@@ -44,7 +44,7 @@ const getEnvFilePath = () => {
             database: 'origin-exchange',
             entities: [Demand, Order, Trade, Asset, Transfer, Account],
             synchronize: true,
-            logging: ['query']
+            logging: ['info']
         }),
         ScheduleModule.forRoot(),
         MatchingEngineModule,

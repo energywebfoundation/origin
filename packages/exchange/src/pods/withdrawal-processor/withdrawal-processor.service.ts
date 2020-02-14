@@ -35,15 +35,13 @@ export class WithdrawalProcessorService {
         const wallet = this.configService.get<string>('EXCHANGE_WALLET_PRIV');
         if (!wallet) {
             this.logger.error('Wallet private key not provided');
-            throw new Error();
+            throw new Error('Wallet private key not provided');
         }
         const web3ProviderUrl = this.configService.get<string>('WEB3');
+        const provider = new ethers.providers.JsonRpcProvider(web3ProviderUrl);
+        this.wallet = new Wallet(wallet, provider);
 
         this.registryAddress = this.configService.get<string>('REGISTRY_ADDRESS');
-
-        const provider = new ethers.providers.JsonRpcProvider(web3ProviderUrl);
-
-        this.wallet = new Wallet(wallet, provider);
 
         const { abi } = Contracts.RegistryJSON;
 
@@ -55,6 +53,18 @@ export class WithdrawalProcessorService {
         this.logger.log(
             `Initializing withdrawal processor for ${this.registryAddress} using ${this.wallet.address}`
         );
+
+        const balance = await this.wallet.getBalance();
+        if (balance.lt(ethers.utils.parseEther('1'))) {
+            this.logger.error(
+                `Withdrawal wallet has not enough EWT tokens, expected at least 1 but has ${ethers.utils.formatEther(
+                    balance
+                )}`
+            );
+
+            throw new Error('Not enough funds');
+        }
+
         this.withdrawalQueue
             .pipe(
                 tap(id => this.log(id)),
