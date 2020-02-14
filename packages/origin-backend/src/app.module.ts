@@ -77,8 +77,9 @@ const ENV_FILE_PATH = path.resolve(__dirname, '../../../../../.env');
         AuthModule,
         EventsModule,
         DeviceTypesModule,
-        CertificationRequestModule,
-        ExchangeAppModule
+        CertificationRequestModule
+        // TODO: enable exchange endpoints
+        // ExchangeAppModule
     ],
     controllers: [AppController]
 })
