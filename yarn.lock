@@ -579,10 +579,10 @@
   resolved "https://registry.yarnpkg.com/@firebase/webchannel-wrapper/-/webchannel-wrapper-0.2.26.tgz#4fe0e0a878d26af98901b29f051deed8017d6237"
   integrity sha512-VlTurkvs4v7EVFWESBZGOPghFEokQhU5au5CP9WqA8B2/PcQRDsaaQlQCA6VATuEnW+vtSiSBvTiOc4004f8xg==
 
-"@fluffy-spoon/substitute@1.107.0":
-  version "1.107.0"
-  resolved "https://registry.yarnpkg.com/@fluffy-spoon/substitute/-/substitute-1.107.0.tgz#99e98768f9d1e163d7d7fa897ddcada462ae154c"
-  integrity sha512-ycm7t0hn/b9Zq592QzWcX1+NPd9uGZu44wVgA6hc18qfiyTAMso+setkZf2LCIo62NhiYXWMcULREK56B60uvg==
+"@fluffy-spoon/substitute@1.110.0":
+  version "1.110.0"
+  resolved "https://registry.yarnpkg.com/@fluffy-spoon/substitute/-/substitute-1.110.0.tgz#b55ef4813a1d6b1fcb60c557ab62c7a1c455fc62"
+  integrity sha512-N6KIXiKPeah/ve2htA4UrLbmz75WWwDKHGUqVx+KFEgPFw2PSFNR08BXZdDAboyRifbs5f+82jvNE1yYAz8jWQ==
 
 "@grpc/proto-loader@^0.5.0":
   version "0.5.3"
@@ -4902,11 +4902,6 @@ commander@3.0.2, commander@^3.0.0:
   version "3.0.2"
   resolved "https://registry.yarnpkg.com/commander/-/commander-3.0.2.tgz#6837c3fb677ad9933d1cfba42dd14d5117d6b39e"
   integrity sha512-Gar0ASD4BDyKC4hl4DwHqDrmvjoxWKZigVnAbn5H1owvm4CxCPdb0HQDehwNYMJpla5+M2tPmPARzhtYuwpHow==
-
-commander@4.1.0:
-  version "4.1.0"
-  resolved "https://registry.yarnpkg.com/commander/-/commander-4.1.0.tgz#545983a0603fe425bc672d66c9e3c89c42121a83"
-  integrity sha512-NIQrwvv9V39FHgGFm36+U9SMQzbiHvU79k+iADraJTpmrFFfx7Ds0IvDoAdZsDrknlkRk14OYoWXb57uTh7/sw==
 
 commander@4.1.1:
   version "4.1.1"
