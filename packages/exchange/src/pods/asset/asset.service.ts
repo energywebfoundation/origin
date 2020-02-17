@@ -10,7 +10,7 @@ export class AssetService {
     private readonly logger = new Logger(AssetService.name);
 
     constructor(
-        @InjectConnection()
+        @InjectConnection('ExchangeConnection')
         private readonly connection: Connection
     ) {}
 

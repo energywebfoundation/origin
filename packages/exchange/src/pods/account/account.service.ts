@@ -14,7 +14,7 @@ export class AccountService {
     constructor(
         @Inject(forwardRef(() => AccountBalanceService))
         private readonly accountBalanceService: AccountBalanceService,
-        @InjectConnection()
+        @InjectConnection('ExchangeConnection')
         private readonly connection: Connection,
         private readonly accountDeployerService: AccountDeployerService
     ) {}
