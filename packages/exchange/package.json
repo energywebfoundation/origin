@@ -85,5 +85,9 @@
         },
         "coverageDirectory": "../coverage",
         "testEnvironment": "node"
+    },
+    "publishConfig": {
+        "access": "public",
+        "registry": "https://registry.npmjs.org"
     }
 }
