@@ -1,6 +1,6 @@
 {
   "name": "@energyweb/origin-backend",
-  "version": "3.6.0",
+  "version": "3.7.0",
   "description": "",
   "main": "dist/js/src/index.js",
   "scripts": {
@@ -33,7 +33,7 @@
   "author": "EnergyWeb DevHub GmbH; Joseph Bagaric, joseph.bagaric@energyweb.org; Piotr Kosinski, piotr.kosinski@energyweb.org",
   "license": "GPL-3.0",
   "dependencies": {
-    "@energyweb/exchange": "0.2.0",
+    "@energyweb/exchange": "0.3.0",
     "@energyweb/origin-backend-core": "1.2.0",
     "@energyweb/utils-general": "7.0.0",
     "@nestjs/common": "6.11.6",

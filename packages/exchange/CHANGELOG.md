@@ -3,6 +3,27 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.3.0](https://github.com/energywebfoundation/origin/compare/@energyweb/exchange@0.2.0...@energyweb/exchange@0.3.0) (2020-02-17)
+
+
+### Bug Fixes
+
+* **exchange:** add main section to package.json ([25e9bfc](https://github.com/energywebfoundation/origin/commit/25e9bfcce342480625da47ec7107299f15b1e59b))
+* **exchange:** set status as error when no enough funds ([0906418](https://github.com/energywebfoundation/origin/commit/09064182f67a4e7432f442e16b3d560029a01b43))
+
+
+### Features
+
+* **exchange:** authentication ([aaef626](https://github.com/energywebfoundation/origin/commit/aaef62612a452855b5ea40c8e081c356083d5e44))
+* **exchange:** deposit watcher, transfers endpoint ([f0f5500](https://github.com/energywebfoundation/origin/commit/f0f5500228cce0d45896e2cd53d43f75e714edec))
+* **exchange:** start watcher from last known block, fix e2e test exit ([b81ac32](https://github.com/energywebfoundation/origin/commit/b81ac32260ab754b5808bc3ac8b99e4eb47766a0))
+* **exchange:** withdrawal e2e tests ([84dcdfa](https://github.com/energywebfoundation/origin/commit/84dcdfa81dfed0c3179b5aa350176b6afb55df69))
+* **exchange:** withdrawal processor WIP ([e56b1dc](https://github.com/energywebfoundation/origin/commit/e56b1dc011475efe8cba125c0f12bef3d117fc92))
+
+
+
+
+
 # [0.2.0](https://github.com/energywebfoundation/origin/compare/@energyweb/exchange@0.1.1...@energyweb/exchange@0.2.0) (2020-02-12)
 
 

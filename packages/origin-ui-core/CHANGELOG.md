@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.2.1](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-ui-core@0.2.0...@energyweb/origin-ui-core@0.2.1) (2020-02-17)
+
+
+### Bug Fixes
+
+* **origin-ui-core:** require device group capacity to be minimum 20 kw ([a75bd03](https://github.com/energywebfoundation/origin/commit/a75bd03078cdf545ed09993acf728201e2ca995d))
+
+
+
+
+
 # [0.2.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-ui-core@0.1.1...@energyweb/origin-ui-core@0.2.0) (2020-02-12)
 
 
