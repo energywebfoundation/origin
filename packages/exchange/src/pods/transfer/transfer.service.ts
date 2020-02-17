@@ -76,7 +76,7 @@ export class TransferService {
         const manager = transaction || this.repository.manager;
 
         const storedWithdrawal = await manager.transaction(tr =>
-            tr.create<Transfer>(Transfer, withdrawal).save()
+            tr.getRepository<Transfer>(Transfer).save(withdrawal)
         );
 
         this.withdrawalProcessorService.requestWithdrawal(storedWithdrawal);
@@ -101,10 +101,7 @@ export class TransferService {
 
             this.logger.debug(`Storing deposit ${JSON.stringify(deposit)}`);
 
-            return manager
-                .getRepository<Transfer>(Transfer)
-                .create(deposit)
-                .save();
+            return manager.getRepository<Transfer>(Transfer).save(deposit);
         });
     }
 
