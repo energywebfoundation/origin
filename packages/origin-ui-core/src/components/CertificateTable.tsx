@@ -22,7 +22,12 @@ import { BuyCertificateModal } from './Modal/BuyCertificateModal';
 import { PublishForSaleModal } from './Modal/PublishForSaleModal';
 import { getBaseURL, getConfiguration, getProducingDevices } from '../features/selectors';
 import { IStoreState } from '../types';
-import { formatCurrency, formatDate, getDeviceLocationText, LOCATION_TITLE } from '../utils/helper';
+import {
+    formatCurrency,
+    formatDate,
+    getDeviceLocationText,
+    LOCATION_TITLE_TRANSLATION_KEY
+} from '../utils/helper';
 import { NotificationType, showNotification } from '../utils/notifications';
 import { getCertificateDetailLink } from '../utils/routing';
 import { IBatchableAction } from './Table/ColumnBatchActions';
@@ -43,6 +48,8 @@ import { getCertificates } from '../features/certificates/selectors';
 import { getCurrencies, getOffChainDataSource } from '../features/general/selectors';
 import { ClaimCertificateBulkModal } from './Modal/ClaimCertificateBulkModal';
 import { EnergyFormatter } from '../utils/EnergyFormatter';
+import { withTranslation, WithTranslation } from 'react-i18next';
+import { checkRecordPassesFilters } from './Table/PaginatedLoaderFiltered';
 
 interface IOwnProps {
     certificates?: PurchasableCertificate.Entity[];
@@ -65,7 +72,7 @@ interface IDispatchProps {
     setLoading: TSetLoading;
 }
 
-type Props = IOwnProps & IStateProps & IDispatchProps;
+type Props = IOwnProps & IStateProps & IDispatchProps & WithTranslation;
 
 interface IEnrichedCertificateData {
     certificate: PurchasableCertificate.Entity;
@@ -101,13 +108,7 @@ export enum SelectedState {
     ForDemand
 }
 
-const CERTIFICATION_DATE_COLUMN = {
-    id: 'certificationDate',
-    label: 'Certification date',
-    sortProperties: [
-        (record: IEnrichedCertificateData) => record?.certificate?.certificate.creationTime
-    ]
-};
+const CERTIFICATION_DATE_COLUMN_ID = 'certificationDate';
 
 class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertificatesState> {
     constructor(props: Props) {
@@ -126,7 +127,7 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
             buyModalForProducingDevice: null,
             showBuyBulkModal: false,
             showClaimBulkModal: false,
-            currentSort: CERTIFICATION_DATE_COLUMN,
+            currentSort: { id: CERTIFICATION_DATE_COLUMN_ID },
             sortAscending: false
         };
 
@@ -172,7 +173,7 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
     async getPaginatedData({
         pageSize,
         offset,
-        filters
+        requestedFilters
     }: IPaginatedLoaderFetchDataParameters): Promise<IPaginatedLoaderFetchDataReturnValues> {
         const { currentUser, selectedState, certificates } = this.props;
         const { matchedCertificates } = this.state;
@@ -197,7 +198,11 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
                     Certificate.Status.Active;
 
                 return (
-                    this.checkRecordPassesFilters(enrichedCertificateData, filters) &&
+                    checkRecordPassesFilters(
+                        enrichedCertificateData,
+                        requestedFilters,
+                        this.deviceTypeService
+                    ) &&
                     ((isActive && ownerOf && !forSale && selectedState === SelectedState.Inbox) ||
                         (claimed && selectedState === SelectedState.Claimed) ||
                         (isActive && forSale && selectedState === SelectedState.ForSale) ||
@@ -296,6 +301,7 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
     }
 
     async buyCertificate(rowIndex: number) {
+        const { t } = this.props;
         const certificateId = this.state.paginatedData[rowIndex].certificate.id;
         const certificate: PurchasableCertificate.Entity = this.props.certificates.find(
             (cert: PurchasableCertificate.Entity) => cert.id === certificateId.toString()
@@ -305,7 +311,7 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
             certificate.certificate.owner?.toLowerCase() ===
             this.props.currentUser?.id?.toLowerCase()
         ) {
-            showNotification(`You can't buy your own certificates.`, NotificationType.Error);
+            showNotification(t('certificate.feedback.cantBuyOwn'), NotificationType.Error);
 
             return;
         }
@@ -322,19 +328,23 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
     }
 
     async buyCertificateBulk(selectedIndexes) {
+        const { t } = this.props;
+
         if (selectedIndexes.length === 0) {
-            showNotification(
-                `No certificates have been selected. Please select at least one certificate.`,
-                NotificationType.Error
-            );
+            showNotification(t('certificate.feedback.noSelected'), NotificationType.Error);
 
             return;
         }
 
         // If we try to bulk buy more than 100 certificates it will probably
         // overflow the block gas limit
-        if (selectedIndexes.length > 100) {
-            showNotification(`Please select less than 100 certificates.`, NotificationType.Error);
+        const CERTIFICATES_LIMIT = 100;
+
+        if (selectedIndexes.length > CERTIFICATES_LIMIT) {
+            showNotification(
+                t('certificate.feedback.pleaseSelectLess', { amount: CERTIFICATES_LIMIT }),
+                NotificationType.Error
+            );
 
             return;
         }
@@ -348,7 +358,7 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
         );
 
         if (isOwnerOfSomeCertificates) {
-            showNotification(`You can't buy your own certificates.`, NotificationType.Error);
+            showNotification(t('certificate.feedback.cantBuyOwn'), NotificationType.Error);
 
             return;
         }
@@ -360,17 +370,21 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
     }
 
     async claimCertificateBulk(selectedIndexes) {
+        const { t } = this.props;
+
         if (selectedIndexes.length === 0) {
-            showNotification(
-                `No certificates have been selected. Please select at least one certificate.`,
-                NotificationType.Error
-            );
+            showNotification(t('certificate.feedback.zeroSelected'), NotificationType.Error);
 
             return;
         }
 
-        if (selectedIndexes.length > 100) {
-            showNotification(`Please select less than 100 certificates.`, NotificationType.Error);
+        const CERTIFICATE_LIMIT = 100;
+
+        if (selectedIndexes.length > CERTIFICATE_LIMIT) {
+            showNotification(
+                t(`certificate.feedback.pleaseSelectLess`, { amount: CERTIFICATE_LIMIT }),
+                NotificationType.Error
+            );
 
             return;
         }
@@ -387,6 +401,7 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
 
     async publishForSale(rowIndex: number) {
         const certificateId = this.state.paginatedData[rowIndex].certificate.id;
+        const { t } = this.props;
 
         const certificate: PurchasableCertificate.Entity = this.props.certificates.find(
             cert => cert.id === certificateId.toString()
@@ -394,7 +409,7 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
 
         if (certificate.forSale) {
             showNotification(
-                `Certificate ${certificate.id} has already been published for sale.`,
+                t('certificate.feedback.alreadyPublishedForSale', { id: certificate.id }),
                 NotificationType.Error
             );
 
@@ -418,6 +433,7 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
 
     async returnToInbox(rowIndex: number) {
         const certificateId = this.state.paginatedData[rowIndex].certificate.id;
+        const { t } = this.props;
 
         const certificate = this.props.certificates.find(
             cert => cert.id === certificateId.toString()
@@ -428,7 +444,7 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
             this.props.currentUser.id.toLowerCase() !== certificate.certificate.owner.toLowerCase()
         ) {
             showNotification(
-                `You are not the owner of certificate ${certificate.id}.`,
+                t('certificate.feedback.notOwner', { id: certificate.id }),
                 NotificationType.Error
             );
 
@@ -436,7 +452,7 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
         }
         if (!certificate.forSale) {
             showNotification(
-                `Certificate ${certificate.id} is already in Inbox.`,
+                t('certificate.feedback.alreadyInInbox', { id: certificate.id }),
                 NotificationType.Error
             );
 
@@ -448,13 +464,14 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
         this.props.setLoading(false);
 
         showNotification(
-            `Certificate ${certificate.id} has been returned to Inbox.`,
+            t('certificate.feedback.returnedToInbox', { id: certificate.id }),
             NotificationType.Success
         );
     }
 
     async claimCertificate(rowIndex: number) {
         const certificateId = this.state.paginatedData[rowIndex].certificate.id;
+        const { t } = this.props;
 
         const certificate: PurchasableCertificate.Entity = this.props.certificates.find(
             (cert: PurchasableCertificate.Entity) => cert.id === certificateId.toString()
@@ -469,7 +486,7 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
             await certificate.claimCertificate();
             this.props.setLoading(false);
             showNotification(
-                `Certificate ${certificate.id} has been claimed.`,
+                t('certificate.feedback.claimed', { id: certificate.id }),
                 NotificationType.Success
             );
         }
@@ -524,6 +541,8 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
             return [];
         }
 
+        const { t } = this.props;
+
         const maxCertificateEnergyInDisplayUnit = EnergyFormatter.getValueInDisplayUnit(
             this.props.certificates.reduce(
                 (a, b) => (b.certificate.energy > a ? b.certificate.energy : a),
@@ -534,7 +553,7 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
         const filters: ICustomFilterDefinition[] = [
             {
                 property: (record: IEnrichedCertificateData) => `${record?.locationText}`,
-                label: `Search by ${LOCATION_TITLE.toLowerCase()}`,
+                label: t('search.searchByRegionProvince'),
                 input: {
                     type: CustomFilterInputType.string
                 },
@@ -543,7 +562,7 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
             {
                 property: (record: IEnrichedCertificateData) =>
                     record?.producingDevice?.offChainProperties?.deviceType,
-                label: 'Device type',
+                label: t('certificate.properties.deviceType'),
                 input: {
                     type: CustomFilterInputType.deviceType,
                     defaultOptions: []
@@ -555,7 +574,7 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
                         .unix(record?.producingDevice?.offChainProperties?.operationalSince)
                         .year()
                         .toString(),
-                label: 'Commissioning date',
+                label: t('certificate.properties.commissioningDate'),
                 input: {
                     type: CustomFilterInputType.dropdown,
                     availableOptions: new Array(40).fill(moment().year()).map((item, index) => ({
@@ -566,14 +585,14 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
             },
             {
                 property: (record: IEnrichedCertificateData) => record?.locationText,
-                label: LOCATION_TITLE,
+                label: t(LOCATION_TITLE_TRANSLATION_KEY),
                 input: {
                     type: CustomFilterInputType.string
                 }
             },
             {
                 property: (record: IEnrichedCertificateData) => record?.organization?.name,
-                label: 'Owner',
+                label: t('certificate.properties.owner'),
                 input: {
                     type: CustomFilterInputType.string
                 }
@@ -581,7 +600,7 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
             {
                 property: (record: IEnrichedCertificateData) =>
                     record?.certificate?.certificate?.creationTime?.toString(),
-                label: 'Certification date',
+                label: t('certificate.properties.certificationDate'),
                 input: {
                     type: CustomFilterInputType.yearMonth
                 }
@@ -589,7 +608,9 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
             {
                 property: (record: IEnrichedCertificateData): number =>
                     EnergyFormatter.getValueInDisplayUnit(record?.certificate?.certificate?.energy),
-                label: `Certified energy (${EnergyFormatter.displayUnit})`,
+                label: `${t('certificate.properties.certifiedEnergy')} (${
+                    EnergyFormatter.displayUnit
+                })`,
                 input: {
                     type: CustomFilterInputType.slider,
                     min: 0,
@@ -627,29 +648,34 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
 
     customSelectCounterGenerator(selectedIndexes: number[]) {
         if (selectedIndexes.length > 0) {
+            const { t } = this.props;
+
             const selectedCertificates = this.state.paginatedData
                 .filter((item, index) => selectedIndexes.includes(index))
                 .map(i => i.certificate);
 
             const energy = selectedCertificates.reduce((a, b) => a + b.certificate.energy, 0);
 
-            return `${selectedIndexes.length} selected (${EnergyFormatter.format(energy, true)})`;
+            return `${t('certificate.feedback.amountSelected', {
+                amount: selectedIndexes.length
+            })} (${EnergyFormatter.format(energy, true)})`;
         }
     }
 
     get batchableActions(): IBatchableAction[] {
         const actions = [];
+        const { t } = this.props;
 
         if ([SelectedState.ForSale, SelectedState.ForDemand].includes(this.props.selectedState)) {
             actions.push({
-                label: 'Buy',
+                label: t('certificate.actions.buy'),
                 handler: this.buyCertificateBulk
             });
         }
 
         if (this.props.selectedState === SelectedState.Inbox) {
             actions.push({
-                label: 'Claim',
+                label: t('certificate.actions.claim'),
                 handler: this.claimCertificateBulk
             });
         }
@@ -658,10 +684,11 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
     }
 
     get actions() {
+        const { t } = this.props;
         const actions = [];
 
         const buyAction = {
-            name: 'Buy',
+            name: t('certificate.actions.buy'),
             onClick: (row: number) => this.buyCertificate(row),
             icon: <AddShoppingCart />
         };
@@ -670,12 +697,12 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
             case SelectedState.Inbox:
                 actions.push(
                     {
-                        name: 'Claim',
+                        name: t('certificate.actions.claim'),
                         icon: <AssignmentTurnedIn />,
                         onClick: (row: number) => this.claimCertificate(row)
                     },
                     {
-                        name: 'Publish for sale',
+                        name: t('certificate.actions.publishForSale'),
                         icon: <Publish />,
                         onClick: (row: number) => this.publishForSale(row)
                     }
@@ -683,7 +710,7 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
                 break;
             case SelectedState.ForSale:
                 actions.push(buyAction, {
-                    name: 'Return to inbox',
+                    name: t('certificate.actions.returnToInbox'),
                     icon: <AssignmentReturn />,
                     onClick: (row: number) => this.returnToInbox(row)
                 });
@@ -711,15 +738,17 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
     }
 
     get columns() {
+        const { t } = this.props;
+
         return ([
             {
                 id: 'deviceType',
-                label: 'Device type',
+                label: t('certificate.properties.deviceType'),
                 sortProperties: [(record: IEnrichedCertificateData) => record?.deviceTypeLabel]
             },
             {
                 id: 'commissioningDate',
-                label: 'Commissioning date',
+                label: t('device.properties.comissioningDate'),
                 sortProperties: [
                     (record: IEnrichedCertificateData) =>
                         record?.producingDevice?.offChainProperties?.operationalSince
@@ -727,21 +756,30 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
             },
             {
                 id: 'locationText',
-                label: LOCATION_TITLE,
+                label: t(LOCATION_TITLE_TRANSLATION_KEY),
                 sortProperties: [(record: IEnrichedCertificateData) => record?.locationText]
             },
-            { id: 'compliance', label: 'Compliance' },
+            { id: 'compliance', label: t('certificate.properties.compliance') },
             {
                 id: 'owner',
-                label: 'Owner',
+                label: t('certificate.properties.owner'),
                 sortProperties: [(record: IEnrichedCertificateData) => record?.organization?.name]
             },
-            CERTIFICATION_DATE_COLUMN,
-            { id: 'price', label: 'Price' },
-            { id: 'currency', label: 'Currency' },
+            {
+                id: CERTIFICATION_DATE_COLUMN_ID,
+                label: t('certificate.properties.certificationDate'),
+                sortProperties: [
+                    (record: IEnrichedCertificateData) =>
+                        record?.certificate?.certificate.creationTime
+                ]
+            },
+            { id: 'price', label: t('certificate.properties.price') },
+            { id: 'currency', label: t('certificate.properties.currency') },
             {
                 id: 'energy',
-                label: `Certified energy (${EnergyFormatter.displayUnit})`,
+                label: `${t('certificate.properties.certifiedEnergy')} (${
+                    EnergyFormatter.displayUnit
+                })`,
                 sortProperties: [
                     [
                         (record: IEnrichedCertificateData) =>
@@ -881,15 +919,17 @@ const dispatchProps: IDispatchProps = {
     setLoading
 };
 
-export const CertificateTable = connect(
-    (state: IStoreState, ownProps: IOwnProps): IStateProps => ({
-        baseURL: getBaseURL(),
-        certificates: ownProps.certificates || getCertificates(state),
-        configuration: getConfiguration(state),
-        currentUser: getCurrentUser(state),
-        producingDevices: getProducingDevices(state),
-        users: getUsers(state),
-        organizationClient: getOffChainDataSource(state)?.organizationClient
-    }),
-    dispatchProps
-)(CertificateTableClass);
+export const CertificateTable = withTranslation()(
+    connect(
+        (state: IStoreState, ownProps: IOwnProps): IStateProps => ({
+            baseURL: getBaseURL(),
+            certificates: ownProps.certificates || getCertificates(state),
+            configuration: getConfiguration(state),
+            currentUser: getCurrentUser(state),
+            producingDevices: getProducingDevices(state),
+            users: getUsers(state),
+            organizationClient: getOffChainDataSource(state)?.organizationClient
+        }),
+        dispatchProps
+    )(CertificateTableClass)
+);

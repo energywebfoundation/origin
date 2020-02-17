@@ -154,6 +154,7 @@ export interface IOriginConfiguration {
     styleConfig: IOriginStyleConfig;
     customSliderStyle: any;
     materialTheme: Theme;
+    language: 'en' | 'pl';
 }
 
 export function createStyleConfigFromSCSSVariables(scssVariables: any): IOriginStyleConfig {
@@ -177,7 +178,8 @@ export function createOriginConfiguration(configuration: Partial<IOriginConfigur
         logo: <OriginGenericLogo />,
         styleConfig: DEFAULT_STYLE_CONFIG,
         customSliderStyle: createSliderStyleForOrigin(DEFAULT_STYLE_CONFIG),
-        materialTheme: createMaterialThemeForOrigin(DEFAULT_STYLE_CONFIG)
+        materialTheme: createMaterialThemeForOrigin(DEFAULT_STYLE_CONFIG),
+        language: 'en'
     };
 
     const newConfiguration: IOriginConfiguration = {

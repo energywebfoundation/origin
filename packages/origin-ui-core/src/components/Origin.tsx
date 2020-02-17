@@ -17,6 +17,10 @@ import { composeWithDevTools } from 'redux-devtools-extension';
 import { MuiPickersUtilsProvider } from '@material-ui/pickers';
 import MomentUtils from '@date-io/moment';
 import { MuiThemeProvider } from '@material-ui/core/styles';
+import i18n from 'i18next';
+import ICU from 'i18next-icu';
+import { EN, PL } from '@energyweb/localization';
+import { initReactI18next } from 'react-i18next';
 import { createBrowserHistory, History } from 'history';
 import { routerMiddleware, ConnectedRouter } from 'connected-react-router';
 import { OriginConfigurationContext } from './OriginConfigurationContext';
@@ -54,6 +58,21 @@ export function Origin() {
         Object.keys(sagas).forEach((saga: keyof typeof sagas) => {
             sagaMiddleware.run(sagas[saga]);
         });
+
+        i18n.use(new ICU())
+            .use(initReactI18next)
+            .init({
+                resources: {
+                    en: EN,
+                    pl: PL
+                },
+                lng: originConfiguration.language,
+                fallbackLng: 'en',
+
+                interpolation: {
+                    escapeValue: false
+                }
+            });
     });
 
     if (!originConfiguration) {

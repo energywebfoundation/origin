@@ -5,14 +5,14 @@ import { useState } from 'react';
 export interface IPaginatedLoaderHooksFetchDataParameters {
     requestedPageSize: number;
     offset: number;
-    filters?: ICustomFilter[];
+    requestedFilters?: ICustomFilter[];
 }
 
 interface IUsePaginatedLoaderParameters<T> {
     getPaginatedData: ({
         requestedPageSize,
         offset,
-        filters
+        requestedFilters
     }: IPaginatedLoaderHooksFetchDataParameters) => Promise<{
         paginatedData: T[];
         total: number;
@@ -32,7 +32,7 @@ export function usePaginatedLoader<T>({
 
     async function loadPage(
         page: number,
-        filters?: ICustomFilter[],
+        requestedFilters?: ICustomFilter[],
         checkIsMounted?: () => boolean
     ) {
         const offset = (page - 1) * pageSize;
@@ -40,13 +40,53 @@ export function usePaginatedLoader<T>({
         const { paginatedData: newPaginatedData, total: newTotal } = await getPaginatedData({
             requestedPageSize: pageSize,
             offset,
-            filters
+            requestedFilters
         });
 
         if (!checkIsMounted || checkIsMounted()) {
             setPaginatedData(newPaginatedData);
             setTotal(newTotal);
         }
+    }
+
+    return {
+        loadPage,
+        pageSize,
+        paginatedData,
+        setPageSize,
+        total
+    };
+}
+
+export function usePaginatedLoaderFiltered<T>({
+    getPaginatedData,
+    initialPageSize = DEFAULT_PAGE_SIZE
+}: IUsePaginatedLoaderParameters<T>) {
+    const {
+        paginatedData,
+        pageSize,
+        loadPage: paginatedLoaderLoadPage,
+        setPageSize,
+        total
+    } = usePaginatedLoader({
+        getPaginatedData,
+        initialPageSize
+    });
+
+    const [appliedFilters, setAppliedFilters] = useState<ICustomFilter[]>([]);
+
+    async function loadPage(
+        page: number,
+        requestedFilters?: ICustomFilter[],
+        checkIsMounted?: () => boolean
+    ) {
+        if (requestedFilters) {
+            setAppliedFilters(requestedFilters);
+        } else if (appliedFilters) {
+            requestedFilters = appliedFilters;
+        }
+
+        paginatedLoaderLoadPage(page, requestedFilters, checkIsMounted);
     }
 
     return {

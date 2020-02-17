@@ -1,0 +1,86 @@
+{
+    "translation": {
+        "header": {
+            "devices": "Devices",
+            "certificates": "Certificates",
+            "demands": "Demands",
+            "organizations": "Organizations"
+        },
+        "navigation": {
+            "devices": {
+                "all": "All devices",
+                "map": "Map view",
+                "my": "My devices",
+                "registerDevice": "Register device",
+                "registerDeviceGroup": "Register device group",
+                "pending": "Pending"
+            },
+            "certificates": {
+                "inbox": "Inbox",
+                "forSale": "For sale",
+                "claimsReport": "Claims report",
+                "detailView": "Detail view",
+                "pending": "Pending",
+                "approved": "Approved",
+                "forDemand": "For demand"
+            }
+        },
+        "device": {
+            "properties": {
+                "owner": "Owner",
+                "facilityName": "Facility name",
+                "regionProvince": "Region, province",
+                "type": "Type",
+                "nameplateCapacity": "Nameplate capacity",
+                "meterRead": "Meter read",
+                "comissioningDate": "Comissioning date",
+                "status": "Status"
+            },
+            "actions": {
+                "requestCertificates": "Request certificates",
+                "approve": "Approve",
+                "registerDevice": "Register device"
+            }
+        },
+        "certificate": {
+            "properties": {
+                "compliance": "Compliance",
+                "owner": "Owner",
+                "price": "Price",
+                "currency": "Currency",
+                "certifiedEnergy": "Certified energy",
+                "deviceType": "Device type",
+                "certificationDate": "Certification date"
+            },
+            "actions": {
+                "requestCertificates": "Request certificates",
+                "approve": "Approve",
+                "registerDevice": "Register device",
+                "publishForSale": "Publish for sale",
+                "claim": "Claim",
+                "returnToInbox": "Return to inbox",
+                "buy": "Buy"
+            },
+            "feedback": {
+                "returnedToInbox": "Certificate {{id}} has been returned to the inbox.",
+                "claimed": "Certificate {{id}} has been claimed.",
+                "notOwner": "You are not the owner of certificate {{id}}.",
+                "alreadyInInbox": "Certificate {{id}} is already in the inbox.",
+                "alreadyPublishedForSale": "Certificate {{id}} has already been published for sale.",
+                "noSelected": "No certificates have been selected. Please select at least one certificate.",
+                "pleaseSelectLess": "Please select less than {amount, plural, =1 {# certificate} other {# certificates}}.",
+                "cantBuyOwn": "You can't buy your own certificates.",
+                "zeroSelected": "No certificates have been selected. Please select at least one certificate.",
+                "amountSelected": "{amount, plural, other {# selected}}"
+            }
+        },
+        "search": {
+            "searchByFacilityNameAndOrganization": "Search by facility name and organization",
+            "searchByRegionProvince": "Search by region and province"
+        },
+        "settings": {
+            "settings": "Settings",
+            "registerOffchainUser": "Register offchain user"
+        }
+    }
+}

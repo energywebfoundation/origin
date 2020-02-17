@@ -1,6 +1,6 @@
 import React, { ReactNode, useState } from 'react';
 import { ICustomFilter, FiltersHeader, ICustomFilterDefinition } from './FiltersHeader';
-import { SortPropertiesType } from './PaginatedLoaderFilteredSorted';
+import { SortPropertiesType, CurrentSortType } from './PaginatedLoaderFilteredSorted';
 import {
     Paper,
     TableFooter,
@@ -50,7 +50,7 @@ interface IProps<T extends readonly ITableColumn[]> {
     total?: number;
     actions?: ITableAction[];
     onSelect?: TableOnSelectFunction;
-    currentSort?: ITableColumn;
+    currentSort?: CurrentSortType;
     sortAscending?: boolean;
     toggleSort?: (sortProperties: ITableColumn) => void;
     filters?: ICustomFilterDefinition[];

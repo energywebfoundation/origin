@@ -37,6 +37,9 @@
         },
         {
             "path": "../origin-backend-core/tsconfig.build.json"
+        },
+        {
+            "path": "../localization/tsconfig.build.json"
         }
     ]
 }

@@ -16,8 +16,10 @@ export type SortPropertiesType = ReadonlyArray<
       ]
 >;
 
+export type CurrentSortType = Pick<ITableColumn, 'id' | 'sortProperties'>;
+
 export interface IPaginatedLoaderFilteredSortedState extends IPaginatedLoaderFilteredState {
-    currentSort: ITableColumn;
+    currentSort: CurrentSortType;
     sortAscending: boolean;
 }
 

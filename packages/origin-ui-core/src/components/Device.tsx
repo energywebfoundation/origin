@@ -11,10 +11,12 @@ import { useLinks } from '../utils/routing';
 import { getCurrentUser } from '../features/users/selectors';
 import { DeviceStatus } from '@energyweb/origin-backend-core';
 import { Role } from '@energyweb/user-registry';
+import { useTranslation } from 'react-i18next';
 
 export function Device() {
     const currentUser = useSelector(getCurrentUser);
     const { baseURL, getDevicesLink } = useLinks();
+    const { t } = useTranslation();
 
     function ProductionDetailView(id: number): JSX.Element {
         return (
@@ -66,35 +68,35 @@ export function Device() {
     const DevicesMenu = [
         {
             key: 'production',
-            label: 'All devices',
+            label: t('navigation.devices.all'),
             component: ProductionList
         },
         {
             key: 'production-map',
-            label: 'Map view',
+            label: t('navigation.devices.map'),
             component: Map
         },
         {
             key: 'owned',
-            label: 'My devices',
+            label: t('navigation.devices.my'),
             component: MyDevices,
             roles: [Role.DeviceManager]
         },
         {
             key: 'pending',
-            label: 'Pending',
+            label: t('navigation.devices.pending'),
             component: ProductionPendingList,
             roles: [Role.Issuer]
         },
         {
             key: 'add',
-            label: 'Register device',
+            label: t('navigation.devices.registerDevice'),
             component: AddDevice,
             roles: [Role.DeviceManager]
         },
         {
             key: 'add-group',
-            label: 'Register device group',
+            label: t('navigation.devices.registerDeviceGroup'),
             component: DeviceGroupForm,
             roles: [Role.DeviceManager]
         },
