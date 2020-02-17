@@ -1,40 +1,39 @@
+import { AppModule as ExchangeAppModule } from '@energyweb/exchange';
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { ConnectionOptions } from 'typeorm';
 import fs from 'fs';
 import path from 'path';
-
-import { JsonEntity } from './pods/json-entity/json-entity.entity';
-import { MarketContractLookup } from './pods/contracts-storage/market-contract-lookup.entity';
-import { Currency } from './pods/currency/currency.entity';
-import { Compliance } from './pods/compliance/compliance.entity';
-import { Organization } from './pods/organization/organization.entity';
-import { User } from './pods/user/user.entity';
-import { Device } from './pods/device/device.entity';
-import { Demand } from './pods/demand/demand.entity';
-
-import { UserModule } from './pods/user/user.module';
-import { ComplianceModule } from './pods/compliance/compliance.module';
-import createConfig from './config/configuration';
-import { Country } from './pods/country/country.entity';
-import { CountryModule } from './pods/country/country.module';
-import { CurrencyModule } from './pods/currency/currency.module';
-import { FileModule } from './pods/file/file.module';
-import { JsonEntityModule } from './pods/json-entity/json-entity.module';
-import { ContractsStorageModule } from './pods/contracts-storage/contracts-storage.module';
-import { OrganizationModule } from './pods/organization/organization.module';
-import { DeviceModule } from './pods/device/device.module';
-import { DemandModule } from './pods/demand/demand.module';
-import { AuthModule } from './auth/auth.module';
-import { EventsModule } from './events/events.module';
+import { ConnectionOptions } from 'typeorm';
 
 import { AppController } from './app.controller';
-import { OrganizationInvitation } from './pods/organization/organizationInvitation.entity';
+import { AuthModule } from './auth/auth.module';
+import createConfig from './config/configuration';
+import { EventsModule } from './events/events.module';
+import { CertificationRequestModule } from './pods/certificate/certificate.module';
+import { CertificationRequest } from './pods/certificate/certification-request.entity';
+import { Compliance } from './pods/compliance/compliance.entity';
+import { ComplianceModule } from './pods/compliance/compliance.module';
+import { ContractsStorageModule } from './pods/contracts-storage/contracts-storage.module';
+import { MarketContractLookup } from './pods/contracts-storage/market-contract-lookup.entity';
+import { Country } from './pods/country/country.entity';
+import { CountryModule } from './pods/country/country.module';
+import { Currency } from './pods/currency/currency.entity';
+import { CurrencyModule } from './pods/currency/currency.module';
+import { Demand } from './pods/demand/demand.entity';
+import { DemandModule } from './pods/demand/demand.module';
 import { DeviceTypes } from './pods/device-types/device-types.entity';
 import { DeviceTypesModule } from './pods/device-types/device-types.module';
-import { CertificationRequest } from './pods/certificate/certification-request.entity';
-import { CertificationRequestModule } from './pods/certificate/certificate.module';
+import { Device } from './pods/device/device.entity';
+import { DeviceModule } from './pods/device/device.module';
+import { FileModule } from './pods/file/file.module';
+import { JsonEntity } from './pods/json-entity/json-entity.entity';
+import { JsonEntityModule } from './pods/json-entity/json-entity.module';
+import { Organization } from './pods/organization/organization.entity';
+import { OrganizationModule } from './pods/organization/organization.module';
+import { OrganizationInvitation } from './pods/organization/organizationInvitation.entity';
+import { User } from './pods/user/user.entity';
+import { UserModule } from './pods/user/user.module';
 
 const ENV_FILE_PATH = path.resolve(__dirname, '../../../../../.env');
 
@@ -79,8 +78,9 @@ const ENV_FILE_PATH = path.resolve(__dirname, '../../../../../.env');
         EventsModule,
         DeviceTypesModule,
         CertificationRequestModule
+        // TODO: enable exchange endpoints
+        // ExchangeAppModule
     ],
-    controllers: [AppController],
-    providers: []
+    controllers: [AppController]
 })
 export class AppModule {}

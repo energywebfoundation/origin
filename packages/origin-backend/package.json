@@ -33,10 +33,11 @@
   "author": "EnergyWeb DevHub GmbH; Joseph Bagaric, joseph.bagaric@energyweb.org; Piotr Kosinski, piotr.kosinski@energyweb.org",
   "license": "GPL-3.0",
   "dependencies": {
+    "@energyweb/exchange": "0.2.0",
     "@energyweb/origin-backend-core": "1.2.0",
     "@energyweb/utils-general": "7.0.0",
     "@nestjs/common": "6.11.6",
-    "@nestjs/config": "^0.0.9",
+    "@nestjs/config": "^0.2.0",
     "@nestjs/core": "6.11.6",
     "@nestjs/jwt": "6.1.1",
     "@nestjs/passport": "6.1.1",
@@ -64,7 +65,7 @@
   },
   "devDependencies": {
     "@nestjs/cli": "6.14.2",
-    "@nestjs/schematics": "6.9.3",
+    "@nestjs/schematics": "6.9.4",
     "@nestjs/testing": "6.11.6",
     "@types/bcryptjs": "2.4.2",
     "@types/body-parser": "1.17.1",

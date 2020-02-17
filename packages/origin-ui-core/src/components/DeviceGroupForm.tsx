@@ -114,7 +114,7 @@ const VALIDATION_SCHEMA = Yup.object().shape({
                         .label('Longitude'),
                     capacity: Yup.number()
                         .required()
-                        .max(20)
+                        .min(20)
                         .label('Capacity'),
                     meterId: Yup.string()
                         .required()

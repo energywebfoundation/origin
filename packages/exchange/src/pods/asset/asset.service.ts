@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { InjectConnection } from '@nestjs/typeorm';
 import { Connection, EntityManager } from 'typeorm';
 
@@ -7,8 +7,10 @@ import { AssetDTO } from './asset.dto';
 
 @Injectable()
 export class AssetService {
+    private readonly logger = new Logger(AssetService.name);
+
     constructor(
-        @InjectConnection()
+        @InjectConnection('ExchangeConnection')
         private readonly connection: Connection
     ) {}
 
@@ -17,15 +19,17 @@ export class AssetService {
     }
 
     public async createIfNotExist(asset: AssetDTO, transaction?: EntityManager) {
+        this.logger.debug(`Requested asset ${JSON.stringify(asset)}`);
         if (transaction) {
             return this.create(asset, transaction);
         }
 
-        return this.connection.transaction(tr => this.create(asset, tr));
+        return this.connection.transaction(async tr => this.create(asset, tr));
     }
 
     private async create(asset: AssetDTO, transaction: EntityManager) {
-        let existingAsset = await transaction.findOne<Asset>(Asset, null, {
+        const repository = transaction.getRepository<Asset>(Asset);
+        let existingAsset = await repository.findOne(null, {
             where: {
                 address: asset.address,
                 tokenId: asset.tokenId
@@ -33,8 +37,10 @@ export class AssetService {
         });
 
         if (!existingAsset) {
-            existingAsset = await transaction.create<Asset>(Asset, asset).save();
+            existingAsset = await repository.save(asset);
         }
+
+        this.logger.debug(`Returning asset ${JSON.stringify(existingAsset)}`);
 
         return existingAsset;
     }

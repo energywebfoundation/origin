@@ -1708,7 +1708,7 @@
     tslib "1.10.0"
     uuid "3.4.0"
 
-"@nestjs/config@0.2.2":
+"@nestjs/config@0.2.2", "@nestjs/config@^0.2.0":
   version "0.2.2"
   resolved "https://registry.yarnpkg.com/@nestjs/config/-/config-0.2.2.tgz#0fa590473e3a2293611ce2c3e2bd03dd78b68911"
   integrity sha512-Tb0Ne0ERsFi8m4bWDtgCjQfz2cdFd0uqgYupqrgPLXRCwQxPFJWCLqDj/iD4MjpHxKvYxWJrHwHii+IF6L9HDg==
@@ -1718,16 +1718,6 @@
     lodash.get "4.4.2"
     lodash.set "4.3.2"
     uuid "3.4.0"
-
-"@nestjs/config@^0.0.9":
-  version "0.0.9"
-  resolved "https://registry.yarnpkg.com/@nestjs/config/-/config-0.0.9.tgz#beefb37d8057fd8ea2710aaee95e7c7249a0f158"
-  integrity sha512-Eq5mRsLTz+9PzyV5xM80sUwaiw912axba2uf4QcnzmeVsC0/z+IZ4RX1HxHcnO7z2w/h3PvYOiK5QCIWI7PjCQ==
-  dependencies:
-    dotenv "8.2.0"
-    lodash.get "4.4.2"
-    lodash.set "4.3.2"
-    uuid "3.3.3"
 
 "@nestjs/core@6.11.6":
   version "6.11.6"
@@ -1792,10 +1782,10 @@
     cron "1.8.2"
     uuid "3.4.0"
 
-"@nestjs/schematics@6.9.3":
-  version "6.9.3"
-  resolved "https://registry.yarnpkg.com/@nestjs/schematics/-/schematics-6.9.3.tgz#046c55fad8bac5ed815f855d156d5a7c236414fd"
-  integrity sha512-Son7gzAEOk0BS7bwKWWa3r/dUc15jUk6rcQqoJrGOjaShLeqmk8yg4t0R5QoorMfei1Jp0XtcWRsY7JIRLWn2g==
+"@nestjs/schematics@6.9.4":
+  version "6.9.4"
+  resolved "https://registry.yarnpkg.com/@nestjs/schematics/-/schematics-6.9.4.tgz#4624c35da771fbb9a346cbd77aebd747d9348fd9"
+  integrity sha512-tZoLDboqXQT+DcWUFTJyDsOIg9Qt6ilXYWWbrbbEPCP2+UKjfsqZPsEnG31DOj0IbovFS5g+Mbn3IanVsEcIsQ==
   dependencies:
     "@angular-devkit/core" "7.3.8"
     "@angular-devkit/schematics" "7.3.8"
@@ -4912,11 +4902,6 @@ commander@3.0.2, commander@^3.0.0:
   version "3.0.2"
   resolved "https://registry.yarnpkg.com/commander/-/commander-3.0.2.tgz#6837c3fb677ad9933d1cfba42dd14d5117d6b39e"
   integrity sha512-Gar0ASD4BDyKC4hl4DwHqDrmvjoxWKZigVnAbn5H1owvm4CxCPdb0HQDehwNYMJpla5+M2tPmPARzhtYuwpHow==
-
-commander@4.1.0:
-  version "4.1.0"
-  resolved "https://registry.yarnpkg.com/commander/-/commander-4.1.0.tgz#545983a0603fe425bc672d66c9e3c89c42121a83"
-  integrity sha512-NIQrwvv9V39FHgGFm36+U9SMQzbiHvU79k+iADraJTpmrFFfx7Ds0IvDoAdZsDrknlkRk14OYoWXb57uTh7/sw==
 
 commander@4.1.1:
   version "4.1.1"
@@ -14786,10 +14771,10 @@ sort-keys@^2.0.0:
   dependencies:
     is-plain-obj "^1.0.0"
 
-sort-keys@^3.0.0:
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/sort-keys/-/sort-keys-3.0.0.tgz#fa751737e3da363ef80632d4fd78e324d661fe9a"
-  integrity sha512-77XUKMiZN5LvQXZ9sgWfJza19AvYIDwaDGwGiULM+B5XYru8Z90Oh06JvqDlJczvjjYvssrV0aK1GI6+YXvn5A==
+sort-keys@^4.0.0:
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/sort-keys/-/sort-keys-4.0.0.tgz#56dc5e256637bfe3fec8db0dc57c08b1a2be22d6"
+  integrity sha512-hlJLzrn/VN49uyNkZ8+9b+0q9DjmmYcYOnbMQtpkLrYpPwRApDPZfmqbUfJnAA3sb/nRib+nDot7Zi/1ER1fuA==
   dependencies:
     is-plain-obj "^2.0.0"
 
@@ -17839,16 +17824,16 @@ write-file-atomic@^3.0.0:
     signal-exit "^3.0.2"
     typedarray-to-buffer "^3.1.5"
 
-write-json-file@4.2.1:
-  version "4.2.1"
-  resolved "https://registry.yarnpkg.com/write-json-file/-/write-json-file-4.2.1.tgz#ddd5ef9d9bae6f8129629410caaa9c79556b8541"
-  integrity sha512-nkmp9weFMmE0Zev48m6sr9zU2iHO2BemwqfIasXny4DzIKIoKt9WEbgdMW0pwk9DmzC8jzSwixkjgK2vu1zw4g==
+write-json-file@4.3.0:
+  version "4.3.0"
+  resolved "https://registry.yarnpkg.com/write-json-file/-/write-json-file-4.3.0.tgz#908493d6fd23225344af324016e4ca8f702dd12d"
+  integrity sha512-PxiShnxf0IlnQuMYOPPhPkhExoCQuTUNPOa/2JWCYTmBquU9njyyDuwRKN26IZBlp4yn1nt+Agh2HOOBl+55HQ==
   dependencies:
     detect-indent "^6.0.0"
     graceful-fs "^4.1.15"
     is-plain-obj "^2.0.0"
     make-dir "^3.0.0"
-    sort-keys "^3.0.0"
+    sort-keys "^4.0.0"
     write-file-atomic "^3.0.0"
 
 write-json-file@^2.2.0:

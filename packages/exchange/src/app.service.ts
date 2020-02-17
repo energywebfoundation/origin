@@ -1,6 +1,8 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { MatchingEngineService } from './pods/matching-engine/matching-engine.service';
 import { OrderService } from './pods/order/order.service';
+import { DepositWatcherService } from './pods/deposit-watcher/deposit-watcher.service';
+import { WithdrawalProcessorService } from './pods/withdrawal-processor/withdrawal-processor.service';
 
 @Injectable()
 export class AppService {
@@ -8,7 +10,9 @@ export class AppService {
 
     constructor(
         private readonly matchingEngineService: MatchingEngineService,
-        private readonly ordersService: OrderService
+        private readonly ordersService: OrderService,
+        private readonly depositWatcherService: DepositWatcherService,
+        private readonly withdrawalProcessorService: WithdrawalProcessorService
     ) {}
 
     public async init() {
@@ -17,5 +21,9 @@ export class AppService {
         const orders = await this.ordersService.getAllActiveOrders();
 
         this.matchingEngineService.init(orders);
+
+        await this.depositWatcherService.init();
+
+        await this.withdrawalProcessorService.init();
     }
 }

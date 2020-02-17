@@ -10,7 +10,7 @@ import { Demand } from './demand.entity';
 @Injectable()
 export class DemandService {
     constructor(
-        @InjectRepository(Demand)
+        @InjectRepository(Demand, 'ExchangeConnection')
         private readonly repository: Repository<Demand>,
         private readonly orderService: OrderService,
         private readonly matchingService: MatchingEngineService
@@ -31,17 +31,15 @@ export class DemandService {
             userId
         });
 
-        const demand = await this.repository
-            .create({
-                userId,
-                price,
-                volumePerPeriod: volume,
-                periods: 1,
-                product: ProductDTO.toProduct(product),
-                start: start.getTime(),
-                bids: [bid]
-            })
-            .save();
+        const demand = await this.repository.save({
+            userId,
+            price,
+            volumePerPeriod: volume,
+            periods: 1,
+            product: ProductDTO.toProduct(product),
+            start: start.getTime(),
+            bids: [bid]
+        });
 
         this.matchingService.submit(bid);
 

@@ -1,36 +1,19 @@
-import { Controller, Get, Param, Post, Body, ForbiddenException } from '@nestjs/common';
+import { IUser } from '@energyweb/origin-backend-core';
+import { Controller, Get, UseGuards } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
 
-import { AccountService } from './account.service';
+import { UserDecorator } from '../decorators/user.decorator';
 import { Account } from './account';
-import { RequestWithdrawalDTO } from '../transfer/create-withdrawal.dto';
-import { TransferService } from '../transfer/transfer.service';
+import { AccountService } from './account.service';
 
 @Controller('account')
 export class AccountController {
-    constructor(
-        private readonly accountService: AccountService,
-        private readonly transferService: TransferService
-    ) {}
+    constructor(private readonly accountService: AccountService) {}
 
-    // TODO: id from auth header
-    @Get(':id')
-    public async getAccount(@Param('id') userId: string): Promise<Account> {
-        return this.accountService.getAccount(userId);
-    }
-
-    @Post('withdrawal')
-    public async requestWithdrawal(@Body() withdrawal: RequestWithdrawalDTO) {
-        try {
-            const result = await this.accountService.requestWithdrawal(withdrawal);
-
-            return result;
-        } catch (error) {
-            throw new ForbiddenException();
-        }
-    }
-
-    @Get('transfers')
-    public async getTransfers() {
-        return this.transferService.getAll('1');
+    // TODO: explicit account creation request
+    @Get()
+    @UseGuards(AuthGuard())
+    public async getAccount(@UserDecorator() user: IUser): Promise<Account> {
+        return this.accountService.getAccount(user.id.toString());
     }
 }

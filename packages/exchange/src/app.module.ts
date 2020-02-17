@@ -22,6 +22,8 @@ import { TradeModule } from './pods/trade/trade.module';
 import { Transfer } from './pods/transfer/transfer.entity';
 import { TransferModule } from './pods/transfer/transfer.module';
 import { AccountBalanceModule } from './pods/account-balance/account-balance.module';
+import { DepositWatcherModule } from './pods/deposit-watcher/deposit-watcher.module';
+import { WithdrawalProcessorModule } from './pods/withdrawal-processor/withdrawal-processor.module';
 
 const getEnvFilePath = () => {
     if (__dirname.includes('dist/js')) {
@@ -34,6 +36,7 @@ const getEnvFilePath = () => {
     imports: [
         ConfigModule.forRoot({ envFilePath: getEnvFilePath(), isGlobal: true }),
         TypeOrmModule.forRoot({
+            name: 'ExchangeConnection',
             type: 'postgres',
             host: 'localhost',
             port: 5432,
@@ -42,7 +45,7 @@ const getEnvFilePath = () => {
             database: 'origin-exchange',
             entities: [Demand, Order, Trade, Asset, Transfer, Account],
             synchronize: true,
-            logging: ['query']
+            logging: ['info']
         }),
         ScheduleModule.forRoot(),
         MatchingEngineModule,
@@ -55,7 +58,9 @@ const getEnvFilePath = () => {
         AccountModule,
         ProductModule,
         AccountDeployerModule,
-        AccountBalanceModule
+        AccountBalanceModule,
+        DepositWatcherModule,
+        WithdrawalProcessorModule
     ],
     providers: [AppService]
 })
