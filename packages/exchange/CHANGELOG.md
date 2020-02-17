@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.3.1](https://github.com/energywebfoundation/origin/compare/@energyweb/exchange@0.3.0...@energyweb/exchange@0.3.1) (2020-02-17)
+
+
+### Bug Fixes
+
+* **exchange:** set public access ([daab3af](https://github.com/energywebfoundation/origin/commit/daab3af80c2f5c05f54e93355e41bee3d95b65f8))
+
+
+
+
+
 # [0.3.0](https://github.com/energywebfoundation/origin/compare/@energyweb/exchange@0.2.0...@energyweb/exchange@0.3.0) (2020-02-17)
 
 
