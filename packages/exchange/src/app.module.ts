@@ -36,6 +36,7 @@ const getEnvFilePath = () => {
     imports: [
         ConfigModule.forRoot({ envFilePath: getEnvFilePath(), isGlobal: true }),
         TypeOrmModule.forRoot({
+            name: 'ExchangeConnection',
             type: 'postgres',
             host: 'localhost',
             port: 5432,

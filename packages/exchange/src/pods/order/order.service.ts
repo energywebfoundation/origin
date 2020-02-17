@@ -14,7 +14,7 @@ import { AccountBalanceService } from '../account-balance/account-balance.servic
 @Injectable()
 export class OrderService {
     constructor(
-        @InjectRepository(Order)
+        @InjectRepository(Order, 'ExchangeConnection')
         private readonly repository: Repository<Order>,
         private readonly matchingEngineService: MatchingEngineService,
         @Inject(forwardRef(() => AccountBalanceService))
@@ -24,15 +24,13 @@ export class OrderService {
     ) {}
 
     public async createBid(bid: CreateBidDTO) {
-        return this.repository
-            .create({
-                ...bid,
-                side: OrderSide.Bid,
-                status: OrderStatus.Active,
-                startVolume: bid.volume,
-                currentVolume: bid.volume
-            })
-            .save();
+        return this.repository.save({
+            ...bid,
+            side: OrderSide.Bid,
+            status: OrderStatus.Active,
+            startVolume: bid.volume,
+            currentVolume: bid.volume
+        });
     }
 
     public async createAsk(ask: CreateAskDTO) {
@@ -49,17 +47,15 @@ export class OrderService {
         const { deviceId } = await this.assetService.get(ask.assetId);
         const product = await this.productService.getProduct(deviceId);
 
-        return this.repository
-            .create({
-                ...ask,
-                product,
-                side: OrderSide.Ask,
-                status: OrderStatus.Active,
-                startVolume: ask.volume,
-                currentVolume: ask.volume,
-                asset: { id: ask.assetId }
-            })
-            .save();
+        return this.repository.save({
+            ...ask,
+            product,
+            side: OrderSide.Ask,
+            status: OrderStatus.Active,
+            startVolume: ask.volume,
+            currentVolume: ask.volume,
+            asset: { id: ask.assetId }
+        });
     }
 
     public async submit(order: Order) {

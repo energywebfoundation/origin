@@ -13,7 +13,7 @@ import { AccountBalanceModule } from '../account-balance/account-balance.module'
     providers: [OrderService],
     exports: [OrderService],
     imports: [
-        TypeOrmModule.forFeature([Order]),
+        TypeOrmModule.forFeature([Order], 'ExchangeConnection'),
         MatchingEngineModule,
         forwardRef(() => AccountBalanceModule),
         ProductModule,

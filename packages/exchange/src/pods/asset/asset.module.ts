@@ -5,7 +5,7 @@ import { Asset } from './asset.entity';
 import { AssetService } from './asset.service';
 
 @Module({
-    imports: [TypeOrmModule.forFeature([Asset])],
+    imports: [TypeOrmModule.forFeature([Asset], 'ExchangeConnection')],
     providers: [AssetService],
     exports: [AssetService]
 })

@@ -10,7 +10,7 @@ export class AssetService {
     private readonly logger = new Logger(AssetService.name);
 
     constructor(
-        @InjectConnection()
+        @InjectConnection('ExchangeConnection')
         private readonly connection: Connection
     ) {}
 
@@ -28,7 +28,8 @@ export class AssetService {
     }
 
     private async create(asset: AssetDTO, transaction: EntityManager) {
-        let existingAsset = await transaction.findOne<Asset>(Asset, null, {
+        const repository = transaction.getRepository<Asset>(Asset);
+        let existingAsset = await repository.findOne(null, {
             where: {
                 address: asset.address,
                 tokenId: asset.tokenId
@@ -36,7 +37,7 @@ export class AssetService {
         });
 
         if (!existingAsset) {
-            existingAsset = await transaction.create<Asset>(Asset, asset).save();
+            existingAsset = await repository.save(asset);
         }
 
         this.logger.debug(`Returning asset ${JSON.stringify(existingAsset)}`);

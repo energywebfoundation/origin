@@ -18,12 +18,12 @@ export class TransferService {
     private readonly logger = new Logger(TransferService.name);
 
     constructor(
-        @InjectRepository(Transfer)
+        @InjectRepository(Transfer, 'ExchangeConnection')
         private readonly repository: Repository<Transfer>,
         private readonly assetService: AssetService,
         @Inject(forwardRef(() => AccountService))
         private readonly accountService: AccountService,
-        @InjectConnection()
+        @InjectConnection('ExchangeConnection')
         private readonly connection: Connection,
         @Inject(forwardRef(() => AccountBalanceService))
         private readonly accountBalanceService: AccountBalanceService,
@@ -76,7 +76,7 @@ export class TransferService {
         const manager = transaction || this.repository.manager;
 
         const storedWithdrawal = await manager.transaction(tr =>
-            tr.create<Transfer>(Transfer, withdrawal).save()
+            tr.getRepository<Transfer>(Transfer).save(withdrawal)
         );
 
         this.withdrawalProcessorService.requestWithdrawal(storedWithdrawal);
@@ -101,10 +101,7 @@ export class TransferService {
 
             this.logger.debug(`Storing deposit ${JSON.stringify(deposit)}`);
 
-            return manager
-                .getRepository<Transfer>(Transfer)
-                .create(deposit)
-                .save();
+            return manager.getRepository<Transfer>(Transfer).save(deposit);
         });
     }
 

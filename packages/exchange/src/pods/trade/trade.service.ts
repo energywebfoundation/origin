@@ -13,9 +13,9 @@ export class TradeService {
     private readonly logger = new Logger(TradeService.name);
 
     constructor(
-        @InjectConnection()
+        @InjectConnection('ExchangeConnection')
         private readonly connection: Connection,
-        @InjectRepository(Trade)
+        @InjectRepository(Trade, 'ExchangeConnection')
         private readonly repository: Repository<Trade>
     ) {}
 

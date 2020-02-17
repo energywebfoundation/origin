@@ -1,5 +1,5 @@
 import { Contracts } from '@energyweb/issuer';
-import { INestApplication } from '@nestjs/common';
+import { INestApplication, CanActivate, ExecutionContext } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Test, TestingModule } from '@nestjs/testing';
 import BN from 'bn.js';
@@ -18,6 +18,7 @@ import { TransferDirection } from '../src/pods/transfer/transfer-direction';
 import { Transfer } from '../src/pods/transfer/transfer.entity';
 import { TransferService } from '../src/pods/transfer/transfer.service';
 import { DatabaseService } from './database.service';
+import { AuthGuard } from '@nestjs/passport';
 
 const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
@@ -67,6 +68,15 @@ describe('AppController (e2e)', () => {
         return contract;
     };
 
+    const authGuard: CanActivate = {
+        canActivate: (context: ExecutionContext) => {
+            const req = context.switchToHttp().getRequest();
+            req.user = { id: 1 };
+
+            return true;
+        }
+    };
+
     beforeAll(async () => {
         registry = await deployRegistry();
 
@@ -82,15 +92,18 @@ describe('AppController (e2e)', () => {
             REGISTRY_ADDRESS: registry.address
         });
 
-        const moduleFixture: TestingModule = await Test.createTestingModule({
+        const moduleFixture = await Test.createTestingModule({
             imports: [AppModule],
             providers: [DatabaseService]
         })
             .overrideProvider(ConfigService)
             .useValue(configService)
+            .overrideGuard(AuthGuard('default'))
+            .useValue(authGuard)
             .compile();
 
         app = moduleFixture.createNestApplication();
+
         transferService = await app.resolve<TransferService>(TransferService);
         accountService = await app.resolve<AccountService>(AccountService);
         databaseService = await app.resolve<DatabaseService>(DatabaseService);
@@ -115,7 +128,7 @@ describe('AppController (e2e)', () => {
             await createDeposit(amount, asset);
 
             await request(app.getHttpServer())
-                .get('/account/1')
+                .get('/account')
                 .expect(200)
                 .expect(res => {
                     const account = res.body as Account;
@@ -130,7 +143,7 @@ describe('AppController (e2e)', () => {
             await confirmDeposit();
 
             await request(app.getHttpServer())
-                .get('/account/1')
+                .get('/account')
                 .expect(200)
                 .expect(res => {
                     const account = res.body as Account;
@@ -269,7 +282,7 @@ describe('AppController (e2e)', () => {
                 .expect(201);
 
             await request(app.getHttpServer())
-                .get('/account/1')
+                .get('/account')
                 .expect(200)
                 .expect(res => {
                     const account = res.body as Account;
