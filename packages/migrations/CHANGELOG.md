@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.0.1](https://github.com/energywebfoundation/origin/compare/@energyweb/migrations@2.0.0...@energyweb/migrations@2.0.1) (2020-02-17)
+
+
+### Bug Fixes
+
+* **deps:** update dependency write-json-file to v4.3.0 ([92301ec](https://github.com/energywebfoundation/origin/commit/92301ecb61fa7195ed545c9336152d1258cb504d))
+
+
+
+
+
 # [2.0.0](https://github.com/energywebfoundation/origin/compare/@energyweb/migrations@1.0.1...@energyweb/migrations@2.0.0) (2020-02-12)
 
 

@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.12.0](https://github.com/energywebfoundation/origin/compare/@energyweb/issuer@0.11.0...@energyweb/issuer@0.12.0) (2020-02-17)
+
+
+### Features
+
+* **issuer:** export registry contract build ([fba7d26](https://github.com/energywebfoundation/origin/commit/fba7d26bc291cc538b2408996e192d198e120fac))
+
+
+
+
+
 # [0.11.0](https://github.com/energywebfoundation/origin/compare/@energyweb/issuer@0.10.1...@energyweb/issuer@0.11.0) (2020-02-12)
 
 

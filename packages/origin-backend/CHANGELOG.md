@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.7.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-backend@3.6.0...@energyweb/origin-backend@3.7.0) (2020-02-17)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @nestjs/config to ^0.2.0 ([5f8f814](https://github.com/energywebfoundation/origin/commit/5f8f814114b3ae42611150c0a55e9721a7672e01))
+
+
+### Features
+
+* **origin-backend:** exchange module import ([16417a4](https://github.com/energywebfoundation/origin/commit/16417a4c6c8728f2274a165859c5b119dc517e9a))
+
+
+
+
+
 # [3.6.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-backend@3.5.0...@energyweb/origin-backend@3.6.0) (2020-02-12)
 
 
