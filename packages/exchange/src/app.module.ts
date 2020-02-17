@@ -62,15 +62,6 @@ const getEnvFilePath = () => {
         DepositWatcherModule,
         WithdrawalProcessorModule
     ],
-    // exports: [
-    //     TypeOrmModule,
-    //     ScheduleModule,
-    //     MatchingEngineModule,
-    //     TradeModule,
-    //     OrderModule,
-    //     DemandModule,
-    //     OrderBookModule
-    // ],
     providers: [AppService]
 })
 export class AppModule {}
