@@ -4,7 +4,7 @@
     "devDependencies": {
         "@openzeppelin/cli": "2.7.1",
         "@openzeppelin/contracts-ethereum-package": "2.4.0",
-        "@openzeppelin/upgrades": "2.6.0",
+        "@openzeppelin/upgrades": "2.7.1",
         "@types/chai": "4.2.9",
         "@types/dotenv": "6.1.1",
         "@types/mocha": "7.0.1",
