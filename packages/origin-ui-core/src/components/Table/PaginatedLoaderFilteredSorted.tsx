@@ -16,7 +16,10 @@ export type SortPropertiesType = ReadonlyArray<
       ]
 >;
 
-export type CurrentSortType = Pick<ITableColumn, 'id' | 'sortProperties'>;
+export type CurrentSortType = {
+    id: ITableColumn['id'];
+    sortProperties: ITableColumn['sortProperties'];
+};
 
 export interface IPaginatedLoaderFilteredSortedState extends IPaginatedLoaderFilteredState {
     currentSort: CurrentSortType;
@@ -78,7 +81,7 @@ export abstract class PaginatedLoaderFilteredSorted<
         });
     }
 
-    toggleSort(column: ITableColumn) {
+    toggleSort(column: CurrentSortType) {
         if (column.id === this.state.currentSort.id) {
             this.setState({
                 sortAscending: !this.state.sortAscending

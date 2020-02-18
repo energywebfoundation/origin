@@ -52,7 +52,7 @@ interface IProps<T extends readonly ITableColumn[]> {
     onSelect?: TableOnSelectFunction;
     currentSort?: CurrentSortType;
     sortAscending?: boolean;
-    toggleSort?: (sortProperties: ITableColumn) => void;
+    toggleSort?: (sortType: CurrentSortType) => void;
     filters?: ICustomFilterDefinition[];
     handleRowClick?: (rowIndex: number) => void;
     batchableActions?: IBatchableAction[];
@@ -189,7 +189,13 @@ export function TableMaterial<T extends readonly ITableColumn[]>(props: IProps<T
                                             <TableSortLabel
                                                 active={sortedByThisColumn}
                                                 direction={order}
-                                                onClick={() => toggleSort(column)}
+                                                onClick={() => {
+                                                    if (!column.sortProperties) {
+                                                        return;
+                                                    }
+
+                                                    toggleSort(column as CurrentSortType);
+                                                }}
                                                 hideSortIcon={!isSortable}
                                                 disabled={!isSortable}
                                             >

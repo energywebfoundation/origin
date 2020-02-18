@@ -109,6 +109,9 @@ export enum SelectedState {
 }
 
 const CERTIFICATION_DATE_COLUMN_ID = 'certificationDate';
+const CERTIFICATION_DATE_COLUMN_SORT_PROPERTIES = [
+    (record: IEnrichedCertificateData) => record?.certificate?.certificate.creationTime
+];
 
 class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertificatesState> {
     constructor(props: Props) {
@@ -127,7 +130,10 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
             buyModalForProducingDevice: null,
             showBuyBulkModal: false,
             showClaimBulkModal: false,
-            currentSort: { id: CERTIFICATION_DATE_COLUMN_ID },
+            currentSort: {
+                id: CERTIFICATION_DATE_COLUMN_ID,
+                sortProperties: CERTIFICATION_DATE_COLUMN_SORT_PROPERTIES
+            },
             sortAscending: false
         };
 
@@ -768,10 +774,7 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
             {
                 id: CERTIFICATION_DATE_COLUMN_ID,
                 label: t('certificate.properties.certificationDate'),
-                sortProperties: [
-                    (record: IEnrichedCertificateData) =>
-                        record?.certificate?.certificate.creationTime
-                ]
+                sortProperties: CERTIFICATION_DATE_COLUMN_SORT_PROPERTIES
             },
             { id: 'price', label: t('certificate.properties.price') },
             { id: 'currency', label: t('certificate.properties.currency') },

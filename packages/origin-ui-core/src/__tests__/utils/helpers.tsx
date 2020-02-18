@@ -27,7 +27,11 @@ import { Provider } from 'react-redux';
 import { createLogger } from 'redux-logger';
 import { IOffChainDataSource } from '@energyweb/origin-backend-client';
 import { setOffChainDataSource } from '../../features/general/actions';
-import { OriginConfigurationProvider, createOriginConfiguration } from '../../components';
+import {
+    OriginConfigurationProvider,
+    createOriginConfiguration,
+    initializeI18N
+} from '../../components';
 import { IDevice, DeviceStatus } from '@energyweb/origin-backend-core';
 
 export const wait = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
@@ -154,6 +158,8 @@ const setupStoreInternal = (
     const sagasTasks: Task[] = runSagas
         ? Object.keys(sagas).reduce((a, saga) => [...a, sagaMiddleware.run(sagas[saga])], [])
         : [];
+
+    initializeI18N('en');
 
     return {
         store,

@@ -1,5 +1,9 @@
 import React, { createContext, ReactNode } from 'react';
 import { createMuiTheme, Theme } from '@material-ui/core';
+import i18n from 'i18next';
+import ICU from 'i18next-icu';
+import { EN, PL } from '@energyweb/localization';
+import { initReactI18next } from 'react-i18next';
 
 import variables from '../styles/variables.scss';
 import { OriginGenericLogo } from './icons/OriginGenericLogo';
@@ -215,4 +219,21 @@ export function OriginConfigurationProvider(props: IProps) {
             {props.children}
         </OriginConfigurationContext.Provider>
     );
+}
+
+export function initializeI18N(language: IOriginConfiguration['language']) {
+    i18n.use(new ICU())
+        .use(initReactI18next)
+        .init({
+            resources: {
+                en: EN,
+                pl: PL
+            },
+            lng: language,
+            fallbackLng: 'en',
+
+            interpolation: {
+                escapeValue: false
+            }
+        });
 }
