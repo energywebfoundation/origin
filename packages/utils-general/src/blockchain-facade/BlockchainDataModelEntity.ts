@@ -7,6 +7,7 @@ export interface IOffChainProperties {
     rootHash: string;
     salts: string[];
     schema: string[];
+    leafs?: PreciseProofs.Leaf[];
 }
 
 export interface IOnChainProperties {
@@ -54,10 +55,10 @@ export abstract class Entity implements IOnChainProperties {
         return `${this.baseUrl}/${this.propertiesDocumentHash}`;
     }
 
-    prepareEntityCreation(offChainProperties: any, schema: any): IOffChainProperties {
+    prepareEntityCreation(offChainProperties: any, schema: any, salts?: string[]): IOffChainProperties {
         validateJson(offChainProperties, schema, this.baseUrl, this.configuration.logger);
 
-        return this.generateAndAddProofs(offChainProperties);
+        return this.generateAndAddProofs(offChainProperties, salts);
     }
 
     async syncOffChainStorage<T>(properties: T, offChainStorageProperties: IOffChainProperties): Promise<void> {
@@ -167,6 +168,7 @@ export abstract class Entity implements IOnChainProperties {
                 schema
             ),
             salts: leafs.map((leaf: PreciseProofs.Leaf) => leaf.salt),
+            leafs,
             schema
         };
 
