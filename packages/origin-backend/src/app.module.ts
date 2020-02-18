@@ -10,7 +10,7 @@ import { AppController } from './app.controller';
 import { AuthModule } from './auth/auth.module';
 import createConfig from './config/configuration';
 import { EventsModule } from './events/events.module';
-import { CertificationRequestModule } from './pods/certificate/certificate.module';
+import { CertificateModule } from './pods/certificate/certificate.module';
 import { CertificationRequest } from './pods/certificate/certification-request.entity';
 import { Compliance } from './pods/compliance/compliance.entity';
 import { ComplianceModule } from './pods/compliance/compliance.module';
@@ -77,7 +77,7 @@ const ENV_FILE_PATH = path.resolve(__dirname, '../../../../../.env');
         AuthModule,
         EventsModule,
         DeviceTypesModule,
-        CertificationRequestModule
+        CertificateModule
         // TODO: enable exchange endpoints
         // ExchangeAppModule
     ],
