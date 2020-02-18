@@ -1,13 +1,15 @@
 import { IDeviceTypeService, ILocationService } from '@energyweb/utils-general';
-import { Order, OrderStatus, OrderSide } from './Order';
-import { Product } from './Product';
+import BN from 'bn.js';
+
 import { Bid } from './Bid';
+import { Order, OrderSide, OrderStatus } from './Order';
+import { Product } from './Product';
 
 export class Ask extends Order {
     constructor(
         id: string,
         price: number,
-        volume: number,
+        volume: BN,
         product: Product,
         validFrom: Date,
         status: OrderStatus

@@ -1,4 +1,5 @@
 import { IDeviceTypeService, ILocationService } from '@energyweb/utils-general';
+import BN from 'bn.js';
 
 import { Ask } from './Ask';
 import { Order, OrderSide, OrderStatus } from './Order';
@@ -8,7 +9,7 @@ export class Bid extends Order {
     constructor(
         id: string,
         price: number,
-        volume: number,
+        volume: BN,
         product: Product,
         validFrom: Date,
         status: OrderStatus
