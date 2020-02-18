@@ -1,36 +1,23 @@
-# Issuer
+# EnergyWeb Issuer
 
 ## Registry
 
 `Registry.sol` is ERC 1888 compatible registry for certificates issued by various issuers over various topics.
 
-## Issuers
+## Issuer
 
-1) `PrivateIssuer.sol` is an implementation of privacy focused issuer which hides the volume for newly created certificates until the `ERC1888` claiming event.
-
-Migration process equals to a swap from private certificate to public certificate and is (currently) a one-way process. For certificate owner 
-
-Issuer uses specific topic to issue:
-- private certificates
-- public certificates (used when migrating from private to public certificate)
-
-2) `PublicIssuer.sol` is an implementation of a public I-REC compliant issuer
+`Issuer.sol` is an implementation of an I-REC compliant issuer which has the option to hide the volume for newly created certificates.
 
 ### Recipes
 
 1) Private issuance and private trading
-  - issue using PrivateIssuer.requestIssue / PrivateIssuer.approveIssue
-  - transfer using PrivateIssuer.privateTransfer
+  - issue using `requestIssuance()` with the `isPrivate` flag set to `true`
+  - transfer using `approvePrivateTransfer()`
 
 2) Private issuance and public trading
-  - issue using PrivateIssuer.requestIssue / PrivateIssuer.approveIssue
-  - migrate to public using PrivateIssuer.migrateToPublic
+  - issue using `requestIssuance()` with the `isPrivate` flag set to `true`
+  - migrate to public using `migrateToPublic()`
   - transfer / trade public volumes
-
-3) Public issuance and private trading
-  - issue using PublicIssuer
-  - deposit volume to PrivateIssuer
-  - transfer using PrivateIssuer.privateTransfer
 
 ### Technical documentation
 
@@ -38,9 +25,9 @@ Issuer uses specific topic to issue:
 
 ```mermaid
 graph TD;
-    A(Device Owner) -->|1. Request Issue| P(PrivateIssuer.sol)
-    I(I-REC) -->|2. Approve Issue| P
-    P-->|3. Issue with private topic| R(Registry.sol)
+    A(Device Owner) -->|1. Request Private Issuance| P(Issuer.sol)
+    I(I-REC) -->|2. Approve Issuance| P
+    P-->|3. Issue with volume set to 0| R(Registry.sol)
 ```
 
 ```mermaid
@@ -52,37 +39,36 @@ sequenceDiagram
   participant A as I-REC API
   participant DB as Database
 
-  U->>+I: encodeIssue(from, to, deviceId)
+  U->>+I: encodeData(from, to, deviceId)
   I-->>-U: (bytes)data
 
-  U->>+I: requestIssue(data)
-  I-->-U: emit IssueRequest(msg.sender, id)
+  U->>+I: requestIssuance(data)
+  I-->-U: emit NewIssuanceRequest(msg.sender, id)
 
-  IS->>+I: getRequest(id)
-  I-->-IS: RequestIssue
+  IS->>+I: getIssuanceRequest(id)
+  I-->-IS: IssuanceRequest
 
   IS->>+A: validate(relevant request data)
   A-->-IS: (boolean)result
   IS->>+IS: createProof(to, balance)
   IS->>+DB: storeProof()
   DB-->-IS: ok
-  IS->>+I: approveIssue(to, requestId, commitment, validityData)
+  IS->>+I: approveIssuancePrivate(to, requestId, commitment, validityData)
   Note over IS,I: commitment = rootHash of the proof
   I->>+R: issue(to, validityData, privateTopic,0, data)
   R-->-I: (uint)id
-  I-->-IS: emit IssueSingle, emit CommitmentUpdated
+  I-->-IS: emit CommitmentUpdated
 ```
 
+---
 2) Migrating certificate to public certificate
 
 ```mermaid
 graph TD;
-    A(Certificate Owner) -->|1. Request Migration| P(PrivateIssuer.sol)
+    A(Certificate Owner) -->|1. Request Migration| P(Issuer.sol)
     I(I-REC) -->|2. Approve Migration| P
     P-->|3. Was already migrated?|P
-    P-->|4. NO: Request issuance| PUB(PublicIssuer.sol)
-    P-->|5. YES: Request minting| PUB
-    PUB-->|6. Issue or mint|R(Registry) 
+    P-->|6. Mint volume from private commitment to public value |R(Registry)
 ```
 
 ```mermaid
@@ -102,56 +88,30 @@ sequenceDiagram
   U->>+I: requestMigrateToPublic(id, hash)
   I-->-U: emit MigrateToPublicRequest(msg.sender, id)
 
-  IS->>+I: getRequestMigrateToPublic(id)
+  IS->>+I: getIssuanceRequestMigrateToPublic(id)
   I-->-IS: RequestStateChange
 
   IS->>+I: migrateToPublic(id, value, salt, proof, newCommitment)
   Note over IS,I: newCommitment = private balance update
-  I->>+PUB: requestIssueFor(request.owner, data)
+  I->>+PUB: requestIssuanceFor(request.owner, data)
   PUB->>-I: returns requestId
-  I->>+PUB: approveIssue()
+  I->>+PUB: approveIssuance()
   PUB->>-I: returns id
-  I-->-IS: emit PublicCertificateCreated(privateId, id)
+  I-->-IS: emit CertificateMigratedToPublic(id)
 ```
 
-Note: alternatively we define a request / approve migration from private to public. So instead of private issuer calling `mint or issue` we call public issuer "issue" function, this also means that public issuer becomes a issuer address for public certificates.
-
+---
 3) Claiming
 
-Claiming is supported only by public issued certificates. Private certificates has to be migrated to public before being claimed.
+Claiming is supported only by public issued certificates. Private certificates have to be migrated to public before being claimed.
 
 ```mermaid
 graph TD;
   A(Device Owner) -->|1. Claim| R(Registry)
 ```
 
-4) Transferring from public to private
-
-```mermaid
-graph TD;
-  C(Certificate Owner)-->|1. 1155.Transfer| R(PrivateIssuer)
-  R --> |2. Update commitment| R
-```
-
-5) Migrating volume to public certificate
-
-This is a case where private certificate was migrated to public, then part of the volume was again transferred to a private certificate.
-
-An example is where buyer buys a public certificate but wishes to perform private trading activities before final migration to public and claiming
-
-Note: Since `PrivateIssuer` is an owner of the token (from step 4) ) it can send publicly the request part to the requesting user. Total amount of tokens locked to smart contract won't change. 
-
-```mermaid
-graph TD;
-    A(Certificate Owner) -->|1. Request Migration| P(PrivateIssuer)
-    I(I-REC) -->|2. Approve Migration| P
-    P-->|3. Transfer from P to requesting address| R(Registry)
-    P-->|4. Update commitment|P
-```
-
-Note: alternatively we can implement it as burn/mint flow. Tokens deposited to PrivateIssuer contract will be burnt immediately. Then transfer from private to public will use `Migrating certificate to public certificate` flow.
-
-6) Private transfers
+---
+4) Private transfers
 
 This is a case where volume can be transferred privately inside the private registry. 
 
@@ -160,7 +120,7 @@ As an example, this can be used to transfer given volume to exchange or other ac
 ```mermaid
 graph TD;
     A(Certificate Owner) -->|1. Request private transfer| X(API)
-    A(Certificate Owner) -->|2. Request Private transfer| P(PrivateIssuer)
+    A(Certificate Owner) -->|2. Request Private transfer| P(Issuer)
     I(I-REC) -->|2. Approve| P
     P-->|3. Validate new commitment| P
     P-->|4. Update commitment|P
@@ -184,7 +144,7 @@ sequenceDiagram
   U->>+I: requestPrivateTransfer(id, hash)
   I-->-U: emit PrivateTransferRequest(msg.sender, id)
 
-  IS->>+I: getRequestPrivateTransfer(id)
+  IS->>+I: getIssuanceRequestPrivateTransfer(id)
   I-->-IS: RequestStateChange
 
   IS->>+I: privateTransfer(requestId, proof, prevCommitment, newCommitment)
