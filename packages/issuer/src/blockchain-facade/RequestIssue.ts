@@ -89,12 +89,15 @@ export class Entity extends BlockchainDataModelEntity.Entity implements IRequest
         if (!this.isPrivate) {
             throw new Error('Certificate is already public.');
         }
+        const issuer: Issuer = this.configuration.blockchainProperties.issuerLogicInstance;
 
-        // const owners = { [this.owner]: value };
-        // const commitment: ICommitment = { owners };
-        // const { rootHash } = this.prepareEntityCreation(commitment, CommitmentSchema);
+        const commitment: IOwnershipCommitment = {
+            ownerAddress: this.configuration.blockchainProperties.activeUser.address,
+            volume: value
+        };
+        const { rootHash } = this.prepareEntityCreation(commitment, OwnershipCommitmentSchema);
 
-        // return this.issuers.private.requestMigrateToPublic(Number(this.id), rootHash);
+        return issuer.requestMigrateToPublic(Number(this.id), rootHash);
     }
 }
 

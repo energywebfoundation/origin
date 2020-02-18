@@ -308,10 +308,6 @@ export class Entity extends BlockchainDataModelEntity.Entity implements ICertifi
             .filter(e => e.returnValues._id === this.id)
             .map(e => e.returnValues as TransferSingleEvent);
 
-        console.log({
-            transferSingleEvents
-        })
-
         const transferBatchEvents = (await registry.getAllTransferBatchEvents()).map(e => e.returnValues);
 
         // Convert TransferBatch to TransferSingle event
