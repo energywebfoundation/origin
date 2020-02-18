@@ -1,7 +1,8 @@
 import { Contracts } from '@energyweb/issuer';
-import { INestApplication, CanActivate, ExecutionContext } from '@nestjs/common';
+import { CanActivate, ExecutionContext, INestApplication } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { Test, TestingModule } from '@nestjs/testing';
+import { AuthGuard } from '@nestjs/passport';
+import { Test } from '@nestjs/testing';
 import BN from 'bn.js';
 import { Contract, ethers } from 'ethers';
 import request from 'supertest';
@@ -18,7 +19,7 @@ import { TransferDirection } from '../src/pods/transfer/transfer-direction';
 import { Transfer } from '../src/pods/transfer/transfer.entity';
 import { TransferService } from '../src/pods/transfer/transfer.service';
 import { DatabaseService } from './database.service';
-import { AuthGuard } from '@nestjs/passport';
+import { AccountDTO } from '../src/pods/account/account.dto';
 
 const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
@@ -146,17 +147,11 @@ describe('AppController (e2e)', () => {
                 .get('/account')
                 .expect(200)
                 .expect(res => {
-                    const account = res.body as Account;
-
-                    // TODO: simplify
-                    const expectedAmount = new BN(
-                        account.balances.available[0].amount.toString(),
-                        16
-                    ).toString(10);
+                    const account = res.body as AccountDTO;
 
                     expect(account.address).toBe(user1Address);
                     expect(account.balances.available.length).toBe(1);
-                    expect(expectedAmount).toEqual(amount);
+                    expect(account.balances.available[0].amount).toEqual(amount);
                     expect(account.balances.available[0].asset).toMatchObject(asset);
                 });
         });
@@ -179,7 +174,7 @@ describe('AppController (e2e)', () => {
             const createAsk: CreateAskDTO = {
                 assetId: deposit.asset.id,
                 userId: user1Id,
-                volume: 100,
+                volume: '100',
                 price: 100,
                 validFrom: new Date()
             };
@@ -196,7 +191,7 @@ describe('AppController (e2e)', () => {
             const createAsk: CreateAskDTO = {
                 assetId: deposit.asset.id,
                 userId: user1Id,
-                volume: 100,
+                volume: '100',
                 price: 100,
                 validFrom: new Date()
             };
@@ -219,7 +214,7 @@ describe('AppController (e2e)', () => {
             const createAsk: CreateAskDTO = {
                 assetId: deposit.asset.id,
                 userId: user1Id,
-                volume: 1001,
+                volume: '1001',
                 price: 100,
                 validFrom: new Date()
             };
@@ -236,7 +231,7 @@ describe('AppController (e2e)', () => {
             const createAsk: CreateAskDTO = {
                 assetId: deposit.asset.id,
                 userId: user1Id,
-                volume: 1000,
+                volume: '1000',
                 price: 100,
                 validFrom: new Date()
             };

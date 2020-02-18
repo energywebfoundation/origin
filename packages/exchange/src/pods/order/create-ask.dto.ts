@@ -1,5 +1,5 @@
 export class CreateAskDTO {
-    readonly volume: number;
+    readonly volume: string;
 
     readonly price: number;
 

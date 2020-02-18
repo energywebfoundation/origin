@@ -104,8 +104,8 @@ describe('AccountBalanceService', () => {
         );
 
         registerTrade(
-            { ask: { asset: asset1, userId } as Order, volume: 500 },
-            { ask: { asset: asset2 } as Order, bid: { userId } as Order, volume: 1000 }
+            { ask: { asset: asset1, userId } as Order, volume: new BN(500) },
+            { ask: { asset: asset2 } as Order, bid: { userId } as Order, volume: new BN(1000) }
         );
 
         const res = await service.getAccountBalance(userId);
@@ -125,9 +125,9 @@ describe('AccountBalanceService', () => {
     it('should return sum of deposits, trades and active sell orders as available for single asset', async () => {
         registerTransfer({ asset: asset1, amount: '1000', direction: TransferDirection.Deposit });
 
-        registerTrade({ ask: { asset: asset1, userId } as Order, volume: 500 });
+        registerTrade({ ask: { asset: asset1, userId } as Order, volume: new BN(500) });
 
-        registerOrder({ asset: asset1, side: OrderSide.Ask, currentVolume: 100 });
+        registerOrder({ asset: asset1, side: OrderSide.Ask, currentVolume: new BN(100) });
 
         const res = await service.getAccountBalance(userId);
 
@@ -148,11 +148,11 @@ describe('AccountBalanceService', () => {
         );
 
         registerTrade(
-            { ask: { asset: asset1, userId } as Order, volume: 400 },
-            { ask: { asset: asset2, userId } as Order, volume: 1000 }
+            { ask: { asset: asset1, userId } as Order, volume: new BN(400) },
+            { ask: { asset: asset2, userId } as Order, volume: new BN(1000) }
         );
 
-        registerOrder({ asset: asset1, side: OrderSide.Ask, currentVolume: 100 });
+        registerOrder({ asset: asset1, side: OrderSide.Ask, currentVolume: new BN(100) });
 
         const res = await service.getAccountBalance(userId);
 

@@ -1,3 +1,4 @@
+import BN from 'bn.js';
 import {
     BaseEntity,
     Column,
@@ -8,6 +9,7 @@ import {
     UpdateDateColumn
 } from 'typeorm';
 
+import { BNTransformer } from '../../utils/valueTransformers';
 import { Order } from '../order/order.entity';
 import { ProductDTO } from '../order/product.dto';
 import { Trade } from '../trade/trade.entity';
@@ -27,8 +29,8 @@ export class Demand extends BaseEntity {
     @UpdateDateColumn({ type: 'timestamptz' })
     start: Date;
 
-    @Column()
-    volumePerPeriod: number;
+    @Column('bigint', { transformer: BNTransformer })
+    volumePerPeriod: BN;
 
     @Column()
     periods: number;

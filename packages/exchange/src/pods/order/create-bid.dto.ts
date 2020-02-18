@@ -1,7 +1,7 @@
 import { ProductDTO } from './product.dto';
 
 export class CreateBidDTO {
-    readonly volume: number;
+    readonly volume: string;
 
     readonly price: number;
 

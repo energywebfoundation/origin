@@ -14,7 +14,7 @@ export class OrderBookService {
         const { asks, bids } = this.matchingEngineService.query(product);
         const toOrderBookOrderDTO = (order: Order) => ({
             price: order.price,
-            volume: order.volume,
+            volume: order.volume.toString(10),
             product: order.product
         });
 

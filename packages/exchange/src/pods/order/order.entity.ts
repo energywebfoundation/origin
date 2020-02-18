@@ -1,13 +1,16 @@
+import BN from 'bn.js';
 import {
     BaseEntity,
     Column,
     Entity,
+    ManyToOne,
     PrimaryGeneratedColumn,
-    UpdateDateColumn,
-    ManyToOne
+    UpdateDateColumn
 } from 'typeorm';
-import { ProductDTO } from './product.dto';
+
+import { BNTransformer } from '../../utils/valueTransformers';
 import { Asset } from '../asset/asset.entity';
+import { ProductDTO } from './product.dto';
 
 @Entity()
 export class Order extends BaseEntity {
@@ -20,11 +23,11 @@ export class Order extends BaseEntity {
     @Column()
     status: number;
 
-    @Column()
-    startVolume: number;
+    @Column('bigint', { transformer: BNTransformer })
+    startVolume: BN;
 
-    @Column()
-    currentVolume: number;
+    @Column('bigint', { transformer: BNTransformer })
+    currentVolume: BN;
 
     @Column()
     side: number;
