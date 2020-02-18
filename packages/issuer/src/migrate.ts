@@ -2,53 +2,31 @@ import Web3 from 'web3';
 
 import { deploy } from '@energyweb/utils-general';
 
-import { PublicIssuer } from './wrappedContracts/PublicIssuer';
-import { PrivateIssuer } from './wrappedContracts/PrivateIssuer';
+import { Issuer } from './wrappedContracts/Issuer';
 import { Registry } from './wrappedContracts/Registry';
 import { CertificateTopic } from './const';
 
-import PublicIssuerJSON from '../build/contracts/PublicIssuer.json';
-import PrivateIssuerJSON from '../build/contracts/PrivateIssuer.json';
+import IssuerJSON from '../build/contracts/Issuer.json';
 import RegistryJSON from '../build/contracts/Registry.json';
 
-export async function migratePublicIssuer(web3: Web3, deployKey: string, registryAddress: string): Promise<PublicIssuer> {
+export async function migrateIssuer(web3: Web3, deployKey: string, registryAddress: string): Promise<Issuer> {
 
     const privateKeyDeployment = deployKey.startsWith('0x') ? deployKey : `0x${deployKey}`;
     const accountDeployment = web3.eth.accounts.privateKeyToAccount(privateKeyDeployment).address;
 
-    const publicIssuerAddress = (await deploy(web3, PublicIssuerJSON.bytecode, {
+    const issuerAddress = (await deploy(web3, IssuerJSON.bytecode, {
         privateKey: privateKeyDeployment
     })).contractAddress;
 
-    const publicIssuer = new PublicIssuer(web3, publicIssuerAddress);
-    await publicIssuer.initialize(CertificateTopic.PUBLIC_IREC, registryAddress, accountDeployment, {
+    const issuer = new Issuer(web3, issuerAddress);
+    await issuer.initialize(CertificateTopic.IREC, registryAddress, accountDeployment, {
         privateKey: privateKeyDeployment
     });
 
-    const version = await publicIssuer.version();
-    console.log(`PublicIssuer ${version} created at ${publicIssuerAddress}`);
+    const version = await issuer.version();
+    console.log(`PublicIssuer ${version} created at ${issuerAddress}`);
 
-    return publicIssuer;
-}
-
-export async function migratePrivateIssuer(web3: Web3, deployKey: string, registryAddress: string, publicIssuerAddress: string): Promise<PrivateIssuer> {
-
-    const privateKeyDeployment = deployKey.startsWith('0x') ? deployKey : `0x${deployKey}`;
-    const accountDeployment = web3.eth.accounts.privateKeyToAccount(privateKeyDeployment).address;
-
-    const privateIssuerAddress = (await deploy(web3, PrivateIssuerJSON.bytecode, {
-        privateKey: privateKeyDeployment
-    })).contractAddress;
-
-    const privateIssuer = new PrivateIssuer(web3, privateIssuerAddress);
-    await privateIssuer.initialize(CertificateTopic.PRIVATE_IREC, registryAddress, publicIssuerAddress, accountDeployment, {
-        privateKey: privateKeyDeployment
-    });
-
-    const version = await privateIssuer.version();
-    console.log(`PrivateIssuer ${version} created at ${privateIssuerAddress}`);
-
-    return privateIssuer;
+    return issuer;
 }
 
 export async function migrateRegistry(web3: Web3, deployKey: string): Promise<Registry> {

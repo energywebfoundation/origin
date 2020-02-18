@@ -9,7 +9,8 @@ import {
     IOrganizationClient,
     IDemandClient,
     IEventClient,
-    IFilesClient
+    IFilesClient,
+    ICertificateClient
 } from '@energyweb/origin-backend-client';
 
 import { PreciseProofClientMock } from './PreciseProofClientMock';
@@ -19,27 +20,21 @@ import { DeviceClientMock } from './DeviceClientMock';
 import { OrganizationClientMock } from './OrganizationClientMock';
 import { DemandClientMock } from './DemandClientMock';
 import { EventClientMock } from './EventClientMock';
+import { CertificateClientMock } from './CertificateClientMock';
 
 export class OffChainDataSourceMock implements IOffChainDataSource {
     dataApiUrl: string;
 
     preciseProofClient: IPreciseProofClient = new PreciseProofClientMock();
-
     configurationClient: IConfigurationClient = new ConfigurationClientMock();
-
     userClient: IUserClient = new UserClientMock();
-
     eventClient: IEventClient = new EventClientMock();
-
     demandClient: IDemandClient;
-
     deviceClient: IDeviceClient;
-
     organizationClient: IOrganizationClient;
-
     requestClient: IRequestClient = new RequestClient();
-
     filesClient: IFilesClient;
+    certificateClient: ICertificateClient = new CertificateClientMock();
 
     constructor() {
         this.eventClient.start();

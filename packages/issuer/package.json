@@ -22,11 +22,11 @@
         "test": "test"
     },
     "scripts": {
-        "build": "yarn build-schemas && yarn build:static && yarn build:ts",
-        "build:static": "yarn compile",
-        "build:ts": "tsc -b tsconfig.build.json --verbose --pretty",
-        "build-schema:Commitment": "typescript-json-schema --ignoreErrors --required src/blockchain-facade/ICommitment.ts ICommitment",
+        "build": "yarn build:static && yarn build:ts",
+        "build:static": "yarn compile && yarn build-schemas",
+        "build-schema:OwnershipCommitment": "typescript-json-schema --ignoreErrors --required src/blockchain-facade/IOwnershipCommitment.ts IOwnershipCommitment",
         "build-schemas": "node ./scripts/buildSchemas.js",
+        "build:ts": "tsc -b tsconfig.build.json --verbose --pretty",
         "clean": "shx rm -rf dist dist-shakeable build",
         "compile": "truffle compile",
         "deploy-contracts": "truffle migrate",

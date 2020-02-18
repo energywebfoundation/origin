@@ -16,13 +16,13 @@ import {
     UnprocessableEntityException
 } from '@nestjs/common';
 import { validate } from 'class-validator';
-import { CertificateService } from './certificate.service';
+import { CertificationRequestService } from './certification-request.service';
 
 const CERTIFICATION_REQUEST_ENDPOINT = '/CertificationRequest';
 
 @Controller('/Certificate')
 export class CertificateController {
-    constructor(private readonly certificateService: CertificateService) {}
+    constructor(private readonly certificationRequestService: CertificationRequestService) {}
 
     @Post(CERTIFICATION_REQUEST_ENDPOINT)
     async createCertificationRequest(
@@ -36,7 +36,7 @@ export class CertificateController {
 
         const { device, ...entityProperties } = data;
 
-        const entity = await this.certificateService.create(
+        const entity = await this.certificationRequestService.create(
             {
                 ...entityProperties,
                 status: CertificationRequestStatus.Pending
@@ -54,12 +54,12 @@ export class CertificateController {
 
         await entity.save();
 
-        return this.certificateService.findOneCertificationRequest(entity.id);
+        return this.certificationRequestService.findOneCertificationRequest(entity.id);
     }
 
     @Get(CERTIFICATION_REQUEST_ENDPOINT)
     async getCertificationRequests(): Promise<ICertificationRequestWithRelationsIds[]> {
-        return this.certificateService.findCertificationRequest();
+        return this.certificationRequestService.findCertificationRequest();
     }
 
     @Put(`${CERTIFICATION_REQUEST_ENDPOINT}/:id`)
@@ -68,7 +68,7 @@ export class CertificateController {
         @Param('id') id: string
     ): Promise<ICertificationRequestWithRelationsIds> {
         try {
-            return this.certificateService.approveCertificationRequest(id);
+            return this.certificationRequestService.approveCertificationRequest(id);
         } catch (error) {
             throw new BadRequestException(error?.message ?? 'Unknown error');
         }
@@ -78,6 +78,6 @@ export class CertificateController {
     async getCertificationRequest(
         @Param('id') id: string
     ): Promise<ICertificationRequestWithRelationsIds> {
-        return this.certificateService.findOneCertificationRequest(id);
+        return this.certificationRequestService.findOneCertificationRequest(id);
     }
 }

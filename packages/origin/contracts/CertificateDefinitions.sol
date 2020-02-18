@@ -2,11 +2,6 @@ pragma solidity ^0.5.0;
 
 contract CertificateDefinitions {
 
-    enum CertificationRequestStatus {
-        Pending,
-        Approved
-    }
-
     enum Status {
         Active,
         Claimed,
