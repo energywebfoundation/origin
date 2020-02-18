@@ -1,6 +1,6 @@
 import React, { ReactNode, useState } from 'react';
 import { ICustomFilter, FiltersHeader, ICustomFilterDefinition } from './FiltersHeader';
-import { SortPropertiesType } from './PaginatedLoaderFilteredSorted';
+import { SortPropertiesType, CurrentSortType } from './PaginatedLoaderFilteredSorted';
 import {
     Paper,
     TableFooter,
@@ -50,9 +50,9 @@ interface IProps<T extends readonly ITableColumn[]> {
     total?: number;
     actions?: ITableAction[];
     onSelect?: TableOnSelectFunction;
-    currentSort?: ITableColumn;
+    currentSort?: CurrentSortType;
     sortAscending?: boolean;
-    toggleSort?: (sortProperties: ITableColumn) => void;
+    toggleSort?: (sortType: CurrentSortType) => void;
     filters?: ICustomFilterDefinition[];
     handleRowClick?: (rowIndex: number) => void;
     batchableActions?: IBatchableAction[];
@@ -189,7 +189,13 @@ export function TableMaterial<T extends readonly ITableColumn[]>(props: IProps<T
                                             <TableSortLabel
                                                 active={sortedByThisColumn}
                                                 direction={order}
-                                                onClick={() => toggleSort(column)}
+                                                onClick={() => {
+                                                    if (!column.sortProperties) {
+                                                        return;
+                                                    }
+
+                                                    toggleSort(column as CurrentSortType);
+                                                }}
                                                 hideSortIcon={!isSortable}
                                                 disabled={!isSortable}
                                             >

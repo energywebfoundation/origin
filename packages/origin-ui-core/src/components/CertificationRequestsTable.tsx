@@ -12,7 +12,7 @@ import {
     usePaginatedLoader
 } from './Table/PaginatedLoaderHooks';
 import { ProducingDevice } from '@energyweb/device-registry';
-import { getDeviceLocationText, LOCATION_TITLE } from '../utils/helper';
+import { getDeviceLocationText, LOCATION_TITLE_TRANSLATION_KEY } from '../utils/helper';
 import { PowerFormatter } from '../utils/PowerFormatter';
 import { EnergyFormatter } from '../utils/EnergyFormatter';
 import { Skeleton } from '@material-ui/lab';
@@ -22,6 +22,7 @@ import {
     CertificationRequestStatus
 } from '@energyweb/origin-backend-core';
 import { Certificate } from '@energyweb/origin';
+import { useTranslation } from 'react-i18next';
 
 interface IProps {
     status: CertificationRequestStatus;
@@ -37,6 +38,7 @@ export function CertificationRequestsTable(props: IProps) {
     const currentUser = useSelector(getCurrentUser);
     const producingDevices = useSelector(getProducingDevices);
     const offChainDataSource = useSelector(getOffChainDataSource);
+    const { t } = useTranslation();
 
     const dispatch = useDispatch();
 
@@ -134,7 +136,7 @@ export function CertificationRequestsTable(props: IProps) {
 
     const columns = [
         { id: 'facility', label: 'Facility' },
-        { id: 'locationText', label: LOCATION_TITLE },
+        { id: 'locationText', label: t(LOCATION_TITLE_TRANSLATION_KEY) },
         { id: 'type', label: 'Type' },
         { id: 'capacity', label: `Capacity (${PowerFormatter.displayUnit})` },
         { id: 'meterRead', label: `Meter Read (${EnergyFormatter.displayUnit})` },

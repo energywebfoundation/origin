@@ -67,7 +67,7 @@ export function formatDate(date: Moment | number, includeTime?: boolean) {
     return moment(date).format(formatToUse);
 }
 
-export const LOCATION_TITLE = 'Region, province';
+export const LOCATION_TITLE_TRANSLATION_KEY = 'device.properties.regionProvince';
 
 export function getDeviceLocationText(device: Device.Entity) {
     return [device?.offChainProperties?.region, device?.offChainProperties?.province]

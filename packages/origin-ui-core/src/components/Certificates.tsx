@@ -11,11 +11,13 @@ import { useSelector } from 'react-redux';
 import { getDemands } from '../features/selectors';
 import { getCurrentUser } from '../features/users/selectors';
 import { CertificationRequestStatus } from '@energyweb/origin-backend-core';
+import { useTranslation } from 'react-i18next';
 
 export function Certificates() {
     const demands = useSelector(getDemands);
     const currentUser = useSelector(getCurrentUser);
     const { baseURL, getCertificatesLink } = useLinks();
+    const { t } = useTranslation();
 
     function CertificateTableKeyDemand(key: SelectedState, demandId?: number) {
         let demand: Demand.Entity = null;
@@ -59,43 +61,43 @@ export function Certificates() {
     const CertificatesMenu = [
         {
             key: 'inbox',
-            label: 'Inbox',
+            label: 'navigation.certificates.inbox',
             component: InboxCertificates,
             show: !isIssuer
         },
         {
             key: 'for_sale',
-            label: 'For sale',
+            label: 'navigation.certificates.forSale',
             component: ForSaleCertificates,
             show: !isIssuer
         },
         {
             key: 'claims_report',
-            label: 'Claims report',
+            label: 'navigation.certificates.claimsReport',
             component: ClaimedCertificates,
             show: !isIssuer
         },
         {
             key: 'detail_view',
-            label: 'Detail view',
+            label: 'navigation.certificates.detailView',
             component: null,
             show: !isIssuer
         },
         {
             key: 'pending',
-            label: 'Pending',
+            label: 'navigation.certificates.pending',
             component: PendingCertificationRequestsTable,
             show: true
         },
         {
             key: 'approved',
-            label: 'Approved',
+            label: 'navigation.certificates.approved',
             component: ApprovedCertificationRequestsTable,
             show: isIssuer
         },
         {
             key: 'for_demand',
-            label: 'For demand',
+            label: 'navigation.certificates.forDemand',
             component: null,
             show: false
         }
@@ -117,7 +119,7 @@ export function Certificates() {
 
                             return (
                                 <li key={menu.key}>
-                                    <NavLink to={link}>{menu.label}</NavLink>
+                                    <NavLink to={link}>{t(menu.label)}</NavLink>
                                 </li>
                             );
                         }

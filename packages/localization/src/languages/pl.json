@@ -1,0 +1,41 @@
+{
+    "translation": {
+        "header": {
+            "devices": "Urządzenia",
+            "certificates": "Certyfikaty",
+            "demands": "Oferty",
+            "organizations": "Organizacje"
+        },
+        "navigation": {
+            "devices": {
+                "all": "Wszystkie urządzenia",
+                "map": "Widok mapy",
+                "my": "Moje urządzenia",
+                "registerDevice": "Zarejestruj urządzenie",
+                "registerDeviceGroup": "Zarejestruj grupę urządzeń",
+                "pending": "Oczekujące"
+            }
+        },
+        "device": {
+            "properties": {
+                "owner": "Właściciel",
+                "facilityName": "Nazwa obiektu",
+                "regionProvince": "Region, prowincja",
+                "type": "Typ",
+                "nameplateCapacity": "Moc",
+                "meterRead": "Odczyt licznika"
+            },
+            "actions": {
+                "requestCertificates": "Poproś o certyfikaty",
+                "approve": "Zaakceptuj"
+            }
+        },
+        "search": {
+            "searchByFacilityNameAndOrganization": "Wyszukaj po nazwie obiektu i organizacji"
+        },
+        "settings": {
+            "settings": "Ustawienia",
+            "registerOffchainUser": "Zarejestruj użytkownika offchain"
+        }
+    }
+}

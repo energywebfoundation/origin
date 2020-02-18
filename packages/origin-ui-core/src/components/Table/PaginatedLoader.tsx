@@ -14,7 +14,7 @@ export interface IPaginatedLoaderState {
 export interface IPaginatedLoaderFetchDataParameters {
     pageSize: number;
     offset: number;
-    filters?: ICustomFilter[];
+    requestedFilters?: ICustomFilter[];
 }
 
 export interface IPaginatedLoaderFetchDataReturnValues {
@@ -26,7 +26,7 @@ export interface IPaginatedLoader {
     getPaginatedData({
         pageSize,
         offset,
-        filters
+        requestedFilters
     }: IPaginatedLoaderFetchDataParameters): Promise<IPaginatedLoaderFetchDataReturnValues>;
 }
 
@@ -65,10 +65,10 @@ export abstract class PaginatedLoader<
     abstract getPaginatedData({
         pageSize,
         offset,
-        filters
+        requestedFilters
     }: IPaginatedLoaderFetchDataParameters): Promise<IPaginatedLoaderFetchDataReturnValues>;
 
-    async loadPage(page: number, filters?: ICustomFilter[]) {
+    async loadPage(page: number, requestedFilters?: ICustomFilter[]) {
         const { pageSize } = this.state;
 
         const offset = (page - 1) * pageSize;
@@ -76,7 +76,7 @@ export abstract class PaginatedLoader<
         const { paginatedData, total } = await this.getPaginatedData({
             pageSize,
             offset,
-            filters
+            requestedFilters
         });
 
         if (!this.isMountedIndicator) {

@@ -1,0 +1,30 @@
+{
+    "name": "@energyweb/localization",
+    "description": "Localization strings for Origin",
+    "license": "GPL-3.0",
+    "homepage": "https://github.com/energywebfoundation/origin",
+    "repository": {
+      "type": "git",
+      "url": "git+https://github.com/energywebfoundation/origin.git"
+    },
+    "bugs": {
+      "url": "https://github.com/energywebfoundation/origin/issues"
+    },
+    "version": "0.0.1",
+    "main": "dist/js/src/index.js",
+    "files": [
+      "dist/js/src"
+    ],
+    "scripts": {
+      "build": "yarn build:ts",
+      "build:ts": "tsc -b tsconfig.build.json --verbose --pretty",
+      "build:watch": "yarn build:ts -w",
+      "prettier": "prettier --write --config-precedence file-override './src/**/*'",
+      "clean": "shx rm -rf dist"
+    },
+    "types": "dist/js/src/index.d.ts",
+    "publishConfig": {
+      "access": "public",
+      "registry": "https://registry.npmjs.org"
+    }
+  }
