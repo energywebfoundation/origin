@@ -75,8 +75,7 @@ graph TD;
 sequenceDiagram
   participant U as Device/Certificate Owner
   participant IS as Issuer
-  participant PUB as Public Issuer Contract
-  participant I as Private Issuer Contract
+  participant I as Issuer Contract
   participant R as Registry Contract
   participant A as I-REC API
   participant DB as Database
@@ -92,11 +91,6 @@ sequenceDiagram
   I-->-IS: RequestStateChange
 
   IS->>+I: migrateToPublic(id, value, salt, proof, newCommitment)
-  Note over IS,I: newCommitment = private balance update
-  I->>+PUB: requestIssuanceFor(request.owner, data)
-  PUB->>-I: returns requestId
-  I->>+PUB: approveIssuance()
-  PUB->>-I: returns id
   I-->-IS: emit CertificateMigratedToPublic(id)
 ```
 
