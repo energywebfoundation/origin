@@ -8,10 +8,11 @@ export interface Entity<
     TMarketLogic = any,
     TDeviceLogic = any,
     TCertificateLogic = any,
-    TUserLogic = any
+    TUserLogic = any,
+    TIssuerLogic = any
 > {
     blockchainProperties: BlockchainProperties<
-        { public: any; private: any },
+        TIssuerLogic,
         TMarketLogic,
         TDeviceLogic,
         TCertificateLogic,
@@ -23,7 +24,7 @@ export interface Entity<
 }
 
 export interface BlockchainProperties<
-    TIssuerLogic = { public: any; private: any },
+    TIssuerLogic = any,
     TMarketLogic = any,
     TDeviceLogic = any,
     TCertificateLogic = any,

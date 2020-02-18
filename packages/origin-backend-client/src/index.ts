@@ -8,3 +8,4 @@ export * from './DemandClient';
 export * from './OffChainDataSource';
 export * from './EventClient';
 export * from './FilesClient';
+export * from './CertificateClient';

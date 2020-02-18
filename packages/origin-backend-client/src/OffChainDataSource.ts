@@ -20,26 +20,18 @@ export interface IOffChainDataSource {
     demandClient: IDemandClient;
     eventClient: IEventClient;
     filesClient: IFilesClient;
-    certificateClient?: ICertificateClient; // @TODO change
+    certificateClient: ICertificateClient;
 }
 
 export class OffChainDataSource implements IOffChainDataSource {
     preciseProofClient: IPreciseProofClient;
-
     configurationClient: IConfigurationClient;
-
     userClient: IUserClient;
-
     deviceClient: IDeviceClient;
-
     organizationClient: IOrganizationClient;
-
     demandClient: IDemandClient;
-
     eventClient: IEventClient;
-
     filesClient: IFilesClient;
-
     certificateClient: ICertificateClient;
 
     constructor(

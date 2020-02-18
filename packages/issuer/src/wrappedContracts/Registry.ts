@@ -1,9 +1,17 @@
 import Web3 from 'web3';
-import { PastEventOptions } from 'web3-eth-contract';
+import { PastEventOptions, EventData } from 'web3-eth-contract';
 
 import { GeneralFunctions, ISpecialTx } from '@energyweb/utils-general';
 
 import RegistryJSON from '../../build/contracts/Registry.json';
+
+export interface TransferSingleEvent {
+    _id: string,
+    _operator: string,
+    _from: string,
+    _to: string,
+    _value: string
+}
 
 export class Registry extends GeneralFunctions {
     web3: Web3;
@@ -33,6 +41,10 @@ export class Registry extends GeneralFunctions {
 
     async getAllTransferSingleEvents(eventFilter?: PastEventOptions) {
         return this.web3Contract.getPastEvents('TransferSingle', this.createFilter(eventFilter));
+    }
+
+    async getAllTransferBatchEvents(eventFilter?: PastEventOptions) {
+        return this.web3Contract.getPastEvents('TransferBatch', this.createFilter(eventFilter));
     }
 
     async getAllIssuanceSingleEvents(eventFilter?: PastEventOptions) {
