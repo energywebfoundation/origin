@@ -1,20 +1,21 @@
 import { DeviceTypeService, LocationService } from '@energyweb/utils-general';
+import BN from 'bn.js';
 import { assert } from 'chai';
 import { List } from 'immutable';
 
-import { MatchingEngine } from '../MatchingEngine';
-import { Order, OrderStatus } from '../Order';
-import { Trade } from '../Trade';
-import { Product } from '../Product';
 import { Ask } from '../Ask';
 import { Bid } from '../Bid';
 import { DeviceVintage } from '../DeviceVintage';
+import { MatchingEngine } from '../MatchingEngine';
 import { Operator } from '../Operator';
+import { Order, OrderStatus } from '../Order';
+import { Product } from '../Product';
+import { Trade } from '../Trade';
 
 interface IOrderCreationArgs {
     product?: Product;
     price?: number;
-    volume?: number;
+    volume?: BN;
 }
 
 interface ITestCase {
@@ -46,7 +47,11 @@ describe('Matching tests', () => {
     const locationService = new LocationService();
 
     const twoUSD = 2;
-    const onekWh = 1000;
+    const onekWh = new BN(1000);
+    const twoKWh = new BN(2000);
+    const threeKWh = new BN(3000);
+    const fourKWh = new BN(4000);
+
     const deviceVintage = new DeviceVintage(2019);
     const locationCentral = ['Thailand;Central;Nakhon Pathom'];
     const locationEast = ['Thailand;East;Nakhon Pathom'];
@@ -102,7 +107,7 @@ describe('Matching tests', () => {
 
         zipped.forEach(([a1, a2]) => {
             assert.equal(a1.id, a2.id);
-            assert.equal(a1.volume, a2.volume);
+            assert.isTrue(a1.volume.eq(a2.volume));
             assert.equal(a1.status, a2.status);
             assert.equal(a1.price, a2.price);
         });
@@ -116,7 +121,7 @@ describe('Matching tests', () => {
         zipped.forEach(([t1, t2]) => {
             assert.equal(t1.askId, t2.askId);
             assert.equal(t1.bidId, t2.bidId);
-            assert.equal(t1.volume, t2.volume);
+            assert.isTrue(t1.volume.eq(t2.volume));
             assert.equal(t1.price, t2.price);
         });
     };
@@ -212,7 +217,7 @@ describe('Matching tests', () => {
 
         it('should return 2 trades and fill all orders when having submitted 2 asks and 1 bid', done => {
             const asksBefore = [createAsk(), createAsk()];
-            const bidsBefore = [createBid({ volume: onekWh * 2 })];
+            const bidsBefore = [createBid({ volume: onekWh.muln(2) })];
 
             const expectedTrades = [
                 new Trade(bidsBefore[0], asksBefore[0], asksBefore[0].volume, asksBefore[0].price),
@@ -223,7 +228,7 @@ describe('Matching tests', () => {
         });
 
         it('should return 2 trades and fill all orders when having submitted 1 asks and 2 bids', done => {
-            const asksBefore = [createAsk({ volume: onekWh * 2 })];
+            const asksBefore = [createAsk({ volume: twoKWh })];
             const bidsBefore = [createBid(), createBid()];
 
             const expectedTrades = [
@@ -235,8 +240,8 @@ describe('Matching tests', () => {
         });
 
         it('should return 2 trades, fill 1st bid and partially fill 2nd bid when having submitted 1 asks and 2 bids', done => {
-            const asksBefore = [createAsk({ volume: onekWh * 2 })];
-            const bidsBefore = [createBid({ volume: onekWh }), createBid({ volume: onekWh * 2 })];
+            const asksBefore = [createAsk({ volume: twoKWh })];
+            const bidsBefore = [createBid({ volume: onekWh }), createBid({ volume: twoKWh })];
 
             const expectedTrades = [
                 new Trade(bidsBefore[0], asksBefore[0], bidsBefore[0].volume, asksBefore[0].price),
@@ -250,13 +255,13 @@ describe('Matching tests', () => {
 
         it('should return 2 trades, fill 1st bid and partially fill 2nd bid when having submitted 1 asks and 2 bids', done => {
             const asksBefore = [
-                createAsk({ volume: onekWh * 2 }),
-                createAsk({ volume: onekWh * 2, price: twoUSD * 2 })
+                createAsk({ volume: twoKWh }),
+                createAsk({ volume: twoKWh, price: twoUSD * 2 })
             ];
-            const bidsBefore = [createBid(), createBid({ volume: onekWh * 2, price: twoUSD * 2 })];
+            const bidsBefore = [createBid(), createBid({ volume: twoKWh, price: twoUSD * 2 })];
 
             const expectedTrades = [
-                new Trade(bidsBefore[1], asksBefore[0], onekWh * 2, asksBefore[0].price)
+                new Trade(bidsBefore[1], asksBefore[0], twoKWh, asksBefore[0].price)
             ];
 
             const asksAfter = [asksBefore[1]];
@@ -267,18 +272,18 @@ describe('Matching tests', () => {
 
         it('should not overmatch bids', done => {
             const asksBefore = [
-                createAsk({ volume: onekWh * 10 }),
-                createAsk({ volume: onekWh * 10 })
+                createAsk({ volume: onekWh.muln(10) }),
+                createAsk({ volume: onekWh.muln(10) })
             ];
-            const bidsBefore = [createBid(), createBid({ volume: onekWh * 2 })];
+            const bidsBefore = [createBid(), createBid({ volume: twoKWh })];
 
             const expectedTrades = [
                 new Trade(bidsBefore[0], asksBefore[0], onekWh, asksBefore[0].price),
-                new Trade(bidsBefore[1], asksBefore[0], onekWh * 2, asksBefore[0].price)
+                new Trade(bidsBefore[1], asksBefore[0], twoKWh, asksBefore[0].price)
             ];
 
             const asksAfter = [
-                asksBefore[0].clone().updateWithTradedVolume(onekWh * 3),
+                asksBefore[0].clone().updateWithTradedVolume(threeKWh),
                 asksBefore[1]
             ];
             const bidsAfter: Bid[] = [];
@@ -288,7 +293,7 @@ describe('Matching tests', () => {
 
         it('should not overmatch asks', done => {
             const asksBefore = [createAsk(), createAsk(), createAsk()];
-            const bidsBefore = [createBid({ volume: onekWh * 10 })];
+            const bidsBefore = [createBid({ volume: onekWh.muln(10) })];
 
             const expectedTrades = [
                 new Trade(bidsBefore[0], asksBefore[0], onekWh, asksBefore[0].price),
@@ -297,7 +302,7 @@ describe('Matching tests', () => {
             ];
 
             const asksAfter: Ask[] = [];
-            const bidsAfter: Bid[] = [bidsBefore[0].clone().updateWithTradedVolume(onekWh * 3)];
+            const bidsAfter: Bid[] = [bidsBefore[0].clone().updateWithTradedVolume(threeKWh)];
 
             executeTestCase({ asksBefore, bidsBefore, expectedTrades, asksAfter, bidsAfter }, done);
         });
@@ -366,7 +371,7 @@ describe('Matching tests', () => {
             const asksBefore = [createAsk(), createAsk()];
             const bidsBefore = [
                 createBid({
-                    volume: onekWh * 2,
+                    volume: twoKWh,
                     product: { deviceType: solarTypeLevel2 }
                 })
             ];
@@ -387,7 +392,7 @@ describe('Matching tests', () => {
             ];
             const bidsBefore = [
                 createBid({
-                    volume: onekWh * 2,
+                    volume: twoKWh,
                     product: { deviceType: windTypeLevel1 }
                 })
             ];
@@ -677,7 +682,7 @@ describe('Matching tests', () => {
             const bidsBefore = [
                 createBid({
                     product: { deviceType: ['Solar', 'Wind'] },
-                    volume: onekWh * 2
+                    volume: twoKWh
                 })
             ];
 
@@ -691,18 +696,18 @@ describe('Matching tests', () => {
 
         it('should match with solar only because if was created earlier', done => {
             const asksBefore = [
-                createAsk({ product: { deviceType: solarTypeLevel3 }, volume: onekWh * 2 }),
+                createAsk({ product: { deviceType: solarTypeLevel3 }, volume: twoKWh }),
                 createAsk({ product: { deviceType: windTypeLevel2 } })
             ];
             const bidsBefore = [
                 createBid({
                     product: { deviceType: ['Solar', 'Wind'] },
-                    volume: onekWh * 2
+                    volume: twoKWh
                 })
             ];
 
             const expectedTrades = [
-                new Trade(bidsBefore[0], asksBefore[0], onekWh * 2, asksBefore[0].price)
+                new Trade(bidsBefore[0], asksBefore[0], twoKWh, asksBefore[0].price)
             ];
 
             const asksAfter = [asksBefore[1]];
@@ -712,22 +717,22 @@ describe('Matching tests', () => {
 
         it('should match with solar and wind and update the remaining bid', done => {
             const asksBefore = [
-                createAsk({ product: { deviceType: solarTypeLevel3 }, volume: onekWh * 2 }),
+                createAsk({ product: { deviceType: solarTypeLevel3 }, volume: twoKWh }),
                 createAsk({ product: { deviceType: windTypeLevel2 } })
             ];
             const bidsBefore = [
                 createBid({
                     product: { deviceType: ['Solar', 'Wind'] },
-                    volume: onekWh * 4
+                    volume: fourKWh
                 })
             ];
 
             const expectedTrades = [
-                new Trade(bidsBefore[0], asksBefore[0], onekWh * 2, asksBefore[0].price),
+                new Trade(bidsBefore[0], asksBefore[0], twoKWh, asksBefore[0].price),
                 new Trade(bidsBefore[0], asksBefore[1], onekWh, asksBefore[0].price)
             ];
 
-            const bidsAfter = [bidsBefore[0].clone().updateWithTradedVolume(onekWh * 3)];
+            const bidsAfter = [bidsBefore[0].clone().updateWithTradedVolume(threeKWh)];
 
             executeTestCase({ asksBefore, bidsBefore, expectedTrades, bidsAfter }, done);
         });
@@ -742,7 +747,7 @@ describe('Matching tests', () => {
             const bidsBefore = [
                 createBid({
                     product: { location: ['Thailand;East', 'Thailand;Central'] },
-                    volume: onekWh * 2
+                    volume: twoKWh
                 })
             ];
 
@@ -758,19 +763,19 @@ describe('Matching tests', () => {
             const asksBefore = [
                 createAsk({
                     product: { deviceType: solarTypeLevel3, location: locationCentral },
-                    volume: onekWh * 2
+                    volume: twoKWh
                 }),
                 createAsk({ product: { deviceType: solarTypeLevel3, location: locationEast } })
             ];
             const bidsBefore = [
                 createBid({
                     product: { location: ['Thailand;East', 'Thailand;Central'] },
-                    volume: onekWh * 2
+                    volume: twoKWh
                 })
             ];
 
             const expectedTrades = [
-                new Trade(bidsBefore[0], asksBefore[0], onekWh * 2, asksBefore[0].price)
+                new Trade(bidsBefore[0], asksBefore[0], twoKWh, asksBefore[0].price)
             ];
 
             const asksAfter = [asksBefore[1]];
@@ -782,23 +787,23 @@ describe('Matching tests', () => {
             const asksBefore = [
                 createAsk({
                     product: { deviceType: solarTypeLevel3, location: locationCentral },
-                    volume: onekWh * 2
+                    volume: twoKWh
                 }),
                 createAsk({ product: { deviceType: solarTypeLevel3, location: locationEast } })
             ];
             const bidsBefore = [
                 createBid({
                     product: { location: ['Thailand;East', 'Thailand;Central'] },
-                    volume: onekWh * 4
+                    volume: fourKWh
                 })
             ];
 
             const expectedTrades = [
-                new Trade(bidsBefore[0], asksBefore[0], onekWh * 2, asksBefore[0].price),
+                new Trade(bidsBefore[0], asksBefore[0], twoKWh, asksBefore[0].price),
                 new Trade(bidsBefore[0], asksBefore[1], onekWh, asksBefore[0].price)
             ];
 
-            const bidsAfter = [bidsBefore[0].clone().updateWithTradedVolume(onekWh * 3)];
+            const bidsAfter = [bidsBefore[0].clone().updateWithTradedVolume(threeKWh)];
 
             executeTestCase({ asksBefore, bidsBefore, expectedTrades, bidsAfter }, done);
         });

@@ -1,5 +1,7 @@
-import { Entity, PrimaryGeneratedColumn, Column, BaseEntity, ManyToOne, JoinTable } from 'typeorm';
+import BN from 'bn.js';
+import { BaseEntity, Column, Entity, JoinTable, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 
+import { BNTransformer } from '../../utils/valueTransformers';
 import { Order } from '../order/order.entity';
 
 @Entity()
@@ -10,8 +12,8 @@ export class Trade extends BaseEntity {
     @Column('timestamptz')
     created: Date;
 
-    @Column()
-    volume: number;
+    @Column('bigint', { transformer: BNTransformer })
+    volume: BN;
 
     @Column()
     price: number;

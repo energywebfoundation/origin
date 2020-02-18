@@ -1,3 +1,5 @@
+import BN from 'bn.js';
+
 import { Product } from './Product';
 
 export enum OrderSide {
@@ -19,11 +21,11 @@ export interface IOrder {
     validFrom: Date;
     product: Product;
     price: number;
-    volume: number;
+    volume: BN;
 }
 
 export abstract class Order implements IOrder {
-    private _volume: number;
+    private _volume: BN;
 
     private _status: OrderStatus;
 
@@ -42,18 +44,18 @@ export abstract class Order implements IOrder {
         public readonly validFrom: Date,
         public readonly product: Product,
         public readonly price: number,
-        volume: number
+        volume: BN
     ) {
         this._status = status;
         this._volume = volume;
     }
 
-    public updateWithTradedVolume(tradedVolume: number) {
-        if (tradedVolume > this.volume) {
+    public updateWithTradedVolume(tradedVolume: BN) {
+        if (tradedVolume.gt(this.volume)) {
             throw new Error('Order overmatched');
         }
-        this._volume -= tradedVolume;
-        this._status = this.volume === 0 ? OrderStatus.Filled : OrderStatus.PartiallyFilled;
+        this._volume = this._volume.sub(tradedVolume);
+        this._status = this.volume.isZero() ? OrderStatus.Filled : OrderStatus.PartiallyFilled;
 
         return this;
     }

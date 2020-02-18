@@ -3,7 +3,7 @@ import { Product } from '@energyweb/exchange-core';
 export class OrderBookOrderDTO {
     price: number;
 
-    volume: number;
+    volume: string;
 
     product: Product;
 }
