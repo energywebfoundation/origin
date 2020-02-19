@@ -15,7 +15,7 @@
     },
     "scripts": {
         "build": "yarn build:ts",
-        "build:ts": "tsc -b tsconfig.build.json --verbose --pretty",
+        "build:ts": "nest build -p tsconfig.build.json --tsc",
         "prettier": "prettier --write --config-precedence file-override './src/**/*'",
         "start": "nest start",
         "start:dev": "nest start --watch",

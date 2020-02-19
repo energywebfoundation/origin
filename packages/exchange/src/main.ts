@@ -16,6 +16,7 @@ async function bootstrap() {
         .setTitle('@energyweb/exchange')
         .setDescription('@energyweb/exchange API description')
         .setVersion('1.0')
+        .addBearerAuth()
         .build();
     const document = SwaggerModule.createDocument(app, options);
     SwaggerModule.setup('api', app, document);

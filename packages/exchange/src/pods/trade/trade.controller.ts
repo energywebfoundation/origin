@@ -4,6 +4,7 @@ import { AuthGuard } from '@nestjs/passport';
 
 import { UserDecorator } from '../decorators/user.decorator';
 import { TradeService } from './trade.service';
+import { TradeDTO } from './trade.dto';
 
 @Controller('trade')
 export class TradeController {
@@ -13,7 +14,9 @@ export class TradeController {
 
     @UseGuards(AuthGuard())
     @Get()
-    public getAll(@UserDecorator() user: IUser) {
-        return this.tradeService.getAll(user.id.toString());
+    public async getAll(@UserDecorator() user: IUser): Promise<TradeDTO[]> {
+        const trades = await this.tradeService.getAll(user.id.toString());
+
+        return trades.map(trade => TradeDTO.fromTrade(trade));
     }
 }
