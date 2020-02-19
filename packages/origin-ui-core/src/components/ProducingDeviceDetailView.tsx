@@ -153,7 +153,7 @@ export function ProducingDeviceDetailView(props: IProps) {
                 description: ''
             },
             {
-                label: t('device.properties.comissioningDate'),
+                label: t('device.properties.commissioningDate'),
                 data: formatDate(selectedDevice.offChainProperties.operationalSince * 1000)
             }
         ],

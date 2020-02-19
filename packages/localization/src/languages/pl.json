@@ -24,7 +24,7 @@
                 "type": "Typ",
                 "nameplateCapacity": "Moc",
                 "meterRead": "Odczyt licznika",
-                "comissioningDate": "Data uruchomienia",
+                "commissioningDate": "Data uruchomienia",
                 "status": "Status",
                 "deviceOwner": "Właściciel urządzenia",
                 "complianceRegistry": "Rejestr certyfikacji",

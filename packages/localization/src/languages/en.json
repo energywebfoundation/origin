@@ -33,7 +33,7 @@
                 "type": "Type",
                 "nameplateCapacity": "Nameplate capacity",
                 "meterRead": "Meter read",
-                "comissioningDate": "Comissioning date",
+                "commissioningDate": "Commissioning date",
                 "status": "Status",
                 "deviceOwner": "Device owner",
                 "complianceRegistry": "Certified by registry",

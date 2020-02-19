@@ -41,7 +41,7 @@ const DEFAULT_ADDRESS = '0x0000000000000000000000000000000000000000';
 interface IFormValues {
     facilityName: string;
     capacity: string;
-    comissioningDate: Moment;
+    commissioningDate: Moment;
     registrationDate: Moment;
     address: string;
     latitude: string;
@@ -53,7 +53,7 @@ interface IFormValues {
 const INITIAL_FORM_VALUES: IFormValues = {
     facilityName: '',
     capacity: '',
-    comissioningDate: null,
+    commissioningDate: null,
     registrationDate: null,
     address: '',
     latitude: '',
@@ -106,7 +106,7 @@ export function AddDevice() {
             .label(t('device.properties.capacity'))
             .required()
             .positive(),
-        comissioningDate: Yup.date().required(),
+        commissioningDate: Yup.date().required(),
         registrationDate: Yup.date().required(),
         address: Yup.string()
             .label(t('device.properties.address'))
@@ -160,7 +160,7 @@ export function AddDevice() {
             gpsLatitude: values.latitude,
             gpsLongitude: values.longitude,
             timezone: 'Asia/Bangkok',
-            operationalSince: values.comissioningDate?.unix(),
+            operationalSince: values.commissioningDate?.unix(),
             otherGreenAttributes: '',
             typeOfPublicSupport: '',
             description: values.projectStory,
@@ -291,8 +291,8 @@ export function AddDevice() {
                                     </div>
 
                                     <Field
-                                        name="comissioningDate"
-                                        label={t('device.properties.comissioningDate')}
+                                        name="commissioningDate"
+                                        label={t('device.properties.commissioningDate')}
                                         className="mt-3"
                                         inputVariant="filled"
                                         variant="inline"

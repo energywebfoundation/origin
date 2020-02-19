@@ -754,7 +754,7 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
             },
             {
                 id: 'commissioningDate',
-                label: t('device.properties.comissioningDate'),
+                label: t('device.properties.commissioningDate'),
                 sortProperties: [
                     (record: IEnrichedCertificateData) =>
                         record?.producingDevice?.offChainProperties?.operationalSince
