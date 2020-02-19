@@ -7,6 +7,7 @@ import { Bar } from 'react-chartjs-2';
 import moment from 'moment-timezone';
 import { formatDate } from '../../utils/helper';
 import { IDevice } from '@energyweb/origin-backend-core';
+import { ISmartMeterReadingsAdapter } from '../../types';
 
 describe('SmartMeterReadingsChart', () => {
     it('correctly renders', async () => {
@@ -36,8 +37,12 @@ describe('SmartMeterReadingsChart', () => {
             getSmartMeterReads: async () => reads
         };
 
+        const onChainReadingsAdapter: Partial<ISmartMeterReadingsAdapter> = {
+            getSmartMeterReads: async () => reads
+        };
+
         const rendered = await shallow(
-            <SmartMeterReadingsChart producingDevice={producingDevice as ProducingDevice.Entity} />
+            <SmartMeterReadingsChart producingDevice={producingDevice as ProducingDevice.Entity} smartMeterReadingsAdapter={onChainReadingsAdapter as ISmartMeterReadingsAdapter} />
         );
 
         expect(rendered.find('.btn-switcher-btn').map(a => a.text())).toStrictEqual([

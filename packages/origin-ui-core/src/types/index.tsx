@@ -1,4 +1,4 @@
-import { DeviceLogic } from '@energyweb/device-registry';
+import { DeviceLogic, Device, ProducingDevice } from '@energyweb/device-registry';
 import { UserLogic } from '@energyweb/user-registry';
 import { CertificateLogic } from '@energyweb/origin';
 import { Configuration } from '@energyweb/utils-general';
@@ -21,4 +21,8 @@ export interface IStoreState {
     contracts: IContractsState;
     users: IUsersState;
     router: RouterState;
+}
+
+export interface ISmartMeterReadingsAdapter {
+    getSmartMeterReads(device: ProducingDevice.Entity): Promise<Device.ISmartMeterRead[]>;
 }
