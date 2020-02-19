@@ -1,5 +1,5 @@
 import React from 'react';
-import { shallow } from 'enzyme';
+import { mount } from 'enzyme';
 import { SmartMeterReadingsChart } from '../../components/SmartMeterReadingsChart';
 import { EnergyFormatter } from '../../utils/EnergyFormatter';
 import { ProducingDevice, Device } from '@energyweb/device-registry';
@@ -8,9 +8,13 @@ import moment from 'moment-timezone';
 import { formatDate } from '../../utils/helper';
 import { IDevice } from '@energyweb/origin-backend-core';
 import { ISmartMeterReadingsAdapter } from '../../types';
+import { initializeI18N } from '../../components';
+import { createRenderedHelpers } from '../utils/helpers';
 
 describe('SmartMeterReadingsChart', () => {
     it('correctly renders', async () => {
+        initializeI18N();
+
         const currentTime = moment().tz('Asia/Bangkok');
         const currentDay = currentTime.date();
         const currentMonthDates = new Array(currentTime.daysInMonth()).fill(null).map((x, i) =>
@@ -33,26 +37,37 @@ describe('SmartMeterReadingsChart', () => {
         ];
 
         const producingDevice: Partial<ProducingDevice.Entity> = {
-            offChainProperties: offChainProperties as IDevice,
-            getSmartMeterReads: async () => reads
+            offChainProperties: offChainProperties as IDevice
         };
 
         const onChainReadingsAdapter: Partial<ISmartMeterReadingsAdapter> = {
             getSmartMeterReads: async () => reads
         };
 
-        const rendered = await shallow(
-            <SmartMeterReadingsChart producingDevice={producingDevice as ProducingDevice.Entity} smartMeterReadingsAdapter={onChainReadingsAdapter as ISmartMeterReadingsAdapter} />
+        const rendered = await mount(
+            <SmartMeterReadingsChart
+                producingDevice={producingDevice as ProducingDevice.Entity}
+                smartMeterReadingsAdapter={onChainReadingsAdapter as ISmartMeterReadingsAdapter}
+            />
         );
 
-        expect(rendered.find('.btn-switcher-btn').map(a => a.text())).toStrictEqual([
-            'Day',
-            'Week',
-            'Month',
-            'Year'
-        ]);
+        const { refresh } = createRenderedHelpers(rendered);
 
-        expect(rendered.find('.btn-switcher-btn.selected').text()).toBe('Month');
+        expect(
+            rendered
+                .find('.btn-switcher-btn')
+                .hostNodes()
+                .map(a => a.text())
+        ).toStrictEqual(['Day', 'Week', 'Month', 'Year']);
+
+        expect(
+            rendered
+                .find('.btn-switcher-btn.selected')
+                .hostNodes()
+                .text()
+        ).toBe('Month');
+
+        await refresh();
 
         let barProps = rendered.find(Bar).props();
 
@@ -84,7 +99,12 @@ describe('SmartMeterReadingsChart', () => {
 
         expect(barProps.options.title.text).toBe(formatDate(currentTime));
 
-        expect(rendered.find('.btn-switcher-btn.selected').text()).toBe('Day');
+        expect(
+            rendered
+                .find('.btn-switcher-btn.selected')
+                .hostNodes()
+                .text()
+        ).toBe('Day');
 
         expect(barProps.data.labels).toStrictEqual([
             '00:00',
@@ -119,7 +139,7 @@ describe('SmartMeterReadingsChart', () => {
                 data: new Array(24)
                     .fill(0)
                     .map((item, index) => (index === currentDayHour ? 0.001 : 0)),
-                label: `Energy (${EnergyFormatter.displayUnit})`
+                label: `Energy (MWh)`
             }
         ]);
     });

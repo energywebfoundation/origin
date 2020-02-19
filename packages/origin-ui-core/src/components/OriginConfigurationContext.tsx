@@ -29,10 +29,11 @@ export const createMaterialThemeForOrigin = (
     styleConfig: IOriginStyleConfig,
     language: ORIGIN_LANGUAGE
 ) => {
-    const materialLocale = {
-        pl: plPL,
-        en: enUS
-    }[language];
+    const materialLocale =
+        {
+            pl: plPL,
+            en: enUS
+        }[language] ?? enUS;
 
     return createMuiTheme(
         {

@@ -158,7 +158,7 @@ export function SmartMeterReadingsChart(props: ISmartMeterReadingsChartProps) {
                     measurementUnit !== 'hour'
                         ? currentDate.format(keyFormat)
                         : `${currentDate.format(keyFormat)}:00`,
-                color: originConfiguration.styleConfig?.PRIMARY_COLOR,
+                color: originConfiguration?.styleConfig?.PRIMARY_COLOR,
                 value: EnergyFormatter.getValueInDisplayUnit(totalEnergy)
             });
 
