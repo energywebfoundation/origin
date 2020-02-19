@@ -12,12 +12,13 @@ import {
 import { Skeleton } from '@material-ui/lab';
 import { useDispatch, useSelector } from 'react-redux';
 import { Formik, Field, Form, FormikActions } from 'formik';
-import * as Yup from 'yup';
 import { TextField } from 'formik-material-ui';
 import { setLoading } from '../../features/general/actions';
 import { FormInput } from '../Form/FormInput';
 import { getOffChainDataSource } from '../../features/general/selectors';
 import { setAuthenticationToken } from '../../features/users/actions';
+import { useTranslation } from 'react-i18next';
+import { useValidation } from '../../utils/validation';
 
 interface IFormValues {
     email: string;
@@ -29,19 +30,12 @@ const INITIAL_FORM_VALUES: IFormValues = {
     password: ''
 };
 
-const VALIDATION_SCHEMA = Yup.object().shape({
-    email: Yup.string()
-        .email()
-        .label('Email')
-        .required(),
-    password: Yup.string()
-        .label('Password')
-        .required()
-});
-
 export function UserLogin() {
     const userClient = useSelector(getOffChainDataSource)?.userClient;
     const dispatch = useDispatch();
+
+    const { t } = useTranslation();
+    const { Yup, yupLocaleInitialized } = useValidation();
 
     const useStyles = makeStyles(() =>
         createStyles({
@@ -52,6 +46,20 @@ export function UserLogin() {
     );
 
     const classes = useStyles(useTheme());
+
+    if (!yupLocaleInitialized) {
+        return <Skeleton variant="rect" height={200} />;
+    }
+
+    const VALIDATION_SCHEMA = Yup.object().shape({
+        email: Yup.string()
+            .email()
+            .label(t('user.properties.email'))
+            .required(),
+        password: Yup.string()
+            .label(t('user.properties.password'))
+            .required()
+    });
 
     async function submitForm(
         values: typeof INITIAL_FORM_VALUES,
@@ -65,10 +73,10 @@ export function UserLogin() {
 
             dispatch(setAuthenticationToken(loginResponse.accessToken));
 
-            showNotification('User logged in.', NotificationType.Success);
+            showNotification(t('user.feedback.userLoggedIn'), NotificationType.Success);
         } catch (error) {
             console.warn('Could not log in.', error);
-            showNotification('Could not log in with supplied credentials.', NotificationType.Error);
+            showNotification(t('user.feedback.couldNotLogIn'), NotificationType.Error);
         }
 
         dispatch(setLoading(false));
@@ -100,7 +108,7 @@ export function UserLogin() {
                             <Grid container spacing={3}>
                                 <Grid item xs={12}>
                                     <FormInput
-                                        label="Email"
+                                        label={t('user.properties.email')}
                                         property="email"
                                         disabled={fieldDisabled}
                                         className="mt-3"
@@ -114,7 +122,7 @@ export function UserLogin() {
                                         required
                                     >
                                         <Field
-                                            label="Password"
+                                            label={t('user.properties.password')}
                                             name="password"
                                             component={TextField}
                                             variant="filled"
@@ -134,7 +142,7 @@ export function UserLogin() {
                                 className="mt-3 right"
                                 disabled={buttonDisabled}
                             >
-                                Login
+                                {t('user.actions.login')}
                             </Button>
                         </Form>
                     );

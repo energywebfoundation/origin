@@ -21,19 +21,26 @@ import { withStyles } from '@material-ui/core/styles';
 
 import { signTypedMessage } from '@energyweb/utils-general';
 import { MarketUser } from '@energyweb/market';
+import { AVAILABLE_ORIGIN_LANGUAGES, ORIGIN_LANGUAGE } from '@energyweb/localization';
 
 import { showNotification, NotificationType } from '../../utils/notifications';
 import { getMarketContractLookupAddress } from '../../features/contracts/selectors';
-import { getCurrencies, getOffChainDataSource, getEnvironment } from '../../features/general/selectors';
+import {
+    getCurrencies,
+    getOffChainDataSource,
+    getEnvironment
+} from '../../features/general/selectors';
 import { getCurrentUser, getUserOffchain, getCurrentUserId } from '../../features/users/selectors';
 import { setMarketContractLookupAddress } from '../../features/contracts/actions';
-import { OriginConfigurationContext } from '../OriginConfigurationContext';
+import { OriginConfigurationContext, setOriginLanguage } from '../OriginConfigurationContext';
 import { getWeb3 } from '../../features/selectors';
 import { refreshUserOffchain } from '../../features/users/actions';
 import { getActiveAccount, isUsingInBrowserPK } from '../../features/authentication/selectors';
+import { useTranslation } from 'react-i18next';
 
 export function AccountSettings() {
     const dispatch = useDispatch();
+    const { t } = useTranslation();
 
     const useStyles = makeStyles(() =>
         createStyles({
@@ -52,7 +59,7 @@ export function AccountSettings() {
     const marketLookupAddress = useSelector(getMarketContractLookupAddress);
     const userOffchain = useSelector(getUserOffchain);
     const currencies = useSelector(getCurrencies);
-    const userClient = useSelector(getOffChainDataSource).userClient;
+    const userClient = useSelector(getOffChainDataSource)?.userClient;
     const web3 = useSelector(getWeb3);
     const currentUserId = useSelector(getCurrentUserId);
     const usingPK = useSelector(isUsingInBrowserPK);
@@ -107,7 +114,7 @@ export function AccountSettings() {
 
     async function saveChanges() {
         if (!propertiesChanged) {
-            showNotification(`No changes have been made.`, NotificationType.Error);
+            showNotification(t('general.feedback.noChangesMade'), NotificationType.Error);
 
             return;
         }
@@ -133,7 +140,7 @@ export function AccountSettings() {
             );
         }
 
-        showNotification(`User settings have been updated.`, NotificationType.Success);
+        showNotification(t('settings.feedback.userSettingsUpdated'), NotificationType.Success);
     }
 
     async function signAndSend(): Promise<void> {
@@ -149,13 +156,16 @@ export function AccountSettings() {
 
             dispatch(refreshUserOffchain());
 
-            showNotification('Blockchain account linked.', NotificationType.Success);
+            showNotification(
+                t('settings.feedback.blockchainAccountLinked'),
+                NotificationType.Success
+            );
         } catch (error) {
             if (error?.response?.data?.message) {
                 showNotification(error?.response?.data?.message, NotificationType.Error);
             } else {
                 console.warn('Could not log in.', error);
-                showNotification('Unknown error', NotificationType.Error);
+                showNotification(t('general.feedback.unknownError'), NotificationType.Error);
             }
         }
     }
@@ -177,7 +187,7 @@ export function AccountSettings() {
                             )}
 
                             <TextField
-                                label="E-mail"
+                                label={t('settings.properties.email')}
                                 value={userOffchain.email}
                                 fullWidth
                                 className="my-3"
@@ -185,7 +195,7 @@ export function AccountSettings() {
                             />
 
                             <TextField
-                                label="Blockchain account"
+                                label={t('settings.properties.blockchainAccount')}
                                 value={userOffchain.blockchainAccountAddress}
                                 fullWidth
                                 className="my-3"
@@ -200,7 +210,7 @@ export function AccountSettings() {
                                     className="mt-3 right"
                                     onClick={signAndSend}
                                 >
-                                    Verify blockchain account
+                                    {t('settings.actions.verifyBlockchainAccount')}
                                 </Button>
                             )}
                         </>
@@ -214,7 +224,7 @@ export function AccountSettings() {
                                         onChange={(e, checked) => setNotificationsEnabled(checked)}
                                     />
                                 }
-                                label="Notifications"
+                                label={t('settings.properties.notifications')}
                             />
                         </FormGroup>
                     )}
@@ -235,14 +245,16 @@ export function AccountSettings() {
                                                 }
                                             />
                                         }
-                                        label="Automatically post certificates for sale"
+                                        label={t(
+                                            'settings.properties.automaticallyPostCertificates'
+                                        )}
                                     />
                                 </FormGroup>
 
                                 {autoPublishCandidate.enabled && (
                                     <div>
                                         <TextField
-                                            label="Price"
+                                            label={t('settings.properties.price')}
                                             value={autoPublishCandidate.priceInCents / 100}
                                             type="number"
                                             placeholder="1"
@@ -257,7 +269,7 @@ export function AccountSettings() {
                                         />
 
                                         <FormControl fullWidth={true} variant="filled">
-                                            <InputLabel>Currency</InputLabel>
+                                            <InputLabel>{t('settings.properties.currency')}</InputLabel>
                                             <Select
                                                 value={autoPublishCandidate.currency}
                                                 onChange={e =>
@@ -285,15 +297,30 @@ export function AccountSettings() {
                     )}
 
                     <TextField
-                        label="Market Lookup Address"
+                        label={t('settings.properties.marketLookupAddress')}
                         value={marketLookupAddressCandidate}
                         onChange={e => setMarketLookupAddressCandidate(e.target.value)}
                         fullWidth
                         className="my-3"
                     />
+
                     <Button onClick={saveChanges} color="primary" disabled={!propertiesChanged}>
-                        Update
+                        {t('general.actions.update')}
                     </Button>
+
+                    <FormControl fullWidth>
+                        <InputLabel>{t('settings.properties.language')}</InputLabel>
+                        <Select
+                            value={originConfiguration.language}
+                            onChange={e => setOriginLanguage(e.target.value as ORIGIN_LANGUAGE)}
+                        >
+                            {AVAILABLE_ORIGIN_LANGUAGES.map(option => (
+                                <MenuItem key={option} value={option}>
+                                    {option}
+                                </MenuItem>
+                            ))}
+                        </Select>
+                    </FormControl>
                 </Grid>
             </Grid>
         </Paper>

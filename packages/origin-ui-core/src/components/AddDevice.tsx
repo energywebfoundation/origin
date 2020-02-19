@@ -14,7 +14,6 @@ import { useSelector, useDispatch } from 'react-redux';
 import { getConfiguration } from '../features/selectors';
 import { Moment } from 'moment';
 import { Formik, Field, Form, FormikActions } from 'formik';
-import * as Yup from 'yup';
 import { TextField, CheckboxWithLabel } from 'formik-material-ui';
 import { useHistory } from 'react-router-dom';
 import { useLinks } from '../utils/routing';
@@ -34,6 +33,8 @@ import { producingDeviceCreatedOrUpdated } from '../features/producingDevices/ac
 import { PowerFormatter } from '../utils/PowerFormatter';
 import { IDevice, DeviceStatus } from '@energyweb/origin-backend-core';
 import { Skeleton } from '@material-ui/lab';
+import { useTranslation } from 'react-i18next';
+import { useValidation } from '../utils/validation';
 
 const DEFAULT_ADDRESS = '0x0000000000000000000000000000000000000000';
 
@@ -61,39 +62,17 @@ const INITIAL_FORM_VALUES: IFormValues = {
     projectStory: ''
 };
 
-const VALIDATION_SCHEMA = Yup.object().shape({
-    facilityName: Yup.string()
-        .label('Facility name')
-        .required(),
-    capacity: Yup.number()
-        .label('Capacity')
-        .required('Required')
-        .positive('Number has to be positive'),
-    comissioningDate: Yup.date().required(),
-    registrationDate: Yup.date().required(),
-    address: Yup.string()
-        .label('Address')
-        .required(),
-    latitude: Yup.number()
-        .label('Latitude')
-        .required('Required')
-        .positive('Number has to be positive'),
-    longitude: Yup.number()
-        .label('Longitude')
-        .required('Required')
-        .positive('Number has to be positive'),
-    supported: Yup.boolean(),
-    projectStory: Yup.string()
-});
-
 export function AddDevice() {
     const currentUser = useSelector(getCurrentUser);
     const configuration = useSelector(getConfiguration);
     const compliance = useSelector(getCompliance);
     const country = useSelector(getCountry);
     const offChainDataSource = useSelector(getOffChainDataSource);
+    const regions = useSelector(getRegions);
 
     const dispatch = useDispatch();
+    const { t } = useTranslation();
+    const { Yup, yupLocaleInitialized } = useValidation();
     const { getDevicesOwnedLink } = useLinks();
 
     const [selectedDeviceType, setSelectedDeviceType] = useState<string[]>([]);
@@ -118,6 +97,31 @@ export function AddDevice() {
     );
 
     const classes = useStyles(useTheme());
+
+    const VALIDATION_SCHEMA = Yup.object().shape({
+        facilityName: Yup.string()
+            .label(t('device.properties.facilityName'))
+            .required(),
+        capacity: Yup.number()
+            .label(t('device.properties.capacity'))
+            .required()
+            .positive(),
+        comissioningDate: Yup.date().required(),
+        registrationDate: Yup.date().required(),
+        address: Yup.string()
+            .label(t('device.properties.address'))
+            .required(),
+        latitude: Yup.number()
+            .label(t('device.properties.latitude'))
+            .required()
+            .positive(),
+        longitude: Yup.number()
+            .label(t('device.properties.longitude'))
+            .required()
+            .positive(),
+        supported: Yup.boolean(),
+        projectStory: Yup.string()
+    });
 
     async function submitForm(
         values: typeof INITIAL_FORM_VALUES,
@@ -172,7 +176,7 @@ export function AddDevice() {
 
             dispatch(producingDeviceCreatedOrUpdated(device));
 
-            showNotification('Device successfully created.', NotificationType.Success);
+            showNotification(t('device.feedback.deviceCreated'), NotificationType.Success);
 
             history.push(getDevicesOwnedLink());
         } catch (error) {
@@ -186,7 +190,10 @@ export function AddDevice() {
     async function uploadImages(files: FileList) {
         if (files.length > 10) {
             showNotification(
-                `Please select up to 10 images. You've selected ${files.length}.`,
+                t('device.feedback.pleaseSelectUpToXImages', {
+                    limit: 10,
+                    actual: files.length
+                }),
                 NotificationType.Error
             );
             return;
@@ -199,19 +206,17 @@ export function AddDevice() {
             setImagesUploadedList(uploadedFiles);
         } catch (error) {
             showNotification(
-                `Unexpected error occurred when ploading images.`,
+                t('device.feedback.unexpectedErrorWhenUploadingImages'),
                 NotificationType.Error
             );
         }
     }
 
-    const initialFormValues: IFormValues = INITIAL_FORM_VALUES;
-
-    const regions = useSelector(getRegions);
-
-    if (!configuration) {
+    if (!configuration || !yupLocaleInitialized) {
         return <Skeleton variant="rect" height={200} />;
     }
+
+    const initialFormValues: IFormValues = INITIAL_FORM_VALUES;
 
     return (
         <Paper className={classes.container}>
@@ -235,7 +240,9 @@ export function AddDevice() {
                         <Form>
                             <Grid container spacing={3}>
                                 <Grid item xs={6}>
-                                    <Typography className="mt-3">General</Typography>
+                                    <Typography className="mt-3">
+                                        {t('device.info.general')}
+                                    </Typography>
                                 </Grid>
                             </Grid>
 
@@ -248,7 +255,7 @@ export function AddDevice() {
                                         required
                                     >
                                         <Field
-                                            label="Facility name"
+                                            label={t('device.properties.facilityName')}
                                             name="facilityName"
                                             component={TextField}
                                             variant="filled"
@@ -266,16 +273,16 @@ export function AddDevice() {
                                             allValues={configuration.deviceTypeService.deviceTypes}
                                             selectOptions={[
                                                 {
-                                                    label: 'Device type',
-                                                    placeholder: 'Select device type'
+                                                    label: t('device.properties.deviceType'),
+                                                    placeholder: t('device.info.selectDeviceType')
                                                 },
                                                 {
-                                                    label: 'Device type',
-                                                    placeholder: 'Select device type'
+                                                    label: t('device.properties.deviceType'),
+                                                    placeholder: t('device.info.selectDeviceType')
                                                 },
                                                 {
-                                                    label: 'Device type',
-                                                    placeholder: 'Select device type'
+                                                    label: t('device.properties.deviceType'),
+                                                    placeholder: t('device.info.selectDeviceType')
                                                 }
                                             ]}
                                             disabled={fieldDisabled}
@@ -285,7 +292,7 @@ export function AddDevice() {
 
                                     <Field
                                         name="comissioningDate"
-                                        label="Comissioning date"
+                                        label={t('device.properties.comissioningDate')}
                                         className="mt-3"
                                         inputVariant="filled"
                                         variant="inline"
@@ -296,7 +303,7 @@ export function AddDevice() {
                                     />
                                     <Field
                                         name="registrationDate"
-                                        label="Registration date"
+                                        label={t('device.properties.registrationDate')}
                                         className="mt-3"
                                         inputVariant="filled"
                                         variant="inline"
@@ -308,7 +315,7 @@ export function AddDevice() {
                                     <Field
                                         name="supported"
                                         Label={{
-                                            label: 'Supported'
+                                            label: t('device.info.supported')
                                         }}
                                         color="primary"
                                         component={CheckboxWithLabel}
@@ -323,7 +330,9 @@ export function AddDevice() {
                                         required
                                     >
                                         <Field
-                                            label={`Capacity (${PowerFormatter.displayUnit})`}
+                                            label={`${t('device.properties.capacity')} (${
+                                                PowerFormatter.displayUnit
+                                            })`}
                                             name="capacity"
                                             component={TextField}
                                             variant="filled"
@@ -341,12 +350,12 @@ export function AddDevice() {
                                             options={regions}
                                             selectOptions={[
                                                 {
-                                                    label: 'Regions',
-                                                    placeholder: 'Select region'
+                                                    label: t('device.properties.regions'),
+                                                    placeholder: t('device.info.selectRegion')
                                                 },
                                                 {
-                                                    label: 'Provinces',
-                                                    placeholder: 'Select province'
+                                                    label: t('device.properties.provinces'),
+                                                    placeholder: t('device.info.selectProvince')
                                                 }
                                             ]}
                                             singleChoice={true}
@@ -360,7 +369,7 @@ export function AddDevice() {
                                         required
                                     >
                                         <Field
-                                            label="Address"
+                                            label={t('device.properties.address')}
                                             name="address"
                                             component={TextField}
                                             variant="filled"
@@ -376,7 +385,7 @@ export function AddDevice() {
                                         required
                                     >
                                         <Field
-                                            label="Latitude"
+                                            label={t('device.properties.latitude')}
                                             name="latitude"
                                             component={TextField}
                                             variant="filled"
@@ -392,7 +401,7 @@ export function AddDevice() {
                                         required
                                     >
                                         <Field
-                                            label="Longitude"
+                                            label={t('device.properties.longitude')}
                                             name="longitude"
                                             component={TextField}
                                             variant="filled"
@@ -406,10 +415,12 @@ export function AddDevice() {
 
                             <Grid container spacing={3}>
                                 <Grid item xs={6}>
-                                    <Typography className="mt-3">Story</Typography>
+                                    <Typography className="mt-3">
+                                        {t('device.properties.story')}
+                                    </Typography>
                                     <FormControl fullWidth variant="filled" className="mt-3">
                                         <Field
-                                            label="Project story"
+                                            label={t('device.properties.projectStory')}
                                             name="projectStory"
                                             component={TextField}
                                             multiline
@@ -422,14 +433,15 @@ export function AddDevice() {
                                     </FormControl>
                                 </Grid>
                                 <Grid item xs={6}>
-                                    <Typography className="mt-3">Images</Typography>
+                                    <Typography className="mt-3">
+                                        {t('device.properties.images')}
+                                    </Typography>
                                     {imagesUploaded ? (
                                         <p className="mt-3">
-                                            Images have been uploaded.
+                                            {t('device.feedback.imagesUploaded')}
                                             <br />
                                             <br />
-                                            Please fill other form fields and proceed by clicking
-                                            &quot;Register&quot;.
+                                            {t('device.info.pleaseFillOtherFields')}
                                         </p>
                                     ) : (
                                         <>
@@ -448,7 +460,9 @@ export function AddDevice() {
                                                     variant="outlined"
                                                     disabled={imagesUploaded}
                                                 >
-                                                    Upload up to 10 images
+                                                    {t('device.info.uploadUpToXImages', {
+                                                        amount: 10
+                                                    })}
                                                 </Button>
                                             </label>
                                         </>
@@ -463,7 +477,7 @@ export function AddDevice() {
                                 className="mt-3 right"
                                 disabled={buttonDisabled}
                             >
-                                Register
+                                {t('device.actions.register')}
                             </Button>
                         </Form>
                     );

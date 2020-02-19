@@ -70,7 +70,7 @@ export function Origin() {
 
     return (
         <MuiThemeProvider theme={originConfiguration.materialTheme}>
-            <MuiPickersUtilsProvider utils={MomentUtils}>
+            <MuiPickersUtilsProvider utils={MomentUtils} locale={originConfiguration.language}>
                 <Provider store={store}>
                     <ConnectedRouter history={history}>
                         <Route path="/" component={AppContainer} />

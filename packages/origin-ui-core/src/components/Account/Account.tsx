@@ -10,34 +10,36 @@ import { AccountSettings } from './AccountSettings';
 import { UserRegister } from './UserRegister';
 import { UserLogin } from './UserLogin';
 import { dataTest } from '../../utils/helper';
+import { useTranslation } from 'react-i18next';
 
 export function Account() {
     const userOffchain = useSelector(getUserOffchain);
 
     const { getAccountLink } = useLinks();
+    const { t } = useTranslation();
 
     const isLoggedIn = Boolean(userOffchain);
 
     const Menu = [
         {
             key: 'settings',
-            label: 'Settings',
+            label: 'settings.navigation.settings',
             component: AccountSettings
         },
         {
             key: 'import',
-            label: 'Import',
+            label: 'settings.navigation.import',
             component: AccountImport
         },
         {
             key: 'user-login',
-            label: 'Login',
+            label: 'settings.navigation.login',
             component: UserLogin,
             hide: isLoggedIn
         },
         {
             key: 'user-register',
-            label: 'Register user',
+            label: 'settings.navigation.registerUser',
             component: UserRegister,
             hide: isLoggedIn
         }
@@ -60,7 +62,7 @@ export function Account() {
                                     activeClassName="active"
                                     {...dataTest(`account-link-${menu.key}`)}
                                 >
-                                    {menu.label}
+                                    {t(menu.label)}
                                 </NavLink>
                             </li>
                         );

@@ -12,13 +12,15 @@ import {
     FilledInput,
     MenuItem
 } from '@material-ui/core';
+import { Skeleton } from '@material-ui/lab';
 import { useDispatch, useSelector } from 'react-redux';
 import { Formik, Field, Form, FormikActions } from 'formik';
-import * as Yup from 'yup';
+import { useValidation } from '../../utils/validation';
 import { TextField, Select } from 'formik-material-ui';
 import { setLoading } from '../../features/general/actions';
 import { FormInput } from '../Form/FormInput';
 import { getOffChainDataSource } from '../../features/general/selectors';
+import { useTranslation } from 'react-i18next';
 
 interface IFormValues {
     titleSelect: string;
@@ -40,34 +42,14 @@ const INITIAL_FORM_VALUES: IFormValues = {
     password: ''
 };
 
-const VALIDATION_SCHEMA = Yup.object().shape({
-    titleSelect: Yup.string()
-        .label('Title')
-        .required(),
-    titleInput: Yup.string().label('Title'),
-    firstName: Yup.string()
-        .label('First name')
-        .required(),
-    lastName: Yup.string()
-        .label('Last name')
-        .required(),
-    telephone: Yup.string()
-        .label('Telephone')
-        .required(),
-    email: Yup.string()
-        .email()
-        .label('Email')
-        .required(),
-    password: Yup.string()
-        .label('Password')
-        .required()
-});
-
 const TITLE_OPTIONS = ['Dr', 'Mr', 'Mrs', 'Ms', 'Other'];
 
 export function UserRegister() {
-    const userClient = useSelector(getOffChainDataSource).userClient;
+    const userClient = useSelector(getOffChainDataSource)?.userClient;
     const dispatch = useDispatch();
+
+    const { t } = useTranslation();
+    const { Yup, yupLocaleInitialized } = useValidation();
 
     const useStyles = makeStyles(() =>
         createStyles({
@@ -78,6 +60,33 @@ export function UserRegister() {
     );
 
     const classes = useStyles(useTheme());
+
+    if (!yupLocaleInitialized) {
+        return <Skeleton variant="rect" height={200} />;
+    }
+
+    const VALIDATION_SCHEMA = Yup.object().shape({
+        titleSelect: Yup.string()
+            .label(t('user.properties.title'))
+            .required(),
+        titleInput: Yup.string().label(t('user.properties.title')),
+        firstName: Yup.string()
+            .label(t('user.properties.firstName'))
+            .required(),
+        lastName: Yup.string()
+            .label(t('user.properties.lastName'))
+            .required(),
+        telephone: Yup.string()
+            .label(t('user.properties.telephone'))
+            .required(),
+        email: Yup.string()
+            .email()
+            .label(t('user.properties.email'))
+            .required(),
+        password: Yup.string()
+            .label(t('user.properties.password'))
+            .required()
+    });
 
     async function submitForm(
         values: typeof INITIAL_FORM_VALUES,
@@ -92,10 +101,10 @@ export function UserRegister() {
                 title: values.titleSelect === 'Other' ? values.titleInput : values.titleSelect
             });
 
-            showNotification('User registered.', NotificationType.Success);
+            showNotification(t('user.feedback.userRegistered'), NotificationType.Success);
         } catch (error) {
             console.warn('Error while registering user', error);
-            showNotification('Error while registering user.', NotificationType.Error);
+            showNotification(t('user.feedback.errorWhileRegisteringUser'), NotificationType.Error);
         }
 
         dispatch(setLoading(false));
@@ -133,10 +142,12 @@ export function UserRegister() {
                                         className="mt-3"
                                         required
                                     >
-                                        <InputLabel required>Title</InputLabel>
+                                        <InputLabel required>
+                                            {t('user.properties.title')}
+                                        </InputLabel>
                                         <Field
                                             name="titleSelect"
-                                            label="Title"
+                                            label={t('user.properties.title')}
                                             component={Select}
                                             input={<FilledInput value={values.titleSelect} />}
                                             fullWidth
@@ -160,7 +171,7 @@ export function UserRegister() {
                                             required
                                         >
                                             <Field
-                                                label="Title"
+                                                label={t('user.properties.title')}
                                                 name="titleInput"
                                                 component={TextField}
                                                 variant="filled"
@@ -172,7 +183,7 @@ export function UserRegister() {
                                     )}
 
                                     <FormInput
-                                        label="First name"
+                                        label={t('user.properties.firstName')}
                                         property="firstName"
                                         disabled={fieldDisabled}
                                         className="mt-3"
@@ -180,7 +191,7 @@ export function UserRegister() {
                                     />
 
                                     <FormInput
-                                        label="Last name"
+                                        label={t('user.properties.lastName')}
                                         property="lastName"
                                         disabled={fieldDisabled}
                                         className="mt-3"
@@ -189,7 +200,7 @@ export function UserRegister() {
                                 </Grid>
                                 <Grid item xs={6}>
                                     <FormInput
-                                        label="Email"
+                                        label={t('user.properties.email')}
                                         property="email"
                                         disabled={fieldDisabled}
                                         className="mt-3"
@@ -197,7 +208,7 @@ export function UserRegister() {
                                     />
 
                                     <FormInput
-                                        label="Telephone"
+                                        label={t('user.properties.telephone')}
                                         property="telephone"
                                         disabled={fieldDisabled}
                                         className="mt-3"
@@ -211,7 +222,7 @@ export function UserRegister() {
                                         required
                                     >
                                         <Field
-                                            label="Password"
+                                            label={t('user.properties.password')}
                                             name="password"
                                             component={TextField}
                                             variant="filled"
@@ -231,7 +242,7 @@ export function UserRegister() {
                                 className="mt-3 right"
                                 disabled={buttonDisabled}
                             >
-                                Register
+                                {t('user.actions.register')}
                             </Button>
                         </Form>
                     );

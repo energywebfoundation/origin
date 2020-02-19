@@ -33,11 +33,11 @@ export interface ITableColumn {
     align?: 'right';
 }
 
-type GetReadonlyArrayItemType<T extends ReadonlyArray<any>> = T extends ReadonlyArray<infer U>
+export type GetReadonlyArrayItemType<T extends ReadonlyArray<any>> = T extends ReadonlyArray<infer U>
     ? U
     : never;
 
-type TTableRow<T extends string> = {
+export type TTableRow<T extends string> = {
     [key in T]: ReactNode;
 };
 

@@ -21,6 +21,7 @@ import {
 import { DATE_FORMAT_DMY } from '../../utils/helper';
 import { EnergyFormatter } from '../../utils/EnergyFormatter';
 import { Upload, IUploadedFile } from '../Upload';
+import { useTranslation } from 'react-i18next';
 
 function setMinTimeInDay(date: Moment): Moment {
     return date
@@ -59,6 +60,8 @@ export function RequestCertificatesModal() {
     const showModal = useSelector(getRequestCertificatesModalVisible);
 
     const dispatch = useDispatch();
+
+    const { t } = useTranslation();
 
     const parsedEnergyInDisplayUnit = parseFloat(energyInDisplayUnit);
 
@@ -110,11 +113,14 @@ export function RequestCertificatesModal() {
 
     return (
         <Dialog open={showModal} onClose={handleClose}>
-            <DialogTitle>{`Request certificates for ${producingDevice?.offChainProperties
-                ?.facilityName ?? ''}`}</DialogTitle>
+            <DialogTitle>
+                {t('certificate.info.requestCertificatesFor', {
+                    facilityName: producingDevice?.offChainProperties?.facilityName ?? ''
+                })}
+            </DialogTitle>
             <DialogContent>
                 <DatePicker
-                    label={'From'}
+                    label={t('certificate.properties.from')}
                     value={fromDate}
                     onChange={handleFromDateChange}
                     variant="inline"
@@ -125,7 +131,7 @@ export function RequestCertificatesModal() {
                 />
 
                 <DatePicker
-                    label={'To'}
+                    label={t('certificate.properties.to')}
                     value={toDate}
                     onChange={handleToDateChange}
                     variant="inline"
@@ -147,10 +153,10 @@ export function RequestCertificatesModal() {
             </DialogContent>
             <DialogActions>
                 <Button onClick={handleClose} color="secondary">
-                    Cancel
+                    {t('general.actions.cancel')}
                 </Button>
                 <Button onClick={requestCerts} color="primary" disabled={!isFormValid}>
-                    Request
+                    {t('certificate.actions.request')}
                 </Button>
             </DialogActions>
         </Dialog>
