@@ -18,13 +18,13 @@ interface IProps {
 type TRecord = [string, number];
 
 export function SmartMeterReadingsTable(props: IProps) {
-    const { producingDevice } = props;
+    const { producingDevice, smartMeterReadingsAdapter } = props;
 
     async function getPaginatedData({
         requestedPageSize,
         offset
     }: IPaginatedLoaderHooksFetchDataParameters) {
-        const readings = await this.props.smartMeterReadingsAdapter.getSmartMeterReads(producingDevice);
+        const readings = await smartMeterReadingsAdapter.getSmartMeterReads(producingDevice);
         const deviceTimezone = producingDevice.offChainProperties.timezone;
 
         const data = [];
