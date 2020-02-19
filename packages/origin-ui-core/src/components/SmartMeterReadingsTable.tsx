@@ -8,21 +8,23 @@ import {
 } from './Table/PaginatedLoaderHooks';
 import { EnergyFormatter } from '../utils/EnergyFormatter';
 import { formatDate } from '../utils/helper';
+import { ISmartMeterReadingsAdapter } from '../types';
 
 interface IProps {
     producingDevice: ProducingDevice.Entity;
+    smartMeterReadingsAdapter: ISmartMeterReadingsAdapter;
 }
 
 type TRecord = [string, number];
 
 export function SmartMeterReadingsTable(props: IProps) {
-    const { producingDevice } = props;
+    const { producingDevice, smartMeterReadingsAdapter } = props;
 
     async function getPaginatedData({
         requestedPageSize,
         offset
     }: IPaginatedLoaderHooksFetchDataParameters) {
-        const readings = await producingDevice.getSmartMeterReads();
+        const readings = await smartMeterReadingsAdapter.getSmartMeterReads(producingDevice);
         const deviceTimezone = producingDevice.offChainProperties.timezone;
 
         const data = [];

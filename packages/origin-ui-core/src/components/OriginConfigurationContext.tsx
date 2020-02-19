@@ -7,6 +7,8 @@ import { initReactI18next } from 'react-i18next';
 
 import variables from '../styles/variables.scss';
 import { OriginGenericLogo } from './icons/OriginGenericLogo';
+import { OnChainReadingsAdapter } from '../adapters/OnChainReadingsAdapter';
+import { ISmartMeterReadingsAdapter } from '../types';
 
 export interface IOriginStyleConfig {
     PRIMARY_COLOR: string;
@@ -159,6 +161,7 @@ export interface IOriginConfiguration {
     customSliderStyle: any;
     materialTheme: Theme;
     language: 'en' | 'pl';
+    smartMeterReadingsAdapter: ISmartMeterReadingsAdapter;
 }
 
 export function createStyleConfigFromSCSSVariables(scssVariables: any): IOriginStyleConfig {
@@ -183,7 +186,8 @@ export function createOriginConfiguration(configuration: Partial<IOriginConfigur
         styleConfig: DEFAULT_STYLE_CONFIG,
         customSliderStyle: createSliderStyleForOrigin(DEFAULT_STYLE_CONFIG),
         materialTheme: createMaterialThemeForOrigin(DEFAULT_STYLE_CONFIG),
-        language: 'en'
+        language: 'en',
+        smartMeterReadingsAdapter: new OnChainReadingsAdapter()
     };
 
     const newConfiguration: IOriginConfiguration = {

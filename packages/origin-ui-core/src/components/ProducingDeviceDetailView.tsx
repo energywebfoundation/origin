@@ -28,6 +28,7 @@ import { formatDate } from '../utils/helper';
 import { getOffChainDataSource } from '../features/general/selectors';
 import { IOrganizationWithRelationsIds } from '@energyweb/origin-backend-core';
 import { DeviceGroupForm } from './DeviceGroupForm';
+import { useOriginConfiguration } from '../utils/configuration';
 
 interface IProps {
     id: number;
@@ -36,6 +37,7 @@ interface IProps {
 }
 
 export function ProducingDeviceDetailView(props: IProps) {
+    const { smartMeterReadingsAdapter } = useOriginConfiguration();
     const configuration = useSelector(getConfiguration);
     const certificates = useSelector(getCertificates);
     const producingDevices = useSelector(getProducingDevices);
@@ -238,11 +240,11 @@ export function ProducingDeviceDetailView(props: IProps) {
                         <div className="container-fluid">
                             <div className="row">
                                 <div className="col-lg-4">
-                                    <SmartMeterReadingsTable producingDevice={selectedDevice} />
+                                    <SmartMeterReadingsTable producingDevice={selectedDevice} smartMeterReadingsAdapter={smartMeterReadingsAdapter} />
                                 </div>
 
                                 <div className="col-lg-8">
-                                    <SmartMeterReadingsChart producingDevice={selectedDevice} />
+                                    <SmartMeterReadingsChart producingDevice={selectedDevice} smartMeterReadingsAdapter={smartMeterReadingsAdapter} />
                                 </div>
                             </div>
                         </div>

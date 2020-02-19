@@ -9,6 +9,7 @@ import { ProducingDevice, Device } from '@energyweb/device-registry';
 import { reverse, formatDate } from '../utils/helper';
 import { EnergyFormatter } from '../utils/EnergyFormatter';
 import { OriginConfigurationContext, IOriginConfiguration } from './OriginConfigurationContext';
+import { ISmartMeterReadingsAdapter } from '../types';
 
 enum TIMEFRAME {
     DAY = 'Day',
@@ -26,6 +27,7 @@ interface ISelectedTimeFrame {
 
 interface ISmartMeterReadingsChartProps {
     producingDevice: ProducingDevice.Entity;
+    smartMeterReadingsAdapter: ISmartMeterReadingsAdapter;
 }
 
 interface ISmartMeterReadingsChartState {
@@ -80,7 +82,7 @@ export class SmartMeterReadingsChart extends React.Component<
     }
 
     async componentDidMount() {
-        const readings: Device.ISmartMeterRead[] = await this.props.producingDevice.getSmartMeterReads();
+        const readings = await this.props.smartMeterReadingsAdapter.getSmartMeterReads(this.props.producingDevice);
 
         this.setState({ readings });
     }
