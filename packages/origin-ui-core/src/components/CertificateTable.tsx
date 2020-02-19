@@ -580,7 +580,7 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
                         .unix(record?.producingDevice?.offChainProperties?.operationalSince)
                         .year()
                         .toString(),
-                label: t('certificate.properties.commissioningDate'),
+                label: t('device.properties.commissioningDate'),
                 input: {
                     type: CustomFilterInputType.dropdown,
                     availableOptions: new Array(40).fill(moment().year()).map((item, index) => ({
@@ -754,7 +754,7 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
             },
             {
                 id: 'commissioningDate',
-                label: t('device.properties.comissioningDate'),
+                label: t('device.properties.commissioningDate'),
                 sortProperties: [
                     (record: IEnrichedCertificateData) =>
                         record?.producingDevice?.offChainProperties?.operationalSince

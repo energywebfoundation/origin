@@ -2,13 +2,18 @@ import React, { createContext, ReactNode } from 'react';
 import { createMuiTheme, Theme } from '@material-ui/core';
 import i18n from 'i18next';
 import ICU from 'i18next-icu';
-import { EN, PL } from '@energyweb/localization';
+import {
+    ORIGIN_LANGUAGES,
+    ORIGIN_LANGUAGE,
+    AVAILABLE_ORIGIN_LANGUAGES
+} from '@energyweb/localization';
 import { initReactI18next } from 'react-i18next';
-
 import variables from '../styles/variables.scss';
 import { OriginGenericLogo } from './icons/OriginGenericLogo';
 import { OnChainReadingsAdapter } from '../adapters/OnChainReadingsAdapter';
 import { ISmartMeterReadingsAdapter } from '../types';
+import { setTimeFormatLanguage } from '../utils/time';
+import { plPL, enUS } from '@material-ui/core/locale';
 
 export interface IOriginStyleConfig {
     PRIMARY_COLOR: string;
@@ -20,88 +25,100 @@ export interface IOriginStyleConfig {
     WHITE: string;
 }
 
-export const createMaterialThemeForOrigin = (styleConfig: IOriginStyleConfig) => {
-    return createMuiTheme({
-        palette: {
-            primary: {
-                main: styleConfig.PRIMARY_COLOR,
-                contrastText: styleConfig.WHITE
+export const createMaterialThemeForOrigin = (
+    styleConfig: IOriginStyleConfig,
+    language: ORIGIN_LANGUAGE
+) => {
+    const materialLocale =
+        {
+            pl: plPL,
+            en: enUS
+        }[language] ?? enUS;
+
+    return createMuiTheme(
+        {
+            palette: {
+                primary: {
+                    main: styleConfig.PRIMARY_COLOR,
+                    contrastText: styleConfig.WHITE
+                },
+                background: {
+                    paper: styleConfig.BACKGROUND_COLOR_DARK,
+                    default: '#f44336'
+                },
+                text: {
+                    primary: styleConfig.WHITE,
+                    secondary: styleConfig.TEXT_COLOR_DEFAULT,
+                    hint: '#f50057',
+                    disabled: styleConfig.TEXT_COLOR_DEFAULT
+                }
             },
-            background: {
-                paper: styleConfig.BACKGROUND_COLOR_DARK,
-                default: '#f44336'
-            },
-            text: {
-                primary: styleConfig.WHITE,
-                secondary: styleConfig.TEXT_COLOR_DEFAULT,
-                hint: '#f50057',
-                disabled: styleConfig.TEXT_COLOR_DEFAULT
+            overrides: {
+                MuiInput: {
+                    underline: {
+                        '&:before': {
+                            borderBottom: '2px solid #474747'
+                        }
+                    }
+                },
+                MuiChip: {
+                    root: {
+                        marginRight: '10px'
+                    }
+                },
+                MuiButton: {
+                    contained: {
+                        '&.Mui-disabled': {
+                            color: styleConfig.TEXT_COLOR_DEFAULT
+                        }
+                    }
+                },
+                MuiTable: {
+                    root: {
+                        borderBottom: `2px solid ${styleConfig.PRIMARY_COLOR}`
+                    }
+                },
+                MuiTableHead: {
+                    root: {
+                        '& > .MuiTableRow-root': {
+                            background: '#2d2d2d'
+                        }
+                    }
+                },
+                MuiTableRow: {
+                    root: {
+                        background: '#333333',
+                        '&:nth-child(even)': {
+                            background: '#2d2d2d'
+                        }
+                    },
+                    footer: {
+                        background: '#2d2d2d'
+                    }
+                },
+                MuiTableCell: {
+                    root: {
+                        borderBottom: '1px solid rgb(72, 72, 72)'
+                    },
+                    body: {
+                        color: styleConfig.TEXT_COLOR_DEFAULT
+                    },
+                    head: {
+                        color: styleConfig.WHITE,
+                        fontWeight: 'bold',
+                        borderBottom: '3px solid #252525',
+                        fontSize: '12px'
+                    }
+                },
+                MuiSelect: {
+                    icon: {
+                        color: styleConfig.FIELD_ICON_COLOR
+                    }
+                }
             }
         },
-        overrides: {
-            MuiInput: {
-                underline: {
-                    '&:before': {
-                        borderBottom: '2px solid #474747'
-                    }
-                }
-            },
-            MuiChip: {
-                root: {
-                    marginRight: '10px'
-                }
-            },
-            MuiButton: {
-                contained: {
-                    '&.Mui-disabled': {
-                        color: styleConfig.TEXT_COLOR_DEFAULT
-                    }
-                }
-            },
-            MuiTable: {
-                root: {
-                    borderBottom: `2px solid ${styleConfig.PRIMARY_COLOR}`
-                }
-            },
-            MuiTableHead: {
-                root: {
-                    '& > .MuiTableRow-root': {
-                        background: '#2d2d2d'
-                    }
-                }
-            },
-            MuiTableRow: {
-                root: {
-                    background: '#333333',
-                    '&:nth-child(even)': {
-                        background: '#2d2d2d'
-                    }
-                },
-                footer: {
-                    background: '#2d2d2d'
-                }
-            },
-            MuiTableCell: {
-                root: {
-                    borderBottom: '1px solid rgb(72, 72, 72)'
-                },
-                body: {
-                    color: styleConfig.TEXT_COLOR_DEFAULT
-                },
-                head: {
-                    color: styleConfig.WHITE,
-                    fontWeight: 'bold',
-                    borderBottom: '3px solid #252525',
-                    fontSize: '12px'
-                }
-            },
-            MuiSelect: {
-                icon: {
-                    color: styleConfig.FIELD_ICON_COLOR
-                }
-            }
-        }
-    });
+        materialLocale
+    );
 };
 
 export const createSliderStyleForOrigin = (styleConfig: IOriginStyleConfig) => ({
@@ -160,7 +177,8 @@ export interface IOriginConfiguration {
     styleConfig: IOriginStyleConfig;
     customSliderStyle: any;
     materialTheme: Theme;
-    language: 'en' | 'pl';
+    defaultLanguage: ORIGIN_LANGUAGE;
+    language: ORIGIN_LANGUAGE;
     smartMeterReadingsAdapter: ISmartMeterReadingsAdapter;
 }
 
@@ -178,15 +196,36 @@ export function createStyleConfigFromSCSSVariables(scssVariables: any): IOriginS
 
 export const OriginConfigurationContext = createContext<IOriginConfiguration>(null);
 
+const ORIGIN_CONFIGURATION_LANGUAGE_STORAGE_KEY = 'OriginConfiguration-language';
+
+export function getOriginLanguage(): ORIGIN_LANGUAGE {
+    const storedLanguage = localStorage.getItem(ORIGIN_CONFIGURATION_LANGUAGE_STORAGE_KEY);
+
+    if (AVAILABLE_ORIGIN_LANGUAGES.includes(storedLanguage)) {
+        return storedLanguage as ORIGIN_LANGUAGE;
+    }
+
+    return 'en';
+}
+
+export function setOriginLanguage(language: ORIGIN_LANGUAGE) {
+    localStorage.setItem(ORIGIN_CONFIGURATION_LANGUAGE_STORAGE_KEY, language);
+
+    location.reload();
+}
+
 export function createOriginConfiguration(configuration: Partial<IOriginConfiguration> = {}) {
     const DEFAULT_STYLE_CONFIG = createStyleConfigFromSCSSVariables(variables);
+
+    const storedLanguage = getOriginLanguage();
 
     const DEFAULT_ORIGIN_CONFIGURATION: IOriginConfiguration = {
         logo: <OriginGenericLogo />,
         styleConfig: DEFAULT_STYLE_CONFIG,
         customSliderStyle: createSliderStyleForOrigin(DEFAULT_STYLE_CONFIG),
-        materialTheme: createMaterialThemeForOrigin(DEFAULT_STYLE_CONFIG),
-        language: 'en',
+        materialTheme: createMaterialThemeForOrigin(DEFAULT_STYLE_CONFIG, storedLanguage),
+        defaultLanguage: 'en',
+        language: storedLanguage,
         smartMeterReadingsAdapter: new OnChainReadingsAdapter()
     };
 
@@ -195,10 +234,13 @@ export function createOriginConfiguration(configuration: Partial<IOriginConfigur
         ...configuration
     };
 
+    setTimeFormatLanguage(newConfiguration.language);
+
     if (configuration.styleConfig) {
         if (!configuration.materialTheme) {
             newConfiguration.materialTheme = createMaterialThemeForOrigin(
-                configuration.styleConfig
+                configuration.styleConfig,
+                newConfiguration.language
             );
         }
 
@@ -225,19 +267,21 @@ export function OriginConfigurationProvider(props: IProps) {
     );
 }
 
-export function initializeI18N(language: IOriginConfiguration['language']) {
+export function initializeI18N(
+    language: ORIGIN_LANGUAGE = 'en',
+    fallbackLanguage: ORIGIN_LANGUAGE = 'en'
+) {
     i18n.use(new ICU())
         .use(initReactI18next)
         .init({
-            resources: {
-                en: EN,
-                pl: PL
-            },
+            resources: ORIGIN_LANGUAGES,
             lng: language,
-            fallbackLng: 'en',
+            fallbackLng: fallbackLanguage,
 
             interpolation: {
                 escapeValue: false
             }
         });
+
+    return i18n;
 }

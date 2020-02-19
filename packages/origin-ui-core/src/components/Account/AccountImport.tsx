@@ -20,9 +20,11 @@ import { importAccount, clearEncryptedAccounts } from '../../features/authentica
 import { getEncryptedAccounts } from '../../features/authentication/selectors';
 import { dataTest } from '../../utils/helper';
 import { showRequestPasswordModal } from '../../features/general/actions';
+import { useTranslation } from 'react-i18next';
 
 export function AccountImport() {
     const encryptedAccounts = useSelector(getEncryptedAccounts);
+    const { t } = useTranslation();
 
     const initialFormValues = {
         privateKey: ''
@@ -36,7 +38,7 @@ export function AccountImport() {
     ) => {
         dispatch(
             showRequestPasswordModal({
-                title: 'Set password',
+                title: t('importAccount.actions.setPassword'),
                 callback: (password: string) => {
                     dispatch(
                         importAccount({
@@ -100,7 +102,7 @@ export function AccountImport() {
 
             dispatch(
                 showRequestPasswordModal({
-                    title: 'Unlock keystore',
+                    title: t('importAccount.actions.unlockKeystore'),
                     callback: (password: string) => {
                         dispatch(
                             importAccount({
@@ -119,14 +121,14 @@ export function AccountImport() {
             <Grid container spacing={3} className={classes.container}>
                 <Grid item xs={12}>
                     <Typography className={classes.information}>
-                        Paste a private key or load a keystore file. <br />
+                        {t('importAccount.feedback.pasteAPrivateKey')} <br />
                     </Typography>
                     <Formik
                         initialValues={initialFormValues}
                         onSubmit={onSubmit}
                         validationSchema={Yup.object().shape({
                             privateKey: Yup.string()
-                                .label('Private key')
+                                .label(t('importAccount.properties.privateKey'))
                                 .required()
                         })}
                     >
@@ -144,7 +146,7 @@ export function AccountImport() {
                                                 {...dataTest('account-import-privateKey')}
                                             >
                                                 <Field
-                                                    label="Private key"
+                                                    label={t('importAccount.properties.privateKey')}
                                                     name="privateKey"
                                                     component={TextField}
                                                     variant="filled"
@@ -160,7 +162,7 @@ export function AccountImport() {
                                                 className={classes.button}
                                                 {...dataTest('account-import-button-submit')}
                                             >
-                                                Continue
+                                                {t('general.actions.continue')}
                                             </Button>
                                         </Grid>
                                         <Grid item xs={6} className={classes.loadKeystoreContainer}>
@@ -176,7 +178,7 @@ export function AccountImport() {
                                                     component="span"
                                                     variant="outlined"
                                                 >
-                                                    Load keystore
+                                                    {t('importAccount.actions.loadKeystore')}
                                                 </Button>
                                             </label>
                                             <br />
@@ -186,7 +188,7 @@ export function AccountImport() {
                                                 rel="noopener"
                                                 color="textSecondary"
                                             >
-                                                What is a keystore file?
+                                                {t('importAccount.information.whatIsKeystore')}
                                             </Link>
                                         </Grid>
                                     </Grid>
@@ -204,7 +206,7 @@ export function AccountImport() {
                                 className={classes.buttonClear}
                                 onClick={() => dispatch(clearEncryptedAccounts())}
                             >
-                                Clear imported accounts
+                                {t('importAccount.actions.clearImportedAccounts')}
                             </Button>
                         </>
                     )}

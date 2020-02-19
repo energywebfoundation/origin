@@ -1,68 +1,50 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { LoadScriptNext, GoogleMap, Marker, InfoWindow } from '@react-google-maps/api';
 import { APIKEY } from './GoogleApiKey';
-import { Device } from '@energyweb/device-registry';
-import { connect } from 'react-redux';
+import { ProducingDevice } from '@energyweb/device-registry';
+import { useSelector } from 'react-redux';
 import { MarketUser } from '@energyweb/market';
-import { IStoreState } from '../types';
 import { Link } from 'react-router-dom';
-import { getProducingDeviceDetailLink } from '../utils/routing';
-import { getBaseURL, getProducingDevices, getConfiguration } from '../features/selectors';
+import { useLinks } from '../utils/routing';
+import { getProducingDevices, getConfiguration } from '../features/selectors';
 import { CircularProgress } from '@material-ui/core';
 import { getOffChainDataSource } from '../features/general/selectors';
-import { IOrganizationClient } from '@energyweb/origin-backend-client';
 import { IOrganization } from '@energyweb/origin-backend-core';
+import { useTranslation } from 'react-i18next';
 
-interface IOwnProps {
-    devices?: Device.Entity[];
+interface IProps {
+    devices?: ProducingDevice.Entity[];
     height?: string;
 }
 
-interface IStateProps {
-    baseURL: string;
-    configuration: IStoreState['configuration'];
-    organizationClient: IOrganizationClient;
-}
+export function DeviceMap(props: IProps) {
+    const [deviceHighlighted, setDeviceHighlighted] = useState<ProducingDevice.Entity>(null);
+    const [owner, setOwner] = useState<MarketUser.Entity>(null);
+    const [organizations, setOrganizations] = useState<IOrganization[]>();
+    const [map, setMap] = useState(null);
 
-type Props = IOwnProps & IStateProps;
+    const producingDevices = useSelector(getProducingDevices);
+    const offChainDataSource = useSelector(getOffChainDataSource);
+    const configuration = useSelector(getConfiguration);
 
-interface IState {
-    deviceHighlighted: Device.Entity;
-    owner: MarketUser.Entity;
-    organizations: IOrganization[];
-}
+    const { getProducingDeviceDetailLink } = useLinks();
+    const { t } = useTranslation();
 
-class DeviceMapClass extends React.Component<Props, IState> {
-    map: any = null;
+    const devices = props.devices || producingDevices;
 
-    constructor(props) {
-        super(props);
+    const { height = '250px' } = props;
 
-        this.state = {
-            deviceHighlighted: null,
-            owner: null,
-            organizations: []
-        };
+    async function showWindowForDevice(device: ProducingDevice.Entity) {
+        setDeviceHighlighted(device);
+        setOwner(await new MarketUser.Entity(device.owner.address, configuration).sync());
     }
 
-    async showWindowForDevice(device: Device.Entity) {
-        this.setState({
-            deviceHighlighted: device,
-            owner: await new MarketUser.Entity(
-                device.owner.address,
-                this.props.configuration as any
-            ).sync()
-        });
-    }
-
-    updateBounds(map: any = this.map) {
-        const { devices } = this.props;
-
-        if (this.map !== map) {
-            this.map = map;
+    function updateBounds(targetMap: any = map) {
+        if (targetMap && map !== targetMap) {
+            setMap(targetMap);
         }
 
-        if (devices.length === 0 || !map) {
+        if (devices.length === 0 || !targetMap) {
             return;
         }
 
@@ -86,102 +68,86 @@ class DeviceMapClass extends React.Component<Props, IState> {
             bounds.west = longitude < bounds.west || bounds.west === null ? longitude : bounds.west;
         }
 
-        map.fitBounds(bounds, 80);
+        targetMap.fitBounds(bounds, 80);
     }
 
-    componentDidUpdate() {
-        this.updateBounds();
-    }
+    useEffect(() => {
+        updateBounds();
+    }, [devices, map]);
 
-    async componentDidMount() {
-        this.setState({
-            organizations: await this.props.organizationClient?.getAll()
-        });
-    }
+    useEffect(() => {
+        (async () => {
+            setOrganizations((await offChainDataSource?.organizationClient?.getAll()) ?? []);
+        })();
+    }, [offChainDataSource]);
 
-    render() {
-        const { devices, height = '250px', baseURL } = this.props;
-        const { deviceHighlighted, owner } = this.state;
-        const defaultCenter =
-            devices.length > 0
-                ? {
-                      lat: parseFloat(devices[0].offChainProperties.gpsLatitude),
-                      lng: parseFloat(devices[0].offChainProperties.gpsLongitude)
-                  }
-                : {
-                      lat: 0,
-                      lng: 0
-                  };
+    const defaultCenter =
+        devices.length > 0
+            ? {
+                  lat: parseFloat(devices[0].offChainProperties.gpsLatitude),
+                  lng: parseFloat(devices[0].offChainProperties.gpsLongitude)
+              }
+            : {
+                  lat: 0,
+                  lng: 0
+              };
 
-        return (
-            <LoadScriptNext googleMapsApiKey={APIKEY} loadingElement={<CircularProgress />}>
-                <GoogleMap
-                    center={defaultCenter}
-                    zoom={10}
-                    mapContainerStyle={{
-                        height
-                    }}
-                    mapTypeId="hybrid"
-                    onLoad={map => this.updateBounds(map)}
-                >
-                    {devices.map((device, index) => (
-                        <React.Fragment key={index}>
-                            <Marker
-                                position={{
-                                    lat: parseFloat(device.offChainProperties.gpsLatitude),
-                                    lng: parseFloat(device.offChainProperties.gpsLongitude)
-                                }}
-                                onClick={() => this.showWindowForDevice(device)}
-                            />
-                        </React.Fragment>
-                    ))}
-
-                    {deviceHighlighted && owner && (
-                        <InfoWindow
+    return (
+        <LoadScriptNext googleMapsApiKey={APIKEY} loadingElement={<CircularProgress />}>
+            <GoogleMap
+                center={defaultCenter}
+                zoom={10}
+                mapContainerStyle={{
+                    height
+                }}
+                mapTypeId="hybrid"
+                onLoad={mapObject => updateBounds(mapObject)}
+            >
+                {devices.map((device, index) => (
+                    <React.Fragment key={index}>
+                        <Marker
                             position={{
-                                lat: parseFloat(deviceHighlighted.offChainProperties.gpsLatitude),
-                                lng: parseFloat(deviceHighlighted.offChainProperties.gpsLongitude)
+                                lat: parseFloat(device.offChainProperties.gpsLatitude),
+                                lng: parseFloat(device.offChainProperties.gpsLongitude)
                             }}
-                            onCloseClick={() =>
-                                this.setState({
-                                    deviceHighlighted: null,
-                                    owner: null
-                                })
-                            }
-                        >
-                            <div
-                                style={{
-                                    color: 'black'
-                                }}
-                            >
-                                <b>{deviceHighlighted.offChainProperties.facilityName}</b>
-                                <br />
-                                <br />
-                                Owner:{' '}
-                                {
-                                    this.state.organizations?.find(
-                                        o => o?.id === owner.information?.organization
-                                    )?.name
-                                }
-                                <br />
-                                <br />
-                                <Link
-                                    to={getProducingDeviceDetailLink(baseURL, deviceHighlighted.id)}
-                                >
-                                    See more
-                                </Link>
-                            </div>
-                        </InfoWindow>
-                    )}
-                </GoogleMap>
-            </LoadScriptNext>
-        );
-    }
-}
+                            onClick={() => showWindowForDevice(device)}
+                        />
+                    </React.Fragment>
+                ))}
 
-export const DeviceMap = connect((state: IStoreState, ownProps: IOwnProps) => ({
-    devices: ownProps.devices || getProducingDevices(state),
-    baseURL: getBaseURL(),
-    configuration: getConfiguration(state),
-    organizationClient: getOffChainDataSource(state)?.organizationClient
-}))(DeviceMapClass);
+                {deviceHighlighted && owner && (
+                    <InfoWindow
+                        position={{
+                            lat: parseFloat(deviceHighlighted.offChainProperties.gpsLatitude),
+                            lng: parseFloat(deviceHighlighted.offChainProperties.gpsLongitude)
+                        }}
+                        onCloseClick={() => {
+                            setDeviceHighlighted(null);
+                            setOwner(null);
+                        }}
+                    >
+                        <div
+                            style={{
+                                color: 'black'
+                            }}
+                        >
+                            <b>{deviceHighlighted.offChainProperties.facilityName}</b>
+                            <br />
+                            <br />
+                            {t('deviceMap.properties.owner')}:{' '}
+                            {
+                                organizations?.find(o => o?.id === owner.information?.organization)
+                                    ?.name
+                            }
+                            <br />
+                            <br />
+                            <Link to={getProducingDeviceDetailLink(deviceHighlighted.id)}>
+                                {t('deviceMap.actions.seeMore')}
+                            </Link>
+                        </div>
+                    </InfoWindow>
+                )}
+            </GoogleMap>
+        </LoadScriptNext>
+    );
+}

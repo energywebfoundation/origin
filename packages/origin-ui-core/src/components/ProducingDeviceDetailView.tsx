@@ -29,6 +29,7 @@ import { getOffChainDataSource } from '../features/general/selectors';
 import { IOrganizationWithRelationsIds } from '@energyweb/origin-backend-core';
 import { DeviceGroupForm } from './DeviceGroupForm';
 import { useOriginConfiguration } from '../utils/configuration';
+import { useTranslation } from 'react-i18next';
 
 interface IProps {
     id: number;
@@ -45,6 +46,8 @@ export function ProducingDeviceDetailView(props: IProps) {
     const organizationClient = useSelector(getOffChainDataSource)?.organizationClient;
 
     const [organizations, setOrganizations] = useState([] as IOrganizationWithRelationsIds[]);
+
+    const { t } = useTranslation();
 
     useEffect(() => {
         (async () => {
@@ -94,45 +97,45 @@ export function ProducingDeviceDetailView(props: IProps) {
         image = hydro;
     } else if (selectedDeviceType.startsWith('Thermal')) {
         image = iconThermal;
-        tooltip = 'Created by Adam Terpening from the Noun Project';
+        tooltip = t('general.feedback.createdByNoun', { fullName: 'Adam Terpening' });
     } else if (selectedDeviceType.startsWith('Solid')) {
         image = iconSolid;
-        tooltip = 'Created by ahmad from the Noun Project';
+        tooltip = t('general.feedback.createdByNoun', { fullName: 'ahmad' });
     } else if (selectedDeviceType.startsWith('Liquid')) {
         image = iconLiquid;
-        tooltip = 'Created by BomSymbols from the Noun Project';
+        tooltip = t('general.feedback.createdByNoun', { fullName: 'BomSymbols' });
     } else if (selectedDeviceType.startsWith('Gaseous')) {
         image = iconGaseous;
-        tooltip = 'Created by Deadtype from the Noun Project';
+        tooltip = t('general.feedback.createdByNoun', { fullName: 'Deadtype' });
     } else if (selectedDeviceType.startsWith('Marine')) {
         image = iconMarine;
-        tooltip = 'Created by Vectors Point from the Noun Project';
+        tooltip = t('general.feedback.createdByNoun', { fullName: 'Vectors Point' });
     }
 
     const data = [
         [
             {
-                label: 'Facility name',
+                label: t('device.properties.facilityName'),
                 data: selectedDevice.offChainProperties.facilityName
             },
             {
-                label: 'Device owner',
+                label: t('device.properties.deviceOwner'),
                 data: owner
                     ? organizations?.find(o => o.id === owner?.information?.organization)?.name
                     : ''
             },
             {
-                label: 'Certified by registry',
+                label: t('device.properties.complianceRegistry'),
                 data: selectedDevice.offChainProperties.complianceRegistry
             },
             {
-                label: 'Other green attributes',
+                label: t('device.properties.otherGreenAttributes'),
                 data: selectedDevice.offChainProperties.otherGreenAttributes
             }
         ],
         [
             {
-                label: 'Device type',
+                label: t('device.properties.deviceType'),
                 data: configuration.deviceTypeService?.getDisplayText(
                     selectedDevice.offChainProperties.deviceType
                 ),
@@ -140,28 +143,28 @@ export function ProducingDeviceDetailView(props: IProps) {
                 rowspan: 2
             },
             {
-                label: 'Meter read',
+                label: t('device.properties.meterRead'),
                 data: EnergyFormatter.format(selectedDevice.lastSmartMeterReadWh),
                 tip: EnergyFormatter.displayUnit
             },
             {
-                label: 'Public support',
+                label: t('device.properties.publicSupport'),
                 data: selectedDevice.offChainProperties.typeOfPublicSupport,
                 description: ''
             },
             {
-                label: 'Commissioning date',
+                label: t('device.properties.commissioningDate'),
                 data: formatDate(selectedDevice.offChainProperties.operationalSince * 1000)
             }
         ],
         [
             {
-                label: 'Nameplate capacity',
+                label: t('device.properties.nameplateCapacity'),
                 data: PowerFormatter.format(selectedDevice.offChainProperties.capacityInW),
                 tip: PowerFormatter.displayUnit
             },
             {
-                label: 'Geo location',
+                label: t('device.properties.geoLocation'),
                 data:
                     selectedDevice.offChainProperties.gpsLatitude +
                     ', ' +
@@ -235,16 +238,24 @@ export function ProducingDeviceDetailView(props: IProps) {
 
                 {props.showSmartMeterReadings && (
                     <div className="PageBody p-4">
-                        <div className="PageBodyTitle">Smart meter readings</div>
+                        <div className="PageBodyTitle">
+                            {t('meterReads.properties.smartMeterReadings')}
+                        </div>
 
                         <div className="container-fluid">
                             <div className="row">
                                 <div className="col-lg-4">
-                                    <SmartMeterReadingsTable producingDevice={selectedDevice} smartMeterReadingsAdapter={smartMeterReadingsAdapter} />
+                                    <SmartMeterReadingsTable
+                                        producingDevice={selectedDevice}
+                                        smartMeterReadingsAdapter={smartMeterReadingsAdapter}
+                                    />
                                 </div>
 
                                 <div className="col-lg-8">
-                                    <SmartMeterReadingsChart producingDevice={selectedDevice} smartMeterReadingsAdapter={smartMeterReadingsAdapter} />
+                                    <SmartMeterReadingsChart
+                                        producingDevice={selectedDevice}
+                                        smartMeterReadingsAdapter={smartMeterReadingsAdapter}
+                                    />
                                 </div>
                             </div>
                         </div>
@@ -264,7 +275,7 @@ export function ProducingDeviceDetailView(props: IProps) {
                         )}
                         selectedState={SelectedState.ForSale}
                         demand={null}
-                        hiddenColumns={['Device type', 'Commissioning date', 'Town, country']}
+                        hiddenColumns={['deviceType', 'commissioningDate', 'locationText']}
                     />
                 </>
             )}

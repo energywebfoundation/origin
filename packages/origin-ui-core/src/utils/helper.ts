@@ -1,4 +1,5 @@
-import moment, { Moment } from 'moment';
+import { Moment } from 'moment';
+import { moment } from './time';
 import { Device } from '@energyweb/device-registry';
 
 export function dataTest(value, name = 'data-test') {
