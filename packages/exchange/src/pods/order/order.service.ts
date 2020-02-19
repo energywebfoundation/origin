@@ -26,6 +26,7 @@ export class OrderService {
     public async createBid(bid: CreateBidDTO) {
         return this.repository.save({
             ...bid,
+            validFrom: new Date(bid.validFrom),
             side: OrderSide.Bid,
             status: OrderStatus.Active,
             startVolume: bid.volume,
@@ -49,6 +50,7 @@ export class OrderService {
 
         return this.repository.save({
             ...ask,
+            validFrom: new Date(ask.validFrom),
             product,
             side: OrderSide.Ask,
             status: OrderStatus.Active,

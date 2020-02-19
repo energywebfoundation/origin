@@ -1,15 +1,16 @@
 import { Contracts } from '@energyweb/issuer';
-import { CanActivate, ExecutionContext, INestApplication } from '@nestjs/common';
+import { CanActivate, ExecutionContext, INestApplication, ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { AuthGuard } from '@nestjs/passport';
 import { Test } from '@nestjs/testing';
-import BN from 'bn.js';
 import { Contract, ethers } from 'ethers';
 import request from 'supertest';
 
 import { AppModule } from '../src/app.module';
 import { AppService } from '../src/app.service';
+import { EmptyResultInterceptor } from '../src/empty-result.interceptor';
 import { Account } from '../src/pods/account/account';
+import { AccountDTO } from '../src/pods/account/account.dto';
 import { AccountService } from '../src/pods/account/account.service';
 import { AssetDTO } from '../src/pods/asset/asset.dto';
 import { CreateAskDTO } from '../src/pods/order/create-ask.dto';
@@ -19,7 +20,6 @@ import { TransferDirection } from '../src/pods/transfer/transfer-direction';
 import { Transfer } from '../src/pods/transfer/transfer.entity';
 import { TransferService } from '../src/pods/transfer/transfer.service';
 import { DatabaseService } from './database.service';
-import { AccountDTO } from '../src/pods/account/account.dto';
 
 const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
@@ -34,6 +34,7 @@ describe('AppController (e2e)', () => {
 
     const asset1Address = '0x9876';
     const transactionHash = `0x${((Math.random() * 0xffffff) << 0).toString(16)}`;
+    const withdrawalAddress = ethers.Wallet.createRandom().address;
 
     const web3 = 'http://localhost:8580';
 
@@ -112,6 +113,9 @@ describe('AppController (e2e)', () => {
         const appService = await app.resolve<AppService>(AppService);
         await appService.init();
 
+        app.useGlobalInterceptors(new EmptyResultInterceptor());
+        app.useGlobalPipes(new ValidationPipe());
+
         await app.init();
     });
 
@@ -176,7 +180,7 @@ describe('AppController (e2e)', () => {
                 userId: user1Id,
                 volume: '100',
                 price: 100,
-                validFrom: new Date()
+                validFrom: new Date().toISOString()
             };
 
             await request(app.getHttpServer())
@@ -193,7 +197,7 @@ describe('AppController (e2e)', () => {
                 userId: user1Id,
                 volume: '100',
                 price: 100,
-                validFrom: new Date()
+                validFrom: new Date().toISOString()
             };
 
             await request(app.getHttpServer())
@@ -216,7 +220,7 @@ describe('AppController (e2e)', () => {
                 userId: user1Id,
                 volume: '1001',
                 price: 100,
-                validFrom: new Date()
+                validFrom: new Date().toISOString()
             };
 
             await request(app.getHttpServer())
@@ -233,7 +237,7 @@ describe('AppController (e2e)', () => {
                 userId: user1Id,
                 volume: '1000',
                 price: 100,
-                validFrom: new Date()
+                validFrom: new Date().toISOString()
             };
 
             await request(app.getHttpServer())
@@ -252,7 +256,7 @@ describe('AppController (e2e)', () => {
                 assetId: deposit.asset.id,
                 userId: user1Id,
                 amount,
-                address: '0x123'
+                address: withdrawalAddress
             };
 
             await request(app.getHttpServer())
@@ -268,7 +272,7 @@ describe('AppController (e2e)', () => {
                 assetId: deposit.asset.id,
                 userId: user1Id,
                 amount,
-                address: '0x123'
+                address: withdrawalAddress
             };
 
             await request(app.getHttpServer())
@@ -280,16 +284,11 @@ describe('AppController (e2e)', () => {
                 .get('/account')
                 .expect(200)
                 .expect(res => {
-                    const account = res.body as Account;
-
-                    const expectedAmount = new BN(
-                        account.balances.available[0].amount.toString(),
-                        16
-                    ).toString(10);
+                    const account = res.body as AccountDTO;
 
                     expect(account.address).toBe(user1Address);
                     expect(account.balances.available.length).toBe(1);
-                    expect(expectedAmount).toEqual('0');
+                    expect(account.balances.available[0].amount).toEqual('0');
                     expect(account.balances.available[0].asset).toMatchObject(asset);
                 });
         });

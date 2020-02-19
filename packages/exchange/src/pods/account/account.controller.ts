@@ -16,15 +16,6 @@ export class AccountController {
     public async getAccount(@UserDecorator() user: IUser): Promise<AccountDTO> {
         const account = await this.accountService.getAccount(user.id.toString());
 
-        return {
-            ...account,
-            balances: {
-                available: account.balances.available.map(b => ({
-                    ...b,
-                    amount: b.amount.toString(10)
-                })),
-                locked: account.balances.locked.map(b => ({ ...b, amount: b.amount.toString(10) }))
-            }
-        };
+        return AccountDTO.fromAccount(account);
     }
 }
