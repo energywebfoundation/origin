@@ -26,7 +26,7 @@ export class DemandService {
         const bid = await this.orderService.createBid({
             price,
             volume,
-            validFrom: start,
+            validFrom: start.toISOString(),
             product: ProductDTO.toProduct(product),
             userId
         });
