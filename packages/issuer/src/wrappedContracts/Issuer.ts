@@ -114,7 +114,7 @@ export class Issuer extends GeneralFunctions {
         _data: any,
         txParams?: ISpecialTx
     ) {
-        const method = this.web3Contract.methods.issue(
+        const method = this.web3Contract.methods.issuePrivate(
             _to,
             _commitment,
             _data
@@ -201,6 +201,10 @@ export class Issuer extends GeneralFunctions {
         const method = this.web3Contract.methods.requestPrivateTransfer(_certificateId, _hash);
 
         return this.send(method, txParams);
+    }
+
+    async getUnapprovedPrivateTransferRequests(_id: number, txParams?: ISpecialTx) {
+        return this.web3Contract.methods.getUnapprovedPrivateTransferRequests(_id).call(txParams);
     }
 
     async getRegistryAddress(txParams?: ISpecialTx) {

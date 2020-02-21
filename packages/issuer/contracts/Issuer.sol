@@ -8,11 +8,12 @@ import "./Registry.sol";
 
 contract Issuer is Initializable, Ownable {
     event NewIssuanceRequest(address indexed _owner, uint256 indexed _id);
+    event ApprovedIssuanceRequest(address indexed _owner, uint256 indexed _id, uint indexed _certificateId);
 
 	event CommitmentUpdated(address indexed _owner, uint256 indexed _id, bytes32 _commitment);
 	event MigrateToPublicRequest(address indexed _owner, uint256 indexed _id);
 	event PrivateTransferRequest(address indexed _owner, uint256 indexed _certificateId, uint256 indexed _id);
-	event CertificateMigratedToPublic(uint indexed _certificateId);
+	event CertificateMigratedToPublic(uint indexed _certificateId, address indexed _owner, uint256 indexed _amount);
 
     int public certificateTopic;
     Registry public registry;
@@ -134,6 +135,8 @@ contract Issuer is Initializable, Ownable {
         uint256 certificateId = registry.issue(_to, _validityData, certificateTopic, _value, request.data);
         certificateToRequestStorage[certificateId] = _requestId;
 
+        emit ApprovedIssuanceRequest(_to, _requestId, certificateId);
+
         return certificateId;
     }
 
@@ -153,21 +156,23 @@ contract Issuer is Initializable, Ownable {
         uint _requestId,
         bytes32 _commitment,
         bytes memory _validityData
-    ) public onlyOwner returns (uint256) {
+    ) public returns (uint256) {
         IssuanceRequest memory request = issuanceRequests[_requestId];
-        require(request.isPrivate, "approveIssuance(): can't approve public certificates using commitments");
+        require(request.isPrivate, "approveIssuancePrivate: can't approve public certificates using commitments");
 
         _approve(_requestId);
 
         uint256 certificateId = registry.issue(_to, _validityData, certificateTopic, 0, request.data);
+		_updateCommitment(certificateId, 0x0, _commitment);
+
         certificateToRequestStorage[certificateId] = _requestId;
 
-		_updateCommitment(certificateId, 0x0, _commitment);
+        emit ApprovedIssuanceRequest(_to, _requestId, certificateId);
 
         return certificateId;
     }
 
-    function issuePrivate(address _to, bytes32 _commitment, bytes memory _data) public onlyOwner returns (uint256) {
+    function issuePrivate(address _to, bytes32 _commitment, bytes memory _data) public returns (uint256) {
         uint256 requestId = requestIssuanceFor(_data, _to, true);
 
         return approveIssuancePrivate(
@@ -201,12 +206,24 @@ contract Issuer is Initializable, Ownable {
 		RequestStateChange storage request = requestPrivateTransferStorage[_requestId];
 
 		require(!request.approved, "Request already approved");
-		// require(validateMerkle(request.hash, _commitment, _proof), "Wrong merkle tree");
+		require(validateMerkle(request.hash, _commitment, _proof), "Wrong merkle tree");
 
 		request.approved = true;
 
 		_updateCommitment(request.certificateId, _previousCommitment, _commitment);
 	}
+
+    function getUnapprovedPrivateTransferRequests(uint _id) external returns (RequestStateChange memory) {
+        // RequestStateChange[] memory privateTransferRequests = new RequestStateChange[](requestPrivateTransferNonce);
+
+		// for (uint i = 0; i < requestPrivateTransferNonce; i++) {
+        //     if (!requestPrivateTransferStorage[i].approved) {
+		// 	    privateTransferRequests[i] = requestPrivateTransferStorage[i];
+        //     }
+		// }
+
+        return requestPrivateTransferStorage[_id];
+    }
 
 	/*
 		Migrate to public certificate (public issue)
@@ -239,14 +256,14 @@ contract Issuer is Initializable, Ownable {
 		require(!request.approved, "migrateToPublic(): Request already approved");
         require(!migrations[request.certificateId], "migrateToPublic(): certificate already migrated");
 		// require(request.hash == keccak256(abi.encodePacked(request.owner, _value, _salt)), "Requested hash does not match");
-		// require(validateProof(request.owner, _value, _salt, commitments[request.certificateId], _proof), "Invalid proof");
+		// require(validateOwnerProof("ownerAddress", request.owner, _salt, commitments[request.certificateId], _proof), "Invalid proof");
 
 		request.approved = true;
 
         registry.mint(request.certificateId, request.owner, _value);
         migrations[request.certificateId] = true;
 
-        emit CertificateMigratedToPublic(request.certificateId);
+        emit CertificateMigratedToPublic(request.certificateId, request.owner, _value);
 	}
 
 	/*
@@ -261,8 +278,14 @@ contract Issuer is Initializable, Ownable {
 		return abi.decode(_data, (uint, uint, string));
 	}
 
-	function validateProof(address _key, uint _value, string memory _salt, bytes32 _rootHash, Proof[] memory _proof) private pure returns (bool) {
-		bytes32 leafHash = keccak256(abi.encodePacked(_key, _value, _salt));
+	function validateOwnerProof(
+        string memory _key,
+        address _ownerAddress,
+        string memory _salt,
+        bytes32 _rootHash,
+        Proof[] memory _proof
+    ) private pure returns (bool) {
+		bytes32 leafHash = keccak256(abi.encodePacked(_key, _ownerAddress, _salt));
 
 		return validateMerkle(leafHash, _rootHash, _proof);
 	}
@@ -305,8 +328,8 @@ contract Issuer is Initializable, Ownable {
         request.approved = true;
     }
 
-	function _updateCommitment(uint _id, bytes32 _previousCommitment, bytes32 _commitment) public {
-		// require(commitments[_id] == _previousCommitment, "updateCommitment: previous commitment invalid");
+	function _updateCommitment(uint _id, bytes32 _previousCommitment, bytes32 _commitment) private {
+		require(commitments[_id] == _previousCommitment, "updateCommitment: previous commitment invalid");
 
 		commitments[_id] = _commitment;
 
