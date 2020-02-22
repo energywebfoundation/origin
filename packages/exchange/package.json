@@ -41,7 +41,7 @@
         "@nestjs/common": "6.11.6",
         "@nestjs/config": "0.2.2",
         "@nestjs/core": "6.11.6",
-        "@nestjs/passport": "6.1.1",
+        "@nestjs/passport": "6.2.0",
         "@nestjs/platform-express": "6.11.6",
         "@nestjs/schedule": "0.2.0",
         "@nestjs/swagger": "4.2.7",
