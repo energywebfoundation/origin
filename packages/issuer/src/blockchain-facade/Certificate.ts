@@ -203,9 +203,6 @@ export class Entity extends BlockchainDataModelEntity.Entity implements ICertifi
 
         const issuer: Issuer = this.configuration.blockchainProperties.issuerLogicInstance;
         const migrationRequestId = await issuer.getMigrationRequestId(Number(this.id), Configuration.getAccount(this.configuration));
-        console.log({
-            migrationRequestId
-        })
 
         const { salts } = await this.getOffChainDump();
 

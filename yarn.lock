@@ -7736,7 +7736,6 @@ ethereumjs-abi@0.6.7:
 
 "ethereumjs-abi@git+https://github.com/ethereumjs/ethereumjs-abi.git":
   version "0.6.8"
-  uid "1cfbb13862f90f0b391d8a699544d5fe4dfb8c7b"
   resolved "git+https://github.com/ethereumjs/ethereumjs-abi.git#1cfbb13862f90f0b391d8a699544d5fe4dfb8c7b"
   dependencies:
     bn.js "^4.11.8"
@@ -14578,10 +14577,10 @@ postgres-interval@^1.1.0:
   dependencies:
     xtend "^4.0.0"
 
-precise-proofs-js@1.0.1:
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/precise-proofs-js/-/precise-proofs-js-1.0.1.tgz#4e8429ef5ceaf69e9d47a73cd9e9f9c07a0dcf0e"
-  integrity sha512-kcMPgKD7wLMYwqBPGekWmbNynlBhT6kXaW2RReddXPHHrxYHRifQUqPoE1oAzhYG4g5TBH5nB4pQa8+bJ+XVSA==
+precise-proofs-js@1.0.2:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/precise-proofs-js/-/precise-proofs-js-1.0.2.tgz#6ec496d893ccc0993994904f3e3456510075a699"
+  integrity sha512-4IVlsBs92WjaalqZ70OVE0k31ptJrCjGKDFmgi2cGk90INep/+AsblCMvGCeARC6GMifH587KKdHAZ1+DYzDlg==
   dependencies:
     build "^0.1.4"
     colors "^1.4.0"

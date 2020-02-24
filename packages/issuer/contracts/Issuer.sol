@@ -201,7 +201,8 @@ contract Issuer is Initializable, Ownable {
         return id;
 	}
 
-	function approvePrivateTransfer(uint _requestId, Proof[] calldata _proof, bytes32 _previousCommitment, bytes32 _commitment) external onlyOwner {
+    // TO-DO: onlyOwner
+	function approvePrivateTransfer(uint _requestId, Proof[] calldata _proof, bytes32 _previousCommitment, bytes32 _commitment) external {
 		RequestStateChange storage request = requestPrivateTransferStorage[_requestId];
 
 		require(!request.approved, "Request already approved");
@@ -258,8 +259,8 @@ contract Issuer is Initializable, Ownable {
 
 		require(!request.approved, "migrateToPublic(): Request already approved");
         require(!migrations[request.certificateId], "migrateToPublic(): certificate already migrated");
-		// require(request.hash == keccak256(abi.encodePacked(request.owner, _value, _salt)), "Requested hash does not match");
-		// require(validateOwnerProof("ownerAddress", request.owner, _salt, commitments[request.certificateId], _proof), "Invalid proof");
+		require(validateOwnerProof("ownerAddress", request.owner, _salt, commitments[request.certificateId], _proof), "Invalid proof");
+		require(request.hash == keccak256(abi.encodePacked("ownerAddress", request.owner, _salt)), "Requested hash does not match");
 
 		request.approved = true;
 
