@@ -59,7 +59,7 @@
   "devDependencies": {
     "@energyweb/origin-backend-client": "3.2.0",
     "@energyweb/origin-backend-client-mocks": "0.3.0",
-    "@fluffy-spoon/substitute": "1.110.0",
+    "@fluffy-spoon/substitute": "1.112.0",
     "ethlint": "1.2.5",
     "fs-extra": "8.1.0",
     "truffle-flattener": "1.4.2"

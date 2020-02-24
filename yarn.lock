@@ -631,10 +631,10 @@
   resolved "https://registry.yarnpkg.com/@firebase/webchannel-wrapper/-/webchannel-wrapper-0.2.35.tgz#232e857698efb30cdda98b6f6a7a31a905d16147"
   integrity sha512-7njiGBbFW0HCnuKNEJLcQt9EjfOzG8EJiXlFJwA3XfgiFxPVHmXrcF4d5yold2wfiwCwrXpeNTGZ854oRr6Hcw==
 
-"@fluffy-spoon/substitute@1.110.0":
-  version "1.110.0"
-  resolved "https://registry.yarnpkg.com/@fluffy-spoon/substitute/-/substitute-1.110.0.tgz#b55ef4813a1d6b1fcb60c557ab62c7a1c455fc62"
-  integrity sha512-N6KIXiKPeah/ve2htA4UrLbmz75WWwDKHGUqVx+KFEgPFw2PSFNR08BXZdDAboyRifbs5f+82jvNE1yYAz8jWQ==
+"@fluffy-spoon/substitute@1.112.0":
+  version "1.112.0"
+  resolved "https://registry.yarnpkg.com/@fluffy-spoon/substitute/-/substitute-1.112.0.tgz#9c0cbb5e5794d7db513f826239bb832732d6c3ea"
+  integrity sha512-hKe4FdAYCv56zStjYjcp1NyMK2zF2EgQWxQDiLvT9yEtdufdj9gZfiNHiZuH3v9W1TIwCwB348PaoCajj4bFyQ==
 
 "@grpc/proto-loader@^0.5.0":
   version "0.5.3"
