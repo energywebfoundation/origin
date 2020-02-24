@@ -156,7 +156,7 @@ contract Issuer is Initializable, Ownable {
         uint _requestId,
         bytes32 _commitment,
         bytes memory _validityData
-    ) public returns (uint256) {
+    ) public onlyOwner returns (uint256) {
         IssuanceRequest memory request = issuanceRequests[_requestId];
         require(request.isPrivate, "approveIssuancePrivate: can't approve public certificates using commitments");
 
@@ -172,7 +172,7 @@ contract Issuer is Initializable, Ownable {
         return certificateId;
     }
 
-    function issuePrivate(address _to, bytes32 _commitment, bytes memory _data) public returns (uint256) {
+    function issuePrivate(address _to, bytes32 _commitment, bytes memory _data) public onlyOwner returns (uint256) {
         uint256 requestId = requestIssuanceFor(_data, _to, true);
 
         return approveIssuancePrivate(
@@ -201,8 +201,7 @@ contract Issuer is Initializable, Ownable {
         return id;
 	}
 
-	// TO-DO: only Issuer
-	function approvePrivateTransfer(uint _requestId, Proof[] calldata _proof, bytes32 _previousCommitment, bytes32 _commitment) external {
+	function approvePrivateTransfer(uint _requestId, Proof[] calldata _proof, bytes32 _previousCommitment, bytes32 _commitment) external onlyOwner {
 		RequestStateChange storage request = requestPrivateTransferStorage[_requestId];
 
 		require(!request.approved, "Request already approved");
@@ -213,23 +212,15 @@ contract Issuer is Initializable, Ownable {
 		_updateCommitment(request.certificateId, _previousCommitment, _commitment);
 	}
 
-    function getUnapprovedPrivateTransferRequests(uint _id) external returns (RequestStateChange memory) {
-        // RequestStateChange[] memory privateTransferRequests = new RequestStateChange[](requestPrivateTransferNonce);
-
-		// for (uint i = 0; i < requestPrivateTransferNonce; i++) {
-        //     if (!requestPrivateTransferStorage[i].approved) {
-		// 	    privateTransferRequests[i] = requestPrivateTransferStorage[i];
-        //     }
-		// }
-
-        return requestPrivateTransferStorage[_id];
-    }
-
 	/*
 		Migrate to public certificate (public issue)
 	*/
 
 	function requestMigrateToPublic(uint _certificateId, bytes32 _ownerAddressLeafHash) external returns (uint256) {
+        bool existsAlready = _migrationRequestExists(_certificateId);
+
+        require(!existsAlready, "migration request for this certificate already exists");
+
 		uint id = ++requestMigrateToPublicNonce;
 
 		requestMigrateToPublicStorage[id] = RequestStateChange({
@@ -244,13 +235,25 @@ contract Issuer is Initializable, Ownable {
         return id;
 	}
 
-	// TO-DO: only Issuer
+    function getMigrationRequestId(uint _certificateId) external onlyOwner returns (uint256) {
+        bool found = false;
+
+		for (uint i = 1; i <= requestMigrateToPublicNonce; i++) {
+            if (requestMigrateToPublicStorage[i].certificateId == _certificateId) {
+                found = true;
+			    return i;
+            }
+		}
+
+        require(found, "unable to find the migration request");
+    }
+
 	function migrateToPublic(
         uint _requestId,
         uint _value,
         string calldata _salt,
         Proof[] calldata _proof
-    ) external returns (uint256 publicCertificateId) {
+    ) external onlyOwner returns (uint256 publicCertificateId) {
 		RequestStateChange storage request = requestMigrateToPublicStorage[_requestId];
 
 		require(!request.approved, "migrateToPublic(): Request already approved");
@@ -262,6 +265,8 @@ contract Issuer is Initializable, Ownable {
 
         registry.mint(request.certificateId, request.owner, _value);
         migrations[request.certificateId] = true;
+
+        _updateCommitment(request.certificateId, commitments[request.certificateId], 0x0);
 
         emit CertificateMigratedToPublic(request.certificateId, request.owner, _value);
 	}
@@ -309,6 +314,10 @@ contract Issuer is Initializable, Ownable {
 		Info
 	*/
 
+    function isCertificatePublic(uint certificateId) external returns (bool) {
+        return commitments[certificateId] != 0x0;
+    }
+
     function getRegistryAddress() public view returns (address) {
         return address(registry);
     }
@@ -320,6 +329,19 @@ contract Issuer is Initializable, Ownable {
 	/*
 		Private methods
 	*/
+
+    function _migrationRequestExists(uint _certificateId) private returns (bool) {
+        bool exists = false;
+
+		for (uint i = 1; i <= requestMigrateToPublicNonce; i++) {
+            if (requestMigrateToPublicStorage[i].certificateId == _certificateId) {
+                exists = true;
+                return exists;
+            }
+		}
+
+        return exists;
+    }
 
     function _approve(uint _requestId) private {
         IssuanceRequest storage request = issuanceRequests[_requestId];

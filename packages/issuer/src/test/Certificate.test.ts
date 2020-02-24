@@ -186,11 +186,19 @@ describe('Cerificate tests', () => {
 
         setActiveUser(deviceOwnerPK);
 
-        await certificate.claim(totalVolume);
+        await certificate.requestMigrateToPublic();
     
+        setActiveUser(issuerPK);
+
+        await certificate.migrateToPublic();
         certificate = await certificate.sync();
 
         assert.isFalse(certificate.isPrivate);
+
+        setActiveUser(deviceOwnerPK);
+
+        await certificate.claim();
+        certificate = await certificate.sync();
 
         assert.isTrue(await certificate.isClaimed());
         assert.equal(await certificate.claimedVolume(), totalVolume);

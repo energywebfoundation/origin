@@ -163,6 +163,10 @@ export class Issuer extends GeneralFunctions {
         return this.send(method, txParams);
     }
 
+    async getMigrationRequestId(_certificateId: number, txParams?: ISpecialTx) {
+        return this.web3Contract.methods.getMigrationRequestId(_certificateId).call(txParams);
+    }
+
     async migrateToPublic(
         _requestId: number,
         _value: number,
@@ -203,8 +207,8 @@ export class Issuer extends GeneralFunctions {
         return this.send(method, txParams);
     }
 
-    async getUnapprovedPrivateTransferRequests(_id: number, txParams?: ISpecialTx) {
-        return this.web3Contract.methods.getUnapprovedPrivateTransferRequests(_id).call(txParams);
+    async isCertificatePublic(_certificateId: number, txParams?: ISpecialTx) {
+        return this.web3Contract.methods.isCertificatePublic(_certificateId).call(txParams);
     }
 
     async getRegistryAddress(txParams?: ISpecialTx) {
