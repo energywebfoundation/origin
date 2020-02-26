@@ -335,10 +335,6 @@ function* fillMarketContractLookupAddressIfMissing(): SagaIterator {
                 [configuration]
             );
 
-            console.log({
-                producingDevices
-            })
-
             for (const device of producingDevices) {
                 yield put(producingDeviceCreatedOrUpdated(device));
             }

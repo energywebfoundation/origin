@@ -187,7 +187,7 @@ describe('Device Facade', () => {
             it('should correctly return reads', async () => {
                 const device = await new ProducingDevice.Entity('0', conf).sync();
                 await device.saveSmartMeterRead(100, SM_READ_TIMESTAMP);
-                await device.saveSmartMeterRead(300, SM_READ_TIMESTAMP+1);
+                await device.saveSmartMeterRead(300, SM_READ_TIMESTAMP + 1);
                 const reads = await device.getSmartMeterReads();
 
                 assert.deepEqual(reads, [
@@ -212,6 +212,8 @@ describe('Device Facade', () => {
                         timestamp: SM_READ_TIMESTAMP + 1
                     }
                 ]);
+
+                assert.equal(device.lastSmartMeterReadWh, 300);
             });
         });
     });
