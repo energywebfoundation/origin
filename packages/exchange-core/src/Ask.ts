@@ -12,9 +12,10 @@ export class Ask extends Order {
         volume: BN,
         product: Product,
         validFrom: Date,
-        status: OrderStatus
+        status: OrderStatus,
+        userId: string
     ) {
-        super(id, OrderSide.Ask, status, validFrom, product, price, volume);
+        super(id, OrderSide.Ask, status, validFrom, product, price, volume, userId);
 
         if (product.deviceType?.length !== 1) {
             throw new Error('Unable to create ask order. DeviceType has to be specified');
@@ -42,7 +43,15 @@ export class Ask extends Order {
     }
 
     public clone() {
-        return new Ask(this.id, this.price, this.volume, this.product, this.validFrom, this.status);
+        return new Ask(
+            this.id,
+            this.price,
+            this.volume,
+            this.product,
+            this.validFrom,
+            this.status,
+            this.userId
+        );
     }
 
     private hasMatchingDeviceType(product: Product, deviceService: IDeviceTypeService) {
