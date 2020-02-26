@@ -128,8 +128,9 @@ export class MatchingEngine {
         this.asks.forEach(ask => {
             const isMatching = this.matches(bid, ask);
             const isFilled = bid.volume.isZero();
+            const isOwned = bid.userId === ask.userId;
 
-            if (!isMatching || isFilled) {
+            if (!isMatching || isFilled || isOwned) {
                 return false;
             }
 

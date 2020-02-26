@@ -44,7 +44,8 @@ export abstract class Order implements IOrder {
         public readonly validFrom: Date,
         public readonly product: Product,
         public readonly price: number,
-        volume: BN
+        volume: BN,
+        public readonly userId: string
     ) {
         this._status = status;
         this._volume = volume;

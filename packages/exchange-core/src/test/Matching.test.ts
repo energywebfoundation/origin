@@ -16,6 +16,7 @@ interface IOrderCreationArgs {
     product?: Product;
     price?: number;
     volume?: BN;
+    userId?: string;
 }
 
 interface ITestCase {
@@ -46,6 +47,8 @@ describe('Matching tests', () => {
     ]);
     const locationService = new LocationService();
 
+    const defaultBuyer = '1';
+    const defaultSeller = '2';
     const twoUSD = 2;
     const onekWh = new BN(1000);
     const twoKWh = new BN(2000);
@@ -81,7 +84,8 @@ describe('Matching tests', () => {
                 location: locationCentral
             },
             new Date(0),
-            OrderStatus.Active
+            OrderStatus.Active,
+            args?.userId || defaultSeller
         );
     };
 
@@ -96,7 +100,8 @@ describe('Matching tests', () => {
                 location: locationCentral
             },
             new Date(0),
-            OrderStatus.Active
+            OrderStatus.Active,
+            args?.userId || defaultBuyer
         );
     };
 
@@ -152,7 +157,7 @@ describe('Matching tests', () => {
         matchingEngine.tick();
 
         if (testCase.expectedTrades.length === 0) {
-            setTimeout(() => done(), 250);
+            setTimeout(() => done(), 100);
         }
     };
 
@@ -182,6 +187,15 @@ describe('Matching tests', () => {
             const expectedTrades = [
                 new Trade(bidsBefore[0], asksBefore[0], asksBefore[0].volume, asksBefore[0].price)
             ];
+
+            executeTestCase({ asksBefore, bidsBefore, expectedTrades }, done);
+        });
+
+        it('should not trade when owning both bid and ask', done => {
+            const asksBefore = [createAsk({ userId: defaultBuyer })];
+            const bidsBefore = [createBid({ userId: defaultBuyer })];
+
+            const expectedTrades: Trade[] = [];
 
             executeTestCase({ asksBefore, bidsBefore, expectedTrades }, done);
         });

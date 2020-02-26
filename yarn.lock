@@ -631,10 +631,10 @@
   resolved "https://registry.yarnpkg.com/@firebase/webchannel-wrapper/-/webchannel-wrapper-0.2.35.tgz#232e857698efb30cdda98b6f6a7a31a905d16147"
   integrity sha512-7njiGBbFW0HCnuKNEJLcQt9EjfOzG8EJiXlFJwA3XfgiFxPVHmXrcF4d5yold2wfiwCwrXpeNTGZ854oRr6Hcw==
 
-"@fluffy-spoon/substitute@1.110.0":
-  version "1.110.0"
-  resolved "https://registry.yarnpkg.com/@fluffy-spoon/substitute/-/substitute-1.110.0.tgz#b55ef4813a1d6b1fcb60c557ab62c7a1c455fc62"
-  integrity sha512-N6KIXiKPeah/ve2htA4UrLbmz75WWwDKHGUqVx+KFEgPFw2PSFNR08BXZdDAboyRifbs5f+82jvNE1yYAz8jWQ==
+"@fluffy-spoon/substitute@1.112.0":
+  version "1.112.0"
+  resolved "https://registry.yarnpkg.com/@fluffy-spoon/substitute/-/substitute-1.112.0.tgz#9c0cbb5e5794d7db513f826239bb832732d6c3ea"
+  integrity sha512-hKe4FdAYCv56zStjYjcp1NyMK2zF2EgQWxQDiLvT9yEtdufdj9gZfiNHiZuH3v9W1TIwCwB348PaoCajj4bFyQ==
 
 "@grpc/proto-loader@^0.5.0":
   version "0.5.3"
@@ -1868,10 +1868,10 @@
     optional "0.1.4"
     tslib "1.10.0"
 
-"@nestjs/typeorm@6.3.1":
-  version "6.3.1"
-  resolved "https://registry.yarnpkg.com/@nestjs/typeorm/-/typeorm-6.3.1.tgz#65e1a666a06290bfe3007293c6aa78152f109056"
-  integrity sha512-Au40kKTpRU8p0Z45psrGTdKKJeIIXNt/2iwSUtA1RODCQZfJQrr/Sg6aLo2373LU9FY4GHGTaI3hmadYCL5Pdg==
+"@nestjs/typeorm@6.3.3":
+  version "6.3.3"
+  resolved "https://registry.yarnpkg.com/@nestjs/typeorm/-/typeorm-6.3.3.tgz#a096d0fe7412eacea7a99d7c46f17ff7f11b0b47"
+  integrity sha512-N6rKvZfblmkMF3G93QilLRY8nhFwfqYRUwjcOMRxfffuyV9+don5MPG1P3p/SimWoWaizYMD5lfhEFOfRHMJ9g==
   dependencies:
     uuid "3.4.0"
 
@@ -7951,22 +7951,7 @@ ethers@4.0.0-beta.3:
     uuid "2.0.1"
     xmlhttprequest "1.8.0"
 
-ethers@4.0.44:
-  version "4.0.44"
-  resolved "https://registry.yarnpkg.com/ethers/-/ethers-4.0.44.tgz#f2608cbc0b4d099b7e10a01c0efc3a1037013b4e"
-  integrity sha512-kCkMPkpYjBkxzqjcuYUfDY7VHDbf5EXnfRPUOazdqdf59SvXaT+w5lgauxLlk1UjxnAiNfeNS87rkIXnsTaM7Q==
-  dependencies:
-    aes-js "3.0.0"
-    bn.js "^4.4.0"
-    elliptic "6.5.2"
-    hash.js "1.1.3"
-    js-sha3 "0.5.7"
-    scrypt-js "2.0.4"
-    setimmediate "1.0.4"
-    uuid "2.0.1"
-    xmlhttprequest "1.8.0"
-
-ethers@^4.0.0-beta.1:
+ethers@4.0.45, ethers@^4.0.0-beta.1:
   version "4.0.45"
   resolved "https://registry.yarnpkg.com/ethers/-/ethers-4.0.45.tgz#8d4cd764d7c7690836b583d4849203c225eb56e2"
   integrity sha512-N/Wmc6Mw4pQO+Sss1HnKDCSS6KSCx0luoBMiPNq+1GbOaO3YaZOyplBEhj+NEoYsizZYODtkITg2oecPeNnidQ==
@@ -9790,10 +9775,10 @@ humanize-ms@^1.2.1:
   dependencies:
     ms "^2.0.0"
 
-husky@4.2.1:
-  version "4.2.1"
-  resolved "https://registry.yarnpkg.com/husky/-/husky-4.2.1.tgz#b09f1bd9129e6c323cc515dc17081d0615e2d7c1"
-  integrity sha512-Qa0lRreeIf4Tl92sSs42ER6qc3hzoyQPPorzOrFWfPEVbdi6LuvJEqWKPk905fOWIR76iBpp7ECZNIwk+a8xuQ==
+husky@4.2.3:
+  version "4.2.3"
+  resolved "https://registry.yarnpkg.com/husky/-/husky-4.2.3.tgz#3b18d2ee5febe99e27f2983500202daffbc3151e"
+  integrity sha512-VxTsSTRwYveKXN4SaH1/FefRJYCtx+wx04sSVcOpD7N2zjoHxa+cEJ07Qg5NmV3HAK+IRKOyNVpi2YBIVccIfQ==
   dependencies:
     chalk "^3.0.0"
     ci-info "^2.0.0"
