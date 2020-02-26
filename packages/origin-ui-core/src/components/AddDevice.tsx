@@ -138,9 +138,7 @@ export function AddDevice() {
 
         const deviceProducingProps: Device.IOnChainProperties = {
             smartMeter: { address: DEFAULT_ADDRESS },
-            owner: { address: currentUser.id },
-            lastSmartMeterReadWh: 0,
-            lastSmartMeterReadFileHash: ''
+            owner: { address: currentUser.id }
         };
 
         const [region, province] = selectedLocation;
@@ -164,7 +162,8 @@ export function AddDevice() {
             otherGreenAttributes: '',
             typeOfPublicSupport: '',
             description: values.projectStory,
-            images: JSON.stringify(imagesUploadedList)
+            images: JSON.stringify(imagesUploadedList),
+            smartMeterReads: []
         };
 
         try {

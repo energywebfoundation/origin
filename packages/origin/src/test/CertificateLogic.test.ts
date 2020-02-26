@@ -60,6 +60,7 @@ describe('CertificateLogic-Facade', () => {
 
     let conf: Configuration.Entity;
     let blockCreationTime: number;
+    let device: ProducingDevice.Entity;
 
     function setActiveUser(privateKey: string) {
         conf.blockchainProperties.activeUser = {
@@ -74,13 +75,11 @@ describe('CertificateLogic-Facade', () => {
         });
 
     async function generateCertificateAndGetId(energy = 100): Promise<string> {
-        const LAST_SMART_METER_READ = Number((await deviceLogic.getDevice(0)).lastSmartMeterReadWh);
+        const LAST_SMART_METER_READ = device.lastSmartMeterReadWh;
 
         setActiveUser(deviceOwnerPK);
 
-        await deviceLogic.saveSmartMeterRead(0, LAST_SMART_METER_READ + energy, '', 0, {
-            privateKey: deviceSmartmeterPK
-        });
+        await device.saveSmartMeterRead(0, LAST_SMART_METER_READ + energy);
         await certificateLogic.createArbitraryCertfificate(0, energy, '', {
             privateKey: issuerPK
         });
@@ -170,9 +169,7 @@ describe('CertificateLogic-Facade', () => {
     it('should onboard a new device', async () => {
         const deviceProps: Device.IOnChainProperties = {
             smartMeter: { address: deviceSmartmeter },
-            owner: { address: accountDeviceOwner },
-            lastSmartMeterReadWh: 0,
-            lastSmartMeterReadFileHash: 'lastSmartMeterReadFileHash'
+            owner: { address: accountDeviceOwner }
         };
 
         const devicePropsOffChain: Omit<IDevice, 'id'> = {
@@ -193,20 +190,19 @@ describe('CertificateLogic-Facade', () => {
             description: '',
             images: '',
             region: '',
-            province: ''
+            province: '',
+            smartMeterReads: []
         };
 
         assert.equal(await ProducingDevice.getDeviceListLength(conf), 0);
 
-        await ProducingDevice.createDevice(deviceProps, devicePropsOffChain, conf);
+        device = await ProducingDevice.createDevice(deviceProps, devicePropsOffChain, conf);
 
         assert.equal(await ProducingDevice.getDeviceListLength(conf), 1);
     });
 
-    it('should log a new meterreading ', async () => {
-        await deviceLogic.saveSmartMeterRead(0, 100, 'lastSmartMeterReadFileHash', 0, {
-            privateKey: deviceSmartmeterPK
-        });
+    it('should log a new meterreading', async () => {
+        await device.saveSmartMeterRead(0, 100);
     });
 
     it('should be able to create arbitrary certificate', async () => {
@@ -274,9 +270,7 @@ describe('CertificateLogic-Facade', () => {
             address: accountDeviceOwner,
             privateKey: deviceOwnerPK
         };
-        await deviceLogic.saveSmartMeterRead(0, 200, 'lastSmartMeterReadFileHash', 0, {
-            privateKey: deviceSmartmeterPK
-        });
+        await device.saveSmartMeterRead(0, 200);
 
         await createCertificate(100);
 
@@ -320,9 +314,7 @@ describe('CertificateLogic-Facade', () => {
     });
 
     it('should create a new certificate (#2)', async () => {
-        await deviceLogic.saveSmartMeterRead(0, 300, 'lastSmartMeterReadFileHash#3', 0, {
-            privateKey: deviceSmartmeterPK
-        });
+        await device.saveSmartMeterRead(0, 300);
 
         await createCertificate(100);
 
@@ -425,9 +417,7 @@ describe('CertificateLogic-Facade', () => {
     });
 
     it('should create a new certificate (#5)', async () => {
-        await deviceLogic.saveSmartMeterRead(0, 400, 'lastSmartMeterReadFileHash#4', 0, {
-            privateKey: deviceSmartmeterPK
-        });
+        await device.saveSmartMeterRead(0, 400);
 
         await createCertificate(100);
 
@@ -485,9 +475,7 @@ describe('CertificateLogic-Facade', () => {
     });
 
     it('should create a new certificate (#6)', async () => {
-        await deviceLogic.saveSmartMeterRead(0, 500, 'lastSmartMeterReadFileHash#5', 0, {
-            privateKey: deviceSmartmeterPK
-        });
+        await device.saveSmartMeterRead(0, 500);
 
         await createCertificate(100);
 
@@ -549,22 +537,14 @@ describe('CertificateLogic-Facade', () => {
             await Certificate.getCertificateListLength(conf)
         );
 
-        const LAST_SMART_METER_READ = Number((await deviceLogic.getDevice(0)).lastSmartMeterReadWh);
+        const LAST_SMART_METER_READ = device.lastSmartMeterReadWh;
 
         conf.blockchainProperties.activeUser = {
             address: accountDeviceOwner,
             privateKey: deviceOwnerPK
         };
 
-        await deviceLogic.saveSmartMeterRead(
-            0,
-            LAST_SMART_METER_READ + 100,
-            'lastSmartMeterReadFileHash#10',
-            0,
-            {
-                privateKey: deviceSmartmeterPK
-            }
-        );
+        await device.saveSmartMeterRead(0, LAST_SMART_METER_READ + 100);
 
         await createCertificate(100);
 

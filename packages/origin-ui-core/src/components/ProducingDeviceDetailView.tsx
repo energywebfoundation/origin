@@ -38,7 +38,6 @@ interface IProps {
 }
 
 export function ProducingDeviceDetailView(props: IProps) {
-    const { smartMeterReadingsAdapter } = useOriginConfiguration();
     const configuration = useSelector(getConfiguration);
     const certificates = useSelector(getCertificates);
     const producingDevices = useSelector(getProducingDevices);
@@ -245,17 +244,11 @@ export function ProducingDeviceDetailView(props: IProps) {
                         <div className="container-fluid">
                             <div className="row">
                                 <div className="col-lg-4">
-                                    <SmartMeterReadingsTable
-                                        producingDevice={selectedDevice}
-                                        smartMeterReadingsAdapter={smartMeterReadingsAdapter}
-                                    />
+                                    <SmartMeterReadingsTable producingDevice={selectedDevice} />
                                 </div>
 
                                 <div className="col-lg-8">
-                                    <SmartMeterReadingsChart
-                                        producingDevice={selectedDevice}
-                                        smartMeterReadingsAdapter={smartMeterReadingsAdapter}
-                                    />
+                                    <SmartMeterReadingsChart producingDevice={selectedDevice} />
                                 </div>
                             </div>
                         </div>

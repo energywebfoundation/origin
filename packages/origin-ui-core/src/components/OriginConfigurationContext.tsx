@@ -10,8 +10,6 @@ import {
 import { initReactI18next } from 'react-i18next';
 import variables from '../styles/variables.scss';
 import { OriginGenericLogo } from './icons/OriginGenericLogo';
-import { OnChainReadingsAdapter } from '../adapters/OnChainReadingsAdapter';
-import { ISmartMeterReadingsAdapter } from '../types';
 import { setTimeFormatLanguage } from '../utils/time';
 import { plPL, enUS } from '@material-ui/core/locale';
 
@@ -179,7 +177,6 @@ export interface IOriginConfiguration {
     materialTheme: Theme;
     defaultLanguage: ORIGIN_LANGUAGE;
     language: ORIGIN_LANGUAGE;
-    smartMeterReadingsAdapter: ISmartMeterReadingsAdapter;
 }
 
 export function createStyleConfigFromSCSSVariables(scssVariables: any): IOriginStyleConfig {
@@ -225,8 +222,7 @@ export function createOriginConfiguration(configuration: Partial<IOriginConfigur
         customSliderStyle: createSliderStyleForOrigin(DEFAULT_STYLE_CONFIG),
         materialTheme: createMaterialThemeForOrigin(DEFAULT_STYLE_CONFIG, storedLanguage),
         defaultLanguage: 'en',
-        language: storedLanguage,
-        smartMeterReadingsAdapter: new OnChainReadingsAdapter()
+        language: storedLanguage
     };
 
     const newConfiguration: IOriginConfiguration = {

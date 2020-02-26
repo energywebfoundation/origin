@@ -6,8 +6,7 @@ import { ProducingDevice, Device } from '@energyweb/device-registry';
 import { Bar } from 'react-chartjs-2';
 import moment from 'moment-timezone';
 import { formatDate } from '../../utils/helper';
-import { IDevice } from '@energyweb/origin-backend-core';
-import { ISmartMeterReadingsAdapter } from '../../types';
+import { IDevice, IEnergyGenerated } from '@energyweb/origin-backend-core';
 import { initializeI18N } from '../../components';
 import { createRenderedHelpers } from '../utils/helpers';
 
@@ -29,7 +28,7 @@ describe('SmartMeterReadingsChart', () => {
             timezone: 'Asia/Bangkok'
         };
 
-        const reads: Device.ISmartMeterRead[] = [
+        const reads: IEnergyGenerated[] = [
             {
                 energy: 1000,
                 timestamp: currentTime.unix()
@@ -37,17 +36,13 @@ describe('SmartMeterReadingsChart', () => {
         ];
 
         const producingDevice: Partial<ProducingDevice.Entity> = {
-            offChainProperties: offChainProperties as IDevice
-        };
-
-        const onChainReadingsAdapter: Partial<ISmartMeterReadingsAdapter> = {
-            getSmartMeterReads: async () => reads
+            offChainProperties: offChainProperties as IDevice,
+            getAmountOfEnergyGenerated: async () => reads
         };
 
         const rendered = await mount(
             <SmartMeterReadingsChart
                 producingDevice={producingDevice as ProducingDevice.Entity}
-                smartMeterReadingsAdapter={onChainReadingsAdapter as ISmartMeterReadingsAdapter}
             />
         );
 

@@ -1,4 +1,4 @@
-import { DeviceLogic, Device, ProducingDevice } from '@energyweb/device-registry';
+import { DeviceLogic, ProducingDevice } from '@energyweb/device-registry';
 import { UserLogic } from '@energyweb/user-registry';
 import { CertificateLogic } from '@energyweb/origin';
 import { Configuration } from '@energyweb/utils-general';
@@ -10,6 +10,7 @@ import { IUsersState } from '../features/users/reducer';
 import { IProducingDevicesState } from '../features/producingDevices/reducer';
 import { RouterState } from 'connected-react-router';
 import { IAuthenticationState } from '../features/authentication/reducer';
+import { ISmartMeterRead } from '@energyweb/origin-backend-core';
 
 export interface IStoreState {
     authentication: IAuthenticationState;
@@ -21,8 +22,4 @@ export interface IStoreState {
     contracts: IContractsState;
     users: IUsersState;
     router: RouterState;
-}
-
-export interface ISmartMeterReadingsAdapter {
-    getSmartMeterReads(device: ProducingDevice.Entity): Promise<Device.ISmartMeterRead[]>;
 }

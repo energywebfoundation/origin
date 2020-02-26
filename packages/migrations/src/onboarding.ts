@@ -134,9 +134,7 @@ export const onboardDemo = async (actionString: string, conf: Configuration.Enti
 
         const deviceProducingProps: Device.IOnChainProperties = {
             smartMeter: { address: action.data.smartMeter },
-            owner: { address: action.data.owner },
-            lastSmartMeterReadWh: action.data.lastSmartMeterReadWh,
-            lastSmartMeterReadFileHash: action.data.lastSmartMeterReadFileHas
+            owner: { address: action.data.owner }
         };
 
         const deviceTypeConfig = action.data.deviceType;
@@ -158,7 +156,8 @@ export const onboardDemo = async (actionString: string, conf: Configuration.Enti
             description: '',
             images: '',
             region: action.data.region,
-            province: action.data.province
+            province: action.data.province,
+            smartMeterReads: action.data.smartMeterReads || []
         };
 
         try {

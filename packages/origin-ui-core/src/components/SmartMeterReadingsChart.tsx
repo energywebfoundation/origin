@@ -5,7 +5,6 @@ import { Button, ButtonGroup } from '@material-ui/core';
 import { ProducingDevice } from '@energyweb/device-registry';
 import { reverse, formatDate } from '../utils/helper';
 import { EnergyFormatter } from '../utils/EnergyFormatter';
-import { ISmartMeterReadingsAdapter } from '../types';
 import { useOriginConfiguration } from '../utils/configuration';
 import { useTranslation } from 'react-i18next';
 
@@ -20,12 +19,10 @@ const DEFAULT_TIMEFRAME = TIMEFRAME.MONTH;
 
 interface ISmartMeterReadingsChartProps {
     producingDevice: ProducingDevice.Entity;
-    smartMeterReadingsAdapter: ISmartMeterReadingsAdapter;
 }
 
 export function SmartMeterReadingsChart(props: ISmartMeterReadingsChartProps) {
-    const { producingDevice, smartMeterReadingsAdapter } = props;
-
+    const { producingDevice } = props;
     const originConfiguration = useOriginConfiguration();
 
     const { t } = useTranslation();
@@ -38,7 +35,7 @@ export function SmartMeterReadingsChart(props: ISmartMeterReadingsChartProps) {
 
     useEffect(() => {
         (async () => {
-            setReadings(await smartMeterReadingsAdapter.getSmartMeterReads(producingDevice));
+            setReadings(await producingDevice.getAmountOfEnergyGenerated());
         })();
     }, [producingDevice]);
 

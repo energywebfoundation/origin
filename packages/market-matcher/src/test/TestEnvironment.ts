@@ -230,9 +230,7 @@ const deployDevice = (config: Configuration.Entity) => {
 
     const deviceProps: Device.IOnChainProperties = {
         smartMeter: { address: deviceSmartMeter },
-        owner: { address: deviceOwnerAddress },
-        lastSmartMeterReadWh: 0,
-        lastSmartMeterReadFileHash: 'lastSmartMeterReadFileHash'
+        owner: { address: deviceOwnerAddress }
     };
 
     const devicePropsOffChain: IDevice = {
@@ -252,7 +250,8 @@ const deployDevice = (config: Configuration.Entity) => {
         description: '',
         images: '',
         region: 'Central',
-        province: 'Nakhon Pathom'
+        province: 'Nakhon Pathom',
+        smartMeterReads: []
     };
 
     return ProducingDevice.createDevice(deviceProps, devicePropsOffChain, deployerConfig);
@@ -271,7 +270,7 @@ const deployCertificate = async (
     });
 
     const producingDevice = await new ProducingDevice.Entity(deviceId, smartMeterConfig).sync();
-    await producingDevice.saveSmartMeterRead(requiredEnergy, 'newMeterRead');
+    await producingDevice.saveSmartMeterRead(requiredEnergy);
 
     await certificateLogic.createArbitraryCertfificate(0, requiredEnergy, '', {
         privateKey: issuerPK

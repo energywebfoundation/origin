@@ -98,6 +98,38 @@ describe('Origin Listener Tests', async () => {
         listener.stop();
     });
 
+    it('an email is sent when a demand has been fulfilled', async () => {
+        const demand = await demo.deployDemand();
+
+        await listener.start();
+
+        currentSmRead += 1 * Unit.MWh;
+        await demo.deploySmartMeterRead(currentSmRead);
+        const certificateId = demo.latestDeployedSmReadIndex.toString();
+
+        await waitForConditionAndAssert(
+            async () => demo.isForSale(certificateId),
+            async () => assert.isTrue(await demo.isForSale(certificateId)),
+            SCAN_INTERVAL
+        );
+
+        await demo.fillDemand(demand.id, demo.latestDeployedSmReadIndex.toString());
+
+        await waitForConditionAndAssert(
+            () => notificationSent(emailService, EmailTypes.DEMAND_FULFILLED),
+            () => {
+                console.log({
+                    sentEmails: emailService.sentEmails
+                });
+                assert.isTrue(notificationSent(emailService, EmailTypes.CERTS_APPROVED));
+                assert.isTrue(notificationSent(emailService, EmailTypes.FOUND_MATCHING_SUPPLY));
+                assert.isTrue(notificationSent(emailService, EmailTypes.DEMAND_PARTIALLY_FILLED));
+                assert.isTrue(notificationSent(emailService, EmailTypes.DEMAND_FULFILLED));
+            },
+            SCAN_INTERVAL + APPROX_EMAIL_SENDING_TIME * 2
+        );
+    });
+
     it('a certificate is published for sale when autoPublish enabled', async () => {
         await listener.start();
 
@@ -119,7 +151,7 @@ describe('Origin Listener Tests', async () => {
         await demo.deploySmartMeterRead(currentSmRead);
 
         await waitForConditionAndAssert(
-            () => emailService.sentEmails.length >= 1,
+            () => notificationSent(emailService, EmailTypes.CERTS_APPROVED),
             () => assert.isTrue(notificationSent(emailService, EmailTypes.CERTS_APPROVED)),
             SCAN_INTERVAL + APPROX_EMAIL_SENDING_TIME
         );
@@ -141,7 +173,7 @@ describe('Origin Listener Tests', async () => {
         );
 
         await waitForConditionAndAssert(
-            () => emailService.sentEmails.length >= 2,
+            () => notificationSent(emailService, EmailTypes.FOUND_MATCHING_SUPPLY),
             () => {
                 assert.isTrue(notificationSent(emailService, EmailTypes.CERTS_APPROVED));
                 assert.isTrue(notificationSent(emailService, EmailTypes.FOUND_MATCHING_SUPPLY));
@@ -168,40 +200,11 @@ describe('Origin Listener Tests', async () => {
         await demo.fillDemand(demand.id, demo.latestDeployedSmReadIndex.toString());
 
         await waitForConditionAndAssert(
-            () => emailService.sentEmails.length >= 3,
+            () => notificationSent(emailService, EmailTypes.DEMAND_PARTIALLY_FILLED),
             () => {
                 assert.isTrue(notificationSent(emailService, EmailTypes.CERTS_APPROVED));
                 assert.isTrue(notificationSent(emailService, EmailTypes.FOUND_MATCHING_SUPPLY));
                 assert.isTrue(notificationSent(emailService, EmailTypes.DEMAND_PARTIALLY_FILLED));
-            },
-            SCAN_INTERVAL + APPROX_EMAIL_SENDING_TIME
-        );
-    });
-
-    it('an email is sent when a demand has been fulfilled', async () => {
-        const demand = await demo.deployDemand();
-
-        await listener.start();
-
-        currentSmRead += 1 * Unit.MWh;
-        await demo.deploySmartMeterRead(currentSmRead);
-        const certificateId = demo.latestDeployedSmReadIndex.toString();
-
-        await waitForConditionAndAssert(
-            async () => demo.isForSale(certificateId),
-            async () => assert.isTrue(await demo.isForSale(certificateId)),
-            SCAN_INTERVAL
-        );
-
-        await demo.fillDemand(demand.id, demo.latestDeployedSmReadIndex.toString());
-
-        await waitForConditionAndAssert(
-            () => emailService.sentEmails.length >= 4,
-            () => {
-                assert.isTrue(notificationSent(emailService, EmailTypes.CERTS_APPROVED));
-                assert.isTrue(notificationSent(emailService, EmailTypes.FOUND_MATCHING_SUPPLY));
-                assert.isTrue(notificationSent(emailService, EmailTypes.DEMAND_PARTIALLY_FILLED));
-                assert.isTrue(notificationSent(emailService, EmailTypes.DEMAND_FULFILLED));
             },
             SCAN_INTERVAL + APPROX_EMAIL_SENDING_TIME
         );
@@ -219,7 +222,7 @@ describe('Origin Listener Tests', async () => {
         assert.equal(await demo.getDeviceStatus(newDeviceId), DeviceStatus.Active);
 
         await waitForConditionAndAssert(
-            () => emailService.sentEmails.length >= 1,
+            () => notificationSent(emailService, EmailTypes.DEVICE_STATUS_CHANGED),
             () => assert.isTrue(notificationSent(emailService, EmailTypes.DEVICE_STATUS_CHANGED)),
             SCAN_INTERVAL + APPROX_EMAIL_SENDING_TIME
         );
@@ -235,7 +238,7 @@ describe('Origin Listener Tests', async () => {
         assert.equal(updatedOrganization.status, OrganizationStatus.Active);
 
         await waitForConditionAndAssert(
-            () => emailService.sentEmails.length >= 1,
+            () => notificationSent(emailService, EmailTypes.ORGANIZATION_STATUS_CHANGES),
             () =>
                 assert.isTrue(
                     notificationSent(emailService, EmailTypes.ORGANIZATION_STATUS_CHANGES)
@@ -256,7 +259,7 @@ describe('Origin Listener Tests', async () => {
         await demo.inviteAdminToOrganization(newOrganization.id);
 
         await waitForConditionAndAssert(
-            () => emailService.sentEmails.length >= 1,
+            () => notificationSent(emailService, EmailTypes.ORGANIZATION_INVITATION),
             () => assert.isTrue(notificationSent(emailService, EmailTypes.ORGANIZATION_INVITATION)),
             SCAN_INTERVAL + APPROX_EMAIL_SENDING_TIME
         );
