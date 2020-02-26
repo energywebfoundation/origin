@@ -1,5 +1,5 @@
 import { AppModule as ExchangeAppModule } from '@energyweb/exchange';
-import { Module } from '@nestjs/common';
+import { Module, DynamicModule } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import fs from 'fs';
@@ -34,53 +34,59 @@ import { OrganizationModule } from './pods/organization/organization.module';
 import { OrganizationInvitation } from './pods/organization/organizationInvitation.entity';
 import { User } from './pods/user/user.entity';
 import { UserModule } from './pods/user/user.module';
+import { ISmartMeterReadingsAdapter } from '@energyweb/origin-backend-core';
 
 const ENV_FILE_PATH = path.resolve(__dirname, '../../../../../.env');
 
-@Module({
-    imports: [
-        ConfigModule.forRoot({
-            envFilePath: fs.existsSync(ENV_FILE_PATH) ? ENV_FILE_PATH : null,
-            load: [createConfig],
-            isGlobal: true
-        }),
-        TypeOrmModule.forRootAsync({
-            useFactory: async (configService: ConfigService) => ({
-                ...configService.get<ConnectionOptions>('ORM'),
-                entities: [
-                    JsonEntity,
-                    MarketContractLookup,
-                    Currency,
-                    Compliance,
-                    Country,
-                    Device,
-                    Demand,
-                    Organization,
-                    User,
-                    OrganizationInvitation,
-                    DeviceTypes,
-                    CertificationRequest
-                ]
-            }),
-            inject: [ConfigService]
-        }),
-        FileModule,
-        UserModule,
-        ComplianceModule,
-        CountryModule,
-        CurrencyModule,
-        JsonEntityModule,
-        ContractsStorageModule,
-        OrganizationModule,
-        DeviceModule,
-        DemandModule,
-        AuthModule,
-        EventsModule,
-        DeviceTypesModule,
-        CertificateModule
-        // TODO: enable exchange endpoints
-        // ExchangeAppModule
-    ],
-    controllers: [AppController]
-})
-export class AppModule {}
+@Module({})
+export class AppModule {
+    static register(smartMeterReadingsAdapter: ISmartMeterReadingsAdapter): DynamicModule {
+        return {
+            module: AppModule,
+            imports: [
+                ConfigModule.forRoot({
+                    envFilePath: fs.existsSync(ENV_FILE_PATH) ? ENV_FILE_PATH : null,
+                    load: [createConfig],
+                    isGlobal: true
+                }),
+                TypeOrmModule.forRootAsync({
+                    useFactory: async (configService: ConfigService) => ({
+                        ...configService.get<ConnectionOptions>('ORM'),
+                        entities: [
+                            JsonEntity,
+                            MarketContractLookup,
+                            Currency,
+                            Compliance,
+                            Country,
+                            Device,
+                            Demand,
+                            Organization,
+                            User,
+                            OrganizationInvitation,
+                            DeviceTypes,
+                            CertificationRequest
+                        ]
+                    }),
+                    inject: [ConfigService]
+                }),
+                FileModule,
+                UserModule,
+                ComplianceModule,
+                CountryModule,
+                CurrencyModule,
+                JsonEntityModule,
+                ContractsStorageModule,
+                OrganizationModule,
+                DeviceModule.register(smartMeterReadingsAdapter),
+                DemandModule,
+                AuthModule,
+                EventsModule,
+                DeviceTypesModule,
+                CertificateModule.register(smartMeterReadingsAdapter)
+                // TODO: enable exchange endpoints
+                // ExchangeAppModule
+            ],
+            controllers: [AppController]
+        };
+    }
+}

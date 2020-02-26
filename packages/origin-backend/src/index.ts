@@ -10,7 +10,7 @@ export async function startAPI(logger?: LoggerService) {
 
     console.log(`Backend starting on port: ${PORT}`);
 
-    const app = await NestFactory.create(AppModule);
+    const app = await NestFactory.create(AppModule.register(null));
     app.useWebSocketAdapter(new WsAdapter(app));
     app.enableCors();
     app.setGlobalPrefix('api');

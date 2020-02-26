@@ -5,7 +5,8 @@ import {
     DeviceStatus,
     DeviceUpdateData,
     SupportedEvents,
-    DeviceStatusChanged
+    DeviceStatusChanged,
+    ISmartMeterRead
 } from '@energyweb/origin-backend-core';
 
 import {
@@ -127,6 +128,27 @@ export class DeviceController {
         } catch (error) {
             throw new UnprocessableEntityException({
                 message: `Device ${id} could not be updated due to an unknown error`
+            });
+        }
+    }
+
+    @Put('/:id/smartMeterReading')
+    async addSmartMeterRead(@Param('id') id: string, @Body() newSmartMeterRead: ISmartMeterRead) {
+        const existing = await this.deviceService.findOne(id);
+
+        if (!existing) {
+            throw new NotFoundException(StorageErrors.NON_EXISTENT);
+        }
+
+        try {
+            await this.deviceService.addSmartMeterReading(id, newSmartMeterRead);
+
+            return {
+                message: `Smart meter reading successfully added to device ${id}`
+            };
+        } catch (error) {
+            throw new UnprocessableEntityException({
+                message: `Smart meter reading could not be added due to an unknown error for device ${id}`
             });
         }
     }

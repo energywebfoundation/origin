@@ -1,5 +1,6 @@
+import moment from 'moment';
 import { Configuration } from '@energyweb/utils-general';
-import { IDevice } from '@energyweb/origin-backend-core';
+import { IDevice, ISmartMeterRead, IEnergyGenerated } from '@energyweb/origin-backend-core';
 
 import * as Device from './Device';
 
@@ -86,8 +87,6 @@ export class Entity extends Device.Entity implements IProducingDevice {
 
             this.smartMeter = { address: device.smartMeter };
             this.owner = { address: device.owner };
-            this.lastSmartMeterReadWh = Number(device.lastSmartMeterReadWh);
-            this.lastSmartMeterReadFileHash = device.lastSmartMeterReadFileHash;
 
             this.initialized = true;
 
@@ -98,5 +97,46 @@ export class Entity extends Device.Entity implements IProducingDevice {
         }
 
         return this;
+    }
+
+    get lastSmartMeterReadWh(): number {
+        const smReads = this.offChainProperties.smartMeterReads;
+
+        if (smReads.length < 1) {
+            return 0;
+        }
+
+        const lastSmReadIndex = this.offChainProperties.smartMeterReads.length - 1;
+        return this.offChainProperties.smartMeterReads[lastSmReadIndex].meterReading;
+    }
+
+    async saveSmartMeterRead(
+        meterReading: number,
+        timestamp: number = moment().unix()
+    ): Promise<void> {
+        return this.configuration.offChainDataSource.deviceClient.addSmartMeterRead(Number(this.id), {
+            meterReading,
+            timestamp
+        });
+    }
+
+    getSmartMeterReads(): ISmartMeterRead[] {
+        return this.offChainProperties.smartMeterReads;
+    }
+
+    async getAmountOfEnergyGenerated(): Promise<IEnergyGenerated[]> {
+        const allMeterReadings = await this.getSmartMeterReads();
+        const energiesGenerated: IEnergyGenerated[] = [];
+
+        for (let i = 0; i < allMeterReadings.length; i++) {
+            const isFirstReading = i === 0;
+
+            energiesGenerated.push({
+                energy: allMeterReadings[i].meterReading - (isFirstReading ? 0 : allMeterReadings[i - 1].meterReading),
+                timestamp: allMeterReadings[i].timestamp
+            });
+        }
+
+        return energiesGenerated;
     }
 }
