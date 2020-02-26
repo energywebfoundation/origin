@@ -35,7 +35,8 @@ describe('ProducingDeviceTable', () => {
 
         addProducingDevice({
             id: '0',
-            status: DeviceStatus.Active
+            status: DeviceStatus.Active,
+            lastSmartMeterReadWh: 7777
         });
 
         addProducingDevice({

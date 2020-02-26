@@ -2,7 +2,7 @@ import React from 'react';
 import { mount } from 'enzyme';
 import { SmartMeterReadingsChart } from '../../components/SmartMeterReadingsChart';
 import { EnergyFormatter } from '../../utils/EnergyFormatter';
-import { ProducingDevice, Device } from '@energyweb/device-registry';
+import { ProducingDevice } from '@energyweb/device-registry';
 import { Bar } from 'react-chartjs-2';
 import moment from 'moment-timezone';
 import { formatDate } from '../../utils/helper';
@@ -41,9 +41,7 @@ describe('SmartMeterReadingsChart', () => {
         };
 
         const rendered = await mount(
-            <SmartMeterReadingsChart
-                producingDevice={producingDevice as ProducingDevice.Entity}
-            />
+            <SmartMeterReadingsChart producingDevice={producingDevice as ProducingDevice.Entity} />
         );
 
         const { refresh } = createRenderedHelpers(rendered);
