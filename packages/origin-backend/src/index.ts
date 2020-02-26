@@ -3,10 +3,10 @@ import { LoggerService } from '@nestjs/common';
 import { WsAdapter } from '@nestjs/platform-ws';
 
 import { AppModule } from './app.module';
-import { getPort } from './port';
+import * as PortUtils from './port';
 
 export async function startAPI(logger?: LoggerService) {
-    const PORT = getPort();
+    const PORT = PortUtils.getPort();
 
     console.log(`Backend starting on port: ${PORT}`);
 
@@ -24,4 +24,4 @@ export async function startAPI(logger?: LoggerService) {
     return app;
 }
 
-export { AppModule };
+export { AppModule, PortUtils };
