@@ -78,7 +78,8 @@ export class MatchingEngineService {
                   order.currentVolume,
                   ProductDTO.toProduct(order.product),
                   order.validFrom,
-                  order.status
+                  order.status,
+                  order.userId
               )
             : new Bid(
                   order.id,
@@ -86,7 +87,8 @@ export class MatchingEngineService {
                   order.currentVolume,
                   ProductDTO.toProduct(order.product),
                   order.validFrom,
-                  order.status
+                  order.status,
+                  order.userId
               );
     }
 }

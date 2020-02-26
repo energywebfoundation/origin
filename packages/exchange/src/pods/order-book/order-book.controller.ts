@@ -1,6 +1,10 @@
-import { Product, DeviceVintage } from '@energyweb/exchange-core';
-import { Controller, Get, Query } from '@nestjs/common';
+import { DeviceVintage, Product } from '@energyweb/exchange-core';
+import { IUser } from '@energyweb/origin-backend-core';
+import { Controller, Get, Query, UseGuards } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
 
+import { UserDecorator } from '../decorators/user.decorator';
+import { OrderBookOrderDTO } from './order-book-order.dto';
 import { OrderBookService } from './order-book.service';
 
 @Controller('orderbook')
@@ -8,7 +12,9 @@ export class OrderBookController {
     constructor(private readonly orderBookService: OrderBookService) {}
 
     @Get()
+    @UseGuards(AuthGuard())
     public getByProduct(
+        @UserDecorator() user: IUser,
         @Query('deviceType') deviceType: string,
         @Query('location') location: string,
         @Query('vintage') vintage: number
@@ -22,6 +28,12 @@ export class OrderBookController {
             product = { ...product, deviceVintage: new DeviceVintage(vintage) };
         }
 
-        return this.orderBookService.getByProduct(product);
+        const { asks, bids } = this.orderBookService.getByProduct(product);
+        const userId = user?.id.toString();
+
+        return {
+            asks: asks.map(ask => OrderBookOrderDTO.fromOrder(ask, userId)).toArray(),
+            bids: bids.map(bid => OrderBookOrderDTO.fromOrder(bid, userId)).toArray()
+        };
     }
 }
