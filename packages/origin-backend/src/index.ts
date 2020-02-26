@@ -23,3 +23,5 @@ export async function startAPI(logger?: LoggerService) {
 
     return app;
 }
+
+export { AppModule };
