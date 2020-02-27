@@ -4,5 +4,11 @@ contract DeviceDefinitions {
     struct Device {
         address smartMeter;
         address owner;
+        uint lastSmartMeterReadWh;
+    }
+
+    struct SmartMeterRead {
+        uint energy;
+        uint timestamp;
     }
 }

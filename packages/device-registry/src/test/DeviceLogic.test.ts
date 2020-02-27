@@ -192,10 +192,11 @@ describe('DeviceLogic', () => {
     it('should return the deployed device correctly', async () => {
         const deployedDevice = await deviceLogic.getDeviceById(0);
 
-        assert.equal(deployedDevice.length, 2);
+        assert.equal(deployedDevice.length, 3);
 
         assert.equal(deployedDevice.smartMeter, deviceSmartmeter);
         assert.equal(deployedDevice.owner, deviceOwnerAddress);
+        assert.equal(deployedDevice.lastSmartMeterReadWh, 0);
     });
 
     it('should return device by ID correctly', async () => {
