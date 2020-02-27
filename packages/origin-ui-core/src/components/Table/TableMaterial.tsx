@@ -33,7 +33,9 @@ export interface ITableColumn {
     align?: 'right';
 }
 
-export type GetReadonlyArrayItemType<T extends ReadonlyArray<any>> = T extends ReadonlyArray<infer U>
+export type GetReadonlyArrayItemType<T extends ReadonlyArray<any>> = T extends ReadonlyArray<
+    infer U
+>
     ? U
     : never;
 

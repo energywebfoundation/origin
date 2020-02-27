@@ -1,4 +1,5 @@
 import Web3 from 'web3';
+// eslint-disable-next-line import/no-extraneous-dependencies
 import ganache from 'ganache-cli';
 import * as Winston from 'winston';
 

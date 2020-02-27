@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from 'react';
+import React, { useState, useContext } from 'react';
 import {
     Paper,
     Grid,
@@ -24,14 +24,12 @@ import { MarketUser } from '@energyweb/market';
 import { AVAILABLE_ORIGIN_LANGUAGES, ORIGIN_LANGUAGE } from '@energyweb/localization';
 
 import { showNotification, NotificationType } from '../../utils/notifications';
-import { getMarketContractLookupAddress } from '../../features/contracts/selectors';
 import {
     getCurrencies,
     getOffChainDataSource,
     getEnvironment
 } from '../../features/general/selectors';
 import { getCurrentUser, getUserOffchain, getCurrentUserId } from '../../features/users/selectors';
-import { setMarketContractLookupAddress } from '../../features/contracts/actions';
 import { OriginConfigurationContext, setOriginLanguage } from '../OriginConfigurationContext';
 import { getWeb3 } from '../../features/selectors';
 import { refreshUserOffchain } from '../../features/users/actions';
@@ -56,7 +54,6 @@ export function AccountSettings() {
     const classes = useStyles(useTheme());
 
     const currentUser = useSelector(getCurrentUser);
-    const marketLookupAddress = useSelector(getMarketContractLookupAddress);
     const userOffchain = useSelector(getUserOffchain);
     const currencies = useSelector(getCurrencies);
     const userClient = useSelector(getOffChainDataSource)?.userClient;
@@ -66,14 +63,7 @@ export function AccountSettings() {
     const activeAccount = useSelector(getActiveAccount);
     const environment = useSelector(getEnvironment);
 
-    const [marketLookupAddressCandidate, setMarketLookupAddressCandidate] = useState('');
     const [notificationsEnabled, setNotificationsEnabled] = useState(null);
-
-    useEffect(() => {
-        if (marketLookupAddressCandidate !== marketLookupAddress) {
-            setMarketLookupAddressCandidate(marketLookupAddress);
-        }
-    }, [marketLookupAddress]);
 
     const userNotificationsEnabled = currentUser?.offChainProperties.notifications ?? false;
     const autoPublish = currentUser?.offChainProperties?.autoPublish ?? null;
@@ -108,9 +98,8 @@ export function AccountSettings() {
 
     const notificationChanged = currentUser && notificationsEnabled !== userNotificationsEnabled;
     const autoPublishChanged = currentUser && autoPublishCandidate !== autoPublish;
-    const contractChanged = marketLookupAddressCandidate !== marketLookupAddress;
 
-    const propertiesChanged = notificationChanged || contractChanged || autoPublishChanged;
+    const propertiesChanged = notificationChanged || autoPublishChanged;
 
     async function saveChanges() {
         if (!propertiesChanged) {
@@ -129,15 +118,6 @@ export function AccountSettings() {
                 : newProperties.autoPublish;
 
             await currentUser.update(newProperties);
-        }
-
-        if (contractChanged) {
-            dispatch(
-                setMarketContractLookupAddress({
-                    address: marketLookupAddressCandidate,
-                    userDefined: true
-                })
-            );
         }
 
         showNotification(t('settings.feedback.userSettingsUpdated'), NotificationType.Success);
@@ -269,7 +249,9 @@ export function AccountSettings() {
                                         />
 
                                         <FormControl fullWidth={true} variant="filled">
-                                            <InputLabel>{t('settings.properties.currency')}</InputLabel>
+                                            <InputLabel>
+                                                {t('settings.properties.currency')}
+                                            </InputLabel>
                                             <Select
                                                 value={autoPublishCandidate.currency}
                                                 onChange={e =>
@@ -292,17 +274,8 @@ export function AccountSettings() {
                                     </div>
                                 )}
                             </div>
-                            <hr />
                         </>
                     )}
-
-                    <TextField
-                        label={t('settings.properties.marketLookupAddress')}
-                        value={marketLookupAddressCandidate}
-                        onChange={e => setMarketLookupAddressCandidate(e.target.value)}
-                        fullWidth
-                        className="my-3"
-                    />
 
                     <Button onClick={saveChanges} color="primary" disabled={!propertiesChanged}>
                         {t('general.actions.update')}
