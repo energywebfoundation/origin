@@ -13,15 +13,18 @@ export class EnergyFormatter {
         maximumFractionDigits: EnergyFormatter.decimalPlaces
     });
 
-    static getValueInDisplayUnit(baseValue: number): number {
-        return baseValue / Unit[EnergyFormatter.displayUnit];
+    static getValueInDisplayUnit(baseValue: number | string): number {
+        return (
+            (typeof baseValue === 'number' ? baseValue : parseInt(baseValue, 10)) /
+            Unit[EnergyFormatter.displayUnit]
+        );
     }
 
     static getBaseValueFromValueInDisplayUnit(valueInDisplayUnit: number): number {
         return valueInDisplayUnit * Unit[EnergyFormatter.displayUnit];
     }
 
-    static format(baseValue: number, includeDisplayUnit?: boolean): string {
+    static format(baseValue: number | string, includeDisplayUnit?: boolean): string {
         return `${EnergyFormatter.formatter.format(
             EnergyFormatter.getValueInDisplayUnit(baseValue)
         )}${includeDisplayUnit ? ' ' + EnergyFormatter.displayUnit : ''}`;
