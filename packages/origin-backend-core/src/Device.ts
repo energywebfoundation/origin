@@ -15,8 +15,8 @@ export interface IEnergyGenerated {
 }
 
 export interface ISmartMeterReadingsAdapter {
-    get(deviceId: number): Promise<ISmartMeterRead[]>;
-    save(deviceId: number, smRead: ISmartMeterRead): Promise<void>;
+    get(device: IDeviceWithId): Promise<ISmartMeterRead[]>;
+    save(device: IDeviceWithId, smRead: ISmartMeterRead): Promise<void>;
 }
 
 export interface IDevice {
