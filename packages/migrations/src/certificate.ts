@@ -34,7 +34,6 @@ export const certificateDemo = async (
                 ).sync();
                 await device.saveSmartMeterRead(
                     action.data.meterreading,
-                    action.data.filehash,
                     action.data.timestamp || 0
                 );
                 device = await device.sync();

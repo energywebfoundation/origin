@@ -103,8 +103,6 @@ describe('Device Facade', () => {
             const deviceProps: Device.IOnChainProperties = {
                 smartMeter: { address: deviceSmartmeter },
                 owner: { address: deviceOwnerAddress },
-                lastSmartMeterReadWh: 0,
-                lastSmartMeterReadFileHash: 'lastSmartMeterReadFileHash'
             };
 
             const devicePropsOffChain: IDevice = {
@@ -125,7 +123,8 @@ describe('Device Facade', () => {
                 description: '',
                 images: '',
                 region: '',
-                province: ''
+                province: '',
+                smartMeterReads: []
             };
 
             assert.equal(await ProducingDevice.getDeviceListLength(conf), 0);
@@ -141,8 +140,6 @@ describe('Device Facade', () => {
                 initialized: true,
                 smartMeter: { address: deviceSmartmeter },
                 owner: { address: deviceOwnerAddress },
-                lastSmartMeterReadWh: 0,
-                lastSmartMeterReadFileHash: '',
                 offChainProperties: devicePropsOffChain
             } as Partial<ProducingDevice.Entity>);
 
@@ -156,16 +153,12 @@ describe('Device Facade', () => {
             };
             let device = await new ProducingDevice.Entity('0', conf).sync();
 
-            await device.saveSmartMeterRead(100, 'newFileHash', SM_READ_TIMESTAMP);
-
             device = await device.sync();
 
             assert.deepOwnInclude(device, {
                 initialized: true,
                 smartMeter: { address: deviceSmartmeter },
                 owner: { address: deviceOwnerAddress },
-                lastSmartMeterReadWh: 100,
-                lastSmartMeterReadFileHash: 'newFileHash',
                 offChainProperties: {
                     status: DeviceStatus.Active,
                     operationalSince: 0,
@@ -184,22 +177,43 @@ describe('Device Facade', () => {
                     description: '',
                     images: '',
                     region: '',
-                    province: ''
+                    province: '',
+                    smartMeterReads: []
                 }
             } as Partial<ProducingDevice.Entity>);
         });
 
-        describe('getSmartMeterReads', () => {
+        describe('Smart Meter Readings', () => {
             it('should correctly return reads', async () => {
                 const device = await new ProducingDevice.Entity('0', conf).sync();
+                await device.saveSmartMeterRead(100, SM_READ_TIMESTAMP);
+                await device.saveSmartMeterRead(300, SM_READ_TIMESTAMP + 1);
                 const reads = await device.getSmartMeterReads();
 
                 assert.deepEqual(reads, [
                     {
-                        energy: 100,
+                        meterReading: 100,
                         timestamp: SM_READ_TIMESTAMP
+                    },
+                    {
+                        meterReading: 300,
+                        timestamp: SM_READ_TIMESTAMP + 1
                     }
                 ]);
+
+                const energyGenerated = await device.getAmountOfEnergyGenerated();
+                assert.deepEqual(energyGenerated, [
+                    {
+                        energy: 100,
+                        timestamp: SM_READ_TIMESTAMP
+                    },
+                    {
+                        energy: 200,
+                        timestamp: SM_READ_TIMESTAMP + 1
+                    }
+                ]);
+
+                assert.equal(device.lastSmartMeterReadWh, 300);
             });
         });
     });

@@ -201,7 +201,7 @@ export const createProducingDevice = (
     properties: ICreateProducingDeviceProperties
 ): ProducingDevice.Entity => {
     const owner = properties.owner || '0x0';
-    const lastSmartMeterReadWh = properties.lastSmartMeterReadWh || 7777;
+    const lastSmartMeterReadWh = properties.lastSmartMeterReadWh ?? 0;
 
     const offChainProperties: IDevice = {
         status: properties.status || DEFAULT_PRODUCING_DEVICE_OFFCHAIN_PROPERTIES.status,
@@ -227,7 +227,8 @@ export const createProducingDevice = (
         description: '',
         images: '',
         region: properties.region || DEFAULT_PRODUCING_DEVICE_OFFCHAIN_PROPERTIES.region,
-        province: properties.province || DEFAULT_PRODUCING_DEVICE_OFFCHAIN_PROPERTIES.province
+        province: properties.province || DEFAULT_PRODUCING_DEVICE_OFFCHAIN_PROPERTIES.province,
+        smartMeterReads: []
     };
 
     return {

@@ -26,11 +26,6 @@ export class DeviceLogic extends GeneralFunctions {
         return this.send(method, txParams);
     }
 
-    async getAllLogNewMeterReadEvents(eventFilter?: PastEventOptions) {
-
-        return this.web3Contract.getPastEvents('LogNewMeterRead', this.createFilter(eventFilter));
-    }
-
     async getAllLogDeviceCreatedEvents(eventFilter?: PastEventOptions) {
         return this.web3Contract.getPastEvents('LogDeviceCreated', this.createFilter(eventFilter));
     }
@@ -39,30 +34,12 @@ export class DeviceLogic extends GeneralFunctions {
         return this.web3Contract.getPastEvents('LogDeviceFullyInitialized', this.createFilter(eventFilter));
     }
 
-    async getSmartMeterReadsForDeviceByIndex(
-        _deviceId: number,
-        _indexes: number[],
-        txParams?: ISpecialTx
-    ) {
-        return this.web3Contract.methods
-            .getSmartMeterReadsForDeviceByIndex(_deviceId, _indexes)
-            .call(txParams);
-    }
-
-    async getSmartMeterReadsForDevice(_deviceId: number, txParams?: ISpecialTx) {
-        return this.web3Contract.methods.getSmartMeterReadsForDevice(_deviceId).call(txParams);
-    }
-
     async getAllLogChangeOwnerEvents(eventFilter?: PastEventOptions) {
         return this.web3Contract.getPastEvents('LogChangeOwner', this.createFilter(eventFilter));
     }
 
     async getAllEvents(eventFilter?: PastEventOptions) {
         return this.web3Contract.getPastEvents('allEvents', this.createFilter(eventFilter));
-    }
-
-    async getLastMeterReadingAndHash(_deviceId: number, txParams?: ISpecialTx) {
-        return this.web3Contract.methods.getLastMeterReadingAndHash(_deviceId).call(txParams);
     }
 
     async createDevice(
@@ -80,23 +57,6 @@ export class DeviceLogic extends GeneralFunctions {
 
     async getDeviceOwner(_deviceId: number, txParams?: ISpecialTx) {
         return this.web3Contract.methods.getDeviceOwner(_deviceId).call(txParams);
-    }
-
-    async saveSmartMeterRead(
-        _deviceId: number,
-        _newMeterRead: number,
-        _lastSmartMeterReadFileHash: string,
-        _timestamp: number = moment().unix(),
-        txParams?: ISpecialTx
-    ) {
-        const method = this.web3Contract.methods.saveSmartMeterRead(
-            _deviceId,
-            _newMeterRead,
-            _lastSmartMeterReadFileHash,
-            _timestamp
-        );
-
-        return this.send(method, txParams);
     }
 
     async getDeviceListLength(txParams?: ISpecialTx) {

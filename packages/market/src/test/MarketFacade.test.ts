@@ -296,9 +296,7 @@ describe('Market-Facade', () => {
 
         const deviceProps: Device.IOnChainProperties = {
             smartMeter: { address: deviceSmartMeter },
-            owner: { address: deviceOwnerAddress },
-            lastSmartMeterReadWh: 0,
-            lastSmartMeterReadFileHash: 'lastSmartMeterReadFileHash'
+            owner: { address: deviceOwnerAddress }
         };
 
         const devicePropsOffChain: Omit<IDevice, 'id'> = {
@@ -319,7 +317,8 @@ describe('Market-Facade', () => {
             description: '',
             images: '',
             region: '',
-            province: ''
+            province: '',
+            smartMeterReads: []
         };
 
         assert.equal(await ProducingDevice.getDeviceListLength(conf), 0);

@@ -1,5 +1,5 @@
 import moment from 'moment';
-import { IDevice, DeviceUpdateData, DeviceStatusChanged, SupportedEvents, IEvent } from '@energyweb/origin-backend-core';
+import { IDevice, DeviceUpdateData, DeviceStatusChanged, SupportedEvents, IEvent, ISmartMeterRead } from '@energyweb/origin-backend-core';
 
 import { IDeviceClient, IEventClient } from '@energyweb/origin-backend-client';
 
@@ -46,6 +46,16 @@ export class DeviceClientMock implements IDeviceClient {
         (this.eventClient as any).triggerEvent(sendEvent);
 
         return device;
+    }
+
+    public async addSmartMeterRead(
+        id: number,
+        smartMeterRead: ISmartMeterRead
+    ): Promise<void> {
+        const device = this.storage.get(id);
+        device.smartMeterReads.push(smartMeterRead);
+
+        this.storage.set(id, device);
     }
 }
 

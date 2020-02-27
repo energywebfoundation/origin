@@ -15,15 +15,6 @@ contract DeviceLogic is Initializable, RoleManagement, IDeviceLogic {
     bool private _initialized;
     address private _userLogic;
 
-    event LogDeviceCreated(address _sender, uint indexed _deviceId);
-    event LogDeviceFullyInitialized(uint indexed _deviceId);
-    event LogNewMeterRead(
-        uint indexed _deviceId,
-        uint _oldMeterRead,
-        uint _newMeterRead,
-        uint _timestamp
-    );
-
     DeviceDefinitions.Device[] private allDevices;
 
     /// @dev mapping for device id => smart meter reads
@@ -59,11 +50,9 @@ contract DeviceLogic is Initializable, RoleManagement, IDeviceLogic {
 	/// @notice Logs meter read
 	/// @param _deviceId The id belonging to an entry in the device registry
 	/// @param _newMeterRead The current meter read of the device
-	/// @param _lastSmartMeterReadFileHash Last meter read file hash
     function saveSmartMeterRead(
         uint _deviceId,
         uint _newMeterRead,
-        string calldata _lastSmartMeterReadFileHash,
         uint _timestamp
     )
         external
@@ -77,7 +66,7 @@ contract DeviceLogic is Initializable, RoleManagement, IDeviceLogic {
             timestamp = block.timestamp;
         }
 
-        uint createdEnergy = _setSmartMeterRead(_deviceId, _newMeterRead, _lastSmartMeterReadFileHash, timestamp);
+        uint createdEnergy = _setSmartMeterRead(_deviceId, _newMeterRead, timestamp);
 
         _deviceSmartMeterReadsMapping[_deviceId].push(
             DeviceDefinitions.SmartMeterRead({ energy: createdEnergy, timestamp: timestamp })
@@ -109,8 +98,7 @@ contract DeviceLogic is Initializable, RoleManagement, IDeviceLogic {
         DeviceDefinitions.Device memory _device = DeviceDefinitions.Device({
             smartMeter: _smartMeter,
             owner: _owner,
-            lastSmartMeterReadWh: 0,
-            lastSmartMeterReadFileHash: ""
+            lastSmartMeterReadWh: 0
         });
 
         deviceId = allDevices.length;
@@ -126,7 +114,7 @@ contract DeviceLogic is Initializable, RoleManagement, IDeviceLogic {
         DeviceDefinitions.SmartMeterRead[] memory reads = new DeviceDefinitions.SmartMeterRead[](length);
         DeviceDefinitions.SmartMeterRead[] memory allReads = getSmartMeterReadsForDevice(_deviceId);
 
-        for (uint i=0; i < length; i++) {
+        for (uint i = 0; i < length; i++) {
             reads[i] = allReads[_indexes[i]];
         }
 
@@ -153,16 +141,15 @@ contract DeviceLogic is Initializable, RoleManagement, IDeviceLogic {
         return getDeviceById(_deviceId).owner;
     }
 
-	/// @notice gets the last meterreading and its hash
+    /// @notice gets the last meterreading
 	/// @param _deviceId the id of an device
-	/// @return the last meterreading and its hash
-    function getLastMeterReadingAndHash(uint _deviceId)
+	/// @return the last meterreading
+    function getLastMeterReading(uint _deviceId)
         external view
-        returns (uint _lastSmartMeterReadWh, string memory _lastSmartMeterReadFileHash)
+        returns (uint _lastSmartMeterReadWh)
     {
         DeviceDefinitions.Device memory device = getDeviceById(_deviceId);
         _lastSmartMeterReadWh = device.lastSmartMeterReadWh;
-        _lastSmartMeterReadFileHash = device.lastSmartMeterReadFileHash;
     }
 
     /// @notice function to get the amount of already onboarded devices
@@ -171,7 +158,6 @@ contract DeviceLogic is Initializable, RoleManagement, IDeviceLogic {
         return allDevices.length;
     }
 
-
     /**
         Internal functions
     */
@@ -179,11 +165,10 @@ contract DeviceLogic is Initializable, RoleManagement, IDeviceLogic {
 	/// @notice sets a new meterreading for an device
 	/// @param _deviceId the id of an device
 	/// @param _newMeterRead the new meterreading in Wh
-	/// @param _smartMeterReadFileHash the filehash for the meterreading
+	/// @param _timestamp Unix timestamp of when the reading was read
     function _setSmartMeterRead(
         uint _deviceId,
         uint _newMeterRead,
-        string memory _smartMeterReadFileHash,
         uint _timestamp
     ) internal returns (uint) {
         DeviceDefinitions.Device storage device = allDevices[_deviceId];
@@ -195,7 +180,6 @@ contract DeviceLogic is Initializable, RoleManagement, IDeviceLogic {
         require(_newMeterRead > oldMeterRead, "saveSmartMeterRead: meter read too low");
 
         device.lastSmartMeterReadWh = _newMeterRead;
-        device.lastSmartMeterReadFileHash = _smartMeterReadFileHash;
 
         emit LogNewMeterRead(
             _deviceId,

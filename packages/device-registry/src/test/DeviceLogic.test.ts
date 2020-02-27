@@ -192,12 +192,11 @@ describe('DeviceLogic', () => {
     it('should return the deployed device correctly', async () => {
         const deployedDevice = await deviceLogic.getDeviceById(0);
 
-        assert.equal(deployedDevice.length, 4);
+        assert.equal(deployedDevice.length, 3);
 
         assert.equal(deployedDevice.smartMeter, deviceSmartmeter);
         assert.equal(deployedDevice.owner, deviceOwnerAddress);
         assert.equal(deployedDevice.lastSmartMeterReadWh, 0);
-        assert.equal(deployedDevice.lastSmartMeterReadFileHash, '');
     });
 
     it('should return device by ID correctly', async () => {
@@ -205,97 +204,7 @@ describe('DeviceLogic', () => {
 
         assert.equal(device0.smartMeter, deviceSmartmeter);
         assert.equal(device0.owner, deviceOwnerAddress);
-        assert.equal(device0.lastSmartMeterReadWh, 0);
-        assert.equal(device0.lastSmartMeterReadFileHash, '');
-    });
 
-    it('should fail when trying to log with saveSmartMeterRead using the wrong smart meter', async () => {
-        let failed = false;
-
-        try {
-            await deviceLogic.saveSmartMeterRead(0, 100, 'lastSmartMeterReadFileHash', 0, {
-                privateKey: '0x191c4b074672d9eda0ce576cfac79e44e320ffef5e3aadd55e000de57341d36c'
-            });
-        } catch (ex) {
-            failed = true;
-            assert.include(ex.message, 'saveSmartMeterRead: wrong sender');
-        }
-
-        assert.isTrue(failed);
-    });
-
-    it('should be able log to with saveSmartMeterRead with the right account', async () => {
-        const TIMESTAMP = moment().unix();
-        const tx = await deviceLogic.saveSmartMeterRead(
-            0,
-            100,
-            'lastSmartMeterReadFileHash',
-            TIMESTAMP,
-            { privateKey: deviceSmartmeterPK }
-        );
-
-        const event = (await deviceLogic.getAllLogNewMeterReadEvents({
-            fromBlock: tx.blockNumber,
-            toBlock: tx.blockNumber
-        }))[0];
-
-        assert.equal(event.event, 'LogNewMeterRead');
-
-        assert.deepEqual(event.returnValues, {
-            0: '0',
-            1: '0',
-            2: '100',
-            3: TIMESTAMP.toString(),
-            _deviceId: '0',
-            _oldMeterRead: '0',
-            _newMeterRead: '100',
-            _timestamp: TIMESTAMP.toString()
-        });
-    });
-
-    it('should fail when trying to log with saveSmartMeterRead and a too low meter reading', async () => {
-        let failed = false;
-
-        try {
-            await deviceLogic.saveSmartMeterRead(0, 50, 'lastSmartMeterReadFileHash', 0, {
-                privateKey: deviceSmartmeterPK
-            });
-        } catch (ex) {
-            failed = true;
-            assert.include(ex.message, 'saveSmartMeterRead: meter read too low');
-        }
-
-        assert.isTrue(failed);
-    });
-
-    it('should be able to log with saveSmartMeterRead again using the right values', async () => {
-        const TIMESTAMP = moment().unix();
-
-        const tx = await deviceLogic.saveSmartMeterRead(
-            0,
-            200,
-            'lastSmartMeterReadFileHash#2',
-            TIMESTAMP,
-            { privateKey: deviceSmartmeterPK }
-        );
-
-        const event = (await deviceLogic.getAllLogNewMeterReadEvents({
-            fromBlock: tx.blockNumber,
-            toBlock: tx.blockNumber
-        }))[0];
-
-        assert.equal(event.event, 'LogNewMeterRead');
-
-        assert.deepEqual(event.returnValues, {
-            0: '0',
-            1: '100',
-            2: '200',
-            3: TIMESTAMP.toString(),
-            _deviceId: '0',
-            _oldMeterRead: '100',
-            _newMeterRead: '200',
-            _timestamp: TIMESTAMP.toString()
-        });
     });
 
     it('should return updated device correctly', async () => {
@@ -303,28 +212,6 @@ describe('DeviceLogic', () => {
 
         assert.equal(device0.smartMeter, deviceSmartmeter);
         assert.equal(device0.owner, deviceOwnerAddress);
-        assert.equal(device0.lastSmartMeterReadWh, '200');
-        assert.equal(device0.lastSmartMeterReadFileHash, 'lastSmartMeterReadFileHash#2');
-    });
-
-    it('should return the correct latest hashes + meter readings', async () => {
-        assert.deepEqual(await deviceLogic.getLastMeterReadingAndHash(0), {
-            0: '200',
-            1: 'lastSmartMeterReadFileHash#2',
-            _lastSmartMeterReadWh: '200',
-            _lastSmartMeterReadFileHash: 'lastSmartMeterReadFileHash#2'
-        });
-
-        it('should fail when trying to return latest hash + meter reading of a non existing device', async () => {
-            let failed = false;
-
-            try {
-                await deviceLogic.getLastMeterReadingAndHash(1);
-            } catch (ex) {
-                failed = true;
-            }
-            assert.isTrue(failed);
-        });
     });
 
     it('should return user registry address', async () => {

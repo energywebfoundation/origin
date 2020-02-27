@@ -59,6 +59,7 @@ describe('PurchasableCertificate-Facade', () => {
     const issuerAccount = web3.eth.accounts.privateKeyToAccount(issuerPK).address;
 
     let conf: Configuration.Entity;
+    let device: ProducingDevice.Entity;
 
     function setActiveUser(privateKey: string) {
         conf.blockchainProperties.activeUser = {
@@ -68,13 +69,9 @@ describe('PurchasableCertificate-Facade', () => {
     }
 
     async function generateCertificateAndGetId(energy = 100): Promise<string> {
-        const LAST_SMART_METER_READ = Number((await deviceLogic.getDevice(0)).lastSmartMeterReadWh);
-
         setActiveUser(deviceOwnerPK);
 
-        await deviceLogic.saveSmartMeterRead(0, LAST_SMART_METER_READ + energy, '', 0, {
-            privateKey: deviceSmartmeterPK
-        });
+        await device.saveSmartMeterRead(0, device.lastSmartMeterReadWh + energy);
 
         await certificateLogic.createArbitraryCertfificate(0, energy, '', {
             privateKey: issuerPK
@@ -196,9 +193,7 @@ describe('PurchasableCertificate-Facade', () => {
     it('should onboard a new device', async () => {
         const deviceProps: Device.IOnChainProperties = {
             smartMeter: { address: deviceSmartmeter },
-            owner: { address: accountDeviceOwner },
-            lastSmartMeterReadWh: 0,
-            lastSmartMeterReadFileHash: 'lastSmartMeterReadFileHash'
+            owner: { address: accountDeviceOwner }
         };
 
         const devicePropsOffChain: Omit<IDevice, 'id'> = {
@@ -219,12 +214,13 @@ describe('PurchasableCertificate-Facade', () => {
             description: '',
             images: '',
             region: '',
-            province: ''
+            province: '',
+            smartMeterReads: []
         };
 
         assert.equal(await ProducingDevice.getDeviceListLength(conf), 0);
 
-        await ProducingDevice.createDevice(deviceProps, devicePropsOffChain, conf);
+        device = await ProducingDevice.createDevice(deviceProps, devicePropsOffChain, conf);
     });
 
     it('should return certificate', async () => {
