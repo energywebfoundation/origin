@@ -39,9 +39,6 @@
         },
         {
             "path": "../localization/tsconfig.build.json"
-        },
-        {
-            "path": "../exchange-core/tsconfig.build.json"
         }
     ]
 }

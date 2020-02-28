@@ -15,13 +15,11 @@ export default {
 const DATA: IOrderBookOrderDTO[] = [
     {
         price: 99,
-        product: { deviceType: ['Solar'] },
         volume: '123456',
         userId: null
     },
     {
         price: 145,
-        product: { deviceType: ['Solar'] },
         volume: '2000300',
         userId: '2'
     }
