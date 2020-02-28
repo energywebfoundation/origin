@@ -28,7 +28,6 @@ import { formatDate } from '../utils/helper';
 import { getOffChainDataSource } from '../features/general/selectors';
 import { IOrganizationWithRelationsIds } from '@energyweb/origin-backend-core';
 import { DeviceGroupForm } from './DeviceGroupForm';
-import { useOriginConfiguration } from '../utils/configuration';
 import { useTranslation } from 'react-i18next';
 
 interface IProps {

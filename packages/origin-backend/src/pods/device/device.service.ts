@@ -20,18 +20,18 @@ export class DeviceService {
         });
 
         if (this.smartMeterReadingsAdapter) {
-            device.smartMeterReads = await this.smartMeterReadingsAdapter.get(Number(id));
+            device.smartMeterReads = await this.smartMeterReadingsAdapter.get(device);
         }
 
         return device;
     }
 
     async addSmartMeterReading(id: string, newSmartMeterRead: ISmartMeterRead): Promise<void> {
-        if (this.smartMeterReadingsAdapter) {
-            return this.smartMeterReadingsAdapter.save(Number(id), newSmartMeterRead)
-        }
-
         const device = await this.repository.findOne(id);
+
+        if (this.smartMeterReadingsAdapter) {
+            return this.smartMeterReadingsAdapter.save(device, newSmartMeterRead)
+        }
 
         device.smartMeterReads = [...device.smartMeterReads, newSmartMeterRead];
 
