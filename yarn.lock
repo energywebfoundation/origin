@@ -4623,10 +4623,10 @@
   dependencies:
     "@types/yargs-parser" "*"
 
-"@types/yup@0.26.28":
-  version "0.26.28"
-  resolved "https://registry.yarnpkg.com/@types/yup/-/yup-0.26.28.tgz#6b8a98fb56ddb5c8a3a7f60996165221671c1ca1"
-  integrity sha512-DiT584YBKBENDzgk50LwiJLLOh+XgHpiy9p8PwSoOY696LpfrJRIeJ2AoBCG9KyjE8gWL4J64xDZgw15itecag==
+"@types/yup@0.26.32":
+  version "0.26.32"
+  resolved "https://registry.yarnpkg.com/@types/yup/-/yup-0.26.32.tgz#bd356fb405f3d641eff963854edf7ad854a8e829"
+  integrity sha512-55WFAq8lNYXdRzSP1cenMFFXtPRe7PWsqn5y9ibqKHOQZ/cSLErkcnB1LE89M7W2TSXVDFtx+T7eFePkGoB+xw==
 
 "@typescript-eslint/eslint-plugin@2.19.0":
   version "2.19.0"
@@ -14995,7 +14995,7 @@ lockfile@^1.0.4:
   dependencies:
     signal-exit "^3.0.2"
 
-lodash-es@^4.17.14, lodash-es@^4.2.1:
+lodash-es@^4.17.11, lodash-es@^4.17.14, lodash-es@^4.2.1:
   version "4.17.15"
   resolved "https://registry.yarnpkg.com/lodash-es/-/lodash-es-4.17.15.tgz#21bd96839354412f23d7a10340e5eac6ee455d78"
   integrity sha512-rlrc3yU3+JNOpZ9zj5pQtxnx2THmvRykwL4Xlxoa8I9lHBlVbbyPhgyPMioxVZ4NqyxaVVtaJnzsyOidQIhyyQ==
@@ -24381,14 +24381,15 @@ yn@3.1.1:
   resolved "https://registry.yarnpkg.com/yn/-/yn-3.1.1.tgz#1e87401a09d767c1d5eab26a6e4c185182d2eb50"
   integrity sha512-Ux4ygGWsu2c7isFWe8Yu1YluJmqVhxqK2cLXNQA5AcC3QfbGNpM7fu0Y8b/z16pXLnFxZYvWhd3fhBY9DLmC6Q==
 
-yup@0.28.0:
-  version "0.28.0"
-  resolved "https://registry.yarnpkg.com/yup/-/yup-0.28.0.tgz#fdc04d1a495465c83d3757a80c47616884baeddc"
-  integrity sha512-9ZmsB/PT6/m+oUKF8rT9lWhMMGfx5s/aNCCf8pMu/GEQA0Ro2tLOc+aX12GjfL67Vif5a3c7eZVuxGFqFScnJQ==
+yup@0.28.1:
+  version "0.28.1"
+  resolved "https://registry.yarnpkg.com/yup/-/yup-0.28.1.tgz#60c0725be7057ed7a9ae61561333809332a63d47"
+  integrity sha512-xSHMZA7UyecSG/CCTDCtnYZMjBrYDR/C7hu0fMsZ6UcS/ngko4qCVFbw+CAmNtHlbItKkvQ3YXITODeTj/dUkw==
   dependencies:
     "@babel/runtime" "^7.0.0"
     fn-name "~2.0.1"
     lodash "^4.17.11"
+    lodash-es "^4.17.11"
     property-expr "^1.5.0"
     synchronous-promise "^2.0.6"
     toposort "^2.0.2"
