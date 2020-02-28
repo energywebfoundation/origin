@@ -6,10 +6,10 @@ import {
 } from '../Table/PaginatedLoaderHooks';
 import { EnergyFormatter } from '../../utils/EnergyFormatter';
 import { Typography } from '@material-ui/core';
-import { OrderBookOrderDTO } from './order-book-order.dto';
+import { IOrderBookOrderDTO } from './order-book-order.dto';
 
 interface IProps {
-    data: OrderBookOrderDTO[];
+    data: IOrderBookOrderDTO[];
     currency: string;
     title: string;
     highlightOrdersUserId: string;
@@ -35,7 +35,7 @@ export function Orders(props: IProps) {
     }
 
     const { paginatedData, loadPage, total, pageSize } = usePaginatedLoaderFiltered<
-        OrderBookOrderDTO
+        IOrderBookOrderDTO
     >({
         getPaginatedData
     });
