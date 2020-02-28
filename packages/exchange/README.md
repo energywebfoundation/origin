@@ -13,7 +13,7 @@
 ## Main features
 - Order book matching engine for time, price and product matching
 - ERC 1155 / ERC 1888 compatible
-- Supply / Demand modules 
+- Supply / Demand modules
 
 ## Trading product concept
 
@@ -66,7 +66,17 @@ yarn start
 
 ```
 docker pull postgres
-docker run --name origin-postgres -d -p 5432:5432 postgres
+docker run --name origin-postgres -e POSTGRES_PASSWORD=postgres -d -p 5432:5432 postgres
+```
+
+#### pgAdmin
+
+```
+docker pull dpage/pgadmin4
+docker run -p 80:80 \
+    -e 'PGADMIN_DEFAULT_EMAIL=user@domain.com' \
+    -e 'PGADMIN_DEFAULT_PASSWORD=SuperSecret' \
+    -d dpage/pgadmin4
 ```
 
 ### Swagger

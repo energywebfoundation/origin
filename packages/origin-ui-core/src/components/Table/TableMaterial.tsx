@@ -59,6 +59,7 @@ interface IProps<T extends readonly ITableColumn[]> {
     handleRowClick?: (rowIndex: number) => void;
     batchableActions?: IBatchableAction[];
     customSelectCounterGenerator?: CustomCounterGeneratorFunction;
+    highlightedRowsIndexes?: number[];
 }
 
 export function TableMaterial<T extends readonly ITableColumn[]>(props: IProps<T>) {
@@ -115,7 +116,8 @@ export function TableMaterial<T extends readonly ITableColumn[]>(props: IProps<T
         handleRowClick,
         batchableActions,
         customSelectCounterGenerator,
-        toggleSort
+        toggleSort,
+        highlightedRowsIndexes
     } = props;
 
     if (selectedIndexes.length > rows.length) {
@@ -192,7 +194,7 @@ export function TableMaterial<T extends readonly ITableColumn[]>(props: IProps<T
                                                 active={sortedByThisColumn}
                                                 direction={order}
                                                 onClick={() => {
-                                                    if (!column.sortProperties) {
+                                                    if (!column.sortProperties || !toggleSort) {
                                                         return;
                                                     }
 
@@ -213,8 +215,20 @@ export function TableMaterial<T extends readonly ITableColumn[]>(props: IProps<T
                             {rows.map((row, rowIndex) => {
                                 const isItemSelected = selectedIndexes.includes(rowIndex);
 
+                                const rowStyle = highlightedRowsIndexes?.includes(rowIndex)
+                                    ? {
+                                          background: '#424242'
+                                      }
+                                    : {};
+
                                 return (
-                                    <TableRow hover role="checkbox" tabIndex={-1} key={rowIndex}>
+                                    <TableRow
+                                        hover
+                                        role="checkbox"
+                                        tabIndex={-1}
+                                        key={rowIndex}
+                                        style={rowStyle}
+                                    >
                                         {showBatchableActions && (
                                             <TableCell padding="checkbox">
                                                 <Checkbox

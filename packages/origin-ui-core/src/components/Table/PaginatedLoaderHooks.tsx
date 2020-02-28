@@ -1,6 +1,7 @@
 import { ICustomFilter } from './FiltersHeader';
 import { PAGINATED_LOADER_INITIAL_STATE, DEFAULT_PAGE_SIZE } from './PaginatedLoader';
 import { useState } from 'react';
+import { CurrentSortType } from './PaginatedLoaderFilteredSorted';
 
 export interface IPaginatedLoaderHooksFetchDataParameters {
     requestedPageSize: number;
@@ -95,5 +96,63 @@ export function usePaginatedLoaderFiltered<T>({
         paginatedData,
         setPageSize,
         total
+    };
+}
+
+export function usePaginatedLoaderSorting<T>({
+    currentSort: defaultCurrentSort,
+    sortAscending: defaultSortAscending
+}: {
+    currentSort: CurrentSortType;
+    sortAscending: boolean;
+}) {
+    const [currentSort, setCurrentSort] = useState<CurrentSortType>(defaultCurrentSort);
+    const [sortAscending, setSortAscending] = useState<boolean>(defaultSortAscending);
+
+    function sortData(records: T[]) {
+        return records.sort((a, b) => {
+            return currentSort?.sortProperties
+                ?.map(field => {
+                    const direction = sortAscending ? 1 : -1;
+
+                    let aPropertyValue;
+                    let bPropertyValue;
+
+                    if (typeof field === 'function') {
+                        aPropertyValue = field(a);
+                        bPropertyValue = field(b);
+                    } else if (field.length === 2) {
+                        aPropertyValue = field[1](field[0](a));
+                        bPropertyValue = field[1](field[0](b));
+                    }
+
+                    if (aPropertyValue > bPropertyValue) {
+                        return direction;
+                    }
+
+                    if (aPropertyValue < bPropertyValue) {
+                        return -direction;
+                    }
+
+                    return 0;
+                })
+                .reduce((previous, next) => previous || next, 0);
+        });
+    }
+
+    function toggleSort(column: CurrentSortType) {
+        if (column.id === currentSort.id) {
+            setSortAscending(!sortAscending);
+        } else {
+            setCurrentSort(column);
+            setSortAscending(true);
+        }
+    }
+
+    return {
+        sortData,
+        toggleSort,
+        currentSort,
+        sortAscending
     };
 }

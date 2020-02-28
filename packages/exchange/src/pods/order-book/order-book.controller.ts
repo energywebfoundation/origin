@@ -4,8 +4,8 @@ import { Controller, Get, Query, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 
 import { UserDecorator } from '../decorators/user.decorator';
-import { OrderBookOrderDTO } from './order-book-order.dto';
 import { OrderBookService } from './order-book.service';
+import { OrderBookOrderDTO } from './order-book-order.dto';
 
 @Controller('orderbook')
 export class OrderBookController {
