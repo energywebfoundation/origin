@@ -4,9 +4,9 @@ import {
     IPaginatedLoaderHooksFetchDataParameters,
     usePaginatedLoaderFiltered
 } from '../Table/PaginatedLoaderHooks';
-import { OrderBookOrderDTO } from '@energyweb/exchange-core';
 import { EnergyFormatter } from '../../utils/EnergyFormatter';
 import { Typography } from '@material-ui/core';
+import { OrderBookOrderDTO } from './order-book-order.dto';
 
 interface IProps {
     data: OrderBookOrderDTO[];

@@ -1,6 +1,4 @@
-import { Product } from './Product';
-import { Bid } from './Bid';
-import { Ask } from './Ask';
+import { Product, Bid, Ask } from '@energyweb/exchange-core';
 
 export class OrderBookOrderDTO {
     price: number;

@@ -2,9 +2,9 @@
 import React from 'react';
 import { Orders } from './Orders';
 import { withKnobs, text, object } from '@storybook/addon-knobs';
-import { OrderBookOrderDTO } from '@energyweb/exchange-core';
 import { MuiThemeProvider } from '@material-ui/core';
 import { createOriginConfiguration } from '../OriginConfigurationContext';
+import { OrderBookOrderDTO } from './order-book-order.dto';
 
 export default {
     title: 'Orders',
