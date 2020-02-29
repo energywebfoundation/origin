@@ -71,7 +71,7 @@
     "ts-loader": "6.2.1",
     "url-loader": "3.0.0",
     "web3": "1.2.4",
-    "web3-core": "1.2.4",
+    "web3-core": "1.2.6",
     "webpack": "4.41.6",
     "winston": "3.2.1",
     "yup": "0.28.1"
