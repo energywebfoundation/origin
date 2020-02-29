@@ -49,8 +49,8 @@
         "moment": "^2.24.0",
         "polly-js": "^1.6.5",
         "rxjs": "^6.5.3",
-        "web3": "1.2.4",
-        "web3-core": "1.2.4",
+        "web3": "1.2.6",
+        "web3-core": "1.2.6",
         "winston": "3.2.1"
     },
     "devDependencies": {
