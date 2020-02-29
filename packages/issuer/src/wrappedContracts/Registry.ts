@@ -20,7 +20,7 @@ export class Registry extends GeneralFunctions {
         const buildFile: any = RegistryJSON;
         super(
             address
-                ? new web3.eth.Contract(RegistryJSON.abi, address)
+                ? new web3.eth.Contract(buildFile.abi, address)
                 : new web3.eth.Contract(
                       buildFile.abi,
                       buildFile.networks.length > 0 ? buildFile.networks[0] : null
