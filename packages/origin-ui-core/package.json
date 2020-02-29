@@ -84,7 +84,7 @@
     "@storybook/preset-scss": "1.0.2",
     "@storybook/preset-typescript": "1.2.0",
     "@storybook/react": "5.3.14",
-    "@storybook/storybook-deployer": "2.8.2",
+    "@storybook/storybook-deployer": "2.8.3",
     "@testing-library/react": "9.4.0",
     "@types/enzyme": "3.10.5",
     "@types/jest": "25.1.2",
