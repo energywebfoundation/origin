@@ -3,6 +3,25 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.4.0](https://github.com/energywebfoundation/origin/compare/@energyweb/exchange@0.3.1...@energyweb/exchange@0.4.0) (2020-03-02)
+
+
+### Bug Fixes
+
+* **deps:** update dependency typeorm to v0.2.24 ([fb6c68b](https://github.com/energywebfoundation/origin/commit/fb6c68b324524fe814859f6274428ddc4f938762))
+* **deps:** update nest monorepo to v6.11.8 ([2934e78](https://github.com/energywebfoundation/origin/commit/2934e780c8555383427cc7c8e22e69fff59ec10f))
+
+
+### Features
+
+* **exchange:** nest swagger compiler plugin for swagger metadata ([6742447](https://github.com/energywebfoundation/origin/commit/6742447c7863ede21a4bab92ae858420f3310d5a))
+* **exchange:** return userId as part of orderbookdto ([84c3525](https://github.com/energywebfoundation/origin/commit/84c3525ca26898b07e26533d71e7a52ee360d91d))
+* **origin-ui-core:** Bids and Asks UI list component ([c08a03b](https://github.com/energywebfoundation/origin/commit/c08a03b911642644f5acb870305ed1efd35e9ce7))
+
+
+
+
+
 ## [0.3.1](https://github.com/energywebfoundation/origin/compare/@energyweb/exchange@0.3.0...@energyweb/exchange@0.3.1) (2020-02-17)
 
 

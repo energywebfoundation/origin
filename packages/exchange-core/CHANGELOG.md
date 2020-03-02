@@ -3,6 +3,27 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0](https://github.com/energywebfoundation/origin/compare/@energyweb/exchange-core@0.1.3...@energyweb/exchange-core@1.0.0) (2020-03-02)
+
+
+### Bug Fixes
+
+* **exchange-core:** prevent self trading ([7bec5f8](https://github.com/energywebfoundation/origin/commit/7bec5f855b9753c6b011e1a34fccedc0444029ce))
+
+
+### Features
+
+* **exchange:** use bn for trade and order volume ([478aecd](https://github.com/energywebfoundation/origin/commit/478aecd19f1be57394145e4c53da0926db10ed62))
+
+
+### BREAKING CHANGES
+
+* **exchange:** 'order.volume' and 'trade.volume' are now BN instead of number
+
+
+
+
+
 ## [0.1.3](https://github.com/energywebfoundation/origin/compare/@energyweb/exchange-core@0.1.2...@energyweb/exchange-core@0.1.3) (2020-02-17)
 
 **Note:** Version bump only for package @energyweb/exchange-core

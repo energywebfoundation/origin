@@ -3,6 +3,29 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.3.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-ui-core@0.2.1...@energyweb/origin-ui-core@0.3.0) (2020-03-02)
+
+
+### Bug Fixes
+
+* **deps:** update dependency clsx to v1.1.0 ([e730da2](https://github.com/energywebfoundation/origin/commit/e730da2c9b711f3bdcf5624eff04b9b6fa47ec19))
+* **deps:** update dependency formik-material-ui to v1.0.2 ([1cd54fd](https://github.com/energywebfoundation/origin/commit/1cd54fd01146215098dcd8276e064fe8a4b473fb))
+* **deps:** update dependency i18next to v19.3.2 ([034a38c](https://github.com/energywebfoundation/origin/commit/034a38cc9c261536a9af206530041f5d177e8b2e))
+* **deps:** update dependency moment-timezone to v0.5.28 ([75cf848](https://github.com/energywebfoundation/origin/commit/75cf8483ad79f1f527120c0effcd869fa7c3be66))
+* **deps:** update dependency query-string to v6.11.0 ([49ad031](https://github.com/energywebfoundation/origin/commit/49ad0315fcad03fc6a8fb2f24a27dce1ee35828a))
+* **deps:** update dependency yup to v0.28.1 ([b89aeba](https://github.com/energywebfoundation/origin/commit/b89aebad0bbac537e49d3be8113a2a6108fae051))
+* **deps:** update react ([6f4b7ea](https://github.com/energywebfoundation/origin/commit/6f4b7ead51b945c7a5a674002a77e45427ee7c3e))
+* **deps:** update webpack ([0f87434](https://github.com/energywebfoundation/origin/commit/0f87434d299a961ed5970e9277e5ea4615fd5deb))
+
+
+### Features
+
+* **origin-ui-core:** Bids and Asks UI list component ([c08a03b](https://github.com/energywebfoundation/origin/commit/c08a03b911642644f5acb870305ed1efd35e9ce7))
+
+
+
+
+
 ## [0.2.1](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-ui-core@0.2.0...@energyweb/origin-ui-core@0.2.1) (2020-02-17)
 
 
