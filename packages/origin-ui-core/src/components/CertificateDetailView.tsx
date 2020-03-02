@@ -87,10 +87,6 @@ export function CertificateDetailView(props: IProps) {
             let description: string;
 
             switch (event.event) {
-                case 'LogNewMeterRead':
-                    label = 'Initial logging';
-                    description = 'Logging by Device #' + event.returnValues._deviceId;
-                    break;
                 case 'LogCreatedCertificate':
                     label = 'Certified';
                     description = 'Local issuer approved the certification request';

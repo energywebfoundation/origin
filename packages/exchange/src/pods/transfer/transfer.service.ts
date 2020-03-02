@@ -75,11 +75,21 @@ export class TransferService {
 
         const manager = transaction || this.repository.manager;
 
-        const storedWithdrawal = await manager.transaction(tr =>
-            tr.getRepository<Transfer>(Transfer).save(withdrawal)
-        );
+        try {
+            const storedWithdrawal = await manager.transaction(tr =>
+                tr.getRepository<Transfer>(Transfer).save(withdrawal)
+            );
 
-        this.withdrawalProcessorService.requestWithdrawal(storedWithdrawal);
+            this.logger.debug(`Created new withdrawal with id=${storedWithdrawal.id}`);
+
+            this.withdrawalProcessorService.requestWithdrawal(storedWithdrawal);
+
+            return storedWithdrawal.id;
+        } catch (error) {
+            this.logger.error(error.message);
+
+            throw error;
+        }
     }
 
     public async createDeposit(depositDTO: CreateDepositDTO) {

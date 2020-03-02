@@ -19,7 +19,7 @@ import MomentUtils from '@date-io/moment';
 import { MuiThemeProvider } from '@material-ui/core/styles';
 import { createBrowserHistory, History } from 'history';
 import { routerMiddleware, ConnectedRouter } from 'connected-react-router';
-import { OriginConfigurationContext } from './OriginConfigurationContext';
+import { OriginConfigurationContext, initializeI18N } from './OriginConfigurationContext';
 import { IStoreState } from '../types';
 
 export function Origin() {
@@ -54,6 +54,8 @@ export function Origin() {
         Object.keys(sagas).forEach((saga: keyof typeof sagas) => {
             sagaMiddleware.run(sagas[saga]);
         });
+
+        initializeI18N(originConfiguration.language);
     });
 
     if (!originConfiguration) {
@@ -68,7 +70,7 @@ export function Origin() {
 
     return (
         <MuiThemeProvider theme={originConfiguration.materialTheme}>
-            <MuiPickersUtilsProvider utils={MomentUtils}>
+            <MuiPickersUtilsProvider utils={MomentUtils} locale={originConfiguration.language}>
                 <Provider store={store}>
                     <ConnectedRouter history={history}>
                         <Route path="/" component={AppContainer} />

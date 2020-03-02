@@ -19,14 +19,14 @@ export class DemandService {
     public async createSingle(
         userId: string,
         price: number,
-        volume: number,
+        volume: string,
         product: ProductDTO,
         start: Date
     ) {
         const bid = await this.orderService.createBid({
             price,
             volume,
-            validFrom: start,
+            validFrom: start.toISOString(),
             product: ProductDTO.toProduct(product),
             userId
         });

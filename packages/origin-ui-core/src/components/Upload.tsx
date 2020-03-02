@@ -6,6 +6,7 @@ import { makeStyles, createStyles, useTheme, Chip } from '@material-ui/core';
 import { getOffChainDataSource } from '../features/general/selectors';
 import { FILE_SUPPORTED_MIMETYPES } from '@energyweb/origin-backend-core';
 import { Delete, Cancel, Replay } from '@material-ui/icons';
+import { useTranslation } from 'react-i18next';
 
 interface IProps {
     onChange: (files: IUploadedFile[]) => void;
@@ -99,6 +100,7 @@ function reducer(
 
 export function Upload(props: IProps) {
     const [state, dispatch] = useReducer(reducer, initialState);
+    const { t } = useTranslation();
 
     const useStyles = makeStyles(() =>
         createStyles({
@@ -293,7 +295,7 @@ export function Upload(props: IProps) {
         <section>
             <div {...getRootProps({ className: classes.dropzone })}>
                 <input {...getInputProps()} />
-                <p>Drop files here or click to select files</p>
+                <p>{t('file.info.dropHereOrClickToSelect')}</p>
             </div>
             <aside className={classes.thumbsContainer}>{thumbs}</aside>
         </section>

@@ -4,6 +4,21 @@ export enum DeviceStatus {
     Active
 }
 
+export interface ISmartMeterRead {
+    meterReading: number;
+    timestamp: number;
+}
+
+export interface IEnergyGenerated {
+    energy: number;
+    timestamp: number;
+}
+
+export interface ISmartMeterReadingsAdapter {
+    get(device: IDeviceWithId): Promise<ISmartMeterRead[]>;
+    save(device: IDeviceWithId, smRead: ISmartMeterRead): Promise<void>;
+}
+
 export interface IDevice {
     status: DeviceStatus;
     facilityName: string;
@@ -22,6 +37,7 @@ export interface IDevice {
     complianceRegistry: string;
     otherGreenAttributes: string;
     typeOfPublicSupport: string;
+    smartMeterReads: ISmartMeterRead[];
     deviceGroup?: string;
 }
 

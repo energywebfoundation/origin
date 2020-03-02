@@ -27,7 +27,11 @@ import { Provider } from 'react-redux';
 import { createLogger } from 'redux-logger';
 import { IOffChainDataSource } from '@energyweb/origin-backend-client';
 import { setOffChainDataSource } from '../../features/general/actions';
-import { OriginConfigurationProvider, createOriginConfiguration } from '../../components';
+import {
+    OriginConfigurationProvider,
+    createOriginConfiguration,
+    initializeI18N
+} from '../../components';
 import { IDevice, DeviceStatus } from '@energyweb/origin-backend-core';
 
 export const wait = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
@@ -155,6 +159,8 @@ const setupStoreInternal = (
         ? Object.keys(sagas).reduce((a, saga) => [...a, sagaMiddleware.run(sagas[saga])], [])
         : [];
 
+    initializeI18N('en');
+
     return {
         store,
         history,
@@ -195,7 +201,7 @@ export const createProducingDevice = (
     properties: ICreateProducingDeviceProperties
 ): ProducingDevice.Entity => {
     const owner = properties.owner || '0x0';
-    const lastSmartMeterReadWh = properties.lastSmartMeterReadWh || 7777;
+    const lastSmartMeterReadWh = properties.lastSmartMeterReadWh ?? 0;
 
     const offChainProperties: IDevice = {
         status: properties.status || DEFAULT_PRODUCING_DEVICE_OFFCHAIN_PROPERTIES.status,
@@ -221,7 +227,8 @@ export const createProducingDevice = (
         description: '',
         images: '',
         region: properties.region || DEFAULT_PRODUCING_DEVICE_OFFCHAIN_PROPERTIES.region,
-        province: properties.province || DEFAULT_PRODUCING_DEVICE_OFFCHAIN_PROPERTIES.province
+        province: properties.province || DEFAULT_PRODUCING_DEVICE_OFFCHAIN_PROPERTIES.province,
+        smartMeterReads: []
     };
 
     return {

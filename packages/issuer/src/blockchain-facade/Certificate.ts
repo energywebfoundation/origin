@@ -1,34 +1,24 @@
 import { TransactionReceipt, EventLog } from 'web3-core';
+import { PreciseProofs } from 'precise-proofs-js';
 
 import { Configuration, BlockchainDataModelEntity, Timestamp } from '@energyweb/utils-general';
 
-import { Registry, PublicIssuer, PrivateIssuer, CertificateTopic, ICommitment, CommitmentSchema } from '..';
+import { Registry, Issuer, OwnershipCommitmentSchema } from '..';
+import { TransferSingleEvent } from '../wrappedContracts/Registry';
+import { IOwnershipCommitment } from './IOwnershipCommitment';
 
+export interface ICertificateOwners {
+    [address: string]: number;
+}
 export interface ICertificate {
     id: string;
-
     issuer: string;
-    
     deviceId: string;
+    energy: number;
     generationStartTime: number;
     generationEndTime: number;
-
-    energy: number;
     creationTime: number;
-
-    sync(): Promise<ICertificate>;
-
-    isClaimed(): Promise<boolean>;
-    claim(amount: number): Promise<TransactionReceipt>;
-
-    transfer(to: string, amount: number): Promise<TransactionReceipt>;
-
-    getAllCertificateEvents(): Promise<EventLog[]>;
-
-    isOwned(byAddress?: string): Promise<boolean>;
-    ownedVolume(byAddress?: string): Promise<number>;
-    isClaimed(byAddress?: string): Promise<boolean>;
-    claimedVolume(byAddress?: string): Promise<number>;
+    owners?: ICertificateOwners;
 }
 
 export const getAllCertificateEvents = async (
@@ -95,14 +85,16 @@ export const getAllCertificateEvents = async (
 export class Entity extends BlockchainDataModelEntity.Entity implements ICertificate {
     public deviceId: string;
 
+    public energy: number;
     public generationStartTime: number;
     public generationEndTime: number;
     public issuer: string;
-    public energy: number;
     public creationTime: number;
-
+    public ownershipCommitment: IOwnershipCommitment;
+    public owners: ICertificateOwners = {};
+    
     public initialized: boolean = false;
-
+    
     public data: number[];
 
     constructor(id: string, configuration: Configuration.Entity, public isPrivate: boolean = false) {
@@ -115,26 +107,34 @@ export class Entity extends BlockchainDataModelEntity.Entity implements ICertifi
         }
 
         const registry: Registry = this.configuration.blockchainProperties.certificateLogicInstance;
-        const publicIssuer: PublicIssuer = this.configuration.blockchainProperties.issuerLogicInstance.public;
+        const certOnChain = await registry.getCertificate(Number(this.id));
 
-        const cert = await registry.getCertificate(Number(this.id));
+        this.data = certOnChain.data;
 
-        this.data = cert.data;
+        const issuer: Issuer = this.configuration.blockchainProperties.issuerLogicInstance;
 
-        const decodedData = await publicIssuer.decodeIssue(this.data);
-
-        this.generationStartTime = Number(decodedData['0']);
-        this.generationEndTime = Number(decodedData['1']);
-        this.deviceId = decodedData['2'];
-
-        this.issuer = cert.issuer;
-
+        const decodedData = await issuer.decodeData(this.data);
         const allIssuanceEvents = await registry.getAllIssuanceSingleEvents({
             filter: { _id: Number(this.id) }
         });
         const creationBlock = await this.configuration.blockchainProperties.web3.eth.getBlock(allIssuanceEvents[0].blockNumber);
 
+        this.generationStartTime = Number(decodedData['0']);
+        this.generationEndTime = Number(decodedData['1']);
+        this.deviceId = decodedData['2'];
+        this.issuer = certOnChain.issuer;
         this.creationTime = Number(creationBlock.timestamp);
+
+        if (this.isPrivate) {
+            this.ownershipCommitment = await this.getOffChainProperties();
+            this.owners = {
+                [this.ownershipCommitment.ownerAddress]: this.ownershipCommitment.volume
+            };
+        } else {
+            this.owners = await this.calculateOwnership();
+        }
+
+        this.energy = Object.keys(this.owners).map(owner => this.owners[owner]).reduce((a, b) => a + b, 0);
 
         this.initialized = true;
 
@@ -145,9 +145,46 @@ export class Entity extends BlockchainDataModelEntity.Entity implements ICertifi
         return this;
     }
 
-    async claim(amount: number): Promise<TransactionReceipt> {
-        const registry: Registry = this.configuration.blockchainProperties.certificateLogicInstance;
+    async claim(amount?: number): Promise<TransactionReceipt> {
         const owner = this.configuration.blockchainProperties.activeUser.address;
+
+        if (this.isPrivate) {
+            const ownerBalance = this.ownedVolume();
+
+            if (!ownerBalance || this.owners[owner] === null) {
+                throw new Error(`transfer(): ${owner} does not own a share in certificate ${this.id}`);
+            }
+
+            if (amount && amount !== ownerBalance) {
+                throw new Error(`transfer(): unable to claim amount ${amount} Wh. For private certificate you can only claim the full balance of ${ownerBalance} Wh`)
+            }
+
+            const issuer: Issuer = this.configuration.blockchainProperties.issuerLogicInstance;
+
+            const { salts } = await this.getOffChainDump();
+
+            const calculatedOffChainStorageProperties = this.prepareEntityCreation(
+                this.ownershipCommitment,
+                OwnershipCommitmentSchema,
+                salts
+            );
+
+            const { logs } = await issuer.requestMigrateToPublic(Number(this.id), calculatedOffChainStorageProperties.leafs[1].hash);
+            const requestId = this.configuration.blockchainProperties.web3.utils.hexToNumber(logs[0].topics[2]);
+
+            const theProof = PreciseProofs.createProof('ownerAddress', calculatedOffChainStorageProperties.leafs, false);
+            const onChainProof = theProof.proofPath.map(p => ({
+                left: !!p.left,
+                hash: p.left || p.right
+            }));
+
+            await issuer.migrateToPublic(requestId, amount, calculatedOffChainStorageProperties.leafs[1].salt, onChainProof);
+
+            this.isPrivate = false;
+            amount = ownerBalance;
+        }
+
+        const registry: Registry = this.configuration.blockchainProperties.certificateLogicInstance;
 
         const { randomHex, hexToBytes } = this.configuration.blockchainProperties.web3.utils;
 
@@ -165,55 +202,78 @@ export class Entity extends BlockchainDataModelEntity.Entity implements ICertifi
         );
     }
 
-    async transfer(to: string, amount: number): Promise<TransactionReceipt> {
-        const registry: Registry = this.configuration.blockchainProperties.certificateLogicInstance;
+    async transfer(to: string, amount?: number): Promise<TransactionReceipt | boolean> {
         const from = this.configuration.blockchainProperties.activeUser.address;
+
+        if (this.isPrivate) {
+            const senderBalance = this.ownedVolume();
+
+            if (!senderBalance || this.owners[from] === null) {
+                throw new Error(`transfer(): ${from} does not own a share in certificate ${this.id}`);
+            }
+
+            if (amount && amount !== senderBalance) {
+                throw new Error(`transfer(): unable to send amount ${amount} Wh. For private certificate you can only send the full balance of ${senderBalance} Wh`)
+            }
+
+            const previousCommitment = this.propertiesDocumentHash;
+
+            const ownershipCommitment: IOwnershipCommitment = {
+                ownerAddress: to,
+                volume: this.ownedVolume()
+            };
+            const updatedOwnershipProperties = this.prepareEntityCreation(
+                ownershipCommitment,
+                OwnershipCommitmentSchema
+            );
+            await this.syncOffChainStorage(ownershipCommitment, updatedOwnershipProperties);
+
+            const issuer: Issuer = this.configuration.blockchainProperties.issuerLogicInstance;
+            const { logs } = await issuer.requestPrivateTransfer(Number(this.id), updatedOwnershipProperties.leafs[1].hash);
+
+            const requestId = this.configuration.blockchainProperties.web3.utils.hexToNumber(logs[0].topics[2]);
+
+            const theProof = PreciseProofs.createProof('ownerAddress', updatedOwnershipProperties.leafs, false);
+            const onChainProof = theProof.proofPath.map(p => ({
+                left: !!p.left,
+                hash: p.left || p.right
+            }));
+            await issuer.approvePrivateTransfer(requestId, onChainProof, previousCommitment, updatedOwnershipProperties.rootHash);
+
+            this.propertiesDocumentHash = updatedOwnershipProperties.rootHash;
+        }
+
+        const registry: Registry = this.configuration.blockchainProperties.certificateLogicInstance;
         
         return registry.safeTransferFrom(
             from,
             to,
             parseInt(this.id, 10),
-            amount,
+            amount ?? this.ownedVolume(),
             this.data,
             Configuration.getAccount(this.configuration)
         );
     }
 
     async revoke(): Promise<TransactionReceipt> {
-        const publicIssuer: PublicIssuer = this.configuration.blockchainProperties.issuerLogicInstance.public;
+        const issuer: Issuer = this.configuration.blockchainProperties.issuerLogicInstance;
         
-        return publicIssuer.revokeCertificate(Number(this.id), Configuration.getAccount(this.configuration));
+        return issuer.revokeCertificate(Number(this.id), Configuration.getAccount(this.configuration));
     }
 
     async getAllCertificateEvents(): Promise<EventLog[]> {
         return getAllCertificateEvents(parseInt(this.id, 10), this.configuration);
     }
 
-    async isOwned(byAddress?: string): Promise<boolean> {
-        if (this.isPrivate) {
-            throw new Error('Unable to fetch owner for private certificates.');
-        }
-
-        const ownedVolume = await this.ownedVolume(byAddress);
+    isOwned(byAddress?: string): boolean {
+        const ownedVolume = this.ownedVolume(byAddress);
 
         return ownedVolume > 0;
     }
 
-    async ownedVolume(byAddress?: string): Promise<number> {
-        if (this.isPrivate) {
-            throw new Error('Unable to fetch volumes for private certificates.');
-        }
-
-        const registry: Registry = this.configuration.blockchainProperties.certificateLogicInstance;
-        const activeUserAddress = this.configuration.blockchainProperties.activeUser.address;
-
-        const balance = await registry.balanceOf(
-            byAddress ?? activeUserAddress,
-            Number(this.id),
-            Configuration.getAccount(this.configuration)
-        );
-        
-        return Number(balance);
+    ownedVolume(byAddress?: string): number {
+        const owner = byAddress ?? this.configuration.blockchainProperties.activeUser.address;
+        return this.owners[owner] ?? 0;
     }
 
     async isClaimed(byAddress?: string): Promise<boolean> {
@@ -234,6 +294,56 @@ export class Entity extends BlockchainDataModelEntity.Entity implements ICertifi
         
         return Number(balance);
     }
+
+    private async calculateOwnership(): Promise<ICertificateOwners> {
+        if (this.isPrivate) {
+            throw new Error('Can only calculate ownership for public certificates');
+        }
+
+        const registry: Registry = this.configuration.blockchainProperties.certificateLogicInstance;
+
+        let transferSingleEvents: TransferSingleEvent[] = (await registry.getAllTransferSingleEvents({
+                filter: { _id: this.id }
+            }))
+            .filter(e => e.returnValues._id === this.id)
+            .map(e => e.returnValues as TransferSingleEvent);
+
+        const transferBatchEvents = (await registry.getAllTransferBatchEvents()).map(e => e.returnValues);
+
+        // Convert TransferBatch to TransferSingle event
+        for (const event of transferBatchEvents.filter(e => e._ids.includes(this.id))) {
+            for (let i = 0; i < event._ids.length; i++) {
+                if (event._ids[i] === this.id) {
+                    transferSingleEvents.push({
+                        _id: event._ids[i],
+                        _operator: event._operator,
+                        _to: event._to,
+                        _from: event._from,
+                        _value: event._values[i]
+                    })
+                }
+            }
+        }
+
+        const owners: ICertificateOwners = {};
+
+        for (const event of transferSingleEvents) {
+            const { _from, _to, _value } = event;
+            const valueTransferred = Number(_value);
+
+            if (_from !== '0x0000000000000000000000000000000000000000') {
+                owners[_from] = owners[_from] - valueTransferred;
+            }
+
+            if (owners[_to] === null || owners[_to] === undefined) {
+                owners[_to] = 0;
+            } 
+
+            owners[_to] += valueTransferred;
+        }
+
+        return owners;
+    }
 }
 
 export const createCertificate = async (
@@ -245,39 +355,43 @@ export const createCertificate = async (
     configuration: Configuration.Entity,
     isVolumePrivate: boolean = false
 ): Promise<Entity> => {
-    const certificate = new Entity(null, configuration, isVolumePrivate);
-
-    const registry: Registry = configuration.blockchainProperties.certificateLogicInstance;
+    const newEntity = new Entity(null, configuration, isVolumePrivate);
 
     const getIdFromLogs = (logs: any) => configuration.blockchainProperties.web3.utils
         .hexToNumber(logs[0].topics[2])
         .toString();
 
+    const issuer: Issuer = configuration.blockchainProperties.issuerLogicInstance;
+
+    const data = await issuer.encodeData(fromTime, toTime, deviceId);
+
+    let tx: TransactionReceipt;
+
     if (isVolumePrivate) {
-        const privateIssuer: PrivateIssuer = configuration.blockchainProperties.issuerLogicInstance.private;
-        const data = await privateIssuer.encodeIssue(fromTime, toTime, deviceId);
+        const ownershipCommitment: IOwnershipCommitment = {
+            ownerAddress: to,
+            volume: value
+        };
+        const updatedOwnershipProperties = newEntity.prepareEntityCreation(
+            ownershipCommitment,
+            OwnershipCommitmentSchema
+        );
 
-        const { logs } = await registry.issue(to, [], CertificateTopic.PRIVATE_IREC, value, data, Configuration.getAccount(configuration));
+        await newEntity.syncOffChainStorage(ownershipCommitment, updatedOwnershipProperties);
 
-        certificate.id = getIdFromLogs(logs);
-
-        const commitment: ICommitment = { volume: value };
-        const { rootHash } = certificate.prepareEntityCreation(commitment, CommitmentSchema);
-        await privateIssuer.updateCommitment(Number(certificate.id), configuration.blockchainProperties.web3.utils.hexToBytes('0x0'), rootHash);
+        tx = await issuer.issuePrivate(to, updatedOwnershipProperties.rootHash, data, Configuration.getAccount(configuration));
+        newEntity.propertiesDocumentHash = updatedOwnershipProperties.rootHash;
     } else {
-        const publicIssuer: PublicIssuer = configuration.blockchainProperties.issuerLogicInstance.public
-        const data = await publicIssuer.encodeIssue(fromTime, toTime, deviceId);
-
-        const { logs } = await publicIssuer.issue(to, value, data, Configuration.getAccount(configuration));
-
-        certificate.id = getIdFromLogs(logs);
+        tx = await issuer.issue(to, value, data, Configuration.getAccount(configuration));
     }
+
+    newEntity.id = getIdFromLogs(tx.logs);
     
     if (configuration.logger) {
-        configuration.logger.info(`Certificate ${certificate.id} created`);
+        configuration.logger.info(`Certificate ${newEntity.id} created`);
     }
 
-    return certificate.sync();
+    return newEntity.sync();
 };
 
 export async function claimCertificates(

@@ -12,6 +12,7 @@
         "ganache-cli",
         "solc"
     ],
+    "labels": ["dependencies"],
     "packageRules": [
         {
             "packagePatterns": ["eslint"],

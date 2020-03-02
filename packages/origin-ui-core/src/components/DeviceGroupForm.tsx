@@ -210,9 +210,7 @@ export function DeviceGroupForm(props: IProps) {
 
         const deviceProducingProps: Device.IOnChainProperties = {
             smartMeter: { address: DEFAULT_ADDRESS },
-            owner: { address: currentUser.id },
-            lastSmartMeterReadWh: 0,
-            lastSmartMeterReadFileHash: ''
+            owner: { address: currentUser.id }
         };
 
         const deviceProducingPropsOffChain: IDevice = {
@@ -233,7 +231,8 @@ export function DeviceGroupForm(props: IProps) {
             typeOfPublicSupport: '',
             description: '',
             images: JSON.stringify([]),
-            deviceGroup: JSON.stringify(values.children)
+            deviceGroup: JSON.stringify(values.children),
+            smartMeterReads: []
         };
 
         try {

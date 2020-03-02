@@ -18,6 +18,7 @@ import {
     PersonAdd,
     ExitToApp
 } from '@material-ui/icons';
+import { useTranslation } from 'react-i18next';
 
 import { useSelector, useDispatch } from 'react-redux';
 import { useLinks } from '../utils/routing';
@@ -96,6 +97,8 @@ export function Header() {
     } = useLinks();
 
     const originConfiguration = useContext(OriginConfigurationContext);
+
+    const { t } = useTranslation();
 
     const privateKeyIndicator = <VpnKeySharp className={classes.icon} />;
 
@@ -194,21 +197,23 @@ export function Header() {
                 <NavLink to={getDevicesLink()}>{originConfiguration.logo}</NavLink>
                 <ul className="NavMenu nav">
                     <li>
-                        <NavLink to={getDevicesLink()}>Devices</NavLink>
+                        <NavLink to={getDevicesLink()}>{t('header.devices')}</NavLink>
                     </li>
                     <li>
-                        <NavLink to={getCertificatesLink()}>Certificates</NavLink>
+                        <NavLink to={getCertificatesLink()}>{t('header.certificates')}</NavLink>
                     </li>
                     {!isIssuer && (
                         <li>
                             <NavLink to={getDemandsLink()} {...dataTest('header-link-demands')}>
-                                Demands
+                                {t('header.demands')}
                             </NavLink>
                         </li>
                     )}
                     {userOffchain && (
                         <li>
-                            <NavLink to={getOrganizationLink()}>Organizations</NavLink>
+                            <NavLink to={getOrganizationLink()}>
+                                {t('header.organizations')}
+                            </NavLink>
                         </li>
                     )}
                 </ul>
@@ -258,7 +263,7 @@ export function Header() {
                         <>
                             &nbsp;
                             <Link className={classes.endIcon} to={getUserRegisterLink()}>
-                                <Tooltip title="Register offchain user">
+                                <Tooltip title={t('settings.registerOffchainUser')}>
                                     <PersonAdd color="primary" />
                                 </Tooltip>
                             </Link>
@@ -270,7 +275,7 @@ export function Header() {
                         className={classes.endIcon}
                         {...dataTest('header-link-account-settings')}
                     >
-                        <Tooltip title="Settings">
+                        <Tooltip title={t('settings.settings')}>
                             <Settings color="primary" />
                         </Tooltip>
                     </Link>

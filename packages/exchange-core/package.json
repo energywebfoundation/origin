@@ -36,7 +36,8 @@
     "dependencies": {
         "@energyweb/utils-general": "7.0.0",
         "immutable": "4.0.0-rc.12",
-        "rxjs": "6.5.4"
+        "rxjs": "6.5.4",
+        "bn.js": "5.1.1"
     },
     "publishConfig": {
         "access": "public",

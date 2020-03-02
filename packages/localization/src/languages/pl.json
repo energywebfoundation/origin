@@ -1,0 +1,225 @@
+{
+    "translation": {
+        "header": {
+            "devices": "Urządzenia",
+            "certificates": "Certyfikaty",
+            "demands": "Oferty",
+            "organizations": "Organizacje"
+        },
+        "navigation": {
+            "devices": {
+                "all": "Wszystkie urządzenia",
+                "map": "Widok mapy",
+                "my": "Moje urządzenia",
+                "registerDevice": "Zarejestruj urządzenie",
+                "registerDeviceGroup": "Zarejestruj grupę urządzeń",
+                "pending": "Oczekujące"
+            }
+        },
+        "device": {
+            "properties": {
+                "owner": "Właściciel",
+                "facilityName": "Nazwa obiektu",
+                "regionProvince": "Region, prowincja",
+                "type": "Typ",
+                "nameplateCapacity": "Moc",
+                "meterRead": "Odczyt licznika",
+                "commissioningDate": "Data uruchomienia",
+                "status": "Status",
+                "deviceOwner": "Właściciel urządzenia",
+                "complianceRegistry": "Rejestr certyfikacji",
+                "otherGreenAttributes": "Pozostałe zielone atrybuty",
+                "deviceType": "Typ urządzenia",
+                "publicSupport": "Wsparcie publiczne",
+                "geoLocation": "Geo-lokalizacja",
+                "registrationDate": "Data rejestracji",
+                "regions": "Regiony",
+                "provinces": "Prowincje",
+                "longitude": "Długość geograficzna",
+                "latitude": "Szerokość geograficzna",
+                "story": "Opis",
+                "projectStory": "Opis projektu",
+                "images": "Zdjęcia",
+                "capacity": "Pojemność",
+                "address": "Adres"
+            },
+            "actions": {
+                "requestCertificates": "Zażądaj certyfikatów",
+                "approve": "Zaakceptuj",
+                "registerDevice": "Zarejestruj urządzenie",
+                "register": "Zarejestruj"
+            }
+        },
+        "certificate": {
+            "properties": {
+                "compliance": "Standard",
+                "owner": "Właściciel",
+                "price": "Cena",
+                "currency": "Waluta",
+                "certifiedEnergy": "Certyfikowana energia",
+                "deviceType": "Typ urządzenia",
+                "certificationDate": "Data certyfikacji",
+                "from": "Od",
+                "to": "Do"
+            },
+            "actions": {
+                "requestCertificates": "Zażądaj certyfikatów",
+                "approve": "Zaakceptuj",
+                "registerDevice": "Zarejestruj urządzenie",
+                "publishForSale": "Wystaw na sprzedaż",
+                "claim": "Claim",
+                "returnToInbox": "Zwróć do skrzynki",
+                "buy": "Kup",
+                "request": "Żądaj"
+            },
+            "info": {
+                "requestCertificatesFor": "Zażądaj certyfikatów dla urządzenia {facilityName}"
+            }
+        },
+        "search": {
+            "searchByFacilityNameAndOrganization": "Wyszukaj po nazwie obiektu i organizacji",
+            "searchByRegionProvince": "Wyszukaj po regionie i prowincji"
+        },
+        "settings": {
+            "settings": "Ustawienia",
+            "registerOffchainUser": "Zarejestruj użytkownika offchain",
+            "feedback": {
+                "userSettingsUpdated": "Ustawienia użytkownika zostały zaktualizowane.",
+                "blockhainAccountLinked": "Połączono konto blockchain."
+            },
+            "properties": {
+                "email": "E-mail",
+                "blockchainAccount": "Konto blockchain",
+                "notifications": "Powiadomienia",
+                "automaticallyPostCertificates": "Automatycznie wystawiaj certyfikaty na sprzedaż",
+                "price": "Cena",
+                "marketLookupAddress": "Adres kontraktu MarketLookup",
+                "language": "Język",
+                "currency": "Waluta"
+            },
+            "actions": {
+                "verifyBlockchainAccount": "Zweryfikuj konto blockchain"
+            },
+            "navigation": {
+                "settings": "Ustawienia",
+                "import": "Import",
+                "login": "Login",
+                "registerUser": "Zarejestruj użytkownika"
+            }
+        },
+        "general": {
+            "actions": {
+                "update": "Zaktualizuj",
+                "continue": "Kontynuuj",
+                "cancel": "Anuluj"
+            },
+            "feedback": {
+                "noChangesMade": "Nie dokonano żadnych zmian.",
+                "unknownError": "Nieznany błąd"
+            }
+        },
+        "importAccount": {
+            "actions": {
+                "setPassword": "Ustaw hasło",
+                "unlockKeystore": "Odblokuj magazyn kluczy",
+                "loadKeystore": "Załaduj magazyn kluczy",
+                "clearImportedAccounts": "Wyczyść importowane konta"
+            },
+            "feedback": {
+                "pasteAPrivateKey": "Wklej klucz prywatny aby załadować magazyn kluczy"
+            },
+            "properties": {
+                "privateKey": "Klucz prywatny"
+            },
+            "information": {
+                "whatIsKeystore": "Co to jest magazyn kluczy?"
+            }
+        },
+        "meterReads": {
+            "properties": {
+                "time": "Czas ({timezone})",
+                "meterValue": "Odczyt licznika ({unit})",
+                "energy": "Energia ({unit})",
+                "timeframes": {
+                    "day": "Dzień",
+                    "week": "Tydzień",
+                    "month": "Miesiąc",
+                    "year": "Rok"
+                },
+                "smartMeterReadings": "Odczyty licznika"
+            }
+        },
+        "deviceMap": {
+            "actions": {
+                "seeMore": "Zobacz więcej"
+            },
+            "properties": {
+                "owner": "Właściciel"
+            }
+        },
+        "validations": {
+            "yup": {
+                "mixed": {
+                    "default": "{path} jest niepoprawne",
+                    "required": "{path} jest wymaganym polem",
+                    "oneOf": "{path} musi być jedną z wymienionych wartości: {values}",
+                    "notOneOf": "{path} nie może być żadną z wymienionych wartości: {values}",
+                    "notType": {
+                        "mustBeType": "{path} musi mieć typ `{type}`,",
+                        "butValueWas": "ale finalna wartość to: `{value}`",
+                        "castFromTheValue": "(rzutowana z wartości `{originalValue}`).",
+                        "ifNull": "Jeśli \"null\" jest zamierzoną wartością jako pusta wartość, oznacz pole w schemacie jako `.nullable()`"
+                    }
+                },
+                "string": {
+                    "length": "{path} musi mieć dokładnie {length} znaków",
+                    "min": "{path} musi mieć przynajmniej {min} znaków",
+                    "max": "{path} musi mieć maksymalnie {max} znaków",
+                    "matches": "{path} musi spełniać standard: \"{regex}\"",
+                    "email": "{path} musi być prawidłowym adresem email",
+                    "url": "{path} musi być poprawnym URL"
+                },
+                "number": {
+                    "min": "{path} musi być większe lub równe {min}",
+                    "max": "{path} musi być mniejsze lub równe {max}",
+                    "lessThan": "{path} musi być mniejsze niż {less}",
+                    "moreThan": "{path} musi byc większe niż {more}",
+                    "positive": "{path} musi być dodatnią liczbą",
+                    "negative": "{path} musi być ujemną liczbą",
+                    "integer": "{path} musi być liczbą całkowitą"
+                }
+            }
+        },
+        "user": {
+            "properties": {
+                "title": "Tytuł",
+                "firstName": "Imię",
+                "lastName": "Nazwisko",
+                "telephone": "Telefon",
+                "email": "Email",
+                "password": "Hasło"
+            },
+            "actions": {
+                "register": "Zarejestruj",
+                "login": "Zaloguj się"
+            },
+            "feedback": {
+                "userRegistered": "Użytkownik zarejestrowany.",
+                "errorWhileRegisteringUser": "Błąd podczas rejestracji użytkownika."
+            }
+        },
+        "notification": {
+            "type": {
+                "success": "Sukces",
+                "info": "Info",
+                "error": "Błąd",
+                "warning": "Ostrzeżenie"
+            }
+        },
+        "file": {
+            "info": {
+                "dropHereOrClickToSelect": "Upuść pliki tutaj lub kliknij aby wybrać"
+            }
+        }
+    }
+}

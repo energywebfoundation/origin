@@ -70,8 +70,8 @@ async function run() {
     await fs.ensureDir(`${ROOT_DIRECTORY}/schemas`);
 
     await generateSchemaIfNew(
-        'yarn --silent build-schema:Commitment',
-        '/schemas/Commitment.schema.json'
+        'yarn --silent build-schema:OwnershipCommitment',
+        '/schemas/OwnershipCommitment.schema.json'
     );
 
     console.log('DEVICE-REGISTRY: Building schemas done');

@@ -335,9 +335,7 @@ export class Demo {
 
         const deviceProducingProps: Device.IOnChainProperties = {
             smartMeter: { address: this.ACCOUNTS.SMART_METER.address },
-            owner: { address: this.ACCOUNTS.DEVICE_MANAGER.address },
-            lastSmartMeterReadWh: 0,
-            lastSmartMeterReadFileHash: ''
+            owner: { address: this.ACCOUNTS.DEVICE_MANAGER.address }
         };
 
         const deviceProducingPropsOffChain: IDevice = {
@@ -358,7 +356,8 @@ export class Demo {
             description: '',
             images: '',
             region: 'Central',
-            province: 'Nakhon Pathom'
+            province: 'Nakhon Pathom',
+            smartMeterReads: []
         };
 
         let newDevice: ProducingDevice.Entity;
@@ -395,19 +394,10 @@ export class Demo {
     }
 
     async deploySmartMeterRead(smRead: number): Promise<void> {
-        const LAST_SMART_METER_READ = Number(
-            (await this.deviceLogic.getDevice(0)).lastSmartMeterReadWh
-        );
+        const device = await new ProducingDevice.Entity('0', this.conf).sync();
+        const LAST_SMART_METER_READ = device.lastSmartMeterReadWh;
 
-        await this.deviceLogic.saveSmartMeterRead(
-            0,
-            smRead,
-            'newSmartMeterRead',
-            this.nextDeployedSmReadIndex,
-            {
-                privateKey: this.ACCOUNTS.SMART_METER.privateKey
-            }
-        );
+        await device.saveSmartMeterRead(0, smRead);
 
         await this.certificateLogic.createArbitraryCertfificate(
             0,

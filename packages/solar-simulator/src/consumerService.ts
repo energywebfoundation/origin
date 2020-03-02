@@ -103,7 +103,7 @@ export async function startConsumerService(configFilePath: string) {
 
         try {
             let device = await new ProducingDevice.Entity(deviceId, conf).sync();
-            await device.saveSmartMeterRead(meterReading, '', timestamp);
+            await device.saveSmartMeterRead(meterReading, timestamp);
             device = await device.sync();
             conf.logger.verbose(
                 `Producing device ${deviceId} smart meter reading saved: ${meterReading}`

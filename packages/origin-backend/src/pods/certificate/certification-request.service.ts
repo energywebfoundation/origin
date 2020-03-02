@@ -11,7 +11,7 @@ import { CertificationRequest } from './certification-request.entity';
 import { DeviceService } from '../device/device.service';
 
 @Injectable()
-export class CertificateService {
+export class CertificationRequestService {
     constructor(
         @InjectRepository(CertificationRequest)
         private readonly certificationRequestRepository: Repository<CertificationRequest>,

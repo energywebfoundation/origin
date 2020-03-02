@@ -1,12 +1,13 @@
+import { IDeviceTypeService, ILocationService } from '@energyweb/utils-general';
+import BN from 'bn.js';
 import { List } from 'immutable';
 import { Subject } from 'rxjs';
-import { IDeviceTypeService, ILocationService } from '@energyweb/utils-general';
 
-import { OrderSide, Order, OrderStatus } from './Order';
-import { Trade } from './Trade';
-import { Product } from './Product';
-import { Bid } from './Bid';
 import { Ask } from './Ask';
+import { Bid } from './Bid';
+import { Order, OrderSide, OrderStatus } from './Order';
+import { Product } from './Product';
+import { Trade } from './Trade';
 
 export type TradeExecutedEvent = { trade: Trade; ask: Ask; bid: Bid };
 
@@ -126,13 +127,14 @@ export class MatchingEngine {
 
         this.asks.forEach(ask => {
             const isMatching = this.matches(bid, ask);
-            const isFilled = bid.volume === 0;
+            const isFilled = bid.volume.isZero();
+            const isOwned = bid.userId === ask.userId;
 
-            if (!isMatching || isFilled) {
+            if (!isMatching || isFilled || isOwned) {
                 return false;
             }
 
-            const filled = Math.min(ask.volume, bid.volume);
+            const filled = BN.min(ask.volume, bid.volume);
 
             executed = executed.concat({
                 trade: new Trade(bid, ask, filled, ask.price),
@@ -148,7 +150,7 @@ export class MatchingEngine {
 
     private matches(bid: Bid, ask: Ask) {
         const hasProductMatched = bid.matches(ask, this.deviceService, this.locationService);
-        const hasVolume = ask.volume > 0;
+        const hasVolume = !ask.volume.isNeg() && !ask.volume.isZero();
         const hasPriceMatched = ask.price <= bid.price;
 
         return hasPriceMatched && hasVolume && hasProductMatched;

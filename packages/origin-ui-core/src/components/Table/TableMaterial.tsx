@@ -1,6 +1,6 @@
 import React, { ReactNode, useState } from 'react';
 import { ICustomFilter, FiltersHeader, ICustomFilterDefinition } from './FiltersHeader';
-import { SortPropertiesType } from './PaginatedLoaderFilteredSorted';
+import { SortPropertiesType, CurrentSortType } from './PaginatedLoaderFilteredSorted';
 import {
     Paper,
     TableFooter,
@@ -33,11 +33,13 @@ export interface ITableColumn {
     align?: 'right';
 }
 
-type GetReadonlyArrayItemType<T extends ReadonlyArray<any>> = T extends ReadonlyArray<infer U>
+export type GetReadonlyArrayItemType<T extends ReadonlyArray<any>> = T extends ReadonlyArray<
+    infer U
+>
     ? U
     : never;
 
-type TTableRow<T extends string> = {
+export type TTableRow<T extends string> = {
     [key in T]: ReactNode;
 };
 
@@ -50,13 +52,14 @@ interface IProps<T extends readonly ITableColumn[]> {
     total?: number;
     actions?: ITableAction[];
     onSelect?: TableOnSelectFunction;
-    currentSort?: ITableColumn;
+    currentSort?: CurrentSortType;
     sortAscending?: boolean;
-    toggleSort?: (sortProperties: ITableColumn) => void;
+    toggleSort?: (sortType: CurrentSortType) => void;
     filters?: ICustomFilterDefinition[];
     handleRowClick?: (rowIndex: number) => void;
     batchableActions?: IBatchableAction[];
     customSelectCounterGenerator?: CustomCounterGeneratorFunction;
+    highlightedRowsIndexes?: number[];
 }
 
 export function TableMaterial<T extends readonly ITableColumn[]>(props: IProps<T>) {
@@ -113,7 +116,8 @@ export function TableMaterial<T extends readonly ITableColumn[]>(props: IProps<T
         handleRowClick,
         batchableActions,
         customSelectCounterGenerator,
-        toggleSort
+        toggleSort,
+        highlightedRowsIndexes
     } = props;
 
     if (selectedIndexes.length > rows.length) {
@@ -189,7 +193,13 @@ export function TableMaterial<T extends readonly ITableColumn[]>(props: IProps<T
                                             <TableSortLabel
                                                 active={sortedByThisColumn}
                                                 direction={order}
-                                                onClick={() => toggleSort(column)}
+                                                onClick={() => {
+                                                    if (!column.sortProperties || !toggleSort) {
+                                                        return;
+                                                    }
+
+                                                    toggleSort(column as CurrentSortType);
+                                                }}
                                                 hideSortIcon={!isSortable}
                                                 disabled={!isSortable}
                                             >
@@ -205,8 +215,20 @@ export function TableMaterial<T extends readonly ITableColumn[]>(props: IProps<T
                             {rows.map((row, rowIndex) => {
                                 const isItemSelected = selectedIndexes.includes(rowIndex);
 
+                                const rowStyle = highlightedRowsIndexes?.includes(rowIndex)
+                                    ? {
+                                          background: '#424242'
+                                      }
+                                    : {};
+
                                 return (
-                                    <TableRow hover role="checkbox" tabIndex={-1} key={rowIndex}>
+                                    <TableRow
+                                        hover
+                                        role="checkbox"
+                                        tabIndex={-1}
+                                        key={rowIndex}
+                                        style={rowStyle}
+                                    >
                                         {showBatchableActions && (
                                             <TableCell padding="checkbox">
                                                 <Checkbox

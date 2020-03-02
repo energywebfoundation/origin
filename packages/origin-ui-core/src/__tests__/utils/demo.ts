@@ -1,4 +1,5 @@
 import Web3 from 'web3';
+// eslint-disable-next-line import/no-extraneous-dependencies
 import ganache from 'ganache-cli';
 import * as Winston from 'winston';
 
@@ -215,9 +216,7 @@ export async function deployDemo() {
 
     const deviceProducingProps: Device.IOnChainProperties = {
         smartMeter: { address: ACCOUNTS.SMART_METER.address },
-        owner: { address: ACCOUNTS.DEVICE_MANAGER.address },
-        lastSmartMeterReadWh: 0,
-        lastSmartMeterReadFileHash: ''
+        owner: { address: ACCOUNTS.DEVICE_MANAGER.address }
     };
 
     const deviceProducingPropsOffChain: IDevice = {
@@ -237,7 +236,8 @@ export async function deployDemo() {
         description: '',
         images: '',
         region: 'Central',
-        province: 'Nakhon Pathom'
+        province: 'Nakhon Pathom',
+        smartMeterReads: []
     };
 
     try {

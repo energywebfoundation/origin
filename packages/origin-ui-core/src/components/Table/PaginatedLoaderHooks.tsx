@@ -1,18 +1,19 @@
 import { ICustomFilter } from './FiltersHeader';
 import { PAGINATED_LOADER_INITIAL_STATE, DEFAULT_PAGE_SIZE } from './PaginatedLoader';
 import { useState } from 'react';
+import { CurrentSortType } from './PaginatedLoaderFilteredSorted';
 
 export interface IPaginatedLoaderHooksFetchDataParameters {
     requestedPageSize: number;
     offset: number;
-    filters?: ICustomFilter[];
+    requestedFilters?: ICustomFilter[];
 }
 
 interface IUsePaginatedLoaderParameters<T> {
     getPaginatedData: ({
         requestedPageSize,
         offset,
-        filters
+        requestedFilters
     }: IPaginatedLoaderHooksFetchDataParameters) => Promise<{
         paginatedData: T[];
         total: number;
@@ -32,7 +33,7 @@ export function usePaginatedLoader<T>({
 
     async function loadPage(
         page: number,
-        filters?: ICustomFilter[],
+        requestedFilters?: ICustomFilter[],
         checkIsMounted?: () => boolean
     ) {
         const offset = (page - 1) * pageSize;
@@ -40,7 +41,7 @@ export function usePaginatedLoader<T>({
         const { paginatedData: newPaginatedData, total: newTotal } = await getPaginatedData({
             requestedPageSize: pageSize,
             offset,
-            filters
+            requestedFilters
         });
 
         if (!checkIsMounted || checkIsMounted()) {
@@ -55,5 +56,103 @@ export function usePaginatedLoader<T>({
         paginatedData,
         setPageSize,
         total
+    };
+}
+
+export function usePaginatedLoaderFiltered<T>({
+    getPaginatedData,
+    initialPageSize = DEFAULT_PAGE_SIZE
+}: IUsePaginatedLoaderParameters<T>) {
+    const {
+        paginatedData,
+        pageSize,
+        loadPage: paginatedLoaderLoadPage,
+        setPageSize,
+        total
+    } = usePaginatedLoader({
+        getPaginatedData,
+        initialPageSize
+    });
+
+    const [appliedFilters, setAppliedFilters] = useState<ICustomFilter[]>([]);
+
+    async function loadPage(
+        page: number,
+        requestedFilters?: ICustomFilter[],
+        checkIsMounted?: () => boolean
+    ) {
+        if (requestedFilters) {
+            setAppliedFilters(requestedFilters);
+        } else if (appliedFilters) {
+            requestedFilters = appliedFilters;
+        }
+
+        paginatedLoaderLoadPage(page, requestedFilters, checkIsMounted);
+    }
+
+    return {
+        loadPage,
+        pageSize,
+        paginatedData,
+        setPageSize,
+        total
+    };
+}
+
+export function usePaginatedLoaderSorting<T>({
+    currentSort: defaultCurrentSort,
+    sortAscending: defaultSortAscending
+}: {
+    currentSort: CurrentSortType;
+    sortAscending: boolean;
+}) {
+    const [currentSort, setCurrentSort] = useState<CurrentSortType>(defaultCurrentSort);
+    const [sortAscending, setSortAscending] = useState<boolean>(defaultSortAscending);
+
+    function sortData(records: T[]) {
+        return records.sort((a, b) => {
+            return currentSort?.sortProperties
+                ?.map(field => {
+                    const direction = sortAscending ? 1 : -1;
+
+                    let aPropertyValue;
+                    let bPropertyValue;
+
+                    if (typeof field === 'function') {
+                        aPropertyValue = field(a);
+                        bPropertyValue = field(b);
+                    } else if (field.length === 2) {
+                        aPropertyValue = field[1](field[0](a));
+                        bPropertyValue = field[1](field[0](b));
+                    }
+
+                    if (aPropertyValue > bPropertyValue) {
+                        return direction;
+                    }
+
+                    if (aPropertyValue < bPropertyValue) {
+                        return -direction;
+                    }
+
+                    return 0;
+                })
+                .reduce((previous, next) => previous || next, 0);
+        });
+    }
+
+    function toggleSort(column: CurrentSortType) {
+        if (column.id === currentSort.id) {
+            setSortAscending(!sortAscending);
+        } else {
+            setCurrentSort(column);
+            setSortAscending(true);
+        }
+    }
+
+    return {
+        sortData,
+        toggleSort,
+        currentSort,
+        sortAscending
     };
 }

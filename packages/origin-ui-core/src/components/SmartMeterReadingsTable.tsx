@@ -8,6 +8,7 @@ import {
 } from './Table/PaginatedLoaderHooks';
 import { EnergyFormatter } from '../utils/EnergyFormatter';
 import { formatDate } from '../utils/helper';
+import { useTranslation } from 'react-i18next';
 
 interface IProps {
     producingDevice: ProducingDevice.Entity;
@@ -17,12 +18,13 @@ type TRecord = [string, number];
 
 export function SmartMeterReadingsTable(props: IProps) {
     const { producingDevice } = props;
+    const { t } = useTranslation();
 
     async function getPaginatedData({
         requestedPageSize,
         offset
     }: IPaginatedLoaderHooksFetchDataParameters) {
-        const readings = await producingDevice.getSmartMeterReads();
+        const readings = await producingDevice.getAmountOfEnergyGenerated();
         const deviceTimezone = producingDevice.offChainProperties.timezone;
 
         const data = [];
@@ -61,8 +63,16 @@ export function SmartMeterReadingsTable(props: IProps) {
     }, [producingDevice]);
 
     const columns = [
-        { id: 'time', label: `Time (${producingDevice.offChainProperties.timezone})` },
-        { id: 'value', label: `Meter value (${EnergyFormatter.displayUnit})` }
+        {
+            id: 'time',
+            label: t('meterReads.properties.time', {
+                timezone: producingDevice.offChainProperties.timezone
+            })
+        },
+        {
+            id: 'value',
+            label: t('meterReads.properties.meterValue', { unit: EnergyFormatter.displayUnit })
+        }
     ] as const;
 
     const rows = paginatedData.map(data => ({

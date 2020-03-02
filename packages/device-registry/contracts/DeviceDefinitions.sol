@@ -5,7 +5,6 @@ contract DeviceDefinitions {
         address smartMeter;
         address owner;
         uint lastSmartMeterReadWh;
-        string lastSmartMeterReadFileHash;
     }
 
     struct SmartMeterRead {

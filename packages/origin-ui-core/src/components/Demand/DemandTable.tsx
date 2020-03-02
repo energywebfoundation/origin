@@ -1,16 +1,12 @@
 import { Delete, Edit, FileCopy, Share } from '@material-ui/icons';
 import moment from 'moment';
-import React from 'react';
-import { connect } from 'react-redux';
-import { Redirect, RouteComponentProps, withRouter } from 'react-router-dom';
-
+import React, { useState, useEffect } from 'react';
+import { useSelector } from 'react-redux';
+import { Redirect, useHistory } from 'react-router-dom';
 import { Demand, MarketUser } from '@energyweb/market';
-import { Configuration, TimeFrame } from '@energyweb/utils-general';
+import { TimeFrame } from '@energyweb/utils-general';
 import { IOrganizationWithRelationsIds, DemandStatus } from '@energyweb/origin-backend-core';
-import { IOrganizationClient } from '@energyweb/origin-backend-client';
-
 import { getBaseURL, getConfiguration, getDemands } from '../../features/selectors';
-import { IStoreState } from '../../types';
 import { NotificationType, showNotification } from '../../utils/notifications';
 import {
     getCertificatesForDemandLink,
@@ -19,35 +15,17 @@ import {
     getDemandViewLink
 } from '../../utils/routing';
 import { CustomFilterInputType, ICustomFilterDefinition } from '../Table/FiltersHeader';
-import {
-    IPaginatedLoaderFetchDataParameters,
-    IPaginatedLoaderFetchDataReturnValues
-} from '../Table/PaginatedLoader';
-import {
-    getInitialPaginatedLoaderFilteredState,
-    IPaginatedLoaderFilteredState,
-    PaginatedLoaderFiltered
-} from '../Table/PaginatedLoaderFiltered';
+import { IPaginatedLoaderFetchDataReturnValues } from '../Table/PaginatedLoader';
+import { checkRecordPassesFilters } from '../Table/PaginatedLoaderFiltered';
 import { TableMaterial } from '../Table/TableMaterial';
 import { getCurrentUser } from '../../features/users/selectors';
 import { formatDate } from '../../utils/helper';
 import { EnergyFormatter } from '../../utils/EnergyFormatter';
 import { getOffChainDataSource } from '../../features/general/selectors';
-
-interface IStateProps {
-    configuration: Configuration.Entity;
-    demands: Demand.Entity[];
-    currentUser: MarketUser.Entity;
-    baseURL: string;
-    organizationClient: IOrganizationClient;
-}
-
-type Props = RouteComponentProps<{}> & IStateProps;
-
-export interface IDemandTableState extends IPaginatedLoaderFilteredState {
-    showMatchingSupply: number;
-    paginatedData: IEnrichedDemandData[];
-}
+import {
+    usePaginatedLoaderFiltered,
+    IPaginatedLoaderHooksFetchDataParameters
+} from '../Table/PaginatedLoaderHooks';
 
 export interface IEnrichedDemandData {
     demand: Demand.Entity;
@@ -57,56 +35,25 @@ export interface IEnrichedDemandData {
 
 const NO_VALUE_TEXT = 'any';
 
-class DemandTableClass extends PaginatedLoaderFiltered<Props, IDemandTableState> {
-    constructor(props: Props) {
-        super(props);
+export function DemandTable() {
+    const [showMatchingSupply, setShowMatchingSupply] = useState<number>(null);
 
-        this.state = {
-            ...getInitialPaginatedLoaderFilteredState(),
-            showMatchingSupply: null
-        };
-    }
+    const baseURL = useSelector(getBaseURL);
+    const configuration = useSelector(getConfiguration);
+    const demands = useSelector(getDemands);
+    const offChainDataSource = useSelector(getOffChainDataSource);
+    const currentUser = useSelector(getCurrentUser);
 
-    get filters(): ICustomFilterDefinition[] {
-        return [
-            {
-                property: (record: IEnrichedDemandData) => record?.demand?.status.toString(),
-                label: 'Status',
-                input: {
-                    type: CustomFilterInputType.multiselect,
-                    availableOptions: [
-                        {
-                            label: 'Active',
-                            value: DemandStatus.ACTIVE.toString()
-                        },
-                        {
-                            label: 'Paused',
-                            value: DemandStatus.PAUSED.toString()
-                        },
-                        {
-                            label: 'Archived',
-                            value: DemandStatus.ARCHIVED.toString()
-                        }
-                    ],
-                    defaultOptions: [
-                        DemandStatus.ACTIVE.toString(),
-                        DemandStatus.PAUSED.toString(),
-                        DemandStatus.ARCHIVED.toString()
-                    ]
-                }
-            }
-        ];
-    }
+    const history = useHistory();
 
-    async enrichData(demands: Demand.Entity[]): Promise<IEnrichedDemandData[]> {
+    async function enrichData(): Promise<IEnrichedDemandData[]> {
         const promises = demands.map(async (demand: Demand.Entity) => {
-            const demandOwner = await new MarketUser.Entity(
-                demand.owner,
-                this.props.configuration
-            ).sync();
+            const demandOwner = await new MarketUser.Entity(demand.owner, configuration).sync();
 
             const demandOwnerOrganization = demandOwner
-                ? await this.props.organizationClient.getById(demandOwner.information?.organization)
+                ? await offChainDataSource?.organizationClient.getById(
+                      demandOwner.information?.organization
+                  )
                 : null;
 
             return {
@@ -119,7 +66,67 @@ class DemandTableClass extends PaginatedLoaderFiltered<Props, IDemandTableState>
         return Promise.all(promises);
     }
 
-    getRegionText(demand: Demand.Entity): string {
+    async function getPaginatedData({
+        requestedPageSize,
+        offset,
+        requestedFilters
+    }: IPaginatedLoaderHooksFetchDataParameters): Promise<IPaginatedLoaderFetchDataReturnValues> {
+        const enrichedData = await enrichData();
+
+        const filteredData = enrichedData.filter(record =>
+            checkRecordPassesFilters(record, requestedFilters)
+        );
+
+        const total = filteredData.length;
+
+        const paginatedData = filteredData.slice(offset, offset + requestedPageSize);
+
+        return {
+            paginatedData,
+            total
+        };
+    }
+
+    const { paginatedData, loadPage, total, pageSize } = usePaginatedLoaderFiltered<
+        IEnrichedDemandData
+    >({
+        getPaginatedData
+    });
+
+    useEffect(() => {
+        loadPage(1);
+    }, [demands]);
+
+    const filters: ICustomFilterDefinition[] = [
+        {
+            property: (record: IEnrichedDemandData) => record?.demand?.status.toString(),
+            label: 'Status',
+            input: {
+                type: CustomFilterInputType.multiselect,
+                availableOptions: [
+                    {
+                        label: 'Active',
+                        value: DemandStatus.ACTIVE.toString()
+                    },
+                    {
+                        label: 'Paused',
+                        value: DemandStatus.PAUSED.toString()
+                    },
+                    {
+                        label: 'Archived',
+                        value: DemandStatus.ARCHIVED.toString()
+                    }
+                ],
+                defaultOptions: [
+                    DemandStatus.ACTIVE.toString(),
+                    DemandStatus.PAUSED.toString(),
+                    DemandStatus.ARCHIVED.toString()
+                ]
+            }
+        }
+    ];
+
+    function getRegionText(demand: Demand.Entity): string {
         let text = '';
         const { location } = demand;
 
@@ -133,31 +140,27 @@ class DemandTableClass extends PaginatedLoaderFiltered<Props, IDemandTableState>
         return text || NO_VALUE_TEXT;
     }
 
-    viewDemand(rowIndex: number) {
-        const demand = this.state.paginatedData[rowIndex].demand;
+    function viewDemand(rowIndex: number) {
+        const demand = paginatedData[rowIndex].demand;
 
-        this.props.history.push(getDemandViewLink(this.props.baseURL, demand.id.toString()));
+        history.push(getDemandViewLink(baseURL, demand.id.toString()));
     }
 
-    cloneDemand(rowIndex: number) {
-        const demand = this.state.paginatedData[rowIndex].demand;
+    function cloneDemand(rowIndex: number) {
+        const demand = paginatedData[rowIndex].demand;
 
-        this.props.history.push(getDemandCloneLink(this.props.baseURL, demand.id.toString()));
+        history.push(getDemandCloneLink(baseURL, demand.id.toString()));
     }
 
-    async editDemand(rowIndex: number) {
-        const demand = this.state.paginatedData[rowIndex].demand;
+    async function editDemand(rowIndex: number) {
+        const demand = paginatedData[rowIndex].demand;
 
         if (!demand) {
             showNotification(`Can't find demand.`, NotificationType.Error);
             return;
         }
 
-        if (
-            !this.props.currentUser ||
-            !this.props.currentUser.id ||
-            demand.owner.toLowerCase() !== this.props.currentUser.id.toLowerCase()
-        ) {
+        if (!currentUser?.id || demand.owner.toLowerCase() !== currentUser.id.toLowerCase()) {
             showNotification(
                 `You need to be owner of the demand to edit it.`,
                 NotificationType.Error
@@ -165,18 +168,14 @@ class DemandTableClass extends PaginatedLoaderFiltered<Props, IDemandTableState>
             return;
         }
 
-        this.props.history.push(getDemandEditLink(this.props.baseURL, demand.id.toString()));
+        history.push(getDemandEditLink(baseURL, demand.id.toString()));
     }
 
-    async deleteDemand(rowIndex: number) {
+    async function deleteDemand(rowIndex: number) {
         try {
-            const demand = this.state.paginatedData[rowIndex].demand;
+            const demand = paginatedData[rowIndex].demand;
 
-            if (
-                !this.props.currentUser ||
-                !this.props.currentUser.id ||
-                demand.owner.toLowerCase() !== this.props.currentUser.id.toLowerCase()
-            ) {
+            if (!currentUser?.id || demand.owner.toLowerCase() !== currentUser.id.toLowerCase()) {
                 showNotification(
                     `You need to be owner of the demand to delete it.`,
                     NotificationType.Error
@@ -192,7 +191,7 @@ class DemandTableClass extends PaginatedLoaderFiltered<Props, IDemandTableState>
                 return;
             }
 
-            await Demand.deleteDemand(demand.id, this.props.configuration);
+            await Demand.deleteDemand(demand.id, configuration);
 
             showNotification('Demand deleted', NotificationType.Success);
         } catch (error) {
@@ -201,52 +200,18 @@ class DemandTableClass extends PaginatedLoaderFiltered<Props, IDemandTableState>
         }
     }
 
-    showMatchingSupply(demandId: number) {
-        this.setState({
-            showMatchingSupply: demandId
-        });
-    }
-
-    async getPaginatedData({
-        pageSize,
-        offset,
-        filters
-    }: IPaginatedLoaderFetchDataParameters): Promise<IPaginatedLoaderFetchDataReturnValues> {
-        const { demands } = this.props;
-        const enrichedData = await this.enrichData(demands);
-
-        const filteredData = enrichedData.filter(record =>
-            this.checkRecordPassesFilters(record, filters)
-        );
-
-        const total = filteredData.length;
-
-        const paginatedData = filteredData.slice(offset, offset + pageSize);
-
-        return {
-            paginatedData,
-            total
-        };
-    }
-
-    async componentDidUpdate(prevProps: Props) {
-        if (prevProps.demands !== this.props.demands) {
-            await this.loadPage(1);
-        }
-    }
-
-    actions = [
-        { icon: <Edit />, name: 'Edit', onClick: (row: number) => this.editDemand(row) },
-        { icon: <FileCopy />, name: 'Clone', onClick: (row: number) => this.cloneDemand(row) },
-        { icon: <Delete />, name: 'Delete', onClick: (row: number) => this.deleteDemand(row) },
+    const actions = [
+        { icon: <Edit />, name: 'Edit', onClick: (row: number) => editDemand(row) },
+        { icon: <FileCopy />, name: 'Clone', onClick: (row: number) => cloneDemand(row) },
+        { icon: <Delete />, name: 'Delete', onClick: (row: number) => deleteDemand(row) },
         {
             icon: <Share />,
             name: 'Show supplies',
-            onClick: (row: number) => this.showMatchingSupply(row)
+            onClick: (row: number) => setShowMatchingSupply(row)
         }
     ];
 
-    columns = [
+    const columns = [
         { id: 'buyer', label: 'Buyer' },
         { id: 'duration', label: 'Duration' },
         { id: 'region', label: 'Region' },
@@ -260,99 +225,78 @@ class DemandTableClass extends PaginatedLoaderFiltered<Props, IDemandTableState>
         { id: 'energy', label: `Energy (${EnergyFormatter.displayUnit})` }
     ] as const;
 
-    get rows() {
-        return this.state.paginatedData.map(enrichedDemandData => {
-            const demand = enrichedDemandData.demand;
+    const rows = paginatedData.map(enrichedDemandData => {
+        const demand = enrichedDemandData.demand;
 
-            const topLevelDeviceTypes = demand.deviceType
-                ? this.props.configuration?.deviceTypeService
-                      ?.decode(demand.deviceType)
-                      .filter(type => type.length === 1)
-                : [];
+        const topLevelDeviceTypes = demand.deviceType
+            ? configuration?.deviceTypeService
+                  ?.decode(demand.deviceType)
+                  .filter(type => type.length === 1)
+            : [];
 
-            const deviceType =
-                topLevelDeviceTypes.length > 0
-                    ? topLevelDeviceTypes.map(type => type[0]).join(', ')
-                    : NO_VALUE_TEXT;
+        const deviceType =
+            topLevelDeviceTypes.length > 0
+                ? topLevelDeviceTypes.map(type => type[0]).join(', ')
+                : NO_VALUE_TEXT;
 
-            const overallDemand = EnergyFormatter.format(
-                Demand.calculateTotalEnergyDemand(
-                    demand.startTime,
-                    demand.endTime,
-                    demand.energyPerTimeFrame,
-                    demand.timeFrame
-                )
-            );
+        const overallDemand = EnergyFormatter.format(
+            Demand.calculateTotalEnergyDemand(
+                demand.startTime,
+                demand.endTime,
+                demand.energyPerTimeFrame,
+                demand.timeFrame
+            )
+        );
 
-            let demandStatus = 'Active';
+        let demandStatus = 'Active';
 
-            if (demand.status === DemandStatus.PAUSED) {
-                demandStatus = 'Paused';
-            } else if (demand.status === DemandStatus.ARCHIVED) {
-                demandStatus = 'Archived';
-            }
-
-            return {
-                buyer: enrichedDemandData.demandOwnerOrganization?.name,
-                duration: `${formatDate(moment.unix(demand.startTime))} - ${formatDate(
-                    moment.unix(demand.endTime)
-                )}`,
-                region: this.getRegionText(demand),
-                deviceType,
-                repeatable:
-                    typeof demand.timeFrame !== 'undefined'
-                        ? TimeFrame[demand.timeFrame]
-                        : NO_VALUE_TEXT,
-                fromSingleFacility: demand.procureFromSingleFacility ? 'yes' : 'no',
-                vintage:
-                    demand.vintage?.length === 2
-                        ? `${demand.vintage[0]} - ${demand.vintage[1]}`
-                        : NO_VALUE_TEXT,
-                demand: EnergyFormatter.format(demand.energyPerTimeFrame),
-                max: `${(demand.maxPriceInCentsPerMwh / 100).toFixed(2)} ${demand.currency}`,
-                status: demandStatus,
-                energy: overallDemand
-            };
-        });
-    }
-
-    render() {
-        const { showMatchingSupply, total, pageSize } = this.state;
-
-        if (showMatchingSupply !== null) {
-            return (
-                <Redirect
-                    push={true}
-                    to={getCertificatesForDemandLink(this.props.baseURL, showMatchingSupply)}
-                />
-            );
+        if (demand.status === DemandStatus.PAUSED) {
+            demandStatus = 'Paused';
+        } else if (demand.status === DemandStatus.ARCHIVED) {
+            demandStatus = 'Archived';
         }
 
+        return {
+            buyer: enrichedDemandData.demandOwnerOrganization?.name,
+            duration: `${formatDate(moment.unix(demand.startTime))} - ${formatDate(
+                moment.unix(demand.endTime)
+            )}`,
+            region: getRegionText(demand),
+            deviceType,
+            repeatable:
+                typeof demand.timeFrame !== 'undefined'
+                    ? TimeFrame[demand.timeFrame]
+                    : NO_VALUE_TEXT,
+            fromSingleFacility: demand.procureFromSingleFacility ? 'yes' : 'no',
+            vintage:
+                demand.vintage?.length === 2
+                    ? `${demand.vintage[0]} - ${demand.vintage[1]}`
+                    : NO_VALUE_TEXT,
+            demand: EnergyFormatter.format(demand.energyPerTimeFrame),
+            max: `${(demand.maxPriceInCentsPerMwh / 100).toFixed(2)} ${demand.currency}`,
+            status: demandStatus,
+            energy: overallDemand
+        };
+    });
+
+    if (showMatchingSupply !== null) {
         return (
-            <div className="ForSaleWrapper">
-                <TableMaterial
-                    columns={this.columns}
-                    rows={this.rows}
-                    loadPage={this.loadPage}
-                    total={total}
-                    pageSize={pageSize}
-                    filters={this.filters}
-                    handleRowClick={(row: number) => this.viewDemand(row)}
-                    actions={this.actions}
-                />
-            </div>
+            <Redirect push={true} to={getCertificatesForDemandLink(baseURL, showMatchingSupply)} />
         );
     }
-}
 
-export const DemandTable = withRouter(
-    connect(
-        (state: IStoreState): IStateProps => ({
-            configuration: getConfiguration(state),
-            demands: getDemands(state),
-            currentUser: getCurrentUser(state),
-            baseURL: getBaseURL(),
-            organizationClient: getOffChainDataSource(state)?.organizationClient
-        })
-    )(DemandTableClass)
-);
+    return (
+        <div className="ForSaleWrapper">
+            <TableMaterial
+                columns={columns}
+                rows={rows}
+                loadPage={loadPage}
+                total={total}
+                pageSize={pageSize}
+                filters={filters}
+                handleRowClick={row => viewDemand(row)}
+                actions={actions}
+            />
+        </div>
+    );
+}

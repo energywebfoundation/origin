@@ -1,11 +1,6 @@
-import { call, put, select, take, all, fork, apply, cancel, takeEvery } from 'redux-saga/effects';
+import { call, put, select, take, all, fork, apply, cancel } from 'redux-saga/effects';
 import { SagaIterator, eventChannel } from 'redux-saga';
-import {
-    setMarketContractLookupAddress,
-    ContractsActions,
-    ISetMarketContractLookupAddressAction,
-    MARKET_CONTRACT_LOOKUP_ADDRESS_STORAGE_KEY
-} from './actions';
+import { setMarketContractLookupAddress } from './actions';
 import { getSearch } from 'connected-react-router';
 import { getConfiguration } from '../selectors';
 import * as queryString from 'query-string';
@@ -261,18 +256,12 @@ function* fillMarketContractLookupAddressIfMissing(): SagaIterator {
     while (true) {
         yield take(GeneralActions.setEnvironment);
 
-        let marketContractLookupAddress: string = localStorage.getItem(
-            MARKET_CONTRACT_LOOKUP_ADDRESS_STORAGE_KEY
-        );
-
-        const existingMartketContractLookupAddress: string = yield select(
-            getMarketContractLookupAddress
-        );
+        let marketContractLookupAddress: string = yield select(getMarketContractLookupAddress);
 
         const environment: IEnvironment = yield select(getEnvironment);
 
-        if (existingMartketContractLookupAddress || !environment) {
-            return;
+        if (marketContractLookupAddress || !environment) {
+            continue;
         }
 
         let offChainDataSource: IOffChainDataSource = yield select(getOffChainDataSource);
@@ -302,7 +291,7 @@ function* fillMarketContractLookupAddressIfMissing(): SagaIterator {
             yield put(setError(ERROR.WRONG_NETWORK_OR_CONTRACT_ADDRESS));
             yield put(setLoading(false));
 
-            return;
+            continue;
         }
 
         const routerSearch: string = yield select(getSearch);
@@ -364,23 +353,6 @@ function* fillMarketContractLookupAddressIfMissing(): SagaIterator {
     }
 }
 
-function* persistUserDefinedMarketLookupContract(): SagaIterator {
-    yield takeEvery(ContractsActions.setMarketContractLookupAddress, function*(
-        action: ISetMarketContractLookupAddressAction
-    ) {
-        if (action.payload.userDefined) {
-            localStorage.setItem(
-                MARKET_CONTRACT_LOOKUP_ADDRESS_STORAGE_KEY,
-                action.payload.address
-            );
-        }
-        yield;
-    });
-}
-
 export function* contractsSaga(): SagaIterator {
-    yield all([
-        fork(fillMarketContractLookupAddressIfMissing),
-        fork(persistUserDefinedMarketLookupContract)
-    ]);
+    yield all([fork(fillMarketContractLookupAddressIfMissing)]);
 }

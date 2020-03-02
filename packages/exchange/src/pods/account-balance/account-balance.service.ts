@@ -51,7 +51,7 @@ export class AccountBalanceService {
         return this.sumByAsset(
             sellOrders,
             order => order.asset,
-            order => new BN(order.currentVolume * -1)
+            order => new BN(order.currentVolume.muln(-1))
         );
     }
 
@@ -76,7 +76,7 @@ export class AccountBalanceService {
             trade => trade.ask.asset,
             trade => {
                 const sign = trade.ask.userId === userId ? -1 : 1;
-                return new BN(trade.volume * sign);
+                return new BN(trade.volume.muln(sign));
             }
         );
     }

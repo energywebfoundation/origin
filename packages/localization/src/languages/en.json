@@ -1,0 +1,267 @@
+{
+    "translation": {
+        "header": {
+            "devices": "Devices",
+            "certificates": "Certificates",
+            "demands": "Demands",
+            "organizations": "Organizations"
+        },
+        "navigation": {
+            "devices": {
+                "all": "All devices",
+                "map": "Map view",
+                "my": "My devices",
+                "registerDevice": "Register device",
+                "registerDeviceGroup": "Register device group",
+                "pending": "Pending"
+            },
+            "certificates": {
+                "inbox": "Inbox",
+                "forSale": "For sale",
+                "claimsReport": "Claims report",
+                "detailView": "Detail view",
+                "pending": "Pending",
+                "approved": "Approved",
+                "forDemand": "For demand"
+            }
+        },
+        "device": {
+            "properties": {
+                "owner": "Owner",
+                "facilityName": "Facility name",
+                "regionProvince": "Region, province",
+                "type": "Type",
+                "nameplateCapacity": "Nameplate capacity",
+                "meterRead": "Meter read",
+                "commissioningDate": "Commissioning date",
+                "status": "Status",
+                "deviceOwner": "Device owner",
+                "complianceRegistry": "Certified by registry",
+                "otherGreenAttributes": "Other green attributes",
+                "deviceType": "Device type",
+                "publicSupport": "Public support",
+                "geoLocation": "Geo location",
+                "registrationDate": "Registration date",
+                "regions": "Regions",
+                "provinces": "Provinces",
+                "longitude": "Longitude",
+                "latitude": "Latitude",
+                "story": "Story",
+                "projectStory": "Project story",
+                "images": "Images",
+                "capacity": "Capacity",
+                "address": "Address"
+            },
+            "actions": {
+                "requestCertificates": "Request certificates",
+                "approve": "Approve",
+                "registerDevice": "Register device",
+                "register": "Register"
+            },
+            "feedback": {
+                "imagesUploaded": "Images have been uploaded.",
+                "deviceCreated": "Device successfully created.",
+                "pleaseSelectUpToXImages": "Please select up to {limit} images. You've selected {actual}.",
+                "unexpectedErrorWhenUploadingImages": "Unexpected error occurred when uploading images."
+            },
+            "info": {
+                "general": "General",
+                "selectDeviceType": "Select device type",
+                "supported": "Supported",
+                "pleaseFillOtherFields": "Please fill other form fields and proceed by clicking \"Register\".",
+                "uploadUpToXImages": "Upload up to {amount} images",
+                "selectRegion": "Select region",
+                "selectProvince": "Select province"
+            }
+        },
+        "certificate": {
+            "properties": {
+                "compliance": "Compliance",
+                "owner": "Owner",
+                "price": "Price",
+                "currency": "Currency",
+                "certifiedEnergy": "Certified energy",
+                "deviceType": "Device type",
+                "certificationDate": "Certification date",
+                "from": "From",
+                "to": "To"
+            },
+            "actions": {
+                "requestCertificates": "Request certificates",
+                "approve": "Approve",
+                "registerDevice": "Register device",
+                "publishForSale": "Publish for sale",
+                "claim": "Claim",
+                "returnToInbox": "Return to inbox",
+                "buy": "Buy",
+                "request": "Request"
+            },
+            "feedback": {
+                "returnedToInbox": "Certificate {id} has been returned to the inbox.",
+                "claimed": "Certificate {id} has been claimed.",
+                "notOwner": "You are not the owner of certificate {id}.",
+                "alreadyInInbox": "Certificate {id} is already in the inbox.",
+                "alreadyPublishedForSale": "Certificate {id} has already been published for sale.",
+                "noSelected": "No certificates have been selected. Please select at least one certificate.",
+                "pleaseSelectLess": "Please select less than {amount, plural, =1 {# certificate} other {# certificates}}.",
+                "cantBuyOwn": "You can't buy your own certificates.",
+                "zeroSelected": "No certificates have been selected. Please select at least one certificate.",
+                "amountSelected": "{amount, plural, other {# selected}}"
+            },
+            "info": {
+                "requestCertificatesFor": "Request certificates for {facilityName}"
+            }
+        },
+        "search": {
+            "searchByFacilityNameAndOrganization": "Search by facility name and organization",
+            "searchByRegionProvince": "Search by region and province"
+        },
+        "settings": {
+            "settings": "Settings",
+            "registerOffchainUser": "Register offchain user",
+            "feedback": {
+                "userSettingsUpdated": "User settings have been updated.",
+                "blockhainAccountLinked": "Blockchain account linked."
+            },
+            "properties": {
+                "email": "E-mail",
+                "blockchainAccount": "Blockchain account",
+                "notifications": "Notifications",
+                "automaticallyPostCertificates": "Automatically post certificates for sale",
+                "price": "Price",
+                "marketLookupAddress": "Market lookup address",
+                "language": "Language",
+                "currency": "Currency"
+            },
+            "actions": {
+                "verifyBlockchainAccount": "Verify blockchain account"
+            },
+            "navigation": {
+                "settings": "Settings",
+                "import": "Import",
+                "login": "Login",
+                "registerUser": "Register user"
+            }
+        },
+        "general": {
+            "actions": {
+                "update": "Update",
+                "continue": "Continue",
+                "cancel": "Cancel"
+            },
+            "feedback": {
+                "noChangesMade": "No changes have been made.",
+                "unknownError": "Unknown error",
+                "createdByNoun": "Created by {fullName} from the Noun project"
+            }
+        },
+        "importAccount": {
+            "actions": {
+                "setPassword": "Set password",
+                "unlockKeystore": "Unlock keystore",
+                "loadKeystore": "Load keystore",
+                "clearImportedAccounts": "Clear imported accounts"
+            },
+            "feedback": {
+                "pasteAPrivateKey": "Paste a private key or load a keystore file."
+            },
+            "properties": {
+                "privateKey": "Private key"
+            },
+            "information": {
+                "whatIsKeystore": "What is a keystore file?"
+            }
+        },
+        "meterReads": {
+            "properties": {
+                "time": "Time ({timezone})",
+                "meterValue": "Meter value ({unit})",
+                "energy": "Energy ({unit})",
+                "timeframes": {
+                    "day": "Day",
+                    "week": "Week",
+                    "month": "Month",
+                    "year": "Year"
+                },
+                "smartMeterReadings": "Smart meter readings"
+            }
+        },
+        "deviceMap": {
+            "actions": {
+                "seeMore": "See more"
+            },
+            "properties": {
+                "owner": "Owner"
+            }
+        },
+        "validations": {
+            "yup": {
+                "mixed": {
+                    "default": "{path} is invalid",
+                    "required": "{path} is a required field",
+                    "oneOf": "{path} must be one of the following values: {values}",
+                    "notOneOf": "{path} must not be one of the following values: {values}",
+                    "notType": {
+                        "mustBeType": "{path} must be a `{type}` type,",
+                        "butValueWas": "but the final value was: `{value}`",
+                        "castFromTheValue": "(cast from the value `{originalValue}`).",
+                        "ifNull": "If \"null\" is intended as an empty value be sure to mark the schema as `.nullable()`"
+                    }
+                },
+                "string": {
+                    "length": "{path} must be exactly {length} characters",
+                    "min": "{path} must be at least {min} characters",
+                    "max": "{path} must be at most {max} characters",
+                    "matches": "{path} must match the following: \"{regex}\"",
+                    "email": "{path} must be a valid email",
+                    "url": "{path} must be a valid URL",
+                    "trim": "{path} must be a trimmed string",
+                    "lowercase": "{path} must be a lowercase string",
+                    "uppercase": "{path} must be a upper case string"
+                },
+                "number": {
+                    "min": "{path} must be greater than or equal to {min}",
+                    "max": "{path} must be less than or equal to {max}",
+                    "lessThan": "{path} must be less than {less}",
+                    "moreThan": "{path} must be greater than {more}",
+                    "positive": "{path} must be a positive number",
+                    "negative": "{path} must be a negative number",
+                    "integer": "{path} must be an integer"
+                }
+            }
+        },
+        "user": {
+            "properties": {
+                "title": "Title",
+                "firstName": "First name",
+                "lastName": "Last name",
+                "telephone": "Telephone",
+                "email": "Email",
+                "password": "Password"
+            },
+            "actions": {
+                "register": "Register",
+                "login": "Login"
+            },
+            "feedback": {
+                "userRegistered": "User registered.",
+                "errorWhileRegisteringUser": "Error while registering user.",
+                "userLoggedIn": "User logged in.",
+                "couldNotLogIn": "Could not log in with supplied credentials."
+            }
+        },
+        "notification": {
+            "type": {
+                "success": "Success",
+                "info": "Info",
+                "error": "Error",
+                "warning": "Warning"
+            }
+        },
+        "file": {
+            "info": {
+                "dropHereOrClickToSelect": "Drop files here or click to select files"
+            }
+        }
+    }
+}
