@@ -60,7 +60,7 @@
     "reflect-metadata": "0.1.13",
     "rxjs": "6.5.4",
     "sqlite3": "4.1.1",
-    "typeorm": "0.2.22",
+    "typeorm": "0.2.24",
     "ws": "7.2.1"
   },
   "devDependencies": {
