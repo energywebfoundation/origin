@@ -3,6 +3,24 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.8.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-backend@3.7.1...@energyweb/origin-backend@3.8.0) (2020-03-02)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @nestjs/jwt to v6.1.2 ([a8a1d9b](https://github.com/energywebfoundation/origin/commit/a8a1d9b9071026b2cfed345dd7bdfe80a1cd21b9))
+* **deps:** update dependency typeorm to v0.2.24 ([fb6c68b](https://github.com/energywebfoundation/origin/commit/fb6c68b324524fe814859f6274428ddc4f938762))
+* **deps:** update nest monorepo to v6.11.8 ([2934e78](https://github.com/energywebfoundation/origin/commit/2934e780c8555383427cc7c8e22e69fff59ec10f))
+
+
+### Features
+
+* Off-chain smart meter readings ([4dfbff0](https://github.com/energywebfoundation/origin/commit/4dfbff036b20578f6c2d960328a52deb0f0dff15))
+
+
+
+
+
 ## [3.7.1](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-backend@3.7.0...@energyweb/origin-backend@3.7.1) (2020-02-17)
 
 **Note:** Version bump only for package @energyweb/origin-backend

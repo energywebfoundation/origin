@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.3.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-backend-client@3.2.0...@energyweb/origin-backend-client@3.3.0) (2020-03-02)
+
+
+### Features
+
+* Off-chain smart meter readings ([4dfbff0](https://github.com/energywebfoundation/origin/commit/4dfbff036b20578f6c2d960328a52deb0f0dff15))
+
+
+
+
+
 # [3.2.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-backend-client@3.1.0...@energyweb/origin-backend-client@3.2.0) (2020-02-12)
 
 

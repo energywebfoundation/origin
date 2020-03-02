@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.5.4](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-ui@1.5.3...@energyweb/origin-ui@1.5.4) (2020-03-02)
+
+
+### Bug Fixes
+
+* **deps:** update react ([6f4b7ea](https://github.com/energywebfoundation/origin/commit/6f4b7ead51b945c7a5a674002a77e45427ee7c3e))
+* **deps:** update webpack ([0f87434](https://github.com/energywebfoundation/origin/commit/0f87434d299a961ed5970e9277e5ea4615fd5deb))
+
+
+
+
+
 ## [1.5.3](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-ui@1.5.2...@energyweb/origin-ui@1.5.3) (2020-02-17)
 
 **Note:** Version bump only for package @energyweb/origin-ui
