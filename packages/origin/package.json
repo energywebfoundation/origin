@@ -42,7 +42,7 @@
         "@energyweb/device-registry": "5.1.0",
         "@energyweb/user-registry": "3.0.3",
         "@energyweb/utils-general": "7.0.1",
-        "web3": "1.2.4",
+        "web3": "1.2.6",
         "web3-core": "1.2.4",
         "web3-eth-contract": "1.2.4",
         "winston": "3.2.1"

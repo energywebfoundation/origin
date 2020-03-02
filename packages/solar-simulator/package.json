@@ -44,7 +44,7 @@
     "geo-tz": "5.1.0",
     "moment": "2.24.0",
     "moment-timezone": "0.5.28",
-    "web3": "1.2.4",
+    "web3": "1.2.6",
     "winston": "3.2.1"
   },
   "publishConfig": {
