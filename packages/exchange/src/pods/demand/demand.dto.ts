@@ -40,7 +40,8 @@ export class DemandDTO {
                     price: bid.price,
                     product: bid.product,
                     side: bid.side,
-                    validFrom: bid.validFrom.toISOString()
+                    validFrom: bid.validFrom.toISOString(),
+                    demandId: demand.id
                 })
             )
         };

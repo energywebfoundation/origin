@@ -29,7 +29,7 @@ import { TransferDirection } from '../src/pods/transfer/transfer-direction';
 import { Transfer } from '../src/pods/transfer/transfer.entity';
 import { TransferService } from '../src/pods/transfer/transfer.service';
 import { DatabaseService } from './database.service';
-import { OrderDTO } from 'src/pods/order/order.dto';
+import { OrderDTO } from '../src/pods/order/order.dto';
 
 const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
