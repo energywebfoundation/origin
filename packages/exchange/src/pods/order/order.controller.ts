@@ -1,14 +1,14 @@
 import { IUser } from '@energyweb/origin-backend-core';
-import { Body, Controller, ForbiddenException, Logger, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, ForbiddenException, Logger, Post, UseGuards, Get } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 
-import { ensureUser } from '../../utils/validationHelpers';
 import { UserDecorator } from '../decorators/user.decorator';
 import { CreateAskDTO } from './create-ask.dto';
 import { CreateBidDTO } from './create-bid.dto';
 import { OrderService } from './order.service';
+import { OrderDTO } from './order.dto';
 
-@Controller('order')
+@Controller('orders')
 export class OrderController {
     private readonly logger = new Logger(OrderController.name);
 
@@ -19,13 +19,8 @@ export class OrderController {
     public async createBid(@UserDecorator() user: IUser, @Body() newOrder: CreateBidDTO) {
         this.logger.log(`Creating new order ${JSON.stringify(newOrder)}`);
 
-        ensureUser(newOrder, user);
-
         try {
-            const order = await this.orderService.createBid({
-                ...newOrder,
-                userId: user.id.toString()
-            });
+            const order = await this.orderService.createBid(user.id.toString(), newOrder);
 
             this.orderService.submit(order);
 
@@ -42,13 +37,8 @@ export class OrderController {
     public async createAsk(@UserDecorator() user: IUser, @Body() newOrder: CreateAskDTO) {
         this.logger.log(`Creating new order ${JSON.stringify(newOrder)}`);
 
-        ensureUser(newOrder, user);
-
         try {
-            const order = await this.orderService.createAsk({
-                ...newOrder,
-                userId: user.id.toString()
-            });
+            const order = await this.orderService.createAsk(user.id.toString(), newOrder);
 
             this.orderService.submit(order);
 
@@ -58,5 +48,13 @@ export class OrderController {
 
             throw new ForbiddenException();
         }
+    }
+
+    @Get()
+    @UseGuards(AuthGuard())
+    public async getOrders(@UserDecorator() user: IUser) {
+        const orders = await this.orderService.getAllOrders(user.id.toString());
+
+        return orders.map(order => OrderDTO.fromOrder(order));
     }
 }

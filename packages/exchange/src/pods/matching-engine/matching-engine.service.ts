@@ -11,9 +11,9 @@ import { Injectable, Logger } from '@nestjs/common';
 import { Interval } from '@nestjs/schedule';
 import { List } from 'immutable';
 
-import { Order as OrderEntity } from '../order/order.entity';
-import { ProductDTO } from '../order/product.dto';
+import { Order } from '../order/order.entity';
 import { TradeService } from '../trade/trade.service';
+import { ProductDTO } from '../order/product.dto';
 
 @Injectable()
 export class MatchingEngineService {
@@ -21,32 +21,35 @@ export class MatchingEngineService {
 
     private readonly logger = new Logger(MatchingEngineService.name);
 
-    private readonly matchingEngine = new MatchingEngine(
-        new DeviceTypeService([]),
-        new LocationService()
-    );
+    private matchingEngine: MatchingEngine;
 
     constructor(private readonly tradeService: TradeService) {}
 
-    public async init(orders: OrderEntity[]) {
+    public init(orders: Order[], deviceTypes: string[][]) {
         this.logger.log(`Initializing matching engine`);
         this.logger.log(`Submitting ${orders.length}`);
 
+        this.matchingEngine = new MatchingEngine(
+            new DeviceTypeService(deviceTypes),
+            new LocationService()
+        );
+
         orders.forEach(order => {
             this.logger.log(`Submitting order ${order.id}`);
+
             this.matchingEngine.submitOrder(this.toOrder(order));
         });
 
-        this.matchingEngine.trades.subscribe(trades => this.onTradeExecutedEvent(trades));
+        this.matchingEngine.trades.subscribe(async trades => this.onTradeExecutedEvent(trades));
 
         this.initialized = true;
     }
 
-    public submit(orderEntity: OrderEntity) {
-        this.logger.log('Submitting order ', orderEntity.id);
+    public submit(order: Order) {
+        this.logger.log(`Submitting order ${order.id}`);
+        this.logger.debug(`Submitting order ${JSON.stringify(order)}`);
 
-        const order = this.toOrder(orderEntity);
-        this.matchingEngine.submitOrder(order);
+        this.matchingEngine.submitOrder(this.toOrder(order));
     }
 
     public query(product: Product) {
@@ -70,7 +73,7 @@ export class MatchingEngineService {
         await this.tradeService.persist(trades);
     }
 
-    private toOrder(order: OrderEntity) {
+    private toOrder(order: Order) {
         return order.side === OrderSide.Ask
             ? new Ask(
                   order.id,
