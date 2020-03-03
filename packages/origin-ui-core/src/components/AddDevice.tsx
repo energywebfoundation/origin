@@ -17,7 +17,7 @@ import { Formik, Field, Form, FormikActions } from 'formik';
 import { TextField, CheckboxWithLabel } from 'formik-material-ui';
 import { useHistory } from 'react-router-dom';
 import { useLinks } from '../utils/routing';
-import { FormikDatePicker } from './FormikDatePicker';
+import { FormikDatePicker } from './Form/FormikDatePicker';
 import { getCurrentUser } from '../features/users/selectors';
 import { setLoading } from '../features/general/actions';
 import {

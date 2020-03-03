@@ -1,11 +1,9 @@
 import React from 'react';
 import { mount } from 'enzyme';
 import { SmartMeterReadingsChart } from '../../components/SmartMeterReadingsChart';
-import { EnergyFormatter } from '../../utils/EnergyFormatter';
 import { ProducingDevice } from '@energyweb/device-registry';
 import { Bar } from 'react-chartjs-2';
-import moment from 'moment-timezone';
-import { formatDate } from '../../utils/helper';
+import { formatDate, EnergyFormatter, moment } from '../../utils';
 import { IDevice, IEnergyGenerated } from '@energyweb/origin-backend-core';
 import { initializeI18N } from '../../components';
 import { createRenderedHelpers } from '../utils/helpers';
