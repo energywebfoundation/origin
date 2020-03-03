@@ -6,7 +6,6 @@ import { Connection, Repository } from 'typeorm';
 
 import { Order } from '../order/order.entity';
 import { Trade } from './trade.entity';
-import { Demand } from '../demand/demand.entity';
 
 @Injectable()
 export class TradeService {
@@ -21,6 +20,7 @@ export class TradeService {
 
     public async persist(event: List<TradeExecutedEvent>) {
         this.logger.log(`Persisting trades and updating orders: ${event.size}`);
+        this.logger.debug(`Persisting trades and updating orders: ${JSON.stringify(event)}`);
 
         return this.connection.transaction(async entityManager => {
             for (const { bid, ask, trade } of event) {
@@ -32,27 +32,15 @@ export class TradeService {
                     currentVolume: bid.volume,
                     status: bid.status
                 });
-                const tradeEntity = await entityManager.insert<Trade>(Trade, {
-                    ...trade,
+                await entityManager.insert<Trade>(Trade, {
+                    created: trade.created,
+                    price: trade.price,
+                    volume: trade.volume,
                     bid,
                     ask
                 });
-                const demand = await entityManager
-                    .getRepository(Demand)
-                    .createQueryBuilder('demand')
-                    .leftJoin('demand.bids', 'bid')
-                    .where('bid.id = :id', { id: bid.id })
-                    .getOne();
-
-                if (demand) {
-                    await entityManager
-                        .getRepository(Demand)
-                        .createQueryBuilder('demand')
-                        .relation(Demand, 'trades')
-                        .of(demand)
-                        .add(tradeEntity.identifiers[0].id);
-                }
             }
+            this.logger.debug(`Persisting trades and orders completed`);
         });
     }
 
@@ -61,6 +49,7 @@ export class TradeService {
             .createQueryBuilder('trade')
             .leftJoinAndSelect('trade.bid', 'bid')
             .leftJoinAndSelect('trade.ask', 'ask')
+            .leftJoinAndSelect('ask.asset', 'asset')
             .where('ask.userId = :userId OR bid.userId = :userId', { userId })
             .getMany();
 

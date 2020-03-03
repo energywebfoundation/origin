@@ -3,13 +3,27 @@ import axios, { AxiosRequestConfig, AxiosResponse, CancelTokenSource } from 'axi
 export interface IRequestClient {
     authenticationToken: string;
 
-    get<T, U>(url: string, config?: AxiosRequestConfig): Promise<AxiosResponse<U>>;
+    get<T extends any, U extends any>(
+        url: string,
+        config?: AxiosRequestConfig
+    ): Promise<AxiosResponse<U>>;
 
-    post<T, U>(url: string, data?: T, config?: AxiosRequestConfig): Promise<AxiosResponse<U>>;
+    post<T extends any, U extends any>(
+        url: string,
+        data?: T,
+        config?: AxiosRequestConfig
+    ): Promise<AxiosResponse<U>>;
 
-    put<T, U>(url: string, data?: T, config?: AxiosRequestConfig): Promise<AxiosResponse<U>>;
+    put<T extends any, U extends any>(
+        url: string,
+        data?: T,
+        config?: AxiosRequestConfig
+    ): Promise<AxiosResponse<U>>;
 
-    delete<T, U>(url: string, config?: AxiosRequestConfig): Promise<AxiosResponse<U>>;
+    delete<T extends any, U extends any>(
+        url: string,
+        config?: AxiosRequestConfig
+    ): Promise<AxiosResponse<U>>;
 
     generateCancelToken(): CancelTokenSource;
 }

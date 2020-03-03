@@ -3,6 +3,19 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.1.4](https://github.com/energywebfoundation/origin/compare/@energyweb/solar-simulator@1.1.3...@energyweb/solar-simulator@1.1.4) (2020-03-02)
+
+
+### Bug Fixes
+
+* **deps:** update dependency csv-parse to v4.8.6 ([49ca6fa](https://github.com/energywebfoundation/origin/commit/49ca6fa1e01ab850f7b0f1ce22a1d87af6e8f860))
+* **deps:** update dependency csv-parse to v4.8.7 ([a8f9e74](https://github.com/energywebfoundation/origin/commit/a8f9e742ea0b115818d495b3f9b62797889a06af))
+* **deps:** update dependency moment-timezone to v0.5.28 ([75cf848](https://github.com/energywebfoundation/origin/commit/75cf8483ad79f1f527120c0effcd869fa7c3be66))
+
+
+
+
+
 ## [1.1.3](https://github.com/energywebfoundation/origin/compare/@energyweb/solar-simulator@1.1.2...@energyweb/solar-simulator@1.1.3) (2020-02-17)
 
 
