@@ -1,11 +1,4 @@
-import {
-    IsInt,
-    IsNotEmpty,
-    IsPositive,
-    Validate,
-    ValidateNested,
-    IsDateString
-} from 'class-validator';
+import { IsInt, IsPositive, Validate, ValidateNested, IsDateString } from 'class-validator';
 
 import { BNStringValidator } from '../../utils/bnStringValidator';
 import { ProductDTO } from './product.dto';
@@ -23,7 +16,4 @@ export class CreateBidDTO {
 
     @ValidateNested()
     readonly product: ProductDTO;
-
-    @IsNotEmpty()
-    readonly userId: string;
 }

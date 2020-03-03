@@ -11,7 +11,7 @@
   "bugs": {
     "url": "https://github.com/energywebfoundation/origin/issues"
   },
-  "version": "3.0.2",
+  "version": "3.0.3",
   "main": "dist/js/src/index.js",
   "files": [
     "dist/js/schemas",
@@ -43,9 +43,9 @@
   },
   "types": "dist/js/src/index.d.ts",
   "dependencies": {
-    "@energyweb/origin-backend-client": "3.2.0",
-    "@energyweb/origin-backend-core": "1.2.0",
-    "@energyweb/utils-general": "7.0.0",
+    "@energyweb/origin-backend-client": "3.3.0",
+    "@energyweb/origin-backend-core": "1.3.0",
+    "@energyweb/utils-general": "7.0.1",
     "typedarray-to-buffer": "3.1.5",
     "web3": "1.2.4",
     "web3-core": "1.2.4",
@@ -54,7 +54,7 @@
     "yaeti": "1.0.2"
   },
   "devDependencies": {
-    "@energyweb/origin-backend-client-mocks": "0.3.0",
+    "@energyweb/origin-backend-client-mocks": "0.4.0",
     "ethlint": "1.2.5",
     "fs-extra": "8.1.0"
   },

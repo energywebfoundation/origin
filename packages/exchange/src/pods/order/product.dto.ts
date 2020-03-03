@@ -17,11 +17,11 @@ export class ProductDTO {
     @ValidateNested()
     public deviceVintage?: DeviceVintageDTO;
 
-    public static toProduct(product: ProductDTO): Product {
+    public static toProduct(dto: ProductDTO): Product {
         return {
-            ...product,
-            deviceVintage: product.deviceVintage
-                ? new DeviceVintage(product.deviceVintage.year, product.deviceVintage.operator)
+            ...dto,
+            deviceVintage: dto.deviceVintage
+                ? new DeviceVintage(dto.deviceVintage.year, dto.deviceVintage.operator)
                 : null
         };
     }

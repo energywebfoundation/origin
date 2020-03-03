@@ -12,7 +12,7 @@ export class Issuer extends GeneralFunctions {
         const buildFile: any = IssuerJSON;
         super(
             address
-                ? new web3.eth.Contract(IssuerJSON.abi, address)
+                ? new web3.eth.Contract(buildFile.abi, address)
                 : new web3.eth.Contract(
                       buildFile.abi,
                       buildFile.networks.length > 0 ? buildFile.networks[0] : null

@@ -1,4 +1,4 @@
-import { IsInt, IsUUID, IsPositive, Validate, IsNotEmpty, IsDateString } from 'class-validator';
+import { IsInt, IsUUID, IsPositive, Validate, IsDateString } from 'class-validator';
 import { BNStringValidator } from '../../utils/bnStringValidator';
 
 export class CreateAskDTO {
@@ -11,9 +11,6 @@ export class CreateAskDTO {
 
     @IsDateString()
     readonly validFrom: string;
-
-    @IsNotEmpty()
-    readonly userId: string;
 
     @IsUUID()
     readonly assetId: string;

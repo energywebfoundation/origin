@@ -5,7 +5,7 @@ export interface IDeviceClient {
     getById(id: number): Promise<IDevice>;
     getAll(): Promise<IDevice[]>;
     add(id: number, device: IDevice): Promise<IDevice>;
-    update(id: number, data: DeviceUpdateData): Promise<IDevice>
+    update(id: number, data: DeviceUpdateData): Promise<IDevice>;
     addSmartMeterRead(id: number, smartMeterRead: ISmartMeterRead): Promise<void>;
 }
 
@@ -39,17 +39,20 @@ export class DeviceClient implements IDeviceClient {
         return data;
     }
 
-    public async update(
-        id: number,
-        data: DeviceUpdateData
-    ): Promise<IDevice> {
-        const response = await this.requestClient.put<DeviceUpdateData, IDevice>(`${this.endpoint}/${id}`, data);
+    public async update(id: number, data: DeviceUpdateData): Promise<IDevice> {
+        const response = await this.requestClient.put<DeviceUpdateData, IDevice>(
+            `${this.endpoint}/${id}`,
+            data
+        );
 
         return response.data;
     }
 
     public async addSmartMeterRead(id: number, smartMeterRead: ISmartMeterRead): Promise<void> {
-        const response = await this.requestClient.put<ISmartMeterRead, void>(`${this.endpoint}/${id}/smartMeterReading`, smartMeterRead);
+        const response = await this.requestClient.put<ISmartMeterRead, void>(
+            `${this.endpoint}/${id}/smartMeterReading`,
+            smartMeterRead
+        );
 
         return response.data;
     }

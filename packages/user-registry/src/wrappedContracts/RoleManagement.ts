@@ -30,7 +30,7 @@ export class RoleManagement extends GeneralFunctions {
         const buildFile: any = RoleManagementJSON;
         super(
             address
-                ? new web3.eth.Contract(RoleManagementJSON.abi, address)
+                ? new web3.eth.Contract(buildFile.abi, address)
                 : new web3.eth.Contract(
                       buildFile.abi,
                       buildFile.networks.length > 0 ? buildFile.networks[0] : null

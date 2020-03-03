@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0](https://github.com/energywebfoundation/origin/compare/@energyweb/issuer@0.12.0...@energyweb/issuer@1.0.0) (2020-03-02)
+
+
+### Features
+
+* **issuer:** Unified private and public issuer contract ([72de487](https://github.com/energywebfoundation/origin/commit/72de4877c87de16c44f883561406237a96d60d39))
+
+
+### BREAKING CHANGES
+
+* **issuer:** Unified issuer
+
+
+
+
+
 # [0.12.0](https://github.com/energywebfoundation/origin/compare/@energyweb/issuer@0.11.0...@energyweb/issuer@0.12.0) (2020-02-17)
 
 

@@ -2,6 +2,7 @@ import { IDeviceTypeService, ILocationService } from '@energyweb/utils-general';
 import BN from 'bn.js';
 import { List } from 'immutable';
 import { Subject } from 'rxjs';
+import { concatMap } from 'rxjs/operators';
 
 import { Ask } from './Ask';
 import { Bid } from './Bid';
@@ -16,6 +17,8 @@ export class MatchingEngine {
 
     private asks: List<Ask> = List<Ask>();
 
+    private readonly triggers = new Subject();
+
     public trades = new Subject<List<TradeExecutedEvent>>();
 
     public cancellationQueue = List<string>();
@@ -23,7 +26,9 @@ export class MatchingEngine {
     constructor(
         private readonly deviceService: IDeviceTypeService,
         private readonly locationService: ILocationService
-    ) {}
+    ) {
+        this.triggers.pipe(concatMap(async () => this.trigger())).subscribe();
+    }
 
     public submitOrder(order: Ask | Bid) {
         if (order.side === OrderSide.Ask) {
@@ -53,10 +58,15 @@ export class MatchingEngine {
     }
 
     public tick() {
+        this.triggers.next();
+    }
+
+    private trigger() {
         const trades = this.match();
         if (!trades.isEmpty()) {
             this.trades.next(trades);
         }
+        return true;
     }
 
     private insert<T extends Order>(orderBook: List<T>, order: T) {
