@@ -1,4 +1,5 @@
 import Web3 from 'web3';
+import { AbiItem } from 'web3-utils';
 import { GeneralFunctions, ISpecialTx } from '@energyweb/utils-general';
 import { PastEventOptions } from 'web3-eth-contract';
 import UserLogicJSON from '../../build/contracts/lightweight/UserLogic.json';
@@ -7,13 +8,15 @@ export class UserLogic extends GeneralFunctions {
     web3: Web3;
 
     constructor(web3: Web3, address?: string) {
-        const buildFile: any = UserLogicJSON;
+        const buildFile = UserLogicJSON;
+        const buildFileAbi = buildFile.abi as AbiItem[];
+
         super(
             address
-                ? new web3.eth.Contract(buildFile.abi, address)
+                ? new web3.eth.Contract(buildFileAbi, address)
                 : new web3.eth.Contract(
-                      buildFile.abi,
-                      buildFile.networks.length > 0 ? buildFile.networks[0] : null
+                      buildFileAbi,
+                      (buildFile.networks as any).length > 0 ? (buildFile.networks as any)[0] : null
                   )
         );
         this.web3 = web3;

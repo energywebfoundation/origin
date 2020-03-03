@@ -1,20 +1,22 @@
 import { GeneralFunctions, ISpecialTx } from '@energyweb/utils-general';
 import { PastEventOptions } from 'web3-eth-contract';
+import { AbiItem } from 'web3-utils';
 import Web3 from 'web3';
-import moment from 'moment';
 import DeviceLogicJSON from '../../build/contracts/lightweight/DeviceLogic.json';
 
 export class DeviceLogic extends GeneralFunctions {
     web3: Web3;
 
     constructor(web3: Web3, address?: string) {
-        const buildFile: any = DeviceLogicJSON;
+        const buildFile = DeviceLogicJSON;
+        const buildFileAbi = buildFile.abi as AbiItem[];
+
         super(
             address
-                ? new web3.eth.Contract(buildFile.abi, address)
+                ? new web3.eth.Contract(buildFileAbi, address)
                 : new web3.eth.Contract(
-                      buildFile.abi,
-                      buildFile.networks.length > 0 ? buildFile.networks[0] : null
+                      buildFileAbi,
+                      (buildFile.networks as any).length > 0 ? (buildFile.networks as any)[0] : null
                   )
         );
         this.web3 = web3;
