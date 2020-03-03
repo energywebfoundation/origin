@@ -5,10 +5,11 @@ import { ProductDTO } from '../order/product.dto';
 export class ProductService {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     public getProduct(deviceId: string): ProductDTO {
-        return {
-            deviceType: ['Solar;Photovoltaic;Classic silicon'],
-            location: ['Thailand;Central;Nakhon Pathom'],
-            deviceVintage: { year: 2016 }
-        };
+        const product = new ProductDTO();
+        product.deviceType = ['Solar;Photovoltaic;Classic silicon'];
+        product.location = ['Thailand;Central;Nakhon Pathom'];
+        product.deviceVintage = { year: 2016 };
+
+        return product;
     }
 }

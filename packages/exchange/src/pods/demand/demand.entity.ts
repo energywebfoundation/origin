@@ -3,8 +3,7 @@ import {
     BaseEntity,
     Column,
     Entity,
-    JoinTable,
-    ManyToMany,
+    OneToMany,
     PrimaryGeneratedColumn,
     UpdateDateColumn
 } from 'typeorm';
@@ -12,7 +11,6 @@ import {
 import { BNTransformer } from '../../utils/valueTransformers';
 import { Order } from '../order/order.entity';
 import { ProductDTO } from '../order/product.dto';
-import { Trade } from '../trade/trade.entity';
 
 @Entity()
 export class Demand extends BaseEntity {
@@ -41,16 +39,12 @@ export class Demand extends BaseEntity {
     @Column('json')
     product: ProductDTO;
 
-    @ManyToMany(() => Order, {
-        eager: true
-    })
-    @JoinTable()
+    @OneToMany(
+        () => Order,
+        order => order.demand,
+        {
+            eager: true
+        }
+    )
     bids: Order[];
-
-    @ManyToMany(() => Trade, {
-        eager: true,
-        cascade: true
-    })
-    @JoinTable()
-    trades: Trade[];
 }

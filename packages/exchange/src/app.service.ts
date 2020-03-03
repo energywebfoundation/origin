@@ -15,12 +15,12 @@ export class AppService {
         private readonly withdrawalProcessorService: WithdrawalProcessorService
     ) {}
 
-    public async init() {
+    public async init(deviceTypes: string[][]) {
         this.logger.log('Initializing matching engine');
 
         const orders = await this.ordersService.getAllActiveOrders();
 
-        this.matchingEngineService.init(orders);
+        this.matchingEngineService.init(orders, deviceTypes);
 
         await this.depositWatcherService.init();
 

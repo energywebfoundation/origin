@@ -4,6 +4,7 @@ import { AuthGuard } from '@nestjs/passport';
 
 import { UserDecorator } from '../decorators/user.decorator';
 import { DemandService } from './demand.service';
+import { DemandDTO } from './demand.dto';
 
 @Controller('demand')
 export class DemandController {
@@ -11,18 +12,27 @@ export class DemandController {
 
     constructor(private readonly demandService: DemandService) {}
 
-    @Get(':id')
+    @Get('/:id')
     @UseGuards(AuthGuard())
     public async findOne(
         @UserDecorator() user: IUser,
         @Param('id', new ParseUUIDPipe({ version: '4' })) id: string
     ) {
-        return this.demandService.findOne(user.id.toString(), id);
+        this.logger.debug(`Requesting demand ${id} from user ${user.id}`);
+        const demand = await this.demandService.findOne(user.id.toString(), id);
+
+        if (!demand) {
+            return null;
+        }
+
+        return DemandDTO.fromDemand(demand);
     }
 
     @Get()
     @UseGuards(AuthGuard())
     public async getAll(@UserDecorator() user: IUser) {
-        return this.demandService.getAll(user.id.toString());
+        const demands = await this.demandService.getAll(user.id.toString());
+
+        return demands.map(demand => DemandDTO.fromDemand(demand));
     }
 }

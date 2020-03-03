@@ -1,16 +1,22 @@
+import { OrderSide, OrderStatus } from '@energyweb/exchange-core';
 import BN from 'bn.js';
 import {
     BaseEntity,
     Column,
     Entity,
+    JoinTable,
     ManyToOne,
     PrimaryGeneratedColumn,
-    UpdateDateColumn
+    UpdateDateColumn,
+    OneToMany,
+    RelationId
 } from 'typeorm';
 
 import { BNTransformer } from '../../utils/valueTransformers';
 import { Asset } from '../asset/asset.entity';
+import { Demand } from '../demand/demand.entity';
 import { ProductDTO } from './product.dto';
+import { Trade } from '../trade/trade.entity';
 
 @Entity()
 export class Order extends BaseEntity {
@@ -21,7 +27,7 @@ export class Order extends BaseEntity {
     userId: string;
 
     @Column()
-    status: number;
+    status: OrderStatus;
 
     @Column('bigint', { transformer: BNTransformer })
     startVolume: BN;
@@ -30,7 +36,7 @@ export class Order extends BaseEntity {
     currentVolume: BN;
 
     @Column()
-    side: number;
+    side: OrderSide;
 
     @Column()
     price: number;
@@ -42,6 +48,22 @@ export class Order extends BaseEntity {
     @Column('json')
     product: ProductDTO;
 
-    @ManyToOne(() => Asset)
+    @ManyToOne(() => Asset, { eager: true })
     asset: Asset;
+
+    @ManyToOne(
+        () => Demand,
+        demand => demand.bids
+    )
+    @JoinTable()
+    demand: Demand;
+
+    @RelationId((order: Order) => order.demand)
+    demandId: string;
+
+    @OneToMany(
+        () => Trade,
+        trade => trade.ask || trade.bid
+    )
+    trades: Trade[];
 }
