@@ -20,7 +20,7 @@ import {
 import { useSelector, useDispatch } from 'react-redux';
 import { getConfiguration } from '../features/selectors';
 import moment from 'moment';
-import { Formik, Field, Form, FormikActions, FieldArray } from 'formik';
+import { Formik, Field, Form, FormikHelpers, FieldArray } from 'formik';
 import * as Yup from 'yup';
 import { TextField } from 'formik-material-ui';
 import { useHistory } from 'react-router-dom';
@@ -197,7 +197,7 @@ export function DeviceGroupForm(props: IProps) {
 
     async function submitForm(
         values: typeof INITIAL_FORM_VALUES,
-        formikActions: FormikActions<typeof INITIAL_FORM_VALUES>
+        formikActions: FormikHelpers<typeof INITIAL_FORM_VALUES>
     ): Promise<void> {
         if (!currentUser) {
             return;
@@ -282,7 +282,7 @@ export function DeviceGroupForm(props: IProps) {
                     const buttonDisabled = isSubmitting || !isValid || readOnly;
 
                     return (
-                        <Form>
+                        <Form translate="">
                             {!readOnly && (
                                 <>
                                     <Grid container spacing={3}>

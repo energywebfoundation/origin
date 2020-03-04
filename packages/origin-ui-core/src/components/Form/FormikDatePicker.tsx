@@ -1,9 +1,13 @@
 import React from 'react';
-import { DatePicker, DatePickerProps } from '@material-ui/pickers';
-import { FieldProps } from 'formik';
-import { DATE_FORMAT_DMY } from '../../utils/time';
-import { ArrowLeft, ArrowRight, AccessAlarms } from '@material-ui/icons';
+import { ArrowLeft, ArrowRight } from '@material-ui/icons';
 import { TextField, InputAdornment, TextFieldProps } from '@material-ui/core';
+import {
+    DatePicker as DatePickerMaterial,
+    DatePickerProps as DatePickerPropsMaterial
+} from '@material-ui/pickers';
+import { DatePicker, DatePickerProps } from 'formik-material-ui-pickers';
+import { FieldProps, Field, useFormikContext } from 'formik';
+import { Moment, DATE_FORMAT_DMY } from '../../utils';
 
 interface ITextFieldWithArrowsEventHandlers {
     onLeftArrowClick: () => void;
@@ -45,17 +49,12 @@ const TextFieldWithArrows = ({
 );
 
 export const FormikDatePickerWithArrows = ({
-    form: { setFieldValue },
-    field: { name, value },
     onLeftArrowClick,
     onRightArrowClick,
     ...rest
-}: FieldProps<DatePickerProps> & ITextFieldWithArrowsEventHandlers) => (
+}: DatePickerProps & ITextFieldWithArrowsEventHandlers) => (
     <DatePicker
-        onChange={newValue => setFieldValue(name, newValue)}
-        value={value}
         format={DATE_FORMAT_DMY}
-        leftArrowIcon={AccessAlarms}
         TextFieldComponent={(props: TextFieldProps) => (
             <TextFieldWithArrows
                 onLeftArrowClick={onLeftArrowClick}
@@ -71,11 +70,57 @@ export const FormikDatePicker = ({
     form: { setFieldValue },
     field: { name, value },
     ...rest
-}: FieldProps) => (
-    <DatePicker
+}: FieldProps<DatePickerPropsMaterial>) => (
+    <DatePickerMaterial
         onChange={newValue => setFieldValue(name, newValue)}
         value={value}
         format={DATE_FORMAT_DMY}
         {...rest}
     />
 );
+
+export const FormikDatePickerWithMonthArrowsFilled = ({
+    name,
+    label,
+    disabled
+}: {
+    name: string;
+    label: string;
+    disabled: boolean;
+}) => {
+    const { setFieldValue, values } = useFormikContext();
+
+    return (
+        <Field
+            name={name}
+            label={label}
+            inputVariant="filled"
+            variant="inline"
+            fullWidth
+            required
+            component={FormikDatePickerWithArrows}
+            disabled={disabled}
+            views={['year', 'month']}
+            format={null}
+            onLeftArrowClick={() =>
+                setFieldValue(
+                    name,
+                    (values[name] as Moment)
+                        .clone()
+                        .subtract(1, 'month')
+                        .startOf('month')
+                )
+            }
+            onRightArrowClick={() =>
+                values[name] &&
+                setFieldValue(
+                    name,
+                    (values[name] as Moment)
+                        .clone()
+                        .add(1, 'month')
+                        .endOf('month')
+                )
+            }
+        />
+    );
+};

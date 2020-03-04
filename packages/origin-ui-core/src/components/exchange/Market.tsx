@@ -20,10 +20,11 @@ import {
     Moment,
     setMaxTimeInMonth,
     setMinTimeInMonth,
-    useTranslation
+    useTranslation,
+    formatCurrency
 } from '../../utils';
-import { Formik, Field, Form } from 'formik';
-import { FormInput, FormikDatePickerWithArrows, FormikEffect } from '../Form';
+import { Formik, Form } from 'formik';
+import { FormInput, FormikDatePickerWithMonthArrowsFilled, FormikEffect } from '../Form';
 
 interface IFormValues {
     generationDateStart: Moment;
@@ -36,8 +37,8 @@ interface IFormValues {
 
 const INITIAL_FORM_VALUES: IFormValues = {
     energy: '',
-    generationDateEnd: setMaxTimeInMonth(moment()),
     generationDateStart: setMinTimeInMonth(moment()),
+    generationDateEnd: setMaxTimeInMonth(moment()),
     price: '',
     deviceType: [],
     location: []
@@ -71,12 +72,12 @@ export function Market(props: IProps) {
     const { Yup } = useValidation();
 
     const VALIDATION_SCHEMA = Yup.object().shape({
-        generationDateEnd: Yup.date()
-            .required()
-            .label(t('exchange.properties.generationDateEnd')),
         generationDateStart: Yup.date()
             .required()
             .label(t('exchange.properties.generationDateStart')),
+        generationDateEnd: Yup.date()
+            .required()
+            .label(t('exchange.properties.generationDateEnd')),
         energy: Yup.number()
             .required()
             .positive()
@@ -111,11 +112,11 @@ export function Market(props: IProps) {
             <Formik
                 initialValues={initialFormValues}
                 validationSchema={VALIDATION_SCHEMA}
-                isInitialValid={false}
+                validateOnMount={false}
                 onSubmit={null}
             >
                 {formikProps => {
-                    const { isValid, isSubmitting, values, setFieldValue, errors } = formikProps;
+                    const { isValid, isSubmitting, setFieldValue, errors, values } = formikProps;
 
                     const totalPrice = isValid
                         ? calculateTotalPrice(values.price, values.energy)
@@ -131,47 +132,8 @@ export function Market(props: IProps) {
                         !errors?.energy &&
                         !isSubmitting;
 
-                    const DatePickerWithArrows = ({
-                        name,
-                        label
-                    }: {
-                        name: string;
-                        label: string;
-                    }) => (
-                        <Field
-                            name={name}
-                            label={label}
-                            inputVariant="filled"
-                            variant="inline"
-                            fullWidth
-                            required
-                            component={FormikDatePickerWithArrows}
-                            disabled={fieldDisabled}
-                            views={['year', 'month']}
-                            format={null}
-                            onLeftArrowClick={() =>
-                                setFieldValue(
-                                    name,
-                                    (values[name] as Moment)
-                                        .clone()
-                                        .subtract(1, 'month')
-                                        .startOf('month')
-                                )
-                            }
-                            onRightArrowClick={() =>
-                                setFieldValue(
-                                    name,
-                                    (values[name] as Moment)
-                                        .clone()
-                                        .add(1, 'month')
-                                        .endOf('month')
-                                )
-                            }
-                        />
-                    );
-
                     return (
-                        <Form>
+                        <Form translate="">
                             <FormikEffect onChange={onChange} />
                             <Typography variant="h4">{t('exchange.info.market')}</Typography>
                             <Grid container spacing={3}>
@@ -213,15 +175,17 @@ export function Market(props: IProps) {
                             <br />
                             <Grid container spacing={3}>
                                 <Grid item xs={6}>
-                                    <DatePickerWithArrows
+                                    <FormikDatePickerWithMonthArrowsFilled
                                         name="generationDateStart"
                                         label={t('exchange.properties.generationDateStart')}
+                                        disabled={fieldDisabled}
                                     />
                                 </Grid>
                                 <Grid item xs={6}>
-                                    <DatePickerWithArrows
+                                    <FormikDatePickerWithMonthArrowsFilled
                                         name="generationDateEnd"
                                         label={t('exchange.properties.generationDateEnd')}
+                                        disabled={fieldDisabled}
                                     />
                                 </Grid>
                             </Grid>
@@ -261,19 +225,14 @@ export function Market(props: IProps) {
                                                 </InputAdornment>
                                             )
                                         }}
-                                        formControlProps={{
+                                        wrapperProps={{
                                             onBlur: e => {
                                                 const parsedValue = parseFloat(
                                                     (e.target as any)?.value
                                                 );
 
                                                 if (!isNaN(parsedValue) && parsedValue > 0) {
-                                                    setFieldValue(
-                                                        'price',
-                                                        (
-                                                            Math.floor(parsedValue * 100) / 100
-                                                        ).toFixed(2)
-                                                    );
+                                                    setFieldValue('price', parsedValue.toFixed(2));
                                                 }
                                             }
                                         }}
@@ -284,7 +243,7 @@ export function Market(props: IProps) {
                             <Grid container spacing={3}>
                                 <Grid item xs={6}>
                                     <Typography>
-                                        {t('exchange.feedback.total')}: {totalPrice}
+                                        {t('exchange.feedback.total')}: {formatCurrency(totalPrice)}
                                         {currency}
                                     </Typography>
                                 </Grid>

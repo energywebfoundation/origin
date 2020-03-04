@@ -20,7 +20,7 @@ import { getConfiguration } from '../../features/selectors';
 import { getRegions, getCurrencies, getCountry } from '../../features/general/selectors';
 import { CustomSlider, CustomSliderThumbComponent } from '../CustomSlider';
 import moment, { Moment } from 'moment';
-import { Formik, Field, Form, FormikActions } from 'formik';
+import { Formik, Field, Form, FormikHelpers } from 'formik';
 import * as Yup from 'yup';
 import { Select, TextField, CheckboxWithLabel } from 'formik-material-ui';
 import { Demand } from '@energyweb/market';
@@ -163,7 +163,7 @@ export function DemandForm(props: IProps) {
 
     async function submitForm(
         values: typeof INITIAL_FORM_VALUES,
-        formikActions: FormikActions<typeof INITIAL_FORM_VALUES>
+        formikActions: FormikHelpers<typeof INITIAL_FORM_VALUES>
     ): Promise<void> {
         if (values.timeframe === '' || values.currency === '') {
             return;
@@ -292,7 +292,7 @@ export function DemandForm(props: IProps) {
                     }
 
                     return (
-                        <Form {...dataTest('demandForm')}>
+                        <Form {...dataTest('demandForm')} translate="">
                             <Grid container spacing={3}>
                                 <Grid item xs={6}>
                                     <Typography className="mt-3">General</Typography>
@@ -388,6 +388,7 @@ export function DemandForm(props: IProps) {
                                         color="primary"
                                         component={CheckboxWithLabel}
                                         disabled={disabled}
+                                        type="checkbox"
                                         {...dataTest('automaticMatching')}
                                     />
                                 </Grid>
@@ -441,6 +442,7 @@ export function DemandForm(props: IProps) {
                                         color="primary"
                                         component={CheckboxWithLabel}
                                         disabled={disabled}
+                                        type="checkbox"
                                     />
                                 </Grid>
                             </Grid>
