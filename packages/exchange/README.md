@@ -11,9 +11,10 @@
 **Exchange** package provides the order book based exchange functionality for the certificates issued by `issuer` package. The major difference between classic (asset, time, price) order book system is the **product** based matching engine, providing the ability to create custom matching rules.
 
 ## Main features
-- Order book matching engine for time, price and product matching
-- ERC 1155 / ERC 1888 compatible
-- Supply / Demand modules
+
+-   Order book matching engine for time, price and product matching
+-   ERC 1155 / ERC 1888 compatible
+-   Supply / Demand modules
 
 ## Trading product concept
 
@@ -33,9 +34,9 @@ export class Product {
 
 Where
 
-- `deviceType` - describes the type of the device for e.g. using I-REC types
-- `location` - describes the location of the the device for e.g. can be multi-level like Country->Region->Province
-- `deviceVintage` - describes the vintage of the device for e.g. the start year of the device operation
+-   `deviceType` - describes the type of the device for e.g. using I-REC types
+-   `location` - describes the location of the the device for e.g. can be multi-level like Country->Region->Province
+-   `deviceVintage` - describes the vintage of the device for e.g. the start year of the device operation
 
 For a producing device all fields are mandatory.
 
@@ -78,6 +79,38 @@ docker run -p 80:80 \
     -e 'PGADMIN_DEFAULT_PASSWORD=SuperSecret' \
     -d dpage/pgadmin4
 ```
+
+#### SQL dump
+
+`example/example.sql` contains a dump of database filled in with the example data:
+
+1. User with `id=1` as a buyer (owner of the bid orders)
+2. User with `id=2` as a seller (owner of the ask orders), with confirmed deposit of 100MWh (100000000)
+3. 3 open bids with prices 90,85,75
+4. 3 open asks with prices 110,120,130
+5. 1 filled ask
+6. 1 partially filled bid
+7. 1 trade
+
+All orders are using same Product definition:
+
+```
+{
+    "deviceType":["Solar;Photovoltaic;Classic silicon"],
+    "location":["Thailand;Central;Nakhon Pathom"],
+    "deviceVintage":{"year":2016}
+}
+```
+
+In order to deploy the data please use pgadmin or psql or similar tools to import \*.sql tool.
+
+_Notice_ that you might need to remove previously imported data in case of PK violations. Use
+
+```
+TRUNCATE "account","asset","demand","order","trade","transfer" CASCADE
+```
+
+with caution.
 
 ### Swagger
 
