@@ -268,7 +268,7 @@ export function HierarchicalMultiSelect<T>(props: IOwnProps<T>) {
                 disabled={disabled}
                 {...dataTest('hierarchical-multi-select-level-1')}
             />
-            {levelTwoValues.length > 0 && (
+            {props.selectOptions && props.selectOptions[1]?.label && levelTwoValues.length > 0 && (
                 <MultiSelectAutocomplete
                     label={props.selectOptions[1].label}
                     placeholder={readOnly ? '' : props.selectOptions[1].placeholder}

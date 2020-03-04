@@ -27,10 +27,10 @@ const DATA: IOrderBookOrderDTO[] = [
 
 const originConfiguration = createOriginConfiguration();
 
-const BidsComponent = () => (
+const OrderComponent = () => (
     <Orders
         data={object('data', DATA)}
-        currency={text('currency', '$')}
+        currency={text('currency', 'USD')}
         title={text('title', 'Orders')}
         highlightOrdersUserId={text('highlightOrdersUserId', '2')}
     />
@@ -38,6 +38,6 @@ const BidsComponent = () => (
 
 export const defaultView = () => (
     <MuiThemeProvider theme={originConfiguration.materialTheme}>
-        <BidsComponent />
+        <OrderComponent />
     </MuiThemeProvider>
 );

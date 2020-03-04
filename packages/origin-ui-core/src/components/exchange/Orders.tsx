@@ -7,6 +7,7 @@ import {
 import { EnergyFormatter } from '../../utils/EnergyFormatter';
 import { Typography } from '@material-ui/core';
 import { IOrderBookOrderDTO } from './order-book-order.dto';
+import { useTranslation } from '../../utils';
 
 interface IProps {
     data: IOrderBookOrderDTO[];
@@ -17,6 +18,8 @@ interface IProps {
 
 export function Orders(props: IProps) {
     const { currency, data, title, highlightOrdersUserId } = props;
+
+    const { t } = useTranslation();
 
     async function getPaginatedData({
         requestedPageSize,
@@ -45,8 +48,11 @@ export function Orders(props: IProps) {
     }, [props.data]);
 
     const columns = [
-        { id: 'volume', label: `Volume (${EnergyFormatter.displayUnit})` },
-        { id: 'price', label: `Price (${currency})` }
+        { id: 'volume', label: t('exchange.info.volume', { unit: EnergyFormatter.displayUnit }) },
+        {
+            id: 'price',
+            label: t('exchange.info.price', { currency, energyUnit: EnergyFormatter.displayUnit })
+        }
     ] as const;
 
     const highlightedRowsIndexes = [];

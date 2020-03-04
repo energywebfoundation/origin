@@ -3,5 +3,9 @@ module.exports = ({ config }) => {
       'popper.js$': 'popper.js/dist/esm/popper.js',
       ...config.resolve.alias
     };
+    config.node = {
+      fs: 'empty',
+      ...config.node
+    };
     return config;
   };

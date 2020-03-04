@@ -19,7 +19,7 @@ import { IPaginatedLoaderFetchDataReturnValues } from '../Table/PaginatedLoader'
 import { checkRecordPassesFilters } from '../Table/PaginatedLoaderFiltered';
 import { TableMaterial } from '../Table/TableMaterial';
 import { getCurrentUser } from '../../features/users/selectors';
-import { formatDate } from '../../utils/helper';
+import { formatDate } from '../../utils/time';
 import { EnergyFormatter } from '../../utils/EnergyFormatter';
 import { getOffChainDataSource } from '../../features/general/selectors';
 import {

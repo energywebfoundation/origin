@@ -262,6 +262,28 @@
             "info": {
                 "dropHereOrClickToSelect": "Drop files here or click to select files"
             }
+        },
+        "exchange": {
+            "actions": {
+                "notify": "Notify",
+                "bid": "Bid"
+            },
+            "feedback": {
+                "total": "Total"
+            },
+            "info": {
+                "regions": "Regions",
+                "selectMultipleRegions": "Select multiple regions",
+                "volume": "Volume ({unit})",
+                "price": "Price ({currency}/{energyUnit})",
+                "market": "Market"
+            },
+            "properties": {
+                "price": "Price",
+                "energy": "Energy",
+                "generationDateStart": "Generation date start",
+                "generationDateEnd": "Generation date end",
+            }
         }
     }
 }

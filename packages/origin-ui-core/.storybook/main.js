@@ -21,6 +21,7 @@ module.exports = {
                 include: [path.resolve(__dirname, '../src')],
             },
         },
-        '@storybook/preset-scss'
+        '@storybook/preset-scss',
+        '@storybook/addon-actions/register'
     ]
 }

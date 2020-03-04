@@ -21,7 +21,8 @@ import { useSelector, useDispatch } from 'react-redux';
 import { getConfiguration } from '../../features/selectors';
 import { getCurrencies } from '../../features/general/selectors';
 import { setLoading } from '../../features/general/actions';
-import { countDecimals, formatDate } from '../../utils/helper';
+import { countDecimals } from '../../utils/helper';
+import { formatDate } from '../../utils/time';
 import { EnergyFormatter } from '../../utils/EnergyFormatter';
 
 interface IProps {

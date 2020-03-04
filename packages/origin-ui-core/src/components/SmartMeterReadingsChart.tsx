@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Bar } from 'react-chartjs-2';
-import { moment } from '../utils/time';
+import { moment, formatDate } from '../utils/time';
 import { Button, ButtonGroup } from '@material-ui/core';
 import { ProducingDevice } from '@energyweb/device-registry';
-import { reverse, formatDate } from '../utils/helper';
+import { reverse } from '../utils/helper';
 import { EnergyFormatter } from '../utils/EnergyFormatter';
 import { useOriginConfiguration } from '../utils/configuration';
 import { useTranslation } from 'react-i18next';

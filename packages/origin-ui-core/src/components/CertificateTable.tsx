@@ -24,10 +24,10 @@ import { getBaseURL, getConfiguration, getProducingDevices } from '../features/s
 import { IStoreState } from '../types';
 import {
     formatCurrency,
-    formatDate,
     getDeviceLocationText,
     LOCATION_TITLE_TRANSLATION_KEY
 } from '../utils/helper';
+import { formatDate } from '../utils/time';
 import { NotificationType, showNotification } from '../utils/notifications';
 import { getCertificateDetailLink } from '../utils/routing';
 import { IBatchableAction } from './Table/ColumnBatchActions';

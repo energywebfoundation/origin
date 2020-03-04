@@ -8,6 +8,7 @@ import {
     OriginConfigurationProvider
 } from './OriginConfigurationContext';
 import { DeviceTypeService, EncodedDeviceType } from '@energyweb/utils-general';
+import { TEST_DEVICE_TYPES } from '../__tests__/utils/helpers';
 
 export default {
     title: 'HierarchicalMultiSelect',
@@ -18,31 +19,7 @@ export default {
 function TestWrapper() {
     const singleChoice = boolean('singleChoice', false);
     const [selectedDeviceType, setSelectedDeviceType] = useState<EncodedDeviceType>([]);
-    const deviceTypeService = new DeviceTypeService(
-        object('allValues', [
-            ['Solar'],
-            ['Solar', 'Photovoltaic'],
-            ['Solar', 'Photovoltaic', 'Roof mounted'],
-            ['Solar', 'Photovoltaic', 'Ground mounted'],
-            ['Solar', 'Photovoltaic', 'Classic silicon'],
-            ['Solar', 'Concentration'],
-            ['Wind'],
-            ['Wind', 'Onshore'],
-            ['Wind', 'Offshore'],
-            ['Solid'],
-            ['Solid', 'Muncipal waste'],
-            ['Solid', 'Muncipal waste', 'Biogenic'],
-            ['Solid', 'Industrial and commercial waste'],
-            ['Solid', 'Industrial and commercial waste', 'Biogenic'],
-            ['Solid', 'Wood'],
-            ['Solid', 'Wood', 'Forestry products'],
-            ['Solid', 'Wood', 'Forestry by-products & waste'],
-            ['Solid', 'Animal fats'],
-            ['Solid', 'Biomass from agriculture'],
-            ['Solid', 'Biomass from agriculture', 'Agricultural products'],
-            ['Solid', 'Biomass from agriculture', 'Agricultural by-products & waste']
-        ])
-    );
+    const deviceTypeService = new DeviceTypeService(object('allValues', TEST_DEVICE_TYPES));
 
     return (
         <HierarchicalMultiSelect
