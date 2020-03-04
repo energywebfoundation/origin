@@ -34,6 +34,7 @@ INSERT INTO public.account (id, "userId", address) VALUES ('d24531e8-a14e-48fb-9
 --
 
 INSERT INTO public.asset (id, address, "tokenId", "deviceId") VALUES ('e7ce7521-aea0-49a0-bed3-deb7db357cd2', '0x9876', '0', '0');
+INSERT INTO public.asset (id, address, "tokenId", "deviceId") VALUES ('2c0fd5e0-a819-4d6a-bfde-e24343d9d679', '0x9876', '1', '1');
 
 
 --
@@ -59,10 +60,17 @@ INSERT INTO public."order" (id, "userId", status, "startVolume", "currentVolume"
 INSERT INTO public."order" (id, "userId", status, "startVolume", "currentVolume", side, price, "validFrom", product, "assetId", "demandId") VALUES ('6ec0593e-7810-4164-96a6-954b2e441172', '1', 0, 2500000, 2500000, 0, 750, '2020-03-04 11:20:05.648397+00', '{"deviceType":["Solar;Photovoltaic;Classic silicon"],"location":["Thailand;Central;Nakhon Pathom"],"deviceVintage":{"year":2016}}', NULL, NULL);
 
 
-INSERT INTO public."order" (id, "userId", status, "startVolume", "currentVolume", side, price, "validFrom", product, "assetId", "demandId") VALUES ('d34ca8db-fa66-47fa-9d3f-6d9d278c03b2', '2', 0, 5000000, 5000000, 1, 1100, '2020-03-04 11:20:05.648397+00', '{"deviceType":["Solar;Photovoltaic;Classic silicon"],"location":["Thailand;Central;Nakhon Pathom"],"deviceVintage":{"year":2016}}', NULL, '87406dfd-1757-4ef9-ab28-c89ab8dadf90');
-INSERT INTO public."order" (id, "userId", status, "startVolume", "currentVolume", side, price, "validFrom", product, "assetId", "demandId") VALUES ('a15e2d4c-f9d8-432e-8635-21b6c9aadcdf', '2', 0, 5000000, 5000000, 1, 1200, '2020-03-04 11:20:05.648397+00', '{"deviceType":["Solar;Photovoltaic;Classic silicon"],"location":["Thailand;Central;Nakhon Pathom"],"deviceVintage":{"year":2016}}', NULL, '87406dfd-1757-4ef9-ab28-c89ab8dadf90');
-INSERT INTO public."order" (id, "userId", status, "startVolume", "currentVolume", side, price, "validFrom", product, "assetId", "demandId") VALUES ('b2a8a14c-ddf7-45cf-bc4e-108ba19d11eb', '2', 0, 15000000, 15000000, 1, 1300, '2020-03-04 11:20:05.648397+00', '{"deviceType":["Solar;Photovoltaic;Classic silicon"],"location":["Thailand;Central;Nakhon Pathom"],"deviceVintage":{"year":2016}}', NULL, '87406dfd-1757-4ef9-ab28-c89ab8dadf90');
+INSERT INTO public."order" (id, "userId", status, "startVolume", "currentVolume", side, price, "validFrom", product, "assetId", "demandId") VALUES ('d34ca8db-fa66-47fa-9d3f-6d9d278c03b2', '2', 0, 5000000, 5000000, 1, 1100, '2020-03-04 11:20:05.648397+00', '{"deviceType":["Solar;Photovoltaic;Classic silicon"],"location":["Thailand;Central;Nakhon Pathom"],"deviceVintage":{"year":2016}}', 'e7ce7521-aea0-49a0-bed3-deb7db357cd2', NULL);
+INSERT INTO public."order" (id, "userId", status, "startVolume", "currentVolume", side, price, "validFrom", product, "assetId", "demandId") VALUES ('a15e2d4c-f9d8-432e-8635-21b6c9aadcdf', '2', 0, 5000000, 5000000, 1, 1200, '2020-03-04 11:20:05.648397+00', '{"deviceType":["Solar;Photovoltaic;Classic silicon"],"location":["Thailand;Central;Nakhon Pathom"],"deviceVintage":{"year":2016}}', 'e7ce7521-aea0-49a0-bed3-deb7db357cd2', NULL);
+INSERT INTO public."order" (id, "userId", status, "startVolume", "currentVolume", side, price, "validFrom", product, "assetId", "demandId") VALUES ('b2a8a14c-ddf7-45cf-bc4e-108ba19d11eb', '2', 0, 15000000, 15000000, 1, 1300, '2020-03-04 11:20:05.648397+00', '{"deviceType":["Solar;Photovoltaic;Classic silicon"],"location":["Thailand;Central;Nakhon Pathom"],"deviceVintage":{"year":2016}}', 'e7ce7521-aea0-49a0-bed3-deb7db357cd2', NULL);
 
+INSERT INTO public."order" (id, "userId", status, "startVolume", "currentVolume", side, price, "validFrom", product, "assetId", "demandId") VALUES ('3016eaee-e93e-4356-a5c9-f45f228642f5', '2', 0, 3000000, 3000000, 1, 800, '2020-03-04 11:20:05.648397+00', '{"deviceType":["Wind;onshore"],"location":["Thailand;Northeast;Nakhon Ratchasima"],"deviceVintage":{"year":2014}}', '2c0fd5e0-a819-4d6a-bfde-e24343d9d679', NULL);
+INSERT INTO public."order" (id, "userId", status, "startVolume", "currentVolume", side, price, "validFrom", product, "assetId", "demandId") VALUES ('2ead1352-cff0-41b7-b5ba-841e8de07d0f', '2', 0, 4000000, 4000000, 1, 850, '2020-03-04 11:20:05.648397+00', '{"deviceType":["Wind;onshore"],"location":["Thailand;Northeast;Nakhon Ratchasima"],"deviceVintage":{"year":2014}}', '2c0fd5e0-a819-4d6a-bfde-e24343d9d679', NULL);
+INSERT INTO public."order" (id, "userId", status, "startVolume", "currentVolume", side, price, "validFrom", product, "assetId", "demandId") VALUES ('b3da36a4-9562-466d-aa6e-9cf0aed8a336', '2', 0, 5000000, 5000000, 1, 860, '2020-03-04 11:20:05.648397+00', '{"deviceType":["Wind;onshore"],"location":["Thailand;Northeast;Nakhon Ratchasima"],"deviceVintage":{"year":2014}}', '2c0fd5e0-a819-4d6a-bfde-e24343d9d679', NULL);
+
+INSERT INTO public."order" (id, "userId", status, "startVolume", "currentVolume", side, price, "validFrom", product, "assetId", "demandId") VALUES ('d6d8be53-4d50-4a71-9554-609a10bf2a73', '2', 0, 5000000, 5000000, 0, 790, '2020-03-04 11:20:05.648397+00', '{"deviceType":["Wind"],"location":["Thailand;Northeast"]}', NULL, NULL);
+INSERT INTO public."order" (id, "userId", status, "startVolume", "currentVolume", side, price, "validFrom", product, "assetId", "demandId") VALUES ('dda5f595-b0f6-4f9b-b186-f04c86d71ce5', '2', 0, 5000000, 5000000, 0, 780, '2020-03-04 11:20:05.648397+00', '{"deviceType":["Wind"],"location":["Thailand;Northeast"]}', NULL, NULL);
+INSERT INTO public."order" (id, "userId", status, "startVolume", "currentVolume", side, price, "validFrom", product, "assetId", "demandId") VALUES ('fa041c7a-2a1f-4241-b158-cb6d3ad1789b', '2', 0, 5000000, 5000000, 0, 770, '2020-03-04 11:20:05.648397+00', '{"deviceType":["Wind"],"location":["Thailand;Northeast"]}', NULL, NULL);
 
 --
 -- TOC entry 2922 (class 0 OID 91453)
@@ -80,6 +88,7 @@ INSERT INTO public.trade (id, created, volume, price, "bidId", "askId") VALUES (
 --
 
 INSERT INTO public.transfer (id, "userId", amount, "transactionHash", address, status, "confirmationBlock", direction, "assetId") VALUES ('7877df6a-79f0-4599-b92a-673754d1e6a2', '2', 100000000, '0x4a84a', '0x4dc3c0838CB50dbA753f3aE583a61655019c40e1', 3, 10000, 0, 'e7ce7521-aea0-49a0-bed3-deb7db357cd2');
+INSERT INTO public.transfer (id, "userId", amount, "transactionHash", address, status, "confirmationBlock", direction, "assetId") VALUES ('a07ca8f6-a061-4887-9e54-3bf9036ae864', '2', 100000000, '0x4a84b', '0x4dc3c0838CB50dbA753f3aE583a61655019c40e1', 3, 10000, 0, '2c0fd5e0-a819-4d6a-bfde-e24343d9d679');
 
 
 -- Completed on 2020-03-04 12:36:13 CET
