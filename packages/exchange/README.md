@@ -104,6 +104,16 @@ TRUNCATE "account","asset","demand","order","trade","transfer" CASCADE
 
 with caution.
 
+#### Bypassing auth for testing purpose
+
+It's possible to run the exchange in bypass auth mode by running:
+
+```
+yarn start:noauth
+```
+
+This can be used for fast integrations and testing
+
 ### Swagger
 
 Swagger endpoint can be found at

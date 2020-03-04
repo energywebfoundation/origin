@@ -18,6 +18,7 @@
         "build:ts": "nest build -p tsconfig.build.json --tsc",
         "prettier": "prettier --write --config-precedence file-override './src/**/*'",
         "start": "nest start",
+        "start:noauth": "concurrently --success first --kill-others -n eth,test \"yarn start-ganache\"  \"wait-on tcp:8580 && ts-node src/main-dev.ts\"",
         "start:dev": "nest start --watch",
         "start:debug": "nest start --debug --watch",
         "start:prod": "node dist/main",
