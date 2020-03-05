@@ -4,6 +4,13 @@ language: node_js
 node_js:
   - "12"
 
+services: postgresql
+
+env:
+  global:
+    - EXCHANGE_DB_PASSWORD=
+    - EXCHANGE_DB_DATABASE=origin_exchange
+
 git:
   depth: false
 
@@ -39,6 +46,9 @@ before_install:
   - sh scripts/restore-original-timestamps.sh
   - git fetch origin master:master
 
+before_script:
+  - psql -c 'create database origin_exchange;' -U postgres
+
 before_deploy:
   - git config --global user.email ${GITHUB_EMAIL}
   - git config --global user.name ${GITHUB_USER}
@@ -59,6 +69,7 @@ script:
   - yarn test:ci:contracts:deployment
   - yarn test:ci:apps
   - yarn test:ci:ui
+  - yarn test:ci:e2e
 
 deploy:
   - provider: script
