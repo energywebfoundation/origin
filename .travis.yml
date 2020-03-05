@@ -8,7 +8,8 @@ services: postgresql
 
 env:
   global:
-    - EXCHANGE_DB_PASSWORD=""
+    - EXCHANGE_DB_PASSWORD=
+    - EXCHANGE_DB_DATABASE=origin_exchange
 
 git:
   depth: false
@@ -46,7 +47,7 @@ before_install:
   - git fetch origin master:master
 
 before_script:
-  - psql -c 'create database origin-exchange;' -U postgres
+  - psql -c 'create database origin_exchange;' -U postgres
 
 before_deploy:
   - git config --global user.email ${GITHUB_EMAIL}
