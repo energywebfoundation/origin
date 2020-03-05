@@ -72,6 +72,8 @@ describe('Application[E2E]', () => {
             click('header-link-demands');
             click('demands-link-create');
 
+            await refresh();
+
             const submitButton = rendered.find(`button${dataTestSelector('submitButton')}`);
 
             expect(submitButton.text()).toBe('Create demand');

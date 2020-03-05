@@ -280,6 +280,7 @@ export function DemandForm(props: IProps) {
                     const { values, isValid, isSubmitting } = formikProps;
 
                     const disabled = isSubmitting || readOnly;
+                    const submitButtonDisabled = disabled || !isValid || !isUserTraderRole;
 
                     let buttonTooltip = '';
 
@@ -530,7 +531,7 @@ export function DemandForm(props: IProps) {
                                             variant="contained"
                                             color="primary"
                                             className="mt-3 right"
-                                            disabled={disabled || !isValid || !isUserTraderRole}
+                                            disabled={submitButtonDisabled}
                                             {...dataTest('submitButton')}
                                         >
                                             {submitButtonText}
