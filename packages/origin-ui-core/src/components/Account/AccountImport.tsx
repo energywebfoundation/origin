@@ -13,7 +13,7 @@ import {
 } from '@material-ui/core';
 import { CloudUpload } from '@material-ui/icons';
 import { TextField } from 'formik-material-ui';
-import { Formik, Field, Form, FormikActions } from 'formik';
+import { Formik, Field, Form, FormikHelpers } from 'formik';
 import * as Yup from 'yup';
 import { useDispatch, useSelector } from 'react-redux';
 import { importAccount, clearEncryptedAccounts } from '../../features/authentication/actions';
@@ -34,7 +34,7 @@ export function AccountImport() {
 
     const onSubmit = (
         values: typeof initialFormValues,
-        actions: FormikActions<typeof initialFormValues>
+        actions: FormikHelpers<typeof initialFormValues>
     ) => {
         dispatch(
             showRequestPasswordModal({
@@ -136,7 +136,7 @@ export function AccountImport() {
                             const { isValid } = props;
 
                             return (
-                                <Form {...dataTest('account-import-form')}>
+                                <Form {...dataTest('account-import-form')} translate="">
                                     <Grid container>
                                         <Grid item xs={6}>
                                             <FormControl

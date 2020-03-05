@@ -1,6 +1,6 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Formik, Form, FormikActions } from 'formik';
+import { Formik, Form, FormikHelpers } from 'formik';
 import * as Yup from 'yup';
 
 import { Paper, Grid, Button, useTheme, makeStyles, createStyles } from '@material-ui/core';
@@ -42,7 +42,7 @@ export function OrganizationInvite() {
 
     async function submitForm(
         values: typeof INITIAL_FORM_VALUES,
-        formikActions: FormikActions<typeof INITIAL_FORM_VALUES>
+        formikActions: FormikHelpers<typeof INITIAL_FORM_VALUES>
     ): Promise<void> {
         formikActions.setSubmitting(true);
         dispatch(setLoading(true));
@@ -82,7 +82,7 @@ export function OrganizationInvite() {
                     const buttonDisabled = isSubmitting || !isValid;
 
                     return (
-                        <Form>
+                        <Form translate="">
                             <Grid container spacing={3}>
                                 <Grid item xs={6}>
                                     <FormInput

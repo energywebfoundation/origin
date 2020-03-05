@@ -11,7 +11,7 @@ import {
 } from '@material-ui/core';
 import { Skeleton } from '@material-ui/lab';
 import { useDispatch, useSelector } from 'react-redux';
-import { Formik, Field, Form, FormikActions } from 'formik';
+import { Formik, Field, Form, FormikHelpers } from 'formik';
 import { TextField } from 'formik-material-ui';
 import { setLoading } from '../../features/general/actions';
 import { FormInput } from '../Form/FormInput';
@@ -63,7 +63,7 @@ export function UserLogin() {
 
     async function submitForm(
         values: typeof INITIAL_FORM_VALUES,
-        formikActions: FormikActions<typeof INITIAL_FORM_VALUES>
+        formikActions: FormikHelpers<typeof INITIAL_FORM_VALUES>
     ): Promise<void> {
         formikActions.setSubmitting(true);
         dispatch(setLoading(true));
@@ -104,7 +104,7 @@ export function UserLogin() {
                     const buttonDisabled = isSubmitting || !isValid;
 
                     return (
-                        <Form>
+                        <Form translate="">
                             <Grid container spacing={3}>
                                 <Grid item xs={12}>
                                     <FormInput
