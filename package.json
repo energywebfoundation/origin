@@ -70,6 +70,7 @@
         "test:ci:contracts:deployment": "yarn test:migrations",
         "test:ci:apps": "lerna run --scope @energyweb/exchange --scope @energyweb/market-matcher --scope @energyweb/event-listener --scope @energyweb/origin-backend --scope @energyweb/migrations test:concurrent --since master --parallel --stream",
         "test:ci:ui": "yarn test:ui",
+        "test:ci:e2e": "lerna run test:e2e --stream --scope @energyweb/exchange",
         "publish:canary": "lerna publish --yes --skip-git --exact --cd-version=prerelease --pre-dist-tag canary --preid=alpha.$TRAVIS_BUILD_NUMBER",
         "publish:release": "lerna version --create-release github --conventional-commits --exact --yes --message \"chore(release): publish /skip-deploy\" && lerna publish from-git --yes",
         "build:containers:canary": "lerna run build:container:canary --stream",
