@@ -274,7 +274,7 @@ export function DemandForm(props: IProps) {
                     endDate: Yup.date().required(),
                     procureFromSingleFacility: Yup.boolean()
                 })}
-                isInitialValid={edit || clone || readOnly}
+                isInitialValid={Boolean(edit || clone || readOnly)}
             >
                 {formikProps => {
                     const { values, isValid, isSubmitting } = formikProps;
