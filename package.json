@@ -7,7 +7,7 @@
         "@openzeppelin/upgrades": "2.7.1",
         "@types/chai": "4.2.9",
         "@types/dotenv": "6.1.1",
-        "@types/mocha": "7.0.1",
+        "@types/mocha": "7.0.2",
         "@types/node": "12.12.21",
         "@typescript-eslint/eslint-plugin": "2.21.0",
         "@typescript-eslint/parser": "2.21.0",
