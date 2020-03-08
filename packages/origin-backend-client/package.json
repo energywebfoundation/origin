@@ -24,7 +24,7 @@
     "axios": "0.19.2",
     "isomorphic-ws": "4.0.1",
     "moment": "2.24.0",
-    "ws": "7.2.1"
+    "ws": "7.2.2"
   },
   "files": [
     "dist"
