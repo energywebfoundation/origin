@@ -11,7 +11,8 @@ import {
     setCompliance,
     setCountry,
     setRegions,
-    setOffChainDataSource
+    setOffChainDataSource,
+    setExchangeClient
 } from './actions';
 import { getConfiguration } from '../selectors';
 import {
@@ -24,6 +25,7 @@ import { UsersActions } from '../users/actions';
 import { isUsingInBrowserPK } from '../authentication/selectors';
 import axios, { Canceler } from 'axios';
 import { IOffChainDataSource, OffChainDataSource } from '@energyweb/origin-backend-client';
+import { ExchangeClient } from '../../utils/exchange';
 
 function* showAccountChangedModalOnChange(): SagaIterator {
     while (true) {
@@ -232,10 +234,21 @@ function* initializeOffChainDataSource(): SagaIterator {
             continue;
         }
 
+        const newOffChainDataSource = new OffChainDataSource(
+            environment.BACKEND_URL,
+            Number(environment.BACKEND_PORT)
+        );
+
+        yield put(setOffChainDataSource(newOffChainDataSource));
+
         yield put(
-            setOffChainDataSource(
-                new OffChainDataSource(environment.BACKEND_URL, Number(environment.BACKEND_PORT))
-            )
+            setExchangeClient({
+                exchangeClient: new ExchangeClient(
+                    `${environment.BACKEND_URL}:${environment.EXCHANGE_PORT ??
+                        environment.BACKEND_PORT}`,
+                    newOffChainDataSource.requestClient
+                )
+            })
         );
     }
 }

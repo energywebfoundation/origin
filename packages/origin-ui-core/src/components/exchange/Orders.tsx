@@ -6,8 +6,8 @@ import {
 } from '../Table/PaginatedLoaderHooks';
 import { EnergyFormatter } from '../../utils/EnergyFormatter';
 import { Typography } from '@material-ui/core';
-import { IOrderBookOrderDTO } from './order-book-order.dto';
 import { useTranslation } from '../../utils';
+import { IOrderBookOrderDTO } from '../../utils/exchange';
 
 interface IProps {
     data: IOrderBookOrderDTO[];

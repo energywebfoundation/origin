@@ -30,3 +30,5 @@ export const getCompliance = (state: IStoreState): string => state.general.compl
 export const getRegions = (state: IStoreState): object => state.general.regions;
 
 export const getCountry = (state: IStoreState): string => state.general.country;
+
+export const getExchangeClient = (state: IStoreState) => state.general.exchangeClient;

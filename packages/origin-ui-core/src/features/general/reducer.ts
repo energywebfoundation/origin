@@ -1,5 +1,6 @@
 import { GeneralActions, IGeneralAction, IEnvironment } from './actions';
 import { IOffChainDataSource } from '@energyweb/origin-backend-client';
+import { IExchangeClient } from '../../utils/exchange';
 
 export interface IGeneralState {
     accountChangedModalVisible: boolean;
@@ -15,6 +16,7 @@ export interface IGeneralState {
     compliance: string;
     country: string;
     regions: object;
+    exchangeClient: IExchangeClient;
 }
 
 const defaultState: IGeneralState = {
@@ -30,7 +32,8 @@ const defaultState: IGeneralState = {
     currencies: [],
     compliance: null,
     country: null,
-    regions: {}
+    regions: {},
+    exchangeClient: null
 };
 
 export default function reducer(state = defaultState, action: IGeneralAction): IGeneralState {
@@ -99,6 +102,9 @@ export default function reducer(state = defaultState, action: IGeneralAction): I
 
         case GeneralActions.setRegions:
             return { ...state, regions: action.payload };
+
+        case GeneralActions.setExchangeClient:
+            return { ...state, exchangeClient: action.payload.exchangeClient };
 
         default:
             return state;

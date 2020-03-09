@@ -22,7 +22,8 @@
                 "detailView": "Detail view",
                 "pending": "Pending",
                 "approved": "Approved",
-                "forDemand": "For demand"
+                "forDemand": "For demand",
+                "exchange": "Exchange"
             }
         },
         "device": {
@@ -276,13 +277,15 @@
                 "selectMultipleRegions": "Select multiple regions",
                 "volume": "Volume ({unit})",
                 "price": "Price ({currency}/{energyUnit})",
-                "market": "Market"
+                "market": "Market",
+                "bids": "Bids",
+                "asks": "Asks"
             },
             "properties": {
                 "price": "Price",
                 "energy": "Energy",
                 "generationDateStart": "Generation date start",
-                "generationDateEnd": "Generation date end",
+                "generationDateEnd": "Generation date end"
             }
         }
     }
