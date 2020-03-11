@@ -1,60 +1,39 @@
 import React from 'react';
 import { Route, NavLink, Redirect } from 'react-router-dom';
 import { Role } from '@energyweb/user-registry';
-import { Demand } from '@energyweb/market';
 import { PageContent } from './PageContent/PageContent';
 import { CertificateTable, SelectedState } from './CertificateTable';
 import { CertificateDetailView } from './CertificateDetailView';
 import { CertificationRequestsTable } from './CertificationRequestsTable';
 import { useLinks } from '../utils/routing';
 import { useSelector } from 'react-redux';
-import { getDemands } from '../features/selectors';
 import { getCurrentUser } from '../features/users/selectors';
-import { CertificationRequestStatus } from '@energyweb/origin-backend-core';
 import { useTranslation } from 'react-i18next';
 
 export function Certificates() {
-    const demands = useSelector(getDemands);
     const currentUser = useSelector(getCurrentUser);
     const { baseURL, getCertificatesLink } = useLinks();
     const { t } = useTranslation();
-
-    function CertificateTableKeyDemand(key: SelectedState, demandId?: number) {
-        let demand: Demand.Entity = null;
-        if (demandId !== undefined) {
-            demand = demands.find(d => d.id === demandId);
-        }
-
-        return <CertificateTable selectedState={key} demand={demand} />;
-    }
 
     function CertificateDetailViewId(id: string) {
         return <CertificateDetailView id={id} />;
     }
 
     function InboxCertificates() {
-        return CertificateTableKeyDemand(SelectedState.Inbox);
+        return <CertificateTable selectedState={SelectedState.Inbox} />;
     }
 
     function ForSaleCertificates() {
-        return CertificateTableKeyDemand(SelectedState.ForSale);
+        return <CertificateTable selectedState={SelectedState.ForSale} />;
     }
 
     function ClaimedCertificates() {
-        return CertificateTableKeyDemand(SelectedState.Claimed);
+        return <CertificateTable selectedState={SelectedState.Claimed} />;
     }
 
-    function ForDemandCertificates(demandId: number) {
-        return CertificateTableKeyDemand(SelectedState.ForDemand, demandId);
-    }
+    const PendingCertificationRequestsTable = () => <CertificationRequestsTable approved={false} />;
 
-    const PendingCertificationRequestsTable = () => (
-        <CertificationRequestsTable status={CertificationRequestStatus.Pending} />
-    );
-
-    const ApprovedCertificationRequestsTable = () => (
-        <CertificationRequestsTable status={CertificationRequestStatus.Approved} />
-    );
+    const ApprovedCertificationRequestsTable = () => <CertificationRequestsTable approved={true} />;
 
     const isIssuer = currentUser && currentUser.isRole(Role.Issuer);
 
@@ -94,12 +73,6 @@ export function Certificates() {
             label: 'navigation.certificates.approved',
             component: ApprovedCertificationRequestsTable,
             show: isIssuer
-        },
-        {
-            key: 'for_demand',
-            label: 'navigation.certificates.forDemand',
-            component: null,
-            show: false
         }
     ];
 
@@ -138,9 +111,6 @@ export function Certificates() {
                     if (matches.length > 0) {
                         if (key === 'detail_view') {
                             matches[0].component = () => CertificateDetailViewId(id);
-                        } else if (key === 'for_demand') {
-                            matches[0].component = () =>
-                                ForDemandCertificates(id ? parseInt(id, 10) : id);
                         }
                     }
 

@@ -4,7 +4,7 @@ import { applyMiddleware, createStore } from 'redux';
 import { routerMiddleware, ConnectedRouter } from 'connected-react-router';
 import { createRootReducer } from '../../reducers';
 import { sagas } from '../../features/sagas';
-import { MarketUser, PurchasableCertificate } from '@energyweb/market';
+import { MarketUser } from '@energyweb/market';
 import {
     addUser,
     updateCurrentUserId,
@@ -13,11 +13,9 @@ import {
 } from '../../features/users/actions';
 import { ReactWrapper, CommonWrapper } from 'enzyme';
 import { Configuration, Compliance } from '@energyweb/utils-general';
-import { Certificate } from '@energyweb/origin';
 
 import { ProducingDevice } from '@energyweb/device-registry';
 import { producingDeviceCreatedOrUpdated } from '../../features/producingDevices/actions';
-import { addCertificate } from '../../features/certificates/actions';
 import { dataTestSelector } from '../../utils/helper';
 import { DATE_FORMAT_DMY } from '../../utils/time';
 import moment from 'moment';
@@ -323,33 +321,21 @@ export const createProducingDevice = (
     } as ProducingDevice.Entity;
 };
 
-interface ICreateCertificateProperties {
-    id: string;
-    certificate: Certificate.ICertificate;
-}
-
-export const createCertificate = (
-    properties: ICreateCertificateProperties
-): PurchasableCertificate.Entity => {
-    const status =
-        typeof properties.certificate.status === 'undefined'
-            ? Certificate.Status.Active
-            : properties.certificate.status;
-
-    properties.certificate.status = status;
-
-    return {
-        id: properties.id,
-        configuration: ({
-            blockchainProperties: {
-                activeUser: {
-                    address: '0x0'
-                }
-            }
-        } as Partial<Configuration.Entity>) as Configuration.Entity,
-        certificate: properties.certificate
-    } as PurchasableCertificate.Entity;
-};
+// export const createCertificate = (
+//     certificate: ICertificate
+// ): Certificate.Entity => {
+//     return {
+//         id: properties.id,
+//         configuration: ({
+//             blockchainProperties: {
+//                 activeUser: {
+//                     address: '0x0'
+//                 }
+//             }
+//         } as Partial<Configuration.Entity>) as Configuration.Entity,
+//         ...certificate
+//     } as Certificate.Entity;
+// };
 
 interface ISetupStoreOptions {
     mockUserFetcher: boolean;
@@ -405,10 +391,10 @@ export const setupStore = (
             const entity = createProducingDevice(properties);
             store.dispatch(producingDeviceCreatedOrUpdated(entity));
         },
-        addCertificate: (properties: ICreateCertificateProperties) => {
-            const entity = createCertificate(properties);
-            store.dispatch(addCertificate(entity));
-        },
+        // addCertificate: (properties: ICreateCertificateProperties) => {
+        //     const entity = createCertificate(properties);
+        //     store.dispatch(addCertificate(entity));
+        // },
         history,
         sagasTasks,
         cleanupStore: () => {

@@ -263,10 +263,9 @@ export function ProducingDeviceDetailView(props: IProps) {
                     <br />
                     <CertificateTable
                         certificates={certificates.filter(
-                            c => c.certificate.deviceId.toString() === props.id.toString()
+                            c => c.deviceId.toString() === props.id.toString()
                         )}
                         selectedState={SelectedState.ForSale}
-                        demand={null}
                         hiddenColumns={['deviceType', 'commissioningDate', 'locationText']}
                     />
                 </>

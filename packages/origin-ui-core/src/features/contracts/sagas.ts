@@ -1,15 +1,11 @@
 import { call, put, select, take, all, fork, apply, cancel } from 'redux-saga/effects';
 import { SagaIterator, eventChannel } from 'redux-saga';
-import { setMarketContractLookupAddress } from './actions';
+import { setContractsLookup } from './actions';
 import { getSearch } from 'connected-react-router';
 import { getConfiguration } from '../selectors';
 import * as queryString from 'query-string';
 import * as Winston from 'winston';
-import {
-    PurchasableCertificate,
-    Demand,
-    createBlockchainProperties as marketCreateBlockchainProperties
-} from '@energyweb/market';
+import { Certificate, Registry, Issuer } from '@energyweb/issuer';
 import { IOffChainDataSource, IConfigurationClient } from '@energyweb/origin-backend-client';
 import {
     Configuration,
@@ -19,8 +15,8 @@ import {
 } from '@energyweb/utils-general';
 import Web3 from 'web3';
 
-import { configurationUpdated, demandCreated, demandUpdated } from '../actions';
-import { ProducingDevice } from '@energyweb/device-registry';
+import { configurationUpdated } from '../actions';
+import { ProducingDevice, DeviceLogic } from '@energyweb/device-registry';
 import {
     setError,
     setLoading,
@@ -32,15 +28,16 @@ import { producingDeviceCreatedOrUpdated } from '../producingDevices/actions';
 import { addCertificate, requestCertificateEntityFetch } from '../certificates/actions';
 import { IStoreState } from '../../types';
 import { getOffChainDataSource, getEnvironment } from '../general/selectors';
-import { getMarketContractLookupAddress } from './selectors';
-import { DemandStatus, SupportedEvents } from '@energyweb/origin-backend-core';
+import { getContractsLookup } from './selectors';
+import { IContractsLookup } from '@energyweb/origin-backend-core';
+import { UserLogic } from '@energyweb/user-registry';
 
 enum ERROR {
     WRONG_NETWORK_OR_CONTRACT_ADDRESS = "Please make sure you've chosen correct blockchain network and the contract address is valid."
 }
 
 async function initConf(
-    marketContractLookupAddress: string,
+    contractsLookup: IContractsLookup,
     routerSearch: string,
     offChainDataSource: IOffChainDataSource,
     environmentWeb3: string
@@ -66,10 +63,13 @@ async function initConf(
         web3 = new Web3(environmentWeb3);
     }
 
-    const blockchainProperties: Configuration.BlockchainProperties = await marketCreateBlockchainProperties(
-        web3,
-        marketContractLookupAddress
-    );
+    const blockchainProperties: Configuration.BlockchainProperties = {
+        userLogicInstance: new UserLogic(web3, contractsLookup.userLogic),
+        deviceLogicInstance: new DeviceLogic(web3, contractsLookup.deviceLogic),
+        registry: new Registry(web3, contractsLookup.registry),
+        issuer: new Issuer(web3, contractsLookup.issuer),
+        web3
+    };
 
     return {
         blockchainProperties,
@@ -102,31 +102,14 @@ function* initEventHandler() {
             configuration
         );
 
-        const certificateContractEventHandler: ContractEventHandler = new ContractEventHandler(
-            configuration.blockchainProperties.certificateLogicInstance,
-            currentBlockNumber
-        );
-
-        const marketContractEventHandler: ContractEventHandler = new ContractEventHandler(
-            configuration.blockchainProperties.marketLogicInstance,
+        const registryContractEventHandler: ContractEventHandler = new ContractEventHandler(
+            configuration.blockchainProperties.registry,
             currentBlockNumber
         );
 
         const channel = eventChannel(emitter => {
-            marketContractEventHandler.onEvent('LogPublishForSale', async function(event: any) {
-                const id = event.returnValues._certificateId?.toString();
-
-                if (typeof id === 'undefined') {
-                    return;
-                }
-
-                emitter({
-                    action: requestCertificateEntityFetch(id)
-                });
-            });
-
-            marketContractEventHandler.onEvent('LogUnpublishForSale', async function(event: any) {
-                const id = event.returnValues._certificateId?.toString();
+            registryContractEventHandler.onEvent('ClaimSingle', async (event: any) => {
+                const id = event.returnValues._id?.toString();
 
                 if (typeof id !== 'string') {
                     return;
@@ -137,74 +120,8 @@ function* initEventHandler() {
                 });
             });
 
-            configuration.offChainDataSource.eventClient.subscribe(
-                SupportedEvents.CREATE_NEW_DEMAND,
-                async (event: any) => {
-                    try {
-                        const demand = new Demand.Entity(
-                            event.data.demandId.toString(),
-                            configuration
-                        );
-
-                        await demand.sync();
-
-                        emitter({
-                            action: demandCreated(demand)
-                        });
-                    } catch (error) {
-                        console.error(
-                            `Error while handling ${SupportedEvents.CREATE_NEW_DEMAND} event`,
-                            error
-                        );
-                    }
-                }
-            );
-
-            configuration.offChainDataSource.eventClient.subscribe(
-                SupportedEvents.DEMAND_UPDATED,
-                async (event: any) => {
-                    const { demandId, status } = event.data;
-
-                    if (parseInt(status as string, 10) === DemandStatus.ARCHIVED) {
-                        emitter({
-                            action: demandUpdated(
-                                await new Demand.Entity(demandId.toString(), configuration).sync()
-                            )
-                        });
-                    }
-                }
-            );
-
-            certificateContractEventHandler.onEvent('LogCertificateSplit', async function(
-                event: any
-            ) {
-                const id = event.returnValues._certificateId?.toString();
-
-                if (typeof id !== 'string') {
-                    return;
-                }
-
-                emitter({
-                    action: requestCertificateEntityFetch(id)
-                });
-            });
-
-            certificateContractEventHandler.onEvent('LogCertificateClaimed', async function(
-                event: any
-            ) {
-                const id = event.returnValues._certificateId?.toString();
-
-                if (typeof id !== 'string') {
-                    return;
-                }
-
-                emitter({
-                    action: requestCertificateEntityFetch(id)
-                });
-            });
-
-            certificateContractEventHandler.onEvent('Transfer', async function(event: any) {
-                const id = event.returnValues.tokenId?.toString();
+            registryContractEventHandler.onEvent('IssuanceSingle', async (event: any) => {
+                const id = event.returnValues._id?.toString();
 
                 if (typeof id !== 'string') {
                     return;
@@ -220,8 +137,7 @@ function* initEventHandler() {
             };
         });
 
-        eventHandlerManager.registerEventHandler(certificateContractEventHandler);
-        eventHandlerManager.registerEventHandler(marketContractEventHandler);
+        eventHandlerManager.registerEventHandler(registryContractEventHandler);
         eventHandlerManager.start();
 
         while (true) {
@@ -238,29 +154,29 @@ function* initEventHandler() {
     }
 }
 
-async function getMarketContractLookupAddressFromAPI(configurationClient: IConfigurationClient) {
+async function getContractsLookupFromAPI(configurationClient: IConfigurationClient) {
     try {
-        const marketContracts = await configurationClient.get('MarketContractLookup');
+        const contracts = await configurationClient.get('ContractsLookup');
 
-        if (marketContracts.length > 0) {
-            return marketContracts[marketContracts.length - 1];
-        }
-
-        return null;
+        return contracts || null;
     } catch {
         return null;
     }
 }
 
-function* fillMarketContractLookupAddressIfMissing(): SagaIterator {
+function* fillContractLookupIfMissing(): SagaIterator {
     while (true) {
         yield take(GeneralActions.setEnvironment);
 
-        let marketContractLookupAddress: string = yield select(getMarketContractLookupAddress);
+        let contractsLookup: IContractsLookup = yield select(getContractsLookup);
 
         const environment: IEnvironment = yield select(getEnvironment);
 
-        if (marketContractLookupAddress || !environment) {
+        const isContractsLookupFilled = Object.keys(contractsLookup).every(
+            key => contractsLookup[key] !== null
+        );
+
+        if (isContractsLookupFilled || !environment) {
             continue;
         }
 
@@ -274,19 +190,15 @@ function* fillMarketContractLookupAddressIfMissing(): SagaIterator {
             offChainDataSource = action.payload;
         }
 
-        if (!marketContractLookupAddress) {
-            marketContractLookupAddress = yield call(
-                getMarketContractLookupAddressFromAPI,
+        if (!isContractsLookupFilled) {
+            contractsLookup = yield call(
+                getContractsLookupFromAPI,
                 offChainDataSource.configurationClient
             );
         }
 
-        if (marketContractLookupAddress) {
-            yield put(
-                setMarketContractLookupAddress({
-                    address: marketContractLookupAddress
-                })
-            );
+        if (contractsLookup) {
+            yield put(setContractsLookup(contractsLookup));
         } else {
             yield put(setError(ERROR.WRONG_NETWORK_OR_CONTRACT_ADDRESS));
             yield put(setLoading(false));
@@ -300,7 +212,7 @@ function* fillMarketContractLookupAddressIfMissing(): SagaIterator {
         try {
             configuration = yield call(
                 initConf,
-                marketContractLookupAddress,
+                contractsLookup,
                 routerSearch,
                 offChainDataSource,
                 environment.WEB3
@@ -328,17 +240,9 @@ function* fillMarketContractLookupAddressIfMissing(): SagaIterator {
                 yield put(producingDeviceCreatedOrUpdated(device));
             }
 
-            const demands: Demand.Entity[] = yield apply(Demand, Demand.getAllDemands, [
-                configuration
-            ]);
-
-            for (const demand of demands) {
-                yield put(demandCreated(demand));
-            }
-
-            const certificates: PurchasableCertificate.Entity[] = yield apply(
-                PurchasableCertificate,
-                PurchasableCertificate.getAllCertificates,
+            const certificates: Certificate.Entity[] = yield apply(
+                Certificate,
+                Certificate.getAllCertificates,
                 [configuration]
             );
 
@@ -348,11 +252,11 @@ function* fillMarketContractLookupAddressIfMissing(): SagaIterator {
 
             yield call(initEventHandler);
         } catch (error) {
-            console.error('fillMarketContractLookupAddressIfMissing() error', error);
+            console.error('fillContractLookupIfMissing() error', error);
         }
     }
 }
 
 export function* contractsSaga(): SagaIterator {
-    yield all([fork(fillMarketContractLookupAddressIfMissing)]);
+    yield all([fork(fillContractLookupIfMissing)]);
 }

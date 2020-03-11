@@ -9,10 +9,6 @@ export function getCertificatesLink(baseURL: string) {
     return `${baseURL}/certificates`;
 }
 
-export function getDemandsLink(baseURL: string) {
-    return `${baseURL}/demands`;
-}
-
 export function getAccountLink(baseURL: string) {
     return `${baseURL}/account`;
 }
@@ -31,18 +27,6 @@ export function getDevicesAddLink(baseURL: string) {
 
 export function getDevicesOwnedLink(baseURL: string) {
     return `${getDevicesLink(baseURL)}/owned`;
-}
-
-export function getDemandEditLink(baseURL: string, id: string) {
-    return `${getDemandsLink(baseURL)}/edit/${id}`;
-}
-
-export function getDemandCloneLink(baseURL: string, id: string) {
-    return `${getDemandsLink(baseURL)}/clone/${id}`;
-}
-
-export function getDemandViewLink(baseURL: string, id: string) {
-    return `${getDemandsLink(baseURL)}/view/${id}`;
 }
 
 export function getCertificateDetailLink(baseURL: string, certificateId: string | number) {
@@ -80,10 +64,6 @@ export function useLinks() {
         getAccountLink: () => getAccountLink(baseURL),
         getOrganizationLink: () => getOrganizationLink(baseURL),
         getCertificatesLink: () => getCertificatesLink(baseURL),
-        getDemandsLink: () => getDemandsLink(baseURL),
-        getDemandEditLink: (id: string) => getDemandEditLink(baseURL, id),
-        getDemandCloneLink: (id: string) => getDemandCloneLink(baseURL, id),
-        getDemandViewLink: (id: string) => getDemandViewLink(baseURL, id),
         getCertificateDetailLink: (certificateId: string | number) =>
             getCertificateDetailLink(baseURL, certificateId),
         getCertificatesForDemandLink: (demandId: number) =>

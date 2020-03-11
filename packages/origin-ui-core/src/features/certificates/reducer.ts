@@ -1,10 +1,10 @@
-import { PurchasableCertificate } from '@energyweb/market';
+import { Certificate } from '@energyweb/issuer';
 import { CertificatesActions, ICertificatesAction, ICertificateFetcher } from './actions';
 import { ProducingDevice } from '@energyweb/device-registry';
 import { IStoreState } from '../../types';
 
 export interface ICertificatesState {
-    certificates: PurchasableCertificate.Entity[];
+    certificates: Certificate.Entity[];
     requestCertificatesModal: {
         visible: boolean;
         producingDevice: ProducingDevice.Entity;
@@ -14,10 +14,10 @@ export interface ICertificatesState {
 
 const fetcher: ICertificateFetcher = {
     async fetch(id: string, configuration: IStoreState['configuration']) {
-        return configuration && new PurchasableCertificate.Entity(id, configuration).sync();
+        return configuration && new Certificate.Entity(id, configuration).sync();
     },
 
-    async reload(entity: PurchasableCertificate.Entity) {
+    async reload(entity: Certificate.Entity) {
         return entity?.sync();
     }
 };

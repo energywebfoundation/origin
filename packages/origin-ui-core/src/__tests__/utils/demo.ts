@@ -14,13 +14,14 @@ import {
     Device,
     ProducingDevice
 } from '@energyweb/device-registry';
-import { Contracts as OriginContracts } from '@energyweb/origin';
-import { Contracts as MarketContracts, MarketUser } from '@energyweb/market';
+import { Contracts as IssuerContracts } from '@energyweb/issuer';
+import { MarketUser } from '@energyweb/market';
 import {
     DeviceStatus,
     OrganizationPostData,
     IUserWithRelationsIds,
-    IDevice
+    IDevice,
+    IContractsLookup
 } from '@energyweb/origin-backend-core';
 import { OffChainDataSourceMock } from '@energyweb/origin-backend-client-mocks';
 
@@ -94,41 +95,23 @@ export async function deployDemo() {
     );
     const deviceLogicAddress = deviceLogic.web3Contract.options.address;
 
-    const certificateLogic = await OriginContracts.migrateCertificateRegistryContracts(
-        web3,
-        deviceLogicAddress,
-        adminPK
-    );
-    const certificateLogicAddress = certificateLogic.web3Contract.options.address;
+    const registry = await IssuerContracts.migrateRegistry(web3, adminPK);
+    const registryAddress = registry.web3Contract.options.address;
 
-    const marketLogic = await MarketContracts.migrateMarketRegistryContracts(
-        web3,
-        certificateLogicAddress,
-        adminPK
-    );
+    const issuer = await IssuerContracts.migrateIssuer(web3, deviceLogicAddress, adminPK);
+    const issuerAddress = issuer.web3Contract.options.address;
 
-    const deployResult = {
-        userLogic: '',
-        deviceLogic: '',
-        certificateLogic: '',
-        marketLogic: ''
+    const deployResult: IContractsLookup = {
+        userLogic: userLogicAddress,
+        deviceLogic: deviceLogicAddress,
+        registry: registryAddress,
+        issuer: issuerAddress
     };
-
-    const marketContractLookup = marketLogic.web3Contract.options.address;
-
-    deployResult.userLogic = userLogicAddress;
-    deployResult.deviceLogic = deviceLogicAddress;
-    deployResult.certificateLogic = certificateLogicAddress;
-    deployResult.marketLogic = marketContractLookup;
 
     const offChainDataSource = new OffChainDataSourceMock();
 
     await offChainDataSource.configurationClient.add('device-types', TEST_DEVICE_TYPES);
-
-    await offChainDataSource.configurationClient.add(
-        'MarketContractLookup',
-        marketContractLookup.toLowerCase()
-    );
+    await offChainDataSource.configurationClient.add('ContractsLookup', deployResult);
     await offChainDataSource.configurationClient.add('Currency', 'USD');
     await offChainDataSource.configurationClient.add('Country', {
         name: 'Thailand',
@@ -141,10 +124,10 @@ export async function deployDemo() {
                 address: ACCOUNTS.ADMIN.address,
                 privateKey: adminPK
             },
-            deviceLogicInstance: deviceLogic,
-            certificateLogicInstance: certificateLogic,
             userLogicInstance: userLogic,
-            marketLogicInstance: marketLogic,
+            deviceLogicInstance: deviceLogic,
+            registry,
+            issuer,
             web3
         },
         offChainDataSource,

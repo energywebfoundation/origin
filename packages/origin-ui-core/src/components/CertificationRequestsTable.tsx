@@ -14,22 +14,17 @@ import {
 import { ProducingDevice } from '@energyweb/device-registry';
 import { getDeviceLocationText, LOCATION_TITLE_TRANSLATION_KEY } from '../utils/helper';
 import { PowerFormatter } from '../utils/PowerFormatter';
-import { EnergyFormatter } from '../utils/EnergyFormatter';
 import { Skeleton } from '@material-ui/lab';
 import { getOffChainDataSource } from '../features/general/selectors';
-import {
-    ICertificationRequestWithRelationsIds,
-    CertificationRequestStatus
-} from '@energyweb/origin-backend-core';
-import { Certificate } from '@energyweb/origin';
+import { CertificationRequest } from '@energyweb/issuer';
 import { useTranslation } from 'react-i18next';
 
 interface IProps {
-    status: CertificationRequestStatus;
+    approved: boolean;
 }
 
 interface IRecord {
-    request: ICertificationRequestWithRelationsIds;
+    request: CertificationRequest.Entity;
     device: ProducingDevice.Entity;
 }
 
@@ -55,7 +50,7 @@ export function CertificationRequestsTable(props: IProps) {
 
         const isIssuer = currentUser.isRole(Role.Issuer);
 
-        const requests = await offChainDataSource.certificateClient.getCertificationRequests();
+        const requests = await CertificationRequest.getAllCertificationRequests(configuration);
 
         let newPaginatedData: IRecord[] = [];
 
@@ -64,7 +59,7 @@ export function CertificationRequestsTable(props: IProps) {
             const device = producingDevices.find(a => a.id === request.device.toString());
 
             if (
-                request.status !== props.status ||
+                request.approved !== props.approved ||
                 (!isIssuer && currentUser.id.toLowerCase() !== device?.owner.address.toLowerCase())
             ) {
                 continue;
@@ -92,7 +87,7 @@ export function CertificationRequestsTable(props: IProps) {
 
     useEffect(() => {
         loadPage(1);
-    }, [props.status, currentUser, producingDevices.length]);
+    }, [props.approved, currentUser, producingDevices.length]);
 
     async function approve(rowIndex: number) {
         const request = paginatedData[rowIndex].request;
@@ -100,13 +95,7 @@ export function CertificationRequestsTable(props: IProps) {
         dispatch(setLoading(true));
 
         try {
-            await offChainDataSource.certificateClient.approveCertificationRequest(request.id);
-            Certificate.createArbitraryCertfificate(
-                request.device,
-                request.energy,
-                request.id,
-                configuration
-            );
+            await request.approve(1e9);
 
             showNotification(`Certification request approved.`, NotificationType.Success);
 
@@ -124,7 +113,7 @@ export function CertificationRequestsTable(props: IProps) {
     }
 
     const actions =
-        currentUser?.isRole(Role.Issuer) && props.status === CertificationRequestStatus.Pending
+        currentUser?.isRole(Role.Issuer) && !props.approved
             ? [
                   {
                       icon: <Check />,
@@ -139,7 +128,6 @@ export function CertificationRequestsTable(props: IProps) {
         { id: 'locationText', label: t(LOCATION_TITLE_TRANSLATION_KEY) },
         { id: 'type', label: 'Type' },
         { id: 'capacity', label: `Capacity (${PowerFormatter.displayUnit})` },
-        { id: 'meterRead', label: `Meter Read (${EnergyFormatter.displayUnit})` },
         { id: 'files', label: 'Evidence files' }
     ] as const;
 
@@ -151,7 +139,6 @@ export function CertificationRequestsTable(props: IProps) {
                 device.offChainProperties.deviceType
             ),
             capacity: PowerFormatter.format(device.offChainProperties.capacityInW),
-            meterRead: EnergyFormatter.format(request.energy),
             files: request.files.map(f => (
                 <div key={f}>
                     <a

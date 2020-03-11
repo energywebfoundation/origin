@@ -1,6 +1,5 @@
 import React, { useContext } from 'react';
 import { NavLink, Link } from 'react-router-dom';
-import { Role } from '@energyweb/user-registry';
 import {
     makeStyles,
     createStyles,
@@ -22,12 +21,7 @@ import { useTranslation } from 'react-i18next';
 
 import { useSelector, useDispatch } from 'react-redux';
 import { useLinks } from '../utils/routing';
-import {
-    getUserById,
-    getUsers,
-    getCurrentUser,
-    getUserOffchain
-} from '../features/users/selectors';
+import { getUserById, getUsers, getUserOffchain } from '../features/users/selectors';
 import { clearAuthenticationToken, requestUser } from '../features/users/actions';
 import {
     isUsingInBrowserPK,
@@ -76,10 +70,7 @@ export function Header() {
     const accounts = useSelector(getAccounts);
     const users = useSelector(getUsers);
     const encryptedAccounts = useSelector(getEncryptedAccounts);
-    const currentUser = useSelector(getCurrentUser);
     const userOffchain = useSelector(getUserOffchain);
-
-    const isIssuer = currentUser?.isRole(Role.Issuer);
 
     let activeAccount = useSelector(getActiveAccount);
 
@@ -91,7 +82,6 @@ export function Header() {
         getDevicesLink,
         getUserRegisterLink,
         getCertificatesLink,
-        getDemandsLink,
         getAccountLink,
         getOrganizationLink
     } = useLinks();
@@ -202,13 +192,6 @@ export function Header() {
                     <li>
                         <NavLink to={getCertificatesLink()}>{t('header.certificates')}</NavLink>
                     </li>
-                    {!isIssuer && (
-                        <li>
-                            <NavLink to={getDemandsLink()} {...dataTest('header-link-demands')}>
-                                {t('header.demands')}
-                            </NavLink>
-                        </li>
-                    )}
                     {userOffchain && (
                         <li>
                             <NavLink to={getOrganizationLink()}>

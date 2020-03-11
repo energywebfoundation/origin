@@ -1,20 +1,18 @@
 import React, { useState, useEffect } from 'react';
-import { Certificate } from '@energyweb/origin';
+import { CertificationRequest } from '@energyweb/issuer';
 import { MarketUser } from '@energyweb/market';
 import { ProducingDeviceDetailView } from './ProducingDeviceDetailView';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { getConfiguration } from '../features/selectors';
 import { getCertificates } from '../features/certificates/selectors';
 import { deduplicate } from '../utils/helper';
 import { formatDate } from '../utils/time';
 import { getUsers, getUserById } from '../features/users/selectors';
-import { requestUser } from '../features/users/actions';
 import { Skeleton } from '@material-ui/lab';
 import { makeStyles, createStyles, useTheme } from '@material-ui/core';
 import { getEnvironment, getOffChainDataSource } from '../features/general/selectors';
 import { EnergyFormatter } from '../utils/EnergyFormatter';
 import { IOrganizationWithRelationsIds } from '@energyweb/origin-backend-core';
-import moment from 'moment';
 
 interface IProps {
     id: string;
@@ -55,8 +53,6 @@ export function CertificateDetailView(props: IProps) {
         );
     }
 
-    const dispatch = useDispatch();
-
     const useStyles = makeStyles(() =>
         createStyles({
             eventsLoader: {
@@ -69,16 +65,6 @@ export function CertificateDetailView(props: IProps) {
 
     const selectedCertificate =
         id !== null && typeof id !== 'undefined' && certificates.find(c => c.id === id);
-
-    let owner: MarketUser.Entity = null;
-
-    if (selectedCertificate) {
-        owner = getUserById(users, selectedCertificate.certificate.owner);
-
-        if (!owner) {
-            dispatch(requestUser(selectedCertificate.certificate.owner));
-        }
-    }
 
     async function enrichEvent() {
         const allCertificateEvents = await selectedCertificate.getAllCertificateEvents();
@@ -135,7 +121,7 @@ export function CertificateDetailView(props: IProps) {
 
                 case 'LogCertificateClaimed':
                     label = 'Certificate claimed';
-                    description = `Initiated by ${getUserDisplayText(owner)}`;
+                    description = `Initiated by `; // ${getUserDisplayText(owner)}`;
                     break;
 
                 default:
@@ -154,16 +140,17 @@ export function CertificateDetailView(props: IProps) {
 
         const resolvedEvents = await Promise.all(jointEvents);
 
-        const request = await offChainDataSource.certificateClient.getCertificationRequest(
-            selectedCertificate.certificate.certificationRequestId
-        );
+        const request = await new CertificationRequest.Entity(
+            selectedCertificate.certificationRequestId.toString(),
+            configuration
+        ).sync();
 
         if (request) {
             resolvedEvents.push({
                 txHash: '',
                 label: 'Requested certification',
                 description: 'Device owner requested certification based on meter reads',
-                timestamp: moment(request.createdDate).unix()
+                timestamp: request.created
             });
         }
 
@@ -223,36 +210,26 @@ export function CertificateDetailView(props: IProps) {
                     data: selectedCertificate.id
                 },
                 {
-                    label: 'Current owner',
-                    data: getUserDisplayText(owner)
-                },
-                {
                     label: 'Claimed',
-                    data:
-                        selectedCertificate.certificate.status === Certificate.Status.Claimed
-                            ? 'yes'
-                            : 'no'
+                    data: selectedCertificate.isClaimed() ? 'yes' : 'no'
                 },
                 {
                     label: 'Creation date',
-                    data: formatDate(selectedCertificate.certificate.creationTime * 1000)
+                    data: formatDate(selectedCertificate.creationTime * 1000)
                 }
             ],
             [
                 {
                     label: `Certified energy (${EnergyFormatter.displayUnit})`,
-                    data: EnergyFormatter.format(selectedCertificate.certificate.energy)
+                    data: EnergyFormatter.format(selectedCertificate.energy)
                 },
                 {
                     label: 'Generation start',
-                    data: formatDate(
-                        selectedCertificate.certificate.generationStartTime * 1000,
-                        true
-                    )
+                    data: formatDate(selectedCertificate.generationStartTime * 1000, true)
                 },
                 {
                     label: 'Generation end',
-                    data: formatDate(selectedCertificate.certificate.generationEndTime * 1000, true)
+                    data: formatDate(selectedCertificate.generationEndTime * 1000, true)
                 }
             ]
         ];
@@ -287,7 +264,7 @@ export function CertificateDetailView(props: IProps) {
                 </div>
                 {selectedCertificate && (
                     <ProducingDeviceDetailView
-                        id={selectedCertificate.certificate.deviceId}
+                        id={Number(selectedCertificate.deviceId)}
                         showSmartMeterReadings={false}
                         showCertificates={false}
                     />
