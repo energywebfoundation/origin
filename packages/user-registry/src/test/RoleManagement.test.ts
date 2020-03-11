@@ -17,7 +17,8 @@ describe('buildRights', () => {
             [[Role.Trader, Role.Matcher], 24],
             [[Role.UserAdmin, Role.DeviceAdmin, Role.DeviceManager, Role.Trader, Role.Matcher], 31],
             [[Role.Issuer], 32],
-            [[Role.Listener], 64]
+            [[Role.Listener], 64],
+            [[Role.UserAdmin, Role.DeviceAdmin, Role.DeviceManager, Role.Issuer], 39]
         ];
 
         TEST_SETS.forEach(([roles, expectedRights]) => {
