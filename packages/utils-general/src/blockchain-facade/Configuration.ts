@@ -5,18 +5,16 @@ import { IOffChainDataSource } from '@energyweb/origin-backend-client';
 import { IDeviceTypeService } from './DeviceTypeService';
 
 export interface Entity<
-    TMarketLogic = any,
-    TDeviceLogic = any,
-    TCertificateLogic = any,
     TUserLogic = any,
-    TIssuerLogic = any
+    TDeviceLogic = any,
+    TRegistry = any,
+    TIssuer = any
 > {
     blockchainProperties: BlockchainProperties<
-        TIssuerLogic,
-        TMarketLogic,
+        TUserLogic,
         TDeviceLogic,
-        TCertificateLogic,
-        TUserLogic
+        TRegistry,
+        TIssuer
     >;
     logger: Winston.Logger;
     deviceTypeService?: IDeviceTypeService;
@@ -24,18 +22,16 @@ export interface Entity<
 }
 
 export interface BlockchainProperties<
-    TIssuerLogic = any,
-    TMarketLogic = any,
+    TUserLogic = any,
     TDeviceLogic = any,
-    TCertificateLogic = any,
-    TUserLogic = any
+    TRegistry = any,
+    TIssuer = any
 > {
     web3: Web3;
-    issuerLogicInstance?: TIssuerLogic;
-    marketLogicInstance?: TMarketLogic;
-    deviceLogicInstance?: TDeviceLogic;
-    certificateLogicInstance?: TCertificateLogic;
     userLogicInstance?: TUserLogic;
+    deviceLogicInstance?: TDeviceLogic;
+    registry?: TRegistry;
+    issuer?: TIssuer;
     activeUser?: EthAccount;
     privateKey?: string;
 }
