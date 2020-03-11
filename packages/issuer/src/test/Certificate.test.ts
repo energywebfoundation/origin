@@ -21,10 +21,6 @@ describe('Cerificate tests', () => {
     });
 
     const web3 = new Web3(process.env.WEB3);
-    const deployKey = process.env.DEPLOY_KEY;
-
-    const privateKeyDeployment = deployKey.startsWith('0x') ? deployKey : `0x${deployKey}`;
-    const accountDeployment = web3.eth.accounts.privateKeyToAccount(privateKeyDeployment).address;
 
     const deviceOwnerPK = '0x622d56ab7f0e75ac133722cc065260a2792bf30ea3265415fe04f3a2dba7e1ac';
     const accountDeviceOwner = web3.eth.accounts.privateKeyToAccount(deviceOwnerPK).address;
@@ -65,22 +61,32 @@ describe('Cerificate tests', () => {
     };
 
     it('migrates Registry', async () => {
-        const registry = await migrateRegistry(web3, privateKeyDeployment);
+        const registry = await migrateRegistry(web3, issuerPK);
         issuer = await migrateIssuer(web3, issuerPK, registry.web3Contract.options.address);
 
         conf = {
             blockchainProperties: {
                 activeUser: {
-                    address: accountDeployment,
-                    privateKey: privateKeyDeployment
+                    address: issuerAccount,
+                    privateKey: issuerPK
                 },
-                certificateLogicInstance: registry,
-                issuerLogicInstance: issuer,
+                registry,
+                issuer,
                 web3
             },
             offChainDataSource: new OffChainDataSourceMock(),
             logger
         };
+    });
+
+    it('gets all certificates', async () => {
+        const totalVolume = 1e9;
+
+        await issueCertificate(totalVolume);
+        await issueCertificate(totalVolume);
+
+        const allCertificates = await Certificate.getAllCertificates(conf);
+        assert.equal(allCertificates.length, 2);
     });
 
     it('issuer issues a certificate', async () => {
@@ -161,7 +167,7 @@ describe('Cerificate tests', () => {
 
     it('claims a certificate', async () => {
         const totalVolume = 1e9;
-        const certificate = await issueCertificate(totalVolume);
+        let certificate = await issueCertificate(totalVolume);
 
         setActiveUser(deviceOwnerPK);
 
@@ -173,11 +179,13 @@ describe('Cerificate tests', () => {
 
         await certificate.claim(amountToSendToTrader);
 
+        certificate = await certificate.sync();
+
         assert.isFalse(certificate.isOwned());
         assert.equal(certificate.ownedVolume(), 0);
 
-        assert.isTrue(await certificate.isClaimed());
-        assert.equal(await certificate.claimedVolume(), amountToSendToTrader);
+        assert.isTrue(certificate.isClaimed());
+        assert.equal(certificate.claimedVolume(), amountToSendToTrader);
     });
 
     it('claims a private certificate', async () => {
@@ -186,11 +194,19 @@ describe('Cerificate tests', () => {
 
         setActiveUser(deviceOwnerPK);
 
-        await certificate.claim(totalVolume);
-    
+        await certificate.requestMigrateToPublic();
+
+        setActiveUser(issuerPK);
+
+        await certificate.migrateToPublic();
         certificate = await certificate.sync();
 
         assert.isFalse(certificate.isPrivate);
+
+        setActiveUser(deviceOwnerPK);
+
+        await certificate.claim();
+        certificate = await certificate.sync();
 
         assert.isTrue(await certificate.isClaimed());
         assert.equal(await certificate.claimedVolume(), totalVolume);
@@ -229,7 +245,7 @@ describe('Cerificate tests', () => {
         assert.equal(certificate2.ownedVolume(accountTrader), totalVolume);
     });
 
-    it('batch claims certificates', async () => {
+    xit('batch claims certificates', async () => {
         const totalVolume = 1e9;
 
         let certificate = await issueCertificate(totalVolume);
@@ -237,10 +253,10 @@ describe('Cerificate tests', () => {
 
         setActiveUser(deviceOwnerPK);
 
-        assert.isFalse(await certificate.isClaimed());
-        assert.isFalse(await certificate2.isClaimed());
-        assert.equal(await certificate.claimedVolume(), 0);
-        assert.equal(await certificate2.claimedVolume(), 0);
+        assert.isFalse(certificate.isClaimed());
+        assert.isFalse(certificate2.isClaimed());
+        assert.equal(certificate.claimedVolume(), 0);
+        assert.equal(certificate2.claimedVolume(), 0);
 
         await Certificate.claimCertificates(
             [certificate.id, certificate2.id],
@@ -250,9 +266,9 @@ describe('Cerificate tests', () => {
         certificate = await certificate.sync();
         certificate2 = await certificate2.sync();
 
-        assert.isTrue(await certificate.isClaimed());
-        assert.isTrue(await certificate2.isClaimed());
-        assert.equal(await certificate.claimedVolume(), totalVolume);
-        assert.equal(await certificate2.claimedVolume(), totalVolume);
+        assert.isTrue(certificate.isClaimed());
+        assert.isTrue(certificate2.isClaimed());
+        assert.equal(certificate.claimedVolume(), totalVolume);
+        assert.equal(certificate2.claimedVolume(), totalVolume);
     });
 });
