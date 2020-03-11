@@ -8,7 +8,7 @@ export interface ICertificationRequestProperties {
     created: number;
     approved: boolean;
     revoked: boolean;
-    energy?: number;
+    energy: number;
 }
 
 export interface ICertificationRequest extends ICertificationRequestProperties {
@@ -23,5 +23,5 @@ export interface ICertificationRequestWithRelations extends ICertificationReques
     device: IDeviceWithId;
 }
 
-export type CertificationRequestOffChainData = Pick<ICertificationRequestProperties, 'id' | 'files'>;
-export type CertificationRequestUpdateData = Pick<CertificationRequestOffChainData, 'files'>;
+export type CertificationRequestOffChainData = Pick<ICertificationRequestProperties, 'id' | 'energy' | 'files'>;
+export type CertificationRequestUpdateData = Pick<CertificationRequestOffChainData, 'energy' | 'files'>;

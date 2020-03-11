@@ -95,7 +95,7 @@ export function CertificationRequestsTable(props: IProps) {
         dispatch(setLoading(true));
 
         try {
-            await request.approve(1e9);
+            await request.approve();
 
             showNotification(`Certification request approved.`, NotificationType.Success);
 

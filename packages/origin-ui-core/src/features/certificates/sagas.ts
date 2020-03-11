@@ -32,12 +32,13 @@ function* requestCertificatesSaga(): SagaIterator {
         yield put(hideRequestCertificatesModal());
         const configuration: IStoreState['configuration'] = yield select(getConfiguration);
 
-        const { startTime, endTime, files, deviceId } = action.payload;
+        const { startTime, endTime, energy, files, deviceId } = action.payload;
 
         try {
             yield apply(CertificationRequest, CertificationRequest.createCertificationRequest, [
                 startTime,
                 endTime,
+                energy,
                 deviceId,
                 configuration,
                 files

@@ -16,6 +16,7 @@ export class Entity extends BlockchainDataModelEntity.Entity implements ICertifi
     revoked: boolean;
     created: Timestamp;
     files: string[];
+    energy: number;
 
     initialized: boolean = false;
 
@@ -36,7 +37,10 @@ export class Entity extends BlockchainDataModelEntity.Entity implements ICertifi
         this.approved = issueRequest.approved;
         this.revoked = issueRequest.revoked;
         this.created = 0; // TO-DO replace with a proper timestamp
-        this.files = (await this.configuration.offChainDataSource.certificateClient.getCertificationRequestData(this.id)).files;
+
+        const offChainData = await this.configuration.offChainDataSource.certificateClient.getCertificationRequestData(this.id);
+        this.energy = offChainData.energy;
+        this.files = offChainData.files;
 
         this.initialized = true;
 
@@ -47,7 +51,7 @@ export class Entity extends BlockchainDataModelEntity.Entity implements ICertifi
         return this;
     }
 
-    async approve(value: number): Promise<number> {
+    async approve(): Promise<number> {
         const validityData = this.configuration.blockchainProperties.web3.eth.abi.encodeFunctionCall({
             name: 'isRequestValid',
             type: 'function',
@@ -63,7 +67,7 @@ export class Entity extends BlockchainDataModelEntity.Entity implements ICertifi
         if (this.isPrivate) {
             const commitment: IOwnershipCommitment = {
                 ownerAddress: this.owner,
-                volume: value
+                volume: this.energy
             };
             const { rootHash } = this.prepareEntityCreation(commitment, OwnershipCommitmentSchema);
 
@@ -78,7 +82,7 @@ export class Entity extends BlockchainDataModelEntity.Entity implements ICertifi
             approveTx = await issuer.approveCertificationRequest(
                 this.owner,
                 Number(this.id),
-                Number(value),
+                this.energy,
                 validityData,
                 Configuration.getAccount(this.configuration)
             );
@@ -114,6 +118,7 @@ export class Entity extends BlockchainDataModelEntity.Entity implements ICertifi
 export const createCertificationRequest = async (
     fromTime: Timestamp,
     toTime: Timestamp,
+    energy: number,
     deviceId: string,
     configuration: Configuration.Entity,
     files: string[],
@@ -140,7 +145,7 @@ export const createCertificationRequest = async (
 
     await configuration.offChainDataSource.certificateClient.updateCertificationRequestData(
         request.id,
-        { files }
+        { energy, files }
     );
 
     if (configuration.logger) {

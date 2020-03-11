@@ -31,6 +31,7 @@ export class CertificateController {
         const certificationRequest = new CertificationRequest();
 
         certificationRequest.id = id;
+        certificationRequest.energy = data.energy;
         certificationRequest.files = data.files;
 
         return this.certificationRequestRepository.save(certificationRequest);

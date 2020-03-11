@@ -8,6 +8,7 @@ export class CertificateClientMock implements ICertificateClient {
     public async updateCertificationRequestData(id: string, data: CertificationRequestUpdateData): Promise<boolean> {
         this.requestStorage.set(id, {
             id,
+            energy: data.energy,
             files: data.files
         });
 

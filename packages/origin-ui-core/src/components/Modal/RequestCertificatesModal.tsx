@@ -6,7 +6,14 @@ import {
     setMinTimeInDay,
     DATE_FORMAT_DMY
 } from '../../utils/time';
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle } from '@material-ui/core';
+import {
+    Button,
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogTitle,
+    TextField
+} from '@material-ui/core';
 import { DatePicker } from '@material-ui/pickers';
 import { useSelector, useDispatch } from 'react-redux';
 import {
@@ -18,6 +25,7 @@ import {
     getRequestCertificatesModalVisible
 } from '../../features/certificates/selectors';
 
+import { EnergyFormatter } from '../../utils/EnergyFormatter';
 import { Upload, IUploadedFile } from '../Upload';
 import { useTranslation } from 'react-i18next';
 
@@ -29,6 +37,7 @@ const DEFAULTS = {
 export function RequestCertificatesModal() {
     const [fromDate, setFromDate] = useState(DEFAULTS.fromDate);
     const [toDate, setToDate] = useState(DEFAULTS.toDate);
+    const [energyInDisplayUnit, setEnergyInDisplayUnit] = useState('');
     const [files, setFiles] = useState<IUploadedFile[]>([]);
 
     const cancelledFiles = files.filter(f => f.cancelled && !f.removed);
@@ -44,10 +53,18 @@ export function RequestCertificatesModal() {
 
     const { t } = useTranslation();
 
+    const parsedEnergyInDisplayUnit = parseFloat(energyInDisplayUnit);
+
+    const energyInBaseUnit =
+        typeof parsedEnergyInDisplayUnit === 'number' && !isNaN(parsedEnergyInDisplayUnit)
+            ? EnergyFormatter.getBaseValueFromValueInDisplayUnit(parsedEnergyInDisplayUnit)
+            : 0;
+
     const isFormValid =
         fromDate &&
         toDate &&
         fromDate.toDate() <= toDate.toDate() &&
+        energyInBaseUnit > 0 &&
         cancelledFiles.length === 0 &&
         filesBeingUploaded.length === 0;
 
@@ -70,6 +87,7 @@ export function RequestCertificatesModal() {
                 deviceId: producingDevice.id,
                 startTime: fromDate.unix(),
                 endTime: toDate.unix(),
+                energy: energyInBaseUnit,
                 files: uploadedFiles.map(f => f.uploadedName)
             })
         );
@@ -111,6 +129,13 @@ export function RequestCertificatesModal() {
                     className="mt-4"
                     fullWidth
                     format={DATE_FORMAT_DMY}
+                />
+                <TextField
+                    label={EnergyFormatter.displayUnit}
+                    value={energyInDisplayUnit}
+                    onChange={event => setEnergyInDisplayUnit(event.target.value)}
+                    className="mt-4"
+                    fullWidth
                 />
 
                 <Upload onChange={newFiles => setFiles(newFiles)} />

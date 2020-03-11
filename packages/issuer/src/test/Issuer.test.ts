@@ -38,7 +38,7 @@ describe('Issuer', () => {
         };
     };
 
-    const createCertificationRequest = async (conf: Configuration.Entity, isPrivate: boolean = false) => {
+    const createCertificationRequest = async (conf: Configuration.Entity, energy: number, isPrivate: boolean = false) => {
         setActiveUser(deviceOwnerPK);
 
         const fromTime = timestamp;
@@ -47,7 +47,7 @@ describe('Issuer', () => {
         const toTime = timestamp;
         const device = '1';
 
-        return CertificationRequest.createCertificationRequest(fromTime, toTime, device, conf, [], isPrivate);
+        return CertificationRequest.createCertificationRequest(fromTime, toTime, energy, device, conf, [], isPrivate);
     };
 
     it('migrates Issuer and Registry', async () => {
@@ -90,6 +90,7 @@ describe('Issuer', () => {
         const certificationRequest = await CertificationRequest.createCertificationRequest(
             fromTime,
             toTime,
+            1e9,
             device,
             conf,
             []
@@ -109,12 +110,12 @@ describe('Issuer', () => {
     });
 
     it('issuer correctly approves issuance', async () => {
-        let certificationRequest = await createCertificationRequest(conf);
+        const volume = 1e9;
+        let certificationRequest = await createCertificationRequest(conf, volume);
 
         setActiveUser(issuerPK);
 
-        const volume = 1000;
-        const certificateId = await certificationRequest.approve(volume);
+        const certificateId = await certificationRequest.approve();
 
         certificationRequest = await certificationRequest.sync();
 
@@ -128,12 +129,12 @@ describe('Issuer', () => {
     });
 
     it('issuer revokes a certificate', async () => {
-        let certificationRequest = await createCertificationRequest(conf);
+        const volume = 1e9;
+        let certificationRequest = await createCertificationRequest(conf, volume);
 
         setActiveUser(issuerPK);
 
-        const volume = 1000;
-        const certificateId = await certificationRequest.approve(volume);
+        const certificateId = await certificationRequest.approve();
 
         certificationRequest = await certificationRequest.sync();
 
@@ -161,12 +162,12 @@ describe('Issuer', () => {
         const toTime = timestamp;
         const device = '1';
 
-        await CertificationRequest.createCertificationRequest(fromTime, toTime, device, conf, []);
+        await CertificationRequest.createCertificationRequest(fromTime, toTime, 1e9, device, conf, []);
 
         let failed = false;
 
         try {
-            await CertificationRequest.createCertificationRequest(fromTime, toTime, device, conf, []);
+            await CertificationRequest.createCertificationRequest(fromTime, toTime, 1e9, device, conf, []);
         } catch (e) {
             failed = true;
         }
@@ -182,25 +183,26 @@ describe('Issuer', () => {
         timestamp += 30 * 24 * 3600;
         const toTime = timestamp;
         const device = '1';
+        const volume = 1e9;
 
-        let certificationRequest = await CertificationRequest.createCertificationRequest(fromTime, toTime, device, conf, []);
+        let certificationRequest = await CertificationRequest.createCertificationRequest(fromTime, toTime, volume, device, conf, []);
 
         setActiveUser(issuerPK);
 
-        const volume = 1000;
-        await certificationRequest.approve(volume);
+        await certificationRequest.approve();
         certificationRequest = await certificationRequest.sync();
 
         await certificationRequest.revoke();
         certificationRequest = await certificationRequest.sync();
 
-        const newCertificationRequest = await CertificationRequest.createCertificationRequest(fromTime, toTime, device, conf, []);
+        const newCertificationRequest = await CertificationRequest.createCertificationRequest(fromTime, toTime, volume, device, conf, []);
 
         assert.exists(newCertificationRequest);
     });
 
     it('user correctly requests private issuance', async () => {
-        const certificationRequest = await createCertificationRequest(conf, true);
+        const volume = 1e9;
+        const certificationRequest = await createCertificationRequest(conf, volume, true);
 
         assert.isAbove(Number(certificationRequest.id), -1);
 
@@ -209,17 +211,18 @@ describe('Issuer', () => {
             device: 1,
             owner: accountDeviceOwner,
             approved: false,
-            isPrivate: true
+            isPrivate: true,
+            energy: volume
         } as Partial<CertificationRequest.Entity>);
     });
 
     it('issuer correctly approves private issuance', async () => {
-        let certificationRequest = await createCertificationRequest(conf, true);
+        const volume = 1e9;
+        let certificationRequest = await createCertificationRequest(conf, volume, true);
 
         setActiveUser(issuerPK);
 
-        const volume = 1000;
-        const certificateId = await certificationRequest.approve(volume);
+        const certificateId = await certificationRequest.approve();
 
         certificationRequest = await certificationRequest.sync();
 
