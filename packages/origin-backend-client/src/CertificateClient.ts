@@ -1,19 +1,14 @@
 import {
     ICertificationRequestWithRelationsIds,
-    CertificationRequestCreateData,
-    CertificationRequestUpdateData,
-    CertificationRequestStatus
+    CertificationRequestOffChainData,
+    CertificationRequestUpdateData
 } from '@energyweb/origin-backend-core';
 
 import { IRequestClient, RequestClient } from './RequestClient';
 
 export interface ICertificateClient {
-    requestCertificates(
-        data: CertificationRequestCreateData
-    ): Promise<ICertificationRequestWithRelationsIds>;
-    approveCertificationRequest(id: string): Promise<ICertificationRequestWithRelationsIds>;
-    getCertificationRequest(id: string): Promise<ICertificationRequestWithRelationsIds>;
-    getCertificationRequests(): Promise<ICertificationRequestWithRelationsIds[]>;
+    updateCertificationRequestData(id: string, data: CertificationRequestUpdateData): Promise<boolean>;
+    getCertificationRequestData(id: string): Promise<CertificationRequestOffChainData>;
 }
 
 export class CertificateClient implements ICertificateClient {
@@ -30,36 +25,16 @@ export class CertificateClient implements ICertificateClient {
         return `${this.certificateEndpoint}/CertificationRequest`;
     }
 
-    public async requestCertificates(data: CertificationRequestCreateData) {
+    public async updateCertificationRequestData(id: string, data: CertificationRequestUpdateData): Promise<boolean> {
         const response = await this.requestClient.post<
-            CertificationRequestCreateData,
-            ICertificationRequestWithRelationsIds
-        >(this.certificateRequestEndpoint, data);
+        CertificationRequestUpdateData,
+            boolean
+        >(`${this.certificateRequestEndpoint}/${id}`, data);
 
         return response.data;
     }
 
-    public async approveCertificationRequest(id: string) {
-        const response = await this.requestClient.put<
-            CertificationRequestUpdateData,
-            ICertificationRequestWithRelationsIds
-        >(`${this.certificateRequestEndpoint}/${id}`, {
-            status: CertificationRequestStatus.Approved
-        });
-
-        return response.data;
-    }
-
-    public async getCertificationRequests() {
-        const { data } = await this.requestClient.get<
-            void,
-            ICertificationRequestWithRelationsIds[]
-        >(this.certificateRequestEndpoint);
-
-        return data;
-    }
-
-    public async getCertificationRequest(id: string) {
+    public async getCertificationRequestData(id: string): Promise<CertificationRequestOffChainData> {
         const { data } = await this.requestClient.get<void, ICertificationRequestWithRelationsIds>(
             `${this.certificateRequestEndpoint}/${id}`
         );

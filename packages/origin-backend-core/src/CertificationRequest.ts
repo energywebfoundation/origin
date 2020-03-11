@@ -1,19 +1,14 @@
 import { IDeviceWithId } from './Device';
 
-export enum CertificationRequestStatus {
-    Pending,
-    Rejected,
-    Approved
-}
-
 export interface ICertificationRequestProperties {
     id: string;
-    energy: number;
-    startTime: number;
-    endTime: number;
+    fromTime: number;
+    toTime: number;
     files: string[];
-    createdDate: Date;
-    status: CertificationRequestStatus;
+    created: number;
+    approved: boolean;
+    revoked: boolean;
+    energy?: number;
 }
 
 export interface ICertificationRequest extends ICertificationRequestProperties {
@@ -28,9 +23,5 @@ export interface ICertificationRequestWithRelations extends ICertificationReques
     device: IDeviceWithId;
 }
 
-export type CertificationRequestCreateData = Omit<
-    ICertificationRequestWithRelationsIds,
-    'id' | 'status' | 'createdDate'
->;
-
-export type CertificationRequestUpdateData = Pick<ICertificationRequestWithRelationsIds, 'status'>;
+export type CertificationRequestOffChainData = Pick<ICertificationRequestProperties, 'id' | 'files'>;
+export type CertificationRequestUpdateData = Pick<CertificationRequestOffChainData, 'files'>;

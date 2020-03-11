@@ -2,52 +2,15 @@ import {
     Entity,
     Column,
     BaseEntity,
-    PrimaryGeneratedColumn,
-    ManyToOne,
-    JoinColumn,
-    CreateDateColumn
+    PrimaryGeneratedColumn
 } from 'typeorm';
-import { IsInt, Min, IsNotEmpty } from 'class-validator';
-import { CertificationRequestStatus, ICertificationRequest } from '@energyweb/origin-backend-core';
-import { Device } from '../device/device.entity';
+import { CertificationRequestOffChainData } from '@energyweb/origin-backend-core';
 
 @Entity()
-export class CertificationRequest extends BaseEntity implements ICertificationRequest {
+export class CertificationRequest extends BaseEntity implements CertificationRequestOffChainData {
     @PrimaryGeneratedColumn('uuid')
     id: string;
 
-    @Column()
-    status: CertificationRequestStatus;
-
-    @Column()
-    @IsInt()
-    @Min(0)
-    @IsNotEmpty()
-    energy: number;
-
-    @Column()
-    @IsInt()
-    @Min(0)
-    @IsNotEmpty()
-    startTime: number;
-
-    @Column()
-    @IsInt()
-    @Min(0)
-    @IsNotEmpty()
-    endTime: number;
-
-    @CreateDateColumn()
-    createdDate: Date;
-
     @Column('simple-array')
     files: string[];
-
-    @ManyToOne(() => Device, {
-        nullable: false,
-        eager: true
-    })
-    @JoinColumn()
-    @IsNotEmpty()
-    device: Device;
 }

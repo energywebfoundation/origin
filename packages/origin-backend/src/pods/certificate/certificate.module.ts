@@ -4,7 +4,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { CertificationRequest } from './certification-request.entity';
 import { CertificateController } from './certificate.controller';
 import { UserModule } from '../user/user.module';
-import { CertificationRequestService } from './certification-request.service';
 import { DeviceModule } from '../device/device.module';
 import { ISmartMeterReadingsAdapter } from '@energyweb/origin-backend-core';
 
@@ -18,7 +17,7 @@ export class CertificateModule {
                 UserModule,
                 DeviceModule.register(smartMeterReadingsAdapter)
             ],
-            providers: [CertificationRequestService],
+            providers: [],
             controllers: [CertificateController],
         };
     }

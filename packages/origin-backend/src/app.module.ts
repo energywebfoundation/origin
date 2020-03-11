@@ -15,7 +15,7 @@ import { CertificationRequest } from './pods/certificate/certification-request.e
 import { Compliance } from './pods/compliance/compliance.entity';
 import { ComplianceModule } from './pods/compliance/compliance.module';
 import { ContractsStorageModule } from './pods/contracts-storage/contracts-storage.module';
-import { MarketContractLookup } from './pods/contracts-storage/market-contract-lookup.entity';
+import { ContractsLookup } from './pods/contracts-storage/contracts-lookup.entity';
 import { Country } from './pods/country/country.entity';
 import { CountryModule } from './pods/country/country.module';
 import { Currency } from './pods/currency/currency.entity';
@@ -54,7 +54,7 @@ export class AppModule {
                         ...configService.get<ConnectionOptions>('ORM'),
                         entities: [
                             JsonEntity,
-                            MarketContractLookup,
+                            ContractsLookup,
                             Currency,
                             Compliance,
                             Country,

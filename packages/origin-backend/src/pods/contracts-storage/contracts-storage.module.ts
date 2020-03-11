@@ -1,11 +1,11 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { MarketContractLookup } from './market-contract-lookup.entity';
-import { MarketContractLookupController } from './market-contract-lookup.controller';
+import { ContractsLookup } from './contracts-lookup.entity';
+import { ContractsLookupController } from './contracts-lookup.controller';
 
 @Module({
-    imports: [TypeOrmModule.forFeature([MarketContractLookup])],
+    imports: [TypeOrmModule.forFeature([ContractsLookup])],
     providers: [],
-    controllers: [MarketContractLookupController]
+    controllers: [ContractsLookupController]
 })
 export class ContractsStorageModule {}

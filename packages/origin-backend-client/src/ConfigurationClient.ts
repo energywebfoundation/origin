@@ -1,7 +1,7 @@
 import { IRequestClient, RequestClient } from './RequestClient';
 
 export type ConfigurationItem =
-    | 'MarketContractLookup'
+    | 'ContractsLookup'
     | 'Currency'
     | 'Compliance'
     | 'Country'

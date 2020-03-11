@@ -1,8 +1,6 @@
 import {
-    CertificationRequestCreateData,
-    CertificationRequestStatus,
-    ICertificationRequestWithRelationsIds,
-    CertificationRequestUpdateData
+    CertificationRequestUpdateData,
+    CertificationRequestOffChainData
 } from '@energyweb/origin-backend-core';
 
 import {
@@ -10,74 +8,38 @@ import {
     Post,
     Body,
     Get,
-    Put,
-    Param,
-    BadRequestException,
-    UnprocessableEntityException
+    Param
 } from '@nestjs/common';
-import { validate } from 'class-validator';
-import { CertificationRequestService } from './certification-request.service';
+import { InjectRepository } from '@nestjs/typeorm';
+import { CertificationRequest } from './certification-request.entity';
+import { Repository } from 'typeorm';
 
 const CERTIFICATION_REQUEST_ENDPOINT = '/CertificationRequest';
 
 @Controller('/Certificate')
 export class CertificateController {
-    constructor(private readonly certificationRequestService: CertificationRequestService) {}
+    constructor(
+        @InjectRepository(CertificationRequest)
+        private readonly certificationRequestRepository: Repository<CertificationRequest>
+    ) {}
 
-    @Post(CERTIFICATION_REQUEST_ENDPOINT)
-    async createCertificationRequest(
-        @Body() data: CertificationRequestCreateData
-    ): Promise<ICertificationRequestWithRelationsIds> {
-        if (typeof data.device === 'undefined') {
-            throw new UnprocessableEntityException({
-                errors: [`Missing data.device`]
-            });
-        }
-
-        const { device, ...entityProperties } = data;
-
-        const entity = await this.certificationRequestService.create(
-            {
-                ...entityProperties,
-                status: CertificationRequestStatus.Pending
-            },
-            device.toString()
-        );
-
-        const validationErrors = await validate(entity);
-
-        if (validationErrors.length > 0) {
-            throw new UnprocessableEntityException({
-                errors: validationErrors
-            });
-        }
-
-        await entity.save();
-
-        return this.certificationRequestService.findOneCertificationRequest(entity.id);
-    }
-
-    @Get(CERTIFICATION_REQUEST_ENDPOINT)
-    async getCertificationRequests(): Promise<ICertificationRequestWithRelationsIds[]> {
-        return this.certificationRequestService.findCertificationRequest();
-    }
-
-    @Put(`${CERTIFICATION_REQUEST_ENDPOINT}/:id`)
+    @Post(`${CERTIFICATION_REQUEST_ENDPOINT}/:id`)
     async updateCertificationRequest(
-        @Body() data: CertificationRequestUpdateData,
-        @Param('id') id: string
-    ): Promise<ICertificationRequestWithRelationsIds> {
-        try {
-            return this.certificationRequestService.approveCertificationRequest(id);
-        } catch (error) {
-            throw new BadRequestException(error?.message ?? 'Unknown error');
-        }
+        @Param('id') id: string,
+        @Body() data: CertificationRequestUpdateData
+    ): Promise<CertificationRequestOffChainData> {
+        const certificationRequest = new CertificationRequest();
+
+        certificationRequest.id = id;
+        certificationRequest.files = data.files;
+
+        return this.certificationRequestRepository.save(certificationRequest);
     }
 
     @Get(`${CERTIFICATION_REQUEST_ENDPOINT}/:id`)
     async getCertificationRequest(
         @Param('id') id: string
-    ): Promise<ICertificationRequestWithRelationsIds> {
-        return this.certificationRequestService.findOneCertificationRequest(id);
+    ): Promise<CertificationRequestOffChainData> {
+        return this.certificationRequestRepository.findOne(id);
     }
 }
