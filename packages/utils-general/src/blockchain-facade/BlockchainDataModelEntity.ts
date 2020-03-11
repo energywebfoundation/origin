@@ -95,7 +95,7 @@ export abstract class Entity implements IOnChainProperties {
         const { properties, salts, schema } = await this.offChainDataClient.get<T>(this.fullUrl);
 
         this.generateAndAddProofs(properties, salts);
-        this.verifyOffChainProperties(this.propertiesDocumentHash, properties, schema);
+        this.verifyOffChainProperties(this.propertiesDocumentHash, properties);
 
         if (this.configuration.logger) {
             this.configuration.logger.verbose(
@@ -120,7 +120,7 @@ export abstract class Entity implements IOnChainProperties {
         }
     }
 
-    verifyOffChainProperties(rootHash: string, properties: any, schema: string[]) {
+    verifyOffChainProperties(rootHash: string, properties: any) {
         Object.keys(properties).map(key => {
             const theProof = this.proofs.find((proof: PreciseProofs.Proof) => proof.key === key);
 
@@ -131,7 +131,7 @@ export abstract class Entity implements IOnChainProperties {
             }
 
             if (theProof) {
-                if (!PreciseProofs.verifyProof(rootHash, theProof, schema)) {
+                if (!PreciseProofs.verifyProof(rootHash, theProof)) {
                     throw new Error(
                         `Proof ${JSON.stringify(theProof)} for property ${key} is invalid.`
                     );
@@ -157,16 +157,13 @@ export abstract class Entity implements IOnChainProperties {
         );
 
         leafs.forEach((leaf: PreciseProofs.Leaf) =>
-            this.addProof(PreciseProofs.createProof(leaf.key, leafs, true, merkleTree))
+            this.addProof(PreciseProofs.createProof(leaf.key, leafs, false))
         );
 
         const schema = leafs.map((leaf: PreciseProofs.Leaf) => leaf.key);
 
         const result = {
-            rootHash: PreciseProofs.createExtendedTreeRootHash(
-                merkleTree[merkleTree.length - 1][0],
-                schema
-            ),
+            rootHash: PreciseProofs.getRootHash(merkleTree),
             salts: leafs.map((leaf: PreciseProofs.Leaf) => leaf.salt),
             leafs,
             schema
