@@ -52,10 +52,10 @@ const configFilePath = absolutePath(program.config ?? '../config/demo-config.jso
 
     await marketDemo(configFilePath, contractConfig);
 
-    if (contractConfig && contractConfig.marketLogic) {
+    if (contractConfig) {
         await offChainDataSource.configurationClient.add(
-            'MarketContractLookup',
-            contractConfig.marketLogic.toLowerCase()
+            'ContractsLookup',
+            contractConfig
         );
     }
 

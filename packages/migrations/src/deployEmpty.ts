@@ -3,17 +3,10 @@ import { logger } from './Logger';
 
 import { Contracts as UserContracts } from '@energyweb/user-registry';
 import { Contracts as DeviceContracts } from '@energyweb/device-registry';
-import { Contracts as OriginContracts } from '@energyweb/origin';
-import { Contracts as MarketContracts } from '@energyweb/market';
+import { Contracts as IssuerContracts } from '@energyweb/issuer';
+import { IContractsLookup } from '@energyweb/origin-backend-core';
 
-export interface DeployedContractAddresses {
-    userLogic: string;
-    deviceLogic: string;
-    certificateLogic: string;
-    marketLogic: string;
-}
-
-export async function deployEmptyContracts() {
+export async function deployEmptyContracts(): Promise<IContractsLookup> {
     const web3: Web3 = new Web3(process.env.WEB3);
     const deployKey: string = process.env.DEPLOY_KEY;
 
@@ -34,30 +27,29 @@ export async function deployEmptyContracts() {
     const deviceLogicAddress = deviceLogic.web3Contract.options.address;
     logger.info('DeviceLogic Contract Deployed: ' + deviceLogicAddress);
 
-    const certificateLogic = await OriginContracts.migrateCertificateRegistryContracts(
+    const registry = await IssuerContracts.migrateRegistry(
         web3,
-        deviceLogicAddress,
         adminPK
     );
-    const certificateLogicAddress = certificateLogic.web3Contract.options.address;
-    logger.info('CertificateLogic Contract Deployed: ' + certificateLogicAddress);
+    const registryAddress = registry.web3Contract.options.address;
+    logger.info('Registry Contract Deployed: ' + registryAddress);
 
-    const marketLogic = await MarketContracts.migrateMarketRegistryContracts(
+    const issuer = await IssuerContracts.migrateIssuer(
         web3,
-        certificateLogicAddress,
-        adminPK
+        adminPK,
+        registryAddress
     );
-    const marketLogicAddress = marketLogic.web3Contract.options.address;
-    logger.info('MarketLogic Deployed: ' + marketLogicAddress);
+    const issuerAddress = issuer.web3Contract.options.address;
+    logger.info('Issuer Deployed: ' + issuerAddress);
 
     console.log('-----------------------------------------------------------\n');
 
     // save addresses in a config file
-    const deployResult: DeployedContractAddresses = {
+    const deployResult: IContractsLookup = {
         userLogic: userLogicAddress,
         deviceLogic: deviceLogicAddress,
-        certificateLogic: certificateLogicAddress,
-        marketLogic: marketLogicAddress
+        registry: registryAddress,
+        issuer: issuerAddress
     };
 
     const writeJsonFile = require('write-json-file');

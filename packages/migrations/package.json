@@ -33,7 +33,7 @@
   "dependencies": {
     "@energyweb/device-registry": "5.1.0",
     "@energyweb/market": "6.0.1",
-    "@energyweb/origin": "4.0.1",
+    "@energyweb/issuer": "1.0.0",
     "@energyweb/origin-backend": "3.8.0",
     "@energyweb/origin-backend-client": "3.3.0",
     "@energyweb/user-registry": "3.0.3",

@@ -151,9 +151,9 @@
                 "email": "issuer@mailinator.com",
                 "password": "test",
                 "organization": "Issuer",
-                "address": "0x9442ed348b161af888e6cb999951ae8b961f7b4b",
-                "privateKey": "0xc4b87d68ea2b91f9d3de3fcb77c299ad962f006ffb8711900cb93d94afec3dc3",
-                "rights": 32
+                "address": "0xD173313A51f8fc37BcF67569b463abd89d81844f",
+                "privateKey": "0xd9066ff9f753a1898709b568119055660a77d9aae4d7a4ad677b8fb3d2a571e5",
+                "rights": 33
             }
         },
         {
