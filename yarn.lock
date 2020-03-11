@@ -18127,10 +18127,10 @@ postgres-interval@^1.1.0:
   dependencies:
     xtend "^4.0.0"
 
-precise-proofs-js@1.0.1:
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/precise-proofs-js/-/precise-proofs-js-1.0.1.tgz#4e8429ef5ceaf69e9d47a73cd9e9f9c07a0dcf0e"
-  integrity sha512-kcMPgKD7wLMYwqBPGekWmbNynlBhT6kXaW2RReddXPHHrxYHRifQUqPoE1oAzhYG4g5TBH5nB4pQa8+bJ+XVSA==
+precise-proofs-js@1.0.2:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/precise-proofs-js/-/precise-proofs-js-1.0.2.tgz#6ec496d893ccc0993994904f3e3456510075a699"
+  integrity sha512-4IVlsBs92WjaalqZ70OVE0k31ptJrCjGKDFmgi2cGk90INep/+AsblCMvGCeARC6GMifH587KKdHAZ1+DYzDlg==
   dependencies:
     build "^0.1.4"
     colors "^1.4.0"
@@ -23647,7 +23647,7 @@ web3-utils@1.2.4:
     underscore "1.9.1"
     utf8 "3.0.0"
 
-web3-utils@1.2.6, web3-utils@^1.2.6:
+web3-utils@1.2.6:
   version "1.2.6"
   resolved "https://registry.yarnpkg.com/web3-utils/-/web3-utils-1.2.6.tgz#b9a25432da00976457fcc1094c4af8ac6d486db9"
   integrity sha512-8/HnqG/l7dGmKMgEL9JeKPTtjScxOePTzopv5aaKFExPfaBrYRkgoMqhoowCiAl/s16QaTn4DoIF1QC4YsT7Mg==
