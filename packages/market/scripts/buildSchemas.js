@@ -74,11 +74,6 @@ async function run() {
         '/schemas/MarketUserOffChainProperties.schema.json'
     );
 
-    await generateSchemaIfNew(
-        'yarn --silent build-schema:PurchasableCertificatePropertiesOffChain',
-        '/schemas/PurchasableCertificateOffChainProperties.schema.json'
-    );
-
     console.log('MARKET: Building schemas done');
 }
 

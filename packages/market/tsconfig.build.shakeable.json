@@ -15,13 +15,7 @@
             "path": "../utils-general/tsconfig.build.json"
         },
         {
-            "path": "../device-registry/tsconfig.build.json"
-        },
-        {
             "path": "../origin-backend-client/tsconfig.build.json"
-        },
-        {
-            "path": "../origin/tsconfig.build.shakeable.json"
         }
     ]
 }
