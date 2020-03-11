@@ -23,7 +23,7 @@
     "precommit": "lint-staged"
   },
   "author": "",
-  "license": "GPL-3.0-only",
+  "license": "GPL-3.0-or-later",
   "dependencies": {
     "@energyweb/device-registry": "5.1.0",
     "@energyweb/market": "6.0.1",

@@ -70,5 +70,5 @@
     "access": "public",
     "registry": "https://registry.npmjs.org"
   },
-  "license": "GPL-3.0-only"
+  "license": "GPL-3.0-or-later"
 }

@@ -4,7 +4,7 @@
     "description": "A service project hosting order book based exchange",
     "homepage": "https://github.com/energywebfoundation/origin/tree/master/packages/exchange#readme",
     "author": "EnergyWeb DevHub GmbH; Piotr Kosinski, piotr.kosinski@energyweb.org",
-    "license": "GPL-3.0",
+    "license": "GPL-3.0-or-later",
     "main": "dist/js/src/index.js",
     "repository": {
         "type": "git",
