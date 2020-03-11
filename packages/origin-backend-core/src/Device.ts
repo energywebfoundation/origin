@@ -39,6 +39,9 @@ export interface IDevice {
     typeOfPublicSupport: string;
     smartMeterReads: ISmartMeterRead[];
     deviceGroup?: string;
+    idInRegistry?: string;
+    generationRealTimeId?: string;
+    generationProductionId?: string;
 }
 
 export interface IDeviceWithId extends IDevice {

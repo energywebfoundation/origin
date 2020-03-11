@@ -252,7 +252,10 @@
                 "deviceType": "Wind;Onshore",
                 "otherGreenAttributes": "N.A.",
                 "typeOfPublicSupport": "N.A",
-                "facilityName": "Wuthering Heights Windfarm"
+                "facilityName": "Wuthering Heights Windfarm",
+                "idInRegistry": "TH123654",
+                "generationRealTimeId": "d2184ck2",
+                "generationProductionId": "35192d2a"
             }
         },
         {

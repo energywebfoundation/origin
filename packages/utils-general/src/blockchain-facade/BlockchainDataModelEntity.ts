@@ -22,7 +22,7 @@ export abstract class Entity implements IOnChainProperties {
 
     propertiesDocumentHash: string;
     url: string;
-    
+
     constructor(id: string, configuration: Configuration.Entity) {
         if (typeof id !== 'string' && id !== null) {
             throw new Error('An ID of an Entity should always be of type string.');

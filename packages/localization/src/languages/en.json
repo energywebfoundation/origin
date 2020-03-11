@@ -50,7 +50,10 @@
                 "projectStory": "Project story",
                 "images": "Images",
                 "capacity": "Capacity",
-                "address": "Address"
+                "address": "Address",
+                "idInRegistry": "Id in registry",
+                "generationRealTimeId": "Generation real time id",
+                "generationProductionId": "Generation production id"
             },
             "actions": {
                 "requestCertificates": "Request certificates",

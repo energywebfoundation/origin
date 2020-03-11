@@ -6,10 +6,12 @@ export interface IOnChainProperties {
     owner: Configuration.EthAccount;
 }
 
-export abstract class Entity extends BlockchainDataModelEntity.Entity implements IOnChainProperties {
+export abstract class Entity extends BlockchainDataModelEntity.Entity
+    implements IOnChainProperties {
     offChainProperties: IDevice;
 
     smartMeter: Configuration.EthAccount;
+
     owner: Configuration.EthAccount;
 
     initialized: boolean;
@@ -21,7 +23,10 @@ export abstract class Entity extends BlockchainDataModelEntity.Entity implements
     }
 
     async createOffChainProperties(devicePropertiesOffChain: IDevice) {
-        return this.configuration.offChainDataSource.deviceClient.add(Number(this.id), devicePropertiesOffChain);
+        return this.configuration.offChainDataSource.deviceClient.add(
+            Number(this.id),
+            devicePropertiesOffChain
+        );
     }
 
     async getOffChainProperties(): Promise<any> {
@@ -29,6 +34,8 @@ export abstract class Entity extends BlockchainDataModelEntity.Entity implements
     }
 
     async setStatus(status: DeviceStatus): Promise<IDevice> {
-        return this.configuration.offChainDataSource.deviceClient.update(Number(this.id), { status });
+        return this.configuration.offChainDataSource.deviceClient.update(Number(this.id), {
+            status
+        });
     }
 }

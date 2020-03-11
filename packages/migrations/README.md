@@ -142,9 +142,7 @@ usage: command to onboard a new producing device
 * <code>owner</code>: ethereum address of the owner of the device, has to have to device manager rights
 * <code>operationalSince</code>: UNIX-timestamp when the device entered service
 * <code>capacityInW</code>: capacity of the device
-* <code>lastSmartMeterReadWh</code>: last meterreading in Wh
 * <code>status</code>: device status (Submitted, Denied, Active)
-* <code>lastSmartMeterReadFileHash</code>: last filehash
 * <code>country</code>: the country where the device is located
 * <code>address</code>: the address where the device is located
 * <code>region</code>: the region where the device is located
@@ -155,38 +153,36 @@ usage: command to onboard a new producing device
 * <code>deviceType</code>: Type of device as string, eg. "Solar;Photovoltaic;Roof mounted"
 * <code>otherGreenAttributes</code>: green attributes as string
 * <code>typeOfPublicSupport</code>: type of public support as string
+* <code>idInRegistry</code>: identifier in regional/country-wide device registry
+* <code>generationRealTimeId</code>: device identifier in energy reads real-time registry
+* <code>generationProductionId</code>: device identifier in energy reads production registry
 
-#### example
-Onboard a new energy producing device for the owner <code>0x33496f621350cea01b18ea5b5c43c6c233c3f72d (John Doe Four of the DeviceManager Organization)
-</code>. The device has a smart meter connected with the ethereum account <code>0x1112ec367b20d2bffd40ee11523c3d36d61adf1b</code>. We're also passing the private key <code>50764e302e4ed8ce624003deca642c03ce06934fe77585175c5576723f084d4c</code> of that smart meter because we want to log new data within the demonstration.<br>
-The device has a capacity of <code>10000</code> Wh and went into producition on <code>01/01/2018 (1514764800)</code>. It's some kind of BiomassGas-powerplant and is compliant to TIGR. In addition, it has the green Attributes of <code>N.A.</code> and also the <code>N.A.</code> type of public support. Because we're freshly deploying that device, it does not have a meterreading thus no need for a filehash. <br>
-The device is located in <code>Main Street 11, 01234 Anytown, AnyState, USA</code>. If you're passing the some GPS coordinates, you will see the location of the device within the webapplication in the consuming device detail view. Also the certificate once created can only change owners upto 3 times
+#### Example
 
 <code>
 {
-    type": "CREATE_PRODUCING_DEVICE",
-    data": {
-        "smartMeter": "0x00f4af465162c05843ea38d203d37f7aad2e2c17",
-        "smartMeterPK": "09f08bc14bfdaf427fdd0eb676db21a86fa908a25870158345e4f847b5ada35e",
-        "owner": "0x33496f621350cea01b18ea5b5c43c6c233c3f72d",
+    "type": "CREATE_PRODUCING_DEVICE",
+    "data": {
+        "smartMeter": "0x43daf8EF8C29126cDBABEDD07b364ad9e49aa6f7",
+        "smartMeterPK": "0xf4254d3ddc25041a85b40877184eb2f1ff9be8b686d9edacf13ce6fa958d562e",
+        "owner": "0x5b1b89a48c1fb9b6ef7fb77c453f2aaf4b156d45",
         "operationalSince": 1514764800,
         "capacityInW": 10000,
-        "lastSmartMeterReadWh": 0,
-        "active": true,
-        "lastSmartMeterReadFileHash": "",
-        "country": "USA",
-        "region": "AnyState",
-        "zip": "01234",
-        "city": "Anytown",
-        "street": "Main Street",
-        "houseNumber": "10",
-        "gpsLatitude": "0",
-        "gpsLongitude": "0",
-        "timezone": "America/Los_Angeles",
-        "deviceType": "Biomass from agriculture",
-        "cO2UsedForCertificate": 0,
+        "status": "Active",
+        "country": "Thailand",
+        "address": "95 Moo 7, Sa Si Mum Sub-district, Kamphaeng Saen District, Nakhon Province 73140",
+        "region": "Central",
+        "province": "Nakhon Pathom",
+        "gpsLatitude": "14.059500",
+        "gpsLongitude": "99.977800",
+        "timezone": "Asia/Bangkok",
+        "deviceType": "Wind;Onshore",
         "otherGreenAttributes": "N.A.",
-        "typeOfPublicSupport": "N.A"
+        "typeOfPublicSupport": "N.A",
+        "facilityName": "Wuthering Heights Windfarm",
+        "idInRegistry": "TH123654",
+        "generationRealTimeId": "d2184ck2",
+        "generationProductionId": "35192d2a"
     }
 }
 </code>

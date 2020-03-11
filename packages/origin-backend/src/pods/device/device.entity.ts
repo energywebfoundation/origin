@@ -68,4 +68,13 @@ export class Device extends BaseEntity implements IDeviceWithId {
 
     @Column('simple-json')
     smartMeterReads: ISmartMeterRead[];
+
+    @Column({ nullable: true })
+    idInRegistry: string;
+
+    @Column({ nullable: true })
+    generationRealTimeId: string;
+
+    @Column({ nullable: true })
+    generationProductionId: string;
 }

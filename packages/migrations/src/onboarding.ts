@@ -93,7 +93,9 @@ export const onboardDemo = async (actionString: string, conf: Configuration.Enti
             await conf.offChainDataSource.userClient.logout();
 
             await conf.offChainDataSource.userClient.login(action.data.email, action.data.password);
-            await conf.offChainDataSource.organizationClient.acceptInvitation(action.data.organization.id);
+            await conf.offChainDataSource.organizationClient.acceptInvitation(
+                action.data.organization.id
+            );
 
             conf.logger.info(
                 `Added user ${action.data.address} to organization with id ${action.data.organizationId}`
@@ -101,7 +103,10 @@ export const onboardDemo = async (actionString: string, conf: Configuration.Enti
             await conf.offChainDataSource.userClient.logout();
         }
     } else if (action.type === 'CREATE_ORGANIZATION') {
-        await conf.offChainDataSource.userClient.login(action.data.leadUser.email, action.data.leadUser.password);
+        await conf.offChainDataSource.userClient.login(
+            action.data.leadUser.email,
+            action.data.leadUser.password
+        );
 
         await conf.offChainDataSource.organizationClient.add({
             address: action.data.address,
@@ -157,7 +162,10 @@ export const onboardDemo = async (actionString: string, conf: Configuration.Enti
             images: '',
             region: action.data.region,
             province: action.data.province,
-            smartMeterReads: action.data.smartMeterReads || []
+            smartMeterReads: action.data.smartMeterReads || [],
+            idInRegistry: action.data.idInRegistry,
+            generationRealTimeId: action.data.generationRealTimeId,
+            generationProductionId: action.data.generationProductionId
         };
 
         try {

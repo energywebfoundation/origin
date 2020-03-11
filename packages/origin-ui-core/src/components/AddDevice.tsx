@@ -35,6 +35,7 @@ import { IDevice, DeviceStatus } from '@energyweb/origin-backend-core';
 import { Skeleton } from '@material-ui/lab';
 import { useTranslation } from 'react-i18next';
 import { useValidation } from '../utils/validation';
+import { FormInput } from './Form';
 
 const DEFAULT_ADDRESS = '0x0000000000000000000000000000000000000000';
 
@@ -48,6 +49,9 @@ interface IFormValues {
     longitude: string;
     supported: boolean;
     projectStory: string;
+    idInRegistry: string;
+    generationRealTimeId: string;
+    generationProductionId: string;
 }
 
 const INITIAL_FORM_VALUES: IFormValues = {
@@ -59,7 +63,10 @@ const INITIAL_FORM_VALUES: IFormValues = {
     latitude: '',
     longitude: '',
     supported: false,
-    projectStory: ''
+    projectStory: '',
+    idInRegistry: '',
+    generationRealTimeId: '',
+    generationProductionId: ''
 };
 
 export function AddDevice() {
@@ -163,7 +170,10 @@ export function AddDevice() {
             typeOfPublicSupport: '',
             description: values.projectStory,
             images: JSON.stringify(imagesUploadedList),
-            smartMeterReads: []
+            smartMeterReads: [],
+            idInRegistry: values.idInRegistry,
+            generationProductionId: values.generationProductionId,
+            generationRealTimeId: values.generationRealTimeId
         };
 
         try {
@@ -430,6 +440,24 @@ export function AddDevice() {
                                             disabled={fieldDisabled}
                                         />
                                     </FormControl>
+                                    <FormInput
+                                        label={t('device.properties.idInRegistry')}
+                                        property="idInRegistry"
+                                        disabled={fieldDisabled}
+                                        className="mt-3"
+                                    />
+                                    <FormInput
+                                        label={t('device.properties.generationRealTimeId')}
+                                        property="generationRealTimeId"
+                                        disabled={fieldDisabled}
+                                        className="mt-3"
+                                    />
+                                    <FormInput
+                                        label={t('device.properties.generationProductionId')}
+                                        property="generationProductionId"
+                                        disabled={fieldDisabled}
+                                        className="mt-3"
+                                    />
                                 </Grid>
                                 <Grid item xs={6}>
                                     <Typography className="mt-3">
