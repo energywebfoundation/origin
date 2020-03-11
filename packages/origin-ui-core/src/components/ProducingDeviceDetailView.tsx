@@ -13,10 +13,8 @@ import { ProducingDevice } from '@energyweb/device-registry';
 import { DeviceMap } from './DeviceMap';
 import { SmartMeterReadingsTable } from './SmartMeterReadingsTable';
 import { SmartMeterReadingsChart } from './SmartMeterReadingsChart';
-import { CertificateTable, SelectedState } from './CertificateTable';
 import { useSelector, useDispatch } from 'react-redux';
 import { getProducingDevices, getConfiguration } from '../features/selectors';
-import { getCertificates } from '../features/certificates/selectors';
 import { requestUser } from '../features/users/actions';
 import { getUserById, getUsers } from '../features/users/selectors';
 import { MarketUser } from '@energyweb/market';
@@ -38,7 +36,6 @@ interface IProps {
 
 export function ProducingDeviceDetailView(props: IProps) {
     const configuration = useSelector(getConfiguration);
-    const certificates = useSelector(getCertificates);
     const producingDevices = useSelector(getProducingDevices);
     const users = useSelector(getUsers);
     const organizationClient = useSelector(getOffChainDataSource)?.organizationClient;
@@ -257,7 +254,7 @@ export function ProducingDeviceDetailView(props: IProps) {
             {selectedDevice.offChainProperties?.deviceGroup && (
                 <DeviceGroupForm device={selectedDevice} readOnly={true} />
             )}
-            {props.showCertificates && (
+            {/* {props.showCertificates && (
                 <>
                     <br />
                     <br />
@@ -269,7 +266,7 @@ export function ProducingDeviceDetailView(props: IProps) {
                         hiddenColumns={['deviceType', 'commissioningDate', 'locationText']}
                     />
                 </>
-            )}
+            )} */}
         </div>
     );
 }

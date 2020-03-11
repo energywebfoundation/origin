@@ -23,10 +23,6 @@ export function Certificates() {
         return <CertificateTable selectedState={SelectedState.Inbox} />;
     }
 
-    function ForSaleCertificates() {
-        return <CertificateTable selectedState={SelectedState.ForSale} />;
-    }
-
     function ClaimedCertificates() {
         return <CertificateTable selectedState={SelectedState.Claimed} />;
     }
@@ -42,12 +38,6 @@ export function Certificates() {
             key: 'inbox',
             label: 'navigation.certificates.inbox',
             component: InboxCertificates,
-            show: !isIssuer
-        },
-        {
-            key: 'for_sale',
-            label: 'navigation.certificates.forSale',
-            component: ForSaleCertificates,
             show: !isIssuer
         },
         {
