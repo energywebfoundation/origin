@@ -1,6 +1,6 @@
 import Web3 from 'web3';
 import { AbiItem } from 'web3-utils';
-import { PastEventOptions, EventData } from 'web3-eth-contract';
+import { PastEventOptions } from 'web3-eth-contract';
 
 import { GeneralFunctions, ISpecialTx } from '@energyweb/utils-general';
 
@@ -12,6 +12,15 @@ export interface TransferSingleEvent {
     _from: string,
     _to: string,
     _value: string
+}
+
+export interface ClaimSingleEvent {
+    _claimIssuer: string,
+    _claimSubject: string,
+    _topic: string,
+    _id: string,
+    _value: string,
+    _claimData: string
 }
 
 export class Registry extends GeneralFunctions {
@@ -48,6 +57,14 @@ export class Registry extends GeneralFunctions {
 
     async getAllTransferBatchEvents(eventFilter?: PastEventOptions) {
         return this.web3Contract.getPastEvents('TransferBatch', this.createFilter(eventFilter));
+    }
+
+    async getAllClaimSingleEvents(eventFilter?: PastEventOptions) {
+        return this.web3Contract.getPastEvents('ClaimSingle', this.createFilter(eventFilter));
+    }
+
+    async getAllClaimBatchEvents(eventFilter?: PastEventOptions) {
+        return this.web3Contract.getPastEvents('ClaimBatch', this.createFilter(eventFilter));
     }
 
     async getAllIssuanceSingleEvents(eventFilter?: PastEventOptions) {

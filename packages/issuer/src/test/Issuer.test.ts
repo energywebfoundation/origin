@@ -8,7 +8,7 @@ import { Configuration } from '@energyweb/utils-general';
 import { OffChainDataSourceMock } from '@energyweb/origin-backend-client-mocks';
 
 import { migrateIssuer, migrateRegistry } from '../migrate';
-import { RequestIssue, Issuer, Registry } from '..';
+import { CertificationRequest, Issuer, Registry } from '..';
 
 import { logger } from '../Logger';
 
@@ -22,10 +22,6 @@ describe('Issuer', () => {
     });
 
     const web3 = new Web3(process.env.WEB3);
-    const deployKey = process.env.DEPLOY_KEY;
-
-    const privateKeyDeployment = deployKey.startsWith('0x') ? deployKey : `0x${deployKey}`;
-    const accountDeployment = web3.eth.accounts.privateKeyToAccount(privateKeyDeployment).address;
 
     const deviceOwnerPK = '0xd9bc30dc17023fbb68fe3002e0ff9107b241544fd6d60863081c55e383f1b5a3';
     const accountDeviceOwner = web3.eth.accounts.privateKeyToAccount(deviceOwnerPK).address;
@@ -42,23 +38,23 @@ describe('Issuer', () => {
         };
     };
 
-    const createRequestIssue = async (conf: Configuration.Entity, isPrivate: boolean = false) => {
+    const createCertificationRequest = async (conf: Configuration.Entity, isPrivate: boolean = false) => {
         setActiveUser(deviceOwnerPK);
 
         const fromTime = timestamp;
         // Simulate time moving forward 1 month
         timestamp += 30 * 24 * 3600;
         const toTime = timestamp;
-        const deviceId = '1';
+        const device = '1';
 
-        return RequestIssue.createRequestIssue(fromTime, toTime, deviceId, conf, isPrivate);
+        return CertificationRequest.createCertificationRequest(fromTime, toTime, device, conf, [], isPrivate);
     };
 
     it('migrates Issuer and Registry', async () => {
-        registry = await migrateRegistry(web3, privateKeyDeployment);
+        registry = await migrateRegistry(web3, issuerPK);
         issuer = await migrateIssuer(
             web3,
-            privateKeyDeployment,
+            issuerPK,
             registry.web3Contract.options.address
         );
         const version = await issuer.version();
@@ -70,8 +66,8 @@ describe('Issuer', () => {
         conf = {
             blockchainProperties: {
                 activeUser: {
-                    address: accountDeployment,
-                    privateKey: privateKeyDeployment
+                    address: issuerAccount,
+                    privateKey: issuerPK
                 },
                 issuerLogicInstance: issuer,
                 web3
@@ -88,39 +84,40 @@ describe('Issuer', () => {
         // Simulate time moving forward 1 month
         timestamp += 30 * 24 * 3600;
         const toTime = timestamp;
-        const deviceId = '1';
+        const device = '1';
 
-        const requestIssue = await RequestIssue.createRequestIssue(
+        const certificationRequest = await CertificationRequest.createCertificationRequest(
             fromTime,
             toTime,
-            deviceId,
-            conf
+            device,
+            conf,
+            []
         );
 
-        assert.isAbove(Number(requestIssue.id), -1);
+        assert.isAbove(Number(certificationRequest.id), -1);
 
-        assert.deepOwnInclude(requestIssue, {
+        assert.deepOwnInclude(certificationRequest, {
             initialized: true,
-            deviceId,
+            device: Number(device),
             owner: accountDeviceOwner,
             fromTime,
             toTime,
             approved: false,
             isPrivate: false
-        } as Partial<RequestIssue.Entity>);
+        } as Partial<CertificationRequest.Entity>);
     });
 
     it('issuer correctly approves issuance', async () => {
-        let requestIssue = await createRequestIssue(conf);
+        let certificationRequest = await createCertificationRequest(conf);
 
         setActiveUser(issuerPK);
 
         const volume = 1000;
-        const certificateId = await requestIssue.approve(accountDeviceOwner, volume);
+        const certificateId = await certificationRequest.approve(volume);
 
-        requestIssue = await requestIssue.sync();
+        certificationRequest = await certificationRequest.sync();
 
-        assert.isTrue(requestIssue.approved);
+        assert.isTrue(certificationRequest.approved);
 
         const deviceOwnerBalance = await registry.balanceOf(
             accountDeviceOwner,
@@ -130,22 +127,22 @@ describe('Issuer', () => {
     });
 
     it('issuer revokes a certificate', async () => {
-        let requestIssue = await createRequestIssue(conf);
+        let certificationRequest = await createCertificationRequest(conf);
 
         setActiveUser(issuerPK);
 
         const volume = 1000;
-        const certificateId = await requestIssue.approve(accountDeviceOwner, volume);
+        const certificateId = await certificationRequest.approve(volume);
 
-        requestIssue = await requestIssue.sync();
+        certificationRequest = await certificationRequest.sync();
 
-        assert.isTrue(requestIssue.approved);
-        assert.isFalse(requestIssue.revoked);
+        assert.isTrue(certificationRequest.approved);
+        assert.isFalse(certificationRequest.revoked);
 
-        await requestIssue.revoke();
+        await certificationRequest.revoke();
 
-        requestIssue = await requestIssue.sync();
-        assert.isTrue(requestIssue.revoked);
+        certificationRequest = await certificationRequest.sync();
+        assert.isTrue(certificationRequest.revoked);
 
         const deviceOwnerBalance = await registry.balanceOf(
             accountDeviceOwner,
@@ -161,14 +158,14 @@ describe('Issuer', () => {
         // Simulate time moving forward 1 month
         timestamp += 30 * 24 * 3600;
         const toTime = timestamp;
-        const deviceId = '1';
+        const device = '1';
 
-        await RequestIssue.createRequestIssue(fromTime, toTime, deviceId, conf);
+        await CertificationRequest.createCertificationRequest(fromTime, toTime, device, conf, []);
 
         let failed = false;
 
         try {
-            await RequestIssue.createRequestIssue(fromTime, toTime, deviceId, conf);
+            await CertificationRequest.createCertificationRequest(fromTime, toTime, device, conf, []);
         } catch (e) {
             failed = true;
         }
@@ -183,49 +180,49 @@ describe('Issuer', () => {
         // Simulate time moving forward 1 month
         timestamp += 30 * 24 * 3600;
         const toTime = timestamp;
-        const deviceId = '1';
+        const device = '1';
 
-        let requestIssue = await RequestIssue.createRequestIssue(fromTime, toTime, deviceId, conf);
+        let certificationRequest = await CertificationRequest.createCertificationRequest(fromTime, toTime, device, conf, []);
 
         setActiveUser(issuerPK);
 
         const volume = 1000;
-        await requestIssue.approve(accountDeviceOwner, volume);
-        requestIssue = await requestIssue.sync();
+        await certificationRequest.approve(volume);
+        certificationRequest = await certificationRequest.sync();
 
-        await requestIssue.revoke();
-        requestIssue = await requestIssue.sync();
+        await certificationRequest.revoke();
+        certificationRequest = await certificationRequest.sync();
 
-        const newRequestIssue = await RequestIssue.createRequestIssue(fromTime, toTime, deviceId, conf);
+        const newCertificationRequest = await CertificationRequest.createCertificationRequest(fromTime, toTime, device, conf, []);
 
-        assert.exists(newRequestIssue);
+        assert.exists(newCertificationRequest);
     });
 
     it('user correctly requests private issuance', async () => {
-        const requestIssue = await createRequestIssue(conf, true);
+        const certificationRequest = await createCertificationRequest(conf, true);
 
-        assert.isAbove(Number(requestIssue.id), -1);
+        assert.isAbove(Number(certificationRequest.id), -1);
 
-        assert.deepOwnInclude(requestIssue, {
+        assert.deepOwnInclude(certificationRequest, {
             initialized: true,
-            deviceId: '1',
+            device: 1,
             owner: accountDeviceOwner,
             approved: false,
             isPrivate: true
-        } as Partial<RequestIssue.Entity>);
+        } as Partial<CertificationRequest.Entity>);
     });
 
     it('issuer correctly approves private issuance', async () => {
-        let requestIssue = await createRequestIssue(conf, true);
+        let certificationRequest = await createCertificationRequest(conf, true);
 
         setActiveUser(issuerPK);
 
         const volume = 1000;
-        const certificateId = await requestIssue.approve(accountDeviceOwner, volume);
+        const certificateId = await certificationRequest.approve(volume);
 
-        requestIssue = await requestIssue.sync();
+        certificationRequest = await certificationRequest.sync();
 
-        assert.isTrue(requestIssue.approved);
+        assert.isTrue(certificationRequest.approved);
 
         const deviceOwnerBalance = await registry.balanceOf(
             accountDeviceOwner,

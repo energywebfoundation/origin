@@ -2,28 +2,22 @@ import * as Moment from 'moment';
 import { extendMoment } from 'moment-range';
 
 import { Configuration, BlockchainDataModelEntity, Timestamp } from '@energyweb/utils-general';
+import { ICertificationRequest } from '@energyweb/origin-backend-core';
+
 import { Issuer, IOwnershipCommitment, OwnershipCommitmentSchema } from '..';
 
-export interface IRequestIssueOnChainProperties {
-    id: string;
+export class Entity extends BlockchainDataModelEntity.Entity implements ICertificationRequest {
+
     owner: string;
-    fromTime: Timestamp,
-    toTime: Timestamp,
-    deviceId: string;
+    fromTime: Timestamp;
+    toTime: Timestamp;
+    device: number;
     approved: boolean;
     revoked: boolean;
-}
+    created: Timestamp;
+    files: string[];
 
-export class Entity extends BlockchainDataModelEntity.Entity implements IRequestIssueOnChainProperties {
-
-    public owner: string;
-    public fromTime: Timestamp;
-    public toTime: Timestamp;
-    public deviceId: string;
-    public approved: boolean;
-    public revoked: boolean;
-
-    public initialized: boolean = false;
+    initialized: boolean = false;
 
     constructor(id: string, configuration: Configuration.Entity, public isPrivate: boolean = false) {
         super(id, configuration);
@@ -32,26 +26,28 @@ export class Entity extends BlockchainDataModelEntity.Entity implements IRequest
     async sync(): Promise<Entity> {
         const issuer: Issuer = this.configuration.blockchainProperties.issuerLogicInstance;
 
-        const issueRequest = await issuer.getIssuanceRequest(Number(this.id));
+        const issueRequest = await issuer.getCertificationRequest(Number(this.id));
         const decodedData = await issuer.decodeData(issueRequest.data);
 
         this.owner = issueRequest.owner;
         this.fromTime = Number(decodedData['0']);
         this.toTime = Number(decodedData['1']);
-        this.deviceId = decodedData['2'];
+        this.device = Number(decodedData['2']);
         this.approved = issueRequest.approved;
         this.revoked = issueRequest.revoked;
+        this.created = 0; // TO-DO replace with a proper timestamp
+        this.files = (await this.configuration.offChainDataSource.certificateClient.getCertificationRequestData(this.id)).files;
 
         this.initialized = true;
 
         if (this.configuration.logger) {
-            this.configuration.logger.verbose(`RequestIssue ${this.id} synced`);
+            this.configuration.logger.verbose(`CertificationRequest ${this.id} synced`);
         }
 
         return this;
     }
 
-    async approve(toAddress: string, value: number): Promise<number> {
+    async approve(value: number): Promise<number> {
         const validityData = this.configuration.blockchainProperties.web3.eth.abi.encodeFunctionCall({
             name: 'isRequestValid',
             type: 'function',
@@ -66,14 +62,26 @@ export class Entity extends BlockchainDataModelEntity.Entity implements IRequest
 
         if (this.isPrivate) {
             const commitment: IOwnershipCommitment = {
-                ownerAddress: toAddress,
+                ownerAddress: this.owner,
                 volume: value
             };
             const { rootHash } = this.prepareEntityCreation(commitment, OwnershipCommitmentSchema);
 
-            approveTx = await issuer.approveIssuancePrivate(toAddress, Number(this.id), rootHash, validityData);
+            approveTx = await issuer.approveCertificationRequestPrivate(
+                this.owner,
+                Number(this.id),
+                rootHash,
+                validityData,
+                Configuration.getAccount(this.configuration)
+            );
         } else {
-            approveTx = await issuer.approveIssuance(toAddress, Number(this.id), Number(value), validityData);
+            approveTx = await issuer.approveCertificationRequest(
+                this.owner,
+                Number(this.id),
+                Number(value),
+                validityData,
+                Configuration.getAccount(this.configuration)
+            );
         } 
 
         return this.configuration.blockchainProperties.web3.utils
@@ -81,8 +89,10 @@ export class Entity extends BlockchainDataModelEntity.Entity implements IRequest
     }
 
     async revoke() {
-        const issuer: Issuer = this.configuration.blockchainProperties.issuerLogicInstance;
-        await issuer.revokeRequest(Number(this.id));
+        await this.configuration.blockchainProperties.issuerLogicInstance.revokeRequest(
+            Number(this.id),
+            Configuration.getAccount(this.configuration)
+        );
     }
 
     async requestMigrateToPublic(value: number) {
@@ -101,11 +111,12 @@ export class Entity extends BlockchainDataModelEntity.Entity implements IRequest
     }
 }
 
-export const createRequestIssue = async (
+export const createCertificationRequest = async (
     fromTime: Timestamp,
     toTime: Timestamp,
     deviceId: string,
     configuration: Configuration.Entity,
+    files: string[],
     isVolumePrivate: boolean = false,
     forAddress?: string,
 ): Promise<Entity> => {
@@ -119,16 +130,21 @@ export const createRequestIssue = async (
 
     const { logs } = await (
         forAddress
-            ? issuer.requestIssuanceFor(data, forAddress, isVolumePrivate, Configuration.getAccount(configuration)) 
-            : issuer.requestIssuance(data, isVolumePrivate, Configuration.getAccount(configuration))
+            ? issuer.requestCertificationFor(data, forAddress, isVolumePrivate, Configuration.getAccount(configuration)) 
+            : issuer.requestCertification(data, isVolumePrivate, Configuration.getAccount(configuration))
     );
 
     request.id = configuration.blockchainProperties.web3.utils
         .hexToNumber(logs[0].topics[2])
         .toString();
 
+    await configuration.offChainDataSource.certificateClient.updateCertificationRequestData(
+        request.id,
+        { files }
+    );
+
     if (configuration.logger) {
-        configuration.logger.info(`RequestIssue ${request.id} created`);
+        configuration.logger.info(`CertificationRequest ${request.id} created`);
     }
 
     return request.sync();
@@ -146,28 +162,40 @@ const validateGenerationPeriod = async (
     const moment = extendMoment(Moment);
     const unix = (timestamp: Timestamp) => moment.unix(timestamp);
 
-    const requestIssueIds = await issuer.getIssuanceRequestsForDevice(deviceId, Configuration.getAccount(configuration));
+    const certificationRequestIds = await issuer.getCertificationRequestsForDevice(deviceId);
     const generationTimeRange = moment.range(unix(fromTime), unix(toTime));
 
-    for (const id of requestIssueIds) {
-        const requestIssue = await new Entity(id, configuration, isPrivate).sync();
+    for (const id of certificationRequestIds) {
+        const certificationRequest = await new Entity(id, configuration, isPrivate).sync();
 
-        if (requestIssue.revoked) {
+        if (certificationRequest.revoked) {
             continue;
         }
 
-        const requestIssueGenerationRange = moment.range(unix(requestIssue.fromTime), unix(requestIssue.toTime));
+        const certificationRequestGenerationRange = moment.range(unix(certificationRequest.fromTime), unix(certificationRequest.toTime));
 
-        if (generationTimeRange.overlaps(requestIssueGenerationRange)) {
+        if (generationTimeRange.overlaps(certificationRequestGenerationRange)) {
             throw new Error(
                 `Generation period ` + 
                 `${unix(fromTime).format()} - ${unix(toTime).format()}` + 
                 ` overlaps with the time period of ` + 
-                `${unix(requestIssue.fromTime).format()} - ${unix(requestIssue.toTime).format()}` + 
-                ` of request ${requestIssue.id}.`
+                `${unix(certificationRequest.fromTime).format()} - ${unix(certificationRequest.toTime).format()}` + 
+                ` of request ${certificationRequest.id}.`
             );
         }
     }
 
     return true;
 }
+
+export async function getAllCertificationRequests(configuration: Configuration.Entity): Promise<Entity[]> {
+    const issuer: Issuer = configuration.blockchainProperties.issuerLogicInstance;
+
+    const totalRequests = await issuer.totalRequests();
+
+    const certificationRequestPromises = Array(Number(totalRequests))
+        .fill(null)
+        .map(async (item, index) => new Entity((index + 1).toString(), configuration).sync());
+
+    return Promise.all(certificationRequestPromises);
+};

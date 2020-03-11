@@ -39,34 +39,34 @@ export class Issuer extends GeneralFunctions {
         return this.web3Contract.methods.decodeData(_data).call(txParams);
     }
 
-    async getIssuanceRequest(_issuanceRequestId: number, txParams?: ISpecialTx) {
-        return this.web3Contract.methods.getIssuanceRequest(_issuanceRequestId).call(txParams);
+    async getCertificationRequest(_certificationRequestId: number, txParams?: ISpecialTx) {
+        return this.web3Contract.methods.getCertificationRequest(_certificationRequestId).call(txParams);
     }
 
-    async getIssuanceRequestsForDevice(_deviceId: string, txParams?: ISpecialTx) {
-        return this.web3Contract.methods.getIssuanceRequestsForDevice(_deviceId).call(txParams);
+    async getCertificationRequestsForDevice(_deviceId: string, txParams?: ISpecialTx) {
+        return this.web3Contract.methods.getCertificationRequestsForDevice(_deviceId).call(txParams);
     }
 
-    async requestIssuance(_data: any, _isPrivate: boolean, txParams?: ISpecialTx) {
-        const method = this.web3Contract.methods.requestIssuance(_data, _isPrivate);
+    async requestCertification(_data: any, _isPrivate: boolean, txParams?: ISpecialTx) {
+        const method = this.web3Contract.methods.requestCertification(_data, _isPrivate);
 
         return this.send(method, txParams);
     }
 
-    async requestIssuanceFor(_data: any, _forAddress: string, _isPrivate: boolean,  txParams?: ISpecialTx) {
-        const method = this.web3Contract.methods.requestIssuanceFor(_data, _forAddress, _isPrivate);
+    async requestCertificationFor(_data: any, _forAddress: string, _isPrivate: boolean,  txParams?: ISpecialTx) {
+        const method = this.web3Contract.methods.requestCertificationFor(_data, _forAddress, _isPrivate);
 
         return this.send(method, txParams);
     }
 
-    async approveIssuance(
+    async approveCertificationRequest(
         _to: string,
         _requestId: number,
         _value: number,
         _validityData: string,
         txParams?: ISpecialTx
     ) {
-        const method = this.web3Contract.methods.approveIssuance(
+        const method = this.web3Contract.methods.approveCertificationRequest(
             _to,
             _requestId,
             _value,
@@ -91,14 +91,14 @@ export class Issuer extends GeneralFunctions {
         return this.send(method, txParams);
     }
 
-    async approveIssuancePrivate(
+    async approveCertificationRequestPrivate(
         _to: string,
         _requestId: number,
         _commitment: string,
         _validityData: string,
         txParams?: ISpecialTx
     ) {
-        const method = this.web3Contract.methods.approveIssuancePrivate(
+        const method = this.web3Contract.methods.approveCertificationRequestPrivate(
             _to,
             _requestId,
             _commitment,
@@ -114,7 +114,7 @@ export class Issuer extends GeneralFunctions {
         _data: any,
         txParams?: ISpecialTx
     ) {
-        const method = this.web3Contract.methods.issue(
+        const method = this.web3Contract.methods.issuePrivate(
             _to,
             _commitment,
             _data
@@ -163,6 +163,10 @@ export class Issuer extends GeneralFunctions {
         return this.send(method, txParams);
     }
 
+    async getMigrationRequestId(_certificateId: number, txParams?: ISpecialTx) {
+        return this.web3Contract.methods.getMigrationRequestId(_certificateId).call(txParams);
+    }
+
     async migrateToPublic(
         _requestId: number,
         _value: number,
@@ -203,8 +207,28 @@ export class Issuer extends GeneralFunctions {
         return this.send(method, txParams);
     }
 
+    async getCertificationRequestForCertificate(_certificateId: number, txParams?: ISpecialTx) {
+        return this.web3Contract.methods.getCertificationRequestForCertificate(_certificateId).call(txParams);
+    }
+
+    async getCertificationRequestIdForCertificate(_certificateId: number, txParams?: ISpecialTx) {
+        return this.web3Contract.methods.getCertificationRequestIdForCertificate(_certificateId).call(txParams);
+    }
+
+    async getCertificateIdForCertificationRequest(_requestId: number, txParams?: ISpecialTx) {
+        return this.web3Contract.methods.getCertificateIdForCertificationRequest(_requestId).call(txParams);
+    }
+
+    async isCertificatePublic(_certificateId: number, txParams?: ISpecialTx) {
+        return this.web3Contract.methods.isCertificatePublic(_certificateId).call(txParams);
+    }
+
     async getRegistryAddress(txParams?: ISpecialTx) {
         return this.web3Contract.methods.getRegistryAddress().call(txParams);
+    }
+
+    async totalRequests(txParams?: ISpecialTx) {
+        return this.web3Contract.methods.totalRequests().call(txParams);
     }
 
     async version(txParams?: ISpecialTx) {
