@@ -15,7 +15,8 @@ export interface IEnergyGenerated {
 }
 
 export interface ISmartMeterReadingsAdapter {
-    get(device: IDeviceWithId): Promise<ISmartMeterRead[]>;
+    getLatest(device: IDeviceWithId): Promise<ISmartMeterRead>;
+    getAll(device: IDeviceWithId): Promise<ISmartMeterRead[]>;
     save(device: IDeviceWithId, smRead: ISmartMeterRead): Promise<void>;
 }
 
@@ -37,8 +38,9 @@ export interface IDevice {
     complianceRegistry: string;
     otherGreenAttributes: string;
     typeOfPublicSupport: string;
-    smartMeterReads: ISmartMeterRead[];
+    lastSmartMeterReading?: ISmartMeterRead;
     deviceGroup?: string;
+    smartMeterReads?: ISmartMeterRead[];
 }
 
 export interface IDeviceWithId extends IDevice {

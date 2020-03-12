@@ -20,10 +20,21 @@ export class DeviceService {
         });
 
         if (this.smartMeterReadingsAdapter) {
-            device.smartMeterReads = await this.smartMeterReadingsAdapter.get(device);
+            device.lastSmartMeterReading = await this.smartMeterReadingsAdapter.getLatest(device);
+            device.smartMeterReads = [];
         }
 
         return device;
+    }
+
+    async getAllSmartMeterReadings(id: string) {
+        const device = await this.repository.findOne(id);
+
+        if (this.smartMeterReadingsAdapter) {
+            return this.smartMeterReadingsAdapter.getAll(device);
+        }
+
+        return device.smartMeterReads;
     }
 
     async addSmartMeterReading(id: string, newSmartMeterRead: ISmartMeterRead): Promise<void> {

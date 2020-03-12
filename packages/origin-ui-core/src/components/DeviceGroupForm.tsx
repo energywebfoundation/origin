@@ -231,8 +231,7 @@ export function DeviceGroupForm(props: IProps) {
             typeOfPublicSupport: '',
             description: '',
             images: JSON.stringify([]),
-            deviceGroup: JSON.stringify(values.children),
-            smartMeterReads: []
+            deviceGroup: JSON.stringify(values.children)
         };
 
         try {

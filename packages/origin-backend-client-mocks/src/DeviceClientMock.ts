@@ -48,6 +48,12 @@ export class DeviceClientMock implements IDeviceClient {
         return device;
     }
 
+    public async getAllSmartMeterReadings(id: number): Promise<ISmartMeterRead[]> {
+        const { smartMeterReads } = this.storage.get(id);
+
+        return smartMeterReads;
+    }
+
     public async addSmartMeterRead(
         id: number,
         smartMeterRead: ISmartMeterRead

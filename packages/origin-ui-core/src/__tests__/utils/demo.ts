@@ -236,8 +236,7 @@ export async function deployDemo() {
         description: '',
         images: '',
         region: 'Central',
-        province: 'Nakhon Pathom',
-        smartMeterReads: []
+        province: 'Nakhon Pathom'
     };
 
     try {

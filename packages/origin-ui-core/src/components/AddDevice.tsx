@@ -162,8 +162,7 @@ export function AddDevice() {
             otherGreenAttributes: '',
             typeOfPublicSupport: '',
             description: values.projectStory,
-            images: JSON.stringify(imagesUploadedList),
-            smartMeterReads: []
+            images: JSON.stringify(imagesUploadedList)
         };
 
         try {

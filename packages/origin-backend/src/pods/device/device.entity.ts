@@ -63,9 +63,12 @@ export class Device extends BaseEntity implements IDeviceWithId {
     @Column()
     typeOfPublicSupport: string;
 
+    @Column('simple-json', { nullable: true })
+    lastSmartMeterReading: ISmartMeterRead;
+
     @Column()
     deviceGroup: string;
 
     @Column('simple-json')
-    smartMeterReads: ISmartMeterRead[];
+    smartMeterReads?: ISmartMeterRead[];
 }

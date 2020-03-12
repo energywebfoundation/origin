@@ -250,8 +250,7 @@ const deployDevice = (config: Configuration.Entity) => {
         description: '',
         images: '',
         region: 'Central',
-        province: 'Nakhon Pathom',
-        smartMeterReads: []
+        province: 'Nakhon Pathom'
     };
 
     return ProducingDevice.createDevice(deviceProps, devicePropsOffChain, deployerConfig);

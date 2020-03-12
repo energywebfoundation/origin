@@ -123,8 +123,7 @@ describe('Device Facade', () => {
                 description: '',
                 images: '',
                 region: '',
-                province: '',
-                smartMeterReads: []
+                province: ''
             };
 
             assert.equal(await ProducingDevice.getDeviceListLength(conf), 0);
