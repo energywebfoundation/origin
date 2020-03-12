@@ -75,7 +75,7 @@
     "web3-core": "1.2.6",
     "webpack": "4.41.6",
     "winston": "3.2.1",
-    "yup": "0.28.1"
+    "yup": "0.28.3"
   },
   "devDependencies": {
     "@energyweb/origin-backend-client-mocks": "0.4.0",
