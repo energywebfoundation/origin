@@ -1,7 +1,7 @@
 {
   "name": "@energyweb/migrations",
   "description": "Migrations for deploying the Origin SDK smart contracts.",
-  "license": "GPL-3.0-only",
+  "license": "GPL-3.0-or-later",
   "author": "",
   "homepage": "https://github.com/energywebfoundation/origin/tree/master/packages/migrations#readme",
   "repository": {

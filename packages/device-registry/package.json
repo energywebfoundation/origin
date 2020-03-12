@@ -1,7 +1,7 @@
 {
   "name": "@energyweb/device-registry",
   "description": "",
-  "license": "GPL-3.0",
+  "license": "GPL-3.0-or-later",
   "author": "",
   "homepage": "https://github.com/energywebfoundation/origin/tree/master/packages/device-registry",
   "repository": {
