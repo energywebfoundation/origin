@@ -10,12 +10,15 @@ import { useLinks } from '../utils/routing';
 import { useSelector } from 'react-redux';
 import { getDemands } from '../features/selectors';
 import { getCurrentUser } from '../features/users/selectors';
+import { getCurrencies } from '../features/general/selectors';
 import { CertificationRequestStatus } from '@energyweb/origin-backend-core';
 import { useTranslation } from 'react-i18next';
+import { Exchange } from './exchange';
 
 export function Certificates() {
     const demands = useSelector(getDemands);
     const currentUser = useSelector(getCurrentUser);
+    const currencies = useSelector(getCurrencies);
     const { baseURL, getCertificatesLink } = useLinks();
     const { t } = useTranslation();
 
@@ -56,7 +59,9 @@ export function Certificates() {
         <CertificationRequestsTable status={CertificationRequestStatus.Approved} />
     );
 
-    const isIssuer = currentUser && currentUser.isRole(Role.Issuer);
+    const ExchangeRoute = () => <Exchange currency={(currencies && currencies[0]) ?? 'USD'} />;
+
+    const isIssuer = currentUser?.isRole(Role.Issuer);
 
     const CertificatesMenu = [
         {
@@ -94,6 +99,12 @@ export function Certificates() {
             label: 'navigation.certificates.approved',
             component: ApprovedCertificationRequestsTable,
             show: isIssuer
+        },
+        {
+            key: 'exchange',
+            label: 'navigation.certificates.exchange',
+            component: ExchangeRoute,
+            show: true
         },
         {
             key: 'for_demand',

@@ -199,7 +199,6 @@ export function Market(props: IProps) {
                                         property="energy"
                                         disabled={fieldDisabled}
                                         className="mt-3"
-                                        variant="standard"
                                         required
                                         InputProps={{
                                             endAdornment: (
@@ -216,7 +215,6 @@ export function Market(props: IProps) {
                                         property="price"
                                         disabled={fieldDisabled}
                                         className="mt-3"
-                                        variant="standard"
                                         required
                                         InputProps={{
                                             endAdornment: (

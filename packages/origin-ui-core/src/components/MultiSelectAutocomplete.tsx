@@ -61,7 +61,13 @@ export function MultiSelectAutocomplete(props: IOwnProps) {
                     ))
                 }
                 renderInput={params => (
-                    <TextField {...params} label={label} placeholder={placeholder} fullWidth />
+                    <TextField
+                        {...params}
+                        label={label}
+                        placeholder={placeholder}
+                        fullWidth
+                        variant="filled"
+                    />
                 )}
                 getOptionSelected={(option, value) => option.value === value.value}
                 getOptionDisabled={() => disabled}

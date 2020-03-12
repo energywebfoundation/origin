@@ -89,7 +89,7 @@ docker run -p 80:80 \
 3. 3 open bids with prices 90,85,75 for `{"deviceType":["Solar;Photovoltaic;Classic silicon"],"location":["Thailand;Central;Nakhon Pathom"],"deviceVintage":{"year":2016}}`
 4. 3 open asks with prices 110,120,130 for `{"deviceType":["Solar;Photovoltaic;Classic silicon"],"location":["Thailand;Central;Nakhon Pathom"],"deviceVintage":{"year":2016}}`
 5. 3 open bids with prices 79,78,77 for `{"deviceType":["Wind"],"location":["Thailand;Northeast"]`
-6. 3 open asks with prices 80,85,86 for `{"deviceType":["Wind;onshore"],"location":["Thailand;Northeast;Nakhon Ratchasima"],"deviceVintage":{"year":2014}}`
+6. 3 open asks with prices 80,85,86 for `{"deviceType":["Wind;Onshore"],"location":["Thailand;Northeast;Nakhon Ratchasima"],"deviceVintage":{"year":2014}}`
 7. 1 filled ask
 8. 1 partially filled bid
 9. 1 trade
@@ -118,4 +118,4 @@ This can be used for fast integrations and testing
 
 Swagger endpoint can be found at
 
-`http://localhost:3000/api`
+`http://localhost:3033/api`

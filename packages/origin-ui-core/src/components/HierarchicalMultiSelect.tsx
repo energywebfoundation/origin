@@ -269,20 +269,21 @@ export function HierarchicalMultiSelect<T>(props: IOwnProps<T>) {
                 {...dataTest('hierarchical-multi-select-level-1')}
             />
             {props.selectOptions && props.selectOptions[1]?.label && levelTwoValues.length > 0 && (
-                <MultiSelectAutocomplete
-                    label={props.selectOptions[1].label}
-                    placeholder={readOnly ? '' : props.selectOptions[1].placeholder}
-                    options={levelTwoValues}
-                    onChange={value => setValueByLevel(value, 2)}
-                    selectedValues={selectedValuesLevelTwo}
-                    className="mt-3"
-                    disabled={disabled}
-                    {...dataTest('hierarchical-multi-select-level-2')}
-                />
+                <div style={{ marginTop: '6px' }}>
+                    <MultiSelectAutocomplete
+                        label={props.selectOptions[1].label}
+                        placeholder={readOnly ? '' : props.selectOptions[1].placeholder}
+                        options={levelTwoValues}
+                        onChange={value => setValueByLevel(value, 2)}
+                        selectedValues={selectedValuesLevelTwo}
+                        className="mt-3"
+                        disabled={disabled}
+                        {...dataTest('hierarchical-multi-select-level-2')}
+                    />
+                </div>
             )}
-            {props.selectOptions &&
-                props.selectOptions[2]?.label &&
-                levelThreeValues.length > 0 && (
+            {props.selectOptions && props.selectOptions[2]?.label && levelThreeValues.length > 0 && (
+                <div style={{ marginTop: '6px' }}>
                     <MultiSelectAutocomplete
                         label={props.selectOptions[2].label}
                         placeholder={readOnly ? '' : props.selectOptions[2].placeholder}
@@ -293,7 +294,8 @@ export function HierarchicalMultiSelect<T>(props: IOwnProps<T>) {
                         disabled={disabled}
                         {...dataTest('hierarchical-multi-select-level-3')}
                     />
-                )}
+                </div>
+            )}
         </>
     );
 }
