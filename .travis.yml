@@ -24,6 +24,7 @@ cache:
     - packages/user-registry/dist
     - packages/origin-backend/dist
     - packages/origin-backend-client/dist
+    - packages/origin-backend-app/dist
     - packages/device-registry/schemas
     - packages/device-registry/build
     - packages/device-registry/dist
