@@ -1,5 +1,12 @@
 import { Contracts } from '@energyweb/issuer';
-import { CanActivate, ExecutionContext, Logger, ValidationPipe } from '@nestjs/common';
+import { DeviceService, DeviceModule } from '@energyweb/origin-backend';
+import {
+    CanActivate,
+    ExecutionContext,
+    Logger,
+    ValidationPipe,
+    DynamicModule
+} from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { AuthGuard } from '@nestjs/passport';
 import { Test } from '@nestjs/testing';
@@ -61,6 +68,17 @@ const deviceTypes = [
     ['Marine', 'Tidal', 'Offshore']
 ];
 
+const createDeviceModuleMock = (): DynamicModule => {
+    const deviceServiceMock = { provide: DeviceService, useValue: {} as DeviceService };
+
+    return {
+        module: DeviceModule,
+        providers: [deviceServiceMock],
+        exports: [deviceServiceMock],
+        global: true
+    };
+};
+
 export const bootstrapTestInstance = async () => {
     const registry = await deployRegistry();
 
@@ -76,7 +94,7 @@ export const bootstrapTestInstance = async () => {
     });
 
     const moduleFixture = await Test.createTestingModule({
-        imports: [AppModule],
+        imports: [AppModule, createDeviceModuleMock()],
         providers: [DatabaseService]
     })
         .overrideProvider(ConfigService)
