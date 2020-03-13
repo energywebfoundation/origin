@@ -1,5 +1,5 @@
-import { AppModule as ExchangeAppModule } from '@energyweb/exchange';
-import { Module, DynamicModule } from '@nestjs/common';
+import { ISmartMeterReadingsAdapter } from '@energyweb/origin-backend-core';
+import { DynamicModule, Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import fs from 'fs';
@@ -34,7 +34,6 @@ import { OrganizationModule } from './pods/organization/organization.module';
 import { OrganizationInvitation } from './pods/organization/organizationInvitation.entity';
 import { User } from './pods/user/user.entity';
 import { UserModule } from './pods/user/user.module';
-import { ISmartMeterReadingsAdapter } from '@energyweb/origin-backend-core';
 
 const ENV_FILE_PATH = path.resolve(__dirname, '../../../../../.env');
 
@@ -83,8 +82,6 @@ export class AppModule {
                 EventsModule,
                 DeviceTypesModule,
                 CertificateModule.register(smartMeterReadingsAdapter)
-                // TODO: enable exchange endpoints
-                // ExchangeAppModule
             ],
             controllers: [AppController]
         };

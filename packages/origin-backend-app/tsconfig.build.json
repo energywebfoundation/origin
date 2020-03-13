@@ -12,7 +12,10 @@
             "path": "../origin-backend-core/tsconfig.build.json"
         },
         {
-            "path": "../utils-general/tsconfig.build.json"
+            "path": "../origin-backend/tsconfig.build.json"
+        },
+        {
+            "path": "../exchange/tsconfig.build.json"
         }
     ]
 }
