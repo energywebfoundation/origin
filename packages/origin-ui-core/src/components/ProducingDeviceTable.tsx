@@ -54,6 +54,10 @@ export function ProducingDeviceTable(props: IOwnProps) {
     const offChainDataSource = useSelector(getOffChainDataSource);
     const baseURL = useSelector(getBaseURL);
 
+    console.log({
+        producingDevices
+    });
+
     const dispatch = useDispatch();
 
     async function enrichProducingDeviceData(): Promise<IEnrichedProducingDeviceData[]> {

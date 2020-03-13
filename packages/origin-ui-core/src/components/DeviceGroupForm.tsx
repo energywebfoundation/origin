@@ -27,7 +27,7 @@ import { useHistory } from 'react-router-dom';
 import { useLinks } from '../utils/routing';
 import { getCurrentUser } from '../features/users/selectors';
 import { setLoading } from '../features/general/actions';
-import { getCompliance, getCountry } from '../features/general/selectors';
+import { getCompliance, getCountry, getExternalDeviceIdTypes } from '../features/general/selectors';
 import { HierarchicalMultiSelect } from './HierarchicalMultiSelect';
 import { ProducingDevice, Device } from '@energyweb/device-registry';
 import { producingDeviceCreatedOrUpdated } from '../features/producingDevices/actions';
@@ -67,11 +67,13 @@ function getDefaultDeviceData(): IDeviceGroupChild {
 interface IFormValues {
     facilityName: string;
     children: IDeviceGroupChild[];
+    externalDeviceIds: ExternalDeviceId[];
 }
 
 const INITIAL_FORM_VALUES: IFormValues = {
     facilityName: '',
-    children: [getDefaultDeviceData()]
+    children: [getDefaultDeviceData()],
+    externalDeviceIds: []
 };
 
 function sumCapacityOfDevices(devices: IDeviceGroupChild[]) {
@@ -157,6 +159,7 @@ export function DeviceGroupForm(props: IProps) {
     const configuration = useSelector(getConfiguration);
     const compliance = useSelector(getCompliance);
     const country = useSelector(getCountry);
+    const externalDeviceIdTypes = useSelector(getExternalDeviceIdTypes);
 
     const [initialFormValuesFromExistingEntity, setInitialFormValuesFromExistingEntity] = useState<
         IFormValues
@@ -189,7 +192,8 @@ export function DeviceGroupForm(props: IProps) {
 
         const newInitialFormValuesFromExistingEntity: IFormValues = {
             facilityName: device?.offChainProperties?.facilityName,
-            children: JSON.parse(device?.offChainProperties?.deviceGroup)
+            children: JSON.parse(device?.offChainProperties?.deviceGroup),
+            externalDeviceIds: device?.offChainProperties?.externalDeviceIds
         };
 
         setInitialFormValuesFromExistingEntity(newInitialFormValuesFromExistingEntity);
@@ -207,6 +211,13 @@ export function DeviceGroupForm(props: IProps) {
 
         formikActions.setSubmitting(true);
         dispatch(setLoading(true));
+
+        const externalDeviceIds = externalDeviceIdTypes.map(type => {
+            return {
+                id: values[type],
+                type
+            };
+        });
 
         const deviceProducingProps: Device.IOnChainProperties = {
             smartMeter: { address: DEFAULT_ADDRESS },
@@ -231,7 +242,8 @@ export function DeviceGroupForm(props: IProps) {
             typeOfPublicSupport: '',
             description: '',
             images: JSON.stringify([]),
-            deviceGroup: JSON.stringify(values.children)
+            deviceGroup: JSON.stringify(values.children),
+            externalDeviceIds
         };
 
         try {
@@ -346,6 +358,23 @@ export function DeviceGroupForm(props: IProps) {
                                                     disabled={true}
                                                 />
                                             </FormControl>
+
+                                            {externalDeviceIdTypes.map(
+                                                (externalDeviceIdType, index) => {
+                                                    const externalDeviceIdTypeText = (externalDeviceIdType as unknown) as string;
+
+                                                    return (
+                                                        <FormInput
+                                                            key={index}
+                                                            name={externalDeviceIdTypeText}
+                                                            label={externalDeviceIdTypeText}
+                                                            property={externalDeviceIdTypeText}
+                                                            disabled={fieldDisabled}
+                                                            className="mt-3"
+                                                        />
+                                                    );
+                                                }
+                                            )}
                                         </Grid>
                                     </Grid>
                                 </>

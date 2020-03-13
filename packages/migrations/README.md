@@ -155,6 +155,7 @@ usage: command to onboard a new producing device
 * <code>deviceType</code>: Type of device as string, eg. "Solar;Photovoltaic;Roof mounted"
 * <code>otherGreenAttributes</code>: green attributes as string
 * <code>typeOfPublicSupport</code>: type of public support as string
+* <code>externalDeviceIds</code>: external device IDs in the format e.g. `{ "id": 123, "type": "Smart Meter Readings API ID" }`
 
 #### example
 Onboard a new energy producing device for the owner <code>0x33496f621350cea01b18ea5b5c43c6c233c3f72d (John Doe Four of the DeviceManager Organization)
@@ -186,7 +187,11 @@ The device is located in <code>Main Street 11, 01234 Anytown, AnyState, USA</cod
         "deviceType": "Biomass from agriculture",
         "cO2UsedForCertificate": 0,
         "otherGreenAttributes": "N.A.",
-        "typeOfPublicSupport": "N.A"
+        "typeOfPublicSupport": "N.A",
+        "externalDeviceIds": {
+            "id": 123,
+            "type": "Smart Meter Readings API ID"
+        }
     }
 }
 </code>

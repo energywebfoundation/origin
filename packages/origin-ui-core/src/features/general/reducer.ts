@@ -1,5 +1,6 @@
 import { GeneralActions, IGeneralAction, IEnvironment } from './actions';
 import { IOffChainDataSource } from '@energyweb/origin-backend-client';
+import { ExternalDeviceIdType } from '@energyweb/origin-backend-core';
 
 export interface IGeneralState {
     accountChangedModalVisible: boolean;
@@ -15,6 +16,7 @@ export interface IGeneralState {
     compliance: string;
     country: string;
     regions: object;
+    externalDeviceIdTypes: ExternalDeviceIdType[];
 }
 
 const defaultState: IGeneralState = {
@@ -30,7 +32,8 @@ const defaultState: IGeneralState = {
     currencies: [],
     compliance: null,
     country: null,
-    regions: {}
+    regions: {},
+    externalDeviceIdTypes: []
 };
 
 export default function reducer(state = defaultState, action: IGeneralAction): IGeneralState {
@@ -90,6 +93,9 @@ export default function reducer(state = defaultState, action: IGeneralAction): I
 
         case GeneralActions.setCurrencies:
             return { ...state, currencies: action.payload.currencies };
+
+        case GeneralActions.setExternalDeviceIdTypes:
+            return { ...state, externalDeviceIdTypes: action.payload.externalDeviceIdTypes };
 
         case GeneralActions.setCompliance:
             return { ...state, compliance: action.payload };

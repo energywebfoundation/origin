@@ -25,7 +25,9 @@ describe('CertificateTable', () => {
                 >) as IOrganizationWithRelationsIds)
         } as Partial<IOrganizationClient>) as IOrganizationClient;
 
-        await offChainDataSource.configurationClient.add('device-types', TEST_DEVICE_TYPES);
+        await offChainDataSource.configurationClient.update({
+            deviceTypes: JSON.stringify(TEST_DEVICE_TYPES)
+        });
 
         const {
             store,

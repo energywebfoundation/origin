@@ -21,6 +21,7 @@ import { FormikDatePicker } from './Form/FormikDatePicker';
 import { getCurrentUser } from '../features/users/selectors';
 import { setLoading } from '../features/general/actions';
 import {
+    getExternalDeviceIdTypes,
     getCompliance,
     getRegions,
     getCountry,
@@ -35,6 +36,7 @@ import { IDevice, DeviceStatus } from '@energyweb/origin-backend-core';
 import { Skeleton } from '@material-ui/lab';
 import { useTranslation } from 'react-i18next';
 import { useValidation } from '../utils/validation';
+import { FormInput } from './Form';
 
 const DEFAULT_ADDRESS = '0x0000000000000000000000000000000000000000';
 
@@ -69,6 +71,7 @@ export function AddDevice() {
     const country = useSelector(getCountry);
     const offChainDataSource = useSelector(getOffChainDataSource);
     const regions = useSelector(getRegions);
+    const externalDeviceIdTypes = useSelector(getExternalDeviceIdTypes);
 
     const dispatch = useDispatch();
     const { t } = useTranslation();
@@ -143,6 +146,13 @@ export function AddDevice() {
 
         const [region, province] = selectedLocation;
 
+        const externalDeviceIds = externalDeviceIdTypes.map(type => {
+            return {
+                id: values[type],
+                type
+            };
+        });
+
         const deviceProducingPropsOffChain: IDevice = {
             status: DeviceStatus.Submitted,
             deviceType,
@@ -162,7 +172,8 @@ export function AddDevice() {
             otherGreenAttributes: '',
             typeOfPublicSupport: '',
             description: values.projectStory,
-            images: JSON.stringify(imagesUploadedList)
+            images: JSON.stringify(imagesUploadedList),
+            externalDeviceIds
         };
 
         try {
@@ -429,6 +440,21 @@ export function AddDevice() {
                                             disabled={fieldDisabled}
                                         />
                                     </FormControl>
+
+                                    {externalDeviceIdTypes.map((externalDeviceIdType, index) => {
+                                        const externalDeviceIdTypeText = (externalDeviceIdType as unknown) as string;
+
+                                        return (
+                                            <FormInput
+                                                key={index}
+                                                name={externalDeviceIdTypeText}
+                                                label={externalDeviceIdTypeText}
+                                                property={externalDeviceIdTypeText}
+                                                disabled={fieldDisabled}
+                                                className="mt-3"
+                                            />
+                                        );
+                                    })}
                                 </Grid>
                                 <Grid item xs={6}>
                                     <Typography className="mt-3">

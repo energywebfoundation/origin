@@ -22,7 +22,7 @@ const configFilePath = absolutePath(program.config ?? '../config/demo-config.jso
         path: envFile
     });
 
-    const { currencies, country, complianceRegistry, deviceTypes } = JSON.parse(
+    const { currencies, country, complianceRegistry, deviceTypes, externalDeviceIdTypes } = JSON.parse(
         fs.readFileSync(configFilePath, 'utf8').toString()
     );
 
@@ -39,25 +39,28 @@ const configFilePath = absolutePath(program.config ?? '../config/demo-config.jso
         Number(process.env.BACKEND_PORT)
     );
 
-    await offChainDataSource.configurationClient.add('Compliance', complianceRegistry ?? 'none');
-    await offChainDataSource.configurationClient.add('Country', country);
-
-    for (const currency of currencies) {
-        await offChainDataSource.configurationClient.add('Currency', currency);
-    }
-
-    await offChainDataSource.configurationClient.add('device-types', deviceTypes);
+    await offChainDataSource.configurationClient.update({
+        complianceStandard: complianceRegistry,
+        countryName: country.name,
+        regions: JSON.stringify(country.regions),
+        deviceTypes: JSON.stringify(deviceTypes),
+        externalDeviceIdTypes,
+        currencies
+    });
 
     const contractConfig = await deployEmptyContracts();
 
     await marketDemo(configFilePath, contractConfig);
 
+    let marketContractLookup: string = null;
+
     if (contractConfig && contractConfig.marketLogic) {
-        await offChainDataSource.configurationClient.add(
-            'MarketContractLookup',
-            contractConfig.marketLogic.toLowerCase()
-        );
+        marketContractLookup = contractConfig.marketLogic.toLowerCase();
     }
+    
+    await offChainDataSource.configurationClient.update({
+        marketContractLookup
+    });
 
     offChainDataSource.eventClient.stop();
 })();
