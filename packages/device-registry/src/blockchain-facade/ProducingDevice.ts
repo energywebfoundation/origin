@@ -119,6 +119,11 @@ export class Entity extends Device.Entity implements IProducingDevice {
 
     async getAmountOfEnergyGenerated(): Promise<IEnergyGenerated[]> {
         const allMeterReadings = await this.getSmartMeterReads();
+
+        if (!allMeterReadings) {
+            return [];
+        }
+
         const energiesGenerated: IEnergyGenerated[] = [];
 
         for (let i = 0; i < allMeterReadings.length; i++) {
