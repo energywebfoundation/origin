@@ -4,6 +4,13 @@ export enum DeviceStatus {
     Active
 }
 
+export interface ExternalDeviceId {
+    id: string;
+    type: string;
+}
+
+export type ExternalDeviceIdType = Pick<ExternalDeviceId, 'type'>;
+
 export interface ISmartMeterRead {
     meterReading: number;
     timestamp: number;
@@ -38,6 +45,7 @@ export interface IDevice {
     complianceRegistry: string;
     otherGreenAttributes: string;
     typeOfPublicSupport: string;
+    externalDeviceIds?: ExternalDeviceId[];
     lastSmartMeterReading?: ISmartMeterRead;
     deviceGroup?: string;
     smartMeterReads?: ISmartMeterRead[];
