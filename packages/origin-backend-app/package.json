@@ -16,7 +16,8 @@
         "prettier": "prettier --write --config-precedence file-override './src/**/*'",
         "clean": "shx rm -rf dist db.sqlite uploads",
         "lint": "eslint \"src/**/*{.ts,.tsx}\"",
-        "lint-fix": "eslint \"src/**/*{.ts,.tsx}\" --fix"
+        "lint-fix": "eslint \"src/**/*{.ts,.tsx}\" --fix",
+        "precommit": "lint-staged"
     },
     "bin": {
         "origin-backend": "./bin/origin-backend-app"
