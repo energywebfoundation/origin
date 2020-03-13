@@ -1,11 +1,13 @@
-import axios, { AxiosResponse } from 'axios';
+/* eslint-disable no-empty */
+/* eslint-disable @typescript-eslint/no-empty-function */
 import 'mocha';
-import dotenv from 'dotenv';
-import { assert } from 'chai';
-import * as fs from 'fs';
-import * as http from 'http';
 
 import { INestApplication, LoggerService } from '@nestjs/common';
+import axios from 'axios';
+import { assert } from 'chai';
+import dotenv from 'dotenv';
+import * as fs from 'fs';
+
 import { startAPI } from '../..';
 import { STATUS_CODES } from '../../enums/StatusCodes';
 import { StorageErrors } from '../../enums/StorageErrors';

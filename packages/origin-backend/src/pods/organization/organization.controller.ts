@@ -333,7 +333,7 @@ export class OrganizationController {
                 email,
                 organizationName: organization.name
             };
-    
+
             this.eventGateway.handleEvent({
                 type: SupportedEvents.ORGANIZATION_INVITATION,
                 data: eventData
@@ -413,7 +413,7 @@ export class OrganizationController {
                 organizationName: organization.name,
                 email: removedUser.email
             };
-    
+
             this.eventGateway.handleEvent({
                 type: SupportedEvents.ORGANIZATION_REMOVED_MEMBER,
                 data: eventData
