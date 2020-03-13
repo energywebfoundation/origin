@@ -12,21 +12,18 @@ import { OffChainDataSource, IOffChainDataSource } from '@energyweb/origin-backe
 const web3 = new Web3(process.env.WEB3);
 
 async function getMarketContractLookupAddress(offChainDataSource: IOffChainDataSource) {
-    let storedMarketContractAddresses: string[] = [];
+    let storedMarketContractAddress: string = null;
 
     console.log(`[SIMULATOR-MOCK-READINGS] Trying to get Market contract address`);
 
-    while (storedMarketContractAddresses.length === 0) {
-        storedMarketContractAddresses = await offChainDataSource.configurationClient.get(
-            'MarketContractLookup'
-        );
+    while (!storedMarketContractAddress) {
+        storedMarketContractAddress = (await offChainDataSource.configurationClient.get())
+            .marketContractLookup;
 
-        if (storedMarketContractAddresses.length === 0) {
+        if (!storedMarketContractAddress) {
             await new Promise(resolve => setTimeout(resolve, 10000));
         }
     }
-
-    const storedMarketContractAddress = storedMarketContractAddresses.pop();
 
     return process.env.MARKET_CONTRACT_ADDRESS || storedMarketContractAddress;
 }

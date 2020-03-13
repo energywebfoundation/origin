@@ -176,8 +176,7 @@ describe('Device Facade', () => {
                     description: '',
                     images: '',
                     region: '',
-                    province: '',
-                    smartMeterReads: []
+                    province: ''
                 }
             } as Partial<ProducingDevice.Entity>);
         });

@@ -150,7 +150,12 @@ const deploy = async () => {
 
     const offChainDataSource = new OffChainDataSourceMock();
 
-    await offChainDataSource.configurationClient.add('device-types', [['Solar']]);
+    await offChainDataSource.configurationClient.update({
+        countryName: 'Thailand',
+        regions: JSON.stringify({ Central: ['Nakhon Pathom'] }),
+        marketContractLookup: marketLogicAddress,
+        deviceTypes: JSON.stringify([['Solar']])
+    });
 
     const config: Configuration.Entity = {
         blockchainProperties: {
@@ -167,14 +172,9 @@ const deploy = async () => {
         offChainDataSource,
         logger,
         deviceTypeService: new DeviceTypeService(
-            await offChainDataSource.configurationClient.get('device-types')
+            JSON.parse((await offChainDataSource.configurationClient.get()).deviceTypes)
         )
     };
-
-    await config.offChainDataSource.configurationClient.add('Country', {
-        name: 'Thailand',
-        regions: { Central: ['Nakhon Pathom'] }
-    });
 
     const matcherConfig: IMatcherConfig = {
         web3Url: process.env.WEB3,

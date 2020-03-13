@@ -37,21 +37,18 @@ async function createBlockchainConfiguration() {
         )
     };
 
-    let storedMarketContractAddresses: string[] = [];
+    let storedMarketContractAddress: string = null;
 
     console.log(`[SIMULATOR-CONSUMER] Trying to get Market contract address`);
 
-    while (storedMarketContractAddresses.length === 0) {
-        storedMarketContractAddresses = await conf.offChainDataSource.configurationClient.get(
-            'MarketContractLookup'
-        );
+    while (!storedMarketContractAddress) {
+        storedMarketContractAddress = (await conf.offChainDataSource.configurationClient.get())
+            .marketContractLookup;
 
-        if (storedMarketContractAddresses.length === 0) {
+        if (!storedMarketContractAddress) {
             await new Promise(resolve => setTimeout(resolve, 10000));
         }
     }
-
-    const storedMarketContractAddress = storedMarketContractAddresses.pop();
 
     console.log(`[SIMULATOR-CONSUMER] Starting for Market ${storedMarketContractAddress}`);
 

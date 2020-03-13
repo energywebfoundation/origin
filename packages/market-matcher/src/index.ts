@@ -40,7 +40,9 @@ const createBlockchainConfig = async (
         logger,
         offChainDataSource: matcherConfig.offChainDataSource,
         deviceTypeService: new DeviceTypeService(
-            await matcherConfig.offChainDataSource.configurationClient.get('device-types')
+            JSON.parse(
+                (await matcherConfig.offChainDataSource.configurationClient.get()).deviceTypes
+            )
         )
     };
 };
