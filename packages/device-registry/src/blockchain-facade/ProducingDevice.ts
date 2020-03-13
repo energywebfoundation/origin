@@ -100,7 +100,7 @@ export class Entity extends Device.Entity implements IProducingDevice {
     }
 
     get lastSmartMeterReadWh(): number {
-        return this.offChainProperties.lastSmartMeterReading?.meterReading ?? 0;
+        return this.offChainProperties.lastSmartMeterReading?.meterReading;
     }
 
     async saveSmartMeterRead(

@@ -32,7 +32,7 @@ import { CloudUpload } from '@material-ui/icons';
 import { ProducingDevice, Device } from '@energyweb/device-registry';
 import { producingDeviceCreatedOrUpdated } from '../features/producingDevices/actions';
 import { PowerFormatter } from '../utils/PowerFormatter';
-import { IDevice, DeviceStatus } from '@energyweb/origin-backend-core';
+import { IDevice, DeviceStatus, ExternalDeviceId } from '@energyweb/origin-backend-core';
 import { Skeleton } from '@material-ui/lab';
 import { useTranslation } from 'react-i18next';
 import { useValidation } from '../utils/validation';
@@ -146,10 +146,11 @@ export function AddDevice() {
 
         const [region, province] = selectedLocation;
 
-        const externalDeviceIds = externalDeviceIdTypes.map(type => {
+        const externalDeviceIds: ExternalDeviceId[] = externalDeviceIdTypes.map(type => {
+            const typeString = (type as unknown) as string;
             return {
-                id: values[type],
-                type
+                id: values[(type as unknown) as string],
+                type: typeString
             };
         });
 
@@ -447,7 +448,6 @@ export function AddDevice() {
                                         return (
                                             <FormInput
                                                 key={index}
-                                                name={externalDeviceIdTypeText}
                                                 label={externalDeviceIdTypeText}
                                                 property={externalDeviceIdTypeText}
                                                 disabled={fieldDisabled}

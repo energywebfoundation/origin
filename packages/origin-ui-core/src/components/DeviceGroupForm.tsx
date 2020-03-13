@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { Unit } from '@energyweb/utils-general';
-import { showNotification, NotificationType } from '../utils/notifications';
+import moment from 'moment';
+import { Formik, Field, Form, FormikHelpers, FieldArray } from 'formik';
+import * as Yup from 'yup';
+import { TextField } from 'formik-material-ui';
+import { useHistory } from 'react-router-dom';
+import { useSelector, useDispatch } from 'react-redux';
 import {
     Paper,
     Typography,
@@ -17,13 +21,13 @@ import {
     TextField as MaterialTextField,
     TableBody
 } from '@material-ui/core';
-import { useSelector, useDispatch } from 'react-redux';
+import { Skeleton } from '@material-ui/lab';
+
+import { Unit } from '@energyweb/utils-general';
+import { IDevice, DeviceStatus, ExternalDeviceId } from '@energyweb/origin-backend-core';
+
+import { showNotification, NotificationType } from '../utils/notifications';
 import { getConfiguration } from '../features/selectors';
-import moment from 'moment';
-import { Formik, Field, Form, FormikHelpers, FieldArray } from 'formik';
-import * as Yup from 'yup';
-import { TextField } from 'formik-material-ui';
-import { useHistory } from 'react-router-dom';
 import { useLinks } from '../utils/routing';
 import { getCurrentUser } from '../features/users/selectors';
 import { setLoading } from '../features/general/actions';
@@ -33,8 +37,6 @@ import { ProducingDevice, Device } from '@energyweb/device-registry';
 import { producingDeviceCreatedOrUpdated } from '../features/producingDevices/actions';
 import { PowerFormatter } from '../utils/PowerFormatter';
 import { FormInput } from './Form/FormInput';
-import { Skeleton } from '@material-ui/lab';
-import { IDevice, DeviceStatus } from '@energyweb/origin-backend-core';
 
 const DEFAULT_ADDRESS = '0x0000000000000000000000000000000000000000';
 
@@ -67,13 +69,11 @@ function getDefaultDeviceData(): IDeviceGroupChild {
 interface IFormValues {
     facilityName: string;
     children: IDeviceGroupChild[];
-    externalDeviceIds: ExternalDeviceId[];
 }
 
 const INITIAL_FORM_VALUES: IFormValues = {
     facilityName: '',
-    children: [getDefaultDeviceData()],
-    externalDeviceIds: []
+    children: [getDefaultDeviceData()]
 };
 
 function sumCapacityOfDevices(devices: IDeviceGroupChild[]) {
@@ -192,8 +192,7 @@ export function DeviceGroupForm(props: IProps) {
 
         const newInitialFormValuesFromExistingEntity: IFormValues = {
             facilityName: device?.offChainProperties?.facilityName,
-            children: JSON.parse(device?.offChainProperties?.deviceGroup),
-            externalDeviceIds: device?.offChainProperties?.externalDeviceIds
+            children: JSON.parse(device?.offChainProperties?.deviceGroup)
         };
 
         setInitialFormValuesFromExistingEntity(newInitialFormValuesFromExistingEntity);
@@ -212,10 +211,11 @@ export function DeviceGroupForm(props: IProps) {
         formikActions.setSubmitting(true);
         dispatch(setLoading(true));
 
-        const externalDeviceIds = externalDeviceIdTypes.map(type => {
+        const externalDeviceIds: ExternalDeviceId[] = externalDeviceIdTypes.map(type => {
+            const typeString = (type as unknown) as string;
             return {
-                id: values[type],
-                type
+                id: values[(type as unknown) as string],
+                type: typeString
             };
         });
 
@@ -366,7 +366,6 @@ export function DeviceGroupForm(props: IProps) {
                                                     return (
                                                         <FormInput
                                                             key={index}
-                                                            name={externalDeviceIdTypeText}
                                                             label={externalDeviceIdTypeText}
                                                             property={externalDeviceIdTypeText}
                                                             disabled={fieldDisabled}
