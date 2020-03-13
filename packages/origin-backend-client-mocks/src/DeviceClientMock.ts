@@ -59,7 +59,15 @@ export class DeviceClientMock implements IDeviceClient {
         smartMeterRead: ISmartMeterRead
     ): Promise<void> {
         const device = this.storage.get(id);
+
+        if (!device.smartMeterReads) {
+            device.smartMeterReads = [];
+        }
+
         device.smartMeterReads.push(smartMeterRead);
+        device.smartMeterReads = device.smartMeterReads.sort((a,b) => (a.timestamp > b.timestamp) ? 1 : ((b.timestamp > a.timestamp) ? -1 : 0));
+
+        device.lastSmartMeterReading = device.smartMeterReads[device.smartMeterReads.length - 1];
 
         this.storage.set(id, device);
     }
