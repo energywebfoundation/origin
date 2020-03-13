@@ -1,34 +1,20 @@
-import { DeviceVintage, Product } from '@energyweb/exchange-core';
 import { IUser } from '@energyweb/origin-backend-core';
-import { Controller, Get, Query, UseGuards } from '@nestjs/common';
+import { Body, Controller, Post, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 
 import { UserDecorator } from '../decorators/user.decorator';
-import { OrderBookService } from './order-book.service';
+import { ProductDTO } from '../order/product.dto';
 import { OrderBookOrderDTO } from './order-book-order.dto';
+import { OrderBookService } from './order-book.service';
 
 @Controller('orderbook')
 export class OrderBookController {
     constructor(private readonly orderBookService: OrderBookService) {}
 
-    @Get()
+    @Post('/search')
     @UseGuards(AuthGuard())
-    public getByProduct(
-        @UserDecorator() user: IUser,
-        @Query('deviceType') deviceType: string,
-        @Query('location') location: string,
-        @Query('vintage') vintage: number
-    ) {
-        let product: Product = deviceType ? { deviceType: [deviceType] } : {};
-
-        if (location) {
-            product = { ...product, location: [location] };
-        }
-        if (vintage) {
-            product = { ...product, deviceVintage: new DeviceVintage(vintage) };
-        }
-
-        const { asks, bids } = this.orderBookService.getByProduct(product);
+    public getByProduct(@UserDecorator() user: IUser, @Body() product: ProductDTO) {
+        const { asks, bids } = this.orderBookService.getByProduct(ProductDTO.toProduct(product));
         const userId = user?.id.toString();
 
         return {

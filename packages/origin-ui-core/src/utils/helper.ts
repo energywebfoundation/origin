@@ -33,7 +33,11 @@ const currencyFormatter = new Intl.NumberFormat('en-US', {
     currency: 'USD'
 });
 
-export function formatCurrency(value: number) {
+export function formatCurrency(value: number | string) {
+    if (typeof value === 'string') {
+        value = parseFloat(value);
+    }
+
     return currencyFormatter.format(value).replace('$', '');
 }
 

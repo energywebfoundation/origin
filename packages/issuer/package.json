@@ -1,7 +1,7 @@
 {
     "name": "@energyweb/issuer",
     "description": "",
-    "license": "GPL-3.0-only",
+    "license": "GPL-3.0-or-later",
     "author": "",
     "homepage": "https://github.com/energywebfoundation/origin/tree/master/packages/issuer",
     "repository": {

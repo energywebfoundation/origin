@@ -47,14 +47,15 @@
     "connected-react-router": "6.7.0",
     "extract-text-webpack-plugin": "4.0.0-beta.0",
     "file-loader": "5.1.0",
-    "formik": "1.5.8",
-    "formik-material-ui": "1.0.2",
+    "formik": "2.1.4",
+    "formik-material-ui": "2.0.0-beta.1",
+    "formik-material-ui-pickers": "0.0.8",
     "history": "4.10.1",
     "i18next": "19.3.2",
     "i18next-icu": "1.2.0",
     "moment": "2.24.0",
     "moment-timezone": "0.5.28",
-    "query-string": "6.11.0",
+    "query-string": "6.11.1",
     "react": "16.13.0",
     "react-chartjs-2": "2.9.0",
     "react-dom": "16.13.0",
@@ -73,7 +74,7 @@
     "web3-core": "1.2.6",
     "webpack": "4.41.6",
     "winston": "3.2.1",
-    "yup": "0.28.1"
+    "yup": "0.28.3"
   },
   "devDependencies": {
     "@energyweb/origin-backend-client-mocks": "0.4.0",
@@ -124,7 +125,7 @@
     "url": "https://github.com/energywebfoundation/origin/issues"
   },
   "author": "EnergyWeb DevHub GmbH",
-  "license": "GPL-3.0",
+  "license": "GPL-3.0-or-later",
   "files": [
     "dist"
   ],

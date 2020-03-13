@@ -23,7 +23,7 @@
     "precommit": "lint-staged"
   },
   "author": "",
-  "license": "GPL-3.0-only",
+  "license": "GPL-3.0-or-later",
   "dependencies": {
     "@energyweb/device-registry": "5.1.0",
     "@energyweb/market": "6.0.1",
@@ -36,7 +36,7 @@
     "commander": "4.1.1",
     "concurrently": "5.1.0",
     "cors": "2.8.5",
-    "csv-parse": "4.8.7",
+    "csv-parse": "4.8.8",
     "dotenv": "8.2.0",
     "ethers": "4.0.45",
     "express": "4.17.1",
