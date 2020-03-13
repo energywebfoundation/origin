@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-empty-function */
+/* eslint-disable no-empty */
 import axios, { AxiosResponse } from 'axios';
 import 'mocha';
 import dotenv from 'dotenv';

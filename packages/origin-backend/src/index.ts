@@ -4,6 +4,8 @@ import { WsAdapter } from '@nestjs/platform-ws';
 
 import { AppModule } from './app.module';
 import * as PortUtils from './port';
+import { DeviceModule } from './pods/device/device.module';
+import { DeviceService } from './pods/device/device.service';
 
 export async function startAPI(logger?: LoggerService) {
     const PORT = PortUtils.getPort();
@@ -24,4 +26,4 @@ export async function startAPI(logger?: LoggerService) {
     return app;
 }
 
-export { AppModule, PortUtils };
+export { AppModule, PortUtils, DeviceModule, DeviceService };

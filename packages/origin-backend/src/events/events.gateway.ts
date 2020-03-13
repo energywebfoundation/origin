@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
     SubscribeMessage,
     WebSocketGateway,
@@ -7,17 +8,18 @@ import {
     MessageBody
 } from '@nestjs/websockets';
 import { Logger } from '@nestjs/common';
-import { getEventsServerPort } from '../port'
 
 import moment from 'moment';
 import { SupportedEvents, IEvent, NewEvent } from '@energyweb/origin-backend-core';
+import { getEventsServerPort } from '../port';
 
 const PORT = getEventsServerPort();
 
 @WebSocketGateway(PORT, { transports: ['websocket'] })
-export class EventsWebSocketGateway implements OnGatewayConnection, OnGatewayDisconnect, OnGatewayInit {
-
+export class EventsWebSocketGateway
+    implements OnGatewayConnection, OnGatewayDisconnect, OnGatewayInit {
     private logger: Logger = new Logger('EventsWebSocketGateway');
+
     private allEvents: IEvent[] = [];
 
     wsClients: any[] = [];
@@ -27,7 +29,7 @@ export class EventsWebSocketGateway implements OnGatewayConnection, OnGatewayDis
     }
 
     handleConnection(client: any) {
-        this.wsClients.push(client);;
+        this.wsClients.push(client);
 
         this.logger.log(`Client connected. Total clients connected: ${this.wsClients.length}`);
     }
@@ -47,7 +49,7 @@ export class EventsWebSocketGateway implements OnGatewayConnection, OnGatewayDis
 
         const content = JSON.stringify(event);
 
-        for (let client of this.wsClients) {
+        for (const client of this.wsClients) {
             client.send(content);
         }
     }
@@ -72,7 +74,9 @@ export class EventsWebSocketGateway implements OnGatewayConnection, OnGatewayDis
         const supportedEvents = Object.values(SupportedEvents);
 
         if (!supportedEvents.includes(type)) {
-            return `Unsupported event name. Please use one of the following: ${supportedEvents.join(', ')}`;
+            return `Unsupported event name. Please use one of the following: ${supportedEvents.join(
+                ', '
+            )}`;
         }
 
         const event: IEvent = {

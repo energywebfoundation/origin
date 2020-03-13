@@ -17,7 +17,10 @@
         "test:e2e": "rm -rf db.sqlite && mocha -r ts-node/register src/test/e2e/*.test.ts --timeout 60000 --exit",
         "test": "yarn test:e2e",
         "test:concurrent": "yarn test",
-        "clean": "shx rm -rf dist db.sqlite uploads"
+        "clean": "shx rm -rf dist db.sqlite uploads",
+        "precommit": "lint-staged",
+        "lint": "eslint \"src/**/*{.ts,.tsx}\"",
+        "lint-fix": "eslint \"src/**/*{.ts,.tsx}\" --fix"
     },
     "bin": {
         "origin-backend": "./bin/origin-backend"
@@ -44,6 +47,7 @@
         "@nestjs/platform-ws": "6.11.11",
         "@nestjs/typeorm": "^6.2.0",
         "@nestjs/websockets": "6.11.11",
+        "axios": "0.19.2",
         "bcryptjs": "2.4.3",
         "body-parser": "1.19.0",
         "class-transformer": "0.2.3",
@@ -52,6 +56,7 @@
         "dotenv": "8.2.0",
         "express": "4.17.1",
         "jsonwebtoken": "8.5.1",
+        "moment": "2.24.0",
         "multer": "1.4.2",
         "passport": "0.4.1",
         "passport-jwt": "4.0.0",
@@ -79,7 +84,6 @@
         "@types/supertest": "2.0.8",
         "@types/websocket": "1.0.0",
         "@types/ws": "7.2.2",
-        "axios": "0.19.2",
         "jest": "25.1.0",
         "supertest": "4.0.2",
         "ts-jest": "25.2.1",

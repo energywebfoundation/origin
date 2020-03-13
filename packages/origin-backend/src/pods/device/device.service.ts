@@ -1,8 +1,8 @@
 import { Injectable, Inject } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, FindOneOptions } from 'typeorm';
-import { Device } from './device.entity';
 import { ISmartMeterReadingsAdapter, ISmartMeterRead } from '@energyweb/origin-backend-core';
+import { Device } from './device.entity';
 import { SM_READS_ADAPTER } from '../../const';
 
 @Injectable()
@@ -30,7 +30,8 @@ export class DeviceService {
         const device = await this.repository.findOne(id);
 
         if (this.smartMeterReadingsAdapter) {
-            return this.smartMeterReadingsAdapter.save(device, newSmartMeterRead)
+            this.smartMeterReadingsAdapter.save(device, newSmartMeterRead);
+            return;
         }
 
         device.smartMeterReads = [...device.smartMeterReads, newSmartMeterRead];
