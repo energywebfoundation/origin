@@ -8,7 +8,11 @@ import { OrganizationInvitation } from './organizationInvitation.entity';
 import { EventsModule } from '../../events/events.module';
 
 @Module({
-    imports: [TypeOrmModule.forFeature([Organization, OrganizationInvitation]), UserModule, EventsModule],
+    imports: [
+        TypeOrmModule.forFeature([Organization, OrganizationInvitation]),
+        UserModule,
+        EventsModule
+    ],
     providers: [],
     controllers: [OrganizationController]
 })

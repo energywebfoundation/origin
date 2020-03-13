@@ -1,3 +1,4 @@
+/* eslint-disable no-empty */
 import axios from 'axios';
 import 'mocha';
 import dotenv from 'dotenv';
@@ -32,7 +33,9 @@ describe('Demand API tests', async () => {
         energyPerTimeFrame: 10,
         registryCompliance: 'I-REC',
         startTime: moment().unix(),
-        endTime: moment().add(1, 'month').unix(),
+        endTime: moment()
+            .add(1, 'month')
+            .unix(),
         procureFromSingleFacility: true,
         automaticMatching: true,
         vintage: [2019, 2020]

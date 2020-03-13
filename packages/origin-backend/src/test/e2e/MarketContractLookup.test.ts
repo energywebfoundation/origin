@@ -1,3 +1,4 @@
+/* eslint-disable no-empty */
 import axios, { AxiosResponse } from 'axios';
 import 'mocha';
 import dotenv from 'dotenv';
