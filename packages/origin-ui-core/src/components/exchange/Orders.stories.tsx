@@ -4,7 +4,7 @@ import { Orders } from './Orders';
 import { withKnobs, text, object } from '@storybook/addon-knobs';
 import { MuiThemeProvider } from '@material-ui/core';
 import { createOriginConfiguration } from '../OriginConfigurationContext';
-import { IOrderBookOrderDTO } from './order-book-order.dto';
+import { IOrderBookOrderDTO } from '../../utils/exchange';
 
 export default {
     title: 'Orders',
@@ -15,8 +15,7 @@ export default {
 const DATA: IOrderBookOrderDTO[] = [
     {
         price: 99,
-        volume: '123456',
-        userId: null
+        volume: '123456'
     },
     {
         price: 145,

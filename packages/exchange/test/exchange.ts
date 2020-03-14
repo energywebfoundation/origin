@@ -118,6 +118,7 @@ export const bootstrapTestInstance = async () => {
     app.useGlobalInterceptors(new EmptyResultInterceptor());
     app.useGlobalPipes(new ValidationPipe());
     app.useLogger(testLogger);
+    app.enableCors();
 
     return {
         transferService,

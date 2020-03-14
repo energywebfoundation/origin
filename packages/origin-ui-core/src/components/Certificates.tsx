@@ -8,10 +8,13 @@ import { CertificationRequestsTable } from './CertificationRequestsTable';
 import { useLinks } from '../utils/routing';
 import { useSelector } from 'react-redux';
 import { getCurrentUser } from '../features/users/selectors';
+import { getCurrencies } from '../features/general/selectors';
 import { useTranslation } from 'react-i18next';
+import { Exchange } from './exchange';
 
 export function Certificates() {
     const currentUser = useSelector(getCurrentUser);
+    const currencies = useSelector(getCurrencies);
     const { baseURL, getCertificatesLink } = useLinks();
     const { t } = useTranslation();
 
@@ -31,7 +34,9 @@ export function Certificates() {
 
     const ApprovedCertificationRequestsTable = () => <CertificationRequestsTable approved={true} />;
 
-    const isIssuer = currentUser && currentUser.isRole(Role.Issuer);
+    const ExchangeRoute = () => <Exchange currency={(currencies && currencies[0]) ?? 'USD'} />;
+
+    const isIssuer = currentUser?.isRole(Role.Issuer);
 
     const CertificatesMenu = [
         {
@@ -63,6 +68,12 @@ export function Certificates() {
             label: 'navigation.certificates.approved',
             component: ApprovedCertificationRequestsTable,
             show: isIssuer
+        },
+        {
+            key: 'exchange',
+            label: 'navigation.certificates.exchange',
+            component: ExchangeRoute,
+            show: true
         }
     ];
 
