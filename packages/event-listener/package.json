@@ -47,7 +47,7 @@
         "dotenv": "^8.2.0",
         "mandrill-api": "1.0.45",
         "moment": "2.24.0",
-        "nodemailer": "6.4.4",
+        "nodemailer": "6.4.5",
         "polly-js": "1.6.5",
         "web3": "1.2.6",
         "winston": "3.2.1"
