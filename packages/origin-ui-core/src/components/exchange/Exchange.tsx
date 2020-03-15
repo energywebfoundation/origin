@@ -79,7 +79,7 @@ export function Exchange(props: IProps) {
                     <Orders
                         data={data.bids}
                         currency={currency}
-                        title={t('exchange.info.asks')}
+                        title={t('exchange.info.bids')}
                         highlightOrdersUserId={userOffchain?.id?.toString()}
                     />
                 </Grid>
