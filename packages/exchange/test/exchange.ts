@@ -15,7 +15,7 @@ import { ProductService } from '../src/pods/product/product.service';
 import { TransferService } from '../src/pods/transfer/transfer.service';
 import { DatabaseService } from './database.service';
 
-const web3 = 'http://localhost:8580';
+const web3 = process.env.EXCHANGE_TEST_PROVIDER || 'http://localhost:8580';
 
 // ganache account 2
 const registryDeployer = '0xc4b87d68ea2b91f9d3de3fcb77c299ad962f006ffb8711900cb93d94afec3dc3';
