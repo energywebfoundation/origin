@@ -3,6 +3,7 @@ import { ConfigModule } from '@nestjs/config';
 import { ScheduleModule } from '@nestjs/schedule';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import path from 'path';
+import { existsSync } from 'fs';
 
 import { AppService } from './app.service';
 import { AccountBalanceModule } from './pods/account-balance/account-balance.module';
@@ -27,7 +28,10 @@ import { WithdrawalProcessorModule } from './pods/withdrawal-processor/withdrawa
 
 const getEnvFilePath = () => {
     if (__dirname.includes('dist/js')) {
-        return path.resolve(__dirname, '../../../../../.env');
+        const envPath = path.resolve(__dirname, '../../../../../.env');
+        if (existsSync(envPath)) {
+            return envPath;
+        }
     }
     return null;
 };
