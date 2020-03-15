@@ -5,10 +5,9 @@ import { assert } from 'chai';
 import * as fs from 'fs';
 
 import { INestApplication } from '@nestjs/common';
+import { IContractsLookup } from '@energyweb/origin-backend-core';
 import { startAPI } from '../..';
 import { STATUS_CODES } from '../../enums/StatusCodes';
-import { StorageErrors } from '../../enums/StorageErrors';
-import { IContractsLookup } from '@energyweb/origin-backend-core';
 
 const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
@@ -37,14 +36,13 @@ describe('ContractsLookup API tests', async () => {
 
         try {
             fs.unlinkSync('db.sqlite');
+            // eslint-disable-next-line no-empty
         } catch (err) {}
     });
 
     describe('GET', () => {
         it('gets empty array when no contract addresses were set', async () => {
-            const getResult: AxiosResponse = await axios.get(
-                `${BASE_API_URL}/ContractsLookup`
-            );
+            const getResult: AxiosResponse = await axios.get(`${BASE_API_URL}/ContractsLookup`);
 
             assert.isEmpty(getResult.data);
             assert.deepEqual(getResult.data, '');
@@ -53,9 +51,7 @@ describe('ContractsLookup API tests', async () => {
         it('returns all contract addresses', async () => {
             await axios.post(`${BASE_API_URL}/ContractsLookup`, contracts);
 
-            const getResult: AxiosResponse = await axios.get(
-                `${BASE_API_URL}/ContractsLookup`
-            );
+            const getResult: AxiosResponse = await axios.get(`${BASE_API_URL}/ContractsLookup`);
 
             assert.deepOwnInclude(getResult.data, contracts);
         });

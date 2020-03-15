@@ -1,9 +1,9 @@
-import { Controller, Get, Post, NotFoundException, Body, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Delete } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 
-import { ContractsLookup } from './contracts-lookup.entity';
 import { IContractsLookup } from '@energyweb/origin-backend-core';
+import { ContractsLookup } from './contracts-lookup.entity';
 
 @Controller('contractslookup')
 export class ContractsLookupController {
@@ -15,6 +15,7 @@ export class ContractsLookupController {
     @Get()
     async get(): Promise<IContractsLookup> {
         const contractsLookup = await this.contractsLookupRepository.find();
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const { id, ...existingContracts } = contractsLookup[0];
 
         return existingContracts;
@@ -22,6 +23,7 @@ export class ContractsLookupController {
 
     @Post()
     async post(@Body() body: any) {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const { id, ...newContracts } = body.value;
         const contracts = await this.contractsLookupRepository.find();
 

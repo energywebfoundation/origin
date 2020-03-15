@@ -1,9 +1,4 @@
-import {
-    Entity,
-    Column,
-    BaseEntity,
-    PrimaryGeneratedColumn
-} from 'typeorm';
+import { Entity, Column, BaseEntity, PrimaryGeneratedColumn } from 'typeorm';
 import { CertificationRequestOffChainData } from '@energyweb/origin-backend-core';
 import { IsInt, Min } from 'class-validator';
 

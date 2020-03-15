@@ -3,16 +3,10 @@ import {
     CertificationRequestOffChainData
 } from '@energyweb/origin-backend-core';
 
-import {
-    Controller,
-    Post,
-    Body,
-    Get,
-    Param
-} from '@nestjs/common';
+import { Controller, Post, Body, Get, Param } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { CertificationRequest } from './certification-request.entity';
 import { Repository } from 'typeorm';
+import { CertificationRequest } from './certification-request.entity';
 
 const CERTIFICATION_REQUEST_ENDPOINT = '/CertificationRequest';
 

@@ -7,7 +7,10 @@ import {
 import { IRequestClient, RequestClient } from './RequestClient';
 
 export interface ICertificateClient {
-    updateCertificationRequestData(id: string, data: CertificationRequestUpdateData): Promise<boolean>;
+    updateCertificationRequestData(
+        id: string,
+        data: CertificationRequestUpdateData
+    ): Promise<boolean>;
     getCertificationRequestData(id: string): Promise<CertificationRequestOffChainData>;
 }
 
@@ -25,16 +28,21 @@ export class CertificateClient implements ICertificateClient {
         return `${this.certificateEndpoint}/CertificationRequest`;
     }
 
-    public async updateCertificationRequestData(id: string, data: CertificationRequestUpdateData): Promise<boolean> {
-        const response = await this.requestClient.post<
-        CertificationRequestUpdateData,
-            boolean
-        >(`${this.certificateRequestEndpoint}/${id}`, data);
+    public async updateCertificationRequestData(
+        id: string,
+        data: CertificationRequestUpdateData
+    ): Promise<boolean> {
+        const response = await this.requestClient.post<CertificationRequestUpdateData, boolean>(
+            `${this.certificateRequestEndpoint}/${id}`,
+            data
+        );
 
         return response.data;
     }
 
-    public async getCertificationRequestData(id: string): Promise<CertificationRequestOffChainData> {
+    public async getCertificationRequestData(
+        id: string
+    ): Promise<CertificationRequestOffChainData> {
         const { data } = await this.requestClient.get<void, ICertificationRequestWithRelationsIds>(
             `${this.certificateRequestEndpoint}/${id}`
         );
