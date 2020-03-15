@@ -24,6 +24,7 @@ import { TradeModule } from './pods/trade/trade.module';
 import { Transfer } from './pods/transfer/transfer.entity';
 import { TransferModule } from './pods/transfer/transfer.module';
 import { WithdrawalProcessorModule } from './pods/withdrawal-processor/withdrawal-processor.module';
+import { RunnerModule } from './pods/runner';
 
 const getEnvFilePath = () => {
     if (__dirname.includes('dist/js')) {
@@ -63,8 +64,10 @@ const getEnvFilePath = () => {
         AccountDeployerModule,
         AccountBalanceModule,
         DepositWatcherModule,
-        WithdrawalProcessorModule
+        WithdrawalProcessorModule,
+        RunnerModule
     ],
-    providers: [AppService]
+    providers: [AppService],
+    exports: [AppService]
 })
 export class AppModule {}

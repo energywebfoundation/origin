@@ -29,7 +29,12 @@ export function Exchange(props: IProps) {
     const [location, setLocation] = useState<string[]>([]);
 
     const fetchData = async () => {
-        setData(await exchangeClient.search(deviceType, location));
+        setData(
+            (await exchangeClient?.search(deviceType, location)) ?? {
+                asks: [],
+                bids: []
+            }
+        );
     };
 
     useEffect(() => {
@@ -58,8 +63,15 @@ export function Exchange(props: IProps) {
                 // eslint-disable-next-line @typescript-eslint/no-empty-function
                 onNotify={() => {}}
                 onChange={values => {
-                    setDeviceType(values.deviceType);
-                    setLocation(values.location.map(l => `${country};${l}`));
+                    if (JSON.stringify(values.deviceType) !== JSON.stringify(deviceType)) {
+                        setDeviceType(values.deviceType);
+                    }
+
+                    const newLocation = values.location.map(l => `${country};${l}`);
+
+                    if (JSON.stringify(newLocation) !== JSON.stringify(location)) {
+                        setLocation(newLocation);
+                    }
                 }}
                 energyUnit={EnergyFormatter.displayUnit}
                 currency={currency}
@@ -79,7 +91,7 @@ export function Exchange(props: IProps) {
                     <Orders
                         data={data.bids}
                         currency={currency}
-                        title={t('exchange.info.asks')}
+                        title={t('exchange.info.bids')}
                         highlightOrdersUserId={userOffchain?.id?.toString()}
                     />
                 </Grid>

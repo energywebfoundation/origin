@@ -7,7 +7,7 @@ import { CertificateDetailView } from './CertificateDetailView';
 import { CertificationRequestsTable } from './CertificationRequestsTable';
 import { useLinks } from '../utils/routing';
 import { useSelector } from 'react-redux';
-import { getCurrentUser } from '../features/users/selectors';
+import { getCurrentUser, getUserOffchain } from '../features/users/selectors';
 import { getCurrencies } from '../features/general/selectors';
 import { useTranslation } from 'react-i18next';
 import { Exchange } from './exchange';
@@ -15,6 +15,8 @@ import { Exchange } from './exchange';
 export function Certificates() {
     const currentUser = useSelector(getCurrentUser);
     const currencies = useSelector(getCurrencies);
+    const userOffchain = useSelector(getUserOffchain);
+
     const { baseURL, getCertificatesLink } = useLinks();
     const { t } = useTranslation();
 
@@ -73,7 +75,7 @@ export function Certificates() {
             key: 'exchange',
             label: 'navigation.certificates.exchange',
             component: ExchangeRoute,
-            show: true
+            show: userOffchain
         }
     ];
 

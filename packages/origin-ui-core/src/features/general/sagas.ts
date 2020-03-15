@@ -244,8 +244,7 @@ function* initializeOffChainDataSource(): SagaIterator {
         yield put(
             setExchangeClient({
                 exchangeClient: new ExchangeClient(
-                    `${environment.BACKEND_URL}:${environment.EXCHANGE_PORT ??
-                        environment.BACKEND_PORT}`,
+                    newOffChainDataSource.dataApiUrl,
                     newOffChainDataSource.requestClient
                 )
             })
