@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.1.0](https://github.com/energywebfoundation/origin/compare/@energyweb/migrations@2.0.3...@energyweb/migrations@2.1.0) (2020-03-16)
+
+
+### Bug Fixes
+
+* **deps:** add commander@4.1.1 to migration ([efced9a](https://github.com/energywebfoundation/origin/commit/efced9a6c6d71b0aef5f9f959b498f3dd23bb9a6))
+
+
+### Features
+
+* add support for externalDeviceIds ([4db7361](https://github.com/energywebfoundation/origin/commit/4db7361131a84e67afa61f06ea3cafc6140c2a24))
+
+
+
+
+
 ## [2.0.3](https://github.com/energywebfoundation/origin/compare/@energyweb/migrations@2.0.2...@energyweb/migrations@2.0.3) (2020-03-02)
 
 **Note:** Version bump only for package @energyweb/migrations
