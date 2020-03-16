@@ -10,6 +10,9 @@
     "include": ["./src/**/*", "./config/*.json"],
     "references": [
         {
+            "path": "../origin-backend-core/tsconfig.build.json"
+        },
+        {
             "path": "../utils-general/tsconfig.build.json"
         },
         {

@@ -8,6 +8,7 @@ import { ProducingDevice } from '@energyweb/device-registry';
 import { Configuration } from '@energyweb/utils-general';
 import { createBlockchainProperties } from '@energyweb/market';
 import { OffChainDataSource, IOffChainDataSource } from '@energyweb/origin-backend-client';
+import { ISmartMeterRead } from '@energyweb/origin-backend-core';
 
 const web3 = new Web3(process.env.WEB3);
 
@@ -34,14 +35,12 @@ async function getProducingDeviceSmartMeterRead(
 ): Promise<number> {
     const device = await new ProducingDevice.Entity(deviceId, conf).sync();
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    return parseInt((device.lastSmartMeterReadWh as any) as string, 10);
+    return device.lastSmartMeterReadWh ?? 0;
 }
 
 async function saveProducingDeviceSmartMeterRead(
-    meterReading: number,
     deviceId: string,
-    timestamp: number,
+    smartMeterReading: ISmartMeterRead,
     smartMeterPrivateKey: string,
     conf: Configuration.Entity
 ) {
@@ -61,18 +60,23 @@ async function saveProducingDeviceSmartMeterRead(
 
     try {
         device = await new ProducingDevice.Entity(deviceId, conf).sync();
-        await device.saveSmartMeterRead(meterReading, timestamp);
+        await device.saveSmartMeterRead(
+            smartMeterReading.meterReading,
+            smartMeterReading.timestamp
+        );
         device = await device.sync();
         conf.logger.verbose(
-            `Producing device ${deviceId} smart meter reading saved: ${meterReading}`
+            `Producing device ${deviceId} smart meter reading saved: ${JSON.stringify(
+                smartMeterReading
+            )}`
         );
     } catch (e) {
         conf.logger.error(`Could not save smart meter reading for producing device\n${e}`);
 
         console.error({
             deviceId: device.id,
-            meterReading,
-            time: moment.unix(timestamp).format(),
+            meterReading: smartMeterReading.meterReading,
+            time: moment.unix(smartMeterReading.timestamp).format(),
             smpk: smartMeterPrivateKey
         });
     }
@@ -154,10 +158,14 @@ const currentTime = moment.tz(device.timezone);
                     conf
                 );
 
+                const smartMeterReading: ISmartMeterRead = {
+                    meterReading: previousRead + energyGenerated,
+                    timestamp: measurementTime.unix()
+                };
+
                 await saveProducingDeviceSmartMeterRead(
-                    previousRead + energyGenerated,
                     device.id,
-                    measurementTime.unix(),
+                    smartMeterReading,
                     device.smartMeterPrivateKey,
                     conf
                 );
