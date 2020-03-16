@@ -17,7 +17,10 @@ function deviceStatusFactory(status: string) {
 export const onboardDemo = async (actionString: string, conf: Configuration.Entity) => {
     const action = JSON.parse(actionString);
 
-    const complianceRegistry = await conf.offChainDataSource.configurationClient.get('Compliance');
+    const {
+        currencies,
+        complianceStandard
+    } = await conf.offChainDataSource.configurationClient.get();
 
     if (action.type === 'CREATE_ACCOUNT') {
         // TODO: create new onboarding for users
@@ -73,7 +76,7 @@ export const onboardDemo = async (actionString: string, conf: Configuration.Enti
             gpsLongitude: action.data.gpsLongitude,
             timezone: action.data.timezone,
             deviceType: deviceTypeConfig,
-            complianceRegistry,
+            complianceRegistry: complianceStandard,
             otherGreenAttributes: action.data.otherGreenAttributes,
             typeOfPublicSupport: action.data.typeOfPublicSupport,
             facilityName: action.data.facilityName,
@@ -81,7 +84,8 @@ export const onboardDemo = async (actionString: string, conf: Configuration.Enti
             images: '',
             region: action.data.region,
             province: action.data.province,
-            smartMeterReads: action.data.smartMeterReads || []
+            smartMeterReads: action.data.smartMeterReads || [],
+            externalDeviceIds: action.data.externalDeviceIds
         };
 
         try {

@@ -1,15 +1,9 @@
 import { IRequestClient, RequestClient } from './RequestClient';
-
-export type ConfigurationItem =
-    | 'ContractsLookup'
-    | 'Currency'
-    | 'Compliance'
-    | 'Country'
-    | 'device-types';
+import { IOriginConfiguration } from '@energyweb/origin-backend-core';
 
 export interface IConfigurationClient {
-    get(item: ConfigurationItem): Promise<any>;
-    add(item: ConfigurationItem, value: string | object): Promise<boolean>;
+    get(): Promise<IOriginConfiguration>;
+    update(configuration: IOriginConfiguration): Promise<boolean>;
 }
 
 export class ConfigurationClient implements IConfigurationClient {
@@ -18,16 +12,18 @@ export class ConfigurationClient implements IConfigurationClient {
         private readonly requestClient: IRequestClient = new RequestClient()
     ) {}
 
-    public async get(item: ConfigurationItem) {
-        const url = `${this.dataApiUrl}/${item}`;
+    public async get(): Promise<IOriginConfiguration> {
+        const url = `${this.dataApiUrl}/Configuration`;
         const { data } = await this.requestClient.get(url);
 
         return data;
     }
 
-    public async add(item: ConfigurationItem, value: string | object) {
-        const url = `${this.dataApiUrl}/${item}`;
-        const { status } = await this.requestClient.post(url, { value });
+    public async update(configuration: IOriginConfiguration): Promise<boolean> {
+        const { status } = await this.requestClient.put(
+            `${this.dataApiUrl}/Configuration`,
+            configuration
+        );
 
         return status >= 200 && status < 300;
     }

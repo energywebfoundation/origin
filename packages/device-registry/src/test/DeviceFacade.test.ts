@@ -123,8 +123,7 @@ describe('Device Facade', () => {
                 description: '',
                 images: '',
                 region: '',
-                province: '',
-                smartMeterReads: []
+                province: ''
             };
 
             assert.equal(await ProducingDevice.getDeviceListLength(conf), 0);
@@ -177,17 +176,19 @@ describe('Device Facade', () => {
                     description: '',
                     images: '',
                     region: '',
-                    province: '',
-                    smartMeterReads: []
+                    province: ''
                 }
             } as Partial<ProducingDevice.Entity>);
         });
 
         describe('Smart Meter Readings', () => {
             it('should correctly return reads', async () => {
-                const device = await new ProducingDevice.Entity('0', conf).sync();
+                let device = await new ProducingDevice.Entity('0', conf).sync();
                 await device.saveSmartMeterRead(100, SM_READ_TIMESTAMP);
                 await device.saveSmartMeterRead(300, SM_READ_TIMESTAMP + 1);
+
+                device = await device.sync();
+
                 const reads = await device.getSmartMeterReads();
 
                 assert.deepEqual(reads, [

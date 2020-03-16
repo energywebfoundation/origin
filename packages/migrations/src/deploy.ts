@@ -21,9 +21,13 @@ const configFilePath = absolutePath(program.config ?? '../config/demo-config.jso
         path: envFile
     });
 
-    const { currencies, country, complianceRegistry, deviceTypes } = JSON.parse(
-        fs.readFileSync(configFilePath, 'utf8').toString()
-    );
+    const {
+        currencies,
+        country,
+        complianceRegistry,
+        deviceTypes,
+        externalDeviceIdTypes
+    } = JSON.parse(fs.readFileSync(configFilePath, 'utf8').toString());
 
     if (!country) {
         throw new Error(
@@ -38,20 +42,24 @@ const configFilePath = absolutePath(program.config ?? '../config/demo-config.jso
         Number(process.env.BACKEND_PORT)
     );
 
-    await offChainDataSource.configurationClient.add('Compliance', complianceRegistry ?? 'none');
-    await offChainDataSource.configurationClient.add('Country', country);
-
-    for (const currency of currencies) {
-        await offChainDataSource.configurationClient.add('Currency', currency);
-    }
-
-    await offChainDataSource.configurationClient.add('device-types', deviceTypes);
+    await offChainDataSource.configurationClient.update({
+        complianceStandard: complianceRegistry,
+        countryName: country.name,
+        regions: country.regions,
+        deviceTypes,
+        externalDeviceIdTypes,
+        currencies
+    });
 
     const contractConfig = await deployEmptyContracts();
 
     if (contractConfig) {
         await offChainDataSource.configurationClient.add('ContractsLookup', contractConfig);
     }
+
+    await offChainDataSource.configurationClient.update({
+        marketContractLookup
+    });
 
     offChainDataSource.eventClient.stop();
 })();

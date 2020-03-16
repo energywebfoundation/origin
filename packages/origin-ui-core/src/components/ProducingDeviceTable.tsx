@@ -195,7 +195,7 @@ export function ProducingDeviceTable(props: IOwnProps) {
                 enrichedData.device.offChainProperties.deviceType
             ) ?? '',
         capacity: PowerFormatter.format(enrichedData.device.offChainProperties.capacityInW),
-        read: EnergyFormatter.format(enrichedData.device.lastSmartMeterReadWh),
+        read: EnergyFormatter.format(enrichedData.device.lastSmartMeterReadWh ?? 0),
         status: DeviceStatus[enrichedData.device.offChainProperties.status]
     }));
 

@@ -110,12 +110,12 @@ export async function deployDemo() {
 
     const offChainDataSource = new OffChainDataSourceMock();
 
-    await offChainDataSource.configurationClient.add('device-types', TEST_DEVICE_TYPES);
-    await offChainDataSource.configurationClient.add('ContractsLookup', deployResult);
-    await offChainDataSource.configurationClient.add('Currency', 'USD');
-    await offChainDataSource.configurationClient.add('Country', {
-        name: 'Thailand',
-        regions: { Central: ['Nakhon Pathom'] }
+    await offChainDataSource.configurationClient.update({
+        countryName: 'Thailand',
+        regions: { Central: ['Nakhon Pathom'] },
+        currencies: ['USD'],
+        marketContractLookup: marketContractLookup.toLowerCase(),
+        deviceTypes: TEST_DEVICE_TYPES
     });
 
     const conf: IStoreState['configuration'] = {
@@ -132,9 +132,7 @@ export async function deployDemo() {
         },
         offChainDataSource,
         logger,
-        deviceTypeService: new DeviceTypeService(
-            await offChainDataSource.configurationClient.get('device-types')
-        )
+        deviceTypeService: new DeviceTypeService(TEST_DEVICE_TYPES)
     };
 
     function createOrganization(user: IUserWithRelationsIds, name: string) {
@@ -219,8 +217,7 @@ export async function deployDemo() {
         description: '',
         images: '',
         region: 'Central',
-        province: 'Nakhon Pathom',
-        smartMeterReads: []
+        province: 'Nakhon Pathom'
     };
 
     try {
