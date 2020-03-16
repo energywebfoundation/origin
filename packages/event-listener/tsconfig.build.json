@@ -12,15 +12,6 @@
             "path": "../utils-general/tsconfig.build.json"
         },
         {
-            "path": "../market-matcher-core/tsconfig.build.json"
-        },
-        {
-            "path": "../market/tsconfig.build.json"
-        },
-        {
-            "path": "../origin/tsconfig.build.json"
-        },
-        {
             "path": "../origin-backend-client/tsconfig.build.json"
         },
         {
