@@ -170,7 +170,7 @@ export class Demo {
 
         await this.offChainDataSource.configurationClient.update({
             marketContractLookup: this.marketContractLookup,
-            deviceTypes: JSON.stringify(deviceTypes)
+            deviceTypes
         });
 
         this.conf = {

@@ -152,9 +152,9 @@ const deploy = async () => {
 
     await offChainDataSource.configurationClient.update({
         countryName: 'Thailand',
-        regions: JSON.stringify({ Central: ['Nakhon Pathom'] }),
+        regions: { Central: ['Nakhon Pathom'] },
         marketContractLookup: marketLogicAddress,
-        deviceTypes: JSON.stringify([['Solar']])
+        deviceTypes: [['Solar']]
     });
 
     const config: Configuration.Entity = {
@@ -172,7 +172,7 @@ const deploy = async () => {
         offChainDataSource,
         logger,
         deviceTypeService: new DeviceTypeService(
-            JSON.parse((await offChainDataSource.configurationClient.get()).deviceTypes)
+            (await offChainDataSource.configurationClient.get()).deviceTypes
         )
     };
 

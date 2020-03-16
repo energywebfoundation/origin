@@ -125,10 +125,10 @@ export async function deployDemo() {
 
     await offChainDataSource.configurationClient.update({
         countryName: 'Thailand',
-        regions: JSON.stringify({ Central: ['Nakhon Pathom'] }),
+        regions: { Central: ['Nakhon Pathom'] },
         currencies: ['USD'],
         marketContractLookup: marketContractLookup.toLowerCase(),
-        deviceTypes: JSON.stringify(TEST_DEVICE_TYPES)
+        deviceTypes: TEST_DEVICE_TYPES
     });
 
     const conf: IStoreState['configuration'] = {

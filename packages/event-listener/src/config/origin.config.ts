@@ -30,9 +30,7 @@ export const initOriginConfig = async (
             transports: [new Winston.transports.Console({ level: 'silly' })]
         }),
         deviceTypeService: new DeviceTypeService(
-            JSON.parse(
-                (await listenerConfig.offChainDataSource.configurationClient.get()).deviceTypes
-            )
+            (await listenerConfig.offChainDataSource.configurationClient.get()).deviceTypes
         )
     };
 };

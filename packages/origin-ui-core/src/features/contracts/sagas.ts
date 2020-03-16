@@ -80,7 +80,7 @@ async function initConf(
             transports: [new Winston.transports.Console({ level: 'silly' })]
         }),
         deviceTypeService: new DeviceTypeService(
-            JSON.parse((await offChainDataSource.configurationClient.get()).deviceTypes)
+            (await offChainDataSource.configurationClient.get()).deviceTypes
         )
     };
 }

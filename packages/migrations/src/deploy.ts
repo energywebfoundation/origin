@@ -42,8 +42,8 @@ const configFilePath = absolutePath(program.config ?? '../config/demo-config.jso
     await offChainDataSource.configurationClient.update({
         complianceStandard: complianceRegistry,
         countryName: country.name,
-        regions: JSON.stringify(country.regions),
-        deviceTypes: JSON.stringify(deviceTypes),
+        regions: country.regions,
+        deviceTypes,
         externalDeviceIdTypes,
         currencies
     });

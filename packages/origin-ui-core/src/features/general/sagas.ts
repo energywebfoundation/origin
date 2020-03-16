@@ -155,7 +155,7 @@ async function getCountryFromAPI(offChainDataSource: IOffChainDataSource) {
 
     return {
         name: countryName,
-        regions: JSON.parse(regions)
+        regions
     };
 }
 
