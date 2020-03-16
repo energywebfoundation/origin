@@ -115,8 +115,6 @@ export const bootstrapTestInstance = async () => {
     const appService = await app.resolve<AppService>(AppService);
     await appService.init(deviceTypes);
 
-    app.useGlobalInterceptors(new EmptyResultInterceptor());
-    app.useGlobalPipes(new ValidationPipe());
     app.useLogger(testLogger);
     app.enableCors();
 

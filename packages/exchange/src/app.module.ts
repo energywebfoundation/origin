@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, ValidationPipe } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { ScheduleModule } from '@nestjs/schedule';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -25,6 +25,8 @@ import { Transfer } from './pods/transfer/transfer.entity';
 import { TransferModule } from './pods/transfer/transfer.module';
 import { WithdrawalProcessorModule } from './pods/withdrawal-processor/withdrawal-processor.module';
 import { RunnerModule } from './pods/runner';
+import { APP_PIPE, APP_INTERCEPTOR } from '@nestjs/core';
+import { EmptyResultInterceptor } from './empty-result.interceptor';
 
 const getEnvFilePath = () => {
     if (__dirname.includes('dist/js')) {
@@ -67,7 +69,11 @@ const getEnvFilePath = () => {
         WithdrawalProcessorModule,
         RunnerModule
     ],
-    providers: [AppService],
+    providers: [
+        AppService,
+        { provide: APP_PIPE, useClass: ValidationPipe },
+        { provide: APP_INTERCEPTOR, useClass: EmptyResultInterceptor }
+    ],
     exports: [AppService]
 })
 export class AppModule {}
