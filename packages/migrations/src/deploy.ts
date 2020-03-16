@@ -4,7 +4,6 @@ import path from 'path';
 import fs from 'fs';
 
 import { OffChainDataSource } from '@energyweb/origin-backend-client';
-import { marketDemo } from './market';
 import { deployEmptyContracts } from './deployEmpty';
 
 program.option('-e, --env <env_file_path>', 'path to the .env file');
@@ -50,13 +49,8 @@ const configFilePath = absolutePath(program.config ?? '../config/demo-config.jso
 
     const contractConfig = await deployEmptyContracts();
 
-    await marketDemo(configFilePath, contractConfig);
-
     if (contractConfig) {
-        await offChainDataSource.configurationClient.add(
-            'ContractsLookup',
-            contractConfig
-        );
+        await offChainDataSource.configurationClient.add('ContractsLookup', contractConfig);
     }
 
     offChainDataSource.eventClient.stop();

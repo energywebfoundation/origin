@@ -1,7 +1,5 @@
 import { Device, ProducingDevice } from '@energyweb/device-registry';
-import { Configuration, Countries } from '@energyweb/utils-general';
-import { User } from '@energyweb/user-registry';
-import { MarketUser } from '@energyweb/market';
+import { Configuration } from '@energyweb/utils-general';
 import { IDevice, DeviceStatus } from '@energyweb/origin-backend-core';
 
 function sleep(ms: number) {
@@ -19,89 +17,15 @@ function deviceStatusFactory(status: string) {
 export const onboardDemo = async (actionString: string, conf: Configuration.Entity) => {
     const action = JSON.parse(actionString);
 
-    const currencies = await conf.offChainDataSource.configurationClient.get('Currency');
     const complianceRegistry = await conf.offChainDataSource.configurationClient.get('Compliance');
 
     if (action.type === 'CREATE_ACCOUNT') {
-        const userPropsOnChain: User.IUserOnChainProperties = {
-            propertiesDocumentHash: null,
-            url: null,
-            id: action.data.address,
-            active: true,
-            roles: action.data.rights
-        };
-
-        const userPropsOffChain: MarketUser.IMarketUserOffChainProperties = {
-            notifications: action.data.notifications || false,
-            autoPublish: action.data.autoPublish || {
-                enabled: false,
-                priceInCents: 150,
-                currency: currencies[0]
-            }
-        };
-
-        await MarketUser.createMarketUser(
-            userPropsOnChain,
-            userPropsOffChain,
-            conf,
-            {
-                email: action.data.email,
-                firstName: action.data.firstName,
-                lastName: action.data.lastName,
-                password: action.data.password,
-                telephone: action.data.telephone,
-                title: action.data.title
-            },
-            action.data.privateKey
-        );
-
-        conf.logger.info(
-            `Onboarded a new user: ${action.data.address} (${action.data.email}) with rights ${action.data.rights}`
-        );
-
-        if (typeof action.data.organization === 'string') {
-            await conf.offChainDataSource.userClient.login(action.data.email, action.data.password);
-
-            await conf.offChainDataSource.organizationClient.add({
-                address: 'Address',
-                ceoName: 'Ceo name',
-                telephone: '1',
-                ceoPassportNumber: '1',
-                code: '1',
-                numberOfEmployees: 1,
-                postcode: '1',
-                shareholders: '1',
-                name: action.data.organization,
-                contact: 'Contact',
-                email: action.data.email,
-                vatNumber: 'XY123456',
-                website: 'http://example.com',
-                yearOfRegistration: 2020,
-                headquartersCountry: 83,
-                companyNumber: '',
-                country: 83,
-                businessTypeSelect: 'Private individual',
-                businessTypeInput: '',
-                activeCountries: '[83]'
-            });
-        } else if (typeof action.data.organization?.id !== 'undefined') {
-            await conf.offChainDataSource.userClient.login(
-                action.data.organization.leadUser.email,
-                action.data.organization.leadUser.password
-            );
-            await conf.offChainDataSource.organizationClient.invite(action.data.email);
-            await conf.offChainDataSource.userClient.logout();
-
-            await conf.offChainDataSource.userClient.login(action.data.email, action.data.password);
-            await conf.offChainDataSource.organizationClient.acceptInvitation(action.data.organization.id);
-
-            conf.logger.info(
-                `Added user ${action.data.address} to organization with id ${action.data.organizationId}`
-            );
-            await conf.offChainDataSource.userClient.logout();
-        }
+        // TODO: create new onboarding for users
     } else if (action.type === 'CREATE_ORGANIZATION') {
-        await conf.offChainDataSource.userClient.login(action.data.leadUser.email, action.data.leadUser.password);
+        await conf.offChainDataSource.userClient.login(
+            action.data.leadUser.email,
+            action.data.leadUser.password
+        );
 
         await conf.offChainDataSource.organizationClient.add({
             address: action.data.address,

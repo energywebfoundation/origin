@@ -20,9 +20,6 @@
             "path": "../device-registry/tsconfig.build.json"
         },
         {
-            "path": "../market/tsconfig.build.shakeable.json"
-        },
-        {
             "path": "../origin-backend-client/tsconfig.build.json"
         },
         {
