@@ -11,7 +11,7 @@
     "bugs": {
         "url": "https://github.com/energywebfoundation/origin/issues"
     },
-    "version": "4.0.1",
+    "version": "4.0.2",
     "main": "dist/js/src/index.js",
     "files": [
         "dist/js/build",
@@ -39,9 +39,9 @@
     },
     "types": "dist/js/src/index.d.ts",
     "dependencies": {
-        "@energyweb/device-registry": "5.1.0",
-        "@energyweb/user-registry": "3.0.3",
-        "@energyweb/utils-general": "7.0.1",
+        "@energyweb/device-registry": "5.1.1",
+        "@energyweb/user-registry": "3.0.4",
+        "@energyweb/utils-general": "7.0.2",
         "web3": "1.2.6",
         "web3-core": "1.2.6",
         "web3-eth-contract": "1.2.6",
@@ -49,8 +49,8 @@
         "winston": "3.2.1"
     },
     "devDependencies": {
-        "@energyweb/origin-backend-client": "3.3.0",
-        "@energyweb/origin-backend-client-mocks": "0.4.0",
+        "@energyweb/origin-backend-client": "4.0.0",
+        "@energyweb/origin-backend-client-mocks": "1.0.0",
         "ethlint": "1.2.5",
         "fs-extra": "8.1.0",
         "moment": "2.24.0",
