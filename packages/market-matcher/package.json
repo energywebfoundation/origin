@@ -44,7 +44,7 @@
         "@energyweb/origin-backend-client-mocks": "1.0.0",
         "@energyweb/user-registry": "3.0.4",
         "@energyweb/utils-general": "7.0.2",
-        "commander": "^4.0.1",
+        "commander": "^5.0.0",
         "dotenv": "^8.2.0",
         "moment": "^2.24.0",
         "polly-js": "^1.6.5",

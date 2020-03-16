@@ -38,7 +38,7 @@
     "@energyweb/origin-backend-client": "4.0.0",
     "@energyweb/user-registry": "3.0.4",
     "@energyweb/utils-general": "7.0.2",
-    "commander": "^4.1.1",
+    "commander": "^5.0.0",
     "dotenv": "8.2.0",
     "web3": "1.2.6",
     "winston": "3.2.1",
