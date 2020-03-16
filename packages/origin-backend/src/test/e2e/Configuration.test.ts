@@ -66,7 +66,7 @@ describe('Configuration API tests', async () => {
                 marketContractLookup,
                 currencies: [currency, currency2],
                 countryName: country.name,
-                regions: JSON.stringify(country.regions),
+                regions: country.regions,
                 complianceStandard: standard
             };
 

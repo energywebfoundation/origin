@@ -1,11 +1,19 @@
 import { ExternalDeviceIdType } from "./Device";
 
+export type ISubRegion = string;
+
+export interface IRegions {
+    [region: string]: ISubRegion[]
+}
+
+export type IDeviceType = string[];
+
 export interface IOriginConfiguration {
     countryName?: string;
     currencies?: string[];
-    regions?: string;
+    regions?: IRegions;
     externalDeviceIdTypes?: ExternalDeviceIdType[];
     marketContractLookup?: string;
     complianceStandard?: string;
-    deviceTypes?: string;
+    deviceTypes?: IDeviceType[];
 }

@@ -1,5 +1,5 @@
 import { Entity, PrimaryColumn, BaseEntity, Column, Check } from 'typeorm';
-import { ExternalDeviceIdType, IOriginConfiguration } from '@energyweb/origin-backend-core';
+import { ExternalDeviceIdType, IOriginConfiguration, IRegions, IDeviceType } from '@energyweb/origin-backend-core';
 
 @Entity()
 @Check(`id = 1`)
@@ -13,8 +13,8 @@ export class Configuration extends BaseEntity implements IOriginConfiguration {
     @Column('simple-array', { nullable: true })
     currencies: string[];
 
-    @Column('varchar', { nullable: true })
-    regions: string;
+    @Column('simple-json', { nullable: true })
+    regions?: IRegions;
 
     @Column('simple-json', { nullable: true })
     externalDeviceIdTypes: ExternalDeviceIdType[];
@@ -25,6 +25,6 @@ export class Configuration extends BaseEntity implements IOriginConfiguration {
     @Column('varchar', { nullable: true })
     complianceStandard: string;
 
-    @Column({ nullable: true })
-    deviceTypes: string;
+    @Column('simple-array', { nullable: true })
+    deviceTypes?: IDeviceType[];
 }
