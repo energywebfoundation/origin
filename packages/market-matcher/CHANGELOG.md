@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.4.2](https://github.com/energywebfoundation/origin/compare/@energyweb/market-matcher@2.4.1...@energyweb/market-matcher@2.4.2) (2020-03-16)
+
+
+### Bug Fixes
+
+* fetch all device smart meter readings only on-demand ([0708917](https://github.com/energywebfoundation/origin/commit/07089170e80de59503c299755f5bdf5e26005a3b))
+
+
+
+
+
 ## [2.4.1](https://github.com/energywebfoundation/origin/compare/@energyweb/market-matcher@2.4.0...@energyweb/market-matcher@2.4.1) (2020-03-02)
 
 **Note:** Version bump only for package @energyweb/market-matcher

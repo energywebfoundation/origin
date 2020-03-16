@@ -3,6 +3,25 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.4.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-ui-core@0.3.0...@energyweb/origin-ui-core@0.4.0) (2020-03-16)
+
+
+### Bug Fixes
+
+* fetch all device smart meter readings only on-demand ([0708917](https://github.com/energywebfoundation/origin/commit/07089170e80de59503c299755f5bdf5e26005a3b))
+* **deps:** update dependency query-string to v6.11.1 ([a0e04e2](https://github.com/energywebfoundation/origin/commit/a0e04e2432447f3a4d71e47c05ae9b0734691e63))
+* **deps:** update dependency yup to v0.28.3 ([a730750](https://github.com/energywebfoundation/origin/commit/a73075003e2bb0cc53544cbd93c40c9326d871de))
+
+
+### Features
+
+* add support for externalDeviceIds ([4db7361](https://github.com/energywebfoundation/origin/commit/4db7361131a84e67afa61f06ea3cafc6140c2a24))
+* **origin-ui-core:** add market component ([f21611e](https://github.com/energywebfoundation/origin/commit/f21611e1a01105c5489535fb57d02552b2553c23))
+
+
+
+
+
 # [0.3.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-ui-core@0.2.1...@energyweb/origin-ui-core@0.3.0) (2020-03-02)
 
 
