@@ -25,7 +25,9 @@ describe('ProducingDeviceTable', () => {
                 >) as IOrganizationWithRelationsIds)
         } as Partial<IOrganizationClient>) as IOrganizationClient;
 
-        await offChainDataSource.configurationClient.add('device-types', TEST_DEVICE_TYPES);
+        await offChainDataSource.configurationClient.update({
+            deviceTypes: TEST_DEVICE_TYPES
+        });
 
         const { store, history, addProducingDevice } = setupStore(undefined, {
             offChainDataSource,

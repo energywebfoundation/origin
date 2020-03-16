@@ -7,21 +7,19 @@ import { IEventListenerConfig } from './config/IEventListenerConfig';
 import { initOriginConfig } from './config/origin.config';
 
 const startEventListener = async (listenerConfig: IEventListenerConfig) => {
-    let storedMarketContractAddresses: string[] = [];
+    let storedMarketContractAddress: string;
 
     console.log(`[EVENT-LISTENER] Trying to get Market contract address`);
 
-    while (storedMarketContractAddresses.length === 0) {
-        storedMarketContractAddresses = await listenerConfig.offChainDataSource.configurationClient.get(
-            'MarketContractLookup'
-        );
+    while (!storedMarketContractAddress) {
+        storedMarketContractAddress = (
+            await listenerConfig.offChainDataSource.configurationClient.get()
+        ).marketContractLookup;
 
-        if (storedMarketContractAddresses.length === 0) {
+        if (!storedMarketContractAddress) {
             await new Promise(resolve => setTimeout(resolve, 10000));
         }
     }
-
-    const storedMarketContractAddress = storedMarketContractAddresses.pop();
 
     console.log(`[EVENT-LISTENER] Starting for Market ${storedMarketContractAddress}`);
 

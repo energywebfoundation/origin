@@ -59,11 +59,12 @@ export class DeviceController {
 
         Object.assign(newEntity, {
             ...body,
-            status: body.status ?? DeviceStatus.Submitted
+            id: Number(id),
+            status: body.status ?? DeviceStatus.Submitted,
+            lastSmartMeterReading: body.lastSmartMeterReading ?? null,
+            smartMeterReads: body.smartMeterReads ?? [],
+            deviceGroup: body.deviceGroup ?? ''
         });
-
-        newEntity.deviceGroup = body.deviceGroup ?? '';
-        newEntity.id = Number(id);
 
         const validationErrors = await validate(newEntity);
 
@@ -130,6 +131,17 @@ export class DeviceController {
                 message: `Device ${id} could not be updated due to an unknown error`
             });
         }
+    }
+
+    @Get('/:id/smartMeterReading')
+    async getAllSmartMeterReadings(@Param('id') id: string) {
+        const existing = await this.deviceService.findOne(id);
+
+        if (!existing) {
+            throw new NotFoundException(StorageErrors.NON_EXISTENT);
+        }
+
+        return this.deviceService.getAllSmartMeterReadings(id);
     }
 
     @Put('/:id/smartMeterReading')

@@ -1,6 +1,6 @@
 import { Entity, Column, BaseEntity, PrimaryColumn } from 'typeorm';
 import { IsInt, Min, IsLatitude, IsLongitude } from 'class-validator';
-import { IDeviceWithId, ISmartMeterRead } from '@energyweb/origin-backend-core';
+import { IDeviceWithId, ISmartMeterRead, ExternalDeviceId } from '@energyweb/origin-backend-core';
 
 @Entity()
 export class Device extends BaseEntity implements IDeviceWithId {
@@ -63,9 +63,15 @@ export class Device extends BaseEntity implements IDeviceWithId {
     @Column()
     typeOfPublicSupport: string;
 
+    @Column('simple-json', { nullable: true })
+    lastSmartMeterReading: ISmartMeterRead;
+
     @Column()
     deviceGroup: string;
 
     @Column('simple-json')
-    smartMeterReads: ISmartMeterRead[];
+    smartMeterReads?: ISmartMeterRead[];
+
+    @Column('simple-json', { nullable: true })
+    externalDeviceIds: ExternalDeviceId[];
 }

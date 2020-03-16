@@ -8,6 +8,7 @@ import {
     IEnvironment,
     GeneralActions,
     setCurrencies,
+    setExternalDeviceIdTypes,
     setCompliance,
     setCountry,
     setRegions,
@@ -109,7 +110,7 @@ function prepareGetEnvironmentTask(): {
 
 async function getComplianceFromAPI(offChainDataSource: IOffChainDataSource) {
     try {
-        return offChainDataSource.configurationClient.get('Compliance');
+        return (await offChainDataSource.configurationClient.get()).complianceStandard;
     } catch {
         return null;
     }
@@ -117,7 +118,7 @@ async function getComplianceFromAPI(offChainDataSource: IOffChainDataSource) {
 
 async function getCurrenciesFromAPI(offChainDataSource: IOffChainDataSource) {
     try {
-        const currencies = await offChainDataSource.configurationClient.get('Currency');
+        const { currencies } = await offChainDataSource.configurationClient.get();
 
         if (currencies.length > 0) {
             return currencies;
@@ -133,8 +134,31 @@ async function getCurrenciesFromAPI(offChainDataSource: IOffChainDataSource) {
     }
 }
 
+async function getExternalDeviceIdTypesFromAPI(offChainDataSource: IOffChainDataSource) {
+    try {
+        const { externalDeviceIdTypes } = await offChainDataSource.configurationClient.get();
+
+        if (externalDeviceIdTypes.length > 0) {
+            return externalDeviceIdTypes;
+        }
+
+        return null;
+    } catch (error) {
+        console.warn('Error while trying to get externalDeviceIdTypes', {
+            message: error?.message,
+            config: error?.config
+        });
+        return null;
+    }
+}
+
 async function getCountryFromAPI(offChainDataSource: IOffChainDataSource) {
-    return offChainDataSource.configurationClient.get('Country');
+    const { countryName, regions } = await offChainDataSource.configurationClient.get();
+
+    return {
+        name: countryName,
+        regions
+    };
 }
 
 function* setupEnvironment(): SagaIterator {
@@ -169,6 +193,30 @@ function* fillCurrency(): SagaIterator {
         yield put(
             setCurrencies({
                 currencies
+            })
+        );
+    }
+}
+
+function* fillExternalDeviceIdTypes(): SagaIterator {
+    while (true) {
+        yield take([GeneralActions.setEnvironment, GeneralActions.setOffChainDataSource]);
+
+        const environment: IEnvironment = yield select(getEnvironment);
+        const offChainDataSource: IOffChainDataSource = yield select(getOffChainDataSource);
+
+        if (!environment || !offChainDataSource) {
+            continue;
+        }
+
+        const externalDeviceIdTypes = yield call(
+            getExternalDeviceIdTypesFromAPI,
+            offChainDataSource
+        );
+
+        yield put(
+            setExternalDeviceIdTypes({
+                externalDeviceIdTypes
             })
         );
     }
@@ -260,6 +308,7 @@ export function* generalSaga(): SagaIterator {
         fork(initializeOffChainDataSource),
         fork(fillCurrency),
         fork(fillCompliance),
-        fork(fillCountryAndRegions)
+        fork(fillCountryAndRegions),
+        fork(fillExternalDeviceIdTypes)
     ]);
 }

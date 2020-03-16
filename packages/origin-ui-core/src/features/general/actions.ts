@@ -1,4 +1,5 @@
 import { IOffChainDataSource } from '@energyweb/origin-backend-client';
+import { ExternalDeviceIdType } from '@energyweb/origin-backend-core';
 import { IExchangeClient } from '../../utils/exchange';
 
 export enum GeneralActions {
@@ -15,7 +16,8 @@ export enum GeneralActions {
     setCurrencies = 'GENERAL_SET_CURRENCIES',
     setCompliance = 'GENERAL_SET_COMPLIANCE',
     setCountry = 'GENERAL_SET_COUNTRY',
-    setRegions = 'GENERAL_SET_REGIONS'
+    setRegions = 'GENERAL_SET_REGIONS',
+    setExternalDeviceIdTypes = 'GENERAL_SET_EXTERNAL_DEVICE_ID_TYPES'
 }
 
 export interface IEnvironment {
@@ -195,6 +197,20 @@ export const setExchangeClient = (payload: ISetExchangeClientAction['payload']) 
 
 export type TSetExchangeClientAction = typeof setExchangeClient;
 
+export interface ISetExternalDeviceIdTypesAction {
+    type: GeneralActions.setExternalDeviceIdTypes;
+    payload: {
+        externalDeviceIdTypes: ExternalDeviceIdType[];
+    };
+}
+
+export const setExternalDeviceIdTypes = (payload: ISetExternalDeviceIdTypesAction['payload']) => ({
+    type: GeneralActions.setExternalDeviceIdTypes,
+    payload
+});
+
+export type TSetExternalDeviceIdTypes = typeof setExternalDeviceIdTypes;
+
 export type IGeneralAction =
     | IShowAccountChangedModalAction
     | IHideAccountChangedModalAction
@@ -209,4 +225,5 @@ export type IGeneralAction =
     | ISetComplianceAction
     | ISetCountryAction
     | ISetRegionsAction
-    | ISetExchangeClientAction;
+    | ISetExchangeClientAction
+    | ISetExternalDeviceIdTypesAction;

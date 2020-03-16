@@ -118,9 +118,6 @@ describe('Origin Listener Tests', async () => {
         await waitForConditionAndAssert(
             () => notificationSent(emailService, EmailTypes.DEMAND_FULFILLED),
             () => {
-                console.log({
-                    sentEmails: emailService.sentEmails
-                });
                 assert.isTrue(notificationSent(emailService, EmailTypes.CERTS_APPROVED));
                 assert.isTrue(notificationSent(emailService, EmailTypes.FOUND_MATCHING_SUPPLY));
                 assert.isTrue(notificationSent(emailService, EmailTypes.DEMAND_PARTIALLY_FILLED));

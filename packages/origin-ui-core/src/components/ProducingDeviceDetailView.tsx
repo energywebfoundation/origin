@@ -142,7 +142,7 @@ export function ProducingDeviceDetailView(props: IProps) {
             },
             {
                 label: t('device.properties.meterRead'),
-                data: EnergyFormatter.format(selectedDevice.lastSmartMeterReadWh),
+                data: EnergyFormatter.format(selectedDevice.lastSmartMeterReadWh ?? 0),
                 tip: EnergyFormatter.displayUnit
             },
             {
