@@ -10,6 +10,7 @@ import { ProducingDevice } from '@energyweb/device-registry';
 import { createBlockchainProperties } from '@energyweb/market';
 import { Configuration } from '@energyweb/utils-general';
 import { OffChainDataSource } from '@energyweb/origin-backend-client';
+import { ISmartMeterRead } from '@energyweb/origin-backend-core';
 
 export function wait(milliseconds: number) {
     return new Promise(resolve => {
@@ -37,21 +38,18 @@ async function createBlockchainConfiguration() {
         )
     };
 
-    let storedMarketContractAddresses: string[] = [];
+    let storedMarketContractAddress: string = null;
 
     console.log(`[SIMULATOR-CONSUMER] Trying to get Market contract address`);
 
-    while (storedMarketContractAddresses.length === 0) {
-        storedMarketContractAddresses = await conf.offChainDataSource.configurationClient.get(
-            'MarketContractLookup'
-        );
+    while (!storedMarketContractAddress) {
+        storedMarketContractAddress = (await conf.offChainDataSource.configurationClient.get())
+            .marketContractLookup;
 
-        if (storedMarketContractAddresses.length === 0) {
+        if (!storedMarketContractAddress) {
             await new Promise(resolve => setTimeout(resolve, 10000));
         }
     }
-
-    const storedMarketContractAddress = storedMarketContractAddresses.pop();
 
     console.log(`[SIMULATOR-CONSUMER] Starting for Market ${storedMarketContractAddress}`);
 
@@ -80,14 +78,12 @@ export async function startConsumerService(configFilePath: string) {
     async function getProducingDeviceSmartMeterRead(deviceId: string): Promise<number> {
         const device = await new ProducingDevice.Entity(deviceId, conf).sync();
 
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        return parseInt((device.lastSmartMeterReadWh as any) as string, 10);
+        return device.lastSmartMeterReadWh ?? 0;
     }
 
     async function saveProducingDeviceSmartMeterRead(
-        meterReading: number,
         deviceId: string,
-        timestamp: number,
+        smartMeterReading: ISmartMeterRead,
         smartMeterPrivateKey: string
     ) {
         console.log('-----------------------------------------------------------');
@@ -103,10 +99,15 @@ export async function startConsumerService(configFilePath: string) {
 
         try {
             let device = await new ProducingDevice.Entity(deviceId, conf).sync();
-            await device.saveSmartMeterRead(meterReading, timestamp);
+            await device.saveSmartMeterRead(
+                smartMeterReading.meterReading,
+                smartMeterReading.timestamp
+            );
             device = await device.sync();
             conf.logger.verbose(
-                `Producing device ${deviceId} smart meter reading saved: ${meterReading}`
+                `Producing device ${deviceId} smart meter reading saved: ${JSON.stringify(
+                    smartMeterReading
+                )}`
             );
         } catch (e) {
             conf.logger.error(`Could not save smart meter reading for producing device\n${e}`);
@@ -153,10 +154,14 @@ export async function startConsumerService(configFilePath: string) {
                 const previousRead: number = await getProducingDeviceSmartMeterRead(device.id);
                 const time = moment(energyMeasurement.measurementTime);
 
+                const smartMeterReading: ISmartMeterRead = {
+                    meterReading: previousRead + roundedEnergy,
+                    timestamp: time.unix()
+                };
+
                 await saveProducingDeviceSmartMeterRead(
-                    previousRead + roundedEnergy,
                     device.id,
-                    time.unix(),
+                    smartMeterReading,
                     device.smartMeterPrivateKey
                 );
 

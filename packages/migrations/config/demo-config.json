@@ -3,6 +3,9 @@
     "currencies": [
         "USD"
     ],
+    "externalDeviceIdTypes": [
+        "Smart Meter Readings API ID"
+    ],
     "country": {
         "name": "Thailand",
         "regions": {
@@ -252,7 +255,11 @@
                 "deviceType": "Wind;Onshore",
                 "otherGreenAttributes": "N.A.",
                 "typeOfPublicSupport": "N.A",
-                "facilityName": "Wuthering Heights Windfarm"
+                "facilityName": "Wuthering Heights Windfarm",
+                "externalDeviceIds": {
+                    "id": 123,
+                    "type": "Smart Meter Readings API ID"
+                }
             }
         },
         {

@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { Unit } from '@energyweb/utils-general';
-import { showNotification, NotificationType } from '../utils/notifications';
+import moment from 'moment';
+import { Formik, Field, Form, FormikHelpers, FieldArray } from 'formik';
+import * as Yup from 'yup';
+import { TextField } from 'formik-material-ui';
+import { useHistory } from 'react-router-dom';
+import { useSelector, useDispatch } from 'react-redux';
 import {
     Paper,
     Typography,
@@ -17,24 +21,22 @@ import {
     TextField as MaterialTextField,
     TableBody
 } from '@material-ui/core';
-import { useSelector, useDispatch } from 'react-redux';
+import { Skeleton } from '@material-ui/lab';
+
+import { Unit } from '@energyweb/utils-general';
+import { IDevice, DeviceStatus, ExternalDeviceId } from '@energyweb/origin-backend-core';
+
+import { showNotification, NotificationType } from '../utils/notifications';
 import { getConfiguration } from '../features/selectors';
-import moment from 'moment';
-import { Formik, Field, Form, FormikHelpers, FieldArray } from 'formik';
-import * as Yup from 'yup';
-import { TextField } from 'formik-material-ui';
-import { useHistory } from 'react-router-dom';
 import { useLinks } from '../utils/routing';
 import { getCurrentUser } from '../features/users/selectors';
 import { setLoading } from '../features/general/actions';
-import { getCompliance, getCountry } from '../features/general/selectors';
+import { getCompliance, getCountry, getExternalDeviceIdTypes } from '../features/general/selectors';
 import { HierarchicalMultiSelect } from './HierarchicalMultiSelect';
 import { ProducingDevice, Device } from '@energyweb/device-registry';
 import { producingDeviceCreatedOrUpdated } from '../features/producingDevices/actions';
 import { PowerFormatter } from '../utils/PowerFormatter';
 import { FormInput } from './Form/FormInput';
-import { Skeleton } from '@material-ui/lab';
-import { IDevice, DeviceStatus } from '@energyweb/origin-backend-core';
 
 const DEFAULT_ADDRESS = '0x0000000000000000000000000000000000000000';
 
@@ -157,6 +159,7 @@ export function DeviceGroupForm(props: IProps) {
     const configuration = useSelector(getConfiguration);
     const compliance = useSelector(getCompliance);
     const country = useSelector(getCountry);
+    const externalDeviceIdTypes = useSelector(getExternalDeviceIdTypes);
 
     const [initialFormValuesFromExistingEntity, setInitialFormValuesFromExistingEntity] = useState<
         IFormValues
@@ -208,6 +211,14 @@ export function DeviceGroupForm(props: IProps) {
         formikActions.setSubmitting(true);
         dispatch(setLoading(true));
 
+        const externalDeviceIds: ExternalDeviceId[] = externalDeviceIdTypes.map(type => {
+            const typeString = (type as unknown) as string;
+            return {
+                id: values[(type as unknown) as string],
+                type: typeString
+            };
+        });
+
         const deviceProducingProps: Device.IOnChainProperties = {
             smartMeter: { address: DEFAULT_ADDRESS },
             owner: { address: currentUser.id }
@@ -232,7 +243,7 @@ export function DeviceGroupForm(props: IProps) {
             description: '',
             images: JSON.stringify([]),
             deviceGroup: JSON.stringify(values.children),
-            smartMeterReads: []
+            externalDeviceIds
         };
 
         try {
@@ -347,6 +358,22 @@ export function DeviceGroupForm(props: IProps) {
                                                     disabled={true}
                                                 />
                                             </FormControl>
+
+                                            {externalDeviceIdTypes.map(
+                                                (externalDeviceIdType, index) => {
+                                                    const externalDeviceIdTypeText = (externalDeviceIdType as unknown) as string;
+
+                                                    return (
+                                                        <FormInput
+                                                            key={index}
+                                                            label={externalDeviceIdTypeText}
+                                                            property={externalDeviceIdTypeText}
+                                                            disabled={fieldDisabled}
+                                                            className="mt-3"
+                                                        />
+                                                    );
+                                                }
+                                            )}
                                         </Grid>
                                     </Grid>
                                 </>

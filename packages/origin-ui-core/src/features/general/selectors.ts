@@ -1,4 +1,5 @@
 import { IStoreState } from '../../types';
+import { ExternalDeviceIdType } from '@energyweb/origin-backend-core';
 
 export const getAccountChangedModalVisible = (state: IStoreState) =>
     state.general.accountChangedModalVisible;
@@ -30,3 +31,6 @@ export const getCompliance = (state: IStoreState): string => state.general.compl
 export const getRegions = (state: IStoreState): object => state.general.regions;
 
 export const getCountry = (state: IStoreState): string => state.general.country;
+
+export const getExternalDeviceIdTypes = (state: IStoreState): ExternalDeviceIdType[] =>
+    state.general.externalDeviceIdTypes;

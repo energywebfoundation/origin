@@ -166,7 +166,12 @@ export class Demo {
         deployResult.certificateLogic = certificateLogicAddress;
         deployResult.marketLogic = this.marketContractLookup;
 
-        await this.offChainDataSource.configurationClient.add('device-types', [['Wind']]);
+        const deviceTypes = [['Wind']];
+
+        await this.offChainDataSource.configurationClient.update({
+            marketContractLookup: this.marketContractLookup,
+            deviceTypes
+        });
 
         this.conf = {
             blockchainProperties: {
@@ -182,9 +187,7 @@ export class Demo {
             },
             offChainDataSource: this.offChainDataSource,
             logger: this.logger,
-            deviceTypeService: new DeviceTypeService(
-                await this.offChainDataSource.configurationClient.get('device-types')
-            )
+            deviceTypeService: new DeviceTypeService(deviceTypes)
         };
 
         const adminPropsOnChain: User.IUserOnChainProperties = {
@@ -397,11 +400,11 @@ export class Demo {
         const device = await new ProducingDevice.Entity('0', this.conf).sync();
         const LAST_SMART_METER_READ = device.lastSmartMeterReadWh;
 
-        await device.saveSmartMeterRead(0, smRead);
+        await device.saveSmartMeterRead(smRead);
 
         await this.certificateLogic.createArbitraryCertfificate(
             0,
-            smRead - LAST_SMART_METER_READ,
+            LAST_SMART_METER_READ ? smRead - LAST_SMART_METER_READ : smRead,
             '',
             {
                 privateKey: this.ACCOUNTS.ISSUER.privateKey

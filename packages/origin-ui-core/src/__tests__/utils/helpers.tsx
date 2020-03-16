@@ -302,8 +302,7 @@ export const createProducingDevice = (
         description: '',
         images: '',
         region: properties.region || DEFAULT_PRODUCING_DEVICE_OFFCHAIN_PROPERTIES.region,
-        province: properties.province || DEFAULT_PRODUCING_DEVICE_OFFCHAIN_PROPERTIES.province,
-        smartMeterReads: []
+        province: properties.province || DEFAULT_PRODUCING_DEVICE_OFFCHAIN_PROPERTIES.province
     };
 
     return {

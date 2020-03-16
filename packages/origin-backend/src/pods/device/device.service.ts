@@ -1,4 +1,4 @@
-import { Injectable, Inject } from '@nestjs/common';
+import { Injectable, Inject, UnprocessableEntityException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, FindOneOptions } from 'typeorm';
 import { Device } from './device.entity';
@@ -20,10 +20,21 @@ export class DeviceService {
         });
 
         if (this.smartMeterReadingsAdapter) {
-            device.smartMeterReads = await this.smartMeterReadingsAdapter.get(device);
+            device.lastSmartMeterReading = await this.smartMeterReadingsAdapter.getLatest(device);
+            device.smartMeterReads = [];
         }
 
         return device;
+    }
+
+    async getAllSmartMeterReadings(id: string) {
+        const device = await this.repository.findOne(id);
+
+        if (this.smartMeterReadingsAdapter) {
+            return this.smartMeterReadingsAdapter.getAll(device);
+        }
+
+        return device.smartMeterReads;
     }
 
     async addSmartMeterReading(id: string, newSmartMeterRead: ISmartMeterRead): Promise<void> {
@@ -33,7 +44,18 @@ export class DeviceService {
             return this.smartMeterReadingsAdapter.save(device, newSmartMeterRead)
         }
 
+        const latestSmartMeterReading = (smReads: ISmartMeterRead[]) => smReads[smReads.length - 1];
+
+        if (device.smartMeterReads.length > 0) {
+            if (newSmartMeterRead.timestamp <= latestSmartMeterReading(device.smartMeterReads).timestamp) {
+                throw new UnprocessableEntityException({
+                    message: `Smart meter reading timestamp should be higher than latest.`
+                });
+            }
+        }
+
         device.smartMeterReads = [...device.smartMeterReads, newSmartMeterRead];
+        device.lastSmartMeterReading = latestSmartMeterReading(device.smartMeterReads);
 
         await device.save();
     }

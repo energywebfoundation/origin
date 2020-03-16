@@ -22,23 +22,20 @@ program.parse(process.argv);
 
     const matcherInterval = Number(process.env.MATCHER_INTERVAL) || 15;
 
-    let storedMarketContractAddresses: string[] = [];
+    const offChainDataSource = new OffChainDataSource(backendUrl, Number(backendPort));
+
+    let storedMarketContractAddress: string;
 
     console.log(`[MARKET-MATCHER] Trying to get Market contract address`);
 
-    const offChainDataSource = new OffChainDataSource(backendUrl, Number(backendPort));
+    while (!storedMarketContractAddress) {
+        storedMarketContractAddress = (await offChainDataSource.configurationClient.get())
+            .marketContractLookup;
 
-    while (storedMarketContractAddresses.length === 0) {
-        storedMarketContractAddresses = await offChainDataSource.configurationClient.get(
-            'MarketContractLookup'
-        );
-
-        if (storedMarketContractAddresses.length === 0) {
+        if (!storedMarketContractAddress) {
             await new Promise(resolve => setTimeout(resolve, 10000));
         }
     }
-
-    const storedMarketContractAddress = storedMarketContractAddresses.pop();
 
     console.log(`[MARKET-MATCHER] Starting for Market ${storedMarketContractAddress}`);
 
