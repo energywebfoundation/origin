@@ -80,7 +80,7 @@ async function initConf(
             transports: [new Winston.transports.Console({ level: 'silly' })]
         }),
         deviceTypeService: new DeviceTypeService(
-            await offChainDataSource.configurationClient.get('device-types')
+            (await offChainDataSource.configurationClient.get()).deviceTypes
         )
     };
 }
@@ -240,13 +240,7 @@ function* initEventHandler() {
 
 async function getMarketContractLookupAddressFromAPI(configurationClient: IConfigurationClient) {
     try {
-        const marketContracts = await configurationClient.get('MarketContractLookup');
-
-        if (marketContracts.length > 0) {
-            return marketContracts[marketContracts.length - 1];
-        }
-
-        return null;
+        return (await configurationClient.get()).marketContractLookup;
     } catch {
         return null;
     }

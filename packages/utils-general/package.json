@@ -1,7 +1,7 @@
 {
   "name": "@energyweb/utils-general",
   "description": "",
-  "license": "GPL-3.0",
+  "license": "GPL-3.0-or-later",
   "homepage": "https://github.com/energywebfoundation/origin/tree/master/packages/utils-general#readme",
   "repository": {
     "type": "git",
@@ -34,9 +34,9 @@
     "jsonschema": "1.2.5",
     "moment": "^2.24.0",
     "precise-proofs-js": "1.0.1",
-    "web3": "1.2.4",
-    "web3-core": "1.2.4",
-    "web3-eth-contract": "1.2.4",
+    "web3": "1.2.6",
+    "web3-core": "1.2.6",
+    "web3-eth-contract": "1.2.6",
     "winston": "3.2.1"
   },
   "devDependencies": {

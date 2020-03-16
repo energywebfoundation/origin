@@ -1,5 +1,3 @@
-import { Moment } from 'moment';
-import { moment } from './time';
 import { Device } from '@energyweb/device-registry';
 
 export function dataTest(value, name = 'data-test') {
@@ -35,7 +33,11 @@ const currencyFormatter = new Intl.NumberFormat('en-US', {
     currency: 'USD'
 });
 
-export function formatCurrency(value: number) {
+export function formatCurrency(value: number | string) {
+    if (typeof value === 'string') {
+        value = parseFloat(value);
+    }
+
     return currencyFormatter.format(value).replace('$', '');
 }
 
@@ -57,15 +59,6 @@ export function clone(item: any) {
 
 export function wait(ms: number) {
     return new Promise(resolve => setTimeout(resolve, ms));
-}
-
-export const DATE_FORMAT_DMY = 'MMM Do, YYYY';
-export const DATE_FORMAT_INCLUDING_TIME = `${DATE_FORMAT_DMY} hh:mm a`;
-
-export function formatDate(date: Moment | number, includeTime?: boolean) {
-    const formatToUse = includeTime ? DATE_FORMAT_INCLUDING_TIME : DATE_FORMAT_DMY;
-
-    return moment(date).format(formatToUse);
 }
 
 export const LOCATION_TITLE_TRANSLATION_KEY = 'device.properties.regionProvince';

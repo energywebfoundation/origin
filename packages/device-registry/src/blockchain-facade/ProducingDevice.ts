@@ -100,14 +100,7 @@ export class Entity extends Device.Entity implements IProducingDevice {
     }
 
     get lastSmartMeterReadWh(): number {
-        const smReads = this.offChainProperties.smartMeterReads;
-
-        if (smReads.length < 1) {
-            return 0;
-        }
-
-        const lastSmReadIndex = this.offChainProperties.smartMeterReads.length - 1;
-        return this.offChainProperties.smartMeterReads[lastSmReadIndex].meterReading;
+        return this.offChainProperties.lastSmartMeterReading?.meterReading;
     }
 
     async saveSmartMeterRead(
@@ -120,12 +113,17 @@ export class Entity extends Device.Entity implements IProducingDevice {
         });
     }
 
-    getSmartMeterReads(): ISmartMeterRead[] {
-        return this.offChainProperties.smartMeterReads;
+    async getSmartMeterReads(): Promise<ISmartMeterRead[]> {
+        return this.configuration.offChainDataSource.deviceClient.getAllSmartMeterReadings(Number(this.id));
     }
 
     async getAmountOfEnergyGenerated(): Promise<IEnergyGenerated[]> {
         const allMeterReadings = await this.getSmartMeterReads();
+
+        if (!allMeterReadings) {
+            return [];
+        }
+
         const energiesGenerated: IEnergyGenerated[] = [];
 
         for (let i = 0; i < allMeterReadings.length; i++) {

@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import moment from 'moment';
 import { PurchasableCertificate, Contracts as MarketContracts } from '@energyweb/market';
 import { ProducingDevice } from '@energyweb/device-registry';
-import { showNotification, NotificationType } from '../../utils/notifications';
 import {
     Button,
     Dialog,
@@ -14,8 +13,13 @@ import {
 import { useSelector, useDispatch } from 'react-redux';
 import { getConfiguration } from '../../features/selectors';
 import { setLoading } from '../../features/general/actions';
-import { EnergyFormatter } from '../../utils/EnergyFormatter';
-import { countDecimals, formatDate } from '../../utils/helper';
+import {
+    countDecimals,
+    formatDate,
+    showNotification,
+    NotificationType,
+    EnergyFormatter
+} from '../../utils';
 
 interface IProps {
     producingDevice: ProducingDevice.Entity;

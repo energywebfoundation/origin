@@ -24,7 +24,7 @@ import { makeStyles, createStyles, useTheme } from '@material-ui/core';
 import { Skeleton } from '@material-ui/lab';
 import { PowerFormatter } from '../utils/PowerFormatter';
 import { EnergyFormatter } from '../utils/EnergyFormatter';
-import { formatDate } from '../utils/helper';
+import { formatDate } from '../utils/time';
 import { getOffChainDataSource } from '../features/general/selectors';
 import { IOrganizationWithRelationsIds } from '@energyweb/origin-backend-core';
 import { DeviceGroupForm } from './DeviceGroupForm';
@@ -142,7 +142,7 @@ export function ProducingDeviceDetailView(props: IProps) {
             },
             {
                 label: t('device.properties.meterRead'),
-                data: EnergyFormatter.format(selectedDevice.lastSmartMeterReadWh),
+                data: EnergyFormatter.format(selectedDevice.lastSmartMeterReadWh ?? 0),
                 tip: EnergyFormatter.displayUnit
             },
             {

@@ -18,7 +18,8 @@ import { Certificate } from '@energyweb/origin';
 import { ProducingDevice } from '@energyweb/device-registry';
 import { producingDeviceCreatedOrUpdated } from '../../features/producingDevices/actions';
 import { addCertificate } from '../../features/certificates/actions';
-import { dataTestSelector, DATE_FORMAT_DMY } from '../../utils/helper';
+import { dataTestSelector } from '../../utils/helper';
+import { DATE_FORMAT_DMY } from '../../utils/time';
 import moment from 'moment';
 import { MuiPickersUtilsProvider } from '@material-ui/pickers';
 import React from 'react';
@@ -99,6 +100,80 @@ export const TEST_DEVICE_TYPES = [
     ['Thermal', 'Steam turbine with condensation turbine'],
     ['Thermal', 'Steam turbine with condensation turbine', 'Non CHP']
 ];
+
+export const TEST_REGIONS = {
+    Northeast: [
+        'Amnat Charoen',
+        'Bueng Kan, Buri Ram',
+        'Chaiyaphum, Kalasin',
+        'Khon Kaen, Loei',
+        'Maha Sarakham',
+        'Mukdahan',
+        'Nakhon Phanom',
+        'Nakhon Ratchasima',
+        'Nong Bua Lamphu',
+        'Nong Khai',
+        'Roi Et',
+        'Sakon Nakhon',
+        'Si Sa Ket',
+        'Surin',
+        'Ubon Ratchathani',
+        'Udon Thani',
+        'Yasothon'
+    ],
+    North: [
+        'Chiang Mai',
+        'Chiang Rai',
+        'Lampang',
+        'Lamphun',
+        'Mae Hong Son',
+        'Nan',
+        'Phayao',
+        'Phrae',
+        'Uttaradit'
+    ],
+    West: ['Tak', 'Kanchanaburi', 'Ratchaburi', 'Phetchaburi', 'Prachuap Khiri Khan'],
+    Central: [
+        'Sukhothai',
+        'Phitsanulok',
+        'Phichit',
+        'Kamphaeng Phet',
+        'Phetchabun',
+        'Nakhon Sawan',
+        'Uthai Thani',
+        'Ang Thong',
+        'Phra Nakhon Si Ayutthaya',
+        'Bangkok, Chai Nat',
+        'Lop Buri',
+        'Nakhon Pathom',
+        'Nonthaburi',
+        'Pathum Thani',
+        'Samut Prakan',
+        'Samut Sakhon',
+        'Samut Songkhram',
+        'Saraburi',
+        'Sing Buri',
+        'Suphan Buri',
+        'Nakhon Nayok'
+    ],
+    East: ['Chachoengsao', 'Chanthaburi', 'Chon Buri', 'Prachin Buri', 'Rayong', 'Sa Kaeo', 'Trat'],
+    South: [
+        'Chumphon',
+        'Nakhon Si Thammarat',
+        'Narathiwat',
+        'Pattani',
+        'Phatthalung',
+        'Songkhla',
+        'Surat Thani',
+        'Yala',
+        'Krabi',
+        'Phang Nga',
+        'Phuket',
+        'Ranong',
+        'Satun',
+        'Trang'
+    ]
+};
 
 export async function waitForConditionAndAssert(
     conditionCheckFunction: () => Promise<boolean> | boolean,
@@ -227,8 +302,7 @@ export const createProducingDevice = (
         description: '',
         images: '',
         region: properties.region || DEFAULT_PRODUCING_DEVICE_OFFCHAIN_PROPERTIES.region,
-        province: properties.province || DEFAULT_PRODUCING_DEVICE_OFFCHAIN_PROPERTIES.province,
-        smartMeterReads: []
+        province: properties.province || DEFAULT_PRODUCING_DEVICE_OFFCHAIN_PROPERTIES.province
     };
 
     return {

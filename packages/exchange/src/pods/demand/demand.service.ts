@@ -1,5 +1,6 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import BN from 'bn.js';
 import { Repository } from 'typeorm';
 
 import { MatchingEngineService } from '../matching-engine/matching-engine.service';
@@ -9,6 +10,8 @@ import { Demand } from './demand.entity';
 
 @Injectable()
 export class DemandService {
+    private readonly logger = new Logger(DemandService.name);
+
     constructor(
         @InjectRepository(Demand, 'ExchangeConnection')
         private readonly repository: Repository<Demand>,
@@ -23,23 +26,26 @@ export class DemandService {
         product: ProductDTO,
         start: Date
     ) {
-        const bid = await this.orderService.createBid({
-            price,
-            volume,
-            validFrom: start.toISOString(),
-            product: ProductDTO.toProduct(product),
-            userId
-        });
-
+        // TODO: in same transaction, add with complex demands implementation
         const demand = await this.repository.save({
             userId,
             price,
-            volumePerPeriod: volume,
+            volumePerPeriod: new BN(volume),
             periods: 1,
-            product: ProductDTO.toProduct(product),
-            start: start.getTime(),
-            bids: [bid]
+            product,
+            start
         });
+
+        const bid = await this.orderService.createDemandBid(
+            userId,
+            {
+                price,
+                volume,
+                validFrom: start.toISOString(),
+                product
+            },
+            demand.id
+        );
 
         this.matchingService.submit(bid);
 
@@ -47,23 +53,10 @@ export class DemandService {
     }
 
     public async findOne(userId: string, id: string) {
-        const demand = await this.repository.findOne(id, { where: { userId } });
-        if (!demand) {
-            return null;
-        }
-
-        return { ...demand, trades: demand.trades.map(trade => trade.withMaskedOrder(userId)) };
+        return this.repository.findOne(id, { where: { userId } });
     }
 
     public async getAll(userId: string) {
-        const demands = await this.repository.find({ where: { userId } });
-        if (!demands) {
-            return null;
-        }
-
-        return demands.map(demand => ({
-            ...demand,
-            trades: demand.trades.map(trade => trade.withMaskedOrder(userId))
-        }));
+        return this.repository.find({ where: { userId } });
     }
 }

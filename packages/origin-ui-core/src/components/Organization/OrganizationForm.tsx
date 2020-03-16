@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import { Formik, Form, FormikActions } from 'formik';
+import { Formik, Form, FormikHelpers } from 'formik';
 import * as Yup from 'yup';
 import { IOrganization, OrganizationPostData } from '@energyweb/origin-backend-core';
 import { Countries } from '@energyweb/utils-general';
@@ -186,7 +186,7 @@ export function OrganizationForm(props: IProps) {
 
     async function submitForm(
         values: typeof INITIAL_FORM_VALUES,
-        formikActions: FormikActions<typeof INITIAL_FORM_VALUES>
+        formikActions: FormikHelpers<typeof INITIAL_FORM_VALUES>
     ): Promise<void> {
         if (values.headquartersCountry === '' || values.country === '') {
             return;
@@ -253,7 +253,7 @@ export function OrganizationForm(props: IProps) {
                     const buttonDisabled = isSubmitting || !isValid || activeCountries.length === 0;
 
                     return (
-                        <Form>
+                        <Form translate="">
                             <Grid container spacing={3}>
                                 <Grid item xs={6}>
                                     <FormInput

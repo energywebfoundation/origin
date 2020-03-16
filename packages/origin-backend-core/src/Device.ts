@@ -4,6 +4,13 @@ export enum DeviceStatus {
     Active
 }
 
+export interface ExternalDeviceId {
+    id: string;
+    type: string;
+}
+
+export type ExternalDeviceIdType = Pick<ExternalDeviceId, 'type'>;
+
 export interface ISmartMeterRead {
     meterReading: number;
     timestamp: number;
@@ -15,7 +22,8 @@ export interface IEnergyGenerated {
 }
 
 export interface ISmartMeterReadingsAdapter {
-    get(device: IDeviceWithId): Promise<ISmartMeterRead[]>;
+    getLatest(device: IDeviceWithId): Promise<ISmartMeterRead>;
+    getAll(device: IDeviceWithId): Promise<ISmartMeterRead[]>;
     save(device: IDeviceWithId, smRead: ISmartMeterRead): Promise<void>;
 }
 
@@ -37,8 +45,10 @@ export interface IDevice {
     complianceRegistry: string;
     otherGreenAttributes: string;
     typeOfPublicSupport: string;
-    smartMeterReads: ISmartMeterRead[];
+    externalDeviceIds?: ExternalDeviceId[];
+    lastSmartMeterReading?: ISmartMeterRead;
     deviceGroup?: string;
+    smartMeterReads?: ISmartMeterRead[];
 }
 
 export interface IDeviceWithId extends IDevice {

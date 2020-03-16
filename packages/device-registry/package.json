@@ -1,7 +1,7 @@
 {
   "name": "@energyweb/device-registry",
   "description": "",
-  "license": "GPL-3.0",
+  "license": "GPL-3.0-or-later",
   "author": "",
   "homepage": "https://github.com/energywebfoundation/origin/tree/master/packages/device-registry",
   "repository": {
@@ -44,9 +44,10 @@
     "@energyweb/utils-general": "7.0.1",
     "moment": "2.24.0",
     "polly-js": "^1.6.5",
-    "web3": "1.2.4",
-    "web3-core": "1.2.4",
-    "web3-eth-contract": "1.2.4",
+    "web3": "1.2.6",
+    "web3-core": "1.2.6",
+    "web3-eth-contract": "1.2.6",
+    "web3-utils": "1.2.6",
     "winston": "3.2.1"
   },
   "devDependencies": {

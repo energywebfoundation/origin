@@ -1,7 +1,7 @@
 {
     "name": "@energyweb/origin",
     "description": "",
-    "license": "GPL-3.0-only",
+    "license": "GPL-3.0-or-later",
     "author": "",
     "homepage": "https://github.com/energywebfoundation/origin/tree/master/packages/origin#readme",
     "repository": {
@@ -42,9 +42,10 @@
         "@energyweb/device-registry": "5.1.0",
         "@energyweb/user-registry": "3.0.3",
         "@energyweb/utils-general": "7.0.1",
-        "web3": "1.2.4",
-        "web3-core": "1.2.4",
-        "web3-eth-contract": "1.2.4",
+        "web3": "1.2.6",
+        "web3-core": "1.2.6",
+        "web3-eth-contract": "1.2.6",
+        "web3-utils": "1.2.6",
         "winston": "3.2.1"
     },
     "devDependencies": {

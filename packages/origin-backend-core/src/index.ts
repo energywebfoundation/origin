@@ -6,3 +6,4 @@ export * from './Demand';
 export * from './Events';
 export * from './General';
 export * from './CertificationRequest';
+export * from './OriginConfiguration';

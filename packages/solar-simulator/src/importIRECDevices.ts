@@ -86,7 +86,6 @@ const processDevices = async parsedContent => {
                 capacityInW: maxCapacity,
                 lastSmartMeterReadWh: 0,
                 active: true,
-                lastSmartMeterReadFileHash: '',
                 country,
                 address,
                 gpsLatitude: latitude.toString(),

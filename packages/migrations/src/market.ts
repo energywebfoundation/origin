@@ -58,7 +58,7 @@ export const marketDemo = async (
         logger
     };
 
-    const currencies = await offChainDataSource.configurationClient.get('Currency');
+    const originConfiguration = await conf.offChainDataSource.configurationClient.get();
 
     const userPropsOnChain: User.IUserOnChainProperties = {
         propertiesDocumentHash: null,
@@ -73,7 +73,7 @@ export const marketDemo = async (
         autoPublish: {
             enabled: false,
             priceInCents: 150,
-            currency: currencies[0]
+            currency: originConfiguration.currencies[0]
         }
     };
 
@@ -122,8 +122,6 @@ export const marketDemo = async (
 
     conf.logger.info(`ERC20 TOKEN - ${symbol}: ${erc20TestAddress}`);
 
-    const complianceRegistry = await conf.offChainDataSource.configurationClient.get('Compliance');
-
     for (const action of actionsArray) {
         switch (action.type) {
             case 'SEND_ERC20_TOKENS_TO':
@@ -164,7 +162,7 @@ export const marketDemo = async (
                     throw new Error('Demand devicetype has to be string[]');
                 }
 
-                if (!currencies.includes(action.data.currency)) {
+                if (!originConfiguration.currencies.includes(action.data.currency)) {
                     conf.logger.error('Demand could not be created\nUnknown currency');
                     break;
                 }
@@ -179,7 +177,7 @@ export const marketDemo = async (
                     otherGreenAttributes: action.data.otherGreenAttributes,
                     typeOfPublicSupport: action.data.typeOfPublicSupport,
                     energyPerTimeFrame: action.data.energyPerTimeFrame,
-                    registryCompliance: complianceRegistry,
+                    registryCompliance: originConfiguration.complianceStandard,
                     startTime: action.data.startTime,
                     endTime: action.data.endTime,
                     automaticMatching: true

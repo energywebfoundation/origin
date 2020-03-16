@@ -13,14 +13,15 @@ import {
 import { useSelector, useDispatch } from 'react-redux';
 import { getConfiguration } from '../features/selectors';
 import { Moment } from 'moment';
-import { Formik, Field, Form, FormikActions } from 'formik';
+import { Formik, Field, Form, FormikHelpers } from 'formik';
 import { TextField, CheckboxWithLabel } from 'formik-material-ui';
 import { useHistory } from 'react-router-dom';
 import { useLinks } from '../utils/routing';
-import { FormikDatePicker } from './FormikDatePicker';
+import { FormikDatePicker } from './Form/FormikDatePicker';
 import { getCurrentUser } from '../features/users/selectors';
 import { setLoading } from '../features/general/actions';
 import {
+    getExternalDeviceIdTypes,
     getCompliance,
     getRegions,
     getCountry,
@@ -31,10 +32,11 @@ import { CloudUpload } from '@material-ui/icons';
 import { ProducingDevice, Device } from '@energyweb/device-registry';
 import { producingDeviceCreatedOrUpdated } from '../features/producingDevices/actions';
 import { PowerFormatter } from '../utils/PowerFormatter';
-import { IDevice, DeviceStatus } from '@energyweb/origin-backend-core';
+import { IDevice, DeviceStatus, ExternalDeviceId } from '@energyweb/origin-backend-core';
 import { Skeleton } from '@material-ui/lab';
 import { useTranslation } from 'react-i18next';
 import { useValidation } from '../utils/validation';
+import { FormInput } from './Form';
 
 const DEFAULT_ADDRESS = '0x0000000000000000000000000000000000000000';
 
@@ -69,6 +71,7 @@ export function AddDevice() {
     const country = useSelector(getCountry);
     const offChainDataSource = useSelector(getOffChainDataSource);
     const regions = useSelector(getRegions);
+    const externalDeviceIdTypes = useSelector(getExternalDeviceIdTypes);
 
     const dispatch = useDispatch();
     const { t } = useTranslation();
@@ -125,7 +128,7 @@ export function AddDevice() {
 
     async function submitForm(
         values: typeof INITIAL_FORM_VALUES,
-        formikActions: FormikActions<typeof INITIAL_FORM_VALUES>
+        formikActions: FormikHelpers<typeof INITIAL_FORM_VALUES>
     ): Promise<void> {
         if (!currentUser) {
             return;
@@ -142,6 +145,14 @@ export function AddDevice() {
         };
 
         const [region, province] = selectedLocation;
+
+        const externalDeviceIds: ExternalDeviceId[] = externalDeviceIdTypes.map(type => {
+            const typeString = (type as unknown) as string;
+            return {
+                id: values[(type as unknown) as string],
+                type: typeString
+            };
+        });
 
         const deviceProducingPropsOffChain: IDevice = {
             status: DeviceStatus.Submitted,
@@ -163,7 +174,7 @@ export function AddDevice() {
             typeOfPublicSupport: '',
             description: values.projectStory,
             images: JSON.stringify(imagesUploadedList),
-            smartMeterReads: []
+            externalDeviceIds
         };
 
         try {
@@ -236,7 +247,7 @@ export function AddDevice() {
                         selectedLocation.length < 2;
 
                     return (
-                        <Form>
+                        <Form translate="">
                             <Grid container spacing={3}>
                                 <Grid item xs={6}>
                                     <Typography className="mt-3">
@@ -430,6 +441,20 @@ export function AddDevice() {
                                             disabled={fieldDisabled}
                                         />
                                     </FormControl>
+
+                                    {externalDeviceIdTypes.map((externalDeviceIdType, index) => {
+                                        const externalDeviceIdTypeText = (externalDeviceIdType as unknown) as string;
+
+                                        return (
+                                            <FormInput
+                                                key={index}
+                                                label={externalDeviceIdTypeText}
+                                                property={externalDeviceIdTypeText}
+                                                disabled={fieldDisabled}
+                                                className="mt-3"
+                                            />
+                                        );
+                                    })}
                                 </Grid>
                                 <Grid item xs={6}>
                                     <Typography className="mt-3">

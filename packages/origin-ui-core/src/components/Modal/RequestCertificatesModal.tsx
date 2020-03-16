@@ -1,5 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import moment, { Moment } from 'moment';
+import {
+    moment,
+    Moment,
+    setMaxTimeInDay,
+    setMinTimeInDay,
+    DATE_FORMAT_DMY
+} from '../../utils/time';
 import {
     Button,
     Dialog,
@@ -18,26 +24,10 @@ import {
     getRequestCertificatesModalProducingDevice,
     getRequestCertificatesModalVisible
 } from '../../features/certificates/selectors';
-import { DATE_FORMAT_DMY } from '../../utils/helper';
+
 import { EnergyFormatter } from '../../utils/EnergyFormatter';
 import { Upload, IUploadedFile } from '../Upload';
 import { useTranslation } from 'react-i18next';
-
-function setMinTimeInDay(date: Moment): Moment {
-    return date
-        .hours(0)
-        .minutes(0)
-        .seconds(0)
-        .milliseconds(0);
-}
-
-function setMaxTimeInDay(date: Moment): Moment {
-    return date
-        .hours(23)
-        .minutes(59)
-        .seconds(59)
-        .milliseconds(999);
-}
 
 const DEFAULTS = {
     fromDate: moment(),

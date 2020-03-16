@@ -1,6 +1,7 @@
 import Web3 from 'web3';
 import { GeneralFunctions, ISpecialTx } from '@energyweb/utils-general';
 import { PastEventOptions } from 'web3-eth-contract';
+import { AbiItem } from 'web3-utils';
 import RoleManagementJSON from '../../build/contracts/lightweight/RoleManagement.json';
 
 export enum Role {
@@ -30,10 +31,10 @@ export class RoleManagement extends GeneralFunctions {
         const buildFile: any = RoleManagementJSON;
         super(
             address
-                ? new web3.eth.Contract(buildFile.abi, address)
+                ? new web3.eth.Contract(RoleManagementJSON.abi as AbiItem[], address)
                 : new web3.eth.Contract(
                       buildFile.abi,
-                      buildFile.networks.length > 0 ? buildFile.networks[0] : null
+                      (buildFile.networks as any).length > 0 ? (buildFile.networks as any)[0] : null
                   )
         );
         this.web3 = web3;

@@ -90,7 +90,7 @@ export class GeneralFunctions {
         );
 
         if (transactionParams.privateKey === '') {
-            return this.web3.eth.sendTransaction(transactionParams);
+            return this.web3.eth.sendTransaction(transactionParams) as Promise<TransactionReceipt>;
         }
 
         return this.sendRaw(this.web3, transactionParams.privateKey, transactionParams);
@@ -187,6 +187,6 @@ export class GeneralFunctions {
     }
 
     createFilter(eventFilter?: PastEventOptions) {
-        return Object.assign({ fromBlock: 0, toBlock: 'latest' }, eventFilter || {});
+        return { fromBlock: 0, toBlock: 'latest', ...(eventFilter || {}) };
     }
 }

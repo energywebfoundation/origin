@@ -20,13 +20,13 @@ import { getConfiguration } from '../../features/selectors';
 import { getRegions, getCurrencies, getCountry } from '../../features/general/selectors';
 import { CustomSlider, CustomSliderThumbComponent } from '../CustomSlider';
 import moment, { Moment } from 'moment';
-import { Formik, Field, Form, FormikActions } from 'formik';
+import { Formik, Field, Form, FormikHelpers } from 'formik';
 import * as Yup from 'yup';
 import { Select, TextField, CheckboxWithLabel } from 'formik-material-ui';
 import { Demand } from '@energyweb/market';
 import { useHistory } from 'react-router-dom';
 import { useLinks } from '../../utils/routing';
-import { FormikDatePicker } from '../FormikDatePicker';
+import { FormikDatePicker } from '../Form/FormikDatePicker';
 import { getCurrentUser } from '../../features/users/selectors';
 import { setLoading } from '../../features/general/actions';
 
@@ -163,7 +163,7 @@ export function DemandForm(props: IProps) {
 
     async function submitForm(
         values: typeof INITIAL_FORM_VALUES,
-        formikActions: FormikActions<typeof INITIAL_FORM_VALUES>
+        formikActions: FormikHelpers<typeof INITIAL_FORM_VALUES>
     ): Promise<void> {
         if (values.timeframe === '' || values.currency === '') {
             return;
@@ -274,12 +274,13 @@ export function DemandForm(props: IProps) {
                     endDate: Yup.date().required(),
                     procureFromSingleFacility: Yup.boolean()
                 })}
-                isInitialValid={edit || clone || readOnly}
+                isInitialValid={Boolean(edit || clone || readOnly)}
             >
                 {formikProps => {
                     const { values, isValid, isSubmitting } = formikProps;
 
                     const disabled = isSubmitting || readOnly;
+                    const submitButtonDisabled = disabled || !isValid || !isUserTraderRole;
 
                     let buttonTooltip = '';
 
@@ -292,7 +293,7 @@ export function DemandForm(props: IProps) {
                     }
 
                     return (
-                        <Form {...dataTest('demandForm')}>
+                        <Form {...dataTest('demandForm')} translate="">
                             <Grid container spacing={3}>
                                 <Grid item xs={6}>
                                     <Typography className="mt-3">General</Typography>
@@ -388,6 +389,7 @@ export function DemandForm(props: IProps) {
                                         color="primary"
                                         component={CheckboxWithLabel}
                                         disabled={disabled}
+                                        type="checkbox"
                                         {...dataTest('automaticMatching')}
                                     />
                                 </Grid>
@@ -441,6 +443,7 @@ export function DemandForm(props: IProps) {
                                         color="primary"
                                         component={CheckboxWithLabel}
                                         disabled={disabled}
+                                        type="checkbox"
                                     />
                                 </Grid>
                             </Grid>
@@ -528,7 +531,7 @@ export function DemandForm(props: IProps) {
                                             variant="contained"
                                             color="primary"
                                             className="mt-3 right"
-                                            disabled={disabled || !isValid || !isUserTraderRole}
+                                            disabled={submitButtonDisabled}
                                             {...dataTest('submitButton')}
                                         >
                                             {submitButtonText}

@@ -1,9 +1,9 @@
-import React from 'react';
-import { FormControl, FormControlTypeMap } from '@material-ui/core';
+import React, { FocusEventHandler } from 'react';
+import { FormControlTypeMap } from '@material-ui/core';
 import { Field } from 'formik';
-import { TextField } from 'formik-material-ui';
+import { TextField, TextFieldProps } from 'formik-material-ui';
 
-interface IProps {
+interface IProps extends Omit<TextFieldProps, 'variant' | 'form' | 'field' | 'meta'> {
     property: string;
     className: string;
     label?: string;
@@ -11,19 +11,17 @@ interface IProps {
     required?: boolean;
     disabled?: boolean;
     type?: string;
+    wrapperProps?: {
+        onBlur: FocusEventHandler;
+    };
 }
 
-export function FormInput(props: IProps) {
+export function FormInput({ wrapperProps, ...props }: IProps) {
     const variant = props.variant ?? 'filled';
     const type = props.type ?? 'text';
 
     return (
-        <FormControl
-            fullWidth
-            variant={variant}
-            className={props.className}
-            required={props.required}
-        >
+        <div {...wrapperProps}>
             <Field
                 label={props.label}
                 name={props.property}
@@ -33,7 +31,8 @@ export function FormInput(props: IProps) {
                 required={props.required}
                 disabled={props.disabled}
                 type={type}
+                {...props}
             />
-        </FormControl>
+        </div>
     );
 }

@@ -1,7 +1,6 @@
 import React from 'react';
 import { mount } from 'enzyme';
 import { Route } from 'react-router-dom';
-import moment from 'moment';
 import { TimeFrame } from '@energyweb/utils-general';
 
 import { AppContainer } from '../../components/AppContainer';
@@ -13,9 +12,7 @@ import {
     waitForConditionAndAssert
 } from '../utils/helpers';
 import { startGanache, deployDemo, ACCOUNTS } from '../utils/demo';
-import { dataTestSelector, formatDate } from '../../utils/helper';
-import { EnergyFormatter } from '../../utils/EnergyFormatter';
-import { PowerFormatter } from '../../utils/PowerFormatter';
+import { formatDate, PowerFormatter, EnergyFormatter, dataTestSelector, moment } from '../../utils';
 
 jest.setTimeout(100000);
 
@@ -74,6 +71,8 @@ describe('Application[E2E]', () => {
         async function testDemands() {
             click('header-link-demands');
             click('demands-link-create');
+
+            await refresh();
 
             const submitButton = rendered.find(`button${dataTestSelector('submitButton')}`);
 

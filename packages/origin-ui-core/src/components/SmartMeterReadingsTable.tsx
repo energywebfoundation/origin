@@ -7,7 +7,7 @@ import {
     IPaginatedLoaderHooksFetchDataParameters
 } from './Table/PaginatedLoaderHooks';
 import { EnergyFormatter } from '../utils/EnergyFormatter';
-import { formatDate } from '../utils/helper';
+import { formatDate } from '../utils/time';
 import { useTranslation } from 'react-i18next';
 
 interface IProps {

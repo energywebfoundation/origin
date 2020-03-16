@@ -47,6 +47,28 @@
 | [`@energyweb/event-listener`](/packages/event-listener) | Listens to Origin events, triggers actions on-chain and sends notifications |
 | [`@energyweb/migrations`](/packages/migrations) | Deployment and configuration utilities |
 
+### Packages types
+
+Origin monorepo produce 3 types of the packages that are meant to be used in different use-cases:
+
+#### Stable
+
+Stable Origin SDK packages are created during `release` branch build.
+
+Install using `yarn add @energyweb/{package}`
+
+#### Canary 
+
+Canary packages are created during `master` branch builds. Canary reflects current state of the `master` branch, they should be a working versions considers as `alpha`
+
+Install using `yarn add @energyweb/{package}@canary`
+
+#### Preview
+
+Preview packages are built on a special `preview` branch, this is mostly used as interal tool for tests, demos, disussions. Not meant to be used as SDK releses
+
+Install using `yarn add @energyweb/{package}@preview`
+
 ## Installation
 
 Make sure have latest `yarn` package manager installed.
