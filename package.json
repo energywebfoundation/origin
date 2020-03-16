@@ -42,7 +42,7 @@
         "clean": "lerna run clean --parallel",
         "build:user-device-registry-origin": "lerna run build --scope @energyweb/user-registry build --scope @energyweb/device-registry build --parallel",
         "build:static": "lerna run build:static --parallel",
-        "build:ts": "lerna run build:ts --stream --ignore @energyweb/solar-simulator --ignore @energyweb/event-listener --ignore @energyweb/origin-ui --ignore @energyweb/origin-ui-core",
+        "build:ts": "lerna run build:ts --stream --ignore @energyweb/solar-simulator --ignore @energyweb/event-listener",
         "run:demo": "lerna run start --scope @energyweb/migrations --stream",
         "run:backend": "lerna run start --scope @energyweb/origin-backend-app --stream",
         "run:ui": "lerna run start --scope @energyweb/origin-ui-core --stream",
