@@ -6,7 +6,8 @@ export interface IRegions {
     [region: string]: ISubRegion[]
 }
 
-export type IDeviceType = string[];
+export type IDeviceSubType = string;
+export type IDeviceType = IDeviceSubType[];
 
 export interface IOriginConfiguration {
     countryName?: string;

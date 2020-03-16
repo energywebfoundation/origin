@@ -25,6 +25,6 @@ export class Configuration extends BaseEntity implements IOriginConfiguration {
     @Column('varchar', { nullable: true })
     complianceStandard: string;
 
-    @Column('simple-array', { nullable: true })
+    @Column('simple-json', { nullable: true })
     deviceTypes?: IDeviceType[];
 }
