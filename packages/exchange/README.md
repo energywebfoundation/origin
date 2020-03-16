@@ -42,19 +42,20 @@ For a producing device all fields are mandatory.
 
 ## Development
 
-Default TypeOrm configuration requires running PostgreSQL database. The detailed config is:
+Default TypeOrm configuration requires running PostgreSQL database. The detailed config with .env parameters is:
 
 ```
 TypeOrmModule.forRoot({
             type: 'postgres',
-            host: 'localhost',
-            port: 5432,
-            username: 'postgres',
-            password: 'postgres',
-            database: 'origin-exchange',
-            entities: [Demand, Order, Trade],
+            name: 'ExchangeConnection',
+            host: process.env.EXCHANGE_DB_HOST ?? 'localhost',
+            port: Number(process.env.EXCHANGE_DB_PORT) ?? 5432,
+            username: process.env.EXCHANGE_DB_USERNAME ?? 'postgres',
+            password: process.env.EXCHANGE_DB_PASSWORD ?? 'postgres',
+            database: process.env.EXCHANGE_DB_DATABASE ?? 'origin-exchange',
+            entities: [Demand, Order, Trade, Asset, Transfer, Account],
             synchronize: true,
-            logging: ['query']
+            logging: ['info']
         }),
 ```
 
