@@ -42,23 +42,16 @@ const configFilePath = absolutePath(program.config ?? '../config/demo-config.jso
         Number(process.env.BACKEND_PORT)
     );
 
+    const contractsLookup = await deployEmptyContracts();
+
     await offChainDataSource.configurationClient.update({
         complianceStandard: complianceRegistry,
+        contractsLookup,
         countryName: country.name,
         regions: country.regions,
         deviceTypes,
         externalDeviceIdTypes,
         currencies
-    });
-
-    const contractConfig = await deployEmptyContracts();
-
-    if (contractConfig) {
-        await offChainDataSource.configurationClient.add('ContractsLookup', contractConfig);
-    }
-
-    await offChainDataSource.configurationClient.update({
-        marketContractLookup
     });
 
     offChainDataSource.eventClient.stop();

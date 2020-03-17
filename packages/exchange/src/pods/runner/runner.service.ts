@@ -1,5 +1,6 @@
 import { Injectable, OnModuleInit, Logger } from '@nestjs/common';
-import { DeviceTypesService } from '@energyweb/origin-backend';
+import { ConfigurationService } from '@energyweb/origin-backend';
+import { IDeviceType } from '@energyweb/origin-backend-core';
 import { MatchingEngineService } from '../matching-engine/matching-engine.service';
 import { OrderService } from '../order/order.service';
 import { DepositWatcherService } from '../deposit-watcher/deposit-watcher.service';
@@ -16,7 +17,7 @@ export class RunnerService implements OnModuleInit {
     private readonly scanInterval = 30000;
 
     constructor(
-        private readonly deviceTypesService: DeviceTypesService,
+        private readonly originBackendConfigurationService: ConfigurationService,
         private readonly matchingEngineService: MatchingEngineService,
         private readonly ordersService: OrderService,
         private readonly depositWatcherService: DepositWatcherService,
@@ -28,7 +29,18 @@ export class RunnerService implements OnModuleInit {
     }
 
     public async fetchDeviceTypesAndInit() {
-        const getDeviceTypes = () => this.deviceTypesService.get();
+        const getDeviceTypes = async () => {
+            let deviceTypes: IDeviceType[] = [];
+
+            try {
+                const configuration = await this.originBackendConfigurationService.get();
+
+                deviceTypes = configuration.deviceTypes || [];
+                // eslint-disable-next-line no-empty
+            } catch (error) {}
+
+            return deviceTypes;
+        };
 
         let deviceTypes = await getDeviceTypes();
 
