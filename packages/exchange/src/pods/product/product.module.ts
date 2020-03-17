@@ -3,7 +3,7 @@ import { DeviceModule } from '@energyweb/origin-backend';
 import { ProductService } from './product.service';
 
 @Module({
-    imports: [DeviceModule.register(null)],
+    imports: [DeviceModule],
     providers: [ProductService],
     exports: [ProductService]
 })
