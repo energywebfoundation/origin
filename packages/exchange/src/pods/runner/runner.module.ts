@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 
-import { DeviceTypesModule } from '@energyweb/origin-backend';
+import { ConfigurationModule } from '@energyweb/origin-backend';
 import { RunnerService } from './runner.service';
 import { MatchingEngineModule } from '../matching-engine/matching-engine.module';
 import { OrderModule } from '../order/order.module';
@@ -9,7 +9,7 @@ import { WithdrawalProcessorModule } from '../withdrawal-processor/withdrawal-pr
 
 @Module({
     imports: [
-        DeviceTypesModule,
+        ConfigurationModule,
         MatchingEngineModule,
         OrderModule,
         DepositWatcherModule,

@@ -1,5 +1,5 @@
-import { IRequestClient, RequestClient } from './RequestClient';
 import { IOriginConfiguration } from '@energyweb/origin-backend-core';
+import { IRequestClient, RequestClient } from './RequestClient';
 
 export interface IConfigurationClient {
     get(): Promise<IOriginConfiguration>;

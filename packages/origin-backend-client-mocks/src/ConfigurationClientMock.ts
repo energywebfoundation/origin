@@ -2,7 +2,7 @@ import { IConfigurationClient } from '@energyweb/origin-backend-client';
 import { IOriginConfiguration } from '@energyweb/origin-backend-core';
 
 export class ConfigurationClientMock implements IConfigurationClient {
-    private configuration: IOriginConfiguration = {};
+    private configuration: IOriginConfiguration = {} as IOriginConfiguration;
 
     public async get() {
         if (!this.configuration) {
