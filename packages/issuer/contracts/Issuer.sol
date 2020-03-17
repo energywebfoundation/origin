@@ -331,8 +331,12 @@ contract Issuer is Initializable, Ownable {
 		Info
 	*/
 
-    function isCertificatePublic(uint certificateId) external view returns (bool) {
-        return commitments[certificateId] != 0x0;
+    function isCertificatePrivate(uint certificateId) external view returns (bool) {
+        if (commitments[certificateId] == 0x0) {
+            return false;
+        }
+
+        return registry.balanceOf(msg.sender, certificateId) == 0;
     }
 
     function getRegistryAddress() external view returns (address) {

@@ -117,7 +117,7 @@ export class Entity extends BlockchainDataModelEntity.Entity implements ICertifi
         this.data = certOnChain.data;
 
         const issuer: Issuer = this.configuration.blockchainProperties.issuer;
-        this.isPrivate = await issuer.isCertificatePublic(Number(this.id));
+        this.isPrivate = await issuer.isCertificatePrivate(Number(this.id), Configuration.getAccount(this.configuration));
 
         const decodedData = await issuer.decodeData(this.data);
         const allIssuanceEvents = await registry.getAllIssuanceSingleEvents({

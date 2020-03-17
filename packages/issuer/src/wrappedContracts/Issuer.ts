@@ -219,8 +219,8 @@ export class Issuer extends GeneralFunctions {
         return this.web3Contract.methods.getCertificateIdForCertificationRequest(_requestId).call(txParams);
     }
 
-    async isCertificatePublic(_certificateId: number, txParams?: ISpecialTx) {
-        return this.web3Contract.methods.isCertificatePublic(_certificateId).call(txParams);
+    async isCertificatePrivate(_certificateId: number, txParams?: ISpecialTx) {
+        return this.web3Contract.methods.isCertificatePrivate(_certificateId).call(txParams);
     }
 
     async getRegistryAddress(txParams?: ISpecialTx) {
