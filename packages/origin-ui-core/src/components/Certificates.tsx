@@ -5,17 +5,16 @@ import { PageContent } from './PageContent/PageContent';
 import { CertificateTable, SelectedState } from './CertificateTable';
 import { CertificateDetailView } from './CertificateDetailView';
 import { CertificationRequestsTable } from './CertificationRequestsTable';
-import { useLinks } from '../utils/routing';
 import { useSelector } from 'react-redux';
-import { getCurrentUser, getUserOffchain } from '../features/users/selectors';
+import { getUserOffchain } from '../features/users/selectors';
 import { getCurrencies } from '../features/general/selectors';
 import { useTranslation } from 'react-i18next';
 import { Exchange } from './exchange';
+import { isRole, useLinks } from '../utils';
 
 export function Certificates() {
-    const currentUser = useSelector(getCurrentUser);
     const currencies = useSelector(getCurrencies);
-    const userOffchain = useSelector(getUserOffchain);
+    const user = useSelector(getUserOffchain);
 
     const { baseURL, getCertificatesLink } = useLinks();
     const { t } = useTranslation();
@@ -38,7 +37,7 @@ export function Certificates() {
 
     const ExchangeRoute = () => <Exchange currency={(currencies && currencies[0]) ?? 'USD'} />;
 
-    const isIssuer = currentUser?.isRole(Role.Issuer);
+    const isIssuer = isRole(user, Role.Issuer);
 
     const CertificatesMenu = [
         {
@@ -57,13 +56,13 @@ export function Certificates() {
             key: 'detail_view',
             label: 'navigation.certificates.detailView',
             component: null,
-            show: !isIssuer
+            show: false
         },
         {
             key: 'pending',
             label: 'navigation.certificates.pending',
             component: PendingCertificationRequestsTable,
-            show: true
+            show: user
         },
         {
             key: 'approved',
@@ -75,7 +74,7 @@ export function Certificates() {
             key: 'exchange',
             label: 'navigation.certificates.exchange',
             component: ExchangeRoute,
-            show: userOffchain
+            show: user
         }
     ];
 

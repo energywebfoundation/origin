@@ -3,13 +3,10 @@ import { LoadScriptNext, GoogleMap, Marker, InfoWindow } from '@react-google-map
 import { APIKEY } from './GoogleApiKey';
 import { ProducingDevice } from '@energyweb/device-registry';
 import { useSelector } from 'react-redux';
-import { MarketUser } from '@energyweb/market';
 import { Link } from 'react-router-dom';
 import { useLinks } from '../utils/routing';
-import { getProducingDevices, getConfiguration } from '../features/selectors';
+import { getProducingDevices } from '../features/selectors';
 import { CircularProgress } from '@material-ui/core';
-import { getOffChainDataSource } from '../features/general/selectors';
-import { IOrganization } from '@energyweb/origin-backend-core';
 import { useTranslation } from 'react-i18next';
 
 interface IProps {
@@ -19,13 +16,10 @@ interface IProps {
 
 export function DeviceMap(props: IProps) {
     const [deviceHighlighted, setDeviceHighlighted] = useState<ProducingDevice.Entity>(null);
-    const [owner, setOwner] = useState<MarketUser.Entity>(null);
-    const [organizations, setOrganizations] = useState<IOrganization[]>();
+    const [owner, setOwner] = useState<string>(null);
     const [map, setMap] = useState(null);
 
     const producingDevices = useSelector(getProducingDevices);
-    const offChainDataSource = useSelector(getOffChainDataSource);
-    const configuration = useSelector(getConfiguration);
 
     const { getProducingDeviceDetailLink } = useLinks();
     const { t } = useTranslation();
@@ -36,7 +30,7 @@ export function DeviceMap(props: IProps) {
 
     async function showWindowForDevice(device: ProducingDevice.Entity) {
         setDeviceHighlighted(device);
-        setOwner(await new MarketUser.Entity(device.owner.address, configuration).sync());
+        setOwner(device.owner.address);
     }
 
     function updateBounds(targetMap: any = map) {
@@ -74,12 +68,6 @@ export function DeviceMap(props: IProps) {
     useEffect(() => {
         updateBounds();
     }, [devices, map]);
-
-    useEffect(() => {
-        (async () => {
-            setOrganizations((await offChainDataSource?.organizationClient?.getAll()) ?? []);
-        })();
-    }, [offChainDataSource]);
 
     const defaultCenter =
         devices.length > 0
@@ -134,11 +122,7 @@ export function DeviceMap(props: IProps) {
                             <b>{deviceHighlighted.offChainProperties.facilityName}</b>
                             <br />
                             <br />
-                            {t('deviceMap.properties.owner')}:{' '}
-                            {
-                                organizations?.find(o => o?.id === owner.information?.organization)
-                                    ?.name
-                            }
+                            {t('deviceMap.properties.owner')}: {owner}
                             <br />
                             <br />
                             <Link to={getProducingDeviceDetailLink(deviceHighlighted.id)}>

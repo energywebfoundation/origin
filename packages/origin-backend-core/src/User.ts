@@ -1,5 +1,13 @@
 import { IOrganization } from './Organization';
 
+type Currency = string;
+
+export interface IAutoPublishConfig {
+    enabled: boolean;
+    currency: Currency;
+    priceInCents: number;
+}
+
 export interface IUserProperties {
     id: number;
     title: string;
@@ -9,6 +17,8 @@ export interface IUserProperties {
     telephone: string;
     blockchainAccountAddress: string;
     blockchainAccountSignedMessage: string;
+    notifications: boolean;
+    autoPublish: IAutoPublishConfig;
 }
 
 export interface IUser extends IUserProperties {
@@ -25,11 +35,17 @@ export interface IUserWithRelations extends IUser {
 
 export type UserRegisterData = Omit<
     IUserProperties,
-    'id' | 'blockchainAccountAddress' | 'blockchainAccountSignedMessage'
+    | 'id'
+    | 'blockchainAccountAddress'
+    | 'blockchainAccountSignedMessage'
+    | 'autoPublish'
+    | 'notifications'
 > & { password: string };
 export type UserRegisterReturnData = IUser;
 
 export type UserLoginData = { username: string; password: string };
 export type UserLoginReturnData = { accessToken: string };
 
-export type UserUpdateData = Pick<IUserProperties, 'blockchainAccountSignedMessage'>;
+export type UserUpdateData = Partial<
+    Pick<IUserProperties, 'blockchainAccountSignedMessage' | 'autoPublish' | 'notifications'>
+>;

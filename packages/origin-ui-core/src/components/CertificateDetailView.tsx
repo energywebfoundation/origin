@@ -1,18 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { CertificationRequest } from '@energyweb/issuer';
-import { MarketUser } from '@energyweb/market';
 import { ProducingDeviceDetailView } from './ProducingDeviceDetailView';
 import { useSelector } from 'react-redux';
 import { getConfiguration } from '../features/selectors';
 import { getCertificates } from '../features/certificates/selectors';
 import { deduplicate } from '../utils/helper';
 import { formatDate } from '../utils/time';
-import { getUsers, getUserById } from '../features/users/selectors';
 import { Skeleton } from '@material-ui/lab';
 import { makeStyles, createStyles, useTheme } from '@material-ui/core';
-import { getEnvironment, getOffChainDataSource } from '../features/general/selectors';
+import { getEnvironment } from '../features/general/selectors';
 import { EnergyFormatter } from '../utils/EnergyFormatter';
-import { IOrganizationWithRelationsIds } from '@energyweb/origin-backend-core';
 
 interface IProps {
     id: string;
@@ -30,28 +27,9 @@ export function CertificateDetailView(props: IProps) {
 
     const certificates = useSelector(getCertificates);
     const configuration = useSelector(getConfiguration);
-    const users = useSelector(getUsers);
     const environment = useSelector(getEnvironment);
-    const offChainDataSource = useSelector(getOffChainDataSource);
-    const organizationClient = offChainDataSource?.organizationClient;
 
     const [events, setEvents] = useState<IEnrichedEvent[]>([]);
-    const [organizations, setOrganizations] = useState([] as IOrganizationWithRelationsIds[]);
-
-    useEffect(() => {
-        (async () => {
-            if (organizationClient) {
-                setOrganizations(await organizationClient.getAll());
-            }
-        })();
-    }, [organizationClient]);
-
-    function getUserDisplayText(user: MarketUser.Entity) {
-        return (
-            organizations?.find(o => o.id === user?.information?.organization)?.name ||
-            `${user?.information?.firstName} ${user?.information?.lastName}`
-        );
-    }
 
     const useStyles = makeStyles(() =>
         createStyles({
@@ -81,32 +59,10 @@ export function CertificateDetailView(props: IProps) {
                 case 'Transfer':
                     if (event.returnValues.from === '0x0000000000000000000000000000000000000000') {
                         label = 'Initial owner';
-                        const user =
-                            getUserById(users, event.returnValues.to) ||
-                            (await new MarketUser.Entity(
-                                event.returnValues.to,
-                                configuration
-                            ).sync());
-
-                        description = getUserDisplayText(user);
+                        description = event.returnValues.to;
                     } else {
-                        const newOwnerUser =
-                            getUserById(users, event.returnValues.to) ||
-                            (await new MarketUser.Entity(
-                                event.returnValues.to,
-                                configuration
-                            ).sync());
-
-                        const newOwner = getUserDisplayText(newOwnerUser);
-
-                        const oldOwnerUser =
-                            getUserById(users, event.returnValues.from) ||
-                            (await new MarketUser.Entity(
-                                event.returnValues.from,
-                                configuration
-                            ).sync());
-
-                        const oldOwner = getUserDisplayText(oldOwnerUser);
+                        const newOwner = event.returnValues.to;
+                        const oldOwner = event.returnValues.from;
 
                         label = 'Changed ownership';
                         description = `Transferred from ${oldOwner} to ${newOwner}`;

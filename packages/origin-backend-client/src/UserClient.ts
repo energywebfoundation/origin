@@ -4,10 +4,13 @@ import {
     UserLoginData,
     UserLoginReturnData,
     UserUpdateData,
-    IUserWithRelationsIds
+    IUserWithRelationsIds,
+    IUserProperties
 } from '@energyweb/origin-backend-core';
 
 import { IRequestClient, RequestClient } from './RequestClient';
+
+type UpdateUserResponseReturnType = any;
 
 export interface IUserClient {
     login(email: string, password: string): Promise<UserLoginReturnData>;
@@ -15,7 +18,11 @@ export interface IUserClient {
     register(data: UserRegisterData): Promise<UserRegisterReturnData>;
     me(): Promise<IUserWithRelationsIds>;
     getUserByBlockchainAccount(blockchainAccountAddress: string): Promise<IUserWithRelationsIds>;
-    attachSignedMessage(id: number, signedMessage: string): Promise<any>;
+    attachSignedMessage(id: number, signedMessage: string): Promise<UpdateUserResponseReturnType>;
+    updateAdditionalProperties(
+        id: number,
+        properties: Partial<Pick<IUserProperties, 'autoPublish' | 'notifications'>>
+    ): Promise<UpdateUserResponseReturnType>;
 }
 
 export class UserClient implements IUserClient {
@@ -75,6 +82,13 @@ export class UserClient implements IUserClient {
 
     public async attachSignedMessage(id: number, signedMessage: string) {
         return this.updateUser(id, { blockchainAccountSignedMessage: signedMessage });
+    }
+
+    public async updateAdditionalProperties(
+        id: number,
+        properties: Partial<Pick<IUserProperties, 'autoPublish' | 'notifications'>>
+    ) {
+        return this.updateUser(id, properties);
     }
 
     private async updateUser(id: number, updatedUserInfo: UserUpdateData) {

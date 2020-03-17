@@ -5,6 +5,8 @@ import fs from 'fs';
 
 import { OffChainDataSource } from '@energyweb/origin-backend-client';
 import { deployEmptyContracts } from './deployEmpty';
+import { onboardDemo } from './onboarding';
+import { marketDemo } from './market';
 
 program.option('-e, --env <env_file_path>', 'path to the .env file');
 program.option('-c, --config <config_file_path>', 'path to the config file');
@@ -53,6 +55,8 @@ const configFilePath = absolutePath(program.config ?? '../config/demo-config.jso
         externalDeviceIdTypes,
         currencies
     });
+
+    await marketDemo(configFilePath, contractsLookup);
 
     offChainDataSource.eventClient.stop();
 })();

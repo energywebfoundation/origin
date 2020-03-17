@@ -156,7 +156,7 @@ function* initEventHandler() {
 
 async function getContractsLookupFromAPI(configurationClient: IConfigurationClient) {
     try {
-        return (await configurationClient.get()).marketContractLookup;
+        return (await configurationClient.get())?.contractsLookup;
     } catch {
         return null;
     }

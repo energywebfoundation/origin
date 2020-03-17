@@ -27,6 +27,7 @@
   "dependencies": {
     "@date-io/moment": "1.3.13",
     "@energyweb/device-registry": "5.1.0",
+    "@energyweb/issuer": "1.0.0",
     "@energyweb/localization": "0.0.2",
     "@energyweb/origin-backend-client": "3.3.0",
     "@energyweb/origin-backend-core": "1.3.0",

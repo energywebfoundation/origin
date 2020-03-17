@@ -43,7 +43,9 @@ export class UserController {
                 title: user.title,
                 blockchainAccountAddress: user.blockchainAccountAddress,
                 blockchainAccountSignedMessage: user.blockchainAccountSignedMessage,
-                organization: user.organization
+                organization: user.organization,
+                autoPublish: user.autoPublish,
+                notifications: user.notifications
             };
         } catch (error) {
             console.log('UserController::register() error', error);

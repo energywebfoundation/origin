@@ -2,7 +2,8 @@ import {
     UserLoginReturnData,
     UserRegisterData,
     IUser,
-    IUserWithRelationsIds
+    IUserWithRelationsIds,
+    IUserProperties
 } from '@energyweb/origin-backend-core';
 import { recoverTypedSignatureAddress } from '@energyweb/utils-general';
 
@@ -13,6 +14,7 @@ export class UserClientMock implements IUserClient {
 
     private userIdCounter = 0;
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     login(email: string, password: string): Promise<UserLoginReturnData> {
         throw new Error('Method not implemented.');
     }
@@ -29,7 +31,9 @@ export class UserClientMock implements IUserClient {
             ...data,
             organization: null,
             blockchainAccountAddress: '',
-            blockchainAccountSignedMessage: ''
+            blockchainAccountSignedMessage: '',
+            autoPublish: null,
+            notifications: false
         };
 
         this.storage.set(this.userIdCounter, user);
@@ -74,6 +78,18 @@ export class UserClientMock implements IUserClient {
             ...user,
             blockchainAccountSignedMessage: signedMessage,
             blockchainAccountAddress: address
+        });
+    }
+
+    async updateAdditionalProperties(
+        id: number,
+        properties: Partial<Pick<IUserProperties, 'autoPublish' | 'notifications'>>
+    ): Promise<any> {
+        const user = this.storage.get(id);
+
+        this.storage.set(id, {
+            ...user,
+            ...properties
         });
     }
 }
