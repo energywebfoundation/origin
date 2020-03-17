@@ -183,8 +183,6 @@ contract Issuer is Initializable, Ownable {
         _updateCommitment(certificateId, 0x0, _commitment);
         certificateToRequestStorage[certificateId] = _requestId;
 
-		_updateCommitment(certificateId, 0x0, _commitment);
-
         emit ApprovedCertificationRequest(_to, _requestId, certificateId);
 
         return certificateId;
@@ -365,7 +363,7 @@ contract Issuer is Initializable, Ownable {
     }
 
 	function _updateCommitment(uint256 _id, bytes32 _previousCommitment, bytes32 _commitment) private {
-		// require(commitments[_id] == _previousCommitment, "updateCommitment: previous commitment invalid");
+		require(commitments[_id] == _previousCommitment, "updateCommitment: previous commitment invalid");
 
 		commitments[_id] = _commitment;
 
