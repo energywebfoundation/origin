@@ -18,6 +18,7 @@ export interface ICertificate {
     generationStartTime: number;
     generationEndTime: number;
     creationTime: number;
+    creationBlockHash: string;
     owners?: ICertificateOwners;
 }
 
@@ -90,6 +91,7 @@ export class Entity extends BlockchainDataModelEntity.Entity implements ICertifi
     public generationEndTime: number;
     public issuer: string;
     public creationTime: number;
+    public creationBlockHash: string;
     public ownershipCommitment: IOwnershipCommitment;
     public owners: ICertificateOwners = {};
     
@@ -124,6 +126,7 @@ export class Entity extends BlockchainDataModelEntity.Entity implements ICertifi
         this.deviceId = decodedData['2'];
         this.issuer = certOnChain.issuer;
         this.creationTime = Number(creationBlock.timestamp);
+        this.creationBlockHash = creationBlock.hash;
 
         if (this.isPrivate) {
             this.ownershipCommitment = await this.getOffChainProperties();
