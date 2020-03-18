@@ -1,96 +1,81 @@
 import moment from 'moment';
 import { Configuration } from '@energyweb/utils-general';
-import { IDevice, ISmartMeterRead, IEnergyGenerated } from '@energyweb/origin-backend-core';
-
-import * as Device from './Device';
+import { IDevice, ISmartMeterRead, IEnergyGenerated, IDeviceWithId, DeviceStatus, ExternalDeviceId } from '@energyweb/origin-backend-core';
 
 export const getAllDevices = async (configuration: Configuration.Entity): Promise<Entity[]> => {
-    const { deviceLogicInstance } = configuration.blockchainProperties;
-    const deviceListLength = parseInt(await deviceLogicInstance.getDeviceListLength(), 10);
-
-    const devicesPromises = Array(deviceListLength)
-        .fill(null)
-        .map(async (item, index) => {
-            return {
-                id: index,
-                device: await deviceLogicInstance.getDevice(index)
-            };
-        });
-
-    const allDevices = await Promise.all(devicesPromises);
+    const allDevices = await configuration.offChainDataSource.deviceClient.getAll();
 
     const producingDevicesSynced = allDevices.map(device =>
-        new Entity(device.id.toString(), configuration).sync()
+        new Entity(device.id, configuration).sync()
     );
 
     return Promise.all(producingDevicesSynced);
 };
 
 export const getDeviceListLength = async (configuration: Configuration.Entity) => {
-    const producingDevices = await getAllDevices(configuration);
-    return producingDevices.length;
+    const allDevices = await configuration.offChainDataSource.deviceClient.getAll();
+    return allDevices.length;
 };
 
-export const getAllDevicesOwnedBy = async (owner: string, configuration: Configuration.Entity) => {
-    return (await getAllDevices(configuration)).filter(
-        (device: Entity) => device.owner.address.toLowerCase() === owner.toLowerCase()
-    );
-};
+// export const getAllDevicesOwnedBy = async (owner: string, configuration: Configuration.Entity) => {
+//     return (await getAllDevices(configuration)).filter(
+//         (device: Entity) => device.owner.address.toLowerCase() === owner.toLowerCase()
+//     );
+// };
 
 export const createDevice = async (
-    devicePropertiesOnChain: Device.IOnChainProperties,
-    devicePropertiesOffChain: IDevice,
+    deviceProperties: IDevice,
     configuration: Configuration.Entity
 ): Promise<Entity> => {
     const producingDevice = new Entity(null, configuration);
 
-    const {
-        status: successCreateDevice,
-        logs
-    } = await configuration.blockchainProperties.deviceLogicInstance.createDevice(
-        devicePropertiesOnChain.smartMeter.address,
-        devicePropertiesOnChain.owner.address,
-        Configuration.getAccount(configuration)
-    );
+    const deviceWithId = await configuration.offChainDataSource.deviceClient.add(deviceProperties);
 
-    if (!successCreateDevice) {
-        await producingDevice.deleteFromOffChainStorage();
-        throw new Error('createDevice: Saving on-chain data failed. Reverting...');
-    }
-
-    const idFromTx = configuration.blockchainProperties.web3.utils
-        .hexToNumber(logs[0].topics[1])
-        .toString();
-
-    producingDevice.id = idFromTx;
-
-    await producingDevice.createOffChainProperties(devicePropertiesOffChain);
+    producingDevice.id = deviceWithId.id;
 
     if (configuration.logger) {
-        configuration.logger.info(`Producing device ${idFromTx} created`);
+        configuration.logger.info(`Producing device ${deviceWithId.id} created`);
     }
 
     return producingDevice.sync();
 };
-export interface IProducingDevice extends Device.IOnChainProperties {
-    offChainProperties: IDevice;
-}
 
-export class Entity extends Device.Entity implements IProducingDevice {
-    offChainProperties: IDevice;
+export class Entity implements IDeviceWithId {
+    status: DeviceStatus;
+    facilityName: string;
+    description: string;
+    images: string;
+    address: string;
+    region: string;
+    province: string;
+    country: string;
+    operationalSince: number;
+    capacityInW: number;
+    gpsLatitude: string;
+    gpsLongitude: string;
+    timezone: string;
+    deviceType: string;
+    complianceRegistry: string;
+    otherGreenAttributes: string;
+    typeOfPublicSupport: string;
+    externalDeviceIds?: ExternalDeviceId[];
+    lastSmartMeterReading?: ISmartMeterRead;
+    deviceGroup?: string;
+
+    initialized: boolean;
+
+    constructor(public id: number, public configuration: Configuration.Entity) {
+        this.initialized = false;
+    }
 
     async sync(): Promise<Entity> {
         if (this.id != null) {
-            const device = await this.configuration.blockchainProperties.deviceLogicInstance.getDeviceById(
-                this.id
-            );
+            const device = await this.configuration.offChainDataSource.deviceClient.getById(this.id);
 
-            this.smartMeter = { address: device.smartMeter };
-            this.owner = { address: device.owner };
+            Object.assign(this, device);
 
             this.initialized = true;
 
-            this.offChainProperties = await this.getOffChainProperties();
             if (this.configuration.logger) {
                 this.configuration.logger.verbose(`Producing device ${this.id} synced`);
             }
@@ -100,26 +85,21 @@ export class Entity extends Device.Entity implements IProducingDevice {
     }
 
     get lastSmartMeterReadWh(): number {
-        return this.offChainProperties.lastSmartMeterReading?.meterReading;
+        return this.lastSmartMeterReading?.meterReading;
     }
 
     async saveSmartMeterRead(
         meterReading: number,
         timestamp: number = moment().unix()
     ): Promise<void> {
-        return this.configuration.offChainDataSource.deviceClient.addSmartMeterRead(
-            Number(this.id),
-            {
-                meterReading,
-                timestamp
-            }
-        );
+        return this.configuration.offChainDataSource.deviceClient.addSmartMeterRead(Number(this.id), {
+            meterReading,
+            timestamp
+        });
     }
 
     async getSmartMeterReads(): Promise<ISmartMeterRead[]> {
-        return this.configuration.offChainDataSource.deviceClient.getAllSmartMeterReadings(
-            Number(this.id)
-        );
+        return this.configuration.offChainDataSource.deviceClient.getAllSmartMeterReadings(Number(this.id));
     }
 
     async getAmountOfEnergyGenerated(): Promise<IEnergyGenerated[]> {
@@ -135,9 +115,7 @@ export class Entity extends Device.Entity implements IProducingDevice {
             const isFirstReading = i === 0;
 
             energiesGenerated.push({
-                energy:
-                    allMeterReadings[i].meterReading -
-                    (isFirstReading ? 0 : allMeterReadings[i - 1].meterReading),
+                energy: allMeterReadings[i].meterReading - (isFirstReading ? 0 : allMeterReadings[i - 1].meterReading),
                 timestamp: allMeterReadings[i].timestamp
             });
         }

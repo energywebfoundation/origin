@@ -1,10 +1,10 @@
-import { Entity, Column, BaseEntity, PrimaryColumn } from 'typeorm';
+import { Entity, Column, BaseEntity, PrimaryGeneratedColumn } from 'typeorm';
 import { IsInt, Min, IsLatitude, IsLongitude } from 'class-validator';
 import { IDeviceWithId, ISmartMeterRead, ExternalDeviceId } from '@energyweb/origin-backend-core';
 
 @Entity()
 export class Device extends BaseEntity implements IDeviceWithId {
-    @PrimaryColumn()
+    @PrimaryGeneratedColumn()
     id: number;
 
     @Column()
