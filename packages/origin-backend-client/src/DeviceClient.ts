@@ -49,7 +49,6 @@ export class DeviceClient implements IDeviceClient {
         return response.data;
     }
 
-
     public async getAllSmartMeterReadings(id: number): Promise<ISmartMeterRead[]> {
         const response = await this.requestClient.get(`${this.endpoint}/${id}/smartMeterReading`);
 

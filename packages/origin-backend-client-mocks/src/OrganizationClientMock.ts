@@ -24,7 +24,6 @@ interface ITmpUser {
 }
 
 export class OrganizationClientMock implements IOrganizationClient {
-
     constructor(public eventClient: IEventClient) {}
 
     private storage = new Map<number, IOrganizationWithRelationsIds>();
@@ -112,7 +111,7 @@ export class OrganizationClientMock implements IOrganizationClient {
             email,
             organization: organizationId,
             status: OrganizationInvitationStatus.Pending
-        }
+        };
 
         this.invitationStorage.set(organizationInvitation.id, organizationInvitation);
 

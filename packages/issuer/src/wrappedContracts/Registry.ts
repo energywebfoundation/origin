@@ -7,20 +7,20 @@ import { GeneralFunctions, ISpecialTx } from '@energyweb/utils-general';
 import RegistryJSON from '../../build/contracts/Registry.json';
 
 export interface TransferSingleEvent {
-    _id: string,
-    _operator: string,
-    _from: string,
-    _to: string,
-    _value: string
+    _id: string;
+    _operator: string;
+    _from: string;
+    _to: string;
+    _value: string;
 }
 
 export interface ClaimSingleEvent {
-    _claimIssuer: string,
-    _claimSubject: string,
-    _topic: string,
-    _id: string,
-    _value: string,
-    _claimData: string
+    _claimIssuer: string;
+    _claimSubject: string;
+    _topic: string;
+    _id: string;
+    _value: string;
+    _claimData: string;
 }
 
 export class Registry extends GeneralFunctions {
@@ -167,14 +167,15 @@ export class Registry extends GeneralFunctions {
         return this.web3Contract.methods.totalSupply().call(txParams);
     }
 
-    async issue(_to: string, _validityData: any, _topic: number, _value: number, _data: any, txParams?: ISpecialTx) {
-        const method = this.web3Contract.methods.issue(
-            _to,
-            _validityData,
-            _topic,
-            _value,
-            _data
-        );
+    async issue(
+        _to: string,
+        _validityData: any,
+        _topic: number,
+        _value: number,
+        _data: any,
+        txParams?: ISpecialTx
+    ) {
+        const method = this.web3Contract.methods.issue(_to, _validityData, _topic, _value, _data);
 
         return this.send(method, txParams);
     }

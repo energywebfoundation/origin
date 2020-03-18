@@ -4,9 +4,4 @@ import * as Contracts from './contracts';
 
 export { createBlockchainProperties } from './blockchain-facade/BlockchainPropertiesFactory';
 export { DeviceLogic } from './wrappedContracts/DeviceLogic';
-export {
-    Contracts,
-    ProducingDevice,
-    Device
-};
-
+export { Contracts, ProducingDevice, Device };

@@ -107,14 +107,19 @@ export class Entity extends Device.Entity implements IProducingDevice {
         meterReading: number,
         timestamp: number = moment().unix()
     ): Promise<void> {
-        return this.configuration.offChainDataSource.deviceClient.addSmartMeterRead(Number(this.id), {
-            meterReading,
-            timestamp
-        });
+        return this.configuration.offChainDataSource.deviceClient.addSmartMeterRead(
+            Number(this.id),
+            {
+                meterReading,
+                timestamp
+            }
+        );
     }
 
     async getSmartMeterReads(): Promise<ISmartMeterRead[]> {
-        return this.configuration.offChainDataSource.deviceClient.getAllSmartMeterReadings(Number(this.id));
+        return this.configuration.offChainDataSource.deviceClient.getAllSmartMeterReadings(
+            Number(this.id)
+        );
     }
 
     async getAmountOfEnergyGenerated(): Promise<IEnergyGenerated[]> {
@@ -130,7 +135,9 @@ export class Entity extends Device.Entity implements IProducingDevice {
             const isFirstReading = i === 0;
 
             energiesGenerated.push({
-                energy: allMeterReadings[i].meterReading - (isFirstReading ? 0 : allMeterReadings[i - 1].meterReading),
+                energy:
+                    allMeterReadings[i].meterReading -
+                    (isFirstReading ? 0 : allMeterReadings[i - 1].meterReading),
                 timestamp: allMeterReadings[i].timestamp
             });
         }

@@ -22,7 +22,7 @@ export abstract class Entity implements IOnChainProperties {
 
     propertiesDocumentHash: string;
     url: string;
-    
+
     constructor(id: string, configuration: Configuration.Entity) {
         if (typeof id !== 'string' && id !== null) {
             throw new Error('An ID of an Entity should always be of type string.');
@@ -31,7 +31,9 @@ export abstract class Entity implements IOnChainProperties {
             throw new Error('An ID of an Entity should always be numeric string.');
         }
         if (!configuration.offChainDataSource) {
-            throw new Error('Entity::constructor: Please set offChainDataSource in the configuration.');
+            throw new Error(
+                'Entity::constructor: Please set offChainDataSource in the configuration.'
+            );
         }
 
         this.id = id;
@@ -41,7 +43,7 @@ export abstract class Entity implements IOnChainProperties {
 
     get offChainDataClient() {
         return this.configuration.offChainDataSource.preciseProofClient;
-    };
+    }
 
     addProof(proof: PreciseProofs.Proof) {
         this.proofs.push(proof);
@@ -55,13 +57,20 @@ export abstract class Entity implements IOnChainProperties {
         return `${this.baseUrl}/${this.propertiesDocumentHash}`;
     }
 
-    prepareEntityCreation(offChainProperties: any, schema: any, salts?: string[]): IOffChainProperties {
+    prepareEntityCreation(
+        offChainProperties: any,
+        schema: any,
+        salts?: string[]
+    ): IOffChainProperties {
         validateJson(offChainProperties, schema, this.baseUrl, this.configuration.logger);
 
         return this.generateAndAddProofs(offChainProperties, salts);
     }
 
-    async syncOffChainStorage<T>(properties: T, offChainStorageProperties: IOffChainProperties): Promise<void> {
+    async syncOffChainStorage<T>(
+        properties: T,
+        offChainStorageProperties: IOffChainProperties
+    ): Promise<void> {
         const newLocation = `${this.baseUrl}/${offChainStorageProperties.rootHash}`;
 
         const hasSynced = await this.offChainDataClient.insert(newLocation, {
@@ -77,7 +86,9 @@ export abstract class Entity implements IOnChainProperties {
         this.propertiesDocumentHash = offChainStorageProperties.rootHash;
 
         if (this.configuration.logger) {
-            this.configuration.logger.verbose(`Put off chain properties to ${this.id}/${this.propertiesDocumentHash}`);
+            this.configuration.logger.verbose(
+                `Put off chain properties to ${this.id}/${this.propertiesDocumentHash}`
+            );
         }
     }
 
