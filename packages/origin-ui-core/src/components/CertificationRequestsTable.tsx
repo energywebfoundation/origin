@@ -1,19 +1,24 @@
 import React, { useEffect } from 'react';
 import { Role } from '@energyweb/user-registry';
-import { showNotification, NotificationType } from '../utils/notifications';
 import { useSelector, useDispatch } from 'react-redux';
 import { getProducingDevices, getConfiguration } from '../features/selectors';
 import { TableMaterial } from './Table/TableMaterial';
 import { Check } from '@material-ui/icons';
-import { getCurrentUser } from '../features/users/selectors';
+import { getUserOffchain } from '../features/users/selectors';
 import { setLoading } from '../features/general/actions';
 import {
     IPaginatedLoaderHooksFetchDataParameters,
     usePaginatedLoader
 } from './Table/PaginatedLoaderHooks';
 import { ProducingDevice } from '@energyweb/device-registry';
-import { getDeviceLocationText, LOCATION_TITLE_TRANSLATION_KEY } from '../utils/helper';
-import { PowerFormatter } from '../utils/PowerFormatter';
+import {
+    PowerFormatter,
+    getDeviceLocationText,
+    LOCATION_TITLE_TRANSLATION_KEY,
+    isRole,
+    showNotification,
+    NotificationType
+} from '../utils';
 import { Skeleton } from '@material-ui/lab';
 import { getOffChainDataSource } from '../features/general/selectors';
 import { CertificationRequest } from '@energyweb/issuer';
@@ -30,7 +35,7 @@ interface IRecord {
 
 export function CertificationRequestsTable(props: IProps) {
     const configuration = useSelector(getConfiguration);
-    const currentUser = useSelector(getCurrentUser);
+    const user = useSelector(getUserOffchain);
     const producingDevices = useSelector(getProducingDevices);
     const offChainDataSource = useSelector(getOffChainDataSource);
     const { t } = useTranslation();
@@ -41,14 +46,14 @@ export function CertificationRequestsTable(props: IProps) {
         requestedPageSize,
         offset
     }: IPaginatedLoaderHooksFetchDataParameters) {
-        if (!currentUser || !offChainDataSource || producingDevices.length === 0) {
+        if (!user || !offChainDataSource || producingDevices.length === 0) {
             return {
                 paginatedData: [],
                 total: 0
             };
         }
 
-        const isIssuer = currentUser.isRole(Role.Issuer);
+        const isIssuer = isRole(user, Role.Issuer);
 
         const requests = await CertificationRequest.getAllCertificationRequests(configuration);
 
@@ -60,7 +65,9 @@ export function CertificationRequestsTable(props: IProps) {
 
             if (
                 request.approved !== props.approved ||
-                (!isIssuer && currentUser.id.toLowerCase() !== device?.owner.address.toLowerCase())
+                (!isIssuer &&
+                    user?.blockchainAccountAddress?.toLowerCase() !==
+                        device?.owner.address.toLowerCase())
             ) {
                 continue;
             }
@@ -87,7 +94,7 @@ export function CertificationRequestsTable(props: IProps) {
 
     useEffect(() => {
         loadPage(1);
-    }, [props.approved, currentUser, producingDevices.length]);
+    }, [props.approved, user, producingDevices.length]);
 
     async function approve(rowIndex: number) {
         const request = paginatedData[rowIndex].request;
@@ -113,7 +120,7 @@ export function CertificationRequestsTable(props: IProps) {
     }
 
     const actions =
-        currentUser?.isRole(Role.Issuer) && !props.approved
+        isRole(user, Role.Issuer) && !props.approved
             ? [
                   {
                       icon: <Check />,

@@ -4,13 +4,6 @@ import { applyMiddleware, createStore } from 'redux';
 import { routerMiddleware, ConnectedRouter } from 'connected-react-router';
 import { createRootReducer } from '../../reducers';
 import { sagas } from '../../features/sagas';
-import { MarketUser } from '@energyweb/market';
-import {
-    addUser,
-    updateCurrentUserId,
-    updateFetcher,
-    IUserFetcher
-} from '../../features/users/actions';
 import { ReactWrapper, CommonWrapper } from 'enzyme';
 import { Configuration, Compliance } from '@energyweb/utils-general';
 
@@ -341,7 +334,6 @@ interface ISetupStoreOptions {
     logActions: boolean;
     offChainDataSource?: IOffChainDataSource;
     runSagas?: boolean;
-    userFetcher?: IUserFetcher;
 }
 
 const DEFAULT_SETUP_STORE_OPTIONS: ISetupStoreOptions = {
@@ -361,39 +353,12 @@ export const setupStore = (
         options.runSagas
     );
 
-    if (options.mockUserFetcher) {
-        const mockUserFetcher = options.userFetcher || {
-            async fetch(id: string) {
-                return ({
-                    id,
-                    organization: 'Example Organization'
-                } as Partial<MarketUser.Entity>) as MarketUser.Entity;
-            }
-        };
-
-        store.dispatch(updateFetcher(mockUserFetcher));
-    }
-
     return {
         store,
-        setCurrentUser: (properties: ISetCurrentUserProperties) => {
-            const user: Partial<MarketUser.Entity> = {
-                id: properties.id,
-                isRole: () => true
-            };
-
-            store.dispatch(addUser(user as MarketUser.Entity));
-
-            store.dispatch(updateCurrentUserId(user.id));
-        },
         addProducingDevice: (properties: ICreateProducingDeviceProperties) => {
             const entity = createProducingDevice(properties);
             store.dispatch(producingDeviceCreatedOrUpdated(entity));
         },
-        // addCertificate: (properties: ICreateCertificateProperties) => {
-        //     const entity = createCertificate(properties);
-        //     store.dispatch(addCertificate(entity));
-        // },
         history,
         sagasTasks,
         cleanupStore: () => {

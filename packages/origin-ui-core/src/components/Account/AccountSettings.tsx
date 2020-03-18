@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import {
     Paper,
     Grid,
@@ -20,21 +20,20 @@ import { useDispatch, useSelector } from 'react-redux';
 import { withStyles } from '@material-ui/core/styles';
 
 import { signTypedMessage } from '@energyweb/utils-general';
-import { MarketUser } from '@energyweb/market';
 import { AVAILABLE_ORIGIN_LANGUAGES, ORIGIN_LANGUAGE } from '@energyweb/localization';
 
-import { showNotification, NotificationType } from '../../utils/notifications';
+import { showNotification, NotificationType, useTranslation } from '../../utils';
 import {
     getCurrencies,
     getOffChainDataSource,
     getEnvironment
 } from '../../features/general/selectors';
-import { getCurrentUser, getUserOffchain, getCurrentUserId } from '../../features/users/selectors';
+import { getUserOffchain, getActiveBlockchainAccountAddress } from '../../features/users/selectors';
 import { OriginConfigurationContext, setOriginLanguage } from '../OriginConfigurationContext';
 import { getWeb3 } from '../../features/selectors';
 import { refreshUserOffchain } from '../../features/users/actions';
 import { getActiveAccount, isUsingInBrowserPK } from '../../features/authentication/selectors';
-import { useTranslation } from 'react-i18next';
+import { IUserProperties } from '@energyweb/origin-backend-core';
 
 export function AccountSettings() {
     const dispatch = useDispatch();
@@ -53,24 +52,27 @@ export function AccountSettings() {
 
     const classes = useStyles(useTheme());
 
-    const currentUser = useSelector(getCurrentUser);
     const userOffchain = useSelector(getUserOffchain);
     const currencies = useSelector(getCurrencies);
     const userClient = useSelector(getOffChainDataSource)?.userClient;
     const web3 = useSelector(getWeb3);
-    const currentUserId = useSelector(getCurrentUserId);
+    const activeBlockchainAccountAddress = useSelector(getActiveBlockchainAccountAddress);
     const usingPK = useSelector(isUsingInBrowserPK);
     const activeAccount = useSelector(getActiveAccount);
     const environment = useSelector(getEnvironment);
 
     const [notificationsEnabled, setNotificationsEnabled] = useState(null);
 
-    const userNotificationsEnabled = currentUser?.offChainProperties.notifications ?? false;
-    const autoPublish = currentUser?.offChainProperties?.autoPublish ?? null;
+    const userNotificationsEnabled = userOffchain?.notifications ?? false;
+    const autoPublish = userOffchain?.autoPublish ?? null;
 
     const [autoPublishCandidate, setAutoPublish] = useState(autoPublish);
 
-    if (currentUser) {
+    if (!userOffchain) {
+        return null;
+    }
+
+    useEffect(() => {
         if (notificationsEnabled === null) {
             setNotificationsEnabled(userNotificationsEnabled);
         }
@@ -78,7 +80,7 @@ export function AccountSettings() {
         if (autoPublishCandidate === null) {
             setAutoPublish(autoPublish);
         }
-    }
+    }, [userOffchain]);
 
     const originConfiguration = useContext(OriginConfigurationContext);
 
@@ -96,8 +98,8 @@ export function AccountSettings() {
         track: {}
     })(Switch);
 
-    const notificationChanged = currentUser && notificationsEnabled !== userNotificationsEnabled;
-    const autoPublishChanged = currentUser && autoPublishCandidate !== autoPublish;
+    const notificationChanged = notificationsEnabled !== userNotificationsEnabled;
+    const autoPublishChanged = autoPublishCandidate !== autoPublish;
 
     const propertiesChanged = notificationChanged || autoPublishChanged;
 
@@ -109,15 +111,17 @@ export function AccountSettings() {
         }
 
         if (notificationChanged || autoPublishChanged) {
-            const newProperties: MarketUser.IMarketUserOffChainProperties =
-                currentUser.offChainProperties;
+            const newProperties: Partial<IUserProperties> = {};
 
-            newProperties.notifications = notificationsEnabled;
-            newProperties.autoPublish = autoPublishChanged
-                ? autoPublishCandidate
-                : newProperties.autoPublish;
+            if (notificationChanged) {
+                newProperties.notifications = notificationsEnabled;
+            }
 
-            await currentUser.update(newProperties);
+            if (autoPublishChanged) {
+                newProperties.autoPublish = autoPublishCandidate;
+            }
+
+            await userClient.updateAdditionalProperties(userOffchain.id, newProperties);
         }
 
         showNotification(t('settings.feedback.userSettingsUpdated'), NotificationType.Success);
@@ -126,7 +130,7 @@ export function AccountSettings() {
     async function signAndSend(): Promise<void> {
         try {
             const signedMessage = await signTypedMessage(
-                currentUserId,
+                activeBlockchainAccountAddress,
                 environment.REGISTRATION_MESSAGE_TO_SIGN,
                 web3,
                 usingPK ? activeAccount?.privateKey : null
@@ -195,20 +199,18 @@ export function AccountSettings() {
                             )}
                         </>
                     )}
-                    {currentUser && (
-                        <FormGroup>
-                            <FormControlLabel
-                                control={
-                                    <PurpleSwitch
-                                        checked={notificationsEnabled}
-                                        onChange={(e, checked) => setNotificationsEnabled(checked)}
-                                    />
-                                }
-                                label={t('settings.properties.notifications')}
-                            />
-                        </FormGroup>
-                    )}
-                    {currentUser && autoPublishCandidate !== null && (
+                    <FormGroup>
+                        <FormControlLabel
+                            control={
+                                <PurpleSwitch
+                                    checked={notificationsEnabled}
+                                    onChange={(e, checked) => setNotificationsEnabled(checked)}
+                                />
+                            }
+                            label={t('settings.properties.notifications')}
+                        />
+                    </FormGroup>
+                    {autoPublishCandidate !== null && (
                         <>
                             <div>
                                 <hr />
@@ -276,11 +278,9 @@ export function AccountSettings() {
                             </div>
                         </>
                     )}
-
                     <Button onClick={saveChanges} color="primary" disabled={!propertiesChanged}>
                         {t('general.actions.update')}
                     </Button>
-
                     <FormControl fullWidth>
                         <InputLabel>{t('settings.properties.language')}</InputLabel>
                         <Select

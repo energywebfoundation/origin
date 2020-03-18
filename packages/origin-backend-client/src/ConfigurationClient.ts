@@ -3,7 +3,7 @@ import { IRequestClient, RequestClient } from './RequestClient';
 
 export interface IConfigurationClient {
     get(): Promise<IOriginConfiguration>;
-    update(configuration: IOriginConfiguration): Promise<boolean>;
+    update(configuration: Partial<IOriginConfiguration>): Promise<boolean>;
 }
 
 export class ConfigurationClient implements IConfigurationClient {
@@ -19,7 +19,7 @@ export class ConfigurationClient implements IConfigurationClient {
         return data;
     }
 
-    public async update(configuration: IOriginConfiguration): Promise<boolean> {
+    public async update(configuration: Partial<IOriginConfiguration>): Promise<boolean> {
         const { status } = await this.requestClient.put(
             `${this.dataApiUrl}/Configuration`,
             configuration

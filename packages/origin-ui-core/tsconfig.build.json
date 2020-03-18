@@ -30,6 +30,9 @@
         },
         {
             "path": "../localization/tsconfig.build.json"
+        },
+        {
+            "path": "../issuer/tsconfig.build.json"
         }
     ]
 }

@@ -18,7 +18,7 @@ import { TextField, CheckboxWithLabel } from 'formik-material-ui';
 import { useHistory } from 'react-router-dom';
 import { useLinks } from '../utils/routing';
 import { FormikDatePicker } from './Form/FormikDatePicker';
-import { getCurrentUser } from '../features/users/selectors';
+import { getUserOffchain } from '../features/users/selectors';
 import { setLoading } from '../features/general/actions';
 import {
     getExternalDeviceIdTypes,
@@ -65,7 +65,7 @@ const INITIAL_FORM_VALUES: IFormValues = {
 };
 
 export function AddDevice() {
-    const currentUser = useSelector(getCurrentUser);
+    const user = useSelector(getUserOffchain);
     const configuration = useSelector(getConfiguration);
     const compliance = useSelector(getCompliance);
     const country = useSelector(getCountry);
@@ -130,7 +130,7 @@ export function AddDevice() {
         values: typeof INITIAL_FORM_VALUES,
         formikActions: FormikHelpers<typeof INITIAL_FORM_VALUES>
     ): Promise<void> {
-        if (!currentUser) {
+        if (!user.blockchainAccountAddress) {
             return;
         }
 
@@ -141,7 +141,7 @@ export function AddDevice() {
 
         const deviceProducingProps: Device.IOnChainProperties = {
             smartMeter: { address: DEFAULT_ADDRESS },
-            owner: { address: currentUser.id }
+            owner: { address: user.blockchainAccountAddress }
         };
 
         const [region, province] = selectedLocation;

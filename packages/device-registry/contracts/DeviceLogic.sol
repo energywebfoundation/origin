@@ -81,14 +81,14 @@ contract DeviceLogic is Initializable, RoleManagement, IDeviceLogic {
         address _smartMeter,
         address _owner
     ) external returns (uint deviceId) {
-        require(isRole(RoleManagement.Role.DeviceManager, _owner), "device owner has to have device manager role");
-        require(
-            _owner == msg.sender ||
-            isRole(RoleManagement.Role.DeviceManager, msg.sender) ||
-            isRole(RoleManagement.Role.DeviceAdmin, msg.sender) ||
-            isRole(RoleManagement.Role.Issuer, msg.sender),
-            "only device admin, manager and issuer can create a device for different owner"
-        );
+        // require(isRole(RoleManagement.Role.DeviceManager, _owner), "device owner has to have device manager role");
+        // require(
+        //     _owner == msg.sender ||
+        //     isRole(RoleManagement.Role.DeviceManager, msg.sender) ||
+        //     isRole(RoleManagement.Role.DeviceAdmin, msg.sender) ||
+        //     isRole(RoleManagement.Role.Issuer, msg.sender),
+        //     "only device admin, manager and issuer can create a device for different owner"
+        // );
 
         DeviceDefinitions.Device memory _device = DeviceDefinitions.Device({
             smartMeter: _smartMeter,

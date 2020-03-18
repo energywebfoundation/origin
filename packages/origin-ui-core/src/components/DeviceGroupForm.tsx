@@ -28,14 +28,13 @@ import { IDevice, DeviceStatus, ExternalDeviceId } from '@energyweb/origin-backe
 
 import { showNotification, NotificationType } from '../utils/notifications';
 import { getConfiguration } from '../features/selectors';
-import { useLinks } from '../utils/routing';
-import { getCurrentUser } from '../features/users/selectors';
+import { getUserOffchain } from '../features/users/selectors';
 import { setLoading } from '../features/general/actions';
 import { getCompliance, getCountry, getExternalDeviceIdTypes } from '../features/general/selectors';
 import { HierarchicalMultiSelect } from './HierarchicalMultiSelect';
 import { ProducingDevice, Device } from '@energyweb/device-registry';
 import { producingDeviceCreatedOrUpdated } from '../features/producingDevices/actions';
-import { PowerFormatter } from '../utils/PowerFormatter';
+import { PowerFormatter, useLinks } from '../utils';
 import { FormInput } from './Form/FormInput';
 
 const DEFAULT_ADDRESS = '0x0000000000000000000000000000000000000000';
@@ -155,7 +154,7 @@ interface IProps {
 export function DeviceGroupForm(props: IProps) {
     const { device, readOnly } = props;
 
-    const currentUser = useSelector(getCurrentUser);
+    const user = useSelector(getUserOffchain);
     const configuration = useSelector(getConfiguration);
     const compliance = useSelector(getCompliance);
     const country = useSelector(getCountry);
@@ -202,7 +201,7 @@ export function DeviceGroupForm(props: IProps) {
         values: typeof INITIAL_FORM_VALUES,
         formikActions: FormikHelpers<typeof INITIAL_FORM_VALUES>
     ): Promise<void> {
-        if (!currentUser) {
+        if (!user?.blockchainAccountAddress) {
             return;
         }
 
@@ -221,7 +220,7 @@ export function DeviceGroupForm(props: IProps) {
 
         const deviceProducingProps: Device.IOnChainProperties = {
             smartMeter: { address: DEFAULT_ADDRESS },
-            owner: { address: currentUser.id }
+            owner: { address: user.blockchainAccountAddress }
         };
 
         const deviceProducingPropsOffChain: IDevice = {

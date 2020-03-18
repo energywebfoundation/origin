@@ -1,77 +1,49 @@
 import { ProducingDevice } from '@energyweb/device-registry';
 import { Certificate } from '@energyweb/issuer';
-import { MarketUser } from '@energyweb/market';
-import { Configuration } from '@energyweb/utils-general';
 import { AssignmentTurnedIn } from '@material-ui/icons';
 import moment from 'moment';
-import React from 'react';
-import { connect } from 'react-redux';
+import React, { useEffect, useState } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import { Redirect } from 'react-router-dom';
-import { IOrganizationClient } from '@energyweb/origin-backend-client';
 
-import { getBaseURL, getConfiguration, getProducingDevices } from '../features/selectors';
-import { IStoreState } from '../types';
-import { getDeviceLocationText, LOCATION_TITLE_TRANSLATION_KEY } from '../utils/helper';
-import { formatDate } from '../utils/time';
-import { NotificationType, showNotification } from '../utils/notifications';
-import { getCertificateDetailLink } from '../utils/routing';
+import { getConfiguration, getProducingDevices } from '../features/selectors';
+import {
+    EnergyFormatter,
+    getDeviceLocationText,
+    LOCATION_TITLE_TRANSLATION_KEY,
+    useLinks,
+    formatDate,
+    NotificationType,
+    showNotification,
+    useTranslation
+} from '../utils';
+
 import { IBatchableAction } from './Table/ColumnBatchActions';
 import { CustomFilterInputType, ICustomFilterDefinition } from './Table/FiltersHeader';
-import {
-    IPaginatedLoaderFetchDataParameters,
-    IPaginatedLoaderFetchDataReturnValues
-} from './Table/PaginatedLoader';
-import {
-    getInitialPaginatedLoaderFilteredSortedState,
-    IPaginatedLoaderFilteredSortedState,
-    PaginatedLoaderFilteredSorted
-} from './Table/PaginatedLoaderFilteredSorted';
+import { IPaginatedLoaderFetchDataReturnValues } from './Table/PaginatedLoader';
 import { TableMaterial } from './Table/TableMaterial';
-import { getUsers, getCurrentUser } from '../features/users/selectors';
-import { setLoading, TSetLoading } from '../features/general/actions';
+import { getUserOffchain } from '../features/users/selectors';
+import { setLoading } from '../features/general/actions';
 import { getCertificates } from '../features/certificates/selectors';
-import { getOffChainDataSource } from '../features/general/selectors';
 import { ClaimCertificateBulkModal } from './Modal/ClaimCertificateBulkModal';
-import { EnergyFormatter } from '../utils/EnergyFormatter';
-import { withTranslation, WithTranslation } from 'react-i18next';
-import { checkRecordPassesFilters } from './Table/PaginatedLoaderFiltered';
+import {
+    usePaginatedLoaderSorting,
+    checkRecordPassesFilters,
+    usePaginatedLoaderFiltered,
+    IPaginatedLoaderHooksFetchDataParameters
+} from './Table';
 
-interface IOwnProps {
+interface IProps {
     certificates?: Certificate.Entity[];
-    // demand?: Demand.Entity;
     hiddenColumns?: string[];
     selectedState: SelectedState;
 }
-
-interface IStateProps {
-    certificates: Certificate.Entity[];
-    configuration: Configuration.Entity;
-    producingDevices: ProducingDevice.Entity[];
-    currentUser: MarketUser.Entity;
-    users: MarketUser.Entity[];
-    baseURL: string;
-    organizationClient: IOrganizationClient;
-}
-
-interface IDispatchProps {
-    setLoading: TSetLoading;
-}
-
-type Props = IOwnProps & IStateProps & IDispatchProps & WithTranslation;
 
 interface IEnrichedCertificateData {
     certificate: Certificate.Entity;
     producingDevice: ProducingDevice.Entity;
     deviceTypeLabel: string;
     locationText: string;
-}
-
-interface ICertificatesState extends IPaginatedLoaderFilteredSortedState {
-    selectedState: SelectedState;
-    selectedCertificates: Certificate.Entity[];
-    detailViewForCertificateId: string;
-    showClaimBulkModal: boolean;
-    paginatedData: IEnrichedCertificateData[];
 }
 
 export enum SelectedState {
@@ -84,68 +56,62 @@ const CERTIFICATION_DATE_COLUMN_SORT_PROPERTIES = [
     (record: IEnrichedCertificateData) => record?.certificate?.creationTime
 ];
 
-class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertificatesState> {
-    constructor(props: Props) {
-        super(props);
+export function CertificateTable(props: IProps) {
+    const { currentSort, sortAscending, sortData, toggleSort } = usePaginatedLoaderSorting({
+        currentSort: {
+            id: CERTIFICATION_DATE_COLUMN_ID,
+            sortProperties: CERTIFICATION_DATE_COLUMN_SORT_PROPERTIES
+        },
+        sortAscending: false
+    });
 
-        this.state = {
-            ...getInitialPaginatedLoaderFilteredSortedState(),
-            selectedState: SelectedState.Inbox,
-            selectedCertificates: [],
-            detailViewForCertificateId: null,
-            showClaimBulkModal: false,
-            currentSort: {
-                id: CERTIFICATION_DATE_COLUMN_ID,
-                sortProperties: CERTIFICATION_DATE_COLUMN_SORT_PROPERTIES
-            },
-            sortAscending: false
-        };
+    const stateCertificates = useSelector(getCertificates);
+    const configuration = useSelector(getConfiguration);
+    const user = useSelector(getUserOffchain);
+    const producingDevices = useSelector(getProducingDevices);
 
-        this.claimCertificateBulk = this.claimCertificateBulk.bind(this);
-        this.hideClaimBulkModal = this.hideClaimBulkModal.bind(this);
-        this.customSelectCounterGenerator = this.customSelectCounterGenerator.bind(this);
-    }
+    const { selectedState } = props;
+    const hiddenColumns = props.hiddenColumns || [];
+    const certificates = props.certificates || stateCertificates;
+    const deviceTypeService = configuration?.deviceTypeService;
+    const { t } = useTranslation();
+    const dispatch = useDispatch();
+    const { getCertificateDetailLink } = useLinks();
 
-    get deviceTypeService() {
-        return this.props.configuration?.deviceTypeService;
-    }
+    const [selectedCertificates, setSelectedCertificates] = useState<Certificate.Entity[]>([]);
+    const [detailViewForCertificateId, setDetailViewForCertificateId] = useState<string>(null);
+    const [showClaimBulkModal, setShowClaimBulkModal] = useState(false);
 
-    async componentDidMount() {
-        await super.componentDidMount();
-    }
+    const userAddress = user?.blockchainAccountAddress?.toLowerCase();
 
-    async componentDidUpdate(prevProps: Props) {
-        if (
-            prevProps.certificates !== this.props.certificates ||
-            prevProps.users.length !== this.props.users.length
-        ) {
-            await this.loadPage(1);
-        }
-    }
-
-    async getPaginatedData({
-        pageSize,
+    async function getPaginatedData({
+        requestedPageSize,
         offset,
         requestedFilters
-    }: IPaginatedLoaderFetchDataParameters): Promise<IPaginatedLoaderFetchDataReturnValues> {
-        const { currentUser, selectedState, certificates } = this.props;
+    }: IPaginatedLoaderHooksFetchDataParameters): Promise<IPaginatedLoaderFetchDataReturnValues> {
+        const enrichedData: IEnrichedCertificateData[] = certificates.map(certificate => {
+            const producingDevice =
+                typeof certificate.deviceId !== 'undefined' &&
+                producingDevices.find(device => device.id === certificate.deviceId.toString());
 
-        const enrichedData = await this.enrichData(certificates);
+            return {
+                certificate,
+                producingDevice,
+                deviceTypeLabel: producingDevice?.offChainProperties?.deviceType,
+                locationText: getDeviceLocationText(producingDevice)
+            };
+        });
 
         const filteredIEnrichedCertificateData = enrichedData.filter(
             (enrichedCertificateData: IEnrichedCertificateData) => {
-                const ownerOf = enrichedCertificateData.certificate.isOwned(
-                    currentUser?.id.toLowerCase()
-                );
-                const claimed = enrichedCertificateData.certificate.isClaimed(
-                    currentUser?.id.toLowerCase()
-                );
+                const ownerOf = enrichedCertificateData.certificate.isOwned(userAddress);
+                const claimed = enrichedCertificateData.certificate.isClaimed(userAddress);
 
                 return (
                     checkRecordPassesFilters(
                         enrichedCertificateData,
                         requestedFilters,
-                        this.deviceTypeService
+                        deviceTypeService
                     ) &&
                     ((ownerOf && selectedState === SelectedState.Inbox) ||
                         (claimed && selectedState === SelectedState.Claimed))
@@ -153,9 +119,9 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
             }
         );
 
-        const sortedEnrichedData = this.sortData(filteredIEnrichedCertificateData);
+        const sortedEnrichedData = sortData(filteredIEnrichedCertificateData);
 
-        const paginatedData = sortedEnrichedData.slice(offset, offset + pageSize);
+        const paginatedData = sortedEnrichedData.slice(offset, offset + requestedPageSize);
         const total = sortedEnrichedData.length;
 
         return {
@@ -164,30 +130,15 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
         };
     }
 
-    async enrichData(certificates: Certificate.Entity[]) {
-        const enrichedData: IEnrichedCertificateData[] = [];
+    const { loadPage, paginatedData, pageSize, total } = usePaginatedLoaderFiltered({
+        getPaginatedData
+    });
 
-        for (const certificate of certificates) {
-            const producingDevice =
-                typeof certificate.deviceId !== 'undefined' &&
-                this.props.producingDevices.find(
-                    device => device.id === certificate.deviceId.toString()
-                );
+    useEffect(() => {
+        loadPage(1);
+    }, [certificates]);
 
-            enrichedData.push({
-                certificate,
-                producingDevice,
-                deviceTypeLabel: producingDevice?.offChainProperties?.deviceType,
-                locationText: getDeviceLocationText(producingDevice)
-            });
-        }
-
-        return enrichedData;
-    }
-
-    async claimCertificateBulk(selectedIndexes) {
-        const { t } = this.props;
-
+    async function claimCertificateBulk(selectedIndexes) {
         if (selectedIndexes.length === 0) {
             showNotification(t('certificate.feedback.zeroSelected'), NotificationType.Error);
 
@@ -205,21 +156,18 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
             return;
         }
 
-        const selectedCertificates = this.state.paginatedData
-            .filter((item, index) => selectedIndexes.includes(index))
-            .map(i => i.certificate);
-
-        this.setState({
-            selectedCertificates,
-            showClaimBulkModal: true
-        });
+        setSelectedCertificates(
+            paginatedData
+                .filter((item, index) => selectedIndexes.includes(index))
+                .map(i => i.certificate)
+        );
+        setShowClaimBulkModal(true);
     }
 
-    async claimCertificate(rowIndex: number) {
-        const certificateId = this.state.paginatedData[rowIndex].certificate.id;
-        const { t } = this.props;
+    async function claimCertificate(rowIndex: number) {
+        const certificateId = paginatedData[rowIndex].certificate.id;
 
-        const certificate: Certificate.Entity = this.props.certificates.find(
+        const certificate: Certificate.Entity = certificates.find(
             (cert: Certificate.Entity) => cert.id === certificateId.toString()
         );
 
@@ -228,14 +176,10 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
             certificate
         });
 
-        if (
-            certificate &&
-            this.props.currentUser &&
-            certificate.isOwned(this.props.currentUser.id)
-        ) {
-            this.props.setLoading(true);
+        if (certificate && certificate.isOwned(userAddress)) {
+            dispatch(setLoading(true));
             await certificate.claim();
-            this.props.setLoading(false);
+            dispatch(setLoading(false));
             showNotification(
                 t('certificate.feedback.claimed', { id: certificate.id }),
                 NotificationType.Success
@@ -243,21 +187,17 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
         }
     }
 
-    showCertificateDetails(rowIndex: number) {
-        this.setState({
-            detailViewForCertificateId: this.state.paginatedData[rowIndex].certificate.id
-        });
+    function showCertificateDetails(rowIndex: number) {
+        setDetailViewForCertificateId(paginatedData[rowIndex].certificate.id);
     }
 
-    get filters(): ICustomFilterDefinition[] {
-        if (![SelectedState.Claimed].includes(this.props.selectedState)) {
+    function getFilters(): ICustomFilterDefinition[] {
+        if (![SelectedState.Claimed].includes(selectedState)) {
             return [];
         }
 
-        const { t } = this.props;
-
         const maxCertificateEnergyInDisplayUnit = EnergyFormatter.getValueInDisplayUnit(
-            this.props.certificates.reduce((a, b) => (b.energy > a ? b.energy : a), 0)
+            certificates.reduce((a, b) => (b.energy > a ? b.energy : a), 0)
         );
 
         const filters: ICustomFilterDefinition[] = [
@@ -322,24 +262,22 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
             }
         ];
 
-        return filters.filter(filter => !this.hiddenColumns.includes(filter.label));
+        return filters.filter(filter => !hiddenColumns.includes(filter.label));
     }
 
-    hideClaimBulkModal() {
-        this.setState({
-            showClaimBulkModal: false
-        });
+    const filters = getFilters();
+
+    function hideClaimBulkModal() {
+        setShowClaimBulkModal(false);
     }
 
-    customSelectCounterGenerator(selectedIndexes: number[]) {
+    function customSelectCounterGenerator(selectedIndexes: number[]) {
         if (selectedIndexes.length > 0) {
-            const { t } = this.props;
-
-            const selectedCertificates = this.state.paginatedData
+            const includedCertificates = paginatedData
                 .filter((item, index) => selectedIndexes.includes(index))
                 .map(i => i.certificate);
 
-            const energy = selectedCertificates.reduce((a, b) => a + b.energy, 0);
+            const energy = includedCertificates.reduce((a, b) => a + b.energy, 0);
 
             return `${t('certificate.feedback.amountSelected', {
                 amount: selectedIndexes.length
@@ -347,30 +285,28 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
         }
     }
 
-    get batchableActions(): IBatchableAction[] {
+    function getBatchableActions(): IBatchableAction[] {
         const actions = [];
-        const { t } = this.props;
 
-        if (this.props.selectedState === SelectedState.Inbox) {
+        if (selectedState === SelectedState.Inbox) {
             actions.push({
                 label: t('certificate.actions.claim'),
-                handler: this.claimCertificateBulk
+                handler: claimCertificateBulk
             });
         }
 
         return actions;
     }
 
-    get actions() {
-        const { t } = this.props;
+    function getActions() {
         const actions = [];
 
-        switch (this.props.selectedState) {
+        switch (selectedState) {
             case SelectedState.Inbox:
                 actions.push({
                     name: t('certificate.actions.claim'),
                     icon: <AssignmentTurnedIn />,
-                    onClick: (row: number) => this.claimCertificate(row)
+                    onClick: (row: number) => claimCertificate(row)
                 });
                 break;
         }
@@ -378,147 +314,102 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
         return actions;
     }
 
-    get hiddenColumns() {
-        const hiddenColumns = this.props.hiddenColumns || [];
+    const batchableActions = getBatchableActions();
+    const actions = getActions();
 
-        return hiddenColumns;
-    }
-
-    get columns() {
-        const { t } = this.props;
-
-        return ([
-            {
-                id: 'deviceType',
-                label: t('certificate.properties.deviceType'),
-                sortProperties: [(record: IEnrichedCertificateData) => record?.deviceTypeLabel]
-            },
-            {
-                id: 'commissioningDate',
-                label: t('device.properties.commissioningDate'),
-                sortProperties: [
-                    (record: IEnrichedCertificateData) =>
-                        record?.producingDevice?.offChainProperties?.operationalSince
+    const columns = ([
+        {
+            id: 'deviceType',
+            label: t('certificate.properties.deviceType'),
+            sortProperties: [(record: IEnrichedCertificateData) => record?.deviceTypeLabel]
+        },
+        {
+            id: 'commissioningDate',
+            label: t('device.properties.commissioningDate'),
+            sortProperties: [
+                (record: IEnrichedCertificateData) =>
+                    record?.producingDevice?.offChainProperties?.operationalSince
+            ]
+        },
+        {
+            id: 'locationText',
+            label: t(LOCATION_TITLE_TRANSLATION_KEY),
+            sortProperties: [(record: IEnrichedCertificateData) => record?.locationText]
+        },
+        { id: 'compliance', label: t('certificate.properties.compliance') },
+        {
+            id: CERTIFICATION_DATE_COLUMN_ID,
+            label: t('certificate.properties.certificationDate'),
+            sortProperties: CERTIFICATION_DATE_COLUMN_SORT_PROPERTIES
+        },
+        {
+            id: 'energy',
+            label: `${t('certificate.properties.certifiedEnergy')} (${
+                EnergyFormatter.displayUnit
+            })`,
+            sortProperties: [
+                [
+                    (record: IEnrichedCertificateData) => record?.certificate?.ownedVolume(),
+                    (value: number) => value
                 ]
-            },
-            {
-                id: 'locationText',
-                label: t(LOCATION_TITLE_TRANSLATION_KEY),
-                sortProperties: [(record: IEnrichedCertificateData) => record?.locationText]
-            },
-            { id: 'compliance', label: t('certificate.properties.compliance') },
-            {
-                id: CERTIFICATION_DATE_COLUMN_ID,
-                label: t('certificate.properties.certificationDate'),
-                sortProperties: CERTIFICATION_DATE_COLUMN_SORT_PROPERTIES
-            },
-            {
-                id: 'energy',
-                label: `${t('certificate.properties.certifiedEnergy')} (${
-                    EnergyFormatter.displayUnit
-                })`,
-                sortProperties: [
-                    [
-                        (record: IEnrichedCertificateData) => record?.certificate?.ownedVolume(),
-                        (value: number) => value
-                    ]
-                ]
-            }
-        ] as const).filter(column => !this.hiddenColumns.includes(column.id));
-    }
+            ]
+        }
+    ] as const).filter(column => !hiddenColumns.includes(column.id));
 
-    get rows() {
-        return this.state.paginatedData.map(enrichedData => {
-            let deviceType = '';
-            let commissioningDate = '';
-            let compliance = '';
+    const rows = paginatedData.map(enrichedData => {
+        let deviceType = '';
+        let commissioningDate = '';
+        let compliance = '';
 
-            if (enrichedData.producingDevice?.offChainProperties) {
-                deviceType = this.deviceTypeService?.getDisplayText(
-                    enrichedData.producingDevice.offChainProperties.deviceType
-                );
-
-                commissioningDate = formatDate(
-                    moment.unix(enrichedData.producingDevice.offChainProperties.operationalSince)
-                );
-
-                compliance = enrichedData.producingDevice.offChainProperties.complianceRegistry;
-            }
-
-            return {
-                deviceType,
-                commissioningDate,
-                locationText: getDeviceLocationText(enrichedData.producingDevice),
-                compliance,
-                certificationDate: formatDate(moment.unix(enrichedData.certificate.creationTime)),
-                energy: EnergyFormatter.format(enrichedData.certificate.energy)
-            };
-        });
-    }
-
-    render() {
-        const {
-            currentSort,
-            detailViewForCertificateId,
-            pageSize,
-            selectedCertificates,
-            showClaimBulkModal,
-            sortAscending,
-            total
-        } = this.state;
-
-        if (detailViewForCertificateId !== null) {
-            return (
-                <Redirect
-                    push={true}
-                    to={getCertificateDetailLink(this.props.baseURL, detailViewForCertificateId)}
-                />
+        if (enrichedData.producingDevice?.offChainProperties) {
+            deviceType = deviceTypeService?.getDisplayText(
+                enrichedData.producingDevice.offChainProperties.deviceType
             );
+
+            commissioningDate = formatDate(
+                moment.unix(enrichedData.producingDevice.offChainProperties.operationalSince)
+            );
+
+            compliance = enrichedData.producingDevice.offChainProperties.complianceRegistry;
         }
 
-        return (
-            <>
-                <TableMaterial
-                    columns={this.columns}
-                    rows={this.rows}
-                    loadPage={this.loadPage}
-                    total={total}
-                    pageSize={pageSize}
-                    batchableActions={this.batchableActions}
-                    customSelectCounterGenerator={this.customSelectCounterGenerator}
-                    filters={this.filters}
-                    handleRowClick={(row: number) => this.showCertificateDetails(row)}
-                    actions={this.actions}
-                    currentSort={currentSort}
-                    sortAscending={sortAscending}
-                    toggleSort={this.toggleSort}
-                />
+        return {
+            deviceType,
+            commissioningDate,
+            locationText: getDeviceLocationText(enrichedData.producingDevice),
+            compliance,
+            certificationDate: formatDate(moment.unix(enrichedData.certificate.creationTime)),
+            energy: EnergyFormatter.format(enrichedData.certificate.energy)
+        };
+    });
 
-                <ClaimCertificateBulkModal
-                    certificates={selectedCertificates}
-                    showModal={showClaimBulkModal}
-                    callback={this.hideClaimBulkModal}
-                />
-            </>
-        );
+    if (detailViewForCertificateId !== null) {
+        return <Redirect push={true} to={getCertificateDetailLink(detailViewForCertificateId)} />;
     }
+
+    return (
+        <>
+            <TableMaterial
+                columns={columns}
+                rows={rows}
+                loadPage={loadPage}
+                total={total}
+                pageSize={pageSize}
+                batchableActions={batchableActions}
+                customSelectCounterGenerator={customSelectCounterGenerator}
+                filters={filters}
+                handleRowClick={(row: number) => showCertificateDetails(row)}
+                actions={actions}
+                currentSort={currentSort}
+                sortAscending={sortAscending}
+                toggleSort={toggleSort}
+            />
+
+            <ClaimCertificateBulkModal
+                certificates={selectedCertificates}
+                showModal={showClaimBulkModal}
+                callback={hideClaimBulkModal}
+            />
+        </>
+    );
 }
-
-const dispatchProps: IDispatchProps = {
-    setLoading
-};
-
-export const CertificateTable = withTranslation()(
-    connect(
-        (state: IStoreState, ownProps: IOwnProps): IStateProps => ({
-            baseURL: getBaseURL(),
-            certificates: ownProps.certificates || getCertificates(state),
-            configuration: getConfiguration(state),
-            currentUser: getCurrentUser(state),
-            producingDevices: getProducingDevices(state),
-            users: getUsers(state),
-            organizationClient: getOffChainDataSource(state)?.organizationClient
-        }),
-        dispatchProps
-    )(CertificateTableClass)
-);

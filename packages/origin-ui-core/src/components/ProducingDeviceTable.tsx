@@ -8,18 +8,23 @@ import { Add, Assignment, Check } from '@material-ui/icons';
 import { checkRecordPassesFilters } from './Table/PaginatedLoaderFiltered';
 import { ICustomFilterDefinition, CustomFilterInputType } from './Table/FiltersHeader';
 import { IPaginatedLoaderFetchDataReturnValues } from './Table/PaginatedLoader';
-import { getProducingDeviceDetailLink } from '../utils/routing';
 import { getProducingDevices, getBaseURL, getConfiguration } from '../features/selectors';
 import { TableMaterial } from './Table/TableMaterial';
-import { getUsers, getUserById, getCurrentUser } from '../features/users/selectors';
+import { getUserOffchain } from '../features/users/selectors';
 import { showRequestCertificatesModal } from '../features/certificates/actions';
-import { getDeviceLocationText, LOCATION_TITLE_TRANSLATION_KEY } from '../utils/helper';
-import { showNotification, NotificationType } from '../utils/notifications';
 import { setLoading } from '../features/general/actions';
 import { producingDeviceCreatedOrUpdated } from '../features/producingDevices/actions';
-import { EnergyFormatter } from '../utils/EnergyFormatter';
-import { PowerFormatter } from '../utils/PowerFormatter';
-import { getOffChainDataSource } from '../features/general/selectors';
+import {
+    EnergyFormatter,
+    PowerFormatter,
+    getDeviceLocationText,
+    LOCATION_TITLE_TRANSLATION_KEY,
+    getProducingDeviceDetailLink,
+    showNotification,
+    NotificationType,
+    isRole
+} from '../utils';
+// import { getOffChainDataSource } from '../features/general/selectors';
 import { DeviceStatus } from '@energyweb/origin-backend-core';
 import { useTranslation } from 'react-i18next';
 import {
@@ -48,21 +53,23 @@ export function ProducingDeviceTable(props: IOwnProps) {
     const [detailViewForDeviceId, setDetailViewForDeviceId] = useState(null);
 
     const configuration = useSelector(getConfiguration);
-    const currentUser = useSelector(getCurrentUser);
+    const user = useSelector(getUserOffchain);
     const producingDevices = useSelector(getProducingDevices);
-    const users = useSelector(getUsers);
-    const offChainDataSource = useSelector(getOffChainDataSource);
+    // const offChainDataSource = useSelector(getOffChainDataSource);
     const baseURL = useSelector(getBaseURL);
 
     const dispatch = useDispatch();
 
     async function enrichProducingDeviceData(): Promise<IEnrichedProducingDeviceData[]> {
         const promises = producingDevices.map(async device => {
-            const user = getUserById(users, device.owner.address);
+            // @TODO fetch real organization name
+            // const organization = await offChainDataSource.organizationClient?.getById(
+            //     user?.information?.organization
+            // );
 
-            const organization = await offChainDataSource.organizationClient?.getById(
-                user?.information?.organization
-            );
+            const organization = {
+                name: 'Example organization'
+            };
 
             return {
                 device,
@@ -92,7 +99,7 @@ export function ProducingDeviceTable(props: IOwnProps) {
                 ) &&
                 (!props.owner ||
                     record?.device?.owner?.address?.toLowerCase() ===
-                        currentUser?.id?.toLowerCase()) &&
+                        user?.blockchainAccountAddress?.toLowerCase()) &&
                 (includedStatuses.length === 0 ||
                     includedStatuses.includes(record.device.offChainProperties.status))
         );
@@ -117,7 +124,7 @@ export function ProducingDeviceTable(props: IOwnProps) {
 
     useEffect(() => {
         loadPage(1);
-    }, [users, producingDevices]);
+    }, [user, producingDevices]);
 
     function viewDevice(rowIndex: number) {
         const device = paginatedData[rowIndex].device;
@@ -210,7 +217,7 @@ export function ProducingDeviceTable(props: IOwnProps) {
 
     const actions = [];
 
-    if (props.actions.requestCertificates && currentUser?.isRole(Role.DeviceManager)) {
+    if (props.actions.requestCertificates && isRole(user, Role.DeviceManager)) {
         actions.push({
             icon: <Assignment />,
             name: t('device.actions.requestCertificates'),
@@ -218,7 +225,7 @@ export function ProducingDeviceTable(props: IOwnProps) {
         });
     }
 
-    if (props.actions.approve && currentUser?.isRole(Role.Issuer)) {
+    if (props.actions.approve && isRole(user, Role.Issuer)) {
         actions.push({
             icon: <Check />,
             name: t('device.actions.approve'),

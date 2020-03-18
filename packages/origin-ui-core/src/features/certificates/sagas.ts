@@ -14,12 +14,11 @@ import {
 import { IStoreState } from '../../types';
 import { getConfiguration } from '../selectors';
 import { showNotification, NotificationType } from '../../utils/notifications';
-import { Role } from '@energyweb/user-registry';
-import { MarketUser } from '@energyweb/market';
-import { getCurrentUser } from '../users/selectors';
+import { getUserOffchain } from '../users/selectors';
 import { setLoading } from '../general/actions';
 import { getCertificates, getCertificateFetcher, getCertificateById } from './selectors';
 import { Certificate, CertificationRequest } from '@energyweb/issuer';
+import { IUserWithRelations } from '@energyweb/origin-backend-core';
 
 function* requestCertificatesSaga(): SagaIterator {
     while (true) {
@@ -61,16 +60,15 @@ function* openRequestCertificatesModalSaga(): SagaIterator {
         );
 
         const device = action.payload.producingDevice;
-        const currentUser: MarketUser.Entity = yield select(getCurrentUser);
 
-        if (device?.owner?.address?.toLowerCase() !== currentUser?.id?.toLowerCase()) {
+        const userOffchain: IUserWithRelations = yield select(getUserOffchain);
+
+        if (
+            device?.owner?.address?.toLowerCase() !==
+            userOffchain?.blockchainAccountAddress?.toLowerCase()
+        ) {
             showNotification(
                 `You need to own the device to request certificates.`,
-                NotificationType.Error
-            );
-        } else if (!currentUser.isRole(Role.DeviceManager)) {
-            showNotification(
-                `You need to have Device Manager role to request certificates.`,
                 NotificationType.Error
             );
         } else {
@@ -123,7 +121,7 @@ function* requestCertificateSaga(): SagaIterator {
         );
 
         if (!action.payload) {
-            return;
+            continue;
         }
 
         const entityId = action.payload.toLowerCase();
