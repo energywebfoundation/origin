@@ -29,7 +29,9 @@ describe('Issuer', () => {
     const issuerPK = '0x50397ee7580b44c966c3975f561efb7b58a54febedaa68a5dc482e52fb696ae7';
     const issuerAccount = web3.eth.accounts.privateKeyToAccount(issuerPK).address;
 
-    let timestamp = moment().subtract(10, 'year').unix();
+    let timestamp = moment()
+        .subtract(10, 'year')
+        .unix();
 
     const setActiveUser = (privateKey: string) => {
         conf.blockchainProperties.activeUser = {
@@ -38,7 +40,11 @@ describe('Issuer', () => {
         };
     };
 
-    const createCertificationRequest = async (conf: Configuration.Entity, energy: number, isPrivate: boolean = false) => {
+    const createCertificationRequest = async (
+        conf: Configuration.Entity,
+        energy: number,
+        isPrivate: boolean = false
+    ) => {
         setActiveUser(deviceOwnerPK);
 
         const fromTime = timestamp;
@@ -47,16 +53,20 @@ describe('Issuer', () => {
         const toTime = timestamp;
         const device = '1';
 
-        return CertificationRequest.createCertificationRequest(fromTime, toTime, energy, device, conf, [], isPrivate);
+        return CertificationRequest.createCertificationRequest(
+            fromTime,
+            toTime,
+            energy,
+            device,
+            conf,
+            [],
+            isPrivate
+        );
     };
 
     it('migrates Issuer and Registry', async () => {
         registry = await migrateRegistry(web3, issuerPK);
-        issuer = await migrateIssuer(
-            web3,
-            issuerPK,
-            registry.web3Contract.options.address
-        );
+        issuer = await migrateIssuer(web3, issuerPK, registry.web3Contract.options.address);
         const version = await issuer.version();
         assert.equal(version, 'v0.1');
 
@@ -80,7 +90,7 @@ describe('Issuer', () => {
 
     it('user correctly requests issuance', async () => {
         setActiveUser(deviceOwnerPK);
-        
+
         const fromTime = timestamp;
         // Simulate time moving forward 1 month
         timestamp += 30 * 24 * 3600;
@@ -162,12 +172,26 @@ describe('Issuer', () => {
         const toTime = timestamp;
         const device = '1';
 
-        await CertificationRequest.createCertificationRequest(fromTime, toTime, 1e9, device, conf, []);
+        await CertificationRequest.createCertificationRequest(
+            fromTime,
+            toTime,
+            1e9,
+            device,
+            conf,
+            []
+        );
 
         let failed = false;
 
         try {
-            await CertificationRequest.createCertificationRequest(fromTime, toTime, 1e9, device, conf, []);
+            await CertificationRequest.createCertificationRequest(
+                fromTime,
+                toTime,
+                1e9,
+                device,
+                conf,
+                []
+            );
         } catch (e) {
             failed = true;
         }
@@ -185,7 +209,14 @@ describe('Issuer', () => {
         const device = '1';
         const volume = 1e9;
 
-        let certificationRequest = await CertificationRequest.createCertificationRequest(fromTime, toTime, volume, device, conf, []);
+        let certificationRequest = await CertificationRequest.createCertificationRequest(
+            fromTime,
+            toTime,
+            volume,
+            device,
+            conf,
+            []
+        );
 
         setActiveUser(issuerPK);
 
@@ -195,7 +226,14 @@ describe('Issuer', () => {
         await certificationRequest.revoke();
         certificationRequest = await certificationRequest.sync();
 
-        const newCertificationRequest = await CertificationRequest.createCertificationRequest(fromTime, toTime, volume, device, conf, []);
+        const newCertificationRequest = await CertificationRequest.createCertificationRequest(
+            fromTime,
+            toTime,
+            volume,
+            device,
+            conf,
+            []
+        );
 
         assert.exists(newCertificationRequest);
     });

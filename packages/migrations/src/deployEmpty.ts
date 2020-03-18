@@ -27,18 +27,11 @@ export async function deployEmptyContracts(): Promise<IContractsLookup> {
     const deviceLogicAddress = deviceLogic.web3Contract.options.address;
     logger.info('DeviceLogic Contract Deployed: ' + deviceLogicAddress);
 
-    const registry = await IssuerContracts.migrateRegistry(
-        web3,
-        adminPK
-    );
+    const registry = await IssuerContracts.migrateRegistry(web3, adminPK);
     const registryAddress = registry.web3Contract.options.address;
     logger.info('Registry Contract Deployed: ' + registryAddress);
 
-    const issuer = await IssuerContracts.migrateIssuer(
-        web3,
-        adminPK,
-        registryAddress
-    );
+    const issuer = await IssuerContracts.migrateIssuer(web3, adminPK, registryAddress);
     const issuerAddress = issuer.web3Contract.options.address;
     logger.info('Issuer Deployed: ' + issuerAddress);
 
@@ -56,4 +49,4 @@ export async function deployEmptyContracts(): Promise<IContractsLookup> {
     await writeJsonFile('./config/contractConfig.json', deployResult);
 
     return deployResult;
-};
+}

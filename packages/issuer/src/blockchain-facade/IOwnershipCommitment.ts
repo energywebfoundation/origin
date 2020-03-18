@@ -1,4 +1,4 @@
 export interface IOwnershipCommitment {
-    ownerAddress: string,
-    volume: number
+    ownerAddress: string;
+    volume: number;
 }

@@ -33,7 +33,10 @@ export class DeviceLogic extends GeneralFunctions {
     }
 
     async getAllLogDeviceFullyInitializedEvents(eventFilter?: PastEventOptions) {
-        return this.web3Contract.getPastEvents('LogDeviceFullyInitialized', this.createFilter(eventFilter));
+        return this.web3Contract.getPastEvents(
+            'LogDeviceFullyInitialized',
+            this.createFilter(eventFilter)
+        );
     }
 
     async getAllLogChangeOwnerEvents(eventFilter?: PastEventOptions) {
@@ -44,15 +47,8 @@ export class DeviceLogic extends GeneralFunctions {
         return this.web3Contract.getPastEvents('allEvents', this.createFilter(eventFilter));
     }
 
-    async createDevice(
-        _smartMeter: string,
-        _owner: string,
-        txParams?: ISpecialTx
-    ) {
-        const method = this.web3Contract.methods.createDevice(
-            _smartMeter,
-            _owner
-        );
+    async createDevice(_smartMeter: string, _owner: string, txParams?: ISpecialTx) {
+        const method = this.web3Contract.methods.createDevice(_smartMeter, _owner);
 
         return this.send(method, txParams);
     }

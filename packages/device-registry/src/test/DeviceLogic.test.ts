@@ -4,7 +4,12 @@ import moment from 'moment';
 import Web3 from 'web3';
 import dotenv from 'dotenv';
 
-import { buildRights, Role, UserLogic, Contracts as UserRegistryContracts } from '@energyweb/user-registry';
+import {
+    buildRights,
+    Role,
+    UserLogic,
+    Contracts as UserRegistryContracts
+} from '@energyweb/user-registry';
 
 import { migrateDeviceRegistryContracts } from '../utils/migrateContracts';
 import { DeviceLogic } from '../wrappedContracts/DeviceLogic';
@@ -30,24 +35,28 @@ describe('DeviceLogic', () => {
     const deviceSmartmeterPK = '0x2dc5120c26df339dbd9861a0f39a79d87e0638d30fdedc938861beac77bbd3f5';
     const deviceSmartmeter = web3.eth.accounts.privateKeyToAccount(deviceSmartmeterPK).address;
 
-    const deviceSmartmeter2PK = '0x554f3c1470e9f66ed2cf1dc260d2f4de77a816af2883679b1dc68c551e8fa5ed';
+    const deviceSmartmeter2PK =
+        '0x554f3c1470e9f66ed2cf1dc260d2f4de77a816af2883679b1dc68c551e8fa5ed';
     const deviceSmartMeter2 = web3.eth.accounts.privateKeyToAccount(deviceSmartmeter2PK).address;
 
     const issuerPK = '0x622d56ab7f0e75ac133722cc065260a2792bf30ea3265415fe04f3a2dba7e1ac';
     const issuerAccount = web3.eth.accounts.privateKeyToAccount(issuerPK).address;
 
-    const traderAndDeviceManagerPK = '0xca77c9b06fde68bcbcc09f603c958620613f4be79f3abb4b2032131d0229462e';
-    const traderAndDeviceManagerAddress = web3.eth.accounts.privateKeyToAccount(traderAndDeviceManagerPK).address;
+    const traderAndDeviceManagerPK =
+        '0xca77c9b06fde68bcbcc09f603c958620613f4be79f3abb4b2032131d0229462e';
+    const traderAndDeviceManagerAddress = web3.eth.accounts.privateKeyToAccount(
+        traderAndDeviceManagerPK
+    ).address;
 
     it('should deploy the contracts', async () => {
-        userLogic = await UserRegistryContracts.migrateUserRegistryContracts(web3, privateKeyDeployment);
-
-        await userLogic.createUser(
-            'propertiesDocumentHash',
-            'documentDBURL',
-            accountDeployment,
-            { privateKey: privateKeyDeployment }
+        userLogic = await UserRegistryContracts.migrateUserRegistryContracts(
+            web3,
+            privateKeyDeployment
         );
+
+        await userLogic.createUser('propertiesDocumentHash', 'documentDBURL', accountDeployment, {
+            privateKey: privateKeyDeployment
+        });
 
         await userLogic.setRoles(
             accountDeployment,
@@ -55,18 +64,13 @@ describe('DeviceLogic', () => {
             { privateKey: privateKeyDeployment }
         );
 
-        await userLogic.createUser(
-            'propertiesDocumentHash',
-            'documentDBURL',
-            issuerAccount,
-            { privateKey: privateKeyDeployment }
-        );
+        await userLogic.createUser('propertiesDocumentHash', 'documentDBURL', issuerAccount, {
+            privateKey: privateKeyDeployment
+        });
 
-        await userLogic.setRoles(
-            issuerAccount,
-            buildRights([Role.Issuer]),
-            { privateKey: privateKeyDeployment }
-        );
+        await userLogic.setRoles(issuerAccount, buildRights([Role.Issuer]), {
+            privateKey: privateKeyDeployment
+        });
 
         await userLogic.createUser(
             'propertiesDocumentHash',
@@ -95,13 +99,9 @@ describe('DeviceLogic', () => {
     it('should not deploy an device when the user does not have the deviceManager rights as deviceManager', async () => {
         let failed = false;
         try {
-            await deviceLogic.createDevice(
-                deviceSmartmeter,
-                deviceOwnerAddress,
-                {
-                    privateKey: deviceOwnerPK
-                }
-            );
+            await deviceLogic.createDevice(deviceSmartmeter, deviceOwnerAddress, {
+                privateKey: deviceOwnerPK
+            });
         } catch (ex) {
             failed = true;
 
@@ -113,13 +113,9 @@ describe('DeviceLogic', () => {
     it('should not deploy an device when the user does not have the deviceManager rights as user', async () => {
         let failed = false;
         try {
-            await deviceLogic.createDevice(
-                deviceSmartmeter,
-                deviceOwnerAddress,
-                {
-                    privateKey: '0x191c4b074672d9eda0ce576cfac79e44e320ffef5e3aadd55e000de57341d36c'
-                }
-            );
+            await deviceLogic.createDevice(deviceSmartmeter, deviceOwnerAddress, {
+                privateKey: '0x191c4b074672d9eda0ce576cfac79e44e320ffef5e3aadd55e000de57341d36c'
+            });
         } catch (ex) {
             failed = true;
             assert.include(ex.message, 'revert device owner has to have device manager role');
@@ -128,12 +124,9 @@ describe('DeviceLogic', () => {
     });
 
     it('should onboard tests-users', async () => {
-        await userLogic.createUser(
-            'propertiesDocumentHash',
-            'documentDBURL',
-            deviceOwnerAddress,
-            { privateKey: privateKeyDeployment }
-        );
+        await userLogic.createUser('propertiesDocumentHash', 'documentDBURL', deviceOwnerAddress, {
+            privateKey: privateKeyDeployment
+        });
         await userLogic.setRoles(
             deviceOwnerAddress,
             buildRights([Role.DeviceManager, Role.DeviceAdmin]),
@@ -146,34 +139,27 @@ describe('DeviceLogic', () => {
     it('should not create active device when the user does not have the device admin/manager rights as user', async () => {
         let failed = false;
         try {
-            await deviceLogic.createDevice(
-                deviceSmartmeter,
-                deviceSmartmeter,
-                {
-                    privateKey: deviceSmartmeterPK
-                }
-            );
+            await deviceLogic.createDevice(deviceSmartmeter, deviceSmartmeter, {
+                privateKey: deviceSmartmeterPK
+            });
         } catch (ex) {
             failed = true;
-            assert.include(
-                ex.message,
-                'device owner has to have device manager role'
-            );
+            assert.include(ex.message, 'device owner has to have device manager role');
         }
         assert.isTrue(failed);
     });
 
     it('should onboard a new device', async () => {
-        const tx = await deviceLogic.createDevice(
-            deviceSmartmeter,
-            deviceOwnerAddress,
-            { privateKey: privateKeyDeployment }
-        );
+        const tx = await deviceLogic.createDevice(deviceSmartmeter, deviceOwnerAddress, {
+            privateKey: privateKeyDeployment
+        });
 
-        const event = (await deviceLogic.getAllLogDeviceCreatedEvents({
-            fromBlock: tx.blockNumber,
-            toBlock: tx.blockNumber
-        }))[0];
+        const event = (
+            await deviceLogic.getAllLogDeviceCreatedEvents({
+                fromBlock: tx.blockNumber,
+                toBlock: tx.blockNumber
+            })
+        )[0];
 
         assert.equal(event.event, 'LogDeviceCreated');
 
@@ -204,7 +190,6 @@ describe('DeviceLogic', () => {
 
         assert.equal(device0.smartMeter, deviceSmartmeter);
         assert.equal(device0.owner, deviceOwnerAddress);
-
     });
 
     it('should return updated device correctly', async () => {

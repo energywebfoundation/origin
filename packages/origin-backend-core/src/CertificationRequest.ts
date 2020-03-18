@@ -23,5 +23,11 @@ export interface ICertificationRequestWithRelations extends ICertificationReques
     device: IDeviceWithId;
 }
 
-export type CertificationRequestOffChainData = Pick<ICertificationRequestProperties, 'id' | 'energy' | 'files'>;
-export type CertificationRequestUpdateData = Pick<CertificationRequestOffChainData, 'energy' | 'files'>;
+export type CertificationRequestOffChainData = Pick<
+    ICertificationRequestProperties,
+    'id' | 'energy' | 'files'
+>;
+export type CertificationRequestUpdateData = Pick<
+    CertificationRequestOffChainData,
+    'energy' | 'files'
+>;

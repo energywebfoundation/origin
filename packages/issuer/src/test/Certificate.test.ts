@@ -31,7 +31,9 @@ describe('Cerificate tests', () => {
     const traderPK = '0xca77c9b06fde68bcbcc09f603c958620613f4be79f3abb4b2032131d0229462e';
     const accountTrader = web3.eth.accounts.privateKeyToAccount(traderPK).address;
 
-    let timestamp = moment().subtract(10, 'year').unix();
+    let timestamp = moment()
+        .subtract(10, 'year')
+        .unix();
 
     const setActiveUser = (privateKey: string) => {
         conf.blockchainProperties.activeUser = {
@@ -99,7 +101,7 @@ describe('Cerificate tests', () => {
         assert.isFalse(certificate.isOwned());
 
         assert.equal(certificate.energy, volume);
-                
+
         setActiveUser(deviceOwnerPK);
         assert.isTrue(certificate.isOwned());
         assert.equal(certificate.ownedVolume(), volume);
@@ -258,10 +260,7 @@ describe('Cerificate tests', () => {
         assert.equal(certificate.claimedVolume(), 0);
         assert.equal(certificate2.claimedVolume(), 0);
 
-        await Certificate.claimCertificates(
-            [certificate.id, certificate2.id],
-            conf
-        );
+        await Certificate.claimCertificates([certificate.id, certificate2.id], conf);
 
         certificate = await certificate.sync();
         certificate2 = await certificate2.sync();

@@ -48,7 +48,10 @@ export class DeviceService {
         const latestSmartMeterReading = (smReads: ISmartMeterRead[]) => smReads[smReads.length - 1];
 
         if (device.smartMeterReads.length > 0) {
-            if (newSmartMeterRead.timestamp <= latestSmartMeterReading(device.smartMeterReads).timestamp) {
+            if (
+                newSmartMeterRead.timestamp <=
+                latestSmartMeterReading(device.smartMeterReads).timestamp
+            ) {
                 throw new UnprocessableEntityException({
                     message: `Smart meter reading timestamp should be higher than latest.`
                 });

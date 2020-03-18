@@ -11,9 +11,11 @@ export async function migrateDeviceRegistryContracts(
 ): Promise<DeviceLogic> {
     const privateKeyDeployment = deployKey.startsWith('0x') ? deployKey : `0x${deployKey}`;
 
-    const deviceLogicAddress = (await deploy(web3, DeviceLogicJSON.bytecode, {
-        privateKey: privateKeyDeployment
-    })).contractAddress;
+    const deviceLogicAddress = (
+        await deploy(web3, DeviceLogicJSON.bytecode, {
+            privateKey: privateKeyDeployment
+        })
+    ).contractAddress;
 
     const deviceLogic = new DeviceLogic(web3, deviceLogicAddress);
     await deviceLogic.initialize(userLogicAddress, {

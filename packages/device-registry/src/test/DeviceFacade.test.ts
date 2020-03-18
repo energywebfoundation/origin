@@ -102,7 +102,7 @@ describe('Device Facade', () => {
 
             const deviceProps: Device.IOnChainProperties = {
                 smartMeter: { address: deviceSmartmeter },
-                owner: { address: deviceOwnerAddress },
+                owner: { address: deviceOwnerAddress }
             };
 
             const devicePropsOffChain: IDevice = {
