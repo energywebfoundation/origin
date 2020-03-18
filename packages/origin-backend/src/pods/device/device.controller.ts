@@ -53,13 +53,12 @@ export class DeviceController {
         return existingEntity;
     }
 
-    @Post('/:id')
-    async post(@Param('id') id: string, @Body() body: IDevice) {
+    @Post()
+    async post(@Body() body: IDevice) {
         const newEntity = new Device();
 
         Object.assign(newEntity, {
             ...body,
-            id: Number(id),
             status: body.status ?? DeviceStatus.Submitted,
             lastSmartMeterReading: body.lastSmartMeterReading ?? null,
             smartMeterReads: body.smartMeterReads ?? [],
