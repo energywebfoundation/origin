@@ -8,9 +8,6 @@
     "include": ["./contracts.ts", "./src/**/*", "./schemas/*.json", "./build/**/*.json"],
     "references": [
         {
-            "path": "../user-registry/tsconfig.build.json"
-        },
-        {
             "path": "../utils-general/tsconfig.build.json"
         },
         {
