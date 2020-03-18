@@ -25,7 +25,7 @@ export function SmartMeterReadingsTable(props: IProps) {
         offset
     }: IPaginatedLoaderHooksFetchDataParameters) {
         const readings = await producingDevice.getAmountOfEnergyGenerated();
-        const deviceTimezone = producingDevice.offChainProperties.timezone;
+        const deviceTimezone = producingDevice.timezone;
 
         const data = [];
         let currentSmartMeterState = 0;
@@ -66,7 +66,7 @@ export function SmartMeterReadingsTable(props: IProps) {
         {
             id: 'time',
             label: t('meterReads.properties.time', {
-                timezone: producingDevice.offChainProperties.timezone
+                timezone: producingDevice.timezone
             })
         },
         {

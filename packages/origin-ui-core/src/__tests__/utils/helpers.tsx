@@ -235,7 +235,7 @@ const setupStoreInternal = (
 };
 
 interface ICreateProducingDeviceProperties {
-    id: string;
+    id: number;
     status: DeviceStatus;
     owner?: string;
     facilityName?: string;
@@ -269,7 +269,7 @@ export const createProducingDevice = (
     const owner = properties.owner || '0x0';
     const lastSmartMeterReadWh = properties.lastSmartMeterReadWh ?? 0;
 
-    const offChainProperties: IDevice = {
+    const offChainProperties = {
         status: properties.status || DEFAULT_PRODUCING_DEVICE_OFFCHAIN_PROPERTIES.status,
         address: properties.address || DEFAULT_PRODUCING_DEVICE_OFFCHAIN_PROPERTIES.address,
         facilityName:
@@ -296,21 +296,21 @@ export const createProducingDevice = (
         province: properties.province || DEFAULT_PRODUCING_DEVICE_OFFCHAIN_PROPERTIES.province
     };
 
-    return {
+    return ({
         id: properties.id,
-        configuration: {
-            blockchainProperties: {
+        configuration: ({
+            blockchainProperties: ({
                 activeUser: {
                     address: '0x0'
                 }
-            } as Configuration.BlockchainProperties
-        } as Configuration.Entity,
+            } as Partial<Configuration.BlockchainProperties>) as Configuration.BlockchainProperties
+        } as Partial<Configuration.Entity>) as Configuration.Entity,
         owner: {
             address: owner
         },
-        offChainProperties,
+        ...offChainProperties,
         lastSmartMeterReadWh
-    } as ProducingDevice.Entity;
+    } as Partial<ProducingDevice.Entity>) as ProducingDevice.Entity;
 };
 
 // export const createCertificate = (

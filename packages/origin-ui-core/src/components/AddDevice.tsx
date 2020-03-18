@@ -29,16 +29,14 @@ import {
 } from '../features/general/selectors';
 import { HierarchicalMultiSelect } from './HierarchicalMultiSelect';
 import { CloudUpload } from '@material-ui/icons';
-import { ProducingDevice, Device } from '@energyweb/device-registry';
+import { ProducingDevice } from '@energyweb/device-registry';
 import { producingDeviceCreatedOrUpdated } from '../features/producingDevices/actions';
 import { PowerFormatter } from '../utils/PowerFormatter';
-import { IDevice, DeviceStatus, ExternalDeviceId } from '@energyweb/origin-backend-core';
+import { DeviceStatus, ExternalDeviceId } from '@energyweb/origin-backend-core';
 import { Skeleton } from '@material-ui/lab';
 import { useTranslation } from 'react-i18next';
 import { useValidation } from '../utils/validation';
 import { FormInput } from './Form';
-
-const DEFAULT_ADDRESS = '0x0000000000000000000000000000000000000000';
 
 interface IFormValues {
     facilityName: string;
@@ -139,11 +137,6 @@ export function AddDevice() {
         formikActions.setSubmitting(true);
         dispatch(setLoading(true));
 
-        const deviceProducingProps: Device.IOnChainProperties = {
-            smartMeter: { address: DEFAULT_ADDRESS },
-            owner: { address: user.blockchainAccountAddress }
-        };
-
         const [region, province] = selectedLocation;
 
         const externalDeviceIds: ExternalDeviceId[] = externalDeviceIdTypes.map(type => {
@@ -154,7 +147,7 @@ export function AddDevice() {
             };
         });
 
-        const deviceProducingPropsOffChain: IDevice = {
+        const deviceProducingPropsOffChain = {
             status: DeviceStatus.Submitted,
             deviceType,
             complianceRegistry: compliance,
@@ -179,7 +172,6 @@ export function AddDevice() {
 
         try {
             const device = await ProducingDevice.createDevice(
-                deviceProducingProps,
                 deviceProducingPropsOffChain,
                 configuration
             );

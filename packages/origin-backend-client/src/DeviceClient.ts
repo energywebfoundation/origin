@@ -1,10 +1,16 @@
-import { IDevice, DeviceUpdateData, ISmartMeterRead, IDeviceWithId } from '@energyweb/origin-backend-core';
+import {
+    IDevice,
+    DeviceUpdateData,
+    ISmartMeterRead,
+    DeviceCreateData,
+    IDeviceWithRelationsIds
+} from '@energyweb/origin-backend-core';
 import { IRequestClient, RequestClient } from './RequestClient';
 
 export interface IDeviceClient {
     getById(id: number): Promise<IDevice>;
-    getAll(): Promise<IDeviceWithId[]>;
-    add(device: IDevice): Promise<IDeviceWithId>;
+    getAll(): Promise<IDeviceWithRelationsIds[]>;
+    add(device: DeviceCreateData): Promise<IDeviceWithRelationsIds>;
     update(id: number, data: DeviceUpdateData): Promise<IDevice>;
     getAllSmartMeterReadings(id: number): Promise<ISmartMeterRead[]>;
     addSmartMeterRead(id: number, smartMeterRead: ISmartMeterRead): Promise<void>;
@@ -27,13 +33,13 @@ export class DeviceClient implements IDeviceClient {
         return data;
     }
 
-    public async getAll(): Promise<IDeviceWithId[]> {
+    public async getAll(): Promise<IDeviceWithRelationsIds[]> {
         const { data } = await this.requestClient.get(this.endpoint);
 
         return data;
     }
 
-    public async add(device: IDevice): Promise<IDeviceWithId> {
+    public async add(device: DeviceCreateData): Promise<IDeviceWithRelationsIds> {
         const { data } = await this.requestClient.post(this.endpoint, device);
 
         return data;

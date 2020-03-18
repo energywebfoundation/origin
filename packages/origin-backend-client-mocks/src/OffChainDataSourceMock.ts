@@ -26,14 +26,23 @@ export class OffChainDataSourceMock implements IOffChainDataSource {
     dataApiUrl: string;
 
     preciseProofClient: IPreciseProofClient = new PreciseProofClientMock();
+
     configurationClient: IConfigurationClient = new ConfigurationClientMock();
+
     userClient: IUserClient = new UserClientMock();
+
     eventClient: IEventClient = new EventClientMock();
+
     demandClient: IDemandClient;
+
     deviceClient: IDeviceClient;
+
     organizationClient: IOrganizationClient;
+
     requestClient: IRequestClient = new RequestClient();
+
     filesClient: IFilesClient;
+
     certificateClient: ICertificateClient = new CertificateClientMock();
 
     constructor() {

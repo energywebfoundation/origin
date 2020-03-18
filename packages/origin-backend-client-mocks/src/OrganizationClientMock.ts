@@ -27,11 +27,15 @@ export class OrganizationClientMock implements IOrganizationClient {
     constructor(public eventClient: IEventClient) {}
 
     private storage = new Map<number, IOrganizationWithRelationsIds>();
+
     private invitationStorage = new Map<number, IOrganizationInvitation>();
+
     private userStorage: ITmpUser[] = [];
 
     private idCounter = 0;
+
     private invitationCounter = 0;
+
     private userCounter = 0;
 
     async getById(id: number): Promise<IOrganizationWithRelationsIds> {
@@ -50,6 +54,7 @@ export class OrganizationClientMock implements IOrganizationClient {
             status: OrganizationStatus.Submitted,
             leadUser: null,
             users: [],
+            devices: [],
             ...data
         };
 
@@ -66,6 +71,7 @@ export class OrganizationClientMock implements IOrganizationClient {
             status: OrganizationStatus.Submitted,
             leadUser: leadUserId,
             users: [leadUserId],
+            devices: [],
             ...data
         };
 
@@ -212,7 +218,7 @@ export class OrganizationClientMock implements IOrganizationClient {
         this.invitationStorage.set(invitationId, invitation);
         this.storage.set(organization.id, organization);
 
-        return;
+        return null;
     }
 
     rejectInvitation(id: number): Promise<any> {

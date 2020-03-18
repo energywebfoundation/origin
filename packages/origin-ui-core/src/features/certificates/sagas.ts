@@ -63,10 +63,7 @@ function* openRequestCertificatesModalSaga(): SagaIterator {
 
         const userOffchain: IUserWithRelations = yield select(getUserOffchain);
 
-        if (
-            device?.owner?.address?.toLowerCase() !==
-            userOffchain?.blockchainAccountAddress?.toLowerCase()
-        ) {
+        if (device?.organization !== userOffchain?.organization?.id) {
             showNotification(
                 `You need to own the device to request certificates.`,
                 NotificationType.Error

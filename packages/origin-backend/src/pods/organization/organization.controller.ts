@@ -133,7 +133,8 @@ export class OrganizationController {
                 ...(body as OrganizationPostData),
                 status: OrganizationStatus.Submitted,
                 leadUser: user,
-                users: [user]
+                users: [user],
+                devices: []
             };
 
             Object.assign(newEntity, data);

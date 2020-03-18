@@ -40,7 +40,8 @@ export type UserRegisterData = Omit<
     | 'blockchainAccountSignedMessage'
     | 'autoPublish'
     | 'notifications'
-> & { password: string };
+> & { password: string } & Partial<Pick<IUserProperties, 'autoPublish' | 'notifications'>>;
+
 export type UserRegisterReturnData = IUser;
 
 export type UserLoginData = { username: string; password: string };

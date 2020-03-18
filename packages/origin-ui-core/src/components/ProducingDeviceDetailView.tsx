@@ -45,22 +45,22 @@ export function ProducingDeviceDetailView(props: IProps) {
 
     const classes = useStyles(useTheme());
 
-    let owner: string = null;
+    let owner: number = null;
     let selectedDevice: ProducingDevice.Entity = null;
 
     if (props.id !== null && props.id !== undefined) {
-        selectedDevice = producingDevices.find(p => p.id === props.id.toString());
+        selectedDevice = producingDevices.find(p => p.id === props.id);
     }
 
     if (!configuration || !organizationClient || !selectedDevice) {
         return <Skeleton variant="rect" height={200} />;
     }
 
-    owner = selectedDevice.owner.address;
+    owner = selectedDevice.organization;
 
     let tooltip = '';
 
-    const selectedDeviceType = selectedDevice.offChainProperties.deviceType;
+    const selectedDeviceType = selectedDevice.deviceType;
     let image = solar;
 
     if (selectedDeviceType.startsWith('Wind')) {
@@ -88,7 +88,7 @@ export function ProducingDeviceDetailView(props: IProps) {
         [
             {
                 label: t('device.properties.facilityName'),
-                data: selectedDevice.offChainProperties.facilityName
+                data: selectedDevice.facilityName
             },
             {
                 label: t('device.properties.deviceOwner'),
@@ -96,19 +96,17 @@ export function ProducingDeviceDetailView(props: IProps) {
             },
             {
                 label: t('device.properties.complianceRegistry'),
-                data: selectedDevice.offChainProperties.complianceRegistry
+                data: selectedDevice.complianceRegistry
             },
             {
                 label: t('device.properties.otherGreenAttributes'),
-                data: selectedDevice.offChainProperties.otherGreenAttributes
+                data: selectedDevice.otherGreenAttributes
             }
         ],
         [
             {
                 label: t('device.properties.deviceType'),
-                data: configuration.deviceTypeService?.getDisplayText(
-                    selectedDevice.offChainProperties.deviceType
-                ),
+                data: configuration.deviceTypeService?.getDisplayText(selectedDevice.deviceType),
                 image,
                 rowspan: 2
             },
@@ -119,26 +117,23 @@ export function ProducingDeviceDetailView(props: IProps) {
             },
             {
                 label: t('device.properties.publicSupport'),
-                data: selectedDevice.offChainProperties.typeOfPublicSupport,
+                data: selectedDevice.typeOfPublicSupport,
                 description: ''
             },
             {
                 label: t('device.properties.commissioningDate'),
-                data: formatDate(selectedDevice.offChainProperties.operationalSince * 1000)
+                data: formatDate(selectedDevice.operationalSince * 1000)
             }
         ],
         [
             {
                 label: t('device.properties.nameplateCapacity'),
-                data: PowerFormatter.format(selectedDevice.offChainProperties.capacityInW),
+                data: PowerFormatter.format(selectedDevice.capacityInW),
                 tip: PowerFormatter.displayUnit
             },
             {
                 label: t('device.properties.geoLocation'),
-                data:
-                    selectedDevice.offChainProperties.gpsLatitude +
-                    ', ' +
-                    selectedDevice.offChainProperties.gpsLongitude,
+                data: selectedDevice.gpsLatitude + ', ' + selectedDevice.gpsLongitude,
                 image: map,
                 type: 'map',
                 rowspan: 3,
@@ -226,7 +221,7 @@ export function ProducingDeviceDetailView(props: IProps) {
                     </div>
                 )}
             </div>
-            {selectedDevice.offChainProperties?.deviceGroup && (
+            {selectedDevice?.deviceGroup && (
                 <DeviceGroupForm device={selectedDevice} readOnly={true} />
             )}
             {/* {props.showCertificates && (

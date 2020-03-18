@@ -1,4 +1,3 @@
-import { DeviceLogic } from '@energyweb/device-registry';
 import { UserLogic } from '@energyweb/user-registry';
 import { Issuer, Registry } from '@energyweb/issuer';
 import { Configuration } from '@energyweb/utils-general';
@@ -12,7 +11,7 @@ import { IAuthenticationState } from '../features/authentication/reducer';
 
 export interface IStoreState {
     authentication: IAuthenticationState;
-    configuration: Configuration.Entity<UserLogic, DeviceLogic, Registry, Issuer>;
+    configuration: Configuration.Entity<UserLogic, Registry, Issuer>;
     producingDevices: IProducingDevicesState;
     certificates: ICertificatesState;
     general: IGeneralState;

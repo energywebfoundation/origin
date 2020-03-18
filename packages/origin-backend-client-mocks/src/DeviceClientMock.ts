@@ -6,14 +6,15 @@ import {
     SupportedEvents,
     IEvent,
     ISmartMeterRead,
-    IDeviceWithId,
-    DeviceStatus
+    DeviceStatus,
+    IDeviceWithRelationsIds
 } from '@energyweb/origin-backend-core';
 
 import { IDeviceClient, IEventClient } from '@energyweb/origin-backend-client';
 
 export class DeviceClientMock implements IDeviceClient {
-    private storage = new Map<number, IDeviceWithId>();
+    private storage = new Map<number, IDeviceWithRelationsIds>();
+
     private idCounter = 0;
 
     constructor(public eventClient: IEventClient) {}
@@ -22,20 +23,21 @@ export class DeviceClientMock implements IDeviceClient {
         return this.storage.get(id);
     }
 
-    async getAll(): Promise<IDeviceWithId[]> {
+    async getAll(): Promise<IDeviceWithRelationsIds[]> {
         return [...this.storage.values()];
     }
 
-    async add(data: IDevice): Promise<IDeviceWithId> {
+    async add(data: IDeviceWithRelationsIds): Promise<IDeviceWithRelationsIds> {
         this.idCounter++;
 
-        const device: IDeviceWithId = {
+        const device: IDeviceWithRelationsIds = {
             ...data,
             id: this.idCounter,
             status: data.status ?? DeviceStatus.Submitted,
             lastSmartMeterReading: data.lastSmartMeterReading ?? null,
             smartMeterReads: data.smartMeterReads ?? [],
-            deviceGroup: data.deviceGroup ?? ''
+            deviceGroup: data.deviceGroup ?? '',
+
         };
 
         this.storage.set(device.id, device);

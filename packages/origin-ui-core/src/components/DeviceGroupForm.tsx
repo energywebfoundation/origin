@@ -24,7 +24,7 @@ import {
 import { Skeleton } from '@material-ui/lab';
 
 import { Unit } from '@energyweb/utils-general';
-import { IDevice, DeviceStatus, ExternalDeviceId } from '@energyweb/origin-backend-core';
+import { DeviceStatus, ExternalDeviceId } from '@energyweb/origin-backend-core';
 
 import { showNotification, NotificationType } from '../utils/notifications';
 import { getConfiguration } from '../features/selectors';
@@ -32,12 +32,10 @@ import { getUserOffchain } from '../features/users/selectors';
 import { setLoading } from '../features/general/actions';
 import { getCompliance, getCountry, getExternalDeviceIdTypes } from '../features/general/selectors';
 import { HierarchicalMultiSelect } from './HierarchicalMultiSelect';
-import { ProducingDevice, Device } from '@energyweb/device-registry';
+import { ProducingDevice } from '@energyweb/device-registry';
 import { producingDeviceCreatedOrUpdated } from '../features/producingDevices/actions';
 import { PowerFormatter, useLinks } from '../utils';
 import { FormInput } from './Form/FormInput';
-
-const DEFAULT_ADDRESS = '0x0000000000000000000000000000000000000000';
 
 const MAX_TOTAL_CAPACITY = 5 * Unit.MW;
 
@@ -147,7 +145,7 @@ const VALIDATION_SCHEMA = Yup.object().shape({
 });
 
 interface IProps {
-    device?: Device.Entity;
+    device?: ProducingDevice.Entity;
     readOnly?: boolean;
 }
 
@@ -190,8 +188,8 @@ export function DeviceGroupForm(props: IProps) {
         }
 
         const newInitialFormValuesFromExistingEntity: IFormValues = {
-            facilityName: device?.offChainProperties?.facilityName,
-            children: JSON.parse(device?.offChainProperties?.deviceGroup)
+            facilityName: device?.facilityName,
+            children: JSON.parse(device?.deviceGroup)
         };
 
         setInitialFormValuesFromExistingEntity(newInitialFormValuesFromExistingEntity);
@@ -218,12 +216,7 @@ export function DeviceGroupForm(props: IProps) {
             };
         });
 
-        const deviceProducingProps: Device.IOnChainProperties = {
-            smartMeter: { address: DEFAULT_ADDRESS },
-            owner: { address: user.blockchainAccountAddress }
-        };
-
-        const deviceProducingPropsOffChain: IDevice = {
+        const deviceProducingPropsOffChain = {
             status: DeviceStatus.Submitted,
             deviceType,
             complianceRegistry: compliance,
@@ -247,7 +240,6 @@ export function DeviceGroupForm(props: IProps) {
 
         try {
             const newDevice = await ProducingDevice.createDevice(
-                deviceProducingProps,
                 deviceProducingPropsOffChain,
                 configuration
             );

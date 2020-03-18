@@ -15,6 +15,9 @@
         },
         {
             "path": "../origin-backend-client-mocks/tsconfig.build.json"
+        },
+        {
+            "path": "../origin-backend-core/tsconfig.build.json"
         }
     ]
 }
