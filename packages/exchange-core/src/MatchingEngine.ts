@@ -9,8 +9,21 @@ import { Bid } from './Bid';
 import { Order, OrderSide, OrderStatus } from './Order';
 import { Product } from './Product';
 import { Trade } from './Trade';
+// import { DirectBid } from './DirectBid';
 
 export type TradeExecutedEvent = { trade: Trade; ask: Ask; bid: Bid };
+
+// export type DirectBidExecutedEvent = { trade: Trade; ask: Ask; bid: DirectBid };
+
+export type StatusChangedEvent = { orderId: string; status: OrderStatus; prevStatus: OrderStatus };
+
+enum ActionKind {
+    AddOrder,
+    AddDirectBid,
+    CancelOrder
+}
+
+type OrderBookAction = { kind: ActionKind; value: Order | string };
 
 export class MatchingEngine {
     private bids: List<Bid> = List<Bid>();
@@ -21,7 +34,9 @@ export class MatchingEngine {
 
     public trades = new Subject<List<TradeExecutedEvent>>();
 
-    public cancellationQueue = List<string>();
+    public orderStatusChange = new Subject<List<StatusChangedEvent>>();
+
+    private pendingActions = List<OrderBookAction>();
 
     constructor(
         private readonly deviceService: IDeviceTypeService,
@@ -31,15 +46,17 @@ export class MatchingEngine {
     }
 
     public submitOrder(order: Ask | Bid) {
-        if (order.side === OrderSide.Ask) {
-            this.asks = this.insert(this.asks, order as Ask);
-        } else {
-            this.bids = this.insert(this.bids, order as Bid);
-        }
+        this.pendingActions = this.pendingActions.concat({
+            kind: ActionKind.AddOrder,
+            value: order
+        });
     }
 
-    public cancelOrder(id: string) {
-        this.cancellationQueue = this.cancellationQueue.concat(id);
+    public cancelOrder(orderId: string) {
+        this.pendingActions = this.pendingActions.concat({
+            kind: ActionKind.CancelOrder,
+            value: orderId
+        });
     }
 
     public orderBook() {
@@ -61,10 +78,50 @@ export class MatchingEngine {
         this.triggers.next();
     }
 
+    private insertOrder(order: Order) {
+        if (order.side === OrderSide.Ask) {
+            this.asks = this.insert(this.asks, order as Ask);
+        } else {
+            this.bids = this.insert(this.bids, order as Bid);
+        }
+    }
+
     private trigger() {
-        const trades = this.match();
+        const actions = this.pendingActions;
+
+        let trades = List<TradeExecutedEvent>();
+        let cancelled = List<StatusChangedEvent>();
+
+        actions.forEach(action => {
+            switch (action.kind) {
+                case ActionKind.AddOrder: {
+                    const order = action.value as Order;
+
+                    this.insertOrder(order);
+                    trades = trades.concat(this.match());
+                    break;
+                }
+                case ActionKind.CancelOrder: {
+                    try {
+                        const id = action.value as string;
+                        const cancelEvent = this.cancel(id);
+                        cancelled = cancelled.concat(cancelEvent);
+                    } catch (error) {
+                        console.log(error);
+                    }
+
+                    break;
+                }
+                default:
+                    throw new Error('Unexpected action');
+            }
+        });
+
         if (!trades.isEmpty()) {
             this.trades.next(trades);
+        }
+        if (!cancelled.isEmpty()) {
+            this.orderStatusChange.next(cancelled);
         }
         return true;
     }
@@ -78,7 +135,6 @@ export class MatchingEngine {
 
     private match() {
         let executedTrades = List<TradeExecutedEvent>();
-        this.cancel();
 
         this.bids.forEach(bid => {
             const executed = this.generateTrades(bid);
@@ -98,20 +154,35 @@ export class MatchingEngine {
         return executedTrades;
     }
 
-    private cancel() {
-        this.cancellationQueue.forEach(id => {
-            const bidKey = this.bids.findKey(bid => bid.id === id);
-
-            if (bidKey !== undefined) {
-                this.bids = this.bids.remove(bidKey);
+    private cancel(orderId: string): StatusChangedEvent {
+        const asks = this.findAndRemove(this.asks, orderId);
+        if (asks.result) {
+            this.asks = asks.modified;
+        } else {
+            const bids = this.findAndRemove(this.bids, orderId);
+            if (bids.result) {
+                this.bids = bids.modified;
             } else {
-                const askKey = this.asks.findKey(ask => ask.id === id);
-                if (askKey !== undefined) {
-                    this.asks = this.asks.remove(askKey);
-                }
+                throw new Error('Unexpected orderId');
             }
-        });
-        this.cancellationQueue = List<string>();
+        }
+
+        return {
+            orderId,
+            status: OrderStatus.Cancelled,
+            prevStatus: OrderStatus.PendingCancellation
+        };
+    }
+
+    private findAndRemove<T extends Order>(
+        source: List<T>,
+        orderId: string
+    ): { result: boolean; modified?: List<T> } {
+        const key = source.findKey(o => o.id === orderId);
+
+        return key !== undefined
+            ? { result: true, modified: source.remove(key) }
+            : { result: false };
     }
 
     private updateOrderBook(matched: List<TradeExecutedEvent>) {

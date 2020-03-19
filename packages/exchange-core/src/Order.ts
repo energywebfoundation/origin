@@ -11,7 +11,8 @@ export enum OrderStatus {
     Active,
     Cancelled,
     Filled,
-    PartiallyFilled
+    PartiallyFilled,
+    PendingCancellation
 }
 
 export interface IOrder {
