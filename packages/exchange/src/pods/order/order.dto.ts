@@ -2,6 +2,7 @@ import { OrderStatus, OrderSide } from '@energyweb/exchange-core';
 import { ProductDTO } from './product.dto';
 import { Asset } from '../asset/asset.entity';
 import { Order } from './order.entity';
+import { OrderType } from './order-type.enum';
 
 export class OrderDTO {
     id: string;
@@ -25,6 +26,10 @@ export class OrderDTO {
     asset: Asset;
 
     demandId: string;
+
+    type: OrderType;
+
+    directBuyId: string;
 
     public static fromOrder(order: Order): OrderDTO {
         return {
