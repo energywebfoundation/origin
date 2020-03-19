@@ -3,6 +3,29 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.0.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-backend-core@1.3.0...@energyweb/origin-backend-core@2.0.0) (2020-03-16)
+
+
+### Bug Fixes
+
+* fetch all device smart meter readings only on-demand ([0708917](https://github.com/energywebfoundation/origin/commit/07089170e80de59503c299755f5bdf5e26005a3b))
+* store deviceTypes as simple-json ([7c330b6](https://github.com/energywebfoundation/origin/commit/7c330b63aa51cc05c4e9ca452b3b61c93605693c))
+
+
+### Features
+
+* add ExternalDeviceIdTypes to OriginConfiguration + unify all configuration items into one db table ([1469e32](https://github.com/energywebfoundation/origin/commit/1469e32ea369daf7f1b910c201670836248914ff))
+* Regions and DeviceTypes in OriginConfiguration are now hard-typed ([23a1f29](https://github.com/energywebfoundation/origin/commit/23a1f29a890192b45b0f270d1ad48a48c47b5246))
+
+
+### BREAKING CHANGES
+
+* Configuration Client now works differently
+
+
+
+
+
 # [1.3.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-backend-core@1.2.0...@energyweb/origin-backend-core@1.3.0) (2020-03-02)
 
 

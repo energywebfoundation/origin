@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [5.1.1](https://github.com/energywebfoundation/origin/compare/@energyweb/device-registry@5.1.0...@energyweb/device-registry@5.1.1) (2020-03-16)
+
+
+### Bug Fixes
+
+* **device-registry:** return empty when no smart meter readings ([924f9f1](https://github.com/energywebfoundation/origin/commit/924f9f180485c18891c5cfdeb973855235d565da))
+* fetch all device smart meter readings only on-demand ([0708917](https://github.com/energywebfoundation/origin/commit/07089170e80de59503c299755f5bdf5e26005a3b))
+
+
+
+
+
 # [5.1.0](https://github.com/energywebfoundation/origin/compare/@energyweb/device-registry@5.0.1...@energyweb/device-registry@5.1.0) (2020-03-02)
 
 

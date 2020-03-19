@@ -50,6 +50,8 @@ export class Entity implements IDevice {
 
     deviceGroup?: string;
 
+    smartMeterReads: ISmartMeterRead[];
+
     initialized: boolean;
 
     organization: number;

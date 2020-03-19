@@ -3,6 +3,28 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.5.0](https://github.com/energywebfoundation/origin/compare/@energyweb/exchange@0.4.0...@energyweb/exchange@0.5.0) (2020-03-16)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @nestjs/config to v0.3.0 ([4cdd97b](https://github.com/energywebfoundation/origin/commit/4cdd97bf62bcee3249535f90ca573fb2024b5a98))
+* **deps:** update dependency @nestjs/schedule to v0.3.0 ([2c0f313](https://github.com/energywebfoundation/origin/commit/2c0f3139d82d9c651543a0e812e098897ae43c3b))
+* **deps:** update dependency @nestjs/swagger to v4.3.2 ([c8cf2fe](https://github.com/energywebfoundation/origin/commit/c8cf2fe4cce3772f4c38f0323019d93f44f68bf5))
+* **deps:** update dependency @nestjs/typeorm to v6.3.4 ([f21e526](https://github.com/energywebfoundation/origin/commit/f21e526e68a2942a0cb50c4f5712531432d96279))
+* **deps:** update nest monorepo to v6.11.11 ([8d93078](https://github.com/energywebfoundation/origin/commit/8d93078773c86dd04ffbf5419fa0b5fc94a6b7bf))
+* **exchange:** downgrades typeorm to 0.2.22 due to start errors ([5322bf7](https://github.com/energywebfoundation/origin/commit/5322bf7a56ed2d9f2daebd62fe565c91024b0c51))
+* **exchange:** use ProductDTO for complex searching ([1f7a33f](https://github.com/energywebfoundation/origin/commit/1f7a33fac1f41239aa90af1603b3964d647fe34e))
+
+
+### Features
+
+* **exchange:** orders endpoint, relations re-design, dtos refactoring ([5b3e7ce](https://github.com/energywebfoundation/origin/commit/5b3e7cecc29edee95ac23151c29202e28971dff3))
+
+
+
+
+
 # [0.4.0](https://github.com/energywebfoundation/origin/compare/@energyweb/exchange@0.3.1...@energyweb/exchange@0.4.0) (2020-03-02)
 
 
