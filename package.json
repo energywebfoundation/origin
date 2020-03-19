@@ -62,7 +62,7 @@
         "test:utils-general": "lerna run test --scope @energyweb/utils-general --stream",
         "test:ci:contracts": "lerna run --scope @energyweb/device-registry --scope @energyweb/issuer --scope @energyweb/utils-general --scope @energyweb/utils-general test:concurrent --since master --parallel --stream",
         "test:ci:contracts:deployment": "yarn test:migrations",
-        "test:ci:apps": "lerna run --scope @energyweb/exchange --scope @energyweb/event-listener --scope @energyweb/origin-backend --scope @energyweb/migrations test:concurrent --since master --parallel --stream",
+        "test:ci:apps": "lerna run --scope @energyweb/exchange --scope @energyweb/origin-backend --scope @energyweb/migrations test:concurrent --since master --parallel --stream",
         "test:ci:ui": "yarn test:ui",
         "test:ci:e2e": "lerna run test:e2e --stream --scope @energyweb/exchange",
         "publish:canary": "lerna publish --yes --skip-git --exact --cd-version=prerelease --pre-dist-tag canary --preid=alpha.$TRAVIS_BUILD_NUMBER",
