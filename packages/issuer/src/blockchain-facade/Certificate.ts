@@ -20,8 +20,10 @@ export interface ICertificate {
     energy: number;
     generationStartTime: number;
     generationEndTime: number;
-    creationTime: number;
     certificationRequestId: number;
+    creationTime: number;
+    creationBlockHash: string;
+    owners?: IOwnedShares;
 }
 
 export const getAllCertificateEvents = async (
@@ -89,6 +91,7 @@ export class Entity extends BlockchainDataModelEntity.Entity implements ICertifi
     public generationEndTime: number;
     public issuer: string;
     public creationTime: number;
+    public creationBlockHash: string;
     public ownershipCommitment: IOwnershipCommitment;
     public certificationRequestId: number;
 
@@ -128,6 +131,7 @@ export class Entity extends BlockchainDataModelEntity.Entity implements ICertifi
         this.deviceId = decodedData['2'];
         this.issuer = certOnChain.issuer;
         this.creationTime = Number(creationBlock.timestamp);
+        this.creationBlockHash = creationBlock.hash;
         this.certificationRequestId = Number(
             await issuer.getCertificationRequestIdForCertificate(Number(this.id))
         );

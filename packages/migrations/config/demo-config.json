@@ -223,10 +223,10 @@
                 "otherGreenAttributes": "N.A.",
                 "typeOfPublicSupport": "N.A",
                 "facilityName": "Wuthering Heights Windfarm",
-                "externalDeviceIds": {
+                "externalDeviceIds": [{
                     "id": 123,
                     "type": "Smart Meter Readings API ID"
-                },
+                }],
                 "user": {
                     "email": "devicemanager@mailinator.com",
                     "password": "test"

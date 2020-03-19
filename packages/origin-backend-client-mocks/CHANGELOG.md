@@ -3,6 +3,28 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-backend-client-mocks@0.4.0...@energyweb/origin-backend-client-mocks@1.0.0) (2020-03-16)
+
+
+### Bug Fixes
+
+* **origin-backend-client-mocks:** saving/reading smart meter readings ([b950784](https://github.com/energywebfoundation/origin/commit/b950784ef771808556497dc61c56cd451a94658a))
+* fetch all device smart meter readings only on-demand ([0708917](https://github.com/energywebfoundation/origin/commit/07089170e80de59503c299755f5bdf5e26005a3b))
+
+
+### Features
+
+* add ExternalDeviceIdTypes to OriginConfiguration + unify all configuration items into one db table ([1469e32](https://github.com/energywebfoundation/origin/commit/1469e32ea369daf7f1b910c201670836248914ff))
+
+
+### BREAKING CHANGES
+
+* Configuration Client now works differently
+
+
+
+
+
 # [0.4.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-backend-client-mocks@0.3.0...@energyweb/origin-backend-client-mocks@0.4.0) (2020-03-02)
 
 

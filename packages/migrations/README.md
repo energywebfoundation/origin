@@ -188,10 +188,10 @@ The device is located in <code>Main Street 11, 01234 Anytown, AnyState, USA</cod
         "cO2UsedForCertificate": 0,
         "otherGreenAttributes": "N.A.",
         "typeOfPublicSupport": "N.A",
-        "externalDeviceIds": {
+        "externalDeviceIds": [{
             "id": 123,
             "type": "Smart Meter Readings API ID"
-        }
+        }]
     }
 }
 </code>
