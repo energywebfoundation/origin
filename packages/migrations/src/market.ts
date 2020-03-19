@@ -3,7 +3,6 @@ import Web3 from 'web3';
 
 import { Configuration } from '@energyweb/utils-general';
 import { UserLogic } from '@energyweb/user-registry';
-import { DeviceLogic } from '@energyweb/device-registry';
 import { OffChainDataSource } from '@energyweb/origin-backend-client';
 import { IContractsLookup } from '@energyweb/origin-backend-core';
 import { Registry, Issuer } from '@energyweb/issuer';
@@ -27,7 +26,6 @@ export const marketDemo = async (demoConfigPath: string, contractConfig: IContra
 
     // create logic instances
     const userLogic = new UserLogic(web3, contractConfig.userLogic);
-    const deviceProducingRegistryLogic = new DeviceLogic(web3, contractConfig.deviceLogic);
     const registry = new Registry(web3, contractConfig.registry);
     const issuer = new Issuer(web3, contractConfig.issuer);
 
@@ -42,7 +40,6 @@ export const marketDemo = async (demoConfigPath: string, contractConfig: IContra
                 address: adminAccount.address,
                 privateKey: adminPK
             },
-            deviceLogicInstance: deviceProducingRegistryLogic,
             registry,
             userLogicInstance: userLogic,
             issuer,

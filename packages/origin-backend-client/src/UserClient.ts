@@ -17,6 +17,7 @@ export interface IUserClient {
     logout(): Promise<void>;
     register(data: UserRegisterData): Promise<UserRegisterReturnData>;
     me(): Promise<IUserWithRelationsIds>;
+    getUserById(id: string): Promise<IUserWithRelationsIds>;
     getUserByBlockchainAccount(blockchainAccountAddress: string): Promise<IUserWithRelationsIds>;
     attachSignedMessage(id: number, signedMessage: string): Promise<UpdateUserResponseReturnType>;
     updateAdditionalProperties(
@@ -36,7 +37,7 @@ export class UserClient implements IUserClient {
     }
 
     private get userEndpoint() {
-        return `${this.dataApiUrl}/User`;
+        return `${this.dataApiUrl}/user`;
     }
 
     public async register(formData: UserRegisterData): Promise<UserRegisterReturnData> {
@@ -89,6 +90,13 @@ export class UserClient implements IUserClient {
         properties: Partial<Pick<IUserProperties, 'autoPublish' | 'notifications'>>
     ) {
         return this.updateUser(id, properties);
+    }
+
+    public async getUserById(id: string): Promise<IUserWithRelationsIds> {
+        const url = `${this.userEndpoint}/${id}`;
+        const { data } = await this.requestClient.get<{}, IUserWithRelationsIds>(url);
+
+        return data;
     }
 
     private async updateUser(id: number, updatedUserInfo: UserUpdateData) {

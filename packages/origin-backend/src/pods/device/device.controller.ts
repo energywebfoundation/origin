@@ -1,12 +1,13 @@
 import { Repository } from 'typeorm';
-import { validate } from 'class-validator';
 import {
-    IDevice,
     DeviceStatus,
     DeviceUpdateData,
     SupportedEvents,
     DeviceStatusChanged,
-    ISmartMeterRead
+    ISmartMeterRead,
+    IUserWithRelationsIds,
+    IDeviceWithRelationsIds,
+    DeviceCreateData
 } from '@energyweb/origin-backend-core';
 
 import {
@@ -20,14 +21,17 @@ import {
     UnprocessableEntityException,
     Delete,
     Put,
-    Inject
+    Inject,
+    UseGuards
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { AuthGuard } from '@nestjs/passport';
 import { EventsWebSocketGateway } from '../../events/events.gateway';
 
 import { Device } from './device.entity';
 import { StorageErrors } from '../../enums/StorageErrors';
 import { DeviceService } from './device.service';
+import { UserDecorator } from '../user/user.decorator';
 
 @Controller('/Device')
 export class DeviceController {
@@ -43,7 +47,7 @@ export class DeviceController {
     }
 
     @Get('/:id')
-    async get(@Param('id') id: string) {
+    async get(@Param('id') id: string): Promise<IDeviceWithRelationsIds> {
         const existingEntity = await this.deviceService.findOne(id);
 
         if (!existingEntity) {
@@ -54,34 +58,20 @@ export class DeviceController {
     }
 
     @Post()
-    async post(@Body() body: IDevice) {
-        const newEntity = new Device();
+    @UseGuards(AuthGuard())
+    async post(@Body() body: DeviceCreateData, @UserDecorator() loggedUser: IUserWithRelationsIds) {
+        if (typeof loggedUser.organization === 'undefined') {
+            throw new BadRequestException('server.errors.loggedUserOrganizationEmpty');
+        }
 
-        Object.assign(newEntity, {
+        return this.deviceService.create({
             ...body,
             status: body.status ?? DeviceStatus.Submitted,
             lastSmartMeterReading: body.lastSmartMeterReading ?? null,
             smartMeterReads: body.smartMeterReads ?? [],
-            deviceGroup: body.deviceGroup ?? ''
+            deviceGroup: body.deviceGroup ?? '',
+            organization: loggedUser.organization
         });
-
-        const validationErrors = await validate(newEntity);
-
-        if (validationErrors.length > 0) {
-            throw new UnprocessableEntityException({
-                success: false,
-                errors: validationErrors
-            });
-        }
-
-        try {
-            await this.deviceRepository.save(newEntity);
-
-            return newEntity;
-        } catch (error) {
-            console.warn('Error while saving entity', error);
-            throw new BadRequestException('Could not save device.');
-        }
     }
 
     @Delete('/:id')
@@ -92,7 +82,7 @@ export class DeviceController {
             throw new NotFoundException(StorageErrors.NON_EXISTENT);
         }
 
-        await this.deviceRepository.remove(existingEntity);
+        await this.deviceService.remove(existingEntity);
 
         return {
             message: `Entity ${id} deleted`

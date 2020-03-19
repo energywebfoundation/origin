@@ -84,7 +84,7 @@ export function RequestCertificatesModal() {
     async function requestCerts() {
         dispatch(
             requestCertificates({
-                deviceId: producingDevice.id,
+                deviceId: producingDevice.id?.toString(),
                 startTime: fromDate.unix(),
                 endTime: toDate.unix(),
                 energy: energyInBaseUnit,
@@ -105,7 +105,7 @@ export function RequestCertificatesModal() {
         <Dialog open={showModal} onClose={handleClose}>
             <DialogTitle>
                 {t('certificate.info.requestCertificatesFor', {
-                    facilityName: producingDevice?.offChainProperties?.facilityName ?? ''
+                    facilityName: producingDevice?.facilityName ?? ''
                 })}
             </DialogTitle>
             <DialogContent>

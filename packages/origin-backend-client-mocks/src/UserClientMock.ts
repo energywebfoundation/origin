@@ -49,6 +49,10 @@ export class UserClientMock implements IUserClient {
         return {} as any;
     }
 
+    async getUserById(id: string): Promise<IUserWithRelationsIds> {
+        return this.storage.get(Number(id));
+    }
+
     async getUserByBlockchainAccount(
         blockchainAccountAddress: string
     ): Promise<IUserWithRelationsIds> {

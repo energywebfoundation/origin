@@ -20,14 +20,9 @@ export const certificateDemo = async (
         case 'SAVE_SMARTMETER_READ_PRODUCING':
             console.log('-----------------------------------------------------------');
 
-            conf.blockchainProperties.activeUser = {
-                address: action.data.smartMeter,
-                privateKey: action.data.smartMeterPK
-            };
-
             try {
                 let device = await new ProducingDevice.Entity(
-                    action.data.deviceId as string,
+                    parseInt(action.data.deviceId, 10),
                     conf
                 ).sync();
                 await device.saveSmartMeterRead(

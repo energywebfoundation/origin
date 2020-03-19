@@ -19,7 +19,6 @@ describe('Configuration API tests', async () => {
     const BASE_API_URL = `http://localhost:${process.env.BACKEND_PORT}/api`;
 
     const contractsLookup: IContractsLookup = {
-        deviceLogic: '0x665b25e0edc2d9b5dee75c5f652f92f5b58be12b',
         issuer: '0x123',
         registry: '0x456',
         userLogic: '0x789'

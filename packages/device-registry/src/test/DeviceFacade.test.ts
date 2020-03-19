@@ -53,6 +53,7 @@ describe('Device Facade', () => {
             const FACILITY_NAME = 'Wuthering Heights Windfarm';
 
             const deviceProps: IDevice = {
+                id: 1,
                 status: DeviceStatus.Active,
                 operationalSince: 0,
                 capacityInW: 10,
@@ -70,7 +71,8 @@ describe('Device Facade', () => {
                 description: '',
                 images: '',
                 region: '',
-                province: ''
+                province: '',
+                organization: 4
             };
 
             assert.equal(await ProducingDevice.getDeviceListLength(conf), 0);

@@ -92,12 +92,14 @@ export function CertificateTable(props: IProps) {
         const enrichedData: IEnrichedCertificateData[] = certificates.map(certificate => {
             const producingDevice =
                 typeof certificate.deviceId !== 'undefined' &&
-                producingDevices.find(device => device.id === certificate.deviceId.toString());
+                producingDevices.find(
+                    device => device.id?.toString() === certificate.deviceId.toString()
+                );
 
             return {
                 certificate,
                 producingDevice,
-                deviceTypeLabel: producingDevice?.offChainProperties?.deviceType,
+                deviceTypeLabel: producingDevice?.deviceType,
                 locationText: getDeviceLocationText(producingDevice)
             };
         });
@@ -210,8 +212,7 @@ export function CertificateTable(props: IProps) {
                 search: true
             },
             {
-                property: (record: IEnrichedCertificateData) =>
-                    record?.producingDevice?.offChainProperties?.deviceType,
+                property: (record: IEnrichedCertificateData) => record?.producingDevice?.deviceType,
                 label: t('certificate.properties.deviceType'),
                 input: {
                     type: CustomFilterInputType.deviceType,
@@ -221,7 +222,7 @@ export function CertificateTable(props: IProps) {
             {
                 property: (record: IEnrichedCertificateData) =>
                     moment
-                        .unix(record?.producingDevice?.offChainProperties?.operationalSince)
+                        .unix(record?.producingDevice?.operationalSince)
                         .year()
                         .toString(),
                 label: t('device.properties.commissioningDate'),
@@ -327,8 +328,7 @@ export function CertificateTable(props: IProps) {
             id: 'commissioningDate',
             label: t('device.properties.commissioningDate'),
             sortProperties: [
-                (record: IEnrichedCertificateData) =>
-                    record?.producingDevice?.offChainProperties?.operationalSince
+                (record: IEnrichedCertificateData) => record?.producingDevice?.operationalSince
             ]
         },
         {

@@ -52,7 +52,7 @@ export function AccountSettings() {
 
     const classes = useStyles(useTheme());
 
-    const userOffchain = useSelector(getUserOffchain);
+    const user = useSelector(getUserOffchain);
     const currencies = useSelector(getCurrencies);
     const userClient = useSelector(getOffChainDataSource)?.userClient;
     const web3 = useSelector(getWeb3);
@@ -63,14 +63,10 @@ export function AccountSettings() {
 
     const [notificationsEnabled, setNotificationsEnabled] = useState(null);
 
-    const userNotificationsEnabled = userOffchain?.notifications ?? false;
-    const autoPublish = userOffchain?.autoPublish ?? null;
+    const userNotificationsEnabled = user?.notifications ?? false;
+    const autoPublish = user?.autoPublish ?? null;
 
     const [autoPublishCandidate, setAutoPublish] = useState(autoPublish);
-
-    if (!userOffchain) {
-        return null;
-    }
 
     useEffect(() => {
         if (notificationsEnabled === null) {
@@ -80,9 +76,13 @@ export function AccountSettings() {
         if (autoPublishCandidate === null) {
             setAutoPublish(autoPublish);
         }
-    }, [userOffchain]);
+    }, [user]);
 
     const originConfiguration = useContext(OriginConfigurationContext);
+
+    if (!user) {
+        return null;
+    }
 
     const PurpleSwitch = withStyles({
         switchBase: {
@@ -121,7 +121,7 @@ export function AccountSettings() {
                 newProperties.autoPublish = autoPublishCandidate;
             }
 
-            await userClient.updateAdditionalProperties(userOffchain.id, newProperties);
+            await userClient.updateAdditionalProperties(user.id, newProperties);
         }
 
         showNotification(t('settings.feedback.userSettingsUpdated'), NotificationType.Success);
@@ -136,7 +136,7 @@ export function AccountSettings() {
                 usingPK ? activeAccount?.privateKey : null
             );
 
-            await userClient.attachSignedMessage(userOffchain.id, signedMessage);
+            await userClient.attachSignedMessage(user.id, signedMessage);
 
             dispatch(refreshUserOffchain());
 
@@ -158,21 +158,21 @@ export function AccountSettings() {
         <Paper>
             <Grid container spacing={3} className={classes.container}>
                 <Grid item xs={12}>
-                    {userOffchain && (
+                    {user && (
                         <>
-                            {`${userOffchain.title} ${userOffchain.firstName} ${userOffchain.lastName}`}
+                            {`${user.title} ${user.firstName} ${user.lastName}`}
 
-                            {userOffchain.organization && (
+                            {user.organization && (
                                 <>
                                     <br />
                                     <br />
-                                    Organization: {userOffchain.organization.name}
+                                    Organization: {user.organization.name}
                                 </>
                             )}
 
                             <TextField
                                 label={t('settings.properties.email')}
-                                value={userOffchain.email}
+                                value={user.email}
                                 fullWidth
                                 className="my-3"
                                 disabled
@@ -180,13 +180,13 @@ export function AccountSettings() {
 
                             <TextField
                                 label={t('settings.properties.blockchainAccount')}
-                                value={userOffchain.blockchainAccountAddress}
+                                value={user.blockchainAccountAddress}
                                 fullWidth
                                 className="my-3"
                                 disabled
                             />
 
-                            {!userOffchain.blockchainAccountAddress && (
+                            {!user.blockchainAccountAddress && (
                                 <Button
                                     type="submit"
                                     variant="contained"

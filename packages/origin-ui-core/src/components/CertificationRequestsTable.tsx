@@ -61,13 +61,11 @@ export function CertificationRequestsTable(props: IProps) {
 
         for (let i = 0; i < requests.length; i++) {
             const request = requests[i];
-            const device = producingDevices.find(a => a.id === request.device.toString());
+            const device = producingDevices.find(a => a.id === request.device);
 
             if (
                 request.approved !== props.approved ||
-                (!isIssuer &&
-                    user?.blockchainAccountAddress?.toLowerCase() !==
-                        device?.owner.address.toLowerCase())
+                (!isIssuer && user?.organization.id !== device?.organization)
             ) {
                 continue;
             }
@@ -140,12 +138,10 @@ export function CertificationRequestsTable(props: IProps) {
 
     const rows = paginatedData.map(({ device, request }) => {
         return {
-            facility: device.offChainProperties.facilityName,
+            facility: device.facilityName,
             locationText: getDeviceLocationText(device),
-            type: configuration.deviceTypeService.getDisplayText(
-                device.offChainProperties.deviceType
-            ),
-            capacity: PowerFormatter.format(device.offChainProperties.capacityInW),
+            type: configuration.deviceTypeService.getDisplayText(device.deviceType),
+            capacity: PowerFormatter.format(device.capacityInW),
             files: request.files.map(f => (
                 <div key={f}>
                     <a

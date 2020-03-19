@@ -24,7 +24,7 @@ import {
     NotificationType,
     isRole
 } from '../utils';
-// import { getOffChainDataSource } from '../features/general/selectors';
+import { getOffChainDataSource } from '../features/general/selectors';
 import { DeviceStatus } from '@energyweb/origin-backend-core';
 import { useTranslation } from 'react-i18next';
 import {
@@ -55,21 +55,16 @@ export function ProducingDeviceTable(props: IOwnProps) {
     const configuration = useSelector(getConfiguration);
     const user = useSelector(getUserOffchain);
     const producingDevices = useSelector(getProducingDevices);
-    // const offChainDataSource = useSelector(getOffChainDataSource);
+    const offChainDataSource = useSelector(getOffChainDataSource);
     const baseURL = useSelector(getBaseURL);
 
     const dispatch = useDispatch();
 
     async function enrichProducingDeviceData(): Promise<IEnrichedProducingDeviceData[]> {
         const promises = producingDevices.map(async device => {
-            // @TODO fetch real organization name
-            // const organization = await offChainDataSource.organizationClient?.getById(
-            //     user?.information?.organization
-            // );
-
-            const organization = {
-                name: 'Example organization'
-            };
+            const organization = await offChainDataSource.organizationClient?.getById(
+                device.organization
+            );
 
             return {
                 device,
@@ -97,11 +92,8 @@ export function ProducingDeviceTable(props: IOwnProps) {
                     requestedFilters,
                     configuration.deviceTypeService
                 ) &&
-                (!props.owner ||
-                    record?.device?.owner?.address?.toLowerCase() ===
-                        user?.blockchainAccountAddress?.toLowerCase()) &&
-                (includedStatuses.length === 0 ||
-                    includedStatuses.includes(record.device.offChainProperties.status))
+                (!props.owner || record?.device?.organization === user?.organization?.id) &&
+                (includedStatuses.length === 0 || includedStatuses.includes(record.device.status))
         );
 
         const total = filteredEnrichedDeviceData.length;
@@ -166,7 +158,7 @@ export function ProducingDeviceTable(props: IOwnProps) {
     const filters: ICustomFilterDefinition[] = [
         {
             property: (record: IEnrichedProducingDeviceData) =>
-                `${record?.device?.offChainProperties?.facilityName}${record?.organizationName}`,
+                `${record?.device?.facilityName}${record?.organizationName}`,
             label: t('search.searchByFacilityNameAndOrganization'),
             input: {
                 type: CustomFilterInputType.string
@@ -195,15 +187,13 @@ export function ProducingDeviceTable(props: IOwnProps) {
 
     const rows = paginatedData.map(enrichedData => ({
         owner: enrichedData.organizationName,
-        facilityName: enrichedData.device.offChainProperties.facilityName,
+        facilityName: enrichedData.device.facilityName,
         provinceRegion: enrichedData.locationText,
         type:
-            configuration?.deviceTypeService?.getDisplayText(
-                enrichedData.device.offChainProperties.deviceType
-            ) ?? '',
-        capacity: PowerFormatter.format(enrichedData.device.offChainProperties.capacityInW),
+            configuration?.deviceTypeService?.getDisplayText(enrichedData.device.deviceType) ?? '',
+        capacity: PowerFormatter.format(enrichedData.device.capacityInW),
         read: EnergyFormatter.format(enrichedData.device.lastSmartMeterReadWh ?? 0),
-        status: DeviceStatus[enrichedData.device.offChainProperties.status]
+        status: DeviceStatus[enrichedData.device.status]
     }));
 
     if (detailViewForDeviceId !== null) {
