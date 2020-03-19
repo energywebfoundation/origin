@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Role } from '@energyweb/user-registry';
+import { Role, isRole, DeviceStatus } from '@energyweb/origin-backend-core';
 import { Link, Redirect } from 'react-router-dom';
 import { ProducingDevice } from '@energyweb/device-registry';
 import { useSelector, useDispatch } from 'react-redux';
@@ -21,11 +21,10 @@ import {
     LOCATION_TITLE_TRANSLATION_KEY,
     getProducingDeviceDetailLink,
     showNotification,
-    NotificationType,
-    isRole
+    NotificationType
 } from '../utils';
 import { getOffChainDataSource } from '../features/general/selectors';
-import { DeviceStatus } from '@energyweb/origin-backend-core';
+
 import { useTranslation } from 'react-i18next';
 import {
     usePaginatedLoaderFiltered,

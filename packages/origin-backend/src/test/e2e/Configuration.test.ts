@@ -20,8 +20,7 @@ describe('Configuration API tests', async () => {
 
     const contractsLookup: IContractsLookup = {
         issuer: '0x123',
-        registry: '0x456',
-        userLogic: '0x789'
+        registry: '0x456'
     };
 
     const standard = 'I-REC';

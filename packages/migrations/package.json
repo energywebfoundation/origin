@@ -36,7 +36,6 @@
         "@energyweb/origin-backend": "3.8.0",
         "@energyweb/origin-backend-core": "1.3.0",
         "@energyweb/origin-backend-client": "3.3.0",
-        "@energyweb/user-registry": "3.0.3",
         "@energyweb/utils-general": "7.0.1",
         "commander": "^4.1.1",
         "dotenv": "8.2.0",

@@ -7,7 +7,6 @@ export interface IContractsState {
 
 const defaultState: IContractsState = {
     contractsLookup: {
-        userLogic: null,
         registry: null,
         issuer: null
     }

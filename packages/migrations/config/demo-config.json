@@ -156,7 +156,7 @@
                 "organization": "Issuer",
                 "address": "0xD173313A51f8fc37BcF67569b463abd89d81844f",
                 "privateKey": "0xd9066ff9f753a1898709b568119055660a77d9aae4d7a4ad677b8fb3d2a571e5",
-                "rights": 33
+                "rights": 16
             }
         },
         {
@@ -204,36 +204,6 @@
                 "address": "0x7672fa3f8c04abbcbad14d896aad8bedece72d2b",
                 "privateKey": "0x50397ee7580b44c966c3975f561efb7b58a54febedaa68a5dc482e52fb696ae7",
                 "rights": 8
-            }
-        },
-        {
-            "type": "CREATE_USER",
-            "data": {
-                "firstName": "Matcher",
-                "lastName": "Surname",
-                "telephone": "111-111-111",
-                "title": "Mr",
-                "email": "matcher@mailinator.com",
-                "password": "test",
-                "organization": "Matcher Organization",
-                "address": "0x2bda153cd94a10cc6584115eada312b27d4166d3",
-                "privateKey": "0x05369a7c890005a9babfb52645d0347bbb456ae562bbac5aad27118e2e9e3a6c",
-                "rights": 63
-            }
-        },
-        {
-            "type": "CREATE_USER",
-            "data": {
-                "firstName": "Listener",
-                "lastName": "Surname",
-                "telephone": "111-111-111",
-                "title": "Mr",
-                "email": "listener@mailinator.com",
-                "password": "test",
-                "organization": "Listener Organization",
-                "address": "0x4Db81bEfaF6B82553898739B788963d20Be8068a",
-                "privateKey": "0x968cc146af9c9d3ac08cca0dd3f915ed5a0966c118e26fd5e99066b0ff8bc060",
-                "rights": 64
             }
         },
         {

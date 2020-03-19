@@ -10,7 +10,6 @@ export type IDeviceSubType = string;
 export type IDeviceType = IDeviceSubType[];
 
 export interface IContractsLookup {
-    userLogic: string;
     registry: string;
     issuer: string;
 }
