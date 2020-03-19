@@ -11,6 +11,7 @@ import { IsInt, IsEmail, Min, ValidateIf, IsNotEmpty, IsUrl } from 'class-valida
 import { OrganizationStatus, IOrganization } from '@energyweb/origin-backend-core';
 import { User } from '../user/user.entity';
 import { OrganizationInvitation } from './organizationInvitation.entity';
+import { Device } from '../device/device.entity';
 
 @Entity()
 export class Organization extends BaseEntity implements IOrganization {
@@ -111,6 +112,12 @@ export class Organization extends BaseEntity implements IOrganization {
         entity => entity.organization
     )
     invitations: OrganizationInvitation[];
+
+    @OneToMany(
+        () => Device,
+        device => device.organization
+    )
+    devices: Device[];
 
     @OneToOne(() => User)
     @JoinColumn()

@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.0.1](https://github.com/energywebfoundation/origin/compare/@energyweb/exchange-core@1.0.0...@energyweb/exchange-core@1.0.1) (2020-03-16)
+
+
+### Bug Fixes
+
+* **exchange-core:** sequential orderbook triggering ([0df82b9](https://github.com/energywebfoundation/origin/commit/0df82b9753176f7594c3666b9326317ee1cfe1db))
+
+
+
+
+
 # [1.0.0](https://github.com/energywebfoundation/origin/compare/@energyweb/exchange-core@0.1.3...@energyweb/exchange-core@1.0.0) (2020-03-02)
 
 

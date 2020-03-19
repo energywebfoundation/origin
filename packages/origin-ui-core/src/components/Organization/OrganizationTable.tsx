@@ -1,10 +1,8 @@
 import React, { useEffect } from 'react';
-import { Role } from '@energyweb/user-registry';
 import { showNotification, NotificationType } from '../../utils/notifications';
 import { useSelector, useDispatch } from 'react-redux';
 import { TableMaterial } from '../Table/TableMaterial';
 import { Check } from '@material-ui/icons';
-import { getCurrentUser } from '../../features/users/selectors';
 import { setLoading } from '../../features/general/actions';
 import {
     IPaginatedLoaderHooksFetchDataParameters,
@@ -33,8 +31,7 @@ function getOrganizationText(status: OrganizationStatus) {
 }
 
 export function OrganizationTable() {
-    const currentUser = useSelector(getCurrentUser);
-    const organizationClient = useSelector(getOffChainDataSource).organizationClient;
+    const organizationClient = useSelector(getOffChainDataSource)?.organizationClient;
 
     const { getOrganizationViewLink } = useLinks();
 
@@ -42,7 +39,7 @@ export function OrganizationTable() {
 
     const dispatch = useDispatch();
 
-    const isIssuer = currentUser?.isRole(Role.Issuer);
+    const isIssuer = true; // @TODO check role if issuer
 
     async function getPaginatedData({
         requestedPageSize,
@@ -77,7 +74,7 @@ export function OrganizationTable() {
 
     useEffect(() => {
         loadPage(1);
-    }, [currentUser, organizationClient]);
+    }, [organizationClient]);
 
     function viewEntity(rowIndex: number) {
         const organizationId = paginatedData[rowIndex]?.organization?.id;

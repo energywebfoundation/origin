@@ -10,24 +10,19 @@ export const certificateDemo = async (
 ) => {
     const action = JSON.parse(actionString);
 
-    const adminPK = adminPrivateKey.startsWith('0x') ? adminPrivateKey : '0x' + adminPrivateKey;
+    const adminPK = adminPrivateKey.startsWith('0x') ? adminPrivateKey : `0x${adminPrivateKey}`;
 
     const adminAccount = conf.blockchainProperties.web3.eth.accounts.privateKeyToAccount(adminPK);
 
-    const registry: Registry = conf.blockchainProperties.registry;
+    const { registry } = conf.blockchainProperties;
 
     switch (action.type) {
         case 'SAVE_SMARTMETER_READ_PRODUCING':
             console.log('-----------------------------------------------------------');
 
-            conf.blockchainProperties.activeUser = {
-                address: action.data.smartMeter,
-                privateKey: action.data.smartMeterPK
-            };
-
             try {
                 let device = await new ProducingDevice.Entity(
-                    (action.data.deviceId as string),
+                    parseInt(action.data.deviceId, 10),
                     conf
                 ).sync();
                 await device.saveSmartMeterRead(
@@ -37,7 +32,7 @@ export const certificateDemo = async (
                 device = await device.sync();
                 conf.logger.verbose('Producing smart meter reading saved');
             } catch (e) {
-                conf.logger.error('Could not save smart meter reading for producing device\n' + e);
+                conf.logger.error(`Could not save smart meter reading for producing device\n${e}`);
             }
 
             console.log('-----------------------------------------------------------\n');
@@ -249,6 +244,5 @@ export const certificateDemo = async (
 
                 throw error;
             }
-
     }
 };

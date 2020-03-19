@@ -11,7 +11,11 @@ import {
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 
-import { UserRegisterReturnData, UserRegisterData, IUser } from '@energyweb/origin-backend-core';
+import {
+    UserRegisterReturnData,
+    UserRegisterData,
+    IUserWithRelationsIds
+} from '@energyweb/origin-backend-core';
 
 import { UserService } from './user.service';
 import { UserDecorator } from './user.decorator';
@@ -22,7 +26,16 @@ export class UserController {
 
     @Post('register')
     public async register(@Body() body: UserRegisterData): Promise<UserRegisterReturnData> {
-        const { email, password, title, firstName, lastName, telephone } = body;
+        const {
+            email,
+            password,
+            title,
+            firstName,
+            lastName,
+            telephone,
+            notifications,
+            autoPublish
+        } = body;
 
         try {
             const user = await this.userService.create({
@@ -31,7 +44,9 @@ export class UserController {
                 title,
                 firstName,
                 lastName,
-                telephone
+                telephone,
+                notifications,
+                autoPublish
             });
 
             return {
@@ -43,7 +58,9 @@ export class UserController {
                 title: user.title,
                 blockchainAccountAddress: user.blockchainAccountAddress,
                 blockchainAccountSignedMessage: user.blockchainAccountSignedMessage,
-                organization: user.organization
+                organization: user.organization,
+                autoPublish: user.autoPublish,
+                notifications: user.notifications
             };
         } catch (error) {
             console.log('UserController::register() error', error);
@@ -53,7 +70,7 @@ export class UserController {
 
     @Get('me')
     @UseGuards(AuthGuard('jwt'))
-    me(@UserDecorator() user: IUser) {
+    me(@UserDecorator() user: IUserWithRelationsIds) {
         return this.userService.findById(user.id);
     }
 
@@ -76,9 +93,16 @@ export class UserController {
         }
 
         try {
-            await this.userService.attachSignedMessage(Number(id), blockchainAccountSignedMessage);
+            await this.userService.attachSignedMessage(id, blockchainAccountSignedMessage);
+
+            return this.userService.findById(id);
         } catch (error) {
             throw new BadRequestException(error.message);
         }
+    }
+
+    @Get(':id')
+    public async get(@Param('id') id: string) {
+        return this.userService.findById(id);
     }
 }

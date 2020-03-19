@@ -5,6 +5,8 @@ import fs from 'fs';
 
 import { OffChainDataSource } from '@energyweb/origin-backend-client';
 import { deployEmptyContracts } from './deployEmpty';
+import { onboardDemo } from './onboarding';
+import { marketDemo } from './market';
 
 program.option('-e, --env <env_file_path>', 'path to the .env file');
 program.option('-c, --config <config_file_path>', 'path to the config file');
@@ -42,8 +44,11 @@ const configFilePath = absolutePath(program.config ?? '../config/demo-config.jso
         Number(process.env.BACKEND_PORT)
     );
 
+    const contractsLookup = await deployEmptyContracts();
+
     await offChainDataSource.configurationClient.update({
         complianceStandard: complianceRegistry,
+        contractsLookup,
         countryName: country.name,
         regions: country.regions,
         deviceTypes,
@@ -51,15 +56,7 @@ const configFilePath = absolutePath(program.config ?? '../config/demo-config.jso
         currencies
     });
 
-    const contractConfig = await deployEmptyContracts();
-
-    if (contractConfig) {
-        await offChainDataSource.configurationClient.add('ContractsLookup', contractConfig);
-    }
-
-    await offChainDataSource.configurationClient.update({
-        marketContractLookup
-    });
+    await marketDemo(configFilePath, contractsLookup);
 
     offChainDataSource.eventClient.stop();
 })();

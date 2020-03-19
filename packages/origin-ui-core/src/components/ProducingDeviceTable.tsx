@@ -8,17 +8,22 @@ import { Add, Assignment, Check } from '@material-ui/icons';
 import { checkRecordPassesFilters } from './Table/PaginatedLoaderFiltered';
 import { ICustomFilterDefinition, CustomFilterInputType } from './Table/FiltersHeader';
 import { IPaginatedLoaderFetchDataReturnValues } from './Table/PaginatedLoader';
-import { getProducingDeviceDetailLink } from '../utils/routing';
 import { getProducingDevices, getBaseURL, getConfiguration } from '../features/selectors';
 import { TableMaterial } from './Table/TableMaterial';
-import { getUsers, getUserById, getCurrentUser } from '../features/users/selectors';
+import { getUserOffchain } from '../features/users/selectors';
 import { showRequestCertificatesModal } from '../features/certificates/actions';
-import { getDeviceLocationText, LOCATION_TITLE_TRANSLATION_KEY } from '../utils/helper';
-import { showNotification, NotificationType } from '../utils/notifications';
 import { setLoading } from '../features/general/actions';
 import { producingDeviceCreatedOrUpdated } from '../features/producingDevices/actions';
-import { EnergyFormatter } from '../utils/EnergyFormatter';
-import { PowerFormatter } from '../utils/PowerFormatter';
+import {
+    EnergyFormatter,
+    PowerFormatter,
+    getDeviceLocationText,
+    LOCATION_TITLE_TRANSLATION_KEY,
+    getProducingDeviceDetailLink,
+    showNotification,
+    NotificationType,
+    isRole
+} from '../utils';
 import { getOffChainDataSource } from '../features/general/selectors';
 import { DeviceStatus } from '@energyweb/origin-backend-core';
 import { useTranslation } from 'react-i18next';
@@ -48,9 +53,8 @@ export function ProducingDeviceTable(props: IOwnProps) {
     const [detailViewForDeviceId, setDetailViewForDeviceId] = useState(null);
 
     const configuration = useSelector(getConfiguration);
-    const currentUser = useSelector(getCurrentUser);
+    const user = useSelector(getUserOffchain);
     const producingDevices = useSelector(getProducingDevices);
-    const users = useSelector(getUsers);
     const offChainDataSource = useSelector(getOffChainDataSource);
     const baseURL = useSelector(getBaseURL);
 
@@ -58,10 +62,8 @@ export function ProducingDeviceTable(props: IOwnProps) {
 
     async function enrichProducingDeviceData(): Promise<IEnrichedProducingDeviceData[]> {
         const promises = producingDevices.map(async device => {
-            const user = getUserById(users, device.owner.address);
-
             const organization = await offChainDataSource.organizationClient?.getById(
-                user?.information?.organization
+                device.organization
             );
 
             return {
@@ -90,11 +92,8 @@ export function ProducingDeviceTable(props: IOwnProps) {
                     requestedFilters,
                     configuration.deviceTypeService
                 ) &&
-                (!props.owner ||
-                    record?.device?.owner?.address?.toLowerCase() ===
-                        currentUser?.id?.toLowerCase()) &&
-                (includedStatuses.length === 0 ||
-                    includedStatuses.includes(record.device.offChainProperties.status))
+                (!props.owner || record?.device?.organization === user?.organization?.id) &&
+                (includedStatuses.length === 0 || includedStatuses.includes(record.device.status))
         );
 
         const total = filteredEnrichedDeviceData.length;
@@ -117,7 +116,7 @@ export function ProducingDeviceTable(props: IOwnProps) {
 
     useEffect(() => {
         loadPage(1);
-    }, [users, producingDevices]);
+    }, [user, producingDevices]);
 
     function viewDevice(rowIndex: number) {
         const device = paginatedData[rowIndex].device;
@@ -159,7 +158,7 @@ export function ProducingDeviceTable(props: IOwnProps) {
     const filters: ICustomFilterDefinition[] = [
         {
             property: (record: IEnrichedProducingDeviceData) =>
-                `${record?.device?.offChainProperties?.facilityName}${record?.organizationName}`,
+                `${record?.device?.facilityName}${record?.organizationName}`,
             label: t('search.searchByFacilityNameAndOrganization'),
             input: {
                 type: CustomFilterInputType.string
@@ -188,15 +187,13 @@ export function ProducingDeviceTable(props: IOwnProps) {
 
     const rows = paginatedData.map(enrichedData => ({
         owner: enrichedData.organizationName,
-        facilityName: enrichedData.device.offChainProperties.facilityName,
+        facilityName: enrichedData.device.facilityName,
         provinceRegion: enrichedData.locationText,
         type:
-            configuration?.deviceTypeService?.getDisplayText(
-                enrichedData.device.offChainProperties.deviceType
-            ) ?? '',
-        capacity: PowerFormatter.format(enrichedData.device.offChainProperties.capacityInW),
+            configuration?.deviceTypeService?.getDisplayText(enrichedData.device.deviceType) ?? '',
+        capacity: PowerFormatter.format(enrichedData.device.capacityInW),
         read: EnergyFormatter.format(enrichedData.device.lastSmartMeterReadWh ?? 0),
-        status: DeviceStatus[enrichedData.device.offChainProperties.status]
+        status: DeviceStatus[enrichedData.device.status]
     }));
 
     if (detailViewForDeviceId !== null) {
@@ -210,7 +207,7 @@ export function ProducingDeviceTable(props: IOwnProps) {
 
     const actions = [];
 
-    if (props.actions.requestCertificates && currentUser?.isRole(Role.DeviceManager)) {
+    if (props.actions.requestCertificates && isRole(user, Role.DeviceManager)) {
         actions.push({
             icon: <Assignment />,
             name: t('device.actions.requestCertificates'),
@@ -218,7 +215,7 @@ export function ProducingDeviceTable(props: IOwnProps) {
         });
     }
 
-    if (props.actions.approve && currentUser?.isRole(Role.Issuer)) {
+    if (props.actions.approve && isRole(user, Role.Issuer)) {
         actions.push({
             icon: <Check />,
             name: t('device.actions.approve'),

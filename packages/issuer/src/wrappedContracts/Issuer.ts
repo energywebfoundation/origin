@@ -21,8 +21,17 @@ export class Issuer extends GeneralFunctions {
         this.web3 = web3;
     }
 
-    async initialize(certificateTopic: number, registryAddress: string, owner: string, txParams: ISpecialTx) {
-        const method = this.web3Contract.methods.initialize(certificateTopic, registryAddress, owner);
+    async initialize(
+        certificateTopic: number,
+        registryAddress: string,
+        owner: string,
+        txParams: ISpecialTx
+    ) {
+        const method = this.web3Contract.methods.initialize(
+            certificateTopic,
+            registryAddress,
+            owner
+        );
 
         return this.send(method, txParams);
     }
@@ -40,11 +49,15 @@ export class Issuer extends GeneralFunctions {
     }
 
     async getCertificationRequest(_certificationRequestId: number, txParams?: ISpecialTx) {
-        return this.web3Contract.methods.getCertificationRequest(_certificationRequestId).call(txParams);
+        return this.web3Contract.methods
+            .getCertificationRequest(_certificationRequestId)
+            .call(txParams);
     }
 
     async getCertificationRequestsForDevice(_deviceId: string, txParams?: ISpecialTx) {
-        return this.web3Contract.methods.getCertificationRequestsForDevice(_deviceId).call(txParams);
+        return this.web3Contract.methods
+            .getCertificationRequestsForDevice(_deviceId)
+            .call(txParams);
     }
 
     async requestCertification(_data: any, _isPrivate: boolean, txParams?: ISpecialTx) {
@@ -53,8 +66,17 @@ export class Issuer extends GeneralFunctions {
         return this.send(method, txParams);
     }
 
-    async requestCertificationFor(_data: any, _forAddress: string, _isPrivate: boolean,  txParams?: ISpecialTx) {
-        const method = this.web3Contract.methods.requestCertificationFor(_data, _forAddress, _isPrivate);
+    async requestCertificationFor(
+        _data: any,
+        _forAddress: string,
+        _isPrivate: boolean,
+        txParams?: ISpecialTx
+    ) {
+        const method = this.web3Contract.methods.requestCertificationFor(
+            _data,
+            _forAddress,
+            _isPrivate
+        );
 
         return this.send(method, txParams);
     }
@@ -70,23 +92,14 @@ export class Issuer extends GeneralFunctions {
             _to,
             _requestId,
             _value,
-            _validityData,
+            _validityData
         );
 
         return this.send(method, txParams);
     }
 
-    async issue(
-        _to: string,
-        _value: number,
-        _data: any,
-        txParams?: ISpecialTx
-    ) {
-        const method = this.web3Contract.methods.issue(
-            _to,
-            _value,
-            _data
-        );
+    async issue(_to: string, _value: number, _data: any, txParams?: ISpecialTx) {
+        const method = this.web3Contract.methods.issue(_to, _value, _data);
 
         return this.send(method, txParams);
     }
@@ -102,23 +115,14 @@ export class Issuer extends GeneralFunctions {
             _to,
             _requestId,
             _commitment,
-            _validityData,
+            _validityData
         );
 
         return this.send(method, txParams);
     }
 
-    async issuePrivate(
-        _to: string,
-        _commitment: string,
-        _data: any,
-        txParams?: ISpecialTx
-    ) {
-        const method = this.web3Contract.methods.issuePrivate(
-            _to,
-            _commitment,
-            _data
-        );
+    async issuePrivate(_to: string, _commitment: string, _data: any, txParams?: ISpecialTx) {
+        const method = this.web3Contract.methods.issuePrivate(_to, _commitment, _data);
 
         return this.send(method, txParams);
     }
@@ -150,15 +154,8 @@ export class Issuer extends GeneralFunctions {
         return this.send(method, txParams);
     }
 
-    async requestMigrateToPublic(
-        _certificateId: number,
-        _hash: string,
-        txParams?: ISpecialTx
-    ) {
-        const method = this.web3Contract.methods.requestMigrateToPublic(
-            _certificateId,
-            _hash
-        );
+    async requestMigrateToPublic(_certificateId: number, _hash: string, txParams?: ISpecialTx) {
+        const method = this.web3Contract.methods.requestMigrateToPublic(_certificateId, _hash);
 
         return this.send(method, txParams);
     }
@@ -174,12 +171,7 @@ export class Issuer extends GeneralFunctions {
         _proof: any,
         txParams?: ISpecialTx
     ) {
-        const method = this.web3Contract.methods.migrateToPublic(
-            _requestId,
-            _value,
-            _salt,
-            _proof
-        );
+        const method = this.web3Contract.methods.migrateToPublic(_requestId, _value, _salt, _proof);
 
         return this.send(method, txParams);
     }
@@ -195,7 +187,7 @@ export class Issuer extends GeneralFunctions {
             _requestId,
             _proof,
             _previousCommitment,
-            _commitment,
+            _commitment
         );
 
         return this.send(method, txParams);
@@ -208,15 +200,21 @@ export class Issuer extends GeneralFunctions {
     }
 
     async getCertificationRequestForCertificate(_certificateId: number, txParams?: ISpecialTx) {
-        return this.web3Contract.methods.getCertificationRequestForCertificate(_certificateId).call(txParams);
+        return this.web3Contract.methods
+            .getCertificationRequestForCertificate(_certificateId)
+            .call(txParams);
     }
 
     async getCertificationRequestIdForCertificate(_certificateId: number, txParams?: ISpecialTx) {
-        return this.web3Contract.methods.getCertificationRequestIdForCertificate(_certificateId).call(txParams);
+        return this.web3Contract.methods
+            .getCertificationRequestIdForCertificate(_certificateId)
+            .call(txParams);
     }
 
     async getCertificateIdForCertificationRequest(_requestId: number, txParams?: ISpecialTx) {
-        return this.web3Contract.methods.getCertificateIdForCertificationRequest(_requestId).call(txParams);
+        return this.web3Contract.methods
+            .getCertificateIdForCertificationRequest(_requestId)
+            .call(txParams);
     }
 
     async isCertificatePrivate(_certificateId: number, txParams?: ISpecialTx) {

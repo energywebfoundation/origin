@@ -4,13 +4,6 @@ import { applyMiddleware, createStore } from 'redux';
 import { routerMiddleware, ConnectedRouter } from 'connected-react-router';
 import { createRootReducer } from '../../reducers';
 import { sagas } from '../../features/sagas';
-import { MarketUser } from '@energyweb/market';
-import {
-    addUser,
-    updateCurrentUserId,
-    updateFetcher,
-    IUserFetcher
-} from '../../features/users/actions';
 import { ReactWrapper, CommonWrapper } from 'enzyme';
 import { Configuration, Compliance } from '@energyweb/utils-general';
 
@@ -242,7 +235,7 @@ const setupStoreInternal = (
 };
 
 interface ICreateProducingDeviceProperties {
-    id: string;
+    id: number;
     status: DeviceStatus;
     owner?: string;
     facilityName?: string;
@@ -276,7 +269,7 @@ export const createProducingDevice = (
     const owner = properties.owner || '0x0';
     const lastSmartMeterReadWh = properties.lastSmartMeterReadWh ?? 0;
 
-    const offChainProperties: IDevice = {
+    const offChainProperties = {
         status: properties.status || DEFAULT_PRODUCING_DEVICE_OFFCHAIN_PROPERTIES.status,
         address: properties.address || DEFAULT_PRODUCING_DEVICE_OFFCHAIN_PROPERTIES.address,
         facilityName:
@@ -303,21 +296,21 @@ export const createProducingDevice = (
         province: properties.province || DEFAULT_PRODUCING_DEVICE_OFFCHAIN_PROPERTIES.province
     };
 
-    return {
+    return ({
         id: properties.id,
-        configuration: {
-            blockchainProperties: {
+        configuration: ({
+            blockchainProperties: ({
                 activeUser: {
                     address: '0x0'
                 }
-            } as Configuration.BlockchainProperties
-        } as Configuration.Entity,
+            } as Partial<Configuration.BlockchainProperties>) as Configuration.BlockchainProperties
+        } as Partial<Configuration.Entity>) as Configuration.Entity,
         owner: {
             address: owner
         },
-        offChainProperties,
+        ...offChainProperties,
         lastSmartMeterReadWh
-    } as ProducingDevice.Entity;
+    } as Partial<ProducingDevice.Entity>) as ProducingDevice.Entity;
 };
 
 // export const createCertificate = (
@@ -341,7 +334,6 @@ interface ISetupStoreOptions {
     logActions: boolean;
     offChainDataSource?: IOffChainDataSource;
     runSagas?: boolean;
-    userFetcher?: IUserFetcher;
 }
 
 const DEFAULT_SETUP_STORE_OPTIONS: ISetupStoreOptions = {
@@ -361,39 +353,12 @@ export const setupStore = (
         options.runSagas
     );
 
-    if (options.mockUserFetcher) {
-        const mockUserFetcher = options.userFetcher || {
-            async fetch(id: string) {
-                return ({
-                    id,
-                    organization: 'Example Organization'
-                } as Partial<MarketUser.Entity>) as MarketUser.Entity;
-            }
-        };
-
-        store.dispatch(updateFetcher(mockUserFetcher));
-    }
-
     return {
         store,
-        setCurrentUser: (properties: ISetCurrentUserProperties) => {
-            const user: Partial<MarketUser.Entity> = {
-                id: properties.id,
-                isRole: () => true
-            };
-
-            store.dispatch(addUser(user as MarketUser.Entity));
-
-            store.dispatch(updateCurrentUserId(user.id));
-        },
         addProducingDevice: (properties: ICreateProducingDeviceProperties) => {
             const entity = createProducingDevice(properties);
             store.dispatch(producingDeviceCreatedOrUpdated(entity));
         },
-        // addCertificate: (properties: ICreateCertificateProperties) => {
-        //     const entity = createCertificate(properties);
-        //     store.dispatch(addCertificate(entity));
-        // },
         history,
         sagasTasks,
         cleanupStore: () => {

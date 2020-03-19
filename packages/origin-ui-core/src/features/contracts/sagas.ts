@@ -16,7 +16,7 @@ import {
 import Web3 from 'web3';
 
 import { configurationUpdated } from '../actions';
-import { ProducingDevice, DeviceLogic } from '@energyweb/device-registry';
+import { ProducingDevice } from '@energyweb/device-registry';
 import {
     setError,
     setLoading,
@@ -65,7 +65,6 @@ async function initConf(
 
     const blockchainProperties: Configuration.BlockchainProperties = {
         userLogicInstance: new UserLogic(web3, contractsLookup.userLogic),
-        deviceLogicInstance: new DeviceLogic(web3, contractsLookup.deviceLogic),
         registry: new Registry(web3, contractsLookup.registry),
         issuer: new Issuer(web3, contractsLookup.issuer),
         web3
@@ -156,7 +155,7 @@ function* initEventHandler() {
 
 async function getContractsLookupFromAPI(configurationClient: IConfigurationClient) {
     try {
-        return (await configurationClient.get()).marketContractLookup;
+        return (await configurationClient.get())?.contractsLookup;
     } catch {
         return null;
     }

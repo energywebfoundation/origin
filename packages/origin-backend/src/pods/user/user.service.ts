@@ -28,8 +28,10 @@ export class UserService {
             .save();
     }
 
-    async findById(id: number) {
-        return this.findOne({ id });
+    async findById(id: number | string) {
+        const parsedId = typeof id === 'string' ? Number(id) : id;
+
+        return this.findOne({ id: parsedId });
     }
 
     async findByEmail(email: string) {
@@ -59,7 +61,7 @@ export class UserService {
         return bcrypt.hashSync(password, this.config.get<number>('PASSWORD_HASH_COST'));
     }
 
-    async attachSignedMessage(id: number, signedMessage: string) {
+    async attachSignedMessage(id: number | string, signedMessage: string) {
         if (!signedMessage) {
             throw new Error('Signed message is empty.');
         }
@@ -98,8 +100,8 @@ export class UserService {
     }
 
     private findOne(conditions: FindConditions<User>): Promise<BaseEntity & IUserWithRelationsIds> {
-        return this.repository.findOne(conditions, {
+        return (this.repository.findOne(conditions, {
             loadRelationIds: true
-        }) as any;
+        }) as Promise<IUser>) as Promise<BaseEntity & IUserWithRelationsIds>;
     }
 }

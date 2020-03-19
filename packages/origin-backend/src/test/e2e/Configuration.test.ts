@@ -5,10 +5,8 @@ import { assert } from 'chai';
 import * as fs from 'fs';
 
 import { INestApplication } from '@nestjs/common';
+import { IOriginConfiguration, IContractsLookup } from '@energyweb/origin-backend-core';
 import { startAPI } from '../..';
-import { STATUS_CODES } from '../../enums/StatusCodes';
-import { StorageErrors } from '../../enums/StorageErrors';
-import { IOriginConfiguration } from '@energyweb/origin-backend-core';
 
 const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
@@ -20,7 +18,12 @@ describe('Configuration API tests', async () => {
 
     const BASE_API_URL = `http://localhost:${process.env.BACKEND_PORT}/api`;
 
-    const marketContractLookup = '0x665b25e0edc2d9b5dee75c5f652f92f5b58be12b';
+    const contractsLookup: IContractsLookup = {
+        issuer: '0x123',
+        registry: '0x456',
+        userLogic: '0x789'
+    };
+
     const standard = 'I-REC';
     const country = {
         name: 'Test Country',
@@ -63,7 +66,7 @@ describe('Configuration API tests', async () => {
 
         it('updates configuration', async () => {
             const configuration: IOriginConfiguration = {
-                marketContractLookup,
+                contractsLookup,
                 currencies: [currency, currency2],
                 countryName: country.name,
                 regions: country.regions,

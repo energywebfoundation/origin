@@ -1,4 +1,4 @@
-import { Device } from '@energyweb/device-registry';
+import { ProducingDevice } from '@energyweb/device-registry';
 
 export function dataTest(value, name = 'data-test') {
     return {
@@ -63,10 +63,8 @@ export function wait(ms: number) {
 
 export const LOCATION_TITLE_TRANSLATION_KEY = 'device.properties.regionProvince';
 
-export function getDeviceLocationText(device: Device.Entity) {
-    return [device?.offChainProperties?.region, device?.offChainProperties?.province]
-        .filter(i => i)
-        .join(', ');
+export function getDeviceLocationText(device: ProducingDevice.Entity) {
+    return [device?.region, device?.province].filter(i => i).join(', ');
 }
 
 export const countDecimals = value => (value % 1 ? value.toString().split('.')[1].length : 0);

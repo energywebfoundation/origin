@@ -1,10 +1,12 @@
 import { Module, ValidationPipe } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
+import { APP_INTERCEPTOR, APP_PIPE } from '@nestjs/core';
 import { ScheduleModule } from '@nestjs/schedule';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import path from 'path';
 
 import { AppService } from './app.service';
+import { EmptyResultInterceptor } from './empty-result.interceptor';
 import { AccountBalanceModule } from './pods/account-balance/account-balance.module';
 import { AccountDeployerModule } from './pods/account-deployer/account-deployer.module';
 import { Account } from './pods/account/account.entity';
@@ -19,14 +21,12 @@ import { OrderBookModule } from './pods/order-book/order-book.module';
 import { Order } from './pods/order/order.entity';
 import { OrderModule } from './pods/order/order.module';
 import { ProductModule } from './pods/product/product.module';
+import { RunnerModule } from './pods/runner';
 import { Trade } from './pods/trade/trade.entity';
 import { TradeModule } from './pods/trade/trade.module';
 import { Transfer } from './pods/transfer/transfer.entity';
 import { TransferModule } from './pods/transfer/transfer.module';
 import { WithdrawalProcessorModule } from './pods/withdrawal-processor/withdrawal-processor.module';
-import { RunnerModule } from './pods/runner';
-import { APP_PIPE, APP_INTERCEPTOR } from '@nestjs/core';
-import { EmptyResultInterceptor } from './empty-result.interceptor';
 
 const getEnvFilePath = () => {
     if (__dirname.includes('dist/js')) {

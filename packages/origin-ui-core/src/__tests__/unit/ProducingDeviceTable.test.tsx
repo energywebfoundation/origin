@@ -36,13 +36,13 @@ describe('ProducingDeviceTable', () => {
         });
 
         addProducingDevice({
-            id: '0',
+            id: 0,
             status: DeviceStatus.Active,
             lastSmartMeterReadWh: 7777
         });
 
         addProducingDevice({
-            id: '1',
+            id: 1,
             status: DeviceStatus.Active,
             facilityName: 'Biomass Energy Facility',
             deviceType: 'Gaseous;Agricultural gas',

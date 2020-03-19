@@ -30,7 +30,7 @@ import { ExchangeClient } from '../../utils/exchange';
 
 function* showAccountChangedModalOnChange(): SagaIterator {
     while (true) {
-        yield take(UsersActions.updateCurrentUserId);
+        yield take(UsersActions.setActiveBlockchainAccountAddress);
         const conf: Configuration.Entity = yield select(getConfiguration);
 
         if (!conf) {

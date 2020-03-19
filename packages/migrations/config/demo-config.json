@@ -145,7 +145,7 @@
     ],
     "flow": [
         {
-            "type": "CREATE_ACCOUNT",
+            "type": "CREATE_USER",
             "data": {
                 "firstName": "Issuer",
                 "lastName": "Surname",
@@ -160,7 +160,7 @@
             }
         },
         {
-            "type": "CREATE_ACCOUNT",
+            "type": "CREATE_USER",
             "data": {
                 "firstName": "Device",
                 "lastName": "Manager",
@@ -176,7 +176,7 @@
             }
         },
         {
-            "type": "CREATE_ACCOUNT",
+            "type": "CREATE_USER",
             "data": {
                 "firstName": "Device",
                 "lastName": "Manager 2",
@@ -192,7 +192,7 @@
             }
         },
         {
-            "type": "CREATE_ACCOUNT",
+            "type": "CREATE_USER",
             "data": {
                 "firstName": "Trader",
                 "lastName": "Surname",
@@ -207,7 +207,7 @@
             }
         },
         {
-            "type": "CREATE_ACCOUNT",
+            "type": "CREATE_USER",
             "data": {
                 "firstName": "Matcher",
                 "lastName": "Surname",
@@ -222,7 +222,7 @@
             }
         },
         {
-            "type": "CREATE_ACCOUNT",
+            "type": "CREATE_USER",
             "data": {
                 "firstName": "Listener",
                 "lastName": "Surname",
@@ -239,9 +239,6 @@
         {
             "type": "CREATE_PRODUCING_DEVICE",
             "data": {
-                "smartMeter": "0x43daf8EF8C29126cDBABEDD07b364ad9e49aa6f7",
-                "smartMeterPK": "0xf4254d3ddc25041a85b40877184eb2f1ff9be8b686d9edacf13ce6fa958d562e",
-                "owner": "0x5b1b89a48c1fb9b6ef7fb77c453f2aaf4b156d45",
                 "operationalSince": 1514764800,
                 "capacityInW": 10000,
                 "status": "Active",
@@ -256,18 +253,19 @@
                 "otherGreenAttributes": "N.A.",
                 "typeOfPublicSupport": "N.A",
                 "facilityName": "Wuthering Heights Windfarm",
-                "externalDeviceIds": {
+                "externalDeviceIds": [{
                     "id": 123,
                     "type": "Smart Meter Readings API ID"
+                }],
+                "user": {
+                    "email": "devicemanager@mailinator.com",
+                    "password": "test"
                 }
             }
         },
         {
             "type": "CREATE_PRODUCING_DEVICE",
             "data": {
-                "smartMeter": "0x7942d95A7DA329C1De09b5437dCEd7Bf68EEC0F6",
-                "smartMeterPK": "0xfd59741dab6ba03ed19a7810f8d852cb3ac57e3f816f8131c47bdf863c978ab8",
-                "owner": "0xfd863c662307fcf0c15f0b9f74f1d06544f19908",
                 "operationalSince": 1483228800,
                 "capacityInW": 70000,
                 "status": "Active",
@@ -285,15 +283,16 @@
                 "deviceType": "Solar;Photovoltaic;Roof mounted",
                 "otherGreenAttributes": "N.A.",
                 "typeOfPublicSupport": "N.A",
-                "facilityName": "Solar Facility A"
+                "facilityName": "Solar Facility A",
+                "user": {
+                    "email": "devicemanager2@mailinator.com",
+                    "password": "test"
+                }
             }
         },
         {
             "type": "CREATE_PRODUCING_DEVICE",
             "data": {
-                "smartMeter": "0x30e69056aAADEE6A3B9ee98afBd34eb6c10d8556",
-                "smartMeterPK": "0xc49bbcd1f71568b55d1ad85bae035b94df402f875a7a6d32ff100fc7e6bb6e33",
-                "owner": "0x5b1b89a48c1fb9b6ef7fb77c453f2aaf4b156d45",
                 "operationalSince": 1514764800,
                 "capacityInW": 10000,
                 "status": "Active",
@@ -307,7 +306,11 @@
                 "deviceType": "Solid;Biomass from agriculture;Agricultural products",
                 "otherGreenAttributes": "N.A.",
                 "typeOfPublicSupport": "N.A",
-                "facilityName": "Biomass Facility"
+                "facilityName": "Biomass Facility",
+                "user": {
+                    "email": "devicemanager@mailinator.com",
+                    "password": "test"
+                }
             }
         }
     ]

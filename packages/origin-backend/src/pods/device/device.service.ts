@@ -1,7 +1,19 @@
-import { Injectable, Inject, UnprocessableEntityException } from '@nestjs/common';
+import {
+    Injectable,
+    Inject,
+    UnprocessableEntityException,
+    BadRequestException
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, FindOneOptions } from 'typeorm';
-import { ISmartMeterReadingsAdapter, ISmartMeterRead } from '@energyweb/origin-backend-core';
+import { Repository, FindOneOptions, BaseEntity } from 'typeorm';
+import {
+    ISmartMeterReadingsAdapter,
+    ISmartMeterRead,
+    IDeviceWithRelationsIds,
+    IDevice,
+    DeviceCreateData
+} from '@energyweb/origin-backend-core';
+import { validate } from 'class-validator';
 import { Device } from './device.entity';
 import { SM_READS_ADAPTER } from '../../const';
 
@@ -13,11 +25,14 @@ export class DeviceService {
         @Inject(SM_READS_ADAPTER) private smartMeterReadingsAdapter?: ISmartMeterReadingsAdapter
     ) {}
 
-    async findOne(id: string, options: FindOneOptions<Device> = {}) {
-        const device = await this.repository.findOne(id, {
+    async findOne(
+        id: string,
+        options: FindOneOptions<Device> = {}
+    ): Promise<BaseEntity & IDeviceWithRelationsIds> {
+        const device = ((await this.repository.findOne(id, {
             loadRelationIds: true,
             ...options
-        });
+        })) as IDevice) as BaseEntity & IDeviceWithRelationsIds;
 
         if (this.smartMeterReadingsAdapter) {
             device.lastSmartMeterReading = await this.smartMeterReadingsAdapter.getLatest(device);
@@ -27,8 +42,35 @@ export class DeviceService {
         return device;
     }
 
+    async create(data: DeviceCreateData & Pick<IDeviceWithRelationsIds, 'organization'>) {
+        const newEntity = new Device();
+        Object.assign(newEntity, data);
+
+        const validationErrors = await validate(newEntity);
+
+        if (validationErrors.length > 0) {
+            throw new UnprocessableEntityException({
+                success: false,
+                errors: validationErrors
+            });
+        }
+
+        try {
+            await this.repository.save(newEntity);
+
+            return newEntity;
+        } catch (error) {
+            console.warn('Error while saving entity', error);
+            throw new BadRequestException('Could not save device.');
+        }
+    }
+
+    async remove(entity: Device | (BaseEntity & IDeviceWithRelationsIds)) {
+        this.repository.remove((entity as IDevice) as Device);
+    }
+
     async getAllSmartMeterReadings(id: string) {
-        const device = await this.repository.findOne(id);
+        const device = await this.findOne(id);
 
         if (this.smartMeterReadingsAdapter) {
             return this.smartMeterReadingsAdapter.getAll(device);
@@ -38,7 +80,7 @@ export class DeviceService {
     }
 
     async addSmartMeterReading(id: string, newSmartMeterRead: ISmartMeterRead): Promise<void> {
-        const device = await this.repository.findOne(id);
+        const device = await this.findOne(id);
 
         if (this.smartMeterReadingsAdapter) {
             this.smartMeterReadingsAdapter.save(device, newSmartMeterRead);
@@ -48,7 +90,10 @@ export class DeviceService {
         const latestSmartMeterReading = (smReads: ISmartMeterRead[]) => smReads[smReads.length - 1];
 
         if (device.smartMeterReads.length > 0) {
-            if (newSmartMeterRead.timestamp <= latestSmartMeterReading(device.smartMeterReads).timestamp) {
+            if (
+                newSmartMeterRead.timestamp <=
+                latestSmartMeterReading(device.smartMeterReads).timestamp
+            ) {
                 throw new UnprocessableEntityException({
                     message: `Smart meter reading timestamp should be higher than latest.`
                 });

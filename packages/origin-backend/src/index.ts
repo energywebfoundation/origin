@@ -7,7 +7,7 @@ import * as PortUtils from './port';
 import { DeviceModule } from './pods/device/device.module';
 import { DeviceService } from './pods/device/device.service';
 
-export * from './pods/device-types';
+export * from './pods/configuration';
 
 export async function startAPI(logger?: LoggerService) {
     const PORT = PortUtils.getPort();

@@ -5,7 +5,6 @@ import { NavLink, Route, Redirect } from 'react-router-dom';
 import { PageContent } from '../PageContent/PageContent';
 import { useLinks } from '../../utils/routing';
 import { getUserOffchain } from '../../features/users/selectors';
-import { AccountImport } from './AccountImport';
 import { AccountSettings } from './AccountSettings';
 import { UserRegister } from './UserRegister';
 import { UserLogin } from './UserLogin';
@@ -24,12 +23,8 @@ export function Account() {
         {
             key: 'settings',
             label: 'settings.navigation.settings',
-            component: AccountSettings
-        },
-        {
-            key: 'import',
-            label: 'settings.navigation.import',
-            component: AccountImport
+            component: AccountSettings,
+            hide: !isLoggedIn
         },
         {
             key: 'user-login',

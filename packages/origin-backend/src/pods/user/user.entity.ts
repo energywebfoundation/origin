@@ -1,7 +1,7 @@
 import { Entity, PrimaryGeneratedColumn, Column, BaseEntity, Unique, ManyToOne } from 'typeorm';
 import { Length, IsNotEmpty } from 'class-validator';
 
-import { IUser } from '@energyweb/origin-backend-core';
+import { IUser, IAutoPublishConfig } from '@energyweb/origin-backend-core';
 
 import { Organization } from '../organization/organization.entity';
 
@@ -36,6 +36,12 @@ export class User extends BaseEntity implements IUser {
 
     @Column({ nullable: true })
     blockchainAccountSignedMessage: string;
+
+    @Column({ nullable: true })
+    notifications: boolean;
+
+    @Column('simple-json', { nullable: true })
+    autoPublish: IAutoPublishConfig;
 
     @ManyToOne(
         () => Organization,

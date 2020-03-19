@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { IUser } from '@energyweb/origin-backend-core';
 import { createParamDecorator } from '@nestjs/common';
 

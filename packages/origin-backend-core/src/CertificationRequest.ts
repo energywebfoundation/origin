@@ -1,4 +1,4 @@
-import { IDeviceWithId } from './Device';
+import { IDevice } from './Device';
 
 export interface ICertificationRequestProperties {
     id: string;
@@ -12,16 +12,22 @@ export interface ICertificationRequestProperties {
 }
 
 export interface ICertificationRequest extends ICertificationRequestProperties {
-    device: IDeviceWithId | IDeviceWithId['id'];
+    device: IDevice | IDevice['id'];
 }
 
 export interface ICertificationRequestWithRelationsIds extends ICertificationRequest {
-    device: IDeviceWithId['id'];
+    device: IDevice['id'];
 }
 
 export interface ICertificationRequestWithRelations extends ICertificationRequest {
-    device: IDeviceWithId;
+    device: IDevice;
 }
 
-export type CertificationRequestOffChainData = Pick<ICertificationRequestProperties, 'id' | 'energy' | 'files'>;
-export type CertificationRequestUpdateData = Pick<CertificationRequestOffChainData, 'energy' | 'files'>;
+export type CertificationRequestOffChainData = Pick<
+    ICertificationRequestProperties,
+    'id' | 'energy' | 'files'
+>;
+export type CertificationRequestUpdateData = Pick<
+    CertificationRequestOffChainData,
+    'energy' | 'files'
+>;
