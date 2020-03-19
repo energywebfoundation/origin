@@ -9,21 +9,19 @@ import { Bid } from './Bid';
 import { Order, OrderSide, OrderStatus } from './Order';
 import { Product } from './Product';
 import { Trade } from './Trade';
-// import { DirectBid } from './DirectBid';
+import { DirectBuy } from './DirectBuy';
 
-export type TradeExecutedEvent = { trade: Trade; ask: Ask; bid: Bid };
-
-// export type DirectBidExecutedEvent = { trade: Trade; ask: Ask; bid: DirectBid };
+export type TradeExecutedEvent = { trade: Trade; ask: Ask; bid: Bid | DirectBuy };
 
 export type StatusChangedEvent = { orderId: string; status: OrderStatus; prevStatus: OrderStatus };
 
 enum ActionKind {
     AddOrder,
-    AddDirectBid,
+    AddDirectBuy,
     CancelOrder
 }
 
-type OrderBookAction = { kind: ActionKind; value: Order | string };
+type OrderBookAction = { kind: ActionKind; value: Order | DirectBuy | string };
 
 export class MatchingEngine {
     private bids: List<Bid> = List<Bid>();
@@ -49,6 +47,13 @@ export class MatchingEngine {
         this.pendingActions = this.pendingActions.concat({
             kind: ActionKind.AddOrder,
             value: order
+        });
+    }
+
+    public submitDirectBuy(directBuy: DirectBuy) {
+        this.pendingActions = this.pendingActions.concat({
+            kind: ActionKind.AddDirectBuy,
+            value: directBuy
         });
     }
 
@@ -112,10 +117,19 @@ export class MatchingEngine {
 
                     break;
                 }
+                case ActionKind.AddDirectBuy: {
+                    const directBuy = action.value as DirectBuy;
+                    const trade = this.directBuy(directBuy);
+
+                    trades = trades.concat(trade);
+                    break;
+                }
                 default:
                     throw new Error('Unexpected action');
             }
         });
+
+        this.cleanOrderBook();
 
         if (!trades.isEmpty()) {
             this.trades.next(trades);
@@ -133,13 +147,34 @@ export class MatchingEngine {
         return unSorted.sortBy(o => direction * o.price);
     }
 
+    private directBuy(bid: DirectBuy): TradeExecutedEvent {
+        const ask = this.asks.find(o => o.id === bid.askId);
+
+        if (ask.userId === bid.userId) {
+            throw new Error('Unable to direct buy your own bid');
+        }
+        if (ask.volume.lt(bid.volume)) {
+            throw new Error('Remaining volume is too low');
+        }
+        if (ask.price !== bid.price) {
+            throw new Error('Unexpected price change');
+        }
+
+        const updated = ask.updateWithTradedVolume(bid.volume);
+        this.asks = this.updateOrder(this.asks, updated);
+
+        const trade = new Trade(bid, updated, bid.volume, bid.price);
+
+        return { trade, ask: updated, bid };
+    }
+
     private match() {
         let executedTrades = List<TradeExecutedEvent>();
 
         this.bids.forEach(bid => {
             const executed = this.generateTrades(bid);
             if (executed.isEmpty()) {
-                return false;
+                return true;
             }
 
             this.updateOrderBook(executed);
@@ -148,8 +183,6 @@ export class MatchingEngine {
 
             return true;
         });
-
-        this.cleanOrderBook();
 
         return executedTrades;
     }
@@ -185,16 +218,17 @@ export class MatchingEngine {
             : { result: false };
     }
 
+    private updateOrder<T extends Order>(source: List<T>, order: T) {
+        return source.set(
+            source.findIndex(o => o.id === order.id),
+            order
+        );
+    }
+
     private updateOrderBook(matched: List<TradeExecutedEvent>) {
         matched.forEach(m => {
-            this.asks = this.asks.set(
-                this.asks.findIndex(ask => ask.id === m.ask.id),
-                m.ask
-            );
-            this.bids = this.bids.set(
-                this.bids.findIndex(bid => bid.id === m.bid.id),
-                m.bid
-            );
+            this.asks = this.updateOrder(this.asks, m.ask);
+            this.bids = this.updateOrder(this.bids, m.bid);
         });
     }
 

@@ -11,6 +11,7 @@ import { Operator } from '../Operator';
 import { Order, OrderStatus } from '../Order';
 import { Product } from '../Product';
 import { Trade } from '../Trade';
+import { DirectBuy } from '../DirectBuy';
 
 interface IOrderCreationArgs {
     product?: Product;
@@ -106,6 +107,26 @@ describe('Matching tests', () => {
         );
     };
 
+    const createDirectBuy = (askId: string, args?: IOrderCreationArgs) => {
+        return new DirectBuy(
+            (initialOrderId++).toString(),
+            args?.userId || defaultBuyer,
+            args?.price || twoUSD,
+            args?.volume || onekWh,
+            askId
+        );
+    };
+
+    const createOrderBookWithSpread = (asks: IOrderCreationArgs[], bids: IOrderCreationArgs[]) => {
+        let startAskPrice = asks.length + bids.length + 2;
+        let startBidPrice = startAskPrice - 1;
+
+        return {
+            asks: asks.map(a => createAsk({ ...a, price: startAskPrice++ })),
+            bids: bids.map(b => createBid({ ...b, price: startBidPrice-- }))
+        };
+    };
+
     const assertOrders = (expected: List<Order>, current: List<Order>) => {
         assert.equal(current.size, expected.size, 'Expected amount of orders');
 
@@ -160,6 +181,8 @@ describe('Matching tests', () => {
         testCase.orders.forEach(a => {
             if (typeof a === 'string') {
                 matchingEngine.cancelOrder(a);
+            } else if (a instanceof DirectBuy) {
+                matchingEngine.submitDirectBuy(a);
             } else {
                 matchingEngine.submitOrder(a);
             }
@@ -475,31 +498,20 @@ describe('Matching tests', () => {
 
     describe('order book filtering by product', () => {
         it('should return whole order book when no product was set', () => {
-            const asks = [
-                createAsk({ price: 8 }),
-                createAsk({ price: 9 }),
-                createAsk({ price: 10 })
-            ];
-            const bids = [
-                createBid({ price: 7 }),
-                createBid({ price: 6 }),
-                createBid({ price: 5 })
-            ];
+            const { asks, bids } = createOrderBookWithSpread([{}, {}, {}], [{}, {}, {}]);
 
             executeOrderBookQuery(asks, bids, {}, asks, bids);
         });
 
         it('should return order book based on device type where bids are "buy anything" product', () => {
-            const asks = [
-                createAsk({ product: { deviceType: solarTypeLevel3 }, price: 8 }),
-                createAsk({ product: { deviceType: solarTypeLevel32 }, price: 9 }),
-                createAsk({ product: { deviceType: windTypeLevel2 }, price: 10 })
-            ];
-            const bids = [
-                createBid({ product: {}, price: 7 }),
-                createBid({ product: {}, price: 6 }),
-                createBid({ product: {}, price: 5 })
-            ];
+            const { asks, bids } = createOrderBookWithSpread(
+                [
+                    { product: { deviceType: solarTypeLevel3 } },
+                    { product: { deviceType: solarTypeLevel32 } },
+                    { product: { deviceType: windTypeLevel2 } }
+                ],
+                [{}, {}, {}]
+            );
 
             const expectedAsks = asks.slice(0, -1);
 
@@ -524,17 +536,19 @@ describe('Matching tests', () => {
         });
 
         it('should return order book based on device type where bids are of different types', () => {
-            const asks = [
-                createAsk({ product: { deviceType: solarTypeLevel3 } }),
-                createAsk({ product: { deviceType: solarTypeLevel32 } }),
-                createAsk({ product: { deviceType: windTypeLevel2 } })
-            ];
-            const bids = [
-                createBid({ product: { deviceType: windTypeLevel1 } }),
-                createBid({ product: { deviceType: windTypeLevel2 } }),
-                createBid({ product: { deviceType: solarTypeLevel1 } }),
-                createBid({ product: { deviceType: solarTypeLevel2 } })
-            ];
+            const { asks, bids } = createOrderBookWithSpread(
+                [
+                    { product: { deviceType: solarTypeLevel3 } },
+                    { product: { deviceType: solarTypeLevel32 } },
+                    { product: { deviceType: windTypeLevel2 } }
+                ],
+                [
+                    { product: { deviceType: windTypeLevel1 } },
+                    { product: { deviceType: windTypeLevel2 } },
+                    { product: { deviceType: solarTypeLevel1 } },
+                    { product: { deviceType: solarTypeLevel2 } }
+                ]
+            );
 
             const expectedAsks = [asks[0], asks[1]];
             const expectedBids = [bids[2], bids[3]];
@@ -549,20 +563,26 @@ describe('Matching tests', () => {
         });
 
         it('should return order book based on device type where bids are of different types with multiple choices', () => {
-            const asks = [
-                createAsk({ product: { deviceType: solarTypeLevel3 } }),
-                createAsk({ product: { deviceType: solarTypeLevel32 } }),
-                createAsk({ product: { deviceType: windTypeLevel2 } }),
-                createAsk({ product: { deviceType: marineTypeLevel3 } })
-            ];
-            const bids = [
-                createBid({ product: { deviceType: marineTypeLevel1 } }),
-                createBid({ product: { deviceType: windTypeLevel1.concat(solarTypeLevel1) } }),
-                createBid({ product: { deviceType: marineTypeLevel1.concat(solarTypeLevel1) } }),
-                createBid({ product: { deviceType: windTypeLevel2 } }),
-                createBid({ product: { deviceType: solarTypeLevel1 } }),
-                createBid({ product: { deviceType: solarTypeLevel2 } })
-            ];
+            const { asks, bids } = createOrderBookWithSpread(
+                [
+                    { product: { deviceType: solarTypeLevel3 } },
+                    { product: { deviceType: solarTypeLevel32 } },
+                    { product: { deviceType: windTypeLevel2 } },
+                    { product: { deviceType: marineTypeLevel3 } }
+                ],
+                [
+                    { product: { deviceType: marineTypeLevel1 } },
+                    {
+                        product: { deviceType: windTypeLevel1.concat(solarTypeLevel1) }
+                    },
+                    {
+                        product: { deviceType: marineTypeLevel1.concat(solarTypeLevel1) }
+                    },
+                    { product: { deviceType: windTypeLevel2 } },
+                    { product: { deviceType: solarTypeLevel1 } },
+                    { product: { deviceType: solarTypeLevel2 } }
+                ]
+            );
 
             const expectedAsks = asks.slice(0, -1);
             const expectedBids = bids.slice(1);
@@ -577,26 +597,25 @@ describe('Matching tests', () => {
         });
 
         it('should return order book based on location', () => {
-            const asks = [
-                createAsk({
-                    product: { location: locationCentral, deviceType: solarTypeLevel3 },
-                    price: 8
-                }),
-                createAsk({
-                    product: { location: locationEast, deviceType: solarTypeLevel3 },
-                    price: 9
-                }),
-                createAsk({
-                    product: { location: locationCentral, deviceType: solarTypeLevel3 },
-                    price: 10
-                })
-            ];
-            const bids = [
-                createBid({ product: { location: ['Thailand'] }, price: 7 }),
-                createBid({ product: { location: ['Thailand'] }, price: 6 }),
-                createBid({ product: { location: locationCentral }, price: 5 }),
-                createBid({ product: { location: locationEast }, price: 4 })
-            ];
+            const { asks, bids } = createOrderBookWithSpread(
+                [
+                    {
+                        product: { location: locationCentral, deviceType: solarTypeLevel3 }
+                    },
+                    {
+                        product: { location: locationEast, deviceType: solarTypeLevel3 }
+                    },
+                    {
+                        product: { location: locationCentral, deviceType: solarTypeLevel3 }
+                    }
+                ],
+                [
+                    { product: { location: ['Thailand'] } },
+                    { product: { location: ['Thailand'] } },
+                    { product: { location: locationCentral } },
+                    { product: { location: locationEast } }
+                ]
+            );
 
             const expectedAsks = [asks[1]];
             const expectedBids = [bids[0], bids[1], bids[3]];
@@ -611,27 +630,26 @@ describe('Matching tests', () => {
         });
 
         it('should return order book based on multiple locations', () => {
-            const asks = [
-                createAsk({
-                    product: { location: locationCentral, deviceType: solarTypeLevel3 },
-                    price: 8
-                }),
-                createAsk({
-                    product: { location: locationEast, deviceType: solarTypeLevel3 },
-                    price: 9
-                }),
-                createAsk({
-                    product: { location: locationCentral, deviceType: solarTypeLevel3 },
-                    price: 10
-                })
-            ];
-            const bids = [
-                createBid({ product: { location: ['Thailand'] }, price: 7 }),
-                createBid({ product: { location: ['Thailand;Central'] }, price: 6 }),
-                createBid({ product: { location: locationCentral }, price: 5 }),
-                createBid({ product: { location: locationEast }, price: 4 }),
-                createBid({ product: { location: ['Malaysia'] }, price: 3 })
-            ];
+            const { asks, bids } = createOrderBookWithSpread(
+                [
+                    {
+                        product: { location: locationCentral, deviceType: solarTypeLevel3 }
+                    },
+                    {
+                        product: { location: locationEast, deviceType: solarTypeLevel3 }
+                    },
+                    {
+                        product: { location: locationCentral, deviceType: solarTypeLevel3 }
+                    }
+                ],
+                [
+                    { product: { location: ['Thailand'] } },
+                    { product: { location: ['Thailand;Central'] } },
+                    { product: { location: locationCentral } },
+                    { product: { location: locationEast } },
+                    { product: { location: ['Malaysia'] } }
+                ]
+            );
 
             const expectedAsks = asks;
             const expectedBids = bids.slice(0, -1);
@@ -942,6 +960,70 @@ describe('Matching tests', () => {
                     expectedTrades,
                     bidsAfter,
                     expectedStatusChanges
+                },
+                done
+            );
+        });
+    });
+
+    describe('DirectBuy orders tests', () => {
+        it('should direct buy send ask', done => {
+            const ask1 = createAsk();
+            const ask2 = createAsk({ price: 2 * ask1.price });
+
+            const directBuy = createDirectBuy(ask2.id, { price: ask2.price });
+
+            const expectedTrades = [new Trade(directBuy, ask2, onekWh, ask2.price)];
+
+            const asksAfter = [ask1];
+
+            executeTestCase(
+                {
+                    orders: [ask1, ask2, directBuy],
+                    expectedTrades,
+                    asksAfter
+                },
+                done
+            );
+        });
+
+        it('should direct buy partial ask volume', done => {
+            const ask1 = createAsk();
+            const ask2 = createAsk({ price: 2 * ask1.price, volume: twoKWh });
+
+            const directBuy = createDirectBuy(ask2.id, { price: ask2.price });
+
+            const expectedTrades = [new Trade(directBuy, ask2, onekWh, ask2.price)];
+
+            const asksAfter = [ask1, ask2];
+
+            executeTestCase(
+                {
+                    orders: [ask1, ask2, directBuy],
+                    expectedTrades,
+                    asksAfter
+                },
+                done
+            );
+        });
+
+        it('should direct buy partial ask volume and match remaining', done => {
+            const ask1 = createAsk();
+            const ask2 = createAsk({ price: 2 * ask1.price, volume: twoKWh });
+
+            const directBuy = createDirectBuy(ask2.id, { price: ask2.price });
+            const bid = createBid({ price: ask2.price, volume: twoKWh });
+
+            const expectedTrades = [
+                new Trade(directBuy, ask2, onekWh, ask2.price),
+                new Trade(bid, ask1, onekWh, ask1.price),
+                new Trade(bid, ask2, onekWh, ask2.price)
+            ];
+
+            executeTestCase(
+                {
+                    orders: [ask1, ask2, directBuy, bid],
+                    expectedTrades
                 },
                 done
             );
