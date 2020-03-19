@@ -1,6 +1,6 @@
 import React from 'react';
 import { Route, NavLink, Redirect } from 'react-router-dom';
-import { Role } from '@energyweb/user-registry';
+import { Role, isRole } from '@energyweb/origin-backend-core';
 import { PageContent } from './PageContent/PageContent';
 import { CertificateTable, SelectedState } from './CertificateTable';
 import { CertificateDetailView } from './CertificateDetailView';
@@ -10,7 +10,7 @@ import { getUserOffchain } from '../features/users/selectors';
 import { getCurrencies } from '../features/general/selectors';
 import { useTranslation } from 'react-i18next';
 import { Exchange } from './exchange';
-import { isRole, useLinks } from '../utils';
+import { useLinks } from '../utils';
 
 export function Certificates() {
     const currencies = useSelector(getCurrencies);

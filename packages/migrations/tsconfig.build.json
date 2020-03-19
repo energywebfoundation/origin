@@ -7,9 +7,6 @@
     "include": ["src/**/*"],
     "references": [
         {
-            "path": "../user-registry/tsconfig.build.json"
-        },
-        {
             "path": "../utils-general/tsconfig.build.json"
         },
         {

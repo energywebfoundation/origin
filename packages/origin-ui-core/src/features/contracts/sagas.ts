@@ -30,7 +30,6 @@ import { IStoreState } from '../../types';
 import { getOffChainDataSource, getEnvironment } from '../general/selectors';
 import { getContractsLookup } from './selectors';
 import { IContractsLookup } from '@energyweb/origin-backend-core';
-import { UserLogic } from '@energyweb/user-registry';
 
 enum ERROR {
     WRONG_NETWORK_OR_CONTRACT_ADDRESS = "Please make sure you've chosen correct blockchain network and the contract address is valid."
@@ -64,7 +63,6 @@ async function initConf(
     }
 
     const blockchainProperties: Configuration.BlockchainProperties = {
-        userLogicInstance: new UserLogic(web3, contractsLookup.userLogic),
         registry: new Registry(web3, contractsLookup.registry),
         issuer: new Issuer(web3, contractsLookup.issuer),
         web3

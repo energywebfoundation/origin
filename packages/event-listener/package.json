@@ -36,7 +36,6 @@
     "dependencies": {
         "@energyweb/device-registry": "5.1.1",
         "@energyweb/origin-backend-client": "4.0.0",
-        "@energyweb/user-registry": "3.0.4",
         "@energyweb/utils-general": "7.0.2",
         "@types/mandrill-api": "^1.0.30",
         "@types/nodemailer": "^6.2.1",

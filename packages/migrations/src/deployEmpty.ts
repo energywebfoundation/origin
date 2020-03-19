@@ -1,6 +1,5 @@
 import Web3 from 'web3';
 
-import { Contracts as UserContracts } from '@energyweb/user-registry';
 import { Contracts as IssuerContracts } from '@energyweb/issuer';
 import { IContractsLookup } from '@energyweb/origin-backend-core';
 import writeJsonFile from 'write-json-file';
@@ -14,11 +13,6 @@ export async function deployEmptyContracts(): Promise<IContractsLookup> {
 
     console.log('-----------------------------------------------------------');
 
-    // deploy user, device and market contracts and store instances of lookup contracts
-    const userLogic = await UserContracts.migrateUserRegistryContracts(web3, adminPK);
-    const userLogicAddress = userLogic.web3Contract.options.address;
-    logger.info(`UserLogic Contract Deployed: ${userLogicAddress}`);
-
     const registry = await IssuerContracts.migrateRegistry(web3, adminPK);
     const registryAddress = registry.web3Contract.options.address;
     logger.info(`Registry Contract Deployed: ${registryAddress}`);
@@ -31,7 +25,6 @@ export async function deployEmptyContracts(): Promise<IContractsLookup> {
 
     // save addresses in a config file
     const deployResult: IContractsLookup = {
-        userLogic: userLogicAddress,
         registry: registryAddress,
         issuer: issuerAddress
     };

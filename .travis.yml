@@ -19,17 +19,12 @@ cache:
     directories:
         - packages/utils-general/build
         - packages/utils-general/dist
-        - packages/user-registry/schemas
-        - packages/user-registry/build
-        - packages/user-registry/dist
         - packages/origin-backend/dist
         - packages/origin-backend-client/dist
         - packages/origin-backend-app/dist
         - packages/device-registry/schemas
         - packages/device-registry/build
         - packages/device-registry/dist
-        - packages/origin/build
-        - packages/origin/dist
         - packages/event-listener/dist
         - packages/exchange/dist
         - packages/exchange-core/dist

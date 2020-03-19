@@ -37,7 +37,8 @@ export const onboardDemo = async (actionString: string, conf: Configuration.Enti
                 enabled: false,
                 priceInCents: 150,
                 currency: currencies[0]
-            }
+            },
+            rights: action.data.rights
         });
 
         conf.logger.info(`Onboarded a new user: ${action.data.email}`);

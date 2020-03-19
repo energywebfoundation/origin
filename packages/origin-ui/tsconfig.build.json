@@ -10,9 +10,6 @@
     "include": ["./src/**/*"],
     "references": [
         {
-            "path": "../user-registry/tsconfig.build.shakeable.json"
-        },
-        {
             "path": "../utils-general/tsconfig.build.json"
         },
         {

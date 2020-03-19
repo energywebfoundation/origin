@@ -4,16 +4,15 @@ import Web3 from 'web3';
 import { IOffChainDataSource } from '@energyweb/origin-backend-client';
 import { IDeviceTypeService } from './DeviceTypeService';
 
-export interface Entity<TUserLogic = any, TRegistry = any, TIssuer = any> {
-    blockchainProperties: BlockchainProperties<TUserLogic, TRegistry, TIssuer>;
+export interface Entity<TRegistry = any, TIssuer = any> {
+    blockchainProperties: BlockchainProperties<TRegistry, TIssuer>;
     logger: Winston.Logger;
     deviceTypeService?: IDeviceTypeService;
     offChainDataSource?: IOffChainDataSource;
 }
 
-export interface BlockchainProperties<TUserLogic = any, TRegistry = any, TIssuer = any> {
+export interface BlockchainProperties<TRegistry = any, TIssuer = any> {
     web3: Web3;
-    userLogicInstance?: TUserLogic;
     registry?: TRegistry;
     issuer?: TIssuer;
     activeUser?: EthAccount;
