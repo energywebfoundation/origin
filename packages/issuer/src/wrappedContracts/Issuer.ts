@@ -164,6 +164,10 @@ export class Issuer extends GeneralFunctions {
         return this.web3Contract.methods.getMigrationRequestId(_certificateId).call(txParams);
     }
 
+    async getMigrationRequest(_requestId: number, txParams?: ISpecialTx) {
+        return this.web3Contract.methods.getMigrationRequest(_requestId).call(txParams);
+    }
+
     async migrateToPublic(
         _requestId: number,
         _value: number,

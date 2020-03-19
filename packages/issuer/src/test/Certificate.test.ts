@@ -177,6 +177,8 @@ describe('Cerificate tests', () => {
 
         await certificate.transfer(accountTrader, amountToSendToTrader);
 
+        certificate = await certificate.sync();
+
         setActiveUser(traderPK);
 
         await certificate.claim(amountToSendToTrader);
@@ -197,6 +199,7 @@ describe('Cerificate tests', () => {
         setActiveUser(deviceOwnerPK);
 
         await certificate.requestMigrateToPublic();
+        certificate = await certificate.sync();
 
         setActiveUser(issuerPK);
 

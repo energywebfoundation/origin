@@ -76,8 +76,7 @@ export class Entity extends BlockchainDataModelEntity.Entity implements ICertifi
 
         if (this.isPrivate) {
             const commitment: IOwnershipCommitment = {
-                ownerAddress: this.owner,
-                volume: this.energy
+                [this.owner]: this.energy
             };
             const { rootHash } = this.prepareEntityCreation(commitment, OwnershipCommitmentSchema);
 
@@ -117,8 +116,7 @@ export class Entity extends BlockchainDataModelEntity.Entity implements ICertifi
         const issuer: Issuer = this.configuration.blockchainProperties.issuer;
 
         const commitment: IOwnershipCommitment = {
-            ownerAddress: this.configuration.blockchainProperties.activeUser.address,
-            volume: value
+            [this.configuration.blockchainProperties.activeUser.address]: value
         };
         const { rootHash } = this.prepareEntityCreation(commitment, OwnershipCommitmentSchema);
 

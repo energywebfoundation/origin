@@ -251,6 +251,10 @@ contract Issuer is Initializable, Ownable {
         return id;
 	}
 
+    function getMigrationRequest(uint _requestId) external onlyOwner returns (RequestStateChange memory) {
+        return requestMigrateToPublicStorage[_requestId];
+    }
+
     function getMigrationRequestId(uint _certificateId) external onlyOwner returns (uint256) {
         bool found = false;
 
@@ -275,8 +279,8 @@ contract Issuer is Initializable, Ownable {
 
 		require(!request.approved, "migrateToPublic(): Request already approved");
         require(!migrations[request.certificateId], "migrateToPublic(): certificate already migrated");
-        require(validateOwnerProof("ownerAddress", request.owner, _salt, commitments[request.certificateId], _proof), "Invalid proof");
-		require(request.hash == keccak256(abi.encodePacked("ownerAddress", request.owner, _salt)), "Requested hash does not match");
+        require(validateOwnershipProof(request.owner, _value, _salt, commitments[request.certificateId], _proof), "Invalid proof");
+		require(request.hash == keccak256(abi.encodePacked(request.owner, _value, _salt)), "Requested hash does not match");
 
 		request.approved = true;
 
@@ -300,14 +304,14 @@ contract Issuer is Initializable, Ownable {
 		return abi.decode(_data, (uint, uint, string));
 	}
 
-	function validateOwnerProof(
-        string memory _key,
+	function validateOwnershipProof(
         address _ownerAddress,
+        uint _volume,
         string memory _salt,
         bytes32 _rootHash,
         Proof[] memory _proof
     ) private pure returns (bool) {
-		bytes32 leafHash = keccak256(abi.encodePacked(_key, _ownerAddress, _salt));
+		bytes32 leafHash = keccak256(abi.encodePacked(_ownerAddress, _volume, _salt));
 
 		return validateMerkle(leafHash, _rootHash, _proof);
 	}

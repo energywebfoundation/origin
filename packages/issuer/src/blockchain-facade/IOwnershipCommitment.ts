@@ -1,4 +1,3 @@
-export interface IOwnershipCommitment {
-    ownerAddress: string;
-    volume: number;
-}
+import { IShareInCertificate } from "./Certificate";
+
+export type IOwnershipCommitment = IShareInCertificate;

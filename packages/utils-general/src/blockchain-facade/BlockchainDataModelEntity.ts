@@ -155,7 +155,7 @@ export abstract class Entity implements IOnChainProperties {
 
     abstract async sync(): Promise<Entity>;
 
-    protected generateAndAddProofs(properties: any, salts?: string[]): IOffChainProperties {
+    generateAndAddProofs(properties: any, salts?: string[]): IOffChainProperties {
         this.proofs = [];
         let leafs = salts
             ? PreciseProofs.createLeafs(properties, salts)
