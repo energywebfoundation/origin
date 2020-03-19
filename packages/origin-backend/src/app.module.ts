@@ -27,6 +27,7 @@ import { OrganizationInvitation } from './pods/organization/organizationInvitati
 import { User } from './pods/user/user.entity';
 import { UserModule } from './pods/user/user.module';
 import { ISmartMeterReadingsAdapter } from '@energyweb/origin-backend-core';
+import { StatusModule } from './pods/status/status.module';
 
 const ENV_FILE_PATH = path.resolve(__dirname, '../../../../../.env');
 
@@ -60,6 +61,7 @@ export class AppModule {
                 FileModule,
                 UserModule,
                 ConfigurationModule,
+                StatusModule,
                 JsonEntityModule,
                 OrganizationModule,
                 DeviceModule.register(smartMeterReadingsAdapter),
