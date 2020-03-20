@@ -20521,10 +20521,10 @@ truffle-typings@1.0.8:
     "@types/mocha" "^5.2.5"
     "@types/web3" "^1.0.18"
 
-truffle@5.1.15:
-  version "5.1.15"
-  resolved "https://registry.yarnpkg.com/truffle/-/truffle-5.1.15.tgz#cf1efb8a601571eb20de13e95dbd8d27c574c0c3"
-  integrity sha512-sknMUERo+3bihwUEThxI4a8h+lJdumLSYGCObmqCNMxjNWCwfqlPkYaIl8z64PcN3Dus/Sr8aLEF8IHpHQWISA==
+truffle@5.1.18:
+  version "5.1.18"
+  resolved "https://registry.yarnpkg.com/truffle/-/truffle-5.1.18.tgz#2fefaed849698b7fb865b417a197d1b6d9229db3"
+  integrity sha512-9oxmLmyTXML5Auxl8adPd3kLcOZVhYNapCmPUcMnYCOXthxa3NEOW9y3PTcoDnwFyuIOETGIiJp4Ew9bmY8v6Q==
   dependencies:
     app-module-path "^2.2.0"
     mocha "5.2.0"
