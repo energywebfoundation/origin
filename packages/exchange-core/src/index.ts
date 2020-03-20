@@ -5,3 +5,4 @@ export { Ask } from './Ask';
 export { Product } from './Product';
 export { DeviceVintage } from './DeviceVintage';
 export { Operator } from './Operator';
+export { DirectBuy } from './DirectBuy';

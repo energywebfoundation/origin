@@ -17,6 +17,7 @@ import { Asset } from '../asset/asset.entity';
 import { Demand } from '../demand/demand.entity';
 import { ProductDTO } from './product.dto';
 import { Trade } from '../trade/trade.entity';
+import { OrderType } from './order-type.enum';
 
 @Entity()
 export class Order extends BaseEntity {
@@ -40,6 +41,12 @@ export class Order extends BaseEntity {
 
     @Column()
     price: number;
+
+    @Column({ default: OrderType.Limit })
+    type: OrderType;
+
+    @Column({ nullable: true, type: 'uuid' })
+    directBuyId: string;
 
     @Column()
     @UpdateDateColumn({ type: 'timestamptz' })

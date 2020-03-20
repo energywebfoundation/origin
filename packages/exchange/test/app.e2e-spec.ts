@@ -1,5 +1,5 @@
 import { INestApplication } from '@nestjs/common';
-import { Contract, ethers } from 'ethers';
+import { Contract, ethers, ContractTransaction } from 'ethers';
 import request from 'supertest';
 
 import { Account } from '../src/pods/account/account';
@@ -7,6 +7,9 @@ import { AccountDTO } from '../src/pods/account/account.dto';
 import { AccountService } from '../src/pods/account/account.service';
 import { DemandService } from '../src/pods/demand/demand.service';
 import { CreateAskDTO } from '../src/pods/order/create-ask.dto';
+import { DirectBuyDTO } from '../src/pods/order/direct-buy.dto';
+import { OrderType } from '../src/pods/order/order-type.enum';
+import { OrderDTO } from '../src/pods/order/order.dto';
 import { Order } from '../src/pods/order/order.entity';
 import { OrderService } from '../src/pods/order/order.service';
 import { ProductService } from '../src/pods/product/product.service';
@@ -16,7 +19,6 @@ import { TransferDirection } from '../src/pods/transfer/transfer-direction';
 import { Transfer } from '../src/pods/transfer/transfer.entity';
 import { TransferService } from '../src/pods/transfer/transfer.service';
 import { DatabaseService } from './database.service';
-import { OrderDTO } from '../src/pods/order/order.dto';
 import { bootstrapTestInstance } from './exchange';
 
 const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
@@ -66,6 +68,7 @@ describe('AppController (e2e)', () => {
         } = await bootstrapTestInstance());
 
         await app.init();
+        await databaseService.cleanUp();
     });
 
     describe('account deposit confirmation', () => {
@@ -208,6 +211,8 @@ describe('AppController (e2e)', () => {
         });
 
         it('should be able to withdraw after confirming deposit', async () => {
+            jest.setTimeout(10000);
+
             await confirmDeposit();
 
             const withdrawal: RequestWithdrawalDTO = {
@@ -233,6 +238,9 @@ describe('AppController (e2e)', () => {
                     expect(account.balances.available[0].amount).toEqual('0');
                     expect(account.balances.available[0].asset).toMatchObject(dummyAsset);
                 });
+
+            // wait to withdrawal to be finished to not mess with tx nonces
+            await sleep(5000);
         });
     });
 
@@ -245,23 +253,19 @@ describe('AppController (e2e)', () => {
         const tokenReceiver = new ethers.Wallet(tokenReceiverPrivateKey, provider);
 
         const issueToken = async (to: string, amount: string) => {
-            const receipt = await registry.functions.issue(to, '0x0', 100, amount, '0x0');
-
-            return receipt.wait();
+            await registry.functions.issue(to, '0x0', 100, amount, '0x0');
         };
 
         const depositToken = async (to: string, amount: string) => {
             const registryWithUserAsSigner = registry.connect(tokenReceiver);
 
-            const transferReceipt = await registryWithUserAsSigner.functions.safeTransferFrom(
+            await registryWithUserAsSigner.functions.safeTransferFrom(
                 tokenReceiver.address,
                 to,
                 1,
                 amount,
                 '0x0'
             );
-
-            return transferReceipt.wait();
         };
 
         beforeEach(async () => {
@@ -355,13 +359,12 @@ describe('AppController (e2e)', () => {
             const deposit = await createDeposit(sellerAddress);
             await confirmDeposit();
 
-            const askOrder = await orderService.createAsk(sellerId, {
+            await orderService.createAsk(sellerId, {
                 assetId: deposit.asset.id,
                 volume: '500',
                 price: 1000,
                 validFrom: validFrom.toISOString()
             });
-            await orderService.submit(askOrder);
 
             const product = productService.getProduct('deviceId');
 
@@ -400,16 +403,66 @@ describe('AppController (e2e)', () => {
         });
     });
 
+    describe('DirectBuy orders tests', () => {
+        it('should allow to buy a selected ask', async () => {
+            const validFrom = new Date();
+            const sellerId = '2';
+            const { address } = await accountService.getOrCreateAccount(sellerId);
+            const deposit = await createDeposit(address);
+            await confirmDeposit();
+
+            await orderService.createAsk(sellerId, {
+                assetId: deposit.asset.id,
+                volume: '500',
+                price: 1000,
+                validFrom: validFrom.toISOString()
+            });
+
+            const ask2 = await orderService.createAsk(sellerId, {
+                assetId: deposit.asset.id,
+                volume: '500',
+                price: 2000,
+                validFrom: validFrom.toISOString()
+            });
+
+            const directBuyOrder: DirectBuyDTO = {
+                askId: ask2.id,
+                price: ask2.price,
+                volume: ask2.startVolume.toString(10)
+            };
+
+            let createdDirectBuyOrder: OrderDTO;
+
+            await request(app.getHttpServer())
+                .post('/orders/ask/buy')
+                .send(directBuyOrder)
+                .expect(201)
+                .expect(res => {
+                    createdDirectBuyOrder = res.body as OrderDTO;
+
+                    expect(createdDirectBuyOrder.type).toBe(OrderType.Direct);
+                    expect(createdDirectBuyOrder.price).toBe(directBuyOrder.price);
+                    expect(createdDirectBuyOrder.startVolume).toBe(directBuyOrder.volume);
+                });
+
+            await sleep(3000);
+
+            await request(app.getHttpServer())
+                .get(`/trade`)
+                .expect(200)
+                .expect(res => {
+                    const trades = res.body as TradeDTO[];
+                    const [trade] = trades;
+
+                    expect(trades).toBeDefined();
+                    expect(trades).toHaveLength(1);
+                    expect(trade.bidId).toBe(createdDirectBuyOrder.id);
+                    expect(trade.volume).toBe(createdDirectBuyOrder.startVolume);
+                });
+        });
+    });
+
     afterEach(async () => {
-        try {
-            await databaseService.cleanUp();
-        } catch (error) {
-            console.error(error);
-        }
-        try {
-            await app.close();
-        } catch (error) {
-            console.error(error);
-        }
+        await app.close();
     });
 });

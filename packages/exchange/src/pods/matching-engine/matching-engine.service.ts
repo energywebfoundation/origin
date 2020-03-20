@@ -4,7 +4,8 @@ import {
     MatchingEngine,
     OrderSide,
     Product,
-    TradeExecutedEvent
+    TradeExecutedEvent,
+    DirectBuy
 } from '@energyweb/exchange-core';
 import { DeviceTypeService, LocationService } from '@energyweb/utils-general';
 import { Injectable, Logger } from '@nestjs/common';
@@ -14,6 +15,7 @@ import { List } from 'immutable';
 import { Order } from '../order/order.entity';
 import { TradeService } from '../trade/trade.service';
 import { ProductDTO } from '../order/product.dto';
+import { OrderType } from '../order/order-type.enum';
 
 @Injectable()
 export class MatchingEngineService {
@@ -49,7 +51,11 @@ export class MatchingEngineService {
         this.logger.log(`Submitting order ${order.id}`);
         this.logger.debug(`Submitting order ${JSON.stringify(order)}`);
 
-        this.matchingEngine.submitOrder(this.toOrder(order));
+        if (order.type === OrderType.Limit) {
+            this.matchingEngine.submitOrder(this.toOrder(order));
+        } else if (order.type === OrderType.Direct) {
+            this.matchingEngine.submitDirectBuy(this.toDirectBuy(order));
+        }
     }
 
     public query(product: Product) {
@@ -93,5 +99,15 @@ export class MatchingEngineService {
                   order.status,
                   order.userId
               );
+    }
+
+    private toDirectBuy(order: Order) {
+        return new DirectBuy(
+            order.id,
+            order.userId,
+            order.price,
+            order.startVolume,
+            order.directBuyId
+        );
     }
 }
