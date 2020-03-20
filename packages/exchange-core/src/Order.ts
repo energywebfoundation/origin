@@ -11,7 +11,9 @@ export enum OrderStatus {
     Active,
     Cancelled,
     Filled,
-    PartiallyFilled
+    PartiallyFilled,
+    PendingCancellation,
+    NotExecuted
 }
 
 export interface IOrder {
@@ -47,6 +49,13 @@ export abstract class Order implements IOrder {
         volume: BN,
         public readonly userId: string
     ) {
+        if (volume.isZero() || volume.isNeg()) {
+            throw new Error('Incorrect negative volume');
+        }
+        if (price <= 0) {
+            throw new Error('Incorrect negative price');
+        }
+
         this._status = status;
         this._volume = volume;
     }
