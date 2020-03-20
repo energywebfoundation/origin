@@ -1,11 +1,12 @@
-import { Validate, IsUUID, IsInt, IsPositive } from 'class-validator';
-import { BNStringValidator } from '../../utils/bnStringValidator';
+import { IsInt, IsPositive, IsUUID, Validate } from 'class-validator';
+
+import { PositiveBNStringValidator } from '../../utils/positiveBNStringValidator';
 
 export class DirectBuyDTO {
     @IsUUID()
     readonly askId: string;
 
-    @Validate(BNStringValidator)
+    @Validate(PositiveBNStringValidator)
     readonly volume: string;
 
     @IsInt()

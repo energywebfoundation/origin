@@ -1,10 +1,10 @@
-import { IsInt, IsPositive, Validate, ValidateNested, IsDateString } from 'class-validator';
+import { IsDateString, IsInt, IsPositive, Validate, ValidateNested } from 'class-validator';
 
-import { BNStringValidator } from '../../utils/bnStringValidator';
+import { PositiveBNStringValidator } from '../../utils/positiveBNStringValidator';
 import { ProductDTO } from './product.dto';
 
 export class CreateBidDTO {
-    @Validate(BNStringValidator)
+    @Validate(PositiveBNStringValidator)
     readonly volume: string;
 
     @IsInt()

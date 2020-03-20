@@ -431,16 +431,33 @@ describe('AppController (e2e)', () => {
                 volume: ask2.startVolume.toString(10)
             };
 
+            let createdDirectBuyOrder: OrderDTO;
+
             await request(app.getHttpServer())
                 .post('/orders/ask/buy')
                 .send(directBuyOrder)
                 .expect(201)
                 .expect(res => {
-                    const order = res.body as OrderDTO;
+                    createdDirectBuyOrder = res.body as OrderDTO;
 
-                    expect(order.type).toBe(OrderType.Direct);
-                    expect(order.price).toBe(directBuyOrder.price);
-                    expect(order.startVolume).toBe(directBuyOrder.volume);
+                    expect(createdDirectBuyOrder.type).toBe(OrderType.Direct);
+                    expect(createdDirectBuyOrder.price).toBe(directBuyOrder.price);
+                    expect(createdDirectBuyOrder.startVolume).toBe(directBuyOrder.volume);
+                });
+
+            await sleep(3000);
+
+            await request(app.getHttpServer())
+                .get(`/trade`)
+                .expect(200)
+                .expect(res => {
+                    const trades = res.body as TradeDTO[];
+                    const [trade] = trades;
+
+                    expect(trades).toBeDefined();
+                    expect(trades).toHaveLength(1);
+                    expect(trade.bidId).toBe(createdDirectBuyOrder.id);
+                    expect(trade.volume).toBe(createdDirectBuyOrder.startVolume);
                 });
         });
     });

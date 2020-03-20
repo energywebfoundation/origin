@@ -1,8 +1,9 @@
-import { IsInt, IsUUID, IsPositive, Validate, IsDateString } from 'class-validator';
-import { BNStringValidator } from '../../utils/bnStringValidator';
+import { IsDateString, IsInt, IsPositive, IsUUID, Validate } from 'class-validator';
+
+import { PositiveBNStringValidator } from '../../utils/positiveBNStringValidator';
 
 export class CreateAskDTO {
-    @Validate(BNStringValidator)
+    @Validate(PositiveBNStringValidator)
     readonly volume: string;
 
     @IsInt()
