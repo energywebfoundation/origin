@@ -7,10 +7,10 @@ import { DeviceGroupForm } from './DeviceGroupForm';
 import { PageContent } from './PageContent/PageContent';
 import { ProducingDeviceDetailView } from './ProducingDeviceDetailView';
 import { DeviceMap } from './DeviceMap';
-import { useLinks, isRole } from '../utils';
+import { useLinks } from '../utils';
 import { getUserOffchain } from '../features/users/selectors';
-import { DeviceStatus } from '@energyweb/origin-backend-core';
-import { Role } from '@energyweb/user-registry';
+import { DeviceStatus, Role, isRole } from '@energyweb/origin-backend-core';
+
 import { useTranslation } from 'react-i18next';
 
 export function Device() {

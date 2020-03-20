@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Role } from '@energyweb/user-registry';
+import { Role, isRole } from '@energyweb/origin-backend-core';
 import { useSelector, useDispatch } from 'react-redux';
 import { getProducingDevices, getConfiguration } from '../features/selectors';
 import { TableMaterial } from './Table/TableMaterial';
@@ -15,7 +15,6 @@ import {
     PowerFormatter,
     getDeviceLocationText,
     LOCATION_TITLE_TRANSLATION_KEY,
-    isRole,
     showNotification,
     NotificationType
 } from '../utils';

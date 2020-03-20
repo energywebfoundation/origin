@@ -48,4 +48,7 @@ export class User extends BaseEntity implements IUser {
         organization => organization.users
     )
     organization: Organization;
+
+    @Column({ default: 0, nullable: false })
+    rights: number;
 }
