@@ -5,7 +5,6 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import path from 'path';
 
-import { AppService } from './app.service';
 import { EmptyResultInterceptor } from './empty-result.interceptor';
 import { AccountBalanceModule } from './pods/account-balance/account-balance.module';
 import { AccountDeployerModule } from './pods/account-deployer/account-deployer.module';
@@ -70,10 +69,8 @@ const getEnvFilePath = () => {
         RunnerModule
     ],
     providers: [
-        AppService,
         { provide: APP_PIPE, useClass: ValidationPipe },
         { provide: APP_INTERCEPTOR, useClass: EmptyResultInterceptor }
-    ],
-    exports: [AppService]
+    ]
 })
 export class AppModule {}
