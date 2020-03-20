@@ -95,7 +95,7 @@ export class MatchingEngine {
         const actions = this.pendingActions;
 
         let trades = List<TradeExecutedEvent>();
-        let cancelled = List<StatusChangedEvent>();
+        let statusChange = List<StatusChangedEvent>();
 
         actions.forEach(action => {
             switch (action.kind) {
@@ -110,7 +110,8 @@ export class MatchingEngine {
                     try {
                         const id = action.value as string;
                         const cancelEvent = this.cancel(id);
-                        cancelled = cancelled.concat(cancelEvent);
+
+                        statusChange = statusChange.concat(cancelEvent);
                     } catch (error) {
                         console.log(error);
                     }
@@ -119,9 +120,18 @@ export class MatchingEngine {
                 }
                 case ActionKind.AddDirectBuy: {
                     const directBuy = action.value as DirectBuy;
-                    const trade = this.directBuy(directBuy);
+                    try {
+                        const trade = this.directBuy(directBuy);
 
-                    trades = trades.concat(trade);
+                        trades = trades.concat(trade);
+                    } catch (error) {
+                        const notExecutedEvent: StatusChangedEvent = {
+                            orderId: directBuy.id,
+                            status: OrderStatus.NotExecuted,
+                            prevStatus: directBuy.status
+                        };
+                        statusChange = statusChange.concat(notExecutedEvent);
+                    }
                     break;
                 }
                 default:
@@ -130,12 +140,13 @@ export class MatchingEngine {
         });
 
         this.cleanOrderBook();
+        this.pendingActions = this.pendingActions.clear();
 
         if (!trades.isEmpty()) {
             this.trades.next(trades);
         }
-        if (!cancelled.isEmpty()) {
-            this.orderStatusChange.next(cancelled);
+        if (!statusChange.isEmpty()) {
+            this.orderStatusChange.next(statusChange);
         }
         return true;
     }
@@ -151,21 +162,32 @@ export class MatchingEngine {
         const ask = this.asks.find(o => o.id === bid.askId);
 
         if (ask.userId === bid.userId) {
-            throw new Error('Unable to direct buy your own bid');
+            throw new Error(
+                `Unable to direct buy your own bid: bid=${JSON.stringify(bid)} ask=${JSON.stringify(
+                    ask
+                )}`
+            );
         }
         if (ask.volume.lt(bid.volume)) {
-            throw new Error('Remaining volume is too low');
+            throw new Error(
+                `Remaining volume is too low: ask.volume=${ask.volume.toString(
+                    10
+                )} bid.volume=${bid.volume.toString(10)}`
+            );
         }
         if (ask.price !== bid.price) {
             throw new Error('Unexpected price change');
         }
 
-        const updated = ask.updateWithTradedVolume(bid.volume);
-        this.asks = this.updateOrder(this.asks, updated);
+        const tradedVolume = bid.volume;
+        const updatedAsk = ask.updateWithTradedVolume(bid.volume);
+        const updatedBid = bid.updateWithTradedVolume(bid.volume);
 
-        const trade = new Trade(bid, updated, bid.volume, bid.price);
+        this.asks = this.updateOrder(this.asks, updatedAsk);
 
-        return { trade, ask: updated, bid };
+        const trade = new Trade(updatedBid, updatedAsk, tradedVolume, bid.price);
+
+        return { trade, ask: updatedAsk, bid: updatedBid };
     }
 
     private match() {
