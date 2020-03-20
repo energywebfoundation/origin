@@ -100,10 +100,14 @@ export class MatchingEngine {
         actions.forEach(action => {
             switch (action.kind) {
                 case ActionKind.AddOrder: {
-                    const order = action.value as Order;
+                    try {
+                        const order = action.value as Order;
 
-                    this.insertOrder(order);
-                    trades = trades.concat(this.match());
+                        this.insertOrder(order);
+                        trades = trades.concat(this.match());
+                    } catch (error) {
+                        console.log(error);
+                    }
                     break;
                 }
                 case ActionKind.CancelOrder: {
@@ -195,15 +199,9 @@ export class MatchingEngine {
 
         this.bids.forEach(bid => {
             const executed = this.generateTrades(bid);
-            if (executed.isEmpty()) {
-                return true;
-            }
-
             this.updateOrderBook(executed);
 
             executedTrades = executedTrades.concat(executed);
-
-            return true;
         });
 
         return executedTrades;
