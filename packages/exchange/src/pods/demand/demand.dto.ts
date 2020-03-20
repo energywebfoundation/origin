@@ -41,7 +41,9 @@ export class DemandDTO {
                     product: bid.product,
                     side: bid.side,
                     validFrom: bid.validFrom.toISOString(),
-                    demandId: demand.id
+                    demandId: demand.id,
+                    type: bid.type,
+                    directBuyId: bid.directBuyId
                 })
             )
         };
