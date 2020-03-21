@@ -43,7 +43,7 @@
     },
     "devDependencies": {
         "@energyweb/origin-backend-core": "2.0.0",
-        "@fluffy-spoon/substitute": "1.113.0",
+        "@fluffy-spoon/substitute": "1.117.0",
         "@types/lolex": "5.1.0",
         "@types/web3": "1.0.20",
         "lolex": "5.1.2"
