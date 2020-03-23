@@ -55,7 +55,7 @@ export class Ask extends Order {
     }
 
     private hasMatchingDeviceType(product: Product, deviceService: IDeviceTypeService) {
-        if (!product.deviceType) {
+        if (!product.deviceType?.length) {
             return true;
         }
 
@@ -70,7 +70,7 @@ export class Ask extends Order {
     }
 
     private hasMatchingLocation(product: Product, locationService: ILocationService) {
-        if (!product.location) {
+        if (!product.location?.length) {
             return true;
         }
 
