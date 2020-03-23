@@ -4,6 +4,7 @@ import { APP_INTERCEPTOR, APP_PIPE } from '@nestjs/core';
 import { ScheduleModule } from '@nestjs/schedule';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import path from 'path';
+import fs from 'fs';
 
 import { EmptyResultInterceptor } from './empty-result.interceptor';
 import { AccountBalanceModule } from './pods/account-balance/account-balance.module';
@@ -28,9 +29,12 @@ import { TransferModule } from './pods/transfer/transfer.module';
 import { WithdrawalProcessorModule } from './pods/withdrawal-processor/withdrawal-processor.module';
 
 const getEnvFilePath = () => {
-    if (__dirname.includes('dist/js')) {
-        return path.resolve(__dirname, '../../../../../.env');
+    const resolvedPath = path.resolve(__dirname, '../../../../../.env');
+
+    if (__dirname.includes('dist/js') && fs.existsSync(resolvedPath)) {
+        return resolvedPath;
     }
+
     return null;
 };
 

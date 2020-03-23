@@ -1237,94 +1237,6 @@
   resolved "https://registry.yarnpkg.com/@emotion/weak-memoize/-/weak-memoize-0.2.5.tgz#8eed982e2ee6f7f4e44c253e12962980791efd46"
   integrity sha512-6U71C2Wp7r5XtFtQzYrW5iKFT67OixrSxjI4MptCHzdSVlgabczzqLe0ZSgnub/5Kp4hSbpDB1tMytZY9pwxxA==
 
-"@energyweb/exchange-core@1.0.0":
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/@energyweb/exchange-core/-/exchange-core-1.0.0.tgz#5ba47b0648a2dc39bfae7db5c80bdc804b64ccdb"
-  integrity sha512-twqww0IWXDtq5fK0Rvg52O2Oqtdr8VwdhhsAs/reBZt+lgiXOnQkE8NvkKI/EuZb6gYyVGciAiih+qTD7LNkaA==
-  dependencies:
-    "@energyweb/utils-general" "7.0.1"
-    bn.js "5.1.1"
-    immutable "4.0.0-rc.12"
-    rxjs "6.5.4"
-
-"@energyweb/exchange-token-account@0.1.3":
-  version "0.1.3"
-  resolved "https://registry.yarnpkg.com/@energyweb/exchange-token-account/-/exchange-token-account-0.1.3.tgz#0f8dd032c97ef6dc0a70d1433775282af4d8c664"
-  integrity sha512-4539UBVvtJwTSbAfhU/HXy9t0CJ1WOfs51zqb3nQS9ZARVgK5aTaKjdgZVYza7Uhnc+cNiQ3N3KH5/yJSGRIlg==
-  dependencies:
-    ethers "4.0.45"
-
-"@energyweb/exchange@0.4.0":
-  version "0.4.0"
-  resolved "https://registry.yarnpkg.com/@energyweb/exchange/-/exchange-0.4.0.tgz#77c550ed278c98b10ad82e7a7b574e161942edfa"
-  integrity sha512-4EfrncQygoJ+MZWG28SKlF4z6LHOkfuY5iD0eCmHW27BIKAry7K7j9vBSVzPVhDkRDOtiFIfIoIeBXOUjsBJJg==
-  dependencies:
-    "@energyweb/exchange-core" "1.0.0"
-    "@energyweb/exchange-token-account" "0.1.3"
-    "@energyweb/issuer" "1.0.0"
-    "@energyweb/origin-backend-core" "1.3.0"
-    "@energyweb/utils-general" "7.0.1"
-    "@nestjs/common" "6.11.8"
-    "@nestjs/config" "0.2.4"
-    "@nestjs/core" "6.11.8"
-    "@nestjs/passport" "6.2.0"
-    "@nestjs/platform-express" "6.11.8"
-    "@nestjs/schedule" "0.2.0"
-    "@nestjs/swagger" "4.3.1"
-    "@nestjs/typeorm" "6.3.3"
-    bn.js "^5.1.1"
-    class-validator "0.11.0"
-    ethers "4.0.45"
-    immutable "4.0.0-rc.12"
-    pg "^7.17.1"
-    reflect-metadata "0.1.13"
-    rxjs "6.5.4"
-    swagger-ui-express "4.1.3"
-    typeorm "0.2.24"
-
-"@energyweb/issuer@1.0.0":
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/@energyweb/issuer/-/issuer-1.0.0.tgz#0013126ae13f573610db8acf1ae6ff36d9a35bb6"
-  integrity sha512-bbfmEpX0wFPfbZONMp81jxDLCuu8fahaW5se+wlCmpA6YLwrdheWKGivs0U9Jnzh7SgDOMDLdebDnzs/Ve60Aw==
-  dependencies:
-    "@energyweb/utils-general" "7.0.1"
-    moment-range "4.0.2"
-    web3 "1.2.4"
-    web3-core "1.2.4"
-    web3-eth-contract "1.2.4"
-    winston "3.2.1"
-
-"@energyweb/origin-backend-client@3.3.0":
-  version "3.3.0"
-  resolved "https://registry.yarnpkg.com/@energyweb/origin-backend-client/-/origin-backend-client-3.3.0.tgz#f0c6b6339c5a32c561bc0057ce29c82411cc1b73"
-  integrity sha512-xhLunuOSTe0JCVqrHwyMcLATiCEod9hd3sWRF8+p6wvMmxLDAG9yCf74kDXEcjbWGSgddhvQ3GMKASVfNNk87Q==
-  dependencies:
-    "@energyweb/origin-backend-core" "1.3.0"
-    axios "0.19.2"
-    isomorphic-ws "4.0.1"
-    moment "2.24.0"
-    ws "7.2.1"
-
-"@energyweb/origin-backend-core@1.3.0":
-  version "1.3.0"
-  resolved "https://registry.yarnpkg.com/@energyweb/origin-backend-core/-/origin-backend-core-1.3.0.tgz#e6d6108c73b5b3c3e085feca5f14320855563de8"
-  integrity sha512-vGB63HmFu+GZN+re6vfRM5nW/bnwcBiHZMqzsvXmY3FIqykbRy1ZGDKsYqXXbTsCCsA5RWBIIVTbkmdtuDNyUw==
-
-"@energyweb/utils-general@7.0.1":
-  version "7.0.1"
-  resolved "https://registry.yarnpkg.com/@energyweb/utils-general/-/utils-general-7.0.1.tgz#c1612ca75d0d1a687ff14612907a41068aaf35f8"
-  integrity sha512-Pi2FmN9dUvuDkN98ErrOcQ5fGF1BX1vwfGsoq7rbs2+apMqtYt1FEAUuDVpAGTetdOHsGKwpWCIHCRXTzb9hIQ==
-  dependencies:
-    "@energyweb/origin-backend-client" "3.3.0"
-    eth-sig-util "2.5.2"
-    jsonschema "1.2.5"
-    moment "^2.24.0"
-    precise-proofs-js "1.0.1"
-    web3 "1.2.4"
-    web3-core "1.2.4"
-    web3-eth-contract "1.2.4"
-    winston "3.2.1"
-
 "@evocateur/libnpmaccess@^3.1.2":
   version "3.1.2"
   resolved "https://registry.yarnpkg.com/@evocateur/libnpmaccess/-/libnpmaccess-3.1.2.tgz#ecf7f6ce6b004e9f942b098d92200be4a4b1c845"
@@ -2823,27 +2735,6 @@
     tslib "1.11.1"
     uuid "7.0.1"
 
-"@nestjs/common@6.11.8":
-  version "6.11.8"
-  resolved "https://registry.yarnpkg.com/@nestjs/common/-/common-6.11.8.tgz#2c7acb2aa312f111b39bedb8015891a7b6916834"
-  integrity sha512-Tnd0Uikrthv2Y2RVTEZvA8f9P2HE+G31tfq1tA7fNLz1af7YeU/gMBtvDlemStMKUOx26/aSP2IRCvKeYwRCFQ==
-  dependencies:
-    axios "0.19.2"
-    cli-color "2.0.0"
-    tslib "1.10.0"
-    uuid "3.4.0"
-
-"@nestjs/config@0.2.4", "@nestjs/config@^0.2.0":
-  version "0.2.4"
-  resolved "https://registry.yarnpkg.com/@nestjs/config/-/config-0.2.4.tgz#189080db6c22e0819c773d00936119721867751d"
-  integrity sha512-XXr6jxL2E5v+zhtlpd3uAU9erDFd8Q/3Oyu6OdhkP7TCVX9erPVbZ4rpsw2qj4t+IeU0T9dYEGVHh6qy9piOEQ==
-  dependencies:
-    dotenv "8.2.0"
-    dotenv-expand "5.1.0"
-    lodash.get "4.4.2"
-    lodash.set "4.3.2"
-    uuid "3.4.0"
-
 "@nestjs/config@0.3.0", "@nestjs/config@^0.3.0":
   version "0.3.0"
   resolved "https://registry.yarnpkg.com/@nestjs/config/-/config-0.3.0.tgz#d33a58ee539bb4d92639d1747918f0de23504c45"
@@ -2854,6 +2745,17 @@
     lodash.get "4.4.2"
     lodash.set "4.3.2"
     uuid "^7.0.2"
+
+"@nestjs/config@^0.2.0":
+  version "0.2.4"
+  resolved "https://registry.yarnpkg.com/@nestjs/config/-/config-0.2.4.tgz#189080db6c22e0819c773d00936119721867751d"
+  integrity sha512-XXr6jxL2E5v+zhtlpd3uAU9erDFd8Q/3Oyu6OdhkP7TCVX9erPVbZ4rpsw2qj4t+IeU0T9dYEGVHh6qy9piOEQ==
+  dependencies:
+    dotenv "8.2.0"
+    dotenv-expand "5.1.0"
+    lodash.get "4.4.2"
+    lodash.set "4.3.2"
+    uuid "3.4.0"
 
 "@nestjs/core@6.11.11":
   version "6.11.11"
@@ -2867,19 +2769,6 @@
     path-to-regexp "3.2.0"
     tslib "1.11.1"
     uuid "7.0.1"
-
-"@nestjs/core@6.11.8":
-  version "6.11.8"
-  resolved "https://registry.yarnpkg.com/@nestjs/core/-/core-6.11.8.tgz#9c149d4aaf49fc94f0a61a58e9661b9aacd13cd7"
-  integrity sha512-QXsik+f0voaWmkMZhX3VDWB+q4jBBXwCJqJurK47h7ksTKJAcpHxV0SVOOrbWoZK0aHSMl3KMU/JNYL/p0mwNw==
-  dependencies:
-    "@nuxtjs/opencollective" "0.2.2"
-    fast-safe-stringify "2.0.7"
-    iterare "1.2.0"
-    object-hash "2.0.3"
-    path-to-regexp "3.2.0"
-    tslib "1.10.0"
-    uuid "3.4.0"
 
 "@nestjs/jwt@6.1.2":
   version "6.1.2"
@@ -2905,17 +2794,6 @@
     multer "1.4.2"
     tslib "1.11.1"
 
-"@nestjs/platform-express@6.11.8":
-  version "6.11.8"
-  resolved "https://registry.yarnpkg.com/@nestjs/platform-express/-/platform-express-6.11.8.tgz#5444b92d9d31842457bab5da85d4d8c39f90f7dc"
-  integrity sha512-nLyZEOAAUSxHX2lL3fuDAjoE1iaFJphFYCx4H09JwScYnurOYYCB3VaXqAoeib4JS1LIGglqHxirjTvNOBXAcA==
-  dependencies:
-    body-parser "1.19.0"
-    cors "2.8.5"
-    express "4.17.1"
-    multer "1.4.2"
-    tslib "1.10.0"
-
 "@nestjs/platform-express@^6.10.14":
   version "6.10.14"
   resolved "https://registry.yarnpkg.com/@nestjs/platform-express/-/platform-express-6.10.14.tgz#1ae544c8668545c2707c094d2de7c4ca98c2ea48"
@@ -2933,14 +2811,6 @@
   dependencies:
     tslib "1.11.1"
     ws "7.2.1"
-
-"@nestjs/schedule@0.2.0":
-  version "0.2.0"
-  resolved "https://registry.yarnpkg.com/@nestjs/schedule/-/schedule-0.2.0.tgz#748c9ba59de0dc9a5baebb100d7734490b58572c"
-  integrity sha512-VkPPQYzsKexltKYf3yE2f1ZmUebGlkd4hfJ8kNtzLYfcfn4ZN+nn7zsJ0yyNvWlCeq3oD1cFLW3Y5qoS4+Glag==
-  dependencies:
-    cron "1.8.2"
-    uuid "3.4.0"
 
 "@nestjs/schedule@0.3.0":
   version "0.3.0"
@@ -2968,14 +2838,6 @@
     "@angular-devkit/schematics" "7.3.8"
     fs-extra "8.1.0"
 
-"@nestjs/swagger@4.3.1":
-  version "4.3.1"
-  resolved "https://registry.yarnpkg.com/@nestjs/swagger/-/swagger-4.3.1.tgz#6ccae012c50e22b667b32df71bf5d0e4415d6b4e"
-  integrity sha512-IhgVZjK9m9hPJsco+e4zZmcGNnuiKTgUflQV4ib13/cW+XP4vKWgQIT66kwLeHbr1FmSYsnb7TsJ+2yiO/2lTw==
-  dependencies:
-    lodash "4.17.15"
-    path-to-regexp "3.2.0"
-
 "@nestjs/swagger@4.3.2":
   version "4.3.2"
   resolved "https://registry.yarnpkg.com/@nestjs/swagger/-/swagger-4.3.2.tgz#725a2545841c944664112b743bd3e9ec54e77a14"
@@ -2991,13 +2853,6 @@
   dependencies:
     optional "0.1.4"
     tslib "1.11.1"
-
-"@nestjs/typeorm@6.3.3":
-  version "6.3.3"
-  resolved "https://registry.yarnpkg.com/@nestjs/typeorm/-/typeorm-6.3.3.tgz#a096d0fe7412eacea7a99d7c46f17ff7f11b0b47"
-  integrity sha512-N6rKvZfblmkMF3G93QilLRY8nhFwfqYRUwjcOMRxfffuyV9+don5MPG1P3p/SimWoWaizYMD5lfhEFOfRHMJ9g==
-  dependencies:
-    uuid "3.4.0"
 
 "@nestjs/typeorm@6.3.4":
   version "6.3.4"
@@ -17037,16 +16892,6 @@ postgres-interval@^1.1.0:
   dependencies:
     xtend "^4.0.0"
 
-precise-proofs-js@1.0.1:
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/precise-proofs-js/-/precise-proofs-js-1.0.1.tgz#4e8429ef5ceaf69e9d47a73cd9e9f9c07a0dcf0e"
-  integrity sha512-kcMPgKD7wLMYwqBPGekWmbNynlBhT6kXaW2RReddXPHHrxYHRifQUqPoE1oAzhYG4g5TBH5nB4pQa8+bJ+XVSA==
-  dependencies:
-    build "^0.1.4"
-    colors "^1.4.0"
-    treeify "^1.1.0"
-    web3 "1.2.4"
-
 precise-proofs-js@1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/precise-proofs-js/-/precise-proofs-js-1.0.2.tgz#6ec496d893ccc0993994904f3e3456510075a699"
@@ -20893,7 +20738,7 @@ typed-styles@^0.0.7:
   resolved "https://registry.yarnpkg.com/typed-styles/-/typed-styles-0.0.7.tgz#93392a008794c4595119ff62dde6809dbc40a3d9"
   integrity sha512-pzP0PWoZUhsECYjABgCGQlRGL1n7tOHsgwYv3oIiEpJwGhFTuty/YNeduxQYzXXa3Ge5BdT6sHYIQYpl4uJ+5Q==
 
-typedarray-to-buffer@3.1.5, typedarray-to-buffer@^3.1.5:
+typedarray-to-buffer@^3.1.5:
   version "3.1.5"
   resolved "https://registry.yarnpkg.com/typedarray-to-buffer/-/typedarray-to-buffer-3.1.5.tgz#a97ee7a9ff42691b9f783ff1bc5112fe3fca9080"
   integrity sha512-zdu8XMNEDepKKR+XYOXAVPtWui0ly0NtohUscw+UmaHiAWT8hrV1rr//H6V+0DvJ3OQ19S979M0laLfX8rm82Q==
