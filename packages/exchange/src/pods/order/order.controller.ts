@@ -7,6 +7,7 @@ import { CreateAskDTO } from './create-ask.dto';
 import { CreateBidDTO } from './create-bid.dto';
 import { OrderService } from './order.service';
 import { OrderDTO } from './order.dto';
+import { DirectBuyDTO } from './direct-buy.dto';
 
 @Controller('orders')
 export class OrderController {
@@ -16,15 +17,15 @@ export class OrderController {
 
     @Post('bid')
     @UseGuards(AuthGuard())
-    public async createBid(@UserDecorator() user: IUser, @Body() newOrder: CreateBidDTO) {
+    public async createBid(
+        @UserDecorator() user: IUser,
+        @Body() newOrder: CreateBidDTO
+    ): Promise<OrderDTO> {
         this.logger.log(`Creating new order ${JSON.stringify(newOrder)}`);
 
         try {
             const order = await this.orderService.createBid(user.id.toString(), newOrder);
-
-            this.orderService.submit(order);
-
-            return order;
+            return OrderDTO.fromOrder(order);
         } catch (error) {
             this.logger.error(error);
 
@@ -34,15 +35,33 @@ export class OrderController {
 
     @Post('ask')
     @UseGuards(AuthGuard())
-    public async createAsk(@UserDecorator() user: IUser, @Body() newOrder: CreateAskDTO) {
+    public async createAsk(
+        @UserDecorator() user: IUser,
+        @Body() newOrder: CreateAskDTO
+    ): Promise<OrderDTO> {
         this.logger.log(`Creating new order ${JSON.stringify(newOrder)}`);
 
         try {
             const order = await this.orderService.createAsk(user.id.toString(), newOrder);
+            return OrderDTO.fromOrder(order);
+        } catch (error) {
+            this.logger.error(error);
 
-            this.orderService.submit(order);
+            throw new ForbiddenException();
+        }
+    }
 
-            return order;
+    @Post('ask/buy')
+    @UseGuards(AuthGuard())
+    public async directBuy(
+        @UserDecorator() user: IUser,
+        @Body() directBuy: DirectBuyDTO
+    ): Promise<OrderDTO> {
+        this.logger.log(`Creating new direct order ${JSON.stringify(directBuy)}`);
+
+        try {
+            const order = await this.orderService.createDirectBuy(user.id.toString(), directBuy);
+            return OrderDTO.fromOrder(order);
         } catch (error) {
             this.logger.error(error);
 
@@ -52,7 +71,7 @@ export class OrderController {
 
     @Get()
     @UseGuards(AuthGuard())
-    public async getOrders(@UserDecorator() user: IUser) {
+    public async getOrders(@UserDecorator() user: IUser): Promise<OrderDTO[]> {
         const orders = await this.orderService.getAllOrders(user.id.toString());
 
         return orders.map(order => OrderDTO.fromOrder(order));

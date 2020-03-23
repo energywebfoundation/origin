@@ -11,6 +11,8 @@ import { ProductService } from '../product/product.service';
 import { CreateAskDTO } from './create-ask.dto';
 import { CreateBidDTO } from './create-bid.dto';
 import { Order } from './order.entity';
+import { OrderType } from './order-type.enum';
+import { DirectBuyDTO } from './direct-buy.dto';
 
 @Injectable()
 export class OrderService {
@@ -29,7 +31,7 @@ export class OrderService {
     public async createBid(userId: string, bid: CreateBidDTO): Promise<Order> {
         this.logger.debug(`Requested bid creation for user:${userId} bid:${JSON.stringify(bid)}`);
 
-        return this.repository.save({
+        const order = await this.repository.save({
             userId,
             validFrom: new Date(bid.validFrom),
             side: OrderSide.Bid,
@@ -39,6 +41,10 @@ export class OrderService {
             price: bid.price,
             product: bid.product
         });
+
+        this.matchingEngineService.submit(order);
+
+        return order;
     }
 
     public async createDemandBid(
@@ -79,7 +85,7 @@ export class OrderService {
         const { deviceId } = await this.assetService.get(ask.assetId);
         const product = this.productService.getProduct(deviceId);
 
-        return this.repository.save({
+        const order = await this.repository.save({
             userId,
             validFrom: new Date(ask.validFrom),
             product,
@@ -90,6 +96,34 @@ export class OrderService {
             asset: { id: ask.assetId },
             price: ask.price
         });
+
+        this.matchingEngineService.submit(order);
+
+        return order;
+    }
+
+    public async createDirectBuy(userId: string, buyAsk: DirectBuyDTO) {
+        const ask = await this.repository.findOne(buyAsk.askId, { where: { side: OrderSide.Ask } });
+        if (!ask || ask.userId === userId) {
+            throw new Error('Ask does not exist or owned by the user');
+        }
+
+        const order = await this.repository.save({
+            userId,
+            validFrom: new Date(),
+            side: OrderSide.Bid,
+            status: OrderStatus.Active,
+            type: OrderType.Direct,
+            startVolume: new BN(buyAsk.volume),
+            currentVolume: new BN(buyAsk.volume),
+            price: buyAsk.price,
+            directBuyId: buyAsk.askId,
+            product: {}
+        });
+
+        this.matchingEngineService.submit(order);
+
+        return order;
     }
 
     public async submit(order: Order) {

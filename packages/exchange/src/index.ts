@@ -1,4 +1,3 @@
-export { AppService } from './app.service';
 export { AppModule } from './app.module';
 
 export { MatchingEngineModule } from './pods/matching-engine/matching-engine.module';

@@ -1,20 +1,17 @@
 import { Contracts } from '@energyweb/issuer';
-import { DeviceService, DeviceModule } from '@energyweb/origin-backend';
 import {
-    CanActivate,
-    ExecutionContext,
-    Logger,
-    ValidationPipe,
-    DynamicModule
-} from '@nestjs/common';
+    DeviceService,
+    DeviceModule,
+    ConfigurationService,
+    ConfigurationModule
+} from '@energyweb/origin-backend';
+import { CanActivate, ExecutionContext, Logger, DynamicModule } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { AuthGuard } from '@nestjs/passport';
 import { Test } from '@nestjs/testing';
 import { ethers } from 'ethers';
 
 import { AppModule } from '../src/app.module';
-import { AppService } from '../src/app.service';
-import { EmptyResultInterceptor } from '../src/empty-result.interceptor';
 import { AccountService } from '../src/pods/account/account.service';
 import { DemandService } from '../src/pods/demand/demand.service';
 import { OrderService } from '../src/pods/order/order.service';
@@ -68,17 +65,6 @@ const deviceTypes = [
     ['Marine', 'Tidal', 'Offshore']
 ];
 
-const createDeviceModuleMock = (): DynamicModule => {
-    const deviceServiceMock = { provide: DeviceService, useValue: {} as DeviceService };
-
-    return {
-        module: DeviceModule,
-        providers: [deviceServiceMock],
-        exports: [deviceServiceMock],
-        global: true
-    };
-};
-
 export const bootstrapTestInstance = async () => {
     const registry = await deployRegistry();
 
@@ -94,8 +80,19 @@ export const bootstrapTestInstance = async () => {
     });
 
     const moduleFixture = await Test.createTestingModule({
-        imports: [AppModule, createDeviceModuleMock()],
-        providers: [DatabaseService]
+        imports: [AppModule],
+        providers: [
+            DatabaseService,
+            {
+                provide: ConfigurationService,
+                useValue: {
+                    get: () => ({
+                        deviceTypes
+                    })
+                }
+            },
+            { provide: DeviceService, useValue: {} as DeviceService }
+        ]
     })
         .overrideProvider(ConfigService)
         .useValue(configService)
@@ -111,9 +108,6 @@ export const bootstrapTestInstance = async () => {
     const demandService = await app.resolve<DemandService>(DemandService);
     const orderService = await app.resolve<OrderService>(OrderService);
     const productService = await app.resolve<ProductService>(ProductService);
-
-    const appService = await app.resolve<AppService>(AppService);
-    await appService.init(deviceTypes);
 
     app.useLogger(testLogger);
     app.enableCors();
