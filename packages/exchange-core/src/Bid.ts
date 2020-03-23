@@ -55,7 +55,7 @@ export class Bid extends Order {
     }
 
     private hasMatchingDeviceType(product: Product, deviceService: IDeviceTypeService) {
-        if (!this.product.deviceType || !product.deviceType) {
+        if (!this.product.deviceType?.length || !product.deviceType?.length) {
             return true;
         }
 
@@ -63,7 +63,7 @@ export class Bid extends Order {
     }
 
     private hasMatchingLocation(product: Product, locationService: ILocationService) {
-        if (!this.product.location || !product.location) {
+        if (!this.product.location?.length || !product.location?.length) {
             return true;
         }
 
@@ -71,7 +71,7 @@ export class Bid extends Order {
     }
 
     private isIncludedInLocation(product: Product, locationService: ILocationService) {
-        if (!this.product.location || !product.location) {
+        if (!this.product.location?.length || !product.location?.length) {
             return true;
         }
 
@@ -82,7 +82,7 @@ export class Bid extends Order {
     }
 
     private isIncludedInDeviceType(product: Product, deviceService: IDeviceTypeService) {
-        if (!this.product.deviceType || !product.deviceType) {
+        if (!this.product.deviceType?.length || !product.deviceType?.length) {
             return true;
         }
 
