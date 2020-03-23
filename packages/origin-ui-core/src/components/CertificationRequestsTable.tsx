@@ -12,6 +12,7 @@ import {
 } from './Table/PaginatedLoaderHooks';
 import { ProducingDevice } from '@energyweb/device-registry';
 import {
+    EnergyFormatter,
     PowerFormatter,
     getDeviceLocationText,
     LOCATION_TITLE_TRANSLATION_KEY,
@@ -68,7 +69,6 @@ export function CertificationRequestsTable(props: IProps) {
             ) {
                 continue;
             }
-
             newPaginatedData.push({
                 request,
                 device
@@ -132,15 +132,17 @@ export function CertificationRequestsTable(props: IProps) {
         { id: 'locationText', label: t(LOCATION_TITLE_TRANSLATION_KEY) },
         { id: 'type', label: 'Type' },
         { id: 'capacity', label: `Capacity (${PowerFormatter.displayUnit})` },
+        { id: 'meterRead', label: `Meter Read (${EnergyFormatter.displayUnit})` },
         { id: 'files', label: 'Evidence files' }
     ] as const;
 
     const rows = paginatedData.map(({ device, request }) => {
         return {
-            facility: device.facilityName,
+            facility: device?.facilityName,
             locationText: getDeviceLocationText(device),
-            type: configuration.deviceTypeService.getDisplayText(device.deviceType),
-            capacity: PowerFormatter.format(device.capacityInW),
+            type: configuration.deviceTypeService.getDisplayText(device?.deviceType),
+            capacity: PowerFormatter.format(device?.capacityInW),
+            meterRead: EnergyFormatter.format(request.energy),
             files: request.files.map(f => (
                 <div key={f}>
                     <a

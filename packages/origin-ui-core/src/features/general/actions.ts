@@ -1,6 +1,6 @@
 import { IOffChainDataSource } from '@energyweb/origin-backend-client';
 import { IExchangeClient } from '../../utils/exchange';
-import { ExternalDeviceIdType } from '@energyweb/origin-backend-core';
+import { IOriginConfiguration } from '@energyweb/origin-backend-core';
 
 export enum GeneralActions {
     showAccountChangedModal = 'SHOW_ACCOUNT_CHANGED_MODAL',
@@ -13,11 +13,7 @@ export enum GeneralActions {
     setOffChainDataSource = 'GENERAL_SET_OFF_CHAIN_DATA_SOURCE',
     setExchangeClient = 'GENERAL_SET_EXCHANGE_CLIENT',
     setEnvironment = 'GENERAL_SET_ENVIRONMENT',
-    setCurrencies = 'GENERAL_SET_CURRENCIES',
-    setCompliance = 'GENERAL_SET_COMPLIANCE',
-    setCountry = 'GENERAL_SET_COUNTRY',
-    setRegions = 'GENERAL_SET_REGIONS',
-    setExternalDeviceIdTypes = 'GENERAL_SET_EXTERNAL_DEVICE_ID_TYPES'
+    setOffchainConfiguration = 'GENERAL_SET_OFFCHAIN_CONFIGURATION'
 }
 
 export interface IEnvironment {
@@ -133,56 +129,6 @@ export const setEnvironment = (payload: ISetEnvironmentAction['payload']) => ({
 
 export type TSetEnvironmentAction = typeof setEnvironment;
 
-export interface ISetCurrenciesAction {
-    type: GeneralActions.setCurrencies;
-    payload: {
-        currencies: string[];
-    };
-}
-
-export const setCurrencies = (payload: ISetCurrenciesAction['payload']) => ({
-    type: GeneralActions.setCurrencies,
-    payload
-});
-
-export type TSetCurrencies = typeof setCurrencies;
-
-export interface ISetComplianceAction {
-    type: GeneralActions.setCompliance;
-    payload: string;
-}
-
-export const setCompliance = (payload: ISetComplianceAction['payload']) => ({
-    type: GeneralActions.setCompliance,
-    payload
-});
-
-export type TSetCompliance = typeof setCompliance;
-
-export interface ISetCountryAction {
-    type: GeneralActions.setCountry;
-    payload: string;
-}
-
-export const setCountry = (payload: ISetCountryAction['payload']) => ({
-    type: GeneralActions.setCountry,
-    payload
-});
-
-export type TSetCountry = typeof setCountry;
-
-export interface ISetRegionsAction {
-    type: GeneralActions.setRegions;
-    payload: object;
-}
-
-export const setRegions = (payload: ISetRegionsAction['payload']) => ({
-    type: GeneralActions.setRegions,
-    payload
-});
-
-export type TSetRegions = typeof setRegions;
-
 export interface ISetExchangeClientAction {
     type: GeneralActions.setExchangeClient;
     payload: {
@@ -196,19 +142,20 @@ export const setExchangeClient = (payload: ISetExchangeClientAction['payload']) 
 });
 
 export type TSetExchangeClientAction = typeof setExchangeClient;
-export interface ISetExternalDeviceIdTypesAction {
-    type: GeneralActions.setExternalDeviceIdTypes;
+
+export interface ISetOffchainConfigurationAction {
+    type: GeneralActions.setOffchainConfiguration;
     payload: {
-        externalDeviceIdTypes: ExternalDeviceIdType[];
+        configuration: IOriginConfiguration;
     };
 }
 
-export const setExternalDeviceIdTypes = (payload: ISetExternalDeviceIdTypesAction['payload']) => ({
-    type: GeneralActions.setExternalDeviceIdTypes,
+export const setOffchainConfiguration = (payload: ISetOffchainConfigurationAction['payload']) => ({
+    type: GeneralActions.setOffchainConfiguration,
     payload
 });
 
-export type TSetExternalDeviceIdTypes = typeof setExternalDeviceIdTypes;
+export type TSetOffchainConfigurationAction = typeof setOffchainConfiguration;
 
 export type IGeneralAction =
     | IShowAccountChangedModalAction
@@ -220,9 +167,5 @@ export type IGeneralAction =
     | IHideRequestPasswordModalAction
     | ISetOffChainDataSourceAction
     | ISetEnvironmentAction
-    | ISetCurrenciesAction
-    | ISetComplianceAction
-    | ISetCountryAction
-    | ISetRegionsAction
     | ISetExchangeClientAction
-    | ISetExternalDeviceIdTypesAction;
+    | ISetOffchainConfigurationAction;

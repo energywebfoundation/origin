@@ -91,6 +91,6 @@ export class DeviceTypeService implements IDeviceTypeService {
     }
 
     getDisplayText(deviceType: string) {
-        return this.decode([deviceType])[0].join(' - ');
+        return deviceType ? this.decode([deviceType])[0].join(' - ') : 'Unknown';
     }
 }
