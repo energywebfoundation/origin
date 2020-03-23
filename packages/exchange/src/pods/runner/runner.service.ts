@@ -33,7 +33,7 @@ export class RunnerService implements OnModuleInit {
             strict: false
         });
 
-        await this.fetchDeviceTypesAndInit();
+        this.fetchDeviceTypesAndInit();
     }
 
     public async fetchDeviceTypesAndInit() {
