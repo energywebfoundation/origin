@@ -14,6 +14,8 @@ import { bootstrapTestInstance } from './exchange';
 const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
 describe('DirectBuy orders tests', () => {
+    jest.setTimeout(10000);
+
     let app: INestApplication;
     let transferService: TransferService;
     let databaseService: DatabaseService;
@@ -95,7 +97,7 @@ describe('DirectBuy orders tests', () => {
                 expect(createdDirectBuyOrder.startVolume).toBe(directBuyOrder.volume);
             });
 
-        await sleep(3000);
+        await sleep(5000);
 
         await request(app.getHttpServer())
             .get(`/trade`)
