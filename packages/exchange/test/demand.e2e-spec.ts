@@ -53,10 +53,10 @@ describe('Demand orders trading', () => {
         } = await bootstrapTestInstance());
 
         await app.init();
-        await databaseService.cleanUp();
     });
 
     afterAll(async () => {
+        await databaseService.cleanUp();
         await app.close();
     });
 

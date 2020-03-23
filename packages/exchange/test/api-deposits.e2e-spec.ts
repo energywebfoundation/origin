@@ -40,13 +40,13 @@ describe('account deposit confirmation', () => {
         ({ transferService, accountService, databaseService, app } = await bootstrapTestInstance());
 
         await app.init();
-        await databaseService.cleanUp();
 
         const { address } = await accountService.getOrCreateAccount(user1Id);
         user1Address = address;
     });
 
     afterAll(async () => {
+        await databaseService.cleanUp();
         await app.close();
     });
 

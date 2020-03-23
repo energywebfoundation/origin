@@ -35,10 +35,6 @@ describe('DirectBuy orders tests', () => {
         });
     };
 
-    const confirmDeposit = () => {
-        return transferService.setAsConfirmed(transactionHash, 10000);
-    };
-
     beforeAll(async () => {
         ({
             transferService,
@@ -49,10 +45,10 @@ describe('DirectBuy orders tests', () => {
         } = await bootstrapTestInstance());
 
         await app.init();
-        await databaseService.cleanUp();
     });
 
     afterAll(async () => {
+        await databaseService.cleanUp();
         await app.close();
     });
 
@@ -60,8 +56,9 @@ describe('DirectBuy orders tests', () => {
         const validFrom = new Date();
         const sellerId = '2';
         const { address } = await accountService.getOrCreateAccount(sellerId);
+
         const deposit = await createDeposit(address);
-        await confirmDeposit();
+        await transferService.setAsConfirmed(transactionHash, 10000);
 
         await orderService.createAsk(sellerId, {
             assetId: deposit.asset.id,

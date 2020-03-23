@@ -43,10 +43,10 @@ describe('account ask order send', () => {
         ({ transferService, accountService, databaseService, app } = await bootstrapTestInstance());
 
         await app.init();
-        await databaseService.cleanUp();
     });
 
     afterAll(async () => {
+        await databaseService.cleanUp();
         await app.close();
     });
 

@@ -21,19 +21,21 @@ describe('Deposits using deployed registry', () => {
     const web3 = 'http://localhost:8580';
 
     let registry: Contract;
+    let depositAddress: string;
 
     beforeAll(async () => {
         ({ accountService, databaseService, registry, app } = await bootstrapTestInstance());
 
         await app.init();
-        await databaseService.cleanUp();
+
+        const { address } = await accountService.getOrCreateAccount(user1Id);
+        depositAddress = address;
     });
 
     afterAll(async () => {
+        await databaseService.cleanUp();
         await app.close();
     });
-
-    let depositAddress: string;
 
     const provider = new ethers.providers.JsonRpcProvider(web3);
     const tokenReceiverPrivateKey =
@@ -58,11 +60,6 @@ describe('Deposits using deployed registry', () => {
             '0x0'
         );
     };
-
-    beforeEach(async () => {
-        const { address } = await accountService.getOrCreateAccount(user1Id);
-        depositAddress = address;
-    });
 
     const getBalance = async (address: string, id: number) => {
         return (await registry.functions.balanceOf(address, id)) as ethers.utils.BigNumber;
