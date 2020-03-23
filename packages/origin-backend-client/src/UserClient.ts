@@ -10,7 +10,7 @@ import {
 
 import { IRequestClient, RequestClient } from './RequestClient';
 
-type UpdateUserResponseReturnType = any;
+type UpdateUserResponseReturnType = IUserWithRelationsIds;
 
 export interface IUserClient {
     login(email: string, password: string): Promise<UserLoginReturnData>;
@@ -99,7 +99,10 @@ export class UserClient implements IUserClient {
         return data;
     }
 
-    private async updateUser(id: number, updatedUserInfo: UserUpdateData) {
+    private async updateUser(
+        id: number,
+        updatedUserInfo: UserUpdateData
+    ): Promise<IUserWithRelationsIds> {
         const url = `${this.userEndpoint}/${id}`;
         const { data } = await this.requestClient.put(url, updatedUserInfo);
 

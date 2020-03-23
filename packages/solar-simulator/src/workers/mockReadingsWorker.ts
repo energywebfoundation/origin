@@ -16,7 +16,7 @@ async function getProducingDeviceSmartMeterRead(
     deviceId: string,
     conf: Configuration.Entity
 ): Promise<number> {
-    const device = await new ProducingDevice.Entity(deviceId, conf).sync();
+    const device = await new ProducingDevice.Entity(parseInt(deviceId, 10), conf).sync();
 
     return device.lastSmartMeterReadWh ?? 0;
 }
@@ -42,7 +42,7 @@ async function saveProducingDeviceSmartMeterRead(
     let device;
 
     try {
-        device = await new ProducingDevice.Entity(deviceId, conf).sync();
+        device = await new ProducingDevice.Entity(parseInt(deviceId, 10), conf).sync();
         await device.saveSmartMeterRead(
             smartMeterReading.meterReading,
             smartMeterReading.timestamp
@@ -88,13 +88,6 @@ const currentTime = moment.tz(device.timezone);
             transports: [new Winston.transports.Console({ level: 'silly' })]
         })
     };
-
-    // const marketContractLookupAddress = await getMarketContractLookupAddress(offChainDataSource);
-
-    // conf.blockchainProperties = await createBlockchainProperties(
-    //     conf.blockchainProperties.web3,
-    //     marketContractLookupAddress
-    // );
 
     const MOCK_READINGS_MINUTES_INTERVAL =
         parseInt(process.env.SOLAR_SIMULATOR_PAST_READINGS_MINUTES_INTERVAL, 10) || 15;
@@ -153,10 +146,15 @@ const currentTime = moment.tz(device.timezone);
                     conf
                 );
             } catch (error) {
-                console.error(
-                    `Error while trying to save meter read for device ${device.id}`,
-                    error?.message
-                );
+                conf.logger.error(`Error while trying to save meter read for device ${device.id}`);
+                if (error?.response?.data) {
+                    conf.logger.error('HTTP Error', {
+                        config: error.config,
+                        response: error?.response?.data
+                    });
+                } else {
+                    conf.logger.error(`ERROR: ${error?.message}`);
+                }
             }
         }
 

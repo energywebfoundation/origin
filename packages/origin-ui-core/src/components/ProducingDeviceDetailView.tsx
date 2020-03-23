@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import marker from '../../assets/marker.svg';
 import map from '../../assets/map.svg';
 import wind from '../../assets/icon_wind.svg';
@@ -20,6 +20,7 @@ import { Skeleton } from '@material-ui/lab';
 import { formatDate, EnergyFormatter, PowerFormatter, useTranslation } from '../utils';
 import { getOffChainDataSource } from '../features/general/selectors';
 import { DeviceGroupForm } from './DeviceGroupForm';
+import { IOrganizationWithRelationsIds } from '@energyweb/origin-backend-core';
 
 interface IProps {
     id: number;
@@ -31,8 +32,17 @@ export function ProducingDeviceDetailView(props: IProps) {
     const configuration = useSelector(getConfiguration);
     const producingDevices = useSelector(getProducingDevices);
     const organizationClient = useSelector(getOffChainDataSource)?.organizationClient;
+    const [organizations, setOrganizations] = useState<IOrganizationWithRelationsIds[]>([]);
 
     const { t } = useTranslation();
+
+    useEffect(() => {
+        (async () => {
+            if (organizationClient) {
+                setOrganizations(await organizationClient.getAll());
+            }
+        })();
+    }, [organizationClient]);
 
     const useStyles = makeStyles(() =>
         createStyles({
@@ -93,6 +103,8 @@ export function ProducingDeviceDetailView(props: IProps) {
             {
                 label: t('device.properties.deviceOwner'),
                 data: owner
+                    ? organizations?.find(o => o.id === selectedDevice?.organization)?.name
+                    : ''
             },
             {
                 label: t('device.properties.complianceRegistry'),

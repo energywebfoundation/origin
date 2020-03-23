@@ -108,7 +108,7 @@ export function Header() {
                     ) : (
                         <>
                             <Link to={getAccountLoginLink()} className={classes.endIcon}>
-                                <Tooltip title={t('settings.login')}>
+                                <Tooltip title={t('settings.navigation.login')}>
                                     <AccountCircle color="primary" />
                                 </Tooltip>
                             </Link>

@@ -63,7 +63,7 @@ export function AccountSettings() {
 
     const [notificationsEnabled, setNotificationsEnabled] = useState(null);
 
-    const userNotificationsEnabled = user?.notifications ?? false;
+    const userNotificationsEnabled = user?.notifications ?? null;
     const autoPublish = user?.autoPublish ?? null;
 
     const [autoPublishCandidate, setAutoPublish] = useState(autoPublish);
@@ -99,7 +99,7 @@ export function AccountSettings() {
     })(Switch);
 
     const notificationChanged = notificationsEnabled !== userNotificationsEnabled;
-    const autoPublishChanged = autoPublishCandidate !== autoPublish;
+    const autoPublishChanged = JSON.stringify(autoPublishCandidate) !== JSON.stringify(autoPublish);
 
     const propertiesChanged = notificationChanged || autoPublishChanged;
 
@@ -123,6 +123,8 @@ export function AccountSettings() {
 
             await userClient.updateAdditionalProperties(user.id, newProperties);
         }
+
+        dispatch(refreshUserOffchain());
 
         showNotification(t('settings.feedback.userSettingsUpdated'), NotificationType.Success);
     }
@@ -210,74 +212,68 @@ export function AccountSettings() {
                             label={t('settings.properties.notifications')}
                         />
                     </FormGroup>
-                    {autoPublishCandidate !== null && (
-                        <>
-                            <div>
-                                <hr />
-                                <FormGroup>
-                                    <FormControlLabel
-                                        control={
-                                            <PurpleSwitch
-                                                checked={autoPublishCandidate.enabled}
-                                                onChange={(e, checked) =>
-                                                    setAutoPublish({
-                                                        ...autoPublishCandidate,
-                                                        enabled: checked
-                                                    })
-                                                }
-                                            />
+
+                    <div>
+                        <hr />
+                        <FormGroup>
+                            <FormControlLabel
+                                control={
+                                    <PurpleSwitch
+                                        checked={autoPublishCandidate?.enabled ?? false}
+                                        onChange={(e, checked) =>
+                                            setAutoPublish({
+                                                ...autoPublishCandidate,
+                                                enabled: checked
+                                            })
                                         }
-                                        label={t(
-                                            'settings.properties.automaticallyPostCertificates'
-                                        )}
                                     />
-                                </FormGroup>
+                                }
+                                label={t('settings.properties.automaticallyPostCertificates')}
+                            />
+                        </FormGroup>
 
-                                {autoPublishCandidate.enabled && (
-                                    <div>
-                                        <TextField
-                                            label={t('settings.properties.price')}
-                                            value={autoPublishCandidate.priceInCents / 100}
-                                            type="number"
-                                            placeholder="1"
-                                            onChange={e =>
-                                                setAutoPublish({
-                                                    ...autoPublishCandidate,
-                                                    priceInCents: parseFloat(e.target.value) * 100
-                                                })
-                                            }
-                                            id="priceInput"
-                                            fullWidth
-                                        />
+                        {autoPublishCandidate?.enabled && (
+                            <div>
+                                <TextField
+                                    label={t('settings.properties.price')}
+                                    value={autoPublishCandidate.priceInCents / 100}
+                                    type="number"
+                                    placeholder="1"
+                                    onChange={e =>
+                                        setAutoPublish({
+                                            ...autoPublishCandidate,
+                                            priceInCents: parseFloat(e.target.value) * 100
+                                        })
+                                    }
+                                    id="priceInput"
+                                    fullWidth
+                                />
 
-                                        <FormControl fullWidth={true} variant="filled">
-                                            <InputLabel>
-                                                {t('settings.properties.currency')}
-                                            </InputLabel>
-                                            <Select
-                                                value={autoPublishCandidate.currency}
-                                                onChange={e =>
-                                                    setAutoPublish({
-                                                        ...autoPublishCandidate,
-                                                        currency: e.target.value as string
-                                                    })
-                                                }
-                                                fullWidth
-                                                variant="filled"
-                                                input={<FilledInput />}
-                                            >
-                                                {currencies.map(currency => (
-                                                    <MenuItem key={currency} value={currency}>
-                                                        {currency}
-                                                    </MenuItem>
-                                                ))}
-                                            </Select>
-                                        </FormControl>
-                                    </div>
-                                )}
+                                <FormControl fullWidth={true} variant="filled">
+                                    <InputLabel>{t('settings.properties.currency')}</InputLabel>
+                                    <Select
+                                        value={autoPublishCandidate.currency}
+                                        onChange={e =>
+                                            setAutoPublish({
+                                                ...autoPublishCandidate,
+                                                currency: e.target.value as string
+                                            })
+                                        }
+                                        fullWidth
+                                        variant="filled"
+                                        input={<FilledInput />}
+                                    >
+                                        {currencies.map(currency => (
+                                            <MenuItem key={currency} value={currency}>
+                                                {currency}
+                                            </MenuItem>
+                                        ))}
+                                    </Select>
+                                </FormControl>
                             </div>
-                        </>
-                    )}
+                        )}
+                    </div>
+
                     <Button onClick={saveChanges} color="primary" disabled={!propertiesChanged}>
                         {t('general.actions.update')}
                     </Button>
