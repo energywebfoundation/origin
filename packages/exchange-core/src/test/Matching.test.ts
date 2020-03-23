@@ -127,8 +127,8 @@ describe('Matching tests', () => {
         };
     };
 
-    const assertOrders = (expected: List<Order>, current: List<Order>) => {
-        assert.equal(current.size, expected.size, 'Expected amount of orders');
+    const assertOrders = (expected: List<Order>, current: List<Order>, type: string) => {
+        assert.equal(current.size, expected.size, `Expected amount of ${type} orders`);
 
         const zipped = expected.zip(current);
 
@@ -199,8 +199,8 @@ describe('Matching tests', () => {
             const expectedAsksAfter = List(testCase.asksAfter);
 
             const { asks, bids } = matchingEngine.orderBook();
-            assertOrders(expectedBidsAfter, bids);
-            assertOrders(expectedAsksAfter, asks);
+            assertOrders(expectedBidsAfter, bids, 'bids');
+            assertOrders(expectedAsksAfter, asks, 'asks');
 
             signalReady();
         });
@@ -236,8 +236,8 @@ describe('Matching tests', () => {
 
         const orderBook = matchingEngine.orderBookByProduct(product);
 
-        assertOrders(List<Ask>(expectedAsks), orderBook.asks);
-        assertOrders(List<Bid>(expectedBids), orderBook.bids);
+        assertOrders(List<Ask>(expectedAsks), orderBook.asks, 'asks');
+        assertOrders(List<Bid>(expectedBids), orderBook.bids, 'bids');
     };
 
     describe('when asks and bid have to same product', () => {
@@ -516,6 +516,32 @@ describe('Matching tests', () => {
             const expectedAsks = asks.slice(0, -1);
 
             executeOrderBookQuery(asks, bids, { deviceType: solarTypeLevel2 }, expectedAsks, bids);
+        });
+
+        it('should return order book based on device type where bids are "buy anything" product and no filter defined', () => {
+            const { asks, bids } = createOrderBookWithSpread(
+                [
+                    { product: { deviceType: solarTypeLevel3 } },
+                    { product: { deviceType: solarTypeLevel32 } },
+                    { product: { deviceType: windTypeLevel2 } }
+                ],
+                [{}, {}, {}]
+            );
+
+            executeOrderBookQuery(asks, bids, {}, asks, bids);
+        });
+
+        it('should return order book based on device type where bids are "buy anything" product and filter with deviceType is []', () => {
+            const { asks, bids } = createOrderBookWithSpread(
+                [
+                    { product: { deviceType: solarTypeLevel3 } },
+                    { product: { deviceType: solarTypeLevel32 } },
+                    { product: { deviceType: windTypeLevel2 } }
+                ],
+                [{}, {}, {}]
+            );
+
+            executeOrderBookQuery(asks, bids, { deviceType: [] }, asks, bids);
         });
 
         it('should return order book based on device type where bids are windType on level 1 and level 2', () => {

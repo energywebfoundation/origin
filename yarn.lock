@@ -4689,10 +4689,10 @@
   dependencies:
     "@types/node" "*"
 
-"@types/ws@7.2.2":
-  version "7.2.2"
-  resolved "https://registry.yarnpkg.com/@types/ws/-/ws-7.2.2.tgz#1bd2038bc80aea60f8a20b2dcf08602a72e65063"
-  integrity sha512-oqnI3DbGCVI9zJ/WHdFo3CUE8jQ8CVQDUIKaDtlTcNeT4zs6UCg9Gvk5QrFx2QPkRszpM6yc8o0p4aGjCsTi+w==
+"@types/ws@7.2.3":
+  version "7.2.3"
+  resolved "https://registry.yarnpkg.com/@types/ws/-/ws-7.2.3.tgz#a3add56077ac6cc9396b9502c7252a1635922032"
+  integrity sha512-VT/GK7nvDA7lfHy40G3LKM+ICqmdIsBLBHGXcWD97MtqQEjNMX+7Gudo8YGpaSlYdTX7IFThhCE8Jx09HegymQ==
   dependencies:
     "@types/node" "*"
 
@@ -4715,10 +4715,10 @@
   dependencies:
     "@types/yargs-parser" "*"
 
-"@types/yup@0.26.32":
-  version "0.26.32"
-  resolved "https://registry.yarnpkg.com/@types/yup/-/yup-0.26.32.tgz#bd356fb405f3d641eff963854edf7ad854a8e829"
-  integrity sha512-55WFAq8lNYXdRzSP1cenMFFXtPRe7PWsqn5y9ibqKHOQZ/cSLErkcnB1LE89M7W2TSXVDFtx+T7eFePkGoB+xw==
+"@types/yup@0.26.33":
+  version "0.26.33"
+  resolved "https://registry.yarnpkg.com/@types/yup/-/yup-0.26.33.tgz#301faab47b952a4a5f9a06246942cc7cbd09cd95"
+  integrity sha512-QzgcNfDtRIph8CjfoWiu+MJiOUp25Yo7FthuOHLVbtCTyonjOo2YRsFzKo3csDWbTXlw5NedOFH0Nje7yipCrA==
 
 "@typescript-eslint/eslint-plugin@2.23.0":
   version "2.23.0"
