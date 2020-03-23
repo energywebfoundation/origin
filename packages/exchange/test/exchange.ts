@@ -1,11 +1,6 @@
 import { Contracts } from '@energyweb/issuer';
-import {
-    DeviceService,
-    DeviceModule,
-    ConfigurationService,
-    ConfigurationModule
-} from '@energyweb/origin-backend';
-import { CanActivate, ExecutionContext, Logger, DynamicModule } from '@nestjs/common';
+import { ConfigurationService, DeviceService } from '@energyweb/origin-backend';
+import { CanActivate, ExecutionContext, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { AuthGuard } from '@nestjs/passport';
 import { Test } from '@nestjs/testing';
