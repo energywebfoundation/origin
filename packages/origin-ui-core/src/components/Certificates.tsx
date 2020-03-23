@@ -12,28 +12,28 @@ import { useTranslation } from 'react-i18next';
 import { Exchange } from './exchange';
 import { useLinks } from '../utils';
 
+function CertificateDetailViewId(id: string) {
+    return <CertificateDetailView id={id} />;
+}
+
+function InboxCertificates() {
+    return <CertificateTable selectedState={SelectedState.Inbox} />;
+}
+
+function ClaimedCertificates() {
+    return <CertificateTable selectedState={SelectedState.Claimed} />;
+}
+
+const PendingCertificationRequestsTable = () => <CertificationRequestsTable approved={false} />;
+
+const ApprovedCertificationRequestsTable = () => <CertificationRequestsTable approved={true} />;
+
 export function Certificates() {
     const currencies = useSelector(getCurrencies);
     const user = useSelector(getUserOffchain);
 
     const { baseURL, getCertificatesLink } = useLinks();
     const { t } = useTranslation();
-
-    function CertificateDetailViewId(id: string) {
-        return <CertificateDetailView id={id} />;
-    }
-
-    function InboxCertificates() {
-        return <CertificateTable selectedState={SelectedState.Inbox} />;
-    }
-
-    function ClaimedCertificates() {
-        return <CertificateTable selectedState={SelectedState.Claimed} />;
-    }
-
-    const PendingCertificationRequestsTable = () => <CertificationRequestsTable approved={false} />;
-
-    const ApprovedCertificationRequestsTable = () => <CertificationRequestsTable approved={true} />;
 
     const ExchangeRoute = () => <Exchange currency={(currencies && currencies[0]) ?? 'USD'} />;
 

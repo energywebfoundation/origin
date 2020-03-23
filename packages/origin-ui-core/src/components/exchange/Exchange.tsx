@@ -11,10 +11,11 @@ import { TOrderBook } from '../../utils/exchange';
 
 interface IProps {
     currency: string;
+    refreshInterval?: number;
 }
 
 export function Exchange(props: IProps) {
-    const { currency } = props;
+    const { currency, refreshInterval } = { refreshInterval: 5000, ...props };
 
     const userOffchain = useSelector(getUserOffchain);
     const exchangeClient = useSelector(getExchangeClient);
@@ -39,6 +40,14 @@ export function Exchange(props: IProps) {
 
     useEffect(() => {
         fetchData();
+    }, [deviceType, location]);
+
+    useEffect(() => {
+        const intervalRef = setInterval(async () => {
+            await fetchData();
+        }, refreshInterval);
+
+        return () => clearInterval(intervalRef);
     }, [deviceType, location]);
 
     return (
