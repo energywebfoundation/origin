@@ -14,7 +14,7 @@ export class DatabaseService {
         const tables = this.connection.entityMetadatas.map(e => `"${e.tableName}"`).join(', ');
 
         try {
-            polly()
+            await polly()
                 .waitAndRetry(3)
                 .executeForPromise(() => this.connection.query(`TRUNCATE ${tables} CASCADE;`));
         } catch (error) {
