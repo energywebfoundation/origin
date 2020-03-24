@@ -4,7 +4,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ISmartMeterReadingsAdapter } from '@energyweb/origin-backend-core';
 import { Device } from './device.entity';
 import { DeviceController } from './device.controller';
-import { EventsModule } from '../../events/events.module';
+import { EventsModule } from '../events';
 import { DeviceService } from './device.service';
 import { SM_READS_ADAPTER } from '../../const';
 

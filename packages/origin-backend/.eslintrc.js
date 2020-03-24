@@ -9,7 +9,8 @@ module.exports = {
                 packageDir: [__dirname, path.join(__dirname, '../../')]
             }
         ],
-        'no-useless-constructor': 'off'
+        'no-useless-constructor': 'off',
+        'no-empty': 'off'
     },
     plugins: ['jest'],
     env: {

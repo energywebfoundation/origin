@@ -21,23 +21,22 @@ import {
     UnprocessableEntityException,
     Delete,
     Put,
-    Inject,
     UseGuards
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { AuthGuard } from '@nestjs/passport';
-import { EventsWebSocketGateway } from '../../events/events.gateway';
 
 import { Device } from './device.entity';
 import { StorageErrors } from '../../enums/StorageErrors';
 import { DeviceService } from './device.service';
 import { UserDecorator } from '../user/user.decorator';
+import { EventsService } from '../events';
 
 @Controller('/Device')
 export class DeviceController {
     constructor(
         @InjectRepository(Device) private readonly deviceRepository: Repository<Device>,
-        @Inject(EventsWebSocketGateway) private readonly eventGateway: EventsWebSocketGateway,
+        private readonly eventsService: EventsService,
         private readonly deviceService: DeviceService
     ) {}
 
@@ -107,7 +106,7 @@ export class DeviceController {
                 status: body.status
             };
 
-            this.eventGateway.handleEvent({
+            this.eventsService.handleEvent({
                 type: SupportedEvents.DEVICE_STATUS_CHANGED,
                 data: event
             });
