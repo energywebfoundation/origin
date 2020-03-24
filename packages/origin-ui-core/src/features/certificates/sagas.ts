@@ -74,7 +74,7 @@ function* openRequestCertificatesModalSaga(): SagaIterator {
     }
 }
 
-function* fetchCertificateSaga(id: string, entitiesBeingFetched: any): SagaIterator {
+function* fetchCertificateSaga(id: number, entitiesBeingFetched: any): SagaIterator {
     if (entitiesBeingFetched.has(id)) {
         return;
     }
@@ -121,7 +121,7 @@ function* requestCertificateSaga(): SagaIterator {
             continue;
         }
 
-        const entityId = action.payload.toLowerCase();
+        const entityId = action.payload;
 
         try {
             yield fork(fetchCertificateSaga, entityId, usersBeingFetched);

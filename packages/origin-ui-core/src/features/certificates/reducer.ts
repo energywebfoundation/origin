@@ -13,7 +13,7 @@ export interface ICertificatesState {
 }
 
 const fetcher: ICertificateFetcher = {
-    async fetch(id: string, configuration: IStoreState['configuration']) {
+    async fetch(id: number, configuration: IStoreState['configuration']) {
         return configuration && new Certificate.Entity(id, configuration).sync();
     },
 
@@ -31,8 +31,8 @@ const defaultState: ICertificatesState = {
     fetcher
 };
 
-function certificateExists(state: ICertificatesState, id: string) {
-    return state.certificates.find(i => i.id.toLowerCase() === id.toLowerCase());
+function certificateExists(state: ICertificatesState, id: number) {
+    return state.certificates.find(i => i.id === id);
 }
 
 export default function reducer(
@@ -55,9 +55,7 @@ export default function reducer(
                 return state;
             }
 
-            const certificateIndex = state.certificates.findIndex(
-                c => c.id.toLowerCase() === action.payload.id.toLowerCase()
-            );
+            const certificateIndex = state.certificates.findIndex(c => c.id === action.payload.id);
 
             return {
                 ...state,

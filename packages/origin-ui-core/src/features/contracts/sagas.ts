@@ -106,7 +106,7 @@ function* initEventHandler() {
 
         const channel = eventChannel(emitter => {
             registryContractEventHandler.onEvent('ClaimSingle', async (event: any) => {
-                const id = event.returnValues._id?.toString();
+                const id = Number(event.returnValues._id);
 
                 if (typeof id !== 'string') {
                     return;
@@ -118,7 +118,7 @@ function* initEventHandler() {
             });
 
             registryContractEventHandler.onEvent('IssuanceSingle', async (event: any) => {
-                const id = event.returnValues._id?.toString();
+                const id = Number(event.returnValues._id);
 
                 if (typeof id !== 'string') {
                     return;

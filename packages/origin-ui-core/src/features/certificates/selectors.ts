@@ -11,13 +11,13 @@ export const getRequestCertificatesModalVisible = (state: IStoreState) =>
 
 export const getCertificateById = (
     certificates: ICertificatesState['certificates'],
-    id: string
+    id: number
 ) => {
     if (typeof id === 'undefined') {
         return;
     }
 
-    return certificates.find(i => i.id.toLowerCase() === id.toLowerCase());
+    return certificates.find(i => i.id === id);
 };
 
 export const getCertificateFetcher = (state: IStoreState) => state.certificates.fetcher;
