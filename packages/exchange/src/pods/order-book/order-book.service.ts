@@ -1,4 +1,4 @@
-import { Product } from '@energyweb/exchange-core';
+import { ProductFilter } from '@energyweb/exchange-core';
 import { Injectable } from '@nestjs/common';
 
 import { MatchingEngineService } from '../matching-engine/matching-engine.service';
@@ -7,7 +7,7 @@ import { MatchingEngineService } from '../matching-engine/matching-engine.servic
 export class OrderBookService {
     constructor(private readonly matchingEngineService: MatchingEngineService) {}
 
-    public getByProduct(product: Product) {
-        return this.matchingEngineService.query(product);
+    public getByProduct(productFilter: ProductFilter) {
+        return this.matchingEngineService.query(productFilter);
     }
 }
