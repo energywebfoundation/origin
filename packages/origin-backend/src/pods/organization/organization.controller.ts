@@ -10,7 +10,7 @@ import {
     IOrganizationInvitation,
     IUserWithRelationsIds,
     OrganizationRemoveMemberReturnData,
-    OrganizationStatusChanged,
+    OrganizationStatusChangedEvent,
     SupportedEvents,
     OrganizationInvitationEvent,
     OrganizationRemovedMember
@@ -195,7 +195,7 @@ export class OrganizationController {
             });
         }
 
-        const eventData: OrganizationStatusChanged = {
+        const eventData: OrganizationStatusChangedEvent = {
             organizationId: existingEntity.id,
             organizationEmail: existingEntity.email,
             status: parsedStatus
