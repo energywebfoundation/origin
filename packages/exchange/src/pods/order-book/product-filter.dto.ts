@@ -11,11 +11,15 @@ export class ProductFilterDTO extends ProductDTO {
     @IsEnum(Filter)
     public locationFilter: Filter;
 
+    @IsEnum(Filter)
+    public deviceVintageFilter: Filter;
+
     public static toProductFilter(productFilter: ProductFilterDTO): ProductFilter {
         return {
             ...ProductDTO.toProduct(productFilter),
             deviceTypeFilter: productFilter.deviceTypeFilter,
-            locationFilter: productFilter.locationFilter
+            locationFilter: productFilter.locationFilter,
+            deviceVintageFilter: productFilter.deviceVintageFilter
         };
     }
 }
