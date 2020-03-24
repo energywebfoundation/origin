@@ -4,10 +4,17 @@ import { Repository, FindConditions, BaseEntity } from 'typeorm';
 import bcrypt from 'bcryptjs';
 import { ConfigService } from '@nestjs/config';
 
-import { UserRegisterData, IUserWithRelationsIds, IUser } from '@energyweb/origin-backend-core';
+import {
+    UserRegisterData,
+    IUserWithRelationsIds,
+    IUser,
+    UserUpdateData
+} from '@energyweb/origin-backend-core';
 import { recoverTypedSignatureAddress } from '@energyweb/utils-general';
 
 import { User } from './user.entity';
+
+export type TUserBaseEntity = BaseEntity & IUserWithRelationsIds;
 
 @Injectable()
 export class UserService {
@@ -99,9 +106,40 @@ export class UserService {
         return user;
     }
 
-    private findOne(conditions: FindConditions<User>): Promise<BaseEntity & IUserWithRelationsIds> {
+    async update(
+        id: number | string,
+        data: Omit<UserUpdateData, 'blockchainAccountSignedMessage'>
+    ): Promise<TUserBaseEntity> {
+        const user = await this.findById(id);
+
+        if (!user) {
+            throw new Error(`Can't find user.`);
+        }
+
+        if (!data.autoPublish && typeof data.notifications === 'undefined') {
+            throw new Error(
+                `You can only update "autoPublish" and "notifications" properties of user and they're not present in the payload.`
+            );
+        }
+
+        if (typeof user.autoPublish !== 'undefined') {
+            user.autoPublish = data.autoPublish;
+        }
+
+        if (typeof user.notifications !== 'undefined') {
+            if (typeof user.notifications !== 'boolean') {
+                throw new Error(`User "notifications" property has to be a boolean.`);
+            }
+
+            user.notifications = data.notifications;
+        }
+
+        return user.save();
+    }
+
+    private findOne(conditions: FindConditions<User>): Promise<TUserBaseEntity> {
         return (this.repository.findOne(conditions, {
             loadRelationIds: true
-        }) as Promise<IUser>) as Promise<BaseEntity & IUserWithRelationsIds>;
+        }) as Promise<IUser>) as Promise<TUserBaseEntity>;
     }
 }

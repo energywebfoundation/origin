@@ -14,7 +14,8 @@ import { AuthGuard } from '@nestjs/passport';
 import {
     UserRegisterReturnData,
     UserRegisterData,
-    IUserWithRelationsIds
+    IUserWithRelationsIds,
+    UserUpdateData
 } from '@energyweb/origin-backend-core';
 
 import { UserService } from './user.service';
@@ -89,14 +90,19 @@ export class UserController {
     @Put(':id')
     public async update(
         @Param('id') id: string,
-        @Body('blockchainAccountSignedMessage') blockchainAccountSignedMessage: string
-    ) {
-        if (!blockchainAccountSignedMessage) {
-            throw new BadRequestException('blockchainAccountSignedMessage has to be present');
-        }
-
+        @Body() body: UserUpdateData
+    ): Promise<IUserWithRelationsIds> {
         try {
-            await this.userService.attachSignedMessage(id, blockchainAccountSignedMessage);
+            if (body.blockchainAccountSignedMessage) {
+                await this.userService.attachSignedMessage(id, body.blockchainAccountSignedMessage);
+            }
+
+            if (
+                typeof body.notifications !== 'undefined' ||
+                typeof body.autoPublish !== 'undefined'
+            ) {
+                await this.userService.update(id, body);
+            }
 
             return this.userService.findById(id);
         } catch (error) {

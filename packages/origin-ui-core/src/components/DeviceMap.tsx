@@ -8,6 +8,8 @@ import { useLinks } from '../utils/routing';
 import { getProducingDevices } from '../features/selectors';
 import { CircularProgress } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
+import { IOrganization } from '@energyweb/origin-backend-core';
+import { getOffChainDataSource } from '../features/general/selectors';
 
 interface IProps {
     devices?: ProducingDevice.Entity[];
@@ -16,12 +18,13 @@ interface IProps {
 
 export function DeviceMap(props: IProps) {
     const [deviceHighlighted, setDeviceHighlighted] = useState<ProducingDevice.Entity>(null);
-    const [owner, setOwner] = useState<number>(null);
+    const [organizations, setOrganizations] = useState<IOrganization[]>();
     const [map, setMap] = useState(null);
 
     const producingDevices = useSelector(getProducingDevices);
 
     const { getProducingDeviceDetailLink } = useLinks();
+    const offChainDataSource = useSelector(getOffChainDataSource);
     const { t } = useTranslation();
 
     const devices = props.devices || producingDevices;
@@ -30,7 +33,6 @@ export function DeviceMap(props: IProps) {
 
     async function showWindowForDevice(device: ProducingDevice.Entity) {
         setDeviceHighlighted(device);
-        setOwner(device.organization);
     }
 
     function updateBounds(targetMap: any = map) {
@@ -69,6 +71,12 @@ export function DeviceMap(props: IProps) {
         updateBounds();
     }, [devices, map]);
 
+    useEffect(() => {
+        (async () => {
+            setOrganizations((await offChainDataSource?.organizationClient?.getAll()) ?? []);
+        })();
+    }, [offChainDataSource]);
+
     const defaultCenter =
         devices.length > 0
             ? {
@@ -103,7 +111,7 @@ export function DeviceMap(props: IProps) {
                     </React.Fragment>
                 ))}
 
-                {deviceHighlighted && owner && (
+                {deviceHighlighted && (
                     <InfoWindow
                         position={{
                             lat: parseFloat(deviceHighlighted.gpsLatitude),
@@ -111,7 +119,6 @@ export function DeviceMap(props: IProps) {
                         }}
                         onCloseClick={() => {
                             setDeviceHighlighted(null);
-                            setOwner(null);
                         }}
                     >
                         <div
@@ -122,7 +129,11 @@ export function DeviceMap(props: IProps) {
                             <b>{deviceHighlighted.facilityName}</b>
                             <br />
                             <br />
-                            {t('deviceMap.properties.owner')}: {owner}
+                            {t('deviceMap.properties.owner')}:{' '}
+                            {
+                                organizations?.find(o => o?.id === deviceHighlighted.organization)
+                                    ?.name
+                            }
                             <br />
                             <br />
                             <Link to={getProducingDeviceDetailLink(deviceHighlighted.id)}>

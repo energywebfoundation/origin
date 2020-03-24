@@ -1,4 +1,5 @@
 import { ProducingDevice } from '@energyweb/device-registry';
+import { useRef, useEffect } from 'react';
 
 export function dataTest(value, name = 'data-test') {
     return {
@@ -68,3 +69,13 @@ export function getDeviceLocationText(device: ProducingDevice.Entity) {
 }
 
 export const countDecimals = value => (value % 1 ? value.toString().split('.')[1].length : 0);
+
+export function usePrevious(value) {
+    const ref = useRef();
+
+    useEffect(() => {
+        ref.current = value;
+    });
+
+    return ref.current;
+}
