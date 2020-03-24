@@ -11,8 +11,8 @@ contract Issuer is Initializable, Ownable {
     event ApprovedCertificationRequest(address indexed _owner, uint256 indexed _id, uint256 indexed _certificateId);
 
 	event CommitmentUpdated(address indexed _owner, uint256 indexed _id, bytes32 _commitment);
-	event MigrateToPublicRequest(address indexed _owner, uint256 indexed _id);
-	event PrivateTransferRequest(address indexed _owner, uint256 indexed _certificateId, uint256 indexed _id);
+	event MigrateToPublicRequested(address indexed _owner, uint256 indexed _id);
+	event PrivateTransferRequested(address indexed _owner, uint256 indexed _certificateId);
 	event CertificateMigratedToPublic(uint256 indexed _certificateId, address indexed _owner, uint256 indexed _amount);
 
     int public certificateTopic;
@@ -29,7 +29,7 @@ contract Issuer is Initializable, Ownable {
     uint256 private certificationRequestNonce;
 
 	mapping(uint256 => RequestStateChange) private requestMigrateToPublicStorage;
-	mapping(uint256 => RequestStateChange) private requestPrivateTransferStorage;
+	mapping(uint256 => PrivateTransferRequest) private requestPrivateTransferStorage;
 
 	mapping(uint256 => bool) private migrations;
 	mapping(uint256 => bytes32) private commitments;
@@ -42,6 +42,11 @@ contract Issuer is Initializable, Ownable {
         bool isPrivate;
         uint256 issuedCertificateId;
     }
+
+    struct PrivateTransferRequest {
+		address owner;
+		bytes32 hash;
+	}
 
 	struct RequestStateChange {
 		address owner;
@@ -214,35 +219,36 @@ contract Issuer is Initializable, Ownable {
 	/*
 		Private transfer
 	*/
-	function requestPrivateTransfer(uint256 _certificateId, bytes32 _ownerAddressLeafHash) external returns (uint) {
-		uint256 id = ++requestPrivateTransferNonce;
+	function requestPrivateTransfer(uint256 _certificateId, bytes32 _ownerAddressLeafHash) external {
+		PrivateTransferRequest storage currentRequest = requestPrivateTransferStorage[_certificateId];
 
-		requestPrivateTransferStorage[id] = RequestStateChange({
+        require(currentRequest.owner == address(0x0), "Only one private transfer can be requested at a time.");
+
+		requestPrivateTransferStorage[_certificateId] = PrivateTransferRequest({
 			owner: msg.sender,
-			hash: _ownerAddressLeafHash,
-			certificateId: _certificateId,
-			approved: false
+			hash: _ownerAddressLeafHash
 		});
 
-		emit PrivateTransferRequest(msg.sender, _certificateId, id);
-
-        return id;
+		emit PrivateTransferRequested(msg.sender, _certificateId);
 	}
 
 	function approvePrivateTransfer(
-        uint256 _requestId,
+        uint256 _certificateId,
         Proof[] calldata _proof,
         bytes32 _previousCommitment,
         bytes32 _commitment
     ) external onlyOwner {
-		RequestStateChange storage request = requestPrivateTransferStorage[_requestId];
+		PrivateTransferRequest storage pendingRequest = requestPrivateTransferStorage[_certificateId];
 
-		require(!request.approved, "Request already approved");
-		require(validateMerkle(request.hash, _commitment, _proof), "Wrong merkle tree");
+        require(pendingRequest.owner != address(0x0), "Can't approve a non-existing private transfer.");
+		require(validateMerkle(pendingRequest.hash, _commitment, _proof), "Wrong merkle tree");
 
-		request.approved = true;
+        requestPrivateTransferStorage[_certificateId] = PrivateTransferRequest({
+			owner: address(0x0),
+			hash: ''
+		});
 
-		_updateCommitment(request.certificateId, _previousCommitment, _commitment);
+		_updateCommitment(_certificateId, _previousCommitment, _commitment);
 	}
 
 	/*
@@ -262,26 +268,13 @@ contract Issuer is Initializable, Ownable {
 			approved: false
 		});
 
-		emit MigrateToPublicRequest(msg.sender, id);
+		emit MigrateToPublicRequested(msg.sender, id);
 
         return id;
 	}
 
-    function getPrivateTransferRequest(uint _requestId) external onlyOwner returns (RequestStateChange memory) {
-        return requestPrivateTransferStorage[_requestId];
-    }
-
-    function getPrivateTransferRequestId(uint _certificateId) external onlyOwner returns (uint256) {
-        bool found = false;
-
-		for (uint i = 1; i <= requestPrivateTransferNonce; i++) {
-            if (requestPrivateTransferStorage[i].certificateId == _certificateId) {
-                found = true;
-			    return i;
-            }
-		}
-
-        require(found, "unable to find the private transfer request");
+    function getPrivateTransferRequest(uint _certificateId) external onlyOwner returns (PrivateTransferRequest memory) {
+        return requestPrivateTransferStorage[_certificateId];
     }
 
     function getMigrationRequest(uint _requestId) external onlyOwner returns (RequestStateChange memory) {

@@ -3,6 +3,7 @@ import {
     CertificationRequestOffChainData,
     CertificationRequestUpdateData,
     IOwnershipCommitmentProof,
+    CommitmentStatus
 } from '@energyweb/origin-backend-core';
 
 import { IRequestClient, RequestClient } from './RequestClient';
@@ -15,7 +16,7 @@ export interface ICertificateClient {
     getCertificationRequestData(id: number): Promise<CertificationRequestOffChainData>;
     getOwnershipCommitment(certificateId: number): Promise<IOwnershipCommitmentProof>;
     getPendingOwnershipCommitment(certificateId: number): Promise<IOwnershipCommitmentProof>;
-    addOwnershipCommitment(certificateId: number, data: IOwnershipCommitmentProof): Promise<boolean>;
+    addOwnershipCommitment(certificateId: number, data: IOwnershipCommitmentProof): Promise<CommitmentStatus>;
     approvePendingOwnershipCommitment(certificateId: number): Promise<IOwnershipCommitmentProof>;
 }
 
@@ -69,13 +70,13 @@ export class CertificateClient implements ICertificateClient {
         return data;
     }
 
-    public async addOwnershipCommitment(certificateId: number, proof: IOwnershipCommitmentProof): Promise<boolean> {
-        const { status } = await this.requestClient.post<
+    public async addOwnershipCommitment(certificateId: number, proof: IOwnershipCommitmentProof): Promise<CommitmentStatus> {
+        const request = await this.requestClient.post<
             IOwnershipCommitmentProof,
-            IOwnershipCommitmentProof
+            CommitmentStatus
         >(`${this.certificateEndpoint}/${certificateId}/OwnershipCommitment`, proof);
 
-        return status >= 200 && status < 300;
+        return request.data;
     }
 
     public async approvePendingOwnershipCommitment(certificateId: number): Promise<IOwnershipCommitmentProof> {

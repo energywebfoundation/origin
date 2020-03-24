@@ -2,7 +2,8 @@ import {
     CertificationRequestOffChainData,
     CertificationRequestUpdateData,
     ICertificateOwnership,
-    IOwnershipCommitmentProof
+    IOwnershipCommitmentProof,
+    CommitmentStatus
 } from '@energyweb/origin-backend-core';
 
 import { ICertificateClient } from '@energyweb/origin-backend-client';
@@ -50,7 +51,7 @@ export class CertificateClientMock implements ICertificateClient {
         return certificate.pendingOwnershipCommitment;
     }
 
-    public async addOwnershipCommitment(certificateId: number, proof: IOwnershipCommitmentProof): Promise<boolean> {
+    public async addOwnershipCommitment(certificateId: number, proof: IOwnershipCommitmentProof): Promise<CommitmentStatus> {
         let certificate = this.certificateStorage.get(certificateId);
 
         if (!certificate?.currentOwnershipCommitment) {
@@ -60,15 +61,16 @@ export class CertificateClientMock implements ICertificateClient {
                 pendingOwnershipCommitment: null,
                 ownershipHistory: []
             });
+
+            return CommitmentStatus.CURRENT;
         } else if (certificate.currentOwnershipCommitment && !certificate.pendingOwnershipCommitment) {
             certificate.pendingOwnershipCommitment = proof;
 
             this.certificateStorage.set(certificateId, certificate);
-        } else {
-            throw new Error(`Unable to add a new commitment to certificate #${certificateId}. There is already a pending commitment in the queue.`);
+            return CommitmentStatus.PENDING;
         }
 
-        return true;
+        return CommitmentStatus.REJECTED;
     }
 
     public async approvePendingOwnershipCommitment(certificateId: number): Promise<IOwnershipCommitmentProof> {

@@ -2,7 +2,8 @@ import {
     CertificationRequestUpdateData,
     CertificationRequestOffChainData,
     IOwnershipCommitmentProof,
-    ICertificateOwnership
+    ICertificateOwnership,
+    CommitmentStatus
 } from '@energyweb/origin-backend-core';
 
 import { Controller, Post, Body, Get, Param, NotFoundException, ConflictException, Put } from '@nestjs/common';
@@ -114,6 +115,7 @@ export class CertificateController {
             await certificate.save();
 
             return {
+                commitmentStatus: CommitmentStatus.CURRENT,
                 message: `Commitment ${proof.rootHash} saved as the current commitment for certificate #${id}`
             };
         } else if (currentOwnershipCommitment && !pendingOwnershipCommitment) {
@@ -123,10 +125,14 @@ export class CertificateController {
             await certificate.save();
 
             return {
+                commitmentStatus: CommitmentStatus.PENDING,
                 message: `Commitment ${proof.rootHash} saved as a pending commitment for certificate #${id}`
             };
         } else {
-            throw new ConflictException(`Unable to add a new commitment to certificate #${id}. There is already a pending commitment in the queue.`);
+            throw new ConflictException({
+                commitmentStatus: CommitmentStatus.REJECTED,
+                message: `Unable to add a new commitment to certificate #${id}. There is already a pending commitment in the queue.`
+            });
         }
     }
 }

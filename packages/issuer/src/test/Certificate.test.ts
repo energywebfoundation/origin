@@ -136,7 +136,11 @@ describe('Cerificate tests', () => {
         setActiveUser(deviceOwnerPK);
 
         await certificate.transfer(accountTrader);
+        certificate = await certificate.sync();
 
+        setActiveUser(issuerPK);
+
+        await certificate.approvePrivateTransfer();
         certificate = await certificate.sync();
 
         assert.isFalse(certificate.isOwned(accountDeviceOwner));

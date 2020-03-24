@@ -6,7 +6,7 @@ import { Configuration, Timestamp } from '@energyweb/utils-general';
 import { Registry, Issuer } from '..';
 import { TransferSingleEvent, ClaimSingleEvent } from '../wrappedContracts/Registry';
 import { PreciseProofEntity } from './PreciseProofEntity';
-import { IOwnershipCommitment } from '@energyweb/origin-backend-core';
+import { IOwnershipCommitment, CommitmentStatus } from '@energyweb/origin-backend-core';
 
 export type IShareInCertificate = IOwnershipCommitment;
 
@@ -88,6 +88,7 @@ export class Entity extends PreciseProofEntity implements ICertificate {
 
         if (this.isPrivate) {
             this.propertiesDocumentHash = await issuer.getCertificateCommitment(this.id);
+
             const { commitment } = await this.getCommitment();
             this.ownedShares = commitment;
         } else {
@@ -230,7 +231,7 @@ export class Entity extends PreciseProofEntity implements ICertificate {
         this.isPrivate = false;
     }
 
-    async transfer(to: string, amount?: number): Promise<TransactionReceipt> {
+    async transfer(to: string, amount?: number): Promise<TransactionReceipt | CommitmentStatus> {
         const fromAddress = this.configuration.blockchainProperties.activeUser.address.toLowerCase();
         const toAddress = to.toLowerCase();
         const issuer: Issuer = this.configuration.blockchainProperties.issuer;
@@ -245,47 +246,20 @@ export class Entity extends PreciseProofEntity implements ICertificate {
         }
 
         if (this.isPrivate) {
-            const previousCommitment = this.propertiesDocumentHash;
             const proposedOwnerShares = { ...this.ownedShares };
             proposedOwnerShares[fromAddress] -= amount;
             proposedOwnerShares[toAddress] = (proposedOwnerShares[toAddress] ?? 0) + amount;
 
             const commitmentProof = this.generateAndAddProofs(proposedOwnerShares);
+            const ownerAddressLeafHash = commitmentProof.leafs.find(leaf => leaf.key === fromAddress).hash;
 
-            await this.saveCommitment(commitmentProof);
-
-            const ownerAddressLeafHash = commitmentProof.leafs.find(leaf => leaf.key === toAddress).hash;
-
-            const { logs } = await issuer.requestPrivateTransfer(
-                Number(this.id),
+            await issuer.requestPrivateTransfer(
+                this.id,
                 ownerAddressLeafHash,
                 Configuration.getAccount(this.configuration)
             );
 
-            const privateTransferRequestId = this.configuration.blockchainProperties.web3.utils.hexToNumber(
-                logs[0].topics[3]
-            );
-
-            const theProof = PreciseProofs.createProof(
-                toAddress,
-                commitmentProof.leafs,
-                false
-            );
-
-            const onChainProof = theProof.proofPath.map(p => ({
-                left: !!p.left,
-                hash: p.left || p.right
-            }));
-
-            this.propertiesDocumentHash = commitmentProof.rootHash;
-
-            return issuer.approvePrivateTransfer(
-                privateTransferRequestId,
-                onChainProof,
-                previousCommitment,
-                commitmentProof.rootHash,
-                Configuration.getAccount(this.configuration)
-            );
+            return this.saveCommitment(commitmentProof);
         }
 
         const registry: Registry = this.configuration.blockchainProperties.registry;
@@ -298,6 +272,47 @@ export class Entity extends PreciseProofEntity implements ICertificate {
             this.data,
             Configuration.getAccount(this.configuration)
         );
+    }
+
+    async approvePrivateTransfer(): Promise<TransactionReceipt> {
+        if (!this.isPrivate) {
+            throw new Error('approvePrivateTransfer(): only for private certificates.');
+        }
+
+        const issuer: Issuer = this.configuration.blockchainProperties.issuer;
+
+        const previousCommitment = this.propertiesDocumentHash;
+        const newCommitmentProof = await this.getPendingTransferCommitment();
+        const request = await issuer.getPrivateTransferRequest(this.id, Configuration.getAccount(this.configuration));
+
+        if (!request) {
+            throw new Error(`approvePrivateTransfer(): no pending requests to approve.`);
+        }
+
+        const theProof = PreciseProofs.createProof(
+            request.owner.toLowerCase(),
+            newCommitmentProof.leafs,
+            false
+        );
+
+        const onChainProof = theProof.proofPath.map(p => ({
+            left: !!p.left,
+            hash: p.left || p.right
+        }));
+
+        this.propertiesDocumentHash = newCommitmentProof.rootHash;
+
+        const tx = issuer.approvePrivateTransfer(
+            this.id,
+            onChainProof,
+            previousCommitment,
+            newCommitmentProof.rootHash,
+            Configuration.getAccount(this.configuration)
+        );
+
+        await this.certificateClient.approvePendingOwnershipCommitment(this.id);
+
+        return tx;
     }
 
     async revoke(): Promise<TransactionReceipt> {
@@ -490,6 +505,8 @@ export const createCertificate = async (
         );
 
         newEntity.id = getIdFromLogs(tx.logs);
+        newEntity.propertiesDocumentHash = commitmentProof.rootHash;
+
         await newEntity.saveCommitment(commitmentProof);
     } else {
         tx = await issuer.issue(to, value, data, Configuration.getAccount(configuration));

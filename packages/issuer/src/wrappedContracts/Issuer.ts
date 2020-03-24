@@ -171,12 +171,8 @@ export class Issuer extends GeneralFunctions {
         return this.send(method, txParams);
     }
 
-    async getPrivateTransferRequestId(_certificateId: number, txParams?: ISpecialTx) {
-        return this.web3Contract.methods.getPrivateTransferRequestId(_certificateId).call(txParams);
-    }
-
-    async getPrivateTransferRequest(_requestId: number, txParams?: ISpecialTx) {
-        return this.web3Contract.methods.getPrivateTransferRequest(_requestId).call(txParams);
+    async getPrivateTransferRequest(_certificateId: number, txParams?: ISpecialTx) {
+        return this.web3Contract.methods.getPrivateTransferRequest(_certificateId).call(txParams);
     }
 
     async getMigrationRequestId(_certificateId: number, txParams?: ISpecialTx) {
@@ -200,14 +196,14 @@ export class Issuer extends GeneralFunctions {
     }
 
     async approvePrivateTransfer(
-        _requestId: number,
+        _certificateId: number,
         _proof: any,
         _previousCommitment: string,
         _commitment: string,
         txParams?: ISpecialTx
     ) {
         const method = this.web3Contract.methods.approvePrivateTransfer(
-            _requestId,
+            _certificateId,
             _proof,
             _previousCommitment,
             _commitment

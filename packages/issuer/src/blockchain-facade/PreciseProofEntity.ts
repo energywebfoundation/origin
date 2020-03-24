@@ -1,6 +1,6 @@
 import { Configuration } from '@energyweb/utils-general';
 import { PreciseProofs } from 'precise-proofs-js';
-import { IOwnershipCommitmentProof, IOwnershipCommitment } from '@energyweb/origin-backend-core';
+import { IOwnershipCommitmentProof, IOwnershipCommitment, CommitmentStatus } from '@energyweb/origin-backend-core';
 
 export interface IOnChainProperties {
     propertiesDocumentHash: string;
@@ -27,23 +27,16 @@ export abstract class PreciseProofEntity implements IOnChainProperties {
         return this.configuration.offChainDataSource.certificateClient;
     }
 
-    async saveCommitment(proof: IOwnershipCommitmentProof): Promise<boolean> {
-        const saved = await this.certificateClient.addOwnershipCommitment(this.id, proof);
+    async saveCommitment(proof: IOwnershipCommitmentProof): Promise<CommitmentStatus> {
+        const commitmentStatus = await this.certificateClient.addOwnershipCommitment(this.id, proof);
 
-        if (!saved) {
-            throw new Error('Unable to save the commitment.');
+        if (commitmentStatus === CommitmentStatus.REJECTED) {
+            this.configuration.logger?.error('Unable to save the commitment. Rejected.');
+        } else if (commitmentStatus === CommitmentStatus.CURRENT) {
+            this.configuration.logger?.verbose(`Commitment saved to for Certificate #${this.id}`);
         }
 
-        this.propertiesDocumentHash = proof.rootHash;
-
-        const commitment = await this.getCommitment();
-        const isCommitmentSaved = JSON.stringify(proof) === JSON.stringify(commitment) ;
-
-        if (this.configuration.logger ?? isCommitmentSaved) {
-            this.configuration.logger.verbose(`Commitment saved to for Certificate #${this.id}`);
-        }
-
-        return isCommitmentSaved;
+        return commitmentStatus;
     }
 
     async getCommitment(): Promise<IOwnershipCommitmentProof> {
@@ -56,11 +49,19 @@ export abstract class PreciseProofEntity implements IOnChainProperties {
         this.generateAndAddProofs(proof.commitment, proof.salts);
         this.verifyOffChainProperties(this.propertiesDocumentHash, proof.commitment);
 
-        if (this.configuration.logger) {
-            this.configuration.logger.verbose(
-                `Got commitment for Certificate #${this.id}`
-            );
+        this.configuration.logger?.verbose(`Got commitment for Certificate #${this.id}`);
+
+        return proof;
+    }
+
+    async getPendingTransferCommitment(): Promise<IOwnershipCommitmentProof> {
+        const proof = await this.certificateClient.getPendingOwnershipCommitment(this.id);
+
+        if (!proof) {
+            throw new Error('getCommitment(): Not found.');
         }
+
+        this.configuration.logger?.verbose(`Got pending transfer commitment for Certificate #${this.id}`);
 
         return proof;
     }
