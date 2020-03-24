@@ -89,6 +89,18 @@ contract Issuer is Initializable, Ownable {
         return certificationRequests[_requestId].issuedCertificateId;
     }
 
+    function getCertificateCommitment(uint certificateId) public view returns (bytes32) {
+        return commitments[certificateId];
+    }
+
+    function isCertificatePrivate(uint certificateId) external view returns (bool) {
+        if (getCertificateCommitment(certificateId) == 0x0) {
+            return false;
+        }
+
+        return registry.balanceOf(msg.sender, certificateId) == 0;
+    }
+
     function totalRequests() external view returns (uint256) {
         require(certificationRequestNonce >= 0, "invalid nonce");
         return certificationRequestNonce;
@@ -217,8 +229,12 @@ contract Issuer is Initializable, Ownable {
         return id;
 	}
 
-	// TO-DO: only Issuer
-	function approvePrivateTransfer(uint256 _requestId, Proof[] calldata _proof, bytes32 _previousCommitment, bytes32 _commitment) external {
+	function approvePrivateTransfer(
+        uint256 _requestId,
+        Proof[] calldata _proof,
+        bytes32 _previousCommitment,
+        bytes32 _commitment
+    ) external onlyOwner {
 		RequestStateChange storage request = requestPrivateTransferStorage[_requestId];
 
 		require(!request.approved, "Request already approved");
@@ -251,6 +267,23 @@ contract Issuer is Initializable, Ownable {
         return id;
 	}
 
+    function getPrivateTransferRequest(uint _requestId) external onlyOwner returns (RequestStateChange memory) {
+        return requestPrivateTransferStorage[_requestId];
+    }
+
+    function getPrivateTransferRequestId(uint _certificateId) external onlyOwner returns (uint256) {
+        bool found = false;
+
+		for (uint i = 1; i <= requestPrivateTransferNonce; i++) {
+            if (requestPrivateTransferStorage[i].certificateId == _certificateId) {
+                found = true;
+			    return i;
+            }
+		}
+
+        require(found, "unable to find the private transfer request");
+    }
+
     function getMigrationRequest(uint _requestId) external onlyOwner returns (RequestStateChange memory) {
         return requestMigrateToPublicStorage[_requestId];
     }
@@ -268,7 +301,6 @@ contract Issuer is Initializable, Ownable {
         require(found, "unable to find the migration request");
     }
 
-	// TO-DO: only Issuer
 	function migrateToPublic(
         uint256 _requestId,
         uint256 _value,
@@ -334,14 +366,6 @@ contract Issuer is Initializable, Ownable {
 	/*
 		Info
 	*/
-
-    function isCertificatePrivate(uint certificateId) external view returns (bool) {
-        if (commitments[certificateId] == 0x0) {
-            return false;
-        }
-
-        return registry.balanceOf(msg.sender, certificateId) == 0;
-    }
 
     function getRegistryAddress() external view returns (address) {
         return address(registry);

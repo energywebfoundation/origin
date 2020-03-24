@@ -1,15 +1,14 @@
 import { TransactionReceipt, EventLog } from 'web3-core';
 import { PreciseProofs } from 'precise-proofs-js';
 
-import { Configuration, BlockchainDataModelEntity, Timestamp } from '@energyweb/utils-general';
+import { Configuration, Timestamp } from '@energyweb/utils-general';
 
-import { Registry, Issuer, OwnershipCommitmentSchema } from '..';
+import { Registry, Issuer } from '..';
 import { TransferSingleEvent, ClaimSingleEvent } from '../wrappedContracts/Registry';
-import { IOwnershipCommitment } from './IOwnershipCommitment';
+import { PreciseProofEntity } from './PreciseProofEntity';
+import { IOwnershipCommitment } from '@energyweb/origin-backend-core';
 
-export interface IShareInCertificate {
-    [address: string]: number;
-}
+export type IShareInCertificate = IOwnershipCommitment;
 
 export interface IOwners {
     [address: string]: {
@@ -19,7 +18,7 @@ export interface IOwners {
 }
 
 export interface ICertificate {
-    id: string;
+    id: number;
     issuer: string;
     deviceId: string;
     energy: number;
@@ -31,7 +30,7 @@ export interface ICertificate {
     owners: IOwners;
 }
 
-export class Entity extends BlockchainDataModelEntity.Entity implements ICertificate {
+export class Entity extends PreciseProofEntity implements ICertificate {
     public deviceId: string;
 
     public energy: number;
@@ -50,7 +49,7 @@ export class Entity extends BlockchainDataModelEntity.Entity implements ICertifi
     private ownedShares: IShareInCertificate = {};
     private claimedShares: IShareInCertificate = {};
 
-    constructor(id: string, configuration: Configuration.Entity) {
+    constructor(id: number, configuration: Configuration.Entity) {
         super(id, configuration);
     }
 
@@ -69,7 +68,7 @@ export class Entity extends BlockchainDataModelEntity.Entity implements ICertifi
 
         const decodedData = await issuer.decodeData(this.data);
         const allIssuanceEvents = await registry.getAllIssuanceSingleEvents({
-            filter: { _id: Number(this.id) }
+            filter: { _id: this.id }
         });
         const creationBlock = await this.configuration.blockchainProperties.web3.eth.getBlock(
             allIssuanceEvents[0].blockNumber
@@ -82,13 +81,15 @@ export class Entity extends BlockchainDataModelEntity.Entity implements ICertifi
         this.creationTime = Number(creationBlock.timestamp);
         this.creationBlockHash = creationBlock.hash;
         this.certificationRequestId = Number(
-            await issuer.getCertificationRequestIdForCertificate(Number(this.id))
+            await issuer.getCertificationRequestIdForCertificate(this.id)
         );
 
         this.claimedShares = await this.calculateClaims();
 
         if (this.isPrivate) {
-            this.ownedShares = await this.getOffChainProperties();
+            this.propertiesDocumentHash = await issuer.getCertificateCommitment(this.id);
+            const { commitment } = await this.getCommitment();
+            this.ownedShares = commitment;
         } else {
             this.ownedShares = await this.calculateOwnership();
         }
@@ -151,7 +152,7 @@ export class Entity extends BlockchainDataModelEntity.Entity implements ICertifi
         return registry.safeTransferAndClaimFrom(
             owner,
             owner,
-            parseInt(this.id, 10),
+            this.id,
             amount || this.ownedVolume(),
             this.data,
             claimData,
@@ -173,7 +174,7 @@ export class Entity extends BlockchainDataModelEntity.Entity implements ICertifi
             throw new Error(`requestMigrateToPublic(): ${owner} does not own a share in certificate ${this.id}`);
         }
 
-        const { salts } = await this.getOffChainDump();
+        const { salts } = await this.getCommitment();
         const calculatedOffChainStorageProperties = this.generateAndAddProofs(this.ownedShares, salts);
         const ownerAddressLeafHash = calculatedOffChainStorageProperties.leafs.find(leaf => leaf.key === owner).hash;
 
@@ -199,12 +200,7 @@ export class Entity extends BlockchainDataModelEntity.Entity implements ICertifi
             Configuration.getAccount(this.configuration)
         );
 
-        console.log({
-            migrationRequestId,
-            migrationRequest
-        })
-
-        const { salts } = await this.getOffChainDump();
+        const { salts } = await this.getCommitment();
 
         const calculatedOffChainStorageProperties = this.generateAndAddProofs(
             this.ownedShares,
@@ -254,11 +250,11 @@ export class Entity extends BlockchainDataModelEntity.Entity implements ICertifi
             proposedOwnerShares[fromAddress] -= amount;
             proposedOwnerShares[toAddress] = (proposedOwnerShares[toAddress] ?? 0) + amount;
 
-            const newOwnershipCommitment: IOwnershipCommitment = proposedOwnerShares;
-            const updatedOwnershipProperties = this.generateAndAddProofs(proposedOwnerShares);
-            await this.syncOffChainStorage(newOwnershipCommitment, updatedOwnershipProperties);
+            const commitmentProof = this.generateAndAddProofs(proposedOwnerShares);
 
-            const ownerAddressLeafHash = updatedOwnershipProperties.leafs.find(leaf => leaf.key === toAddress).hash;
+            await this.saveCommitment(commitmentProof);
+
+            const ownerAddressLeafHash = commitmentProof.leafs.find(leaf => leaf.key === toAddress).hash;
 
             const { logs } = await issuer.requestPrivateTransfer(
                 Number(this.id),
@@ -272,7 +268,7 @@ export class Entity extends BlockchainDataModelEntity.Entity implements ICertifi
 
             const theProof = PreciseProofs.createProof(
                 toAddress,
-                updatedOwnershipProperties.leafs,
+                commitmentProof.leafs,
                 false
             );
 
@@ -281,13 +277,13 @@ export class Entity extends BlockchainDataModelEntity.Entity implements ICertifi
                 hash: p.left || p.right
             }));
 
-            this.propertiesDocumentHash = updatedOwnershipProperties.rootHash;
+            this.propertiesDocumentHash = commitmentProof.rootHash;
 
             return issuer.approvePrivateTransfer(
                 privateTransferRequestId,
                 onChainProof,
                 previousCommitment,
-                updatedOwnershipProperties.rootHash,
+                commitmentProof.rootHash,
                 Configuration.getAccount(this.configuration)
             );
         }
@@ -297,7 +293,7 @@ export class Entity extends BlockchainDataModelEntity.Entity implements ICertifi
         return registry.safeTransferFrom(
             fromAddress,
             toAddress,
-            parseInt(this.id, 10),
+            this.id,
             amount,
             this.data,
             Configuration.getAccount(this.configuration)
@@ -313,7 +309,7 @@ export class Entity extends BlockchainDataModelEntity.Entity implements ICertifi
     }
 
     async getAllCertificateEvents(): Promise<EventLog[]> {
-        return getAllCertificateEvents(parseInt(this.id, 10), this.configuration);
+        return getAllCertificateEvents(this.id, this.configuration);
     }
 
     isOwned(byAddress?: string): boolean {
@@ -349,10 +345,10 @@ export class Entity extends BlockchainDataModelEntity.Entity implements ICertifi
 
         let transferSingleEvents: TransferSingleEvent[] = (
             await registry.getAllTransferSingleEvents({
-                filter: { _id: this.id }
+                filter: { _id: this.id.toString() }
             })
         )
-            .filter(e => e.returnValues._id === this.id)
+            .filter(e => e.returnValues._id === this.id.toString())
             .map(e => e.returnValues as TransferSingleEvent);
 
         const transferBatchEvents = (await registry.getAllTransferBatchEvents()).map(
@@ -360,9 +356,9 @@ export class Entity extends BlockchainDataModelEntity.Entity implements ICertifi
         );
 
         // Convert TransferBatch to TransferSingle event
-        for (const event of transferBatchEvents.filter(e => e._ids.includes(this.id))) {
+        for (const event of transferBatchEvents.filter(e => e._ids.includes(this.id.toString()))) {
             for (let i = 0; i < event._ids.length; i++) {
-                if (event._ids[i] === this.id) {
+                if (event._ids[i] === this.id.toString()) {
                     transferSingleEvents.push({
                         _id: event._ids[i],
                         _operator: event._operator,
@@ -410,18 +406,18 @@ export class Entity extends BlockchainDataModelEntity.Entity implements ICertifi
 
         let claimSingleEvents: ClaimSingleEvent[] = (
             await registry.getAllClaimSingleEvents({
-                filter: { _id: this.id }
+                filter: { _id: this.id.toString() }
             })
         )
-            .filter(e => e.returnValues._id === this.id)
+            .filter(e => e.returnValues._id === this.id.toString())
             .map(e => e.returnValues as ClaimSingleEvent);
 
         const claimBatchEvents = (await registry.getAllClaimBatchEvents()).map(e => e.returnValues);
 
         // Convert ClaimBatch to ClaimSingle event
-        for (const event of claimBatchEvents.filter(e => e._ids.includes(this.id))) {
+        for (const event of claimBatchEvents.filter(e => e._ids.includes(this.id.toString()))) {
             for (let i = 0; i < event._ids.length; i++) {
-                if (event._ids[i] === this.id) {
+                if (event._ids[i] === this.id.toString()) {
                     claimSingleEvents.push({
                         _claimIssuer: event._claimIssuer,
                         _claimSubject: event._claimSubject,
@@ -470,8 +466,8 @@ export const createCertificate = async (
 ): Promise<Entity> => {
     const newEntity = new Entity(null, configuration);
 
-    const getIdFromLogs = (logs: any) =>
-        configuration.blockchainProperties.web3.utils.hexToNumber(logs[0].topics[2]).toString();
+    const getIdFromLogs = (logs: any): number =>
+        configuration.blockchainProperties.web3.utils.hexToNumber(logs[0].topics[2]);
 
     const issuer: Issuer = configuration.blockchainProperties.issuer;
 
@@ -484,22 +480,21 @@ export const createCertificate = async (
             [to.toLowerCase()]: value
         };
 
-        const updatedOwnershipProperties = newEntity.generateAndAddProofs(ownershipCommitment);
-
-        await newEntity.syncOffChainStorage(ownershipCommitment, updatedOwnershipProperties);
+        const commitmentProof = newEntity.generateAndAddProofs(ownershipCommitment);
 
         tx = await issuer.issuePrivate(
             to,
-            updatedOwnershipProperties.rootHash,
+            commitmentProof.rootHash,
             data,
             Configuration.getAccount(configuration)
         );
-        newEntity.propertiesDocumentHash = updatedOwnershipProperties.rootHash;
+
+        newEntity.id = getIdFromLogs(tx.logs);
+        await newEntity.saveCommitment(commitmentProof);
     } else {
         tx = await issuer.issue(to, value, data, Configuration.getAccount(configuration));
+        newEntity.id = getIdFromLogs(tx.logs);
     }
-
-    newEntity.id = getIdFromLogs(tx.logs);
 
     if (configuration.logger) {
         configuration.logger.info(`Certificate ${newEntity.id} created`);
@@ -509,11 +504,9 @@ export const createCertificate = async (
 };
 
 export async function claimCertificates(
-    certificateIds: string[],
+    certificateIds: number[],
     configuration: Configuration.Entity
 ) {
-    const certificateIdsAsNumber = certificateIds.map(c => parseInt(c, 10));
-
     const certificatesPromises = certificateIds.map(certId =>
         new Entity(certId, configuration).sync()
     );
@@ -541,7 +534,7 @@ export async function claimCertificates(
     return configuration.blockchainProperties.registry.safeBatchTransferAndClaimFrom(
         from,
         from,
-        certificateIdsAsNumber,
+        certificateIds,
         values,
         data,
         claimData,
@@ -550,12 +543,10 @@ export async function claimCertificates(
 }
 
 export async function transferCertificates(
-    certificateIds: string[],
+    certificateIds: number[],
     to: string,
     configuration: Configuration.Entity
 ) {
-    const certificateIdsAsNumber = certificateIds.map(c => parseInt(c, 10));
-
     const certificatesPromises = certificateIds.map(certId =>
         new Entity(certId, configuration).sync()
     );
@@ -573,7 +564,7 @@ export async function transferCertificates(
     return configuration.blockchainProperties.registry.safeBatchTransferFrom(
         from,
         to,
-        certificateIdsAsNumber,
+        certificateIds,
         values,
         data,
         Configuration.getAccount(configuration)
@@ -588,7 +579,7 @@ export async function getAllCertificates(configuration: Configuration.Entity): P
         .fill(null)
         .map(async (item, index) => {
             const certId = await issuer.getCertificateIdForCertificationRequest(index + 1);
-            return Number(certId) > 0 ? new Entity(certId, configuration).sync() : null;
+            return certId > 0 ? new Entity(certId, configuration).sync() : null;
         });
 
     const certificates = await Promise.all(certificatePromises);

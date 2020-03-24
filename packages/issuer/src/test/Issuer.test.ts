@@ -106,7 +106,7 @@ describe('Issuer', () => {
             []
         );
 
-        assert.isAbove(Number(certificationRequest.id), -1);
+        assert.isAbove(certificationRequest.id, -1);
 
         assert.deepOwnInclude(certificationRequest, {
             initialized: true,
@@ -133,7 +133,7 @@ describe('Issuer', () => {
 
         const deviceOwnerBalance = await registry.balanceOf(
             accountDeviceOwner,
-            Number(certificateId)
+            certificateId
         );
         assert.equal(deviceOwnerBalance, volume);
     });

@@ -2855,17 +2855,6 @@
     lodash.set "4.3.2"
     uuid "^7.0.2"
 
-"@nestjs/config@^0.2.0":
-  version "0.2.4"
-  resolved "https://registry.yarnpkg.com/@nestjs/config/-/config-0.2.4.tgz#189080db6c22e0819c773d00936119721867751d"
-  integrity sha512-XXr6jxL2E5v+zhtlpd3uAU9erDFd8Q/3Oyu6OdhkP7TCVX9erPVbZ4rpsw2qj4t+IeU0T9dYEGVHh6qy9piOEQ==
-  dependencies:
-    dotenv "8.2.0"
-    dotenv-expand "5.1.0"
-    lodash.get "4.4.2"
-    lodash.set "4.3.2"
-    uuid "3.4.0"
-
 "@nestjs/core@6.11.11":
   version "6.11.11"
   resolved "https://registry.yarnpkg.com/@nestjs/core/-/core-6.11.11.tgz#2b97a3e9c2a853f5693ed84daf81c1ee3b2782b4"
@@ -17058,7 +17047,7 @@ precise-proofs-js@1.0.1:
     treeify "^1.1.0"
     web3 "1.2.4"
 
-precise-proofs-js@1.0.2:
+precise-proofs-js@1.0.2, precise-proofs-js@^1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/precise-proofs-js/-/precise-proofs-js-1.0.2.tgz#6ec496d893ccc0993994904f3e3456510075a699"
   integrity sha512-4IVlsBs92WjaalqZ70OVE0k31ptJrCjGKDFmgi2cGk90INep/+AsblCMvGCeARC6GMifH587KKdHAZ1+DYzDlg==
@@ -20904,7 +20893,7 @@ typed-styles@^0.0.7:
   resolved "https://registry.yarnpkg.com/typed-styles/-/typed-styles-0.0.7.tgz#93392a008794c4595119ff62dde6809dbc40a3d9"
   integrity sha512-pzP0PWoZUhsECYjABgCGQlRGL1n7tOHsgwYv3oIiEpJwGhFTuty/YNeduxQYzXXa3Ge5BdT6sHYIQYpl4uJ+5Q==
 
-typedarray-to-buffer@3.1.5, typedarray-to-buffer@^3.1.5:
+typedarray-to-buffer@^3.1.5:
   version "3.1.5"
   resolved "https://registry.yarnpkg.com/typedarray-to-buffer/-/typedarray-to-buffer-3.1.5.tgz#a97ee7a9ff42691b9f783ff1bc5112fe3fca9080"
   integrity sha512-zdu8XMNEDepKKR+XYOXAVPtWui0ly0NtohUscw+UmaHiAWT8hrV1rr//H6V+0DvJ3OQ19S979M0laLfX8rm82Q==

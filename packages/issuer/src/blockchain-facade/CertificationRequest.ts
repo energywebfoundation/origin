@@ -1,12 +1,13 @@
 import * as Moment from 'moment';
 import { extendMoment } from 'moment-range';
 
-import { Configuration, BlockchainDataModelEntity, Timestamp } from '@energyweb/utils-general';
-import { ICertificationRequest } from '@energyweb/origin-backend-core';
+import { Configuration, Timestamp } from '@energyweb/utils-general';
+import { ICertificationRequest, IOwnershipCommitment } from '@energyweb/origin-backend-core';
 
-import { Issuer, IOwnershipCommitment, OwnershipCommitmentSchema } from '..';
+import { Issuer } from '..';
+import { PreciseProofEntity } from './PreciseProofEntity';
 
-export class Entity extends BlockchainDataModelEntity.Entity implements ICertificationRequest {
+export class Entity extends PreciseProofEntity implements ICertificationRequest {
     owner: string;
     fromTime: Timestamp;
     toTime: Timestamp;
@@ -20,7 +21,7 @@ export class Entity extends BlockchainDataModelEntity.Entity implements ICertifi
     initialized: boolean = false;
 
     constructor(
-        id: string,
+        id: number,
         configuration: Configuration.Entity,
         public isPrivate: boolean = false
     ) {
@@ -30,7 +31,7 @@ export class Entity extends BlockchainDataModelEntity.Entity implements ICertifi
     async sync(): Promise<Entity> {
         const issuer: Issuer = this.configuration.blockchainProperties.issuer;
 
-        const issueRequest = await issuer.getCertificationRequest(Number(this.id));
+        const issueRequest = await issuer.getCertificationRequest(this.id);
         const decodedData = await issuer.decodeData(issueRequest.data);
 
         this.owner = issueRequest.owner;
@@ -39,7 +40,10 @@ export class Entity extends BlockchainDataModelEntity.Entity implements ICertifi
         this.device = Number(decodedData['2']);
         this.approved = issueRequest.approved;
         this.revoked = issueRequest.revoked;
-        this.created = 0; // TO-DO replace with a proper timestamp
+
+        const newCertificationRequestEvent = await issuer.getAllNewCertificationRequestEvents({ filter: { _id: this.id } });
+        const creationBlock = await this.configuration.blockchainProperties.web3.eth.getBlock(newCertificationRequestEvent[0].blockNumber);
+        this.created = Number(creationBlock.timestamp);
 
         const offChainData = await this.configuration.offChainDataSource.certificateClient.getCertificationRequestData(
             this.id
@@ -78,11 +82,11 @@ export class Entity extends BlockchainDataModelEntity.Entity implements ICertifi
             const commitment: IOwnershipCommitment = {
                 [this.owner]: this.energy
             };
-            const { rootHash } = this.prepareEntityCreation(commitment, OwnershipCommitmentSchema);
+            const { rootHash } = this.generateAndAddProofs(commitment);
 
             approveTx = await issuer.approveCertificationRequestPrivate(
                 this.owner,
-                Number(this.id),
+                this.id,
                 rootHash,
                 validityData,
                 Configuration.getAccount(this.configuration)
@@ -90,7 +94,7 @@ export class Entity extends BlockchainDataModelEntity.Entity implements ICertifi
         } else {
             approveTx = await issuer.approveCertificationRequest(
                 this.owner,
-                Number(this.id),
+                this.id,
                 this.energy,
                 validityData,
                 Configuration.getAccount(this.configuration)
@@ -104,7 +108,7 @@ export class Entity extends BlockchainDataModelEntity.Entity implements ICertifi
 
     async revoke() {
         await this.configuration.blockchainProperties.issuer.revokeRequest(
-            Number(this.id),
+            this.id,
             Configuration.getAccount(this.configuration)
         );
     }
@@ -118,9 +122,9 @@ export class Entity extends BlockchainDataModelEntity.Entity implements ICertifi
         const commitment: IOwnershipCommitment = {
             [this.configuration.blockchainProperties.activeUser.address]: value
         };
-        const { rootHash } = this.prepareEntityCreation(commitment, OwnershipCommitmentSchema);
+        const { rootHash } = this.generateAndAddProofs(commitment);
 
-        return issuer.requestMigrateToPublic(Number(this.id), rootHash);
+        return issuer.requestMigrateToPublic(this.id, rootHash);
     }
 }
 
@@ -155,11 +159,9 @@ export const createCertificationRequest = async (
               Configuration.getAccount(configuration)
           ));
 
-    request.id = configuration.blockchainProperties.web3.utils
-        .hexToNumber(logs[0].topics[2])
-        .toString();
+    request.id = configuration.blockchainProperties.web3.utils.hexToNumber(logs[0].topics[2]);
 
-    await configuration.offChainDataSource.certificateClient.updateCertificationRequestData(
+    const result = await configuration.offChainDataSource.certificateClient.updateCertificationRequestData(
         request.id,
         { energy, files }
     );
@@ -223,7 +225,7 @@ export async function getAllCertificationRequests(
 
     const certificationRequestPromises = Array(Number(totalRequests))
         .fill(null)
-        .map(async (item, index) => new Entity((index + 1).toString(), configuration).sync());
+        .map(async (item, index) => new Entity(index + 1, configuration).sync());
 
     return Promise.all(certificationRequestPromises);
 }

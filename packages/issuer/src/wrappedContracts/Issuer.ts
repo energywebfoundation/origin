@@ -40,6 +40,10 @@ export class Issuer extends GeneralFunctions {
         return this.web3Contract.getPastEvents('allEvents', this.createFilter(eventFilter));
     }
 
+    async getAllNewCertificationRequestEvents(eventFilter?: PastEventOptions) {
+        return this.web3Contract.getPastEvents('NewCertificationRequest', this.createFilter(eventFilter));
+    }
+
     async encodeData(_from: Timestamp, _to: Timestamp, _deviceId: string, txParams?: ISpecialTx) {
         return this.web3Contract.methods.encodeData(_from, _to, _deviceId).call(txParams);
     }
@@ -54,9 +58,16 @@ export class Issuer extends GeneralFunctions {
             .call(txParams);
     }
 
-    async getCertificationRequestsForDevice(_deviceId: string, txParams?: ISpecialTx) {
-        return this.web3Contract.methods
+    async getCertificationRequestsForDevice(_deviceId: string, txParams?: ISpecialTx): Promise<number[]> {
+        const ids = await this.web3Contract.methods
             .getCertificationRequestsForDevice(_deviceId)
+            .call(txParams)
+        return ids.map((id: any) => Number(id));
+    }
+
+    async getCertificateCommitment(_certificateId: number, txParams?: ISpecialTx) {
+        return this.web3Contract.methods
+            .getCertificateCommitment(_certificateId)
             .call(txParams);
     }
 
@@ -160,6 +171,14 @@ export class Issuer extends GeneralFunctions {
         return this.send(method, txParams);
     }
 
+    async getPrivateTransferRequestId(_certificateId: number, txParams?: ISpecialTx) {
+        return this.web3Contract.methods.getPrivateTransferRequestId(_certificateId).call(txParams);
+    }
+
+    async getPrivateTransferRequest(_requestId: number, txParams?: ISpecialTx) {
+        return this.web3Contract.methods.getPrivateTransferRequest(_requestId).call(txParams);
+    }
+
     async getMigrationRequestId(_certificateId: number, txParams?: ISpecialTx) {
         return this.web3Contract.methods.getMigrationRequestId(_certificateId).call(txParams);
     }
@@ -209,16 +228,18 @@ export class Issuer extends GeneralFunctions {
             .call(txParams);
     }
 
-    async getCertificationRequestIdForCertificate(_certificateId: number, txParams?: ISpecialTx) {
-        return this.web3Contract.methods
+    async getCertificationRequestIdForCertificate(_certificateId: number, txParams?: ISpecialTx): Promise<number> {
+        const id = await this.web3Contract.methods
             .getCertificationRequestIdForCertificate(_certificateId)
-            .call(txParams);
+            .call(txParams)
+        return Number(id);
     }
 
-    async getCertificateIdForCertificationRequest(_requestId: number, txParams?: ISpecialTx) {
-        return this.web3Contract.methods
+    async getCertificateIdForCertificationRequest(_requestId: number, txParams?: ISpecialTx): Promise<number> {
+        const id = await  this.web3Contract.methods
             .getCertificateIdForCertificationRequest(_requestId)
             .call(txParams);
+        return Number(id);
     }
 
     async isCertificatePrivate(_certificateId: number, txParams?: ISpecialTx) {
