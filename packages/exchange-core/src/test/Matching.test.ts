@@ -535,7 +535,11 @@ describe('Matching tests', () => {
             executeOrderBookQuery(
                 asks,
                 bids,
-                { locationFilter: Filter.All, deviceTypeFilter: Filter.All },
+                {
+                    locationFilter: Filter.All,
+                    deviceTypeFilter: Filter.All,
+                    deviceVintageFilter: Filter.All
+                },
                 asks,
                 bids
             );
@@ -559,7 +563,8 @@ describe('Matching tests', () => {
                 {
                     deviceType: solarTypeLevel2,
                     deviceTypeFilter: Filter.Specific,
-                    locationFilter: Filter.All
+                    locationFilter: Filter.All,
+                    deviceVintageFilter: Filter.All
                 },
                 expectedAsks,
                 bids
@@ -579,7 +584,11 @@ describe('Matching tests', () => {
             executeOrderBookQuery(
                 asks,
                 bids,
-                { deviceTypeFilter: Filter.All, locationFilter: Filter.All },
+                {
+                    deviceTypeFilter: Filter.All,
+                    locationFilter: Filter.All,
+                    deviceVintageFilter: Filter.All
+                },
                 asks,
                 bids
             );
@@ -600,7 +609,11 @@ describe('Matching tests', () => {
             executeOrderBookQuery(
                 asks,
                 bids,
-                { deviceTypeFilter: Filter.Unspecified, locationFilter: Filter.All },
+                {
+                    deviceTypeFilter: Filter.Unspecified,
+                    locationFilter: Filter.All,
+                    deviceVintageFilter: Filter.All
+                },
                 asks,
                 bidsAfter
             );
@@ -626,7 +639,8 @@ describe('Matching tests', () => {
                 {
                     deviceType: windTypeLevel2,
                     deviceTypeFilter: Filter.Specific,
-                    locationFilter: Filter.All
+                    locationFilter: Filter.All,
+                    deviceVintageFilter: Filter.All
                 },
                 expectedAsks,
                 bids
@@ -657,7 +671,8 @@ describe('Matching tests', () => {
                 {
                     deviceType: solarTypeLevel1,
                     deviceTypeFilter: Filter.Specific,
-                    locationFilter: Filter.All
+                    locationFilter: Filter.All,
+                    deviceVintageFilter: Filter.All
                 },
                 expectedAsks,
                 expectedBids
@@ -695,7 +710,8 @@ describe('Matching tests', () => {
                 {
                     deviceType: solarTypeLevel1.concat(windTypeLevel1),
                     deviceTypeFilter: Filter.Specific,
-                    locationFilter: Filter.All
+                    locationFilter: Filter.All,
+                    deviceVintageFilter: Filter.All
                 },
                 expectedAsks,
                 expectedBids
@@ -732,7 +748,8 @@ describe('Matching tests', () => {
                 {
                     location: locationEast,
                     locationFilter: Filter.Specific,
-                    deviceTypeFilter: Filter.All
+                    deviceTypeFilter: Filter.All,
+                    deviceVintageFilter: Filter.All
                 },
                 expectedAsks,
                 expectedBids
@@ -770,7 +787,8 @@ describe('Matching tests', () => {
                 {
                     location: locationEast.concat(locationCentral),
                     locationFilter: Filter.Specific,
-                    deviceTypeFilter: Filter.All
+                    deviceTypeFilter: Filter.All,
+                    deviceVintageFilter: Filter.All
                 },
                 expectedAsks,
                 expectedBids

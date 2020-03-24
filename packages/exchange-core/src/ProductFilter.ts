@@ -10,4 +10,6 @@ export class ProductFilter extends Product {
     deviceTypeFilter: Filter = Filter.All;
 
     locationFilter: Filter = Filter.All;
+
+    deviceVintageFilter: Filter = Filter.All;
 }

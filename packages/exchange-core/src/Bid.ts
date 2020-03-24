@@ -25,7 +25,7 @@ export class Bid extends Order {
         locationService: ILocationService
     ): boolean {
         const isIncludedInDeviceType = this.isIncludedInDeviceType(productFilter, deviceService);
-        const hasMatchingVintage = this.hasMatchingVintage(productFilter);
+        const hasMatchingVintage = this.filterByDeviceVintage(productFilter);
         const isIncludedInLocation = this.isIncludedInLocation(productFilter, locationService);
 
         return isIncludedInDeviceType && hasMatchingVintage && isIncludedInLocation;
@@ -103,6 +103,17 @@ export class Bid extends Order {
             ) ||
             deviceService.includesSomeDeviceType(this.product.deviceType, productFilter.deviceType)
         );
+    }
+
+    private filterByDeviceVintage(productFilter: ProductFilter) {
+        if (productFilter.deviceVintageFilter === Filter.All) {
+            return true;
+        }
+        if (productFilter.deviceVintageFilter === Filter.Unspecified) {
+            return !this.product.deviceVintage;
+        }
+
+        return productFilter.deviceVintage.matches(this.product.deviceVintage);
     }
 
     private hasMatchingVintage(product: Product) {
