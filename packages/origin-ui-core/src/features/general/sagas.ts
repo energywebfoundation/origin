@@ -7,13 +7,9 @@ import {
     setEnvironment,
     IEnvironment,
     GeneralActions,
-    setCurrencies,
-    setExternalDeviceIdTypes,
-    setCompliance,
-    setCountry,
-    setRegions,
     setOffChainDataSource,
-    setExchangeClient
+    setExchangeClient,
+    setOffchainConfiguration
 } from './actions';
 import { getConfiguration } from '../selectors';
 import {
@@ -27,6 +23,7 @@ import { isUsingInBrowserPK } from '../authentication/selectors';
 import axios, { Canceler } from 'axios';
 import { IOffChainDataSource, OffChainDataSource } from '@energyweb/origin-backend-client';
 import { ExchangeClient } from '../../utils/exchange';
+import { IOriginConfiguration } from '@energyweb/origin-backend-core';
 
 function* showAccountChangedModalOnChange(): SagaIterator {
     while (true) {
@@ -108,57 +105,14 @@ function prepareGetEnvironmentTask(): {
     };
 }
 
-async function getComplianceFromAPI(offChainDataSource: IOffChainDataSource) {
+async function getConfigurationFromAPI(
+    offChainDataSource: IOffChainDataSource
+): Promise<IOriginConfiguration> {
     try {
-        return (await offChainDataSource.configurationClient.get()).complianceStandard;
+        return await offChainDataSource.configurationClient.get();
     } catch {
         return null;
     }
-}
-
-async function getCurrenciesFromAPI(offChainDataSource: IOffChainDataSource) {
-    try {
-        const { currencies } = await offChainDataSource.configurationClient.get();
-
-        if (currencies.length > 0) {
-            return currencies;
-        }
-
-        return null;
-    } catch (error) {
-        console.warn('Error while trying to get currency', {
-            message: error?.message,
-            config: error?.config
-        });
-        return null;
-    }
-}
-
-async function getExternalDeviceIdTypesFromAPI(offChainDataSource: IOffChainDataSource) {
-    try {
-        const { externalDeviceIdTypes } = await offChainDataSource.configurationClient.get();
-
-        if (externalDeviceIdTypes.length > 0) {
-            return externalDeviceIdTypes;
-        }
-
-        return null;
-    } catch (error) {
-        console.warn('Error while trying to get externalDeviceIdTypes', {
-            message: error?.message,
-            config: error?.config
-        });
-        return null;
-    }
-}
-
-async function getCountryFromAPI(offChainDataSource: IOffChainDataSource) {
-    const { countryName, regions } = await offChainDataSource.configurationClient.get();
-
-    return {
-        name: countryName,
-        regions
-    };
 }
 
 function* setupEnvironment(): SagaIterator {
@@ -177,7 +131,7 @@ function* setupEnvironment(): SagaIterator {
     }
 }
 
-function* fillCurrency(): SagaIterator {
+function* fillOffchainConfiguration(): SagaIterator {
     while (true) {
         yield take([GeneralActions.setEnvironment, GeneralActions.setOffChainDataSource]);
 
@@ -188,86 +142,12 @@ function* fillCurrency(): SagaIterator {
             continue;
         }
 
-        const currencies = yield call(getCurrenciesFromAPI, offChainDataSource);
-
-        yield put(
-            setCurrencies({
-                currencies
-            })
-        );
-    }
-}
-
-function* fillExternalDeviceIdTypes(): SagaIterator {
-    while (true) {
-        yield take([GeneralActions.setEnvironment, GeneralActions.setOffChainDataSource]);
-
-        const environment: IEnvironment = yield select(getEnvironment);
-        const offChainDataSource: IOffChainDataSource = yield select(getOffChainDataSource);
-
-        if (!environment || !offChainDataSource) {
-            continue;
-        }
-
-        const externalDeviceIdTypes = yield call(
-            getExternalDeviceIdTypesFromAPI,
+        const configuration: IOriginConfiguration = yield call(
+            getConfigurationFromAPI,
             offChainDataSource
         );
 
-        yield put(
-            setExternalDeviceIdTypes({
-                externalDeviceIdTypes
-            })
-        );
-    }
-}
-
-function* fillCompliance(): SagaIterator {
-    while (true) {
-        yield take([GeneralActions.setEnvironment, GeneralActions.setOffChainDataSource]);
-
-        const environment: IEnvironment = yield select(getEnvironment);
-        const offChainDataSource: IOffChainDataSource = yield select(getOffChainDataSource);
-
-        if (!environment || !offChainDataSource) {
-            continue;
-        }
-
-        try {
-            const compliance = yield call(getComplianceFromAPI, offChainDataSource);
-
-            yield put(setCompliance(compliance));
-        } catch (error) {
-            console.warn('Could not set compliance due to an error: ', error?.message);
-        }
-    }
-}
-
-function* fillCountryAndRegions(): SagaIterator {
-    while (true) {
-        yield take([GeneralActions.setEnvironment, GeneralActions.setOffChainDataSource]);
-
-        const environment: IEnvironment = yield select(getEnvironment);
-        const offChainDataSource: IOffChainDataSource = yield select(getOffChainDataSource);
-
-        if (!environment || !offChainDataSource) {
-            continue;
-        }
-
-        try {
-            const country = yield call(getCountryFromAPI, offChainDataSource);
-
-            if (!country) {
-                console.warn(
-                    `Country from API is null. It might result in application not functioning.`
-                );
-            }
-
-            yield put(setCountry(country ? country.name : null));
-            yield put(setRegions(country ? country.regions : null));
-        } catch (error) {
-            console.warn(`Could not set country and regions due to an error: `, error?.message);
-        }
+        yield put(setOffchainConfiguration({ configuration }));
     }
 }
 
@@ -305,9 +185,6 @@ export function* generalSaga(): SagaIterator {
         fork(showAccountChangedModalOnChange),
         fork(setupEnvironment),
         fork(initializeOffChainDataSource),
-        fork(fillCurrency),
-        fork(fillCompliance),
-        fork(fillCountryAndRegions),
-        fork(fillExternalDeviceIdTypes)
+        fork(fillOffchainConfiguration)
     ]);
 }

@@ -1,7 +1,7 @@
 import { GeneralActions, IGeneralAction, IEnvironment } from './actions';
 import { IOffChainDataSource } from '@energyweb/origin-backend-client';
 import { IExchangeClient } from '../../utils/exchange';
-import { ExternalDeviceIdType } from '@energyweb/origin-backend-core';
+import { IOriginConfiguration } from '@energyweb/origin-backend-core';
 
 export interface IGeneralState {
     accountChangedModalVisible: boolean;
@@ -13,12 +13,8 @@ export interface IGeneralState {
     requestPasswordModalCallback: (password: string) => void;
     offChainDataSource: IOffChainDataSource;
     environment: IEnvironment;
-    currencies: string[];
-    compliance: string;
-    country: string;
-    regions: object;
     exchangeClient: IExchangeClient;
-    externalDeviceIdTypes: ExternalDeviceIdType[];
+    offChainConfiguration: IOriginConfiguration;
 }
 
 const defaultState: IGeneralState = {
@@ -31,12 +27,8 @@ const defaultState: IGeneralState = {
     requestPasswordModalTitle: null,
     offChainDataSource: null,
     environment: null,
-    currencies: [],
-    compliance: null,
-    country: null,
-    regions: {},
     exchangeClient: null,
-    externalDeviceIdTypes: []
+    offChainConfiguration: null
 };
 
 export default function reducer(state = defaultState, action: IGeneralAction): IGeneralState {
@@ -94,20 +86,8 @@ export default function reducer(state = defaultState, action: IGeneralAction): I
                 environment: action.payload
             };
 
-        case GeneralActions.setCurrencies:
-            return { ...state, currencies: action.payload.currencies };
-
-        case GeneralActions.setExternalDeviceIdTypes:
-            return { ...state, externalDeviceIdTypes: action.payload.externalDeviceIdTypes };
-
-        case GeneralActions.setCompliance:
-            return { ...state, compliance: action.payload };
-
-        case GeneralActions.setCountry:
-            return { ...state, country: action.payload };
-
-        case GeneralActions.setRegions:
-            return { ...state, regions: action.payload };
+        case GeneralActions.setOffchainConfiguration:
+            return { ...state, offChainConfiguration: action.payload.configuration };
 
         case GeneralActions.setExchangeClient:
             return { ...state, exchangeClient: action.payload.exchangeClient };

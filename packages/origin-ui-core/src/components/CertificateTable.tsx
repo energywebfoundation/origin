@@ -132,7 +132,9 @@ export function CertificateTable(props: IProps) {
         };
     }
 
-    const { loadPage, paginatedData, pageSize, total } = usePaginatedLoaderFiltered({
+    const { loadPage, paginatedData, pageSize, total } = usePaginatedLoaderFiltered<
+        IEnrichedCertificateData
+    >({
         getPaginatedData
     });
 
@@ -170,13 +172,8 @@ export function CertificateTable(props: IProps) {
         const certificateId = paginatedData[rowIndex].certificate.id;
 
         const certificate: Certificate.Entity = certificates.find(
-            (cert: Certificate.Entity) => cert.id === certificateId.toString()
+            cert => cert.id === certificateId.toString()
         );
-
-        console.log({
-            action: 'claim',
-            certificate
-        });
 
         if (certificate && certificate.isOwned(userAddress)) {
             dispatch(setLoading(true));
@@ -361,16 +358,14 @@ export function CertificateTable(props: IProps) {
         let commissioningDate = '';
         let compliance = '';
 
-        if (enrichedData.producingDevice?.offChainProperties) {
-            deviceType = deviceTypeService?.getDisplayText(
-                enrichedData.producingDevice.offChainProperties.deviceType
-            );
+        if (enrichedData.producingDevice) {
+            deviceType = deviceTypeService?.getDisplayText(enrichedData.producingDevice.deviceType);
 
             commissioningDate = formatDate(
-                moment.unix(enrichedData.producingDevice.offChainProperties.operationalSince)
+                moment.unix(enrichedData.producingDevice.operationalSince)
             );
 
-            compliance = enrichedData.producingDevice.offChainProperties.complianceRegistry;
+            compliance = enrichedData.producingDevice.complianceRegistry;
         }
 
         return {

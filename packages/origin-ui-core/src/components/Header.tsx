@@ -68,15 +68,20 @@ export function Header() {
                     <li>
                         <NavLink to={getDevicesLink()}>{t('header.devices')}</NavLink>
                     </li>
-                    <li>
-                        <NavLink to={getCertificatesLink()}>{t('header.certificates')}</NavLink>
-                    </li>
+
                     {userOffchain && (
-                        <li>
-                            <NavLink to={getOrganizationLink()}>
-                                {t('header.organizations')}
-                            </NavLink>
-                        </li>
+                        <>
+                            <li>
+                                <NavLink to={getCertificatesLink()}>
+                                    {t('header.certificates')}
+                                </NavLink>
+                            </li>
+                            <li>
+                                <NavLink to={getOrganizationLink()}>
+                                    {t('header.organizations')}
+                                </NavLink>
+                            </li>
+                        </>
                     )}
                 </ul>
 
@@ -108,7 +113,7 @@ export function Header() {
                     ) : (
                         <>
                             <Link to={getAccountLoginLink()} className={classes.endIcon}>
-                                <Tooltip title={t('settings.login')}>
+                                <Tooltip title={t('settings.navigation.login')}>
                                     <AccountCircle color="primary" />
                                 </Tooltip>
                             </Link>

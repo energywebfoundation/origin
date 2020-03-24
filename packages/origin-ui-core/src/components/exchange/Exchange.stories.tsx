@@ -10,12 +10,12 @@ import { Exchange } from './Exchange';
 import { setupStore, TEST_DEVICE_TYPES, TEST_REGIONS } from '../../__tests__/utils/helpers';
 import { Provider } from 'react-redux';
 import { configurationUpdated } from '../../features';
-import { setRegions, setExchangeClient } from '../../features/general/actions';
+import { setOffchainConfiguration, setExchangeClient } from '../../features/general/actions';
 import { DeviceTypeService, Configuration } from '@energyweb/utils-general';
 import MomentUtils from '@date-io/moment';
 import { MuiPickersUtilsProvider } from '@material-ui/pickers';
 import { setUserOffchain } from '../../features/users/actions';
-import { IUserWithRelations } from '@energyweb/origin-backend-core';
+import { IUserWithRelations, IOriginConfiguration } from '@energyweb/origin-backend-core';
 import { ExchangeClient, ExchangeClientMock } from '../../utils/exchange';
 
 export default {
@@ -39,7 +39,13 @@ export const defaultView = () => {
         } as Partial<Configuration.Entity>) as Configuration.Entity)
     );
 
-    store.dispatch(setRegions(TEST_REGIONS));
+    store.dispatch(
+        setOffchainConfiguration({
+            configuration: ({ regions: TEST_REGIONS } as Partial<
+                IOriginConfiguration
+            >) as IOriginConfiguration
+        })
+    );
     store.dispatch(
         setUserOffchain(({
             id: number('userOffchain.id', 1)

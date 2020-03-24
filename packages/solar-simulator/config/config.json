@@ -1,7 +1,7 @@
 {
   "devices": [
     {
-      "id": "0",
+      "id": "1",
       "maxCapacity": 8536000,
       "smartMeterPrivateKey": "0xf4254d3ddc25041a85b40877184eb2f1ff9be8b686d9edacf13ce6fa958d562e",
       "role": "producer",
@@ -14,7 +14,7 @@
       "energy_unit": "wattHour"
     },
     {
-      "id": "1",
+      "id": "2",
       "maxCapacity": 10000000,
       "smartMeterPrivateKey": "0xfd59741dab6ba03ed19a7810f8d852cb3ac57e3f816f8131c47bdf863c978ab8",
       "role": "producer",
@@ -27,7 +27,7 @@
       "energy_unit": "wattHour"
     },
     {
-      "id": "2",
+      "id": "3",
       "maxCapacity": 6000000,
       "smartMeterPrivateKey": "0xc49bbcd1f71568b55d1ad85bae035b94df402f875a7a6d32ff100fc7e6bb6e33",
       "role": "producer",
