@@ -4,6 +4,7 @@ import BN from 'bn.js';
 import { Ask } from './Ask';
 import { Order, OrderSide, OrderStatus } from './Order';
 import { Product } from './Product';
+import { ProductFilter, Filter } from './ProductFilter';
 
 export class Bid extends Order {
     constructor(
@@ -19,13 +20,13 @@ export class Bid extends Order {
     }
 
     public filterBy(
-        product: Product,
+        productFilter: ProductFilter,
         deviceService: IDeviceTypeService,
         locationService: ILocationService
     ): boolean {
-        const isIncludedInDeviceType = this.isIncludedInDeviceType(product, deviceService);
-        const hasMatchingVintage = this.hasMatchingVintage(product);
-        const isIncludedInLocation = this.isIncludedInLocation(product, locationService);
+        const isIncludedInDeviceType = this.isIncludedInDeviceType(productFilter, deviceService);
+        const hasMatchingVintage = this.hasMatchingVintage(productFilter);
+        const isIncludedInLocation = this.isIncludedInLocation(productFilter, locationService);
 
         return isIncludedInDeviceType && hasMatchingVintage && isIncludedInLocation;
     }
@@ -70,25 +71,37 @@ export class Bid extends Order {
         return locationService.matches(this.product.location, product.location[0]);
     }
 
-    private isIncludedInLocation(product: Product, locationService: ILocationService) {
-        if (!this.product.location?.length || !product.location?.length) {
+    private isIncludedInLocation(productFilter: ProductFilter, locationService: ILocationService) {
+        if (productFilter.locationFilter === Filter.All) {
             return true;
+        }
+        if (productFilter.locationFilter === Filter.Unspecified) {
+            return !this.product.location?.length;
         }
 
         return (
-            locationService.matchesSome(product.location, this.product.location) ||
-            locationService.matchesSome(this.product.location, product.location)
+            locationService.matchesSome(productFilter.location, this.product.location) ||
+            locationService.matchesSome(this.product.location, productFilter.location)
         );
     }
 
-    private isIncludedInDeviceType(product: Product, deviceService: IDeviceTypeService) {
-        if (!this.product.deviceType?.length || !product.deviceType?.length) {
+    private isIncludedInDeviceType(
+        productFilter: ProductFilter,
+        deviceService: IDeviceTypeService
+    ) {
+        if (productFilter.deviceTypeFilter === Filter.All) {
             return true;
+        }
+        if (productFilter.deviceTypeFilter === Filter.Unspecified) {
+            return !this.product.deviceType?.length;
         }
 
         return (
-            deviceService.includesSomeDeviceType(product.deviceType, this.product.deviceType) ||
-            deviceService.includesSomeDeviceType(this.product.deviceType, product.deviceType)
+            deviceService.includesSomeDeviceType(
+                productFilter.deviceType,
+                this.product.deviceType
+            ) ||
+            deviceService.includesSomeDeviceType(this.product.deviceType, productFilter.deviceType)
         );
     }
 

@@ -4,6 +4,7 @@ import BN from 'bn.js';
 import { Bid } from './Bid';
 import { Order, OrderSide, OrderStatus } from './Order';
 import { Product } from './Product';
+import { ProductFilter, Filter } from './ProductFilter';
 
 export class Ask extends Order {
     constructor(
@@ -23,13 +24,13 @@ export class Ask extends Order {
     }
 
     public filterBy(
-        product: Product,
+        productFilter: ProductFilter,
         deviceService: IDeviceTypeService,
         locationService: ILocationService
     ): boolean {
-        const hasMatchingDeviceType = this.hasMatchingDeviceType(product, deviceService);
-        const hasMatchingVintage = this.hasMatchingVintage(product);
-        const hasMatchingLocation = this.hasMatchingLocation(product, locationService);
+        const hasMatchingDeviceType = this.filterByMatchingDeviceType(productFilter, deviceService);
+        const hasMatchingVintage = this.hasMatchingVintage(productFilter);
+        const hasMatchingLocation = this.filterByMatchingLocation(productFilter, locationService);
 
         return hasMatchingDeviceType && hasMatchingVintage && hasMatchingLocation;
     }
@@ -39,7 +40,13 @@ export class Ask extends Order {
         deviceService: IDeviceTypeService,
         locationService: ILocationService
     ): boolean {
-        return this.filterBy(bid.product, deviceService, locationService);
+        const { product } = bid;
+
+        const hasMatchingDeviceType = this.hasMatchingDeviceType(product, deviceService);
+        const hasMatchingVintage = this.hasMatchingVintage(product);
+        const hasMatchingLocation = this.hasMatchingLocation(product, locationService);
+
+        return hasMatchingDeviceType && hasMatchingVintage && hasMatchingLocation;
     }
 
     public clone() {
@@ -52,6 +59,37 @@ export class Ask extends Order {
             this.status,
             this.userId
         );
+    }
+
+    private filterByMatchingDeviceType(
+        productFilter: ProductFilter,
+        deviceService: IDeviceTypeService
+    ) {
+        if (
+            productFilter.deviceTypeFilter === Filter.All ||
+            productFilter.deviceTypeFilter === Filter.Unspecified
+        ) {
+            return true;
+        }
+
+        return deviceService.includesDeviceType(
+            this.product.deviceType[0],
+            productFilter.deviceType
+        );
+    }
+
+    private filterByMatchingLocation(
+        productFilter: ProductFilter,
+        locationService: ILocationService
+    ) {
+        if (
+            productFilter.locationFilter === Filter.All ||
+            productFilter.locationFilter === Filter.Unspecified
+        ) {
+            return true;
+        }
+
+        return locationService.matches(productFilter.location, this.product.location[0]);
     }
 
     private hasMatchingDeviceType(product: Product, deviceService: IDeviceTypeService) {
