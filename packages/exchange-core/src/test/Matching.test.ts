@@ -12,6 +12,7 @@ import { Order, OrderStatus } from '../Order';
 import { Product } from '../Product';
 import { Trade } from '../Trade';
 import { DirectBuy } from '../DirectBuy';
+import { ProductFilter, Filter } from '../ProductFilter';
 
 interface IOrderCreationArgs {
     product?: Product;
@@ -166,6 +167,7 @@ describe('Matching tests', () => {
         });
     };
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const executeTestCase = (testCase: ITestCase, done: any) => {
         const matchingEngine = new MatchingEngine(deviceService, locationService);
         let doneTimer: NodeJS.Timeout;
@@ -223,7 +225,7 @@ describe('Matching tests', () => {
     const executeOrderBookQuery = (
         asks: Ask[],
         bids: Bid[],
-        product: Product,
+        productFilter: ProductFilter,
         expectedAsks: Ask[],
         expectedBids: Bid[]
     ) => {
@@ -234,7 +236,7 @@ describe('Matching tests', () => {
 
         matchingEngine.tick();
 
-        const orderBook = matchingEngine.orderBookByProduct(product);
+        const orderBook = matchingEngine.orderBookByProduct(productFilter);
 
         assertOrders(List<Ask>(expectedAsks), orderBook.asks, 'asks');
         assertOrders(List<Bid>(expectedBids), orderBook.bids, 'bids');
@@ -496,11 +498,51 @@ describe('Matching tests', () => {
         });
     });
 
+    describe('unspecified product matching', () => {
+        it('should buy 2 asks', done => {
+            const asksBefore = [
+                createAsk({ product: { deviceType: windTypeLevel2 }, price: 3 }),
+                createAsk({ product: { deviceType: windTypeLevel22 }, price: 2 }),
+                createAsk({ product: { deviceType: solarTypeLevel3 }, price: 1 })
+            ];
+
+            const bidsBefore = [
+                createBid({
+                    volume: threeKWh,
+                    product: {}
+                })
+            ];
+
+            const asksAfter = [asksBefore[0]];
+            const bidsAfter = [bidsBefore[0].clone().updateWithTradedVolume(twoKWh)];
+
+            const expectedTrades = [
+                new Trade(bidsBefore[0], asksBefore[2], onekWh, asksBefore[2].price),
+                new Trade(bidsBefore[0], asksBefore[1], onekWh, asksBefore[1].price)
+            ];
+
+            executeTestCase(
+                { orders: [...asksBefore, ...bidsBefore], expectedTrades, asksAfter, bidsAfter },
+                done
+            );
+        });
+    });
+
     describe('order book filtering by product', () => {
         it('should return whole order book when no product was set', () => {
             const { asks, bids } = createOrderBookWithSpread([{}, {}, {}], [{}, {}, {}]);
 
-            executeOrderBookQuery(asks, bids, {}, asks, bids);
+            executeOrderBookQuery(
+                asks,
+                bids,
+                {
+                    locationFilter: Filter.All,
+                    deviceTypeFilter: Filter.All,
+                    deviceVintageFilter: Filter.All
+                },
+                asks,
+                bids
+            );
         });
 
         it('should return order book based on device type where bids are "buy anything" product', () => {
@@ -515,7 +557,18 @@ describe('Matching tests', () => {
 
             const expectedAsks = asks.slice(0, -1);
 
-            executeOrderBookQuery(asks, bids, { deviceType: solarTypeLevel2 }, expectedAsks, bids);
+            executeOrderBookQuery(
+                asks,
+                bids,
+                {
+                    deviceType: solarTypeLevel2,
+                    deviceTypeFilter: Filter.Specific,
+                    locationFilter: Filter.All,
+                    deviceVintageFilter: Filter.All
+                },
+                expectedAsks,
+                bids
+            );
         });
 
         it('should return order book based on device type where bids are "buy anything" product and no filter defined', () => {
@@ -525,23 +578,45 @@ describe('Matching tests', () => {
                     { product: { deviceType: solarTypeLevel32 } },
                     { product: { deviceType: windTypeLevel2 } }
                 ],
-                [{}, {}, {}]
+                [{ product: {} }, { product: {} }, { product: {} }]
             );
 
-            executeOrderBookQuery(asks, bids, {}, asks, bids);
+            executeOrderBookQuery(
+                asks,
+                bids,
+                {
+                    deviceTypeFilter: Filter.All,
+                    locationFilter: Filter.All,
+                    deviceVintageFilter: Filter.All
+                },
+                asks,
+                bids
+            );
         });
 
-        it('should return order book based on device type where bids are "buy anything" product and filter with deviceType is []', () => {
+        it('should return order book based on device type where bids are "buy anything"', () => {
             const { asks, bids } = createOrderBookWithSpread(
                 [
                     { product: { deviceType: solarTypeLevel3 } },
                     { product: { deviceType: solarTypeLevel32 } },
                     { product: { deviceType: windTypeLevel2 } }
                 ],
-                [{}, {}, {}]
+                [{ product: { deviceType: solarTypeLevel3 } }, { product: {} }, { product: {} }]
             );
 
-            executeOrderBookQuery(asks, bids, { deviceType: [] }, asks, bids);
+            const bidsAfter = [bids[1], bids[2]];
+
+            executeOrderBookQuery(
+                asks,
+                bids,
+                {
+                    deviceTypeFilter: Filter.Unspecified,
+                    locationFilter: Filter.All,
+                    deviceVintageFilter: Filter.All
+                },
+                asks,
+                bidsAfter
+            );
         });
 
         it('should return order book based on device type where bids are windType on level 1 and level 2', () => {
@@ -558,7 +633,18 @@ describe('Matching tests', () => {
 
             const expectedAsks = asks.slice(-1);
 
-            executeOrderBookQuery(asks, bids, { deviceType: windTypeLevel2 }, expectedAsks, bids);
+            executeOrderBookQuery(
+                asks,
+                bids,
+                {
+                    deviceType: windTypeLevel2,
+                    deviceTypeFilter: Filter.Specific,
+                    locationFilter: Filter.All,
+                    deviceVintageFilter: Filter.All
+                },
+                expectedAsks,
+                bids
+            );
         });
 
         it('should return order book based on device type where bids are of different types', () => {
@@ -582,7 +668,12 @@ describe('Matching tests', () => {
             executeOrderBookQuery(
                 asks,
                 bids,
-                { deviceType: solarTypeLevel1 },
+                {
+                    deviceType: solarTypeLevel1,
+                    deviceTypeFilter: Filter.Specific,
+                    locationFilter: Filter.All,
+                    deviceVintageFilter: Filter.All
+                },
                 expectedAsks,
                 expectedBids
             );
@@ -616,7 +707,12 @@ describe('Matching tests', () => {
             executeOrderBookQuery(
                 asks,
                 bids,
-                { deviceType: solarTypeLevel1.concat(windTypeLevel1) },
+                {
+                    deviceType: solarTypeLevel1.concat(windTypeLevel1),
+                    deviceTypeFilter: Filter.Specific,
+                    locationFilter: Filter.All,
+                    deviceVintageFilter: Filter.All
+                },
                 expectedAsks,
                 expectedBids
             );
@@ -649,7 +745,12 @@ describe('Matching tests', () => {
             executeOrderBookQuery(
                 asks,
                 bids,
-                { location: locationEast },
+                {
+                    location: locationEast,
+                    locationFilter: Filter.Specific,
+                    deviceTypeFilter: Filter.All,
+                    deviceVintageFilter: Filter.All
+                },
                 expectedAsks,
                 expectedBids
             );
@@ -683,7 +784,12 @@ describe('Matching tests', () => {
             executeOrderBookQuery(
                 asks,
                 bids,
-                { location: locationEast.concat(locationCentral) },
+                {
+                    location: locationEast.concat(locationCentral),
+                    locationFilter: Filter.Specific,
+                    deviceTypeFilter: Filter.All,
+                    deviceVintageFilter: Filter.All
+                },
                 expectedAsks,
                 expectedBids
             );
