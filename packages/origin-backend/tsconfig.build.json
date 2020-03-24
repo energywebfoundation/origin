@@ -4,7 +4,8 @@
         "composite": true,
         "outDir": "./dist/js",
         "emitDecoratorMetadata": true,
-        "experimentalDecorators": true
+        "experimentalDecorators": true,
+        "typeRoots": ["./src/types"]
     },
     "include": ["src/**/*", "ormconfig.json"],
     "references": [
