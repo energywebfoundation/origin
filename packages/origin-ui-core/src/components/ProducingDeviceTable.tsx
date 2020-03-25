@@ -151,7 +151,7 @@ export function ProducingDeviceTable(props: IOwnProps) {
             console.error(error);
         }
 
-        setLoading(false);
+        dispatch(setLoading(false));
     }
 
     const filters: ICustomFilterDefinition[] = [

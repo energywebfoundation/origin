@@ -69,7 +69,7 @@ export class MatchingEngineService {
             return;
         }
 
-        this.logger.log('Triggering matching engine');
+        this.logger.debug('Triggering matching engine');
         this.matchingEngine.tick();
     }
 

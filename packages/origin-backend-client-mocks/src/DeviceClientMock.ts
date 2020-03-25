@@ -2,7 +2,7 @@ import moment from 'moment';
 import {
     IDevice,
     DeviceUpdateData,
-    DeviceStatusChanged,
+    DeviceStatusChangedEvent,
     SupportedEvents,
     IEvent,
     ISmartMeterRead,
@@ -36,8 +36,7 @@ export class DeviceClientMock implements IDeviceClient {
             status: data.status ?? DeviceStatus.Submitted,
             lastSmartMeterReading: data.lastSmartMeterReading ?? null,
             smartMeterReads: data.smartMeterReads ?? [],
-            deviceGroup: data.deviceGroup ?? '',
-
+            deviceGroup: data.deviceGroup ?? ''
         };
 
         this.storage.set(device.id, device);
@@ -52,9 +51,10 @@ export class DeviceClientMock implements IDeviceClient {
 
         this.storage.set(id, device);
 
-        const event: DeviceStatusChanged = {
+        const event: DeviceStatusChangedEvent = {
             deviceId: id.toString(),
-            status: data.status
+            status: data.status,
+            deviceManagersEmails: []
         };
 
         const sendEvent: IEvent = {

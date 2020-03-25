@@ -6,6 +6,7 @@ import { OrganizationController } from './organization.controller';
 import { UserModule } from '../user/user.module';
 import { OrganizationInvitation } from './organizationInvitation.entity';
 import { EventsModule } from '../events';
+import { OrganizationService } from './organization.service';
 
 @Module({
     imports: [
@@ -13,7 +14,8 @@ import { EventsModule } from '../events';
         UserModule,
         EventsModule
     ],
-    providers: [],
-    controllers: [OrganizationController]
+    providers: [OrganizationService],
+    controllers: [OrganizationController],
+    exports: [OrganizationService]
 })
 export class OrganizationModule {}

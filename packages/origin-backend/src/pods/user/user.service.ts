@@ -60,8 +60,13 @@ export class UserService {
         return this.findOne({ blockchainAccountAddress });
     }
 
-    async findByIds(ids: number[], conditions: FindConditions<User>) {
-        return this.repository.findByIds(ids, conditions);
+    async findByIds(
+        ids: number[],
+        conditions: FindConditions<User> = {}
+    ): Promise<TUserBaseEntity[]> {
+        return (this.repository.findByIds(ids, conditions) as Promise<IUser[]>) as Promise<
+            TUserBaseEntity[]
+        >;
     }
 
     hashPassword(password: string) {

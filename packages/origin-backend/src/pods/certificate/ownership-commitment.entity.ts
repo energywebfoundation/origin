@@ -1,6 +1,9 @@
 import { PreciseProofs } from 'precise-proofs-js';
 import { Entity, Column, BaseEntity, PrimaryColumn, ManyToOne } from 'typeorm';
-import { OwnershipCommitmentProofWithTx, IOwnershipCommitment } from '@energyweb/origin-backend-core';
+import {
+    OwnershipCommitmentProofWithTx,
+    IOwnershipCommitment
+} from '@energyweb/origin-backend-core';
 import { Certificate } from './certificate.entity';
 
 @Entity()
@@ -17,7 +20,10 @@ export class OwnershipCommitment extends BaseEntity implements OwnershipCommitme
     @Column('simple-array')
     salts: string[];
 
-    @ManyToOne(type => Certificate, cert => cert.ownershipHistory)
+    @ManyToOne(
+        () => Certificate,
+        cert => cert.ownershipHistory
+    )
     certificate: Certificate;
 
     @Column()
