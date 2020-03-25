@@ -253,13 +253,16 @@ export class Entity extends PreciseProofEntity implements ICertificate {
             const commitmentProof = this.generateAndAddProofs(proposedOwnerShares);
             const ownerAddressLeafHash = commitmentProof.leafs.find(leaf => leaf.key === fromAddress).hash;
 
-            await issuer.requestPrivateTransfer(
+            const tx = await issuer.requestPrivateTransfer(
                 this.id,
                 ownerAddressLeafHash,
                 Configuration.getAccount(this.configuration)
             );
 
-            return this.saveCommitment(commitmentProof);
+            return this.saveCommitment({
+                ...commitmentProof,
+                txHash: tx.transactionHash
+            });
         }
 
         const registry: Registry = this.configuration.blockchainProperties.registry;
@@ -507,7 +510,10 @@ export const createCertificate = async (
         newEntity.id = getIdFromLogs(tx.logs);
         newEntity.propertiesDocumentHash = commitmentProof.rootHash;
 
-        await newEntity.saveCommitment(commitmentProof);
+        await newEntity.saveCommitment({
+            ...commitmentProof,
+            txHash: tx.transactionHash
+        });
     } else {
         tx = await issuer.issue(to, value, data, Configuration.getAccount(configuration));
         newEntity.id = getIdFromLogs(tx.logs);

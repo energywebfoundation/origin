@@ -1,6 +1,6 @@
 import { Configuration } from '@energyweb/utils-general';
 import { PreciseProofs } from 'precise-proofs-js';
-import { IOwnershipCommitmentProof, IOwnershipCommitment, CommitmentStatus } from '@energyweb/origin-backend-core';
+import { IOwnershipCommitmentProof, IOwnershipCommitment, CommitmentStatus, OwnershipCommitmentProofWithTx } from '@energyweb/origin-backend-core';
 
 export interface IOnChainProperties {
     propertiesDocumentHash: string;
@@ -27,7 +27,7 @@ export abstract class PreciseProofEntity implements IOnChainProperties {
         return this.configuration.offChainDataSource.certificateClient;
     }
 
-    async saveCommitment(proof: IOwnershipCommitmentProof): Promise<CommitmentStatus> {
+    async saveCommitment(proof: OwnershipCommitmentProofWithTx): Promise<CommitmentStatus> {
         const commitmentStatus = await this.certificateClient.addOwnershipCommitment(this.id, proof);
 
         if (commitmentStatus === CommitmentStatus.REJECTED) {
@@ -39,7 +39,7 @@ export abstract class PreciseProofEntity implements IOnChainProperties {
         return commitmentStatus;
     }
 
-    async getCommitment(): Promise<IOwnershipCommitmentProof> {
+    async getCommitment(): Promise<OwnershipCommitmentProofWithTx> {
         const proof = await this.certificateClient.getOwnershipCommitment(this.id);
 
         if (!proof) {
@@ -54,7 +54,7 @@ export abstract class PreciseProofEntity implements IOnChainProperties {
         return proof;
     }
 
-    async getPendingTransferCommitment(): Promise<IOwnershipCommitmentProof> {
+    async getPendingTransferCommitment(): Promise<OwnershipCommitmentProofWithTx> {
         const proof = await this.certificateClient.getPendingOwnershipCommitment(this.id);
 
         if (!proof) {

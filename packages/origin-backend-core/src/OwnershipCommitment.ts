@@ -10,3 +10,7 @@ export interface IOwnershipCommitmentProof {
     leafs: PreciseProofs.Leaf[];
     salts: string[];
 }
+
+export interface OwnershipCommitmentProofWithTx extends IOwnershipCommitmentProof {
+    txHash: string;
+}

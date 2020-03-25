@@ -3,7 +3,8 @@ import {
     CertificationRequestOffChainData,
     CertificationRequestUpdateData,
     IOwnershipCommitmentProof,
-    CommitmentStatus
+    CommitmentStatus,
+    OwnershipCommitmentProofWithTx
 } from '@energyweb/origin-backend-core';
 
 import { IRequestClient, RequestClient } from './RequestClient';
@@ -14,10 +15,10 @@ export interface ICertificateClient {
         data: CertificationRequestUpdateData
     ): Promise<boolean>;
     getCertificationRequestData(id: number): Promise<CertificationRequestOffChainData>;
-    getOwnershipCommitment(certificateId: number): Promise<IOwnershipCommitmentProof>;
-    getPendingOwnershipCommitment(certificateId: number): Promise<IOwnershipCommitmentProof>;
-    addOwnershipCommitment(certificateId: number, data: IOwnershipCommitmentProof): Promise<CommitmentStatus>;
-    approvePendingOwnershipCommitment(certificateId: number): Promise<IOwnershipCommitmentProof>;
+    getOwnershipCommitment(certificateId: number): Promise<OwnershipCommitmentProofWithTx>;
+    getPendingOwnershipCommitment(certificateId: number): Promise<OwnershipCommitmentProofWithTx>;
+    addOwnershipCommitment(certificateId: number, data: OwnershipCommitmentProofWithTx): Promise<CommitmentStatus>;
+    approvePendingOwnershipCommitment(certificateId: number): Promise<OwnershipCommitmentProofWithTx>;
 }
 
 export class CertificateClient implements ICertificateClient {
@@ -56,33 +57,33 @@ export class CertificateClient implements ICertificateClient {
         return data;
     }
 
-    public async getOwnershipCommitment(certificateId: number): Promise<IOwnershipCommitmentProof> {
+    public async getOwnershipCommitment(certificateId: number): Promise<OwnershipCommitmentProofWithTx> {
         const url = `${this.certificateEndpoint}/${certificateId}/OwnershipCommitment`;
         const { data } = await this.requestClient.get(url);
 
         return data;
     }
 
-    public async getPendingOwnershipCommitment(certificateId: number): Promise<IOwnershipCommitmentProof> {
+    public async getPendingOwnershipCommitment(certificateId: number): Promise<OwnershipCommitmentProofWithTx> {
         const url = `${this.certificateEndpoint}/${certificateId}/OwnershipCommitment/pending`;
         const { data } = await this.requestClient.get(url);
 
         return data;
     }
 
-    public async addOwnershipCommitment(certificateId: number, proof: IOwnershipCommitmentProof): Promise<CommitmentStatus> {
+    public async addOwnershipCommitment(certificateId: number, proof: OwnershipCommitmentProofWithTx): Promise<CommitmentStatus> {
         const request = await this.requestClient.post<
-            IOwnershipCommitmentProof,
+            OwnershipCommitmentProofWithTx,
             CommitmentStatus
         >(`${this.certificateEndpoint}/${certificateId}/OwnershipCommitment`, proof);
 
         return request.data;
     }
 
-    public async approvePendingOwnershipCommitment(certificateId: number): Promise<IOwnershipCommitmentProof> {
+    public async approvePendingOwnershipCommitment(certificateId: number): Promise<OwnershipCommitmentProofWithTx> {
         const response = await this.requestClient.put<
-            IOwnershipCommitmentProof,
-            IOwnershipCommitmentProof
+            OwnershipCommitmentProofWithTx,
+            OwnershipCommitmentProofWithTx
         >(`${this.certificateEndpoint}/${certificateId}/OwnershipCommitment/pending/approve`);
 
         return response.data;
