@@ -14,12 +14,16 @@ export class ProductFilterDTO extends ProductDTO {
     @IsEnum(Filter)
     public deviceVintageFilter: Filter;
 
+    @IsEnum(Filter)
+    public generationTimeFilter: Filter;
+
     public static toProductFilter(productFilter: ProductFilterDTO): ProductFilter {
         return {
             ...ProductDTO.toProduct(productFilter),
             deviceTypeFilter: productFilter.deviceTypeFilter,
             locationFilter: productFilter.locationFilter,
-            deviceVintageFilter: productFilter.deviceVintageFilter
+            deviceVintageFilter: productFilter.deviceVintageFilter,
+            generationTimeFilter: productFilter.generationTimeFilter
         };
     }
 }

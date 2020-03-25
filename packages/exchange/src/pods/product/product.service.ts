@@ -20,6 +20,8 @@ export class ProductService implements OnModuleInit {
         product.deviceType = ['Solar;Photovoltaic;Classic silicon'];
         product.location = ['Thailand;Central;Nakhon Pathom'];
         product.deviceVintage = { year: 2016 };
+        product.generationFrom = new Date('2020-01-01').toISOString();
+        product.generationTo = new Date('2020-01-31').toISOString();
 
         return product;
     }

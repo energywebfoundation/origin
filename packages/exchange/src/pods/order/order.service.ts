@@ -139,9 +139,15 @@ export class OrderService {
     }
 
     public async getAllActiveOrders() {
-        return this.repository.find({
+        this.logger.debug(`Requested all active orders`);
+
+        const orders = await this.repository.find({
             where: [{ status: OrderStatus.Active }, { status: OrderStatus.PartiallyFilled }]
         });
+
+        this.logger.debug(`Found ${orders?.length} active orders`);
+
+        return orders;
     }
 
     public async getActiveOrders(userId: string) {
