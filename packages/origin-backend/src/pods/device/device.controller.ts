@@ -1,4 +1,3 @@
-import { Repository } from 'typeorm';
 import {
     DeviceStatus,
     DeviceUpdateData,
@@ -23,10 +22,8 @@ import {
     Put,
     UseGuards
 } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
 import { AuthGuard } from '@nestjs/passport';
 
-import { Device } from './device.entity';
 import { StorageErrors } from '../../enums/StorageErrors';
 import { DeviceService } from './device.service';
 import { UserDecorator } from '../user/user.decorator';
@@ -36,7 +33,6 @@ import { OrganizationService } from '../organization';
 @Controller('/Device')
 export class DeviceController {
     constructor(
-        @InjectRepository(Device) private readonly deviceRepository: Repository<Device>,
         private readonly eventsService: EventsService,
         private readonly deviceService: DeviceService,
         private readonly organizationService: OrganizationService
@@ -44,7 +40,7 @@ export class DeviceController {
 
     @Get()
     async getAll() {
-        return this.deviceRepository.find();
+        return this.deviceService.getAll();
     }
 
     @Get('/:id')

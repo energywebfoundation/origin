@@ -29,7 +29,8 @@ import { addCertificate, requestCertificateEntityFetch } from '../certificates/a
 import { IStoreState } from '../../types';
 import { getOffChainDataSource, getEnvironment } from '../general/selectors';
 import { getContractsLookup } from './selectors';
-import { IContractsLookup } from '@energyweb/origin-backend-core';
+import { IContractsLookup, IOrganizationWithRelationsIds } from '@energyweb/origin-backend-core';
+import { addOrganizations } from '../users/actions';
 
 enum ERROR {
     WRONG_NETWORK_OR_CONTRACT_ADDRESS = "Please make sure you've chosen correct blockchain network and the contract address is valid."
@@ -244,6 +245,14 @@ function* fillContractLookupIfMissing(): SagaIterator {
             for (const certificate of certificates) {
                 yield put(addCertificate(certificate));
             }
+
+            const organizations: IOrganizationWithRelationsIds[] = yield apply(
+                offChainDataSource.organizationClient,
+                offChainDataSource.organizationClient.getAll,
+                []
+            );
+
+            yield put(addOrganizations(organizations));
 
             yield call(initEventHandler);
         } catch (error) {

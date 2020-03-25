@@ -19,7 +19,7 @@ export class DeviceClientMock implements IDeviceClient {
 
     constructor(public eventClient: IEventClient) {}
 
-    async getById(id: number): Promise<IDevice> {
+    async getById(id: number): Promise<IDeviceWithRelationsIds> {
         return this.storage.get(id);
     }
 

@@ -8,7 +8,7 @@ import {
 import { IRequestClient, RequestClient } from './RequestClient';
 
 export interface IDeviceClient {
-    getById(id: number): Promise<IDevice>;
+    getById(id: number): Promise<IDeviceWithRelationsIds>;
     getAll(): Promise<IDeviceWithRelationsIds[]>;
     add(device: DeviceCreateData): Promise<IDeviceWithRelationsIds>;
     update(id: number, data: DeviceUpdateData): Promise<IDevice>;
@@ -26,7 +26,7 @@ export class DeviceClient implements IDeviceClient {
         return `${this.dataApiUrl}/Device`;
     }
 
-    public async getById(id: number): Promise<IDevice> {
+    public async getById(id: number): Promise<IDeviceWithRelationsIds> {
         const url = `${this.endpoint}/${id}`;
         const { data } = await this.requestClient.get(url);
 

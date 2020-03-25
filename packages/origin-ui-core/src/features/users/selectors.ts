@@ -14,3 +14,5 @@ export const getIsLeadUser = (state: IStoreState): boolean => {
 
     return user.organization?.leadUser === user.id;
 };
+
+export const getOrganizations = (state: IStoreState) => state.users.organizations;

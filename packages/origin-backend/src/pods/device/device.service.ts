@@ -105,4 +105,25 @@ export class DeviceService {
 
         await device.save();
     }
+
+    async getAll(
+        options: FindOneOptions<Device> = {}
+    ): Promise<Array<BaseEntity & IDeviceWithRelationsIds>> {
+        const devices = ((await this.repository.find({
+            loadRelationIds: true,
+            ...options
+        })) as IDevice[]) as (BaseEntity & IDeviceWithRelationsIds)[];
+
+        if (this.smartMeterReadingsAdapter) {
+            for (const device of devices) {
+                device.lastSmartMeterReading = await this.smartMeterReadingsAdapter.getLatest(
+                    device
+                );
+
+                device.smartMeterReads = [];
+            }
+        }
+
+        return devices;
+    }
 }
