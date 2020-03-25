@@ -7,14 +7,17 @@ export class Certificate extends BaseEntity implements ICertificateOwnership {
     @PrimaryColumn()
     id: number;
 
-    @OneToOne(type => OwnershipCommitment)
+    @OneToOne(() => OwnershipCommitment)
     @JoinColumn()
     currentOwnershipCommitment: OwnershipCommitment;
 
-    @OneToOne(type => OwnershipCommitment, { nullable: true })
+    @OneToOne(() => OwnershipCommitment, { nullable: true })
     @JoinColumn()
     pendingOwnershipCommitment: OwnershipCommitment;
 
-    @OneToMany(type => OwnershipCommitment, commitment => commitment.certificate)
+    @OneToMany(
+        () => OwnershipCommitment,
+        commitment => commitment.certificate
+    )
     ownershipHistory: OwnershipCommitment[];
 }

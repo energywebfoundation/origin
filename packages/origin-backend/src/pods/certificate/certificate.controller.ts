@@ -6,7 +6,16 @@ import {
     CommitmentStatus
 } from '@energyweb/origin-backend-core';
 
-import { Controller, Post, Body, Get, Param, NotFoundException, ConflictException, Put } from '@nestjs/common';
+import {
+    Controller,
+    Post,
+    Body,
+    Get,
+    Param,
+    NotFoundException,
+    ConflictException,
+    Put
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CertificationRequest } from './certification-request.entity';
@@ -75,18 +84,24 @@ export class CertificateController {
         const certificate = await this.certificateRepository.findOne(id);
 
         if (!certificate?.pendingOwnershipCommitment) {
-            throw new NotFoundException(`getPendingOwnershipCommitment(): ${StorageErrors.NON_EXISTENT}`);
+            throw new NotFoundException(
+                `getPendingOwnershipCommitment(): ${StorageErrors.NON_EXISTENT}`
+            );
         }
 
         return certificate.pendingOwnershipCommitment;
     }
 
     @Put(`/:id/OwnershipCommitment/pending/approve`)
-    async approvePendingOwnershipCommitment(@Param('id') id: number): Promise<OwnershipCommitmentProofWithTx> {
+    async approvePendingOwnershipCommitment(
+        @Param('id') id: number
+    ): Promise<OwnershipCommitmentProofWithTx> {
         const certificate = await this.certificateRepository.findOne(id);
 
         if (!certificate?.pendingOwnershipCommitment) {
-            throw new NotFoundException(`approvePendingOwnershipCommitment(): ${StorageErrors.NON_EXISTENT}`);
+            throw new NotFoundException(
+                `approvePendingOwnershipCommitment(): ${StorageErrors.NON_EXISTENT}`
+            );
         }
 
         certificate.ownershipHistory.push(certificate.currentOwnershipCommitment);
@@ -99,8 +114,11 @@ export class CertificateController {
     }
 
     @Post(`/:id/OwnershipCommitment`)
-    async addOwnershipCommitment(@Param('id') id: number, @Body() proof: OwnershipCommitmentProofWithTx) {
-        const certificate = await this.certificateRepository.findOne(id) ?? new Certificate();
+    async addOwnershipCommitment(
+        @Param('id') id: number,
+        @Body() proof: OwnershipCommitmentProofWithTx
+    ) {
+        const certificate = (await this.certificateRepository.findOne(id)) ?? new Certificate();
 
         const { currentOwnershipCommitment, pendingOwnershipCommitment } = certificate;
 
@@ -118,7 +136,8 @@ export class CertificateController {
                 commitmentStatus: CommitmentStatus.CURRENT,
                 message: `Commitment ${proof.rootHash} saved as the current commitment for certificate #${id}`
             };
-        } else if (currentOwnershipCommitment && !pendingOwnershipCommitment) {
+        }
+        if (currentOwnershipCommitment && !pendingOwnershipCommitment) {
             await this.ownershipCommitmentRepository.save(newCommitment);
             certificate.pendingOwnershipCommitment = newCommitment;
 
@@ -128,11 +147,10 @@ export class CertificateController {
                 commitmentStatus: CommitmentStatus.PENDING,
                 message: `Commitment ${proof.rootHash} saved as a pending commitment for certificate #${id}`
             };
-        } else {
-            throw new ConflictException({
-                commitmentStatus: CommitmentStatus.REJECTED,
-                message: `Unable to add a new commitment to certificate #${id}. There is already a pending commitment in the queue.`
-            });
         }
+        throw new ConflictException({
+            commitmentStatus: CommitmentStatus.REJECTED,
+            message: `Unable to add a new commitment to certificate #${id}. There is already a pending commitment in the queue.`
+        });
     }
 }

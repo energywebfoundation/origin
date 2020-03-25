@@ -9,16 +9,24 @@ import { PreciseProofEntity } from './PreciseProofEntity';
 
 export class Entity extends PreciseProofEntity implements ICertificationRequest {
     owner: string;
+
     fromTime: Timestamp;
+
     toTime: Timestamp;
+
     device: number;
+
     approved: boolean;
+
     revoked: boolean;
+
     created: Timestamp;
+
     files: string[];
+
     energy: number;
 
-    initialized: boolean = false;
+    initialized = false;
 
     constructor(
         id: number,
@@ -29,7 +37,7 @@ export class Entity extends PreciseProofEntity implements ICertificationRequest 
     }
 
     async sync(): Promise<Entity> {
-        const issuer: Issuer = this.configuration.blockchainProperties.issuer;
+        const { issuer } = this.configuration.blockchainProperties;
 
         const issueRequest = await issuer.getCertificationRequest(this.id);
         const decodedData = await issuer.decodeData(issueRequest.data);
@@ -41,8 +49,12 @@ export class Entity extends PreciseProofEntity implements ICertificationRequest 
         this.approved = issueRequest.approved;
         this.revoked = issueRequest.revoked;
 
-        const newCertificationRequestEvent = await issuer.getAllNewCertificationRequestEvents({ filter: { _id: this.id } });
-        const creationBlock = await this.configuration.blockchainProperties.web3.eth.getBlock(newCertificationRequestEvent[0].blockNumber);
+        const newCertificationRequestEvent = await issuer.getAllNewCertificationRequestEvents({
+            filter: { _id: this.id }
+        });
+        const creationBlock = await this.configuration.blockchainProperties.web3.eth.getBlock(
+            newCertificationRequestEvent[0].blockNumber
+        );
         this.created = Number(creationBlock.timestamp);
 
         const offChainData = await this.configuration.offChainDataSource.certificateClient.getCertificationRequestData(
@@ -76,7 +88,7 @@ export class Entity extends PreciseProofEntity implements ICertificationRequest 
         );
 
         let approveTx;
-        const issuer: Issuer = this.configuration.blockchainProperties.issuer;
+        const { issuer } = this.configuration.blockchainProperties;
 
         if (this.isPrivate) {
             const commitment: IOwnershipCommitment = {
@@ -117,7 +129,7 @@ export class Entity extends PreciseProofEntity implements ICertificationRequest 
         if (!this.isPrivate) {
             throw new Error('Certificate is already public.');
         }
-        const issuer: Issuer = this.configuration.blockchainProperties.issuer;
+        const { issuer } = this.configuration.blockchainProperties;
 
         const commitment: IOwnershipCommitment = {
             [this.configuration.blockchainProperties.activeUser.address]: value
@@ -135,12 +147,12 @@ export const createCertificationRequest = async (
     deviceId: string,
     configuration: Configuration.Entity,
     files: string[],
-    isVolumePrivate: boolean = false,
+    isVolumePrivate = false,
     forAddress?: string
 ): Promise<Entity> => {
     const request = new Entity(null, configuration, isVolumePrivate);
 
-    const issuer: Issuer = configuration.blockchainProperties.issuer;
+    const { issuer } = configuration.blockchainProperties;
 
     await validateGenerationPeriod(fromTime, toTime, deviceId, configuration, isVolumePrivate);
 
@@ -180,7 +192,7 @@ const validateGenerationPeriod = async (
     configuration: Configuration.Entity,
     isPrivate?: boolean
 ): Promise<boolean> => {
-    const issuer: Issuer = configuration.blockchainProperties.issuer;
+    const { issuer } = configuration.blockchainProperties;
 
     const moment = extendMoment(Moment);
     const unix = (timestamp: Timestamp) => moment.unix(timestamp);
@@ -219,7 +231,7 @@ const validateGenerationPeriod = async (
 export async function getAllCertificationRequests(
     configuration: Configuration.Entity
 ): Promise<Entity[]> {
-    const issuer: Issuer = configuration.blockchainProperties.issuer;
+    const { issuer } = configuration.blockchainProperties;
 
     const totalRequests = await issuer.totalRequests();
 

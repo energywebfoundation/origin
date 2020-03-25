@@ -9,9 +9,10 @@ export interface IEvent {
     timestamp: number;
 }
 
-export type DeviceStatusChanged = {
+export type DeviceStatusChangedEvent = {
     deviceId: string;
     status: DeviceStatus;
+    deviceManagersEmails: string[];
 };
 
 export type CreatedNewDemand = {
@@ -40,7 +41,7 @@ export type OrganizationInvitationEvent = {
     organizationName: string;
 };
 
-export type OrganizationRemovedMember = {
+export type OrganizationRemovedMemberEvent = {
     organizationName: string;
     email: string;
 };
@@ -56,10 +57,10 @@ export enum SupportedEvents {
 }
 
 export type SupportedEventData =
-    | DeviceStatusChanged
+    | DeviceStatusChangedEvent
     | CreatedNewDemand
     | DemandUpdated
     | DemandPartiallyFilledEvent
     | OrganizationStatusChangedEvent
     | OrganizationInvitationEvent
-    | OrganizationRemovedMember;
+    | OrganizationRemovedMemberEvent;

@@ -13,7 +13,7 @@ import {
     SupportedEvents,
     OrganizationInvitationStatus,
     OrganizationInvitationEvent,
-    OrganizationRemovedMember
+    OrganizationRemovedMemberEvent
 } from '@energyweb/origin-backend-core';
 
 import { IOrganizationClient, IEventClient } from '@energyweb/origin-backend-client';
@@ -160,7 +160,7 @@ export class OrganizationClientMock implements IOrganizationClient {
 
         this.storage.set(organization.id, organization);
 
-        const eventData: OrganizationRemovedMember = {
+        const eventData: OrganizationRemovedMemberEvent = {
             organizationName: organization.name,
             email: this.userStorage.find(user => user.id === userId).email
         };

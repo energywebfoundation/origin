@@ -4,19 +4,32 @@ import {
     OrganizationInvitationEvent,
     OrganizationStatusChangedEvent,
     NewEvent,
-    OrganizationStatus
+    OrganizationStatus,
+    OrganizationRemovedMemberEvent,
+    DeviceStatusChangedEvent,
+    DeviceStatus
 } from '@energyweb/origin-backend-core';
 import { MailService } from '../mail';
 import EmailTypes from './EmailTypes';
 
 const SUPPORTED_EVENTS = [
     SupportedEvents.ORGANIZATION_INVITATION,
-    SupportedEvents.ORGANIZATION_STATUS_CHANGED
+    SupportedEvents.ORGANIZATION_STATUS_CHANGED,
+    SupportedEvents.ORGANIZATION_REMOVED_MEMBER,
+    SupportedEvents.DEVICE_STATUS_CHANGED
 ];
 
 type TSupportedNotificationEvent = {
-    type: SupportedEvents.ORGANIZATION_INVITATION | SupportedEvents.ORGANIZATION_STATUS_CHANGED;
-    data: OrganizationInvitationEvent | OrganizationStatusChangedEvent;
+    type:
+        | SupportedEvents.ORGANIZATION_INVITATION
+        | SupportedEvents.ORGANIZATION_STATUS_CHANGED
+        | SupportedEvents.ORGANIZATION_REMOVED_MEMBER
+        | SupportedEvents.DEVICE_STATUS_CHANGED;
+    data:
+        | OrganizationInvitationEvent
+        | OrganizationStatusChangedEvent
+        | OrganizationRemovedMemberEvent
+        | DeviceStatusChangedEvent;
 };
 
 function assertIsSupportedEvent(event: NewEvent): asserts event is TSupportedNotificationEvent {
@@ -28,6 +41,8 @@ function assertIsSupportedEvent(event: NewEvent): asserts event is TSupportedNot
 @Injectable()
 export class NotificationService {
     private readonly logger = new Logger(NotificationService.name);
+
+    constructor(private readonly mailService: MailService) {}
 
     private handlers = {
         [SupportedEvents.ORGANIZATION_INVITATION]: async (data: OrganizationInvitationEvent) => {
@@ -45,16 +60,34 @@ export class NotificationService {
             const url = `${process.env.UI_BASE_URL}/organization/organization-view/${data.organizationId}`;
 
             await this.sendNotificationEmail(
-                EmailTypes.ORGANIZATION_STATUS_CHANGES,
+                EmailTypes.ORGANIZATION_STATUS_CHANGED,
                 data.organizationEmail,
                 `Status of your registration changed to ${
                     OrganizationStatus[data.status]
                 }. To find out more please visit <a href="${url}">${url}</a>`
             );
+        },
+        [SupportedEvents.ORGANIZATION_REMOVED_MEMBER]: async (
+            data: OrganizationRemovedMemberEvent
+        ) => {
+            await this.sendNotificationEmail(
+                EmailTypes.ORGANIZATION_REMOVED_MEMBER,
+                data.email,
+                `Organization ${data.organizationName} has removed you from the organization.`
+            );
+        },
+        [SupportedEvents.DEVICE_STATUS_CHANGED]: async (data: DeviceStatusChangedEvent) => {
+            const url = `${process.env.UI_BASE_URL}/devices/owned`;
+
+            await this.sendNotificationEmail(
+                EmailTypes.DEVICE_STATUS_CHANGED,
+                data.deviceManagersEmails,
+                `Your device with id: "${data.deviceId}" has had its status changed to "${
+                    DeviceStatus[data.status]
+                }".<br /><br /><a href="${url}">${url}</a>`
+            );
         }
     };
-
-    constructor(private readonly mailService: MailService) {}
 
     async handleEvent(event: NewEvent) {
         try {
@@ -70,13 +103,15 @@ export class NotificationService {
 
     private async sendNotificationEmail(
         notificationType: EmailTypes,
-        emailAddress: string,
+        emailAddress: string | string[],
         html: string
     ) {
         this.logger.log(`Sending "${notificationType}" email to ${emailAddress}...`);
 
+        const emails = Array.isArray(emailAddress) ? emailAddress : [emailAddress];
+
         const result = await this.mailService.send({
-            to: [emailAddress],
+            to: emails,
             subject: `[Origin] ${notificationType}`,
             html
         } as any);

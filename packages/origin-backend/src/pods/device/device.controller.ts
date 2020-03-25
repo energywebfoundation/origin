@@ -3,7 +3,7 @@ import {
     DeviceStatus,
     DeviceUpdateData,
     SupportedEvents,
-    DeviceStatusChanged,
+    DeviceStatusChangedEvent,
     ISmartMeterRead,
     IUserWithRelationsIds,
     IDeviceWithRelationsIds,
@@ -31,13 +31,15 @@ import { StorageErrors } from '../../enums/StorageErrors';
 import { DeviceService } from './device.service';
 import { UserDecorator } from '../user/user.decorator';
 import { EventsService } from '../events';
+import { OrganizationService } from '../organization';
 
 @Controller('/Device')
 export class DeviceController {
     constructor(
         @InjectRepository(Device) private readonly deviceRepository: Repository<Device>,
         private readonly eventsService: EventsService,
-        private readonly deviceService: DeviceService
+        private readonly deviceService: DeviceService,
+        private readonly organizationService: OrganizationService
     ) {}
 
     @Get()
@@ -90,20 +92,25 @@ export class DeviceController {
 
     @Put('/:id')
     async put(@Param('id') id: string, @Body() body: DeviceUpdateData) {
-        const existing = await this.deviceService.findOne(id);
+        const device = await this.deviceService.findOne(id);
 
-        if (!existing) {
+        if (!device) {
             throw new NotFoundException(StorageErrors.NON_EXISTENT);
         }
 
-        existing.status = body.status;
+        device.status = body.status;
 
         try {
-            await existing.save();
+            await device.save();
 
-            const event: DeviceStatusChanged = {
+            const deviceManagers = await this.organizationService.getDeviceManagers(
+                device.organization
+            );
+
+            const event: DeviceStatusChangedEvent = {
                 deviceId: id,
-                status: body.status
+                status: body.status,
+                deviceManagersEmails: deviceManagers.map(u => u.email)
             };
 
             this.eventsService.handleEvent({

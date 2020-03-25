@@ -13,7 +13,8 @@ import {
     OrganizationStatusChangedEvent,
     SupportedEvents,
     OrganizationInvitationEvent,
-    OrganizationRemovedMember
+    OrganizationRemovedMemberEvent,
+    OrganizationUpdateData
 } from '@energyweb/origin-backend-core';
 
 import {
@@ -29,7 +30,8 @@ import {
     Put,
     UseGuards,
     Query,
-    ParseIntPipe
+    ParseIntPipe,
+    Logger
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { AuthGuard } from '@nestjs/passport';
@@ -41,16 +43,20 @@ import { UserService } from '../user/user.service';
 import { OrganizationInvitation } from './organizationInvitation.entity';
 import { User } from '../user/user.entity';
 import { EventsService } from '../events';
+import { OrganizationService } from './organization.service';
 
 @Controller('/Organization')
 export class OrganizationController {
+    private logger = new Logger(OrganizationController.name);
+
     constructor(
         @InjectRepository(Organization)
         private readonly organizationRepository: Repository<Organization>,
         @InjectRepository(OrganizationInvitation)
         private readonly organizationInvitationRepository: Repository<OrganizationInvitation>,
         private readonly userService: UserService,
-        private readonly eventsService: EventsService
+        private readonly eventsService: EventsService,
+        private readonly organizationService: OrganizationService
     ) {}
 
     @Get()
@@ -109,9 +115,7 @@ export class OrganizationController {
 
     @Get('/:id')
     async get(@Param('id') id: string) {
-        const existingEntity = await this.organizationRepository.findOne(id, {
-            loadRelationIds: true
-        });
+        const existingEntity = await this.organizationService.findOne(id);
 
         if (!existingEntity) {
             throw new NotFoundException(StorageErrors.NON_EXISTENT);
@@ -158,13 +162,13 @@ export class OrganizationController {
 
     @Delete('/:id')
     async delete(@Param('id') id: string) {
-        const existingEntity = await this.organizationRepository.findOne(id);
+        const existingEntity = await this.organizationService.findOne(id);
 
         if (!existingEntity) {
             throw new NotFoundException(StorageErrors.NON_EXISTENT);
         }
 
-        await this.organizationRepository.remove(existingEntity);
+        await this.organizationService.remove(existingEntity);
 
         return {
             message: `Entity ${id} deleted`
@@ -172,24 +176,21 @@ export class OrganizationController {
     }
 
     @Put('/:id')
-    async put(@Param('id') id: string, @Body() body: any) {
-        const existingEntity = await this.organizationRepository.findOne(id);
+    async put(@Param('id') id: string, @Body() body: OrganizationUpdateData) {
+        const existingEntity = await this.organizationService.findOne(id);
 
         if (!existingEntity) {
             throw new NotFoundException(StorageErrors.NON_EXISTENT);
         }
 
-        const parsedStatus = parseInt(body?.status, 10);
-
-        if (existingEntity.status === parsedStatus) {
+        if (existingEntity.status === body.status) {
             throw new BadRequestException(`Organization is already in requested status.`);
         }
 
-        existingEntity.status = parsedStatus;
-
         try {
-            await existingEntity.save();
+            await this.organizationService.update(id, body);
         } catch (error) {
+            this.logger.error(error);
             throw new UnprocessableEntityException({
                 message: `Entity ${id} could not be updated due to an unkown error`
             });
@@ -198,7 +199,7 @@ export class OrganizationController {
         const eventData: OrganizationStatusChangedEvent = {
             organizationId: existingEntity.id,
             organizationEmail: existingEntity.email,
-            status: parsedStatus
+            status: body.status
         };
 
         this.eventsService.handleEvent({
@@ -409,7 +410,7 @@ export class OrganizationController {
 
             removedUser.save();
 
-            const eventData: OrganizationRemovedMember = {
+            const eventData: OrganizationRemovedMemberEvent = {
                 organizationName: organization.name,
                 email: removedUser.email
             };
