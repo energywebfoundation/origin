@@ -143,10 +143,6 @@ describe('Cerificate tests', () => {
         await certificate.approvePrivateTransfer();
         certificate = await certificate.sync();
 
-        console.log({
-            owned: certificate.ownedVolume(accountDeviceOwner)
-        })
-
         assert.isFalse(certificate.isOwned(accountDeviceOwner));
         assert.equal(certificate.ownedVolume(accountDeviceOwner).privateVolume, 0);
 
