@@ -97,7 +97,7 @@ export type TSetRequestCertificatesModalVisibilityAction = typeof setRequestCert
 
 export interface IRequestCertificateEntityFetchAction {
     type: CertificatesActions.requestCertificateEntityFetch;
-    payload: string;
+    payload: number;
 }
 
 export const requestCertificateEntityFetch = (
@@ -110,7 +110,7 @@ export const requestCertificateEntityFetch = (
 export type TRequestUserCertificateEntityFetchAction = typeof requestCertificateEntityFetch;
 
 export interface ICertificateFetcher {
-    fetch(id: string, configuration: IStoreState['configuration']): Promise<Certificate.Entity>;
+    fetch(id: number, configuration: IStoreState['configuration']): Promise<Certificate.Entity>;
 
     reload(entity: Certificate.Entity): Promise<Certificate.Entity>;
 }

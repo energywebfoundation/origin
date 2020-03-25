@@ -79,7 +79,7 @@ export function CertificateTable(props: IProps) {
     const { getCertificateDetailLink } = useLinks();
 
     const [selectedCertificates, setSelectedCertificates] = useState<Certificate.Entity[]>([]);
-    const [detailViewForCertificateId, setDetailViewForCertificateId] = useState<string>(null);
+    const [detailViewForCertificateId, setDetailViewForCertificateId] = useState<number>(null);
     const [showClaimBulkModal, setShowClaimBulkModal] = useState(false);
 
     const userAddress = user?.blockchainAccountAddress?.toLowerCase();
@@ -172,7 +172,7 @@ export function CertificateTable(props: IProps) {
         const certificateId = paginatedData[rowIndex].certificate.id;
 
         const certificate: Certificate.Entity = certificates.find(
-            cert => cert.id === certificateId.toString()
+            cert => cert.id === certificateId
         );
 
         if (certificate && certificate.isOwned(userAddress)) {

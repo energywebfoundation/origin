@@ -12,7 +12,7 @@ import { useTranslation } from 'react-i18next';
 import { Exchange } from './exchange';
 import { useLinks } from '../utils';
 
-function CertificateDetailViewId(id: string) {
+function CertificateDetailViewId(id: number) {
     return <CertificateDetailView id={id} />;
 }
 

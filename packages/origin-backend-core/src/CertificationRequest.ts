@@ -1,7 +1,7 @@
 import { IDevice } from './Device';
 
 export interface ICertificationRequestProperties {
-    id: string;
+    id: number;
     fromTime: number;
     toTime: number;
     files: string[];

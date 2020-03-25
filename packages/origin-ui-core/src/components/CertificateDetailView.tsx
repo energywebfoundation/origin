@@ -12,7 +12,7 @@ import { getEnvironment } from '../features/general/selectors';
 import { EnergyFormatter } from '../utils/EnergyFormatter';
 
 interface IProps {
-    id: string;
+    id: number;
 }
 
 interface IEnrichedEvent {
@@ -97,7 +97,7 @@ export function CertificateDetailView(props: IProps) {
         const resolvedEvents = await Promise.all(jointEvents);
 
         const request = await new CertificationRequest.Entity(
-            selectedCertificate.certificationRequestId.toString(),
+            selectedCertificate.certificationRequestId,
             configuration
         ).sync();
 
@@ -163,7 +163,7 @@ export function CertificateDetailView(props: IProps) {
             [
                 {
                     label: 'Certificate id',
-                    data: selectedCertificate.id
+                    data: selectedCertificate.id.toString()
                 },
                 {
                     label: 'Claimed',

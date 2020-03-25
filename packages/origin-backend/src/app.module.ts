@@ -20,13 +20,13 @@ import { DemandModule } from './pods/demand/demand.module';
 import { Device } from './pods/device/device.entity';
 import { DeviceModule } from './pods/device/device.module';
 import { FileModule } from './pods/file/file.module';
-import { JsonEntity } from './pods/json-entity/json-entity.entity';
-import { JsonEntityModule } from './pods/json-entity/json-entity.module';
+import { OwnershipCommitment } from './pods/certificate/ownership-commitment.entity';
 import { Organization } from './pods/organization/organization.entity';
 import { OrganizationModule } from './pods/organization/organization.module';
 import { OrganizationInvitation } from './pods/organization/organizationInvitation.entity';
 import { User } from './pods/user/user.entity';
 import { UserModule } from './pods/user/user.module';
+import { Certificate } from './pods/certificate/certificate.entity';
 
 const ENV_FILE_PATH = path.resolve(__dirname, '../../../../../.env');
 
@@ -45,14 +45,15 @@ export class AppModule {
                     useFactory: async (configService: ConfigService) => ({
                         ...configService.get<ConnectionOptions>('ORM'),
                         entities: [
-                            JsonEntity,
+                            OwnershipCommitment,
                             Configuration,
                             Device,
                             Demand,
                             Organization,
                             User,
                             OrganizationInvitation,
-                            CertificationRequest
+                            CertificationRequest,
+                            Certificate
                         ]
                     }),
                     inject: [ConfigService]
@@ -60,7 +61,6 @@ export class AppModule {
                 FileModule,
                 UserModule,
                 ConfigurationModule,
-                JsonEntityModule,
                 OrganizationModule,
                 DeviceModule.register(smartMeterReadingsAdapter),
                 DemandModule,

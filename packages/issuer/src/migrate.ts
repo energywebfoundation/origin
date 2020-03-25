@@ -29,7 +29,7 @@ export async function migrateIssuer(
     });
 
     const version = await issuer.version();
-    console.log(`PublicIssuer ${version} created at ${issuerAddress}`);
+    console.log(`Issuer ${version} created at ${issuerAddress}`);
 
     return issuer;
 }
