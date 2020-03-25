@@ -10,9 +10,10 @@ import {
 } from '../Table/PaginatedLoaderHooks';
 import { getOffChainDataSource } from '../../features/general/selectors';
 import { Countries } from '@energyweb/utils-general';
-import { IOrganization, OrganizationStatus } from '@energyweb/origin-backend-core';
-import { useLinks } from '../../utils/routing';
+import { IOrganization, OrganizationStatus, Role, isRole } from '@energyweb/origin-backend-core';
+import { useLinks } from '../../utils';
 import { useHistory } from 'react-router-dom';
+import { getUserOffchain } from '../../features/users/selectors';
 
 interface IRecord {
     organization: IOrganization;
@@ -32,6 +33,7 @@ function getOrganizationText(status: OrganizationStatus) {
 
 export function OrganizationTable() {
     const organizationClient = useSelector(getOffChainDataSource)?.organizationClient;
+    const user = useSelector(getUserOffchain);
 
     const { getOrganizationViewLink } = useLinks();
 
@@ -39,7 +41,7 @@ export function OrganizationTable() {
 
     const dispatch = useDispatch();
 
-    const isIssuer = true; // @TODO check role if issuer
+    const isIssuer = isRole(user, Role.Issuer);
 
     async function getPaginatedData({
         requestedPageSize,

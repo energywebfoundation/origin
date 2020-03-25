@@ -8,7 +8,7 @@ import {
     OrganizationStatus,
     OrganizationRemoveMemberReturnData,
     IUserWithRelationsIds,
-    OrganizationStatusChanged,
+    OrganizationStatusChangedEvent,
     IEvent,
     SupportedEvents,
     OrganizationInvitationStatus,
@@ -87,7 +87,7 @@ export class OrganizationClientMock implements IOrganizationClient {
 
         this.storage.set(id, organization);
 
-        const eventData: OrganizationStatusChanged = {
+        const eventData: OrganizationStatusChangedEvent = {
             organizationId: id,
             organizationEmail: organization.email,
             status: data.status

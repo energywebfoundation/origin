@@ -2,6 +2,7 @@ import { ISmartMeterReadingsAdapter } from '@energyweb/origin-backend-core';
 import { DynamicModule, Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+
 import fs from 'fs';
 import path from 'path';
 import { ConnectionOptions } from 'typeorm';
@@ -9,7 +10,7 @@ import { ConnectionOptions } from 'typeorm';
 import { AppController } from './app.controller';
 import { AuthModule } from './auth/auth.module';
 import createConfig from './config/configuration';
-import { EventsModule } from './events/events.module';
+import { EventsModule } from './pods/events';
 import { CertificateModule } from './pods/certificate/certificate.module';
 import { CertificationRequest } from './pods/certificate/certification-request.entity';
 import { Configuration } from './pods/configuration/configuration.entity';
