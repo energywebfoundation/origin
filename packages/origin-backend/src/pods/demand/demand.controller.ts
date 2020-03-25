@@ -19,20 +19,19 @@ import {
     Body,
     UnprocessableEntityException,
     Delete,
-    Put,
-    Inject
+    Put
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
 import { Demand } from './demand.entity';
 import { StorageErrors } from '../../enums/StorageErrors';
-import { EventsWebSocketGateway } from '../../events/events.gateway';
+import { EventsService } from '../events';
 
 @Controller('/Demand')
 export class DemandController {
     constructor(
         @InjectRepository(Demand) private readonly demandRepository: Repository<Demand>,
-        @Inject(EventsWebSocketGateway) private readonly eventGateway: EventsWebSocketGateway
+        private readonly eventsService: EventsService
     ) {}
 
     @Get()
@@ -87,7 +86,7 @@ export class DemandController {
             demandId: newEntity.id
         };
 
-        this.eventGateway.handleEvent({
+        this.eventsService.handleEvent({
             type: SupportedEvents.CREATE_NEW_DEMAND,
             data: eventData
         });
@@ -142,7 +141,7 @@ export class DemandController {
             });
         }
 
-        this.eventGateway.handleEvent({
+        this.eventsService.handleEvent({
             type: SupportedEvents.DEMAND_UPDATED,
             data: { demandId: existing.id }
         });
@@ -155,7 +154,7 @@ export class DemandController {
                 blockNumber: body.demandPartiallyFilledEvent.blockNumber
             };
 
-            this.eventGateway.handleEvent({
+            this.eventsService.handleEvent({
                 type: SupportedEvents.DEMAND_PARTIALLY_FILLED,
                 data: eventData
             });

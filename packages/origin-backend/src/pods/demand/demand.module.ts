@@ -3,7 +3,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { Demand } from './demand.entity';
 import { DemandController } from './demand.controller';
-import { EventsModule } from '../../events/events.module';
+import { EventsModule } from '../events';
 
 @Module({
     imports: [TypeOrmModule.forFeature([Demand]), EventsModule],

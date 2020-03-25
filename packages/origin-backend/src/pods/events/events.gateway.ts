@@ -11,7 +11,7 @@ import { Logger } from '@nestjs/common';
 
 import moment from 'moment';
 import { SupportedEvents, IEvent, NewEvent } from '@energyweb/origin-backend-core';
-import { getEventsServerPort } from '../port';
+import { getEventsServerPort } from '../../port';
 
 const PORT = getEventsServerPort();
 

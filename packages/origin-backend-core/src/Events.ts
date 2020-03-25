@@ -29,7 +29,7 @@ export type DemandPartiallyFilledEvent = {
     blockNumber: number;
 };
 
-export type OrganizationStatusChanged = {
+export type OrganizationStatusChangedEvent = {
     organizationId: number;
     organizationEmail: string;
     status: OrganizationStatus;
@@ -60,6 +60,6 @@ export type SupportedEventData =
     | CreatedNewDemand
     | DemandUpdated
     | DemandPartiallyFilledEvent
-    | OrganizationStatusChanged
+    | OrganizationStatusChangedEvent
     | OrganizationInvitationEvent
     | OrganizationRemovedMember;

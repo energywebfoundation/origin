@@ -10,7 +10,7 @@ import {
     IOrganizationInvitation,
     IUserWithRelationsIds,
     OrganizationRemoveMemberReturnData,
-    OrganizationStatusChanged,
+    OrganizationStatusChangedEvent,
     SupportedEvents,
     OrganizationInvitationEvent,
     OrganizationRemovedMember
@@ -29,8 +29,7 @@ import {
     Put,
     UseGuards,
     Query,
-    ParseIntPipe,
-    Inject
+    ParseIntPipe
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { AuthGuard } from '@nestjs/passport';
@@ -41,7 +40,7 @@ import { UserDecorator } from '../user/user.decorator';
 import { UserService } from '../user/user.service';
 import { OrganizationInvitation } from './organizationInvitation.entity';
 import { User } from '../user/user.entity';
-import { EventsWebSocketGateway } from '../../events/events.gateway';
+import { EventsService } from '../events';
 
 @Controller('/Organization')
 export class OrganizationController {
@@ -51,7 +50,7 @@ export class OrganizationController {
         @InjectRepository(OrganizationInvitation)
         private readonly organizationInvitationRepository: Repository<OrganizationInvitation>,
         private readonly userService: UserService,
-        @Inject(EventsWebSocketGateway) private readonly eventGateway: EventsWebSocketGateway
+        private readonly eventsService: EventsService
     ) {}
 
     @Get()
@@ -196,13 +195,13 @@ export class OrganizationController {
             });
         }
 
-        const eventData: OrganizationStatusChanged = {
+        const eventData: OrganizationStatusChangedEvent = {
             organizationId: existingEntity.id,
             organizationEmail: existingEntity.email,
             status: parsedStatus
         };
 
-        this.eventGateway.handleEvent({
+        this.eventsService.handleEvent({
             type: SupportedEvents.ORGANIZATION_STATUS_CHANGED,
             data: eventData
         });
@@ -335,7 +334,7 @@ export class OrganizationController {
                 organizationName: organization.name
             };
 
-            this.eventGateway.handleEvent({
+            this.eventsService.handleEvent({
                 type: SupportedEvents.ORGANIZATION_INVITATION,
                 data: eventData
             });
@@ -415,7 +414,7 @@ export class OrganizationController {
                 email: removedUser.email
             };
 
-            this.eventGateway.handleEvent({
+            this.eventsService.handleEvent({
                 type: SupportedEvents.ORGANIZATION_REMOVED_MEMBER,
                 data: eventData
             });
