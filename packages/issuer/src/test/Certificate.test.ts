@@ -104,7 +104,7 @@ describe('Cerificate tests', () => {
 
         setActiveUser(deviceOwnerPK);
         assert.isTrue(certificate.isOwned());
-        assert.equal(certificate.ownedVolume(), volume);
+        assert.equal(certificate.ownedVolume().publicVolume, volume);
 
         assert.deepOwnInclude(certificate, {
             initialized: true,
@@ -123,10 +123,10 @@ describe('Cerificate tests', () => {
         certificate = await certificate.sync();
 
         assert.isTrue(certificate.isOwned(accountDeviceOwner));
-        assert.equal(certificate.ownedVolume(accountDeviceOwner), (totalVolume / 4) * 3);
+        assert.equal(certificate.ownedVolume(accountDeviceOwner).publicVolume, (totalVolume / 4) * 3);
 
         assert.isTrue(certificate.isOwned(accountTrader));
-        assert.equal(certificate.ownedVolume(accountTrader), totalVolume / 4);
+        assert.equal(certificate.ownedVolume(accountTrader).publicVolume, totalVolume / 4);
     });
 
     it('transfers a private certificate', async () => {
@@ -135,7 +135,7 @@ describe('Cerificate tests', () => {
 
         setActiveUser(deviceOwnerPK);
 
-        await certificate.transfer(accountTrader);
+        await certificate.transfer(accountTrader, totalVolume, true);
         certificate = await certificate.sync();
 
         setActiveUser(issuerPK);
@@ -144,10 +144,10 @@ describe('Cerificate tests', () => {
         certificate = await certificate.sync();
 
         assert.isFalse(certificate.isOwned(accountDeviceOwner));
-        assert.equal(certificate.ownedVolume(accountDeviceOwner), 0);
+        assert.equal(certificate.ownedVolume(accountDeviceOwner).privateVolume, 0);
 
         assert.isTrue(certificate.isOwned(accountTrader));
-        assert.equal(certificate.ownedVolume(accountTrader), totalVolume);
+        assert.equal(certificate.ownedVolume(accountTrader).privateVolume, totalVolume);
     });
 
     it('partially transfers a private certificate', async () => {
@@ -157,7 +157,7 @@ describe('Cerificate tests', () => {
 
         setActiveUser(deviceOwnerPK);
 
-        await certificate.transfer(accountTrader, partialVolumeToSend);
+        await certificate.transfer(accountTrader, partialVolumeToSend, true);
         certificate = await certificate.sync();
 
         setActiveUser(issuerPK);
@@ -166,10 +166,10 @@ describe('Cerificate tests', () => {
         certificate = await certificate.sync();
 
         assert.isTrue(certificate.isOwned(accountDeviceOwner));
-        assert.equal(certificate.ownedVolume(accountDeviceOwner), totalVolume - partialVolumeToSend);
+        assert.equal(certificate.ownedVolume(accountDeviceOwner).privateVolume, totalVolume - partialVolumeToSend);
 
         assert.isTrue(certificate.isOwned(accountTrader));
-        assert.equal(certificate.ownedVolume(accountTrader), partialVolumeToSend);
+        assert.equal(certificate.ownedVolume(accountTrader).privateVolume, partialVolumeToSend);
     });
 
     it('fails claiming a revoked certificate', async () => {
@@ -212,7 +212,7 @@ describe('Cerificate tests', () => {
         certificate = await certificate.sync();
 
         assert.isFalse(certificate.isOwned());
-        assert.equal(certificate.ownedVolume(), 0);
+        assert.equal(certificate.ownedVolume().publicVolume, 0);
 
         assert.isTrue(certificate.isClaimed());
         assert.equal(certificate.claimedVolume(), amountToSendToTrader);
@@ -232,8 +232,6 @@ describe('Cerificate tests', () => {
         await certificate.migrateToPublic();
         certificate = await certificate.sync();
 
-        assert.isFalse(certificate.isPrivate);
-
         setActiveUser(deviceOwnerPK);
 
         await certificate.claim();
@@ -250,7 +248,7 @@ describe('Cerificate tests', () => {
 
         setActiveUser(deviceOwnerPK);
 
-        await certificate.transfer(accountTrader, partialVolumeToClaim);
+        await certificate.transfer(accountTrader, partialVolumeToClaim, true);
         certificate = await certificate.sync();
 
         setActiveUser(issuerPK);
@@ -267,8 +265,6 @@ describe('Cerificate tests', () => {
 
         await certificate.migrateToPublic();
         certificate = await certificate.sync();
-
-        assert.isFalse(certificate.isPrivate);
 
         setActiveUser(traderPK);
 
@@ -289,8 +285,8 @@ describe('Cerificate tests', () => {
 
         assert.isTrue(certificate.isOwned());
         assert.isTrue(certificate2.isOwned());
-        assert.equal(certificate.ownedVolume(), totalVolume);
-        assert.equal(certificate2.ownedVolume(), totalVolume);
+        assert.equal(certificate.ownedVolume().publicVolume, totalVolume);
+        assert.equal(certificate2.ownedVolume().publicVolume, totalVolume);
 
         await Certificate.transferCertificates(
             [certificate.id, certificate2.id],
@@ -303,13 +299,13 @@ describe('Cerificate tests', () => {
 
         assert.isFalse(certificate.isOwned());
         assert.isFalse(certificate2.isOwned());
-        assert.equal(certificate.ownedVolume(), 0);
-        assert.equal(certificate2.ownedVolume(), 0);
+        assert.equal(certificate.ownedVolume().publicVolume, 0);
+        assert.equal(certificate2.ownedVolume().publicVolume, 0);
 
         assert.isTrue(certificate.isOwned(accountTrader));
         assert.isTrue(certificate2.isOwned(accountTrader));
-        assert.equal(certificate.ownedVolume(accountTrader), totalVolume);
-        assert.equal(certificate2.ownedVolume(accountTrader), totalVolume);
+        assert.equal(certificate.ownedVolume(accountTrader).publicVolume, totalVolume);
+        assert.equal(certificate2.ownedVolume(accountTrader).publicVolume, totalVolume);
     });
 
     xit('batch claims certificates', async () => {

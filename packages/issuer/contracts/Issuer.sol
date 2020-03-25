@@ -98,14 +98,6 @@ contract Issuer is Initializable, Ownable {
         return commitments[certificateId];
     }
 
-    function isCertificatePrivate(uint certificateId) external view returns (bool) {
-        if (getCertificateCommitment(certificateId) == 0x0) {
-            return false;
-        }
-
-        return registry.balanceOf(msg.sender, certificateId) == 0;
-    }
-
     function totalRequests() external view returns (uint256) {
         require(certificationRequestNonce >= 0, "invalid nonce");
         return certificationRequestNonce;

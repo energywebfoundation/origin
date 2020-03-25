@@ -161,7 +161,7 @@ export const createCertificationRequest = async (
 
     request.id = configuration.blockchainProperties.web3.utils.hexToNumber(logs[0].topics[2]);
 
-    const result = await configuration.offChainDataSource.certificateClient.updateCertificationRequestData(
+    await configuration.offChainDataSource.certificateClient.updateCertificationRequestData(
         request.id,
         { energy, files }
     );

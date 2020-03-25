@@ -238,10 +238,6 @@ export class Issuer extends GeneralFunctions {
         return Number(id);
     }
 
-    async isCertificatePrivate(_certificateId: number, txParams?: ISpecialTx) {
-        return this.web3Contract.methods.isCertificatePrivate(_certificateId).call(txParams);
-    }
-
     async getRegistryAddress(txParams?: ISpecialTx) {
         return this.web3Contract.methods.getRegistryAddress().call(txParams);
     }

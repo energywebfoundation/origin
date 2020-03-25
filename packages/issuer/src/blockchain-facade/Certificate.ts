@@ -6,13 +6,19 @@ import { Configuration, Timestamp } from '@energyweb/utils-general';
 import { Registry, Issuer } from '..';
 import { TransferSingleEvent, ClaimSingleEvent } from '../wrappedContracts/Registry';
 import { PreciseProofEntity } from './PreciseProofEntity';
-import { IOwnershipCommitment, CommitmentStatus } from '@energyweb/origin-backend-core';
+import { CommitmentStatus, IOwnershipCommitment } from '@energyweb/origin-backend-core';
 
-export type IShareInCertificate = IOwnershipCommitment;
+const NULL_ADDRESS = '0x0000000000000000000000000000000000000000';
+const NULL_HASH = '0x0000000000000000000000000000000000000000000000000000000000000000';
+
+export interface IShareInCertificate {
+    [address: string]: number;
+}
 
 export interface IOwners {
     [address: string]: {
         owned: number,
+        ownedPrivate: number,
         claimed: number
     }
 }
@@ -43,11 +49,11 @@ export class Entity extends PreciseProofEntity implements ICertificate {
     public certificationRequestId: number;
 
     public initialized: boolean = false;
-    public isPrivate: boolean;
     public data: number[];
 
-    private ownedShares: IShareInCertificate = {};
     private claimedShares: IShareInCertificate = {};
+    private ownedShares: IShareInCertificate = {};
+    private ownedSharesPrivate: IShareInCertificate = {};
 
     constructor(id: number, configuration: Configuration.Entity) {
         super(id, configuration);
@@ -59,12 +65,11 @@ export class Entity extends PreciseProofEntity implements ICertificate {
         }
 
         const registry: Registry = this.configuration.blockchainProperties.registry;
-        const certOnChain = await registry.getCertificate(Number(this.id));
+        const certOnChain = await registry.getCertificate(this.id);
 
         this.data = certOnChain.data;
 
         const issuer: Issuer = this.configuration.blockchainProperties.issuer;
-        this.isPrivate = await issuer.isCertificatePrivate(Number(this.id), Configuration.getAccount(this.configuration));
 
         const decodedData = await issuer.decodeData(this.data);
         const allIssuanceEvents = await registry.getAllIssuanceSingleEvents({
@@ -85,14 +90,13 @@ export class Entity extends PreciseProofEntity implements ICertificate {
         );
 
         this.claimedShares = await this.calculateClaims();
+        this.ownedShares = await this.calculateOwnership();
 
-        if (this.isPrivate) {
-            this.propertiesDocumentHash = await issuer.getCertificateCommitment(this.id);
+        this.propertiesDocumentHash = await issuer.getCertificateCommitment(this.id);
 
+        if (this.propertiesDocumentHash !== NULL_HASH) {
             const { commitment } = await this.getCommitment();
-            this.ownedShares = commitment;
-        } else {
-            this.ownedShares = await this.calculateOwnership();
+            this.ownedSharesPrivate = commitment ?? {};
         }
 
         const getShareSum = (shares: IShareInCertificate) => Object.keys(shares).map(owner => shares[owner]).reduce((a, b) => a + b, 0);
@@ -110,35 +114,49 @@ export class Entity extends PreciseProofEntity implements ICertificate {
     get owners(): IOwners {
         const owners: IOwners = {};
 
-        for (const ownerAddress in Object.keys(this.ownedShares)) {
+        const allOwnerAddresses = [...new Set([
+            ...Object.keys(this.ownedShares),
+            ...Object.keys(this.ownedSharesPrivate),
+            ...Object.keys(this.claimedShares)]
+        )];
+
+        for (const ownerAddress of allOwnerAddresses) {
             if (!owners[ownerAddress]) {
                 owners[ownerAddress] = {
                     owned: 0,
+                    ownedPrivate: 0,
                     claimed: 0
                 };
             }
 
-            owners[ownerAddress].owned += this.ownedShares[ownerAddress];
+            owners[ownerAddress].owned += this.ownedShares[ownerAddress] ?? 0;
+            owners[ownerAddress].ownedPrivate += this.ownedSharesPrivate[ownerAddress] ?? 0;
+            owners[ownerAddress].claimed += this.claimedShares[ownerAddress] ?? 0;
         }
 
-        for (const ownerAddress in Object.keys(this.claimedShares)) {
-            if (!owners[ownerAddress]) {
-                owners[ownerAddress] = {
-                    owned: 0,
-                    claimed: 0
-                };
-            }
-
-            owners[ownerAddress].claimed += this.claimedShares[ownerAddress];
-        }
-
-        return owners; 
+        return owners;
     }
 
     async claim(amount?: number): Promise<TransactionReceipt> {
-        if (this.isPrivate) {
+        const { publicVolume, privateVolume } = this.ownedVolume();
+
+        if (publicVolume === 0) {
             throw new Error(
-                `claim(): Can't claim private certificate. Please migrate it to a public certificate first.`
+                privateVolume === 0
+                    ? `claim(): Unable to claim certificate. You do not own a share in the certificate.`
+                    : `claim(): Can't claim private volumes. Please migrate some volume to public first.`
+            );
+        }
+        
+        if (amount && amount > publicVolume) {
+            const totalOwned = publicVolume + privateVolume;
+
+            throw new Error(
+                `claim(): Can't claim ${amount} Wh. ${
+                    totalOwned < amount
+                        ? `You only own ${publicVolume} Wh.`
+                        : `Please migrate ${amount - publicVolume} Wh from private to public.`
+                }`
             );
         }
 
@@ -154,7 +172,7 @@ export class Entity extends PreciseProofEntity implements ICertificate {
             owner,
             owner,
             this.id,
-            amount || this.ownedVolume(),
+            amount || publicVolume,
             this.data,
             claimData,
             Configuration.getAccount(this.configuration)
@@ -162,38 +180,30 @@ export class Entity extends PreciseProofEntity implements ICertificate {
     }
 
     async requestMigrateToPublic(): Promise<TransactionReceipt> {
-        if (!this.isPrivate) {
-            throw new Error('migrateToPublic(): Can only migrate private certificates to public.');
+        const { privateVolume } = this.ownedVolume();
+
+        if (privateVolume === 0) {
+            throw new Error('migrateToPublic(): No private volume owned.');
         }
 
         const owner = this.configuration.blockchainProperties.activeUser.address.toLowerCase();
         const issuer: Issuer = this.configuration.blockchainProperties.issuer;
 
-        const ownerBalance = this.ownedVolume();
-
-        if (!ownerBalance) {
-            throw new Error(`requestMigrateToPublic(): ${owner} does not own a share in certificate ${this.id}`);
-        }
-
         const { salts } = await this.getCommitment();
-        const calculatedOffChainStorageProperties = this.generateAndAddProofs(this.ownedShares, salts);
+        const calculatedOffChainStorageProperties = this.generateAndAddProofs(this.ownedSharesPrivate, salts);
         const ownerAddressLeafHash = calculatedOffChainStorageProperties.leafs.find(leaf => leaf.key === owner).hash;
 
         return issuer.requestMigrateToPublic(
-            Number(this.id),
+            this.id,
             ownerAddressLeafHash,
             Configuration.getAccount(this.configuration)
         );
     }
 
     async migrateToPublic() {
-        if (!this.isPrivate) {
-            throw new Error('migrateToPublic(): Can only migrate private certificates to public.');
-        }
-
         const issuer: Issuer = this.configuration.blockchainProperties.issuer;
         const migrationRequestId = await issuer.getMigrationRequestId(
-            Number(this.id),
+            this.id,
             Configuration.getAccount(this.configuration)
         );
         const migrationRequest = await issuer.getMigrationRequest(
@@ -201,15 +211,22 @@ export class Entity extends PreciseProofEntity implements ICertificate {
             Configuration.getAccount(this.configuration)
         );
 
+        const requestor = migrationRequest.owner.toLowerCase();
+        const { privateVolume } = this.ownedVolume(requestor);
+
+        if (privateVolume === 0) {
+            throw new Error(`migrateToPublic(): Requestor doesn't own any private volume in certificate #${this.id}.`);
+        }
+
         const { salts } = await this.getCommitment();
 
         const calculatedOffChainStorageProperties = this.generateAndAddProofs(
-            this.ownedShares,
+            this.ownedSharesPrivate,
             salts
         );
 
         const theProof = PreciseProofs.createProof(
-            migrationRequest.owner.toLowerCase(),
+            requestor,
             calculatedOffChainStorageProperties.leafs,
             false
         );
@@ -222,31 +239,31 @@ export class Entity extends PreciseProofEntity implements ICertificate {
 
         await issuer.migrateToPublic(
             migrationRequestId,
-            this.ownedShares[migrationRequest.owner.toLowerCase()],
+            privateVolume,
             salt,
             onChainProof,
             Configuration.getAccount(this.configuration)
         );
-
-        this.isPrivate = false;
     }
 
-    async transfer(to: string, amount?: number): Promise<TransactionReceipt | CommitmentStatus> {
+    async transfer(to: string, amount?: number, privately: boolean = false): Promise<TransactionReceipt | CommitmentStatus> {
         const fromAddress = this.configuration.blockchainProperties.activeUser.address.toLowerCase();
         const toAddress = to.toLowerCase();
         const issuer: Issuer = this.configuration.blockchainProperties.issuer;
 
-        const senderBalance = this.ownedVolume();
-        amount = amount ?? senderBalance;
+        const { publicVolume, privateVolume } = this.ownedVolume();
 
-        if (senderBalance === 0 || amount > senderBalance) {
+        const availableAmount = (privately ? privateVolume : publicVolume);
+        amount = amount ?? availableAmount;
+
+        if (amount === 0 || amount > availableAmount) {
             throw new Error(
-                `transfer(): unable to send amount ${amount} Wh. Sender ${fromAddress} only has a balance of ${senderBalance} Wh`
+                `transfer(): unable to send amount ${amount} Wh. Sender ${fromAddress} has a balance of ${publicVolume + privateVolume} Wh (public: ${publicVolume}, private: ${privateVolume})`
             );
         }
 
-        if (this.isPrivate) {
-            const proposedOwnerShares = { ...this.ownedShares };
+        if (privately) {
+            const proposedOwnerShares = { ...this.ownedSharesPrivate };
             proposedOwnerShares[fromAddress] -= amount;
             proposedOwnerShares[toAddress] = (proposedOwnerShares[toAddress] ?? 0) + amount;
 
@@ -278,10 +295,6 @@ export class Entity extends PreciseProofEntity implements ICertificate {
     }
 
     async approvePrivateTransfer(): Promise<TransactionReceipt> {
-        if (!this.isPrivate) {
-            throw new Error('approvePrivateTransfer(): only for private certificates.');
-        }
-
         const issuer: Issuer = this.configuration.blockchainProperties.issuer;
 
         const previousCommitment = this.propertiesDocumentHash;
@@ -321,7 +334,7 @@ export class Entity extends PreciseProofEntity implements ICertificate {
     async revoke(): Promise<TransactionReceipt> {
         const issuer: Issuer = this.configuration.blockchainProperties.issuer;
         return issuer.revokeCertificate(
-            Number(this.id),
+            this.id,
             Configuration.getAccount(this.configuration)
         );
     }
@@ -331,15 +344,19 @@ export class Entity extends PreciseProofEntity implements ICertificate {
     }
 
     isOwned(byAddress?: string): boolean {
-        const ownedVolume = this.ownedVolume(byAddress);
+        const { publicVolume, privateVolume } = this.ownedVolume(byAddress);
 
-        return ownedVolume > 0;
+        return (publicVolume + privateVolume) > 0;
     }
 
-    ownedVolume(byAddress?: string): number {
+    ownedVolume(byAddress?: string): { publicVolume: number, privateVolume: number } {
         const owner = byAddress ?? this.configuration.blockchainProperties.activeUser.address;
-        const owned = this.ownedShares[owner.toLowerCase()] ?? 0;
-        return owned - this.claimedVolume(owner);
+        const ownerBalances = this.owners[owner.toLowerCase()];
+
+        return {
+            publicVolume: (ownerBalances?.owned ?? 0) - this.claimedVolume(owner),
+            privateVolume: ownerBalances?.ownedPrivate ?? 0
+        };
     }
 
     isClaimed(byAddress?: string): boolean {
@@ -354,10 +371,6 @@ export class Entity extends PreciseProofEntity implements ICertificate {
     }
 
     private async calculateOwnership(): Promise<IShareInCertificate> {
-        if (this.isPrivate) {
-            throw new Error('Can only calculate ownership for public certificates');
-        }
-
         const ownedShares: IShareInCertificate = {};
         const registry: Registry = this.configuration.blockchainProperties.registry;
 
@@ -394,7 +407,7 @@ export class Entity extends PreciseProofEntity implements ICertificate {
             const toAddress = _to.toLowerCase();
             const valueTransferred = Number(_value);
 
-            if (_from !== '0x0000000000000000000000000000000000000000') {
+            if (_from !== NULL_ADDRESS) {
                 ownedShares[fromAddress] = ownedShares[fromAddress] - valueTransferred;
             }
 
@@ -407,7 +420,7 @@ export class Entity extends PreciseProofEntity implements ICertificate {
 
         // Validate if all balances have been correctly calculated
         for (const ownerAddress of Object.keys(ownedShares)) {
-            const ownedBalance = Number(await registry.balanceOf(ownerAddress, Number(this.id)));
+            const ownedBalance = Number(await registry.balanceOf(ownerAddress, this.id));
             const calculatedBalance = ownedShares[ownerAddress] - (this.claimedShares[ownerAddress] ?? 0);
 
             if (ownedBalance != calculatedBalance) {
@@ -462,7 +475,7 @@ export class Entity extends PreciseProofEntity implements ICertificate {
 
         // Validate if all balances have been correctly calculated
         for (const ownerAddress of Object.keys(claimedShares)) {
-            const claimedBalance = await registry.claimedBalanceOf(ownerAddress, Number(this.id));
+            const claimedBalance = await registry.claimedBalanceOf(ownerAddress, this.id);
 
             if (claimedBalance != claimedShares[ownerAddress]) {
                 throw new Error(`Non-matching claimed balances. Please re-sync the certificate data.\nCalculated from events: ${claimedShares[ownerAddress]}\nRegistry.balanceOf(): ${claimedBalance}`)
@@ -535,8 +548,7 @@ export async function claimCertificates(
     );
     const certificates = await Promise.all(certificatesPromises);
 
-    const isOwnerPromise = certificates.map(cert => cert.isOwned());
-    const owned = await Promise.all(isOwnerPromise);
+    const owned = certificates.map(cert => cert.isOwned());
 
     const ownsAllCertificates = owned.every(isOwned => isOwned === true);
 
@@ -544,8 +556,7 @@ export async function claimCertificates(
         throw new Error(`You can only claim your own certificates`);
     }
 
-    const valuesPromise = certificates.map(cert => cert.ownedVolume());
-    const values = await Promise.all(valuesPromise);
+    const values = certificates.map(cert => cert.ownedVolume().publicVolume);
 
     const { randomHex, hexToBytes } = configuration.blockchainProperties.web3.utils;
     // TO-DO: replace with proper claim data
@@ -575,8 +586,7 @@ export async function transferCertificates(
     );
     const certificates = await Promise.all(certificatesPromises);
 
-    const valuesPromise = certificates.map(cert => cert.ownedVolume());
-    const values = await Promise.all(valuesPromise);
+    const values = certificates.map(cert => cert.ownedVolume().publicVolume);
 
     const { randomHex, hexToBytes } = configuration.blockchainProperties.web3.utils;
     // TO-DO: replace with proper data
