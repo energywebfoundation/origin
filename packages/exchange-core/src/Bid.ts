@@ -4,7 +4,7 @@ import BN from 'bn.js';
 import { Ask } from './Ask';
 import { Order, OrderSide, OrderStatus } from './Order';
 import { Product } from './Product';
-import { ProductFilter, Filter } from './ProductFilter';
+import { Filter, ProductFilter } from './ProductFilter';
 
 export class Bid extends Order {
     constructor(
@@ -27,8 +27,14 @@ export class Bid extends Order {
         const isIncludedInDeviceType = this.isIncludedInDeviceType(productFilter, deviceService);
         const hasMatchingVintage = this.filterByDeviceVintage(productFilter);
         const isIncludedInLocation = this.isIncludedInLocation(productFilter, locationService);
+        const hasMatchingGenerationTime = this.filterByGenerationTime(productFilter);
 
-        return isIncludedInDeviceType && hasMatchingVintage && isIncludedInLocation;
+        return (
+            isIncludedInDeviceType &&
+            hasMatchingVintage &&
+            isIncludedInLocation &&
+            hasMatchingGenerationTime
+        );
     }
 
     public matches(
@@ -36,11 +42,19 @@ export class Bid extends Order {
         deviceService: IDeviceTypeService,
         locationService: ILocationService
     ): boolean {
-        const hasMatchingDeviceType = this.hasMatchingDeviceType(ask.product, deviceService);
-        const hasMatchingVintage = this.hasMatchingVintage(ask.product);
-        const hasMatchingLocation = this.hasMatchingLocation(ask.product, locationService);
+        const { product } = ask;
 
-        return hasMatchingDeviceType && hasMatchingVintage && hasMatchingLocation;
+        const hasMatchingDeviceType = this.hasMatchingDeviceType(product, deviceService);
+        const hasMatchingVintage = this.hasMatchingVintage(product);
+        const hasMatchingLocation = this.hasMatchingLocation(product, locationService);
+        const hasMatchingGenerationTime = this.hasMatchingGenerationTime(ask);
+
+        return (
+            hasMatchingDeviceType &&
+            hasMatchingVintage &&
+            hasMatchingLocation &&
+            hasMatchingGenerationTime
+        );
     }
 
     public clone() {
@@ -116,10 +130,29 @@ export class Bid extends Order {
         return productFilter.deviceVintage.matches(this.product.deviceVintage);
     }
 
+    private filterByGenerationTime(productFilter: ProductFilter) {
+        if (productFilter.generationTimeFilter === Filter.All) {
+            return true;
+        }
+        if (productFilter.generationTimeFilter === Filter.Unspecified) {
+            return !this.product.generationTime;
+        }
+
+        return Order.hasMatchingGenerationTimes(this.product, productFilter);
+    }
+
     private hasMatchingVintage(product: Product) {
         if (!this.product.deviceVintage || !product.deviceVintage) {
             return true;
         }
         return product.deviceVintage.matches(this.product.deviceVintage);
+    }
+
+    private hasMatchingGenerationTime(ask: Ask) {
+        if (!this.product.generationTime) {
+            return true;
+        }
+
+        return Order.hasMatchingGenerationTimes(this.product, ask.product);
     }
 }

@@ -2,6 +2,7 @@ import { DeviceTypeService, LocationService } from '@energyweb/utils-general';
 import BN from 'bn.js';
 import { assert } from 'chai';
 import { List } from 'immutable';
+import moment from 'moment';
 
 import { Ask } from '../Ask';
 import { Bid } from '../Bid';
@@ -13,6 +14,7 @@ import { Product } from '../Product';
 import { Trade } from '../Trade';
 import { DirectBuy } from '../DirectBuy';
 import { ProductFilter, Filter } from '../ProductFilter';
+import { TimeRange } from '../TimeRange';
 
 interface IOrderCreationArgs {
     product?: Product;
@@ -57,6 +59,10 @@ describe('Matching tests', () => {
     const twoKWh = new BN(2000);
     const threeKWh = new BN(3000);
     const fourKWh = new BN(4000);
+    const defaultTimeRange: TimeRange = {
+        from: moment('2020-01-01').toDate(),
+        to: moment('2020-01-31').toDate()
+    };
 
     const deviceVintage = new DeviceVintage(2019);
     const locationCentral = ['Thailand;Central;Nakhon Pathom'];
@@ -74,6 +80,20 @@ describe('Matching tests', () => {
     const marineTypeLevel3 = deviceService.encode([['Marine', 'Tidal', 'Offshore']]);
     const marineTypeLevel1 = deviceService.encode([['Marine']]);
 
+    const defaultProduct: Product = {
+        deviceType: solarTypeLevel3,
+        deviceVintage,
+        location: locationCentral,
+        generationTime: defaultTimeRange
+    };
+
+    const allFilters: ProductFilter = {
+        locationFilter: Filter.All,
+        deviceTypeFilter: Filter.All,
+        deviceVintageFilter: Filter.All,
+        generationTimeFilter: Filter.All
+    };
+
     let initialOrderId = 0;
 
     const createAsk = (args?: IOrderCreationArgs) => {
@@ -81,10 +101,9 @@ describe('Matching tests', () => {
             (initialOrderId++).toString(),
             args?.price || twoUSD,
             args?.volume || onekWh,
-            args?.product || {
-                deviceType: solarTypeLevel3,
-                deviceVintage,
-                location: locationCentral
+            {
+                ...defaultProduct,
+                ...args?.product
             },
             new Date(0),
             OrderStatus.Active,
@@ -97,10 +116,9 @@ describe('Matching tests', () => {
             (initialOrderId++).toString(),
             args?.price || twoUSD,
             args?.volume || onekWh,
-            args?.product || {
-                deviceType: solarTypeLevel3,
-                deviceVintage,
-                location: locationCentral
+            {
+                ...defaultProduct,
+                ...args?.product
             },
             new Date(0),
             OrderStatus.Active,
@@ -473,7 +491,9 @@ describe('Matching tests', () => {
 
         it('should return 2 trades and fill all orders when having submitted 2 asks and 1 bid when bid is level 2 specific device type', done => {
             const asksBefore = [
-                createAsk({ product: { deviceType: windTypeLevel2 } }),
+                createAsk({
+                    product: { deviceType: windTypeLevel2 }
+                }),
                 createAsk({ product: { deviceType: windTypeLevel22 } }),
                 createAsk({ product: { deviceType: solarTypeLevel3 } })
             ];
@@ -509,7 +529,7 @@ describe('Matching tests', () => {
             const bidsBefore = [
                 createBid({
                     volume: threeKWh,
-                    product: {}
+                    product: { deviceType: [] }
                 })
             ];
 
@@ -532,17 +552,7 @@ describe('Matching tests', () => {
         it('should return whole order book when no product was set', () => {
             const { asks, bids } = createOrderBookWithSpread([{}, {}, {}], [{}, {}, {}]);
 
-            executeOrderBookQuery(
-                asks,
-                bids,
-                {
-                    locationFilter: Filter.All,
-                    deviceTypeFilter: Filter.All,
-                    deviceVintageFilter: Filter.All
-                },
-                asks,
-                bids
-            );
+            executeOrderBookQuery(asks, bids, allFilters, asks, bids);
         });
 
         it('should return order book based on device type where bids are "buy anything" product', () => {
@@ -561,10 +571,9 @@ describe('Matching tests', () => {
                 asks,
                 bids,
                 {
+                    ...allFilters,
                     deviceType: solarTypeLevel2,
-                    deviceTypeFilter: Filter.Specific,
-                    locationFilter: Filter.All,
-                    deviceVintageFilter: Filter.All
+                    deviceTypeFilter: Filter.Specific
                 },
                 expectedAsks,
                 bids
@@ -581,17 +590,7 @@ describe('Matching tests', () => {
                 [{ product: {} }, { product: {} }, { product: {} }]
             );
 
-            executeOrderBookQuery(
-                asks,
-                bids,
-                {
-                    deviceTypeFilter: Filter.All,
-                    locationFilter: Filter.All,
-                    deviceVintageFilter: Filter.All
-                },
-                asks,
-                bids
-            );
+            executeOrderBookQuery(asks, bids, allFilters, asks, bids);
         });
 
         it('should return order book based on device type where bids are "buy anything"', () => {
@@ -601,7 +600,11 @@ describe('Matching tests', () => {
                     { product: { deviceType: solarTypeLevel32 } },
                     { product: { deviceType: windTypeLevel2 } }
                 ],
-                [{ product: { deviceType: solarTypeLevel3 } }, { product: {} }, { product: {} }]
+                [
+                    { product: { deviceType: solarTypeLevel3 } },
+                    { product: { deviceType: [] } },
+                    { product: { deviceType: [] } }
+                ]
             );
 
             const bidsAfter = [bids[1], bids[2]];
@@ -610,9 +613,8 @@ describe('Matching tests', () => {
                 asks,
                 bids,
                 {
-                    deviceTypeFilter: Filter.Unspecified,
-                    locationFilter: Filter.All,
-                    deviceVintageFilter: Filter.All
+                    ...allFilters,
+                    deviceTypeFilter: Filter.Unspecified
                 },
                 asks,
                 bidsAfter
@@ -637,10 +639,9 @@ describe('Matching tests', () => {
                 asks,
                 bids,
                 {
+                    ...allFilters,
                     deviceType: windTypeLevel2,
-                    deviceTypeFilter: Filter.Specific,
-                    locationFilter: Filter.All,
-                    deviceVintageFilter: Filter.All
+                    deviceTypeFilter: Filter.Specific
                 },
                 expectedAsks,
                 bids
@@ -669,10 +670,9 @@ describe('Matching tests', () => {
                 asks,
                 bids,
                 {
+                    ...allFilters,
                     deviceType: solarTypeLevel1,
-                    deviceTypeFilter: Filter.Specific,
-                    locationFilter: Filter.All,
-                    deviceVintageFilter: Filter.All
+                    deviceTypeFilter: Filter.Specific
                 },
                 expectedAsks,
                 expectedBids
@@ -708,10 +708,9 @@ describe('Matching tests', () => {
                 asks,
                 bids,
                 {
+                    ...allFilters,
                     deviceType: solarTypeLevel1.concat(windTypeLevel1),
-                    deviceTypeFilter: Filter.Specific,
-                    locationFilter: Filter.All,
-                    deviceVintageFilter: Filter.All
+                    deviceTypeFilter: Filter.Specific
                 },
                 expectedAsks,
                 expectedBids
@@ -746,10 +745,9 @@ describe('Matching tests', () => {
                 asks,
                 bids,
                 {
+                    ...allFilters,
                     location: locationEast,
-                    locationFilter: Filter.Specific,
-                    deviceTypeFilter: Filter.All,
-                    deviceVintageFilter: Filter.All
+                    locationFilter: Filter.Specific
                 },
                 expectedAsks,
                 expectedBids
@@ -785,10 +783,9 @@ describe('Matching tests', () => {
                 asks,
                 bids,
                 {
+                    ...allFilters,
                     location: locationEast.concat(locationCentral),
-                    locationFilter: Filter.Specific,
-                    deviceTypeFilter: Filter.All,
-                    deviceVintageFilter: Filter.All
+                    locationFilter: Filter.Specific
                 },
                 expectedAsks,
                 expectedBids
@@ -1158,6 +1155,164 @@ describe('Matching tests', () => {
                     expectedTrades
                 },
                 done
+            );
+        });
+    });
+
+    describe('generation time matching and filters', () => {
+        it('should not match when bid generation time is out of ask generation time', done => {
+            const ask1 = createAsk({
+                product: {
+                    generationTime: {
+                        from: moment('2020-01-01').toDate(),
+                        to: moment('2020-01-31').toDate()
+                    }
+                }
+            });
+            const bid1 = createBid({
+                product: {
+                    generationTime: {
+                        from: moment('2020-02-01').toDate(),
+                        to: moment('2020-02-29').toDate()
+                    }
+                }
+            });
+
+            const expectedTrades: Trade[] = [];
+
+            executeTestCase(
+                {
+                    orders: [ask1, bid1],
+                    expectedTrades,
+                    asksAfter: [ask1],
+                    bidsAfter: [bid1]
+                },
+                done
+            );
+        });
+
+        it('should not match when bid partially contains ask generation time', done => {
+            const ask1 = createAsk({
+                product: {
+                    generationTime: {
+                        from: moment('2020-01-15').toDate(),
+                        to: moment('2020-02-15').toDate()
+                    }
+                }
+            });
+            const bid1 = createBid({
+                product: {
+                    generationTime: {
+                        from: moment('2020-02-01').toDate(),
+                        to: moment('2020-02-29').toDate()
+                    }
+                }
+            });
+            const bid2 = createBid({
+                product: {
+                    generationTime: {
+                        from: moment('2020-01-01').toDate(),
+                        to: moment('2020-01-31').toDate()
+                    }
+                }
+            });
+
+            const expectedTrades: Trade[] = [];
+
+            executeTestCase(
+                {
+                    orders: [ask1, bid1, bid2],
+                    expectedTrades,
+                    asksAfter: [ask1],
+                    bidsAfter: [bid1, bid2]
+                },
+                done
+            );
+        });
+
+        it('should match when bid contains ask generation time', done => {
+            const ask1 = createAsk({
+                product: {
+                    generationTime: {
+                        from: moment('2020-01-15').toDate(),
+                        to: moment('2020-02-15').toDate()
+                    }
+                }
+            });
+            const bid1 = createBid({
+                product: {
+                    generationTime: {
+                        from: moment('2020-01-01').toDate(),
+                        to: moment('2020-02-29').toDate()
+                    }
+                }
+            });
+            const bid2 = createBid({
+                product: {
+                    generationTime: {
+                        from: moment('2020-01-01').toDate(),
+                        to: moment('2020-01-31').toDate()
+                    }
+                }
+            });
+
+            const expectedTrades: Trade[] = [new Trade(bid1, ask1, bid1.volume, ask1.price)];
+
+            executeTestCase(
+                {
+                    orders: [ask1, bid1, bid2],
+                    expectedTrades,
+                    bidsAfter: [bid2]
+                },
+                done
+            );
+        });
+
+        it('should return bids and asks that matches filter generation time', () => {
+            const { asks, bids } = createOrderBookWithSpread(
+                [
+                    {
+                        product: {
+                            generationTime: {
+                                from: moment('2020-01-15').toDate(),
+                                to: moment('2020-02-15').toDate()
+                            }
+                        }
+                    }
+                ],
+                [
+                    {
+                        product: {
+                            generationTime: {
+                                from: moment('2020-01-01').toDate(),
+                                to: moment('2020-02-29').toDate()
+                            }
+                        }
+                    },
+                    {
+                        product: {
+                            generationTime: {
+                                from: moment('2020-01-01').toDate(),
+                                to: moment('2020-01-31').toDate()
+                            }
+                        }
+                    }
+                ]
+            );
+
+            executeOrderBookQuery(
+                asks,
+                bids,
+                {
+                    ...allFilters,
+                    generationTime: {
+                        from: moment('2020-01-01').toDate(),
+                        to: moment('2020-01-31').toDate()
+                    },
+                    generationTimeFilter: Filter.Specific
+                },
+                [],
+                bids
             );
         });
     });

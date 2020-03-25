@@ -7,3 +7,4 @@ export { ProductFilter, Filter } from './ProductFilter';
 export { DeviceVintage } from './DeviceVintage';
 export { Operator } from './Operator';
 export { DirectBuy } from './DirectBuy';
+export { TimeRange } from './TimeRange';

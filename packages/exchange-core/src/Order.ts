@@ -1,6 +1,10 @@
 import BN from 'bn.js';
+import * as Moment from 'moment';
+import { extendMoment } from 'moment-range';
 
 import { Product } from './Product';
+
+const moment = extendMoment(Moment);
 
 export enum OrderSide {
     Bid,
@@ -68,5 +72,12 @@ export abstract class Order implements IOrder {
         this._status = this.volume.isZero() ? OrderStatus.Filled : OrderStatus.PartiallyFilled;
 
         return this;
+    }
+
+    public static hasMatchingGenerationTimes(bidProduct: Product, askProduct: Product) {
+        const bidRange = moment.range(bidProduct.generationTime.from, bidProduct.generationTime.to);
+        const askRange = moment.range(askProduct.generationTime.from, askProduct.generationTime.to);
+
+        return bidRange.contains(askRange);
     }
 }
