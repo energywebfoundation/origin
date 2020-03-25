@@ -150,6 +150,28 @@ describe('Cerificate tests', () => {
         assert.equal(certificate.ownedVolume(accountTrader), totalVolume);
     });
 
+    it('partially transfers a private certificate', async () => {
+        const totalVolume = 1e9;
+        const partialVolumeToSend = totalVolume / 4;
+        let certificate = await issueCertificate(totalVolume, true);
+
+        setActiveUser(deviceOwnerPK);
+
+        await certificate.transfer(accountTrader, partialVolumeToSend);
+        certificate = await certificate.sync();
+
+        setActiveUser(issuerPK);
+
+        await certificate.approvePrivateTransfer();
+        certificate = await certificate.sync();
+
+        assert.isTrue(certificate.isOwned(accountDeviceOwner));
+        assert.equal(certificate.ownedVolume(accountDeviceOwner), totalVolume - partialVolumeToSend);
+
+        assert.isTrue(certificate.isOwned(accountTrader));
+        assert.equal(certificate.ownedVolume(accountTrader), partialVolumeToSend);
+    });
+
     it('fails claiming a revoked certificate', async () => {
         const totalVolume = 1e9;
         const certificate = await issueCertificate(totalVolume);
@@ -219,6 +241,42 @@ describe('Cerificate tests', () => {
 
         assert.isTrue(await certificate.isClaimed());
         assert.equal(await certificate.claimedVolume(), totalVolume);
+    });
+
+    it('claims a partial private certificate', async () => {
+        const totalVolume = 1e9;
+        const partialVolumeToClaim = totalVolume / 4;
+        let certificate = await issueCertificate(totalVolume, true);
+
+        setActiveUser(deviceOwnerPK);
+
+        await certificate.transfer(accountTrader, partialVolumeToClaim);
+        certificate = await certificate.sync();
+
+        setActiveUser(issuerPK);
+
+        await certificate.approvePrivateTransfer();
+        certificate = await certificate.sync();
+
+        setActiveUser(traderPK);
+
+        await certificate.requestMigrateToPublic();
+        certificate = await certificate.sync();
+
+        setActiveUser(issuerPK);
+
+        await certificate.migrateToPublic();
+        certificate = await certificate.sync();
+
+        assert.isFalse(certificate.isPrivate);
+
+        setActiveUser(traderPK);
+
+        await certificate.claim();
+        certificate = await certificate.sync();
+
+        assert.isTrue(await certificate.isClaimed());
+        assert.equal(await certificate.claimedVolume(), partialVolumeToClaim);
     });
 
     it('batch transfers certificates', async () => {
