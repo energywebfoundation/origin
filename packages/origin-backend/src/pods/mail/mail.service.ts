@@ -26,25 +26,22 @@ export class MailService {
                 sendMailOptions
             );
 
-            if (result.messageId) {
-                const allSucceeded = result.accepted.reduce(
-                    (a, b) => a && b.status === 'sent',
-                    true
-                );
-
-                if (allSucceeded) {
-                    this.logger.log(`Sent email with id: ${result.messageId}. `);
-                    this.logger.log(result);
-                    return true;
-                }
-
-                this.logger.error(`Error when sending email.`);
-                this.logger.error(result);
-
-                return false;
+            if (!result.messageId) {
+                return true;
             }
 
-            return true;
+            const allSucceeded = result.accepted.every(e => e.status === 'sent');
+
+            if (allSucceeded) {
+                this.logger.log(`Sent email with id: ${result.messageId}. `);
+                this.logger.log(result);
+                return true;
+            }
+
+            this.logger.error(`Error when sending email.`);
+            this.logger.error(result);
+
+            return false;
         } catch (error) {
             this.logger.error(`Error when sending email.`);
             this.logger.error(error);

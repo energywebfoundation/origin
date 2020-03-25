@@ -16,7 +16,7 @@ import { MailService } from './mail.service';
                         // eslint-disable-next-line @typescript-eslint/camelcase
                         from_email: configService.get<string>('EMAIL_FROM'),
                         // eslint-disable-next-line @typescript-eslint/camelcase
-                        from_name: 'Energy Web Origin',
+                        from_name: configService.get<string>('EMAIL_FROM_NAME'),
                         headers: {
                             'Reply-To': configService.get<string>('EMAIL_REPLY_TO')
                         },
@@ -24,7 +24,9 @@ import { MailService } from './mail.service';
                         tags: ['origin', 'no-reply']
                     }),
                     defaults: {
-                        from: `"Energy Web Origin" <${configService.get<string>('EMAIL_FROM')}>`
+                        from: `"${configService.get<string>(
+                            'EMAIL_FROM_NAME'
+                        )}" <${configService.get<string>('EMAIL_FROM')}>`
                     },
                     template: {
                         dir: `${__dirname}/templates`,
