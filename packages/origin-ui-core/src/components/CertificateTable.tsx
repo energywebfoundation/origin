@@ -346,7 +346,11 @@ export function CertificateTable(props: IProps) {
             })`,
             sortProperties: [
                 [
-                    (record: IEnrichedCertificateData) => record?.certificate?.ownedVolume(),
+                    (record: IEnrichedCertificateData) => {
+                        const owned = record?.certificate?.ownedVolume();
+                        if (!owned) return null;
+                        return owned.publicVolume + owned.privateVolume;
+                    },
                     (value: number) => value
                 ]
             ]
