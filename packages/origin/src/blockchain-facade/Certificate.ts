@@ -177,7 +177,7 @@ export class Entity extends BlockchainDataModelEntity.Entity implements ICertifi
             this.parentId = Number(cert.parentId);
             this.certificationRequestId = cert.certificationRequestId;
 
-            this.syncCertificationRequestOffChainData();
+            await this.syncCertificationRequestOffChainData();
 
             this.initialized = true;
 
