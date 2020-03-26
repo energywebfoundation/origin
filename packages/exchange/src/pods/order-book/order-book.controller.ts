@@ -3,9 +3,9 @@ import { Body, Controller, Post, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 
 import { UserDecorator } from '../decorators/user.decorator';
-import { ProductDTO } from '../order/product.dto';
 import { OrderBookOrderDTO } from './order-book-order.dto';
 import { OrderBookService } from './order-book.service';
+import { ProductFilterDTO } from './product-filter.dto';
 
 @Controller('orderbook')
 export class OrderBookController {
@@ -13,8 +13,10 @@ export class OrderBookController {
 
     @Post('/search')
     @UseGuards(AuthGuard())
-    public getByProduct(@UserDecorator() user: IUser, @Body() product: ProductDTO) {
-        const { asks, bids } = this.orderBookService.getByProduct(ProductDTO.toProduct(product));
+    public getByProduct(@UserDecorator() user: IUser, @Body() productFilter: ProductFilterDTO) {
+        const { asks, bids } = this.orderBookService.getByProduct(
+            ProductFilterDTO.toProductFilter(productFilter)
+        );
         const userId = user?.id.toString();
 
         return {

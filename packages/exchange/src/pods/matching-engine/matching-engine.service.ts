@@ -3,7 +3,7 @@ import {
     Bid,
     MatchingEngine,
     OrderSide,
-    Product,
+    ProductFilter,
     TradeExecutedEvent,
     DirectBuy
 } from '@energyweb/exchange-core';
@@ -58,9 +58,8 @@ export class MatchingEngineService {
         }
     }
 
-    public query(product: Product) {
-        // TODO: consider reading this info from DB and filtering
-        return this.matchingEngine.orderBookByProduct(product);
+    public query(productFilter: ProductFilter) {
+        return this.matchingEngine.orderBookByProduct(productFilter);
     }
 
     @Interval(1000)

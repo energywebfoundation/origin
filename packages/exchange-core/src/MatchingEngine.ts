@@ -6,10 +6,10 @@ import { concatMap } from 'rxjs/operators';
 
 import { Ask } from './Ask';
 import { Bid } from './Bid';
-import { Order, OrderSide, OrderStatus } from './Order';
-import { Product } from './Product';
-import { Trade } from './Trade';
 import { DirectBuy } from './DirectBuy';
+import { Order, OrderSide, OrderStatus } from './Order';
+import { ProductFilter } from './ProductFilter';
+import { Trade } from './Trade';
 
 export type TradeExecutedEvent = { trade: Trade; ask: Ask; bid: Bid | DirectBuy };
 
@@ -68,12 +68,12 @@ export class MatchingEngine {
         return { asks: this.asks, bids: this.bids };
     }
 
-    public orderBookByProduct(product: Product) {
+    public orderBookByProduct(productFilter: ProductFilter) {
         const asks = this.asks.filter(ask =>
-            ask.filterBy(product, this.deviceService, this.locationService)
+            ask.filterBy(productFilter, this.deviceService, this.locationService)
         );
         const bids = this.bids.filter(bid =>
-            bid.filterBy(product, this.deviceService, this.locationService)
+            bid.filterBy(productFilter, this.deviceService, this.locationService)
         );
 
         return { asks, bids };
