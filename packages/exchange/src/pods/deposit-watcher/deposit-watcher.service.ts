@@ -3,6 +3,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { ethers } from 'ethers';
 import { Log } from 'ethers/providers';
+import moment from 'moment';
 
 import { TransferService } from '../transfer/transfer.service';
 
@@ -18,18 +19,33 @@ export class DepositWatcherService {
 
     private readonly provider: ethers.providers.JsonRpcProvider;
 
+    private readonly issuer: ethers.Contract;
+
+    private readonly registry: ethers.Contract;
+
     public constructor(
         private readonly configService: ConfigService,
         private readonly transferService: TransferService
     ) {
-        const { abi } = Contracts.RegistryJSON;
+        this.tokenInterface = new ethers.utils.Interface(Contracts.RegistryJSON.abi);
 
-        this.tokenInterface = new ethers.utils.Interface(abi);
         this.walletAddress = this.configService.get<string>('EXCHANGE_WALLET_PUB');
         this.registryAddress = this.configService.get<string>('REGISTRY_ADDRESS');
 
         const web3ProviderUrl = this.configService.get<string>('WEB3');
         this.provider = new ethers.providers.JsonRpcProvider(web3ProviderUrl);
+
+        this.registry = new ethers.Contract(
+            this.registryAddress,
+            Contracts.RegistryJSON.abi,
+            this.provider
+        );
+
+        this.issuer = new ethers.Contract(
+            this.configService.get<string>('ISSUER_ADDRESS'),
+            Contracts.IssuerJSON.abi,
+            this.provider
+        );
     }
 
     public async init() {
@@ -69,6 +85,10 @@ export class DepositWatcherService {
         const { transactionHash } = event;
 
         try {
+            const { generationFrom, generationTo, deviceId } = await this.decodeDataField(
+                id.toString()
+            );
+
             await this.transferService.createDeposit({
                 transactionHash,
                 address: from as string,
@@ -76,8 +96,9 @@ export class DepositWatcherService {
                 asset: {
                     address: this.registryAddress,
                     tokenId: id.toString(),
-                    // TODO: fetch the real device ID from contract after we agree on the structure of the bytes field
-                    deviceId: 'dummy'
+                    deviceId,
+                    generationFrom,
+                    generationTo
                 }
             });
 
@@ -91,5 +112,17 @@ export class DepositWatcherService {
         } catch (error) {
             this.logger.error(error.message);
         }
+    }
+
+    private async decodeDataField(certificateId: string) {
+        const { data } = await this.registry.functions.getCertificate(certificateId);
+
+        const result = await this.issuer.functions.decodeData(data);
+
+        return {
+            generationFrom: moment(result[0]).toISOString(),
+            generationTo: moment(result[1]).toISOString(),
+            deviceId: result[2]
+        };
     }
 }

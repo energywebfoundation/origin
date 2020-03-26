@@ -1,6 +1,6 @@
 /* eslint-disable max-classes-per-file */
-import { Asset } from '../asset/asset.entity';
 import { Account } from './account';
+import { AssetDTO } from '../asset/asset.dto';
 
 export class AccountDTO {
     address: string;
@@ -12,10 +12,13 @@ export class AccountDTO {
             ...account,
             balances: {
                 available: account.balances.available.map(b => ({
-                    ...b,
+                    asset: AssetDTO.fromAsset(b.asset),
                     amount: b.amount.toString(10)
                 })),
-                locked: account.balances.locked.map(b => ({ ...b, amount: b.amount.toString(10) }))
+                locked: account.balances.locked.map(b => ({
+                    asset: AssetDTO.fromAsset(b.asset),
+                    amount: b.amount.toString(10)
+                }))
             }
         };
     }
@@ -28,7 +31,7 @@ export class AccountBalanceDTO {
 }
 
 export class AccountAssetDTO {
-    asset: Asset;
+    asset: AssetDTO;
 
     amount: string;
 }

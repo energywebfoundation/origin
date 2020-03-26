@@ -1,12 +1,5 @@
 import BN from 'bn.js';
-import {
-    BaseEntity,
-    Column,
-    Entity,
-    OneToMany,
-    PrimaryGeneratedColumn,
-    UpdateDateColumn
-} from 'typeorm';
+import { BaseEntity, Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 import { BNTransformer } from '../../utils/valueTransformers';
 import { Order } from '../order/order.entity';
@@ -23,8 +16,7 @@ export class Demand extends BaseEntity {
     @Column()
     price: number;
 
-    @Column()
-    @UpdateDateColumn({ type: 'timestamptz' })
+    @Column({ type: 'timestamptz' })
     start: Date;
 
     @Column('bigint', { transformer: BNTransformer })
