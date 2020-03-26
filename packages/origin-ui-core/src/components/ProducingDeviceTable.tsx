@@ -10,7 +10,7 @@ import { ICustomFilterDefinition, CustomFilterInputType } from './Table/FiltersH
 import { IPaginatedLoaderFetchDataReturnValues } from './Table/PaginatedLoader';
 import { getProducingDevices, getBaseURL, getConfiguration } from '../features/selectors';
 import { TableMaterial } from './Table/TableMaterial';
-import { getUserOffchain } from '../features/users/selectors';
+import { getUserOffchain, getOrganizations } from '../features/users/selectors';
 import { showRequestCertificatesModal } from '../features/certificates/actions';
 import { setLoading } from '../features/general/actions';
 import { producingDeviceCreatedOrUpdated } from '../features/producingDevices/actions';
@@ -23,7 +23,6 @@ import {
     showNotification,
     NotificationType
 } from '../utils';
-import { getOffChainDataSource } from '../features/general/selectors';
 
 import { useTranslation } from 'react-i18next';
 import {
@@ -54,25 +53,25 @@ export function ProducingDeviceTable(props: IOwnProps) {
     const configuration = useSelector(getConfiguration);
     const user = useSelector(getUserOffchain);
     const producingDevices = useSelector(getProducingDevices);
-    const offChainDataSource = useSelector(getOffChainDataSource);
     const baseURL = useSelector(getBaseURL);
+    const organizations = useSelector(getOrganizations);
 
     const dispatch = useDispatch();
 
-    async function enrichProducingDeviceData(): Promise<IEnrichedProducingDeviceData[]> {
-        const promises = producingDevices.map(async device => {
-            const organization = await offChainDataSource.organizationClient?.getById(
-                device.organization
-            );
+    function enrichProducingDeviceData(): IEnrichedProducingDeviceData[] {
+        const enriched: IEnrichedProducingDeviceData[] = [];
 
-            return {
+        for (const device of producingDevices) {
+            const organization = organizations.find(o => o.id === device.organization);
+
+            enriched.push({
                 device,
                 organizationName: organization?.name,
                 locationText: getDeviceLocationText(device)
-            };
-        });
+            });
+        }
 
-        return Promise.all(promises);
+        return enriched;
     }
 
     async function getPaginatedData({
@@ -115,7 +114,7 @@ export function ProducingDeviceTable(props: IOwnProps) {
 
     useEffect(() => {
         loadPage(1);
-    }, [user, producingDevices]);
+    }, [user, producingDevices, organizations]);
 
     function viewDevice(rowIndex: number) {
         const device = paginatedData[rowIndex].device;

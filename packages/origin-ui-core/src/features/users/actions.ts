@@ -1,4 +1,4 @@
-import { IUserWithRelations } from '@energyweb/origin-backend-core';
+import { IUserWithRelations, IOrganizationWithRelationsIds } from '@energyweb/origin-backend-core';
 
 export enum UsersActions {
     setActiveBlockchainAccountAddress = 'USERS_SET_ACTIVE_BLOCKCHAIN_ACCOUNT_ADDRESS',
@@ -6,7 +6,8 @@ export enum UsersActions {
     setUserOffchain = 'SET_USER_OFFCHAIN',
     setAuthenticationToken = 'SET_AUTHENTICATION_TOKEN',
     clearAuthenticationToken = 'CLEAR_AUTHENTICATION_TOKEN',
-    refreshUserOffchain = 'REFRESH_USER_OFFCHAIN'
+    refreshUserOffchain = 'REFRESH_USER_OFFCHAIN',
+    addOrganizations = 'USERS_ADD_ORGANIZATIONS'
 }
 
 export interface ISetActiveBlockchainAccountAddressAction {
@@ -67,9 +68,22 @@ export const clearAuthenticationToken = () => ({
 
 export type TClearAuthenticationTokenAction = typeof clearAuthenticationToken;
 
+export interface IAddOrganizationsAction {
+    type: UsersActions.addOrganizations;
+    payload: IOrganizationWithRelationsIds[];
+}
+
+export const addOrganizations = (payload: IAddOrganizationsAction['payload']) => ({
+    type: UsersActions.addOrganizations,
+    payload
+});
+
+export type TAddOrganizationsAction = typeof addOrganizations;
+
 export type IUsersAction =
     | ISetActiveBlockchainAccountAddressAction
     | ISetUserOffchainAction
     | ISetAuthenticationTokenAction
     | IClearAuthenticationTokenAction
-    | IRefreshUserOffchainAction;
+    | IRefreshUserOffchainAction
+    | IAddOrganizationsAction;

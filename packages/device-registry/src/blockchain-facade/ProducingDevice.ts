@@ -6,7 +6,8 @@ import {
     IEnergyGenerated,
     DeviceStatus,
     ExternalDeviceId,
-    DeviceCreateData
+    DeviceCreateData,
+    IDeviceWithRelationsIds
 } from '@energyweb/origin-backend-core';
 
 export class Entity implements IDevice {
@@ -56,12 +57,21 @@ export class Entity implements IDevice {
 
     organization: number;
 
-    constructor(public id: number, public configuration: Configuration.Entity) {
-        this.initialized = false;
+    constructor(
+        public id: number,
+        public configuration: Configuration.Entity,
+        data?: IDeviceWithRelationsIds
+    ) {
+        if (data) {
+            Object.assign(this, data);
+            this.initialized = true;
+        } else {
+            this.initialized = false;
+        }
     }
 
     async sync(): Promise<Entity> {
-        if (this.id != null) {
+        if (this.id !== null) {
             const device = await this.configuration.offChainDataSource.deviceClient.getById(
                 this.id
             );
@@ -134,11 +144,7 @@ export class Entity implements IDevice {
 export const getAllDevices = async (configuration: Configuration.Entity): Promise<Entity[]> => {
     const allDevices = await configuration.offChainDataSource.deviceClient.getAll();
 
-    const producingDevicesSynced = allDevices.map(device =>
-        new Entity(device.id, configuration).sync()
-    );
-
-    return Promise.all(producingDevicesSynced);
+    return allDevices.map(device => new Entity(device.id, configuration, device));
 };
 
 export const getDeviceListLength = async (configuration: Configuration.Entity) => {
