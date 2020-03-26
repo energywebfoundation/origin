@@ -8,8 +8,8 @@ services: postgresql
 
 env:
     global:
-        - EXCHANGE_DB_PASSWORD=
-        - EXCHANGE_DB_DATABASE=origin_exchange
+        - DB_PASSWORD=
+        - DB_DATABASE=origin_exchange
 
 git:
     depth: false
