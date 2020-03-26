@@ -1,11 +1,7 @@
 {
     "complianceRegistry": "I-REC",
-    "currencies": [
-        "USD"
-    ],
-    "externalDeviceIdTypes": [
-        "Smart Meter Readings API ID"
-    ],
+    "currencies": ["USD"],
+    "externalDeviceIdTypes": ["Smart Meter Readings API ID", "Issuer ID"],
     "country": {
         "name": "Thailand",
         "regions": {
@@ -63,7 +59,15 @@
                 "Suphan Buri",
                 "Nakhon Nayok"
             ],
-            "East": ["Chachoengsao", "Chanthaburi", "Chon Buri", "Prachin Buri", "Rayong", "Sa Kaeo", "Trat"],
+            "East": [
+                "Chachoengsao",
+                "Chanthaburi",
+                "Chon Buri",
+                "Prachin Buri",
+                "Rayong",
+                "Sa Kaeo",
+                "Trat"
+            ],
             "South": [
                 "Chumphon",
                 "Nakhon Si Thammarat",
@@ -223,10 +227,16 @@
                 "otherGreenAttributes": "N.A.",
                 "typeOfPublicSupport": "N.A",
                 "facilityName": "Wuthering Heights Windfarm",
-                "externalDeviceIds": [{
-                    "id": 123,
-                    "type": "Smart Meter Readings API ID"
-                }],
+                "externalDeviceIds": [
+                    {
+                        "id": 123,
+                        "type": "Smart Meter Readings API ID"
+                    },
+                    {
+                        "id": "ABQ123-1",
+                        "type": "Issuer ID"
+                    }
+                ],
                 "user": {
                     "email": "devicemanager@mailinator.com",
                     "password": "test"
@@ -257,7 +267,13 @@
                 "user": {
                     "email": "devicemanager2@mailinator.com",
                     "password": "test"
-                }
+                },
+                "externalDeviceIds": [
+                    {
+                        "id": "ABQ123-2",
+                        "type": "Issuer ID"
+                    }
+                ]
             }
         },
         {
@@ -280,7 +296,13 @@
                 "user": {
                     "email": "devicemanager@mailinator.com",
                     "password": "test"
-                }
+                },
+                "externalDeviceIds": [
+                    {
+                        "id": "ABQ123-3",
+                        "type": "Issuer ID"
+                    }
+                ]
             }
         }
     ]
