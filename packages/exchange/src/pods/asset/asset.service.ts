@@ -37,7 +37,17 @@ export class AssetService {
         });
 
         if (!existingAsset) {
-            existingAsset = await repository.save(asset);
+            this.logger.debug(`Asset does not exist. Creating.`);
+
+            const newAsset = {
+                address: asset.address,
+                tokenId: asset.tokenId,
+                deviceId: asset.tokenId,
+                generationFrom: new Date(asset.generationFrom),
+                generationTo: new Date(asset.generationTo)
+            };
+
+            existingAsset = await repository.save(newAsset);
         }
 
         this.logger.debug(`Returning asset ${JSON.stringify(existingAsset)}`);

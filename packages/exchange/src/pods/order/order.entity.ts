@@ -6,18 +6,17 @@ import {
     Entity,
     JoinTable,
     ManyToOne,
-    PrimaryGeneratedColumn,
-    UpdateDateColumn,
     OneToMany,
+    PrimaryGeneratedColumn,
     RelationId
 } from 'typeorm';
 
 import { BNTransformer } from '../../utils/valueTransformers';
 import { Asset } from '../asset/asset.entity';
 import { Demand } from '../demand/demand.entity';
-import { ProductDTO } from './product.dto';
 import { Trade } from '../trade/trade.entity';
 import { OrderType } from './order-type.enum';
+import { ProductDTO } from './product.dto';
 
 @Entity()
 export class Order extends BaseEntity {
@@ -48,8 +47,7 @@ export class Order extends BaseEntity {
     @Column({ nullable: true, type: 'uuid' })
     directBuyId: string;
 
-    @Column()
-    @UpdateDateColumn({ type: 'timestamptz' })
+    @Column({ type: 'timestamptz' })
     validFrom: Date;
 
     @Column('json')

@@ -21,7 +21,13 @@ let demandService: DemandService;
 let orderService: OrderService;
 let productService: ProductService;
 
-const dummyAsset = { address: '0x9876', tokenId: '0', deviceId: '0' };
+const dummyAsset = {
+    address: '0x9876',
+    tokenId: '0',
+    deviceId: '0',
+    generationFrom: new Date('2020-01-01').toISOString(),
+    generationTo: new Date('2020-01-31').toISOString()
+};
 
 const transactionHash = `0x${((Math.random() * 0xffffff) << 0).toString(16)}`;
 
@@ -77,7 +83,7 @@ describe('Demand orders trading', () => {
             validFrom: validFrom.toISOString()
         });
 
-        const product = productService.getProduct('deviceId');
+        const product = await productService.getProduct(deposit.asset.id);
 
         const demand = await demandService.createSingle(
             demandOwner,

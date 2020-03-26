@@ -21,7 +21,13 @@ describe('account ask order send', () => {
     let accountService: AccountService;
 
     const user1Id = '1';
-    const dummyAsset = { address: '0x9876', tokenId: '0', deviceId: '0' };
+    const dummyAsset = {
+        address: '0x9876',
+        tokenId: '0',
+        deviceId: '0',
+        generationFrom: new Date('2020-01-01').toISOString(),
+        generationTo: new Date('2020-01-31').toISOString()
+    };
 
     const transactionHash = `0x${((Math.random() * 0xffffff) << 0).toString(16)}`;
     const withdrawalAddress = ethers.Wallet.createRandom().address;

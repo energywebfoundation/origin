@@ -1,5 +1,7 @@
 import { INestApplication } from '@nestjs/common';
-import { Contract, ethers } from 'ethers';
+import { Contracts } from '@energyweb/issuer';
+import { Contract, ethers, ContractTransaction } from 'ethers';
+import moment from 'moment';
 import request from 'supertest';
 
 import { AccountService } from '../src/pods/account/account.service';
@@ -21,10 +23,20 @@ describe('Deposits using deployed registry', () => {
     const web3 = 'http://localhost:8580';
 
     let registry: Contract;
+    let issuer: Contract;
+
     let depositAddress: string;
 
+    const registryInterface = new ethers.utils.Interface(Contracts.IssuerJSON.abi);
+
     beforeAll(async () => {
-        ({ accountService, databaseService, registry, app } = await bootstrapTestInstance());
+        ({
+            accountService,
+            databaseService,
+            registry,
+            issuer,
+            app
+        } = await bootstrapTestInstance());
 
         await app.init();
 
@@ -41,12 +53,40 @@ describe('Deposits using deployed registry', () => {
     const tokenReceiverPrivateKey =
         '0xca77c9b06fde68bcbcc09f603c958620613f4be79f3abb4b2032131d0229462e';
     const tokenReceiver = new ethers.Wallet(tokenReceiverPrivateKey, provider);
-    let tokenId = 1;
 
-    const issueToken = async (to: string, amount: string) => {
-        await registry.functions.issue(to, '0x0', 100, amount, '0x0');
+    const issueToken = async (address: string, amount: string) => {
+        const from = moment('2020-01-01').unix();
+        const to = moment('2020-01-31').unix();
+        const deviceId = 'QWERTY123';
 
-        return tokenId++;
+        const data = await issuer.encodeData(from, to, deviceId);
+
+        const requestReceipt = await ((await issuer.requestCertificationFor(
+            data,
+            address,
+            false
+        )) as ContractTransaction).wait();
+
+        const {
+            values: { _id: requestId }
+        } = registryInterface.parseLog(requestReceipt.logs[0]);
+
+        const validityData = registryInterface.functions.isRequestValid.encode([
+            requestId.toString()
+        ]);
+
+        const approvalReceipt = await ((await issuer.approveCertificationRequest(
+            address,
+            requestId,
+            amount,
+            validityData
+        )) as ContractTransaction).wait();
+
+        const { args } = approvalReceipt.events.find(
+            e => e.event === 'ApprovedCertificationRequest'
+        );
+
+        return args[2].toString();
     };
 
     const depositToken = async (to: string, amount: string, id: number) => {
@@ -94,13 +134,10 @@ describe('Deposits using deployed registry', () => {
         jest.setTimeout(15000);
 
         const withdrawalAddress = ethers.Wallet.createRandom().address;
-        console.log(`withdrawalAddress=${withdrawalAddress}`);
-
         const withdrawalAmount = '5';
         const depositAmount = '10';
 
         const id = await issueToken(tokenReceiver.address, '1000');
-        console.log('token id = ', id);
         await depositToken(depositAddress, depositAmount, id);
 
         await sleep(5000);
@@ -120,8 +157,6 @@ describe('Deposits using deployed registry', () => {
 
         const startBalance = await getBalance(withdrawalAddress, id);
 
-        console.log(startBalance.toString());
-
         await request(app.getHttpServer())
             .post('/transfer/withdrawal')
             .send(withdrawal)
@@ -130,8 +165,6 @@ describe('Deposits using deployed registry', () => {
         await sleep(5000);
 
         const endBalance = await getBalance(withdrawalAddress, id);
-
-        console.log(endBalance.toString());
 
         expect(endBalance.gt(startBalance)).toBeTruthy();
     });

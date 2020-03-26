@@ -5,7 +5,6 @@ import BN from 'bn.js';
 import { Repository } from 'typeorm';
 
 import { AccountBalanceService } from '../account-balance/account-balance.service';
-import { AssetService } from '../asset/asset.service';
 import { MatchingEngineService } from '../matching-engine/matching-engine.service';
 import { ProductService } from '../product/product.service';
 import { CreateAskDTO } from './create-ask.dto';
@@ -24,8 +23,7 @@ export class OrderService {
         private readonly matchingEngineService: MatchingEngineService,
         @Inject(forwardRef(() => AccountBalanceService))
         private readonly accountBalanceService: AccountBalanceService,
-        private readonly productService: ProductService,
-        private readonly assetService: AssetService
+        private readonly productService: ProductService
     ) {}
 
     public async createBid(userId: string, bid: CreateBidDTO): Promise<Order> {
@@ -82,8 +80,7 @@ export class OrderService {
             throw new Error('Not enough assets');
         }
 
-        const { deviceId } = await this.assetService.get(ask.assetId);
-        const product = this.productService.getProduct(deviceId);
+        const product = await this.productService.getProduct(ask.assetId);
 
         const order = await this.repository.save({
             userId,

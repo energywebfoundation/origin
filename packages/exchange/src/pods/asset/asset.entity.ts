@@ -13,4 +13,10 @@ export class Asset extends BaseEntity {
 
     @Column()
     deviceId: string;
+
+    @Column({ type: 'timestamptz' })
+    generationFrom: Date;
+
+    @Column({ type: 'timestamptz' })
+    generationTo: Date;
 }
