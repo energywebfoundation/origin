@@ -47,11 +47,11 @@ const getEnvFilePath = () => {
         TypeOrmModule.forRoot({
             type: 'postgres',
             name: 'ExchangeConnection',
-            host: process.env.EXCHANGE_DB_HOST ?? 'localhost',
-            port: Number(process.env.EXCHANGE_DB_PORT) ?? 5432,
-            username: process.env.EXCHANGE_DB_USERNAME ?? 'postgres',
-            password: process.env.EXCHANGE_DB_PASSWORD ?? 'postgres',
-            database: process.env.EXCHANGE_DB_DATABASE ?? 'origin-exchange',
+            host: process.env.DB_HOST ?? 'localhost',
+            port: Number(process.env.DB_PORT) ?? 5432,
+            username: process.env.DB_USERNAME ?? 'postgres',
+            password: process.env.DB_PASSWORD ?? 'postgres',
+            database: process.env.DB_DATABASE ?? 'origin',
             entities: [Demand, Order, Trade, Asset, Transfer, Account],
             synchronize: true,
             logging: ['info']
