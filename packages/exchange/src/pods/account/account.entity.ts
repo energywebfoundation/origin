@@ -1,7 +1,8 @@
-import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { ExtendedBaseEntity } from '@energyweb/origin-backend';
 
 @Entity()
-export class Account extends BaseEntity {
+export class Account extends ExtendedBaseEntity {
     @PrimaryGeneratedColumn('uuid')
     id: string;
 

@@ -1,6 +1,5 @@
 import { Product } from '@energyweb/exchange-core';
 import {
-    BaseEntity,
     Column,
     Entity,
     JoinTable,
@@ -10,9 +9,10 @@ import {
 } from 'typeorm';
 
 import { Order } from '../order/order.entity';
+import { ExtendedBaseEntity } from '@energyweb/origin-backend';
 
 @Entity()
-export class Supply extends BaseEntity {
+export class Supply extends ExtendedBaseEntity {
     @PrimaryGeneratedColumn('uuid')
     id: string;
 

@@ -60,7 +60,7 @@
         "test:device-registry": "lerna run --scope @energyweb/device-registry --stream test:concurrent",
         "test:event-listener": "lerna run test:concurrent --scope @energyweb/event-listener --stream",
         "test:utils-general": "lerna run test --scope @energyweb/utils-general --stream",
-        "test:ci:contracts": "lerna run --scope @energyweb/device-registry --scope @energyweb/issuer --scope @energyweb/utils-general --scope @energyweb/utils-general test:concurrent --since master --parallel --stream",
+        "test:ci:contracts": "lerna run --scope @energyweb/issuer --scope @energyweb/utils-general test:concurrent --since master --parallel --stream",
         "test:ci:contracts:deployment": "yarn test:migrations",
         "test:ci:apps": "lerna run --scope @energyweb/exchange --scope @energyweb/origin-backend --scope @energyweb/migrations test:concurrent --since master --parallel --stream",
         "test:ci:ui": "yarn test:ui",
