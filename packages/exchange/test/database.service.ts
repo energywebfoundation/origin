@@ -21,4 +21,8 @@ export class DatabaseService {
             throw new Error(`ERROR: Cleaning test db: ${error}`);
         }
     }
+
+    public async truncate(table: string) {
+        return this.connection.query(`TRUNCATE "${table}" CASCADE;`);
+    }
 }

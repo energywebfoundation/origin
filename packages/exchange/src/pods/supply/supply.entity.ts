@@ -1,12 +1,5 @@
 import { Product } from '@energyweb/exchange-core';
-import {
-    Column,
-    Entity,
-    JoinTable,
-    ManyToMany,
-    PrimaryGeneratedColumn,
-    UpdateDateColumn
-} from 'typeorm';
+import { Column, Entity, JoinTable, ManyToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { ExtendedBaseEntity } from '@energyweb/origin-backend';
 
 import { Order } from '../order/order.entity';
@@ -22,8 +15,7 @@ export class Supply extends ExtendedBaseEntity {
     @Column()
     price: number;
 
-    @Column()
-    @UpdateDateColumn({ type: 'timestamptz' })
+    @Column({ type: 'timestamptz' })
     start: Date;
 
     @Column()

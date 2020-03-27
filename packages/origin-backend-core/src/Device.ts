@@ -29,22 +29,25 @@ export interface ISmartMeterReadingsAdapter {
     save(device: IDeviceWithRelationsIds, smRead: ISmartMeterRead): Promise<void>;
 }
 
-export interface IDeviceProperties {
+export interface IDeviceProductInfo {
+    deviceType: string;
+    region: string;
+    province: string;
+    country: string;
+    operationalSince: number;
+}
+
+export interface IDeviceProperties extends IDeviceProductInfo {
     id: number;
     status: DeviceStatus;
     facilityName: string;
     description: string;
     images: string;
     address: string;
-    region: string;
-    province: string;
-    country: string;
-    operationalSince: number;
     capacityInW: number;
     gpsLatitude: string;
     gpsLongitude: string;
     timezone: string;
-    deviceType: string;
     complianceRegistry: string;
     otherGreenAttributes: string;
     typeOfPublicSupport: string;

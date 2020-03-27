@@ -1,4 +1,5 @@
 import { DeviceVintage } from './DeviceVintage';
+import { TimeRange } from './TimeRange';
 
 export class Product {
     public deviceType?: string[];
@@ -6,4 +7,6 @@ export class Product {
     public location?: string[];
 
     public deviceVintage?: DeviceVintage;
+
+    public generationTime?: TimeRange;
 }

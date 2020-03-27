@@ -21,7 +21,13 @@ describe('account ask order send', () => {
     let accountService: AccountService;
 
     const user1Id = '1';
-    const dummyAsset = { address: '0x9876', tokenId: '0', deviceId: '0' };
+    const dummyAsset = {
+        address: '0x9876',
+        tokenId: '0',
+        deviceId: '0',
+        generationFrom: new Date('2020-01-01').toISOString(),
+        generationTo: new Date('2020-01-31').toISOString()
+    };
 
     const transactionHash = `0x${((Math.random() * 0xffffff) << 0).toString(16)}`;
     const withdrawalAddress = ethers.Wallet.createRandom().address;
@@ -55,9 +61,11 @@ describe('account ask order send', () => {
     const amount = '1000';
 
     beforeEach(async () => {
-        const { address } = await accountService.getOrCreateAccount(user1Id);
-        user1Address = address;
-        deposit = await createDeposit(address);
+        await databaseService.truncate('order');
+        await databaseService.truncate('transfer');
+
+        ({ address: user1Address } = await accountService.getOrCreateAccount(user1Id));
+        deposit = await createDeposit(user1Address);
     });
 
     it('should not be able to create ask order on unconfirmed deposit', async () => {
@@ -117,6 +125,8 @@ describe('account ask order send', () => {
             price: 100,
             validFrom: new Date().toISOString()
         };
+
+        await confirmDeposit();
 
         await request(app.getHttpServer())
             .post('/orders/ask')

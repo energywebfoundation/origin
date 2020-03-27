@@ -1,5 +1,6 @@
 import { Contracts } from '@energyweb/issuer';
 import { ConfigurationService, DeviceService } from '@energyweb/origin-backend';
+import { ExternalDeviceId, IDeviceProductInfo } from '@energyweb/origin-backend-core';
 import { CanActivate, ExecutionContext, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { AuthGuard } from '@nestjs/passport';
@@ -19,16 +20,28 @@ const web3 = 'http://localhost:8580';
 // ganache account 2
 const registryDeployer = '0xc4b87d68ea2b91f9d3de3fcb77c299ad962f006ffb8711900cb93d94afec3dc3';
 
-const deployRegistry = async () => {
-    const { abi, bytecode } = Contracts.RegistryJSON;
-
+const deployContract = async ({ abi, bytecode }: { abi: any; bytecode: string }) => {
     const provider = new ethers.providers.JsonRpcProvider(web3);
     const wallet = new ethers.Wallet(registryDeployer, provider);
 
     const factory = new ethers.ContractFactory(abi, bytecode, wallet);
     const contract = await factory.deploy();
-    await contract.deployed();
+
+    return contract.deployed();
+};
+
+const deployRegistry = async () => {
+    const contract = await deployContract(Contracts.RegistryJSON);
     await contract.functions.initialize();
+
+    return contract;
+};
+
+const deployIssuer = async (registry: string) => {
+    const contract = await deployContract(Contracts.IssuerJSON);
+    const wallet = new ethers.Wallet(registryDeployer);
+
+    await contract.functions.initialize(100, registry, wallet.address);
 
     return contract;
 };
@@ -62,6 +75,7 @@ const deviceTypes = [
 
 export const bootstrapTestInstance = async () => {
     const registry = await deployRegistry();
+    const issuer = await deployIssuer(registry.address);
 
     const configService = new ConfigService({
         WEB3: web3,
@@ -71,7 +85,9 @@ export const bootstrapTestInstance = async () => {
         // ganache account 1
         EXCHANGE_WALLET_PUB: '0xd46aC0Bc23dB5e8AfDAAB9Ad35E9A3bA05E092E8',
         EXCHANGE_WALLET_PRIV: '0xd9bc30dc17023fbb68fe3002e0ff9107b241544fd6d60863081c55e383f1b5a3',
-        REGISTRY_ADDRESS: registry.address
+        REGISTRY_ADDRESS: registry.address,
+        ISSUER_ADDRESS: issuer.address,
+        ISSUER_ID: 'Issuer ID'
     });
 
     const moduleFixture = await Test.createTestingModule({
@@ -86,7 +102,20 @@ export const bootstrapTestInstance = async () => {
                     })
                 }
             },
-            { provide: DeviceService, useValue: {} as DeviceService }
+            {
+                provide: DeviceService,
+                useValue: ({
+                    findDeviceProductInfo: async (): Promise<IDeviceProductInfo> => {
+                        return {
+                            deviceType: 'Solar;Photovoltaic;Classic silicon',
+                            country: 'Thailand',
+                            region: 'Central',
+                            province: 'Nakhon Pathom',
+                            operationalSince: 2016
+                        };
+                    }
+                } as unknown) as DeviceService
+            }
         ]
     })
         .overrideProvider(ConfigService)
@@ -115,6 +144,7 @@ export const bootstrapTestInstance = async () => {
         orderService,
         productService,
         registry,
+        issuer,
         app
     };
 };

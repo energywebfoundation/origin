@@ -1,5 +1,5 @@
 import BN from 'bn.js';
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { ExtendedBaseEntity } from '@energyweb/origin-backend';
 
 import { BNTransformer } from '../../utils/valueTransformers';
@@ -17,8 +17,7 @@ export class Demand extends ExtendedBaseEntity {
     @Column()
     price: number;
 
-    @Column()
-    @UpdateDateColumn({ type: 'timestamptz' })
+    @Column({ type: 'timestamptz' })
     start: Date;
 
     @Column('bigint', { transformer: BNTransformer })

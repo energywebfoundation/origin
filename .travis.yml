@@ -25,7 +25,6 @@ cache:
     #     - packages/device-registry/schemas
     #     - packages/device-registry/build
     #     - packages/device-registry/dist
-    #     - packages/event-listener/dist
     #     - packages/exchange/dist
     #     - packages/exchange-core/dist
     #     - packages/exchange-token-account/dist

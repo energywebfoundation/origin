@@ -15,32 +15,32 @@
 </p>
 
 ## Table of Contents
-- [Packages](#packages)
-- [Installation](#installation)
-- [Energy Attribute Certificates](#energy-attribute-certificates)
-- [Key modules and components](#key-modules-and-components)
-- [Deployment](#deployment)
-- [Contribution guidelines](#contribution-guidelines)
+
+-   [Packages](#packages)
+-   [Installation](#installation)
+-   [Energy Attribute Certificates](#energy-attribute-certificates)
+-   [Key modules and components](#key-modules-and-components)
+-   [Deployment](#deployment)
+-   [Contribution guidelines](#contribution-guidelines)
 
 ## Packages
 
 ### SDK Releases
 
-| Package | Stable | Canary | Description |
-| --- | --- | --- | --- |
-| [`@energyweb/device-registry`](/packages/device-registry) | [![npm](https://img.shields.io/npm/v/@energyweb/device-registry.svg)](https://www.npmjs.com/package/@energyweb/device-registry) | [![npm](https://img.shields.io/npm/v/@energyweb/device-registry/canary)](https://www.npmjs.com/package/@energyweb/device-registry) | Contracts and client for the Device Registry |
-| [`@energyweb/origin-backend-client`](/packages/origin-backend-client) | [![npm](https://img.shields.io/npm/v/@energyweb/origin-backend-client.svg)](https://www.npmjs.com/package/@energyweb/origin-backend-client) | [![npm](https://img.shields.io/npm/v/@energyweb/origin-backend-client/canary)](https://www.npmjs.com/package/@energyweb/origin-backend-client) | Client library for off-chain data source |
-| [`@energyweb/origin-backend`](/packages/origin-backend) | [![npm](https://img.shields.io/npm/v/@energyweb/origin-backend.svg)](https://www.npmjs.com/package/@energyweb/origin-backend) | [![npm](https://img.shields.io/npm/v/@energyweb/origin-backend/canary)](https://www.npmjs.com/package/@energyweb/origin-backend) | Example backend for storing off-chain meta-data |
-| [`@energyweb/utils-general`](/packages/utils-general) | [![npm](https://img.shields.io/npm/v/@energyweb/utils-general.svg)](https://www.npmjs.com/package/@energyweb/utils-general) | [![npm](https://img.shields.io/npm/v/@energyweb/utils-general/canary)](https://www.npmjs.com/package/@energyweb/utils-general) | Utilities |
+| Package                                                               | Stable                                                                                                                                      | Canary                                                                                                                                         | Description                                     |
+| --------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------- |
+| [`@energyweb/device-registry`](/packages/device-registry)             | [![npm](https://img.shields.io/npm/v/@energyweb/device-registry.svg)](https://www.npmjs.com/package/@energyweb/device-registry)             | [![npm](https://img.shields.io/npm/v/@energyweb/device-registry/canary)](https://www.npmjs.com/package/@energyweb/device-registry)             | Contracts and client for the Device Registry    |
+| [`@energyweb/origin-backend-client`](/packages/origin-backend-client) | [![npm](https://img.shields.io/npm/v/@energyweb/origin-backend-client.svg)](https://www.npmjs.com/package/@energyweb/origin-backend-client) | [![npm](https://img.shields.io/npm/v/@energyweb/origin-backend-client/canary)](https://www.npmjs.com/package/@energyweb/origin-backend-client) | Client library for off-chain data source        |
+| [`@energyweb/origin-backend`](/packages/origin-backend)               | [![npm](https://img.shields.io/npm/v/@energyweb/origin-backend.svg)](https://www.npmjs.com/package/@energyweb/origin-backend)               | [![npm](https://img.shields.io/npm/v/@energyweb/origin-backend/canary)](https://www.npmjs.com/package/@energyweb/origin-backend)               | Example backend for storing off-chain meta-data |
+| [`@energyweb/utils-general`](/packages/utils-general)                 | [![npm](https://img.shields.io/npm/v/@energyweb/utils-general.svg)](https://www.npmjs.com/package/@energyweb/utils-general)                 | [![npm](https://img.shields.io/npm/v/@energyweb/utils-general/canary)](https://www.npmjs.com/package/@energyweb/utils-general)                 | Utilities                                       |
 
 ### Applications, Infrastructure and Demo
 
-| Package | Description |
-| --- | --- |
-| [`@energyweb/origin-ui`](/packages/origin-ui) | UI for Origin |
+| Package                                                   | Description                                |
+| --------------------------------------------------------- | ------------------------------------------ |
+| [`@energyweb/origin-ui`](/packages/origin-ui)             | UI for Origin                              |
 | [`@energyweb/solar-simulator`](/packages/solar-simulator) | Solar production and consumption simulator |
-| [`@energyweb/event-listener`](/packages/event-listener) | Listens to Origin events, triggers actions on-chain and sends notifications |
-| [`@energyweb/migrations`](/packages/migrations) | Deployment and configuration utilities |
+| [`@energyweb/migrations`](/packages/migrations)           | Deployment and configuration utilities     |
 
 ### Packages types
 
@@ -101,11 +101,13 @@ yarn run:origin
 Visit the UI at: http://localhost:3000.
 
 ## Energy Attribute Certificates
+
 Energy Attribute Certificates, or EACs, is an official document which guarantees that produced energy comes from a renewable source. There are different standards that regulate how data is stored and validated. In Europe, this document is called Guarantee of Origin (GO), in North America, it's called Renewable Energy Certificate (REC), and in parts of Asia, Africa, the Middle East, and Latin America governing standard is International REC (I-REC). Standards do vary, but they all share the same core principles.
 
 The main purpose of EACs is to act as an accounting vehicle to prove that consumed energy came from a renewable source. EACs are mostly used to address sustainability reports regarding [Scope 2 emissions](https://en.wikipedia.org/wiki/Carbon_emissions_reporting#Scope_2:_Electricity_indirect_GHG_emissions).
 
 ## Key modules and components
+
 Overview of architecture
 
 ### Key repositories

@@ -27,7 +27,7 @@ export class OrderController {
             const order = await this.orderService.createBid(user.id.toString(), newOrder);
             return OrderDTO.fromOrder(order);
         } catch (error) {
-            this.logger.error(error);
+            this.logger.error(error.message);
 
             throw new ForbiddenException();
         }
@@ -45,7 +45,7 @@ export class OrderController {
             const order = await this.orderService.createAsk(user.id.toString(), newOrder);
             return OrderDTO.fromOrder(order);
         } catch (error) {
-            this.logger.error(error);
+            this.logger.error(error.message);
 
             throw new ForbiddenException();
         }
@@ -63,7 +63,7 @@ export class OrderController {
             const order = await this.orderService.createDirectBuy(user.id.toString(), directBuy);
             return OrderDTO.fromOrder(order);
         } catch (error) {
-            this.logger.error(error);
+            this.logger.error(error.message);
 
             throw new ForbiddenException();
         }
