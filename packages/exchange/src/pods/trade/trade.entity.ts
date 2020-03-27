@@ -1,9 +1,9 @@
 import BN from 'bn.js';
 import { Column, Entity, JoinTable, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { ExtendedBaseEntity } from '@energyweb/origin-backend';
 
 import { BNTransformer } from '../../utils/valueTransformers';
 import { Order } from '../order/order.entity';
-import { ExtendedBaseEntity } from '@energyweb/origin-backend';
 
 @Entity()
 export class Trade extends ExtendedBaseEntity {

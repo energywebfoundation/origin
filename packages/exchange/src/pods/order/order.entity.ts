@@ -10,6 +10,7 @@ import {
     OneToMany,
     RelationId
 } from 'typeorm';
+import { ExtendedBaseEntity } from '@energyweb/origin-backend';
 
 import { BNTransformer } from '../../utils/valueTransformers';
 import { Asset } from '../asset/asset.entity';
@@ -17,7 +18,6 @@ import { Demand } from '../demand/demand.entity';
 import { ProductDTO } from './product.dto';
 import { Trade } from '../trade/trade.entity';
 import { OrderType } from './order-type.enum';
-import { ExtendedBaseEntity } from '@energyweb/origin-backend';
 
 @Entity()
 export class Order extends ExtendedBaseEntity {

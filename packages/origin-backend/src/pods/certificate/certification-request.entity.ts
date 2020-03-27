@@ -4,7 +4,8 @@ import { IsInt, Min } from 'class-validator';
 import { ExtendedBaseEntity } from '../ExtendedBaseEntity';
 
 @Entity()
-export class CertificationRequest extends ExtendedBaseEntity implements CertificationRequestOffChainData {
+export class CertificationRequest extends ExtendedBaseEntity
+    implements CertificationRequestOffChainData {
     @PrimaryGeneratedColumn()
     id: number;
 

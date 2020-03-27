@@ -1,8 +1,8 @@
 import { Column, Entity, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
+import { ExtendedBaseEntity } from '@energyweb/origin-backend';
 import { Asset } from '../asset/asset.entity';
 import { TransferDirection } from './transfer-direction';
 import { TransferStatus } from './transfer-status';
-import { ExtendedBaseEntity } from '@energyweb/origin-backend';
 
 @Entity()
 export class Transfer extends ExtendedBaseEntity {

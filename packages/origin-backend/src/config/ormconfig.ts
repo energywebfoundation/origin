@@ -1,3 +1,4 @@
+import path from 'path';
 import { ConnectionOptions } from 'typeorm';
 
 const ormConfig: ConnectionOptions = {
@@ -11,7 +12,7 @@ const ormConfig: ConnectionOptions = {
     logging: ['info'],
     migrationsRun: true,
     logger: 'file',
-    migrations: [__dirname + '/migrations/**/*{.ts,.js}'],
+    migrations: [path.join(__dirname, '/migrations/**/*{.ts,.js}')],
     cli: {
         migrationsDir: 'src/migrations'
     }

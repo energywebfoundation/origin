@@ -8,7 +8,8 @@ import { Certificate } from './certificate.entity';
 import { ExtendedBaseEntity } from '../ExtendedBaseEntity';
 
 @Entity()
-export class OwnershipCommitment extends ExtendedBaseEntity implements OwnershipCommitmentProofWithTx {
+export class OwnershipCommitment extends ExtendedBaseEntity
+    implements OwnershipCommitmentProofWithTx {
     @PrimaryColumn()
     rootHash: string;
 

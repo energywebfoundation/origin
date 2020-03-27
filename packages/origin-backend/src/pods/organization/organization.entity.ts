@@ -1,11 +1,4 @@
-import {
-    Entity,
-    Column,
-    PrimaryGeneratedColumn,
-    OneToMany,
-    OneToOne,
-    JoinColumn
-} from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, OneToMany, OneToOne, JoinColumn } from 'typeorm';
 import { IsInt, IsEmail, Min, ValidateIf, IsNotEmpty, IsUrl } from 'class-validator';
 import { OrganizationStatus, IOrganization } from '@energyweb/origin-backend-core';
 import { User } from '../user/user.entity';

@@ -1,16 +1,10 @@
 import BN from 'bn.js';
-import {
-    Column,
-    Entity,
-    OneToMany,
-    PrimaryGeneratedColumn,
-    UpdateDateColumn
-} from 'typeorm';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { ExtendedBaseEntity } from '@energyweb/origin-backend';
 
 import { BNTransformer } from '../../utils/valueTransformers';
 import { Order } from '../order/order.entity';
 import { ProductDTO } from '../order/product.dto';
-import { ExtendedBaseEntity } from '@energyweb/origin-backend';
 
 @Entity()
 export class Demand extends ExtendedBaseEntity {

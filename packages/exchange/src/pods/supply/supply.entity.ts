@@ -7,9 +7,9 @@ import {
     PrimaryGeneratedColumn,
     UpdateDateColumn
 } from 'typeorm';
+import { ExtendedBaseEntity } from '@energyweb/origin-backend';
 
 import { Order } from '../order/order.entity';
-import { ExtendedBaseEntity } from '@energyweb/origin-backend';
 
 @Entity()
 export class Supply extends ExtendedBaseEntity {
