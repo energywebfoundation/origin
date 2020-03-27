@@ -61,9 +61,11 @@ describe('account ask order send', () => {
     const amount = '1000';
 
     beforeEach(async () => {
-        const { address } = await accountService.getOrCreateAccount(user1Id);
-        user1Address = address;
-        deposit = await createDeposit(address);
+        await databaseService.truncate('order');
+        await databaseService.truncate('transfer');
+
+        ({ address: user1Address } = await accountService.getOrCreateAccount(user1Id));
+        deposit = await createDeposit(user1Address);
     });
 
     it('should not be able to create ask order on unconfirmed deposit', async () => {
@@ -123,6 +125,8 @@ describe('account ask order send', () => {
             price: 100,
             validFrom: new Date().toISOString()
         };
+
+        await confirmDeposit();
 
         await request(app.getHttpServer())
             .post('/orders/ask')

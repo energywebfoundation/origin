@@ -1,5 +1,5 @@
 import { OrderSide } from '@energyweb/exchange-core';
-import { Injectable, forwardRef, Inject } from '@nestjs/common';
+import { Injectable, forwardRef, Inject, Logger } from '@nestjs/common';
 import BN from 'bn.js';
 import { Map } from 'immutable';
 
@@ -13,6 +13,8 @@ import { Asset } from '../asset/asset.entity';
 
 @Injectable()
 export class AccountBalanceService {
+    private readonly logger = new Logger(AccountBalanceService.name);
+
     constructor(
         private readonly tradeService: TradeService,
         private readonly transferService: TransferService,
@@ -39,8 +41,14 @@ export class AccountBalanceService {
     }
 
     public async hasEnoughAssetAmount(userId: string, assetId: string, assetAmount: string) {
+        this.logger.debug(
+            `Checking available amount for user ${userId} asset ${assetId} amount ${assetAmount}`
+        );
+
         const { available } = await this.getAccountBalance(userId);
         const accountAsset = available.find(({ asset }) => asset.id === assetId);
+
+        this.logger.debug(`Available amount is ${accountAsset.amount.toString(10)}`);
 
         return accountAsset && accountAsset.amount.gte(new BN(assetAmount));
     }

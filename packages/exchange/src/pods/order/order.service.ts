@@ -74,7 +74,7 @@ export class OrderService {
             !(await this.accountBalanceService.hasEnoughAssetAmount(
                 userId,
                 ask.assetId,
-                ask.volume.toString()
+                ask.volume
             ))
         ) {
             throw new Error('Not enough assets');
