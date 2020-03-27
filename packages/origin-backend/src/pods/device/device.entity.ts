@@ -1,10 +1,11 @@
-import { Entity, Column, BaseEntity, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
 import { IsInt, Min, IsLatitude, IsLongitude, IsNotEmpty } from 'class-validator';
 import { ISmartMeterRead, ExternalDeviceId, IDevice } from '@energyweb/origin-backend-core';
 import { Organization } from '../organization/organization.entity';
+import { ExtendedBaseEntity } from '../ExtendedBaseEntity';
 
 @Entity()
-export class Device extends BaseEntity implements IDevice {
+export class Device extends ExtendedBaseEntity implements IDevice {
     @PrimaryGeneratedColumn()
     id: number;
 

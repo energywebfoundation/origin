@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, FindOneOptions, BaseEntity } from 'typeorm';
+import { Repository, FindOneOptions } from 'typeorm';
 import {
     IOrganization,
     IOrganizationWithRelationsIds,
@@ -11,6 +11,7 @@ import {
 } from '@energyweb/origin-backend-core';
 import { Organization } from './organization.entity';
 import { UserService } from '../user';
+import { ExtendedBaseEntity } from '../ExtendedBaseEntity';
 
 @Injectable()
 export class OrganizationService {
@@ -23,16 +24,16 @@ export class OrganizationService {
     async findOne(
         id: string | number,
         options: FindOneOptions<Organization> = {}
-    ): Promise<BaseEntity & IOrganizationWithRelationsIds> {
+    ): Promise<ExtendedBaseEntity & IOrganizationWithRelationsIds> {
         const entity = ((await this.repository.findOne(id, {
             loadRelationIds: true,
             ...options
-        })) as IOrganization) as BaseEntity & IOrganizationWithRelationsIds;
+        })) as IOrganization) as ExtendedBaseEntity & IOrganizationWithRelationsIds;
 
         return entity;
     }
 
-    async remove(entity: Organization | (BaseEntity & IOrganizationWithRelationsIds)) {
+    async remove(entity: Organization | (ExtendedBaseEntity & IOrganizationWithRelationsIds)) {
         return this.repository.remove((entity as IOrganization) as Organization);
     }
 
@@ -52,7 +53,7 @@ export class OrganizationService {
     async update(
         id: number | string,
         data: OrganizationUpdateData
-    ): Promise<BaseEntity & IOrganizationWithRelationsIds> {
+    ): Promise<ExtendedBaseEntity & IOrganizationWithRelationsIds> {
         const entity = await this.findOne(id);
 
         if (!entity) {

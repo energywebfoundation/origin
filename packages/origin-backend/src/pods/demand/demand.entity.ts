@@ -1,13 +1,14 @@
-import { Entity, Column, BaseEntity, PrimaryGeneratedColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 import { IsInt, Min, IsBoolean, IsOptional } from 'class-validator';
 import {
     DemandStatus,
     IDemandProperties,
     DemandPartiallyFilled
 } from '@energyweb/origin-backend-core';
+import { ExtendedBaseEntity } from '../ExtendedBaseEntity';
 
 @Entity()
-export class Demand extends BaseEntity implements IDemandProperties {
+export class Demand extends ExtendedBaseEntity implements IDemandProperties {
     @PrimaryGeneratedColumn()
     id: number;
 

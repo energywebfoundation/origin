@@ -1,9 +1,10 @@
-import { Entity, Column, BaseEntity, PrimaryGeneratedColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 import { CertificationRequestOffChainData } from '@energyweb/origin-backend-core';
 import { IsInt, Min } from 'class-validator';
+import { ExtendedBaseEntity } from '../ExtendedBaseEntity';
 
 @Entity()
-export class CertificationRequest extends BaseEntity implements CertificationRequestOffChainData {
+export class CertificationRequest extends ExtendedBaseEntity implements CertificationRequestOffChainData {
     @PrimaryGeneratedColumn()
     id: number;
 

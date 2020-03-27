@@ -1,7 +1,6 @@
 import {
     Entity,
     Column,
-    BaseEntity,
     PrimaryGeneratedColumn,
     OneToMany,
     OneToOne,
@@ -12,9 +11,10 @@ import { OrganizationStatus, IOrganization } from '@energyweb/origin-backend-cor
 import { User } from '../user/user.entity';
 import { OrganizationInvitation } from './organizationInvitation.entity';
 import { Device } from '../device/device.entity';
+import { ExtendedBaseEntity } from '../ExtendedBaseEntity';
 
 @Entity()
-export class Organization extends BaseEntity implements IOrganization {
+export class Organization extends ExtendedBaseEntity implements IOrganization {
     @PrimaryGeneratedColumn()
     id: number;
 
