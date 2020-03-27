@@ -11,7 +11,9 @@ import {
     ISmartMeterRead,
     IDeviceWithRelationsIds,
     IDevice,
-    DeviceCreateData
+    DeviceCreateData,
+    ExternalDeviceId,
+    IDeviceProductInfo
 } from '@energyweb/origin-backend-core';
 import { validate } from 'class-validator';
 import { Device } from './device.entity';
@@ -125,5 +127,15 @@ export class DeviceService {
         }
 
         return devices;
+    }
+
+    async findDeviceProductInfo(externalId: ExternalDeviceId): Promise<IDeviceProductInfo> {
+        const devices = await this.repository.find();
+
+        return devices.find(device =>
+            device.externalDeviceIds.find(
+                id => id.id === externalId.id && id.type === externalId.type
+            )
+        );
     }
 }
