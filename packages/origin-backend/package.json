@@ -19,6 +19,10 @@
     "test:e2e": "rm -rf db.sqlite && TS_NODE_PROJECT=tsconfig.build.json TS_NODE_FILES=true mocha -r ts-node/register src/test/e2e/*.test.ts --timeout 60000 --exit",
     "test": "yarn test:e2e",
     "test:concurrent": "yarn test",
+    "typeorm": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js --config src/config/ormconfig.ts",
+    "migrate": "yarn typeorm migration:generate -- -n",
+    "migrate:revert": "yarn typeorm migration:revert",
+    "typeorm:run": "yarn typeorm migration:run",
     "clean": "shx rm -rf dist db.sqlite uploads"
   },
   "bin": {
@@ -47,6 +51,7 @@
     "@nestjs/platform-ws": "6.11.11",
     "@nestjs/typeorm": "^6.2.0",
     "@nestjs/websockets": "6.11.11",
+    "@types/node": "^12.12.31",
     "bcryptjs": "2.4.3",
     "body-parser": "1.19.0",
     "class-transformer": "0.2.3",
