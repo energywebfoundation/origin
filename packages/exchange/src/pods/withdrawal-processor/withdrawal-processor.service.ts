@@ -1,37 +1,40 @@
-import { Injectable, Logger, Inject, forwardRef } from '@nestjs/common';
+import { Contracts } from '@energyweb/issuer';
+import { ConfigurationService } from '@energyweb/origin-backend';
+import { forwardRef, Inject, Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { ethers, Wallet, Contract, ContractTransaction } from 'ethers';
+import { ModuleRef } from '@nestjs/core';
+import { Contract, ContractTransaction, ethers, Wallet } from 'ethers';
 import { Subject } from 'rxjs';
 import { concatMap, tap } from 'rxjs/operators';
-import { Contracts } from '@energyweb/issuer';
 
+import { AccountBalanceService } from '../account-balance/account-balance.service';
 import { TransferDirection } from '../transfer/transfer-direction';
+import { TransferStatus } from '../transfer/transfer-status';
 import { Transfer } from '../transfer/transfer.entity';
 import { TransferService } from '../transfer/transfer.service';
-import { TransferStatus } from '../transfer/transfer-status';
-import { AccountBalanceService } from '../account-balance/account-balance.service';
 
 @Injectable()
-export class WithdrawalProcessorService {
+export class WithdrawalProcessorService implements OnModuleInit {
     private readonly logger = new Logger(WithdrawalProcessorService.name);
 
-    private readonly wallet: ethers.Wallet;
+    private wallet: ethers.Wallet;
 
     private readonly withdrawalQueue = new Subject<string>();
 
-    private readonly registryAddress: string;
+    private registry: ethers.Contract;
 
-    private readonly registry: ethers.Contract;
-
-    private readonly tokenInterface: ethers.utils.Interface;
+    private tokenInterface: ethers.utils.Interface;
 
     public constructor(
         private readonly configService: ConfigService,
         @Inject(forwardRef(() => TransferService))
         private readonly transferService: TransferService,
         @Inject(forwardRef(() => AccountBalanceService))
-        private readonly accountBalanceService: AccountBalanceService
-    ) {
+        private readonly accountBalanceService: AccountBalanceService,
+        private readonly moduleRef: ModuleRef
+    ) {}
+
+    public async onModuleInit() {
         const wallet = this.configService.get<string>('EXCHANGE_WALLET_PRIV');
         if (!wallet) {
             this.logger.error('Wallet private key not provided');
@@ -39,19 +42,24 @@ export class WithdrawalProcessorService {
         }
         const web3ProviderUrl = this.configService.get<string>('WEB3');
         const provider = new ethers.providers.JsonRpcProvider(web3ProviderUrl);
+
         this.wallet = new Wallet(wallet, provider);
 
-        this.registryAddress = this.configService.get<string>('REGISTRY_ADDRESS');
+        const originBackendConfigurationService = this.moduleRef.get(ConfigurationService, {
+            strict: false
+        });
+
+        const {
+            contractsLookup: { registry }
+        } = await originBackendConfigurationService.get();
 
         const { abi } = Contracts.RegistryJSON;
 
-        this.registry = new Contract(this.registryAddress, abi, this.wallet);
+        this.registry = new Contract(registry, abi, this.wallet);
         this.tokenInterface = new ethers.utils.Interface(abi);
-    }
 
-    public async init() {
         this.logger.log(
-            `Initializing withdrawal processor for ${this.registryAddress} using ${this.wallet.address}`
+            `Initializing withdrawal processor for ${this.registry.address} using ${this.wallet.address}`
         );
 
         const balance = await this.wallet.getBalance();

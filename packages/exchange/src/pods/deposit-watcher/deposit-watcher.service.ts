@@ -1,6 +1,8 @@
 import { Contracts } from '@energyweb/issuer';
-import { Injectable, Logger } from '@nestjs/common';
+import { ConfigurationService } from '@energyweb/origin-backend';
+import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { ModuleRef } from '@nestjs/core';
 import { ethers } from 'ethers';
 import { Log } from 'ethers/providers';
 import moment from 'moment';
@@ -8,29 +10,42 @@ import moment from 'moment';
 import { TransferService } from '../transfer/transfer.service';
 
 @Injectable()
-export class DepositWatcherService {
+export class DepositWatcherService implements OnModuleInit {
     private readonly logger = new Logger(DepositWatcherService.name);
 
-    private readonly tokenInterface: ethers.utils.Interface;
+    private tokenInterface: ethers.utils.Interface;
 
-    private readonly walletAddress: string;
+    private walletAddress: string;
 
-    private readonly registryAddress: string;
+    private registryAddress: string;
 
-    private readonly provider: ethers.providers.JsonRpcProvider;
+    private provider: ethers.providers.JsonRpcProvider;
 
-    private readonly issuer: ethers.Contract;
+    private issuer: ethers.Contract;
 
-    private readonly registry: ethers.Contract;
+    private registry: ethers.Contract;
 
     public constructor(
         private readonly configService: ConfigService,
-        private readonly transferService: TransferService
-    ) {
+        private readonly transferService: TransferService,
+        private readonly moduleRef: ModuleRef
+    ) {}
+
+    public async onModuleInit() {
+        this.logger.debug('onModuleInit');
+
+        const originBackendConfigurationService = this.moduleRef.get(ConfigurationService, {
+            strict: false
+        });
+
+        const {
+            contractsLookup: { registry, issuer }
+        } = await originBackendConfigurationService.get();
+
         this.tokenInterface = new ethers.utils.Interface(Contracts.RegistryJSON.abi);
 
         this.walletAddress = this.configService.get<string>('EXCHANGE_WALLET_PUB');
-        this.registryAddress = this.configService.get<string>('REGISTRY_ADDRESS');
+        this.registryAddress = registry;
 
         const web3ProviderUrl = this.configService.get<string>('WEB3');
         this.provider = new ethers.providers.JsonRpcProvider(web3ProviderUrl);
@@ -41,15 +56,7 @@ export class DepositWatcherService {
             this.provider
         );
 
-        this.issuer = new ethers.Contract(
-            this.configService.get<string>('ISSUER_ADDRESS'),
-            Contracts.IssuerJSON.abi,
-            this.provider
-        );
-    }
-
-    public async init() {
-        this.logger.debug(`Initializing watcher for ${this.registryAddress}`);
+        this.issuer = new ethers.Contract(issuer, Contracts.IssuerJSON.abi, this.provider);
 
         const topics = [this.tokenInterface.events.TransferSingle.topic];
         const blockNumber = await this.transferService.getLastConfirmationBlock();
