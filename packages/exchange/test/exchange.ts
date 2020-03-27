@@ -1,5 +1,6 @@
 import { Contracts } from '@energyweb/issuer';
 import { ConfigurationService, DeviceService } from '@energyweb/origin-backend';
+import { ExternalDeviceId, IDeviceProductInfo } from '@energyweb/origin-backend-core';
 import { CanActivate, ExecutionContext, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { AuthGuard } from '@nestjs/passport';
@@ -85,7 +86,8 @@ export const bootstrapTestInstance = async () => {
         EXCHANGE_WALLET_PUB: '0xd46aC0Bc23dB5e8AfDAAB9Ad35E9A3bA05E092E8',
         EXCHANGE_WALLET_PRIV: '0xd9bc30dc17023fbb68fe3002e0ff9107b241544fd6d60863081c55e383f1b5a3',
         REGISTRY_ADDRESS: registry.address,
-        ISSUER_ADDRESS: issuer.address
+        ISSUER_ADDRESS: issuer.address,
+        ISSUER_ID: 'Issuer ID'
     });
 
     const moduleFixture = await Test.createTestingModule({
@@ -100,7 +102,20 @@ export const bootstrapTestInstance = async () => {
                     })
                 }
             },
-            { provide: DeviceService, useValue: {} as DeviceService }
+            {
+                provide: DeviceService,
+                useValue: ({
+                    findDeviceProductInfo: async (): Promise<IDeviceProductInfo> => {
+                        return {
+                            deviceType: 'Solar;Photovoltaic;Classic silicon',
+                            country: 'Thailand',
+                            region: 'Central',
+                            province: 'Nakhon Pathom',
+                            operationalSince: 2016
+                        };
+                    }
+                } as unknown) as DeviceService
+            }
         ]
     })
         .overrideProvider(ConfigService)
