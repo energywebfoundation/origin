@@ -64,9 +64,9 @@ export class AccountService {
 
         const balances = await this.accountBalanceService.getAccountBalance(userId);
 
-        return {
+        return new Account({
             address,
             balances
-        };
+        });
     }
 }

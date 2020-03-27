@@ -34,10 +34,10 @@ export class AccountBalanceService {
 
         const aggregated = deposits.mergeWith(sum, trades).mergeWith(sum, sellOrders);
 
-        return {
+        return new AccountBalance({
             available: Array.from(aggregated.values()),
             locked: Array.from(sellOrders.values())
-        };
+        });
     }
 
     public async hasEnoughAssetAmount(userId: string, assetId: string, assetAmount: string) {
@@ -103,7 +103,7 @@ export class AccountBalanceService {
 
             const amount = accountAsset.amount.add(currentAmount);
 
-            return res.set(id, { ...accountAsset, amount });
+            return res.set(id, new AccountAsset({ ...accountAsset, amount }));
         }, Map<string, AccountAsset>());
     }
 }
