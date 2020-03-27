@@ -33,8 +33,8 @@ INSERT INTO public.account (id, "userId", address) VALUES ('d24531e8-a14e-48fb-9
 -- Data for Name: asset; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-INSERT INTO public.asset (id, address, "tokenId", "deviceId") VALUES ('e7ce7521-aea0-49a0-bed3-deb7db357cd2', '0x9876', '0', '0');
-INSERT INTO public.asset (id, address, "tokenId", "deviceId") VALUES ('2c0fd5e0-a819-4d6a-bfde-e24343d9d679', '0x9876', '1', '1');
+INSERT INTO public.asset (id, address, "tokenId", "deviceId", "generationFrom", "generationTo") VALUES ('e7ce7521-aea0-49a0-bed3-deb7db357cd2', '0x9876', '0', '0', '2020-01-01T00:00:00.000Z', '2020-01-31T00:00:00.000Z');
+INSERT INTO public.asset (id, address, "tokenId", "deviceId", "generationFrom", "generationTo") VALUES ('2c0fd5e0-a819-4d6a-bfde-e24343d9d679', '0x9876', '1', '1', '2020-01-01T00:00:00.000Z', '2020-01-31T00:00:00.000Z');
 
 
 --
@@ -51,8 +51,6 @@ INSERT INTO public.demand (id, "userId", price, start, "volumePerPeriod", period
 -- Dependencies: 200
 -- Data for Name: order; Type: TABLE DATA; Schema: public; Owner: postgres
 --
-
-{"deviceType":["Solar;Photovoltaic;Classic silicon"],"location":["Thailand;Central;Nakhon Pathom"],"deviceVintage":{"year":2016},"generationFrom":"2020-01-01T00:00:00.000Z","generationTo":"2020-01-31T00:00:00.000Z"}
 
 INSERT INTO public."order" (id, "userId", status, "startVolume", "currentVolume", side, price, "validFrom", product, "assetId", "demandId") VALUES ('c6463d76-bd4e-4015-beef-0834c7fb682a', '2', 3, 500, 250, 1, 1000, '2020-03-04 11:20:05.648397+00', '{"deviceType":["Solar;Photovoltaic;Classic silicon"],"location":["Thailand;Central;Nakhon Pathom"],"deviceVintage":{"year":2016},"generationFrom":"2020-01-01T00:00:00.000Z","generationTo":"2020-01-31T00:00:00.000Z"}', 'e7ce7521-aea0-49a0-bed3-deb7db357cd2', NULL);
 INSERT INTO public."order" (id, "userId", status, "startVolume", "currentVolume", side, price, "validFrom", product, "assetId", "demandId") VALUES ('d91d2450-ec5c-4819-9237-6582b6858ef4', '1', 2, 250, 0, 0, 1000, '2020-03-04 11:20:05.648397+00', '{"deviceType":["Solar;Photovoltaic;Classic silicon"],"location":["Thailand;Central;Nakhon Pathom"],"deviceVintage":{"year":2016}}', NULL, '87406dfd-1757-4ef9-ab28-c89ab8dadf90');
