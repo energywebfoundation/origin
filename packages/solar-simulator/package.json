@@ -30,7 +30,7 @@
     "@energyweb/origin-backend-client": "4.0.0",
     "@energyweb/origin-backend-core": "2.0.0",
     "@energyweb/utils-general": "7.0.2",
-    "@types/moment-timezone": "0.5.12",
+    "@types/moment-timezone": "0.5.13",
     "axios": "0.19.2",
     "bn.js": "5.1.1",
     "body-parser": "1.19.0",
