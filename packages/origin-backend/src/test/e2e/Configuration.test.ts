@@ -4,9 +4,9 @@ import request from 'supertest';
 import { Test } from '@nestjs/testing';
 import { IContractsLookup, IOriginConfiguration } from '@energyweb/origin-backend-core';
 import { INestApplication } from '@nestjs/common';
+import { WsAdapter } from '@nestjs/platform-ws';
 
 import { AppModule } from '../../app.module';
-import { WsAdapter } from '@nestjs/platform-ws';
 
 describe('Configuration API tests', () => {
     let app: INestApplication;
@@ -34,8 +34,6 @@ describe('Configuration API tests', () => {
         app = moduleRef.createNestApplication();
         app.enableCors();
         app.useWebSocketAdapter(new WsAdapter(app));
-
-        app
 
         await app.init();
     });
