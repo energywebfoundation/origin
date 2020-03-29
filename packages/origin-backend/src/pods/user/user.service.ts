@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, FindConditions, BaseEntity } from 'typeorm';
+import { Repository, FindConditions } from 'typeorm';
 import bcrypt from 'bcryptjs';
 import { ConfigService } from '@nestjs/config';
 
@@ -13,8 +13,9 @@ import {
 import { recoverTypedSignatureAddress } from '@energyweb/utils-general';
 
 import { User } from './user.entity';
+import { ExtendedBaseEntity } from '../ExtendedBaseEntity';
 
-export type TUserBaseEntity = BaseEntity & IUserWithRelationsIds;
+export type TUserBaseEntity = ExtendedBaseEntity & IUserWithRelationsIds;
 
 @Injectable()
 export class UserService {

@@ -21,7 +21,6 @@ export interface IEnvironment {
     BACKEND_URL: string;
     BACKEND_PORT: string;
     BLOCKCHAIN_EXPLORER_URL: string;
-    EXCHANGE_PORT: string;
     WEB3: string;
     REGISTRATION_MESSAGE_TO_SIGN: string;
 }

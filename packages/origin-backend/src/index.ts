@@ -6,6 +6,7 @@ import { AppModule } from './app.module';
 import * as PortUtils from './port';
 import { DeviceModule } from './pods/device/device.module';
 import { DeviceService } from './pods/device/device.service';
+import { ExtendedBaseEntity } from './pods/ExtendedBaseEntity';
 
 export * from './pods/configuration';
 
@@ -28,4 +29,4 @@ export async function startAPI(logger?: LoggerService) {
     return app;
 }
 
-export { AppModule, PortUtils, DeviceModule, DeviceService };
+export { AppModule, PortUtils, DeviceModule, DeviceService, ExtendedBaseEntity };

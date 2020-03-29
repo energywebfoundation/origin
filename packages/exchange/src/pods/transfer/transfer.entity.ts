@@ -1,10 +1,11 @@
-import { BaseEntity, Column, Entity, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
+import { Column, Entity, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
+import { ExtendedBaseEntity } from '@energyweb/origin-backend';
 import { Asset } from '../asset/asset.entity';
 import { TransferDirection } from './transfer-direction';
 import { TransferStatus } from './transfer-status';
 
 @Entity()
-export class Transfer extends BaseEntity {
+export class Transfer extends ExtendedBaseEntity {
     @PrimaryGeneratedColumn('uuid')
     id: string;
 

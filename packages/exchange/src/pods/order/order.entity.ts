@@ -1,7 +1,6 @@
 import { OrderSide, OrderStatus } from '@energyweb/exchange-core';
 import BN from 'bn.js';
 import {
-    BaseEntity,
     Column,
     Entity,
     JoinTable,
@@ -10,6 +9,7 @@ import {
     PrimaryGeneratedColumn,
     RelationId
 } from 'typeorm';
+import { ExtendedBaseEntity } from '@energyweb/origin-backend';
 
 import { BNTransformer } from '../../utils/valueTransformers';
 import { Asset } from '../asset/asset.entity';
@@ -19,7 +19,7 @@ import { OrderType } from './order-type.enum';
 import { ProductDTO } from './product.dto';
 
 @Entity()
-export class Order extends BaseEntity {
+export class Order extends ExtendedBaseEntity {
     @PrimaryGeneratedColumn('uuid')
     id: string;
 

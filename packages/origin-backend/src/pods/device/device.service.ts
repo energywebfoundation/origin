@@ -5,7 +5,7 @@ import {
     BadRequestException
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, FindOneOptions, BaseEntity } from 'typeorm';
+import { Repository, FindOneOptions } from 'typeorm';
 import {
     ISmartMeterReadingsAdapter,
     ISmartMeterRead,
@@ -18,6 +18,7 @@ import {
 import { validate } from 'class-validator';
 import { Device } from './device.entity';
 import { SM_READS_ADAPTER } from '../../const';
+import { ExtendedBaseEntity } from '../ExtendedBaseEntity';
 
 @Injectable()
 export class DeviceService {
@@ -30,11 +31,11 @@ export class DeviceService {
     async findOne(
         id: string,
         options: FindOneOptions<Device> = {}
-    ): Promise<BaseEntity & IDeviceWithRelationsIds> {
+    ): Promise<ExtendedBaseEntity & IDeviceWithRelationsIds> {
         const device = ((await this.repository.findOne(id, {
             loadRelationIds: true,
             ...options
-        })) as IDevice) as BaseEntity & IDeviceWithRelationsIds;
+        })) as IDevice) as ExtendedBaseEntity & IDeviceWithRelationsIds;
 
         if (this.smartMeterReadingsAdapter) {
             device.lastSmartMeterReading = await this.smartMeterReadingsAdapter.getLatest(device);
@@ -67,7 +68,7 @@ export class DeviceService {
         }
     }
 
-    async remove(entity: Device | (BaseEntity & IDeviceWithRelationsIds)) {
+    async remove(entity: Device | (ExtendedBaseEntity & IDeviceWithRelationsIds)) {
         this.repository.remove((entity as IDevice) as Device);
     }
 
@@ -110,11 +111,11 @@ export class DeviceService {
 
     async getAll(
         options: FindOneOptions<Device> = {}
-    ): Promise<Array<BaseEntity & IDeviceWithRelationsIds>> {
+    ): Promise<Array<ExtendedBaseEntity & IDeviceWithRelationsIds>> {
         const devices = ((await this.repository.find({
             loadRelationIds: true,
             ...options
-        })) as IDevice[]) as (BaseEntity & IDeviceWithRelationsIds)[];
+        })) as IDevice[]) as (ExtendedBaseEntity & IDeviceWithRelationsIds)[];
 
         if (this.smartMeterReadingsAdapter) {
             for (const device of devices) {

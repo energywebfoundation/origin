@@ -1,12 +1,13 @@
 import BN from 'bn.js';
-import { BaseEntity, Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { ExtendedBaseEntity } from '@energyweb/origin-backend';
 
 import { BNTransformer } from '../../utils/valueTransformers';
 import { Order } from '../order/order.entity';
 import { ProductDTO } from '../order/product.dto';
 
 @Entity()
-export class Demand extends BaseEntity {
+export class Demand extends ExtendedBaseEntity {
     @PrimaryGeneratedColumn('uuid')
     id: string;
 

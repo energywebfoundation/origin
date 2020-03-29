@@ -15,8 +15,6 @@ import { CertificateModule } from './pods/certificate/certificate.module';
 import { CertificationRequest } from './pods/certificate/certification-request.entity';
 import { Configuration } from './pods/configuration/configuration.entity';
 import { ConfigurationModule } from './pods/configuration/configuration.module';
-import { Demand } from './pods/demand/demand.entity';
-import { DemandModule } from './pods/demand/demand.module';
 import { Device } from './pods/device/device.entity';
 import { DeviceModule } from './pods/device/device.module';
 import { FileModule } from './pods/file/file.module';
@@ -48,7 +46,6 @@ export class AppModule {
                             OwnershipCommitment,
                             Configuration,
                             Device,
-                            Demand,
                             Organization,
                             User,
                             OrganizationInvitation,
@@ -63,7 +60,6 @@ export class AppModule {
                 ConfigurationModule,
                 OrganizationModule,
                 DeviceModule.register(smartMeterReadingsAdapter),
-                DemandModule,
                 AuthModule,
                 EventsModule,
                 CertificateModule.register(smartMeterReadingsAdapter)

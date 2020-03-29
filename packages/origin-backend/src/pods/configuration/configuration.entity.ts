@@ -1,4 +1,4 @@
-import { Entity, PrimaryColumn, BaseEntity, Column, Check } from 'typeorm';
+import { Entity, PrimaryColumn, Column, Check } from 'typeorm';
 import {
     ExternalDeviceIdType,
     IContractsLookup,
@@ -6,10 +6,11 @@ import {
     IRegions,
     IDeviceType
 } from '@energyweb/origin-backend-core';
+import { ExtendedBaseEntity } from '../ExtendedBaseEntity';
 
 @Entity()
 @Check(`id = 1`)
-export class Configuration extends BaseEntity implements IOriginConfiguration {
+export class Configuration extends ExtendedBaseEntity implements IOriginConfiguration {
     @PrimaryColumn({ type: 'int', default: () => `1`, nullable: false })
     id: 1;
 
