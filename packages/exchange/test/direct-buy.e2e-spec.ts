@@ -4,7 +4,7 @@ import request from 'supertest';
 import { AccountService } from '../src/pods/account/account.service';
 import { DirectBuyDTO } from '../src/pods/order/direct-buy.dto';
 import { OrderType } from '../src/pods/order/order-type.enum';
-import { OrderDTO } from '../src/pods/order/order.dto';
+import { Order } from '../src/pods/order/order.entity';
 import { OrderService } from '../src/pods/order/order.service';
 import { TradeDTO } from '../src/pods/trade/trade.dto';
 import { TransferService } from '../src/pods/transfer/transfer.service';
@@ -86,14 +86,16 @@ describe('DirectBuy orders tests', () => {
             volume: ask2.startVolume.toString(10)
         };
 
-        let createdDirectBuyOrder: OrderDTO;
+        let createdDirectBuyOrder: Order;
 
         await request(app.getHttpServer())
             .post('/orders/ask/buy')
             .send(directBuyOrder)
             .expect(201)
             .expect(res => {
-                createdDirectBuyOrder = res.body as OrderDTO;
+                createdDirectBuyOrder = res.body as Order;
+
+                console.log(createdDirectBuyOrder);
 
                 expect(createdDirectBuyOrder.type).toBe(OrderType.Direct);
                 expect(createdDirectBuyOrder.price).toBe(directBuyOrder.price);

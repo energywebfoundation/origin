@@ -3,7 +3,7 @@ import request from 'supertest';
 
 import { AccountService } from '../src/pods/account/account.service';
 import { DemandService } from '../src/pods/demand/demand.service';
-import { OrderDTO } from '../src/pods/order/order.dto';
+import { Order } from '../src/pods/order/order.entity';
 import { OrderService } from '../src/pods/order/order.service';
 import { ProductService } from '../src/pods/product/product.service';
 import { TradeDTO } from '../src/pods/trade/trade.dto';
@@ -111,7 +111,7 @@ describe('Demand orders trading', () => {
             .get(`/orders`)
             .expect(200)
             .expect(res => {
-                const orders = res.body as OrderDTO[];
+                const orders = res.body as Order[];
 
                 expect(orders).toBeDefined();
                 expect(orders).toHaveLength(1);

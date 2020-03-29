@@ -6,7 +6,7 @@ import { Asset } from '../asset/asset.entity';
 export class AccountAsset {
     public asset: Asset;
 
-    @Transform(value => value.toString(10))
+    @Transform((value: BN) => value.toString(10))
     public amount: BN;
 
     public constructor(accountAsset: Partial<AccountAsset>) {

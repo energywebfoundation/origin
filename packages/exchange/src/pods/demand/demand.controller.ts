@@ -4,7 +4,6 @@ import { AuthGuard } from '@nestjs/passport';
 
 import { UserDecorator } from '../decorators/user.decorator';
 import { DemandService } from './demand.service';
-import { DemandDTO } from './demand.dto';
 
 @Controller('demand')
 export class DemandController {
@@ -25,14 +24,12 @@ export class DemandController {
             return null;
         }
 
-        return DemandDTO.fromDemand(demand);
+        return demand;
     }
 
     @Get()
     @UseGuards(AuthGuard())
     public async getAll(@UserDecorator() user: IUser) {
-        const demands = await this.demandService.getAll(user.id.toString());
-
-        return demands.map(demand => DemandDTO.fromDemand(demand));
+        return this.demandService.getAll(user.id.toString());
     }
 }

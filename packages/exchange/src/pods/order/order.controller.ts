@@ -1,14 +1,25 @@
 import { IUser } from '@energyweb/origin-backend-core';
-import { Body, Controller, ForbiddenException, Logger, Post, UseGuards, Get } from '@nestjs/common';
+import {
+    Body,
+    Controller,
+    ForbiddenException,
+    Logger,
+    Post,
+    UseGuards,
+    Get,
+    UseInterceptors,
+    ClassSerializerInterceptor
+} from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 
 import { UserDecorator } from '../decorators/user.decorator';
 import { CreateAskDTO } from './create-ask.dto';
 import { CreateBidDTO } from './create-bid.dto';
 import { OrderService } from './order.service';
-import { OrderDTO } from './order.dto';
 import { DirectBuyDTO } from './direct-buy.dto';
+import { Order } from './order.entity';
 
+@UseInterceptors(ClassSerializerInterceptor)
 @Controller('orders')
 export class OrderController {
     private readonly logger = new Logger(OrderController.name);
@@ -20,12 +31,11 @@ export class OrderController {
     public async createBid(
         @UserDecorator() user: IUser,
         @Body() newOrder: CreateBidDTO
-    ): Promise<OrderDTO> {
+    ): Promise<Order> {
         this.logger.log(`Creating new order ${JSON.stringify(newOrder)}`);
 
         try {
-            const order = await this.orderService.createBid(user.id.toString(), newOrder);
-            return OrderDTO.fromOrder(order);
+            return this.orderService.createBid(user.id.toString(), newOrder);
         } catch (error) {
             this.logger.error(error.message);
 
@@ -38,12 +48,11 @@ export class OrderController {
     public async createAsk(
         @UserDecorator() user: IUser,
         @Body() newOrder: CreateAskDTO
-    ): Promise<OrderDTO> {
+    ): Promise<Order> {
         this.logger.log(`Creating new order ${JSON.stringify(newOrder)}`);
 
         try {
-            const order = await this.orderService.createAsk(user.id.toString(), newOrder);
-            return OrderDTO.fromOrder(order);
+            return this.orderService.createAsk(user.id.toString(), newOrder);
         } catch (error) {
             this.logger.error(error.message);
 
@@ -56,12 +65,11 @@ export class OrderController {
     public async directBuy(
         @UserDecorator() user: IUser,
         @Body() directBuy: DirectBuyDTO
-    ): Promise<OrderDTO> {
+    ): Promise<Order> {
         this.logger.log(`Creating new direct order ${JSON.stringify(directBuy)}`);
 
         try {
-            const order = await this.orderService.createDirectBuy(user.id.toString(), directBuy);
-            return OrderDTO.fromOrder(order);
+            return this.orderService.createDirectBuy(user.id.toString(), directBuy);
         } catch (error) {
             this.logger.error(error.message);
 
@@ -71,9 +79,7 @@ export class OrderController {
 
     @Get()
     @UseGuards(AuthGuard())
-    public async getOrders(@UserDecorator() user: IUser): Promise<OrderDTO[]> {
-        const orders = await this.orderService.getAllOrders(user.id.toString());
-
-        return orders.map(order => OrderDTO.fromOrder(order));
+    public async getOrders(@UserDecorator() user: IUser): Promise<Order[]> {
+        return this.orderService.getAllOrders(user.id.toString());
     }
 }

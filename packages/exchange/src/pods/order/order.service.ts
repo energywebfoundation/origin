@@ -120,7 +120,7 @@ export class OrderService {
 
         this.matchingEngineService.submit(order);
 
-        return order;
+        return new Order(order);
     }
 
     public async submit(order: Order) {
