@@ -23,7 +23,8 @@
     "migrate": "yarn typeorm migration:generate -- -n",
     "migrate:revert": "yarn typeorm migration:revert",
     "typeorm:run": "yarn typeorm migration:run",
-    "clean": "shx rm -rf dist uploads"
+    "clean": "shx rm -rf dist uploads",
+    "precommit": "lint-staged"
   },
   "bin": {
     "origin-backend": "./bin/origin-backend"
