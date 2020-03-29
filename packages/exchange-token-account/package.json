@@ -33,7 +33,7 @@
     },
     "types": "dist/js/src/index.d.ts",
     "dependencies": {
-        "ethers": "4.0.45"
+        "ethers": "4.0.46"
     },
     "devDependencies": {
         "@energyweb/issuer": "1.0.1",
