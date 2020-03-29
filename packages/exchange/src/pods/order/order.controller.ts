@@ -35,7 +35,8 @@ export class OrderController {
         this.logger.log(`Creating new order ${JSON.stringify(newOrder)}`);
 
         try {
-            return this.orderService.createBid(user.id.toString(), newOrder);
+            const order = await this.orderService.createBid(user.id.toString(), newOrder);
+            return order;
         } catch (error) {
             this.logger.error(error.message);
 
@@ -52,7 +53,8 @@ export class OrderController {
         this.logger.log(`Creating new order ${JSON.stringify(newOrder)}`);
 
         try {
-            return this.orderService.createAsk(user.id.toString(), newOrder);
+            const order = await this.orderService.createAsk(user.id.toString(), newOrder);
+            return order;
         } catch (error) {
             this.logger.error(error.message);
 
@@ -69,7 +71,8 @@ export class OrderController {
         this.logger.log(`Creating new direct order ${JSON.stringify(directBuy)}`);
 
         try {
-            return this.orderService.createDirectBuy(user.id.toString(), directBuy);
+            const order = await this.orderService.createDirectBuy(user.id.toString(), directBuy);
+            return order;
         } catch (error) {
             this.logger.error(error.message);
 
@@ -80,6 +83,7 @@ export class OrderController {
     @Get()
     @UseGuards(AuthGuard())
     public async getOrders(@UserDecorator() user: IUser): Promise<Order[]> {
-        return this.orderService.getAllOrders(user.id.toString());
+        const orders = await this.orderService.getAllOrders(user.id.toString());
+        return orders;
     }
 }

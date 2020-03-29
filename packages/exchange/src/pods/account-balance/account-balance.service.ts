@@ -48,7 +48,7 @@ export class AccountBalanceService {
         const { available } = await this.getAccountBalance(userId);
         const accountAsset = available.find(({ asset }) => asset.id === assetId);
 
-        this.logger.debug(`Available amount is ${accountAsset.amount.toString(10)}`);
+        this.logger.debug(`Available amount is ${accountAsset?.amount.toString(10) ?? 0}`);
 
         return accountAsset && accountAsset.amount.gte(new BN(assetAmount));
     }
