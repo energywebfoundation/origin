@@ -20,8 +20,8 @@ describe('account deposit confirmation', () => {
         address: '0x9876',
         tokenId: '0',
         deviceId: '0',
-        generationFrom: new Date('2020-01-01').toISOString(),
-        generationTo: new Date('2020-01-31').toISOString()
+        generationFrom: new Date('2020-01-01'),
+        generationTo: new Date('2020-01-31')
     };
 
     const transactionHash = `0x${((Math.random() * 0xffffff) << 0).toString(16)}`;
@@ -87,7 +87,10 @@ describe('account deposit confirmation', () => {
                 expect(account.address).toBe(user1Address);
                 expect(account.balances.available.length).toBe(1);
                 expect(account.balances.available[0].amount).toEqual(amount);
-                expect(account.balances.available[0].asset).toMatchObject(dummyAsset);
+
+                expect(account.balances.available[0].asset).toMatchObject(
+                    JSON.parse(JSON.stringify(dummyAsset))
+                );
             });
     });
 });

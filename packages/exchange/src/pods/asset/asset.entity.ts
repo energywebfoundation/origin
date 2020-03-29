@@ -1,7 +1,16 @@
 import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
+export interface IAsset {
+    id: string;
+    address: string;
+    tokenId: string;
+    deviceId: string;
+    generationFrom: Date;
+    generationTo: Date;
+}
+
 @Entity()
-export class Asset extends BaseEntity {
+export class Asset extends BaseEntity implements IAsset {
     @PrimaryGeneratedColumn('uuid')
     id: string;
 
@@ -20,3 +29,5 @@ export class Asset extends BaseEntity {
     @Column({ type: 'timestamptz' })
     generationTo: Date;
 }
+
+export type CreateAssetDTO = Omit<IAsset, 'id'>;

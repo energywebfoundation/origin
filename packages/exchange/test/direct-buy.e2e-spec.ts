@@ -26,8 +26,8 @@ describe('DirectBuy orders tests', () => {
         address: '0x9876',
         tokenId: '0',
         deviceId: '0',
-        generationFrom: new Date('2020-01-01').toISOString(),
-        generationTo: new Date('2020-01-31').toISOString()
+        generationFrom: new Date('2020-01-01'),
+        generationTo: new Date('2020-01-31')
     };
 
     const transactionHash = `0x${((Math.random() * 0xffffff) << 0).toString(16)}`;
