@@ -8,9 +8,10 @@ const ormConfig: ConnectionOptions = {
     username: process.env.DB_USERNAME ?? 'postgres',
     password: process.env.DB_PASSWORD ?? 'postgres',
     database: process.env.DB_DATABASE ?? 'origin',
-    synchronize: true,
+    synchronize: process.env.MODE !== 'production',
+    dropSchema: process.env.MODE !== 'production',
     logging: ['info'],
-    migrationsRun: true,
+    migrationsRun: process.env.MODE === 'production',
     logger: 'file',
     migrations: [path.join(__dirname, '/migrations/**/*{.ts,.js}')],
     cli: {
