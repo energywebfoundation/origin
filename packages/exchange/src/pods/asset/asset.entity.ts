@@ -1,4 +1,5 @@
-import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { ExtendedBaseEntity } from '@energyweb/origin-backend';
 
 export interface IAsset {
     id: string;
@@ -10,7 +11,7 @@ export interface IAsset {
 }
 
 @Entity()
-export class Asset extends BaseEntity implements IAsset {
+export class Asset extends ExtendedBaseEntity implements IAsset {
     @PrimaryGeneratedColumn('uuid')
     id: string;
 

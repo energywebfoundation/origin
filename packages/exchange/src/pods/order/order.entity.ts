@@ -2,7 +2,6 @@ import { OrderSide, OrderStatus } from '@energyweb/exchange-core';
 import BN from 'bn.js';
 import { Exclude, Transform } from 'class-transformer';
 import {
-    BaseEntity,
     Column,
     Entity,
     JoinTable,
@@ -11,6 +10,7 @@ import {
     PrimaryGeneratedColumn,
     RelationId
 } from 'typeorm';
+import { ExtendedBaseEntity } from '@energyweb/origin-backend';
 
 import { BNTransformer } from '../../utils/valueTransformers';
 import { Asset } from '../asset/asset.entity';
@@ -20,7 +20,7 @@ import { OrderType } from './order-type.enum';
 import { ProductDTO } from './product.dto';
 
 @Entity()
-export class Order extends BaseEntity {
+export class Order extends ExtendedBaseEntity {
     constructor(order: Partial<Order>) {
         super();
         Object.assign(this, order);

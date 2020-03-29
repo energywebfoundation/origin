@@ -1,13 +1,14 @@
-import { Entity, PrimaryGeneratedColumn, Column, BaseEntity, Unique, ManyToOne } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, Unique, ManyToOne } from 'typeorm';
 import { Length, IsNotEmpty } from 'class-validator';
 
 import { IUser, IAutoPublishConfig } from '@energyweb/origin-backend-core';
 
 import { Organization } from '../organization/organization.entity';
+import { ExtendedBaseEntity } from '../ExtendedBaseEntity';
 
 @Entity()
 @Unique(['email', 'blockchainAccountAddress'])
-export class User extends BaseEntity implements IUser {
+export class User extends ExtendedBaseEntity implements IUser {
     @PrimaryGeneratedColumn()
     id: number;
 
