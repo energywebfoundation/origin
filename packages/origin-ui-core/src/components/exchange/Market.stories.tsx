@@ -40,7 +40,7 @@ export const defaultView = () => {
 
     store.dispatch(
         setOffchainConfiguration({
-            configuration: ({ regions: TEST_REGIONS } as Partial<
+            configuration: ({ regions: TEST_REGIONS, countryName: 'Thailand' } as Partial<
                 IOriginConfiguration
             >) as IOriginConfiguration
         })
