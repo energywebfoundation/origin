@@ -2,7 +2,6 @@ import { INestApplication } from '@nestjs/common';
 import request from 'supertest';
 
 import { Account } from '../src/pods/account/account';
-import { AccountDTO } from '../src/pods/account/account.dto';
 import { AccountService } from '../src/pods/account/account.service';
 import { TransferService } from '../src/pods/transfer/transfer.service';
 import { DatabaseService } from './database.service';
@@ -21,8 +20,8 @@ describe('account deposit confirmation', () => {
         address: '0x9876',
         tokenId: '0',
         deviceId: '0',
-        generationFrom: new Date('2020-01-01').toISOString(),
-        generationTo: new Date('2020-01-31').toISOString()
+        generationFrom: new Date('2020-01-01'),
+        generationTo: new Date('2020-01-31')
     };
 
     const transactionHash = `0x${((Math.random() * 0xffffff) << 0).toString(16)}`;
@@ -83,12 +82,15 @@ describe('account deposit confirmation', () => {
             .get('/account')
             .expect(200)
             .expect(res => {
-                const account = res.body as AccountDTO;
+                const account = res.body as Account;
 
                 expect(account.address).toBe(user1Address);
                 expect(account.balances.available.length).toBe(1);
                 expect(account.balances.available[0].amount).toEqual(amount);
-                expect(account.balances.available[0].asset).toMatchObject(dummyAsset);
+
+                expect(account.balances.available[0].asset).toMatchObject(
+                    JSON.parse(JSON.stringify(dummyAsset))
+                );
             });
     });
 });

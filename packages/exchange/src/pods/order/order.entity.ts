@@ -1,5 +1,6 @@
 import { OrderSide, OrderStatus } from '@energyweb/exchange-core';
 import BN from 'bn.js';
+import { Exclude, Transform } from 'class-transformer';
 import {
     Column,
     Entity,
@@ -20,6 +21,11 @@ import { ProductDTO } from './product.dto';
 
 @Entity()
 export class Order extends ExtendedBaseEntity {
+    constructor(order: Partial<Order>) {
+        super();
+        Object.assign(this, order);
+    }
+
     @PrimaryGeneratedColumn('uuid')
     id: string;
 
@@ -30,9 +36,11 @@ export class Order extends ExtendedBaseEntity {
     status: OrderStatus;
 
     @Column('bigint', { transformer: BNTransformer })
+    @Transform((v: BN) => v.toString(10))
     startVolume: BN;
 
     @Column('bigint', { transformer: BNTransformer })
+    @Transform((v: BN) => v.toString(10))
     currentVolume: BN;
 
     @Column()
@@ -54,13 +62,18 @@ export class Order extends ExtendedBaseEntity {
     product: ProductDTO;
 
     @ManyToOne(() => Asset, { eager: true })
+    @Exclude()
     asset: Asset;
+
+    @RelationId((order: Order) => order.asset)
+    assetId: string;
 
     @ManyToOne(
         () => Demand,
         demand => demand.bids
     )
     @JoinTable()
+    @Exclude()
     demand: Demand;
 
     @RelationId((order: Order) => order.demand)
@@ -70,5 +83,6 @@ export class Order extends ExtendedBaseEntity {
         () => Trade,
         trade => trade.ask || trade.bid
     )
+    @Exclude()
     trades: Trade[];
 }
