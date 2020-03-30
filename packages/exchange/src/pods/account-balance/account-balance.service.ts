@@ -34,10 +34,10 @@ export class AccountBalanceService {
 
         const aggregated = deposits.mergeWith(sum, trades).mergeWith(sum, sellOrders);
 
-        return {
+        return new AccountBalance({
             available: Array.from(aggregated.values()),
             locked: Array.from(sellOrders.values())
-        };
+        });
     }
 
     public async hasEnoughAssetAmount(userId: string, assetId: string, assetAmount: string) {
@@ -48,7 +48,7 @@ export class AccountBalanceService {
         const { available } = await this.getAccountBalance(userId);
         const accountAsset = available.find(({ asset }) => asset.id === assetId);
 
-        this.logger.debug(`Available amount is ${accountAsset.amount.toString(10)}`);
+        this.logger.debug(`Available amount is ${accountAsset?.amount.toString(10) ?? 0}`);
 
         return accountAsset && accountAsset.amount.gte(new BN(assetAmount));
     }
@@ -103,7 +103,7 @@ export class AccountBalanceService {
 
             const amount = accountAsset.amount.add(currentAmount);
 
-            return res.set(id, { ...accountAsset, amount });
+            return res.set(id, new AccountAsset({ ...accountAsset, amount }));
         }, Map<string, AccountAsset>());
     }
 }

@@ -127,8 +127,8 @@ export class DepositWatcherService implements OnModuleInit {
         const result = await this.issuer.functions.decodeData(data);
 
         return {
-            generationFrom: moment(result[0]).toISOString(),
-            generationTo: moment(result[1]).toISOString(),
+            generationFrom: moment(result[0]).toDate(),
+            generationTo: moment(result[1]).toDate(),
             deviceId: result[2]
         };
     }

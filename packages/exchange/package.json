@@ -49,6 +49,7 @@
         "@nestjs/swagger": "4.3.2",
         "@nestjs/typeorm": "6.3.4",
         "bn.js": "^5.1.1",
+        "class-transformer": "0.2.3",
         "class-validator": "0.11.1",
         "ethers": "4.0.46",
         "immutable": "4.0.0-rc.12",
