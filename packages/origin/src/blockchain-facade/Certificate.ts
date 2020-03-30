@@ -201,6 +201,10 @@ export class Entity extends BlockchainDataModelEntity.Entity implements ICertifi
             this.certificationRequestId
         );
 
+        if (!request) {
+            return;
+        }
+
         this.generationStartTime = request.startTime;
         this.generationEndTime = request.endTime;
     }
