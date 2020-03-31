@@ -21,6 +21,7 @@ interface IOrderCreationArgs {
     price?: number;
     volume?: BN;
     userId?: string;
+    validFrom?: Date;
 }
 
 interface ITestCase {
@@ -105,7 +106,7 @@ describe('Matching tests', () => {
                 ...defaultProduct,
                 ...args?.product
             },
-            new Date(0),
+            args?.validFrom || new Date(),
             OrderStatus.Active,
             args?.userId || defaultSeller
         );
@@ -120,7 +121,7 @@ describe('Matching tests', () => {
                 ...defaultProduct,
                 ...args?.product
             },
-            new Date(0),
+            args?.validFrom || new Date(),
             OrderStatus.Active,
             args?.userId || defaultBuyer
         );
@@ -160,7 +161,13 @@ describe('Matching tests', () => {
     };
 
     const assertTrades = (expected: List<Trade>, current: List<Trade>) => {
-        assert.equal(current.size, expected.size, 'Expected amount of trades');
+        assert.equal(
+            current.size,
+            expected.size,
+            `Expected amount of trades: current=${JSON.stringify(
+                current
+            )} expected=${JSON.stringify(expected)}`
+        );
 
         const zipped = expected.zip(current);
 
@@ -194,7 +201,7 @@ describe('Matching tests', () => {
                 clearInterval(doneTimer);
                 done();
             } else {
-                doneTimer = setTimeout(() => done(), 100);
+                doneTimer = setTimeout(() => done(), 50);
             }
         };
 
@@ -236,7 +243,7 @@ describe('Matching tests', () => {
         matchingEngine.tick();
 
         if (testCase.expectedTrades.length === 0 && !testCase.expectedStatusChanges) {
-            setTimeout(() => done(), 100);
+            setTimeout(() => done(), 50);
         }
     };
 
@@ -1313,6 +1320,59 @@ describe('Matching tests', () => {
                 },
                 [],
                 bids
+            );
+        });
+    });
+
+    describe('validFrom tests', () => {
+        it('should not disclose the future bids and asks', () => {
+            const { asks, bids } = createOrderBookWithSpread(
+                [
+                    {
+                        validFrom: moment()
+                            .add(1, 'day')
+                            .toDate()
+                    },
+                    {}
+                ],
+                [
+                    {},
+                    {
+                        validFrom: moment()
+                            .add(1, 'day')
+                            .toDate()
+                    }
+                ]
+            );
+
+            executeOrderBookQuery(
+                asks,
+                bids,
+                {
+                    ...allFilters
+                },
+                [asks[1]],
+                [bids[0]]
+            );
+        });
+
+        it('should not match orders with validFrom in the future', done => {
+            const ask1 = createAsk();
+            const bid1 = createBid({
+                validFrom: moment()
+                    .add(1, 'day')
+                    .toDate()
+            });
+            const bid2 = createBid();
+
+            const expectedTrades: Trade[] = [new Trade(bid2, ask1, bid2.volume, ask1.price)];
+
+            executeTestCase(
+                {
+                    orders: [ask1, bid1, bid2],
+                    expectedTrades
+                },
+                done
             );
         });
     });
