@@ -66,7 +66,7 @@ const seedFilePath = absolutePath(program.seedFile ?? '../config/seed.sql');
         logger.error(errorTxt);
         process.exit(1);
     }
-    
+
     const contractsLookup = await deployContracts();
 
     if (rows[0]?.contractsLookup && program.redeploy) {
@@ -83,7 +83,7 @@ const seedFilePath = absolutePath(program.seedFile ?? '../config/seed.sql');
             values: [
                 '1',
                 countryName,
-                JSON.stringify(externalDeviceIdTypes),
+                currencies.toString(),
                 JSON.stringify(regions),
                 JSON.stringify(externalDeviceIdTypes),
                 JSON.stringify(contractsLookup),
@@ -97,7 +97,7 @@ const seedFilePath = absolutePath(program.seedFile ?? '../config/seed.sql');
         const seedSql = fs.readFileSync(seedFilePath).toString();
         await client.query(seedSql);
     }
-    
+
     logger.info('DONE.');
     process.exit(0);
 })();
