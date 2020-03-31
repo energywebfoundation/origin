@@ -9,7 +9,6 @@ const ormConfig: ConnectionOptions = {
     password: process.env.DB_PASSWORD ?? 'postgres',
     database: process.env.DB_DATABASE ?? 'origin',
     synchronize: process.env.MODE !== 'production',
-    dropSchema: process.env.MODE !== 'production',
     logging: ['info'],
     migrationsRun: process.env.MODE === 'production',
     logger: 'file',

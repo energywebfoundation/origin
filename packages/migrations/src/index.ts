@@ -1,3 +1,3 @@
-import { deployEmptyContracts } from './deployEmpty';
+import { deployContracts } from './deployContracts';
 
-export { deployEmptyContracts };
+export { deployContracts };
