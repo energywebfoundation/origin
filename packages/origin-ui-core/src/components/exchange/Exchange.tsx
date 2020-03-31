@@ -59,7 +59,12 @@ export function Exchange(props: IProps) {
                         product: {
                             deviceType:
                                 values.deviceType?.length > 0 ? values.deviceType : undefined,
-                            location: values.location?.length > 0 ? values.location : undefined
+                            location:
+                                values.location?.length > 0
+                                    ? values.location?.map(l => `${country};${l}`)
+                                    : undefined,
+                            generationFrom: null,
+                            generationTo: null
                         },
                         validFrom: moment().toISOString(),
                         volume: EnergyFormatter.getBaseValueFromValueInDisplayUnit(

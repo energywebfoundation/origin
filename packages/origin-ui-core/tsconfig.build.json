@@ -30,6 +30,9 @@
         },
         {
             "path": "../issuer/tsconfig.build.json"
+        },
+        {
+            "path": "../exchange-core/tsconfig.build.json"
         }
     ]
 }

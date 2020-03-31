@@ -1,10 +1,13 @@
 import { IRequestClient, RequestClient } from '@energyweb/origin-backend-client';
-import { TOrderBook, ProductDTO, CreateBidDTO, IOrder } from '.';
+import { TOrderBook, CreateBidDTO, IOrder, IProductFilterDTO } from '.';
+import { Filter } from '@energyweb/exchange-core';
 
 export interface IExchangeClient {
     search(deviceType?: string[], location?: string[]): Promise<TOrderBook>;
     createBid(data: CreateBidDTO): Promise<IOrder>;
 }
+
+const DUMMY_ISO_STRING = '2020-03-30T12:03:17.940Z';
 
 export class ExchangeClient implements IExchangeClient {
     // eslint-disable-next-line no-useless-constructor
@@ -14,12 +17,21 @@ export class ExchangeClient implements IExchangeClient {
     ) {}
 
     public async search(deviceType?: string[], location?: string[]) {
-        const data: ProductDTO = {
-            deviceType: deviceType?.length > 0 ? deviceType : undefined,
-            location: location?.length > 0 ? location : undefined
+        const deviceTypePresent = deviceType?.length > 0;
+        const locationPresent = location?.length > 0;
+
+        const data: IProductFilterDTO = {
+            deviceTypeFilter: deviceTypePresent ? Filter.Specific : Filter.Unspecified,
+            locationFilter: locationPresent ? Filter.Specific : Filter.Unspecified,
+            generationTimeFilter: Filter.Unspecified,
+            deviceVintageFilter: Filter.Unspecified,
+            deviceType: deviceTypePresent ? deviceType : undefined,
+            location: locationPresent ? location : undefined,
+            generationFrom: DUMMY_ISO_STRING,
+            generationTo: DUMMY_ISO_STRING
         };
 
-        const response = await this.requestClient.post<ProductDTO, TOrderBook>(
+        const response = await this.requestClient.post<IProductFilterDTO, TOrderBook>(
             `${this.orderbookEndpoint}/search`,
             data
         );
