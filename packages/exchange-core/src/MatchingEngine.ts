@@ -65,18 +65,26 @@ export class MatchingEngine {
     }
 
     public orderBook() {
-        return { asks: this.asks, bids: this.bids };
+        const now = new Date();
+        const validFromFilter = (order: Order) => order.validFrom <= now;
+
+        return {
+            asks: this.asks.filter(validFromFilter),
+            bids: this.bids.filter(validFromFilter)
+        };
     }
 
     public orderBookByProduct(productFilter: ProductFilter) {
-        const asks = this.asks.filter(ask =>
+        const { asks, bids } = this.orderBook();
+
+        const filteredAsks = asks.filter(ask =>
             ask.filterBy(productFilter, this.deviceService, this.locationService)
         );
-        const bids = this.bids.filter(bid =>
+        const filteredBids = bids.filter(bid =>
             bid.filterBy(productFilter, this.deviceService, this.locationService)
         );
 
-        return { asks, bids };
+        return { asks: filteredAsks, bids: filteredBids };
     }
 
     public tick() {
@@ -195,16 +203,11 @@ export class MatchingEngine {
     }
 
     private match() {
-        let executedTrades = List<TradeExecutedEvent>();
+        const { bids, asks } = this.orderBook();
+        const executed = this.generateTrades(asks, bids);
+        this.updateOrderBook(executed);
 
-        this.bids.forEach(bid => {
-            const executed = this.generateTrades(bid);
-            this.updateOrderBook(executed);
-
-            executedTrades = executedTrades.concat(executed);
-        });
-
-        return executedTrades;
+        return executed;
     }
 
     private cancel(orderId: string): StatusChangedEvent {
@@ -257,27 +260,29 @@ export class MatchingEngine {
         this.bids = this.bids.filterNot(bid => bid.status === OrderStatus.Filled);
     }
 
-    private generateTrades(bid: Bid) {
+    private generateTrades(asks: List<Ask>, bids: List<Bid>) {
         let executed = List<TradeExecutedEvent>();
 
-        this.asks.forEach(ask => {
-            const isMatching = this.matches(bid, ask);
-            const isFilled = bid.volume.isZero();
-            const isOwned = bid.userId === ask.userId;
+        bids.forEach(bid => {
+            asks.forEach(ask => {
+                const isMatching = this.matches(bid, ask);
+                if (!isMatching) {
+                    return false;
+                }
 
-            if (!isMatching || isFilled || isOwned) {
-                return false;
-            }
+                const filled = BN.min(ask.volume, bid.volume);
 
-            const filled = BN.min(ask.volume, bid.volume);
+                ask.updateWithTradedVolume(filled);
+                bid.updateWithTradedVolume(filled);
 
-            executed = executed.concat({
-                trade: new Trade(bid, ask, filled, ask.price),
-                ask: ask.updateWithTradedVolume(filled),
-                bid: bid.updateWithTradedVolume(filled)
+                executed = executed.concat({
+                    trade: new Trade(bid, ask, filled, ask.price),
+                    ask,
+                    bid
+                });
+
+                return true;
             });
-
-            return true;
         });
 
         return executed;
@@ -285,9 +290,12 @@ export class MatchingEngine {
 
     private matches(bid: Bid, ask: Ask) {
         const hasProductMatched = bid.matches(ask, this.deviceService, this.locationService);
-        const hasVolume = !ask.volume.isNeg() && !ask.volume.isZero();
-        const hasPriceMatched = ask.price <= bid.price;
+        const hasAskVolume = !ask.volume.isNeg() && !ask.volume.isZero();
+        const hasBidVolume = !bid.volume.isNeg() && !bid.volume.isZero();
 
-        return hasPriceMatched && hasVolume && hasProductMatched;
+        const hasPriceMatched = ask.price <= bid.price;
+        const sameOwner = bid.userId === ask.userId;
+
+        return hasPriceMatched && hasAskVolume && hasBidVolume && hasProductMatched && !sameOwner;
     }
 }
