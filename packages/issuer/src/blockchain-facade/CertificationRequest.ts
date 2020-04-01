@@ -48,7 +48,7 @@ export class Entity extends PreciseProofEntity implements ICertificationRequest 
         this.owner = issueRequest.owner;
         this.fromTime = Number(decodedData['0']);
         this.toTime = Number(decodedData['1']);
-        this.device = device.id;
+        this.device = device?.id || decodedData['2'];
         this.approved = issueRequest.approved;
         this.revoked = issueRequest.revoked;
 
