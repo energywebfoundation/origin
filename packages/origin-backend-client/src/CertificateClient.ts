@@ -1,8 +1,7 @@
 import {
-    ICertificationRequestWithRelationsIds,
+    ICertificationRequest,
     CertificationRequestOffChainData,
     CertificationRequestUpdateData,
-    IOwnershipCommitmentProof,
     CommitmentStatus,
     OwnershipCommitmentProofWithTx
 } from '@energyweb/origin-backend-core';
@@ -55,7 +54,7 @@ export class CertificateClient implements ICertificateClient {
     public async getCertificationRequestData(
         id: number
     ): Promise<CertificationRequestOffChainData> {
-        const { data } = await this.requestClient.get<void, ICertificationRequestWithRelationsIds>(
+        const { data } = await this.requestClient.get<void, ICertificationRequest>(
             `${this.certificateRequestEndpoint}/${id}`
         );
 

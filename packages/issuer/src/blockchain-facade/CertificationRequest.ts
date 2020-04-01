@@ -13,7 +13,7 @@ export class Entity extends PreciseProofEntity implements ICertificationRequest 
 
     toTime: Timestamp;
 
-    device: number;
+    deviceId: string;
 
     approved: boolean;
 
@@ -40,15 +40,11 @@ export class Entity extends PreciseProofEntity implements ICertificationRequest 
 
         const issueRequest = await issuer.getCertificationRequest(this.id);
         const decodedData = await issuer.decodeData(issueRequest.data);
-        const device = await this.configuration.offChainDataSource.deviceClient.getByExternalId({
-            type: process.env.ISSUER_ID || 'Issuer ID',
-            id: decodedData['2']
-        });
 
         this.owner = issueRequest.owner;
         this.fromTime = Number(decodedData['0']);
         this.toTime = Number(decodedData['1']);
-        this.device = device?.id || decodedData['2'];
+        this.deviceId = decodedData['2'];
         this.approved = issueRequest.approved;
         this.revoked = issueRequest.revoked;
 
