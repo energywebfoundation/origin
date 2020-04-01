@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Contracts } from '@energyweb/issuer';
 import { ConfigurationService, DeviceService } from '@energyweb/origin-backend';
 import { IDeviceProductInfo } from '@energyweb/origin-backend-core';
