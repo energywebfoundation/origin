@@ -70,14 +70,14 @@ describe('DirectBuy orders tests', () => {
             assetId: deposit.asset.id,
             volume: '500',
             price: 1000,
-            validFrom: validFrom.toISOString()
+            validFrom
         });
 
         const ask2 = await orderService.createAsk(sellerId, {
             assetId: deposit.asset.id,
             volume: '500',
             price: 2000,
-            validFrom: validFrom.toISOString()
+            validFrom
         });
 
         const directBuyOrder: DirectBuyDTO = {

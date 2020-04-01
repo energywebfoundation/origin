@@ -1,7 +1,10 @@
+import { TimeFrame } from '@energyweb/utils-general';
 import { INestApplication } from '@nestjs/common';
+import moment from 'moment';
 import request from 'supertest';
 
 import { AccountService } from '../src/pods/account/account.service';
+import { CreateDemandDTO } from '../src/pods/demand/create-demand.dto';
 import { DemandService } from '../src/pods/demand/demand.service';
 import { Order } from '../src/pods/order/order.entity';
 import { OrderService } from '../src/pods/order/order.service';
@@ -68,6 +71,7 @@ describe('Demand orders trading', () => {
 
     const demandOwner = '1';
     const sellerId = '2';
+    const price = 1000;
 
     it('should trade the bid from the demand', async () => {
         const validFrom = new Date();
@@ -79,19 +83,23 @@ describe('Demand orders trading', () => {
         await orderService.createAsk(sellerId, {
             assetId: deposit.asset.id,
             volume: '500',
-            price: 1000,
-            validFrom: validFrom.toISOString()
+            price,
+            validFrom
         });
 
         const product = await productService.getProduct(deposit.asset.id);
-
-        const demand = await demandService.createSingle(
-            demandOwner,
-            1000,
-            '250',
+        const createDemand: CreateDemandDTO = {
+            price,
+            periodTimeFrame: TimeFrame.monthly,
+            start: moment().toDate(),
+            end: moment()
+                .add(1, 'month')
+                .toDate(),
             product,
-            validFrom
-        );
+            volumePerPeriod: '250'
+        };
+
+        const demand = await demandService.create(demandOwner, createDemand);
 
         await sleep(5000);
 

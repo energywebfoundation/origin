@@ -73,7 +73,7 @@ describe('account ask order send', () => {
             assetId: deposit.asset.id,
             volume: '100',
             price: 100,
-            validFrom: new Date().toISOString()
+            validFrom: new Date()
         };
 
         await request(app.getHttpServer())
@@ -89,7 +89,7 @@ describe('account ask order send', () => {
             assetId: deposit.asset.id,
             volume: '100',
             price: 100,
-            validFrom: new Date().toISOString()
+            validFrom: new Date()
         };
 
         await request(app.getHttpServer())
@@ -109,7 +109,7 @@ describe('account ask order send', () => {
             assetId: deposit.asset.id,
             volume: '1001',
             price: 100,
-            validFrom: new Date().toISOString()
+            validFrom: new Date()
         };
 
         await request(app.getHttpServer())
@@ -123,7 +123,7 @@ describe('account ask order send', () => {
             assetId: deposit.asset.id,
             volume: '1000',
             price: 100,
-            validFrom: new Date().toISOString()
+            validFrom: new Date()
         };
 
         await confirmDeposit();

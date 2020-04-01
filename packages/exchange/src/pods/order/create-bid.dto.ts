@@ -1,4 +1,5 @@
-import { IsDateString, IsInt, IsPositive, Validate, ValidateNested } from 'class-validator';
+import { Type } from 'class-transformer';
+import { IsDate, IsInt, IsPositive, Validate, ValidateNested } from 'class-validator';
 
 import { PositiveBNStringValidator } from '../../utils/positiveBNStringValidator';
 import { ProductDTO } from './product.dto';
@@ -11,8 +12,9 @@ export class CreateBidDTO {
     @IsPositive()
     readonly price: number;
 
-    @IsDateString()
-    readonly validFrom: string;
+    @IsDate()
+    @Type(() => Date)
+    readonly validFrom: Date;
 
     @ValidateNested()
     readonly product: ProductDTO;

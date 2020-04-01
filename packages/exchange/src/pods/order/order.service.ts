@@ -2,7 +2,7 @@ import { OrderSide, OrderStatus } from '@energyweb/exchange-core';
 import { forwardRef, Inject, Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import BN from 'bn.js';
-import { Repository } from 'typeorm';
+import { Repository, EntityManager } from 'typeorm';
 
 import { AccountBalanceService } from '../account-balance/account-balance.service';
 import { MatchingEngineService } from '../matching-engine/matching-engine.service';
@@ -45,26 +45,36 @@ export class OrderService {
         return order;
     }
 
-    public async createDemandBid(
+    public async createDemandBids(
         userId: string,
-        bid: CreateBidDTO,
-        demandId: string
-    ): Promise<Order> {
+        bids: CreateBidDTO[],
+        demandId: string,
+        transaction: EntityManager
+    ): Promise<Order[]> {
         this.logger.debug(
-            `Requested demand bid creation for user:${userId} bid:${JSON.stringify(bid)}`
+            `Requested demand bids creation for user:${userId} bid:${JSON.stringify(bids)}`
         );
 
-        return this.repository.save({
-            userId,
-            validFrom: new Date(bid.validFrom),
-            side: OrderSide.Bid,
-            status: OrderStatus.Active,
-            startVolume: new BN(bid.volume),
-            currentVolume: new BN(bid.volume),
-            price: bid.price,
-            product: bid.product,
-            demand: { id: demandId }
-        });
+        const repository = transaction.getRepository<Order>(Order);
+
+        const orders: Order[] = [];
+
+        for (const bid of bids) {
+            const order = await repository.save({
+                userId,
+                validFrom: new Date(bid.validFrom),
+                side: OrderSide.Bid,
+                status: OrderStatus.Active,
+                startVolume: new BN(bid.volume),
+                currentVolume: new BN(bid.volume),
+                price: bid.price,
+                product: bid.product,
+                demand: { id: demandId }
+            });
+            orders.push(new Order(order));
+        }
+
+        return orders;
     }
 
     public async createAsk(userId: string, ask: CreateAskDTO): Promise<Order> {
