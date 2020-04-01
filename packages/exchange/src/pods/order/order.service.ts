@@ -1,17 +1,18 @@
-import { OrderSide, OrderStatus } from '@energyweb/exchange-core';
+import { OrderSide, OrderStatus, StatusChangedEvent } from '@energyweb/exchange-core';
 import { forwardRef, Inject, Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import BN from 'bn.js';
-import { Repository, EntityManager } from 'typeorm';
+import { List } from 'immutable';
+import { EntityManager, Repository } from 'typeorm';
 
 import { AccountBalanceService } from '../account-balance/account-balance.service';
 import { MatchingEngineService } from '../matching-engine/matching-engine.service';
 import { ProductService } from '../product/product.service';
 import { CreateAskDTO } from './create-ask.dto';
 import { CreateBidDTO } from './create-bid.dto';
-import { Order } from './order.entity';
-import { OrderType } from './order-type.enum';
 import { DirectBuyDTO } from './direct-buy.dto';
+import { OrderType } from './order-type.enum';
+import { Order } from './order.entity';
 
 @Injectable()
 export class OrderService {
@@ -20,6 +21,7 @@ export class OrderService {
     constructor(
         @InjectRepository(Order, 'ExchangeConnection')
         private readonly repository: Repository<Order>,
+        @Inject(forwardRef(() => MatchingEngineService))
         private readonly matchingEngineService: MatchingEngineService,
         @Inject(forwardRef(() => AccountBalanceService))
         private readonly accountBalanceService: AccountBalanceService,
@@ -172,6 +174,26 @@ export class OrderService {
                 { status: OrderStatus.Active, userId, side },
                 { status: OrderStatus.PartiallyFilled, userId, side }
             ]
+        });
+    }
+
+    public async persistOrderStatusChange(statusChanges: List<StatusChangedEvent>) {
+        statusChanges.forEach(async statusChange => {
+            this.logger.debug(`Updating status for ${JSON.stringify(statusChange)}`);
+            try {
+                const order = await this.repository.findOne(statusChange.orderId);
+                if (order.status !== statusChange.prevStatus) {
+                    this.logger.error(
+                        `Unexpected status change for order ${order.id} expected ${
+                            OrderStatus[statusChange.prevStatus]
+                        } but received ${OrderStatus[order.status]}`
+                    );
+                }
+
+                await this.repository.update(statusChange.orderId, { status: statusChange.status });
+            } catch (e) {
+                this.logger.error(`Unexpected error ${e.message}`);
+            }
         });
     }
 }

@@ -1,21 +1,23 @@
 import {
     Ask,
     Bid,
+    DirectBuy,
     MatchingEngine,
     OrderSide,
     ProductFilter,
-    TradeExecutedEvent,
-    DirectBuy
+    StatusChangedEvent,
+    TradeExecutedEvent
 } from '@energyweb/exchange-core';
 import { DeviceTypeService, LocationService } from '@energyweb/utils-general';
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger, Inject, forwardRef } from '@nestjs/common';
 import { Interval } from '@nestjs/schedule';
 import { List } from 'immutable';
 
-import { Order } from '../order/order.entity';
-import { TradeService } from '../trade/trade.service';
-import { ProductDTO } from '../order/product.dto';
 import { OrderType } from '../order/order-type.enum';
+import { Order } from '../order/order.entity';
+import { OrderService } from '../order/order.service';
+import { ProductDTO } from '../order/product.dto';
+import { TradeService } from '../trade/trade.service';
 
 @Injectable()
 export class MatchingEngineService {
@@ -25,7 +27,11 @@ export class MatchingEngineService {
 
     private matchingEngine: MatchingEngine;
 
-    constructor(private readonly tradeService: TradeService) {}
+    constructor(
+        private readonly tradeService: TradeService,
+        @Inject(forwardRef(() => OrderService))
+        private readonly orderService: OrderService
+    ) {}
 
     public init(orders: Order[], deviceTypes: string[][]) {
         this.logger.log(`Initializing matching engine`);
@@ -43,6 +49,9 @@ export class MatchingEngineService {
         });
 
         this.matchingEngine.trades.subscribe(async trades => this.onTradeExecutedEvent(trades));
+        this.matchingEngine.orderStatusChange.subscribe(async orderStatusChanges =>
+            this.onOrderStatusChanges(orderStatusChanges)
+        );
 
         this.initialized = true;
     }
@@ -76,6 +85,13 @@ export class MatchingEngineService {
         this.logger.log('Received TradeExecutedEvent event');
 
         await this.tradeService.persist(trades);
+    }
+
+    private async onOrderStatusChanges(statusChanges: List<StatusChangedEvent>) {
+        this.logger.log('Received StatusChangedEvent event');
+        this.logger.log(`Received StatusChangedEvent event ${JSON.stringify(statusChanges)}`);
+
+        await this.orderService.persistOrderStatusChange(statusChanges);
     }
 
     private toOrder(order: Order) {
