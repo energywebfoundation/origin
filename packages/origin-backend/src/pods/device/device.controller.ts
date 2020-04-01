@@ -135,6 +135,17 @@ export class DeviceController {
         return this.deviceService.getAllSmartMeterReadings(id);
     }
 
+    @Get('/get-by-external-id/:type/:id')
+    async getByExternalId(@Param('type') type: string, @Param('id') id: string) {
+        const existing = await this.deviceService.findByExternalId({ id, type });
+
+        if (!existing) {
+            throw new NotFoundException(StorageErrors.NON_EXISTENT);
+        }
+
+        return existing;
+    }
+
     @Put('/:id/smartMeterReading')
     async addSmartMeterRead(@Param('id') id: string, @Body() newSmartMeterRead: ISmartMeterRead) {
         const existing = await this.deviceService.findOne(id);

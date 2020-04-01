@@ -4,8 +4,11 @@ import {
     Moment,
     setMaxTimeInDay,
     setMinTimeInDay,
-    DATE_FORMAT_DMY
-} from '../../utils/time';
+    DATE_FORMAT_DMY,
+    getDeviceId,
+    EnergyFormatter,
+    useTranslation
+} from '../../utils';
 import {
     Button,
     Dialog,
@@ -24,10 +27,8 @@ import {
     getRequestCertificatesModalProducingDevice,
     getRequestCertificatesModalVisible
 } from '../../features/certificates/selectors';
-
-import { EnergyFormatter } from '../../utils/EnergyFormatter';
 import { Upload, IUploadedFile } from '../Upload';
-import { useTranslation } from 'react-i18next';
+import { getEnvironment } from '../../features';
 
 const DEFAULTS = {
     fromDate: moment(),
@@ -48,6 +49,7 @@ export function RequestCertificatesModal() {
 
     const producingDevice = useSelector(getRequestCertificatesModalProducingDevice);
     const showModal = useSelector(getRequestCertificatesModalVisible);
+    const environment = useSelector(getEnvironment);
 
     const dispatch = useDispatch();
 
@@ -84,7 +86,7 @@ export function RequestCertificatesModal() {
     async function requestCerts() {
         dispatch(
             requestCertificates({
-                deviceId: producingDevice.id?.toString(),
+                deviceId: getDeviceId(producingDevice, environment),
                 startTime: fromDate.unix(),
                 endTime: toDate.unix(),
                 energy: energyInBaseUnit,

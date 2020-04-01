@@ -6,7 +6,6 @@ import { Grid } from '@material-ui/core';
 import { getUserOffchain } from '../../features/users/selectors';
 import { getExchangeClient, getCountry } from '../../features/general/selectors';
 import { useSelector } from 'react-redux';
-
 import { TOrderBook } from '../../utils/exchange';
 
 interface IProps {

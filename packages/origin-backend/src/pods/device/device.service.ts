@@ -28,6 +28,20 @@ export class DeviceService {
         @Inject(SM_READS_ADAPTER) private smartMeterReadingsAdapter?: ISmartMeterReadingsAdapter
     ) {}
 
+    async findByExternalId(
+        externalId: ExternalDeviceId
+    ): Promise<ExtendedBaseEntity & IDeviceWithRelationsIds> {
+        const devices = ((await this.repository.find({
+            loadEagerRelations: true
+        })) as IDevice[]) as (ExtendedBaseEntity & IDeviceWithRelationsIds)[];
+
+        return devices.find(device =>
+            device.externalDeviceIds.find(
+                id => id.id === externalId.id && id.type === externalId.type
+            )
+        );
+    }
+
     async findOne(
         id: string,
         options: FindOneOptions<Device> = {}
