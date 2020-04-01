@@ -31,6 +31,13 @@ export type CreateBidDTO = {
     product: IProductDTO;
 };
 
+export type CreateAskDTO = {
+    volume: string;
+    price: number;
+    validFrom: string;
+    assetId: string;
+};
+
 export interface IOrder {
     id: string;
     userId: string;
@@ -42,4 +49,53 @@ export interface IProductFilterDTO extends IProductDTO {
     locationFilter: Filter;
     deviceVintageFilter: Filter;
     generationTimeFilter: Filter;
+}
+
+export interface IAsset {
+    id: string;
+    address: string;
+    tokenId: string;
+    deviceId: string;
+    generationFrom: Date;
+    generationTo: Date;
+}
+
+export type AccountAsset = {
+    asset: IAsset;
+    amount: string;
+};
+
+export type AccountBalance = {
+    available: AccountAsset[];
+    locked: AccountAsset[];
+};
+
+export type ExchangeAccount = {
+    address: string;
+    balances: AccountBalance;
+};
+
+export enum TransferStatus {
+    Unknown,
+    Accepted,
+    Unconfirmed,
+    Confirmed,
+    Error
+}
+
+export enum TransferDirection {
+    Deposit,
+    Withdrawal
+}
+
+export interface ITransfer {
+    id: string;
+    userId: string;
+    asset: IAsset;
+    amount: string;
+    transactionHash: string;
+    address: string;
+    status: TransferStatus;
+    confirmationBlock?: number;
+    direction: TransferDirection;
 }

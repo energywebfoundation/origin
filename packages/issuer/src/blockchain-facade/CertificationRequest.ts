@@ -4,7 +4,6 @@ import { extendMoment } from 'moment-range';
 import { Configuration, Timestamp } from '@energyweb/utils-general';
 import { ICertificationRequest, IOwnershipCommitment } from '@energyweb/origin-backend-core';
 
-import { Issuer } from '..';
 import { PreciseProofEntity } from './PreciseProofEntity';
 
 export class Entity extends PreciseProofEntity implements ICertificationRequest {
@@ -14,7 +13,7 @@ export class Entity extends PreciseProofEntity implements ICertificationRequest 
 
     toTime: Timestamp;
 
-    device: number;
+    deviceId: string;
 
     approved: boolean;
 
@@ -45,7 +44,7 @@ export class Entity extends PreciseProofEntity implements ICertificationRequest 
         this.owner = issueRequest.owner;
         this.fromTime = Number(decodedData['0']);
         this.toTime = Number(decodedData['1']);
-        this.device = Number(decodedData['2']);
+        this.deviceId = decodedData['2'];
         this.approved = issueRequest.approved;
         this.revoked = issueRequest.revoked;
 

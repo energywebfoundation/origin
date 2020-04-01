@@ -147,7 +147,7 @@ export class Entity extends PreciseProofEntity implements ICertificate {
                     : `claim(): Can't claim private volumes. Please migrate some volume to public first.`
             );
         }
-        
+
         if (amount && amount > publicVolume) {
             const totalOwned = publicVolume + privateVolume;
 
@@ -413,7 +413,7 @@ export class Entity extends PreciseProofEntity implements ICertificate {
 
             if (ownedShares[toAddress] === null || ownedShares[toAddress] === undefined) {
                 ownedShares[toAddress] = 0;
-            } 
+            }
 
             ownedShares[toAddress] += valueTransferred;
         }
@@ -468,7 +468,7 @@ export class Entity extends PreciseProofEntity implements ICertificate {
 
             if (claimedShares[claimSubject] === null || claimedShares[claimSubject] === undefined) {
                 claimedShares[claimSubject] = 0;
-            } 
+            }
 
             claimedShares[claimSubject] += valueClaimed;
         }

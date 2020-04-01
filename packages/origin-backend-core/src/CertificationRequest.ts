@@ -1,6 +1,4 @@
-import { IDevice } from './Device';
-
-export interface ICertificationRequestProperties {
+export interface ICertificationRequest {
     id: number;
     fromTime: number;
     toTime: number;
@@ -9,22 +7,11 @@ export interface ICertificationRequestProperties {
     approved: boolean;
     revoked: boolean;
     energy: number;
-}
-
-export interface ICertificationRequest extends ICertificationRequestProperties {
-    device: IDevice | IDevice['id'];
-}
-
-export interface ICertificationRequestWithRelationsIds extends ICertificationRequest {
-    device: IDevice['id'];
-}
-
-export interface ICertificationRequestWithRelations extends ICertificationRequest {
-    device: IDevice;
+    deviceId: string;
 }
 
 export type CertificationRequestOffChainData = Pick<
-    ICertificationRequestProperties,
+    ICertificationRequest,
     'id' | 'energy' | 'files'
 >;
 export type CertificationRequestUpdateData = Pick<

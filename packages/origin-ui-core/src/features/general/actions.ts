@@ -23,6 +23,7 @@ export interface IEnvironment {
     BLOCKCHAIN_EXPLORER_URL: string;
     WEB3: string;
     REGISTRATION_MESSAGE_TO_SIGN: string;
+    ISSUER_ID: string;
 }
 
 export interface IShowAccountChangedModalAction {

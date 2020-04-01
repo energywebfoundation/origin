@@ -40,6 +40,7 @@
     "@material-ui/types": "4.1.1",
     "@react-google-maps/api": "1.8.3",
     "axios": "0.19.2",
+    "bn.js": "5.1.1",
     "bootstrap": "4.4.1",
     "chart.js": "2.9.3",
     "clsx": "1.1.0",

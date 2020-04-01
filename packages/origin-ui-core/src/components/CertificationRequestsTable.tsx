@@ -17,10 +17,11 @@ import {
     getDeviceLocationText,
     LOCATION_TITLE_TRANSLATION_KEY,
     showNotification,
-    NotificationType
+    NotificationType,
+    getDeviceId
 } from '../utils';
 import { Skeleton } from '@material-ui/lab';
-import { getOffChainDataSource } from '../features/general/selectors';
+import { getOffChainDataSource, getEnvironment } from '../features/general/selectors';
 import { CertificationRequest } from '@energyweb/issuer';
 import { useTranslation } from 'react-i18next';
 
@@ -38,6 +39,7 @@ export function CertificationRequestsTable(props: IProps) {
     const user = useSelector(getUserOffchain);
     const producingDevices = useSelector(getProducingDevices);
     const offChainDataSource = useSelector(getOffChainDataSource);
+    const environment = useSelector(getEnvironment);
     const { t } = useTranslation();
 
     const dispatch = useDispatch();
@@ -61,7 +63,10 @@ export function CertificationRequestsTable(props: IProps) {
 
         for (let i = 0; i < requests.length; i++) {
             const request = requests[i];
-            const device = producingDevices.find(a => a.id === request.device);
+            const device = producingDevices.find(
+                // eslint-disable-next-line no-loop-func
+                a => getDeviceId(a, environment) === request.deviceId
+            );
 
             if (
                 request.approved !== props.approved ||

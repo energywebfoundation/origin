@@ -1,10 +1,22 @@
 import { IRequestClient, RequestClient } from '@energyweb/origin-backend-client';
-import { TOrderBook, CreateBidDTO, IOrder, IProductFilterDTO } from '.';
+import {
+    TOrderBook,
+    CreateAskDTO,
+    CreateBidDTO,
+    IOrder,
+    IProductFilterDTO,
+    ExchangeAccount,
+    ITransfer
+} from '.';
 import { Filter } from '@energyweb/exchange-core';
 
 export interface IExchangeClient {
     search(deviceType?: string[], location?: string[]): Promise<TOrderBook>;
+    createAsk(data: CreateAskDTO): Promise<IOrder>;
     createBid(data: CreateBidDTO): Promise<IOrder>;
+    getAccount(): Promise<ExchangeAccount>;
+    getAllTransfers(): Promise<ITransfer[]>;
+    getOrders?(): Promise<any>;
 }
 
 const DUMMY_ISO_STRING = '2020-03-30T12:03:17.940Z';
@@ -39,6 +51,15 @@ export class ExchangeClient implements IExchangeClient {
         return response.data;
     }
 
+    public async createAsk(data: CreateAskDTO) {
+        const response = await this.requestClient.post<CreateAskDTO, IOrder>(
+            `${this.ordersEndpoint}/ask`,
+            data
+        );
+
+        return response.data;
+    }
+
     public async createBid(data: CreateBidDTO): Promise<IOrder> {
         const response = await this.requestClient.post<CreateBidDTO, IOrder>(
             `${this.ordersEndpoint}/bid`,
@@ -48,12 +69,34 @@ export class ExchangeClient implements IExchangeClient {
         return response.data;
     }
 
+    public async getAccount() {
+        const response = await this.requestClient.get<{}, ExchangeAccount>(this.accountEndpoint);
+
+        return response.data;
+    }
+
+    public async getAllTransfers() {
+        const response = await this.requestClient.get<{}, ITransfer[]>(
+            `${this.transferEndpoint}/all`
+        );
+
+        return response.data;
+    }
+
+    private get accountEndpoint() {
+        return `${this.dataApiUrl}/account`;
+    }
+
     private get ordersEndpoint() {
         return `${this.dataApiUrl}/orders`;
     }
 
     private get orderbookEndpoint() {
         return `${this.dataApiUrl}/orderbook`;
+    }
+
+    private get transferEndpoint() {
+        return `${this.dataApiUrl}/transfer`;
     }
 }
 
@@ -115,5 +158,17 @@ export const ExchangeClientMock: IExchangeClient = {
             price: 0,
             userId: ''
         };
+    },
+
+    async createAsk() {
+        return null;
+    },
+
+    async getAllTransfers() {
+        return null;
+    },
+
+    async getAccount() {
+        return null;
     }
 };

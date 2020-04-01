@@ -1,6 +1,6 @@
 import { ProducingDevice } from '@energyweb/device-registry';
 import { Certificate } from '@energyweb/issuer';
-import { AssignmentTurnedIn } from '@material-ui/icons';
+import { AssignmentTurnedIn, Publish } from '@material-ui/icons';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
@@ -15,7 +15,8 @@ import {
     formatDate,
     NotificationType,
     showNotification,
-    useTranslation
+    useTranslation,
+    getDeviceId
 } from '../utils';
 
 import { IBatchableAction } from './Table/ColumnBatchActions';
@@ -26,12 +27,15 @@ import { getUserOffchain } from '../features/users/selectors';
 import { setLoading } from '../features/general/actions';
 import { getCertificates } from '../features/certificates/selectors';
 import { ClaimCertificateBulkModal } from './Modal/ClaimCertificateBulkModal';
+import { PublishForSaleModal } from './Modal/PublishForSaleModal';
+
 import {
     usePaginatedLoaderSorting,
     checkRecordPassesFilters,
     usePaginatedLoaderFiltered,
     IPaginatedLoaderHooksFetchDataParameters
 } from './Table';
+import { getEnvironment } from '../features';
 
 interface IProps {
     certificates?: Certificate.Entity[];
@@ -41,6 +45,7 @@ interface IProps {
 
 interface IEnrichedCertificateData {
     certificate: Certificate.Entity;
+    ownedVolume: number;
     producingDevice: ProducingDevice.Entity;
     deviceTypeLabel: string;
     locationText: string;
@@ -69,6 +74,7 @@ export function CertificateTable(props: IProps) {
     const configuration = useSelector(getConfiguration);
     const user = useSelector(getUserOffchain);
     const producingDevices = useSelector(getProducingDevices);
+    const environment = useSelector(getEnvironment);
 
     const { selectedState } = props;
     const hiddenColumns = props.hiddenColumns || [];
@@ -81,6 +87,8 @@ export function CertificateTable(props: IProps) {
     const [selectedCertificates, setSelectedCertificates] = useState<Certificate.Entity[]>([]);
     const [detailViewForCertificateId, setDetailViewForCertificateId] = useState<number>(null);
     const [showClaimBulkModal, setShowClaimBulkModal] = useState(false);
+    const [sellModalData, setSellModalData] = useState<Certificate.Entity>(null);
+    const [sellModalVisibility, setSellModalVisibility] = useState(false);
 
     const userAddress = user?.blockchainAccountAddress?.toLowerCase();
 
@@ -93,33 +101,34 @@ export function CertificateTable(props: IProps) {
             const producingDevice =
                 typeof certificate.deviceId !== 'undefined' &&
                 producingDevices.find(
-                    device => device.id?.toString() === certificate.deviceId.toString()
+                    device => getDeviceId(device, environment) === certificate.deviceId.toString()
                 );
+
+            const ownedVolume = certificate.ownedVolume(userAddress);
 
             return {
                 certificate,
                 producingDevice,
                 deviceTypeLabel: producingDevice?.deviceType,
-                locationText: getDeviceLocationText(producingDevice)
+                locationText: getDeviceLocationText(producingDevice),
+                ownedVolume: ownedVolume.privateVolume + ownedVolume.publicVolume
             };
         });
 
-        const filteredIEnrichedCertificateData = enrichedData.filter(
-            (enrichedCertificateData: IEnrichedCertificateData) => {
-                const ownerOf = enrichedCertificateData.certificate.isOwned(userAddress);
-                const claimed = enrichedCertificateData.certificate.isClaimed(userAddress);
+        const filteredIEnrichedCertificateData = enrichedData.filter(enrichedCertificateData => {
+            const ownerOf = enrichedCertificateData.certificate.isOwned(userAddress);
+            const claimed = enrichedCertificateData.certificate.isClaimed(userAddress);
 
-                return (
-                    checkRecordPassesFilters(
-                        enrichedCertificateData,
-                        requestedFilters,
-                        deviceTypeService
-                    ) &&
-                    ((ownerOf && selectedState === SelectedState.Inbox) ||
-                        (claimed && selectedState === SelectedState.Claimed))
-                );
-            }
-        );
+            return (
+                checkRecordPassesFilters(
+                    enrichedCertificateData,
+                    requestedFilters,
+                    deviceTypeService
+                ) &&
+                ((ownerOf && selectedState === SelectedState.Inbox) ||
+                    (claimed && selectedState === SelectedState.Claimed))
+            );
+        });
 
         const sortedEnrichedData = sortData(filteredIEnrichedCertificateData);
 
@@ -168,12 +177,24 @@ export function CertificateTable(props: IProps) {
         setShowClaimBulkModal(true);
     }
 
+    async function publishForSale(rowIndex: number) {
+        const certificateId = paginatedData[rowIndex].certificate.id;
+
+        const certificate = certificates.find(cert => cert.id === certificateId);
+
+        setSellModalData(certificate);
+        setSellModalVisibility(true);
+    }
+
+    function hidePublishForSaleModal() {
+        setSellModalData(null);
+        setSellModalVisibility(false);
+    }
+
     async function claimCertificate(rowIndex: number) {
         const certificateId = paginatedData[rowIndex].certificate.id;
 
-        const certificate: Certificate.Entity = certificates.find(
-            cert => cert.id === certificateId
-        );
+        const certificate = certificates.find(cert => cert.id === certificateId);
 
         if (certificate && certificate.isOwned(userAddress)) {
             dispatch(setLoading(true));
@@ -306,6 +327,11 @@ export function CertificateTable(props: IProps) {
                     icon: <AssignmentTurnedIn />,
                     onClick: (row: number) => claimCertificate(row)
                 });
+                actions.push({
+                    name: t('certificate.actions.publishForSale'),
+                    icon: <Publish />,
+                    onClick: (row: number) => publishForSale(row)
+                });
                 break;
         }
 
@@ -378,7 +404,7 @@ export function CertificateTable(props: IProps) {
             locationText: getDeviceLocationText(enrichedData.producingDevice),
             compliance,
             certificationDate: formatDate(moment.unix(enrichedData.certificate.creationTime)),
-            energy: EnergyFormatter.format(enrichedData.certificate.energy)
+            energy: EnergyFormatter.format(enrichedData.ownedVolume)
         };
     });
 
@@ -402,6 +428,21 @@ export function CertificateTable(props: IProps) {
                 currentSort={currentSort}
                 sortAscending={sortAscending}
                 toggleSort={toggleSort}
+            />
+
+            <PublishForSaleModal
+                certificate={sellModalData}
+                producingDevice={
+                    sellModalData
+                        ? producingDevices.find(
+                              device =>
+                                  getDeviceId(device, environment) ===
+                                  sellModalData.deviceId.toString()
+                          )
+                        : null
+                }
+                showModal={sellModalVisibility}
+                callback={hidePublishForSaleModal}
             />
 
             <ClaimCertificateBulkModal

@@ -43,9 +43,17 @@ export class CertificateController {
     ): Promise<CertificationRequestOffChainData> {
         const certificationRequest = new CertificationRequest();
 
-        certificationRequest.id = id;
         certificationRequest.energy = data.energy;
         certificationRequest.files = data.files;
+
+        const existing = await this.certificationRequestRepository.findOne(id);
+
+        if (existing) {
+            existing.energy = data.energy;
+            existing.files = data.files;
+
+            return existing.save();
+        }
 
         return this.certificationRequestRepository.save(certificationRequest);
     }

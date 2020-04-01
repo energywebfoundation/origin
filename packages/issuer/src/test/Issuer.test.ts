@@ -43,7 +43,7 @@ describe('Issuer', () => {
     const createCertificationRequest = async (
         conf: Configuration.Entity,
         energy: number,
-        isPrivate: boolean = false
+        isPrivate = false
     ) => {
         setActiveUser(deviceOwnerPK);
 
@@ -110,7 +110,7 @@ describe('Issuer', () => {
 
         assert.deepOwnInclude(certificationRequest, {
             initialized: true,
-            device: Number(device),
+            deviceId: device,
             owner: accountDeviceOwner,
             fromTime,
             toTime,
@@ -131,10 +131,7 @@ describe('Issuer', () => {
 
         assert.isTrue(certificationRequest.approved);
 
-        const deviceOwnerBalance = await registry.balanceOf(
-            accountDeviceOwner,
-            certificateId
-        );
+        const deviceOwnerBalance = await registry.balanceOf(accountDeviceOwner, certificateId);
         assert.equal(deviceOwnerBalance, volume);
     });
 
@@ -246,7 +243,7 @@ describe('Issuer', () => {
 
         assert.deepOwnInclude(certificationRequest, {
             initialized: true,
-            device: 1,
+            deviceId: '1',
             owner: accountDeviceOwner,
             approved: false,
             isPrivate: true,

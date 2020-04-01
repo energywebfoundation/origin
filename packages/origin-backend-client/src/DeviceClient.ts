@@ -3,12 +3,14 @@ import {
     DeviceUpdateData,
     ISmartMeterRead,
     DeviceCreateData,
-    IDeviceWithRelationsIds
+    IDeviceWithRelationsIds,
+    ExternalDeviceId
 } from '@energyweb/origin-backend-core';
 import { IRequestClient, RequestClient } from './RequestClient';
 
 export interface IDeviceClient {
     getById(id: number): Promise<IDeviceWithRelationsIds>;
+    getByExternalId(id: ExternalDeviceId): Promise<IDeviceWithRelationsIds>;
     getAll(): Promise<IDeviceWithRelationsIds[]>;
     add(device: DeviceCreateData): Promise<IDeviceWithRelationsIds>;
     update(id: number, data: DeviceUpdateData): Promise<IDevice>;
@@ -24,6 +26,13 @@ export class DeviceClient implements IDeviceClient {
 
     private get endpoint() {
         return `${this.dataApiUrl}/Device`;
+    }
+
+    public async getByExternalId(id: ExternalDeviceId) {
+        const url = `${this.endpoint}/get-by-external-id/${id.type}/${id.id}`;
+        const { data } = await this.requestClient.get(url);
+
+        return data;
     }
 
     public async getById(id: number): Promise<IDeviceWithRelationsIds> {
