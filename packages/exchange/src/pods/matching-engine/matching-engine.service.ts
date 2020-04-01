@@ -71,6 +71,10 @@ export class MatchingEngineService {
         return this.matchingEngine.orderBookByProduct(productFilter);
     }
 
+    public cancel(orderId: string) {
+        this.matchingEngine.cancelOrder(orderId);
+    }
+
     @Interval(1000)
     private executeMatching() {
         if (!this.initialized) {

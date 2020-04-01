@@ -5,12 +5,14 @@ import request from 'supertest';
 import { Account } from '../src/pods/account/account';
 import { AccountService } from '../src/pods/account/account.service';
 import { CreateAskDTO } from '../src/pods/order/create-ask.dto';
+import { CreateBidDTO } from '../src/pods/order/create-bid.dto';
 import { Order } from '../src/pods/order/order.entity';
 import { RequestWithdrawalDTO } from '../src/pods/transfer/create-withdrawal.dto';
 import { Transfer } from '../src/pods/transfer/transfer.entity';
 import { TransferService } from '../src/pods/transfer/transfer.service';
 import { DatabaseService } from './database.service';
 import { bootstrapTestInstance } from './exchange';
+import { OrderStatus } from '@energyweb/exchange-core';
 
 const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
@@ -186,5 +188,49 @@ describe('account ask order send', () => {
 
         // wait to withdrawal to be finished to not mess with tx nonces
         await sleep(5000);
+    });
+
+    it('should be able to cancel bid', async () => {
+        const createBid: CreateBidDTO = {
+            price: 100,
+            validFrom: new Date(),
+            volume: '1000',
+            product: { deviceType: ['Solar'] }
+        };
+
+        let order: Order;
+
+        await request(app.getHttpServer())
+            .post('/orders/bid')
+            .send(createBid)
+            .expect(201)
+            .expect(res => {
+                order = res.body as Order;
+
+                expect(order.price).toBe(100);
+                expect(order.status).toBe(OrderStatus.Active);
+            });
+
+        await request(app.getHttpServer())
+            .post(`/orders/${order.id}/cancel`)
+            .expect(202)
+            .expect(res => {
+                const cancelled = res.body as Order;
+
+                expect(cancelled.id).toBe(order.id);
+                expect(cancelled.status).toBe(OrderStatus.PendingCancellation);
+            });
+
+        await sleep(3000);
+
+        await request(app.getHttpServer())
+            .get(`/orders/${order.id}`)
+            .expect(200)
+            .expect(res => {
+                const cancelled = res.body as Order;
+
+                expect(cancelled.id).toBe(order.id);
+                expect(cancelled.status).toBe(OrderStatus.Cancelled);
+            });
     });
 });

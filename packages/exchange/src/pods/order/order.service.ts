@@ -5,6 +5,7 @@ import BN from 'bn.js';
 import { List } from 'immutable';
 import { EntityManager, Repository } from 'typeorm';
 
+import { UnauthorizedActionError, UnknownEntity } from '../../utils/exceptions';
 import { AccountBalanceService } from '../account-balance/account-balance.service';
 import { MatchingEngineService } from '../matching-engine/matching-engine.service';
 import { ProductService } from '../product/product.service';
@@ -135,6 +136,19 @@ export class OrderService {
         return new Order(order);
     }
 
+    public async cancelOrder(userId: string, orderId: string) {
+        const order = await this.findOne(userId, orderId);
+        if (!order) {
+            throw new UnknownEntity(orderId);
+        }
+
+        await this.repository.update(orderId, { status: OrderStatus.PendingCancellation });
+
+        this.matchingEngineService.cancel(orderId);
+
+        return new Order({ ...order, status: OrderStatus.PendingCancellation });
+    }
+
     public async submit(order: Order) {
         this.logger.debug(`Submitting order:${JSON.stringify(order)}`);
 
@@ -157,6 +171,10 @@ export class OrderService {
         this.logger.debug(`Found ${orders?.length} active orders`);
 
         return orders;
+    }
+
+    public async findOne(userId: string, orderId: string) {
+        return this.repository.findOne(orderId, { where: { userId } });
     }
 
     public async getActiveOrders(userId: string) {
