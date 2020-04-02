@@ -5,7 +5,7 @@ import BN from 'bn.js';
 import { List } from 'immutable';
 import { EntityManager, Repository } from 'typeorm';
 
-import { UnauthorizedActionError, UnknownEntity } from '../../utils/exceptions';
+import { UnknownEntityError } from '../../utils/exceptions';
 import { AccountBalanceService } from '../account-balance/account-balance.service';
 import { MatchingEngineService } from '../matching-engine/matching-engine.service';
 import { ProductService } from '../product/product.service';
@@ -139,7 +139,7 @@ export class OrderService {
     public async cancelOrder(userId: string, orderId: string) {
         const order = await this.findOne(userId, orderId);
         if (!order) {
-            throw new UnknownEntity(orderId);
+            throw new UnknownEntityError(orderId);
         }
 
         await this.repository.update(orderId, { status: OrderStatus.PendingCancellation });
@@ -208,10 +208,30 @@ export class OrderService {
                     );
                 }
 
-                await this.repository.update(statusChange.orderId, { status: statusChange.status });
+                await this.updateStatus(statusChange.orderId, statusChange.status);
             } catch (e) {
                 this.logger.error(`Unexpected error ${e.message}`);
             }
         });
+    }
+
+    public async reactivateOrder(order: Order) {
+        if (
+            order.status !== OrderStatus.Cancelled &&
+            order.status !== OrderStatus.PendingCancellation
+        ) {
+            throw new Error(
+                'Unable to reactive order in state other than Cancelled or PendingCancellation'
+            );
+        }
+
+        await this.updateStatus(order.id, OrderStatus.Active);
+        const updated = await this.findOne(order.userId, order.id);
+
+        this.matchingEngineService.submit(updated);
+    }
+
+    private updateStatus(orderId: string, status: OrderStatus) {
+        return this.repository.update(orderId, { status });
     }
 }

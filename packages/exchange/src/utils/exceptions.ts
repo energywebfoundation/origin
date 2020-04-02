@@ -5,8 +5,14 @@ export class UnauthorizedActionError extends Error {
     }
 }
 
-export class UnknownEntity extends Error {
+export class UnknownEntityError extends Error {
     constructor(id: string) {
         super(`Unknown entity ${id}`);
+    }
+}
+
+export class ForbiddenActionError extends Error {
+    constructor(msg: string) {
+        super(`Forbidden action: ${msg}`);
     }
 }

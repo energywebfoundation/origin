@@ -1,4 +1,5 @@
-import { TimeFrame } from '@energyweb/utils-general';
+import { OrderStatus } from '@energyweb/exchange-core';
+import { DemandStatus, TimeFrame } from '@energyweb/utils-general';
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectConnection, InjectRepository } from '@nestjs/typeorm';
 import BN from 'bn.js';
@@ -6,6 +7,7 @@ import * as Moment from 'moment';
 import { extendMoment } from 'moment-range';
 import { Connection, Repository } from 'typeorm';
 
+import { ForbiddenActionError } from '../../utils/exceptions';
 import { MatchingEngineService } from '../matching-engine/matching-engine.service';
 import { CreateBidDTO } from '../order/create-bid.dto';
 import { Order } from '../order/order.entity';
@@ -52,7 +54,8 @@ export class DemandService {
                 periodTimeFrame: createDemand.periodTimeFrame,
                 product: createDemand.product,
                 start: createDemand.start,
-                end: createDemand.end
+                end: createDemand.end,
+                status: DemandStatus.ACTIVE
             });
 
             bids = await this.orderService.createDemandBids(
@@ -68,12 +71,83 @@ export class DemandService {
         return this.findOne(userId, demand.id);
     }
 
+    public async pause(userId: string, demandId: string): Promise<Demand> {
+        const demand = await this.findOne(userId, demandId);
+        if (!demand) {
+            return null;
+        }
+        if (demand.status !== DemandStatus.ACTIVE) {
+            throw new ForbiddenActionError(
+                `Demand ${demand.id} expected status is DemandStatus.ACTIVE but had ${
+                    DemandStatus[demand.status]
+                }`
+            );
+        }
+
+        await this.repository.update(demand.id, { status: DemandStatus.PAUSED });
+        await this.cancelDemandBids(demand);
+
+        return this.findOne(userId, demand.id);
+    }
+
+    public async archive(userId: string, demandId: string): Promise<Demand> {
+        const demand = await this.findOne(userId, demandId);
+        if (!demand) {
+            return null;
+        }
+        if (demand.status === DemandStatus.ARCHIVED || demand.status === DemandStatus.ACTIVE) {
+            throw new ForbiddenActionError(
+                `Demand ${demand.id} expected status is DemandStatus.PAUSED but had ${
+                    DemandStatus[demand.status]
+                }`
+            );
+        }
+
+        await this.repository.update(demand.id, { status: DemandStatus.ARCHIVED });
+        return this.findOne(userId, demand.id);
+    }
+
+    public async resume(userId: string, demandId: string): Promise<Demand> {
+        const demand = await this.findOne(userId, demandId);
+        if (!demand) {
+            return null;
+        }
+        if (demand.status !== DemandStatus.PAUSED) {
+            throw new ForbiddenActionError(
+                `Demand ${demand.id} expected status is DemandStatus.PAUSED but had ${
+                    DemandStatus[demand.status]
+                }`
+            );
+        }
+
+        await this.repository.update(demand.id, { status: DemandStatus.ACTIVE });
+        this.reSubmitDemandBids(demand);
+
+        return this.findOne(userId, demand.id);
+    }
+
     public async findOne(userId: string, id: string) {
         return this.repository.findOne(id, { where: { userId } });
     }
 
     public async getAll(userId: string) {
         return this.repository.find({ where: { userId } });
+    }
+
+    private async cancelDemandBids(demand: Demand) {
+        for (const bid of demand.bids.filter(
+            b => b.status === OrderStatus.Active || b.status === OrderStatus.PartiallyFilled
+        )) {
+            await this.orderService.cancelOrder(demand.userId, bid.id);
+        }
+    }
+
+    private reSubmitDemandBids(demand: Demand) {
+        for (const bid of demand.bids.filter(
+            b => b.status === OrderStatus.Cancelled || b.status === OrderStatus.PendingCancellation
+        )) {
+            this.orderService.reactivateOrder(bid);
+        }
     }
 
     private generateValidityDates(createDemand: CreateDemandDTO) {

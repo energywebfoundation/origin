@@ -1,3 +1,4 @@
+import { OrderStatus } from '@energyweb/exchange-core';
 import { INestApplication } from '@nestjs/common';
 import { ethers } from 'ethers';
 import request from 'supertest';
@@ -12,7 +13,6 @@ import { Transfer } from '../src/pods/transfer/transfer.entity';
 import { TransferService } from '../src/pods/transfer/transfer.service';
 import { DatabaseService } from './database.service';
 import { bootstrapTestInstance } from './exchange';
-import { OrderStatus } from '@energyweb/exchange-core';
 
 const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 

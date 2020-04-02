@@ -1,5 +1,5 @@
 import { ExtendedBaseEntity } from '@energyweb/origin-backend';
-import { TimeFrame } from '@energyweb/utils-general';
+import { TimeFrame, DemandStatus } from '@energyweb/utils-general';
 import BN from 'bn.js';
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
@@ -41,4 +41,7 @@ export class Demand extends ExtendedBaseEntity {
         }
     )
     bids: Order[];
+
+    @Column()
+    status: DemandStatus;
 }
