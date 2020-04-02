@@ -73,6 +73,7 @@ export class DemandController {
             if (error instanceof ForbiddenActionError) {
                 throw new ForbiddenException();
             }
+            throw error;
         }
     }
 

@@ -1,11 +1,9 @@
-import { Filter } from '@energyweb/exchange-core';
 import { INestApplication } from '@nestjs/common';
 import { ethers } from 'ethers';
 import request from 'supertest';
 
 import { Account } from '../src/pods/account/account';
 import { AccountService } from '../src/pods/account/account.service';
-import { ProductFilterDTO } from '../src/pods/order-book/product-filter.dto';
 import { CreateAskDTO } from '../src/pods/order/create-ask.dto';
 import { CreateBidDTO } from '../src/pods/order/create-bid.dto';
 import { OrderStatus } from '../src/pods/order/order-status.enum';
