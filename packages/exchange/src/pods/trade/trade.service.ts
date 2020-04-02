@@ -44,7 +44,7 @@ export class TradeService {
         });
     }
 
-    public async getAll(userId: string) {
+    public async getAll(userId: string, maskOrders = true) {
         const trades = await this.repository
             .createQueryBuilder('trade')
             .leftJoinAndSelect('trade.bid', 'bid')
@@ -53,6 +53,6 @@ export class TradeService {
             .where('ask.userId = :userId OR bid.userId = :userId', { userId })
             .getMany();
 
-        return trades.map(trade => trade.withMaskedOrder(userId));
+        return maskOrders ? trades.map(trade => trade.withMaskedOrder(userId)) : trades;
     }
 }
