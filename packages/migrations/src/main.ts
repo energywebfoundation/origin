@@ -52,7 +52,7 @@ const seedFilePath = absolutePath(program.seedFile ?? '../config/seed.sql');
 
     try {
         logger.info('Migrating table to the database...');
-        const createTablesQuery = fs.readFileSync(absolutePath('../config/create_tables.sql')).toString();
+        const createTablesQuery = fs.readFileSync(absolutePath('./schema/create_tables.sql')).toString();
         await client.query(createTablesQuery);
     } catch (e) {
         logger.debug(e);
@@ -67,6 +67,7 @@ const seedFilePath = absolutePath(program.seedFile ?? '../config/seed.sql');
         process.exit(1);
     }
 
+    logger.info(`Deploying contracts to ${process.env.WEB3}...`);
     const contractsLookup = await deployContracts();
 
     if (rows[0]?.contractsLookup && program.redeploy) {
