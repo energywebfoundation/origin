@@ -14,7 +14,7 @@ import {
 import { IStoreState } from '../../types';
 import { getConfiguration } from '../selectors';
 import { showNotification, NotificationType } from '../../utils/notifications';
-import { getUserOffchain } from '../users/selectors';
+import { getUserOffchain, getActiveBlockchainAccountAddress } from '../users/selectors';
 import { setLoading } from '../general/actions';
 import { getCertificates, getCertificateFetcher, getCertificateById } from './selectors';
 import { Certificate, CertificationRequest } from '@energyweb/issuer';
@@ -62,10 +62,19 @@ function* openRequestCertificatesModalSaga(): SagaIterator {
         const device = action.payload.producingDevice;
 
         const userOffchain: IUserWithRelations = yield select(getUserOffchain);
+        const activeAddress: string = yield select(getActiveBlockchainAccountAddress);
 
         if (device?.organization !== userOffchain?.organization?.id) {
             showNotification(
                 `You need to own the device to request certificates.`,
+                NotificationType.Error
+            );
+        } else if (
+            !activeAddress ||
+            activeAddress?.toLowerCase() !== userOffchain?.blockchainAccountAddress?.toLowerCase()
+        ) {
+            showNotification(
+                `You need to select a blockchain account bound to the logged in user.`,
                 NotificationType.Error
             );
         } else {

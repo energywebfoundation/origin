@@ -146,7 +146,6 @@ contract Issuer is Initializable, Ownable {
     }
 
     function approveCertificationRequest(
-        address _to,
         uint256 _requestId,
         uint256 _value,
         bytes memory _validityData
@@ -156,11 +155,11 @@ contract Issuer is Initializable, Ownable {
 
         _approve(_requestId);
 
-        uint256 certificateId = registry.issue(_to, _validityData, certificateTopic, _value, request.data);
+        uint256 certificateId = registry.issue(request.owner, _validityData, certificateTopic, _value, request.data);
         _assignCertificate(_requestId, certificateId);
         certificateToRequestStorage[certificateId] = _requestId;
 
-        emit ApprovedCertificationRequest(_to, _requestId, certificateId);
+        emit ApprovedCertificationRequest(request.owner, _requestId, certificateId);
 
         return certificateId;
     }
@@ -169,7 +168,6 @@ contract Issuer is Initializable, Ownable {
         uint256 requestId = requestCertificationFor(_data, _to, false);
 
         return approveCertificationRequest(
-            _to,
             requestId,
             _value,
             abi.encodeWithSignature("isRequestValid(uint256)", requestId)
@@ -177,7 +175,6 @@ contract Issuer is Initializable, Ownable {
     }
 
     function approveCertificationRequestPrivate(
-        address _to,
         uint256 _requestId,
         bytes32 _commitment,
         bytes memory _validityData
@@ -187,12 +184,12 @@ contract Issuer is Initializable, Ownable {
 
         _approve(_requestId);
 
-        uint256 certificateId = registry.issue(_to, _validityData, certificateTopic, 0, request.data);
+        uint256 certificateId = registry.issue(request.owner, _validityData, certificateTopic, 0, request.data);
         _assignCertificate(_requestId, certificateId);
         _updateCommitment(certificateId, 0x0, _commitment);
         certificateToRequestStorage[certificateId] = _requestId;
 
-        emit ApprovedCertificationRequest(_to, _requestId, certificateId);
+        emit ApprovedCertificationRequest(request.owner, _requestId, certificateId);
 
         return certificateId;
     }
@@ -201,7 +198,6 @@ contract Issuer is Initializable, Ownable {
         uint256 requestId = requestCertificationFor(_data, _to, true);
 
         return approveCertificationRequestPrivate(
-            _to,
             requestId,
             _commitment,
             abi.encodeWithSignature("isRequestValid(uint256)", requestId)

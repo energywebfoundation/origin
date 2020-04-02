@@ -76,7 +76,6 @@ describe('Deposits using deployed registry', () => {
         ]);
 
         const approvalReceipt = await ((await issuer.approveCertificationRequest(
-            address,
             requestId,
             amount,
             validityData

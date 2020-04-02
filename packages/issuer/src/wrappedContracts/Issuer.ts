@@ -41,7 +41,10 @@ export class Issuer extends GeneralFunctions {
     }
 
     async getAllNewCertificationRequestEvents(eventFilter?: PastEventOptions) {
-        return this.web3Contract.getPastEvents('NewCertificationRequest', this.createFilter(eventFilter));
+        return this.web3Contract.getPastEvents(
+            'NewCertificationRequest',
+            this.createFilter(eventFilter)
+        );
     }
 
     async encodeData(_from: Timestamp, _to: Timestamp, _deviceId: string, txParams?: ISpecialTx) {
@@ -58,17 +61,18 @@ export class Issuer extends GeneralFunctions {
             .call(txParams);
     }
 
-    async getCertificationRequestsForDevice(_deviceId: string, txParams?: ISpecialTx): Promise<number[]> {
+    async getCertificationRequestsForDevice(
+        _deviceId: string,
+        txParams?: ISpecialTx
+    ): Promise<number[]> {
         const ids = await this.web3Contract.methods
             .getCertificationRequestsForDevice(_deviceId)
-            .call(txParams)
+            .call(txParams);
         return ids.map((id: any) => Number(id));
     }
 
     async getCertificateCommitment(_certificateId: number, txParams?: ISpecialTx) {
-        return this.web3Contract.methods
-            .getCertificateCommitment(_certificateId)
-            .call(txParams);
+        return this.web3Contract.methods.getCertificateCommitment(_certificateId).call(txParams);
     }
 
     async requestCertification(_data: any, _isPrivate: boolean, txParams?: ISpecialTx) {
@@ -93,14 +97,12 @@ export class Issuer extends GeneralFunctions {
     }
 
     async approveCertificationRequest(
-        _to: string,
         _requestId: number,
         _value: number,
         _validityData: string,
         txParams?: ISpecialTx
     ) {
         const method = this.web3Contract.methods.approveCertificationRequest(
-            _to,
             _requestId,
             _value,
             _validityData
@@ -116,14 +118,12 @@ export class Issuer extends GeneralFunctions {
     }
 
     async approveCertificationRequestPrivate(
-        _to: string,
         _requestId: number,
         _commitment: string,
         _validityData: string,
         txParams?: ISpecialTx
     ) {
         const method = this.web3Contract.methods.approveCertificationRequestPrivate(
-            _to,
             _requestId,
             _commitment,
             _validityData
@@ -224,15 +224,21 @@ export class Issuer extends GeneralFunctions {
             .call(txParams);
     }
 
-    async getCertificationRequestIdForCertificate(_certificateId: number, txParams?: ISpecialTx): Promise<number> {
+    async getCertificationRequestIdForCertificate(
+        _certificateId: number,
+        txParams?: ISpecialTx
+    ): Promise<number> {
         const id = await this.web3Contract.methods
             .getCertificationRequestIdForCertificate(_certificateId)
-            .call(txParams)
+            .call(txParams);
         return Number(id);
     }
 
-    async getCertificateIdForCertificationRequest(_requestId: number, txParams?: ISpecialTx): Promise<number> {
-        const id = await  this.web3Contract.methods
+    async getCertificateIdForCertificationRequest(
+        _requestId: number,
+        txParams?: ISpecialTx
+    ): Promise<number> {
+        const id = await this.web3Contract.methods
             .getCertificateIdForCertificationRequest(_requestId)
             .call(txParams);
         return Number(id);
