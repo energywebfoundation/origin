@@ -3,10 +3,6 @@
     "schedule": ["every weekend"],
     "ignoreDeps": [
         "@energyweb/device-registry",
-        "@energyweb/market-matcher",
-        "@energyweb/market",
-        "@energyweb/origin",
-        "@energyweb/user-registry",
         "@energyweb/utils-general",
         "@energyweb/origin-backend",
         "ganache-cli",

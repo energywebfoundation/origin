@@ -1,8 +1,8 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Configuration } from './configuration.entity';
 import { IOriginConfiguration } from '@energyweb/origin-backend-core';
+import { Configuration } from './configuration.entity';
 import { StorageErrors } from '../../enums/StorageErrors';
 
 @Injectable()
@@ -31,7 +31,7 @@ export class ConfigurationService {
             existing = new Configuration();
         }
 
-        Object.assign(existing, data)
+        Object.assign(existing, data);
         return existing.save();
     }
 }

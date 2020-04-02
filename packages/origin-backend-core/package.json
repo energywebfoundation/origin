@@ -24,5 +24,8 @@
   "publishConfig": {
     "access": "public",
     "registry": "https://registry.npmjs.org"
+  },
+  "dependencies": {
+    "precise-proofs-js": "1.0.2"
   }
 }

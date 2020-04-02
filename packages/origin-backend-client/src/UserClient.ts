@@ -4,18 +4,26 @@ import {
     UserLoginData,
     UserLoginReturnData,
     UserUpdateData,
-    IUserWithRelationsIds
+    IUserWithRelationsIds,
+    IUserProperties
 } from '@energyweb/origin-backend-core';
 
 import { IRequestClient, RequestClient } from './RequestClient';
+
+type UpdateUserResponseReturnType = IUserWithRelationsIds;
 
 export interface IUserClient {
     login(email: string, password: string): Promise<UserLoginReturnData>;
     logout(): Promise<void>;
     register(data: UserRegisterData): Promise<UserRegisterReturnData>;
     me(): Promise<IUserWithRelationsIds>;
+    getUserById(id: string): Promise<IUserWithRelationsIds>;
     getUserByBlockchainAccount(blockchainAccountAddress: string): Promise<IUserWithRelationsIds>;
-    attachSignedMessage(id: number, signedMessage: string): Promise<any>;
+    attachSignedMessage(id: number, signedMessage: string): Promise<UpdateUserResponseReturnType>;
+    updateAdditionalProperties(
+        id: number,
+        properties: Partial<Pick<IUserProperties, 'autoPublish' | 'notifications'>>
+    ): Promise<UpdateUserResponseReturnType>;
 }
 
 export class UserClient implements IUserClient {
@@ -29,7 +37,7 @@ export class UserClient implements IUserClient {
     }
 
     private get userEndpoint() {
-        return `${this.dataApiUrl}/User`;
+        return `${this.dataApiUrl}/user`;
     }
 
     public async register(formData: UserRegisterData): Promise<UserRegisterReturnData> {
@@ -77,7 +85,24 @@ export class UserClient implements IUserClient {
         return this.updateUser(id, { blockchainAccountSignedMessage: signedMessage });
     }
 
-    private async updateUser(id: number, updatedUserInfo: UserUpdateData) {
+    public async updateAdditionalProperties(
+        id: number,
+        properties: Partial<Pick<IUserProperties, 'autoPublish' | 'notifications'>>
+    ) {
+        return this.updateUser(id, properties);
+    }
+
+    public async getUserById(id: string): Promise<IUserWithRelationsIds> {
+        const url = `${this.userEndpoint}/${id}`;
+        const { data } = await this.requestClient.get<{}, IUserWithRelationsIds>(url);
+
+        return data;
+    }
+
+    private async updateUser(
+        id: number,
+        updatedUserInfo: UserUpdateData
+    ): Promise<IUserWithRelationsIds> {
         const url = `${this.userEndpoint}/${id}`;
         const { data } = await this.requestClient.put(url, updatedUserInfo);
 

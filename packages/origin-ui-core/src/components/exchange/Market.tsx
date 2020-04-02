@@ -79,12 +79,10 @@ export function Market(props: IProps) {
             .required()
             .label(t('exchange.properties.generationDateEnd')),
         energy: Yup.number()
-            .required()
             .positive()
             .integer()
             .label(t('exchange.properties.energy')),
         price: Yup.number()
-            .required()
             .positive()
             .min(0.01)
             .label(t('exchange.properties.price'))
@@ -148,6 +146,14 @@ export function Market(props: IProps) {
                                             {
                                                 label: t('device.properties.deviceType'),
                                                 placeholder: t('device.info.selectDeviceType')
+                                            },
+                                            {
+                                                label: t('device.properties.deviceType'),
+                                                placeholder: t('device.info.selectDeviceType')
+                                            },
+                                            {
+                                                label: t('device.properties.deviceType'),
+                                                placeholder: t('device.info.selectDeviceType')
                                             }
                                         ]}
                                         disabled={fieldDisabled}
@@ -161,6 +167,12 @@ export function Market(props: IProps) {
                                         }
                                         options={regions}
                                         selectOptions={[
+                                            {
+                                                label: t('exchange.info.regions'),
+                                                placeholder: t(
+                                                    'exchange.info.selectMultipleRegions'
+                                                )
+                                            },
                                             {
                                                 label: t('exchange.info.regions'),
                                                 placeholder: t(
@@ -199,7 +211,6 @@ export function Market(props: IProps) {
                                         property="energy"
                                         disabled={fieldDisabled}
                                         className="mt-3"
-                                        variant="standard"
                                         required
                                         InputProps={{
                                             endAdornment: (
@@ -216,7 +227,6 @@ export function Market(props: IProps) {
                                         property="price"
                                         disabled={fieldDisabled}
                                         className="mt-3"
-                                        variant="standard"
                                         required
                                         InputProps={{
                                             endAdornment: (

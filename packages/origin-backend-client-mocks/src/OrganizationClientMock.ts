@@ -8,12 +8,12 @@ import {
     OrganizationStatus,
     OrganizationRemoveMemberReturnData,
     IUserWithRelationsIds,
-    OrganizationStatusChanged,
+    OrganizationStatusChangedEvent,
     IEvent,
     SupportedEvents,
     OrganizationInvitationStatus,
     OrganizationInvitationEvent,
-    OrganizationRemovedMember
+    OrganizationRemovedMemberEvent
 } from '@energyweb/origin-backend-core';
 
 import { IOrganizationClient, IEventClient } from '@energyweb/origin-backend-client';
@@ -24,15 +24,18 @@ interface ITmpUser {
 }
 
 export class OrganizationClientMock implements IOrganizationClient {
-
     constructor(public eventClient: IEventClient) {}
 
     private storage = new Map<number, IOrganizationWithRelationsIds>();
+
     private invitationStorage = new Map<number, IOrganizationInvitation>();
+
     private userStorage: ITmpUser[] = [];
 
     private idCounter = 0;
+
     private invitationCounter = 0;
+
     private userCounter = 0;
 
     async getById(id: number): Promise<IOrganizationWithRelationsIds> {
@@ -51,6 +54,7 @@ export class OrganizationClientMock implements IOrganizationClient {
             status: OrganizationStatus.Submitted,
             leadUser: null,
             users: [],
+            devices: [],
             ...data
         };
 
@@ -67,6 +71,7 @@ export class OrganizationClientMock implements IOrganizationClient {
             status: OrganizationStatus.Submitted,
             leadUser: leadUserId,
             users: [leadUserId],
+            devices: [],
             ...data
         };
 
@@ -82,7 +87,7 @@ export class OrganizationClientMock implements IOrganizationClient {
 
         this.storage.set(id, organization);
 
-        const eventData: OrganizationStatusChanged = {
+        const eventData: OrganizationStatusChangedEvent = {
             organizationId: id,
             organizationEmail: organization.email,
             status: data.status
@@ -112,7 +117,7 @@ export class OrganizationClientMock implements IOrganizationClient {
             email,
             organization: organizationId,
             status: OrganizationInvitationStatus.Pending
-        }
+        };
 
         this.invitationStorage.set(organizationInvitation.id, organizationInvitation);
 
@@ -155,7 +160,7 @@ export class OrganizationClientMock implements IOrganizationClient {
 
         this.storage.set(organization.id, organization);
 
-        const eventData: OrganizationRemovedMember = {
+        const eventData: OrganizationRemovedMemberEvent = {
             organizationName: organization.name,
             email: this.userStorage.find(user => user.id === userId).email
         };
@@ -213,7 +218,7 @@ export class OrganizationClientMock implements IOrganizationClient {
         this.invitationStorage.set(invitationId, invitation);
         this.storage.set(organization.id, organization);
 
-        return;
+        return null;
     }
 
     rejectInvitation(id: number): Promise<any> {

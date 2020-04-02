@@ -63,7 +63,7 @@ export function SmartMeterReadingsChart(props: ISmartMeterReadingsChartProps) {
     };
 
     const endDateInTimezone = moment(selectedTimeFrame?.endDate)
-        .tz(producingDevice?.offChainProperties?.timezone)
+        .tz(producingDevice?.timezone)
         .clone();
 
     function changeSelectedTimeFrame(increment = true) {
@@ -136,14 +136,12 @@ export function SmartMeterReadingsChart(props: ISmartMeterReadingsChartProps) {
             const currentDate = chartEndDate
                 .clone()
                 .subtract(currentIndex, measurementUnit)
-                .tz(producingDevice.offChainProperties.timezone);
+                .tz(producingDevice.timezone);
 
             let totalEnergy = 0;
 
             for (const reading of readings) {
-                const readingDate = moment
-                    .unix(reading.timestamp)
-                    .tz(producingDevice.offChainProperties.timezone);
+                const readingDate = moment.unix(reading.timestamp).tz(producingDevice.timezone);
 
                 if (readingDate.isSame(currentDate, measurementUnit)) {
                     totalEnergy += reading.energy;

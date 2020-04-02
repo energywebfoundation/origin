@@ -1,19 +1,13 @@
-import {
-    Entity,
-    Column,
-    BaseEntity,
-    PrimaryGeneratedColumn,
-    OneToMany,
-    OneToOne,
-    JoinColumn
-} from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, OneToMany, OneToOne, JoinColumn } from 'typeorm';
 import { IsInt, IsEmail, Min, ValidateIf, IsNotEmpty, IsUrl } from 'class-validator';
 import { OrganizationStatus, IOrganization } from '@energyweb/origin-backend-core';
 import { User } from '../user/user.entity';
 import { OrganizationInvitation } from './organizationInvitation.entity';
+import { Device } from '../device/device.entity';
+import { ExtendedBaseEntity } from '../ExtendedBaseEntity';
 
 @Entity()
-export class Organization extends BaseEntity implements IOrganization {
+export class Organization extends ExtendedBaseEntity implements IOrganization {
     @PrimaryGeneratedColumn()
     id: number;
 
@@ -111,6 +105,12 @@ export class Organization extends BaseEntity implements IOrganization {
         entity => entity.organization
     )
     invitations: OrganizationInvitation[];
+
+    @OneToMany(
+        () => Device,
+        device => device.organization
+    )
+    devices: Device[];
 
     @OneToOne(() => User)
     @JoinColumn()

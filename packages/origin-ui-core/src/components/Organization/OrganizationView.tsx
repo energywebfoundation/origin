@@ -11,7 +11,7 @@ interface IMatchParams {
 }
 
 export function OrganizationView() {
-    const organizationClient = useSelector(getOffChainDataSource).organizationClient;
+    const organizationClient = useSelector(getOffChainDataSource)?.organizationClient;
 
     const [entity, setEntity] = useState<IOrganization>(null);
 

@@ -1,10 +1,12 @@
-import { Module } from '@nestjs/common';
+import { Module, ValidationPipe } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
+import { APP_INTERCEPTOR, APP_PIPE } from '@nestjs/core';
 import { ScheduleModule } from '@nestjs/schedule';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import path from 'path';
+import fs from 'fs';
 
-import { AppService } from './app.service';
+import { EmptyResultInterceptor } from './empty-result.interceptor';
 import { AccountBalanceModule } from './pods/account-balance/account-balance.module';
 import { AccountDeployerModule } from './pods/account-deployer/account-deployer.module';
 import { Account } from './pods/account/account.entity';
@@ -19,6 +21,7 @@ import { OrderBookModule } from './pods/order-book/order-book.module';
 import { Order } from './pods/order/order.entity';
 import { OrderModule } from './pods/order/order.module';
 import { ProductModule } from './pods/product/product.module';
+import { RunnerModule } from './pods/runner';
 import { Trade } from './pods/trade/trade.entity';
 import { TradeModule } from './pods/trade/trade.module';
 import { Transfer } from './pods/transfer/transfer.entity';
@@ -26,9 +29,12 @@ import { TransferModule } from './pods/transfer/transfer.module';
 import { WithdrawalProcessorModule } from './pods/withdrawal-processor/withdrawal-processor.module';
 
 const getEnvFilePath = () => {
-    if (__dirname.includes('dist/js')) {
-        return path.resolve(__dirname, '../../../../../.env');
+    const resolvedPath = path.resolve(__dirname, '../../../../../.env');
+
+    if (__dirname.includes('dist/js') && fs.existsSync(resolvedPath)) {
+        return resolvedPath;
     }
+
     return null;
 };
 
@@ -41,11 +47,11 @@ const getEnvFilePath = () => {
         TypeOrmModule.forRoot({
             type: 'postgres',
             name: 'ExchangeConnection',
-            host: process.env.EXCHANGE_DB_HOST ?? 'localhost',
-            port: Number(process.env.EXCHANGE_DB_PORT) ?? 5432,
-            username: process.env.EXCHANGE_DB_USERNAME ?? 'postgres',
-            password: process.env.EXCHANGE_DB_PASSWORD ?? 'postgres',
-            database: process.env.EXCHANGE_DB_DATABASE ?? 'origin-exchange',
+            host: process.env.DB_HOST ?? 'localhost',
+            port: Number(process.env.DB_PORT) ?? 5432,
+            username: process.env.DB_USERNAME ?? 'postgres',
+            password: process.env.DB_PASSWORD ?? 'postgres',
+            database: process.env.DB_DATABASE ?? 'origin',
             entities: [Demand, Order, Trade, Asset, Transfer, Account],
             synchronize: true,
             logging: ['info']
@@ -63,8 +69,12 @@ const getEnvFilePath = () => {
         AccountDeployerModule,
         AccountBalanceModule,
         DepositWatcherModule,
-        WithdrawalProcessorModule
+        WithdrawalProcessorModule,
+        RunnerModule
     ],
-    providers: [AppService]
+    providers: [
+        { provide: APP_PIPE, useClass: ValidationPipe },
+        { provide: APP_INTERCEPTOR, useClass: EmptyResultInterceptor }
+    ]
 })
 export class AppModule {}

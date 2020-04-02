@@ -10,10 +10,11 @@ import {
     IOrganizationInvitation,
     IUserWithRelationsIds,
     OrganizationRemoveMemberReturnData,
-    OrganizationStatusChanged,
+    OrganizationStatusChangedEvent,
     SupportedEvents,
     OrganizationInvitationEvent,
-    OrganizationRemovedMember
+    OrganizationRemovedMemberEvent,
+    OrganizationUpdateData
 } from '@energyweb/origin-backend-core';
 
 import {
@@ -30,7 +31,7 @@ import {
     UseGuards,
     Query,
     ParseIntPipe,
-    Inject
+    Logger
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { AuthGuard } from '@nestjs/passport';
@@ -41,17 +42,21 @@ import { UserDecorator } from '../user/user.decorator';
 import { UserService } from '../user/user.service';
 import { OrganizationInvitation } from './organizationInvitation.entity';
 import { User } from '../user/user.entity';
-import { EventsWebSocketGateway } from '../../events/events.gateway';
+import { EventsService } from '../events';
+import { OrganizationService } from './organization.service';
 
 @Controller('/Organization')
 export class OrganizationController {
+    private logger = new Logger(OrganizationController.name);
+
     constructor(
         @InjectRepository(Organization)
         private readonly organizationRepository: Repository<Organization>,
         @InjectRepository(OrganizationInvitation)
         private readonly organizationInvitationRepository: Repository<OrganizationInvitation>,
         private readonly userService: UserService,
-        @Inject(EventsWebSocketGateway) private readonly eventGateway: EventsWebSocketGateway
+        private readonly eventsService: EventsService,
+        private readonly organizationService: OrganizationService
     ) {}
 
     @Get()
@@ -110,9 +115,7 @@ export class OrganizationController {
 
     @Get('/:id')
     async get(@Param('id') id: string) {
-        const existingEntity = await this.organizationRepository.findOne(id, {
-            loadRelationIds: true
-        });
+        const existingEntity = await this.organizationService.findOne(id);
 
         if (!existingEntity) {
             throw new NotFoundException(StorageErrors.NON_EXISTENT);
@@ -133,7 +136,8 @@ export class OrganizationController {
                 ...(body as OrganizationPostData),
                 status: OrganizationStatus.Submitted,
                 leadUser: user,
-                users: [user]
+                users: [user],
+                devices: []
             };
 
             Object.assign(newEntity, data);
@@ -158,13 +162,13 @@ export class OrganizationController {
 
     @Delete('/:id')
     async delete(@Param('id') id: string) {
-        const existingEntity = await this.organizationRepository.findOne(id);
+        const existingEntity = await this.organizationService.findOne(id);
 
         if (!existingEntity) {
             throw new NotFoundException(StorageErrors.NON_EXISTENT);
         }
 
-        await this.organizationRepository.remove(existingEntity);
+        await this.organizationService.remove(existingEntity);
 
         return {
             message: `Entity ${id} deleted`
@@ -172,36 +176,33 @@ export class OrganizationController {
     }
 
     @Put('/:id')
-    async put(@Param('id') id: string, @Body() body: any) {
-        const existingEntity = await this.organizationRepository.findOne(id);
+    async put(@Param('id') id: string, @Body() body: OrganizationUpdateData) {
+        const existingEntity = await this.organizationService.findOne(id);
 
         if (!existingEntity) {
             throw new NotFoundException(StorageErrors.NON_EXISTENT);
         }
 
-        const parsedStatus = parseInt(body?.status, 10);
-
-        if (existingEntity.status === parsedStatus) {
+        if (existingEntity.status === body.status) {
             throw new BadRequestException(`Organization is already in requested status.`);
         }
 
-        existingEntity.status = parsedStatus;
-
         try {
-            await existingEntity.save();
+            await this.organizationService.update(id, body);
         } catch (error) {
+            this.logger.error(error);
             throw new UnprocessableEntityException({
                 message: `Entity ${id} could not be updated due to an unkown error`
             });
         }
 
-        const eventData: OrganizationStatusChanged = {
+        const eventData: OrganizationStatusChangedEvent = {
             organizationId: existingEntity.id,
             organizationEmail: existingEntity.email,
-            status: parsedStatus
+            status: body.status
         };
 
-        this.eventGateway.handleEvent({
+        this.eventsService.handleEvent({
             type: SupportedEvents.ORGANIZATION_STATUS_CHANGED,
             data: eventData
         });
@@ -333,8 +334,8 @@ export class OrganizationController {
                 email,
                 organizationName: organization.name
             };
-    
-            this.eventGateway.handleEvent({
+
+            this.eventsService.handleEvent({
                 type: SupportedEvents.ORGANIZATION_INVITATION,
                 data: eventData
             });
@@ -409,12 +410,12 @@ export class OrganizationController {
 
             removedUser.save();
 
-            const eventData: OrganizationRemovedMember = {
+            const eventData: OrganizationRemovedMemberEvent = {
                 organizationName: organization.name,
                 email: removedUser.email
             };
-    
-            this.eventGateway.handleEvent({
+
+            this.eventsService.handleEvent({
                 type: SupportedEvents.ORGANIZATION_REMOVED_MEMBER,
                 data: eventData
             });

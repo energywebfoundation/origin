@@ -1,7 +1,17 @@
-import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { ExtendedBaseEntity } from '@energyweb/origin-backend';
+
+export interface IAsset {
+    id: string;
+    address: string;
+    tokenId: string;
+    deviceId: string;
+    generationFrom: Date;
+    generationTo: Date;
+}
 
 @Entity()
-export class Asset extends BaseEntity {
+export class Asset extends ExtendedBaseEntity implements IAsset {
     @PrimaryGeneratedColumn('uuid')
     id: string;
 
@@ -13,4 +23,12 @@ export class Asset extends BaseEntity {
 
     @Column()
     deviceId: string;
+
+    @Column({ type: 'timestamptz' })
+    generationFrom: Date;
+
+    @Column({ type: 'timestamptz' })
+    generationTo: Date;
 }
+
+export type CreateAssetDTO = Omit<IAsset, 'id'>;

@@ -1,7 +1,6 @@
 export * from './Header';
 export * from './Certificates';
 export * from './Device';
-export * from './Demand/Demands';
 export * from './Account/Account';
 export * from './ErrorComponent';
 export * from './Modal';

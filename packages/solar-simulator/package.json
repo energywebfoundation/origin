@@ -26,7 +26,6 @@
   "license": "GPL-3.0-or-later",
   "dependencies": {
     "@energyweb/device-registry": "5.1.1",
-    "@energyweb/market": "6.0.2",
     "@energyweb/origin-backend-client": "4.0.0",
     "@energyweb/origin-backend-core": "2.0.0",
     "@energyweb/utils-general": "7.0.2",

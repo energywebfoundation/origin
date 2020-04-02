@@ -18,7 +18,7 @@ import { TextField, CheckboxWithLabel } from 'formik-material-ui';
 import { useHistory } from 'react-router-dom';
 import { useLinks } from '../utils/routing';
 import { FormikDatePicker } from './Form/FormikDatePicker';
-import { getCurrentUser } from '../features/users/selectors';
+import { getUserOffchain } from '../features/users/selectors';
 import { setLoading } from '../features/general/actions';
 import {
     getExternalDeviceIdTypes,
@@ -29,16 +29,14 @@ import {
 } from '../features/general/selectors';
 import { HierarchicalMultiSelect } from './HierarchicalMultiSelect';
 import { CloudUpload } from '@material-ui/icons';
-import { ProducingDevice, Device } from '@energyweb/device-registry';
+import { ProducingDevice } from '@energyweb/device-registry';
 import { producingDeviceCreatedOrUpdated } from '../features/producingDevices/actions';
 import { PowerFormatter } from '../utils/PowerFormatter';
-import { IDevice, DeviceStatus, ExternalDeviceId } from '@energyweb/origin-backend-core';
+import { DeviceStatus, ExternalDeviceId } from '@energyweb/origin-backend-core';
 import { Skeleton } from '@material-ui/lab';
 import { useTranslation } from 'react-i18next';
 import { useValidation } from '../utils/validation';
 import { FormInput } from './Form';
-
-const DEFAULT_ADDRESS = '0x0000000000000000000000000000000000000000';
 
 interface IFormValues {
     facilityName: string;
@@ -65,7 +63,7 @@ const INITIAL_FORM_VALUES: IFormValues = {
 };
 
 export function AddDevice() {
-    const currentUser = useSelector(getCurrentUser);
+    const user = useSelector(getUserOffchain);
     const configuration = useSelector(getConfiguration);
     const compliance = useSelector(getCompliance);
     const country = useSelector(getCountry);
@@ -130,7 +128,7 @@ export function AddDevice() {
         values: typeof INITIAL_FORM_VALUES,
         formikActions: FormikHelpers<typeof INITIAL_FORM_VALUES>
     ): Promise<void> {
-        if (!currentUser) {
+        if (!user.blockchainAccountAddress) {
             return;
         }
 
@@ -138,11 +136,6 @@ export function AddDevice() {
 
         formikActions.setSubmitting(true);
         dispatch(setLoading(true));
-
-        const deviceProducingProps: Device.IOnChainProperties = {
-            smartMeter: { address: DEFAULT_ADDRESS },
-            owner: { address: currentUser.id }
-        };
 
         const [region, province] = selectedLocation;
 
@@ -154,7 +147,7 @@ export function AddDevice() {
             };
         });
 
-        const deviceProducingPropsOffChain: IDevice = {
+        const deviceProducingPropsOffChain = {
             status: DeviceStatus.Submitted,
             deviceType,
             complianceRegistry: compliance,
@@ -179,7 +172,6 @@ export function AddDevice() {
 
         try {
             const device = await ProducingDevice.createDevice(
-                deviceProducingProps,
                 deviceProducingPropsOffChain,
                 configuration
             );

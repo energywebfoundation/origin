@@ -6,7 +6,6 @@ import { OrderService } from './order.service';
 import { MatchingEngineModule } from '../matching-engine/matching-engine.module';
 import { OrderController } from './order.controller';
 import { ProductModule } from '../product/product.module';
-import { AssetModule } from '../asset/asset.module';
 import { AccountBalanceModule } from '../account-balance/account-balance.module';
 
 @Module({
@@ -14,10 +13,9 @@ import { AccountBalanceModule } from '../account-balance/account-balance.module'
     exports: [OrderService],
     imports: [
         TypeOrmModule.forFeature([Order], 'ExchangeConnection'),
-        MatchingEngineModule,
+        forwardRef(() => MatchingEngineModule),
         forwardRef(() => AccountBalanceModule),
-        ProductModule,
-        AssetModule
+        ProductModule
     ],
     controllers: [OrderController]
 })

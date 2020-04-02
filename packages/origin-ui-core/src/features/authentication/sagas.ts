@@ -1,7 +1,7 @@
 import { SagaIterator } from 'redux-saga';
 import { take, all, fork, call, put, select } from 'redux-saga/effects';
 import { Actions, IConfigurationUpdatedAction } from '../actions';
-import { updateCurrentUserId } from '../users/actions';
+import { setActiveBlockchainAccountAddress } from '../users/actions';
 import { getActiveAccount, getAccounts, getEncryptedAccounts } from './selectors';
 import {
     IAccount,
@@ -128,7 +128,7 @@ function* applyActiveUser(): SagaIterator {
         }
 
         try {
-            yield put(updateCurrentUserId(action.payload.address));
+            yield put(setActiveBlockchainAccountAddress(action.payload.address));
         } catch (error) {
             console.error('applyActiveUser::UserDoesntExist', error);
         }

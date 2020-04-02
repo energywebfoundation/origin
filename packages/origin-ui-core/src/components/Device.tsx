@@ -7,14 +7,14 @@ import { DeviceGroupForm } from './DeviceGroupForm';
 import { PageContent } from './PageContent/PageContent';
 import { ProducingDeviceDetailView } from './ProducingDeviceDetailView';
 import { DeviceMap } from './DeviceMap';
-import { useLinks } from '../utils/routing';
-import { getCurrentUser } from '../features/users/selectors';
-import { DeviceStatus } from '@energyweb/origin-backend-core';
-import { Role } from '@energyweb/user-registry';
+import { useLinks } from '../utils';
+import { getUserOffchain } from '../features/users/selectors';
+import { DeviceStatus, Role, isRole } from '@energyweb/origin-backend-core';
+
 import { useTranslation } from 'react-i18next';
 
 export function Device() {
-    const currentUser = useSelector(getCurrentUser);
+    const userOffchain = useSelector(getUserOffchain);
     const { baseURL, getDevicesLink } = useLinks();
     const { t } = useTranslation();
 
@@ -31,7 +31,7 @@ export function Device() {
     function MyDevices() {
         return (
             <ProducingDeviceTable
-                owner={currentUser?.id}
+                owner={userOffchain?.blockchainAccountAddress}
                 showAddDeviceButton={true}
                 actions={{
                     requestCertificates: true
@@ -117,7 +117,7 @@ export function Device() {
                             menu.hide ||
                             (menu.roles?.length > 0 &&
                                 !menu.roles.reduce(
-                                    (prev, next) => prev && currentUser?.isRole(next),
+                                    (prev, next) => prev && isRole(userOffchain, next),
                                     true
                                 ))
                         ) {

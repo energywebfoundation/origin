@@ -1,3 +1,5 @@
+import { IOrganization } from '.';
+
 export enum DeviceStatus {
     Submitted,
     Denied,
@@ -22,26 +24,30 @@ export interface IEnergyGenerated {
 }
 
 export interface ISmartMeterReadingsAdapter {
-    getLatest(device: IDeviceWithId): Promise<ISmartMeterRead>;
-    getAll(device: IDeviceWithId): Promise<ISmartMeterRead[]>;
-    save(device: IDeviceWithId, smRead: ISmartMeterRead): Promise<void>;
+    getLatest(device: IDeviceWithRelationsIds): Promise<ISmartMeterRead>;
+    getAll(device: IDeviceWithRelationsIds): Promise<ISmartMeterRead[]>;
+    save(device: IDeviceWithRelationsIds, smRead: ISmartMeterRead): Promise<void>;
 }
 
-export interface IDevice {
+export interface IDeviceProductInfo {
+    deviceType: string;
+    region: string;
+    province: string;
+    country: string;
+    operationalSince: number;
+}
+
+export interface IDeviceProperties extends IDeviceProductInfo {
+    id: number;
     status: DeviceStatus;
     facilityName: string;
     description: string;
     images: string;
     address: string;
-    region: string;
-    province: string;
-    country: string;
-    operationalSince: number;
     capacityInW: number;
     gpsLatitude: string;
     gpsLongitude: string;
     timezone: string;
-    deviceType: string;
     complianceRegistry: string;
     otherGreenAttributes: string;
     typeOfPublicSupport: string;
@@ -51,8 +57,17 @@ export interface IDevice {
     smartMeterReads?: ISmartMeterRead[];
 }
 
-export interface IDeviceWithId extends IDevice {
-    id: number;
+export interface IDevice extends IDeviceProperties {
+    organization: IOrganization | IOrganization['id'];
 }
 
+export interface IDeviceWithRelationsIds extends IDevice {
+    organization: IOrganization['id'];
+}
+
+export interface IDeviceWithRelations extends IDevice {
+    organization: IOrganization;
+}
+
+export type DeviceCreateData = Omit<IDeviceProperties, 'id'>;
 export type DeviceUpdateData = Pick<IDevice, 'status'>;

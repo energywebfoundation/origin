@@ -26,7 +26,7 @@ const VALIDATION_SCHEMA = Yup.object({
 });
 
 export function OrganizationInvite() {
-    const organizationClient = useSelector(getOffChainDataSource).organizationClient;
+    const organizationClient = useSelector(getOffChainDataSource)?.organizationClient;
 
     const dispatch = useDispatch();
 

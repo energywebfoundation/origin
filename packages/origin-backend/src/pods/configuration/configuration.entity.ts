@@ -1,10 +1,17 @@
-import { Entity, PrimaryColumn, BaseEntity, Column, Check } from 'typeorm';
-import { ExternalDeviceIdType, IOriginConfiguration, IRegions, IDeviceType } from '@energyweb/origin-backend-core';
+import { Entity, PrimaryColumn, Column, Check } from 'typeorm';
+import {
+    ExternalDeviceIdType,
+    IContractsLookup,
+    IOriginConfiguration,
+    IRegions,
+    IDeviceType
+} from '@energyweb/origin-backend-core';
+import { ExtendedBaseEntity } from '../ExtendedBaseEntity';
 
 @Entity()
 @Check(`id = 1`)
-export class Configuration extends BaseEntity implements IOriginConfiguration {
-    @PrimaryColumn({type: 'int', default: () => `1`, nullable: false})
+export class Configuration extends ExtendedBaseEntity implements IOriginConfiguration {
+    @PrimaryColumn({ type: 'int', default: () => `1`, nullable: false })
     id: 1;
 
     @Column('varchar', { nullable: true })
@@ -19,8 +26,8 @@ export class Configuration extends BaseEntity implements IOriginConfiguration {
     @Column('simple-json', { nullable: true })
     externalDeviceIdTypes: ExternalDeviceIdType[];
 
-    @Column('varchar', { length: 42, nullable: true })
-    marketContractLookup: string;
+    @Column('simple-json', { nullable: true })
+    contractsLookup: IContractsLookup;
 
     @Column('varchar', { nullable: true })
     complianceStandard: string;

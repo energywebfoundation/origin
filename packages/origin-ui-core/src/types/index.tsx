@@ -1,8 +1,5 @@
-import { DeviceLogic } from '@energyweb/device-registry';
-import { UserLogic } from '@energyweb/user-registry';
-import { CertificateLogic } from '@energyweb/origin';
+import { Issuer, Registry } from '@energyweb/issuer';
 import { Configuration } from '@energyweb/utils-general';
-import { Demand, MarketLogic } from '@energyweb/market';
 import { IGeneralState } from '../features/general/reducer';
 import { IContractsState } from '../features/contracts/reducer';
 import { ICertificatesState } from '../features/certificates/reducer';
@@ -13,10 +10,9 @@ import { IAuthenticationState } from '../features/authentication/reducer';
 
 export interface IStoreState {
     authentication: IAuthenticationState;
-    configuration: Configuration.Entity<MarketLogic, DeviceLogic, CertificateLogic, UserLogic>;
+    configuration: Configuration.Entity<Registry, Issuer>;
     producingDevices: IProducingDevicesState;
     certificates: ICertificatesState;
-    demands: Demand.Entity[];
     general: IGeneralState;
     contracts: IContractsState;
     users: IUsersState;

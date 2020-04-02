@@ -1,4 +1,5 @@
 import { IStoreState } from '../../types';
+import { IContractsLookup } from '@energyweb/origin-backend-core';
 
-export const getMarketContractLookupAddress = (state: IStoreState): string =>
-    state.contracts.marketContractLookupAddress;
+export const getContractsLookup = (state: IStoreState): IContractsLookup =>
+    state.contracts.contractsLookup;

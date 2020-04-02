@@ -1,36 +1,20 @@
-import { IDeviceWithId } from './Device';
-
-export enum CertificationRequestStatus {
-    Pending,
-    Rejected,
-    Approved
-}
-
-export interface ICertificationRequestProperties {
-    id: string;
-    energy: number;
-    startTime: number;
-    endTime: number;
+export interface ICertificationRequest {
+    id: number;
+    fromTime: number;
+    toTime: number;
     files: string[];
-    createdDate: Date;
-    status: CertificationRequestStatus;
+    created: number;
+    approved: boolean;
+    revoked: boolean;
+    energy: number;
+    deviceId: string;
 }
 
-export interface ICertificationRequest extends ICertificationRequestProperties {
-    device: IDeviceWithId | IDeviceWithId['id'];
-}
-
-export interface ICertificationRequestWithRelationsIds extends ICertificationRequest {
-    device: IDeviceWithId['id'];
-}
-
-export interface ICertificationRequestWithRelations extends ICertificationRequest {
-    device: IDeviceWithId;
-}
-
-export type CertificationRequestCreateData = Omit<
-    ICertificationRequestWithRelationsIds,
-    'id' | 'status' | 'createdDate'
+export type CertificationRequestOffChainData = Pick<
+    ICertificationRequest,
+    'id' | 'energy' | 'files'
 >;
-
-export type CertificationRequestUpdateData = Pick<ICertificationRequestWithRelationsIds, 'status'>;
+export type CertificationRequestUpdateData = Pick<
+    CertificationRequestOffChainData,
+    'energy' | 'files'
+>;

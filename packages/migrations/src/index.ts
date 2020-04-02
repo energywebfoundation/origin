@@ -1,4 +1,3 @@
-import { deployEmptyContracts } from './deployEmpty';
-import { marketDemo } from './market';
+import { deployContracts } from './deployContracts';
 
-export { deployEmptyContracts, marketDemo };
+export { deployContracts };

@@ -1,26 +1,31 @@
 import { OrderSide, OrderStatus } from '@energyweb/exchange-core';
 import BN from 'bn.js';
+import { Exclude, Transform } from 'class-transformer';
 import {
-    BaseEntity,
     Column,
     Entity,
     JoinTable,
     ManyToOne,
-    PrimaryGeneratedColumn,
-    UpdateDateColumn,
     OneToMany,
+    PrimaryGeneratedColumn,
     RelationId
 } from 'typeorm';
+import { ExtendedBaseEntity } from '@energyweb/origin-backend';
 
 import { BNTransformer } from '../../utils/valueTransformers';
 import { Asset } from '../asset/asset.entity';
 import { Demand } from '../demand/demand.entity';
-import { ProductDTO } from './product.dto';
 import { Trade } from '../trade/trade.entity';
 import { OrderType } from './order-type.enum';
+import { ProductDTO } from './product.dto';
 
 @Entity()
-export class Order extends BaseEntity {
+export class Order extends ExtendedBaseEntity {
+    constructor(order: Partial<Order>) {
+        super();
+        Object.assign(this, order);
+    }
+
     @PrimaryGeneratedColumn('uuid')
     id: string;
 
@@ -31,9 +36,11 @@ export class Order extends BaseEntity {
     status: OrderStatus;
 
     @Column('bigint', { transformer: BNTransformer })
+    @Transform((v: BN) => v.toString(10))
     startVolume: BN;
 
     @Column('bigint', { transformer: BNTransformer })
+    @Transform((v: BN) => v.toString(10))
     currentVolume: BN;
 
     @Column()
@@ -48,21 +55,25 @@ export class Order extends BaseEntity {
     @Column({ nullable: true, type: 'uuid' })
     directBuyId: string;
 
-    @Column()
-    @UpdateDateColumn({ type: 'timestamptz' })
+    @Column({ type: 'timestamptz' })
     validFrom: Date;
 
     @Column('json')
     product: ProductDTO;
 
     @ManyToOne(() => Asset, { eager: true })
+    @Exclude()
     asset: Asset;
+
+    @RelationId((order: Order) => order.asset)
+    assetId: string;
 
     @ManyToOne(
         () => Demand,
         demand => demand.bids
     )
     @JoinTable()
+    @Exclude()
     demand: Demand;
 
     @RelationId((order: Order) => order.demand)
@@ -72,5 +83,6 @@ export class Order extends BaseEntity {
         () => Trade,
         trade => trade.ask || trade.bid
     )
+    @Exclude()
     trades: Trade[];
 }

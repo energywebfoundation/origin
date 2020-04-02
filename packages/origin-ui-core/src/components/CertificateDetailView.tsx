@@ -1,23 +1,18 @@
 import React, { useState, useEffect } from 'react';
-import { Certificate } from '@energyweb/origin';
-import { MarketUser } from '@energyweb/market';
+import { CertificationRequest } from '@energyweb/issuer';
 import { ProducingDeviceDetailView } from './ProducingDeviceDetailView';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { getConfiguration } from '../features/selectors';
 import { getCertificates } from '../features/certificates/selectors';
 import { deduplicate } from '../utils/helper';
 import { formatDate } from '../utils/time';
-import { getUsers, getUserById } from '../features/users/selectors';
-import { requestUser } from '../features/users/actions';
 import { Skeleton } from '@material-ui/lab';
 import { makeStyles, createStyles, useTheme } from '@material-ui/core';
-import { getEnvironment, getOffChainDataSource } from '../features/general/selectors';
+import { getEnvironment } from '../features/general/selectors';
 import { EnergyFormatter } from '../utils/EnergyFormatter';
-import { IOrganizationWithRelationsIds } from '@energyweb/origin-backend-core';
-import moment from 'moment';
 
 interface IProps {
-    id: string;
+    id: number;
 }
 
 interface IEnrichedEvent {
@@ -32,30 +27,9 @@ export function CertificateDetailView(props: IProps) {
 
     const certificates = useSelector(getCertificates);
     const configuration = useSelector(getConfiguration);
-    const users = useSelector(getUsers);
     const environment = useSelector(getEnvironment);
-    const offChainDataSource = useSelector(getOffChainDataSource);
-    const organizationClient = offChainDataSource?.organizationClient;
 
     const [events, setEvents] = useState<IEnrichedEvent[]>([]);
-    const [organizations, setOrganizations] = useState([] as IOrganizationWithRelationsIds[]);
-
-    useEffect(() => {
-        (async () => {
-            if (organizationClient) {
-                setOrganizations(await organizationClient.getAll());
-            }
-        })();
-    }, [organizationClient]);
-
-    function getUserDisplayText(user: MarketUser.Entity) {
-        return (
-            organizations?.find(o => o.id === user?.information?.organization)?.name ||
-            `${user?.information?.firstName} ${user?.information?.lastName}`
-        );
-    }
-
-    const dispatch = useDispatch();
 
     const useStyles = makeStyles(() =>
         createStyles({
@@ -69,16 +43,6 @@ export function CertificateDetailView(props: IProps) {
 
     const selectedCertificate =
         id !== null && typeof id !== 'undefined' && certificates.find(c => c.id === id);
-
-    let owner: MarketUser.Entity = null;
-
-    if (selectedCertificate) {
-        owner = getUserById(users, selectedCertificate.certificate.owner);
-
-        if (!owner) {
-            dispatch(requestUser(selectedCertificate.certificate.owner));
-        }
-    }
 
     async function enrichEvent() {
         const allCertificateEvents = await selectedCertificate.getAllCertificateEvents();
@@ -95,32 +59,10 @@ export function CertificateDetailView(props: IProps) {
                 case 'Transfer':
                     if (event.returnValues.from === '0x0000000000000000000000000000000000000000') {
                         label = 'Initial owner';
-                        const user =
-                            getUserById(users, event.returnValues.to) ||
-                            (await new MarketUser.Entity(
-                                event.returnValues.to,
-                                configuration
-                            ).sync());
-
-                        description = getUserDisplayText(user);
+                        description = event.returnValues.to;
                     } else {
-                        const newOwnerUser =
-                            getUserById(users, event.returnValues.to) ||
-                            (await new MarketUser.Entity(
-                                event.returnValues.to,
-                                configuration
-                            ).sync());
-
-                        const newOwner = getUserDisplayText(newOwnerUser);
-
-                        const oldOwnerUser =
-                            getUserById(users, event.returnValues.from) ||
-                            (await new MarketUser.Entity(
-                                event.returnValues.from,
-                                configuration
-                            ).sync());
-
-                        const oldOwner = getUserDisplayText(oldOwnerUser);
+                        const newOwner = event.returnValues.to;
+                        const oldOwner = event.returnValues.from;
 
                         label = 'Changed ownership';
                         description = `Transferred from ${oldOwner} to ${newOwner}`;
@@ -135,7 +77,7 @@ export function CertificateDetailView(props: IProps) {
 
                 case 'LogCertificateClaimed':
                     label = 'Certificate claimed';
-                    description = `Initiated by ${getUserDisplayText(owner)}`;
+                    description = `Initiated by `; // ${getUserDisplayText(owner)}`;
                     break;
 
                 default:
@@ -154,16 +96,17 @@ export function CertificateDetailView(props: IProps) {
 
         const resolvedEvents = await Promise.all(jointEvents);
 
-        const request = await offChainDataSource.certificateClient.getCertificationRequest(
-            selectedCertificate.certificate.certificationRequestId
-        );
+        const request = await new CertificationRequest.Entity(
+            selectedCertificate.certificationRequestId,
+            configuration
+        ).sync();
 
         if (request) {
             resolvedEvents.push({
                 txHash: '',
                 label: 'Requested certification',
                 description: 'Device owner requested certification based on meter reads',
-                timestamp: moment(request.createdDate).unix()
+                timestamp: request.created
             });
         }
 
@@ -220,39 +163,29 @@ export function CertificateDetailView(props: IProps) {
             [
                 {
                     label: 'Certificate id',
-                    data: selectedCertificate.id
-                },
-                {
-                    label: 'Current owner',
-                    data: getUserDisplayText(owner)
+                    data: selectedCertificate.id.toString()
                 },
                 {
                     label: 'Claimed',
-                    data:
-                        selectedCertificate.certificate.status === Certificate.Status.Claimed
-                            ? 'yes'
-                            : 'no'
+                    data: selectedCertificate.isClaimed() ? 'yes' : 'no'
                 },
                 {
                     label: 'Creation date',
-                    data: formatDate(selectedCertificate.certificate.creationTime * 1000)
+                    data: formatDate(selectedCertificate.creationTime * 1000)
                 }
             ],
             [
                 {
                     label: `Certified energy (${EnergyFormatter.displayUnit})`,
-                    data: EnergyFormatter.format(selectedCertificate.certificate.energy)
+                    data: EnergyFormatter.format(selectedCertificate.energy)
                 },
                 {
                     label: 'Generation start',
-                    data: formatDate(
-                        selectedCertificate.certificate.generationStartTime * 1000,
-                        true
-                    )
+                    data: formatDate(selectedCertificate.generationStartTime * 1000, true)
                 },
                 {
                     label: 'Generation end',
-                    data: formatDate(selectedCertificate.certificate.generationEndTime * 1000, true)
+                    data: formatDate(selectedCertificate.generationEndTime * 1000, true)
                 }
             ]
         ];
@@ -287,7 +220,7 @@ export function CertificateDetailView(props: IProps) {
                 </div>
                 {selectedCertificate && (
                     <ProducingDeviceDetailView
-                        id={selectedCertificate.certificate.deviceId}
+                        id={Number(selectedCertificate.deviceId)}
                         showSmartMeterReadings={false}
                         showCertificates={false}
                     />

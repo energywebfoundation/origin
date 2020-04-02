@@ -1,6 +1,5 @@
 import React from 'react';
-import { PurchasableCertificate } from '@energyweb/market';
-import { Certificate } from '@energyweb/origin';
+import { Certificate } from '@energyweb/issuer';
 import { showNotification, NotificationType } from '../../utils/notifications';
 import {
     Button,
@@ -15,7 +14,7 @@ import { getConfiguration } from '../../features/selectors';
 import { EnergyFormatter } from '../../utils/EnergyFormatter';
 
 interface IProps {
-    certificates: PurchasableCertificate.Entity[];
+    certificates: Certificate.Entity[];
     showModal: boolean;
     callback: () => void;
 }
@@ -28,7 +27,7 @@ export function ClaimCertificateBulkModal(props: IProps) {
     }
 
     async function claimCertificates() {
-        const certificateIds: string[] = props.certificates.map(cert => cert.id);
+        const certificateIds: number[] = props.certificates.map(cert => cert.id);
 
         await Certificate.claimCertificates(certificateIds, configuration);
 
@@ -37,7 +36,7 @@ export function ClaimCertificateBulkModal(props: IProps) {
     }
 
     const totalEnergy = EnergyFormatter.format(
-        props.certificates.reduce((a, b) => a + Number(b.certificate.energy), 0),
+        props.certificates.reduce((a, b) => a + Number(b.energy), 0),
         true
     );
 

@@ -2,92 +2,82 @@ sudo: required
 dist: bionic
 language: node_js
 node_js:
-  - "12"
+    - "12"
 
 services: postgresql
 
 env:
-  global:
-    - EXCHANGE_DB_PASSWORD=
-    - EXCHANGE_DB_DATABASE=origin_exchange
+    global:
+        - DB_PASSWORD=
+        - DB_DATABASE=origin
 
 git:
-  depth: false
+    depth: false
 
 cache:
-  yarn: true
-  directories:
-    - packages/utils-general/build
-    - packages/utils-general/dist
-    - packages/user-registry/schemas
-    - packages/user-registry/build
-    - packages/user-registry/dist
-    - packages/origin-backend/dist
-    - packages/origin-backend-client/dist
-    - packages/device-registry/schemas
-    - packages/device-registry/build
-    - packages/device-registry/dist
-    - packages/origin/build
-    - packages/origin/dist
-    - packages/market/schemas
-    - packages/market/build
-    - packages/market/dist
-    - packages/market-matcher/dist
-    - packages/market-matcher-core/dist
-    - packages/event-listener/dist
-    - packages/exchange/dist
-    - packages/exchange-core/dist
-    - packages/exchange-token-account/dist
-    - packages/exchange-token-account/build
-    - packages/issuer/build
-    - packages/issuer/dist
+    yarn: true
+    # directories:
+    #     - packages/utils-general/build
+    #     - packages/utils-general/dist
+    #     - packages/origin-backend/dist
+    #     - packages/origin-backend-client/dist
+    #     - packages/origin-backend-app/dist
+    #     - packages/device-registry/schemas
+    #     - packages/device-registry/build
+    #     - packages/device-registry/dist
+    #     - packages/exchange/dist
+    #     - packages/exchange-core/dist
+    #     - packages/exchange-token-account/dist
+    #     - packages/exchange-token-account/build
+    #     - packages/issuer/build
+    #     - packages/issuer/dist
 
 before_install:
-  - sh scripts/restore-original-timestamps.sh
-  - git fetch origin master:master
+    - sh scripts/restore-original-timestamps.sh
+    - git fetch origin master:master
 
 before_script:
-  - psql -c 'create database origin_exchange;' -U postgres
+    - psql -c 'create database origin;' -U postgres
 
 before_deploy:
-  - git config --global user.email ${GITHUB_EMAIL}
-  - git config --global user.name ${GITHUB_USER}
-  - git remote set-url origin "https://${GITHUB_TOKEN}@github.com/energywebfoundation/origin.git" > /dev/null 2>&1
-  - git reset --hard
-  - echo "//registry.npmjs.org/:_authToken=\${NPM_TOKEN}" >> $HOME/.npmrc 2> /dev/null
+    - git config --global user.email ${GITHUB_EMAIL}
+    - git config --global user.name ${GITHUB_USER}
+    - git remote set-url origin "https://${GITHUB_TOKEN}@github.com/energywebfoundation/origin.git" > /dev/null 2>&1
+    - git reset --hard
+    - echo "//registry.npmjs.org/:_authToken=\${NPM_TOKEN}" >> $HOME/.npmrc 2> /dev/null
 
 install:
-  - set -e
-  - yarn
-  - yarn build
-  - yarn build:ui
+    - set -e
+    - yarn
+    - yarn build
+    - yarn build:ui
 
 script:
-  - set -e
-  - yarn lint
-  - yarn test:ci:contracts
-  - yarn test:ci:contracts:deployment
-  - yarn test:ci:apps
-  - yarn test:ci:ui
-  - yarn test:ci:e2e
+    - set -e
+    - yarn lint
+    - yarn test:ci:contracts
+    - yarn test:ci:contracts:deployment
+    - yarn test:ci:apps
+    - yarn test:ci:ui
+    - yarn test:ci:e2e
 
 deploy:
-  - provider: script
-    script: "git checkout master && yarn publish:canary && yarn build:containers:canary"
-    skip_cleanup: true
-    on:
-      node: "12"
-      branch: master
-  - provider: script
-    edge: true
-    script: "git checkout release && yarn publish:release && yarn build:containers:release"
-    on:
-      node: "12"
-      branch: release
-      condition: '$TRAVIS_COMMIT_MESSAGE != *"skip-deploy"*'
-  - provider: script
-    script: "git checkout preview && yarn publish:preview"
-    skip_cleanup: true
-    on:
-      node: "12"
-      branch: preview
+    - provider: script
+      script: "git checkout master && yarn publish:canary && yarn build:containers:canary"
+      skip_cleanup: true
+      on:
+          node: "12"
+          branch: master
+    - provider: script
+      edge: true
+      script: "git checkout release && yarn publish:release && yarn build:containers:release"
+      on:
+          node: "12"
+          branch: release
+          condition: '$TRAVIS_COMMIT_MESSAGE != *"skip-deploy"*'
+    - provider: script
+      script: "git checkout preview && yarn publish:preview"
+      skip_cleanup: true
+      on:
+          node: "12"
+          branch: preview

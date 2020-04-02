@@ -8,4 +8,4 @@ RUN mkdir -p /var/db
 
 RUN for i in 1 2 3 4 5; do yarn global add @energyweb/origin-backend@${VERSION} && break || sleep 15; done
 
-CMD ["/bin/bash", "-c", "touch /var/db/db.sqlite && origin-backend"]
+CMD ["/bin/bash", "-c", "origin-backend"]

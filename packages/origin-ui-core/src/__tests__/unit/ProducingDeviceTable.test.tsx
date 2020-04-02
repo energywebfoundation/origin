@@ -8,8 +8,8 @@ import {
     createRenderedHelpers,
     TEST_DEVICE_TYPES
 } from '../utils/helpers';
-import { IOrganizationWithRelationsIds, DeviceStatus } from '@energyweb/origin-backend-core';
-import { IOrganizationClient, IOffChainDataSource } from '@energyweb/origin-backend-client';
+import { DeviceStatus } from '@energyweb/origin-backend-core';
+import { IOffChainDataSource } from '@energyweb/origin-backend-client';
 import { configurationUpdated } from '../../features';
 import { Configuration, DeviceTypeService } from '@energyweb/utils-general';
 import { OffChainDataSourceMock } from '@energyweb/origin-backend-client-mocks';
@@ -17,13 +17,6 @@ import { OffChainDataSourceMock } from '@energyweb/origin-backend-client-mocks';
 describe('ProducingDeviceTable', () => {
     it('correctly renders and search works', async () => {
         const offChainDataSource: IOffChainDataSource = new OffChainDataSourceMock();
-
-        offChainDataSource.organizationClient = ({
-            getById: async () =>
-                (({ name: 'Example Organization' } as Partial<
-                    IOrganizationWithRelationsIds
-                >) as IOrganizationWithRelationsIds)
-        } as Partial<IOrganizationClient>) as IOrganizationClient;
 
         await offChainDataSource.configurationClient.update({
             deviceTypes: TEST_DEVICE_TYPES
@@ -36,13 +29,13 @@ describe('ProducingDeviceTable', () => {
         });
 
         addProducingDevice({
-            id: '0',
+            id: 0,
             status: DeviceStatus.Active,
             lastSmartMeterReadWh: 7777
         });
 
         addProducingDevice({
-            id: '1',
+            id: 1,
             status: DeviceStatus.Active,
             facilityName: 'Biomass Energy Facility',
             deviceType: 'Gaseous;Agricultural gas',
@@ -78,14 +71,14 @@ describe('ProducingDeviceTable', () => {
         await refresh();
 
         assertMainTableContent([
-            'Example Organization',
+            '',
             'Wuthering Heights facility',
             'Central, Nakhon Pathom',
             'Solar - Photovoltaic - Roof mounted',
             '9.877',
             '0.008',
             // next device
-            'Example Organization',
+            '',
             'Biomass Energy Facility',
             'Central, Nakhon Pathom',
             'Gaseous - Agricultural gas',
@@ -104,7 +97,7 @@ describe('ProducingDeviceTable', () => {
         await refresh();
 
         assertMainTableContent([
-            'Example Organization',
+            '',
             'Biomass Energy Facility',
             'Central, Nakhon Pathom',
             'Gaseous - Agricultural gas',
@@ -119,7 +112,7 @@ describe('ProducingDeviceTable', () => {
         await refresh();
 
         assertMainTableContent([
-            'Example Organization',
+            '',
             'Wuthering Heights facility',
             'Central, Nakhon Pathom',
             'Solar - Photovoltaic - Roof mounted',

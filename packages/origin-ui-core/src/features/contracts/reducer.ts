@@ -1,17 +1,21 @@
 import { ContractsActions, IContractsAction } from './actions';
+import { IContractsLookup } from '@energyweb/origin-backend-core';
 
 export interface IContractsState {
-    marketContractLookupAddress: string;
+    contractsLookup: IContractsLookup;
 }
 
 const defaultState: IContractsState = {
-    marketContractLookupAddress: ''
+    contractsLookup: {
+        registry: null,
+        issuer: null
+    }
 };
 
 export default function reducer(state = defaultState, action: IContractsAction): IContractsState {
     switch (action.type) {
-        case ContractsActions.setMarketContractLookupAddress:
-            return { ...state, marketContractLookupAddress: action.payload.address };
+        case ContractsActions.setContractsLookup:
+            return { ...state, contractsLookup: action.payload };
 
         default:
             return state;

@@ -1,4 +1,5 @@
-import { IsDateString, IsInt, IsPositive, IsUUID, Validate } from 'class-validator';
+import { Type } from 'class-transformer';
+import { IsDate, IsInt, IsPositive, IsUUID, Validate } from 'class-validator';
 
 import { PositiveBNStringValidator } from '../../utils/positiveBNStringValidator';
 
@@ -10,8 +11,9 @@ export class CreateAskDTO {
     @IsPositive()
     readonly price: number;
 
-    @IsDateString()
-    readonly validFrom: string;
+    @IsDate()
+    @Type(() => Date)
+    readonly validFrom: Date;
 
     @IsUUID()
     readonly assetId: string;

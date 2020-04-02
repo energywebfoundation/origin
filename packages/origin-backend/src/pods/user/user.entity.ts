@@ -1,13 +1,14 @@
-import { Entity, PrimaryGeneratedColumn, Column, BaseEntity, Unique, ManyToOne,  } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, Unique, ManyToOne } from 'typeorm';
 import { Length, IsNotEmpty } from 'class-validator';
 
-import { IUser } from '@energyweb/origin-backend-core';
+import { IUser, IAutoPublishConfig } from '@energyweb/origin-backend-core';
 
 import { Organization } from '../organization/organization.entity';
+import { ExtendedBaseEntity } from '../ExtendedBaseEntity';
 
 @Entity()
 @Unique(['email', 'blockchainAccountAddress'])
-export class User extends BaseEntity implements IUser {
+export class User extends ExtendedBaseEntity implements IUser {
     @PrimaryGeneratedColumn()
     id: number;
 
@@ -37,9 +38,18 @@ export class User extends BaseEntity implements IUser {
     @Column({ nullable: true })
     blockchainAccountSignedMessage: string;
 
+    @Column({ nullable: true })
+    notifications: boolean;
+
+    @Column('simple-json', { nullable: true })
+    autoPublish: IAutoPublishConfig;
+
     @ManyToOne(
         () => Organization,
         organization => organization.users
     )
     organization: Organization;
+
+    @Column({ default: 0, nullable: false })
+    rights: number;
 }

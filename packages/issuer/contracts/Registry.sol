@@ -1,4 +1,4 @@
-pragma solidity ^0.5.0;
+pragma solidity ^0.5.6;
 pragma experimental ABIEncoderV2;
 
 import "./ERC1155/ERC1155Mintable.sol";
@@ -48,10 +48,13 @@ contract Registry is ERC1155Mintable, ERC1888 {
 
 		_validate(cert.issuer,  cert.validityData);
 
-		safeTransferFrom(_from, _to, _id, _value, _data);
+		if (_from != _to) {
+			safeTransferFrom(_from, _to, _id, _value, _data);
+		}
+
 		_burn(_to, _id, _value);
 
-		emit ClaimSingle(cert.issuer, address(0x0), cert.topic, _id, _value, _claimData); //_claimSubject address ??
+		emit ClaimSingle(_from, _to, cert.topic, _id, _value, _claimData); //_claimSubject address ??
 	}
 
 	function safeBatchTransferAndClaimFrom(
@@ -71,26 +74,22 @@ contract Registry is ERC1155Mintable, ERC1888 {
 		);
 
 		int256[] memory topics = new int256[](numberOfClaims);
-		address issuer = address(0);
 
 		for (uint256 i = 0; i < numberOfClaims; ++i) {
 			Certificate memory cert = certificateStorage[_ids[i]];
-
 			_validate(cert.issuer,  cert.validityData);
-			if (issuer == address(0)) {
-				issuer = cert.issuer;
-			}
-
 			topics[i] = cert.topic;
 		}
 
-		safeBatchTransferFrom(_from, _to, _ids, _values, _data);
+		if (_from != _to) {
+			safeBatchTransferFrom(_from, _to, _ids, _values, _data);
+		}
 
 		for (uint256 i = 0; i < numberOfClaims; ++i) {
 			_burn(_to, _ids[i], _values[i]);
 		}
 
-		emit ClaimBatch(issuer, address(0x0), topics, _ids, _values, _claimData); //_claimSubject address ??
+		emit ClaimBatch(_from, _to, topics, _ids, _values, _claimData);
 	}
 
 	function getCertificate(uint256 _id) external view returns (address issuer, int256 topic, bytes memory validityData, bytes memory data) {
