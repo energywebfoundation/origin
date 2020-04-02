@@ -14,15 +14,7 @@ import { HierarchicalMultiSelect } from '../HierarchicalMultiSelect';
 import { useSelector } from 'react-redux';
 import { getConfiguration, getRegions } from '../../features';
 import { Skeleton } from '@material-ui/lab';
-import {
-    useValidation,
-    moment,
-    Moment,
-    setMaxTimeInMonth,
-    setMinTimeInMonth,
-    useTranslation,
-    formatCurrency
-} from '../../utils';
+import { useValidation, Moment, useTranslation, formatCurrency } from '../../utils';
 import { Formik, Form } from 'formik';
 import { FormInput, FormikDatePickerWithMonthArrowsFilled, FormikEffect } from '../Form';
 
@@ -37,8 +29,8 @@ interface IFormValues {
 
 const INITIAL_FORM_VALUES: IFormValues = {
     energy: '',
-    generationDateStart: setMinTimeInMonth(moment()),
-    generationDateEnd: setMaxTimeInMonth(moment()),
+    generationDateStart: null,
+    generationDateEnd: null,
     price: '',
     deviceType: [],
     location: []
@@ -72,12 +64,8 @@ export function Market(props: IProps) {
     const { Yup } = useValidation();
 
     const VALIDATION_SCHEMA = Yup.object().shape({
-        generationDateStart: Yup.date()
-            .required()
-            .label(t('exchange.properties.generationDateStart')),
-        generationDateEnd: Yup.date()
-            .required()
-            .label(t('exchange.properties.generationDateEnd')),
+        generationDateStart: Yup.date().label(t('exchange.properties.generationDateStart')),
+        generationDateEnd: Yup.date().label(t('exchange.properties.generationDateEnd')),
         energy: Yup.number()
             .positive()
             .integer()
@@ -191,6 +179,7 @@ export function Market(props: IProps) {
                                         name="generationDateStart"
                                         label={t('exchange.properties.generationDateStart')}
                                         disabled={fieldDisabled}
+                                        required={false}
                                     />
                                 </Grid>
                                 <Grid item xs={6}>
@@ -198,6 +187,7 @@ export function Market(props: IProps) {
                                         name="generationDateEnd"
                                         label={t('exchange.properties.generationDateEnd')}
                                         disabled={fieldDisabled}
+                                        required={false}
                                     />
                                 </Grid>
                             </Grid>
