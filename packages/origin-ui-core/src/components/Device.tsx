@@ -31,7 +31,7 @@ export function Device() {
     function MyDevices() {
         return (
             <ProducingDeviceTable
-                owner={userOffchain?.blockchainAccountAddress}
+                owner={userOffchain?.id}
                 showAddDeviceButton={true}
                 actions={{
                     requestCertificates: true
@@ -43,7 +43,6 @@ export function Device() {
     function ProductionList() {
         return (
             <ProducingDeviceTable
-                owner={null}
                 hiddenColumns={['status']}
                 includedStatuses={[DeviceStatus.Active]}
                 actions={{
@@ -56,7 +55,6 @@ export function Device() {
     function ProductionPendingList() {
         return (
             <ProducingDeviceTable
-                owner={null}
                 includedStatuses={[DeviceStatus.Submitted]}
                 actions={{
                     approve: true

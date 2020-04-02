@@ -35,7 +35,7 @@ interface IOwnProps {
         requestCertificates?: boolean;
         approve?: boolean;
     };
-    owner?: string;
+    owner?: number;
     showAddDeviceButton?: boolean;
     hiddenColumns?: string[];
     includedStatuses?: DeviceStatus[];
@@ -90,7 +90,7 @@ export function ProducingDeviceTable(props: IOwnProps) {
                     requestedFilters,
                     configuration.deviceTypeService
                 ) &&
-                (props.owner === null || record?.device?.organization === user?.organization?.id) &&
+                (!props.owner || record?.device?.organization === user?.organization?.id) &&
                 (includedStatuses.length === 0 || includedStatuses.includes(record.device.status))
         );
 
