@@ -110,6 +110,10 @@ export class Bid extends Order {
             return !this.product.deviceType?.length;
         }
 
+        if (!this.product.deviceType?.length) {
+            return false;
+        }
+
         return (
             deviceService.includesSomeDeviceType(
                 productFilter.deviceType,
