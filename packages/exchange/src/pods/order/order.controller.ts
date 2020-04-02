@@ -8,7 +8,10 @@ import {
     UseGuards,
     Get,
     UseInterceptors,
-    ClassSerializerInterceptor
+    ClassSerializerInterceptor,
+    Param,
+    ParseUUIDPipe,
+    HttpCode
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 
@@ -85,5 +88,26 @@ export class OrderController {
     public async getOrders(@UserDecorator() user: IUser): Promise<Order[]> {
         const orders = await this.orderService.getAllOrders(user.id.toString());
         return orders;
+    }
+
+    @Get('/:id')
+    @UseGuards(AuthGuard())
+    public async getOrder(
+        @UserDecorator() user: IUser,
+        @Param('id', new ParseUUIDPipe({ version: '4' })) orderId: string
+    ) {
+        const order = await this.orderService.findOne(user.id.toString(), orderId);
+        return order;
+    }
+
+    @Post('/:id/cancel')
+    @UseGuards(AuthGuard())
+    @HttpCode(202)
+    public async cancelOrder(
+        @UserDecorator() user: IUser,
+        @Param('id', new ParseUUIDPipe({ version: '4' })) orderId: string
+    ) {
+        const order = await this.orderService.cancelOrder(user.id.toString(), orderId);
+        return order;
     }
 }

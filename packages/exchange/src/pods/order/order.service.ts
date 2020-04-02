@@ -1,17 +1,19 @@
-import { OrderSide, OrderStatus } from '@energyweb/exchange-core';
+import { OrderSide, OrderStatus, StatusChangedEvent } from '@energyweb/exchange-core';
 import { forwardRef, Inject, Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import BN from 'bn.js';
-import { Repository } from 'typeorm';
+import { List } from 'immutable';
+import { EntityManager, Repository } from 'typeorm';
 
+import { UnknownEntityError } from '../../utils/exceptions';
 import { AccountBalanceService } from '../account-balance/account-balance.service';
 import { MatchingEngineService } from '../matching-engine/matching-engine.service';
 import { ProductService } from '../product/product.service';
 import { CreateAskDTO } from './create-ask.dto';
 import { CreateBidDTO } from './create-bid.dto';
-import { Order } from './order.entity';
-import { OrderType } from './order-type.enum';
 import { DirectBuyDTO } from './direct-buy.dto';
+import { OrderType } from './order-type.enum';
+import { Order } from './order.entity';
 
 @Injectable()
 export class OrderService {
@@ -20,6 +22,7 @@ export class OrderService {
     constructor(
         @InjectRepository(Order, 'ExchangeConnection')
         private readonly repository: Repository<Order>,
+        @Inject(forwardRef(() => MatchingEngineService))
         private readonly matchingEngineService: MatchingEngineService,
         @Inject(forwardRef(() => AccountBalanceService))
         private readonly accountBalanceService: AccountBalanceService,
@@ -45,26 +48,36 @@ export class OrderService {
         return order;
     }
 
-    public async createDemandBid(
+    public async createDemandBids(
         userId: string,
-        bid: CreateBidDTO,
-        demandId: string
-    ): Promise<Order> {
+        bids: CreateBidDTO[],
+        demandId: string,
+        transaction: EntityManager
+    ): Promise<Order[]> {
         this.logger.debug(
-            `Requested demand bid creation for user:${userId} bid:${JSON.stringify(bid)}`
+            `Requested demand bids creation for user:${userId} bid:${JSON.stringify(bids)}`
         );
 
-        return this.repository.save({
-            userId,
-            validFrom: new Date(bid.validFrom),
-            side: OrderSide.Bid,
-            status: OrderStatus.Active,
-            startVolume: new BN(bid.volume),
-            currentVolume: new BN(bid.volume),
-            price: bid.price,
-            product: bid.product,
-            demand: { id: demandId }
-        });
+        const repository = transaction.getRepository<Order>(Order);
+
+        const orders: Order[] = [];
+
+        for (const bid of bids) {
+            const order = await repository.save({
+                userId,
+                validFrom: new Date(bid.validFrom),
+                side: OrderSide.Bid,
+                status: OrderStatus.Active,
+                startVolume: new BN(bid.volume),
+                currentVolume: new BN(bid.volume),
+                price: bid.price,
+                product: bid.product,
+                demand: { id: demandId }
+            });
+            orders.push(new Order(order));
+        }
+
+        return orders;
     }
 
     public async createAsk(userId: string, ask: CreateAskDTO): Promise<Order> {
@@ -123,6 +136,19 @@ export class OrderService {
         return new Order(order);
     }
 
+    public async cancelOrder(userId: string, orderId: string) {
+        const order = await this.findOne(userId, orderId);
+        if (!order) {
+            throw new UnknownEntityError(orderId);
+        }
+
+        await this.repository.update(orderId, { status: OrderStatus.PendingCancellation });
+
+        this.matchingEngineService.cancel(orderId);
+
+        return new Order({ ...order, status: OrderStatus.PendingCancellation });
+    }
+
     public async submit(order: Order) {
         this.logger.debug(`Submitting order:${JSON.stringify(order)}`);
 
@@ -147,6 +173,10 @@ export class OrderService {
         return orders;
     }
 
+    public async findOne(userId: string, orderId: string) {
+        return this.repository.findOne(orderId, { where: { userId } });
+    }
+
     public async getActiveOrders(userId: string) {
         return this.repository.find({
             where: [
@@ -163,5 +193,45 @@ export class OrderService {
                 { status: OrderStatus.PartiallyFilled, userId, side }
             ]
         });
+    }
+
+    public async persistOrderStatusChange(statusChanges: List<StatusChangedEvent>) {
+        statusChanges.forEach(async statusChange => {
+            this.logger.debug(`Updating status for ${JSON.stringify(statusChange)}`);
+            try {
+                const order = await this.repository.findOne(statusChange.orderId);
+                if (order.status !== statusChange.prevStatus) {
+                    this.logger.error(
+                        `Unexpected status change for order ${order.id} expected ${
+                            OrderStatus[statusChange.prevStatus]
+                        } but received ${OrderStatus[order.status]}`
+                    );
+                }
+
+                await this.updateStatus(statusChange.orderId, statusChange.status);
+            } catch (e) {
+                this.logger.error(`Unexpected error ${e.message}`);
+            }
+        });
+    }
+
+    public async reactivateOrder(order: Order) {
+        if (
+            order.status !== OrderStatus.Cancelled &&
+            order.status !== OrderStatus.PendingCancellation
+        ) {
+            throw new Error(
+                'Unable to reactive order in state other than Cancelled or PendingCancellation'
+            );
+        }
+
+        await this.updateStatus(order.id, OrderStatus.Active);
+        const updated = await this.findOne(order.userId, order.id);
+
+        this.matchingEngineService.submit(updated);
+    }
+
+    private updateStatus(orderId: string, status: OrderStatus) {
+        return this.repository.update(orderId, { status });
     }
 }

@@ -1,5 +1,5 @@
-export { MatchingEngine, TradeExecutedEvent } from './MatchingEngine';
-export { Order, OrderSide, OrderStatus, IOrder } from './Order';
+export * from './MatchingEngine';
+export * from './Order';
 export { Bid } from './Bid';
 export { Ask } from './Ask';
 export { Product } from './Product';

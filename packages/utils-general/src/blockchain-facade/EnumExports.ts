@@ -15,3 +15,9 @@ export enum Unit {
     GW = 1e9,
     GWh = 1e9
 }
+
+export enum DemandStatus {
+    ACTIVE,
+    PAUSED,
+    ARCHIVED
+}

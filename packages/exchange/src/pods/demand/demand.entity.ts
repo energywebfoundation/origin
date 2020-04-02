@@ -1,6 +1,7 @@
+import { ExtendedBaseEntity } from '@energyweb/origin-backend';
+import { TimeFrame, DemandStatus } from '@energyweb/utils-general';
 import BN from 'bn.js';
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
-import { ExtendedBaseEntity } from '@energyweb/origin-backend';
 
 import { BNTransformer } from '../../utils/valueTransformers';
 import { Order } from '../order/order.entity';
@@ -20,14 +21,14 @@ export class Demand extends ExtendedBaseEntity {
     @Column({ type: 'timestamptz' })
     start: Date;
 
+    @Column({ type: 'timestamptz' })
+    end: Date;
+
     @Column('bigint', { transformer: BNTransformer })
     volumePerPeriod: BN;
 
     @Column()
-    periods: number;
-
-    @Column({ nullable: true })
-    timeFrame: number;
+    periodTimeFrame: TimeFrame;
 
     @Column('json')
     product: ProductDTO;
@@ -40,4 +41,7 @@ export class Demand extends ExtendedBaseEntity {
         }
     )
     bids: Order[];
+
+    @Column()
+    status: DemandStatus;
 }

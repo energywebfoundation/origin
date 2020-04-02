@@ -54,6 +54,7 @@
         "ethers": "4.0.46",
         "immutable": "4.0.0-rc.12",
         "moment": "2.24.0",
+        "moment-range": "4.0.2",
         "pg": "^7.17.1",
         "reflect-metadata": "0.1.13",
         "rxjs": "6.5.4",

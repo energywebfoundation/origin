@@ -1,7 +1,12 @@
+import { OrderStatus } from '@energyweb/exchange-core';
+import { DemandStatus, TimeFrame } from '@energyweb/utils-general';
 import { INestApplication } from '@nestjs/common';
+import moment from 'moment';
 import request from 'supertest';
 
 import { AccountService } from '../src/pods/account/account.service';
+import { CreateDemandDTO } from '../src/pods/demand/create-demand.dto';
+import { Demand } from '../src/pods/demand/demand.entity';
 import { DemandService } from '../src/pods/demand/demand.service';
 import { Order } from '../src/pods/order/order.entity';
 import { OrderService } from '../src/pods/order/order.service';
@@ -66,8 +71,26 @@ describe('Demand orders trading', () => {
         await app.close();
     });
 
+    beforeEach(async () => {
+        await databaseService.truncate('order');
+        await databaseService.truncate('transfer');
+        await databaseService.truncate('demand');
+    });
+
     const demandOwner = '1';
     const sellerId = '2';
+    const price = 1000;
+
+    const createDemandWith2Bids: CreateDemandDTO = {
+        price: 100,
+        periodTimeFrame: TimeFrame.monthly,
+        start: moment().toDate(),
+        end: moment()
+            .add(2, 'month')
+            .toDate(),
+        product: { deviceType: ['Solar'] },
+        volumePerPeriod: '250'
+    };
 
     it('should trade the bid from the demand', async () => {
         const validFrom = new Date();
@@ -79,19 +102,23 @@ describe('Demand orders trading', () => {
         await orderService.createAsk(sellerId, {
             assetId: deposit.asset.id,
             volume: '500',
-            price: 1000,
-            validFrom: validFrom.toISOString()
+            price,
+            validFrom
         });
 
         const product = await productService.getProduct(deposit.asset.id);
-
-        const demand = await demandService.createSingle(
-            demandOwner,
-            1000,
-            '250',
+        const createDemand: CreateDemandDTO = {
+            price,
+            periodTimeFrame: TimeFrame.monthly,
+            start: moment().toDate(),
+            end: moment()
+                .add(1, 'month')
+                .toDate(),
             product,
-            validFrom
-        );
+            volumePerPeriod: '250'
+        };
+
+        const demand = await demandService.create(demandOwner, createDemand);
 
         await sleep(5000);
 
@@ -116,6 +143,117 @@ describe('Demand orders trading', () => {
                 expect(orders).toBeDefined();
                 expect(orders).toHaveLength(1);
                 expect(orders[0].demandId).toBe(demand.id);
+            });
+    });
+
+    it('should be able to create demand', async () => {
+        await request(app.getHttpServer())
+            .post(`/demand`)
+            .send(createDemandWith2Bids)
+            .expect(201)
+            .expect(res => {
+                const created = res.body as Demand;
+
+                const [bid1, bid2] = created.bids;
+
+                expect(created.price).toBe(createDemandWith2Bids.price);
+                expect(created.bids).toHaveLength(2);
+
+                expect(bid1.price).toBe(createDemandWith2Bids.price);
+                expect(bid2.price).toBe(createDemandWith2Bids.price);
+
+                expect(bid1.demandId).toBe(created.id);
+                expect(bid2.demandId).toBe(created.id);
+            });
+    });
+
+    it('should be able to cancel demand', async () => {
+        let demandId: string;
+
+        await request(app.getHttpServer())
+            .post(`/demand`)
+            .send(createDemandWith2Bids)
+            .expect(201)
+            .expect(res => {
+                demandId = (res.body as Demand).id;
+            });
+
+        await request(app.getHttpServer())
+            .post(`/demand/${demandId}/pause`)
+            .expect(202)
+            .expect(res => {
+                const demand = res.body as Demand;
+
+                expect(demand.id).toBe(demandId);
+                expect(demand.status).toBe(DemandStatus.PAUSED);
+
+                const [bid1, bid2] = demand.bids;
+
+                expect(bid1.status).toBe(OrderStatus.PendingCancellation);
+                expect(bid2.status).toBe(OrderStatus.PendingCancellation);
+            });
+
+        await sleep(3000);
+
+        await request(app.getHttpServer())
+            .get(`/demand/${demandId}`)
+            .expect(200)
+            .expect(res => {
+                const demand = res.body as Demand;
+
+                expect(demand.id).toBe(demandId);
+                expect(demand.status).toBe(DemandStatus.PAUSED);
+
+                const [bid1, bid2] = demand.bids;
+
+                expect(bid1.status).toBe(OrderStatus.Cancelled);
+                expect(bid2.status).toBe(OrderStatus.Cancelled);
+            });
+    });
+
+    it('should be able to resume paused demand', async () => {
+        let demandId: string;
+
+        await request(app.getHttpServer())
+            .post(`/demand`)
+            .send(createDemandWith2Bids)
+            .expect(201)
+            .expect(res => {
+                demandId = (res.body as Demand).id;
+            });
+
+        await request(app.getHttpServer())
+            .post(`/demand/${demandId}/pause`)
+            .expect(202);
+
+        // TODO: this is a known bug with status management in the orderbook matching system, to be fixed in separate PR
+        await sleep(3000);
+
+        await request(app.getHttpServer())
+            .post(`/demand/${demandId}/resume`)
+            .expect(202)
+            .expect(res => {
+                const demand = res.body as Demand;
+
+                expect(demand.id).toBe(demandId);
+                expect(demand.status).toBe(DemandStatus.ACTIVE);
+            });
+
+        await sleep(3000);
+
+        await request(app.getHttpServer())
+            .get(`/demand/${demandId}`)
+            .expect(200)
+            .expect(res => {
+                const demand = res.body as Demand;
+
+                expect(demand.id).toBe(demandId);
+                expect(demand.status).toBe(DemandStatus.ACTIVE);
+
+                const [bid1, bid2] = demand.bids;
+
+                expect(bid1.status).toBe(OrderStatus.Active);
+                expect(bid2.status).toBe(OrderStatus.Active);
             });
     });
 });
