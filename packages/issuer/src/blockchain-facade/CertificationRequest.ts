@@ -96,7 +96,6 @@ export class Entity extends PreciseProofEntity implements ICertificationRequest 
             const { rootHash } = this.generateAndAddProofs(commitment);
 
             approveTx = await issuer.approveCertificationRequestPrivate(
-                this.owner,
                 this.id,
                 rootHash,
                 validityData,
@@ -104,7 +103,6 @@ export class Entity extends PreciseProofEntity implements ICertificationRequest 
             );
         } else {
             approveTx = await issuer.approveCertificationRequest(
-                this.owner,
                 this.id,
                 this.energy,
                 validityData,

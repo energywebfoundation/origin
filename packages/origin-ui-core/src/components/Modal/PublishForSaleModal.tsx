@@ -25,7 +25,7 @@ import { CommitmentStatus } from '@energyweb/origin-backend-core';
 import { formatDate, EnergyFormatter, countDecimals } from '../../utils';
 import { ITransfer } from '../../utils/exchange';
 import { Certificate } from '@energyweb/issuer';
-import { getUserOffchain } from '../../features/users/selectors';
+import { getUserOffchain, getActiveBlockchainAccountAddress } from '../../features/users/selectors';
 
 interface IProps {
     certificate: Certificate.Entity;
@@ -50,6 +50,7 @@ export function PublishForSaleModal(props: IProps) {
     const currencies = useSelector(getCurrencies);
     const exchangeClient = useSelector(getExchangeClient);
     const user = useSelector(getUserOffchain);
+    const activeAddress = useSelector(getActiveBlockchainAccountAddress);
 
     const [energyInDisplayUnit, setEnergyInDisplayUnit] = useState(
         EnergyFormatter.getValueInDisplayUnit(DEFAULT_ENERGY_IN_BASE_UNIT)
@@ -91,6 +92,17 @@ export function PublishForSaleModal(props: IProps) {
 
     async function publishForSale() {
         if (!isFormValid) {
+            return;
+        }
+
+        if (
+            !activeAddress ||
+            user?.blockchainAccountAddress?.toLowerCase() !== activeAddress?.toLowerCase()
+        ) {
+            showNotification(
+                `You need to select a blockchain account bound to the logged in user.`,
+                NotificationType.Error
+            );
             return;
         }
 
