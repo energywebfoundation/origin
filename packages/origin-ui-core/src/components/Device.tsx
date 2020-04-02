@@ -43,6 +43,7 @@ export function Device() {
     function ProductionList() {
         return (
             <ProducingDeviceTable
+                owner={null}
                 hiddenColumns={['status']}
                 includedStatuses={[DeviceStatus.Active]}
                 actions={{
@@ -55,6 +56,7 @@ export function Device() {
     function ProductionPendingList() {
         return (
             <ProducingDeviceTable
+                owner={null}
                 includedStatuses={[DeviceStatus.Submitted]}
                 actions={{
                     approve: true
