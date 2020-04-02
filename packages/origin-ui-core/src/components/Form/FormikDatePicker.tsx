@@ -82,11 +82,13 @@ export const FormikDatePicker = ({
 export const FormikDatePickerWithMonthArrowsFilled = ({
     name,
     label,
-    disabled
+    disabled,
+    required
 }: {
     name: string;
     label: string;
     disabled: boolean;
+    required: boolean;
 }) => {
     const { setFieldValue, values } = useFormikContext();
 
@@ -97,7 +99,7 @@ export const FormikDatePickerWithMonthArrowsFilled = ({
             inputVariant="filled"
             variant="inline"
             fullWidth
-            required
+            required={required}
             component={FormikDatePickerWithArrows}
             disabled={disabled}
             views={['year', 'month']}
