@@ -31,7 +31,7 @@ export function Device() {
     function MyDevices() {
         return (
             <ProducingDeviceTable
-                owner={userOffchain?.blockchainAccountAddress}
+                owner={userOffchain?.id}
                 showAddDeviceButton={true}
                 actions={{
                     requestCertificates: true

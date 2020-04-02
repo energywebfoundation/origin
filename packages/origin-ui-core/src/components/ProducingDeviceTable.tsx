@@ -35,7 +35,7 @@ interface IOwnProps {
         requestCertificates?: boolean;
         approve?: boolean;
     };
-    owner?: string;
+    owner?: number;
     showAddDeviceButton?: boolean;
     hiddenColumns?: string[];
     includedStatuses?: DeviceStatus[];
