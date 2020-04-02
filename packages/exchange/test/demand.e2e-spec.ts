@@ -1,4 +1,3 @@
-import { OrderStatus } from '@energyweb/exchange-core';
 import { DemandStatus, TimeFrame } from '@energyweb/utils-general';
 import { INestApplication } from '@nestjs/common';
 import moment from 'moment';
@@ -15,6 +14,7 @@ import { TradeDTO } from '../src/pods/trade/trade.dto';
 import { TransferService } from '../src/pods/transfer/transfer.service';
 import { DatabaseService } from './database.service';
 import { bootstrapTestInstance } from './exchange';
+import { OrderStatus } from '../src/pods/order/order-status.enum';
 
 const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
@@ -228,7 +228,6 @@ describe('Demand orders trading', () => {
             .post(`/demand/${demandId}/pause`)
             .expect(202);
 
-        // TODO: this is a known bug with status management in the orderbook matching system, to be fixed in separate PR
         await sleep(3000);
 
         await request(app.getHttpServer())

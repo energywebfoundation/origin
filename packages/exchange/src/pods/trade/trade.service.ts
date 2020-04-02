@@ -6,6 +6,7 @@ import { Connection, Repository } from 'typeorm';
 
 import { Order } from '../order/order.entity';
 import { Trade } from './trade.entity';
+import { OrderStatus } from '../order/order-status.enum';
 
 @Injectable()
 export class TradeService {
@@ -26,11 +27,11 @@ export class TradeService {
             for (const { bid, ask, trade } of event) {
                 await entityManager.update<Order>(Order, ask.id, {
                     currentVolume: ask.volume,
-                    status: ask.status
+                    status: ask.volume.isZero() ? OrderStatus.Filled : OrderStatus.PartiallyFilled
                 });
                 await entityManager.update<Order>(Order, bid.id, {
                     currentVolume: bid.volume,
-                    status: bid.status
+                    status: bid.volume.isZero() ? OrderStatus.Filled : OrderStatus.PartiallyFilled
                 });
                 await entityManager.insert<Trade>(Trade, {
                     created: trade.created,

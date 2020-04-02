@@ -1,20 +1,22 @@
 import { IUser } from '@energyweb/origin-backend-core';
 import {
+    Body,
     Controller,
+    ForbiddenException,
     Get,
+    HttpCode,
     Logger,
     Param,
     ParseUUIDPipe,
-    UseGuards,
-    Body,
     Post,
-    HttpCode
+    UseGuards
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 
+import { ForbiddenActionError } from '../../utils/exceptions';
 import { UserDecorator } from '../decorators/user.decorator';
-import { DemandService } from './demand.service';
 import { CreateDemandDTO } from './create-demand.dto';
+import { DemandService } from './demand.service';
 
 @Controller('demand')
 export class DemandController {
@@ -64,8 +66,14 @@ export class DemandController {
         @UserDecorator() user: IUser,
         @Param('id', new ParseUUIDPipe({ version: '4' })) id: string
     ) {
-        const demand = await this.demandService.resume(user.id.toString(), id);
-        return demand;
+        try {
+            const demand = await this.demandService.resume(user.id.toString(), id);
+            return demand;
+        } catch (error) {
+            if (error instanceof ForbiddenActionError) {
+                throw new ForbiddenException();
+            }
+        }
     }
 
     @Post('/:id/archive')

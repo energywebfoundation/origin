@@ -1,4 +1,4 @@
-import { OrderSide, OrderStatus, StatusChangedEvent } from '@energyweb/exchange-core';
+import { OrderSide, ActionResultEvent, ActionResult } from '@energyweb/exchange-core';
 import { forwardRef, Inject, Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import BN from 'bn.js';
@@ -14,6 +14,7 @@ import { CreateBidDTO } from './create-bid.dto';
 import { DirectBuyDTO } from './direct-buy.dto';
 import { OrderType } from './order-type.enum';
 import { Order } from './order.entity';
+import { OrderStatus } from './order-status.enum';
 
 @Injectable()
 export class OrderService {
@@ -195,20 +196,15 @@ export class OrderService {
         });
     }
 
-    public async persistOrderStatusChange(statusChanges: List<StatusChangedEvent>) {
-        statusChanges.forEach(async statusChange => {
-            this.logger.debug(`Updating status for ${JSON.stringify(statusChange)}`);
+    public async persistOrderStatusChange(actionResults: List<ActionResultEvent>) {
+        actionResults.forEach(async actionResult => {
+            this.logger.debug(`Updating status for ${JSON.stringify(actionResult)}`);
             try {
-                const order = await this.repository.findOne(statusChange.orderId);
-                if (order.status !== statusChange.prevStatus) {
-                    this.logger.error(
-                        `Unexpected status change for order ${order.id} expected ${
-                            OrderStatus[statusChange.prevStatus]
-                        } but received ${OrderStatus[order.status]}`
-                    );
+                if (actionResult.result !== ActionResult.Cancelled) {
+                    return;
                 }
 
-                await this.updateStatus(statusChange.orderId, statusChange.status);
+                await this.updateStatus(actionResult.orderId, OrderStatus.Cancelled);
             } catch (e) {
                 this.logger.error(`Unexpected error ${e.message}`);
             }

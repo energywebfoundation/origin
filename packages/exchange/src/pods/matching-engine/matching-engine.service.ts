@@ -5,7 +5,7 @@ import {
     MatchingEngine,
     OrderSide,
     ProductFilter,
-    StatusChangedEvent,
+    ActionResultEvent,
     TradeExecutedEvent
 } from '@energyweb/exchange-core';
 import { DeviceTypeService, LocationService } from '@energyweb/utils-general';
@@ -49,8 +49,8 @@ export class MatchingEngineService {
         });
 
         this.matchingEngine.trades.subscribe(async trades => this.onTradeExecutedEvent(trades));
-        this.matchingEngine.orderStatusChange.subscribe(async orderStatusChanges =>
-            this.onOrderStatusChanges(orderStatusChanges)
+        this.matchingEngine.actionResults.subscribe(async actionResultEvents =>
+            this.onActionResultEvent(actionResultEvents)
         );
 
         this.initialized = true;
@@ -91,7 +91,7 @@ export class MatchingEngineService {
         await this.tradeService.persist(trades);
     }
 
-    private async onOrderStatusChanges(statusChanges: List<StatusChangedEvent>) {
+    private async onActionResultEvent(statusChanges: List<ActionResultEvent>) {
         this.logger.log('Received StatusChangedEvent event');
         this.logger.log(`Received StatusChangedEvent event ${JSON.stringify(statusChanges)}`);
 
@@ -106,7 +106,6 @@ export class MatchingEngineService {
                   order.currentVolume,
                   ProductDTO.toProduct(order.product),
                   order.validFrom,
-                  order.status,
                   order.userId
               )
             : new Bid(
@@ -115,7 +114,6 @@ export class MatchingEngineService {
                   order.currentVolume,
                   ProductDTO.toProduct(order.product),
                   order.validFrom,
-                  order.status,
                   order.userId
               );
     }
