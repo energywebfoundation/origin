@@ -17,8 +17,8 @@ program.parse(process.argv);
 const absolutePath = (relativePath: string) => path.resolve(__dirname, relativePath);
 
 const envFile = program.env ? absolutePath(program.env) : '../../.env';
-const configFilePath = absolutePath(program.config ?? './config/demo-config.json');
-const seedFilePath = absolutePath(program.seedFile ?? './config/seed.sql');
+const configFilePath = absolutePath(program.config ?? '../config/demo-config.json');
+const seedFilePath = absolutePath(program.seedFile ?? '../config/seed.sql');
 
 (async () => {
     dotenv.config({
@@ -52,7 +52,7 @@ const seedFilePath = absolutePath(program.seedFile ?? './config/seed.sql');
 
     try {
         logger.info('Migrating table to the database...');
-        const createTablesQuery = fs.readFileSync(absolutePath('./config/create_tables.sql')).toString();
+        const createTablesQuery = fs.readFileSync(absolutePath('./schema/create_tables.sql')).toString();
         await client.query(createTablesQuery);
     } catch (e) {
         logger.debug(e);
