@@ -2,7 +2,7 @@ import { IDeviceTypeService, ILocationService } from '@energyweb/utils-general';
 import BN from 'bn.js';
 
 import { Ask } from './Ask';
-import { Order, OrderSide, OrderStatus } from './Order';
+import { Order, OrderSide } from './Order';
 import { Product } from './Product';
 import { Filter, ProductFilter } from './ProductFilter';
 
@@ -13,10 +13,9 @@ export class Bid extends Order {
         volume: BN,
         product: Product,
         validFrom: Date,
-        status: OrderStatus,
         userId: string
     ) {
-        super(id, OrderSide.Bid, status, validFrom, product, price, volume, userId);
+        super(id, OrderSide.Bid, validFrom, product, price, volume, userId);
     }
 
     public filterBy(
@@ -58,15 +57,7 @@ export class Bid extends Order {
     }
 
     public clone() {
-        return new Bid(
-            this.id,
-            this.price,
-            this.volume,
-            this.product,
-            this.validFrom,
-            this.status,
-            this.userId
-        );
+        return new Bid(this.id, this.price, this.volume, this.product, this.validFrom, this.userId);
     }
 
     private hasMatchingDeviceType(product: Product, deviceService: IDeviceTypeService) {

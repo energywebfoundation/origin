@@ -11,19 +11,9 @@ export enum OrderSide {
     Ask
 }
 
-export enum OrderStatus {
-    Active,
-    Cancelled,
-    Filled,
-    PartiallyFilled,
-    PendingCancellation,
-    NotExecuted
-}
-
 export interface IOrder {
     id: string;
     side: OrderSide;
-    status: OrderStatus;
     validFrom: Date;
     product: Product;
     price: number;
@@ -33,20 +23,17 @@ export interface IOrder {
 export abstract class Order implements IOrder {
     private _volume: BN;
 
-    private _status: OrderStatus;
-
     public get volume() {
         return this._volume;
     }
 
-    public get status() {
-        return this._status;
+    public get isFilled() {
+        return this.volume.isZero();
     }
 
     protected constructor(
         public readonly id: string,
         public readonly side: OrderSide,
-        status: OrderStatus,
         public readonly validFrom: Date,
         public readonly product: Product,
         public readonly price: number,
@@ -60,7 +47,6 @@ export abstract class Order implements IOrder {
             throw new Error('Incorrect negative price');
         }
 
-        this._status = status;
         this._volume = volume;
     }
 
@@ -69,7 +55,6 @@ export abstract class Order implements IOrder {
             throw new Error('Order overmatched');
         }
         this._volume = this._volume.sub(tradedVolume);
-        this._status = this.volume.isZero() ? OrderStatus.Filled : OrderStatus.PartiallyFilled;
 
         return this;
     }

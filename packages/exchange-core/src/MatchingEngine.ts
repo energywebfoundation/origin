@@ -7,13 +7,18 @@ import { concatMap } from 'rxjs/operators';
 import { Ask } from './Ask';
 import { Bid } from './Bid';
 import { DirectBuy } from './DirectBuy';
-import { Order, OrderSide, OrderStatus } from './Order';
+import { Order, OrderSide } from './Order';
 import { ProductFilter } from './ProductFilter';
 import { Trade } from './Trade';
 
+export enum ActionResult {
+    Cancelled,
+    Error
+}
+
 export type TradeExecutedEvent = { trade: Trade; ask: Ask; bid: Bid | DirectBuy };
 
-export type StatusChangedEvent = { orderId: string; status: OrderStatus; prevStatus: OrderStatus };
+export type ActionResultEvent = { orderId: string; result: ActionResult; error?: string };
 
 enum ActionKind {
     AddOrder,
@@ -32,7 +37,7 @@ export class MatchingEngine {
 
     public trades = new Subject<List<TradeExecutedEvent>>();
 
-    public orderStatusChange = new Subject<List<StatusChangedEvent>>();
+    public actionResults = new Subject<List<ActionResultEvent>>();
 
     private pendingActions = List<OrderBookAction>();
 
@@ -103,7 +108,7 @@ export class MatchingEngine {
         const actions = this.pendingActions;
 
         let trades = List<TradeExecutedEvent>();
-        let statusChange = List<StatusChangedEvent>();
+        let statusChange = List<ActionResultEvent>();
 
         actions.forEach(action => {
             switch (action.kind) {
@@ -137,10 +142,10 @@ export class MatchingEngine {
 
                         trades = trades.concat(trade);
                     } catch (error) {
-                        const notExecutedEvent: StatusChangedEvent = {
+                        const notExecutedEvent: ActionResultEvent = {
                             orderId: directBuy.id,
-                            status: OrderStatus.NotExecuted,
-                            prevStatus: directBuy.status
+                            result: ActionResult.Error,
+                            error: error.msg
                         };
                         statusChange = statusChange.concat(notExecutedEvent);
                     }
@@ -158,7 +163,7 @@ export class MatchingEngine {
             this.trades.next(trades);
         }
         if (!statusChange.isEmpty()) {
-            this.orderStatusChange.next(statusChange);
+            this.actionResults.next(statusChange);
         }
         return true;
     }
@@ -210,7 +215,7 @@ export class MatchingEngine {
         return executed;
     }
 
-    private cancel(orderId: string): StatusChangedEvent {
+    private cancel(orderId: string): ActionResultEvent {
         const asks = this.findAndRemove(this.asks, orderId);
         if (asks.result) {
             this.asks = asks.modified;
@@ -225,8 +230,7 @@ export class MatchingEngine {
 
         return {
             orderId,
-            status: OrderStatus.Cancelled,
-            prevStatus: OrderStatus.PendingCancellation
+            result: ActionResult.Cancelled
         };
     }
 
@@ -256,8 +260,8 @@ export class MatchingEngine {
     }
 
     private cleanOrderBook() {
-        this.asks = this.asks.filterNot(ask => ask.status === OrderStatus.Filled);
-        this.bids = this.bids.filterNot(bid => bid.status === OrderStatus.Filled);
+        this.asks = this.asks.filterNot(ask => ask.isFilled);
+        this.bids = this.bids.filterNot(bid => bid.isFilled);
     }
 
     private generateTrades(asks: List<Ask>, bids: List<Bid>) {
