@@ -42,7 +42,7 @@
   "devDependencies": {
     "@types/eth-sig-util": "2.1.0",
     "ethlint": "1.2.5",
-    "fs-extra": "8.1.0"
+    "fs-extra": "9.0.0"
   },
   "gitHead": "54beaf7fe6686810de74ca290daf99cbde510f9d",
   "publishConfig": {
