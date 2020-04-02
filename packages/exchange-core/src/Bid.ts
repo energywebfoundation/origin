@@ -93,6 +93,10 @@ export class Bid extends Order {
             return !this.product.location?.length;
         }
 
+        if (!this.product.location?.length) {
+            return false;
+        }
+
         return (
             locationService.matchesSome(productFilter.location, this.product.location) ||
             locationService.matchesSome(this.product.location, productFilter.location)
@@ -131,6 +135,10 @@ export class Bid extends Order {
             return !this.product.deviceVintage;
         }
 
+        if (!this.product.deviceVintage) {
+            return false;
+        }
+
         return productFilter.deviceVintage.matches(this.product.deviceVintage);
     }
 
@@ -140,6 +148,10 @@ export class Bid extends Order {
         }
         if (productFilter.generationTimeFilter === Filter.Unspecified) {
             return !this.product.generationTime;
+        }
+
+        if (!this.product.generationTime) {
+            return false;
         }
 
         return Order.hasMatchingGenerationTimes(this.product, productFilter);
