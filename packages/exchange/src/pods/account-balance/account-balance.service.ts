@@ -77,7 +77,7 @@ export class AccountBalanceService {
     }
 
     private async getTrades(userId: string) {
-        const trades = await this.tradeService.getAll(userId);
+        const trades = await this.tradeService.getAll(userId, false);
 
         return this.sumByAsset(
             trades,
