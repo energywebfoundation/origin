@@ -1,4 +1,3 @@
-import { OrderStatus } from '@energyweb/exchange-core';
 import { INestApplication } from '@nestjs/common';
 import { ethers } from 'ethers';
 import request from 'supertest';
@@ -7,6 +6,7 @@ import { Account } from '../src/pods/account/account';
 import { AccountService } from '../src/pods/account/account.service';
 import { CreateAskDTO } from '../src/pods/order/create-ask.dto';
 import { CreateBidDTO } from '../src/pods/order/create-bid.dto';
+import { OrderStatus } from '../src/pods/order/order-status.enum';
 import { Order } from '../src/pods/order/order.entity';
 import { RequestWithdrawalDTO } from '../src/pods/transfer/create-withdrawal.dto';
 import { Transfer } from '../src/pods/transfer/transfer.entity';

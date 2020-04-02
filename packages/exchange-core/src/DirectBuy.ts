@@ -1,6 +1,6 @@
 import BN from 'bn.js';
+
 import { Bid } from './Bid';
-import { OrderStatus } from './Order';
 
 export class DirectBuy extends Bid {
     constructor(
@@ -10,6 +10,6 @@ export class DirectBuy extends Bid {
         volume: BN,
         public readonly askId: string
     ) {
-        super(id, price, volume, null, new Date(), OrderStatus.Active, userId);
+        super(id, price, volume, null, new Date(), userId);
     }
 }

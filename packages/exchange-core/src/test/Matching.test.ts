@@ -7,9 +7,9 @@ import moment from 'moment';
 import { Ask } from '../Ask';
 import { Bid } from '../Bid';
 import { DeviceVintage } from '../DeviceVintage';
-import { MatchingEngine, StatusChangedEvent } from '../MatchingEngine';
+import { MatchingEngine, ActionResultEvent, ActionResult } from '../MatchingEngine';
 import { Operator } from '../Operator';
-import { Order, OrderStatus } from '../Order';
+import { Order } from '../Order';
 import { Product } from '../Product';
 import { Trade } from '../Trade';
 import { DirectBuy } from '../DirectBuy';
@@ -32,7 +32,7 @@ interface ITestCase {
     asksAfter?: Ask[];
     bidsAfter?: Bid[];
 
-    expectedStatusChanges?: StatusChangedEvent[];
+    expectedStatusChanges?: ActionResultEvent[];
 }
 
 describe('Matching tests', () => {
@@ -107,7 +107,6 @@ describe('Matching tests', () => {
                 ...args?.product
             },
             args?.validFrom || new Date(),
-            OrderStatus.Active,
             args?.userId || defaultSeller
         );
     };
@@ -122,7 +121,6 @@ describe('Matching tests', () => {
                 ...args?.product
             },
             args?.validFrom || new Date(),
-            OrderStatus.Active,
             args?.userId || defaultBuyer
         );
     };
@@ -155,7 +153,6 @@ describe('Matching tests', () => {
         zipped.forEach(([a1, a2]) => {
             assert.equal(a1.id, a2.id, 'Wrong order id');
             assert.isTrue(a1.volume.eq(a2.volume), 'Wrong volume');
-            assert.equal(a1.status, a2.status, 'Wrong status');
             assert.equal(a1.price, a2.price, 'Wrong price');
         });
     };
@@ -180,8 +177,8 @@ describe('Matching tests', () => {
     };
 
     const assertStatusChanges = (
-        expected: List<StatusChangedEvent>,
-        current: List<StatusChangedEvent>
+        expected: List<ActionResultEvent>,
+        current: List<ActionResultEvent>
     ) => {
         assert.equal(current.size, expected.size, 'Expected amount of status changes');
 
@@ -232,7 +229,7 @@ describe('Matching tests', () => {
             signalReady();
         });
 
-        matchingEngine.orderStatusChange.subscribe(res => {
+        matchingEngine.actionResults.subscribe(res => {
             const expectedStatusChanges = List(testCase.expectedStatusChanges);
 
             assertStatusChanges(expectedStatusChanges, res);
@@ -1082,11 +1079,10 @@ describe('Matching tests', () => {
             const expectedTrades = [new Trade(bid, ask1, onekWh, ask1.price)];
 
             const bidsAfter = [bid2];
-            const expectedStatusChanges: StatusChangedEvent[] = [
+            const expectedStatusChanges: ActionResultEvent[] = [
                 {
                     orderId: ask1.id,
-                    status: OrderStatus.Cancelled,
-                    prevStatus: OrderStatus.PendingCancellation
+                    result: ActionResult.Cancelled
                 }
             ];
 

@@ -1,4 +1,3 @@
-import { OrderStatus } from '@energyweb/exchange-core';
 import { DemandStatus } from '@energyweb/utils-general';
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectConnection, InjectRepository } from '@nestjs/typeorm';
@@ -13,6 +12,7 @@ import { OrderService } from '../order/order.service';
 import { CreateDemandDTO } from './create-demand.dto';
 import { DemandTimePeriodService } from './demand-time-period.service';
 import { Demand } from './demand.entity';
+import { OrderStatus } from '../order/order-status.enum';
 
 @Injectable()
 export class DemandService {
@@ -116,12 +116,15 @@ export class DemandService {
         if (!demand) {
             return null;
         }
-        if (demand.status !== DemandStatus.PAUSED) {
-            throw new ForbiddenActionError(
-                `Demand ${demand.id} expected status is DemandStatus.PAUSED but had ${
-                    DemandStatus[demand.status]
-                }`
-            );
+        if (
+            demand.status !== DemandStatus.PAUSED ||
+            demand.bids.some(bid => bid.status === OrderStatus.PendingCancellation)
+        ) {
+            const msg = `Demand ${demand.id} expected status is DemandStatus.PAUSED but had ${
+                DemandStatus[demand.status]
+            }`;
+            this.logger.error(msg);
+            throw new ForbiddenActionError(msg);
         }
 
         await this.repository.update(demand.id, { status: DemandStatus.ACTIVE });
