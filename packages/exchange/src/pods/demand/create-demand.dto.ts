@@ -1,6 +1,14 @@
 import { TimeFrame } from '@energyweb/utils-general';
 import { Type } from 'class-transformer';
-import { IsDate, Validate, ValidateNested, IsEnum, IsInt, IsPositive } from 'class-validator';
+import {
+    IsDate,
+    Validate,
+    ValidateNested,
+    IsEnum,
+    IsInt,
+    IsPositive,
+    IsBoolean
+} from 'class-validator';
 
 import { PositiveBNStringValidator } from '../../utils/positiveBNStringValidator';
 import { ProductDTO } from '../order/product.dto';
@@ -26,4 +34,7 @@ export class CreateDemandDTO {
 
     @ValidateNested()
     public readonly product: ProductDTO;
+
+    @IsBoolean()
+    public readonly boundToGenerationTime: boolean;
 }
