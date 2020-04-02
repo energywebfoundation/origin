@@ -1,10 +1,8 @@
 import { OrderStatus } from '@energyweb/exchange-core';
-import { DemandStatus, TimeFrame } from '@energyweb/utils-general';
+import { DemandStatus } from '@energyweb/utils-general';
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectConnection, InjectRepository } from '@nestjs/typeorm';
 import BN from 'bn.js';
-import * as Moment from 'moment';
-import { extendMoment } from 'moment-range';
 import { Connection, Repository } from 'typeorm';
 
 import { ForbiddenActionError } from '../../utils/exceptions';
@@ -13,9 +11,8 @@ import { CreateBidDTO } from '../order/create-bid.dto';
 import { Order } from '../order/order.entity';
 import { OrderService } from '../order/order.service';
 import { CreateDemandDTO } from './create-demand.dto';
+import { DemandTimePeriodService } from './demand-time-period.service';
 import { Demand } from './demand.entity';
-
-const moment = extendMoment(Moment);
 
 @Injectable()
 export class DemandService {
@@ -27,17 +24,24 @@ export class DemandService {
         private readonly orderService: OrderService,
         private readonly matchingService: MatchingEngineService,
         @InjectConnection('ExchangeConnection')
-        private readonly connection: Connection
+        private readonly connection: Connection,
+        private readonly demandTimePeriodService: DemandTimePeriodService
     ) {}
 
     public async create(userId: string, createDemand: CreateDemandDTO): Promise<Demand> {
-        const validityDates = this.generateValidityDates(createDemand);
+        const validityDates = this.demandTimePeriodService.generateValidityDates(createDemand);
         const bidsToCreate = validityDates.map(
-            (validFrom): CreateBidDTO => ({
+            ({ validFrom, generationFrom, generationTo }): CreateBidDTO => ({
                 volume: createDemand.volumePerPeriod,
                 price: createDemand.price,
-                validFrom: validFrom.toDate(),
-                product: createDemand.product
+                validFrom,
+                product: createDemand.boundToGenerationTime
+                    ? {
+                          ...createDemand.product,
+                          generationFrom: generationFrom.toISOString(),
+                          generationTo: generationTo.toISOString()
+                      }
+                    : createDemand.product
             })
         );
 
@@ -147,34 +151,6 @@ export class DemandService {
             b => b.status === OrderStatus.Cancelled || b.status === OrderStatus.PendingCancellation
         )) {
             this.orderService.reactivateOrder(bid);
-        }
-    }
-
-    private generateValidityDates(createDemand: CreateDemandDTO) {
-        const range = moment.range(createDemand.start, createDemand.end);
-
-        const { diff, step } = this.timeFrameToTimeDiff(createDemand.periodTimeFrame);
-        return Array.from(range.by(diff, { step, excludeEnd: true }));
-    }
-
-    private timeFrameToTimeDiff(
-        timeFrame: TimeFrame
-    ): { diff: Moment.unitOfTime.Diff; step?: number } {
-        switch (timeFrame) {
-            case TimeFrame.yearly:
-                return { diff: 'year' };
-            case TimeFrame.monthly:
-                return { diff: 'month' };
-            case TimeFrame.weekly:
-                return { diff: 'week' };
-            case TimeFrame.daily:
-                return { diff: 'day' };
-            case TimeFrame.hourly:
-                return { diff: 'hour' };
-            case TimeFrame.halfHourly:
-                return { diff: 'minute', step: 30 };
-            default:
-                throw new Error('Unknown timeframe');
         }
     }
 }
