@@ -17,7 +17,7 @@ interface IProps {
 export function Exchange(props: IProps) {
     const { currency, refreshInterval } = { refreshInterval: 5000, ...props };
 
-    const userOffchain = useSelector(getUserOffchain);
+    const user = useSelector(getUserOffchain);
     const exchangeClient = useSelector(getExchangeClient);
     const country = useSelector(getCountry);
     const dispatch = useDispatch();
@@ -95,6 +95,7 @@ export function Exchange(props: IProps) {
                 }}
                 energyUnit={EnergyFormatter.displayUnit}
                 currency={currency}
+                disableBidding={!user}
             />
             <br />
             <br />
@@ -104,7 +105,7 @@ export function Exchange(props: IProps) {
                         data={data.asks}
                         currency={currency}
                         title={t('exchange.info.asks')}
-                        highlightOrdersUserId={userOffchain?.id?.toString()}
+                        highlightOrdersUserId={user?.id?.toString()}
                     />
                 </Grid>
                 <Grid item xs={6}>
@@ -112,7 +113,7 @@ export function Exchange(props: IProps) {
                         data={data.bids}
                         currency={currency}
                         title={t('exchange.info.bids')}
-                        highlightOrdersUserId={userOffchain?.id?.toString()}
+                        highlightOrdersUserId={user?.id?.toString()}
                     />
                 </Grid>
             </Grid>

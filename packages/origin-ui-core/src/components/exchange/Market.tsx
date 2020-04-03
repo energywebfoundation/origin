@@ -42,11 +42,11 @@ interface IProps {
     onChange: (values: IMarketFormValues) => void;
     currency: string;
     energyUnit: string;
-    disabled?: boolean;
+    disableBidding?: boolean;
 }
 
 export function Market(props: IProps) {
-    const { onBid, currency, energyUnit, onNotify, onChange, disabled } = props;
+    const { onBid, currency, energyUnit, onNotify, onChange, disableBidding } = props;
 
     const configuration = useSelector(getConfiguration);
     const regions = useSelector(getRegions);
@@ -109,17 +109,17 @@ export function Market(props: IProps) {
                         ? calculateTotalPrice(values.price, values.energy)
                         : 0;
 
-                    const fieldDisabled = isSubmitting || disabled;
+                    const fieldDisabled = isSubmitting;
 
                     const notifyButtonEnabled =
-                        values.price && !errors?.price && !isSubmitting && !disabled;
+                        values.price && !errors?.price && !isSubmitting && !disableBidding;
                     const bidButtonEnabled =
                         values.price &&
                         values.energy &&
                         !errors?.price &&
                         !errors?.energy &&
                         !isSubmitting &&
-                        !disabled;
+                        !disableBidding;
 
                     return (
                         <Form translate="">
