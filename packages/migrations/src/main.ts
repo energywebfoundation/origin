@@ -61,7 +61,7 @@ const seedFilePath = absolutePath(program.seedFile ?? '../config/seed.sql');
         }
     }
 
-    const { rows } = await client.query('SELECT * FROM configuration;');
+    const { rows } = await client.query('SELECT * FROM public.configuration;');
 
     if (rows[0]?.contractsLookup && !program.redeploy) {
         const errorTxt = `Contracts already deployed. Please use 'start:redeploy' to redeploy the contracts.`;
