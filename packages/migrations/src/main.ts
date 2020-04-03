@@ -50,13 +50,15 @@ const seedFilePath = absolutePath(program.seedFile ?? '../config/seed.sql');
     await client.connect();
     logger.info(`Connected to ${postgresConfig.host}:${postgresConfig.port} - database ${postgresConfig.database}`);
 
-    try {
-        logger.info('Migrating table to the database...');
-        const createTablesQuery = fs.readFileSync(absolutePath('./schema/create_tables.sql')).toString();
-        await client.query(createTablesQuery);
-    } catch (e) {
-        logger.debug(e);
-        logger.info('Tables have been deployed already.');
+    if (program.redeploy) {
+        try {
+            logger.info('Migrating tables to the database...');
+            const createTablesQuery = fs.readFileSync(absolutePath('./schema/create_tables.sql')).toString();
+            await client.query(createTablesQuery);
+        } catch (e) {
+            logger.debug(e);
+            logger.info('Tables have been deployed already.');
+        }
     }
 
     const { rows } = await client.query('SELECT * FROM configuration;');
