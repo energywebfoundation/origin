@@ -5,8 +5,6 @@ import { ModuleRef } from '@nestjs/core';
 
 @Injectable()
 export class DeviceTypeServiceWrapper implements OnModuleInit {
-    private initialized = false;
-
     private _deviceTypeService: IDeviceTypeService;
 
     constructor(private readonly moduleRef: ModuleRef) {}
