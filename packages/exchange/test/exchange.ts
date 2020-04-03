@@ -6,6 +6,7 @@ import { CanActivate, ExecutionContext, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { AuthGuard } from '@nestjs/passport';
 import { Test } from '@nestjs/testing';
+import { useContainer } from 'class-validator';
 import { ethers } from 'ethers';
 
 import { AppModule } from '../src/app.module';
@@ -138,6 +139,8 @@ export const bootstrapTestInstance = async () => {
 
     app.useLogger(testLogger);
     app.enableCors();
+
+    useContainer(app.select(AppModule), { fallbackOnErrors: true });
 
     return {
         transferService,

@@ -1,15 +1,15 @@
 import {
+    ActionResultEvent,
     Ask,
     Bid,
     DirectBuy,
     MatchingEngine,
     OrderSide,
     ProductFilter,
-    ActionResultEvent,
     TradeExecutedEvent
 } from '@energyweb/exchange-core';
-import { DeviceTypeService, LocationService } from '@energyweb/utils-general';
-import { Injectable, Logger, Inject, forwardRef } from '@nestjs/common';
+import { LocationService } from '@energyweb/utils-general';
+import { forwardRef, Inject, Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { Interval } from '@nestjs/schedule';
 import { List } from 'immutable';
 
@@ -17,10 +17,11 @@ import { OrderType } from '../order/order-type.enum';
 import { Order } from '../order/order.entity';
 import { OrderService } from '../order/order.service';
 import { ProductDTO } from '../order/product.dto';
+import { DeviceTypeServiceWrapper } from '../runner/deviceTypeServiceWrapper';
 import { TradeService } from '../trade/trade.service';
 
 @Injectable()
-export class MatchingEngineService {
+export class MatchingEngineService implements OnModuleInit {
     private initialized = false;
 
     private readonly logger = new Logger(MatchingEngineService.name);
@@ -30,15 +31,18 @@ export class MatchingEngineService {
     constructor(
         private readonly tradeService: TradeService,
         @Inject(forwardRef(() => OrderService))
-        private readonly orderService: OrderService
+        private readonly orderService: OrderService,
+        private readonly deviceTypeServiceWrapper: DeviceTypeServiceWrapper
     ) {}
 
-    public init(orders: Order[], deviceTypes: string[][]) {
+    public async onModuleInit() {
         this.logger.log(`Initializing matching engine`);
-        this.logger.log(`Submitting ${orders.length}`);
+
+        const orders = await this.orderService.getAllActiveOrders();
+        this.logger.log(`Submitting ${orders.length} existing orders`);
 
         this.matchingEngine = new MatchingEngine(
-            new DeviceTypeService(deviceTypes),
+            this.deviceTypeServiceWrapper.deviceTypeService,
             new LocationService()
         );
 

@@ -42,6 +42,7 @@
         "@nestjs/platform-ws": "6.11.11",
         "@nestjs/config": "^0.2.0",
         "body-parser": "1.19.0",
+        "class-validator": "0.11.1",
         "cors": "2.8.5",
         "dotenv": "8.2.0"
     },
