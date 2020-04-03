@@ -43,10 +43,13 @@ export class ExchangeClient implements IExchangeClient {
             generationTo: DUMMY_ISO_STRING
         };
 
-        const response = await this.requestClient.post<IProductFilterDTO, TOrderBook>(
-            `${this.orderbookEndpoint}/search`,
-            data
-        );
+        let url = `${this.orderbookEndpoint}/public/search`;
+
+        if (this.requestClient.authenticationToken) {
+            url = `${this.orderbookEndpoint}/search`;
+        }
+
+        const response = await this.requestClient.post<IProductFilterDTO, TOrderBook>(url, data);
 
         return response.data;
     }

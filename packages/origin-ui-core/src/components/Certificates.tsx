@@ -44,13 +44,13 @@ export function Certificates() {
             key: 'inbox',
             label: 'navigation.certificates.inbox',
             component: InboxCertificates,
-            show: !isIssuer
+            show: user && !isIssuer
         },
         {
             key: 'claims_report',
             label: 'navigation.certificates.claimsReport',
             component: ClaimedCertificates,
-            show: !isIssuer
+            show: user && !isIssuer
         },
         {
             key: 'detail_view',
@@ -74,7 +74,7 @@ export function Certificates() {
             key: 'exchange',
             label: 'navigation.certificates.exchange',
             component: ExchangeRoute,
-            show: user
+            show: true
         }
     ];
 

@@ -68,14 +68,12 @@ export function Header() {
                     <li>
                         <NavLink to={getDevicesLink()}>{t('header.devices')}</NavLink>
                     </li>
+                    <li>
+                        <NavLink to={getCertificatesLink()}>{t('header.certificates')}</NavLink>
+                    </li>
 
                     {userOffchain && (
                         <>
-                            <li>
-                                <NavLink to={getCertificatesLink()}>
-                                    {t('header.certificates')}
-                                </NavLink>
-                            </li>
                             <li>
                                 <NavLink to={getOrganizationLink()}>
                                     {t('header.organizations')}
