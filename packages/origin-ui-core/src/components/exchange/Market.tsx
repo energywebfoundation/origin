@@ -18,7 +18,7 @@ import { useValidation, Moment, useTranslation, formatCurrency } from '../../uti
 import { Formik, Form } from 'formik';
 import { FormInput, FormikDatePickerWithMonthArrowsFilled, FormikEffect } from '../Form';
 
-interface IFormValues {
+export interface IMarketFormValues {
     generationDateStart: Moment;
     generationDateEnd: Moment;
     price: string;
@@ -27,7 +27,7 @@ interface IFormValues {
     location: string[];
 }
 
-const INITIAL_FORM_VALUES: IFormValues = {
+const INITIAL_FORM_VALUES: IMarketFormValues = {
     energy: '',
     generationDateStart: null,
     generationDateEnd: null,
@@ -37,15 +37,16 @@ const INITIAL_FORM_VALUES: IFormValues = {
 };
 
 interface IProps {
-    onBid: (values: IFormValues) => void;
-    onNotify: (values: IFormValues) => void;
-    onChange: (values: IFormValues) => void;
+    onBid: (values: IMarketFormValues) => void;
+    onNotify: (values: IMarketFormValues) => void;
+    onChange: (values: IMarketFormValues) => void;
     currency: string;
     energyUnit: string;
+    disabled?: boolean;
 }
 
 export function Market(props: IProps) {
-    const { onBid, currency, energyUnit, onNotify, onChange } = props;
+    const { onBid, currency, energyUnit, onNotify, onChange, disabled } = props;
 
     const configuration = useSelector(getConfiguration);
     const regions = useSelector(getRegions);
@@ -108,15 +109,17 @@ export function Market(props: IProps) {
                         ? calculateTotalPrice(values.price, values.energy)
                         : 0;
 
-                    const fieldDisabled = isSubmitting;
+                    const fieldDisabled = isSubmitting || disabled;
 
-                    const notifyButtonEnabled = values.price && !errors?.price && !isSubmitting;
+                    const notifyButtonEnabled =
+                        values.price && !errors?.price && !isSubmitting && !disabled;
                     const bidButtonEnabled =
                         values.price &&
                         values.energy &&
                         !errors?.price &&
                         !errors?.energy &&
-                        !isSubmitting;
+                        !isSubmitting &&
+                        !disabled;
 
                     return (
                         <Form translate="">
