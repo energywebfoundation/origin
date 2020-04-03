@@ -122,7 +122,7 @@
             "registerOffchainUser": "Register offchain user",
             "feedback": {
                 "userSettingsUpdated": "User settings have been updated.",
-                "blockhainAccountLinked": "Blockchain account linked."
+                "blockchainAccountLinked": "Blockchain account linked."
             },
             "properties": {
                 "email": "E-mail",
@@ -153,7 +153,9 @@
             "feedback": {
                 "noChangesMade": "No changes have been made.",
                 "unknownError": "Unknown error",
-                "createdByNoun": "Created by {fullName} from the Noun project"
+                "createdByNoun": "Created by {fullName} from the Noun project",
+                "attachBlockchainAccountFirst": "You have to attach a blockchain address to your account.",
+                "noOrganization": "You need to be a part of an organization. You can create it or join existing one."
             }
         },
         "importAccount": {

@@ -129,6 +129,15 @@ export function AddDevice() {
         formikActions: FormikHelpers<typeof INITIAL_FORM_VALUES>
     ): Promise<void> {
         if (!user.blockchainAccountAddress) {
+            showNotification(
+                t('general.feedback.attachBlockchainAccountFirst'),
+                NotificationType.Error
+            );
+            return;
+        }
+
+        if (!user.organization) {
+            showNotification(t('general.feedback.noOrganization'), NotificationType.Error);
             return;
         }
 
@@ -182,7 +191,8 @@ export function AddDevice() {
 
             history.push(getDevicesOwnedLink());
         } catch (error) {
-            throw new Error(error);
+            console.error(error);
+            showNotification(t('general.feedback.unknownError'), NotificationType.Error);
         }
 
         dispatch(setLoading(false));
