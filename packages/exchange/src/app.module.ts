@@ -3,8 +3,8 @@ import { ConfigModule } from '@nestjs/config';
 import { APP_INTERCEPTOR, APP_PIPE } from '@nestjs/core';
 import { ScheduleModule } from '@nestjs/schedule';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import path from 'path';
 import fs from 'fs';
+import path from 'path';
 
 import { EmptyResultInterceptor } from './empty-result.interceptor';
 import { AccountBalanceModule } from './pods/account-balance/account-balance.module';
@@ -21,12 +21,13 @@ import { OrderBookModule } from './pods/order-book/order-book.module';
 import { Order } from './pods/order/order.entity';
 import { OrderModule } from './pods/order/order.module';
 import { ProductModule } from './pods/product/product.module';
-import { RunnerModule } from './pods/runner';
+import { RunnerModule } from './pods/runner/runner.module';
 import { Trade } from './pods/trade/trade.entity';
 import { TradeModule } from './pods/trade/trade.module';
 import { Transfer } from './pods/transfer/transfer.entity';
 import { TransferModule } from './pods/transfer/transfer.module';
 import { WithdrawalProcessorModule } from './pods/withdrawal-processor/withdrawal-processor.module';
+import { HTTPLoggingInterceptor } from './utils/httpLoggingInterceptor';
 
 const getEnvFilePath = () => {
     const resolvedPath = path.resolve(__dirname, '../../../../../.env');
@@ -74,7 +75,8 @@ const getEnvFilePath = () => {
     ],
     providers: [
         { provide: APP_PIPE, useClass: ValidationPipe },
-        { provide: APP_INTERCEPTOR, useClass: EmptyResultInterceptor }
+        { provide: APP_INTERCEPTOR, useClass: EmptyResultInterceptor },
+        { provide: APP_INTERCEPTOR, useClass: HTTPLoggingInterceptor }
     ]
 })
 export class AppModule {}

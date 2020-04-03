@@ -1,5 +1,5 @@
 import { IUser } from '@energyweb/origin-backend-core';
-import { Body, Controller, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Post, UseGuards, HttpCode } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 
 import { UserDecorator } from '../decorators/user.decorator';
@@ -13,6 +13,7 @@ export class OrderBookController {
 
     @Post('/search')
     @UseGuards(AuthGuard())
+    @HttpCode(200)
     public getByProduct(@UserDecorator() user: IUser, @Body() productFilter: ProductFilterDTO) {
         const { asks, bids } = this.orderBookService.getByProduct(
             ProductFilterDTO.toProductFilter(productFilter)
