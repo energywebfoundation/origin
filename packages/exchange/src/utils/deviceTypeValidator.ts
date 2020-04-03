@@ -10,8 +10,6 @@ export class DeviceTypeValidator implements ValidatorConstraintInterface {
     constructor(private readonly deviceTypeServiceWrapper: DeviceTypeServiceWrapper) {}
 
     validate(deviceTypes: string[]) {
-        console.log(this.deviceTypeServiceWrapper.deviceTypeService);
-
         const { areValid } = this.deviceTypeServiceWrapper.deviceTypeService.validate(deviceTypes);
         return areValid;
     }
