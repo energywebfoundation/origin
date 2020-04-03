@@ -53,6 +53,8 @@ describe('orderbook tests', () => {
     };
 
     beforeAll(async () => {
+        jest.setTimeout(10000);
+
         ({
             transferService,
             orderService,
@@ -66,14 +68,7 @@ describe('orderbook tests', () => {
         ({ address: user1Address } = await accountService.getOrCreateAccount(user1Id));
         deposit = await createDeposit(user1Address);
         await confirmDeposit();
-    });
 
-    afterAll(async () => {
-        await databaseService.cleanUp();
-        await app.close();
-    });
-
-    it('should return orders based on the filter', async () => {
         const createAsk1: CreateAskDTO = {
             assetId: deposit.asset.id,
             volume: '100',
@@ -118,7 +113,14 @@ describe('orderbook tests', () => {
         await orderService.createBid(user2Id, createBid2);
 
         await sleep(2000);
+    });
 
+    afterAll(async () => {
+        await databaseService.cleanUp();
+        await app.close();
+    });
+
+    it('should return orders based on the filter', async () => {
         await request(app.getHttpServer())
             .post('/orderbook/search')
             .send({
@@ -158,5 +160,63 @@ describe('orderbook tests', () => {
                 expect(asks).toHaveLength(2);
                 expect(bids).toHaveLength(1);
             });
+    });
+
+    it('should return 400 when filters are set as specific but no values provided', async () => {
+        await request(app.getHttpServer())
+            .post('/orderbook/search')
+            .send({
+                deviceVintageFilter: Filter.All,
+                generationTimeFilter: Filter.All,
+                locationFilter: Filter.All,
+                deviceTypeFilter: Filter.Specific
+            } as ProductFilterDTO)
+            .expect(400);
+
+        await request(app.getHttpServer())
+            .post('/orderbook/search')
+            .send({
+                deviceVintageFilter: Filter.Specific,
+                generationTimeFilter: Filter.All,
+                locationFilter: Filter.All,
+                deviceTypeFilter: Filter.All
+            } as ProductFilterDTO)
+            .expect(400);
+
+        await request(app.getHttpServer())
+            .post('/orderbook/search')
+            .send({
+                deviceVintageFilter: Filter.All,
+                generationTimeFilter: Filter.Specific,
+                generationFrom: new Date().toISOString(),
+                locationFilter: Filter.All,
+                deviceTypeFilter: Filter.All
+            } as ProductFilterDTO)
+            .expect(400);
+    });
+
+    it('should return 400 when provided deviceTypes are not valid', async () => {
+        await request(app.getHttpServer())
+            .post('/orderbook/search')
+            .send({
+                deviceVintageFilter: Filter.All,
+                generationTimeFilter: Filter.All,
+                locationFilter: Filter.All,
+                deviceTypeFilter: Filter.Specific,
+                deviceType: ['LOL']
+            } as ProductFilterDTO)
+            .expect(400);
+    });
+
+    it('should return 400 when provided filter enum is invalid', async () => {
+        await request(app.getHttpServer())
+            .post('/orderbook/search')
+            .send({
+                deviceVintageFilter: ('LOL' as unknown) as Filter,
+                generationTimeFilter: Filter.All,
+                locationFilter: Filter.All,
+                deviceTypeFilter: Filter.All
+            } as ProductFilterDTO)
+            .expect(400);
     });
 });
