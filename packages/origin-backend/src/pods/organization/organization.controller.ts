@@ -147,7 +147,7 @@ export class OrganizationController {
             if (validationErrors.length > 0) {
                 throw new UnprocessableEntityException({
                     success: false,
-                    errors: validationErrors
+                    errors: validationErrors.map(e => e?.toString())
                 });
             } else {
                 await this.organizationRepository.save(newEntity);
@@ -155,7 +155,9 @@ export class OrganizationController {
                 return newEntity;
             }
         } catch (error) {
-            console.warn('Error while saving entity', error);
+            console.warn('Error while saving entity');
+            console.error(error);
+
             throw new BadRequestException('Could not save organization.');
         }
     }

@@ -132,11 +132,20 @@ const VALIDATION_SCHEMA = Yup.object({
         .when('businessTypeSelect', {
             is: 'Other',
             then: Yup.string().required()
-        })
-}).test({
-    name: 'at-least-one-property',
-    message: ERRORS.COMPANY_NUMBER_OR_CEO_PASSPORT,
-    test: value => !!(value.companyNumber || value.ceoPassportNumber)
+        }),
+    atLeastOneProp: Yup.mixed().test(
+        'atLeastOneProperty',
+        ERRORS.COMPANY_NUMBER_OR_CEO_PASSPORT,
+        function(this: Yup.TestContext): boolean {
+            const objectToValidate: IFormValues = this.parent;
+
+            if (!objectToValidate) {
+                return false;
+            }
+
+            return !!(objectToValidate.companyNumber || objectToValidate.ceoPassportNumber);
+        }
+    )
 });
 
 export function OrganizationForm(props: IProps) {
@@ -247,7 +256,7 @@ export function OrganizationForm(props: IProps) {
                 {formikProps => {
                     const { isValid, isSubmitting, values, errors } = formikProps;
 
-                    const undefinedErrors = (errors as any).undefined;
+                    const otherErrors = (errors as any)?.atLeastOneProp;
 
                     const fieldDisabled = isSubmitting || readOnly;
                     const buttonDisabled = isSubmitting || !isValid || activeCountries.length === 0;
@@ -415,7 +424,7 @@ export function OrganizationForm(props: IProps) {
                                 </Grid>
                             </Grid>
 
-                            {undefinedErrors && <div className="mt-3">{undefinedErrors}</div>}
+                            {otherErrors && <div className="mt-3">{otherErrors}</div>}
 
                             {!readOnly && (
                                 <Button
