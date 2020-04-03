@@ -15,10 +15,18 @@ export class OrderBookController {
     @UseGuards(AuthGuard())
     @HttpCode(200)
     public getByProduct(@UserDecorator() user: IUser, @Body() productFilter: ProductFilterDTO) {
+        return this.filterOrderBook(productFilter, user.id.toString());
+    }
+
+    @Post('/public/search')
+    public getByProductPublic(@Body() productFilter: ProductFilterDTO) {
+        return this.filterOrderBook(productFilter);
+    }
+
+    private filterOrderBook(productFilter: ProductFilterDTO, userId?: string) {
         const { asks, bids } = this.orderBookService.getByProduct(
             ProductFilterDTO.toProductFilter(productFilter)
         );
-        const userId = user?.id.toString();
 
         return {
             asks: asks.map(ask => OrderBookOrderDTO.fromOrder(ask, userId)).toArray(),
