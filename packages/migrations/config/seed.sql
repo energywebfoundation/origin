@@ -160,7 +160,7 @@ VALUES
         '4'
     );
 
-/* 
+/*
     ORGANIZATIONS
  */
 INSERT INTO
@@ -391,7 +391,7 @@ VALUES
         '4'
     );
 
-/* 
+/*
     DEVICES
  */
 INSERT INTO
@@ -566,16 +566,16 @@ VALUES
     );
 
 SELECT setval(
-    pg_get_serial_sequence('"user"', 'id'),
-    (SELECT MAX("id") FROM "user") + 1
+    pg_get_serial_sequence('public.user', 'id'),
+    (SELECT MAX("id") FROM public.user) + 1
 );
 
 SELECT setval(
-    pg_get_serial_sequence('"organization"', 'id'),
-    (SELECT MAX("id") FROM "organization") + 1
+    pg_get_serial_sequence('public.organization', 'id'),
+    (SELECT MAX("id") FROM public.organization) + 1
 );
 
 SELECT setval(
-    pg_get_serial_sequence('"device"', 'id'),
-    (SELECT MAX("id") FROM "device") + 1
+    pg_get_serial_sequence('public.device', 'id'),
+    (SELECT MAX("id") FROM public.device) + 1
 );
