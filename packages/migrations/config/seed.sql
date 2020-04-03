@@ -1,3 +1,14 @@
+SET statement_timeout = 0;
+SET lock_timeout = 0;
+SET idle_in_transaction_session_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SELECT pg_catalog.set_config('search_path', '', false);
+SET check_function_bodies = false;
+SET xmloption = content;
+SET client_min_messages = warning;
+SET row_security = off;
+
 /* Needed to temporarily disregard foreign key constraints */
 SET session_replication_role = replica;
 
@@ -26,7 +37,7 @@ VALUES
     (
         '2020-03-30 10:08:33.510625+02',
         '2020-03-30 10:08:33.652639+02',
-        '1',
+        1,
         'Mr',
         'Issuer',
         'Surname',
@@ -62,7 +73,7 @@ VALUES
     (
         '2020-03-30 10:08:33.510625+02',
         '2020-03-30 10:08:33.652639+02',
-        '2',
+        2,
         'Mr',
         'Device',
         'Manager',
@@ -98,7 +109,7 @@ VALUES
     (
         '2020-03-30 10:08:33.510625+02',
         '2020-03-30 10:08:33.652639+02',
-        '3',
+        3,
         'Mr',
         'Device',
         'Manager 2',
@@ -134,7 +145,7 @@ VALUES
     (
         '2020-03-30 10:08:33.510625+02',
         '2020-03-30 10:08:33.652639+02',
-        '4',
+        4,
         'Mr',
         'Trader',
         'Surname',
@@ -184,7 +195,7 @@ VALUES
     (
         '2020-03-30 09:55:25.962333+02',
         '2020-03-30 09:55:25.962333+02',
-        '1',
+        1,
         '[83]',
         '1',
         'Issuer',
@@ -241,7 +252,7 @@ VALUES
     (
         '2020-03-30 09:55:25.962333+02',
         '2020-03-30 09:55:25.962333+02',
-        '2',
+        2,
         '[83]',
         '1',
         'Device Manager Organization',
@@ -298,7 +309,7 @@ VALUES
     (
         '2020-03-30 09:55:25.962333+02',
         '2020-03-30 09:55:25.962333+02',
-        '3',
+        3,
         '[83]',
         '1',
         'Device Manager Second Organization',
@@ -355,7 +366,7 @@ VALUES
     (
         '2020-03-30 09:55:25.962333+02',
         '2020-03-30 09:55:25.962333+02',
-        '4',
+        4,
         '[83]',
         '1',
         'Trader Organization',
@@ -415,7 +426,7 @@ VALUES
     (
         '2020-03-30 09:36:02.607206+02',
         '2020-03-30 09:36:02.607206+02',
-        '1',
+        1,
         '2',
         'Wuthering Heights Windfarm',
         '',
@@ -472,7 +483,7 @@ VALUES
     (
         '2020-03-30 09:36:02.607206+02',
         '2020-03-30 09:36:02.607206+02',
-        '2',
+        2,
         '2',
         'Solar Facility A',
         '',
@@ -529,7 +540,7 @@ VALUES
     (
         '2020-03-30 09:36:02.607206+02',
         '2020-03-30 09:36:02.607206+02',
-        '3',
+        3,
         '2',
         'Biomass Facility',
         '',
@@ -553,3 +564,18 @@ VALUES
         '[{"id":"ABQ123-3","type":"Issuer ID"}]',
         '2'
     );
+
+SELECT setval(
+    pg_get_serial_sequence('"user"', 'id'),
+    (SELECT MAX("id") FROM "user") + 1
+);
+
+SELECT setval(
+    pg_get_serial_sequence('"organization"', 'id'),
+    (SELECT MAX("id") FROM "organization") + 1
+);
+
+SELECT setval(
+    pg_get_serial_sequence('"device"', 'id'),
+    (SELECT MAX("id") FROM "device") + 1
+);
