@@ -37,7 +37,7 @@
         "@energyweb/utils-general": "7.0.2",
         "bn.js": "5.1.1",
         "immutable": "4.0.0-rc.12",
-        "rxjs": "6.5.4",
+        "rxjs": "6.5.5",
         "moment": "2.24.0",
         "moment-range": "4.0.2"
     },

@@ -69,7 +69,7 @@
     "passport-local": "1.0.0",
     "precise-proofs-js": "^1.0.2",
     "reflect-metadata": "0.1.13",
-    "rxjs": "6.5.4",
+    "rxjs": "6.5.5",
     "sqlite3": "4.1.1",
     "typeorm": "0.2.24",
     "ws": "7.2.3"
