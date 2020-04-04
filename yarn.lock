@@ -2734,27 +2734,16 @@
     tslib "1.11.1"
     uuid "7.0.2"
 
-"@nestjs/config@0.3.0", "@nestjs/config@^0.3.0":
-  version "0.3.0"
-  resolved "https://registry.yarnpkg.com/@nestjs/config/-/config-0.3.0.tgz#d33a58ee539bb4d92639d1747918f0de23504c45"
-  integrity sha512-KwLvqBFlfHDDQQGpUBAo429nKU7B4RjSv0hMgz/5fFi2ZrKBFIhRdF8lvN8YJ2mCLlsT6EIDDZe1cOjflHsOTg==
+"@nestjs/config@0.4.0", "@nestjs/config@^0.4.0":
+  version "0.4.0"
+  resolved "https://registry.yarnpkg.com/@nestjs/config/-/config-0.4.0.tgz#5259a87f5603be62faf16fdb026ff4acc3ff7004"
+  integrity sha512-QJooLLCNKzlzSD+m/CHtytd7XM5larcp+YUajBkteCo4KLQL2Kd0PFiowzXBrVEpX4b9osgZf16K+V1shJD/nA==
   dependencies:
     dotenv "8.2.0"
     dotenv-expand "5.1.0"
     lodash.get "4.4.2"
     lodash.set "4.3.2"
-    uuid "^7.0.2"
-
-"@nestjs/config@^0.2.0":
-  version "0.2.4"
-  resolved "https://registry.yarnpkg.com/@nestjs/config/-/config-0.2.4.tgz#189080db6c22e0819c773d00936119721867751d"
-  integrity sha512-XXr6jxL2E5v+zhtlpd3uAU9erDFd8Q/3Oyu6OdhkP7TCVX9erPVbZ4rpsw2qj4t+IeU0T9dYEGVHh6qy9piOEQ==
-  dependencies:
-    dotenv "8.2.0"
-    dotenv-expand "5.1.0"
-    lodash.get "4.4.2"
-    lodash.set "4.3.2"
-    uuid "3.4.0"
+    uuid "7.0.2"
 
 "@nestjs/core@6.11.11":
   version "6.11.11"
@@ -21169,11 +21158,6 @@ uuid@3.3.3, uuid@^3.0.1, uuid@^3.3.2, uuid@^3.3.3:
   resolved "https://registry.yarnpkg.com/uuid/-/uuid-3.3.3.tgz#4568f0216e78760ee1dbf3a4d2cf53e224112866"
   integrity sha512-pW0No1RGHgzlpHJO1nsVrHKpOEIxkGg1xB+v0ZmdNH5OAeAwzAVrCnI2/6Mtx+Uys6iaylxa+D3g4j63IKKjSQ==
 
-uuid@3.4.0, uuid@^3.0.0, uuid@^3.1.0:
-  version "3.4.0"
-  resolved "https://registry.yarnpkg.com/uuid/-/uuid-3.4.0.tgz#b23e4358afa8a202fe7a100af1f5f883f02007ee"
-  integrity sha512-HjSDRw6gZE5JMggctHBcjVak08+KEVhSIiDzFnT9S9aegmp85S/bReBVTb4QTFaRNptJ9kuYaNhnbNEOkbKb/A==
-
 uuid@7.0.1:
   version "7.0.1"
   resolved "https://registry.yarnpkg.com/uuid/-/uuid-7.0.1.tgz#95ed6ff3d8c881cbf85f0f05cc3915ef994818ef"
@@ -21183,6 +21167,11 @@ uuid@7.0.2, uuid@^7.0.2:
   version "7.0.2"
   resolved "https://registry.yarnpkg.com/uuid/-/uuid-7.0.2.tgz#7ff5c203467e91f5e0d85cfcbaaf7d2ebbca9be6"
   integrity sha512-vy9V/+pKG+5ZTYKf+VcphF5Oc6EFiu3W8Nv3P3zIh0EqVI80ZxOzuPfe9EHjkFNvf8+xuTHVeei4Drydlx4zjw==
+
+uuid@^3.0.0, uuid@^3.1.0:
+  version "3.4.0"
+  resolved "https://registry.yarnpkg.com/uuid/-/uuid-3.4.0.tgz#b23e4358afa8a202fe7a100af1f5f883f02007ee"
+  integrity sha512-HjSDRw6gZE5JMggctHBcjVak08+KEVhSIiDzFnT9S9aegmp85S/bReBVTb4QTFaRNptJ9kuYaNhnbNEOkbKb/A==
 
 v8-compile-cache@2.0.3:
   version "2.0.3"
