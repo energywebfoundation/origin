@@ -45,8 +45,7 @@
   "devDependencies": {
     "@energyweb/origin-backend-client": "4.0.0",
     "@energyweb/origin-backend-client-mocks": "1.0.0",
-    "ethlint": "1.2.5",
-    "fs-extra": "8.1.0"
+    "ethlint": "1.2.5"
   },
   "gitHead": "54beaf7fe6686810de74ca290daf99cbde510f9d",
   "publishConfig": {
