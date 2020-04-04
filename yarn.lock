@@ -11681,10 +11681,10 @@ hyphenate-style-name@^1.0.3:
   resolved "https://registry.yarnpkg.com/hyphenate-style-name/-/hyphenate-style-name-1.0.3.tgz#097bb7fa0b8f1a9cf0bd5c734cf95899981a9b48"
   integrity sha512-EcuixamT82oplpoJ2XU4pDtKGWQ7b00CD9f1ug9IaQ3p1bkHMiKCZ9ut9QDI6qsa6cpUuB+A/I+zLtdNK4n2DQ==
 
-i18next-icu@1.2.0:
-  version "1.2.0"
-  resolved "https://registry.yarnpkg.com/i18next-icu/-/i18next-icu-1.2.0.tgz#78b478179cc70dc7e91aae03cb0395bd5d56d771"
-  integrity sha512-KPZT5chqw7Wq0SqAKk8yKNkTRSeydveGFKdxfv/SPliR88otMJFwZAIiTJskj1S5eLbYtOYcWwNBkdQATgLL1w==
+i18next-icu@1.3.0:
+  version "1.3.0"
+  resolved "https://registry.yarnpkg.com/i18next-icu/-/i18next-icu-1.3.0.tgz#ce208becc0f416e58bb964e95934b230d5b35cb8"
+  integrity sha512-Jx+Vi7IJWZ4mtvSdBT6jCHqia9JZnfF477dUw6tHG86cG5mZhBJJdlQW5VzEYgjsCc5xHrqn+LTr+3N5h5xdpQ==
   dependencies:
     intl-messageformat "2.2.0"
 
