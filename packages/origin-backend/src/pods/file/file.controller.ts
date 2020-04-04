@@ -63,6 +63,8 @@ export class FileController {
 
     @Get(':id')
     test(@Param('id') id: string, @Res() res: Response) {
-        return res.sendFile(path.join(FILES_LOCATION, id));
+        res.sendFile(path.join(FILES_LOCATION, id));
+
+        return {}; // has to be sent otherwise EmptyResultInterceptor intercepts it
     }
 }
