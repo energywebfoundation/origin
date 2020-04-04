@@ -42,12 +42,12 @@ export function CertificateDetailView(props: IProps) {
     const classes = useStyles(useTheme());
 
     const selectedCertificate =
-        id !== null && typeof id !== 'undefined' && certificates.find(c => c.id === id);
+        id !== null && typeof id !== 'undefined' && certificates.find((c) => c.id === id);
 
     async function enrichEvent() {
         const allCertificateEvents = await selectedCertificate.getAllCertificateEvents();
 
-        const jointEvents = allCertificateEvents.map(async event => {
+        const jointEvents = allCertificateEvents.map(async (event) => {
             let label: string;
             let description: string;
 
@@ -201,7 +201,7 @@ export function CertificateDetailView(props: IProps) {
                                 <tbody>
                                     {data.map((row, rowIndex) => (
                                         <tr key={rowIndex}>
-                                            {row.map(col => (
+                                            {row.map((col) => (
                                                 <td key={col.label} rowSpan={1} colSpan={1}>
                                                     <div className="Label">{col.label}</div>
                                                     <div className="Data">{col.data}</div>

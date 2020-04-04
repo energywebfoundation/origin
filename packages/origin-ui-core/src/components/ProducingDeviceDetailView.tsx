@@ -59,7 +59,7 @@ export function ProducingDeviceDetailView(props: IProps) {
     let selectedDevice: ProducingDevice.Entity = null;
 
     if (props.id !== null && props.id !== undefined) {
-        selectedDevice = producingDevices.find(p => p.id === props.id);
+        selectedDevice = producingDevices.find((p) => p.id === props.id);
     }
 
     if (!configuration || !organizationClient || !selectedDevice) {
@@ -103,7 +103,7 @@ export function ProducingDeviceDetailView(props: IProps) {
             {
                 label: t('device.properties.deviceOwner'),
                 data: owner
-                    ? organizations?.find(o => o.id === selectedDevice?.organization)?.name
+                    ? organizations?.find((o) => o.id === selectedDevice?.organization)?.name
                     : ''
             },
             {

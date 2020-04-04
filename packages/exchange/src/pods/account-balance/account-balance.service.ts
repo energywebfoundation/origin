@@ -58,8 +58,8 @@ export class AccountBalanceService {
 
         return this.sumByAsset(
             sellOrders,
-            order => order.asset,
-            order => new BN(order.currentVolume.muln(-1))
+            (order) => order.asset,
+            (order) => new BN(order.currentVolume.muln(-1))
         );
     }
 
@@ -68,8 +68,8 @@ export class AccountBalanceService {
 
         return this.sumByAsset(
             transfers,
-            transfer => transfer.asset,
-            transfer => {
+            (transfer) => transfer.asset,
+            (transfer) => {
                 const sign = transfer.direction === TransferDirection.Withdrawal ? -1 : 1;
                 return new BN(transfer.amount).mul(new BN(sign));
             }
@@ -81,8 +81,8 @@ export class AccountBalanceService {
 
         return this.sumByAsset(
             trades,
-            trade => trade.ask.asset,
-            trade => {
+            (trade) => trade.ask.asset,
+            (trade) => {
                 const sign = trade.ask.userId === userId ? -1 : 1;
                 return new BN(trade.volume.muln(sign));
             }

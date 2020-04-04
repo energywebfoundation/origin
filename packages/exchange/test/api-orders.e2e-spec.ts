@@ -14,7 +14,7 @@ import { TransferService } from '../src/pods/transfer/transfer.service';
 import { DatabaseService } from './database.service';
 import { bootstrapTestInstance } from './exchange';
 
-const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 describe('account ask order send', () => {
     let app: INestApplication;
@@ -78,10 +78,7 @@ describe('account ask order send', () => {
             validFrom: new Date()
         };
 
-        await request(app.getHttpServer())
-            .post('/orders/ask')
-            .send(createAsk)
-            .expect(403);
+        await request(app.getHttpServer()).post('/orders/ask').send(createAsk).expect(403);
     });
 
     it('should be able to create ask order on confirmed deposit', async () => {
@@ -98,7 +95,7 @@ describe('account ask order send', () => {
             .post('/orders/ask')
             .send(createAsk)
             .expect(201)
-            .expect(res => {
+            .expect((res) => {
                 const order = res.body as Order;
 
                 expect(order.price).toBe(100);
@@ -114,10 +111,7 @@ describe('account ask order send', () => {
             validFrom: new Date()
         };
 
-        await request(app.getHttpServer())
-            .post('/orders/ask')
-            .send(createAsk)
-            .expect(403);
+        await request(app.getHttpServer()).post('/orders/ask').send(createAsk).expect(403);
     });
 
     it('should not be able to create 2nd ask order bigger than remaining deposit', async () => {
@@ -130,15 +124,9 @@ describe('account ask order send', () => {
 
         await confirmDeposit();
 
-        await request(app.getHttpServer())
-            .post('/orders/ask')
-            .send(createAsk)
-            .expect(201);
+        await request(app.getHttpServer()).post('/orders/ask').send(createAsk).expect(201);
 
-        await request(app.getHttpServer())
-            .post('/orders/ask')
-            .send(createAsk)
-            .expect(403);
+        await request(app.getHttpServer()).post('/orders/ask').send(createAsk).expect(403);
     });
 
     it('should not be able to withdraw without any deposit', async () => {
@@ -175,7 +163,7 @@ describe('account ask order send', () => {
         await request(app.getHttpServer())
             .get('/account')
             .expect(200)
-            .expect(res => {
+            .expect((res) => {
                 const account = res.body as Account;
 
                 expect(account.address).toBe(user1Address);
@@ -204,7 +192,7 @@ describe('account ask order send', () => {
             .post('/orders/bid')
             .send(createBid)
             .expect(201)
-            .expect(res => {
+            .expect((res) => {
                 order = res.body as Order;
 
                 expect(order.price).toBe(100);
@@ -214,7 +202,7 @@ describe('account ask order send', () => {
         await request(app.getHttpServer())
             .post(`/orders/${order.id}/cancel`)
             .expect(202)
-            .expect(res => {
+            .expect((res) => {
                 const cancelled = res.body as Order;
 
                 expect(cancelled.id).toBe(order.id);
@@ -226,7 +214,7 @@ describe('account ask order send', () => {
         await request(app.getHttpServer())
             .get(`/orders/${order.id}`)
             .expect(200)
-            .expect(res => {
+            .expect((res) => {
                 const cancelled = res.body as Order;
 
                 expect(cancelled.id).toBe(order.id);

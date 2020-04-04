@@ -92,24 +92,15 @@ const currentTime = moment.tz(device.timezone);
     const MOCK_READINGS_MINUTES_INTERVAL =
         parseInt(process.env.SOLAR_SIMULATOR_PAST_READINGS_MINUTES_INTERVAL, 10) || 15;
 
-    let measurementTime = currentTime
-        .clone()
-        .subtract(1, 'day')
-        .startOf('day');
+    let measurementTime = currentTime.clone().subtract(1, 'day').startOf('day');
 
     while (measurementTime.isSameOrBefore(currentTime)) {
         const newMeasurementTime = measurementTime
             .clone()
             .add(MOCK_READINGS_MINUTES_INTERVAL, 'minute');
 
-        const measurementTimeWithFixedYear = measurementTime
-            .clone()
-            .year(2015)
-            .unix();
-        const newMeasurementTimeWithFixedYear = newMeasurementTime
-            .clone()
-            .year(2015)
-            .unix();
+        const measurementTimeWithFixedYear = measurementTime.clone().year(2015).unix();
+        const newMeasurementTimeWithFixedYear = newMeasurementTime.clone().year(2015).unix();
 
         const combinedMultiplierForMatchingRows = (workerData.DATA as any[])
             .filter((row: any) => {

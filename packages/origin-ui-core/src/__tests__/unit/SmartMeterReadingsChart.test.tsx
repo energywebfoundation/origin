@@ -14,12 +14,9 @@ describe('SmartMeterReadingsChart', () => {
 
         const currentTime = moment().tz('Asia/Bangkok');
         const currentDay = currentTime.date();
-        const currentMonthDates = new Array(currentTime.daysInMonth()).fill(null).map((x, i) =>
-            currentTime
-                .clone()
-                .startOf('month')
-                .add(i, 'days')
-        );
+        const currentMonthDates = new Array(currentTime.daysInMonth())
+            .fill(null)
+            .map((x, i) => currentTime.clone().startOf('month').add(i, 'days'));
         const currentDayHour = currentTime.hour();
 
         const offChainProperties: Partial<IDeviceWithRelationsIds> = {
@@ -48,15 +45,10 @@ describe('SmartMeterReadingsChart', () => {
             rendered
                 .find('.btn-switcher-btn')
                 .hostNodes()
-                .map(a => a.text())
+                .map((a) => a.text())
         ).toStrictEqual(['Day', 'Week', 'Month', 'Year']);
 
-        expect(
-            rendered
-                .find('.btn-switcher-btn.selected')
-                .hostNodes()
-                .text()
-        ).toBe('Month');
+        expect(rendered.find('.btn-switcher-btn.selected').hostNodes().text()).toBe('Month');
 
         await refresh();
 
@@ -65,7 +57,7 @@ describe('SmartMeterReadingsChart', () => {
         expect(barProps.options.title.text).toBe(currentTime.format('MMM YYYY'));
 
         expect(barProps.data).toStrictEqual({
-            labels: currentMonthDates.map(date => date.format('D MMM')),
+            labels: currentMonthDates.map((date) => date.format('D MMM')),
             datasets: [
                 {
                     backgroundColor: currentMonthDates.map(() => undefined),
@@ -90,12 +82,7 @@ describe('SmartMeterReadingsChart', () => {
 
         expect(barProps.options.title.text).toBe(formatDate(currentTime));
 
-        expect(
-            rendered
-                .find('.btn-switcher-btn.selected')
-                .hostNodes()
-                .text()
-        ).toBe('Day');
+        expect(rendered.find('.btn-switcher-btn.selected').hostNodes().text()).toBe('Day');
 
         expect(barProps.data.labels).toStrictEqual([
             '00:00',

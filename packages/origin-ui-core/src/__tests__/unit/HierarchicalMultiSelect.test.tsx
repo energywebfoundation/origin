@@ -91,7 +91,7 @@ function createHelperFunctions(rendered: ReactWrapper) {
                             `hierarchical-multi-select-level-${level}`
                         )} .MuiChip-label`
                     )
-                    .map(e => e.text())
+                    .map((e) => e.text())
             ).toStrictEqual(expectedTypes);
         },
 

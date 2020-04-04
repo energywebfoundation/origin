@@ -82,10 +82,10 @@ export class MatchingEngine {
     public orderBookByProduct(productFilter: ProductFilter) {
         const { asks, bids } = this.orderBook();
 
-        const filteredAsks = asks.filter(ask =>
+        const filteredAsks = asks.filter((ask) =>
             ask.filterBy(productFilter, this.deviceService, this.locationService)
         );
-        const filteredBids = bids.filter(bid =>
+        const filteredBids = bids.filter((bid) =>
             bid.filterBy(productFilter, this.deviceService, this.locationService)
         );
 
@@ -110,7 +110,7 @@ export class MatchingEngine {
         let trades = List<TradeExecutedEvent>();
         let statusChange = List<ActionResultEvent>();
 
-        actions.forEach(action => {
+        actions.forEach((action) => {
             switch (action.kind) {
                 case ActionKind.AddOrder: {
                     try {
@@ -172,11 +172,11 @@ export class MatchingEngine {
         const unSorted = orderBook.concat(order);
         const direction = order.side === OrderSide.Ask ? 1 : -1;
 
-        return unSorted.sortBy(o => direction * o.price);
+        return unSorted.sortBy((o) => direction * o.price);
     }
 
     private directBuy(bid: DirectBuy): TradeExecutedEvent {
-        const ask = this.asks.find(o => o.id === bid.askId);
+        const ask = this.asks.find((o) => o.id === bid.askId);
 
         if (ask.userId === bid.userId) {
             throw new Error(
@@ -238,7 +238,7 @@ export class MatchingEngine {
         source: List<T>,
         orderId: string
     ): { result: boolean; modified?: List<T> } {
-        const key = source.findKey(o => o.id === orderId);
+        const key = source.findKey((o) => o.id === orderId);
 
         return key !== undefined
             ? { result: true, modified: source.remove(key) }
@@ -247,28 +247,28 @@ export class MatchingEngine {
 
     private updateOrder<T extends Order>(source: List<T>, order: T) {
         return source.set(
-            source.findIndex(o => o.id === order.id),
+            source.findIndex((o) => o.id === order.id),
             order
         );
     }
 
     private updateOrderBook(matched: List<TradeExecutedEvent>) {
-        matched.forEach(m => {
+        matched.forEach((m) => {
             this.asks = this.updateOrder(this.asks, m.ask);
             this.bids = this.updateOrder(this.bids, m.bid);
         });
     }
 
     private cleanOrderBook() {
-        this.asks = this.asks.filterNot(ask => ask.isFilled);
-        this.bids = this.bids.filterNot(bid => bid.isFilled);
+        this.asks = this.asks.filterNot((ask) => ask.isFilled);
+        this.bids = this.bids.filterNot((bid) => bid.isFilled);
     }
 
     private generateTrades(asks: List<Ask>, bids: List<Bid>) {
         let executed = List<TradeExecutedEvent>();
 
-        bids.forEach(bid => {
-            asks.forEach(ask => {
+        bids.forEach((bid) => {
+            asks.forEach((ask) => {
                 const isMatching = this.matches(bid, ask);
                 if (!isMatching) {
                     return false;

@@ -28,11 +28,11 @@ interface IOwnProps<T> {
 }
 
 function decode(encodedValue: EncodedValueType) {
-    return encodedValue.map(item => item.split(';'));
+    return encodedValue.map((item) => item.split(';'));
 }
 
 function encode(decodedType: DecodedValueType) {
-    return decodedType.map(group => group.join(';'));
+    return decodedType.map((group) => group.join(';'));
 }
 
 function getDisplayText(value: string) {
@@ -46,22 +46,23 @@ function filterOutOrphanOptions(type: EncodedValueType) {
 
     const allTypesDecoded = decode(type);
 
-    const levelOneTypes = allTypesDecoded.filter(i => i.length === 1);
-    const levelTwoTypes = allTypesDecoded.filter(i => i.length === 2);
-    const levelThreeTypes = allTypesDecoded.filter(i => i.length === 3);
+    const levelOneTypes = allTypesDecoded.filter((i) => i.length === 1);
+    const levelTwoTypes = allTypesDecoded.filter((i) => i.length === 2);
+    const levelThreeTypes = allTypesDecoded.filter((i) => i.length === 3);
 
     if (levelOneTypes.length === 0) {
         return [];
     }
 
     const filteredLevelTwoTypes = levelTwoTypes.filter(
-        childType => levelOneTypes.filter(parentType => parentType[0] === childType[0]).length === 1
+        (childType) =>
+            levelOneTypes.filter((parentType) => parentType[0] === childType[0]).length === 1
     );
 
     const filteredLevelThreeTypes = levelThreeTypes.filter(
-        childType =>
+        (childType) =>
             filteredLevelTwoTypes.filter(
-                parentType => parentType[0] === childType[0] && parentType[1] === childType[1]
+                (parentType) => parentType[0] === childType[0] && parentType[1] === childType[1]
             ).length === 1
     );
 
@@ -73,17 +74,17 @@ function filterSelected(
     types: string[],
     selected: IAutocompleteMultiSelectOptionType[]
 ) {
-    const isSelected = (selected || []).find(type => type.value === currentType);
+    const isSelected = (selected || []).find((type) => type.value === currentType);
 
     if (!isSelected) {
         return [];
     }
 
-    return types.filter(t => t.startsWith(`${currentType};`));
+    return types.filter((t) => t.startsWith(`${currentType};`));
 }
 
 function valuesToSelectionOptions(types: EncodedValueType) {
-    return types.map(t => ({
+    return types.map((t) => ({
         value: t,
         label: getDisplayText(t)
     }));
@@ -99,23 +100,23 @@ export function HierarchicalMultiSelect<T>(props: IOwnProps<T>) {
     if (props.allValues) {
         allValues.push(...props.allValues);
     } else {
-        Object.keys(props.options).map(key => {
+        Object.keys(props.options).map((key) => {
             allValues.push([key]);
 
-            props.options[key].map(item => {
+            props.options[key].map((item) => {
                 allValues.push([key, item]);
             });
         });
     }
 
     function allValuesByLevel(level: Level): EncodedValueType {
-        return allValues.filter(t => t.length === level).map(t => encode([t]).pop());
+        return allValues.filter((t) => t.length === level).map((t) => encode([t]).pop());
     }
 
     function selectedOptionsByLevel(level: Level): IAutocompleteMultiSelectOptionType[] {
         return (
             selectedValueDecoded &&
-            valuesToSelectionOptions(encode(selectedValueDecoded.filter(t => t.length === level)))
+            valuesToSelectionOptions(encode(selectedValueDecoded.filter((t) => t.length === level)))
         );
     }
 
@@ -188,7 +189,7 @@ export function HierarchicalMultiSelect<T>(props: IOwnProps<T>) {
 
         derivedTypes.push(...optionLevel2Types);
 
-        optionLevel2Types.map(t => {
+        optionLevel2Types.map((t) => {
             derivedTypes.push(
                 ...filterSelected(t, availableL3Types, valuesToSelectionOptions(optionLevel2Types))
             );
@@ -213,22 +214,22 @@ export function HierarchicalMultiSelect<T>(props: IOwnProps<T>) {
                 newEncodedType = [];
             } else {
                 newEncodedType = encode([
-                    ...selectedValueDecoded.filter(t => t.length !== level),
-                    ...newSelectedOptionsArray.map(i => [i.value])
+                    ...selectedValueDecoded.filter((t) => t.length !== level),
+                    ...newSelectedOptionsArray.map((i) => [i.value])
                 ]);
             }
         } else {
             newEncodedType = encode([
-                ...selectedValueDecoded.filter(t => t.length !== level),
-                ...newSelectedOptionsArray.map(i => [i.value])
+                ...selectedValueDecoded.filter((t) => t.length !== level),
+                ...newSelectedOptionsArray.map((i) => [i.value])
             ]);
 
             if (level === 1 && newSelectedOptionsArray.length > 0) {
                 const alreadySelectedLevelOneOptions = selectedOptionsByLevel(1);
 
-                const newOptions = newSelectedOptionsArray.filter(o =>
+                const newOptions = newSelectedOptionsArray.filter((o) =>
                     alreadySelectedLevelOneOptions.every(
-                        selectedOption => selectedOption.value !== o.value
+                        (selectedOption) => selectedOption.value !== o.value
                     )
                 );
 
@@ -262,7 +263,7 @@ export function HierarchicalMultiSelect<T>(props: IOwnProps<T>) {
                 label={props.selectOptions[0].label}
                 placeholder={readOnly ? '' : props.selectOptions[0].placeholder}
                 options={allValuesLevelOne}
-                onChange={value => setValueByLevel(value, 1)}
+                onChange={(value) => setValueByLevel(value, 1)}
                 selectedValues={selectedValuesLevelOne}
                 className="mt-3"
                 disabled={disabled}
@@ -274,7 +275,7 @@ export function HierarchicalMultiSelect<T>(props: IOwnProps<T>) {
                         label={props.selectOptions[1].label}
                         placeholder={readOnly ? '' : props.selectOptions[1].placeholder}
                         options={levelTwoValues}
-                        onChange={value => setValueByLevel(value, 2)}
+                        onChange={(value) => setValueByLevel(value, 2)}
                         selectedValues={selectedValuesLevelTwo}
                         className="mt-3"
                         disabled={disabled}
@@ -288,7 +289,7 @@ export function HierarchicalMultiSelect<T>(props: IOwnProps<T>) {
                         label={props.selectOptions[2].label}
                         placeholder={readOnly ? '' : props.selectOptions[2].placeholder}
                         options={levelThreeValues}
-                        onChange={value => setValueByLevel(value, 3)}
+                        onChange={(value) => setValueByLevel(value, 3)}
                         selectedValues={selectedValuesLevelThree}
                         className="mt-3"
                         disabled={disabled}

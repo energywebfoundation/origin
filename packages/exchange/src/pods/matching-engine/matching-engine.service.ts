@@ -46,14 +46,14 @@ export class MatchingEngineService implements OnModuleInit {
             new LocationService()
         );
 
-        orders.forEach(order => {
+        orders.forEach((order) => {
             this.logger.log(`Submitting order ${order.id}`);
 
             this.matchingEngine.submitOrder(this.toOrder(order));
         });
 
-        this.matchingEngine.trades.subscribe(async trades => this.onTradeExecutedEvent(trades));
-        this.matchingEngine.actionResults.subscribe(async actionResultEvents =>
+        this.matchingEngine.trades.subscribe(async (trades) => this.onTradeExecutedEvent(trades));
+        this.matchingEngine.actionResults.subscribe(async (actionResultEvents) =>
             this.onActionResultEvent(actionResultEvents)
         );
 

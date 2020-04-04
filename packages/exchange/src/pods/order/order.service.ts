@@ -197,7 +197,7 @@ export class OrderService {
     }
 
     public async persistOrderStatusChange(actionResults: List<ActionResultEvent>) {
-        actionResults.forEach(async actionResult => {
+        actionResults.forEach(async (actionResult) => {
             this.logger.debug(`Updating status for ${JSON.stringify(actionResult)}`);
             try {
                 if (actionResult.result !== ActionResult.Cancelled) {

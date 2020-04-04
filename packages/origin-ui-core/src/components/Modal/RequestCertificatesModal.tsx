@@ -41,11 +41,11 @@ export function RequestCertificatesModal() {
     const [energyInDisplayUnit, setEnergyInDisplayUnit] = useState('');
     const [files, setFiles] = useState<IUploadedFile[]>([]);
 
-    const cancelledFiles = files.filter(f => f.cancelled && !f.removed);
+    const cancelledFiles = files.filter((f) => f.cancelled && !f.removed);
     const filesBeingUploaded = files.filter(
-        f => !f.removed && !f.cancelled && f.uploadProgress !== 100
+        (f) => !f.removed && !f.cancelled && f.uploadProgress !== 100
     );
-    const uploadedFiles = files.filter(f => !f.removed && f.uploadedName);
+    const uploadedFiles = files.filter((f) => !f.removed && f.uploadedName);
 
     const producingDevice = useSelector(getRequestCertificatesModalProducingDevice);
     const showModal = useSelector(getRequestCertificatesModalVisible);
@@ -90,7 +90,7 @@ export function RequestCertificatesModal() {
                 startTime: fromDate.unix(),
                 endTime: toDate.unix(),
                 energy: energyInBaseUnit,
-                files: uploadedFiles.map(f => f.uploadedName)
+                files: uploadedFiles.map((f) => f.uploadedName)
             })
         );
     }
@@ -135,12 +135,12 @@ export function RequestCertificatesModal() {
                 <TextField
                     label={EnergyFormatter.displayUnit}
                     value={energyInDisplayUnit}
-                    onChange={event => setEnergyInDisplayUnit(event.target.value)}
+                    onChange={(event) => setEnergyInDisplayUnit(event.target.value)}
                     className="mt-4"
                     fullWidth
                 />
 
-                <Upload onChange={newFiles => setFiles(newFiles)} />
+                <Upload onChange={(newFiles) => setFiles(newFiles)} />
             </DialogContent>
             <DialogActions>
                 <Button onClick={handleClose} color="secondary">

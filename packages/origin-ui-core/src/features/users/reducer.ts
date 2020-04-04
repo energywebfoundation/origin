@@ -30,8 +30,8 @@ export default function reducer(state = defaultState, action: IUsersAction): IUs
 
         case UsersActions.addOrganizations:
             const organizations = [...state.organizations];
-            action.payload.map(newOrganization => {
-                if (!organizations.find(o => o.id === newOrganization.id)) {
+            action.payload.map((newOrganization) => {
+                if (!organizations.find((o) => o.id === newOrganization.id)) {
                     organizations.push(newOrganization);
                 }
             });

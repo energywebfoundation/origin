@@ -112,7 +112,7 @@ export function Device() {
         <div className="PageWrapper">
             <div className="PageNav">
                 <ul className="NavMenu nav">
-                    {DevicesMenu.map(menu => {
+                    {DevicesMenu.map((menu) => {
                         if (
                             menu.hide ||
                             (menu.roles?.length > 0 &&
@@ -137,10 +137,10 @@ export function Device() {
 
             <Route
                 path={`${getDevicesLink()}/:key/:id?`}
-                render={props => {
+                render={(props) => {
                     const key = props.match.params.key;
                     const id = props.match.params.id;
-                    const matches = DevicesMenu.filter(item => {
+                    const matches = DevicesMenu.filter((item) => {
                         return item.key === key;
                     });
 

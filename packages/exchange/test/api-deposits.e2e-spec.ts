@@ -63,7 +63,7 @@ describe('account deposit confirmation', () => {
         await request(app.getHttpServer())
             .get('/account')
             .expect(200)
-            .expect(res => {
+            .expect((res) => {
                 const account = res.body as Account;
 
                 expect(account.address).toBe(user1Address);
@@ -81,7 +81,7 @@ describe('account deposit confirmation', () => {
         await request(app.getHttpServer())
             .get('/account')
             .expect(200)
-            .expect(res => {
+            .expect((res) => {
                 const account = res.body as Account;
 
                 expect(account.address).toBe(user1Address);

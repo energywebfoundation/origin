@@ -184,12 +184,12 @@ export function SmartMeterReadingsChart(props: ISmartMeterReadingsChartProps) {
     const formattedReadings = getFormattedReadings();
 
     const data = {
-        labels: formattedReadings.map(entry => entry.label),
+        labels: formattedReadings.map((entry) => entry.label),
         datasets: [
             {
                 label: t('meterReads.properties.energy', { unit: EnergyFormatter.displayUnit }),
-                backgroundColor: formattedReadings.map(entry => entry.color),
-                data: formattedReadings.map(entry => entry.value)
+                backgroundColor: formattedReadings.map((entry) => entry.color),
+                data: formattedReadings.map((entry) => entry.value)
             }
         ]
     };

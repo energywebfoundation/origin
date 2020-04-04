@@ -83,7 +83,7 @@ export function FiltersHeader(props: IProps) {
             return;
         }
 
-        const newProcessedFilters: ICustomFilter[] = props.filters.map(filter => {
+        const newProcessedFilters: ICustomFilter[] = props.filters.map((filter) => {
             if (filter.input.type === CustomFilterInputType.multiselect) {
                 return {
                     ...filter,
@@ -108,8 +108,8 @@ export function FiltersHeader(props: IProps) {
         return null;
     }
 
-    const searchFilter = processedFilters.find(f => f.search);
-    const standardFilters = processedFilters.filter(f => !f.search);
+    const searchFilter = processedFilters.find((f) => f.search);
+    const standardFilters = processedFilters.filter((f) => !f.search);
 
     return (
         <>

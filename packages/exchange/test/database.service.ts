@@ -11,7 +11,7 @@ export class DatabaseService {
     ) {}
 
     public async cleanUp() {
-        const tables = this.connection.entityMetadatas.map(e => `"${e.tableName}"`).join(', ');
+        const tables = this.connection.entityMetadatas.map((e) => `"${e.tableName}"`).join(', ');
 
         try {
             await polly()

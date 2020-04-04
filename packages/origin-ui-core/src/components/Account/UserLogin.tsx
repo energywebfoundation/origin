@@ -52,13 +52,8 @@ export function UserLogin() {
     }
 
     const VALIDATION_SCHEMA = Yup.object().shape({
-        email: Yup.string()
-            .email()
-            .label(t('user.properties.email'))
-            .required(),
-        password: Yup.string()
-            .label(t('user.properties.password'))
-            .required()
+        email: Yup.string().email().label(t('user.properties.email')).required(),
+        password: Yup.string().label(t('user.properties.password')).required()
     });
 
     async function submitForm(
@@ -97,7 +92,7 @@ export function UserLogin() {
                 validationSchema={VALIDATION_SCHEMA}
                 isInitialValid={false}
             >
-                {formikProps => {
+                {(formikProps) => {
                     const { isValid, isSubmitting } = formikProps;
 
                     const fieldDisabled = isSubmitting;

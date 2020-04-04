@@ -14,7 +14,7 @@ import { TransferService } from '../src/pods/transfer/transfer.service';
 import { DatabaseService } from './database.service';
 import { bootstrapTestInstance } from './exchange';
 
-const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 describe('orderbook tests', () => {
     let app: INestApplication;
@@ -92,13 +92,8 @@ describe('orderbook tests', () => {
             validFrom: new Date(),
             product: {
                 deviceType: ['Wind'],
-                generationFrom: moment()
-                    .startOf('month')
-                    .toISOString(),
-                generationTo: moment()
-                    .startOf('month')
-                    .add(1, 'month')
-                    .toISOString()
+                generationFrom: moment().startOf('month').toISOString(),
+                generationTo: moment().startOf('month').add(1, 'month').toISOString()
             }
         };
 
@@ -130,7 +125,7 @@ describe('orderbook tests', () => {
                 deviceTypeFilter: Filter.All
             } as ProductFilterDTO)
             .expect(200)
-            .expect(res => {
+            .expect((res) => {
                 console.log(res.body);
                 const { asks, bids } = res.body as {
                     asks: OrderBookOrderDTO[];
@@ -151,7 +146,7 @@ describe('orderbook tests', () => {
                 deviceType: ['Solar']
             } as ProductFilterDTO)
             .expect(200)
-            .expect(res => {
+            .expect((res) => {
                 const { asks, bids } = res.body as {
                     asks: OrderBookOrderDTO[];
                     bids: OrderBookOrderDTO[];

@@ -26,7 +26,7 @@ import {
 } from '../../components';
 import { IDevice, DeviceStatus } from '@energyweb/origin-backend-core';
 
-export const wait = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+export const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 export const flushPromises = () => new Promise(setImmediate);
 
@@ -362,7 +362,7 @@ export const setupStore = (
         history,
         sagasTasks,
         cleanupStore: () => {
-            sagasTasks.map(task => task.cancel());
+            sagasTasks.map((task) => task.cancel());
         }
     };
 };
@@ -407,7 +407,7 @@ export const createRenderedHelpers = (rendered: ReactWrapper) => {
             );
         },
         assertMainTableContent: (expected: string[]) => {
-            expect(rendered.find('table tbody tr td').map(el => el.text())).toEqual(expected);
+            expect(rendered.find('table tbody tr td').map((el) => el.text())).toEqual(expected);
         },
         refresh,
         fillInputField: (name: string, value: string) => {
@@ -427,10 +427,7 @@ export const createRenderedHelpers = (rendered: ReactWrapper) => {
                 });
         },
         submitForm: (dataTest: string) => {
-            rendered
-                .find(dataTestSelector(dataTest))
-                .hostNodes()
-                .simulate('submit');
+            rendered.find(dataTestSelector(dataTest)).hostNodes().simulate('submit');
         },
         fillDate: async (name: string, dayOfMonth: number) => {
             const now = moment();
@@ -451,12 +448,7 @@ export const createRenderedHelpers = (rendered: ReactWrapper) => {
             expect(
                 (rendered.find(`${dataTestSelector(name)} input`).getDOMNode() as HTMLInputElement)
                     .value
-            ).toBe(
-                now
-                    .clone()
-                    .set('date', dayOfMonth)
-                    .format(DATE_FORMAT_DMY)
-            );
+            ).toBe(now.clone().set('date', dayOfMonth).format(DATE_FORMAT_DMY));
 
             // Close Datepicker (click outside)
             (document.querySelector('body > [role="presentation"] > div') as HTMLElement).click();
@@ -481,7 +473,9 @@ export const createRenderedHelpers = (rendered: ReactWrapper) => {
             rendered.find(`#mui-component-select-${name}`).simulate('mousedown');
 
             expect(
-                Array.from(document.querySelectorAll(`#menu-${name} ul li`)).map(i => i.textContent)
+                Array.from(document.querySelectorAll(`#menu-${name} ul li`)).map(
+                    (i) => i.textContent
+                )
             ).toStrictEqual(labels);
 
             (document.querySelector(

@@ -62,7 +62,7 @@ export function ProducingDeviceTable(props: IOwnProps) {
         const enriched: IEnrichedProducingDeviceData[] = [];
 
         for (const device of producingDevices) {
-            const organization = organizations.find(o => o.id === device.organization);
+            const organization = organizations.find((o) => o.id === device.organization);
 
             enriched.push({
                 device,
@@ -84,7 +84,7 @@ export function ProducingDeviceTable(props: IOwnProps) {
         const includedStatuses = props.includedStatuses || [];
 
         const filteredEnrichedDeviceData = enrichedDeviceData.filter(
-            record =>
+            (record) =>
                 checkRecordPassesFilters(
                     record,
                     requestedFilters,
@@ -181,9 +181,9 @@ export function ProducingDeviceTable(props: IOwnProps) {
             id: 'read',
             label: `${t('device.properties.meterRead')} (${EnergyFormatter.displayUnit})`
         }
-    ] as const).filter(column => !hiddenColumns.includes(column.id));
+    ] as const).filter((column) => !hiddenColumns.includes(column.id));
 
-    const rows = paginatedData.map(enrichedData => ({
+    const rows = paginatedData.map((enrichedData) => ({
         owner: enrichedData.organizationName,
         facilityName: enrichedData.device.facilityName,
         provinceRegion: enrichedData.locationText,
@@ -230,7 +230,7 @@ export function ProducingDeviceTable(props: IOwnProps) {
                 total={total}
                 pageSize={pageSize}
                 filters={filters}
-                handleRowClick={row => viewDevice(row)}
+                handleRowClick={(row) => viewDevice(row)}
                 actions={actions}
             />
             {props.showAddDeviceButton && (

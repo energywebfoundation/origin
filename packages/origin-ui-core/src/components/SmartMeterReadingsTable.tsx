@@ -75,7 +75,7 @@ export function SmartMeterReadingsTable(props: IProps) {
         }
     ] as const;
 
-    const rows = paginatedData.map(data => ({
+    const rows = paginatedData.map((data) => ({
         time: data[0],
         value: EnergyFormatter.format(data[1])
     }));

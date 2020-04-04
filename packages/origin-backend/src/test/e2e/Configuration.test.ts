@@ -68,7 +68,7 @@ describe('Configuration API tests', () => {
                 .set('Accept', 'application/json')
                 .expect('Content-Type', /json/)
                 .expect(200)
-                .expect(res => {
+                .expect((res) => {
                     assert.deepOwnInclude(res.body, configuration);
                 });
         });

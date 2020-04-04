@@ -75,8 +75,8 @@ export class WithdrawalProcessorService implements OnModuleInit {
 
         this.withdrawalQueue
             .pipe(
-                tap(id => this.log(id)),
-                concatMap(id => this.process(id))
+                tap((id) => this.log(id)),
+                concatMap((id) => this.process(id))
             )
             .subscribe();
 
@@ -88,7 +88,7 @@ export class WithdrawalProcessorService implements OnModuleInit {
             `Found ${acceptedWithdrawals.length} TransferStatus.Accepted withdrawals`
         );
 
-        acceptedWithdrawals.forEach(withdrawal => this.requestWithdrawal(withdrawal));
+        acceptedWithdrawals.forEach((withdrawal) => this.requestWithdrawal(withdrawal));
 
         // TODO: handle unconfirmed withdrawals
     }
@@ -159,8 +159,8 @@ export class WithdrawalProcessorService implements OnModuleInit {
         this.logger.debug(`Withdrawal ${id} receipt: ${JSON.stringify(receipt)} `);
 
         const hasLog = receipt.logs
-            .map(log => this.tokenInterface.parseLog(log))
-            .some(log => this.hasMatchingLog(withdrawal, log));
+            .map((log) => this.tokenInterface.parseLog(log))
+            .some((log) => this.hasMatchingLog(withdrawal, log));
 
         if (!hasLog) {
             this.logger.error(

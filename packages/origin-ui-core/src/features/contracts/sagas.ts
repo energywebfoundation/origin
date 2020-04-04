@@ -105,7 +105,7 @@ function* initEventHandler() {
             currentBlockNumber
         );
 
-        const channel = eventChannel(emitter => {
+        const channel = eventChannel((emitter) => {
             registryContractEventHandler.onEvent('ClaimSingle', async (event: any) => {
                 const id = Number(event.returnValues._id);
 
@@ -169,7 +169,7 @@ function* fillContractLookupIfMissing(): SagaIterator {
         const environment: IEnvironment = yield select(getEnvironment);
 
         const isContractsLookupFilled = Object.keys(contractsLookup).every(
-            key => contractsLookup[key] !== null
+            (key) => contractsLookup[key] !== null
         );
 
         if (isContractsLookupFilled || !environment) {

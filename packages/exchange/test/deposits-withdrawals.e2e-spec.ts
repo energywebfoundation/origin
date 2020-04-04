@@ -11,7 +11,7 @@ import { Transfer } from '../src/pods/transfer/transfer.entity';
 import { DatabaseService } from './database.service';
 import { bootstrapTestInstance } from './exchange';
 
-const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 describe('Deposits using deployed registry', () => {
     let app: INestApplication;
@@ -82,7 +82,7 @@ describe('Deposits using deployed registry', () => {
         )) as ContractTransaction).wait();
 
         const { args } = approvalReceipt.events.find(
-            e => e.event === 'ApprovedCertificationRequest'
+            (e) => e.event === 'ApprovedCertificationRequest'
         );
 
         return args[2].toString();
@@ -117,7 +117,7 @@ describe('Deposits using deployed registry', () => {
         await request(app.getHttpServer())
             .get('/transfer/all')
             .expect(200)
-            .expect(res => {
+            .expect((res) => {
                 const transfers = res.body as Transfer[];
                 const [tokenDeposit] = transfers;
 

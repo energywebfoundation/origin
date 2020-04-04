@@ -67,14 +67,8 @@ export function Market(props: IProps) {
     const VALIDATION_SCHEMA = Yup.object().shape({
         generationDateStart: Yup.date().label(t('exchange.properties.generationDateStart')),
         generationDateEnd: Yup.date().label(t('exchange.properties.generationDateEnd')),
-        energy: Yup.number()
-            .positive()
-            .integer()
-            .label(t('exchange.properties.energy')),
-        price: Yup.number()
-            .positive()
-            .min(0.01)
-            .label(t('exchange.properties.price'))
+        energy: Yup.number().positive().integer().label(t('exchange.properties.energy')),
+        price: Yup.number().positive().min(0.01).label(t('exchange.properties.price'))
     });
 
     if (!configuration?.deviceTypeService?.deviceTypes) {
@@ -102,7 +96,7 @@ export function Market(props: IProps) {
                 validateOnMount={false}
                 onSubmit={null}
             >
-                {formikProps => {
+                {(formikProps) => {
                     const { isValid, isSubmitting, setFieldValue, errors, values } = formikProps;
 
                     const totalPrice = isValid
@@ -229,7 +223,7 @@ export function Market(props: IProps) {
                                             )
                                         }}
                                         wrapperProps={{
-                                            onBlur: e => {
+                                            onBlur: (e) => {
                                                 const parsedValue = parseFloat(
                                                     (e.target as any)?.value
                                                 );

@@ -33,13 +33,9 @@ export class Demand extends ExtendedBaseEntity {
     @Column('json')
     product: ProductDTO;
 
-    @OneToMany(
-        () => Order,
-        order => order.demand,
-        {
-            eager: true
-        }
-    )
+    @OneToMany(() => Order, (order) => order.demand, {
+        eager: true
+    })
     bids: Order[];
 
     @Column()

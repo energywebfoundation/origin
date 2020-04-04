@@ -11,7 +11,7 @@ interface IFormCountrySelectProps {
     disabled?: boolean;
 }
 
-const COUNTRY_OPTIONS = Countries.map(country => ({
+const COUNTRY_OPTIONS = Countries.map((country) => ({
     value: country.id,
     label: country.name
 }));

@@ -65,7 +65,7 @@ export function CertificationRequestsTable(props: IProps) {
             const request = requests[i];
             const device = producingDevices.find(
                 // eslint-disable-next-line no-loop-func
-                a => getDeviceId(a, environment) === request.deviceId
+                (a) => getDeviceId(a, environment) === request.deviceId
             );
 
             if (
@@ -148,7 +148,7 @@ export function CertificationRequestsTable(props: IProps) {
             type: configuration.deviceTypeService.getDisplayText(device?.deviceType),
             capacity: PowerFormatter.format(device?.capacityInW),
             meterRead: EnergyFormatter.format(request.energy),
-            files: request.files.map(f => (
+            files: request.files.map((f) => (
                 <div key={f}>
                     <a
                         href={offChainDataSource.filesClient.getLink(f)}

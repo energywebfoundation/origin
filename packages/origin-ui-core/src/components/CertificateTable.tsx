@@ -97,11 +97,11 @@ export function CertificateTable(props: IProps) {
         offset,
         requestedFilters
     }: IPaginatedLoaderHooksFetchDataParameters): Promise<IPaginatedLoaderFetchDataReturnValues> {
-        const enrichedData: IEnrichedCertificateData[] = certificates.map(certificate => {
+        const enrichedData: IEnrichedCertificateData[] = certificates.map((certificate) => {
             const producingDevice =
                 typeof certificate.deviceId !== 'undefined' &&
                 producingDevices.find(
-                    device => getDeviceId(device, environment) === certificate.deviceId.toString()
+                    (device) => getDeviceId(device, environment) === certificate.deviceId.toString()
                 );
 
             const ownedVolume = certificate.ownedVolume(userAddress);
@@ -115,7 +115,7 @@ export function CertificateTable(props: IProps) {
             };
         });
 
-        const filteredIEnrichedCertificateData = enrichedData.filter(enrichedCertificateData => {
+        const filteredIEnrichedCertificateData = enrichedData.filter((enrichedCertificateData) => {
             const ownerOf = enrichedCertificateData.certificate.isOwned(userAddress);
             const claimed = enrichedCertificateData.certificate.isClaimed(userAddress);
 
@@ -172,7 +172,7 @@ export function CertificateTable(props: IProps) {
         setSelectedCertificates(
             paginatedData
                 .filter((item, index) => selectedIndexes.includes(index))
-                .map(i => i.certificate)
+                .map((i) => i.certificate)
         );
         setShowClaimBulkModal(true);
     }
@@ -180,7 +180,7 @@ export function CertificateTable(props: IProps) {
     async function publishForSale(rowIndex: number) {
         const certificateId = paginatedData[rowIndex].certificate.id;
 
-        const certificate = certificates.find(cert => cert.id === certificateId);
+        const certificate = certificates.find((cert) => cert.id === certificateId);
 
         setSellModalData(certificate);
         setSellModalVisibility(true);
@@ -194,7 +194,7 @@ export function CertificateTable(props: IProps) {
     async function claimCertificate(rowIndex: number) {
         const certificateId = paginatedData[rowIndex].certificate.id;
 
-        const certificate = certificates.find(cert => cert.id === certificateId);
+        const certificate = certificates.find((cert) => cert.id === certificateId);
 
         if (certificate && certificate.isOwned(userAddress)) {
             dispatch(setLoading(true));
@@ -239,10 +239,7 @@ export function CertificateTable(props: IProps) {
             },
             {
                 property: (record: IEnrichedCertificateData) =>
-                    moment
-                        .unix(record?.producingDevice?.operationalSince)
-                        .year()
-                        .toString(),
+                    moment.unix(record?.producingDevice?.operationalSince).year().toString(),
                 label: t('device.properties.commissioningDate'),
                 input: {
                     type: CustomFilterInputType.dropdown,
@@ -281,7 +278,7 @@ export function CertificateTable(props: IProps) {
             }
         ];
 
-        return filters.filter(filter => !hiddenColumns.includes(filter.label));
+        return filters.filter((filter) => !hiddenColumns.includes(filter.label));
     }
 
     const filters = getFilters();
@@ -294,7 +291,7 @@ export function CertificateTable(props: IProps) {
         if (selectedIndexes.length > 0) {
             const includedCertificates = paginatedData
                 .filter((item, index) => selectedIndexes.includes(index))
-                .map(i => i.certificate);
+                .map((i) => i.certificate);
 
             const energy = includedCertificates.reduce((a, b) => a + b.energy, 0);
 
@@ -381,9 +378,9 @@ export function CertificateTable(props: IProps) {
                 ]
             ]
         }
-    ] as const).filter(column => !hiddenColumns.includes(column.id));
+    ] as const).filter((column) => !hiddenColumns.includes(column.id));
 
-    const rows = paginatedData.map(enrichedData => {
+    const rows = paginatedData.map((enrichedData) => {
         let deviceType = '';
         let commissioningDate = '';
         let compliance = '';
@@ -435,7 +432,7 @@ export function CertificateTable(props: IProps) {
                 producingDevice={
                     sellModalData
                         ? producingDevices.find(
-                              device =>
+                              (device) =>
                                   getDeviceId(device, environment) ===
                                   sellModalData.deviceId.toString()
                           )

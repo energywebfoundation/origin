@@ -16,9 +16,6 @@ export class Certificate extends ExtendedBaseEntity implements ICertificateOwner
     @JoinColumn()
     pendingOwnershipCommitment: OwnershipCommitment;
 
-    @OneToMany(
-        () => OwnershipCommitment,
-        commitment => commitment.certificate
-    )
+    @OneToMany(() => OwnershipCommitment, (commitment) => commitment.certificate)
     ownershipHistory: OwnershipCommitment[];
 }

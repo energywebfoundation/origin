@@ -35,9 +35,9 @@ export class DeviceService {
             loadEagerRelations: true
         })) as IDevice[]) as (ExtendedBaseEntity & IDeviceWithRelationsIds)[];
 
-        return devices.find(device =>
+        return devices.find((device) =>
             device.externalDeviceIds.find(
-                id => id.id === externalId.id && id.type === externalId.type
+                (id) => id.id === externalId.id && id.type === externalId.type
             )
         );
     }
@@ -147,9 +147,9 @@ export class DeviceService {
     async findDeviceProductInfo(externalId: ExternalDeviceId): Promise<IDeviceProductInfo> {
         const devices = await this.repository.find();
 
-        return devices.find(device =>
+        return devices.find((device) =>
             device.externalDeviceIds.find(
-                id => id.id === externalId.id && id.type === externalId.type
+                (id) => id.id === externalId.id && id.type === externalId.type
             )
         );
     }

@@ -17,7 +17,7 @@ export const getCertificateById = (
         return;
     }
 
-    return certificates.find(i => i.id === id);
+    return certificates.find((i) => i.id === id);
 };
 
 export const getCertificateFetcher = (state: IStoreState) => state.certificates.fetcher;

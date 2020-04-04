@@ -147,7 +147,7 @@ export class OrganizationController {
             if (validationErrors.length > 0) {
                 throw new UnprocessableEntityException({
                     success: false,
-                    errors: validationErrors.map(e => e?.toString())
+                    errors: validationErrors.map((e) => e?.toString())
                 });
             } else {
                 await this.organizationRepository.save(newEntity);
@@ -306,14 +306,14 @@ export class OrganizationController {
                 });
             }
 
-            if (organization.users.find(u => u.email === email)) {
+            if (organization.users.find((u) => u.email === email)) {
                 throw new BadRequestException({
                     success: false,
                     error: `Invited user already belongs to this organization.`
                 });
             }
 
-            if (organization.invitations.find(u => u.email === email)) {
+            if (organization.invitations.find((u) => u.email === email)) {
                 throw new BadRequestException({
                     success: false,
                     error: `User has already been invited to this organization.`
@@ -395,16 +395,16 @@ export class OrganizationController {
                 });
             }
 
-            if (!organization.users.find(u => u.id === removedUserId)) {
+            if (!organization.users.find((u) => u.id === removedUserId)) {
                 throw new BadRequestException({
                     success: false,
                     error: `User to be removed is not part of the organization.`
                 });
             }
 
-            const removedUser = organization.users.find(u => u.id === removedUserId);
+            const removedUser = organization.users.find((u) => u.id === removedUserId);
 
-            organization.users = organization.users.filter(u => u.id !== removedUserId);
+            organization.users = organization.users.filter((u) => u.id !== removedUserId);
 
             await organization.save();
 
