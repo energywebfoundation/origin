@@ -2771,12 +2771,12 @@
     tslib "1.11.1"
     uuid "7.0.2"
 
-"@nestjs/jwt@6.1.2":
-  version "6.1.2"
-  resolved "https://registry.yarnpkg.com/@nestjs/jwt/-/jwt-6.1.2.tgz#8048d5dd149218ec15f1224e4e45a1fde9e8a64b"
-  integrity sha512-+qfcAeAuZiwGRj5WqmDCtzhlY109l2e6QJR4K2ANu1UJskxxaD9O7QS8SGegzpfTaIL01NAF8BWNxwy5ps6Lzg==
+"@nestjs/jwt@7.0.0":
+  version "7.0.0"
+  resolved "https://registry.yarnpkg.com/@nestjs/jwt/-/jwt-7.0.0.tgz#977390ea2d5f61cbf49d3da4df740311b98998db"
+  integrity sha512-2GWFcW4jl3Ey7YutEIx0d4ZkKKIeHW5BLE92jpETmdZUwI+510mSHxkByTcjAbtKdpdSubiKuyDeU9IQZ5tPEQ==
   dependencies:
-    "@types/jsonwebtoken" "8.3.7"
+    "@types/jsonwebtoken" "8.3.8"
     jsonwebtoken "8.5.1"
 
 "@nestjs/passport@6.2.0":
@@ -4245,13 +4245,6 @@
   version "8.3.5"
   resolved "https://registry.yarnpkg.com/@types/jsonwebtoken/-/jsonwebtoken-8.3.5.tgz#ff9be1151a844095df1ff5f723651298c2c07659"
   integrity sha512-VGM1gb+LwsQ5EPevvbvdnKncajBdYqNcrvixBif1BsiDQiSF1q+j4bBTvKC6Bt9n2kqNSx+yNTY2TVJ360E7EQ==
-  dependencies:
-    "@types/node" "*"
-
-"@types/jsonwebtoken@8.3.7":
-  version "8.3.7"
-  resolved "https://registry.yarnpkg.com/@types/jsonwebtoken/-/jsonwebtoken-8.3.7.tgz#ab79ad55b9435834d24cca3112f42c08eedb1a54"
-  integrity sha512-B5SSifLkjB0ns7VXpOOtOUlynE78/hKcY8G8pOAhkLJZinwofIBYqz555nRj2W9iDWZqFhK5R+7NZDaRmKWAoQ==
   dependencies:
     "@types/node" "*"
 
