@@ -11,7 +11,7 @@ export class FilterValidator implements ValidatorConstraintInterface {
     validate(filter: Filter, args: ValidationArguments) {
         try {
             if (filter === Filter.Specific) {
-                return args.constraints.every(property => !!(args.object as any)[property]);
+                return args.constraints.every((property) => !!(args.object as any)[property]);
             }
 
             return true;

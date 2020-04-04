@@ -154,7 +154,7 @@ export function Upload(props: IProps) {
 
     const { getRootProps, getInputProps } = useDropzone({
         accept: FILE_SUPPORTED_MIMETYPES,
-        onDrop: acceptedFiles => {
+        onDrop: (acceptedFiles) => {
             setFiles([...files, ...acceptedFiles]);
         }
     });
@@ -173,7 +173,7 @@ export function Upload(props: IProps) {
 
         const uploadedArray = await offChainDataSource.filesClient.upload(
             [file],
-            progressEvent => {
+            (progressEvent) => {
                 dispatch({
                     type: 'setFileProgress',
                     payload: {
@@ -263,7 +263,7 @@ export function Upload(props: IProps) {
     });
 
     useEffect(() => {
-        files.map(f => {
+        files.map((f) => {
             const fileIndex = files.indexOf(f);
             const uploadedFile = state && state[fileIndex];
 

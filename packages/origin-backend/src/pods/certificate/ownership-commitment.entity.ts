@@ -22,10 +22,7 @@ export class OwnershipCommitment extends ExtendedBaseEntity
     @Column('simple-array')
     salts: string[];
 
-    @ManyToOne(
-        () => Certificate,
-        cert => cert.ownershipHistory
-    )
+    @ManyToOne(() => Certificate, (cert) => cert.ownershipHistory)
     certificate: Certificate;
 
     @Column()

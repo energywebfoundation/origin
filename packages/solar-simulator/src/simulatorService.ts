@@ -136,7 +136,7 @@ export async function startAPI(configFilePath: string, dataFilePath: string): Pr
     app.get('/device/:id/energy', async (req, res) => {
         console.log(`GET - /device/${req.params.id}/energy`);
 
-        const device = CONFIG.devices.find(a => a.id === req.params.id);
+        const device = CONFIG.devices.find((a) => a.id === req.params.id);
 
         if (!device) {
             return res.status(404).json({
@@ -173,7 +173,7 @@ export async function startAPI(configFilePath: string, dataFilePath: string): Pr
     app.get('/device/:id', async (req, res) => {
         console.log(`GET - /device/${req.params.id}`);
 
-        const device = CONFIG.devices.find(a => a.id === req.params.id);
+        const device = CONFIG.devices.find((a) => a.id === req.params.id);
 
         if (!device) {
             return res.status(404).json({

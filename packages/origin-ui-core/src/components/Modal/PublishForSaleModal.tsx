@@ -121,17 +121,17 @@ export function PublishForSaleModal(props: IProps) {
             const transfers = await exchangeClient.getAllTransfers();
 
             transfer = transfers.find(
-                item => item.transactionHash === transferResult.transactionHash
+                (item) => item.transactionHash === transferResult.transactionHash
             );
 
             if (transfer) {
                 break;
             }
 
-            await new Promise(resolve => setTimeout(resolve, 1000));
+            await new Promise((resolve) => setTimeout(resolve, 1000));
         }
 
-        await new Promise(resolve => setTimeout(resolve, 10000));
+        await new Promise((resolve) => setTimeout(resolve, 10000));
 
         await exchangeClient.createAsk({
             assetId: transfer.asset.id,
@@ -215,7 +215,7 @@ export function PublishForSaleModal(props: IProps) {
                     value={energyInDisplayUnit}
                     type="number"
                     placeholder="1"
-                    onChange={e => validateInputs(e)}
+                    onChange={(e) => validateInputs(e)}
                     className="mt-4"
                     id="energyInDisplayUnitInput"
                     fullWidth
@@ -226,7 +226,7 @@ export function PublishForSaleModal(props: IProps) {
                     value={price}
                     type="number"
                     placeholder="1"
-                    onChange={e => validateInputs(e)}
+                    onChange={(e) => validateInputs(e)}
                     className="mt-4"
                     id="priceInput"
                     fullWidth
@@ -236,12 +236,12 @@ export function PublishForSaleModal(props: IProps) {
                     <InputLabel>Currency</InputLabel>
                     <Select
                         value={currency}
-                        onChange={e => setCurrency(e.target.value as string)}
+                        onChange={(e) => setCurrency(e.target.value as string)}
                         fullWidth
                         variant="filled"
                         input={<FilledInput />}
                     >
-                        {currencies?.map(item => (
+                        {currencies?.map((item) => (
                             <MenuItem key={item} value={item}>
                                 {item}
                             </MenuItem>

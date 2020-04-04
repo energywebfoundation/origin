@@ -91,40 +91,25 @@ function sumCapacityOfDevices(devices: IDeviceGroupChild[]) {
 }
 
 const VALIDATION_SCHEMA = Yup.object().shape({
-    facilityName: Yup.string()
-        .label('Facility name')
-        .required(),
+    facilityName: Yup.string().label('Facility name').required(),
     children: Yup.array()
         .of(
             Yup.object()
                 .shape({
                     installationName: Yup.string().required('Installation name'),
-                    address: Yup.string()
-                        .required()
-                        .label('Address'),
-                    city: Yup.string()
-                        .required()
-                        .label('City'),
-                    latitude: Yup.number()
-                        .required()
-                        .label('Latitude'),
-                    longitude: Yup.number()
-                        .required()
-                        .label('Longitude'),
-                    capacity: Yup.number()
-                        .required()
-                        .min(20)
-                        .label('Capacity'),
-                    meterId: Yup.string()
-                        .required()
-                        .label('Meter id'),
+                    address: Yup.string().required().label('Address'),
+                    city: Yup.string().required().label('City'),
+                    latitude: Yup.number().required().label('Latitude'),
+                    longitude: Yup.number().required().label('Longitude'),
+                    capacity: Yup.number().required().min(20).label('Capacity'),
+                    meterId: Yup.string().required().label('Meter id'),
                     meterType: Yup.string()
                         .oneOf(['interval', 'scalar'])
                         .required()
                         .label('Meter type')
                 })
                 // eslint-disable-next-line no-template-curly-in-string
-                .test('is-total-capacity-in-bounds', '${path} threshold invalid', function() {
+                .test('is-total-capacity-in-bounds', '${path} threshold invalid', function () {
                     const devices: IDeviceGroupChild[] = this.parent;
                     const totalCapacityInW = sumCapacityOfDevices(devices);
 
@@ -208,7 +193,7 @@ export function DeviceGroupForm(props: IProps) {
         formikActions.setSubmitting(true);
         dispatch(setLoading(true));
 
-        const externalDeviceIds: ExternalDeviceId[] = externalDeviceIdTypes.map(type => {
+        const externalDeviceIds: ExternalDeviceId[] = externalDeviceIdTypes.map((type) => {
             const typeString = (type as unknown) as string;
             return {
                 id: values[(type as unknown) as string],
@@ -277,7 +262,7 @@ export function DeviceGroupForm(props: IProps) {
                 validationSchema={VALIDATION_SCHEMA}
                 isInitialValid={false}
             >
-                {formikProps => {
+                {(formikProps) => {
                     const { isValid, isSubmitting, values } = formikProps;
 
                     const fieldDisabled = isSubmitting || readOnly;
@@ -390,7 +375,7 @@ export function DeviceGroupForm(props: IProps) {
                                     <TableBody>
                                         <FieldArray
                                             name="children"
-                                            render={arrayHelpers => (
+                                            render={(arrayHelpers) => (
                                                 <>
                                                     {values.children.map((child, childIndex) => (
                                                         <TableRow key={childIndex}>

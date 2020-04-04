@@ -97,7 +97,7 @@ export function DeviceMap(props: IProps) {
                     height
                 }}
                 mapTypeId="hybrid"
-                onLoad={mapObject => updateBounds(mapObject)}
+                onLoad={(mapObject) => updateBounds(mapObject)}
             >
                 {devices.map((device, index) => (
                     <React.Fragment key={index}>
@@ -131,7 +131,7 @@ export function DeviceMap(props: IProps) {
                             <br />
                             {t('deviceMap.properties.owner')}:{' '}
                             {
-                                organizations?.find(o => o?.id === deviceHighlighted.organization)
+                                organizations?.find((o) => o?.id === deviceHighlighted.organization)
                                     ?.name
                             }
                             <br />

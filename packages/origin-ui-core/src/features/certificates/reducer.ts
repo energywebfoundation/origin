@@ -32,7 +32,7 @@ const defaultState: ICertificatesState = {
 };
 
 function certificateExists(state: ICertificatesState, id: number) {
-    return state.certificates.find(i => i.id === id);
+    return state.certificates.find((i) => i.id === id);
 }
 
 export default function reducer(
@@ -55,7 +55,9 @@ export default function reducer(
                 return state;
             }
 
-            const certificateIndex = state.certificates.findIndex(c => c.id === action.payload.id);
+            const certificateIndex = state.certificates.findIndex(
+                (c) => c.id === action.payload.id
+            );
 
             return {
                 ...state,

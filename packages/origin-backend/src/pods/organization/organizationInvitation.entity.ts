@@ -20,9 +20,6 @@ export class OrganizationInvitation extends ExtendedBaseEntity implements IOrgan
     @Column()
     status: OrganizationInvitationStatus;
 
-    @ManyToOne(
-        () => Organization,
-        organization => organization.users
-    )
+    @ManyToOne(() => Organization, (organization) => organization.users)
     organization: Organization;
 }

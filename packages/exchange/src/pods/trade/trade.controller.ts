@@ -17,6 +17,6 @@ export class TradeController {
     public async getAll(@UserDecorator() user: IUser): Promise<TradeDTO[]> {
         const trades = await this.tradeService.getAll(user.id.toString());
 
-        return trades.map(trade => TradeDTO.fromTrade(trade));
+        return trades.map((trade) => TradeDTO.fromTrade(trade));
     }
 }

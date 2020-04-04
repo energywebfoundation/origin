@@ -11,7 +11,7 @@ import { TransferService } from '../src/pods/transfer/transfer.service';
 import { DatabaseService } from './database.service';
 import { bootstrapTestInstance } from './exchange';
 
-const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 describe('DirectBuy orders tests', () => {
     jest.setTimeout(10000);
@@ -92,7 +92,7 @@ describe('DirectBuy orders tests', () => {
             .post('/orders/ask/buy')
             .send(directBuyOrder)
             .expect(201)
-            .expect(res => {
+            .expect((res) => {
                 createdDirectBuyOrder = res.body as Order;
 
                 console.log(createdDirectBuyOrder);
@@ -107,7 +107,7 @@ describe('DirectBuy orders tests', () => {
         await request(app.getHttpServer())
             .get(`/trade`)
             .expect(200)
-            .expect(res => {
+            .expect((res) => {
                 const trades = res.body as TradeDTO[];
                 const [trade] = trades;
 

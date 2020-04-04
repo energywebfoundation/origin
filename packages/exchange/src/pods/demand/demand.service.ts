@@ -48,7 +48,7 @@ export class DemandService {
         let demand: Demand;
         let bids: Order[];
 
-        await this.connection.transaction(async transaction => {
+        await this.connection.transaction(async (transaction) => {
             const repository = transaction.getRepository<Demand>(Demand);
 
             demand = await repository.save({
@@ -70,7 +70,7 @@ export class DemandService {
             );
         });
 
-        bids.forEach(bid => this.matchingService.submit(bid));
+        bids.forEach((bid) => this.matchingService.submit(bid));
 
         return this.findOne(userId, demand.id);
     }
@@ -118,7 +118,7 @@ export class DemandService {
         }
         if (
             demand.status !== DemandStatus.PAUSED ||
-            demand.bids.some(bid => bid.status === OrderStatus.PendingCancellation)
+            demand.bids.some((bid) => bid.status === OrderStatus.PendingCancellation)
         ) {
             const msg = `Demand ${demand.id} expected status is DemandStatus.PAUSED but had ${
                 DemandStatus[demand.status]
@@ -143,7 +143,7 @@ export class DemandService {
 
     private async cancelDemandBids(demand: Demand) {
         for (const bid of demand.bids.filter(
-            b => b.status === OrderStatus.Active || b.status === OrderStatus.PartiallyFilled
+            (b) => b.status === OrderStatus.Active || b.status === OrderStatus.PartiallyFilled
         )) {
             await this.orderService.cancelOrder(demand.userId, bid.id);
         }
@@ -151,7 +151,8 @@ export class DemandService {
 
     private reSubmitDemandBids(demand: Demand) {
         for (const bid of demand.bids.filter(
-            b => b.status === OrderStatus.Cancelled || b.status === OrderStatus.PendingCancellation
+            (b) =>
+                b.status === OrderStatus.Cancelled || b.status === OrderStatus.PendingCancellation
         )) {
             this.orderService.reactivateOrder(bid);
         }

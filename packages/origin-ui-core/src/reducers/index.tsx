@@ -9,7 +9,7 @@ import { combineReducers } from 'redux';
 import { IStoreState } from '../types';
 import { connectRouter } from 'connected-react-router';
 
-export const createRootReducer = history =>
+export const createRootReducer = (history) =>
     combineReducers<IStoreState>({
         authentication,
         certificates,

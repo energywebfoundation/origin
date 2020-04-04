@@ -27,7 +27,7 @@ export function ClaimCertificateBulkModal(props: IProps) {
     }
 
     async function claimCertificates() {
-        const certificateIds: number[] = props.certificates.map(cert => cert.id);
+        const certificateIds: number[] = props.certificates.map((cert) => cert.id);
 
         await Certificate.claimCertificates(certificateIds, configuration);
 

@@ -29,8 +29,8 @@ export class OrderBookController {
         );
 
         return {
-            asks: asks.map(ask => OrderBookOrderDTO.fromOrder(ask, userId)).toArray(),
-            bids: bids.map(bid => OrderBookOrderDTO.fromOrder(bid, userId)).toArray()
+            asks: asks.map((ask) => OrderBookOrderDTO.fromOrder(ask, userId)).toArray(),
+            bids: bids.map((bid) => OrderBookOrderDTO.fromOrder(bid, userId)).toArray()
         };
     }
 }

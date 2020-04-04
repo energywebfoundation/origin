@@ -35,7 +35,7 @@ export function OrganizationUsersTable() {
 
         const entities = await organizationClient.getMembers(userOffchain.organization.id);
 
-        let newPaginatedData: IRecord[] = entities.map(i => ({
+        let newPaginatedData: IRecord[] = entities.map((i) => ({
             user: i
         }));
 

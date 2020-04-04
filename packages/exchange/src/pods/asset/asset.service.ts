@@ -23,7 +23,7 @@ export class AssetService {
             return this.create(asset, transaction);
         }
 
-        return this.connection.transaction(async tr => this.create(asset, tr));
+        return this.connection.transaction(async (tr) => this.create(asset, tr));
     }
 
     private async create(asset: CreateAssetDTO, transaction: EntityManager) {

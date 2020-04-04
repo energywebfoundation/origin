@@ -23,7 +23,7 @@ export class TradeService {
         this.logger.log(`Persisting trades and updating orders: ${event.size}`);
         this.logger.debug(`Persisting trades and updating orders: ${JSON.stringify(event)}`);
 
-        return this.connection.transaction(async entityManager => {
+        return this.connection.transaction(async (entityManager) => {
             for (const { bid, ask, trade } of event) {
                 await entityManager.update<Order>(Order, ask.id, {
                     currentVolume: ask.volume,
@@ -54,6 +54,6 @@ export class TradeService {
             .where('ask.userId = :userId OR bid.userId = :userId', { userId })
             .getMany();
 
-        return maskOrders ? trades.map(trade => trade.withMaskedOrder(userId)) : trades;
+        return maskOrders ? trades.map((trade) => trade.withMaskedOrder(userId)) : trades;
     }
 }

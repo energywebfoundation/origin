@@ -36,7 +36,7 @@ if (!fs.existsSync(program.input)) {
     process.exit(1);
 }
 
-const processDevices = async parsedContent => {
+const processDevices = async (parsedContent) => {
     const devices = [];
     const flow = [];
 

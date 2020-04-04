@@ -45,7 +45,7 @@ export function formatCurrency(value: number | string) {
 export function deduplicate(inputArray: any[]) {
     return inputArray.filter(
         (item, index, array) =>
-            array.map(nestedItem => JSON.stringify(nestedItem)).indexOf(JSON.stringify(item)) ===
+            array.map((nestedItem) => JSON.stringify(nestedItem)).indexOf(JSON.stringify(item)) ===
             index
     );
 }
@@ -59,16 +59,16 @@ export function clone(item: any) {
 }
 
 export function wait(ms: number) {
-    return new Promise(resolve => setTimeout(resolve, ms));
+    return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 export const LOCATION_TITLE_TRANSLATION_KEY = 'device.properties.regionProvince';
 
 export function getDeviceLocationText(device: ProducingDevice.Entity) {
-    return [device?.region, device?.province].filter(i => i).join(', ');
+    return [device?.region, device?.province].filter((i) => i).join(', ');
 }
 
-export const countDecimals = value => (value % 1 ? value.toString().split('.')[1].length : 0);
+export const countDecimals = (value) => (value % 1 ? value.toString().split('.')[1].length : 0);
 
 export function usePrevious(value) {
     const ref = useRef();

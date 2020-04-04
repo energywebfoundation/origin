@@ -106,7 +106,7 @@ export class DeviceController {
             const event: DeviceStatusChangedEvent = {
                 deviceId: id,
                 status: body.status,
-                deviceManagersEmails: deviceManagers.map(u => u.email)
+                deviceManagersEmails: deviceManagers.map((u) => u.email)
             };
 
             this.eventsService.handleEvent({

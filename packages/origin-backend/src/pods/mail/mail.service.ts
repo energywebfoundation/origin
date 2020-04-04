@@ -30,7 +30,7 @@ export class MailService {
                 return true;
             }
 
-            const allSucceeded = result.accepted.every(e => e.status === 'sent');
+            const allSucceeded = result.accepted.every((e) => e.status === 'sent');
 
             if (allSucceeded) {
                 this.logger.log(`Sent email with id: ${result.messageId}. `);

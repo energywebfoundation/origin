@@ -44,10 +44,7 @@ export class User extends ExtendedBaseEntity implements IUser {
     @Column('simple-json', { nullable: true })
     autoPublish: IAutoPublishConfig;
 
-    @ManyToOne(
-        () => Organization,
-        organization => organization.users
-    )
+    @ManyToOne(() => Organization, (organization) => organization.users)
     organization: Organization;
 
     @Column({ default: 0, nullable: false })

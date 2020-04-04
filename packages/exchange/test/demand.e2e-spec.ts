@@ -16,7 +16,7 @@ import { DatabaseService } from './database.service';
 import { bootstrapTestInstance } from './exchange';
 import { OrderStatus } from '../src/pods/order/order-status.enum';
 
-const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 let app: INestApplication;
 let transferService: TransferService;
@@ -85,9 +85,7 @@ describe('Demand orders trading', () => {
         price: 100,
         periodTimeFrame: TimeFrame.monthly,
         start: moment().toDate(),
-        end: moment()
-            .add(2, 'month')
-            .toDate(),
+        end: moment().add(2, 'month').toDate(),
         product: { deviceType: ['Solar'] },
         volumePerPeriod: '250',
         boundToGenerationTime: false
@@ -112,9 +110,7 @@ describe('Demand orders trading', () => {
             price,
             periodTimeFrame: TimeFrame.monthly,
             start: moment().toDate(),
-            end: moment()
-                .add(1, 'month')
-                .toDate(),
+            end: moment().add(1, 'month').toDate(),
             product,
             volumePerPeriod: '250',
             boundToGenerationTime: false
@@ -127,7 +123,7 @@ describe('Demand orders trading', () => {
         await request(app.getHttpServer())
             .get(`/trade`)
             .expect(200)
-            .expect(res => {
+            .expect((res) => {
                 const trades = res.body as TradeDTO[];
 
                 expect(trades).toBeDefined();
@@ -139,7 +135,7 @@ describe('Demand orders trading', () => {
         await request(app.getHttpServer())
             .get(`/orders`)
             .expect(200)
-            .expect(res => {
+            .expect((res) => {
                 const orders = res.body as Order[];
 
                 expect(orders).toBeDefined();
@@ -153,7 +149,7 @@ describe('Demand orders trading', () => {
             .post(`/demand`)
             .send(createDemandWith2Bids)
             .expect(201)
-            .expect(res => {
+            .expect((res) => {
                 const created = res.body as Demand;
 
                 const [bid1, bid2] = created.bids;
@@ -176,14 +172,14 @@ describe('Demand orders trading', () => {
             .post(`/demand`)
             .send(createDemandWith2Bids)
             .expect(201)
-            .expect(res => {
+            .expect((res) => {
                 demandId = (res.body as Demand).id;
             });
 
         await request(app.getHttpServer())
             .post(`/demand/${demandId}/pause`)
             .expect(202)
-            .expect(res => {
+            .expect((res) => {
                 const demand = res.body as Demand;
 
                 expect(demand.id).toBe(demandId);
@@ -200,7 +196,7 @@ describe('Demand orders trading', () => {
         await request(app.getHttpServer())
             .get(`/demand/${demandId}`)
             .expect(200)
-            .expect(res => {
+            .expect((res) => {
                 const demand = res.body as Demand;
 
                 expect(demand.id).toBe(demandId);
@@ -220,20 +216,18 @@ describe('Demand orders trading', () => {
             .post(`/demand`)
             .send(createDemandWith2Bids)
             .expect(201)
-            .expect(res => {
+            .expect((res) => {
                 demandId = (res.body as Demand).id;
             });
 
-        await request(app.getHttpServer())
-            .post(`/demand/${demandId}/pause`)
-            .expect(202);
+        await request(app.getHttpServer()).post(`/demand/${demandId}/pause`).expect(202);
 
         await sleep(3000);
 
         await request(app.getHttpServer())
             .post(`/demand/${demandId}/resume`)
             .expect(202)
-            .expect(res => {
+            .expect((res) => {
                 const demand = res.body as Demand;
 
                 expect(demand.id).toBe(demandId);
@@ -245,7 +239,7 @@ describe('Demand orders trading', () => {
         await request(app.getHttpServer())
             .get(`/demand/${demandId}`)
             .expect(200)
-            .expect(res => {
+            .expect((res) => {
                 const demand = res.body as Demand;
 
                 expect(demand.id).toBe(demandId);

@@ -73,70 +73,32 @@ const ERRORS = {
 };
 
 const VALIDATION_SCHEMA = Yup.object({
-    code: Yup.string()
-        .required()
-        .label('Code'),
-    name: Yup.string()
-        .required()
-        .label('Name'),
-    contact: Yup.string()
-        .required()
-        .label('Contact'),
-    telephone: Yup.string()
-        .required()
-        .label('Telephone'),
-    email: Yup.string()
-        .email()
-        .required()
-        .label('Email'),
-    address: Yup.string()
-        .required()
-        .label('Address'),
-    shareholders: Yup.string()
-        .required()
-        .label('Shareholders'),
+    code: Yup.string().required().label('Code'),
+    name: Yup.string().required().label('Name'),
+    contact: Yup.string().required().label('Contact'),
+    telephone: Yup.string().required().label('Telephone'),
+    email: Yup.string().email().required().label('Email'),
+    address: Yup.string().required().label('Address'),
+    shareholders: Yup.string().required().label('Shareholders'),
     ceoPassportNumber: Yup.string().label('CEO passport number'),
-    ceoName: Yup.string()
-        .required()
-        .label('CEO name'),
+    ceoName: Yup.string().required().label('CEO name'),
     companyNumber: Yup.string().label('Company number'),
-    vatNumber: Yup.string()
-        .required()
-        .label('VAT number'),
-    postcode: Yup.string()
-        .required()
-        .label('Postcode'),
-    headquartersCountry: Yup.string()
-        .required()
-        .label('Headquarters country'),
-    country: Yup.string()
-        .required()
-        .label('Country'),
-    yearOfRegistration: Yup.number()
-        .min(1900)
-        .label('Year of registration')
-        .required(),
-    numberOfEmployees: Yup.number()
-        .positive()
-        .label('Approximate number of employees')
-        .required(),
-    website: Yup.string()
-        .url()
-        .label('Website')
-        .required(),
-    businessTypeSelect: Yup.string()
-        .label('Business type')
-        .required(),
-    businessTypeInput: Yup.string()
-        .label('Business type')
-        .when('businessTypeSelect', {
-            is: 'Other',
-            then: Yup.string().required()
-        }),
+    vatNumber: Yup.string().required().label('VAT number'),
+    postcode: Yup.string().required().label('Postcode'),
+    headquartersCountry: Yup.string().required().label('Headquarters country'),
+    country: Yup.string().required().label('Country'),
+    yearOfRegistration: Yup.number().min(1900).label('Year of registration').required(),
+    numberOfEmployees: Yup.number().positive().label('Approximate number of employees').required(),
+    website: Yup.string().url().label('Website').required(),
+    businessTypeSelect: Yup.string().label('Business type').required(),
+    businessTypeInput: Yup.string().label('Business type').when('businessTypeSelect', {
+        is: 'Other',
+        then: Yup.string().required()
+    }),
     atLeastOneProp: Yup.mixed().test(
         'atLeastOneProperty',
         ERRORS.COMPANY_NUMBER_OR_CEO_PASSPORT,
-        function(this: Yup.TestContext): boolean {
+        function (this: Yup.TestContext): boolean {
             const objectToValidate: IFormValues = this.parent;
 
             if (!objectToValidate) {
@@ -179,8 +141,8 @@ export function OrganizationForm(props: IProps) {
             const activeCountriesParsed: string[] = JSON.parse(entity.activeCountries);
 
             setActiveCountries(
-                Countries.filter(c => activeCountriesParsed.includes(c.id.toString())).map(
-                    country => ({
+                Countries.filter((c) => activeCountriesParsed.includes(c.id.toString())).map(
+                    (country) => ({
                         value: country.id.toString(),
                         label: country.name
                     })
@@ -207,7 +169,7 @@ export function OrganizationForm(props: IProps) {
         try {
             const formData: OrganizationPostData = {
                 ...values,
-                activeCountries: JSON.stringify(activeCountries.map(i => i.value)),
+                activeCountries: JSON.stringify(activeCountries.map((i) => i.value)),
                 numberOfEmployees: Number(values.numberOfEmployees),
                 yearOfRegistration: Number(values.yearOfRegistration),
                 headquartersCountry: values.headquartersCountry,
@@ -253,7 +215,7 @@ export function OrganizationForm(props: IProps) {
                 validationSchema={VALIDATION_SCHEMA}
                 isInitialValid={false}
             >
-                {formikProps => {
+                {(formikProps) => {
                     const { isValid, isSubmitting, values, errors } = formikProps;
 
                     const otherErrors = (errors as any)?.atLeastOneProp;
@@ -390,7 +352,7 @@ export function OrganizationForm(props: IProps) {
                                     <FormCountryMultiSelect
                                         label="Active countries"
                                         placeholder="Select active countries"
-                                        onChange={value => setActiveCountries(value)}
+                                        onChange={(value) => setActiveCountries(value)}
                                         selectedValues={activeCountries}
                                         disabled={fieldDisabled}
                                         className="mt-3"

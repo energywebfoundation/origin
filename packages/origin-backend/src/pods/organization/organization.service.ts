@@ -41,7 +41,9 @@ export class OrganizationService {
         const organization = await this.findOne(id);
         const members = await this.getMembers(id);
 
-        return members.filter(u => u.id === organization.leadUser || isRole(u, Role.DeviceManager));
+        return members.filter(
+            (u) => u.id === organization.leadUser || isRole(u, Role.DeviceManager)
+        );
     }
 
     async getMembers(id: string | number): Promise<IUserWithRelationsIds[]> {

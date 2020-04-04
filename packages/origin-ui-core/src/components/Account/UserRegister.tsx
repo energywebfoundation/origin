@@ -66,26 +66,13 @@ export function UserRegister() {
     }
 
     const VALIDATION_SCHEMA = Yup.object().shape({
-        titleSelect: Yup.string()
-            .label(t('user.properties.title'))
-            .required(),
+        titleSelect: Yup.string().label(t('user.properties.title')).required(),
         titleInput: Yup.string().label(t('user.properties.title')),
-        firstName: Yup.string()
-            .label(t('user.properties.firstName'))
-            .required(),
-        lastName: Yup.string()
-            .label(t('user.properties.lastName'))
-            .required(),
-        telephone: Yup.string()
-            .label(t('user.properties.telephone'))
-            .required(),
-        email: Yup.string()
-            .email()
-            .label(t('user.properties.email'))
-            .required(),
-        password: Yup.string()
-            .label(t('user.properties.password'))
-            .required()
+        firstName: Yup.string().label(t('user.properties.firstName')).required(),
+        lastName: Yup.string().label(t('user.properties.lastName')).required(),
+        telephone: Yup.string().label(t('user.properties.telephone')).required(),
+        email: Yup.string().email().label(t('user.properties.email')).required(),
+        password: Yup.string().label(t('user.properties.password')).required()
     });
 
     async function submitForm(
@@ -122,7 +109,7 @@ export function UserRegister() {
                 validationSchema={VALIDATION_SCHEMA}
                 isInitialValid={false}
             >
-                {formikProps => {
+                {(formikProps) => {
                     const { isValid, isSubmitting, values } = formikProps;
 
                     const isTitleValid =
@@ -156,7 +143,7 @@ export function UserRegister() {
                                             required
                                             disabled={fieldDisabled}
                                         >
-                                            {TITLE_OPTIONS.map(option => (
+                                            {TITLE_OPTIONS.map((option) => (
                                                 <MenuItem value={option} key={option}>
                                                     {option}
                                                 </MenuItem>

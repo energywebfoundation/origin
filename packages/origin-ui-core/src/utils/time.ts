@@ -17,19 +17,11 @@ export function setTimeFormatLanguage(language: string) {
 }
 
 export function setMinTimeInDay(date: Moment): Moment {
-    return date
-        .hours(0)
-        .minutes(0)
-        .seconds(0)
-        .milliseconds(0);
+    return date.hours(0).minutes(0).seconds(0).milliseconds(0);
 }
 
 export function setMaxTimeInDay(date: Moment): Moment {
-    return date
-        .hours(23)
-        .minutes(59)
-        .seconds(59)
-        .milliseconds(999);
+    return date.hours(23).minutes(59).seconds(59).milliseconds(999);
 }
 
 export function setMinTimeInMonth(date: Moment): Moment {

@@ -35,7 +35,7 @@ export function RequestPasswordModal() {
     return (
         <Dialog open={show} onClose={handleClose}>
             <form
-                onSubmit={e => {
+                onSubmit={(e) => {
                     e.preventDefault();
                     submit();
                 }}
@@ -47,7 +47,7 @@ export function RequestPasswordModal() {
                     <TextField
                         label="Password"
                         value={password}
-                        onChange={e => setPassword(e.target.value)}
+                        onChange={(e) => setPassword(e.target.value)}
                         fullWidth
                         className="my-3"
                         autoFocus

@@ -44,7 +44,7 @@ export function Account() {
         <div className="PageWrapper">
             <div className="PageNav">
                 <ul className="NavMenu nav">
-                    {Menu.map(menu => {
+                    {Menu.map((menu) => {
                         if (menu.hide) {
                             return null;
                         }
@@ -67,9 +67,9 @@ export function Account() {
 
             <Route
                 path={`${getAccountLink()}/:key/:id?`}
-                render={props => {
+                render={(props) => {
                     const key = props.match.params.key;
-                    const matches = Menu.filter(item => {
+                    const matches = Menu.filter((item) => {
                         return item.key === key;
                     });
 

@@ -140,8 +140,8 @@ describe('Matching tests', () => {
         let startBidPrice = startAskPrice - 1;
 
         return {
-            asks: asks.map(a => createAsk({ ...a, price: startAskPrice++ })),
-            bids: bids.map(b => createBid({ ...b, price: startBidPrice-- }))
+            asks: asks.map((a) => createAsk({ ...a, price: startAskPrice++ })),
+            bids: bids.map((b) => createBid({ ...b, price: startBidPrice-- }))
         };
     };
 
@@ -202,7 +202,7 @@ describe('Matching tests', () => {
             }
         };
 
-        testCase.orders.forEach(a => {
+        testCase.orders.forEach((a) => {
             if (typeof a === 'string') {
                 matchingEngine.cancelOrder(a);
             } else if (a instanceof DirectBuy) {
@@ -212,11 +212,11 @@ describe('Matching tests', () => {
             }
         });
 
-        matchingEngine.trades.subscribe(res => {
+        matchingEngine.trades.subscribe((res) => {
             const expectedTrades = List(testCase.expectedTrades);
             assertTrades(
                 expectedTrades,
-                res.map(r => r.trade)
+                res.map((r) => r.trade)
             );
 
             const expectedBidsAfter = List(testCase.bidsAfter);
@@ -229,7 +229,7 @@ describe('Matching tests', () => {
             signalReady();
         });
 
-        matchingEngine.actionResults.subscribe(res => {
+        matchingEngine.actionResults.subscribe((res) => {
             const expectedStatusChanges = List(testCase.expectedStatusChanges);
 
             assertStatusChanges(expectedStatusChanges, res);
@@ -253,8 +253,8 @@ describe('Matching tests', () => {
     ) => {
         const matchingEngine = new MatchingEngine(deviceService, locationService);
 
-        asks.forEach(b => matchingEngine.submitOrder(b));
-        bids.forEach(a => matchingEngine.submitOrder(a));
+        asks.forEach((b) => matchingEngine.submitOrder(b));
+        bids.forEach((a) => matchingEngine.submitOrder(a));
 
         matchingEngine.tick();
 
@@ -265,7 +265,7 @@ describe('Matching tests', () => {
     };
 
     describe('when asks and bid have to same product', () => {
-        it('should trade when price and volume are matching', done => {
+        it('should trade when price and volume are matching', (done) => {
             const asksBefore = [createAsk()];
             const bidsBefore = [createBid()];
 
@@ -276,7 +276,7 @@ describe('Matching tests', () => {
             executeTestCase({ orders: [...asksBefore, ...bidsBefore], expectedTrades }, done);
         });
 
-        it('should not trade when owning both bid and ask', done => {
+        it('should not trade when owning both bid and ask', (done) => {
             const asksBefore = [createAsk({ userId: defaultBuyer })];
             const bidsBefore = [createBid({ userId: defaultBuyer })];
 
@@ -285,7 +285,7 @@ describe('Matching tests', () => {
             executeTestCase({ orders: [...asksBefore, ...bidsBefore], expectedTrades }, done);
         });
 
-        it('should not trade bid price is too low', done => {
+        it('should not trade bid price is too low', (done) => {
             const asksBefore = [createAsk()];
             const bidsBefore = [createBid({ price: twoUSD - 1 })];
 
@@ -302,7 +302,7 @@ describe('Matching tests', () => {
             );
         });
 
-        it('should trade at ask price when bid price is higher than ask', done => {
+        it('should trade at ask price when bid price is higher than ask', (done) => {
             const asksBefore = [createAsk()];
             const bidsBefore = [createBid({ price: twoUSD + 1 })];
 
@@ -313,7 +313,7 @@ describe('Matching tests', () => {
             executeTestCase({ orders: [...asksBefore, ...bidsBefore], expectedTrades }, done);
         });
 
-        it('should return 2 trades and fill all orders when having submitted 2 asks and 1 bid', done => {
+        it('should return 2 trades and fill all orders when having submitted 2 asks and 1 bid', (done) => {
             const asksBefore = [createAsk(), createAsk()];
             const bidsBefore = [createBid({ volume: onekWh.muln(2) })];
 
@@ -325,7 +325,7 @@ describe('Matching tests', () => {
             executeTestCase({ orders: [...asksBefore, ...bidsBefore], expectedTrades }, done);
         });
 
-        it('should return 2 trades and fill all orders when having submitted 1 asks and 2 bids', done => {
+        it('should return 2 trades and fill all orders when having submitted 1 asks and 2 bids', (done) => {
             const asksBefore = [createAsk({ volume: twoKWh })];
             const bidsBefore = [createBid(), createBid()];
 
@@ -337,7 +337,7 @@ describe('Matching tests', () => {
             executeTestCase({ orders: [...asksBefore, ...bidsBefore], expectedTrades }, done);
         });
 
-        it('should return 2 trades, fill 1st bid and partially fill 2nd bid when having submitted 1 asks and 2 bids', done => {
+        it('should return 2 trades, fill 1st bid and partially fill 2nd bid when having submitted 1 asks and 2 bids', (done) => {
             const asksBefore = [createAsk({ volume: twoKWh })];
             const bidsBefore = [createBid({ volume: onekWh }), createBid({ volume: twoKWh })];
 
@@ -354,7 +354,7 @@ describe('Matching tests', () => {
             );
         });
 
-        it('should return 3 trades', done => {
+        it('should return 3 trades', (done) => {
             const asksBefore = [
                 createAsk({ volume: twoKWh }),
                 createAsk({ volume: twoKWh, price: twoUSD * 2 })
@@ -375,7 +375,7 @@ describe('Matching tests', () => {
             );
         });
 
-        it('should not overmatch bids', done => {
+        it('should not overmatch bids', (done) => {
             const asksBefore = [
                 createAsk({ volume: onekWh.muln(10) }),
                 createAsk({ volume: onekWh.muln(10) })
@@ -399,7 +399,7 @@ describe('Matching tests', () => {
             );
         });
 
-        it('should not overmatch asks', done => {
+        it('should not overmatch asks', (done) => {
             const asksBefore = [createAsk(), createAsk(), createAsk()];
             const bidsBefore = [createBid({ volume: onekWh.muln(10) })];
 
@@ -420,7 +420,7 @@ describe('Matching tests', () => {
     });
 
     describe('when ask is solar level 3 specific device type', () => {
-        it('should trade when bid is solar level 1 specific device type', done => {
+        it('should trade when bid is solar level 1 specific device type', (done) => {
             const asksBefore = [createAsk()];
             const bidsBefore = [createBid({ product: { deviceType: solarTypeLevel1 } })];
 
@@ -431,7 +431,7 @@ describe('Matching tests', () => {
             executeTestCase({ orders: [...asksBefore, ...bidsBefore], expectedTrades }, done);
         });
 
-        it('should trade when bid is solar level 2 specific device type', done => {
+        it('should trade when bid is solar level 2 specific device type', (done) => {
             const asksBefore = [createAsk()];
             const bidsBefore = [createBid({ product: { deviceType: solarTypeLevel2 } })];
 
@@ -442,7 +442,7 @@ describe('Matching tests', () => {
             executeTestCase({ orders: [...asksBefore, ...bidsBefore], expectedTrades }, done);
         });
 
-        it('should not trade when bid is solar level 2 specific device type but ask price is higher', done => {
+        it('should not trade when bid is solar level 2 specific device type but ask price is higher', (done) => {
             const asksBefore = [createAsk({ price: twoUSD * 2 })];
             const bidsBefore = [createBid({ product: { deviceType: solarTypeLevel2 } })];
 
@@ -459,7 +459,7 @@ describe('Matching tests', () => {
             );
         });
 
-        it('should not trade when bid is different solar level 3 specific device type', done => {
+        it('should not trade when bid is different solar level 3 specific device type', (done) => {
             const asksBefore = [createAsk()];
             const bidsBefore = [createBid({ product: { deviceType: solarTypeLevel32 } })];
 
@@ -476,7 +476,7 @@ describe('Matching tests', () => {
             );
         });
 
-        it('should return 2 trades and fill all orders when having submitted 2 asks and 1 bid when bid is level 2 specific device type', done => {
+        it('should return 2 trades and fill all orders when having submitted 2 asks and 1 bid when bid is level 2 specific device type', (done) => {
             const asksBefore = [createAsk(), createAsk()];
             const bidsBefore = [
                 createBid({
@@ -493,7 +493,7 @@ describe('Matching tests', () => {
             executeTestCase({ orders: [...asksBefore, ...bidsBefore], expectedTrades }, done);
         });
 
-        it('should return 2 trades and fill all orders when having submitted 2 asks and 1 bid when bid is level 2 specific device type', done => {
+        it('should return 2 trades and fill all orders when having submitted 2 asks and 1 bid when bid is level 2 specific device type', (done) => {
             const asksBefore = [
                 createAsk({
                     product: { deviceType: windTypeLevel2 }
@@ -523,7 +523,7 @@ describe('Matching tests', () => {
     });
 
     describe('unspecified product matching', () => {
-        it('should buy 2 asks', done => {
+        it('should buy 2 asks', (done) => {
             const asksBefore = [
                 createAsk({ product: { deviceType: windTypeLevel2 }, price: 3 }),
                 createAsk({ product: { deviceType: windTypeLevel22 }, price: 2 }),
@@ -798,7 +798,7 @@ describe('Matching tests', () => {
     });
 
     describe('vintage matching', () => {
-        it('should not match when ask vintage not equals bid vintage', done => {
+        it('should not match when ask vintage not equals bid vintage', (done) => {
             const asksBefore = [
                 createAsk({
                     product: { deviceVintage: new DeviceVintage(2010), deviceType: solarTypeLevel3 }
@@ -818,7 +818,7 @@ describe('Matching tests', () => {
             executeTestCase({ orders: [...asksBefore, ...bidsBefore], expectedTrades }, done);
         });
 
-        it('should match when ask vintage is younger than bid', done => {
+        it('should match when ask vintage is younger than bid', (done) => {
             const asksBefore = [
                 createAsk({
                     product: { deviceVintage: new DeviceVintage(2018), deviceType: solarTypeLevel3 }
@@ -840,7 +840,7 @@ describe('Matching tests', () => {
             executeTestCase({ orders: [...asksBefore, ...bidsBefore], expectedTrades }, done);
         });
 
-        it('should match when bid vintage is the same as ask', done => {
+        it('should match when bid vintage is the same as ask', (done) => {
             const asksBefore = [
                 createAsk({
                     product: { deviceVintage: new DeviceVintage(2018), deviceType: solarTypeLevel3 }
@@ -861,7 +861,7 @@ describe('Matching tests', () => {
     });
 
     describe('location matching', () => {
-        it('should not match with different region', done => {
+        it('should not match with different region', (done) => {
             const asksBefore = [createAsk()];
             const bidsBefore = [
                 createBid({
@@ -874,7 +874,7 @@ describe('Matching tests', () => {
             executeTestCase({ orders: [...asksBefore, ...bidsBefore], expectedTrades }, done);
         });
 
-        it('should match with same region', done => {
+        it('should match with same region', (done) => {
             const asksBefore = [createAsk()];
             const bidsBefore = [
                 createBid({
@@ -897,7 +897,7 @@ describe('Matching tests', () => {
             );
         });
 
-        it('should match with same country', done => {
+        it('should match with same country', (done) => {
             const asksBefore = [createAsk()];
             const bidsBefore = [
                 createBid({
@@ -922,7 +922,7 @@ describe('Matching tests', () => {
     });
 
     describe('Multi device type matching', () => {
-        it('should match with solar and wind asks', done => {
+        it('should match with solar and wind asks', (done) => {
             const asksBefore = [
                 createAsk({ product: { deviceType: solarTypeLevel3 } }),
                 createAsk({ product: { deviceType: windTypeLevel2 } })
@@ -942,7 +942,7 @@ describe('Matching tests', () => {
             executeTestCase({ orders: [...asksBefore, ...bidsBefore], expectedTrades }, done);
         });
 
-        it('should match with solar only because if was created earlier', done => {
+        it('should match with solar only because if was created earlier', (done) => {
             const asksBefore = [
                 createAsk({ product: { deviceType: solarTypeLevel3 }, volume: twoKWh }),
                 createAsk({ product: { deviceType: windTypeLevel2 } })
@@ -966,7 +966,7 @@ describe('Matching tests', () => {
             );
         });
 
-        it('should match with solar and wind and update the remaining bid', done => {
+        it('should match with solar and wind and update the remaining bid', (done) => {
             const asksBefore = [
                 createAsk({ product: { deviceType: solarTypeLevel3 }, volume: twoKWh }),
                 createAsk({ product: { deviceType: windTypeLevel2 } })
@@ -993,7 +993,7 @@ describe('Matching tests', () => {
     });
 
     describe('Multi location matching', () => {
-        it('should match with east and central', done => {
+        it('should match with east and central', (done) => {
             const asksBefore = [
                 createAsk({ product: { deviceType: solarTypeLevel3, location: locationCentral } }),
                 createAsk({ product: { deviceType: solarTypeLevel3, location: locationEast } })
@@ -1013,7 +1013,7 @@ describe('Matching tests', () => {
             executeTestCase({ orders: [...asksBefore, ...bidsBefore], expectedTrades }, done);
         });
 
-        it('should match with central only because if was created earlier', done => {
+        it('should match with central only because if was created earlier', (done) => {
             const asksBefore = [
                 createAsk({
                     product: { deviceType: solarTypeLevel3, location: locationCentral },
@@ -1040,7 +1040,7 @@ describe('Matching tests', () => {
             );
         });
 
-        it('should match with central and east and update the remaining bid', done => {
+        it('should match with central and east and update the remaining bid', (done) => {
             const asksBefore = [
                 createAsk({
                     product: { deviceType: solarTypeLevel3, location: locationCentral },
@@ -1070,7 +1070,7 @@ describe('Matching tests', () => {
     });
 
     describe('Cancellation tests', () => {
-        it('should execute cancel action respecting the order', done => {
+        it('should execute cancel action respecting the order', (done) => {
             const ask1 = createAsk({ volume: twoKWh });
             const bid = createBid();
             const cancelAsk1 = ask1.id;
@@ -1099,7 +1099,7 @@ describe('Matching tests', () => {
     });
 
     describe('DirectBuy orders tests', () => {
-        it('should direct buy send ask', done => {
+        it('should direct buy send ask', (done) => {
             const ask1 = createAsk();
             const ask2 = createAsk({ price: 2 * ask1.price });
 
@@ -1119,7 +1119,7 @@ describe('Matching tests', () => {
             );
         });
 
-        it('should direct buy partial ask volume', done => {
+        it('should direct buy partial ask volume', (done) => {
             const ask1 = createAsk();
             const ask2 = createAsk({ price: 2 * ask1.price, volume: twoKWh });
 
@@ -1139,7 +1139,7 @@ describe('Matching tests', () => {
             );
         });
 
-        it('should direct buy partial ask volume and match remaining', done => {
+        it('should direct buy partial ask volume and match remaining', (done) => {
             const ask1 = createAsk();
             const ask2 = createAsk({ price: 2 * ask1.price, volume: twoKWh });
 
@@ -1163,7 +1163,7 @@ describe('Matching tests', () => {
     });
 
     describe('generation time matching and filters', () => {
-        it('should not match when bid generation time is out of ask generation time', done => {
+        it('should not match when bid generation time is out of ask generation time', (done) => {
             const ask1 = createAsk({
                 product: {
                     generationTime: {
@@ -1194,7 +1194,7 @@ describe('Matching tests', () => {
             );
         });
 
-        it('should not match when bid partially contains ask generation time', done => {
+        it('should not match when bid partially contains ask generation time', (done) => {
             const ask1 = createAsk({
                 product: {
                     generationTime: {
@@ -1233,7 +1233,7 @@ describe('Matching tests', () => {
             );
         });
 
-        it('should match when bid contains ask generation time', done => {
+        it('should match when bid contains ask generation time', (done) => {
             const ask1 = createAsk({
                 product: {
                     generationTime: {
@@ -1325,18 +1325,14 @@ describe('Matching tests', () => {
             const { asks, bids } = createOrderBookWithSpread(
                 [
                     {
-                        validFrom: moment()
-                            .add(1, 'day')
-                            .toDate()
+                        validFrom: moment().add(1, 'day').toDate()
                     },
                     {}
                 ],
                 [
                     {},
                     {
-                        validFrom: moment()
-                            .add(1, 'day')
-                            .toDate()
+                        validFrom: moment().add(1, 'day').toDate()
                     }
                 ]
             );
@@ -1352,12 +1348,10 @@ describe('Matching tests', () => {
             );
         });
 
-        it('should not match orders with validFrom in the future', done => {
+        it('should not match orders with validFrom in the future', (done) => {
             const ask1 = createAsk();
             const bid1 = createBid({
-                validFrom: moment()
-                    .add(1, 'day')
-                    .toDate()
+                validFrom: moment().add(1, 'day').toDate()
             });
             const bid2 = createBid();
 

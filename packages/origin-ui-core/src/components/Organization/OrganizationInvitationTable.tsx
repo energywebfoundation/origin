@@ -65,9 +65,9 @@ export function OrganizationInvitationTable(props: IProps) {
             );
         }
 
-        let newPaginatedData: IRecord[] = invitations.map(invitation => ({
+        let newPaginatedData: IRecord[] = invitations.map((invitation) => ({
             invitation,
-            organization: organizations?.find(o => o.id === invitation.organization)
+            organization: organizations?.find((o) => o.id === invitation.organization)
         }));
 
         const newTotal = newPaginatedData.length;

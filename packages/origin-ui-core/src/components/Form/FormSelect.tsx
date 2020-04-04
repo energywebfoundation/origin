@@ -37,7 +37,7 @@ export function FormSelect(props: IFormSelectProps) {
                 required={props.required}
                 disabled={props.disabled}
             >
-                {props.options.map(option => (
+                {props.options.map((option) => (
                     <MenuItem value={option.value} key={option.value}>
                         {option.label}
                     </MenuItem>

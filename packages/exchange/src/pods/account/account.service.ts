@@ -24,7 +24,7 @@ export class AccountService {
             return this.create(userId, transaction);
         }
 
-        return this.connection.transaction(tr => this.create(userId, tr));
+        return this.connection.transaction((tr) => this.create(userId, tr));
     }
 
     private async create(userId: string, transaction: EntityManager) {

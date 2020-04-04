@@ -88,7 +88,7 @@ export function Certificates() {
         <div className="PageWrapper">
             <div className="PageNav">
                 <ul className="NavMenu nav">
-                    {CertificatesMenu.map(menu => {
+                    {CertificatesMenu.map((menu) => {
                         if (menu.show) {
                             const link = `${getCertificatesLink()}/${menu.key}`;
 
@@ -104,10 +104,10 @@ export function Certificates() {
 
             <Route
                 path={`${getCertificatesLink()}/:key/:id?`}
-                render={props => {
+                render={(props) => {
                     const key = props.match.params.key;
                     const id = props.match.params.id;
-                    const matches = CertificatesMenu.filter(item => {
+                    const matches = CertificatesMenu.filter((item) => {
                         return item.key === key;
                     });
                     if (matches.length > 0) {

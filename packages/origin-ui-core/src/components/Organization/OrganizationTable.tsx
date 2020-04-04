@@ -56,7 +56,7 @@ export function OrganizationTable() {
 
         const entities = await organizationClient.getAll();
 
-        let newPaginatedData: IRecord[] = entities.map(i => ({
+        let newPaginatedData: IRecord[] = entities.map((i) => ({
             organization: i
         }));
 
@@ -134,7 +134,7 @@ export function OrganizationTable() {
     const rows = paginatedData.map(({ organization }) => {
         return {
             name: organization.name,
-            headquartersCountry: Countries.find(i => i.id === organization.headquartersCountry)
+            headquartersCountry: Countries.find((i) => i.id === organization.headquartersCountry)
                 ?.name,
             yearOfRegistration: organization.yearOfRegistration,
             status: getOrganizationText(organization.status)

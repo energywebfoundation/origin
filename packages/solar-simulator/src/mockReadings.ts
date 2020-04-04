@@ -22,7 +22,7 @@ export async function mockData(configFilePath: string, dataFilePath: string): Pr
 
     const location = getMockReadingsWorkerLocation();
 
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
         let counter = 0;
 
         function incrementAndResolve() {
@@ -41,7 +41,7 @@ export async function mockData(configFilePath: string, dataFilePath: string): Pr
                 }
             });
 
-            worker.on('message', message => console.log(message));
+            worker.on('message', (message) => console.log(message));
 
             worker.on('exit', incrementAndResolve);
         }

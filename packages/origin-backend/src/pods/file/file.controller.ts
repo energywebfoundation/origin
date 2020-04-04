@@ -58,7 +58,7 @@ export class FileController {
             throw new BadRequestException('files.files array has to be defined.');
         }
 
-        return files.map(f => f.filename);
+        return files.map((f) => f.filename);
     }
 
     @Get(':id')

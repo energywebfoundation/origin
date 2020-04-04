@@ -60,7 +60,7 @@ export function Exchange(props: IProps) {
                 deviceType: values.deviceType?.length > 0 ? values.deviceType : undefined,
                 location:
                     values.location?.length > 0
-                        ? values.location?.map(l => `${country};${l}`)
+                        ? values.location?.map((l) => `${country};${l}`)
                         : undefined,
                 generationFrom: null,
                 generationTo: null
@@ -82,12 +82,12 @@ export function Exchange(props: IProps) {
                 onBid={onBid}
                 // eslint-disable-next-line @typescript-eslint/no-empty-function
                 onNotify={() => {}}
-                onChange={values => {
+                onChange={(values) => {
                     if (JSON.stringify(values.deviceType) !== JSON.stringify(deviceType)) {
                         setDeviceType(values.deviceType);
                     }
 
-                    const newLocation = values.location.map(l => `${country};${l}`);
+                    const newLocation = values.location.map((l) => `${country};${l}`);
 
                     if (JSON.stringify(newLocation) !== JSON.stringify(location)) {
                         setLocation(newLocation);

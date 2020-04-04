@@ -239,7 +239,7 @@ export function AccountSettings() {
                                     value={autoPublishCandidate.priceInCents / 100}
                                     type="number"
                                     placeholder="1"
-                                    onChange={e =>
+                                    onChange={(e) =>
                                         setAutoPublish({
                                             ...autoPublishCandidate,
                                             priceInCents: parseFloat(e.target.value) * 100
@@ -253,7 +253,7 @@ export function AccountSettings() {
                                     <InputLabel>{t('settings.properties.currency')}</InputLabel>
                                     <Select
                                         value={autoPublishCandidate.currency}
-                                        onChange={e =>
+                                        onChange={(e) =>
                                             setAutoPublish({
                                                 ...autoPublishCandidate,
                                                 currency: e.target.value as string
@@ -263,7 +263,7 @@ export function AccountSettings() {
                                         variant="filled"
                                         input={<FilledInput />}
                                     >
-                                        {currencies.map(currency => (
+                                        {currencies.map((currency) => (
                                             <MenuItem key={currency} value={currency}>
                                                 {currency}
                                             </MenuItem>
@@ -281,9 +281,9 @@ export function AccountSettings() {
                         <InputLabel>{t('settings.properties.language')}</InputLabel>
                         <Select
                             value={originConfiguration.language}
-                            onChange={e => setOriginLanguage(e.target.value as ORIGIN_LANGUAGE)}
+                            onChange={(e) => setOriginLanguage(e.target.value as ORIGIN_LANGUAGE)}
                         >
-                            {AVAILABLE_ORIGIN_LANGUAGES.map(option => (
+                            {AVAILABLE_ORIGIN_LANGUAGES.map((option) => (
                                 <MenuItem key={option} value={option}>
                                     {option}
                                 </MenuItem>

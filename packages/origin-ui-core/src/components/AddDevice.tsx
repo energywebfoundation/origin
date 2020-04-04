@@ -100,26 +100,13 @@ export function AddDevice() {
     const classes = useStyles(useTheme());
 
     const VALIDATION_SCHEMA = Yup.object().shape({
-        facilityName: Yup.string()
-            .label(t('device.properties.facilityName'))
-            .required(),
-        capacity: Yup.number()
-            .label(t('device.properties.capacity'))
-            .required()
-            .positive(),
+        facilityName: Yup.string().label(t('device.properties.facilityName')).required(),
+        capacity: Yup.number().label(t('device.properties.capacity')).required().positive(),
         commissioningDate: Yup.date().required(),
         registrationDate: Yup.date().required(),
-        address: Yup.string()
-            .label(t('device.properties.address'))
-            .required(),
-        latitude: Yup.number()
-            .label(t('device.properties.latitude'))
-            .required()
-            .positive(),
-        longitude: Yup.number()
-            .label(t('device.properties.longitude'))
-            .required()
-            .positive(),
+        address: Yup.string().label(t('device.properties.address')).required(),
+        latitude: Yup.number().label(t('device.properties.latitude')).required().positive(),
+        longitude: Yup.number().label(t('device.properties.longitude')).required().positive(),
         supported: Yup.boolean(),
         projectStory: Yup.string()
     });
@@ -148,7 +135,7 @@ export function AddDevice() {
 
         const [region, province] = selectedLocation;
 
-        const externalDeviceIds: ExternalDeviceId[] = externalDeviceIdTypes.map(type => {
+        const externalDeviceIds: ExternalDeviceId[] = externalDeviceIdTypes.map((type) => {
             const typeString = (type as unknown) as string;
             return {
                 id: values[(type as unknown) as string],
@@ -238,7 +225,7 @@ export function AddDevice() {
                 validationSchema={VALIDATION_SCHEMA}
                 isInitialValid={false}
             >
-                {formikProps => {
+                {(formikProps) => {
                     const { isValid, isSubmitting } = formikProps;
 
                     const fieldDisabled = isSubmitting;
@@ -475,7 +462,7 @@ export function AddDevice() {
                                                 className={classes.fileUploadInput}
                                                 id="contained-button-file"
                                                 type="file"
-                                                onChange={e => uploadImages(e.target.files)}
+                                                onChange={(e) => uploadImages(e.target.files)}
                                                 multiple
                                                 disabled={imagesUploaded}
                                             />
