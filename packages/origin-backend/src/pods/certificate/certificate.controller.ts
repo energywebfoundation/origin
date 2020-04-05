@@ -1,7 +1,7 @@
 import {
     CertificationRequestUpdateData,
     CertificationRequestOffChainData,
-    OwnershipCommitmentProofWithTx,
+    IOwnershipCommitmentProofWithTx,
     ICertificateOwnership,
     CommitmentStatus
 } from '@energyweb/origin-backend-core';
@@ -77,7 +77,9 @@ export class CertificateController {
     }
 
     @Get(`/:id/OwnershipCommitment`)
-    async getOwnershipCommitment(@Param('id') id: number): Promise<OwnershipCommitmentProofWithTx> {
+    async getOwnershipCommitment(
+        @Param('id') id: number
+    ): Promise<IOwnershipCommitmentProofWithTx> {
         const certificate = await this.certificateRepository.findOne(id);
 
         if (!certificate?.currentOwnershipCommitment) {
@@ -103,7 +105,7 @@ export class CertificateController {
     @Put(`/:id/OwnershipCommitment/pending/approve`)
     async approvePendingOwnershipCommitment(
         @Param('id') id: number
-    ): Promise<OwnershipCommitmentProofWithTx> {
+    ): Promise<IOwnershipCommitmentProofWithTx> {
         const certificate = await this.certificateRepository.findOne(id);
 
         if (!certificate?.pendingOwnershipCommitment) {
@@ -124,7 +126,7 @@ export class CertificateController {
     @Post(`/:id/OwnershipCommitment`)
     async addOwnershipCommitment(
         @Param('id') id: number,
-        @Body() proof: OwnershipCommitmentProofWithTx
+        @Body() proof: IOwnershipCommitmentProofWithTx
     ) {
         const certificate = (await this.certificateRepository.findOne(id)) ?? new Certificate();
 

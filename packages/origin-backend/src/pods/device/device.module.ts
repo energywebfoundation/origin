@@ -8,13 +8,19 @@ import { EventsModule } from '../events';
 import { DeviceService } from './device.service';
 import { SM_READS_ADAPTER } from '../../const';
 import { OrganizationModule } from '../organization';
+import { ConfigurationModule } from '../configuration';
 
 @Module({})
 export class DeviceModule {
     static register(smartMeterReadingsAdapter: ISmartMeterReadingsAdapter): DynamicModule {
         return {
             module: DeviceModule,
-            imports: [TypeOrmModule.forFeature([Device]), EventsModule, OrganizationModule],
+            imports: [
+                TypeOrmModule.forFeature([Device]),
+                ConfigurationModule,
+                EventsModule,
+                OrganizationModule
+            ],
             providers: [
                 {
                     provide: SM_READS_ADAPTER,
