@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Market, IMarketFormValues } from './Market';
-import { EnergyFormatter, moment, useTranslation } from '../../utils';
+import { EnergyFormatter, moment, useTranslation, useIntervalFetch } from '../../utils';
 import { Orders } from './Orders';
 import { Grid } from '@material-ui/core';
 import { getUserOffchain } from '../../features/users/selectors';
@@ -30,26 +30,18 @@ export function Exchange(props: IProps) {
     const [deviceType, setDeviceType] = useState<string[]>([]);
     const [location, setLocation] = useState<string[]>([]);
 
-    const fetchData = async () => {
-        setData(
-            (await exchangeClient?.search(deviceType, location)) ?? {
-                asks: [],
-                bids: []
-            }
-        );
+    const fetchData = async (checkIsMounted: () => boolean) => {
+        const fetchedData = (await exchangeClient?.search(deviceType, location)) ?? {
+            asks: [],
+            bids: []
+        };
+
+        if (checkIsMounted()) {
+            setData(fetchedData);
+        }
     };
 
-    useEffect(() => {
-        fetchData();
-    }, [deviceType, location]);
-
-    useEffect(() => {
-        const intervalRef = setInterval(async () => {
-            await fetchData();
-        }, refreshInterval);
-
-        return () => clearInterval(intervalRef);
-    }, [deviceType, location]);
+    useIntervalFetch(fetchData, refreshInterval, [deviceType, location]);
 
     async function onBid(values: IMarketFormValues) {
         dispatch(setLoading(true));
@@ -70,8 +62,6 @@ export function Exchange(props: IProps) {
                 parseFloat(values.energy)
             ).toString()
         });
-
-        await fetchData();
 
         dispatch(setLoading(false));
     }

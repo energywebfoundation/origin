@@ -6,7 +6,8 @@ import {
     IOrder,
     IProductFilterDTO,
     ExchangeAccount,
-    ITransfer
+    ITransfer,
+    ITradeDTO
 } from '.';
 import { Filter } from '@energyweb/exchange-core';
 
@@ -16,6 +17,7 @@ export interface IExchangeClient {
     createBid(data: CreateBidDTO): Promise<IOrder>;
     getAccount(): Promise<ExchangeAccount>;
     getAllTransfers(): Promise<ITransfer[]>;
+    getTrades(): Promise<ITradeDTO[]>;
     getOrders?(): Promise<any>;
 }
 
@@ -86,6 +88,12 @@ export class ExchangeClient implements IExchangeClient {
         return response.data;
     }
 
+    public async getTrades() {
+        const response = await this.requestClient.get<{}, ITradeDTO[]>(this.tradeEndpoint);
+
+        return response.data;
+    }
+
     private get accountEndpoint() {
         return `${this.dataApiUrl}/account`;
     }
@@ -100,6 +108,10 @@ export class ExchangeClient implements IExchangeClient {
 
     private get transferEndpoint() {
         return `${this.dataApiUrl}/transfer`;
+    }
+
+    private get tradeEndpoint() {
+        return `${this.dataApiUrl}/trade`;
     }
 }
 
@@ -173,5 +185,9 @@ export const ExchangeClientMock: IExchangeClient = {
 
     async getAccount() {
         return null;
+    },
+
+    async getTrades() {
+        return [];
     }
 };

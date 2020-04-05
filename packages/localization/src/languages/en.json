@@ -23,7 +23,8 @@
                 "pending": "Pending",
                 "approved": "Approved",
                 "forDemand": "For demand",
-                "exchange": "Exchange"
+                "exchange": "Exchange",
+                "myTrades": "My trades"
             }
         },
         "device": {
@@ -281,7 +282,13 @@
                 "price": "Price ({currency}/{energyUnit})",
                 "market": "Market",
                 "bids": "Bids",
-                "asks": "Asks"
+                "asks": "Asks",
+                "date": "Date",
+                "myTrades": "My trades",
+                "side": "Side",
+                "buy": "Buy",
+                "sell": "Sell",
+                "total": "Total"
             },
             "properties": {
                 "price": "Price",

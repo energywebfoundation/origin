@@ -15,6 +15,7 @@ import { useSelector } from 'react-redux';
 import { getConfiguration, getRegions } from '../../features';
 import { Skeleton } from '@material-ui/lab';
 import { useValidation, Moment, useTranslation, formatCurrency } from '../../utils';
+import { calculateTotalPrice } from '../../utils/exchange';
 import { Formik, Form } from 'formik';
 import { FormInput, FormikDatePickerWithMonthArrowsFilled, FormikEffect } from '../Form';
 
@@ -76,17 +77,6 @@ export function Market(props: IProps) {
     }
 
     const initialFormValues = INITIAL_FORM_VALUES;
-
-    function calculateTotalPrice(price: string, energy: string) {
-        const priceAsFloat = parseFloat(price);
-        const energyAsFloat = parseFloat(energy);
-
-        if (isNaN(priceAsFloat) || isNaN(energyAsFloat) || !priceAsFloat || !energyAsFloat) {
-            return 0;
-        }
-
-        return (priceAsFloat * energyAsFloat).toFixed(2);
-    }
 
     return (
         <Paper className={classes.wrapper}>

@@ -9,7 +9,7 @@ import { useSelector } from 'react-redux';
 import { getUserOffchain } from '../features/users/selectors';
 import { getCurrencies } from '../features/general/selectors';
 import { useTranslation } from 'react-i18next';
-import { Exchange } from './exchange';
+import { Exchange, MyTrades } from './exchange';
 import { useLinks } from '../utils';
 
 function CertificateDetailViewId(id: number) {
@@ -35,7 +35,10 @@ export function Certificates() {
     const { baseURL, getCertificatesLink } = useLinks();
     const { t } = useTranslation();
 
-    const ExchangeRoute = () => <Exchange currency={(currencies && currencies[0]) ?? 'USD'} />;
+    const defaultCurrency = (currencies && currencies[0]) ?? 'USD';
+
+    const ExchangeRoute = () => <Exchange currency={defaultCurrency} />;
+    const TradesRoute = () => <MyTrades currency={defaultCurrency} />;
 
     const isIssuer = isRole(user, Role.Issuer);
 
@@ -75,6 +78,12 @@ export function Certificates() {
             label: 'navigation.certificates.exchange',
             component: ExchangeRoute,
             show: true
+        },
+        {
+            key: 'my-trades',
+            label: 'navigation.certificates.myTrades',
+            component: TradesRoute,
+            show: user
         }
     ];
 
