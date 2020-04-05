@@ -1,6 +1,11 @@
 import { Configuration } from '@energyweb/utils-general';
 import { PreciseProofs } from 'precise-proofs-js';
-import { IOwnershipCommitmentProof, IOwnershipCommitment, CommitmentStatus, OwnershipCommitmentProofWithTx } from '@energyweb/origin-backend-core';
+import {
+    IOwnershipCommitmentProof,
+    IOwnershipCommitment,
+    CommitmentStatus,
+    IOwnershipCommitmentProofWithTx
+} from '@energyweb/origin-backend-core';
 
 export interface IOnChainProperties {
     propertiesDocumentHash: string;
@@ -8,6 +13,7 @@ export interface IOnChainProperties {
 
 export abstract class PreciseProofEntity implements IOnChainProperties {
     configuration: Configuration.Entity;
+
     proofs: PreciseProofs.Proof[];
 
     propertiesDocumentHash: string;
@@ -27,8 +33,11 @@ export abstract class PreciseProofEntity implements IOnChainProperties {
         return this.configuration.offChainDataSource.certificateClient;
     }
 
-    async saveCommitment(proof: OwnershipCommitmentProofWithTx): Promise<CommitmentStatus> {
-        const commitmentStatus = await this.certificateClient.addOwnershipCommitment(this.id, proof);
+    async saveCommitment(proof: IOwnershipCommitmentProofWithTx): Promise<CommitmentStatus> {
+        const commitmentStatus = await this.certificateClient.addOwnershipCommitment(
+            this.id,
+            proof
+        );
 
         if (commitmentStatus === CommitmentStatus.REJECTED) {
             this.configuration.logger?.error('Unable to save the commitment. Rejected.');
@@ -39,7 +48,7 @@ export abstract class PreciseProofEntity implements IOnChainProperties {
         return commitmentStatus;
     }
 
-    async getCommitment(): Promise<OwnershipCommitmentProofWithTx> {
+    async getCommitment(): Promise<IOwnershipCommitmentProofWithTx> {
         const proof = await this.certificateClient.getOwnershipCommitment(this.id);
 
         if (!proof) {
@@ -54,26 +63,28 @@ export abstract class PreciseProofEntity implements IOnChainProperties {
         return proof;
     }
 
-    async getPendingTransferCommitment(): Promise<OwnershipCommitmentProofWithTx> {
+    async getPendingTransferCommitment(): Promise<IOwnershipCommitmentProofWithTx> {
         const proof = await this.certificateClient.getPendingOwnershipCommitment(this.id);
 
         if (!proof) {
             throw new Error('getCommitment(): Not found.');
         }
 
-        this.configuration.logger?.verbose(`Got pending transfer commitment for Certificate #${this.id}`);
+        this.configuration.logger?.verbose(
+            `Got pending transfer commitment for Certificate #${this.id}`
+        );
 
         return proof;
     }
 
     verifyOffChainProperties(rootHash: string, properties: any) {
-        Object.keys(properties).map(key => {
+        Object.keys(properties).map((key) => {
             const theProof = this.proofs.find((proof: PreciseProofs.Proof) => proof.key === key);
 
             if (this.configuration.logger.level == 'debug') {
                 console.log('\nDEBUG verifyOffChainProperties');
-                console.log('rootHash: ' + rootHash);
-                console.log('properties: ' + properties);
+                console.log(`rootHash: ${rootHash}`);
+                console.log(`properties: ${properties}`);
             }
 
             if (theProof) {
@@ -90,7 +101,10 @@ export abstract class PreciseProofEntity implements IOnChainProperties {
 
     abstract async sync(): Promise<PreciseProofEntity>;
 
-    generateAndAddProofs(commitment: IOwnershipCommitment, salts?: string[]): IOwnershipCommitmentProof {
+    generateAndAddProofs(
+        commitment: IOwnershipCommitment,
+        salts?: string[]
+    ): IOwnershipCommitmentProof {
         this.proofs = [];
         let leafs = salts
             ? PreciseProofs.createLeafs(commitment, salts)

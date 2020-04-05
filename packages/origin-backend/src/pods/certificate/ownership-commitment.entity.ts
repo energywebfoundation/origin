@@ -1,7 +1,7 @@
 import { PreciseProofs } from 'precise-proofs-js';
 import { Entity, Column, PrimaryColumn, ManyToOne } from 'typeorm';
 import {
-    OwnershipCommitmentProofWithTx,
+    IOwnershipCommitmentProofWithTx,
     IOwnershipCommitment
 } from '@energyweb/origin-backend-core';
 import { Certificate } from './certificate.entity';
@@ -9,7 +9,7 @@ import { ExtendedBaseEntity } from '../ExtendedBaseEntity';
 
 @Entity()
 export class OwnershipCommitment extends ExtendedBaseEntity
-    implements OwnershipCommitmentProofWithTx {
+    implements IOwnershipCommitmentProofWithTx {
     @PrimaryColumn()
     rootHash: string;
 

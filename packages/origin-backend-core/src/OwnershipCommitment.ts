@@ -11,6 +11,6 @@ export interface IOwnershipCommitmentProof {
     salts: string[];
 }
 
-export interface OwnershipCommitmentProofWithTx extends IOwnershipCommitmentProof {
+export interface IOwnershipCommitmentProofWithTx extends IOwnershipCommitmentProof {
     txHash: string;
 }

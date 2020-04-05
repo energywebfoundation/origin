@@ -3,13 +3,14 @@ import {
     CertificationRequestUpdateData,
     ICertificateOwnership,
     CommitmentStatus,
-    OwnershipCommitmentProofWithTx
+    IOwnershipCommitmentProofWithTx
 } from '@energyweb/origin-backend-core';
 
 import { ICertificateClient } from '@energyweb/origin-backend-client';
 
 export class CertificateClientMock implements ICertificateClient {
     private requestStorage = new Map<number, CertificationRequestOffChainData>();
+
     private certificateStorage = new Map<number, ICertificateOwnership>();
 
     public async updateCertificationRequestData(
@@ -31,7 +32,9 @@ export class CertificateClientMock implements ICertificateClient {
         return this.requestStorage.get(id);
     }
 
-    public async getOwnershipCommitment(certificateId: number): Promise<OwnershipCommitmentProofWithTx> {
+    public async getOwnershipCommitment(
+        certificateId: number
+    ): Promise<IOwnershipCommitmentProofWithTx> {
         const certificate = this.certificateStorage.get(certificateId);
 
         if (!certificate?.currentOwnershipCommitment) {
@@ -41,7 +44,9 @@ export class CertificateClientMock implements ICertificateClient {
         return certificate.currentOwnershipCommitment;
     }
 
-    public async getPendingOwnershipCommitment(certificateId: number): Promise<OwnershipCommitmentProofWithTx> {
+    public async getPendingOwnershipCommitment(
+        certificateId: number
+    ): Promise<IOwnershipCommitmentProofWithTx> {
         const certificate = this.certificateStorage.get(certificateId);
 
         if (!certificate?.pendingOwnershipCommitment) {
@@ -51,8 +56,11 @@ export class CertificateClientMock implements ICertificateClient {
         return certificate.pendingOwnershipCommitment;
     }
 
-    public async addOwnershipCommitment(certificateId: number, proof: OwnershipCommitmentProofWithTx): Promise<CommitmentStatus> {
-        let certificate = this.certificateStorage.get(certificateId);
+    public async addOwnershipCommitment(
+        certificateId: number,
+        proof: IOwnershipCommitmentProofWithTx
+    ): Promise<CommitmentStatus> {
+        const certificate = this.certificateStorage.get(certificateId);
 
         if (!certificate?.currentOwnershipCommitment) {
             this.certificateStorage.set(certificateId, {
@@ -63,7 +71,8 @@ export class CertificateClientMock implements ICertificateClient {
             });
 
             return CommitmentStatus.CURRENT;
-        } else if (certificate.currentOwnershipCommitment && !certificate.pendingOwnershipCommitment) {
+        }
+        if (certificate.currentOwnershipCommitment && !certificate.pendingOwnershipCommitment) {
             certificate.pendingOwnershipCommitment = proof;
 
             this.certificateStorage.set(certificateId, certificate);
@@ -73,7 +82,9 @@ export class CertificateClientMock implements ICertificateClient {
         return CommitmentStatus.REJECTED;
     }
 
-    public async approvePendingOwnershipCommitment(certificateId: number): Promise<OwnershipCommitmentProofWithTx> {
+    public async approvePendingOwnershipCommitment(
+        certificateId: number
+    ): Promise<IOwnershipCommitmentProofWithTx> {
         const certificate = this.certificateStorage.get(certificateId);
 
         if (!certificate?.pendingOwnershipCommitment) {

@@ -8,7 +8,7 @@ import {
     ISmartMeterRead,
     DeviceStatus,
     IDeviceWithRelationsIds,
-    ExternalDeviceId
+    IExternalDeviceId
 } from '@energyweb/origin-backend-core';
 
 import { IDeviceClient, IEventClient } from '@energyweb/origin-backend-client';
@@ -20,9 +20,9 @@ export class DeviceClientMock implements IDeviceClient {
 
     constructor(public eventClient: IEventClient) {}
 
-    async getByExternalId(id: ExternalDeviceId): Promise<IDeviceWithRelationsIds> {
-        return [...this.storage.values()].find(d =>
-            d.externalDeviceIds?.find(i => i.type === id.type && i.id === id.id)
+    async getByExternalId(id: IExternalDeviceId): Promise<IDeviceWithRelationsIds> {
+        return [...this.storage.values()].find((d) =>
+            d.externalDeviceIds?.find((i) => i.type === id.type && i.id === id.id)
         );
     }
 
