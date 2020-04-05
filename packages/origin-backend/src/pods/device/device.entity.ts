@@ -1,6 +1,6 @@
 import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
 import { IsInt, Min, IsLatitude, IsLongitude, IsNotEmpty } from 'class-validator';
-import { ISmartMeterRead, IExternalDeviceId, IDevice } from '@energyweb/origin-backend-core';
+import { ISmartMeterRead, ExternalDeviceId, IDevice } from '@energyweb/origin-backend-core';
 import { Organization } from '../organization/organization.entity';
 import { ExtendedBaseEntity } from '../ExtendedBaseEntity';
 
@@ -75,7 +75,7 @@ export class Device extends ExtendedBaseEntity implements IDevice {
     smartMeterReads?: ISmartMeterRead[];
 
     @Column('simple-json', { nullable: true })
-    externalDeviceIds: IExternalDeviceId[];
+    externalDeviceIds: ExternalDeviceId[];
 
     @ManyToOne(() => Organization, (organization) => organization.devices, { nullable: false })
     @IsNotEmpty()

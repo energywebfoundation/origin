@@ -24,7 +24,7 @@ import {
 import { Skeleton } from '@material-ui/lab';
 
 import { Unit } from '@energyweb/utils-general';
-import { DeviceStatus, IExternalDeviceId } from '@energyweb/origin-backend-core';
+import { DeviceStatus, ExternalDeviceId } from '@energyweb/origin-backend-core';
 
 import { showNotification, NotificationType } from '../utils/notifications';
 import { getConfiguration } from '../features/selectors';
@@ -193,7 +193,7 @@ export function DeviceGroupForm(props: IProps) {
         formikActions.setSubmitting(true);
         dispatch(setLoading(true));
 
-        const externalDeviceIds: IExternalDeviceId[] = externalDeviceIdTypes.map((type) => {
+        const externalDeviceIds: ExternalDeviceId[] = externalDeviceIdTypes.map((type) => {
             const typeString = (type as unknown) as string;
             return {
                 id: values[(type as unknown) as string],

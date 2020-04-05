@@ -72,7 +72,6 @@
     "rxjs": "6.5.5",
     "sqlite3": "4.1.1",
     "typeorm": "0.2.24",
-    "uuid": "7.0.3",
     "ws": "7.2.3"
   },
   "devDependencies": {
@@ -91,7 +90,6 @@
     "@types/passport-jwt": "3.0.3",
     "@types/passport-local": "1.0.33",
     "@types/supertest": "2.0.8",
-    "@types/uuid": "7.0.2",
     "@types/websocket": "1.0.0",
     "@types/ws": "7.2.3",
     "axios": "0.19.2",

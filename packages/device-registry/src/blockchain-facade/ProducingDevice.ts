@@ -5,7 +5,7 @@ import {
     ISmartMeterRead,
     IEnergyGenerated,
     DeviceStatus,
-    IExternalDeviceId,
+    ExternalDeviceId,
     DeviceCreateData,
     IDeviceWithRelationsIds
 } from '@energyweb/origin-backend-core';
@@ -45,7 +45,7 @@ export class Entity implements IDevice {
 
     typeOfPublicSupport: string;
 
-    externalDeviceIds?: IExternalDeviceId[];
+    externalDeviceIds?: ExternalDeviceId[];
 
     lastSmartMeterReading?: ISmartMeterRead;
 
@@ -144,7 +144,7 @@ export class Entity implements IDevice {
 export const getAllDevices = async (configuration: Configuration.Entity): Promise<Entity[]> => {
     const allDevices = await configuration.offChainDataSource.deviceClient.getAll();
 
-    return allDevices.map((device) => new Entity(device.id, configuration, device));
+    return allDevices.map(device => new Entity(device.id, configuration, device));
 };
 
 export const getDeviceListLength = async (configuration: Configuration.Entity) => {

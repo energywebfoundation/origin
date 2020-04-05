@@ -4,16 +4,12 @@ import path from 'path';
 import fs from 'fs';
 import { Client, ClientConfig } from 'pg';
 
-import { ExternalDeviceIdType } from '@energyweb/origin-backend-core';
 import { deployContracts } from './deployContracts';
 import { logger } from './Logger';
 
 program.option('-e, --env <env_file_path>', 'path to the .env file');
 program.option('-c, --config <config_file_path>', 'path to the config file');
-program.option(
-    '-s, --seed-file <seed_sql_path>',
-    'path to the SQL file that will be used for seeding the database'
-);
+program.option('-s, --seed-file <seed_sql_path>', 'path to the SQL file that will be used for seeding the database');
 program.option('-r, --redeploy', 're-deploy the contracts');
 
 program.parse(process.argv);
@@ -29,13 +25,14 @@ const seedFilePath = absolutePath(program.seedFile ?? '../config/seed.sql');
         path: envFile
     });
 
-    const parsedConfig = JSON.parse(fs.readFileSync(configFilePath, 'utf8').toString());
-
-    const { currencies, countryName, regions, complianceStandard, deviceTypes } = parsedConfig;
-
     const {
+        currencies,
+        countryName,
+        regions,
+        complianceStandard,
+        deviceTypes,
         externalDeviceIdTypes
-    }: { externalDeviceIdTypes: ExternalDeviceIdType[] } = parsedConfig;
+    } = JSON.parse(fs.readFileSync(configFilePath, 'utf8').toString());
 
     if (currencies.length < 1) {
         throw new Error('At least one currency has to be specified: e.g. [ "USD" ]');
@@ -51,16 +48,12 @@ const seedFilePath = absolutePath(program.seedFile ?? '../config/seed.sql');
     const client = new Client(postgresConfig);
 
     await client.connect();
-    logger.info(
-        `Connected to ${postgresConfig.host}:${postgresConfig.port} - database ${postgresConfig.database}`
-    );
+    logger.info(`Connected to ${postgresConfig.host}:${postgresConfig.port} - database ${postgresConfig.database}`);
 
     if (program.redeploy) {
         try {
             logger.info('Migrating tables to the database...');
-            const createTablesQuery = fs
-                .readFileSync(absolutePath('./schema/create_tables.sql'))
-                .toString();
+            const createTablesQuery = fs.readFileSync(absolutePath('./schema/create_tables.sql')).toString();
             await client.query(createTablesQuery);
         } catch (e) {
             logger.debug(e);
@@ -89,8 +82,7 @@ const seedFilePath = absolutePath(program.seedFile ?? '../config/seed.sql');
     } else {
         logger.info(`Saving configuration...`);
         const newConfigurationQuery = {
-            text:
-                'INSERT INTO public.configuration (id, "countryName", currencies, regions, "externalDeviceIdTypes", "contractsLookup", "complianceStandard", "deviceTypes") VALUES ($1, $2, $3, $4, $5, $6, $7, $8)',
+            text: 'INSERT INTO public.configuration (id, "countryName", currencies, regions, "externalDeviceIdTypes", "contractsLookup", "complianceStandard", "deviceTypes") VALUES ($1, $2, $3, $4, $5, $6, $7, $8)',
             values: [
                 '1',
                 countryName,
