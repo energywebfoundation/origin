@@ -59,7 +59,7 @@ export function PublishForSaleModal(props: IProps) {
     const energyInBaseUnit = EnergyFormatter.getBaseValueFromValueInDisplayUnit(
         energyInDisplayUnit
     );
-    const [price, setPrice] = useState(1);
+    const [price, setPrice] = useState('1');
     const [currency, setCurrency] = useState(null);
     const [validation, setValidation] = useState({
         energyInDisplayUnit: true,
@@ -135,10 +135,13 @@ export function PublishForSaleModal(props: IProps) {
 
         await exchangeClient.createAsk({
             assetId: transfer.asset.id,
-            price: Math.round((price + Number.EPSILON) * 100),
+            price: Math.round((parseFloat(price) + Number.EPSILON) * 100),
             volume: amountAsBN.toString(),
             validFrom: moment().toISOString()
         });
+
+        await certificate.sync();
+
         showNotification(`Certificate has been published for sale.`, NotificationType.Success);
         dispatch(setLoading(false));
         handleClose();

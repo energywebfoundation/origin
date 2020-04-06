@@ -187,6 +187,7 @@ export function CertificateTable(props: IProps) {
     }
 
     function hidePublishForSaleModal() {
+        loadPage(1);
         setSellModalData(null);
         setSellModalVisibility(false);
     }
