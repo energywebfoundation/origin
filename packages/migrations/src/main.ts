@@ -56,6 +56,14 @@ const seedFilePath = absolutePath(program.seedFile ?? '../config/seed.sql');
     );
 
     if (program.redeploy) {
+        if (process.env.MODE !== 'production') {
+            logger.info('Dropping the public schema...');
+            const dropQuery = fs
+                .readFileSync(absolutePath('./schema/drop_schema.sql'))
+                .toString();
+            await client.query(dropQuery);
+        }
+
         try {
             logger.info('Migrating tables to the database...');
             const createTablesQuery = fs
