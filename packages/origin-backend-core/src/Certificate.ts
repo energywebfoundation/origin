@@ -1,4 +1,4 @@
-import { OwnershipCommitmentProofWithTx } from "./OwnershipCommitment";
+import { IOwnershipCommitmentProofWithTx } from './OwnershipCommitment';
 
 export enum CommitmentStatus {
     CURRENT,
@@ -8,7 +8,7 @@ export enum CommitmentStatus {
 
 export interface ICertificateOwnership {
     id: number;
-    currentOwnershipCommitment: OwnershipCommitmentProofWithTx;
-    pendingOwnershipCommitment: OwnershipCommitmentProofWithTx;
-    ownershipHistory: OwnershipCommitmentProofWithTx[];
+    currentOwnershipCommitment: IOwnershipCommitmentProofWithTx;
+    pendingOwnershipCommitment: IOwnershipCommitmentProofWithTx;
+    ownershipHistory: IOwnershipCommitmentProofWithTx[];
 }
