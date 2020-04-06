@@ -135,7 +135,7 @@ export function PublishForSaleModal(props: IProps) {
 
         await exchangeClient.createAsk({
             assetId: transfer.asset.id,
-            price: price * 100,
+            price: Math.round((price + Number.EPSILON) * 100),
             volume: amountAsBN.toString(),
             validFrom: moment().toISOString()
         });

@@ -24,6 +24,15 @@ export interface IProductDTO {
     generationTo: string;
 }
 
+export interface ITradeDTO {
+    id: string;
+    created: string;
+    volume: string;
+    price: number;
+    bidId: string;
+    askId: string;
+}
+
 export type CreateBidDTO = {
     volume: string;
     price: number;

@@ -4,7 +4,7 @@ import 'moment/min/locales.min';
 export const DATE_FORMAT_DMY = 'MMM Do, YYYY';
 export const DATE_FORMAT_INCLUDING_TIME = `${DATE_FORMAT_DMY} hh:mm a`;
 
-export function formatDate(date: Moment | number, includeTime?: boolean) {
+export function formatDate(date: Moment | number | string, includeTime?: boolean) {
     const formatToUse = includeTime ? DATE_FORMAT_INCLUDING_TIME : DATE_FORMAT_DMY;
 
     return moment(date).format(formatToUse);

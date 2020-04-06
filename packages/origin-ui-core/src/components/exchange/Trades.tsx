@@ -6,18 +6,17 @@ import {
 } from '../Table/PaginatedLoaderHooks';
 import { EnergyFormatter } from '../../utils/EnergyFormatter';
 import { Typography } from '@material-ui/core';
-import { useTranslation } from '../../utils';
-import { IOrderBookOrderDTO } from '../../utils/exchange';
+import { useTranslation, formatDate, formatCurrency, moment } from '../../utils';
+import { ITradeDTO, calculateTotalPrice } from '../../utils/exchange';
 
 interface IProps {
-    data: IOrderBookOrderDTO[];
+    data: ITradeDTO[];
     currency: string;
     title: string;
-    highlightOrdersUserId: string;
 }
 
-export function Orders(props: IProps) {
-    const { currency, data, title, highlightOrdersUserId } = props;
+export function Trades(props: IProps) {
+    const { currency, data, title } = props;
 
     const { t } = useTranslation();
 
@@ -29,7 +28,9 @@ export function Orders(props: IProps) {
 
         const newTotal = newPaginatedData.length;
 
-        newPaginatedData = newPaginatedData.slice(offset, offset + requestedPageSize);
+        newPaginatedData = newPaginatedData
+            .sort((a, b) => moment(b.created).unix() - moment(a.created).unix())
+            .slice(offset, offset + requestedPageSize);
 
         return {
             paginatedData: newPaginatedData,
@@ -37,9 +38,7 @@ export function Orders(props: IProps) {
         };
     }
 
-    const { paginatedData, loadPage, total, pageSize } = usePaginatedLoaderFiltered<
-        IOrderBookOrderDTO
-    >({
+    const { paginatedData, loadPage, total, pageSize } = usePaginatedLoaderFiltered<ITradeDTO>({
         getPaginatedData
     });
 
@@ -56,22 +55,30 @@ export function Orders(props: IProps) {
     }, [props.data]);
 
     const columns = [
+        { id: 'date', label: t('exchange.info.date') },
+        { id: 'side', label: t('exchange.info.side') },
         { id: 'volume', label: t('exchange.info.volume', { unit: EnergyFormatter.displayUnit }) },
         {
             id: 'price',
             label: t('exchange.info.price', { currency, energyUnit: EnergyFormatter.displayUnit })
+        },
+        {
+            id: 'total',
+            label: t('exchange.info.total')
         }
     ] as const;
 
-    const highlightedRowsIndexes = [];
-    const rows = paginatedData.map(({ price, volume, userId }, index) => {
-        if (typeof userId !== 'undefined' && userId !== null && userId === highlightOrdersUserId) {
-            highlightedRowsIndexes.push(index);
-        }
+    const rows = paginatedData.map(({ price, volume, created, bidId }) => {
+        const priceInDisplayUnit = (price / 100).toString();
 
         return {
+            date: formatDate(created, true),
+            side: bidId ? t('exchange.info.buy') : t('exchange.info.sell'),
             volume: EnergyFormatter.format(volume),
-            price: (price / 100).toString()
+            price: priceInDisplayUnit,
+            total: `${formatCurrency(
+                calculateTotalPrice(priceInDisplayUnit, EnergyFormatter.format(volume))
+            )}${currency}`
         };
     });
 
@@ -86,7 +93,6 @@ export function Orders(props: IProps) {
                 loadPage={loadPage}
                 total={total}
                 pageSize={pageSize}
-                highlightedRowsIndexes={highlightedRowsIndexes}
             />
         </>
     );
