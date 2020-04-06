@@ -68,6 +68,11 @@ export class Issuer extends GeneralFunctions {
         const ids = await this.web3Contract.methods
             .getCertificationRequestsForDevice(_deviceId)
             .call(txParams);
+
+        if (!ids) {
+            return [];
+        }
+
         return ids.map((id: any) => Number(id));
     }
 
