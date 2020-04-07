@@ -2,7 +2,7 @@ import * as Moment from 'moment';
 import { extendMoment } from 'moment-range';
 
 import { Configuration, Timestamp } from '@energyweb/utils-general';
-import { ICertificationRequest, IOwnershipCommitment } from '@energyweb/origin-backend-core';
+import { ICertificationRequest, IOwnershipCommitment, MAX_ENERGY_PER_CERTIFICATE } from '@energyweb/origin-backend-core';
 
 import { PreciseProofEntity } from './PreciseProofEntity';
 
@@ -147,6 +147,10 @@ export const createCertificationRequest = async (
     isVolumePrivate = false,
     forAddress?: string
 ): Promise<Entity> => {
+    if (energy > MAX_ENERGY_PER_CERTIFICATE) {
+        throw new Error(`Too much energy requested. Requested: ${energy}, Max: ${MAX_ENERGY_PER_CERTIFICATE}`);
+    }
+
     const request = new Entity(null, configuration, isVolumePrivate);
 
     const { issuer } = configuration.blockchainProperties;
@@ -170,13 +174,17 @@ export const createCertificationRequest = async (
 
     request.id = configuration.blockchainProperties.web3.utils.hexToNumber(logs[0].topics[2]);
 
-    await configuration.offChainDataSource.certificateClient.updateCertificationRequestData(
+    const success = await configuration.offChainDataSource.certificateClient.updateCertificationRequestData(
         request.id,
         { energy, files }
     );
 
-    if (configuration.logger) {
-        configuration.logger.info(`CertificationRequest ${request.id} created`);
+    if (success) {
+        if (configuration.logger) {
+            configuration.logger.info(`CertificationRequest ${request.id} created`);
+        }
+    } else {
+        throw new Error('Unable to create CertificationRequest');
     }
 
     return request.sync();

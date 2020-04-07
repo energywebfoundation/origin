@@ -6,7 +6,7 @@ import { Configuration, Timestamp } from '@energyweb/utils-general';
 import { Registry, Issuer } from '..';
 import { TransferSingleEvent, ClaimSingleEvent } from '../wrappedContracts/Registry';
 import { PreciseProofEntity } from './PreciseProofEntity';
-import { CommitmentStatus, IOwnershipCommitment } from '@energyweb/origin-backend-core';
+import { CommitmentStatus, IOwnershipCommitment, MAX_ENERGY_PER_CERTIFICATE } from '@energyweb/origin-backend-core';
 
 const NULL_ADDRESS = '0x0000000000000000000000000000000000000000';
 const NULL_HASH = '0x0000000000000000000000000000000000000000000000000000000000000000';
@@ -495,6 +495,10 @@ export const createCertificate = async (
     configuration: Configuration.Entity,
     isVolumePrivate: boolean = false
 ): Promise<Entity> => {
+    if (value > MAX_ENERGY_PER_CERTIFICATE) {
+        throw new Error(`Too much energy requested. Requested: ${value}, Max: ${MAX_ENERGY_PER_CERTIFICATE}`);
+    }
+
     const newEntity = new Entity(null, configuration);
 
     const getIdFromLogs = (logs: any): number =>
