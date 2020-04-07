@@ -81,19 +81,17 @@ describe('Matching tests', () => {
     const marineTypeLevel3 = deviceService.encode([['Marine', 'Tidal', 'Offshore']]);
     const marineTypeLevel1 = deviceService.encode([['Marine']]);
 
+    const defaultGridOperator = 'TH-MEA';
+
     const defaultProduct: Product = {
         deviceType: solarTypeLevel3,
         deviceVintage,
         location: locationCentral,
-        generationTime: defaultTimeRange
+        generationTime: defaultTimeRange,
+        gridOperator: [defaultGridOperator]
     };
 
-    const allFilters: ProductFilter = {
-        locationFilter: Filter.All,
-        deviceTypeFilter: Filter.All,
-        deviceVintageFilter: Filter.All,
-        generationTimeFilter: Filter.All
-    };
+    const allFilters = new ProductFilter();
 
     let initialOrderId = 0;
 
@@ -917,6 +915,110 @@ describe('Matching tests', () => {
             executeTestCase(
                 { orders: [...asksBefore, ...bidsBefore], expectedTrades, bidsAfter },
                 done
+            );
+        });
+    });
+
+    describe('Grid operator', () => {
+        it('should match when grid operator is not set', (done) => {
+            const asksBefore = [createAsk({ product: { gridOperator: undefined } })];
+            const bidsBefore = [
+                createBid({
+                    product: { gridOperator: undefined }
+                })
+            ];
+
+            const expectedTrades = [
+                new Trade(bidsBefore[0], asksBefore[0], onekWh, asksBefore[0].price)
+            ];
+
+            executeTestCase({ orders: [...asksBefore, ...bidsBefore], expectedTrades }, done);
+        });
+
+        it('should not match on different grid operator', (done) => {
+            const asksBefore = [createAsk()];
+            const bidsBefore = [
+                createBid({
+                    product: { gridOperator: ['TH-PEA'] }
+                })
+            ];
+
+            executeTestCase(
+                {
+                    orders: [...asksBefore, ...bidsBefore],
+                    asksAfter: asksBefore,
+                    bidsAfter: bidsBefore,
+                    expectedTrades: []
+                },
+                done
+            );
+        });
+
+        it('should match when bid has multiple grid operator', (done) => {
+            const asksBefore = [createAsk()];
+            const bidsBefore = [
+                createBid({
+                    product: { gridOperator: ['TH-PEA', defaultGridOperator] }
+                })
+            ];
+
+            const expectedTrades = [
+                new Trade(bidsBefore[0], asksBefore[0], onekWh, asksBefore[0].price)
+            ];
+
+            executeTestCase(
+                {
+                    orders: [...asksBefore, ...bidsBefore],
+                    expectedTrades
+                },
+                done
+            );
+        });
+
+        it('should filter on unspecified grid operator', () => {
+            const { asks, bids } = createOrderBookWithSpread(
+                [{ product: { gridOperator: ['TH-PEA'] } }, {}],
+                [
+                    {},
+                    {
+                        product: { gridOperator: ['TH-PEA'] }
+                    }
+                ]
+            );
+
+            executeOrderBookQuery(
+                asks,
+                bids,
+                {
+                    ...allFilters,
+                    gridOperatorFilter: Filter.Unspecified
+                },
+                asks,
+                []
+            );
+        });
+
+        it('should filter on specific', () => {
+            const { asks, bids } = createOrderBookWithSpread(
+                [{ product: { gridOperator: ['TH-PEA'] } }, {}],
+                [
+                    {},
+                    {
+                        product: { gridOperator: ['TH-PEA'] }
+                    }
+                ]
+            );
+
+            executeOrderBookQuery(
+                asks,
+                bids,
+                {
+                    ...allFilters,
+                    gridOperatorFilter: Filter.Specific,
+                    gridOperator: ['TH-PEA', 'TH-ANY']
+                },
+                [asks[0]],
+                [bids[1]]
             );
         });
     });

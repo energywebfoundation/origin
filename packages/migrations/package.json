@@ -20,7 +20,6 @@
         "build": "yarn build:ts && yarn copy:schema",
         "build:ts": "tsc -b tsconfig.build.json --verbose --pretty",
         "copy:schema": "shx cp -r src/schema dist/js/src/",
-        "deploy-empty": "yarn build:ts && node dist/js/deployEmpty",
         "start": "ts-node src/main.ts",
         "start:redeploy": "yarn start -r",
         "start-all": "concurrently --restart-tries 3 --restart-after 1500 -n eth,deploy \"yarn start-ganache\" \"wait-on tcp:8545 && yarn start:redeploy\"",

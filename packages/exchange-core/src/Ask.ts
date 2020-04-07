@@ -25,6 +25,9 @@ export class Ask extends Order {
                 'Unable to create ask order. GenerationTime has to be specified as single TimeRange'
             );
         }
+        if (product.gridOperator && product.gridOperator.length > 1) {
+            throw new Error('Unable to create ask order. GridOperator has to be not set or 1');
+        }
     }
 
     private get deviceType() {
@@ -44,12 +47,14 @@ export class Ask extends Order {
         const hasMatchingVintage = this.filterByDeviceVintage(productFilter);
         const hasMatchingLocation = this.filterByLocation(productFilter, locationService);
         const hasMatchingGenerationTime = this.filterByGenerationTime(productFilter);
+        const hasMatchingGridOperator = this.filterByGridOperator(productFilter);
 
         return (
             hasMatchingDeviceType &&
             hasMatchingVintage &&
             hasMatchingLocation &&
-            hasMatchingGenerationTime
+            hasMatchingGenerationTime &&
+            hasMatchingGridOperator
         );
     }
 
@@ -64,12 +69,14 @@ export class Ask extends Order {
         const hasMatchingVintage = this.hasMatchingVintage(product);
         const hasMatchingLocation = this.hasMatchingLocation(product, locationService);
         const hasMatchingGenerationTime = this.hasMatchingGenerationTime(bid);
+        const hasMatchingGridOperator = this.hasMatchingGridOperator(product);
 
         return (
             hasMatchingDeviceType &&
             hasMatchingVintage &&
             hasMatchingLocation &&
-            hasMatchingGenerationTime
+            hasMatchingGenerationTime &&
+            hasMatchingGridOperator
         );
     }
 
@@ -109,6 +116,14 @@ export class Ask extends Order {
         );
     }
 
+    private filterByGridOperator(productFilter: ProductFilter) {
+        return this.filter(productFilter.gridOperatorFilter, () =>
+            productFilter.gridOperator.some(
+                (bidGridOperator) => bidGridOperator === this.product.gridOperator[0]
+            )
+        );
+    }
+
     private hasMatchingDeviceType(product: Product, deviceService: IDeviceTypeService) {
         if (!product.deviceType?.length) {
             return true;
@@ -138,5 +153,15 @@ export class Ask extends Order {
         }
 
         return Order.hasMatchingGenerationTimes(bid.product, this.product);
+    }
+
+    private hasMatchingGridOperator(product: Product) {
+        if (!this.product.gridOperator?.length || !product.gridOperator?.length) {
+            return true;
+        }
+
+        return product.gridOperator.some(
+            (bidGridOperator) => bidGridOperator === this.product.gridOperator[0]
+        );
     }
 }

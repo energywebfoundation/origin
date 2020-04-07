@@ -14,4 +14,6 @@ export class ProductFilter extends Product {
     deviceVintageFilter: Filter = Filter.All;
 
     generationTimeFilter: Filter = Filter.All;
+
+    gridOperatorFilter: Filter = Filter.All;
 }

@@ -31,7 +31,14 @@ const seedFilePath = absolutePath(program.seedFile ?? '../config/seed.sql');
 
     const parsedConfig = JSON.parse(fs.readFileSync(configFilePath, 'utf8').toString());
 
-    const { currencies, countryName, regions, complianceStandard, deviceTypes } = parsedConfig;
+    const {
+        currencies,
+        countryName,
+        regions,
+        complianceStandard,
+        deviceTypes,
+        gridOperators
+    } = parsedConfig;
 
     const {
         externalDeviceIdTypes
@@ -43,7 +50,7 @@ const seedFilePath = absolutePath(program.seedFile ?? '../config/seed.sql');
 
     const postgresConfig: ClientConfig = {
         host: process.env.DB_HOST ?? 'localhost',
-        port: Number(process.env.DB_PORT) ?? 5432,
+        port: Number(process.env.DB_PORT) || 5432,
         user: process.env.DB_USERNAME ?? 'postgres',
         password: process.env.DB_PASSWORD ?? 'postgres',
         database: process.env.DB_DATABASE ?? 'origin'
@@ -58,9 +65,7 @@ const seedFilePath = absolutePath(program.seedFile ?? '../config/seed.sql');
     if (program.redeploy) {
         if (process.env.MODE !== 'production') {
             logger.info('Dropping the public schema...');
-            const dropQuery = fs
-                .readFileSync(absolutePath('./schema/drop_schema.sql'))
-                .toString();
+            const dropQuery = fs.readFileSync(absolutePath('./schema/drop_schema.sql')).toString();
             await client.query(dropQuery);
         }
 
@@ -71,7 +76,7 @@ const seedFilePath = absolutePath(program.seedFile ?? '../config/seed.sql');
                 .toString();
             await client.query(createTablesQuery);
         } catch (e) {
-            logger.debug(e);
+            logger.error(e);
             logger.info('Tables have been deployed already.');
         }
     }
@@ -98,7 +103,7 @@ const seedFilePath = absolutePath(program.seedFile ?? '../config/seed.sql');
         logger.info(`Saving configuration...`);
         const newConfigurationQuery = {
             text:
-                'INSERT INTO public.configuration (id, "countryName", currencies, regions, "externalDeviceIdTypes", "contractsLookup", "complianceStandard", "deviceTypes") VALUES ($1, $2, $3, $4, $5, $6, $7, $8)',
+                'INSERT INTO public.configuration (id, "countryName", currencies, regions, "externalDeviceIdTypes", "contractsLookup", "complianceStandard", "deviceTypes", "gridOperators") VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)',
             values: [
                 '1',
                 countryName,
@@ -107,7 +112,8 @@ const seedFilePath = absolutePath(program.seedFile ?? '../config/seed.sql');
                 JSON.stringify(externalDeviceIdTypes),
                 JSON.stringify(contractsLookup),
                 complianceStandard,
-                JSON.stringify(deviceTypes)
+                JSON.stringify(deviceTypes),
+                gridOperators?.toString()
             ]
         };
         await client.query(newConfigurationQuery);

@@ -27,12 +27,14 @@ export class Bid extends Order {
         const hasMatchingVintage = this.filterByDeviceVintage(productFilter);
         const isIncludedInLocation = this.isIncludedInLocation(productFilter, locationService);
         const hasMatchingGenerationTime = this.filterByGenerationTime(productFilter);
+        const hasMatchingGridOperator = this.filterByGridOperator(productFilter);
 
         return (
             isIncludedInDeviceType &&
             hasMatchingVintage &&
             isIncludedInLocation &&
-            hasMatchingGenerationTime
+            hasMatchingGenerationTime &&
+            hasMatchingGridOperator
         );
     }
 
@@ -47,12 +49,14 @@ export class Bid extends Order {
         const hasMatchingVintage = this.hasMatchingVintage(product);
         const hasMatchingLocation = this.hasMatchingLocation(product, locationService);
         const hasMatchingGenerationTime = this.hasMatchingGenerationTime(ask);
+        const hasMatchingGridOperator = this.hasMatchingGridOperator(product);
 
         return (
             hasMatchingDeviceType &&
             hasMatchingVintage &&
             hasMatchingLocation &&
-            hasMatchingGenerationTime
+            hasMatchingGenerationTime &&
+            hasMatchingGridOperator
         );
     }
 
@@ -148,6 +152,23 @@ export class Bid extends Order {
         return Order.hasMatchingGenerationTimes(this.product, productFilter);
     }
 
+    private filterByGridOperator(productFilter: ProductFilter) {
+        if (productFilter.gridOperatorFilter === Filter.All) {
+            return true;
+        }
+        if (productFilter.gridOperatorFilter === Filter.Unspecified) {
+            return !this.product.gridOperator?.length;
+        }
+
+        if (!this.product.gridOperator?.length) {
+            return false;
+        }
+
+        return this.product.gridOperator.some((bidGridOperator) =>
+            productFilter.gridOperator.some((gridOperator) => gridOperator === bidGridOperator)
+        );
+    }
+
     private hasMatchingVintage(product: Product) {
         if (!this.product.deviceVintage || !product.deviceVintage) {
             return true;
@@ -161,5 +182,15 @@ export class Bid extends Order {
         }
 
         return Order.hasMatchingGenerationTimes(this.product, ask.product);
+    }
+
+    private hasMatchingGridOperator(product: Product) {
+        if (!this.product.gridOperator?.length || !product.gridOperator?.length) {
+            return true;
+        }
+
+        return this.product.gridOperator.some(
+            (bidGridOperator) => bidGridOperator === product.gridOperator[0]
+        );
     }
 }

@@ -3,6 +3,7 @@ import { DeviceVintage, Operator, Product } from '@energyweb/exchange-core';
 import { IsDateString, IsOptional, Min, Validate, ValidateNested, IsEnum } from 'class-validator';
 
 import { DeviceTypeValidator } from '../../utils/deviceTypeValidator';
+import { GridOperatorValidator } from '../../utils/gridOperatorValidator';
 
 export class DeviceVintageDTO {
     @Min(1900)
@@ -32,6 +33,10 @@ export class ProductDTO {
     @IsDateString()
     @IsOptional()
     public generationTo?: string;
+
+    @IsOptional()
+    @Validate(GridOperatorValidator)
+    public gridOperator?: string[];
 
     public static toProduct(dto: ProductDTO): Product {
         return {
