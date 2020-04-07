@@ -6,3 +6,4 @@ build
 db.sqlite
 .openzeppelin/.session
 schemas
+src/ethers

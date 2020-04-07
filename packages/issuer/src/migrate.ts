@@ -1,52 +1,45 @@
-import Web3 from 'web3';
+import { ethers } from 'ethers';
 
-import { deploy } from '@energyweb/utils-general';
-
-import { Issuer } from './wrappedContracts/Issuer';
-import { Registry } from './wrappedContracts/Registry';
 import { CertificateTopic } from './const';
 
-import IssuerJSON from '../build/contracts/Issuer.json';
-import RegistryJSON from '../build/contracts/Registry.json';
+import { factories } from './contracts';
+import { Issuer } from './ethers/Issuer';
+import { Registry } from './ethers/Registry';
 
 export async function migrateIssuer(
-    web3: Web3,
+    web3ProviderUrl: string,
     deployKey: string,
     registryAddress: string
 ): Promise<Issuer> {
     const privateKeyDeployment = deployKey.startsWith('0x') ? deployKey : `0x${deployKey}`;
-    const accountDeployment = web3.eth.accounts.privateKeyToAccount(privateKeyDeployment).address;
 
-    const issuerAddress = (
-        await deploy(web3, IssuerJSON.bytecode, {
-            privateKey: privateKeyDeployment
-        })
-    ).contractAddress;
+    const provider = new ethers.providers.JsonRpcProvider(web3ProviderUrl);
+    const wallet = new ethers.Wallet(privateKeyDeployment, provider);
 
-    const issuer = new Issuer(web3, issuerAddress);
-    await issuer.initialize(CertificateTopic.IREC, registryAddress, accountDeployment, {
-        privateKey: privateKeyDeployment
-    });
+    const issuerContract = await new factories.IssuerFactory(wallet).deploy();
 
-    const version = await issuer.version();
-    console.log(`Issuer ${version} created at ${issuerAddress}`);
+    await issuerContract.initialize(CertificateTopic.IREC, registryAddress, wallet.address);
 
-    return issuer;
+    const version = await issuerContract.version();
+    console.log(`Issuer ${version} created at ${issuerContract.address}`);
+
+    return issuerContract;
 }
 
-export async function migrateRegistry(web3: Web3, deployKey: string): Promise<Registry> {
+export async function migrateRegistry(
+    web3ProviderUrl: string,
+    deployKey: string
+): Promise<Registry> {
     const privateKeyDeployment = deployKey.startsWith('0x') ? deployKey : `0x${deployKey}`;
 
-    const registryAddress = (
-        await deploy(web3, RegistryJSON.bytecode, {
-            privateKey: privateKeyDeployment
-        })
-    ).contractAddress;
+    const provider = new ethers.providers.JsonRpcProvider(web3ProviderUrl);
+    const wallet = new ethers.Wallet(privateKeyDeployment, provider);
 
-    const registry = new Registry(web3, registryAddress);
-    await registry.initialize({ privateKey: privateKeyDeployment });
+    const registryContract = await new factories.RegistryFactory(wallet).deploy();
 
-    console.log(`Registry created at ${registryAddress}`);
+    await registryContract.initialize();
 
-    return registry;
+    console.log(`Registry created at ${registryContract.address}`);
+
+    return registryContract;
 }

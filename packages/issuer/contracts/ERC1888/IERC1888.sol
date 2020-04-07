@@ -9,7 +9,7 @@ interface ERC1888 {
         bytes data;
     }
 
-    event IssuanceSingle(address indexed _issuer, int256 indexed _topic, uint256 _id);
+    event IssuanceSingle(address indexed _issuer, int256 indexed _topic, uint256 indexed _id);
     //event IssuanceBatch(address indexed _issuer, int256[] indexed _topics, uint256[] _ids);
 
     event ClaimSingle(address indexed _claimIssuer, address indexed _claimSubject, int256 indexed _topic, uint256 _id, uint256 _value, bytes32 _claimData);

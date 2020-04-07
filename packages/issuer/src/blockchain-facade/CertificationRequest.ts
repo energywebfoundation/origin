@@ -1,10 +1,15 @@
 import * as Moment from 'moment';
 import { extendMoment } from 'moment-range';
+import { BigNumber, Interface } from 'ethers/utils';
+import { Event as BlockchainEvent } from 'ethers';
 
 import { Configuration, Timestamp } from '@energyweb/utils-general';
 import { ICertificationRequest, IOwnershipCommitment } from '@energyweb/origin-backend-core';
 
 import { PreciseProofEntity } from './PreciseProofEntity';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import { Issuer } from '../ethers/Issuer';
+import { IssuerJSON } from '../contracts';
 
 export class Entity extends PreciseProofEntity implements ICertificationRequest {
     owner: string;
@@ -23,7 +28,7 @@ export class Entity extends PreciseProofEntity implements ICertificationRequest 
 
     files: string[];
 
-    energy: number;
+    energy: BigNumber;
 
     initialized = false;
 
@@ -48,12 +53,19 @@ export class Entity extends PreciseProofEntity implements ICertificationRequest 
         this.approved = issueRequest.approved;
         this.revoked = issueRequest.revoked;
 
-        const newCertificationRequestEvent = await issuer.getAllNewCertificationRequestEvents({
-            filter: { _id: this.id }
-        });
-        const creationBlock = await this.configuration.blockchainProperties.web3.eth.getBlock(
-            newCertificationRequestEvent[0].blockNumber
+        const newCertificationRequestFilter = issuer.filters.NewCertificationRequest(null, this.id);
+        const newCertificationRequestLogs = (
+            await issuer.provider.getLogs({
+                ...newCertificationRequestFilter,
+                fromBlock: 0,
+                toBlock: 'latest'
+            })
+        ).map((log) => issuer.interface.parseLog(log).values);
+
+        const creationBlock = await issuer.provider.getBlock(
+            newCertificationRequestLogs[0].blockNumber
         );
+
         this.created = Number(creationBlock.timestamp);
 
         const offChainData = await this.configuration.offChainDataSource.certificateClient.getCertificationRequestData(
@@ -72,22 +84,12 @@ export class Entity extends PreciseProofEntity implements ICertificationRequest 
     }
 
     async approve(): Promise<number> {
-        const validityData = this.configuration.blockchainProperties.web3.eth.abi.encodeFunctionCall(
-            {
-                name: 'isRequestValid',
-                type: 'function',
-                inputs: [
-                    {
-                        type: 'uint256',
-                        name: '_requestId'
-                    }
-                ]
-            },
-            [this.id.toString()]
-        );
+        const issuerInterface = new Interface(IssuerJSON.abi);
+        const validityData = issuerInterface.functions.isRequestValid.encode([this.id.toString()]);
 
         let approveTx;
         const { issuer } = this.configuration.blockchainProperties;
+        const issuerWithSigner = issuer.connect(this.configuration.blockchainProperties.activeUser);
 
         if (this.isPrivate) {
             const commitment: IOwnershipCommitment = {
@@ -95,34 +97,36 @@ export class Entity extends PreciseProofEntity implements ICertificationRequest 
             };
             const { rootHash } = this.generateAndAddProofs(commitment);
 
-            approveTx = await issuer.approveCertificationRequestPrivate(
+            approveTx = await issuerWithSigner.approveCertificationRequestPrivate(
                 this.id,
                 rootHash,
-                validityData,
-                Configuration.getAccount(this.configuration)
+                validityData
             );
         } else {
-            approveTx = await issuer.approveCertificationRequest(
+            approveTx = await issuerWithSigner.approveCertificationRequest(
                 this.id,
                 this.energy,
-                validityData,
-                Configuration.getAccount(this.configuration)
+                validityData
             );
         }
 
-        return this.configuration.blockchainProperties.web3.utils.hexToNumber(
-            approveTx.logs[1].topics[1]
+        const { events } = await approveTx.wait();
+
+        const certificateId = Number(
+            events.find((log: BlockchainEvent) => log.event === 'ApprovedCertificationRequest')
+                .topics[3]
         );
+
+        return certificateId;
     }
 
     async revoke() {
-        await this.configuration.blockchainProperties.issuer.revokeRequest(
-            this.id,
-            Configuration.getAccount(this.configuration)
-        );
+        const { issuer } = this.configuration.blockchainProperties;
+        const issuerWithSigner = issuer.connect(this.configuration.blockchainProperties.activeUser);
+        await issuerWithSigner.revokeRequest(this.id);
     }
 
-    async requestMigrateToPublic(value: number) {
+    async requestMigrateToPublic(value: BigNumber) {
         if (!this.isPrivate) {
             throw new Error('Certificate is already public.');
         }
@@ -133,54 +137,10 @@ export class Entity extends PreciseProofEntity implements ICertificationRequest 
         };
         const { rootHash } = this.generateAndAddProofs(commitment);
 
-        return issuer.requestMigrateToPublic(this.id, rootHash);
+        const issuerWithSigner = issuer.connect(this.configuration.blockchainProperties.activeUser);
+        return issuerWithSigner.requestMigrateToPublic(this.id, rootHash);
     }
 }
-
-export const createCertificationRequest = async (
-    fromTime: Timestamp,
-    toTime: Timestamp,
-    energy: number,
-    deviceId: string,
-    configuration: Configuration.Entity,
-    files: string[],
-    isVolumePrivate = false,
-    forAddress?: string
-): Promise<Entity> => {
-    const request = new Entity(null, configuration, isVolumePrivate);
-
-    const { issuer } = configuration.blockchainProperties;
-
-    await validateGenerationPeriod(fromTime, toTime, deviceId, configuration, isVolumePrivate);
-
-    const data = await issuer.encodeData(fromTime, toTime, deviceId);
-
-    const { logs } = await (forAddress
-        ? issuer.requestCertificationFor(
-              data,
-              forAddress,
-              isVolumePrivate,
-              Configuration.getAccount(configuration)
-          )
-        : issuer.requestCertification(
-              data,
-              isVolumePrivate,
-              Configuration.getAccount(configuration)
-          ));
-
-    request.id = configuration.blockchainProperties.web3.utils.hexToNumber(logs[0].topics[2]);
-
-    await configuration.offChainDataSource.certificateClient.updateCertificationRequestData(
-        request.id,
-        { energy, files }
-    );
-
-    if (configuration.logger) {
-        configuration.logger.info(`CertificationRequest ${request.id} created`);
-    }
-
-    return request.sync();
-};
 
 const validateGenerationPeriod = async (
     fromTime: Timestamp,
@@ -198,7 +158,11 @@ const validateGenerationPeriod = async (
     const generationTimeRange = moment.range(unix(fromTime), unix(toTime));
 
     for (const id of certificationRequestIds) {
-        const certificationRequest = await new Entity(id, configuration, isPrivate).sync();
+        const certificationRequest = await new Entity(
+            id.toNumber(),
+            configuration,
+            isPrivate
+        ).sync();
 
         if (certificationRequest.revoked) {
             continue;
@@ -223,6 +187,47 @@ const validateGenerationPeriod = async (
     }
 
     return true;
+};
+
+export const createCertificationRequest = async (
+    fromTime: Timestamp,
+    toTime: Timestamp,
+    energy: BigNumber,
+    deviceId: string,
+    configuration: Configuration.Entity,
+    files: string[],
+    isVolumePrivate = false,
+    forAddress?: string
+): Promise<Entity> => {
+    const request = new Entity(null, configuration, isVolumePrivate);
+
+    const { issuer } = configuration.blockchainProperties;
+    const issuerWithSigner = issuer.connect(configuration.blockchainProperties.activeUser);
+
+    await validateGenerationPeriod(fromTime, toTime, deviceId, configuration, isVolumePrivate);
+
+    const data = await issuer.encodeData(fromTime, toTime, deviceId);
+
+    const tx = await (forAddress
+        ? issuerWithSigner.requestCertificationFor(data, forAddress, isVolumePrivate)
+        : issuerWithSigner.requestCertification(data, isVolumePrivate));
+
+    const { events } = await tx.wait();
+
+    request.id = Number(
+        events.find((log: BlockchainEvent) => log.event === 'NewCertificationRequest').topics[2]
+    );
+
+    await configuration.offChainDataSource.certificateClient.updateCertificationRequestData(
+        request.id,
+        { energy, files }
+    );
+
+    if (configuration.logger) {
+        configuration.logger.info(`CertificationRequest ${request.id} created`);
+    }
+
+    return request.sync();
 };
 
 export async function getAllCertificationRequests(

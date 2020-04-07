@@ -261,15 +261,15 @@ contract Issuer is Initializable, Ownable {
         return id;
 	}
 
-    function getPrivateTransferRequest(uint _certificateId) external onlyOwner returns (PrivateTransferRequest memory) {
+    function getPrivateTransferRequest(uint _certificateId) external view onlyOwner returns (PrivateTransferRequest memory) {
         return requestPrivateTransferStorage[_certificateId];
     }
 
-    function getMigrationRequest(uint _requestId) external onlyOwner returns (RequestStateChange memory) {
+    function getMigrationRequest(uint _requestId) external view onlyOwner returns (RequestStateChange memory) {
         return requestMigrateToPublicStorage[_requestId];
     }
 
-    function getMigrationRequestId(uint _certificateId) external onlyOwner returns (uint256) {
+    function getMigrationRequestId(uint _certificateId) external view onlyOwner returns (uint256) {
         bool found = false;
 
 		for (uint i = 1; i <= requestMigrateToPublicNonce; i++) {
