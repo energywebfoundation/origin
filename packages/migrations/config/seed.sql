@@ -420,7 +420,8 @@ INSERT INTO
         "deviceGroup",
         "smartMeterReads",
         "externalDeviceIds",
-        "organizationId"
+        "organizationId",
+        "gridOperator"
     )
 VALUES
     (
@@ -448,7 +449,8 @@ VALUES
         '',
         '[]',
         '[{"id":123,"type":"Smart Meter Readings API ID"},{"id":"ABQ123-1","type":"Issuer ID"}]',
-        '2'
+        '2',
+        'TH-PEA'
     );
 
 INSERT INTO
@@ -477,7 +479,8 @@ INSERT INTO
         "deviceGroup",
         "smartMeterReads",
         "externalDeviceIds",
-        "organizationId"
+        "organizationId",
+        "gridOperator"
     )
 VALUES
     (
@@ -505,7 +508,8 @@ VALUES
         '',
         '[]',
         '[{"id":"ABQ123-2","type":"Issuer ID"}]',
-        '3'
+        '3',
+        'TH-MEA'
     );
 
 INSERT INTO
@@ -534,7 +538,8 @@ INSERT INTO
         "deviceGroup",
         "smartMeterReads",
         "externalDeviceIds",
-        "organizationId"
+        "organizationId",
+        "gridOperator"
     )
 VALUES
     (
@@ -562,7 +567,8 @@ VALUES
         '',
         '[]',
         '[{"id":"ABQ123-3","type":"Issuer ID"}]',
-        '2'
+        '2',
+        'TH-PEA'
     );
 
 SELECT setval(
