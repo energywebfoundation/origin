@@ -139,6 +139,20 @@ describe('orderbook tests', () => {
 
         await request(app.getHttpServer())
             .post('/orderbook/search')
+            .expect(200)
+            .expect((res) => {
+                console.log(res.body);
+                const { asks, bids } = res.body as {
+                    asks: OrderBookOrderDTO[];
+                    bids: OrderBookOrderDTO[];
+                };
+
+                expect(asks).toHaveLength(2);
+                expect(bids).toHaveLength(2);
+            });
+
+        await request(app.getHttpServer())
+            .post('/orderbook/search')
             .send({
                 deviceVintageFilter: Filter.All,
                 generationTimeFilter: Filter.All,
