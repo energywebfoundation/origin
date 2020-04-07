@@ -2,7 +2,7 @@
 import 'mocha';
 import { assert } from 'chai';
 import moment from 'moment';
-import Web3 from 'web3';
+import { providers, Wallet } from 'ethers';
 import dotenv from 'dotenv';
 
 import { Configuration } from '@energyweb/utils-general';
@@ -17,16 +17,20 @@ describe('Device Facade', () => {
         path: '.env.test'
     });
 
-    const web3: Web3 = new Web3(process.env.WEB3);
+    const provider = new providers.JsonRpcProvider(process.env.WEB3);
+
     const deployKey: string = process.env.DEPLOY_KEY;
 
     const privateKeyDeployment = deployKey.startsWith('0x') ? deployKey : `0x${deployKey}`;
+    const deploymentWallet = new Wallet(privateKeyDeployment, provider);
 
-    const accountDeployment = web3.eth.accounts.privateKeyToAccount(privateKeyDeployment).address;
-    let conf: Configuration.Entity;
+    const deviceOwnerPK = '0x622d56ab7f0e75ac133722cc065260a2792bf30ea3265415fe04f3a2dba7e1ac';
+    const deviceOwnerWallet = new Wallet(deviceOwnerPK, provider);
 
     const deviceSmartmeterPK = '0x2dc5120c26df339dbd9861a0f39a79d87e0638d30fdedc938861beac77bbd3f5';
-    const deviceSmartmeter = web3.eth.accounts.privateKeyToAccount(deviceSmartmeterPK).address;
+    const deviceSmartmeterWallet = new Wallet(deviceSmartmeterPK, provider);
+
+    let conf: Configuration.Entity;
 
     const SM_READ_TIMESTAMP = moment().unix();
 
@@ -34,11 +38,7 @@ describe('Device Facade', () => {
         it('should onboard a new producing device', async () => {
             conf = {
                 blockchainProperties: {
-                    activeUser: {
-                        address: accountDeployment,
-                        privateKey: privateKeyDeployment
-                    },
-                    web3
+                    activeUser: deploymentWallet
                 },
                 offChainDataSource: new OffChainDataSourceMock(),
                 logger
@@ -78,10 +78,7 @@ describe('Device Facade', () => {
         });
 
         it('should log a new meter reading', async () => {
-            conf.blockchainProperties.activeUser = {
-                address: deviceSmartmeter,
-                privateKey: deviceSmartmeterPK
-            };
+            conf.blockchainProperties.activeUser = deviceSmartmeterWallet;
             let device = await new ProducingDevice.Entity(1, conf).sync();
 
             device = await device.sync();
