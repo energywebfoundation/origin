@@ -128,12 +128,12 @@ export class UserService {
             );
         }
 
-        if (typeof user.autoPublish !== 'undefined') {
+        if (typeof data.autoPublish !== 'undefined') {
             user.autoPublish = data.autoPublish;
         }
 
-        if (typeof user.notifications !== 'undefined') {
-            if (typeof user.notifications !== 'boolean') {
+        if (typeof data.notifications !== 'undefined') {
+            if (typeof data.notifications !== 'boolean') {
                 throw new Error(`User "notifications" property has to be a boolean.`);
             }
 
