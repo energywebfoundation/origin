@@ -22,13 +22,18 @@ export class ProductFilterDTO extends ProductDTO {
     @Validate(FilterValidator, ['generationFrom', 'generationTo'])
     public generationTimeFilter: Filter;
 
+    @IsEnum(Filter)
+    @Validate(FilterValidator, ['gridOperator'])
+    public gridOperatorFilter: Filter;
+
     public static toProductFilter(productFilter: ProductFilterDTO): ProductFilter {
         return {
             ...ProductDTO.toProduct(productFilter),
             deviceTypeFilter: productFilter.deviceTypeFilter,
             locationFilter: productFilter.locationFilter,
             deviceVintageFilter: productFilter.deviceVintageFilter,
-            generationTimeFilter: productFilter.generationTimeFilter
+            generationTimeFilter: productFilter.generationTimeFilter,
+            gridOperatorFilter: productFilter.gridOperatorFilter
         };
     }
 }

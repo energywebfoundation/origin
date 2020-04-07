@@ -122,7 +122,8 @@ describe('orderbook tests', () => {
                 deviceVintageFilter: Filter.All,
                 generationTimeFilter: Filter.All,
                 locationFilter: Filter.All,
-                deviceTypeFilter: Filter.All
+                deviceTypeFilter: Filter.All,
+                gridOperatorFilter: Filter.All
             } as ProductFilterDTO)
             .expect(200)
             .expect((res) => {
@@ -143,7 +144,8 @@ describe('orderbook tests', () => {
                 generationTimeFilter: Filter.All,
                 locationFilter: Filter.All,
                 deviceTypeFilter: Filter.Specific,
-                deviceType: ['Solar']
+                deviceType: ['Solar'],
+                gridOperatorFilter: Filter.All
             } as ProductFilterDTO)
             .expect(200)
             .expect((res) => {
@@ -164,7 +166,8 @@ describe('orderbook tests', () => {
                 deviceVintageFilter: Filter.All,
                 generationTimeFilter: Filter.All,
                 locationFilter: Filter.All,
-                deviceTypeFilter: Filter.Specific
+                deviceTypeFilter: Filter.Specific,
+                gridOperatorFilter: Filter.All
             } as ProductFilterDTO)
             .expect(400);
 
@@ -185,7 +188,8 @@ describe('orderbook tests', () => {
                 generationTimeFilter: Filter.Specific,
                 generationFrom: new Date().toISOString(),
                 locationFilter: Filter.All,
-                deviceTypeFilter: Filter.All
+                deviceTypeFilter: Filter.All,
+                gridOperatorFilter: Filter.All
             } as ProductFilterDTO)
             .expect(400);
     });
@@ -198,7 +202,8 @@ describe('orderbook tests', () => {
                 generationTimeFilter: Filter.All,
                 locationFilter: Filter.All,
                 deviceTypeFilter: Filter.Specific,
-                deviceType: ['LOL']
+                deviceType: ['LOL'],
+                gridOperatorFilter: Filter.All
             } as ProductFilterDTO)
             .expect(400);
     });
@@ -210,7 +215,8 @@ describe('orderbook tests', () => {
                 deviceVintageFilter: ('LOL' as unknown) as Filter,
                 generationTimeFilter: Filter.All,
                 locationFilter: Filter.All,
-                deviceTypeFilter: Filter.All
+                deviceTypeFilter: Filter.All,
+                gridOperatorFilter: Filter.All
             } as ProductFilterDTO)
             .expect(400);
     });
