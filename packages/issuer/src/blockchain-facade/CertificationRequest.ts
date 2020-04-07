@@ -170,13 +170,17 @@ export const createCertificationRequest = async (
 
     request.id = configuration.blockchainProperties.web3.utils.hexToNumber(logs[0].topics[2]);
 
-    await configuration.offChainDataSource.certificateClient.updateCertificationRequestData(
+    const success = await configuration.offChainDataSource.certificateClient.updateCertificationRequestData(
         request.id,
         { energy, files }
     );
 
-    if (configuration.logger) {
-        configuration.logger.info(`CertificationRequest ${request.id} created`);
+    if (success) {
+        if (configuration.logger) {
+            configuration.logger.info(`CertificationRequest ${request.id} created`);
+        }
+    } else {
+        throw new Error('Unable to create CertificationRequest');
     }
 
     return request.sync();

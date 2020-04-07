@@ -48,7 +48,14 @@ export class CertificateClient implements ICertificateClient {
             data
         );
 
-        return response.data;
+        const success = response.status >= 200 && response.status < 300;
+
+        if (!success) {
+            console.error(`Unable to create certification request ${id}`);
+            console.error(JSON.stringify(response));
+        }
+
+        return success;
     }
 
     public async getCertificationRequestData(
