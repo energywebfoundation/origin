@@ -1,7 +1,8 @@
 import { PreciseProofs } from 'precise-proofs-js';
+import { BigNumber } from 'ethers/utils';
 
 export interface IOwnershipCommitment {
-    [address: string]: number;
+    [address: string]: BigNumber;
 }
 
 export interface IOwnershipCommitmentProof {

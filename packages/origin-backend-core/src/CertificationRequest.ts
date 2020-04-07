@@ -1,3 +1,5 @@
+import { BigNumber } from 'ethers/utils';
+
 export interface ICertificationRequest {
     id: number;
     fromTime: number;
@@ -6,7 +8,7 @@ export interface ICertificationRequest {
     created: number;
     approved: boolean;
     revoked: boolean;
-    energy: number;
+    energy: BigNumber;
     deviceId: string;
 }
 

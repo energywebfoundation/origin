@@ -1,3 +1,4 @@
+import { BigNumber } from 'ethers/utils';
 import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 import { CertificationRequestOffChainData } from '@energyweb/origin-backend-core';
 import { IsInt, Min } from 'class-validator';
@@ -12,7 +13,7 @@ export class CertificationRequest extends ExtendedBaseEntity
     @Column()
     @IsInt()
     @Min(0)
-    energy: number;
+    energy: BigNumber;
 
     @Column('simple-array')
     files: string[];
