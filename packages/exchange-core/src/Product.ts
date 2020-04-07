@@ -9,4 +9,6 @@ export class Product {
     public deviceVintage?: DeviceVintage;
 
     public generationTime?: TimeRange;
+
+    public gridOperator?: string[];
 }

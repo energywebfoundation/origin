@@ -34,4 +34,7 @@ export class Configuration extends ExtendedBaseEntity implements IOriginConfigur
 
     @Column('simple-json', { nullable: true })
     deviceTypes?: IDeviceType[];
+
+    @Column('simple-array', { nullable: true })
+    gridOperators?: string[];
 }

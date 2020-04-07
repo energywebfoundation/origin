@@ -4,11 +4,17 @@ import { BigNumber, Interface } from 'ethers/utils';
 import { Event as BlockchainEvent } from 'ethers';
 
 import { Configuration, Timestamp } from '@energyweb/utils-general';
-import { ICertificationRequest, IOwnershipCommitment } from '@energyweb/origin-backend-core';
+import {
+    ICertificationRequest,
+    IOwnershipCommitment,
+    MAX_ENERGY_PER_CERTIFICATE
+} from '@energyweb/origin-backend-core';
 
 import { PreciseProofEntity } from './PreciseProofEntity';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { Issuer } from '../ethers/Issuer';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import { Registry } from '../ethers/Registry';
 import { IssuerJSON } from '../contracts';
 
 export class Entity extends PreciseProofEntity implements ICertificationRequest {
@@ -41,7 +47,8 @@ export class Entity extends PreciseProofEntity implements ICertificationRequest 
     }
 
     async sync(): Promise<Entity> {
-        const { issuer } = this.configuration.blockchainProperties;
+        const { issuer } = this.configuration
+            .blockchainProperties as Configuration.BlockchainProperties<Registry, Issuer>;
 
         const issueRequest = await issuer.getCertificationRequest(this.id);
         const decodedData = await issuer.decodeData(issueRequest.data);
@@ -88,7 +95,8 @@ export class Entity extends PreciseProofEntity implements ICertificationRequest 
         const validityData = issuerInterface.functions.isRequestValid.encode([this.id.toString()]);
 
         let approveTx;
-        const { issuer } = this.configuration.blockchainProperties;
+        const { issuer } = this.configuration
+            .blockchainProperties as Configuration.BlockchainProperties<Registry, Issuer>;
         const issuerWithSigner = issuer.connect(this.configuration.blockchainProperties.activeUser);
 
         if (this.isPrivate) {
@@ -121,7 +129,8 @@ export class Entity extends PreciseProofEntity implements ICertificationRequest 
     }
 
     async revoke() {
-        const { issuer } = this.configuration.blockchainProperties;
+        const { issuer } = this.configuration
+            .blockchainProperties as Configuration.BlockchainProperties<Registry, Issuer>;
         const issuerWithSigner = issuer.connect(this.configuration.blockchainProperties.activeUser);
         await issuerWithSigner.revokeRequest(this.id);
     }
@@ -130,7 +139,8 @@ export class Entity extends PreciseProofEntity implements ICertificationRequest 
         if (!this.isPrivate) {
             throw new Error('Certificate is already public.');
         }
-        const { issuer } = this.configuration.blockchainProperties;
+        const { issuer } = this.configuration
+            .blockchainProperties as Configuration.BlockchainProperties<Registry, Issuer>;
 
         const commitment: IOwnershipCommitment = {
             [this.configuration.blockchainProperties.activeUser.address]: value
@@ -149,7 +159,10 @@ const validateGenerationPeriod = async (
     configuration: Configuration.Entity,
     isPrivate?: boolean
 ): Promise<boolean> => {
-    const { issuer } = configuration.blockchainProperties;
+    const { issuer } = configuration.blockchainProperties as Configuration.BlockchainProperties<
+        Registry,
+        Issuer
+    >;
 
     const moment = extendMoment(Moment);
     const unix = (timestamp: Timestamp) => moment.unix(timestamp);
@@ -199,9 +212,18 @@ export const createCertificationRequest = async (
     isVolumePrivate = false,
     forAddress?: string
 ): Promise<Entity> => {
+    if (energy.gt(MAX_ENERGY_PER_CERTIFICATE)) {
+        throw new Error(
+            `Too much energy requested. Requested: ${energy}, Max: ${MAX_ENERGY_PER_CERTIFICATE}`
+        );
+    }
+
     const request = new Entity(null, configuration, isVolumePrivate);
 
-    const { issuer } = configuration.blockchainProperties;
+    const { issuer } = configuration.blockchainProperties as Configuration.BlockchainProperties<
+        Registry,
+        Issuer
+    >;
     const issuerWithSigner = issuer.connect(configuration.blockchainProperties.activeUser);
 
     await validateGenerationPeriod(fromTime, toTime, deviceId, configuration, isVolumePrivate);
@@ -218,13 +240,17 @@ export const createCertificationRequest = async (
         events.find((log: BlockchainEvent) => log.event === 'NewCertificationRequest').topics[2]
     );
 
-    await configuration.offChainDataSource.certificateClient.updateCertificationRequestData(
+    const success = await configuration.offChainDataSource.certificateClient.updateCertificationRequestData(
         request.id,
         { energy, files }
     );
 
-    if (configuration.logger) {
-        configuration.logger.info(`CertificationRequest ${request.id} created`);
+    if (success) {
+        if (configuration.logger) {
+            configuration.logger.info(`CertificationRequest ${request.id} created`);
+        }
+    } else {
+        throw new Error('Unable to create CertificationRequest');
     }
 
     return request.sync();
@@ -233,7 +259,10 @@ export const createCertificationRequest = async (
 export async function getAllCertificationRequests(
     configuration: Configuration.Entity
 ): Promise<Entity[]> {
-    const { issuer } = configuration.blockchainProperties;
+    const { issuer } = configuration.blockchainProperties as Configuration.BlockchainProperties<
+        Registry,
+        Issuer
+    >;
 
     const totalRequests = await issuer.totalRequests();
 

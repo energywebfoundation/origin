@@ -1,5 +1,9 @@
 import { PreciseProofs } from 'precise-proofs-js';
-import { CommitmentStatus, IOwnershipCommitment } from '@energyweb/origin-backend-core';
+import {
+    CommitmentStatus,
+    IOwnershipCommitment,
+    MAX_ENERGY_PER_CERTIFICATE
+} from '@energyweb/origin-backend-core';
 import { ContractTransaction, Event as BlockchainEvent } from 'ethers';
 import { BigNumber, randomBytes } from 'ethers/utils';
 import { Log } from 'ethers/providers';
@@ -44,7 +48,10 @@ export const getAllCertificateEvents = async (
     certId: number,
     configuration: Configuration.Entity
 ): Promise<Log[]> => {
-    const { registry } = configuration.blockchainProperties;
+    const { registry } = configuration.blockchainProperties as Configuration.BlockchainProperties<
+        Registry,
+        Issuer
+    >;
 
     const allEventTypesFilter = registry.filters.TransferSingle(null, null, null, null, null);
     const allEvents = (
@@ -96,12 +103,14 @@ export class Entity extends PreciseProofEntity implements ICertificate {
             return this;
         }
 
-        const { registry } = this.configuration.blockchainProperties;
+        const { registry } = this.configuration
+            .blockchainProperties as Configuration.BlockchainProperties<Registry, Issuer>;
         const certOnChain = await registry.getCertificate(this.id);
 
         this.data = certOnChain.data;
 
-        const { issuer } = this.configuration.blockchainProperties;
+        const { issuer } = this.configuration
+            .blockchainProperties as Configuration.BlockchainProperties<Registry, Issuer>;
 
         const decodedData = await issuer.decodeData(this.data);
 
@@ -208,9 +217,11 @@ export class Entity extends PreciseProofEntity implements ICertificate {
         // TO-DO: replace with proper claim data
         const claimData = randomBytes(32);
 
-        const { activeUser } = this.configuration.blockchainProperties;
+        const { activeUser } = this.configuration
+            .blockchainProperties as Configuration.BlockchainProperties<Registry, Issuer>;
 
-        const { registry } = this.configuration.blockchainProperties;
+        const { registry } = this.configuration
+            .blockchainProperties as Configuration.BlockchainProperties<Registry, Issuer>;
         const registryWithSigner = registry.connect(activeUser);
 
         return registryWithSigner.safeTransferAndClaimFrom(
@@ -231,7 +242,8 @@ export class Entity extends PreciseProofEntity implements ICertificate {
         }
 
         const owner = this.configuration.blockchainProperties.activeUser.address.toLowerCase();
-        const { issuer } = this.configuration.blockchainProperties;
+        const { issuer } = this.configuration
+            .blockchainProperties as Configuration.BlockchainProperties<Registry, Issuer>;
         const issuerWithSigner = issuer.connect(this.configuration.blockchainProperties.activeUser);
 
         const { salts } = await this.getCommitment();
@@ -247,7 +259,8 @@ export class Entity extends PreciseProofEntity implements ICertificate {
     }
 
     async migrateToPublic(): Promise<ContractTransaction> {
-        const { issuer } = this.configuration.blockchainProperties;
+        const { issuer } = this.configuration
+            .blockchainProperties as Configuration.BlockchainProperties<Registry, Issuer>;
         const issuerWithSigner = issuer.connect(this.configuration.blockchainProperties.activeUser);
 
         const migrationRequestId = await issuerWithSigner.getMigrationRequestId(this.id);
@@ -297,7 +310,8 @@ export class Entity extends PreciseProofEntity implements ICertificate {
         const fromAddress = this.configuration.blockchainProperties.activeUser.address.toLowerCase();
         const toAddress = to.toLowerCase();
 
-        const { issuer } = this.configuration.blockchainProperties;
+        const { issuer } = this.configuration
+            .blockchainProperties as Configuration.BlockchainProperties<Registry, Issuer>;
         const issuerWithSigner = issuer.connect(this.configuration.blockchainProperties.activeUser);
 
         const { publicVolume, privateVolume } = this.ownedVolume();
@@ -335,7 +349,8 @@ export class Entity extends PreciseProofEntity implements ICertificate {
             });
         }
 
-        const { registry } = this.configuration.blockchainProperties;
+        const { registry } = this.configuration
+            .blockchainProperties as Configuration.BlockchainProperties<Registry, Issuer>;
         const registryWithSigner = registry.connect(
             this.configuration.blockchainProperties.activeUser
         );
@@ -350,7 +365,8 @@ export class Entity extends PreciseProofEntity implements ICertificate {
     }
 
     async approvePrivateTransfer(): Promise<ContractTransaction> {
-        const { issuer } = this.configuration.blockchainProperties;
+        const { issuer } = this.configuration
+            .blockchainProperties as Configuration.BlockchainProperties<Registry, Issuer>;
         const issuerWithSigner = issuer.connect(this.configuration.blockchainProperties.activeUser);
 
         const previousCommitment = this.propertiesDocumentHash;
@@ -387,7 +403,8 @@ export class Entity extends PreciseProofEntity implements ICertificate {
     }
 
     async revoke(): Promise<ContractTransaction> {
-        const { issuer } = this.configuration.blockchainProperties;
+        const { issuer } = this.configuration
+            .blockchainProperties as Configuration.BlockchainProperties<Registry, Issuer>;
         const issuerWithSigner = issuer.connect(this.configuration.blockchainProperties.activeUser);
 
         return issuerWithSigner.revokeCertificate(this.id);
@@ -426,7 +443,8 @@ export class Entity extends PreciseProofEntity implements ICertificate {
 
     private async calculateOwnership(): Promise<IShareInCertificate> {
         const ownedShares: IShareInCertificate = {};
-        const { registry } = this.configuration.blockchainProperties;
+        const { registry } = this.configuration
+            .blockchainProperties as Configuration.BlockchainProperties<Registry, Issuer>;
 
         const transferSingleFilter = registry.filters.TransferSingle(null, null, null, null, null);
         const transferSingleEvents = (
@@ -500,7 +518,8 @@ export class Entity extends PreciseProofEntity implements ICertificate {
 
     private async calculateClaims(): Promise<IShareInCertificate> {
         const claimedShares: IShareInCertificate = {};
-        const { registry } = this.configuration.blockchainProperties;
+        const { registry } = this.configuration
+            .blockchainProperties as Configuration.BlockchainProperties<Registry, Issuer>;
 
         const claimSingleFilter = registry.filters.ClaimSingle(null, null, null, null, null, null);
         const claimSingleEvents = (
@@ -576,12 +595,21 @@ export const createCertificate = async (
     configuration: Configuration.Entity,
     isVolumePrivate = false
 ): Promise<Entity> => {
+    if (value.gt(MAX_ENERGY_PER_CERTIFICATE)) {
+        throw new Error(
+            `Too much energy requested. Requested: ${value}, Max: ${MAX_ENERGY_PER_CERTIFICATE}`
+        );
+    }
+
     const newEntity = new Entity(null, configuration);
 
     const getIdFromEvents = (logs: BlockchainEvent[]): number =>
         Number(logs.find((log) => log.event === 'ApprovedCertificationRequest').topics[2]);
 
-    const { issuer } = configuration.blockchainProperties;
+    const { issuer } = configuration.blockchainProperties as Configuration.BlockchainProperties<
+        Registry,
+        Issuer
+    >;
     const issuerWithSigner = issuer.connect(configuration.blockchainProperties.activeUser);
 
     const data = await issuer.encodeData(fromTime, toTime, deviceId);
@@ -642,9 +670,15 @@ export async function claimCertificates(
     const claimData = certificates.map(() => randomBytes(32));
     const data = randomBytes(32);
 
-    const { activeUser } = configuration.blockchainProperties;
+    const { activeUser } = configuration.blockchainProperties as Configuration.BlockchainProperties<
+        Registry,
+        Issuer
+    >;
 
-    const { registry } = configuration.blockchainProperties;
+    const { registry } = configuration.blockchainProperties as Configuration.BlockchainProperties<
+        Registry,
+        Issuer
+    >;
     const registryWithSigner = registry.connect(activeUser);
 
     return registryWithSigner.safeBatchTransferAndClaimFrom(
@@ -672,9 +706,15 @@ export async function transferCertificates(
     // TO-DO: replace with proper data
     const data = randomBytes(32);
 
-    const { activeUser } = configuration.blockchainProperties;
+    const { activeUser } = configuration.blockchainProperties as Configuration.BlockchainProperties<
+        Registry,
+        Issuer
+    >;
 
-    const { registry } = configuration.blockchainProperties;
+    const { registry } = configuration.blockchainProperties as Configuration.BlockchainProperties<
+        Registry,
+        Issuer
+    >;
     const registryWithSigner = registry.connect(activeUser);
 
     return registryWithSigner.safeBatchTransferFrom(
@@ -687,7 +727,10 @@ export async function transferCertificates(
 }
 
 export async function getAllCertificates(configuration: Configuration.Entity): Promise<Entity[]> {
-    const { issuer } = configuration.blockchainProperties;
+    const { issuer } = configuration.blockchainProperties as Configuration.BlockchainProperties<
+        Registry,
+        Issuer
+    >;
     const totalRequests = (await issuer.totalRequests()).toNumber();
 
     const certificatePromises = Array(totalRequests)

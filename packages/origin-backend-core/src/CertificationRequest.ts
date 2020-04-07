@@ -1,5 +1,7 @@
 import { BigNumber } from 'ethers/utils';
 
+export const MAX_ENERGY_PER_CERTIFICATE = 1e16;
+
 export interface ICertificationRequest {
     id: number;
     fromTime: number;

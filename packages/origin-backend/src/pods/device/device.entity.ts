@@ -80,4 +80,7 @@ export class Device extends ExtendedBaseEntity implements IDevice {
     @ManyToOne(() => Organization, (organization) => organization.devices, { nullable: false })
     @IsNotEmpty()
     organization: Organization;
+
+    @Column({ nullable: true })
+    gridOperator: string;
 }

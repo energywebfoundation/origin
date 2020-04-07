@@ -124,6 +124,7 @@ CREATE TABLE public.configuration (
     "contractsLookup" text,
     "complianceStandard" character varying,
     "deviceTypes" text,
+    "gridOperators" text,
     CONSTRAINT "CHK_3c3716a6563ee58bdf448a8c4e" CHECK ((id = 1))
 );
 
@@ -176,7 +177,8 @@ CREATE TABLE public.device (
     "deviceGroup" character varying NOT NULL,
     "smartMeterReads" text NOT NULL,
     "externalDeviceIds" text,
-    "organizationId" integer NOT NULL
+    "organizationId" integer NOT NULL,
+    "gridOperator" character varying
 );
 
 
