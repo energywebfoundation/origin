@@ -1,6 +1,6 @@
-import { BigNumber } from 'ethers/utils';
+import { BigNumber, bigNumberify } from 'ethers/utils';
 
-export const MAX_ENERGY_PER_CERTIFICATE = 1e16;
+export const MAX_ENERGY_PER_CERTIFICATE = bigNumberify('10000000000000000');
 
 export interface ICertificationRequest {
     id: number;
