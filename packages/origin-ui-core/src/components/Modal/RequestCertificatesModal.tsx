@@ -29,6 +29,7 @@ import {
 } from '../../features/certificates/selectors';
 import { Upload, IUploadedFile } from '../Upload';
 import { getEnvironment } from '../../features';
+import { MAX_ENERGY_PER_CERTIFICATE } from '@energyweb/origin-backend-core';
 
 const DEFAULTS = {
     fromDate: moment(),
@@ -67,7 +68,7 @@ export function RequestCertificatesModal() {
         toDate &&
         fromDate.toDate() <= toDate.toDate() &&
         energyInBaseUnit > 0 &&
-        energyInBaseUnit < 1e16 &&
+        energyInBaseUnit < MAX_ENERGY_PER_CERTIFICATE &&
         cancelledFiles.length === 0 &&
         filesBeingUploaded.length === 0;
 
