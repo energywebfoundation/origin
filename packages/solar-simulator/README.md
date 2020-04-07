@@ -44,7 +44,6 @@ To run simulator and consumer services you need to deploy Origin first.
 ### General
 
 Edit `.env` in the root of the monorepo and configure:
-- `WEB3` - by default configured to local Ganache instance (`http://localhost:8545`), if you've deployed Origin to Volta, use: `https://volta-rpc.energyweb.org`
 - `ENERGY_API_BASE_URL` - the address on which simulation server is running, by default locally it's `http://localhost:3032`, in Docker it's `http://simulation:3032`
 
 ### Device
@@ -83,17 +82,3 @@ As an outcome of running this script we will receive 2 products:
 
 1. new `config/config.json` with updated `devices` field based on input CSV file
 2. json console output with commands necessary to setup demo environment https://github.com/energywebfoundation/ew-utils-demo/blob/master/config/demo-config.json
-
-
-#### fund-devices-smart-meters script
-
-```
-Usage: yarn fund-devices-smart-meters -- [options]
-
-Options:
-  -f, --fundingAccount <string>  funding account private key
-  -v, --value <ewt>              value of the funding tx (default: 1EWT) (default: "1")
-  -h, --help                     output usage information
-```
-
-Before we can setup the demo environement, newly generated smart meters wallets have to be funded with the EWF token. Script is using monorepo root's `.env` `WEB3` variable to connect to given web3 endpoint.

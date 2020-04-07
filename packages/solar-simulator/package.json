@@ -14,7 +14,6 @@
     "start-simulation": "ts-node src/simulatorService.ts",
     "start-consuming-api": "ts-node src/consumerService.ts",
     "import-irec-devices": "ts-node src/importIRECDevices.ts -i irec-example/irec-thailand.csv",
-    "fund-devices-smart-meters": "ts-node src/fundDevices.ts",
     "deploy-mock-readings": "ts-node src/mockReadings.ts",
     "prettier": "prettier --write --config-precedence file-override './src/**/*'",
     "lint": "eslint \"src/**/*{.ts,.tsx}\"",
@@ -44,7 +43,6 @@
     "geo-tz": "5.1.0",
     "moment": "2.24.0",
     "moment-timezone": "0.5.28",
-    "web3": "1.2.6",
     "winston": "3.2.1"
   },
   "publishConfig": {

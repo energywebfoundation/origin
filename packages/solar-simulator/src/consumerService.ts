@@ -1,7 +1,6 @@
 import axios from 'axios';
 import { Moment } from 'moment';
 import moment from 'moment-timezone';
-import Web3 from 'web3';
 import * as Winston from 'winston';
 import dotenv from 'dotenv';
 import fs from 'fs';
@@ -18,8 +17,6 @@ export function wait(milliseconds: number) {
 }
 
 async function createBlockchainConfiguration() {
-    const web3 = new Web3(process.env.WEB3 ?? 'http://localhost:8545');
-
     const logger = Winston.createLogger({
         format: Winston.format.combine(Winston.format.colorize(), Winston.format.simple()),
         level: 'verbose',
@@ -27,9 +24,7 @@ async function createBlockchainConfiguration() {
     });
 
     const conf: Configuration.Entity = {
-        blockchainProperties: {
-            web3
-        },
+        blockchainProperties: {},
         logger,
         offChainDataSource: new OffChainDataSource(
             process.env.BACKEND_URL,
@@ -61,19 +56,9 @@ export async function startConsumerService(configFilePath: string) {
 
     async function saveProducingDeviceSmartMeterRead(
         deviceId: string,
-        smartMeterReading: ISmartMeterRead,
-        smartMeterPrivateKey: string
+        smartMeterReading: ISmartMeterRead
     ) {
         console.log('-----------------------------------------------------------');
-
-        const smartMeterAddress: string = conf.blockchainProperties.web3.eth.accounts.privateKeyToAccount(
-            smartMeterPrivateKey
-        ).address;
-
-        conf.blockchainProperties.activeUser = {
-            address: smartMeterAddress,
-            privateKey: smartMeterPrivateKey
-        };
 
         try {
             let device = await new ProducingDevice.Entity(parseInt(deviceId, 10), conf).sync();
@@ -137,11 +122,7 @@ export async function startConsumerService(configFilePath: string) {
                     timestamp: time.unix()
                 };
 
-                await saveProducingDeviceSmartMeterRead(
-                    device.id,
-                    smartMeterReading,
-                    device.smartMeterPrivateKey
-                );
+                await saveProducingDeviceSmartMeterRead(device.id, smartMeterReading);
 
                 console.log(
                     `[Device ID: ${device.id}]::Save Energy Read of: ${roundedEnergy}Wh - [${energyMeasurement.measurementTime}]`
