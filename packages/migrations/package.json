@@ -17,8 +17,8 @@
         "migrations": "./bin/migrations"
     },
     "scripts": {
-        "build": "yarn build:ts && yarn copy:schema",
-        "build:ts": "tsc -b tsconfig.build.json --verbose --pretty",
+        "build": "yarn build:ts",
+        "build:ts": "tsc -b tsconfig.build.json --verbose --pretty && yarn copy:schema",
         "copy:schema": "shx cp -r src/schema dist/js/src/",
         "start": "ts-node src/main.ts",
         "start:redeploy": "yarn start -r",
