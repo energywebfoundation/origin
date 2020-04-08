@@ -1,11 +1,8 @@
 import { BigNumber } from 'ethers/utils';
 import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
-import {
-    CertificationRequestOffChainData,
-    MAX_ENERGY_PER_CERTIFICATE
-} from '@energyweb/origin-backend-core';
-import { IsPositive, Min, Max } from 'class-validator';
+import { CertificationRequestOffChainData } from '@energyweb/origin-backend-core';
 import { ExtendedBaseEntity } from '../ExtendedBaseEntity';
+import { BigNumberTransformer } from '../../utils/transformers';
 
 @Entity()
 export class CertificationRequest extends ExtendedBaseEntity
@@ -13,10 +10,7 @@ export class CertificationRequest extends ExtendedBaseEntity
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column({ type: 'bigint' })
-    @IsPositive()
-    @Min(0)
-    @Max(MAX_ENERGY_PER_CERTIFICATE)
+    @Column('bigint', { transformer: BigNumberTransformer })
     energy: BigNumber;
 
     @Column('simple-array')
