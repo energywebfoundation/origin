@@ -11,6 +11,7 @@ import { DeviceStatus, IDevice } from '@energyweb/origin-backend-core';
 
 import { ProducingDevice } from '..';
 import { logger } from '../Logger';
+import { bigNumberify } from 'ethers/utils';
 
 describe('Device Facade', () => {
     dotenv.config({
@@ -118,11 +119,11 @@ describe('Device Facade', () => {
 
                 assert.deepEqual(reads, [
                     {
-                        meterReading: 100,
+                        meterReading: bigNumberify(100),
                         timestamp: SM_READ_TIMESTAMP
                     },
                     {
-                        meterReading: 300,
+                        meterReading: bigNumberify(300),
                         timestamp: SM_READ_TIMESTAMP + 1
                     }
                 ]);
@@ -130,16 +131,16 @@ describe('Device Facade', () => {
                 const energyGenerated = await device.getAmountOfEnergyGenerated();
                 assert.deepEqual(energyGenerated, [
                     {
-                        energy: 100,
+                        energy: bigNumberify(100),
                         timestamp: SM_READ_TIMESTAMP
                     },
                     {
-                        energy: 200,
+                        energy: bigNumberify(200),
                         timestamp: SM_READ_TIMESTAMP + 1
                     }
                 ]);
 
-                assert.equal(device.lastSmartMeterReadWh, 300);
+                assert.deepEqual(device.lastSmartMeterReadWh, bigNumberify(300));
             });
         });
     });
