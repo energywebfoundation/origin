@@ -12,6 +12,7 @@ import {
 import { useSelector } from 'react-redux';
 import { getConfiguration } from '../../features/selectors';
 import { EnergyFormatter } from '../../utils/EnergyFormatter';
+import { bigNumberify } from 'ethers/utils';
 
 interface IProps {
     certificates: Certificate.Entity[];
@@ -36,7 +37,7 @@ export function ClaimCertificateBulkModal(props: IProps) {
     }
 
     const totalEnergy = EnergyFormatter.format(
-        props.certificates.reduce((a, b) => a + Number(b.energy), 0),
+        props.certificates.reduce((a, b) => a.add(b.energy), bigNumberify(0)),
         true
     );
 

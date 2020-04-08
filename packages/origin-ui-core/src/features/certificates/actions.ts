@@ -1,6 +1,7 @@
 import { Certificate } from '@energyweb/issuer';
 import { ProducingDevice } from '@energyweb/device-registry';
 import { IStoreState } from '../../types';
+import { BigNumber } from 'ethers/utils';
 
 export enum CertificatesActions {
     addCertificate = 'CERTIFICATE_CREATED',
@@ -41,7 +42,7 @@ export interface IRequestCertificatesAction {
     type: CertificatesActions.requestCertificates;
     payload: {
         deviceId: string;
-        energy: number;
+        energy: BigNumber;
         startTime: number;
         endTime: number;
         files: string[];

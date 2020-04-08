@@ -13,6 +13,7 @@ import { IOffChainDataSource } from '@energyweb/origin-backend-client';
 import { configurationUpdated } from '../../features';
 import { Configuration, DeviceTypeService } from '@energyweb/utils-general';
 import { OffChainDataSourceMock } from '@energyweb/origin-backend-client-mocks';
+import { bigNumberify } from 'ethers/utils';
 
 describe('ProducingDeviceTable', () => {
     it('correctly renders and search works', async () => {
@@ -31,7 +32,7 @@ describe('ProducingDeviceTable', () => {
         addProducingDevice({
             id: 0,
             status: DeviceStatus.Active,
-            lastSmartMeterReadWh: 7777
+            lastSmartMeterReadWh: bigNumberify(7777)
         });
 
         addProducingDevice({

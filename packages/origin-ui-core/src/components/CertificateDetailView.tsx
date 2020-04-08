@@ -51,18 +51,22 @@ export function CertificateDetailView(props: IProps) {
             let label: string;
             let description: string;
 
+            const { registry } = configuration.blockchainProperties;
+
             switch (event.event) {
                 case 'LogCreatedCertificate':
                     label = 'Certified';
                     description = 'Local issuer approved the certification request';
                     break;
                 case 'Transfer':
-                    if (event.returnValues.from === '0x0000000000000000000000000000000000000000') {
+                    const { values } = registry.interface.parseLog(event);
+
+                    if (values.from === '0x0000000000000000000000000000000000000000') {
                         label = 'Initial owner';
-                        description = event.returnValues.to;
+                        description = values.to;
                     } else {
-                        const newOwner = event.returnValues.to;
-                        const oldOwner = event.returnValues.from;
+                        const newOwner = values.to;
+                        const oldOwner = values.from;
 
                         label = 'Changed ownership';
                         description = `Transferred from ${oldOwner} to ${newOwner}`;
@@ -84,13 +88,13 @@ export function CertificateDetailView(props: IProps) {
                     label = event.event;
             }
 
+            const eventBlock = await registry.provider.getBlock(event.blockHash);
+
             return {
                 txHash: event.transactionHash,
                 label,
                 description,
-                timestamp: (
-                    await configuration.blockchainProperties.web3.eth.getBlock(event.blockNumber)
-                ).timestamp
+                timestamp: eventBlock.timestamp
             };
         });
 

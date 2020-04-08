@@ -1,19 +1,14 @@
+import { ethers } from 'ethers';
 import { call, put, select, take, all, fork, apply, cancel } from 'redux-saga/effects';
-import { SagaIterator, eventChannel } from 'redux-saga';
+import { SagaIterator } from 'redux-saga';
 import { setContractsLookup } from './actions';
 import { getSearch } from 'connected-react-router';
 import { getConfiguration } from '../selectors';
 import * as queryString from 'query-string';
 import * as Winston from 'winston';
-import { Certificate, Registry, Issuer } from '@energyweb/issuer';
+import { Certificate, Contracts } from '@energyweb/issuer';
 import { IOffChainDataSource, IConfigurationClient } from '@energyweb/origin-backend-client';
-import {
-    Configuration,
-    ContractEventHandler,
-    EventHandlerManager,
-    DeviceTypeService
-} from '@energyweb/utils-general';
-import Web3 from 'web3';
+import { Configuration, DeviceTypeService } from '@energyweb/utils-general';
 
 import { configurationUpdated } from '../actions';
 import { ProducingDevice } from '@energyweb/device-registry';
@@ -42,15 +37,15 @@ async function initConf(
     offChainDataSource: IOffChainDataSource,
     environmentWeb3: string
 ): Promise<IStoreState['configuration']> {
-    let web3: Web3 = null;
+    let ethersProvider: ethers.providers.JsonRpcProvider | ethers.providers.Web3Provider = null;
     const params = queryString.parse(routerSearch);
 
     const ethereumProvider = (window as any).ethereum;
 
     if (params.rpc) {
-        web3 = new Web3(params.rpc as string);
+        ethersProvider = new ethers.providers.JsonRpcProvider(params.rpc as string);
     } else if (ethereumProvider) {
-        web3 = new Web3(ethereumProvider);
+        ethersProvider = new ethers.providers.Web3Provider(ethereumProvider);
         try {
             // Request account access if needed
             await ethereumProvider.enable();
@@ -58,15 +53,19 @@ async function initConf(
             // User denied account access...
         }
     } else if ((window as any).web3) {
-        web3 = new Web3(web3.currentProvider);
+        ethersProvider = new ethers.providers.Web3Provider((window as any).web3.currentProvider);
     } else if (environmentWeb3) {
-        web3 = new Web3(environmentWeb3);
+        ethersProvider = new ethers.providers.JsonRpcProvider(environmentWeb3);
     }
 
+    const signer = ethersProvider.getSigner();
+    console.log({
+        signer
+    });
+
     const blockchainProperties: Configuration.BlockchainProperties = {
-        registry: new Registry(web3, contractsLookup.registry),
-        issuer: new Issuer(web3, contractsLookup.issuer),
-        web3
+        registry: Contracts.factories.RegistryFactory.connect(contractsLookup.registry, signer),
+        issuer: Contracts.factories.IssuerFactory.connect(contractsLookup.issuer, signer)
     };
 
     return {
@@ -90,66 +89,31 @@ function* initEventHandler() {
         return;
     }
 
-    try {
-        const currentBlockNumber: number = yield call(
-            configuration.blockchainProperties.web3.eth.getBlockNumber
-        );
-
-        const eventHandlerManager: EventHandlerManager = new EventHandlerManager(
-            4000,
-            configuration
-        );
-
-        const registryContractEventHandler: ContractEventHandler = new ContractEventHandler(
-            configuration.blockchainProperties.registry,
-            currentBlockNumber
-        );
-
-        const channel = eventChannel((emitter) => {
-            registryContractEventHandler.onEvent('ClaimSingle', async (event: any) => {
-                const id = Number(event.returnValues._id);
-
-                if (typeof id !== 'string') {
-                    return;
-                }
-
-                emitter({
-                    action: requestCertificateEntityFetch(id)
-                });
+    configuration.blockchainProperties.registry
+        .on('ClaimSingle', async (event: any) => {
+            console.log({
+                event
             });
+            const id = Number(event.returnValues._id);
 
-            registryContractEventHandler.onEvent('IssuanceSingle', async (event: any) => {
-                const id = Number(event.returnValues._id);
-
-                if (typeof id !== 'string') {
-                    return;
-                }
-
-                emitter({
-                    action: requestCertificateEntityFetch(id)
-                });
-            });
-
-            return () => {
-                eventHandlerManager.stop();
-            };
-        });
-
-        eventHandlerManager.registerEventHandler(registryContractEventHandler);
-        eventHandlerManager.start();
-
-        while (true) {
-            const { action } = yield take(channel);
-
-            if (!action) {
-                break;
+            if (typeof id !== 'string') {
+                return;
             }
 
-            yield put(action);
-        }
-    } catch (error) {
-        console.error('initEventHandler() error', error);
-    }
+            put(requestCertificateEntityFetch(id));
+        })
+        .on('IssuanceSingle', async (event: any) => {
+            console.log({
+                event
+            });
+            const id = Number(event.returnValues._id);
+
+            if (typeof id !== 'string') {
+                return;
+            }
+
+            put(requestCertificateEntityFetch(id));
+        });
 }
 
 async function getContractsLookupFromAPI(configurationClient: IConfigurationClient) {

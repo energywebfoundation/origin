@@ -5,6 +5,7 @@ import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Redirect } from 'react-router-dom';
+import { BigNumber, bigNumberify } from 'ethers/utils';
 
 import { getConfiguration, getProducingDevices } from '../features/selectors';
 import {
@@ -45,7 +46,7 @@ interface IProps {
 
 interface IEnrichedCertificateData {
     certificate: Certificate.Entity;
-    ownedVolume: number;
+    ownedVolume: BigNumber;
     producingDevice: ProducingDevice.Entity;
     deviceTypeLabel: string;
     locationText: string;
@@ -111,7 +112,7 @@ export function CertificateTable(props: IProps) {
                 producingDevice,
                 deviceTypeLabel: producingDevice?.deviceType,
                 locationText: getDeviceLocationText(producingDevice),
-                ownedVolume: ownedVolume.privateVolume + ownedVolume.publicVolume
+                ownedVolume: ownedVolume.privateVolume.add(ownedVolume.publicVolume)
             };
         });
 
@@ -218,7 +219,10 @@ export function CertificateTable(props: IProps) {
         }
 
         const maxCertificateEnergyInDisplayUnit = EnergyFormatter.getValueInDisplayUnit(
-            certificates.reduce((a, b) => (b.energy > a ? b.energy : a), 0)
+            certificates.reduce(
+                (a, b) => (b.energy.gt(a) ? b.energy : bigNumberify(a)),
+                bigNumberify(0)
+            )
         );
 
         const filters: ICustomFilterDefinition[] = [
@@ -267,14 +271,14 @@ export function CertificateTable(props: IProps) {
             },
             {
                 property: (record: IEnrichedCertificateData): number =>
-                    EnergyFormatter.getValueInDisplayUnit(record?.certificate?.energy),
+                    EnergyFormatter.getValueInDisplayUnit(record?.certificate?.energy).toNumber(),
                 label: `${t('certificate.properties.certifiedEnergy')} (${
                     EnergyFormatter.displayUnit
                 })`,
                 input: {
                     type: CustomFilterInputType.slider,
                     min: 0,
-                    max: maxCertificateEnergyInDisplayUnit
+                    max: maxCertificateEnergyInDisplayUnit.toNumber()
                 }
             }
         ];
@@ -294,7 +298,7 @@ export function CertificateTable(props: IProps) {
                 .filter((item, index) => selectedIndexes.includes(index))
                 .map((i) => i.certificate);
 
-            const energy = includedCertificates.reduce((a, b) => a + b.energy, 0);
+            const energy = includedCertificates.reduce((a, b) => a.add(b.energy), bigNumberify(0));
 
             return `${t('certificate.feedback.amountSelected', {
                 amount: selectedIndexes.length
@@ -373,9 +377,9 @@ export function CertificateTable(props: IProps) {
                     (record: IEnrichedCertificateData) => {
                         const owned = record?.certificate?.ownedVolume();
                         if (!owned) return null;
-                        return owned.publicVolume + owned.privateVolume;
+                        return owned.publicVolume.add(owned.privateVolume).toString();
                     },
-                    (value: number) => value
+                    (value: string) => value
                 ]
             ]
         }

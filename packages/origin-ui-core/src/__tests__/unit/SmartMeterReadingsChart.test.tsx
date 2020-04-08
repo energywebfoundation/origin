@@ -1,5 +1,6 @@
 import React from 'react';
 import { mount } from 'enzyme';
+import { bigNumberify } from 'ethers/utils';
 import { SmartMeterReadingsChart } from '../../components/SmartMeterReadingsChart';
 import { ProducingDevice } from '@energyweb/device-registry';
 import { Bar } from 'react-chartjs-2';
@@ -25,7 +26,7 @@ describe('SmartMeterReadingsChart', () => {
 
         const reads: IEnergyGenerated[] = [
             {
-                energy: 1000,
+                energy: bigNumberify(1000),
                 timestamp: currentTime.unix()
             }
         ];

@@ -1,4 +1,5 @@
 import { Unit } from '@energyweb/utils-general';
+import { BigNumber, BigNumberish, bigNumberify } from 'ethers/utils';
 
 export class EnergyFormatter {
     public static readonly displayUnit: string = 'MWh';
@@ -13,20 +14,20 @@ export class EnergyFormatter {
         maximumFractionDigits: EnergyFormatter.decimalPlaces
     });
 
-    static getValueInDisplayUnit(baseValue: number | string): number {
-        return (
-            (typeof baseValue === 'number' ? baseValue : parseInt(baseValue, 10)) /
-            Unit[EnergyFormatter.displayUnit]
-        );
+    static getValueInDisplayUnit(baseValue: BigNumberish): BigNumber {
+        const returnValue = bigNumberify(baseValue);
+        return returnValue.div(Unit[EnergyFormatter.displayUnit]);
     }
 
-    static getBaseValueFromValueInDisplayUnit(valueInDisplayUnit: number): number {
-        return valueInDisplayUnit * Unit[EnergyFormatter.displayUnit];
+    static getBaseValueFromValueInDisplayUnit(valueInDisplayUnit: BigNumberish): BigNumber {
+        const returnValue = bigNumberify(valueInDisplayUnit);
+        return returnValue.mul(Unit[EnergyFormatter.displayUnit]);
     }
 
-    static format(baseValue: number | string, includeDisplayUnit?: boolean): string {
+    static format(baseValue: BigNumberish, includeDisplayUnit?: boolean): string {
+        const returnValue = bigNumberify(baseValue);
         return `${EnergyFormatter.formatter.format(
-            EnergyFormatter.getValueInDisplayUnit(baseValue)
+            EnergyFormatter.getValueInDisplayUnit(returnValue).toNumber()
         )}${includeDisplayUnit ? ' ' + EnergyFormatter.displayUnit : ''}`;
     }
 }

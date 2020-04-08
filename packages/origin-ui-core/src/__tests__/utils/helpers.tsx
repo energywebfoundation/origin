@@ -25,6 +25,7 @@ import {
     initializeI18N
 } from '../../components';
 import { IDevice, DeviceStatus } from '@energyweb/origin-backend-core';
+import { BigNumber, bigNumberify } from 'ethers/utils';
 
 export const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -243,7 +244,7 @@ interface ICreateProducingDeviceProperties {
     address?: string;
     country?: string;
     capacityInW?: number;
-    lastSmartMeterReadWh?: number;
+    lastSmartMeterReadWh?: BigNumber;
     operationalSince?: number;
     complianceRegistry?: Compliance;
     region?: string;
@@ -267,7 +268,7 @@ export const createProducingDevice = (
     properties: ICreateProducingDeviceProperties
 ): ProducingDevice.Entity => {
     const owner = properties.owner || '0x0';
-    const lastSmartMeterReadWh = properties.lastSmartMeterReadWh ?? 0;
+    const lastSmartMeterReadWh = properties.lastSmartMeterReadWh ?? bigNumberify(0);
 
     const offChainProperties = {
         status: properties.status || DEFAULT_PRODUCING_DEVICE_OFFCHAIN_PROPERTIES.status,
