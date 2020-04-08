@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.1.5](https://github.com/energywebfoundation/origin/compare/@energyweb/exchange-token-account@0.1.4...@energyweb/exchange-token-account@0.1.5) (2020-04-08)
+
+
+### Bug Fixes
+
+* **deps:** update dependency ethers to v4.0.46 ([f2efe8e](https://github.com/energywebfoundation/origin/commit/f2efe8ee404bebc2fa111fabeb891797a2a5416e))
+
+
+
+
+
 ## [0.1.4](https://github.com/energywebfoundation/origin/compare/@energyweb/exchange-token-account@0.1.3...@energyweb/exchange-token-account@0.1.4) (2020-03-16)
 
 **Note:** Version bump only for package @energyweb/exchange-token-account
