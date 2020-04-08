@@ -3,6 +3,32 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.1.0](https://github.com/energywebfoundation/origin/compare/@energyweb/issuer@1.0.1...@energyweb/issuer@1.1.0) (2020-04-08)
+
+
+### Bug Fixes
+
+* **issuer:** return empty array in getCertificationRequestsForDevice() if none ([fe51d90](https://github.com/energywebfoundation/origin/commit/fe51d90366c0a4e507710e006eead14d93d6354c))
+* disallow bad user request certs flow ([99cec42](https://github.com/energywebfoundation/origin/commit/99cec42a5c813c8d4fb013ea8be1dce46ef1d20a))
+* **issuer:** Certificate always has a private and public volume balance ([37274aa](https://github.com/energywebfoundation/origin/commit/37274aaeb9d881e8759c2121d3c9b80cbda586dd))
+* **issuer:** isCertificatePrivate check ([52c7001](https://github.com/energywebfoundation/origin/commit/52c70016305c01cfa0f9038d2e3d7d3178d8ee83))
+
+
+### Features
+
+* add ability to autogenerate external device ids ([822b752](https://github.com/energywebfoundation/origin/commit/822b7523730b726aeb2f7f09922d1742f3faa075))
+* add ORGANIZATION_REMOVED_MEMBER and DEVICE_STATUS_CHANGED email notifications ([384f90f](https://github.com/energywebfoundation/origin/commit/384f90fa18bf9ee7a38648afa28de95ca7f64071))
+* add posting certificates for sale ([84a141a](https://github.com/energywebfoundation/origin/commit/84a141a9868102f1d012170926c2439069716783))
+* **issuer:** approval process for private transfers ([b285bfd](https://github.com/energywebfoundation/origin/commit/b285bfdc4c7807a619ded163cc49a83b7545eb88))
+* **issuer:** improve storing multi-owner commitments off-chain ([4c03539](https://github.com/energywebfoundation/origin/commit/4c035393eaadf0db394c6d690c8f49837acdca20))
+* **issuer:** multi-owner private certificates ([e3c23cf](https://github.com/energywebfoundation/origin/commit/e3c23cf48d5acd1b0c68aa88d79fabf499b89b48))
+* store energy amount in CertificationRequest ([5d756ba](https://github.com/energywebfoundation/origin/commit/5d756ba848245ebf50416d4ce53b61e8e0072ebb))
+* **issuer:** rename IssueRequest to CertificationRequest, various security fixes ([0984142](https://github.com/energywebfoundation/origin/commit/098414200b68ffbe545ae33129aef11f7cb93692))
+
+
+
+
+
 ## [1.0.1](https://github.com/energywebfoundation/origin/compare/@energyweb/issuer@1.0.0...@energyweb/issuer@1.0.1) (2020-03-16)
 
 **Note:** Version bump only for package @energyweb/issuer

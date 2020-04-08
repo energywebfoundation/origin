@@ -3,6 +3,37 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [8.0.0](https://github.com/energywebfoundation/origin/compare/@energyweb/utils-general@7.0.2...@energyweb/utils-general@8.0.0) (2020-04-08)
+
+
+### Bug Fixes
+
+* **deps:** update dependency jsonschema to v1.2.6 ([8a8d429](https://github.com/energywebfoundation/origin/commit/8a8d429541d60a2df6dc583e7c996aa79f17bb41))
+* **origin-ui-core:** fix displaying certificates ([aed5142](https://github.com/energywebfoundation/origin/commit/aed51423ec13d11800029ba736b44e1e7fb6a449))
+* adjust application to off-chain device registry ([a3583fb](https://github.com/energywebfoundation/origin/commit/a3583fb6c80604c88ef69724c69229a74320ff95))
+
+
+### chore
+
+* **utils-general:** rm BlockchainDataModelEntity ([898bf13](https://github.com/energywebfoundation/origin/commit/898bf13013b7cf38378498945b43f033531ce870))
+
+
+### Features
+
+* **issuer:** multi-owner private certificates ([e3c23cf](https://github.com/energywebfoundation/origin/commit/e3c23cf48d5acd1b0c68aa88d79fabf499b89b48))
+* **utils-general:** demandstatus enum ([83c4ce4](https://github.com/energywebfoundation/origin/commit/83c4ce4a52fedaafd5914aa0b38672d7893b6ed2))
+* **utils-general:** new precise proofs structure + new Configuration contracts structure ([721e16c](https://github.com/energywebfoundation/origin/commit/721e16c2c610574c4003aee249ead2e2e60e2ce4))
+
+
+### BREAKING CHANGES
+
+* **utils-general:** Removes BlockchainDataModelEntity, it will no longer be needed in future versions
+* **utils-general:** new precise proofs structure + new Configuration contracts structure
+
+
+
+
+
 ## [7.0.2](https://github.com/energywebfoundation/origin/compare/@energyweb/utils-general@7.0.1...@energyweb/utils-general@7.0.2) (2020-03-16)
 
 **Note:** Version bump only for package @energyweb/utils-general

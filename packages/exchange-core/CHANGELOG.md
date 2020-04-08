@@ -3,6 +3,41 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.0.0](https://github.com/energywebfoundation/origin/compare/@energyweb/exchange-core@1.0.1...@energyweb/exchange-core@2.0.0) (2020-04-08)
+
+
+### Bug Fixes
+
+* **deps:** update dependency rxjs to v6.5.5 ([2c19e39](https://github.com/energywebfoundation/origin/commit/2c19e39552b2e68a91db9fc8b21127488a9cd576))
+* **exchange-core:** [] should be equivalent to undefined for orderbook filtering and matching ([f7d374a](https://github.com/energywebfoundation/origin/commit/f7d374a407fa3e1e653fea5dac2605bb73891310))
+* **exchange-core:** dont crash on filtering unspecified bids ([67c77b7](https://github.com/energywebfoundation/origin/commit/67c77b7e65dac5d7ba0e2ee34c1768f617497041))
+* **exchange-core:** fix filtering unspecified bids on other fields ([db65aa8](https://github.com/energywebfoundation/origin/commit/db65aa8006588790d56f6fff0cfbbc4bd6816075))
+* **exchange-core:** reported volume, pending actions clear, more consistency checks ([1bd4d60](https://github.com/energywebfoundation/origin/commit/1bd4d603361e07a887e33da5b2dea089c2492a1b))
+* **exchnage-core:** in-order cancellations ([fcf8b80](https://github.com/energywebfoundation/origin/commit/fcf8b807ca53f2e59d74ebad2f09bed0b7ab981a))
+
+
+### chore
+
+* **exchange-core:** remove order status tracking ([cfe0684](https://github.com/energywebfoundation/origin/commit/cfe0684b782fb2d627cb6660eac7b78c24ca296e))
+
+
+### Features
+
+* **exchange-core:** add explicit ordebook filters ([56d7038](https://github.com/energywebfoundation/origin/commit/56d7038de159c98efb2c18cd927979f520d25411))
+* **exchange-core:** direct buy orders ([27e8aa7](https://github.com/energywebfoundation/origin/commit/27e8aa7ed70fab15b350c0cc81d9317556a76c92))
+* **exchange-core:** grid operator matching & filtering ([94d9109](https://github.com/energywebfoundation/origin/commit/94d9109f9e7ff1b7a2768494b2afbb9477175d62))
+* **exchange-core:** validFrom filtered orderbook views ([f9b5886](https://github.com/energywebfoundation/origin/commit/f9b5886fcf2c826940cd3331226c9636c5ba4f83))
+* **exchnage-core:** generation time matching and filtering ([9139d63](https://github.com/energywebfoundation/origin/commit/9139d63179dd9a7a2ec65cb8c2ea8a1cda012be8))
+
+
+### BREAKING CHANGES
+
+* **exchange-core:** OrderStatus enum is not longer a member of exchange-core package. Action results are now signalled via actionResults events
+
+
+
+
+
 ## [1.0.1](https://github.com/energywebfoundation/origin/compare/@energyweb/exchange-core@1.0.0...@energyweb/exchange-core@1.0.1) (2020-03-16)
 
 
