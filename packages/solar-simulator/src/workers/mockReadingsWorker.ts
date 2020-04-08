@@ -8,14 +8,15 @@ import { ProducingDevice } from '@energyweb/device-registry';
 import { Configuration } from '@energyweb/utils-general';
 import { OffChainDataSource } from '@energyweb/origin-backend-client';
 import { ISmartMeterRead } from '@energyweb/origin-backend-core';
+import { bigNumberify, BigNumber } from 'ethers/utils';
 
 async function getProducingDeviceSmartMeterRead(
     deviceId: string,
     conf: Configuration.Entity
-): Promise<number> {
+): Promise<BigNumber> {
     const device = await new ProducingDevice.Entity(parseInt(deviceId, 10), conf).sync();
 
-    return device.lastSmartMeterReadWh ?? 0;
+    return device.lastSmartMeterReadWh ?? bigNumberify(0);
 }
 
 async function saveProducingDeviceSmartMeterRead(
@@ -97,19 +98,19 @@ const currentTime = moment.tz(device.timezone);
             .reduce((a, b) => a + parseFloat(b[1]), 0);
 
         const multiplier = combinedMultiplierForMatchingRows ?? 0;
-        const energyGenerated = Math.round(device.maxCapacity * multiplier);
+        const energyGenerated = bigNumberify(Math.round(device.maxCapacity * multiplier));
 
-        const isValidMeterReading = energyGenerated > 0;
+        const isValidMeterReading = energyGenerated.gt(0);
 
         if (isValidMeterReading) {
             try {
-                const previousRead: number = await getProducingDeviceSmartMeterRead(
+                const previousRead: BigNumber = await getProducingDeviceSmartMeterRead(
                     device.id,
                     conf
                 );
 
                 const smartMeterReading: ISmartMeterRead = {
-                    meterReading: previousRead + energyGenerated,
+                    meterReading: previousRead.add(energyGenerated),
                     timestamp: measurementTime.unix()
                 };
 

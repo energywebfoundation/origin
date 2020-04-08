@@ -9,6 +9,7 @@ import { ProducingDevice } from '@energyweb/device-registry';
 import { Configuration } from '@energyweb/utils-general';
 import { OffChainDataSource } from '@energyweb/origin-backend-client';
 import { ISmartMeterRead } from '@energyweb/origin-backend-core';
+import { bigNumberify, BigNumber } from 'ethers/utils';
 
 export function wait(milliseconds: number) {
     return new Promise((resolve) => {
@@ -48,10 +49,10 @@ export async function startConsumerService(configFilePath: string) {
     const CHECK_INTERVAL = CONFIG.config.ENERGY_READ_CHECK_INTERVAL || 29000;
     const conf = await createBlockchainConfiguration();
 
-    async function getProducingDeviceSmartMeterRead(deviceId: string): Promise<number> {
+    async function getProducingDeviceSmartMeterRead(deviceId: string): Promise<BigNumber> {
         const device = await new ProducingDevice.Entity(parseInt(deviceId, 10), conf).sync();
 
-        return device.lastSmartMeterReadWh ?? 0;
+        return device.lastSmartMeterReadWh ?? bigNumberify(0);
     }
 
     async function saveProducingDeviceSmartMeterRead(
@@ -112,13 +113,13 @@ export async function startConsumerService(configFilePath: string) {
                     continue;
                 }
 
-                const roundedEnergy: number = Math.round(energyMeasurement.energy);
+                const roundedEnergy: BigNumber = bigNumberify(Math.round(energyMeasurement.energy));
 
-                const previousRead: number = await getProducingDeviceSmartMeterRead(device.id);
+                const previousRead: BigNumber = await getProducingDeviceSmartMeterRead(device.id);
                 const time = moment(energyMeasurement.measurementTime);
 
                 const smartMeterReading: ISmartMeterRead = {
-                    meterReading: previousRead + roundedEnergy,
+                    meterReading: previousRead.add(roundedEnergy),
                     timestamp: time.unix()
                 };
 
