@@ -6,7 +6,6 @@ import {
 } from '@energyweb/origin-backend-core';
 import { ContractTransaction, Event as BlockchainEvent } from 'ethers';
 import { BigNumber, randomBytes } from 'ethers/utils';
-import { Log } from 'ethers/providers';
 
 import { Configuration, Timestamp } from '@energyweb/utils-general';
 
@@ -47,7 +46,7 @@ export interface ICertificate {
 export const getAllCertificateEvents = async (
     certId: number,
     configuration: Configuration.Entity
-): Promise<Log[]> => {
+): Promise<BlockchainEvent[]> => {
     const { registry } = configuration.blockchainProperties as Configuration.BlockchainProperties<
         Registry,
         Issuer
@@ -410,7 +409,7 @@ export class Entity extends PreciseProofEntity implements ICertificate {
         return issuerWithSigner.revokeCertificate(this.id);
     }
 
-    async getAllCertificateEvents(): Promise<Log[]> {
+    async getAllCertificateEvents(): Promise<BlockchainEvent[]> {
         return getAllCertificateEvents(this.id, this.configuration);
     }
 
