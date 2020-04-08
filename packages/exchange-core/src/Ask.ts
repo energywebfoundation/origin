@@ -13,7 +13,8 @@ export class Ask extends Order {
         volume: BN,
         product: Product,
         validFrom: Date,
-        userId: string
+        userId: string,
+        public readonly assetId: string
     ) {
         super(id, OrderSide.Ask, validFrom, product, price, volume, userId);
 
@@ -81,7 +82,15 @@ export class Ask extends Order {
     }
 
     public clone() {
-        return new Ask(this.id, this.price, this.volume, this.product, this.validFrom, this.userId);
+        return new Ask(
+            this.id,
+            this.price,
+            this.volume,
+            this.product,
+            this.validFrom,
+            this.userId,
+            this.assetId
+        );
     }
 
     private filter(filter: Filter, pred: () => boolean) {
