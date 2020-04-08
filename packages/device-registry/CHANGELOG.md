@@ -3,6 +3,33 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.0.0](https://github.com/energywebfoundation/origin/compare/@energyweb/device-registry@5.1.1...@energyweb/device-registry@6.0.0) (2020-04-08)
+
+
+### Bug Fixes
+
+* adjust application to off-chain device registry ([a3583fb](https://github.com/energywebfoundation/origin/commit/a3583fb6c80604c88ef69724c69229a74320ff95))
+* remove MarketUser from UI ([9d15489](https://github.com/energywebfoundation/origin/commit/9d15489fa976fb9861337de0b8cbc56a06477203))
+
+
+### chore
+
+* **device-registry:** remove all off-chain components ([d11c834](https://github.com/energywebfoundation/origin/commit/d11c83486a89eab252a88dcf79054383f9ea5152))
+
+
+### Features
+
+* add ability to autogenerate external device ids ([822b752](https://github.com/energywebfoundation/origin/commit/822b7523730b726aeb2f7f09922d1742f3faa075))
+
+
+### BREAKING CHANGES
+
+* **device-registry:** The device registry is now entirely on-chain
+
+
+
+
+
 ## [5.1.1](https://github.com/energywebfoundation/origin/compare/@energyweb/device-registry@5.1.0...@energyweb/device-registry@5.1.1) (2020-03-16)
 
 

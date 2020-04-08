@@ -3,6 +3,55 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [5.0.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-backend@4.0.0...@energyweb/origin-backend@5.0.0) (2020-04-08)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @nestjs/config to v0.4.0 ([e7ac62d](https://github.com/energywebfoundation/origin/commit/e7ac62d728b854cb95b5c9293bc0be70d66aa0f8))
+* **deps:** update dependency @nestjs/jwt to v7 ([143fb82](https://github.com/energywebfoundation/origin/commit/143fb82ad08423e05fd4ccd25926cb30c0caa4ff))
+* **deps:** update dependency @nestjs/passport to v7 ([be26821](https://github.com/energywebfoundation/origin/commit/be268216980b5b1119638ddae039022aa8e9790a))
+* **deps:** update dependency class-validator to v0.11.1 ([5607f1c](https://github.com/energywebfoundation/origin/commit/5607f1cb3ef09e7838ac8fcd4e72538e65bf514e))
+* **deps:** update dependency rxjs to v6.5.5 ([2c19e39](https://github.com/energywebfoundation/origin/commit/2c19e39552b2e68a91db9fc8b21127488a9cd576))
+* **origin-backend:** fix displaying uploaded files ([97bc31c](https://github.com/energywebfoundation/origin/commit/97bc31cb93cd27e15e7c6a19ee1e90409c2d87a9))
+* **origin-backend:** fix saving user settings ([04b5361](https://github.com/energywebfoundation/origin/commit/04b53613aec909e75f1107e6d9dc07c0d27e0b48))
+* **origin-backend:** store certificate energy as BigInt ([cbaf676](https://github.com/energywebfoundation/origin/commit/cbaf676b9725d82bdbf5a177cb495afe9710ede4))
+* **origin-ui-core:** display notification when users tries to register device without organization ([ff4e0a4](https://github.com/energywebfoundation/origin/commit/ff4e0a44bc5c88f1028699872143a9a8e69c9163))
+* adjust application to off-chain device registry ([a3583fb](https://github.com/energywebfoundation/origin/commit/a3583fb6c80604c88ef69724c69229a74320ff95))
+* don't drop schema when run:origin ([57ca815](https://github.com/energywebfoundation/origin/commit/57ca8151bd27555c17031556b5980213d476cea9))
+* enable editing account settings ([b058828](https://github.com/energywebfoundation/origin/commit/b058828cafe8e07f0d5b921f8d0c59efc4f67ee7))
+* make ContractsLookup part of Configuration ([4fe28c4](https://github.com/energywebfoundation/origin/commit/4fe28c4a79dc17658b067d519c6f0288a6243198))
+* remove MarketUser from UI ([9d15489](https://github.com/energywebfoundation/origin/commit/9d15489fa976fb9861337de0b8cbc56a06477203))
+* working exchange integration ([49ced59](https://github.com/energywebfoundation/origin/commit/49ced5996c4198fcbf43b8e0eeaf978182ba3a47))
+
+
+### chore
+
+* **device-registry:** remove all off-chain components ([d11c834](https://github.com/energywebfoundation/origin/commit/d11c83486a89eab252a88dcf79054383f9ea5152))
+
+
+### Features
+
+* **origin-backend:** add grid operators ([247a179](https://github.com/energywebfoundation/origin/commit/247a17950ebe917fbf82ecb0dcd25a47caddcc57))
+* add ability to autogenerate external device ids ([822b752](https://github.com/energywebfoundation/origin/commit/822b7523730b726aeb2f7f09922d1742f3faa075))
+* add ORGANIZATION_REMOVED_MEMBER and DEVICE_STATUS_CHANGED email notifications ([384f90f](https://github.com/energywebfoundation/origin/commit/384f90fa18bf9ee7a38648afa28de95ca7f64071))
+* add posting certificates for sale ([84a141a](https://github.com/energywebfoundation/origin/commit/84a141a9868102f1d012170926c2439069716783))
+* **issuer:** approval process for private transfers ([b285bfd](https://github.com/energywebfoundation/origin/commit/b285bfdc4c7807a619ded163cc49a83b7545eb88))
+* **origin-backend:** add createdAt and updatedAt to every entity ([7aae8c0](https://github.com/energywebfoundation/origin/commit/7aae8c0212ec1c4cb4c0388d69c576ec05f9cdfb))
+* **origin-backend:** add findDeviceProductInfo method ([a9a380b](https://github.com/energywebfoundation/origin/commit/a9a380b568b33fa344ee700024d4bbdcedfba830))
+* New CertificationRequest structure + use ContractsLookup instead of MarketContractLookup ([cb380c0](https://github.com/energywebfoundation/origin/commit/cb380c05986ee5e8f8fb1398e225ee54147a3936))
+* store energy amount in CertificationRequest ([5d756ba](https://github.com/energywebfoundation/origin/commit/5d756ba848245ebf50416d4ce53b61e8e0072ebb))
+* support storing OwnershipCommitments off-chain ([6586895](https://github.com/energywebfoundation/origin/commit/658689556bb22a011e5dc947cf288f0b4c2cebcb))
+
+
+### BREAKING CHANGES
+
+* **device-registry:** The device registry is now entirely on-chain
+
+
+
+
+
 # [4.0.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-backend@3.8.0...@energyweb/origin-backend@4.0.0) (2020-03-16)
 
 

@@ -3,6 +3,51 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-ui-core@0.4.0...@energyweb/origin-ui-core@1.0.0) (2020-04-08)
+
+
+### Bug Fixes
+
+* **deps:** update dependency i18next to v19.3.4 ([61fd12f](https://github.com/energywebfoundation/origin/commit/61fd12f8f225f9f413c3906a4abe8ab2e2258901))
+* **deps:** update dependency i18next-icu to v1.3.0 ([7adfe57](https://github.com/energywebfoundation/origin/commit/7adfe570c4b2f1e9742d1f8738ccd4255c20e1a4))
+* **deps:** update react ([36a1dc2](https://github.com/energywebfoundation/origin/commit/36a1dc2a7d6ded84692c0f96fd2af45ec6b8f4ec))
+* **deps:** update webpack ([7081f1d](https://github.com/energywebfoundation/origin/commit/7081f1dc27611653d3335a30b0821ec7f137b2d5))
+* **origin-ui-core:** add spinner to exchange ui on posting bid ([5db4183](https://github.com/energywebfoundation/origin/commit/5db418329c2c9dedf08df0ecb475f0696b9e49a6))
+* **origin-ui-core:** adjust exchange UI ([efe1e64](https://github.com/energywebfoundation/origin/commit/efe1e644852c227eb6a4987dbe40616bb504ee46))
+* **origin-ui-core:** disallow requesting more than BigInt (1e16) energy ([11dfddd](https://github.com/energywebfoundation/origin/commit/11dfddde220946d33eb81a8c79707e13a5268a80))
+* **origin-ui-core:** display notification when users tries to register device without organization ([ff4e0a4](https://github.com/energywebfoundation/origin/commit/ff4e0a44bc5c88f1028699872143a9a8e69c9163))
+* **origin-ui-core:** fix displaying certificates ([aed5142](https://github.com/energywebfoundation/origin/commit/aed51423ec13d11800029ba736b44e1e7fb6a449))
+* **origin-ui-core:** register device group ([555920e](https://github.com/energywebfoundation/origin/commit/555920e357ae6c29f1086e65f0680dba097e087e))
+* **origin-ui-core:** update certificate energy in inbox after posting for sale ([1e15e3d](https://github.com/energywebfoundation/origin/commit/1e15e3de3dea7ec549c371a50406be6359e103b8))
+* **origin-ui-core:** use user.id instead of user.blockchainAddress when getting MyDevices ([923fe0b](https://github.com/energywebfoundation/origin/commit/923fe0b85c94aa24fda5bdf03898437288901803))
+* **origin-user-core:** don't show all devices to users without a blockchain address ([f5939ef](https://github.com/energywebfoundation/origin/commit/f5939ef965849255b9a848e7c9477bc20788dd6a))
+* adjust application to off-chain device registry ([a3583fb](https://github.com/energywebfoundation/origin/commit/a3583fb6c80604c88ef69724c69229a74320ff95))
+* disallow bad user request certs flow ([99cec42](https://github.com/energywebfoundation/origin/commit/99cec42a5c813c8d4fb013ea8be1dce46ef1d20a))
+* enable editing account settings ([b058828](https://github.com/energywebfoundation/origin/commit/b058828cafe8e07f0d5b921f8d0c59efc4f67ee7))
+* remove MarketUser from UI ([9d15489](https://github.com/energywebfoundation/origin/commit/9d15489fa976fb9861337de0b8cbc56a06477203))
+* working exchange integration ([49ced59](https://github.com/energywebfoundation/origin/commit/49ced5996c4198fcbf43b8e0eeaf978182ba3a47))
+
+
+### Features
+
+* **origin-ui-core:** add My trades view ([05ff2c9](https://github.com/energywebfoundation/origin/commit/05ff2c9a8056e31a0249ec9d881cbefc79cc887a))
+* add ability to autogenerate external device ids ([822b752](https://github.com/energywebfoundation/origin/commit/822b7523730b726aeb2f7f09922d1742f3faa075))
+* **origin-ui-core:** allow guests to view exchange ([a61e397](https://github.com/energywebfoundation/origin/commit/a61e39758b9426ee57c23f6cfe87752c72c8dfb8))
+* add new exchange UI ([f0df25c](https://github.com/energywebfoundation/origin/commit/f0df25c9736b99713da1d4b7f53e73a8e7530b84))
+* add ORGANIZATION_REMOVED_MEMBER and DEVICE_STATUS_CHANGED email notifications ([384f90f](https://github.com/energywebfoundation/origin/commit/384f90fa18bf9ee7a38648afa28de95ca7f64071))
+* add posting certificates for sale ([84a141a](https://github.com/energywebfoundation/origin/commit/84a141a9868102f1d012170926c2439069716783))
+* adjust the UI to the new structure ([4849fb2](https://github.com/energywebfoundation/origin/commit/4849fb2cc0913c927a437806503f3f5d9024e903))
+* store energy amount in CertificationRequest ([5d756ba](https://github.com/energywebfoundation/origin/commit/5d756ba848245ebf50416d4ce53b61e8e0072ebb))
+
+
+### BREAKING CHANGES
+
+* Removed a lot of functionality
+
+
+
+
+
 # [0.4.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-ui-core@0.3.0...@energyweb/origin-ui-core@0.4.0) (2020-03-16)
 
 

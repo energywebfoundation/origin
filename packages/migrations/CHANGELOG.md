@@ -3,6 +3,38 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.0.0](https://github.com/energywebfoundation/origin/compare/@energyweb/migrations@2.1.0...@energyweb/migrations@3.0.0) (2020-04-08)
+
+
+### Bug Fixes
+
+* **deps:** update dependency pg to v8 ([550201a](https://github.com/energywebfoundation/origin/commit/550201aaa4d8a2f5ef73973cc8682341f2046238))
+* **migrations:** fix sql migrations ([f6df16d](https://github.com/energywebfoundation/origin/commit/f6df16d49a2ef0472a9c94e408ba40ce0d2e5fea))
+* **migrations:** move drop_schema.sql ([6c9e52e](https://github.com/energywebfoundation/origin/commit/6c9e52ef8aa396b2f7cd2f3d8f1cbed9dc91dd08))
+* **migrations:** set next autoincrement ID after SQL seeding ([4738b82](https://github.com/energywebfoundation/origin/commit/4738b82f856952eeca08a4e054c685df709a482a))
+* adjust application to off-chain device registry ([a3583fb](https://github.com/energywebfoundation/origin/commit/a3583fb6c80604c88ef69724c69229a74320ff95))
+* fix migrating currencies ([17de6c6](https://github.com/energywebfoundation/origin/commit/17de6c60ef55f04504d5052cd6e96d8d52d7a5c1))
+* make ContractsLookup part of Configuration ([4fe28c4](https://github.com/energywebfoundation/origin/commit/4fe28c4a79dc17658b067d519c6f0288a6243198))
+* remove MarketUser from UI ([9d15489](https://github.com/energywebfoundation/origin/commit/9d15489fa976fb9861337de0b8cbc56a06477203))
+* **migrations:** replace MarketContractLookup with ContractsLookup ([5fe52ec](https://github.com/energywebfoundation/origin/commit/5fe52ecd611dad17e359ff2d42b6fc3cbfe4e92d))
+
+
+### Features
+
+* add ability to autogenerate external device ids ([822b752](https://github.com/energywebfoundation/origin/commit/822b7523730b726aeb2f7f09922d1742f3faa075))
+* **migrations:** introduce Issuer ID ([dffd83c](https://github.com/energywebfoundation/origin/commit/dffd83cb8d995da53e99ad0532b3754f88124f43))
+* **migrations:** migrate using SQL files ([322d900](https://github.com/energywebfoundation/origin/commit/322d900ba582fc100fe351c4b373bd5fe9ea842f))
+
+
+### BREAKING CHANGES
+
+* **migrations:** New way of doing migrations through SQL files. Requires Postgres installed
+* **migrations:** replace MarketContractLookup with ContractsLookup
+
+
+
+
+
 # [2.1.0](https://github.com/energywebfoundation/origin/compare/@energyweb/migrations@2.0.3...@energyweb/migrations@2.1.0) (2020-03-16)
 
 

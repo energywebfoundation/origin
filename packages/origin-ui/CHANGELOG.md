@@ -3,6 +3,30 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.0.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-ui@1.5.5...@energyweb/origin-ui@2.0.0) (2020-04-08)
+
+
+### Bug Fixes
+
+* **deps:** update react ([36a1dc2](https://github.com/energywebfoundation/origin/commit/36a1dc2a7d6ded84692c0f96fd2af45ec6b8f4ec))
+* **deps:** update webpack ([7081f1d](https://github.com/energywebfoundation/origin/commit/7081f1dc27611653d3335a30b0821ec7f137b2d5))
+
+
+### Features
+
+* add new exchange UI ([f0df25c](https://github.com/energywebfoundation/origin/commit/f0df25c9736b99713da1d4b7f53e73a8e7530b84))
+* add posting certificates for sale ([84a141a](https://github.com/energywebfoundation/origin/commit/84a141a9868102f1d012170926c2439069716783))
+* adjust the UI to the new structure ([4849fb2](https://github.com/energywebfoundation/origin/commit/4849fb2cc0913c927a437806503f3f5d9024e903))
+
+
+### BREAKING CHANGES
+
+* Removed a lot of functionality
+
+
+
+
+
 ## [1.5.5](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-ui@1.5.4...@energyweb/origin-ui@1.5.5) (2020-03-16)
 
 **Note:** Version bump only for package @energyweb/origin-ui

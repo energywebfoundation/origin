@@ -11,14 +11,14 @@
     "bugs": {
         "url": "https://github.com/energywebfoundation/origin/issues"
     },
-    "version": "2.0.3",
+    "version": "3.0.0",
     "main": "dist/js/src/main.js",
     "bin": {
         "migrations": "./bin/migrations"
     },
     "scripts": {
-        "build": "yarn build:ts && yarn copy:schema",
-        "build:ts": "tsc -b tsconfig.build.json --verbose --pretty",
+        "build": "yarn build:ts",
+        "build:ts": "tsc -b tsconfig.build.json --verbose --pretty && yarn copy:schema",
         "copy:schema": "shx cp -r src/schema dist/js/src/",
         "start": "ts-node src/main.ts",
         "start:redeploy": "yarn start -r",
@@ -30,8 +30,8 @@
     },
     "types": "dist/js/index.d.ts",
     "dependencies": {
-        "@energyweb/issuer": "1.0.1",
-        "@energyweb/origin-backend-core": "2.0.0",
+        "@energyweb/issuer": "1.1.0",
+        "@energyweb/origin-backend-core": "2.1.0",
         "@types/pg": "7.14.3",
         "commander": "^4.1.1",
         "dotenv": "8.2.0",

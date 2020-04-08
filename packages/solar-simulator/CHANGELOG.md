@@ -3,6 +3,20 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.1.6](https://github.com/energywebfoundation/origin/compare/@energyweb/solar-simulator@1.1.5...@energyweb/solar-simulator@1.1.6) (2020-04-08)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @types/moment-timezone to v0.5.13 ([fd468ab](https://github.com/energywebfoundation/origin/commit/fd468ab142d0f819651be4d5a22275ad0b2e7c43))
+* **deps:** update dependency commander to v5 ([fc22d06](https://github.com/energywebfoundation/origin/commit/fc22d0664b0e0fef350a3f7fc3de943e51f346f4))
+* **deps:** update dependency ethers to v4.0.46 ([f2efe8e](https://github.com/energywebfoundation/origin/commit/f2efe8ee404bebc2fa111fabeb891797a2a5416e))
+* enable editing account settings ([b058828](https://github.com/energywebfoundation/origin/commit/b058828cafe8e07f0d5b921f8d0c59efc4f67ee7))
+
+
+
+
+
 ## [1.1.5](https://github.com/energywebfoundation/origin/compare/@energyweb/solar-simulator@1.1.4...@energyweb/solar-simulator@1.1.5) (2020-03-16)
 
 

@@ -3,6 +3,57 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.6.0](https://github.com/energywebfoundation/origin/compare/@energyweb/exchange@0.5.0...@energyweb/exchange@0.6.0) (2020-04-08)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @nestjs/config to v0.4.0 ([e7ac62d](https://github.com/energywebfoundation/origin/commit/e7ac62d728b854cb95b5c9293bc0be70d66aa0f8))
+* **deps:** update dependency @nestjs/passport to v7 ([be26821](https://github.com/energywebfoundation/origin/commit/be268216980b5b1119638ddae039022aa8e9790a))
+* **deps:** update dependency @nestjs/swagger to v4.5.1 ([79e1290](https://github.com/energywebfoundation/origin/commit/79e1290e07a44dc7065badb5e94786f94277e98e))
+* **deps:** update dependency class-validator to v0.11.1 ([5607f1c](https://github.com/energywebfoundation/origin/commit/5607f1cb3ef09e7838ac8fcd4e72538e65bf514e))
+* **deps:** update dependency ethers to v4.0.46 ([f2efe8e](https://github.com/energywebfoundation/origin/commit/f2efe8ee404bebc2fa111fabeb891797a2a5416e))
+* **deps:** update dependency pg to v8 ([550201a](https://github.com/energywebfoundation/origin/commit/550201aaa4d8a2f5ef73973cc8682341f2046238))
+* **deps:** update dependency rxjs to v6.5.5 ([2c19e39](https://github.com/energywebfoundation/origin/commit/2c19e39552b2e68a91db9fc8b21127488a9cd576))
+* **deps:** update dependency swagger-ui-express to v4.1.4 ([ee966d5](https://github.com/energywebfoundation/origin/commit/ee966d537546dc4b883195a8d2507683bbc3b62d))
+* **exchange:** better volume validation. better e2e test for directbuys ([ef9c3cb](https://github.com/energywebfoundation/origin/commit/ef9c3cb21ea2b6698bf0a5d6a80456e7bcdff71a))
+* **exchange:** do not mask orders when using for account balance calculation ([6230412](https://github.com/energywebfoundation/origin/commit/6230412eb2bf3c8f6ce9ac8f16c9a7bf26c1ba47))
+* **exchange:** dont wait for runner service to start application ([05c69cb](https://github.com/energywebfoundation/origin/commit/05c69cb3605544618070f031562ee8eab1715660))
+* **exchange:** fix devicemodule mock ([157c38f](https://github.com/energywebfoundation/origin/commit/157c38f71b9dbe117f817ef5b2c733b97fb817a1))
+* **exchange:** public orderbook endpoint ([78f9dd2](https://github.com/energywebfoundation/origin/commit/78f9dd2565a060918c9695005258266b554d55ec))
+* disallow bad user request certs flow ([99cec42](https://github.com/energywebfoundation/origin/commit/99cec42a5c813c8d4fb013ea8be1dce46ef1d20a))
+* **exchange:** fix for example.sql ([dee775c](https://github.com/energywebfoundation/origin/commit/dee775cbfcc2c2ab5d4b44299ee624329a663993))
+* **exchange:** retry truncate after fail ([9f8fe50](https://github.com/energywebfoundation/origin/commit/9f8fe505b86c942fe86307a501e0062678d0d205))
+* **exchange:** retry truncate after fail. await for result ([787c488](https://github.com/energywebfoundation/origin/commit/787c4889d2b2376d2ce018c18ff04b9be44fe3fe))
+* **exchange:** runInBand mode for e2e tests ([68b2e9a](https://github.com/energywebfoundation/origin/commit/68b2e9ad36f0ad5db63244ff97843171d65eee23))
+* **exchnage:** fix external modules resolution. remove app.service ([a4c7c42](https://github.com/energywebfoundation/origin/commit/a4c7c427c88c80f89a7f27a3770fdd5a339fd2fa))
+* **origin-backend-app:** fix exchange dependency ([7512f5a](https://github.com/energywebfoundation/origin/commit/7512f5ac525e9cf7030a4b995f3705dc0ec1623b))
+* fix exchange nest build ([3234b4f](https://github.com/energywebfoundation/origin/commit/3234b4ff0805c58baa2e234f9e9826a328ccf69f))
+* make ContractsLookup part of Configuration ([4fe28c4](https://github.com/energywebfoundation/origin/commit/4fe28c4a79dc17658b067d519c6f0288a6243198))
+* remove MarketUser from UI ([9d15489](https://github.com/energywebfoundation/origin/commit/9d15489fa976fb9861337de0b8cbc56a06477203))
+* working exchange integration ([49ced59](https://github.com/energywebfoundation/origin/commit/49ced5996c4198fcbf43b8e0eeaf978182ba3a47))
+
+
+### Features
+
+* **exchange:** default filters to Filter.All ([b3a2084](https://github.com/energywebfoundation/origin/commit/b3a2084faaab02e01cd02cab29cc4c53be3694f9))
+* **exchange:** demand creation ([94e6fe5](https://github.com/energywebfoundation/origin/commit/94e6fe5db3263eabf8c4f32f7966e1001095adb8))
+* **exchange:** demand status management ([a2dfaed](https://github.com/energywebfoundation/origin/commit/a2dfaed81459dd08e93b04d111430276d54deb25))
+* **exchange:** direct buy api. e2e tests fixes ([589580d](https://github.com/energywebfoundation/origin/commit/589580d31810646d7bdb3343c4b3bd0deb15821f))
+* **exchange:** grid operator filters and validators ([e413171](https://github.com/energywebfoundation/origin/commit/e413171734aa7dadd52865f0eda0cfade3992b91))
+* **exchange:** option to bound the generation time to demand period ([119348e](https://github.com/energywebfoundation/origin/commit/119348e0939ffe6965035aec19e86963792ca2a3))
+* **exchange:** order cancellation api ([9768e76](https://github.com/energywebfoundation/origin/commit/9768e762fabd72d5714d8f1673dd66325765b1f3))
+* **exchange:** product filter validation, matching engine service init ([20c3e97](https://github.com/energywebfoundation/origin/commit/20c3e970dcd394c1e2ad0e369e868379cb87f481))
+* **exchange:** use device service for device product info ([52c6566](https://github.com/energywebfoundation/origin/commit/52c656638a12d117dafb5e89173b9583855b7d01))
+* **exchange:** use product filter type to provide orderbook searching ([6b752f4](https://github.com/energywebfoundation/origin/commit/6b752f4ae6991fc72bf9af13945504d434ed6182))
+* **exchange:** using token.data to get generation times and deviceid. integration tests using issuer contract. ([b79fb2d](https://github.com/energywebfoundation/origin/commit/b79fb2d93821d2b98c33a3ffa02449788a7fa24c))
+* add new exchange UI ([f0df25c](https://github.com/energywebfoundation/origin/commit/f0df25c9736b99713da1d4b7f53e73a8e7530b84))
+* add ORGANIZATION_REMOVED_MEMBER and DEVICE_STATUS_CHANGED email notifications ([384f90f](https://github.com/energywebfoundation/origin/commit/384f90fa18bf9ee7a38648afa28de95ca7f64071))
+
+
+
+
+
 # [0.5.0](https://github.com/energywebfoundation/origin/compare/@energyweb/exchange@0.4.0...@energyweb/exchange@0.5.0) (2020-03-16)
 
 

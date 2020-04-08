@@ -11,7 +11,7 @@
     "bugs": {
         "url": "https://github.com/energywebfoundation/origin/issues"
     },
-    "version": "1.0.1",
+    "version": "2.0.0",
     "main": "dist/js/src/index.js",
     "files": [
         "dist/js/build",
@@ -34,12 +34,12 @@
     },
     "types": "dist/js/src/index.d.ts",
     "dependencies": {
-        "@energyweb/utils-general": "7.0.2",
+        "@energyweb/utils-general": "8.0.0",
         "bn.js": "5.1.1",
         "immutable": "4.0.0-rc.12",
-        "rxjs": "6.5.5",
         "moment": "2.24.0",
-        "moment-range": "4.0.2"
+        "moment-range": "4.0.2",
+        "rxjs": "6.5.5"
     },
     "publishConfig": {
         "access": "public",
