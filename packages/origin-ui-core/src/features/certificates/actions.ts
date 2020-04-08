@@ -1,4 +1,4 @@
-import { PurchasableCertificate } from '@energyweb/market';
+import { Certificate } from '@energyweb/issuer';
 import { ProducingDevice } from '@energyweb/device-registry';
 import { IStoreState } from '../../types';
 
@@ -15,10 +15,10 @@ export enum CertificatesActions {
 
 export interface IAddCertificateAction {
     type: CertificatesActions.addCertificate;
-    payload: PurchasableCertificate.Entity;
+    payload: Certificate.Entity;
 }
 
-export const addCertificate = (payload: PurchasableCertificate.Entity) => ({
+export const addCertificate = (payload: Certificate.Entity) => ({
     type: CertificatesActions.addCertificate,
     payload
 });
@@ -27,10 +27,10 @@ export type TAddCertificateAction = typeof addCertificate;
 
 export interface IUpdateCertificateAction {
     type: CertificatesActions.updateCertificate;
-    payload: PurchasableCertificate.Entity;
+    payload: Certificate.Entity;
 }
 
-export const updateCertificate = (payload: PurchasableCertificate.Entity) => ({
+export const updateCertificate = (payload: Certificate.Entity) => ({
     type: CertificatesActions.updateCertificate,
     payload
 });
@@ -97,7 +97,7 @@ export type TSetRequestCertificatesModalVisibilityAction = typeof setRequestCert
 
 export interface IRequestCertificateEntityFetchAction {
     type: CertificatesActions.requestCertificateEntityFetch;
-    payload: string;
+    payload: number;
 }
 
 export const requestCertificateEntityFetch = (
@@ -110,12 +110,9 @@ export const requestCertificateEntityFetch = (
 export type TRequestUserCertificateEntityFetchAction = typeof requestCertificateEntityFetch;
 
 export interface ICertificateFetcher {
-    fetch(
-        id: string,
-        configuration: IStoreState['configuration']
-    ): Promise<PurchasableCertificate.Entity>;
+    fetch(id: number, configuration: IStoreState['configuration']): Promise<Certificate.Entity>;
 
-    reload(entity: PurchasableCertificate.Entity): Promise<PurchasableCertificate.Entity>;
+    reload(entity: Certificate.Entity): Promise<Certificate.Entity>;
 }
 
 export interface IUpdateFetcherAction {

@@ -15,37 +15,34 @@
 </p>
 
 ## Table of Contents
-- [Packages](#packages)
-- [Installation](#installation)
-- [Energy Attribute Certificates](#energy-attribute-certificates)
-- [Key modules and components](#key-modules-and-components)
-- [Deployment](#deployment)
-- [Contribution guidelines](#contribution-guidelines)
+
+-   [Packages](#packages)
+-   [Installation](#installation)
+-   [Energy Attribute Certificates](#energy-attribute-certificates)
+-   [Key modules and components](#key-modules-and-components)
+-   [Deployment](#deployment)
+-   [Contribution guidelines](#contribution-guidelines)
 
 ## Packages
 
 ### SDK Releases
 
-| Package | Stable | Canary | Description |
-| --- | --- | --- | --- |
-| [`@energyweb/device-registry`](/packages/device-registry) | [![npm](https://img.shields.io/npm/v/@energyweb/device-registry.svg)](https://www.npmjs.com/package/@energyweb/device-registry) | [![npm](https://img.shields.io/npm/v/@energyweb/device-registry/canary)](https://www.npmjs.com/package/@energyweb/device-registry) | Contracts and client for the Device Registry |
-| [`@energyweb/market-matcher-core`](/packages/market-matcher-core) | [![npm](https://img.shields.io/npm/v/@energyweb/market-matcher-core.svg)](https://www.npmjs.com/package/@energyweb/market-matcher-core) | [![npm](https://img.shields.io/npm/v/@energyweb/market-matcher-core/canary)](https://www.npmjs.com/package/@energyweb/market-matcher-core) | Matching rules and logic for market-matcher |
-| [`@energyweb/market`](/packages/market) | [![npm](https://img.shields.io/npm/v/@energyweb/market.svg)](https://www.npmjs.com/package/@energyweb/market) | [![npm](https://img.shields.io/npm/v/@energyweb/market/canary)](https://www.npmjs.com/package/@energyweb/market/canary) | Contracts and client for the Origin Marketplace |
-| [`@energyweb/origin`](/packages/origin) | [![npm](https://img.shields.io/npm/v/@energyweb/origin.svg)](https://www.npmjs.com/package/@energyweb/origin) | [![npm](https://img.shields.io/npm/v/@energyweb/market/canary)](https://www.npmjs.com/package/@energyweb/market/canary) | Contracts and client Origin Issuer of certificates |
-| [`@energyweb/origin-backend-client`](/packages/origin-backend-client) | [![npm](https://img.shields.io/npm/v/@energyweb/origin-backend-client.svg)](https://www.npmjs.com/package/@energyweb/origin-backend-client) | [![npm](https://img.shields.io/npm/v/@energyweb/origin-backend-client/canary)](https://www.npmjs.com/package/@energyweb/origin-backend-client) | Client library for off-chain data source |
-| [`@energyweb/origin-backend`](/packages/origin-backend) | [![npm](https://img.shields.io/npm/v/@energyweb/origin-backend.svg)](https://www.npmjs.com/package/@energyweb/origin-backend) | [![npm](https://img.shields.io/npm/v/@energyweb/origin-backend/canary)](https://www.npmjs.com/package/@energyweb/origin-backend) | Example backend for storing off-chain meta-data |
-| [`@energyweb/user-registry`](/packages/user-registry) | [![npm](https://img.shields.io/npm/v/@energyweb/user-registry.svg)](https://www.npmjs.com/package/@energyweb/user-registry) | [![npm](https://img.shields.io/npm/v/@energyweb/user-registry/canary)](https://www.npmjs.com/package/@energyweb/user-registry) | Contracts and client for the User Registry |
-| [`@energyweb/utils-general`](/packages/utils-general) | [![npm](https://img.shields.io/npm/v/@energyweb/utils-general.svg)](https://www.npmjs.com/package/@energyweb/utils-general) | [![npm](https://img.shields.io/npm/v/@energyweb/utils-general/canary)](https://www.npmjs.com/package/@energyweb/utils-general) | Utilities |
+| Package                                                               | Stable                                                                                                                                      | Canary                                                                                                                                         | Description                                     |
+| --------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------- |
+| [`@energyweb/device-registry`](/packages/device-registry)             | [![npm](https://img.shields.io/npm/v/@energyweb/device-registry.svg)](https://www.npmjs.com/package/@energyweb/device-registry)             | [![npm](https://img.shields.io/npm/v/@energyweb/device-registry/canary)](https://www.npmjs.com/package/@energyweb/device-registry)             | Contracts and client for the Device Registry    |
+| [`@energyweb/issuer`](/packages/issuer)             | [![npm](https://img.shields.io/npm/v/@energyweb/issuer.svg)](https://www.npmjs.com/package/@energyweb/issuer)             | [![npm](https://img.shields.io/npm/v/@energyweb/issuer/canary)](https://www.npmjs.com/package/@energyweb/issuer)             | Energy Attribute Certificates Issuer Module    |
+| [`@energyweb/origin-backend-client`](/packages/origin-backend-client) | [![npm](https://img.shields.io/npm/v/@energyweb/origin-backend-client.svg)](https://www.npmjs.com/package/@energyweb/origin-backend-client) | [![npm](https://img.shields.io/npm/v/@energyweb/origin-backend-client/canary)](https://www.npmjs.com/package/@energyweb/origin-backend-client) | Client library for off-chain data source        |
+| [`@energyweb/origin-backend`](/packages/origin-backend)               | [![npm](https://img.shields.io/npm/v/@energyweb/origin-backend.svg)](https://www.npmjs.com/package/@energyweb/origin-backend)               | [![npm](https://img.shields.io/npm/v/@energyweb/origin-backend/canary)](https://www.npmjs.com/package/@energyweb/origin-backend)               | Example backend for storing off-chain meta-data |
+| [`@energyweb/exchange`](/packages/exchange)               | [![npm](https://img.shields.io/npm/v/@energyweb/exchange.svg)](https://www.npmjs.com/package/@energyweb/exchange)               | [![npm](https://img.shields.io/npm/v/@energyweb/exchange/canary)](https://www.npmjs.com/package/@energyweb/exchange)               | A service project hosting order book based exchange |
+| [`@energyweb/utils-general`](/packages/utils-general)                 | [![npm](https://img.shields.io/npm/v/@energyweb/utils-general.svg)](https://www.npmjs.com/package/@energyweb/utils-general)                 | [![npm](https://img.shields.io/npm/v/@energyweb/utils-general/canary)](https://www.npmjs.com/package/@energyweb/utils-general)                 | Utilities                                       |
 
 ### Applications, Infrastructure and Demo
 
-| Package | Description |
-| --- | --- |
-| [`@energyweb/origin-ui`](/packages/origin-ui) | UI for Origin |
-| [`@energyweb/market-matcher`](/packages/market-matcher) | Off-chain agent for demand and supply matching |
+| Package                                                   | Description                                |
+| --------------------------------------------------------- | ------------------------------------------ |
+| [`@energyweb/origin-ui`](/packages/origin-ui)             | UI for Origin                              |
 | [`@energyweb/solar-simulator`](/packages/solar-simulator) | Solar production and consumption simulator |
-| [`@energyweb/event-listener`](/packages/event-listener) | Listens to Origin events, triggers actions on-chain and sends notifications |
-| [`@energyweb/migrations`](/packages/migrations) | Deployment and configuration utilities |
+| [`@energyweb/migrations`](/packages/migrations)           | Deployment and configuration utilities     |
 
 ### Packages types
 
@@ -57,7 +54,7 @@ Stable Origin SDK packages are created during `release` branch build.
 
 Install using `yarn add @energyweb/{package}`
 
-#### Canary 
+#### Canary
 
 Canary packages are created during `master` branch builds. Canary reflects current state of the `master` branch, they should be a working versions considers as `alpha`
 
@@ -91,9 +88,12 @@ yarn test
 
 ## Run demo
 
-Make sure you have created a `.env` file in the root of the monorepo and that all necessary variables are set.
+### Preparation
+1. Install [Postgres](https://www.postgresql.org/download/) and create a new database named `origin`.
+2. Make sure you have created a `.env` file in the root of the monorepo and that all necessary variables are set.
 Use [`.env.example`](.env.example) as an example of how the `.env` file should look.
 
+### Running
 After you have the `.env` file created, run the following command:
 
 ```shell
@@ -103,11 +103,13 @@ yarn run:origin
 Visit the UI at: http://localhost:3000.
 
 ## Energy Attribute Certificates
+
 Energy Attribute Certificates, or EACs, is an official document which guarantees that produced energy comes from a renewable source. There are different standards that regulate how data is stored and validated. In Europe, this document is called Guarantee of Origin (GO), in North America, it's called Renewable Energy Certificate (REC), and in parts of Asia, Africa, the Middle East, and Latin America governing standard is International REC (I-REC). Standards do vary, but they all share the same core principles.
 
 The main purpose of EACs is to act as an accounting vehicle to prove that consumed energy came from a renewable source. EACs are mostly used to address sustainability reports regarding [Scope 2 emissions](https://en.wikipedia.org/wiki/Carbon_emissions_reporting#Scope_2:_Electricity_indirect_GHG_emissions).
 
 ## Key modules and components
+
 Overview of architecture
 
 ### Key repositories
@@ -115,19 +117,16 @@ Overview of architecture
 This section lists key entry points to start your journey with Origin.
 
 1. [migrations](https://github.com/energywebfoundation/origin/tree/master/packages/migrations) - repository with build scripts that enable easy deployment of smart contracts to EWC, Volta or a local blockchain. Often used to demo and get to know features and capabilities of Origin.
-2. [origin-backend](https://github.com/energywebfoundation/origin/tree/master/packages/origin-backend) - Origin combines on and off-chain data storage. This repository is used to act as a backend service for off-chain data storage. You'll need this to run `migrations` (store data), and `origin-ui` to display stored data.
-3. [origin-ui](https://github.com/energywebfoundation/origin/tree/master/packages/origin-ui) - frontend of the system needed to view data stored in smart contracts (on-chain) and in the backend (off-chain). To interact Origin frontend you'll need [MetaMask](https://metamask.io).
+2. [origin-backend](https://github.com/energywebfoundation/origin/tree/master/packages/origin-backend) - This repository is used to act as a backend service for off-chain data storage.
+3. [origin-ui](https://github.com/energywebfoundation/origin/tree/master/packages/origin-ui) - frontend of the system needed to view data stored in smart contracts (on-chain) and in the backend (off-chain). To interact with the Origin frontend you'll need [MetaMask](https://metamask.io).
 
 ### Other components
 
-1. [user-registry](https://github.com/energywebfoundation/origin/tree/master/packages/user-registry) - high-level library to interact with user registry. Can be used to i. a. create new user or set user's role in the system.
-2. [device-registry](https://github.com/energywebfoundation/origin/tree/master/packages/device-registry) - high-level library for creating and managing electricity producing and consuming devices. Depends on [user-registry](https://github.com/energywebfoundation/origin/tree/master/packages/user-registry), because only user with Device Manager role can be owner of device.
-3. [origin](https://github.com/energywebfoundation/origin/tree/master/packages/origin) - a heart of Origin systems, contains logic for storing and transferring Energy Attribute Certificates (as a form of unique [ERC721](http://erc721.org/) tokens).
-4. [market](https://github.com/energywebfoundation/origin/tree/master/packages/market) - a library that allows to create demand (for buyers), supply (for sellers) and agreements between buyers and sellers. It also extends the `Certificate` from [origin](https://github.com/energywebfoundation/origin/tree/master/packages/origin) and creates `PurchasableCertificate`s that can be sold on the marketplace.
-5. [market-matcher](https://github.com/energywebfoundation/origin/tree/master/packages/market-matcher) - the most important part of marketplace, guarantees automatic matching of supply and demand between sellers and buyers. Matching rules can be highly customized and afterwards the algorithm can be tested by running matching simulator.
-6. [utils-general](https://github.com/energywebfoundation/origin/tree/master/packages/utils-general) - Contains logic for more straightforward interaction with contracts, such as watching events. It is also a base layer for other libraries to build upon. It provides a foundation for things like off-chain data storage that is universal for all entities.
-7. [solar-simulator](https://github.com/energywebfoundation/origin/tree/master/packages/solar-simulator) - This service simulates smart-meter readings based on example solar data from whole year in 15-mins intervals. Also allows you to generate the config based on data from public I-REC registry.
-8. [event-listener](https://github.com/energywebfoundation/origin/tree/master/packages/event-listener) - Event listeners listen to events on the blockchain and react accordingly.
+1. [device-registry](https://github.com/energywebfoundation/origin/tree/master/packages/device-registry) - high-level library for creating and managing electricity producing and consuming devices.
+2. [issuer](https://github.com/energywebfoundation/origin/tree/master/packages/issuer) - high-level library for issuing and transferring Energy Attribute Certificates.
+3. [exchange](https://github.com/energywebfoundation/origin/tree/master/packages/exchange) - An orderbook-based exchange for trading Energy Attribute Certificates.
+4. [utils-general](https://github.com/energywebfoundation/origin/tree/master/packages/utils-general) - Contains logic for more straightforward interaction with contracts, such as watching events. It is also a base layer for other libraries to build upon. It provides a foundation for things like off-chain data storage that is universal for all entities.
+5. [solar-simulator](https://github.com/energywebfoundation/origin/tree/master/packages/solar-simulator) - This service simulates smart-meter readings based on example solar data from whole year in 15-mins intervals. Also allows you to generate the config based on data from public I-REC registry.
 
 ## Deployment
 

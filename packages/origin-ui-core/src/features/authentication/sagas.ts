@@ -1,7 +1,7 @@
 import { SagaIterator } from 'redux-saga';
 import { take, all, fork, call, put, select } from 'redux-saga/effects';
 import { Actions, IConfigurationUpdatedAction } from '../actions';
-import { updateCurrentUserId } from '../users/actions';
+import { setActiveBlockchainAccountAddress } from '../users/actions';
 import { getActiveAccount, getAccounts, getEncryptedAccounts } from './selectors';
 import {
     IAccount,
@@ -47,7 +47,7 @@ function isKeystore(privateKey: string): boolean {
 function storeAccount(account: IEncryptedAccount) {
     const storedAccounts = loadEncryptedAccountsFromStorage();
 
-    if (storedAccounts.some(a => a.address.toLowerCase() === account.address.toLowerCase())) {
+    if (storedAccounts.some((a) => a.address.toLowerCase() === account.address.toLowerCase())) {
         throw new Error(`Account ${account.address} already imported`);
     }
 
@@ -112,7 +112,7 @@ function* setupDefaultActiveAccount(): SagaIterator {
         if (accounts.length === 0) {
             yield put(setActiveAccount(null));
         } else if (!activeAccount || !activeAccount.privateKey) {
-            yield put(setActiveAccount(accounts.find(a => a.privateKey) || accounts[0]));
+            yield put(setActiveAccount(accounts.find((a) => a.privateKey) || accounts[0]));
         }
     }
 }
@@ -128,7 +128,7 @@ function* applyActiveUser(): SagaIterator {
         }
 
         try {
-            yield put(updateCurrentUserId(action.payload.address));
+            yield put(setActiveBlockchainAccountAddress(action.payload.address));
         } catch (error) {
             console.error('applyActiveUser::UserDoesntExist', error);
         }
@@ -194,7 +194,7 @@ function* importAccountSaga(): SagaIterator {
 
             if (
                 address &&
-                encryptedAccounts.some(a => a.address.toLowerCase() === address.toLowerCase())
+                encryptedAccounts.some((a) => a.address.toLowerCase() === address.toLowerCase())
             ) {
                 throw new Error(`Account ${address} already imported.`);
             }
@@ -222,7 +222,7 @@ function* unlockAccountSaga(): SagaIterator {
 
         const encryptedAccounts: IEncryptedAccount[] = yield select(getEncryptedAccounts);
 
-        const account = encryptedAccounts.find(a => a.address === action.payload.address);
+        const account = encryptedAccounts.find((a) => a.address === action.payload.address);
 
         if (!account) {
             throw new Error(`Account ${action.payload.address} not found in storage`);

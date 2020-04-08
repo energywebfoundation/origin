@@ -53,7 +53,7 @@ export abstract class PaginatedLoaderFilteredSorted<
 
         return records.sort((a, b) => {
             return currentSort?.sortProperties
-                ?.map(field => {
+                ?.map((field) => {
                     const direction = sortAscending ? 1 : -1;
 
                     let aPropertyValue;

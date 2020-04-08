@@ -31,9 +31,9 @@
   "dependencies": {
     "@energyweb/origin-backend-client": "4.0.0",
     "eth-sig-util": "2.5.2",
-    "jsonschema": "1.2.5",
+    "jsonschema": "1.2.6",
     "moment": "^2.24.0",
-    "precise-proofs-js": "1.0.1",
+    "precise-proofs-js": "1.0.2",
     "web3": "1.2.6",
     "web3-core": "1.2.6",
     "web3-eth-contract": "1.2.6",
@@ -41,8 +41,7 @@
   },
   "devDependencies": {
     "@types/eth-sig-util": "2.1.0",
-    "ethlint": "1.2.5",
-    "fs-extra": "8.1.0"
+    "ethlint": "1.2.5"
   },
   "gitHead": "54beaf7fe6686810de74ca290daf99cbde510f9d",
   "publishConfig": {

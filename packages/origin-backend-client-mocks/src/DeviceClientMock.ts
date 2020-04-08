@@ -1,40 +1,67 @@
 import moment from 'moment';
-import { IDevice, DeviceUpdateData, DeviceStatusChanged, SupportedEvents, IEvent, ISmartMeterRead } from '@energyweb/origin-backend-core';
+import {
+    IDevice,
+    DeviceUpdateData,
+    DeviceStatusChangedEvent,
+    SupportedEvents,
+    IEvent,
+    ISmartMeterRead,
+    DeviceStatus,
+    IDeviceWithRelationsIds,
+    IExternalDeviceId
+} from '@energyweb/origin-backend-core';
 
 import { IDeviceClient, IEventClient } from '@energyweb/origin-backend-client';
 
 export class DeviceClientMock implements IDeviceClient {
-    private storage = new Map<number, IDevice>();
+    private storage = new Map<number, IDeviceWithRelationsIds>();
+
+    private idCounter = 0;
 
     constructor(public eventClient: IEventClient) {}
 
-    async getById(id: number): Promise<IDevice> {
+    async getByExternalId(id: IExternalDeviceId): Promise<IDeviceWithRelationsIds> {
+        return [...this.storage.values()].find((d) =>
+            d.externalDeviceIds?.find((i) => i.type === id.type && i.id === id.id)
+        );
+    }
+
+    async getById(id: number): Promise<IDeviceWithRelationsIds> {
         return this.storage.get(id);
     }
 
-    async getAll(): Promise<IDevice[]> {
+    async getAll(): Promise<IDeviceWithRelationsIds[]> {
         return [...this.storage.values()];
     }
 
-    async add(id: number, data: IDevice): Promise<IDevice> {
-        this.storage.set(id, data);
+    async add(data: IDeviceWithRelationsIds): Promise<IDeviceWithRelationsIds> {
+        this.idCounter++;
 
-        return data;
+        const device: IDeviceWithRelationsIds = {
+            ...data,
+            id: this.idCounter,
+            status: data.status ?? DeviceStatus.Submitted,
+            lastSmartMeterReading: data.lastSmartMeterReading ?? null,
+            smartMeterReads: data.smartMeterReads ?? [],
+            deviceGroup: data.deviceGroup ?? ''
+        };
+
+        this.storage.set(device.id, device);
+
+        return device;
     }
 
-    async update(
-        id: number,
-        data: DeviceUpdateData
-    ): Promise<IDevice> {
+    async update(id: number, data: DeviceUpdateData): Promise<IDevice> {
         const device = this.storage.get(id);
 
         Object.assign(device, data);
 
         this.storage.set(id, device);
 
-        const event: DeviceStatusChanged = {
+        const event: DeviceStatusChangedEvent = {
             deviceId: id.toString(),
-            status: data.status
+            status: data.status,
+            deviceManagersEmails: []
         };
 
         const sendEvent: IEvent = {
@@ -54,10 +81,7 @@ export class DeviceClientMock implements IDeviceClient {
         return smartMeterReads;
     }
 
-    public async addSmartMeterRead(
-        id: number,
-        smartMeterRead: ISmartMeterRead
-    ): Promise<void> {
+    public async addSmartMeterRead(id: number, smartMeterRead: ISmartMeterRead): Promise<void> {
         const device = this.storage.get(id);
 
         if (!device.smartMeterReads) {
@@ -65,11 +89,12 @@ export class DeviceClientMock implements IDeviceClient {
         }
 
         device.smartMeterReads.push(smartMeterRead);
-        device.smartMeterReads = device.smartMeterReads.sort((a,b) => (a.timestamp > b.timestamp) ? 1 : ((b.timestamp > a.timestamp) ? -1 : 0));
+        device.smartMeterReads = device.smartMeterReads.sort((a, b) =>
+            a.timestamp > b.timestamp ? 1 : b.timestamp > a.timestamp ? -1 : 0
+        );
 
         device.lastSmartMeterReading = device.smartMeterReads[device.smartMeterReads.length - 1];
 
         this.storage.set(id, device);
     }
 }
-

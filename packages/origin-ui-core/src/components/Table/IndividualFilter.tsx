@@ -37,7 +37,7 @@ export function IndividualFilter(props: IProps) {
             return (
                 <FormControl fullWidth={true} variant="filled">
                     <TextField
-                        onChange={e => props.changeFilterValue(filter, e.target.value)}
+                        onChange={(e) => props.changeFilterValue(filter, e.target.value)}
                         value={filter.selectedValue ? filter.selectedValue : ''}
                         label={filter.label}
                         fullWidth={true}
@@ -53,17 +53,17 @@ export function IndividualFilter(props: IProps) {
                     <Select
                         multiple
                         value={filter.selectedValue}
-                        onChange={e => props.changeFilterValue(filter, e.target.value)}
+                        onChange={(e) => props.changeFilterValue(filter, e.target.value)}
                         input={<FilledInput />}
-                        renderValue={selected => (
+                        renderValue={(selected) => (
                             <>
-                                {(selected as string[]).map(value => (
+                                {(selected as string[]).map((value) => (
                                     <Chip
                                         color="primary"
                                         key={value}
                                         label={
                                             filter.input.availableOptions.find(
-                                                o => o.value === value
+                                                (o) => o.value === value
                                             ).label
                                         }
                                     />
@@ -71,7 +71,7 @@ export function IndividualFilter(props: IProps) {
                             </>
                         )}
                     >
-                        {filter.input.availableOptions.map(option => (
+                        {filter.input.availableOptions.map((option) => (
                             <MenuItem
                                 key={option.value}
                                 value={option.value}
@@ -92,7 +92,7 @@ export function IndividualFilter(props: IProps) {
             return (
                 <HierarchicalMultiSelect
                     selectedValue={filter.selectedValue ? filter.selectedValue : []}
-                    onChange={e => props.changeFilterValue(filter, e)}
+                    onChange={(e) => props.changeFilterValue(filter, e)}
                     allValues={configuration?.deviceTypeService?.deviceTypes}
                     selectOptions={[
                         {
@@ -116,13 +116,13 @@ export function IndividualFilter(props: IProps) {
                     <InputLabel>{filter.label}</InputLabel>
                     <Select
                         value={filter.selectedValue ? filter.selectedValue : ''}
-                        onChange={e => props.changeFilterValue(filter, e.target.value)}
+                        onChange={(e) => props.changeFilterValue(filter, e.target.value)}
                         fullWidth={true}
                         variant="filled"
                         input={<FilledInput />}
                     >
                         <MenuItem value="">Any</MenuItem>
-                        {filter.input.availableOptions.map(option => (
+                        {filter.input.availableOptions.map((option) => (
                             <MenuItem value={option.value} key={option.value}>
                                 {option.label}
                             </MenuItem>

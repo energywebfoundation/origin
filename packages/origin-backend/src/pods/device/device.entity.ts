@@ -1,10 +1,12 @@
-import { Entity, Column, BaseEntity, PrimaryColumn } from 'typeorm';
-import { IsInt, Min, IsLatitude, IsLongitude } from 'class-validator';
-import { IDeviceWithId, ISmartMeterRead, ExternalDeviceId } from '@energyweb/origin-backend-core';
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
+import { IsInt, Min, IsLatitude, IsLongitude, IsNotEmpty } from 'class-validator';
+import { ISmartMeterRead, IExternalDeviceId, IDevice } from '@energyweb/origin-backend-core';
+import { Organization } from '../organization/organization.entity';
+import { ExtendedBaseEntity } from '../ExtendedBaseEntity';
 
 @Entity()
-export class Device extends BaseEntity implements IDeviceWithId {
-    @PrimaryColumn()
+export class Device extends ExtendedBaseEntity implements IDevice {
+    @PrimaryGeneratedColumn()
     id: number;
 
     @Column()
@@ -73,5 +75,12 @@ export class Device extends BaseEntity implements IDeviceWithId {
     smartMeterReads?: ISmartMeterRead[];
 
     @Column('simple-json', { nullable: true })
-    externalDeviceIds: ExternalDeviceId[];
+    externalDeviceIds: IExternalDeviceId[];
+
+    @ManyToOne(() => Organization, (organization) => organization.devices, { nullable: false })
+    @IsNotEmpty()
+    organization: Organization;
+
+    @Column({ nullable: true })
+    gridOperator: string;
 }

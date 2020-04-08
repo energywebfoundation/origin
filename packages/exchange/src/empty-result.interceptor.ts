@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
     Injectable,
     NestInterceptor,
@@ -12,7 +13,7 @@ import { map } from 'rxjs/operators';
 export class EmptyResultInterceptor implements NestInterceptor {
     intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
         return next.handle().pipe(
-            map(data => {
+            map((data) => {
                 if (!data) {
                     throw new NotFoundException();
                 }

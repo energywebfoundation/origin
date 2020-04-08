@@ -19,14 +19,11 @@ const INITIAL_FORM_VALUES: IFormValues = {
 };
 
 const VALIDATION_SCHEMA = Yup.object({
-    email: Yup.string()
-        .email()
-        .required()
-        .label('Email')
+    email: Yup.string().email().required().label('Email')
 });
 
 export function OrganizationInvite() {
-    const organizationClient = useSelector(getOffChainDataSource).organizationClient;
+    const organizationClient = useSelector(getOffChainDataSource)?.organizationClient;
 
     const dispatch = useDispatch();
 
@@ -75,7 +72,7 @@ export function OrganizationInvite() {
                 validationSchema={VALIDATION_SCHEMA}
                 isInitialValid={false}
             >
-                {formikProps => {
+                {(formikProps) => {
                     const { isValid, isSubmitting } = formikProps;
 
                     const fieldDisabled = isSubmitting;

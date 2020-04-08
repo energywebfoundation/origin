@@ -1,6 +1,5 @@
 import certificates from '../features/certificates/reducer';
 import producingDevices from '../features/producingDevices/reducer';
-import demands from './Demand';
 import configuration from './Configuration';
 import general from '../features/general/reducer';
 import contracts from '../features/contracts/reducer';
@@ -10,12 +9,11 @@ import { combineReducers } from 'redux';
 import { IStoreState } from '../types';
 import { connectRouter } from 'connected-react-router';
 
-export const createRootReducer = history =>
+export const createRootReducer = (history) =>
     combineReducers<IStoreState>({
         authentication,
         certificates,
         producingDevices,
-        demands,
         general,
         configuration,
         contracts,

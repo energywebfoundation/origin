@@ -9,7 +9,6 @@ import {
 
 import { showNotification, NotificationType } from '../../utils/notifications';
 import { TableMaterial } from '../Table/TableMaterial';
-import { getCurrentUser } from '../../features/users/selectors';
 import { setLoading } from '../../features/general/actions';
 import {
     IPaginatedLoaderHooksFetchDataParameters,
@@ -40,7 +39,6 @@ interface IProps {
 }
 
 export function OrganizationInvitationTable(props: IProps) {
-    const currentUser = useSelector(getCurrentUser);
     const organizationClient = useSelector(getOffChainDataSource).organizationClient;
 
     const dispatch = useDispatch();
@@ -67,9 +65,9 @@ export function OrganizationInvitationTable(props: IProps) {
             );
         }
 
-        let newPaginatedData: IRecord[] = invitations.map(invitation => ({
+        let newPaginatedData: IRecord[] = invitations.map((invitation) => ({
             invitation,
-            organization: organizations?.find(o => o.id === invitation.organization)
+            organization: organizations?.find((o) => o.id === invitation.organization)
         }));
 
         const newTotal = newPaginatedData.length;
@@ -88,7 +86,7 @@ export function OrganizationInvitationTable(props: IProps) {
 
     useEffect(() => {
         loadPage(1);
-    }, [currentUser, organizationClient]);
+    }, [organizationClient]);
 
     async function accept(rowIndex: number) {
         const invitation = paginatedData[rowIndex]?.invitation;

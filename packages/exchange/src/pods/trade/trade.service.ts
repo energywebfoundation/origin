@@ -6,6 +6,7 @@ import { Connection, Repository } from 'typeorm';
 
 import { Order } from '../order/order.entity';
 import { Trade } from './trade.entity';
+import { OrderStatus } from '../order/order-status.enum';
 
 @Injectable()
 export class TradeService {
@@ -22,15 +23,15 @@ export class TradeService {
         this.logger.log(`Persisting trades and updating orders: ${event.size}`);
         this.logger.debug(`Persisting trades and updating orders: ${JSON.stringify(event)}`);
 
-        return this.connection.transaction(async entityManager => {
+        return this.connection.transaction(async (entityManager) => {
             for (const { bid, ask, trade } of event) {
                 await entityManager.update<Order>(Order, ask.id, {
                     currentVolume: ask.volume,
-                    status: ask.status
+                    status: ask.volume.isZero() ? OrderStatus.Filled : OrderStatus.PartiallyFilled
                 });
                 await entityManager.update<Order>(Order, bid.id, {
                     currentVolume: bid.volume,
-                    status: bid.status
+                    status: bid.volume.isZero() ? OrderStatus.Filled : OrderStatus.PartiallyFilled
                 });
                 await entityManager.insert<Trade>(Trade, {
                     created: trade.created,
@@ -44,7 +45,7 @@ export class TradeService {
         });
     }
 
-    public async getAll(userId: string) {
+    public async getAll(userId: string, maskOrders = true) {
         const trades = await this.repository
             .createQueryBuilder('trade')
             .leftJoinAndSelect('trade.bid', 'bid')
@@ -53,6 +54,6 @@ export class TradeService {
             .where('ask.userId = :userId OR bid.userId = :userId', { userId })
             .getMany();
 
-        return trades.map(trade => trade.withMaskedOrder(userId));
+        return maskOrders ? trades.map((trade) => trade.withMaskedOrder(userId)) : trades;
     }
 }

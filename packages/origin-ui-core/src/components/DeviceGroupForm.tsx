@@ -24,21 +24,18 @@ import {
 import { Skeleton } from '@material-ui/lab';
 
 import { Unit } from '@energyweb/utils-general';
-import { IDevice, DeviceStatus, ExternalDeviceId } from '@energyweb/origin-backend-core';
+import { DeviceStatus, IExternalDeviceId } from '@energyweb/origin-backend-core';
 
 import { showNotification, NotificationType } from '../utils/notifications';
 import { getConfiguration } from '../features/selectors';
-import { useLinks } from '../utils/routing';
-import { getCurrentUser } from '../features/users/selectors';
+import { getUserOffchain } from '../features/users/selectors';
 import { setLoading } from '../features/general/actions';
 import { getCompliance, getCountry, getExternalDeviceIdTypes } from '../features/general/selectors';
 import { HierarchicalMultiSelect } from './HierarchicalMultiSelect';
-import { ProducingDevice, Device } from '@energyweb/device-registry';
+import { ProducingDevice } from '@energyweb/device-registry';
 import { producingDeviceCreatedOrUpdated } from '../features/producingDevices/actions';
-import { PowerFormatter } from '../utils/PowerFormatter';
+import { PowerFormatter, useLinks } from '../utils';
 import { FormInput } from './Form/FormInput';
-
-const DEFAULT_ADDRESS = '0x0000000000000000000000000000000000000000';
 
 const MAX_TOTAL_CAPACITY = 5 * Unit.MW;
 
@@ -94,40 +91,25 @@ function sumCapacityOfDevices(devices: IDeviceGroupChild[]) {
 }
 
 const VALIDATION_SCHEMA = Yup.object().shape({
-    facilityName: Yup.string()
-        .label('Facility name')
-        .required(),
+    facilityName: Yup.string().label('Facility name').required(),
     children: Yup.array()
         .of(
             Yup.object()
                 .shape({
                     installationName: Yup.string().required('Installation name'),
-                    address: Yup.string()
-                        .required()
-                        .label('Address'),
-                    city: Yup.string()
-                        .required()
-                        .label('City'),
-                    latitude: Yup.number()
-                        .required()
-                        .label('Latitude'),
-                    longitude: Yup.number()
-                        .required()
-                        .label('Longitude'),
-                    capacity: Yup.number()
-                        .required()
-                        .min(20)
-                        .label('Capacity'),
-                    meterId: Yup.string()
-                        .required()
-                        .label('Meter id'),
+                    address: Yup.string().required().label('Address'),
+                    city: Yup.string().required().label('City'),
+                    latitude: Yup.number().required().label('Latitude'),
+                    longitude: Yup.number().required().label('Longitude'),
+                    capacity: Yup.number().required().min(20).label('Capacity'),
+                    meterId: Yup.string().required().label('Meter id'),
                     meterType: Yup.string()
                         .oneOf(['interval', 'scalar'])
                         .required()
                         .label('Meter type')
                 })
                 // eslint-disable-next-line no-template-curly-in-string
-                .test('is-total-capacity-in-bounds', '${path} threshold invalid', function() {
+                .test('is-total-capacity-in-bounds', '${path} threshold invalid', function () {
                     const devices: IDeviceGroupChild[] = this.parent;
                     const totalCapacityInW = sumCapacityOfDevices(devices);
 
@@ -148,14 +130,14 @@ const VALIDATION_SCHEMA = Yup.object().shape({
 });
 
 interface IProps {
-    device?: Device.Entity;
+    device?: ProducingDevice.Entity;
     readOnly?: boolean;
 }
 
 export function DeviceGroupForm(props: IProps) {
     const { device, readOnly } = props;
 
-    const currentUser = useSelector(getCurrentUser);
+    const user = useSelector(getUserOffchain);
     const configuration = useSelector(getConfiguration);
     const compliance = useSelector(getCompliance);
     const country = useSelector(getCountry);
@@ -191,8 +173,8 @@ export function DeviceGroupForm(props: IProps) {
         }
 
         const newInitialFormValuesFromExistingEntity: IFormValues = {
-            facilityName: device?.offChainProperties?.facilityName,
-            children: JSON.parse(device?.offChainProperties?.deviceGroup)
+            facilityName: device?.facilityName,
+            children: JSON.parse(device?.deviceGroup)
         };
 
         setInitialFormValuesFromExistingEntity(newInitialFormValuesFromExistingEntity);
@@ -202,7 +184,7 @@ export function DeviceGroupForm(props: IProps) {
         values: typeof INITIAL_FORM_VALUES,
         formikActions: FormikHelpers<typeof INITIAL_FORM_VALUES>
     ): Promise<void> {
-        if (!currentUser) {
+        if (!user?.blockchainAccountAddress) {
             return;
         }
 
@@ -211,20 +193,14 @@ export function DeviceGroupForm(props: IProps) {
         formikActions.setSubmitting(true);
         dispatch(setLoading(true));
 
-        const externalDeviceIds: ExternalDeviceId[] = externalDeviceIdTypes.map(type => {
-            const typeString = (type as unknown) as string;
+        const externalDeviceIds: IExternalDeviceId[] = externalDeviceIdTypes.map(({ type }) => {
             return {
-                id: values[(type as unknown) as string],
-                type: typeString
+                id: values[type],
+                type
             };
         });
 
-        const deviceProducingProps: Device.IOnChainProperties = {
-            smartMeter: { address: DEFAULT_ADDRESS },
-            owner: { address: currentUser.id }
-        };
-
-        const deviceProducingPropsOffChain: IDevice = {
+        const deviceProducingPropsOffChain = {
             status: DeviceStatus.Submitted,
             deviceType,
             complianceRegistry: compliance,
@@ -248,7 +224,6 @@ export function DeviceGroupForm(props: IProps) {
 
         try {
             const newDevice = await ProducingDevice.createDevice(
-                deviceProducingProps,
                 deviceProducingPropsOffChain,
                 configuration
             );
@@ -286,7 +261,7 @@ export function DeviceGroupForm(props: IProps) {
                 validationSchema={VALIDATION_SCHEMA}
                 isInitialValid={false}
             >
-                {formikProps => {
+                {(formikProps) => {
                     const { isValid, isSubmitting, values } = formikProps;
 
                     const fieldDisabled = isSubmitting || readOnly;
@@ -361,13 +336,15 @@ export function DeviceGroupForm(props: IProps) {
 
                                             {externalDeviceIdTypes.map(
                                                 (externalDeviceIdType, index) => {
-                                                    const externalDeviceIdTypeText = (externalDeviceIdType as unknown) as string;
+                                                    if (externalDeviceIdType.autogenerated) {
+                                                        return null;
+                                                    }
 
                                                     return (
                                                         <FormInput
                                                             key={index}
-                                                            label={externalDeviceIdTypeText}
-                                                            property={externalDeviceIdTypeText}
+                                                            label={externalDeviceIdType.type}
+                                                            property={externalDeviceIdType.type}
                                                             disabled={fieldDisabled}
                                                             className="mt-3"
                                                         />
@@ -399,7 +376,7 @@ export function DeviceGroupForm(props: IProps) {
                                     <TableBody>
                                         <FieldArray
                                             name="children"
-                                            render={arrayHelpers => (
+                                            render={(arrayHelpers) => (
                                                 <>
                                                     {values.children.map((child, childIndex) => (
                                                         <TableRow key={childIndex}>

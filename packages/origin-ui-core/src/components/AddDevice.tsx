@@ -18,7 +18,7 @@ import { TextField, CheckboxWithLabel } from 'formik-material-ui';
 import { useHistory } from 'react-router-dom';
 import { useLinks } from '../utils/routing';
 import { FormikDatePicker } from './Form/FormikDatePicker';
-import { getCurrentUser } from '../features/users/selectors';
+import { getUserOffchain } from '../features/users/selectors';
 import { setLoading } from '../features/general/actions';
 import {
     getExternalDeviceIdTypes,
@@ -29,16 +29,14 @@ import {
 } from '../features/general/selectors';
 import { HierarchicalMultiSelect } from './HierarchicalMultiSelect';
 import { CloudUpload } from '@material-ui/icons';
-import { ProducingDevice, Device } from '@energyweb/device-registry';
+import { ProducingDevice } from '@energyweb/device-registry';
 import { producingDeviceCreatedOrUpdated } from '../features/producingDevices/actions';
 import { PowerFormatter } from '../utils/PowerFormatter';
-import { IDevice, DeviceStatus, ExternalDeviceId } from '@energyweb/origin-backend-core';
+import { DeviceStatus, IExternalDeviceId } from '@energyweb/origin-backend-core';
 import { Skeleton } from '@material-ui/lab';
 import { useTranslation } from 'react-i18next';
 import { useValidation } from '../utils/validation';
 import { FormInput } from './Form';
-
-const DEFAULT_ADDRESS = '0x0000000000000000000000000000000000000000';
 
 interface IFormValues {
     facilityName: string;
@@ -65,7 +63,7 @@ const INITIAL_FORM_VALUES: IFormValues = {
 };
 
 export function AddDevice() {
-    const currentUser = useSelector(getCurrentUser);
+    const user = useSelector(getUserOffchain);
     const configuration = useSelector(getConfiguration);
     const compliance = useSelector(getCompliance);
     const country = useSelector(getCountry);
@@ -102,26 +100,13 @@ export function AddDevice() {
     const classes = useStyles(useTheme());
 
     const VALIDATION_SCHEMA = Yup.object().shape({
-        facilityName: Yup.string()
-            .label(t('device.properties.facilityName'))
-            .required(),
-        capacity: Yup.number()
-            .label(t('device.properties.capacity'))
-            .required()
-            .positive(),
+        facilityName: Yup.string().label(t('device.properties.facilityName')).required(),
+        capacity: Yup.number().label(t('device.properties.capacity')).required().positive(),
         commissioningDate: Yup.date().required(),
         registrationDate: Yup.date().required(),
-        address: Yup.string()
-            .label(t('device.properties.address'))
-            .required(),
-        latitude: Yup.number()
-            .label(t('device.properties.latitude'))
-            .required()
-            .positive(),
-        longitude: Yup.number()
-            .label(t('device.properties.longitude'))
-            .required()
-            .positive(),
+        address: Yup.string().label(t('device.properties.address')).required(),
+        latitude: Yup.number().label(t('device.properties.latitude')).required().positive(),
+        longitude: Yup.number().label(t('device.properties.longitude')).required().positive(),
         supported: Yup.boolean(),
         projectStory: Yup.string()
     });
@@ -130,7 +115,16 @@ export function AddDevice() {
         values: typeof INITIAL_FORM_VALUES,
         formikActions: FormikHelpers<typeof INITIAL_FORM_VALUES>
     ): Promise<void> {
-        if (!currentUser) {
+        if (!user.blockchainAccountAddress) {
+            showNotification(
+                t('general.feedback.attachBlockchainAccountFirst'),
+                NotificationType.Error
+            );
+            return;
+        }
+
+        if (!user.organization) {
+            showNotification(t('general.feedback.noOrganization'), NotificationType.Error);
             return;
         }
 
@@ -139,22 +133,16 @@ export function AddDevice() {
         formikActions.setSubmitting(true);
         dispatch(setLoading(true));
 
-        const deviceProducingProps: Device.IOnChainProperties = {
-            smartMeter: { address: DEFAULT_ADDRESS },
-            owner: { address: currentUser.id }
-        };
-
         const [region, province] = selectedLocation;
 
-        const externalDeviceIds: ExternalDeviceId[] = externalDeviceIdTypes.map(type => {
-            const typeString = (type as unknown) as string;
+        const externalDeviceIds: IExternalDeviceId[] = externalDeviceIdTypes.map(({ type }) => {
             return {
-                id: values[(type as unknown) as string],
-                type: typeString
+                id: values[type],
+                type
             };
         });
 
-        const deviceProducingPropsOffChain: IDevice = {
+        const deviceProducingPropsOffChain = {
             status: DeviceStatus.Submitted,
             deviceType,
             complianceRegistry: compliance,
@@ -179,7 +167,6 @@ export function AddDevice() {
 
         try {
             const device = await ProducingDevice.createDevice(
-                deviceProducingProps,
                 deviceProducingPropsOffChain,
                 configuration
             );
@@ -190,7 +177,8 @@ export function AddDevice() {
 
             history.push(getDevicesOwnedLink());
         } catch (error) {
-            throw new Error(error);
+            console.error(error);
+            showNotification(t('general.feedback.unknownError'), NotificationType.Error);
         }
 
         dispatch(setLoading(false));
@@ -236,7 +224,7 @@ export function AddDevice() {
                 validationSchema={VALIDATION_SCHEMA}
                 isInitialValid={false}
             >
-                {formikProps => {
+                {(formikProps) => {
                     const { isValid, isSubmitting } = formikProps;
 
                     const fieldDisabled = isSubmitting;
@@ -443,13 +431,15 @@ export function AddDevice() {
                                     </FormControl>
 
                                     {externalDeviceIdTypes.map((externalDeviceIdType, index) => {
-                                        const externalDeviceIdTypeText = (externalDeviceIdType as unknown) as string;
+                                        if (externalDeviceIdType.autogenerated) {
+                                            return null;
+                                        }
 
                                         return (
                                             <FormInput
                                                 key={index}
-                                                label={externalDeviceIdTypeText}
-                                                property={externalDeviceIdTypeText}
+                                                label={externalDeviceIdType.type}
+                                                property={externalDeviceIdType.type}
                                                 disabled={fieldDisabled}
                                                 className="mt-3"
                                             />
@@ -473,7 +463,7 @@ export function AddDevice() {
                                                 className={classes.fileUploadInput}
                                                 id="contained-button-file"
                                                 type="file"
-                                                onChange={e => uploadImages(e.target.files)}
+                                                onChange={(e) => uploadImages(e.target.files)}
                                                 multiple
                                                 disabled={imagesUploaded}
                                             />

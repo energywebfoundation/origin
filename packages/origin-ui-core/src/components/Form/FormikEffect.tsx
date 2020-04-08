@@ -1,23 +1,14 @@
 import { connect } from 'formik';
-import { useEffect, useRef } from 'react';
+import { useEffect } from 'react';
+import { usePrevious } from '../../utils';
 
-function usePrevious(value) {
-    const ref = useRef();
-
-    useEffect(() => {
-        ref.current = value;
-    });
-
-    return ref.current;
-}
-
-const FormikEffectComponent = ({
+function FormikEffectComponent<T extends any>({
     onChange,
     formik
 }: {
-    onChange: (values: any) => void;
+    onChange: (values: T) => void;
     formik?: any;
-}) => {
+}) {
     const { values } = formik;
     const prevValues = usePrevious(values);
 
@@ -28,6 +19,6 @@ const FormikEffectComponent = ({
     }, [values]);
 
     return null;
-};
+}
 
 export const FormikEffect = connect(FormikEffectComponent);

@@ -1,6 +1,0 @@
-.DS_Store
-node_modules
-dist
-build
-schemas
-db.sqlite

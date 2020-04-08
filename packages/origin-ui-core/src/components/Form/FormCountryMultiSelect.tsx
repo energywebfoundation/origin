@@ -15,7 +15,7 @@ interface IProps {
     max?: number;
 }
 
-const COUNTRY_OPTIONS = Countries.map(country => ({
+const COUNTRY_OPTIONS = Countries.map((country) => ({
     value: country.id.toString(),
     label: country.name
 }));

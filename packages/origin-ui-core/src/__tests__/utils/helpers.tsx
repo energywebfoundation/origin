@@ -4,20 +4,11 @@ import { applyMiddleware, createStore } from 'redux';
 import { routerMiddleware, ConnectedRouter } from 'connected-react-router';
 import { createRootReducer } from '../../reducers';
 import { sagas } from '../../features/sagas';
-import { MarketUser, PurchasableCertificate } from '@energyweb/market';
-import {
-    addUser,
-    updateCurrentUserId,
-    updateFetcher,
-    IUserFetcher
-} from '../../features/users/actions';
 import { ReactWrapper, CommonWrapper } from 'enzyme';
 import { Configuration, Compliance } from '@energyweb/utils-general';
-import { Certificate } from '@energyweb/origin';
 
 import { ProducingDevice } from '@energyweb/device-registry';
 import { producingDeviceCreatedOrUpdated } from '../../features/producingDevices/actions';
-import { addCertificate } from '../../features/certificates/actions';
 import { dataTestSelector } from '../../utils/helper';
 import { DATE_FORMAT_DMY } from '../../utils/time';
 import moment from 'moment';
@@ -35,7 +26,7 @@ import {
 } from '../../components';
 import { IDevice, DeviceStatus } from '@energyweb/origin-backend-core';
 
-export const wait = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+export const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 export const flushPromises = () => new Promise(setImmediate);
 
@@ -244,7 +235,7 @@ const setupStoreInternal = (
 };
 
 interface ICreateProducingDeviceProperties {
-    id: string;
+    id: number;
     status: DeviceStatus;
     owner?: string;
     facilityName?: string;
@@ -278,7 +269,7 @@ export const createProducingDevice = (
     const owner = properties.owner || '0x0';
     const lastSmartMeterReadWh = properties.lastSmartMeterReadWh ?? 0;
 
-    const offChainProperties: IDevice = {
+    const offChainProperties = {
         status: properties.status || DEFAULT_PRODUCING_DEVICE_OFFCHAIN_PROPERTIES.status,
         address: properties.address || DEFAULT_PRODUCING_DEVICE_OFFCHAIN_PROPERTIES.address,
         facilityName:
@@ -305,57 +296,44 @@ export const createProducingDevice = (
         province: properties.province || DEFAULT_PRODUCING_DEVICE_OFFCHAIN_PROPERTIES.province
     };
 
-    return {
+    return ({
         id: properties.id,
-        configuration: {
-            blockchainProperties: {
+        configuration: ({
+            blockchainProperties: ({
                 activeUser: {
                     address: '0x0'
                 }
-            } as Configuration.BlockchainProperties
-        } as Configuration.Entity,
+            } as Partial<Configuration.BlockchainProperties>) as Configuration.BlockchainProperties
+        } as Partial<Configuration.Entity>) as Configuration.Entity,
         owner: {
             address: owner
         },
-        offChainProperties,
+        ...offChainProperties,
         lastSmartMeterReadWh
-    } as ProducingDevice.Entity;
+    } as Partial<ProducingDevice.Entity>) as ProducingDevice.Entity;
 };
 
-interface ICreateCertificateProperties {
-    id: string;
-    certificate: Certificate.ICertificate;
-}
-
-export const createCertificate = (
-    properties: ICreateCertificateProperties
-): PurchasableCertificate.Entity => {
-    const status =
-        typeof properties.certificate.status === 'undefined'
-            ? Certificate.Status.Active
-            : properties.certificate.status;
-
-    properties.certificate.status = status;
-
-    return {
-        id: properties.id,
-        configuration: ({
-            blockchainProperties: {
-                activeUser: {
-                    address: '0x0'
-                }
-            }
-        } as Partial<Configuration.Entity>) as Configuration.Entity,
-        certificate: properties.certificate
-    } as PurchasableCertificate.Entity;
-};
+// export const createCertificate = (
+//     certificate: ICertificate
+// ): Certificate.Entity => {
+//     return {
+//         id: properties.id,
+//         configuration: ({
+//             blockchainProperties: {
+//                 activeUser: {
+//                     address: '0x0'
+//                 }
+//             }
+//         } as Partial<Configuration.Entity>) as Configuration.Entity,
+//         ...certificate
+//     } as Certificate.Entity;
+// };
 
 interface ISetupStoreOptions {
     mockUserFetcher: boolean;
     logActions: boolean;
     offChainDataSource?: IOffChainDataSource;
     runSagas?: boolean;
-    userFetcher?: IUserFetcher;
 }
 
 const DEFAULT_SETUP_STORE_OPTIONS: ISetupStoreOptions = {
@@ -375,43 +353,16 @@ export const setupStore = (
         options.runSagas
     );
 
-    if (options.mockUserFetcher) {
-        const mockUserFetcher = options.userFetcher || {
-            async fetch(id: string) {
-                return ({
-                    id,
-                    organization: 'Example Organization'
-                } as Partial<MarketUser.Entity>) as MarketUser.Entity;
-            }
-        };
-
-        store.dispatch(updateFetcher(mockUserFetcher));
-    }
-
     return {
         store,
-        setCurrentUser: (properties: ISetCurrentUserProperties) => {
-            const user: Partial<MarketUser.Entity> = {
-                id: properties.id,
-                isRole: () => true
-            };
-
-            store.dispatch(addUser(user as MarketUser.Entity));
-
-            store.dispatch(updateCurrentUserId(user.id));
-        },
         addProducingDevice: (properties: ICreateProducingDeviceProperties) => {
             const entity = createProducingDevice(properties);
             store.dispatch(producingDeviceCreatedOrUpdated(entity));
         },
-        addCertificate: (properties: ICreateCertificateProperties) => {
-            const entity = createCertificate(properties);
-            store.dispatch(addCertificate(entity));
-        },
         history,
         sagasTasks,
         cleanupStore: () => {
-            sagasTasks.map(task => task.cancel());
+            sagasTasks.map((task) => task.cancel());
         }
     };
 };
@@ -456,7 +407,7 @@ export const createRenderedHelpers = (rendered: ReactWrapper) => {
             );
         },
         assertMainTableContent: (expected: string[]) => {
-            expect(rendered.find('table tbody tr td').map(el => el.text())).toEqual(expected);
+            expect(rendered.find('table tbody tr td').map((el) => el.text())).toEqual(expected);
         },
         refresh,
         fillInputField: (name: string, value: string) => {
@@ -476,10 +427,7 @@ export const createRenderedHelpers = (rendered: ReactWrapper) => {
                 });
         },
         submitForm: (dataTest: string) => {
-            rendered
-                .find(dataTestSelector(dataTest))
-                .hostNodes()
-                .simulate('submit');
+            rendered.find(dataTestSelector(dataTest)).hostNodes().simulate('submit');
         },
         fillDate: async (name: string, dayOfMonth: number) => {
             const now = moment();
@@ -500,12 +448,7 @@ export const createRenderedHelpers = (rendered: ReactWrapper) => {
             expect(
                 (rendered.find(`${dataTestSelector(name)} input`).getDOMNode() as HTMLInputElement)
                     .value
-            ).toBe(
-                now
-                    .clone()
-                    .set('date', dayOfMonth)
-                    .format(DATE_FORMAT_DMY)
-            );
+            ).toBe(now.clone().set('date', dayOfMonth).format(DATE_FORMAT_DMY));
 
             // Close Datepicker (click outside)
             (document.querySelector('body > [role="presentation"] > div') as HTMLElement).click();
@@ -530,7 +473,9 @@ export const createRenderedHelpers = (rendered: ReactWrapper) => {
             rendered.find(`#mui-component-select-${name}`).simulate('mousedown');
 
             expect(
-                Array.from(document.querySelectorAll(`#menu-${name} ul li`)).map(i => i.textContent)
+                Array.from(document.querySelectorAll(`#menu-${name} ul li`)).map(
+                    (i) => i.textContent
+                )
             ).toStrictEqual(labels);
 
             (document.querySelector(

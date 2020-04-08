@@ -80,7 +80,7 @@ export function Actions(props: IProps) {
             open={open}
             className={classes.speedDial}
         >
-            {actions.map(action => (
+            {actions.map((action) => (
                 <SpeedDialAction
                     key={action.name}
                     icon={action.icon}

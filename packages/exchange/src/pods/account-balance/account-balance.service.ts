@@ -1,5 +1,5 @@
 import { OrderSide } from '@energyweb/exchange-core';
-import { Injectable, forwardRef, Inject } from '@nestjs/common';
+import { Injectable, forwardRef, Inject, Logger } from '@nestjs/common';
 import BN from 'bn.js';
 import { Map } from 'immutable';
 
@@ -13,6 +13,8 @@ import { Asset } from '../asset/asset.entity';
 
 @Injectable()
 export class AccountBalanceService {
+    private readonly logger = new Logger(AccountBalanceService.name);
+
     constructor(
         private readonly tradeService: TradeService,
         private readonly transferService: TransferService,
@@ -32,15 +34,21 @@ export class AccountBalanceService {
 
         const aggregated = deposits.mergeWith(sum, trades).mergeWith(sum, sellOrders);
 
-        return {
+        return new AccountBalance({
             available: Array.from(aggregated.values()),
             locked: Array.from(sellOrders.values())
-        };
+        });
     }
 
     public async hasEnoughAssetAmount(userId: string, assetId: string, assetAmount: string) {
+        this.logger.debug(
+            `Checking available amount for user ${userId} asset ${assetId} amount ${assetAmount}`
+        );
+
         const { available } = await this.getAccountBalance(userId);
         const accountAsset = available.find(({ asset }) => asset.id === assetId);
+
+        this.logger.debug(`Available amount is ${accountAsset?.amount.toString(10) ?? 0}`);
 
         return accountAsset && accountAsset.amount.gte(new BN(assetAmount));
     }
@@ -50,8 +58,8 @@ export class AccountBalanceService {
 
         return this.sumByAsset(
             sellOrders,
-            order => order.asset,
-            order => new BN(order.currentVolume.muln(-1))
+            (order) => order.asset,
+            (order) => new BN(order.currentVolume.muln(-1))
         );
     }
 
@@ -60,8 +68,8 @@ export class AccountBalanceService {
 
         return this.sumByAsset(
             transfers,
-            transfer => transfer.asset,
-            transfer => {
+            (transfer) => transfer.asset,
+            (transfer) => {
                 const sign = transfer.direction === TransferDirection.Withdrawal ? -1 : 1;
                 return new BN(transfer.amount).mul(new BN(sign));
             }
@@ -69,12 +77,12 @@ export class AccountBalanceService {
     }
 
     private async getTrades(userId: string) {
-        const trades = await this.tradeService.getAll(userId);
+        const trades = await this.tradeService.getAll(userId, false);
 
         return this.sumByAsset(
             trades,
-            trade => trade.ask.asset,
-            trade => {
+            (trade) => trade.ask.asset,
+            (trade) => {
                 const sign = trade.ask.userId === userId ? -1 : 1;
                 return new BN(trade.volume.muln(sign));
             }
@@ -95,7 +103,7 @@ export class AccountBalanceService {
 
             const amount = accountAsset.amount.add(currentAmount);
 
-            return res.set(id, { ...accountAsset, amount });
+            return res.set(id, new AccountAsset({ ...accountAsset, amount }));
         }, Map<string, AccountAsset>());
     }
 }

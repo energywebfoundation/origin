@@ -63,7 +63,7 @@ export function SmartMeterReadingsChart(props: ISmartMeterReadingsChartProps) {
     };
 
     const endDateInTimezone = moment(selectedTimeFrame?.endDate)
-        .tz(producingDevice?.offChainProperties?.timezone)
+        .tz(producingDevice?.timezone)
         .clone();
 
     function changeSelectedTimeFrame(increment = true) {
@@ -136,14 +136,12 @@ export function SmartMeterReadingsChart(props: ISmartMeterReadingsChartProps) {
             const currentDate = chartEndDate
                 .clone()
                 .subtract(currentIndex, measurementUnit)
-                .tz(producingDevice.offChainProperties.timezone);
+                .tz(producingDevice.timezone);
 
             let totalEnergy = 0;
 
             for (const reading of readings) {
-                const readingDate = moment
-                    .unix(reading.timestamp)
-                    .tz(producingDevice.offChainProperties.timezone);
+                const readingDate = moment.unix(reading.timestamp).tz(producingDevice.timezone);
 
                 if (readingDate.isSame(currentDate, measurementUnit)) {
                     totalEnergy += reading.energy;
@@ -186,12 +184,12 @@ export function SmartMeterReadingsChart(props: ISmartMeterReadingsChartProps) {
     const formattedReadings = getFormattedReadings();
 
     const data = {
-        labels: formattedReadings.map(entry => entry.label),
+        labels: formattedReadings.map((entry) => entry.label),
         datasets: [
             {
                 label: t('meterReads.properties.energy', { unit: EnergyFormatter.displayUnit }),
-                backgroundColor: formattedReadings.map(entry => entry.color),
-                data: formattedReadings.map(entry => entry.value)
+                backgroundColor: formattedReadings.map((entry) => entry.color),
+                data: formattedReadings.map((entry) => entry.value)
             }
         ]
     };

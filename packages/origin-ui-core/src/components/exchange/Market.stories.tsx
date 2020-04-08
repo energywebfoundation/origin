@@ -10,11 +10,12 @@ import { Market } from './Market';
 import { setupStore, TEST_DEVICE_TYPES, TEST_REGIONS } from '../../__tests__/utils/helpers';
 import { Provider } from 'react-redux';
 import { configurationUpdated } from '../../features';
-import { setRegions } from '../../features/general/actions';
+import { setOffchainConfiguration } from '../../features/general/actions';
 import { DeviceTypeService, Configuration } from '@energyweb/utils-general';
 import MomentUtils from '@date-io/moment';
 import { MuiPickersUtilsProvider } from '@material-ui/pickers';
 import { action } from '@storybook/addon-actions';
+import { IOriginConfiguration } from '@energyweb/origin-backend-core';
 
 export default {
     title: 'Market',
@@ -37,7 +38,13 @@ export const defaultView = () => {
         } as Partial<Configuration.Entity>) as Configuration.Entity)
     );
 
-    store.dispatch(setRegions(TEST_REGIONS));
+    store.dispatch(
+        setOffchainConfiguration({
+            configuration: ({ regions: TEST_REGIONS, countryName: 'Thailand' } as Partial<
+                IOriginConfiguration
+            >) as IOriginConfiguration
+        })
+    );
 
     return (
         <OriginConfigurationProvider value={originConfiguration}>

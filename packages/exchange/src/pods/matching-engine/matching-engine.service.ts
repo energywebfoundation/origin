@@ -1,46 +1,61 @@
 import {
+    ActionResultEvent,
     Ask,
     Bid,
+    DirectBuy,
     MatchingEngine,
     OrderSide,
-    Product,
+    ProductFilter,
     TradeExecutedEvent
 } from '@energyweb/exchange-core';
-import { DeviceTypeService, LocationService } from '@energyweb/utils-general';
-import { Injectable, Logger } from '@nestjs/common';
+import { LocationService } from '@energyweb/utils-general';
+import { forwardRef, Inject, Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { Interval } from '@nestjs/schedule';
 import { List } from 'immutable';
 
+import { OrderType } from '../order/order-type.enum';
 import { Order } from '../order/order.entity';
-import { TradeService } from '../trade/trade.service';
+import { OrderService } from '../order/order.service';
 import { ProductDTO } from '../order/product.dto';
+import { DeviceTypeServiceWrapper } from '../runner/deviceTypeServiceWrapper';
+import { TradeService } from '../trade/trade.service';
 
 @Injectable()
-export class MatchingEngineService {
+export class MatchingEngineService implements OnModuleInit {
     private initialized = false;
 
     private readonly logger = new Logger(MatchingEngineService.name);
 
     private matchingEngine: MatchingEngine;
 
-    constructor(private readonly tradeService: TradeService) {}
+    constructor(
+        private readonly tradeService: TradeService,
+        @Inject(forwardRef(() => OrderService))
+        private readonly orderService: OrderService,
+        private readonly deviceTypeServiceWrapper: DeviceTypeServiceWrapper
+    ) {}
 
-    public init(orders: Order[], deviceTypes: string[][]) {
+    public async onModuleInit() {
         this.logger.log(`Initializing matching engine`);
-        this.logger.log(`Submitting ${orders.length}`);
+
+        const orders = await this.orderService.getAllActiveOrders();
+        this.logger.log(`Submitting ${orders.length} existing orders`);
 
         this.matchingEngine = new MatchingEngine(
-            new DeviceTypeService(deviceTypes),
+            this.deviceTypeServiceWrapper.deviceTypeService,
             new LocationService()
         );
 
-        orders.forEach(order => {
+        orders.forEach((order) => {
             this.logger.log(`Submitting order ${order.id}`);
 
             this.matchingEngine.submitOrder(this.toOrder(order));
         });
 
-        this.matchingEngine.trades.subscribe(async trades => this.onTradeExecutedEvent(trades));
+        this.matchingEngine.trades.subscribe(async (trades) => this.onTradeExecutedEvent(trades));
+        this.matchingEngine.actionResults.subscribe(async (actionResultEvents) =>
+            this.onActionResultEvent(actionResultEvents)
+        );
 
         this.initialized = true;
     }
@@ -49,12 +64,19 @@ export class MatchingEngineService {
         this.logger.log(`Submitting order ${order.id}`);
         this.logger.debug(`Submitting order ${JSON.stringify(order)}`);
 
-        this.matchingEngine.submitOrder(this.toOrder(order));
+        if (order.type === OrderType.Limit) {
+            this.matchingEngine.submitOrder(this.toOrder(order));
+        } else if (order.type === OrderType.Direct) {
+            this.matchingEngine.submitDirectBuy(this.toDirectBuy(order));
+        }
     }
 
-    public query(product: Product) {
-        // TODO: consider reading this info from DB and filtering
-        return this.matchingEngine.orderBookByProduct(product);
+    public query(productFilter: ProductFilter) {
+        return this.matchingEngine.orderBookByProduct(productFilter);
+    }
+
+    public cancel(orderId: string) {
+        this.matchingEngine.cancelOrder(orderId);
     }
 
     @Interval(1000)
@@ -63,7 +85,7 @@ export class MatchingEngineService {
             return;
         }
 
-        this.logger.log('Triggering matching engine');
+        this.logger.debug('Triggering matching engine');
         this.matchingEngine.tick();
     }
 
@@ -71,6 +93,13 @@ export class MatchingEngineService {
         this.logger.log('Received TradeExecutedEvent event');
 
         await this.tradeService.persist(trades);
+    }
+
+    private async onActionResultEvent(statusChanges: List<ActionResultEvent>) {
+        this.logger.log('Received StatusChangedEvent event');
+        this.logger.log(`Received StatusChangedEvent event ${JSON.stringify(statusChanges)}`);
+
+        await this.orderService.persistOrderStatusChange(statusChanges);
     }
 
     private toOrder(order: Order) {
@@ -81,7 +110,6 @@ export class MatchingEngineService {
                   order.currentVolume,
                   ProductDTO.toProduct(order.product),
                   order.validFrom,
-                  order.status,
                   order.userId
               )
             : new Bid(
@@ -90,8 +118,17 @@ export class MatchingEngineService {
                   order.currentVolume,
                   ProductDTO.toProduct(order.product),
                   order.validFrom,
-                  order.status,
                   order.userId
               );
+    }
+
+    private toDirectBuy(order: Order) {
+        return new DirectBuy(
+            order.id,
+            order.userId,
+            order.price,
+            order.startVolume,
+            order.directBuyId
+        );
     }
 }

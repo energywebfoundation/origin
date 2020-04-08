@@ -4,7 +4,7 @@ import { SmartMeterReadingsChart } from '../../components/SmartMeterReadingsChar
 import { ProducingDevice } from '@energyweb/device-registry';
 import { Bar } from 'react-chartjs-2';
 import { formatDate, EnergyFormatter, moment } from '../../utils';
-import { IDevice, IEnergyGenerated } from '@energyweb/origin-backend-core';
+import { IDeviceWithRelationsIds, IEnergyGenerated } from '@energyweb/origin-backend-core';
 import { initializeI18N } from '../../components';
 import { createRenderedHelpers } from '../utils/helpers';
 
@@ -14,15 +14,12 @@ describe('SmartMeterReadingsChart', () => {
 
         const currentTime = moment().tz('Asia/Bangkok');
         const currentDay = currentTime.date();
-        const currentMonthDates = new Array(currentTime.daysInMonth()).fill(null).map((x, i) =>
-            currentTime
-                .clone()
-                .startOf('month')
-                .add(i, 'days')
-        );
+        const currentMonthDates = new Array(currentTime.daysInMonth())
+            .fill(null)
+            .map((x, i) => currentTime.clone().startOf('month').add(i, 'days'));
         const currentDayHour = currentTime.hour();
 
-        const offChainProperties: Partial<IDevice> = {
+        const offChainProperties: Partial<IDeviceWithRelationsIds> = {
             timezone: 'Asia/Bangkok'
         };
 
@@ -34,7 +31,7 @@ describe('SmartMeterReadingsChart', () => {
         ];
 
         const producingDevice: Partial<ProducingDevice.Entity> = {
-            offChainProperties: offChainProperties as IDevice,
+            ...offChainProperties,
             getAmountOfEnergyGenerated: async () => reads
         };
 
@@ -48,15 +45,10 @@ describe('SmartMeterReadingsChart', () => {
             rendered
                 .find('.btn-switcher-btn')
                 .hostNodes()
-                .map(a => a.text())
+                .map((a) => a.text())
         ).toStrictEqual(['Day', 'Week', 'Month', 'Year']);
 
-        expect(
-            rendered
-                .find('.btn-switcher-btn.selected')
-                .hostNodes()
-                .text()
-        ).toBe('Month');
+        expect(rendered.find('.btn-switcher-btn.selected').hostNodes().text()).toBe('Month');
 
         await refresh();
 
@@ -65,7 +57,7 @@ describe('SmartMeterReadingsChart', () => {
         expect(barProps.options.title.text).toBe(currentTime.format('MMM YYYY'));
 
         expect(barProps.data).toStrictEqual({
-            labels: currentMonthDates.map(date => date.format('D MMM')),
+            labels: currentMonthDates.map((date) => date.format('D MMM')),
             datasets: [
                 {
                     backgroundColor: currentMonthDates.map(() => undefined),
@@ -90,12 +82,7 @@ describe('SmartMeterReadingsChart', () => {
 
         expect(barProps.options.title.text).toBe(formatDate(currentTime));
 
-        expect(
-            rendered
-                .find('.btn-switcher-btn.selected')
-                .hostNodes()
-                .text()
-        ).toBe('Day');
+        expect(rendered.find('.btn-switcher-btn.selected').hostNodes().text()).toBe('Day');
 
         expect(barProps.data.labels).toStrictEqual([
             '00:00',

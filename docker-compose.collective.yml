@@ -1,4 +1,4 @@
-version: '3'
+version: "3"
 services:
   origin_ui:
     image: "energyweb/origin-ui:${TAG}"
@@ -13,13 +13,6 @@ services:
 
   market_matcher:
     image: "energyweb/market-matcher:${TAG}"
-    env_file:
-      - ./.env
-    depends_on:
-      - origin_backend
-
-  event_listener:
-    image: "energyweb/event-listener:${TAG}"
     env_file:
       - ./.env
     depends_on:

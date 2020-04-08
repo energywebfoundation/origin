@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { parentPort, workerData } from 'worker_threads';
 
 import moment from 'moment-timezone';
@@ -6,34 +7,16 @@ import * as Winston from 'winston';
 
 import { ProducingDevice } from '@energyweb/device-registry';
 import { Configuration } from '@energyweb/utils-general';
-import { createBlockchainProperties } from '@energyweb/market';
-import { OffChainDataSource, IOffChainDataSource } from '@energyweb/origin-backend-client';
+import { OffChainDataSource } from '@energyweb/origin-backend-client';
 import { ISmartMeterRead } from '@energyweb/origin-backend-core';
 
 const web3 = new Web3(process.env.WEB3);
-
-async function getMarketContractLookupAddress(offChainDataSource: IOffChainDataSource) {
-    let storedMarketContractAddress: string = null;
-
-    console.log(`[SIMULATOR-MOCK-READINGS] Trying to get Market contract address`);
-
-    while (!storedMarketContractAddress) {
-        storedMarketContractAddress = (await offChainDataSource.configurationClient.get())
-            .marketContractLookup;
-
-        if (!storedMarketContractAddress) {
-            await new Promise(resolve => setTimeout(resolve, 10000));
-        }
-    }
-
-    return process.env.MARKET_CONTRACT_ADDRESS || storedMarketContractAddress;
-}
 
 async function getProducingDeviceSmartMeterRead(
     deviceId: string,
     conf: Configuration.Entity
 ): Promise<number> {
-    const device = await new ProducingDevice.Entity(deviceId, conf).sync();
+    const device = await new ProducingDevice.Entity(parseInt(deviceId, 10), conf).sync();
 
     return device.lastSmartMeterReadWh ?? 0;
 }
@@ -59,7 +42,7 @@ async function saveProducingDeviceSmartMeterRead(
     let device;
 
     try {
-        device = await new ProducingDevice.Entity(deviceId, conf).sync();
+        device = await new ProducingDevice.Entity(parseInt(deviceId, 10), conf).sync();
         await device.saveSmartMeterRead(
             smartMeterReading.meterReading,
             smartMeterReading.timestamp
@@ -106,34 +89,18 @@ const currentTime = moment.tz(device.timezone);
         })
     };
 
-    const marketContractLookupAddress = await getMarketContractLookupAddress(offChainDataSource);
-
-    conf.blockchainProperties = await createBlockchainProperties(
-        conf.blockchainProperties.web3,
-        marketContractLookupAddress
-    );
-
     const MOCK_READINGS_MINUTES_INTERVAL =
         parseInt(process.env.SOLAR_SIMULATOR_PAST_READINGS_MINUTES_INTERVAL, 10) || 15;
 
-    let measurementTime = currentTime
-        .clone()
-        .subtract(1, 'day')
-        .startOf('day');
+    let measurementTime = currentTime.clone().subtract(1, 'day').startOf('day');
 
     while (measurementTime.isSameOrBefore(currentTime)) {
         const newMeasurementTime = measurementTime
             .clone()
             .add(MOCK_READINGS_MINUTES_INTERVAL, 'minute');
 
-        const measurementTimeWithFixedYear = measurementTime
-            .clone()
-            .year(2015)
-            .unix();
-        const newMeasurementTimeWithFixedYear = newMeasurementTime
-            .clone()
-            .year(2015)
-            .unix();
+        const measurementTimeWithFixedYear = measurementTime.clone().year(2015).unix();
+        const newMeasurementTimeWithFixedYear = newMeasurementTime.clone().year(2015).unix();
 
         const combinedMultiplierForMatchingRows = (workerData.DATA as any[])
             .filter((row: any) => {
@@ -170,10 +137,15 @@ const currentTime = moment.tz(device.timezone);
                     conf
                 );
             } catch (error) {
-                console.error(
-                    `Error while trying to save meter read for device ${device.id}`,
-                    error?.message
-                );
+                conf.logger.error(`Error while trying to save meter read for device ${device.id}`);
+                if (error?.response?.data) {
+                    conf.logger.error('HTTP Error', {
+                        config: error.config,
+                        response: error?.response?.data
+                    });
+                } else {
+                    conf.logger.error(`ERROR: ${error?.message}`);
+                }
             }
         }
 

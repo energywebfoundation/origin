@@ -1,12 +1,13 @@
 import { Module, DynamicModule } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
+import { ISmartMeterReadingsAdapter } from '@energyweb/origin-backend-core';
 import { CertificationRequest } from './certification-request.entity';
 import { CertificateController } from './certificate.controller';
 import { UserModule } from '../user/user.module';
-import { CertificationRequestService } from './certification-request.service';
 import { DeviceModule } from '../device/device.module';
-import { ISmartMeterReadingsAdapter } from '@energyweb/origin-backend-core';
+import { OwnershipCommitment } from './ownership-commitment.entity';
+import { Certificate } from './certificate.entity';
 
 @Module({})
 export class CertificateModule {
@@ -14,12 +15,12 @@ export class CertificateModule {
         return {
             module: CertificateModule,
             imports: [
-                TypeOrmModule.forFeature([CertificationRequest]),
+                TypeOrmModule.forFeature([CertificationRequest, OwnershipCommitment, Certificate]),
                 UserModule,
                 DeviceModule.register(smartMeterReadingsAdapter)
             ],
-            providers: [CertificationRequestService],
-            controllers: [CertificateController],
+            providers: [],
+            controllers: [CertificateController]
         };
     }
 }

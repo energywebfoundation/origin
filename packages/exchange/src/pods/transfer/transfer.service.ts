@@ -76,7 +76,7 @@ export class TransferService {
         const manager = transaction || this.repository.manager;
 
         try {
-            const storedWithdrawal = await manager.transaction(tr =>
+            const storedWithdrawal = await manager.transaction((tr) =>
                 tr.getRepository<Transfer>(Transfer).save(withdrawal)
             );
 
@@ -95,7 +95,7 @@ export class TransferService {
     public async createDeposit(depositDTO: CreateDepositDTO) {
         this.logger.debug(`Requested deposit creation for ${JSON.stringify(depositDTO)}`);
 
-        return this.connection.transaction<Transfer>(async manager => {
+        return this.connection.transaction<Transfer>(async (manager) => {
             const { id } = await this.assetService.createIfNotExist(depositDTO.asset, manager);
             const { userId } = await this.accountService.findByAddress(depositDTO.address);
 

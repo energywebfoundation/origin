@@ -5,7 +5,6 @@ import { NavLink, Route, Redirect } from 'react-router-dom';
 import { PageContent } from '../PageContent/PageContent';
 import { useLinks } from '../../utils/routing';
 import { getUserOffchain } from '../../features/users/selectors';
-import { AccountImport } from './AccountImport';
 import { AccountSettings } from './AccountSettings';
 import { UserRegister } from './UserRegister';
 import { UserLogin } from './UserLogin';
@@ -24,12 +23,8 @@ export function Account() {
         {
             key: 'settings',
             label: 'settings.navigation.settings',
-            component: AccountSettings
-        },
-        {
-            key: 'import',
-            label: 'settings.navigation.import',
-            component: AccountImport
+            component: AccountSettings,
+            hide: !isLoggedIn
         },
         {
             key: 'user-login',
@@ -49,7 +44,7 @@ export function Account() {
         <div className="PageWrapper">
             <div className="PageNav">
                 <ul className="NavMenu nav">
-                    {Menu.map(menu => {
+                    {Menu.map((menu) => {
                         if (menu.hide) {
                             return null;
                         }
@@ -72,9 +67,9 @@ export function Account() {
 
             <Route
                 path={`${getAccountLink()}/:key/:id?`}
-                render={props => {
+                render={(props) => {
                     const key = props.match.params.key;
-                    const matches = Menu.filter(item => {
+                    const matches = Menu.filter((item) => {
                         return item.key === key;
                     });
 

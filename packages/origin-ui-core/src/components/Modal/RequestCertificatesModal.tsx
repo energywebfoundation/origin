@@ -4,8 +4,11 @@ import {
     Moment,
     setMaxTimeInDay,
     setMinTimeInDay,
-    DATE_FORMAT_DMY
-} from '../../utils/time';
+    DATE_FORMAT_DMY,
+    getDeviceId,
+    EnergyFormatter,
+    useTranslation
+} from '../../utils';
 import {
     Button,
     Dialog,
@@ -24,10 +27,9 @@ import {
     getRequestCertificatesModalProducingDevice,
     getRequestCertificatesModalVisible
 } from '../../features/certificates/selectors';
-
-import { EnergyFormatter } from '../../utils/EnergyFormatter';
 import { Upload, IUploadedFile } from '../Upload';
-import { useTranslation } from 'react-i18next';
+import { getEnvironment } from '../../features';
+import { MAX_ENERGY_PER_CERTIFICATE } from '@energyweb/origin-backend-core';
 
 const DEFAULTS = {
     fromDate: moment(),
@@ -40,14 +42,15 @@ export function RequestCertificatesModal() {
     const [energyInDisplayUnit, setEnergyInDisplayUnit] = useState('');
     const [files, setFiles] = useState<IUploadedFile[]>([]);
 
-    const cancelledFiles = files.filter(f => f.cancelled && !f.removed);
+    const cancelledFiles = files.filter((f) => f.cancelled && !f.removed);
     const filesBeingUploaded = files.filter(
-        f => !f.removed && !f.cancelled && f.uploadProgress !== 100
+        (f) => !f.removed && !f.cancelled && f.uploadProgress !== 100
     );
-    const uploadedFiles = files.filter(f => !f.removed && f.uploadedName);
+    const uploadedFiles = files.filter((f) => !f.removed && f.uploadedName);
 
     const producingDevice = useSelector(getRequestCertificatesModalProducingDevice);
     const showModal = useSelector(getRequestCertificatesModalVisible);
+    const environment = useSelector(getEnvironment);
 
     const dispatch = useDispatch();
 
@@ -65,6 +68,7 @@ export function RequestCertificatesModal() {
         toDate &&
         fromDate.toDate() <= toDate.toDate() &&
         energyInBaseUnit > 0 &&
+        energyInBaseUnit < MAX_ENERGY_PER_CERTIFICATE &&
         cancelledFiles.length === 0 &&
         filesBeingUploaded.length === 0;
 
@@ -84,11 +88,11 @@ export function RequestCertificatesModal() {
     async function requestCerts() {
         dispatch(
             requestCertificates({
-                deviceId: producingDevice.id,
+                deviceId: getDeviceId(producingDevice, environment),
                 startTime: fromDate.unix(),
                 endTime: toDate.unix(),
                 energy: energyInBaseUnit,
-                files: uploadedFiles.map(f => f.uploadedName)
+                files: uploadedFiles.map((f) => f.uploadedName)
             })
         );
     }
@@ -105,7 +109,7 @@ export function RequestCertificatesModal() {
         <Dialog open={showModal} onClose={handleClose}>
             <DialogTitle>
                 {t('certificate.info.requestCertificatesFor', {
-                    facilityName: producingDevice?.offChainProperties?.facilityName ?? ''
+                    facilityName: producingDevice?.facilityName ?? ''
                 })}
             </DialogTitle>
             <DialogContent>
@@ -130,16 +134,15 @@ export function RequestCertificatesModal() {
                     fullWidth
                     format={DATE_FORMAT_DMY}
                 />
-
                 <TextField
                     label={EnergyFormatter.displayUnit}
                     value={energyInDisplayUnit}
-                    onChange={event => setEnergyInDisplayUnit(event.target.value)}
+                    onChange={(event) => setEnergyInDisplayUnit(event.target.value)}
                     className="mt-4"
                     fullWidth
                 />
 
-                <Upload onChange={newFiles => setFiles(newFiles)} />
+                <Upload onChange={(newFiles) => setFiles(newFiles)} />
             </DialogContent>
             <DialogActions>
                 <Button onClick={handleClose} color="secondary">

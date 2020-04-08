@@ -2,8 +2,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { InjectConnection } from '@nestjs/typeorm';
 import { Connection, EntityManager } from 'typeorm';
 
-import { Asset } from './asset.entity';
-import { AssetDTO } from './asset.dto';
+import { Asset, CreateAssetDTO } from './asset.entity';
 
 @Injectable()
 export class AssetService {
@@ -18,16 +17,16 @@ export class AssetService {
         return this.connection.getRepository<Asset>(Asset).findOne(id);
     }
 
-    public async createIfNotExist(asset: AssetDTO, transaction?: EntityManager) {
+    public async createIfNotExist(asset: CreateAssetDTO, transaction?: EntityManager) {
         this.logger.debug(`Requested asset ${JSON.stringify(asset)}`);
         if (transaction) {
             return this.create(asset, transaction);
         }
 
-        return this.connection.transaction(async tr => this.create(asset, tr));
+        return this.connection.transaction(async (tr) => this.create(asset, tr));
     }
 
-    private async create(asset: AssetDTO, transaction: EntityManager) {
+    private async create(asset: CreateAssetDTO, transaction: EntityManager) {
         const repository = transaction.getRepository<Asset>(Asset);
         let existingAsset = await repository.findOne(null, {
             where: {
@@ -37,6 +36,7 @@ export class AssetService {
         });
 
         if (!existingAsset) {
+            this.logger.debug(`Asset does not exist. Creating.`);
             existingAsset = await repository.save(asset);
         }
 

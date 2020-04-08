@@ -1,13 +1,15 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Contracts } from '@energyweb/issuer';
-import { CanActivate, ExecutionContext, Logger, ValidationPipe } from '@nestjs/common';
+import { ConfigurationService, DeviceService } from '@energyweb/origin-backend';
+import { IDeviceProductInfo } from '@energyweb/origin-backend-core';
+import { CanActivate, ExecutionContext, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { AuthGuard } from '@nestjs/passport';
 import { Test } from '@nestjs/testing';
+import { useContainer } from 'class-validator';
 import { ethers } from 'ethers';
 
 import { AppModule } from '../src/app.module';
-import { AppService } from '../src/app.service';
-import { EmptyResultInterceptor } from '../src/empty-result.interceptor';
 import { AccountService } from '../src/pods/account/account.service';
 import { DemandService } from '../src/pods/demand/demand.service';
 import { OrderService } from '../src/pods/order/order.service';
@@ -20,16 +22,28 @@ const web3 = 'http://localhost:8580';
 // ganache account 2
 const registryDeployer = '0xc4b87d68ea2b91f9d3de3fcb77c299ad962f006ffb8711900cb93d94afec3dc3';
 
-const deployRegistry = async () => {
-    const { abi, bytecode } = Contracts.RegistryJSON;
-
+const deployContract = async ({ abi, bytecode }: { abi: any; bytecode: string }) => {
     const provider = new ethers.providers.JsonRpcProvider(web3);
     const wallet = new ethers.Wallet(registryDeployer, provider);
 
     const factory = new ethers.ContractFactory(abi, bytecode, wallet);
     const contract = await factory.deploy();
-    await contract.deployed();
+
+    return contract.deployed();
+};
+
+const deployRegistry = async () => {
+    const contract = await deployContract(Contracts.RegistryJSON);
     await contract.functions.initialize();
+
+    return contract;
+};
+
+const deployIssuer = async (registry: string) => {
+    const contract = await deployContract(Contracts.IssuerJSON);
+    const wallet = new ethers.Wallet(registryDeployer);
+
+    await contract.functions.initialize(100, registry, wallet.address);
 
     return contract;
 };
@@ -63,6 +77,7 @@ const deviceTypes = [
 
 export const bootstrapTestInstance = async () => {
     const registry = await deployRegistry();
+    const issuer = await deployIssuer(registry.address);
 
     const configService = new ConfigService({
         WEB3: web3,
@@ -72,12 +87,40 @@ export const bootstrapTestInstance = async () => {
         // ganache account 1
         EXCHANGE_WALLET_PUB: '0xd46aC0Bc23dB5e8AfDAAB9Ad35E9A3bA05E092E8',
         EXCHANGE_WALLET_PRIV: '0xd9bc30dc17023fbb68fe3002e0ff9107b241544fd6d60863081c55e383f1b5a3',
-        REGISTRY_ADDRESS: registry.address
+        ISSUER_ID: 'Issuer ID'
     });
 
     const moduleFixture = await Test.createTestingModule({
         imports: [AppModule],
-        providers: [DatabaseService]
+        providers: [
+            DatabaseService,
+            {
+                provide: ConfigurationService,
+                useValue: {
+                    get: () => ({
+                        deviceTypes,
+                        contractsLookup: {
+                            issuer: issuer.address,
+                            registry: registry.address
+                        }
+                    })
+                }
+            },
+            {
+                provide: DeviceService,
+                useValue: ({
+                    findDeviceProductInfo: async (): Promise<IDeviceProductInfo> => {
+                        return {
+                            deviceType: 'Solar;Photovoltaic;Classic silicon',
+                            country: 'Thailand',
+                            region: 'Central',
+                            province: 'Nakhon Pathom',
+                            operationalSince: 2016
+                        };
+                    }
+                } as unknown) as DeviceService
+            }
+        ]
     })
         .overrideProvider(ConfigService)
         .useValue(configService)
@@ -94,12 +137,10 @@ export const bootstrapTestInstance = async () => {
     const orderService = await app.resolve<OrderService>(OrderService);
     const productService = await app.resolve<ProductService>(ProductService);
 
-    const appService = await app.resolve<AppService>(AppService);
-    await appService.init(deviceTypes);
-
-    app.useGlobalInterceptors(new EmptyResultInterceptor());
-    app.useGlobalPipes(new ValidationPipe());
     app.useLogger(testLogger);
+    app.enableCors();
+
+    useContainer(app.select(AppModule), { fallbackOnErrors: true });
 
     return {
         transferService,
@@ -109,6 +150,7 @@ export const bootstrapTestInstance = async () => {
         orderService,
         productService,
         registry,
+        issuer,
         app
     };
 };

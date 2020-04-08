@@ -7,13 +7,12 @@ import dotenv from 'dotenv';
 import fs from 'fs';
 
 import { ProducingDevice } from '@energyweb/device-registry';
-import { createBlockchainProperties } from '@energyweb/market';
 import { Configuration } from '@energyweb/utils-general';
 import { OffChainDataSource } from '@energyweb/origin-backend-client';
 import { ISmartMeterRead } from '@energyweb/origin-backend-core';
 
 export function wait(milliseconds: number) {
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
         setTimeout(resolve, milliseconds);
     });
 }
@@ -38,28 +37,7 @@ async function createBlockchainConfiguration() {
         )
     };
 
-    let storedMarketContractAddress: string = null;
-
-    console.log(`[SIMULATOR-CONSUMER] Trying to get Market contract address`);
-
-    while (!storedMarketContractAddress) {
-        storedMarketContractAddress = (await conf.offChainDataSource.configurationClient.get())
-            .marketContractLookup;
-
-        if (!storedMarketContractAddress) {
-            await new Promise(resolve => setTimeout(resolve, 10000));
-        }
-    }
-
-    console.log(`[SIMULATOR-CONSUMER] Starting for Market ${storedMarketContractAddress}`);
-
-    const latestMarketContractLookupAddress: string =
-        process.env.MARKET_CONTRACT_ADDRESS || storedMarketContractAddress;
-
-    conf.blockchainProperties = await createBlockchainProperties(
-        conf.blockchainProperties.web3,
-        latestMarketContractLookupAddress
-    );
+    console.log(`[SIMULATOR-CONSUMER] Starting`);
 
     return conf;
 }
@@ -76,7 +54,7 @@ export async function startConsumerService(configFilePath: string) {
     const conf = await createBlockchainConfiguration();
 
     async function getProducingDeviceSmartMeterRead(deviceId: string): Promise<number> {
-        const device = await new ProducingDevice.Entity(deviceId, conf).sync();
+        const device = await new ProducingDevice.Entity(parseInt(deviceId, 10), conf).sync();
 
         return device.lastSmartMeterReadWh ?? 0;
     }
@@ -98,7 +76,7 @@ export async function startConsumerService(configFilePath: string) {
         };
 
         try {
-            let device = await new ProducingDevice.Entity(deviceId, conf).sync();
+            let device = await new ProducingDevice.Entity(parseInt(deviceId, 10), conf).sync();
             await device.saveSmartMeterRead(
                 smartMeterReading.meterReading,
                 smartMeterReading.timestamp

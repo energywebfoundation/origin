@@ -14,19 +14,12 @@ import { HierarchicalMultiSelect } from '../HierarchicalMultiSelect';
 import { useSelector } from 'react-redux';
 import { getConfiguration, getRegions } from '../../features';
 import { Skeleton } from '@material-ui/lab';
-import {
-    useValidation,
-    moment,
-    Moment,
-    setMaxTimeInMonth,
-    setMinTimeInMonth,
-    useTranslation,
-    formatCurrency
-} from '../../utils';
+import { useValidation, Moment, useTranslation, formatCurrency } from '../../utils';
+import { calculateTotalPrice } from '../../utils/exchange';
 import { Formik, Form } from 'formik';
 import { FormInput, FormikDatePickerWithMonthArrowsFilled, FormikEffect } from '../Form';
 
-interface IFormValues {
+export interface IMarketFormValues {
     generationDateStart: Moment;
     generationDateEnd: Moment;
     price: string;
@@ -35,25 +28,26 @@ interface IFormValues {
     location: string[];
 }
 
-const INITIAL_FORM_VALUES: IFormValues = {
+const INITIAL_FORM_VALUES: IMarketFormValues = {
     energy: '',
-    generationDateStart: setMinTimeInMonth(moment()),
-    generationDateEnd: setMaxTimeInMonth(moment()),
+    generationDateStart: null,
+    generationDateEnd: null,
     price: '',
     deviceType: [],
     location: []
 };
 
 interface IProps {
-    onBid: (values: IFormValues) => void;
-    onNotify: (values: IFormValues) => void;
-    onChange: (values: IFormValues) => void;
+    onBid: (values: IMarketFormValues) => void;
+    onNotify: (values: IMarketFormValues) => void;
+    onChange: (values: IMarketFormValues) => void;
     currency: string;
     energyUnit: string;
+    disableBidding?: boolean;
 }
 
 export function Market(props: IProps) {
-    const { onBid, currency, energyUnit, onNotify, onChange } = props;
+    const { onBid, currency, energyUnit, onNotify, onChange, disableBidding } = props;
 
     const configuration = useSelector(getConfiguration);
     const regions = useSelector(getRegions);
@@ -72,22 +66,10 @@ export function Market(props: IProps) {
     const { Yup } = useValidation();
 
     const VALIDATION_SCHEMA = Yup.object().shape({
-        generationDateStart: Yup.date()
-            .required()
-            .label(t('exchange.properties.generationDateStart')),
-        generationDateEnd: Yup.date()
-            .required()
-            .label(t('exchange.properties.generationDateEnd')),
-        energy: Yup.number()
-            .required()
-            .positive()
-            .integer()
-            .label(t('exchange.properties.energy')),
-        price: Yup.number()
-            .required()
-            .positive()
-            .min(0.01)
-            .label(t('exchange.properties.price'))
+        generationDateStart: Yup.date().label(t('exchange.properties.generationDateStart')),
+        generationDateEnd: Yup.date().label(t('exchange.properties.generationDateEnd')),
+        energy: Yup.number().positive().integer().label(t('exchange.properties.energy')),
+        price: Yup.number().positive().min(0.01).label(t('exchange.properties.price'))
     });
 
     if (!configuration?.deviceTypeService?.deviceTypes) {
@@ -95,17 +77,6 @@ export function Market(props: IProps) {
     }
 
     const initialFormValues = INITIAL_FORM_VALUES;
-
-    function calculateTotalPrice(price: string, energy: string) {
-        const priceAsFloat = parseFloat(price);
-        const energyAsFloat = parseFloat(energy);
-
-        if (isNaN(priceAsFloat) || isNaN(energyAsFloat) || !priceAsFloat || !energyAsFloat) {
-            return 0;
-        }
-
-        return (priceAsFloat * energyAsFloat).toFixed(2);
-    }
 
     return (
         <Paper className={classes.wrapper}>
@@ -115,7 +86,7 @@ export function Market(props: IProps) {
                 validateOnMount={false}
                 onSubmit={null}
             >
-                {formikProps => {
+                {(formikProps) => {
                     const { isValid, isSubmitting, setFieldValue, errors, values } = formikProps;
 
                     const totalPrice = isValid
@@ -124,13 +95,15 @@ export function Market(props: IProps) {
 
                     const fieldDisabled = isSubmitting;
 
-                    const notifyButtonEnabled = values.price && !errors?.price && !isSubmitting;
+                    const notifyButtonEnabled =
+                        values.price && !errors?.price && !isSubmitting && !disableBidding;
                     const bidButtonEnabled =
                         values.price &&
                         values.energy &&
                         !errors?.price &&
                         !errors?.energy &&
-                        !isSubmitting;
+                        !isSubmitting &&
+                        !disableBidding;
 
                     return (
                         <Form translate="">
@@ -145,6 +118,14 @@ export function Market(props: IProps) {
                                         }
                                         allValues={configuration.deviceTypeService.deviceTypes}
                                         selectOptions={[
+                                            {
+                                                label: t('device.properties.deviceType'),
+                                                placeholder: t('device.info.selectDeviceType')
+                                            },
+                                            {
+                                                label: t('device.properties.deviceType'),
+                                                placeholder: t('device.info.selectDeviceType')
+                                            },
                                             {
                                                 label: t('device.properties.deviceType'),
                                                 placeholder: t('device.info.selectDeviceType')
@@ -166,6 +147,12 @@ export function Market(props: IProps) {
                                                 placeholder: t(
                                                     'exchange.info.selectMultipleRegions'
                                                 )
+                                            },
+                                            {
+                                                label: t('exchange.info.regions'),
+                                                placeholder: t(
+                                                    'exchange.info.selectMultipleRegions'
+                                                )
                                             }
                                         ]}
                                         disabled={fieldDisabled}
@@ -179,6 +166,7 @@ export function Market(props: IProps) {
                                         name="generationDateStart"
                                         label={t('exchange.properties.generationDateStart')}
                                         disabled={fieldDisabled}
+                                        required={false}
                                     />
                                 </Grid>
                                 <Grid item xs={6}>
@@ -186,6 +174,7 @@ export function Market(props: IProps) {
                                         name="generationDateEnd"
                                         label={t('exchange.properties.generationDateEnd')}
                                         disabled={fieldDisabled}
+                                        required={false}
                                     />
                                 </Grid>
                             </Grid>
@@ -199,7 +188,6 @@ export function Market(props: IProps) {
                                         property="energy"
                                         disabled={fieldDisabled}
                                         className="mt-3"
-                                        variant="standard"
                                         required
                                         InputProps={{
                                             endAdornment: (
@@ -216,7 +204,6 @@ export function Market(props: IProps) {
                                         property="price"
                                         disabled={fieldDisabled}
                                         className="mt-3"
-                                        variant="standard"
                                         required
                                         InputProps={{
                                             endAdornment: (
@@ -226,7 +213,7 @@ export function Market(props: IProps) {
                                             )
                                         }}
                                         wrapperProps={{
-                                            onBlur: e => {
+                                            onBlur: (e) => {
                                                 const parsedValue = parseFloat(
                                                     (e.target as any)?.value
                                                 );

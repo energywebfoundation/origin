@@ -58,13 +58,13 @@ export function Organization() {
         }
     ];
 
-    const firstNotHiddenRoute = Menu.filter(i => !i.hide)[0]?.key;
+    const firstNotHiddenRoute = Menu.filter((i) => !i.hide)[0]?.key;
 
     return (
         <div className="PageWrapper">
             <div className="PageNav">
                 <ul className="NavMenu nav">
-                    {Menu.map(menu => {
+                    {Menu.map((menu) => {
                         if (menu.hide) {
                             return null;
                         }
@@ -86,9 +86,9 @@ export function Organization() {
 
             <Route
                 path={`${getOrganizationLink()}/:key/:id?`}
-                render={props => {
+                render={(props) => {
                     const key = props.match.params.key;
-                    const matches = Menu.filter(item => {
+                    const matches = Menu.filter((item) => {
                         return item.key === key;
                     });
 

@@ -1,12 +1,10 @@
-import * as BlockchainDataModelEntity from './blockchain-facade/BlockchainDataModelEntity';
 import * as Configuration from './blockchain-facade/Configuration';
 
 export { ContractEventHandler } from './blockchain-facade/ContractEventHandler';
 export { EventHandlerManager } from './blockchain-facade/EventHandlerManager';
-export { BlockchainDataModelEntity };
 export { Configuration };
 export { validateJson } from './off-chain-data/json-validator';
-export { TimeFrame, Unit } from './blockchain-facade/EnumExports';
+export * from './blockchain-facade/EnumExports';
 export { deploy } from './deployment/deploy';
 export * from './blockchain-facade/DeviceTypeService';
 export { extendArray } from './extensions/array.extensions';

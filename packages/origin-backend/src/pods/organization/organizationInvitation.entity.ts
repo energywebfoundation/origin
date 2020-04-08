@@ -1,4 +1,4 @@
-import { Entity, Column, BaseEntity, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
 import { IsEmail } from 'class-validator';
 import {
     OrganizationInvitationStatus,
@@ -6,9 +6,10 @@ import {
 } from '@energyweb/origin-backend-core';
 
 import { Organization } from './organization.entity';
+import { ExtendedBaseEntity } from '../ExtendedBaseEntity';
 
 @Entity()
-export class OrganizationInvitation extends BaseEntity implements IOrganizationInvitation {
+export class OrganizationInvitation extends ExtendedBaseEntity implements IOrganizationInvitation {
     @PrimaryGeneratedColumn()
     id: number;
 
@@ -19,9 +20,6 @@ export class OrganizationInvitation extends BaseEntity implements IOrganizationI
     @Column()
     status: OrganizationInvitationStatus;
 
-    @ManyToOne(
-        () => Organization,
-        organization => organization.users
-    )
+    @ManyToOne(() => Organization, (organization) => organization.users)
     organization: Organization;
 }

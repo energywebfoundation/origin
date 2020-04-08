@@ -3,14 +3,13 @@ import { LoadScriptNext, GoogleMap, Marker, InfoWindow } from '@react-google-map
 import { APIKEY } from './GoogleApiKey';
 import { ProducingDevice } from '@energyweb/device-registry';
 import { useSelector } from 'react-redux';
-import { MarketUser } from '@energyweb/market';
 import { Link } from 'react-router-dom';
 import { useLinks } from '../utils/routing';
-import { getProducingDevices, getConfiguration } from '../features/selectors';
+import { getProducingDevices } from '../features/selectors';
 import { CircularProgress } from '@material-ui/core';
-import { getOffChainDataSource } from '../features/general/selectors';
-import { IOrganization } from '@energyweb/origin-backend-core';
 import { useTranslation } from 'react-i18next';
+import { IOrganization } from '@energyweb/origin-backend-core';
+import { getOffChainDataSource } from '../features/general/selectors';
 
 interface IProps {
     devices?: ProducingDevice.Entity[];
@@ -19,15 +18,13 @@ interface IProps {
 
 export function DeviceMap(props: IProps) {
     const [deviceHighlighted, setDeviceHighlighted] = useState<ProducingDevice.Entity>(null);
-    const [owner, setOwner] = useState<MarketUser.Entity>(null);
     const [organizations, setOrganizations] = useState<IOrganization[]>();
     const [map, setMap] = useState(null);
 
     const producingDevices = useSelector(getProducingDevices);
-    const offChainDataSource = useSelector(getOffChainDataSource);
-    const configuration = useSelector(getConfiguration);
 
     const { getProducingDeviceDetailLink } = useLinks();
+    const offChainDataSource = useSelector(getOffChainDataSource);
     const { t } = useTranslation();
 
     const devices = props.devices || producingDevices;
@@ -36,7 +33,6 @@ export function DeviceMap(props: IProps) {
 
     async function showWindowForDevice(device: ProducingDevice.Entity) {
         setDeviceHighlighted(device);
-        setOwner(await new MarketUser.Entity(device.owner.address, configuration).sync());
     }
 
     function updateBounds(targetMap: any = map) {
@@ -56,8 +52,8 @@ export function DeviceMap(props: IProps) {
         };
 
         for (const device of devices) {
-            const latitude = parseFloat(device.offChainProperties.gpsLatitude);
-            const longitude = parseFloat(device.offChainProperties.gpsLongitude);
+            const latitude = parseFloat(device.gpsLatitude);
+            const longitude = parseFloat(device.gpsLongitude);
 
             bounds.north =
                 latitude > bounds.north || bounds.north === null ? latitude : bounds.north;
@@ -84,8 +80,8 @@ export function DeviceMap(props: IProps) {
     const defaultCenter =
         devices.length > 0
             ? {
-                  lat: parseFloat(devices[0].offChainProperties.gpsLatitude),
-                  lng: parseFloat(devices[0].offChainProperties.gpsLongitude)
+                  lat: parseFloat(devices[0].gpsLatitude),
+                  lng: parseFloat(devices[0].gpsLongitude)
               }
             : {
                   lat: 0,
@@ -101,29 +97,28 @@ export function DeviceMap(props: IProps) {
                     height
                 }}
                 mapTypeId="hybrid"
-                onLoad={mapObject => updateBounds(mapObject)}
+                onLoad={(mapObject) => updateBounds(mapObject)}
             >
                 {devices.map((device, index) => (
                     <React.Fragment key={index}>
                         <Marker
                             position={{
-                                lat: parseFloat(device.offChainProperties.gpsLatitude),
-                                lng: parseFloat(device.offChainProperties.gpsLongitude)
+                                lat: parseFloat(device.gpsLatitude),
+                                lng: parseFloat(device.gpsLongitude)
                             }}
                             onClick={() => showWindowForDevice(device)}
                         />
                     </React.Fragment>
                 ))}
 
-                {deviceHighlighted && owner && (
+                {deviceHighlighted && (
                     <InfoWindow
                         position={{
-                            lat: parseFloat(deviceHighlighted.offChainProperties.gpsLatitude),
-                            lng: parseFloat(deviceHighlighted.offChainProperties.gpsLongitude)
+                            lat: parseFloat(deviceHighlighted.gpsLatitude),
+                            lng: parseFloat(deviceHighlighted.gpsLongitude)
                         }}
                         onCloseClick={() => {
                             setDeviceHighlighted(null);
-                            setOwner(null);
                         }}
                     >
                         <div
@@ -131,12 +126,12 @@ export function DeviceMap(props: IProps) {
                                 color: 'black'
                             }}
                         >
-                            <b>{deviceHighlighted.offChainProperties.facilityName}</b>
+                            <b>{deviceHighlighted.facilityName}</b>
                             <br />
                             <br />
                             {t('deviceMap.properties.owner')}:{' '}
                             {
-                                organizations?.find(o => o?.id === owner.information?.organization)
+                                organizations?.find((o) => o?.id === deviceHighlighted.organization)
                                     ?.name
                             }
                             <br />

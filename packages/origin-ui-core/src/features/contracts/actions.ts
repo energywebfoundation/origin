@@ -1,21 +1,19 @@
+import { IContractsLookup } from '@energyweb/origin-backend-core';
+
 export enum ContractsActions {
-    setMarketContractLookupAddress = 'CONTRACTS_SET_MARKET_CONTRACT_LOOKUP_ADDRESS'
+    setContractsLookup = 'CONTRACTS_SET_LOOKUP'
 }
 
-export interface ISetMarketContractLookupAddressAction {
-    type: ContractsActions.setMarketContractLookupAddress;
-    payload: {
-        address: string;
-    };
+export interface ISetContractsLookupAction {
+    type: ContractsActions.setContractsLookup;
+    payload: IContractsLookup;
 }
 
-export const setMarketContractLookupAddress = (
-    payload: ISetMarketContractLookupAddressAction['payload']
-) => ({
-    type: ContractsActions.setMarketContractLookupAddress,
+export const setContractsLookup = (payload: ISetContractsLookupAction['payload']) => ({
+    type: ContractsActions.setContractsLookup,
     payload
 });
 
-export type TSetMarketContractLookupAddress = typeof setMarketContractLookupAddress;
+export type TSetContractsLookup = typeof setContractsLookup;
 
-export type IContractsAction = ISetMarketContractLookupAddressAction;
+export type IContractsAction = ISetContractsLookupAction;

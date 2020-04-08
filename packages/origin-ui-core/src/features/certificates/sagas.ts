@@ -1,8 +1,7 @@
-import { put, take, all, fork, select, call, apply, delay } from 'redux-saga/effects';
+import { put, take, all, fork, select, call, apply } from 'redux-saga/effects';
 import { SagaIterator } from 'redux-saga';
 import {
     CertificatesActions,
-    IAddCertificateAction,
     IRequestCertificatesAction,
     IShowRequestCertificatesModalAction,
     setRequestCertificatesModalVisibility,
@@ -10,50 +9,16 @@ import {
     IRequestCertificateEntityFetchAction,
     ICertificateFetcher,
     addCertificate,
-    updateCertificate,
-    requestCertificateEntityFetch,
-    IUpdateCertificateAction
+    updateCertificate
 } from './actions';
-import { requestUser } from '../users/actions';
 import { IStoreState } from '../../types';
 import { getConfiguration } from '../selectors';
 import { showNotification, NotificationType } from '../../utils/notifications';
-import { Role } from '@energyweb/user-registry';
-import { MarketUser, PurchasableCertificate, NoneCurrency } from '@energyweb/market';
-import { getCurrentUser } from '../users/selectors';
+import { getUserOffchain, getActiveBlockchainAccountAddress } from '../users/selectors';
 import { setLoading } from '../general/actions';
 import { getCertificates, getCertificateFetcher, getCertificateById } from './selectors';
-import { EnergyFormatter } from '../../utils/EnergyFormatter';
-import { OffChainDataSource } from '@energyweb/origin-backend-client';
-import { getOffChainDataSource } from '../general/selectors';
-
-function areOffChainSettlementOptionsMissing(certificate: PurchasableCertificate.Entity) {
-    return (
-        certificate.forSale &&
-        certificate.acceptedToken === '0x0000000000000000000000000000000000000000' &&
-        (!certificate.offChainProperties ||
-            (certificate.offChainProperties.currency === NoneCurrency &&
-                certificate.offChainProperties.priceInCents === 0))
-    );
-}
-
-function* fetchCertificateDetailsSaga(): SagaIterator {
-    while (true) {
-        const action: IAddCertificateAction | IUpdateCertificateAction = yield take([
-            CertificatesActions.addCertificate,
-            CertificatesActions.updateCertificate
-        ]);
-
-        const certificate = action.payload;
-
-        yield put(requestUser(certificate.certificate.owner));
-
-        if (areOffChainSettlementOptionsMissing(certificate)) {
-            yield delay(100);
-            yield put(requestCertificateEntityFetch(certificate.id));
-        }
-    }
-}
+import { Certificate, CertificationRequest } from '@energyweb/issuer';
+import { IUserWithRelations } from '@energyweb/origin-backend-core';
 
 function* requestCertificatesSaga(): SagaIterator {
     while (true) {
@@ -64,31 +29,21 @@ function* requestCertificatesSaga(): SagaIterator {
         yield put(setLoading(true));
 
         yield put(hideRequestCertificatesModal());
+        const configuration: IStoreState['configuration'] = yield select(getConfiguration);
 
-        const offChainDataSource: OffChainDataSource = yield select(getOffChainDataSource);
+        const { startTime, endTime, energy, files, deviceId } = action.payload;
 
         try {
-            yield apply(
-                offChainDataSource.certificateClient,
-                offChainDataSource.certificateClient.requestCertificates,
-                [
-                    {
-                        device: parseInt(action.payload.deviceId, 10),
-                        energy: action.payload.energy,
-                        startTime: action.payload.startTime,
-                        endTime: action.payload.endTime,
-                        files: action.payload.files
-                    }
-                ]
-            );
+            yield apply(CertificationRequest, CertificationRequest.createCertificationRequest, [
+                startTime,
+                endTime,
+                energy,
+                deviceId,
+                configuration,
+                files
+            ]);
 
-            showNotification(
-                `Certificates for ${EnergyFormatter.format(
-                    action.payload.energy,
-                    true
-                )} requested.`,
-                NotificationType.Success
-            );
+            showNotification(`Certificates requested.`, NotificationType.Success);
         } catch (error) {
             console.warn('Error while requesting certificates', error);
             showNotification(`Transaction could not be completed.`, NotificationType.Error);
@@ -105,16 +60,21 @@ function* openRequestCertificatesModalSaga(): SagaIterator {
         );
 
         const device = action.payload.producingDevice;
-        const currentUser: MarketUser.Entity = yield select(getCurrentUser);
 
-        if (device?.owner?.address?.toLowerCase() !== currentUser?.id?.toLowerCase()) {
+        const userOffchain: IUserWithRelations = yield select(getUserOffchain);
+        const activeAddress: string = yield select(getActiveBlockchainAccountAddress);
+
+        if (device?.organization !== userOffchain?.organization?.id) {
             showNotification(
                 `You need to own the device to request certificates.`,
                 NotificationType.Error
             );
-        } else if (!currentUser.isRole(Role.DeviceManager)) {
+        } else if (
+            !activeAddress ||
+            activeAddress?.toLowerCase() !== userOffchain?.blockchainAccountAddress?.toLowerCase()
+        ) {
             showNotification(
-                `You need to have Device Manager role to request certificates.`,
+                `You need to select a blockchain account bound to the logged in user.`,
                 NotificationType.Error
             );
         } else {
@@ -123,18 +83,14 @@ function* openRequestCertificatesModalSaga(): SagaIterator {
     }
 }
 
-function* fetchCertificateSaga(id: string, entitiesBeingFetched: any): SagaIterator {
+function* fetchCertificateSaga(id: number, entitiesBeingFetched: any): SagaIterator {
     if (entitiesBeingFetched.has(id)) {
         return;
     }
 
-    const entities: PurchasableCertificate.Entity[] = yield select(getCertificates);
+    const entities: Certificate.Entity[] = yield select(getCertificates);
 
-    const existingEntity: PurchasableCertificate.Entity = yield call(
-        getCertificateById,
-        entities,
-        id
-    );
+    const existingEntity: Certificate.Entity = yield call(getCertificateById, entities, id);
 
     const configuration: IStoreState['configuration'] = yield select(getConfiguration);
     const fetcher: ICertificateFetcher = yield select(getCertificateFetcher);
@@ -143,20 +99,13 @@ function* fetchCertificateSaga(id: string, entitiesBeingFetched: any): SagaItera
 
     try {
         if (existingEntity) {
-            const reloadedEntity: PurchasableCertificate.Entity = yield call(
-                fetcher.reload,
-                existingEntity
-            );
+            const reloadedEntity: Certificate.Entity = yield call(fetcher.reload, existingEntity);
 
             if (reloadedEntity) {
                 yield put(updateCertificate(reloadedEntity));
             }
         } else {
-            const fetchedEntity: PurchasableCertificate.Entity = yield call(
-                fetcher.fetch,
-                id,
-                configuration
-            );
+            const fetchedEntity: Certificate.Entity = yield call(fetcher.fetch, id, configuration);
 
             if (fetchedEntity) {
                 yield put(addCertificate(fetchedEntity));
@@ -178,10 +127,10 @@ function* requestCertificateSaga(): SagaIterator {
         );
 
         if (!action.payload) {
-            return;
+            continue;
         }
 
-        const entityId = action.payload.toLowerCase();
+        const entityId = action.payload;
 
         try {
             yield fork(fetchCertificateSaga, entityId, usersBeingFetched);
@@ -193,7 +142,6 @@ function* requestCertificateSaga(): SagaIterator {
 
 export function* certificatesSaga(): SagaIterator {
     yield all([
-        fork(fetchCertificateDetailsSaga),
         fork(requestCertificatesSaga),
         fork(openRequestCertificatesModalSaga),
         fork(requestCertificateSaga)

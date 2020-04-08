@@ -3,7 +3,6 @@ import { Certificates } from './Certificates';
 import { Route, Switch } from 'react-router-dom';
 import { Header } from './Header';
 import { Device } from './Device';
-import { Demands } from './Demand/Demands';
 import { Account } from './Account/Account';
 import { Organization } from './Organization/Organization';
 import { AccountChangedModal } from './Modal/AccountChangedModal';
@@ -22,7 +21,6 @@ export function AppContainer() {
     const {
         baseURL,
         getAccountLink,
-        getDemandsLink,
         getDevicesLink,
         getCertificatesLink,
         getOrganizationLink
@@ -59,7 +57,6 @@ export function AppContainer() {
             <Switch>
                 <Route path={getDevicesLink()} component={Device} />
                 <Route path={getCertificatesLink()} component={Certificates} />
-                <Route path={getDemandsLink()} component={Demands} />
                 <Route path={getAccountLink()} component={Account} />
                 <Route path={getOrganizationLink()} component={Organization} />
 

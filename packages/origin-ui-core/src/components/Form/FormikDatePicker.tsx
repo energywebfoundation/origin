@@ -28,7 +28,7 @@ const TextFieldWithArrows = ({
                 <InputAdornment position="end">
                     <ArrowLeft
                         style={{ cursor: 'pointer' }}
-                        onClick={event => {
+                        onClick={(event) => {
                             event.stopPropagation();
 
                             onLeftArrowClick();
@@ -36,7 +36,7 @@ const TextFieldWithArrows = ({
                     />
                     <ArrowRight
                         style={{ cursor: 'pointer' }}
-                        onClick={event => {
+                        onClick={(event) => {
                             event.stopPropagation();
 
                             onRightArrowClick();
@@ -72,7 +72,7 @@ export const FormikDatePicker = ({
     ...rest
 }: FieldProps<DatePickerPropsMaterial>) => (
     <DatePickerMaterial
-        onChange={newValue => setFieldValue(name, newValue)}
+        onChange={(newValue) => setFieldValue(name, newValue)}
         value={value}
         format={DATE_FORMAT_DMY}
         {...rest}
@@ -82,11 +82,13 @@ export const FormikDatePicker = ({
 export const FormikDatePickerWithMonthArrowsFilled = ({
     name,
     label,
-    disabled
+    disabled,
+    required
 }: {
     name: string;
     label: string;
     disabled: boolean;
+    required: boolean;
 }) => {
     const { setFieldValue, values } = useFormikContext();
 
@@ -97,7 +99,7 @@ export const FormikDatePickerWithMonthArrowsFilled = ({
             inputVariant="filled"
             variant="inline"
             fullWidth
-            required
+            required={required}
             component={FormikDatePickerWithArrows}
             disabled={disabled}
             views={['year', 'month']}
@@ -105,21 +107,12 @@ export const FormikDatePickerWithMonthArrowsFilled = ({
             onLeftArrowClick={() =>
                 setFieldValue(
                     name,
-                    (values[name] as Moment)
-                        .clone()
-                        .subtract(1, 'month')
-                        .startOf('month')
+                    (values[name] as Moment).clone().subtract(1, 'month').startOf('month')
                 )
             }
             onRightArrowClick={() =>
                 values[name] &&
-                setFieldValue(
-                    name,
-                    (values[name] as Moment)
-                        .clone()
-                        .add(1, 'month')
-                        .endOf('month')
-                )
+                setFieldValue(name, (values[name] as Moment).clone().add(1, 'month').endOf('month'))
             }
         />
     );

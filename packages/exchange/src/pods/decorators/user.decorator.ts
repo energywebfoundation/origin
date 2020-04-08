@@ -1,6 +1,7 @@
 import { IUser } from '@energyweb/origin-backend-core';
-import { createParamDecorator } from '@nestjs/common';
+import { createParamDecorator, ExecutionContext } from '@nestjs/common';
 
-export const UserDecorator = createParamDecorator((data, req: any) => {
-    return req.user as IUser;
+export const UserDecorator = createParamDecorator((data: unknown, ctx: ExecutionContext) => {
+    const request = ctx.switchToHttp().getRequest();
+    return request.user as IUser;
 });

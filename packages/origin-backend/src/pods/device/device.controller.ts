@@ -1,12 +1,12 @@
-import { Repository } from 'typeorm';
-import { validate } from 'class-validator';
 import {
-    IDevice,
     DeviceStatus,
     DeviceUpdateData,
     SupportedEvents,
-    DeviceStatusChanged,
-    ISmartMeterRead
+    DeviceStatusChangedEvent,
+    ISmartMeterRead,
+    IUserWithRelationsIds,
+    IDeviceWithRelationsIds,
+    DeviceCreateData
 } from '@energyweb/origin-backend-core';
 
 import {
@@ -20,30 +20,31 @@ import {
     UnprocessableEntityException,
     Delete,
     Put,
-    Inject
+    UseGuards
 } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { EventsWebSocketGateway } from '../../events/events.gateway';
+import { AuthGuard } from '@nestjs/passport';
 
-import { Device } from './device.entity';
 import { StorageErrors } from '../../enums/StorageErrors';
 import { DeviceService } from './device.service';
+import { UserDecorator } from '../user/user.decorator';
+import { EventsService } from '../events';
+import { OrganizationService } from '../organization';
 
 @Controller('/Device')
 export class DeviceController {
     constructor(
-        @InjectRepository(Device) private readonly deviceRepository: Repository<Device>,
-        @Inject(EventsWebSocketGateway) private readonly eventGateway: EventsWebSocketGateway,
-        private readonly deviceService: DeviceService
+        private readonly eventsService: EventsService,
+        private readonly deviceService: DeviceService,
+        private readonly organizationService: OrganizationService
     ) {}
 
     @Get()
     async getAll() {
-        return this.deviceRepository.find();
+        return this.deviceService.getAll();
     }
 
     @Get('/:id')
-    async get(@Param('id') id: string) {
+    async get(@Param('id') id: string): Promise<IDeviceWithRelationsIds> {
         const existingEntity = await this.deviceService.findOne(id);
 
         if (!existingEntity) {
@@ -53,36 +54,21 @@ export class DeviceController {
         return existingEntity;
     }
 
-    @Post('/:id')
-    async post(@Param('id') id: string, @Body() body: IDevice) {
-        const newEntity = new Device();
+    @Post()
+    @UseGuards(AuthGuard())
+    async post(@Body() body: DeviceCreateData, @UserDecorator() loggedUser: IUserWithRelationsIds) {
+        if (typeof loggedUser.organization === 'undefined') {
+            throw new BadRequestException('server.errors.loggedUserOrganizationEmpty');
+        }
 
-        Object.assign(newEntity, {
+        return this.deviceService.create({
             ...body,
-            id: Number(id),
             status: body.status ?? DeviceStatus.Submitted,
             lastSmartMeterReading: body.lastSmartMeterReading ?? null,
             smartMeterReads: body.smartMeterReads ?? [],
-            deviceGroup: body.deviceGroup ?? ''
+            deviceGroup: body.deviceGroup ?? '',
+            organization: loggedUser.organization
         });
-
-        const validationErrors = await validate(newEntity);
-
-        if (validationErrors.length > 0) {
-            throw new UnprocessableEntityException({
-                success: false,
-                errors: validationErrors
-            });
-        }
-
-        try {
-            await this.deviceRepository.save(newEntity);
-
-            return newEntity;
-        } catch (error) {
-            console.warn('Error while saving entity', error);
-            throw new BadRequestException('Could not save device.');
-        }
     }
 
     @Delete('/:id')
@@ -93,7 +79,7 @@ export class DeviceController {
             throw new NotFoundException(StorageErrors.NON_EXISTENT);
         }
 
-        await this.deviceRepository.remove(existingEntity);
+        await this.deviceService.remove(existingEntity);
 
         return {
             message: `Entity ${id} deleted`
@@ -102,23 +88,28 @@ export class DeviceController {
 
     @Put('/:id')
     async put(@Param('id') id: string, @Body() body: DeviceUpdateData) {
-        const existing = await this.deviceService.findOne(id);
+        const device = await this.deviceService.findOne(id);
 
-        if (!existing) {
+        if (!device) {
             throw new NotFoundException(StorageErrors.NON_EXISTENT);
         }
 
-        existing.status = body.status;
+        device.status = body.status;
 
         try {
-            await existing.save();
+            await device.save();
 
-            const event: DeviceStatusChanged = {
+            const deviceManagers = await this.organizationService.getDeviceManagers(
+                device.organization
+            );
+
+            const event: DeviceStatusChangedEvent = {
                 deviceId: id,
-                status: body.status
+                status: body.status,
+                deviceManagersEmails: deviceManagers.map((u) => u.email)
             };
 
-            this.eventGateway.handleEvent({
+            this.eventsService.handleEvent({
                 type: SupportedEvents.DEVICE_STATUS_CHANGED,
                 data: event
             });
@@ -142,6 +133,17 @@ export class DeviceController {
         }
 
         return this.deviceService.getAllSmartMeterReadings(id);
+    }
+
+    @Get('/get-by-external-id/:type/:id')
+    async getByExternalId(@Param('type') type: string, @Param('id') id: string) {
+        const existing = await this.deviceService.findByExternalId({ id, type });
+
+        if (!existing) {
+            throw new NotFoundException(StorageErrors.NON_EXISTENT);
+        }
+
+        return existing;
     }
 
     @Put('/:id/smartMeterReading')

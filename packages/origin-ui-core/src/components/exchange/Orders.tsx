@@ -6,8 +6,8 @@ import {
 } from '../Table/PaginatedLoaderHooks';
 import { EnergyFormatter } from '../../utils/EnergyFormatter';
 import { Typography } from '@material-ui/core';
-import { IOrderBookOrderDTO } from './order-book-order.dto';
 import { useTranslation } from '../../utils';
+import { IOrderBookOrderDTO } from '../../utils/exchange';
 
 interface IProps {
     data: IOrderBookOrderDTO[];
@@ -44,7 +44,15 @@ export function Orders(props: IProps) {
     });
 
     useEffect(() => {
-        loadPage(1);
+        let isMounted = true;
+
+        const checkIsMounted = () => isMounted;
+
+        loadPage(1, null, checkIsMounted);
+
+        return () => {
+            isMounted = false;
+        };
     }, [props.data]);
 
     const columns = [

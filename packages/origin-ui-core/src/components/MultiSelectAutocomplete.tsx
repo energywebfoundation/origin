@@ -44,7 +44,7 @@ export function MultiSelectAutocomplete(props: IOwnProps) {
                 multiple
                 filterSelectedOptions
                 options={options}
-                getOptionLabel={option => option.label}
+                getOptionLabel={(option) => option.label}
                 onChange={(event, value: IAutocompleteMultiSelectOptionType[]) => {
                     props.onChange(value ? value.slice(0, max ?? value.length) : value);
                 }}
@@ -60,8 +60,14 @@ export function MultiSelectAutocomplete(props: IOwnProps) {
                         />
                     ))
                 }
-                renderInput={params => (
-                    <TextField {...params} label={label} placeholder={placeholder} fullWidth />
+                renderInput={(params) => (
+                    <TextField
+                        {...params}
+                        label={label}
+                        placeholder={placeholder}
+                        fullWidth
+                        variant="filled"
+                    />
                 )}
                 getOptionSelected={(option, value) => option.value === value.value}
                 getOptionDisabled={() => disabled}

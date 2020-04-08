@@ -32,5 +32,5 @@ export class EventClientMock implements IEventClient {
 
         const matchingCallbacks = this.allCallbacks.filter(cb => cb.event === event.type);
         matchingCallbacks.forEach(cb => cb.callback(event));
-    };
+    }
 }

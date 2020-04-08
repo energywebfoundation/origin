@@ -5,4 +5,6 @@ export * from './PowerFormatter';
 export * from './routing';
 export * from './time';
 export * from './validation';
+export * from './device';
+export * from './fetching';
 export { useTranslation } from 'react-i18next';

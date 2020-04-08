@@ -85,7 +85,7 @@ export function TableMaterial<T extends readonly ITableColumn[]>(props: IProps<T
             }
         } else if (newSelectedIndexes.includes(index)) {
             newSelectedIndexes = newSelectedIndexes.filter(
-                selectedIndex => selectedIndex !== index
+                (selectedIndex) => selectedIndex !== index
             );
         }
 
@@ -171,14 +171,14 @@ export function TableMaterial<T extends readonly ITableColumn[]>(props: IProps<T
                                                 selectedIndexes.length !== 0 &&
                                                 selectedIndexes.length === rows.length
                                             }
-                                            onChange={e =>
+                                            onChange={(e) =>
                                                 setAllItemsSelectedProperty(e.target.checked)
                                             }
                                             color="primary"
                                         />
                                     </TableCell>
                                 )}
-                                {columns.map(column => {
+                                {columns.map((column) => {
                                     const isSortable = column.sortProperties?.length > 0;
                                     const sortedByThisColumn =
                                         isSortable && column.id === currentSort.id;
@@ -233,7 +233,7 @@ export function TableMaterial<T extends readonly ITableColumn[]>(props: IProps<T
                                             <TableCell padding="checkbox">
                                                 <Checkbox
                                                     checked={isItemSelected}
-                                                    onChange={e =>
+                                                    onChange={(e) =>
                                                         itemSelectionChanged(
                                                             rowIndex,
                                                             e.target.checked
@@ -243,7 +243,7 @@ export function TableMaterial<T extends readonly ITableColumn[]>(props: IProps<T
                                                 />
                                             </TableCell>
                                         )}
-                                        {columns.map(column => {
+                                        {columns.map((column) => {
                                             const value = row[column.id];
                                             return (
                                                 <TableCell

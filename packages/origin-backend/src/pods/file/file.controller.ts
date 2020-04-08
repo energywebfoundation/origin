@@ -58,11 +58,13 @@ export class FileController {
             throw new BadRequestException('files.files array has to be defined.');
         }
 
-        return files.map(f => f.filename);
+        return files.map((f) => f.filename);
     }
 
     @Get(':id')
     test(@Param('id') id: string, @Res() res: Response) {
-        return res.sendFile(path.join(FILES_LOCATION, id));
+        res.sendFile(path.join(FILES_LOCATION, id));
+
+        return {}; // has to be sent otherwise EmptyResultInterceptor intercepts it
     }
 }

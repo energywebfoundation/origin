@@ -93,7 +93,7 @@ export function AccountImport() {
         const reader = new FileReader();
         reader.readAsText(file, 'UTF-8');
 
-        reader.onload = event => {
+        reader.onload = (event) => {
             const keystore = event.target.result;
 
             if (typeof keystore !== 'string') {
@@ -132,7 +132,7 @@ export function AccountImport() {
                                 .required()
                         })}
                     >
-                        {props => {
+                        {(props) => {
                             const { isValid } = props;
 
                             return (
@@ -170,7 +170,9 @@ export function AccountImport() {
                                                 className={classes.fileUploadInput}
                                                 id="contained-button-file"
                                                 type="file"
-                                                onChange={e => handleKeystoreUpload(e.target.files)}
+                                                onChange={(e) =>
+                                                    handleKeystoreUpload(e.target.files)
+                                                }
                                             />
                                             <label htmlFor="contained-button-file">
                                                 <Button

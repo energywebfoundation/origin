@@ -1,19 +1,14 @@
+import { ExtendedBaseEntity } from '@energyweb/origin-backend';
+import { TimeFrame, DemandStatus } from '@energyweb/utils-general';
 import BN from 'bn.js';
-import {
-    BaseEntity,
-    Column,
-    Entity,
-    OneToMany,
-    PrimaryGeneratedColumn,
-    UpdateDateColumn
-} from 'typeorm';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 import { BNTransformer } from '../../utils/valueTransformers';
 import { Order } from '../order/order.entity';
 import { ProductDTO } from '../order/product.dto';
 
 @Entity()
-export class Demand extends BaseEntity {
+export class Demand extends ExtendedBaseEntity {
     @PrimaryGeneratedColumn('uuid')
     id: string;
 
@@ -23,28 +18,26 @@ export class Demand extends BaseEntity {
     @Column()
     price: number;
 
-    @Column()
-    @UpdateDateColumn({ type: 'timestamptz' })
+    @Column({ type: 'timestamptz' })
     start: Date;
+
+    @Column({ type: 'timestamptz' })
+    end: Date;
 
     @Column('bigint', { transformer: BNTransformer })
     volumePerPeriod: BN;
 
     @Column()
-    periods: number;
-
-    @Column({ nullable: true })
-    timeFrame: number;
+    periodTimeFrame: TimeFrame;
 
     @Column('json')
     product: ProductDTO;
 
-    @OneToMany(
-        () => Order,
-        order => order.demand,
-        {
-            eager: true
-        }
-    )
+    @OneToMany(() => Order, (order) => order.demand, {
+        eager: true
+    })
     bids: Order[];
+
+    @Column()
+    status: DemandStatus;
 }

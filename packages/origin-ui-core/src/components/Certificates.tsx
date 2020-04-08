@@ -1,93 +1,71 @@
 import React from 'react';
 import { Route, NavLink, Redirect } from 'react-router-dom';
-import { Role } from '@energyweb/user-registry';
-import { Demand } from '@energyweb/market';
+import { Role, isRole } from '@energyweb/origin-backend-core';
 import { PageContent } from './PageContent/PageContent';
 import { CertificateTable, SelectedState } from './CertificateTable';
 import { CertificateDetailView } from './CertificateDetailView';
 import { CertificationRequestsTable } from './CertificationRequestsTable';
-import { useLinks } from '../utils/routing';
 import { useSelector } from 'react-redux';
-import { getDemands } from '../features/selectors';
-import { getCurrentUser } from '../features/users/selectors';
-import { CertificationRequestStatus } from '@energyweb/origin-backend-core';
+import { getUserOffchain } from '../features/users/selectors';
+import { getCurrencies } from '../features/general/selectors';
 import { useTranslation } from 'react-i18next';
+import { Exchange, MyTrades } from './exchange';
+import { useLinks } from '../utils';
+
+function CertificateDetailViewId(id: number) {
+    return <CertificateDetailView id={id} />;
+}
+
+function InboxCertificates() {
+    return <CertificateTable selectedState={SelectedState.Inbox} />;
+}
+
+function ClaimedCertificates() {
+    return <CertificateTable selectedState={SelectedState.Claimed} />;
+}
+
+const PendingCertificationRequestsTable = () => <CertificationRequestsTable approved={false} />;
+
+const ApprovedCertificationRequestsTable = () => <CertificationRequestsTable approved={true} />;
 
 export function Certificates() {
-    const demands = useSelector(getDemands);
-    const currentUser = useSelector(getCurrentUser);
+    const currencies = useSelector(getCurrencies);
+    const user = useSelector(getUserOffchain);
+
     const { baseURL, getCertificatesLink } = useLinks();
     const { t } = useTranslation();
 
-    function CertificateTableKeyDemand(key: SelectedState, demandId?: number) {
-        let demand: Demand.Entity = null;
-        if (demandId !== undefined) {
-            demand = demands.find(d => d.id === demandId);
-        }
+    const defaultCurrency = (currencies && currencies[0]) ?? 'USD';
 
-        return <CertificateTable selectedState={key} demand={demand} />;
-    }
+    const ExchangeRoute = () => <Exchange currency={defaultCurrency} />;
+    const TradesRoute = () => <MyTrades currency={defaultCurrency} />;
 
-    function CertificateDetailViewId(id: string) {
-        return <CertificateDetailView id={id} />;
-    }
-
-    function InboxCertificates() {
-        return CertificateTableKeyDemand(SelectedState.Inbox);
-    }
-
-    function ForSaleCertificates() {
-        return CertificateTableKeyDemand(SelectedState.ForSale);
-    }
-
-    function ClaimedCertificates() {
-        return CertificateTableKeyDemand(SelectedState.Claimed);
-    }
-
-    function ForDemandCertificates(demandId: number) {
-        return CertificateTableKeyDemand(SelectedState.ForDemand, demandId);
-    }
-
-    const PendingCertificationRequestsTable = () => (
-        <CertificationRequestsTable status={CertificationRequestStatus.Pending} />
-    );
-
-    const ApprovedCertificationRequestsTable = () => (
-        <CertificationRequestsTable status={CertificationRequestStatus.Approved} />
-    );
-
-    const isIssuer = currentUser && currentUser.isRole(Role.Issuer);
+    const isIssuer = isRole(user, Role.Issuer);
 
     const CertificatesMenu = [
         {
             key: 'inbox',
             label: 'navigation.certificates.inbox',
             component: InboxCertificates,
-            show: !isIssuer
-        },
-        {
-            key: 'for_sale',
-            label: 'navigation.certificates.forSale',
-            component: ForSaleCertificates,
-            show: !isIssuer
+            show: user && !isIssuer
         },
         {
             key: 'claims_report',
             label: 'navigation.certificates.claimsReport',
             component: ClaimedCertificates,
-            show: !isIssuer
+            show: user && !isIssuer
         },
         {
             key: 'detail_view',
             label: 'navigation.certificates.detailView',
             component: null,
-            show: !isIssuer
+            show: false
         },
         {
             key: 'pending',
             label: 'navigation.certificates.pending',
             component: PendingCertificationRequestsTable,
-            show: true
+            show: user
         },
         {
             key: 'approved',
@@ -96,10 +74,16 @@ export function Certificates() {
             show: isIssuer
         },
         {
-            key: 'for_demand',
-            label: 'navigation.certificates.forDemand',
-            component: null,
-            show: false
+            key: 'exchange',
+            label: 'navigation.certificates.exchange',
+            component: ExchangeRoute,
+            show: true
+        },
+        {
+            key: 'my-trades',
+            label: 'navigation.certificates.myTrades',
+            component: TradesRoute,
+            show: user
         }
     ];
 
@@ -113,7 +97,7 @@ export function Certificates() {
         <div className="PageWrapper">
             <div className="PageNav">
                 <ul className="NavMenu nav">
-                    {CertificatesMenu.map(menu => {
+                    {CertificatesMenu.map((menu) => {
                         if (menu.show) {
                             const link = `${getCertificatesLink()}/${menu.key}`;
 
@@ -129,18 +113,15 @@ export function Certificates() {
 
             <Route
                 path={`${getCertificatesLink()}/:key/:id?`}
-                render={props => {
+                render={(props) => {
                     const key = props.match.params.key;
                     const id = props.match.params.id;
-                    const matches = CertificatesMenu.filter(item => {
+                    const matches = CertificatesMenu.filter((item) => {
                         return item.key === key;
                     });
                     if (matches.length > 0) {
                         if (key === 'detail_view') {
                             matches[0].component = () => CertificateDetailViewId(id);
-                        } else if (key === 'for_demand') {
-                            matches[0].component = () =>
-                                ForDemandCertificates(id ? parseInt(id, 10) : id);
                         }
                     }
 

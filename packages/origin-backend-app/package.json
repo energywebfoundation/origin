@@ -1,0 +1,66 @@
+{
+    "name": "@energyweb/origin-backend-app",
+    "version": "1.0.0",
+    "description": "This is a bootstrap project for Origin API",
+    "main": "dist/js/src/index.js",
+    "scripts": {
+        "start": "nest start",
+        "start:dev": "nest start --watch",
+        "start:debug": "nest start --debug --watch",
+        "start:prod": "node dist/main",
+        "prebuild": "shx rm -rf dist",
+        "build": "yarn build:ts",
+        "build:ts": "tsc -b tsconfig.build.json --verbose --pretty",
+        "build:container:canary": "make build-canary push",
+        "build:container:latest": "make build-latest push",
+        "prettier": "prettier --write --config-precedence file-override './src/**/*'",
+        "clean": "shx rm -rf dist db.sqlite uploads",
+        "lint": "eslint \"src/**/*{.ts,.tsx}\"",
+        "lint-fix": "eslint \"src/**/*{.ts,.tsx}\" --fix",
+        "precommit": "lint-staged"
+    },
+    "bin": {
+        "origin-backend": "./bin/origin-backend-app"
+    },
+    "homepage": "https://github.com/energywebfoundation/origin/tree/master/packages/origin-backend-app#readme",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/energywebfoundation/origin.git"
+    },
+    "bugs": {
+        "url": "https://github.com/energywebfoundation/origin/issues"
+    },
+    "author": "EnergyWeb DevHub GmbH; Joseph Bagaric, joseph.bagaric@energyweb.org; Piotr Kosinski, piotr.kosinski@energyweb.org",
+    "license": "GPL-3.0-or-later",
+    "dependencies": {
+        "@energyweb/origin-backend": "4.0.0",
+        "@energyweb/exchange": "0.5.0",
+        "@energyweb/origin-backend-core": "2.0.0",
+        "@energyweb/utils-general": "7.0.2",
+        "@nestjs/common": "7.0.7",
+        "@nestjs/core": "7.0.7",
+        "@nestjs/platform-ws": "7.0.7",
+        "@nestjs/config": "^0.4.0",
+        "body-parser": "1.19.0",
+        "class-validator": "0.11.1",
+        "cors": "2.8.5",
+        "dotenv": "8.2.0"
+    },
+    "devDependencies": {
+        "axios": "0.19.2",
+        "jest": "25.2.7",
+        "supertest": "4.0.2",
+        "ts-jest": "25.3.1",
+        "ts-loader": "6.2.2",
+        "tsconfig-paths": "3.9.0"
+    },
+    "files": [
+        "dist",
+        "bin"
+    ],
+    "gitHead": "54beaf7fe6686810de74ca290daf99cbde510f9d",
+    "publishConfig": {
+        "access": "public",
+        "registry": "https://registry.npmjs.org"
+    }
+}

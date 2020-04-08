@@ -6,7 +6,7 @@ import { startAPI } from './simulatorService';
 import { startConsumerService } from './consumerService';
 import { mockData } from './mockReadings';
 
-const absolutePath = relativePath => path.resolve(__dirname, relativePath);
+const absolutePath = (relativePath) => path.resolve(__dirname, relativePath);
 
 program.option('-e, --env <env_file_path>', 'path to the .env file');
 program.option('-c, --config <config_file_path>', 'path to the config file');

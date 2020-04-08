@@ -1,43 +1,45 @@
 import React, { useEffect } from 'react';
-import { Role } from '@energyweb/user-registry';
-import { showNotification, NotificationType } from '../utils/notifications';
+import { Role, isRole } from '@energyweb/origin-backend-core';
 import { useSelector, useDispatch } from 'react-redux';
 import { getProducingDevices, getConfiguration } from '../features/selectors';
 import { TableMaterial } from './Table/TableMaterial';
 import { Check } from '@material-ui/icons';
-import { getCurrentUser } from '../features/users/selectors';
+import { getUserOffchain } from '../features/users/selectors';
 import { setLoading } from '../features/general/actions';
 import {
     IPaginatedLoaderHooksFetchDataParameters,
     usePaginatedLoader
 } from './Table/PaginatedLoaderHooks';
 import { ProducingDevice } from '@energyweb/device-registry';
-import { getDeviceLocationText, LOCATION_TITLE_TRANSLATION_KEY } from '../utils/helper';
-import { PowerFormatter } from '../utils/PowerFormatter';
-import { EnergyFormatter } from '../utils/EnergyFormatter';
-import { Skeleton } from '@material-ui/lab';
-import { getOffChainDataSource } from '../features/general/selectors';
 import {
-    ICertificationRequestWithRelationsIds,
-    CertificationRequestStatus
-} from '@energyweb/origin-backend-core';
-import { Certificate } from '@energyweb/origin';
+    EnergyFormatter,
+    PowerFormatter,
+    getDeviceLocationText,
+    LOCATION_TITLE_TRANSLATION_KEY,
+    showNotification,
+    NotificationType,
+    getDeviceId
+} from '../utils';
+import { Skeleton } from '@material-ui/lab';
+import { getOffChainDataSource, getEnvironment } from '../features/general/selectors';
+import { CertificationRequest } from '@energyweb/issuer';
 import { useTranslation } from 'react-i18next';
 
 interface IProps {
-    status: CertificationRequestStatus;
+    approved: boolean;
 }
 
 interface IRecord {
-    request: ICertificationRequestWithRelationsIds;
+    request: CertificationRequest.Entity;
     device: ProducingDevice.Entity;
 }
 
 export function CertificationRequestsTable(props: IProps) {
     const configuration = useSelector(getConfiguration);
-    const currentUser = useSelector(getCurrentUser);
+    const user = useSelector(getUserOffchain);
     const producingDevices = useSelector(getProducingDevices);
     const offChainDataSource = useSelector(getOffChainDataSource);
+    const environment = useSelector(getEnvironment);
     const { t } = useTranslation();
 
     const dispatch = useDispatch();
@@ -46,30 +48,32 @@ export function CertificationRequestsTable(props: IProps) {
         requestedPageSize,
         offset
     }: IPaginatedLoaderHooksFetchDataParameters) {
-        if (!currentUser || !offChainDataSource || producingDevices.length === 0) {
+        if (!user || !offChainDataSource || producingDevices.length === 0) {
             return {
                 paginatedData: [],
                 total: 0
             };
         }
 
-        const isIssuer = currentUser.isRole(Role.Issuer);
+        const isIssuer = isRole(user, Role.Issuer);
 
-        const requests = await offChainDataSource.certificateClient.getCertificationRequests();
+        const requests = await CertificationRequest.getAllCertificationRequests(configuration);
 
         let newPaginatedData: IRecord[] = [];
 
         for (let i = 0; i < requests.length; i++) {
             const request = requests[i];
-            const device = producingDevices.find(a => a.id === request.device.toString());
+            const device = producingDevices.find(
+                // eslint-disable-next-line no-loop-func
+                (a) => getDeviceId(a, environment) === request.deviceId
+            );
 
             if (
-                request.status !== props.status ||
-                (!isIssuer && currentUser.id.toLowerCase() !== device?.owner.address.toLowerCase())
+                request.approved !== props.approved ||
+                (!isIssuer && user?.organization.id !== device?.organization)
             ) {
                 continue;
             }
-
             newPaginatedData.push({
                 request,
                 device
@@ -92,7 +96,7 @@ export function CertificationRequestsTable(props: IProps) {
 
     useEffect(() => {
         loadPage(1);
-    }, [props.status, currentUser, producingDevices.length]);
+    }, [props.approved, user, producingDevices.length]);
 
     async function approve(rowIndex: number) {
         const request = paginatedData[rowIndex].request;
@@ -100,13 +104,7 @@ export function CertificationRequestsTable(props: IProps) {
         dispatch(setLoading(true));
 
         try {
-            await offChainDataSource.certificateClient.approveCertificationRequest(request.id);
-            Certificate.createArbitraryCertfificate(
-                request.device,
-                request.energy,
-                request.id,
-                configuration
-            );
+            await request.approve();
 
             showNotification(`Certification request approved.`, NotificationType.Success);
 
@@ -124,7 +122,7 @@ export function CertificationRequestsTable(props: IProps) {
     }
 
     const actions =
-        currentUser?.isRole(Role.Issuer) && props.status === CertificationRequestStatus.Pending
+        isRole(user, Role.Issuer) && !props.approved
             ? [
                   {
                       icon: <Check />,
@@ -145,14 +143,12 @@ export function CertificationRequestsTable(props: IProps) {
 
     const rows = paginatedData.map(({ device, request }) => {
         return {
-            facility: device.offChainProperties.facilityName,
+            facility: device?.facilityName,
             locationText: getDeviceLocationText(device),
-            type: configuration.deviceTypeService.getDisplayText(
-                device.offChainProperties.deviceType
-            ),
-            capacity: PowerFormatter.format(device.offChainProperties.capacityInW),
+            type: configuration.deviceTypeService.getDisplayText(device?.deviceType),
+            capacity: PowerFormatter.format(device?.capacityInW),
             meterRead: EnergyFormatter.format(request.energy),
-            files: request.files.map(f => (
+            files: request.files.map((f) => (
                 <div key={f}>
                     <a
                         href={offChainDataSource.filesClient.getLink(f)}

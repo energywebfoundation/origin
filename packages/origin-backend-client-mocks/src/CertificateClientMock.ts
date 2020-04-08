@@ -1,40 +1,102 @@
-import { CertificationRequestCreateData, ICertificationRequestWithRelationsIds, CertificationRequestStatus } from '@energyweb/origin-backend-core';
+import {
+    CertificationRequestOffChainData,
+    CertificationRequestUpdateData,
+    ICertificateOwnership,
+    CommitmentStatus,
+    IOwnershipCommitmentProofWithTx
+} from '@energyweb/origin-backend-core';
 
 import { ICertificateClient } from '@energyweb/origin-backend-client';
 
 export class CertificateClientMock implements ICertificateClient {
-    private requestStorage = new Map<string, ICertificationRequestWithRelationsIds>();
+    private requestStorage = new Map<number, CertificationRequestOffChainData>();
 
-    private requestCertificateIdCounter = 0;
+    private certificateStorage = new Map<number, ICertificateOwnership>();
 
-    public async requestCertificates(data: CertificationRequestCreateData): Promise<ICertificationRequestWithRelationsIds> {
-        ++this.requestCertificateIdCounter;
-        const newRequest = {
-            id: this.requestCertificateIdCounter.toString(),
-            ...data,
-            createdDate: new Date(),
-            status: CertificationRequestStatus.Pending
-        };
+    public async updateCertificationRequestData(
+        id: number,
+        data: CertificationRequestUpdateData
+    ): Promise<boolean> {
+        this.requestStorage.set(id, {
+            id,
+            energy: data.energy,
+            files: data.files
+        });
 
-        this.requestStorage.set(this.requestCertificateIdCounter.toString(), newRequest);
-
-        return newRequest;
+        return true;
     }
 
-    public async approveCertificationRequest(id: string): Promise<ICertificationRequestWithRelationsIds> {
-        const request = this.requestStorage.get(id);
-        request.status = CertificationRequestStatus.Approved;
-
-        this.requestStorage.set(id, request);
-
-        return request;
-    }
-
-    public async getCertificationRequests(): Promise<ICertificationRequestWithRelationsIds[]> {
-        return Array.from(this.requestStorage.values());
-    }
-
-    public async getCertificationRequest(id: string): Promise<ICertificationRequestWithRelationsIds> {
+    public async getCertificationRequestData(
+        id: number
+    ): Promise<CertificationRequestOffChainData> {
         return this.requestStorage.get(id);
+    }
+
+    public async getOwnershipCommitment(
+        certificateId: number
+    ): Promise<IOwnershipCommitmentProofWithTx> {
+        const certificate = this.certificateStorage.get(certificateId);
+
+        if (!certificate?.currentOwnershipCommitment) {
+            throw new Error(`getOwnershipCommitment(): doesn't exist`);
+        }
+
+        return certificate.currentOwnershipCommitment;
+    }
+
+    public async getPendingOwnershipCommitment(
+        certificateId: number
+    ): Promise<IOwnershipCommitmentProofWithTx> {
+        const certificate = this.certificateStorage.get(certificateId);
+
+        if (!certificate?.pendingOwnershipCommitment) {
+            throw new Error(`getPendingOwnershipCommitment(): doesn't exist`);
+        }
+
+        return certificate.pendingOwnershipCommitment;
+    }
+
+    public async addOwnershipCommitment(
+        certificateId: number,
+        proof: IOwnershipCommitmentProofWithTx
+    ): Promise<CommitmentStatus> {
+        const certificate = this.certificateStorage.get(certificateId);
+
+        if (!certificate?.currentOwnershipCommitment) {
+            this.certificateStorage.set(certificateId, {
+                id: certificateId,
+                currentOwnershipCommitment: proof,
+                pendingOwnershipCommitment: null,
+                ownershipHistory: []
+            });
+
+            return CommitmentStatus.CURRENT;
+        }
+        if (certificate.currentOwnershipCommitment && !certificate.pendingOwnershipCommitment) {
+            certificate.pendingOwnershipCommitment = proof;
+
+            this.certificateStorage.set(certificateId, certificate);
+            return CommitmentStatus.PENDING;
+        }
+
+        return CommitmentStatus.REJECTED;
+    }
+
+    public async approvePendingOwnershipCommitment(
+        certificateId: number
+    ): Promise<IOwnershipCommitmentProofWithTx> {
+        const certificate = this.certificateStorage.get(certificateId);
+
+        if (!certificate?.pendingOwnershipCommitment) {
+            throw new Error(`approvePendingOwnershipCommitment(): Doesn't exist`);
+        }
+
+        certificate.ownershipHistory.push(certificate.currentOwnershipCommitment);
+        certificate.currentOwnershipCommitment = certificate.pendingOwnershipCommitment;
+        certificate.pendingOwnershipCommitment = null;
+
+        this.certificateStorage.set(certificateId, certificate);
+
+        return certificate.currentOwnershipCommitment;
     }
 }

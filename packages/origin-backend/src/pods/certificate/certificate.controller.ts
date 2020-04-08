@@ -1,8 +1,9 @@
 import {
-    CertificationRequestCreateData,
-    CertificationRequestStatus,
-    ICertificationRequestWithRelationsIds,
-    CertificationRequestUpdateData
+    CertificationRequestUpdateData,
+    CertificationRequestOffChainData,
+    IOwnershipCommitmentProofWithTx,
+    ICertificateOwnership,
+    CommitmentStatus
 } from '@energyweb/origin-backend-core';
 
 import {
@@ -10,74 +11,156 @@ import {
     Post,
     Body,
     Get,
-    Put,
     Param,
-    BadRequestException,
-    UnprocessableEntityException
+    NotFoundException,
+    ConflictException,
+    Put
 } from '@nestjs/common';
-import { validate } from 'class-validator';
-import { CertificationRequestService } from './certification-request.service';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { CertificationRequest } from './certification-request.entity';
+import { OwnershipCommitment } from './ownership-commitment.entity';
+import { StorageErrors } from '../../enums/StorageErrors';
+import { Certificate } from './certificate.entity';
 
 const CERTIFICATION_REQUEST_ENDPOINT = '/CertificationRequest';
 
 @Controller('/Certificate')
 export class CertificateController {
-    constructor(private readonly certificationRequestService: CertificationRequestService) {}
+    constructor(
+        @InjectRepository(Certificate)
+        private readonly certificateRepository: Repository<Certificate>,
+        @InjectRepository(CertificationRequest)
+        private readonly certificationRequestRepository: Repository<CertificationRequest>,
+        @InjectRepository(OwnershipCommitment)
+        private readonly ownershipCommitmentRepository: Repository<OwnershipCommitment>
+    ) {}
 
-    @Post(CERTIFICATION_REQUEST_ENDPOINT)
-    async createCertificationRequest(
-        @Body() data: CertificationRequestCreateData
-    ): Promise<ICertificationRequestWithRelationsIds> {
-        if (typeof data.device === 'undefined') {
-            throw new UnprocessableEntityException({
-                errors: [`Missing data.device`]
-            });
-        }
-
-        const { device, ...entityProperties } = data;
-
-        const entity = await this.certificationRequestService.create(
-            {
-                ...entityProperties,
-                status: CertificationRequestStatus.Pending
-            },
-            device.toString()
-        );
-
-        const validationErrors = await validate(entity);
-
-        if (validationErrors.length > 0) {
-            throw new UnprocessableEntityException({
-                errors: validationErrors
-            });
-        }
-
-        await entity.save();
-
-        return this.certificationRequestService.findOneCertificationRequest(entity.id);
-    }
-
-    @Get(CERTIFICATION_REQUEST_ENDPOINT)
-    async getCertificationRequests(): Promise<ICertificationRequestWithRelationsIds[]> {
-        return this.certificationRequestService.findCertificationRequest();
-    }
-
-    @Put(`${CERTIFICATION_REQUEST_ENDPOINT}/:id`)
+    @Post(`${CERTIFICATION_REQUEST_ENDPOINT}/:id`)
     async updateCertificationRequest(
-        @Body() data: CertificationRequestUpdateData,
-        @Param('id') id: string
-    ): Promise<ICertificationRequestWithRelationsIds> {
-        try {
-            return this.certificationRequestService.approveCertificationRequest(id);
-        } catch (error) {
-            throw new BadRequestException(error?.message ?? 'Unknown error');
+        @Param('id') id: number,
+        @Body() data: CertificationRequestUpdateData
+    ): Promise<CertificationRequestOffChainData> {
+        const certificationRequest = new CertificationRequest();
+
+        certificationRequest.energy = data.energy;
+        certificationRequest.files = data.files;
+
+        const existing = await this.certificationRequestRepository.findOne(id);
+
+        if (existing) {
+            existing.energy = data.energy;
+            existing.files = data.files;
+
+            return existing.save();
         }
+
+        return this.certificationRequestRepository.save(certificationRequest);
     }
 
     @Get(`${CERTIFICATION_REQUEST_ENDPOINT}/:id`)
     async getCertificationRequest(
         @Param('id') id: string
-    ): Promise<ICertificationRequestWithRelationsIds> {
-        return this.certificationRequestService.findOneCertificationRequest(id);
+    ): Promise<CertificationRequestOffChainData> {
+        return this.certificationRequestRepository.findOne(id);
+    }
+
+    @Get('/:id')
+    async getCertificate(@Param('id') id: number): Promise<ICertificateOwnership> {
+        const certificate = await this.certificateRepository.findOne(id);
+
+        if (!certificate) {
+            throw new NotFoundException(`getCertificate(): ${StorageErrors.NON_EXISTENT}`);
+        }
+
+        return certificate;
+    }
+
+    @Get(`/:id/OwnershipCommitment`)
+    async getOwnershipCommitment(
+        @Param('id') id: number
+    ): Promise<IOwnershipCommitmentProofWithTx> {
+        const certificate = await this.certificateRepository.findOne(id);
+
+        if (!certificate?.currentOwnershipCommitment) {
+            throw new NotFoundException(`getOwnershipCommitment(): ${StorageErrors.NON_EXISTENT}`);
+        }
+
+        return certificate.currentOwnershipCommitment;
+    }
+
+    @Get(`/:id/OwnershipCommitment/pending`)
+    async getPendingOwnershipCommitment(@Param('id') id: number) {
+        const certificate = await this.certificateRepository.findOne(id);
+
+        if (!certificate?.pendingOwnershipCommitment) {
+            throw new NotFoundException(
+                `getPendingOwnershipCommitment(): ${StorageErrors.NON_EXISTENT}`
+            );
+        }
+
+        return certificate.pendingOwnershipCommitment;
+    }
+
+    @Put(`/:id/OwnershipCommitment/pending/approve`)
+    async approvePendingOwnershipCommitment(
+        @Param('id') id: number
+    ): Promise<IOwnershipCommitmentProofWithTx> {
+        const certificate = await this.certificateRepository.findOne(id);
+
+        if (!certificate?.pendingOwnershipCommitment) {
+            throw new NotFoundException(
+                `approvePendingOwnershipCommitment(): ${StorageErrors.NON_EXISTENT}`
+            );
+        }
+
+        certificate.ownershipHistory.push(certificate.currentOwnershipCommitment);
+        certificate.currentOwnershipCommitment = certificate.pendingOwnershipCommitment;
+        certificate.pendingOwnershipCommitment = null;
+
+        await certificate.save();
+
+        return certificate.currentOwnershipCommitment;
+    }
+
+    @Post(`/:id/OwnershipCommitment`)
+    async addOwnershipCommitment(
+        @Param('id') id: number,
+        @Body() proof: IOwnershipCommitmentProofWithTx
+    ) {
+        const certificate = (await this.certificateRepository.findOne(id)) ?? new Certificate();
+
+        const { currentOwnershipCommitment, pendingOwnershipCommitment } = certificate;
+
+        const newCommitment = new OwnershipCommitment();
+
+        Object.assign(newCommitment, { ...proof });
+
+        if (!currentOwnershipCommitment) {
+            await this.ownershipCommitmentRepository.save(newCommitment);
+            certificate.currentOwnershipCommitment = newCommitment;
+
+            await certificate.save();
+
+            return {
+                commitmentStatus: CommitmentStatus.CURRENT,
+                message: `Commitment ${proof.rootHash} saved as the current commitment for certificate #${id}`
+            };
+        }
+        if (currentOwnershipCommitment && !pendingOwnershipCommitment) {
+            await this.ownershipCommitmentRepository.save(newCommitment);
+            certificate.pendingOwnershipCommitment = newCommitment;
+
+            await certificate.save();
+
+            return {
+                commitmentStatus: CommitmentStatus.PENDING,
+                message: `Commitment ${proof.rootHash} saved as a pending commitment for certificate #${id}`
+            };
+        }
+        throw new ConflictException({
+            commitmentStatus: CommitmentStatus.REJECTED,
+            message: `Unable to add a new commitment to certificate #${id}. There is already a pending commitment in the queue.`
+        });
     }
 }

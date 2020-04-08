@@ -22,8 +22,16 @@ export async function mockData(configFilePath: string, dataFilePath: string): Pr
 
     const location = getMockReadingsWorkerLocation();
 
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
         let counter = 0;
+
+        function incrementAndResolve() {
+            counter++;
+
+            if (counter >= CONFIG.devices.length) {
+                resolve('done');
+            }
+        }
 
         for (const device of CONFIG.devices) {
             const worker = new Worker(location, {
@@ -33,15 +41,9 @@ export async function mockData(configFilePath: string, dataFilePath: string): Pr
                 }
             });
 
-            worker.on('message', message => console.log(message));
+            worker.on('message', (message) => console.log(message));
 
-            worker.on('exit', () => {
-                counter++;
-
-                if (counter >= CONFIG.devices.length) {
-                    resolve('done');
-                }
-            });
+            worker.on('exit', incrementAndResolve);
         }
     });
 }

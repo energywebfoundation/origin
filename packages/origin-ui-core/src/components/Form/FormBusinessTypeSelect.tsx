@@ -18,8 +18,8 @@ interface IProps {
 
 const BUSINESS_LEGAL_TYPE_OPTIONS = [
     ...Object.keys(IRECBusinessLegalStatus)
-        .filter(k => !isNaN(Number(k)))
-        .map(item => ({
+        .filter((k) => !isNaN(Number(k)))
+        .map((item) => ({
             value: item,
             label: IRECBusinessLegalStatusLabelsMap[item]
         })),
