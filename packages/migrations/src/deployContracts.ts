@@ -1,5 +1,3 @@
-import Web3 from 'web3';
-
 import { Contracts as IssuerContracts } from '@energyweb/issuer';
 import { IContractsLookup } from '@energyweb/origin-backend-core';
 
