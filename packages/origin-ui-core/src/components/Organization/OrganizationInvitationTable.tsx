@@ -39,7 +39,7 @@ interface IProps {
 }
 
 export function OrganizationInvitationTable(props: IProps) {
-    const organizationClient = useSelector(getOffChainDataSource).organizationClient;
+    const organizationClient = useSelector(getOffChainDataSource)?.organizationClient;
 
     const dispatch = useDispatch();
 

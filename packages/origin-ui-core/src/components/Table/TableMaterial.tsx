@@ -43,6 +43,11 @@ export type TTableRow<T extends string> = {
     [key in T]: ReactNode;
 };
 
+export interface ICustomRow {
+    renderAfterIndex: number;
+    display: React.ReactElement;
+}
+
 interface IProps<T extends readonly ITableColumn[]> {
     columns: T;
     rows: TTableRow<GetReadonlyArrayItemType<T>['id']>[];
@@ -60,6 +65,7 @@ interface IProps<T extends readonly ITableColumn[]> {
     batchableActions?: IBatchableAction[];
     customSelectCounterGenerator?: CustomCounterGeneratorFunction;
     highlightedRowsIndexes?: number[];
+    customRow?: ICustomRow;
 }
 
 export function TableMaterial<T extends readonly ITableColumn[]>(props: IProps<T>) {
@@ -105,6 +111,7 @@ export function TableMaterial<T extends readonly ITableColumn[]>(props: IProps<T
     }
 
     const {
+        customRow: arbitraryRow,
         columns,
         pageSize,
         rows,
@@ -144,6 +151,14 @@ export function TableMaterial<T extends readonly ITableColumn[]>(props: IProps<T
     );
 
     const classes = useStyles(useTheme());
+
+    const tableRows = arbitraryRow
+        ? [
+              ...rows.slice(0, arbitraryRow.renderAfterIndex + 1),
+              arbitraryRow,
+              ...rows.slice(arbitraryRow.renderAfterIndex + 1)
+          ]
+        : rows;
 
     return (
         <>
@@ -212,10 +227,23 @@ export function TableMaterial<T extends readonly ITableColumn[]>(props: IProps<T
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {rows.map((row, rowIndex) => {
-                                const isItemSelected = selectedIndexes.includes(rowIndex);
+                            {tableRows.map((row, rowIndex) => {
+                                const index =
+                                    arbitraryRow && arbitraryRow.renderAfterIndex < rowIndex
+                                        ? rowIndex - 1
+                                        : rowIndex;
 
-                                const rowStyle = highlightedRowsIndexes?.includes(rowIndex)
+                                if (typeof (row as ICustomRow).renderAfterIndex !== 'undefined') {
+                                    return (
+                                        <TableRow tabIndex={-1} key={`${index}-details`}>
+                                            {arbitraryRow.display}
+                                        </TableRow>
+                                    );
+                                }
+
+                                const isItemSelected = selectedIndexes.includes(index);
+
+                                const rowStyle = highlightedRowsIndexes?.includes(index)
                                     ? {
                                           background: '#424242'
                                       }
@@ -226,7 +254,7 @@ export function TableMaterial<T extends readonly ITableColumn[]>(props: IProps<T
                                         hover
                                         role="checkbox"
                                         tabIndex={-1}
-                                        key={rowIndex}
+                                        key={index}
                                         style={rowStyle}
                                     >
                                         {showBatchableActions && (
@@ -235,7 +263,7 @@ export function TableMaterial<T extends readonly ITableColumn[]>(props: IProps<T
                                                     checked={isItemSelected}
                                                     onChange={(e) =>
                                                         itemSelectionChanged(
-                                                            rowIndex,
+                                                            index,
                                                             e.target.checked
                                                         )
                                                     }
@@ -249,7 +277,7 @@ export function TableMaterial<T extends readonly ITableColumn[]>(props: IProps<T
                                                 <TableCell
                                                     onClick={
                                                         handleRowClick &&
-                                                        (() => handleRowClick(rowIndex))
+                                                        (() => handleRowClick(index))
                                                     }
                                                     className={
                                                         handleRowClick ? 'cursor-pointer' : ''
@@ -263,10 +291,10 @@ export function TableMaterial<T extends readonly ITableColumn[]>(props: IProps<T
                                         })}
                                         {actions && actions.length > 0 && (
                                             <TableCell
-                                                key={rowIndex}
+                                                key={index}
                                                 className={classes.tableCellWrappingActions}
                                             >
-                                                <Actions actions={actions} id={rowIndex} />
+                                                <Actions actions={actions} id={index} />
                                             </TableCell>
                                         )}
                                     </TableRow>
