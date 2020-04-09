@@ -28,6 +28,7 @@ import { Transfer } from './pods/transfer/transfer.entity';
 import { TransferModule } from './pods/transfer/transfer.module';
 import { WithdrawalProcessorModule } from './pods/withdrawal-processor/withdrawal-processor.module';
 import { HTTPLoggingInterceptor } from './utils/httpLoggingInterceptor';
+import { PostgresConnectionOptions } from 'typeorm/driver/postgres/PostgresConnectionOptions';
 
 const getEnvFilePath = () => {
     const pathsToTest = ['../../../../../.env', '../../../../../../.env'];
@@ -46,6 +47,25 @@ const getEnvFilePath = () => {
     return finalPath;
 };
 
+const getDBConnectionOptions = (): PostgresConnectionOptions => {
+    return process.env.DATABASE_URL
+        ? {
+              type: 'postgres',
+              url: process.env.DATABASE_URL,
+              ssl: {
+                  rejectUnauthorized: false
+              }
+          }
+        : {
+              type: 'postgres',
+              host: process.env.DB_HOST ?? 'localhost',
+              port: Number(process.env.DB_PORT) ?? 5432,
+              username: process.env.DB_USERNAME ?? 'postgres',
+              password: process.env.DB_PASSWORD ?? 'postgres',
+              database: process.env.DB_DATABASE ?? 'origin'
+          };
+};
+
 @Module({
     imports: [
         ConfigModule.forRoot({
@@ -53,13 +73,8 @@ const getEnvFilePath = () => {
             isGlobal: true
         }),
         TypeOrmModule.forRoot({
-            type: 'postgres',
+            ...getDBConnectionOptions(),
             name: 'ExchangeConnection',
-            host: process.env.DB_HOST ?? 'localhost',
-            port: Number(process.env.DB_PORT) ?? 5432,
-            username: process.env.DB_USERNAME ?? 'postgres',
-            password: process.env.DB_PASSWORD ?? 'postgres',
-            database: process.env.DB_DATABASE ?? 'origin',
             entities: [Demand, Order, Trade, Asset, Transfer, Account],
             synchronize: true,
             logging: ['info']
