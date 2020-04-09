@@ -9,6 +9,10 @@ export function getCertificatesLink(baseURL: string) {
     return `${baseURL}/certificates`;
 }
 
+export function getAdminLink(baseURL: string) {
+    return `${baseURL}/admin`;
+}
+
 export function getAccountLink(baseURL: string) {
     return `${baseURL}/account`;
 }
@@ -76,6 +80,7 @@ export function useLinks() {
             getProducingDeviceDetailLink(baseURL, deviceId),
         getOrganizationViewLink: (id: string) => getOrganizationViewLink(baseURL, id),
         getUserRegisterLink: () => getUserRegisterLink(baseURL),
-        getAccountLoginLink: () => getAccountLoginLink(baseURL)
+        getAccountLoginLink: () => getAccountLoginLink(baseURL),
+        getAdminLink: () => getAdminLink(baseURL)
     };
 }

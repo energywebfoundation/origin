@@ -51,6 +51,7 @@ export function Header() {
         getDevicesLink,
         getUserRegisterLink,
         getCertificatesLink,
+        getAdminLink,
         getAccountLink,
         getOrganizationLink,
         getAccountLoginLink
@@ -70,6 +71,9 @@ export function Header() {
                     </li>
                     <li>
                         <NavLink to={getCertificatesLink()}>{t('header.certificates')}</NavLink>
+                    </li>
+                    <li>
+                        <NavLink to={getAdminLink()}>{t('header.admin')}</NavLink>
                     </li>
 
                     {userOffchain && (

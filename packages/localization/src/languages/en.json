@@ -4,7 +4,8 @@
             "devices": "Devices",
             "certificates": "Certificates",
             "demands": "Demands",
-            "organizations": "Organizations"
+            "organizations": "Organizations",
+            "admin": "Admin"
         },
         "navigation": {
             "devices": {
@@ -25,6 +26,9 @@
                 "forDemand": "For demand",
                 "exchange": "Exchange",
                 "myTrades": "My trades"
+            },
+            "admin": {
+                "organizationAndUser": "Organization and User"
             }
         },
         "device": {

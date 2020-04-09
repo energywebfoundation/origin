@@ -4,6 +4,7 @@ import { Route, Switch } from 'react-router-dom';
 import { Header } from './Header';
 import { Device } from './Device';
 import { Account } from './Account/Account';
+import { Admin } from './Admin';
 import { Organization } from './Organization/Organization';
 import { AccountChangedModal } from './Modal/AccountChangedModal';
 import { RequestPasswordModal } from './Modal/RequestPasswordModal';
@@ -23,6 +24,7 @@ export function AppContainer() {
         getAccountLink,
         getDevicesLink,
         getCertificatesLink,
+        getAdminLink,
         getOrganizationLink
     } = useLinks();
 
@@ -57,6 +59,7 @@ export function AppContainer() {
             <Switch>
                 <Route path={getDevicesLink()} component={Device} />
                 <Route path={getCertificatesLink()} component={Certificates} />
+                <Route path={getAdminLink()} component={Admin} />
                 <Route path={getAccountLink()} component={Account} />
                 <Route path={getOrganizationLink()} component={Organization} />
 

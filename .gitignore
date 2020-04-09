@@ -10,3 +10,4 @@ package-lock.json
 !.env.example
 !.env.test
 coverage
+docker-compose.yml

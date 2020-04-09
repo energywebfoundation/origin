@@ -5,7 +5,7 @@ services:
     restart: unless-stopped
     tty: true
     ports:
-      - "80:80"
+      - "8081:80"
     volumes:
       - ./packages/origin-ui/dist:/var/www/html
       - ./packages/origin-ui/nginx/default.conf:/etc/nginx/conf.d/default.conf
