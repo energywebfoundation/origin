@@ -105,7 +105,8 @@ describe('Matching tests', () => {
                 ...args?.product
             },
             args?.validFrom || new Date(),
-            args?.userId || defaultSeller
+            args?.userId || defaultSeller,
+            'assetId'
         );
     };
 
