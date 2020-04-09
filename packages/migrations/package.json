@@ -14,7 +14,7 @@
     "version": "3.0.0",
     "main": "dist/js/src/main.js",
     "bin": {
-        "migrations": "./bin/migrations"
+        "origin-migrations": "./bin/migrations"
     },
     "scripts": {
         "build": "yarn build:ts",
