@@ -5,6 +5,7 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import fs from 'fs';
 import path from 'path';
+import { PostgresConnectionOptions } from 'typeorm/driver/postgres/PostgresConnectionOptions';
 
 import { EmptyResultInterceptor } from './empty-result.interceptor';
 import { AccountBalanceModule } from './pods/account-balance/account-balance.module';
@@ -28,7 +29,6 @@ import { Transfer } from './pods/transfer/transfer.entity';
 import { TransferModule } from './pods/transfer/transfer.module';
 import { WithdrawalProcessorModule } from './pods/withdrawal-processor/withdrawal-processor.module';
 import { HTTPLoggingInterceptor } from './utils/httpLoggingInterceptor';
-import { PostgresConnectionOptions } from 'typeorm/driver/postgres/PostgresConnectionOptions';
 
 const getEnvFilePath = () => {
     const pathsToTest = ['../../../../../.env', '../../../../../../.env'];
