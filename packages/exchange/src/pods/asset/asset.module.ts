@@ -3,10 +3,12 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { Asset } from './asset.entity';
 import { AssetService } from './asset.service';
+import { AssetController } from './asset.controller';
 
 @Module({
     imports: [TypeOrmModule.forFeature([Asset], 'ExchangeConnection')],
     providers: [AssetService],
-    exports: [AssetService]
+    exports: [AssetService],
+    controllers: [AssetController]
 })
 export class AssetModule {}

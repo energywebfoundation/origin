@@ -3,11 +3,14 @@ import {
     TOrderBook,
     CreateAskDTO,
     CreateBidDTO,
-    IOrder,
     IProductFilterDTO,
     ExchangeAccount,
     ITransfer,
-    ITradeDTO
+    ITradeDTO,
+    Order,
+    IAsset,
+    IDirectBuyDTO,
+    IOrder
 } from '.';
 import { Filter } from '@energyweb/exchange-core';
 
@@ -15,10 +18,13 @@ export interface IExchangeClient {
     search(deviceType?: string[], location?: string[]): Promise<TOrderBook>;
     createAsk(data: CreateAskDTO): Promise<IOrder>;
     createBid(data: CreateBidDTO): Promise<IOrder>;
+    directBuy(data: IDirectBuyDTO): Promise<IOrder>;
     getAccount(): Promise<ExchangeAccount>;
     getAllTransfers(): Promise<ITransfer[]>;
     getTrades(): Promise<ITradeDTO[]>;
-    getOrders?(): Promise<any>;
+    getAssetById(id: string): Promise<IAsset>;
+    getOrderById(id: string): Promise<Order>;
+    getOrders?(): Promise<Order[]>;
 }
 
 const DUMMY_ISO_STRING = '2020-03-30T12:03:17.940Z';
@@ -74,6 +80,15 @@ export class ExchangeClient implements IExchangeClient {
         return response.data;
     }
 
+    public async directBuy(data: IDirectBuyDTO): Promise<IOrder> {
+        const response = await this.requestClient.post<IDirectBuyDTO, IOrder>(
+            `${this.ordersEndpoint}/ask/buy`,
+            data
+        );
+
+        return response.data;
+    }
+
     public async getAccount() {
         const response = await this.requestClient.get<{}, ExchangeAccount>(this.accountEndpoint);
 
@@ -92,6 +107,22 @@ export class ExchangeClient implements IExchangeClient {
         const response = await this.requestClient.get<{}, ITradeDTO[]>(this.tradeEndpoint);
 
         return response.data;
+    }
+
+    public async getAssetById(id: string) {
+        const response = await this.requestClient.get<{}, IAsset>(`${this.assetEndpoint}/${id}`);
+
+        return response.data;
+    }
+
+    public async getOrderById(id: string) {
+        const response = await this.requestClient.get<{}, Order>(`${this.ordersEndpoint}/${id}`);
+
+        return response.data;
+    }
+
+    private get assetEndpoint() {
+        return `${this.dataApiUrl}/asset`;
     }
 
     private get accountEndpoint() {
@@ -117,7 +148,7 @@ export class ExchangeClient implements IExchangeClient {
 
 export const ExchangeClientMock: IExchangeClient = {
     async search() {
-        return {
+        return ({
             asks: [
                 {
                     id: '3016eaee-e93e-4356-a5c9-f45f228642f5',
@@ -164,15 +195,31 @@ export const ExchangeClientMock: IExchangeClient = {
                     volume: '5000000'
                 }
             ]
-        };
+        } as Partial<TOrderBook>) as TOrderBook;
     },
 
     async createBid() {
-        return {
+        return ({
             id: '',
             price: 0,
-            userId: ''
-        };
+            userId: '',
+            product: null,
+            side: 0,
+            validFrom: '',
+            volume: ''
+        } as Partial<IOrder>) as IOrder;
+    },
+
+    async directBuy() {
+        return ({
+            id: '',
+            price: 0,
+            userId: '',
+            product: null,
+            side: 0,
+            validFrom: '',
+            volume: ''
+        } as Partial<IOrder>) as IOrder;
     },
 
     async createAsk() {
@@ -189,5 +236,13 @@ export const ExchangeClientMock: IExchangeClient = {
 
     async getTrades() {
         return [];
+    },
+
+    async getAssetById() {
+        return null;
+    },
+
+    async getOrderById() {
+        return null;
     }
 };

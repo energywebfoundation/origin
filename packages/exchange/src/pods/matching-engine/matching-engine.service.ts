@@ -110,7 +110,8 @@ export class MatchingEngineService implements OnModuleInit {
                   order.currentVolume,
                   ProductDTO.toProduct(order.product),
                   order.validFrom,
-                  order.userId
+                  order.userId,
+                  order.assetId
               )
             : new Bid(
                   order.id,

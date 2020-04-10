@@ -1,41 +1,40 @@
 import {
+    DeviceCreateData,
     DeviceStatus,
     DeviceUpdateData,
-    SupportedEvents,
-    DeviceStatusChangedEvent,
+    IDeviceWithRelationsIds,
     ISmartMeterRead,
     IUserWithRelationsIds,
-    IDeviceWithRelationsIds,
-    DeviceCreateData
+    DeviceStatusChangedEvent,
+    SupportedEvents
 } from '@energyweb/origin-backend-core';
-
 import {
-    Controller,
-    Get,
-    Param,
-    NotFoundException,
-    Post,
-    Body,
     BadRequestException,
-    UnprocessableEntityException,
+    Body,
+    Controller,
     Delete,
+    Get,
+    NotFoundException,
+    Param,
+    Post,
     Put,
+    UnprocessableEntityException,
     UseGuards
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 
 import { StorageErrors } from '../../enums/StorageErrors';
-import { DeviceService } from './device.service';
-import { UserDecorator } from '../user/user.decorator';
-import { EventsService } from '../events';
 import { OrganizationService } from '../organization';
+import { UserDecorator } from '../user/user.decorator';
+import { DeviceService } from './device.service';
+import { NotificationService } from '../notification';
 
 @Controller('/Device')
 export class DeviceController {
     constructor(
-        private readonly eventsService: EventsService,
         private readonly deviceService: DeviceService,
-        private readonly organizationService: OrganizationService
+        private readonly organizationService: OrganizationService,
+        private readonly notificationService: NotificationService
     ) {}
 
     @Get()
@@ -109,7 +108,7 @@ export class DeviceController {
                 deviceManagersEmails: deviceManagers.map((u) => u.email)
             };
 
-            this.eventsService.handleEvent({
+            this.notificationService.handleEvent({
                 type: SupportedEvents.DEVICE_STATUS_CHANGED,
                 data: event
             });

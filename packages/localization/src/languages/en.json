@@ -52,7 +52,9 @@
                 "projectStory": "Project story",
                 "images": "Images",
                 "capacity": "Capacity",
-                "address": "Address"
+                "address": "Address",
+                "constructed": "Constructed",
+                "vintageCod": "Vintage / (Commercial Operation Date)"
             },
             "actions": {
                 "requestCertificates": "Request certificates",
@@ -270,7 +272,8 @@
         "exchange": {
             "actions": {
                 "notify": "Notify",
-                "bid": "Bid"
+                "bid": "Bid",
+                "buy": "Buy"
             },
             "feedback": {
                 "total": "Total"
@@ -294,7 +297,9 @@
                 "price": "Price",
                 "energy": "Energy",
                 "generationDateStart": "Generation date start",
-                "generationDateEnd": "Generation date end"
+                "generationDateEnd": "Generation date end",
+                "generationFrom": "Generation from",
+                "generationTo": "Generation to"
             }
         }
     }

@@ -5,14 +5,14 @@ import { Organization } from './organization.entity';
 import { OrganizationController } from './organization.controller';
 import { UserModule } from '../user/user.module';
 import { OrganizationInvitation } from './organizationInvitation.entity';
-import { EventsModule } from '../events';
 import { OrganizationService } from './organization.service';
+import { NotificationModule } from '../notification';
 
 @Module({
     imports: [
         TypeOrmModule.forFeature([Organization, OrganizationInvitation]),
         UserModule,
-        EventsModule
+        NotificationModule
     ],
     providers: [OrganizationService],
     controllers: [OrganizationController],

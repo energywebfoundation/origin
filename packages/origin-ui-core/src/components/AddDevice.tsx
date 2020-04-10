@@ -290,7 +290,7 @@ export function AddDevice() {
 
                                     <Field
                                         name="commissioningDate"
-                                        label={t('device.properties.commissioningDate')}
+                                        label={t('device.properties.vintageCod')}
                                         className="mt-3"
                                         inputVariant="filled"
                                         variant="inline"

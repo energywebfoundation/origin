@@ -17,7 +17,6 @@ import { Configuration } from './pods/configuration/configuration.entity';
 import { ConfigurationModule } from './pods/configuration/configuration.module';
 import { Device } from './pods/device/device.entity';
 import { DeviceModule } from './pods/device/device.module';
-import { EventsModule } from './pods/events';
 import { FileModule } from './pods/file/file.module';
 import { Organization } from './pods/organization/organization.entity';
 import { OrganizationModule } from './pods/organization/organization.module';
@@ -77,7 +76,6 @@ export class AppModule {
                 OrganizationModule,
                 DeviceModule.register(smartMeterReadingsAdapter),
                 AuthModule,
-                EventsModule,
                 CertificateModule.register(smartMeterReadingsAdapter)
             ],
             controllers: [AppController]
