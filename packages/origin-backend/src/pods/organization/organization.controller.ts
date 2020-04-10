@@ -1,48 +1,43 @@
-import { Repository, FindConditions } from 'typeorm';
-import { validate } from 'class-validator';
 import {
-    OrganizationStatus,
-    OrganizationPostData,
     IOrganization,
+    IOrganizationInvitation,
     IUser,
+    IUserWithRelationsIds,
     OrganizationInvitationStatus,
     OrganizationInviteCreateReturnData,
-    IOrganizationInvitation,
-    IUserWithRelationsIds,
+    OrganizationPostData,
     OrganizationRemoveMemberReturnData,
-    OrganizationStatusChangedEvent,
-    SupportedEvents,
-    OrganizationInvitationEvent,
-    OrganizationRemovedMemberEvent,
+    OrganizationStatus,
     OrganizationUpdateData
 } from '@energyweb/origin-backend-core';
-
 import {
-    Controller,
-    Get,
-    Param,
-    NotFoundException,
-    Post,
-    Body,
     BadRequestException,
-    UnprocessableEntityException,
+    Body,
+    Controller,
     Delete,
-    Put,
-    UseGuards,
-    Query,
+    Get,
+    Logger,
+    NotFoundException,
+    Param,
     ParseIntPipe,
-    Logger
+    Post,
+    Put,
+    Query,
+    UnprocessableEntityException,
+    UseGuards
 } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
 import { AuthGuard } from '@nestjs/passport';
+import { InjectRepository } from '@nestjs/typeorm';
+import { validate } from 'class-validator';
+import { FindConditions, Repository } from 'typeorm';
 
-import { Organization } from './organization.entity';
 import { StorageErrors } from '../../enums/StorageErrors';
 import { UserDecorator } from '../user/user.decorator';
-import { UserService } from '../user/user.service';
-import { OrganizationInvitation } from './organizationInvitation.entity';
 import { User } from '../user/user.entity';
+import { UserService } from '../user/user.service';
+import { Organization } from './organization.entity';
 import { OrganizationService } from './organization.service';
+import { OrganizationInvitation } from './organizationInvitation.entity';
 
 @Controller('/Organization')
 export class OrganizationController {
