@@ -42,7 +42,6 @@ import { UserDecorator } from '../user/user.decorator';
 import { UserService } from '../user/user.service';
 import { OrganizationInvitation } from './organizationInvitation.entity';
 import { User } from '../user/user.entity';
-import { EventsService } from '../events';
 import { OrganizationService } from './organization.service';
 
 @Controller('/Organization')
@@ -55,7 +54,6 @@ export class OrganizationController {
         @InjectRepository(OrganizationInvitation)
         private readonly organizationInvitationRepository: Repository<OrganizationInvitation>,
         private readonly userService: UserService,
-        private readonly eventsService: EventsService,
         private readonly organizationService: OrganizationService
     ) {}
 
@@ -198,19 +196,11 @@ export class OrganizationController {
             });
         }
 
-        const eventData: OrganizationStatusChangedEvent = {
+        return {
+            message: `Entity ${id} successfully updated`,
             organizationId: existingEntity.id,
             organizationEmail: existingEntity.email,
             status: body.status
-        };
-
-        this.eventsService.handleEvent({
-            type: SupportedEvents.ORGANIZATION_STATUS_CHANGED,
-            data: eventData
-        });
-
-        return {
-            message: `Entity ${id} successfully updated`
         };
     }
 
@@ -332,16 +322,6 @@ export class OrganizationController {
 
             await organization.save();
 
-            const eventData: OrganizationInvitationEvent = {
-                email,
-                organizationName: organization.name
-            };
-
-            this.eventsService.handleEvent({
-                type: SupportedEvents.ORGANIZATION_INVITATION,
-                data: eventData
-            });
-
             return {
                 success: true,
                 error: null
@@ -411,16 +391,6 @@ export class OrganizationController {
             removedUser.organization = null;
 
             removedUser.save();
-
-            const eventData: OrganizationRemovedMemberEvent = {
-                organizationName: organization.name,
-                email: removedUser.email
-            };
-
-            this.eventsService.handleEvent({
-                type: SupportedEvents.ORGANIZATION_REMOVED_MEMBER,
-                data: eventData
-            });
 
             return {
                 success: true,

@@ -1,39 +1,34 @@
 import {
+    DeviceCreateData,
     DeviceStatus,
     DeviceUpdateData,
-    SupportedEvents,
-    DeviceStatusChangedEvent,
-    ISmartMeterRead,
-    IUserWithRelationsIds,
     IDeviceWithRelationsIds,
-    DeviceCreateData
+    ISmartMeterRead,
+    IUserWithRelationsIds
 } from '@energyweb/origin-backend-core';
-
 import {
-    Controller,
-    Get,
-    Param,
-    NotFoundException,
-    Post,
-    Body,
     BadRequestException,
-    UnprocessableEntityException,
+    Body,
+    Controller,
     Delete,
+    Get,
+    NotFoundException,
+    Param,
+    Post,
     Put,
+    UnprocessableEntityException,
     UseGuards
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 
 import { StorageErrors } from '../../enums/StorageErrors';
-import { DeviceService } from './device.service';
-import { UserDecorator } from '../user/user.decorator';
-import { EventsService } from '../events';
 import { OrganizationService } from '../organization';
+import { UserDecorator } from '../user/user.decorator';
+import { DeviceService } from './device.service';
 
 @Controller('/Device')
 export class DeviceController {
     constructor(
-        private readonly eventsService: EventsService,
         private readonly deviceService: DeviceService,
         private readonly organizationService: OrganizationService
     ) {}
@@ -103,19 +98,11 @@ export class DeviceController {
                 device.organization
             );
 
-            const event: DeviceStatusChangedEvent = {
+            return {
+                message: `Device ${id} successfully updated`,
                 deviceId: id,
                 status: body.status,
                 deviceManagersEmails: deviceManagers.map((u) => u.email)
-            };
-
-            this.eventsService.handleEvent({
-                type: SupportedEvents.DEVICE_STATUS_CHANGED,
-                data: event
-            });
-
-            return {
-                message: `Device ${id} successfully updated`
             };
         } catch (error) {
             throw new UnprocessableEntityException({
