@@ -53,7 +53,8 @@
                 "images": "Images",
                 "capacity": "Capacity",
                 "address": "Address",
-                "constructed": "Constructed"
+                "constructed": "Constructed",
+                "vintageCod": "Vintage / (Commercial Operation Date)"
             },
             "actions": {
                 "requestCertificates": "Request certificates",
