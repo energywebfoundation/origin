@@ -15,8 +15,6 @@
         "build:ts": "tsc -b tsconfig.build.json --verbose --pretty",
         "prettier": "prettier --write --config-precedence file-override './src/**/*'",
         "test:e2e": "TS_NODE_PROJECT=tsconfig.build.json TS_NODE_FILES=true mocha -r ts-node/register src/test/e2e/*.test.ts --timeout 60000 --exit",
-        "test": "yarn test:e2e",
-        "test:concurrent": "yarn test",
         "typeorm": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js --config src/config/ormconfig.ts",
         "migrate": "yarn typeorm migration:generate -- -n",
         "migrate:revert": "yarn typeorm migration:revert",
