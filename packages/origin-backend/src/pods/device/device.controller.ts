@@ -4,7 +4,9 @@ import {
     DeviceUpdateData,
     IDeviceWithRelationsIds,
     ISmartMeterRead,
-    IUserWithRelationsIds
+    IUserWithRelationsIds,
+    DeviceStatusChangedEvent,
+    SupportedEvents
 } from '@energyweb/origin-backend-core';
 import {
     BadRequestException,
@@ -25,12 +27,14 @@ import { StorageErrors } from '../../enums/StorageErrors';
 import { OrganizationService } from '../organization';
 import { UserDecorator } from '../user/user.decorator';
 import { DeviceService } from './device.service';
+import { NotificationService } from '../notification';
 
 @Controller('/Device')
 export class DeviceController {
     constructor(
         private readonly deviceService: DeviceService,
-        private readonly organizationService: OrganizationService
+        private readonly organizationService: OrganizationService,
+        private readonly notificationService: NotificationService
     ) {}
 
     @Get()
@@ -98,11 +102,19 @@ export class DeviceController {
                 device.organization
             );
 
-            return {
-                message: `Device ${id} successfully updated`,
+            const event: DeviceStatusChangedEvent = {
                 deviceId: id,
                 status: body.status,
                 deviceManagersEmails: deviceManagers.map((u) => u.email)
+            };
+
+            this.notificationService.handleEvent({
+                type: SupportedEvents.DEVICE_STATUS_CHANGED,
+                data: event
+            });
+
+            return {
+                message: `Device ${id} successfully updated`
             };
         } catch (error) {
             throw new UnprocessableEntityException({

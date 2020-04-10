@@ -8,7 +8,11 @@ import {
     OrganizationPostData,
     OrganizationRemoveMemberReturnData,
     OrganizationStatus,
-    OrganizationUpdateData
+    OrganizationStatusChangedEvent,
+    OrganizationUpdateData,
+    SupportedEvents,
+    OrganizationInvitationEvent,
+    OrganizationRemovedMemberEvent
 } from '@energyweb/origin-backend-core';
 import {
     BadRequestException,
@@ -32,6 +36,7 @@ import { validate } from 'class-validator';
 import { FindConditions, Repository } from 'typeorm';
 
 import { StorageErrors } from '../../enums/StorageErrors';
+import { NotificationService } from '../notification';
 import { UserDecorator } from '../user/user.decorator';
 import { User } from '../user/user.entity';
 import { UserService } from '../user/user.service';
@@ -49,7 +54,8 @@ export class OrganizationController {
         @InjectRepository(OrganizationInvitation)
         private readonly organizationInvitationRepository: Repository<OrganizationInvitation>,
         private readonly userService: UserService,
-        private readonly organizationService: OrganizationService
+        private readonly organizationService: OrganizationService,
+        private readonly notificationService: NotificationService
     ) {}
 
     @Get()
@@ -191,11 +197,19 @@ export class OrganizationController {
             });
         }
 
-        return {
-            message: `Entity ${id} successfully updated`,
+        const eventData: OrganizationStatusChangedEvent = {
             organizationId: existingEntity.id,
             organizationEmail: existingEntity.email,
             status: body.status
+        };
+
+        this.notificationService.handleEvent({
+            type: SupportedEvents.ORGANIZATION_STATUS_CHANGED,
+            data: eventData
+        });
+
+        return {
+            message: `Entity ${id} successfully updated`
         };
     }
 
@@ -317,6 +331,16 @@ export class OrganizationController {
 
             await organization.save();
 
+            const eventData: OrganizationInvitationEvent = {
+                email,
+                organizationName: organization.name
+            };
+
+            this.notificationService.handleEvent({
+                type: SupportedEvents.ORGANIZATION_INVITATION,
+                data: eventData
+            });
+
             return {
                 success: true,
                 error: null
@@ -386,6 +410,16 @@ export class OrganizationController {
             removedUser.organization = null;
 
             removedUser.save();
+
+            const eventData: OrganizationRemovedMemberEvent = {
+                organizationName: organization.name,
+                email: removedUser.email
+            };
+
+            this.notificationService.handleEvent({
+                type: SupportedEvents.ORGANIZATION_REMOVED_MEMBER,
+                data: eventData
+            });
 
             return {
                 success: true,
