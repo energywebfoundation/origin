@@ -1,13 +1,72 @@
-# Origin Migrations
+<h1 align="center">
+  <br>
+  <a href="https://www.energyweb.org/"><img src="https://www.energyweb.org/wp-content/uploads/2019/04/logo-brand.png" alt="EnergyWeb" width="150"></a>
+  <br>
+  EnergyWeb Origin
+  <br>
+  <br>
+</h1>
+
+# @energyweb/migrations
 
 This repository is used to deploy all the contracts and migrate all the data for the Origin project of the Energy Web Foundation.
 
-## How-to
-- `npm install` - Install the dependencies
-
 ## Running
-0. You need to have Postgres running with a clean new database called `origin`.
-1. `yarn start-ganache` - Starts a local blockchain instance (or use Volta)
-2. (new terminal window) `yarn start:redeploy`. This will redeploy the contracts every time. Use `yarn start` in production.
-3. (new terminal window) `yarn start-backend` - Starts a local backend instance
-4. (new terminal window) You can now start the UI by running `yarn run:ui` from the root of the monorepo
+
+Command line options:
+
+```
+  -c, --config <config_file_path>  path to the config file
+  -s, --seed-file <seed_sql_path>  path to the SQL file that will be used for seeding the database
+  -e, --env <env_file_path>        path to the .env file or system variables when not set
+  -f, --force                      WARNING: Drop existing and migrate, allowed only when MODE is not set to
+                                   PRODUCTION (default: false)
+```
+
+In a development mode use:
+
+```
+yarn start <options>
+```
+
+### Required configuration variables
+
+-   `WEB3` - web3 endpoint url
+-   `DEPLOY_KEY` - private key to be used for smart contracts deployment
+-   `DATABASE_URL` - formatted as `postgresql://[user[:password]@][netloc][:port][/dbname][?param1=value1&...]` - has precedence over DB_HOST, DB_PORT, DB_USERNAME, DB_PASSWORD, DB_DATABASE
+-   `DB_HOST, DB_PORT, DB_USERNAME, DB_PASSWORD, DB_DATABASE` - database connection details
+
+#### Default configuration
+
+Note: When no `DATABASE_URL` and `DB_HOST, DB_PORT, DB_USERNAME, DB_PASSWORD, DB_DATABASE` provided, the migration program will default to:
+
+```
+DB_HOST = 'localhost'
+DB_PORT = 5432
+DB_USERNAME = 'postgres'
+DB_PASSWORD = 'postgres'
+DB_DATABASE = 'origin'
+```
+
+Migrations program will read the `.env` file and `process.env` by default, this location of `.env` file can be specified using `-e` switch
+
+## Migrations
+
+Migrations currently support 2 modes:
+
+1. Initial migration
+2. Forced migration
+
+### Initial migration
+
+This is a default mode, migrations will check the existence of the configuration tables in the provided database connection parameters. Process will perform:
+
+-   creates `public` schema if not exists
+-   creates tables using `src/scheme/create_tables.sql`
+-   deploy issuer and registry contracts from `@energyweb/issuer` package
+-   stores initial configuration from provided `-c` JSON file path
+-   stores the demo/seed data from provided -s sql file
+
+### Forced migration
+
+When `-f` parameter is provided, migrations will drop existing DB and run the initial migration
