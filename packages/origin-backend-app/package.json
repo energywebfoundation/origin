@@ -34,6 +34,7 @@
     "license": "GPL-3.0-or-later",
     "dependencies": {
         "@energyweb/exchange": "0.6.0",
+        "@energyweb/migrations": "3.0.0",
         "@energyweb/origin-backend": "5.0.0",
         "@energyweb/origin-backend-core": "2.1.0",
         "@energyweb/utils-general": "8.0.0",
