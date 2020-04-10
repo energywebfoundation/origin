@@ -25,7 +25,7 @@ import { IStoreState } from '../../types';
 import { getOffChainDataSource, getEnvironment } from '../general/selectors';
 import { getContractsLookup } from './selectors';
 import { IContractsLookup, IOrganizationWithRelationsIds } from '@energyweb/origin-backend-core';
-import { addOrganizations } from '../users/actions';
+import { addOrganizations, setActiveBlockchainAccountAddress } from '../users/actions';
 
 enum ERROR {
     WRONG_NETWORK_OR_CONTRACT_ADDRESS = "Please make sure you've chosen correct blockchain network and the contract address is valid."
@@ -37,15 +37,15 @@ async function initConf(
     offChainDataSource: IOffChainDataSource,
     environmentWeb3: string
 ): Promise<IStoreState['configuration']> {
-    let ethersProvider: ethers.providers.JsonRpcProvider | ethers.providers.Web3Provider = null;
+    let web3: ethers.providers.JsonRpcProvider = null;
     const params = queryString.parse(routerSearch);
 
     const ethereumProvider = (window as any).ethereum;
 
     if (params.rpc) {
-        ethersProvider = new ethers.providers.JsonRpcProvider(params.rpc as string);
+        web3 = new ethers.providers.JsonRpcProvider(params.rpc as string);
     } else if (ethereumProvider) {
-        ethersProvider = new ethers.providers.Web3Provider(ethereumProvider);
+        web3 = new ethers.providers.Web3Provider(ethereumProvider);
         try {
             // Request account access if needed
             await ethereumProvider.enable();
@@ -53,19 +53,19 @@ async function initConf(
             // User denied account access...
         }
     } else if ((window as any).web3) {
-        ethersProvider = new ethers.providers.Web3Provider((window as any).web3.currentProvider);
+        web3 = new ethers.providers.Web3Provider((window as any).web3.currentProvider);
     } else if (environmentWeb3) {
-        ethersProvider = new ethers.providers.JsonRpcProvider(environmentWeb3);
+        web3 = new ethers.providers.JsonRpcProvider(environmentWeb3);
     }
 
-    const signer = ethersProvider.getSigner();
-    console.log({
-        signer
-    });
+    const accounts = await web3.listAccounts();
+    const signer = web3.getSigner(accounts[0]);
 
     const blockchainProperties: Configuration.BlockchainProperties = {
         registry: Contracts.factories.RegistryFactory.connect(contractsLookup.registry, signer),
-        issuer: Contracts.factories.IssuerFactory.connect(contractsLookup.issuer, signer)
+        issuer: Contracts.factories.IssuerFactory.connect(contractsLookup.issuer, signer),
+        web3,
+        activeUser: signer
     };
 
     return {
@@ -178,7 +178,14 @@ function* fillContractLookupIfMissing(): SagaIterator {
                 environment.WEB3
             );
 
+            const userAddress = yield apply(
+                configuration.blockchainProperties.activeUser,
+                configuration.blockchainProperties.activeUser.getAddress,
+                []
+            );
+
             yield put(configurationUpdated(configuration));
+            yield put(setActiveBlockchainAccountAddress(userAddress));
 
             yield put(setLoading(false));
         } catch (error) {

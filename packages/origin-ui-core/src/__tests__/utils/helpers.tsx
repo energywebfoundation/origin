@@ -5,7 +5,7 @@ import { routerMiddleware, ConnectedRouter } from 'connected-react-router';
 import { createRootReducer } from '../../reducers';
 import { sagas } from '../../features/sagas';
 import { ReactWrapper, CommonWrapper } from 'enzyme';
-import { Configuration, Compliance } from '@energyweb/utils-general';
+import { Compliance } from '@energyweb/utils-general';
 
 import { ProducingDevice } from '@energyweb/device-registry';
 import { producingDeviceCreatedOrUpdated } from '../../features/producingDevices/actions';
@@ -299,13 +299,13 @@ export const createProducingDevice = (
 
     return ({
         id: properties.id,
-        configuration: ({
-            blockchainProperties: ({
-                activeUser: {
-                    address: '0x0'
-                }
-            } as Partial<Configuration.BlockchainProperties>) as Configuration.BlockchainProperties
-        } as Partial<Configuration.Entity>) as Configuration.Entity,
+        // configuration: ({
+        //     blockchainProperties: ({
+        //         activeUser: {
+        //             address: '0x0'
+        //         }
+        //     } as Partial<Configuration.BlockchainProperties>) as Configuration.BlockchainProperties
+        // } as Partial<Configuration.Entity>) as Configuration.Entity,
         owner: {
             address: owner
         },

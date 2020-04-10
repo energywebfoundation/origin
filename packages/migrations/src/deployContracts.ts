@@ -7,12 +7,11 @@ export async function deployContracts(): Promise<IContractsLookup> {
     const adminPK = deployKey.startsWith('0x') ? deployKey : `0x${deployKey}`;
 
     const registry = await IssuerContracts.migrateRegistry(process.env.WEB3, adminPK);
-    const registryAddress = registry.web3Contract.options.address;
 
-    const issuer = await IssuerContracts.migrateIssuer(process.env.WEB3, adminPK, registryAddress);
+    const issuer = await IssuerContracts.migrateIssuer(process.env.WEB3, adminPK, registry.address);
 
     return {
-        registry: registryAddress,
-        issuer: issuer.web3Contract.options.address
+        registry: registry.address,
+        issuer: issuer.address
     };
 }

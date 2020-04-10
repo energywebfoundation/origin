@@ -5,7 +5,7 @@ import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Redirect } from 'react-router-dom';
-import { BigNumber, bigNumberify } from 'ethers/utils';
+import { bigNumberify } from 'ethers/utils';
 
 import { getConfiguration, getProducingDevices } from '../features/selectors';
 import {
@@ -46,7 +46,7 @@ interface IProps {
 
 interface IEnrichedCertificateData {
     certificate: Certificate.Entity;
-    ownedVolume: BigNumber;
+    ownedVolume: Certificate.IOwnedVolumes;
     producingDevice: ProducingDevice.Entity;
     deviceTypeLabel: string;
     locationText: string;
@@ -98,23 +98,24 @@ export function CertificateTable(props: IProps) {
         offset,
         requestedFilters
     }: IPaginatedLoaderHooksFetchDataParameters): Promise<IPaginatedLoaderFetchDataReturnValues> {
-        const enrichedData: IEnrichedCertificateData[] = certificates.map((certificate) => {
-            const producingDevice =
-                typeof certificate.deviceId !== 'undefined' &&
-                producingDevices.find(
-                    (device) => getDeviceId(device, environment) === certificate.deviceId.toString()
-                );
+        const enrichedData: IEnrichedCertificateData[] = await Promise.all(
+            certificates.map(async (certificate) => {
+                const producingDevice =
+                    typeof certificate.deviceId !== 'undefined' &&
+                    producingDevices.find(
+                        (device) =>
+                            getDeviceId(device, environment) === certificate.deviceId.toString()
+                    );
 
-            const ownedVolume = certificate.ownedVolume(userAddress);
-
-            return {
-                certificate,
-                producingDevice,
-                deviceTypeLabel: producingDevice?.deviceType,
-                locationText: getDeviceLocationText(producingDevice),
-                ownedVolume: ownedVolume.privateVolume.add(ownedVolume.publicVolume)
-            };
-        });
+                return {
+                    certificate,
+                    producingDevice,
+                    deviceTypeLabel: producingDevice?.deviceType,
+                    locationText: getDeviceLocationText(producingDevice),
+                    ownedVolume: await certificate.ownedVolume(userAddress)
+                };
+            })
+        );
 
         const filteredIEnrichedCertificateData = enrichedData.filter((enrichedCertificateData) => {
             const ownerOf = enrichedCertificateData.certificate.isOwned(userAddress);
@@ -375,7 +376,7 @@ export function CertificateTable(props: IProps) {
             sortProperties: [
                 [
                     (record: IEnrichedCertificateData) => {
-                        const owned = record?.certificate?.ownedVolume();
+                        const owned = record?.ownedVolume;
                         if (!owned) return null;
                         return owned.publicVolume.add(owned.privateVolume).toString();
                     },
@@ -406,7 +407,7 @@ export function CertificateTable(props: IProps) {
             locationText: getDeviceLocationText(enrichedData.producingDevice),
             compliance,
             certificationDate: formatDate(moment.unix(enrichedData.certificate.creationTime)),
-            energy: EnergyFormatter.format(enrichedData.ownedVolume)
+            energy: EnergyFormatter.format(enrichedData.ownedVolume.publicVolume)
         };
     });
 

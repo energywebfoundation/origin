@@ -4,12 +4,13 @@ import moment from 'moment-timezone';
 import * as Winston from 'winston';
 import dotenv from 'dotenv';
 import fs from 'fs';
+import { ethers } from 'ethers';
+import { bigNumberify, BigNumber } from 'ethers/utils';
 
 import { ProducingDevice } from '@energyweb/device-registry';
 import { Configuration } from '@energyweb/utils-general';
 import { OffChainDataSource } from '@energyweb/origin-backend-client';
 import { ISmartMeterRead } from '@energyweb/origin-backend-core';
-import { bigNumberify, BigNumber } from 'ethers/utils';
 
 export function wait(milliseconds: number) {
     return new Promise((resolve) => {
@@ -18,6 +19,8 @@ export function wait(milliseconds: number) {
 }
 
 async function createBlockchainConfiguration() {
+    const web3 = new ethers.providers.JsonRpcProvider(process.env.WEB3 ?? 'http://localhost:8545');
+
     const logger = Winston.createLogger({
         format: Winston.format.combine(Winston.format.colorize(), Winston.format.simple()),
         level: 'verbose',
@@ -25,7 +28,9 @@ async function createBlockchainConfiguration() {
     });
 
     const conf: Configuration.Entity = {
-        blockchainProperties: {},
+        blockchainProperties: {
+            web3
+        },
         logger,
         offChainDataSource: new OffChainDataSource(
             process.env.BACKEND_URL,

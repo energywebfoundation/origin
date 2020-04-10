@@ -30,6 +30,11 @@ export interface IOwners {
     };
 }
 
+export interface IOwnedVolumes {
+    publicVolume: BigNumber;
+    privateVolume: BigNumber;
+}
+
 export interface ICertificate {
     id: number;
     issuer: string;
@@ -191,7 +196,7 @@ export class Entity extends PreciseProofEntity implements ICertificate {
     }
 
     async claim(amount?: BigNumber): Promise<ContractTransaction> {
-        const { publicVolume, privateVolume } = this.ownedVolume();
+        const { publicVolume, privateVolume } = await this.ownedVolume();
 
         if (publicVolume.eq(0)) {
             throw new Error(
@@ -223,9 +228,11 @@ export class Entity extends PreciseProofEntity implements ICertificate {
             .blockchainProperties as Configuration.BlockchainProperties<Registry, Issuer>;
         const registryWithSigner = registry.connect(activeUser);
 
+        const activeUserAddress = await activeUser.getAddress();
+
         return registryWithSigner.safeTransferAndClaimFrom(
-            activeUser.address,
-            activeUser.address,
+            activeUserAddress,
+            activeUserAddress,
             this.id,
             amount || publicVolume,
             this.data,
@@ -234,16 +241,17 @@ export class Entity extends PreciseProofEntity implements ICertificate {
     }
 
     async requestMigrateToPublic(): Promise<ContractTransaction> {
-        const { privateVolume } = this.ownedVolume();
+        const { privateVolume } = await this.ownedVolume();
 
         if (privateVolume.eq(0)) {
             throw new Error('migrateToPublic(): No private volume owned.');
         }
 
-        const owner = this.configuration.blockchainProperties.activeUser.address.toLowerCase();
+        const { activeUser } = this.configuration.blockchainProperties;
+        const owner = (await activeUser.getAddress()).toLowerCase();
         const { issuer } = this.configuration
             .blockchainProperties as Configuration.BlockchainProperties<Registry, Issuer>;
-        const issuerWithSigner = issuer.connect(this.configuration.blockchainProperties.activeUser);
+        const issuerWithSigner = issuer.connect(activeUser);
 
         const { salts } = await this.getCommitment();
         const calculatedOffChainStorageProperties = this.generateAndAddProofs(
@@ -266,7 +274,7 @@ export class Entity extends PreciseProofEntity implements ICertificate {
         const migrationRequest = await issuerWithSigner.getMigrationRequest(migrationRequestId);
 
         const requestor = migrationRequest.owner.toLowerCase();
-        const { privateVolume } = this.ownedVolume(requestor);
+        const { privateVolume } = await this.ownedVolume(requestor);
 
         if (privateVolume.eq(0)) {
             throw new Error(
@@ -306,14 +314,15 @@ export class Entity extends PreciseProofEntity implements ICertificate {
         amount?: BigNumber,
         privately = false
     ): Promise<ContractTransaction | CommitmentStatus> {
-        const fromAddress = this.configuration.blockchainProperties.activeUser.address.toLowerCase();
+        const { activeUser } = this.configuration.blockchainProperties;
+        const fromAddress = (await activeUser.getAddress()).toLowerCase();
         const toAddress = to.toLowerCase();
 
         const { issuer } = this.configuration
             .blockchainProperties as Configuration.BlockchainProperties<Registry, Issuer>;
-        const issuerWithSigner = issuer.connect(this.configuration.blockchainProperties.activeUser);
+        const issuerWithSigner = issuer.connect(activeUser);
 
-        const { publicVolume, privateVolume } = this.ownedVolume();
+        const { publicVolume, privateVolume } = await this.ownedVolume();
 
         const availableAmount = privately ? privateVolume : publicVolume;
         const amountToTransfer = amount ?? availableAmount;
@@ -350,9 +359,7 @@ export class Entity extends PreciseProofEntity implements ICertificate {
 
         const { registry } = this.configuration
             .blockchainProperties as Configuration.BlockchainProperties<Registry, Issuer>;
-        const registryWithSigner = registry.connect(
-            this.configuration.blockchainProperties.activeUser
-        );
+        const registryWithSigner = registry.connect(activeUser);
 
         return registryWithSigner.safeTransferFrom(
             fromAddress,
@@ -413,30 +420,33 @@ export class Entity extends PreciseProofEntity implements ICertificate {
         return getAllCertificateEvents(this.id, this.configuration);
     }
 
-    isOwned(byAddress?: string): boolean {
-        const { publicVolume, privateVolume } = this.ownedVolume(byAddress);
+    async isOwned(byAddress?: string): Promise<boolean> {
+        const { publicVolume, privateVolume } = await this.ownedVolume(byAddress);
 
         return publicVolume.add(privateVolume).gt(0);
     }
 
-    ownedVolume(byAddress?: string): { publicVolume: BigNumber; privateVolume: BigNumber } {
-        const owner = byAddress ?? this.configuration.blockchainProperties.activeUser.address;
+    async ownedVolume(byAddress?: string): Promise<IOwnedVolumes> {
+        const owner =
+            byAddress ?? (await this.configuration.blockchainProperties.activeUser.getAddress());
         const ownerBalances = this.owners[owner.toLowerCase()];
+        const claimedVolume = await this.claimedVolume(owner);
 
         return {
-            publicVolume: (ownerBalances?.owned ?? new BigNumber(0)).sub(this.claimedVolume(owner)),
+            publicVolume: (ownerBalances?.owned ?? new BigNumber(0)).sub(claimedVolume),
             privateVolume: ownerBalances?.ownedPrivate ?? new BigNumber(0)
         };
     }
 
-    isClaimed(byAddress?: string): boolean {
-        const claimedVolume = this.claimedVolume(byAddress);
+    async isClaimed(byAddress?: string): Promise<boolean> {
+        const claimedVolume = await this.claimedVolume(byAddress);
 
         return claimedVolume.gt(0);
     }
 
-    claimedVolume(byAddress?: string): BigNumber {
-        const owner = byAddress ?? this.configuration.blockchainProperties.activeUser.address;
+    async claimedVolume(byAddress?: string): Promise<BigNumber> {
+        const owner =
+            byAddress ?? (await this.configuration.blockchainProperties.activeUser.getAddress());
         return this.claimedShares[owner.toLowerCase()] ?? new BigNumber(0);
     }
 
@@ -655,7 +665,8 @@ export async function claimCertificates(
     );
     const certificates = await Promise.all(certificatesPromises);
 
-    const owned = certificates.map((cert) => cert.isOwned());
+    const ownedPromises = certificates.map((cert) => cert.isOwned());
+    const owned = await Promise.all(ownedPromises);
 
     const ownsAllCertificates = owned.every((isOwned) => isOwned === true);
 
@@ -663,7 +674,9 @@ export async function claimCertificates(
         throw new Error(`You can only claim your own certificates`);
     }
 
-    const values = certificates.map((cert) => cert.ownedVolume().publicVolume);
+    const ownedVolumesPromises = certificates.map((cert) => cert.ownedVolume());
+    const ownedVolumes = await Promise.all(ownedVolumesPromises);
+    const values = ownedVolumes.map((ownedVolume) => ownedVolume.publicVolume);
 
     // TO-DO: replace with proper claim data
     const claimData = certificates.map(() => randomBytes(32));
@@ -680,9 +693,11 @@ export async function claimCertificates(
     >;
     const registryWithSigner = registry.connect(activeUser);
 
+    const activeUserAddress = await activeUser.getAddress();
+
     return registryWithSigner.safeBatchTransferAndClaimFrom(
-        activeUser.address,
-        activeUser.address,
+        activeUserAddress,
+        activeUserAddress,
         certificateIds,
         values,
         data,
@@ -700,7 +715,9 @@ export async function transferCertificates(
     );
     const certificates = await Promise.all(certificatesPromises);
 
-    const values = certificates.map((cert) => cert.ownedVolume().publicVolume);
+    const ownedVolumesPromises = certificates.map((cert) => cert.ownedVolume());
+    const ownedVolumes = await Promise.all(ownedVolumesPromises);
+    const values = ownedVolumes.map((ownedVolume) => ownedVolume.publicVolume);
 
     // TO-DO: replace with proper data
     const data = randomBytes(32);
@@ -716,8 +733,10 @@ export async function transferCertificates(
     >;
     const registryWithSigner = registry.connect(activeUser);
 
+    const activeUserAddress = await activeUser.getAddress();
+
     return registryWithSigner.safeBatchTransferFrom(
-        activeUser.address,
+        activeUserAddress,
         to,
         certificateIds,
         values,

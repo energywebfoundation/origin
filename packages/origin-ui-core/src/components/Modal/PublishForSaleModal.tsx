@@ -69,13 +69,12 @@ export function PublishForSaleModal(props: IProps) {
     const dispatch = useDispatch();
 
     useEffect(() => {
-        if (certificate) {
-            setEnergyInDisplayUnit(
-                EnergyFormatter.getValueInDisplayUnit(
-                    certificate.ownedVolume(user.blockchainAccountAddress).publicVolume
-                )
-            );
-        }
+        (async () => {
+            const { publicVolume } = await certificate.ownedVolume(user.blockchainAccountAddress);
+            if (certificate) {
+                setEnergyInDisplayUnit(EnergyFormatter.getValueInDisplayUnit(publicVolume));
+            }
+        })();
     }, [certificate, user]);
 
     useEffect(() => {
@@ -153,8 +152,9 @@ export function PublishForSaleModal(props: IProps) {
                     newEnergyInDisplayUnit
                 );
 
-                const ownedPublicVolume = certificate.ownedVolume(user.blockchainAccountAddress)
-                    .publicVolume;
+                const ownedPublicVolume = (
+                    await certificate.ownedVolume(user.blockchainAccountAddress)
+                ).publicVolume;
 
                 const energyInDisplayUnitValid =
                     newEnergyInBaseValueUnit.gte(1) &&

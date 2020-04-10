@@ -1,5 +1,5 @@
 import * as Winston from 'winston';
-import { Wallet } from 'ethers';
+import { Signer } from 'ethers';
 import { JsonRpcProvider } from 'ethers/providers';
 
 import { IOffChainDataSource } from '@energyweb/origin-backend-client';
@@ -16,6 +16,6 @@ export interface BlockchainProperties<TRegistry = any, TIssuer = any> {
     web3?: JsonRpcProvider;
     registry?: TRegistry;
     issuer?: TIssuer;
-    activeUser?: Wallet;
+    activeUser?: Signer;
     privateKey?: string;
 }

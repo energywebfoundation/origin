@@ -89,13 +89,13 @@ describe('Certificate tests', () => {
         assert.isNotNull(certificate.id);
 
         setActiveUser(issuerWallet);
-        assert.isFalse(certificate.isOwned());
+        assert.isFalse(await certificate.isOwned());
 
         assert.equal(certificate.energy.toString(), volume.toString());
 
         setActiveUser(deviceOwnerWallet);
-        assert.isTrue(certificate.isOwned());
-        assert.equal(certificate.ownedVolume().publicVolume.toString(), volume.toString());
+        assert.isTrue(await certificate.isOwned());
+        assert.equal((await certificate.ownedVolume()).publicVolume.toString(), volume.toString());
 
         assert.deepOwnInclude(certificate, {
             initialized: true,
@@ -113,15 +113,15 @@ describe('Certificate tests', () => {
 
         certificate = await certificate.sync();
 
-        assert.isTrue(certificate.isOwned(deviceOwnerWallet.address));
+        assert.isTrue(await certificate.isOwned(deviceOwnerWallet.address));
         assert.equal(
-            certificate.ownedVolume(deviceOwnerWallet.address).publicVolume.toString(),
+            (await certificate.ownedVolume(deviceOwnerWallet.address)).publicVolume.toString(),
             totalVolume.div(4).mul(3).toString()
         );
 
-        assert.isTrue(certificate.isOwned(traderWallet.address));
+        assert.isTrue(await certificate.isOwned(traderWallet.address));
         assert.equal(
-            certificate.ownedVolume(traderWallet.address).publicVolume.toString(),
+            (await certificate.ownedVolume(traderWallet.address)).publicVolume.toString(),
             totalVolume.div(4).toString()
         );
     });
@@ -140,15 +140,15 @@ describe('Certificate tests', () => {
         await certificate.approvePrivateTransfer();
         certificate = await certificate.sync();
 
-        assert.isFalse(certificate.isOwned(deviceOwnerWallet.address));
+        assert.isFalse(await certificate.isOwned(deviceOwnerWallet.address));
         assert.equal(
-            certificate.ownedVolume(deviceOwnerWallet.address).privateVolume.toString(),
+            (await certificate.ownedVolume(deviceOwnerWallet.address)).privateVolume.toString(),
             '0'
         );
 
-        assert.isTrue(certificate.isOwned(traderWallet.address));
+        assert.isTrue(await certificate.isOwned(traderWallet.address));
         assert.equal(
-            certificate.ownedVolume(traderWallet.address).privateVolume.toString(),
+            (await certificate.ownedVolume(traderWallet.address)).privateVolume.toString(),
             totalVolume.toString()
         );
     });
@@ -168,15 +168,15 @@ describe('Certificate tests', () => {
         await certificate.approvePrivateTransfer();
         certificate = await certificate.sync();
 
-        assert.isTrue(certificate.isOwned(deviceOwnerWallet.address));
+        assert.isTrue(await certificate.isOwned(deviceOwnerWallet.address));
         assert.equal(
-            certificate.ownedVolume(deviceOwnerWallet.address).privateVolume.toString(),
+            (await certificate.ownedVolume(deviceOwnerWallet.address)).privateVolume.toString(),
             totalVolume.sub(partialVolumeToSend).toString()
         );
 
-        assert.isTrue(certificate.isOwned(traderWallet.address));
+        assert.isTrue(await certificate.isOwned(traderWallet.address));
         assert.equal(
-            certificate.ownedVolume(traderWallet.address).privateVolume.toString(),
+            (await certificate.ownedVolume(traderWallet.address)).privateVolume.toString(),
             partialVolumeToSend.toString()
         );
     });
@@ -220,11 +220,14 @@ describe('Certificate tests', () => {
 
         certificate = await certificate.sync();
 
-        assert.isFalse(certificate.isOwned());
-        assert.equal(certificate.ownedVolume().publicVolume.toString(), '0');
+        assert.isFalse(await certificate.isOwned());
+        assert.equal((await certificate.ownedVolume()).publicVolume.toString(), '0');
 
-        assert.isTrue(certificate.isClaimed());
-        assert.equal(certificate.claimedVolume().toString(), amountToSendToTrader.toString());
+        assert.isTrue(await certificate.isClaimed());
+        assert.equal(
+            (await certificate.claimedVolume()).toString(),
+            amountToSendToTrader.toString()
+        );
     });
 
     it('claims a private certificate', async () => {
@@ -246,8 +249,8 @@ describe('Certificate tests', () => {
         await certificate.claim();
         certificate = await certificate.sync();
 
-        assert.isTrue(certificate.isClaimed());
-        assert.equal(certificate.claimedVolume().toString(), totalVolume.toString());
+        assert.isTrue(await certificate.isClaimed());
+        assert.equal((await certificate.claimedVolume()).toString(), totalVolume.toString());
     });
 
     it('claims a partial private certificate', async () => {
@@ -280,8 +283,11 @@ describe('Certificate tests', () => {
         await certificate.claim();
         certificate = await certificate.sync();
 
-        assert.isTrue(certificate.isClaimed());
-        assert.equal(certificate.claimedVolume().toString(), partialVolumeToClaim.toString());
+        assert.isTrue(await certificate.isClaimed());
+        assert.equal(
+            (await certificate.claimedVolume()).toString(),
+            partialVolumeToClaim.toString()
+        );
     });
 
     it('batch transfers certificates', async () => {
@@ -292,10 +298,16 @@ describe('Certificate tests', () => {
 
         setActiveUser(deviceOwnerWallet);
 
-        assert.isTrue(certificate.isOwned());
-        assert.isTrue(certificate2.isOwned());
-        assert.equal(certificate.ownedVolume().publicVolume.toString(), totalVolume.toString());
-        assert.equal(certificate2.ownedVolume().publicVolume.toString(), totalVolume.toString());
+        assert.isTrue(await certificate.isOwned());
+        assert.isTrue(await certificate2.isOwned());
+        assert.equal(
+            (await certificate.ownedVolume()).publicVolume.toString(),
+            totalVolume.toString()
+        );
+        assert.equal(
+            (await certificate2.ownedVolume()).publicVolume.toString(),
+            totalVolume.toString()
+        );
 
         await Certificate.transferCertificates(
             [certificate.id, certificate2.id],
@@ -306,19 +318,19 @@ describe('Certificate tests', () => {
         certificate = await certificate.sync();
         certificate2 = await certificate2.sync();
 
-        assert.isFalse(certificate.isOwned());
-        assert.isFalse(certificate2.isOwned());
-        assert.equal(certificate.ownedVolume().publicVolume.toString(), '0');
-        assert.equal(certificate2.ownedVolume().publicVolume.toString(), '0');
+        assert.isFalse(await certificate.isOwned());
+        assert.isFalse(await certificate2.isOwned());
+        assert.equal((await certificate.ownedVolume()).publicVolume.toString(), '0');
+        assert.equal((await certificate2.ownedVolume()).publicVolume.toString(), '0');
 
-        assert.isTrue(certificate.isOwned(traderWallet.address));
-        assert.isTrue(certificate2.isOwned(traderWallet.address));
+        assert.isTrue(await certificate.isOwned(traderWallet.address));
+        assert.isTrue(await certificate2.isOwned(traderWallet.address));
         assert.equal(
-            certificate.ownedVolume(traderWallet.address).publicVolume.toString(),
+            (await certificate.ownedVolume(traderWallet.address)).publicVolume.toString(),
             totalVolume.toString()
         );
         assert.equal(
-            certificate2.ownedVolume(traderWallet.address).publicVolume.toString(),
+            (await certificate2.ownedVolume(traderWallet.address)).publicVolume.toString(),
             totalVolume.toString()
         );
     });
@@ -331,19 +343,19 @@ describe('Certificate tests', () => {
 
         setActiveUser(deviceOwnerWallet);
 
-        assert.isFalse(certificate.isClaimed());
-        assert.isFalse(certificate2.isClaimed());
-        assert.equal(certificate.claimedVolume().toString(), '0');
-        assert.equal(certificate2.claimedVolume().toString(), '0');
+        assert.isFalse(await certificate.isClaimed());
+        assert.isFalse(await certificate2.isClaimed());
+        assert.equal((await certificate.claimedVolume()).toString(), '0');
+        assert.equal((await certificate2.claimedVolume()).toString(), '0');
 
         await Certificate.claimCertificates([certificate.id, certificate2.id], conf);
 
         certificate = await certificate.sync();
         certificate2 = await certificate2.sync();
 
-        assert.isTrue(certificate.isClaimed());
-        assert.isTrue(certificate2.isClaimed());
-        assert.equal(certificate.claimedVolume().toString(), totalVolume.toString());
-        assert.equal(certificate2.claimedVolume().toString(), totalVolume.toString());
+        assert.isTrue(await certificate.isClaimed());
+        assert.isTrue(await certificate2.isClaimed());
+        assert.equal((await certificate.claimedVolume()).toString(), totalVolume.toString());
+        assert.equal((await certificate2.claimedVolume()).toString(), totalVolume.toString());
     });
 });

@@ -142,8 +142,10 @@ export class Entity extends PreciseProofEntity implements ICertificationRequest 
         const { issuer } = this.configuration
             .blockchainProperties as Configuration.BlockchainProperties<Registry, Issuer>;
 
+        const activeUserAddress = await this.configuration.blockchainProperties.activeUser.getAddress();
+
         const commitment: IOwnershipCommitment = {
-            [this.configuration.blockchainProperties.activeUser.address]: value
+            [activeUserAddress]: value
         };
         const { rootHash } = this.generateAndAddProofs(commitment);
 
