@@ -241,7 +241,7 @@ export function CertificateTable(props: IProps) {
             {
                 property: (record: IEnrichedCertificateData) =>
                     moment.unix(record?.producingDevice?.operationalSince).year().toString(),
-                label: t('device.properties.commissioningDate'),
+                label: t('device.properties.vintageCod'),
                 input: {
                     type: CustomFilterInputType.dropdown,
                     availableOptions: new Array(40).fill(moment().year()).map((item, index) => ({
@@ -347,7 +347,7 @@ export function CertificateTable(props: IProps) {
         },
         {
             id: 'commissioningDate',
-            label: t('device.properties.commissioningDate'),
+            label: t('device.properties.vintageCod'),
             sortProperties: [
                 (record: IEnrichedCertificateData) => record?.producingDevice?.operationalSince
             ]

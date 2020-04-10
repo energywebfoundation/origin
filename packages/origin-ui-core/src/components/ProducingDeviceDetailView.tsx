@@ -133,7 +133,7 @@ export function ProducingDeviceDetailView(props: IProps) {
                 description: ''
             },
             {
-                label: t('device.properties.commissioningDate'),
+                label: t('device.properties.vintageCod'),
                 data: formatDate(selectedDevice.operationalSince * 1000)
             }
         ],
