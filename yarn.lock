@@ -2810,14 +2810,6 @@
     multer "1.4.2"
     tslib "1.11.1"
 
-"@nestjs/platform-ws@7.0.7":
-  version "7.0.7"
-  resolved "https://registry.yarnpkg.com/@nestjs/platform-ws/-/platform-ws-7.0.7.tgz#64b1f6b04eb91eca6c5d5f45a54207e7b798251e"
-  integrity sha512-6u6da49jEJGcogRoO6HuO37vXCtwJO4eWy69hwSnwr00vjmRvFiuxMS966eDTKv0U3q6LIeRTJ2RH/rDfys/Xw==
-  dependencies:
-    tslib "1.11.1"
-    ws "7.2.3"
-
 "@nestjs/schedule@0.3.0":
   version "0.3.0"
   resolved "https://registry.yarnpkg.com/@nestjs/schedule/-/schedule-0.3.0.tgz#876ef9ec7677be5012eeefaf2749dad74e8694a8"
@@ -2864,14 +2856,6 @@
   integrity sha512-CRDYV3oxTUa6mTDJfdW+RPLtVUpGx0RpigQdLlvMFLM56v+bYnrTuuy4vurKDgLNFC+AttL9JLZOgRhW8fGdgQ==
   dependencies:
     uuid "3.3.3"
-
-"@nestjs/websockets@7.0.7":
-  version "7.0.7"
-  resolved "https://registry.yarnpkg.com/@nestjs/websockets/-/websockets-7.0.7.tgz#a07019203d2bbf42b87f7d15f5671bc01efac0e6"
-  integrity sha512-lKCp5JgZ2YO6mnP6amkffy0c9nD4Dq7IwidKS0OKUzS7H6NiuvQQXM9gsoVoYTwGk5/jJ6Y5TlegIsHG0cA5SQ==
-  dependencies:
-    iterare "1.2.0"
-    tslib "1.11.1"
 
 "@nodelib/fs.stat@^1.1.2":
   version "1.1.3"
