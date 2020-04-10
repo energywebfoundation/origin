@@ -57,7 +57,6 @@ script:
     - set -e
     - yarn lint
     - yarn test:ci:contracts
-    - yarn test:ci:contracts:deployment
     - yarn test:ci:apps
     - yarn test:ci:ui
     - yarn test:ci:e2e
