@@ -30,13 +30,20 @@ import { WithdrawalProcessorModule } from './pods/withdrawal-processor/withdrawa
 import { HTTPLoggingInterceptor } from './utils/httpLoggingInterceptor';
 
 const getEnvFilePath = () => {
-    const resolvedPath = path.resolve(__dirname, '../../../../../.env');
+    const pathsToTest = ['../../../../../.env', '../../../../../../.env'];
 
-    if (__dirname.includes('dist/js') && fs.existsSync(resolvedPath)) {
-        return resolvedPath;
+    let finalPath = null;
+
+    for (const pathToTest of pathsToTest) {
+        const resolvedPath = path.resolve(__dirname, pathToTest);
+
+        if (__dirname.includes('dist/js') && fs.existsSync(resolvedPath)) {
+            finalPath = resolvedPath;
+            break;
+        }
     }
 
-    return null;
+    return finalPath;
 };
 
 @Module({

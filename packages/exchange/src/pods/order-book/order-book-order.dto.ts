@@ -9,6 +9,8 @@ export class OrderBookOrderDTO {
 
     userId: string;
 
+    assetId?: string;
+
     public static fromOrder(order: Bid | Ask, userId?: string): OrderBookOrderDTO {
         return {
             ...order,

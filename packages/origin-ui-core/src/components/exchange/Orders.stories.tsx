@@ -12,7 +12,7 @@ export default {
     decorators: [withKnobs]
 };
 
-const DATA: IOrderBookOrderDTO[] = [
+const DATA: IOrderBookOrderDTO[] = ([
     {
         price: 99,
         volume: '123456'
@@ -22,7 +22,7 @@ const DATA: IOrderBookOrderDTO[] = [
         volume: '2000300',
         userId: '2'
     }
-];
+] as Partial<IOrderBookOrderDTO[]>) as IOrderBookOrderDTO[];
 
 const originConfiguration = createOriginConfiguration();
 

@@ -1,23 +1,24 @@
 import React, { useEffect } from 'react';
-import { TableMaterial } from '../Table/TableMaterial';
+import { TableMaterial, ICustomRow } from '../Table/TableMaterial';
 import {
     IPaginatedLoaderHooksFetchDataParameters,
     usePaginatedLoaderFiltered
 } from '../Table/PaginatedLoaderHooks';
-import { EnergyFormatter } from '../../utils/EnergyFormatter';
 import { Typography } from '@material-ui/core';
-import { useTranslation } from '../../utils';
+import { useTranslation, EnergyFormatter } from '../../utils';
 import { IOrderBookOrderDTO } from '../../utils/exchange';
 
-interface IProps {
+export interface IOrdersProps {
     data: IOrderBookOrderDTO[];
     currency: string;
     title: string;
     highlightOrdersUserId: string;
+    handleRowClick?: (index: number, order: IOrderBookOrderDTO) => void;
+    customRow?: ICustomRow;
 }
 
-export function Orders(props: IProps) {
-    const { currency, data, title, highlightOrdersUserId } = props;
+export function Orders(props: IOrdersProps) {
+    const { currency, data, title, highlightOrdersUserId, handleRowClick, customRow } = props;
 
     const { t } = useTranslation();
 
@@ -87,6 +88,14 @@ export function Orders(props: IProps) {
                 total={total}
                 pageSize={pageSize}
                 highlightedRowsIndexes={highlightedRowsIndexes}
+                handleRowClick={
+                    handleRowClick
+                        ? (index: number) => {
+                              handleRowClick(index, paginatedData[index]);
+                          }
+                        : null
+                }
+                customRow={customRow}
             />
         </>
     );
