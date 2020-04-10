@@ -1,7 +1,6 @@
 import { AppModule as ExchangeModule } from '@energyweb/exchange';
 import { LoggerService } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
-import { WsAdapter } from '@nestjs/platform-ws';
 import { useContainer } from 'class-validator';
 
 import { OriginAppModule } from './origin-app.module';
@@ -13,7 +12,6 @@ export async function startAPI(logger?: LoggerService) {
     console.log(`Backend starting on port: ${PORT}`);
 
     const app = await NestFactory.create(OriginAppModule.register(null));
-    app.useWebSocketAdapter(new WsAdapter(app));
     app.enableCors();
     app.setGlobalPrefix('api');
 

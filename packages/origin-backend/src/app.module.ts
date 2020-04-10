@@ -10,7 +10,6 @@ import { ConnectionOptions } from 'typeorm';
 import { AppController } from './app.controller';
 import { AuthModule } from './auth/auth.module';
 import createConfig from './config/configuration';
-import { EventsModule } from './pods/events';
 import { CertificateModule } from './pods/certificate/certificate.module';
 import { CertificationRequest } from './pods/certificate/certification-request.entity';
 import { Configuration } from './pods/configuration/configuration.entity';
@@ -61,7 +60,6 @@ export class AppModule {
                 OrganizationModule,
                 DeviceModule.register(smartMeterReadingsAdapter),
                 AuthModule,
-                EventsModule,
                 CertificateModule.register(smartMeterReadingsAdapter)
             ],
             controllers: [AppController]
