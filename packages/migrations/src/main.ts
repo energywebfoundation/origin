@@ -133,7 +133,7 @@ async function isFirstMigration(client: Client) {
 
 async function importSeed(client: Client, seedFile: string) {
     if (!fs.existsSync(seedFile)) {
-        logger.info('Seed file wa not provided. Skipping');
+        logger.info('Seed file was not provided. Skipping');
         return;
     }
 
@@ -181,7 +181,7 @@ try {
 
             await importConfiguration(dbClient, program.config, contractsLookup);
 
-            await importSeed(dbClient, program.seed);
+            await importSeed(dbClient, program.seedFile);
         }
 
         process.exit(0);
