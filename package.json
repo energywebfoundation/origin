@@ -2,7 +2,7 @@
     "name": "root",
     "private": true,
     "devDependencies": {
-        "@openzeppelin/cli": "2.8.0",
+        "@openzeppelin/cli": "2.8.1",
         "@openzeppelin/contracts-ethereum-package": "2.5.0",
         "@openzeppelin/upgrades": "2.8.0",
         "@types/chai": "4.2.11",
