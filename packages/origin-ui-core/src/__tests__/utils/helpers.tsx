@@ -316,7 +316,7 @@ export const createProducingDevice = (
 
 // export const createCertificate = (
 //     certificate: ICertificate
-// ): Certificate.Entity => {
+// ): Certificate => {
 //     return {
 //         id: properties.id,
 //         configuration: ({
@@ -327,7 +327,7 @@ export const createProducingDevice = (
 //             }
 //         } as Partial<Configuration.Entity>) as Configuration.Entity,
 //         ...certificate
-//     } as Certificate.Entity;
+//     } as Certificate;
 // };
 
 interface ISetupStoreOptions {

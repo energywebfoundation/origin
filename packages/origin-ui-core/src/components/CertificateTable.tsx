@@ -1,5 +1,5 @@
 import { ProducingDevice } from '@energyweb/device-registry';
-import { Certificate } from '@energyweb/issuer';
+import { Certificate, IOwnedVolumes } from '@energyweb/issuer';
 import { AssignmentTurnedIn, Publish } from '@material-ui/icons';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
@@ -39,14 +39,14 @@ import {
 import { getEnvironment } from '../features';
 
 interface IProps {
-    certificates?: Certificate.Entity[];
+    certificates?: Certificate[];
     hiddenColumns?: string[];
     selectedState: SelectedState;
 }
 
 interface IEnrichedCertificateData {
-    certificate: Certificate.Entity;
-    ownedVolume: Certificate.IOwnedVolumes;
+    certificate: Certificate;
+    ownedVolume: IOwnedVolumes;
     producingDevice: ProducingDevice.Entity;
     deviceTypeLabel: string;
     locationText: string;
@@ -61,6 +61,13 @@ const CERTIFICATION_DATE_COLUMN_ID = 'certificationDate';
 const CERTIFICATION_DATE_COLUMN_SORT_PROPERTIES = [
     (record: IEnrichedCertificateData) => record?.certificate?.creationTime
 ];
+
+const filterAsync = async (array, asyncfilterMethod) => {
+    const asyncMethodResult = await Promise.all(
+        array.map(async (item) => ((await asyncfilterMethod(item)) ? item : null))
+    );
+    return asyncMethodResult.filter((i) => i !== null);
+};
 
 export function CertificateTable(props: IProps) {
     const { currentSort, sortAscending, sortData, toggleSort } = usePaginatedLoaderSorting({
@@ -85,10 +92,10 @@ export function CertificateTable(props: IProps) {
     const dispatch = useDispatch();
     const { getCertificateDetailLink } = useLinks();
 
-    const [selectedCertificates, setSelectedCertificates] = useState<Certificate.Entity[]>([]);
+    const [selectedCertificates, setSelectedCertificates] = useState<Certificate[]>([]);
     const [detailViewForCertificateId, setDetailViewForCertificateId] = useState<number>(null);
     const [showClaimBulkModal, setShowClaimBulkModal] = useState(false);
-    const [sellModalData, setSellModalData] = useState<Certificate.Entity>(null);
+    const [sellModalData, setSellModalData] = useState<Certificate>(null);
     const [sellModalVisibility, setSellModalVisibility] = useState(false);
 
     const userAddress = user?.blockchainAccountAddress?.toLowerCase();
@@ -117,20 +124,23 @@ export function CertificateTable(props: IProps) {
             })
         );
 
-        const filteredIEnrichedCertificateData = enrichedData.filter((enrichedCertificateData) => {
-            const ownerOf = enrichedCertificateData.certificate.isOwned(userAddress);
-            const claimed = enrichedCertificateData.certificate.isClaimed(userAddress);
+        const filteredIEnrichedCertificateData = await filterAsync(
+            enrichedData,
+            async (enrichedCertificateData) => {
+                const ownerOf = await enrichedCertificateData.certificate.isOwned(userAddress);
+                const claimed = await enrichedCertificateData.certificate.isClaimed(userAddress);
 
-            return (
-                checkRecordPassesFilters(
-                    enrichedCertificateData,
-                    requestedFilters,
-                    deviceTypeService
-                ) &&
-                ((ownerOf && selectedState === SelectedState.Inbox) ||
-                    (claimed && selectedState === SelectedState.Claimed))
-            );
-        });
+                return (
+                    checkRecordPassesFilters(
+                        enrichedCertificateData,
+                        requestedFilters,
+                        deviceTypeService
+                    ) &&
+                    ((ownerOf && selectedState === SelectedState.Inbox) ||
+                        (claimed && selectedState === SelectedState.Claimed))
+                );
+            }
+        );
 
         const sortedEnrichedData = sortData(filteredIEnrichedCertificateData);
 

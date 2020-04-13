@@ -22,7 +22,7 @@ import {
 } from '../utils';
 import { Skeleton } from '@material-ui/lab';
 import { getOffChainDataSource, getEnvironment } from '../features/general/selectors';
-import { CertificationRequest } from '@energyweb/issuer';
+import { CertificationRequest, getAllCertificationRequests } from '@energyweb/issuer';
 import { useTranslation } from 'react-i18next';
 
 interface IProps {
@@ -30,7 +30,7 @@ interface IProps {
 }
 
 interface IRecord {
-    request: CertificationRequest.Entity;
+    request: CertificationRequest;
     device: ProducingDevice.Entity;
 }
 
@@ -57,7 +57,7 @@ export function CertificationRequestsTable(props: IProps) {
 
         const isIssuer = isRole(user, Role.Issuer);
 
-        const requests = await CertificationRequest.getAllCertificationRequests(configuration);
+        const requests = await getAllCertificationRequests(configuration);
 
         let newPaginatedData: IRecord[] = [];
 

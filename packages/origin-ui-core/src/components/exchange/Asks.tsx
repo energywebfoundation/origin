@@ -10,7 +10,6 @@ import { TableCell, Button, InputAdornment, Grid } from '@material-ui/core';
 import { getUserOffchain } from '../../features/users/selectors';
 import { FormInput } from '../Form';
 import { Formik, Form } from 'formik';
-import { bigNumberify } from 'ethers/utils';
 
 interface IAsksProps {
     buyDirect: (orderId: string, volume: string, price: number) => void;
@@ -68,9 +67,9 @@ export function Asks(props: Props) {
             .positive()
             .integer()
             .max(
-                (
-                    EnergyFormatter.getValueInDisplayUnit(selectedOrder?.volume) ?? bigNumberify(0)
-                ).toNumber()
+                selectedOrder
+                    ? EnergyFormatter.getValueInDisplayUnit(selectedOrder.volume).toNumber()
+                    : 0
             )
             .label(t('exchange.properties.energy'))
     });

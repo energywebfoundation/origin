@@ -28,7 +28,7 @@ import { Certificate } from '@energyweb/issuer';
 import { getUserOffchain, getActiveBlockchainAccountAddress } from '../../features/users/selectors';
 
 interface IProps {
-    certificate: Certificate.Entity;
+    certificate: Certificate;
     producingDevice: ProducingDevice.Entity;
     showModal: boolean;
     callback: () => void;
@@ -70,8 +70,10 @@ export function PublishForSaleModal(props: IProps) {
 
     useEffect(() => {
         (async () => {
-            const { publicVolume } = await certificate.ownedVolume(user.blockchainAccountAddress);
             if (certificate) {
+                const { publicVolume } = await certificate.ownedVolume(
+                    user.blockchainAccountAddress
+                );
                 setEnergyInDisplayUnit(EnergyFormatter.getValueInDisplayUnit(publicVolume));
             }
         })();

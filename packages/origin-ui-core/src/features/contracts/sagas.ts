@@ -6,7 +6,7 @@ import { getSearch } from 'connected-react-router';
 import { getConfiguration } from '../selectors';
 import * as queryString from 'query-string';
 import * as Winston from 'winston';
-import { Certificate, Contracts } from '@energyweb/issuer';
+import { Certificate, Contracts, CertificateUtils } from '@energyweb/issuer';
 import { IOffChainDataSource, IConfigurationClient } from '@energyweb/origin-backend-client';
 import { Configuration, DeviceTypeService } from '@energyweb/utils-general';
 
@@ -26,6 +26,7 @@ import { getOffChainDataSource, getEnvironment } from '../general/selectors';
 import { getContractsLookup } from './selectors';
 import { IContractsLookup, IOrganizationWithRelationsIds } from '@energyweb/origin-backend-core';
 import { addOrganizations, setActiveBlockchainAccountAddress } from '../users/actions';
+import { BigNumber } from 'ethers/utils';
 
 enum ERROR {
     WRONG_NETWORK_OR_CONTRACT_ADDRESS = "Please make sure you've chosen correct blockchain network and the contract address is valid."
@@ -91,9 +92,6 @@ function* initEventHandler() {
 
     configuration.blockchainProperties.registry
         .on('ClaimSingle', async (event: any) => {
-            console.log({
-                event
-            });
             const id = Number(event.returnValues._id);
 
             if (typeof id !== 'string') {
@@ -102,17 +100,8 @@ function* initEventHandler() {
 
             put(requestCertificateEntityFetch(id));
         })
-        .on('IssuanceSingle', async (event: any) => {
-            console.log({
-                event
-            });
-            const id = Number(event.returnValues._id);
-
-            if (typeof id !== 'string') {
-                return;
-            }
-
-            put(requestCertificateEntityFetch(id));
+        .on('IssuanceSingle', async (sender: string, topic: BigNumber, id: BigNumber) => {
+            put(requestCertificateEntityFetch(id?.toNumber()));
         });
 }
 
@@ -207,9 +196,9 @@ function* fillContractLookupIfMissing(): SagaIterator {
                 yield put(producingDeviceCreatedOrUpdated(device));
             }
 
-            const certificates: Certificate.Entity[] = yield apply(
+            const certificates: Certificate[] = yield apply(
                 Certificate,
-                Certificate.getAllCertificates,
+                CertificateUtils.getAllCertificates,
                 [configuration]
             );
 

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Certificate } from '@energyweb/issuer';
+import { Certificate, CertificateUtils } from '@energyweb/issuer';
 import { showNotification, NotificationType } from '../../utils/notifications';
 import {
     Button,
@@ -15,7 +15,7 @@ import { EnergyFormatter } from '../../utils/EnergyFormatter';
 import { bigNumberify } from 'ethers/utils';
 
 interface IProps {
-    certificates: Certificate.Entity[];
+    certificates: Certificate[];
     showModal: boolean;
     callback: () => void;
 }
@@ -30,7 +30,7 @@ export function ClaimCertificateBulkModal(props: IProps) {
     async function claimCertificates() {
         const certificateIds: number[] = props.certificates.map((cert) => cert.id);
 
-        await Certificate.claimCertificates(certificateIds, configuration);
+        await CertificateUtils.claimCertificates(certificateIds, configuration);
 
         showNotification(`Certificates have been claimed.`, NotificationType.Success);
         handleClose();

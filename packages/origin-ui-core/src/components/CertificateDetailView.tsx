@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { CertificationRequest } from '@energyweb/issuer';
+import { CertificationRequest, CertificateUtils } from '@energyweb/issuer';
 import { ProducingDeviceDetailView } from './ProducingDeviceDetailView';
 import { useSelector } from 'react-redux';
 import { getConfiguration } from '../features/selectors';
@@ -45,7 +45,10 @@ export function CertificateDetailView(props: IProps) {
         id !== null && typeof id !== 'undefined' && certificates.find((c) => c.id === id);
 
     async function enrichEvent() {
-        const allCertificateEvents = await selectedCertificate.getAllCertificateEvents();
+        const allCertificateEvents = await CertificateUtils.getAllCertificateEvents(
+            selectedCertificate.id,
+            selectedCertificate.configuration
+        );
 
         const jointEvents = allCertificateEvents.map(async (event) => {
             let label: string;
@@ -100,7 +103,7 @@ export function CertificateDetailView(props: IProps) {
 
         const resolvedEvents = await Promise.all(jointEvents);
 
-        const request = await new CertificationRequest.Entity(
+        const request = await new CertificationRequest(
             selectedCertificate.certificationRequestId,
             configuration
         ).sync();
