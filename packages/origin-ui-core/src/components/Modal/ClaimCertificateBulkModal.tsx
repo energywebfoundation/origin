@@ -37,7 +37,10 @@ export function ClaimCertificateBulkModal(props: IProps) {
     }
 
     const totalEnergy = EnergyFormatter.format(
-        props.certificates.reduce((a, b) => a.add(b.energy), bigNumberify(0)),
+        props.certificates.reduce((a, b) => {
+            const energy = b.energy.publicVolume.add(b.energy.privateVolume);
+            return a.add(energy);
+        }, bigNumberify(0)),
         true
     );
 

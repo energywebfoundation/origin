@@ -1,5 +1,5 @@
 import { ProducingDevice } from '@energyweb/device-registry';
-import { Certificate, IOwnedVolumes } from '@energyweb/issuer';
+import { Certificate, ICertificateEnergy } from '@energyweb/issuer';
 import { AssignmentTurnedIn, Publish } from '@material-ui/icons';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
@@ -46,7 +46,7 @@ interface IProps {
 
 interface IEnrichedCertificateData {
     certificate: Certificate;
-    ownedVolume: IOwnedVolumes;
+    ownedVolume: ICertificateEnergy;
     producingDevice: ProducingDevice.Entity;
     deviceTypeLabel: string;
     locationText: string;
@@ -105,24 +105,21 @@ export function CertificateTable(props: IProps) {
         offset,
         requestedFilters
     }: IPaginatedLoaderHooksFetchDataParameters): Promise<IPaginatedLoaderFetchDataReturnValues> {
-        const enrichedData: IEnrichedCertificateData[] = await Promise.all(
-            certificates.map(async (certificate) => {
-                const producingDevice =
-                    typeof certificate.deviceId !== 'undefined' &&
-                    producingDevices.find(
-                        (device) =>
-                            getDeviceId(device, environment) === certificate.deviceId.toString()
-                    );
+        const enrichedData: IEnrichedCertificateData[] = certificates.map((certificate) => {
+            const producingDevice =
+                typeof certificate.deviceId !== 'undefined' &&
+                producingDevices.find(
+                    (device) => getDeviceId(device, environment) === certificate.deviceId.toString()
+                );
 
-                return {
-                    certificate,
-                    producingDevice,
-                    deviceTypeLabel: producingDevice?.deviceType,
-                    locationText: getDeviceLocationText(producingDevice),
-                    ownedVolume: await certificate.ownedVolume(userAddress)
-                };
-            })
-        );
+            return {
+                certificate,
+                producingDevice,
+                deviceTypeLabel: producingDevice?.deviceType,
+                locationText: getDeviceLocationText(producingDevice),
+                ownedVolume: certificate.energy
+            };
+        });
 
         const filteredIEnrichedCertificateData = await filterAsync(
             enrichedData,
@@ -209,7 +206,7 @@ export function CertificateTable(props: IProps) {
 
         const certificate = certificates.find((cert) => cert.id === certificateId);
 
-        if (certificate && certificate.isOwned(userAddress)) {
+        if (certificate && certificate.isOwned) {
             dispatch(setLoading(true));
             await certificate.claim();
             dispatch(setLoading(false));
@@ -230,10 +227,11 @@ export function CertificateTable(props: IProps) {
         }
 
         const maxCertificateEnergyInDisplayUnit = EnergyFormatter.getValueInDisplayUnit(
-            certificates.reduce(
-                (a, b) => (b.energy.gt(a) ? b.energy : bigNumberify(a)),
-                bigNumberify(0)
-            )
+            certificates.reduce((a, b) => {
+                const { publicVolume, privateVolume } = b.energy;
+                const energy = publicVolume.add(privateVolume);
+                return energy.gt(a) ? energy : bigNumberify(a);
+            }, bigNumberify(0))
         );
 
         const filters: ICustomFilterDefinition[] = [
@@ -281,8 +279,14 @@ export function CertificateTable(props: IProps) {
                 }
             },
             {
-                property: (record: IEnrichedCertificateData): number =>
-                    EnergyFormatter.getValueInDisplayUnit(record?.certificate?.energy).toNumber(),
+                property: (record: IEnrichedCertificateData): number => {
+                    const energy = record?.certificate?.energy;
+                    if (energy) {
+                        const totalOwnedEnergy = energy.publicVolume.add(energy.privateVolume);
+                        return EnergyFormatter.getValueInDisplayUnit(totalOwnedEnergy).toNumber();
+                    }
+                    return EnergyFormatter.getValueInDisplayUnit(null).toNumber();
+                },
                 label: `${t('certificate.properties.certifiedEnergy')} (${
                     EnergyFormatter.displayUnit
                 })`,
@@ -309,7 +313,11 @@ export function CertificateTable(props: IProps) {
                 .filter((item, index) => selectedIndexes.includes(index))
                 .map((i) => i.certificate);
 
-            const energy = includedCertificates.reduce((a, b) => a.add(b.energy), bigNumberify(0));
+            const energy = includedCertificates.reduce((a, b) => {
+                const { publicVolume, privateVolume } = b.energy;
+                const totalOwned = publicVolume.add(privateVolume);
+                return a.add(totalOwned);
+            }, bigNumberify(0));
 
             return `${t('certificate.feedback.amountSelected', {
                 amount: selectedIndexes.length

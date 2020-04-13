@@ -166,6 +166,8 @@ export function CertificateDetailView(props: IProps) {
             </p>
         ));
 
+        const { publicVolume, privateVolume } = selectedCertificate.energy;
+
         data = [
             [
                 {
@@ -174,7 +176,7 @@ export function CertificateDetailView(props: IProps) {
                 },
                 {
                     label: 'Claimed',
-                    data: selectedCertificate.isClaimed() ? 'yes' : 'no'
+                    data: selectedCertificate.isClaimed ? 'yes' : 'no'
                 },
                 {
                     label: 'Creation date',
@@ -184,7 +186,7 @@ export function CertificateDetailView(props: IProps) {
             [
                 {
                     label: `Certified energy (${EnergyFormatter.displayUnit})`,
-                    data: EnergyFormatter.format(selectedCertificate.energy)
+                    data: EnergyFormatter.format(publicVolume.add(privateVolume))
                 },
                 {
                     label: 'Generation start',
