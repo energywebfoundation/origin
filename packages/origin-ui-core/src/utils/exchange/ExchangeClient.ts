@@ -15,7 +15,11 @@ import {
 import { Filter } from '@energyweb/exchange-core';
 
 export interface IExchangeClient {
-    search(deviceType?: string[], location?: string[]): Promise<TOrderBook>;
+    search(
+        deviceType?: string[],
+        location?: string[],
+        gridOperator?: string[]
+    ): Promise<TOrderBook>;
     createAsk(data: CreateAskDTO): Promise<IOrder>;
     createBid(data: CreateBidDTO): Promise<IOrder>;
     directBuy(data: IDirectBuyDTO): Promise<IOrder>;
