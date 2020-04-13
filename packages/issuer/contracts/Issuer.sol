@@ -292,8 +292,8 @@ contract Issuer is Initializable, Ownable {
 
 		require(!request.approved, "migrateToPublic(): Request already approved");
         require(!migrations[request.certificateId], "migrateToPublic(): certificate already migrated");
-        require(validateOwnershipProof(request.owner, _value, _salt, commitments[request.certificateId], _proof), "Invalid proof");
 		require(request.hash == keccak256(abi.encodePacked(request.owner, _value, _salt)), "Requested hash does not match");
+        require(validateOwnershipProof(request.owner, _value, _salt, commitments[request.certificateId], _proof), "Invalid proof");
 
 		request.approved = true;
 

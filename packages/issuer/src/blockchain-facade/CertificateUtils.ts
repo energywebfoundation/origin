@@ -15,18 +15,13 @@ export async function claimCertificates(
     );
     const certificates = await Promise.all(certificatesPromises);
 
-    const ownedPromises = certificates.map((cert) => cert.isOwned());
-    const owned = await Promise.all(ownedPromises);
-
-    const ownsAllCertificates = owned.every((isOwned) => isOwned === true);
+    const ownsAllCertificates = certificates.every((cert) => cert.isOwned === true);
 
     if (!ownsAllCertificates) {
         throw new Error(`You can only claim your own certificates`);
     }
 
-    const ownedVolumesPromises = certificates.map((cert) => cert.ownedVolume());
-    const ownedVolumes = await Promise.all(ownedVolumesPromises);
-    const values = ownedVolumes.map((ownedVolume) => ownedVolume.publicVolume);
+    const values = certificates.map((cert) => cert.energy.publicVolume);
 
     // TO-DO: replace with proper claim data
     const claimData = certificates.map(() => randomBytes(32));
@@ -65,9 +60,13 @@ export async function transferCertificates(
     );
     const certificates = await Promise.all(certificatesPromises);
 
-    const ownedVolumesPromises = certificates.map((cert) => cert.ownedVolume());
-    const ownedVolumes = await Promise.all(ownedVolumesPromises);
-    const values = ownedVolumes.map((ownedVolume) => ownedVolume.publicVolume);
+    const ownsAllCertificates = certificates.every((cert) => cert.isOwned === true);
+
+    if (!ownsAllCertificates) {
+        throw new Error(`You can only claim your own certificates`);
+    }
+
+    const values = certificates.map((cert) => cert.energy.publicVolume);
 
     // TO-DO: replace with proper data
     const data = randomBytes(32);

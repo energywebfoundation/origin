@@ -5,7 +5,7 @@ import {
     MAX_ENERGY_PER_CERTIFICATE
 } from '@energyweb/origin-backend-core';
 import { Event as BlockchainEvent, ContractTransaction } from 'ethers';
-import { BigNumber, randomBytes } from 'ethers/utils';
+import { BigNumber, randomBytes, bigNumberify } from 'ethers/utils';
 
 import { Configuration, Timestamp } from '@energyweb/utils-general';
 
@@ -15,43 +15,30 @@ import { Registry } from '../ethers/Registry';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { Issuer } from '../ethers/Issuer';
 
-const NULL_ADDRESS = '0x0000000000000000000000000000000000000000';
 const NULL_HASH = '0x0000000000000000000000000000000000000000000000000000000000000000';
 
-export interface IShareInCertificate {
-    [address: string]: BigNumber;
-}
-
-export interface IOwners {
-    [address: string]: {
-        owned: BigNumber;
-        ownedPrivate: BigNumber;
-        claimed: BigNumber;
-    };
-}
-
-export interface IOwnedVolumes {
+export interface ICertificateEnergy {
     publicVolume: BigNumber;
     privateVolume: BigNumber;
+    claimedVolume: BigNumber;
 }
 
 export interface ICertificate {
     id: number;
     issuer: string;
     deviceId: string;
-    energy: BigNumber;
+    energy: ICertificateEnergy;
     generationStartTime: number;
     generationEndTime: number;
     certificationRequestId: number;
     creationTime: number;
     creationBlockHash: string;
-    owners: IOwners;
 }
 
 export class Certificate extends PreciseProofEntity implements ICertificate {
     public deviceId: string;
 
-    public energy: BigNumber;
+    public energy: ICertificateEnergy;
 
     public generationStartTime: number;
 
@@ -71,11 +58,7 @@ export class Certificate extends PreciseProofEntity implements ICertificate {
 
     public data: string;
 
-    private claimedShares: IShareInCertificate = {};
-
-    private ownedShares: IShareInCertificate = {};
-
-    private ownedSharesPrivate: IShareInCertificate = {};
+    private privateOwnershipCommitment: IOwnershipCommitment = {};
 
     constructor(id: number, configuration: Configuration.Entity) {
         super(id, configuration);
@@ -96,7 +79,7 @@ export class Certificate extends PreciseProofEntity implements ICertificate {
             );
         }
 
-        const newEntity = new Certificate(null, configuration);
+        const newCertificate = new Certificate(null, configuration);
 
         const getIdFromEvents = (logs: BlockchainEvent[]): number =>
             Number(logs.find((log) => log.event === 'ApprovedCertificationRequest').topics[2]);
@@ -116,30 +99,37 @@ export class Certificate extends PreciseProofEntity implements ICertificate {
                 [to.toLowerCase()]: value
             };
 
-            const commitmentProof = newEntity.generateAndAddProofs(ownershipCommitment);
+            console.log({
+                ownershipCommitment
+            });
+
+            const commitmentProof = newCertificate.generateAndAddProofs(ownershipCommitment);
 
             tx = await issuerWithSigner.issuePrivate(to, commitmentProof.rootHash, data);
             const { events } = await tx.wait();
 
-            newEntity.id = getIdFromEvents(events);
-            newEntity.propertiesDocumentHash = commitmentProof.rootHash;
+            newCertificate.id = getIdFromEvents(events);
+            newCertificate.propertiesDocumentHash = commitmentProof.rootHash;
 
-            await newEntity.saveCommitment({
+            await newCertificate.saveCommitment({
                 ...commitmentProof,
                 txHash: tx.hash
             });
         } else {
+            console.log({
+                value
+            });
             tx = await issuerWithSigner.issue(to, value, data);
             const { events } = await tx.wait();
 
-            newEntity.id = getIdFromEvents(events);
+            newCertificate.id = getIdFromEvents(events);
         }
 
         if (configuration.logger) {
-            configuration.logger.info(`Certificate ${newEntity.id} created`);
+            configuration.logger.info(`Certificate ${newCertificate.id} created`);
         }
 
-        return newEntity.sync();
+        return newCertificate.sync();
     }
 
     async sync(): Promise<Certificate> {
@@ -176,21 +166,26 @@ export class Certificate extends PreciseProofEntity implements ICertificate {
             await issuer.getCertificationRequestIdForCertificate(this.id)
         );
 
-        this.claimedShares = await this.calculateClaims();
-        this.ownedShares = await this.calculateOwnership();
-
         this.propertiesDocumentHash = await issuer.getCertificateCommitment(this.id);
 
         if (this.propertiesDocumentHash !== NULL_HASH) {
             const { commitment } = await this.getCommitment();
-            this.ownedSharesPrivate = commitment ?? {};
+            this.privateOwnershipCommitment = commitment ?? {};
         }
 
-        const getShareSum = (shares: IShareInCertificate) =>
-            Object.keys(shares)
-                .map((owner) => shares[owner])
-                .reduce((a, b) => a.add(b), new BigNumber(0));
-        this.energy = getShareSum(this.ownedShares).add(getShareSum(this.claimedShares));
+        const owner = (
+            await this.configuration.blockchainProperties.activeUser.getAddress()
+        ).toLowerCase();
+        const ownedEnergy = await registry.balanceOf(owner, this.id);
+        const claimedEnergy = await registry.claimedBalanceOf(owner, this.id);
+
+        this.energy = {
+            publicVolume: ownedEnergy.sub(claimedEnergy).lt(0)
+                ? bigNumberify(0)
+                : ownedEnergy.sub(claimedEnergy),
+            privateVolume: this.privateOwnershipCommitment[owner] ?? bigNumberify(0),
+            claimedVolume: claimedEnergy
+        };
 
         this.initialized = true;
 
@@ -201,42 +196,31 @@ export class Certificate extends PreciseProofEntity implements ICertificate {
         return this;
     }
 
-    get owners(): IOwners {
-        const owners: IOwners = {};
-
-        const allOwnerAddresses = [
-            ...new Set([
-                ...Object.keys(this.ownedShares),
-                ...Object.keys(this.ownedSharesPrivate),
-                ...Object.keys(this.claimedShares)
-            ])
-        ];
-
-        for (const ownerAddress of allOwnerAddresses) {
-            const zero = new BigNumber(0);
-
-            if (!owners[ownerAddress]) {
-                owners[ownerAddress] = {
-                    owned: zero,
-                    ownedPrivate: zero,
-                    claimed: zero
-                };
-            }
-
-            const { owned, ownedPrivate, claimed } = owners[ownerAddress];
-
-            owners[ownerAddress].owned = owned.add(this.ownedShares[ownerAddress] ?? zero);
-            owners[ownerAddress].ownedPrivate = ownedPrivate.add(
-                this.ownedSharesPrivate[ownerAddress] ?? zero
-            );
-            owners[ownerAddress].claimed = claimed.add(this.claimedShares[ownerAddress] ?? zero);
+    get isOwned(): boolean {
+        if (!this.energy) {
+            return false;
         }
 
-        return owners;
+        const { publicVolume, privateVolume } = this.energy;
+        console.log({
+            energy: this.energy
+        });
+
+        return publicVolume.add(privateVolume).gt(0);
+    }
+
+    get isClaimed(): boolean {
+        if (!this.energy) {
+            return false;
+        }
+
+        const { claimedVolume } = this.energy;
+
+        return claimedVolume.gt(0);
     }
 
     async claim(amount?: BigNumber): Promise<ContractTransaction> {
-        const { publicVolume, privateVolume } = await this.ownedVolume();
+        const { publicVolume, privateVolume } = this.energy;
 
         if (publicVolume.eq(0)) {
             throw new Error(
@@ -281,7 +265,7 @@ export class Certificate extends PreciseProofEntity implements ICertificate {
     }
 
     async requestMigrateToPublic(): Promise<ContractTransaction> {
-        const { privateVolume } = await this.ownedVolume();
+        const { privateVolume } = this.energy;
 
         if (privateVolume.eq(0)) {
             throw new Error('migrateToPublic(): No private volume owned.');
@@ -295,7 +279,7 @@ export class Certificate extends PreciseProofEntity implements ICertificate {
 
         const { salts } = await this.getCommitment();
         const calculatedOffChainStorageProperties = this.generateAndAddProofs(
-            this.ownedSharesPrivate,
+            this.privateOwnershipCommitment,
             salts
         );
         const ownerAddressLeafHash = calculatedOffChainStorageProperties.leafs.find(
@@ -314,7 +298,7 @@ export class Certificate extends PreciseProofEntity implements ICertificate {
         const migrationRequest = await issuerWithSigner.getMigrationRequest(migrationRequestId);
 
         const requestor = migrationRequest.owner.toLowerCase();
-        const { privateVolume } = await this.ownedVolume(requestor);
+        const privateVolume = this.privateOwnershipCommitment[requestor];
 
         if (privateVolume.eq(0)) {
             throw new Error(
@@ -325,7 +309,7 @@ export class Certificate extends PreciseProofEntity implements ICertificate {
         const { salts } = await this.getCommitment();
 
         const calculatedOffChainStorageProperties = this.generateAndAddProofs(
-            this.ownedSharesPrivate,
+            this.privateOwnershipCommitment,
             salts
         );
 
@@ -362,7 +346,7 @@ export class Certificate extends PreciseProofEntity implements ICertificate {
             .blockchainProperties as Configuration.BlockchainProperties<Registry, Issuer>;
         const issuerWithSigner = issuer.connect(activeUser);
 
-        const { publicVolume, privateVolume } = await this.ownedVolume();
+        const { publicVolume, privateVolume } = this.energy;
 
         const availableAmount = privately ? privateVolume : publicVolume;
         const amountToTransfer = amount ?? availableAmount;
@@ -376,7 +360,7 @@ export class Certificate extends PreciseProofEntity implements ICertificate {
         }
 
         if (privately) {
-            const proposedOwnerShares = { ...this.ownedSharesPrivate };
+            const proposedOwnerShares = { ...this.privateOwnershipCommitment };
             proposedOwnerShares[fromAddress] = proposedOwnerShares[fromAddress].sub(
                 amountToTransfer
             );
@@ -454,179 +438,5 @@ export class Certificate extends PreciseProofEntity implements ICertificate {
         const issuerWithSigner = issuer.connect(this.configuration.blockchainProperties.activeUser);
 
         return issuerWithSigner.revokeCertificate(this.id);
-    }
-
-    async isOwned(byAddress?: string): Promise<boolean> {
-        const { publicVolume, privateVolume } = await this.ownedVolume(byAddress);
-
-        return publicVolume.add(privateVolume).gt(0);
-    }
-
-    async ownedVolume(byAddress?: string): Promise<IOwnedVolumes> {
-        const owner =
-            byAddress ?? (await this.configuration.blockchainProperties.activeUser.getAddress());
-        const ownerBalances = this.owners[owner.toLowerCase()];
-        const claimedVolume = await this.claimedVolume(owner);
-
-        return {
-            publicVolume: (ownerBalances?.owned ?? new BigNumber(0)).sub(claimedVolume),
-            privateVolume: ownerBalances?.ownedPrivate ?? new BigNumber(0)
-        };
-    }
-
-    async isClaimed(byAddress?: string): Promise<boolean> {
-        const claimedVolume = await this.claimedVolume(byAddress);
-
-        return claimedVolume.gt(0);
-    }
-
-    async claimedVolume(byAddress?: string): Promise<BigNumber> {
-        const owner =
-            byAddress ?? (await this.configuration.blockchainProperties.activeUser.getAddress());
-        return this.claimedShares[owner.toLowerCase()] ?? new BigNumber(0);
-    }
-
-    private async calculateOwnership(): Promise<IShareInCertificate> {
-        const ownedShares: IShareInCertificate = {};
-        const { registry } = this.configuration
-            .blockchainProperties as Configuration.BlockchainProperties<Registry, Issuer>;
-
-        const transferSingleFilter = registry.filters.TransferSingle(null, null, null, null, null);
-        const transferSingleEvents = (
-            await registry.provider.getLogs({
-                ...transferSingleFilter,
-                fromBlock: 0,
-                toBlock: 'latest'
-            })
-        )
-            .map((log) => registry.interface.parseLog(log).values)
-            .filter((event) => event._id.eq(this.id));
-
-        const transferBatchFilter = registry.filters.TransferBatch(null, null, null, null, null);
-        const transferBatchEvents = (
-            await registry.provider.getLogs({
-                ...transferBatchFilter,
-                fromBlock: 0,
-                toBlock: 'latest'
-            })
-        )
-            .map((log) => registry.interface.parseLog(log).values)
-            .filter((e) => e._ids.some((id: BigNumber) => id.eq(this.id)));
-
-        // Convert TransferBatch to TransferSingle event
-        for (const event of transferBatchEvents) {
-            for (let i = 0; i < event._ids.length; i++) {
-                if (event._ids[i].eq(this.id)) {
-                    transferSingleEvents.push({
-                        _id: event._ids[i],
-                        _operator: event._operator,
-                        _to: event._to,
-                        _from: event._from,
-                        _value: event._values[i]
-                    });
-                }
-            }
-        }
-
-        for (const event of transferSingleEvents) {
-            const { _from, _to, _value } = event;
-            const fromAddress = _from.toLowerCase();
-            const toAddress = _to.toLowerCase();
-
-            if (_from !== NULL_ADDRESS) {
-                ownedShares[fromAddress] = ownedShares[fromAddress].sub(_value);
-            }
-
-            if (ownedShares[toAddress] === null || ownedShares[toAddress] === undefined) {
-                ownedShares[toAddress] = new BigNumber(0);
-            }
-
-            ownedShares[toAddress] = ownedShares[toAddress].add(_value);
-        }
-
-        // Validate if all balances have been correctly calculated
-        for (const ownerAddress of Object.keys(ownedShares)) {
-            const ownedBalance = await registry.balanceOf(ownerAddress, this.id);
-            const calculatedBalance = ownedShares[ownerAddress].sub(
-                this.claimedShares[ownerAddress] ?? 0
-            );
-
-            if (!ownedBalance.eq(calculatedBalance)) {
-                throw new Error(
-                    `Non-matching owned balances. Please re-sync the certificate data.\nCalculated from events: ${calculatedBalance.toString()}\nRegistry.balanceOf(): ${ownedBalance.toString()}`
-                );
-            }
-        }
-
-        return ownedShares;
-    }
-
-    private async calculateClaims(): Promise<IShareInCertificate> {
-        const claimedShares: IShareInCertificate = {};
-        const { registry } = this.configuration
-            .blockchainProperties as Configuration.BlockchainProperties<Registry, Issuer>;
-
-        const claimSingleFilter = registry.filters.ClaimSingle(null, null, null, null, null, null);
-        const claimSingleEvents = (
-            await registry.provider.getLogs({
-                ...claimSingleFilter,
-                fromBlock: 0,
-                toBlock: 'latest'
-            })
-        )
-            .map((log) => registry.interface.parseLog(log).values)
-            .filter((event) => event._id.eq(this.id));
-
-        const claimBatchFilter = registry.filters.ClaimBatch(null, null, null, null, null, null);
-        const claimBatchEvents = (
-            await registry.provider.getLogs({
-                ...claimBatchFilter,
-                fromBlock: 0,
-                toBlock: 'latest'
-            })
-        )
-            .map((log) => registry.interface.parseLog(log).values)
-            .filter((e) => e._ids.some((id: BigNumber) => id.eq(this.id)));
-
-        // Convert ClaimBatch to ClaimSingle event
-        for (const event of claimBatchEvents) {
-            for (let i = 0; i < event._ids.length; i++) {
-                if (event._ids[i] === this.id.toString()) {
-                    claimSingleEvents.push({
-                        _claimIssuer: event._claimIssuer,
-                        _claimSubject: event._claimSubject,
-                        _topic: event._topics[i],
-                        _id: event._ids[i],
-                        _value: event._values[i],
-                        _claimData: event._claimData[i]
-                    });
-                }
-            }
-        }
-
-        for (const event of claimSingleEvents) {
-            const { _claimSubject, _value } = event;
-            const claimSubject = _claimSubject.toLowerCase();
-            const valueClaimed = Number(_value);
-
-            if (claimedShares[claimSubject] === null || claimedShares[claimSubject] === undefined) {
-                claimedShares[claimSubject] = new BigNumber(0);
-            }
-
-            claimedShares[claimSubject] = claimedShares[claimSubject].add(valueClaimed);
-        }
-
-        // Validate if all balances have been correctly calculated
-        for (const ownerAddress of Object.keys(claimedShares)) {
-            const claimedBalance = await registry.claimedBalanceOf(ownerAddress, this.id);
-
-            if (!claimedBalance.eq(claimedShares[ownerAddress])) {
-                throw new Error(
-                    `Non-matching claimed balances. Please re-sync the certificate data.\nCalculated from events: ${claimedShares[ownerAddress]}\nRegistry.claimedBalanceOf(): ${claimedBalance}`
-                );
-            }
-        }
-
-        return claimedShares;
     }
 }
