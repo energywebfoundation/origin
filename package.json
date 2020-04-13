@@ -67,7 +67,8 @@
         "publish:release": "lerna version --create-release github --conventional-commits --exact --yes --message \"chore(release): publish /skip-deploy\" && lerna publish from-git --yes",
         "build:containers:canary": "lerna run build:container:canary --stream",
         "build:containers:release": "lerna run build:container:latest --stream",
-        "publish:preview": "lerna publish --yes --skip-git --exact --cd-version=prerelease --pre-dist-tag preview --preid=preview.$TRAVIS_BUILD_NUMBER"
+        "publish:preview": "lerna publish --yes --skip-git --exact --cd-version=prerelease --pre-dist-tag preview --preid=preview.$TRAVIS_BUILD_NUMBER",
+        "deploy:heroku": "lerna run deploy:origin-backend-app:heroku:canary --scope @energyweb/migrations && lerna run deploy:container:heroku:canary --scope @energyweb/origin-ui"
     },
     "workspaces": [
         "packages/*"
