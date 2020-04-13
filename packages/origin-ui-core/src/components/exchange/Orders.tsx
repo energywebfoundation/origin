@@ -72,7 +72,7 @@ export function Orders(props: IOrdersProps) {
 
         return {
             volume: EnergyFormatter.format(volume),
-            price: (price / 100).toString()
+            price: (price / 100).toFixed(2)
         };
     });
 

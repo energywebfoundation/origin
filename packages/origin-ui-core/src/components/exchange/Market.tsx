@@ -14,7 +14,7 @@ import { HierarchicalMultiSelect } from '../HierarchicalMultiSelect';
 import { useSelector } from 'react-redux';
 import { getConfiguration } from '../../features';
 import { Skeleton } from '@material-ui/lab';
-import { useValidation, Moment, useTranslation, formatCurrency } from '../../utils';
+import { useValidation, Moment, useTranslation, formatCurrencyComplete } from '../../utils';
 import { calculateTotalPrice } from '../../utils/exchange';
 import { Formik, Form } from 'formik';
 import { FormInput, FormikDatePickerWithMonthArrowsFilled, FormikEffect } from '../Form';
@@ -218,8 +218,8 @@ export function Market(props: IProps) {
                             <Grid container spacing={3}>
                                 <Grid item xs={6}>
                                     <Typography>
-                                        {t('exchange.feedback.total')}: {formatCurrency(totalPrice)}
-                                        {currency}
+                                        {t('exchange.feedback.total')}:{' '}
+                                        {formatCurrencyComplete(totalPrice, currency)}
                                     </Typography>
                                 </Grid>
                                 <Grid item xs={6}>

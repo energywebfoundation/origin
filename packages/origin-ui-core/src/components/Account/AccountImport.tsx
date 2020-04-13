@@ -18,7 +18,7 @@ import * as Yup from 'yup';
 import { useDispatch, useSelector } from 'react-redux';
 import { importAccount, clearEncryptedAccounts } from '../../features/authentication/actions';
 import { getEncryptedAccounts } from '../../features/authentication/selectors';
-import { dataTest } from '../../utils/helper';
+import { dataTest } from '../../utils';
 import { showRequestPasswordModal } from '../../features/general/actions';
 import { useTranslation } from 'react-i18next';
 

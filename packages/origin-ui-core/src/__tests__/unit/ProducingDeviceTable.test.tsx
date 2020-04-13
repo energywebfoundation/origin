@@ -1,7 +1,7 @@
 import React from 'react';
 import { mount } from 'enzyme';
 import { ProducingDeviceTable } from '../../components/ProducingDeviceTable';
-import { dataTestSelector } from '../../utils/helper';
+import { dataTestSelector } from '../../utils';
 import {
     setupStore,
     WrapperComponent,
