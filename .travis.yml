@@ -2,7 +2,7 @@ sudo: required
 dist: bionic
 language: node_js
 node_js:
-    - "12"
+    - '12'
 
 services: postgresql
 
@@ -45,6 +45,7 @@ before_deploy:
     - git remote set-url origin "https://${GITHUB_TOKEN}@github.com/energywebfoundation/origin.git" > /dev/null 2>&1
     - git reset --hard
     - echo "//registry.npmjs.org/:_authToken=\${NPM_TOKEN}" >> $HOME/.npmrc 2> /dev/null
+    - wget -qO- https://toolbelt.heroku.com/install-ubuntu.sh | sh
 
 install:
     - set -e
@@ -56,28 +57,27 @@ script:
     - set -e
     - yarn lint
     - yarn test:ci:contracts
-    - yarn test:ci:contracts:deployment
     - yarn test:ci:apps
     - yarn test:ci:ui
     - yarn test:ci:e2e
 
 deploy:
     - provider: script
-      script: "git checkout master && yarn publish:canary && yarn build:containers:canary"
+      script: 'git checkout master && yarn publish:canary && yarn build:containers:canary'
       skip_cleanup: true
       on:
-          node: "12"
+          node: '12'
           branch: master
     - provider: script
       edge: true
-      script: "git checkout release && yarn publish:release && yarn build:containers:release"
+      script: 'git checkout release && yarn publish:release && yarn build:containers:release'
       on:
-          node: "12"
+          node: '12'
           branch: release
           condition: '$TRAVIS_COMMIT_MESSAGE != *"skip-deploy"*'
     - provider: script
-      script: "git checkout preview && yarn publish:preview"
+      script: 'git checkout preview && yarn publish:preview'
       skip_cleanup: true
       on:
-          node: "12"
+          node: '12'
           branch: preview

@@ -20,7 +20,7 @@
         "precommit": "lint-staged"
     },
     "bin": {
-        "origin-backend": "./bin/origin-backend-app"
+        "origin-backend-app": "./bin/origin-backend-app"
     },
     "homepage": "https://github.com/energywebfoundation/origin/tree/master/packages/origin-backend-app#readme",
     "repository": {
@@ -34,13 +34,13 @@
     "license": "GPL-3.0-or-later",
     "dependencies": {
         "@energyweb/exchange": "0.6.0",
+        "@energyweb/migrations": "3.0.0",
         "@energyweb/origin-backend": "5.0.0",
         "@energyweb/origin-backend-core": "2.1.0",
         "@energyweb/utils-general": "8.0.0",
         "@nestjs/common": "7.0.7",
         "@nestjs/config": "^0.4.0",
         "@nestjs/core": "7.0.7",
-        "@nestjs/platform-ws": "7.0.7",
         "body-parser": "1.19.0",
         "class-validator": "0.11.1",
         "cors": "2.8.5",
@@ -48,7 +48,7 @@
     },
     "devDependencies": {
         "axios": "0.19.2",
-        "jest": "25.2.7",
+        "jest": "25.3.0",
         "supertest": "4.0.2",
         "ts-jest": "25.3.1",
         "ts-loader": "6.2.2",

@@ -1,10 +1,10 @@
 import 'mocha';
-import { assert } from 'chai';
-import request from 'supertest';
-import { Test } from '@nestjs/testing';
+
 import { IContractsLookup, IOriginConfiguration } from '@energyweb/origin-backend-core';
 import { INestApplication } from '@nestjs/common';
-import { WsAdapter } from '@nestjs/platform-ws';
+import { Test } from '@nestjs/testing';
+import { assert } from 'chai';
+import request from 'supertest';
 
 import { AppModule } from '../../app.module';
 
@@ -33,7 +33,6 @@ describe('Configuration API tests', () => {
 
         app = moduleRef.createNestApplication();
         app.enableCors();
-        app.useWebSocketAdapter(new WsAdapter(app));
 
         await app.init();
     });

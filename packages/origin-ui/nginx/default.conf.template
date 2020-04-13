@@ -7,17 +7,14 @@ gzip_vary on;
 gzip_disable     "msie6";
 
 server {
-    listen       80;
-    server_name  localhost;
-
+    listen ${PORT};
     location / {
-        root   /var/www/html;
+        root   /usr/share/nginx/html;
         index  index.html index.htm;
-        try_files $uri $uri/ /index.html;
+        try_files ${DOLLAR}uri ${DOLLAR}uri/ /index.html;
     }
-
     error_page   500 502 503 504  /50x.html;
     location = /50x.html {
-        root   /var/www/html;
+        root   /usr/share/nginx/html;
     }
 }

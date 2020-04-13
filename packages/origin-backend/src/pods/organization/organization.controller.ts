@@ -1,49 +1,48 @@
-import { Repository, FindConditions } from 'typeorm';
-import { validate } from 'class-validator';
 import {
-    OrganizationStatus,
-    OrganizationPostData,
     IOrganization,
+    IOrganizationInvitation,
     IUser,
+    IUserWithRelationsIds,
     OrganizationInvitationStatus,
     OrganizationInviteCreateReturnData,
-    IOrganizationInvitation,
-    IUserWithRelationsIds,
+    OrganizationPostData,
     OrganizationRemoveMemberReturnData,
+    OrganizationStatus,
     OrganizationStatusChangedEvent,
+    OrganizationUpdateData,
     SupportedEvents,
     OrganizationInvitationEvent,
-    OrganizationRemovedMemberEvent,
-    OrganizationUpdateData
+    OrganizationRemovedMemberEvent
 } from '@energyweb/origin-backend-core';
-
 import {
-    Controller,
-    Get,
-    Param,
-    NotFoundException,
-    Post,
-    Body,
     BadRequestException,
-    UnprocessableEntityException,
+    Body,
+    Controller,
     Delete,
-    Put,
-    UseGuards,
-    Query,
+    Get,
+    Logger,
+    NotFoundException,
+    Param,
     ParseIntPipe,
-    Logger
+    Post,
+    Put,
+    Query,
+    UnprocessableEntityException,
+    UseGuards
 } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
 import { AuthGuard } from '@nestjs/passport';
+import { InjectRepository } from '@nestjs/typeorm';
+import { validate } from 'class-validator';
+import { FindConditions, Repository } from 'typeorm';
 
-import { Organization } from './organization.entity';
 import { StorageErrors } from '../../enums/StorageErrors';
+import { NotificationService } from '../notification';
 import { UserDecorator } from '../user/user.decorator';
-import { UserService } from '../user/user.service';
-import { OrganizationInvitation } from './organizationInvitation.entity';
 import { User } from '../user/user.entity';
-import { EventsService } from '../events';
+import { UserService } from '../user/user.service';
+import { Organization } from './organization.entity';
 import { OrganizationService } from './organization.service';
+import { OrganizationInvitation } from './organizationInvitation.entity';
 
 @Controller('/Organization')
 export class OrganizationController {
@@ -55,8 +54,8 @@ export class OrganizationController {
         @InjectRepository(OrganizationInvitation)
         private readonly organizationInvitationRepository: Repository<OrganizationInvitation>,
         private readonly userService: UserService,
-        private readonly eventsService: EventsService,
-        private readonly organizationService: OrganizationService
+        private readonly organizationService: OrganizationService,
+        private readonly notificationService: NotificationService
     ) {}
 
     @Get()
@@ -204,7 +203,7 @@ export class OrganizationController {
             status: body.status
         };
 
-        this.eventsService.handleEvent({
+        this.notificationService.handleEvent({
             type: SupportedEvents.ORGANIZATION_STATUS_CHANGED,
             data: eventData
         });
@@ -337,7 +336,7 @@ export class OrganizationController {
                 organizationName: organization.name
             };
 
-            this.eventsService.handleEvent({
+            this.notificationService.handleEvent({
                 type: SupportedEvents.ORGANIZATION_INVITATION,
                 data: eventData
             });
@@ -417,7 +416,7 @@ export class OrganizationController {
                 email: removedUser.email
             };
 
-            this.eventsService.handleEvent({
+            this.notificationService.handleEvent({
                 type: SupportedEvents.ORGANIZATION_REMOVED_MEMBER,
                 data: eventData
             });
