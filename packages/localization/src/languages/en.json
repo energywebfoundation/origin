@@ -54,7 +54,8 @@
                 "capacity": "Capacity",
                 "address": "Address",
                 "constructed": "Constructed",
-                "vintageCod": "Vintage / (Commercial Operation Date)"
+                "vintageCod": "Vintage / (Commercial Operation Date)",
+                "gridOperator": "Grid operator"
             },
             "actions": {
                 "requestCertificates": "Request certificates",
@@ -75,7 +76,8 @@
                 "pleaseFillOtherFields": "Please fill other form fields and proceed by clicking \"Register\".",
                 "uploadUpToXImages": "Upload up to {amount} images",
                 "selectRegion": "Select region",
-                "selectProvince": "Select province"
+                "selectProvince": "Select province",
+                "selectGridOperator": "Select grid operator"
             }
         },
         "certificate": {
@@ -118,7 +120,9 @@
         },
         "search": {
             "searchByFacilityNameAndOrganization": "Search by facility name and organization",
-            "searchByRegionProvince": "Search by region and province"
+            "searchByLocation": "Search by location",
+            "searchByGridOperator": "Search by grid operator",
+            "searchByLocationAndGridOperator": "Search by location and grid operator"
         },
         "settings": {
             "settings": "Settings",
@@ -151,7 +155,8 @@
             "actions": {
                 "update": "Update",
                 "continue": "Continue",
-                "cancel": "Cancel"
+                "cancel": "Cancel",
+                "search": "Search"
             },
             "feedback": {
                 "noChangesMade": "No changes have been made.",

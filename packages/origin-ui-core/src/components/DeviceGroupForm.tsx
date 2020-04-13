@@ -200,31 +200,30 @@ export function DeviceGroupForm(props: IProps) {
             };
         });
 
-        const deviceProducingPropsOffChain = {
-            status: DeviceStatus.Submitted,
-            deviceType,
-            complianceRegistry: compliance,
-            facilityName: values.facilityName,
-            capacityInW: sumCapacityOfDevices(values.children),
-            country,
-            address: '',
-            region: '',
-            province: '',
-            gpsLatitude: values.children[0].latitude?.toString(),
-            gpsLongitude: values.children[0].longitude?.toString(),
-            timezone: 'Asia/Bangkok',
-            operationalSince: moment().unix(),
-            otherGreenAttributes: '',
-            typeOfPublicSupport: '',
-            description: '',
-            images: JSON.stringify([]),
-            deviceGroup: JSON.stringify(values.children),
-            externalDeviceIds
-        };
-
         try {
             const newDevice = await ProducingDevice.createDevice(
-                deviceProducingPropsOffChain,
+                {
+                    status: DeviceStatus.Submitted,
+                    deviceType,
+                    complianceRegistry: compliance,
+                    facilityName: values.facilityName,
+                    capacityInW: sumCapacityOfDevices(values.children),
+                    country,
+                    address: '',
+                    region: '',
+                    province: '',
+                    gpsLatitude: values.children[0].latitude?.toString(),
+                    gpsLongitude: values.children[0].longitude?.toString(),
+                    timezone: 'Asia/Bangkok',
+                    operationalSince: moment().unix(),
+                    otherGreenAttributes: '',
+                    typeOfPublicSupport: '',
+                    description: '',
+                    images: JSON.stringify([]),
+                    deviceGroup: JSON.stringify(values.children),
+                    externalDeviceIds,
+                    gridOperator: ''
+                },
                 configuration
             );
 

@@ -15,7 +15,11 @@ import {
 import { Filter } from '@energyweb/exchange-core';
 
 export interface IExchangeClient {
-    search(deviceType?: string[], location?: string[]): Promise<TOrderBook>;
+    search(
+        deviceType?: string[],
+        location?: string[],
+        gridOperator?: string[]
+    ): Promise<TOrderBook>;
     createAsk(data: CreateAskDTO): Promise<IOrder>;
     createBid(data: CreateBidDTO): Promise<IOrder>;
     directBuy(data: IDirectBuyDTO): Promise<IOrder>;
@@ -27,8 +31,6 @@ export interface IExchangeClient {
     getOrders?(): Promise<Order[]>;
 }
 
-const DUMMY_ISO_STRING = '2020-03-30T12:03:17.940Z';
-
 export class ExchangeClient implements IExchangeClient {
     // eslint-disable-next-line no-useless-constructor
     constructor(
@@ -36,19 +38,20 @@ export class ExchangeClient implements IExchangeClient {
         private readonly requestClient: IRequestClient = new RequestClient()
     ) {}
 
-    public async search(deviceType?: string[], location?: string[]) {
+    public async search(deviceType?: string[], location?: string[], gridOperator?: string[]) {
         const deviceTypePresent = deviceType?.length > 0;
         const locationPresent = location?.length > 0;
+        const gridOperatorPresent = gridOperator?.length > 0;
 
         const data: IProductFilterDTO = {
             deviceTypeFilter: deviceTypePresent ? Filter.Specific : Filter.Unspecified,
             locationFilter: locationPresent ? Filter.Specific : Filter.Unspecified,
+            gridOperatorFilter: gridOperatorPresent ? Filter.Specific : Filter.Unspecified,
             generationTimeFilter: Filter.Unspecified,
             deviceVintageFilter: Filter.Unspecified,
             deviceType: deviceTypePresent ? deviceType : undefined,
             location: locationPresent ? location : undefined,
-            generationFrom: DUMMY_ISO_STRING,
-            generationTo: DUMMY_ISO_STRING
+            gridOperator: gridOperatorPresent ? gridOperator : undefined
         };
 
         let url = `${this.orderbookEndpoint}/public/search`;

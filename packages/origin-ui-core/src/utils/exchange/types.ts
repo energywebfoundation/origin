@@ -9,8 +9,9 @@ export interface IProductDTO {
     deviceType?: string[];
     location?: string[];
     deviceVintage?: DeviceVintageDTO;
-    generationFrom: string;
-    generationTo: string;
+    generationFrom?: string;
+    generationTo?: string;
+    gridOperator?: string[];
 }
 
 export interface ITradeDTO {
@@ -41,6 +42,7 @@ export interface IProductFilterDTO extends IProductDTO {
     locationFilter: Filter;
     deviceVintageFilter: Filter;
     generationTimeFilter: Filter;
+    gridOperatorFilter: Filter;
 }
 
 export interface IAsset {

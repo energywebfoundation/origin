@@ -37,6 +37,7 @@ export interface IDeviceProductInfo {
     province: string;
     country: string;
     operationalSince: number;
+    gridOperator: string;
 }
 
 export interface IDeviceProperties extends IDeviceProductInfo {

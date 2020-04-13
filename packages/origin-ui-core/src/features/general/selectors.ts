@@ -40,3 +40,5 @@ export const getExchangeClient = (state: IStoreState) => state.general.exchangeC
 
 export const getExternalDeviceIdTypes = (state: IStoreState): ExternalDeviceIdType[] =>
     state.general.offChainConfiguration?.externalDeviceIdTypes;
+
+export const getOffchainConfiguration = (state: IStoreState) => state.general.offChainConfiguration;

@@ -18,17 +18,17 @@ import {
     EnergyFormatter,
     PowerFormatter,
     getDeviceLocationText,
-    LOCATION_TITLE_TRANSLATION_KEY,
+    getDeviceColumns,
     getProducingDeviceDetailLink,
     showNotification,
     NotificationType
 } from '../utils';
-
 import { useTranslation } from 'react-i18next';
 import {
     usePaginatedLoaderFiltered,
     IPaginatedLoaderHooksFetchDataParameters
 } from './Table/PaginatedLoaderHooks';
+import { getEnvironment } from '../features';
 
 interface IOwnProps {
     actions: {
@@ -55,6 +55,7 @@ export function ProducingDeviceTable(props: IOwnProps) {
     const producingDevices = useSelector(getProducingDevices);
     const baseURL = useSelector(getBaseURL);
     const organizations = useSelector(getOrganizations);
+    const environment = useSelector(getEnvironment);
 
     const dispatch = useDispatch();
 
@@ -170,7 +171,7 @@ export function ProducingDeviceTable(props: IOwnProps) {
     const columns = ([
         { id: 'owner', label: t('device.properties.owner') },
         { id: 'facilityName', label: t('device.properties.facilityName') },
-        { id: 'provinceRegion', label: t(LOCATION_TITLE_TRANSLATION_KEY) },
+        ...getDeviceColumns(environment, t),
         { id: 'type', label: t('device.properties.type') },
         {
             id: 'capacity',
@@ -186,12 +187,13 @@ export function ProducingDeviceTable(props: IOwnProps) {
     const rows = paginatedData.map((enrichedData) => ({
         owner: enrichedData.organizationName,
         facilityName: enrichedData.device.facilityName,
-        provinceRegion: enrichedData.locationText,
+        deviceLocation: enrichedData.locationText,
         type:
             configuration?.deviceTypeService?.getDisplayText(enrichedData.device.deviceType) ?? '',
         capacity: PowerFormatter.format(enrichedData.device.capacityInW),
         read: EnergyFormatter.format(enrichedData.device.lastSmartMeterReadWh ?? 0),
-        status: DeviceStatus[enrichedData.device.status]
+        status: DeviceStatus[enrichedData.device.status],
+        gridOperator: enrichedData?.device?.gridOperator
     }));
 
     if (detailViewForDeviceId !== null) {

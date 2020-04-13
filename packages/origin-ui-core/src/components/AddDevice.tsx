@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { showNotification, NotificationType } from '../utils/notifications';
 import {
     Paper,
     Typography,
@@ -11,19 +10,26 @@ import {
     createStyles
 } from '@material-ui/core';
 import { useSelector, useDispatch } from 'react-redux';
-import { getConfiguration } from '../features/selectors';
+import { getConfiguration, getEnvironment } from '../features';
 import { Moment } from 'moment';
 import { Formik, Field, Form, FormikHelpers } from 'formik';
 import { TextField, CheckboxWithLabel } from 'formik-material-ui';
 import { useHistory } from 'react-router-dom';
-import { useLinks } from '../utils/routing';
+import {
+    useLinks,
+    areDeviceSpecificPropertiesValid,
+    PowerFormatter,
+    showNotification,
+    NotificationType,
+    useValidation,
+    useTranslation
+} from '../utils';
 import { FormikDatePicker } from './Form/FormikDatePicker';
 import { getUserOffchain } from '../features/users/selectors';
 import { setLoading } from '../features/general/actions';
 import {
     getExternalDeviceIdTypes,
     getCompliance,
-    getRegions,
     getCountry,
     getOffChainDataSource
 } from '../features/general/selectors';
@@ -31,12 +37,10 @@ import { HierarchicalMultiSelect } from './HierarchicalMultiSelect';
 import { CloudUpload } from '@material-ui/icons';
 import { ProducingDevice } from '@energyweb/device-registry';
 import { producingDeviceCreatedOrUpdated } from '../features/producingDevices/actions';
-import { PowerFormatter } from '../utils/PowerFormatter';
 import { DeviceStatus, IExternalDeviceId } from '@energyweb/origin-backend-core';
 import { Skeleton } from '@material-ui/lab';
-import { useTranslation } from 'react-i18next';
-import { useValidation } from '../utils/validation';
 import { FormInput } from './Form';
+import { DeviceSelectors } from './DeviceSelectors';
 
 interface IFormValues {
     facilityName: string;
@@ -68,8 +72,8 @@ export function AddDevice() {
     const compliance = useSelector(getCompliance);
     const country = useSelector(getCountry);
     const offChainDataSource = useSelector(getOffChainDataSource);
-    const regions = useSelector(getRegions);
     const externalDeviceIdTypes = useSelector(getExternalDeviceIdTypes);
+    const environment = useSelector(getEnvironment);
 
     const dispatch = useDispatch();
     const { t } = useTranslation();
@@ -78,6 +82,7 @@ export function AddDevice() {
 
     const [selectedDeviceType, setSelectedDeviceType] = useState<string[]>([]);
     const [selectedLocation, setSelectedLocation] = useState<string[]>([]);
+    const [selectedGridOperator, setSelectedGridOperator] = useState<string[]>([]);
     const [imagesUploaded, setImagesUploaded] = useState(false);
     const [imagesUploadedList, setImagesUploadedList] = useState<string[]>([]);
 
@@ -142,32 +147,31 @@ export function AddDevice() {
             };
         });
 
-        const deviceProducingPropsOffChain = {
-            status: DeviceStatus.Submitted,
-            deviceType,
-            complianceRegistry: compliance,
-            facilityName: values.facilityName,
-            capacityInW: PowerFormatter.getBaseValueFromValueInDisplayUnit(
-                parseFloat(values.capacity)
-            ),
-            country,
-            address: values.address,
-            region,
-            province: province.split(';')[1],
-            gpsLatitude: values.latitude,
-            gpsLongitude: values.longitude,
-            timezone: 'Asia/Bangkok',
-            operationalSince: values.commissioningDate?.unix(),
-            otherGreenAttributes: '',
-            typeOfPublicSupport: '',
-            description: values.projectStory,
-            images: JSON.stringify(imagesUploadedList),
-            externalDeviceIds
-        };
-
         try {
             const device = await ProducingDevice.createDevice(
-                deviceProducingPropsOffChain,
+                {
+                    status: DeviceStatus.Submitted,
+                    deviceType,
+                    complianceRegistry: compliance,
+                    facilityName: values.facilityName,
+                    capacityInW: PowerFormatter.getBaseValueFromValueInDisplayUnit(
+                        parseFloat(values.capacity)
+                    ),
+                    country,
+                    address: values.address,
+                    region: region || '',
+                    province: province ? province.split(';')[1] : '',
+                    gpsLatitude: values.latitude,
+                    gpsLongitude: values.longitude,
+                    timezone: 'Asia/Bangkok',
+                    operationalSince: values.commissioningDate?.unix(),
+                    otherGreenAttributes: '',
+                    typeOfPublicSupport: '',
+                    description: values.projectStory,
+                    images: JSON.stringify(imagesUploadedList),
+                    externalDeviceIds,
+                    gridOperator: (selectedGridOperator && selectedGridOperator[0]) || ''
+                },
                 configuration
             );
 
@@ -232,7 +236,11 @@ export function AddDevice() {
                         isSubmitting ||
                         !isValid ||
                         selectedDeviceType.length === 0 ||
-                        selectedLocation.length < 2;
+                        !areDeviceSpecificPropertiesValid(
+                            selectedLocation,
+                            selectedGridOperator,
+                            environment
+                        );
 
                     return (
                         <Form translate="">
@@ -339,27 +347,17 @@ export function AddDevice() {
                                             disabled={fieldDisabled}
                                         />
                                     </FormControl>
-                                    <div className={classes.selectContainer}>
-                                        <HierarchicalMultiSelect
-                                            selectedValue={selectedLocation}
-                                            onChange={(value: string[]) =>
-                                                setSelectedLocation(value)
-                                            }
-                                            options={regions}
-                                            selectOptions={[
-                                                {
-                                                    label: t('device.properties.regions'),
-                                                    placeholder: t('device.info.selectRegion')
-                                                },
-                                                {
-                                                    label: t('device.properties.provinces'),
-                                                    placeholder: t('device.info.selectProvince')
-                                                }
-                                            ]}
+                                    <Grid container>
+                                        <DeviceSelectors
+                                            location={selectedLocation}
+                                            onLocationChange={setSelectedLocation}
+                                            gridOperator={selectedGridOperator}
+                                            onGridOperatorChange={setSelectedGridOperator}
+                                            gridItemSize={12}
                                             singleChoice={true}
                                             disabled={fieldDisabled}
                                         />
-                                    </div>
+                                    </Grid>
                                     <FormControl
                                         fullWidth
                                         variant="filled"

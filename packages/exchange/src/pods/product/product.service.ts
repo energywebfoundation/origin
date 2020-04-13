@@ -51,7 +51,8 @@ export class ProductService implements OnModuleInit {
             location,
             deviceVintage: { year: deviceProductInfo.operationalSince },
             generationFrom: generationFrom.toISOString(),
-            generationTo: generationTo.toISOString()
+            generationTo: generationTo.toISOString(),
+            gridOperator: [deviceProductInfo.gridOperator]
         };
 
         this.logger.debug(`Returning ${JSON.stringify(product)}`);
