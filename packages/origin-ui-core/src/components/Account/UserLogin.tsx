@@ -1,5 +1,11 @@
 import React from 'react';
-import { showNotification, NotificationType } from '../../utils/notifications';
+import {
+    showNotification,
+    NotificationType,
+    useValidation,
+    useTranslation,
+    useLinks
+} from '../../utils';
 import {
     Paper,
     FormControl,
@@ -17,8 +23,7 @@ import { setLoading } from '../../features/general/actions';
 import { FormInput } from '../Form/FormInput';
 import { getOffChainDataSource } from '../../features/general/selectors';
 import { setAuthenticationToken } from '../../features/users/actions';
-import { useTranslation } from 'react-i18next';
-import { useValidation } from '../../utils/validation';
+import { useHistory } from 'react-router-dom';
 
 interface IFormValues {
     email: string;
@@ -36,6 +41,8 @@ export function UserLogin() {
 
     const { t } = useTranslation();
     const { Yup, yupLocaleInitialized } = useValidation();
+    const { getAccountLink } = useLinks();
+    const history = useHistory();
 
     const useStyles = makeStyles(() =>
         createStyles({
@@ -69,6 +76,8 @@ export function UserLogin() {
             dispatch(setAuthenticationToken(loginResponse.accessToken));
 
             showNotification(t('user.feedback.userLoggedIn'), NotificationType.Success);
+
+            history.push(getAccountLink());
         } catch (error) {
             console.warn('Could not log in.', error);
             showNotification(t('user.feedback.couldNotLogIn'), NotificationType.Error);
