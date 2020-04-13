@@ -7,4 +7,6 @@ export * from './time';
 export * from './validation';
 export * from './device';
 export * from './fetching';
+export * from './currency';
+export * from './test';
 export { useTranslation } from 'react-i18next';

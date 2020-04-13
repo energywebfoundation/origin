@@ -3,7 +3,7 @@ import {
     MultiSelectAutocomplete,
     IAutocompleteMultiSelectOptionType
 } from './MultiSelectAutocomplete';
-import { dataTest } from '../utils/helper';
+import { dataTest } from '../utils';
 
 type Level = 1 | 2 | 3;
 

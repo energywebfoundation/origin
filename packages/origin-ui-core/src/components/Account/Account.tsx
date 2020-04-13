@@ -3,13 +3,11 @@ import { useSelector } from 'react-redux';
 import { NavLink, Route, Redirect } from 'react-router-dom';
 
 import { PageContent } from '../PageContent/PageContent';
-import { useLinks } from '../../utils/routing';
 import { getUserOffchain } from '../../features/users/selectors';
 import { AccountSettings } from './AccountSettings';
 import { UserRegister } from './UserRegister';
 import { UserLogin } from './UserLogin';
-import { dataTest } from '../../utils/helper';
-import { useTranslation } from 'react-i18next';
+import { dataTest, useLinks, useTranslation } from '../../utils';
 
 export function Account() {
     const userOffchain = useSelector(getUserOffchain);
