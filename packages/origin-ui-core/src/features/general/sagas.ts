@@ -19,7 +19,6 @@ import {
     getOffChainDataSource
 } from './selectors';
 import { UsersActions } from '../users/actions';
-import { isUsingInBrowserPK } from '../authentication/selectors';
 import axios, { Canceler } from 'axios';
 import { IOffChainDataSource, OffChainDataSource } from '@energyweb/origin-backend-client';
 import { ExchangeClient } from '../../utils/exchange';
@@ -43,9 +42,8 @@ function* showAccountChangedModalOnChange(): SagaIterator {
                 const accountChangedModalEnabled: boolean = yield select(
                     getAccountChangedModalEnabled
                 );
-                const usingInBrowserPrivateKey: boolean = yield select(isUsingInBrowserPK);
 
-                if (!accountChangedModalEnabled || usingInBrowserPrivateKey) {
+                if (!accountChangedModalEnabled) {
                     break;
                 }
 
