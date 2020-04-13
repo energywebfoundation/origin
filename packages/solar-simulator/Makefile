@@ -19,3 +19,11 @@ ifdef DOCKER_USER
 	@docker login -u ${DOCKER_USER} -p $(shell echo '$$DOCKER_PASS')
 	@docker push ${NAME}
 endif
+
+push-heroku-canary:
+ifdef HEROKU_API_KEY
+	@docker tag ${CANARY} registry.heroku.com/${HEROKU_CANARY_APP_SIM}/web
+	@docker login -u _ -p $(shell echo '$$HEROKU_API_KEY') registry.heroku.com
+	@docker push registry.heroku.com/${HEROKU_CANARY_APP_SIM}/web
+	@heroku container:release web -a ${HEROKU_CANARY_APP_SIM}
+endif
