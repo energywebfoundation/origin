@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { mount, ReactWrapper } from 'enzyme';
 import { EncodedDeviceType, DeviceTypeService } from '@energyweb/utils-general';
 import { setupStore, WrapperComponent } from '../utils/helpers';
-import { dataTestSelector } from '../../utils/helper';
+import { dataTestSelector } from '../../utils';
 import { MultiSelectAutocomplete } from '../../components/MultiSelectAutocomplete';
 import { act } from '@testing-library/react';
 import { HierarchicalMultiSelect } from '../../components/HierarchicalMultiSelect';
