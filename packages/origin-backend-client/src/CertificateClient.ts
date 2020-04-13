@@ -8,6 +8,12 @@ import {
 
 import { IRequestClient, RequestClient } from './RequestClient';
 
+export class CertificationRequestDTO {
+    id: number;
+    energy: string;
+    files: string[];
+}
+
 export interface ICertificateClient {
     updateCertificationRequestData(
         id: number,
@@ -43,9 +49,15 @@ export class CertificateClient implements ICertificateClient {
         id: number,
         data: CertificationRequestUpdateData
     ): Promise<boolean> {
-        const response = await this.requestClient.post<CertificationRequestUpdateData, boolean>(
+        const dto: CertificationRequestDTO = {
+            id,
+            energy: data.energy.toString(),
+            files: data.files
+        };
+
+        const response = await this.requestClient.post<CertificationRequestDTO, boolean>(
             `${this.certificateRequestEndpoint}/${id}`,
-            data
+            dto
         );
 
         const success = response.status >= 200 && response.status < 300;

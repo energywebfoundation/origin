@@ -1,6 +1,4 @@
 import {
-    CertificationRequestUpdateData,
-    CertificationRequestOffChainData,
     IOwnershipCommitmentProofWithTx,
     ICertificateOwnership,
     CommitmentStatus
@@ -18,10 +16,12 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { bigNumberify } from 'ethers/utils';
 import { CertificationRequest } from './certification-request.entity';
 import { OwnershipCommitment } from './ownership-commitment.entity';
 import { StorageErrors } from '../../enums/StorageErrors';
 import { Certificate } from './certificate.entity';
+import { CertificationRequestDTO } from './certification-request.dto';
 
 const CERTIFICATION_REQUEST_ENDPOINT = '/CertificationRequest';
 
@@ -39,29 +39,27 @@ export class CertificateController {
     @Post(`${CERTIFICATION_REQUEST_ENDPOINT}/:id`)
     async updateCertificationRequest(
         @Param('id') id: number,
-        @Body() data: CertificationRequestUpdateData
-    ): Promise<CertificationRequestOffChainData> {
-        const certificationRequest = new CertificationRequest();
+        @Body() data: CertificationRequestDTO
+    ): Promise<CertificationRequest> {
+        let certificationRequest = await this.certificationRequestRepository.findOne(id);
 
-        certificationRequest.energy = data.energy;
-        certificationRequest.files = data.files;
+        console.log({
+            certificationRequest,
+            data
+        });
 
-        const existing = await this.certificationRequestRepository.findOne(id);
-
-        if (existing) {
-            existing.energy = data.energy;
-            existing.files = data.files;
-
-            return existing.save();
+        if (!certificationRequest) {
+            certificationRequest = new CertificationRequest();
         }
+
+        certificationRequest.energy = bigNumberify(data.energy);
+        certificationRequest.files = data.files;
 
         return this.certificationRequestRepository.save(certificationRequest);
     }
 
     @Get(`${CERTIFICATION_REQUEST_ENDPOINT}/:id`)
-    async getCertificationRequest(
-        @Param('id') id: string
-    ): Promise<CertificationRequestOffChainData> {
+    async getCertificationRequest(@Param('id') id: string): Promise<CertificationRequest> {
         return this.certificationRequestRepository.findOne(id);
     }
 
