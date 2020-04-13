@@ -42,7 +42,7 @@ const absolutePath = (relativePath: string) => {
 async function createSchema(client: Client, drop: boolean) {
     try {
         if (drop) {
-            await client.query('DROP SCHEMA public CASCADE');
+            await client.query('DROP SCHEMA IF EXISTS public CASCADE');
         }
 
         await client.query('CREATE SCHEMA IF NOT EXISTS public');
