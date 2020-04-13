@@ -1,4 +1,3 @@
-import { ProducingDevice } from '@energyweb/device-registry';
 import { useRef, useEffect } from 'react';
 
 export function dataTest(value, name = 'data-test') {
@@ -60,12 +59,6 @@ export function clone(item: any) {
 
 export function wait(ms: number) {
     return new Promise((resolve) => setTimeout(resolve, ms));
-}
-
-export const LOCATION_TITLE_TRANSLATION_KEY = 'device.properties.regionProvince';
-
-export function getDeviceLocationText(device: ProducingDevice.Entity) {
-    return [device?.region, device?.province].filter((i) => i).join(', ');
 }
 
 export const countDecimals = (value) => (value % 1 ? value.toString().split('.')[1].length : 0);

@@ -22,4 +22,5 @@ export interface IOriginConfiguration {
     externalDeviceIdTypes?: ExternalDeviceIdType[];
     complianceStandard?: string;
     deviceTypes?: IDeviceType[];
+    gridOperators?: string[];
 }

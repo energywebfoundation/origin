@@ -73,14 +73,12 @@ describe('ProducingDeviceTable', () => {
         assertMainTableContent([
             '',
             'Wuthering Heights facility',
-            'Central, Nakhon Pathom',
             'Solar - Photovoltaic - Roof mounted',
             '9.877',
             '0.008',
             // next device
             '',
             'Biomass Energy Facility',
-            'Central, Nakhon Pathom',
             'Gaseous - Agricultural gas',
             '0.736',
             '0'
@@ -99,7 +97,6 @@ describe('ProducingDeviceTable', () => {
         assertMainTableContent([
             '',
             'Biomass Energy Facility',
-            'Central, Nakhon Pathom',
             'Gaseous - Agricultural gas',
             '0.736',
             '0'
@@ -114,7 +111,6 @@ describe('ProducingDeviceTable', () => {
         assertMainTableContent([
             '',
             'Wuthering Heights facility',
-            'Central, Nakhon Pathom',
             'Solar - Photovoltaic - Roof mounted',
             '9.877',
             '0.008'

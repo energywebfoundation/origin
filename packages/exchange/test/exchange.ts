@@ -115,7 +115,8 @@ export const bootstrapTestInstance = async () => {
                             country: 'Thailand',
                             region: 'Central',
                             province: 'Nakhon Pathom',
-                            operationalSince: 2016
+                            operationalSince: 2016,
+                            gridOperator: 'TH-PEA'
                         };
                     }
                 } as unknown) as DeviceService

@@ -24,6 +24,7 @@ export interface IEnvironment {
     WEB3: string;
     REGISTRATION_MESSAGE_TO_SIGN: string;
     ISSUER_ID: string;
+    DEVICE_PROPERTIES_ENABLED: string;
 }
 
 export interface IShowAccountChangedModalAction {

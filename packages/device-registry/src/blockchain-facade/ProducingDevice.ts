@@ -39,6 +39,8 @@ export class Entity implements IDevice {
 
     deviceType: string;
 
+    gridOperator: string;
+
     complianceRegistry: string;
 
     otherGreenAttributes: string;
