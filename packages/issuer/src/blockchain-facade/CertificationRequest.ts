@@ -17,7 +17,7 @@ import { Issuer } from '../ethers/Issuer';
 import { Registry } from '../ethers/Registry';
 import { IssuerJSON } from '../contracts';
 
-export class Entity extends PreciseProofEntity implements ICertificationRequest {
+export class CertificationRequest extends PreciseProofEntity implements ICertificationRequest {
     owner: string;
 
     fromTime: Timestamp;
@@ -46,7 +46,67 @@ export class Entity extends PreciseProofEntity implements ICertificationRequest 
         super(id, configuration);
     }
 
-    async sync(): Promise<Entity> {
+    public static async create(
+        fromTime: Timestamp,
+        toTime: Timestamp,
+        energy: BigNumber,
+        deviceId: string,
+        configuration: Configuration.Entity,
+        files: string[],
+        isVolumePrivate = false,
+        forAddress?: string
+    ): Promise<CertificationRequest> {
+        if (energy.gt(MAX_ENERGY_PER_CERTIFICATE)) {
+            throw new Error(
+                `Too much energy requested. Requested: ${energy}, Max: ${MAX_ENERGY_PER_CERTIFICATE}`
+            );
+        }
+
+        const request = new CertificationRequest(null, configuration, isVolumePrivate);
+
+        const { issuer } = configuration.blockchainProperties as Configuration.BlockchainProperties<
+            Registry,
+            Issuer
+        >;
+        const issuerWithSigner = issuer.connect(configuration.blockchainProperties.activeUser);
+
+        await this.validateGenerationPeriod(
+            fromTime,
+            toTime,
+            deviceId,
+            configuration,
+            isVolumePrivate
+        );
+
+        const data = await issuer.encodeData(fromTime, toTime, deviceId);
+
+        const tx = await (forAddress
+            ? issuerWithSigner.requestCertificationFor(data, forAddress, isVolumePrivate)
+            : issuerWithSigner.requestCertification(data, isVolumePrivate));
+
+        const { events } = await tx.wait();
+
+        request.id = Number(
+            events.find((log: BlockchainEvent) => log.event === 'NewCertificationRequest').topics[2]
+        );
+
+        const success = await configuration.offChainDataSource.certificateClient.updateCertificationRequestData(
+            request.id,
+            { energy, files }
+        );
+
+        if (success) {
+            if (configuration.logger) {
+                configuration.logger.info(`CertificationRequest ${request.id} created`);
+            }
+        } else {
+            throw new Error('Unable to create CertificationRequest');
+        }
+
+        return request.sync();
+    }
+
+    async sync(): Promise<CertificationRequest> {
         const { issuer } = this.configuration
             .blockchainProperties as Configuration.BlockchainProperties<Registry, Issuer>;
 
@@ -152,115 +212,61 @@ export class Entity extends PreciseProofEntity implements ICertificationRequest 
         const issuerWithSigner = issuer.connect(this.configuration.blockchainProperties.activeUser);
         return issuerWithSigner.requestMigrateToPublic(this.id, rootHash);
     }
-}
 
-const validateGenerationPeriod = async (
-    fromTime: Timestamp,
-    toTime: Timestamp,
-    deviceId: string,
-    configuration: Configuration.Entity,
-    isPrivate?: boolean
-): Promise<boolean> => {
-    const { issuer } = configuration.blockchainProperties as Configuration.BlockchainProperties<
-        Registry,
-        Issuer
-    >;
+    private static async validateGenerationPeriod(
+        fromTime: Timestamp,
+        toTime: Timestamp,
+        deviceId: string,
+        configuration: Configuration.Entity,
+        isPrivate?: boolean
+    ): Promise<boolean> {
+        const { issuer } = configuration.blockchainProperties as Configuration.BlockchainProperties<
+            Registry,
+            Issuer
+        >;
 
-    const moment = extendMoment(Moment);
-    const unix = (timestamp: Timestamp) => moment.unix(timestamp);
+        const moment = extendMoment(Moment);
+        const unix = (timestamp: Timestamp) => moment.unix(timestamp);
 
-    const certificationRequestIds = await issuer.getCertificationRequestsForDevice(deviceId);
-    const generationTimeRange = moment.range(unix(fromTime), unix(toTime));
+        const certificationRequestIds = await issuer.getCertificationRequestsForDevice(deviceId);
+        const generationTimeRange = moment.range(unix(fromTime), unix(toTime));
 
-    for (const id of certificationRequestIds) {
-        const certificationRequest = await new Entity(
-            id.toNumber(),
-            configuration,
-            isPrivate
-        ).sync();
+        for (const id of certificationRequestIds) {
+            const certificationRequest = await new CertificationRequest(
+                id.toNumber(),
+                configuration,
+                isPrivate
+            ).sync();
 
-        if (certificationRequest.revoked) {
-            continue;
-        }
+            if (certificationRequest.revoked) {
+                continue;
+            }
 
-        const certificationRequestGenerationRange = moment.range(
-            unix(certificationRequest.fromTime),
-            unix(certificationRequest.toTime)
-        );
-
-        if (generationTimeRange.overlaps(certificationRequestGenerationRange)) {
-            throw new Error(
-                `Generation period ` +
-                    `${unix(fromTime).format()} - ${unix(toTime).format()}` +
-                    ` overlaps with the time period of ` +
-                    `${unix(certificationRequest.fromTime).format()} - ${unix(
-                        certificationRequest.toTime
-                    ).format()}` +
-                    ` of request ${certificationRequest.id}.`
+            const certificationRequestGenerationRange = moment.range(
+                unix(certificationRequest.fromTime),
+                unix(certificationRequest.toTime)
             );
+
+            if (generationTimeRange.overlaps(certificationRequestGenerationRange)) {
+                throw new Error(
+                    `Generation period ` +
+                        `${unix(fromTime).format()} - ${unix(toTime).format()}` +
+                        ` overlaps with the time period of ` +
+                        `${unix(certificationRequest.fromTime).format()} - ${unix(
+                            certificationRequest.toTime
+                        ).format()}` +
+                        ` of request ${certificationRequest.id}.`
+                );
+            }
         }
+
+        return true;
     }
-
-    return true;
-};
-
-export const createCertificationRequest = async (
-    fromTime: Timestamp,
-    toTime: Timestamp,
-    energy: BigNumber,
-    deviceId: string,
-    configuration: Configuration.Entity,
-    files: string[],
-    isVolumePrivate = false,
-    forAddress?: string
-): Promise<Entity> => {
-    if (energy.gt(MAX_ENERGY_PER_CERTIFICATE)) {
-        throw new Error(
-            `Too much energy requested. Requested: ${energy}, Max: ${MAX_ENERGY_PER_CERTIFICATE}`
-        );
-    }
-
-    const request = new Entity(null, configuration, isVolumePrivate);
-
-    const { issuer } = configuration.blockchainProperties as Configuration.BlockchainProperties<
-        Registry,
-        Issuer
-    >;
-    const issuerWithSigner = issuer.connect(configuration.blockchainProperties.activeUser);
-
-    await validateGenerationPeriod(fromTime, toTime, deviceId, configuration, isVolumePrivate);
-
-    const data = await issuer.encodeData(fromTime, toTime, deviceId);
-
-    const tx = await (forAddress
-        ? issuerWithSigner.requestCertificationFor(data, forAddress, isVolumePrivate)
-        : issuerWithSigner.requestCertification(data, isVolumePrivate));
-
-    const { events } = await tx.wait();
-
-    request.id = Number(
-        events.find((log: BlockchainEvent) => log.event === 'NewCertificationRequest').topics[2]
-    );
-
-    const success = await configuration.offChainDataSource.certificateClient.updateCertificationRequestData(
-        request.id,
-        { energy, files }
-    );
-
-    if (success) {
-        if (configuration.logger) {
-            configuration.logger.info(`CertificationRequest ${request.id} created`);
-        }
-    } else {
-        throw new Error('Unable to create CertificationRequest');
-    }
-
-    return request.sync();
-};
+}
 
 export async function getAllCertificationRequests(
     configuration: Configuration.Entity
-): Promise<Entity[]> {
+): Promise<CertificationRequest[]> {
     const { issuer } = configuration.blockchainProperties as Configuration.BlockchainProperties<
         Registry,
         Issuer
@@ -270,7 +276,7 @@ export async function getAllCertificationRequests(
 
     const certificationRequestPromises = Array(Number(totalRequests))
         .fill(null)
-        .map(async (item, index) => new Entity(index + 1, configuration).sync());
+        .map(async (item, index) => new CertificationRequest(index + 1, configuration).sync());
 
     return Promise.all(certificationRequestPromises);
 }

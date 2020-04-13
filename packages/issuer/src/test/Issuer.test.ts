@@ -43,15 +43,7 @@ describe('Issuer', () => {
         const toTime = timestamp;
         const device = '1';
 
-        return CertificationRequest.createCertificationRequest(
-            fromTime,
-            toTime,
-            energy,
-            device,
-            conf,
-            [],
-            isPrivate
-        );
+        return CertificationRequest.create(fromTime, toTime, energy, device, conf, [], isPrivate);
     };
 
     it('migrates Issuer and Registry', async () => {
@@ -84,7 +76,7 @@ describe('Issuer', () => {
         const toTime = timestamp;
         const device = '1';
 
-        const certificationRequest = await CertificationRequest.createCertificationRequest(
+        const certificationRequest = await CertificationRequest.create(
             fromTime,
             toTime,
             energy,
@@ -104,7 +96,7 @@ describe('Issuer', () => {
             approved: false,
             isPrivate: false,
             energy
-        } as Partial<CertificationRequest.Entity>);
+        } as Partial<CertificationRequest>);
     });
 
     it('issuer correctly approves issuance', async () => {
@@ -160,19 +152,12 @@ describe('Issuer', () => {
         const toTime = timestamp;
         const device = '1';
 
-        await CertificationRequest.createCertificationRequest(
-            fromTime,
-            toTime,
-            new BigNumber(1e9),
-            device,
-            conf,
-            []
-        );
+        await CertificationRequest.create(fromTime, toTime, new BigNumber(1e9), device, conf, []);
 
         let failed = false;
 
         try {
-            await CertificationRequest.createCertificationRequest(
+            await CertificationRequest.create(
                 fromTime,
                 toTime,
                 new BigNumber(1e9),
@@ -197,7 +182,7 @@ describe('Issuer', () => {
         const device = '1';
         const volume = new BigNumber(1e9);
 
-        let certificationRequest = await CertificationRequest.createCertificationRequest(
+        let certificationRequest = await CertificationRequest.create(
             fromTime,
             toTime,
             volume,
@@ -214,7 +199,7 @@ describe('Issuer', () => {
         await certificationRequest.revoke();
         certificationRequest = await certificationRequest.sync();
 
-        const newCertificationRequest = await CertificationRequest.createCertificationRequest(
+        const newCertificationRequest = await CertificationRequest.create(
             fromTime,
             toTime,
             volume,
@@ -239,7 +224,7 @@ describe('Issuer', () => {
             approved: false,
             isPrivate: true,
             energy: volume
-        } as Partial<CertificationRequest.Entity>);
+        } as Partial<CertificationRequest>);
     });
 
     it('issuer correctly approves private issuance', async () => {

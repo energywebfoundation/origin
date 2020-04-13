@@ -9,7 +9,7 @@ import { Configuration } from '@energyweb/utils-general';
 import { OffChainDataSourceMock } from '@energyweb/origin-backend-client-mocks';
 
 import { migrateIssuer, migrateRegistry } from '../migrate';
-import { Certificate } from '..';
+import { Certificate, CertificateUtils } from '..';
 
 import { logger } from '../Logger';
 
@@ -46,7 +46,7 @@ describe('Certificate tests', () => {
         const generationEndTime = timestamp;
         const deviceId = '1';
 
-        return Certificate.createCertificate(
+        return Certificate.create(
             deviceOwnerWallet.address,
             volume,
             generationStartTime,
@@ -78,7 +78,7 @@ describe('Certificate tests', () => {
         await issueCertificate(totalVolume);
         await issueCertificate(totalVolume);
 
-        const allCertificates = await Certificate.getAllCertificates(conf);
+        const allCertificates = await CertificateUtils.getAllCertificates(conf);
         assert.equal(allCertificates.length, 2);
     });
 
@@ -100,7 +100,7 @@ describe('Certificate tests', () => {
         assert.deepOwnInclude(certificate, {
             initialized: true,
             issuer: conf.blockchainProperties.issuer.address
-        } as Partial<Certificate.Entity>);
+        } as Partial<Certificate>);
     });
 
     it('transfers a certificate', async () => {
@@ -309,7 +309,7 @@ describe('Certificate tests', () => {
             totalVolume.toString()
         );
 
-        await Certificate.transferCertificates(
+        await CertificateUtils.transferCertificates(
             [certificate.id, certificate2.id],
             traderWallet.address,
             conf
@@ -348,7 +348,7 @@ describe('Certificate tests', () => {
         assert.equal((await certificate.claimedVolume()).toString(), '0');
         assert.equal((await certificate2.claimedVolume()).toString(), '0');
 
-        await Certificate.claimCertificates([certificate.id, certificate2.id], conf);
+        await CertificateUtils.claimCertificates([certificate.id, certificate2.id], conf);
 
         certificate = await certificate.sync();
         certificate2 = await certificate2.sync();

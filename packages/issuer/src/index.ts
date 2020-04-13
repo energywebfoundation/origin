@@ -1,7 +1,8 @@
-import * as CertificationRequest from './blockchain-facade/CertificationRequest';
-import * as Certificate from './blockchain-facade/Certificate';
+import * as CertificateUtils from './blockchain-facade/CertificateUtils';
 import * as Contracts from './contracts';
 
 export * from './const';
 
-export { CertificationRequest, Certificate, Contracts };
+export * from './blockchain-facade/CertificationRequest';
+export * from './blockchain-facade/Certificate';
+export { Contracts, CertificateUtils };
