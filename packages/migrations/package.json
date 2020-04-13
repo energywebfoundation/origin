@@ -27,7 +27,7 @@
         "start-backend": "npx @energyweb/origin-backend",
         "prettier": "prettier --write --config-precedence file-override './src/**/*'",
         "clean": "shx rm -rf dist",
-        "deploy:origin-backend-app:heroku:canary": "make build-heroku-canary push-heroku-canary"
+        "deploy:origin-backend-app:heroku:canary": "make build-canary push-heroku-canary"
     },
     "types": "dist/js/index.d.ts",
     "dependencies": {
