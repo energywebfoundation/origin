@@ -16,6 +16,7 @@ import { Issuer } from '../ethers/Issuer';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { Registry } from '../ethers/Registry';
 import { IssuerJSON } from '../contracts';
+import { getEventsFromContract } from '../utils/events';
 
 export class CertificationRequest extends PreciseProofEntity implements ICertificationRequest {
     owner: string;
@@ -120,14 +121,10 @@ export class CertificationRequest extends PreciseProofEntity implements ICertifi
         this.approved = issueRequest.approved;
         this.revoked = issueRequest.revoked;
 
-        const newCertificationRequestFilter = issuer.filters.NewCertificationRequest(null, this.id);
-        const newCertificationRequestLogs = (
-            await issuer.provider.getLogs({
-                ...newCertificationRequestFilter,
-                fromBlock: 0,
-                toBlock: 'latest'
-            })
-        ).map((log) => issuer.interface.parseLog(log).values);
+        const newCertificationRequestLogs = await getEventsFromContract(
+            issuer,
+            issuer.filters.NewCertificationRequest(null, this.id, null)
+        );
 
         const creationBlock = await issuer.provider.getBlock(
             newCertificationRequestLogs[0].blockNumber
@@ -228,7 +225,13 @@ export class CertificationRequest extends PreciseProofEntity implements ICertifi
         const moment = extendMoment(Moment);
         const unix = (timestamp: Timestamp) => moment.unix(timestamp);
 
-        const certificationRequestIds = await issuer.getCertificationRequestsForDevice(deviceId);
+        const certificationRequestEvents = await getEventsFromContract(
+            issuer,
+            issuer.filters.NewCertificationRequest(null, null, deviceId)
+        );
+
+        const certificationRequestIds = certificationRequestEvents.map((event) => event._id);
+
         const generationTimeRange = moment.range(unix(fromTime), unix(toTime));
 
         for (const id of certificationRequestIds) {

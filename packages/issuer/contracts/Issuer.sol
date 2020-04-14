@@ -7,7 +7,7 @@ import "@openzeppelin/contracts-ethereum-package/contracts/ownership/Ownable.sol
 import "./Registry.sol";
 
 contract Issuer is Initializable, Ownable {
-    event NewCertificationRequest(address indexed _owner, uint256 indexed _id);
+    event NewCertificationRequest(address indexed _owner, uint256 indexed _id, string indexed _deviceId);
     event ApprovedCertificationRequest(address indexed _owner, uint256 indexed _id, uint256 indexed _certificateId);
 
 	event CommitmentUpdated(address indexed _owner, uint256 indexed _id, bytes32 _commitment);
@@ -20,9 +20,6 @@ contract Issuer is Initializable, Ownable {
 
     mapping(uint256 => CertificationRequest) private certificationRequests;
     mapping(uint256 => uint256) private certificateToRequestStorage;
-
-    // Device Id => CertificationRequestIds[]
-    mapping(string => uint256[]) private requestsPerDevice;
 
 	uint256 private requestMigrateToPublicNonce;
 	uint256 private requestPrivateTransferNonce;
@@ -77,10 +74,6 @@ contract Issuer is Initializable, Ownable {
         return certificationRequests[_requestId];
     }
 
-    function getCertificationRequestsForDevice(string calldata _deviceId) external view returns (uint256[] memory) {
-        return requestsPerDevice[_deviceId];
-    }
-
     function getCertificationRequestForCertificate(uint256 _certificateId) external view returns (CertificationRequest memory) {
         return getCertificationRequest(certificateToRequestStorage[_certificateId]);
     }
@@ -111,9 +104,7 @@ contract Issuer is Initializable, Ownable {
 
         (,, string memory deviceId) = decodeData(_data);
 
-        requestsPerDevice[deviceId].push(id);
-
-        emit NewCertificationRequest(_owner, id);
+        emit NewCertificationRequest(_owner, id, deviceId);
 
         return id;
     }

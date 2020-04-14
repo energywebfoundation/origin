@@ -14,6 +14,7 @@ import { PreciseProofEntity } from './PreciseProofEntity';
 import { Registry } from '../ethers/Registry';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { Issuer } from '../ethers/Issuer';
+import { getEventsFromContract } from '../utils/events';
 
 const NULL_HASH = '0x0000000000000000000000000000000000000000000000000000000000000000';
 
@@ -147,12 +148,11 @@ export class Certificate extends PreciseProofEntity implements ICertificate {
 
         const decodedData = await issuer.decodeData(this.data);
 
-        const issuanceSingleFilter = registry.filters.IssuanceSingle(null, null, this.id);
-        const issuanceLogs = await registry.provider.getLogs({
-            ...issuanceSingleFilter,
-            fromBlock: 0,
-            toBlock: 'latest'
-        });
+        const issuanceLogs = await getEventsFromContract(
+            registry,
+            registry.filters.IssuanceSingle(null, null, this.id)
+        );
+
         const issuanceBlock = await registry.provider.getBlock(issuanceLogs[0].blockHash);
 
         this.generationStartTime = Number(decodedData['0']);

@@ -5,6 +5,7 @@ import { Configuration } from '@energyweb/utils-general';
 import { Certificate } from './Certificate';
 import { Registry } from '../ethers/Registry';
 import { Issuer } from '../ethers/Issuer';
+import { getEventsFromContract } from '../utils/events';
 
 export async function claimCertificates(
     certificateIds: number[],
@@ -105,18 +106,10 @@ export async function getAllCertificates(
     const certificatePromises = Array(totalRequests)
         .fill(null)
         .map(async (item, index) => {
-            const approvedFilter = issuer.filters.ApprovedCertificationRequest(
-                null,
-                index + 1,
-                null
+            const approvedCertificationRequestEvents = await getEventsFromContract(
+                issuer,
+                issuer.filters.ApprovedCertificationRequest(null, index + 1, null)
             );
-            const approvedCertificationRequestEvents = (
-                await issuer.provider.getLogs({
-                    ...approvedFilter,
-                    fromBlock: 0,
-                    toBlock: 'latest'
-                })
-            ).map((log) => issuer.interface.parseLog(log).values);
 
             const certId = approvedCertificationRequestEvents[0]._certificateId;
 
@@ -137,14 +130,10 @@ export const getAllCertificateEvents = async (
         Issuer
     >;
 
-    const allEventTypesFilter = registry.filters.TransferSingle(null, null, null, null, null);
-    const allEvents = (
-        await registry.provider.getLogs({
-            ...allEventTypesFilter,
-            fromBlock: 0,
-            toBlock: 'latest'
-        })
-    ).map((log) => registry.interface.parseLog(log).values);
+    const allEvents = await getEventsFromContract(
+        registry,
+        registry.filters.TransferSingle(null, null, null, null, null)
+    );
 
     return allEvents.filter((event) => event._id === certId);
 };
