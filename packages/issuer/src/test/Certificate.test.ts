@@ -189,6 +189,28 @@ describe('Certificate tests', () => {
         assert.equal(certificate.energy.privateVolume.toString(), partialVolumeToSend.toString());
     });
 
+    it('fails transferring a revoked certificate', async () => {
+        const totalVolume = new BigNumber(1e9);
+        let certificate = await issueCertificate(totalVolume);
+
+        setActiveUser(issuerWallet);
+
+        await certificate.revoke();
+
+        setActiveUser(deviceOwnerWallet);
+        certificate = await certificate.sync();
+
+        let failed = false;
+
+        try {
+            await certificate.transfer(traderWallet.address);
+        } catch (e) {
+            failed = true;
+        }
+
+        assert.isTrue(failed);
+    });
+
     it('fails claiming a revoked certificate', async () => {
         const totalVolume = new BigNumber(1e9);
         let certificate = await issueCertificate(totalVolume);

@@ -118,29 +118,49 @@ describe('Issuer', () => {
         assert.equal(deviceOwnerBalance.toString(), volume.toString());
     });
 
-    it('issuer revokes a certificate', async () => {
+    it('user revokes a certificationRequest', async () => {
+        setActiveUser(deviceOwnerWallet);
+
         const volume = new BigNumber(1e9);
         let certificationRequest = await createCertificationRequest(volume);
 
-        setActiveUser(issuerWallet);
-
-        const certificateId = await certificationRequest.approve();
-
         certificationRequest = await certificationRequest.sync();
 
-        assert.isTrue(certificationRequest.approved);
+        assert.isFalse(certificationRequest.approved);
         assert.isFalse(certificationRequest.revoked);
 
         await certificationRequest.revoke();
 
         certificationRequest = await certificationRequest.sync();
         assert.isTrue(certificationRequest.revoked);
+    });
 
-        const deviceOwnerBalance = await conf.blockchainProperties.registry.balanceOf(
-            deviceOwnerWallet.address,
-            Number(certificateId)
-        );
-        assert.equal(deviceOwnerBalance.toString(), volume.toString());
+    it('user shouldnt be able to revoke an approved certificationRequest', async () => {
+        setActiveUser(deviceOwnerWallet);
+
+        const volume = new BigNumber(1e9);
+        let certificationRequest = await createCertificationRequest(volume);
+
+        setActiveUser(issuerWallet);
+        certificationRequest = await certificationRequest.sync();
+
+        await certificationRequest.approve();
+
+        setActiveUser(deviceOwnerWallet);
+        certificationRequest = await certificationRequest.sync();
+
+        assert.isTrue(certificationRequest.approved);
+        assert.isFalse(certificationRequest.revoked);
+
+        let failed = false;
+
+        try {
+            await certificationRequest.revoke();
+        } catch (e) {
+            failed = true;
+        }
+
+        assert.isTrue(failed);
     });
 
     it('should fail to request 2 certificates with the same generation period', async () => {
@@ -191,9 +211,6 @@ describe('Issuer', () => {
             []
         );
 
-        setActiveUser(issuerWallet);
-
-        await certificationRequest.approve();
         certificationRequest = await certificationRequest.sync();
 
         await certificationRequest.revoke();

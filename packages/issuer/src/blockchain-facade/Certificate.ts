@@ -161,9 +161,13 @@ export class Certificate extends PreciseProofEntity implements ICertificate {
         this.issuer = certOnChain.issuer;
         this.creationTime = Number(issuanceBlock.timestamp);
         this.creationBlockHash = issuanceLogs[0].blockHash;
-        this.certificationRequestId = Number(
-            await issuer.getCertificationRequestIdForCertificate(this.id)
+
+        const approvedCertificationRequestEvents = await getEventsFromContract(
+            issuer,
+            issuer.filters.ApprovedCertificationRequest(null, this.id, null)
         );
+
+        this.certificationRequestId = approvedCertificationRequestEvents[0]._certificateId;
 
         this.propertiesDocumentHash = await issuer.getCertificateCommitment(this.id);
 
@@ -332,6 +336,10 @@ export class Certificate extends PreciseProofEntity implements ICertificate {
         amount?: BigNumber,
         privately = false
     ): Promise<ContractTransaction | CommitmentStatus> {
+        if (await this.isRevoked()) {
+            throw new Error(`Unable to transfer Certificate #${this.id}. It has been revoked.`);
+        }
+
         const { activeUser } = this.configuration.blockchainProperties;
         const fromAddress = await activeUser.getAddress();
         const toAddress = ethers.utils.getAddress(to);
@@ -428,5 +436,17 @@ export class Certificate extends PreciseProofEntity implements ICertificate {
         const issuerWithSigner = issuer.connect(this.configuration.blockchainProperties.activeUser);
 
         return issuerWithSigner.revokeCertificate(this.id);
+    }
+
+    async isRevoked(): Promise<boolean> {
+        const { issuer } = this.configuration
+            .blockchainProperties as Configuration.BlockchainProperties<Registry, Issuer>;
+
+        const revokedEvents = await getEventsFromContract(
+            issuer,
+            issuer.filters.RevokedCertificate(this.id)
+        );
+
+        return revokedEvents.length > 0;
     }
 }
