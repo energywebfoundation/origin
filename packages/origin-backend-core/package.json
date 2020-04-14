@@ -28,6 +28,7 @@
     "registry": "https://registry.npmjs.org"
   },
   "dependencies": {
+    "ethers": "^4.0.46",
     "precise-proofs-js": "1.0.2"
   }
 }

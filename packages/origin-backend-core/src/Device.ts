@@ -1,5 +1,5 @@
-import { IOrganization } from '.';
 import { BigNumber } from 'ethers/utils';
+import { IOrganization } from '.';
 
 export enum DeviceStatus {
     Submitted,

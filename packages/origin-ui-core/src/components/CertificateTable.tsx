@@ -26,7 +26,6 @@ import { IBatchableAction } from './Table/ColumnBatchActions';
 import { CustomFilterInputType, ICustomFilterDefinition } from './Table/FiltersHeader';
 import { IPaginatedLoaderFetchDataReturnValues } from './Table/PaginatedLoader';
 import { TableMaterial } from './Table/TableMaterial';
-import { getUserOffchain } from '../features/users/selectors';
 import { setLoading } from '../features/general/actions';
 import { getCertificates } from '../features/certificates/selectors';
 import { ClaimCertificateBulkModal } from './Modal/ClaimCertificateBulkModal';
@@ -63,13 +62,6 @@ const CERTIFICATION_DATE_COLUMN_SORT_PROPERTIES = [
     (record: IEnrichedCertificateData) => record?.certificate?.creationTime
 ];
 
-const filterAsync = async (array, asyncfilterMethod) => {
-    const asyncMethodResult = await Promise.all(
-        array.map(async (item) => ((await asyncfilterMethod(item)) ? item : null))
-    );
-    return asyncMethodResult.filter((i) => i !== null);
-};
-
 export function CertificateTable(props: IProps) {
     const { currentSort, sortAscending, sortData, toggleSort } = usePaginatedLoaderSorting({
         currentSort: {
@@ -81,7 +73,6 @@ export function CertificateTable(props: IProps) {
 
     const stateCertificates = useSelector(getCertificates);
     const configuration = useSelector(getConfiguration);
-    const user = useSelector(getUserOffchain);
     const producingDevices = useSelector(getProducingDevices);
     const environment = useSelector(getEnvironment);
 
@@ -98,8 +89,6 @@ export function CertificateTable(props: IProps) {
     const [showClaimBulkModal, setShowClaimBulkModal] = useState(false);
     const [sellModalData, setSellModalData] = useState<Certificate>(null);
     const [sellModalVisibility, setSellModalVisibility] = useState(false);
-
-    const userAddress = user?.blockchainAccountAddress?.toLowerCase();
 
     async function getPaginatedData({
         requestedPageSize,
@@ -122,11 +111,10 @@ export function CertificateTable(props: IProps) {
             };
         });
 
-        const filteredIEnrichedCertificateData = await filterAsync(
-            enrichedData,
-            async (enrichedCertificateData) => {
-                const ownerOf = await enrichedCertificateData.certificate.isOwned(userAddress);
-                const claimed = await enrichedCertificateData.certificate.isClaimed(userAddress);
+        const filteredIEnrichedCertificateData = await enrichedData.filter(
+            (enrichedCertificateData) => {
+                const ownerOf = enrichedCertificateData.certificate.isOwned;
+                const claimed = enrichedCertificateData.certificate.isClaimed;
 
                 return (
                     checkRecordPassesFilters(

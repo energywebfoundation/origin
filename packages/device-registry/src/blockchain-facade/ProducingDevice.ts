@@ -101,13 +101,10 @@ export class Entity implements IDevice {
     ): Promise<void> {
         const readingBN = bigNumberify(meterReading);
 
-        return this.configuration.offChainDataSource.deviceClient.addSmartMeterRead(
-            this.id,
-            {
-                meterReading: readingBN,
-                timestamp
-            }
-        );
+        return this.configuration.offChainDataSource.deviceClient.addSmartMeterRead(this.id, {
+            meterReading: readingBN,
+            timestamp
+        });
     }
 
     async getSmartMeterReads(): Promise<ISmartMeterRead[]> {
@@ -129,7 +126,9 @@ export class Entity implements IDevice {
             const isFirstReading = i === 0;
 
             energiesGenerated.push({
-                energy: allMeterReadings[i].meterReading.sub((isFirstReading ? 0 : allMeterReadings[i - 1].meterReading)),
+                energy: allMeterReadings[i].meterReading.sub(
+                    isFirstReading ? 0 : allMeterReadings[i - 1].meterReading
+                ),
                 timestamp: allMeterReadings[i].timestamp
             });
         }

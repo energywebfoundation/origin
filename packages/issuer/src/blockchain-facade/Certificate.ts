@@ -202,9 +202,6 @@ export class Certificate extends PreciseProofEntity implements ICertificate {
         }
 
         const { publicVolume, privateVolume } = this.energy;
-        console.log({
-            energy: this.energy
-        });
 
         return publicVolume.add(privateVolume).gt(0);
     }

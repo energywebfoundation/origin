@@ -9,9 +9,9 @@ import { Configuration } from '@energyweb/utils-general';
 import { OffChainDataSourceMock } from '@energyweb/origin-backend-client-mocks';
 import { DeviceStatus, IDevice } from '@energyweb/origin-backend-core';
 
+import { bigNumberify } from 'ethers/utils';
 import { ProducingDevice } from '..';
 import { logger } from '../Logger';
-import { bigNumberify } from 'ethers/utils';
 
 describe('Device Facade', () => {
     dotenv.config({
@@ -24,9 +24,6 @@ describe('Device Facade', () => {
 
     const privateKeyDeployment = deployKey.startsWith('0x') ? deployKey : `0x${deployKey}`;
     const deploymentWallet = new Wallet(privateKeyDeployment, provider);
-
-    const deviceOwnerPK = '0x622d56ab7f0e75ac133722cc065260a2792bf30ea3265415fe04f3a2dba7e1ac';
-    const deviceOwnerWallet = new Wallet(deviceOwnerPK, provider);
 
     const deviceSmartmeterPK = '0x2dc5120c26df339dbd9861a0f39a79d87e0638d30fdedc938861beac77bbd3f5';
     const deviceSmartmeterWallet = new Wallet(deviceSmartmeterPK, provider);
