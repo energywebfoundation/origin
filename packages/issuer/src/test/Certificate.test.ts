@@ -46,10 +46,6 @@ describe('Certificate tests', () => {
         const generationEndTime = timestamp;
         const deviceId = '1';
 
-        console.log({
-            ownerIntended: deviceOwnerWallet.address
-        });
-
         return Certificate.create(
             deviceOwnerWallet.address,
             volume,

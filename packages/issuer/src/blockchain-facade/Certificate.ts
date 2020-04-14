@@ -4,7 +4,7 @@ import {
     IOwnershipCommitment,
     MAX_ENERGY_PER_CERTIFICATE
 } from '@energyweb/origin-backend-core';
-import { Event as BlockchainEvent, ContractTransaction } from 'ethers';
+import { Event as BlockchainEvent, ContractTransaction, ethers } from 'ethers';
 import { BigNumber, randomBytes, bigNumberify } from 'ethers/utils';
 
 import { Configuration, Timestamp } from '@energyweb/utils-general';
@@ -94,18 +94,20 @@ export class Certificate extends PreciseProofEntity implements ICertificate {
 
         let tx: ContractTransaction;
 
+        const properChecksumToAddress = ethers.utils.getAddress(to);
+
         if (isVolumePrivate) {
             const ownershipCommitment: IOwnershipCommitment = {
-                [to.toLowerCase()]: value
+                [properChecksumToAddress]: value
             };
-
-            console.log({
-                ownershipCommitment
-            });
 
             const commitmentProof = newCertificate.generateAndAddProofs(ownershipCommitment);
 
-            tx = await issuerWithSigner.issuePrivate(to, commitmentProof.rootHash, data);
+            tx = await issuerWithSigner.issuePrivate(
+                properChecksumToAddress,
+                commitmentProof.rootHash,
+                data
+            );
             const { events } = await tx.wait();
 
             newCertificate.id = getIdFromEvents(events);
@@ -116,10 +118,7 @@ export class Certificate extends PreciseProofEntity implements ICertificate {
                 txHash: tx.hash
             });
         } else {
-            console.log({
-                value
-            });
-            tx = await issuerWithSigner.issue(to, value, data);
+            tx = await issuerWithSigner.issue(properChecksumToAddress, value, data);
             const { events } = await tx.wait();
 
             newCertificate.id = getIdFromEvents(events);
@@ -173,9 +172,7 @@ export class Certificate extends PreciseProofEntity implements ICertificate {
             this.privateOwnershipCommitment = commitment ?? {};
         }
 
-        const owner = (
-            await this.configuration.blockchainProperties.activeUser.getAddress()
-        ).toLowerCase();
+        const owner = await this.configuration.blockchainProperties.activeUser.getAddress();
         const ownedEnergy = await registry.balanceOf(owner, this.id);
         const claimedEnergy = await registry.claimedBalanceOf(owner, this.id);
 
@@ -269,7 +266,7 @@ export class Certificate extends PreciseProofEntity implements ICertificate {
         }
 
         const { activeUser } = this.configuration.blockchainProperties;
-        const owner = (await activeUser.getAddress()).toLowerCase();
+        const owner = await activeUser.getAddress();
         const { issuer } = this.configuration
             .blockchainProperties as Configuration.BlockchainProperties<Registry, Issuer>;
         const issuerWithSigner = issuer.connect(activeUser);
@@ -294,7 +291,7 @@ export class Certificate extends PreciseProofEntity implements ICertificate {
         const migrationRequestId = await issuerWithSigner.getMigrationRequestId(this.id);
         const migrationRequest = await issuerWithSigner.getMigrationRequest(migrationRequestId);
 
-        const requestor = migrationRequest.owner.toLowerCase();
+        const requestor = migrationRequest.owner;
         const privateVolume = this.privateOwnershipCommitment[requestor];
 
         if (privateVolume.eq(0)) {
@@ -336,8 +333,8 @@ export class Certificate extends PreciseProofEntity implements ICertificate {
         privately = false
     ): Promise<ContractTransaction | CommitmentStatus> {
         const { activeUser } = this.configuration.blockchainProperties;
-        const fromAddress = (await activeUser.getAddress()).toLowerCase();
-        const toAddress = to.toLowerCase();
+        const fromAddress = await activeUser.getAddress();
+        const toAddress = ethers.utils.getAddress(to);
 
         const { issuer } = this.configuration
             .blockchainProperties as Configuration.BlockchainProperties<Registry, Issuer>;
@@ -404,11 +401,7 @@ export class Certificate extends PreciseProofEntity implements ICertificate {
             throw new Error(`approvePrivateTransfer(): no pending requests to approve.`);
         }
 
-        const theProof = PreciseProofs.createProof(
-            request.owner.toLowerCase(),
-            newCommitmentProof.leafs,
-            false
-        );
+        const theProof = PreciseProofs.createProof(request.owner, newCommitmentProof.leafs, false);
 
         const onChainProof = theProof.proofPath.map((p) => ({
             left: !!p.left,
