@@ -110,8 +110,12 @@ export function AddDevice() {
         commissioningDate: Yup.date().required(),
         registrationDate: Yup.date().required(),
         address: Yup.string().label(t('device.properties.address')).required(),
-        latitude: Yup.number().label(t('device.properties.latitude')).required().positive(),
-        longitude: Yup.number().label(t('device.properties.longitude')).required().positive(),
+        latitude: Yup.number().label(t('device.properties.latitude')).required().min(-90).max(90),
+        longitude: Yup.number()
+            .label(t('device.properties.longitude'))
+            .required()
+            .min(-180)
+            .max(180),
         supported: Yup.boolean(),
         projectStory: Yup.string()
     });
