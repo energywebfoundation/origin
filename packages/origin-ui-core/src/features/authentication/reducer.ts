@@ -1,20 +1,13 @@
-import {
-    AuthenticationActions,
-    IAuthenticationAction,
-    IAccount,
-    IEncryptedAccount
-} from './actions';
+import { AuthenticationActions, IAuthenticationAction, IAccount } from './actions';
 
 export interface IAuthenticationState {
     accounts: IAccount[];
     activeAccount: IAccount;
-    encryptedAccounts: IEncryptedAccount[];
 }
 
 const defaultState: IAuthenticationState = {
     accounts: [],
-    activeAccount: null,
-    encryptedAccounts: []
+    activeAccount: null
 };
 
 export default function reducer(
@@ -27,12 +20,6 @@ export default function reducer(
 
         case AuthenticationActions.setActiveAccount:
             return { ...state, activeAccount: action.payload };
-
-        case AuthenticationActions.addEncryptedAccount:
-            return { ...state, encryptedAccounts: [...state.encryptedAccounts, action.payload] };
-
-        case AuthenticationActions.clearEncryptedAccounts:
-            return { ...state, encryptedAccounts: [] };
 
         default:
             return state;
