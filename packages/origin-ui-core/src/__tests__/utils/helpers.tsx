@@ -9,9 +9,7 @@ import { Compliance } from '@energyweb/utils-general';
 
 import { ProducingDevice } from '@energyweb/device-registry';
 import { producingDeviceCreatedOrUpdated } from '../../features/producingDevices/actions';
-import { dataTestSelector } from '../../utils/helper';
-import { DATE_FORMAT_DMY } from '../../utils/time';
-import moment from 'moment';
+import { dataTestSelector, DATE_FORMAT_DMY, moment } from '../../utils';
 import { MuiPickersUtilsProvider } from '@material-ui/pickers';
 import React from 'react';
 import MomentUtils from '@date-io/moment';

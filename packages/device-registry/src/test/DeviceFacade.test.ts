@@ -67,7 +67,8 @@ describe('Device Facade', () => {
                 images: '',
                 region: '',
                 province: '',
-                organization: 4
+                organization: 4,
+                gridOperator: ''
             };
 
             assert.equal(await ProducingDevice.getDeviceListLength(conf), 0);

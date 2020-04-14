@@ -18,10 +18,18 @@ const envFile = program.env ? absolutePath(program.env) : '../../.env';
 const configFilePath = absolutePath(program.config ?? '../config/config.json');
 const dataFilePath = absolutePath(program.data ?? '../config/data.csv');
 
+function initEnv() {
+    if (envFile) {
+        dotenv.config({
+            path: envFile
+        });
+    } else {
+        dotenv.config();
+    }
+}
+
 (async () => {
-    dotenv.config({
-        path: envFile
-    });
+    initEnv();
 
     console.log(
         `Running the simulator with:\n.env file: ${envFile}\nconfig file: ${configFilePath}\ndata file: ${dataFilePath}`

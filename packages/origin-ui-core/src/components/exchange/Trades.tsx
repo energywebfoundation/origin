@@ -6,7 +6,7 @@ import {
 } from '../Table/PaginatedLoaderHooks';
 import { EnergyFormatter } from '../../utils/EnergyFormatter';
 import { Typography } from '@material-ui/core';
-import { useTranslation, formatDate, formatCurrency, moment } from '../../utils';
+import { useTranslation, formatDate, moment, formatCurrencyComplete } from '../../utils';
 import { ITradeDTO, calculateTotalPrice } from '../../utils/exchange';
 
 interface IProps {
@@ -76,9 +76,10 @@ export function Trades(props: IProps) {
             side: bidId ? t('exchange.info.buy') : t('exchange.info.sell'),
             volume: EnergyFormatter.format(volume),
             price: priceInDisplayUnit,
-            total: `${formatCurrency(
-                calculateTotalPrice(priceInDisplayUnit, EnergyFormatter.format(volume))
-            )}${currency}`
+            total: `${formatCurrencyComplete(
+                calculateTotalPrice(priceInDisplayUnit, EnergyFormatter.format(volume)),
+                currency
+            )}`
         };
     });
 

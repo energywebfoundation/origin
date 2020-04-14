@@ -1,5 +1,5 @@
 import { ProducingDevice } from '@energyweb/device-registry';
-import { Certificate, ICertificateEnergy } from '@energyweb/issuer';
+import { Certificate } from '@energyweb/issuer';
 import { AssignmentTurnedIn, Publish } from '@material-ui/icons';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
@@ -11,15 +11,17 @@ import { getConfiguration, getProducingDevices } from '../features/selectors';
 import {
     EnergyFormatter,
     getDeviceLocationText,
-    LOCATION_TITLE_TRANSLATION_KEY,
     useLinks,
     formatDate,
     NotificationType,
     showNotification,
     useTranslation,
-    getDeviceId
+    getDeviceId,
+    getDeviceFilters,
+    getDeviceGridOperatorText,
+    getDeviceColumns,
+    getDeviceSpecificPropertiesSearchTitle
 } from '../utils';
-
 import { IBatchableAction } from './Table/ColumnBatchActions';
 import { CustomFilterInputType, ICustomFilterDefinition } from './Table/FiltersHeader';
 import { IPaginatedLoaderFetchDataReturnValues } from './Table/PaginatedLoader';
@@ -29,7 +31,6 @@ import { setLoading } from '../features/general/actions';
 import { getCertificates } from '../features/certificates/selectors';
 import { ClaimCertificateBulkModal } from './Modal/ClaimCertificateBulkModal';
 import { PublishForSaleModal } from './Modal/PublishForSaleModal';
-
 import {
     usePaginatedLoaderSorting,
     checkRecordPassesFilters,
@@ -46,10 +47,10 @@ interface IProps {
 
 interface IEnrichedCertificateData {
     certificate: Certificate;
-    ownedVolume: ICertificateEnergy;
     producingDevice: ProducingDevice.Entity;
     deviceTypeLabel: string;
     locationText: string;
+    gridOperatorText: string;
 }
 
 export enum SelectedState {
@@ -117,7 +118,7 @@ export function CertificateTable(props: IProps) {
                 producingDevice,
                 deviceTypeLabel: producingDevice?.deviceType,
                 locationText: getDeviceLocationText(producingDevice),
-                ownedVolume: certificate.energy
+                gridOperatorText: getDeviceGridOperatorText(producingDevice)
             };
         });
 
@@ -236,8 +237,9 @@ export function CertificateTable(props: IProps) {
 
         const filters: ICustomFilterDefinition[] = [
             {
-                property: (record: IEnrichedCertificateData) => `${record?.locationText}`,
-                label: t('search.searchByRegionProvince'),
+                property: (record: IEnrichedCertificateData) =>
+                    `${record?.locationText}${record?.gridOperatorText}`,
+                label: getDeviceSpecificPropertiesSearchTitle(environment, t),
                 input: {
                     type: CustomFilterInputType.string
                 },
@@ -263,13 +265,12 @@ export function CertificateTable(props: IProps) {
                     }))
                 }
             },
-            {
-                property: (record: IEnrichedCertificateData) => record?.locationText,
-                label: t(LOCATION_TITLE_TRANSLATION_KEY),
-                input: {
-                    type: CustomFilterInputType.string
-                }
-            },
+            ...getDeviceFilters(
+                (record: IEnrichedCertificateData) => record?.locationText,
+                (record: IEnrichedCertificateData) => record?.gridOperatorText,
+                environment,
+                t
+            ),
             {
                 property: (record: IEnrichedCertificateData) =>
                     record?.certificate?.creationTime?.toString(),
@@ -375,11 +376,10 @@ export function CertificateTable(props: IProps) {
                 (record: IEnrichedCertificateData) => record?.producingDevice?.operationalSince
             ]
         },
-        {
-            id: 'locationText',
-            label: t(LOCATION_TITLE_TRANSLATION_KEY),
-            sortProperties: [(record: IEnrichedCertificateData) => record?.locationText]
-        },
+        ...getDeviceColumns(environment, t, [
+            (record: IEnrichedCertificateData) => record?.locationText,
+            (record: IEnrichedCertificateData) => record?.gridOperatorText
+        ]),
         { id: 'compliance', label: t('certificate.properties.compliance') },
         {
             id: CERTIFICATION_DATE_COLUMN_ID,
@@ -394,7 +394,7 @@ export function CertificateTable(props: IProps) {
             sortProperties: [
                 [
                     (record: IEnrichedCertificateData) => {
-                        const owned = record?.ownedVolume;
+                        const owned = record?.certificate?.energy;
                         if (!owned) return null;
                         return owned.publicVolume.add(owned.privateVolume).toString();
                     },
@@ -422,10 +422,11 @@ export function CertificateTable(props: IProps) {
         return {
             deviceType,
             commissioningDate,
-            locationText: getDeviceLocationText(enrichedData.producingDevice),
+            deviceLocation: getDeviceLocationText(enrichedData.producingDevice),
             compliance,
             certificationDate: formatDate(moment.unix(enrichedData.certificate.creationTime)),
-            energy: EnergyFormatter.format(enrichedData.ownedVolume.publicVolume)
+            energy: EnergyFormatter.format(enrichedData.certificate.energy.publicVolume),
+            gridOperator: enrichedData?.gridOperatorText
         };
     });
 

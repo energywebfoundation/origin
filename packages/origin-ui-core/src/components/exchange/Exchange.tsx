@@ -29,9 +29,10 @@ export function Exchange(props: IProps) {
     });
     const [deviceType, setDeviceType] = useState<string[]>([]);
     const [location, setLocation] = useState<string[]>([]);
+    const [gridOperator, setGridOperator] = useState<string[]>([]);
 
     const fetchData = async (checkIsMounted: () => boolean) => {
-        const fetchedData = (await exchangeClient?.search(deviceType, location)) ?? {
+        const fetchedData = (await exchangeClient?.search(deviceType, location, gridOperator)) ?? {
             asks: [],
             bids: []
         };
@@ -41,7 +42,7 @@ export function Exchange(props: IProps) {
         }
     };
 
-    useIntervalFetch(fetchData, refreshInterval, [deviceType, location]);
+    useIntervalFetch(fetchData, refreshInterval, [deviceType, location, gridOperator]);
 
     async function onBid(values: IMarketFormValues) {
         dispatch(setLoading(true));
@@ -101,6 +102,12 @@ export function Exchange(props: IProps) {
 
                     if (JSON.stringify(newLocation) !== JSON.stringify(location)) {
                         setLocation(newLocation);
+                    }
+
+                    const newGridOperator = values.gridOperator;
+
+                    if (JSON.stringify(newGridOperator) !== JSON.stringify(gridOperator)) {
+                        setGridOperator(newGridOperator);
                     }
                 }}
                 energyUnit={EnergyFormatter.displayUnit}

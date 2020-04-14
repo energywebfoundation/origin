@@ -12,12 +12,13 @@ import {
 } from '@material-ui/core';
 import { HierarchicalMultiSelect } from '../HierarchicalMultiSelect';
 import { useSelector } from 'react-redux';
-import { getConfiguration, getRegions } from '../../features';
+import { getConfiguration } from '../../features';
 import { Skeleton } from '@material-ui/lab';
-import { useValidation, Moment, useTranslation, formatCurrency } from '../../utils';
+import { useValidation, Moment, useTranslation, formatCurrencyComplete } from '../../utils';
 import { calculateTotalPrice } from '../../utils/exchange';
 import { Formik, Form } from 'formik';
 import { FormInput, FormikDatePickerWithMonthArrowsFilled, FormikEffect } from '../Form';
+import { DeviceSelectors } from '../DeviceSelectors';
 
 export interface IMarketFormValues {
     generationDateStart: Moment;
@@ -26,6 +27,7 @@ export interface IMarketFormValues {
     energy: string;
     deviceType: string[];
     location: string[];
+    gridOperator: string[];
 }
 
 const INITIAL_FORM_VALUES: IMarketFormValues = {
@@ -34,7 +36,8 @@ const INITIAL_FORM_VALUES: IMarketFormValues = {
     generationDateEnd: null,
     price: '',
     deviceType: [],
-    location: []
+    location: [],
+    gridOperator: []
 };
 
 interface IProps {
@@ -50,7 +53,6 @@ export function Market(props: IProps) {
     const { onBid, currency, energyUnit, onNotify, onChange, disableBidding } = props;
 
     const configuration = useSelector(getConfiguration);
-    const regions = useSelector(getRegions);
 
     const { t } = useTranslation();
 
@@ -109,6 +111,7 @@ export function Market(props: IProps) {
                         <Form translate="">
                             <FormikEffect onChange={onChange} />
                             <Typography variant="h4">{t('exchange.info.market')}</Typography>
+
                             <Grid container spacing={3}>
                                 <Grid item xs={6}>
                                     <HierarchicalMultiSelect
@@ -134,30 +137,15 @@ export function Market(props: IProps) {
                                         disabled={fieldDisabled}
                                     />
                                 </Grid>
-                                <Grid item xs={6}>
-                                    <HierarchicalMultiSelect
-                                        selectedValue={values.location}
-                                        onChange={(value: string[]) =>
-                                            setFieldValue('location', value)
-                                        }
-                                        options={regions}
-                                        selectOptions={[
-                                            {
-                                                label: t('exchange.info.regions'),
-                                                placeholder: t(
-                                                    'exchange.info.selectMultipleRegions'
-                                                )
-                                            },
-                                            {
-                                                label: t('exchange.info.regions'),
-                                                placeholder: t(
-                                                    'exchange.info.selectMultipleRegions'
-                                                )
-                                            }
-                                        ]}
-                                        disabled={fieldDisabled}
-                                    />
-                                </Grid>
+                                <DeviceSelectors
+                                    location={values.location}
+                                    onLocationChange={(value) => setFieldValue('location', value)}
+                                    gridOperator={values.gridOperator}
+                                    onGridOperatorChange={(value) =>
+                                        setFieldValue('gridOperator', value)
+                                    }
+                                    disabled={fieldDisabled}
+                                ></DeviceSelectors>
                             </Grid>
                             <br />
                             <Grid container spacing={3}>
@@ -230,8 +218,8 @@ export function Market(props: IProps) {
                             <Grid container spacing={3}>
                                 <Grid item xs={6}>
                                     <Typography>
-                                        {t('exchange.feedback.total')}: {formatCurrency(totalPrice)}
-                                        {currency}
+                                        {t('exchange.feedback.total')}:{' '}
+                                        {formatCurrencyComplete(totalPrice, currency)}
                                     </Typography>
                                 </Grid>
                                 <Grid item xs={6}>

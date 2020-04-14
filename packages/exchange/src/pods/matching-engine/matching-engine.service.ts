@@ -85,7 +85,6 @@ export class MatchingEngineService implements OnModuleInit {
             return;
         }
 
-        this.logger.debug('Triggering matching engine');
         this.matchingEngine.tick();
     }
 
