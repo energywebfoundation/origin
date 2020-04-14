@@ -105,7 +105,21 @@ export async function getAllCertificates(
     const certificatePromises = Array(totalRequests)
         .fill(null)
         .map(async (item, index) => {
-            const certId = await issuer.getCertificateIdForCertificationRequest(index + 1);
+            const approvedFilter = issuer.filters.ApprovedCertificationRequest(
+                null,
+                index + 1,
+                null
+            );
+            const approvedCertificationRequestEvents = (
+                await issuer.provider.getLogs({
+                    ...approvedFilter,
+                    fromBlock: 0,
+                    toBlock: 'latest'
+                })
+            ).map((log) => issuer.interface.parseLog(log).values);
+
+            const certId = approvedCertificationRequestEvents[0]._certificateId;
+
             return certId.gt(0) ? new Certificate(certId.toNumber(), configuration).sync() : null;
         });
 

@@ -40,7 +40,6 @@ contract Issuer is Initializable, Ownable {
         bool approved;
         bool revoked;
         bool isPrivate;
-        uint256 issuedCertificateId;
     }
 
     struct PrivateTransferRequest {
@@ -90,10 +89,6 @@ contract Issuer is Initializable, Ownable {
         return certificateToRequestStorage[_certificateId];
     }
 
-    function getCertificateIdForCertificationRequest(uint256 _requestId) external view returns (uint256) {
-        return certificationRequests[_requestId].issuedCertificateId;
-    }
-
     function getCertificateCommitment(uint certificateId) public view returns (bytes32) {
         return commitments[certificateId];
     }
@@ -111,8 +106,7 @@ contract Issuer is Initializable, Ownable {
             data: _data,
             approved: false,
             revoked: false,
-            isPrivate: _private,
-            issuedCertificateId: 0
+            isPrivate: _private
         });
 
         (,, string memory deviceId) = decodeData(_data);
@@ -156,7 +150,6 @@ contract Issuer is Initializable, Ownable {
         _approve(_requestId);
 
         uint256 certificateId = registry.issue(request.owner, _validityData, certificateTopic, _value, request.data);
-        _assignCertificate(_requestId, certificateId);
         certificateToRequestStorage[certificateId] = _requestId;
 
         emit ApprovedCertificationRequest(request.owner, _requestId, certificateId);
@@ -185,7 +178,6 @@ contract Issuer is Initializable, Ownable {
         _approve(_requestId);
 
         uint256 certificateId = registry.issue(request.owner, _validityData, certificateTopic, 0, request.data);
-        _assignCertificate(_requestId, certificateId);
         _updateCommitment(certificateId, 0x0, _commitment);
         certificateToRequestStorage[certificateId] = _requestId;
 
@@ -284,7 +276,7 @@ contract Issuer is Initializable, Ownable {
 
 	function migrateToPublic(
         uint256 _requestId,
-        uint256 _value,
+        uint256 _volume,
         string calldata _salt,
         Proof[] calldata _proof
     ) external onlyOwner returns (uint256 publicCertificateId) {
@@ -292,17 +284,17 @@ contract Issuer is Initializable, Ownable {
 
 		require(!request.approved, "migrateToPublic(): Request already approved");
         require(!migrations[request.certificateId], "migrateToPublic(): certificate already migrated");
-		require(request.hash == keccak256(abi.encodePacked(request.owner, _value, _salt)), "Requested hash does not match");
-        require(validateOwnershipProof(request.owner, _value, _salt, commitments[request.certificateId], _proof), "Invalid proof");
+		require(request.hash == keccak256(abi.encodePacked(request.owner, _volume, _salt)), "Requested hash does not match");
+        require(validateOwnershipProof(request.owner, _volume, _salt, commitments[request.certificateId], _proof), "Invalid proof");
 
 		request.approved = true;
 
-        registry.mint(request.certificateId, request.owner, _value);
+        registry.mint(request.certificateId, request.owner, _volume);
         migrations[request.certificateId] = true;
 
         _updateCommitment(request.certificateId, commitments[request.certificateId], 0x0);
 
-        emit CertificateMigratedToPublic(request.certificateId, request.owner, _value);
+        emit CertificateMigratedToPublic(request.certificateId, request.owner, _volume);
 	}
 
 	/*
@@ -365,14 +357,6 @@ contract Issuer is Initializable, Ownable {
         require(!request.approved, "Already issued"); //consider checking topic and other params from request
 
         request.approved = true;
-    }
-
-    function _assignCertificate(uint256 _requestId, uint256 _certificateId) private {
-        CertificationRequest storage request = certificationRequests[_requestId];
-        require(request.issuedCertificateId == 0, "Already assigned a certificate to the request");
-        require(_certificateId > 0, "Certificate Id has to be higher than 0");
-
-        request.issuedCertificateId = _certificateId;
     }
 
 	function _updateCommitment(uint256 _id, bytes32 _previousCommitment, bytes32 _commitment) private {
