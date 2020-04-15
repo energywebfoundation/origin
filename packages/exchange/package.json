@@ -13,15 +13,13 @@
     "bugs": {
         "url": "https://github.com/energywebfoundation/origin/issues"
     },
+    "bin": {
+        "origin-exchange-migrate": "./bin/exchange-migrate"
+    },
     "scripts": {
         "build": "yarn build:ts",
-        "build:ts": "tsc -b tsconfig.build.json --verbose --pretty && nest build -p tsconfig.build.json --tsc",
+        "build:ts": "tsc -b tsconfig.build.json --verbose --pretty && nest build -p tsconfig.build.json --tsc && cp migrations/initial.sql dist/js/migrations/",
         "prettier": "prettier --write --config-precedence file-override './src/**/*'",
-        "start": "nest start",
-        "start:noauth": "concurrently --success first --kill-others -n eth,test \"yarn start-ganache\"  \"wait-on tcp:8580 && ts-node src/main-dev.ts\"",
-        "start:dev": "nest start --watch",
-        "start:debug": "nest start --debug --watch",
-        "start:prod": "node dist/main",
         "lint": "eslint \"src/**/*{.ts,.tsx}\" \"test/**/*{.ts,.tsx}\"",
         "lint-fix": "eslint \"src/**/*{.ts,.tsx}\" \"test/**/*{.ts,.tsx}\" --fix",
         "test": "jest",
@@ -29,9 +27,12 @@
         "test:watch": "jest --watch",
         "test:cov": "jest --coverage",
         "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-        "test:e2e": "concurrently --success first --kill-others -n eth,test \"yarn start-ganache\"  \"wait-on tcp:8580 && jest --runInBand --verbose --config ./test/jest-e2e.json --forceExit\"",
+        "test:e2e": "yarn typeorm:run && concurrently --success first --kill-others -n eth,test \"yarn start-ganache\"  \"wait-on tcp:8580 && jest --runInBand --verbose --config ./test/jest-e2e.json --forceExit\"",
         "start-ganache": "ganache-cli -m 'chalk park staff buzz chair purchase wise oak receive avoid avoid home' -l 8000000 -e 1000000 -a 20 -p 8580",
-        "clean": "shx rm -rf dist dist-shakeable"
+        "clean": "shx rm -rf dist dist-shakeable",
+        "typeorm": "ts-node -r tsconfig-paths/register ./node_modules/.bin/typeorm --config ormconfig-dev.ts",
+        "typeorm:migrate": "yarn typeorm migration:generate -- -n",
+        "typeorm:run": "npm run typeorm migration:run"
     },
     "dependencies": {
         "@energyweb/exchange-core": "2.0.0",

@@ -76,7 +76,7 @@ const getDBConnectionOptions = (): PostgresConnectionOptions => {
             ...getDBConnectionOptions(),
             name: 'ExchangeConnection',
             entities: [Demand, Order, Trade, Asset, Transfer, Account],
-            synchronize: true,
+            synchronize: false,
             logging: ['info']
         }),
         ScheduleModule.forRoot(),
