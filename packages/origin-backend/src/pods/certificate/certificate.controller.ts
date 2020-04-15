@@ -16,7 +16,7 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { bigNumberify } from 'ethers/utils';
+
 import { CertificationRequest } from './certification-request.entity';
 import { OwnershipCommitment } from './ownership-commitment.entity';
 import { StorageErrors } from '../../enums/StorageErrors';
@@ -43,16 +43,12 @@ export class CertificateController {
     ): Promise<CertificationRequest> {
         let certificationRequest = await this.certificationRequestRepository.findOne(id);
 
-        console.log({
-            certificationRequest,
-            data
-        });
-
         if (!certificationRequest) {
             certificationRequest = new CertificationRequest();
         }
 
-        certificationRequest.energy = bigNumberify(data.energy);
+        certificationRequest.id = id;
+        certificationRequest.energy = data.energy;
         certificationRequest.files = data.files;
 
         return this.certificationRequestRepository.save(certificationRequest);

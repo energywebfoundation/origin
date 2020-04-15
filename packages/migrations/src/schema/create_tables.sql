@@ -76,7 +76,7 @@ CREATE TABLE public.certification_request (
     "createdAt" timestamp with time zone DEFAULT now() NOT NULL,
     "updatedAt" timestamp with time zone DEFAULT now() NOT NULL,
     id integer NOT NULL,
-    energy integer NOT NULL,
+    energy character varying NOT NULL,
     files text NOT NULL
 );
 

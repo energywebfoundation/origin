@@ -215,14 +215,6 @@ export function CertificateTable(props: IProps) {
             return [];
         }
 
-        const maxCertificateEnergyInDisplayUnit = EnergyFormatter.getValueInDisplayUnit(
-            certificates.reduce((a, b) => {
-                const { publicVolume, privateVolume } = b.energy;
-                const energy = publicVolume.add(privateVolume);
-                return energy.gt(a) ? energy : bigNumberify(a);
-            }, bigNumberify(0))
-        );
-
         const filters: ICustomFilterDefinition[] = [
             {
                 property: (record: IEnrichedCertificateData) =>
@@ -268,21 +260,19 @@ export function CertificateTable(props: IProps) {
                 }
             },
             {
-                property: (record: IEnrichedCertificateData): number => {
+                property: (record: IEnrichedCertificateData): string => {
                     const energy = record?.certificate?.energy;
                     if (energy) {
                         const totalOwnedEnergy = energy.publicVolume.add(energy.privateVolume);
-                        return EnergyFormatter.getValueInDisplayUnit(totalOwnedEnergy).toNumber();
+                        return EnergyFormatter.getValueInDisplayUnit(totalOwnedEnergy).toString();
                     }
-                    return EnergyFormatter.getValueInDisplayUnit(null).toNumber();
+                    return EnergyFormatter.getValueInDisplayUnit(null).toString();
                 },
                 label: `${t('certificate.properties.certifiedEnergy')} (${
                     EnergyFormatter.displayUnit
                 })`,
                 input: {
-                    type: CustomFilterInputType.slider,
-                    min: 0,
-                    max: maxCertificateEnergyInDisplayUnit.toNumber()
+                    type: CustomFilterInputType.string
                 }
             }
         ];

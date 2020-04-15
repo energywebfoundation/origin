@@ -1,5 +1,5 @@
+import { bigNumberify } from 'ethers/utils';
 import {
-    ICertificationRequest,
     CertificationRequestOffChainData,
     CertificationRequestUpdateData,
     CommitmentStatus,
@@ -73,11 +73,14 @@ export class CertificateClient implements ICertificateClient {
     public async getCertificationRequestData(
         id: number
     ): Promise<CertificationRequestOffChainData> {
-        const { data } = await this.requestClient.get<void, ICertificationRequest>(
+        const { data } = await this.requestClient.get<void, CertificationRequestDTO>(
             `${this.certificateRequestEndpoint}/${id}`
         );
 
-        return data;
+        return {
+            ...data,
+            energy: bigNumberify(data.energy)
+        };
     }
 
     public async getOwnershipCommitment(

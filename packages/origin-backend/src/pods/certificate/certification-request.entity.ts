@@ -1,17 +1,14 @@
-import { BigNumber } from 'ethers/utils';
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
-import { CertificationRequestOffChainData } from '@energyweb/origin-backend-core';
+import { Entity, Column, PrimaryColumn } from 'typeorm';
 import { ExtendedBaseEntity } from '../ExtendedBaseEntity';
-import { BigNumberTransformer } from '../../utils/transformers';
+import { CertificationRequestDTO } from './certification-request.dto';
 
 @Entity()
-export class CertificationRequest extends ExtendedBaseEntity
-    implements CertificationRequestOffChainData {
-    @PrimaryGeneratedColumn()
+export class CertificationRequest extends ExtendedBaseEntity implements CertificationRequestDTO {
+    @PrimaryColumn()
     id: number;
 
-    @Column('bigint', { transformer: BigNumberTransformer })
-    energy: BigNumber;
+    @Column('varchar')
+    energy: string;
 
     @Column('simple-array')
     files: string[];
