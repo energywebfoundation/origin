@@ -28,15 +28,11 @@ export async function claimCertificates(
     const claimData = certificates.map(() => randomBytes(32));
     const data = randomBytes(32);
 
-    const { activeUser } = configuration.blockchainProperties as Configuration.BlockchainProperties<
-        Registry,
-        Issuer
-    >;
+    const {
+        activeUser,
+        registry
+    } = configuration.blockchainProperties as Configuration.BlockchainProperties<Registry, Issuer>;
 
-    const { registry } = configuration.blockchainProperties as Configuration.BlockchainProperties<
-        Registry,
-        Issuer
-    >;
     const registryWithSigner = registry.connect(activeUser);
 
     const activeUserAddress = await activeUser.getAddress();

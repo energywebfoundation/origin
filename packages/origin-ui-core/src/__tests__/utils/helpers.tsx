@@ -5,7 +5,7 @@ import { routerMiddleware, ConnectedRouter } from 'connected-react-router';
 import { createRootReducer } from '../../reducers';
 import { sagas } from '../../features/sagas';
 import { ReactWrapper, CommonWrapper } from 'enzyme';
-import { Compliance } from '@energyweb/utils-general';
+import { Compliance, Configuration } from '@energyweb/utils-general';
 
 import { ProducingDevice } from '@energyweb/device-registry';
 import { producingDeviceCreatedOrUpdated } from '../../features/producingDevices/actions';
@@ -24,6 +24,8 @@ import {
 } from '../../components';
 import { IDevice, DeviceStatus } from '@energyweb/origin-backend-core';
 import { BigNumber, bigNumberify } from 'ethers/utils';
+import { ICertificate, Certificate } from '@energyweb/issuer';
+import { Signer } from 'ethers';
 
 export const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -297,13 +299,13 @@ export const createProducingDevice = (
 
     return ({
         id: properties.id,
-        // configuration: ({
-        //     blockchainProperties: ({
-        //         activeUser: {
-        //             address: '0x0'
-        //         }
-        //     } as Partial<Configuration.BlockchainProperties>) as Configuration.BlockchainProperties
-        // } as Partial<Configuration.Entity>) as Configuration.Entity,
+        configuration: ({
+            blockchainProperties: ({
+                activeUser: {
+                    getAddress: async () => '0x0'
+                } as Partial<Signer>
+            } as Partial<Configuration.BlockchainProperties>) as Configuration.BlockchainProperties
+        } as Partial<Configuration.Entity>) as Configuration.Entity,
         owner: {
             address: owner
         },
@@ -312,21 +314,19 @@ export const createProducingDevice = (
     } as Partial<ProducingDevice.Entity>) as ProducingDevice.Entity;
 };
 
-// export const createCertificate = (
-//     certificate: ICertificate
-// ): Certificate => {
-//     return {
-//         id: properties.id,
-//         configuration: ({
-//             blockchainProperties: {
-//                 activeUser: {
-//                     address: '0x0'
-//                 }
-//             }
-//         } as Partial<Configuration.Entity>) as Configuration.Entity,
-//         ...certificate
-//     } as Certificate;
-// };
+export const createCertificate = (certificate: ICertificate): Certificate => {
+    return {
+        id: certificate.id,
+        configuration: ({
+            blockchainProperties: {
+                activeUser: {
+                    getAddress: async () => '0x0'
+                } as Partial<Signer>
+            }
+        } as Partial<Configuration.Entity>) as Configuration.Entity,
+        ...certificate
+    } as Certificate;
+};
 
 interface ISetupStoreOptions {
     mockUserFetcher: boolean;

@@ -76,7 +76,7 @@ describe('ProducingDeviceTable', () => {
             'Wuthering Heights facility',
             'Solar - Photovoltaic - Roof mounted',
             '9.877',
-            '0.008',
+            '0',
             // next device
             '',
             'Biomass Energy Facility',
@@ -114,7 +114,7 @@ describe('ProducingDeviceTable', () => {
             'Wuthering Heights facility',
             'Solar - Photovoltaic - Roof mounted',
             '9.877',
-            '0.008'
+            '0'
         ]);
 
         assertPagination(1, 1, 1);

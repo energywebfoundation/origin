@@ -1,5 +1,4 @@
 import { assert } from 'chai';
-import Web3 from 'web3';
 
 const TokenAccount = artifacts.require('TokenAccount');
 const TestToken = artifacts.require('TestToken');

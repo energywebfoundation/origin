@@ -7,6 +7,7 @@ import {
     IExternalDeviceId
 } from '@energyweb/origin-backend-core';
 import { IRequestClient, RequestClient } from './RequestClient';
+import { bigNumberify } from 'ethers/utils';
 
 export interface IDeviceClient {
     getById(id: number): Promise<IDeviceWithRelationsIds>;
@@ -66,7 +67,14 @@ export class DeviceClient implements IDeviceClient {
     public async getAllSmartMeterReadings(id: number): Promise<ISmartMeterRead[]> {
         const response = await this.requestClient.get(`${this.endpoint}/${id}/smartMeterReading`);
 
-        return response.data;
+        const meterReadingsFormatted: ISmartMeterRead[] = response.data.map((read: ISmartMeterRead) => {
+            return {
+                ...read,
+                meterReading: bigNumberify(read.meterReading)    
+            };
+        });
+
+        return meterReadingsFormatted;
     }
 
     public async addSmartMeterRead(id: number, smartMeterRead: ISmartMeterRead): Promise<void> {

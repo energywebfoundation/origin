@@ -104,9 +104,8 @@ const currentTime = moment.tz(device.timezone);
 
         if (isValidMeterReading) {
             try {
-                const previousRead: BigNumber = await getProducingDeviceSmartMeterRead(
-                    device.id,
-                    conf
+                const previousRead: BigNumber = bigNumberify(
+                    await getProducingDeviceSmartMeterRead(device.id, conf)
                 );
 
                 const smartMeterReading: ISmartMeterRead = {
