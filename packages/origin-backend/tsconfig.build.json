@@ -7,7 +7,7 @@
         "experimentalDecorators": true,
         "typeRoots": ["./src/types"]
     },
-    "include": ["src/**/*"],
+    "include": ["src/**/*", "migrations/*", "ormconfig*.ts"],
     "references": [
         {
             "path": "../origin-backend-core/tsconfig.build.json"
