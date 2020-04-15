@@ -267,16 +267,17 @@ describe('Certificate tests', () => {
         certificate = await certificate.sync();
 
         await certificate.requestMigrateToPublic();
-        certificate = await certificate.sync();
 
         setActiveUser(issuerWallet);
-
-        await certificate.migrateToPublic();
         certificate = await certificate.sync();
 
+        await certificate.migrateToPublic();
+
         setActiveUser(deviceOwnerWallet);
+        certificate = await certificate.sync();
 
         await certificate.claim();
+
         certificate = await certificate.sync();
 
         assert.isTrue(certificate.isClaimed);

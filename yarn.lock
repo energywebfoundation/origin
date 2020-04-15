@@ -16650,6 +16650,17 @@ precise-proofs-js@1.0.2, precise-proofs-js@^1.0.2:
     treeify "^1.1.0"
     web3 "1.2.4"
 
+precise-proofs-js@1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/precise-proofs-js/-/precise-proofs-js-1.1.0.tgz#e519f81c4eb288d55274d68267c08aae7c535ad2"
+  integrity sha512-fT/3CBEpR3tcCTR9jzEIrpyK4xrKyCKcvAU5ma73VBhTx/h6hbqZu2wnQ90p0tjYU7oTLCX/Zdqn6Qg7B6+64g==
+  dependencies:
+    build "^0.1.4"
+    colors "^1.4.0"
+    ethers "^4.0.46"
+    treeify "^1.1.0"
+    web3-utils "^1.2.6"
+
 prelude-ls@~1.1.2:
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/prelude-ls/-/prelude-ls-1.1.2.tgz#21932a549f5e52ffd9a827f570e04be62a97da54"
@@ -22141,7 +22152,7 @@ web3-utils@1.2.4:
     underscore "1.9.1"
     utf8 "3.0.0"
 
-web3-utils@1.2.6:
+web3-utils@1.2.6, web3-utils@^1.2.6:
   version "1.2.6"
   resolved "https://registry.yarnpkg.com/web3-utils/-/web3-utils-1.2.6.tgz#b9a25432da00976457fcc1094c4af8ac6d486db9"
   integrity sha512-8/HnqG/l7dGmKMgEL9JeKPTtjScxOePTzopv5aaKFExPfaBrYRkgoMqhoowCiAl/s16QaTn4DoIF1QC4YsT7Mg==
