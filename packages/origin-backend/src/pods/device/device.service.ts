@@ -141,7 +141,7 @@ export class DeviceService {
         device.smartMeterReads = [...device.smartMeterReads, newSmartMeterRead];
         device.lastSmartMeterReading = latestSmartMeterReading(device.smartMeterReads);
 
-        await device.save();
+        await this.repository.save(device);
     }
 
     async getAll(
