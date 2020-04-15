@@ -7,15 +7,15 @@ import "@openzeppelin/contracts-ethereum-package/contracts/ownership/Ownable.sol
 import "./Registry.sol";
 
 contract Issuer is Initializable, Ownable {
-    event NewCertificationRequest(address indexed _owner, uint256 indexed _id, string indexed _deviceId);
-    event ApprovedCertificationRequest(address indexed _owner, uint256 indexed _id, uint256 indexed _certificateId);
-    event RevokedCertificationRequest(address indexed _owner, uint256 indexed _id);
+    event CertificationRequested(address indexed _owner, uint256 indexed _id, string indexed _deviceId);
+    event CertificationRequestApproved(address indexed _owner, uint256 indexed _id, uint256 indexed _certificateId);
+    event CertificationRequestRevoked(address indexed _owner, uint256 indexed _id);
 
 	event CommitmentUpdated(address indexed _owner, uint256 indexed _id, bytes32 _commitment);
 	event MigrateToPublicRequested(address indexed _owner, uint256 indexed _id);
 	event PrivateTransferRequested(address indexed _owner, uint256 indexed _certificateId);
 	event CertificateMigratedToPublic(uint256 indexed _certificateId, address indexed _owner, uint256 indexed _amount);
-    event RevokedCertificate(uint256 indexed _certificateId);
+    event CertificateRevoked(uint256 indexed _certificateId);
 
     int public certificateTopic;
     Registry public registry;
@@ -99,7 +99,7 @@ contract Issuer is Initializable, Ownable {
 
         (,, string memory deviceId) = decodeData(_data);
 
-        emit NewCertificationRequest(_owner, id, deviceId);
+        emit CertificationRequested(_owner, id, deviceId);
 
         return id;
     }
@@ -121,20 +121,20 @@ contract Issuer is Initializable, Ownable {
     function revokeRequest(uint256 _requestId) external {
         CertificationRequest storage request = certificationRequests[_requestId];
 
-        require(msg.sender == request.owner, "revokeRequest(): Only the request creator can revoke the certificate.");
+        require(msg.sender == request.owner, "revokeRequest(): Only the request creator can revoke the request.");
         require(!request.revoked, "revokeRequest(): Already revoked");
         require(!request.approved, "revokeRequest(): You can't revoke approved requests");
 
         request.revoked = true;
 
-        emit RevokedCertificationRequest(request.owner, _requestId);
+        emit CertificationRequestRevoked(request.owner, _requestId);
     }
 
     function revokeCertificate(uint256 _certificateId) external onlyOwner {
         require(!revokedCertificates[_certificateId], "revokeCertificate(): Already revoked");
         revokedCertificates[_certificateId] = true;
 
-        emit RevokedCertificate(_certificateId);
+        emit CertificateRevoked(_certificateId);
     }
 
     function approveCertificationRequest(
@@ -152,7 +152,7 @@ contract Issuer is Initializable, Ownable {
         uint256 certificateId = registry.issue(request.owner, _validityData, certificateTopic, _value, request.data);
         requestToCertificate[_requestId] = certificateId;
 
-        emit ApprovedCertificationRequest(request.owner, _requestId, certificateId);
+        emit CertificationRequestApproved(request.owner, _requestId, certificateId);
 
         return certificateId;
     }
@@ -183,7 +183,7 @@ contract Issuer is Initializable, Ownable {
         _updateCommitment(certificateId, 0x0, _commitment);
         requestToCertificate[_requestId] = certificateId;
 
-        emit ApprovedCertificationRequest(request.owner, _requestId, certificateId);
+        emit CertificationRequestApproved(request.owner, _requestId, certificateId);
 
         return certificateId;
     }

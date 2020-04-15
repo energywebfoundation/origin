@@ -102,12 +102,12 @@ export async function getAllCertificates(
     const certificatePromises = Array(totalRequests)
         .fill(null)
         .map(async (item, index) => {
-            const approvedCertificationRequestEvents = await getEventsFromContract(
+            const certificationRequestApprovedEvents = await getEventsFromContract(
                 issuer,
-                issuer.filters.ApprovedCertificationRequest(null, index + 1, null)
+                issuer.filters.CertificationRequestApproved(null, index + 1, null)
             );
 
-            const certId = approvedCertificationRequestEvents[0]._certificateId;
+            const certId = certificationRequestApprovedEvents[0]._certificateId;
             return certId.gt(0) ? new Certificate(certId.toNumber(), configuration).sync() : null;
         });
 

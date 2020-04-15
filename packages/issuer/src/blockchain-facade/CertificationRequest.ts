@@ -88,7 +88,7 @@ export class CertificationRequest extends PreciseProofEntity implements ICertifi
         const { events } = await tx.wait();
 
         request.id = Number(
-            events.find((log: BlockchainEvent) => log.event === 'NewCertificationRequest').topics[2]
+            events.find((log: BlockchainEvent) => log.event === 'CertificationRequested').topics[2]
         );
 
         const success = await configuration.offChainDataSource.certificateClient.updateCertificationRequestData(
@@ -121,13 +121,13 @@ export class CertificationRequest extends PreciseProofEntity implements ICertifi
         this.approved = issueRequest.approved;
         this.revoked = issueRequest.revoked;
 
-        const newCertificationRequestLogs = await getEventsFromContract(
+        const certificationRequestedLogs = await getEventsFromContract(
             issuer,
-            issuer.filters.NewCertificationRequest(null, this.id, null)
+            issuer.filters.CertificationRequested(null, this.id, null)
         );
 
         const creationBlock = await issuer.provider.getBlock(
-            newCertificationRequestLogs[0].blockNumber
+            certificationRequestedLogs[0].blockNumber
         );
 
         this.created = Number(creationBlock.timestamp);
@@ -178,7 +178,7 @@ export class CertificationRequest extends PreciseProofEntity implements ICertifi
         const { events } = await approveTx.wait();
 
         const certificateId = Number(
-            events.find((log: BlockchainEvent) => log.event === 'ApprovedCertificationRequest')
+            events.find((log: BlockchainEvent) => log.event === 'CertificationRequestApproved')
                 .topics[3]
         );
 
@@ -225,12 +225,12 @@ export class CertificationRequest extends PreciseProofEntity implements ICertifi
         const moment = extendMoment(Moment);
         const unix = (timestamp: Timestamp) => moment.unix(timestamp);
 
-        const certificationRequestEvents = await getEventsFromContract(
+        const certificationRequestedEvents = await getEventsFromContract(
             issuer,
-            issuer.filters.NewCertificationRequest(null, null, deviceId)
+            issuer.filters.CertificationRequested(null, null, deviceId)
         );
 
-        const certificationRequestIds = certificationRequestEvents.map((event) => event._id);
+        const certificationRequestIds = certificationRequestedEvents.map((event) => event._id);
 
         const generationTimeRange = moment.range(unix(fromTime), unix(toTime));
 

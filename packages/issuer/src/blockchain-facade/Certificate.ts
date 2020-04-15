@@ -83,7 +83,7 @@ export class Certificate extends PreciseProofEntity implements ICertificate {
         const newCertificate = new Certificate(null, configuration);
 
         const getIdFromEvents = (logs: BlockchainEvent[]): number =>
-            Number(logs.find((log) => log.event === 'ApprovedCertificationRequest').topics[2]);
+            Number(logs.find((log) => log.event === 'CertificationRequestApproved').topics[2]);
 
         const { issuer } = configuration.blockchainProperties as Configuration.BlockchainProperties<
             Registry,
@@ -148,26 +148,28 @@ export class Certificate extends PreciseProofEntity implements ICertificate {
 
         const decodedData = await issuer.decodeData(this.data);
 
-        const issuanceLogs = await getEventsFromContract(
+        const allIssuanceLogs = await getEventsFromContract(
             registry,
-            registry.filters.IssuanceSingle(null, null, this.id)
+            registry.filters.IssuanceSingle(null, null, null)
         );
-
-        const issuanceBlock = await registry.provider.getBlock(issuanceLogs[0].blockHash);
+        const issuanceLog = allIssuanceLogs.filter(
+            (event) => event._id.toString() === this.id.toString()
+        )[0];
+        const issuanceBlock = await registry.provider.getBlock(issuanceLog.blockHash);
 
         this.generationStartTime = Number(decodedData['0']);
         this.generationEndTime = Number(decodedData['1']);
         this.deviceId = decodedData['2'];
         this.issuer = certOnChain.issuer;
         this.creationTime = Number(issuanceBlock.timestamp);
-        this.creationBlockHash = issuanceLogs[0].blockHash;
+        this.creationBlockHash = issuanceLog.blockHash;
 
-        const approvedCertificationRequestEvents = await getEventsFromContract(
+        const certificationRequestApprovedEvents = await getEventsFromContract(
             issuer,
-            issuer.filters.ApprovedCertificationRequest(null, this.id, null)
+            issuer.filters.CertificationRequestApproved(null, this.id, null)
         );
 
-        this.certificationRequestId = approvedCertificationRequestEvents[0]._certificateId;
+        this.certificationRequestId = certificationRequestApprovedEvents[0]._certificateId;
 
         this.propertiesDocumentHash = await issuer.getCertificateCommitment(this.id);
 
@@ -444,7 +446,7 @@ export class Certificate extends PreciseProofEntity implements ICertificate {
 
         const revokedEvents = await getEventsFromContract(
             issuer,
-            issuer.filters.RevokedCertificate(this.id)
+            issuer.filters.CertificateRevoked(this.id)
         );
 
         return revokedEvents.length > 0;
