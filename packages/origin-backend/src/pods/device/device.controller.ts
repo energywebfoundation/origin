@@ -19,7 +19,8 @@ import {
     Post,
     Put,
     UnprocessableEntityException,
-    UseGuards
+    UseGuards,
+    Logger
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 
@@ -31,6 +32,8 @@ import { NotificationService } from '../notification';
 
 @Controller('/Device')
 export class DeviceController {
+    private readonly logger = new Logger(DeviceController.name);
+
     constructor(
         private readonly deviceService: DeviceService,
         private readonly organizationService: OrganizationService,
@@ -160,6 +163,8 @@ export class DeviceController {
                 message: `Smart meter reading successfully added to device ${id}`
             };
         } catch (error) {
+            this.logger.error('Errow when saving smart meter read');
+            this.logger.error(error);
             throw new UnprocessableEntityException({
                 message: `Smart meter reading could not be added due to an unknown error for device ${id}`
             });
