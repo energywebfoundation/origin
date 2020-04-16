@@ -1,3 +1,4 @@
+import { BigNumber } from 'ethers/utils';
 import { IOrganization } from '.';
 
 export enum DeviceStatus {
@@ -16,12 +17,12 @@ export type ExternalDeviceIdType = Pick<IExternalDeviceId, 'type'> & {
 };
 
 export interface ISmartMeterRead {
-    meterReading: number;
+    meterReading: BigNumber;
     timestamp: number;
 }
 
 export interface IEnergyGenerated {
-    energy: number;
+    energy: BigNumber;
     timestamp: number;
 }
 

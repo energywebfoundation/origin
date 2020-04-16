@@ -1,4 +1,4 @@
-import { call, put, delay, select, take, all, fork, cancelled } from 'redux-saga/effects';
+import { call, put, delay, select, take, all, fork, cancelled, apply } from 'redux-saga/effects';
 import { Configuration } from '@energyweb/utils-general';
 import { SagaIterator } from 'redux-saga';
 import {
@@ -34,8 +34,10 @@ function* showAccountChangedModalOnChange(): SagaIterator {
         }
 
         try {
-            const initialAccounts: string[] = yield call(
-                conf.blockchainProperties.web3.eth.getAccounts
+            const initialAccounts: string[] = yield apply(
+                conf.blockchainProperties.web3,
+                conf.blockchainProperties.web3.listAccounts,
+                []
             );
 
             while (true) {
@@ -50,8 +52,10 @@ function* showAccountChangedModalOnChange(): SagaIterator {
                 const accountChangedModalVisible: boolean = yield select(
                     getAccountChangedModalVisible
                 );
-                const accounts: string[] = yield call(
-                    conf.blockchainProperties.web3.eth.getAccounts
+                const accounts: string[] = yield apply(
+                    conf.blockchainProperties.web3,
+                    conf.blockchainProperties.web3.listAccounts,
+                    []
                 );
 
                 if (accountChangedModalVisible) {

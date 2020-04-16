@@ -5,6 +5,7 @@ import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Redirect } from 'react-router-dom';
+import { bigNumberify } from 'ethers/utils';
 
 import { getConfiguration, getProducingDevices } from '../features/selectors';
 import {
@@ -25,7 +26,6 @@ import { IBatchableAction } from './Table/ColumnBatchActions';
 import { CustomFilterInputType, ICustomFilterDefinition } from './Table/FiltersHeader';
 import { IPaginatedLoaderFetchDataReturnValues } from './Table/PaginatedLoader';
 import { TableMaterial } from './Table/TableMaterial';
-import { getUserOffchain } from '../features/users/selectors';
 import { setLoading } from '../features/general/actions';
 import { getCertificates } from '../features/certificates/selectors';
 import { ClaimCertificateBulkModal } from './Modal/ClaimCertificateBulkModal';
@@ -39,14 +39,13 @@ import {
 import { getEnvironment } from '../features';
 
 interface IProps {
-    certificates?: Certificate.Entity[];
+    certificates?: Certificate[];
     hiddenColumns?: string[];
     selectedState: SelectedState;
 }
 
 interface IEnrichedCertificateData {
-    certificate: Certificate.Entity;
-    ownedVolume: number;
+    certificate: Certificate;
     producingDevice: ProducingDevice.Entity;
     deviceTypeLabel: string;
     locationText: string;
@@ -74,7 +73,6 @@ export function CertificateTable(props: IProps) {
 
     const stateCertificates = useSelector(getCertificates);
     const configuration = useSelector(getConfiguration);
-    const user = useSelector(getUserOffchain);
     const producingDevices = useSelector(getProducingDevices);
     const environment = useSelector(getEnvironment);
 
@@ -86,13 +84,11 @@ export function CertificateTable(props: IProps) {
     const dispatch = useDispatch();
     const { getCertificateDetailLink } = useLinks();
 
-    const [selectedCertificates, setSelectedCertificates] = useState<Certificate.Entity[]>([]);
+    const [selectedCertificates, setSelectedCertificates] = useState<Certificate[]>([]);
     const [detailViewForCertificateId, setDetailViewForCertificateId] = useState<number>(null);
     const [showClaimBulkModal, setShowClaimBulkModal] = useState(false);
-    const [sellModalData, setSellModalData] = useState<Certificate.Entity>(null);
+    const [sellModalData, setSellModalData] = useState<Certificate>(null);
     const [sellModalVisibility, setSellModalVisibility] = useState(false);
-
-    const userAddress = user?.blockchainAccountAddress?.toLowerCase();
 
     async function getPaginatedData({
         requestedPageSize,
@@ -106,32 +102,31 @@ export function CertificateTable(props: IProps) {
                     (device) => getDeviceId(device, environment) === certificate.deviceId.toString()
                 );
 
-            const ownedVolume = certificate.ownedVolume(userAddress);
-
             return {
                 certificate,
                 producingDevice,
                 deviceTypeLabel: producingDevice?.deviceType,
                 locationText: getDeviceLocationText(producingDevice),
-                ownedVolume: ownedVolume.privateVolume + ownedVolume.publicVolume,
                 gridOperatorText: getDeviceGridOperatorText(producingDevice)
             };
         });
 
-        const filteredIEnrichedCertificateData = enrichedData.filter((enrichedCertificateData) => {
-            const ownerOf = enrichedCertificateData.certificate.isOwned(userAddress);
-            const claimed = enrichedCertificateData.certificate.isClaimed(userAddress);
+        const filteredIEnrichedCertificateData = await enrichedData.filter(
+            (enrichedCertificateData) => {
+                const ownerOf = enrichedCertificateData.certificate.isOwned;
+                const claimed = enrichedCertificateData.certificate.isClaimed;
 
-            return (
-                checkRecordPassesFilters(
-                    enrichedCertificateData,
-                    requestedFilters,
-                    deviceTypeService
-                ) &&
-                ((ownerOf && selectedState === SelectedState.Inbox) ||
-                    (claimed && selectedState === SelectedState.Claimed))
-            );
-        });
+                return (
+                    checkRecordPassesFilters(
+                        enrichedCertificateData,
+                        requestedFilters,
+                        deviceTypeService
+                    ) &&
+                    ((ownerOf && selectedState === SelectedState.Inbox) ||
+                        (claimed && selectedState === SelectedState.Claimed))
+                );
+            }
+        );
 
         const sortedEnrichedData = sortData(filteredIEnrichedCertificateData);
 
@@ -200,7 +195,7 @@ export function CertificateTable(props: IProps) {
 
         const certificate = certificates.find((cert) => cert.id === certificateId);
 
-        if (certificate && certificate.isOwned(userAddress)) {
+        if (certificate && certificate.isOwned) {
             dispatch(setLoading(true));
             await certificate.claim();
             dispatch(setLoading(false));
@@ -219,10 +214,6 @@ export function CertificateTable(props: IProps) {
         if (![SelectedState.Claimed].includes(selectedState)) {
             return [];
         }
-
-        const maxCertificateEnergyInDisplayUnit = EnergyFormatter.getValueInDisplayUnit(
-            certificates.reduce((a, b) => (b.energy > a ? b.energy : a), 0)
-        );
 
         const filters: ICustomFilterDefinition[] = [
             {
@@ -269,15 +260,26 @@ export function CertificateTable(props: IProps) {
                 }
             },
             {
-                property: (record: IEnrichedCertificateData): number =>
-                    EnergyFormatter.getValueInDisplayUnit(record?.certificate?.energy),
+                property: (record: IEnrichedCertificateData): string => {
+                    const ownedEnergy = record?.certificate?.energy;
+                    if (ownedEnergy) {
+                        let energy;
+
+                        if (selectedState === SelectedState.Claimed) {
+                            energy = ownedEnergy.claimedVolume;
+                        } else {
+                            energy = ownedEnergy.publicVolume.add(ownedEnergy.privateVolume);
+                        }
+
+                        return EnergyFormatter.getValueInDisplayUnit(energy).toString();
+                    }
+                    return EnergyFormatter.getValueInDisplayUnit(null).toString();
+                },
                 label: `${t('certificate.properties.certifiedEnergy')} (${
                     EnergyFormatter.displayUnit
                 })`,
                 input: {
-                    type: CustomFilterInputType.slider,
-                    min: 0,
-                    max: maxCertificateEnergyInDisplayUnit
+                    type: CustomFilterInputType.string
                 }
             }
         ];
@@ -297,7 +299,11 @@ export function CertificateTable(props: IProps) {
                 .filter((item, index) => selectedIndexes.includes(index?.toString()))
                 .map((i) => i.certificate);
 
-            const energy = includedCertificates.reduce((a, b) => a + b.energy, 0);
+            const energy = includedCertificates.reduce((a, b) => {
+                const { publicVolume, privateVolume } = b.energy;
+                const totalOwned = publicVolume.add(privateVolume);
+                return a.add(totalOwned);
+            }, bigNumberify(0));
 
             return `${t('certificate.feedback.amountSelected', {
                 amount: selectedIndexes.length
@@ -373,11 +379,20 @@ export function CertificateTable(props: IProps) {
             sortProperties: [
                 [
                     (record: IEnrichedCertificateData) => {
-                        const owned = record?.certificate?.ownedVolume();
+                        const owned = record?.certificate?.energy;
                         if (!owned) return null;
-                        return owned.publicVolume + owned.privateVolume;
+
+                        let energy;
+
+                        if (selectedState === SelectedState.Claimed) {
+                            energy = owned.claimedVolume;
+                        } else {
+                            energy = owned.publicVolume.add(owned.privateVolume);
+                        }
+
+                        return energy.toString();
                     },
-                    (value: number) => value
+                    (value: string) => value
                 ]
             ]
         }
@@ -398,13 +413,19 @@ export function CertificateTable(props: IProps) {
             compliance = enrichedData.producingDevice.complianceRegistry;
         }
 
+        const { publicVolume, privateVolume, claimedVolume } = enrichedData.certificate.energy;
+
         return {
             deviceType,
             commissioningDate,
             deviceLocation: getDeviceLocationText(enrichedData.producingDevice),
             compliance,
             certificationDate: formatDate(moment.unix(enrichedData.certificate.creationTime)),
-            energy: EnergyFormatter.format(enrichedData.ownedVolume),
+            energy: EnergyFormatter.format(
+                selectedState === SelectedState.Claimed
+                    ? claimedVolume
+                    : publicVolume.add(privateVolume)
+            ),
             gridOperator: enrichedData?.gridOperatorText
         };
     });

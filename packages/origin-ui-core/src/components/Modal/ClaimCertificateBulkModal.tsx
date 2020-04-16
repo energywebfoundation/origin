@@ -1,5 +1,5 @@
 import React from 'react';
-import { Certificate } from '@energyweb/issuer';
+import { Certificate, CertificateUtils } from '@energyweb/issuer';
 import { showNotification, NotificationType } from '../../utils/notifications';
 import {
     Button,
@@ -12,9 +12,10 @@ import {
 import { useSelector } from 'react-redux';
 import { getConfiguration } from '../../features/selectors';
 import { EnergyFormatter } from '../../utils/EnergyFormatter';
+import { bigNumberify } from 'ethers/utils';
 
 interface IProps {
-    certificates: Certificate.Entity[];
+    certificates: Certificate[];
     showModal: boolean;
     callback: () => void;
 }
@@ -29,14 +30,17 @@ export function ClaimCertificateBulkModal(props: IProps) {
     async function claimCertificates() {
         const certificateIds: number[] = props.certificates.map((cert) => cert.id);
 
-        await Certificate.claimCertificates(certificateIds, configuration);
+        await CertificateUtils.claimCertificates(certificateIds, configuration);
 
         showNotification(`Certificates have been claimed.`, NotificationType.Success);
         handleClose();
     }
 
     const totalEnergy = EnergyFormatter.format(
-        props.certificates.reduce((a, b) => a + Number(b.energy), 0),
+        props.certificates.reduce((a, b) => {
+            const energy = b.energy.publicVolume.add(b.energy.privateVolume);
+            return a.add(energy);
+        }, bigNumberify(0)),
         true
     );
 

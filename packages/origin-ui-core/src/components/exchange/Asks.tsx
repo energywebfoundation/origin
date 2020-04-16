@@ -65,7 +65,11 @@ export function Asks(props: Props) {
         energy: Yup.number()
             .positive()
             .integer()
-            .max(EnergyFormatter.getValueInDisplayUnit(selectedOrder?.volume) ?? 0)
+            .max(
+                selectedOrder
+                    ? EnergyFormatter.getValueInDisplayUnit(selectedOrder.volume).toNumber()
+                    : 0
+            )
             .label(t('exchange.properties.energy'))
     });
 

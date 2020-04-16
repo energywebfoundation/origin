@@ -82,7 +82,7 @@ describe('Deposits using deployed registry', () => {
         )) as ContractTransaction).wait();
 
         const { args } = approvalReceipt.events.find(
-            (e) => e.event === 'ApprovedCertificationRequest'
+            (e) => e.event === 'CertificationRequestApproved'
         );
 
         return args[2].toString();

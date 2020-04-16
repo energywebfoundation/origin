@@ -1,19 +1,14 @@
+import { ethers } from 'ethers';
 import { call, put, select, take, all, fork, apply, cancel } from 'redux-saga/effects';
-import { SagaIterator, eventChannel } from 'redux-saga';
+import { SagaIterator } from 'redux-saga';
 import { setContractsLookup } from './actions';
 import { getSearch } from 'connected-react-router';
 import { getConfiguration } from '../selectors';
 import * as queryString from 'query-string';
 import * as Winston from 'winston';
-import { Certificate, Registry, Issuer } from '@energyweb/issuer';
+import { Certificate, Contracts, CertificateUtils } from '@energyweb/issuer';
 import { IOffChainDataSource, IConfigurationClient } from '@energyweb/origin-backend-client';
-import {
-    Configuration,
-    ContractEventHandler,
-    EventHandlerManager,
-    DeviceTypeService
-} from '@energyweb/utils-general';
-import Web3 from 'web3';
+import { Configuration, DeviceTypeService } from '@energyweb/utils-general';
 
 import { configurationUpdated } from '../actions';
 import { ProducingDevice } from '@energyweb/device-registry';
@@ -30,7 +25,8 @@ import { IStoreState } from '../../types';
 import { getOffChainDataSource, getEnvironment } from '../general/selectors';
 import { getContractsLookup } from './selectors';
 import { IContractsLookup, IOrganizationWithRelationsIds } from '@energyweb/origin-backend-core';
-import { addOrganizations } from '../users/actions';
+import { addOrganizations, setActiveBlockchainAccountAddress } from '../users/actions';
+import { BigNumber } from 'ethers/utils';
 
 enum ERROR {
     WRONG_NETWORK_OR_CONTRACT_ADDRESS = "Please make sure you've chosen correct blockchain network and the contract address is valid."
@@ -42,15 +38,15 @@ async function initConf(
     offChainDataSource: IOffChainDataSource,
     environmentWeb3: string
 ): Promise<IStoreState['configuration']> {
-    let web3: Web3 = null;
+    let web3: ethers.providers.JsonRpcProvider = null;
     const params = queryString.parse(routerSearch);
 
     const ethereumProvider = (window as any).ethereum;
 
     if (params.rpc) {
-        web3 = new Web3(params.rpc as string);
+        web3 = new ethers.providers.JsonRpcProvider(params.rpc as string);
     } else if (ethereumProvider) {
-        web3 = new Web3(ethereumProvider);
+        web3 = new ethers.providers.Web3Provider(ethereumProvider);
         try {
             // Request account access if needed
             await ethereumProvider.enable();
@@ -58,15 +54,19 @@ async function initConf(
             // User denied account access...
         }
     } else if ((window as any).web3) {
-        web3 = new Web3(web3.currentProvider);
+        web3 = new ethers.providers.Web3Provider((window as any).web3.currentProvider);
     } else if (environmentWeb3) {
-        web3 = new Web3(environmentWeb3);
+        web3 = new ethers.providers.JsonRpcProvider(environmentWeb3);
     }
 
+    const accounts = await web3.listAccounts();
+    const signer = web3.getSigner(accounts[0]);
+
     const blockchainProperties: Configuration.BlockchainProperties = {
-        registry: new Registry(web3, contractsLookup.registry),
-        issuer: new Issuer(web3, contractsLookup.issuer),
-        web3
+        registry: Contracts.factories.RegistryFactory.connect(contractsLookup.registry, signer),
+        issuer: Contracts.factories.IssuerFactory.connect(contractsLookup.issuer, signer),
+        web3,
+        activeUser: signer
     };
 
     return {
@@ -90,66 +90,21 @@ function* initEventHandler() {
         return;
     }
 
-    try {
-        const currentBlockNumber: number = yield call(
-            configuration.blockchainProperties.web3.eth.getBlockNumber
-        );
-
-        const eventHandlerManager: EventHandlerManager = new EventHandlerManager(
-            4000,
-            configuration
-        );
-
-        const registryContractEventHandler: ContractEventHandler = new ContractEventHandler(
-            configuration.blockchainProperties.registry,
-            currentBlockNumber
-        );
-
-        const channel = eventChannel((emitter) => {
-            registryContractEventHandler.onEvent('ClaimSingle', async (event: any) => {
-                const id = Number(event.returnValues._id);
-
-                if (typeof id !== 'string') {
-                    return;
-                }
-
-                emitter({
-                    action: requestCertificateEntityFetch(id)
-                });
-            });
-
-            registryContractEventHandler.onEvent('IssuanceSingle', async (event: any) => {
-                const id = Number(event.returnValues._id);
-
-                if (typeof id !== 'string') {
-                    return;
-                }
-
-                emitter({
-                    action: requestCertificateEntityFetch(id)
-                });
-            });
-
-            return () => {
-                eventHandlerManager.stop();
-            };
-        });
-
-        eventHandlerManager.registerEventHandler(registryContractEventHandler);
-        eventHandlerManager.start();
-
-        while (true) {
-            const { action } = yield take(channel);
-
-            if (!action) {
-                break;
+    configuration.blockchainProperties.registry
+        .on(
+            'ClaimSingle',
+            async (
+                _claimIssuer: string,
+                _claimSubject: string,
+                _topic: BigNumber,
+                _id: BigNumber
+            ) => {
+                put(requestCertificateEntityFetch(_id.toNumber()));
             }
-
-            yield put(action);
-        }
-    } catch (error) {
-        console.error('initEventHandler() error', error);
-    }
+        )
+        .on('IssuanceSingle', async (sender: string, topic: BigNumber, id: BigNumber) => {
+            put(requestCertificateEntityFetch(id?.toNumber()));
+        });
 }
 
 async function getContractsLookupFromAPI(configurationClient: IConfigurationClient) {
@@ -214,7 +169,14 @@ function* fillContractLookupIfMissing(): SagaIterator {
                 environment.WEB3
             );
 
+            const userAddress = yield apply(
+                configuration.blockchainProperties.activeUser,
+                configuration.blockchainProperties.activeUser.getAddress,
+                []
+            );
+
             yield put(configurationUpdated(configuration));
+            yield put(setActiveBlockchainAccountAddress(userAddress));
 
             yield put(setLoading(false));
         } catch (error) {
@@ -236,9 +198,9 @@ function* fillContractLookupIfMissing(): SagaIterator {
                 yield put(producingDeviceCreatedOrUpdated(device));
             }
 
-            const certificates: Certificate.Entity[] = yield apply(
+            const certificates: Certificate[] = yield apply(
                 Certificate,
-                Certificate.getAllCertificates,
+                CertificateUtils.getAllCertificates,
                 [configuration]
             );
 

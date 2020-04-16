@@ -34,7 +34,7 @@ function* requestCertificatesSaga(): SagaIterator {
         const { startTime, endTime, energy, files, deviceId } = action.payload;
 
         try {
-            yield apply(CertificationRequest, CertificationRequest.createCertificationRequest, [
+            yield apply(CertificationRequest, CertificationRequest.create, [
                 startTime,
                 endTime,
                 energy,
@@ -88,9 +88,9 @@ function* fetchCertificateSaga(id: number, entitiesBeingFetched: any): SagaItera
         return;
     }
 
-    const entities: Certificate.Entity[] = yield select(getCertificates);
+    const entities: Certificate[] = yield select(getCertificates);
 
-    const existingEntity: Certificate.Entity = yield call(getCertificateById, entities, id);
+    const existingEntity: Certificate = yield call(getCertificateById, entities, id);
 
     const configuration: IStoreState['configuration'] = yield select(getConfiguration);
     const fetcher: ICertificateFetcher = yield select(getCertificateFetcher);
@@ -99,13 +99,13 @@ function* fetchCertificateSaga(id: number, entitiesBeingFetched: any): SagaItera
 
     try {
         if (existingEntity) {
-            const reloadedEntity: Certificate.Entity = yield call(fetcher.reload, existingEntity);
+            const reloadedEntity: Certificate = yield call(fetcher.reload, existingEntity);
 
             if (reloadedEntity) {
                 yield put(updateCertificate(reloadedEntity));
             }
         } else {
-            const fetchedEntity: Certificate.Entity = yield call(fetcher.fetch, id, configuration);
+            const fetchedEntity: Certificate = yield call(fetcher.fetch, id, configuration);
 
             if (fetchedEntity) {
                 yield put(addCertificate(fetchedEntity));

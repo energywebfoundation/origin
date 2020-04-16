@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import moment from 'moment';
+import { ContractTransaction } from 'ethers';
+import { BigNumber, bigNumberify } from 'ethers/utils';
 
 import { ProducingDevice } from '@energyweb/device-registry';
 import {
@@ -19,8 +21,6 @@ import { showNotification, NotificationType } from '../../utils/notifications';
 import { useSelector, useDispatch } from 'react-redux';
 import { getCurrencies, getExchangeClient } from '../../features/general/selectors';
 import { setLoading } from '../../features/general/actions';
-import BN from 'bn.js';
-import { TransactionReceipt } from 'web3-core';
 import { CommitmentStatus } from '@energyweb/origin-backend-core';
 import { formatDate, EnergyFormatter, countDecimals } from '../../utils';
 import { ITransfer } from '../../utils/exchange';
@@ -28,19 +28,19 @@ import { Certificate } from '@energyweb/issuer';
 import { getUserOffchain, getActiveBlockchainAccountAddress } from '../../features/users/selectors';
 
 interface IProps {
-    certificate: Certificate.Entity;
+    certificate: Certificate;
     producingDevice: ProducingDevice.Entity;
     showModal: boolean;
     callback: () => void;
 }
 
-const DEFAULT_ENERGY_IN_BASE_UNIT = 1;
+const DEFAULT_ENERGY_IN_BASE_UNIT = bigNumberify(1);
 
-function assertIsTransactionReceipt(
-    data: TransactionReceipt | CommitmentStatus
-): asserts data is TransactionReceipt {
-    if (typeof data === 'number' || !data.transactionHash) {
-        throw new Error(`Data.transactionHash is not present`);
+function assertIsContractTransaction(
+    data: ContractTransaction | CommitmentStatus
+): asserts data is ContractTransaction {
+    if (typeof data === 'number' || !data.hash) {
+        throw new Error(`Data.hash is not present`);
     }
 }
 
@@ -71,9 +71,7 @@ export function PublishForSaleModal(props: IProps) {
     useEffect(() => {
         if (certificate) {
             setEnergyInDisplayUnit(
-                EnergyFormatter.getValueInDisplayUnit(
-                    certificate.ownedVolume(user.blockchainAccountAddress).publicVolume
-                )
+                EnergyFormatter.getValueInDisplayUnit(certificate.energy.publicVolume)
             );
         }
     }, [certificate, user]);
@@ -107,12 +105,12 @@ export function PublishForSaleModal(props: IProps) {
         }
 
         dispatch(setLoading(true));
-        const amountAsBN = new BN(energyInBaseUnit);
+        const amountAsBN = new BigNumber(energyInBaseUnit);
         const account = await exchangeClient.getAccount();
 
-        const transferResult = await certificate.transfer(account.address, amountAsBN.toNumber());
+        const transferResult = await certificate.transfer(account.address, amountAsBN);
 
-        assertIsTransactionReceipt(transferResult);
+        assertIsContractTransaction(transferResult);
 
         let transfer: ITransfer;
 
@@ -120,9 +118,7 @@ export function PublishForSaleModal(props: IProps) {
         while (true) {
             const transfers = await exchangeClient.getAllTransfers();
 
-            transfer = transfers.find(
-                (item) => item.transactionHash === transferResult.transactionHash
-            );
+            transfer = transfers.find((item) => item.transactionHash === transferResult.hash);
 
             if (transfer) {
                 break;
@@ -150,18 +146,16 @@ export function PublishForSaleModal(props: IProps) {
     async function validateInputs(event) {
         switch (event.target.id) {
             case 'energyInDisplayUnitInput':
-                const newEnergyInDisplayUnit = Number(event.target.value);
+                const newEnergyInDisplayUnit = bigNumberify(event.target.value);
                 const newEnergyInBaseValueUnit = EnergyFormatter.getBaseValueFromValueInDisplayUnit(
                     newEnergyInDisplayUnit
                 );
 
-                const ownedPublicVolume = certificate.ownedVolume(user.blockchainAccountAddress)
-                    .publicVolume;
+                const ownedPublicVolume = certificate.energy.publicVolume;
 
                 const energyInDisplayUnitValid =
-                    !isNaN(energyInDisplayUnit) &&
-                    newEnergyInBaseValueUnit >= 1 &&
-                    newEnergyInBaseValueUnit <= ownedPublicVolume &&
+                    newEnergyInBaseValueUnit.gte(1) &&
+                    newEnergyInBaseValueUnit.lt(ownedPublicVolume) &&
                     countDecimals(newEnergyInDisplayUnit) <= 6;
 
                 setEnergyInDisplayUnit(newEnergyInDisplayUnit);

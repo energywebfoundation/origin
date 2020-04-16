@@ -1,6 +1,7 @@
 import { Certificate } from '@energyweb/issuer';
 import { ProducingDevice } from '@energyweb/device-registry';
 import { IStoreState } from '../../types';
+import { BigNumber } from 'ethers/utils';
 
 export enum CertificatesActions {
     addCertificate = 'CERTIFICATE_CREATED',
@@ -15,10 +16,10 @@ export enum CertificatesActions {
 
 export interface IAddCertificateAction {
     type: CertificatesActions.addCertificate;
-    payload: Certificate.Entity;
+    payload: Certificate;
 }
 
-export const addCertificate = (payload: Certificate.Entity) => ({
+export const addCertificate = (payload: Certificate) => ({
     type: CertificatesActions.addCertificate,
     payload
 });
@@ -27,10 +28,10 @@ export type TAddCertificateAction = typeof addCertificate;
 
 export interface IUpdateCertificateAction {
     type: CertificatesActions.updateCertificate;
-    payload: Certificate.Entity;
+    payload: Certificate;
 }
 
-export const updateCertificate = (payload: Certificate.Entity) => ({
+export const updateCertificate = (payload: Certificate) => ({
     type: CertificatesActions.updateCertificate,
     payload
 });
@@ -41,7 +42,7 @@ export interface IRequestCertificatesAction {
     type: CertificatesActions.requestCertificates;
     payload: {
         deviceId: string;
-        energy: number;
+        energy: BigNumber;
         startTime: number;
         endTime: number;
         files: string[];
@@ -110,9 +111,9 @@ export const requestCertificateEntityFetch = (
 export type TRequestUserCertificateEntityFetchAction = typeof requestCertificateEntityFetch;
 
 export interface ICertificateFetcher {
-    fetch(id: number, configuration: IStoreState['configuration']): Promise<Certificate.Entity>;
+    fetch(id: number, configuration: IStoreState['configuration']): Promise<Certificate>;
 
-    reload(entity: Certificate.Entity): Promise<Certificate.Entity>;
+    reload(entity: Certificate): Promise<Certificate>;
 }
 
 export interface IUpdateFetcherAction {
