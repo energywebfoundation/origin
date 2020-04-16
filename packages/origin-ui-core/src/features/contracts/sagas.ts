@@ -91,15 +91,17 @@ function* initEventHandler() {
     }
 
     configuration.blockchainProperties.registry
-        .on('ClaimSingle', async (event: any) => {
-            const id = Number(event.returnValues._id);
-
-            if (typeof id !== 'string') {
-                return;
+        .on(
+            'ClaimSingle',
+            async (
+                _claimIssuer: string,
+                _claimSubject: string,
+                _topic: BigNumber,
+                _id: BigNumber
+            ) => {
+                put(requestCertificateEntityFetch(_id.toNumber()));
             }
-
-            put(requestCertificateEntityFetch(id));
-        })
+        )
         .on('IssuanceSingle', async (sender: string, topic: BigNumber, id: BigNumber) => {
             put(requestCertificateEntityFetch(id?.toNumber()));
         });

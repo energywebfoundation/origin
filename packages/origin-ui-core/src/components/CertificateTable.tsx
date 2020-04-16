@@ -261,10 +261,17 @@ export function CertificateTable(props: IProps) {
             },
             {
                 property: (record: IEnrichedCertificateData): string => {
-                    const energy = record?.certificate?.energy;
-                    if (energy) {
-                        const totalOwnedEnergy = energy.publicVolume.add(energy.privateVolume);
-                        return EnergyFormatter.getValueInDisplayUnit(totalOwnedEnergy).toString();
+                    const ownedEnergy = record?.certificate?.energy;
+                    if (ownedEnergy) {
+                        let energy;
+
+                        if (selectedState === SelectedState.Claimed) {
+                            energy = ownedEnergy.claimedVolume;
+                        } else {
+                            energy = ownedEnergy.publicVolume.add(ownedEnergy.privateVolume);
+                        }
+
+                        return EnergyFormatter.getValueInDisplayUnit(energy).toString();
                     }
                     return EnergyFormatter.getValueInDisplayUnit(null).toString();
                 },
@@ -374,7 +381,16 @@ export function CertificateTable(props: IProps) {
                     (record: IEnrichedCertificateData) => {
                         const owned = record?.certificate?.energy;
                         if (!owned) return null;
-                        return owned.publicVolume.add(owned.privateVolume).toString();
+
+                        let energy;
+
+                        if (selectedState === SelectedState.Claimed) {
+                            energy = owned.claimedVolume;
+                        } else {
+                            energy = owned.publicVolume.add(owned.privateVolume);
+                        }
+
+                        return energy.toString();
                     },
                     (value: string) => value
                 ]
@@ -397,13 +413,19 @@ export function CertificateTable(props: IProps) {
             compliance = enrichedData.producingDevice.complianceRegistry;
         }
 
+        const { publicVolume, privateVolume, claimedVolume } = enrichedData.certificate.energy;
+
         return {
             deviceType,
             commissioningDate,
             deviceLocation: getDeviceLocationText(enrichedData.producingDevice),
             compliance,
             certificationDate: formatDate(moment.unix(enrichedData.certificate.creationTime)),
-            energy: EnergyFormatter.format(enrichedData.certificate.energy.publicVolume),
+            energy: EnergyFormatter.format(
+                selectedState === SelectedState.Claimed
+                    ? claimedVolume
+                    : publicVolume.add(privateVolume)
+            ),
             gridOperator: enrichedData?.gridOperatorText
         };
     });
