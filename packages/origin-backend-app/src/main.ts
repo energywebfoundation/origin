@@ -19,11 +19,17 @@ export async function startAPI(logger?: LoggerService) {
             return 'unknown';
         }
 
-        return JSON.parse(info.toString()).version;
+        const parsed = JSON.parse(info.toString());
+
+        return {
+            'origin-backend-app': parsed.version,
+            exchange: parsed.dependencies['@energyweb/exchange'],
+            'origin-backend': parsed.dependencies['@energyweb/origin-backend']
+        };
     };
 
     console.log(`Backend starting on port: ${PORT}`);
-    console.log(`Backend version: ${getVersion()}`);
+    console.log(`Backend versions: ${JSON.stringify(getVersion())}`);
 
     const app = await NestFactory.create(OriginAppModule.register(null));
     app.enableCors();
