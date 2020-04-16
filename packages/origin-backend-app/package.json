@@ -10,7 +10,7 @@
         "start:prod": "node dist/main",
         "prebuild": "shx rm -rf dist",
         "build": "yarn build:ts",
-        "build:ts": "tsc -b tsconfig.build.json --verbose --pretty",
+        "build:ts": "nest build -p tsconfig.build.json --tsc",
         "build:container:canary": "make build-canary push",
         "build:container:latest": "make build-latest push",
         "prettier": "prettier --write --config-precedence file-override './src/**/*'",
@@ -41,10 +41,12 @@
         "@nestjs/common": "7.0.7",
         "@nestjs/config": "^0.4.0",
         "@nestjs/core": "7.0.7",
+        "@nestjs/swagger": "4.5.1",
         "body-parser": "1.19.0",
         "class-validator": "0.11.1",
         "cors": "2.8.5",
-        "dotenv": "8.2.0"
+        "dotenv": "8.2.0",
+        "swagger-ui-express": "4.1.4"
     },
     "devDependencies": {
         "axios": "0.19.2",
