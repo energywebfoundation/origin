@@ -17,46 +17,8 @@ program.option(
     '-e, --env <env_file_path>',
     'path to the .env file or system variables when not set'
 );
-program.option(
-    '-f, --force',
-    'WARNING: Drop existing and migrate, allowed only when MODE is not set to PRODUCTION',
-    false
-);
 
 program.parse(process.argv);
-
-const absolutePath = (relativePath: string) => {
-    if (!relativePath) {
-        throw new Error('Path not set');
-    }
-
-    const resolved = path.resolve(__dirname, relativePath);
-
-    if (!fs.existsSync(resolved)) {
-        throw new Error(`Path ${resolved} does not exist`);
-    }
-
-    return resolved;
-};
-
-async function createSchema(client: Client, drop: boolean) {
-    try {
-        if (drop) {
-            await client.query('DROP SCHEMA IF EXISTS public CASCADE');
-        }
-
-        await client.query('CREATE SCHEMA IF NOT EXISTS public');
-
-        logger.info('Migrating tables to the database...');
-        const createTablesQuery = fs
-            .readFileSync(absolutePath('./schema/create_tables.sql'))
-            .toString();
-        await client.query(createTablesQuery);
-    } catch (e) {
-        logger.error(e);
-        process.exit(1);
-    }
-}
 
 async function connectToDB() {
     const postgresConfig: ClientConfig = process.env.DATABASE_URL
@@ -127,7 +89,18 @@ async function isFirstMigration(client: Client) {
         const { rows } = await client.query('SELECT * FROM public.configuration;');
         return rows[0]?.contractsLookup === undefined;
     } catch (e) {
+        logger.error(e.message);
+        return false;
+    }
+}
+
+async function hasSchema(client: Client) {
+    try {
+        await client.query('SELECT * FROM public.configuration;');
         return true;
+    } catch (e) {
+        logger.error(e.message);
+        return false;
     }
 }
 
@@ -157,36 +130,40 @@ try {
         initEnv();
 
         const dbClient = await connectToDB();
+        const isMigrated = await hasSchema(dbClient);
+
+        if (!isMigrated) {
+            logger.error('Seems that migration script for SQL has not been run before.');
+            process.exit(1);
+        }
+
         const isFirst = await isFirstMigration(dbClient);
 
         logger.info(`Is first migration: ${isFirst}`);
-        logger.info(`Is force set: ${program.force}`);
-        logger.info(`MODE=${process.env.MODE ?? '<Not set>'}`);
 
-        if (isFirst || (program.force && process.env.MODE !== 'production')) {
-            if (!program.config || !fs.existsSync(program.config)) {
-                throw new Error('Config path is missing or path does not exist');
-            }
-            if (!process.env.WEB3) {
-                throw new Error('process.env.WEB3 is missing');
-            }
-            if (!process.env.DEPLOY_KEY) {
-                throw new Error('process.env.DEPLOY_KEY is missing');
-            }
-
-            await createSchema(dbClient, program.force);
-
-            logger.info(`Deploying contracts to ${process.env.WEB3}...`);
-            const contractsLookup = await deployContracts();
-
-            await importConfiguration(dbClient, program.config, contractsLookup);
-
-            await importSeed(dbClient, program.seedFile);
+        if (!isFirst) {
+            logger.info('Migration script assumes that contracts were not previously deployed');
+            process.exit(0);
         }
 
-        process.exit(0);
+        if (!program.config || !fs.existsSync(program.config)) {
+            throw new Error('Config path is missing or path does not exist');
+        }
+        if (!process.env.WEB3) {
+            throw new Error('process.env.WEB3 is missing');
+        }
+        if (!process.env.DEPLOY_KEY) {
+            throw new Error('process.env.DEPLOY_KEY is missing');
+        }
 
-        // TODO: incremental migrations
+        logger.info(`Deploying contracts to ${process.env.WEB3}...`);
+        const contractsLookup = await deployContracts();
+
+        await importConfiguration(dbClient, program.config, contractsLookup);
+
+        await importSeed(dbClient, program.seedFile);
+
+        process.exit(0);
     })();
 } catch (e) {
     process.exit(1);
