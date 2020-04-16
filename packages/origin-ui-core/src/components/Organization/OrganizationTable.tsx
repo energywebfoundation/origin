@@ -119,7 +119,7 @@ export function OrganizationTable() {
               {
                   icon: <Check />,
                   name: 'Approve',
-                  onClick: (row: number) => approve(row)
+                  onClick: (index: string) => approve(parseInt(index, 10))
               }
           ]
         : [];
@@ -149,7 +149,7 @@ export function OrganizationTable() {
             total={total}
             pageSize={pageSize}
             actions={actions}
-            handleRowClick={viewEntity}
+            handleRowClick={(index: string) => viewEntity(parseInt(index, 10))}
         />
     );
 }

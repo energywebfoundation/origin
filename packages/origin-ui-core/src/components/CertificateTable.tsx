@@ -291,10 +291,10 @@ export function CertificateTable(props: IProps) {
         setShowClaimBulkModal(false);
     }
 
-    function customSelectCounterGenerator(selectedIndexes: number[]) {
+    function customSelectCounterGenerator(selectedIndexes: string[]) {
         if (selectedIndexes.length > 0) {
             const includedCertificates = paginatedData
-                .filter((item, index) => selectedIndexes.includes(index))
+                .filter((item, index) => selectedIndexes.includes(index?.toString()))
                 .map((i) => i.certificate);
 
             const energy = includedCertificates.reduce((a, b) => a + b.energy, 0);
@@ -424,7 +424,9 @@ export function CertificateTable(props: IProps) {
                 batchableActions={batchableActions}
                 customSelectCounterGenerator={customSelectCounterGenerator}
                 filters={filters}
-                handleRowClick={(row: number) => showCertificateDetails(row)}
+                handleRowClick={(rowIndex: string) =>
+                    showCertificateDetails(parseInt(rowIndex, 10))
+                }
                 actions={actions}
                 currentSort={currentSort}
                 sortAscending={sortAscending}

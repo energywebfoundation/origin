@@ -127,7 +127,7 @@ export function CertificationRequestsTable(props: IProps) {
                   {
                       icon: <Check />,
                       name: 'Approve',
-                      onClick: (row: number) => approve(row)
+                      onClick: (row: string) => approve(parseInt(row, 10))
                   }
               ]
             : [];

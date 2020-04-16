@@ -23,7 +23,7 @@ import {
     CustomCounterGeneratorFunction
 } from './ColumnBatchActions';
 
-type TableOnSelectFunction = (index: number, selected: boolean) => void;
+type TableOnSelectFunction = (id: string, selected: boolean) => void;
 
 export interface ITableColumn {
     id: string;
@@ -43,14 +43,18 @@ export type TTableRow<T extends string> = {
     [key in T]: ReactNode;
 };
 
-export interface ICustomRow {
-    renderAfterIndex: number;
+export interface ICustomRow<T extends any> {
+    shouldDisplay: (row: T) => boolean;
     display: React.ReactElement;
+}
+
+export function getRowId(row: { id?: string }, index: number): string {
+    return row?.id ?? index?.toString();
 }
 
 interface IProps<T extends readonly ITableColumn[]> {
     columns: T;
-    rows: TTableRow<GetReadonlyArrayItemType<T>['id']>[];
+    rows: (TTableRow<GetReadonlyArrayItemType<T>['id']> & { id?: string })[];
 
     loadPage?: (page: number, filters?: ICustomFilter[]) => void | Promise<any>;
     pageSize?: number;
@@ -61,16 +65,16 @@ interface IProps<T extends readonly ITableColumn[]> {
     sortAscending?: boolean;
     toggleSort?: (sortType: CurrentSortType) => void;
     filters?: ICustomFilterDefinition[];
-    handleRowClick?: (rowIndex: number) => void;
+    handleRowClick?: (rowId: string) => void;
     batchableActions?: IBatchableAction[];
     customSelectCounterGenerator?: CustomCounterGeneratorFunction;
-    highlightedRowsIndexes?: number[];
-    customRow?: ICustomRow;
+    highlightedRowsIds?: string[];
+    customRow?: ICustomRow<TTableRow<GetReadonlyArrayItemType<T>['id']> & { id?: string }>;
 }
 
 export function TableMaterial<T extends readonly ITableColumn[]>(props: IProps<T>) {
     const [currentPage, setCurrentPage] = useState(1);
-    const [selectedIndexes, setSelectedIndexes] = useState([]);
+    const [selectedIds, setSelectedIds] = useState<string[]>([]);
 
     async function loadPage(page: number, filters?: ICustomFilter[]) {
         await props.loadPage(page, filters);
@@ -82,36 +86,34 @@ export function TableMaterial<T extends readonly ITableColumn[]>(props: IProps<T
         loadPage(1, filters);
     }
 
-    function itemSelectionChanged(index: number, selected: boolean) {
-        let newSelectedIndexes = selectedIndexes;
+    function itemSelectionChanged(id: string, selected: boolean) {
+        let newSelectedIndexes = selectedIds;
 
         if (selected) {
-            if (!newSelectedIndexes.includes(index)) {
-                newSelectedIndexes = [...selectedIndexes, index];
+            if (!newSelectedIndexes.includes(id)) {
+                newSelectedIndexes = [...selectedIds, id];
             }
-        } else if (newSelectedIndexes.includes(index)) {
-            newSelectedIndexes = newSelectedIndexes.filter(
-                (selectedIndex) => selectedIndex !== index
-            );
+        } else if (newSelectedIndexes.includes(id)) {
+            newSelectedIndexes = newSelectedIndexes.filter((selectedIndex) => selectedIndex !== id);
         }
 
-        setSelectedIndexes(newSelectedIndexes);
+        setSelectedIds(newSelectedIndexes);
     }
 
     function resetSelection() {
-        setSelectedIndexes([]);
+        setSelectedIds([]);
     }
 
     function setAllItemsSelectedProperty(checked: boolean) {
         if (checked) {
-            setSelectedIndexes(props.rows.map((row, index) => index));
+            setSelectedIds(props.rows.map((row, index) => index?.toString()));
         } else {
             resetSelection();
         }
     }
 
     const {
-        customRow: arbitraryRow,
+        customRow,
         columns,
         pageSize,
         rows,
@@ -124,11 +126,11 @@ export function TableMaterial<T extends readonly ITableColumn[]>(props: IProps<T
         batchableActions,
         customSelectCounterGenerator,
         toggleSort,
-        highlightedRowsIndexes
+        highlightedRowsIds: highlightedRowsIndexes
     } = props;
 
-    if (selectedIndexes.length > rows.length) {
-        setSelectedIndexes([]);
+    if (selectedIds.length > rows.length) {
+        setSelectedIds([]);
     }
 
     const zeroIndexBasedPage = currentPage - 1;
@@ -152,21 +154,13 @@ export function TableMaterial<T extends readonly ITableColumn[]>(props: IProps<T
 
     const classes = useStyles(useTheme());
 
-    const tableRows = arbitraryRow
-        ? [
-              ...rows.slice(0, arbitraryRow.renderAfterIndex + 1),
-              arbitraryRow,
-              ...rows.slice(arbitraryRow.renderAfterIndex + 1)
-          ]
-        : rows;
-
     return (
         <>
             <FiltersHeader filters={filters} filtersChanged={filtersChanged} />
 
             <ColumnBatchActions
                 batchableActions={batchableActions}
-                selectedIndexes={selectedIndexes}
+                selectedIds={selectedIds}
                 customCounterGenerator={customSelectCounterGenerator}
             />
 
@@ -179,12 +173,12 @@ export function TableMaterial<T extends readonly ITableColumn[]>(props: IProps<T
                                     <TableCell padding="checkbox">
                                         <Checkbox
                                             indeterminate={
-                                                selectedIndexes.length > 0 &&
-                                                selectedIndexes.length < rows.length
+                                                selectedIds.length > 0 &&
+                                                selectedIds.length < rows.length
                                             }
                                             checked={
-                                                selectedIndexes.length !== 0 &&
-                                                selectedIndexes.length === rows.length
+                                                selectedIds.length !== 0 &&
+                                                selectedIds.length === rows.length
                                             }
                                             onChange={(e) =>
                                                 setAllItemsSelectedProperty(e.target.checked)
@@ -227,77 +221,68 @@ export function TableMaterial<T extends readonly ITableColumn[]>(props: IProps<T
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {tableRows.map((row, rowIndex) => {
-                                const index =
-                                    arbitraryRow && arbitraryRow.renderAfterIndex < rowIndex
-                                        ? rowIndex - 1
-                                        : rowIndex;
-
-                                if (typeof (row as ICustomRow).renderAfterIndex !== 'undefined') {
-                                    return (
-                                        <TableRow tabIndex={-1} key={`${index}-details`}>
-                                            {arbitraryRow.display}
-                                        </TableRow>
-                                    );
-                                }
-
-                                const isItemSelected = selectedIndexes.includes(index);
-
-                                const rowStyle = highlightedRowsIndexes?.includes(index)
+                            {rows.map((row, rowIndex) => {
+                                const id = getRowId(row, rowIndex);
+                                const isItemSelected = selectedIds.includes(id);
+                                const rowStyle = highlightedRowsIndexes?.includes(id)
                                     ? {
                                           background: '#424242'
                                       }
                                     : {};
 
                                 return (
-                                    <TableRow
-                                        hover
-                                        role="checkbox"
-                                        tabIndex={-1}
-                                        key={index}
-                                        style={rowStyle}
-                                    >
-                                        {showBatchableActions && (
-                                            <TableCell padding="checkbox">
-                                                <Checkbox
-                                                    checked={isItemSelected}
-                                                    onChange={(e) =>
-                                                        itemSelectionChanged(
-                                                            index,
-                                                            e.target.checked
-                                                        )
-                                                    }
-                                                    color="primary"
-                                                />
-                                            </TableCell>
-                                        )}
-                                        {columns.map((column) => {
-                                            const value = row[column.id];
-                                            return (
-                                                <TableCell
-                                                    onClick={
-                                                        handleRowClick &&
-                                                        (() => handleRowClick(index))
-                                                    }
-                                                    className={
-                                                        handleRowClick ? 'cursor-pointer' : ''
-                                                    }
-                                                    key={column.id}
-                                                    align={column.align}
-                                                >
-                                                    {value}
+                                    <React.Fragment key={id}>
+                                        <TableRow
+                                            hover
+                                            role="checkbox"
+                                            tabIndex={-1}
+                                            style={rowStyle}
+                                        >
+                                            {showBatchableActions && (
+                                                <TableCell padding="checkbox">
+                                                    <Checkbox
+                                                        checked={isItemSelected}
+                                                        onChange={(e) =>
+                                                            itemSelectionChanged(
+                                                                id,
+                                                                e.target.checked
+                                                            )
+                                                        }
+                                                        color="primary"
+                                                    />
                                                 </TableCell>
-                                            );
-                                        })}
-                                        {actions && actions.length > 0 && (
-                                            <TableCell
-                                                key={index}
-                                                className={classes.tableCellWrappingActions}
-                                            >
-                                                <Actions actions={actions} id={index} />
-                                            </TableCell>
+                                            )}
+                                            {columns.map((column) => {
+                                                const value = row[column.id];
+                                                return (
+                                                    <TableCell
+                                                        onClick={
+                                                            handleRowClick &&
+                                                            (() => handleRowClick(id))
+                                                        }
+                                                        className={
+                                                            handleRowClick ? 'cursor-pointer' : ''
+                                                        }
+                                                        key={column.id}
+                                                        align={column.align}
+                                                    >
+                                                        {value}
+                                                    </TableCell>
+                                                );
+                                            })}
+                                            {actions && actions.length > 0 && (
+                                                <TableCell
+                                                    key={id}
+                                                    className={classes.tableCellWrappingActions}
+                                                >
+                                                    <Actions actions={actions} id={id} />
+                                                </TableCell>
+                                            )}
+                                        </TableRow>
+                                        {customRow?.shouldDisplay(row) && (
+                                            <TableRow>{customRow.display}</TableRow>
                                         )}
-                                    </TableRow>
+                                    </React.Fragment>
                                 );
                             })}
                         </TableBody>

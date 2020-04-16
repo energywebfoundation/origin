@@ -232,7 +232,7 @@ export function ProducingDeviceTable(props: IOwnProps) {
                 total={total}
                 pageSize={pageSize}
                 filters={filters}
-                handleRowClick={(row) => viewDevice(row)}
+                handleRowClick={(index) => viewDevice(parseInt(index, 10))}
                 actions={actions}
             />
             {props.showAddDeviceButton && (

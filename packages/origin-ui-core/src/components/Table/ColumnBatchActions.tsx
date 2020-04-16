@@ -3,36 +3,36 @@ import { Button } from '@material-ui/core';
 
 export interface IBatchableAction {
     label: string;
-    handler: (selectedIndexes: number[]) => void;
+    handler: (selectedIds: string[]) => void;
 }
 
-export type CustomCounterGeneratorFunction = (selectedIndexes: number[]) => string;
+export type CustomCounterGeneratorFunction = (selectedIds: string[]) => string;
 
 interface IProps {
-    selectedIndexes: number[];
+    selectedIds: string[];
     batchableActions: IBatchableAction[];
     customCounterGenerator?: CustomCounterGeneratorFunction;
 }
 
 export class ColumnBatchActions extends Component<IProps> {
     handleAction(action: IBatchableAction) {
-        action.handler(this.props.selectedIndexes);
+        action.handler(this.props.selectedIds);
     }
 
     get counter(): string {
-        const { customCounterGenerator, selectedIndexes } = this.props;
+        const { customCounterGenerator, selectedIds } = this.props;
 
         if (customCounterGenerator) {
-            return customCounterGenerator(selectedIndexes);
+            return customCounterGenerator(selectedIds);
         }
 
-        return `${selectedIndexes.length} selected`;
+        return `${selectedIds.length} selected`;
     }
 
     render() {
-        const { batchableActions, selectedIndexes } = this.props;
+        const { batchableActions, selectedIds } = this.props;
 
-        return selectedIndexes.length ? (
+        return selectedIds.length ? (
             <div className="ColumnBatchActions">
                 <span className="ColumnBatchActions_counter">{this.counter}</span>
                 <div className="ColumnBatchActions_list">
