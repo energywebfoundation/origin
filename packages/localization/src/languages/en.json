@@ -77,7 +77,8 @@
                 "uploadUpToXImages": "Upload up to {amount} images",
                 "selectRegion": "Select region",
                 "selectProvince": "Select province",
-                "selectGridOperator": "Select grid operator"
+                "selectGridOperator": "Select grid operator",
+                "toRegisterADevice": "To register a device you need to fulfill following criteria:"
             }
         },
         "certificate": {
@@ -163,7 +164,10 @@
                 "unknownError": "Unknown error",
                 "createdByNoun": "Created by {fullName} from the Noun project",
                 "attachBlockchainAccountFirst": "You have to attach a blockchain address to your account.",
-                "noOrganization": "You need to be a part of an organization. You can create it or join existing one."
+                "noOrganization": "You need to be a part of an organization. You can create it or join existing one.",
+                "haveToBeLoggedInUser": "You need to be a logged in user.",
+                "userHasToBePartOfApprovedOrganization": "The user should be a part of an approved organization.",
+                "userHasToHaveBlockchainAccount": "The user has to have a blockchain account attached to the account."
             }
         },
         "importAccount": {

@@ -64,7 +64,7 @@ VALUES
         '2020',
         '1',
         'http://example.com',
-        '0'
+        '2'
     );
 
 INSERT INTO
@@ -119,7 +119,7 @@ VALUES
         '2020',
         '1',
         'http://example.com',
-        '0'
+        '2'
     );
 
 INSERT INTO
@@ -174,7 +174,7 @@ VALUES
         '2020',
         '1',
         'http://example.com',
-        '0'
+        '2'
     );
 
 INSERT INTO
@@ -229,7 +229,7 @@ VALUES
         '2020',
         '1',
         'http://example.com',
-        '0'
+        '2'
     );
 
 /*

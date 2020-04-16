@@ -1,6 +1,10 @@
 import { ProducingDevice } from '@energyweb/device-registry';
 import { IEnvironment } from '../features/general/actions';
 import { CustomFilterInputType, ICustomFilterDefinition } from '../components/Table/FiltersHeader';
+import { getUserOffchain } from '../features/users/selectors';
+import { useSelector } from 'react-redux';
+import { useTranslation } from '.';
+import { OrganizationStatus } from '@energyweb/origin-backend-core';
 
 type TranslateFunc = (key: string) => string;
 
@@ -143,4 +147,45 @@ export function getDeviceSpecificPropertiesSearchTitle(
     }
 
     return t('general.actions.search');
+}
+
+export interface IDevicePermissionRule {
+    label: string;
+    passing: boolean;
+}
+
+export interface IDevicePermission {
+    value: boolean;
+    rules: IDevicePermissionRule[];
+}
+
+export function useDevicePermissions() {
+    const user = useSelector(getUserOffchain);
+    const { t } = useTranslation();
+
+    const canCreateDevice: IDevicePermission = {
+        value: false,
+        rules: [
+            {
+                label: t('general.feedback.haveToBeLoggedInUser'),
+                passing: Boolean(user)
+            },
+            {
+                label: t('general.feedback.userHasToBePartOfApprovedOrganization'),
+                passing:
+                    Boolean(user?.organization) &&
+                    user?.organization?.status === OrganizationStatus.Active
+            },
+            {
+                label: t('general.feedback.userHasToHaveBlockchainAccount'),
+                passing: Boolean(user?.blockchainAccountAddress)
+            }
+        ]
+    };
+
+    canCreateDevice.value = canCreateDevice.rules.every((r) => r.passing);
+
+    return {
+        canCreateDevice
+    };
 }

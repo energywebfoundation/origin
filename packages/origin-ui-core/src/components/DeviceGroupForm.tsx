@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import moment from 'moment';
 import { Formik, Field, Form, FormikHelpers, FieldArray } from 'formik';
 import * as Yup from 'yup';
 import { TextField } from 'formik-material-ui';
@@ -22,11 +21,8 @@ import {
     TableBody
 } from '@material-ui/core';
 import { Skeleton } from '@material-ui/lab';
-
 import { Unit } from '@energyweb/utils-general';
 import { DeviceStatus, IExternalDeviceId } from '@energyweb/origin-backend-core';
-
-import { showNotification, NotificationType } from '../utils/notifications';
 import { getConfiguration } from '../features/selectors';
 import { getUserOffchain } from '../features/users/selectors';
 import { setLoading } from '../features/general/actions';
@@ -34,8 +30,17 @@ import { getCompliance, getCountry, getExternalDeviceIdTypes } from '../features
 import { HierarchicalMultiSelect } from './HierarchicalMultiSelect';
 import { ProducingDevice } from '@energyweb/device-registry';
 import { producingDeviceCreatedOrUpdated } from '../features/producingDevices/actions';
-import { PowerFormatter, useLinks } from '../utils';
+import {
+    PowerFormatter,
+    useLinks,
+    useDevicePermissions,
+    useTranslation,
+    showNotification,
+    NotificationType,
+    moment
+} from '../utils';
 import { FormInput } from './Form/FormInput';
+import { DevicePermissionsFeedback } from './DevicePermissionsFeedback';
 
 const MAX_TOTAL_CAPACITY = 5 * Unit.MW;
 
@@ -90,45 +95,6 @@ function sumCapacityOfDevices(devices: IDeviceGroupChild[]) {
     return totalCapacityInW;
 }
 
-const VALIDATION_SCHEMA = Yup.object().shape({
-    facilityName: Yup.string().label('Facility name').required(),
-    children: Yup.array()
-        .of(
-            Yup.object()
-                .shape({
-                    installationName: Yup.string().required('Installation name'),
-                    address: Yup.string().required().label('Address'),
-                    city: Yup.string().required().label('City'),
-                    latitude: Yup.number().required().label('Latitude'),
-                    longitude: Yup.number().required().label('Longitude'),
-                    capacity: Yup.number().required().min(20).label('Capacity'),
-                    meterId: Yup.string().required().label('Meter id'),
-                    meterType: Yup.string()
-                        .oneOf(['interval', 'scalar'])
-                        .required()
-                        .label('Meter type')
-                })
-                // eslint-disable-next-line no-template-curly-in-string
-                .test('is-total-capacity-in-bounds', '${path} threshold invalid', function () {
-                    const devices: IDeviceGroupChild[] = this.parent;
-                    const totalCapacityInW = sumCapacityOfDevices(devices);
-
-                    if (totalCapacityInW > MAX_TOTAL_CAPACITY) {
-                        return this.createError({
-                            path: `${this.path}.capacity`,
-                            message: `Total capacity can be maximum: ${PowerFormatter.format(
-                                MAX_TOTAL_CAPACITY,
-                                true
-                            )}`
-                        });
-                    }
-
-                    return true;
-                })
-        )
-        .min(1)
-});
-
 interface IProps {
     device?: ProducingDevice.Entity;
     readOnly?: boolean;
@@ -136,13 +102,13 @@ interface IProps {
 
 export function DeviceGroupForm(props: IProps) {
     const { device, readOnly } = props;
-
+    const { t } = useTranslation();
     const user = useSelector(getUserOffchain);
     const configuration = useSelector(getConfiguration);
     const compliance = useSelector(getCompliance);
     const country = useSelector(getCountry);
     const externalDeviceIdTypes = useSelector(getExternalDeviceIdTypes);
-
+    const { canCreateDevice } = useDevicePermissions();
     const [initialFormValuesFromExistingEntity, setInitialFormValuesFromExistingEntity] = useState<
         IFormValues
     >(null);
@@ -179,6 +145,53 @@ export function DeviceGroupForm(props: IProps) {
 
         setInitialFormValuesFromExistingEntity(newInitialFormValuesFromExistingEntity);
     }, [device]);
+
+    const VALIDATION_SCHEMA = Yup.object().shape({
+        facilityName: Yup.string().label(t('device.properties.facilityName')).required(),
+        children: Yup.array()
+            .of(
+                Yup.object()
+                    .shape({
+                        installationName: Yup.string().required('Installation name'),
+                        address: Yup.string().required().label(t('device.properties.address')),
+                        city: Yup.string().required().label('City'),
+                        latitude: Yup.number()
+                            .label(t('device.properties.latitude'))
+                            .required()
+                            .min(-90)
+                            .max(90),
+                        longitude: Yup.number()
+                            .label(t('device.properties.longitude'))
+                            .required()
+                            .min(-180)
+                            .max(180),
+                        capacity: Yup.number().required().min(20).label('Capacity'),
+                        meterId: Yup.string().required().label('Meter id'),
+                        meterType: Yup.string()
+                            .oneOf(['interval', 'scalar'])
+                            .required()
+                            .label('Meter type')
+                    })
+                    // eslint-disable-next-line no-template-curly-in-string
+                    .test('is-total-capacity-in-bounds', '${path} threshold invalid', function () {
+                        const devices: IDeviceGroupChild[] = this.parent;
+                        const totalCapacityInW = sumCapacityOfDevices(devices);
+
+                        if (totalCapacityInW > MAX_TOTAL_CAPACITY) {
+                            return this.createError({
+                                path: `${this.path}.capacity`,
+                                message: `Total capacity can be maximum: ${PowerFormatter.format(
+                                    MAX_TOTAL_CAPACITY,
+                                    true
+                                )}`
+                            });
+                        }
+
+                        return true;
+                    })
+            )
+            .min(1)
+    });
 
     async function submitForm(
         values: typeof INITIAL_FORM_VALUES,
@@ -252,6 +265,14 @@ export function DeviceGroupForm(props: IProps) {
         return <Skeleton variant="rect" height={200} />;
     }
 
+    if (!readOnly && !canCreateDevice?.value) {
+        return (
+            <Paper className={classes.container}>
+                <DevicePermissionsFeedback canCreateDevice={canCreateDevice} />
+            </Paper>
+        );
+    }
+
     return (
         <Paper className={classes.container}>
             <Formik
@@ -284,7 +305,7 @@ export function DeviceGroupForm(props: IProps) {
                                                 required
                                             >
                                                 <Field
-                                                    label="Facility name"
+                                                    label={t('device.properties.facilityName')}
                                                     name="facilityName"
                                                     component={TextField}
                                                     variant="filled"
@@ -362,11 +383,15 @@ export function DeviceGroupForm(props: IProps) {
                                     <TableHead>
                                         <TableRow>
                                             <TableCell>Installation name</TableCell>
-                                            <TableCell>Address</TableCell>
+                                            <TableCell>{t('device.properties.address')}</TableCell>
                                             <TableCell>Village/Town/City</TableCell>
-                                            <TableCell>Latitude</TableCell>
-                                            <TableCell>Longitude</TableCell>
-                                            <TableCell>Capacity (kW)</TableCell>
+                                            <TableCell>{t('device.properties.latitude')}</TableCell>
+                                            <TableCell>
+                                                {t('device.properties.longitude')}
+                                            </TableCell>
+                                            <TableCell>
+                                                {t('device.properties.capacity')} (kW)
+                                            </TableCell>
                                             <TableCell>Meter id</TableCell>
                                             <TableCell>Meter type</TableCell>
                                             {!readOnly && <TableCell></TableCell>}

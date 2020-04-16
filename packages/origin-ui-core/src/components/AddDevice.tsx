@@ -11,7 +11,6 @@ import {
 } from '@material-ui/core';
 import { useSelector, useDispatch } from 'react-redux';
 import { getConfiguration, getEnvironment } from '../features';
-import { Moment } from 'moment';
 import { Formik, Field, Form, FormikHelpers } from 'formik';
 import { TextField, CheckboxWithLabel } from 'formik-material-ui';
 import { useHistory } from 'react-router-dom';
@@ -22,7 +21,9 @@ import {
     showNotification,
     NotificationType,
     useValidation,
-    useTranslation
+    useTranslation,
+    useDevicePermissions,
+    Moment
 } from '../utils';
 import { FormikDatePicker } from './Form/FormikDatePicker';
 import { getUserOffchain } from '../features/users/selectors';
@@ -41,6 +42,7 @@ import { DeviceStatus, IExternalDeviceId } from '@energyweb/origin-backend-core'
 import { Skeleton } from '@material-ui/lab';
 import { FormInput } from './Form';
 import { DeviceSelectors } from './DeviceSelectors';
+import { DevicePermissionsFeedback } from './DevicePermissionsFeedback';
 
 interface IFormValues {
     facilityName: string;
@@ -85,7 +87,7 @@ export function AddDevice() {
     const [selectedGridOperator, setSelectedGridOperator] = useState<string[]>([]);
     const [imagesUploaded, setImagesUploaded] = useState(false);
     const [imagesUploadedList, setImagesUploadedList] = useState<string[]>([]);
-
+    const { canCreateDevice } = useDevicePermissions();
     const history = useHistory();
 
     const useStyles = makeStyles(() =>
@@ -220,6 +222,14 @@ export function AddDevice() {
 
     if (!configuration || !yupLocaleInitialized) {
         return <Skeleton variant="rect" height={200} />;
+    }
+
+    if (!canCreateDevice?.value) {
+        return (
+            <Paper className={classes.container}>
+                <DevicePermissionsFeedback canCreateDevice={canCreateDevice} />
+            </Paper>
+        );
     }
 
     const initialFormValues: IFormValues = INITIAL_FORM_VALUES;
