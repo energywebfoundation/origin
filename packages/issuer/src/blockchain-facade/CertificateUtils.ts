@@ -107,6 +107,10 @@ export async function getAllCertificates(
                 issuer.filters.CertificationRequestApproved(null, index + 1, null)
             );
 
+            if (certificationRequestApprovedEvents.length < 1) {
+                return null;
+            }
+
             const certId = certificationRequestApprovedEvents[0]._certificateId;
             return certId.gt(0) ? new Certificate(certId.toNumber(), configuration).sync() : null;
         });
