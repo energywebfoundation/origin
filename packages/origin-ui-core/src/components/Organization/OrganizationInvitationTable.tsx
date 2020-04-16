@@ -150,12 +150,12 @@ export function OrganizationInvitationTable(props: IProps) {
                   {
                       icon: <Check />,
                       name: 'Accept',
-                      onClick: (row: number) => accept(row)
+                      onClick: (row: string) => accept(parseInt(row, 10))
                   },
                   {
                       icon: <Clear />,
                       name: 'Reject',
-                      onClick: (row: number) => reject(row)
+                      onClick: (row: string) => reject(parseInt(row, 10))
                   }
               ]
             : [];

@@ -13,8 +13,8 @@ export interface IOrdersProps {
     currency: string;
     title: string;
     highlightOrdersUserId: string;
-    handleRowClick?: (index: number, order: IOrderBookOrderDTO) => void;
-    customRow?: ICustomRow;
+    handleRowClick?: (order: IOrderBookOrderDTO) => void;
+    customRow?: ICustomRow<any>;
 }
 
 export function Orders(props: IOrdersProps) {
@@ -65,12 +65,13 @@ export function Orders(props: IOrdersProps) {
     ] as const;
 
     const highlightedRowsIndexes = [];
-    const rows = paginatedData.map(({ price, volume, userId }, index) => {
+    const rows = paginatedData.map(({ id, price, volume, userId }, index) => {
         if (typeof userId !== 'undefined' && userId !== null && userId === highlightOrdersUserId) {
             highlightedRowsIndexes.push(index);
         }
 
         return {
+            id,
             volume: EnergyFormatter.format(volume),
             price: (price / 100).toFixed(2)
         };
@@ -87,11 +88,11 @@ export function Orders(props: IOrdersProps) {
                 loadPage={loadPage}
                 total={total}
                 pageSize={pageSize}
-                highlightedRowsIndexes={highlightedRowsIndexes}
+                highlightedRowsIds={highlightedRowsIndexes}
                 handleRowClick={
                     handleRowClick
-                        ? (index: number) => {
-                              handleRowClick(index, paginatedData[index]);
+                        ? (id: string) => {
+                              handleRowClick(paginatedData?.find((r) => r.id === id));
                           }
                         : null
                 }

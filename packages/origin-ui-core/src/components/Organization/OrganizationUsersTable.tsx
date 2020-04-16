@@ -88,7 +88,7 @@ export function OrganizationUsersTable() {
         {
             icon: <DeleteOutline />,
             name: 'Remove',
-            onClick: (row: number) => remove(row)
+            onClick: (index: string) => remove(parseInt(index, 10))
         }
     ];
 
