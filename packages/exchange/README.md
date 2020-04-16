@@ -42,27 +42,38 @@ For a producing device all fields are mandatory.
 
 ## Development
 
+Exchange project is currently not meant to be run as a separate nest application. In order to run exchange project please refer to https://github.com/energywebfoundation/origin/tree/master/packages/origin-backend-app
+
 Default TypeOrm configuration requires running PostgreSQL database. The detailed config with .env parameters is:
 
 ```
-TypeOrmModule.forRoot({
-            type: 'postgres',
-            name: 'ExchangeConnection',
-            host: process.env.DB_HOST ?? 'localhost',
-            port: Number(process.env.DB_PORT) ?? 5432,
-            username: process.env.DB_USERNAME ?? 'postgres',
-            password: process.env.DB_PASSWORD ?? 'postgres',
-            database: process.env.DB_DATABASE ?? 'origin',
-            entities: [Demand, Order, Trade, Asset, Transfer, Account],
-            synchronize: true,
-            logging: ['info']
-        }),
+DB_HOST      - default 'localhost'
+DB_PORT      - default 5432
+DB_USERNAME  - default 'postgres',
+DB_PASSWORD  - default 'postgres',
+DB_DATABASE  - default 'origin',
 ```
 
+or
+
 ```
-yarn
-yarn start
+DATABASE_URL  - postgres://{user}:{password}@{host}:{port}/{database}
 ```
+
+### Using TypeORM migrations
+
+Exchange project uses TypeORM mechanism to perform SQL data migrations. For detailed information please refer to https://github.com/typeorm/typeorm/blob/master/docs/migrations.md
+
+-   `yarn typeorm:run` to update DB to latest exchange tables schema
+-   `yarn typeorm:migrate SampleMigrationName` to create new migration file based on the changes in the code entities
+
+Development flow:
+
+-   run `yarn typeorm:run` - to apply latest migrations
+-   apply changes in the entities, like change the variable name or type
+-   run `yarn typeorm:migrate LastestChanges...`
+-   inspect newely created migration in /migrations folder
+-   run `yarn typeorm:run` to apply newly created migration
 
 ### PostgreSQL installation using Docker
 
@@ -104,14 +115,6 @@ TRUNCATE "account","asset","demand","order","trade","transfer" CASCADE
 ```
 
 with caution.
-
-#### Bypassing auth for testing purpose
-
-It's possible to run the exchange in bypass auth mode by running:
-
-```
-yarn start:noauth
-```
 
 This can be used for fast integrations and testing
 
