@@ -23,7 +23,7 @@ const config: ConnectionOptions = {
     ...getDBConnectionOptions(),
     synchronize: false,
     migrationsRun: true,
-    migrations: ['dist/js/migrations/*.js'],
+    migrations: [`${__dirname}/migrations/*.js`],
     migrationsTableName: 'migrations_exchange'
 };
 
