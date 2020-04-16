@@ -87,10 +87,20 @@ export function Certificates() {
         }
     ];
 
+    function getDefaultRedirect() {
+        if (user) {
+            if (isIssuer) {
+                return CertificatesMenu[3].key;
+            }
+
+            return CertificatesMenu[0].key;
+        }
+
+        return CertificatesMenu[5].key;
+    }
+
     const defaultRedirect = {
-        pathname: `${getCertificatesLink()}/${
-            isIssuer ? CertificatesMenu[4].key : CertificatesMenu[0].key
-        }`
+        pathname: `${getCertificatesLink()}/${getDefaultRedirect()}`
     };
 
     return (
