@@ -2,14 +2,34 @@ import { AppModule as ExchangeModule } from '@energyweb/exchange';
 import { LoggerService } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { useContainer } from 'class-validator';
+import fs from 'fs';
 
 import { OriginAppModule } from './origin-app.module';
 import * as PortUtils from './port';
 
 export async function startAPI(logger?: LoggerService) {
     const PORT = PortUtils.getPort();
+    const getVersion = () => {
+        let info;
+        if (fs.existsSync('package.json')) {
+            info = fs.readFileSync('package.json');
+        } else if (fs.existsSync('../package.json')) {
+            info = fs.readFileSync('../package.json');
+        } else {
+            return 'unknown';
+        }
+
+        const parsed = JSON.parse(info.toString());
+
+        return {
+            'origin-backend-app': parsed.version,
+            exchange: parsed.dependencies['@energyweb/exchange'],
+            'origin-backend': parsed.dependencies['@energyweb/origin-backend']
+        };
+    };
 
     console.log(`Backend starting on port: ${PORT}`);
+    console.log(`Backend versions: ${JSON.stringify(getVersion())}`);
 
     const app = await NestFactory.create(OriginAppModule.register(null));
     app.enableCors();
