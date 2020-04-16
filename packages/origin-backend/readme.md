@@ -42,8 +42,12 @@ Development flow:
 -   run `yarn typeorm:run` - to apply latest migrations
 -   apply changes in the entities, like change the variable name or type
 -   run `yarn typeorm:migrate LastestChanges...`
--   inspect newely created migration in /migrations folder
+-   inspect newly created migration in /migrations folder
 -   run `yarn typeorm:run` to apply newly created migration
+
+**Warning:**
+
+**Existing migration files from `/migration` folder should never be edited after being committed.**
 
 ### PostgreSQL installation using Docker
 
