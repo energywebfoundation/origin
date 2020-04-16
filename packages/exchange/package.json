@@ -14,7 +14,7 @@
         "url": "https://github.com/energywebfoundation/origin/issues"
     },
     "bin": {
-        "origin-exchange-migrate": "./bin/exchange-migrate"
+        "origin-exchange-migrate": "./bin/origin-exchange-migrate"
     },
     "scripts": {
         "build": "yarn build:ts",
@@ -32,7 +32,9 @@
         "clean": "shx rm -rf dist dist-shakeable",
         "typeorm": "ts-node -r tsconfig-paths/register ./node_modules/.bin/typeorm --config ormconfig-dev.ts",
         "typeorm:migrate": "yarn typeorm migration:generate -- -n",
-        "typeorm:run": "npm run typeorm migration:run"
+        "typeorm:run": "yarn typeorm migration:run",
+        "typeorm:drop": "yarn typeorm schema:drop",
+        "typeorm:dropAndMigrate": "yarn typeorm:drop && yarn typeorm:run"
     },
     "dependencies": {
         "@energyweb/exchange-core": "2.0.0",
@@ -97,5 +99,9 @@
     "publishConfig": {
         "access": "public",
         "registry": "https://registry.npmjs.org"
-    }
+    },
+    "files": [
+        "dist",
+        "bin"
+    ]
 }
