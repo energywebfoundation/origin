@@ -229,7 +229,10 @@ export function CertificateDetailView(props: IProps) {
                 </div>
                 {selectedCertificate && (
                     <ProducingDeviceDetailView
-                        id={Number(selectedCertificate.deviceId)}
+                        externalId={{
+                            id: selectedCertificate.deviceId,
+                            type: environment.ISSUER_ID
+                        }}
                         showSmartMeterReadings={false}
                         showCertificates={false}
                     />
