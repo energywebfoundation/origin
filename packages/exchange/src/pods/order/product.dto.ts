@@ -46,7 +46,7 @@ export class ProductDTO {
                 : null,
             generationTime:
                 dto.generationFrom && dto.generationTo
-                    ? { from: new Date(dto.generationFrom), to: new Date(dto.generationFrom) }
+                    ? { from: new Date(dto.generationFrom), to: new Date(dto.generationTo) }
                     : null
         };
     }
