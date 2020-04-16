@@ -18,11 +18,14 @@
         "typeorm": "ts-node -r tsconfig-paths/register ./node_modules/.bin/typeorm --config ormconfig-dev.ts",
         "typeorm:migrate": "yarn typeorm migration:generate -- -n",
         "typeorm:run": "yarn typeorm migration:run",
+        "typeorm:drop": "yarn typeorm schema:drop",
+        "typeorm:dropAndMigrate": "yarn typeorm:drop && yarn typeorm:run",
         "clean": "shx rm -rf dist uploads",
         "precommit": "lint-staged"
     },
     "bin": {
-        "origin-backend": "./bin/origin-backend"
+        "origin-backend": "./bin/origin-backend",
+        "origin-backend-migrate": "./bin/origin-backend-migrate"
     },
     "homepage": "https://github.com/energywebfoundation/origin/tree/master/packages/origin-backend#readme",
     "repository": {
