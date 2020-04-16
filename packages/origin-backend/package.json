@@ -12,18 +12,20 @@
         "start:prod": "node dist/main",
         "prebuild": "shx rm -rf dist",
         "build": "yarn build:ts",
-        "build:ts": "tsc -b tsconfig.build.json --verbose --pretty",
+        "build:ts": "tsc -b tsconfig.build.json --verbose --pretty && cp migrations/initial.sql dist/js/migrations/",
         "prettier": "prettier --write --config-precedence file-override './src/**/*'",
         "test:e2e": "TS_NODE_PROJECT=tsconfig.build.json TS_NODE_FILES=true mocha -r ts-node/register src/test/e2e/*.test.ts --timeout 60000 --exit",
-        "typeorm": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js --config src/config/ormconfig.ts",
-        "migrate": "yarn typeorm migration:generate -- -n",
-        "migrate:revert": "yarn typeorm migration:revert",
+        "typeorm": "ts-node -r tsconfig-paths/register ./node_modules/.bin/typeorm --config ormconfig-dev.ts",
+        "typeorm:migrate": "yarn typeorm migration:generate -- -n",
         "typeorm:run": "yarn typeorm migration:run",
+        "typeorm:drop": "yarn typeorm schema:drop",
+        "typeorm:dropAndMigrate": "yarn typeorm:drop && yarn typeorm:run",
         "clean": "shx rm -rf dist uploads",
         "precommit": "lint-staged"
     },
     "bin": {
-        "origin-backend": "./bin/origin-backend"
+        "origin-backend": "./bin/origin-backend",
+        "origin-backend-migrate": "./bin/origin-backend-migrate"
     },
     "homepage": "https://github.com/energywebfoundation/origin/tree/master/packages/origin-backend#readme",
     "repository": {

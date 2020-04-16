@@ -9,7 +9,7 @@
 
 # @energyweb/migrations
 
-This repository is used to deploy all the contracts and migrate all the data for the Origin project of the Energy Web Foundation.
+This repository is used to deploy all the contracts and migrate configuration and seed data for the Origin project of the Energy Web Foundation.
 
 ## Running
 
@@ -19,8 +19,6 @@ Command line options:
   -c, --config <config_file_path>  path to the config file
   -s, --seed-file <seed_sql_path>  path to the SQL file that will be used for seeding the database
   -e, --env <env_file_path>        path to the .env file or system variables when not set
-  -f, --force                      WARNING: Drop existing and migrate, allowed only when MODE is not set to
-                                   PRODUCTION (default: false)
 ```
 
 In a development mode use:
@@ -52,21 +50,10 @@ Migrations program will read the `.env` file and `process.env` by default, this 
 
 ## Migrations
 
-Migrations currently support 2 modes:
+Migrations project requires the database schema and tables to be migrated before.
 
-1. Initial migration
-2. Forced migration
+Migrations will check the existence of the configuration tables in the provided database connection parameters. Process will perform:
 
-### Initial migration
-
-This is a default mode, migrations will check the existence of the configuration tables in the provided database connection parameters. Process will perform:
-
--   creates `public` schema if not exists
--   creates tables using `src/scheme/create_tables.sql`
 -   deploy issuer and registry contracts from `@energyweb/issuer` package
 -   stores initial configuration from provided `-c` JSON file path
 -   stores the demo/seed data from provided -s sql file
-
-### Forced migration
-
-When `-f` parameter is provided, migrations will drop existing DB and run the initial migration
