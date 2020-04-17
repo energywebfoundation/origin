@@ -189,7 +189,8 @@ export class CertificationRequest extends PreciseProofEntity implements ICertifi
         const { issuer } = this.configuration
             .blockchainProperties as Configuration.BlockchainProperties<Registry, Issuer>;
         const issuerWithSigner = issuer.connect(this.configuration.blockchainProperties.activeUser);
-        await issuerWithSigner.revokeRequest(this.id);
+        const revokeTx = await issuerWithSigner.revokeRequest(this.id);
+        await revokeTx.wait();
     }
 
     async requestMigrateToPublic(value: BigNumber) {
@@ -207,7 +208,10 @@ export class CertificationRequest extends PreciseProofEntity implements ICertifi
         const { rootHash } = this.generateAndAddProofs(commitment);
 
         const issuerWithSigner = issuer.connect(this.configuration.blockchainProperties.activeUser);
-        return issuerWithSigner.requestMigrateToPublic(this.id, rootHash);
+        const tx = await issuerWithSigner.requestMigrateToPublic(this.id, rootHash);
+        await tx.wait();
+
+        return tx;
     }
 
     private static async validateGenerationPeriod(

@@ -37,7 +37,7 @@ export async function claimCertificates(
 
     const activeUserAddress = await activeUser.getAddress();
 
-    return registryWithSigner.safeBatchTransferAndClaimFrom(
+    const claimTx = await registryWithSigner.safeBatchTransferAndClaimFrom(
         activeUserAddress,
         activeUserAddress,
         certificateIds,
@@ -45,6 +45,10 @@ export async function claimCertificates(
         data,
         claimData
     );
+
+    await claimTx.wait();
+
+    return claimTx;
 }
 
 export async function transferCertificates(
@@ -81,13 +85,17 @@ export async function transferCertificates(
 
     const activeUserAddress = await activeUser.getAddress();
 
-    return registryWithSigner.safeBatchTransferFrom(
+    const transferTx = await registryWithSigner.safeBatchTransferFrom(
         activeUserAddress,
         to,
         certificateIds,
         values,
         data
     );
+
+    await transferTx.wait();
+
+    return transferTx;
 }
 
 export async function getAllCertificates(
