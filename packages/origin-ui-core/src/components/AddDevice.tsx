@@ -213,6 +213,7 @@ export function AddDevice() {
             setImagesUploaded(true);
             setImagesUploadedList(uploadedFiles);
         } catch (error) {
+            console.log(error);
             showNotification(
                 t('device.feedback.unexpectedErrorWhenUploadingImages'),
                 NotificationType.Error
