@@ -15,15 +15,16 @@ import {
     EnergyFormatter,
     PowerFormatter,
     getDeviceLocationText,
-    LOCATION_TITLE_TRANSLATION_KEY,
+    getDeviceGridOperatorText,
     showNotification,
     NotificationType,
-    getDeviceId
+    getDeviceId,
+    getDeviceColumns,
+    useTranslation
 } from '../utils';
 import { Skeleton } from '@material-ui/lab';
 import { getOffChainDataSource, getEnvironment } from '../features/general/selectors';
 import { CertificationRequest, getAllCertificationRequests } from '@energyweb/issuer';
-import { useTranslation } from 'react-i18next';
 
 interface IProps {
     approved: boolean;
@@ -134,7 +135,7 @@ export function CertificationRequestsTable(props: IProps) {
 
     const columns = [
         { id: 'facility', label: 'Facility' },
-        { id: 'locationText', label: t(LOCATION_TITLE_TRANSLATION_KEY) },
+        ...getDeviceColumns(environment, t),
         { id: 'type', label: 'Type' },
         { id: 'capacity', label: `Capacity (${PowerFormatter.displayUnit})` },
         { id: 'meterRead', label: `Meter Read (${EnergyFormatter.displayUnit})` },
@@ -144,7 +145,8 @@ export function CertificationRequestsTable(props: IProps) {
     const rows = paginatedData.map(({ device, request }) => {
         return {
             facility: device?.facilityName,
-            locationText: getDeviceLocationText(device),
+            gridOperator: getDeviceGridOperatorText(device),
+            deviceLocation: getDeviceLocationText(device),
             type: configuration.deviceTypeService.getDisplayText(device?.deviceType),
             capacity: PowerFormatter.format(device?.capacityInW),
             meterRead: EnergyFormatter.format(request.energy),
