@@ -149,7 +149,7 @@ export function CertificateTable(props: IProps) {
         loadPage(1);
     }, [certificates]);
 
-    async function claimCertificateBulk(selectedIndexes) {
+    async function claimCertificateBulk(selectedIndexes: string[]) {
         if (selectedIndexes.length === 0) {
             showNotification(t('certificate.feedback.zeroSelected'), NotificationType.Error);
 
@@ -169,7 +169,7 @@ export function CertificateTable(props: IProps) {
 
         setSelectedCertificates(
             paginatedData
-                .filter((item, index) => selectedIndexes.includes(index))
+                .filter((item, index) => selectedIndexes.includes(index.toString()))
                 .map((i) => i.certificate)
         );
         setShowClaimBulkModal(true);
