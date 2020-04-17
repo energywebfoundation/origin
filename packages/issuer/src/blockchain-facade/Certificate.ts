@@ -254,7 +254,7 @@ export class Certificate extends PreciseProofEntity implements ICertificate {
 
         const activeUserAddress = await activeUser.getAddress();
 
-        return registryWithSigner.safeTransferAndClaimFrom(
+        const claimTx = await registryWithSigner.safeTransferAndClaimFrom(
             activeUserAddress,
             activeUserAddress,
             this.id,
@@ -262,6 +262,10 @@ export class Certificate extends PreciseProofEntity implements ICertificate {
             this.data,
             claimData
         );
+
+        await claimTx.wait();
+
+        return claimTx;
     }
 
     async requestMigrateToPublic(): Promise<ContractTransaction> {
@@ -286,7 +290,10 @@ export class Certificate extends PreciseProofEntity implements ICertificate {
             (leaf) => leaf.key === owner
         ).hash;
 
-        return issuerWithSigner.requestMigrateToPublic(this.id, ownerAddressLeafHash);
+        const tx = await issuerWithSigner.requestMigrateToPublic(this.id, ownerAddressLeafHash);
+        await tx.wait();
+
+        return tx;
     }
 
     async migrateToPublic(): Promise<ContractTransaction> {
@@ -324,13 +331,15 @@ export class Certificate extends PreciseProofEntity implements ICertificate {
         }));
 
         const { salt } = theProof;
-
-        return issuerWithSigner.migrateToPublic(
+        const tx = await issuerWithSigner.migrateToPublic(
             migrationRequestId,
             privateVolume,
             salt,
             onChainProof
         );
+        await tx.wait();
+
+        return tx;
     }
 
     async transfer(
@@ -378,6 +387,7 @@ export class Certificate extends PreciseProofEntity implements ICertificate {
             ).hash;
 
             const tx = await issuerWithSigner.requestPrivateTransfer(this.id, ownerAddressLeafHash);
+            await tx.wait();
 
             return this.saveCommitment({
                 ...commitmentProof,
@@ -389,13 +399,17 @@ export class Certificate extends PreciseProofEntity implements ICertificate {
             .blockchainProperties as Configuration.BlockchainProperties<Registry, Issuer>;
         const registryWithSigner = registry.connect(activeUser);
 
-        return registryWithSigner.safeTransferFrom(
+        const tx = await registryWithSigner.safeTransferFrom(
             fromAddress,
             toAddress,
             this.id,
             amountToTransfer,
             this.data
         );
+
+        await tx.wait();
+
+        return tx;
     }
 
     async approvePrivateTransfer(): Promise<ContractTransaction> {
@@ -427,6 +441,7 @@ export class Certificate extends PreciseProofEntity implements ICertificate {
             newCommitmentProof.rootHash
         );
 
+        await tx.wait();
         await this.certificateClient.approvePendingOwnershipCommitment(this.id);
 
         return tx;
@@ -437,7 +452,10 @@ export class Certificate extends PreciseProofEntity implements ICertificate {
             .blockchainProperties as Configuration.BlockchainProperties<Registry, Issuer>;
         const issuerWithSigner = issuer.connect(this.configuration.blockchainProperties.activeUser);
 
-        return issuerWithSigner.revokeCertificate(this.id);
+        const tx = await issuerWithSigner.revokeCertificate(this.id);
+        await tx.wait();
+
+        return tx;
     }
 
     async isRevoked(): Promise<boolean> {

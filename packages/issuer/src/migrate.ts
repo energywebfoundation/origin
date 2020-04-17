@@ -17,13 +17,13 @@ export async function migrateIssuer(
     const wallet = new ethers.Wallet(privateKeyDeployment, provider);
 
     const issuerContract = await new factories.IssuerFactory(wallet).deploy();
+    await issuerContract.deployed();
 
     const tx = await issuerContract.initialize(
         CertificateTopic.IREC,
         registryAddress,
         wallet.address
     );
-
     await tx.wait();
 
     const version = await issuerContract.version();
@@ -42,9 +42,9 @@ export async function migrateRegistry(
     const wallet = new ethers.Wallet(privateKeyDeployment, provider);
 
     const registryContract = await new factories.RegistryFactory(wallet).deploy();
+    await registryContract.deployed();
 
     const tx = await registryContract.initialize();
-
     await tx.wait();
 
     console.log(`Registry created at ${registryContract.address}`);
