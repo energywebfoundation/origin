@@ -18,7 +18,13 @@ export async function migrateIssuer(
 
     const issuerContract = await new factories.IssuerFactory(wallet).deploy();
 
-    await issuerContract.initialize(CertificateTopic.IREC, registryAddress, wallet.address);
+    const tx = await issuerContract.initialize(
+        CertificateTopic.IREC,
+        registryAddress,
+        wallet.address
+    );
+
+    await tx.wait();
 
     const version = await issuerContract.version();
     console.log(`Issuer ${version} created at ${issuerContract.address}`);
@@ -37,7 +43,9 @@ export async function migrateRegistry(
 
     const registryContract = await new factories.RegistryFactory(wallet).deploy();
 
-    await registryContract.initialize();
+    const tx = await registryContract.initialize();
+
+    await tx.wait();
 
     console.log(`Registry created at ${registryContract.address}`);
 
