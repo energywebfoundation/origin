@@ -2957,10 +2957,10 @@
   dependencies:
     "@types/node" ">= 8"
 
-"@openzeppelin/cli@2.8.1":
-  version "2.8.1"
-  resolved "https://registry.yarnpkg.com/@openzeppelin/cli/-/cli-2.8.1.tgz#5cc909b0b978de63ff12b09178bdd042ef47c814"
-  integrity sha512-LJa36nowictp01vP60UMcpquq1qTfCnzMVDM++dXRWKEaVuJTepvRDD8qKU7USCIrdHLOEIbwUtZBG1IfiZYnw==
+"@openzeppelin/cli@2.8.2":
+  version "2.8.2"
+  resolved "https://registry.yarnpkg.com/@openzeppelin/cli/-/cli-2.8.2.tgz#b569c55f8c291ac4c7a16ca1b584ee2b4063a7f2"
+  integrity sha512-K0m1UAywnweAwzbwwmqI+JSezDRnqDRWkKQMI2VV6T03LOXcG/L9oqO9KRORI8md+KbxBW9v5rmNV63wGQIRlA==
   dependencies:
     "@openzeppelin/fuzzy-solidity-import-parser" "^0.1.2"
     "@openzeppelin/upgrades" "2.8.0"
