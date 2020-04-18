@@ -96,7 +96,6 @@
         "nodemailer": "6.4.6",
         "supertest": "4.0.2",
         "ts-jest": "25.4.0",
-        "ts-loader": "6.2.2",
         "tsconfig-paths": "3.9.0"
     },
     "files": [
