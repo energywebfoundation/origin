@@ -1,6 +1,16 @@
 import React, { ReactNode, useState } from 'react';
-import { ICustomFilter, FiltersHeader, ICustomFilterDefinition } from './FiltersHeader';
-import { SortPropertiesType, CurrentSortType } from './PaginatedLoaderFilteredSorted';
+import {
+    SortPropertiesType,
+    CurrentSortType,
+    ICustomFilter,
+    FiltersHeader,
+    ICustomFilterDefinition,
+    Actions,
+    ITableAction,
+    ColumnBatchActions,
+    IBatchableAction,
+    CustomCounterGeneratorFunction
+} from '.';
 import {
     Paper,
     TableFooter,
@@ -16,12 +26,6 @@ import {
     Checkbox,
     TableSortLabel
 } from '@material-ui/core';
-import { Actions, ITableAction } from './Actions';
-import {
-    ColumnBatchActions,
-    IBatchableAction,
-    CustomCounterGeneratorFunction
-} from './ColumnBatchActions';
 
 type TableOnSelectFunction = (id: string, selected: boolean) => void;
 

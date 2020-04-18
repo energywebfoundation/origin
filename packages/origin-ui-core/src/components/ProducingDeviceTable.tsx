@@ -5,11 +5,17 @@ import { ProducingDevice } from '@energyweb/device-registry';
 import { useSelector, useDispatch } from 'react-redux';
 import { Fab, Tooltip } from '@material-ui/core';
 import { Add, Assignment, Check } from '@material-ui/icons';
-import { checkRecordPassesFilters } from './Table/PaginatedLoaderFiltered';
-import { ICustomFilterDefinition, CustomFilterInputType } from './Table/FiltersHeader';
-import { IPaginatedLoaderFetchDataReturnValues } from './Table/PaginatedLoader';
 import { getProducingDevices, getBaseURL, getConfiguration } from '../features/selectors';
-import { TableMaterial } from './Table/TableMaterial';
+import {
+    TableMaterial,
+    ITableAction,
+    usePaginatedLoaderFiltered,
+    IPaginatedLoaderHooksFetchDataParameters,
+    IPaginatedLoaderFetchDataReturnValues,
+    checkRecordPassesFilters,
+    ICustomFilterDefinition,
+    CustomFilterInputType
+} from './Table';
 import { getUserOffchain, getOrganizations } from '../features/users/selectors';
 import { showRequestCertificatesModal } from '../features/certificates/actions';
 import { setLoading } from '../features/general/actions';
@@ -21,13 +27,9 @@ import {
     getDeviceColumns,
     getProducingDeviceDetailLink,
     showNotification,
-    NotificationType
+    NotificationType,
+    useTranslation
 } from '../utils';
-import { useTranslation } from 'react-i18next';
-import {
-    usePaginatedLoaderFiltered,
-    IPaginatedLoaderHooksFetchDataParameters
-} from './Table/PaginatedLoaderHooks';
 import { getEnvironment } from '../features';
 
 interface IOwnProps {
@@ -123,7 +125,7 @@ export function ProducingDeviceTable(props: IOwnProps) {
         setDetailViewForDeviceId(device.id);
     }
 
-    async function requestCerts(rowIndex: number) {
+    async function requestCerts(rowIndex: string) {
         dispatch(
             showRequestCertificatesModal({
                 producingDevice: paginatedData[rowIndex].device
@@ -131,7 +133,7 @@ export function ProducingDeviceTable(props: IOwnProps) {
         );
     }
 
-    async function approve(rowIndex: number) {
+    async function approve(rowIndex: string) {
         const producingDevice = paginatedData[rowIndex].device;
 
         dispatch(setLoading(true));
@@ -205,13 +207,13 @@ export function ProducingDeviceTable(props: IOwnProps) {
         );
     }
 
-    const actions = [];
+    const actions: ITableAction[] = [];
 
     if (props.actions.requestCertificates && isRole(user, Role.DeviceManager)) {
         actions.push({
             icon: <Assignment />,
             name: t('device.actions.requestCertificates'),
-            onClick: (row: number) => requestCerts(row)
+            onClick: requestCerts
         });
     }
 
@@ -219,7 +221,7 @@ export function ProducingDeviceTable(props: IOwnProps) {
         actions.push({
             icon: <Check />,
             name: t('device.actions.approve'),
-            onClick: (row: number) => approve(row)
+            onClick: approve
         });
     }
 

@@ -5,7 +5,6 @@ import { Header } from './Header';
 import { Device } from './Device';
 import { Account } from './Account/Account';
 import { Organization } from './Organization/Organization';
-import { AccountChangedModal } from './Modal/AccountChangedModal';
 import { RequestPasswordModal } from './Modal/RequestPasswordModal';
 import { RequestCertificatesModal } from './Modal/RequestCertificatesModal';
 import { useSelector } from 'react-redux';
@@ -62,7 +61,6 @@ export function AppContainer() {
 
                 <Route path={baseURL} component={Device} />
             </Switch>
-            <AccountChangedModal />
             <RequestPasswordModal />
             <RequestCertificatesModal />
         </div>

@@ -3,9 +3,6 @@ import { IExchangeClient } from '../../utils/exchange';
 import { IOriginConfiguration } from '@energyweb/origin-backend-core';
 
 export enum GeneralActions {
-    showAccountChangedModal = 'SHOW_ACCOUNT_CHANGED_MODAL',
-    hideAccountChangedModal = 'HIDE_ACCOUNT_CHANGED_MODAL',
-    disableAccountChangedModal = 'DISABLE_ACCOUNT_CHANGED_MODAL',
     setLoading = 'GENERAL_SET_LOADING',
     setError = 'GENERAL_SET_ERROR',
     showRequestPasswordModal = 'SHOW_REQUEST_PASSWORD_MODAL',
@@ -26,36 +23,6 @@ export interface IEnvironment {
     ISSUER_ID: string;
     DEVICE_PROPERTIES_ENABLED: string;
 }
-
-export interface IShowAccountChangedModalAction {
-    type: GeneralActions.showAccountChangedModal;
-}
-
-export const showAccountChangedModal = () => ({
-    type: GeneralActions.showAccountChangedModal
-});
-
-export type TShowAccountChangedModal = typeof showAccountChangedModal;
-
-export interface IHideAccountChangedModalAction {
-    type: GeneralActions.hideAccountChangedModal;
-}
-
-export const hideAccountChangedModal = () => ({
-    type: GeneralActions.hideAccountChangedModal
-});
-
-export type THideAccountChangedModal = typeof hideAccountChangedModal;
-
-export interface IDisableAccountChangedModalAction {
-    type: GeneralActions.disableAccountChangedModal;
-}
-
-export const disableAccountChangedModal = () => ({
-    type: GeneralActions.disableAccountChangedModal
-});
-
-export type TDisableAccountChangedModal = typeof disableAccountChangedModal;
 
 export interface ISetLoadingAction {
     type: GeneralActions.setLoading;
@@ -159,9 +126,6 @@ export const setOffchainConfiguration = (payload: ISetOffchainConfigurationActio
 export type TSetOffchainConfigurationAction = typeof setOffchainConfiguration;
 
 export type IGeneralAction =
-    | IShowAccountChangedModalAction
-    | IHideAccountChangedModalAction
-    | IDisableAccountChangedModalAction
     | ISetLoadingAction
     | ISetErrorAction
     | IRequestPasswordModalAction

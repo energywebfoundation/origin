@@ -97,7 +97,7 @@ export function CertificationRequestsTable(props: IProps) {
 
     useEffect(() => {
         loadPage(1);
-    }, [props.approved, user, producingDevices.length]);
+    }, [props.approved, user, producingDevices.length, configuration]);
 
     async function approve(rowIndex: number) {
         const request = paginatedData[rowIndex].request;

@@ -4,8 +4,6 @@ import { IExchangeClient } from '../../utils/exchange';
 import { IOriginConfiguration } from '@energyweb/origin-backend-core';
 
 export interface IGeneralState {
-    accountChangedModalVisible: boolean;
-    accountChangedModalEnabled: boolean;
     loading: boolean;
     error: string;
     requestPasswordModalVisible: boolean;
@@ -18,8 +16,6 @@ export interface IGeneralState {
 }
 
 const defaultState: IGeneralState = {
-    accountChangedModalVisible: false,
-    accountChangedModalEnabled: true,
     loading: true,
     error: null,
     requestPasswordModalVisible: false,
@@ -33,19 +29,6 @@ const defaultState: IGeneralState = {
 
 export default function reducer(state = defaultState, action: IGeneralAction): IGeneralState {
     switch (action.type) {
-        case GeneralActions.showAccountChangedModal:
-            return { ...state, accountChangedModalVisible: true };
-
-        case GeneralActions.hideAccountChangedModal:
-            return { ...state, accountChangedModalVisible: false };
-
-        case GeneralActions.disableAccountChangedModal:
-            return {
-                ...state,
-                accountChangedModalVisible: false,
-                accountChangedModalEnabled: false
-            };
-
         case GeneralActions.setLoading:
             return {
                 ...state,

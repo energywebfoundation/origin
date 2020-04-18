@@ -1,12 +1,10 @@
 import { ProducingDevice } from '@energyweb/device-registry';
 import { Certificate } from '@energyweb/issuer';
 import { AssignmentTurnedIn, Publish } from '@material-ui/icons';
-import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Redirect } from 'react-router-dom';
 import { bigNumberify } from 'ethers/utils';
-
 import { getConfiguration, getProducingDevices } from '../features/selectors';
 import {
     EnergyFormatter,
@@ -20,22 +18,24 @@ import {
     getDeviceFilters,
     getDeviceGridOperatorText,
     getDeviceColumns,
-    getDeviceSpecificPropertiesSearchTitle
+    getDeviceSpecificPropertiesSearchTitle,
+    moment
 } from '../utils';
-import { IBatchableAction } from './Table/ColumnBatchActions';
-import { CustomFilterInputType, ICustomFilterDefinition } from './Table/FiltersHeader';
-import { IPaginatedLoaderFetchDataReturnValues } from './Table/PaginatedLoader';
-import { TableMaterial } from './Table/TableMaterial';
-import { setLoading } from '../features/general/actions';
-import { getCertificates } from '../features/certificates/selectors';
-import { ClaimCertificateBulkModal } from './Modal/ClaimCertificateBulkModal';
-import { PublishForSaleModal } from './Modal/PublishForSaleModal';
 import {
+    IPaginatedLoaderFetchDataReturnValues,
+    TableMaterial,
+    CustomFilterInputType,
+    ICustomFilterDefinition,
+    IBatchableAction,
     usePaginatedLoaderSorting,
     checkRecordPassesFilters,
     usePaginatedLoaderFiltered,
     IPaginatedLoaderHooksFetchDataParameters
 } from './Table';
+import { setLoading } from '../features/general/actions';
+import { getCertificates } from '../features/certificates/selectors';
+import { ClaimCertificateBulkModal } from './Modal/ClaimCertificateBulkModal';
+import { PublishForSaleModal } from './Modal/PublishForSaleModal';
 import { getEnvironment } from '../features';
 
 interface IProps {
