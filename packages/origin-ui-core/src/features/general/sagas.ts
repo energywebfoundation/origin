@@ -240,6 +240,44 @@ async function initConf(
     return createConfiguration(accounts[0], web3, offchainConfiguration, offChainDataSource);
 }
 
+function createContractEventChannel(registry: any) {
+    return eventChannel<BigNumber[]>((emitter) => {
+        const onClaimSingle = (
+            claimIssuer: string,
+            claimSubject: string,
+            topic: BigNumber,
+            id: BigNumber
+        ) => {
+            emitter([id]);
+        };
+
+        const onClaimBatch = (
+            claimIssuer: string,
+            claimSubject: string,
+            topics: BigNumber[],
+            ids: BigNumber[]
+        ) => {
+            emitter(ids);
+        };
+
+        const onIssuanceSingle = async (sender: string, topic: BigNumber, id: BigNumber) => {
+            emitter([id]);
+        };
+
+        registry
+            .on('ClaimSingle', onClaimSingle)
+            .on('ClaimBatch', onClaimBatch)
+            .on('IssuanceSingle', onIssuanceSingle);
+
+        return () => {
+            registry
+                .off('ClaimSingle', onClaimSingle)
+                .off('ClaimBatch', onClaimBatch)
+                .off('IssuanceSingle', onIssuanceSingle);
+        };
+    });
+}
+
 function* initEventHandler() {
     const configuration: IStoreState['configuration'] = yield select(getConfiguration);
 
@@ -247,21 +285,42 @@ function* initEventHandler() {
         return;
     }
 
-    configuration.blockchainProperties.registry
-        .on(
-            'ClaimSingle',
-            async (
-                _claimIssuer: string,
-                _claimSubject: string,
-                _topic: BigNumber,
-                _id: BigNumber
-            ) => {
-                put(requestCertificateEntityFetch(_id.toNumber()));
+    const channel: EventChannel<BigNumber> = yield call(
+        createContractEventChannel,
+        configuration.blockchainProperties.registry
+    );
+
+    while (true) {
+        const certificateIds: BigNumber[] = yield take(channel);
+
+        for (const id of certificateIds) {
+            if (id) {
+                yield put(requestCertificateEntityFetch(id?.toNumber()));
             }
-        )
-        .on('IssuanceSingle', async (sender: string, topic: BigNumber, id: BigNumber) => {
-            put(requestCertificateEntityFetch(id?.toNumber()));
-        });
+        }
+    }
+}
+
+function* fetchDataAfterConfigurationChange(configuration: Configuration.Entity): SagaIterator {
+    const producingDevices: ProducingDevice.Entity[] = yield apply(
+        ProducingDevice,
+        ProducingDevice.getAllDevices,
+        [configuration]
+    );
+
+    for (const device of producingDevices) {
+        yield put(producingDeviceCreatedOrUpdated(device));
+    }
+
+    const certificates: Certificate[] = yield apply(
+        Certificate,
+        CertificateUtils.getAllCertificates,
+        [configuration]
+    );
+
+    for (const certificate of certificates) {
+        yield put(addCertificate(certificate));
+    }
 }
 
 function* fillContractLookupIfMissing(): SagaIterator {
@@ -318,26 +377,7 @@ function* fillContractLookupIfMissing(): SagaIterator {
         }
 
         try {
-            const producingDevices: ProducingDevice.Entity[] = yield apply(
-                ProducingDevice,
-                ProducingDevice.getAllDevices,
-                [configuration]
-            );
-
-            for (const device of producingDevices) {
-                yield put(producingDeviceCreatedOrUpdated(device));
-            }
-
-            const certificates: Certificate[] = yield apply(
-                Certificate,
-                CertificateUtils.getAllCertificates,
-                [configuration]
-            );
-
-            for (const certificate of certificates) {
-                yield put(addCertificate(certificate));
-            }
-
+            yield call(fetchDataAfterConfigurationChange, configuration);
             const organizations: IOrganizationWithRelationsIds[] = yield apply(
                 offChainDataSource.organizationClient,
                 offChainDataSource.organizationClient.getAll,
@@ -345,7 +385,6 @@ function* fillContractLookupIfMissing(): SagaIterator {
             );
 
             yield put(addOrganizations(organizations));
-
             yield call(initEventHandler);
         } catch (error) {
             console.error('fillContractLookupIfMissing() error', error);
