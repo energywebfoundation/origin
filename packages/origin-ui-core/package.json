@@ -38,7 +38,7 @@
     "@material-ui/lab": "4.0.0-alpha.39",
     "@material-ui/pickers": "3.2.9",
     "@material-ui/types": "4.1.1",
-    "@react-google-maps/api": "1.8.6",
+    "@react-google-maps/api": "1.8.7",
     "axios": "0.19.2",
     "bn.js": "5.1.1",
     "bootstrap": "4.4.1",
