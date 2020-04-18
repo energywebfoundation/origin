@@ -5,15 +5,6 @@ export const getLoading = (state: IStoreState) => state.general.loading;
 
 export const getError = (state: IStoreState) => state.general.error;
 
-export const getRequestPasswordModalVisible = (state: IStoreState) =>
-    state.general.requestPasswordModalVisible;
-
-export const getRequestPasswordModalCallback = (state: IStoreState) =>
-    state.general.requestPasswordModalCallback;
-
-export const getRequestPasswordModalTitle = (state: IStoreState) =>
-    state.general.requestPasswordModalTitle;
-
 export const getOffChainDataSource = (state: IStoreState) => state.general.offChainDataSource;
 
 export const getEnvironment = (state: IStoreState) => state.general.environment;
@@ -36,3 +27,6 @@ export const getExternalDeviceIdTypes = (state: IStoreState): ExternalDeviceIdTy
     state.general.offChainConfiguration?.externalDeviceIdTypes;
 
 export const getOffchainConfiguration = (state: IStoreState) => state.general.offChainConfiguration;
+
+export const getAccountMismatchModalProperties = (state: IStoreState) =>
+    state.general.accountMismatchModalProperties;
