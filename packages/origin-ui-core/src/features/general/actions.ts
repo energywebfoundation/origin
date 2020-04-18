@@ -5,12 +5,12 @@ import { IOriginConfiguration } from '@energyweb/origin-backend-core';
 export enum GeneralActions {
     setLoading = 'GENERAL_SET_LOADING',
     setError = 'GENERAL_SET_ERROR',
-    showRequestPasswordModal = 'SHOW_REQUEST_PASSWORD_MODAL',
-    hideRequestPasswordModal = 'HIDE_REQUEST_PASSWORD_MODAL',
     setOffChainDataSource = 'GENERAL_SET_OFF_CHAIN_DATA_SOURCE',
     setExchangeClient = 'GENERAL_SET_EXCHANGE_CLIENT',
     setEnvironment = 'GENERAL_SET_ENVIRONMENT',
-    setOffchainConfiguration = 'GENERAL_SET_OFFCHAIN_CONFIGURATION'
+    setOffchainConfiguration = 'GENERAL_SET_OFFCHAIN_CONFIGURATION',
+    setAccountMismatchModalProperties = 'GENERAL_SET_ACCOUNT_MISMATCH_MODAL_PROPERTIES',
+    accountMismatchModalResolved = 'GENERAL_ACCOUNT_MISMATCH_MODAL_RESOLVED'
 }
 
 export interface IEnvironment {
@@ -47,31 +47,6 @@ export const setError = (payload: ISetErrorAction['payload']) => ({
 });
 
 export type TSetError = typeof setError;
-
-export interface IRequestPasswordModalAction {
-    type: GeneralActions.showRequestPasswordModal;
-    payload: {
-        title?: string;
-        callback: (password: string) => void;
-    };
-}
-
-export const showRequestPasswordModal = (payload: IRequestPasswordModalAction['payload']) => ({
-    type: GeneralActions.showRequestPasswordModal,
-    payload
-});
-
-export type TShowRequestPasswordModal = typeof showRequestPasswordModal;
-
-export interface IHideRequestPasswordModalAction {
-    type: GeneralActions.hideRequestPasswordModal;
-}
-
-export const hideRequestPasswordModal = () => ({
-    type: GeneralActions.hideRequestPasswordModal
-});
-
-export type THideRequestPasswordModalAction = typeof hideRequestPasswordModal;
 
 export interface ISetOffChainDataSourceAction {
     type: GeneralActions.setOffChainDataSource;
@@ -125,12 +100,42 @@ export const setOffchainConfiguration = (payload: ISetOffchainConfigurationActio
 
 export type TSetOffchainConfigurationAction = typeof setOffchainConfiguration;
 
+export interface IAccountMismatchModalResolvedAction {
+    type: GeneralActions.accountMismatchModalResolved;
+    payload: boolean;
+}
+
+export const accountMismatchModalResolvedAction = (
+    payload: IAccountMismatchModalResolvedAction['payload']
+) => ({
+    type: GeneralActions.accountMismatchModalResolved,
+    payload
+});
+
+export type TAccountMismatchModalResolvedAction = typeof accountMismatchModalResolvedAction;
+
+export interface ISetAccountMismatchModalPropertiesAction {
+    type: GeneralActions.setAccountMismatchModalProperties;
+    payload: {
+        visibility: boolean;
+    };
+}
+
+export const setAccountMismatchModalPropertiesAction = (
+    payload: ISetAccountMismatchModalPropertiesAction['payload']
+) => ({
+    type: GeneralActions.setAccountMismatchModalProperties,
+    payload
+});
+
+export type TSetAccountMismatchModalPropertiesAction = typeof setAccountMismatchModalPropertiesAction;
+
 export type IGeneralAction =
     | ISetLoadingAction
     | ISetErrorAction
-    | IRequestPasswordModalAction
-    | IHideRequestPasswordModalAction
     | ISetOffChainDataSourceAction
     | ISetEnvironmentAction
     | ISetExchangeClientAction
-    | ISetOffchainConfigurationAction;
+    | ISetOffchainConfigurationAction
+    | ISetAccountMismatchModalPropertiesAction
+    | IAccountMismatchModalResolvedAction;

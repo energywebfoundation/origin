@@ -167,7 +167,12 @@
                 "noOrganization": "You need to be a part of an organization. You can create it or join existing one.",
                 "haveToBeLoggedInUser": "You need to be a logged in user.",
                 "userHasToBePartOfApprovedOrganization": "The user should be a part of an approved organization.",
-                "userHasToHaveBlockchainAccount": "The user has to have a blockchain account attached to the account."
+                "userHasToHaveBlockchainAccount": "The user has to have a blockchain account attached to the account.",
+                "blockchainAccountMismatch": "Blockchain account mismatch"
+            },
+            "info": {
+                "tryingToSignAndBoundIs": "You are trying to sign a transaction with account different than the one that has been linked to your account. Blockchain address bound to your user is:",
+                "andYouAreTrying": "and you are trying to use address:"
             }
         },
         "importAccount": {

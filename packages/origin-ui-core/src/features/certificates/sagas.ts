@@ -14,11 +14,12 @@ import {
 import { IStoreState } from '../../types';
 import { getConfiguration } from '../selectors';
 import { showNotification, NotificationType } from '../../utils/notifications';
-import { getUserOffchain, getActiveBlockchainAccountAddress } from '../users/selectors';
+import { getUserOffchain } from '../users/selectors';
 import { setLoading } from '../general/actions';
 import { getCertificates, getCertificateFetcher, getCertificateById } from './selectors';
 import { Certificate, CertificationRequest } from '@energyweb/issuer';
 import { IUserWithRelations } from '@energyweb/origin-backend-core';
+import { assertCorrectBlockchainAccount } from '../../utils/sagas';
 
 function* requestCertificatesSaga(): SagaIterator {
     while (true) {
@@ -34,16 +35,20 @@ function* requestCertificatesSaga(): SagaIterator {
         const { startTime, endTime, energy, files, deviceId } = action.payload;
 
         try {
-            yield apply(CertificationRequest, CertificationRequest.create, [
-                startTime,
-                endTime,
-                energy,
-                deviceId,
-                configuration,
-                files
-            ]);
+            const shouldContinue: boolean = yield call(assertCorrectBlockchainAccount);
 
-            showNotification(`Certificates requested.`, NotificationType.Success);
+            if (shouldContinue) {
+                yield apply(CertificationRequest, CertificationRequest.create, [
+                    startTime,
+                    endTime,
+                    energy,
+                    deviceId,
+                    configuration,
+                    files
+                ]);
+
+                showNotification(`Certificates requested.`, NotificationType.Success);
+            }
         } catch (error) {
             console.warn('Error while requesting certificates', error);
             showNotification(`Transaction could not be completed.`, NotificationType.Error);
@@ -62,19 +67,10 @@ function* openRequestCertificatesModalSaga(): SagaIterator {
         const device = action.payload.producingDevice;
 
         const userOffchain: IUserWithRelations = yield select(getUserOffchain);
-        const activeAddress: string = yield select(getActiveBlockchainAccountAddress);
 
         if (device?.organization !== userOffchain?.organization?.id) {
             showNotification(
                 `You need to own the device to request certificates.`,
-                NotificationType.Error
-            );
-        } else if (
-            !activeAddress ||
-            activeAddress?.toLowerCase() !== userOffchain?.blockchainAccountAddress?.toLowerCase()
-        ) {
-            showNotification(
-                `You need to select a blockchain account bound to the logged in user.`,
                 NotificationType.Error
             );
         } else {
