@@ -113,7 +113,8 @@
                 "pleaseSelectLess": "Please select less than {amount, plural, =1 {# certificate} other {# certificates}}.",
                 "cantBuyOwn": "You can't buy your own certificates.",
                 "zeroSelected": "No certificates have been selected. Please select at least one certificate.",
-                "amountSelected": "{amount, plural, other {# selected}}"
+                "amountSelected": "{amount, plural, other {# selected}}",
+                "certificatePublished": "Certificate has been published for sale."
             },
             "info": {
                 "requestCertificatesFor": "Request certificates for {facilityName}"

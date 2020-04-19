@@ -1,4 +1,4 @@
-import { put, take, all, fork, select, call, apply } from 'redux-saga/effects';
+import { put, take, all, fork, select, call, apply, delay } from 'redux-saga/effects';
 import { SagaIterator } from 'redux-saga';
 import {
     CertificatesActions,
@@ -9,17 +9,31 @@ import {
     IRequestCertificateEntityFetchAction,
     ICertificateFetcher,
     addCertificate,
-    updateCertificate
+    updateCertificate,
+    IRequestPublishForSaleAction
 } from './actions';
 import { IStoreState } from '../../types';
 import { getConfiguration } from '../selectors';
-import { showNotification, NotificationType } from '../../utils/notifications';
+import { showNotification, NotificationType, moment } from '../../utils';
 import { getUserOffchain } from '../users/selectors';
 import { setLoading } from '../general/actions';
 import { getCertificates, getCertificateFetcher, getCertificateById } from './selectors';
 import { Certificate, CertificationRequest } from '@energyweb/issuer';
-import { IUserWithRelations } from '@energyweb/origin-backend-core';
+import { IUserWithRelations, CommitmentStatus } from '@energyweb/origin-backend-core';
 import { assertCorrectBlockchainAccount } from '../../utils/sagas';
+import { getExchangeClient } from '../general/selectors';
+import { IExchangeClient, ExchangeAccount, ITransfer } from '../../utils/exchange';
+import { ContractTransaction } from 'ethers';
+import { getI18n } from 'react-i18next';
+import { Configuration } from '@energyweb/utils-general';
+
+function assertIsContractTransaction(
+    data: ContractTransaction | CommitmentStatus
+): asserts data is ContractTransaction {
+    if (typeof data === 'number' || !data.hash) {
+        throw new Error(`Data.hash is not present`);
+    }
+}
 
 function* requestCertificatesSaga(): SagaIterator {
     while (true) {
@@ -115,7 +129,7 @@ function* fetchCertificateSaga(id: number, entitiesBeingFetched: any): SagaItera
 }
 
 function* requestCertificateSaga(): SagaIterator {
-    const usersBeingFetched = new Map<string, boolean>();
+    const entitiesBeingFetched = new Map<string, boolean>();
 
     while (true) {
         const action: IRequestCertificateEntityFetchAction = yield take(
@@ -129,9 +143,92 @@ function* requestCertificateSaga(): SagaIterator {
         const entityId = action.payload;
 
         try {
-            yield fork(fetchCertificateSaga, entityId, usersBeingFetched);
+            yield fork(fetchCertificateSaga, entityId, entitiesBeingFetched);
         } catch (error) {
             console.error('requestCertificateSaga: error', error);
+        }
+    }
+}
+
+function* requestPublishForSaleSaga(): SagaIterator {
+    while (true) {
+        const action: IRequestPublishForSaleAction = yield take(
+            CertificatesActions.requestPublishForSale
+        );
+        const exchangeClient: IExchangeClient = yield select(getExchangeClient);
+        const configuration: Configuration.Entity = yield select(getConfiguration);
+
+        if (!exchangeClient || !configuration) {
+            continue;
+        }
+
+        const shouldContinue: boolean = yield call(assertCorrectBlockchainAccount);
+
+        if (!shouldContinue) {
+            continue;
+        }
+
+        const { amount, certificateId, callback, price } = action.payload;
+
+        const i18n = getI18n();
+
+        yield put(setLoading(true));
+
+        try {
+            const account: ExchangeAccount = yield call([
+                exchangeClient,
+                exchangeClient.getAccount
+            ]);
+
+            const certificate = new Certificate(certificateId, configuration);
+
+            yield call([certificate, certificate.sync]);
+
+            const transferResult: ContractTransaction | CommitmentStatus = yield call(
+                [certificate, certificate.transfer],
+                account.address,
+                amount
+            );
+
+            assertIsContractTransaction(transferResult);
+
+            let transfer: ITransfer;
+
+            while (true) {
+                const transfers: ITransfer[] = yield call([
+                    exchangeClient,
+                    exchangeClient.getAllTransfers
+                ]);
+
+                transfer = transfers.find((item) => item.transactionHash === transferResult.hash);
+
+                if (transfer) {
+                    break;
+                }
+
+                yield delay(1000);
+            }
+
+            yield call([exchangeClient, exchangeClient.createAsk], {
+                assetId: transfer.asset.id,
+                price,
+                volume: amount.toString(),
+                validFrom: moment().toISOString()
+            });
+
+            showNotification(
+                i18n.t('certificate.feedback.certificatePublished'),
+                NotificationType.Success
+            );
+        } catch (error) {
+            console.error(error);
+            showNotification(i18n.t('general.feedback.unknownError'), NotificationType.Error);
+        }
+
+        yield put(setLoading(false));
+
+        if (callback) {
+            yield call(callback);
         }
     }
 }
@@ -140,6 +237,7 @@ export function* certificatesSaga(): SagaIterator {
     yield all([
         fork(requestCertificatesSaga),
         fork(openRequestCertificatesModalSaga),
-        fork(requestCertificateSaga)
+        fork(requestCertificateSaga),
+        fork(requestPublishForSaleSaga)
     ]);
 }
