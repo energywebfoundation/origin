@@ -11,7 +11,8 @@ export enum CertificatesActions {
     setRequestCertificatesModalVisibility = 'SET_REQUEST_CERTIFICATES_MODAL_VISIBILITY',
     hideRequestCertificatesModal = 'HIDE_REQUEST_CERTIFICATES_MODAL',
     requestCertificateEntityFetch = 'REQUEST_CERTIFICATE_ENTITY_FETCH',
-    updateFetcher = 'CERTIFICATES_UPDATE_FETCHER'
+    updateFetcher = 'CERTIFICATES_UPDATE_FETCHER',
+    requestPublishForSale = 'CERTIFICATES_REQUEST_PUBLISH_FOR_SALE'
 }
 
 export interface IAddCertificateAction {
@@ -128,6 +129,23 @@ export const updateFetcher = (payload: IUpdateFetcherAction['payload']) => ({
 
 export type TUpdateFetcherAction = typeof updateFetcher;
 
+export interface IRequestPublishForSaleAction {
+    type: CertificatesActions.requestPublishForSale;
+    payload: {
+        certificateId: Certificate['id'];
+        amount: BigNumber;
+        price: number;
+        callback: () => void;
+    };
+}
+
+export const requestPublishForSale = (payload: IRequestPublishForSaleAction['payload']) => ({
+    type: CertificatesActions.requestPublishForSale,
+    payload
+});
+
+export type TRequestPublishForSaleAction = typeof requestPublishForSale;
+
 export type ICertificatesAction =
     | IAddCertificateAction
     | IUpdateCertificateAction
@@ -136,4 +154,5 @@ export type ICertificatesAction =
     | ISetRequestCertificatesModalVisibilityAction
     | IHideRequestCertificatesModalAction
     | IRequestCertificateEntityFetchAction
-    | IUpdateFetcherAction;
+    | IUpdateFetcherAction
+    | IRequestPublishForSaleAction;

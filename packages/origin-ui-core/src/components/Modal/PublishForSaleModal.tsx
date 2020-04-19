@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import moment from 'moment';
-import { ContractTransaction } from 'ethers';
-import { BigNumber, bigNumberify } from 'ethers/utils';
-
+import { bigNumberify } from 'ethers/utils';
 import { ProducingDevice } from '@energyweb/device-registry';
 import {
     Button,
@@ -17,15 +15,12 @@ import {
     MenuItem,
     Select
 } from '@material-ui/core';
-import { showNotification, NotificationType } from '../../utils/notifications';
 import { useSelector, useDispatch } from 'react-redux';
-import { getCurrencies, getExchangeClient } from '../../features/general/selectors';
-import { setLoading } from '../../features/general/actions';
-import { CommitmentStatus } from '@energyweb/origin-backend-core';
+import { getCurrencies } from '../../features/general/selectors';
 import { formatDate, EnergyFormatter, countDecimals } from '../../utils';
-import { ITransfer } from '../../utils/exchange';
 import { Certificate } from '@energyweb/issuer';
-import { getUserOffchain, getActiveBlockchainAccountAddress } from '../../features/users/selectors';
+import { getUserOffchain } from '../../features/users/selectors';
+import { requestPublishForSale } from '../../features/certificates';
 
 interface IProps {
     certificate: Certificate;
@@ -36,21 +31,11 @@ interface IProps {
 
 const DEFAULT_ENERGY_IN_BASE_UNIT = bigNumberify(1);
 
-function assertIsContractTransaction(
-    data: ContractTransaction | CommitmentStatus
-): asserts data is ContractTransaction {
-    if (typeof data === 'number' || !data.hash) {
-        throw new Error(`Data.hash is not present`);
-    }
-}
-
 export function PublishForSaleModal(props: IProps) {
     const { certificate, callback, producingDevice, showModal } = props;
 
     const currencies = useSelector(getCurrencies);
-    const exchangeClient = useSelector(getExchangeClient);
     const user = useSelector(getUserOffchain);
-    const activeAddress = useSelector(getActiveBlockchainAccountAddress);
 
     const [energyInDisplayUnit, setEnergyInDisplayUnit] = useState(
         EnergyFormatter.getValueInDisplayUnit(DEFAULT_ENERGY_IN_BASE_UNIT)
@@ -84,7 +69,8 @@ export function PublishForSaleModal(props: IProps) {
 
     const isFormValid = validation.energyInDisplayUnit && validation.price;
 
-    function handleClose() {
+    async function handleClose() {
+        await certificate.sync();
         callback();
     }
 
@@ -93,54 +79,16 @@ export function PublishForSaleModal(props: IProps) {
             return;
         }
 
-        if (
-            !activeAddress ||
-            user?.blockchainAccountAddress?.toLowerCase() !== activeAddress?.toLowerCase()
-        ) {
-            showNotification(
-                `You need to select a blockchain account bound to the logged in user.`,
-                NotificationType.Error
-            );
-            return;
-        }
-
-        dispatch(setLoading(true));
-        const amountAsBN = new BigNumber(energyInBaseUnit);
-        const account = await exchangeClient.getAccount();
-
-        const transferResult = await certificate.transfer(account.address, amountAsBN);
-
-        assertIsContractTransaction(transferResult);
-
-        let transfer: ITransfer;
-
-        // eslint-disable-next-line no-constant-condition
-        while (true) {
-            const transfers = await exchangeClient.getAllTransfers();
-
-            transfer = transfers.find((item) => item.transactionHash === transferResult.hash);
-
-            if (transfer) {
-                break;
-            }
-
-            await new Promise((resolve) => setTimeout(resolve, 1000));
-        }
-
-        await new Promise((resolve) => setTimeout(resolve, 10000));
-
-        await exchangeClient.createAsk({
-            assetId: transfer.asset.id,
-            price: Math.round((parseFloat(price) + Number.EPSILON) * 100),
-            volume: amountAsBN.toString(),
-            validFrom: moment().toISOString()
-        });
-
-        await certificate.sync();
-
-        showNotification(`Certificate has been published for sale.`, NotificationType.Success);
-        dispatch(setLoading(false));
-        handleClose();
+        dispatch(
+            requestPublishForSale({
+                certificateId: certificate.id,
+                amount: energyInBaseUnit,
+                price: Math.round((parseFloat(price) + Number.EPSILON) * 100),
+                callback: () => {
+                    handleClose();
+                }
+            })
+        );
     }
 
     async function validateInputs(event) {
