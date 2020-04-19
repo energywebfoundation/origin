@@ -8,7 +8,8 @@ import {
     setExchangeClient,
     setOffchainConfiguration,
     setError,
-    setLoading
+    setLoading,
+    IRequestDeviceCreationAction
 } from './actions';
 import { getEnvironment, getOffChainDataSource, getOffchainConfiguration } from './selectors';
 import axios, { Canceler } from 'axios';
@@ -25,8 +26,8 @@ import {
     ISetActiveBlockchainAccountAddressAction
 } from '../users/actions';
 import { ethers } from 'ethers';
-import { getSearch } from 'connected-react-router';
-import { getConfiguration } from '../selectors';
+import { getSearch, push } from 'connected-react-router';
+import { getConfiguration, getBaseURL } from '../selectors';
 import * as queryString from 'query-string';
 import * as Winston from 'winston';
 import { Certificate, Contracts, CertificateUtils } from '@energyweb/issuer';
@@ -37,6 +38,8 @@ import { producingDeviceCreatedOrUpdated } from '../producingDevices/actions';
 import { addCertificate, requestCertificateEntityFetch } from '../certificates/actions';
 import { IStoreState } from '../../types';
 import { BigNumber } from 'ethers/utils';
+import { getI18n } from 'react-i18next';
+import { showNotification, NotificationType, getDevicesOwnedLink } from '../../utils';
 
 function createEthereumProviderAccountsChangedEventChannel(ethereumProvider: any) {
     return eventChannel<string[]>((emitter) => {
@@ -430,6 +433,42 @@ function* updateConfigurationWhenUserChanged(): SagaIterator {
     }
 }
 
+function* requestDeviceCreation() {
+    while (true) {
+        const {
+            payload: { data, callback }
+        }: IRequestDeviceCreationAction = yield take(GeneralActions.requestDeviceCreation);
+
+        const configuration: Configuration.Entity = yield select(getConfiguration);
+        const baseURL: string = yield select(getBaseURL);
+
+        if (!configuration) {
+            continue;
+        }
+
+        yield put(setLoading(true));
+
+        const i18n = getI18n();
+
+        try {
+            const device = yield call(ProducingDevice.createDevice, data, configuration);
+
+            yield put(producingDeviceCreatedOrUpdated(device));
+
+            showNotification(i18n.t('device.feedback.deviceCreated'), NotificationType.Success);
+
+            yield put(push(getDevicesOwnedLink(baseURL)));
+        } catch (error) {
+            console.error(error);
+            showNotification(i18n.t('general.feedback.unknownError'), NotificationType.Error);
+        }
+
+        yield put(setLoading(false));
+
+        yield call(callback);
+    }
+}
+
 export function* generalSaga(): SagaIterator {
     yield all([
         fork(showAccountChangedModalOnChange),
@@ -437,6 +476,7 @@ export function* generalSaga(): SagaIterator {
         fork(initializeOffChainDataSource),
         fork(fillOffchainConfiguration),
         fork(fillContractLookupIfMissing),
-        fork(updateConfigurationWhenUserChanged)
+        fork(updateConfigurationWhenUserChanged),
+        fork(requestDeviceCreation)
     ]);
 }

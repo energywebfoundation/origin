@@ -114,7 +114,8 @@
                 "cantBuyOwn": "You can't buy your own certificates.",
                 "zeroSelected": "No certificates have been selected. Please select at least one certificate.",
                 "amountSelected": "{amount, plural, other {# selected}}",
-                "certificatePublished": "Certificate has been published for sale."
+                "certificatePublished": "Certificate has been published for sale.",
+                "certificatesClaimed": "Certificates have been claimed."
             },
             "info": {
                 "requestCertificatesFor": "Request certificates for {facilityName}"

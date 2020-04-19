@@ -1,6 +1,6 @@
 import { IOffChainDataSource } from '@energyweb/origin-backend-client';
 import { IExchangeClient } from '../../utils/exchange';
-import { IOriginConfiguration } from '@energyweb/origin-backend-core';
+import { IOriginConfiguration, DeviceCreateData } from '@energyweb/origin-backend-core';
 
 export enum GeneralActions {
     setLoading = 'GENERAL_SET_LOADING',
@@ -10,7 +10,8 @@ export enum GeneralActions {
     setEnvironment = 'GENERAL_SET_ENVIRONMENT',
     setOffchainConfiguration = 'GENERAL_SET_OFFCHAIN_CONFIGURATION',
     setAccountMismatchModalProperties = 'GENERAL_SET_ACCOUNT_MISMATCH_MODAL_PROPERTIES',
-    accountMismatchModalResolved = 'GENERAL_ACCOUNT_MISMATCH_MODAL_RESOLVED'
+    accountMismatchModalResolved = 'GENERAL_ACCOUNT_MISMATCH_MODAL_RESOLVED',
+    requestDeviceCreation = 'GENERAL_REQUEST_DEVICE_CREATION'
 }
 
 export interface IEnvironment {
@@ -130,6 +131,21 @@ export const setAccountMismatchModalPropertiesAction = (
 
 export type TSetAccountMismatchModalPropertiesAction = typeof setAccountMismatchModalPropertiesAction;
 
+export interface IRequestDeviceCreationAction {
+    type: GeneralActions.requestDeviceCreation;
+    payload: {
+        data: DeviceCreateData;
+        callback: () => void;
+    };
+}
+
+export const requestDeviceCreation = (payload: IRequestDeviceCreationAction['payload']) => ({
+    type: GeneralActions.requestDeviceCreation,
+    payload
+});
+
+export type TRequestDeviceCreationAction = typeof requestDeviceCreation;
+
 export type IGeneralAction =
     | ISetLoadingAction
     | ISetErrorAction
@@ -138,4 +154,5 @@ export type IGeneralAction =
     | ISetExchangeClientAction
     | ISetOffchainConfigurationAction
     | ISetAccountMismatchModalPropertiesAction
-    | IAccountMismatchModalResolvedAction;
+    | IAccountMismatchModalResolvedAction
+    | IRequestDeviceCreationAction;
