@@ -16655,16 +16655,6 @@ postgres-interval@^1.1.0:
   dependencies:
     xtend "^4.0.0"
 
-precise-proofs-js@1.0.2, precise-proofs-js@^1.0.2:
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/precise-proofs-js/-/precise-proofs-js-1.0.2.tgz#6ec496d893ccc0993994904f3e3456510075a699"
-  integrity sha512-4IVlsBs92WjaalqZ70OVE0k31ptJrCjGKDFmgi2cGk90INep/+AsblCMvGCeARC6GMifH587KKdHAZ1+DYzDlg==
-  dependencies:
-    build "^0.1.4"
-    colors "^1.4.0"
-    treeify "^1.1.0"
-    web3 "1.2.4"
-
 precise-proofs-js@1.1.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/precise-proofs-js/-/precise-proofs-js-1.1.0.tgz#e519f81c4eb288d55274d68267c08aae7c535ad2"
@@ -16675,6 +16665,16 @@ precise-proofs-js@1.1.0:
     ethers "^4.0.46"
     treeify "^1.1.0"
     web3-utils "^1.2.6"
+
+precise-proofs-js@^1.0.2:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/precise-proofs-js/-/precise-proofs-js-1.0.2.tgz#6ec496d893ccc0993994904f3e3456510075a699"
+  integrity sha512-4IVlsBs92WjaalqZ70OVE0k31ptJrCjGKDFmgi2cGk90INep/+AsblCMvGCeARC6GMifH587KKdHAZ1+DYzDlg==
+  dependencies:
+    build "^0.1.4"
+    colors "^1.4.0"
+    treeify "^1.1.0"
+    web3 "1.2.4"
 
 prelude-ls@~1.1.2:
   version "1.1.2"
