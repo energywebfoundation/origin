@@ -1,4 +1,4 @@
-import { Certificate } from '@energyweb/issuer';
+import { Certificate, CertificationRequest } from '@energyweb/issuer';
 import { ProducingDevice } from '@energyweb/device-registry';
 import { IStoreState } from '../../types';
 import { BigNumber } from 'ethers/utils';
@@ -14,7 +14,8 @@ export enum CertificatesActions {
     updateFetcher = 'CERTIFICATES_UPDATE_FETCHER',
     requestPublishForSale = 'CERTIFICATES_REQUEST_PUBLISH_FOR_SALE',
     requestClaimCertificate = 'CERTIFICATES_REQUEST_CLAIM_CERTIFICATE',
-    requestClaimCertificateBulk = 'CERTIFICATES_REQUEST_CLAIM_CERTIFICATE_BULK'
+    requestClaimCertificateBulk = 'CERTIFICATES_REQUEST_CLAIM_CERTIFICATE_BULK',
+    requestCertificateApproval = 'CERTIFICATES_REQUEST_CERTIFICATE_APPROVAL'
 }
 
 export interface IAddCertificateAction {
@@ -178,6 +179,23 @@ export const requestClaimCertificateBulk = (
 
 export type TRequestClaimCertificateBulkAction = typeof requestClaimCertificateBulk;
 
+export interface IRequestCertificateApprovalAction {
+    type: CertificatesActions.requestCertificateApproval;
+    payload: {
+        certificationRequest: CertificationRequest;
+        callback: () => void;
+    };
+}
+
+export const requestCertificateApproval = (
+    payload: IRequestCertificateApprovalAction['payload']
+) => ({
+    type: CertificatesActions.requestCertificateApproval,
+    payload
+});
+
+export type TRequestCertificateApprovalAction = typeof requestCertificateApproval;
+
 export type ICertificatesAction =
     | IAddCertificateAction
     | IUpdateCertificateAction
@@ -189,4 +207,5 @@ export type ICertificatesAction =
     | IUpdateFetcherAction
     | IRequestPublishForSaleAction
     | IRequestClaimCertificateAction
-    | IRequestClaimCertificateBulkAction;
+    | IRequestClaimCertificateBulkAction
+    | IRequestCertificateApprovalAction;

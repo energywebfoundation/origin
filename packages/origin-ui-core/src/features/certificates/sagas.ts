@@ -12,7 +12,8 @@ import {
     updateCertificate,
     IRequestPublishForSaleAction,
     IRequestClaimCertificateAction,
-    IRequestClaimCertificateBulkAction
+    IRequestClaimCertificateBulkAction,
+    IRequestCertificateApprovalAction
 } from './actions';
 import { IStoreState } from '../../types';
 import { getConfiguration } from '../selectors';
@@ -320,6 +321,41 @@ function* requestClaimCertificateBulkSaga(): SagaIterator {
     }
 }
 
+function* requestCertificateApprovalSaga(): SagaIterator {
+    while (true) {
+        const action: IRequestCertificateApprovalAction = yield take(
+            CertificatesActions.requestCertificateApproval
+        );
+
+        const shouldContinue: boolean = yield call(assertCorrectBlockchainAccount);
+
+        if (!shouldContinue) {
+            continue;
+        }
+
+        const { certificationRequest, callback } = action.payload;
+
+        const i18n = getI18n();
+
+        yield put(setLoading(true));
+
+        try {
+            yield call([certificationRequest, certificationRequest.approve]);
+
+            showNotification(i18n.t('certificate.feedback.approved'), NotificationType.Success);
+        } catch (error) {
+            console.error(error);
+            showNotification(i18n.t('general.feedback.unknownError'), NotificationType.Error);
+        }
+
+        yield put(setLoading(false));
+
+        if (callback) {
+            yield call(callback);
+        }
+    }
+}
+
 export function* certificatesSaga(): SagaIterator {
     yield all([
         fork(requestCertificatesSaga),
@@ -327,6 +363,7 @@ export function* certificatesSaga(): SagaIterator {
         fork(requestCertificateSaga),
         fork(requestPublishForSaleSaga),
         fork(requestClaimCertificateSaga),
-        fork(requestClaimCertificateBulkSaga)
+        fork(requestClaimCertificateBulkSaga),
+        fork(requestCertificateApprovalSaga)
     ]);
 }
