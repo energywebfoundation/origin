@@ -14,7 +14,6 @@ describe('account deposit confirmation', () => {
     let accountService: AccountService;
 
     const user1Id = '1';
-    const user2Id = '2';
 
     const dummyAsset = {
         address: '0x9876',
@@ -24,20 +23,20 @@ describe('account deposit confirmation', () => {
         generationTo: new Date('2020-01-31')
     };
 
-    const transactionHash = `0x${((Math.random() * 0xffffff) << 0).toString(16)}`;
+    const createTransactionHash = () => `0x${((Math.random() * 0xffffff) << 0).toString(16)}`;
 
     let user1Address: string;
 
     const createDeposit = (address: string, amount = '1000', asset = dummyAsset) => {
         return transferService.createDeposit({
             address,
-            transactionHash,
+            transactionHash: createTransactionHash(),
             amount,
             asset
         });
     };
 
-    const confirmDeposit = () => {
+    const confirmDeposit = (transactionHash: string) => {
         return transferService.setAsConfirmed(transactionHash, 10000);
     };
 
@@ -73,10 +72,10 @@ describe('account deposit confirmation', () => {
 
     it('should list confirmed deposit', async () => {
         const amount = '1000';
-        const { address } = await accountService.getOrCreateAccount(user2Id);
+        const { address } = await accountService.getOrCreateAccount(user1Id);
 
-        await createDeposit(address, amount);
-        await confirmDeposit();
+        const { transactionHash } = await createDeposit(address, amount);
+        await confirmDeposit(transactionHash);
 
         await request(app.getHttpServer())
             .get('/account')

@@ -8,6 +8,7 @@ import { Log } from 'ethers/providers';
 import moment from 'moment';
 
 import { TransferService } from '../transfer/transfer.service';
+import { TransferStatus } from '../transfer/transfer-status';
 
 @Injectable()
 export class DepositWatcherService implements OnModuleInit {
@@ -92,6 +93,20 @@ export class DepositWatcherService implements OnModuleInit {
         const { transactionHash } = event;
 
         try {
+            const transfer = await this.transferService.findOne(null, {
+                where: { transactionHash }
+            });
+
+            if (transfer) {
+                this.logger.error(
+                    `Deposit with transactionHash ${transactionHash} already exists and has status ${
+                        TransferStatus[transfer.status]
+                    } `
+                );
+
+                return;
+            }
+
             const { generationFrom, generationTo, deviceId } = await this.decodeDataField(
                 id.toString()
             );
