@@ -11,3 +11,5 @@ package-lock.json
 !.env.test
 coverage
 docker-compose.yml
+packages/market/src/test/unit/Demand.test.ts
+.docker-compose.yml.swp
