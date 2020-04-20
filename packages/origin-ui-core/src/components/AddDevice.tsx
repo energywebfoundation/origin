@@ -13,9 +13,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { getConfiguration, getEnvironment } from '../features';
 import { Formik, Field, Form, FormikHelpers } from 'formik';
 import { TextField, CheckboxWithLabel } from 'formik-material-ui';
-import { useHistory } from 'react-router-dom';
 import {
-    useLinks,
     areDeviceSpecificPropertiesValid,
     PowerFormatter,
     showNotification,
@@ -26,18 +24,15 @@ import {
     Moment
 } from '../utils';
 import { FormikDatePicker } from './Form/FormikDatePicker';
-import { getUserOffchain } from '../features/users/selectors';
-import { setLoading } from '../features/general/actions';
 import {
+    requestDeviceCreation,
     getExternalDeviceIdTypes,
     getCompliance,
     getCountry,
     getOffChainDataSource
-} from '../features/general/selectors';
+} from '../features/general';
 import { HierarchicalMultiSelect } from './HierarchicalMultiSelect';
 import { CloudUpload } from '@material-ui/icons';
-import { ProducingDevice } from '@energyweb/device-registry';
-import { producingDeviceCreatedOrUpdated } from '../features/producingDevices/actions';
 import { DeviceStatus, IExternalDeviceId } from '@energyweb/origin-backend-core';
 import { Skeleton } from '@material-ui/lab';
 import { FormInput } from './Form';
@@ -69,7 +64,6 @@ const INITIAL_FORM_VALUES: IFormValues = {
 };
 
 export function AddDevice() {
-    const user = useSelector(getUserOffchain);
     const configuration = useSelector(getConfiguration);
     const compliance = useSelector(getCompliance);
     const country = useSelector(getCountry);
@@ -80,7 +74,6 @@ export function AddDevice() {
     const dispatch = useDispatch();
     const { t } = useTranslation();
     const { Yup, yupLocaleInitialized } = useValidation();
-    const { getDevicesOwnedLink } = useLinks();
 
     const [selectedDeviceType, setSelectedDeviceType] = useState<string[]>([]);
     const [selectedLocation, setSelectedLocation] = useState<string[]>([]);
@@ -88,7 +81,6 @@ export function AddDevice() {
     const [imagesUploaded, setImagesUploaded] = useState(false);
     const [imagesUploadedList, setImagesUploadedList] = useState<string[]>([]);
     const { canCreateDevice } = useDevicePermissions();
-    const history = useHistory();
 
     const useStyles = makeStyles(() =>
         createStyles({
@@ -139,23 +131,9 @@ export function AddDevice() {
         values: typeof INITIAL_FORM_VALUES,
         formikActions: FormikHelpers<typeof INITIAL_FORM_VALUES>
     ): Promise<void> {
-        if (!user.blockchainAccountAddress) {
-            showNotification(
-                t('general.feedback.attachBlockchainAccountFirst'),
-                NotificationType.Error
-            );
-            return;
-        }
-
-        if (!user.organization) {
-            showNotification(t('general.feedback.noOrganization'), NotificationType.Error);
-            return;
-        }
-
         const deviceType = selectedDeviceType.sort((a, b) => b.length - a.length)[0];
 
         formikActions.setSubmitting(true);
-        dispatch(setLoading(true));
 
         const [region, province] = selectedLocation;
 
@@ -166,9 +144,9 @@ export function AddDevice() {
             };
         });
 
-        try {
-            const device = await ProducingDevice.createDevice(
-                {
+        dispatch(
+            requestDeviceCreation({
+                data: {
                     status: DeviceStatus.Submitted,
                     deviceType,
                     complianceRegistry: compliance,
@@ -191,21 +169,11 @@ export function AddDevice() {
                     externalDeviceIds,
                     gridOperator: (selectedGridOperator && selectedGridOperator[0]) || ''
                 },
-                configuration
-            );
-
-            dispatch(producingDeviceCreatedOrUpdated(device));
-
-            showNotification(t('device.feedback.deviceCreated'), NotificationType.Success);
-
-            history.push(getDevicesOwnedLink());
-        } catch (error) {
-            console.error(error);
-            showNotification(t('general.feedback.unknownError'), NotificationType.Error);
-        }
-
-        dispatch(setLoading(false));
-        formikActions.setSubmitting(false);
+                callback: () => {
+                    formikActions.setSubmitting(false);
+                }
+            })
+        );
     }
 
     async function uploadImages(files: FileList) {

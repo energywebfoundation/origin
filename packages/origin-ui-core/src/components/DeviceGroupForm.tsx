@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { Formik, Field, Form, FormikHelpers, FieldArray } from 'formik';
 import * as Yup from 'yup';
 import { TextField } from 'formik-material-ui';
-import { useHistory } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import {
     Paper,
@@ -24,21 +23,15 @@ import { Skeleton } from '@material-ui/lab';
 import { Unit } from '@energyweb/utils-general';
 import { DeviceStatus, IExternalDeviceId } from '@energyweb/origin-backend-core';
 import { getConfiguration } from '../features/selectors';
-import { getUserOffchain } from '../features/users/selectors';
-import { setLoading } from '../features/general/actions';
-import { getCompliance, getCountry, getExternalDeviceIdTypes } from '../features/general/selectors';
+import {
+    getCompliance,
+    getCountry,
+    getExternalDeviceIdTypes,
+    requestDeviceCreation
+} from '../features/general';
 import { HierarchicalMultiSelect } from './HierarchicalMultiSelect';
 import { ProducingDevice } from '@energyweb/device-registry';
-import { producingDeviceCreatedOrUpdated } from '../features/producingDevices/actions';
-import {
-    PowerFormatter,
-    useLinks,
-    useDevicePermissions,
-    useTranslation,
-    showNotification,
-    NotificationType,
-    moment
-} from '../utils';
+import { PowerFormatter, useDevicePermissions, useTranslation, moment } from '../utils';
 import { FormInput } from './Form/FormInput';
 import { DevicePermissionsFeedback } from './DevicePermissionsFeedback';
 
@@ -103,7 +96,6 @@ interface IProps {
 export function DeviceGroupForm(props: IProps) {
     const { device, readOnly } = props;
     const { t } = useTranslation();
-    const user = useSelector(getUserOffchain);
     const configuration = useSelector(getConfiguration);
     const compliance = useSelector(getCompliance);
     const country = useSelector(getCountry);
@@ -114,11 +106,8 @@ export function DeviceGroupForm(props: IProps) {
     >(null);
 
     const dispatch = useDispatch();
-    const { getDevicesOwnedLink } = useLinks();
 
     const selectedDeviceType = ['Solar', 'Solar;Photovoltaic'];
-
-    const history = useHistory();
 
     const useStyles = makeStyles(() =>
         createStyles({
@@ -210,14 +199,9 @@ export function DeviceGroupForm(props: IProps) {
         values: typeof INITIAL_FORM_VALUES,
         formikActions: FormikHelpers<typeof INITIAL_FORM_VALUES>
     ): Promise<void> {
-        if (!user?.blockchainAccountAddress) {
-            return;
-        }
-
         const deviceType = 'Solar;Photovoltaic';
 
         formikActions.setSubmitting(true);
-        dispatch(setLoading(true));
 
         const externalDeviceIds: IExternalDeviceId[] = externalDeviceIdTypes.map(({ type }) => {
             return {
@@ -226,9 +210,9 @@ export function DeviceGroupForm(props: IProps) {
             };
         });
 
-        try {
-            const newDevice = await ProducingDevice.createDevice(
-                {
+        dispatch(
+            requestDeviceCreation({
+                data: {
                     status: DeviceStatus.Submitted,
                     deviceType,
                     complianceRegistry: compliance,
@@ -250,20 +234,11 @@ export function DeviceGroupForm(props: IProps) {
                     externalDeviceIds,
                     gridOperator: ''
                 },
-                configuration
-            );
-
-            dispatch(producingDeviceCreatedOrUpdated(newDevice));
-
-            showNotification('Device successfully created.', NotificationType.Success);
-
-            history.push(getDevicesOwnedLink());
-        } catch (error) {
-            throw new Error(error);
-        }
-
-        dispatch(setLoading(false));
-        formikActions.setSubmitting(false);
+                callback: () => {
+                    formikActions.setSubmitting(false);
+                }
+            })
+        );
     }
 
     let initialFormValues: IFormValues = null;

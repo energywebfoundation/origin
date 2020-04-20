@@ -1,6 +1,5 @@
 import React from 'react';
-import { Certificate, CertificateUtils } from '@energyweb/issuer';
-import { showNotification, NotificationType } from '../../utils/notifications';
+import { Certificate } from '@energyweb/issuer';
 import {
     Button,
     Dialog,
@@ -9,10 +8,10 @@ import {
     DialogTitle,
     DialogContentText
 } from '@material-ui/core';
-import { useSelector } from 'react-redux';
-import { getConfiguration } from '../../features/selectors';
-import { EnergyFormatter } from '../../utils/EnergyFormatter';
+import { useDispatch } from 'react-redux';
+import { EnergyFormatter } from '../../utils';
 import { bigNumberify } from 'ethers/utils';
+import { requestClaimCertificateBulk } from '../../features/certificates';
 
 interface IProps {
     certificates: Certificate[];
@@ -21,7 +20,7 @@ interface IProps {
 }
 
 export function ClaimCertificateBulkModal(props: IProps) {
-    const configuration = useSelector(getConfiguration);
+    const dispatch = useDispatch();
 
     function handleClose() {
         props.callback();
@@ -30,9 +29,12 @@ export function ClaimCertificateBulkModal(props: IProps) {
     async function claimCertificates() {
         const certificateIds: number[] = props.certificates.map((cert) => cert.id);
 
-        await CertificateUtils.claimCertificates(certificateIds, configuration);
+        dispatch(
+            requestClaimCertificateBulk({
+                certificateIds
+            })
+        );
 
-        showNotification(`Certificates have been claimed.`, NotificationType.Success);
         handleClose();
     }
 

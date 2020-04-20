@@ -5,7 +5,6 @@ import { getProducingDevices, getConfiguration } from '../features/selectors';
 import { TableMaterial } from './Table/TableMaterial';
 import { Check } from '@material-ui/icons';
 import { getUserOffchain } from '../features/users/selectors';
-import { setLoading } from '../features/general/actions';
 import {
     IPaginatedLoaderHooksFetchDataParameters,
     usePaginatedLoader
@@ -16,8 +15,6 @@ import {
     PowerFormatter,
     getDeviceLocationText,
     getDeviceGridOperatorText,
-    showNotification,
-    NotificationType,
     getDeviceId,
     getDeviceColumns,
     useTranslation
@@ -25,6 +22,7 @@ import {
 import { Skeleton } from '@material-ui/lab';
 import { getOffChainDataSource, getEnvironment } from '../features/general/selectors';
 import { CertificationRequest, getAllCertificationRequests } from '@energyweb/issuer';
+import { requestCertificateApproval } from '../features/certificates';
 
 interface IProps {
     approved: boolean;
@@ -100,22 +98,16 @@ export function CertificationRequestsTable(props: IProps) {
     }, [props.approved, user, producingDevices.length, configuration]);
 
     async function approve(rowIndex: number) {
-        const request = paginatedData[rowIndex].request;
+        const certificationRequest = paginatedData[rowIndex].request;
 
-        dispatch(setLoading(true));
-
-        try {
-            await request.approve();
-
-            showNotification(`Certification request approved.`, NotificationType.Success);
-
-            await loadPage(1);
-        } catch (error) {
-            showNotification(`Could not approve certification request.`, NotificationType.Error);
-            console.error(error);
-        }
-
-        dispatch(setLoading(false));
+        dispatch(
+            requestCertificateApproval({
+                certificationRequest,
+                callback: () => {
+                    loadPage(1);
+                }
+            })
+        );
     }
 
     if (!configuration) {

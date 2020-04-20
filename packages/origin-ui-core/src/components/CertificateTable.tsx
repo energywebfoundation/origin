@@ -30,13 +30,14 @@ import {
     usePaginatedLoaderSorting,
     checkRecordPassesFilters,
     usePaginatedLoaderFiltered,
-    IPaginatedLoaderHooksFetchDataParameters
+    IPaginatedLoaderHooksFetchDataParameters,
+    ITableAction
 } from './Table';
-import { setLoading } from '../features/general/actions';
 import { getCertificates } from '../features/certificates/selectors';
 import { ClaimCertificateBulkModal } from './Modal/ClaimCertificateBulkModal';
 import { PublishForSaleModal } from './Modal/PublishForSaleModal';
 import { getEnvironment } from '../features';
+import { requestClaimCertificate } from '../features/certificates';
 
 interface IProps {
     certificates?: Certificate[];
@@ -175,7 +176,7 @@ export function CertificateTable(props: IProps) {
         setShowClaimBulkModal(true);
     }
 
-    async function publishForSale(rowIndex: number) {
+    async function publishForSale(rowIndex: string) {
         const certificateId = paginatedData[rowIndex].certificate.id;
 
         const certificate = certificates.find((cert) => cert.id === certificateId);
@@ -190,20 +191,14 @@ export function CertificateTable(props: IProps) {
         setSellModalVisibility(false);
     }
 
-    async function claimCertificate(rowIndex: number) {
+    async function claimCertificate(rowIndex: string) {
         const certificateId = paginatedData[rowIndex].certificate.id;
 
-        const certificate = certificates.find((cert) => cert.id === certificateId);
-
-        if (certificate && certificate.isOwned) {
-            dispatch(setLoading(true));
-            await certificate.claim();
-            dispatch(setLoading(false));
-            showNotification(
-                t('certificate.feedback.claimed', { id: certificate.id }),
-                NotificationType.Success
-            );
-        }
+        dispatch(
+            requestClaimCertificate({
+                certificateId
+            })
+        );
     }
 
     function showCertificateDetails(rowIndex: number) {
@@ -312,7 +307,7 @@ export function CertificateTable(props: IProps) {
     }
 
     function getBatchableActions(): IBatchableAction[] {
-        const actions = [];
+        const actions: IBatchableAction[] = [];
 
         if (selectedState === SelectedState.Inbox) {
             actions.push({
@@ -325,19 +320,19 @@ export function CertificateTable(props: IProps) {
     }
 
     function getActions() {
-        const actions = [];
+        const actions: ITableAction[] = [];
 
         switch (selectedState) {
             case SelectedState.Inbox:
                 actions.push({
                     name: t('certificate.actions.claim'),
                     icon: <AssignmentTurnedIn />,
-                    onClick: (row: number) => claimCertificate(row)
+                    onClick: claimCertificate
                 });
                 actions.push({
                     name: t('certificate.actions.publishForSale'),
                     icon: <Publish />,
-                    onClick: (row: number) => publishForSale(row)
+                    onClick: publishForSale
                 });
                 break;
         }
