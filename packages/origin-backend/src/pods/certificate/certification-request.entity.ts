@@ -1,22 +1,14 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
-import {
-    CertificationRequestOffChainData,
-    MAX_ENERGY_PER_CERTIFICATE
-} from '@energyweb/origin-backend-core';
-import { IsPositive, Min, Max } from 'class-validator';
+import { Entity, Column, PrimaryColumn } from 'typeorm';
 import { ExtendedBaseEntity } from '../ExtendedBaseEntity';
+import { CertificationRequestDTO } from './certification-request.dto';
 
 @Entity()
-export class CertificationRequest extends ExtendedBaseEntity
-    implements CertificationRequestOffChainData {
-    @PrimaryGeneratedColumn()
+export class CertificationRequest extends ExtendedBaseEntity implements CertificationRequestDTO {
+    @PrimaryColumn()
     id: number;
 
-    @Column({ type: 'bigint' })
-    @IsPositive()
-    @Min(0)
-    @Max(MAX_ENERGY_PER_CERTIFICATE)
-    energy: number;
+    @Column('varchar')
+    energy: string;
 
     @Column('simple-array')
     files: string[];

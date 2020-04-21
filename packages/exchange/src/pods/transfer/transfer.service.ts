@@ -1,6 +1,6 @@
 import { Injectable, forwardRef, Inject, Logger } from '@nestjs/common';
 import { InjectRepository, InjectConnection } from '@nestjs/typeorm';
-import { Repository, Connection, EntityManager } from 'typeorm';
+import { Repository, Connection, EntityManager, FindOneOptions } from 'typeorm';
 
 import { Transfer } from './transfer.entity';
 import { TransferDirection } from './transfer-direction';
@@ -44,8 +44,8 @@ export class TransferService {
         });
     }
 
-    public async findOne(id: string) {
-        return this.repository.findOne(id);
+    public async findOne(id?: string, findOptions?: FindOneOptions<Transfer>) {
+        return this.repository.findOne(id, findOptions);
     }
 
     public async getByStatus(status: TransferStatus, direction: TransferDirection) {

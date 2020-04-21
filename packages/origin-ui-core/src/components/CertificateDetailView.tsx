@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { CertificationRequest } from '@energyweb/issuer';
+import { CertificationRequest, CertificateUtils } from '@energyweb/issuer';
 import { ProducingDeviceDetailView } from './ProducingDeviceDetailView';
 import { useSelector } from 'react-redux';
 import { getConfiguration } from '../features/selectors';
@@ -45,11 +45,16 @@ export function CertificateDetailView(props: IProps) {
         id !== null && typeof id !== 'undefined' && certificates.find((c) => c.id === id);
 
     async function enrichEvent() {
-        const allCertificateEvents = await selectedCertificate.getAllCertificateEvents();
+        const allCertificateEvents = await CertificateUtils.getAllCertificateEvents(
+            selectedCertificate.id,
+            selectedCertificate.configuration
+        );
 
         const jointEvents = allCertificateEvents.map(async (event) => {
             let label: string;
             let description: string;
+
+            const { registry } = configuration.blockchainProperties;
 
             switch (event.event) {
                 case 'LogCreatedCertificate':
@@ -57,12 +62,14 @@ export function CertificateDetailView(props: IProps) {
                     description = 'Local issuer approved the certification request';
                     break;
                 case 'Transfer':
-                    if (event.returnValues.from === '0x0000000000000000000000000000000000000000') {
+                    const { values } = registry.interface.parseLog(event);
+
+                    if (values.from === '0x0000000000000000000000000000000000000000') {
                         label = 'Initial owner';
-                        description = event.returnValues.to;
+                        description = values.to;
                     } else {
-                        const newOwner = event.returnValues.to;
-                        const oldOwner = event.returnValues.from;
+                        const newOwner = values.to;
+                        const oldOwner = values.from;
 
                         label = 'Changed ownership';
                         description = `Transferred from ${oldOwner} to ${newOwner}`;
@@ -84,19 +91,19 @@ export function CertificateDetailView(props: IProps) {
                     label = event.event;
             }
 
+            const eventBlock = await registry.provider.getBlock(event.blockHash);
+
             return {
                 txHash: event.transactionHash,
                 label,
                 description,
-                timestamp: (
-                    await configuration.blockchainProperties.web3.eth.getBlock(event.blockNumber)
-                ).timestamp
+                timestamp: eventBlock.timestamp
             };
         });
 
         const resolvedEvents = await Promise.all(jointEvents);
 
-        const request = await new CertificationRequest.Entity(
+        const request = await new CertificationRequest(
             selectedCertificate.certificationRequestId,
             configuration
         ).sync();
@@ -159,6 +166,8 @@ export function CertificateDetailView(props: IProps) {
             </p>
         ));
 
+        const { publicVolume, privateVolume, claimedVolume } = selectedCertificate.energy;
+
         data = [
             [
                 {
@@ -167,7 +176,7 @@ export function CertificateDetailView(props: IProps) {
                 },
                 {
                     label: 'Claimed',
-                    data: selectedCertificate.isClaimed() ? 'yes' : 'no'
+                    data: selectedCertificate.isClaimed ? 'yes' : 'no'
                 },
                 {
                     label: 'Creation date',
@@ -177,7 +186,11 @@ export function CertificateDetailView(props: IProps) {
             [
                 {
                     label: `Certified energy (${EnergyFormatter.displayUnit})`,
-                    data: EnergyFormatter.format(selectedCertificate.energy)
+                    data: EnergyFormatter.format(
+                        selectedCertificate.isClaimed
+                            ? claimedVolume
+                            : publicVolume.add(privateVolume)
+                    )
                 },
                 {
                     label: 'Generation start',

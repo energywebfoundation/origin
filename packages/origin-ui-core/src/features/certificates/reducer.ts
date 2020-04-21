@@ -4,7 +4,7 @@ import { ProducingDevice } from '@energyweb/device-registry';
 import { IStoreState } from '../../types';
 
 export interface ICertificatesState {
-    certificates: Certificate.Entity[];
+    certificates: Certificate[];
     requestCertificatesModal: {
         visible: boolean;
         producingDevice: ProducingDevice.Entity;
@@ -14,10 +14,10 @@ export interface ICertificatesState {
 
 const fetcher: ICertificateFetcher = {
     async fetch(id: number, configuration: IStoreState['configuration']) {
-        return configuration && new Certificate.Entity(id, configuration).sync();
+        return configuration && new Certificate(id, configuration).sync();
     },
 
-    async reload(entity: Certificate.Entity) {
+    async reload(entity: Certificate) {
         return entity?.sync();
     }
 };

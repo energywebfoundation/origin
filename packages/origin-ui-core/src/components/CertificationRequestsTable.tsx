@@ -5,7 +5,6 @@ import { getProducingDevices, getConfiguration } from '../features/selectors';
 import { TableMaterial } from './Table/TableMaterial';
 import { Check } from '@material-ui/icons';
 import { getUserOffchain } from '../features/users/selectors';
-import { setLoading } from '../features/general/actions';
 import {
     IPaginatedLoaderHooksFetchDataParameters,
     usePaginatedLoader
@@ -15,22 +14,22 @@ import {
     EnergyFormatter,
     PowerFormatter,
     getDeviceLocationText,
-    LOCATION_TITLE_TRANSLATION_KEY,
-    showNotification,
-    NotificationType,
-    getDeviceId
+    getDeviceGridOperatorText,
+    getDeviceId,
+    getDeviceColumns,
+    useTranslation
 } from '../utils';
 import { Skeleton } from '@material-ui/lab';
 import { getOffChainDataSource, getEnvironment } from '../features/general/selectors';
-import { CertificationRequest } from '@energyweb/issuer';
-import { useTranslation } from 'react-i18next';
+import { CertificationRequest, getAllCertificationRequests } from '@energyweb/issuer';
+import { requestCertificateApproval } from '../features/certificates';
 
 interface IProps {
     approved: boolean;
 }
 
 interface IRecord {
-    request: CertificationRequest.Entity;
+    request: CertificationRequest;
     device: ProducingDevice.Entity;
 }
 
@@ -57,7 +56,7 @@ export function CertificationRequestsTable(props: IProps) {
 
         const isIssuer = isRole(user, Role.Issuer);
 
-        const requests = await CertificationRequest.getAllCertificationRequests(configuration);
+        const requests = await getAllCertificationRequests(configuration);
 
         let newPaginatedData: IRecord[] = [];
 
@@ -96,25 +95,19 @@ export function CertificationRequestsTable(props: IProps) {
 
     useEffect(() => {
         loadPage(1);
-    }, [props.approved, user, producingDevices.length]);
+    }, [props.approved, user, producingDevices.length, configuration]);
 
     async function approve(rowIndex: number) {
-        const request = paginatedData[rowIndex].request;
+        const certificationRequest = paginatedData[rowIndex].request;
 
-        dispatch(setLoading(true));
-
-        try {
-            await request.approve();
-
-            showNotification(`Certification request approved.`, NotificationType.Success);
-
-            await loadPage(1);
-        } catch (error) {
-            showNotification(`Could not approve certification request.`, NotificationType.Error);
-            console.error(error);
-        }
-
-        dispatch(setLoading(false));
+        dispatch(
+            requestCertificateApproval({
+                certificationRequest,
+                callback: () => {
+                    loadPage(1);
+                }
+            })
+        );
     }
 
     if (!configuration) {
@@ -127,14 +120,14 @@ export function CertificationRequestsTable(props: IProps) {
                   {
                       icon: <Check />,
                       name: 'Approve',
-                      onClick: (row: number) => approve(row)
+                      onClick: (row: string) => approve(parseInt(row, 10))
                   }
               ]
             : [];
 
     const columns = [
         { id: 'facility', label: 'Facility' },
-        { id: 'locationText', label: t(LOCATION_TITLE_TRANSLATION_KEY) },
+        ...getDeviceColumns(environment, t),
         { id: 'type', label: 'Type' },
         { id: 'capacity', label: `Capacity (${PowerFormatter.displayUnit})` },
         { id: 'meterRead', label: `Meter Read (${EnergyFormatter.displayUnit})` },
@@ -144,7 +137,8 @@ export function CertificationRequestsTable(props: IProps) {
     const rows = paginatedData.map(({ device, request }) => {
         return {
             facility: device?.facilityName,
-            locationText: getDeviceLocationText(device),
+            gridOperator: getDeviceGridOperatorText(device),
+            deviceLocation: getDeviceLocationText(device),
             type: configuration.deviceTypeService.getDisplayText(device?.deviceType),
             capacity: PowerFormatter.format(device?.capacityInW),
             meterRead: EnergyFormatter.format(request.energy),

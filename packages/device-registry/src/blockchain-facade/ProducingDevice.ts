@@ -9,6 +9,7 @@ import {
     DeviceCreateData,
     IDeviceWithRelationsIds
 } from '@energyweb/origin-backend-core';
+import { BigNumber, BigNumberish, bigNumberify } from 'ethers/utils';
 
 export class Entity implements IDevice {
     status: DeviceStatus;
@@ -90,21 +91,20 @@ export class Entity implements IDevice {
         return this;
     }
 
-    get lastSmartMeterReadWh(): number {
+    get lastSmartMeterReadWh(): BigNumber {
         return this.lastSmartMeterReading?.meterReading;
     }
 
     async saveSmartMeterRead(
-        meterReading: number,
+        meterReading: BigNumberish,
         timestamp: number = moment().unix()
     ): Promise<void> {
-        return this.configuration.offChainDataSource.deviceClient.addSmartMeterRead(
-            Number(this.id),
-            {
-                meterReading,
-                timestamp
-            }
-        );
+        const readingBN = bigNumberify(meterReading);
+
+        return this.configuration.offChainDataSource.deviceClient.addSmartMeterRead(this.id, {
+            meterReading: readingBN,
+            timestamp
+        });
     }
 
     async getSmartMeterReads(): Promise<ISmartMeterRead[]> {
@@ -126,9 +126,9 @@ export class Entity implements IDevice {
             const isFirstReading = i === 0;
 
             energiesGenerated.push({
-                energy:
-                    allMeterReadings[i].meterReading -
-                    (isFirstReading ? 0 : allMeterReadings[i - 1].meterReading),
+                energy: allMeterReadings[i].meterReading.sub(
+                    isFirstReading ? 0 : allMeterReadings[i - 1].meterReading
+                ),
                 timestamp: allMeterReadings[i].timestamp
             });
         }

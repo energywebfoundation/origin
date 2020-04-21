@@ -23,7 +23,7 @@ export function getDeviceLocationText(device: ProducingDevice.Entity) {
 }
 
 export function getDeviceGridOperatorText(device: ProducingDevice.Entity) {
-    return device.gridOperator.split(';').join(' ');
+    return device?.gridOperator?.split(';')?.join(' ') || '';
 }
 
 interface IRecordWithLocationText {

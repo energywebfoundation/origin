@@ -1,6 +1,6 @@
 import program from 'commander';
 import parse from 'csv-parse/lib/sync';
-import { HDNode } from 'ethers/utils';
+import { HDNode, bigNumberify } from 'ethers/utils';
 import fs from 'fs';
 import geoTz from 'geo-tz';
 
@@ -84,7 +84,7 @@ const processDevices = async (parsedContent) => {
                 owner: program.owner || '',
                 operationalSince: new Date(registrationDate).getTime() / 1000,
                 capacityInW: maxCapacity,
-                lastSmartMeterReadWh: 0,
+                lastSmartMeterReadWh: bigNumberify(0),
                 active: true,
                 country,
                 address,

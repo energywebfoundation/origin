@@ -1,5 +1,6 @@
 import * as Winston from 'winston';
-import Web3 from 'web3';
+import { Signer } from 'ethers';
+import { JsonRpcProvider } from 'ethers/providers';
 
 import { IOffChainDataSource } from '@energyweb/origin-backend-client';
 import { IDeviceTypeService } from './DeviceTypeService';
@@ -12,19 +13,9 @@ export interface Entity<TRegistry = any, TIssuer = any> {
 }
 
 export interface BlockchainProperties<TRegistry = any, TIssuer = any> {
-    web3: Web3;
+    web3?: JsonRpcProvider;
     registry?: TRegistry;
     issuer?: TIssuer;
-    activeUser?: EthAccount;
+    activeUser?: Signer;
     privateKey?: string;
 }
-
-export interface EthAccount {
-    address: string;
-    privateKey?: string;
-}
-
-export const getAccount = (configuration: Entity) => ({
-    from: configuration.blockchainProperties.activeUser.address,
-    privateKey: configuration.blockchainProperties.activeUser.privateKey
-});

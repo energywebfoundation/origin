@@ -113,7 +113,10 @@
                 "pleaseSelectLess": "Please select less than {amount, plural, =1 {# certificate} other {# certificates}}.",
                 "cantBuyOwn": "You can't buy your own certificates.",
                 "zeroSelected": "No certificates have been selected. Please select at least one certificate.",
-                "amountSelected": "{amount, plural, other {# selected}}"
+                "amountSelected": "{amount, plural, other {# selected}}",
+                "certificatePublished": "Certificate has been published for sale.",
+                "certificatesClaimed": "Certificates have been claimed.",
+                "approved": "Certification request approved."
             },
             "info": {
                 "requestCertificatesFor": "Request certificates for {facilityName}"
@@ -167,7 +170,12 @@
                 "noOrganization": "You need to be a part of an organization. You can create it or join existing one.",
                 "haveToBeLoggedInUser": "You need to be a logged in user.",
                 "userHasToBePartOfApprovedOrganization": "The user should be a part of an approved organization.",
-                "userHasToHaveBlockchainAccount": "The user has to have a blockchain account attached to the account."
+                "userHasToHaveBlockchainAccount": "The user has to have a blockchain account attached to the account.",
+                "blockchainAccountMismatch": "Blockchain account mismatch"
+            },
+            "info": {
+                "tryingToSignAndBoundIs": "You are trying to sign a transaction with account different than the one that has been linked to your account. Blockchain address bound to your user is:",
+                "andYouAreTrying": "and you are trying to use address:"
             }
         },
         "importAccount": {

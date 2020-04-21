@@ -1,5 +1,5 @@
+import { bigNumberify } from 'ethers/utils';
 import {
-    ICertificationRequest,
     CertificationRequestOffChainData,
     CertificationRequestUpdateData,
     CommitmentStatus,
@@ -7,6 +7,12 @@ import {
 } from '@energyweb/origin-backend-core';
 
 import { IRequestClient, RequestClient } from './RequestClient';
+
+export class CertificationRequestDTO {
+    id: number;
+    energy: string;
+    files: string[];
+}
 
 export interface ICertificateClient {
     updateCertificationRequestData(
@@ -43,9 +49,15 @@ export class CertificateClient implements ICertificateClient {
         id: number,
         data: CertificationRequestUpdateData
     ): Promise<boolean> {
-        const response = await this.requestClient.post<CertificationRequestUpdateData, boolean>(
+        const dto: CertificationRequestDTO = {
+            id,
+            energy: data.energy.toString(),
+            files: data.files
+        };
+
+        const response = await this.requestClient.post<CertificationRequestDTO, boolean>(
             `${this.certificateRequestEndpoint}/${id}`,
-            data
+            dto
         );
 
         const success = response.status >= 200 && response.status < 300;
@@ -61,11 +73,14 @@ export class CertificateClient implements ICertificateClient {
     public async getCertificationRequestData(
         id: number
     ): Promise<CertificationRequestOffChainData> {
-        const { data } = await this.requestClient.get<void, ICertificationRequest>(
+        const { data } = await this.requestClient.get<void, CertificationRequestDTO>(
             `${this.certificateRequestEndpoint}/${id}`
         );
 
-        return data;
+        return {
+            ...data,
+            energy: bigNumberify(data.energy)
+        };
     }
 
     public async getOwnershipCommitment(

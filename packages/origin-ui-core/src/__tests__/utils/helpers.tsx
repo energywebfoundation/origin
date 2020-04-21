@@ -5,7 +5,7 @@ import { routerMiddleware, ConnectedRouter } from 'connected-react-router';
 import { createRootReducer } from '../../reducers';
 import { sagas } from '../../features/sagas';
 import { ReactWrapper, CommonWrapper } from 'enzyme';
-import { Configuration, Compliance } from '@energyweb/utils-general';
+import { Compliance, Configuration } from '@energyweb/utils-general';
 
 import { ProducingDevice } from '@energyweb/device-registry';
 import { producingDeviceCreatedOrUpdated } from '../../features/producingDevices/actions';
@@ -23,6 +23,9 @@ import {
     initializeI18N
 } from '../../components';
 import { IDevice, DeviceStatus } from '@energyweb/origin-backend-core';
+import { BigNumber, bigNumberify } from 'ethers/utils';
+import { ICertificate, Certificate } from '@energyweb/issuer';
+import { Signer } from 'ethers';
 
 export const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -241,7 +244,7 @@ interface ICreateProducingDeviceProperties {
     address?: string;
     country?: string;
     capacityInW?: number;
-    lastSmartMeterReadWh?: number;
+    lastSmartMeterReadWh?: BigNumber;
     operationalSince?: number;
     complianceRegistry?: Compliance;
     region?: string;
@@ -265,7 +268,7 @@ export const createProducingDevice = (
     properties: ICreateProducingDeviceProperties
 ): ProducingDevice.Entity => {
     const owner = properties.owner || '0x0';
-    const lastSmartMeterReadWh = properties.lastSmartMeterReadWh ?? 0;
+    const lastSmartMeterReadWh = properties.lastSmartMeterReadWh ?? bigNumberify(0);
 
     const offChainProperties = {
         status: properties.status || DEFAULT_PRODUCING_DEVICE_OFFCHAIN_PROPERTIES.status,
@@ -299,8 +302,8 @@ export const createProducingDevice = (
         configuration: ({
             blockchainProperties: ({
                 activeUser: {
-                    address: '0x0'
-                }
+                    getAddress: async () => '0x0'
+                } as Partial<Signer>
             } as Partial<Configuration.BlockchainProperties>) as Configuration.BlockchainProperties
         } as Partial<Configuration.Entity>) as Configuration.Entity,
         owner: {
@@ -311,21 +314,19 @@ export const createProducingDevice = (
     } as Partial<ProducingDevice.Entity>) as ProducingDevice.Entity;
 };
 
-// export const createCertificate = (
-//     certificate: ICertificate
-// ): Certificate.Entity => {
-//     return {
-//         id: properties.id,
-//         configuration: ({
-//             blockchainProperties: {
-//                 activeUser: {
-//                     address: '0x0'
-//                 }
-//             }
-//         } as Partial<Configuration.Entity>) as Configuration.Entity,
-//         ...certificate
-//     } as Certificate.Entity;
-// };
+export const createCertificate = (certificate: ICertificate): Certificate => {
+    return {
+        id: certificate.id,
+        configuration: ({
+            blockchainProperties: {
+                activeUser: {
+                    getAddress: async () => '0x0'
+                } as Partial<Signer>
+            }
+        } as Partial<Configuration.Entity>) as Configuration.Entity,
+        ...certificate
+    } as Certificate;
+};
 
 interface ISetupStoreOptions {
     mockUserFetcher: boolean;

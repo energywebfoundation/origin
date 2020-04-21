@@ -30,7 +30,6 @@ export function Asks(props: Props) {
     const { t } = useTranslation();
     const { Yup } = useValidation();
 
-    const [selectedIndex, setSelectedIndex] = useState<number>(null);
     const [selectedOrder, setSelectedOrder] = useState<IOrderBookOrderDTO>(null);
     const [asset, setAsset] = useState<IAsset>();
     const [device, setDevice] = useState<IDeviceWithRelationsIds>();
@@ -66,7 +65,11 @@ export function Asks(props: Props) {
         energy: Yup.number()
             .positive()
             .integer()
-            .max(EnergyFormatter.getValueInDisplayUnit(selectedOrder?.volume) ?? 0)
+            .max(
+                selectedOrder
+                    ? EnergyFormatter.getValueInDisplayUnit(selectedOrder.volume).toNumber()
+                    : 0
+            )
             .label(t('exchange.properties.energy'))
     });
 
@@ -76,19 +79,17 @@ export function Asks(props: Props) {
 
     return (
         <Orders
-            handleRowClick={(index, newOrder) => {
-                if (selectedIndex === index) {
-                    setSelectedIndex(null);
+            handleRowClick={(newOrder) => {
+                if (selectedOrder?.id === newOrder?.id) {
                     setSelectedOrder(null);
                 } else {
-                    setSelectedIndex(index);
                     setSelectedOrder(newOrder);
                 }
             }}
             customRow={
-                displayAssetDetails && device
+                selectedOrder && displayAssetDetails && device
                     ? {
-                          renderAfterIndex: selectedIndex,
+                          shouldDisplay: (row: { id: string }) => row?.id === selectedOrder?.id,
                           display: (
                               <TableCell colSpan={2}>
                                   {t('device.properties.facilityName')}: {device?.facilityName}

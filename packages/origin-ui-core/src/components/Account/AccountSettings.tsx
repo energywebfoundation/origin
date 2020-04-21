@@ -131,8 +131,7 @@ export function AccountSettings() {
             const signedMessage = await signTypedMessage(
                 activeBlockchainAccountAddress,
                 environment.REGISTRATION_MESSAGE_TO_SIGN,
-                web3,
-                null
+                web3
             );
 
             await userClient.attachSignedMessage(user.id, signedMessage);

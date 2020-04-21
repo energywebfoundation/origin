@@ -108,7 +108,7 @@ contract Registry is ERC1155Mintable, ERC1888 {
 		claimedBalances[_id][_from] = claimedBalances[_id][_from].add(_value);
 	}
 
-	function _validate(address _verifier, bytes memory _validityData) internal {
+	function _validate(address _verifier, bytes memory _validityData) internal view {
 		if (_verifier.isContract()) {
 			(bool success, bytes memory result) = _verifier.staticcall(_validityData);
 

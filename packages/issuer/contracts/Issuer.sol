@@ -7,22 +7,21 @@ import "@openzeppelin/contracts-ethereum-package/contracts/ownership/Ownable.sol
 import "./Registry.sol";
 
 contract Issuer is Initializable, Ownable {
-    event NewCertificationRequest(address indexed _owner, uint256 indexed _id);
-    event ApprovedCertificationRequest(address indexed _owner, uint256 indexed _id, uint256 indexed _certificateId);
+    event CertificationRequested(address indexed _owner, uint256 indexed _id, string indexed _deviceId);
+    event CertificationRequestApproved(address indexed _owner, uint256 indexed _id, uint256 indexed _certificateId);
+    event CertificationRequestRevoked(address indexed _owner, uint256 indexed _id);
 
 	event CommitmentUpdated(address indexed _owner, uint256 indexed _id, bytes32 _commitment);
 	event MigrateToPublicRequested(address indexed _owner, uint256 indexed _id);
 	event PrivateTransferRequested(address indexed _owner, uint256 indexed _certificateId);
 	event CertificateMigratedToPublic(uint256 indexed _certificateId, address indexed _owner, uint256 indexed _amount);
+    event CertificateRevoked(uint256 indexed _certificateId);
 
     int public certificateTopic;
     Registry public registry;
 
     mapping(uint256 => CertificationRequest) private certificationRequests;
-    mapping(uint256 => uint256) private certificateToRequestStorage;
-
-    // Device Id => CertificationRequestIds[]
-    mapping(string => uint256[]) private requestsPerDevice;
+    mapping(uint256 => uint256) private requestToCertificate;
 
 	uint256 private requestMigrateToPublicNonce;
 	uint256 private requestPrivateTransferNonce;
@@ -32,6 +31,7 @@ contract Issuer is Initializable, Ownable {
 	mapping(uint256 => PrivateTransferRequest) private requestPrivateTransferStorage;
 
 	mapping(uint256 => bool) private migrations;
+    mapping(uint256 => bool) private revokedCertificates;
 	mapping(uint256 => bytes32) private commitments;
 
     struct CertificationRequest {
@@ -40,7 +40,6 @@ contract Issuer is Initializable, Ownable {
         bool approved;
         bool revoked;
         bool isPrivate;
-        uint256 issuedCertificateId;
     }
 
     struct PrivateTransferRequest {
@@ -78,22 +77,6 @@ contract Issuer is Initializable, Ownable {
         return certificationRequests[_requestId];
     }
 
-    function getCertificationRequestsForDevice(string calldata _deviceId) external view returns (uint256[] memory) {
-        return requestsPerDevice[_deviceId];
-    }
-
-    function getCertificationRequestForCertificate(uint256 _certificateId) external view returns (CertificationRequest memory) {
-        return getCertificationRequest(certificateToRequestStorage[_certificateId]);
-    }
-
-    function getCertificationRequestIdForCertificate(uint256 _certificateId) external view returns (uint256) {
-        return certificateToRequestStorage[_certificateId];
-    }
-
-    function getCertificateIdForCertificationRequest(uint256 _requestId) external view returns (uint256) {
-        return certificationRequests[_requestId].issuedCertificateId;
-    }
-
     function getCertificateCommitment(uint certificateId) public view returns (bytes32) {
         return commitments[certificateId];
     }
@@ -111,15 +94,12 @@ contract Issuer is Initializable, Ownable {
             data: _data,
             approved: false,
             revoked: false,
-            isPrivate: _private,
-            issuedCertificateId: 0
+            isPrivate: _private
         });
 
         (,, string memory deviceId) = decodeData(_data);
 
-        requestsPerDevice[deviceId].push(id);
-
-        emit NewCertificationRequest(_owner, id);
+        emit CertificationRequested(_owner, id, deviceId);
 
         return id;
     }
@@ -130,19 +110,31 @@ contract Issuer is Initializable, Ownable {
 
     function isRequestValid(uint256 _requestId) external view returns (bool) {
         CertificationRequest memory request = certificationRequests[_requestId];
+        uint certificateId = requestToCertificate[_requestId];
 
-        return _requestId <= certificationRequestNonce && request.approved && request.revoked == false;
+        return _requestId <= certificationRequestNonce
+            && request.approved
+            && !request.revoked
+            && !revokedCertificates[certificateId];
     }
 
-    function revokeRequest(uint256 _requestId) public onlyOwner {
+    function revokeRequest(uint256 _requestId) external {
         CertificationRequest storage request = certificationRequests[_requestId];
+
+        require(msg.sender == request.owner, "revokeRequest(): Only the request creator can revoke the request.");
         require(!request.revoked, "revokeRequest(): Already revoked");
+        require(!request.approved, "revokeRequest(): You can't revoke approved requests");
 
         request.revoked = true;
+
+        emit CertificationRequestRevoked(request.owner, _requestId);
     }
 
     function revokeCertificate(uint256 _certificateId) external onlyOwner {
-        revokeRequest(certificateToRequestStorage[_certificateId]);
+        require(!revokedCertificates[_certificateId], "revokeCertificate(): Already revoked");
+        revokedCertificates[_certificateId] = true;
+
+        emit CertificateRevoked(_certificateId);
     }
 
     function approveCertificationRequest(
@@ -150,16 +142,17 @@ contract Issuer is Initializable, Ownable {
         uint256 _value,
         bytes memory _validityData
     ) public onlyOwner returns (uint256) {
+        require(_requestNotApprovedOrRevoked(_requestId), "approveCertificationRequest(): request already approved or revoked");
+
         CertificationRequest memory request = certificationRequests[_requestId];
         require(!request.isPrivate, "CertificationRequest(): please use commitments for private certification");
 
         _approve(_requestId);
 
         uint256 certificateId = registry.issue(request.owner, _validityData, certificateTopic, _value, request.data);
-        _assignCertificate(_requestId, certificateId);
-        certificateToRequestStorage[certificateId] = _requestId;
+        requestToCertificate[_requestId] = certificateId;
 
-        emit ApprovedCertificationRequest(request.owner, _requestId, certificateId);
+        emit CertificationRequestApproved(request.owner, _requestId, certificateId);
 
         return certificateId;
     }
@@ -179,17 +172,18 @@ contract Issuer is Initializable, Ownable {
         bytes32 _commitment,
         bytes memory _validityData
     ) public onlyOwner returns (uint256) {
+        require(_requestNotApprovedOrRevoked(_requestId), "approveCertificationRequest(): request already approved or revoked");
+
         CertificationRequest memory request = certificationRequests[_requestId];
         require(request.isPrivate, "approve: can't approve public certificates using commitments");
 
         _approve(_requestId);
 
         uint256 certificateId = registry.issue(request.owner, _validityData, certificateTopic, 0, request.data);
-        _assignCertificate(_requestId, certificateId);
         _updateCommitment(certificateId, 0x0, _commitment);
-        certificateToRequestStorage[certificateId] = _requestId;
+        requestToCertificate[_requestId] = certificateId;
 
-        emit ApprovedCertificationRequest(request.owner, _requestId, certificateId);
+        emit CertificationRequestApproved(request.owner, _requestId, certificateId);
 
         return certificateId;
     }
@@ -225,11 +219,11 @@ contract Issuer is Initializable, Ownable {
         Proof[] calldata _proof,
         bytes32 _previousCommitment,
         bytes32 _commitment
-    ) external onlyOwner {
+    ) external onlyOwner returns (bool) {
 		PrivateTransferRequest storage pendingRequest = requestPrivateTransferStorage[_certificateId];
 
-        require(pendingRequest.owner != address(0x0), "Can't approve a non-existing private transfer.");
-		require(validateMerkle(pendingRequest.hash, _commitment, _proof), "Wrong merkle tree");
+        require(pendingRequest.owner != address(0x0), "approvePrivateTransfer(): Can't approve a non-existing private transfer.");
+		require(validateMerkle(pendingRequest.hash, _commitment, _proof), "approvePrivateTransfer(): Wrong merkle tree");
 
         requestPrivateTransferStorage[_certificateId] = PrivateTransferRequest({
 			owner: address(0x0),
@@ -237,6 +231,8 @@ contract Issuer is Initializable, Ownable {
 		});
 
 		_updateCommitment(_certificateId, _previousCommitment, _commitment);
+
+        return true;
 	}
 
 	/*
@@ -261,15 +257,15 @@ contract Issuer is Initializable, Ownable {
         return id;
 	}
 
-    function getPrivateTransferRequest(uint _certificateId) external onlyOwner returns (PrivateTransferRequest memory) {
+    function getPrivateTransferRequest(uint _certificateId) external view onlyOwner returns (PrivateTransferRequest memory) {
         return requestPrivateTransferStorage[_certificateId];
     }
 
-    function getMigrationRequest(uint _requestId) external onlyOwner returns (RequestStateChange memory) {
+    function getMigrationRequest(uint _requestId) external view onlyOwner returns (RequestStateChange memory) {
         return requestMigrateToPublicStorage[_requestId];
     }
 
-    function getMigrationRequestId(uint _certificateId) external onlyOwner returns (uint256) {
+    function getMigrationRequestId(uint _certificateId) external view onlyOwner returns (uint256) {
         bool found = false;
 
 		for (uint i = 1; i <= requestMigrateToPublicNonce; i++) {
@@ -284,25 +280,25 @@ contract Issuer is Initializable, Ownable {
 
 	function migrateToPublic(
         uint256 _requestId,
-        uint256 _value,
+        uint256 _volume,
         string calldata _salt,
         Proof[] calldata _proof
-    ) external onlyOwner returns (uint256 publicCertificateId) {
+    ) external onlyOwner {
 		RequestStateChange storage request = requestMigrateToPublicStorage[_requestId];
 
 		require(!request.approved, "migrateToPublic(): Request already approved");
         require(!migrations[request.certificateId], "migrateToPublic(): certificate already migrated");
-        require(validateOwnershipProof(request.owner, _value, _salt, commitments[request.certificateId], _proof), "Invalid proof");
-		require(request.hash == keccak256(abi.encodePacked(request.owner, _value, _salt)), "Requested hash does not match");
+		require(request.hash == keccak256(abi.encodePacked(request.owner, _volume, _salt)), "Requested hash does not match");
+        require(validateOwnershipProof(request.owner, _volume, _salt, commitments[request.certificateId], _proof), "Invalid proof");
 
 		request.approved = true;
 
-        registry.mint(request.certificateId, request.owner, _value);
+        registry.mint(request.certificateId, request.owner, _volume);
         migrations[request.certificateId] = true;
 
         _updateCommitment(request.certificateId, commitments[request.certificateId], 0x0);
 
-        emit CertificateMigratedToPublic(request.certificateId, request.owner, _value);
+        emit CertificateMigratedToPublic(request.certificateId, request.owner, _volume);
 	}
 
 	/*
@@ -367,14 +363,6 @@ contract Issuer is Initializable, Ownable {
         request.approved = true;
     }
 
-    function _assignCertificate(uint256 _requestId, uint256 _certificateId) private {
-        CertificationRequest storage request = certificationRequests[_requestId];
-        require(request.issuedCertificateId == 0, "Already assigned a certificate to the request");
-        require(_certificateId > 0, "Certificate Id has to be higher than 0");
-
-        request.issuedCertificateId = _certificateId;
-    }
-
 	function _updateCommitment(uint256 _id, bytes32 _previousCommitment, bytes32 _commitment) private {
 		require(commitments[_id] == _previousCommitment, "updateCommitment: previous commitment invalid");
 
@@ -383,7 +371,7 @@ contract Issuer is Initializable, Ownable {
 		emit CommitmentUpdated(msg.sender, _id, _commitment);
 	}
 
-    function _migrationRequestExists(uint _certificateId) private returns (bool) {
+    function _migrationRequestExists(uint _certificateId) private view returns (bool) {
         bool exists = false;
 
 		for (uint i = 1; i <= requestMigrateToPublicNonce; i++) {
@@ -394,5 +382,11 @@ contract Issuer is Initializable, Ownable {
 		}
 
         return exists;
+    }
+
+    function _requestNotApprovedOrRevoked(uint256 _requestId) private view returns (bool) {
+        CertificationRequest memory request = certificationRequests[_requestId];
+
+        return !request.approved && !request.revoked;
     }
 }
