@@ -112,7 +112,7 @@ export class CertificateController {
         certificate.currentOwnershipCommitment = certificate.pendingOwnershipCommitment;
         certificate.pendingOwnershipCommitment = null;
 
-        await certificate.save();
+        await this.certificateRepository.save(certificate);
 
         return certificate.currentOwnershipCommitment;
     }
@@ -134,7 +134,7 @@ export class CertificateController {
             await this.ownershipCommitmentRepository.save(newCommitment);
             certificate.currentOwnershipCommitment = newCommitment;
 
-            await certificate.save();
+            await this.certificateRepository.save(certificate);
 
             return {
                 commitmentStatus: CommitmentStatus.CURRENT,
@@ -145,7 +145,7 @@ export class CertificateController {
             await this.ownershipCommitmentRepository.save(newCommitment);
             certificate.pendingOwnershipCommitment = newCommitment;
 
-            await certificate.save();
+            await this.certificateRepository.save(certificate);
 
             return {
                 commitmentStatus: CommitmentStatus.PENDING,

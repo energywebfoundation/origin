@@ -107,7 +107,7 @@ export class UserService {
         user.blockchainAccountSignedMessage = signedMessage;
         user.blockchainAccountAddress = address;
 
-        await user.save();
+        await this.repository.save(user);
 
         return user;
     }
@@ -140,7 +140,7 @@ export class UserService {
             user.notifications = data.notifications;
         }
 
-        return user.save();
+        return this.repository.save(user);
     }
 
     private findOne(conditions: FindConditions<User>): Promise<TUserBaseEntity> {
