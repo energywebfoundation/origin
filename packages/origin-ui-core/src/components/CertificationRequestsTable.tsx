@@ -56,7 +56,9 @@ export function CertificationRequestsTable(props: IProps) {
 
         const isIssuer = isRole(user, Role.Issuer);
 
-        const requests = await getAllCertificationRequests(configuration);
+        const requests = (await getAllCertificationRequests(configuration)).filter(
+            (cert) => cert.initialized
+        );
 
         let newPaginatedData: IRecord[] = [];
 
