@@ -55,6 +55,8 @@ describe('Matching tests', () => {
 
     const defaultBuyer = '1';
     const defaultSeller = '2';
+    const otherSeller = '3';
+
     const twoUSD = 2;
     const onekWh = new BN(1000);
     const twoKWh = new BN(2000);
@@ -625,16 +627,18 @@ describe('Matching tests', () => {
         });
 
         it('should return order book based on device type where bids are windType on level 1 and level 2', () => {
-            const asks = [
-                createAsk({ product: { deviceType: solarTypeLevel3 } }),
-                createAsk({ product: { deviceType: solarTypeLevel32 } }),
-                createAsk({ product: { deviceType: windTypeLevel2 } })
-            ];
-            const bids = [
-                createBid({ product: { deviceType: windTypeLevel1 } }),
-                createBid({ product: { deviceType: windTypeLevel2 } }),
-                createBid({ product: { deviceType: windTypeLevel2 } })
-            ];
+            const { asks, bids } = createOrderBookWithSpread(
+                [
+                    { product: { deviceType: solarTypeLevel3 } },
+                    { product: { deviceType: solarTypeLevel32 } },
+                    { product: { deviceType: windTypeLevel2 } }
+                ],
+                [
+                    { product: { deviceType: windTypeLevel1 } },
+                    { product: { deviceType: windTypeLevel2 } },
+                    { product: { deviceType: windTypeLevel2 } }
+                ]
+            );
 
             const expectedAsks = asks.slice(-1);
 
@@ -1464,6 +1468,29 @@ describe('Matching tests', () => {
                 {
                     orders: [ask1, bid1, bid2],
                     expectedTrades
+                },
+                done
+            );
+        });
+    });
+
+    describe('should skip owned ask and continue matching', () => {
+        it('should skip 1 ask and matching with 2', (done) => {
+            const ask1 = createAsk({ userId: defaultSeller, price: 100 });
+            const ask2 = createAsk({ userId: otherSeller, price: 200, volume: twoKWh });
+            const bid1 = createBid({ userId: defaultSeller, price: 200 });
+            const bid2 = createBid({ userId: defaultSeller, price: 200 });
+
+            const expectedTrades: Trade[] = [
+                new Trade(bid1, ask2, bid1.volume, ask2.price),
+                new Trade(bid2, ask2, bid2.volume, ask2.price)
+            ];
+
+            executeTestCase(
+                {
+                    orders: [ask1, ask2, bid1, bid2],
+                    expectedTrades,
+                    asksAfter: [ask1]
                 },
                 done
             );

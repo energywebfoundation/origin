@@ -271,7 +271,7 @@ export class MatchingEngine {
             asks.forEach((ask) => {
                 const isMatching = this.matches(bid, ask);
                 if (!isMatching) {
-                    return false;
+                    return true;
                 }
 
                 const filled = BN.min(ask.volume, bid.volume);
