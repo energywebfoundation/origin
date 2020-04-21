@@ -10,7 +10,7 @@
         "start:prod": "node dist/main",
         "prebuild": "shx rm -rf dist",
         "build": "yarn build:ts",
-        "build:ts": "tsc -b tsconfig.build.json --verbose --pretty",
+        "build:ts": "tsc -b tsconfig.build.json --verbose --pretty && nest build -p tsconfig.build.json --tsc",
         "build:container:canary": "make build-canary push",
         "build:container:latest": "make build-latest push",
         "prettier": "prettier --write --config-precedence file-override './src/**/*'",
@@ -40,11 +40,13 @@
         "@energyweb/utils-general": "8.0.0",
         "@nestjs/common": "7.0.8",
         "@nestjs/config": "^0.4.0",
+        "@nestjs/swagger": "4.5.1",
         "@nestjs/core": "7.0.8",
         "body-parser": "1.19.0",
         "class-validator": "0.12.1",
         "cors": "2.8.5",
-        "dotenv": "8.2.0"
+        "dotenv": "8.2.0",
+        "swagger-ui-express": "4.1.4"
     },
     "devDependencies": {
         "axios": "0.19.2",
