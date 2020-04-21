@@ -32,6 +32,6 @@ export class ConfigurationService {
         }
 
         Object.assign(existing, data);
-        return existing.save();
+        return this.configurationRepository.save(existing);
     }
 }

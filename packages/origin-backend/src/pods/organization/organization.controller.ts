@@ -53,6 +53,8 @@ export class OrganizationController {
         private readonly organizationRepository: Repository<Organization>,
         @InjectRepository(OrganizationInvitation)
         private readonly organizationInvitationRepository: Repository<OrganizationInvitation>,
+        @InjectRepository(User)
+        private readonly userRepository: Repository<User>,
         private readonly userService: UserService,
         private readonly organizationService: OrganizationService,
         private readonly notificationService: NotificationService
@@ -256,9 +258,9 @@ export class OrganizationController {
             ((user as any) as User).organization = organization;
             organization.users.push((user as any) as User);
             invitation.status = status;
-            await organization.save();
-            await invitation.save();
-            await user.save();
+            await this.organizationRepository.save(organization);
+            await this.organizationInvitationRepository.save(invitation);
+            await this.userRepository.save(user);
 
             return true;
         } catch (error) {
@@ -325,11 +327,11 @@ export class OrganizationController {
                 status: OrganizationInvitationStatus.Pending
             });
 
-            await invitation.save();
+            await this.organizationInvitationRepository.save(invitation);
 
             organization.invitations.push(invitation);
 
-            await organization.save();
+            await this.organizationRepository.save(organization);
 
             const eventData: OrganizationInvitationEvent = {
                 email,
@@ -405,11 +407,11 @@ export class OrganizationController {
 
             organization.users = organization.users.filter((u) => u.id !== removedUserId);
 
-            await organization.save();
+            await this.organizationRepository.save(organization);
 
             removedUser.organization = null;
 
-            removedUser.save();
+            await this.userRepository.save(removedUser);
 
             const eventData: OrganizationRemovedMemberEvent = {
                 organizationName: organization.name,
