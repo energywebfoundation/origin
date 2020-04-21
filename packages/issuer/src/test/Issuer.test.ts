@@ -262,21 +262,4 @@ describe('Issuer', () => {
         );
         assert.equal(deviceOwnerBalance.toString(), '0');
     });
-
-    it('return uninitialized certification request if fails to read data from backend', async () => {
-        const volume = new BigNumber(1e9);
-        let certificationRequest = await createCertificationRequest(volume);
-
-        setActiveUser(issuerWallet);
-
-        const oldMethod = conf.offChainDataSource.certificateClient.getCertificationRequestData;
-        conf.offChainDataSource.certificateClient.getCertificationRequestData = async () => {
-            throw new Error('unavailable');
-        };
-        certificationRequest = await certificationRequest.sync();
-
-        assert.isFalse(certificationRequest.initialized);
-
-        conf.offChainDataSource.certificateClient.getCertificationRequestData = oldMethod;
-    });
 });
