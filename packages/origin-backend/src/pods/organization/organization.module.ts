@@ -7,10 +7,11 @@ import { UserModule } from '../user/user.module';
 import { OrganizationInvitation } from './organizationInvitation.entity';
 import { OrganizationService } from './organization.service';
 import { NotificationModule } from '../notification';
+import { User } from '../user';
 
 @Module({
     imports: [
-        TypeOrmModule.forFeature([Organization, OrganizationInvitation]),
+        TypeOrmModule.forFeature([Organization, OrganizationInvitation, User]),
         UserModule,
         NotificationModule
     ],
