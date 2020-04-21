@@ -14,9 +14,11 @@ describe('SmartMeterReadingsChart', () => {
         initializeI18N();
 
         const currentTime = moment().tz('Asia/Bangkok');
+        const currentDay = currentTime.date();
         const currentMonthDates = new Array(currentTime.daysInMonth())
             .fill(null)
             .map((x, i) => currentTime.clone().startOf('month').add(i, 'days'));
+        const currentDayHour = currentTime.hour();
 
         const offChainProperties: Partial<IDeviceWithRelationsIds> = {
             timezone: 'Asia/Bangkok'
@@ -60,7 +62,9 @@ describe('SmartMeterReadingsChart', () => {
             datasets: [
                 {
                     backgroundColor: currentMonthDates.map(() => undefined),
-                    data: currentMonthDates.map(() => bigNumberify(0)),
+                    data: currentMonthDates.map((item, index) =>
+                        index === currentDay - 1 ? 0.1 : 0
+                    ),
                     label: `Energy (${EnergyFormatter.displayUnit})`
                 }
             ]
@@ -111,7 +115,9 @@ describe('SmartMeterReadingsChart', () => {
         expect(barProps.data.datasets).toStrictEqual([
             {
                 backgroundColor: new Array(24).fill(0).map(() => undefined),
-                data: new Array(24).fill(0).map(() => bigNumberify(0)),
+                data: new Array(24)
+                    .fill(0)
+                    .map((item, index) => (index === currentDayHour ? 0.1 : 0)),
                 label: `Energy (MWh)`
             }
         ]);
