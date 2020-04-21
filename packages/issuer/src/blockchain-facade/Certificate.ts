@@ -169,6 +169,7 @@ export class Certificate extends PreciseProofEntity implements ICertificate {
             issuer.filters.CertificationRequestApproved(null, this.id, null)
         );
 
+        // TO-DO: Temporary - remove this try/catch block once sync problems are fixed
         try {
             this.certificationRequestId = certificationRequestApprovedEvents[0]._certificateId;
         } catch (e) {

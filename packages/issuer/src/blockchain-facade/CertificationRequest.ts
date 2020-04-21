@@ -134,6 +134,7 @@ export class CertificationRequest extends PreciseProofEntity implements ICertifi
 
         let offChainData: Pick<ICertificationRequest, 'id' | 'energy' | 'files'>;
 
+        // TO-DO: Temporary - remove this try/catch block once sync problems are fixed
         try {
             offChainData = await this.configuration.offChainDataSource.certificateClient.getCertificationRequestData(
                 this.id
