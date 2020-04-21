@@ -94,7 +94,7 @@ export function PublishForSaleModal(props: IProps) {
     async function validateInputs(event) {
         switch (event.target.id) {
             case 'energyInDisplayUnitInput':
-                const newEnergyInDisplayUnit = bigNumberify(event.target.value);
+                const newEnergyInDisplayUnit = Number(event.target.value);
                 const newEnergyInBaseValueUnit = EnergyFormatter.getBaseValueFromValueInDisplayUnit(
                     newEnergyInDisplayUnit
                 );
