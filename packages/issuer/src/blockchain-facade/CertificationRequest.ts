@@ -132,9 +132,24 @@ export class CertificationRequest extends PreciseProofEntity implements ICertifi
 
         this.created = Number(creationBlock.timestamp);
 
-        const offChainData = await this.configuration.offChainDataSource.certificateClient.getCertificationRequestData(
-            this.id
-        );
+        let offChainData: Pick<ICertificationRequest, 'id' | 'energy' | 'files'>;
+
+        try {
+            offChainData = await this.configuration.offChainDataSource.certificateClient.getCertificationRequestData(
+                this.id
+            );
+        } catch (e) {
+            if (this.configuration.logger) {
+                this.configuration.logger.error(
+                    `Error fetching off-chain data for certificate ${this.id}: ${e}`
+                );
+            }
+
+            this.initialized = false;
+
+            return this;
+        }
+
         this.energy = offChainData.energy;
         this.files = offChainData.files;
 
