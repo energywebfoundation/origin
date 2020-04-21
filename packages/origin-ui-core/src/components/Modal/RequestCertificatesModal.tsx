@@ -30,7 +30,6 @@ import {
 import { Upload, IUploadedFile } from '../Upload';
 import { getEnvironment } from '../../features';
 import { MAX_ENERGY_PER_CERTIFICATE } from '@energyweb/origin-backend-core';
-import { BigNumber } from 'ethers/utils';
 
 const DEFAULTS = {
     fromDate: moment(),
@@ -57,7 +56,7 @@ export function RequestCertificatesModal() {
 
     const { t } = useTranslation();
 
-    const parsedEnergyInDisplayUnit = new BigNumber(energyInDisplayUnit ?? 0);
+    const parsedEnergyInDisplayUnit = Number(energyInDisplayUnit ?? 0);
 
     const energyInBaseUnit = EnergyFormatter.getBaseValueFromValueInDisplayUnit(
         parsedEnergyInDisplayUnit
