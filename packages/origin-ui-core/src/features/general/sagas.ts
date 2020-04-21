@@ -321,7 +321,7 @@ function* fetchDataAfterConfigurationChange(configuration: Configuration.Entity)
         [configuration]
     );
 
-    for (const certificate of certificates) {
+    for (const certificate of certificates.filter((cert) => cert.initialized)) {
         yield put(addCertificate(certificate));
     }
 }
