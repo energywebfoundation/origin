@@ -1,10 +1,13 @@
-import { INestApplication } from '@nestjs/common';
 import { Contracts } from '@energyweb/issuer';
-import { Contract, ethers, ContractTransaction } from 'ethers';
+import { INestApplication } from '@nestjs/common';
+import { Contract, ContractTransaction, ethers } from 'ethers';
 import moment from 'moment';
 import request from 'supertest';
 
+import { Account } from '../src/pods/account/account';
 import { AccountService } from '../src/pods/account/account.service';
+import { CreateAskDTO } from '../src/pods/order/create-ask.dto';
+import { Order } from '../src/pods/order/order.entity';
 import { RequestWithdrawalDTO } from '../src/pods/transfer/create-withdrawal.dto';
 import { TransferDirection } from '../src/pods/transfer/transfer-direction';
 import { Transfer } from '../src/pods/transfer/transfer.entity';
@@ -54,12 +57,13 @@ describe('Deposits using deployed registry', () => {
         '0xca77c9b06fde68bcbcc09f603c958620613f4be79f3abb4b2032131d0229462e';
     const tokenReceiver = new ethers.Wallet(tokenReceiverPrivateKey, provider);
 
+    const generationFrom = moment('2020-01-01').unix();
+    const generationTo = moment('2020-01-31').unix();
+
     const issueToken = async (address: string, amount: string) => {
-        const from = moment('2020-01-01').unix();
-        const to = moment('2020-01-31').unix();
         const deviceId = 'QWERTY123';
 
-        const data = await issuer.encodeData(from, to, deviceId);
+        const data = await issuer.encodeData(generationFrom, generationTo, deviceId);
 
         const requestReceipt = await ((await issuer.requestCertificationFor(
             data,
@@ -104,7 +108,7 @@ describe('Deposits using deployed registry', () => {
         return (await registry.functions.balanceOf(address, id)) as ethers.utils.BigNumber;
     };
 
-    it('should discover token deposit', async () => {
+    it('should be able to discover token deposit and post the ask', async () => {
         jest.setTimeout(10000);
 
         const depositAmount = '10';
@@ -126,6 +130,52 @@ describe('Deposits using deployed registry', () => {
                 expect(tokenDeposit.direction).toBe(TransferDirection.Deposit);
                 expect(tokenDeposit.amount).toBe(depositAmount);
                 expect(tokenDeposit.address).toBe(depositAddress);
+            });
+
+        let assetId: string;
+
+        await request(app.getHttpServer())
+            .get('/account')
+            .expect(200)
+            .expect((res) => {
+                const account = res.body as Account;
+
+                const [balance] = account.balances.available;
+
+                expect(balance.amount).toBe('10');
+                expect(new Date(balance.asset.generationFrom)).toStrictEqual(
+                    moment.unix(generationFrom).toDate()
+                );
+                expect(new Date(balance.asset.generationTo)).toStrictEqual(
+                    moment.unix(generationTo).toDate()
+                );
+
+                assetId = balance.asset.id;
+            });
+
+        const createAsk: CreateAskDTO = {
+            assetId,
+            volume: '10',
+            price: 100,
+            validFrom: new Date()
+        };
+
+        await request(app.getHttpServer())
+            .post('/orders/ask')
+            .send(createAsk)
+            .expect(201)
+            .expect((res) => {
+                const order = res.body as Order;
+
+                expect(order.price).toBe(100);
+                expect(order.startVolume).toBe('10');
+                expect(order.assetId).toBe(assetId);
+                expect(new Date(order.product.generationFrom)).toStrictEqual(
+                    moment.unix(generationFrom).toDate()
+                );
+                expect(new Date(order.product.generationTo)).toStrictEqual(
+                    moment.unix(generationTo).toDate()
+                );
             });
     });
 

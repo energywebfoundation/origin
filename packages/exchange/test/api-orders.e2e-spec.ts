@@ -99,7 +99,12 @@ describe('account ask order send', () => {
                 const order = res.body as Order;
 
                 expect(order.price).toBe(100);
-                expect(order.asset.id).toBe(deposit.asset.id);
+                expect(order.startVolume).toBe('100');
+                expect(order.assetId).toBe(deposit.asset.id);
+                expect(new Date(order.product.generationFrom)).toStrictEqual(
+                    dummyAsset.generationFrom
+                );
+                expect(new Date(order.product.generationTo)).toStrictEqual(dummyAsset.generationTo);
             });
     });
 
@@ -178,11 +183,13 @@ describe('account ask order send', () => {
         await sleep(5000);
     });
 
-    it('should be able to cancel bid', async () => {
+    it('should be able to create and cancel bid', async () => {
+        const volume = '1000';
+
         const createBid: CreateBidDTO = {
             price: 100,
             validFrom: new Date(),
-            volume: '1000',
+            volume,
             product: { deviceType: ['Solar'] }
         };
 
@@ -196,6 +203,7 @@ describe('account ask order send', () => {
                 order = res.body as Order;
 
                 expect(order.price).toBe(100);
+                expect(order.startVolume).toBe(volume);
                 expect(order.status).toBe(OrderStatus.Active);
             });
 

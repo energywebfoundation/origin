@@ -46,7 +46,7 @@ export class OrderService {
 
         this.matchingEngineService.submit(order);
 
-        return order;
+        return new Order(order);
     }
 
     public async createDemandBids(
@@ -78,7 +78,7 @@ export class OrderService {
             orders.push(new Order(order));
         }
 
-        return orders;
+        return orders.map((order) => new Order(order));
     }
 
     public async createAsk(userId: string, ask: CreateAskDTO): Promise<Order> {
@@ -110,7 +110,7 @@ export class OrderService {
 
         this.matchingEngineService.submit(order);
 
-        return order;
+        return new Order(order);
     }
 
     public async createDirectBuy(userId: string, buyAsk: DirectBuyDTO) {
