@@ -75,8 +75,6 @@ export function UserLogin() {
 
             dispatch(setAuthenticationToken(loginResponse.accessToken));
 
-            showNotification(t('user.feedback.userLoggedIn'), NotificationType.Success);
-
             history.push(getAccountLink());
         } catch (error) {
             console.warn('Could not log in.', error);
