@@ -35,7 +35,11 @@ import { Configuration, DeviceTypeService } from '@energyweb/utils-general';
 import { configurationUpdated } from '../actions';
 import { ProducingDevice } from '@energyweb/device-registry';
 import { producingDeviceCreatedOrUpdated } from '../producingDevices/actions';
-import { addCertificate, requestCertificateEntityFetch } from '../certificates/actions';
+import {
+    addCertificate,
+    requestCertificateEntityFetch,
+    updateCertificate
+} from '../certificates/actions';
 import { IStoreState } from '../../types';
 import { BigNumber } from 'ethers/utils';
 import { getI18n } from 'react-i18next';
@@ -304,7 +308,10 @@ function* initEventHandler() {
     }
 }
 
-function* fetchDataAfterConfigurationChange(configuration: Configuration.Entity): SagaIterator {
+function* fetchDataAfterConfigurationChange(
+    configuration: Configuration.Entity,
+    update = false
+): SagaIterator {
     const producingDevices: ProducingDevice.Entity[] = yield apply(
         ProducingDevice,
         ProducingDevice.getAllDevices,
@@ -324,7 +331,7 @@ function* fetchDataAfterConfigurationChange(configuration: Configuration.Entity)
     const initializedCertificates = certificates.filter((cert) => cert.initialized);
 
     for (const certificate of initializedCertificates) {
-        yield put(addCertificate(certificate));
+        yield put(update ? updateCertificate(certificate) : addCertificate(certificate));
     }
 }
 
@@ -436,6 +443,7 @@ function* updateConfigurationWhenUserChanged(): SagaIterator {
         );
 
         yield put(configurationUpdated(newConfiguration));
+        yield call(fetchDataAfterConfigurationChange, newConfiguration, true);
     }
 }
 
