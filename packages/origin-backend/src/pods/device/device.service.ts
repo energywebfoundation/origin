@@ -217,7 +217,7 @@ export class DeviceService {
             };
         } catch (error) {
             throw new UnprocessableEntityException({
-                message: `Device ${id} could not be updated due to an unknown error`
+                message: `Device ${id} could not be updated due to an error ${error.message}`
             });
         }
     }
