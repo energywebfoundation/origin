@@ -4,6 +4,10 @@ language: node_js
 node_js:
     - '12'
 
+notifications:
+  slack: energywebfoundation:lS0R4jfZryd9btZaw5A7MZTX
+    if: branch = master
+
 services: postgresql
 
 env:
