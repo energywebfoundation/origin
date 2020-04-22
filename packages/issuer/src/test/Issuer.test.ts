@@ -9,7 +9,7 @@ import { OffChainDataSourceMock } from '@energyweb/origin-backend-client-mocks';
 
 import { providers, Wallet } from 'ethers';
 import { migrateIssuer, migrateRegistry } from '../migrate';
-import { CertificationRequest } from '..';
+import { CertificationRequest, getAllCertificationRequests } from '..';
 
 import { logger } from '../Logger';
 
@@ -64,6 +64,16 @@ describe('Issuer', () => {
             offChainDataSource: new OffChainDataSourceMock(),
             logger
         };
+    });
+
+    it('gets all certification requests', async () => {
+        const totalVolume = new BigNumber(1e9);
+
+        await createCertificationRequest(totalVolume);
+        await createCertificationRequest(totalVolume);
+
+        const allCertificationRequests = await getAllCertificationRequests(conf);
+        assert.equal(allCertificationRequests.length, 2);
     });
 
     it('user correctly requests issuance', async () => {

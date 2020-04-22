@@ -295,11 +295,14 @@ export async function getAllCertificationRequests(
         Issuer
     >;
 
-    const totalRequests = await issuer.totalRequests();
+    const certificationRequestedEvents = await getEventsFromContract(
+        issuer,
+        issuer.filters.CertificationRequested(null, null, null)
+    );
 
-    const certificationRequestPromises = Array(Number(totalRequests))
-        .fill(null)
-        .map(async (item, index) => new CertificationRequest(index + 1, configuration).sync());
+    const certificationRequestPromises = certificationRequestedEvents.map((event) =>
+        new CertificationRequest(event._id.toNumber(), configuration).sync()
+    );
 
     return Promise.all(certificationRequestPromises);
 }

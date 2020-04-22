@@ -81,11 +81,6 @@ contract Issuer is Initializable, Ownable {
         return commitments[certificateId];
     }
 
-    function totalRequests() external view returns (uint256) {
-        require(certificationRequestNonce >= 0, "invalid nonce");
-        return certificationRequestNonce;
-    }
-
     function requestCertificationFor(bytes memory _data, address _owner, bool _private) public returns (uint256) {
         uint256 id = ++certificationRequestNonce;
 

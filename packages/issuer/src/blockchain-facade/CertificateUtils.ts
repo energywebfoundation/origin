@@ -105,27 +105,16 @@ export async function getAllCertificates(
         Registry,
         Issuer
     >;
-    const totalRequests = (await issuer.totalRequests()).toNumber();
 
-    const certificatePromises = Array(totalRequests)
-        .fill(null)
-        .map(async (item, index) => {
-            const certificationRequestApprovedEvents = await getEventsFromContract(
-                issuer,
-                issuer.filters.CertificationRequestApproved(null, index + 1, null)
-            );
+    const certificationRequestApprovedEvents = await getEventsFromContract(
+        issuer,
+        issuer.filters.CertificationRequestApproved(null, null, null)
+    );
+    const certificatePromises = certificationRequestApprovedEvents.map((event) =>
+        new Certificate(event._certificateId.toNumber(), configuration).sync()
+    );
 
-            if (certificationRequestApprovedEvents.length < 1) {
-                return null;
-            }
-
-            const certId = certificationRequestApprovedEvents[0]._certificateId;
-            return certId.gt(0) ? new Certificate(certId.toNumber(), configuration).sync() : null;
-        });
-
-    const certificates = await Promise.all(certificatePromises);
-
-    return certificates.filter((cert) => cert !== null);
+    return Promise.all(certificatePromises);
 }
 
 export const getAllCertificateEvents = async (
