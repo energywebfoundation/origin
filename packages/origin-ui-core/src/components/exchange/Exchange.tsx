@@ -30,9 +30,17 @@ export function Exchange(props: IProps) {
     const [deviceType, setDeviceType] = useState<string[]>([]);
     const [location, setLocation] = useState<string[]>([]);
     const [gridOperator, setGridOperator] = useState<string[]>([]);
+    const [generationDateStart, setGenerationDateStart] = useState<string>();
+    const [generationDateEnd, setGenerationDateEnd] = useState<string>();
 
     const fetchData = async (checkIsMounted: () => boolean) => {
-        const fetchedData = (await exchangeClient?.search(deviceType, location, gridOperator)) ?? {
+        const fetchedData = (await exchangeClient?.search(
+            deviceType,
+            location,
+            gridOperator,
+            generationDateStart,
+            generationDateEnd
+        )) ?? {
             asks: [],
             bids: []
         };
@@ -42,7 +50,13 @@ export function Exchange(props: IProps) {
         }
     };
 
-    useIntervalFetch(fetchData, refreshInterval, [deviceType, location, gridOperator]);
+    useIntervalFetch(fetchData, refreshInterval, [
+        deviceType,
+        location,
+        gridOperator,
+        generationDateStart,
+        generationDateEnd
+    ]);
 
     async function onBid(values: IMarketFormValues) {
         dispatch(setLoading(true));
@@ -55,8 +69,8 @@ export function Exchange(props: IProps) {
                     values.location?.length > 0
                         ? values.location?.map((l) => `${country};${l}`)
                         : undefined,
-                generationFrom: null,
-                generationTo: null
+                generationFrom: generationDateStart,
+                generationTo: generationDateEnd
             },
             validFrom: moment().toISOString(),
             volume: EnergyFormatter.getBaseValueFromValueInDisplayUnit(
@@ -108,6 +122,27 @@ export function Exchange(props: IProps) {
 
                     if (JSON.stringify(newGridOperator) !== JSON.stringify(gridOperator)) {
                         setGridOperator(newGridOperator);
+                    }
+
+                    const newGenerationDateStart = values.generationDateStart
+                        ?.startOf('month')
+                        .toISOString();
+
+                    if (
+                        JSON.stringify(newGenerationDateStart) !==
+                        JSON.stringify(generationDateStart)
+                    ) {
+                        setGenerationDateStart(newGenerationDateStart);
+                    }
+
+                    const newGenerationDateEnd = values.generationDateEnd
+                        ?.endOf('month')
+                        .toISOString();
+
+                    if (
+                        JSON.stringify(newGenerationDateEnd) !== JSON.stringify(generationDateEnd)
+                    ) {
+                        setGenerationDateEnd(newGenerationDateEnd);
                     }
                 }}
                 energyUnit={EnergyFormatter.displayUnit}
