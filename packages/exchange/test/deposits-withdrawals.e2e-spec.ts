@@ -1,6 +1,5 @@
 import { Contracts } from '@energyweb/issuer';
 import { INestApplication } from '@nestjs/common';
-import BN from 'bn.js';
 import { Contract, ContractTransaction, ethers } from 'ethers';
 import moment from 'moment';
 import request from 'supertest';
