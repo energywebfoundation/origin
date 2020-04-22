@@ -18,7 +18,9 @@ export interface IExchangeClient {
     search(
         deviceType?: string[],
         location?: string[],
-        gridOperator?: string[]
+        gridOperator?: string[],
+        generationFrom?: string,
+        generationTo?: string
     ): Promise<TOrderBook>;
     createAsk(data: CreateAskDTO): Promise<IOrder>;
     createBid(data: CreateBidDTO): Promise<IOrder>;
@@ -38,7 +40,13 @@ export class ExchangeClient implements IExchangeClient {
         private readonly requestClient: IRequestClient = new RequestClient()
     ) {}
 
-    public async search(deviceType?: string[], location?: string[], gridOperator?: string[]) {
+    public async search(
+        deviceType?: string[],
+        location?: string[],
+        gridOperator?: string[],
+        generationFrom?: string,
+        generationTo?: string
+    ) {
         const deviceTypePresent = deviceType?.length > 0;
         const locationPresent = location?.length > 0;
         const gridOperatorPresent = gridOperator?.length > 0;
@@ -47,11 +55,14 @@ export class ExchangeClient implements IExchangeClient {
             deviceTypeFilter: deviceTypePresent ? Filter.Specific : Filter.Unspecified,
             locationFilter: locationPresent ? Filter.Specific : Filter.Unspecified,
             gridOperatorFilter: gridOperatorPresent ? Filter.Specific : Filter.Unspecified,
-            generationTimeFilter: Filter.Unspecified,
+            generationTimeFilter:
+                generationFrom && generationTo ? Filter.Specific : Filter.Unspecified,
             deviceVintageFilter: Filter.Unspecified,
             deviceType: deviceTypePresent ? deviceType : undefined,
             location: locationPresent ? location : undefined,
-            gridOperator: gridOperatorPresent ? gridOperator : undefined
+            gridOperator: gridOperatorPresent ? gridOperator : undefined,
+            generationFrom: generationFrom ?? undefined,
+            generationTo: generationTo ?? undefined
         };
 
         let url = `${this.orderbookEndpoint}/public/search`;
