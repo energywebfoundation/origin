@@ -7,8 +7,8 @@ node_js:
 notifications:
   slack: 
     if: branch = master
-    - rooms:
-        energywebfoundation:lS0R4jfZryd9btZaw5A7MZTX
+        rooms:
+        - energywebfoundation:lS0R4jfZryd9btZaw5A7MZTX#origin-updates
     
 
 services: postgresql
