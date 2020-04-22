@@ -56,7 +56,9 @@ export function RequestCertificatesModal() {
 
     const { t } = useTranslation();
 
-    const parsedEnergyInDisplayUnit = Number(energyInDisplayUnit ?? 0);
+    const parsedEnergyInDisplayUnit = isNaN(Number(energyInDisplayUnit))
+        ? 0
+        : Number(energyInDisplayUnit);
 
     const energyInBaseUnit = EnergyFormatter.getBaseValueFromValueInDisplayUnit(
         parsedEnergyInDisplayUnit
