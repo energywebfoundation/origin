@@ -5,8 +5,11 @@ node_js:
     - '12'
 
 notifications:
-  slack: energywebfoundation:lS0R4jfZryd9btZaw5A7MZTX
+  slack: 
     if: branch = master
+    - rooms:
+        energywebfoundation:lS0R4jfZryd9btZaw5A7MZTX
+    
 
 services: postgresql
 
