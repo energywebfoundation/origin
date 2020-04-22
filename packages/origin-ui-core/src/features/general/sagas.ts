@@ -406,16 +406,20 @@ function* updateConfigurationWhenUserChanged(): SagaIterator {
         const existingConfiguration: Configuration.Entity = yield select(getConfiguration);
         const offchainConfiguration: IOriginConfiguration = yield select(getOffchainConfiguration);
 
+        if (
+            !existingConfiguration ||
+            !offchainConfiguration ||
+            !existingConfiguration?.blockchainProperties?.activeUser
+        ) {
+            continue;
+        }
+
         const existingSignerAddress: string = yield call([
             existingConfiguration?.blockchainProperties?.activeUser,
             existingConfiguration?.blockchainProperties?.activeUser?.getAddress
         ]);
 
-        if (
-            !existingConfiguration ||
-            !offchainConfiguration ||
-            address?.toLowerCase() === existingSignerAddress?.toLowerCase()
-        ) {
+        if (address?.toLowerCase() === existingSignerAddress?.toLowerCase()) {
             continue;
         }
 
