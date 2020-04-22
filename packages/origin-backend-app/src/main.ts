@@ -12,10 +12,8 @@ export async function startAPI(logger?: LoggerService) {
     const PORT = PortUtils.getPort();
     const getVersion = () => {
         let info;
-        if (fs.existsSync('package.json')) {
-            info = fs.readFileSync('package.json');
-        } else if (fs.existsSync('../package.json')) {
-            info = fs.readFileSync('../package.json');
+        if (fs.existsSync(`${__dirname}/../../../package.json`)) {
+            info = fs.readFileSync(`${__dirname}/../../../package.json`);
         } else {
             return 'unknown';
         }
