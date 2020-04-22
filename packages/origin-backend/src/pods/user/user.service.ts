@@ -26,14 +26,14 @@ export class UserService {
     ) {}
 
     create(data: UserRegisterData): Promise<User> {
-        return this.repository
-            .create({
-                ...data,
-                password: this.hashPassword(data.password),
-                blockchainAccountAddress: '',
-                blockchainAccountSignedMessage: ''
-            })
-            .save();
+        const user = this.repository.create({
+            ...data,
+            password: this.hashPassword(data.password),
+            blockchainAccountAddress: '',
+            blockchainAccountSignedMessage: ''
+        });
+
+        return this.repository.save(user);
     }
 
     async findById(id: number | string) {
