@@ -10,7 +10,6 @@ import {
 } from './actions';
 import { getOffChainDataSource } from '../general/selectors';
 import { IRequestClient, IOffChainDataSource } from '@energyweb/origin-backend-client';
-import { showNotification, NotificationType } from '../../utils';
 import {
     IUserWithRelationsIds,
     IOrganizationWithRelationsIds
@@ -131,8 +130,6 @@ function* logOutSaga(): SagaIterator {
         requestClient.authenticationToken = null;
 
         yield put(setUserOffchain(null));
-
-        showNotification('Logged out successfully.', NotificationType.Success);
     }
 }
 
