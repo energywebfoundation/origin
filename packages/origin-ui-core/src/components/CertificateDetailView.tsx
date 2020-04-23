@@ -54,50 +54,38 @@ export function CertificateDetailView(props: IProps) {
             let label: string;
             let description: string;
 
-            const { registry } = configuration.blockchainProperties;
-
-            switch (event.event) {
-                case 'LogCreatedCertificate':
+            switch (event.name) {
+                case 'IssuanceSingle':
                     label = 'Certified';
-                    description = 'Local issuer approved the certification request';
-                    break;
-                case 'Transfer':
-                    const { values } = registry.interface.parseLog(event);
+                    description = `Local issuer approved the certification request`;
 
-                    if (values.from === '0x0000000000000000000000000000000000000000') {
+                    break;
+                case 'TransferSingle':
+                    if (event.values._from === '0x0000000000000000000000000000000000000000') {
                         label = 'Initial owner';
-                        description = values.to;
+                        description = event.values._to;
                     } else {
-                        const newOwner = values.to;
-                        const oldOwner = values.from;
+                        const newOwner = event.values._to;
+                        const oldOwner = event.values._from;
 
                         label = 'Changed ownership';
                         description = `Transferred from ${oldOwner} to ${newOwner}`;
                     }
                     break;
-                case 'LogPublishForSale':
-                    label = 'Certificate published for sale';
-                    break;
-                case 'LogUnpublishForSale':
-                    label = 'Certificate unpublished from sale';
-                    break;
-
-                case 'LogCertificateClaimed':
+                case 'ClaimSingle':
                     label = 'Certificate claimed';
-                    description = `Initiated by `; // ${getUserDisplayText(owner)}`;
+                    description = `Initiated by ${event.values._claimIssuer}`;
                     break;
 
                 default:
-                    label = event.event;
+                    label = event.name;
             }
-
-            const eventBlock = await registry.provider.getBlock(event.blockHash);
 
             return {
                 txHash: event.transactionHash,
                 label,
                 description,
-                timestamp: eventBlock.timestamp
+                timestamp: event.timestamp
             };
         });
 
@@ -109,7 +97,7 @@ export function CertificateDetailView(props: IProps) {
         ).sync();
 
         if (request) {
-            resolvedEvents.push({
+            resolvedEvents.unshift({
                 txHash: '',
                 label: 'Requested certification',
                 description: 'Device owner requested certification based on meter reads',
