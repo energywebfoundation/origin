@@ -1,11 +1,20 @@
-import { Event as BlockchainEvent } from 'ethers';
 import { randomBytes } from 'ethers/utils';
 import { Configuration } from '@energyweb/utils-general';
 
+import { Log } from 'ethers/providers';
+import { EventFilter } from 'ethers';
 import { Certificate } from './Certificate';
 import { Registry } from '../ethers/Registry';
 import { Issuer } from '../ethers/Issuer';
 import { getEventsFromContract } from '../utils/events';
+
+export interface IBlockchainEvent {
+    name: string;
+    transactionHash: string;
+    blockHash: string;
+    values: any;
+    timestamp: number;
+}
 
 export async function claimCertificates(
     certificateIds: number[],
@@ -120,16 +129,49 @@ export async function getAllCertificates(
 export const getAllCertificateEvents = async (
     certId: number,
     configuration: Configuration.Entity
-): Promise<BlockchainEvent[]> => {
+): Promise<IBlockchainEvent[]> => {
     const { registry } = configuration.blockchainProperties as Configuration.BlockchainProperties<
         Registry,
         Issuer
     >;
 
-    const allEvents = await getEventsFromContract(
-        registry,
-        registry.filters.TransferSingle(null, null, null, null, null)
+    const getEvent = async (filter: EventFilter, eventName: string) => {
+        const logs = await registry.provider.getLogs({
+            ...filter,
+            fromBlock: 0,
+            toBlock: 'latest'
+        });
+        const parsedLogs = await Promise.all(
+            logs.map(async (event: Log) => {
+                const { values } = registry.interface.parseLog(event);
+                const eventBlock = await registry.provider.getBlock(event.blockHash);
+
+                return {
+                    name: eventName,
+                    transactionHash: event.transactionHash,
+                    blockHash: event.blockHash,
+                    values,
+                    timestamp: eventBlock.timestamp
+                };
+            })
+        );
+        return parsedLogs.filter((event) => event.values._id.toNumber() === certId);
+    };
+
+    const issuanceSingleEvents = await getEvent(
+        registry.filters.IssuanceSingle(null, null, null),
+        'IssuanceSingle'
     );
 
-    return allEvents.filter((event) => event._id === certId);
+    const transferSingleEvents = await getEvent(
+        registry.filters.TransferSingle(null, null, null, null, null),
+        'TransferSingle'
+    );
+
+    const claimSingleEvents = await getEvent(
+        registry.filters.ClaimSingle(null, null, null, null, null, null),
+        'ClaimSingle'
+    );
+
+    return [...issuanceSingleEvents, ...transferSingleEvents, ...claimSingleEvents];
 };
