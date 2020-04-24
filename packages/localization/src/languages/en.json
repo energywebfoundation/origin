@@ -4,9 +4,14 @@
             "devices": "Devices",
             "certificates": "Certificates",
             "demands": "Demands",
-            "organizations": "Organizations"
+            "organizations": "Organizations",
+            "admin": "Admin",
+            "supportAgent": "Support Agents"
         },
         "navigation": {
+            "admin": {
+                "users": "Manage Users"
+            },
             "devices": {
                 "all": "All devices",
                 "map": "Map view",
