@@ -9,6 +9,10 @@ export interface IEvent {
     timestamp: number;
 }
 
+export type UserStatusChangedEvent = {
+    email: string;
+};
+
 export type DeviceStatusChangedEvent = {
     deviceId: string;
     status: DeviceStatus;
@@ -53,10 +57,12 @@ export enum SupportedEvents {
     DEMAND_PARTIALLY_FILLED = 'DemandPartiallyFilled',
     ORGANIZATION_STATUS_CHANGED = 'OrganizationStatusChanged',
     ORGANIZATION_INVITATION = 'OrganizationInvitation',
-    ORGANIZATION_REMOVED_MEMBER = 'OrganizationRemovedMember'
+    ORGANIZATION_REMOVED_MEMBER = 'OrganizationRemovedMember',
+    USER_STATUS_CHANGED = 'UserStatusChanged'
 }
 
 export type SupportedEventData =
+    | UserStatusChangedEvent
     | DeviceStatusChangedEvent
     | CreatedNewDemand
     | DemandUpdated
