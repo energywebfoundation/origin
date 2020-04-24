@@ -7,3 +7,4 @@ export * from './DeviceClient';
 export * from './OffChainDataSource';
 export * from './FilesClient';
 export * from './CertificateClient';
+export * from './AdminClient';

@@ -6,3 +6,4 @@ export * from './ErrorComponent';
 export * from './Modal';
 export * from './Origin';
 export * from './OriginConfigurationContext';
+export * from './Admin';

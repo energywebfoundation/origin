@@ -86,7 +86,9 @@ export function UserRegister() {
             await userClient.register({
                 ...values,
                 title: values.titleSelect === 'Other' ? values.titleInput : values.titleSelect,
-                rights: 12
+                rights: 12,
+                status: 0,
+                kycStatus: 0
             });
 
             showNotification(t('user.feedback.userRegistered'), NotificationType.Success);
