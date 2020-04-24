@@ -3,6 +3,30 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [5.0.1](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-backend@5.0.0...@energyweb/origin-backend@5.0.1) (2020-04-24)
+
+
+### Bug Fixes
+
+* **deps:** update dependency class-validator to v0.12.1 ([b5000af](https://github.com/energywebfoundation/origin/commit/b5000af21eb1bc8e1df1eb85cac636cfe5e31adc))
+* **deps:** update dependency ts-loader to v7 ([722101a](https://github.com/energywebfoundation/origin/commit/722101a02d82ea125f011de23cd1232e82e7db47))
+* **deps:** update nest monorepo to v7.0.8 ([67e8239](https://github.com/energywebfoundation/origin/commit/67e823940e8c671790acbd106af0dc479ec9c23d))
+* **origin-backend:** device update ([1cd631b](https://github.com/energywebfoundation/origin/commit/1cd631b38452a1b42f78d28f07348b04ce100e7b))
+* **origin-backend:** fix init ([1306a7e](https://github.com/energywebfoundation/origin/commit/1306a7e9c51c537a7e39f63ed56724a82ab1df4b))
+* **origin-backend:** fix storing the smart meter reads ([560f1dd](https://github.com/energywebfoundation/origin/commit/560f1ddd1b14c24f8ed9d02eca7d6d344fc29277))
+* **origin-backend:** registration ([dffbf50](https://github.com/energywebfoundation/origin/commit/dffbf509fc34fbc247170628a76ed2e02e4b6765))
+* **origin-backend:** use repositry.save(enityt) instead of entity.save() ([2f34ca0](https://github.com/energywebfoundation/origin/commit/2f34ca042cc292be46526e555ed49b0fcc4a63e0))
+* all energy references to BigNumber ([9265556](https://github.com/energywebfoundation/origin/commit/926555616e2f88dbc6ef824e05becce4d64148e3))
+* bin env for migration scripts ([aef836e](https://github.com/energywebfoundation/origin/commit/aef836e0e263076c3bdb6fafb5335a595af9d519))
+* migration catalog ([48209a1](https://github.com/energywebfoundation/origin/commit/48209a1357d82e85c0c6a330bde62669dcb98844))
+* migrations path fix ([54b4c67](https://github.com/energywebfoundation/origin/commit/54b4c67aec30a2ca469b1218bc824eb66050abc7))
+* store certificate energy as a string (maximum 2^256-1) ([2a284a9](https://github.com/energywebfoundation/origin/commit/2a284a9ff3b362dfa41516995b1cadd4c5651194))
+* **origin-backend-app:** fix inconsistent build process ([6795770](https://github.com/energywebfoundation/origin/commit/6795770702f1fa52260c9a1c4a6631b2be7ffb05))
+
+
+
+
+
 # [5.0.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-backend@4.0.0...@energyweb/origin-backend@5.0.0) (2020-04-08)
 
 

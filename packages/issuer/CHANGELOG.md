@@ -3,6 +3,41 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.0.0](https://github.com/energywebfoundation/origin/compare/@energyweb/issuer@1.1.0...@energyweb/issuer@2.0.0) (2020-04-24)
+
+
+### Bug Fixes
+
+* certificate history ([74e4e37](https://github.com/energywebfoundation/origin/commit/74e4e376fcb96bfa1844bf56d565e7c39af6612e))
+* **issuer:** contract interactions wait ([15f2785](https://github.com/energywebfoundation/origin/commit/15f2785c8b30e23d2883024719fea7fabe37d44e))
+* **issuer:** return initialized=false if fetching events errored on Certificate ([80087b2](https://github.com/energywebfoundation/origin/commit/80087b27c289087129a9d9778e1b1c51f18d0970))
+* **issuer:** return uninitialized certification request if fails to read data from backend ([0c19601](https://github.com/energywebfoundation/origin/commit/0c196019b4a3203e4b61180d8028f9c5da753e08))
+* **issuer:** storing bignumber in precise proofs ([6dd91c7](https://github.com/energywebfoundation/origin/commit/6dd91c707656108f0882450af3a3dd38d95adc0c))
+* **issuer:** swtich IDs to get correct certificationRequestId in Certificate ([23d5527](https://github.com/energywebfoundation/origin/commit/23d5527daf1525e380bdc8b6a767a03f773a1338))
+* **issuer:** wait for confirmation before proceeding to the next transcation ([cba2368](https://github.com/energywebfoundation/origin/commit/cba23684ac4158f22cd7192a1aa16d0d1c8515b8))
+
+
+### chore
+
+* **issuer:** better code organization and naming ([438aa89](https://github.com/energywebfoundation/origin/commit/438aa89279d68a33dea752fc00b0c6f41b84a268))
+* **issuer:** only show energy volumes for the active user ([39cf708](https://github.com/energywebfoundation/origin/commit/39cf708d8b02e8859b6ec48babbadfcffc53c32b))
+
+
+### Features
+
+* **issuer:** Web3js to ethers + typechain ([594ea82](https://github.com/energywebfoundation/origin/commit/594ea82067ec7cab73b7c3a8315814ac5f68d663))
+
+
+### BREAKING CHANGES
+
+* **issuer:** Certificate.energy now returns "publicVolume", "privateVolume" and "claimedVolume"
+* **issuer:** Use Certificate and CertificationRequest instead of Certificate.Entity and CertificationRequest.Entity
+* **issuer:** The issuer package now uses the Ethers instead of Web3JS
+
+
+
+
+
 # [1.1.0](https://github.com/energywebfoundation/origin/compare/@energyweb/issuer@1.0.1...@energyweb/issuer@1.1.0) (2020-04-08)
 
 

@@ -3,6 +3,26 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.2.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-backend-core@2.1.0...@energyweb/origin-backend-core@2.2.0) (2020-04-24)
+
+
+### Bug Fixes
+
+* **deps:** update dependency precise-proofs-js to v1.1.0 ([b1f0bb7](https://github.com/energywebfoundation/origin/commit/b1f0bb723a4a006357ed3b7dcad7494c70b0c5b4))
+* all energy references to BigNumber ([9265556](https://github.com/energywebfoundation/origin/commit/926555616e2f88dbc6ef824e05becce4d64148e3))
+* store certificate energy as a string (maximum 2^256-1) ([2a284a9](https://github.com/energywebfoundation/origin/commit/2a284a9ff3b362dfa41516995b1cadd4c5651194))
+* use BigNumber in MAX_ENERGY_PER_CERTIFICATE ([4694664](https://github.com/energywebfoundation/origin/commit/46946644adce8a979da8698d201a1215cd77eced))
+
+
+### Features
+
+* add support for device grid operator property ([f6d77f3](https://github.com/energywebfoundation/origin/commit/f6d77f327a7676c3e742cc8a022e5c085cf66e39))
+* required device external IDs ([0d619d1](https://github.com/energywebfoundation/origin/commit/0d619d1310a69f53930fa85f25f0c24e7ce4860d))
+
+
+
+
+
 # [2.1.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-backend-core@2.0.0...@energyweb/origin-backend-core@2.1.0) (2020-04-08)
 
 

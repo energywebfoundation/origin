@@ -3,6 +3,27 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.0.0](https://github.com/energywebfoundation/origin/compare/@energyweb/exchange-core@2.0.0...@energyweb/exchange-core@3.0.0) (2020-04-24)
+
+
+### Bug Fixes
+
+* **exchange-core:** fix matching termination ([ac8e593](https://github.com/energywebfoundation/origin/commit/ac8e5933b21dee5255da63571a29b16735dfe4ae))
+
+
+### chore
+
+* **exchange-core:** ask requires asset id to be set ([3535d2a](https://github.com/energywebfoundation/origin/commit/3535d2ab5d9a53b9079e6a6b9356033ffb210155))
+
+
+### BREAKING CHANGES
+
+* **exchange-core:** Asset contructor requires assetId: string to set
+
+
+
+
+
 # [2.0.0](https://github.com/energywebfoundation/origin/compare/@energyweb/exchange-core@1.0.1...@energyweb/exchange-core@2.0.0) (2020-04-08)
 
 
