@@ -9,14 +9,31 @@ type Currency = string;
     DeviceManager:    0x0...----1-- = 4
     Trader:           0x0...---1--- = 8
     Issuer:           0x0...--1---- = 16
+    Admin:            0x0...-1----- = 32
+    Agents:           0x0...1------ = 64
 */
 export enum Role {
     UserAdmin,
     DeviceAdmin,
     DeviceManager,
     Trader,
-    Issuer
+    Issuer,
+    Admin,
+    Agent
 }
+
+export enum Status {
+    'Pending',
+    'Active',
+    'Suspended',
+    'Deleted'
+};
+
+export enum KYCStatus {
+    'Pending KYC',
+    'KYC passed',
+    'KYC rejected'
+};
 
 export function buildRights(roles: Role[]): number {
     if (!roles) {
@@ -56,6 +73,8 @@ export interface IUserProperties {
     notifications: boolean;
     autoPublish: IAutoPublishConfig;
     rights: number;
+    status: number;
+    kycStatus: number;
 }
 
 export interface IUser extends IUserProperties {
