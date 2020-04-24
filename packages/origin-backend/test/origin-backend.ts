@@ -71,7 +71,9 @@ export const registerAndLogin = async (
             lastName: 'Name',
             title: 'Sir',
             rights: buildRights(roles),
-            telephone: '991'
+            telephone: '991',
+            status: 0,
+            kycStatus: 0
         };
         await userService.create(userRegistration);
         user = await userService.findOne({ email: userEmail });
