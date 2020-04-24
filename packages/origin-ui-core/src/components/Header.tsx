@@ -3,7 +3,7 @@ import { NavLink, Link } from 'react-router-dom';
 import { makeStyles, createStyles, useTheme, Tooltip } from '@material-ui/core';
 import { AccountCircle, Settings, PersonAdd, ExitToApp } from '@material-ui/icons';
 
-import { IUserWithRelations } from '@energyweb/origin-backend-core';
+import { IUserWithRelations, Role, isRole } from '@energyweb/origin-backend-core';
 
 import { useSelector, useDispatch } from 'react-redux';
 import { useLinks, dataTest, useTranslation } from '../utils';
@@ -53,7 +53,8 @@ export function Header() {
         getCertificatesLink,
         getAccountLink,
         getOrganizationLink,
-        getAccountLoginLink
+        getAccountLoginLink,
+        getAdminLink
     } = useLinks();
 
     const originConfiguration = useContext(OriginConfigurationContext);
@@ -71,6 +72,22 @@ export function Header() {
                     <li>
                         <NavLink to={getCertificatesLink()}>{t('header.certificates')}</NavLink>
                     </li>
+
+                    {isRole(userOffchain, Role.Admin) && (
+                        <>
+                            <li>
+                                <NavLink to={getAdminLink()}>{t('header.admin')}</NavLink>
+                            </li>
+                        </>
+                    )}
+
+                    {isRole(userOffchain, Role.Agents) && (
+                        <>
+                            <li>
+                                <NavLink to={getAdminLink()}>{t('header.supportAgent')}</NavLink>
+                            </li>
+                        </>
+                    )}
 
                     {userOffchain && (
                         <>

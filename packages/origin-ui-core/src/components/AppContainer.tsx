@@ -3,6 +3,7 @@ import { Certificates } from './Certificates';
 import { Route, Switch } from 'react-router-dom';
 import { Header } from './Header';
 import { Device } from './Device';
+import { Admin } from './Admin';
 import { Account } from './Account/Account';
 import { Organization } from './Organization/Organization';
 import { RequestCertificatesModal, AccountMismatchModal } from './Modal';
@@ -21,7 +22,8 @@ export function AppContainer() {
         getAccountLink,
         getDevicesLink,
         getCertificatesLink,
-        getOrganizationLink
+        getOrganizationLink,
+        getAdminLink
     } = useLinks();
 
     const useStyles = makeStyles(() =>
@@ -57,6 +59,7 @@ export function AppContainer() {
                 <Route path={getCertificatesLink()} component={Certificates} />
                 <Route path={getAccountLink()} component={Account} />
                 <Route path={getOrganizationLink()} component={Organization} />
+                <Route path={getAdminLink()} component={Admin} />
 
                 <Route path={baseURL} component={Device} />
             </Switch>

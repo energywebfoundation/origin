@@ -9,13 +9,17 @@ type Currency = string;
     DeviceManager:    0x0...----1-- = 4
     Trader:           0x0...---1--- = 8
     Issuer:           0x0...--1---- = 16
+    Admin:            0x0...-1----- = 32
+    Agents:           0x0...1------ = 64
 */
 export enum Role {
     UserAdmin,
     DeviceAdmin,
     DeviceManager,
     Trader,
-    Issuer
+    Issuer,
+    Admin,
+    Agents
 }
 
 export function buildRights(roles: Role[]): number {
