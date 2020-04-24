@@ -1,5 +1,6 @@
 import React from 'react';
 import { mount } from 'enzyme';
+import { bigNumberify } from 'ethers/utils';
 import { SmartMeterReadingsChart } from '../../components/SmartMeterReadingsChart';
 import { ProducingDevice } from '@energyweb/device-registry';
 import { Bar } from 'react-chartjs-2';
@@ -25,7 +26,7 @@ describe('SmartMeterReadingsChart', () => {
 
         const reads: IEnergyGenerated[] = [
             {
-                energy: 1000,
+                energy: bigNumberify(1000),
                 timestamp: currentTime.unix()
             }
         ];
@@ -62,7 +63,7 @@ describe('SmartMeterReadingsChart', () => {
                 {
                     backgroundColor: currentMonthDates.map(() => undefined),
                     data: currentMonthDates.map((item, index) =>
-                        index === currentDay - 1 ? 0.001 : 0
+                        index === currentDay - 1 ? 0.1 : 0
                     ),
                     label: `Energy (${EnergyFormatter.displayUnit})`
                 }
@@ -116,7 +117,7 @@ describe('SmartMeterReadingsChart', () => {
                 backgroundColor: new Array(24).fill(0).map(() => undefined),
                 data: new Array(24)
                     .fill(0)
-                    .map((item, index) => (index === currentDayHour ? 0.001 : 0)),
+                    .map((item, index) => (index === currentDayHour ? 0.1 : 0)),
                 label: `Energy (MWh)`
             }
         ]);

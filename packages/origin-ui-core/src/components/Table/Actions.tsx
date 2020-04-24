@@ -8,12 +8,12 @@ import { useOriginConfiguration } from '../../utils/configuration';
 export interface ITableAction {
     name: string;
     icon: React.ReactNode;
-    onClick: (rowIndex: number) => void;
+    onClick: (rowId: string) => void;
 }
 
 interface IProps {
     actions: ITableAction[];
-    id: number;
+    id: string;
 }
 
 export function Actions(props: IProps) {

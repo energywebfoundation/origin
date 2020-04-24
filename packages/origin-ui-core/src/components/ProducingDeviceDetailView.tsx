@@ -20,10 +20,11 @@ import { Skeleton } from '@material-ui/lab';
 import { formatDate, EnergyFormatter, PowerFormatter, useTranslation } from '../utils';
 import { getOffChainDataSource } from '../features/general/selectors';
 import { DeviceGroupForm } from './DeviceGroupForm';
-import { IOrganizationWithRelationsIds } from '@energyweb/origin-backend-core';
+import { IOrganizationWithRelationsIds, IExternalDeviceId } from '@energyweb/origin-backend-core';
 
 interface IProps {
-    id: number;
+    id?: number;
+    externalId?: IExternalDeviceId;
     showSmartMeterReadings: boolean;
     showCertificates: boolean;
 }
@@ -60,6 +61,14 @@ export function ProducingDeviceDetailView(props: IProps) {
 
     if (props.id !== null && props.id !== undefined) {
         selectedDevice = producingDevices.find((p) => p.id === props.id);
+    } else if (props.externalId) {
+        selectedDevice = producingDevices.find((p) =>
+            p.externalDeviceIds?.find(
+                (deviceExternalId) =>
+                    deviceExternalId.id === props.externalId.id &&
+                    deviceExternalId.type === props.externalId.type
+            )
+        );
     }
 
     if (!configuration || !organizationClient || !selectedDevice) {
@@ -133,7 +142,7 @@ export function ProducingDeviceDetailView(props: IProps) {
                 description: ''
             },
             {
-                label: t('device.properties.commissioningDate'),
+                label: t('device.properties.vintageCod'),
                 data: formatDate(selectedDevice.operationalSince * 1000)
             }
         ],

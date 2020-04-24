@@ -1,22 +1,15 @@
-import moment from 'moment';
+import { IOrganizationClient } from '@energyweb/origin-backend-client';
 import {
-    IOrganizationWithRelationsIds,
-    OrganizationPostData,
-    OrganizationUpdateData,
-    OrganizationInviteCreateReturnData,
     IOrganizationInvitation,
-    OrganizationStatus,
-    OrganizationRemoveMemberReturnData,
+    IOrganizationWithRelationsIds,
     IUserWithRelationsIds,
-    OrganizationStatusChangedEvent,
-    IEvent,
-    SupportedEvents,
     OrganizationInvitationStatus,
-    OrganizationInvitationEvent,
-    OrganizationRemovedMemberEvent
+    OrganizationInviteCreateReturnData,
+    OrganizationPostData,
+    OrganizationRemoveMemberReturnData,
+    OrganizationStatus,
+    OrganizationUpdateData
 } from '@energyweb/origin-backend-core';
-
-import { IOrganizationClient, IEventClient } from '@energyweb/origin-backend-client';
 
 interface ITmpUser {
     id: number;
@@ -24,8 +17,6 @@ interface ITmpUser {
 }
 
 export class OrganizationClientMock implements IOrganizationClient {
-    constructor(public eventClient: IEventClient) {}
-
     private storage = new Map<number, IOrganizationWithRelationsIds>();
 
     private invitationStorage = new Map<number, IOrganizationInvitation>();
@@ -87,20 +78,6 @@ export class OrganizationClientMock implements IOrganizationClient {
 
         this.storage.set(id, organization);
 
-        const eventData: OrganizationStatusChangedEvent = {
-            organizationId: id,
-            organizationEmail: organization.email,
-            status: data.status
-        };
-
-        const sendEvent: IEvent = {
-            type: SupportedEvents.ORGANIZATION_STATUS_CHANGED,
-            data: eventData,
-            timestamp: moment().unix()
-        };
-
-        (this.eventClient as any).triggerEvent(sendEvent);
-
         return Promise.resolve(organization);
     }
 
@@ -120,19 +97,6 @@ export class OrganizationClientMock implements IOrganizationClient {
         };
 
         this.invitationStorage.set(organizationInvitation.id, organizationInvitation);
-
-        const eventData: OrganizationInvitationEvent = {
-            organizationName: organization.name,
-            email
-        };
-
-        const sendEvent: IEvent = {
-            type: SupportedEvents.ORGANIZATION_INVITATION,
-            data: eventData,
-            timestamp: moment().unix()
-        };
-
-        (this.eventClient as any).triggerEvent(sendEvent);
 
         this.userCounter++;
         this.userStorage.push({
@@ -156,22 +120,9 @@ export class OrganizationClientMock implements IOrganizationClient {
     ): Promise<OrganizationRemoveMemberReturnData> {
         const organization = this.storage.get(organizationId);
 
-        organization.users = organization.users.filter(user => user !== userId);
+        organization.users = organization.users.filter((user) => user !== userId);
 
         this.storage.set(organization.id, organization);
-
-        const eventData: OrganizationRemovedMemberEvent = {
-            organizationName: organization.name,
-            email: this.userStorage.find(user => user.id === userId).email
-        };
-
-        const sendEvent: IEvent = {
-            type: SupportedEvents.ORGANIZATION_REMOVED_MEMBER,
-            data: eventData,
-            timestamp: moment().unix()
-        };
-
-        (this.eventClient as any).triggerEvent(sendEvent);
 
         const returnData: OrganizationRemoveMemberReturnData = {
             success: true,
@@ -196,24 +147,11 @@ export class OrganizationClientMock implements IOrganizationClient {
     acceptInvitation(invitationId: number): Promise<any> {
         const invitation = this.invitationStorage.get(invitationId);
         const organization = this.storage.get(invitation.organization as number);
-        const user = this.userStorage.find(user => user.email === invitation.email);
+        const user = this.userStorage.find((user) => user.email === invitation.email);
 
         invitation.status = OrganizationInvitationStatus.Accepted;
 
         organization.users.push(user.id);
-
-        const eventData: OrganizationInvitationEvent = {
-            organizationName: organization.name,
-            email: invitation.email
-        };
-
-        const sendEvent: IEvent = {
-            type: SupportedEvents.ORGANIZATION_INVITATION,
-            data: eventData,
-            timestamp: moment().unix()
-        };
-
-        (this.eventClient as any).triggerEvent(sendEvent);
 
         this.invitationStorage.set(invitationId, invitation);
         this.storage.set(organization.id, organization);

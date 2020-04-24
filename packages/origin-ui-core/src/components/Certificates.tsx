@@ -87,10 +87,20 @@ export function Certificates() {
         }
     ];
 
+    function getDefaultRedirect() {
+        if (user) {
+            if (isIssuer) {
+                return CertificatesMenu[3].key;
+            }
+
+            return CertificatesMenu[0].key;
+        }
+
+        return CertificatesMenu[5].key;
+    }
+
     const defaultRedirect = {
-        pathname: `${getCertificatesLink()}/${
-            isIssuer ? CertificatesMenu[4].key : CertificatesMenu[0].key
-        }`
+        pathname: `${getCertificatesLink()}/${getDefaultRedirect()}`
     };
 
     return (
@@ -115,13 +125,13 @@ export function Certificates() {
                 path={`${getCertificatesLink()}/:key/:id?`}
                 render={(props) => {
                     const key = props.match.params.key;
-                    const id = props.match.params.id;
+                    const id = props.match.params.id as string;
                     const matches = CertificatesMenu.filter((item) => {
                         return item.key === key;
                     });
                     if (matches.length > 0) {
                         if (key === 'detail_view') {
-                            matches[0].component = () => CertificateDetailViewId(id);
+                            matches[0].component = () => CertificateDetailViewId(parseInt(id, 10));
                         }
                     }
 

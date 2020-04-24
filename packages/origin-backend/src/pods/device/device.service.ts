@@ -1,26 +1,34 @@
 import {
-    Injectable,
+    DeviceCreateData,
+    DeviceUpdateData,
+    IDevice,
+    IDeviceProductInfo,
+    IDeviceWithRelationsIds,
+    IExternalDeviceId,
+    ISmartMeterRead,
+    ISmartMeterReadingsAdapter,
+    DeviceStatusChangedEvent,
+    SupportedEvents
+} from '@energyweb/origin-backend-core';
+import {
+    BadRequestException,
     Inject,
-    UnprocessableEntityException,
-    BadRequestException
+    Injectable,
+    NotFoundException,
+    UnprocessableEntityException
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, FindOneOptions } from 'typeorm';
-import {
-    ISmartMeterReadingsAdapter,
-    ISmartMeterRead,
-    IDeviceWithRelationsIds,
-    IDevice,
-    DeviceCreateData,
-    IExternalDeviceId,
-    IDeviceProductInfo
-} from '@energyweb/origin-backend-core';
 import { validate } from 'class-validator';
+import { FindOneOptions, Repository } from 'typeorm';
 import { v4 as uuid } from 'uuid';
-import { Device } from './device.entity';
+
 import { SM_READS_ADAPTER } from '../../const';
-import { ExtendedBaseEntity } from '../ExtendedBaseEntity';
 import { ConfigurationService } from '../configuration';
+import { StorageErrors } from '../../enums/StorageErrors';
+import { ExtendedBaseEntity } from '../ExtendedBaseEntity';
+import { OrganizationService } from '../organization';
+import { Device } from './device.entity';
+import { NotificationService } from '../notification';
 
 @Injectable()
 export class DeviceService {
@@ -28,6 +36,8 @@ export class DeviceService {
         @InjectRepository(Device)
         private readonly repository: Repository<Device>,
         private readonly configurationService: ConfigurationService,
+        private readonly organizationService: OrganizationService,
+        private readonly notificationService: NotificationService,
         @Inject(SM_READS_ADAPTER) private smartMeterReadingsAdapter?: ISmartMeterReadingsAdapter
     ) {}
 
@@ -141,7 +151,7 @@ export class DeviceService {
         device.smartMeterReads = [...device.smartMeterReads, newSmartMeterRead];
         device.lastSmartMeterReading = latestSmartMeterReading(device.smartMeterReads);
 
-        await device.save();
+        await this.repository.save(device);
     }
 
     async getAll(
@@ -173,5 +183,42 @@ export class DeviceService {
                 (id) => id.id === externalId.id && id.type === externalId.type
             )
         );
+    }
+
+    async update(id: string, update: DeviceUpdateData) {
+        const device = await this.findOne(id);
+
+        if (!device) {
+            throw new NotFoundException(StorageErrors.NON_EXISTENT);
+        }
+
+        device.status = update.status;
+
+        try {
+            await this.repository.save(device);
+
+            const deviceManagers = await this.organizationService.getDeviceManagers(
+                device.organization
+            );
+
+            const event: DeviceStatusChangedEvent = {
+                deviceId: id,
+                status: device.status,
+                deviceManagersEmails: deviceManagers.map((u) => u.email)
+            };
+
+            this.notificationService.handleEvent({
+                type: SupportedEvents.DEVICE_STATUS_CHANGED,
+                data: event
+            });
+
+            return {
+                message: `Device ${id} successfully updated`
+            };
+        } catch (error) {
+            throw new UnprocessableEntityException({
+                message: `Device ${id} could not be updated due to an error ${error.message}`
+            });
+        }
     }
 }

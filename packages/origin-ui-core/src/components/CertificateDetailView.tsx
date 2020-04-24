@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { CertificationRequest } from '@energyweb/issuer';
+import { CertificationRequest, CertificateUtils } from '@energyweb/issuer';
 import { ProducingDeviceDetailView } from './ProducingDeviceDetailView';
 import { useSelector } from 'react-redux';
 import { getConfiguration } from '../features/selectors';
@@ -45,64 +45,59 @@ export function CertificateDetailView(props: IProps) {
         id !== null && typeof id !== 'undefined' && certificates.find((c) => c.id === id);
 
     async function enrichEvent() {
-        const allCertificateEvents = await selectedCertificate.getAllCertificateEvents();
+        const allCertificateEvents = await CertificateUtils.getAllCertificateEvents(
+            selectedCertificate.id,
+            selectedCertificate.configuration
+        );
 
         const jointEvents = allCertificateEvents.map(async (event) => {
             let label: string;
             let description: string;
 
-            switch (event.event) {
-                case 'LogCreatedCertificate':
+            switch (event.name) {
+                case 'IssuanceSingle':
                     label = 'Certified';
-                    description = 'Local issuer approved the certification request';
+                    description = `Local issuer approved the certification request`;
+
                     break;
-                case 'Transfer':
-                    if (event.returnValues.from === '0x0000000000000000000000000000000000000000') {
+                case 'TransferSingle':
+                    if (event.values._from === '0x0000000000000000000000000000000000000000') {
                         label = 'Initial owner';
-                        description = event.returnValues.to;
+                        description = event.values._to;
                     } else {
-                        const newOwner = event.returnValues.to;
-                        const oldOwner = event.returnValues.from;
+                        const newOwner = event.values._to;
+                        const oldOwner = event.values._from;
 
                         label = 'Changed ownership';
                         description = `Transferred from ${oldOwner} to ${newOwner}`;
                     }
                     break;
-                case 'LogPublishForSale':
-                    label = 'Certificate published for sale';
-                    break;
-                case 'LogUnpublishForSale':
-                    label = 'Certificate unpublished from sale';
-                    break;
-
-                case 'LogCertificateClaimed':
+                case 'ClaimSingle':
                     label = 'Certificate claimed';
-                    description = `Initiated by `; // ${getUserDisplayText(owner)}`;
+                    description = `Initiated by ${event.values._claimIssuer}`;
                     break;
 
                 default:
-                    label = event.event;
+                    label = event.name;
             }
 
             return {
                 txHash: event.transactionHash,
                 label,
                 description,
-                timestamp: (
-                    await configuration.blockchainProperties.web3.eth.getBlock(event.blockNumber)
-                ).timestamp
+                timestamp: event.timestamp
             };
         });
 
         const resolvedEvents = await Promise.all(jointEvents);
 
-        const request = await new CertificationRequest.Entity(
+        const request = await new CertificationRequest(
             selectedCertificate.certificationRequestId,
             configuration
         ).sync();
 
         if (request) {
-            resolvedEvents.push({
+            resolvedEvents.unshift({
                 txHash: '',
                 label: 'Requested certification',
                 description: 'Device owner requested certification based on meter reads',
@@ -159,6 +154,8 @@ export function CertificateDetailView(props: IProps) {
             </p>
         ));
 
+        const { publicVolume, privateVolume, claimedVolume } = selectedCertificate.energy;
+
         data = [
             [
                 {
@@ -167,7 +164,7 @@ export function CertificateDetailView(props: IProps) {
                 },
                 {
                     label: 'Claimed',
-                    data: selectedCertificate.isClaimed() ? 'yes' : 'no'
+                    data: selectedCertificate.isClaimed ? 'yes' : 'no'
                 },
                 {
                     label: 'Creation date',
@@ -177,7 +174,11 @@ export function CertificateDetailView(props: IProps) {
             [
                 {
                     label: `Certified energy (${EnergyFormatter.displayUnit})`,
-                    data: EnergyFormatter.format(selectedCertificate.energy)
+                    data: EnergyFormatter.format(
+                        selectedCertificate.isClaimed
+                            ? claimedVolume
+                            : publicVolume.add(privateVolume)
+                    )
                 },
                 {
                     label: 'Generation start',
@@ -220,7 +221,10 @@ export function CertificateDetailView(props: IProps) {
                 </div>
                 {selectedCertificate && (
                     <ProducingDeviceDetailView
-                        id={Number(selectedCertificate.deviceId)}
+                        externalId={{
+                            id: selectedCertificate.deviceId,
+                            type: environment.ISSUER_ID
+                        }}
                         showSmartMeterReadings={false}
                         showCertificates={false}
                     />

@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import { bigNumberify } from 'ethers/utils';
 import moment from 'moment-timezone';
 import { ProducingDevice } from '@energyweb/device-registry';
 import { TableMaterial } from './Table/TableMaterial';
@@ -28,10 +29,10 @@ export function SmartMeterReadingsTable(props: IProps) {
         const deviceTimezone = producingDevice.timezone;
 
         const data = [];
-        let currentSmartMeterState = 0;
+        let currentSmartMeterState = bigNumberify(0);
 
         for (let i = 0; i < readings.length; i++) {
-            currentSmartMeterState += readings[i].energy;
+            currentSmartMeterState = currentSmartMeterState.add(readings[i].energy);
 
             data.push([
                 formatDate(moment.unix(readings[i].timestamp).tz(deviceTimezone), true),
@@ -77,7 +78,7 @@ export function SmartMeterReadingsTable(props: IProps) {
 
     const rows = paginatedData.map((data) => ({
         time: data[0],
-        value: EnergyFormatter.format(data[1])
+        value: EnergyFormatter.format(bigNumberify(data[1]))
     }));
 
     return (

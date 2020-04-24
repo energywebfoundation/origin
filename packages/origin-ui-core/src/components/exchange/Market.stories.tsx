@@ -56,7 +56,7 @@ export const defaultView = () => {
                             onNotify={action('onNotify')}
                             onChange={action('onChange')}
                             energyUnit={text('energyUnit', 'MWh')}
-                            currency={text('currency', '$')}
+                            currency={text('currency', 'USD')}
                         />
                     </Provider>
                 </MuiPickersUtilsProvider>

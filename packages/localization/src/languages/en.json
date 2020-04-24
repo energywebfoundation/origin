@@ -52,7 +52,10 @@
                 "projectStory": "Project story",
                 "images": "Images",
                 "capacity": "Capacity",
-                "address": "Address"
+                "address": "Address",
+                "constructed": "Constructed",
+                "vintageCod": "Vintage / (Commercial Operation Date)",
+                "gridOperator": "Grid operator"
             },
             "actions": {
                 "requestCertificates": "Request certificates",
@@ -73,7 +76,9 @@
                 "pleaseFillOtherFields": "Please fill other form fields and proceed by clicking \"Register\".",
                 "uploadUpToXImages": "Upload up to {amount} images",
                 "selectRegion": "Select region",
-                "selectProvince": "Select province"
+                "selectProvince": "Select province",
+                "selectGridOperator": "Select grid operator",
+                "toRegisterADevice": "To register a device you need to fulfill following criteria:"
             }
         },
         "certificate": {
@@ -108,7 +113,10 @@
                 "pleaseSelectLess": "Please select less than {amount, plural, =1 {# certificate} other {# certificates}}.",
                 "cantBuyOwn": "You can't buy your own certificates.",
                 "zeroSelected": "No certificates have been selected. Please select at least one certificate.",
-                "amountSelected": "{amount, plural, other {# selected}}"
+                "amountSelected": "{amount, plural, other {# selected}}",
+                "certificatePublished": "Certificate has been published for sale.",
+                "certificatesClaimed": "Certificates have been claimed.",
+                "approved": "Certification request approved."
             },
             "info": {
                 "requestCertificatesFor": "Request certificates for {facilityName}"
@@ -116,7 +124,9 @@
         },
         "search": {
             "searchByFacilityNameAndOrganization": "Search by facility name and organization",
-            "searchByRegionProvince": "Search by region and province"
+            "searchByLocation": "Search by location",
+            "searchByGridOperator": "Search by grid operator",
+            "searchByLocationAndGridOperator": "Search by location and grid operator"
         },
         "settings": {
             "settings": "Settings",
@@ -149,14 +159,23 @@
             "actions": {
                 "update": "Update",
                 "continue": "Continue",
-                "cancel": "Cancel"
+                "cancel": "Cancel",
+                "search": "Search"
             },
             "feedback": {
                 "noChangesMade": "No changes have been made.",
                 "unknownError": "Unknown error",
                 "createdByNoun": "Created by {fullName} from the Noun project",
                 "attachBlockchainAccountFirst": "You have to attach a blockchain address to your account.",
-                "noOrganization": "You need to be a part of an organization. You can create it or join existing one."
+                "noOrganization": "You need to be a part of an organization. You can create it or join existing one.",
+                "haveToBeLoggedInUser": "You need to be a logged in user.",
+                "userHasToBePartOfApprovedOrganization": "The user should be a part of an approved organization.",
+                "userHasToHaveBlockchainAccount": "The user has to have a blockchain account attached to the account.",
+                "blockchainAccountMismatch": "Blockchain account mismatch"
+            },
+            "info": {
+                "tryingToSignAndBoundIs": "You are trying to sign a transaction with account different than the one that has been linked to your account. Blockchain address bound to your user is:",
+                "andYouAreTrying": "and you are trying to use address:"
             }
         },
         "importAccount": {
@@ -270,7 +289,8 @@
         "exchange": {
             "actions": {
                 "notify": "Notify",
-                "bid": "Bid"
+                "bid": "Bid",
+                "buy": "Buy"
             },
             "feedback": {
                 "total": "Total"
@@ -294,7 +314,9 @@
                 "price": "Price",
                 "energy": "Energy",
                 "generationDateStart": "Generation date start",
-                "generationDateEnd": "Generation date end"
+                "generationDateEnd": "Generation date end",
+                "generationFrom": "Generation from",
+                "generationTo": "Generation to"
             }
         }
     }

@@ -1,24 +1,17 @@
-import moment from 'moment';
+import { IDeviceClient } from '@energyweb/origin-backend-client';
 import {
-    IDevice,
-    DeviceUpdateData,
-    DeviceStatusChangedEvent,
-    SupportedEvents,
-    IEvent,
-    ISmartMeterRead,
     DeviceStatus,
+    DeviceUpdateData,
+    IDevice,
     IDeviceWithRelationsIds,
-    IExternalDeviceId
+    IExternalDeviceId,
+    ISmartMeterRead
 } from '@energyweb/origin-backend-core';
-
-import { IDeviceClient, IEventClient } from '@energyweb/origin-backend-client';
 
 export class DeviceClientMock implements IDeviceClient {
     private storage = new Map<number, IDeviceWithRelationsIds>();
 
     private idCounter = 0;
-
-    constructor(public eventClient: IEventClient) {}
 
     async getByExternalId(id: IExternalDeviceId): Promise<IDeviceWithRelationsIds> {
         return [...this.storage.values()].find((d) =>
@@ -57,20 +50,6 @@ export class DeviceClientMock implements IDeviceClient {
         Object.assign(device, data);
 
         this.storage.set(id, device);
-
-        const event: DeviceStatusChangedEvent = {
-            deviceId: id.toString(),
-            status: data.status,
-            deviceManagersEmails: []
-        };
-
-        const sendEvent: IEvent = {
-            type: SupportedEvents.DEVICE_STATUS_CHANGED,
-            data: event,
-            timestamp: moment().unix()
-        };
-
-        (this.eventClient as any).triggerEvent(sendEvent);
 
         return device;
     }

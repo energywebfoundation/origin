@@ -1,41 +1,41 @@
 import {
+    DeviceCreateData,
     DeviceStatus,
     DeviceUpdateData,
-    SupportedEvents,
-    DeviceStatusChangedEvent,
-    ISmartMeterRead,
-    IUserWithRelationsIds,
     IDeviceWithRelationsIds,
-    DeviceCreateData
+    ISmartMeterRead,
+    IUserWithRelationsIds
 } from '@energyweb/origin-backend-core';
-
 import {
-    Controller,
-    Get,
-    Param,
-    NotFoundException,
-    Post,
-    Body,
     BadRequestException,
-    UnprocessableEntityException,
+    Body,
+    Controller,
     Delete,
+    Get,
+    Logger,
+    NotFoundException,
+    Param,
+    Post,
     Put,
+    UnprocessableEntityException,
     UseGuards
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 
 import { StorageErrors } from '../../enums/StorageErrors';
-import { DeviceService } from './device.service';
-import { UserDecorator } from '../user/user.decorator';
-import { EventsService } from '../events';
+import { NotificationService } from '../notification';
 import { OrganizationService } from '../organization';
+import { UserDecorator } from '../user/user.decorator';
+import { DeviceService } from './device.service';
 
 @Controller('/Device')
 export class DeviceController {
+    private readonly logger = new Logger(DeviceController.name);
+
     constructor(
-        private readonly eventsService: EventsService,
         private readonly deviceService: DeviceService,
-        private readonly organizationService: OrganizationService
+        private readonly organizationService: OrganizationService,
+        private readonly notificationService: NotificationService
     ) {}
 
     @Get()
@@ -88,40 +88,8 @@ export class DeviceController {
 
     @Put('/:id')
     async put(@Param('id') id: string, @Body() body: DeviceUpdateData) {
-        const device = await this.deviceService.findOne(id);
-
-        if (!device) {
-            throw new NotFoundException(StorageErrors.NON_EXISTENT);
-        }
-
-        device.status = body.status;
-
-        try {
-            await device.save();
-
-            const deviceManagers = await this.organizationService.getDeviceManagers(
-                device.organization
-            );
-
-            const event: DeviceStatusChangedEvent = {
-                deviceId: id,
-                status: body.status,
-                deviceManagersEmails: deviceManagers.map((u) => u.email)
-            };
-
-            this.eventsService.handleEvent({
-                type: SupportedEvents.DEVICE_STATUS_CHANGED,
-                data: event
-            });
-
-            return {
-                message: `Device ${id} successfully updated`
-            };
-        } catch (error) {
-            throw new UnprocessableEntityException({
-                message: `Device ${id} could not be updated due to an unknown error`
-            });
-        }
+        const res = await this.deviceService.update(id, body);
+        return res;
     }
 
     @Get('/:id/smartMeterReading')
@@ -161,6 +129,8 @@ export class DeviceController {
                 message: `Smart meter reading successfully added to device ${id}`
             };
         } catch (error) {
+            this.logger.error('Errow when saving smart meter read');
+            this.logger.error(error);
             throw new UnprocessableEntityException({
                 message: `Smart meter reading could not be added due to an unknown error for device ${id}`
             });

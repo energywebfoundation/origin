@@ -1,6 +1,7 @@
-import { Certificate } from '@energyweb/issuer';
+import { Certificate, CertificationRequest } from '@energyweb/issuer';
 import { ProducingDevice } from '@energyweb/device-registry';
 import { IStoreState } from '../../types';
+import { BigNumber } from 'ethers/utils';
 
 export enum CertificatesActions {
     addCertificate = 'CERTIFICATE_CREATED',
@@ -10,15 +11,19 @@ export enum CertificatesActions {
     setRequestCertificatesModalVisibility = 'SET_REQUEST_CERTIFICATES_MODAL_VISIBILITY',
     hideRequestCertificatesModal = 'HIDE_REQUEST_CERTIFICATES_MODAL',
     requestCertificateEntityFetch = 'REQUEST_CERTIFICATE_ENTITY_FETCH',
-    updateFetcher = 'CERTIFICATES_UPDATE_FETCHER'
+    updateFetcher = 'CERTIFICATES_UPDATE_FETCHER',
+    requestPublishForSale = 'CERTIFICATES_REQUEST_PUBLISH_FOR_SALE',
+    requestClaimCertificate = 'CERTIFICATES_REQUEST_CLAIM_CERTIFICATE',
+    requestClaimCertificateBulk = 'CERTIFICATES_REQUEST_CLAIM_CERTIFICATE_BULK',
+    requestCertificateApproval = 'CERTIFICATES_REQUEST_CERTIFICATE_APPROVAL'
 }
 
 export interface IAddCertificateAction {
     type: CertificatesActions.addCertificate;
-    payload: Certificate.Entity;
+    payload: Certificate;
 }
 
-export const addCertificate = (payload: Certificate.Entity) => ({
+export const addCertificate = (payload: Certificate) => ({
     type: CertificatesActions.addCertificate,
     payload
 });
@@ -27,10 +32,10 @@ export type TAddCertificateAction = typeof addCertificate;
 
 export interface IUpdateCertificateAction {
     type: CertificatesActions.updateCertificate;
-    payload: Certificate.Entity;
+    payload: Certificate;
 }
 
-export const updateCertificate = (payload: Certificate.Entity) => ({
+export const updateCertificate = (payload: Certificate) => ({
     type: CertificatesActions.updateCertificate,
     payload
 });
@@ -41,7 +46,7 @@ export interface IRequestCertificatesAction {
     type: CertificatesActions.requestCertificates;
     payload: {
         deviceId: string;
-        energy: number;
+        energy: BigNumber;
         startTime: number;
         endTime: number;
         files: string[];
@@ -110,9 +115,9 @@ export const requestCertificateEntityFetch = (
 export type TRequestUserCertificateEntityFetchAction = typeof requestCertificateEntityFetch;
 
 export interface ICertificateFetcher {
-    fetch(id: number, configuration: IStoreState['configuration']): Promise<Certificate.Entity>;
+    fetch(id: number, configuration: IStoreState['configuration']): Promise<Certificate>;
 
-    reload(entity: Certificate.Entity): Promise<Certificate.Entity>;
+    reload(entity: Certificate): Promise<Certificate>;
 }
 
 export interface IUpdateFetcherAction {
@@ -127,6 +132,70 @@ export const updateFetcher = (payload: IUpdateFetcherAction['payload']) => ({
 
 export type TUpdateFetcherAction = typeof updateFetcher;
 
+export interface IRequestPublishForSaleAction {
+    type: CertificatesActions.requestPublishForSale;
+    payload: {
+        certificateId: Certificate['id'];
+        amount: BigNumber;
+        price: number;
+        callback: () => void;
+    };
+}
+
+export const requestPublishForSale = (payload: IRequestPublishForSaleAction['payload']) => ({
+    type: CertificatesActions.requestPublishForSale,
+    payload
+});
+
+export type TRequestPublishForSaleAction = typeof requestPublishForSale;
+
+export interface IRequestClaimCertificateAction {
+    type: CertificatesActions.requestClaimCertificate;
+    payload: {
+        certificateId: Certificate['id'];
+    };
+}
+
+export const requestClaimCertificate = (payload: IRequestClaimCertificateAction['payload']) => ({
+    type: CertificatesActions.requestClaimCertificate,
+    payload
+});
+
+export type TRequestClaimCertificateAction = typeof requestClaimCertificate;
+
+export interface IRequestClaimCertificateBulkAction {
+    type: CertificatesActions.requestClaimCertificateBulk;
+    payload: {
+        certificateIds: Certificate['id'][];
+    };
+}
+
+export const requestClaimCertificateBulk = (
+    payload: IRequestClaimCertificateBulkAction['payload']
+) => ({
+    type: CertificatesActions.requestClaimCertificateBulk,
+    payload
+});
+
+export type TRequestClaimCertificateBulkAction = typeof requestClaimCertificateBulk;
+
+export interface IRequestCertificateApprovalAction {
+    type: CertificatesActions.requestCertificateApproval;
+    payload: {
+        certificationRequest: CertificationRequest;
+        callback: () => void;
+    };
+}
+
+export const requestCertificateApproval = (
+    payload: IRequestCertificateApprovalAction['payload']
+) => ({
+    type: CertificatesActions.requestCertificateApproval,
+    payload
+});
+
+export type TRequestCertificateApprovalAction = typeof requestCertificateApproval;
+
 export type ICertificatesAction =
     | IAddCertificateAction
     | IUpdateCertificateAction
@@ -135,4 +204,8 @@ export type ICertificatesAction =
     | ISetRequestCertificatesModalVisibilityAction
     | IHideRequestCertificatesModalAction
     | IRequestCertificateEntityFetchAction
-    | IUpdateFetcherAction;
+    | IUpdateFetcherAction
+    | IRequestPublishForSaleAction
+    | IRequestClaimCertificateAction
+    | IRequestClaimCertificateBulkAction
+    | IRequestCertificateApprovalAction;

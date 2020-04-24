@@ -2,13 +2,14 @@
 import 'mocha';
 import { assert } from 'chai';
 import moment from 'moment';
-import Web3 from 'web3';
+import { providers, Wallet } from 'ethers';
 import dotenv from 'dotenv';
 
 import { Configuration } from '@energyweb/utils-general';
 import { OffChainDataSourceMock } from '@energyweb/origin-backend-client-mocks';
 import { DeviceStatus, IDevice } from '@energyweb/origin-backend-core';
 
+import { bigNumberify } from 'ethers/utils';
 import { ProducingDevice } from '..';
 import { logger } from '../Logger';
 
@@ -17,16 +18,17 @@ describe('Device Facade', () => {
         path: '.env.test'
     });
 
-    const web3: Web3 = new Web3(process.env.WEB3);
+    const provider = new providers.JsonRpcProvider(process.env.WEB3);
+
     const deployKey: string = process.env.DEPLOY_KEY;
 
     const privateKeyDeployment = deployKey.startsWith('0x') ? deployKey : `0x${deployKey}`;
-
-    const accountDeployment = web3.eth.accounts.privateKeyToAccount(privateKeyDeployment).address;
-    let conf: Configuration.Entity;
+    const deploymentWallet = new Wallet(privateKeyDeployment, provider);
 
     const deviceSmartmeterPK = '0x2dc5120c26df339dbd9861a0f39a79d87e0638d30fdedc938861beac77bbd3f5';
-    const deviceSmartmeter = web3.eth.accounts.privateKeyToAccount(deviceSmartmeterPK).address;
+    const deviceSmartmeterWallet = new Wallet(deviceSmartmeterPK, provider);
+
+    let conf: Configuration.Entity;
 
     const SM_READ_TIMESTAMP = moment().unix();
 
@@ -34,11 +36,7 @@ describe('Device Facade', () => {
         it('should onboard a new producing device', async () => {
             conf = {
                 blockchainProperties: {
-                    activeUser: {
-                        address: accountDeployment,
-                        privateKey: privateKeyDeployment
-                    },
-                    web3
+                    activeUser: deploymentWallet
                 },
                 offChainDataSource: new OffChainDataSourceMock(),
                 logger
@@ -66,7 +64,8 @@ describe('Device Facade', () => {
                 images: '',
                 region: '',
                 province: '',
-                organization: 4
+                organization: 4,
+                gridOperator: ''
             };
 
             assert.equal(await ProducingDevice.getDeviceListLength(conf), 0);
@@ -78,10 +77,7 @@ describe('Device Facade', () => {
         });
 
         it('should log a new meter reading', async () => {
-            conf.blockchainProperties.activeUser = {
-                address: deviceSmartmeter,
-                privateKey: deviceSmartmeterPK
-            };
+            conf.blockchainProperties.activeUser = deviceSmartmeterWallet;
             let device = await new ProducingDevice.Entity(1, conf).sync();
 
             device = await device.sync();
@@ -121,11 +117,11 @@ describe('Device Facade', () => {
 
                 assert.deepEqual(reads, [
                     {
-                        meterReading: 100,
+                        meterReading: bigNumberify(100),
                         timestamp: SM_READ_TIMESTAMP
                     },
                     {
-                        meterReading: 300,
+                        meterReading: bigNumberify(300),
                         timestamp: SM_READ_TIMESTAMP + 1
                     }
                 ]);
@@ -133,16 +129,16 @@ describe('Device Facade', () => {
                 const energyGenerated = await device.getAmountOfEnergyGenerated();
                 assert.deepEqual(energyGenerated, [
                     {
-                        energy: 100,
+                        energy: bigNumberify(100),
                         timestamp: SM_READ_TIMESTAMP
                     },
                     {
-                        energy: 200,
+                        energy: bigNumberify(200),
                         timestamp: SM_READ_TIMESTAMP + 1
                     }
                 ]);
 
-                assert.equal(device.lastSmartMeterReadWh, 300);
+                assert.deepEqual(device.lastSmartMeterReadWh, bigNumberify(300));
             });
         });
     });

@@ -14,19 +14,19 @@
     "version": "3.0.0",
     "main": "dist/js/src/main.js",
     "bin": {
-        "migrations": "./bin/migrations"
+        "origin-migrations": "./bin/migrations"
     },
     "scripts": {
-        "build": "yarn build:ts && yarn copy:schema",
+        "build": "yarn build:ts",
         "build:ts": "tsc -b tsconfig.build.json --verbose --pretty",
-        "copy:schema": "shx cp -r src/schema dist/js/src/",
         "start": "ts-node src/main.ts",
-        "start:redeploy": "yarn start -r",
-        "start-all": "concurrently --restart-tries 3 --restart-after 1500 -n eth,deploy \"yarn start-ganache\" \"wait-on tcp:8545 && yarn start:redeploy\"",
-        "start-ganache": "ganache-cli -q -m \"chalk park staff buzz chair purchase wise oak receive avoid avoid home\" -l 8000000 -e 1000000 -a 40 -h 0.0.0.0",
+        "start:defaultConfigs": "yarn start -c ./config/demo-config.json -s ./config/seed.sql -e ../../.env",
+        "start-all": "concurrently --restart-tries 3 --restart-after 1500 -n eth,deploy \"yarn start-ganache\" \"wait-on tcp:8553 && yarn start:redeploy\"",
+        "start-ganache": "ganache-cli -q -m \"chalk park staff buzz chair purchase wise oak receive avoid avoid home\" -l 8000000 -e 1000000 -a 40 -h 0.0.0.0 -p 8553",
         "start-backend": "npx @energyweb/origin-backend",
         "prettier": "prettier --write --config-precedence file-override './src/**/*'",
-        "clean": "shx rm -rf dist"
+        "clean": "shx rm -rf dist",
+        "deploy:origin-backend-app:heroku:canary": "make build-canary push-heroku-canary"
     },
     "types": "dist/js/index.d.ts",
     "dependencies": {
@@ -35,8 +35,7 @@
         "@types/pg": "7.14.3",
         "commander": "^4.1.1",
         "dotenv": "8.2.0",
-        "pg": "8.0.0",
-        "web3": "1.2.6",
+        "pg": "8.0.2",
         "winston": "3.2.1",
         "write-json-file": "4.3.0",
         "yaeti": "1.0.2"

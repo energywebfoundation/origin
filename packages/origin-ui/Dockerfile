@@ -2,13 +2,13 @@ FROM nginx:alpine
 
 RUN apk add --no-cache bash
 
-COPY dist/* /var/www/html/
-COPY nginx/default.conf /etc/nginx/conf.d/default.conf
+COPY dist/* /usr/share/nginx/html/
+COPY nginx/default.conf.template /etc/nginx/conf.d/default.conf.template
 
-COPY env.sh /var/www/html
+COPY env.sh /usr/share/nginx/html
 
-RUN chmod +x /var/www/html/env.sh
+RUN chmod +x /usr/share/nginx/html/env.sh
 
-WORKDIR /var/www/html
+WORKDIR /usr/share/nginx/html
 
-CMD ["/bin/bash", "-c", "/var/www/html/env.sh && nginx -g \"daemon off;\""]
+CMD ["/bin/bash", "-c", "DOLLAR='$' envsubst < /etc/nginx/conf.d/default.conf.template > /etc/nginx/conf.d/default.conf && ./env.sh && nginx -g \"daemon off;\""]

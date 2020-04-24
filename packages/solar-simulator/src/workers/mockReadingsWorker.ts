@@ -2,47 +2,34 @@
 import { parentPort, workerData } from 'worker_threads';
 
 import moment from 'moment-timezone';
-import Web3 from 'web3';
 import * as Winston from 'winston';
 
 import { ProducingDevice } from '@energyweb/device-registry';
 import { Configuration } from '@energyweb/utils-general';
 import { OffChainDataSource } from '@energyweb/origin-backend-client';
 import { ISmartMeterRead } from '@energyweb/origin-backend-core';
-
-const web3 = new Web3(process.env.WEB3);
+import { bigNumberify, BigNumber } from 'ethers/utils';
 
 async function getProducingDeviceSmartMeterRead(
     deviceId: string,
     conf: Configuration.Entity
-): Promise<number> {
+): Promise<BigNumber> {
     const device = await new ProducingDevice.Entity(parseInt(deviceId, 10), conf).sync();
 
-    return device.lastSmartMeterReadWh ?? 0;
+    return device.lastSmartMeterReadWh ?? bigNumberify(0);
 }
 
 async function saveProducingDeviceSmartMeterRead(
-    deviceId: string,
+    deviceId: number,
     smartMeterReading: ISmartMeterRead,
-    smartMeterPrivateKey: string,
     conf: Configuration.Entity
 ) {
     console.log('-----------------------------------------------------------');
 
-    const smartMeterAddress: string = conf.blockchainProperties.web3.eth.accounts.privateKeyToAccount(
-        smartMeterPrivateKey
-    ).address;
-
-    // eslint-disable-next-line no-param-reassign
-    conf.blockchainProperties.activeUser = {
-        address: smartMeterAddress,
-        privateKey: smartMeterPrivateKey
-    };
-
     let device;
 
     try {
-        device = await new ProducingDevice.Entity(parseInt(deviceId, 10), conf).sync();
+        device = await new ProducingDevice.Entity(deviceId, conf).sync();
         await device.saveSmartMeterRead(
             smartMeterReading.meterReading,
             smartMeterReading.timestamp
@@ -59,8 +46,7 @@ async function saveProducingDeviceSmartMeterRead(
         console.error({
             deviceId: device.id,
             meterReading: smartMeterReading.meterReading,
-            time: moment.unix(smartMeterReading.timestamp).format(),
-            smpk: smartMeterPrivateKey
+            time: moment.unix(smartMeterReading.timestamp).format()
         });
     }
 
@@ -78,9 +64,7 @@ const currentTime = moment.tz(device.timezone);
     );
 
     const conf = {
-        blockchainProperties: {
-            web3
-        },
+        blockchainProperties: {},
         offChainDataSource,
         logger: Winston.createLogger({
             level: 'verbose',
@@ -114,28 +98,22 @@ const currentTime = moment.tz(device.timezone);
             .reduce((a, b) => a + parseFloat(b[1]), 0);
 
         const multiplier = combinedMultiplierForMatchingRows ?? 0;
-        const energyGenerated = Math.round(device.maxCapacity * multiplier);
+        const energyGenerated = bigNumberify(Math.round(device.maxCapacity * multiplier));
 
-        const isValidMeterReading = energyGenerated > 0;
+        const isValidMeterReading = energyGenerated.gt(0);
 
         if (isValidMeterReading) {
             try {
-                const previousRead: number = await getProducingDeviceSmartMeterRead(
-                    device.id,
-                    conf
+                const previousRead: BigNumber = bigNumberify(
+                    await getProducingDeviceSmartMeterRead(device.id, conf)
                 );
 
                 const smartMeterReading: ISmartMeterRead = {
-                    meterReading: previousRead + energyGenerated,
+                    meterReading: previousRead.add(energyGenerated),
                     timestamp: measurementTime.unix()
                 };
 
-                await saveProducingDeviceSmartMeterRead(
-                    device.id,
-                    smartMeterReading,
-                    device.smartMeterPrivateKey,
-                    conf
-                );
+                await saveProducingDeviceSmartMeterRead(device.id, smartMeterReading, conf);
             } catch (error) {
                 conf.logger.error(`Error while trying to save meter read for device ${device.id}`);
                 if (error?.response?.data) {
@@ -157,6 +135,4 @@ const currentTime = moment.tz(device.timezone);
 
         measurementTime = newMeasurementTime;
     }
-
-    offChainDataSource.eventClient.stop();
 })();

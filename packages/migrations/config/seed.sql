@@ -9,8 +9,228 @@ SET xmloption = content;
 SET client_min_messages = warning;
 SET row_security = off;
 
-/* Needed to temporarily disregard foreign key constraints */
-SET session_replication_role = replica;
+/*
+    ORGANIZATIONS
+ */
+INSERT INTO
+    public.organization (
+        "createdAt",
+        "updatedAt",
+        id,
+        "activeCountries",
+        code,
+        name,
+        contact,
+        telephone,
+        email,
+        address,
+        shareholders,
+        "ceoPassportNumber",
+        "ceoName",
+        "companyNumber",
+        "vatNumber",
+        postcode,
+        "headquartersCountry",
+        country,
+        "businessTypeSelect",
+        "businessTypeInput",
+        "yearOfRegistration",
+        "numberOfEmployees",
+        website,
+        status
+    )
+VALUES
+    (
+        '2020-03-30 09:55:25.962333+02',
+        '2020-03-30 09:55:25.962333+02',
+        1,
+        '[83]',
+        '1',
+        'Issuer',
+        'Contact',
+        '1',
+        'issuer@mailinator.com',
+        'Address',
+        '1',
+        '1',
+        'CEO name',
+        '',
+        'XY123456',
+        '1',
+        '83',
+        '83',
+        'Private individual',
+        '',
+        '2020',
+        '1',
+        'http://example.com',
+        '2'
+    );
+
+INSERT INTO
+    public.organization (
+        "createdAt",
+        "updatedAt",
+        id,
+        "activeCountries",
+        code,
+        name,
+        contact,
+        telephone,
+        email,
+        address,
+        shareholders,
+        "ceoPassportNumber",
+        "ceoName",
+        "companyNumber",
+        "vatNumber",
+        postcode,
+        "headquartersCountry",
+        country,
+        "businessTypeSelect",
+        "businessTypeInput",
+        "yearOfRegistration",
+        "numberOfEmployees",
+        website,
+        status
+    )
+VALUES
+    (
+        '2020-03-30 09:55:25.962333+02',
+        '2020-03-30 09:55:25.962333+02',
+        2,
+        '[83]',
+        '1',
+        'Device Manager Organization',
+        'Contact',
+        '1',
+        'devicemanager@mailinator.com',
+        'Address',
+        '1',
+        '1',
+        'CEO name',
+        '',
+        'XY123456',
+        '1',
+        '83',
+        '83',
+        'Private individual',
+        '',
+        '2020',
+        '1',
+        'http://example.com',
+        '2'
+    );
+
+INSERT INTO
+    public.organization (
+        "createdAt",
+        "updatedAt",
+        id,
+        "activeCountries",
+        code,
+        name,
+        contact,
+        telephone,
+        email,
+        address,
+        shareholders,
+        "ceoPassportNumber",
+        "ceoName",
+        "companyNumber",
+        "vatNumber",
+        postcode,
+        "headquartersCountry",
+        country,
+        "businessTypeSelect",
+        "businessTypeInput",
+        "yearOfRegistration",
+        "numberOfEmployees",
+        website,
+        status
+    )
+VALUES
+    (
+        '2020-03-30 09:55:25.962333+02',
+        '2020-03-30 09:55:25.962333+02',
+        3,
+        '[83]',
+        '1',
+        'Device Manager Second Organization',
+        'Contact',
+        '1',
+        'devicemanager2@mailinator.com',
+        'Address',
+        '1',
+        '1',
+        'CEO name',
+        '',
+        'XY123456',
+        '1',
+        '83',
+        '83',
+        'Private individual',
+        '',
+        '2020',
+        '1',
+        'http://example.com',
+        '2'
+    );
+
+INSERT INTO
+    public.organization (
+        "createdAt",
+        "updatedAt",
+        id,
+        "activeCountries",
+        code,
+        name,
+        contact,
+        telephone,
+        email,
+        address,
+        shareholders,
+        "ceoPassportNumber",
+        "ceoName",
+        "companyNumber",
+        "vatNumber",
+        postcode,
+        "headquartersCountry",
+        country,
+        "businessTypeSelect",
+        "businessTypeInput",
+        "yearOfRegistration",
+        "numberOfEmployees",
+        website,
+        status
+    )
+VALUES
+    (
+        '2020-03-30 09:55:25.962333+02',
+        '2020-03-30 09:55:25.962333+02',
+        4,
+        '[83]',
+        '1',
+        'Trader Organization',
+        'Contact',
+        '1',
+        'trader@mailinator.com',
+        'Address',
+        '1',
+        '1',
+        'CEO name',
+        '',
+        'XY123456',
+        '1',
+        '83',
+        '83',
+        'Private individual',
+        '',
+        '2020',
+        '1',
+        'http://example.com',
+        '2'
+    );
 
 /*
     USERS
@@ -160,236 +380,13 @@ VALUES
         '4'
     );
 
-/*
-    ORGANIZATIONS
- */
-INSERT INTO
-    public.organization (
-        "createdAt",
-        "updatedAt",
-        id,
-        "activeCountries",
-        code,
-        name,
-        contact,
-        telephone,
-        email,
-        address,
-        shareholders,
-        "ceoPassportNumber",
-        "ceoName",
-        "companyNumber",
-        "vatNumber",
-        postcode,
-        "headquartersCountry",
-        country,
-        "businessTypeSelect",
-        "businessTypeInput",
-        "yearOfRegistration",
-        "numberOfEmployees",
-        website,
-        status,
-        "leadUserId"
-    )
-VALUES
-    (
-        '2020-03-30 09:55:25.962333+02',
-        '2020-03-30 09:55:25.962333+02',
-        1,
-        '[83]',
-        '1',
-        'Issuer',
-        'Contact',
-        '1',
-        'issuer@mailinator.com',
-        'Address',
-        '1',
-        '1',
-        'CEO name',
-        '',
-        'XY123456',
-        '1',
-        '83',
-        '83',
-        'Private individual',
-        '',
-        '2020',
-        '1',
-        'http://example.com',
-        '0',
-        '1'
-    );
+UPDATE public.organization SET "leadUserId"='1' where id=1;
 
-INSERT INTO
-    public.organization (
-        "createdAt",
-        "updatedAt",
-        id,
-        "activeCountries",
-        code,
-        name,
-        contact,
-        telephone,
-        email,
-        address,
-        shareholders,
-        "ceoPassportNumber",
-        "ceoName",
-        "companyNumber",
-        "vatNumber",
-        postcode,
-        "headquartersCountry",
-        country,
-        "businessTypeSelect",
-        "businessTypeInput",
-        "yearOfRegistration",
-        "numberOfEmployees",
-        website,
-        status,
-        "leadUserId"
-    )
-VALUES
-    (
-        '2020-03-30 09:55:25.962333+02',
-        '2020-03-30 09:55:25.962333+02',
-        2,
-        '[83]',
-        '1',
-        'Device Manager Organization',
-        'Contact',
-        '1',
-        'devicemanager@mailinator.com',
-        'Address',
-        '1',
-        '1',
-        'CEO name',
-        '',
-        'XY123456',
-        '1',
-        '83',
-        '83',
-        'Private individual',
-        '',
-        '2020',
-        '1',
-        'http://example.com',
-        '0',
-        '2'
-    );
+UPDATE public.organization SET "leadUserId"='2' where id=2;
 
-INSERT INTO
-    public.organization (
-        "createdAt",
-        "updatedAt",
-        id,
-        "activeCountries",
-        code,
-        name,
-        contact,
-        telephone,
-        email,
-        address,
-        shareholders,
-        "ceoPassportNumber",
-        "ceoName",
-        "companyNumber",
-        "vatNumber",
-        postcode,
-        "headquartersCountry",
-        country,
-        "businessTypeSelect",
-        "businessTypeInput",
-        "yearOfRegistration",
-        "numberOfEmployees",
-        website,
-        status,
-        "leadUserId"
-    )
-VALUES
-    (
-        '2020-03-30 09:55:25.962333+02',
-        '2020-03-30 09:55:25.962333+02',
-        3,
-        '[83]',
-        '1',
-        'Device Manager Second Organization',
-        'Contact',
-        '1',
-        'devicemanager2@mailinator.com',
-        'Address',
-        '1',
-        '1',
-        'CEO name',
-        '',
-        'XY123456',
-        '1',
-        '83',
-        '83',
-        'Private individual',
-        '',
-        '2020',
-        '1',
-        'http://example.com',
-        '0',
-        '3'
-    );
+UPDATE public.organization SET "leadUserId"='3' where id=3;
 
-INSERT INTO
-    public.organization (
-        "createdAt",
-        "updatedAt",
-        id,
-        "activeCountries",
-        code,
-        name,
-        contact,
-        telephone,
-        email,
-        address,
-        shareholders,
-        "ceoPassportNumber",
-        "ceoName",
-        "companyNumber",
-        "vatNumber",
-        postcode,
-        "headquartersCountry",
-        country,
-        "businessTypeSelect",
-        "businessTypeInput",
-        "yearOfRegistration",
-        "numberOfEmployees",
-        website,
-        status,
-        "leadUserId"
-    )
-VALUES
-    (
-        '2020-03-30 09:55:25.962333+02',
-        '2020-03-30 09:55:25.962333+02',
-        4,
-        '[83]',
-        '1',
-        'Trader Organization',
-        'Contact',
-        '1',
-        'trader@mailinator.com',
-        'Address',
-        '1',
-        '1',
-        'CEO name',
-        '',
-        'XY123456',
-        '1',
-        '83',
-        '83',
-        'Private individual',
-        '',
-        '2020',
-        '1',
-        'http://example.com',
-        '0',
-        '4'
-    );
+UPDATE public.organization SET "leadUserId"='4' where id=4;
 
 /*
     DEVICES

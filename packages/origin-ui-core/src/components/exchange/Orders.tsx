@@ -1,23 +1,24 @@
 import React, { useEffect } from 'react';
-import { TableMaterial } from '../Table/TableMaterial';
+import { TableMaterial, ICustomRow } from '../Table/TableMaterial';
 import {
     IPaginatedLoaderHooksFetchDataParameters,
     usePaginatedLoaderFiltered
 } from '../Table/PaginatedLoaderHooks';
-import { EnergyFormatter } from '../../utils/EnergyFormatter';
 import { Typography } from '@material-ui/core';
-import { useTranslation } from '../../utils';
+import { useTranslation, EnergyFormatter } from '../../utils';
 import { IOrderBookOrderDTO } from '../../utils/exchange';
 
-interface IProps {
+export interface IOrdersProps {
     data: IOrderBookOrderDTO[];
     currency: string;
     title: string;
     highlightOrdersUserId: string;
+    handleRowClick?: (order: IOrderBookOrderDTO) => void;
+    customRow?: ICustomRow<any>;
 }
 
-export function Orders(props: IProps) {
-    const { currency, data, title, highlightOrdersUserId } = props;
+export function Orders(props: IOrdersProps) {
+    const { currency, data, title, highlightOrdersUserId, handleRowClick, customRow } = props;
 
     const { t } = useTranslation();
 
@@ -64,14 +65,15 @@ export function Orders(props: IProps) {
     ] as const;
 
     const highlightedRowsIndexes = [];
-    const rows = paginatedData.map(({ price, volume, userId }, index) => {
+    const rows = paginatedData.map(({ id, price, volume, userId }, index) => {
         if (typeof userId !== 'undefined' && userId !== null && userId === highlightOrdersUserId) {
             highlightedRowsIndexes.push(index);
         }
 
         return {
+            id,
             volume: EnergyFormatter.format(volume),
-            price: (price / 100).toString()
+            price: (price / 100).toFixed(2)
         };
     });
 
@@ -86,7 +88,15 @@ export function Orders(props: IProps) {
                 loadPage={loadPage}
                 total={total}
                 pageSize={pageSize}
-                highlightedRowsIndexes={highlightedRowsIndexes}
+                highlightedRowsIds={highlightedRowsIndexes}
+                handleRowClick={
+                    handleRowClick
+                        ? (id: string) => {
+                              handleRowClick(paginatedData?.find((r) => r.id === id));
+                          }
+                        : null
+                }
+                customRow={customRow}
             />
         </>
     );

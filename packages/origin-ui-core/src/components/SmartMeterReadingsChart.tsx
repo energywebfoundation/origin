@@ -7,6 +7,7 @@ import { reverse } from '../utils/helper';
 import { EnergyFormatter } from '../utils/EnergyFormatter';
 import { useOriginConfiguration } from '../utils/configuration';
 import { useTranslation } from 'react-i18next';
+import { bigNumberify } from 'ethers/utils';
 
 enum TIMEFRAME {
     DAY = 'Day',
@@ -138,13 +139,13 @@ export function SmartMeterReadingsChart(props: ISmartMeterReadingsChartProps) {
                 .subtract(currentIndex, measurementUnit)
                 .tz(producingDevice.timezone);
 
-            let totalEnergy = 0;
+            let totalEnergy = bigNumberify(0);
 
             for (const reading of readings) {
                 const readingDate = moment.unix(reading.timestamp).tz(producingDevice.timezone);
 
                 if (readingDate.isSame(currentDate, measurementUnit)) {
-                    totalEnergy += reading.energy;
+                    totalEnergy = totalEnergy.add(reading.energy);
                 }
             }
 

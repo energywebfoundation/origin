@@ -56,19 +56,20 @@ export function RequestCertificatesModal() {
 
     const { t } = useTranslation();
 
-    const parsedEnergyInDisplayUnit = parseFloat(energyInDisplayUnit);
+    const parsedEnergyInDisplayUnit = isNaN(Number(energyInDisplayUnit))
+        ? 0
+        : Number(energyInDisplayUnit);
 
-    const energyInBaseUnit =
-        typeof parsedEnergyInDisplayUnit === 'number' && !isNaN(parsedEnergyInDisplayUnit)
-            ? EnergyFormatter.getBaseValueFromValueInDisplayUnit(parsedEnergyInDisplayUnit)
-            : 0;
+    const energyInBaseUnit = EnergyFormatter.getBaseValueFromValueInDisplayUnit(
+        parsedEnergyInDisplayUnit
+    );
 
     const isFormValid =
         fromDate &&
         toDate &&
         fromDate.toDate() <= toDate.toDate() &&
-        energyInBaseUnit > 0 &&
-        energyInBaseUnit < MAX_ENERGY_PER_CERTIFICATE &&
+        energyInBaseUnit.gt(0) &&
+        energyInBaseUnit.lt(MAX_ENERGY_PER_CERTIFICATE) &&
         cancelledFiles.length === 0 &&
         filesBeingUploaded.length === 0;
 

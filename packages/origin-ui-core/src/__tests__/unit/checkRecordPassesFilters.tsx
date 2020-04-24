@@ -1,5 +1,8 @@
-import { checkRecordPassesFilters } from '../../components/Table/PaginatedLoaderFiltered';
-import { CustomFilterInputType, ICustomFilter } from '../../components/Table/FiltersHeader';
+import {
+    checkRecordPassesFilters,
+    CustomFilterInputType,
+    ICustomFilter
+} from '../../components/Table';
 import { DeviceTypeService } from '@energyweb/utils-general';
 import { TEST_DEVICE_TYPES } from '../utils/helpers';
 

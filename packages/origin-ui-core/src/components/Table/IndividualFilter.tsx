@@ -14,7 +14,7 @@ import { DatePicker } from '@material-ui/pickers';
 
 import { ICustomFilter, CustomFilterInputType } from './FiltersHeader';
 import { CustomSlider, CustomSliderThumbComponent } from '../CustomSlider';
-import { dataTest } from '../../utils/helper';
+import { dataTest } from '../../utils';
 import { HierarchicalMultiSelect } from '../HierarchicalMultiSelect';
 import { getConfiguration } from '../../features/selectors';
 

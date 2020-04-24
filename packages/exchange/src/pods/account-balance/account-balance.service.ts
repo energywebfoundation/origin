@@ -23,6 +23,8 @@ export class AccountBalanceService {
     ) {}
 
     public async getAccountBalance(userId: string): Promise<AccountBalance> {
+        this.logger.debug(`[UserId: ${userId}] Requested account balance:`);
+
         const deposits = await this.getTransfers(userId);
         const trades = await this.getTrades(userId);
         const sellOrders = await this.getSellOrders(userId);
@@ -34,10 +36,14 @@ export class AccountBalanceService {
 
         const aggregated = deposits.mergeWith(sum, trades).mergeWith(sum, sellOrders);
 
-        return new AccountBalance({
+        const balances = new AccountBalance({
             available: Array.from(aggregated.values()),
             locked: Array.from(sellOrders.values())
         });
+
+        this.logger.debug(`[UserId: ${userId}] Balances: ${JSON.stringify(balances)}`);
+
+        return balances;
     }
 
     public async hasEnoughAssetAmount(userId: string, assetId: string, assetAmount: string) {

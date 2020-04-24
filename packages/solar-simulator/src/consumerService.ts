@@ -1,10 +1,11 @@
 import axios from 'axios';
 import { Moment } from 'moment';
 import moment from 'moment-timezone';
-import Web3 from 'web3';
 import * as Winston from 'winston';
 import dotenv from 'dotenv';
 import fs from 'fs';
+import { ethers } from 'ethers';
+import { bigNumberify, BigNumber } from 'ethers/utils';
 
 import { ProducingDevice } from '@energyweb/device-registry';
 import { Configuration } from '@energyweb/utils-general';
@@ -18,7 +19,7 @@ export function wait(milliseconds: number) {
 }
 
 async function createBlockchainConfiguration() {
-    const web3 = new Web3(process.env.WEB3 ?? 'http://localhost:8545');
+    const web3 = new ethers.providers.JsonRpcProvider(process.env.WEB3 ?? 'http://localhost:8545');
 
     const logger = Winston.createLogger({
         format: Winston.format.combine(Winston.format.colorize(), Winston.format.simple()),
@@ -53,27 +54,17 @@ export async function startConsumerService(configFilePath: string) {
     const CHECK_INTERVAL = CONFIG.config.ENERGY_READ_CHECK_INTERVAL || 29000;
     const conf = await createBlockchainConfiguration();
 
-    async function getProducingDeviceSmartMeterRead(deviceId: string): Promise<number> {
+    async function getProducingDeviceSmartMeterRead(deviceId: string): Promise<BigNumber> {
         const device = await new ProducingDevice.Entity(parseInt(deviceId, 10), conf).sync();
 
-        return device.lastSmartMeterReadWh ?? 0;
+        return device.lastSmartMeterReadWh ?? bigNumberify(0);
     }
 
     async function saveProducingDeviceSmartMeterRead(
         deviceId: string,
-        smartMeterReading: ISmartMeterRead,
-        smartMeterPrivateKey: string
+        smartMeterReading: ISmartMeterRead
     ) {
         console.log('-----------------------------------------------------------');
-
-        const smartMeterAddress: string = conf.blockchainProperties.web3.eth.accounts.privateKeyToAccount(
-            smartMeterPrivateKey
-        ).address;
-
-        conf.blockchainProperties.activeUser = {
-            address: smartMeterAddress,
-            privateKey: smartMeterPrivateKey
-        };
 
         try {
             let device = await new ProducingDevice.Entity(parseInt(deviceId, 10), conf).sync();
@@ -127,21 +118,17 @@ export async function startConsumerService(configFilePath: string) {
                     continue;
                 }
 
-                const roundedEnergy: number = Math.round(energyMeasurement.energy);
+                const roundedEnergy: BigNumber = bigNumberify(Math.round(energyMeasurement.energy));
 
-                const previousRead: number = await getProducingDeviceSmartMeterRead(device.id);
+                const previousRead: BigNumber = await getProducingDeviceSmartMeterRead(device.id);
                 const time = moment(energyMeasurement.measurementTime);
 
                 const smartMeterReading: ISmartMeterRead = {
-                    meterReading: previousRead + roundedEnergy,
+                    meterReading: previousRead.add(roundedEnergy),
                     timestamp: time.unix()
                 };
 
-                await saveProducingDeviceSmartMeterRead(
-                    device.id,
-                    smartMeterReading,
-                    device.smartMeterPrivateKey
-                );
+                await saveProducingDeviceSmartMeterRead(device.id, smartMeterReading);
 
                 console.log(
                     `[Device ID: ${device.id}]::Save Energy Read of: ${roundedEnergy}Wh - [${energyMeasurement.measurementTime}]`

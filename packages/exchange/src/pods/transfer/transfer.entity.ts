@@ -18,7 +18,7 @@ export class Transfer extends ExtendedBaseEntity {
     @Column('bigint')
     amount: string;
 
-    @Column({ nullable: true })
+    @Column({ nullable: true, unique: true })
     transactionHash: string;
 
     @Column()

@@ -32,7 +32,6 @@ import { getUserOffchain, getActiveBlockchainAccountAddress } from '../../featur
 import { OriginConfigurationContext, setOriginLanguage } from '../OriginConfigurationContext';
 import { getWeb3 } from '../../features/selectors';
 import { refreshUserOffchain } from '../../features/users/actions';
-import { getActiveAccount, isUsingInBrowserPK } from '../../features/authentication/selectors';
 import { IUserProperties } from '@energyweb/origin-backend-core';
 
 export function AccountSettings() {
@@ -57,8 +56,6 @@ export function AccountSettings() {
     const userClient = useSelector(getOffChainDataSource)?.userClient;
     const web3 = useSelector(getWeb3);
     const activeBlockchainAccountAddress = useSelector(getActiveBlockchainAccountAddress);
-    const usingPK = useSelector(isUsingInBrowserPK);
-    const activeAccount = useSelector(getActiveAccount);
     const environment = useSelector(getEnvironment);
 
     const [notificationsEnabled, setNotificationsEnabled] = useState(null);
@@ -134,8 +131,7 @@ export function AccountSettings() {
             const signedMessage = await signTypedMessage(
                 activeBlockchainAccountAddress,
                 environment.REGISTRATION_MESSAGE_TO_SIGN,
-                web3,
-                usingPK ? activeAccount?.privateKey : null
+                web3
             );
 
             await userClient.attachSignedMessage(user.id, signedMessage);

@@ -39,10 +39,14 @@ export abstract class PreciseProofEntity implements IOnChainProperties {
             proof
         );
 
-        if (commitmentStatus === CommitmentStatus.REJECTED) {
-            this.configuration.logger?.error('Unable to save the commitment. Rejected.');
-        } else if (commitmentStatus === CommitmentStatus.CURRENT) {
-            this.configuration.logger?.verbose(`Commitment saved to for Certificate #${this.id}`);
+        if (this.configuration.logger) {
+            if (commitmentStatus === CommitmentStatus.REJECTED) {
+                this.configuration.logger.error('Unable to save the commitment. Rejected.');
+            } else if (commitmentStatus === CommitmentStatus.CURRENT) {
+                this.configuration.logger.verbose(
+                    `Commitment saved to for Certificate #${this.id}`
+                );
+            }
         }
 
         return commitmentStatus;
@@ -58,7 +62,9 @@ export abstract class PreciseProofEntity implements IOnChainProperties {
         this.generateAndAddProofs(proof.commitment, proof.salts);
         this.verifyOffChainProperties(this.propertiesDocumentHash, proof.commitment);
 
-        this.configuration.logger?.verbose(`Got commitment for Certificate #${this.id}`);
+        if (this.configuration.logger) {
+            this.configuration.logger.verbose(`Got commitment for Certificate #${this.id}`);
+        }
 
         return proof;
     }
@@ -70,9 +76,11 @@ export abstract class PreciseProofEntity implements IOnChainProperties {
             throw new Error('getCommitment(): Not found.');
         }
 
-        this.configuration.logger?.verbose(
-            `Got pending transfer commitment for Certificate #${this.id}`
-        );
+        if (this.configuration.logger) {
+            this.configuration.logger.verbose(
+                `Got pending transfer commitment for Certificate #${this.id}`
+            );
+        }
 
         return proof;
     }
@@ -81,10 +89,10 @@ export abstract class PreciseProofEntity implements IOnChainProperties {
         Object.keys(properties).map((key) => {
             const theProof = this.proofs.find((proof: PreciseProofs.Proof) => proof.key === key);
 
-            if (this.configuration.logger.level == 'debug') {
-                console.log('\nDEBUG verifyOffChainProperties');
-                console.log(`rootHash: ${rootHash}`);
-                console.log(`properties: ${properties}`);
+            if (this.configuration.logger) {
+                this.configuration.logger.debug('\nDEBUG verifyOffChainProperties');
+                this.configuration.logger.debug(`rootHash: ${rootHash}`);
+                this.configuration.logger.debug(`properties: ${properties}`);
             }
 
             if (theProof) {
@@ -96,6 +104,8 @@ export abstract class PreciseProofEntity implements IOnChainProperties {
             } else {
                 throw new Error(`Could not find proof for property ${key}`);
             }
+
+            return true;
         });
     }
 
@@ -127,9 +137,9 @@ export abstract class PreciseProofEntity implements IOnChainProperties {
             leafs
         };
 
-        if (this.configuration.logger.level == 'debug') {
-            console.log('\nDEBUG generateAndAddProofs');
-            console.log(result);
+        if (this.configuration.logger) {
+            this.configuration.logger.debug('\nDEBUG generateAndAddProofs');
+            this.configuration.logger.debug(result);
             PreciseProofs.printTree(merkleTree, leafs);
         }
 

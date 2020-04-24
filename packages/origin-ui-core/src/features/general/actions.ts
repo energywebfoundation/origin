@@ -1,19 +1,17 @@
 import { IOffChainDataSource } from '@energyweb/origin-backend-client';
 import { IExchangeClient } from '../../utils/exchange';
-import { IOriginConfiguration } from '@energyweb/origin-backend-core';
+import { IOriginConfiguration, DeviceCreateData } from '@energyweb/origin-backend-core';
 
 export enum GeneralActions {
-    showAccountChangedModal = 'SHOW_ACCOUNT_CHANGED_MODAL',
-    hideAccountChangedModal = 'HIDE_ACCOUNT_CHANGED_MODAL',
-    disableAccountChangedModal = 'DISABLE_ACCOUNT_CHANGED_MODAL',
     setLoading = 'GENERAL_SET_LOADING',
     setError = 'GENERAL_SET_ERROR',
-    showRequestPasswordModal = 'SHOW_REQUEST_PASSWORD_MODAL',
-    hideRequestPasswordModal = 'HIDE_REQUEST_PASSWORD_MODAL',
     setOffChainDataSource = 'GENERAL_SET_OFF_CHAIN_DATA_SOURCE',
     setExchangeClient = 'GENERAL_SET_EXCHANGE_CLIENT',
     setEnvironment = 'GENERAL_SET_ENVIRONMENT',
-    setOffchainConfiguration = 'GENERAL_SET_OFFCHAIN_CONFIGURATION'
+    setOffchainConfiguration = 'GENERAL_SET_OFFCHAIN_CONFIGURATION',
+    setAccountMismatchModalProperties = 'GENERAL_SET_ACCOUNT_MISMATCH_MODAL_PROPERTIES',
+    accountMismatchModalResolved = 'GENERAL_ACCOUNT_MISMATCH_MODAL_RESOLVED',
+    requestDeviceCreation = 'GENERAL_REQUEST_DEVICE_CREATION'
 }
 
 export interface IEnvironment {
@@ -24,37 +22,8 @@ export interface IEnvironment {
     WEB3: string;
     REGISTRATION_MESSAGE_TO_SIGN: string;
     ISSUER_ID: string;
+    DEVICE_PROPERTIES_ENABLED: string;
 }
-
-export interface IShowAccountChangedModalAction {
-    type: GeneralActions.showAccountChangedModal;
-}
-
-export const showAccountChangedModal = () => ({
-    type: GeneralActions.showAccountChangedModal
-});
-
-export type TShowAccountChangedModal = typeof showAccountChangedModal;
-
-export interface IHideAccountChangedModalAction {
-    type: GeneralActions.hideAccountChangedModal;
-}
-
-export const hideAccountChangedModal = () => ({
-    type: GeneralActions.hideAccountChangedModal
-});
-
-export type THideAccountChangedModal = typeof hideAccountChangedModal;
-
-export interface IDisableAccountChangedModalAction {
-    type: GeneralActions.disableAccountChangedModal;
-}
-
-export const disableAccountChangedModal = () => ({
-    type: GeneralActions.disableAccountChangedModal
-});
-
-export type TDisableAccountChangedModal = typeof disableAccountChangedModal;
 
 export interface ISetLoadingAction {
     type: GeneralActions.setLoading;
@@ -79,31 +48,6 @@ export const setError = (payload: ISetErrorAction['payload']) => ({
 });
 
 export type TSetError = typeof setError;
-
-export interface IRequestPasswordModalAction {
-    type: GeneralActions.showRequestPasswordModal;
-    payload: {
-        title?: string;
-        callback: (password: string) => void;
-    };
-}
-
-export const showRequestPasswordModal = (payload: IRequestPasswordModalAction['payload']) => ({
-    type: GeneralActions.showRequestPasswordModal,
-    payload
-});
-
-export type TShowRequestPasswordModal = typeof showRequestPasswordModal;
-
-export interface IHideRequestPasswordModalAction {
-    type: GeneralActions.hideRequestPasswordModal;
-}
-
-export const hideRequestPasswordModal = () => ({
-    type: GeneralActions.hideRequestPasswordModal
-});
-
-export type THideRequestPasswordModalAction = typeof hideRequestPasswordModal;
 
 export interface ISetOffChainDataSourceAction {
     type: GeneralActions.setOffChainDataSource;
@@ -157,15 +101,58 @@ export const setOffchainConfiguration = (payload: ISetOffchainConfigurationActio
 
 export type TSetOffchainConfigurationAction = typeof setOffchainConfiguration;
 
+export interface IAccountMismatchModalResolvedAction {
+    type: GeneralActions.accountMismatchModalResolved;
+    payload: boolean;
+}
+
+export const accountMismatchModalResolvedAction = (
+    payload: IAccountMismatchModalResolvedAction['payload']
+) => ({
+    type: GeneralActions.accountMismatchModalResolved,
+    payload
+});
+
+export type TAccountMismatchModalResolvedAction = typeof accountMismatchModalResolvedAction;
+
+export interface ISetAccountMismatchModalPropertiesAction {
+    type: GeneralActions.setAccountMismatchModalProperties;
+    payload: {
+        visibility: boolean;
+    };
+}
+
+export const setAccountMismatchModalPropertiesAction = (
+    payload: ISetAccountMismatchModalPropertiesAction['payload']
+) => ({
+    type: GeneralActions.setAccountMismatchModalProperties,
+    payload
+});
+
+export type TSetAccountMismatchModalPropertiesAction = typeof setAccountMismatchModalPropertiesAction;
+
+export interface IRequestDeviceCreationAction {
+    type: GeneralActions.requestDeviceCreation;
+    payload: {
+        data: DeviceCreateData;
+        callback: () => void;
+    };
+}
+
+export const requestDeviceCreation = (payload: IRequestDeviceCreationAction['payload']) => ({
+    type: GeneralActions.requestDeviceCreation,
+    payload
+});
+
+export type TRequestDeviceCreationAction = typeof requestDeviceCreation;
+
 export type IGeneralAction =
-    | IShowAccountChangedModalAction
-    | IHideAccountChangedModalAction
-    | IDisableAccountChangedModalAction
     | ISetLoadingAction
     | ISetErrorAction
-    | IRequestPasswordModalAction
-    | IHideRequestPasswordModalAction
     | ISetOffChainDataSourceAction
     | ISetEnvironmentAction
     | ISetExchangeClientAction
-    | ISetOffchainConfigurationAction;
+    | ISetOffchainConfigurationAction
+    | ISetAccountMismatchModalPropertiesAction
+    | IAccountMismatchModalResolvedAction
+    | IRequestDeviceCreationAction;

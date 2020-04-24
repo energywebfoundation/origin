@@ -5,6 +5,7 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import fs from 'fs';
 import path from 'path';
+import { PostgresConnectionOptions } from 'typeorm/driver/postgres/PostgresConnectionOptions';
 
 import { EmptyResultInterceptor } from './empty-result.interceptor';
 import { AccountBalanceModule } from './pods/account-balance/account-balance.module';
@@ -30,13 +31,39 @@ import { WithdrawalProcessorModule } from './pods/withdrawal-processor/withdrawa
 import { HTTPLoggingInterceptor } from './utils/httpLoggingInterceptor';
 
 const getEnvFilePath = () => {
-    const resolvedPath = path.resolve(__dirname, '../../../../../.env');
+    const pathsToTest = ['../../../../../.env', '../../../../../../.env'];
 
-    if (__dirname.includes('dist/js') && fs.existsSync(resolvedPath)) {
-        return resolvedPath;
+    let finalPath = null;
+
+    for (const pathToTest of pathsToTest) {
+        const resolvedPath = path.resolve(__dirname, pathToTest);
+
+        if (__dirname.includes('dist/js') && fs.existsSync(resolvedPath)) {
+            finalPath = resolvedPath;
+            break;
+        }
     }
 
-    return null;
+    return finalPath;
+};
+
+const getDBConnectionOptions = (): PostgresConnectionOptions => {
+    return process.env.DATABASE_URL
+        ? {
+              type: 'postgres',
+              url: process.env.DATABASE_URL,
+              ssl: {
+                  rejectUnauthorized: false
+              }
+          }
+        : {
+              type: 'postgres',
+              host: process.env.DB_HOST ?? 'localhost',
+              port: Number(process.env.DB_PORT) ?? 5432,
+              username: process.env.DB_USERNAME ?? 'postgres',
+              password: process.env.DB_PASSWORD ?? 'postgres',
+              database: process.env.DB_DATABASE ?? 'origin'
+          };
 };
 
 @Module({
@@ -46,15 +73,10 @@ const getEnvFilePath = () => {
             isGlobal: true
         }),
         TypeOrmModule.forRoot({
-            type: 'postgres',
+            ...getDBConnectionOptions(),
             name: 'ExchangeConnection',
-            host: process.env.DB_HOST ?? 'localhost',
-            port: Number(process.env.DB_PORT) ?? 5432,
-            username: process.env.DB_USERNAME ?? 'postgres',
-            password: process.env.DB_PASSWORD ?? 'postgres',
-            database: process.env.DB_DATABASE ?? 'origin',
             entities: [Demand, Order, Trade, Asset, Transfer, Account],
-            synchronize: true,
+            synchronize: false,
             logging: ['info']
         }),
         ScheduleModule.forRoot(),

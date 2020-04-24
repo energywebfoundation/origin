@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Market, IMarketFormValues } from './Market';
 import { EnergyFormatter, moment, useTranslation, useIntervalFetch } from '../../utils';
-import { Orders } from './Orders';
+import { Asks, Orders } from '.';
 import { Grid } from '@material-ui/core';
 import { getUserOffchain } from '../../features/users/selectors';
 import { getExchangeClient, getCountry } from '../../features/general/selectors';
@@ -29,9 +29,18 @@ export function Exchange(props: IProps) {
     });
     const [deviceType, setDeviceType] = useState<string[]>([]);
     const [location, setLocation] = useState<string[]>([]);
+    const [gridOperator, setGridOperator] = useState<string[]>([]);
+    const [generationDateStart, setGenerationDateStart] = useState<string>();
+    const [generationDateEnd, setGenerationDateEnd] = useState<string>();
 
     const fetchData = async (checkIsMounted: () => boolean) => {
-        const fetchedData = (await exchangeClient?.search(deviceType, location)) ?? {
+        const fetchedData = (await exchangeClient?.search(
+            deviceType,
+            location,
+            gridOperator,
+            generationDateStart,
+            generationDateEnd
+        )) ?? {
             asks: [],
             bids: []
         };
@@ -41,7 +50,13 @@ export function Exchange(props: IProps) {
         }
     };
 
-    useIntervalFetch(fetchData, refreshInterval, [deviceType, location]);
+    useIntervalFetch(fetchData, refreshInterval, [
+        deviceType,
+        location,
+        gridOperator,
+        generationDateStart,
+        generationDateEnd
+    ]);
 
     async function onBid(values: IMarketFormValues) {
         dispatch(setLoading(true));
@@ -54,13 +69,33 @@ export function Exchange(props: IProps) {
                     values.location?.length > 0
                         ? values.location?.map((l) => `${country};${l}`)
                         : undefined,
-                generationFrom: null,
-                generationTo: null
+                generationFrom: generationDateStart,
+                generationTo: generationDateEnd
             },
             validFrom: moment().toISOString(),
             volume: EnergyFormatter.getBaseValueFromValueInDisplayUnit(
                 parseFloat(values.energy)
             ).toString()
+        });
+
+        dispatch(setLoading(false));
+    }
+
+    async function buyDirect(orderId: string, volume: string, price: number) {
+        if (
+            typeof orderId === 'undefined' ||
+            typeof volume === 'undefined' ||
+            typeof price === 'undefined'
+        ) {
+            throw new Error(`Can't buyDirect order with undefined parameters passed`);
+        }
+
+        dispatch(setLoading(true));
+
+        await exchangeClient.directBuy({
+            askId: orderId,
+            volume,
+            price
         });
 
         dispatch(setLoading(false));
@@ -82,6 +117,33 @@ export function Exchange(props: IProps) {
                     if (JSON.stringify(newLocation) !== JSON.stringify(location)) {
                         setLocation(newLocation);
                     }
+
+                    const newGridOperator = values.gridOperator;
+
+                    if (JSON.stringify(newGridOperator) !== JSON.stringify(gridOperator)) {
+                        setGridOperator(newGridOperator);
+                    }
+
+                    const newGenerationDateStart = values.generationDateStart
+                        ?.startOf('month')
+                        .toISOString();
+
+                    if (
+                        JSON.stringify(newGenerationDateStart) !==
+                        JSON.stringify(generationDateStart)
+                    ) {
+                        setGenerationDateStart(newGenerationDateStart);
+                    }
+
+                    const newGenerationDateEnd = values.generationDateEnd
+                        ?.endOf('month')
+                        .toISOString();
+
+                    if (
+                        JSON.stringify(newGenerationDateEnd) !== JSON.stringify(generationDateEnd)
+                    ) {
+                        setGenerationDateEnd(newGenerationDateEnd);
+                    }
                 }}
                 energyUnit={EnergyFormatter.displayUnit}
                 currency={currency}
@@ -91,11 +153,14 @@ export function Exchange(props: IProps) {
             <br />
             <Grid container spacing={3}>
                 <Grid item xs={6}>
-                    <Orders
+                    <Asks
                         data={data.asks}
                         currency={currency}
                         title={t('exchange.info.asks')}
                         highlightOrdersUserId={user?.id?.toString()}
+                        displayAssetDetails={true}
+                        buyDirect={buyDirect}
+                        energyUnit={EnergyFormatter.displayUnit}
                     />
                 </Grid>
                 <Grid item xs={6}>

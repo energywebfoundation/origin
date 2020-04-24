@@ -1,32 +1,27 @@
 import { Unit } from '@energyweb/utils-general';
+import { commify, BigNumber, BigNumberish, bigNumberify } from 'ethers/utils';
 
 export class EnergyFormatter {
     public static readonly displayUnit: string = 'MWh';
 
     public static readonly decimalPlaces: number = 3;
 
-    public static readonly minValue: number = 1 / 10 ** EnergyFormatter.decimalPlaces;
+    static getValueInDisplayUnit(baseValue: BigNumberish): number {
+        const bnValue = bigNumberify(baseValue);
 
-    private static readonly formatter = new Intl.NumberFormat('en-US', {
-        style: 'decimal',
-        minimumFractionDigits: 0,
-        maximumFractionDigits: EnergyFormatter.decimalPlaces
-    });
-
-    static getValueInDisplayUnit(baseValue: number | string): number {
-        return (
-            (typeof baseValue === 'number' ? baseValue : parseInt(baseValue, 10)) /
-            Unit[EnergyFormatter.displayUnit]
-        );
+        const whole = bnValue.div(Unit[EnergyFormatter.displayUnit]);
+        const mod = bnValue.mod(Unit[EnergyFormatter.displayUnit]);
+        return parseFloat(`${whole}.${mod.toString().slice(0, EnergyFormatter.decimalPlaces)}`);
     }
 
-    static getBaseValueFromValueInDisplayUnit(valueInDisplayUnit: number): number {
-        return valueInDisplayUnit * Unit[EnergyFormatter.displayUnit];
+    static getBaseValueFromValueInDisplayUnit(valueInDisplayUnit: number): BigNumber {
+        return bigNumberify(valueInDisplayUnit * Unit[EnergyFormatter.displayUnit]);
     }
 
-    static format(baseValue: number | string, includeDisplayUnit?: boolean): string {
-        return `${EnergyFormatter.formatter.format(
-            EnergyFormatter.getValueInDisplayUnit(baseValue)
-        )}${includeDisplayUnit ? ' ' + EnergyFormatter.displayUnit : ''}`;
+    static format(baseValue: BigNumberish, includeDisplayUnit?: boolean): string {
+        const returnValue = bigNumberify(baseValue);
+        return `${commify(EnergyFormatter.getValueInDisplayUnit(returnValue).toString())}${
+            includeDisplayUnit ? ' ' + EnergyFormatter.displayUnit : ''
+        }`;
     }
 }

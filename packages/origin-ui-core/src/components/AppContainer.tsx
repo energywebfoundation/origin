@@ -5,9 +5,7 @@ import { Header } from './Header';
 import { Device } from './Device';
 import { Account } from './Account/Account';
 import { Organization } from './Organization/Organization';
-import { AccountChangedModal } from './Modal/AccountChangedModal';
-import { RequestPasswordModal } from './Modal/RequestPasswordModal';
-import { RequestCertificatesModal } from './Modal/RequestCertificatesModal';
+import { RequestCertificatesModal, AccountMismatchModal } from './Modal';
 import { useSelector } from 'react-redux';
 import { ErrorComponent } from './ErrorComponent';
 import { useLinks } from '../utils/routing';
@@ -62,9 +60,8 @@ export function AppContainer() {
 
                 <Route path={baseURL} component={Device} />
             </Switch>
-            <AccountChangedModal />
-            <RequestPasswordModal />
             <RequestCertificatesModal />
+            <AccountMismatchModal />
         </div>
     );
 }

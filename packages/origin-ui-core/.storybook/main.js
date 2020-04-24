@@ -23,5 +23,13 @@ module.exports = {
         },
         '@storybook/preset-scss',
         '@storybook/addon-actions/register'
-    ]
+    ],
+    webpackFinal: (config) => ({
+        ...config,
+        externals: [
+            {
+                xmlhttprequest: '{XMLHttpRequest:XMLHttpRequest}'
+            }
+        ]
+    })
 }

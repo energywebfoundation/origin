@@ -1,7 +1,7 @@
 import React from 'react';
 import { mount } from 'enzyme';
 import { ProducingDeviceTable } from '../../components/ProducingDeviceTable';
-import { dataTestSelector } from '../../utils/helper';
+import { dataTestSelector } from '../../utils';
 import {
     setupStore,
     WrapperComponent,
@@ -13,6 +13,7 @@ import { IOffChainDataSource } from '@energyweb/origin-backend-client';
 import { configurationUpdated } from '../../features';
 import { Configuration, DeviceTypeService } from '@energyweb/utils-general';
 import { OffChainDataSourceMock } from '@energyweb/origin-backend-client-mocks';
+import { bigNumberify } from 'ethers/utils';
 
 describe('ProducingDeviceTable', () => {
     it('correctly renders and search works', async () => {
@@ -31,7 +32,7 @@ describe('ProducingDeviceTable', () => {
         addProducingDevice({
             id: 0,
             status: DeviceStatus.Active,
-            lastSmartMeterReadWh: 7777
+            lastSmartMeterReadWh: bigNumberify(7777)
         });
 
         addProducingDevice({
@@ -73,14 +74,12 @@ describe('ProducingDeviceTable', () => {
         assertMainTableContent([
             '',
             'Wuthering Heights facility',
-            'Central, Nakhon Pathom',
             'Solar - Photovoltaic - Roof mounted',
             '9.877',
-            '0.008',
+            '0.777',
             // next device
             '',
             'Biomass Energy Facility',
-            'Central, Nakhon Pathom',
             'Gaseous - Agricultural gas',
             '0.736',
             '0'
@@ -99,7 +98,6 @@ describe('ProducingDeviceTable', () => {
         assertMainTableContent([
             '',
             'Biomass Energy Facility',
-            'Central, Nakhon Pathom',
             'Gaseous - Agricultural gas',
             '0.736',
             '0'
@@ -114,10 +112,9 @@ describe('ProducingDeviceTable', () => {
         assertMainTableContent([
             '',
             'Wuthering Heights facility',
-            'Central, Nakhon Pathom',
             'Solar - Photovoltaic - Roof mounted',
             '9.877',
-            '0.008'
+            '0.777'
         ]);
 
         assertPagination(1, 1, 1);

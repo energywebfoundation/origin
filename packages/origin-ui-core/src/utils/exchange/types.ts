@@ -1,15 +1,4 @@
-import { Filter, Operator } from '@energyweb/exchange-core';
-
-export interface IOrderBookOrderDTO {
-    price: number;
-    volume: string;
-    userId?: string;
-}
-
-export type TOrderBook = {
-    asks: IOrderBookOrderDTO[];
-    bids: IOrderBookOrderDTO[];
-};
+import { Filter, Operator, OrderSide, Product } from '@energyweb/exchange-core';
 
 export type DeviceVintageDTO = {
     year: number;
@@ -20,8 +9,9 @@ export interface IProductDTO {
     deviceType?: string[];
     location?: string[];
     deviceVintage?: DeviceVintageDTO;
-    generationFrom: string;
-    generationTo: string;
+    generationFrom?: string;
+    generationTo?: string;
+    gridOperator?: string[];
 }
 
 export interface ITradeDTO {
@@ -47,17 +37,12 @@ export type CreateAskDTO = {
     assetId: string;
 };
 
-export interface IOrder {
-    id: string;
-    userId: string;
-    price: number;
-}
-
 export interface IProductFilterDTO extends IProductDTO {
     deviceTypeFilter: Filter;
     locationFilter: Filter;
     deviceVintageFilter: Filter;
     generationTimeFilter: Filter;
+    gridOperatorFilter: Filter;
 }
 
 export interface IAsset {
@@ -65,8 +50,8 @@ export interface IAsset {
     address: string;
     tokenId: string;
     deviceId: string;
-    generationFrom: Date;
-    generationTo: Date;
+    generationFrom: string;
+    generationTo: string;
 }
 
 export type AccountAsset = {
@@ -108,3 +93,38 @@ export interface ITransfer {
     confirmationBlock?: number;
     direction: TransferDirection;
 }
+
+export interface IOrderBookOrderDTO {
+    id: string;
+    price: number;
+    volume: string;
+    product: Product;
+    userId: string;
+    assetId?: string;
+}
+
+export type TOrderBook = {
+    asks: IOrderBookOrderDTO[];
+    bids: IOrderBookOrderDTO[];
+};
+
+export interface IDirectBuyDTO {
+    askId: string;
+    volume: string;
+    price: number;
+}
+
+export interface IOrder {
+    id: string;
+    side: OrderSide;
+    validFrom: string;
+    product: Product;
+    price: number;
+    startVolume: string;
+    currentVolume: string;
+    directBuyId: string;
+    assetId: string;
+    userId: string;
+}
+
+export type Order = IOrder & { assetId: string };
