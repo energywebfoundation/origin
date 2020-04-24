@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [5.0.1](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-backend-client@5.0.0...@energyweb/origin-backend-client@5.0.1) (2020-04-24)
+
+
+### Bug Fixes
+
+* **origin-ui-core:** fix image upload when registering devices ([fcbfe00](https://github.com/energywebfoundation/origin/commit/fcbfe008670d0f030f6de953957229fd98432208))
+* store certificate energy as a string (maximum 2^256-1) ([2a284a9](https://github.com/energywebfoundation/origin/commit/2a284a9ff3b362dfa41516995b1cadd4c5651194))
+
+
+
+
+
 # [5.0.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-backend-client@4.0.0...@energyweb/origin-backend-client@5.0.0) (2020-04-08)
 
 

@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.1.0](https://github.com/energywebfoundation/origin/compare/@energyweb/device-registry@6.0.0...@energyweb/device-registry@6.1.0) (2020-04-24)
+
+
+### Features
+
+* add support for device grid operator property ([f6d77f3](https://github.com/energywebfoundation/origin/commit/f6d77f327a7676c3e742cc8a022e5c085cf66e39))
+
+
+
+
+
 # [6.0.0](https://github.com/energywebfoundation/origin/compare/@energyweb/device-registry@5.1.1...@energyweb/device-registry@6.0.0) (2020-04-08)
 
 

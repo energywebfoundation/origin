@@ -3,6 +3,27 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [9.0.0](https://github.com/energywebfoundation/origin/compare/@energyweb/utils-general@8.0.0...@energyweb/utils-general@9.0.0) (2020-04-24)
+
+
+### Bug Fixes
+
+* **deps:** update dependency precise-proofs-js to v1.1.0 ([b1f0bb7](https://github.com/energywebfoundation/origin/commit/b1f0bb723a4a006357ed3b7dcad7494c70b0c5b4))
+
+
+### chore
+
+* **utils-general:** transition from web3 to ethers ([4679d96](https://github.com/energywebfoundation/origin/commit/4679d9625c9cf65f726af7447977d76cc45c5789))
+
+
+### BREAKING CHANGES
+
+* **utils-general:** transition to ethers
+
+
+
+
+
 # [8.0.0](https://github.com/energywebfoundation/origin/compare/@energyweb/utils-general@7.0.2...@energyweb/utils-general@8.0.0) (2020-04-08)
 
 

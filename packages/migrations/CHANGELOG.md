@@ -3,6 +3,30 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.1.0](https://github.com/energywebfoundation/origin/compare/@energyweb/migrations@3.0.0...@energyweb/migrations@3.1.0) (2020-04-24)
+
+
+### Bug Fixes
+
+* migrations path fix ([54b4c67](https://github.com/energywebfoundation/origin/commit/54b4c67aec30a2ca469b1218bc824eb66050abc7))
+* **deps:** update dependency pg to v8.0.2 ([52fac12](https://github.com/energywebfoundation/origin/commit/52fac12321f62b942eec4e10b4b583875dfbc5aa))
+* **migrations:** build script ([8c2c88a](https://github.com/energywebfoundation/origin/commit/8c2c88af496784bb6d823df68887e657d5e10c6c))
+* **migrations:** fix build process ([b3a363f](https://github.com/energywebfoundation/origin/commit/b3a363f9a45a68d8b209abf1ea0f676b4d237236))
+* **migrations:** fix make stage ([2f1f878](https://github.com/energywebfoundation/origin/commit/2f1f878e943b9a90c9ef36eac8aff06bac29a3da))
+* **migrations:** fix yarn migrate:demo command ([0001b78](https://github.com/energywebfoundation/origin/commit/0001b789e8861486b09f843aff7ccee596b048b8))
+* **origin-ui-core:** add feedback when no permissions to add device ([e106c40](https://github.com/energywebfoundation/origin/commit/e106c40331acf9ad3a1d9f6cdcdfe5374c80a6fa))
+* store certificate energy as a string (maximum 2^256-1) ([2a284a9](https://github.com/energywebfoundation/origin/commit/2a284a9ff3b362dfa41516995b1cadd4c5651194))
+* **migrations:** seed file does not require fk check to be off ([04f468d](https://github.com/energywebfoundation/origin/commit/04f468de875453916d55e015df80bfe41ec64500))
+
+
+### Features
+
+* **migrations:** example heroku Dockerfile ([aa0dbc7](https://github.com/energywebfoundation/origin/commit/aa0dbc73ded6619572c5513793d8f3d0053c9999))
+
+
+
+
+
 # [3.0.0](https://github.com/energywebfoundation/origin/compare/@energyweb/migrations@2.1.0...@energyweb/migrations@3.0.0) (2020-04-08)
 
 

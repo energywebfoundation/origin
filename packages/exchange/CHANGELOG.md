@@ -3,6 +3,32 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.7.0](https://github.com/energywebfoundation/origin/compare/@energyweb/exchange@0.6.0...@energyweb/exchange@0.7.0) (2020-04-24)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @nestjs/swagger to v4.5.2 ([93e7880](https://github.com/energywebfoundation/origin/commit/93e7880da173d97fe20cbc16234aa5b77468ac86))
+* **deps:** update dependency class-validator to v0.12.1 ([b5000af](https://github.com/energywebfoundation/origin/commit/b5000af21eb1bc8e1df1eb85cac636cfe5e31adc))
+* **deps:** update dependency ts-loader to v7 ([722101a](https://github.com/energywebfoundation/origin/commit/722101a02d82ea125f011de23cd1232e82e7db47))
+* **deps:** update nest monorepo to v7.0.8 ([67e8239](https://github.com/energywebfoundation/origin/commit/67e823940e8c671790acbd106af0dc479ec9c23d))
+* **exchange:** check dto.generationTo ([5f2f0d2](https://github.com/energywebfoundation/origin/commit/5f2f0d29296c18b344106d0f8d6d55f46edeec26))
+* **exchange:** check transaction hash uniqueness ([e6b277a](https://github.com/energywebfoundation/origin/commit/e6b277abd36be930844a978823ba5d8966cc3538))
+* **exchange:** generation times parsing ([a1461c7](https://github.com/energywebfoundation/origin/commit/a1461c7e3699ff2b034e14762d0ca30e245095e6)), closes [#856](https://github.com/energywebfoundation/origin/issues/856)
+* bin env for migration scripts ([aef836e](https://github.com/energywebfoundation/origin/commit/aef836e0e263076c3bdb6fafb5335a595af9d519))
+* migration catalog ([48209a1](https://github.com/energywebfoundation/origin/commit/48209a1357d82e85c0c6a330bde62669dcb98844))
+* migrations path fix ([54b4c67](https://github.com/energywebfoundation/origin/commit/54b4c67aec30a2ca469b1218bc824eb66050abc7))
+
+
+### Features
+
+* add support for device grid operator property ([f6d77f3](https://github.com/energywebfoundation/origin/commit/f6d77f327a7676c3e742cc8a022e5c085cf66e39))
+* **exchange:** add GET asset/:id endpoint. Add assetId in orderbook dto object ([235f94c](https://github.com/energywebfoundation/origin/commit/235f94c2b5fc4ff226ed1f0ba58f0302bb658e94))
+
+
+
+
+
 # [0.6.0](https://github.com/energywebfoundation/origin/compare/@energyweb/exchange@0.5.0...@energyweb/exchange@0.6.0) (2020-04-08)
 
 

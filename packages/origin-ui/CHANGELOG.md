@@ -3,6 +3,26 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.1.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-ui@2.0.0...@energyweb/origin-ui@2.1.0) (2020-04-24)
+
+
+### Bug Fixes
+
+* **deps:** update dependency ts-loader to v7 ([722101a](https://github.com/energywebfoundation/origin/commit/722101a02d82ea125f011de23cd1232e82e7db47))
+* **origin-ui:** build:full before packaging to docker ([2101456](https://github.com/energywebfoundation/origin/commit/21014565cdcac4daaab2efb2f54cbebf40b0da2e))
+* **origin-ui:** fix build process ([b8fa20e](https://github.com/energywebfoundation/origin/commit/b8fa20e3c6441b310f3b0470ae01caaca3a47570))
+
+
+### Features
+
+* add support for device grid operator property ([f6d77f3](https://github.com/energywebfoundation/origin/commit/f6d77f327a7676c3e742cc8a022e5c085cf66e39))
+* **migrations:** example heroku Dockerfile ([aa0dbc7](https://github.com/energywebfoundation/origin/commit/aa0dbc73ded6619572c5513793d8f3d0053c9999))
+* **monorepo:** origin-ui deployment to heroku ([54398bf](https://github.com/energywebfoundation/origin/commit/54398bf9f349267f2fcb2b6e809eaed65fe2c274))
+
+
+
+
+
 # [2.0.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-ui@1.5.5...@energyweb/origin-ui@2.0.0) (2020-04-08)
 
 
