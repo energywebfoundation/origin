@@ -17,5 +17,4 @@ export interface BlockchainProperties<TRegistry = any, TIssuer = any> {
     registry?: TRegistry;
     issuer?: TIssuer;
     activeUser?: Signer;
-    privateKey?: string;
 }
