@@ -62,7 +62,7 @@ Install using `yarn add @energyweb/{package}@canary`
 
 #### Preview
 
-Preview packages are built on a special `preview` branch, this is mostly used as interal tool for tests, demos, disussions. Not meant to be used as SDK releses
+Preview packages are built on a special `preview` branch, this is mostly used as interal tool for tests, demos, discussions.
 
 Install using `yarn add @energyweb/{package}@preview`
 
