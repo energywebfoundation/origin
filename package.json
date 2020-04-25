@@ -25,7 +25,7 @@
         "lerna": "3.20.2",
         "lint-staged": "10.1.7",
         "mocha": "7.1.1",
-        "prettier": "2.0.4",
+        "prettier": "2.0.5",
         "shx": "0.3.2",
         "solc": "0.5.16",
         "truffle": "5.1.22",

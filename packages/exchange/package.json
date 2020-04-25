@@ -75,7 +75,7 @@
         "eslint-plugin-jest": "23.8.2",
         "jest": "25.4.0",
         "polly-js": "1.6.5",
-        "prettier": "2.0.4",
+        "prettier": "2.0.5",
         "supertest": "4.0.2",
         "ts-jest": "25.4.0",
         "ts-node": "8.8.2",
