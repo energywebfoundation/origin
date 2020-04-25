@@ -70,7 +70,7 @@
         "sqlite3": "4.1.1",
         "typeorm": "0.2.24",
         "uuid": "7.0.3",
-        "ws": "7.2.3"
+        "ws": "7.2.5"
     },
     "devDependencies": {
         "@nestjs/cli": "7.1.2",
