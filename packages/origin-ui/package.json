@@ -9,6 +9,7 @@
         "build:container:canary": "yarn build:full && make build-canary push-dockerhub",
         "build:container:latest": "yarn build:full && make build-latest push-dockerhub",
         "deploy:container:heroku:canary": "make push-heroku-canary",
+        "deploy:container:heroku:stable": "make push-heroku-stable",
         "config-env": "bash env.sh",
         "start": "yarn config-env && cross-env NODE_OPTIONS=\"--max_old_space_size=8192\" webpack-dev-server --config webpack/dev.config.js --watch",
         "start-all": "yarn start",

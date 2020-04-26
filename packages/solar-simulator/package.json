@@ -21,7 +21,8 @@
         "lint-fix": "eslint \"src/**/*{.ts,.tsx}\" --fix",
         "clean": "shx rm -rf dist",
         "precommit": "lint-staged",
-        "deploy:container:heroku:canary": "make push-heroku-canary"
+        "deploy:container:heroku:canary": "make push-heroku-canary",
+        "deploy:container:heroku:stable": "make push-heroku-stable"
     },
     "author": "",
     "license": "GPL-3.0-or-later",

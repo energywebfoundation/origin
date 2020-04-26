@@ -2,14 +2,13 @@ sudo: required
 dist: bionic
 language: node_js
 node_js:
-    - '12'
+    - "12"
 
 notifications:
-  slack: 
-    if: branch = master
-    rooms:
-    - energywebfoundation:lS0R4jfZryd9btZaw5A7MZTX#origin-updates
-    
+    slack:
+        if: branch = master
+        rooms:
+            - energywebfoundation:lS0R4jfZryd9btZaw5A7MZTX#origin-updates
 
 services: postgresql
 
@@ -70,21 +69,21 @@ script:
 
 deploy:
     - provider: script
-      script: 'git checkout master && yarn publish:canary && yarn build:containers:canary && yarn deploy:heroku'
+      script: "git checkout master && yarn publish:canary && yarn build:containers:canary && yarn deploy:heroku:canary"
       skip_cleanup: true
       on:
-          node: '12'
+          node: "12"
           branch: master
     - provider: script
       edge: true
-      script: 'git checkout release && yarn publish:release && yarn build:containers:release'
+      script: "git checkout release && yarn publish:release && yarn build:containers:release"
       on:
-          node: '12'
+          node: "12"
           branch: release
           condition: '$TRAVIS_COMMIT_MESSAGE != *"skip-deploy"*'
     - provider: script
-      script: 'git checkout preview && yarn publish:preview'
+      script: "git checkout preview && yarn publish:preview"
       skip_cleanup: true
       on:
-          node: '12'
+          node: "12"
           branch: preview
