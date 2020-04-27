@@ -55,7 +55,7 @@
         "class-validator": "0.12.2",
         "cors": "2.8.5",
         "dotenv": "8.2.0",
-        "ethers": "4.0.46",
+        "ethers": "4.0.47",
         "express": "4.17.1",
         "jsonwebtoken": "8.5.1",
         "moment": "2.24.0",
