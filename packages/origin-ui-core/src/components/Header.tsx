@@ -72,7 +72,15 @@ export function Header() {
                     <li>
                         <NavLink to={getCertificatesLink()}>{t('header.certificates')}</NavLink>
                     </li>
-
+                    {userOffchain && (
+                        <>
+                            <li>
+                                <NavLink to={getOrganizationLink()}>
+                                    {t('header.organizations')}
+                                </NavLink>
+                            </li>
+                        </>
+                    )}
                     {isRole(userOffchain, Role.Admin) && (
                         <>
                             <li>
@@ -81,20 +89,10 @@ export function Header() {
                         </>
                     )}
 
-                    {isRole(userOffchain, Role.Agents) && (
+                    {isRole(userOffchain, Role.Agent) && (
                         <>
                             <li>
                                 <NavLink to={getAdminLink()}>{t('header.supportAgent')}</NavLink>
-                            </li>
-                        </>
-                    )}
-
-                    {userOffchain && (
-                        <>
-                            <li>
-                                <NavLink to={getOrganizationLink()}>
-                                    {t('header.organizations')}
-                                </NavLink>
                             </li>
                         </>
                     )}

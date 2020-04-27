@@ -1,31 +1,19 @@
-import { DeviceStatus } from '@energyweb/origin-backend-core';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { NavLink, Redirect, Route } from 'react-router-dom';
 import { useLinks } from '../utils';
 import { PageContent } from './PageContent/PageContent';
-import { ProducingDeviceTable } from './ProducingDeviceTable';
+import { AdminUsersTable } from './AdminUsersTable';
 
 export function Admin() {
     const { baseURL, getAdminLink } = useLinks();
     const { t } = useTranslation();
 
-    function ProductionList() {
-        return (
-            <ProducingDeviceTable
-                includedStatuses={[DeviceStatus.Submitted]}
-                actions={{
-                    approve: true
-                }}
-            />
-        );
-    }
-
     const DevicesMenu = [
         {
             key: 'manageuser',
             label: t('navigation.admin.users'),
-            component: ProductionList
+            component: AdminUsersTable
         }
     ];
 

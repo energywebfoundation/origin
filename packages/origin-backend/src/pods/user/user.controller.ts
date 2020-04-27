@@ -36,7 +36,9 @@ export class UserController {
             telephone,
             notifications,
             autoPublish,
-            rights
+            rights,
+            status,
+            kycStatus
         } = body;
 
         try {
@@ -49,7 +51,9 @@ export class UserController {
                 telephone,
                 notifications,
                 autoPublish,
-                rights
+                rights,
+                status,
+                kycStatus
             });
 
             return {
@@ -64,7 +68,9 @@ export class UserController {
                 organization: user.organization,
                 autoPublish: user.autoPublish,
                 notifications: user.notifications,
-                rights: user.rights
+                rights: user.rights,
+                status: user.status,
+                kycStatus: user.kycStatus
             };
         } catch (error) {
             console.log('UserController::register() error', error);

@@ -8,7 +8,7 @@ export class AdminController {
 
     @Get('users')
     @UseGuards(AuthGuard('jwt'))
-    public async getAllUser() {
-        return this.adminService.getAllUser();
+    public async getAllUsers() {
+        return this.adminService.getAllUsers();
     }
 }

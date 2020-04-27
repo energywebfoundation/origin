@@ -10,7 +10,9 @@ export class AdminService {
         private readonly repository: Repository<User>
     ) {}
 
-    public async getAllUser() {
-        return this.repository.find();
+    public async getAllUsers() {
+        return this.repository.find({
+            relations: ['organization']
+        });
     }
 }

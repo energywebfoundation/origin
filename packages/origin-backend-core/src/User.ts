@@ -19,7 +19,7 @@ export enum Role {
     Trader,
     Issuer,
     Admin,
-    Agents
+    Agent
 }
 
 export function buildRights(roles: Role[]): number {
@@ -60,6 +60,8 @@ export interface IUserProperties {
     notifications: boolean;
     autoPublish: IAutoPublishConfig;
     rights: number;
+    status: number;
+    kycStatus: number;
 }
 
 export interface IUser extends IUserProperties {

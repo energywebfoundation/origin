@@ -1,10 +1,8 @@
 import { IUser } from '@energyweb/origin-backend-core';
 import { IRequestClient, RequestClient } from './RequestClient';
 
-type onUploadProgressFunction = (progressEvent: ProgressEvent) => void;
-
 export interface IAdminClient {
-    getAllUser(): Promise<IUser[]>;
+    getAllUsers(): Promise<IUser[]>;
 }
 
 export class AdminClient implements IAdminClient {
@@ -13,7 +11,7 @@ export class AdminClient implements IAdminClient {
         private readonly requestClient: IRequestClient = new RequestClient()
     ) {}
 
-    public async getAllUser() {
+    public async getAllUsers() {
         const { data } = await this.requestClient.get(`${this.endpoint}/users`);
         return data;
     }

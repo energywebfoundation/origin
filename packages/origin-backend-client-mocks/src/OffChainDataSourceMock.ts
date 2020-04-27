@@ -41,4 +41,6 @@ export class OffChainDataSourceMock implements IOffChainDataSource {
         this.deviceClient = new DeviceClientMock();
         this.organizationClient = new OrganizationClientMock();
     }
+
+    adminClient: import('../../origin-backend-client/src').IAdminClient;
 }
