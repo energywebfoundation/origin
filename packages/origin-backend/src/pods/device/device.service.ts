@@ -1,5 +1,6 @@
 import {
     DeviceCreateData,
+    DeviceStatusChangedEvent,
     DeviceUpdateData,
     IDevice,
     IDeviceProductInfo,
@@ -7,11 +8,9 @@ import {
     IExternalDeviceId,
     ISmartMeterRead,
     ISmartMeterReadingsAdapter,
-    DeviceStatusChangedEvent,
     SupportedEvents
 } from '@energyweb/origin-backend-core';
 import {
-    BadRequestException,
     Inject,
     Injectable,
     NotFoundException,
@@ -23,12 +22,12 @@ import { FindOneOptions, Repository } from 'typeorm';
 import { v4 as uuid } from 'uuid';
 
 import { SM_READS_ADAPTER } from '../../const';
-import { ConfigurationService } from '../configuration';
 import { StorageErrors } from '../../enums/StorageErrors';
+import { ConfigurationService } from '../configuration';
 import { ExtendedBaseEntity } from '../ExtendedBaseEntity';
+import { NotificationService } from '../notification';
 import { OrganizationService } from '../organization';
 import { Device } from './device.entity';
-import { NotificationService } from '../notification';
 
 @Injectable()
 export class DeviceService {
@@ -103,14 +102,9 @@ export class DeviceService {
             });
         }
 
-        try {
-            await this.repository.save(newEntity);
+        await this.repository.save(newEntity);
 
-            return newEntity;
-        } catch (error) {
-            console.warn('Error while saving entity', error);
-            throw new BadRequestException('Could not save device.');
-        }
+        return newEntity;
     }
 
     async remove(entity: Device | (ExtendedBaseEntity & IDeviceWithRelationsIds)) {

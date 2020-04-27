@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnprocessableEntityException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, FindOneOptions } from 'typeorm';
 import {
@@ -7,8 +7,11 @@ import {
     IUserWithRelationsIds,
     isRole,
     Role,
-    OrganizationUpdateData
+    OrganizationUpdateData,
+    OrganizationPostData,
+    OrganizationStatus
 } from '@energyweb/origin-backend-core';
+import { validate } from 'class-validator';
 import { Organization } from './organization.entity';
 import { UserService } from '../user';
 import { ExtendedBaseEntity } from '../ExtendedBaseEntity';
@@ -20,6 +23,35 @@ export class OrganizationService {
         private readonly repository: Repository<Organization>,
         private readonly userService: UserService
     ) {}
+
+    async create(userId: number, data: OrganizationPostData) {
+        const newEntity = new Organization();
+
+        const user = await this.userService.findById(userId);
+
+        const newOrganization: Omit<IOrganization, 'id'> = {
+            ...data,
+            status: OrganizationStatus.Submitted,
+            leadUser: user,
+            users: [user],
+            devices: []
+        };
+
+        Object.assign(newEntity, newOrganization);
+
+        const validationErrors = await validate(newEntity);
+
+        if (validationErrors.length > 0) {
+            throw new UnprocessableEntityException({
+                success: false,
+                errors: validationErrors.map((e) => e?.toString())
+            });
+        } else {
+            await this.repository.save(newEntity);
+
+            return newEntity;
+        }
+    }
 
     async findOne(
         id: string | number,

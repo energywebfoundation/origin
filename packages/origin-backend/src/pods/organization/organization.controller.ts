@@ -1,24 +1,25 @@
 import {
-    IOrganization,
     IOrganizationInvitation,
+    isRole,
     IUser,
     IUserWithRelationsIds,
+    OrganizationInvitationEvent,
     OrganizationInvitationStatus,
     OrganizationInviteCreateReturnData,
     OrganizationPostData,
+    OrganizationRemovedMemberEvent,
     OrganizationRemoveMemberReturnData,
-    OrganizationStatus,
     OrganizationStatusChangedEvent,
     OrganizationUpdateData,
-    SupportedEvents,
-    OrganizationInvitationEvent,
-    OrganizationRemovedMemberEvent
+    Role,
+    SupportedEvents
 } from '@energyweb/origin-backend-core';
 import {
     BadRequestException,
     Body,
     Controller,
     Delete,
+    ForbiddenException,
     Get,
     Logger,
     NotFoundException,
@@ -32,7 +33,6 @@ import {
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { InjectRepository } from '@nestjs/typeorm';
-import { validate } from 'class-validator';
 import { FindConditions, Repository } from 'typeorm';
 
 import { StorageErrors } from '../../enums/StorageErrors';
@@ -114,6 +114,21 @@ export class OrganizationController {
         return organization.users;
     }
 
+    @Get('/:id/devices')
+    @UseGuards(AuthGuard('jwt'))
+    async getDevices(@Param('id') id: string, @UserDecorator() loggedUser: IUserWithRelationsIds) {
+        if (!isRole(loggedUser, Role.DeviceManager)) {
+            throw new ForbiddenException();
+        }
+
+        const organization = await this.organizationRepository.findOne(id, {
+            relations: ['devices'],
+            where: { id: loggedUser.organization }
+        });
+
+        return organization.devices;
+    }
+
     @Get('/:id')
     async get(@Param('id') id: string) {
         const existingEntity = await this.organizationService.findOne(id);
@@ -127,34 +142,11 @@ export class OrganizationController {
 
     @Post()
     @UseGuards(AuthGuard('jwt'))
-    async post(@Body() body: any, @UserDecorator() loggedUser: IUser) {
+    async post(@Body() body: OrganizationPostData, @UserDecorator() loggedUser: IUser) {
         try {
-            const newEntity = new Organization();
+            const organization = this.organizationService.create(loggedUser.id, body);
 
-            const user = await this.userService.findById(loggedUser.id);
-
-            const data: Omit<IOrganization, 'id'> = {
-                ...(body as OrganizationPostData),
-                status: OrganizationStatus.Submitted,
-                leadUser: user,
-                users: [user],
-                devices: []
-            };
-
-            Object.assign(newEntity, data);
-
-            const validationErrors = await validate(newEntity);
-
-            if (validationErrors.length > 0) {
-                throw new UnprocessableEntityException({
-                    success: false,
-                    errors: validationErrors.map((e) => e?.toString())
-                });
-            } else {
-                await this.organizationRepository.save(newEntity);
-
-                return newEntity;
-            }
+            return organization;
         } catch (error) {
             console.warn('Error while saving entity');
             console.error(error);
@@ -224,6 +216,7 @@ export class OrganizationController {
     ) {
         try {
             const user = await this.userService.findById(loggedUser.id);
+
             const invitation = await this.organizationInvitationRepository.findOneOrFail(
                 invitationId,
                 {
@@ -255,8 +248,8 @@ export class OrganizationController {
                 }
             );
 
-            ((user as any) as User).organization = organization;
-            organization.users.push((user as any) as User);
+            ((user as unknown) as User).organization = organization;
+            organization.users.push((user as unknown) as User);
             invitation.status = status;
             await this.organizationRepository.save(organization);
             await this.organizationInvitationRepository.save(invitation);
