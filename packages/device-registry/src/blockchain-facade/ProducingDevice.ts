@@ -60,6 +60,10 @@ export class Entity implements IDevice {
 
     organization: number;
 
+    automaticPostForSale: boolean;
+
+    defaultAskPrice: number;
+
     constructor(
         public id: number,
         public configuration: Configuration.Entity,
