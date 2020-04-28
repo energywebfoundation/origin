@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Contracts } from '@energyweb/issuer';
-import { ConfigurationService, DeviceService } from '@energyweb/origin-backend';
-import { IDeviceProductInfo } from '@energyweb/origin-backend-core';
+import { ConfigurationService, DeviceService, ExtendedBaseEntity } from '@energyweb/origin-backend';
+import { IDeviceProductInfo, IDeviceWithRelationsIds } from '@energyweb/origin-backend-core';
 import { CanActivate, ExecutionContext, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { AuthGuard } from '@nestjs/passport';
@@ -75,7 +75,7 @@ const deviceTypes = [
     ['Marine', 'Tidal', 'Offshore']
 ];
 
-export const bootstrapTestInstance = async () => {
+export const bootstrapTestInstance = async (deviceServiceMock?: DeviceService) => {
     const registry = await deployRegistry();
     const issuer = await deployIssuer(registry.address);
 
@@ -108,18 +108,34 @@ export const bootstrapTestInstance = async () => {
             },
             {
                 provide: DeviceService,
-                useValue: ({
-                    findDeviceProductInfo: async (): Promise<IDeviceProductInfo> => {
-                        return {
-                            deviceType: 'Solar;Photovoltaic;Classic silicon',
-                            country: 'Thailand',
-                            region: 'Central',
-                            province: 'Nakhon Pathom',
-                            operationalSince: 2016,
-                            gridOperator: 'TH-PEA'
-                        };
-                    }
-                } as unknown) as DeviceService
+                useValue:
+                    deviceServiceMock ??
+                    (({
+                        findDeviceProductInfo: async (): Promise<IDeviceProductInfo> => {
+                            return {
+                                deviceType: 'Solar;Photovoltaic;Classic silicon',
+                                country: 'Thailand',
+                                region: 'Central',
+                                province: 'Nakhon Pathom',
+                                operationalSince: 2016,
+                                gridOperator: 'TH-PEA'
+                            };
+                        },
+                        findByExternalId: async (): Promise<
+                            ExtendedBaseEntity & IDeviceWithRelationsIds
+                        > => {
+                            return {
+                                deviceType: 'Solar;Photovoltaic;Classic silicon',
+                                country: 'Thailand',
+                                region: 'Central',
+                                province: 'Nakhon Pathom',
+                                operationalSince: 2016,
+                                gridOperator: 'TH-PEA',
+                                automaticPostForSale: false,
+                                defaultAskPrice: null
+                            } as ExtendedBaseEntity & IDeviceWithRelationsIds;
+                        }
+                    } as unknown) as DeviceService)
             }
         ]
     })

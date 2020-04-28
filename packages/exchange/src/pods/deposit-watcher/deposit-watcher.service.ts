@@ -1,5 +1,5 @@
 import { Contracts } from '@energyweb/issuer';
-import { ConfigurationService } from '@energyweb/origin-backend';
+import { ConfigurationService, DeviceService } from '@energyweb/origin-backend';
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { ModuleRef } from '@nestjs/core';
@@ -9,6 +9,9 @@ import moment from 'moment';
 
 import { TransferService } from '../transfer/transfer.service';
 import { TransferStatus } from '../transfer/transfer-status';
+import { OrderService } from '../order/order.service';
+import { AccountService } from '../account/account.service';
+import { CreateAskDTO } from '../order/create-ask.dto';
 
 @Injectable()
 export class DepositWatcherService implements OnModuleInit {
@@ -26,16 +29,28 @@ export class DepositWatcherService implements OnModuleInit {
 
     private registry: ethers.Contract;
 
+    private deviceService: DeviceService;
+
+    private issuerTypeId: string;
+
     public constructor(
         private readonly configService: ConfigService,
         private readonly transferService: TransferService,
+        private readonly orderService: OrderService,
+        private readonly accountService: AccountService,
         private readonly moduleRef: ModuleRef
-    ) {}
+    ) {
+        this.issuerTypeId = this.configService.get<string>('ISSUER_ID');
+    }
 
     public async onModuleInit() {
         this.logger.debug('onModuleInit');
 
         const originBackendConfigurationService = this.moduleRef.get(ConfigurationService, {
+            strict: false
+        });
+
+        this.deviceService = this.moduleRef.get(DeviceService, {
             strict: false
         });
 
@@ -93,12 +108,12 @@ export class DepositWatcherService implements OnModuleInit {
         const { transactionHash } = event;
 
         try {
-            const transfer = await this.transferService.findOne(null, {
+            let transfer = await this.transferService.findOne(null, {
                 where: { transactionHash }
             });
 
             if (transfer) {
-                this.logger.error(
+                this.logger.debug(
                     `Deposit with transactionHash ${transactionHash} already exists and has status ${
                         TransferStatus[transfer.status]
                     } `
@@ -111,10 +126,12 @@ export class DepositWatcherService implements OnModuleInit {
                 id.toString()
             );
 
-            await this.transferService.createDeposit({
+            const amount = value.toString();
+
+            transfer = await this.transferService.createDeposit({
                 transactionHash,
                 address: from as string,
-                amount: value.toString(),
+                amount,
                 asset: {
                     address: this.registryAddress,
                     tokenId: id.toString(),
@@ -129,8 +146,10 @@ export class DepositWatcherService implements OnModuleInit {
             await this.transferService.setAsConfirmed(transactionHash, receipt.blockNumber);
 
             this.logger.debug(
-                `Successfully created deposit of tokenId=${id} from ${from} with value=${value}`
+                `Successfully created deposit of tokenId=${id} from=${from} with value=${value} for user=${transfer.userId} `
             );
+
+            await this.tryPostForSale(deviceId, from, amount, transfer.asset.id);
         } catch (error) {
             this.logger.error(error.message);
         }
@@ -146,5 +165,38 @@ export class DepositWatcherService implements OnModuleInit {
             generationTo: moment.unix(result[1]).toDate(),
             deviceId: result[2]
         };
+    }
+
+    private async tryPostForSale(
+        deviceId: string,
+        sender: string,
+        amount: string,
+        assetId: string
+    ) {
+        this.logger.debug(
+            `Trying to post for sale deviceId=${deviceId} sender=${sender} amount=${amount} assetId=${assetId}`
+        );
+
+        const {
+            id,
+            automaticPostForSale,
+            defaultAskPrice
+        } = await this.deviceService.findByExternalId({
+            id: deviceId,
+            type: this.issuerTypeId
+        });
+        const { userId } = await this.accountService.findByAddress(sender);
+
+        if (!automaticPostForSale) {
+            this.logger.debug(`Device ${id} does not have automaticPostForSale enabled`);
+        }
+
+        const ask: CreateAskDTO = {
+            price: defaultAskPrice,
+            validFrom: new Date(),
+            volume: amount,
+            assetId
+        };
+        await this.orderService.createAsk(userId, ask);
     }
 }
