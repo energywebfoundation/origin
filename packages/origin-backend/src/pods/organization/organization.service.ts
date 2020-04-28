@@ -104,4 +104,14 @@ export class OrganizationService {
 
         return this.findOne(id);
     }
+
+    async hasDevice(id: number, deviceId: string) {
+        const devicesCount = await this.repository
+            .createQueryBuilder('organization')
+            .leftJoinAndSelect('organization.devices', 'device')
+            .where('device.id = :deviceId AND organization.id = :id', { id, deviceId })
+            .getCount();
+
+        return devicesCount === 1;
+    }
 }

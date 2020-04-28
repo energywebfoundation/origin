@@ -47,51 +47,71 @@ export const bootstrapTestInstance = async () => {
     };
 };
 
-export const basicSetup = async (
+export const registerAndLogin = async (
     app: any,
     configurationService: ConfigurationService,
     userService: UserService,
-    organizationService: OrganizationService
+    organizationService: OrganizationService,
+    roles: Role[] = [Role.UserAdmin],
+    userNonce = 0,
+    orgNonce = 0
 ) => {
     await configurationService.update({
         contractsLookup: { registry: '', issuer: '' }
     });
 
-    const userRegistration: UserRegisterData = {
-        email: 'test@example.com',
-        password: '123',
-        firstName: 'Name',
-        lastName: 'Name',
-        title: 'Sir',
-        rights: buildRights([Role.UserAdmin, Role.DeviceManager]),
-        telephone: '991'
-    };
+    const userEmail = `user${userNonce}@example.com`;
 
-    const organizationRegistration = {
-        email: 'org@example.com',
-        code: '',
-        contact: '',
-        telephone: '',
-        address: '',
-        shareholders: '',
-        ceoName: 'John',
-        vatNumber: '',
-        postcode: '',
-        businessTypeSelect: '',
-        businessTypeInput: '',
-        activeCountries: 'EU',
-        name: 'Test',
-        ceoPassportNumber: '1',
-        companyNumber: '2',
-        headquartersCountry: 1,
-        country: 1,
-        yearOfRegistration: 2000,
-        numberOfEmployees: 1,
-        website: 'http://example.com'
-    } as OrganizationPostData;
+    let user = await userService.findOne({ email: userEmail });
+    if (!user) {
+        const userRegistration: UserRegisterData = {
+            email: userEmail,
+            password: '123',
+            firstName: 'Name',
+            lastName: 'Name',
+            title: 'Sir',
+            rights: buildRights(roles),
+            telephone: '991'
+        };
+        await userService.create(userRegistration);
+        user = await userService.findOne({ email: userEmail });
+    }
 
-    const user = await userService.create(userRegistration);
-    const organization = await organizationService.create(user.id, organizationRegistration);
+    const organizationEmail = `org${orgNonce}@example.com`;
+
+    let organization = await organizationService.findOne(null, {
+        where: { email: organizationEmail }
+    });
+
+    if (!organization) {
+        const organizationRegistration = {
+            email: organizationEmail,
+            code: '',
+            contact: '',
+            telephone: '',
+            address: '',
+            shareholders: '',
+            ceoName: 'John',
+            vatNumber: '',
+            postcode: '',
+            businessTypeSelect: '',
+            businessTypeInput: '',
+            activeCountries: 'EU',
+            name: 'Test',
+            ceoPassportNumber: '1',
+            companyNumber: '2',
+            headquartersCountry: 1,
+            country: 1,
+            yearOfRegistration: 2000,
+            numberOfEmployees: 1,
+            website: 'http://example.com'
+        } as OrganizationPostData;
+
+        await organizationService.create(user.id, organizationRegistration);
+        organization = await organizationService.findOne(null, {
+            where: { email: organizationEmail }
+        });
+    }
 
     let accessToken: string;
 

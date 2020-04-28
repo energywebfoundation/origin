@@ -8,7 +8,8 @@ import {
     IExternalDeviceId,
     ISmartMeterRead,
     ISmartMeterReadingsAdapter,
-    SupportedEvents
+    SupportedEvents,
+    DeviceSettingsUpdateData
 } from '@energyweb/origin-backend-core';
 import {
     Inject,
@@ -205,6 +206,31 @@ export class DeviceService {
                 type: SupportedEvents.DEVICE_STATUS_CHANGED,
                 data: event
             });
+
+            return {
+                message: `Device ${id} successfully updated`
+            };
+        } catch (error) {
+            throw new UnprocessableEntityException({
+                message: `Device ${id} could not be updated due to an error ${error.message}`
+            });
+        }
+    }
+
+    async updateSettings(id: string, update: DeviceSettingsUpdateData) {
+        const device = await this.findOne(id);
+
+        if (!device) {
+            throw new NotFoundException(StorageErrors.NON_EXISTENT);
+        }
+
+        device.automaticPostForSale = update.automaticPostForSale;
+        if (update.automaticPostForSale) {
+            device.defaultAskPrice = update.defaultAskPrice;
+        }
+
+        try {
+            await this.repository.save(device);
 
             return {
                 message: `Device ${id} successfully updated`

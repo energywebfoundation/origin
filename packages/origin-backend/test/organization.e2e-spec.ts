@@ -1,9 +1,9 @@
 /* eslint-disable no-return-assign */
-import { DeviceStatus } from '@energyweb/origin-backend-core';
+import { DeviceStatus, Role } from '@energyweb/origin-backend-core';
 import request from 'supertest';
 
 import { Device } from '../src/pods/device';
-import { basicSetup, bootstrapTestInstance } from './origin-backend';
+import { registerAndLogin, bootstrapTestInstance } from './origin-backend';
 
 describe('Organization e2e tests', () => {
     it('should return organization devices only', async () => {
@@ -20,11 +20,12 @@ describe('Organization e2e tests', () => {
 
         await databaseService.cleanUp();
 
-        const { accessToken, organization } = await basicSetup(
+        const { accessToken, organization } = await registerAndLogin(
             app,
             configurationService,
             userService,
-            organizationService
+            organizationService,
+            [Role.DeviceManager]
         );
 
         await deviceService.create({
@@ -49,7 +50,9 @@ describe('Organization e2e tests', () => {
             typeOfPublicSupport: '',
             deviceGroup: '',
             smartMeterReads: [],
-            externalDeviceIds: []
+            externalDeviceIds: [],
+            automaticPostForSale: false,
+            defaultAskPrice: 0
         });
 
         await request(app.getHttpServer())
