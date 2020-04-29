@@ -14,7 +14,7 @@
         "build": "yarn build:ts",
         "build:ts": "tsc -b tsconfig.build.json --verbose --pretty && cp migrations/initial.sql dist/js/migrations/",
         "prettier": "prettier --write --config-precedence file-override './src/**/*'",
-        "test:e2e": "TS_NODE_PROJECT=tsconfig.build.json TS_NODE_FILES=true mocha -r ts-node/register src/test/e2e/*.test.ts --timeout 60000 --exit",
+        "test:e2e": "yarn typeorm:run && jest --runInBand --verbose --config ./test/jest-e2e.json --forceExit",
         "typeorm": "ts-node -r tsconfig-paths/register ./node_modules/.bin/typeorm --config ormconfig-dev.ts",
         "typeorm:migrate": "yarn typeorm migration:generate -- -n",
         "typeorm:run": "yarn typeorm migration:run",
@@ -94,7 +94,8 @@
         "nodemailer": "6.4.6",
         "supertest": "4.0.2",
         "ts-jest": "25.4.0",
-        "tsconfig-paths": "3.9.0"
+        "tsconfig-paths": "3.9.0",
+        "polly-js": "1.6.5"
     },
     "files": [
         "dist",

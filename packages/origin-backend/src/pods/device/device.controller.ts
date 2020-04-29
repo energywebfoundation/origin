@@ -4,7 +4,10 @@ import {
     DeviceUpdateData,
     IDeviceWithRelationsIds,
     ISmartMeterRead,
-    IUserWithRelationsIds
+    IUserWithRelationsIds,
+    isRole,
+    Role,
+    DeviceSettingsUpdateData
 } from '@energyweb/origin-backend-core';
 import {
     BadRequestException,
@@ -18,7 +21,8 @@ import {
     Post,
     Put,
     UnprocessableEntityException,
-    UseGuards
+    UseGuards,
+    ForbiddenException
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 
@@ -89,6 +93,35 @@ export class DeviceController {
     @Put('/:id')
     async put(@Param('id') id: string, @Body() body: DeviceUpdateData) {
         const res = await this.deviceService.update(id, body);
+        return res;
+    }
+
+    @Put('/:id/settings')
+    @UseGuards(AuthGuard())
+    async updateDeviceSettings(
+        @Param('id') id: string,
+        @Body() body: DeviceSettingsUpdateData,
+        @UserDecorator() loggedUser: IUserWithRelationsIds
+    ) {
+        if (!isRole(loggedUser, Role.Trader)) {
+            throw new ForbiddenException();
+        }
+
+        if (!this.organizationService.hasDevice(loggedUser.organization, id)) {
+            throw new ForbiddenException();
+        }
+
+        if (
+            body?.automaticPostForSale === undefined ||
+            (body?.automaticPostForSale &&
+                (!Number.isInteger(body?.defaultAskPrice) || body?.defaultAskPrice === 0))
+        ) {
+            throw new UnprocessableEntityException(
+                'Body is missing automaticPostForSale or defaultAskPrice'
+            );
+        }
+
+        const res = await this.deviceService.updateSettings(id, body);
         return res;
     }
 

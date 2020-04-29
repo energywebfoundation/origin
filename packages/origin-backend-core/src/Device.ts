@@ -60,6 +60,8 @@ export interface IDeviceProperties extends IDeviceProductInfo {
     lastSmartMeterReading?: ISmartMeterRead;
     deviceGroup?: string;
     smartMeterReads?: ISmartMeterRead[];
+    defaultAskPrice: number;
+    automaticPostForSale: boolean;
 }
 
 export interface IDevice extends IDeviceProperties {
@@ -76,3 +78,4 @@ export interface IDeviceWithRelations extends IDevice {
 
 export type DeviceCreateData = Omit<IDeviceProperties, 'id'>;
 export type DeviceUpdateData = Pick<IDevice, 'status'>;
+export type DeviceSettingsUpdateData = Pick<IDevice, 'defaultAskPrice' | 'automaticPostForSale'>;

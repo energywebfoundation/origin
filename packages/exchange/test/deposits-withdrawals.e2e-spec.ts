@@ -1,6 +1,5 @@
-import { Contracts } from '@energyweb/issuer';
 import { INestApplication } from '@nestjs/common';
-import { Contract, ContractTransaction, ethers } from 'ethers';
+import { Contract, ethers } from 'ethers';
 import moment from 'moment';
 import request from 'supertest';
 
@@ -13,6 +12,7 @@ import { TransferDirection } from '../src/pods/transfer/transfer-direction';
 import { Transfer } from '../src/pods/transfer/transfer.entity';
 import { DatabaseService } from './database.service';
 import { bootstrapTestInstance } from './exchange';
+import { depositToken, issueToken, provider } from './utils';
 
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -23,14 +23,10 @@ describe('Deposits using deployed registry', () => {
 
     const user1Id = '1';
 
-    const web3 = 'http://localhost:8580';
-
     let registry: Contract;
     let issuer: Contract;
 
     let depositAddress: string;
-
-    const registryInterface = new ethers.utils.Interface(Contracts.IssuerJSON.abi);
 
     beforeAll(async () => {
         ({
@@ -52,57 +48,12 @@ describe('Deposits using deployed registry', () => {
         await app.close();
     });
 
-    const provider = new ethers.providers.JsonRpcProvider(web3);
     const tokenReceiverPrivateKey =
         '0xca77c9b06fde68bcbcc09f603c958620613f4be79f3abb4b2032131d0229462e';
     const tokenReceiver = new ethers.Wallet(tokenReceiverPrivateKey, provider);
 
     const generationFrom = moment('2020-01-01').unix();
     const generationTo = moment('2020-01-31').unix();
-
-    const issueToken = async (address: string, amount: string) => {
-        const deviceId = 'QWERTY123';
-
-        const data = await issuer.encodeData(generationFrom, generationTo, deviceId);
-
-        const requestReceipt = await ((await issuer.requestCertificationFor(
-            data,
-            address,
-            false
-        )) as ContractTransaction).wait();
-
-        const {
-            values: { _id: requestId }
-        } = registryInterface.parseLog(requestReceipt.logs[0]);
-
-        const validityData = registryInterface.functions.isRequestValid.encode([
-            requestId.toString()
-        ]);
-
-        const approvalReceipt = await ((await issuer.approveCertificationRequest(
-            requestId,
-            amount,
-            validityData
-        )) as ContractTransaction).wait();
-
-        const { args } = approvalReceipt.events.find(
-            (e) => e.event === 'CertificationRequestApproved'
-        );
-
-        return args[2].toString();
-    };
-
-    const depositToken = async (to: string, amount: string, id: number) => {
-        const registryWithUserAsSigner = registry.connect(tokenReceiver);
-
-        await registryWithUserAsSigner.functions.safeTransferFrom(
-            tokenReceiver.address,
-            to,
-            id,
-            amount,
-            '0x0'
-        );
-    };
 
     const getBalance = async (address: string, id: number) => {
         return (await registry.functions.balanceOf(address, id)) as ethers.utils.BigNumber;
@@ -113,8 +64,14 @@ describe('Deposits using deployed registry', () => {
 
         const depositAmount = '10';
 
-        const id = await issueToken(tokenReceiver.address, '1000');
-        await depositToken(depositAddress, depositAmount, id);
+        const id = await issueToken(
+            issuer,
+            tokenReceiver.address,
+            '1000',
+            generationFrom,
+            generationTo
+        );
+        await depositToken(registry, tokenReceiver, depositAddress, depositAmount, id);
 
         await sleep(5000);
 
@@ -186,8 +143,14 @@ describe('Deposits using deployed registry', () => {
         const withdrawalAmount = '5';
         const depositAmount = '10';
 
-        const id = await issueToken(tokenReceiver.address, '1000');
-        await depositToken(depositAddress, depositAmount, id);
+        const id = await issueToken(
+            issuer,
+            tokenReceiver.address,
+            '1000',
+            generationFrom,
+            generationTo
+        );
+        await depositToken(registry, tokenReceiver, depositAddress, depositAmount, id);
 
         await sleep(5000);
 

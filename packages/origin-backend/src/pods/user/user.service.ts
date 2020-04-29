@@ -143,7 +143,7 @@ export class UserService {
         return this.repository.save(user);
     }
 
-    private findOne(conditions: FindConditions<User>): Promise<TUserBaseEntity> {
+    async findOne(conditions: FindConditions<User>): Promise<TUserBaseEntity> {
         return (this.repository.findOne(conditions, {
             loadRelationIds: true
         }) as Promise<IUser>) as Promise<TUserBaseEntity>;

@@ -1,5 +1,6 @@
 import {
     DeviceCreateData,
+    DeviceStatusChangedEvent,
     DeviceUpdateData,
     IDevice,
     IDeviceProductInfo,
@@ -7,11 +8,10 @@ import {
     IExternalDeviceId,
     ISmartMeterRead,
     ISmartMeterReadingsAdapter,
-    DeviceStatusChangedEvent,
-    SupportedEvents
+    SupportedEvents,
+    DeviceSettingsUpdateData
 } from '@energyweb/origin-backend-core';
 import {
-    BadRequestException,
     Inject,
     Injectable,
     NotFoundException,
@@ -23,12 +23,12 @@ import { FindOneOptions, Repository } from 'typeorm';
 import { v4 as uuid } from 'uuid';
 
 import { SM_READS_ADAPTER } from '../../const';
-import { ConfigurationService } from '../configuration';
 import { StorageErrors } from '../../enums/StorageErrors';
+import { ConfigurationService } from '../configuration';
 import { ExtendedBaseEntity } from '../ExtendedBaseEntity';
+import { NotificationService } from '../notification';
 import { OrganizationService } from '../organization';
 import { Device } from './device.entity';
-import { NotificationService } from '../notification';
 
 @Injectable()
 export class DeviceService {
@@ -103,14 +103,9 @@ export class DeviceService {
             });
         }
 
-        try {
-            await this.repository.save(newEntity);
+        await this.repository.save(newEntity);
 
-            return newEntity;
-        } catch (error) {
-            console.warn('Error while saving entity', error);
-            throw new BadRequestException('Could not save device.');
-        }
+        return newEntity;
     }
 
     async remove(entity: Device | (ExtendedBaseEntity & IDeviceWithRelationsIds)) {
@@ -211,6 +206,31 @@ export class DeviceService {
                 type: SupportedEvents.DEVICE_STATUS_CHANGED,
                 data: event
             });
+
+            return {
+                message: `Device ${id} successfully updated`
+            };
+        } catch (error) {
+            throw new UnprocessableEntityException({
+                message: `Device ${id} could not be updated due to an error ${error.message}`
+            });
+        }
+    }
+
+    async updateSettings(id: string, update: DeviceSettingsUpdateData) {
+        const device = await this.findOne(id);
+
+        if (!device) {
+            throw new NotFoundException(StorageErrors.NON_EXISTENT);
+        }
+
+        device.automaticPostForSale = update.automaticPostForSale;
+        if (update.automaticPostForSale) {
+            device.defaultAskPrice = update.defaultAskPrice;
+        }
+
+        try {
+            await this.repository.save(device);
 
             return {
                 message: `Device ${id} successfully updated`

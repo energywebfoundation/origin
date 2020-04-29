@@ -65,7 +65,9 @@ describe('Device Facade', () => {
                 region: '',
                 province: '',
                 organization: 4,
-                gridOperator: ''
+                gridOperator: '',
+                automaticPostForSale: false,
+                defaultAskPrice: null
             };
 
             assert.equal(await ProducingDevice.getDeviceListLength(conf), 0);

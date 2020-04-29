@@ -167,7 +167,9 @@ export function AddDevice() {
                     description: values.projectStory,
                     images: JSON.stringify(imagesUploadedList),
                     externalDeviceIds,
-                    gridOperator: (selectedGridOperator && selectedGridOperator[0]) || ''
+                    gridOperator: (selectedGridOperator && selectedGridOperator[0]) || '',
+                    automaticPostForSale: false,
+                    defaultAskPrice: null
                 },
                 callback: () => {
                     formikActions.setSubmitting(false);

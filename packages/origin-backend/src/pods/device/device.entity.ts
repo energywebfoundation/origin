@@ -83,4 +83,10 @@ export class Device extends ExtendedBaseEntity implements IDevice {
 
     @Column({ nullable: true })
     gridOperator: string;
+
+    @Column({ nullable: true })
+    defaultAskPrice: number;
+
+    @Column({ default: false })
+    automaticPostForSale: boolean;
 }

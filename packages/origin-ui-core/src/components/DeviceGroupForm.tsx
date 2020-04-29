@@ -232,7 +232,9 @@ export function DeviceGroupForm(props: IProps) {
                     images: JSON.stringify([]),
                     deviceGroup: JSON.stringify(values.children),
                     externalDeviceIds,
-                    gridOperator: ''
+                    gridOperator: '',
+                    automaticPostForSale: false,
+                    defaultAskPrice: null
                 },
                 callback: () => {
                     formikActions.setSubmitting(false);
