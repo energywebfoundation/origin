@@ -11,22 +11,14 @@ export class DefaultAskPriceColumnInDevice1587979261608 implements MigrationInte
         );
         await queryRunner.query(`DROP SEQUENCE "certification_request_id_seq"`, undefined);
         await queryRunner.query(
-            `ALTER TABLE "certification_request" DROP COLUMN "energy"`,
-            undefined
-        );
-        await queryRunner.query(
-            `ALTER TABLE "certification_request" ADD "energy" character varying NOT NULL`,
+            `ALTER TABLE "certification_request" ALTER COLUMN "energy" TYPE character varying NOT NULL`,
             undefined
         );
     }
 
     public async down(queryRunner: QueryRunner): Promise<void> {
         await queryRunner.query(
-            `ALTER TABLE "certification_request" DROP COLUMN "energy"`,
-            undefined
-        );
-        await queryRunner.query(
-            `ALTER TABLE "certification_request" ADD "energy" bigint NOT NULL`,
+            `ALTER TABLE "certification_request" ALTER COLUMN "energy" TYPE bigint NOT NULL`,
             undefined
         );
         await queryRunner.query(
