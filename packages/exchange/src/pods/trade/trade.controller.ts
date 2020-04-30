@@ -15,8 +15,11 @@ export class TradeController {
     @UseGuards(AuthGuard())
     @Get()
     public async getAll(@UserDecorator() user: IUser): Promise<TradeDTO[]> {
-        const trades = await this.tradeService.getAll(user.id.toString());
+        const userId = user.id.toString();
+        const trades = await this.tradeService.getAll(userId, false);
 
-        return trades.map((trade) => TradeDTO.fromTrade(trade));
+        return trades.map((trade) =>
+            TradeDTO.fromTrade(trade.withMaskedOrder(userId), trade.ask.assetId, trade.ask.product)
+        );
     }
 }
