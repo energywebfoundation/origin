@@ -4,6 +4,7 @@ import { NavLink, Redirect, Route } from 'react-router-dom';
 import { useLinks } from '../utils';
 import { PageContent } from './PageContent/PageContent';
 import { AdminUsersTable } from './AdminUsersTable';
+import { AdminUserView } from './AdminUserView';
 
 export function Admin() {
     const { baseURL, getAdminLink } = useLinks();
@@ -11,9 +12,15 @@ export function Admin() {
 
     const DevicesMenu = [
         {
-            key: 'manageuser',
+            key: 'manage-user',
             label: t('navigation.admin.users'),
             component: AdminUsersTable
+        },
+        {
+            key: 'user-update',
+            label: 'Update',
+            component: AdminUserView,
+            hide: true
         }
     ];
 
@@ -22,6 +29,10 @@ export function Admin() {
             <div className="PageNav">
                 <ul className="NavMenu nav">
                     {DevicesMenu.map((menu) => {
+                        if (menu.hide) {
+                            return null;
+                        }
+
                         return (
                             <li key={menu.key}>
                                 <NavLink to={`${getAdminLink()}/${menu.key}`}>{menu.label}</NavLink>

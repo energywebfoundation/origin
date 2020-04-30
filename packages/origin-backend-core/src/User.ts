@@ -22,6 +22,19 @@ export enum Role {
     Agent
 }
 
+export enum Status {
+    'Pending',
+    'Active',
+    'Suspended',
+    'Deleted'
+};
+
+export enum KYCStatus {
+    'Pending KYC',
+    'KYC passed',
+    'KYC rejected'
+};
+
 export function buildRights(roles: Role[]): number {
     if (!roles) {
         return 0;

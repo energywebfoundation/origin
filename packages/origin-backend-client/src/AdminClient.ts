@@ -1,7 +1,8 @@
-import { IUser } from '@energyweb/origin-backend-core';
+import { IUser, UserUpdateData, IUserWithRelations } from '@energyweb/origin-backend-core';
 import { IRequestClient, RequestClient } from './RequestClient';
 
 export interface IAdminClient {
+    update(formData: UserUpdateData): Promise<IUserWithRelations>;
     getAllUsers(): Promise<IUser[]>;
 }
 
@@ -10,6 +11,13 @@ export class AdminClient implements IAdminClient {
         private readonly dataApiUrl: string,
         private readonly requestClient: IRequestClient = new RequestClient()
     ) {}
+
+    async update(formData: IUser) {
+        console.log(formData);
+        const response = await this.requestClient.put(`${this.endpoint}/users/` + formData.id,formData);
+        console.log(response);
+        return response.data;
+    }
 
     public async getAllUsers() {
         const { data } = await this.requestClient.get(`${this.endpoint}/users`);

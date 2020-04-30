@@ -1,4 +1,5 @@
 import { IUser } from '@energyweb/origin-backend-core';
+import { Edit } from '@material-ui/icons';
 import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { getOffChainDataSource } from '../features/general/selectors';
@@ -8,6 +9,7 @@ import {
     usePaginatedLoader
 } from './Table/PaginatedLoaderHooks';
 import { TableMaterial } from './Table/TableMaterial';
+import { useHistory } from 'react-router-dom';
 
 interface IRecord {
     user: IUser;
@@ -29,6 +31,8 @@ export const KYCStatus = {
 export function AdminUsersTable() {
     const adminClient = useSelector(getOffChainDataSource)?.adminClient;
     const userOffchain = useSelector(getUserOffchain);
+
+    const history = useHistory();
 
     async function getPaginatedData({
         requestedPageSize,
@@ -73,14 +77,26 @@ export function AdminUsersTable() {
     ] as const;
 
     const rows = paginatedData.map(({ user }) => {
+        const organizationName = user?.organization?.name;
         return {
             firstName: user.title + ' ' + user.firstName + ' ' + user.lastName,
-            organization: user.organization.name,
+            organization: organizationName,
             email: user.email,
             status: Status[user.status],
             kycStatus: KYCStatus[user.kycStatus]
         };
     });
+
+    const actions = [
+        {
+            icon: <Edit />,
+            name: 'Update',
+            onClick: (index: string) => {
+                const user = paginatedData[index];
+                history.push('user-update', user);
+            }
+        }
+    ];
 
     return (
         <TableMaterial
@@ -89,6 +105,7 @@ export function AdminUsersTable() {
             loadPage={loadPage}
             total={total}
             pageSize={pageSize}
+            actions={actions}
         />
     );
 }
