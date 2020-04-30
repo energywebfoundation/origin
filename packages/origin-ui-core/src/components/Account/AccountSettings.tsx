@@ -13,8 +13,7 @@ import {
     InputLabel,
     Select,
     TextField,
-    MenuItem,
-    FilledInput
+    MenuItem
 } from '@material-ui/core';
 import { useDispatch, useSelector } from 'react-redux';
 import { withStyles } from '@material-ui/core/styles';
@@ -23,11 +22,7 @@ import { signTypedMessage } from '@energyweb/utils-general';
 import { AVAILABLE_ORIGIN_LANGUAGES, ORIGIN_LANGUAGE } from '@energyweb/localization';
 
 import { showNotification, NotificationType, useTranslation } from '../../utils';
-import {
-    getCurrencies,
-    getOffChainDataSource,
-    getEnvironment
-} from '../../features/general/selectors';
+import { getOffChainDataSource, getEnvironment } from '../../features/general/selectors';
 import { getUserOffchain, getActiveBlockchainAccountAddress } from '../../features/users/selectors';
 import { OriginConfigurationContext, setOriginLanguage } from '../OriginConfigurationContext';
 import { getWeb3 } from '../../features/selectors';
@@ -52,7 +47,6 @@ export function AccountSettings() {
     const classes = useStyles(useTheme());
 
     const user = useSelector(getUserOffchain);
-    const currencies = useSelector(getCurrencies);
     const userClient = useSelector(getOffChainDataSource)?.userClient;
     const web3 = useSelector(getWeb3);
     const activeBlockchainAccountAddress = useSelector(getActiveBlockchainAccountAddress);
@@ -61,17 +55,10 @@ export function AccountSettings() {
     const [notificationsEnabled, setNotificationsEnabled] = useState(null);
 
     const userNotificationsEnabled = user?.notifications ?? null;
-    const autoPublish = user?.autoPublish ?? null;
-
-    const [autoPublishCandidate, setAutoPublish] = useState(autoPublish);
 
     useEffect(() => {
         if (notificationsEnabled === null) {
             setNotificationsEnabled(userNotificationsEnabled);
-        }
-
-        if (autoPublishCandidate === null) {
-            setAutoPublish(autoPublish);
         }
     }, [user]);
 
@@ -96,9 +83,8 @@ export function AccountSettings() {
     })(Switch);
 
     const notificationChanged = notificationsEnabled !== userNotificationsEnabled;
-    const autoPublishChanged = JSON.stringify(autoPublishCandidate) !== JSON.stringify(autoPublish);
 
-    const propertiesChanged = notificationChanged || autoPublishChanged;
+    const propertiesChanged = notificationChanged;
 
     async function saveChanges() {
         if (!propertiesChanged) {
@@ -107,15 +93,11 @@ export function AccountSettings() {
             return;
         }
 
-        if (notificationChanged || autoPublishChanged) {
+        if (notificationChanged) {
             const newProperties: Partial<IUserProperties> = {};
 
             if (notificationChanged) {
                 newProperties.notifications = notificationsEnabled;
-            }
-
-            if (autoPublishChanged) {
-                newProperties.autoPublish = autoPublishCandidate;
             }
 
             await userClient.updateAdditionalProperties(user.id, newProperties);
@@ -208,67 +190,6 @@ export function AccountSettings() {
                             label={t('settings.properties.notifications')}
                         />
                     </FormGroup>
-
-                    <div>
-                        <hr />
-                        <FormGroup>
-                            <FormControlLabel
-                                control={
-                                    <PurpleSwitch
-                                        checked={autoPublishCandidate?.enabled ?? false}
-                                        onChange={(e, checked) =>
-                                            setAutoPublish({
-                                                ...autoPublishCandidate,
-                                                enabled: checked
-                                            })
-                                        }
-                                    />
-                                }
-                                label={t('settings.properties.automaticallyPostCertificates')}
-                            />
-                        </FormGroup>
-
-                        {autoPublishCandidate?.enabled && (
-                            <div>
-                                <TextField
-                                    label={t('settings.properties.price')}
-                                    value={autoPublishCandidate.priceInCents / 100}
-                                    type="number"
-                                    placeholder="1"
-                                    onChange={(e) =>
-                                        setAutoPublish({
-                                            ...autoPublishCandidate,
-                                            priceInCents: parseFloat(e.target.value) * 100
-                                        })
-                                    }
-                                    id="priceInput"
-                                    fullWidth
-                                />
-
-                                <FormControl fullWidth={true} variant="filled">
-                                    <InputLabel>{t('settings.properties.currency')}</InputLabel>
-                                    <Select
-                                        value={autoPublishCandidate.currency}
-                                        onChange={(e) =>
-                                            setAutoPublish({
-                                                ...autoPublishCandidate,
-                                                currency: e.target.value as string
-                                            })
-                                        }
-                                        fullWidth
-                                        variant="filled"
-                                        input={<FilledInput />}
-                                    >
-                                        {currencies.map((currency) => (
-                                            <MenuItem key={currency} value={currency}>
-                                                {currency}
-                                            </MenuItem>
-                                        ))}
-                                    </Select>
-                                </FormControl>
-                            </div>
-                        )}
-                    </div>
 
                     <Button onClick={saveChanges} color="primary" disabled={!propertiesChanged}>
                         {t('general.actions.update')}
