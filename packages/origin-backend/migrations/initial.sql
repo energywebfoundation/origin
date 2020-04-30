@@ -163,7 +163,9 @@ CREATE TABLE public."user" (
     notifications boolean,
     "autoPublish" text,
     rights integer DEFAULT 0 NOT NULL,
-    "organizationId" integer
+    "organizationId" integer,
+    "status" integer DEFAULT 0 NOT NULL,
+    "kycStatus" integer DEFAULT 0 NOT NULL
 );
 
 CREATE SEQUENCE public.user_id_seq

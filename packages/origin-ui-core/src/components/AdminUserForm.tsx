@@ -193,6 +193,7 @@ export function AdminUserForm(props: IProps) {
                                 <Grid item xs={6}>
                                     <FormSelect
                                         options={STATUS_OPTIONS}
+                                        currentValue=""
                                         label="Status"
                                         property="status"
                                         disabled={fieldDisabled}
@@ -202,6 +203,7 @@ export function AdminUserForm(props: IProps) {
 
                                     <FormSelect
                                         options={KYC_STATUS_OPTIONS}
+                                        currentValue=""
                                         label="KYC Status"
                                         property="kycStatus"
                                         disabled={fieldDisabled}
