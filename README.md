@@ -27,14 +27,14 @@
 
 ### SDK Releases
 
-| Package                                                               | Stable                                                                                                                                      | Canary                                                                                                                                         | Description                                     |
-| --------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------- |
-| [`@energyweb/device-registry`](/packages/device-registry)             | [![npm](https://img.shields.io/npm/v/@energyweb/device-registry.svg)](https://www.npmjs.com/package/@energyweb/device-registry)             | [![npm](https://img.shields.io/npm/v/@energyweb/device-registry/canary)](https://www.npmjs.com/package/@energyweb/device-registry)             | Contracts and client for the Device Registry    |
-| [`@energyweb/issuer`](/packages/issuer)             | [![npm](https://img.shields.io/npm/v/@energyweb/issuer.svg)](https://www.npmjs.com/package/@energyweb/issuer)             | [![npm](https://img.shields.io/npm/v/@energyweb/issuer/canary)](https://www.npmjs.com/package/@energyweb/issuer)             | Energy Attribute Certificates Issuer Module    |
-| [`@energyweb/origin-backend-client`](/packages/origin-backend-client) | [![npm](https://img.shields.io/npm/v/@energyweb/origin-backend-client.svg)](https://www.npmjs.com/package/@energyweb/origin-backend-client) | [![npm](https://img.shields.io/npm/v/@energyweb/origin-backend-client/canary)](https://www.npmjs.com/package/@energyweb/origin-backend-client) | Client library for off-chain data source        |
-| [`@energyweb/origin-backend`](/packages/origin-backend)               | [![npm](https://img.shields.io/npm/v/@energyweb/origin-backend.svg)](https://www.npmjs.com/package/@energyweb/origin-backend)               | [![npm](https://img.shields.io/npm/v/@energyweb/origin-backend/canary)](https://www.npmjs.com/package/@energyweb/origin-backend)               | Example backend for storing off-chain meta-data |
-| [`@energyweb/exchange`](/packages/exchange)               | [![npm](https://img.shields.io/npm/v/@energyweb/exchange.svg)](https://www.npmjs.com/package/@energyweb/exchange)               | [![npm](https://img.shields.io/npm/v/@energyweb/exchange/canary)](https://www.npmjs.com/package/@energyweb/exchange)               | A service project hosting order book based exchange |
-| [`@energyweb/utils-general`](/packages/utils-general)                 | [![npm](https://img.shields.io/npm/v/@energyweb/utils-general.svg)](https://www.npmjs.com/package/@energyweb/utils-general)                 | [![npm](https://img.shields.io/npm/v/@energyweb/utils-general/canary)](https://www.npmjs.com/package/@energyweb/utils-general)                 | Utilities                                       |
+| Package                                                               | Stable                                                                                                                                      | Canary                                                                                                                                         | Description                                         |
+| --------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------- |
+| [`@energyweb/device-registry`](/packages/device-registry)             | [![npm](https://img.shields.io/npm/v/@energyweb/device-registry.svg)](https://www.npmjs.com/package/@energyweb/device-registry)             | [![npm](https://img.shields.io/npm/v/@energyweb/device-registry/canary)](https://www.npmjs.com/package/@energyweb/device-registry)             | Contracts and client for the Device Registry        |
+| [`@energyweb/issuer`](/packages/issuer)                               | [![npm](https://img.shields.io/npm/v/@energyweb/issuer.svg)](https://www.npmjs.com/package/@energyweb/issuer)                               | [![npm](https://img.shields.io/npm/v/@energyweb/issuer/canary)](https://www.npmjs.com/package/@energyweb/issuer)                               | Energy Attribute Certificates Issuer Module         |
+| [`@energyweb/origin-backend-client`](/packages/origin-backend-client) | [![npm](https://img.shields.io/npm/v/@energyweb/origin-backend-client.svg)](https://www.npmjs.com/package/@energyweb/origin-backend-client) | [![npm](https://img.shields.io/npm/v/@energyweb/origin-backend-client/canary)](https://www.npmjs.com/package/@energyweb/origin-backend-client) | Client library for off-chain data source            |
+| [`@energyweb/origin-backend`](/packages/origin-backend)               | [![npm](https://img.shields.io/npm/v/@energyweb/origin-backend.svg)](https://www.npmjs.com/package/@energyweb/origin-backend)               | [![npm](https://img.shields.io/npm/v/@energyweb/origin-backend/canary)](https://www.npmjs.com/package/@energyweb/origin-backend)               | Example backend for storing off-chain meta-data     |
+| [`@energyweb/exchange`](/packages/exchange)                           | [![npm](https://img.shields.io/npm/v/@energyweb/exchange.svg)](https://www.npmjs.com/package/@energyweb/exchange)                           | [![npm](https://img.shields.io/npm/v/@energyweb/exchange/canary)](https://www.npmjs.com/package/@energyweb/exchange)                           | A service project hosting order book based exchange |
+| [`@energyweb/utils-general`](/packages/utils-general)                 | [![npm](https://img.shields.io/npm/v/@energyweb/utils-general.svg)](https://www.npmjs.com/package/@energyweb/utils-general)                 | [![npm](https://img.shields.io/npm/v/@energyweb/utils-general/canary)](https://www.npmjs.com/package/@energyweb/utils-general)                 | Utilities                                           |
 
 ### Applications, Infrastructure and Demo
 
@@ -89,11 +89,13 @@ yarn test
 ## Run demo
 
 ### Preparation
+
 1. Install [Postgres](https://www.postgresql.org/download/) and create a new database named `origin`.
 2. Make sure you have created a `.env` file in the root of the monorepo and that all necessary variables are set.
-Use [`.env.example`](.env.example) as an example of how the `.env` file should look.
+   Use [`.env.example`](.env.example) as an example of how the `.env` file should look.
 
 ### Running
+
 After you have the `.env` file created, run the following command:
 
 ```shell
@@ -101,6 +103,30 @@ yarn run:origin
 ```
 
 Visit the UI at: http://localhost:3000.
+
+### Heroku environment provisioning
+
+For fast deployment to Heroku you can run the available script `provision-heroku-origin`
+
+```
+PREFIX=<name> STAGE=<stage> TEAM=<team> ./provision-heroku-origin.sh
+```
+
+Naming convention is for apps:
+
+```
+${PREFIX}-origin-sim-${STAGE}
+${PREFIX}-origin-ui-${STAGE}
+${PREFIX}-origin-api-${STAGE}
+```
+
+For e.g in order to create `ptt-origin-ui-stable` run the script with:
+
+```
+PREFIX=ptt STAGE=stable TEAM=<team> ./provision-heroku-origin.sh
+```
+
+Note: This script assumes that Heroku CLI tool is installed and your are logged in https://devcenter.heroku.com/articles/heroku-cli
 
 ## Energy Attribute Certificates
 
