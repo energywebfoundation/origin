@@ -73,7 +73,7 @@
     "url-loader": "4.1.0",
     "webpack": "4.43.0",
     "winston": "3.2.1",
-    "yup": "0.28.4"
+    "yup": "0.28.5"
   },
   "devDependencies": {
     "@energyweb/origin-backend-client-mocks": "2.0.1",
