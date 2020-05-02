@@ -20,7 +20,6 @@ export enum Role {
     Issuer,
     Admin,
     Agent
-<<<<<<< HEAD
 }
 
 export enum Status {
@@ -34,22 +33,7 @@ export enum KYCStatus {
     'Pending KYC',
     'KYC passed',
     'KYC rejected'
-=======
->>>>>>> c28ce78f... feat: admin user browsing
 }
-
-export enum Status {
-    'Pending',
-    'Active',
-    'Suspended',
-    'Deleted'
-};
-
-export enum KYCStatus {
-    'Pending KYC',
-    'KYC passed',
-    'KYC rejected'
-};
 
 export function buildRights(roles: Role[]): number {
     if (!roles) {
