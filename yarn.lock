@@ -1083,6 +1083,13 @@
   dependencies:
     regenerator-runtime "^0.13.4"
 
+"@babel/runtime@^7.9.6":
+  version "7.9.6"
+  resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.9.6.tgz#a9102eb5cadedf3f31d08a9ecf294af7827ea29f"
+  integrity sha512-64AF1xY3OAkFHqOb9s4jpgk1Mm5vDZ4L3acHvAml+53nO1XbXLuDodsVpO4OIUsmemlUHMxNdYMNJmsvOwLrvQ==
+  dependencies:
+    regenerator-runtime "^0.13.4"
+
 "@babel/template@^7.3.3":
   version "7.8.6"
   resolved "https://registry.yarnpkg.com/@babel/template/-/template-7.8.6.tgz#86b22af15f828dfb086474f964dcc3e39c43ce2b"
@@ -3164,10 +3171,10 @@
     prop-types "^15.6.1"
     react-lifecycles-compat "^3.0.4"
 
-"@react-google-maps/api@1.8.7":
-  version "1.8.7"
-  resolved "https://registry.yarnpkg.com/@react-google-maps/api/-/api-1.8.7.tgz#50d62280b6e4155ae6cf4f477d76155a75a59fd3"
-  integrity sha512-261U1/EEW93Zf+U34SlBT0vlZqxz/9Cr5QkXttn0NrcThNam6t2QvcDHWSv9pRPWU+KkW6D812wK1Niob5o28Q==
+"@react-google-maps/api@1.9.0":
+  version "1.9.0"
+  resolved "https://registry.yarnpkg.com/@react-google-maps/api/-/api-1.9.0.tgz#252c411687a490b6f20ad89d699a127d8e144e72"
+  integrity sha512-rDFJW18zir92dy9AqbT6KvtQt7vTxbR4o6mUg4I8igadEzM8CTH5zR+CIWKfMy89Bc2hZJVMHU/2+zPu63VHRw==
   dependencies:
     "@react-google-maps/infobox" "1.8.7"
     "@react-google-maps/marker-clusterer" "1.8.7"
@@ -3851,10 +3858,10 @@
   dependencies:
     defer-to-connect "^1.0.1"
 
-"@testing-library/dom@^7.1.0":
-  version "7.2.0"
-  resolved "https://registry.yarnpkg.com/@testing-library/dom/-/dom-7.2.0.tgz#948894c2ef52017d299c35da02e085498363cd1e"
-  integrity sha512-K1Sao38VxsTrjTkFkzeW8m/oCtgCI5lANCE7u9ZaF+TTL3uKuiZ+vazeurxjvRHAsE6PvXjOIl6JFuZfgcWJSQ==
+"@testing-library/dom@^7.2.2":
+  version "7.2.2"
+  resolved "https://registry.yarnpkg.com/@testing-library/dom/-/dom-7.2.2.tgz#30ab09cca132fe49b2ca61ccd9ed785c5f0a6fc5"
+  integrity sha512-g+gT//COYh2FgRrlgcgdkifkjqSk7wQIS7F8jbrf6yoEsh85PJUJ/QtO0bJ9QU7pQPYQgKcgqNJsOs0dlyFYag==
   dependencies:
     "@babel/runtime" "^7.9.2"
     "@types/testing-library__dom" "^7.0.0"
@@ -3862,14 +3869,14 @@
     dom-accessibility-api "^0.4.2"
     pretty-format "^25.1.0"
 
-"@testing-library/react@10.0.3":
-  version "10.0.3"
-  resolved "https://registry.yarnpkg.com/@testing-library/react/-/react-10.0.3.tgz#7781adc75cce172f8cda28faa77be29c6270ab43"
-  integrity sha512-EVmd3ghDFBEjOSLnISUdi7OcLdP6tsqjmTprpMaBz5TreoM8jnxGKIPkLD579CE0LYGqK01iffQiy6wwW/RUig==
+"@testing-library/react@10.0.4":
+  version "10.0.4"
+  resolved "https://registry.yarnpkg.com/@testing-library/react/-/react-10.0.4.tgz#8e0e299cd91acc626d81ed8489fdc13df864c31d"
+  integrity sha512-2e1B5debfuiIGbvUuiSXybskuh7ZTVJDDvG/IxlzLOY9Co/mKFj9hIklAe2nGZYcOUxFaiqWrRZ9vCVGzJfRlQ==
   dependencies:
-    "@babel/runtime" "^7.9.2"
-    "@testing-library/dom" "^7.1.0"
-    "@types/testing-library__react" "^10.0.0"
+    "@babel/runtime" "^7.9.6"
+    "@testing-library/dom" "^7.2.2"
+    "@types/testing-library__react" "^10.0.1"
 
 "@truffle/error@^0.0.6":
   version "0.0.6"
@@ -4417,10 +4424,10 @@
   dependencies:
     "@types/react" "*"
 
-"@types/react-dom@16.9.6":
-  version "16.9.6"
-  resolved "https://registry.yarnpkg.com/@types/react-dom/-/react-dom-16.9.6.tgz#9e7f83d90566521cc2083be2277c6712dcaf754c"
-  integrity sha512-S6ihtlPMDotrlCJE9ST1fRmYrQNNwfgL61UB4I1W7M6kPulUKx9fXAleW5zpdIjUQ4fTaaog8uERezjsGUj9HQ==
+"@types/react-dom@16.9.7":
+  version "16.9.7"
+  resolved "https://registry.yarnpkg.com/@types/react-dom/-/react-dom-16.9.7.tgz#60844d48ce252d7b2dccf0c7bb937130e27c0cd2"
+  integrity sha512-GHTYhM8/OwUCf254WO5xqR/aqD3gC9kSTLpopWGpQLpnw23jk44RvMHsyUSEplvRJZdHxhJGMMLF0kCPYHPhQA==
   dependencies:
     "@types/react" "*"
 
@@ -4434,10 +4441,10 @@
     hoist-non-react-statics "^3.3.0"
     redux "^4.0.0"
 
-"@types/react-router-dom@5.1.4":
-  version "5.1.4"
-  resolved "https://registry.yarnpkg.com/@types/react-router-dom/-/react-router-dom-5.1.4.tgz#8d3e0306df74af301cc896309e7d4758f1a4bf71"
-  integrity sha512-LO0z5qqSfWdYtCNsRm8/OMnnkv52hwADJKrAfpKIyfHclORllcgAMGypEA7ajHm38+jOonKLx8nPygNAAZGxtg==
+"@types/react-router-dom@5.1.5":
+  version "5.1.5"
+  resolved "https://registry.yarnpkg.com/@types/react-router-dom/-/react-router-dom-5.1.5.tgz#7c334a2ea785dbad2b2dcdd83d2cf3d9973da090"
+  integrity sha512-ArBM4B1g3BWLGbaGvwBGO75GNFbLDUthrDojV2vHLih/Tq8M+tgvY1DSwkuNrPSwdp/GUL93WSEpTZs8nVyJLw==
   dependencies:
     "@types/history" "*"
     "@types/react" "*"
@@ -4571,7 +4578,7 @@
   dependencies:
     pretty-format "^25.1.0"
 
-"@types/testing-library__react@^10.0.0":
+"@types/testing-library__react@^10.0.1":
   version "10.0.1"
   resolved "https://registry.yarnpkg.com/@types/testing-library__react/-/testing-library__react-10.0.1.tgz#92bb4a02394bf44428e35f1da2970ed77f803593"
   integrity sha512-RbDwmActAckbujLZeVO/daSfdL1pnjVqas25UueOkAY5r7vriavWf0Zqg7ghXMHa8ycD/kLkv8QOj31LmSYwww==
@@ -17584,10 +17591,10 @@ react-hotkeys@2.0.0:
   dependencies:
     prop-types "^15.6.1"
 
-react-i18next@11.3.5:
-  version "11.3.5"
-  resolved "https://registry.yarnpkg.com/react-i18next/-/react-i18next-11.3.5.tgz#9cd5273f752a241db65b3118e3075f895f5fbf65"
-  integrity sha512-x1dgM7UU/jKQ72/q3p9kkYz0C8fqAfMlUlx+SxqBUcRMTs/09HfnOUZFry1+GBpUcDHAg8R/vmPqL9rRzFO0UQ==
+react-i18next@11.4.0:
+  version "11.4.0"
+  resolved "https://registry.yarnpkg.com/react-i18next/-/react-i18next-11.4.0.tgz#dde6bf3a695910af7a4270fea2e111bc331cf151"
+  integrity sha512-lyOZSSQkif4H9HnHN3iEKVkryLI+WkdZSEw3VAZzinZLopfYRMHVY5YxCopdkXPLEHs6S5GjKYPh3+j0j336Fg==
   dependencies:
     "@babel/runtime" "^7.3.1"
     html-parse-stringify2 "2.0.1"
