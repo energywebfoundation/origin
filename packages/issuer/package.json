@@ -58,7 +58,7 @@
         "ethlint": "1.2.5",
         "ganache-cli": "6.5.1",
         "truffle-typings": "1.0.8",
-        "typechain": "1.0.5",
+        "typechain": "2.0.0",
         "typechain-target-ethers": "1.0.4"
     },
     "publishConfig": {
