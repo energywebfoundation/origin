@@ -38,7 +38,7 @@
     "devDependencies": {
         "@energyweb/issuer": "2.0.0",
         "truffle-typings": "1.0.8",
-        "typechain": "1.0.5",
+        "typechain": "2.0.0",
         "typechain-target-ethers": "1.0.4"
     },
     "gitHead": "54beaf7fe6686810de74ca290daf99cbde510f9d",
