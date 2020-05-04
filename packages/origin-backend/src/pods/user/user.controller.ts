@@ -35,7 +35,6 @@ export class UserController {
             lastName,
             telephone,
             notifications,
-            autoPublish,
             rights
         } = body;
 
@@ -48,7 +47,6 @@ export class UserController {
                 lastName,
                 telephone,
                 notifications,
-                autoPublish,
                 rights
             });
 
@@ -62,7 +60,6 @@ export class UserController {
                 blockchainAccountAddress: user.blockchainAccountAddress,
                 blockchainAccountSignedMessage: user.blockchainAccountSignedMessage,
                 organization: user.organization,
-                autoPublish: user.autoPublish,
                 notifications: user.notifications,
                 rights: user.rights
             };
@@ -97,10 +94,7 @@ export class UserController {
                 await this.userService.attachSignedMessage(id, body.blockchainAccountSignedMessage);
             }
 
-            if (
-                typeof body.notifications !== 'undefined' ||
-                typeof body.autoPublish !== 'undefined'
-            ) {
+            if (typeof body.notifications !== 'undefined') {
                 await this.userService.update(id, body);
             }
 
