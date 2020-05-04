@@ -22,7 +22,7 @@ export interface IUserClient {
     attachSignedMessage(id: number, signedMessage: string): Promise<UpdateUserResponseReturnType>;
     updateAdditionalProperties(
         id: number,
-        properties: Partial<Pick<IUserProperties, 'autoPublish' | 'notifications'>>
+        properties: Partial<Pick<IUserProperties, 'notifications'>>
     ): Promise<UpdateUserResponseReturnType>;
 }
 
@@ -87,7 +87,7 @@ export class UserClient implements IUserClient {
 
     public async updateAdditionalProperties(
         id: number,
-        properties: Partial<Pick<IUserProperties, 'autoPublish' | 'notifications'>>
+        properties: Partial<Pick<IUserProperties, 'notifications'>>
     ) {
         return this.updateUser(id, properties);
     }
