@@ -40,7 +40,7 @@
     "dependencies": {
         "@energyweb/origin-backend-core": "2.2.0",
         "@energyweb/utils-general": "9.0.0",
-        "@nestjs-modules/mailer": "1.3.9",
+        "@nestjs-modules/mailer": "1.4.2",
         "@nestjs/common": "7.0.9",
         "@nestjs/config": "^0.4.0",
         "@nestjs/core": "7.0.9",
