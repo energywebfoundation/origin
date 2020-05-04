@@ -1,7 +1,5 @@
 import { IOrganization } from './Organization';
 
-type Currency = string;
-
 /*
     no role:          0x0...------0 = 0
     UserAdmin:        0x0...------1 = 1
@@ -28,14 +26,8 @@ export function buildRights(roles: Role[]): number {
     }, 0);
 }
 
-export function isRole(user: IUser, role: Role): boolean {
-    if (!user) {
-        return false;
-    }
-
-    const roleTransfomed = Math.pow(2, role);
-
-    return (user.rights & roleTransfomed) !== 0;
+export function isRole({ rights }: { rights: number }, role: Role): boolean {
+    return (rights & Math.pow(2, role)) !== 0;
 }
 
 export interface IUserProperties {
@@ -65,12 +57,8 @@ export interface IUserWithRelations extends IUser {
 
 export type UserRegisterData = Omit<
     IUserProperties,
-    | 'id'
-    | 'blockchainAccountAddress'
-    | 'blockchainAccountSignedMessage'
-    | 'autoPublish'
-    | 'notifications'
-> & { password: string } & Partial<Pick<IUserProperties, 'notifications'>>;
+    'id' | 'blockchainAccountAddress' | 'blockchainAccountSignedMessage'
+> & { password: string };
 
 export type UserRegisterReturnData = IUser;
 
