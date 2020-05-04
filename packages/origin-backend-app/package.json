@@ -14,7 +14,7 @@
         "build:container:canary": "make build-canary push",
         "build:container:latest": "make build-latest push",
         "prettier": "prettier --write --config-precedence file-override './src/**/*'",
-        "clean": "shx rm -rf dist db.sqlite uploads",
+        "clean": "shx rm -rf dist uploads",
         "lint": "eslint \"src/**/*{.ts,.tsx}\"",
         "lint-fix": "eslint \"src/**/*{.ts,.tsx}\" --fix",
         "precommit": "lint-staged"
