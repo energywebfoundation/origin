@@ -9,13 +9,16 @@ import {
 import { Logger } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
 import request from 'supertest';
+import dotenv from 'dotenv';
 
+import { signTypedMessagePrivateKey } from '@energyweb/utils-general';
 import { AppModule } from '../src/app.module';
 import { ConfigurationService } from '../src/pods/configuration';
-import { DeviceService } from '../src/pods/device';
-import { OrganizationService } from '../src/pods/organization';
+import { DeviceService } from '../src/pods/device/device.service';
+import { OrganizationService } from '../src/pods/organization/organization.service';
 import { UserService } from '../src/pods/user';
 import { DatabaseService } from './database.service';
+import { CertificationRequestService } from '../src/pods/certificate/certification-request.service';
 
 const testLogger = new Logger('e2e');
 
@@ -25,6 +28,10 @@ export const bootstrapTestInstance = async () => {
         providers: [DatabaseService]
     }).compile();
 
+    dotenv.config({
+        path: '.env.test'
+    });
+
     const app = moduleFixture.createNestApplication();
 
     const userService = await app.resolve<UserService>(UserService);
@@ -32,6 +39,9 @@ export const bootstrapTestInstance = async () => {
     const organizationService = await app.resolve<OrganizationService>(OrganizationService);
     const deviceService = await app.resolve<DeviceService>(DeviceService);
     const configurationService = await app.resolve<ConfigurationService>(ConfigurationService);
+    const certificationRequestService = await app.resolve<CertificationRequestService>(
+        CertificationRequestService
+    );
 
     app.useLogger(testLogger);
     app.enableCors();
@@ -43,7 +53,8 @@ export const bootstrapTestInstance = async () => {
         testLogger,
         organizationService,
         deviceService,
-        configurationService
+        configurationService,
+        certificationRequestService
     };
 };
 
@@ -75,6 +86,13 @@ export const registerAndLogin = async (
         };
         await userService.create(userRegistration);
         user = await userService.findOne({ email: userEmail });
+
+        const signedMessage = await signTypedMessagePrivateKey(
+            'd9066ff9f753a1898709b568119055660a77d9aae4d7a4ad677b8fb3d2a571e5',
+            process.env.REGISTRATION_MESSAGE_TO_SIGN
+        );
+
+        user = await userService.attachSignedMessage(user.id, signedMessage);
     }
 
     const organizationEmail = `org${orgNonce}@example.com`;

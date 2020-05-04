@@ -27,7 +27,7 @@ import { StorageErrors } from '../../enums/StorageErrors';
 import { ConfigurationService } from '../configuration';
 import { ExtendedBaseEntity } from '../ExtendedBaseEntity';
 import { NotificationService } from '../notification';
-import { OrganizationService } from '../organization';
+import { OrganizationService } from '../organization/organization.service';
 import { Device } from './device.entity';
 
 @Injectable()

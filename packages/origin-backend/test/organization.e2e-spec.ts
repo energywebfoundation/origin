@@ -2,7 +2,7 @@
 import { DeviceStatus, Role } from '@energyweb/origin-backend-core';
 import request from 'supertest';
 
-import { Device } from '../src/pods/device';
+import { Device } from '../src/pods/device/device.entity';
 import { registerAndLogin, bootstrapTestInstance } from './origin-backend';
 
 describe('Organization e2e tests', () => {

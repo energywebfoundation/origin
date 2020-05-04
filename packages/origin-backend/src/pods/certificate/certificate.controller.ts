@@ -1,7 +1,8 @@
 import {
     IOwnershipCommitmentProofWithTx,
     ICertificateOwnership,
-    CommitmentStatus
+    CommitmentStatus,
+    IUserWithRelationsIds
 } from '@energyweb/origin-backend-core';
 
 import {
@@ -12,16 +13,20 @@ import {
     Param,
     NotFoundException,
     ConflictException,
-    Put
+    Put,
+    UseGuards
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
+import { AuthGuard } from '@nestjs/passport';
 import { CertificationRequest } from './certification-request.entity';
 import { OwnershipCommitment } from './ownership-commitment.entity';
 import { StorageErrors } from '../../enums/StorageErrors';
 import { Certificate } from './certificate.entity';
-import { CertificationRequestDTO } from './certification-request.dto';
+import { CertificationRequestUpdateDTO } from './certification-request.dto';
+import { UserDecorator } from '../user/user.decorator';
+import { CertificationRequestService } from './certification-request.service';
 
 const CERTIFICATION_REQUEST_ENDPOINT = '/CertificationRequest';
 
@@ -30,33 +35,29 @@ export class CertificateController {
     constructor(
         @InjectRepository(Certificate)
         private readonly certificateRepository: Repository<Certificate>,
-        @InjectRepository(CertificationRequest)
-        private readonly certificationRequestRepository: Repository<CertificationRequest>,
+        private readonly certificationRequestService: CertificationRequestService,
         @InjectRepository(OwnershipCommitment)
         private readonly ownershipCommitmentRepository: Repository<OwnershipCommitment>
     ) {}
 
     @Post(`${CERTIFICATION_REQUEST_ENDPOINT}/:id`)
+    @UseGuards(AuthGuard())
     async updateCertificationRequest(
         @Param('id') id: number,
-        @Body() data: CertificationRequestDTO
+        @Body() data: CertificationRequestUpdateDTO,
+        @UserDecorator() loggedUser: IUserWithRelationsIds
     ): Promise<CertificationRequest> {
-        let certificationRequest = await this.certificationRequestRepository.findOne(id);
-
-        if (!certificationRequest) {
-            certificationRequest = new CertificationRequest();
-        }
-
-        certificationRequest.id = id;
-        certificationRequest.energy = data.energy;
-        certificationRequest.files = data.files;
-
-        return this.certificationRequestRepository.save(certificationRequest);
+        return this.certificationRequestService.update(id, data, loggedUser);
     }
 
     @Get(`${CERTIFICATION_REQUEST_ENDPOINT}/:id`)
-    async getCertificationRequest(@Param('id') id: string): Promise<CertificationRequest> {
-        return this.certificationRequestRepository.findOne(id);
+    async getCertificationRequest(@Param('id') id: number): Promise<CertificationRequest> {
+        return this.certificationRequestService.get(id);
+    }
+
+    @Get(CERTIFICATION_REQUEST_ENDPOINT)
+    async getAllCertificationRequests(): Promise<CertificationRequest[]> {
+        return this.certificationRequestService.getAll();
     }
 
     @Get('/:id')
