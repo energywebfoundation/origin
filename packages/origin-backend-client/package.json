@@ -23,7 +23,7 @@
     "@energyweb/origin-backend-core": "2.2.0",
     "axios": "0.19.2",
     "ethers": "4.0.47",
-    "moment": "2.24.0"
+    "moment": "2.25.1"
   },
   "files": [
     "dist"
