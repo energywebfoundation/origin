@@ -2,6 +2,7 @@ import * as Moment from 'moment';
 import { extendMoment } from 'moment-range';
 import { BigNumber, Interface } from 'ethers/utils';
 import { Event as BlockchainEvent } from 'ethers';
+import polly from 'polly-js';
 
 import { Configuration, Timestamp } from '@energyweb/utils-general';
 import {
@@ -91,10 +92,14 @@ export class CertificationRequest extends PreciseProofEntity implements ICertifi
             events.find((log: BlockchainEvent) => log.event === 'CertificationRequested').topics[2]
         );
 
-        const success = await configuration.offChainDataSource.certificateClient.updateCertificationRequestData(
-            request.id,
-            { energy, files }
-        );
+        const success = await polly()
+            .waitAndRetry(10)
+            .executeForPromise(() =>
+                configuration.offChainDataSource.certificateClient.updateCertificationRequest(
+                    request.id,
+                    { energy, files }
+                )
+            );
 
         if (success) {
             if (configuration.logger) {
@@ -108,51 +113,11 @@ export class CertificationRequest extends PreciseProofEntity implements ICertifi
     }
 
     async sync(): Promise<CertificationRequest> {
-        const { issuer } = this.configuration
-            .blockchainProperties as Configuration.BlockchainProperties<Registry, Issuer>;
-
-        const issueRequest = await issuer.getCertificationRequest(this.id);
-        const decodedData = await issuer.decodeData(issueRequest.data);
-
-        this.owner = issueRequest.owner;
-        this.fromTime = Number(decodedData['0']);
-        this.toTime = Number(decodedData['1']);
-        this.deviceId = decodedData['2'];
-        this.approved = issueRequest.approved;
-        this.revoked = issueRequest.revoked;
-
-        const certificationRequestedLogs = await getEventsFromContract(
-            issuer,
-            issuer.filters.CertificationRequested(null, this.id, null)
+        const offChainData = await this.configuration.offChainDataSource.certificateClient.getCertificationRequest(
+            this.id
         );
 
-        const creationBlock = await issuer.provider.getBlock(
-            certificationRequestedLogs[0].blockNumber
-        );
-
-        this.created = Number(creationBlock.timestamp);
-
-        let offChainData: Pick<ICertificationRequest, 'id' | 'energy' | 'files'>;
-
-        // TO-DO: Temporary - remove this try/catch block once sync problems are fixed
-        try {
-            offChainData = await this.configuration.offChainDataSource.certificateClient.getCertificationRequestData(
-                this.id
-            );
-        } catch (e) {
-            if (this.configuration.logger) {
-                this.configuration.logger.error(
-                    `Error fetching off-chain data for certificate ${this.id}: ${e}`
-                );
-            }
-
-            this.initialized = false;
-
-            return this;
-        }
-
-        this.energy = offChainData.energy;
-        this.files = offChainData.files;
+        Object.assign(this, offChainData);
 
         this.initialized = true;
 
@@ -290,18 +255,10 @@ export class CertificationRequest extends PreciseProofEntity implements ICertifi
 export async function getAllCertificationRequests(
     configuration: Configuration.Entity
 ): Promise<CertificationRequest[]> {
-    const { issuer } = configuration.blockchainProperties as Configuration.BlockchainProperties<
-        Registry,
-        Issuer
-    >;
+    const all = await configuration.offChainDataSource.certificateClient.getAllCertificationRequests();
 
-    const certificationRequestedEvents = await getEventsFromContract(
-        issuer,
-        issuer.filters.CertificationRequested(null, null, null)
-    );
-
-    const certificationRequestPromises = certificationRequestedEvents.map((event) =>
-        new CertificationRequest(event._id.toNumber(), configuration).sync()
+    const certificationRequestPromises = all.map((certReq) =>
+        new CertificationRequest(certReq.id, configuration).sync()
     );
 
     return Promise.all(certificationRequestPromises);
