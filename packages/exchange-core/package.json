@@ -29,7 +29,7 @@
         "test": "mocha -r ts-node/register src/test/*.test.ts --exit",
         "test:concurrent": "yarn test",
         "prettier": "prettier --write --config-precedence file-override './src/**/*'",
-        "clean": "shx rm -rf build dist dist-shakeable schemas db.sqlite",
+        "clean": "shx rm -rf build dist dist-shakeable schemas",
         "precommit": "lint-staged"
     },
     "types": "dist/js/src/index.d.ts",

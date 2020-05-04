@@ -3,4 +3,3 @@ node_modules
 schemas
 build
 dist
-db.sqlite
