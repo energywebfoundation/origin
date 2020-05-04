@@ -32,7 +32,6 @@ export class UserClientMock implements IUserClient {
             organization: null,
             blockchainAccountAddress: '',
             blockchainAccountSignedMessage: '',
-            autoPublish: null,
             notifications: false
         };
 
@@ -87,7 +86,7 @@ export class UserClientMock implements IUserClient {
 
     async updateAdditionalProperties(
         id: number,
-        properties: Partial<Pick<IUserProperties, 'autoPublish' | 'notifications'>>
+        properties: Partial<Pick<IUserProperties, 'notifications'>>
     ): Promise<any> {
         const user = this.storage.get(id);
 
