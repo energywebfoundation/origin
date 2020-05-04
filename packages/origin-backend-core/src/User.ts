@@ -38,12 +38,6 @@ export function isRole(user: IUser, role: Role): boolean {
     return (user.rights & roleTransfomed) !== 0;
 }
 
-export interface IAutoPublishConfig {
-    enabled: boolean;
-    currency: Currency;
-    priceInCents: number;
-}
-
 export interface IUserProperties {
     id: number;
     title: string;
@@ -54,7 +48,6 @@ export interface IUserProperties {
     blockchainAccountAddress: string;
     blockchainAccountSignedMessage: string;
     notifications: boolean;
-    autoPublish: IAutoPublishConfig;
     rights: number;
 }
 
@@ -77,7 +70,7 @@ export type UserRegisterData = Omit<
     | 'blockchainAccountSignedMessage'
     | 'autoPublish'
     | 'notifications'
-> & { password: string } & Partial<Pick<IUserProperties, 'autoPublish' | 'notifications'>>;
+> & { password: string } & Partial<Pick<IUserProperties, 'notifications'>>;
 
 export type UserRegisterReturnData = IUser;
 
@@ -85,5 +78,5 @@ export type UserLoginData = { username: string; password: string };
 export type UserLoginReturnData = { accessToken: string };
 
 export type UserUpdateData = Partial<
-    Pick<IUserProperties, 'blockchainAccountSignedMessage' | 'autoPublish' | 'notifications'>
+    Pick<IUserProperties, 'blockchainAccountSignedMessage' | 'notifications'>
 >;
