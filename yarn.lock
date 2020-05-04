@@ -10780,16 +10780,15 @@ gensync@^1.0.0-beta.1:
   resolved "https://registry.yarnpkg.com/gensync/-/gensync-1.0.0-beta.1.tgz#58f4361ff987e5ff6e1e7a210827aa371eaac269"
   integrity sha512-r8EC6NO1sngH/zdD9fiRDLdcgnbayXah+mLgManTaIZJqEC1MZstmnox8KpnI2/fxQwrp5OpCOYWLp4rBl4Jcg==
 
-geo-tz@5.1.0:
-  version "5.1.0"
-  resolved "https://registry.yarnpkg.com/geo-tz/-/geo-tz-5.1.0.tgz#7cfb3046109287b8f0d1ed5d54cf4ffab1b4fbf4"
-  integrity sha512-W5eiXHAgfQz41jDf0KvBjvwOblySw3yz7cjeUjwezKTVt9GILNCsoMN7xXWdS5PncH+ZS01IzjfiBs1WqHSJ8A==
+geo-tz@6.0.0:
+  version "6.0.0"
+  resolved "https://registry.yarnpkg.com/geo-tz/-/geo-tz-6.0.0.tgz#0268d294c5fffeb2e68d9b8bf2428c86deaca184"
+  integrity sha512-Kc9KN3dEM8Ye4n159w9YISWXG8HGzAMNsJZMhuuV7lJ38yt1HSGXPbY3mhDtWHeT9JTzAc0YSsUGvoHV7pk4MA==
   dependencies:
     "@turf/boolean-point-in-polygon" "^6.0.1"
     "@turf/helpers" "^6.1.4"
     geobuf "^3.0.1"
-    pbf "^3.2.0"
-    timed-cache "^1.1.1"
+    pbf "^3.2.1"
 
 geobuf@^3.0.1:
   version "3.0.1"
@@ -16349,7 +16348,7 @@ pause@0.0.1:
   resolved "https://registry.yarnpkg.com/pause/-/pause-0.0.1.tgz#1d408b3fdb76923b9543d96fb4c9dfd535d9cb5d"
   integrity sha1-HUCLP9t2kjuVQ9lvtMnf1TXZy10=
 
-pbf@^3.1.0, pbf@^3.2.0:
+pbf@^3.1.0, pbf@^3.2.1:
   version "3.2.1"
   resolved "https://registry.yarnpkg.com/pbf/-/pbf-3.2.1.tgz#b4c1b9e72af966cd82c6531691115cc0409ffe2a"
   integrity sha512-ClrV7pNOn7rtmoQVF4TS1vyU0WhYRnP92fzbfF75jAIwpnzdJXf8iTd4CMEqO4yUenH6NDqLiwjqlh6QgZzgLQ==
@@ -20367,11 +20366,6 @@ thunky@^1.0.2:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/thunky/-/thunky-1.1.0.tgz#5abaf714a9405db0504732bbccd2cedd9ef9537d"
   integrity sha512-eHY7nBftgThBqOyHGVN+l8gF0BucP09fMo0oO/Lb0w1OF80dJv+lDVpXG60WMQvkcxAkNybKsrEIE3ZtKGmPrA==
-
-timed-cache@^1.1.1:
-  version "1.1.2"
-  resolved "https://registry.yarnpkg.com/timed-cache/-/timed-cache-1.1.2.tgz#8db06b06142311b00fac90cc80ab521ceaf3a738"
-  integrity sha512-7HZL3Ytt5t9oyeXj/bdLWzLtAyJ6eiQ2DzWh8QWCiQpuaA1ExrCpLkTFJ/wvrwJjGZtDUF+i4ZMExo6lkZWxTw==
 
 timed-out@^4.0.0, timed-out@^4.0.1:
   version "4.0.1"
