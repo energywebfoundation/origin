@@ -44,7 +44,7 @@
         "express": "4.17.1",
         "fs-extra": "9.0.0",
         "geo-tz": "5.1.0",
-        "moment": "2.24.0",
+        "moment": "2.25.1",
         "moment-timezone": "0.5.28",
         "winston": "3.2.1"
     },
