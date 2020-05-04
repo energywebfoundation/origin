@@ -1,8 +1,7 @@
 import {
+    ILoggedInUser,
     IOrganizationInvitation,
     isRole,
-    IUser,
-    IUserWithRelationsIds,
     OrganizationInvitationEvent,
     OrganizationInvitationStatus,
     OrganizationInviteCreateReturnData,
@@ -12,7 +11,8 @@ import {
     OrganizationStatusChangedEvent,
     OrganizationUpdateData,
     Role,
-    SupportedEvents
+    SupportedEvents,
+    UserDecorator
 } from '@energyweb/origin-backend-core';
 import {
     BadRequestException,
@@ -37,7 +37,6 @@ import { FindConditions, Repository } from 'typeorm';
 
 import { StorageErrors } from '../../enums/StorageErrors';
 import { NotificationService } from '../notification';
-import { UserDecorator } from '../user/user.decorator';
 import { User } from '../user/user.entity';
 import { UserService } from '../user/user.service';
 import { Organization } from './organization.entity';
@@ -68,7 +67,7 @@ export class OrganizationController {
     @Get('invitation')
     @UseGuards(AuthGuard('jwt'))
     async getInvitations(
-        @UserDecorator() loggedUser: IUser,
+        @UserDecorator() loggedUser: ILoggedInUser,
         @Query('email') emailFromQuery: string,
         @Query('organization') organizationId: string
     ): Promise<IOrganizationInvitation[]> {
@@ -98,7 +97,7 @@ export class OrganizationController {
 
     @Get('/:id/users')
     @UseGuards(AuthGuard('jwt'))
-    async getUsers(@Param('id') id: string, @UserDecorator() loggedUser: IUserWithRelationsIds) {
+    async getUsers(@Param('id') id: string, @UserDecorator() loggedUser: ILoggedInUser) {
         const organization = await this.organizationRepository.findOne(id, {
             relations: ['users', 'leadUser']
         });
@@ -116,14 +115,14 @@ export class OrganizationController {
 
     @Get('/:id/devices')
     @UseGuards(AuthGuard('jwt'))
-    async getDevices(@Param('id') id: string, @UserDecorator() loggedUser: IUserWithRelationsIds) {
+    async getDevices(@Param('id') id: string, @UserDecorator() loggedUser: ILoggedInUser) {
         if (!isRole(loggedUser, Role.DeviceManager)) {
             throw new ForbiddenException();
         }
 
         const organization = await this.organizationRepository.findOne(id, {
             relations: ['devices'],
-            where: { id: loggedUser.organization }
+            where: { id: loggedUser.organizationId }
         });
 
         return organization.devices;
@@ -142,7 +141,7 @@ export class OrganizationController {
 
     @Post()
     @UseGuards(AuthGuard('jwt'))
-    async post(@Body() body: OrganizationPostData, @UserDecorator() loggedUser: IUser) {
+    async post(@Body() body: OrganizationPostData, @UserDecorator() loggedUser: ILoggedInUser) {
         try {
             const organization = this.organizationService.create(loggedUser.id, body);
 
@@ -212,7 +211,7 @@ export class OrganizationController {
     async updateInvitation(
         @Body('status') status: IOrganizationInvitation['status'],
         @Param('invitationId') invitationId: string,
-        @UserDecorator() loggedUser: IUser
+        @UserDecorator() loggedUser: ILoggedInUser
     ) {
         try {
             const user = await this.userService.findById(loggedUser.id);
@@ -277,7 +276,7 @@ export class OrganizationController {
     @UseGuards(AuthGuard('jwt'))
     async invite(
         @Body('email') email: string,
-        @UserDecorator() loggedUser: IUser
+        @UserDecorator() loggedUser: ILoggedInUser
     ): Promise<OrganizationInviteCreateReturnData> {
         try {
             const user = await this.userService.findById(loggedUser.id);
@@ -359,7 +358,7 @@ export class OrganizationController {
     async removeMember(
         @Param('id', new ParseIntPipe()) organizationId: number,
         @Param('userId', new ParseIntPipe()) removedUserId: number,
-        @UserDecorator() loggedUser: IUserWithRelationsIds
+        @UserDecorator() loggedUser: ILoggedInUser
     ): Promise<OrganizationRemoveMemberReturnData> {
         try {
             const user = await this.userService.findById(loggedUser.id);

@@ -1,19 +1,20 @@
 import {
     DeviceCreateData,
+    DeviceSettingsUpdateData,
     DeviceStatus,
     DeviceUpdateData,
     IDeviceWithRelationsIds,
+    ILoggedInUser,
     ISmartMeterRead,
-    IUserWithRelationsIds,
-    isRole,
     Role,
-    DeviceSettingsUpdateData
+    UserDecorator
 } from '@energyweb/origin-backend-core';
 import {
     BadRequestException,
     Body,
     Controller,
     Delete,
+    ForbiddenException,
     Get,
     Logger,
     NotFoundException,
@@ -21,15 +22,12 @@ import {
     Post,
     Put,
     UnprocessableEntityException,
-    UseGuards,
-    ForbiddenException
+    UseGuards
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 
 import { StorageErrors } from '../../enums/StorageErrors';
-import { NotificationService } from '../notification';
 import { OrganizationService } from '../organization';
-import { UserDecorator } from '../user/user.decorator';
 import { DeviceService } from './device.service';
 
 @Controller('/Device')
@@ -38,8 +36,7 @@ export class DeviceController {
 
     constructor(
         private readonly deviceService: DeviceService,
-        private readonly organizationService: OrganizationService,
-        private readonly notificationService: NotificationService
+        private readonly organizationService: OrganizationService
     ) {}
 
     @Get()
@@ -60,8 +57,8 @@ export class DeviceController {
 
     @Post()
     @UseGuards(AuthGuard())
-    async post(@Body() body: DeviceCreateData, @UserDecorator() loggedUser: IUserWithRelationsIds) {
-        if (typeof loggedUser.organization === 'undefined') {
+    async post(@Body() body: DeviceCreateData, @UserDecorator() loggedUser: ILoggedInUser) {
+        if (typeof loggedUser.organizationId === 'undefined') {
             throw new BadRequestException('server.errors.loggedUserOrganizationEmpty');
         }
 
@@ -71,7 +68,7 @@ export class DeviceController {
             lastSmartMeterReading: body.lastSmartMeterReading ?? null,
             smartMeterReads: body.smartMeterReads ?? [],
             deviceGroup: body.deviceGroup ?? '',
-            organization: loggedUser.organization
+            organization: loggedUser.organizationId
         });
     }
 
@@ -101,13 +98,13 @@ export class DeviceController {
     async updateDeviceSettings(
         @Param('id') id: string,
         @Body() body: DeviceSettingsUpdateData,
-        @UserDecorator() loggedUser: IUserWithRelationsIds
+        @UserDecorator() loggedUser: ILoggedInUser
     ) {
-        if (!isRole(loggedUser, Role.Trader)) {
+        if (!loggedUser.hasRole(Role.Trader)) {
             throw new ForbiddenException();
         }
 
-        if (!this.organizationService.hasDevice(loggedUser.organization, id)) {
+        if (!this.organizationService.hasDevice(loggedUser.organizationId, id)) {
             throw new ForbiddenException();
         }
 
