@@ -23,6 +23,7 @@ import { OrganizationModule } from './pods/organization/organization.module';
 import { OrganizationInvitation } from './pods/organization/organizationInvitation.entity';
 import { User } from './pods/user/user.entity';
 import { UserModule } from './pods/user/user.module';
+import { AdminModule } from './pods/admin/admin.module';
 
 const ENV_FILE_PATH = path.resolve(__dirname, '../../../../../.env');
 
@@ -76,7 +77,8 @@ export class AppModule {
                 OrganizationModule,
                 DeviceModule.register(smartMeterReadingsAdapter),
                 AuthModule,
-                CertificateModule.register(smartMeterReadingsAdapter)
+                CertificateModule.register(smartMeterReadingsAdapter),
+                AdminModule
             ],
             controllers: [AppController]
         };
