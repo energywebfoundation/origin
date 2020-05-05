@@ -37,6 +37,15 @@ export class CertificationRequestWatcherService implements OnModuleInit {
             contractsLookup: { issuer }
         } = await originBackendConfigurationService.get();
 
+        try {
+            ethers.utils.getAddress(issuer);
+        } catch (e) {
+            this.logger.error(
+                `Issuer address "${issuer}" is not a contract address. Unable to initialize.`
+            );
+            return;
+        }
+
         this.issuerInterface = new ethers.utils.Interface(Contracts.IssuerJSON.abi);
 
         const web3ProviderUrl = this.configService.get<string>('WEB3');
