@@ -1,11 +1,7 @@
-import { IsInt, IsPositive, Validate, IsOptional } from 'class-validator';
+import { Validate, IsOptional } from 'class-validator';
 import { PositiveBNStringValidator } from '../../utils/positiveBNStringValidator';
 
-export class CertificationRequestDTO {
-    @IsInt()
-    @IsPositive()
-    public readonly id: number;
-
+export class CertificationRequestUpdateDTO {
     @Validate(PositiveBNStringValidator)
     public readonly energy: string;
 

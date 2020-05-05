@@ -1,25 +1,26 @@
 import { bigNumberify } from 'ethers/utils';
 import {
-    CertificationRequestOffChainData,
+    ICertificationRequest,
     CertificationRequestUpdateData,
     CommitmentStatus,
-    IOwnershipCommitmentProofWithTx
+    IOwnershipCommitmentProofWithTx,
+    ICertificationRequestBackend
 } from '@energyweb/origin-backend-core';
 
 import { IRequestClient, RequestClient } from './RequestClient';
 
-export class CertificationRequestDTO {
-    id: number;
+export class CertificationRequestUpdateDTO {
     energy: string;
     files: string[];
 }
 
 export interface ICertificateClient {
-    updateCertificationRequestData(
+    updateCertificationRequest(
         id: number,
         data: CertificationRequestUpdateData
     ): Promise<boolean>;
-    getCertificationRequestData(id: number): Promise<CertificationRequestOffChainData>;
+    getCertificationRequest(id: number): Promise<ICertificationRequest>;
+    getAllCertificationRequests(): Promise<ICertificationRequest[]>;
     getOwnershipCommitment(certificateId: number): Promise<IOwnershipCommitmentProofWithTx>;
     getPendingOwnershipCommitment(certificateId: number): Promise<IOwnershipCommitmentProofWithTx>;
     addOwnershipCommitment(
@@ -45,17 +46,16 @@ export class CertificateClient implements ICertificateClient {
         return `${this.certificateEndpoint}/CertificationRequest`;
     }
 
-    public async updateCertificationRequestData(
+    public async updateCertificationRequest(
         id: number,
         data: CertificationRequestUpdateData
     ): Promise<boolean> {
-        const dto: CertificationRequestDTO = {
-            id,
+        const dto: CertificationRequestUpdateDTO = {
             energy: data.energy.toString(),
             files: data.files
         };
 
-        const response = await this.requestClient.post<CertificationRequestDTO, boolean>(
+        const response = await this.requestClient.post<CertificationRequestUpdateDTO, boolean>(
             `${this.certificateRequestEndpoint}/${id}`,
             dto
         );
@@ -70,17 +70,31 @@ export class CertificateClient implements ICertificateClient {
         return success;
     }
 
-    public async getCertificationRequestData(
+    public async getCertificationRequest(
         id: number
-    ): Promise<CertificationRequestOffChainData> {
-        const { data } = await this.requestClient.get<void, CertificationRequestDTO>(
+    ): Promise<ICertificationRequest> {
+        const { data } = await this.requestClient.get<void, ICertificationRequestBackend>(
             `${this.certificateRequestEndpoint}/${id}`
         );
 
         return {
+            id,
             ...data,
-            energy: bigNumberify(data.energy)
+            energy: bigNumberify(data.energy),
+            deviceId: data.device.id.toString()
         };
+    }
+
+    public async getAllCertificationRequests(): Promise<ICertificationRequest[]> {
+        const { data } = await this.requestClient.get<void, ICertificationRequestBackend[]>(this.certificateRequestEndpoint);
+
+        return data.map(certReq => {
+            return {
+                ...certReq,
+                energy: bigNumberify(certReq.energy),
+                deviceId: certReq.device.id.toString()
+            };
+        });
     }
 
     public async getOwnershipCommitment(

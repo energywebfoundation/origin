@@ -35,7 +35,9 @@ export class UserController {
             lastName,
             telephone,
             notifications,
-            rights
+            rights,
+            status,
+            kycStatus
         } = body;
 
         try {
@@ -47,7 +49,9 @@ export class UserController {
                 lastName,
                 telephone,
                 notifications,
-                rights
+                rights,
+                status,
+                kycStatus
             });
 
             return {
@@ -61,7 +65,9 @@ export class UserController {
                 blockchainAccountSignedMessage: user.blockchainAccountSignedMessage,
                 organization: user.organization,
                 notifications: user.notifications,
-                rights: user.rights
+                rights: user.rights,
+                status: user.status,
+                kycStatus: user.kycStatus
             };
         } catch (error) {
             console.log('UserController::register() error', error);

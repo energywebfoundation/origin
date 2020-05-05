@@ -65,6 +65,10 @@ export class OrganizationService {
         return entity;
     }
 
+    async getAll() {
+        return this.repository.find();
+    }
+
     async remove(entity: Organization | (ExtendedBaseEntity & IOrganizationWithRelationsIds)) {
         return this.repository.remove((entity as IOrganization) as Organization);
     }

@@ -15,7 +15,6 @@ import {
     PowerFormatter,
     getDeviceLocationText,
     getDeviceGridOperatorText,
-    getDeviceId,
     getDeviceColumns,
     useTranslation
 } from '../utils';
@@ -62,22 +61,21 @@ export function CertificationRequestsTable(props: IProps) {
 
         let newPaginatedData: IRecord[] = [];
 
-        for (let i = 0; i < requests.length; i++) {
-            const request = requests[i];
-            const device = producingDevices.find(
+        for (const request of requests) {
+            const requestDevice = producingDevices.find(
                 // eslint-disable-next-line no-loop-func
-                (a) => getDeviceId(a, environment) === request.deviceId
+                (device) => device.id?.toString() === request.deviceId
             );
 
             if (
                 request.approved !== props.approved ||
-                (!isIssuer && user?.organization.id !== device?.organization)
+                (!isIssuer && user?.organization.id !== requestDevice?.organization)
             ) {
                 continue;
             }
             newPaginatedData.push({
                 request,
-                device
+                device: requestDevice
             });
         }
 

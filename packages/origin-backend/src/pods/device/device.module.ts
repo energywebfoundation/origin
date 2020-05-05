@@ -6,7 +6,7 @@ import { Device } from './device.entity';
 import { DeviceController } from './device.controller';
 import { DeviceService } from './device.service';
 import { SM_READS_ADAPTER } from '../../const';
-import { OrganizationModule } from '../organization';
+import { OrganizationModule } from '../organization/organization.module';
 import { ConfigurationModule } from '../configuration';
 import { NotificationModule } from '../notification';
 

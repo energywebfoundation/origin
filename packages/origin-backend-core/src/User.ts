@@ -7,13 +7,30 @@ import { IOrganization } from './Organization';
     DeviceManager:    0x0...----1-- = 4
     Trader:           0x0...---1--- = 8
     Issuer:           0x0...--1---- = 16
+    Admin:            0x0...-1----- = 32
+    SupportAgent:     0x0...1------ = 64
 */
 export enum Role {
     UserAdmin,
     DeviceAdmin,
     DeviceManager,
     Trader,
-    Issuer
+    Issuer,
+    Admin,
+    SupportAgent
+}
+
+export enum Status {
+    'Pending',
+    'Active',
+    'Suspended',
+    'Deleted'
+}
+
+export enum KYCStatus {
+    'Pending KYC',
+    'KYC passed',
+    'KYC rejected'
 }
 
 export function buildRights(roles: Role[]): number {
@@ -41,6 +58,8 @@ export interface IUserProperties {
     blockchainAccountSignedMessage: string;
     notifications: boolean;
     rights: number;
+    status: number;
+    kycStatus: number;
 }
 
 export interface IUser extends IUserProperties {

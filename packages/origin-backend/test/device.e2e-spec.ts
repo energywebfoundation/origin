@@ -14,15 +14,12 @@ describe('Device e2e tests', () => {
         const {
             app,
             userService,
-            databaseService,
             deviceService,
             organizationService,
             configurationService
         } = await bootstrapTestInstance();
 
         await app.init();
-
-        await databaseService.cleanUp();
 
         const { accessToken, organization } = await registerAndLogin(
             app,

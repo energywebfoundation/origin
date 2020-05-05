@@ -27,7 +27,7 @@ import {
 import { AuthGuard } from '@nestjs/passport';
 
 import { StorageErrors } from '../../enums/StorageErrors';
-import { OrganizationService } from '../organization';
+import { OrganizationService } from '../organization/organization.service';
 import { DeviceService } from './device.service';
 
 @Controller('/Device')
