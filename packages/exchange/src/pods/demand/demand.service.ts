@@ -1,4 +1,3 @@
-import { UserDecorator, ILoggedInUser } from '@energyweb/origin-backend-core';
 import { DemandStatus } from '@energyweb/utils-general';
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectConnection, InjectRepository } from '@nestjs/typeorm';
