@@ -53,11 +53,12 @@ export class TransferService {
     }
 
     public async requestWithdrawal(
+        userId: string,
         withdrawalDTO: RequestWithdrawalDTO,
         transaction?: EntityManager
     ) {
         const hasEnoughFunds = await this.accountBalanceService.hasEnoughAssetAmount(
-            withdrawalDTO.userId,
+            userId,
             withdrawalDTO.assetId,
             withdrawalDTO.amount
         );
@@ -67,7 +68,9 @@ export class TransferService {
         }
 
         const withdrawal: Partial<Transfer> = {
-            ...withdrawalDTO,
+            userId,
+            amount: withdrawalDTO.amount,
+            address: withdrawalDTO.address,
             asset: { id: withdrawalDTO.assetId } as Asset,
             status: TransferStatus.Accepted,
             direction: TransferDirection.Withdrawal

@@ -51,7 +51,7 @@ const deployIssuer = async (registry: string) => {
 const authGuard: CanActivate = {
     canActivate: (context: ExecutionContext) => {
         const req = context.switchToHttp().getRequest();
-        req.user = { id: 1 };
+        req.user = { id: 1, organization: 1 };
 
         return true;
     }
