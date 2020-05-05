@@ -7,7 +7,8 @@ import {
     OrganizationStatus,
     OrganizationRemovedMemberEvent,
     DeviceStatusChangedEvent,
-    DeviceStatus
+    DeviceStatus,
+    UserStatusChangedEvent
 } from '@energyweb/origin-backend-core';
 import { MailService } from '../mail';
 import EmailTypes from './EmailTypes';
@@ -16,16 +17,19 @@ const SUPPORTED_EVENTS = [
     SupportedEvents.ORGANIZATION_INVITATION,
     SupportedEvents.ORGANIZATION_STATUS_CHANGED,
     SupportedEvents.ORGANIZATION_REMOVED_MEMBER,
-    SupportedEvents.DEVICE_STATUS_CHANGED
+    SupportedEvents.DEVICE_STATUS_CHANGED,
+    SupportedEvents.USER_STATUS_CHANGED
 ];
 
 type TSupportedNotificationEvent = {
     type:
+        | SupportedEvents.USER_STATUS_CHANGED
         | SupportedEvents.ORGANIZATION_INVITATION
         | SupportedEvents.ORGANIZATION_STATUS_CHANGED
         | SupportedEvents.ORGANIZATION_REMOVED_MEMBER
         | SupportedEvents.DEVICE_STATUS_CHANGED;
     data:
+        | UserStatusChangedEvent
         | OrganizationInvitationEvent
         | OrganizationStatusChangedEvent
         | OrganizationRemovedMemberEvent
@@ -85,6 +89,13 @@ export class NotificationService {
                 `Your device with id: "${data.deviceId}" has had its status changed to "${
                     DeviceStatus[data.status]
                 }".<br /><br /><a href="${url}">${url}</a>`
+            );
+        },
+        [SupportedEvents.USER_STATUS_CHANGED]: async (data: UserStatusChangedEvent) => {
+            await this.sendNotificationEmail(
+                EmailTypes.USER_STATUS_CHANGED,
+                data.email,
+                `Status of your user information`
             );
         }
     };
