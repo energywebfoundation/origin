@@ -209,7 +209,7 @@ export function ProducingDeviceTable(props: IOwnProps) {
 
     const actions: ITableAction[] = [];
 
-    if (props.actions.requestCertificates && isRole(user, Role.DeviceManager)) {
+    if (props.actions.requestCertificates && isRole(user, Role.OrganizationDeviceManager)) {
         actions.push({
             icon: <Assignment />,
             name: t('device.actions.requestCertificates'),
