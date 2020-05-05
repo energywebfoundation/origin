@@ -82,6 +82,7 @@ export class UserController {
     }
 
     @Get('for-blockchain-account/:address')
+    @UseGuards(AuthGuard('jwt'))
     getUserForBlockchainAccount(@Param('address') address: string) {
         if (address) {
             return this.userService.findByBlockchainAccount(address?.toLowerCase());
@@ -90,7 +91,10 @@ export class UserController {
         return null;
     }
 
+    // TODO: should only update owned
+
     @Put(':id')
+    @UseGuards(AuthGuard('jwt'))
     public async update(
         @Param('id') id: string,
         @Body() body: UserUpdateData

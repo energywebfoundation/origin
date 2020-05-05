@@ -12,6 +12,7 @@ export class ConfigurationController {
         return this.configurationService.get();
     }
 
+    // TODO: remove
     @Put()
     async put(@Body() body: IOriginConfiguration) {
         const configuration = await this.configurationService.update(body);

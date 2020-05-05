@@ -12,7 +12,9 @@ import {
     OrganizationUpdateData,
     Role,
     SupportedEvents,
-    UserDecorator
+    UserDecorator,
+    RolesGuard,
+    Roles
 } from '@energyweb/origin-backend-core';
 import {
     BadRequestException,
@@ -99,7 +101,8 @@ export class OrganizationController {
     }
 
     @Get('/:id/users')
-    @UseGuards(AuthGuard('jwt'))
+    @UseGuards(AuthGuard(), RolesGuard)
+    @Roles(Role.OrganizationAdmin)
     async getUsers(@Param('id') id: string, @UserDecorator() loggedUser: ILoggedInUser) {
         const organization = await this.organizationRepository.findOne(id, {
             relations: ['users', 'leadUser']
@@ -117,7 +120,8 @@ export class OrganizationController {
     }
 
     @Get('/:id/devices')
-    @UseGuards(AuthGuard('jwt'))
+    @UseGuards(AuthGuard(), RolesGuard)
+    @Roles(Role.OrganizationAdmin, Role.OrganizationDeviceManager)
     async getDevices(@Param('id') id: string, @UserDecorator() loggedUser: ILoggedInUser) {
         if (!isRole(loggedUser, Role.OrganizationDeviceManager)) {
             throw new ForbiddenException();
@@ -142,6 +146,8 @@ export class OrganizationController {
         return existingEntity;
     }
 
+    // TODO: who can create an organization
+
     @Post()
     @UseGuards(AuthGuard('jwt'))
     async post(@Body() body: OrganizationPostData, @UserDecorator() loggedUser: ILoggedInUser) {
@@ -156,6 +162,8 @@ export class OrganizationController {
             throw new BadRequestException('Could not save organization.');
         }
     }
+
+    // TODO: who can delete an organization
 
     @Delete('/:id')
     async delete(@Param('id') id: string) {
@@ -210,7 +218,8 @@ export class OrganizationController {
     }
 
     @Put('invitation/:invitationId')
-    @UseGuards(AuthGuard('jwt'))
+    @UseGuards(AuthGuard(), RolesGuard)
+    @Roles(Role.OrganizationAdmin)
     async updateInvitation(
         @Body('status') status: IOrganizationInvitation['status'],
         @Param('invitationId') invitationId: string,
@@ -276,7 +285,8 @@ export class OrganizationController {
     }
 
     @Post('invite')
-    @UseGuards(AuthGuard('jwt'))
+    @UseGuards(AuthGuard(), RolesGuard)
+    @Roles(Role.OrganizationAdmin)
     async invite(
         @Body('email') email: string,
         @UserDecorator() loggedUser: ILoggedInUser
@@ -357,7 +367,8 @@ export class OrganizationController {
     }
 
     @Post(':id/remove-member/:userId')
-    @UseGuards(AuthGuard('jwt'))
+    @UseGuards(AuthGuard(), RolesGuard)
+    @Roles(Role.OrganizationAdmin)
     async removeMember(
         @Param('id', new ParseIntPipe()) organizationId: number,
         @Param('userId', new ParseIntPipe()) removedUserId: number,

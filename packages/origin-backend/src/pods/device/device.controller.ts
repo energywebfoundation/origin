@@ -7,7 +7,9 @@ import {
     ILoggedInUser,
     ISmartMeterRead,
     Role,
-    UserDecorator
+    UserDecorator,
+    RolesGuard,
+    Roles
 } from '@energyweb/origin-backend-core';
 import {
     BadRequestException,
@@ -39,6 +41,8 @@ export class DeviceController {
         private readonly organizationService: OrganizationService
     ) {}
 
+    // TODO: remove sensitive information
+
     @Get()
     async getAll() {
         return this.deviceService.getAll();
@@ -56,7 +60,8 @@ export class DeviceController {
     }
 
     @Post()
-    @UseGuards(AuthGuard())
+    @UseGuards(AuthGuard(), RolesGuard)
+    @Roles(Role.OrganizationAdmin, Role.OrganizationDeviceManager)
     async post(@Body() body: DeviceCreateData, @UserDecorator() loggedUser: ILoggedInUser) {
         if (typeof loggedUser.organizationId === 'undefined') {
             throw new BadRequestException('server.errors.loggedUserOrganizationEmpty');
@@ -73,6 +78,8 @@ export class DeviceController {
     }
 
     @Delete('/:id')
+    @UseGuards(AuthGuard(), RolesGuard)
+    @Roles(Role.OrganizationAdmin, Role.OrganizationDeviceManager)
     async delete(@Param('id') id: string) {
         const existingEntity = await this.deviceService.findOne(id);
 
@@ -88,22 +95,21 @@ export class DeviceController {
     }
 
     @Put('/:id')
+    @UseGuards(AuthGuard(), RolesGuard)
+    @Roles(Role.OrganizationAdmin, Role.OrganizationDeviceManager)
     async put(@Param('id') id: string, @Body() body: DeviceUpdateData) {
         const res = await this.deviceService.update(id, body);
         return res;
     }
 
     @Put('/:id/settings')
-    @UseGuards(AuthGuard())
+    @UseGuards(AuthGuard(), RolesGuard)
+    @Roles(Role.OrganizationAdmin, Role.OrganizationDeviceManager, Role.OrganizationUser)
     async updateDeviceSettings(
         @Param('id') id: string,
         @Body() body: DeviceSettingsUpdateData,
         @UserDecorator() loggedUser: ILoggedInUser
     ) {
-        if (!loggedUser.hasRole(Role.OrganizationUser)) {
-            throw new ForbiddenException();
-        }
-
         if (!this.organizationService.hasDevice(loggedUser.organizationId, id)) {
             throw new ForbiddenException();
         }
@@ -143,6 +149,8 @@ export class DeviceController {
 
         return existing;
     }
+
+    // TODO: who can store smart meter readings for device?
 
     @Put('/:id/smartMeterReading')
     async addSmartMeterRead(@Param('id') id: string, @Body() newSmartMeterRead: ISmartMeterRead) {

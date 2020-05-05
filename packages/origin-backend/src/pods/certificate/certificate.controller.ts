@@ -3,7 +3,10 @@ import {
     ICertificateOwnership,
     CommitmentStatus,
     UserDecorator,
-    ILoggedInUser
+    ILoggedInUser,
+    RolesGuard,
+    Roles,
+    Role
 } from '@energyweb/origin-backend-core';
 
 import {
@@ -41,7 +44,8 @@ export class CertificateController {
     ) {}
 
     @Post(`${CERTIFICATION_REQUEST_ENDPOINT}/:id`)
-    @UseGuards(AuthGuard())
+    @UseGuards(AuthGuard(), RolesGuard)
+    @Roles(Role.OrganizationAdmin, Role.OrganizationDeviceManager)
     async updateCertificationRequest(
         @Param('id') id: number,
         @Body() data: CertificationRequestUpdateDTO,
@@ -51,11 +55,13 @@ export class CertificateController {
     }
 
     @Get(`${CERTIFICATION_REQUEST_ENDPOINT}/:id`)
+    @UseGuards(AuthGuard())
     async getCertificationRequest(@Param('id') id: number): Promise<CertificationRequest> {
         return this.certificationRequestService.get(id);
     }
 
     @Get(CERTIFICATION_REQUEST_ENDPOINT)
+    @UseGuards(AuthGuard())
     async getAllCertificationRequests(): Promise<CertificationRequest[]> {
         return this.certificationRequestService.getAll();
     }
@@ -71,7 +77,10 @@ export class CertificateController {
         return certificate;
     }
 
+    // TODO: add ownership management and roles
+
     @Get(`/:id/OwnershipCommitment`)
+    @UseGuards(AuthGuard())
     async getOwnershipCommitment(
         @Param('id') id: number
     ): Promise<IOwnershipCommitmentProofWithTx> {
@@ -85,6 +94,7 @@ export class CertificateController {
     }
 
     @Get(`/:id/OwnershipCommitment/pending`)
+    @UseGuards(AuthGuard())
     async getPendingOwnershipCommitment(@Param('id') id: number) {
         const certificate = await this.certificateRepository.findOne(id);
 
@@ -98,6 +108,7 @@ export class CertificateController {
     }
 
     @Put(`/:id/OwnershipCommitment/pending/approve`)
+    @UseGuards(AuthGuard())
     async approvePendingOwnershipCommitment(
         @Param('id') id: number
     ): Promise<IOwnershipCommitmentProofWithTx> {
@@ -119,6 +130,7 @@ export class CertificateController {
     }
 
     @Post(`/:id/OwnershipCommitment`)
+    @UseGuards(AuthGuard())
     async addOwnershipCommitment(
         @Param('id') id: number,
         @Body() proof: IOwnershipCommitmentProofWithTx
