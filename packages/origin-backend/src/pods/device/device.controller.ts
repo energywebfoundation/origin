@@ -100,7 +100,7 @@ export class DeviceController {
         @Body() body: DeviceSettingsUpdateData,
         @UserDecorator() loggedUser: ILoggedInUser
     ) {
-        if (!loggedUser.hasRole(Role.Trader)) {
+        if (!loggedUser.hasRole(Role.OrganizationUser)) {
             throw new ForbiddenException();
         }
 

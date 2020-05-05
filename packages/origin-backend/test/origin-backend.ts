@@ -69,7 +69,7 @@ export const registerAndLogin = async (
     configurationService: ConfigurationService,
     userService: UserService,
     organizationService: OrganizationService,
-    roles: Role[] = [Role.UserAdmin],
+    roles: Role[] = [Role.OrganizationAdmin],
     userNonce = 0,
     orgNonce = 0
 ) => {

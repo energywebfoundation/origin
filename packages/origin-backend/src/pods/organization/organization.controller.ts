@@ -119,7 +119,7 @@ export class OrganizationController {
     @Get('/:id/devices')
     @UseGuards(AuthGuard('jwt'))
     async getDevices(@Param('id') id: string, @UserDecorator() loggedUser: ILoggedInUser) {
-        if (!isRole(loggedUser, Role.DeviceManager)) {
+        if (!isRole(loggedUser, Role.OrganizationDeviceManager)) {
             throw new ForbiddenException();
         }
 

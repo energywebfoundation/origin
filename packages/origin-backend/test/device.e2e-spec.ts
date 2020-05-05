@@ -26,7 +26,7 @@ describe('Device e2e tests', () => {
             configurationService,
             userService,
             organizationService,
-            [Role.Trader, Role.DeviceManager]
+            [Role.OrganizationUser, Role.OrganizationDeviceManager]
         );
 
         const { id: deviceId } = await deviceService.create({

@@ -78,7 +78,7 @@ export class OrganizationService {
         const members = await this.getMembers(id);
 
         return members.filter(
-            (u) => u.id === organization.leadUser || isRole(u, Role.DeviceManager)
+            (u) => u.id === organization.leadUser || isRole(u, Role.OrganizationDeviceManager)
         );
     }
 
