@@ -1,8 +1,8 @@
 import ethSigUtil from 'eth-sig-util';
 import { JsonRpcProvider } from 'ethers/providers';
 
-export async function recoverTypedSignatureAddress(text: string, signedMessage: string) {
-    const data = {
+const getData = (text: string): ethSigUtil.EIP712TypedData => {
+    return {
         types: {
             EIP712Domain: [
                 { name: 'name', type: 'string' },
@@ -19,10 +19,12 @@ export async function recoverTypedSignatureAddress(text: string, signedMessage: 
             text
         }
     };
+}
 
+export async function recoverTypedSignatureAddress(text: string, signedMessage: string) {
     return ethSigUtil.recoverTypedSignature({
         sig: signedMessage,
-        data
+        data: getData(text)
     });
 }
 
@@ -31,23 +33,15 @@ export async function signTypedMessage(
     text: string,
     web3: JsonRpcProvider
 ): Promise<string> {
-    const data = {
-        types: {
-            EIP712Domain: [
-                { name: 'name', type: 'string' },
-                { name: 'version', type: 'string' }
-            ],
-            TextInformation: [{ name: 'text', type: 'string' }]
-        },
-        domain: {
-            name: 'Origin',
-            version: '2'
-        },
-        primaryType: 'TextInformation',
-        message: {
-            text
-        }
-    };
+    return web3.send('eth_signTypedData_v4', [from, JSON.stringify(getData(text))]);
+}
 
-    return web3.send('eth_signTypedData_v4', [from, JSON.stringify(data)]);
+export async function signTypedMessagePrivateKey(
+    privateKey: string,
+    text: string
+): Promise<string> {
+    return ethSigUtil.signTypedData(
+        Buffer.from(privateKey, 'hex'),
+        { data: getData(text) }
+    );
 }

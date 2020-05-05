@@ -29,7 +29,9 @@ import {
     Put,
     Query,
     UnprocessableEntityException,
-    UseGuards
+    UseGuards,
+    Inject,
+    forwardRef
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -56,6 +58,7 @@ export class OrganizationController {
         @InjectRepository(User)
         private readonly userRepository: Repository<User>,
         private readonly userService: UserService,
+        @Inject(forwardRef(() => OrganizationService))
         private readonly organizationService: OrganizationService,
         private readonly notificationService: NotificationService
     ) {}

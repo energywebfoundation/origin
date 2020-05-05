@@ -28,7 +28,7 @@ import { AuthGuard } from '@nestjs/passport';
 
 import { StorageErrors } from '../../enums/StorageErrors';
 import { NotificationService } from '../notification';
-import { OrganizationService } from '../organization';
+import { OrganizationService } from '../organization/organization.service';
 import { UserDecorator } from '../user/user.decorator';
 import { DeviceService } from './device.service';
 
