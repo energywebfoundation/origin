@@ -69,7 +69,7 @@ export class CertificationRequestWatcherService implements OnModuleInit {
 
         const { _id } = log.values;
 
-        const exists = await this.certificationRequestService.get(_id);
+        const exists = await this.certificationRequestService.get(_id.toNumber());
 
         if (exists) {
             this.logger.debug(`CertificationRequest ${_id} already created.`);
