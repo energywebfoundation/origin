@@ -1,11 +1,12 @@
-import { IPreciseProofClient, PreciseProofClient } from './PreciseProofClient';
-import { IConfigurationClient, ConfigurationClient } from './ConfigurationClient';
-import { IUserClient, UserClient } from './UserClient';
-import { IDeviceClient, DeviceClient } from './DeviceClient';
-import { IRequestClient, RequestClient } from './RequestClient';
-import { IOrganizationClient, OrganizationClient } from './OrganizationClient';
+import { CertificateClient, ICertificateClient } from './CertificateClient';
+import { ConfigurationClient, IConfigurationClient } from './ConfigurationClient';
+import { DeviceClient, IDeviceClient } from './DeviceClient';
 import { FilesClient, IFilesClient } from './FilesClient';
-import { ICertificateClient, CertificateClient } from './CertificateClient';
+import { IOrganizationClient, OrganizationClient } from './OrganizationClient';
+import { IPreciseProofClient, PreciseProofClient } from './PreciseProofClient';
+import { IRequestClient, RequestClient } from './RequestClient';
+import { IUserClient, UserClient } from './UserClient';
+import { IAdminClient, AdminClient } from './AdminClient';
 
 export interface IOffChainDataSource {
     dataApiUrl: string;
@@ -17,6 +18,7 @@ export interface IOffChainDataSource {
     organizationClient: IOrganizationClient;
     filesClient: IFilesClient;
     certificateClient: ICertificateClient;
+    adminClient: IAdminClient;
 }
 
 export class OffChainDataSource implements IOffChainDataSource {
@@ -34,6 +36,8 @@ export class OffChainDataSource implements IOffChainDataSource {
 
     certificateClient: ICertificateClient;
 
+    adminClient: IAdminClient;
+
     constructor(
         public readonly backendUrl: string,
         public readonly port: number = 80,
@@ -46,6 +50,7 @@ export class OffChainDataSource implements IOffChainDataSource {
         this.organizationClient = new OrganizationClient(this.dataApiUrl, this.requestClient);
         this.filesClient = new FilesClient(this.dataApiUrl, this.requestClient);
         this.certificateClient = new CertificateClient(this.dataApiUrl, this.requestClient);
+        this.adminClient = new AdminClient(this.dataApiUrl, this.requestClient);
     }
 
     get dataApiUrl() {
