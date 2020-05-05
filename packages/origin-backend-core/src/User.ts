@@ -1,23 +1,12 @@
 import { IOrganization } from './Organization';
 
-/*
-    no role:          0x0...------0 = 0
-    UserAdmin:        0x0...------1 = 1
-    DeviceAdmin:      0x0...-----1- = 2
-    DeviceManager:    0x0...----1-- = 4
-    Trader:           0x0...---1--- = 8
-    Issuer:           0x0...--1---- = 16
-    Admin:            0x0...-1----- = 32
-    SupportAgent:     0x0...1------ = 64
-*/
 export enum Role {
-    UserAdmin,
-    DeviceAdmin,
-    DeviceManager,
-    Trader,
-    Issuer,
-    Admin,
-    SupportAgent
+    OrganizationAdmin = 1,
+    OrganizationDeviceManager = 2,
+    OrganizationUser = 4,
+    Issuer = 8,
+    Admin = 16,
+    SupportAgent = 32
 }
 
 export enum Status {
@@ -39,12 +28,12 @@ export function buildRights(roles: Role[]): number {
     }
 
     return roles.reduce((a, b) => {
-        return a | Math.pow(2, b);
+        return a | b;
     }, 0);
 }
 
 export function isRole({ rights }: { rights: number }, role: Role): boolean {
-    return (rights & Math.pow(2, role)) !== 0;
+    return (rights & role) !== 0;
 }
 
 export interface IUserProperties {
