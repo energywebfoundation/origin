@@ -46,6 +46,12 @@ export const bootstrapTestInstance = async () => {
     app.useLogger(testLogger);
     app.enableCors();
 
+    await databaseService.cleanUp();
+
+    await configurationService.update({
+        contractsLookup: { registry: '', issuer: '' }
+    });
+
     return {
         app,
         databaseService,
@@ -67,10 +73,6 @@ export const registerAndLogin = async (
     userNonce = 0,
     orgNonce = 0
 ) => {
-    await configurationService.update({
-        contractsLookup: { registry: '', issuer: '' }
-    });
-
     const userEmail = `user${userNonce}@example.com`;
 
     let user = await userService.findOne({ email: userEmail });

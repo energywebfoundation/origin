@@ -10,7 +10,6 @@ describe('CertificationRequest e2e tests', () => {
         const {
             app,
             userService,
-            databaseService,
             deviceService,
             organizationService,
             configurationService,
@@ -18,8 +17,6 @@ describe('CertificationRequest e2e tests', () => {
         } = await bootstrapTestInstance();
 
         await app.init();
-
-        await databaseService.cleanUp();
 
         const { accessToken, user, organization } = await registerAndLogin(
             app,
