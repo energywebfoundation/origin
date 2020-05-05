@@ -3,12 +3,12 @@ import { isRole, IUserWithRelationsIds } from './User';
 
 export interface ILoggedInUser {
     id: number;
-    organizationId?: number;
+    organizationId: number;
     email: string;
     blockchainAccountAddress: string;
     rights: number;
     hasRole(role: Role): boolean;
-    ownerId: number;
+    ownerId: string;
 }
 
 export class LoggedInUser implements ILoggedInUser {
@@ -34,7 +34,8 @@ export class LoggedInUser implements ILoggedInUser {
         return isRole(this, role);
     }
 
+    // This could be changed to organizationId ?? userId down the road, for now we will require a org for each users
     get ownerId() {
-        return this.organizationId ?? this.id;
+        return this.organizationId.toString();
     }
 }
