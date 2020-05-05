@@ -47,6 +47,34 @@ export class CertificationRequestService {
         return this.repository.save(certificationRequest);
     }
 
+    async registerApproved(id: number): Promise<CertificationRequest> {
+        const certificationRequest = await this.repository.findOne(id);
+
+        if (!certificationRequest) {
+            throw new NotFoundException(
+                `approveCertificationRequest(): ${StorageErrors.NON_EXISTENT}`
+            );
+        }
+
+        certificationRequest.approved = true;
+
+        return this.repository.save(certificationRequest);
+    }
+
+    async registerRevoked(id: number): Promise<CertificationRequest> {
+        const certificationRequest = await this.repository.findOne(id);
+
+        if (!certificationRequest) {
+            throw new NotFoundException(
+                `approveCertificationRequest(): ${StorageErrors.NON_EXISTENT}`
+            );
+        }
+
+        certificationRequest.revoked = true;
+
+        return this.repository.save(certificationRequest);
+    }
+
     async get(id: number): Promise<CertificationRequest> {
         return this.repository.findOne(id, { relations: ['device'] });
     }

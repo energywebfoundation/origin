@@ -46,11 +46,21 @@ export class CertificationRequestWatcherService implements OnModuleInit {
 
         this.provider.on(
             this.issuer.filters.CertificationRequested(null, null, null),
-            (event: Log) => this.processEvent(event)
+            (event: Log) => this.registerNewRequest(event)
+        );
+
+        this.provider.on(
+            this.issuer.filters.CertificationRequestApproved(null, null, null),
+            (event: Log) => this.registerApproved(event)
+        );
+
+        this.provider.on(
+            this.issuer.filters.CertificationRequestRevoked(null, null),
+            (event: Log) => this.registerRevoked(event)
         );
     }
 
-    private async processEvent(event: Log): Promise<void> {
+    private async registerNewRequest(event: Log): Promise<void> {
         this.logger.debug(`Discovered new event ${JSON.stringify(event)}`);
 
         const log = this.issuerInterface.parseLog(event);
@@ -95,6 +105,66 @@ export class CertificationRequestWatcherService implements OnModuleInit {
 
         this.logger.log(
             `Read certification request ${certificationRequest.id} from the blockchain and stored it.`
+        );
+    }
+
+    private async registerApproved(event: Log): Promise<void> {
+        this.logger.debug(`Discovered new event ${JSON.stringify(event)}`);
+
+        const log = this.issuerInterface.parseLog(event);
+
+        this.logger.debug(`Parsed to ${JSON.stringify(log)}`);
+
+        const { _id } = log.values;
+
+        const certificationRequest = await this.certificationRequestService.get(_id);
+
+        if (!certificationRequest) {
+            this.logger.error(
+                `CertificationRequest with ID ${_id} has been approved, but wasn't initialized in the database.`
+            );
+            return;
+        }
+
+        if (certificationRequest.approved) {
+            this.logger.error(`CertificationRequest ${_id} already been approved.`);
+            return;
+        }
+
+        await this.certificationRequestService.registerApproved(_id);
+
+        this.logger.log(
+            `Registered approved certification request with ID ${certificationRequest.id}.`
+        );
+    }
+
+    private async registerRevoked(event: Log): Promise<void> {
+        this.logger.debug(`Discovered new event ${JSON.stringify(event)}`);
+
+        const log = this.issuerInterface.parseLog(event);
+
+        this.logger.debug(`Parsed to ${JSON.stringify(log)}`);
+
+        const { _id } = log.values;
+
+        const certificationRequest = await this.certificationRequestService.get(_id);
+
+        if (!certificationRequest) {
+            this.logger.error(
+                `CertificationRequest with ID ${_id} has been revoked, but wasn't initialized in the database.`
+            );
+            return;
+        }
+
+        if (certificationRequest.revoked) {
+            this.logger.error(`CertificationRequest ${_id} already been revoked.`);
+            return;
+        }
+
+        await this.certificationRequestService.registerRevoked(_id);
+
+        this.logger.log(
+            `Registered revoked certification request with ID ${certificationRequest.id}.`
         );
     }
 }
