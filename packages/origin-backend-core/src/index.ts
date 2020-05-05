@@ -10,3 +10,5 @@ export * from './OwnershipCommitment';
 export * from './Certificate';
 export * from './LoggedInUser';
 export * from './UserDecorator';
+export * from './RolesDecorator';
+export * from './RolesGuard';
