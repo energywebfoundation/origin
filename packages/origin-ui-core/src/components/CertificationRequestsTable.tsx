@@ -20,7 +20,7 @@ import {
 } from '../utils';
 import { Skeleton } from '@material-ui/lab';
 import { getOffChainDataSource, getEnvironment } from '../features/general/selectors';
-import { CertificationRequest, getAllCertificationRequests } from '@energyweb/issuer';
+import { CertificationRequest } from '@energyweb/issuer';
 import { requestCertificateApproval } from '../features/certificates';
 
 interface IProps {
@@ -55,7 +55,7 @@ export function CertificationRequestsTable(props: IProps) {
 
         const isIssuer = isRole(user, Role.Issuer);
 
-        const requests = (await getAllCertificationRequests(configuration)).filter(
+        const requests = (await CertificationRequest.getAll(configuration)).filter(
             (cert) => cert.initialized
         );
 
