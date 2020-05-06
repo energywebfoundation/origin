@@ -32,8 +32,8 @@ export function buildRights(roles: Role[]): number {
     }, 0);
 }
 
-export function isRole(user: { rights: number }, role: Role): boolean {
-    return (user?.rights & role) !== 0;
+export function isRole(user: { rights: number }, ...roles: Role[]): boolean {
+    return roles.some((role) => (user?.rights & role) !== 0);
 }
 
 export interface IUserProperties {
