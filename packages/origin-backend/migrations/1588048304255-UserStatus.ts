@@ -4,19 +4,12 @@ export class UserStatus1588048304255 implements MigrationInterface {
     name = 'UserStatus1588048304255';
 
     public async up(queryRunner: QueryRunner): Promise<void> {
-        await queryRunner.query(`ALTER TABLE "user" ADD "status" integer`, undefined);
-        await queryRunner.query(`ALTER TABLE "user" ALTER COLUMN "status" SET NOT NULL`, undefined);
         await queryRunner.query(
-            `ALTER TABLE "user" ALTER COLUMN "status" SET DEFAULT 0`,
-            undefined
-        );
-        await queryRunner.query(`ALTER TABLE "user" ADD "kycStatus" integer`, undefined);
-        await queryRunner.query(
-            `ALTER TABLE "user" ALTER COLUMN "kycStatus" SET NOT NULL`,
+            `ALTER TABLE "user" ADD "status" integer NOT NULL DEFAULT 0`,
             undefined
         );
         await queryRunner.query(
-            `ALTER TABLE "user" ALTER COLUMN "kycStatus" SET DEFAULT 0`,
+            `ALTER TABLE "user" ADD "kycStatus" integer NOT NULL DEFAULT 0`,
             undefined
         );
     }
