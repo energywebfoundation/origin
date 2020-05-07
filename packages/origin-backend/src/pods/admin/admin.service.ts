@@ -1,8 +1,8 @@
-import { IUser } from '@energyweb/origin-backend-core';
+import { IUser, KYCStatus, Status } from '@energyweb/origin-backend-core';
 import { Injectable, UnprocessableEntityException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
 import { validate } from 'class-validator';
+import { Repository } from 'typeorm';
 import { ExtendedBaseEntity } from '../ExtendedBaseEntity';
 import { User } from '../user/user.entity';
 
@@ -17,6 +17,19 @@ export class AdminService {
         return this.repository.find({
             relations: ['organization']
         });
+    }
+
+    public async getUsersBy(orgName: string, status: Status, kycStatus: KYCStatus) {
+        const _orgName = `%${orgName}%`;
+        const result = await this.repository
+            .createQueryBuilder('user')
+            .leftJoinAndSelect('user.organization', 'organization')
+            .where(
+                'organization.name ilike :_orgName and user.status = :status and user.kycStatus = :kycStatus',
+                { _orgName, status, kycStatus }
+            )
+            .getMany();
+        return result;
     }
 
     async update(id: number | string, data: IUser): Promise<ExtendedBaseEntity & IUser> {
