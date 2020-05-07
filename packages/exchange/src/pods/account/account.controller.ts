@@ -1,4 +1,5 @@
-import { IUser } from '@energyweb/origin-backend-core';
+import { ILoggedInUser } from '@energyweb/origin-backend-core';
+import { UserDecorator } from '@energyweb/origin-backend-utils';
 import {
     Controller,
     Get,
@@ -8,7 +9,6 @@ import {
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 
-import { UserDecorator } from '../decorators/user.decorator';
 import { AccountService } from './account.service';
 import { Account } from './account';
 
@@ -20,7 +20,7 @@ export class AccountController {
     @UseInterceptors(ClassSerializerInterceptor)
     @Get()
     @UseGuards(AuthGuard())
-    public async getAccount(@UserDecorator() user: IUser): Promise<Account> {
+    public async getAccount(@UserDecorator() user: ILoggedInUser): Promise<Account> {
         return this.accountService.getAccount(user.id.toString());
     }
 }

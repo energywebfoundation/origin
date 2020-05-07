@@ -1,26 +1,26 @@
-import { IUser } from '@energyweb/origin-backend-core';
+import { ILoggedInUser } from '@energyweb/origin-backend-core';
+import { UserDecorator } from '@energyweb/origin-backend-utils';
 import {
     Body,
+    ClassSerializerInterceptor,
     Controller,
     ForbiddenException,
-    Logger,
-    Post,
-    UseGuards,
     Get,
-    UseInterceptors,
-    ClassSerializerInterceptor,
+    HttpCode,
+    Logger,
     Param,
     ParseUUIDPipe,
-    HttpCode
+    Post,
+    UseGuards,
+    UseInterceptors
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 
-import { UserDecorator } from '../decorators/user.decorator';
 import { CreateAskDTO } from './create-ask.dto';
 import { CreateBidDTO } from './create-bid.dto';
-import { OrderService } from './order.service';
 import { DirectBuyDTO } from './direct-buy.dto';
 import { Order } from './order.entity';
+import { OrderService } from './order.service';
 
 @UseInterceptors(ClassSerializerInterceptor)
 @Controller('orders')
@@ -32,7 +32,7 @@ export class OrderController {
     @Post('bid')
     @UseGuards(AuthGuard())
     public async createBid(
-        @UserDecorator() user: IUser,
+        @UserDecorator() user: ILoggedInUser,
         @Body() newOrder: CreateBidDTO
     ): Promise<Order> {
         this.logger.log(`Creating new order ${JSON.stringify(newOrder)}`);
@@ -50,7 +50,7 @@ export class OrderController {
     @Post('ask')
     @UseGuards(AuthGuard())
     public async createAsk(
-        @UserDecorator() user: IUser,
+        @UserDecorator() user: ILoggedInUser,
         @Body() newOrder: CreateAskDTO
     ): Promise<Order> {
         this.logger.log(`Creating new order ${JSON.stringify(newOrder)}`);
@@ -68,7 +68,7 @@ export class OrderController {
     @Post('ask/buy')
     @UseGuards(AuthGuard())
     public async directBuy(
-        @UserDecorator() user: IUser,
+        @UserDecorator() user: ILoggedInUser,
         @Body() directBuy: DirectBuyDTO
     ): Promise<Order> {
         this.logger.log(`Creating new direct order ${JSON.stringify(directBuy)}`);
@@ -85,7 +85,7 @@ export class OrderController {
 
     @Get()
     @UseGuards(AuthGuard())
-    public async getOrders(@UserDecorator() user: IUser): Promise<Order[]> {
+    public async getOrders(@UserDecorator() user: ILoggedInUser): Promise<Order[]> {
         const orders = await this.orderService.getAllOrders(user.id.toString());
         return orders;
     }
@@ -93,7 +93,7 @@ export class OrderController {
     @Get('/:id')
     @UseGuards(AuthGuard())
     public async getOrder(
-        @UserDecorator() user: IUser,
+        @UserDecorator() user: ILoggedInUser,
         @Param('id', new ParseUUIDPipe({ version: '4' })) orderId: string
     ) {
         const order = await this.orderService.findOne(user.id.toString(), orderId);
@@ -104,7 +104,7 @@ export class OrderController {
     @UseGuards(AuthGuard())
     @HttpCode(202)
     public async cancelOrder(
-        @UserDecorator() user: IUser,
+        @UserDecorator() user: ILoggedInUser,
         @Param('id', new ParseUUIDPipe({ version: '4' })) orderId: string
     ) {
         const order = await this.orderService.cancelOrder(user.id.toString(), orderId);

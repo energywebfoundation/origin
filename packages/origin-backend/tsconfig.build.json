@@ -5,9 +5,9 @@
         "outDir": "./dist/js",
         "emitDecoratorMetadata": true,
         "experimentalDecorators": true,
-        "typeRoots": ["./src/types"]
+        "typeRoots": ["./src/types", "./node_modules/@types", "../../node_modules/@types"]
     },
-    "include": ["src/**/*", "migrations/*", "ormconfig*.ts"],
+    "include": ["src/**/*", "migrations/*", "ormconfig*.ts", "test/*"],
     "references": [
         {
             "path": "../origin-backend-core/tsconfig.build.json"

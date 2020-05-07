@@ -1,6 +1,13 @@
-import { IUser, SupportedEvents, UserStatusChangedEvent } from '@energyweb/origin-backend-core';
-import { Body, Controller, Get, Param, Put, UseGuards, Query } from '@nestjs/common';
+import {
+    IUser,
+    Role,
+    SupportedEvents,
+    UserStatusChangedEvent
+} from '@energyweb/origin-backend-core';
+import { Roles, RolesGuard } from '@energyweb/origin-backend-utils';
+import { Body, Controller, Get, Param, Put, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
+
 import { NotificationService } from '../notification/notification.service';
 import { AdminService } from './admin.service';
 
@@ -12,7 +19,8 @@ export class AdminController {
     ) {}
 
     @Get('users')
-    @UseGuards(AuthGuard('jwt'))
+    @UseGuards(AuthGuard('jwt'), RolesGuard)
+    @Roles(Role.Admin, Role.SupportAgent)
     public async getAllUsers() {
         return this.adminService.getAllUsers();
     }
@@ -28,7 +36,8 @@ export class AdminController {
     }
 
     @Put('users/:id')
-    @UseGuards(AuthGuard('jwt'))
+    @UseGuards(AuthGuard('jwt'), RolesGuard)
+    @Roles(Role.Admin, Role.SupportAgent)
     public async put(@Param('id') id: string, @Body() body: IUser) {
         const user = await this.adminService.update(id, body);
         const eventData: UserStatusChangedEvent = {

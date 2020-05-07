@@ -122,14 +122,10 @@ export class UserService {
             throw new Error(`Can't find user.`);
         }
 
-        if (!data.autoPublish && typeof data.notifications === 'undefined') {
+        if (typeof data.notifications === 'undefined') {
             throw new Error(
                 `You can only update "autoPublish" and "notifications" properties of user and they're not present in the payload.`
             );
-        }
-
-        if (typeof data.autoPublish !== 'undefined') {
-            user.autoPublish = data.autoPublish;
         }
 
         if (typeof data.notifications !== 'undefined') {

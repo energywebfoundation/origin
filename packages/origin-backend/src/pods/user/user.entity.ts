@@ -1,7 +1,7 @@
 import { Entity, PrimaryGeneratedColumn, Column, Unique, ManyToOne } from 'typeorm';
 import { Length, IsNotEmpty } from 'class-validator';
 
-import { IUser, IAutoPublishConfig, KYCStatus, Status } from '@energyweb/origin-backend-core';
+import { IUser, KYCStatus, Status } from '@energyweb/origin-backend-core';
 
 import { Organization } from '../organization/organization.entity';
 import { ExtendedBaseEntity } from '../ExtendedBaseEntity';
@@ -41,18 +41,15 @@ export class User extends ExtendedBaseEntity implements IUser {
     @Column({ nullable: true })
     notifications: boolean;
 
-    @Column('simple-json', { nullable: true })
-    autoPublish: IAutoPublishConfig;
-
     @ManyToOne(() => Organization, (organization) => organization.users)
     organization: Organization;
 
     @Column({ default: 0, nullable: false })
     rights: number;
 
-    @Column()
+    @Column({ default: 0, nullable: false })
     status: Status;
 
-    @Column()
+    @Column({ default: 0, nullable: false })
     kycStatus: KYCStatus;
 }
