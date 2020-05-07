@@ -88,7 +88,8 @@ export function UserRegister() {
                 title: values.titleSelect === 'Other' ? values.titleInput : values.titleSelect,
                 rights: 12,
                 status: 0,
-                kycStatus: 0
+                kycStatus: 0,
+                notifications: true
             });
 
             showNotification(t('user.feedback.userRegistered'), NotificationType.Success);

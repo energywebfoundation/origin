@@ -80,7 +80,7 @@ export function Device() {
             key: 'owned',
             label: t('navigation.devices.my'),
             component: MyDevices,
-            roles: [Role.DeviceManager]
+            roles: [Role.OrganizationDeviceManager]
         },
         {
             key: 'pending',
@@ -92,13 +92,13 @@ export function Device() {
             key: 'add',
             label: t('navigation.devices.registerDevice'),
             component: AddDevice,
-            roles: [Role.DeviceManager]
+            roles: [Role.OrganizationDeviceManager]
         },
         {
             key: 'add-group',
             label: t('navigation.devices.registerDeviceGroup'),
             component: DeviceGroupForm,
-            roles: [Role.DeviceManager]
+            roles: [Role.OrganizationDeviceManager]
         },
         {
             key: 'producing_detail_view',

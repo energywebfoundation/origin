@@ -1,25 +1,25 @@
 import {
-    Controller,
-    Post,
-    Body,
-    InternalServerErrorException,
-    UseGuards,
-    Get,
-    Param,
+    IUserWithRelationsIds,
+    UserDecorator,
+    UserRegisterData,
+    UserRegisterReturnData,
+    UserUpdateData,
+    ILoggedInUser
+} from '@energyweb/origin-backend-core';
+import {
     BadRequestException,
-    Put
+    Body,
+    Controller,
+    Get,
+    InternalServerErrorException,
+    Param,
+    Post,
+    Put,
+    UseGuards
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 
-import {
-    UserRegisterReturnData,
-    UserRegisterData,
-    IUserWithRelationsIds,
-    UserUpdateData
-} from '@energyweb/origin-backend-core';
-
 import { UserService } from './user.service';
-import { UserDecorator } from './user.decorator';
 
 @Controller('user')
 export class UserController {
@@ -35,7 +35,6 @@ export class UserController {
             lastName,
             telephone,
             notifications,
-            autoPublish,
             rights,
             status,
             kycStatus
@@ -50,7 +49,6 @@ export class UserController {
                 lastName,
                 telephone,
                 notifications,
-                autoPublish,
                 rights,
                 status,
                 kycStatus
@@ -66,7 +64,6 @@ export class UserController {
                 blockchainAccountAddress: user.blockchainAccountAddress,
                 blockchainAccountSignedMessage: user.blockchainAccountSignedMessage,
                 organization: user.organization,
-                autoPublish: user.autoPublish,
                 notifications: user.notifications,
                 rights: user.rights,
                 status: user.status,
@@ -80,11 +77,12 @@ export class UserController {
 
     @Get('me')
     @UseGuards(AuthGuard('jwt'))
-    me(@UserDecorator() user: IUserWithRelationsIds) {
+    me(@UserDecorator() user: ILoggedInUser) {
         return this.userService.findById(user.id);
     }
 
     @Get('for-blockchain-account/:address')
+    @UseGuards(AuthGuard('jwt'))
     getUserForBlockchainAccount(@Param('address') address: string) {
         if (address) {
             return this.userService.findByBlockchainAccount(address?.toLowerCase());
@@ -93,7 +91,10 @@ export class UserController {
         return null;
     }
 
+    // TODO: should only update owned
+
     @Put(':id')
+    @UseGuards(AuthGuard('jwt'))
     public async update(
         @Param('id') id: string,
         @Body() body: UserUpdateData
@@ -103,10 +104,7 @@ export class UserController {
                 await this.userService.attachSignedMessage(id, body.blockchainAccountSignedMessage);
             }
 
-            if (
-                typeof body.notifications !== 'undefined' ||
-                typeof body.autoPublish !== 'undefined'
-            ) {
+            if (typeof body.notifications !== 'undefined') {
                 await this.userService.update(id, body);
             }
 

@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, DeepPartial } from 'typeorm';
-import { IUserWithRelationsIds } from '@energyweb/origin-backend-core';
+import { ILoggedInUser } from '@energyweb/origin-backend-core';
 import { getAddress } from 'ethers/utils';
 import { CertificationRequest } from './certification-request.entity';
 import { CertificationRequestUpdateDTO } from './certification-request.dto';
@@ -23,7 +23,7 @@ export class CertificationRequestService {
     async update(
         id: number,
         data: CertificationRequestUpdateDTO,
-        loggedUser: IUserWithRelationsIds
+        loggedUser: ILoggedInUser
     ): Promise<CertificationRequest> {
         const certificationRequest = await this.repository.findOne(id, { relations: ['device'] });
 

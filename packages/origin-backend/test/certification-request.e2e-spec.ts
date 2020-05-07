@@ -23,7 +23,7 @@ describe('CertificationRequest e2e tests', () => {
             configurationService,
             userService,
             organizationService,
-            [Role.Trader, Role.DeviceManager]
+            [Role.OrganizationUser, Role.OrganizationDeviceManager]
         );
 
         await request(app.getHttpServer())

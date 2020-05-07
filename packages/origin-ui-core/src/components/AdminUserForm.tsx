@@ -28,11 +28,6 @@ const INITIAL_FORM_VALUES: IUser = {
     blockchainAccountAddress: '',
     blockchainAccountSignedMessage: '',
     notifications: null,
-    autoPublish: {
-        enabled: null,
-        currency: null,
-        priceInCents: 0
-    },
     organization: null,
     rights: 0,
     status: 0,

@@ -4,7 +4,8 @@ import {
     buildRights,
     OrganizationPostData,
     Role,
-    UserRegisterData
+    UserRegisterData,
+    LoggedInUser
 } from '@energyweb/origin-backend-core';
 import { Logger } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
@@ -69,7 +70,7 @@ export const registerAndLogin = async (
     configurationService: ConfigurationService,
     userService: UserService,
     organizationService: OrganizationService,
-    roles: Role[] = [Role.UserAdmin],
+    roles: Role[] = [Role.OrganizationAdmin],
     userNonce = 0,
     orgNonce = 0
 ) => {
@@ -86,7 +87,8 @@ export const registerAndLogin = async (
             rights: buildRights(roles),
             telephone: '991',
             status: 0,
-            kycStatus: 0
+            kycStatus: 0,
+            notifications: true
         };
         await userService.create(userRegistration);
         user = await userService.findOne({ email: userEmail });
@@ -145,5 +147,5 @@ export const registerAndLogin = async (
         })
         .expect((res) => ({ accessToken } = res.body));
 
-    return { accessToken, user, organization };
+    return { accessToken, user: new LoggedInUser(user), organization };
 };
