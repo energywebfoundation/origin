@@ -1,13 +1,13 @@
 import {
     IUser,
-    SupportedEvents,
-    UserStatusChangedEvent,
-    RolesGuard,
     Role,
-    Roles
+    SupportedEvents,
+    UserStatusChangedEvent
 } from '@energyweb/origin-backend-core';
+import { Roles, RolesGuard } from '@energyweb/origin-backend-utils';
 import { Body, Controller, Get, Param, Put, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
+
 import { NotificationService } from '../notification/notification.service';
 import { AdminService } from './admin.service';
 

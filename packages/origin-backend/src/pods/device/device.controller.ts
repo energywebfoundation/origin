@@ -6,11 +6,9 @@ import {
     IDeviceWithRelationsIds,
     ILoggedInUser,
     ISmartMeterRead,
-    Role,
-    UserDecorator,
-    RolesGuard,
-    Roles
+    Role
 } from '@energyweb/origin-backend-core';
+import { Roles, RolesGuard, UserDecorator } from '@energyweb/origin-backend-utils';
 import {
     BadRequestException,
     Body,
