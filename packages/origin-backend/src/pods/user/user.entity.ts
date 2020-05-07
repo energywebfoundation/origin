@@ -47,9 +47,9 @@ export class User extends ExtendedBaseEntity implements IUser {
     @Column({ default: 0, nullable: false })
     rights: number;
 
-    @Column({ default: 0 })
+    @Column({ default: 0, nullable: false })
     status: Status;
 
-    @Column({ default: 0 })
+    @Column({ default: 0, nullable: false })
     kycStatus: KYCStatus;
 }
