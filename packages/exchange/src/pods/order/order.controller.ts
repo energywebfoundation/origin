@@ -1,25 +1,26 @@
-import { UserDecorator, ILoggedInUser } from '@energyweb/origin-backend-core';
+import { ILoggedInUser } from '@energyweb/origin-backend-core';
+import { UserDecorator } from '@energyweb/origin-backend-utils';
 import {
     Body,
+    ClassSerializerInterceptor,
     Controller,
     ForbiddenException,
-    Logger,
-    Post,
-    UseGuards,
     Get,
-    UseInterceptors,
-    ClassSerializerInterceptor,
+    HttpCode,
+    Logger,
     Param,
     ParseUUIDPipe,
-    HttpCode
+    Post,
+    UseGuards,
+    UseInterceptors
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 
 import { CreateAskDTO } from './create-ask.dto';
 import { CreateBidDTO } from './create-bid.dto';
-import { OrderService } from './order.service';
 import { DirectBuyDTO } from './direct-buy.dto';
 import { Order } from './order.entity';
+import { OrderService } from './order.service';
 
 @UseInterceptors(ClassSerializerInterceptor)
 @Controller('orders')

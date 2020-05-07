@@ -1,6 +1,5 @@
 import { createParamDecorator, ExecutionContext } from '@nestjs/common';
-import { IUserWithRelationsIds } from './User';
-import { LoggedInUser } from './LoggedInUser';
+import { IUserWithRelationsIds, LoggedInUser } from '@energyweb/origin-backend-core';
 
 export const UserDecorator = createParamDecorator((data: unknown, ctx: ExecutionContext) => {
     const request = ctx.switchToHttp().getRequest();

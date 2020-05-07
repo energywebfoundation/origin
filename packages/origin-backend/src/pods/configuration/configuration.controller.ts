@@ -1,4 +1,5 @@
-import { IOriginConfiguration, Role, Roles, RolesGuard } from '@energyweb/origin-backend-core';
+import { IOriginConfiguration, Role } from '@energyweb/origin-backend-core';
+import { Roles, RolesGuard } from '@energyweb/origin-backend-utils';
 import { Body, Controller, Get, Put, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 

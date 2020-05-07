@@ -1,4 +1,5 @@
-import { ILoggedInUser, UserDecorator } from '@energyweb/origin-backend-core';
+import { ILoggedInUser } from '@energyweb/origin-backend-core';
+import { UserDecorator } from '@energyweb/origin-backend-utils';
 import { Controller, Get, Logger, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 

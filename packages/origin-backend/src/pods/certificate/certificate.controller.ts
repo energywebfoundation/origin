@@ -1,35 +1,32 @@
 import {
-    IOwnershipCommitmentProofWithTx,
-    ICertificateOwnership,
     CommitmentStatus,
-    UserDecorator,
+    ICertificateOwnership,
     ILoggedInUser,
-    RolesGuard,
-    Roles,
+    IOwnershipCommitmentProofWithTx,
     Role
 } from '@energyweb/origin-backend-core';
-
+import { Roles, RolesGuard, UserDecorator } from '@energyweb/origin-backend-utils';
 import {
-    Controller,
-    Post,
     Body,
-    Get,
-    Param,
-    NotFoundException,
     ConflictException,
+    Controller,
+    Get,
+    NotFoundException,
+    Param,
+    Post,
     Put,
     UseGuards
 } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
-import { AuthGuard } from '@nestjs/passport';
-import { CertificationRequest } from './certification-request.entity';
-import { OwnershipCommitment } from './ownership-commitment.entity';
 import { StorageErrors } from '../../enums/StorageErrors';
 import { Certificate } from './certificate.entity';
 import { CertificationRequestUpdateDTO } from './certification-request.dto';
+import { CertificationRequest } from './certification-request.entity';
 import { CertificationRequestService } from './certification-request.service';
+import { OwnershipCommitment } from './ownership-commitment.entity';
 
 const CERTIFICATION_REQUEST_ENDPOINT = '/CertificationRequest';
 

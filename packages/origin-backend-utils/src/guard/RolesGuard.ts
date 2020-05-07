@@ -1,6 +1,6 @@
 import { Injectable, CanActivate, ExecutionContext } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
-import { IUserWithRelationsIds, LoggedInUser, Role } from '.';
+import { IUserWithRelationsIds, LoggedInUser, Role } from '@energyweb/origin-backend-core';
 
 @Injectable()
 export class RolesGuard implements CanActivate {

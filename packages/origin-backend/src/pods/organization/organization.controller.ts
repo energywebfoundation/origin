@@ -11,11 +11,9 @@ import {
     OrganizationStatusChangedEvent,
     OrganizationUpdateData,
     Role,
-    SupportedEvents,
-    UserDecorator,
-    RolesGuard,
-    Roles
+    SupportedEvents
 } from '@energyweb/origin-backend-core';
+import { UserDecorator, RolesGuard, Roles } from '@energyweb/origin-backend-utils';
 import {
     BadRequestException,
     Body,
