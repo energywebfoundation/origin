@@ -92,6 +92,11 @@ export function AdminUsersTable() {
         loadPage(1);
     }, [userOffchain, adminClient]);
 
+    function viewUser(index: number) {
+        const user = paginatedData[index];
+        history.push('user-update', user);
+    }
+
     const columns = [
         { id: 'firstName', label: 'Name' },
         { id: 'organization', label: 'Organization' },
@@ -167,6 +172,7 @@ export function AdminUsersTable() {
             pageSize={pageSize}
             actions={actions}
             filters={filters}
+            handleRowClick={(index) => viewUser(parseInt(index, 10))}
         />
     );
 }
