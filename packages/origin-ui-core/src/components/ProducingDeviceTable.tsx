@@ -28,7 +28,8 @@ import {
     getProducingDeviceDetailLink,
     showNotification,
     NotificationType,
-    useTranslation
+    useTranslation,
+    moment
 } from '../utils';
 import { getEnvironment } from '../features';
 
@@ -170,6 +171,12 @@ export function ProducingDeviceTable(props: IOwnProps) {
 
     const hiddenColumns = props.hiddenColumns || [];
 
+    const currentYear = moment().format('YYYY');
+    const isMay15orAfter = moment().isSameOrAfter(`${currentYear}-05-15`, 'day');
+    const currentIRECYear = isMay15orAfter
+        ? `${Number(currentYear)}/${Number(currentYear) + 1}`
+        : `${Number(currentYear) - 1}/${Number(currentYear)}`;
+
     const columns = ([
         { id: 'owner', label: t('device.properties.owner') },
         { id: 'facilityName', label: t('device.properties.facilityName') },
@@ -181,8 +188,16 @@ export function ProducingDeviceTable(props: IOwnProps) {
         },
         { id: 'status', label: t('device.properties.status') },
         {
-            id: 'read',
-            label: `${t('device.properties.meterRead')} (${EnergyFormatter.displayUnit})`
+            id: 'readCertified',
+            label: `${t('device.properties.meterReadCertified')} for ${currentIRECYear} (${
+                EnergyFormatter.displayUnit
+            })`
+        },
+        {
+            id: 'readToBeCertified',
+            label: `${t('device.properties.meterReadToBeCertified')} for ${currentIRECYear} (${
+                EnergyFormatter.displayUnit
+            })`
         }
     ] as const).filter((column) => !hiddenColumns.includes(column.id));
 
@@ -193,7 +208,12 @@ export function ProducingDeviceTable(props: IOwnProps) {
         type:
             configuration?.deviceTypeService?.getDisplayText(enrichedData.device.deviceType) ?? '',
         capacity: PowerFormatter.format(enrichedData.device.capacityInW),
-        read: EnergyFormatter.format(enrichedData.device.lastSmartMeterReadWh ?? 0),
+        readCertified: EnergyFormatter.format(
+            enrichedData.device.meterStats.certified.toNumber() ?? 0
+        ),
+        readToBeCertified: EnergyFormatter.format(
+            enrichedData.device.meterStats.uncertified.toNumber() ?? 0
+        ),
         status: DeviceStatus[enrichedData.device.status],
         gridOperator: enrichedData?.device?.gridOperator
     }));
