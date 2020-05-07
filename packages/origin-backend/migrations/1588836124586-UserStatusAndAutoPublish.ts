@@ -1,7 +1,7 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class Status1588836124586 implements MigrationInterface {
-    name = 'Status1588836124586';
+export class UserStatusAndAutoPublish1588836124586 implements MigrationInterface {
+    name = 'UserStatusAndAutoPublish1588836124586';
 
     public async up(queryRunner: QueryRunner): Promise<void> {
         await queryRunner.query(`ALTER TABLE "user" DROP COLUMN "autoPublish"`, undefined);
