@@ -1,11 +1,11 @@
 import {
+    ILoggedInUser,
     IUserWithRelationsIds,
-    UserDecorator,
     UserRegisterData,
     UserRegisterReturnData,
-    UserUpdateData,
-    ILoggedInUser
+    UserUpdateData
 } from '@energyweb/origin-backend-core';
+import { UserDecorator } from '@energyweb/origin-backend-utils';
 import {
     BadRequestException,
     Body,
