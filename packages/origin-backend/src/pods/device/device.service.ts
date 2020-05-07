@@ -97,9 +97,6 @@ export class DeviceService {
             ...data,
             status: data.status ?? DeviceStatus.Submitted,
             smartMeterReads: data.smartMeterReads ?? [],
-            meterStats: this.calculateCertifiedEnergy(
-                this.resolveCertified(data.smartMeterReads, [])
-            ),
             deviceGroup: data.deviceGroup ?? '',
             organization,
             externalDeviceIds: data.externalDeviceIds
@@ -300,7 +297,9 @@ export class DeviceService {
             const { meterReading, timestamp, certified } = smReads[i];
 
             energiesGenerated.push({
-                energy: meterReading.sub(isFirstReading ? 0 : smReads[i - 1].meterReading),
+                energy: bigNumberify(meterReading).sub(
+                    isFirstReading ? 0 : bigNumberify(smReads[i - 1].meterReading)
+                ),
                 timestamp,
                 certified
             });

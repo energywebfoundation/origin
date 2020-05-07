@@ -159,7 +159,11 @@ export class DeviceController {
             };
         } catch (error) {
             this.logger.error('Error when saving smart meter read');
-            this.logger.error(error);
+            this.logger.error({
+                error,
+                id,
+                newSmartMeterRead
+            });
             throw new UnprocessableEntityException({
                 message: `Smart meter reading could not be added due to an unknown error for device ${id}`
             });
