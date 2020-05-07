@@ -1,19 +1,22 @@
 import {
     DeviceCreateData,
+    DeviceSettingsUpdateData,
     DeviceStatus,
     DeviceUpdateData,
     IDeviceWithRelationsIds,
+    ILoggedInUser,
     ISmartMeterRead,
-    IUserWithRelationsIds,
-    isRole,
     Role,
-    DeviceSettingsUpdateData
+    UserDecorator,
+    RolesGuard,
+    Roles
 } from '@energyweb/origin-backend-core';
 import {
     BadRequestException,
     Body,
     Controller,
     Delete,
+    ForbiddenException,
     Get,
     Logger,
     NotFoundException,
@@ -21,15 +24,12 @@ import {
     Post,
     Put,
     UnprocessableEntityException,
-    UseGuards,
-    ForbiddenException
+    UseGuards
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 
 import { StorageErrors } from '../../enums/StorageErrors';
-import { NotificationService } from '../notification';
 import { OrganizationService } from '../organization/organization.service';
-import { UserDecorator } from '../user/user.decorator';
 import { DeviceService } from './device.service';
 
 @Controller('/Device')
@@ -38,9 +38,10 @@ export class DeviceController {
 
     constructor(
         private readonly deviceService: DeviceService,
-        private readonly organizationService: OrganizationService,
-        private readonly notificationService: NotificationService
+        private readonly organizationService: OrganizationService
     ) {}
+
+    // TODO: remove sensitive information
 
     @Get()
     async getAll() {
@@ -59,9 +60,10 @@ export class DeviceController {
     }
 
     @Post()
-    @UseGuards(AuthGuard())
-    async post(@Body() body: DeviceCreateData, @UserDecorator() loggedUser: IUserWithRelationsIds) {
-        if (typeof loggedUser.organization === 'undefined') {
+    @UseGuards(AuthGuard(), RolesGuard)
+    @Roles(Role.OrganizationAdmin, Role.OrganizationDeviceManager)
+    async post(@Body() body: DeviceCreateData, @UserDecorator() loggedUser: ILoggedInUser) {
+        if (typeof loggedUser.organizationId === 'undefined') {
             throw new BadRequestException('server.errors.loggedUserOrganizationEmpty');
         }
 
@@ -71,11 +73,13 @@ export class DeviceController {
             lastSmartMeterReading: body.lastSmartMeterReading ?? null,
             smartMeterReads: body.smartMeterReads ?? [],
             deviceGroup: body.deviceGroup ?? '',
-            organization: loggedUser.organization
+            organization: loggedUser.organizationId
         });
     }
 
     @Delete('/:id')
+    @UseGuards(AuthGuard(), RolesGuard)
+    @Roles(Role.OrganizationAdmin, Role.OrganizationDeviceManager)
     async delete(@Param('id') id: string) {
         const existingEntity = await this.deviceService.findOne(id);
 
@@ -91,23 +95,22 @@ export class DeviceController {
     }
 
     @Put('/:id')
+    @UseGuards(AuthGuard(), RolesGuard)
+    @Roles(Role.OrganizationAdmin, Role.OrganizationDeviceManager)
     async put(@Param('id') id: string, @Body() body: DeviceUpdateData) {
         const res = await this.deviceService.update(id, body);
         return res;
     }
 
     @Put('/:id/settings')
-    @UseGuards(AuthGuard())
+    @UseGuards(AuthGuard(), RolesGuard)
+    @Roles(Role.OrganizationAdmin, Role.OrganizationDeviceManager, Role.OrganizationUser)
     async updateDeviceSettings(
         @Param('id') id: string,
         @Body() body: DeviceSettingsUpdateData,
-        @UserDecorator() loggedUser: IUserWithRelationsIds
+        @UserDecorator() loggedUser: ILoggedInUser
     ) {
-        if (!isRole(loggedUser, Role.Trader)) {
-            throw new ForbiddenException();
-        }
-
-        if (!this.organizationService.hasDevice(loggedUser.organization, id)) {
+        if (!this.organizationService.hasDevice(loggedUser.organizationId, id)) {
             throw new ForbiddenException();
         }
 
@@ -146,6 +149,8 @@ export class DeviceController {
 
         return existing;
     }
+
+    // TODO: who can store smart meter readings for device?
 
     @Put('/:id/smartMeterReading')
     async addSmartMeterRead(@Param('id') id: string, @Body() newSmartMeterRead: ISmartMeterRead) {

@@ -9,19 +9,15 @@ import { IJWTPayload } from './auth.service';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
-    private readonly configService: ConfigService;
-
     constructor(
-        @Inject(ConfigService) _configService: ConfigService,
+        @Inject(ConfigService) configService: ConfigService,
         private readonly userService: UserService
     ) {
         super({
             jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
             ignoreExpiration: false,
-            secretOrKey: _configService.get<string>('JWT_SECRET')
+            secretOrKey: configService.get<string>('JWT_SECRET')
         });
-
-        this.configService = _configService;
     }
 
     async validate(payload: IJWTPayload): Promise<IUserWithRelationsIds> {

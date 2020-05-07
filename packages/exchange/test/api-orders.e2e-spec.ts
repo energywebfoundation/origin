@@ -137,7 +137,6 @@ describe('account ask order send', () => {
     it('should not be able to withdraw without any deposit', async () => {
         const withdrawal: RequestWithdrawalDTO = {
             assetId: deposit.asset.id,
-            userId: user1Id,
             amount,
             address: withdrawalAddress
         };
@@ -155,7 +154,6 @@ describe('account ask order send', () => {
 
         const withdrawal: RequestWithdrawalDTO = {
             assetId: deposit.asset.id,
-            userId: user1Id,
             amount,
             address: withdrawalAddress
         };

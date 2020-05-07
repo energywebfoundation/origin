@@ -22,7 +22,7 @@ describe('Organization e2e tests', () => {
             configurationService,
             userService,
             organizationService,
-            [Role.DeviceManager]
+            [Role.OrganizationDeviceManager]
         );
 
         await deviceService.create({

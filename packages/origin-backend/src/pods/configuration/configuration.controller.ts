@@ -1,5 +1,6 @@
-import { Controller, Get, Body, Put } from '@nestjs/common';
-import { IOriginConfiguration } from '@energyweb/origin-backend-core';
+import { IOriginConfiguration, Role, Roles, RolesGuard } from '@energyweb/origin-backend-core';
+import { Body, Controller, Get, Put, UseGuards } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
 
 import { ConfigurationService } from './configuration.service';
 
@@ -13,6 +14,8 @@ export class ConfigurationController {
     }
 
     @Put()
+    @UseGuards(AuthGuard(), RolesGuard)
+    @Roles(Role.Admin)
     async put(@Body() body: IOriginConfiguration) {
         const configuration = await this.configurationService.update(body);
 

@@ -162,7 +162,6 @@ describe('Deposits using deployed registry', () => {
 
         const withdrawal: RequestWithdrawalDTO = {
             assetId: deposit.asset.id,
-            userId: user1Id,
             amount: withdrawalAmount,
             address: withdrawalAddress
         };

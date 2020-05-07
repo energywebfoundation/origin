@@ -267,7 +267,7 @@ VALUES
         '0xd173313a51f8fc37bcf67569b463abd89d81844f',
         '0x09790e96275e023b965f6b267512b5267bcb18f5b5fdaaf46de899a0f91f2a8d006c7fbaebddf5ad36c116775c961aca3c32525b6dd1529bdee41eee5e9730a71c',
         'f',
-        '{"enabled":false,"priceInCents":150,"currency":"USD"}',
+        '{"enabled":false}',
         '16',
         '1'
     );
@@ -304,7 +304,7 @@ VALUES
         '0xe6f70568571f331ae431bb4d3249aaf4a01c548ddd6e0a1fbefdd207cf31b13d419f43ff28cf011df17697eb7856c470e361b4239898f53613cacbcc589e5d6a1c',
         't',
         '{"enabled":false,"priceInCents":150,"currency":"USD"}',
-        '12',
+        '1',
         '2'
     );
 INSERT INTO
@@ -340,7 +340,7 @@ VALUES
         '0x617ba0b0b20d547272001e2b1d9a9ef7da24b5e58c2a97767fb2e65a294010906862458c503dbe1a6db0db782cddf9bd98409bdaa0930754b3bd18863c8d99ab1b',
         't',
         '{"enabled":false,"priceInCents":150,"currency":"USD"}',
-        '12',
+        '1',
         '3'
     );
 INSERT INTO
@@ -375,14 +375,14 @@ VALUES
         '0x7672fa3f8c04abbcbad14d896aad8bedece72d2b',
         '0xb0a804f410f2934278703eb992e5ba12f9e8b9068b68ff6d1246a56cf52e48677d3648057453d86f4372b2ffd98fa189aee1562d8c564ac62bc416d6cdc474051c',
         'f',
-        '{"enabled":false,"priceInCents":150,"currency":"USD"}',
-        '8',
+        '{"enabled":false}',
+        '1',
         '4'
     );
     
-INSERT INTO "public"."user"("createdAt", "updatedAt", "id", "title", "firstName", "lastName", "email", "telephone", "password", "blockchainAccountAddress", "blockchainAccountSignedMessage", "notifications", "autoPublish", "rights", "organizationId") VALUES ('2020-03-30 08:08:33.510625+00', '2020-03-30 08:08:33.652639+00', 5, 'Mr', 'Admin', 'Surname', 'admin@mailinator.com', '111-111-111', '$2a$08$j8LnGtFdbTfKN5F.0InfdO2gxMWXHbrjWvRziCIl0lRj.kxOKJ/b6', '0x7672fa3f8c04abbcbad14d896aad8bedece72d2b', '0xb0a804f410f2934278703eb992e5ba12f9e8b9068b68ff6d1246a56cf52e48677d3648057453d86f4372b2ffd98fa189aee1562d8c564ac62bc416d6cdc474051c', 'f', '{"enabled":false,"priceInCents":150,"currency":"USD"}', '32', '4');
+INSERT INTO "public"."user"("createdAt", "updatedAt", "id", "title", "firstName", "lastName", "email", "telephone", "password", "blockchainAccountAddress", "blockchainAccountSignedMessage", "notifications", "autoPublish", "rights", "organizationId") VALUES ('2020-03-30 08:08:33.510625+00', '2020-03-30 08:08:33.652639+00', 5, 'Mr', 'Admin', 'Surname', 'admin@mailinator.com', '111-111-111', '$2a$08$j8LnGtFdbTfKN5F.0InfdO2gxMWXHbrjWvRziCIl0lRj.kxOKJ/b6', '0x7672fa3f8c04abbcbad14d896aad8bedece72d2b', '0xb0a804f410f2934278703eb992e5ba12f9e8b9068b68ff6d1246a56cf52e48677d3648057453d86f4372b2ffd98fa189aee1562d8c564ac62bc416d6cdc474051c', 'f', '{"enabled":false,"priceInCents":150,"currency":"USD"}', '16', '4');
 
-INSERT INTO "public"."user"("createdAt", "updatedAt", "id", "title", "firstName", "lastName", "email", "telephone", "password", "blockchainAccountAddress", "blockchainAccountSignedMessage", "notifications", "autoPublish", "rights", "organizationId") VALUES ('2020-03-30 08:08:33.510625+00', '2020-03-30 08:08:33.652639+00', 6, 'Mr', 'Agents', 'Surname', 'agents@mailinator.com', '111-111-111', '$2a$08$j8LnGtFdbTfKN5F.0InfdO2gxMWXHbrjWvRziCIl0lRj.kxOKJ/b6', '0x7672fa3f8c04abbcbad14d896aad8bedece72d2b', '0xb0a804f410f2934278703eb992e5ba12f9e8b9068b68ff6d1246a56cf52e48677d3648057453d86f4372b2ffd98fa189aee1562d8c564ac62bc416d6cdc474051c', 'f', '{"enabled":false,"priceInCents":150,"currency":"USD"}', '64', '4');    
+INSERT INTO "public"."user"("createdAt", "updatedAt", "id", "title", "firstName", "lastName", "email", "telephone", "password", "blockchainAccountAddress", "blockchainAccountSignedMessage", "notifications", "autoPublish", "rights", "organizationId") VALUES ('2020-03-30 08:08:33.510625+00', '2020-03-30 08:08:33.652639+00', 6, 'Mr', 'Agents', 'Surname', 'agents@mailinator.com', '111-111-111', '$2a$08$j8LnGtFdbTfKN5F.0InfdO2gxMWXHbrjWvRziCIl0lRj.kxOKJ/b6', '0x7672fa3f8c04abbcbad14d896aad8bedece72d2b', '0xb0a804f410f2934278703eb992e5ba12f9e8b9068b68ff6d1246a56cf52e48677d3648057453d86f4372b2ffd98fa189aee1562d8c564ac62bc416d6cdc474051c', 'f', '{"enabled":false,"priceInCents":150,"currency":"USD"}', '32', '4');    
 
 UPDATE public.organization SET "leadUserId"='1' where id=1;
 
