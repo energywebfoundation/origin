@@ -56,11 +56,13 @@ export class DeviceService {
             loadEagerRelations: true
         })) as IDevice[]) as (ExtendedBaseEntity & IDeviceWithRelationsIds)[];
 
-        return devices.find((device) =>
-            device.externalDeviceIds.find(
-                (id) => id.id === externalId.id && id.type === externalId.type
-            )
+        const device = devices.find((d) =>
+            d.externalDeviceIds.find((id) => id.id === externalId.id && id.type === externalId.type)
         );
+
+        device.meterStats = await this.getMeterStats(device.id.toString());
+
+        return device;
     }
 
     async findOne(
@@ -76,15 +78,9 @@ export class DeviceService {
             device.smartMeterReads = [];
         }
 
+        device.meterStats = await this.getMeterStats(device.id.toString());
+
         return device;
-    }
-
-    async getCertificationRequests(deviceId: string): Promise<ICertificationRequestBackend[]> {
-        const device = await this.repository.findOne(deviceId, {
-            relations: ['certificationRequests']
-        });
-
-        return device.certificationRequests;
     }
 
     async create(data: DeviceCreateData, loggedUser: ILoggedInUser) {
@@ -117,9 +113,6 @@ export class DeviceService {
         const validationErrors = await validate(newEntity);
 
         if (validationErrors.length > 0) {
-            console.log({
-                validationErrors
-            });
             throw new UnprocessableEntityException({
                 success: false,
                 errors: validationErrors
@@ -135,21 +128,18 @@ export class DeviceService {
         this.repository.remove((entity as IDevice) as Device);
     }
 
-    async getAllSmartMeterReadings(id: string): Promise<ISmartMeterReadWithStatus[]> {
-        const device = await this.findOne(id);
-        const certificationRequests = await this.getCertificationRequests(id);
+    async getAllSmartMeterReadings(id: string): Promise<ISmartMeterRead[]> {
+        const device = await this.repository.findOne(id);
 
         if (this.smartMeterReadingsAdapter) {
-            const smReads = await this.smartMeterReadingsAdapter.getAll(device);
-            return this.resolveCertified(smReads, certificationRequests);
+            return this.smartMeterReadingsAdapter.getAll(device);
         }
 
-        return this.resolveCertified(device.smartMeterReads, certificationRequests);
+        return device.smartMeterReads;
     }
 
     async addSmartMeterReading(id: string, newSmartMeterRead: ISmartMeterRead): Promise<void> {
         const device = await this.findOne(id);
-        const certificationRequests = await this.getCertificationRequests(id);
 
         if (this.smartMeterReadingsAdapter) {
             await this.smartMeterReadingsAdapter.save(device, newSmartMeterRead);
@@ -168,9 +158,6 @@ export class DeviceService {
         }
 
         device.smartMeterReads = [...device.smartMeterReads, newSmartMeterRead];
-        device.meterStats = this.calculateCertifiedEnergy(
-            this.resolveCertified(device.smartMeterReads, certificationRequests)
-        );
 
         await this.repository.save(device);
     }
@@ -183,10 +170,12 @@ export class DeviceService {
             ...options
         })) as IDevice[]) as (ExtendedBaseEntity & IDeviceWithRelationsIds)[];
 
-        if (this.smartMeterReadingsAdapter) {
-            for (const device of devices) {
+        for (const device of devices) {
+            if (this.smartMeterReadingsAdapter) {
                 device.smartMeterReads = [];
             }
+
+            device.meterStats = await this.getMeterStats(device.id.toString());
         }
 
         return devices;
@@ -262,6 +251,23 @@ export class DeviceService {
                 message: `Device ${id} could not be updated due to an error ${error.message}`
             });
         }
+    }
+
+    private async getMeterStats(deviceId: string): Promise<ISmartMeterReadStats> {
+        const smReads = await this.getAllSmartMeterReadings(deviceId);
+        const certificationRequests = await this.getCertificationRequests(deviceId);
+
+        return this.calculateCertifiedEnergy(this.resolveCertified(smReads, certificationRequests));
+    }
+
+    private async getCertificationRequests(
+        deviceId: string
+    ): Promise<ICertificationRequestBackend[]> {
+        const device = await this.repository.findOne(deviceId, {
+            relations: ['certificationRequests']
+        });
+
+        return device.certificationRequests;
     }
 
     private resolveCertified(

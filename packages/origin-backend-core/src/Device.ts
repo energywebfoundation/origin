@@ -41,8 +41,8 @@ export interface ISmartMeterReadStats {
 }
 
 export interface ISmartMeterReadingsAdapter {
-    getAll(device: IDeviceWithRelationsIds): Promise<ISmartMeterRead[]>;
-    save(device: IDeviceWithRelationsIds, smRead: ISmartMeterRead): Promise<void>;
+    getAll(device: IDevice): Promise<ISmartMeterRead[]>;
+    save(device: IDevice, smRead: ISmartMeterRead): Promise<void>;
 }
 
 export interface IDeviceProductInfo {

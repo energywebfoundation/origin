@@ -5,8 +5,7 @@ import {
     IDeviceWithRelationsIds,
     ILoggedInUser,
     ISmartMeterRead,
-    Role,
-    ISmartMeterReadWithStatus
+    Role
 } from '@energyweb/origin-backend-core';
 import { Roles, RolesGuard, UserDecorator } from '@energyweb/origin-backend-utils';
 import {
@@ -120,7 +119,7 @@ export class DeviceController {
     }
 
     @Get('/:id/smartMeterReading')
-    async getAllSmartMeterReadings(@Param('id') id: string): Promise<ISmartMeterReadWithStatus[]> {
+    async getAllSmartMeterReadings(@Param('id') id: string): Promise<ISmartMeterRead[]> {
         const device = await this.deviceService.findOne(id);
 
         if (!device) {

@@ -3,15 +3,17 @@ import {
     DeviceStatus,
     IDeviceWithRelationsIds,
     DeviceSettingsUpdateData,
-    Role,
-    ISmartMeterReadWithStatus
+    Role
 } from '@energyweb/origin-backend-core';
 import request from 'supertest';
 
 import moment from 'moment';
+import { bigNumberify } from 'ethers/utils';
 import { registerAndLogin, bootstrapTestInstance } from './origin-backend';
 
 describe('Device e2e tests', () => {
+    jest.setTimeout(1000000);
+
     it('should allow to edit settings for organization member with DeviceManager role', async () => {
         const {
             app,
@@ -171,11 +173,13 @@ describe('Device e2e tests', () => {
         );
 
         await request(app.getHttpServer())
-            .get(`/device/${device.id}/smartMeterReading`)
+            .get(`/device/${device.id}`)
             .set('Authorization', `Bearer ${accessToken}`)
             .expect((res) => {
-                const smReads = res.body as ISmartMeterReadWithStatus[];
-                expect(smReads).toStrictEqual([]);
+                const resultDevice = res.body as IDeviceWithRelationsIds;
+
+                expect(bigNumberify(resultDevice.meterStats.certified).toNumber()).toBe(0);
+                expect(bigNumberify(resultDevice.meterStats.uncertified).toNumber()).toBe(0);
             });
 
         const now = moment();
@@ -213,12 +217,14 @@ describe('Device e2e tests', () => {
         });
 
         await request(app.getHttpServer())
-            .get(`/device/${device.id}/smartMeterReading`)
+            .get(`/device/${device.id}`)
             .set('Authorization', `Bearer ${accessToken}`)
             .expect((res) => {
-                const smReads = res.body as ISmartMeterReadWithStatus[];
+                const resultDevice = res.body as IDeviceWithRelationsIds;
 
-                expect(smReads.some((smRead) => smRead.certified)).toBe(true);
+                expect(bigNumberify(resultDevice.meterStats.certified).toNumber()).toBeGreaterThan(
+                    0
+                );
             });
 
         await app.close();

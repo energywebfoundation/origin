@@ -1,20 +1,9 @@
 import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, OneToMany } from 'typeorm';
 import { IsInt, Min, IsLatitude, IsLongitude, IsNotEmpty } from 'class-validator';
-import {
-    ISmartMeterRead,
-    IExternalDeviceId,
-    IDevice,
-    ISmartMeterReadStats
-} from '@energyweb/origin-backend-core';
-import { bigNumberify } from 'ethers/utils';
+import { ISmartMeterRead, IExternalDeviceId, IDevice } from '@energyweb/origin-backend-core';
 import { Organization } from '../organization/organization.entity';
 import { ExtendedBaseEntity } from '../ExtendedBaseEntity';
 import { CertificationRequest } from '../certificate/certification-request.entity';
-
-const defaultMeterStats: ISmartMeterReadStats = {
-    certified: bigNumberify(0),
-    uncertified: bigNumberify(0)
-};
 
 @Entity()
 export class Device extends ExtendedBaseEntity implements IDevice {
@@ -76,12 +65,6 @@ export class Device extends ExtendedBaseEntity implements IDevice {
 
     @Column()
     typeOfPublicSupport: string;
-
-    @Column('simple-json', {
-        default: defaultMeterStats,
-        nullable: false
-    })
-    meterStats: ISmartMeterReadStats;
 
     @Column()
     deviceGroup: string;
