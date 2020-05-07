@@ -1,6 +1,11 @@
 import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, OneToMany } from 'typeorm';
 import { IsInt, Min, IsLatitude, IsLongitude, IsNotEmpty } from 'class-validator';
-import { ISmartMeterRead, IExternalDeviceId, IDevice } from '@energyweb/origin-backend-core';
+import {
+    ISmartMeterRead,
+    IExternalDeviceId,
+    IDevice,
+    ISmartMeterReadStats
+} from '@energyweb/origin-backend-core';
 import { Organization } from '../organization/organization.entity';
 import { ExtendedBaseEntity } from '../ExtendedBaseEntity';
 import { CertificationRequest } from '../certificate/certification-request.entity';
@@ -67,7 +72,7 @@ export class Device extends ExtendedBaseEntity implements IDevice {
     typeOfPublicSupport: string;
 
     @Column('simple-json', { nullable: true })
-    lastSmartMeterReading: ISmartMeterRead;
+    meterStats: ISmartMeterReadStats;
 
     @Column()
     deviceGroup: string;

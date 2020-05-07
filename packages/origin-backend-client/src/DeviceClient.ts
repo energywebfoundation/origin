@@ -4,7 +4,8 @@ import {
     ISmartMeterRead,
     DeviceCreateData,
     IDeviceWithRelationsIds,
-    IExternalDeviceId
+    IExternalDeviceId,
+    ISmartMeterReadWithStatus
 } from '@energyweb/origin-backend-core';
 import { IRequestClient, RequestClient } from './RequestClient';
 import { bigNumberify } from 'ethers/utils';
@@ -15,7 +16,7 @@ export interface IDeviceClient {
     getAll(): Promise<IDeviceWithRelationsIds[]>;
     add(device: DeviceCreateData): Promise<IDeviceWithRelationsIds>;
     update(id: number, data: DeviceUpdateData): Promise<IDevice>;
-    getAllSmartMeterReadings(id: number): Promise<ISmartMeterRead[]>;
+    getAllSmartMeterReadings(id: number): Promise<ISmartMeterReadWithStatus[]>;
     addSmartMeterRead(id: number, smartMeterRead: ISmartMeterRead): Promise<void>;
 }
 
@@ -64,17 +65,17 @@ export class DeviceClient implements IDeviceClient {
         return response.data;
     }
 
-    public async getAllSmartMeterReadings(id: number): Promise<ISmartMeterRead[]> {
-        const response = await this.requestClient.get(`${this.endpoint}/${id}/smartMeterReading`);
+    public async getAllSmartMeterReadings(id: number): Promise<ISmartMeterReadWithStatus[]> {
+        const response = await this.requestClient.get<void, ISmartMeterReadWithStatus[]>(`${this.endpoint}/${id}/smartMeterReading`);
 
-        const meterReadingsFormatted: ISmartMeterRead[] = response.data.map((read: ISmartMeterRead) => {
-            return {
-                ...read,
-                meterReading: bigNumberify(read.meterReading)    
-            };
-        });
+        // const meterReadingsFormatted: ISmartMeterRead[] = response.data.map((read: ISmartMeterRead) => {
+        //     return {
+        //         ...read,
+        //         meterReading: bigNumberify(read.meterReading)    
+        //     };
+        // });
 
-        return meterReadingsFormatted;
+        return response.data;
     }
 
     public async addSmartMeterRead(id: number, smartMeterRead: ISmartMeterRead): Promise<void> {
