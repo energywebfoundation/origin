@@ -1,4 +1,4 @@
-import { IUser } from '@energyweb/origin-backend-core';
+import { IUser, IOrganization } from '@energyweb/origin-backend-core';
 import { Injectable, UnprocessableEntityException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -16,6 +16,17 @@ export class AdminService {
     public async getAllUsers() {
         return this.repository.find({
             relations: ['organization']
+        });
+    }
+
+    public async getUsersBy(orgName: string, status: number, kycStatus: number) {
+        const result = await this.repository.find({
+            where: { status, kycStatus },
+            relations: ['organization']
+        });
+        return result.filter((item) => {
+            const organization = item.organization as IOrganization;
+            return organization.name.toLocaleLowerCase().includes(orgName.toLocaleLowerCase());
         });
     }
 
