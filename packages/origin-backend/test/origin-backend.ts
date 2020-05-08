@@ -13,7 +13,6 @@ import { Test } from '@nestjs/testing';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import dotenv from 'dotenv';
 import request from 'supertest';
-import { PostgresConnectionOptions } from 'typeorm/driver/postgres/PostgresConnectionOptions';
 
 import { entities } from '../src';
 import { AppModule } from '../src/app.module';
@@ -27,29 +26,15 @@ import { DatabaseService } from './database.service';
 const testLogger = new Logger('e2e');
 
 export const bootstrapTestInstance = async () => {
-    const getDBConnectionOptions = (): PostgresConnectionOptions => {
-        return process.env.DATABASE_URL
-            ? {
-                  type: 'postgres',
-                  url: process.env.DATABASE_URL,
-                  ssl: {
-                      rejectUnauthorized: false
-                  }
-              }
-            : {
-                  type: 'postgres',
-                  host: process.env.DB_HOST ?? 'localhost',
-                  port: Number(process.env.DB_PORT) ?? 5432,
-                  username: process.env.DB_USERNAME ?? 'postgres',
-                  password: process.env.DB_PASSWORD ?? 'postgres',
-                  database: process.env.DB_DATABASE ?? 'origin'
-              };
-    };
-
     const moduleFixture = await Test.createTestingModule({
         imports: [
             TypeOrmModule.forRoot({
-                ...getDBConnectionOptions(),
+                type: 'postgres',
+                host: process.env.DB_HOST ?? 'localhost',
+                port: Number(process.env.DB_PORT) ?? 5432,
+                username: process.env.DB_USERNAME ?? 'postgres',
+                password: process.env.DB_PASSWORD ?? 'postgres',
+                database: process.env.DB_DATABASE ?? 'origin',
                 entities,
                 logging: ['info']
             }),
