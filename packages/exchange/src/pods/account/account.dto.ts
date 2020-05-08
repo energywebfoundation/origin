@@ -1,11 +1,11 @@
 import { AccountBalance } from '../account-balance/account-balance';
 
-export class Account {
+export class AccountDTO {
     public address: string;
 
     public balances: AccountBalance;
 
-    public constructor(account: Partial<Account>) {
+    public constructor(account: Partial<AccountDTO>) {
         Object.assign(this, account);
     }
 }

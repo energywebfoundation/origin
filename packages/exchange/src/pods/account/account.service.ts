@@ -3,8 +3,8 @@ import { Connection, EntityManager } from 'typeorm';
 
 import { AccountBalanceService } from '../account-balance/account-balance.service';
 import { AccountDeployerService } from '../account-deployer/account-deployer.service';
-import { Account } from './account';
-import { Account as AccountEntity } from './account.entity';
+import { AccountDTO } from './account.dto';
+import { Account } from './account.entity';
 
 @Injectable()
 export class AccountService {
@@ -27,7 +27,7 @@ export class AccountService {
 
     private async create(userId: string, transaction: EntityManager) {
         this.logger.debug(`Trying to find account for userId=${userId}`);
-        const repository = transaction.getRepository<AccountEntity>(AccountEntity);
+        const repository = transaction.getRepository<Account>(Account);
 
         let account = await repository.findOne(null, {
             where: { userId }
@@ -47,7 +47,7 @@ export class AccountService {
     public async findByAddress(address: string, transaction?: EntityManager) {
         this.logger.debug(`Requesting account for address ${address}`);
         const manager = transaction || this.connection.manager;
-        const repository = manager.getRepository<AccountEntity>(AccountEntity);
+        const repository = manager.getRepository<Account>(Account);
 
         const account = await repository.findOne({
             where: { address }
@@ -57,12 +57,12 @@ export class AccountService {
         return account;
     }
 
-    public async getAccount(userId: string): Promise<Account> {
+    public async getAccount(userId: string): Promise<AccountDTO> {
         const { address } = await this.getOrCreateAccount(userId);
 
         const balances = await this.accountBalanceService.getAccountBalance(userId);
 
-        return new Account({
+        return new AccountDTO({
             address,
             balances
         });

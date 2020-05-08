@@ -1,7 +1,7 @@
 import { INestApplication } from '@nestjs/common';
 import request from 'supertest';
 
-import { Account } from '../src/pods/account/account';
+import { AccountDTO } from '../src/pods/account/account.dto';
 import { AccountService } from '../src/pods/account/account.service';
 import { TransferService } from '../src/pods/transfer/transfer.service';
 import { DatabaseService } from './database.service';
@@ -63,7 +63,7 @@ describe('account deposit confirmation', () => {
             .get('/account')
             .expect(200)
             .expect((res) => {
-                const account = res.body as Account;
+                const account = res.body as AccountDTO;
 
                 expect(account.address).toBe(user1Address);
                 expect(account.balances.available.length).toBe(0);
@@ -81,7 +81,7 @@ describe('account deposit confirmation', () => {
             .get('/account')
             .expect(200)
             .expect((res) => {
-                const account = res.body as Account;
+                const account = res.body as AccountDTO;
 
                 expect(account.address).toBe(user1Address);
                 expect(account.balances.available.length).toBe(1);
