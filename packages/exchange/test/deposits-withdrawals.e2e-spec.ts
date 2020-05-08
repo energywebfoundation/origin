@@ -3,7 +3,7 @@ import { Contract, ethers } from 'ethers';
 import moment from 'moment';
 import request from 'supertest';
 
-import { Account } from '../src/pods/account/account';
+import { AccountDTO } from '../src/pods/account/account.dto';
 import { AccountService } from '../src/pods/account/account.service';
 import { CreateAskDTO } from '../src/pods/order/create-ask.dto';
 import { Order } from '../src/pods/order/order.entity';
@@ -95,7 +95,7 @@ describe('Deposits using deployed registry', () => {
             .get('/account')
             .expect(200)
             .expect((res) => {
-                const account = res.body as Account;
+                const account = res.body as AccountDTO;
 
                 const [balance] = account.balances.available;
 
