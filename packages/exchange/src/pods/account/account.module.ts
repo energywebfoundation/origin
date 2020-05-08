@@ -9,7 +9,7 @@ import { AccountService } from './account.service';
 
 @Module({
     imports: [
-        TypeOrmModule.forFeature([Account], 'ExchangeConnection'),
+        TypeOrmModule.forFeature([Account]),
         forwardRef(() => AccountBalanceModule),
         AccountDeployerModule
     ],

@@ -51,7 +51,7 @@
         "@nestjs/platform-express": "7.0.9",
         "@nestjs/schedule": "0.3.1",
         "@nestjs/swagger": "4.5.3",
-        "@nestjs/typeorm": "6.3.4",
+        "@nestjs/typeorm": "7.0.0",
         "bn.js": "^5.1.1",
         "class-transformer": "0.2.3",
         "class-validator": "0.12.2",

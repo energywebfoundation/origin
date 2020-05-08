@@ -1,3 +1,0 @@
-import { startAPI } from '.';
-
-startAPI();

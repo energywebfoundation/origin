@@ -1,6 +1,6 @@
 import { TradeExecutedEvent } from '@energyweb/exchange-core';
 import { Injectable, Logger } from '@nestjs/common';
-import { InjectConnection, InjectRepository } from '@nestjs/typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
 import { List } from 'immutable';
 import { Connection, Repository } from 'typeorm';
 
@@ -13,9 +13,8 @@ export class TradeService {
     private readonly logger = new Logger(TradeService.name);
 
     constructor(
-        @InjectConnection('ExchangeConnection')
         private readonly connection: Connection,
-        @InjectRepository(Trade, 'ExchangeConnection')
+        @InjectRepository(Trade)
         private readonly repository: Repository<Trade>
     ) {}
 
