@@ -12,7 +12,7 @@ import { TransferService } from './transfer.service';
 @Module({
     providers: [TransferService],
     imports: [
-        TypeOrmModule.forFeature([Transfer], 'ExchangeConnection'),
+        TypeOrmModule.forFeature([Transfer]),
         AssetModule,
         forwardRef(() => AccountModule),
         forwardRef(() => AccountBalanceModule),

@@ -18,12 +18,11 @@ export class TransferService {
     private readonly logger = new Logger(TransferService.name);
 
     constructor(
-        @InjectRepository(Transfer, 'ExchangeConnection')
+        @InjectRepository(Transfer)
         private readonly repository: Repository<Transfer>,
         private readonly assetService: AssetService,
         @Inject(forwardRef(() => AccountService))
         private readonly accountService: AccountService,
-        @InjectConnection('ExchangeConnection')
         private readonly connection: Connection,
         @Inject(forwardRef(() => AccountBalanceService))
         private readonly accountBalanceService: AccountBalanceService,

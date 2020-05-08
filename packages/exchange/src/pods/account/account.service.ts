@@ -1,5 +1,4 @@
 import { forwardRef, Inject, Injectable, Logger } from '@nestjs/common';
-import { InjectConnection } from '@nestjs/typeorm';
 import { Connection, EntityManager } from 'typeorm';
 
 import { AccountBalanceService } from '../account-balance/account-balance.service';
@@ -14,7 +13,6 @@ export class AccountService {
     constructor(
         @Inject(forwardRef(() => AccountBalanceService))
         private readonly accountBalanceService: AccountBalanceService,
-        @InjectConnection('ExchangeConnection')
         private readonly connection: Connection,
         private readonly accountDeployerService: AccountDeployerService
     ) {}

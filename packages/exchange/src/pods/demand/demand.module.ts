@@ -11,11 +11,7 @@ import { DemandTimePeriodService } from './demand-time-period.service';
 @Module({
     providers: [DemandService, DemandTimePeriodService],
     exports: [DemandService],
-    imports: [
-        TypeOrmModule.forFeature([Demand], 'ExchangeConnection'),
-        OrderModule,
-        MatchingEngineModule
-    ],
+    imports: [TypeOrmModule.forFeature([Demand]), OrderModule, MatchingEngineModule],
     controllers: [DemandController]
 })
 export class DemandModule {}

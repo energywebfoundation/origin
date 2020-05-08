@@ -6,9 +6,12 @@ import { CanActivate, ExecutionContext, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { AuthGuard } from '@nestjs/passport';
 import { Test } from '@nestjs/testing';
+import { TypeOrmModule } from '@nestjs/typeorm';
 import { useContainer } from 'class-validator';
 import { ethers } from 'ethers';
+import { PostgresConnectionOptions } from 'typeorm/driver/postgres/PostgresConnectionOptions';
 
+import { entities } from '../src';
 import { AppModule } from '../src/app.module';
 import { AccountService } from '../src/pods/account/account.service';
 import { DemandService } from '../src/pods/demand/demand.service';
@@ -90,8 +93,34 @@ export const bootstrapTestInstance = async (deviceServiceMock?: DeviceService) =
         ISSUER_ID: 'Issuer ID'
     });
 
+    const getDBConnectionOptions = (): PostgresConnectionOptions => {
+        return process.env.DATABASE_URL
+            ? {
+                  type: 'postgres',
+                  url: process.env.DATABASE_URL,
+                  ssl: {
+                      rejectUnauthorized: false
+                  }
+              }
+            : {
+                  type: 'postgres',
+                  host: process.env.DB_HOST ?? 'localhost',
+                  port: Number(process.env.DB_PORT) ?? 5432,
+                  username: process.env.DB_USERNAME ?? 'postgres',
+                  password: process.env.DB_PASSWORD ?? 'postgres',
+                  database: process.env.DB_DATABASE ?? 'origin'
+              };
+    };
+
     const moduleFixture = await Test.createTestingModule({
-        imports: [AppModule],
+        imports: [
+            TypeOrmModule.forRoot({
+                ...getDBConnectionOptions(),
+                entities,
+                logging: ['info']
+            }),
+            AppModule
+        ],
         providers: [
             DatabaseService,
             {
