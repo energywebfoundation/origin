@@ -216,6 +216,8 @@ describe('Device e2e tests', () => {
             created: moment().subtract(1, 'day').unix()
         });
 
+        await certificationRequestService.registerApproved(1);
+
         await request(app.getHttpServer())
             .get(`/device/${device.id}`)
             .set('Authorization', `Bearer ${accessToken}`)
