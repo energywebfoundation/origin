@@ -1,30 +1,24 @@
-import { NestFactory } from '@nestjs/core';
-import { LoggerService } from '@nestjs/common';
+import { Certificate } from './pods/certificate/certificate.entity';
+import { CertificationRequest } from './pods/certificate/certification-request.entity';
+import { OwnershipCommitment } from './pods/certificate/ownership-commitment.entity';
+import { Configuration } from './pods/configuration/configuration.entity';
+import { Device } from './pods/device/device.entity';
+import { Organization } from './pods/organization/organization.entity';
+import { OrganizationInvitation } from './pods/organization/organizationInvitation.entity';
+import { User } from './pods/user/user.entity';
 
-import { AppModule } from './app.module';
-import * as PortUtils from './port';
-import { DeviceModule } from './pods/device/device.module';
-import { DeviceService } from './pods/device/device.service';
-import { ExtendedBaseEntity } from './pods/ExtendedBaseEntity';
+export { AppModule } from './app.module';
+export { ExtendedBaseEntity } from './pods/ExtendedBaseEntity';
+export { ConfigurationService } from './pods/configuration/configuration.service';
+export { DeviceService } from './pods/device/device.service';
 
-export * from './pods/configuration';
-
-export async function startAPI(logger?: LoggerService) {
-    const PORT = PortUtils.getPort();
-
-    console.log(`Backend starting on port: ${PORT}`);
-
-    const app = await NestFactory.create(AppModule.register(null));
-    app.enableCors();
-    app.setGlobalPrefix('api');
-
-    if (logger) {
-        app.useLogger(logger);
-    }
-
-    await app.listen(PORT);
-
-    return app;
-}
-
-export { AppModule, PortUtils, DeviceModule, DeviceService, ExtendedBaseEntity };
+export const entities = [
+    Device,
+    OwnershipCommitment,
+    Configuration,
+    Organization,
+    User,
+    OrganizationInvitation,
+    CertificationRequest,
+    Certificate
+];

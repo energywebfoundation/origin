@@ -2,30 +2,59 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import {
     buildRights,
+    LoggedInUser,
     OrganizationPostData,
     Role,
-    UserRegisterData,
-    LoggedInUser
+    UserRegisterData
 } from '@energyweb/origin-backend-core';
+import { signTypedMessagePrivateKey } from '@energyweb/utils-general';
 import { Logger } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
-import request from 'supertest';
+import { TypeOrmModule } from '@nestjs/typeorm';
 import dotenv from 'dotenv';
+import request from 'supertest';
+import { PostgresConnectionOptions } from 'typeorm/driver/postgres/PostgresConnectionOptions';
 
-import { signTypedMessagePrivateKey } from '@energyweb/utils-general';
+import { entities } from '../src';
 import { AppModule } from '../src/app.module';
+import { CertificationRequestService } from '../src/pods/certificate/certification-request.service';
 import { ConfigurationService } from '../src/pods/configuration';
 import { DeviceService } from '../src/pods/device/device.service';
 import { OrganizationService } from '../src/pods/organization/organization.service';
 import { UserService } from '../src/pods/user';
 import { DatabaseService } from './database.service';
-import { CertificationRequestService } from '../src/pods/certificate/certification-request.service';
 
 const testLogger = new Logger('e2e');
 
 export const bootstrapTestInstance = async () => {
+    const getDBConnectionOptions = (): PostgresConnectionOptions => {
+        return process.env.DATABASE_URL
+            ? {
+                  type: 'postgres',
+                  url: process.env.DATABASE_URL,
+                  ssl: {
+                      rejectUnauthorized: false
+                  }
+              }
+            : {
+                  type: 'postgres',
+                  host: process.env.DB_HOST ?? 'localhost',
+                  port: Number(process.env.DB_PORT) ?? 5432,
+                  username: process.env.DB_USERNAME ?? 'postgres',
+                  password: process.env.DB_PASSWORD ?? 'postgres',
+                  database: process.env.DB_DATABASE ?? 'origin'
+              };
+    };
+
     const moduleFixture = await Test.createTestingModule({
-        imports: [AppModule.register(null)],
+        imports: [
+            TypeOrmModule.forRoot({
+                ...getDBConnectionOptions(),
+                entities,
+                logging: ['info']
+            }),
+            AppModule.register(null)
+        ],
         providers: [DatabaseService]
     }).compile();
 
