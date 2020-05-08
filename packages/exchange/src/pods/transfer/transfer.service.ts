@@ -1,5 +1,5 @@
 import { Injectable, forwardRef, Inject, Logger } from '@nestjs/common';
-import { InjectRepository, InjectConnection } from '@nestjs/typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, Connection, EntityManager, FindOneOptions } from 'typeorm';
 
 import { Transfer } from './transfer.entity';

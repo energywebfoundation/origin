@@ -1,6 +1,6 @@
 import { DemandStatus } from '@energyweb/utils-general';
 import { Injectable, Logger } from '@nestjs/common';
-import { InjectConnection, InjectRepository } from '@nestjs/typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
 import BN from 'bn.js';
 import { Connection, Repository } from 'typeorm';
 

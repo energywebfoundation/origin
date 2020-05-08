@@ -1,6 +1,6 @@
 import { TradeExecutedEvent } from '@energyweb/exchange-core';
 import { Injectable, Logger } from '@nestjs/common';
-import { InjectConnection, InjectRepository } from '@nestjs/typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
 import { List } from 'immutable';
 import { Connection, Repository } from 'typeorm';
 
