@@ -86,9 +86,8 @@ export class CertificationRequestWatcherService implements OnModuleInit {
         }
 
         const certRequestInfo = await this.issuer.getCertificationRequest(_id);
-        const decodedData = await this.issuer.decodeData(certRequestInfo.data);
+        const [fromTime, toTime, deviceId] = await this.issuer.decodeData(certRequestInfo.data);
 
-        const deviceId = decodedData['2'];
         const device = await this.deviceService.findByExternalId({
             id: deviceId,
             type: process.env.ISSUER_ID
@@ -99,17 +98,17 @@ export class CertificationRequestWatcherService implements OnModuleInit {
             return;
         }
 
-        const creationBlock = await this.issuer.provider.getBlock(event.blockNumber);
+        const { timestamp: created } = await this.issuer.provider.getBlock(event.blockNumber);
 
         const certificationRequest = await this.certificationRequestService.create({
             id: _id.toNumber(),
             owner: certRequestInfo.owner,
-            fromTime: Number(decodedData['0']),
-            toTime: Number(decodedData['1']),
+            fromTime: fromTime.toNumber(),
+            toTime: toTime.toNumber(),
             device,
             approved: certRequestInfo.approved,
             revoked: certRequestInfo.revoked,
-            created: Number(creationBlock.timestamp)
+            created
         });
 
         this.logger.log(
@@ -126,7 +125,7 @@ export class CertificationRequestWatcherService implements OnModuleInit {
 
         const { _id } = log.values;
 
-        const certificationRequest = await this.certificationRequestService.get(_id);
+        const certificationRequest = await this.certificationRequestService.get(_id.toNumber());
 
         if (!certificationRequest) {
             this.logger.error(
@@ -156,7 +155,7 @@ export class CertificationRequestWatcherService implements OnModuleInit {
 
         const { _id } = log.values;
 
-        const certificationRequest = await this.certificationRequestService.get(_id);
+        const certificationRequest = await this.certificationRequestService.get(_id.toNumber());
 
         if (!certificationRequest) {
             this.logger.error(

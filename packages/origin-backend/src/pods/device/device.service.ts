@@ -278,12 +278,17 @@ export class DeviceService {
             let certified = false;
 
             for (const certReq of certificationRequests) {
+                if (!certReq.approved) {
+                    continue;
+                }
+
                 const smReadTime = moment.unix(smRead.timestamp);
                 const certificationFromTime = moment.unix(certReq.fromTime);
                 const certificationToTime = moment.unix(certReq.toTime);
 
                 if (smReadTime.isBetween(certificationFromTime, certificationToTime)) {
                     certified = true;
+                    break;
                 }
             }
 
