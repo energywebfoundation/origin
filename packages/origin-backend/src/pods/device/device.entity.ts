@@ -66,9 +66,6 @@ export class Device extends ExtendedBaseEntity implements IDevice {
     @Column()
     typeOfPublicSupport: string;
 
-    @Column('simple-json', { nullable: true })
-    lastSmartMeterReading: ISmartMeterRead;
-
     @Column()
     deviceGroup: string;
 

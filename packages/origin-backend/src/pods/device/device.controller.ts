@@ -1,7 +1,6 @@
 import {
     DeviceCreateData,
     DeviceSettingsUpdateData,
-    DeviceStatus,
     DeviceUpdateData,
     IDeviceWithRelationsIds,
     ILoggedInUser,
@@ -65,14 +64,7 @@ export class DeviceController {
             throw new BadRequestException('server.errors.loggedUserOrganizationEmpty');
         }
 
-        return this.deviceService.create({
-            ...body,
-            status: body.status ?? DeviceStatus.Submitted,
-            lastSmartMeterReading: body.lastSmartMeterReading ?? null,
-            smartMeterReads: body.smartMeterReads ?? [],
-            deviceGroup: body.deviceGroup ?? '',
-            organization: loggedUser.organizationId
-        });
+        return this.deviceService.create(body, loggedUser);
     }
 
     @Delete('/:id')
@@ -127,10 +119,10 @@ export class DeviceController {
     }
 
     @Get('/:id/smartMeterReading')
-    async getAllSmartMeterReadings(@Param('id') id: string) {
-        const existing = await this.deviceService.findOne(id);
+    async getAllSmartMeterReadings(@Param('id') id: string): Promise<ISmartMeterRead[]> {
+        const device = await this.deviceService.findOne(id);
 
-        if (!existing) {
+        if (!device) {
             throw new NotFoundException(StorageErrors.NON_EXISTENT);
         }
 
@@ -165,8 +157,12 @@ export class DeviceController {
                 message: `Smart meter reading successfully added to device ${id}`
             };
         } catch (error) {
-            this.logger.error('Errow when saving smart meter read');
-            this.logger.error(error);
+            this.logger.error('Error when saving smart meter read');
+            this.logger.error({
+                error,
+                id,
+                newSmartMeterRead
+            });
             throw new UnprocessableEntityException({
                 message: `Smart meter reading could not be added due to an unknown error for device ${id}`
             });

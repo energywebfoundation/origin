@@ -9,7 +9,13 @@ import {
     ISmartMeterRead,
     ISmartMeterReadingsAdapter,
     SupportedEvents,
-    DeviceSettingsUpdateData
+    DeviceSettingsUpdateData,
+    ICertificationRequestBackend,
+    ISmartMeterReadWithStatus,
+    ISmartMeterReadStats,
+    IEnergyGeneratedWithStatus,
+    DeviceStatus,
+    ILoggedInUser
 } from '@energyweb/origin-backend-core';
 import {
     Inject,
@@ -22,6 +28,8 @@ import { validate } from 'class-validator';
 import { FindOneOptions, Repository } from 'typeorm';
 import { v4 as uuid } from 'uuid';
 
+import moment from 'moment';
+import { bigNumberify } from 'ethers/utils';
 import { SM_READS_ADAPTER } from '../../const';
 import { StorageErrors } from '../../enums/StorageErrors';
 import { ConfigurationService } from '../configuration';
@@ -48,11 +56,13 @@ export class DeviceService {
             loadEagerRelations: true
         })) as IDevice[]) as (ExtendedBaseEntity & IDeviceWithRelationsIds)[];
 
-        return devices.find((device) =>
-            device.externalDeviceIds.find(
-                (id) => id.id === externalId.id && id.type === externalId.type
-            )
+        const device = devices.find((d) =>
+            d.externalDeviceIds.find((id) => id.id === externalId.id && id.type === externalId.type)
         );
+
+        device.meterStats = await this.getMeterStats(device.id.toString());
+
+        return device;
     }
 
     async findOne(
@@ -65,20 +75,26 @@ export class DeviceService {
         })) as IDevice) as ExtendedBaseEntity & IDeviceWithRelationsIds;
 
         if (this.smartMeterReadingsAdapter) {
-            device.lastSmartMeterReading = await this.smartMeterReadingsAdapter.getLatest(device);
             device.smartMeterReads = [];
         }
+
+        device.meterStats = await this.getMeterStats(device.id.toString());
 
         return device;
     }
 
-    async create(data: DeviceCreateData & Pick<IDeviceWithRelationsIds, 'organization'>) {
+    async create(data: DeviceCreateData, loggedUser: ILoggedInUser) {
         const configuration = await this.configurationService.get();
+        const organization = await this.organizationService.findOne(loggedUser.organizationId);
 
         const newEntity = new Device();
 
         Object.assign(newEntity, {
             ...data,
+            status: data.status ?? DeviceStatus.Submitted,
+            smartMeterReads: data.smartMeterReads ?? [],
+            deviceGroup: data.deviceGroup ?? '',
+            organization,
             externalDeviceIds: data.externalDeviceIds
                 ? data.externalDeviceIds.map(({ id, type }) => {
                       if (
@@ -112,8 +128,8 @@ export class DeviceService {
         this.repository.remove((entity as IDevice) as Device);
     }
 
-    async getAllSmartMeterReadings(id: string) {
-        const device = await this.findOne(id);
+    async getAllSmartMeterReadings(id: string): Promise<ISmartMeterRead[]> {
+        const device = await this.repository.findOne(id);
 
         if (this.smartMeterReadingsAdapter) {
             return this.smartMeterReadingsAdapter.getAll(device);
@@ -126,16 +142,14 @@ export class DeviceService {
         const device = await this.findOne(id);
 
         if (this.smartMeterReadingsAdapter) {
-            this.smartMeterReadingsAdapter.save(device, newSmartMeterRead);
+            await this.smartMeterReadingsAdapter.save(device, newSmartMeterRead);
             return;
         }
-
-        const latestSmartMeterReading = (smReads: ISmartMeterRead[]) => smReads[smReads.length - 1];
 
         if (device.smartMeterReads.length > 0) {
             if (
                 newSmartMeterRead.timestamp <=
-                latestSmartMeterReading(device.smartMeterReads).timestamp
+                device.smartMeterReads[device.smartMeterReads.length - 1].timestamp
             ) {
                 throw new UnprocessableEntityException({
                     message: `Smart meter reading timestamp should be higher than latest.`
@@ -144,7 +158,6 @@ export class DeviceService {
         }
 
         device.smartMeterReads = [...device.smartMeterReads, newSmartMeterRead];
-        device.lastSmartMeterReading = latestSmartMeterReading(device.smartMeterReads);
 
         await this.repository.save(device);
     }
@@ -157,14 +170,12 @@ export class DeviceService {
             ...options
         })) as IDevice[]) as (ExtendedBaseEntity & IDeviceWithRelationsIds)[];
 
-        if (this.smartMeterReadingsAdapter) {
-            for (const device of devices) {
-                device.lastSmartMeterReading = await this.smartMeterReadingsAdapter.getLatest(
-                    device
-                );
-
+        for (const device of devices) {
+            if (this.smartMeterReadingsAdapter) {
                 device.smartMeterReads = [];
             }
+
+            device.meterStats = await this.getMeterStats(device.id.toString());
         }
 
         return devices;
@@ -240,5 +251,77 @@ export class DeviceService {
                 message: `Device ${id} could not be updated due to an error ${error.message}`
             });
         }
+    }
+
+    private async getMeterStats(deviceId: string): Promise<ISmartMeterReadStats> {
+        const smReads = await this.getAllSmartMeterReadings(deviceId);
+        const certificationRequests = await this.getCertificationRequests(deviceId);
+
+        return this.calculateCertifiedEnergy(this.resolveCertified(smReads, certificationRequests));
+    }
+
+    private async getCertificationRequests(
+        deviceId: string
+    ): Promise<ICertificationRequestBackend[]> {
+        const device = await this.repository.findOne(deviceId, {
+            relations: ['certificationRequests']
+        });
+
+        return device.certificationRequests;
+    }
+
+    private resolveCertified(
+        smReads: ISmartMeterRead[],
+        certificationRequests: ICertificationRequestBackend[]
+    ): ISmartMeterReadWithStatus[] {
+        return smReads.map((smRead) => {
+            let certified = false;
+
+            for (const certReq of certificationRequests) {
+                if (!certReq.approved) {
+                    continue;
+                }
+
+                const smReadTime = moment.unix(smRead.timestamp);
+                const certificationFromTime = moment.unix(certReq.fromTime);
+                const certificationToTime = moment.unix(certReq.toTime);
+
+                if (smReadTime.isBetween(certificationFromTime, certificationToTime)) {
+                    certified = true;
+                    break;
+                }
+            }
+
+            return {
+                ...smRead,
+                certified
+            };
+        });
+    }
+
+    private calculateCertifiedEnergy(smReads: ISmartMeterReadWithStatus[]): ISmartMeterReadStats {
+        const energiesGenerated: IEnergyGeneratedWithStatus[] = [];
+
+        for (let i = 0; i < smReads.length; i++) {
+            const isFirstReading = i === 0;
+
+            const { meterReading, timestamp, certified } = smReads[i];
+
+            energiesGenerated.push({
+                energy: bigNumberify(meterReading).sub(
+                    isFirstReading ? 0 : bigNumberify(smReads[i - 1].meterReading)
+                ),
+                timestamp,
+                certified
+            });
+        }
+
+        const sumEnergy = (energyGens: IEnergyGeneratedWithStatus[]) =>
+            energyGens.reduce((sum, energyGen) => sum.add(energyGen.energy), bigNumberify(0));
+
+        return {
+            certified: sumEnergy(energiesGenerated.filter((energyGen) => energyGen.certified)),
+            uncertified: sumEnergy(energiesGenerated.filter((energyGen) => !energyGen.certified))
+        };
     }
 }

@@ -22,8 +22,8 @@ import {
     createOriginConfiguration,
     initializeI18N
 } from '../../components';
-import { IDevice, DeviceStatus } from '@energyweb/origin-backend-core';
-import { BigNumber, bigNumberify } from 'ethers/utils';
+import { IDevice, DeviceStatus, ISmartMeterReadStats } from '@energyweb/origin-backend-core';
+import { bigNumberify } from 'ethers/utils';
 import { ICertificate, Certificate } from '@energyweb/issuer';
 import { Signer } from 'ethers';
 
@@ -244,7 +244,7 @@ interface ICreateProducingDeviceProperties {
     address?: string;
     country?: string;
     capacityInW?: number;
-    lastSmartMeterReadWh?: BigNumber;
+    meterStats?: ISmartMeterReadStats;
     operationalSince?: number;
     complianceRegistry?: Compliance;
     region?: string;
@@ -268,7 +268,10 @@ export const createProducingDevice = (
     properties: ICreateProducingDeviceProperties
 ): ProducingDevice.Entity => {
     const owner = properties.owner || '0x0';
-    const lastSmartMeterReadWh = properties.lastSmartMeterReadWh ?? bigNumberify(0);
+    const meterStats = properties.meterStats ?? {
+        certified: bigNumberify(0),
+        uncertified: bigNumberify(0)
+    };
 
     const offChainProperties = {
         status: properties.status || DEFAULT_PRODUCING_DEVICE_OFFCHAIN_PROPERTIES.status,
@@ -310,7 +313,7 @@ export const createProducingDevice = (
             address: owner
         },
         ...offChainProperties,
-        lastSmartMeterReadWh
+        meterStats
     } as Partial<ProducingDevice.Entity>) as ProducingDevice.Entity;
 };
 
