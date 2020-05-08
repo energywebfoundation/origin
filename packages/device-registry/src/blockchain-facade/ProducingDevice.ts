@@ -10,7 +10,7 @@ import {
     IDeviceWithRelationsIds,
     ISmartMeterReadStats
 } from '@energyweb/origin-backend-core';
-import { BigNumber, BigNumberish, bigNumberify } from 'ethers/utils';
+import { BigNumberish, bigNumberify } from 'ethers/utils';
 
 export class Entity implements IDevice {
     status: DeviceStatus;
