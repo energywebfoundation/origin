@@ -32,7 +32,10 @@ describe('ProducingDeviceTable', () => {
         addProducingDevice({
             id: 0,
             status: DeviceStatus.Active,
-            lastSmartMeterReadWh: bigNumberify(7777)
+            meterStats: {
+                uncertified: bigNumberify(7777),
+                certified: bigNumberify(0)
+            }
         });
 
         addProducingDevice({
@@ -76,12 +79,14 @@ describe('ProducingDeviceTable', () => {
             'Wuthering Heights facility',
             'Solar - Photovoltaic - Roof mounted',
             '9.877',
+            '0',
             '0.777',
             // next device
             '',
             'Biomass Energy Facility',
             'Gaseous - Agricultural gas',
             '0.736',
+            '0',
             '0'
         ]);
 
@@ -100,6 +105,7 @@ describe('ProducingDeviceTable', () => {
             'Biomass Energy Facility',
             'Gaseous - Agricultural gas',
             '0.736',
+            '0',
             '0'
         ]);
 
@@ -114,6 +120,7 @@ describe('ProducingDeviceTable', () => {
             'Wuthering Heights facility',
             'Solar - Photovoltaic - Roof mounted',
             '9.877',
+            '0',
             '0.777'
         ]);
 

@@ -16,7 +16,10 @@ async function getProducingDeviceSmartMeterRead(
 ): Promise<BigNumber> {
     const device = await new ProducingDevice.Entity(parseInt(deviceId, 10), conf).sync();
 
-    return device.lastSmartMeterReadWh ?? bigNumberify(0);
+    const smartMeterReadings = await device.getSmartMeterReads();
+    const latestSmRead = smartMeterReadings[smartMeterReadings.length - 1];
+
+    return latestSmRead?.meterReading ?? bigNumberify(0);
 }
 
 async function saveProducingDeviceSmartMeterRead(

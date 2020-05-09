@@ -132,8 +132,13 @@ export function ProducingDeviceDetailView(props: IProps) {
                 rowspan: 2
             },
             {
-                label: t('device.properties.meterRead'),
-                data: EnergyFormatter.format(selectedDevice.lastSmartMeterReadWh ?? 0),
+                label: t('device.properties.meterReadCertified'),
+                data: EnergyFormatter.format(selectedDevice.meterStats.certified.toNumber() ?? 0),
+                tip: EnergyFormatter.displayUnit
+            },
+            {
+                label: t('device.properties.meterReadToBeCertified'),
+                data: EnergyFormatter.format(selectedDevice.meterStats.uncertified.toNumber() ?? 0),
                 tip: EnergyFormatter.displayUnit
             },
             {

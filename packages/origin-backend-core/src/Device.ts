@@ -22,15 +22,27 @@ export interface ISmartMeterRead {
     timestamp: number;
 }
 
+export interface ISmartMeterReadWithStatus extends ISmartMeterRead {
+    certified: boolean;
+}
+
 export interface IEnergyGenerated {
     energy: BigNumber;
     timestamp: number;
 }
 
+export interface IEnergyGeneratedWithStatus extends IEnergyGenerated {
+    certified: boolean;
+}
+
+export interface ISmartMeterReadStats {
+    certified: BigNumber;
+    uncertified: BigNumber;
+}
+
 export interface ISmartMeterReadingsAdapter {
-    getLatest(device: IDeviceWithRelationsIds): Promise<ISmartMeterRead>;
-    getAll(device: IDeviceWithRelationsIds): Promise<ISmartMeterRead[]>;
-    save(device: IDeviceWithRelationsIds, smRead: ISmartMeterRead): Promise<void>;
+    getAll(device: IDevice): Promise<ISmartMeterRead[]>;
+    save(device: IDevice, smRead: ISmartMeterRead): Promise<void>;
 }
 
 export interface IDeviceProductInfo {
@@ -57,7 +69,7 @@ export interface IDeviceProperties extends IDeviceProductInfo {
     otherGreenAttributes: string;
     typeOfPublicSupport: string;
     externalDeviceIds?: IExternalDeviceId[];
-    lastSmartMeterReading?: ISmartMeterRead;
+    meterStats?: ISmartMeterReadStats;
     deviceGroup?: string;
     smartMeterReads?: ISmartMeterRead[];
     defaultAskPrice: number;
@@ -76,6 +88,6 @@ export interface IDeviceWithRelations extends IDevice {
     organization: IOrganization;
 }
 
-export type DeviceCreateData = Omit<IDeviceProperties, 'id'>;
+export type DeviceCreateData = Omit<IDeviceProperties, 'id' | 'meterStats'>;
 export type DeviceUpdateData = Pick<IDevice, 'status'>;
 export type DeviceSettingsUpdateData = Pick<IDevice, 'defaultAskPrice' | 'automaticPostForSale'>;

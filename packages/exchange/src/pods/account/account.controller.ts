@@ -10,7 +10,7 @@ import {
 import { AuthGuard } from '@nestjs/passport';
 
 import { AccountService } from './account.service';
-import { Account } from './account';
+import { AccountDTO } from './account.dto';
 
 @Controller('account')
 export class AccountController {
@@ -20,7 +20,7 @@ export class AccountController {
     @UseInterceptors(ClassSerializerInterceptor)
     @Get()
     @UseGuards(AuthGuard())
-    public async getAccount(@UserDecorator() user: ILoggedInUser): Promise<Account> {
+    public async getAccount(@UserDecorator() user: ILoggedInUser): Promise<AccountDTO> {
         return this.accountService.getAccount(user.id.toString());
     }
 }

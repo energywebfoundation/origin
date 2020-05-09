@@ -5,7 +5,8 @@ import {
     IDevice,
     IDeviceWithRelationsIds,
     IExternalDeviceId,
-    ISmartMeterRead
+    ISmartMeterRead,
+    ISmartMeterReadWithStatus
 } from '@energyweb/origin-backend-core';
 
 export class DeviceClientMock implements IDeviceClient {
@@ -34,7 +35,6 @@ export class DeviceClientMock implements IDeviceClient {
             ...data,
             id: this.idCounter,
             status: data.status ?? DeviceStatus.Submitted,
-            lastSmartMeterReading: data.lastSmartMeterReading ?? null,
             smartMeterReads: data.smartMeterReads ?? [],
             deviceGroup: data.deviceGroup ?? ''
         };
@@ -54,10 +54,13 @@ export class DeviceClientMock implements IDeviceClient {
         return device;
     }
 
-    public async getAllSmartMeterReadings(id: number): Promise<ISmartMeterRead[]> {
+    public async getAllSmartMeterReadings(id: number): Promise<ISmartMeterReadWithStatus[]> {
         const { smartMeterReads } = this.storage.get(id);
 
-        return smartMeterReads;
+        return smartMeterReads.map(smRead => ({
+            ...smRead,
+            certified: false
+        }));
     }
 
     public async addSmartMeterRead(id: number, smartMeterRead: ISmartMeterRead): Promise<void> {
@@ -71,8 +74,6 @@ export class DeviceClientMock implements IDeviceClient {
         device.smartMeterReads = device.smartMeterReads.sort((a, b) =>
             a.timestamp > b.timestamp ? 1 : b.timestamp > a.timestamp ? -1 : 0
         );
-
-        device.lastSmartMeterReading = device.smartMeterReads[device.smartMeterReads.length - 1];
 
         this.storage.set(id, device);
     }

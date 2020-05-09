@@ -1,12 +1,12 @@
 import { Entity, Column, PrimaryColumn, ManyToOne } from 'typeorm';
 import { IsNotEmpty, Min, IsBoolean } from 'class-validator';
-import { ICertificationRequestMinimal } from '@energyweb/origin-backend-core';
+import { ICertificationRequestBackend } from '@energyweb/origin-backend-core';
 import { ExtendedBaseEntity } from '../ExtendedBaseEntity';
 import { Device } from '../device/device.entity';
 
 @Entity()
 export class CertificationRequest extends ExtendedBaseEntity
-    implements ICertificationRequestMinimal {
+    implements ICertificationRequestBackend {
     @PrimaryColumn()
     id: number;
 

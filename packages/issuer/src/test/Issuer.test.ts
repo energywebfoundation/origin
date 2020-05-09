@@ -9,7 +9,7 @@ import { OffChainDataSourceMock } from '@energyweb/origin-backend-client-mocks';
 
 import { providers, Wallet } from 'ethers';
 import { migrateIssuer, migrateRegistry } from '../migrate';
-import { CertificationRequest, getAllCertificationRequests } from '..';
+import { CertificationRequest } from '..';
 
 import { logger } from '../Logger';
 
@@ -101,7 +101,7 @@ describe('Issuer', () => {
         await createCertificationRequest(totalVolume);
         await createCertificationRequest(totalVolume);
 
-        const allCertificationRequests = await getAllCertificationRequests(conf);
+        const allCertificationRequests = await CertificationRequest.getAll(conf);
         assert.equal(allCertificationRequests.length, 2);
     });
 

@@ -49,7 +49,7 @@
         "@nestjs/jwt": "7.0.0",
         "@nestjs/passport": "7.0.0",
         "@nestjs/platform-express": "^7.0.0",
-        "@nestjs/typeorm": "^6.2.0",
+        "@nestjs/typeorm": "7.0.0",
         "@types/node": "^12.12.31",
         "bcryptjs": "2.4.3",
         "body-parser": "1.19.0",
@@ -69,11 +69,11 @@
         "precise-proofs-js": "^1.0.2",
         "reflect-metadata": "0.1.13",
         "rxjs": "6.5.5",
-        "typeorm": "0.2.24",
+        "typeorm": "0.2.22",
         "uuid": "7.0.3"
     },
     "devDependencies": {
-        "@nestjs/cli": "7.1.4",
+        "@nestjs/cli": "7.1.5",
         "@nestjs/schematics": "7.0.0",
         "@nestjs/testing": "7.0.9",
         "@types/bcryptjs": "2.4.2",

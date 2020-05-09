@@ -17,7 +17,6 @@ import { Issuer } from '../ethers/Issuer';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { Registry } from '../ethers/Registry';
 import { IssuerJSON } from '../contracts';
-import { getEventsFromContract } from '../utils/events';
 
 export class CertificationRequest extends PreciseProofEntity implements ICertificationRequest {
     owner: string;
@@ -72,13 +71,7 @@ export class CertificationRequest extends PreciseProofEntity implements ICertifi
         >;
         const issuerWithSigner = issuer.connect(configuration.blockchainProperties.activeUser);
 
-        await this.validateGenerationPeriod(
-            fromTime,
-            toTime,
-            deviceId,
-            configuration,
-            isVolumePrivate
-        );
+        await this.validateGenerationPeriod(fromTime, toTime, deviceId, configuration);
 
         const data = await issuer.encodeData(fromTime, toTime, deviceId);
 
@@ -195,38 +188,33 @@ export class CertificationRequest extends PreciseProofEntity implements ICertifi
         return tx;
     }
 
+    public static async getAll(
+        configuration: Configuration.Entity
+    ): Promise<CertificationRequest[]> {
+        const all = await configuration.offChainDataSource.certificateClient.getAllCertificationRequests();
+
+        const certificationRequestPromises = all.map((certReq) =>
+            new CertificationRequest(certReq.id, configuration).sync()
+        );
+
+        return Promise.all(certificationRequestPromises);
+    }
+
     private static async validateGenerationPeriod(
         fromTime: Timestamp,
         toTime: Timestamp,
         deviceId: string,
-        configuration: Configuration.Entity,
-        isPrivate?: boolean
+        configuration: Configuration.Entity
     ): Promise<boolean> {
-        const { issuer } = configuration.blockchainProperties as Configuration.BlockchainProperties<
-            Registry,
-            Issuer
-        >;
-
         const moment = extendMoment(Moment);
         const unix = (timestamp: Timestamp) => moment.unix(timestamp);
 
-        const certificationRequestedEvents = await getEventsFromContract(
-            issuer,
-            issuer.filters.CertificationRequested(null, null, deviceId)
-        );
-
-        const certificationRequestIds = certificationRequestedEvents.map((event) => event._id);
+        const allCertificationRequests = await this.getAll(configuration);
 
         const generationTimeRange = moment.range(unix(fromTime), unix(toTime));
 
-        for (const id of certificationRequestIds) {
-            const certificationRequest = await new CertificationRequest(
-                id.toNumber(),
-                configuration,
-                isPrivate
-            ).sync();
-
-            if (certificationRequest.revoked) {
+        for (const certificationRequest of allCertificationRequests) {
+            if (certificationRequest.revoked || certificationRequest.deviceId !== deviceId) {
                 continue;
             }
 
@@ -250,16 +238,4 @@ export class CertificationRequest extends PreciseProofEntity implements ICertifi
 
         return true;
     }
-}
-
-export async function getAllCertificationRequests(
-    configuration: Configuration.Entity
-): Promise<CertificationRequest[]> {
-    const all = await configuration.offChainDataSource.certificateClient.getAllCertificationRequests();
-
-    const certificationRequestPromises = all.map((certReq) =>
-        new CertificationRequest(certReq.id, configuration).sync()
-    );
-
-    return Promise.all(certificationRequestPromises);
 }

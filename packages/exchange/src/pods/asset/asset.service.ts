@@ -1,5 +1,4 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { InjectConnection } from '@nestjs/typeorm';
 import { Connection, EntityManager } from 'typeorm';
 
 import { Asset, CreateAssetDTO } from './asset.entity';
@@ -8,10 +7,7 @@ import { Asset, CreateAssetDTO } from './asset.entity';
 export class AssetService {
     private readonly logger = new Logger(AssetService.name);
 
-    constructor(
-        @InjectConnection('ExchangeConnection')
-        private readonly connection: Connection
-    ) {}
+    constructor(private readonly connection: Connection) {}
 
     public async get(id: string) {
         return this.connection.getRepository<Asset>(Asset).findOne(id);

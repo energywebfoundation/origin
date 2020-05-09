@@ -32,7 +32,7 @@ export class CertificateClientMock implements ICertificateClient {
     }
 
     public async getAllCertificationRequests(): Promise<ICertificationRequest[]> {
-        return [...this.requestStorage.values()]
+        return [...this.requestStorage.values()];
     }
 
     public mockBlockchainData(
@@ -42,6 +42,7 @@ export class CertificateClientMock implements ICertificateClient {
         const certificateRequest = this.requestStorage.get(id);
 
         this.requestStorage.set(id, {
+            id,
             ...certificateRequest,
             ...reqData
         });

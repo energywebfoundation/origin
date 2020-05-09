@@ -18,7 +18,7 @@ describe('CertificationRequest e2e tests', () => {
 
         await app.init();
 
-        const { accessToken, user, organization } = await registerAndLogin(
+        const { accessToken, user } = await registerAndLogin(
             app,
             configurationService,
             userService,
@@ -35,32 +35,34 @@ describe('CertificationRequest e2e tests', () => {
                 expect(requests).toHaveLength(0);
             });
 
-        const device = await deviceService.create({
-            address: '',
-            capacityInW: 1000,
-            complianceRegistry: 'I-REC',
-            country: 'EU',
-            description: '',
-            deviceType: 'Solar',
-            facilityName: 'Test',
-            gpsLatitude: '10',
-            gpsLongitude: '10',
-            gridOperator: 'OP',
-            images: '',
-            operationalSince: 2000,
-            organization: organization.id,
-            otherGreenAttributes: '',
-            province: '',
-            region: '',
-            status: DeviceStatus.Active,
-            timezone: '',
-            typeOfPublicSupport: '',
-            deviceGroup: '',
-            smartMeterReads: [],
-            externalDeviceIds: [],
-            automaticPostForSale: false,
-            defaultAskPrice: null
-        });
+        const device = await deviceService.create(
+            {
+                address: '',
+                capacityInW: 1000,
+                complianceRegistry: 'I-REC',
+                country: 'EU',
+                description: '',
+                deviceType: 'Solar',
+                facilityName: 'Test',
+                gpsLatitude: '10',
+                gpsLongitude: '10',
+                gridOperator: 'OP',
+                images: '',
+                operationalSince: 2000,
+                otherGreenAttributes: '',
+                province: '',
+                region: '',
+                status: DeviceStatus.Active,
+                timezone: '',
+                typeOfPublicSupport: '',
+                deviceGroup: '',
+                smartMeterReads: [],
+                externalDeviceIds: [],
+                automaticPostForSale: false,
+                defaultAskPrice: null
+            },
+            user
+        );
 
         const owner = '0xD173313A51f8fc37BcF67569b463abd89d81844f';
         const fromTime = moment().subtract(2, 'month').unix();

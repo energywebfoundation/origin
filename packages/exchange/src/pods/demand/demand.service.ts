@@ -1,6 +1,6 @@
 import { DemandStatus } from '@energyweb/utils-general';
 import { Injectable, Logger } from '@nestjs/common';
-import { InjectConnection, InjectRepository } from '@nestjs/typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
 import BN from 'bn.js';
 import { Connection, Repository } from 'typeorm';
 
@@ -19,11 +19,10 @@ export class DemandService {
     private readonly logger = new Logger(DemandService.name);
 
     constructor(
-        @InjectRepository(Demand, 'ExchangeConnection')
+        @InjectRepository(Demand)
         private readonly repository: Repository<Demand>,
         private readonly orderService: OrderService,
         private readonly matchingService: MatchingEngineService,
-        @InjectConnection('ExchangeConnection')
         private readonly connection: Connection,
         private readonly demandTimePeriodService: DemandTimePeriodService
     ) {}

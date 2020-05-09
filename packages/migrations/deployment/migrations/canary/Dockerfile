@@ -3,7 +3,7 @@ FROM energyweb/origin-backend-app:canary
 RUN mkdir /var/migration-config
 COPY config/* /var/migration-config/
 
-RUN yarn global add typeorm
+RUN yarn global add typeorm@0.2.22
 RUN yarn global add pg
 
 WORKDIR /usr/local/share/.config/yarn/global/node_modules/\@energyweb/
