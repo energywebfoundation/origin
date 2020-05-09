@@ -5,9 +5,8 @@ import {
     UserStatusChangedEvent
 } from '@energyweb/origin-backend-core';
 import { Roles, RolesGuard } from '@energyweb/origin-backend-utils';
-import { Body, Controller, Get, Param, Put, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, Put, Query, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-
 import { NotificationService } from '../notification/notification.service';
 import { AdminService } from './admin.service';
 
@@ -26,7 +25,8 @@ export class AdminController {
     }
 
     @Get('usersBy')
-    @UseGuards(AuthGuard('jwt'))
+    @UseGuards(AuthGuard('jwt'), RolesGuard)
+    @Roles(Role.Admin, Role.SupportAgent)
     public async getUsersBy(
         @Query('orgName') orgName: string,
         @Query('status') status: number,
