@@ -50,8 +50,8 @@ export function AdminUsersTable() {
         if (requestedFilters.length > 0) {
             entities = await adminClient.getUsersBy(
                 requestedFilters[2]?.selectedValue,
-                parseInt(requestedFilters[0]?.selectedValue, 10),
-                parseInt(requestedFilters[1]?.selectedValue, 10)
+                parseInt(requestedFilters[0]?.selectedValue, 10) || 0,
+                parseInt(requestedFilters[1]?.selectedValue, 10) || 0
             );
         } else {
             entities = await adminClient.getAllUsers();
