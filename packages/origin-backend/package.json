@@ -91,7 +91,7 @@
         "@types/uuid": "7.0.3",
         "@types/websocket": "1.0.0",
         "@types/ws": "7.2.4",
-        "jest": "25.5.4",
+        "jest": "26.0.1",
         "nodemailer": "6.4.6",
         "supertest": "4.0.2",
         "ts-jest": "25.4.0",

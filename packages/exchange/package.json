@@ -74,7 +74,7 @@
         "@types/node": "12.12.27",
         "@types/supertest": "2.0.9",
         "eslint-plugin-jest": "23.8.2",
-        "jest": "25.5.4",
+        "jest": "26.0.1",
         "polly-js": "1.6.5",
         "prettier": "2.0.5",
         "supertest": "4.0.2",
