@@ -23,11 +23,8 @@ export class AdminClient implements IAdminClient {
         return data;
     }
     
-    public async getUsersBy(orgName: string,status: number, kycStatus: number) {
-        orgName = orgName == null?'':orgName;
-        status = isNaN(status)?0:status;
-        kycStatus = isNaN(kycStatus)?0:kycStatus;
-        const { data } = await this.requestClient.get(`${this.endpoint}/usersBy?orgName=` + orgName + `&status=` + status + `&kycStatus=` + kycStatus );
+    public async getUsersBy(orgName: string ,status: number, kycStatus: number) {
+        const { data } = await this.requestClient.get(`${this.endpoint}/usersBy?orgName=${orgName??''}&status=${status??0}&kycStatus=${kycStatus??0}`);
         return data;
     }
 
