@@ -51,7 +51,7 @@
         "typeorm": "0.2.24"
     },
     "devDependencies": {
-        "jest": "25.5.4",
+        "jest": "26.0.1",
         "supertest": "4.0.2",
         "ts-jest": "25.4.0",
         "tsconfig-paths": "3.9.0"
