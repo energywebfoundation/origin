@@ -34,7 +34,6 @@ import {
     ITableAction
 } from './Table';
 import { getCertificates } from '../features/certificates/selectors';
-import { ClaimCertificateBulkModal } from './Modal/ClaimCertificateBulkModal';
 import { PublishForSaleModal } from './Modal/PublishForSaleModal';
 import { getEnvironment } from '../features';
 import { ClaimModal } from './Modal/ClaimModal';
@@ -87,7 +86,6 @@ export function CertificateTable(props: IProps) {
     const [selectedCertificates, setSelectedCertificates] = useState<Certificate[]>([]);
     const [detailViewForCertificateId, setDetailViewForCertificateId] = useState<number>(null);
     const [showClaimModal, setShowClaimModal] = useState(false);
-    const [showClaimBulkModal, setShowClaimBulkModal] = useState(false);
     const [selectedCertificate, setSelectedCertificate] = useState<Certificate>(null);
     const [sellModalVisibility, setSellModalVisibility] = useState(false);
 
@@ -173,7 +171,7 @@ export function CertificateTable(props: IProps) {
                 .filter((item, index) => selectedIndexes.includes(index.toString()))
                 .map((i) => i.certificate)
         );
-        setShowClaimBulkModal(true);
+        setShowClaimModal(true);
     }
 
     const getCertificateFromRow = (rowIndex) =>
@@ -191,7 +189,7 @@ export function CertificateTable(props: IProps) {
     }
 
     async function claimCertificate(rowIndex: string) {
-        setSelectedCertificate(getCertificateFromRow(rowIndex));
+        setSelectedCertificates([getCertificateFromRow(rowIndex)]);
         setShowClaimModal(true);
     }
 
@@ -280,10 +278,6 @@ export function CertificateTable(props: IProps) {
 
     function hideClaimModal() {
         setShowClaimModal(false);
-    }
-
-    function hideClaimBulkModal() {
-        setShowClaimBulkModal(false);
     }
 
     function customSelectCounterGenerator(selectedIndexes: string[]) {
@@ -463,15 +457,9 @@ export function CertificateTable(props: IProps) {
             />
 
             <ClaimModal
-                certificateId={selectedCertificate?.id}
+                certificates={selectedCertificates}
                 showModal={showClaimModal}
                 callback={hideClaimModal}
-            />
-
-            <ClaimCertificateBulkModal
-                certificates={selectedCertificates}
-                showModal={showClaimBulkModal}
-                callback={hideClaimBulkModal}
             />
         </>
     );

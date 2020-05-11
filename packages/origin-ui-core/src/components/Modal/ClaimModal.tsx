@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import moment from 'moment-timezone';
+import { bigNumberify } from 'ethers/utils';
 import {
     Button,
     Dialog,
@@ -11,21 +12,26 @@ import {
     InputLabel,
     FilledInput,
     MenuItem,
-    Select
+    Select,
+    DialogContentText
 } from '@material-ui/core';
 import { useSelector, useDispatch } from 'react-redux';
 import { Certificate } from '@energyweb/issuer';
 import { getUserOffchain } from '../../features/users/selectors';
-import { requestClaimCertificate } from '../../features/certificates';
+import { requestClaimCertificate, requestClaimCertificateBulk } from '../../features/certificates';
+import { EnergyFormatter } from '../../utils';
 
 interface IProps {
-    certificateId: Certificate['id'];
+    certificates: Certificate[];
     showModal: boolean;
     callback: () => void;
 }
 
 export function ClaimModal(props: IProps) {
-    const { certificateId, callback, showModal } = props;
+    const { certificates, callback, showModal } = props;
+
+    const isBulkClaim = certificates.length > 1;
+    const certificateIds: number[] = certificates.map((cert) => cert.id);
 
     const user = useSelector(getUserOffchain);
     const countries = moment.tz.countries();
@@ -43,21 +49,44 @@ export function ClaimModal(props: IProps) {
     }, [countries]);
 
     async function handleClose() {
+        setZipCode(null);
+        setRegion(null);
+        setCountry(null);
         callback();
     }
 
     async function claim() {
-        dispatch(
-            requestClaimCertificate({
-                certificateId
-            })
-        );
+        const action = isBulkClaim
+            ? requestClaimCertificateBulk({ certificateIds })
+            : requestClaimCertificate({ certificateId: certificateIds[0] });
+
+        dispatch(action);
+
+        handleClose();
     }
+
+    const title = `Claiming certificate${isBulkClaim ? 's' : ''} ${certificateIds?.join(
+        ', '
+    )} in the name of:`;
+
+    const totalEnergy = EnergyFormatter.format(
+        props.certificates.reduce((a, b) => {
+            const energy = b.energy.publicVolume.add(b.energy.privateVolume);
+            return a.add(energy);
+        }, bigNumberify(0)),
+        true
+    );
 
     return (
         <Dialog open={showModal} onClose={handleClose}>
-            <DialogTitle>{`Claiming certificate #${certificateId} in the name of:`}</DialogTitle>
+            <DialogTitle>{title}</DialogTitle>
             <DialogContent>
+                {isBulkClaim && (
+                    <DialogContentText>
+                        You selected a total of {totalEnergy} worth of certificates.
+                    </DialogContentText>
+                )}
+
                 <TextField
                     label="Beneficiary"
                     value={user?.organization?.name ?? ''}
@@ -88,7 +117,7 @@ export function ClaimModal(props: IProps) {
                 <FormControl fullWidth={true} variant="filled" className="mt-4">
                     <InputLabel>Country</InputLabel>
                     <Select
-                        value={country}
+                        value={country ?? countries[0]}
                         onChange={(e) => setCountry(e.target.value as string)}
                         fullWidth
                         variant="filled"
