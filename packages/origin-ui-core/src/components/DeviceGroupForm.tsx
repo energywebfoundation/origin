@@ -34,6 +34,7 @@ import { ProducingDevice } from '@energyweb/device-registry';
 import { PowerFormatter, useDevicePermissions, useTranslation, moment } from '../utils';
 import { FormInput } from './Form/FormInput';
 import { DevicePermissionsFeedback } from './DevicePermissionsFeedback';
+import { Upload, IUploadedFile } from './Upload';
 
 const MAX_TOTAL_CAPACITY = 5 * Unit.MW;
 
@@ -121,6 +122,13 @@ export function DeviceGroupForm(props: IProps) {
     );
 
     const classes = useStyles(useTheme());
+
+    const [setFiles] = useState<IUploadedFile[]>([]);
+    // const cancelledFiles = files.filter((f) => f.cancelled && !f.removed);
+    // const filesBeingUploaded = files.filter(
+    //     (f) => !f.removed && !f.cancelled && f.uploadProgress !== 100
+    // );
+    // const uploadedFiles = files.filter((f) => !f.removed && f.uploadedName);
 
     useEffect(() => {
         if (!device) {
@@ -359,6 +367,8 @@ export function DeviceGroupForm(props: IProps) {
                                                         required={!!externalDeviceIdType.required}
                                                     />
                                                 ))}
+
+                                            <Upload onChange={(newFiles) => setFiles(newFiles)} />
                                         </Grid>
                                     </Grid>
                                 </>

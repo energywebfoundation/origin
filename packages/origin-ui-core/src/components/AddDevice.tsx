@@ -38,6 +38,7 @@ import { Skeleton } from '@material-ui/lab';
 import { FormInput } from './Form';
 import { DeviceSelectors } from './DeviceSelectors';
 import { DevicePermissionsFeedback } from './DevicePermissionsFeedback';
+import { Upload, IUploadedFile } from './Upload';
 
 interface IFormValues {
     facilityName: string;
@@ -81,6 +82,13 @@ export function AddDevice() {
     const [imagesUploaded, setImagesUploaded] = useState(false);
     const [imagesUploadedList, setImagesUploadedList] = useState<string[]>([]);
     const { canCreateDevice } = useDevicePermissions();
+
+    const [setFiles] = useState<IUploadedFile[]>([]);
+    // const cancelledFiles = _files.filter((f) => f.cancelled && !f.removed);
+    // const filesBeingUploaded = _files.filter(
+    //     (f) => !f.removed && !f.cancelled && f.uploadProgress !== 100
+    // );
+    // const uploadedFiles = _files.filter((f) => !f.removed && f.uploadedName);
 
     const useStyles = makeStyles(() =>
         createStyles({
@@ -478,6 +486,8 @@ export function AddDevice() {
                                             </label>
                                         </>
                                     )}
+
+                                    <Upload onChange={(newFiles) => setFiles(newFiles)} />
                                 </Grid>
                             </Grid>
 
