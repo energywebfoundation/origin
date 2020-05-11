@@ -139,6 +139,10 @@ export class UserService {
         return this.repository.save(user);
     }
 
+    async addToOrganization(userId: number, organizationId: number) {
+        await this.repository.update(userId, { organization: { id: organizationId } });
+    }
+
     async findOne(conditions: FindConditions<User>): Promise<TUserBaseEntity> {
         return (this.repository.findOne(conditions, {
             loadRelationIds: true

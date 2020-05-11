@@ -12,6 +12,7 @@ import { Logger } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import dotenv from 'dotenv';
+import { ethers } from 'ethers';
 import request from 'supertest';
 
 import { entities } from '../src';
@@ -81,14 +82,13 @@ export const bootstrapTestInstance = async () => {
 
 export const registerAndLogin = async (
     app: any,
-    configurationService: ConfigurationService,
     userService: UserService,
     organizationService: OrganizationService,
     roles: Role[] = [Role.OrganizationAdmin],
-    userNonce = 0,
-    orgNonce = 0
+    userSeed = 'default',
+    orgSeed = 'default'
 ) => {
-    const userEmail = `user${userNonce}@example.com`;
+    const userEmail = `user${userSeed}@example.com`;
 
     let user = await userService.findOne({ email: userEmail });
     if (!user) {
@@ -108,14 +108,14 @@ export const registerAndLogin = async (
         user = await userService.findOne({ email: userEmail });
 
         const signedMessage = await signTypedMessagePrivateKey(
-            'd9066ff9f753a1898709b568119055660a77d9aae4d7a4ad677b8fb3d2a571e5',
+            ethers.Wallet.createRandom().privateKey.substring(2),
             process.env.REGISTRATION_MESSAGE_TO_SIGN
         );
 
         user = await userService.attachSignedMessage(user.id, signedMessage);
     }
 
-    const organizationEmail = `org${orgNonce}@example.com`;
+    const organizationEmail = `org${orgSeed}@example.com`;
 
     let organization = await organizationService.findOne(null, {
         where: { email: organizationEmail }
@@ -149,6 +149,8 @@ export const registerAndLogin = async (
         organization = await organizationService.findOne(null, {
             where: { email: organizationEmail }
         });
+    } else {
+        await userService.addToOrganization(user.id, organization.id);
     }
 
     user.organization = organization.id;

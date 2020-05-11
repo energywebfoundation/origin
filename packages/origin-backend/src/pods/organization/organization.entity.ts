@@ -94,7 +94,7 @@ export class Organization extends ExtendedBaseEntity implements IOrganization {
     @Column()
     status: OrganizationStatus;
 
-    @OneToMany(() => User, (user) => user.organization)
+    @OneToMany(() => User, (user) => user.organization, { cascade: true })
     users: User[];
 
     @OneToMany(() => OrganizationInvitation, (entity) => entity.organization)

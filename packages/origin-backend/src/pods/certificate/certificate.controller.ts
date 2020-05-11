@@ -63,7 +63,7 @@ export class CertificateController {
         }
 
         return this.certificationRequestService.get(id, {
-            where: { userId: loggedUser.organizationId }
+            where: { userId: loggedUser.ownerId }
         });
     }
 
@@ -78,7 +78,7 @@ export class CertificateController {
         }
 
         return this.certificationRequestService.getAll({
-            where: { userId: loggedUser.organizationId }
+            where: { userId: loggedUser.ownerId }
         });
     }
 

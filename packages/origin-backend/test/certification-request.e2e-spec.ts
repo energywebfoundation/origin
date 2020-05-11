@@ -5,7 +5,6 @@ import moment from 'moment';
 import request from 'supertest';
 
 import { CertificationRequestService } from '../src/pods/certificate/certification-request.service';
-import { ConfigurationService } from '../src/pods/configuration/configuration.service';
 import { DeviceService } from '../src/pods/device/device.service';
 import { OrganizationService } from '../src/pods/organization/organization.service';
 import { UserService } from '../src/pods/user';
@@ -16,8 +15,9 @@ describe('CertificationRequest e2e tests', () => {
     let userService: UserService;
     let deviceService: DeviceService;
     let organizationService: OrganizationService;
-    let configurationService: ConfigurationService;
     let certificationRequestService: CertificationRequestService;
+
+    const defaultOrganization = 'org1';
 
     beforeAll(async () => {
         ({
@@ -25,7 +25,6 @@ describe('CertificationRequest e2e tests', () => {
             userService,
             deviceService,
             organizationService,
-            configurationService,
             certificationRequestService
         } = await bootstrapTestInstance());
 
@@ -39,10 +38,11 @@ describe('CertificationRequest e2e tests', () => {
     it('should read information from the blockchain', async () => {
         const { accessToken, user } = await registerAndLogin(
             app,
-            configurationService,
             userService,
             organizationService,
-            [Role.OrganizationUser, Role.OrganizationDeviceManager]
+            [Role.OrganizationUser, Role.OrganizationDeviceManager],
+            '1',
+            defaultOrganization
         );
 
         await request(app.getHttpServer())
@@ -146,10 +146,31 @@ describe('CertificationRequest e2e tests', () => {
     it('should allow issuer to read the certification request', async () => {
         const { accessToken } = await registerAndLogin(
             app,
-            configurationService,
             userService,
             organizationService,
-            [Role.Issuer]
+            [Role.Issuer],
+            'issuer',
+            'issuerOrg'
+        );
+
+        await request(app.getHttpServer())
+            .get(`/Certificate/CertificationRequest`)
+            .set('Authorization', `Bearer ${accessToken}`)
+            .expect((res) => {
+                const requests = res.body as ICertificationRequestBackend[];
+
+                expect(requests).toHaveLength(1);
+            });
+    });
+
+    it('should allow other organization member to read the certification request', async () => {
+        const { accessToken } = await registerAndLogin(
+            app,
+            userService,
+            organizationService,
+            [Role.OrganizationDeviceManager],
+            '2',
+            defaultOrganization
         );
 
         await request(app.getHttpServer())
