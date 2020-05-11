@@ -16,7 +16,7 @@ import {
     DialogContentText
 } from '@material-ui/core';
 import { useSelector, useDispatch } from 'react-redux';
-import { Certificate } from '@energyweb/issuer';
+import { Certificate, IClaimData } from '@energyweb/issuer';
 import { getUserOffchain } from '../../features/users/selectors';
 import { requestClaimCertificate, requestClaimCertificateBulk } from '../../features/certificates';
 import { EnergyFormatter } from '../../utils';
@@ -34,31 +34,38 @@ export function ClaimModal(props: IProps) {
     const certificateIds: number[] = certificates.map((cert) => cert.id);
 
     const user = useSelector(getUserOffchain);
-    const countries = moment.tz.countries();
+    const countryCodes = moment.tz.countries();
 
+    const [beneficiary, setBeneficiary] = useState(user?.organization?.name);
+    const [address, setAddress] = useState(user?.organization?.address);
     const [zipCode, setZipCode] = useState(null);
     const [region, setRegion] = useState(null);
-    const [country, setCountry] = useState(null);
+    const [countryCode, setCountryCode] = useState(null);
 
     const dispatch = useDispatch();
 
     useEffect(() => {
-        if (country === null && countries && countries[0]) {
-            setCountry(countries[0]);
+        if (countryCode === null && countryCodes && countryCodes[0]) {
+            setCountryCode(countryCodes[0]);
         }
-    }, [countries]);
+    }, [countryCodes]);
 
     async function handleClose() {
-        setZipCode(null);
-        setRegion(null);
-        setCountry(null);
         callback();
     }
 
     async function claim() {
+        const claimData: IClaimData = {
+            beneficiary,
+            address,
+            region,
+            zipCode,
+            countryCode
+        };
+
         const action = isBulkClaim
-            ? requestClaimCertificateBulk({ certificateIds })
-            : requestClaimCertificate({ certificateId: certificateIds[0] });
+            ? requestClaimCertificateBulk({ certificateIds, claimData })
+            : requestClaimCertificate({ certificateId: certificateIds[0], claimData });
 
         dispatch(action);
 
@@ -89,13 +96,15 @@ export function ClaimModal(props: IProps) {
 
                 <TextField
                     label="Beneficiary"
-                    value={user?.organization?.name ?? ''}
+                    value={beneficiary ?? ''}
+                    onChange={(e) => setBeneficiary(e.target.value as string)}
                     className="mt-4"
                     fullWidth
                 />
                 <TextField
                     label="Address"
-                    value={user?.organization?.address ?? ''}
+                    value={address ?? ''}
+                    onChange={(e) => setAddress(e.target.value as string)}
                     className="mt-4"
                     fullWidth
                 />
@@ -117,13 +126,13 @@ export function ClaimModal(props: IProps) {
                 <FormControl fullWidth={true} variant="filled" className="mt-4">
                     <InputLabel>Country</InputLabel>
                     <Select
-                        value={country ?? countries[0]}
-                        onChange={(e) => setCountry(e.target.value as string)}
+                        value={countryCode ?? countryCodes[0]}
+                        onChange={(e) => setCountryCode(e.target.value as string)}
                         fullWidth
                         variant="filled"
                         input={<FilledInput />}
                     >
-                        {countries?.map((item) => (
+                        {countryCodes?.map((item) => (
                             <MenuItem key={item} value={item}>
                                 {item}
                             </MenuItem>

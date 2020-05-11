@@ -255,7 +255,7 @@ function* requestClaimCertificateSaga(): SagaIterator {
             continue;
         }
 
-        const { certificateId } = action.payload;
+        const { certificateId, claimData } = action.payload;
         const certificate: Certificate = yield call(getCertificate, certificateId);
 
         const i18n = getI18n();
@@ -271,7 +271,7 @@ function* requestClaimCertificateSaga(): SagaIterator {
         yield put(setLoading(true));
 
         try {
-            yield call([certificate, certificate.claim]);
+            yield call([certificate, certificate.claim], claimData);
             showNotification(
                 i18n.t('certificate.feedback.claimed', { id: certificate.id }),
                 NotificationType.Success
@@ -299,14 +299,19 @@ function* requestClaimCertificateBulkSaga(): SagaIterator {
             continue;
         }
 
-        const { certificateIds } = action.payload;
+        const { certificateIds, claimData } = action.payload;
 
         const i18n = getI18n();
 
         yield put(setLoading(true));
 
         try {
-            yield call(CertificateUtils.claimCertificates, certificateIds, configuration);
+            yield call(
+                CertificateUtils.claimCertificates,
+                certificateIds,
+                claimData,
+                configuration
+            );
 
             showNotification(
                 i18n.t('certificate.feedback.certificatesClaimed'),
