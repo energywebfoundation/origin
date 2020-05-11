@@ -2,7 +2,7 @@ import { ProducingDevice } from '@energyweb/device-registry';
 import { Certificate } from '@energyweb/issuer';
 import { AssignmentTurnedIn, Publish } from '@material-ui/icons';
 import React, { useEffect, useState } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { Redirect } from 'react-router-dom';
 import { bigNumberify } from 'ethers/utils';
 import { getConfiguration, getProducingDevices } from '../features/selectors';
@@ -37,7 +37,7 @@ import { getCertificates } from '../features/certificates/selectors';
 import { ClaimCertificateBulkModal } from './Modal/ClaimCertificateBulkModal';
 import { PublishForSaleModal } from './Modal/PublishForSaleModal';
 import { getEnvironment } from '../features';
-import { requestClaimCertificate } from '../features/certificates';
+import { ClaimModal } from './Modal/ClaimModal';
 
 interface IProps {
     certificates?: Certificate[];
@@ -82,13 +82,13 @@ export function CertificateTable(props: IProps) {
     const certificates = props.certificates || stateCertificates;
     const deviceTypeService = configuration?.deviceTypeService;
     const { t } = useTranslation();
-    const dispatch = useDispatch();
     const { getCertificateDetailLink } = useLinks();
 
     const [selectedCertificates, setSelectedCertificates] = useState<Certificate[]>([]);
     const [detailViewForCertificateId, setDetailViewForCertificateId] = useState<number>(null);
+    const [showClaimModal, setShowClaimModal] = useState(false);
     const [showClaimBulkModal, setShowClaimBulkModal] = useState(false);
-    const [sellModalData, setSellModalData] = useState<Certificate>(null);
+    const [selectedCertificate, setSelectedCertificate] = useState<Certificate>(null);
     const [sellModalVisibility, setSellModalVisibility] = useState(false);
 
     async function getPaginatedData({
@@ -176,29 +176,23 @@ export function CertificateTable(props: IProps) {
         setShowClaimBulkModal(true);
     }
 
+    const getCertificateFromRow = (rowIndex) =>
+        certificates.find((cert) => cert.id === paginatedData[rowIndex].certificate.id);
+
     async function publishForSale(rowIndex: string) {
-        const certificateId = paginatedData[rowIndex].certificate.id;
-
-        const certificate = certificates.find((cert) => cert.id === certificateId);
-
-        setSellModalData(certificate);
+        setSelectedCertificate(getCertificateFromRow(rowIndex));
         setSellModalVisibility(true);
     }
 
     function hidePublishForSaleModal() {
         loadPage(1);
-        setSellModalData(null);
+        setSelectedCertificate(null);
         setSellModalVisibility(false);
     }
 
     async function claimCertificate(rowIndex: string) {
-        const certificateId = paginatedData[rowIndex].certificate.id;
-
-        dispatch(
-            requestClaimCertificate({
-                certificateId
-            })
-        );
+        setSelectedCertificate(getCertificateFromRow(rowIndex));
+        setShowClaimModal(true);
     }
 
     function showCertificateDetails(rowIndex: number) {
@@ -283,6 +277,10 @@ export function CertificateTable(props: IProps) {
     }
 
     const filters = getFilters();
+
+    function hideClaimModal() {
+        setShowClaimModal(false);
+    }
 
     function hideClaimBulkModal() {
         setShowClaimBulkModal(false);
@@ -450,18 +448,24 @@ export function CertificateTable(props: IProps) {
             />
 
             <PublishForSaleModal
-                certificate={sellModalData}
+                certificate={selectedCertificate}
                 producingDevice={
-                    sellModalData
+                    selectedCertificate
                         ? producingDevices.find(
                               (device) =>
                                   getDeviceId(device, environment) ===
-                                  sellModalData.deviceId.toString()
+                                  selectedCertificate.deviceId.toString()
                           )
                         : null
                 }
                 showModal={sellModalVisibility}
                 callback={hidePublishForSaleModal}
+            />
+
+            <ClaimModal
+                certificateId={selectedCertificate?.id}
+                showModal={showClaimModal}
+                callback={hideClaimModal}
             />
 
             <ClaimCertificateBulkModal
