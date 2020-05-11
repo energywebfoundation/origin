@@ -73,7 +73,7 @@
         "uuid": "7.0.3"
     },
     "devDependencies": {
-        "@nestjs/cli": "7.1.4",
+        "@nestjs/cli": "7.1.5",
         "@nestjs/schematics": "7.0.0",
         "@nestjs/testing": "7.0.9",
         "@types/bcryptjs": "2.4.2",
@@ -91,10 +91,10 @@
         "@types/uuid": "7.0.3",
         "@types/websocket": "1.0.0",
         "@types/ws": "7.2.4",
-        "jest": "25.5.4",
+        "jest": "26.0.1",
         "nodemailer": "6.4.6",
         "supertest": "4.0.2",
-        "ts-jest": "25.4.0",
+        "ts-jest": "25.5.1",
         "tsconfig-paths": "3.9.0",
         "polly-js": "1.6.5"
     },

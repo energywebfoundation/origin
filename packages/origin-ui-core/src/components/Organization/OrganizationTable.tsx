@@ -41,7 +41,7 @@ export function OrganizationTable() {
 
     const dispatch = useDispatch();
 
-    const isIssuer = isRole(user, Role.Issuer);
+    const hasApprovalRights = isRole(user, Role.Admin, Role.SupportAgent);
 
     async function getPaginatedData({
         requestedPageSize,
@@ -114,7 +114,7 @@ export function OrganizationTable() {
         dispatch(setLoading(false));
     }
 
-    const actions = isIssuer
+    const actions = hasApprovalRights
         ? [
               {
                   icon: <Check />,

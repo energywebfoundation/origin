@@ -41,7 +41,7 @@
         "@nestjs/common": "7.0.9",
         "@nestjs/config": "^0.4.0",
         "@nestjs/core": "7.0.9",
-        "@nestjs/swagger": "4.5.3",
+        "@nestjs/swagger": "4.5.5",
         "@nestjs/typeorm": "7.0.0",
         "body-parser": "1.19.0",
         "class-validator": "0.12.2",
@@ -51,9 +51,9 @@
         "typeorm": "0.2.24"
     },
     "devDependencies": {
-        "jest": "25.5.4",
+        "jest": "26.0.1",
         "supertest": "4.0.2",
-        "ts-jest": "25.4.0",
+        "ts-jest": "25.5.1",
         "tsconfig-paths": "3.9.0"
     },
     "files": [
