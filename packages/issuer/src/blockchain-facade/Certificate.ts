@@ -5,7 +5,7 @@ import {
     MAX_ENERGY_PER_CERTIFICATE
 } from '@energyweb/origin-backend-core';
 import { Event as BlockchainEvent, ContractTransaction, ethers } from 'ethers';
-import { BigNumber, randomBytes, bigNumberify } from 'ethers/utils';
+import { BigNumber, bigNumberify } from 'ethers/utils';
 
 import { Configuration, Timestamp } from '@energyweb/utils-general';
 
@@ -15,6 +15,7 @@ import { Registry } from '../ethers/Registry';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { Issuer } from '../ethers/Issuer';
 import { getEventsFromContract } from '../utils/events';
+import { encodeClaimData, decodeClaimData } from './CertificateUtils';
 
 const NULL_HASH = '0x0000000000000000000000000000000000000000000000000000000000000000';
 
@@ -22,6 +23,23 @@ export interface ICertificateEnergy {
     publicVolume: BigNumber;
     privateVolume: BigNumber;
     claimedVolume: BigNumber;
+}
+
+export interface IClaimData {
+    beneficiary?: string;
+    address?: string;
+    region?: string;
+    zipCode?: string;
+    countryCode?: string;
+}
+
+export interface IClaim {
+    id: number;
+    from: string;
+    to: string;
+    topic: number;
+    value: number;
+    claimData: IClaimData;
 }
 
 export interface ICertificate {
@@ -58,6 +76,8 @@ export class Certificate extends PreciseProofEntity implements ICertificate {
     public initialized = false;
 
     public data: string;
+
+    public claims: IClaim[];
 
     private privateOwnershipCommitment: IOwnershipCommitment = {};
 
@@ -143,6 +163,8 @@ export class Certificate extends PreciseProofEntity implements ICertificate {
 
         this.data = certOnChain.data;
 
+        this.claims = await this.getClaimedData();
+
         const { issuer } = this.configuration
             .blockchainProperties as Configuration.BlockchainProperties<Registry, Issuer>;
 
@@ -218,7 +240,7 @@ export class Certificate extends PreciseProofEntity implements ICertificate {
         return claimedVolume.gt(0);
     }
 
-    async claim(amount?: BigNumber): Promise<ContractTransaction> {
+    async claim(claimData: IClaimData, amount?: BigNumber): Promise<ContractTransaction> {
         const { publicVolume, privateVolume } = this.energy;
 
         if (publicVolume.eq(0)) {
@@ -241,9 +263,6 @@ export class Certificate extends PreciseProofEntity implements ICertificate {
             );
         }
 
-        // TO-DO: replace with proper claim data
-        const claimData = randomBytes(32);
-
         const { activeUser } = this.configuration
             .blockchainProperties as Configuration.BlockchainProperties<Registry, Issuer>;
 
@@ -253,13 +272,15 @@ export class Certificate extends PreciseProofEntity implements ICertificate {
 
         const activeUserAddress = await activeUser.getAddress();
 
+        const encodedClaimData = await encodeClaimData(claimData);
+
         const claimTx = await registryWithSigner.safeTransferAndClaimFrom(
             activeUserAddress,
             activeUserAddress,
             this.id,
             amount || publicVolume,
             this.data,
-            claimData
+            encodedClaimData
         );
 
         await claimTx.wait();
@@ -467,5 +488,59 @@ export class Certificate extends PreciseProofEntity implements ICertificate {
         );
 
         return revokedEvents.length > 0;
+    }
+
+    async getClaimedData(): Promise<IClaim[]> {
+        const { registry } = this.configuration
+            .blockchainProperties as Configuration.BlockchainProperties<Registry, Issuer>;
+
+        const claims: IClaim[] = [];
+
+        const claimSingleEvents = await getEventsFromContract(
+            registry,
+            registry.filters.ClaimSingle(null, null, null, null, null, null)
+        );
+
+        claimSingleEvents
+            .filter((claimEvent) => claimEvent._id.toNumber() === this.id)
+            .forEach(async (claimEvent) => {
+                const claimData = await decodeClaimData(claimEvent._claimData);
+
+                claims.push({
+                    id: claimEvent._id,
+                    from: claimEvent._claimIssuer,
+                    to: claimEvent._claimSubject,
+                    topic: claimEvent._topic,
+                    value: claimEvent._value,
+                    claimData
+                });
+            });
+
+        const claimBatchEvents = await getEventsFromContract(
+            registry,
+            registry.filters.ClaimBatch(null, null, null, null, null, null)
+        );
+
+        claimBatchEvents
+            .filter((claimBatchEvent) =>
+                claimBatchEvent._ids.map((idAsBN: BigNumber) => idAsBN.toNumber()).includes(this.id)
+            )
+            .forEach(async (claimBatchEvent) => {
+                const claimIds = claimBatchEvent._ids.map((idAsBN: BigNumber) => idAsBN.toNumber());
+
+                const index = claimIds.indexOf(this.id);
+                const claimData = await decodeClaimData(claimBatchEvent._claimData[index]);
+
+                claims.push({
+                    id: claimBatchEvent._ids[index],
+                    from: claimBatchEvent._claimIssuer,
+                    to: claimBatchEvent._claimSubject,
+                    topic: claimBatchEvent._topics[index],
+                    value: claimBatchEvent._values[index],
+                    claimData
+                });
+            });
+
+        return claims;
     }
 }
