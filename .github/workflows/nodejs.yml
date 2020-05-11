@@ -22,3 +22,6 @@ jobs:
     - uses: actions/checkout@v2
     - uses: bahmutov/npm-install@v1
     - run: yarn build
+    - run: yarn test:ci:contracts
+    - run: yarn test:ci:apps
+    - run: yarn test:ci:ui
