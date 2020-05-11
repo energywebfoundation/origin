@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, DeepPartial } from 'typeorm';
+import { Repository, DeepPartial, FindOneOptions, FindManyOptions } from 'typeorm';
 import { ILoggedInUser } from '@energyweb/origin-backend-core';
 import { getAddress } from 'ethers/utils';
 import { CertificationRequest } from './certification-request.entity';
@@ -75,11 +75,14 @@ export class CertificationRequestService {
         return this.repository.save(certificationRequest);
     }
 
-    async get(id: number): Promise<CertificationRequest> {
-        return this.repository.findOne(id, { relations: ['device'] });
+    async get(
+        id: number,
+        options?: FindOneOptions<CertificationRequest>
+    ): Promise<CertificationRequest> {
+        return this.repository.findOne(id, { ...options, relations: ['device'] });
     }
 
-    async getAll(): Promise<CertificationRequest[]> {
-        return this.repository.find({ relations: ['device'] });
+    async getAll(options?: FindManyOptions<CertificationRequest>): Promise<CertificationRequest[]> {
+        return this.repository.find({ ...options, relations: ['device'] });
     }
 }

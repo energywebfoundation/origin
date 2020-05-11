@@ -52,15 +52,34 @@ export class CertificateController {
     }
 
     @Get(`${CERTIFICATION_REQUEST_ENDPOINT}/:id`)
-    @UseGuards(AuthGuard())
-    async getCertificationRequest(@Param('id') id: number): Promise<CertificationRequest> {
-        return this.certificationRequestService.get(id);
+    @UseGuards(AuthGuard(), RolesGuard)
+    @Roles(Role.OrganizationAdmin, Role.OrganizationDeviceManager, Role.Issuer, Role.Admin)
+    async getCertificationRequest(
+        @Param('id') id: number,
+        @UserDecorator() loggedUser: ILoggedInUser
+    ): Promise<CertificationRequest> {
+        if (loggedUser.hasRole(Role.Issuer, Role.Admin)) {
+            return this.certificationRequestService.get(id);
+        }
+
+        return this.certificationRequestService.get(id, {
+            where: { userId: loggedUser.organizationId }
+        });
     }
 
     @Get(CERTIFICATION_REQUEST_ENDPOINT)
     @UseGuards(AuthGuard())
-    async getAllCertificationRequests(): Promise<CertificationRequest[]> {
-        return this.certificationRequestService.getAll();
+    @Roles(Role.OrganizationAdmin, Role.OrganizationDeviceManager, Role.Issuer, Role.Admin)
+    async getAllCertificationRequests(
+        @UserDecorator() loggedUser: ILoggedInUser
+    ): Promise<CertificationRequest[]> {
+        if (loggedUser.hasRole(Role.Issuer, Role.Admin)) {
+            return this.certificationRequestService.getAll();
+        }
+
+        return this.certificationRequestService.getAll({
+            where: { userId: loggedUser.organizationId }
+        });
     }
 
     @Get('/:id')

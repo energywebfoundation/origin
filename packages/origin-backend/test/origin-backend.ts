@@ -151,6 +151,8 @@ export const registerAndLogin = async (
         });
     }
 
+    user.organization = organization.id;
+
     let accessToken: string;
 
     await request(app.getHttpServer())

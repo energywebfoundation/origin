@@ -213,7 +213,8 @@ describe('Device e2e tests', () => {
             device,
             approved: false,
             revoked: false,
-            created: moment().subtract(1, 'day').unix()
+            created: moment().subtract(1, 'day').unix(),
+            userId: user.organizationId.toString()
         });
 
         await certificationRequestService.registerApproved(1);
