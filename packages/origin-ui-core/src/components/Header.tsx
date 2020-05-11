@@ -72,7 +72,12 @@ export function Header() {
                     <li>
                         <NavLink to={getCertificatesLink()}>{t('header.certificates')}</NavLink>
                     </li>
-                    {userOffchain && (
+                    {isRole(
+                        userOffchain,
+                        Role.OrganizationAdmin,
+                        Role.Admin,
+                        Role.SupportAgent
+                    ) && (
                         <>
                             <li>
                                 <NavLink to={getOrganizationLink()}>
