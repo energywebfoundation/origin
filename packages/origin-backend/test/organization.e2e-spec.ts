@@ -11,15 +11,13 @@ describe('Organization e2e tests', () => {
             app,
             userService,
             deviceService,
-            organizationService,
-            configurationService
+            organizationService
         } = await bootstrapTestInstance();
 
         await app.init();
 
         const { accessToken, user, organization } = await registerAndLogin(
             app,
-            configurationService,
             userService,
             organizationService,
             [Role.OrganizationDeviceManager]

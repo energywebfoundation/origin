@@ -217,7 +217,6 @@ export class OrganizationController {
 
     @Put('invitation/:invitationId')
     @UseGuards(AuthGuard(), RolesGuard)
-    @Roles(Role.OrganizationAdmin, Role.Admin)
     async updateInvitation(
         @Body('status') status: IOrganizationInvitation['status'],
         @Param('invitationId') invitationId: string,

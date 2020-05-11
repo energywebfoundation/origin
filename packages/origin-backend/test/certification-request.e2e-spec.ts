@@ -1,29 +1,48 @@
 /* eslint-disable no-return-assign */
-import { DeviceStatus, Role, ICertificationRequestBackend } from '@energyweb/origin-backend-core';
-import request from 'supertest';
+import { DeviceStatus, ICertificationRequestBackend, Role } from '@energyweb/origin-backend-core';
+import { INestApplication } from '@nestjs/common';
 import moment from 'moment';
+import request from 'supertest';
 
-import { registerAndLogin, bootstrapTestInstance } from './origin-backend';
+import { CertificationRequestService } from '../src/pods/certificate/certification-request.service';
+import { DeviceService } from '../src/pods/device/device.service';
+import { OrganizationService } from '../src/pods/organization/organization.service';
+import { UserService } from '../src/pods/user';
+import { bootstrapTestInstance, registerAndLogin } from './origin-backend';
 
 describe('CertificationRequest e2e tests', () => {
-    it('should read information from the blockchain', async () => {
-        const {
+    let app: INestApplication;
+    let userService: UserService;
+    let deviceService: DeviceService;
+    let organizationService: OrganizationService;
+    let certificationRequestService: CertificationRequestService;
+
+    const defaultOrganization = 'org1';
+
+    beforeAll(async () => {
+        ({
             app,
             userService,
             deviceService,
             organizationService,
-            configurationService,
             certificationRequestService
-        } = await bootstrapTestInstance();
+        } = await bootstrapTestInstance());
 
         await app.init();
+    });
 
+    afterAll(async () => {
+        await app.close();
+    });
+
+    it('should read information from the blockchain', async () => {
         const { accessToken, user } = await registerAndLogin(
             app,
-            configurationService,
             userService,
             organizationService,
-            [Role.OrganizationUser, Role.OrganizationDeviceManager]
+            [Role.OrganizationUser, Role.OrganizationDeviceManager],
+            '1',
+            defaultOrganization
         );
 
         await request(app.getHttpServer())
@@ -77,7 +96,8 @@ describe('CertificationRequest e2e tests', () => {
             device,
             approved: false,
             revoked: false,
-            created
+            created,
+            userId: user.ownerId
         });
 
         await request(app.getHttpServer())
@@ -121,7 +141,45 @@ describe('CertificationRequest e2e tests', () => {
 
                 expect(requests).toHaveLength(1);
             });
+    });
 
-        await app.close();
+    it('should allow issuer to read the certification request', async () => {
+        const { accessToken } = await registerAndLogin(
+            app,
+            userService,
+            organizationService,
+            [Role.Issuer],
+            'issuer',
+            'issuerOrg'
+        );
+
+        await request(app.getHttpServer())
+            .get(`/Certificate/CertificationRequest`)
+            .set('Authorization', `Bearer ${accessToken}`)
+            .expect((res) => {
+                const requests = res.body as ICertificationRequestBackend[];
+
+                expect(requests).toHaveLength(1);
+            });
+    });
+
+    it('should allow other organization member to read the certification request', async () => {
+        const { accessToken } = await registerAndLogin(
+            app,
+            userService,
+            organizationService,
+            [Role.OrganizationDeviceManager],
+            '2',
+            defaultOrganization
+        );
+
+        await request(app.getHttpServer())
+            .get(`/Certificate/CertificationRequest`)
+            .set('Authorization', `Bearer ${accessToken}`)
+            .expect((res) => {
+                const requests = res.body as ICertificationRequestBackend[];
+
+                expect(requests).toHaveLength(1);
+            });
     });
 });

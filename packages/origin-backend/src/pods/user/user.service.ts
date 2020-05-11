@@ -58,7 +58,13 @@ export class UserService {
     }
 
     async findByBlockchainAccount(blockchainAccountAddress: string) {
-        return this.findOne({ blockchainAccountAddress });
+        return (this.repository
+            .createQueryBuilder('user')
+            .where('LOWER(user.blockchainAccountAddress) = LOWER(:blockchainAccountAddress)', {
+                blockchainAccountAddress
+            })
+            .loadAllRelationIds()
+            .getOne() as Promise<IUser>) as Promise<TUserBaseEntity>;
     }
 
     async findByIds(
@@ -137,6 +143,10 @@ export class UserService {
         }
 
         return this.repository.save(user);
+    }
+
+    async addToOrganization(userId: number, organizationId: number) {
+        await this.repository.update(userId, { organization: { id: organizationId } });
     }
 
     async findOne(conditions: FindConditions<User>): Promise<TUserBaseEntity> {

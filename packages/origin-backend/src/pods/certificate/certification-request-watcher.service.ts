@@ -8,6 +8,7 @@ import { Log } from 'ethers/providers';
 import { ConfigurationService } from '../configuration';
 import { DeviceService } from '../device/device.service';
 import { CertificationRequestService } from './certification-request.service';
+import { UserService } from '../user';
 
 @Injectable()
 export class CertificationRequestWatcherService implements OnModuleInit {
@@ -23,7 +24,8 @@ export class CertificationRequestWatcherService implements OnModuleInit {
         private readonly configService: ConfigService,
         private readonly moduleRef: ModuleRef,
         private readonly certificationRequestService: CertificationRequestService,
-        private readonly deviceService: DeviceService
+        private readonly deviceService: DeviceService,
+        private readonly userService: UserService
     ) {}
 
     public async onModuleInit() {
@@ -85,8 +87,8 @@ export class CertificationRequestWatcherService implements OnModuleInit {
             return;
         }
 
-        const certRequestInfo = await this.issuer.getCertificationRequest(_id);
-        const [fromTime, toTime, deviceId] = await this.issuer.decodeData(certRequestInfo.data);
+        const { owner, revoked, approved, data } = await this.issuer.getCertificationRequest(_id);
+        const [fromTime, toTime, deviceId] = await this.issuer.decodeData(data);
 
         const device = await this.deviceService.findByExternalId({
             id: deviceId,
@@ -99,15 +101,22 @@ export class CertificationRequestWatcherService implements OnModuleInit {
         }
 
         const { timestamp: created } = await this.issuer.provider.getBlock(event.blockNumber);
+        const user = await this.userService.findByBlockchainAccount(owner);
+
+        if (!user) {
+            this.logger.error(`Encountered request from unknown address ${owner}`);
+            return;
+        }
 
         const certificationRequest = await this.certificationRequestService.create({
             id: _id.toNumber(),
-            owner: certRequestInfo.owner,
+            owner,
+            userId: user.organization.toString(),
             fromTime: fromTime.toNumber(),
             toTime: toTime.toNumber(),
             device,
-            approved: certRequestInfo.approved,
-            revoked: certRequestInfo.revoked,
+            approved,
+            revoked,
             created
         });
 

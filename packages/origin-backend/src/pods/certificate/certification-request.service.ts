@@ -1,8 +1,7 @@
-import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, DeepPartial } from 'typeorm';
+import { Repository, DeepPartial, FindOneOptions, FindManyOptions } from 'typeorm';
 import { ILoggedInUser } from '@energyweb/origin-backend-core';
-import { getAddress } from 'ethers/utils';
 import { CertificationRequest } from './certification-request.entity';
 import { CertificationRequestUpdateDTO } from './certification-request.dto';
 import { StorageErrors } from '../../enums/StorageErrors';
@@ -25,19 +24,14 @@ export class CertificationRequestService {
         data: CertificationRequestUpdateDTO,
         loggedUser: ILoggedInUser
     ): Promise<CertificationRequest> {
-        const certificationRequest = await this.repository.findOne(id, { relations: ['device'] });
+        const certificationRequest = await this.repository.findOne(id, {
+            relations: ['device'],
+            where: { userId: loggedUser.ownerId }
+        });
 
         if (!certificationRequest) {
             throw new NotFoundException(
                 `updateCertificationRequest(): ${StorageErrors.NON_EXISTENT}`
-            );
-        }
-        if (
-            getAddress(loggedUser.blockchainAccountAddress) !==
-            getAddress(certificationRequest.owner)
-        ) {
-            throw new UnauthorizedException(
-                `Logged in user ${loggedUser.blockchainAccountAddress} is not the owner of the request.`
             );
         }
 
@@ -75,11 +69,14 @@ export class CertificationRequestService {
         return this.repository.save(certificationRequest);
     }
 
-    async get(id: number): Promise<CertificationRequest> {
-        return this.repository.findOne(id, { relations: ['device'] });
+    async get(
+        id: number,
+        options?: FindOneOptions<CertificationRequest>
+    ): Promise<CertificationRequest> {
+        return this.repository.findOne(id, { ...options, relations: ['device'] });
     }
 
-    async getAll(): Promise<CertificationRequest[]> {
-        return this.repository.find({ relations: ['device'] });
+    async getAll(options?: FindManyOptions<CertificationRequest>): Promise<CertificationRequest[]> {
+        return this.repository.find({ ...options, relations: ['device'] });
     }
 }
