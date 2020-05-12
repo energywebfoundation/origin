@@ -1,8 +1,8 @@
-import { randomBytes, formatBytes32String, parseBytes32String } from 'ethers/utils';
+import { randomBytes } from 'ethers/utils';
 import { Configuration } from '@energyweb/utils-general';
-
 import { Log } from 'ethers/providers';
 import { EventFilter } from 'ethers';
+
 import { Certificate, IClaimData } from './Certificate';
 import { Registry } from '../ethers/Registry';
 import { Issuer } from '../ethers/Issuer';
@@ -16,23 +16,47 @@ export interface IBlockchainEvent {
     timestamp: number;
 }
 
-export const encodeClaimData = async (claimData: IClaimData) => {
+export const encodeClaimData = async (
+    claimData: IClaimData,
+    configuration: Configuration.Entity
+) => {
     const { beneficiary, address, region, zipCode, countryCode } = claimData;
+    const { registry } = configuration.blockchainProperties as Configuration.BlockchainProperties<
+        Registry,
+        Issuer
+    >;
 
-    return formatBytes32String(`${beneficiary};${address};${region};${zipCode};${countryCode}`);
+    return registry.encodeClaimData(
+        beneficiary ?? '',
+        address ?? '',
+        region ?? '',
+        zipCode ?? '',
+        countryCode ?? ''
+    );
 };
 
-export const decodeClaimData = async (encodedClaimData: string): Promise<IClaimData> => {
-    const [beneficiary, address, region, zipCode, countryCode] = parseBytes32String(
-        encodedClaimData
-    ).split(';');
+export const decodeClaimData = async (
+    encodedClaimData: string,
+    configuration: Configuration.Entity
+): Promise<IClaimData> => {
+    const { registry } = configuration.blockchainProperties as Configuration.BlockchainProperties<
+        Registry,
+        Issuer
+    >;
+    const {
+        _beneficiary,
+        _address,
+        _region,
+        _zipCode,
+        _countryCode
+    } = await registry.decodeClaimData(encodedClaimData);
 
     return {
-        beneficiary,
-        address,
-        region,
-        zipCode,
-        countryCode
+        beneficiary: _beneficiary,
+        address: _address,
+        region: _region,
+        zipCode: _zipCode,
+        countryCode: _countryCode
     };
 };
 
@@ -54,7 +78,7 @@ export async function claimCertificates(
 
     const values = certificates.map((cert) => cert.energy.publicVolume);
 
-    const encodedClaimData = await encodeClaimData(claimData);
+    const encodedClaimData = await encodeClaimData(claimData, configuration);
     const data = randomBytes(32);
 
     const {

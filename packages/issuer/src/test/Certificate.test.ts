@@ -34,11 +34,19 @@ describe('Certificate tests', () => {
     let timestamp = moment().subtract(10, 'year').unix();
 
     const claimData: IClaimData = {
-        beneficiary: '￼Test',
-        address: 'Addr',
-        region: 'Region',
-        zipCode: '321',
+        beneficiary: 'Testing beneficiary 1234',
+        address: 'Random address 123, Somewhere',
+        region: 'Northernmost Region',
+        zipCode: '321-45',
         countryCode: 'DE'
+    };
+
+    const emptyClaimData: IClaimData = {
+        beneficiary: '',
+        address: '',
+        region: '',
+        zipCode: '',
+        countryCode: ''
     };
 
     const setActiveUser = (wallet: Wallet) => {
@@ -269,6 +277,24 @@ describe('Certificate tests', () => {
         assert.isTrue(
             certificate.claims.some(
                 (claim) => JSON.stringify(claim.claimData) === JSON.stringify(claimData)
+            )
+        );
+    });
+
+    it('claims a certificate with empty beneficiary', async () => {
+        const totalVolume = new BigNumber(1e9);
+        let certificate = await issueCertificate(totalVolume);
+
+        setActiveUser(deviceOwnerWallet);
+        certificate = await certificate.sync();
+
+        await certificate.claim(emptyClaimData, totalVolume);
+
+        certificate = await certificate.sync();
+
+        assert.isTrue(
+            certificate.claims.some(
+                (claim) => JSON.stringify(claim.claimData) === JSON.stringify(emptyClaimData)
             )
         );
     });

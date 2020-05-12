@@ -272,7 +272,7 @@ export class Certificate extends PreciseProofEntity implements ICertificate {
 
         const activeUserAddress = await activeUser.getAddress();
 
-        const encodedClaimData = await encodeClaimData(claimData);
+        const encodedClaimData = await encodeClaimData(claimData, this.configuration);
 
         const claimTx = await registryWithSigner.safeTransferAndClaimFrom(
             activeUserAddress,
@@ -504,7 +504,7 @@ export class Certificate extends PreciseProofEntity implements ICertificate {
         claimSingleEvents
             .filter((claimEvent) => claimEvent._id.toNumber() === this.id)
             .forEach(async (claimEvent) => {
-                const claimData = await decodeClaimData(claimEvent._claimData);
+                const claimData = await decodeClaimData(claimEvent._claimData, this.configuration);
 
                 claims.push({
                     id: claimEvent._id,
@@ -529,7 +529,10 @@ export class Certificate extends PreciseProofEntity implements ICertificate {
                 const claimIds = claimBatchEvent._ids.map((idAsBN: BigNumber) => idAsBN.toNumber());
 
                 const index = claimIds.indexOf(this.id);
-                const claimData = await decodeClaimData(claimBatchEvent._claimData[index]);
+                const claimData = await decodeClaimData(
+                    claimBatchEvent._claimData[index],
+                    this.configuration
+                );
 
                 claims.push({
                     id: claimBatchEvent._ids[index],
