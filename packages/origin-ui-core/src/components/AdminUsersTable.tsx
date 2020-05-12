@@ -46,30 +46,15 @@ export function AdminUsersTable() {
                 total: 0
             };
         }
-        let entities = await adminClient.getAllUsers();
-        let _requestedFilters = requestedFilters.filter((item) => item.selectedValue !== '');
-        _requestedFilters = _requestedFilters.filter((item) => item.selectedValue !== null);
-
-        if (_requestedFilters.length > 0) {
-            entities = entities.filter((item) => {
-                const organization = item.organization as IOrganization;
-                if (
-                    item.status === parseInt(requestedFilters[0]?.selectedValue, 10) ||
-                    item.kycStatus === parseInt(requestedFilters[1]?.selectedValue, 10) ||
-                    requestedFilters[2]?.selectedValue === '' ||
-                    requestedFilters[2]?.selectedValue === null
-                        ? false
-                        : organization.name
-                              .toLocaleLowerCase()
-                              .includes(requestedFilters[2]?.selectedValue.toLocaleLowerCase())
-                )
-                    return true;
-
-                return (
-                    item.status === parseInt(requestedFilters[0]?.selectedValue, 10) ||
-                    item.kycStatus === parseInt(requestedFilters[1]?.selectedValue, 10)
-                );
-            });
+        let entities = [];
+        if (requestedFilters.length > 0) {
+            entities = await adminClient.getUsersBy(
+                requestedFilters[2]?.selectedValue,
+                parseInt(requestedFilters[0]?.selectedValue, 10) || 0,
+                parseInt(requestedFilters[1]?.selectedValue, 10) || 0
+            );
+        } else {
+            entities = await adminClient.getAllUsers();
         }
         let newPaginatedData: IRecord[] = entities.map((i) => ({
             user: i
@@ -91,6 +76,11 @@ export function AdminUsersTable() {
     useEffect(() => {
         loadPage(1);
     }, [userOffchain, adminClient]);
+
+    function viewUser(index: number) {
+        const user = paginatedData[index];
+        history.push('user-update', user);
+    }
 
     const columns = [
         { id: 'firstName', label: 'Name' },
@@ -167,6 +157,7 @@ export function AdminUsersTable() {
             pageSize={pageSize}
             actions={actions}
             filters={filters}
+            handleRowClick={(index) => viewUser(parseInt(index, 10))}
         />
     );
 }
