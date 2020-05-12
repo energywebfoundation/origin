@@ -9,3 +9,4 @@ export * from './OriginConfiguration';
 export * from './OwnershipCommitment';
 export * from './Certificate';
 export * from './LoggedInUser';
+export * from './UserRegistrationData';
