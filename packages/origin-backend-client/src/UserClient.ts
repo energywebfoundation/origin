@@ -1,6 +1,6 @@
 import {
     UserRegisterReturnData,
-    UserRegisterData,
+    UserRegistrationData,
     UserLoginData,
     UserLoginReturnData,
     UserUpdateData,
@@ -15,10 +15,9 @@ type UpdateUserResponseReturnType = IUserWithRelationsIds;
 export interface IUserClient {
     login(email: string, password: string): Promise<UserLoginReturnData>;
     logout(): Promise<void>;
-    register(data: UserRegisterData): Promise<UserRegisterReturnData>;
+    register(data: UserRegistrationData): Promise<UserRegisterReturnData>;
     me(): Promise<IUserWithRelationsIds>;
     getUserById(id: string): Promise<IUserWithRelationsIds>;
-    getUserByBlockchainAccount(blockchainAccountAddress: string): Promise<IUserWithRelationsIds>;
     attachSignedMessage(id: number, signedMessage: string): Promise<UpdateUserResponseReturnType>;
     updateAdditionalProperties(
         id: number,
@@ -40,7 +39,7 @@ export class UserClient implements IUserClient {
         return `${this.dataApiUrl}/user`;
     }
 
-    public async register(formData: UserRegisterData): Promise<UserRegisterReturnData> {
+    public async register(formData: UserRegistrationData): Promise<UserRegisterReturnData> {
         const url = `${this.userEndpoint}/register`;
         const { data } = await this.requestClient.post(url, formData);
 
@@ -67,15 +66,6 @@ export class UserClient implements IUserClient {
 
     public async me(): Promise<IUserWithRelationsIds> {
         const url = `${this.userEndpoint}/me`;
-        const { data } = await this.requestClient.get<{}, IUserWithRelationsIds>(url);
-
-        return data;
-    }
-
-    public async getUserByBlockchainAccount(
-        blockchainAccountAddress: string
-    ): Promise<IUserWithRelationsIds> {
-        const url = `${this.userEndpoint}/for-blockchain-account/${blockchainAccountAddress}`;
         const { data } = await this.requestClient.get<{}, IUserWithRelationsIds>(url);
 
         return data;
