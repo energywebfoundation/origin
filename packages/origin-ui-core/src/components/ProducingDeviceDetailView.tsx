@@ -32,6 +32,7 @@ interface IProps {
 export function ProducingDeviceDetailView(props: IProps) {
     const configuration = useSelector(getConfiguration);
     const producingDevices = useSelector(getProducingDevices);
+    const offChainDataSource = useSelector(getOffChainDataSource);
     const organizationClient = useSelector(getOffChainDataSource)?.organizationClient;
     const [organizations, setOrganizations] = useState<IOrganizationWithRelationsIds[]>([]);
 
@@ -164,6 +165,20 @@ export function ProducingDeviceDetailView(props: IProps) {
                 type: 'map',
                 rowspan: 3,
                 colspan: 2
+            },
+            {
+                label: 'Files Upload',
+                data: JSON.parse(selectedDevice.files).map((f) => (
+                    <div key={f} className="Label">
+                        <a
+                            href={offChainDataSource.filesClient.getLink(f)}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                        >
+                            {f}
+                        </a>
+                    </div>
+                ))
             }
         ]
     ];
