@@ -165,6 +165,20 @@ export function ProducingDeviceDetailView(props: IProps) {
                 type: 'map',
                 rowspan: 3,
                 colspan: 2
+            },
+            {
+                label: 'Files Upload',
+                data: JSON.parse(selectedDevice.files).map((f) => (
+                    <div key={f} className="Label">
+                        <a
+                            href={offChainDataSource.filesClient.getLink(f)}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                        >
+                            {f}
+                        </a>
+                    </div>
+                ))
             }
         ],
         [
