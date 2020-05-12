@@ -28,6 +28,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { StorageErrors } from '../../enums/StorageErrors';
 import { OrganizationService } from '../organization/organization.service';
 import { DeviceService } from './device.service';
+import { ExtendedBaseEntity } from '../ExtendedBaseEntity';
 
 @Controller('/Device')
 export class DeviceController {
@@ -86,8 +87,11 @@ export class DeviceController {
 
     @Put('/:id')
     @UseGuards(AuthGuard(), RolesGuard)
-    @Roles(Role.OrganizationAdmin, Role.OrganizationDeviceManager)
-    async put(@Param('id') id: string, @Body() body: DeviceUpdateData) {
+    @Roles(Role.OrganizationAdmin, Role.OrganizationDeviceManager, Role.Issuer)
+    async put(
+        @Param('id') id: string,
+        @Body() body: DeviceUpdateData
+    ): Promise<ExtendedBaseEntity & IDeviceWithRelationsIds> {
         const res = await this.deviceService.update(id, body);
         return res;
     }
