@@ -23,6 +23,9 @@ export class Device extends ExtendedBaseEntity implements IDevice {
     images: string;
 
     @Column()
+    files: string;
+
+    @Column()
     address: string;
 
     @Column()
