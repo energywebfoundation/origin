@@ -100,7 +100,7 @@ export class OrganizationController {
 
     @Get('/:id/users')
     @UseGuards(AuthGuard(), RolesGuard)
-    @Roles(Role.OrganizationAdmin)
+    @Roles(Role.OrganizationAdmin, Role.Admin, Role.SupportAgent)
     async getUsers(@Param('id') id: string, @UserDecorator() loggedUser: ILoggedInUser) {
         const organization = await this.organizationRepository.findOne(id, {
             relations: ['users', 'leadUser']
@@ -119,7 +119,7 @@ export class OrganizationController {
 
     @Get('/:id/devices')
     @UseGuards(AuthGuard(), RolesGuard)
-    @Roles(Role.OrganizationAdmin, Role.OrganizationDeviceManager)
+    @Roles(Role.OrganizationAdmin, Role.OrganizationDeviceManager, Role.Admin, Role.SupportAgent)
     async getDevices(@Param('id') id: string, @UserDecorator() loggedUser: ILoggedInUser) {
         if (!isRole(loggedUser, Role.OrganizationDeviceManager)) {
             throw new ForbiddenException();
@@ -217,7 +217,6 @@ export class OrganizationController {
 
     @Put('invitation/:invitationId')
     @UseGuards(AuthGuard(), RolesGuard)
-    @Roles(Role.OrganizationAdmin)
     async updateInvitation(
         @Body('status') status: IOrganizationInvitation['status'],
         @Param('invitationId') invitationId: string,
@@ -284,7 +283,7 @@ export class OrganizationController {
 
     @Post('invite')
     @UseGuards(AuthGuard(), RolesGuard)
-    @Roles(Role.OrganizationAdmin)
+    @Roles(Role.OrganizationAdmin, Role.Admin)
     async invite(
         @Body('email') email: string,
         @UserDecorator() loggedUser: ILoggedInUser
@@ -366,7 +365,7 @@ export class OrganizationController {
 
     @Post(':id/remove-member/:userId')
     @UseGuards(AuthGuard(), RolesGuard)
-    @Roles(Role.OrganizationAdmin)
+    @Roles(Role.OrganizationAdmin, Role.Admin)
     async removeMember(
         @Param('id', new ParseIntPipe()) organizationId: number,
         @Param('userId', new ParseIntPipe()) removedUserId: number,

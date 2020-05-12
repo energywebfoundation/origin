@@ -121,7 +121,12 @@ export class DeviceService {
 
         await this.repository.save(newEntity);
 
-        return newEntity;
+        const meterStats = await this.getMeterStats(newEntity.id.toString());
+
+        return {
+            ...newEntity,
+            meterStats
+        };
     }
 
     async remove(entity: Device | (ExtendedBaseEntity & IDeviceWithRelationsIds)) {
@@ -191,7 +196,10 @@ export class DeviceService {
         );
     }
 
-    async update(id: string, update: DeviceUpdateData) {
+    async update(
+        id: string,
+        update: DeviceUpdateData
+    ): Promise<ExtendedBaseEntity & IDeviceWithRelationsIds> {
         const device = await this.findOne(id);
 
         if (!device) {
@@ -218,9 +226,7 @@ export class DeviceService {
                 data: event
             });
 
-            return {
-                message: `Device ${id} successfully updated`
-            };
+            return device;
         } catch (error) {
             throw new UnprocessableEntityException({
                 message: `Device ${id} could not be updated due to an error ${error.message}`

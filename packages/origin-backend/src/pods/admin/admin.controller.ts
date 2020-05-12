@@ -2,10 +2,12 @@ import {
     IUser,
     Role,
     SupportedEvents,
-    UserStatusChangedEvent
+    UserStatusChangedEvent,
+    Status,
+    KYCStatus
 } from '@energyweb/origin-backend-core';
 import { Roles, RolesGuard } from '@energyweb/origin-backend-utils';
-import { Body, Controller, Get, Param, Put, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, Put, UseGuards, Query } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 
 import { NotificationService } from '../notification/notification.service';
@@ -23,6 +25,17 @@ export class AdminController {
     @Roles(Role.Admin, Role.SupportAgent)
     public async getAllUsers() {
         return this.adminService.getAllUsers();
+    }
+
+    @Get('usersBy')
+    @UseGuards(AuthGuard('jwt'))
+    @Roles(Role.Admin, Role.SupportAgent)
+    public async getUsersBy(
+        @Query('orgName') orgName: string,
+        @Query('status') status: Status,
+        @Query('kycStatus') kycStatus: KYCStatus
+    ) {
+        return this.adminService.getUsersBy(orgName, status, kycStatus);
     }
 
     @Put('users/:id')

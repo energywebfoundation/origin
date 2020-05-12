@@ -19,15 +19,13 @@ describe('Device e2e tests', () => {
             app,
             userService,
             deviceService,
-            organizationService,
-            configurationService
+            organizationService
         } = await bootstrapTestInstance();
 
         await app.init();
 
         const { accessToken, user } = await registerAndLogin(
             app,
-            configurationService,
             userService,
             organizationService,
             [Role.OrganizationUser, Role.OrganizationDeviceManager]
@@ -130,7 +128,6 @@ describe('Device e2e tests', () => {
             userService,
             deviceService,
             organizationService,
-            configurationService,
             certificationRequestService
         } = await bootstrapTestInstance();
 
@@ -138,7 +135,6 @@ describe('Device e2e tests', () => {
 
         const { accessToken, user } = await registerAndLogin(
             app,
-            configurationService,
             userService,
             organizationService,
             [Role.OrganizationUser, Role.OrganizationDeviceManager]
@@ -215,7 +211,8 @@ describe('Device e2e tests', () => {
             device,
             approved: false,
             revoked: false,
-            created: moment().subtract(1, 'day').unix()
+            created: moment().subtract(1, 'day').unix(),
+            userId: user.organizationId.toString()
         });
 
         await certificationRequestService.registerApproved(1);

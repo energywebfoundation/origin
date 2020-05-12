@@ -13,6 +13,9 @@ export class CertificationRequest extends ExtendedBaseEntity
     @Column('varchar')
     owner: string;
 
+    @Column()
+    userId: string;
+
     @Column('varchar', { nullable: true })
     energy: string;
 

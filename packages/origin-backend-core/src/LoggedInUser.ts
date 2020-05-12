@@ -7,7 +7,7 @@ export interface ILoggedInUser {
     email: string;
     blockchainAccountAddress: string;
     rights: number;
-    hasRole(role: Role): boolean;
+    hasRole(...role: Role[]): boolean;
     ownerId: string;
 }
 
@@ -30,8 +30,8 @@ export class LoggedInUser implements ILoggedInUser {
 
     rights: number;
 
-    hasRole(role: Role): boolean {
-        return isRole(this, role);
+    hasRole(...role: Role[]): boolean {
+        return isRole(this, ...role);
     }
 
     // This could be changed to organizationId ?? userId down the road, for now we will require a org for each users
