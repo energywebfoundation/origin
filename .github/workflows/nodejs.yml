@@ -21,6 +21,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - uses: bahmutov/npm-install@v1
+    - run: git checkout master
     - run: yarn build
     - run: yarn test:ci:contracts
     - run: yarn test:ci:apps
