@@ -1,39 +1,61 @@
-import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, FindConditions } from 'typeorm';
-import bcrypt from 'bcryptjs';
-import { ConfigService } from '@nestjs/config';
-
 import {
-    UserRegisterData,
-    IUserWithRelationsIds,
+    buildRights,
     IUser,
+    IUserWithRelationsIds,
+    KYCStatus,
+    Role,
+    Status,
+    UserRegistrationData,
     UserUpdateData
 } from '@energyweb/origin-backend-core';
 import { recoverTypedSignatureAddress } from '@energyweb/utils-general';
+import { ConflictException, Injectable, Logger } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+import { InjectRepository } from '@nestjs/typeorm';
+import bcrypt from 'bcryptjs';
+import { FindConditions, Repository } from 'typeorm';
 
-import { User } from './user.entity';
 import { ExtendedBaseEntity } from '../ExtendedBaseEntity';
+import { User } from './user.entity';
 
 export type TUserBaseEntity = ExtendedBaseEntity & IUserWithRelationsIds;
 
 @Injectable()
 export class UserService {
+    private readonly logger = new Logger(UserService.name);
+
     constructor(
         @InjectRepository(User)
         private readonly repository: Repository<User>,
         private readonly config: ConfigService
     ) {}
 
-    create(data: UserRegisterData): Promise<User> {
-        const user = this.repository.create({
-            ...data,
-            password: this.hashPassword(data.password),
-            blockchainAccountAddress: '',
-            blockchainAccountSignedMessage: ''
-        });
+    public async create(data: UserRegistrationData): Promise<User> {
+        const isExistingUser = await this.hasUser({ email: data.email });
 
-        return this.repository.save(user);
+        if (isExistingUser) {
+            this.logger.error(`User with email ${data.email} already exists`);
+            throw new ConflictException();
+        }
+
+        return this.repository.save({
+            title: data.title,
+            firstName: data.firstName,
+            lastName: data.lastName,
+            email: data.email,
+            telephone: data.telephone,
+            password: this.hashPassword(data.password),
+            notifications: true,
+            rights: Role.OrganizationAdmin,
+            status: Status.Pending,
+            kycStatus: KYCStatus['Pending KYC']
+        });
+    }
+
+    public async changeRole(userId: number, ...roles: Role[]) {
+        this.logger.log(`Changing user role for userId=${userId} to ${buildRights(roles)}`);
+
+        return this.repository.update(userId, { rights: buildRights(roles) });
     }
 
     async findById(id: number | string) {
@@ -153,5 +175,9 @@ export class UserService {
         return (this.repository.findOne(conditions, {
             loadRelationIds: true
         }) as Promise<IUser>) as Promise<TUserBaseEntity>;
+    }
+
+    private async hasUser(conditions: FindConditions<User>) {
+        return (await this.repository.findOne(conditions)) !== undefined;
     }
 }
