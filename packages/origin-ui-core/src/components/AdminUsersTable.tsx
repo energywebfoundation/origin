@@ -94,7 +94,7 @@ export function AdminUsersTable() {
         const organization = user.organization as IOrganization;
         return {
             firstName: user.title + ' ' + user.firstName + ' ' + user.lastName,
-            organization: organization.name,
+            organization: organization?.name ?? '',
             email: user.email,
             status: KeyStatus[user.status],
             kycStatus: KeyKYCStatus[user.kycStatus]
