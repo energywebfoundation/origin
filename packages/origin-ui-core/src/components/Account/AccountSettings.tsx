@@ -100,7 +100,7 @@ export function AccountSettings() {
                 newProperties.notifications = notificationsEnabled;
             }
 
-            await userClient.updateAdditionalProperties(user.id, newProperties);
+            await userClient.updateAdditionalProperties(newProperties);
         }
 
         dispatch(refreshUserOffchain());
@@ -116,7 +116,7 @@ export function AccountSettings() {
                 web3
             );
 
-            await userClient.attachSignedMessage(user.id, signedMessage);
+            await userClient.attachSignedMessage(signedMessage);
 
             dispatch(refreshUserOffchain());
 

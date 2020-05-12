@@ -58,7 +58,7 @@ export class UserClientMock implements IUserClient {
         return this.storage.get(Number(id));
     }
 
-    async attachSignedMessage(id: number, signedMessage: string): Promise<any> {
+    async attachSignedMessage(signedMessage: string, id?: number): Promise<any> {
         const address = await recoverTypedSignatureAddress(
             process.env.REGISTRATION_MESSAGE_TO_SIGN ?? 'I register as Origin user',
             signedMessage
@@ -74,8 +74,8 @@ export class UserClientMock implements IUserClient {
     }
 
     async updateAdditionalProperties(
-        id: number,
-        properties: Partial<Pick<IUserProperties, 'notifications'>>
+        properties: Partial<Pick<IUserProperties, 'notifications'>>,
+        id?: number
     ): Promise<any> {
         const user = this.storage.get(id);
 
