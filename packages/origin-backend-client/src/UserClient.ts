@@ -18,9 +18,8 @@ export interface IUserClient {
     register(data: UserRegistrationData): Promise<UserRegisterReturnData>;
     me(): Promise<IUserWithRelationsIds>;
     getUserById(id: string): Promise<IUserWithRelationsIds>;
-    attachSignedMessage(id: number, signedMessage: string): Promise<UpdateUserResponseReturnType>;
+    attachSignedMessage(signedMessage: string): Promise<UpdateUserResponseReturnType>;
     updateAdditionalProperties(
-        id: number,
         properties: Partial<Pick<IUserProperties, 'notifications'>>
     ): Promise<UpdateUserResponseReturnType>;
 }
@@ -71,15 +70,14 @@ export class UserClient implements IUserClient {
         return data;
     }
 
-    public async attachSignedMessage(id: number, signedMessage: string) {
-        return this.updateUser(id, { blockchainAccountSignedMessage: signedMessage });
+    public async attachSignedMessage(signedMessage: string) {
+        return this.updateUser({ blockchainAccountSignedMessage: signedMessage });
     }
 
     public async updateAdditionalProperties(
-        id: number,
         properties: Partial<Pick<IUserProperties, 'notifications'>>
     ) {
-        return this.updateUser(id, properties);
+        return this.updateUser(properties);
     }
 
     public async getUserById(id: string): Promise<IUserWithRelationsIds> {
@@ -89,12 +87,8 @@ export class UserClient implements IUserClient {
         return data;
     }
 
-    private async updateUser(
-        id: number,
-        updatedUserInfo: UserUpdateData
-    ): Promise<IUserWithRelationsIds> {
-        const url = `${this.userEndpoint}/${id}`;
-        const { data } = await this.requestClient.put(url, updatedUserInfo);
+    private async updateUser(updatedUserInfo: UserUpdateData): Promise<IUserWithRelationsIds> {
+        const { data } = await this.requestClient.put(this.userEndpoint, updatedUserInfo);
 
         return data;
     }
