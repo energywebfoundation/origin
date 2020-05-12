@@ -53,6 +53,8 @@ describe('User e2e tests', () => {
                 expect(user.rights).toBe(buildRights([Role.OrganizationAdmin]));
                 expect(user.status).toBe(Status.Pending);
                 expect(user.kycStatus).toBe(KYCStatus['Pending KYC']);
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                expect((user as any).password).toBeUndefined();
             });
 
         let accessToken: string;

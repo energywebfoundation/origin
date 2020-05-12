@@ -10,6 +10,12 @@ import { ExtendedBaseEntity } from '../ExtendedBaseEntity';
 @Entity()
 @Unique(['email', 'blockchainAccountAddress'])
 export class User extends ExtendedBaseEntity implements IUser {
+    constructor(user: Partial<User>) {
+        super();
+
+        Object.assign(this, user);
+    }
+
     @PrimaryGeneratedColumn()
     id: number;
 

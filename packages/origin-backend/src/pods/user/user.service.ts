@@ -5,8 +5,7 @@ import {
     KYCStatus,
     Role,
     Status,
-    UserRegistrationData,
-    UserUpdateData
+    UserRegistrationData
 } from '@energyweb/origin-backend-core';
 import { recoverTypedSignatureAddress } from '@energyweb/utils-general';
 import { ConflictException, Injectable, Logger } from '@nestjs/common';
@@ -38,18 +37,20 @@ export class UserService {
             throw new ConflictException();
         }
 
-        return this.repository.save({
-            title: data.title,
-            firstName: data.firstName,
-            lastName: data.lastName,
-            email: data.email,
-            telephone: data.telephone,
-            password: this.hashPassword(data.password),
-            notifications: true,
-            rights: Role.OrganizationAdmin,
-            status: Status.Pending,
-            kycStatus: KYCStatus['Pending KYC']
-        });
+        return new User(
+            await this.repository.save({
+                title: data.title,
+                firstName: data.firstName,
+                lastName: data.lastName,
+                email: data.email,
+                telephone: data.telephone,
+                password: this.hashPassword(data.password),
+                notifications: true,
+                rights: Role.OrganizationAdmin,
+                status: Status.Pending,
+                kycStatus: KYCStatus['Pending KYC']
+            })
+        );
     }
 
     public async changeRole(userId: number, ...roles: Role[]) {
@@ -109,10 +110,6 @@ export class UserService {
 
         const user = await this.findById(id);
 
-        if (!user) {
-            throw new Error(`Can't find user.`);
-        }
-
         if (user.blockchainAccountAddress) {
             throw new Error('User has blockchain account already linked.');
         }
@@ -140,31 +137,10 @@ export class UserService {
         return user;
     }
 
-    async update(
-        id: number | string,
-        data: Omit<UserUpdateData, 'blockchainAccountSignedMessage'>
-    ): Promise<TUserBaseEntity> {
-        const user = await this.findById(id);
+    async update(id: number | string, notifications: boolean): Promise<TUserBaseEntity> {
+        await this.repository.update(id, { notifications });
 
-        if (!user) {
-            throw new Error(`Can't find user.`);
-        }
-
-        if (typeof data.notifications === 'undefined') {
-            throw new Error(
-                `You can only update "notifications" properties of user and they're not present in the payload.`
-            );
-        }
-
-        if (typeof data.notifications !== 'undefined') {
-            if (typeof data.notifications !== 'boolean') {
-                throw new Error(`User "notifications" property has to be a boolean.`);
-            }
-
-            user.notifications = data.notifications;
-        }
-
-        return this.repository.save(user);
+        return this.findById(id);
     }
 
     async addToOrganization(userId: number, organizationId: number) {

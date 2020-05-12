@@ -16,7 +16,8 @@ import {
     Post,
     Put,
     UseGuards,
-    UseInterceptors
+    UseInterceptors,
+    Logger
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 
@@ -25,6 +26,8 @@ import { UserService } from './user.service';
 @UseInterceptors(ClassSerializerInterceptor)
 @Controller('user')
 export class UserController {
+    private readonly logger = new Logger(UserController.name);
+
     constructor(private readonly userService: UserService) {}
 
     @Post('register')
@@ -42,23 +45,25 @@ export class UserController {
         return this.userService.findById(user.id);
     }
 
-    // TODO: should only update owned
-    @Put(':id')
+    @Put()
     @UseGuards(AuthGuard('jwt'))
     public async update(
-        @Param('id') id: string,
+        @UserDecorator() user: ILoggedInUser,
         @Body() body: UserUpdateData
     ): Promise<IUserWithRelationsIds> {
         try {
             if (body.blockchainAccountSignedMessage) {
-                await this.userService.attachSignedMessage(id, body.blockchainAccountSignedMessage);
+                await this.userService.attachSignedMessage(
+                    user.id,
+                    body.blockchainAccountSignedMessage
+                );
             }
 
             if (typeof body.notifications !== 'undefined') {
-                await this.userService.update(id, body);
+                await this.userService.update(user.id, body.notifications);
             }
 
-            return this.userService.findById(id);
+            return this.userService.findById(user.id);
         } catch (error) {
             throw new BadRequestException(error.message);
         }
