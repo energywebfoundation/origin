@@ -33,4 +33,5 @@ heroku config:set --app ${PREFIX}-origin-ui-${STAGE} \
   BACKEND_URL=${PREFIX}-origin-api-${STAGE}.herokuapp.com \
   ISSUER_ID='Issuer ID' \
   WEB3='https://volta-rpc-origin-0a316ab339e3d2ee3.energyweb.org' \
+  REGISTRATION_MESSAGE_TO_SIGN='I register as Origin user' \
   DEVICE_PROPERTIES='<PROPS>'
