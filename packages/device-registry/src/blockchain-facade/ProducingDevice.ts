@@ -21,6 +21,8 @@ export class Entity implements IDevice {
 
     images: string;
 
+    files: string;
+
     address: string;
 
     region: string;
@@ -77,6 +79,7 @@ export class Entity implements IDevice {
             this.initialized = false;
         }
     }
+    
 
     async sync(): Promise<Entity> {
         if (this.id !== null) {
