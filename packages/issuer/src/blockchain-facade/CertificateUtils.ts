@@ -1,9 +1,9 @@
 import { randomBytes } from 'ethers/utils';
 import { Configuration } from '@energyweb/utils-general';
-
 import { Log } from 'ethers/providers';
 import { EventFilter } from 'ethers';
-import { Certificate } from './Certificate';
+
+import { Certificate, IClaimData } from './Certificate';
 import { Registry } from '../ethers/Registry';
 import { Issuer } from '../ethers/Issuer';
 import { getEventsFromContract } from '../utils/events';
@@ -16,8 +16,53 @@ export interface IBlockchainEvent {
     timestamp: number;
 }
 
+export const encodeClaimData = async (
+    claimData: IClaimData,
+    configuration: Configuration.Entity
+) => {
+    const { beneficiary, address, region, zipCode, countryCode } = claimData;
+    const { registry } = configuration.blockchainProperties as Configuration.BlockchainProperties<
+        Registry,
+        Issuer
+    >;
+
+    return registry.encodeClaimData(
+        beneficiary ?? '',
+        address ?? '',
+        region ?? '',
+        zipCode ?? '',
+        countryCode ?? ''
+    );
+};
+
+export const decodeClaimData = async (
+    encodedClaimData: string,
+    configuration: Configuration.Entity
+): Promise<IClaimData> => {
+    const { registry } = configuration.blockchainProperties as Configuration.BlockchainProperties<
+        Registry,
+        Issuer
+    >;
+    const {
+        _beneficiary,
+        _address,
+        _region,
+        _zipCode,
+        _countryCode
+    } = await registry.decodeClaimData(encodedClaimData);
+
+    return {
+        beneficiary: _beneficiary,
+        address: _address,
+        region: _region,
+        zipCode: _zipCode,
+        countryCode: _countryCode
+    };
+};
+
 export async function claimCertificates(
     certificateIds: number[],
+    claimData: IClaimData,
     configuration: Configuration.Entity
 ) {
     const certificatesPromises = certificateIds.map((certId) =>
@@ -33,8 +78,7 @@ export async function claimCertificates(
 
     const values = certificates.map((cert) => cert.energy.publicVolume);
 
-    // TO-DO: replace with proper claim data
-    const claimData = certificates.map(() => randomBytes(32));
+    const encodedClaimData = await encodeClaimData(claimData, configuration);
     const data = randomBytes(32);
 
     const {
@@ -52,7 +96,7 @@ export async function claimCertificates(
         certificateIds,
         values,
         data,
-        claimData
+        certificates.map(() => encodedClaimData)
     );
 
     await claimTx.wait();
