@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { CertificationRequest, CertificateUtils } from '@energyweb/issuer';
 import { ProducingDeviceDetailView } from './ProducingDeviceDetailView';
 import { useSelector } from 'react-redux';
+import { getAddress } from 'ethers/utils';
 import { getConfiguration, getProducingDevices } from '../features/selectors';
 import { getCertificates } from '../features/certificates/selectors';
 import { deduplicate } from '../utils/helper';
@@ -11,6 +12,7 @@ import { makeStyles, createStyles, useTheme } from '@material-ui/core';
 import { getEnvironment } from '../features/general/selectors';
 import { EnergyFormatter } from '../utils/EnergyFormatter';
 import { ProducingDevice } from '@energyweb/device-registry';
+import { getUserOffchain } from '../features/users/selectors';
 
 interface IProps {
     id: number;
@@ -26,6 +28,7 @@ interface IEnrichedEvent {
 export function CertificateDetailView(props: IProps) {
     const { id } = props;
 
+    const user = useSelector(getUserOffchain);
     const certificates = useSelector(getCertificates);
     const producingDevices = useSelector(getProducingDevices);
     const configuration = useSelector(getConfiguration);
@@ -216,6 +219,23 @@ export function CertificateDetailView(props: IProps) {
                 }
             ]
         ];
+
+        if (selectedCertificate.isClaimed) {
+            const claimData = selectedCertificate.claims.find(
+                (claim) => getAddress(claim.to) === getAddress(user.blockchainAccountAddress)
+            )?.claimData;
+
+            if (claimData) {
+                data.push([
+                    {
+                        label: 'Claim beneficiary',
+                        data: Object.values(claimData)
+                            .filter((value) => value !== '')
+                            .join(', ')
+                    }
+                ]);
+            }
+        }
     }
 
     return (

@@ -42,7 +42,7 @@ contract Registry is ERC1155Mintable, ERC1888 {
 		uint256 _id,
 		uint256 _value,
 		bytes calldata _data,
-		bytes32 _claimData
+		bytes calldata _claimData
 	) external {
 		Certificate memory cert = certificateStorage[_id];
 
@@ -63,7 +63,7 @@ contract Registry is ERC1155Mintable, ERC1888 {
 		uint256[] calldata _ids,
 		uint256[] calldata _values,
 		bytes calldata _data,
-		bytes32[] calldata _claimData
+		bytes[] calldata _claimData
 	) external {
 		uint numberOfClaims = _ids.length;
 
@@ -130,4 +130,28 @@ contract Registry is ERC1155Mintable, ERC1888 {
 	function allCertificateIds() public view returns (uint256[] memory) {
 		return _allCertificates;
     }
+
+	/*
+		Utils
+	*/
+
+	function encodeClaimData(
+		string memory _beneficiary,
+		string memory _address,
+		string memory _region,
+		string memory _zipCode,
+		string memory _countryCode
+	) public pure returns (bytes memory _claimData) {
+		return abi.encode(_beneficiary, _address, _region, _zipCode, _countryCode);
+	}
+
+	function decodeClaimData(bytes memory _claimData) public pure returns (
+		string memory _beneficiary,
+		string memory _address,
+		string memory _region,
+		string memory _zipCode,
+		string memory _countryCode
+	) {
+		return abi.decode(_claimData, (string, string, string, string, string));
+	}
 }

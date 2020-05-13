@@ -9,7 +9,7 @@ import { Configuration } from '@energyweb/utils-general';
 import { OffChainDataSourceMock } from '@energyweb/origin-backend-client-mocks';
 
 import { migrateIssuer, migrateRegistry } from '../migrate';
-import { Certificate, CertificateUtils } from '..';
+import { Certificate, CertificateUtils, IClaimData } from '..';
 
 import { logger } from '../Logger';
 
@@ -32,6 +32,22 @@ describe('Certificate tests', () => {
     const traderWallet = new Wallet(traderPK, provider);
 
     let timestamp = moment().subtract(10, 'year').unix();
+
+    const claimData: IClaimData = {
+        beneficiary: 'Testing beneficiary 1234',
+        address: 'Random address 123, Somewhere',
+        region: 'Northernmost Region',
+        zipCode: '321-45',
+        countryCode: 'DE'
+    };
+
+    const emptyClaimData: IClaimData = {
+        beneficiary: '',
+        address: '',
+        region: '',
+        zipCode: '',
+        countryCode: ''
+    };
 
     const setActiveUser = (wallet: Wallet) => {
         conf.blockchainProperties.activeUser = wallet;
@@ -225,7 +241,7 @@ describe('Certificate tests', () => {
         let failed = false;
 
         try {
-            await certificate.claim(totalVolume);
+            await certificate.claim({}, totalVolume);
         } catch (e) {
             failed = true;
         }
@@ -248,7 +264,7 @@ describe('Certificate tests', () => {
 
         setActiveUser(traderWallet);
 
-        await certificate.claim(amountToSendToTrader);
+        await certificate.claim(claimData, amountToSendToTrader);
 
         certificate = await certificate.sync();
 
@@ -257,6 +273,30 @@ describe('Certificate tests', () => {
 
         assert.isTrue(certificate.isClaimed);
         assert.equal(certificate.energy.claimedVolume.toString(), amountToSendToTrader.toString());
+
+        assert.isTrue(
+            certificate.claims.some(
+                (claim) => JSON.stringify(claim.claimData) === JSON.stringify(claimData)
+            )
+        );
+    });
+
+    it('claims a certificate with empty beneficiary', async () => {
+        const totalVolume = new BigNumber(1e9);
+        let certificate = await issueCertificate(totalVolume);
+
+        setActiveUser(deviceOwnerWallet);
+        certificate = await certificate.sync();
+
+        await certificate.claim(emptyClaimData, totalVolume);
+
+        certificate = await certificate.sync();
+
+        assert.isTrue(
+            certificate.claims.some(
+                (claim) => JSON.stringify(claim.claimData) === JSON.stringify(emptyClaimData)
+            )
+        );
     });
 
     it('claims a private certificate', async () => {
@@ -276,12 +316,18 @@ describe('Certificate tests', () => {
         setActiveUser(deviceOwnerWallet);
         certificate = await certificate.sync();
 
-        await certificate.claim();
+        await certificate.claim(claimData);
 
         certificate = await certificate.sync();
 
         assert.isTrue(certificate.isClaimed);
         assert.equal(certificate.energy.claimedVolume.toString(), totalVolume.toString());
+
+        assert.isTrue(
+            certificate.claims.some(
+                (claim) => JSON.stringify(claim.claimData) === JSON.stringify(claimData)
+            )
+        );
     });
 
     it('claims a partial private certificate', async () => {
@@ -312,11 +358,17 @@ describe('Certificate tests', () => {
         setActiveUser(traderWallet);
         certificate = await certificate.sync();
 
-        await certificate.claim();
+        await certificate.claim(claimData);
         certificate = await certificate.sync();
 
         assert.isTrue(certificate.isClaimed);
         assert.equal(certificate.energy.claimedVolume.toString(), partialVolumeToClaim.toString());
+
+        assert.isTrue(
+            certificate.claims.some(
+                (claim) => JSON.stringify(claim.claimData) === JSON.stringify(claimData)
+            )
+        );
     });
 
     it('batch transfers certificates', async () => {
@@ -373,7 +425,11 @@ describe('Certificate tests', () => {
         assert.equal(certificate.energy.claimedVolume.toString(), '0');
         assert.equal(certificate2.energy.claimedVolume.toString(), '0');
 
-        await CertificateUtils.claimCertificates([certificate.id, certificate2.id], conf);
+        await CertificateUtils.claimCertificates(
+            [certificate.id, certificate2.id],
+            claimData,
+            conf
+        );
 
         certificate = await certificate.sync();
         certificate2 = await certificate2.sync();
@@ -382,5 +438,11 @@ describe('Certificate tests', () => {
         assert.isTrue(certificate2.isClaimed);
         assert.equal(certificate.energy.claimedVolume.toString(), totalVolume.toString());
         assert.equal(certificate2.energy.claimedVolume.toString(), totalVolume.toString());
+
+        assert.isTrue(
+            certificate.claims.some(
+                (claim) => JSON.stringify(claim.claimData) === JSON.stringify(claimData)
+            )
+        );
     });
 });
