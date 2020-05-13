@@ -3,7 +3,7 @@ import { CertificationRequest, CertificateUtils } from '@energyweb/issuer';
 import { ProducingDeviceDetailView } from './ProducingDeviceDetailView';
 import { useSelector } from 'react-redux';
 import { getAddress } from 'ethers/utils';
-import { getConfiguration } from '../features/selectors';
+import { getConfiguration, getProducingDevices } from '../features/selectors';
 import { getCertificates } from '../features/certificates/selectors';
 import { deduplicate } from '../utils/helper';
 import { formatDate } from '../utils/time';
@@ -11,6 +11,7 @@ import { Skeleton } from '@material-ui/lab';
 import { makeStyles, createStyles, useTheme } from '@material-ui/core';
 import { getEnvironment } from '../features/general/selectors';
 import { EnergyFormatter } from '../utils/EnergyFormatter';
+import { ProducingDevice } from '@energyweb/device-registry';
 import { getUserOffchain } from '../features/users/selectors';
 
 interface IProps {
@@ -29,6 +30,7 @@ export function CertificateDetailView(props: IProps) {
 
     const user = useSelector(getUserOffchain);
     const certificates = useSelector(getCertificates);
+    const producingDevices = useSelector(getProducingDevices);
     const configuration = useSelector(getConfiguration);
     const environment = useSelector(getEnvironment);
 
@@ -131,6 +133,18 @@ export function CertificateDetailView(props: IProps) {
 
     let eventsDisplay = [];
     if (selectedCertificate) {
+        let producingDevice: ProducingDevice.Entity = null;
+
+        if (selectedCertificate.deviceId) {
+            producingDevice = producingDevices.find((p) =>
+                p.externalDeviceIds?.find(
+                    (deviceExternalId) =>
+                        deviceExternalId.id === selectedCertificate.deviceId &&
+                        deviceExternalId.type === environment.ISSUER_ID
+                )
+            );
+        }
+
         eventsDisplay = events.reverse().map((event, index) => (
             <p key={index}>
                 <span className="timestamp text-muted">
@@ -171,7 +185,11 @@ export function CertificateDetailView(props: IProps) {
                 },
                 {
                     label: 'Creation date',
-                    data: formatDate(selectedCertificate.creationTime * 1000)
+                    data: formatDate(
+                        selectedCertificate.creationTime * 1000,
+                        false,
+                        producingDevice.timezone
+                    )
                 }
             ],
             [
@@ -185,11 +203,19 @@ export function CertificateDetailView(props: IProps) {
                 },
                 {
                     label: 'Generation start',
-                    data: formatDate(selectedCertificate.generationStartTime * 1000, true)
+                    data: formatDate(
+                        selectedCertificate.generationStartTime * 1000,
+                        true,
+                        producingDevice.timezone
+                    )
                 },
                 {
                     label: 'Generation end',
-                    data: formatDate(selectedCertificate.generationEndTime * 1000, true)
+                    data: formatDate(
+                        selectedCertificate.generationEndTime * 1000,
+                        true,
+                        producingDevice.timezone
+                    )
                 }
             ]
         ];
