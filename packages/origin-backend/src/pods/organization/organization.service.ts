@@ -13,7 +13,7 @@ import {
 } from '@energyweb/origin-backend-core';
 import { validate } from 'class-validator';
 import { Organization } from './organization.entity';
-import { UserService } from '../user';
+import { UserService, User } from '../user';
 import { ExtendedBaseEntity } from '../ExtendedBaseEntity';
 
 @Injectable()
@@ -25,32 +25,44 @@ export class OrganizationService {
     ) {}
 
     async create(userId: number, data: OrganizationPostData) {
-        const newEntity = new Organization();
+        const organizationToCreate = new Organization({
+            activeCountries: data.activeCountries,
+            code: data.code,
+            name: data.name,
+            contact: data.contact,
+            telephone: data.telephone,
+            email: data.email,
+            address: data.address,
+            shareholders: data.shareholders,
+            ceoPassportNumber: data.ceoPassportNumber,
+            ceoName: data.ceoName,
+            companyNumber: data.companyNumber,
+            vatNumber: data.vatNumber,
+            postcode: data.postcode,
+            headquartersCountry: data.headquartersCountry,
+            country: data.country,
+            businessTypeSelect: data.businessTypeSelect,
+            businessTypeInput: data.businessTypeInput,
+            yearOfRegistration: data.yearOfRegistration,
+            numberOfEmployees: data.numberOfEmployees,
+            website: data.website,
 
-        const user = await this.userService.findById(userId);
-
-        const newOrganization: Omit<IOrganization, 'id'> = {
-            ...data,
             status: OrganizationStatus.Submitted,
-            leadUser: user,
-            users: [user],
+            leadUser: { id: userId } as User,
+            users: [{ id: userId } as User],
             devices: []
-        };
+        });
 
-        Object.assign(newEntity, newOrganization);
-
-        const validationErrors = await validate(newEntity);
+        const validationErrors = await validate(organizationToCreate);
 
         if (validationErrors.length > 0) {
             throw new UnprocessableEntityException({
                 success: false,
                 errors: validationErrors.map((e) => e?.toString())
             });
-        } else {
-            await this.repository.save(newEntity);
-
-            return newEntity;
         }
+
+        return this.repository.save(organizationToCreate);
     }
 
     async findOne(
