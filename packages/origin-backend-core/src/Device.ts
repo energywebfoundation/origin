@@ -60,7 +60,6 @@ export interface IDeviceProperties extends IDeviceProductInfo {
     facilityName: string;
     description: string;
     images: string;
-    files: string;
     address: string;
     capacityInW: number;
     gpsLatitude: string;
@@ -75,6 +74,7 @@ export interface IDeviceProperties extends IDeviceProductInfo {
     smartMeterReads?: ISmartMeterRead[];
     defaultAskPrice: number;
     automaticPostForSale: boolean;
+    files?: string;
 }
 
 export interface IDevice extends IDeviceProperties {

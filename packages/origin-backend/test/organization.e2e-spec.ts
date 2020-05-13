@@ -36,7 +36,6 @@ describe('Organization e2e tests', () => {
                 gpsLongitude: '10',
                 gridOperator: 'OP',
                 images: '',
-                files: '',
                 operationalSince: 2000,
                 otherGreenAttributes: '',
                 province: '',
