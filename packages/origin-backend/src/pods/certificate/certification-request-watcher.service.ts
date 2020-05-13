@@ -26,7 +26,7 @@ export class CertificationRequestWatcherService implements OnModuleInit {
         private readonly certificationRequestService: CertificationRequestService,
         private readonly deviceService: DeviceService,
         private readonly userService: UserService
-    ) {}
+    ) { }
 
     public async onModuleInit() {
         this.logger.log('onModuleInit');
@@ -148,7 +148,7 @@ export class CertificationRequestWatcherService implements OnModuleInit {
             return;
         }
 
-        await this.certificationRequestService.registerApproved(_id);
+        await this.certificationRequestService.registerApproved(_id.toNumber());
 
         this.logger.log(
             `Registered approved certification request with ID ${certificationRequest.id}.`
