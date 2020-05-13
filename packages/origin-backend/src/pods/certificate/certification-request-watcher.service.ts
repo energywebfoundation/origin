@@ -26,7 +26,7 @@ export class CertificationRequestWatcherService implements OnModuleInit {
         private readonly certificationRequestService: CertificationRequestService,
         private readonly deviceService: DeviceService,
         private readonly userService: UserService
-    ) { }
+    ) {}
 
     public async onModuleInit() {
         this.logger.log('onModuleInit');
