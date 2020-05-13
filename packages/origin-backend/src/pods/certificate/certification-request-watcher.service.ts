@@ -148,7 +148,7 @@ export class CertificationRequestWatcherService implements OnModuleInit {
             return;
         }
 
-        await this.certificationRequestService.registerApproved(_id);
+        await this.certificationRequestService.registerApproved(_id.toNumber());
 
         this.logger.log(
             `Registered approved certification request with ID ${certificationRequest.id}.`
