@@ -79,7 +79,6 @@ export class Entity implements IDevice {
             this.initialized = false;
         }
     }
-    
 
     async sync(): Promise<Entity> {
         if (this.id !== null) {
