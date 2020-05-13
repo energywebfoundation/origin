@@ -49,6 +49,7 @@
                 "deviceType": "Device type",
                 "publicSupport": "Public support",
                 "geoLocation": "Geo location",
+                "filesUpload": "Files Upload",
                 "registrationDate": "Registration date",
                 "regions": "Regions",
                 "provinces": "Provinces",
