@@ -30,13 +30,13 @@ export function Organization() {
             key: 'organization-invitations',
             label: 'Invitations',
             component: OrganizationInvitations,
-            hide: !isLoggedIn
+            hide: !isLoggedIn || !userOffchain?.organization
         },
         {
             key: 'organization-invite',
             label: 'Invite',
             component: OrganizationInvite,
-            hide: !isLoggedIn || !isLeadUser
+            hide: !isLoggedIn || !isLeadUser || !userOffchain?.organization
         },
         {
             key: 'organization-register',
