@@ -62,6 +62,7 @@ describe('Device Facade', () => {
                 facilityName: FACILITY_NAME,
                 description: '',
                 images: '',
+                files: '',
                 region: '',
                 province: '',
                 organization: 4,

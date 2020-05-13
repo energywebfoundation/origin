@@ -92,6 +92,7 @@ export function AdminUsersTable() {
 
     const rows = paginatedData.map(({ user }) => {
         const organization = user.organization as IOrganization;
+
         return {
             firstName: user.title + ' ' + user.firstName + ' ' + user.lastName,
             organization: organization?.name ?? '',

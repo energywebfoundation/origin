@@ -21,6 +21,8 @@ export class Entity implements IDevice {
 
     images: string;
 
+    files: string;
+
     address: string;
 
     region: string;
