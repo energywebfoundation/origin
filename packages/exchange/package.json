@@ -103,5 +103,8 @@
     "files": [
         "dist",
         "bin"
-    ]
+    ],
+    "resolutions": {
+        "tslib": "1.11.2"
+    }
 }
