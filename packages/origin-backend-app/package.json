@@ -47,8 +47,7 @@
         "class-validator": "0.12.2",
         "cors": "2.8.5",
         "dotenv": "8.2.0",
-        "swagger-ui-express": "4.1.4",
-        "typeorm": "0.2.24"
+        "swagger-ui-express": "4.1.4"
     },
     "devDependencies": {
         "jest": "26.0.1",
