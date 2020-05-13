@@ -22,7 +22,7 @@ export class Device extends ExtendedBaseEntity implements IDevice {
     @Column()
     images: string;
 
-    @Column({ default: '' })
+    @Column({ default: '[]' })
     files: string;
 
     @Column()
