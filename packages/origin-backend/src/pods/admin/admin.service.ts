@@ -39,9 +39,7 @@ export class AdminService {
             throw new Error(`Can't find entity.`);
         }
 
-        const updateEntity = new User();
-
-        Object.assign(updateEntity, {
+        const updateEntity = new User({
             ...entity,
             title: data.title,
             firstName: data.firstName,
@@ -55,6 +53,7 @@ export class AdminService {
         const validationErrors = await validate(updateEntity, {
             skipUndefinedProperties: true
         });
+
         if (validationErrors.length > 0) {
             throw new UnprocessableEntityException({
                 success: false,
