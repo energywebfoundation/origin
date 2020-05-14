@@ -1,4 +1,4 @@
-import { Injectable, UnprocessableEntityException } from '@nestjs/common';
+import { Injectable, UnprocessableEntityException, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, FindOneOptions } from 'typeorm';
 import {
@@ -9,19 +9,24 @@ import {
     Role,
     OrganizationUpdateData,
     OrganizationPostData,
-    OrganizationStatus
+    OrganizationStatus,
+    ILoggedInUser,
+    OrganizationRemovedMemberEvent,
+    SupportedEvents
 } from '@energyweb/origin-backend-core';
 import { validate } from 'class-validator';
 import { Organization } from './organization.entity';
 import { UserService, User } from '../user';
 import { ExtendedBaseEntity } from '../ExtendedBaseEntity';
+import { NotificationService } from '../notification';
 
 @Injectable()
 export class OrganizationService {
     constructor(
         @InjectRepository(Organization)
         private readonly repository: Repository<Organization>,
-        private readonly userService: UserService
+        private readonly userService: UserService,
+        private readonly notificationService: NotificationService
     ) {}
 
     async create(userId: number, data: OrganizationPostData) {
@@ -129,5 +134,46 @@ export class OrganizationService {
             .getCount();
 
         return devicesCount === 1;
+    }
+
+    async removeMember(user: ILoggedInUser, organizationId: number, memberId: number) {
+        if (organizationId !== user.organizationId) {
+            throw new BadRequestException({
+                success: false,
+                error: `You are not in the requested organization.`
+            });
+        }
+
+        const organization = await this.repository.findOne(user.organizationId, {
+            relations: ['leadUser', 'users']
+        });
+
+        if (organization.leadUser.id === memberId) {
+            throw new BadRequestException({
+                success: false,
+                error: `Can't remove lead user from organization.`
+            });
+        }
+
+        if (!organization.users.find((u) => u.id === memberId)) {
+            throw new BadRequestException({
+                success: false,
+                error: `User to be removed is not part of the organization.`
+            });
+        }
+
+        await this.userService.removeOrganization(memberId);
+
+        const removedUser = await this.userService.findById(memberId);
+
+        const eventData: OrganizationRemovedMemberEvent = {
+            organizationName: organization.name,
+            email: removedUser.email
+        };
+
+        this.notificationService.handleEvent({
+            type: SupportedEvents.ORGANIZATION_REMOVED_MEMBER,
+            data: eventData
+        });
     }
 }

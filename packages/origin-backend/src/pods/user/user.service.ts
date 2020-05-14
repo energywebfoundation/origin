@@ -147,6 +147,10 @@ export class UserService {
         await this.repository.update(userId, { organization: { id: organizationId } });
     }
 
+    async removeOrganization(userId: number) {
+        await this.repository.update(userId, { organization: null });
+    }
+
     async findOne(conditions: FindConditions<User>): Promise<TUserBaseEntity> {
         return (this.repository.findOne(conditions, {
             loadRelationIds: true

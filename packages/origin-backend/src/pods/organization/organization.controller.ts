@@ -4,7 +4,6 @@ import {
     isRole,
     OrganizationInviteCreateReturnData,
     OrganizationPostData,
-    OrganizationRemovedMemberEvent,
     OrganizationRemoveMemberReturnData,
     OrganizationStatusChangedEvent,
     OrganizationUpdateData,
@@ -36,8 +35,6 @@ import { Repository } from 'typeorm';
 
 import { StorageErrors } from '../../enums/StorageErrors';
 import { NotificationService } from '../notification';
-import { User } from '../user/user.entity';
-import { UserService } from '../user/user.service';
 import { OrganizationInvitationService } from './organization-invitation.service';
 import { Organization } from './organization.entity';
 import { OrganizationService } from './organization.service';
@@ -52,9 +49,6 @@ export class OrganizationController {
         private readonly organizationRepository: Repository<Organization>,
         @InjectRepository(OrganizationInvitation)
         private readonly organizationInvitationRepository: Repository<OrganizationInvitation>,
-        @InjectRepository(User)
-        private readonly userRepository: Repository<User>,
-        private readonly userService: UserService,
         @Inject(forwardRef(() => OrganizationService))
         private readonly organizationService: OrganizationService,
         private readonly notificationService: NotificationService,
@@ -227,82 +221,14 @@ export class OrganizationController {
     @Roles(Role.OrganizationAdmin, Role.Admin)
     async removeMember(
         @Param('id', new ParseIntPipe()) organizationId: number,
-        @Param('userId', new ParseIntPipe()) removedUserId: number,
+        @Param('userId', new ParseIntPipe()) memberId: number,
         @UserDecorator() loggedUser: ILoggedInUser
     ): Promise<OrganizationRemoveMemberReturnData> {
-        try {
-            const user = await this.userService.findById(loggedUser.id);
+        await this.organizationService.removeMember(loggedUser, organizationId, memberId);
 
-            if (typeof user.organization === 'undefined') {
-                throw new BadRequestException({
-                    success: false,
-                    error: `User doesn't belong to any organization.`
-                });
-            }
-
-            const organization = await this.organizationRepository.findOne(user.organization, {
-                relations: ['leadUser', 'invitations', 'users']
-            });
-
-            if (organization.id !== organizationId || organization.leadUser.id !== user.id) {
-                throw new BadRequestException({
-                    success: false,
-                    error: `User is not a lead user of organization.`
-                });
-            }
-
-            if (organization.leadUser.id === removedUserId) {
-                throw new BadRequestException({
-                    success: false,
-                    error: `Can't remove lead user from organization.`
-                });
-            }
-
-            if (!organization.users.find((u) => u.id === removedUserId)) {
-                throw new BadRequestException({
-                    success: false,
-                    error: `User to be removed is not part of the organization.`
-                });
-            }
-
-            const removedUser = organization.users.find((u) => u.id === removedUserId);
-
-            organization.users = organization.users.filter((u) => u.id !== removedUserId);
-
-            await this.organizationRepository.save(organization);
-
-            removedUser.organization = null;
-
-            await this.userRepository.save(removedUser);
-
-            const eventData: OrganizationRemovedMemberEvent = {
-                organizationName: organization.name,
-                email: removedUser.email
-            };
-
-            this.notificationService.handleEvent({
-                type: SupportedEvents.ORGANIZATION_REMOVED_MEMBER,
-                data: eventData
-            });
-
-            return {
-                success: true,
-                error: null
-            };
-        } catch (error) {
-            if (error instanceof BadRequestException) {
-                throw error;
-            }
-
-            console.warn(
-                'Unexpected error while removing member from organization',
-                error?.message
-            );
-
-            throw new BadRequestException({
-                success: false,
-                error: 'Could not remove member due to unknown error'
-            });
-        }
+        return {
+            success: true,
+            error: null
+        };
     }
 }

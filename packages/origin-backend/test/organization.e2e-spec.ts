@@ -163,7 +163,36 @@ describe('Organization e2e tests', () => {
 
                 expect(devices).toHaveLength(1);
             });
+    });
 
-        await app.close();
+    it('should be able to remove organization member when organization admin', async () => {
+        const { accessToken: adminAccessToken, organization } = await registerAndLogin(
+            app,
+            userService,
+            organizationService,
+            [Role.OrganizationAdmin]
+        );
+
+        const { user: member, accessToken: memberAccessToken } = await registerAndLogin(
+            app,
+            userService,
+            organizationService,
+            [Role.OrganizationUser],
+            'member'
+        );
+
+        await request(app.getHttpServer())
+            .post(`/organization/${organization.id}/remove-member/${member.id}`)
+            .set('Authorization', `Bearer ${adminAccessToken}`)
+            .expect(201);
+
+        await request(app.getHttpServer())
+            .get(`/user/me`)
+            .set('Authorization', `Bearer ${memberAccessToken}`)
+            .expect(200)
+            .expect((res) => {
+                const { organization: memberOrganization } = res.body as TUserBaseEntity;
+                expect(memberOrganization).toBeUndefined();
+            });
     });
 });
