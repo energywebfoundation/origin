@@ -69,22 +69,6 @@ export abstract class PreciseProofEntity implements IOnChainProperties {
         return proof;
     }
 
-    async getPendingTransferCommitment(): Promise<IOwnershipCommitmentProofWithTx> {
-        const proof = await this.certificateClient.getPendingOwnershipCommitment(this.id);
-
-        if (!proof) {
-            throw new Error('getCommitment(): Not found.');
-        }
-
-        if (this.configuration.logger) {
-            this.configuration.logger.verbose(
-                `Got pending transfer commitment for Certificate #${this.id}`
-            );
-        }
-
-        return proof;
-    }
-
     verifyOffChainProperties(rootHash: string, properties: any) {
         Object.keys(properties).map((key) => {
             const theProof = this.proofs.find((proof: PreciseProofs.Proof) => proof.key === key);
