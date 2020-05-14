@@ -25,7 +25,9 @@ export class AdminService {
             .createQueryBuilder('user')
             .leftJoinAndSelect('user.organization', 'organization')
             .where(
-                'organization.name ilike :_orgName and user.status = :status and user.kycStatus = :kycStatus',
+                `organization.name ilike :_orgName ${
+                    status > 0 ? `and user.status = :status` : ``
+                } ${kycStatus > 0 ? `and user.kycStatus = :kycStatus` : ``}`,
                 { _orgName, status, kycStatus }
             )
             .getMany();
