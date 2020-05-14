@@ -8,6 +8,11 @@ import { ExtendedBaseEntity } from '../ExtendedBaseEntity';
 
 @Entity()
 export class Organization extends ExtendedBaseEntity implements IOrganization {
+    constructor(organization?: Partial<Organization>) {
+        super();
+        Object.assign(this, organization);
+    }
+
     @PrimaryGeneratedColumn()
     id: number;
 

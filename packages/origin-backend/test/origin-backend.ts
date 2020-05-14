@@ -1,11 +1,10 @@
 /* eslint-disable no-return-assign */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import {
-    buildRights,
     LoggedInUser,
     OrganizationPostData,
     Role,
-    UserRegisterData
+    UserRegistrationData
 } from '@energyweb/origin-backend-core';
 import { signTypedMessagePrivateKey } from '@energyweb/utils-general';
 import { Logger } from '@nestjs/common';
@@ -92,19 +91,16 @@ export const registerAndLogin = async (
 
     let user = await userService.findOne({ email: userEmail });
     if (!user) {
-        const userRegistration: UserRegisterData = {
+        const userRegistration: UserRegistrationData = {
             email: userEmail,
             password: '123',
             firstName: 'Name',
             lastName: 'Name',
             title: 'Sir',
-            rights: buildRights(roles),
-            telephone: '991',
-            status: 0,
-            kycStatus: 0,
-            notifications: true
+            telephone: '991'
         };
-        await userService.create(userRegistration);
+        const { id: userId } = await userService.create(userRegistration);
+        await userService.changeRole(userId, ...roles);
         user = await userService.findOne({ email: userEmail });
 
         const signedMessage = await signTypedMessagePrivateKey(

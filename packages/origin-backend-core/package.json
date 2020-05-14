@@ -28,6 +28,8 @@
         "registry": "https://registry.npmjs.org"
     },
     "dependencies": {
+        "class-validator": "0.12.2",
+        "class-transformer": "0.2.3",
         "ethers": "4.0.47",
         "precise-proofs-js": "1.1.0"
     }

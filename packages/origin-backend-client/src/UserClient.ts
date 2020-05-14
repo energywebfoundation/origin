@@ -1,6 +1,6 @@
 import {
     UserRegisterReturnData,
-    UserRegisterData,
+    UserRegistrationData,
     UserLoginData,
     UserLoginReturnData,
     UserUpdateData,
@@ -15,13 +15,11 @@ type UpdateUserResponseReturnType = IUserWithRelationsIds;
 export interface IUserClient {
     login(email: string, password: string): Promise<UserLoginReturnData>;
     logout(): Promise<void>;
-    register(data: UserRegisterData): Promise<UserRegisterReturnData>;
+    register(data: UserRegistrationData): Promise<UserRegisterReturnData>;
     me(): Promise<IUserWithRelationsIds>;
     getUserById(id: string): Promise<IUserWithRelationsIds>;
-    getUserByBlockchainAccount(blockchainAccountAddress: string): Promise<IUserWithRelationsIds>;
-    attachSignedMessage(id: number, signedMessage: string): Promise<UpdateUserResponseReturnType>;
+    attachSignedMessage(signedMessage: string): Promise<UpdateUserResponseReturnType>;
     updateAdditionalProperties(
-        id: number,
         properties: Partial<Pick<IUserProperties, 'notifications'>>
     ): Promise<UpdateUserResponseReturnType>;
 }
@@ -40,7 +38,7 @@ export class UserClient implements IUserClient {
         return `${this.dataApiUrl}/user`;
     }
 
-    public async register(formData: UserRegisterData): Promise<UserRegisterReturnData> {
+    public async register(formData: UserRegistrationData): Promise<UserRegisterReturnData> {
         const url = `${this.userEndpoint}/register`;
         const { data } = await this.requestClient.post(url, formData);
 
@@ -72,24 +70,14 @@ export class UserClient implements IUserClient {
         return data;
     }
 
-    public async getUserByBlockchainAccount(
-        blockchainAccountAddress: string
-    ): Promise<IUserWithRelationsIds> {
-        const url = `${this.userEndpoint}/for-blockchain-account/${blockchainAccountAddress}`;
-        const { data } = await this.requestClient.get<{}, IUserWithRelationsIds>(url);
-
-        return data;
-    }
-
-    public async attachSignedMessage(id: number, signedMessage: string) {
-        return this.updateUser(id, { blockchainAccountSignedMessage: signedMessage });
+    public async attachSignedMessage(signedMessage: string) {
+        return this.updateUser({ blockchainAccountSignedMessage: signedMessage });
     }
 
     public async updateAdditionalProperties(
-        id: number,
         properties: Partial<Pick<IUserProperties, 'notifications'>>
     ) {
-        return this.updateUser(id, properties);
+        return this.updateUser(properties);
     }
 
     public async getUserById(id: string): Promise<IUserWithRelationsIds> {
@@ -99,12 +87,8 @@ export class UserClient implements IUserClient {
         return data;
     }
 
-    private async updateUser(
-        id: number,
-        updatedUserInfo: UserUpdateData
-    ): Promise<IUserWithRelationsIds> {
-        const url = `${this.userEndpoint}/${id}`;
-        const { data } = await this.requestClient.put(url, updatedUserInfo);
+    private async updateUser(updatedUserInfo: UserUpdateData): Promise<IUserWithRelationsIds> {
+        const { data } = await this.requestClient.put(this.userEndpoint, updatedUserInfo);
 
         return data;
     }

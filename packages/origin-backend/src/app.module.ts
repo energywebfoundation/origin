@@ -1,6 +1,7 @@
 import { ISmartMeterReadingsAdapter } from '@energyweb/origin-backend-core';
-import { DynamicModule, Module } from '@nestjs/common';
+import { DynamicModule, Module, ValidationPipe } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
+import { APP_PIPE } from '@nestjs/core';
 import fs from 'fs';
 import path from 'path';
 
@@ -37,7 +38,8 @@ export class AppModule {
                 CertificateModule.register(smartMeterReadingsAdapter),
                 AdminModule
             ],
-            controllers: [AppController]
+            controllers: [AppController],
+            providers: [{ provide: APP_PIPE, useClass: ValidationPipe }]
         };
     }
 }

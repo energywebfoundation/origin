@@ -14,6 +14,9 @@
         },
         {
             "path": "../utils-general/tsconfig.build.json"
+        },
+        {
+            "path": "../origin-backend-utils/tsconfig.build.json"
         }
     ]
 }
