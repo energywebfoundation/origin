@@ -16,12 +16,22 @@ interface IOwnProps {
     onChange: (value: IAutocompleteMultiSelectOptionType[]) => void;
     selectedValues: IAutocompleteMultiSelectOptionType[];
     disabled?: boolean;
+    required?: boolean;
     className?: string;
     max?: number;
 }
 
 export function MultiSelectAutocomplete(props: IOwnProps) {
-    const { label, placeholder, options, selectedValues, disabled, className, max } = props;
+    const {
+        label,
+        placeholder,
+        options,
+        selectedValues,
+        disabled,
+        className,
+        max,
+        required
+    } = props;
 
     const { styleConfig } = useOriginConfiguration();
 
@@ -64,8 +74,10 @@ export function MultiSelectAutocomplete(props: IOwnProps) {
                     <TextField
                         {...params}
                         label={label}
+                        name={label}
                         placeholder={placeholder}
                         fullWidth
+                        required={required}
                         variant="filled"
                     />
                 )}
