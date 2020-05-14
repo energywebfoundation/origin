@@ -265,7 +265,12 @@ export function AddDevice() {
 
                             <Grid container spacing={3}>
                                 <Grid item xs={6}>
-                                    <FormControl fullWidth variant="filled" className="mt-3">
+                                    <FormControl
+                                        fullWidth
+                                        variant="filled"
+                                        className="mt-3"
+                                        required
+                                    >
                                         <Field
                                             label={t('device.properties.facilityName')}
                                             name="facilityName"
@@ -297,7 +302,6 @@ export function AddDevice() {
                                                     placeholder: t('device.info.selectDeviceType')
                                                 }
                                             ]}
-                                            required={true}
                                             disabled={fieldDisabled}
                                             singleChoice={true}
                                         />
@@ -363,7 +367,6 @@ export function AddDevice() {
                                             gridItemSize={12}
                                             singleChoice={true}
                                             disabled={fieldDisabled}
-                                            required={true}
                                         />
                                     </Grid>
                                     <FormControl

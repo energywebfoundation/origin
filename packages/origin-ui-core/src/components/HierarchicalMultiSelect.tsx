@@ -24,7 +24,6 @@ interface IOwnProps<T> {
     options?: T;
     allValues?: string[][];
     disabled?: boolean;
-    required?: boolean;
     readOnly?: boolean;
 }
 
@@ -248,7 +247,7 @@ export function HierarchicalMultiSelect<T>(props: IOwnProps<T>) {
         props.onChange(newEncodedType);
     }
 
-    const { disabled, readOnly, required } = props;
+    const { disabled, readOnly } = props;
 
     const allValuesLevelOne = valuesToSelectionOptions(allValuesByLevel(1));
 
@@ -268,7 +267,6 @@ export function HierarchicalMultiSelect<T>(props: IOwnProps<T>) {
                 selectedValues={selectedValuesLevelOne}
                 className="mt-3"
                 disabled={disabled}
-                required={required}
                 {...dataTest('hierarchical-multi-select-level-1')}
             />
             {props.selectOptions && props.selectOptions[1]?.label && levelTwoValues.length > 0 && (
@@ -281,7 +279,6 @@ export function HierarchicalMultiSelect<T>(props: IOwnProps<T>) {
                         selectedValues={selectedValuesLevelTwo}
                         className="mt-3"
                         disabled={disabled}
-                        required={required}
                         {...dataTest('hierarchical-multi-select-level-2')}
                     />
                 </div>
@@ -296,7 +293,6 @@ export function HierarchicalMultiSelect<T>(props: IOwnProps<T>) {
                         selectedValues={selectedValuesLevelThree}
                         className="mt-3"
                         disabled={disabled}
-                        required={required}
                         {...dataTest('hierarchical-multi-select-level-3')}
                     />
                 </div>
