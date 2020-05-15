@@ -3,6 +3,30 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.0.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-backend-client@5.0.1...@energyweb/origin-backend-client@6.0.0) (2020-05-15)
+
+
+### chore
+
+* **origin-backend-client:** replace UserRegisterData ([52e9674](https://github.com/energywebfoundation/origin/commit/52e967480c426bc2aa9cc0f59b8c676ca17a4474))
+* **origin-backend-client:** rm autopublish remaining code ([9f97d04](https://github.com/energywebfoundation/origin/commit/9f97d040679e95c300f0a02fd85f18ef7e6091f5))
+
+
+### Features
+
+* add meterStats to Device for un/certified meter readings reference ([627d785](https://github.com/energywebfoundation/origin/commit/627d7855506f52cb70ee083844ef2664b9227a0b))
+* Detect and store the whole CertificationRequest on the backend ([613eb28](https://github.com/energywebfoundation/origin/commit/613eb28eeae25ec414b393f61311dbfb679351d4))
+
+
+### BREAKING CHANGES
+
+* **origin-backend-client:** UserRegisterData type replace with UserRegistrationData
+* **origin-backend-client:** autoPublish is not longer a member of IUser interface
+
+
+
+
+
 ## [5.0.1](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-backend-client@5.0.0...@energyweb/origin-backend-client@5.0.1) (2020-04-24)
 
 
