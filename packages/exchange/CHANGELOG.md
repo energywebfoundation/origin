@@ -3,6 +3,34 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0](https://github.com/energywebfoundation/origin/compare/@energyweb/exchange@0.7.0...@energyweb/exchange@1.0.0) (2020-05-15)
+
+
+### Bug Fixes
+
+* fixate tslib version to 1.11.2 to avoid typeorm issue ([274d4e9](https://github.com/energywebfoundation/origin/commit/274d4e9717f4c8f4b258a56331724330dcc3685b))
+* **exchange:** register correct Account object, rename non-entity Account to AccountDTO ([c6ea24e](https://github.com/energywebfoundation/origin/commit/c6ea24e855bc0d6009f0354ac5fce15658280c47))
+
+
+### chore
+
+* **exchange:** user ownerId for ownership based queries ([28c028b](https://github.com/energywebfoundation/origin/commit/28c028b5ae8362cb3fe04e0655d4a2c0325b6064))
+
+
+### Features
+
+* **exchange:** create ask on deposit when autopostforsale is enabled ([bb309ca](https://github.com/energywebfoundation/origin/commit/bb309cae2ed8af868568f82b98f1ae7d739d005f))
+* **exchange:** provide assetId and product with trade ([2854ac2](https://github.com/energywebfoundation/origin/commit/2854ac2c2699684057cd3d5ad5b90c53d1f14b73))
+
+
+### BREAKING CHANGES
+
+* **exchange:** Since now the ownerId is used to track the ownership of assets in exchange db. Currently ownerId=organizationId which means that organization is mandatory for each user
+
+
+
+
+
 # [0.7.0](https://github.com/energywebfoundation/origin/compare/@energyweb/exchange@0.6.0...@energyweb/exchange@0.7.0) (2020-04-24)
 
 

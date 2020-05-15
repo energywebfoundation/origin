@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.2.0](https://github.com/energywebfoundation/origin/compare/@energyweb/device-registry@6.1.0...@energyweb/device-registry@6.2.0) (2020-05-15)
+
+
+### Bug Fixes
+
+* store [] as the default for device.files ([52e5fcc](https://github.com/energywebfoundation/origin/commit/52e5fccdeb303133b3db9413fc317e4a1c60ebca))
+
+
+### Features
+
+* add meterStats to Device for un/certified meter readings reference ([627d785](https://github.com/energywebfoundation/origin/commit/627d7855506f52cb70ee083844ef2664b9227a0b))
+
+
+
+
+
 # [6.1.0](https://github.com/energywebfoundation/origin/compare/@energyweb/device-registry@6.0.0...@energyweb/device-registry@6.1.0) (2020-04-24)
 
 

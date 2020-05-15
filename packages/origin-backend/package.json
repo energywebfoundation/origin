@@ -1,6 +1,6 @@
 {
     "name": "@energyweb/origin-backend",
-    "version": "5.0.1",
+    "version": "5.1.0",
     "description": "",
     "main": "dist/js/src/index.js",
     "scripts": {
@@ -38,10 +38,10 @@
     "author": "EnergyWeb DevHub GmbH; Joseph Bagaric, joseph.bagaric@energyweb.org; Piotr Kosinski, piotr.kosinski@energyweb.org",
     "license": "GPL-3.0-or-later",
     "dependencies": {
-        "@energyweb/issuer": "2.0.0",
-        "@energyweb/origin-backend-core": "2.2.0",
-        "@energyweb/origin-backend-utils": "1.0.0",
-        "@energyweb/utils-general": "9.0.0",
+        "@energyweb/issuer": "2.1.0",
+        "@energyweb/origin-backend-core": "3.0.0",
+        "@energyweb/origin-backend-utils": "1.0.1",
+        "@energyweb/utils-general": "9.1.0",
         "@nestjs-modules/mailer": "1.4.2",
         "@nestjs/common": "7.0.9",
         "@nestjs/config": "^0.4.0",
@@ -93,10 +93,10 @@
         "@types/ws": "7.2.4",
         "jest": "26.0.1",
         "nodemailer": "6.4.6",
+        "polly-js": "1.6.5",
         "supertest": "4.0.2",
         "ts-jest": "25.5.1",
-        "tsconfig-paths": "3.9.0",
-        "polly-js": "1.6.5"
+        "tsconfig-paths": "3.9.0"
     },
     "files": [
         "dist",

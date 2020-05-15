@@ -3,6 +3,30 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.0.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-backend-client-mocks@2.0.1...@energyweb/origin-backend-client-mocks@3.0.0) (2020-05-15)
+
+
+### chore
+
+* **origin-backend-client-mocks:** replace UserRegisterData ([9abaa6d](https://github.com/energywebfoundation/origin/commit/9abaa6d4f79dcb457d475bf19340e5a08cf8e438))
+* **origin-backend-client-mocks:** rm autopublish remaining code ([fabb172](https://github.com/energywebfoundation/origin/commit/fabb1724e7887ec26d716b25dde8e2156534373b))
+
+
+### Features
+
+* add meterStats to Device for un/certified meter readings reference ([627d785](https://github.com/energywebfoundation/origin/commit/627d7855506f52cb70ee083844ef2664b9227a0b))
+* Detect and store the whole CertificationRequest on the backend ([613eb28](https://github.com/energywebfoundation/origin/commit/613eb28eeae25ec414b393f61311dbfb679351d4))
+
+
+### BREAKING CHANGES
+
+* **origin-backend-client-mocks:** UserRegisterData type replace with UserRegistrationData
+* **origin-backend-client-mocks:** autoPublish is not longer a member of IUser interface
+
+
+
+
+
 ## [2.0.1](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-backend-client-mocks@2.0.0...@energyweb/origin-backend-client-mocks@2.0.1) (2020-04-24)
 
 **Note:** Version bump only for package @energyweb/origin-backend-client-mocks

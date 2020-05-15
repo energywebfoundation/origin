@@ -3,6 +3,38 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [5.1.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-backend@5.0.1...@energyweb/origin-backend@5.1.0) (2020-05-15)
+
+
+### Bug Fixes
+
+* fixate tslib version to 1.11.2 to avoid typeorm issue ([274d4e9](https://github.com/energywebfoundation/origin/commit/274d4e9717f4c8f4b258a56331724330dcc3685b))
+* store [] as the default for device.files ([52e5fcc](https://github.com/energywebfoundation/origin/commit/52e5fccdeb303133b3db9413fc317e4a1c60ebca))
+* **origin-backend:** add default to status and kycstatus for user ([afc397f](https://github.com/energywebfoundation/origin/commit/afc397f37441af389666b865c088927cf0c22444))
+* **origin-backend:** add files default ([f7a265b](https://github.com/energywebfoundation/origin/commit/f7a265bd268201289d93788d310131ebc2ea56e9))
+* **origin-backend:** add nullable:false to user statuses ([090e29b](https://github.com/energywebfoundation/origin/commit/090e29b6791b47b20a702bd0f4120236b59a83b1))
+* **origin-backend:** apply ownership to certificate requests ([75408ea](https://github.com/energywebfoundation/origin/commit/75408ead45f0bf508c742975528787efa20b8db7))
+* **origin-backend:** configuration not being initialized in the tests ([2bff1f0](https://github.com/energywebfoundation/origin/commit/2bff1f087d353fbdfabb9022fccf2b07c12f105c))
+* **origin-backend:** don't run watcher service if the Issuer address is incorrect ([278bcca](https://github.com/energywebfoundation/origin/commit/278bcca8e1bd4cb27e60f9a02351ac430e00df90))
+* **origin-backend:** fix e2e test checking if certified ([b319b2c](https://github.com/energywebfoundation/origin/commit/b319b2cbba8f4cccd4f2d4154a4cbd13bfe7e099))
+* **origin-backend:** fix getting certification request ([f1d766f](https://github.com/energywebfoundation/origin/commit/f1d766f0fea9e38b8fd869904818f82b09817a15))
+* **origin-backend:** fix issues with registering/approving devices ([9a5e066](https://github.com/energywebfoundation/origin/commit/9a5e066298d5c949f840dc09b8b098b6ce31e50c))
+* **origin-backend:** migration dropping column ([00220b8](https://github.com/energywebfoundation/origin/commit/00220b800a8e5353aea4d6de1709c8e8a20e4d30))
+* **origin-backend:** smReads - calculating if certified or not ([2a9a01e](https://github.com/energywebfoundation/origin/commit/2a9a01e4d09a8a683214630dac1214c426f4f67d))
+
+
+### Features
+
+* add meterStats to Device for un/certified meter readings reference ([627d785](https://github.com/energywebfoundation/origin/commit/627d7855506f52cb70ee083844ef2664b9227a0b))
+* Detect and store the whole CertificationRequest on the backend ([613eb28](https://github.com/energywebfoundation/origin/commit/613eb28eeae25ec414b393f61311dbfb679351d4))
+* register Approved and Revoked events ([e74afec](https://github.com/energywebfoundation/origin/commit/e74afec51924a37abe39cad94e416f955474f17b))
+* **origin-backend:** added automatic post for sale flag, API for updating settings ([a871f60](https://github.com/energywebfoundation/origin/commit/a871f601ea611ca5e51fbe7cd0d0b0fcf4d2cea3))
+* **origin-backend:** price per device asset. initial e2e setup ([8479b5e](https://github.com/energywebfoundation/origin/commit/8479b5efc7e3cdba2e6f61eb6d62cb8ed4814526))
+
+
+
+
+
 ## [5.0.1](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-backend@5.0.0...@energyweb/origin-backend@5.0.1) (2020-04-24)
 
 
