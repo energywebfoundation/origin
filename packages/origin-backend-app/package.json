@@ -14,7 +14,7 @@
         "build:container:canary": "make build-canary push",
         "build:container:latest": "make build-latest push",
         "prettier": "prettier --write --config-precedence file-override './src/**/*'",
-        "clean": "shx rm -rf dist db.sqlite uploads",
+        "clean": "shx rm -rf dist uploads",
         "lint": "eslint \"src/**/*{.ts,.tsx}\"",
         "lint-fix": "eslint \"src/**/*{.ts,.tsx}\" --fix",
         "precommit": "lint-staged"
@@ -38,22 +38,25 @@
         "@energyweb/origin-backend": "5.0.1",
         "@energyweb/origin-backend-core": "2.2.0",
         "@energyweb/utils-general": "9.0.0",
-        "@nestjs/common": "7.0.8",
+        "@nestjs/common": "7.0.9",
         "@nestjs/config": "^0.4.0",
-        "@nestjs/core": "7.0.8",
-        "@nestjs/swagger": "4.5.1",
+        "@nestjs/core": "7.0.9",
+        "@nestjs/swagger": "4.5.5",
+        "@nestjs/typeorm": "7.0.0",
         "body-parser": "1.19.0",
-        "class-validator": "0.12.1",
+        "class-validator": "0.12.2",
         "cors": "2.8.5",
         "dotenv": "8.2.0",
         "swagger-ui-express": "4.1.4"
     },
     "devDependencies": {
-        "axios": "0.19.2",
-        "jest": "25.4.0",
+        "jest": "26.0.1",
         "supertest": "4.0.2",
-        "ts-jest": "25.4.0",
+        "ts-jest": "25.5.1",
         "tsconfig-paths": "3.9.0"
+    },
+    "resolutions": {
+        "tslib": "1.11.2"
     },
     "files": [
         "dist",

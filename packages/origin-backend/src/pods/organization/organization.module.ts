@@ -7,7 +7,8 @@ import { UserModule } from '../user/user.module';
 import { OrganizationInvitation } from './organizationInvitation.entity';
 import { OrganizationService } from './organization.service';
 import { NotificationModule } from '../notification';
-import { User } from '../user';
+import { User } from '../user/user.entity';
+import { OrganizationInvitationService } from './organization-invitation.service';
 
 @Module({
     imports: [
@@ -15,7 +16,7 @@ import { User } from '../user';
         UserModule,
         NotificationModule
     ],
-    providers: [OrganizationService],
+    providers: [OrganizationService, OrganizationInvitationService],
     controllers: [OrganizationController],
     exports: [OrganizationService]
 })

@@ -1,10 +1,10 @@
+import { Account } from './pods/account/account.entity';
+import { Asset } from './pods/asset/asset.entity';
+import { Demand } from './pods/demand/demand.entity';
+import { Order } from './pods/order/order.entity';
+import { Trade } from './pods/trade/trade.entity';
+import { Transfer } from './pods/transfer/transfer.entity';
+
 export { AppModule } from './app.module';
 
-export { MatchingEngineModule } from './pods/matching-engine/matching-engine.module';
-export { OrderModule } from './pods/order/order.module';
-export { TradeModule } from './pods/trade/trade.module';
-export { OrderBookModule } from './pods/order-book/order-book.module';
-export { DemandModule } from './pods/demand/demand.module';
-export { Demand } from './pods/demand/demand.entity';
-export { Trade } from './pods/trade/trade.entity';
-export { Order } from './pods/order/order.entity';
+export const entities = [Demand, Trade, Order, Transfer, Account, Asset];

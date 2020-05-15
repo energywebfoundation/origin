@@ -2,7 +2,7 @@ import { INestApplication } from '@nestjs/common';
 import { ethers } from 'ethers';
 import request from 'supertest';
 
-import { Account } from '../src/pods/account/account';
+import { AccountDTO } from '../src/pods/account/account.dto';
 import { AccountService } from '../src/pods/account/account.service';
 import { CreateAskDTO } from '../src/pods/order/create-ask.dto';
 import { CreateBidDTO } from '../src/pods/order/create-bid.dto';
@@ -137,7 +137,6 @@ describe('account ask order send', () => {
     it('should not be able to withdraw without any deposit', async () => {
         const withdrawal: RequestWithdrawalDTO = {
             assetId: deposit.asset.id,
-            userId: user1Id,
             amount,
             address: withdrawalAddress
         };
@@ -155,7 +154,6 @@ describe('account ask order send', () => {
 
         const withdrawal: RequestWithdrawalDTO = {
             assetId: deposit.asset.id,
-            userId: user1Id,
             amount,
             address: withdrawalAddress
         };
@@ -169,7 +167,7 @@ describe('account ask order send', () => {
             .get('/account')
             .expect(200)
             .expect((res) => {
-                const account = res.body as Account;
+                const account = res.body as AccountDTO;
 
                 expect(account.address).toBe(user1Address);
                 expect(account.balances.available.length).toBe(1);

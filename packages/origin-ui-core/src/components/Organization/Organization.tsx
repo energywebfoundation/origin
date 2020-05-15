@@ -36,7 +36,7 @@ export function Organization() {
             key: 'organization-invite',
             label: 'Invite',
             component: OrganizationInvite,
-            hide: !isLoggedIn || !isLeadUser
+            hide: !isLoggedIn || !isLeadUser || !userOffchain?.organization
         },
         {
             key: 'organization-register',

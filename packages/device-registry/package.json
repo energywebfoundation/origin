@@ -30,13 +30,13 @@
     "test": "mocha -r ts-node/register src/test/*.test.ts --timeout 60000 --exit",
     "test:concurrent": "yarn test",
     "prettier": "prettier --write --config-precedence file-override './src/**/*'",
-    "clean": "shx rm -rf build dist dist-shakeable schemas db.sqlite"
+    "clean": "shx rm -rf build dist dist-shakeable schemas"
   },
   "types": "dist/js/src/index.d.ts",
   "dependencies": {
     "@energyweb/origin-backend-core": "2.2.0",
     "@energyweb/utils-general": "9.0.0",
-    "ethers": "4.0.46",
+    "ethers": "4.0.47",
     "moment": "2.24.0",
     "polly-js": "^1.6.5",
     "winston": "3.2.1"

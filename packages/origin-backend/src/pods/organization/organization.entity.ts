@@ -8,6 +8,11 @@ import { ExtendedBaseEntity } from '../ExtendedBaseEntity';
 
 @Entity()
 export class Organization extends ExtendedBaseEntity implements IOrganization {
+    constructor(organization?: Partial<Organization>) {
+        super();
+        Object.assign(this, organization);
+    }
+
     @PrimaryGeneratedColumn()
     id: number;
 
@@ -94,7 +99,7 @@ export class Organization extends ExtendedBaseEntity implements IOrganization {
     @Column()
     status: OrganizationStatus;
 
-    @OneToMany(() => User, (user) => user.organization)
+    @OneToMany(() => User, (user) => user.organization, { cascade: true })
     users: User[];
 
     @OneToMany(() => OrganizationInvitation, (entity) => entity.organization)

@@ -7,9 +7,10 @@ import {
     DeviceStatus,
     IExternalDeviceId,
     DeviceCreateData,
-    IDeviceWithRelationsIds
+    IDeviceWithRelationsIds,
+    ISmartMeterReadStats
 } from '@energyweb/origin-backend-core';
-import { BigNumber, BigNumberish, bigNumberify } from 'ethers/utils';
+import { BigNumberish, bigNumberify } from 'ethers/utils';
 
 export class Entity implements IDevice {
     status: DeviceStatus;
@@ -19,6 +20,8 @@ export class Entity implements IDevice {
     description: string;
 
     images: string;
+
+    files: string;
 
     address: string;
 
@@ -50,7 +53,7 @@ export class Entity implements IDevice {
 
     externalDeviceIds?: IExternalDeviceId[];
 
-    lastSmartMeterReading?: ISmartMeterRead;
+    meterStats?: ISmartMeterReadStats;
 
     deviceGroup?: string;
 
@@ -59,6 +62,10 @@ export class Entity implements IDevice {
     initialized: boolean;
 
     organization: number;
+
+    automaticPostForSale: boolean;
+
+    defaultAskPrice: number;
 
     constructor(
         public id: number,
@@ -89,10 +96,6 @@ export class Entity implements IDevice {
         }
 
         return this;
-    }
-
-    get lastSmartMeterReadWh(): BigNumber {
-        return this.lastSmartMeterReading?.meterReading;
     }
 
     async saveSmartMeterRead(

@@ -1,8 +1,9 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, OneToMany } from 'typeorm';
 import { IsInt, Min, IsLatitude, IsLongitude, IsNotEmpty } from 'class-validator';
 import { ISmartMeterRead, IExternalDeviceId, IDevice } from '@energyweb/origin-backend-core';
 import { Organization } from '../organization/organization.entity';
 import { ExtendedBaseEntity } from '../ExtendedBaseEntity';
+import { CertificationRequest } from '../certificate/certification-request.entity';
 
 @Entity()
 export class Device extends ExtendedBaseEntity implements IDevice {
@@ -20,6 +21,9 @@ export class Device extends ExtendedBaseEntity implements IDevice {
 
     @Column()
     images: string;
+
+    @Column({ default: '[]' })
+    files: string;
 
     @Column()
     address: string;
@@ -65,9 +69,6 @@ export class Device extends ExtendedBaseEntity implements IDevice {
     @Column()
     typeOfPublicSupport: string;
 
-    @Column('simple-json', { nullable: true })
-    lastSmartMeterReading: ISmartMeterRead;
-
     @Column()
     deviceGroup: string;
 
@@ -83,4 +84,13 @@ export class Device extends ExtendedBaseEntity implements IDevice {
 
     @Column({ nullable: true })
     gridOperator: string;
+
+    @OneToMany(() => CertificationRequest, (certificationRequest) => certificationRequest.device)
+    certificationRequests: CertificationRequest[];
+
+    @Column({ nullable: true })
+    defaultAskPrice: number;
+
+    @Column({ default: false })
+    automaticPostForSale: boolean;
 }

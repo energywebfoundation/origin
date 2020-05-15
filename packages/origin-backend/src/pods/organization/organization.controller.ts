@@ -1,45 +1,41 @@
 import {
-    IOrganization,
+    ILoggedInUser,
     IOrganizationInvitation,
-    IUser,
-    IUserWithRelationsIds,
-    OrganizationInvitationStatus,
+    isRole,
     OrganizationInviteCreateReturnData,
     OrganizationPostData,
     OrganizationRemoveMemberReturnData,
-    OrganizationStatus,
     OrganizationStatusChangedEvent,
     OrganizationUpdateData,
-    SupportedEvents,
-    OrganizationInvitationEvent,
-    OrganizationRemovedMemberEvent
+    Role,
+    SupportedEvents
 } from '@energyweb/origin-backend-core';
+import { Roles, RolesGuard, UserDecorator } from '@energyweb/origin-backend-utils';
 import {
     BadRequestException,
     Body,
     Controller,
     Delete,
+    ForbiddenException,
+    forwardRef,
     Get,
+    Inject,
     Logger,
     NotFoundException,
     Param,
     ParseIntPipe,
     Post,
     Put,
-    Query,
     UnprocessableEntityException,
     UseGuards
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { InjectRepository } from '@nestjs/typeorm';
-import { validate } from 'class-validator';
-import { FindConditions, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 
 import { StorageErrors } from '../../enums/StorageErrors';
 import { NotificationService } from '../notification';
-import { UserDecorator } from '../user/user.decorator';
-import { User } from '../user/user.entity';
-import { UserService } from '../user/user.service';
+import { OrganizationInvitationService } from './organization-invitation.service';
 import { Organization } from './organization.entity';
 import { OrganizationService } from './organization.service';
 import { OrganizationInvitation } from './organizationInvitation.entity';
@@ -53,11 +49,10 @@ export class OrganizationController {
         private readonly organizationRepository: Repository<Organization>,
         @InjectRepository(OrganizationInvitation)
         private readonly organizationInvitationRepository: Repository<OrganizationInvitation>,
-        @InjectRepository(User)
-        private readonly userRepository: Repository<User>,
-        private readonly userService: UserService,
+        @Inject(forwardRef(() => OrganizationService))
         private readonly organizationService: OrganizationService,
-        private readonly notificationService: NotificationService
+        private readonly notificationService: NotificationService,
+        private readonly organizationInvitationService: OrganizationInvitationService
     ) {}
 
     @Get()
@@ -65,31 +60,13 @@ export class OrganizationController {
         return this.organizationRepository.find();
     }
 
-    @Get('invitation')
-    @UseGuards(AuthGuard('jwt'))
+    @Get('/invitation')
+    @UseGuards(AuthGuard())
     async getInvitations(
-        @UserDecorator() loggedUser: IUser,
-        @Query('email') emailFromQuery: string,
-        @Query('organization') organizationId: string
+        @UserDecorator() loggedUser: ILoggedInUser
     ): Promise<IOrganizationInvitation[]> {
-        const findConditions: FindConditions<OrganizationInvitation> = {};
-
-        if (emailFromQuery) {
-            if (emailFromQuery === loggedUser.email) {
-                findConditions.email = loggedUser.email;
-            } else {
-                throw new BadRequestException(
-                    `You can only get invitations received to logged user email.`
-                );
-            }
-        }
-
-        if (organizationId) {
-            findConditions.organization = { id: parseInt(organizationId, 10) };
-        }
-
         return (this.organizationInvitationRepository.find({
-            where: findConditions,
+            where: { email: loggedUser.email },
             loadRelationIds: true
         }) as Promise<Omit<IOrganizationInvitation, 'organization'>[]>) as Promise<
             IOrganizationInvitation[]
@@ -97,8 +74,9 @@ export class OrganizationController {
     }
 
     @Get('/:id/users')
-    @UseGuards(AuthGuard('jwt'))
-    async getUsers(@Param('id') id: string, @UserDecorator() loggedUser: IUserWithRelationsIds) {
+    @UseGuards(AuthGuard(), RolesGuard)
+    @Roles(Role.OrganizationAdmin, Role.Admin, Role.SupportAgent)
+    async getUsers(@Param('id') id: string, @UserDecorator() loggedUser: ILoggedInUser) {
         const organization = await this.organizationRepository.findOne(id, {
             relations: ['users', 'leadUser']
         });
@@ -114,6 +92,22 @@ export class OrganizationController {
         return organization.users;
     }
 
+    @Get('/:id/devices')
+    @UseGuards(AuthGuard(), RolesGuard)
+    @Roles(Role.OrganizationAdmin, Role.OrganizationDeviceManager, Role.Admin, Role.SupportAgent)
+    async getDevices(@Param('id') id: string, @UserDecorator() loggedUser: ILoggedInUser) {
+        if (!isRole(loggedUser, Role.OrganizationDeviceManager)) {
+            throw new ForbiddenException();
+        }
+
+        const organization = await this.organizationRepository.findOne(id, {
+            relations: ['devices'],
+            where: { id: loggedUser.organizationId }
+        });
+
+        return organization.devices;
+    }
+
     @Get('/:id')
     async get(@Param('id') id: string) {
         const existingEntity = await this.organizationService.findOne(id);
@@ -126,35 +120,12 @@ export class OrganizationController {
     }
 
     @Post()
-    @UseGuards(AuthGuard('jwt'))
-    async post(@Body() body: any, @UserDecorator() loggedUser: IUser) {
+    @UseGuards(AuthGuard())
+    async post(@Body() body: OrganizationPostData, @UserDecorator() loggedUser: ILoggedInUser) {
         try {
-            const newEntity = new Organization();
+            const organization = this.organizationService.create(loggedUser.id, body);
 
-            const user = await this.userService.findById(loggedUser.id);
-
-            const data: Omit<IOrganization, 'id'> = {
-                ...(body as OrganizationPostData),
-                status: OrganizationStatus.Submitted,
-                leadUser: user,
-                users: [user],
-                devices: []
-            };
-
-            Object.assign(newEntity, data);
-
-            const validationErrors = await validate(newEntity);
-
-            if (validationErrors.length > 0) {
-                throw new UnprocessableEntityException({
-                    success: false,
-                    errors: validationErrors.map((e) => e?.toString())
-                });
-            } else {
-                await this.organizationRepository.save(newEntity);
-
-                return newEntity;
-            }
+            return organization;
         } catch (error) {
             console.warn('Error while saving entity');
             console.error(error);
@@ -164,6 +135,8 @@ export class OrganizationController {
     }
 
     @Delete('/:id')
+    @UseGuards(AuthGuard(), RolesGuard)
+    @Roles(Role.Admin)
     async delete(@Param('id') id: string) {
         const existingEntity = await this.organizationService.findOne(id);
 
@@ -179,6 +152,8 @@ export class OrganizationController {
     }
 
     @Put('/:id')
+    @UseGuards(AuthGuard(), RolesGuard)
+    @Roles(Role.Admin)
     async put(@Param('id') id: string, @Body() body: OrganizationUpdateData) {
         const existingEntity = await this.organizationService.findOne(id);
 
@@ -215,232 +190,45 @@ export class OrganizationController {
         };
     }
 
-    @Put('invitation/:invitationId')
-    @UseGuards(AuthGuard('jwt'))
+    @Put('/invitation/:invitationId')
+    @UseGuards(AuthGuard())
     async updateInvitation(
         @Body('status') status: IOrganizationInvitation['status'],
         @Param('invitationId') invitationId: string,
-        @UserDecorator() loggedUser: IUser
+        @UserDecorator() loggedUser: ILoggedInUser
     ) {
-        try {
-            const user = await this.userService.findById(loggedUser.id);
-            const invitation = await this.organizationInvitationRepository.findOneOrFail(
-                invitationId,
-                {
-                    loadRelationIds: true
-                }
-            );
-
-            if (invitation.email !== user.email) {
-                throw new BadRequestException('Invitation email does not match.');
-            }
-
-            if (invitation.status !== OrganizationInvitationStatus.Pending) {
-                throw new BadRequestException('Invitation is not in pending state.');
-            }
-
-            if (
-                ![
-                    OrganizationInvitationStatus.Rejected,
-                    OrganizationInvitationStatus.Accepted
-                ].includes(status)
-            ) {
-                throw new BadRequestException('Incorrect invitation status value.');
-            }
-
-            const organization = await this.organizationRepository.findOneOrFail(
-                invitation.organization,
-                {
-                    relations: ['users']
-                }
-            );
-
-            ((user as any) as User).organization = organization;
-            organization.users.push((user as any) as User);
-            invitation.status = status;
-            await this.organizationRepository.save(organization);
-            await this.organizationInvitationRepository.save(invitation);
-            await this.userRepository.save(user);
-
-            return true;
-        } catch (error) {
-            if (error instanceof BadRequestException) {
-                throw error;
-            }
-
-            console.warn(
-                'Unexpected error while accepting invitation to organization',
-                error?.message
-            );
-
-            throw new BadRequestException({
-                success: false,
-                error: 'Could not accept invitation.'
-            });
-        }
+        await this.organizationInvitationService.acceptOrReject(loggedUser, invitationId, status);
+        return true;
     }
 
-    @Post('invite')
-    @UseGuards(AuthGuard('jwt'))
+    @Post('/invite')
+    @UseGuards(AuthGuard(), RolesGuard)
+    @Roles(Role.OrganizationAdmin, Role.Admin)
     async invite(
         @Body('email') email: string,
-        @UserDecorator() loggedUser: IUser
+        @UserDecorator() loggedUser: ILoggedInUser
     ): Promise<OrganizationInviteCreateReturnData> {
-        try {
-            const user = await this.userService.findById(loggedUser.id);
+        await this.organizationInvitationService.invite(loggedUser, email);
 
-            if (typeof user.organization === 'undefined') {
-                throw new BadRequestException({
-                    success: false,
-                    error: `User doesn't belong to any organization.`
-                });
-            }
-
-            const organization = await this.organizationRepository.findOne(user.organization, {
-                relations: ['leadUser', 'invitations', 'users']
-            });
-
-            if (organization.leadUser.id !== user.id) {
-                throw new BadRequestException({
-                    success: false,
-                    error: `User is not a lead user of organization.`
-                });
-            }
-
-            if (organization.users.find((u) => u.email === email)) {
-                throw new BadRequestException({
-                    success: false,
-                    error: `Invited user already belongs to this organization.`
-                });
-            }
-
-            if (organization.invitations.find((u) => u.email === email)) {
-                throw new BadRequestException({
-                    success: false,
-                    error: `User has already been invited to this organization.`
-                });
-            }
-
-            const invitation = this.organizationInvitationRepository.create({
-                email,
-                organization,
-                status: OrganizationInvitationStatus.Pending
-            });
-
-            await this.organizationInvitationRepository.save(invitation);
-
-            organization.invitations.push(invitation);
-
-            await this.organizationRepository.save(organization);
-
-            const eventData: OrganizationInvitationEvent = {
-                email,
-                organizationName: organization.name
-            };
-
-            this.notificationService.handleEvent({
-                type: SupportedEvents.ORGANIZATION_INVITATION,
-                data: eventData
-            });
-
-            return {
-                success: true,
-                error: null
-            };
-        } catch (error) {
-            if (error instanceof BadRequestException) {
-                throw error;
-            }
-
-            console.warn('Unexpected error while inviting user to organization', error?.message);
-
-            throw new BadRequestException({
-                success: false,
-                error: 'Could not invite user due to unknown error'
-            });
-        }
+        return {
+            success: true,
+            error: null
+        };
     }
 
     @Post(':id/remove-member/:userId')
-    @UseGuards(AuthGuard('jwt'))
+    @UseGuards(AuthGuard(), RolesGuard)
+    @Roles(Role.OrganizationAdmin, Role.Admin)
     async removeMember(
         @Param('id', new ParseIntPipe()) organizationId: number,
-        @Param('userId', new ParseIntPipe()) removedUserId: number,
-        @UserDecorator() loggedUser: IUserWithRelationsIds
+        @Param('userId', new ParseIntPipe()) memberId: number,
+        @UserDecorator() loggedUser: ILoggedInUser
     ): Promise<OrganizationRemoveMemberReturnData> {
-        try {
-            const user = await this.userService.findById(loggedUser.id);
+        await this.organizationService.removeMember(loggedUser, organizationId, memberId);
 
-            if (typeof user.organization === 'undefined') {
-                throw new BadRequestException({
-                    success: false,
-                    error: `User doesn't belong to any organization.`
-                });
-            }
-
-            const organization = await this.organizationRepository.findOne(user.organization, {
-                relations: ['leadUser', 'invitations', 'users']
-            });
-
-            if (organization.id !== organizationId || organization.leadUser.id !== user.id) {
-                throw new BadRequestException({
-                    success: false,
-                    error: `User is not a lead user of organization.`
-                });
-            }
-
-            if (organization.leadUser.id === removedUserId) {
-                throw new BadRequestException({
-                    success: false,
-                    error: `Can't remove lead user from organization.`
-                });
-            }
-
-            if (!organization.users.find((u) => u.id === removedUserId)) {
-                throw new BadRequestException({
-                    success: false,
-                    error: `User to be removed is not part of the organization.`
-                });
-            }
-
-            const removedUser = organization.users.find((u) => u.id === removedUserId);
-
-            organization.users = organization.users.filter((u) => u.id !== removedUserId);
-
-            await this.organizationRepository.save(organization);
-
-            removedUser.organization = null;
-
-            await this.userRepository.save(removedUser);
-
-            const eventData: OrganizationRemovedMemberEvent = {
-                organizationName: organization.name,
-                email: removedUser.email
-            };
-
-            this.notificationService.handleEvent({
-                type: SupportedEvents.ORGANIZATION_REMOVED_MEMBER,
-                data: eventData
-            });
-
-            return {
-                success: true,
-                error: null
-            };
-        } catch (error) {
-            if (error instanceof BadRequestException) {
-                throw error;
-            }
-
-            console.warn(
-                'Unexpected error while removing member from organization',
-                error?.message
-            );
-
-            throw new BadRequestException({
-                success: false,
-                error: 'Could not remove member due to unknown error'
-            });
-        }
+        return {
+            success: true,
+            error: null
+        };
     }
 }

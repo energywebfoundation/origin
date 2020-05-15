@@ -65,7 +65,9 @@ describe('Device Facade', () => {
                 region: '',
                 province: '',
                 organization: 4,
-                gridOperator: ''
+                gridOperator: '',
+                automaticPostForSale: false,
+                defaultAskPrice: null
             };
 
             assert.equal(await ProducingDevice.getDeviceListLength(conf), 0);
@@ -115,30 +117,25 @@ describe('Device Facade', () => {
 
                 const reads = await device.getSmartMeterReads();
 
-                assert.deepEqual(reads, [
-                    {
-                        meterReading: bigNumberify(100),
-                        timestamp: SM_READ_TIMESTAMP
-                    },
-                    {
-                        meterReading: bigNumberify(300),
-                        timestamp: SM_READ_TIMESTAMP + 1
-                    }
-                ]);
+                assert.deepOwnInclude(reads[0], {
+                    meterReading: bigNumberify(100),
+                    timestamp: SM_READ_TIMESTAMP
+                });
+                assert.deepOwnInclude(reads[1], {
+                    meterReading: bigNumberify(300),
+                    timestamp: SM_READ_TIMESTAMP + 1
+                });
 
                 const energyGenerated = await device.getAmountOfEnergyGenerated();
-                assert.deepEqual(energyGenerated, [
-                    {
-                        energy: bigNumberify(100),
-                        timestamp: SM_READ_TIMESTAMP
-                    },
-                    {
-                        energy: bigNumberify(200),
-                        timestamp: SM_READ_TIMESTAMP + 1
-                    }
-                ]);
+                assert.deepOwnInclude(energyGenerated[0], {
+                    energy: bigNumberify(100),
+                    timestamp: SM_READ_TIMESTAMP
+                });
 
-                assert.deepEqual(device.lastSmartMeterReadWh, bigNumberify(300));
+                assert.deepOwnInclude(energyGenerated[1], {
+                    energy: bigNumberify(200),
+                    timestamp: SM_READ_TIMESTAMP + 1
+                });
             });
         });
     });

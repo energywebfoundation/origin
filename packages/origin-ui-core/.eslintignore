@@ -2,7 +2,6 @@ dist/
 node_modules
 assets
 nginx
-db.sqlite
 jest.config.js
 webpack
 

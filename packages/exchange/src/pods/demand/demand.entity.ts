@@ -7,8 +7,21 @@ import { BNTransformer } from '../../utils/valueTransformers';
 import { Order } from '../order/order.entity';
 import { ProductDTO } from '../order/product.dto';
 
+export interface IDemand {
+    id: string;
+    userId: string;
+    price: number;
+    start: Date;
+    end: Date;
+    volumePerPeriod: BN;
+    periodTimeFrame: TimeFrame;
+    product: ProductDTO;
+    bids: Order[];
+    status: DemandStatus;
+}
+
 @Entity()
-export class Demand extends ExtendedBaseEntity {
+export class Demand extends ExtendedBaseEntity implements IDemand {
     @PrimaryGeneratedColumn('uuid')
     id: string;
 

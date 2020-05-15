@@ -4,9 +4,14 @@
             "devices": "Urządzenia",
             "certificates": "Certyfikaty",
             "demands": "Oferty",
-            "organizations": "Organizacje"
+            "organizations": "Organizacje",
+            "admin": "Admin",
+            "supportAgent": "Support Agents"
         },
         "navigation": {
+            "admin": {
+                "users": "Manage Users"
+            },
             "devices": {
                 "all": "Wszystkie urządzenia",
                 "map": "Widok mapy",
@@ -23,7 +28,8 @@
                 "regionProvince": "Region, prowincja",
                 "type": "Typ",
                 "nameplateCapacity": "Moc",
-                "meterRead": "Odczyt licznika",
+                "meterReadCertified": "Certified",
+                "meterReadToBeCertified": "To be certified",
                 "commissioningDate": "Data uruchomienia",
                 "status": "Status",
                 "deviceOwner": "Właściciel urządzenia",

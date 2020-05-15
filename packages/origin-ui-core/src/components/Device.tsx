@@ -80,7 +80,7 @@ export function Device() {
             key: 'owned',
             label: t('navigation.devices.my'),
             component: MyDevices,
-            roles: [Role.DeviceManager]
+            roles: [Role.OrganizationDeviceManager, Role.OrganizationAdmin]
         },
         {
             key: 'pending',
@@ -92,13 +92,13 @@ export function Device() {
             key: 'add',
             label: t('navigation.devices.registerDevice'),
             component: AddDevice,
-            roles: [Role.DeviceManager]
+            roles: [Role.OrganizationDeviceManager, Role.OrganizationAdmin]
         },
         {
             key: 'add-group',
             label: t('navigation.devices.registerDeviceGroup'),
             component: DeviceGroupForm,
-            roles: [Role.DeviceManager]
+            roles: [Role.OrganizationDeviceManager, Role.OrganizationAdmin]
         },
         {
             key: 'producing_detail_view',
@@ -113,14 +113,7 @@ export function Device() {
             <div className="PageNav">
                 <ul className="NavMenu nav">
                     {DevicesMenu.map((menu) => {
-                        if (
-                            menu.hide ||
-                            (menu.roles?.length > 0 &&
-                                !menu.roles.reduce(
-                                    (prev, next) => prev && isRole(userOffchain, next),
-                                    true
-                                ))
-                        ) {
+                        if (menu.hide || (menu.roles && !isRole(userOffchain, ...menu.roles))) {
                             return null;
                         }
 

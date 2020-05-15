@@ -2,7 +2,6 @@ node_modules
 .DS_Store
 dist
 dist-shakeable
-db.sqlite
 .vscode
 *.log
 package-lock.json

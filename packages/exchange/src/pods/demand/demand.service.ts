@@ -1,49 +1,34 @@
 import { DemandStatus } from '@energyweb/utils-general';
 import { Injectable, Logger } from '@nestjs/common';
-import { InjectConnection, InjectRepository } from '@nestjs/typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
 import BN from 'bn.js';
 import { Connection, Repository } from 'typeorm';
 
 import { ForbiddenActionError } from '../../utils/exceptions';
 import { MatchingEngineService } from '../matching-engine/matching-engine.service';
 import { CreateBidDTO } from '../order/create-bid.dto';
+import { OrderStatus } from '../order/order-status.enum';
 import { Order } from '../order/order.entity';
 import { OrderService } from '../order/order.service';
 import { CreateDemandDTO } from './create-demand.dto';
 import { DemandTimePeriodService } from './demand-time-period.service';
-import { Demand } from './demand.entity';
-import { OrderStatus } from '../order/order-status.enum';
+import { Demand, IDemand } from './demand.entity';
 
 @Injectable()
 export class DemandService {
     private readonly logger = new Logger(DemandService.name);
 
     constructor(
-        @InjectRepository(Demand, 'ExchangeConnection')
+        @InjectRepository(Demand)
         private readonly repository: Repository<Demand>,
         private readonly orderService: OrderService,
         private readonly matchingService: MatchingEngineService,
-        @InjectConnection('ExchangeConnection')
         private readonly connection: Connection,
         private readonly demandTimePeriodService: DemandTimePeriodService
     ) {}
 
     public async create(userId: string, createDemand: CreateDemandDTO): Promise<Demand> {
-        const validityDates = this.demandTimePeriodService.generateValidityDates(createDemand);
-        const bidsToCreate = validityDates.map(
-            ({ validFrom, generationFrom, generationTo }): CreateBidDTO => ({
-                volume: createDemand.volumePerPeriod,
-                price: createDemand.price,
-                validFrom,
-                product: createDemand.boundToGenerationTime
-                    ? {
-                          ...createDemand.product,
-                          generationFrom: generationFrom.toISOString(),
-                          generationTo: generationTo.toISOString()
-                      }
-                    : createDemand.product
-            })
-        );
+        const bidsToCreate = this.prepareBids(createDemand);
 
         let demand: Demand;
         let bids: Order[];
@@ -51,7 +36,7 @@ export class DemandService {
         await this.connection.transaction(async (transaction) => {
             const repository = transaction.getRepository<Demand>(Demand);
 
-            demand = await repository.save({
+            const demandToCreate: Omit<IDemand, 'id' | 'bids'> = {
                 userId,
                 price: createDemand.price,
                 volumePerPeriod: new BN(createDemand.volumePerPeriod),
@@ -60,7 +45,9 @@ export class DemandService {
                 start: createDemand.start,
                 end: createDemand.end,
                 status: DemandStatus.ACTIVE
-            });
+            };
+
+            demand = await repository.save(demandToCreate);
 
             bids = await this.orderService.createDemandBids(
                 userId,
@@ -156,5 +143,23 @@ export class DemandService {
         )) {
             this.orderService.reactivateOrder(bid);
         }
+    }
+
+    private prepareBids(createDemand: CreateDemandDTO) {
+        const validityDates = this.demandTimePeriodService.generateValidityDates(createDemand);
+        return validityDates.map(
+            ({ validFrom, generationFrom, generationTo }): CreateBidDTO => ({
+                volume: createDemand.volumePerPeriod,
+                price: createDemand.price,
+                validFrom,
+                product: createDemand.boundToGenerationTime
+                    ? {
+                          ...createDemand.product,
+                          generationFrom: generationFrom.toISOString(),
+                          generationTo: generationTo.toISOString()
+                      }
+                    : createDemand.product
+            })
+        );
     }
 }

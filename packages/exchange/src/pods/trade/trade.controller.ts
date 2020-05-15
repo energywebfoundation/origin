@@ -1,10 +1,10 @@
-import { IUser } from '@energyweb/origin-backend-core';
+import { ILoggedInUser } from '@energyweb/origin-backend-core';
+import { UserDecorator } from '@energyweb/origin-backend-utils';
 import { Controller, Get, Logger, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 
-import { UserDecorator } from '../decorators/user.decorator';
-import { TradeService } from './trade.service';
 import { TradeDTO } from './trade.dto';
+import { TradeService } from './trade.service';
 
 @Controller('trade')
 export class TradeController {
@@ -14,9 +14,12 @@ export class TradeController {
 
     @UseGuards(AuthGuard())
     @Get()
-    public async getAll(@UserDecorator() user: IUser): Promise<TradeDTO[]> {
-        const trades = await this.tradeService.getAll(user.id.toString());
+    public async getAll(@UserDecorator() user: ILoggedInUser): Promise<TradeDTO[]> {
+        const userId = user.id.toString();
+        const trades = await this.tradeService.getAll(userId, false);
 
-        return trades.map((trade) => TradeDTO.fromTrade(trade));
+        return trades.map((trade) =>
+            TradeDTO.fromTrade(trade.withMaskedOrder(userId), trade.ask.assetId, trade.ask.product)
+        );
     }
 }

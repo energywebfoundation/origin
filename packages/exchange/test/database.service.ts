@@ -1,14 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import { InjectConnection } from '@nestjs/typeorm';
 import polly from 'polly-js';
 import { Connection } from 'typeorm';
 
 @Injectable()
 export class DatabaseService {
-    constructor(
-        @InjectConnection('ExchangeConnection')
-        private readonly connection: Connection
-    ) {}
+    constructor(private readonly connection: Connection) {}
 
     public async cleanUp() {
         const tables = this.connection.entityMetadatas.map((e) => `"${e.tableName}"`).join(', ');

@@ -1,14 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import {
-    moment,
-    Moment,
-    setMaxTimeInDay,
-    setMinTimeInDay,
-    DATE_FORMAT_DMY,
-    getDeviceId,
-    EnergyFormatter,
-    useTranslation
-} from '../../utils';
+import { moment, DATE_FORMAT_DMY, getDeviceId, EnergyFormatter, useTranslation } from '../../utils';
 import {
     Button,
     Dialog,
@@ -31,14 +22,7 @@ import { Upload, IUploadedFile } from '../Upload';
 import { getEnvironment } from '../../features';
 import { MAX_ENERGY_PER_CERTIFICATE } from '@energyweb/origin-backend-core';
 
-const DEFAULTS = {
-    fromDate: moment(),
-    toDate: setMaxTimeInDay(moment())
-};
-
 export function RequestCertificatesModal() {
-    const [fromDate, setFromDate] = useState(DEFAULTS.fromDate);
-    const [toDate, setToDate] = useState(DEFAULTS.toDate);
     const [energyInDisplayUnit, setEnergyInDisplayUnit] = useState('');
     const [files, setFiles] = useState<IUploadedFile[]>([]);
 
@@ -51,6 +35,14 @@ export function RequestCertificatesModal() {
     const producingDevice = useSelector(getRequestCertificatesModalProducingDevice);
     const showModal = useSelector(getRequestCertificatesModalVisible);
     const environment = useSelector(getEnvironment);
+
+    const DEFAULTS = {
+        fromDate: moment.tz(producingDevice?.timezone).startOf('day'),
+        toDate: moment.tz(producingDevice?.timezone).endOf('day')
+    };
+
+    const [fromDate, setFromDate] = useState(DEFAULTS.fromDate);
+    const [toDate, setToDate] = useState(DEFAULTS.toDate);
 
     const dispatch = useDispatch();
 
@@ -98,14 +90,6 @@ export function RequestCertificatesModal() {
         );
     }
 
-    function handleFromDateChange(date: Moment) {
-        setFromDate(setMinTimeInDay(date));
-    }
-
-    function handleToDateChange(date: Moment) {
-        setToDate(setMaxTimeInDay(date));
-    }
-
     return (
         <Dialog open={showModal} onClose={handleClose}>
             <DialogTitle>
@@ -117,7 +101,7 @@ export function RequestCertificatesModal() {
                 <DatePicker
                     label={t('certificate.properties.from')}
                     value={fromDate}
-                    onChange={handleFromDateChange}
+                    onChange={setFromDate}
                     variant="inline"
                     inputVariant="filled"
                     className="mt-4"
@@ -128,7 +112,7 @@ export function RequestCertificatesModal() {
                 <DatePicker
                     label={t('certificate.properties.to')}
                     value={toDate}
-                    onChange={handleToDateChange}
+                    onChange={setToDate}
                     variant="inline"
                     inputVariant="filled"
                     className="mt-4"

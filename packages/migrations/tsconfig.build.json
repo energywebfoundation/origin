@@ -11,9 +11,6 @@
         },
         {
             "path": "../device-registry/tsconfig.build.json"
-        },
-        {
-            "path": "../origin-backend/tsconfig.build.json"
         }
     ]
 }

@@ -1,4 +1,4 @@
-import { Certificate, CertificationRequest } from '@energyweb/issuer';
+import { Certificate, CertificationRequest, IClaimData } from '@energyweb/issuer';
 import { ProducingDevice } from '@energyweb/device-registry';
 import { IStoreState } from '../../types';
 import { BigNumber } from 'ethers/utils';
@@ -153,6 +153,7 @@ export interface IRequestClaimCertificateAction {
     type: CertificatesActions.requestClaimCertificate;
     payload: {
         certificateId: Certificate['id'];
+        claimData: IClaimData;
     };
 }
 
@@ -167,6 +168,7 @@ export interface IRequestClaimCertificateBulkAction {
     type: CertificatesActions.requestClaimCertificateBulk;
     payload: {
         certificateIds: Certificate['id'][];
+        claimData: IClaimData;
     };
 }
 

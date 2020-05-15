@@ -21,7 +21,7 @@ export class OrderService {
     private readonly logger = new Logger(OrderService.name);
 
     constructor(
-        @InjectRepository(Order, 'ExchangeConnection')
+        @InjectRepository(Order)
         private readonly repository: Repository<Order>,
         @Inject(forwardRef(() => MatchingEngineService))
         private readonly matchingEngineService: MatchingEngineService,

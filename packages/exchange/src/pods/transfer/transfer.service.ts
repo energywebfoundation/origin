@@ -1,5 +1,5 @@
 import { Injectable, forwardRef, Inject, Logger } from '@nestjs/common';
-import { InjectRepository, InjectConnection } from '@nestjs/typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, Connection, EntityManager, FindOneOptions } from 'typeorm';
 
 import { Transfer } from './transfer.entity';
@@ -18,12 +18,11 @@ export class TransferService {
     private readonly logger = new Logger(TransferService.name);
 
     constructor(
-        @InjectRepository(Transfer, 'ExchangeConnection')
+        @InjectRepository(Transfer)
         private readonly repository: Repository<Transfer>,
         private readonly assetService: AssetService,
         @Inject(forwardRef(() => AccountService))
         private readonly accountService: AccountService,
-        @InjectConnection('ExchangeConnection')
         private readonly connection: Connection,
         @Inject(forwardRef(() => AccountBalanceService))
         private readonly accountBalanceService: AccountBalanceService,
@@ -53,11 +52,12 @@ export class TransferService {
     }
 
     public async requestWithdrawal(
+        userId: string,
         withdrawalDTO: RequestWithdrawalDTO,
         transaction?: EntityManager
     ) {
         const hasEnoughFunds = await this.accountBalanceService.hasEnoughAssetAmount(
-            withdrawalDTO.userId,
+            userId,
             withdrawalDTO.assetId,
             withdrawalDTO.amount
         );
@@ -67,7 +67,9 @@ export class TransferService {
         }
 
         const withdrawal: Partial<Transfer> = {
-            ...withdrawalDTO,
+            userId,
+            amount: withdrawalDTO.amount,
+            address: withdrawalDTO.address,
             asset: { id: withdrawalDTO.assetId } as Asset,
             status: TransferStatus.Accepted,
             direction: TransferDirection.Withdrawal

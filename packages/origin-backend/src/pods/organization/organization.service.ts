@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnprocessableEntityException, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, FindOneOptions } from 'typeorm';
 import {
@@ -7,19 +7,68 @@ import {
     IUserWithRelationsIds,
     isRole,
     Role,
-    OrganizationUpdateData
+    OrganizationUpdateData,
+    OrganizationPostData,
+    OrganizationStatus,
+    ILoggedInUser,
+    OrganizationRemovedMemberEvent,
+    SupportedEvents
 } from '@energyweb/origin-backend-core';
+import { validate } from 'class-validator';
 import { Organization } from './organization.entity';
-import { UserService } from '../user';
+import { UserService, User } from '../user';
 import { ExtendedBaseEntity } from '../ExtendedBaseEntity';
+import { NotificationService } from '../notification';
 
 @Injectable()
 export class OrganizationService {
     constructor(
         @InjectRepository(Organization)
         private readonly repository: Repository<Organization>,
-        private readonly userService: UserService
+        private readonly userService: UserService,
+        private readonly notificationService: NotificationService
     ) {}
+
+    async create(userId: number, data: OrganizationPostData) {
+        const organizationToCreate = new Organization({
+            activeCountries: data.activeCountries,
+            code: data.code,
+            name: data.name,
+            contact: data.contact,
+            telephone: data.telephone,
+            email: data.email,
+            address: data.address,
+            shareholders: data.shareholders,
+            ceoPassportNumber: data.ceoPassportNumber,
+            ceoName: data.ceoName,
+            companyNumber: data.companyNumber,
+            vatNumber: data.vatNumber,
+            postcode: data.postcode,
+            headquartersCountry: data.headquartersCountry,
+            country: data.country,
+            businessTypeSelect: data.businessTypeSelect,
+            businessTypeInput: data.businessTypeInput,
+            yearOfRegistration: data.yearOfRegistration,
+            numberOfEmployees: data.numberOfEmployees,
+            website: data.website,
+
+            status: OrganizationStatus.Submitted,
+            leadUser: { id: userId } as User,
+            users: [{ id: userId } as User],
+            devices: []
+        });
+
+        const validationErrors = await validate(organizationToCreate);
+
+        if (validationErrors.length > 0) {
+            throw new UnprocessableEntityException({
+                success: false,
+                errors: validationErrors.map((e) => e?.toString())
+            });
+        }
+
+        return this.repository.save(organizationToCreate);
+    }
 
     async findOne(
         id: string | number,
@@ -33,6 +82,10 @@ export class OrganizationService {
         return entity;
     }
 
+    async getAll() {
+        return this.repository.find();
+    }
+
     async remove(entity: Organization | (ExtendedBaseEntity & IOrganizationWithRelationsIds)) {
         return this.repository.remove((entity as IOrganization) as Organization);
     }
@@ -42,7 +95,7 @@ export class OrganizationService {
         const members = await this.getMembers(id);
 
         return members.filter(
-            (u) => u.id === organization.leadUser || isRole(u, Role.DeviceManager)
+            (u) => u.id === organization.leadUser || isRole(u, Role.OrganizationDeviceManager)
         );
     }
 
@@ -71,5 +124,56 @@ export class OrganizationService {
         });
 
         return this.findOne(id);
+    }
+
+    async hasDevice(id: number, deviceId: string) {
+        const devicesCount = await this.repository
+            .createQueryBuilder('organization')
+            .leftJoinAndSelect('organization.devices', 'device')
+            .where('device.id = :deviceId AND organization.id = :id', { id, deviceId })
+            .getCount();
+
+        return devicesCount === 1;
+    }
+
+    async removeMember(user: ILoggedInUser, organizationId: number, memberId: number) {
+        if (organizationId !== user.organizationId) {
+            throw new BadRequestException({
+                success: false,
+                error: `You are not in the requested organization.`
+            });
+        }
+
+        const organization = await this.repository.findOne(user.organizationId, {
+            relations: ['leadUser', 'users']
+        });
+
+        if (organization.leadUser.id === memberId) {
+            throw new BadRequestException({
+                success: false,
+                error: `Can't remove lead user from organization.`
+            });
+        }
+
+        if (!organization.users.find((u) => u.id === memberId)) {
+            throw new BadRequestException({
+                success: false,
+                error: `User to be removed is not part of the organization.`
+            });
+        }
+
+        await this.userService.removeOrganization(memberId);
+
+        const removedUser = await this.userService.findById(memberId);
+
+        const eventData: OrganizationRemovedMemberEvent = {
+            organizationName: organization.name,
+            email: removedUser.email
+        };
+
+        this.notificationService.handleEvent({
+            type: SupportedEvents.ORGANIZATION_REMOVED_MEMBER,
+            data: eventData
+        });
     }
 }

@@ -38,6 +38,7 @@ import { Skeleton } from '@material-ui/lab';
 import { FormInput } from './Form';
 import { DeviceSelectors } from './DeviceSelectors';
 import { DevicePermissionsFeedback } from './DevicePermissionsFeedback';
+import { Upload, IUploadedFile } from './Upload';
 
 interface IFormValues {
     facilityName: string;
@@ -81,6 +82,17 @@ export function AddDevice() {
     const [imagesUploaded, setImagesUploaded] = useState(false);
     const [imagesUploadedList, setImagesUploadedList] = useState<string[]>([]);
     const { canCreateDevice } = useDevicePermissions();
+
+    const [docfiles, setFiles] = useState<IUploadedFile[]>([]);
+    const uploadedDocFiles = docfiles
+        .filter((f) => !f.removed && f.uploadedName)
+        .reduce(
+            (arr, x) => {
+                arr.filenames.push(x.uploadedName);
+                return arr;
+            },
+            { filenames: [] }
+        );
 
     const useStyles = makeStyles(() =>
         createStyles({
@@ -166,8 +178,11 @@ export function AddDevice() {
                     typeOfPublicSupport: '',
                     description: values.projectStory,
                     images: JSON.stringify(imagesUploadedList),
+                    files: JSON.stringify(uploadedDocFiles.filenames),
                     externalDeviceIds,
-                    gridOperator: (selectedGridOperator && selectedGridOperator[0]) || ''
+                    gridOperator: (selectedGridOperator && selectedGridOperator[0]) || '',
+                    automaticPostForSale: false,
+                    defaultAskPrice: null
                 },
                 callback: () => {
                     formikActions.setSubmitting(false);
@@ -476,6 +491,8 @@ export function AddDevice() {
                                             </label>
                                         </>
                                     )}
+
+                                    <Upload onChange={(newFiles) => setFiles(newFiles)} />
                                 </Grid>
                             </Grid>
 

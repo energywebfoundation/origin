@@ -32,6 +32,7 @@ interface IProps {
 export function ProducingDeviceDetailView(props: IProps) {
     const configuration = useSelector(getConfiguration);
     const producingDevices = useSelector(getProducingDevices);
+    const offChainDataSource = useSelector(getOffChainDataSource);
     const organizationClient = useSelector(getOffChainDataSource)?.organizationClient;
     const [organizations, setOrganizations] = useState<IOrganizationWithRelationsIds[]>([]);
 
@@ -132,8 +133,13 @@ export function ProducingDeviceDetailView(props: IProps) {
                 rowspan: 2
             },
             {
-                label: t('device.properties.meterRead'),
-                data: EnergyFormatter.format(selectedDevice.lastSmartMeterReadWh ?? 0),
+                label: t('device.properties.meterReadCertified'),
+                data: EnergyFormatter.format(selectedDevice.meterStats.certified.toNumber() ?? 0),
+                tip: EnergyFormatter.displayUnit
+            },
+            {
+                label: t('device.properties.meterReadToBeCertified'),
+                data: EnergyFormatter.format(selectedDevice.meterStats.uncertified.toNumber() ?? 0),
                 tip: EnergyFormatter.displayUnit
             },
             {
@@ -160,6 +166,25 @@ export function ProducingDeviceDetailView(props: IProps) {
                 rowspan: 3,
                 colspan: 2
             }
+        ],
+        [
+            {
+                label: t('device.properties.filesUpload'),
+                rowspan: 3,
+                colspan: 2,
+                ul: true,
+                li: JSON.parse(selectedDevice.files).map((f) => (
+                    <li key={f}>
+                        <a
+                            href={offChainDataSource.filesClient.getLink(f)}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                        >
+                            {f}
+                        </a>
+                    </li>
+                ))
+            }
         ]
     ];
 
@@ -180,6 +205,13 @@ export function ProducingDeviceDetailView(props: IProps) {
                                         <div className="Data">
                                             {col.data} {col.tip && <span>{col.tip}</span>}
                                         </div>
+
+                                        {col.ul && (
+                                            <div className="Data">
+                                                <ul>{col.li}</ul>
+                                            </div>
+                                        )}
+
                                         {col.image &&
                                             (col.type !== 'map' ? (
                                                 <div className={`Image`}>

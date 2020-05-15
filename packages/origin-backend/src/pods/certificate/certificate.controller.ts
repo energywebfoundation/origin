@@ -1,27 +1,32 @@
 import {
-    IOwnershipCommitmentProofWithTx,
+    CommitmentStatus,
     ICertificateOwnership,
-    CommitmentStatus
+    ILoggedInUser,
+    IOwnershipCommitmentProofWithTx,
+    Role
 } from '@energyweb/origin-backend-core';
-
+import { Roles, RolesGuard, UserDecorator } from '@energyweb/origin-backend-utils';
 import {
-    Controller,
-    Post,
     Body,
-    Get,
-    Param,
-    NotFoundException,
     ConflictException,
-    Put
+    Controller,
+    Get,
+    NotFoundException,
+    Param,
+    Post,
+    Put,
+    UseGuards
 } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
-import { CertificationRequest } from './certification-request.entity';
-import { OwnershipCommitment } from './ownership-commitment.entity';
 import { StorageErrors } from '../../enums/StorageErrors';
 import { Certificate } from './certificate.entity';
-import { CertificationRequestDTO } from './certification-request.dto';
+import { CertificationRequestUpdateDTO } from './certification-request.dto';
+import { CertificationRequest } from './certification-request.entity';
+import { CertificationRequestService } from './certification-request.service';
+import { OwnershipCommitment } from './ownership-commitment.entity';
 
 const CERTIFICATION_REQUEST_ENDPOINT = '/CertificationRequest';
 
@@ -30,33 +35,51 @@ export class CertificateController {
     constructor(
         @InjectRepository(Certificate)
         private readonly certificateRepository: Repository<Certificate>,
-        @InjectRepository(CertificationRequest)
-        private readonly certificationRequestRepository: Repository<CertificationRequest>,
+        private readonly certificationRequestService: CertificationRequestService,
         @InjectRepository(OwnershipCommitment)
         private readonly ownershipCommitmentRepository: Repository<OwnershipCommitment>
     ) {}
 
     @Post(`${CERTIFICATION_REQUEST_ENDPOINT}/:id`)
+    @UseGuards(AuthGuard(), RolesGuard)
+    @Roles(Role.OrganizationAdmin, Role.OrganizationDeviceManager)
     async updateCertificationRequest(
         @Param('id') id: number,
-        @Body() data: CertificationRequestDTO
+        @Body() data: CertificationRequestUpdateDTO,
+        @UserDecorator() loggedUser: ILoggedInUser
     ): Promise<CertificationRequest> {
-        let certificationRequest = await this.certificationRequestRepository.findOne(id);
-
-        if (!certificationRequest) {
-            certificationRequest = new CertificationRequest();
-        }
-
-        certificationRequest.id = id;
-        certificationRequest.energy = data.energy;
-        certificationRequest.files = data.files;
-
-        return this.certificationRequestRepository.save(certificationRequest);
+        return this.certificationRequestService.update(id, data, loggedUser);
     }
 
     @Get(`${CERTIFICATION_REQUEST_ENDPOINT}/:id`)
-    async getCertificationRequest(@Param('id') id: string): Promise<CertificationRequest> {
-        return this.certificationRequestRepository.findOne(id);
+    @UseGuards(AuthGuard(), RolesGuard)
+    @Roles(Role.OrganizationAdmin, Role.OrganizationDeviceManager, Role.Issuer, Role.Admin)
+    async getCertificationRequest(
+        @Param('id') id: number,
+        @UserDecorator() loggedUser: ILoggedInUser
+    ): Promise<CertificationRequest> {
+        if (loggedUser.hasRole(Role.Issuer, Role.Admin)) {
+            return this.certificationRequestService.get(id);
+        }
+
+        return this.certificationRequestService.get(id, {
+            where: { userId: loggedUser.ownerId }
+        });
+    }
+
+    @Get(CERTIFICATION_REQUEST_ENDPOINT)
+    @UseGuards(AuthGuard())
+    @Roles(Role.OrganizationAdmin, Role.OrganizationDeviceManager, Role.Issuer, Role.Admin)
+    async getAllCertificationRequests(
+        @UserDecorator() loggedUser: ILoggedInUser
+    ): Promise<CertificationRequest[]> {
+        if (loggedUser.hasRole(Role.Issuer, Role.Admin)) {
+            return this.certificationRequestService.getAll();
+        }
+
+        return this.certificationRequestService.getAll({
+            where: { userId: loggedUser.ownerId }
+        });
     }
 
     @Get('/:id')
@@ -70,7 +93,10 @@ export class CertificateController {
         return certificate;
     }
 
+    // TODO: add ownership management and roles
+
     @Get(`/:id/OwnershipCommitment`)
+    @UseGuards(AuthGuard())
     async getOwnershipCommitment(
         @Param('id') id: number
     ): Promise<IOwnershipCommitmentProofWithTx> {
@@ -84,6 +110,7 @@ export class CertificateController {
     }
 
     @Get(`/:id/OwnershipCommitment/pending`)
+    @UseGuards(AuthGuard())
     async getPendingOwnershipCommitment(@Param('id') id: number) {
         const certificate = await this.certificateRepository.findOne(id);
 
@@ -97,6 +124,7 @@ export class CertificateController {
     }
 
     @Put(`/:id/OwnershipCommitment/pending/approve`)
+    @UseGuards(AuthGuard())
     async approvePendingOwnershipCommitment(
         @Param('id') id: number
     ): Promise<IOwnershipCommitmentProofWithTx> {
@@ -118,6 +146,7 @@ export class CertificateController {
     }
 
     @Post(`/:id/OwnershipCommitment`)
+    @UseGuards(AuthGuard())
     async addOwnershipCommitment(
         @Param('id') id: number,
         @Body() proof: IOwnershipCommitmentProofWithTx

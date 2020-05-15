@@ -4,9 +4,14 @@
             "devices": "Devices",
             "certificates": "Certificates",
             "demands": "Demands",
-            "organizations": "Organizations"
+            "organizations": "Organizations",
+            "admin": "Admin",
+            "supportAgent": "Support Agents"
         },
         "navigation": {
+            "admin": {
+                "users": "Manage Users"
+            },
             "devices": {
                 "all": "All devices",
                 "map": "Map view",
@@ -34,7 +39,8 @@
                 "regionProvince": "Region, province",
                 "type": "Type",
                 "nameplateCapacity": "Nameplate capacity",
-                "meterRead": "Meter read",
+                "meterReadCertified": "Certified",
+                "meterReadToBeCertified": "To be certified",
                 "commissioningDate": "Commissioning date",
                 "status": "Status",
                 "deviceOwner": "Device owner",
@@ -43,6 +49,7 @@
                 "deviceType": "Device type",
                 "publicSupport": "Public support",
                 "geoLocation": "Geo location",
+                "filesUpload": "Files Upload",
                 "registrationDate": "Registration date",
                 "regions": "Regions",
                 "provinces": "Provinces",

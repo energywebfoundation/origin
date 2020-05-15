@@ -26,16 +26,17 @@
         "start-backend": "npx @energyweb/origin-backend",
         "prettier": "prettier --write --config-precedence file-override './src/**/*'",
         "clean": "shx rm -rf dist",
-        "deploy:origin-backend-app:heroku:canary": "make build-canary push-heroku-canary"
+        "deploy:container:heroku:canary": "make build-canary push-heroku-canary",
+        "deploy:container:heroku:stable": "make build-stable push-heroku-stable"
     },
     "types": "dist/js/index.d.ts",
     "dependencies": {
         "@energyweb/issuer": "2.0.0",
         "@energyweb/origin-backend-core": "2.2.0",
         "@types/pg": "7.14.3",
-        "commander": "^4.1.1",
+        "commander": "^5.0.0",
         "dotenv": "8.2.0",
-        "pg": "8.0.2",
+        "pg": "8.1.0",
         "winston": "3.2.1",
         "write-json-file": "4.3.0",
         "yaeti": "1.0.2"
