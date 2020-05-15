@@ -22,6 +22,7 @@ import { DeviceService } from '../src/pods/device/device.service';
 import { OrganizationService } from '../src/pods/organization/organization.service';
 import { UserService } from '../src/pods/user';
 import { DatabaseService } from './database.service';
+import { CertificateService } from '../src/pods/certificate/certificate.service';
 
 const testLogger = new Logger('e2e');
 
@@ -54,6 +55,7 @@ export const bootstrapTestInstance = async () => {
     const organizationService = await app.resolve<OrganizationService>(OrganizationService);
     const deviceService = await app.resolve<DeviceService>(DeviceService);
     const configurationService = await app.resolve<ConfigurationService>(ConfigurationService);
+    const certificateService = await app.resolve<CertificateService>(CertificateService);
     const certificationRequestService = await app.resolve<CertificationRequestService>(
         CertificationRequestService
     );
@@ -75,6 +77,7 @@ export const bootstrapTestInstance = async () => {
         organizationService,
         deviceService,
         configurationService,
+        certificateService,
         certificationRequestService
     };
 };

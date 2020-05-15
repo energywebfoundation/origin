@@ -4,7 +4,8 @@ import {
     IOwnershipCommitmentProof,
     IOwnershipCommitment,
     CommitmentStatus,
-    IOwnershipCommitmentProofWithTx
+    IOwnershipCommitmentProofWithTx,
+    OwnershipCommitmentStatus
 } from '@energyweb/origin-backend-core';
 
 export interface IOnChainProperties {
@@ -33,23 +34,25 @@ export abstract class PreciseProofEntity implements IOnChainProperties {
         return this.configuration.offChainDataSource.certificateClient;
     }
 
-    async saveCommitment(proof: IOwnershipCommitmentProofWithTx): Promise<CommitmentStatus> {
-        const commitmentStatus = await this.certificateClient.addOwnershipCommitment(
-            this.id,
-            proof
-        );
+    async saveCommitment(
+        proof: IOwnershipCommitmentProofWithTx
+    ): Promise<OwnershipCommitmentStatus> {
+        const status = await this.certificateClient.addOwnershipCommitment(this.id, proof);
 
         if (this.configuration.logger) {
-            if (commitmentStatus === CommitmentStatus.REJECTED) {
+            if (status === CommitmentStatus.REJECTED) {
                 this.configuration.logger.error('Unable to save the commitment. Rejected.');
-            } else if (commitmentStatus === CommitmentStatus.CURRENT) {
+            } else if (status === CommitmentStatus.CURRENT) {
                 this.configuration.logger.verbose(
                     `Commitment saved to for Certificate #${this.id}`
                 );
             }
         }
 
-        return commitmentStatus;
+        return {
+            proof,
+            status
+        };
     }
 
     async getCommitment(): Promise<IOwnershipCommitmentProofWithTx> {

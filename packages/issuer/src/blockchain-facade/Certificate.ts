@@ -1,7 +1,7 @@
 import {
-    CommitmentStatus,
     IOwnershipCommitment,
-    MAX_ENERGY_PER_CERTIFICATE
+    MAX_ENERGY_PER_CERTIFICATE,
+    OwnershipCommitmentStatus
 } from '@energyweb/origin-backend-core';
 import { Event as BlockchainEvent, ContractTransaction, ethers } from 'ethers';
 import { BigNumber, bigNumberify } from 'ethers/utils';
@@ -78,7 +78,7 @@ export class Certificate extends PreciseProofEntity implements ICertificate {
 
     public claims: IClaim[];
 
-    private privateOwnershipCommitment: IOwnershipCommitment = {};
+    public privateOwnershipCommitment: IOwnershipCommitment = {};
 
     constructor(id: number, configuration: Configuration.Entity) {
         super(id, configuration);
@@ -319,7 +319,7 @@ export class Certificate extends PreciseProofEntity implements ICertificate {
         to: string,
         amount?: BigNumber,
         privately = false
-    ): Promise<ContractTransaction | CommitmentStatus> {
+    ): Promise<ContractTransaction | OwnershipCommitmentStatus> {
         if (await this.isRevoked()) {
             throw new Error(`Unable to transfer Certificate #${this.id}. It has been revoked.`);
         }

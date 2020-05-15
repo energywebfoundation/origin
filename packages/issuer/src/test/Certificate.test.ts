@@ -8,10 +8,12 @@ import { BigNumber } from 'ethers/utils';
 import { Configuration } from '@energyweb/utils-general';
 import { OffChainDataSourceMock } from '@energyweb/origin-backend-client-mocks';
 
+import { OwnershipCommitmentStatus } from '@energyweb/origin-backend-core';
 import { migrateIssuer, migrateRegistry } from '../migrate';
 import { Certificate, CertificateUtils, IClaimData } from '..';
 
 import { logger } from '../Logger';
+import { MockCertificate } from './MockCertificate';
 
 describe('Certificate tests', () => {
     let conf: Configuration.Entity;
@@ -154,12 +156,18 @@ describe('Certificate tests', () => {
         setActiveUser(deviceOwnerWallet);
         certificate = await certificate.sync();
 
-        await certificate.transfer(traderWallet.address, totalVolume, true);
+        const { proof } = (await certificate.transfer(
+            traderWallet.address,
+            totalVolume,
+            true
+        )) as OwnershipCommitmentStatus;
         certificate = await certificate.sync();
 
         setActiveUser(issuerWallet);
 
-        await certificate.approvePrivateTransfer();
+        const mockedCertificate = await new MockCertificate(certificate.id, conf).sync();
+
+        await (mockedCertificate as MockCertificate).approvePrivateTransfer(proof);
 
         setActiveUser(deviceOwnerWallet);
         certificate = await certificate.sync();
@@ -182,12 +190,18 @@ describe('Certificate tests', () => {
         setActiveUser(deviceOwnerWallet);
         certificate = await certificate.sync();
 
-        await certificate.transfer(traderWallet.address, partialVolumeToSend, true);
+        const { proof } = (await certificate.transfer(
+            traderWallet.address,
+            partialVolumeToSend,
+            true
+        )) as OwnershipCommitmentStatus;
         certificate = await certificate.sync();
 
         setActiveUser(issuerWallet);
 
-        await certificate.approvePrivateTransfer();
+        const mockedCertificate = await new MockCertificate(certificate.id, conf).sync();
+
+        await (mockedCertificate as MockCertificate).approvePrivateTransfer(proof);
 
         setActiveUser(deviceOwnerWallet);
         certificate = await certificate.sync();
@@ -311,7 +325,9 @@ describe('Certificate tests', () => {
         setActiveUser(issuerWallet);
         certificate = await certificate.sync();
 
-        await certificate.migrateToPublic();
+        const mockedCertificate = await new MockCertificate(certificate.id, conf).sync();
+
+        await (mockedCertificate as MockCertificate).migrateToPublic();
 
         setActiveUser(deviceOwnerWallet);
         certificate = await certificate.sync();
@@ -338,12 +354,17 @@ describe('Certificate tests', () => {
         setActiveUser(deviceOwnerWallet);
         certificate = await certificate.sync();
 
-        await certificate.transfer(traderWallet.address, partialVolumeToClaim, true);
+        const { proof } = (await certificate.transfer(
+            traderWallet.address,
+            partialVolumeToClaim,
+            true
+        )) as OwnershipCommitmentStatus;
 
         setActiveUser(issuerWallet);
         certificate = await certificate.sync();
 
-        await certificate.approvePrivateTransfer();
+        let mockedCertificate = await new MockCertificate(certificate.id, conf).sync();
+        await (mockedCertificate as MockCertificate).approvePrivateTransfer(proof);
 
         setActiveUser(traderWallet);
         certificate = await certificate.sync();
@@ -353,7 +374,8 @@ describe('Certificate tests', () => {
         setActiveUser(issuerWallet);
         certificate = await certificate.sync();
 
-        await certificate.migrateToPublic();
+        mockedCertificate = await mockedCertificate.sync();
+        await (mockedCertificate as MockCertificate).migrateToPublic();
 
         setActiveUser(traderWallet);
         certificate = await certificate.sync();
