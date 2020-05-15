@@ -1,11 +1,19 @@
 import {
-    ICertificateOwnership,
     ILoggedInUser,
     IOwnershipCommitmentProofWithTx,
     Role
 } from '@energyweb/origin-backend-core';
 import { Roles, RolesGuard, UserDecorator } from '@energyweb/origin-backend-utils';
-import { Body, Controller, Get, NotFoundException, Param, Post, UseGuards } from '@nestjs/common';
+import {
+    Body,
+    Controller,
+    Get,
+    NotFoundException,
+    Param,
+    Post,
+    UseGuards,
+    Put
+} from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 
 import { StorageErrors } from '../../enums/StorageErrors';
@@ -51,7 +59,7 @@ export class CertificateController {
     }
 
     @Get(CERTIFICATION_REQUEST_ENDPOINT)
-    @UseGuards(AuthGuard())
+    @UseGuards(AuthGuard(), RolesGuard)
     @Roles(Role.OrganizationAdmin, Role.OrganizationDeviceManager, Role.Issuer, Role.Admin)
     async getAllCertificationRequests(
         @UserDecorator() loggedUser: ILoggedInUser
@@ -65,26 +73,18 @@ export class CertificateController {
         });
     }
 
-    @Get('/:id')
-    @UseGuards(AuthGuard())
-    async getCertificate(@Param('id') id: number): Promise<ICertificateOwnership> {
-        const certificate = await this.certificateService.get(id);
-
-        if (!certificate) {
-            throw new NotFoundException(`getCertificate(): ${StorageErrors.NON_EXISTENT}`);
-        }
-
-        return certificate;
-    }
-
     // TODO: add ownership management and roles
 
     @Get(`/:id/OwnershipCommitment`)
-    @UseGuards(AuthGuard())
+    @UseGuards(AuthGuard(), RolesGuard)
+    @Roles(Role.OrganizationUser)
     async getOwnershipCommitment(
         @Param('id') id: number
     ): Promise<IOwnershipCommitmentProofWithTx> {
         const certificate = await this.certificateService.get(id);
+        console.log({
+            certificate
+        });
 
         if (!certificate?.currentOwnershipCommitment) {
             throw new NotFoundException(`getOwnershipCommitment(): ${StorageErrors.NON_EXISTENT}`);
@@ -93,12 +93,14 @@ export class CertificateController {
         return certificate.currentOwnershipCommitment;
     }
 
-    @Post(`/:id/OwnershipCommitment`)
-    @UseGuards(AuthGuard())
+    @Put(`/:id/OwnershipCommitment`)
+    @UseGuards(AuthGuard(), RolesGuard)
+    @Roles(Role.OrganizationUser)
     async addOwnershipCommitment(
         @Param('id') id: number,
-        @Body() proof: IOwnershipCommitmentProofWithTx
+        @Body() proof: IOwnershipCommitmentProofWithTx,
+        @UserDecorator() loggedUser: ILoggedInUser
     ) {
-        return this.certificateService.addOwnershipCommitment(id, proof);
+        return this.certificateService.addOwnershipCommitment(id, proof, loggedUser);
     }
 }

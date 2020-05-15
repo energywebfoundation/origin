@@ -1,15 +1,22 @@
 import { ContractTransaction, Contract, Wallet } from 'ethers';
 import { JsonRpcProvider } from 'ethers/providers';
 import { getAddress } from 'ethers/utils';
-import { Injectable, NotFoundException, Logger, ConflictException } from '@nestjs/common';
+import {
+    Injectable,
+    NotFoundException,
+    Logger,
+    ConflictException,
+    UnauthorizedException
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, DeepPartial } from 'typeorm';
 import {
     ICertificateOwnership,
     IOwnershipCommitmentProofWithTx,
     CommitmentStatus,
     IOwnershipCommitment,
-    IOwnershipCommitmentProof
+    IOwnershipCommitmentProof,
+    ILoggedInUser
 } from '@energyweb/origin-backend-core';
 import { Contracts } from '@energyweb/issuer';
 import { ConfigService } from '@nestjs/config';
@@ -33,8 +40,16 @@ export class CertificateService {
         private readonly configService: ConfigService
     ) {}
 
+    async create(cert: DeepPartial<Certificate>) {
+        const certificate = this.repository.create(cert);
+
+        return this.repository.save(certificate);
+    }
+
     async get(id: number): Promise<ICertificateOwnership> {
-        return this.repository.findOne(id);
+        return this.repository.findOne(id, {
+            relations: ['currentOwnershipCommitment', 'pendingOwnershipCommitment']
+        });
     }
 
     async getOwnershipCommitment(id: number): Promise<IOwnershipCommitmentProofWithTx> {
@@ -45,18 +60,6 @@ export class CertificateService {
         }
 
         return certificate.currentOwnershipCommitment;
-    }
-
-    async getPendingOwnershipCommitment(id: number) {
-        const certificate = await this.repository.findOne(id);
-
-        if (!certificate?.pendingOwnershipCommitment) {
-            throw new NotFoundException(
-                `getPendingOwnershipCommitment(): ${StorageErrors.NON_EXISTENT}`
-            );
-        }
-
-        return certificate.pendingOwnershipCommitment;
     }
 
     async approvePendingOwnershipCommitment(id: number): Promise<IOwnershipCommitmentProofWithTx> {
@@ -77,8 +80,24 @@ export class CertificateService {
         return certificate.currentOwnershipCommitment;
     }
 
-    async addOwnershipCommitment(id: number, proof: IOwnershipCommitmentProofWithTx) {
-        const certificate = (await this.repository.findOne(id)) ?? new Certificate();
+    async addOwnershipCommitment(
+        id: number,
+        proof: IOwnershipCommitmentProofWithTx,
+        user: ILoggedInUser
+    ) {
+        const certificate = await this.repository.findOne(id);
+
+        if (!certificate) {
+            throw new NotFoundException(
+                `Tried adding a commitment for certificate with ID "${id}". ${StorageErrors.NON_EXISTENT}.`
+            );
+        }
+
+        if (user.blockchainAccountAddress !== certificate.originalRequestor) {
+            throw new UnauthorizedException(
+                `Not the original requestor of certificate with ID "${id}".`
+            );
+        }
 
         const { currentOwnershipCommitment, pendingOwnershipCommitment } = certificate;
 
@@ -97,7 +116,16 @@ export class CertificateService {
                 message: `Commitment ${proof.rootHash} saved as the current commitment for certificate #${id}`
             };
         }
+
         if (currentOwnershipCommitment && !pendingOwnershipCommitment) {
+            const isCurrentOwner = currentOwnershipCommitment.commitment[
+                user.blockchainAccountAddress
+            ].gt(0);
+
+            if (!isCurrentOwner) {
+                throw new UnauthorizedException(`Not an owner in certificate.`);
+            }
+
             await this.ownershipCommitmentRepository.save(newCommitment);
             certificate.pendingOwnershipCommitment = newCommitment;
 
@@ -108,6 +136,7 @@ export class CertificateService {
                 message: `Commitment ${proof.rootHash} saved as a pending commitment for certificate #${id}`
             };
         }
+
         throw new ConflictException({
             commitmentStatus: CommitmentStatus.REJECTED,
             message: `Unable to add a new commitment to certificate #${id}. There is already a pending commitment in the queue.`

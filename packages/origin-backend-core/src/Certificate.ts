@@ -13,6 +13,7 @@ export interface OwnershipCommitmentStatus {
 
 export interface ICertificateOwnership {
     id: number;
+    originalRequestor: string;
     currentOwnershipCommitment: IOwnershipCommitmentProofWithTx;
     pendingOwnershipCommitment: IOwnershipCommitmentProofWithTx;
     ownershipHistory: IOwnershipCommitmentProofWithTx[];

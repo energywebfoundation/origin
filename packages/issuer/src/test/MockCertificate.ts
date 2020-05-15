@@ -2,6 +2,7 @@ import { ContractTransaction } from 'ethers';
 import { Configuration } from '@energyweb/utils-general';
 import { PreciseProofs } from 'precise-proofs-js';
 import { IOwnershipCommitmentProofWithTx } from '@energyweb/origin-backend-core';
+import { CertificateClientMock } from '@energyweb/origin-backend-client-mocks';
 import { Registry } from '../ethers/Registry';
 import { Issuer } from '../ethers/Issuer';
 import { Certificate } from '../blockchain-facade/Certificate';
@@ -87,7 +88,9 @@ export class MockCertificate extends Certificate {
         );
 
         await tx.wait();
-        await this.certificateClient.approvePendingOwnershipCommitment(this.id);
+        await (this.certificateClient as CertificateClientMock).approvePendingOwnershipCommitment(
+            this.id
+        );
 
         return tx;
     }

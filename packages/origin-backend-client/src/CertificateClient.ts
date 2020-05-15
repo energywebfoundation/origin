@@ -22,14 +22,10 @@ export interface ICertificateClient {
     getCertificationRequest(id: number): Promise<ICertificationRequest>;
     getAllCertificationRequests(): Promise<ICertificationRequest[]>;
     getOwnershipCommitment(certificateId: number): Promise<IOwnershipCommitmentProofWithTx>;
-    getPendingOwnershipCommitment(certificateId: number): Promise<IOwnershipCommitmentProofWithTx>;
     addOwnershipCommitment(
         certificateId: number,
         data: IOwnershipCommitmentProofWithTx
     ): Promise<CommitmentStatus>;
-    approvePendingOwnershipCommitment(
-        certificateId: number
-    ): Promise<IOwnershipCommitmentProofWithTx>;
 }
 
 export class CertificateClient implements ICertificateClient {
@@ -106,35 +102,15 @@ export class CertificateClient implements ICertificateClient {
         return data;
     }
 
-    public async getPendingOwnershipCommitment(
-        certificateId: number
-    ): Promise<IOwnershipCommitmentProofWithTx> {
-        const url = `${this.certificateEndpoint}/${certificateId}/OwnershipCommitment/pending`;
-        const { data } = await this.requestClient.get(url);
-
-        return data;
-    }
-
     public async addOwnershipCommitment(
         certificateId: number,
         proof: IOwnershipCommitmentProofWithTx
     ): Promise<CommitmentStatus> {
-        const request = await this.requestClient.post<
+        const request = await this.requestClient.put<
             IOwnershipCommitmentProofWithTx,
             CommitmentStatus
         >(`${this.certificateEndpoint}/${certificateId}/OwnershipCommitment`, proof);
 
         return request.data;
-    }
-
-    public async approvePendingOwnershipCommitment(
-        certificateId: number
-    ): Promise<IOwnershipCommitmentProofWithTx> {
-        const response = await this.requestClient.put<
-            IOwnershipCommitmentProofWithTx,
-            IOwnershipCommitmentProofWithTx
-        >(`${this.certificateEndpoint}/${certificateId}/OwnershipCommitment/pending/approve`);
-
-        return response.data;
     }
 }
