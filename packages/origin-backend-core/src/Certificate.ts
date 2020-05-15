@@ -6,9 +6,9 @@ export enum CommitmentStatus {
     REJECTED
 }
 
-export interface OwnershipCommitmentStatus {
-    proof: IOwnershipCommitmentProofWithTx,
-    status: CommitmentStatus
+export interface IOwnershipCommitmentStatus {
+    proof: IOwnershipCommitmentProofWithTx;
+    status: CommitmentStatus;
 }
 
 export interface ICertificateOwnership {

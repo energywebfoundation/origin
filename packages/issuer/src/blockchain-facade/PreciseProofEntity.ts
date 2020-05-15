@@ -5,7 +5,7 @@ import {
     IOwnershipCommitment,
     CommitmentStatus,
     IOwnershipCommitmentProofWithTx,
-    OwnershipCommitmentStatus
+    IOwnershipCommitmentStatus
 } from '@energyweb/origin-backend-core';
 
 export interface IOnChainProperties {
@@ -36,7 +36,7 @@ export abstract class PreciseProofEntity implements IOnChainProperties {
 
     async saveCommitment(
         proof: IOwnershipCommitmentProofWithTx
-    ): Promise<OwnershipCommitmentStatus> {
+    ): Promise<IOwnershipCommitmentStatus> {
         const status = await this.certificateClient.addOwnershipCommitment(this.id, proof);
 
         if (this.configuration.logger) {

@@ -8,7 +8,7 @@ import { BigNumber } from 'ethers/utils';
 import { Configuration } from '@energyweb/utils-general';
 import { OffChainDataSourceMock } from '@energyweb/origin-backend-client-mocks';
 
-import { OwnershipCommitmentStatus } from '@energyweb/origin-backend-core';
+import { IOwnershipCommitmentStatus } from '@energyweb/origin-backend-core';
 import { migrateIssuer, migrateRegistry } from '../migrate';
 import { Certificate, CertificateUtils, IClaimData } from '..';
 
@@ -160,7 +160,7 @@ describe('Certificate tests', () => {
             traderWallet.address,
             totalVolume,
             true
-        )) as OwnershipCommitmentStatus;
+        )) as IOwnershipCommitmentStatus;
         certificate = await certificate.sync();
 
         setActiveUser(issuerWallet);
@@ -194,7 +194,7 @@ describe('Certificate tests', () => {
             traderWallet.address,
             partialVolumeToSend,
             true
-        )) as OwnershipCommitmentStatus;
+        )) as IOwnershipCommitmentStatus;
         certificate = await certificate.sync();
 
         setActiveUser(issuerWallet);
@@ -358,7 +358,7 @@ describe('Certificate tests', () => {
             traderWallet.address,
             partialVolumeToClaim,
             true
-        )) as OwnershipCommitmentStatus;
+        )) as IOwnershipCommitmentStatus;
 
         setActiveUser(issuerWallet);
         certificate = await certificate.sync();
