@@ -95,7 +95,7 @@
         "nodemailer": "6.4.6",
         "polly-js": "1.6.5",
         "supertest": "4.0.2",
-        "ts-jest": "25.5.1",
+        "ts-jest": "26.0.0",
         "tsconfig-paths": "3.9.0"
     },
     "files": [
