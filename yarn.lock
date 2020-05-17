@@ -2889,13 +2889,13 @@
     multer "1.4.2"
     tslib "1.11.1"
 
-"@nestjs/schedule@0.3.1":
-  version "0.3.1"
-  resolved "https://registry.yarnpkg.com/@nestjs/schedule/-/schedule-0.3.1.tgz#ffd450c0089b8976791be56c4ae385d232f97bce"
-  integrity sha512-B8lKHQAS3pUxwas8ykJCf+BVCllepTUwOJgHxA+2UPuBXPkRhzBVC/QFrjWgkO9nDHGJkoqLzR0B4kKT7va4Uw==
+"@nestjs/schedule@0.4.0":
+  version "0.4.0"
+  resolved "https://registry.yarnpkg.com/@nestjs/schedule/-/schedule-0.4.0.tgz#03dfd38b6699bcf7dd467278ffd7c05dfd41a5e7"
+  integrity sha512-+Ko9dhSO+DrtX2cEX+avd4GvSfBNa3O+ZzRKEWCyAhjuxLqqr1GO7XUY07DnDji7MJQgMb8ToRGq8HxiJGIBTw==
   dependencies:
     cron "1.7.2"
-    uuid "7.0.3"
+    uuid "8.0.0"
 
 "@nestjs/schematics@7.0.0", "@nestjs/schematics@^7.0.0":
   version "7.0.0"
