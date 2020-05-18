@@ -49,13 +49,15 @@ export class OrganizationClient implements IOrganizationClient {
         }
 
         const url = `${this.endpoint}/${id}`;
-        const { data } = await this.requestClient.get(url);
+        const { data } = await this.requestClient.get<unknown, IOrganizationWithRelationsIds>(url);
 
         return data;
     }
 
     public async getAll(): Promise<IOrganizationWithRelationsIds[]> {
-        const { data } = await this.requestClient.get(this.endpoint);
+        const { data } = await this.requestClient.get<unknown, IOrganizationWithRelationsIds[]>(
+            this.endpoint
+        );
 
         return data;
     }
@@ -105,13 +107,15 @@ export class OrganizationClient implements IOrganizationClient {
     }
 
     public async getInvitations(): Promise<IOrganizationInvitation[]> {
-        const { data } = await this.requestClient.get(`${this.endpoint}/invitation`);
+        const { data } = await this.requestClient.get<unknown, IOrganizationInvitation[]>(
+            `${this.endpoint}/invitation`
+        );
 
         return data;
     }
 
     public async getInvitationsForEmail(email: string): Promise<IOrganizationInvitation[]> {
-        const { data } = await this.requestClient.get(
+        const { data } = await this.requestClient.get<unknown, IOrganizationInvitation[]>(
             `${this.endpoint}/invitation?email=${encodeURIComponent(email)}`
         );
 
@@ -121,7 +125,7 @@ export class OrganizationClient implements IOrganizationClient {
     public async getInvitationsToOrganization(
         organizationId: number
     ): Promise<IOrganizationInvitation[]> {
-        const { data } = await this.requestClient.get(
+        const { data } = await this.requestClient.get<unknown, IOrganizationInvitation[]>(
             `${this.endpoint}/invitation?organization=${organizationId}`
         );
 
@@ -129,7 +133,9 @@ export class OrganizationClient implements IOrganizationClient {
     }
 
     public async getMembers(id: number): Promise<IUserWithRelationsIds[]> {
-        const { data } = await this.requestClient.get(`${this.endpoint}/${id}/users`);
+        const { data } = await this.requestClient.get<unknown, IUserWithRelationsIds[]>(
+            `${this.endpoint}/${id}/users`
+        );
 
         return data;
     }
