@@ -37,7 +37,7 @@ export class AccountBalanceService {
         const available = deposits.mergeWith(sum, trades).mergeWith(sum, sellOrders);
 
         const balances = new AccountBalance({
-            available: Array.from(available.values()),
+            available: Array.from(available.values()).filter((asset) => asset.amount.gt(new BN(0))),
             locked: Array.from(sellOrders.values()).map(
                 (asset) => new AccountAsset({ ...asset, amount: asset.amount.abs() })
             )

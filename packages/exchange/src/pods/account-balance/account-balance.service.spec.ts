@@ -156,16 +156,11 @@ describe('AccountBalanceService', () => {
 
         const res = await service.getAccountBalance(userId);
 
-        const expectedAsset1Amount = 1000 - 500 - 400 - 100;
-        const expectedAsset2Amount = 2000 - 1000 - 1000;
+        expect(res.available.length).toBe(0);
+        expect(res.locked.length).toBe(1);
 
-        expect(res.available.length).toBe(2);
-
-        expect(res.available[0].amount).toEqual(new BN(expectedAsset1Amount));
-        expect(res.available[0].asset).toEqual(asset1);
-
-        expect(res.available[1].amount).toEqual(new BN(expectedAsset2Amount));
-        expect(res.available[1].asset).toEqual(asset2);
+        expect(res.locked[0].amount).toEqual(new BN(100));
+        expect(res.locked[0].asset).toEqual(asset1);
     });
 
     it('should return locked asset amount', async () => {
