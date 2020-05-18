@@ -1,34 +1,36 @@
-import { put, take, all, fork, select, call, apply, delay } from 'redux-saga/effects';
-import { SagaIterator } from 'redux-saga';
-import {
-    CertificatesActions,
-    IRequestCertificatesAction,
-    IShowRequestCertificatesModalAction,
-    setRequestCertificatesModalVisibility,
-    hideRequestCertificatesModal,
-    IRequestCertificateEntityFetchAction,
-    ICertificateFetcher,
-    addCertificate,
-    updateCertificate,
-    IRequestPublishForSaleAction,
-    IRequestClaimCertificateAction,
-    IRequestClaimCertificateBulkAction,
-    IRequestCertificateApprovalAction
-} from './actions';
-import { IStoreState } from '../../types';
-import { getConfiguration } from '../selectors';
-import { showNotification, NotificationType, moment } from '../../utils';
-import { getUserOffchain } from '../users/selectors';
-import { setLoading } from '../general/actions';
-import { getCertificates, getCertificateFetcher, getCertificateById } from './selectors';
-import { Certificate, CertificationRequest, CertificateUtils } from '@energyweb/issuer';
-import { IUserWithRelations, CommitmentStatus } from '@energyweb/origin-backend-core';
-import { assertCorrectBlockchainAccount } from '../../utils/sagas';
-import { getExchangeClient } from '../general/selectors';
-import { IExchangeClient, ExchangeAccount, ITransfer } from '../../utils/exchange';
+import { Certificate, CertificateUtils, CertificationRequest } from '@energyweb/issuer';
+import { CommitmentStatus, IUserWithRelations } from '@energyweb/origin-backend-core';
+import { Configuration } from '@energyweb/utils-general';
 import { ContractTransaction } from 'ethers';
 import { getI18n } from 'react-i18next';
-import { Configuration } from '@energyweb/utils-general';
+import { SagaIterator } from 'redux-saga';
+import { all, apply, call, delay, fork, put, select, take } from 'redux-saga/effects';
+
+import { CertificateSource } from '.';
+import { IStoreState } from '../../types';
+import { moment, NotificationType, showNotification } from '../../utils';
+import { ExchangeAccount, IExchangeClient, ITransfer } from '../../utils/exchange';
+import { assertCorrectBlockchainAccount } from '../../utils/sagas';
+import { setLoading } from '../general/actions';
+import { getExchangeClient } from '../general/selectors';
+import { getConfiguration } from '../selectors';
+import { getUserOffchain } from '../users/selectors';
+import {
+    addCertificate,
+    CertificatesActions,
+    hideRequestCertificatesModal,
+    ICertificateFetcher,
+    IRequestCertificateApprovalAction,
+    IRequestCertificateEntityFetchAction,
+    IRequestCertificatesAction,
+    IRequestClaimCertificateAction,
+    IRequestClaimCertificateBulkAction,
+    IRequestPublishForSaleAction,
+    IShowRequestCertificatesModalAction,
+    setRequestCertificatesModalVisibility
+} from './actions';
+import { getCertificateById, getCertificateFetcher, getCertificates } from './selectors';
+import { ICertificateViewItem } from './types';
 
 function assertIsContractTransaction(
     data: ContractTransaction | CommitmentStatus
@@ -111,9 +113,9 @@ function* fetchCertificateSaga(id: number, entitiesBeingFetched: any): SagaItera
         return;
     }
 
-    const entities: Certificate[] = yield select(getCertificates);
+    const entities: ICertificateViewItem[] = yield select(getCertificates);
 
-    const existingEntity: Certificate = yield call(getCertificateById, entities, id);
+    const existingEntity: ICertificateViewItem = yield call(getCertificateById, entities, id);
 
     const configuration: IStoreState['configuration'] = yield select(getConfiguration);
     const fetcher: ICertificateFetcher = yield select(getCertificateFetcher);
@@ -121,17 +123,18 @@ function* fetchCertificateSaga(id: number, entitiesBeingFetched: any): SagaItera
     entitiesBeingFetched.set(id, true);
 
     try {
-        if (existingEntity) {
-            const reloadedEntity: Certificate = yield call(fetcher.reload, existingEntity);
-
-            if (reloadedEntity) {
-                yield put(updateCertificate(reloadedEntity));
-            }
-        } else {
+        if (existingEntity.source === CertificateSource.Blockchain) {
             const fetchedEntity: Certificate = yield call(fetcher.fetch, id, configuration);
 
             if (fetchedEntity) {
-                yield put(addCertificate(fetchedEntity));
+                yield put(
+                    addCertificate({
+                        ...fetchedEntity,
+                        isClaimed: fetchedEntity.isClaimed,
+                        isOwned: fetchedEntity.isOwned,
+                        source: CertificateSource.Blockchain
+                    })
+                );
             }
         }
     } catch (error) {
@@ -180,7 +183,8 @@ function* requestPublishForSaleSaga(): SagaIterator {
             continue;
         }
 
-        const { amount, certificateId, callback, price } = action.payload;
+        const { amount, certificateId, callback, price, source } = action.payload;
+        let { assetId } = action.payload;
 
         const i18n = getI18n();
 
@@ -192,35 +196,38 @@ function* requestPublishForSaleSaga(): SagaIterator {
                 exchangeClient.getAccount
             ]);
 
-            const certificate: Certificate = yield call(getCertificate, certificateId);
+            if (source === CertificateSource.Blockchain) {
+                const certificate: Certificate = yield call(getCertificate, certificateId);
 
-            const transferResult: ContractTransaction | CommitmentStatus = yield call(
-                [certificate, certificate.transfer],
-                account.address,
-                amount
-            );
+                const transferResult: ContractTransaction | CommitmentStatus = yield call(
+                    [certificate, certificate.transfer],
+                    account.address,
+                    amount
+                );
 
-            assertIsContractTransaction(transferResult);
+                assertIsContractTransaction(transferResult);
 
-            let transfer: ITransfer;
+                while (true) {
+                    const transfers: ITransfer[] = yield call([
+                        exchangeClient,
+                        exchangeClient.getAllTransfers
+                    ]);
 
-            while (true) {
-                const transfers: ITransfer[] = yield call([
-                    exchangeClient,
-                    exchangeClient.getAllTransfers
-                ]);
+                    const transfer = transfers.find(
+                        (item) => item.transactionHash === transferResult.hash
+                    );
 
-                transfer = transfers.find((item) => item.transactionHash === transferResult.hash);
+                    if (transfer) {
+                        assetId = transfer.asset.id;
+                        break;
+                    }
 
-                if (transfer) {
-                    break;
+                    yield delay(1000);
                 }
-
-                yield delay(1000);
             }
 
             yield call([exchangeClient, exchangeClient.createAsk], {
-                assetId: transfer.asset.id,
+                assetId,
                 price,
                 volume: amount.toString(),
                 validFrom: moment().toISOString()

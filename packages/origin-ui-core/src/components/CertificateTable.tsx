@@ -1,5 +1,4 @@
 import { ProducingDevice } from '@energyweb/device-registry';
-import { Certificate } from '@energyweb/issuer';
 import { AssignmentTurnedIn, Publish } from '@material-ui/icons';
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
@@ -37,15 +36,16 @@ import { getCertificates } from '../features/certificates/selectors';
 import { PublishForSaleModal } from './Modal/PublishForSaleModal';
 import { getEnvironment } from '../features';
 import { ClaimModal } from './Modal/ClaimModal';
+import { ICertificateViewItem, CertificateSource } from '../features/certificates';
 
 interface IProps {
-    certificates?: Certificate[];
+    certificates?: ICertificateViewItem[];
     hiddenColumns?: string[];
     selectedState: SelectedState;
 }
 
 interface IEnrichedCertificateData {
-    certificate: Certificate;
+    certificate: ICertificateViewItem;
     producingDevice: ProducingDevice.Entity;
     deviceTypeLabel: string;
     locationText: string;
@@ -83,10 +83,10 @@ export function CertificateTable(props: IProps) {
     const { t } = useTranslation();
     const { getCertificateDetailLink } = useLinks();
 
-    const [selectedCertificates, setSelectedCertificates] = useState<Certificate[]>([]);
+    const [selectedCertificates, setSelectedCertificates] = useState<ICertificateViewItem[]>([]);
     const [detailViewForCertificateId, setDetailViewForCertificateId] = useState<number>(null);
     const [showClaimModal, setShowClaimModal] = useState(false);
-    const [selectedCertificate, setSelectedCertificate] = useState<Certificate>(null);
+    const [selectedCertificate, setSelectedCertificate] = useState<ICertificateViewItem>(null);
     const [sellModalVisibility, setSellModalVisibility] = useState(false);
 
     async function getPaginatedData({
@@ -110,22 +110,20 @@ export function CertificateTable(props: IProps) {
             };
         });
 
-        const filteredIEnrichedCertificateData = await enrichedData.filter(
-            (enrichedCertificateData) => {
-                const ownerOf = enrichedCertificateData.certificate.isOwned;
-                const claimed = enrichedCertificateData.certificate.isClaimed;
+        const filteredIEnrichedCertificateData = enrichedData.filter((enrichedCertificateData) => {
+            const ownerOf = enrichedCertificateData.certificate.isOwned;
+            const claimed = enrichedCertificateData.certificate.isClaimed;
 
-                return (
-                    checkRecordPassesFilters(
-                        enrichedCertificateData,
-                        requestedFilters,
-                        deviceTypeService
-                    ) &&
-                    ((ownerOf && selectedState === SelectedState.Inbox) ||
-                        (claimed && selectedState === SelectedState.Claimed))
-                );
-            }
-        );
+            return (
+                checkRecordPassesFilters(
+                    enrichedCertificateData,
+                    requestedFilters,
+                    deviceTypeService
+                ) &&
+                ((ownerOf && selectedState === SelectedState.Inbox) ||
+                    (claimed && selectedState === SelectedState.Claimed))
+            );
+        });
 
         const sortedEnrichedData = sortData(filteredIEnrichedCertificateData);
 
@@ -189,7 +187,17 @@ export function CertificateTable(props: IProps) {
     }
 
     async function claimCertificate(rowIndex: string) {
-        setSelectedCertificates([getCertificateFromRow(rowIndex)]);
+        const certificate = getCertificateFromRow(rowIndex);
+
+        if (certificate.source === CertificateSource.Exchange) {
+            showNotification(
+                'Claiming certificate from the exchange is currently not supported',
+                NotificationType.Error
+            );
+            return;
+        }
+
+        setSelectedCertificates([certificate]);
         setShowClaimModal(true);
     }
 
@@ -244,6 +252,29 @@ export function CertificateTable(props: IProps) {
                 label: t('certificate.properties.certificationDate'),
                 input: {
                     type: CustomFilterInputType.yearMonth
+                }
+            },
+            {
+                property: (record: IEnrichedCertificateData): string => {
+                    const ownedEnergy = record?.certificate?.energy;
+                    if (ownedEnergy) {
+                        let energy;
+
+                        if (selectedState === SelectedState.Claimed) {
+                            energy = ownedEnergy.claimedVolume;
+                        } else {
+                            energy = ownedEnergy.publicVolume.add(ownedEnergy.privateVolume);
+                        }
+
+                        return EnergyFormatter.getValueInDisplayUnit(energy).toString();
+                    }
+                    return EnergyFormatter.getValueInDisplayUnit(null).toString();
+                },
+                label: `${t('certificate.properties.certifiedEnergy')} (${
+                    EnergyFormatter.displayUnit
+                })`,
+                input: {
+                    type: CustomFilterInputType.string
                 }
             },
             {
@@ -382,6 +413,10 @@ export function CertificateTable(props: IProps) {
                     (value: string) => value
                 ]
             ]
+        },
+        {
+            id: 'source',
+            label: `${t('certificate.properties.source')}`
         }
     ] as const).filter((column) => !hiddenColumns.includes(column.id));
 
@@ -413,7 +448,11 @@ export function CertificateTable(props: IProps) {
                     ? claimedVolume
                     : publicVolume.add(privateVolume)
             ),
-            gridOperator: enrichedData?.gridOperatorText
+            gridOperator: enrichedData?.gridOperatorText,
+            source:
+                enrichedData.certificate.source === CertificateSource.Exchange
+                    ? 'Exchange'
+                    : 'Blockchain'
         };
     });
 
