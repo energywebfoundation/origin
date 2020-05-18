@@ -170,11 +170,7 @@ describe('account ask order send', () => {
                 const account = res.body as AccountDTO;
 
                 expect(account.address).toBe(user1Address);
-                expect(account.balances.available.length).toBe(1);
-                expect(account.balances.available[0].amount).toEqual('0');
-                expect(account.balances.available[0].asset).toMatchObject(
-                    JSON.parse(JSON.stringify(dummyAsset))
-                );
+                expect(account.balances.available.length).toBe(0);
             });
 
         // wait to withdrawal to be finished to not mess with tx nonces

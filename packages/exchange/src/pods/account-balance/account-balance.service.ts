@@ -34,11 +34,13 @@ export class AccountBalanceService {
             amount: oldVal.amount.add(newVal.amount)
         });
 
-        const aggregated = deposits.mergeWith(sum, trades).mergeWith(sum, sellOrders);
+        const available = deposits.mergeWith(sum, trades).mergeWith(sum, sellOrders);
 
         const balances = new AccountBalance({
-            available: Array.from(aggregated.values()),
-            locked: Array.from(sellOrders.values())
+            available: Array.from(available.values()).filter((asset) => asset.amount.gt(new BN(0))),
+            locked: Array.from(sellOrders.values()).map(
+                (asset) => new AccountAsset({ ...asset, amount: asset.amount.abs() })
+            )
         });
 
         this.logger.debug(`[UserId: ${userId}] Balances: ${JSON.stringify(balances)}`);
