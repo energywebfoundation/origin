@@ -366,7 +366,6 @@ function* fetchDataAfterConfigurationChange(
                 claimedVolume: new BigNumber(0)
             },
             source: CertificateSource.Exchange,
-            id: onChainCertificate.id * -1,
             assetId: asset.id
         };
 
@@ -375,7 +374,7 @@ function* fetchDataAfterConfigurationChange(
 
     const certificates = initializedCertificates.concat(available);
 
-    console.log(`Total certificates ${certificates.length}`);
+    console.log(`Total certificates ${certificates.length} from exchange: ${available.length}`);
 
     for (const certificate of certificates) {
         yield put(update ? updateCertificate(certificate) : addCertificate(certificate));

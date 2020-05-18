@@ -111,7 +111,9 @@ export function CertificateTable(props: IProps) {
         });
 
         const filteredIEnrichedCertificateData = enrichedData.filter((enrichedCertificateData) => {
-            const ownerOf = enrichedCertificateData.certificate.isOwned;
+            const ownerOf =
+                enrichedCertificateData.certificate.isOwned ||
+                enrichedCertificateData.certificate.source === CertificateSource.Exchange;
             const claimed = enrichedCertificateData.certificate.isClaimed;
 
             return (
@@ -173,7 +175,11 @@ export function CertificateTable(props: IProps) {
     }
 
     const getCertificateFromRow = (rowIndex) =>
-        certificates.find((cert) => cert.id === paginatedData[rowIndex].certificate.id);
+        certificates.find(
+            (cert) =>
+                cert.id === paginatedData[rowIndex].certificate.id &&
+                cert.source === paginatedData[rowIndex].certificate.source
+        );
 
     async function publishForSale(rowIndex: string) {
         setSelectedCertificate(getCertificateFromRow(rowIndex));

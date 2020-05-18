@@ -35,6 +35,8 @@ const DEFAULT_ENERGY_IN_BASE_UNIT = bigNumberify(1);
 export function PublishForSaleModal(props: IProps) {
     const { certificate, callback, producingDevice, showModal } = props;
 
+    console.log(certificate);
+
     const currencies = useSelector(getCurrencies);
     const user = useSelector(getUserOffchain);
 
