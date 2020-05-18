@@ -167,4 +167,15 @@ describe('AccountBalanceService', () => {
         expect(res.available[1].amount).toEqual(new BN(expectedAsset2Amount));
         expect(res.available[1].asset).toEqual(asset2);
     });
+
+    it('should return locked asset amount', async () => {
+        registerTransfer({ asset: asset1, amount: '1000', direction: TransferDirection.Deposit });
+        registerOrder({ asset: asset1, side: OrderSide.Ask, currentVolume: new BN(1000) });
+
+        const res = await service.getAccountBalance(userId);
+
+        expect(res.locked.length).toBe(1);
+        expect(res.locked[0].asset).toEqual(asset1);
+        expect(res.locked[0].amount).toEqual(new BN(1000));
+    });
 });
