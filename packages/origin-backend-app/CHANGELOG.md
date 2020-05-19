@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.1.1](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-backend-app@1.1.0...@energyweb/origin-backend-app@1.1.1) (2020-05-15)
+
+
+### Bug Fixes
+
+* add resolution for tslib ([5fb358f](https://github.com/energywebfoundation/origin/commit/5fb358ffe444708ccb5a5b416968fc9f6b12d9a8))
+* fixate tslib version to 1.11.2 to avoid typeorm issue ([274d4e9](https://github.com/energywebfoundation/origin/commit/274d4e9717f4c8f4b258a56331724330dcc3685b))
+
+
+
+
+
 # [1.1.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-backend-app@1.0.1...@energyweb/origin-backend-app@1.1.0) (2020-04-24)
 
 

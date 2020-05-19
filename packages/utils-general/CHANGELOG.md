@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [9.1.0](https://github.com/energywebfoundation/origin/compare/@energyweb/utils-general@9.0.0...@energyweb/utils-general@9.1.0) (2020-05-15)
+
+
+### Features
+
+* **utils-general:** enable signing messages using private keys ([492a562](https://github.com/energywebfoundation/origin/commit/492a5624bec9a418b8cffc29d2e684ec5ed73aea))
+
+
+
+
+
 # [9.0.0](https://github.com/energywebfoundation/origin/compare/@energyweb/utils-general@8.0.0...@energyweb/utils-general@9.0.0) (2020-04-24)
 
 

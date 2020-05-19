@@ -98,7 +98,8 @@
                 "deviceType": "Device type",
                 "certificationDate": "Certification date",
                 "from": "From",
-                "to": "To"
+                "to": "To",
+                "source": "Source"
             },
             "actions": {
                 "requestCertificates": "Request certificates",

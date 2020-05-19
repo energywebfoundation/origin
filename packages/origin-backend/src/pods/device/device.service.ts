@@ -25,7 +25,7 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { validate } from 'class-validator';
-import { FindOneOptions, Repository } from 'typeorm';
+import { FindOneOptions, Repository, DeepPartial } from 'typeorm';
 import { v4 as uuid } from 'uuid';
 
 import moment from 'moment';
@@ -164,7 +164,7 @@ export class DeviceService {
 
         device.smartMeterReads = [...device.smartMeterReads, newSmartMeterRead];
 
-        await this.repository.save(device);
+        await this.repository.save((device as unknown) as DeepPartial<Device>);
     }
 
     async getAll(
@@ -209,7 +209,7 @@ export class DeviceService {
         device.status = update.status;
 
         try {
-            await this.repository.save(device);
+            await this.repository.save((device as unknown) as DeepPartial<Device>);
 
             const deviceManagers = await this.organizationService.getDeviceManagers(
                 device.organization
@@ -247,7 +247,7 @@ export class DeviceService {
         }
 
         try {
-            await this.repository.save(device);
+            await this.repository.save((device as unknown) as DeepPartial<Device>);
 
             return {
                 message: `Device ${id} successfully updated`

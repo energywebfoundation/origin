@@ -49,13 +49,18 @@ export class CertificateController {
         @Param('id') id: number,
         @UserDecorator() loggedUser: ILoggedInUser
     ): Promise<CertificationRequest> {
-        if (loggedUser.hasRole(Role.Issuer, Role.Admin)) {
-            return this.certificationRequestService.get(id);
+        const request = await this.certificationRequestService.get(id);
+
+        if (loggedUser.hasRole(Role.Issuer, Role.Admin) || request.userId === loggedUser.ownerId) {
+            return request;
         }
 
-        return this.certificationRequestService.get(id, {
-            where: { userId: loggedUser.ownerId }
-        });
+        return {
+            id: request.id,
+            created: request.created,
+            energy: request.energy,
+            device: request.device
+        } as CertificationRequest;
     }
 
     @Get(CERTIFICATION_REQUEST_ENDPOINT)

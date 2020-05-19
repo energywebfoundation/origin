@@ -3,6 +3,27 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.2.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-ui-core@1.1.0...@energyweb/origin-ui-core@1.2.0) (2020-05-15)
+
+
+### Bug Fixes
+
+* **origin-core-ui:** allow users without org to see the invitations ([bdab6a9](https://github.com/energywebfoundation/origin/commit/bdab6a9fdb3adea3f308349fc9cc7e592c892804))
+* **origin-ui:** create certification requests with the correct time and timezone ([2a6ea43](https://github.com/energywebfoundation/origin/commit/2a6ea431bde2092d545c3ad0e32016b8a81a05e6))
+* **origin-ui-core:** add OrganizationAdmin to devices managment views ([19843a9](https://github.com/energywebfoundation/origin/commit/19843a9a4366631260c017256ce6e2520e09e029))
+* **origin-ui-core:** remove issuer from organization approval role ([deb3bbf](https://github.com/energywebfoundation/origin/commit/deb3bbfb211eafd23ad3b8e66a1ecd92f9886554))
+
+
+### Features
+
+* **origin-ui-core:** add a modal for claiming beneficiary ([deaeb9d](https://github.com/energywebfoundation/origin/commit/deaeb9db92d621d1949f239627c826bff358c9bb))
+* **origin-ui-core:** show claim beneficiary in the certificate details view ([feff7b4](https://github.com/energywebfoundation/origin/commit/feff7b4d318e9d916f2fb4356263dbd9842ae390))
+* register Approved and Revoked events ([e74afec](https://github.com/energywebfoundation/origin/commit/e74afec51924a37abe39cad94e416f955474f17b))
+
+
+
+
+
 # [1.1.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-ui-core@1.0.0...@energyweb/origin-ui-core@1.1.0) (2020-04-24)
 
 

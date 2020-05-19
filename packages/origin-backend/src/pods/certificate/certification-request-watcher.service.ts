@@ -5,11 +5,13 @@ import { ModuleRef } from '@nestjs/core';
 import { ethers } from 'ethers';
 import { Log } from 'ethers/providers';
 
+import { DeepPartial } from 'typeorm';
 import { ConfigurationService } from '../configuration';
 import { DeviceService } from '../device/device.service';
 import { CertificationRequestService } from './certification-request.service';
 import { CertificateService } from './certificate.service';
 import { UserService } from '../user';
+import { Device } from '../device/device.entity';
 
 @Injectable()
 export class CertificationRequestWatcherService implements OnModuleInit {
@@ -116,7 +118,7 @@ export class CertificationRequestWatcherService implements OnModuleInit {
             userId: user.organization.toString(),
             fromTime: fromTime.toNumber(),
             toTime: toTime.toNumber(),
-            device,
+            device: (device as unknown) as DeepPartial<Device>,
             approved,
             revoked,
             created

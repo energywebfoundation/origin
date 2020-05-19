@@ -3,6 +3,23 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.1.0](https://github.com/energywebfoundation/origin/compare/@energyweb/issuer@2.0.0...@energyweb/issuer@2.1.0) (2020-05-15)
+
+
+### Bug Fixes
+
+* **issuer:** enable storing more than 32 bytes in beneficiary data ([f075dfd](https://github.com/energywebfoundation/origin/commit/f075dfd048761443093b026d3f5c185a175d352b))
+
+
+### Features
+
+* **issuer:** store all certificationRequest information on the backend ([355e51f](https://github.com/energywebfoundation/origin/commit/355e51ff00db1321283b11d1f7188304abe56fb0))
+* **issuer:** Use defined beneficiary claim data ([e89900f](https://github.com/energywebfoundation/origin/commit/e89900f20f76167480a2b317d0f85320d8e370e2))
+
+
+
+
+
 # [2.0.0](https://github.com/energywebfoundation/origin/compare/@energyweb/issuer@1.1.0...@energyweb/issuer@2.0.0) (2020-04-24)
 
 
