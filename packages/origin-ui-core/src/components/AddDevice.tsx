@@ -304,6 +304,7 @@ export function AddDevice() {
                                             ]}
                                             disabled={fieldDisabled}
                                             singleChoice={true}
+                                            required={true}
                                         />
                                     </div>
 
@@ -367,6 +368,7 @@ export function AddDevice() {
                                             gridItemSize={12}
                                             singleChoice={true}
                                             disabled={fieldDisabled}
+                                            required={true}
                                         />
                                     </Grid>
                                     <FormControl
