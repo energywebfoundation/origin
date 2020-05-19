@@ -40,7 +40,10 @@ export class UserClient implements IUserClient {
 
     public async register(formData: UserRegistrationData): Promise<UserRegisterReturnData> {
         const url = `${this.userEndpoint}/register`;
-        const { data } = await this.requestClient.post(url, formData);
+        const { data } = await this.requestClient.post<
+            UserRegistrationData,
+            UserRegisterReturnData
+        >(url, formData);
 
         return data;
     }
@@ -65,7 +68,7 @@ export class UserClient implements IUserClient {
 
     public async me(): Promise<IUserWithRelationsIds> {
         const url = `${this.userEndpoint}/me`;
-        const { data } = await this.requestClient.get<{}, IUserWithRelationsIds>(url);
+        const { data } = await this.requestClient.get<unknown, IUserWithRelationsIds>(url);
 
         return data;
     }
@@ -82,13 +85,16 @@ export class UserClient implements IUserClient {
 
     public async getUserById(id: string): Promise<IUserWithRelationsIds> {
         const url = `${this.userEndpoint}/${id}`;
-        const { data } = await this.requestClient.get<{}, IUserWithRelationsIds>(url);
+        const { data } = await this.requestClient.get<unknown, IUserWithRelationsIds>(url);
 
         return data;
     }
 
     private async updateUser(updatedUserInfo: UserUpdateData): Promise<IUserWithRelationsIds> {
-        const { data } = await this.requestClient.put(this.userEndpoint, updatedUserInfo);
+        const { data } = await this.requestClient.put<UserUpdateData, IUserWithRelationsIds>(
+            this.userEndpoint,
+            updatedUserInfo
+        );
 
         return data;
     }

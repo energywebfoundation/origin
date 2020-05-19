@@ -14,7 +14,7 @@ export class ConfigurationClient implements IConfigurationClient {
 
     public async get(): Promise<IOriginConfiguration> {
         const url = `${this.dataApiUrl}/Configuration`;
-        const { data } = await this.requestClient.get(url);
+        const { data } = await this.requestClient.get<unknown, IOriginConfiguration>(url);
 
         return data;
     }
