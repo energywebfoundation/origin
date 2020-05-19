@@ -12,7 +12,7 @@ import { ConflictException, Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { InjectRepository } from '@nestjs/typeorm';
 import bcrypt from 'bcryptjs';
-import { FindConditions, Repository } from 'typeorm';
+import { FindConditions, Repository, DeepPartial } from 'typeorm';
 
 import { ExtendedBaseEntity } from '../ExtendedBaseEntity';
 import { User } from './user.entity';
@@ -132,7 +132,7 @@ export class UserService {
         user.blockchainAccountSignedMessage = signedMessage;
         user.blockchainAccountAddress = address;
 
-        await this.repository.save(user);
+        await this.repository.save((user as unknown) as DeepPartial<User>);
 
         return user;
     }
