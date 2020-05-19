@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { TextField, Chip, makeStyles, createStyles, useTheme } from '@material-ui/core';
 import { Autocomplete } from '@material-ui/lab';
 
@@ -18,10 +18,20 @@ interface IOwnProps {
     disabled?: boolean;
     className?: string;
     max?: number;
+    required?: boolean;
 }
 
 export function MultiSelectAutocomplete(props: IOwnProps) {
-    const { label, placeholder, options, selectedValues, disabled, className, max } = props;
+    const {
+        label,
+        placeholder,
+        options,
+        selectedValues,
+        disabled,
+        className,
+        max,
+        required
+    } = props;
 
     const { styleConfig } = useOriginConfiguration();
 
@@ -37,6 +47,8 @@ export function MultiSelectAutocomplete(props: IOwnProps) {
     );
 
     const classes = useStyles(useTheme());
+    const [touchFlag, setTouchFlag] = useState<boolean>(null);
+    const [textValue, setTextValue] = useState<string>(null);
 
     return (
         <div className={className}>
@@ -47,6 +59,8 @@ export function MultiSelectAutocomplete(props: IOwnProps) {
                 getOptionLabel={(option) => option.label}
                 onChange={(event, value: IAutocompleteMultiSelectOptionType[]) => {
                     props.onChange(value ? value.slice(0, max ?? value.length) : value);
+                    setTouchFlag(true);
+                    setTextValue(' ');
                 }}
                 value={selectedValues}
                 renderTags={(value, getTagProps) =>
@@ -63,7 +77,15 @@ export function MultiSelectAutocomplete(props: IOwnProps) {
                 renderInput={(params) => (
                     <TextField
                         {...params}
+                        required={required}
                         label={label}
+                        helperText={
+                            touchFlag && required && props.selectedValues.length === 0
+                                ? label + ' is a required field'
+                                : ''
+                        }
+                        inputProps={{ ...params.inputProps, value: textValue }}
+                        error={touchFlag && required && props.selectedValues.length === 0}
                         placeholder={placeholder}
                         fullWidth
                         variant="filled"

@@ -13,6 +13,7 @@ interface IProps {
     onGridOperatorChange: (value: string[]) => void;
     singleChoice?: boolean;
     gridItemSize?: GridSize;
+    required?: boolean;
 }
 
 export function DeviceSelectors(props: IProps) {
@@ -23,7 +24,8 @@ export function DeviceSelectors(props: IProps) {
         onLocationChange,
         disabled,
         singleChoice,
-        gridItemSize
+        gridItemSize,
+        required
     } = { gridItemSize: 6 as GridSize, ...props };
 
     const regions = useSelector(getRegions);
@@ -55,6 +57,7 @@ export function DeviceSelectors(props: IProps) {
                         ]}
                         singleChoice={singleChoice}
                         disabled={disabled}
+                        required={required}
                     />
                 </Grid>
             )}
@@ -76,6 +79,7 @@ export function DeviceSelectors(props: IProps) {
                         ]}
                         singleChoice={singleChoice}
                         disabled={disabled}
+                        required={required}
                     />
                 </Grid>
             )}
