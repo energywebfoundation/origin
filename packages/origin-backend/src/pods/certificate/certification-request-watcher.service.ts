@@ -9,6 +9,7 @@ import { DeepPartial } from 'typeorm';
 import { ConfigurationService } from '../configuration';
 import { DeviceService } from '../device/device.service';
 import { CertificationRequestService } from './certification-request.service';
+import { CertificateService } from './certificate.service';
 import { UserService } from '../user';
 import { Device } from '../device/device.entity';
 
@@ -25,6 +26,7 @@ export class CertificationRequestWatcherService implements OnModuleInit {
     public constructor(
         private readonly configService: ConfigService,
         private readonly moduleRef: ModuleRef,
+        private readonly certificateService: CertificateService,
         private readonly certificationRequestService: CertificationRequestService,
         private readonly deviceService: DeviceService,
         private readonly userService: UserService
@@ -134,7 +136,7 @@ export class CertificationRequestWatcherService implements OnModuleInit {
 
         this.logger.debug(`Parsed to ${JSON.stringify(log)}`);
 
-        const { _id } = log.values;
+        const { _id, _owner } = log.values;
 
         const certificationRequest = await this.certificationRequestService.get(_id.toNumber());
 
@@ -151,6 +153,10 @@ export class CertificationRequestWatcherService implements OnModuleInit {
         }
 
         await this.certificationRequestService.registerApproved(_id.toNumber());
+        await this.certificateService.create({
+            id: _id.toNumber(),
+            originalRequestor: _owner
+        });
 
         this.logger.log(
             `Registered approved certification request with ID ${certificationRequest.id}.`
