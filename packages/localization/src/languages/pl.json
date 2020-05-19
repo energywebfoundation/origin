@@ -66,7 +66,8 @@
                 "deviceType": "Typ urządzenia",
                 "certificationDate": "Data certyfikacji",
                 "from": "Od",
-                "to": "Do"
+                "to": "Do",
+                "source": "Źródło"
             },
             "actions": {
                 "requestCertificates": "Zażądaj certyfikatów",

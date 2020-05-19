@@ -52,6 +52,10 @@ export interface ICertificate {
     certificationRequestId: number;
     creationTime: number;
     creationBlockHash: string;
+
+    isClaimed: boolean;
+    isOwned: boolean;
+    claims: IClaim[];
 }
 
 export class Certificate extends PreciseProofEntity implements ICertificate {

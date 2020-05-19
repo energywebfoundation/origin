@@ -1,28 +1,33 @@
-import React, { useState, useEffect } from 'react';
-import moment from 'moment-timezone';
-import { bigNumberify } from 'ethers/utils';
+import { IClaimData } from '@energyweb/issuer';
 import {
     Button,
     Dialog,
     DialogActions,
     DialogContent,
+    DialogContentText,
     DialogTitle,
-    TextField,
+    FilledInput,
     FormControl,
     InputLabel,
-    FilledInput,
     MenuItem,
     Select,
-    DialogContentText
+    TextField
 } from '@material-ui/core';
-import { useSelector, useDispatch } from 'react-redux';
-import { Certificate, IClaimData } from '@energyweb/issuer';
+import { bigNumberify } from 'ethers/utils';
+import moment from 'moment-timezone';
+import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+
+import {
+    ICertificateViewItem,
+    requestClaimCertificate,
+    requestClaimCertificateBulk
+} from '../../features/certificates';
 import { getUserOffchain } from '../../features/users/selectors';
-import { requestClaimCertificate, requestClaimCertificateBulk } from '../../features/certificates';
 import { EnergyFormatter } from '../../utils';
 
 interface IProps {
-    certificates: Certificate[];
+    certificates: ICertificateViewItem[];
     showModal: boolean;
     callback: () => void;
 }

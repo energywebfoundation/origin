@@ -1,7 +1,9 @@
-import { Certificate, CertificationRequest, IClaimData } from '@energyweb/issuer';
 import { ProducingDevice } from '@energyweb/device-registry';
-import { IStoreState } from '../../types';
+import { Certificate, CertificationRequest, IClaimData } from '@energyweb/issuer';
 import { BigNumber } from 'ethers/utils';
+
+import { ICertificateViewItem, CertificateSource } from '.';
+import { IStoreState } from '../../types';
 
 export enum CertificatesActions {
     addCertificate = 'CERTIFICATE_CREATED',
@@ -20,10 +22,10 @@ export enum CertificatesActions {
 
 export interface IAddCertificateAction {
     type: CertificatesActions.addCertificate;
-    payload: Certificate;
+    payload: ICertificateViewItem;
 }
 
-export const addCertificate = (payload: Certificate) => ({
+export const addCertificate = (payload: ICertificateViewItem) => ({
     type: CertificatesActions.addCertificate,
     payload
 });
@@ -32,10 +34,10 @@ export type TAddCertificateAction = typeof addCertificate;
 
 export interface IUpdateCertificateAction {
     type: CertificatesActions.updateCertificate;
-    payload: Certificate;
+    payload: ICertificateViewItem;
 }
 
-export const updateCertificate = (payload: Certificate) => ({
+export const updateCertificate = (payload: ICertificateViewItem) => ({
     type: CertificatesActions.updateCertificate,
     payload
 });
@@ -138,6 +140,8 @@ export interface IRequestPublishForSaleAction {
         certificateId: Certificate['id'];
         amount: BigNumber;
         price: number;
+        source: CertificateSource;
+        assetId?: string;
         callback: () => void;
     };
 }

@@ -1,6 +1,3 @@
-import React, { useState, useEffect } from 'react';
-import moment from 'moment';
-import { bigNumberify } from 'ethers/utils';
 import { ProducingDevice } from '@energyweb/device-registry';
 import {
     Button,
@@ -8,22 +5,26 @@ import {
     DialogActions,
     DialogContent,
     DialogTitle,
-    TextField,
+    FilledInput,
     FormControl,
     InputLabel,
-    FilledInput,
     MenuItem,
-    Select
+    Select,
+    TextField
 } from '@material-ui/core';
-import { useSelector, useDispatch } from 'react-redux';
-import { getCurrencies } from '../../features/general/selectors';
-import { formatDate, EnergyFormatter, countDecimals } from '../../utils';
-import { Certificate } from '@energyweb/issuer';
-import { getUserOffchain } from '../../features/users/selectors';
+import { bigNumberify } from 'ethers/utils';
+import moment from 'moment';
+import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+
 import { requestPublishForSale } from '../../features/certificates';
+import { ICertificateViewItem } from '../../features/certificates/types';
+import { getCurrencies } from '../../features/general/selectors';
+import { getUserOffchain } from '../../features/users/selectors';
+import { countDecimals, EnergyFormatter, formatDate } from '../../utils';
 
 interface IProps {
-    certificate: Certificate;
+    certificate: ICertificateViewItem;
     producingDevice: ProducingDevice.Entity;
     showModal: boolean;
     callback: () => void;
@@ -70,7 +71,7 @@ export function PublishForSaleModal(props: IProps) {
     const isFormValid = validation.energyInDisplayUnit && validation.price;
 
     async function handleClose() {
-        await certificate.sync();
+        // await certificate.sync();
         callback();
     }
 
@@ -86,7 +87,9 @@ export function PublishForSaleModal(props: IProps) {
                 price: Math.round((parseFloat(price) + Number.EPSILON) * 100),
                 callback: () => {
                     handleClose();
-                }
+                },
+                source: certificate.source,
+                assetId: certificate.assetId
             })
         );
     }
