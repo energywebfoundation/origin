@@ -91,7 +91,13 @@ export class CertificationRequestWatcherService implements OnModuleInit {
             return;
         }
 
-        const { owner, revoked, approved, data } = await this.issuer.getCertificationRequest(_id);
+        const {
+            owner,
+            revoked,
+            approved,
+            data,
+            sender
+        } = await this.issuer.getCertificationRequest(_id);
         const [fromTime, toTime, deviceId] = await this.issuer.decodeData(data);
 
         const device = await this.deviceService.findByExternalId({
@@ -105,10 +111,10 @@ export class CertificationRequestWatcherService implements OnModuleInit {
         }
 
         const { timestamp: created } = await this.issuer.provider.getBlock(event.blockNumber);
-        const user = await this.userService.findByBlockchainAccount(owner);
+        const user = await this.userService.findByBlockchainAccount(sender);
 
         if (!user) {
-            this.logger.error(`Encountered request from unknown address ${owner}`);
+            this.logger.error(`Encountered request from unknown address ${sender}`);
             return;
         }
 
