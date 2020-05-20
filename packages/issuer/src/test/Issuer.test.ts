@@ -39,7 +39,8 @@ describe('Issuer', () => {
         isPrivate = false,
         fromTime?: number,
         toTime?: number,
-        deviceId?: string
+        deviceId?: string,
+        forAddress?: string
     ) => {
         setActiveUser(deviceOwnerWallet);
 
@@ -56,12 +57,14 @@ describe('Issuer', () => {
             device,
             conf,
             [],
-            isPrivate
+            isPrivate,
+            forAddress
         );
 
         (conf.offChainDataSource.certificateClient as any).mockBlockchainData(
             certificationRequest.id,
             {
+                sender: forAddress || deviceOwnerWallet.address,
                 owner: deviceOwnerWallet.address,
                 fromTime: generationFromTime,
                 toTime: generationToTime,
@@ -341,5 +344,27 @@ describe('Issuer', () => {
             Number(certificateId)
         );
         assert.equal(deviceOwnerBalance.toString(), '0');
+    });
+
+    it('should be able to request for other address', async () => {
+        setActiveUser(deviceOwnerWallet);
+
+        const fromTime = timestamp;
+        // Simulate time moving forward 1 month
+        timestamp += 30 * 24 * 3600;
+        const toTime = timestamp;
+        const device = '1';
+        const volume = new BigNumber(1e9);
+
+        const certificationRequest = await createCertificationRequest(
+            volume,
+            false,
+            fromTime,
+            toTime,
+            device,
+            issuerWallet.address
+        );
+
+        assert.isOk(certificationRequest);
     });
 });

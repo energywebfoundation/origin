@@ -7,10 +7,10 @@
     "include": ["src/**/*"],
     "references": [
         {
-            "path": "../utils-general/tsconfig.build.json"
+            "path": "../issuer/tsconfig.build.json"
         },
         {
-            "path": "../device-registry/tsconfig.build.json"
+            "path": "../origin-backend-core/tsconfig.build.json"
         }
     ]
 }

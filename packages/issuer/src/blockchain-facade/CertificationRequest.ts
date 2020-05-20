@@ -79,14 +79,15 @@ export class CertificationRequest extends PreciseProofEntity implements ICertifi
             ? issuerWithSigner.requestCertificationFor(data, forAddress, isVolumePrivate)
             : issuerWithSigner.requestCertification(data, isVolumePrivate));
 
-        const { events } = await tx.wait();
+        const {
+            events: [certificationRequested]
+        } = await tx.wait();
 
-        request.id = Number(
-            events.find((log: BlockchainEvent) => log.event === 'CertificationRequested').topics[2]
-        );
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        request.id = (certificationRequested.args as any)._id.toNumber();
 
         const success = await polly()
-            .waitAndRetry(10)
+            .waitAndRetry([2000, 4000, 8000, 16000])
             .executeForPromise(() =>
                 configuration.offChainDataSource.certificateClient.updateCertificationRequest(
                     request.id,

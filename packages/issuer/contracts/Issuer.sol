@@ -40,6 +40,7 @@ contract Issuer is Initializable, Ownable {
         bool approved;
         bool revoked;
         bool isPrivate;
+        address sender;
     }
 
     struct PrivateTransferRequest {
@@ -89,7 +90,8 @@ contract Issuer is Initializable, Ownable {
             data: _data,
             approved: false,
             revoked: false,
-            isPrivate: _private
+            isPrivate: _private,
+            sender: msg.sender
         });
 
         (,, string memory deviceId) = decodeData(_data);
