@@ -67,13 +67,18 @@ function* requestCertificatesSaga(): SagaIterator {
             const shouldContinue: boolean = yield call(assertCorrectBlockchainAccount);
 
             if (shouldContinue) {
+                const exchangeClient: IExchangeClient = yield select(getExchangeClient);
+                const { address } = yield call([exchangeClient, exchangeClient.getAccount]);
+
                 yield apply(CertificationRequest, CertificationRequest.create, [
                     startTime,
                     endTime,
                     energy,
                     deviceId,
                     configuration,
-                    files
+                    files,
+                    false,
+                    address
                 ]);
 
                 showNotification(`Certificates requested.`, NotificationType.Success);
