@@ -48,7 +48,7 @@
         "chai": "4.2.0",
         "dotenv": "8.2.0",
         "ethers": "4.0.47",
-        "mocha": "7.1.2",
+        "mocha": "7.2.0",
         "moment": "2.24.0",
         "moment-range": "4.0.2",
         "polly-js": "1.6.5",
