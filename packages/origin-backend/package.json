@@ -70,7 +70,7 @@
         "reflect-metadata": "0.1.13",
         "rxjs": "6.5.5",
         "typeorm": "0.2.22",
-        "uuid": "8.0.0"
+        "uuid": "8.1.0"
     },
     "devDependencies": {
         "@nestjs/cli": "7.1.5",
@@ -88,7 +88,7 @@
         "@types/passport-jwt": "3.0.3",
         "@types/passport-local": "1.0.33",
         "@types/supertest": "2.0.9",
-        "@types/uuid": "7.0.3",
+        "@types/uuid": "8.0.0",
         "@types/websocket": "1.0.0",
         "@types/ws": "7.2.4",
         "jest": "26.0.1",
