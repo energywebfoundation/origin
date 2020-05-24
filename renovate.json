@@ -27,7 +27,7 @@
             "groupName": "react"
         },
         {
-            "depTypeList": ["devDependencies"],
+            "updateTypes": ["minor", "patch", "pin", "digest"],
             "automerge": true
         }
     ]
