@@ -35,7 +35,7 @@
     "types": "dist/js/src/index.d.ts",
     "dependencies": {
         "@energyweb/utils-general": "9.1.0",
-        "bn.js": "5.1.1",
+        "bn.js": "5.1.2",
         "immutable": "4.0.0-rc.12",
         "moment": "2.24.0",
         "moment-range": "4.0.2",
