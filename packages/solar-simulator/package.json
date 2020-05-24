@@ -38,7 +38,7 @@
         "commander": "5.1.0",
         "concurrently": "5.2.0",
         "cors": "2.8.5",
-        "csv-parse": "4.9.1",
+        "csv-parse": "4.10.1",
         "dotenv": "8.2.0",
         "ethers": "4.0.47",
         "express": "4.17.1",
