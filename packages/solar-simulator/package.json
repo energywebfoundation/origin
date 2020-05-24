@@ -33,7 +33,7 @@
         "@energyweb/utils-general": "9.1.0",
         "@types/moment-timezone": "0.5.13",
         "axios": "0.19.2",
-        "bn.js": "5.1.1",
+        "bn.js": "5.1.2",
         "body-parser": "1.19.0",
         "commander": "5.1.0",
         "concurrently": "5.2.0",
