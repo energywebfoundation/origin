@@ -41,12 +41,15 @@ export class Bundle extends ExtendedBaseEntity {
     }
 
     canSplit(volume: BN, energyPerUnit: BN) {
-        if (!volume.mod(energyPerUnit).isZero()) {
+        if (
+            !volume.mod(energyPerUnit).isZero() ||
+            volume.lt(energyPerUnit.mul(new BN(this.items.length)))
+        ) {
             return false;
         }
 
         const precision = new BN(1000);
-        const ratio = volume.mul(precision).div(volume);
+        const ratio = this.volume.mul(precision).div(volume);
 
         return this.items.every((item) => item.currentVolume.mul(precision).mod(ratio).isZero());
     }
