@@ -8,7 +8,10 @@ import {
     UseGuards,
     UseInterceptors,
     ClassSerializerInterceptor,
-    Get
+    Get,
+    Param,
+    ParseUUIDPipe,
+    Put
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 
@@ -84,6 +87,22 @@ export class BundleController {
                 bundleToCreate
             );
             return bundleTrade;
+        } catch (error) {
+            this.logger.error(error.message);
+
+            throw error;
+        }
+    }
+
+    @Put('/:id/cancel')
+    @UseGuards(AuthGuard())
+    public async cancelBundle(
+        @UserDecorator() user: ILoggedInUser,
+        @Param('id', new ParseUUIDPipe({ version: '4' })) bundleId: string
+    ): Promise<Bundle> {
+        try {
+            const bundle = await this.bundleService.cancel(user.ownerId.toString(), bundleId);
+            return bundle;
         } catch (error) {
             this.logger.error(error.message);
 

@@ -50,7 +50,7 @@ export class BundleService {
     }
 
     public async getAvailable(): Promise<Bundle[]> {
-        return this.bundleRepository.find();
+        return this.bundleRepository.find({ isCancelled: false });
     }
 
     public async create(userId: string, createBundle: CreateBundleDTO): Promise<Bundle> {
@@ -64,6 +64,7 @@ export class BundleService {
 
         const bundle: Bundle = {
             userId,
+            isCancelled: false,
             price: createBundle.price,
             items: createBundle.items.map(
                 (item): BundleItem =>
@@ -110,6 +111,12 @@ export class BundleService {
         const { id } = await this.bundleTradeRepository.save(trade);
 
         return this.bundleTradeRepository.findOne(id);
+    }
+
+    public async cancel(userId: string, bundleId: string) {
+        await this.bundleRepository.update({ userId, id: bundleId }, { isCancelled: true });
+
+        return this.get(bundleId);
     }
 
     private async hasEnoughAssets(userId: string, createBundle: CreateBundleDTO) {

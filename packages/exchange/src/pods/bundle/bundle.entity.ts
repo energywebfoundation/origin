@@ -22,6 +22,9 @@ export class Bundle extends ExtendedBaseEntity {
     @Column()
     price: number;
 
+    @Column()
+    isCancelled: boolean;
+
     @OneToMany(() => BundleItem, (bundleItem) => bundleItem.bundle, { eager: true, cascade: true })
     items: BundleItem[];
 

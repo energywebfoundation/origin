@@ -28,6 +28,10 @@ export class Bundles1590407732107 implements MigrationInterface {
             `ALTER TABLE "bundle_trade" ADD CONSTRAINT "FK_84d0a546dc26d9d4d0a1f484492" FOREIGN KEY ("bundleId") REFERENCES "bundle"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`,
             undefined
         );
+        await queryRunner.query(
+            `ALTER TABLE "bundle" ADD "isCancelled" boolean NOT NULL`,
+            undefined
+        );
     }
 
     public async down(queryRunner: QueryRunner): Promise<any> {
