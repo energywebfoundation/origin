@@ -26,7 +26,8 @@ heroku config:set --app ${PREFIX}-origin-api-${STAGE} \
   EXCHANGE_WALLET_PRIV='<KEY>' \
   EXCHANGE_WALLET_PUB='<KEY>' \
   JWT_SECRET='<SECRET>' \
-  MANDRILL_API_KEY='<KEY>'
+  MANDRILL_API_KEY='<KEY>' \
+  ENERGY_PER_UNIT=1000000
 
 heroku config:set --app ${PREFIX}-origin-ui-${STAGE} \
   BACKEND_PORT=443 \
