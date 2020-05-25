@@ -19,6 +19,7 @@ import { OrderService } from '../order/order.service';
 import { ProductDTO } from '../order/product.dto';
 import { DeviceTypeServiceWrapper } from '../runner/deviceTypeServiceWrapper';
 import { TradeService } from '../trade/trade.service';
+import { MessageService } from '../message/message.service';
 
 @Injectable()
 export class MatchingEngineService implements OnModuleInit {
@@ -32,8 +33,9 @@ export class MatchingEngineService implements OnModuleInit {
         private readonly tradeService: TradeService,
         @Inject(forwardRef(() => OrderService))
         private readonly orderService: OrderService,
-        private readonly deviceTypeServiceWrapper: DeviceTypeServiceWrapper
-    ) {}
+        private readonly deviceTypeServiceWrapper: DeviceTypeServiceWrapper,
+        private readonly messageService: MessageService
+    ) { }
 
     public async onModuleInit() {
         this.logger.log(`Initializing matching engine`);
@@ -92,6 +94,9 @@ export class MatchingEngineService implements OnModuleInit {
         this.logger.log('Received TradeExecutedEvent event');
 
         await this.tradeService.persist(trades);
+
+        this.logger.log('Publish TradeExecutedEvent to external');
+        this.messageService.publish(JSON.stringify(trades), 'marketplace.trade');
     }
 
     private async onActionResultEvent(statusChanges: List<ActionResultEvent>) {
@@ -104,22 +109,22 @@ export class MatchingEngineService implements OnModuleInit {
     private toOrder(order: Order) {
         return order.side === OrderSide.Ask
             ? new Ask(
-                  order.id,
-                  order.price,
-                  order.currentVolume,
-                  ProductDTO.toProduct(order.product),
-                  order.validFrom,
-                  order.userId,
-                  order.assetId
-              )
+                order.id,
+                order.price,
+                order.currentVolume,
+                ProductDTO.toProduct(order.product),
+                order.validFrom,
+                order.userId,
+                order.assetId
+            )
             : new Bid(
-                  order.id,
-                  order.price,
-                  order.currentVolume,
-                  ProductDTO.toProduct(order.product),
-                  order.validFrom,
-                  order.userId
-              );
+                order.id,
+                order.price,
+                order.currentVolume,
+                ProductDTO.toProduct(order.product),
+                order.validFrom,
+                order.userId
+            );
     }
 
     private toDirectBuy(order: Order) {
