@@ -218,6 +218,19 @@ describe('Bundles', () => {
                 expect(itemOne.amount).toBe(`${5 * MWh}`);
                 expect(itemTwo.amount).toBe(`${5 * MWh}`);
             });
+
+        await request(app.getHttpServer())
+            .get('/bundle/trade')
+            .expect(200)
+            .expect((res) => {
+                const trades = res.body as BundleTrade[];
+
+                expect(trades).toHaveLength(1);
+
+                const [trade] = trades;
+                expect(trade.bundle.id).toBe(bundle.id);
+                expect(trade.buyerId).toBe(user1Id);
+            });
     });
 
     it('should not return cancelled bundles', async () => {

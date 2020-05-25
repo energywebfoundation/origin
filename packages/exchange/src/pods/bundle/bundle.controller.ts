@@ -53,6 +53,19 @@ export class BundleController {
         }
     }
 
+    @Get('/trade')
+    @UseGuards(AuthGuard())
+    public async getTrades(@UserDecorator() user: ILoggedInUser): Promise<BundleTrade[]> {
+        try {
+            const bundleTrade = await this.bundleService.getTrades(user.ownerId.toString());
+            return bundleTrade;
+        } catch (error) {
+            this.logger.error(error.message);
+
+            throw error;
+        }
+    }
+
     @Post()
     @UseGuards(AuthGuard())
     public async createBundle(
