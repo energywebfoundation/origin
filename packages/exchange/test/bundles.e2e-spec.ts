@@ -8,7 +8,6 @@ import { CreateBundleDTO } from '../src/pods/bundle/create-bundle.dto';
 import { TransferService } from '../src/pods/transfer/transfer.service';
 import { DatabaseService } from './database.service';
 import { bootstrapTestInstance } from './exchange';
-import { CreateAssetDTO } from '../src/pods/asset/asset.entity';
 import { BuyBundleDTO } from '../src/pods/bundle/buy-bundle.dto';
 import { BundleTrade } from '../src/pods/bundle/bundle-trade.entity';
 import { AccountDTO } from '../src/pods/account/account.dto';
