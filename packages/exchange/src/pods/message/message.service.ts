@@ -1,4 +1,4 @@
-import { Injectable, OnModuleInit, OnModuleDestroy, Logger } from "@nestjs/common";
+import { Injectable, OnModuleInit, OnModuleDestroy, Logger } from '@nestjs/common';
 import { connect, Connection, Channel } from 'amqplib/callback_api';
 import { ConfigService } from '@nestjs/config';
 

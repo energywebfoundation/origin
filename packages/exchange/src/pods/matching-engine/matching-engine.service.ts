@@ -13,6 +13,7 @@ import { forwardRef, Inject, Injectable, Logger, OnModuleInit } from '@nestjs/co
 import { Interval } from '@nestjs/schedule';
 import { List } from 'immutable';
 
+import { ConfigService } from '@nestjs/config';
 import { OrderType } from '../order/order-type.enum';
 import { Order } from '../order/order.entity';
 import { OrderService } from '../order/order.service';
@@ -20,7 +21,6 @@ import { ProductDTO } from '../order/product.dto';
 import { DeviceTypeServiceWrapper } from '../runner/deviceTypeServiceWrapper';
 import { TradeService } from '../trade/trade.service';
 import { MessageService } from '../message/message.service';
-import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class MatchingEngineService implements OnModuleInit {
@@ -114,22 +114,22 @@ export class MatchingEngineService implements OnModuleInit {
     private toOrder(order: Order) {
         return order.side === OrderSide.Ask
             ? new Ask(
-                order.id,
-                order.price,
-                order.currentVolume,
-                ProductDTO.toProduct(order.product),
-                order.validFrom,
-                order.userId,
-                order.assetId
-            )
+                  order.id,
+                  order.price,
+                  order.currentVolume,
+                  ProductDTO.toProduct(order.product),
+                  order.validFrom,
+                  order.userId,
+                  order.assetId
+              )
             : new Bid(
-                order.id,
-                order.price,
-                order.currentVolume,
-                ProductDTO.toProduct(order.product),
-                order.validFrom,
-                order.userId
-            );
+                  order.id,
+                  order.price,
+                  order.currentVolume,
+                  ProductDTO.toProduct(order.product),
+                  order.validFrom,
+                  order.userId
+              );
     }
 
     private toDirectBuy(order: Order) {
