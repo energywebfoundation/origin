@@ -15,6 +15,7 @@ import { BundleService } from '../bundle/bundle.service';
 import { Bundle } from '../bundle/bundle.entity';
 import { BundleItem } from '../bundle/bundle-item.entity';
 import { BundleTrade } from '../bundle/bundle-trade.entity';
+import { plainToClass } from 'class-transformer';
 
 jest.mock('../trade/trade.service');
 jest.mock('../transfer/transfer.service');
@@ -228,28 +229,43 @@ describe('AccountBalanceService', () => {
     });
 
     it('should return asset from bundles as available', async () => {
-        registerBundleTrades(
-            {
-                volume: new BN('60'),
-                bundle: {
-                    items: [
-                        { asset: asset1, startVolume: new BN('100') } as BundleItem,
-                        { asset: asset2, startVolume: new BN('200') } as BundleItem
-                    ],
-                    volume: new BN('300')
-                } as Bundle
-            },
-            {
-                volume: new BN('10'),
-                bundle: {
-                    items: [
-                        { asset: asset1, startVolume: new BN('50') } as BundleItem,
-                        { asset: asset2, startVolume: new BN('50') } as BundleItem
-                    ],
-                    volume: new BN('100')
-                } as Bundle
-            }
-        );
+        const trade1 = plainToClass(BundleTrade, {
+            volume: new BN('60'),
+            bundle: plainToClass(Bundle, {
+                items: [
+                    {
+                        asset: asset1,
+                        startVolume: new BN('100'),
+                        currentVolume: new BN('100')
+                    },
+                    {
+                        asset: asset2,
+                        startVolume: new BN('200'),
+                        currentVolume: new BN('200')
+                    }
+                ]
+            })
+        });
+
+        const trade2 = plainToClass(BundleTrade, {
+            volume: new BN('10'),
+            bundle: plainToClass(Bundle, {
+                items: [
+                    {
+                        asset: asset1,
+                        startVolume: new BN('50'),
+                        currentVolume: new BN('50')
+                    },
+                    {
+                        asset: asset2,
+                        startVolume: new BN('50'),
+                        currentVolume: new BN('50')
+                    }
+                ]
+            })
+        });
+
+        registerBundleTrades(trade1, trade2);
 
         const res = await service.getAccountBalance(userId);
 

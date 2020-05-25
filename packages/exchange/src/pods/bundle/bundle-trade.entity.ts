@@ -21,7 +21,7 @@ export class BundleTrade extends ExtendedBaseEntity {
     buyerId: string;
 
     @Column('varchar', { transformer: BNTransformer })
-    @Transform((v: BN) => v.toString(10))
+    @Transform((v: BN) => v.toString(10), { toPlainOnly: true })
     volume: BN;
 
     @ManyToOne(() => Bundle, { eager: true })
