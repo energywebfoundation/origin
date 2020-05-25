@@ -1,20 +1,28 @@
 import { Injectable, OnModuleInit, OnModuleDestroy, Logger } from "@nestjs/common";
 import { connect, Connection, Channel } from 'amqplib/callback_api';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
-export class MessageService implements OnModuleInit {
+export class MessageService implements OnModuleInit, OnModuleDestroy {
     private readonly logger = new Logger(MessageService.name);
 
     private connection: Connection;
 
     private channel: Channel;
 
-    private exchange = 'trade';
+    private exchange: string;
+
+    private queueConnectionString: string;
+
+    constructor(private readonly configService: ConfigService) {
+        this.queueConnectionString = this.configService.get<string>('QUEUE_CONNECTION_STRING');
+        this.exchange = this.configService.get<string>('QUEUE_NAME');
+    }
 
     public onModuleInit() {
         this.logger.log('onModuleInit');
         this.logger.log('Initializing MessageService');
-        connect('amqp://reacc:cai8ydlaDA@localhost:5672', (conErr, con: Connection) => {
+        connect(this.queueConnectionString, (conErr, con: Connection) => {
             if (conErr) {
                 this.logger.error(conErr);
                 throw conErr;

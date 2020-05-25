@@ -20,6 +20,7 @@ import { ProductDTO } from '../order/product.dto';
 import { DeviceTypeServiceWrapper } from '../runner/deviceTypeServiceWrapper';
 import { TradeService } from '../trade/trade.service';
 import { MessageService } from '../message/message.service';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class MatchingEngineService implements OnModuleInit {
@@ -29,13 +30,18 @@ export class MatchingEngineService implements OnModuleInit {
 
     private matchingEngine: MatchingEngine;
 
+    private tradeTopic: string;
+
     constructor(
         private readonly tradeService: TradeService,
         @Inject(forwardRef(() => OrderService))
         private readonly orderService: OrderService,
         private readonly deviceTypeServiceWrapper: DeviceTypeServiceWrapper,
-        private readonly messageService: MessageService
-    ) { }
+        private readonly messageService: MessageService,
+        private readonly configService: ConfigService
+    ) {
+        this.tradeTopic = this.configService.get<string>('QUEUE_TOPIC_TRADE');
+    }
 
     public async onModuleInit() {
         this.logger.log(`Initializing matching engine`);
@@ -96,7 +102,7 @@ export class MatchingEngineService implements OnModuleInit {
         await this.tradeService.persist(trades);
 
         this.logger.log('Publish TradeExecutedEvent to external');
-        this.messageService.publish(JSON.stringify(trades), 'marketplace.trade');
+        this.messageService.publish(JSON.stringify(trades), this.tradeTopic);
     }
 
     private async onActionResultEvent(statusChanges: List<ActionResultEvent>) {
