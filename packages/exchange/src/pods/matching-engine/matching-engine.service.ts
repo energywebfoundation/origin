@@ -101,7 +101,6 @@ export class MatchingEngineService implements OnModuleInit {
 
         await this.tradeService.persist(trades);
 
-        this.logger.log('Publish TradeExecutedEvent to external');
         this.messageService.publish(JSON.stringify(trades), this.tradeTopic);
     }
 
