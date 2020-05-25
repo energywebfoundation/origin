@@ -111,7 +111,8 @@ export class CertificationRequestWatcherService implements OnModuleInit {
         }
 
         const { timestamp: created } = await this.issuer.provider.getBlock(event.blockNumber);
-        const user = await this.userService.findByBlockchainAccount(sender);
+        // const user = await this.userService.findByBlockchainAccount(sender);
+        const user = await this.userService.findByBlockchainAccount(owner); // workaround
 
         if (!user) {
             this.logger.error(`Encountered request from unknown address ${sender}`);
