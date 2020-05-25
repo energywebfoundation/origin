@@ -9,10 +9,6 @@ import { MessageModule } from '../message/message.module';
 @Module({
     providers: [MatchingEngineService],
     exports: [MatchingEngineService],
-    imports: [
-        TradeModule, forwardRef(() => OrderModule), 
-        RunnerModule, 
-        MessageModule
-    ]
+    imports: [TradeModule, forwardRef(() => OrderModule), RunnerModule, MessageModule]
 })
 export class MatchingEngineModule {}
