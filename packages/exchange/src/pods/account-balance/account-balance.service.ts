@@ -10,6 +10,9 @@ import { TransferService } from '../transfer/transfer.service';
 import { AccountAsset } from './account-asset';
 import { AccountBalance } from './account-balance';
 import { Asset } from '../asset/asset.entity';
+import { BundleService } from '../bundle/bundle.service';
+
+export type AssetAmount = { id: string; amount: BN };
 
 @Injectable()
 export class AccountBalanceService {
@@ -19,26 +22,34 @@ export class AccountBalanceService {
         private readonly tradeService: TradeService,
         private readonly transferService: TransferService,
         @Inject(forwardRef(() => OrderService))
-        private readonly orderService: OrderService
+        private readonly orderService: OrderService,
+        @Inject(forwardRef(() => BundleService))
+        private readonly bundleService: BundleService
     ) {}
 
     public async getAccountBalance(userId: string): Promise<AccountBalance> {
         this.logger.debug(`[UserId: ${userId}] Requested account balance:`);
 
-        const deposits = await this.getTransfers(userId);
+        const transfers = await this.getTransfers(userId);
         const trades = await this.getTrades(userId);
         const sellOrders = await this.getSellOrders(userId);
+        const inBundles = await this.getAssetsLockedInBundles(userId);
+        const fromBundles = await this.getAssetsFromBundles(userId);
 
         const sum = (oldVal: AccountAsset, newVal: AccountAsset) => ({
             ...oldVal,
             amount: oldVal.amount.add(newVal.amount)
         });
 
-        const available = deposits.mergeWith(sum, trades).mergeWith(sum, sellOrders);
+        const available = transfers
+            .mergeWith(sum, trades)
+            .mergeWith(sum, sellOrders)
+            .mergeWith(sum, fromBundles);
+        const locked = sellOrders.mergeWith(sum, inBundles);
 
         const balances = new AccountBalance({
             available: Array.from(available.values()).filter((asset) => asset.amount.gt(new BN(0))),
-            locked: Array.from(sellOrders.values()).map(
+            locked: Array.from(locked.values()).map(
                 (asset) => new AccountAsset({ ...asset, amount: asset.amount.abs() })
             )
         });
@@ -48,17 +59,44 @@ export class AccountBalanceService {
         return balances;
     }
 
-    public async hasEnoughAssetAmount(userId: string, assetId: string, assetAmount: string) {
+    public async hasEnoughAssetAmount(userId: string, ...assets: AssetAmount[]) {
         this.logger.debug(
-            `Checking available amount for user ${userId} asset ${assetId} amount ${assetAmount}`
+            `Checking available amount for user ${userId} asset ${assets.map(
+                (a) => a.id
+            )} amount ${assets.map((a) => a.amount.toString(10))}`
         );
 
         const { available } = await this.getAccountBalance(userId);
-        const accountAsset = available.find(({ asset }) => asset.id === assetId);
 
-        this.logger.debug(`Available amount is ${accountAsset?.amount.toString(10) ?? 0}`);
+        return assets.every(({ id, amount }) => {
+            const accountAsset = available.find(({ asset }) => asset.id === id);
 
-        return accountAsset && accountAsset.amount.gte(new BN(assetAmount));
+            this.logger.debug(`Available amount is ${accountAsset?.amount.toString(10) ?? 0}`);
+
+            return accountAsset && accountAsset.amount.gte(amount);
+        });
+    }
+
+    private async getAssetsLockedInBundles(userId: string) {
+        const bundles = await this.bundleService.getByUser(userId);
+        const items = bundles.flatMap((bundle) => bundle.items);
+
+        return this.sumByAsset(
+            items,
+            (bundle) => bundle.asset,
+            (order) => order.currentVolume.muln(-1)
+        );
+    }
+
+    private async getAssetsFromBundles(userId: string) {
+        const trades = await this.bundleService.getTrades(userId);
+        const items = trades.flatMap((trade) => trade.items);
+
+        return this.sumByAsset(
+            items,
+            (bundle) => bundle.asset,
+            (order) => order.volume
+        );
     }
 
     private async getSellOrders(userId: string) {
@@ -67,7 +105,7 @@ export class AccountBalanceService {
         return this.sumByAsset(
             sellOrders,
             (order) => order.asset,
-            (order) => new BN(order.currentVolume.muln(-1))
+            (order) => order.currentVolume.muln(-1)
         );
     }
 
@@ -92,7 +130,7 @@ export class AccountBalanceService {
             (trade) => trade.ask.asset,
             (trade) => {
                 const sign = trade.ask.userId === userId ? -1 : 1;
-                return new BN(trade.volume.muln(sign));
+                return trade.volume.muln(sign);
             }
         );
     }

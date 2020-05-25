@@ -11,10 +11,15 @@ import { TransferDirection } from '../transfer/transfer-direction';
 import { Transfer } from '../transfer/transfer.entity';
 import { TransferService } from '../transfer/transfer.service';
 import { AccountBalanceService } from './account-balance.service';
+import { BundleService } from '../bundle/bundle.service';
+import { Bundle } from '../bundle/bundle.entity';
+import { BundleItem } from '../bundle/bundle-item.entity';
+import { BundleTrade } from '../bundle/bundle-trade.entity';
 
 jest.mock('../trade/trade.service');
 jest.mock('../transfer/transfer.service');
 jest.mock('../order/order.service');
+jest.mock('../bundle/bundle.service');
 
 describe('AccountBalanceService', () => {
     const userId = '1';
@@ -25,6 +30,7 @@ describe('AccountBalanceService', () => {
     let tradeService: TradeService;
     let transferService: TransferService;
     let orderService: OrderService;
+    let bundleService: BundleService;
 
     const registerTransfer = (...transfers: Partial<Transfer>[]) => {
         jest.spyOn(transferService, 'getAllCompleted').mockImplementation(
@@ -42,19 +48,38 @@ describe('AccountBalanceService', () => {
         );
     };
 
+    const registerBundles = (...bundles: Partial<Bundle>[]) => {
+        jest.spyOn(bundleService, 'getByUser').mockImplementation(async () => bundles as Bundle[]);
+    };
+
+    const registerBundleTrades = (...trades: Partial<BundleTrade>[]) => {
+        jest.spyOn(bundleService, 'getTrades').mockImplementation(
+            async () => trades as BundleTrade[]
+        );
+    };
+
     beforeEach(async () => {
         const module: TestingModule = await Test.createTestingModule({
-            providers: [AccountBalanceService, TradeService, TransferService, OrderService]
+            providers: [
+                AccountBalanceService,
+                TradeService,
+                TransferService,
+                OrderService,
+                BundleService
+            ]
         }).compile();
 
         service = module.get<AccountBalanceService>(AccountBalanceService);
         tradeService = module.get<TradeService>(TradeService);
         transferService = module.get<TransferService>(TransferService);
         orderService = module.get<OrderService>(OrderService);
+        bundleService = module.get<BundleService>(BundleService);
 
         registerTransfer();
         registerTrade();
         registerOrder();
+        registerBundles();
+        registerBundleTrades();
     });
 
     it('should be defined', () => {
@@ -172,5 +197,69 @@ describe('AccountBalanceService', () => {
         expect(res.locked.length).toBe(1);
         expect(res.locked[0].asset).toEqual(asset1);
         expect(res.locked[0].amount).toEqual(new BN(1000));
+    });
+
+    it('should return asset in bundles as locked', async () => {
+        registerBundles(
+            {
+                items: [
+                    { asset: asset1, currentVolume: new BN('1000') } as BundleItem,
+                    { asset: asset2, currentVolume: new BN('500') } as BundleItem
+                ]
+            },
+            {
+                items: [
+                    { asset: asset1, currentVolume: new BN('250') } as BundleItem,
+                    { asset: asset2, currentVolume: new BN('500') } as BundleItem
+                ]
+            }
+        );
+
+        const res = await service.getAccountBalance(userId);
+
+        expect(res.locked.length).toBe(2);
+        const [assetOne, assetTwo] = res.locked;
+
+        expect(assetOne.asset).toEqual(asset1);
+        expect(assetOne.amount).toMatchObject(new BN(1250));
+
+        expect(assetTwo.asset).toEqual(asset2);
+        expect(assetTwo.amount).toMatchObject(new BN(1000));
+    });
+
+    it('should return asset from bundles as available', async () => {
+        registerBundleTrades(
+            {
+                volume: new BN('60'),
+                bundle: {
+                    items: [
+                        { asset: asset1, startVolume: new BN('100') } as BundleItem,
+                        { asset: asset2, startVolume: new BN('200') } as BundleItem
+                    ],
+                    volume: new BN('300')
+                } as Bundle
+            },
+            {
+                volume: new BN('10'),
+                bundle: {
+                    items: [
+                        { asset: asset1, startVolume: new BN('50') } as BundleItem,
+                        { asset: asset2, startVolume: new BN('50') } as BundleItem
+                    ],
+                    volume: new BN('100')
+                } as Bundle
+            }
+        );
+
+        const res = await service.getAccountBalance(userId);
+
+        expect(res.available.length).toBe(2);
+        const [assetOne, assetTwo] = res.available;
+
+        expect(assetOne.asset).toEqual(asset1);
+        expect(assetOne.amount).toMatchObject(new BN(20 + 5));
+
+        expect(assetTwo.asset).toEqual(asset2);
+        expect(assetTwo.amount).toMatchObject(new BN(40 + 5));
     });
 });
