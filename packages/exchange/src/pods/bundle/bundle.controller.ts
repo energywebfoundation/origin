@@ -25,6 +25,18 @@ export class BundleController {
 
     constructor(private readonly bundleService: BundleService) {}
 
+    @Get('/available')
+    public async getAvailableBundles(): Promise<Bundle[]> {
+        try {
+            const bundles = await this.bundleService.getAvailable();
+            return bundles;
+        } catch (error) {
+            this.logger.error(error.message);
+
+            throw error;
+        }
+    }
+
     @Get()
     @UseGuards(AuthGuard())
     public async getBundles(@UserDecorator() user: ILoggedInUser): Promise<Bundle[]> {

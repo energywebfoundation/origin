@@ -49,6 +49,10 @@ export class BundleService {
         return this.bundleTradeRepository.find({ where: { buyerId: userId } });
     }
 
+    public async getAvailable(): Promise<Bundle[]> {
+        return this.bundleRepository.find();
+    }
+
     public async create(userId: string, createBundle: CreateBundleDTO): Promise<Bundle> {
         this.logger.debug(
             `Bundle creation requested by userId=${userId} ${JSON.stringify(createBundle)}`

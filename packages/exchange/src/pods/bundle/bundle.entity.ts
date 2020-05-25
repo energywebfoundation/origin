@@ -16,6 +16,7 @@ export class Bundle extends ExtendedBaseEntity {
     id: string;
 
     @Column()
+    @Expose()
     userId: string;
 
     @Column()

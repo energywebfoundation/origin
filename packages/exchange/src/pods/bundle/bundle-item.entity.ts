@@ -1,6 +1,6 @@
 import { ExtendedBaseEntity } from '@energyweb/origin-backend';
 import BN from 'bn.js';
-import { Transform } from 'class-transformer';
+import { Transform, Exclude } from 'class-transformer';
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 
 import { BNTransformer } from '../../utils/valueTransformers';
@@ -24,5 +24,6 @@ export class BundleItem extends ExtendedBaseEntity {
     currentVolume: BN;
 
     @ManyToOne(() => Bundle, (bundle) => bundle.items)
+    @Exclude()
     bundle: Bundle;
 }
