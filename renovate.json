@@ -6,7 +6,8 @@
         "@energyweb/utils-general",
         "@energyweb/origin-backend",
         "ganache-cli",
-        "solc"
+        "solc",
+        "@date-io/moment"
     ],
     "labels": ["dependencies"],
     "packageRules": [
