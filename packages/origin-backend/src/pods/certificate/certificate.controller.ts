@@ -87,9 +87,6 @@ export class CertificateController {
         @Param('id') id: number
     ): Promise<IOwnershipCommitmentProofWithTx> {
         const certificate = await this.certificateService.get(id);
-        console.log({
-            certificate
-        });
 
         if (!certificate?.currentOwnershipCommitment) {
             throw new NotFoundException(`getOwnershipCommitment(): ${StorageErrors.NON_EXISTENT}`);
