@@ -10,7 +10,7 @@
         "allowSyntheticDefaultImports": true,
         "resolveJsonModule": true,
         "esModuleInterop": true,
-        "lib": ["es2018", "dom"],
+        "lib": ["es2019", "dom"],
         "skipLibCheck": true,
         "preserveSymlinks": true,
         "pretty": true

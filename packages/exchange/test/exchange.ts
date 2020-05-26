@@ -13,6 +13,7 @@ import { ethers } from 'ethers';
 import { entities } from '../src';
 import { AppModule } from '../src/app.module';
 import { AccountService } from '../src/pods/account/account.service';
+import { BundleService } from '../src/pods/bundle/bundle.service';
 import { DemandService } from '../src/pods/demand/demand.service';
 import { OrderService } from '../src/pods/order/order.service';
 import { ProductService } from '../src/pods/product/product.service';
@@ -89,7 +90,8 @@ export const bootstrapTestInstance = async (deviceServiceMock?: DeviceService) =
         // ganache account 1
         EXCHANGE_WALLET_PUB: '0xd46aC0Bc23dB5e8AfDAAB9Ad35E9A3bA05E092E8',
         EXCHANGE_WALLET_PRIV: '0xd9bc30dc17023fbb68fe3002e0ff9107b241544fd6d60863081c55e383f1b5a3',
-        ISSUER_ID: 'Issuer ID'
+        ISSUER_ID: 'Issuer ID',
+        ENERGY_PER_UNIT: 1000000
     });
 
     const moduleFixture = await Test.createTestingModule({
@@ -167,6 +169,7 @@ export const bootstrapTestInstance = async (deviceServiceMock?: DeviceService) =
     const demandService = await app.resolve<DemandService>(DemandService);
     const orderService = await app.resolve<OrderService>(OrderService);
     const productService = await app.resolve<ProductService>(ProductService);
+    const bundleService = await app.resolve<BundleService>(BundleService);
 
     app.useLogger(testLogger);
     app.enableCors();
@@ -180,6 +183,7 @@ export const bootstrapTestInstance = async (deviceServiceMock?: DeviceService) =
         demandService,
         orderService,
         productService,
+        bundleService,
         registry,
         issuer,
         app

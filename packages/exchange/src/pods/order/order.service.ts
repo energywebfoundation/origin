@@ -85,11 +85,10 @@ export class OrderService {
         this.logger.debug(`Requested ask creation for user:${userId} ask:${JSON.stringify(ask)}`);
 
         if (
-            !(await this.accountBalanceService.hasEnoughAssetAmount(
-                userId,
-                ask.assetId,
-                ask.volume
-            ))
+            !(await this.accountBalanceService.hasEnoughAssetAmount(userId, {
+                id: ask.assetId,
+                amount: new BN(ask.volume)
+            }))
         ) {
             throw new Error('Not enough assets');
         }

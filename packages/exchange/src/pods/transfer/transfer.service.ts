@@ -1,17 +1,18 @@
-import { Injectable, forwardRef, Inject, Logger } from '@nestjs/common';
+import { forwardRef, Inject, Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, Connection, EntityManager, FindOneOptions } from 'typeorm';
+import BN from 'bn.js';
+import { Connection, EntityManager, FindOneOptions, Repository } from 'typeorm';
 
-import { Transfer } from './transfer.entity';
-import { TransferDirection } from './transfer-direction';
-import { CreateDepositDTO } from './create-deposit.dto';
-import { AssetService } from '../asset/asset.service';
-import { Asset } from '../asset/asset.entity';
-import { AccountService } from '../account/account.service';
-import { RequestWithdrawalDTO } from './create-withdrawal.dto';
 import { AccountBalanceService } from '../account-balance/account-balance.service';
-import { TransferStatus } from './transfer-status';
+import { AccountService } from '../account/account.service';
+import { Asset } from '../asset/asset.entity';
+import { AssetService } from '../asset/asset.service';
 import { WithdrawalProcessorService } from '../withdrawal-processor/withdrawal-processor.service';
+import { CreateDepositDTO } from './create-deposit.dto';
+import { RequestWithdrawalDTO } from './create-withdrawal.dto';
+import { TransferDirection } from './transfer-direction';
+import { TransferStatus } from './transfer-status';
+import { Transfer } from './transfer.entity';
 
 @Injectable()
 export class TransferService {
@@ -56,11 +57,10 @@ export class TransferService {
         withdrawalDTO: RequestWithdrawalDTO,
         transaction?: EntityManager
     ) {
-        const hasEnoughFunds = await this.accountBalanceService.hasEnoughAssetAmount(
-            userId,
-            withdrawalDTO.assetId,
-            withdrawalDTO.amount
-        );
+        const hasEnoughFunds = await this.accountBalanceService.hasEnoughAssetAmount(userId, {
+            id: withdrawalDTO.assetId,
+            amount: new BN(withdrawalDTO.amount)
+        });
 
         if (!hasEnoughFunds) {
             throw new Error('Not enough funds');
