@@ -1,8 +1,13 @@
 import { OrderSide } from '@energyweb/exchange-core';
 import { Test, TestingModule } from '@nestjs/testing';
 import BN from 'bn.js';
+import { plainToClass } from 'class-transformer';
 
 import { Asset } from '../asset/asset.entity';
+import { BundleItem } from '../bundle/bundle-item.entity';
+import { BundleTrade } from '../bundle/bundle-trade.entity';
+import { Bundle } from '../bundle/bundle.entity';
+import { BundleService } from '../bundle/bundle.service';
 import { Order } from '../order/order.entity';
 import { OrderService } from '../order/order.service';
 import { Trade } from '../trade/trade.entity';
@@ -11,11 +16,6 @@ import { TransferDirection } from '../transfer/transfer-direction';
 import { Transfer } from '../transfer/transfer.entity';
 import { TransferService } from '../transfer/transfer.service';
 import { AccountBalanceService } from './account-balance.service';
-import { BundleService } from '../bundle/bundle.service';
-import { Bundle } from '../bundle/bundle.entity';
-import { BundleItem } from '../bundle/bundle-item.entity';
-import { BundleTrade } from '../bundle/bundle-trade.entity';
-import { plainToClass } from 'class-transformer';
 
 jest.mock('../trade/trade.service');
 jest.mock('../transfer/transfer.service');
