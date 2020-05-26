@@ -89,6 +89,10 @@ export class BundleService {
             )}`
         );
 
+        if (bundle.isCancelled) {
+            throw new ForbiddenException('Unable to buy cancelled bundle');
+        }
+
         if (bundle.userId === userId) {
             throw new ForbiddenException('Unable to buy owned bundle');
         }

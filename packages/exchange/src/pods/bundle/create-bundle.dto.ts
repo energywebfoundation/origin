@@ -1,4 +1,4 @@
-import { IsInt, IsPositive, ValidateNested } from 'class-validator';
+import { IsInt, IsPositive, ValidateNested, ArrayMinSize } from 'class-validator';
 
 import { BundleItemDTO } from './bundle-item.dto';
 
@@ -8,5 +8,6 @@ export class CreateBundleDTO {
     price: number;
 
     @ValidateNested()
+    @ArrayMinSize(2)
     items: BundleItemDTO[];
 }
