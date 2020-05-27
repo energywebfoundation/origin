@@ -127,7 +127,6 @@ describe('orderbook tests', () => {
             } as ProductFilterDTO)
             .expect(200)
             .expect((res) => {
-                console.log(res.body);
                 const { asks, bids } = res.body as {
                     asks: OrderBookOrderDTO[];
                     bids: OrderBookOrderDTO[];
@@ -141,7 +140,6 @@ describe('orderbook tests', () => {
             .post('/orderbook/search')
             .expect(200)
             .expect((res) => {
-                console.log(res.body);
                 const { asks, bids } = res.body as {
                     asks: OrderBookOrderDTO[];
                     bids: OrderBookOrderDTO[];

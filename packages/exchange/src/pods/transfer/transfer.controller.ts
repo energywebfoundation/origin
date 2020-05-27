@@ -1,5 +1,5 @@
-import { ILoggedInUser } from '@energyweb/origin-backend-core';
-import { UserDecorator } from '@energyweb/origin-backend-utils';
+import { ILoggedInUser, Role } from '@energyweb/origin-backend-core';
+import { Roles, RolesGuard, UserDecorator } from '@energyweb/origin-backend-utils';
 import { Body, Controller, ForbiddenException, Get, Post, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 
@@ -17,7 +17,8 @@ export class TransferController {
     }
 
     @Post('withdrawal')
-    @UseGuards(AuthGuard())
+    @UseGuards(AuthGuard(), RolesGuard)
+    @Roles(Role.OrganizationAdmin)
     public async requestWithdrawal(
         @UserDecorator() user: ILoggedInUser,
         @Body() withdrawal: RequestWithdrawalDTO

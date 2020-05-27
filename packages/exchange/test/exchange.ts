@@ -19,6 +19,7 @@ import { OrderService } from '../src/pods/order/order.service';
 import { ProductService } from '../src/pods/product/product.service';
 import { TransferService } from '../src/pods/transfer/transfer.service';
 import { DatabaseService } from './database.service';
+import { RolesGuard } from '@energyweb/origin-backend-utils';
 
 const web3 = 'http://localhost:8580';
 
@@ -158,6 +159,8 @@ export const bootstrapTestInstance = async (deviceServiceMock?: DeviceService) =
         .overrideProvider(ConfigService)
         .useValue(configService)
         .overrideGuard(AuthGuard('default'))
+        .useValue(authGuard)
+        .overrideGuard(RolesGuard)
         .useValue(authGuard)
         .compile();
 
