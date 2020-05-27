@@ -225,4 +225,18 @@ describe('Organization e2e tests', () => {
                 expect(invitation.organization).toBe(organization.id);
             });
     });
+
+    it('should fail to get invitations for different organization', async () => {
+        const { accessToken, organization } = await registerAndLogin(
+            app,
+            userService,
+            organizationService,
+            [Role.OrganizationAdmin]
+        );
+
+        await request(app.getHttpServer())
+            .get(`/organization/${organization.id + 1}/invitations`)
+            .set('Authorization', `Bearer ${accessToken}`)
+            .expect(401);
+    });
 });

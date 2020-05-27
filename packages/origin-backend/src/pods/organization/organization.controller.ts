@@ -27,7 +27,8 @@ import {
     Post,
     Put,
     UnprocessableEntityException,
-    UseGuards
+    UseGuards,
+    UnauthorizedException
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -193,8 +194,15 @@ export class OrganizationController {
     @Get('/:id/invitations')
     @UseGuards(AuthGuard())
     async getInvitationsForOrganization(
-        @Param('id') organizationId: string
+        @Param('id') organizationId: string,
+        @UserDecorator() loggedUser: ILoggedInUser
     ): Promise<IOrganizationInvitation[]> {
+        if (loggedUser.organizationId !== Number(organizationId)) {
+            throw new UnauthorizedException(
+                `You can only GET invitations from your organization. Requested: ${organizationId}, User organization: ${loggedUser.organizationId}`
+            );
+        }
+
         const organization = await this.organizationService.findOne(organizationId);
 
         if (!organization) {
