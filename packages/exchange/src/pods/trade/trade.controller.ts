@@ -16,7 +16,7 @@ export class TradeController {
     @Get()
     public async getAll(@UserDecorator() user: ILoggedInUser): Promise<TradeDTO[]> {
         const userId = user.id.toString();
-        const trades = await this.tradeService.getAll(userId, false);
+        const trades = await this.tradeService.getAllByUser(userId, false);
 
         return trades.map((trade) =>
             TradeDTO.fromTrade(trade.withMaskedOrder(userId), trade.ask.assetId, trade.ask.product)
