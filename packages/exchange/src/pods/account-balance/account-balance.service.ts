@@ -123,7 +123,7 @@ export class AccountBalanceService {
     }
 
     private async getTrades(userId: string) {
-        const trades = await this.tradeService.getAll(userId, false);
+        const trades = await this.tradeService.getAllByUser(userId, false);
 
         return this.sumByAsset(
             trades,
