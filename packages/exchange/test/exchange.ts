@@ -2,6 +2,7 @@
 import { Contracts } from '@energyweb/issuer';
 import { ConfigurationService, DeviceService, ExtendedBaseEntity } from '@energyweb/origin-backend';
 import { IDeviceProductInfo, IDeviceWithRelationsIds } from '@energyweb/origin-backend-core';
+import { RolesGuard } from '@energyweb/origin-backend-utils';
 import { CanActivate, ExecutionContext, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { AuthGuard } from '@nestjs/passport';
@@ -158,6 +159,8 @@ export const bootstrapTestInstance = async (deviceServiceMock?: DeviceService) =
         .overrideProvider(ConfigService)
         .useValue(configService)
         .overrideGuard(AuthGuard('default'))
+        .useValue(authGuard)
+        .overrideGuard(RolesGuard)
         .useValue(authGuard)
         .compile();
 

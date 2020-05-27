@@ -34,7 +34,8 @@
         "typeorm:migrate": "yarn typeorm migration:generate -- -n",
         "typeorm:run": "yarn typeorm migration:run",
         "typeorm:drop": "yarn typeorm schema:drop",
-        "typeorm:dropAndMigrate": "yarn typeorm:drop && yarn typeorm:run"
+        "typeorm:dropAndMigrate": "yarn typeorm:drop && yarn typeorm:run",
+        "precommit": "lint-staged"
     },
     "dependencies": {
         "@energyweb/exchange-core": "3.0.1",
