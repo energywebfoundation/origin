@@ -17,6 +17,8 @@ type TradeCacheItem = {
     price: number;
 };
 
+const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+
 @Injectable()
 export class TradeService implements OnModuleInit {
     private readonly logger = new Logger(TradeService.name);
@@ -59,7 +61,7 @@ export class TradeService implements OnModuleInit {
                 });
 
                 const tradeToStore = new Trade({
-                    created: trade.created,
+                    created: new Date(),
                     price: trade.price,
                     volume: trade.volume,
                     bid: { id: bid.id } as Order,
@@ -68,6 +70,9 @@ export class TradeService implements OnModuleInit {
                 await entityManager.insert<Trade>(Trade, tradeToStore);
 
                 trades.push(tradeToStore.id);
+
+                // This is to force each trade have unique created timestamp making the trades order deterministic
+                await sleep(1);
             }
             this.logger.debug(`Persisting trades and orders completed`);
         });
