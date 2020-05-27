@@ -67,7 +67,7 @@ export class MessageService implements OnModuleInit, OnModuleDestroy {
         }
 
         this.logger.log('Publish item to external by messaging queue');
-        this.logger.debug(message);
+        this.logger.log(message);
         if (this.channel) {
             this.channel.publish(this.exchange, topic, Buffer.from(message));
         } else {

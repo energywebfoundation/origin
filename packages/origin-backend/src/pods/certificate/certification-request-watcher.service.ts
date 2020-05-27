@@ -98,6 +98,7 @@ export class CertificationRequestWatcherService implements OnModuleInit {
             data,
             sender
         } = await this.issuer.getCertificationRequest(_id);
+
         const [fromTime, toTime, deviceId] = await this.issuer.decodeData(data);
 
         const device = await this.deviceService.findByExternalId({

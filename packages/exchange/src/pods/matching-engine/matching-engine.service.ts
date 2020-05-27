@@ -13,14 +13,14 @@ import { forwardRef, Inject, Injectable, Logger, OnModuleInit } from '@nestjs/co
 import { Interval } from '@nestjs/schedule';
 import { List } from 'immutable';
 
-import { ConfigService } from '@nestjs/config';
+// import { ConfigService } from '@nestjs/config';
 import { OrderType } from '../order/order-type.enum';
 import { Order } from '../order/order.entity';
 import { OrderService } from '../order/order.service';
 import { ProductDTO } from '../order/product.dto';
 import { DeviceTypeServiceWrapper } from '../runner/deviceTypeServiceWrapper';
 import { TradeService } from '../trade/trade.service';
-import { MessageService } from '../message/message.service';
+// import { MessageService } from '../message/message.service';
 
 @Injectable()
 export class MatchingEngineService implements OnModuleInit {
@@ -30,17 +30,17 @@ export class MatchingEngineService implements OnModuleInit {
 
     private matchingEngine: MatchingEngine;
 
-    private tradeTopic: string;
+    // private tradeTopic: string;
 
     constructor(
         private readonly tradeService: TradeService,
         @Inject(forwardRef(() => OrderService))
         private readonly orderService: OrderService,
-        private readonly deviceTypeServiceWrapper: DeviceTypeServiceWrapper,
-        private readonly messageService: MessageService,
-        private readonly configService: ConfigService
+        private readonly deviceTypeServiceWrapper: DeviceTypeServiceWrapper//,
+        // private readonly messageService: MessageService,
+        // private readonly configService: ConfigService
     ) {
-        this.tradeTopic = this.configService.get<string>('QUEUE_TOPIC_TRADE');
+        // this.tradeTopic = this.configService.get<string>('QUEUE_TOPIC_TRADE');
     }
 
     public async onModuleInit() {
@@ -101,7 +101,7 @@ export class MatchingEngineService implements OnModuleInit {
 
         await this.tradeService.persist(trades);
 
-        this.messageService.publish(JSON.stringify(trades), this.tradeTopic);
+        //this.messageService.publish(JSON.stringify(trades), this.tradeTopic);
     }
 
     private async onActionResultEvent(statusChanges: List<ActionResultEvent>) {
