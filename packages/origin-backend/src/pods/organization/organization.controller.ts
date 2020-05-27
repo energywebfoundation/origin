@@ -190,10 +190,10 @@ export class OrganizationController {
         };
     }
 
-    @Get('/invitation/:organizationId')
+    @Get('/:id/invitations')
     @UseGuards(AuthGuard())
     async getInvitationsForOrganization(
-        @Param('organizationId') organizationId: string
+        @Param('id') organizationId: string
     ): Promise<IOrganizationInvitation[]> {
         const organization = await this.organizationService.findOne(organizationId);
 

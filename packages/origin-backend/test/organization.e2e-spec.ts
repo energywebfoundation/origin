@@ -215,7 +215,7 @@ describe('Organization e2e tests', () => {
             .expect(201);
 
         await request(app.getHttpServer())
-            .get(`/organization/invitation/${organization.id}`)
+            .get(`/organization/${organization.id}/invitations`)
             .set('Authorization', `Bearer ${accessToken}`)
             .expect(200)
             .expect((res) => {
