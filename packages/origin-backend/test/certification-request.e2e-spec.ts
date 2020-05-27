@@ -143,6 +143,65 @@ describe('CertificationRequest e2e tests', () => {
             });
     });
 
+    it('should not be able to create a certification request for a non-approved device', async () => {
+        const { user } = await registerAndLogin(
+            app,
+            userService,
+            organizationService,
+            [Role.OrganizationUser, Role.OrganizationDeviceManager],
+            '1',
+            defaultOrganization
+        );
+
+        const device = await deviceService.create(
+            {
+                address: '',
+                capacityInW: 1000,
+                complianceRegistry: 'I-REC',
+                country: 'EU',
+                description: '',
+                deviceType: 'Solar',
+                facilityName: 'Test',
+                gpsLatitude: '10',
+                gpsLongitude: '10',
+                gridOperator: 'OP',
+                images: '',
+                operationalSince: 2000,
+                otherGreenAttributes: '',
+                province: '',
+                region: '',
+                status: DeviceStatus.Submitted,
+                timezone: '',
+                typeOfPublicSupport: '',
+                deviceGroup: '',
+                smartMeterReads: [],
+                externalDeviceIds: [],
+                automaticPostForSale: false,
+                defaultAskPrice: null
+            },
+            user
+        );
+
+        const owner = '0xD173313A51f8fc37BcF67569b463abd89d81844f';
+        const fromTime = moment().subtract(2, 'month').unix();
+        const toTime = moment().subtract(1, 'month').unix();
+        const created = moment().subtract(1, 'day').unix();
+
+        expect(
+            certificationRequestService.create({
+                id: 1,
+                owner,
+                fromTime,
+                toTime,
+                device,
+                approved: false,
+                revoked: false,
+                created,
+                userId: user.ownerId
+            })
+        ).rejects.toThrow();
+    });
+
     it('should allow issuer to read the certification request', async () => {
         const { accessToken } = await registerAndLogin(
             app,
