@@ -40,7 +40,7 @@ describe('AccountBalanceService', () => {
     };
 
     const registerTrade = (...trades: Partial<Trade>[]) => {
-        jest.spyOn(tradeService, 'getAll').mockImplementation(async () => trades as Trade[]);
+        jest.spyOn(tradeService, 'getAllByUser').mockImplementation(async () => trades as Trade[]);
     };
 
     const registerOrder = (...orders: Partial<Order>[]) => {

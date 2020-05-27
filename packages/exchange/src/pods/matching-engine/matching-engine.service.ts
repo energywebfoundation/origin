@@ -1,10 +1,7 @@
 import {
     ActionResultEvent,
-    Ask,
-    Bid,
     DirectBuy,
     MatchingEngine,
-    OrderSide,
     ProductFilter,
     TradeExecutedEvent
 } from '@energyweb/exchange-core';
@@ -16,9 +13,9 @@ import { List } from 'immutable';
 import { OrderType } from '../order/order-type.enum';
 import { Order } from '../order/order.entity';
 import { OrderService } from '../order/order.service';
-import { ProductDTO } from '../order/product.dto';
 import { DeviceTypeServiceWrapper } from '../runner/deviceTypeServiceWrapper';
 import { TradeService } from '../trade/trade.service';
+import { toMatchingEngineOrder } from './order-mapper';
 
 @Injectable()
 export class MatchingEngineService implements OnModuleInit {
@@ -49,7 +46,7 @@ export class MatchingEngineService implements OnModuleInit {
         orders.forEach((order) => {
             this.logger.log(`Submitting order ${order.id}`);
 
-            this.matchingEngine.submitOrder(this.toOrder(order));
+            this.matchingEngine.submitOrder(toMatchingEngineOrder(order));
         });
 
         this.matchingEngine.trades.subscribe(async (trades) => this.onTradeExecutedEvent(trades));
@@ -65,7 +62,7 @@ export class MatchingEngineService implements OnModuleInit {
         this.logger.debug(`Submitting order ${JSON.stringify(order)}`);
 
         if (order.type === OrderType.Limit) {
-            this.matchingEngine.submitOrder(this.toOrder(order));
+            this.matchingEngine.submitOrder(toMatchingEngineOrder(order));
         } else if (order.type === OrderType.Direct) {
             this.matchingEngine.submitDirectBuy(this.toDirectBuy(order));
         }
@@ -99,27 +96,6 @@ export class MatchingEngineService implements OnModuleInit {
         this.logger.log(`Received StatusChangedEvent event ${JSON.stringify(statusChanges)}`);
 
         await this.orderService.persistOrderStatusChange(statusChanges);
-    }
-
-    private toOrder(order: Order) {
-        return order.side === OrderSide.Ask
-            ? new Ask(
-                  order.id,
-                  order.price,
-                  order.currentVolume,
-                  ProductDTO.toProduct(order.product),
-                  order.validFrom,
-                  order.userId,
-                  order.assetId
-              )
-            : new Bid(
-                  order.id,
-                  order.price,
-                  order.currentVolume,
-                  ProductDTO.toProduct(order.product),
-                  order.validFrom,
-                  order.userId
-              );
     }
 
     private toDirectBuy(order: Order) {
