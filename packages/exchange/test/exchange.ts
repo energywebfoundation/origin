@@ -2,6 +2,7 @@
 import { Contracts } from '@energyweb/issuer';
 import { ConfigurationService, DeviceService, ExtendedBaseEntity } from '@energyweb/origin-backend';
 import { IDeviceProductInfo, IDeviceWithRelationsIds } from '@energyweb/origin-backend-core';
+import { RolesGuard } from '@energyweb/origin-backend-utils';
 import { CanActivate, ExecutionContext, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { AuthGuard } from '@nestjs/passport';
@@ -19,7 +20,6 @@ import { OrderService } from '../src/pods/order/order.service';
 import { ProductService } from '../src/pods/product/product.service';
 import { TransferService } from '../src/pods/transfer/transfer.service';
 import { DatabaseService } from './database.service';
-import { RolesGuard } from '@energyweb/origin-backend-utils';
 
 const web3 = 'http://localhost:8580';
 
