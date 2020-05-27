@@ -17,6 +17,8 @@ import { DatabaseService } from './database.service';
 import { bootstrapTestInstance, registerAndLogin } from './origin-backend';
 
 describe('Organization e2e tests', () => {
+    jest.setTimeout(1000000);
+
     let app: INestApplication;
     let databaseService: DatabaseService;
     let deviceService: DeviceService;
@@ -193,6 +195,34 @@ describe('Organization e2e tests', () => {
             .expect((res) => {
                 const { organization: memberOrganization } = res.body as TUserBaseEntity;
                 expect(memberOrganization).toBeUndefined();
+            });
+    });
+
+    it('should be able to get invitations for organization', async () => {
+        const { accessToken, organization } = await registerAndLogin(
+            app,
+            userService,
+            organizationService,
+            [Role.OrganizationAdmin]
+        );
+
+        const newUserEmail = 'newuser@example.com';
+
+        await request(app.getHttpServer())
+            .post('/organization/invite')
+            .set('Authorization', `Bearer ${accessToken}`)
+            .send({ email: newUserEmail })
+            .expect(201);
+
+        await request(app.getHttpServer())
+            .get(`/organization/invitation/${organization.id}`)
+            .set('Authorization', `Bearer ${accessToken}`)
+            .expect(200)
+            .expect((res) => {
+                const [invitation] = res.body as IOrganizationInvitation[];
+
+                expect(invitation).toBeDefined();
+                expect(invitation.organization).toBe(organization.id);
             });
     });
 });

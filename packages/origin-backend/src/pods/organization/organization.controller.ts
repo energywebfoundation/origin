@@ -190,6 +190,25 @@ export class OrganizationController {
         };
     }
 
+    @Get('/invitation/:organizationId')
+    @UseGuards(AuthGuard())
+    async getInvitationsForOrganization(
+        @Param('organizationId') organizationId: string
+    ): Promise<IOrganizationInvitation[]> {
+        const organization = await this.organizationService.findOne(organizationId);
+
+        if (!organization) {
+            throw new NotFoundException(StorageErrors.NON_EXISTENT);
+        }
+
+        return (this.organizationInvitationRepository.find({
+            where: { organization: organizationId },
+            loadRelationIds: true
+        }) as Promise<Omit<IOrganizationInvitation, 'organization'>[]>) as Promise<
+            IOrganizationInvitation[]
+        >;
+    }
+
     @Put('/invitation/:invitationId')
     @UseGuards(AuthGuard())
     async updateInvitation(
