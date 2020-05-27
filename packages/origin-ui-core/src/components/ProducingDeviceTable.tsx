@@ -127,11 +127,18 @@ export function ProducingDeviceTable(props: IOwnProps) {
     }
 
     async function requestCerts(rowIndex: string) {
-        dispatch(
-            showRequestCertificatesModal({
-                producingDevice: paginatedData[rowIndex].device
-            })
-        );
+        const producingDevice = paginatedData[rowIndex].device;
+
+        if (producingDevice.status !== DeviceStatus.Active) {
+            return showNotification(
+                `You can only request certificates for devices with status ${
+                    DeviceStatus[DeviceStatus.Active]
+                }.`,
+                NotificationType.Error
+            );
+        }
+
+        dispatch(showRequestCertificatesModal({ producingDevice }));
     }
 
     async function approve(rowIndex: string) {
