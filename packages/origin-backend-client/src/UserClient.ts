@@ -107,7 +107,7 @@ export class UserClient implements IUserClient {
 
     public async updateProfile(formData: IUser): Promise<IUserWithRelations> {
         const response = await this.requestClient.put<UserUpdateData, IUserWithRelations>(
-            `${this.userEndpoint}/profile/${formData.id}`,
+            `${this.userEndpoint}/profile`,
             formData
         );
         return response.data;
@@ -121,7 +121,7 @@ export class UserClient implements IUserClient {
     }
     public async updateChainAddress(formData: IUser): Promise<IUserWithRelations> {
         const response = await this.requestClient.put<UserUpdateData, IUserWithRelations>(
-            `${this.userEndpoint}/chainAddress/${formData.id}`,
+            `${this.userEndpoint}/chainAddress`,
             formData
         );
         return response.data;
