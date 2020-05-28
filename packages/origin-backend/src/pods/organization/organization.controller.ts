@@ -8,7 +8,8 @@ import {
     OrganizationStatusChangedEvent,
     OrganizationUpdateData,
     Role,
-    SupportedEvents
+    SupportedEvents,
+    OrganizationRole
 } from '@energyweb/origin-backend-core';
 import { Roles, RolesGuard, UserDecorator } from '@energyweb/origin-backend-utils';
 import {
@@ -39,7 +40,7 @@ import { NotificationService } from '../notification';
 import { OrganizationInvitationService } from './organization-invitation.service';
 import { Organization } from './organization.entity';
 import { OrganizationService } from './organization.service';
-import { OrganizationInvitation } from './organizationInvitation.entity';
+import { OrganizationInvitation } from './organization-invitation.entity';
 
 @Controller('/Organization')
 export class OrganizationController {
@@ -233,9 +234,10 @@ export class OrganizationController {
     @Roles(Role.OrganizationAdmin, Role.Admin)
     async invite(
         @Body('email') email: string,
+        @Body('role') role: OrganizationRole,
         @UserDecorator() loggedUser: ILoggedInUser
     ): Promise<OrganizationInviteCreateReturnData> {
-        await this.organizationInvitationService.invite(loggedUser, email);
+        await this.organizationInvitationService.invite(loggedUser, email, role);
 
         return {
             success: true,

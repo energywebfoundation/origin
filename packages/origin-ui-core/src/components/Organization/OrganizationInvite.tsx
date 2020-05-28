@@ -4,18 +4,25 @@ import { Formik, Form, FormikHelpers } from 'formik';
 import * as Yup from 'yup';
 
 import { Paper, Grid, Button, useTheme, makeStyles, createStyles } from '@material-ui/core';
+import { OrganizationRole, Role } from '@energyweb/origin-backend-core';
 
 import { showNotification, NotificationType } from '../../utils/notifications';
 import { setLoading } from '../../features/general/actions';
 import { FormInput } from '../Form/FormInput';
 import { getOffChainDataSource } from '../../features/general/selectors';
+import {
+    MultiSelectAutocomplete,
+    IAutocompleteMultiSelectOptionType
+} from '../MultiSelectAutocomplete';
 
 interface IFormValues {
     email: string;
+    role: OrganizationRole;
 }
 
 const INITIAL_FORM_VALUES: IFormValues = {
-    email: ''
+    email: '',
+    role: Role.OrganizationUser
 };
 
 const VALIDATION_SCHEMA = Yup.object({
@@ -38,14 +45,14 @@ export function OrganizationInvite() {
     const classes = useStyles(useTheme());
 
     async function submitForm(
-        values: typeof INITIAL_FORM_VALUES,
-        formikActions: FormikHelpers<typeof INITIAL_FORM_VALUES>
+        values: IFormValues,
+        formikActions: FormikHelpers<IFormValues>
     ): Promise<void> {
         formikActions.setSubmitting(true);
         dispatch(setLoading(true));
 
         try {
-            await organizationClient.invite(values.email);
+            await organizationClient.invite(values.email, Number(values.role));
 
             showNotification(`Invitation sent`, NotificationType.Success);
         } catch (error) {
@@ -73,10 +80,24 @@ export function OrganizationInvite() {
                 isInitialValid={false}
             >
                 {(formikProps) => {
-                    const { isValid, isSubmitting } = formikProps;
+                    const { isValid, isSubmitting, values, setFieldValue } = formikProps;
 
                     const fieldDisabled = isSubmitting;
                     const buttonDisabled = isSubmitting || !isValid;
+
+                    const supportedRoles = [
+                        Role.OrganizationUser,
+                        Role.OrganizationDeviceManager,
+                        Role.OrganizationAdmin
+                    ];
+                    const selectedValues = values.role
+                        ? [
+                              {
+                                  label: Role[values.role],
+                                  value: values.role.toString()
+                              }
+                          ]
+                        : [];
 
                     return (
                         <Form translate="">
@@ -88,6 +109,29 @@ export function OrganizationInvite() {
                                         disabled={fieldDisabled}
                                         className="mt-3"
                                         required
+                                    />
+                                </Grid>
+                                <Grid item xs={6}>
+                                    <MultiSelectAutocomplete
+                                        label="Role"
+                                        placeholder=""
+                                        options={supportedRoles.map((role) => ({
+                                            label: Role[role],
+                                            value: role.toString()
+                                        }))}
+                                        onChange={(
+                                            selection: IAutocompleteMultiSelectOptionType[]
+                                        ) => {
+                                            const [selected1, selected2] = selection;
+                                            const selectedElement = selectedValues.length
+                                                ? selected2
+                                                : selected1;
+                                            return setFieldValue('role', selectedElement?.value);
+                                        }}
+                                        selectedValues={selectedValues}
+                                        className="mt-3"
+                                        disabled={fieldDisabled}
+                                        required={true}
                                     />
                                 </Grid>
                             </Grid>

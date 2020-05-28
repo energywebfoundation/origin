@@ -2,7 +2,9 @@ import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
 import { IsEmail } from 'class-validator';
 import {
     OrganizationInvitationStatus,
-    IOrganizationInvitation
+    IOrganizationInvitation,
+    OrganizationRole,
+    Role
 } from '@energyweb/origin-backend-core';
 
 import { Organization } from './organization.entity';
@@ -16,6 +18,9 @@ export class OrganizationInvitation extends ExtendedBaseEntity implements IOrgan
     @Column()
     @IsEmail()
     email: string;
+
+    @Column({ default: Role.OrganizationUser })
+    role: OrganizationRole;
 
     @Column()
     status: OrganizationInvitationStatus;

@@ -3,7 +3,7 @@ import {
     OrganizationInvitationEvent,
     OrganizationInvitationStatus,
     SupportedEvents,
-    Role
+    OrganizationRole
 } from '@energyweb/origin-backend-core';
 import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -12,7 +12,7 @@ import { Repository } from 'typeorm';
 
 import { NotificationService } from '../notification';
 import { Organization } from './organization.entity';
-import { OrganizationInvitation } from './organizationInvitation.entity';
+import { OrganizationInvitation } from './organization-invitation.entity';
 import { UserService } from '../user';
 
 @Injectable()
@@ -28,7 +28,7 @@ export class OrganizationInvitationService {
         private readonly userService: UserService
     ) {}
 
-    public async invite(user: ILoggedInUser, email: string) {
+    public async invite(user: ILoggedInUser, email: string, role: OrganizationRole) {
         if (!isEmail(email)) {
             throw new BadRequestException({
                 success: false,
@@ -55,6 +55,7 @@ export class OrganizationInvitationService {
         await this.invitationRepository.save({
             email: lowerCaseEmail,
             organization,
+            role,
             status: OrganizationInvitationStatus.Pending
         });
 
@@ -104,7 +105,7 @@ export class OrganizationInvitationService {
 
         if (status === OrganizationInvitationStatus.Accepted) {
             await this.userService.addToOrganization(user.id, invitation.organization.id);
-            await this.userService.changeRole(user.id, Role.OrganizationUser);
+            await this.userService.changeRole(user.id, invitation.role);
         }
 
         invitation.status = status;
