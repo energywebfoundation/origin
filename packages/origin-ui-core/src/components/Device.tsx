@@ -40,6 +40,18 @@ export function Device() {
         );
     }
 
+    function AutomaticSupplyDevices() {
+        return (
+            <ProducingDeviceTable
+                owner={userOffchain?.id}
+                showAddDeviceButton={true}
+                actions={{
+                    requestCertificates: true
+                }}
+            />
+        );
+    }
+
     function ProductionList() {
         return (
             <ProducingDeviceTable
@@ -105,6 +117,12 @@ export function Device() {
             label: 'Production detail',
             component: null,
             hide: true
+        },
+        {
+            key: 'supply',
+            label: t('navigation.devices.supply'),
+            component: AutomaticSupplyDevices,
+            roles: [Role.OrganizationDeviceManager, Role.OrganizationAdmin]
         }
     ];
 
