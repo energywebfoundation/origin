@@ -5,7 +5,10 @@ import {
     UserLoginReturnData,
     UserUpdateData,
     IUserWithRelationsIds,
-    IUserProperties
+    IUserProperties,
+    IUserWithRelations,
+    IUser,
+    UserPasswordUpdate
 } from '@energyweb/origin-backend-core';
 
 import { IRequestClient, RequestClient } from './RequestClient';
@@ -22,6 +25,9 @@ export interface IUserClient {
     updateAdditionalProperties(
         properties: Partial<Pick<IUserProperties, 'notifications'>>
     ): Promise<UpdateUserResponseReturnType>;
+    updateProfile(formData: IUser): Promise<IUserWithRelations>;
+    updatePassword(formData: UserPasswordUpdate): Promise<IUserWithRelations>;
+    updateChainAddress(formData: IUser): Promise<IUserWithRelations>;
 }
 
 export class UserClient implements IUserClient {
@@ -97,5 +103,27 @@ export class UserClient implements IUserClient {
         );
 
         return data;
+    }
+
+    public async updateProfile(formData: IUser): Promise<IUserWithRelations> {
+        const response = await this.requestClient.put<UserUpdateData, IUserWithRelations>(
+            `${this.userEndpoint}/profile/${formData.id}`,
+            formData
+        );
+        return response.data;
+    }
+    public async updatePassword(formData: UserPasswordUpdate): Promise<IUserWithRelations> {
+        const response = await this.requestClient.put<UserPasswordUpdate, IUserWithRelations>(
+            `${this.userEndpoint}/password`,
+            formData
+        );
+        return response.data;   
+    }
+    public async updateChainAddress(formData: IUser): Promise<IUserWithRelations> {
+        const response = await this.requestClient.put<UserUpdateData, IUserWithRelations>(
+            `${this.userEndpoint}/chainAddress/${formData.id}`,
+            formData
+        );
+        return response.data;
     }
 }
