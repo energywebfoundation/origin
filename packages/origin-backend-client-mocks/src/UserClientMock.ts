@@ -6,13 +6,16 @@ import {
     IUserProperties,
     Status,
     KYCStatus,
-    Role
+    Role,
+    UserPasswordUpdate,
+    IUserWithRelations
 } from '@energyweb/origin-backend-core';
 import { recoverTypedSignatureAddress } from '@energyweb/utils-general';
 
 import { IUserClient } from '@energyweb/origin-backend-client';
 
 export class UserClientMock implements IUserClient {
+    
     private storage = new Map<number, IUserWithRelationsIds>();
 
     private userIdCounter = 0;
@@ -83,5 +86,15 @@ export class UserClientMock implements IUserClient {
             ...user,
             ...properties
         });
+    }
+
+    updateProfile(formData: IUser): Promise<IUserWithRelations> {
+        throw new Error("Method not implemented.");
+    }
+    updatePassword(formData: UserPasswordUpdate): Promise<IUserWithRelations> {
+        throw new Error("Method not implemented.");
+    }
+    updateChainAddress(formData: IUser): Promise<IUserWithRelations> {
+        throw new Error("Method not implemented.");
     }
 }
