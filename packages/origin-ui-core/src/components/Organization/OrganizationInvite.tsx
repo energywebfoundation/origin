@@ -14,6 +14,7 @@ import {
     MultiSelectAutocomplete,
     IAutocompleteMultiSelectOptionType
 } from '../MultiSelectAutocomplete';
+import { useTranslation } from '../../utils';
 
 interface IFormValues {
     email: string;
@@ -30,6 +31,8 @@ const VALIDATION_SCHEMA = Yup.object({
 });
 
 export function OrganizationInvite() {
+    const { t } = useTranslation();
+
     const organizationClient = useSelector(getOffChainDataSource)?.organizationClient;
 
     const dispatch = useDispatch();
@@ -85,19 +88,30 @@ export function OrganizationInvite() {
                     const fieldDisabled = isSubmitting;
                     const buttonDisabled = isSubmitting || !isValid;
 
-                    const supportedRoles = [
-                        Role.OrganizationUser,
-                        Role.OrganizationDeviceManager,
-                        Role.OrganizationAdmin
+                    const supportedRoles: IAutocompleteMultiSelectOptionType[] = [
+                        {
+                            value: Role.OrganizationUser.toString(),
+                            label: t('organization.invitations.roles.member')
+                        },
+                        {
+                            value: Role.OrganizationDeviceManager.toString(),
+                            label: t('organization.invitations.roles.deviceManager')
+                        },
+                        {
+                            value: Role.OrganizationAdmin.toString(),
+                            label: t('organization.invitations.roles.admin')
+                        }
                     ];
-                    const selectedValues = values.role
-                        ? [
-                              {
-                                  label: Role[values.role],
-                                  value: values.role.toString()
-                              }
-                          ]
-                        : [];
+
+                    let selectedRole: IAutocompleteMultiSelectOptionType[];
+                    if (values.role) {
+                        const defaultRole = supportedRoles.find(
+                            (role) => role.value === values.role.toString()
+                        );
+                        selectedRole = [defaultRole];
+                    } else {
+                        selectedRole = [];
+                    }
 
                     return (
                         <Form translate="">
@@ -116,19 +130,19 @@ export function OrganizationInvite() {
                                         label="Role"
                                         placeholder=""
                                         options={supportedRoles.map((role) => ({
-                                            label: Role[role],
-                                            value: role.toString()
+                                            label: role.label,
+                                            value: role.value.toString()
                                         }))}
                                         onChange={(
                                             selection: IAutocompleteMultiSelectOptionType[]
                                         ) => {
                                             const [selected1, selected2] = selection;
-                                            const selectedElement = selectedValues.length
+                                            const selectedElement = selectedRole.length
                                                 ? selected2
                                                 : selected1;
                                             return setFieldValue('role', selectedElement?.value);
                                         }}
-                                        selectedValues={selectedValues}
+                                        selectedValues={selectedRole}
                                         className="mt-3"
                                         disabled={fieldDisabled}
                                         required={true}

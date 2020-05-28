@@ -326,6 +326,15 @@
                 "generationFrom": "Generation from",
                 "generationTo": "Generation to"
             }
+        },
+        "organization": {
+            "invitations": {
+                "roles": {
+                    "member": "Member",
+                    "deviceManager": "Device Manager",
+                    "admin": "Admin"
+                }
+            }
         }
     }
 }
