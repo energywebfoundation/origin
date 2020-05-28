@@ -7,7 +7,10 @@ export enum OrganizationInvitationStatus {
     Accepted
 }
 
-export type OrganizationRole = Role.OrganizationUser | Role.OrganizationDeviceManager | Role.OrganizationAdmin;
+export type OrganizationRole =
+    | Role.OrganizationUser
+    | Role.OrganizationDeviceManager
+    | Role.OrganizationAdmin;
 
 export interface IOrganizationInvitationProperties {
     id: number;
@@ -24,7 +27,7 @@ export interface IOrganizationInvitationWithRelations extends IOrganizationInvit
     organization: IOrganization;
 }
 
-export type OrganizationInviteCreateData = { email: string, role: OrganizationRole };
+export type OrganizationInviteCreateData = { email: string; role: OrganizationRole };
 export type OrganizationInviteCreateReturnData = { success: boolean; error: string };
 
 export type OrganizationInviteUpdateData = Pick<IOrganizationInvitation, 'status'>;
