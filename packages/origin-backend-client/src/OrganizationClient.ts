@@ -126,7 +126,7 @@ export class OrganizationClient implements IOrganizationClient {
         organizationId: number
     ): Promise<IOrganizationInvitation[]> {
         const { data } = await this.requestClient.get<unknown, IOrganizationInvitation[]>(
-            `${this.endpoint}/invitation?organization=${organizationId}`
+            `${this.endpoint}/${organizationId}/invitations`
         );
 
         return data;
