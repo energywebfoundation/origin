@@ -8,7 +8,8 @@ import {
     OrganizationInvitationStatus,
     IOrganizationWithRelationsIds,
     IUserWithRelationsIds,
-    OrganizationRemoveMemberReturnData
+    OrganizationRemoveMemberReturnData,
+    OrganizationRole
 } from '@energyweb/origin-backend-core';
 
 import { IRequestClient, RequestClient } from './RequestClient';
@@ -19,7 +20,7 @@ export interface IOrganizationClient {
     add(data: OrganizationPostData): Promise<IOrganizationWithRelationsIds>;
     update(id: number, data: OrganizationUpdateData): Promise<IOrganizationWithRelationsIds>;
 
-    invite(email: string): Promise<OrganizationInviteCreateReturnData>;
+    invite(email: string, role: OrganizationRole): Promise<OrganizationInviteCreateReturnData>;
     getInvitations(): Promise<IOrganizationInvitation[]>;
     getInvitationsToOrganization(organizationId: number): Promise<IOrganizationInvitation[]>;
     getInvitationsForEmail(email: string): Promise<IOrganizationInvitation[]>;
@@ -95,12 +96,13 @@ export class OrganizationClient implements IOrganizationClient {
         });
     }
 
-    public async invite(email: string): Promise<OrganizationInviteCreateReturnData> {
+    public async invite(email: string, role: OrganizationRole): Promise<OrganizationInviteCreateReturnData> {
         const response = await this.requestClient.post<
             OrganizationInviteCreateData,
             OrganizationInviteCreateReturnData
         >(`${this.endpoint}/invite`, {
-            email
+            email,
+            role
         });
 
         return response.data;

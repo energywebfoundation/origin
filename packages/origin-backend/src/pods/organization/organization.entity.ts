@@ -2,7 +2,7 @@ import { Entity, Column, PrimaryGeneratedColumn, OneToMany, OneToOne, JoinColumn
 import { IsInt, IsEmail, Min, ValidateIf, IsNotEmpty, IsUrl } from 'class-validator';
 import { OrganizationStatus, IOrganization } from '@energyweb/origin-backend-core';
 import { User } from '../user/user.entity';
-import { OrganizationInvitation } from './organizationInvitation.entity';
+import { OrganizationInvitation } from './organization-invitation.entity';
 import { Device } from '../device/device.entity';
 import { ExtendedBaseEntity } from '../ExtendedBaseEntity';
 
