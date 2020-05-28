@@ -190,8 +190,8 @@ export class UserService {
         return this.repository.findOne(id);
     }
 
-    async updatePassword(user: UserPasswordUpdate) {
-        const _user = await this.getUserAndPasswordByEmail(user.email);
+    async updatePassword(email: string, user: UserPasswordUpdate) {
+        const _user = await this.getUserAndPasswordByEmail(email);
 
         if (_user && bcrypt.compareSync(user.oldPassword, _user.password)) {
             const updateEntity = new User({

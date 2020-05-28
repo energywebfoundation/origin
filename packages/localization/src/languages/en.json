@@ -160,7 +160,8 @@
                 "settings": "Settings",
                 "import": "Import",
                 "login": "Login",
-                "registerUser": "Register user"
+                "registerUser": "Register user",
+                "userProfile": "User profile"
             }
         },
         "general": {
@@ -272,13 +273,22 @@
             },
             "actions": {
                 "register": "Register",
-                "login": "Login"
+                "login": "Login",
+                "save": "Save"
             },
             "feedback": {
                 "userRegistered": "User registered.",
                 "errorWhileRegisteringUser": "Error while registering user.",
                 "userLoggedIn": "User logged in.",
                 "couldNotLogIn": "Could not log in with supplied credentials."
+            },
+            "profile": {
+                "updateProfile": "User profile updated.",
+                "errorUpdateProfile": "Error to update User profile.",
+                "updatePassword": "User password updated.",
+                "errorUpdatePassword": "Error to update User password.",
+                "updateChainAddress": "User blockchain address update.",
+                "errorUpdateChainAddress": "Error to update User blockchain address."
             }
         },
         "notification": {

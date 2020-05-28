@@ -76,21 +76,24 @@ export class UserController {
         return this.userService.findById(id);
     }
 
-    @Put('profile/:id')
+    @Put('profile')
     @UseGuards(AuthGuard('jwt'))
-    public async putProfile(@Param('id') id: string, @Body() body: IUser) {
+    public async putProfile(@UserDecorator() { id }: ILoggedInUser, @Body() body: IUser) {
         return this.userService.updateProfile(id, body);
     }
 
     @Put('password')
     @UseGuards(AuthGuard('jwt'))
-    public async putChainAddress(@Body() body: UserPasswordUpdate) {
-        return this.userService.updatePassword(body);
+    public async putPassword(
+        @UserDecorator() { email }: ILoggedInUser,
+        @Body() body: UserPasswordUpdate
+    ) {
+        return this.userService.updatePassword(email, body);
     }
 
-    @Put('chainAddress/:id')
+    @Put('chainAddress')
     @UseGuards(AuthGuard('jwt'))
-    public async putPassword(@Param('id') id: string, @Body() body: IUser) {
+    public async putChainAddress(@UserDecorator() { id }: ILoggedInUser, @Body() body: IUser) {
         return this.userService.updateBlockChainAddress(id, body);
     }
 }
