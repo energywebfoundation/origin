@@ -3,7 +3,9 @@ import {
     IUserWithRelationsIds,
     UserRegisterReturnData,
     UserRegistrationData,
-    UserUpdateData
+    UserUpdateData,
+    IUser,
+    UserPasswordUpdate
 } from '@energyweb/origin-backend-core';
 import { UserDecorator } from '@energyweb/origin-backend-utils';
 import {
@@ -72,5 +74,23 @@ export class UserController {
     @Get(':id')
     public async get(@Param('id') id: string) {
         return this.userService.findById(id);
+    }
+
+    @Put('profile/:id')
+    @UseGuards(AuthGuard('jwt'))
+    public async putProfile(@Param('id') id: string, @Body() body: IUser) {
+        return this.userService.updateProfile(id, body);
+    }
+
+    @Put('password')
+    @UseGuards(AuthGuard('jwt'))
+    public async putChainAddress(@Body() body: UserPasswordUpdate) {
+        return this.userService.updatePassword(body);
+    }
+
+    @Put('chainAddress/:id')
+    @UseGuards(AuthGuard('jwt'))
+    public async putPassword(@Param('id') id: string, @Body() body: IUser) {
+        return this.userService.updateBlockChainAddress(id, body);
     }
 }
