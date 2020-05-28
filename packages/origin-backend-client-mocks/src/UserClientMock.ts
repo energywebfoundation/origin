@@ -89,6 +89,7 @@ export class UserClientMock implements IUserClient {
     }
 
     updateProfile(formData: IUser): Promise<IUserWithRelations> {
+        
         throw new Error("Method not implemented.");
     }
     updatePassword(formData: UserPasswordUpdate): Promise<IUserWithRelations> {
