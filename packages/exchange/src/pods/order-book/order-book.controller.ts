@@ -30,10 +30,10 @@ export class OrderBookController {
         return this.filterOrderBook(productFilter);
     }
 
-    private async filterOrderBook(productFilterDTO: ProductFilterDTO, userId?: string) {
+    private filterOrderBook(productFilterDTO: ProductFilterDTO, userId?: string) {
         const productFilter = ProductFilterDTO.toProductFilter(productFilterDTO);
         const { asks, bids } = this.orderBookService.getByProduct(productFilter);
-        const lastTradedPrice = await this.tradeService.getLastTradedPrice(productFilter);
+        const lastTradedPrice = this.tradeService.getLastTradedPrice(productFilter);
 
         return {
             asks: asks.map((ask) => OrderBookOrderDTO.fromOrder(ask, userId)).toArray(),
