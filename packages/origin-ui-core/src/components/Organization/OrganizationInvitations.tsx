@@ -1,16 +1,16 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 
-import { getUserOffchain, getIsLeadUser } from '../../features/users/selectors';
+import { getUserOffchain } from '../../features/users/selectors';
 import { OrganizationInvitationTable } from './OrganizationInvitationTable';
+import { isRole, Role } from '@energyweb/origin-backend-core';
 
 export function OrganizationInvitations() {
     const userOffchain = useSelector(getUserOffchain);
-    const isLeadUser = useSelector(getIsLeadUser);
 
     return (
         <>
-            {isLeadUser && (
+            {isRole(userOffchain, Role.OrganizationAdmin) && (
                 <>
                     Sent
                     <br />
