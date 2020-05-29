@@ -38,7 +38,7 @@ export class OrderController {
         this.logger.log(`Creating new order ${JSON.stringify(newOrder)}`);
 
         try {
-            const order = await this.orderService.createBid(user.id.toString(), newOrder);
+            const order = await this.orderService.createBid(user.ownerId, newOrder);
             return order;
         } catch (error) {
             this.logger.error(error.message);
@@ -56,7 +56,7 @@ export class OrderController {
         this.logger.log(`Creating new order ${JSON.stringify(newOrder)}`);
 
         try {
-            const order = await this.orderService.createAsk(user.id.toString(), newOrder);
+            const order = await this.orderService.createAsk(user.ownerId, newOrder);
             return order;
         } catch (error) {
             this.logger.error(error.message);
@@ -74,7 +74,7 @@ export class OrderController {
         this.logger.log(`Creating new direct order ${JSON.stringify(directBuy)}`);
 
         try {
-            const order = await this.orderService.createDirectBuy(user.id.toString(), directBuy);
+            const order = await this.orderService.createDirectBuy(user.ownerId, directBuy);
             return order;
         } catch (error) {
             this.logger.error(error.message);
@@ -86,7 +86,7 @@ export class OrderController {
     @Get()
     @UseGuards(AuthGuard())
     public async getOrders(@UserDecorator() user: ILoggedInUser): Promise<Order[]> {
-        const orders = await this.orderService.getAllOrders(user.id.toString());
+        const orders = await this.orderService.getAllOrders(user.ownerId);
         return orders;
     }
 
@@ -96,7 +96,7 @@ export class OrderController {
         @UserDecorator() user: ILoggedInUser,
         @Param('id', new ParseUUIDPipe({ version: '4' })) orderId: string
     ) {
-        const order = await this.orderService.findOne(user.id.toString(), orderId);
+        const order = await this.orderService.findOne(user.ownerId, orderId);
         return order;
     }
 
@@ -107,7 +107,7 @@ export class OrderController {
         @UserDecorator() user: ILoggedInUser,
         @Param('id', new ParseUUIDPipe({ version: '4' })) orderId: string
     ) {
-        const order = await this.orderService.cancelOrder(user.id.toString(), orderId);
+        const order = await this.orderService.cancelOrder(user.ownerId, orderId);
         return order;
     }
 }

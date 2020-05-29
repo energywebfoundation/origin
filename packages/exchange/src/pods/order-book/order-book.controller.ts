@@ -22,7 +22,7 @@ export class OrderBookController {
         @UserDecorator() user: ILoggedInUser,
         @Body() productFilter: ProductFilterDTO
     ) {
-        return this.filterOrderBook(productFilter, user.id.toString());
+        return this.filterOrderBook(productFilter, user.ownerId);
     }
 
     @Post('/public/search')
