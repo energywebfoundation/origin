@@ -7,7 +7,7 @@ import { BundleService } from '../src/pods/bundle/bundle.service';
 import { CreateBundleDTO } from '../src/pods/bundle/create-bundle.dto';
 import { TransferService } from '../src/pods/transfer/transfer.service';
 import { DatabaseService } from './database.service';
-import { bootstrapTestInstance } from './exchange';
+import { bootstrapTestInstance, authenticatedUser } from './exchange';
 import { BuyBundleDTO } from '../src/pods/bundle/buy-bundle.dto';
 import { BundleTrade } from '../src/pods/bundle/bundle-trade.entity';
 import { AccountDTO } from '../src/pods/account/account.dto';
@@ -19,7 +19,7 @@ describe('Bundles', () => {
     let accountService: AccountService;
     let bundleService: BundleService;
 
-    const user1Id = '1';
+    const user1Id = authenticatedUser.organization;
     const MWh = 10 ** 6;
 
     const assetOne = {
@@ -191,7 +191,7 @@ describe('Bundles', () => {
                 const trade = res.body as BundleTrade;
 
                 expect(trade).toBeDefined();
-                expect(trade.buyerId).toBe('1');
+                expect(trade.buyerId).toBe(user1Id);
                 expect(trade.volume).toBe(`${10 * MWh}`);
                 expect(trade.items).toHaveLength(2);
 

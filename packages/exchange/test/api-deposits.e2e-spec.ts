@@ -5,7 +5,7 @@ import { AccountDTO } from '../src/pods/account/account.dto';
 import { AccountService } from '../src/pods/account/account.service';
 import { TransferService } from '../src/pods/transfer/transfer.service';
 import { DatabaseService } from './database.service';
-import { bootstrapTestInstance } from './exchange';
+import { bootstrapTestInstance, authenticatedUser } from './exchange';
 
 describe('account deposit confirmation', () => {
     let app: INestApplication;
@@ -13,7 +13,7 @@ describe('account deposit confirmation', () => {
     let databaseService: DatabaseService;
     let accountService: AccountService;
 
-    const user1Id = '1';
+    const user1Id = authenticatedUser.organization;
 
     const dummyAsset = {
         address: '0x9876',
