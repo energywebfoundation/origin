@@ -27,8 +27,8 @@ interface IRecord {
 }
 
 export const KeyStatus = {
-    0: 'Active',
-    1: 'Paused'
+    1: 'Active',
+    2: 'Paused'
 };
 
 export function AutoSupplyDeviceTable() {
@@ -93,7 +93,7 @@ export function AutoSupplyDeviceTable() {
             type: device.deviceType,
             facility: device.facilityName,
             price: device.defaultAskPrice,
-            status: device.automaticPostForSale ? KeyStatus[0] : KeyStatus[1],
+            status: device.automaticPostForSale ? KeyStatus[1] : KeyStatus[2],
             certified: EnergyFormatter.format(device.meterStats?.uncertified?.toNumber() ?? 0)
         };
     });
@@ -202,7 +202,7 @@ export function AutoSupplyDeviceTable() {
 
                     <TextField
                         label={'Status'}
-                        value={entity?.automaticPostForSale ? KeyStatus[0] : KeyStatus[1]}
+                        value={entity?.automaticPostForSale ? KeyStatus[1] : KeyStatus[2]}
                         className="mt-4"
                         fullWidth
                         onChange={(e) =>
