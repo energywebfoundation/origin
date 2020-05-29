@@ -92,6 +92,17 @@ export class DeviceController {
         };
     }
 
+    @Put('/:id')
+    @UseGuards(AuthGuard(), RolesGuard)
+    @Roles(Role.OrganizationAdmin, Role.OrganizationDeviceManager, Role.Issuer)
+    async put(
+        @Param('id') id: string,
+        @Body() body: DeviceUpdateData
+    ): Promise<ExtendedBaseEntity & IDeviceWithRelationsIds> {
+        const res = await this.deviceService.update(id, body);
+        return res;
+    }
+
     @Put('/:id/settings')
     @UseGuards(AuthGuard(), RolesGuard)
     @Roles(Role.OrganizationAdmin, Role.OrganizationDeviceManager, Role.OrganizationUser)
@@ -106,7 +117,7 @@ export class DeviceController {
 
         if (
             body?.automaticPostForSale === undefined ||
-            (body?.automaticPostForSale === undefined &&
+            (body?.automaticPostForSale &&
                 (!Number.isInteger(body?.defaultAskPrice) || body?.defaultAskPrice === 0))
         ) {
             throw new UnprocessableEntityException(
@@ -115,17 +126,6 @@ export class DeviceController {
         }
 
         const res = await this.deviceService.updateSettings(id, body);
-        return res;
-    }
-
-    @Put('/:id')
-    @UseGuards(AuthGuard(), RolesGuard)
-    @Roles(Role.OrganizationAdmin, Role.OrganizationDeviceManager, Role.Issuer)
-    async put(
-        @Param('id') id: string,
-        @Body() body: DeviceUpdateData
-    ): Promise<ExtendedBaseEntity & IDeviceWithRelationsIds> {
-        const res = await this.deviceService.update(id, body);
         return res;
     }
 
