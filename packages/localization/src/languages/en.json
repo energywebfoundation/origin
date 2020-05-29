@@ -18,7 +18,8 @@
                 "my": "My devices",
                 "registerDevice": "Register device",
                 "registerDeviceGroup": "Register device group",
-                "pending": "Pending"
+                "pending": "Pending",
+                "supply": "Supply"
             },
             "certificates": {
                 "inbox": "Inbox",
