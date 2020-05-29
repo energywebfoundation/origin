@@ -1,21 +1,21 @@
 import {
     DeviceCreateData,
+    DeviceSettingsUpdateData,
+    DeviceStatus,
     DeviceStatusChangedEvent,
     DeviceUpdateData,
+    ICertificationRequestBackend,
     IDevice,
     IDeviceProductInfo,
     IDeviceWithRelationsIds,
+    IEnergyGeneratedWithStatus,
     IExternalDeviceId,
+    ILoggedInUser,
     ISmartMeterRead,
     ISmartMeterReadingsAdapter,
-    SupportedEvents,
-    DeviceSettingsUpdateData,
-    ICertificationRequestBackend,
-    ISmartMeterReadWithStatus,
     ISmartMeterReadStats,
-    IEnergyGeneratedWithStatus,
-    DeviceStatus,
-    ILoggedInUser
+    ISmartMeterReadWithStatus,
+    SupportedEvents
 } from '@energyweb/origin-backend-core';
 import {
     Inject,
@@ -25,11 +25,10 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { validate } from 'class-validator';
-import { FindOneOptions, Repository, DeepPartial } from 'typeorm';
-import { v4 as uuid } from 'uuid';
-
-import moment from 'moment';
 import { bigNumberify } from 'ethers/utils';
+import moment from 'moment';
+import { DeepPartial, FindOneOptions, Repository } from 'typeorm';
+import { v4 as uuid } from 'uuid';
 import { SM_READS_ADAPTER } from '../../const';
 import { StorageErrors } from '../../enums/StorageErrors';
 import { ConfigurationService } from '../configuration';
@@ -331,15 +330,16 @@ export class DeviceService {
         };
     }
 
-    async getSupplyBy(facilityName: string, status: DeviceStatus) {
+    async getSupplyBy(facilityName: string, status: number) {
         const _facilityName = `%${facilityName}%`;
+        const _status = status === 1;
         const result = await this.repository
             .createQueryBuilder('device')
             .where(
                 `device.facilityName ilike :_facilityName ${
-                    status > 0 ? `and device.status = :status` : ``
+                    status > 0 ? `and device.automaticPostForSale = :_status` : ``
                 }`,
-                { _facilityName, status }
+                { _facilityName, _status }
             )
             .getMany();
         return result;

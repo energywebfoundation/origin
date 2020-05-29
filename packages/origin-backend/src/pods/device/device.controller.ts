@@ -5,8 +5,7 @@ import {
     IDeviceWithRelationsIds,
     ILoggedInUser,
     ISmartMeterRead,
-    Role,
-    DeviceStatus
+    Role
 } from '@energyweb/origin-backend-core';
 import { Roles, RolesGuard, UserDecorator } from '@energyweb/origin-backend-utils';
 import {
@@ -21,16 +20,15 @@ import {
     Param,
     Post,
     Put,
+    Query,
     UnprocessableEntityException,
-    UseGuards,
-    Query
+    UseGuards
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-
 import { StorageErrors } from '../../enums/StorageErrors';
+import { ExtendedBaseEntity } from '../ExtendedBaseEntity';
 import { OrganizationService } from '../organization/organization.service';
 import { DeviceService } from './device.service';
-import { ExtendedBaseEntity } from '../ExtendedBaseEntity';
 
 @Controller('/Device')
 export class DeviceController {
@@ -51,12 +49,7 @@ export class DeviceController {
     @Get('supplyBy')
     @UseGuards(AuthGuard(), RolesGuard)
     @Roles(Role.OrganizationAdmin, Role.OrganizationDeviceManager, Role.OrganizationUser)
-    async getSupplyBy(
-        @Query('facility') facilityName: string,
-        @Query('status') status: DeviceStatus
-    ) {
-        console.log(facilityName);
-        console.log(status);
+    async getSupplyBy(@Query('facility') facilityName: string, @Query('status') status: number) {
         return this.deviceService.getSupplyBy(facilityName, status);
     }
 
