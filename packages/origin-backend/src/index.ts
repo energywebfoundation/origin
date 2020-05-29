@@ -4,7 +4,7 @@ import { OwnershipCommitment } from './pods/certificate/ownership-commitment.ent
 import { Configuration } from './pods/configuration/configuration.entity';
 import { Device } from './pods/device/device.entity';
 import { Organization } from './pods/organization/organization.entity';
-import { OrganizationInvitation } from './pods/organization/organizationInvitation.entity';
+import { OrganizationInvitation } from './pods/organization/organization-invitation.entity';
 import { User } from './pods/user/user.entity';
 
 export { AppModule } from './app.module';

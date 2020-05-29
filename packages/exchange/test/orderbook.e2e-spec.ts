@@ -11,6 +11,7 @@ import { OrderBookOrderDTO } from '../src/pods/order-book/order-book-order.dto';
 import { CreateAskDTO } from '../src/pods/order/create-ask.dto';
 import { CreateBidDTO } from '../src/pods/order/create-bid.dto';
 import { OrderService } from '../src/pods/order/order.service';
+import { TradePriceInfoDTO } from '../src/pods/trade/trade-price-info.dto';
 import { TransferService } from '../src/pods/transfer/transfer.service';
 import { DatabaseService } from './database.service';
 import { bootstrapTestInstance } from './exchange';
@@ -20,7 +21,7 @@ const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 type OrderBook = {
     asks: OrderBookOrderDTO[];
     bids: OrderBookOrderDTO[];
-    lastTradedPrice: number;
+    lastTradedPrice: TradePriceInfoDTO;
 };
 
 describe('orderbook tests', () => {
@@ -114,7 +115,10 @@ describe('orderbook tests', () => {
         await orderService.createBid(user2Id, createBid2);
     };
 
-    const windTradeLastTradePrice = 1100;
+    let windTradeLastTradePrice: {
+        price: number;
+        assetId: string;
+    };
 
     const createWindTrades = async (address: string) => {
         const deposit = await createDeposit(address, '1000', windAsset);
@@ -146,9 +150,17 @@ describe('orderbook tests', () => {
 
         await orderService.createBid(user2Id, createBid1);
         await orderService.createBid(user2Id, createBid1);
+
+        windTradeLastTradePrice = {
+            price: 1100,
+            assetId: deposit.asset.id
+        };
     };
 
-    const marineTradeLastTradePrice = 3000;
+    let marineTradeLastTradePrice: {
+        price: number;
+        assetId: string;
+    };
 
     const createMarineTrades = async (address: string) => {
         const deposit = await createDeposit(address, '1000', marineAsset);
@@ -172,6 +184,11 @@ describe('orderbook tests', () => {
         };
 
         await orderService.createBid(user2Id, createBid1);
+
+        marineTradeLastTradePrice = {
+            price: 3000,
+            assetId: deposit.asset.id
+        };
     };
 
     const createTrades = async (address: string) => {
@@ -269,7 +286,8 @@ describe('orderbook tests', () => {
 
                 expect(asks).toHaveLength(2);
                 expect(bids).toHaveLength(2);
-                expect(lastTradedPrice).toBe(marineTradeLastTradePrice); // marine asset trade
+                expect(lastTradedPrice.price).toBe(marineTradeLastTradePrice.price); // marine asset trade
+                expect(lastTradedPrice.assetId).toBe(marineTradeLastTradePrice.assetId); // marine asset trade
             });
 
         await request(app.getHttpServer())
@@ -311,7 +329,8 @@ describe('orderbook tests', () => {
                 expect(asks).toHaveLength(0);
                 expect(bids).toHaveLength(1);
 
-                expect(lastTradedPrice).toBe(windTradeLastTradePrice);
+                expect(lastTradedPrice.price).toBe(windTradeLastTradePrice.price);
+                expect(lastTradedPrice.assetId).toBe(windTradeLastTradePrice.assetId);
             });
     });
 

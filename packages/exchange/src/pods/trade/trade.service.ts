@@ -2,19 +2,25 @@ import { Ask, Bid, ProductFilter, TradeExecutedEvent } from '@energyweb/exchange
 import { IDeviceTypeService, LocationService } from '@energyweb/utils-general';
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import BN from 'bn.js';
 import { List } from 'immutable';
 import { Connection, Repository } from 'typeorm';
 
 import { toMatchingEngineOrder } from '../matching-engine/order-mapper';
 import { OrderStatus } from '../order/order-status.enum';
 import { Order } from '../order/order.entity';
+import { ProductDTO } from '../order/product.dto';
 import { DeviceTypeServiceWrapper } from '../runner/deviceTypeServiceWrapper';
+import { TradePriceInfoDTO } from './trade-price-info.dto';
 import { Trade } from './trade.entity';
 
 type TradeCacheItem = {
     ask: Ask;
     bid: Bid;
     price: number;
+    product: ProductDTO;
+    volume: BN;
+    created: Date;
 };
 
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
@@ -80,7 +86,7 @@ export class TradeService implements OnModuleInit {
         await this.updateTradesCache(trades);
     }
 
-    public getLastTradedPrice(productFilter: ProductFilter) {
+    public getLastTradedPrice(productFilter: ProductFilter): TradePriceInfoDTO {
         this.logger.debug(`Finding last traded price for ${JSON.stringify(productFilter)}`);
 
         const lastTrade = this.tradeCache.find(({ ask, bid }) => {
@@ -90,7 +96,13 @@ export class TradeService implements OnModuleInit {
             );
         });
 
-        return lastTrade?.price;
+        return new TradePriceInfoDTO({
+            price: lastTrade?.price,
+            created: lastTrade?.created,
+            volume: lastTrade?.volume,
+            product: lastTrade?.product,
+            assetId: lastTrade?.ask.assetId
+        });
     }
 
     private async getAll() {
@@ -133,7 +145,10 @@ export class TradeService implements OnModuleInit {
                 ...trade.bid,
                 currentVolume: trade.bid.startVolume
             } as Order) as Bid,
-            price: trade.price
+            price: trade.price,
+            created: trade.created,
+            volume: trade.volume,
+            product: trade.ask.product
         };
     }
 

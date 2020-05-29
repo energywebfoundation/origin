@@ -5,15 +5,21 @@ import {
     KYCStatus,
     Role,
     Status,
+    UserPasswordUpdate,
     UserRegistrationData
 } from '@energyweb/origin-backend-core';
 import { recoverTypedSignatureAddress } from '@energyweb/utils-general';
-import { ConflictException, Injectable, Logger } from '@nestjs/common';
+import {
+    ConflictException,
+    Injectable,
+    Logger,
+    UnprocessableEntityException
+} from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { InjectRepository } from '@nestjs/typeorm';
 import bcrypt from 'bcryptjs';
-import { FindConditions, Repository, DeepPartial } from 'typeorm';
-
+import { validate } from 'class-validator';
+import { DeepPartial, FindConditions, Repository } from 'typeorm';
 import { ExtendedBaseEntity } from '../ExtendedBaseEntity';
 import { User } from './user.entity';
 
@@ -159,5 +165,76 @@ export class UserService {
 
     private async hasUser(conditions: FindConditions<User>) {
         return (await this.repository.findOne(conditions)) !== undefined;
+    }
+
+    async updateProfile(id: number | string, user: IUser) {
+        const updateEntity = new User({
+            firstName: user.firstName,
+            lastName: user.lastName,
+            email: user.email,
+            telephone: user.telephone
+        });
+
+        const validationErrors = await validate(updateEntity, {
+            skipUndefinedProperties: true
+        });
+
+        if (validationErrors.length > 0) {
+            throw new UnprocessableEntityException({
+                success: false,
+                errors: validationErrors
+            });
+        }
+
+        await this.repository.update(id, updateEntity);
+        return this.repository.findOne(id);
+    }
+
+    async updatePassword(email: string, user: UserPasswordUpdate) {
+        const _user = await this.getUserAndPasswordByEmail(email);
+
+        if (_user && bcrypt.compareSync(user.oldPassword, _user.password)) {
+            const updateEntity = new User({
+                password: this.hashPassword(user.newPassword)
+            });
+
+            const validationErrors = await validate(updateEntity, {
+                skipUndefinedProperties: true
+            });
+
+            if (validationErrors.length > 0) {
+                throw new UnprocessableEntityException({
+                    success: false,
+                    errors: validationErrors
+                });
+            }
+
+            await this.repository.update(_user.id, updateEntity);
+            return this.repository.findOne(_user.id);
+        }
+        throw new ConflictException({
+            success: false,
+            errors: `This Current password are not same.`
+        });
+    }
+
+    async updateBlockChainAddress(id: number | string, user: IUser) {
+        const updateEntity = new User({
+            blockchainAccountAddress: user.blockchainAccountAddress
+        });
+
+        const validationErrors = await validate(updateEntity, {
+            skipUndefinedProperties: true
+        });
+
+        if (validationErrors.length > 0) {
+            throw new UnprocessableEntityException({
+                success: false,
+                errors: validationErrors
+            });
+        }
+
+        await this.repository.update(id, updateEntity);
+        return this.repository.findOne(id);
     }
 }

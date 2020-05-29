@@ -8,7 +8,8 @@ import {
     OrganizationPostData,
     OrganizationRemoveMemberReturnData,
     OrganizationStatus,
-    OrganizationUpdateData
+    OrganizationUpdateData,
+    OrganizationRole
 } from '@energyweb/origin-backend-core';
 
 interface ITmpUser {
@@ -81,17 +82,18 @@ export class OrganizationClientMock implements IOrganizationClient {
         return Promise.resolve(organization);
     }
 
-    invite(email: string): Promise<OrganizationInviteCreateReturnData> {
+    invite(email: string, role: OrganizationRole): Promise<OrganizationInviteCreateReturnData> {
         throw new Error('Method not implemented.');
     }
 
-    inviteMocked(email: string, organizationId: number): OrganizationInviteCreateReturnData {
+    inviteMocked(email: string, organizationId: number, role: OrganizationRole): OrganizationInviteCreateReturnData {
         const organization = this.storage.get(organizationId);
         this.invitationCounter++;
 
         const organizationInvitation: IOrganizationInvitation = {
             id: this.invitationCounter,
             email,
+            role,
             organization: organizationId,
             status: OrganizationInvitationStatus.Pending
         };

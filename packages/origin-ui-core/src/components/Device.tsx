@@ -1,17 +1,17 @@
+import { DeviceStatus, isRole, Role } from '@energyweb/origin-backend-core';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
-import { Route, NavLink, Redirect } from 'react-router-dom';
-import { ProducingDeviceTable } from './ProducingDeviceTable';
+import { NavLink, Redirect, Route } from 'react-router-dom';
+import { getUserOffchain } from '../features/users/selectors';
+import { useLinks } from '../utils';
 import { AddDevice } from './AddDevice';
+import { AutoSupplyDeviceTable } from './AutoSupplyDeviceTable';
 import { DeviceGroupForm } from './DeviceGroupForm';
+import { DeviceMap } from './DeviceMap';
 import { PageContent } from './PageContent/PageContent';
 import { ProducingDeviceDetailView } from './ProducingDeviceDetailView';
-import { DeviceMap } from './DeviceMap';
-import { useLinks } from '../utils';
-import { getUserOffchain } from '../features/users/selectors';
-import { DeviceStatus, Role, isRole } from '@energyweb/origin-backend-core';
-
-import { useTranslation } from 'react-i18next';
+import { ProducingDeviceTable } from './ProducingDeviceTable';
 
 export function Device() {
     const userOffchain = useSelector(getUserOffchain);
@@ -29,18 +29,6 @@ export function Device() {
     }
 
     function MyDevices() {
-        return (
-            <ProducingDeviceTable
-                owner={userOffchain?.id}
-                showAddDeviceButton={true}
-                actions={{
-                    requestCertificates: true
-                }}
-            />
-        );
-    }
-
-    function AutomaticSupplyDevices() {
         return (
             <ProducingDeviceTable
                 owner={userOffchain?.id}
@@ -121,7 +109,7 @@ export function Device() {
         {
             key: 'supply',
             label: t('navigation.devices.supply'),
-            component: AutomaticSupplyDevices,
+            component: AutoSupplyDeviceTable,
             roles: [Role.OrganizationDeviceManager, Role.OrganizationAdmin]
         }
     ];
