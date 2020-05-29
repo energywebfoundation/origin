@@ -14,7 +14,7 @@ import { OrderService } from '../src/pods/order/order.service';
 import { TradePriceInfoDTO } from '../src/pods/trade/trade-price-info.dto';
 import { TransferService } from '../src/pods/transfer/transfer.service';
 import { DatabaseService } from './database.service';
-import { bootstrapTestInstance } from './exchange';
+import { bootstrapTestInstance, authenticatedUser } from './exchange';
 
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -31,7 +31,7 @@ describe('orderbook tests', () => {
     let orderService: OrderService;
     let accountService: AccountService;
 
-    const user1Id = '1';
+    const user1Id = authenticatedUser.organization;
     const user2Id = '2';
 
     const solarAsset: CreateAssetDTO = {

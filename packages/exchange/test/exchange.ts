@@ -52,10 +52,12 @@ const deployIssuer = async (registry: string) => {
     return contract;
 };
 
+export const authenticatedUser = { id: 1, organization: '1000' };
+
 const authGuard: CanActivate = {
     canActivate: (context: ExecutionContext) => {
         const req = context.switchToHttp().getRequest();
-        req.user = { id: 1, organization: 1 };
+        req.user = authenticatedUser;
 
         return true;
     }

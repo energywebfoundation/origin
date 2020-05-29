@@ -10,7 +10,7 @@ import { AccountService } from '../src/pods/account/account.service';
 import { OrderStatus } from '../src/pods/order/order-status.enum';
 import { Order } from '../src/pods/order/order.entity';
 import { DatabaseService } from './database.service';
-import { bootstrapTestInstance } from './exchange';
+import { bootstrapTestInstance, authenticatedUser } from './exchange';
 import { depositToken, issueToken, provider } from './utils';
 
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
@@ -20,7 +20,7 @@ describe('Deposits automatic posting for sale', () => {
     let databaseService: DatabaseService;
     let accountService: AccountService;
 
-    const user1Id = '1';
+    const user1Id = authenticatedUser.organization;
 
     let registry: Contract;
     let issuer: Contract;
