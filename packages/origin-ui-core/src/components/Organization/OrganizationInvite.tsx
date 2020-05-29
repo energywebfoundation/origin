@@ -14,6 +14,7 @@ import {
     MultiSelectAutocomplete,
     IAutocompleteMultiSelectOptionType
 } from '../MultiSelectAutocomplete';
+import { roleNames } from './Organization';
 import { useTranslation } from '../../utils';
 
 interface IFormValues {
@@ -88,20 +89,9 @@ export function OrganizationInvite() {
                     const fieldDisabled = isSubmitting;
                     const buttonDisabled = isSubmitting || !isValid;
 
-                    const supportedRoles: IAutocompleteMultiSelectOptionType[] = [
-                        {
-                            value: Role.OrganizationUser.toString(),
-                            label: t('organization.invitations.roles.member')
-                        },
-                        {
-                            value: Role.OrganizationDeviceManager.toString(),
-                            label: t('organization.invitations.roles.deviceManager')
-                        },
-                        {
-                            value: Role.OrganizationAdmin.toString(),
-                            label: t('organization.invitations.roles.admin')
-                        }
-                    ];
+                    const supportedRoles: IAutocompleteMultiSelectOptionType[] = Object.keys(
+                        roleNames
+                    ).map((key) => ({ label: t(roleNames[key]), value: key.toString() }));
 
                     let selectedRole: IAutocompleteMultiSelectOptionType[];
                     if (values.role) {

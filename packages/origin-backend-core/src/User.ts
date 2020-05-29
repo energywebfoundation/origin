@@ -32,6 +32,30 @@ export function buildRights(roles: Role[]): number {
     }, 0);
 }
 
+export function getRolesFromRights(rights: number): Role[] {
+    let userRights = rights;
+    
+    if (!userRights) {
+        return [];
+    }
+
+    const userRoles: Role[] = [];
+
+    const rolesKeys = Object.keys(Role);
+    const roles: Role[] = rolesKeys.splice(0, rolesKeys.length / 2).map(value => Number(value));
+
+    for (const role of roles.sort((a, b) => b - a)) {
+        if (userRights < role) {
+            continue;
+        }
+
+        userRoles.push(role);
+        userRights -= role;
+    }
+
+    return userRoles;
+}
+
 export function isRole(user: { rights: number }, ...roles: Role[]): boolean {
     return roles.some((role) => (user?.rights & role) !== 0);
 }
