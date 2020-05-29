@@ -1,14 +1,5 @@
 import { IDeviceClient } from '@energyweb/origin-backend-client';
-import {
-    DeviceStatus,
-    DeviceUpdateData,
-    IDevice,
-    IDeviceWithRelationsIds,
-    IExternalDeviceId,
-    ISmartMeterRead,
-    ISmartMeterReadWithStatus,
-    DeviceSettingsUpdateData
-} from '@energyweb/origin-backend-core';
+import { DeviceSettingsUpdateData, DeviceStatus, DeviceUpdateData, IDevice, IDeviceWithRelationsIds, IExternalDeviceId, ISmartMeterRead, ISmartMeterReadWithStatus } from '@energyweb/origin-backend-core';
 
 export class DeviceClientMock implements IDeviceClient {
     
@@ -80,7 +71,7 @@ export class DeviceClientMock implements IDeviceClient {
         this.storage.set(id, device);
     }
 
-    public async getSupplyBy(facilityName: string, status: DeviceStatus): Promise<IDeviceWithRelationsIds[]> {
+    public async getSupplyBy(facilityName: string, status: number): Promise<IDeviceWithRelationsIds[]> {
         return [...this.storage.values()];
     }
 

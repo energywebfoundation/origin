@@ -1,16 +1,6 @@
-import {
-    IDevice,
-    DeviceUpdateData,
-    ISmartMeterRead,
-    DeviceCreateData,
-    IDeviceWithRelationsIds,
-    IExternalDeviceId,
-    ISmartMeterReadWithStatus,
-    DeviceStatus,
-    DeviceSettingsUpdateData
-} from '@energyweb/origin-backend-core';
-import { IRequestClient, RequestClient } from './RequestClient';
+import { DeviceCreateData, DeviceSettingsUpdateData, DeviceUpdateData, IDevice, IDeviceWithRelationsIds, IExternalDeviceId, ISmartMeterRead, ISmartMeterReadWithStatus } from '@energyweb/origin-backend-core';
 import { bigNumberify } from 'ethers/utils';
+import { IRequestClient, RequestClient } from './RequestClient';
 
 export interface IDeviceClient {
     getById(id: number): Promise<IDeviceWithRelationsIds>;
@@ -20,7 +10,7 @@ export interface IDeviceClient {
     update(id: number, data: DeviceUpdateData): Promise<IDevice>;
     getAllSmartMeterReadings(id: number): Promise<ISmartMeterReadWithStatus[]>;
     addSmartMeterRead(id: number, smartMeterRead: ISmartMeterRead): Promise<void>;
-    getSupplyBy(facilityName: string, status: DeviceStatus): Promise<IDeviceWithRelationsIds[]>;
+    getSupplyBy(facilityName: string, status: number): Promise<IDeviceWithRelationsIds[]>;
     delete(id: number): Promise<void>;
     updateDeviceSettings(id: number, device: DeviceSettingsUpdateData): Promise<void>;
 }
@@ -108,7 +98,7 @@ export class DeviceClient implements IDeviceClient {
         };
     }
 
-    public async getSupplyBy(facilityName: string, status: DeviceStatus) {
+    public async getSupplyBy(facilityName: string, status: number) {
         const { data } = await this.requestClient.get<unknown, IDeviceWithRelationsIds[]>(
             `${this.endpoint}/supplyBy?facility=${
                 facilityName ?? ''
