@@ -3,6 +3,37 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.3.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-ui-core@1.2.0...@energyweb/origin-ui-core@1.3.0) (2020-05-29)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @date-io/moment to v2 ([1b309ac](https://github.com/energywebfoundation/origin/commit/1b309ac9ba66e30b8d3e04a822a3bcfe9c542437))
+* **deps:** update dependency bn.js to v5.1.2 ([abe9afb](https://github.com/energywebfoundation/origin/commit/abe9afba4c6ad4d02bd8afd044f49582423e1293))
+* **deps:** update dependency bootstrap to v4.5.0 ([b8d5401](https://github.com/energywebfoundation/origin/commit/b8d54012283ae4014ef3402909cf8ffaac3a9b88))
+* **deps:** update dependency moment-timezone to v0.5.31 ([e3b8550](https://github.com/energywebfoundation/origin/commit/e3b855014f9cc4df425387899c689c08516067f0))
+* **deps:** update dependency ts-loader to v7.0.5 ([111c753](https://github.com/energywebfoundation/origin/commit/111c75323f4137d16b56c097d4254bc1a3e430af))
+* **deps:** update dependency yup to v0.29.0 ([646d50f](https://github.com/energywebfoundation/origin/commit/646d50fbd9fd9e5d96d7b9aac6b5832fc2473a60))
+* **deps:** update mui monorepo ([88c62cb](https://github.com/energywebfoundation/origin/commit/88c62cbd61646abd27d4a1b5034b476b7ef643f7))
+* **deps:** update mui monorepo ([cd73a37](https://github.com/energywebfoundation/origin/commit/cd73a37b674838f2b0c77fdbb49c4af3f266f0cc))
+* **deps:** update react ([3f9b412](https://github.com/energywebfoundation/origin/commit/3f9b412c2bd4223270082c4ea8c9faaaf4420fdb))
+* **origin-ui-core:** disallow requesting certificates for non-Active devices ([071e035](https://github.com/energywebfoundation/origin/commit/071e03543ce1d4afe7d90ec2cc8c5d0289101575))
+* **origin-ui-core:** post for sale. use original id ([2b5b8c7](https://github.com/energywebfoundation/origin/commit/2b5b8c714232ff4c83879bbc57676f6d1cb4eb84))
+
+
+### Features
+
+* **origin-ui-core:** add last trade info to exchange client ([b2026f4](https://github.com/energywebfoundation/origin/commit/b2026f401cecbbef86f92222f07e0ad5269fba03))
+* **origin-ui-core:** new ui for automatic supply price for devices ([e419040](https://github.com/energywebfoundation/origin/commit/e419040b7ba76d11327ed7654a79013aaeeb1ad9))
+* **origin-ui-core:** new ui for automatic supply price for devices ([fc2f8e4](https://github.com/energywebfoundation/origin/commit/fc2f8e470c5f7e472bb1204444bedcfc6c2d22a0))
+* **origin-ui-core:** new user profile page ([f3abed4](https://github.com/energywebfoundation/origin/commit/f3abed44875607a9a5530f28e97bc4297cd1d7f7))
+* **origin-ui-core:** request certificates for org deposit account ([a47f512](https://github.com/energywebfoundation/origin/commit/a47f51266d4308467fe67ac815f457650aa9c606))
+* **origin-ui-core:** show exchange certificates ([9adab23](https://github.com/energywebfoundation/origin/commit/9adab2377b5e4070308bb109e052d1cbc7142c81))
+
+
+
+
+
 # [1.2.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-ui-core@1.1.0...@energyweb/origin-ui-core@1.2.0) (2020-05-15)
 
 

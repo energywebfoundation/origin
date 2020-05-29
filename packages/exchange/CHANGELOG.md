@@ -3,6 +3,41 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.1.0](https://github.com/energywebfoundation/origin/compare/@energyweb/exchange@1.0.0...@energyweb/exchange@1.1.0) (2020-05-29)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @nestjs/config to v0.4.2 ([2c93aef](https://github.com/energywebfoundation/origin/commit/2c93aef9b9820647fdb9df49f25cdf4c41c6a737))
+* **deps:** update dependency @nestjs/config to v0.5.0 ([e57cb73](https://github.com/energywebfoundation/origin/commit/e57cb73efa867020dcd4414a0ad4694995a42a80))
+* **deps:** update dependency @nestjs/schedule to v0.4.0 ([377e56b](https://github.com/energywebfoundation/origin/commit/377e56b70737149294d070532f5edd93fedb8290))
+* **deps:** update dependency @nestjs/swagger to v4.5.7 ([459d351](https://github.com/energywebfoundation/origin/commit/459d351dad5bc870401403b104c2c54f3b9b9164))
+* **deps:** update nest monorepo to v7.0.13 ([ea1133d](https://github.com/energywebfoundation/origin/commit/ea1133dd1efdcad9083b19b622884918dd802bee))
+* **deps:** update nest monorepo to v7.1.0 ([78be769](https://github.com/energywebfoundation/origin/commit/78be769e5b1f8a27e16bb65ff2c879b20a03bce8))
+* **exchange:** accounting tests ([d1a6faa](https://github.com/energywebfoundation/origin/commit/d1a6faa93aa777665d14c420581a1e665453a873))
+* **exchange:** amount serialization ([ed18baa](https://github.com/energywebfoundation/origin/commit/ed18baa0cf046cde9daaa480a84726098ee8dabd))
+* **exchange:** at least 2 items in bundle, should not be able to buy cancelled bundles ([f27ad4e](https://github.com/energywebfoundation/origin/commit/f27ad4e1881099e43e11c6535b5eaed1247d2d99))
+* **exchange:** correct logged in user id. improve tests ([37cf9a1](https://github.com/energywebfoundation/origin/commit/37cf9a18a9e6c2487b60ee5a64737e1145ee3d1a))
+* **exchange:** do not return account assets with 0 amount ([dabaf30](https://github.com/energywebfoundation/origin/commit/dabaf30d7e6e09e2eb031c07d797e0f59c7c0d1e))
+* **exchange:** e2e orders test ([c1d5b32](https://github.com/energywebfoundation/origin/commit/c1d5b32dc44e8ed5035d411149026b6fa84104de))
+* **exchange:** make trade creation deterministic ([3dad8fd](https://github.com/energywebfoundation/origin/commit/3dad8fdf3824ca9999d33f63e1089daedec570af))
+* **exchange:** missing lint-staged. linter errors ([e9087bf](https://github.com/energywebfoundation/origin/commit/e9087bf26dce0ea4a48bb086d7944453550f691e))
+* **exchange:** negative locked amounts ([715b726](https://github.com/energywebfoundation/origin/commit/715b7268e5206358e5a803cade7b2d3bc38706cf))
+* **exchange:** restrict withdrawals to org admin ([9045f47](https://github.com/energywebfoundation/origin/commit/9045f47284784a9bd1560148fc278c5a28def3e9))
+
+
+### Features
+
+* **exchange:** bundles cancellation ([0371bae](https://github.com/energywebfoundation/origin/commit/0371baee21272fc7a43046b5121016ff31460327))
+* **exchange:** bundles trading ([376b6ba](https://github.com/energywebfoundation/origin/commit/376b6ba4b3e7487b731e5bcbd9d27d81a4ba4580))
+* **exchange:** extended last trade information ([c576896](https://github.com/energywebfoundation/origin/commit/c5768969ff9579a5f0693db412906a5752d4d183))
+* **exchange:** last traded price based on product filter ([c24d34b](https://github.com/energywebfoundation/origin/commit/c24d34b226710f044cafc0b1e873275012cc359e))
+* **exchange:** traded bundles endpoint ([140a743](https://github.com/energywebfoundation/origin/commit/140a7430823d32ae8a91319cca24e109a47404e0))
+
+
+
+
+
 # [1.0.0](https://github.com/energywebfoundation/origin/compare/@energyweb/exchange@0.7.0...@energyweb/exchange@1.0.0) (2020-05-15)
 
 
