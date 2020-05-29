@@ -85,11 +85,11 @@ export class DeviceClientMock implements IDeviceClient {
     }
 
     public async delete(id: number): Promise<void> {
-        throw new Error("Method not implemented.");
+        
     }
 
     public async updateDeviceSettings(id: number, device: DeviceSettingsUpdateData): Promise<void> {
-        throw new Error("Method not implemented.");
+
     }
     
 }
