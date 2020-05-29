@@ -8,8 +8,10 @@ import {
     OrganizationInvitationStatus,
     IOrganizationWithRelationsIds,
     IUserWithRelationsIds,
-    OrganizationRemoveMemberReturnData,
-    OrganizationRole
+    OrganizationMemberChangedReturnData,
+    OrganizationRole,
+    Role,
+    OrganizationUpdateMemberRole
 } from '@energyweb/origin-backend-core';
 
 import { IRequestClient, RequestClient } from './RequestClient';
@@ -31,7 +33,7 @@ export interface IOrganizationClient {
     removeMember(
         organizationId: number,
         userId: number
-    ): Promise<OrganizationRemoveMemberReturnData>;
+    ): Promise<OrganizationMemberChangedReturnData>;
 }
 
 export class OrganizationClient implements IOrganizationClient {
@@ -158,6 +160,19 @@ export class OrganizationClient implements IOrganizationClient {
             OrganizationInviteUpdateData,
             IOrganizationInvitation
         >(`${this.endpoint}/invitation/${id}`, data);
+
+        return response.data;
+    }
+
+    public async memberChangeRole(
+        organizationId: number,
+        userId: number,
+        newRole: Role
+    ): Promise<{ success: boolean; error: string }> {
+        const response = await this.requestClient.put<OrganizationUpdateMemberRole, { success: boolean; error: string }>(
+            `${this.endpoint}/${organizationId}/change-role/${userId}`,
+            { role: newRole }
+        );
 
         return response.data;
     }

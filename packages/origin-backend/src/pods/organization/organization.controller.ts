@@ -4,12 +4,13 @@ import {
     isRole,
     OrganizationInviteCreateReturnData,
     OrganizationPostData,
-    OrganizationRemoveMemberReturnData,
+    OrganizationMemberChangedReturnData,
     OrganizationStatusChangedEvent,
     OrganizationUpdateData,
     Role,
     SupportedEvents,
-    OrganizationRole
+    OrganizationRole,
+    OrganizationUpdateMemberRole
 } from '@energyweb/origin-backend-core';
 import { Roles, RolesGuard, UserDecorator } from '@energyweb/origin-backend-utils';
 import {
@@ -255,8 +256,25 @@ export class OrganizationController {
         @Param('id', new ParseIntPipe()) organizationId: number,
         @Param('userId', new ParseIntPipe()) memberId: number,
         @UserDecorator() loggedUser: ILoggedInUser
-    ): Promise<OrganizationRemoveMemberReturnData> {
+    ): Promise<OrganizationMemberChangedReturnData> {
         await this.organizationService.removeMember(loggedUser, organizationId, memberId);
+
+        return {
+            success: true,
+            error: null
+        };
+    }
+
+    @Put(':id/change-role/:userId')
+    @UseGuards(AuthGuard(), RolesGuard)
+    @Roles(Role.OrganizationAdmin, Role.Admin)
+    async changeMemberRole(
+        @Param('id', new ParseIntPipe()) organizationId: number,
+        @Param('userId', new ParseIntPipe()) memberId: number,
+        @Body() { role }: OrganizationUpdateMemberRole,
+        @UserDecorator() loggedUser: ILoggedInUser
+    ): Promise<OrganizationMemberChangedReturnData> {
+        await this.organizationService.changeMemberRole(loggedUser, organizationId, memberId, role);
 
         return {
             success: true,

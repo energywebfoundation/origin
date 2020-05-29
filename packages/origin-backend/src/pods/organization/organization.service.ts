@@ -12,7 +12,8 @@ import {
     OrganizationStatus,
     ILoggedInUser,
     OrganizationRemovedMemberEvent,
-    SupportedEvents
+    SupportedEvents,
+    OrganizationMemberChangedRoleEvent
 } from '@energyweb/origin-backend-core';
 import { validate } from 'class-validator';
 import { Organization } from './organization.entity';
@@ -176,6 +177,58 @@ export class OrganizationService {
 
         this.notificationService.handleEvent({
             type: SupportedEvents.ORGANIZATION_REMOVED_MEMBER,
+            data: eventData
+        });
+    }
+
+    async changeMemberRole(
+        user: ILoggedInUser,
+        organizationId: number,
+        memberId: number,
+        newRole: Role
+    ) {
+        if (organizationId !== user.organizationId) {
+            throw new BadRequestException({
+                success: false,
+                error: `You are not in the requested organization.`
+            });
+        }
+
+        const userToBeChanged = await this.userService.findById(memberId);
+        const admins = await this.getAdmins(organizationId);
+
+        if (
+            newRole !== Role.OrganizationAdmin &&
+            isRole(userToBeChanged, Role.OrganizationAdmin) &&
+            admins.length < 2
+        ) {
+            throw new BadRequestException({
+                success: false,
+                error: `Can't remove admin user from organization. There always has to be at least one admin in the organization.`
+            });
+        }
+
+        const organization = await this.repository.findOne(user.organizationId, {
+            relations: ['users']
+        });
+
+        if (!organization.users.find((u) => u.id === memberId)) {
+            throw new BadRequestException({
+                success: false,
+                error: `User to be removed is not part of the organization.`
+            });
+        }
+
+        await this.userService.changeRole(memberId, newRole);
+
+        const eventData: OrganizationMemberChangedRoleEvent = {
+            organizationName: organization.name,
+            newRole,
+            email: userToBeChanged.email
+        };
+
+        this.notificationService.handleEvent({
+            type: SupportedEvents.ORGANIZATION_MEMBER_CHANGED_ROLE,
             data: eventData
         });
     }

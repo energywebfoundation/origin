@@ -1,4 +1,4 @@
-import { IUser } from './User';
+import { IUser, Role } from './User';
 import { IDevice } from '.';
 
 export enum OrganizationStatus {
@@ -71,4 +71,8 @@ export type OrganizationPostData = Omit<IOrganizationProperties, 'id' | 'status'
 
 export type OrganizationUpdateData = Pick<IOrganization, 'status'>;
 
-export type OrganizationRemoveMemberReturnData = { success: boolean; error: string };
+export type OrganizationMemberChangedReturnData = { success: boolean; error: string };
+
+export interface OrganizationUpdateMemberRole {
+    role: Role;
+};

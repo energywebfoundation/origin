@@ -4,7 +4,8 @@ import {
     Role,
     UserRegistrationData,
     OrganizationInvitationStatus,
-    IOrganizationInvitation
+    IOrganizationInvitation,
+    getRolesFromRights
 } from '@energyweb/origin-backend-core';
 import { INestApplication } from '@nestjs/common';
 import request from 'supertest';
@@ -238,5 +239,39 @@ describe('Organization e2e tests', () => {
             .get(`/organization/${organization.id + 1}/invitations`)
             .set('Authorization', `Bearer ${accessToken}`)
             .expect(401);
+    });
+
+    it('should be able to change role for organization member when organization admin', async () => {
+        const { accessToken: adminAccessToken, organization } = await registerAndLogin(
+            app,
+            userService,
+            organizationService,
+            [Role.OrganizationAdmin]
+        );
+
+        const { user: member, accessToken: memberAccessToken } = await registerAndLogin(
+            app,
+            userService,
+            organizationService,
+            [Role.OrganizationUser],
+            'member'
+        );
+
+        await request(app.getHttpServer())
+            .put(`/organization/${organization.id}/change-role/${member.id}`)
+            .set('Authorization', `Bearer ${adminAccessToken}`)
+            .send({
+                role: Role.OrganizationDeviceManager
+            })
+            .expect(200);
+
+        await request(app.getHttpServer())
+            .get(`/user/me`)
+            .set('Authorization', `Bearer ${memberAccessToken}`)
+            .expect(200)
+            .expect((res) => {
+                const { rights } = res.body as TUserBaseEntity;
+                expect(getRolesFromRights(rights)).toContain(Role.OrganizationDeviceManager);
+            });
     });
 });

@@ -6,7 +6,7 @@ import {
     OrganizationInvitationStatus,
     OrganizationInviteCreateReturnData,
     OrganizationPostData,
-    OrganizationRemoveMemberReturnData,
+    OrganizationMemberChangedReturnData,
     OrganizationStatus,
     OrganizationUpdateData,
     OrganizationRole
@@ -101,14 +101,14 @@ export class OrganizationClientMock implements IOrganizationClient {
     removeMember(
         organizationId: number,
         userId: number
-    ): Promise<OrganizationRemoveMemberReturnData> {
+    ): Promise<OrganizationMemberChangedReturnData> {
         const organization = this.storage.get(organizationId);
 
         organization.users = organization.users.filter((user) => user !== userId);
 
         this.storage.set(organization.id, organization);
 
-        const returnData: OrganizationRemoveMemberReturnData = {
+        const returnData: OrganizationMemberChangedReturnData = {
             success: true,
             error: ''
         };
