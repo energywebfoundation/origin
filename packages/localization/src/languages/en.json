@@ -18,7 +18,8 @@
                 "my": "My devices",
                 "registerDevice": "Register device",
                 "registerDeviceGroup": "Register device group",
-                "pending": "Pending"
+                "pending": "Pending",
+                "supply": "Supply"
             },
             "certificates": {
                 "inbox": "Inbox",
@@ -98,7 +99,8 @@
                 "deviceType": "Device type",
                 "certificationDate": "Certification date",
                 "from": "From",
-                "to": "To"
+                "to": "To",
+                "source": "Source"
             },
             "actions": {
                 "requestCertificates": "Request certificates",
@@ -159,8 +161,10 @@
                 "settings": "Settings",
                 "import": "Import",
                 "login": "Login",
-                "registerUser": "Register user"
+                "registerUser": "Register user",
+                "userProfile": "User profile"
             }
+            
         },
         "general": {
             "actions": {
@@ -271,13 +275,22 @@
             },
             "actions": {
                 "register": "Register",
-                "login": "Login"
+                "login": "Login",
+                "save": "Save"
             },
             "feedback": {
                 "userRegistered": "User registered.",
                 "errorWhileRegisteringUser": "Error while registering user.",
                 "userLoggedIn": "User logged in.",
                 "couldNotLogIn": "Could not log in with supplied credentials."
+            },
+            "profile": {
+                "updateProfile": "User profile updated.",
+                "errorUpdateProfile": "Error to update User profile.",
+                "updatePassword": "User password updated.",
+                "errorUpdatePassword": "Error to update User password.",
+                "updateChainAddress": "User blockchain address update.",
+                "errorUpdateChainAddress": "Error to update User blockchain address."
             }
         },
         "notification": {
@@ -324,6 +337,15 @@
                 "generationDateEnd": "Generation date end",
                 "generationFrom": "Generation from",
                 "generationTo": "Generation to"
+            }
+        },
+        "organization": {
+            "invitations": {
+                "roles": {
+                    "member": "Member",
+                    "deviceManager": "Device Manager",
+                    "admin": "Admin"
+                }
             }
         }
     }

@@ -13,7 +13,7 @@ import { ProductService } from '../src/pods/product/product.service';
 import { TradeDTO } from '../src/pods/trade/trade.dto';
 import { TransferService } from '../src/pods/transfer/transfer.service';
 import { DatabaseService } from './database.service';
-import { bootstrapTestInstance } from './exchange';
+import { bootstrapTestInstance, authenticatedUser } from './exchange';
 import { OrderStatus } from '../src/pods/order/order-status.enum';
 
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
@@ -77,7 +77,7 @@ describe('Demand orders trading', () => {
         await databaseService.truncate('demand');
     });
 
-    const demandOwner = '1';
+    const demandOwner = authenticatedUser.organization;
     const sellerId = '2';
     const price = 1000;
 

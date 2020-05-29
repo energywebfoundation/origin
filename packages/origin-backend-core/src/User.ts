@@ -71,3 +71,5 @@ export type UserLoginReturnData = { accessToken: string };
 export type UserUpdateData = Partial<
     Pick<IUserProperties, 'blockchainAccountSignedMessage' | 'notifications'>
 >;
+
+export type UserPasswordUpdate = { email: string; oldPassword: string; newPassword: string };

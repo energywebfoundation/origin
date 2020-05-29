@@ -1,4 +1,10 @@
-import { IUser, UserUpdateData, IUserWithRelations, KYCStatus, Status } from '@energyweb/origin-backend-core';
+import {
+    IUser,
+    UserUpdateData,
+    IUserWithRelations,
+    KYCStatus,
+    Status
+} from '@energyweb/origin-backend-core';
 import { IRequestClient, RequestClient } from './RequestClient';
 
 export interface IAdminClient {
@@ -14,17 +20,24 @@ export class AdminClient implements IAdminClient {
     ) {}
 
     async update(formData: IUser) {
-        const response = await this.requestClient.put(`${this.endpoint}/users/` + formData.id,formData);
+        const response = await this.requestClient.put<UserUpdateData, IUserWithRelations>(
+            `${this.endpoint}/users/${formData.id}`,
+            formData
+        );
         return response.data;
     }
 
     public async getAllUsers() {
-        const { data } = await this.requestClient.get(`${this.endpoint}/users`);
+        const { data } = await this.requestClient.get<unknown, IUser[]>(`${this.endpoint}/users`);
         return data;
     }
-    
-    public async getUsersBy(orgName: string,status: Status, kycStatus: KYCStatus) {
-        const { data } = await this.requestClient.get(`${this.endpoint}/usersBy?orgName=${orgName??''}&status=${status}&kycStatus=${kycStatus}`);
+
+    public async getUsersBy(orgName: string, status: Status, kycStatus: KYCStatus) {
+        const { data } = await this.requestClient.get<unknown, IUser[]>(
+            `${this.endpoint}/usersBy?orgName=${
+                orgName ?? ''
+            }&status=${status}&kycStatus=${kycStatus}`
+        );
         return data;
     }
 

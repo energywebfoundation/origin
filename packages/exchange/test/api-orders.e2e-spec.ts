@@ -12,7 +12,7 @@ import { RequestWithdrawalDTO } from '../src/pods/transfer/create-withdrawal.dto
 import { Transfer } from '../src/pods/transfer/transfer.entity';
 import { TransferService } from '../src/pods/transfer/transfer.service';
 import { DatabaseService } from './database.service';
-import { bootstrapTestInstance } from './exchange';
+import { bootstrapTestInstance, authenticatedUser } from './exchange';
 
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -22,7 +22,7 @@ describe('account ask order send', () => {
     let databaseService: DatabaseService;
     let accountService: AccountService;
 
-    const user1Id = '1';
+    const user1Id = authenticatedUser.organization;
     const dummyAsset = {
         address: '0x9876',
         tokenId: '0',
@@ -170,11 +170,7 @@ describe('account ask order send', () => {
                 const account = res.body as AccountDTO;
 
                 expect(account.address).toBe(user1Address);
-                expect(account.balances.available.length).toBe(1);
-                expect(account.balances.available[0].amount).toEqual('0');
-                expect(account.balances.available[0].asset).toMatchObject(
-                    JSON.parse(JSON.stringify(dummyAsset))
-                );
+                expect(account.balances.available.length).toBe(0);
             });
 
         // wait to withdrawal to be finished to not mess with tx nonces

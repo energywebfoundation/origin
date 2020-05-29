@@ -6,7 +6,8 @@
         "@energyweb/utils-general",
         "@energyweb/origin-backend",
         "ganache-cli",
-        "solc"
+        "solc",
+        "@date-io/moment"
     ],
     "labels": ["dependencies"],
     "packageRules": [
@@ -27,7 +28,7 @@
             "groupName": "react"
         },
         {
-            "depTypeList": ["devDependencies"],
+            "updateTypes": ["minor", "patch", "pin", "digest"],
             "automerge": true
         }
     ]

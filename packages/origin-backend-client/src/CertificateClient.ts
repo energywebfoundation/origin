@@ -1,3 +1,4 @@
+/* eslint-disable max-classes-per-file */
 import { bigNumberify } from 'ethers/utils';
 import {
     ICertificationRequest,
@@ -11,25 +12,19 @@ import { IRequestClient, RequestClient } from './RequestClient';
 
 export class CertificationRequestUpdateDTO {
     energy: string;
+
     files: string[];
 }
 
 export interface ICertificateClient {
-    updateCertificationRequest(
-        id: number,
-        data: CertificationRequestUpdateData
-    ): Promise<boolean>;
+    updateCertificationRequest(id: number, data: CertificationRequestUpdateData): Promise<boolean>;
     getCertificationRequest(id: number): Promise<ICertificationRequest>;
     getAllCertificationRequests(): Promise<ICertificationRequest[]>;
     getOwnershipCommitment(certificateId: number): Promise<IOwnershipCommitmentProofWithTx>;
-    getPendingOwnershipCommitment(certificateId: number): Promise<IOwnershipCommitmentProofWithTx>;
     addOwnershipCommitment(
         certificateId: number,
         data: IOwnershipCommitmentProofWithTx
     ): Promise<CommitmentStatus>;
-    approvePendingOwnershipCommitment(
-        certificateId: number
-    ): Promise<IOwnershipCommitmentProofWithTx>;
 }
 
 export class CertificateClient implements ICertificateClient {
@@ -70,9 +65,7 @@ export class CertificateClient implements ICertificateClient {
         return success;
     }
 
-    public async getCertificationRequest(
-        id: number
-    ): Promise<ICertificationRequest> {
+    public async getCertificationRequest(id: number): Promise<ICertificationRequest> {
         const { data } = await this.requestClient.get<void, ICertificationRequestBackend>(
             `${this.certificateRequestEndpoint}/${id}`
         );
@@ -86,9 +79,11 @@ export class CertificateClient implements ICertificateClient {
     }
 
     public async getAllCertificationRequests(): Promise<ICertificationRequest[]> {
-        const { data } = await this.requestClient.get<void, ICertificationRequestBackend[]>(this.certificateRequestEndpoint);
+        const { data } = await this.requestClient.get<void, ICertificationRequestBackend[]>(
+            this.certificateRequestEndpoint
+        );
 
-        return data.map(certReq => {
+        return data.map((certReq) => {
             return {
                 ...certReq,
                 energy: bigNumberify(certReq.energy),
@@ -101,16 +96,9 @@ export class CertificateClient implements ICertificateClient {
         certificateId: number
     ): Promise<IOwnershipCommitmentProofWithTx> {
         const url = `${this.certificateEndpoint}/${certificateId}/OwnershipCommitment`;
-        const { data } = await this.requestClient.get(url);
-
-        return data;
-    }
-
-    public async getPendingOwnershipCommitment(
-        certificateId: number
-    ): Promise<IOwnershipCommitmentProofWithTx> {
-        const url = `${this.certificateEndpoint}/${certificateId}/OwnershipCommitment/pending`;
-        const { data } = await this.requestClient.get(url);
+        const { data } = await this.requestClient.get<unknown, IOwnershipCommitmentProofWithTx>(
+            url
+        );
 
         return data;
     }
@@ -119,22 +107,11 @@ export class CertificateClient implements ICertificateClient {
         certificateId: number,
         proof: IOwnershipCommitmentProofWithTx
     ): Promise<CommitmentStatus> {
-        const request = await this.requestClient.post<
+        const request = await this.requestClient.put<
             IOwnershipCommitmentProofWithTx,
             CommitmentStatus
         >(`${this.certificateEndpoint}/${certificateId}/OwnershipCommitment`, proof);
 
         return request.data;
-    }
-
-    public async approvePendingOwnershipCommitment(
-        certificateId: number
-    ): Promise<IOwnershipCommitmentProofWithTx> {
-        const response = await this.requestClient.put<
-            IOwnershipCommitmentProofWithTx,
-            IOwnershipCommitmentProofWithTx
-        >(`${this.certificateEndpoint}/${certificateId}/OwnershipCommitment/pending/approve`);
-
-        return response.data;
     }
 }

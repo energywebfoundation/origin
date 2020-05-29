@@ -21,6 +21,7 @@ import { TradeModule } from './pods/trade/trade.module';
 import { TransferModule } from './pods/transfer/transfer.module';
 import { WithdrawalProcessorModule } from './pods/withdrawal-processor/withdrawal-processor.module';
 import { HTTPLoggingInterceptor } from './utils/httpLoggingInterceptor';
+import { BundleModule } from './pods/bundle/bundle.module';
 
 const getEnvFilePath = () => {
     const pathsToTest = ['../../../../../.env', '../../../../../../.env'];
@@ -59,7 +60,8 @@ const getEnvFilePath = () => {
         AccountBalanceModule,
         DepositWatcherModule,
         WithdrawalProcessorModule,
-        RunnerModule
+        RunnerModule,
+        BundleModule
     ],
     providers: [
         { provide: APP_PIPE, useClass: ValidationPipe },

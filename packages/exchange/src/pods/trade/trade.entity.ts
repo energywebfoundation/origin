@@ -7,6 +7,11 @@ import { Order } from '../order/order.entity';
 
 @Entity()
 export class Trade extends ExtendedBaseEntity {
+    constructor(partial: Partial<Trade>) {
+        super();
+        Object.assign(this, partial);
+    }
+
     @PrimaryGeneratedColumn('uuid')
     id: string;
 

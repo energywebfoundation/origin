@@ -8,7 +8,8 @@ import {
     OrganizationInvitationStatus,
     IOrganizationWithRelationsIds,
     IUserWithRelationsIds,
-    OrganizationRemoveMemberReturnData
+    OrganizationRemoveMemberReturnData,
+    OrganizationRole
 } from '@energyweb/origin-backend-core';
 
 import { IRequestClient, RequestClient } from './RequestClient';
@@ -19,7 +20,7 @@ export interface IOrganizationClient {
     add(data: OrganizationPostData): Promise<IOrganizationWithRelationsIds>;
     update(id: number, data: OrganizationUpdateData): Promise<IOrganizationWithRelationsIds>;
 
-    invite(email: string): Promise<OrganizationInviteCreateReturnData>;
+    invite(email: string, role: OrganizationRole): Promise<OrganizationInviteCreateReturnData>;
     getInvitations(): Promise<IOrganizationInvitation[]>;
     getInvitationsToOrganization(organizationId: number): Promise<IOrganizationInvitation[]>;
     getInvitationsForEmail(email: string): Promise<IOrganizationInvitation[]>;
@@ -49,13 +50,15 @@ export class OrganizationClient implements IOrganizationClient {
         }
 
         const url = `${this.endpoint}/${id}`;
-        const { data } = await this.requestClient.get(url);
+        const { data } = await this.requestClient.get<unknown, IOrganizationWithRelationsIds>(url);
 
         return data;
     }
 
     public async getAll(): Promise<IOrganizationWithRelationsIds[]> {
-        const { data } = await this.requestClient.get(this.endpoint);
+        const { data } = await this.requestClient.get<unknown, IOrganizationWithRelationsIds[]>(
+            this.endpoint
+        );
 
         return data;
     }
@@ -93,25 +96,28 @@ export class OrganizationClient implements IOrganizationClient {
         });
     }
 
-    public async invite(email: string): Promise<OrganizationInviteCreateReturnData> {
+    public async invite(email: string, role: OrganizationRole): Promise<OrganizationInviteCreateReturnData> {
         const response = await this.requestClient.post<
             OrganizationInviteCreateData,
             OrganizationInviteCreateReturnData
         >(`${this.endpoint}/invite`, {
-            email
+            email,
+            role
         });
 
         return response.data;
     }
 
     public async getInvitations(): Promise<IOrganizationInvitation[]> {
-        const { data } = await this.requestClient.get(`${this.endpoint}/invitation`);
+        const { data } = await this.requestClient.get<unknown, IOrganizationInvitation[]>(
+            `${this.endpoint}/invitation`
+        );
 
         return data;
     }
 
     public async getInvitationsForEmail(email: string): Promise<IOrganizationInvitation[]> {
-        const { data } = await this.requestClient.get(
+        const { data } = await this.requestClient.get<unknown, IOrganizationInvitation[]>(
             `${this.endpoint}/invitation?email=${encodeURIComponent(email)}`
         );
 
@@ -121,15 +127,17 @@ export class OrganizationClient implements IOrganizationClient {
     public async getInvitationsToOrganization(
         organizationId: number
     ): Promise<IOrganizationInvitation[]> {
-        const { data } = await this.requestClient.get(
-            `${this.endpoint}/invitation?organization=${organizationId}`
+        const { data } = await this.requestClient.get<unknown, IOrganizationInvitation[]>(
+            `${this.endpoint}/${organizationId}/invitations`
         );
 
         return data;
     }
 
     public async getMembers(id: number): Promise<IUserWithRelationsIds[]> {
-        const { data } = await this.requestClient.get(`${this.endpoint}/${id}/users`);
+        const { data } = await this.requestClient.get<unknown, IUserWithRelationsIds[]>(
+            `${this.endpoint}/${id}/users`
+        );
 
         return data;
     }

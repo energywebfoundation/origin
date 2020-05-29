@@ -8,7 +8,8 @@ import {
     OrganizationStatusChangedEvent,
     OrganizationUpdateData,
     Role,
-    SupportedEvents
+    SupportedEvents,
+    OrganizationRole
 } from '@energyweb/origin-backend-core';
 import { Roles, RolesGuard, UserDecorator } from '@energyweb/origin-backend-utils';
 import {
@@ -27,7 +28,8 @@ import {
     Post,
     Put,
     UnprocessableEntityException,
-    UseGuards
+    UseGuards,
+    UnauthorizedException
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -38,7 +40,7 @@ import { NotificationService } from '../notification';
 import { OrganizationInvitationService } from './organization-invitation.service';
 import { Organization } from './organization.entity';
 import { OrganizationService } from './organization.service';
-import { OrganizationInvitation } from './organizationInvitation.entity';
+import { OrganizationInvitation } from './organization-invitation.entity';
 
 @Controller('/Organization')
 export class OrganizationController {
@@ -190,6 +192,32 @@ export class OrganizationController {
         };
     }
 
+    @Get('/:id/invitations')
+    @UseGuards(AuthGuard())
+    async getInvitationsForOrganization(
+        @Param('id') organizationId: string,
+        @UserDecorator() loggedUser: ILoggedInUser
+    ): Promise<IOrganizationInvitation[]> {
+        if (loggedUser.organizationId !== Number(organizationId)) {
+            throw new UnauthorizedException(
+                `You can only GET invitations from your organization. Requested: ${organizationId}, User organization: ${loggedUser.organizationId}`
+            );
+        }
+
+        const organization = await this.organizationService.findOne(organizationId);
+
+        if (!organization) {
+            throw new NotFoundException(StorageErrors.NON_EXISTENT);
+        }
+
+        return (this.organizationInvitationRepository.find({
+            where: { organization: organizationId },
+            loadRelationIds: true
+        }) as Promise<Omit<IOrganizationInvitation, 'organization'>[]>) as Promise<
+            IOrganizationInvitation[]
+        >;
+    }
+
     @Put('/invitation/:invitationId')
     @UseGuards(AuthGuard())
     async updateInvitation(
@@ -206,9 +234,10 @@ export class OrganizationController {
     @Roles(Role.OrganizationAdmin, Role.Admin)
     async invite(
         @Body('email') email: string,
+        @Body('role') role: OrganizationRole,
         @UserDecorator() loggedUser: ILoggedInUser
     ): Promise<OrganizationInviteCreateReturnData> {
-        await this.organizationInvitationService.invite(loggedUser, email);
+        await this.organizationInvitationService.invite(loggedUser, email, role);
 
         return {
             success: true,

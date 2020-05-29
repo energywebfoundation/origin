@@ -52,7 +52,7 @@ export function CertificateDetailView(props: IProps) {
     async function enrichEvent() {
         const allCertificateEvents = await CertificateUtils.getAllCertificateEvents(
             selectedCertificate.id,
-            selectedCertificate.configuration
+            configuration
         );
 
         const jointEvents = allCertificateEvents.map(async (event) => {

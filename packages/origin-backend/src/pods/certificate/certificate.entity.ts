@@ -1,4 +1,4 @@
-import { Entity, PrimaryColumn, OneToMany, OneToOne, JoinColumn } from 'typeorm';
+import { Entity, PrimaryColumn, OneToMany, OneToOne, JoinColumn, Column } from 'typeorm';
 import { ICertificateOwnership } from '@energyweb/origin-backend-core';
 import { OwnershipCommitment } from './ownership-commitment.entity';
 import { ExtendedBaseEntity } from '../ExtendedBaseEntity';
@@ -8,7 +8,10 @@ export class Certificate extends ExtendedBaseEntity implements ICertificateOwner
     @PrimaryColumn()
     id: number;
 
-    @OneToOne(() => OwnershipCommitment)
+    @Column('varchar')
+    originalRequestor: string;
+
+    @OneToOne(() => OwnershipCommitment, { nullable: true })
     @JoinColumn()
     currentOwnershipCommitment: OwnershipCommitment;
 

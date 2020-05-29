@@ -95,8 +95,6 @@ describe('DirectBuy orders tests', () => {
             .expect((res) => {
                 createdDirectBuyOrder = res.body as Order;
 
-                console.log(createdDirectBuyOrder);
-
                 expect(createdDirectBuyOrder.type).toBe(OrderType.Direct);
                 expect(createdDirectBuyOrder.price).toBe(directBuyOrder.price);
                 expect(createdDirectBuyOrder.startVolume).toBe(directBuyOrder.volume);

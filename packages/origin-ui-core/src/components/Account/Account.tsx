@@ -8,6 +8,7 @@ import { AccountSettings } from './AccountSettings';
 import { UserRegister } from './UserRegister';
 import { UserLogin } from './UserLogin';
 import { dataTest, useLinks, useTranslation } from '../../utils';
+import { UserProfile } from './UserProfile';
 
 export function Account() {
     const userOffchain = useSelector(getUserOffchain);
@@ -35,6 +36,12 @@ export function Account() {
             label: 'settings.navigation.registerUser',
             component: UserRegister,
             hide: isLoggedIn
+        },
+        {
+            key: 'user-profile',
+            label: 'settings.navigation.userProfile',
+            component: UserProfile,
+            hide: !isLoggedIn
         }
     ];
 

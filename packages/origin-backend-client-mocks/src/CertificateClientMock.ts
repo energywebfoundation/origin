@@ -81,6 +81,7 @@ export class CertificateClientMock implements ICertificateClient {
         if (!certificate?.currentOwnershipCommitment) {
             this.certificateStorage.set(certificateId, {
                 id: certificateId,
+                originalRequestor: '',
                 currentOwnershipCommitment: proof,
                 pendingOwnershipCommitment: null,
                 ownershipHistory: []

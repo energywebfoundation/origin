@@ -1,7 +1,7 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, UnprocessableEntityException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, DeepPartial, FindOneOptions, FindManyOptions } from 'typeorm';
-import { ILoggedInUser } from '@energyweb/origin-backend-core';
+import { ILoggedInUser, DeviceStatus } from '@energyweb/origin-backend-core';
 import { CertificationRequest } from './certification-request.entity';
 import { CertificationRequestUpdateDTO } from './certification-request.dto';
 import { StorageErrors } from '../../enums/StorageErrors';
@@ -14,6 +14,15 @@ export class CertificationRequestService {
     ) {}
 
     async create(cert: DeepPartial<CertificationRequest>) {
+        if (cert.device.status !== DeviceStatus.Active) {
+            throw new UnprocessableEntityException({
+                success: false,
+                error: `Cannot create certification requests for device with status: ${
+                    DeviceStatus[cert.device.status]
+                }. Should be ${DeviceStatus[DeviceStatus.Active]}.`
+            });
+        }
+
         const certificationRequest = this.repository.create(cert);
 
         return this.repository.save(certificationRequest);

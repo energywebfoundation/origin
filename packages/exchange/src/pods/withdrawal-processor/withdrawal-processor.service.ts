@@ -3,6 +3,7 @@ import { ConfigurationService } from '@energyweb/origin-backend';
 import { forwardRef, Inject, Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { ModuleRef } from '@nestjs/core';
+import BN from 'bn.js';
 import { Contract, ContractTransaction, ethers, Wallet } from 'ethers';
 import { Subject } from 'rxjs';
 import { concatMap, tap } from 'rxjs/operators';
@@ -133,8 +134,7 @@ export class WithdrawalProcessorService implements OnModuleInit {
 
         const hasEnoughFunds = await this.accountBalanceService.hasEnoughAssetAmount(
             withdrawal.userId,
-            withdrawal.asset.id,
-            withdrawal.amount
+            { id: withdrawal.asset.id, amount: new BN(withdrawal.amount) }
         );
         if (!hasEnoughFunds) {
             this.logger.error(

@@ -25,7 +25,8 @@ export function Exchange(props: IProps) {
 
     const [data, setData] = useState<TOrderBook>({
         asks: [],
-        bids: []
+        bids: [],
+        lastTradedPrice: null
     });
     const [deviceType, setDeviceType] = useState<string[]>([]);
     const [location, setLocation] = useState<string[]>([]);
@@ -42,7 +43,8 @@ export function Exchange(props: IProps) {
             generationDateEnd
         )) ?? {
             asks: [],
-            bids: []
+            bids: [],
+            lastTradedPrice: null
         };
 
         if (checkIsMounted()) {

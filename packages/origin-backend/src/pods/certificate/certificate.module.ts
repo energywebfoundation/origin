@@ -12,6 +12,7 @@ import { ConfigurationModule } from '../configuration';
 import { DeviceModule } from '../device/device.module';
 import { CertificationRequestService } from './certification-request.service';
 import { CertificationRequestWatcherService } from './certification-request-watcher.service';
+import { CertificateService } from './certificate.service';
 
 @Module({})
 export class CertificateModule {
@@ -24,9 +25,17 @@ export class CertificateModule {
                 ConfigurationModule,
                 DeviceModule.register(smartMeterReadingsAdapter)
             ],
-            providers: [CertificationRequestService, CertificationRequestWatcherService],
+            providers: [
+                CertificateService,
+                CertificationRequestService,
+                CertificationRequestWatcherService
+            ],
             controllers: [CertificateController],
-            exports: [CertificationRequestService, CertificationRequestWatcherService]
+            exports: [
+                CertificateService,
+                CertificationRequestService,
+                CertificationRequestWatcherService
+            ]
         };
     }
 }

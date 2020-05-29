@@ -8,7 +8,7 @@ import { OrderService } from '../src/pods/order/order.service';
 import { TradeDTO } from '../src/pods/trade/trade.dto';
 import { TransferService } from '../src/pods/transfer/transfer.service';
 import { DatabaseService } from './database.service';
-import { bootstrapTestInstance } from './exchange';
+import { bootstrapTestInstance, authenticatedUser } from './exchange';
 
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -102,7 +102,7 @@ describe('Trades API', () => {
     });
 
     it('should be able to read the product information from the ask as a buyer', async () => {
-        const buyerId = '1';
+        const buyerId = authenticatedUser.organization;
         const sellerId = '2';
 
         await testTrade(sellerId, buyerId);
@@ -110,7 +110,7 @@ describe('Trades API', () => {
 
     it('should be able to read the product information from the ask as a seller', async () => {
         const buyerId = '2';
-        const sellerId = '1';
+        const sellerId = authenticatedUser.organization;
 
         await testTrade(sellerId, buyerId);
     });

@@ -21,6 +21,8 @@ export class AccountController {
     @Get()
     @UseGuards(AuthGuard())
     public async getAccount(@UserDecorator() user: ILoggedInUser): Promise<AccountDTO> {
-        return this.accountService.getAccount(user.id.toString());
+        const account = await this.accountService.getAccount(user.ownerId.toString());
+
+        return account;
     }
 }

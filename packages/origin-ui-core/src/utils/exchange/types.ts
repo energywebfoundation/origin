@@ -103,9 +103,18 @@ export interface IOrderBookOrderDTO {
     assetId?: string;
 }
 
+export type TradePriceInfo = {
+    created: string;
+    volume: string;
+    price: number;
+    product: Product;
+    assetId: string;
+};
+
 export type TOrderBook = {
     asks: IOrderBookOrderDTO[];
     bids: IOrderBookOrderDTO[];
+    lastTradedPrice: TradePriceInfo;
 };
 
 export interface IDirectBuyDTO {
