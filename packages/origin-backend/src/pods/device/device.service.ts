@@ -330,4 +330,18 @@ export class DeviceService {
             uncertified: sumEnergy(energiesGenerated.filter((energyGen) => !energyGen.certified))
         };
     }
+
+    async getSupplyBy(facilityName: string, status: DeviceStatus) {
+        const _facilityName = `%${facilityName}%`;
+        const result = await this.repository
+            .createQueryBuilder('device')
+            .where(
+                `device.facilityName ilike :_facilityName ${
+                    status > 0 ? `and device.status = :status` : ``
+                }`,
+                { _facilityName, status }
+            )
+            .getMany();
+        return result;
+    }
 }

@@ -5,7 +5,8 @@ import {
     IDeviceWithRelationsIds,
     ILoggedInUser,
     ISmartMeterRead,
-    Role
+    Role,
+    DeviceStatus
 } from '@energyweb/origin-backend-core';
 import { Roles, RolesGuard, UserDecorator } from '@energyweb/origin-backend-utils';
 import {
@@ -21,7 +22,8 @@ import {
     Post,
     Put,
     UnprocessableEntityException,
-    UseGuards
+    UseGuards,
+    Query
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 
@@ -44,6 +46,18 @@ export class DeviceController {
     @Get()
     async getAll() {
         return this.deviceService.getAll();
+    }
+
+    @Get('supplyBy')
+    @UseGuards(AuthGuard(), RolesGuard)
+    @Roles(Role.OrganizationAdmin, Role.OrganizationDeviceManager, Role.OrganizationUser)
+    async getSupplyBy(
+        @Query('facility') facilityName: string,
+        @Query('status') status: DeviceStatus
+    ) {
+        console.log(facilityName);
+        console.log(status);
+        return this.deviceService.getSupplyBy(facilityName, status);
     }
 
     @Get('/:id')
@@ -85,17 +99,6 @@ export class DeviceController {
         };
     }
 
-    @Put('/:id')
-    @UseGuards(AuthGuard(), RolesGuard)
-    @Roles(Role.OrganizationAdmin, Role.OrganizationDeviceManager, Role.Issuer)
-    async put(
-        @Param('id') id: string,
-        @Body() body: DeviceUpdateData
-    ): Promise<ExtendedBaseEntity & IDeviceWithRelationsIds> {
-        const res = await this.deviceService.update(id, body);
-        return res;
-    }
-
     @Put('/:id/settings')
     @UseGuards(AuthGuard(), RolesGuard)
     @Roles(Role.OrganizationAdmin, Role.OrganizationDeviceManager, Role.OrganizationUser)
@@ -110,7 +113,7 @@ export class DeviceController {
 
         if (
             body?.automaticPostForSale === undefined ||
-            (body?.automaticPostForSale &&
+            (body?.automaticPostForSale === undefined &&
                 (!Number.isInteger(body?.defaultAskPrice) || body?.defaultAskPrice === 0))
         ) {
             throw new UnprocessableEntityException(
@@ -119,6 +122,17 @@ export class DeviceController {
         }
 
         const res = await this.deviceService.updateSettings(id, body);
+        return res;
+    }
+
+    @Put('/:id')
+    @UseGuards(AuthGuard(), RolesGuard)
+    @Roles(Role.OrganizationAdmin, Role.OrganizationDeviceManager, Role.Issuer)
+    async put(
+        @Param('id') id: string,
+        @Body() body: DeviceUpdateData
+    ): Promise<ExtendedBaseEntity & IDeviceWithRelationsIds> {
+        const res = await this.deviceService.update(id, body);
         return res;
     }
 
