@@ -3,6 +3,29 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [5.1.1](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-backend@5.1.0...@energyweb/origin-backend@5.1.1) (2020-05-29)
+
+
+### Bug Fixes
+
+* **origin-backend:** proper auth for getting organization invitations ([4d9d5c0](https://github.com/energywebfoundation/origin/commit/4d9d5c0cc8cdfa476e0138eeef6e6ee2c7889fdd))
+* change URL to fetch invitations for organization ([cc0b238](https://github.com/energywebfoundation/origin/commit/cc0b238966cf8e6e3b14b485f2d4e4b6e7cec865))
+* endpoint for fetching invitations for an organization ([57e11d9](https://github.com/energywebfoundation/origin/commit/57e11d9c8b09739ff443389c71dae6c31e4bb6d3))
+* **deps:** update dependency @nestjs/config to v0.5.0 ([e57cb73](https://github.com/energywebfoundation/origin/commit/e57cb73efa867020dcd4414a0ad4694995a42a80))
+* **deps:** update dependency uuid to v8 ([2342cae](https://github.com/energywebfoundation/origin/commit/2342cae4dc0c3e86e86ac4237f48f2d62943ca28))
+* **deps:** update dependency uuid to v8.1.0 ([2bcb626](https://github.com/energywebfoundation/origin/commit/2bcb626b42bcb726041dfe6ddc79bd5f73bd2060))
+* **deps:** update nest monorepo to v7.0.13 ([ea1133d](https://github.com/energywebfoundation/origin/commit/ea1133dd1efdcad9083b19b622884918dd802bee))
+* **deps:** update nest monorepo to v7.1.0 ([78be769](https://github.com/energywebfoundation/origin/commit/78be769e5b1f8a27e16bb65ff2c879b20a03bce8))
+* **origin-backend:** additional types casting ([573b27e](https://github.com/energywebfoundation/origin/commit/573b27e225b1592cf8e2093e852b76351c00d3a5))
+* **origin-backend:** allow other users to access minimal certification request data ([8d310b7](https://github.com/energywebfoundation/origin/commit/8d310b7cef51596397014a3cf87d832224727132))
+* **origin-backend:** deny creating certification requests for non-approved devices ([d8d1756](https://github.com/energywebfoundation/origin/commit/d8d175605f21fd3aac8f6e05556371ec104fa93a))
+* certificate tests ([923eb7e](https://github.com/energywebfoundation/origin/commit/923eb7e2f17c9d882077a2810d738c703946aeba))
+* ownership commitments permissions + store original requestor ([1751d30](https://github.com/energywebfoundation/origin/commit/1751d3009d11f92d23bc9834632ef5b0ffb5bcee))
+
+
+
+
+
 # [5.1.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-backend@5.0.1...@energyweb/origin-backend@5.1.0) (2020-05-15)
 
 

@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.0.1](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-backend-client-mocks@3.0.0...@energyweb/origin-backend-client-mocks@3.0.1) (2020-05-29)
+
+
+### Bug Fixes
+
+* ownership commitments permissions + store original requestor ([1751d30](https://github.com/energywebfoundation/origin/commit/1751d3009d11f92d23bc9834632ef5b0ffb5bcee))
+
+
+
+
+
 # [3.0.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-backend-client-mocks@2.0.1...@energyweb/origin-backend-client-mocks@3.0.0) (2020-05-15)
 
 

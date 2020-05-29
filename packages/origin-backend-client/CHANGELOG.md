@@ -3,6 +3,19 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.0.1](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-backend-client@6.0.0...@energyweb/origin-backend-client@6.0.1) (2020-05-29)
+
+
+### Bug Fixes
+
+* change URL to fetch invitations for organization ([cc0b238](https://github.com/energywebfoundation/origin/commit/cc0b238966cf8e6e3b14b485f2d4e4b6e7cec865))
+* endpoint for fetching invitations for an organization ([57e11d9](https://github.com/energywebfoundation/origin/commit/57e11d9c8b09739ff443389c71dae6c31e4bb6d3))
+* ownership commitments permissions + store original requestor ([1751d30](https://github.com/energywebfoundation/origin/commit/1751d3009d11f92d23bc9834632ef5b0ffb5bcee))
+
+
+
+
+
 # [6.0.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-backend-client@5.0.1...@energyweb/origin-backend-client@6.0.0) (2020-05-15)
 
 
