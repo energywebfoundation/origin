@@ -44,25 +44,7 @@ export class OrganizationClientMock implements IOrganizationClient {
         const organization: IOrganizationWithRelationsIds = {
             id: this.idCounter,
             status: OrganizationStatus.Submitted,
-            leadUser: null,
             users: [],
-            devices: [],
-            ...data
-        };
-
-        this.storage.set(organization.id, organization);
-
-        return organization;
-    }
-
-    addMocked(data: OrganizationPostData, leadUserId: number): IOrganizationWithRelationsIds {
-        this.idCounter++;
-
-        const organization: IOrganizationWithRelationsIds = {
-            id: this.idCounter,
-            status: OrganizationStatus.Submitted,
-            leadUser: leadUserId,
-            users: [leadUserId],
             devices: [],
             ...data
         };

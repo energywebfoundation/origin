@@ -78,17 +78,20 @@ export class OrganizationController {
     @Get('/:id/users')
     @UseGuards(AuthGuard(), RolesGuard)
     @Roles(Role.OrganizationAdmin, Role.Admin, Role.SupportAgent)
-    async getUsers(@Param('id') id: string, @UserDecorator() loggedUser: ILoggedInUser) {
+    async getUsers(
+        @Param('id', new ParseIntPipe()) id: number,
+        @UserDecorator() loggedUser: ILoggedInUser
+    ) {
+        if (loggedUser.organizationId !== id) {
+            throw new BadRequestException('Not a member of the organization.');
+        }
+
         const organization = await this.organizationRepository.findOne(id, {
-            relations: ['users', 'leadUser']
+            relations: ['users']
         });
 
         if (!organization) {
             throw new NotFoundException(StorageErrors.NON_EXISTENT);
-        }
-
-        if (loggedUser.id !== organization.leadUser.id) {
-            throw new BadRequestException('Only lead user can view other organization members.');
         }
 
         return organization.users;

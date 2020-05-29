@@ -54,19 +54,16 @@ export interface IOrganizationProperties {
 }
 
 export interface IOrganization extends IOrganizationProperties {
-    leadUser: IUser | IUser['id'];
     users: Array<IUser | IUser['id']>;
     devices: Array<IDevice | IDevice['id']>;
 }
 
 export interface IOrganizationWithRelationsIds extends IOrganization {
-    leadUser: IUser['id'];
     users: Array<IUser['id']>;
     devices: Array<IDevice['id']>;
 }
 
 export interface IOrganizationWithRelations extends IOrganization {
-    leadUser: IUser;
     users: IUser[];
 }
 
