@@ -20,15 +20,15 @@ import {
     Param,
     Post,
     Put,
+    Query,
     UnprocessableEntityException,
     UseGuards
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-
 import { StorageErrors } from '../../enums/StorageErrors';
+import { ExtendedBaseEntity } from '../ExtendedBaseEntity';
 import { OrganizationService } from '../organization/organization.service';
 import { DeviceService } from './device.service';
-import { ExtendedBaseEntity } from '../ExtendedBaseEntity';
 
 @Controller('/Device')
 export class DeviceController {
@@ -44,6 +44,13 @@ export class DeviceController {
     @Get()
     async getAll() {
         return this.deviceService.getAll();
+    }
+
+    @Get('supplyBy')
+    @UseGuards(AuthGuard(), RolesGuard)
+    @Roles(Role.OrganizationAdmin, Role.OrganizationDeviceManager, Role.OrganizationUser)
+    async getSupplyBy(@Query('facility') facilityName: string, @Query('status') status: number) {
+        return this.deviceService.getSupplyBy(facilityName, status);
     }
 
     @Get('/:id')
