@@ -5,7 +5,9 @@ import {
     DeviceCreateData,
     IDeviceWithRelationsIds,
     IExternalDeviceId,
-    ISmartMeterReadWithStatus
+    ISmartMeterReadWithStatus,
+    DeviceStatus,
+    DeviceSettingsUpdateData
 } from '@energyweb/origin-backend-core';
 import { IRequestClient, RequestClient } from './RequestClient';
 import { bigNumberify } from 'ethers/utils';
@@ -18,6 +20,9 @@ export interface IDeviceClient {
     update(id: number, data: DeviceUpdateData): Promise<IDevice>;
     getAllSmartMeterReadings(id: number): Promise<ISmartMeterReadWithStatus[]>;
     addSmartMeterRead(id: number, smartMeterRead: ISmartMeterRead): Promise<void>;
+    getSupplyBy(facilityName: string, status: DeviceStatus): Promise<IDeviceWithRelationsIds[]>;
+    delete(id: number): Promise<void>;
+    updateDeviceSettings(id: number, device: DeviceSettingsUpdateData): Promise<void>;
 }
 
 export class DeviceClient implements IDeviceClient {
@@ -25,7 +30,7 @@ export class DeviceClient implements IDeviceClient {
         private readonly dataApiUrl: string,
         private readonly requestClient: IRequestClient = new RequestClient()
     ) {}
-
+    
     private get endpoint() {
         return `${this.dataApiUrl}/Device`;
     }
@@ -102,4 +107,28 @@ export class DeviceClient implements IDeviceClient {
             }))
         };
     }
+
+    public async getSupplyBy(facilityName: string, status: DeviceStatus) {
+        const { data } = await this.requestClient.get<unknown, IDeviceWithRelationsIds[]>(
+            `${this.endpoint}/supplyBy?facility=${
+                facilityName ?? ''
+            }&status=${status}`
+        );
+        return data;
+    }
+
+    public async delete(id: number) {
+        const { data } = await this.requestClient.delete<void, unknown>(
+            `${this.endpoint}/${id}`
+        );
+    }
+
+    public async updateDeviceSettings(id: number, device: DeviceSettingsUpdateData): Promise<void> {
+        const response = await this.requestClient.put<DeviceSettingsUpdateData, void>(
+            `${this.endpoint}/${id}/settings`,
+            device
+        );
+    }
+
+    
 }
