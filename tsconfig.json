@@ -11,7 +11,7 @@
         "resolveJsonModule": true,
         "esModuleInterop": true,
         "lib": ["es2019", "dom"],
-        "types": ["node"],
+        "types": ["node", "mocha"],
         "skipLibCheck": true,
         "preserveSymlinks": true,
         "pretty": true

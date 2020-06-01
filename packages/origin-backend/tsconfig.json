@@ -5,6 +5,7 @@
         "outDir": "./dist/js",
         "emitDecoratorMetadata": true,
         "experimentalDecorators": true,
+        "types": ["node", "jest"],
         "typeRoots": ["./src/types", "./node_modules/@types", "../../node_modules/@types"]
     },
     "include": ["src/**/*", "migrations/*", "ormconfig*.ts", "test/*"],
