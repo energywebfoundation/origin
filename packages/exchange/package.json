@@ -18,7 +18,7 @@
     },
     "scripts": {
         "build": "yarn build:ts",
-        "build:ts": "tsc -b tsconfig.build.json --verbose --pretty && nest build -p tsconfig.build.json --tsc && cp migrations/initial.sql dist/js/migrations/",
+        "build:ts": "tsc -b tsconfig.json && nest build -p tsconfig.json --tsc && cp migrations/initial.sql dist/js/migrations/",
         "prettier": "prettier --write --config-precedence file-override './src/**/*'",
         "lint": "eslint \"src/**/*{.ts,.tsx}\" \"test/**/*{.ts,.tsx}\"",
         "lint-fix": "eslint \"src/**/*{.ts,.tsx}\" \"test/**/*{.ts,.tsx}\" --fix",

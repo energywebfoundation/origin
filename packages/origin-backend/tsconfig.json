@@ -1,12 +1,22 @@
 {
     "extends": "../../tsconfig.json",
     "compilerOptions": {
-        "lib": ["es6"],
+        "composite": true,
+        "outDir": "./dist/js",
         "emitDecoratorMetadata": true,
         "experimentalDecorators": true,
-        "removeComments": true,
-        "outDir": "./dist",
-        "types": ["node", "jest"]
+        "typeRoots": ["./src/types", "./node_modules/@types", "../../node_modules/@types"]
     },
-    "exclude": ["node_modules", "dist"]
+    "include": ["src/**/*", "migrations/*", "ormconfig*.ts", "test/*"],
+    "references": [
+        {
+            "path": "../origin-backend-core/tsconfig.json"
+        },
+        {
+            "path": "../utils-general/tsconfig.json"
+        },
+        {
+            "path": "../origin-backend-utils/tsconfig.json"
+        }
+    ]
 }

@@ -1,6 +1,14 @@
 {
     "extends": "../../tsconfig.json",
     "compilerOptions": {
-        "noImplicitAny": true
-    }
+        "composite": true,
+        "rootDir": "./",
+        "outDir": "./dist/js"
+    },
+    "include": ["src/**/*", "build/**/*.json", "test/*"],
+    "references": [
+        {
+            "path": "../origin-backend-client/tsconfig.json"
+        }
+    ]
 }

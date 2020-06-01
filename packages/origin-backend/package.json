@@ -12,7 +12,7 @@
         "start:prod": "node dist/main",
         "prebuild": "shx rm -rf dist",
         "build": "yarn build:ts",
-        "build:ts": "tsc -b tsconfig.build.json --verbose --pretty && cp migrations/initial.sql dist/js/migrations/",
+        "build:ts": "tsc -b tsconfig.json && cp migrations/initial.sql dist/js/migrations/",
         "prettier": "prettier --write --config-precedence file-override './src/**/*'",
         "test:e2e": "yarn typeorm:run && jest --runInBand --verbose --config ./test/jest-e2e.json --forceExit",
         "typeorm": "ts-node -r tsconfig-paths/register ./node_modules/.bin/typeorm --config ormconfig-dev.ts",

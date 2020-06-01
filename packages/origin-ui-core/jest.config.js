@@ -11,7 +11,7 @@ module.exports = {
     testEnvironment: 'jest-environment-jsdom-fifteen',
     globals: {
         'ts-jest': {
-            tsConfig: 'tsconfig.build.json'
+            tsConfig: 'tsconfig.json'
         }
     }
 };
