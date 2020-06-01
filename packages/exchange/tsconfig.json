@@ -6,7 +6,7 @@
         "emitDecoratorMetadata": true,
         "experimentalDecorators": true,
         "lib": ["es2019"],
-        "types": ["node", "jest"]
+        "types": ["node", "mocha"]
     },
     "include": ["src/**/*", "test/**/*", "migrations/*", "ormconfig*.ts"],
     "references": [
