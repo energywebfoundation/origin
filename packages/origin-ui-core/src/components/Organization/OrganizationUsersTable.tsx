@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { showNotification, NotificationType } from '../../utils/notifications';
 import { useSelector, useDispatch } from 'react-redux';
 import { TableMaterial } from '../Table/TableMaterial';
@@ -13,6 +13,7 @@ import {
 import { IUser, getRolesFromRights, isRole, Role } from '@energyweb/origin-backend-core';
 import { roleNames } from './Organization';
 import { useTranslation } from '../../utils';
+import { ChangeRoleModal } from '../Modal/ChangeRoleModal';
 
 interface IRecord {
     user: IUser;
@@ -25,6 +26,9 @@ export function OrganizationUsersTable() {
     const userOffchain = useSelector(getUserOffchain);
 
     const dispatch = useDispatch();
+
+    const [selectedUser, setSelectedUser] = useState<IUser>(null);
+    const [showUserRoleChangeModal, setShowUserRoleChangeModal] = useState(false);
 
     async function getPaginatedData({
         requestedPageSize,
@@ -91,25 +95,13 @@ export function OrganizationUsersTable() {
     async function changeRole(rowIndex: number) {
         const user = paginatedData[rowIndex]?.user;
 
-        if (!isRole(user, Role.OrganizationAdmin)) {
+        if (!isRole(userOffchain, Role.OrganizationAdmin)) {
             showNotification(`Only the Admin can change user roles.`, NotificationType.Error);
             return;
         }
 
-        dispatch(setLoading(true));
-
-        try {
-            await organizationClient.changeRole(userOffchain.organization.id, user.id);
-
-            showNotification(`User role updated.`, NotificationType.Success);
-
-            await loadPage(1);
-        } catch (error) {
-            showNotification(`Could not update user role.`, NotificationType.Error);
-            console.error(error);
-        }
-
-        dispatch(setLoading(false));
+        setSelectedUser(user);
+        setShowUserRoleChangeModal(true);
     }
 
     const actions = [
@@ -144,13 +136,21 @@ export function OrganizationUsersTable() {
     });
 
     return (
-        <TableMaterial
-            columns={columns}
-            rows={rows}
-            loadPage={loadPage}
-            total={total}
-            pageSize={pageSize}
-            actions={actions}
-        />
+        <>
+            <TableMaterial
+                columns={columns}
+                rows={rows}
+                loadPage={loadPage}
+                total={total}
+                pageSize={pageSize}
+                actions={actions}
+            />
+
+            <ChangeRoleModal
+                user={selectedUser}
+                showModal={showUserRoleChangeModal}
+                callback={() => setShowUserRoleChangeModal(false)}
+            />
+        </>
     );
 }
