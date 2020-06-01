@@ -26,7 +26,6 @@
         "test:concurrent": "yarn test",
         "test:watch": "jest --watch",
         "test:cov": "jest --coverage",
-        "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
         "test:mocha": "mocha -r ts-node/register test/*.e2e-spec.ts --timeout 60000 --exit",
         "test:e2e": "yarn typeorm:run && concurrently --success first --kill-others -n eth,test \"yarn start-ganache\"  \"wait-on tcp:8580 && yarn test:mocha\"",
         "start-ganache": "ganache-cli -m 'chalk park staff buzz chair purchase wise oak receive avoid avoid home' -l 8000000 -e 1000000 -a 20 -p 8580 -q",
@@ -81,9 +80,7 @@
         "polly-js": "1.6.5",
         "prettier": "2.0.5",
         "supertest": "4.0.2",
-        "ts-jest": "26.1.0",
-        "ts-node": "8.10.2",
-        "tsconfig-paths": "3.9.0"
+        "ts-node": "8.10.2"
     },
     "jest": {
         "moduleFileExtensions": [
