@@ -104,6 +104,11 @@ export function OrganizationUsersTable() {
         setShowUserRoleChangeModal(true);
     }
 
+    async function changeRoleCallback() {
+        setShowUserRoleChangeModal(false);
+        await loadPage(1);
+    }
+
     const actions = [
         {
             icon: <DeleteOutline />,
@@ -149,7 +154,7 @@ export function OrganizationUsersTable() {
             <ChangeRoleModal
                 user={selectedUser}
                 showModal={showUserRoleChangeModal}
-                callback={() => setShowUserRoleChangeModal(false)}
+                callback={changeRoleCallback}
             />
         </>
     );
