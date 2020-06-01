@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-expressions */
 /* eslint-disable no-return-assign */
 import { DeviceStatus, ICertificationRequestBackend, Role } from '@energyweb/origin-backend-core';
 import { INestApplication } from '@nestjs/common';
@@ -188,8 +189,8 @@ describe('CertificationRequest e2e tests', () => {
         const toTime = moment().subtract(1, 'month').unix();
         const created = moment().subtract(1, 'day').unix();
 
-        expect(
-            certificationRequestService.create({
+        try {
+            await certificationRequestService.create({
                 id: 1,
                 owner,
                 fromTime,
@@ -199,8 +200,13 @@ describe('CertificationRequest e2e tests', () => {
                 revoked: false,
                 created,
                 userId: user.ownerId
-            })
-        ).to.throw();
+            });
+        } catch (e) {
+            expect(e).to.be.ok;
+            return;
+        }
+
+        expect.fail();
     });
 
     it('should allow issuer to read the certification request', async () => {
