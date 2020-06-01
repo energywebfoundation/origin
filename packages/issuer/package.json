@@ -24,7 +24,7 @@
     "scripts": {
         "build": "yarn build:static && yarn build:ts",
         "build:static": "yarn compile && yarn typechain:registry && yarn typechain:issuer",
-        "build:ts": "tsc -b tsconfig.build.json --verbose --pretty && yarn copy:declarations",
+        "build:ts": "tsc -b tsconfig.json && yarn copy:declarations",
         "copy:declarations": "shx cp src/ethers/*.d.ts dist/js/src/ethers",
         "typechain:registry": "typechain --target ethers --outDir src/ethers './build/contracts/Registry.json'",
         "typechain:issuer": "typechain --target ethers --outDir src/ethers './build/contracts/Issuer.json'",

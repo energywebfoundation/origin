@@ -1,7 +1,19 @@
 {
     "extends": "../../tsconfig.json",
     "compilerOptions": {
+        "composite": true,
+        "rootDir": "./",
+        "outDir": "./dist/js",
+        "resolveJsonModule": true,
         "types": ["mocha", "node", "truffle-typings"]
     },
-    "exclude": ["src/ethers"]
+    "include": ["./src/**/*", "./dist/ts/**/*", "./schemas/*.json", "./build/**/*.json"],
+    "references": [
+        {
+            "path": "../utils-general/tsconfig.json"
+        },
+        {
+            "path": "../origin-backend-client-mocks/tsconfig.json"
+        }
+    ]
 }

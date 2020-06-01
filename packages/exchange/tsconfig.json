@@ -1,13 +1,32 @@
 {
     "extends": "../../tsconfig.json",
     "compilerOptions": {
-        "lib": ["es2019"],
-        "types": ["node", "jest"],
+        "composite": true,
+        "outDir": "./dist/js",
         "emitDecoratorMetadata": true,
         "experimentalDecorators": true,
-        "removeComments": true,
-        "outDir": "./dist",
-        "baseUrl": "./"
+        "lib": ["es2019"],
+        "types": ["node", "jest"]
     },
-    "exclude": ["node_modules", "dist"]
+    "include": ["src/**/*", "test/**/*", "migrations/*", "ormconfig*.ts"],
+    "references": [
+        {
+            "path": "../exchange-core/tsconfig.json"
+        },
+        {
+            "path": "../exchange-token-account/tsconfig.json"
+        },
+        {
+            "path": "../utils-general/tsconfig.json"
+        },
+        {
+            "path": "../origin-backend-core/tsconfig.json"
+        },
+        {
+            "path": "../origin-backend/tsconfig.json"
+        },
+        {
+            "path": "../issuer/tsconfig.json"
+        }
+    ]
 }
