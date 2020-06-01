@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.1.2](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-ui@2.1.1...@energyweb/origin-ui@2.1.2) (2020-05-29)
+
+
+### Bug Fixes
+
+* **deps:** update dependency ts-loader to v7.0.5 ([111c753](https://github.com/energywebfoundation/origin/commit/111c75323f4137d16b56c097d4254bc1a3e430af))
+
+
+
+
+
 ## [2.1.1](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-ui@2.1.0...@energyweb/origin-ui@2.1.1) (2020-05-15)
 
 **Note:** Version bump only for package @energyweb/origin-ui

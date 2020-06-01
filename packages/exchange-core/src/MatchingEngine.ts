@@ -10,13 +10,12 @@ import { DirectBuy } from './DirectBuy';
 import { Order, OrderSide } from './Order';
 import { ProductFilter } from './ProductFilter';
 import { Trade } from './Trade';
+import { TradeExecutedEvent } from './TradeExecutedEvent';
 
 export enum ActionResult {
     Cancelled,
     Error
 }
-
-export type TradeExecutedEvent = { trade: Trade; ask: Ask; bid: Bid | DirectBuy };
 
 export type ActionResultEvent = { orderId: string; result: ActionResult; error?: string };
 
@@ -204,7 +203,7 @@ export class MatchingEngine {
 
         const trade = new Trade(updatedBid, updatedAsk, tradedVolume, bid.price);
 
-        return { trade, ask: updatedAsk, bid: updatedBid };
+        return new TradeExecutedEvent(trade, updatedAsk, updatedBid);
     }
 
     private match() {

@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.1.2](https://github.com/energywebfoundation/origin/compare/@energyweb/migrations@3.1.1...@energyweb/migrations@3.1.2) (2020-05-29)
+
+
+### Bug Fixes
+
+* **deps:** update dependency pg to v8.2.1 ([bf0f299](https://github.com/energywebfoundation/origin/commit/bf0f299569a71b7608f5ecafd4b4d8278155a60e))
+* **migrations:** build dependencies ([8c0ae6d](https://github.com/energywebfoundation/origin/commit/8c0ae6d65d043e1cf57f331efa94f08bdc98a4c7))
+
+
+
+
+
 ## [3.1.1](https://github.com/energywebfoundation/origin/compare/@energyweb/migrations@3.1.0...@energyweb/migrations@3.1.1) (2020-05-15)
 
 

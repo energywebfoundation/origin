@@ -3,6 +3,25 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.2.0](https://github.com/energywebfoundation/origin/compare/@energyweb/issuer@2.1.0...@energyweb/issuer@2.2.0) (2020-05-29)
+
+
+### Bug Fixes
+
+* **deps:** update dependency mocha to v7.2.0 ([b0ee1b6](https://github.com/energywebfoundation/origin/commit/b0ee1b6300808e1bdb465f7e0459f6c11b5be2b9))
+* certificate tests ([923eb7e](https://github.com/energywebfoundation/origin/commit/923eb7e2f17c9d882077a2810d738c703946aeba))
+* linting errors ([c6a6c65](https://github.com/energywebfoundation/origin/commit/c6a6c6519441582b397616b40bbe9b72cb550c98))
+* ownership commitments permissions + store original requestor ([1751d30](https://github.com/energywebfoundation/origin/commit/1751d3009d11f92d23bc9834632ef5b0ffb5bcee))
+
+
+### Features
+
+* **issuer:** store sender for the certification request ([39d0871](https://github.com/energywebfoundation/origin/commit/39d0871b3ccc48719d3ca3dc7539c86593fffba6))
+
+
+
+
+
 # [2.1.0](https://github.com/energywebfoundation/origin/compare/@energyweb/issuer@2.0.0...@energyweb/issuer@2.1.0) (2020-05-15)
 
 

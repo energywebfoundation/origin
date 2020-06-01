@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.0.2](https://github.com/energywebfoundation/origin/compare/@energyweb/exchange-core@3.0.1...@energyweb/exchange-core@3.0.2) (2020-05-29)
+
+
+### Bug Fixes
+
+* **deps:** update dependency bn.js to v5.1.2 ([abe9afb](https://github.com/energywebfoundation/origin/commit/abe9afba4c6ad4d02bd8afd044f49582423e1293))
+
+
+
+
+
 ## [3.0.1](https://github.com/energywebfoundation/origin/compare/@energyweb/exchange-core@3.0.0...@energyweb/exchange-core@3.0.1) (2020-05-15)
 
 **Note:** Version bump only for package @energyweb/exchange-core

@@ -7,6 +7,7 @@ import {
 } from '@energyweb/exchange-core';
 import { LocationService } from '@energyweb/utils-general';
 import { forwardRef, Inject, Injectable, Logger, OnModuleInit } from '@nestjs/common';
+import { EventBus } from '@nestjs/cqrs';
 import { Interval } from '@nestjs/schedule';
 import { List } from 'immutable';
 
@@ -14,8 +15,8 @@ import { OrderType } from '../order/order-type.enum';
 import { Order } from '../order/order.entity';
 import { OrderService } from '../order/order.service';
 import { DeviceTypeServiceWrapper } from '../runner/deviceTypeServiceWrapper';
-import { TradeService } from '../trade/trade.service';
 import { toMatchingEngineOrder } from './order-mapper';
+import { BulkTradeExecutedEvent } from './bulk-trade-executed.event';
 
 @Injectable()
 export class MatchingEngineService implements OnModuleInit {
@@ -26,10 +27,10 @@ export class MatchingEngineService implements OnModuleInit {
     private matchingEngine: MatchingEngine;
 
     constructor(
-        private readonly tradeService: TradeService,
         @Inject(forwardRef(() => OrderService))
         private readonly orderService: OrderService,
-        private readonly deviceTypeServiceWrapper: DeviceTypeServiceWrapper
+        private readonly deviceTypeServiceWrapper: DeviceTypeServiceWrapper,
+        private readonly eventBus: EventBus
     ) {}
 
     public async onModuleInit() {
@@ -88,7 +89,7 @@ export class MatchingEngineService implements OnModuleInit {
     private async onTradeExecutedEvent(trades: List<TradeExecutedEvent>) {
         this.logger.log('Received TradeExecutedEvent event');
 
-        await this.tradeService.persist(trades);
+        this.eventBus.publish(new BulkTradeExecutedEvent(trades));
     }
 
     private async onActionResultEvent(statusChanges: List<ActionResultEvent>) {

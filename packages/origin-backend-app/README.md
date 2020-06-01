@@ -77,3 +77,51 @@ docker run -p 80:80 \
 Swagger endpoint can be found at
 
 `http://localhost:3033/api`
+
+### Custom event handlers
+
+It's possible to handle events emitted by `@energyweb/exchange` in the `@energyweb/origin-backend-app` project. This feature allows 3rd party developers to implement custom event handling logic, additional to existing core event handlers.
+
+Currently supported event is `BulkTradeExecutedEvent` which is emitted whenever new trade in the matching engine occurs.
+
+In order to register custom event handler for this event please follow these steps:
+
+1. Create custom event handler code
+
+```
+import { BulkTradeExecutedEvent } from '@energyweb/exchange';
+import { Logger } from '@nestjs/common';
+import { EventsHandler, IEventHandler } from '@nestjs/cqrs';
+
+@EventsHandler(BulkTradeExecutedEvent)
+export class NewTradeExecutedEventHandler implements IEventHandler<BulkTradeExecutedEvent> {
+    private readonly logger = new Logger(NewTradeExecutedEventHandler.name);
+
+    async handle(event: BulkTradeExecutedEvent) {
+        this.logger.debug(`Received trade executed events ${JSON.stringify(event)}`);
+    }
+}
+```
+
+Note: This follows the recipe created by Nest.js team which is documented here https://docs.nestjs.com/recipes/cqrs
+
+2. Register your event handler as provider in `origin-app.module.ts`
+
+```
+@Module({})
+export class OriginAppModule {
+    static register(smartMeterReadingsAdapter: ISmartMeterReadingsAdapter): DynamicModule {
+        return {
+            module: OriginAppModule,
+            imports: [
+                OriginAppTypeOrmModule(),
+                OriginBackendModule.register(smartMeterReadingsAdapter),
+                ExchangeModule
+            ],
+            providers: [NewTradeExecutedEventHandler] // <-- add your event handler here
+        };
+    }
+}
+```
+
+Note: Due to a way in which Nest.js is handling DI, your custom handler class name has to be unique, this means you should not use name taken by core event handler **TradeExecutedEventHandler**

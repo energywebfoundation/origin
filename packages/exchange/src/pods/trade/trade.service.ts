@@ -1,5 +1,5 @@
 import { Ask, Bid, ProductFilter, TradeExecutedEvent } from '@energyweb/exchange-core';
-import { IDeviceTypeService, LocationService } from '@energyweb/utils-general';
+import { LocationService } from '@energyweb/utils-general';
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import BN from 'bn.js';
@@ -31,8 +31,6 @@ export class TradeService implements OnModuleInit {
 
     private readonly locationService = new LocationService();
 
-    private deviceTypeService: IDeviceTypeService;
-
     private tradeCache: TradeCacheItem[];
 
     constructor(
@@ -44,7 +42,6 @@ export class TradeService implements OnModuleInit {
 
     public async onModuleInit() {
         this.logger.log(`Initializing trade service`);
-        this.deviceTypeService = this.deviceTypeServiceWrapper.deviceTypeService;
 
         await this.loadTradesCache();
     }
@@ -91,8 +88,16 @@ export class TradeService implements OnModuleInit {
 
         const lastTrade = this.tradeCache.find(({ ask, bid }) => {
             return (
-                ask.filterBy(productFilter, this.deviceTypeService, this.locationService) &&
-                bid.filterBy(productFilter, this.deviceTypeService, this.locationService)
+                ask.filterBy(
+                    productFilter,
+                    this.deviceTypeServiceWrapper.deviceTypeService,
+                    this.locationService
+                ) &&
+                bid.filterBy(
+                    productFilter,
+                    this.deviceTypeServiceWrapper.deviceTypeService,
+                    this.locationService
+                )
             );
         });
 
