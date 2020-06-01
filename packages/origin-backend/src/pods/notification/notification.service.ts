@@ -9,7 +9,8 @@ import {
     DeviceStatusChangedEvent,
     DeviceStatus,
     UserStatusChangedEvent,
-    OrganizationMemberChangedRoleEvent
+    OrganizationMemberChangedRoleEvent,
+    Role
 } from '@energyweb/origin-backend-core';
 import { MailService } from '../mail';
 import EmailTypes from './EmailTypes';
@@ -92,7 +93,9 @@ export class NotificationService {
             await this.sendNotificationEmail(
                 EmailTypes.ORGANIZATION_MEMBER_CHANGED_ROLE,
                 data.email,
-                `The administrator of ${data.organizationName} changed your role to ${data.newRole}. Visit <a href="${url}">${url}</a> to see the details.`
+                `The administrator of ${data.organizationName} changed your role to ${
+                    Role[data.newRole]
+                }. Visit <a href="${url}">${url}</a> to see the details.`
             );
         },
         [SupportedEvents.DEVICE_STATUS_CHANGED]: async (data: DeviceStatusChangedEvent) => {

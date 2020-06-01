@@ -34,6 +34,11 @@ export interface IOrganizationClient {
         organizationId: number,
         userId: number
     ): Promise<OrganizationMemberChangedReturnData>;
+    memberChangeRole(
+        organizationId: number,
+        userId: number,
+        newRole: Role
+    ): Promise<OrganizationMemberChangedReturnData>
 }
 
 export class OrganizationClient implements IOrganizationClient {
@@ -147,8 +152,8 @@ export class OrganizationClient implements IOrganizationClient {
     public async removeMember(
         organizationId: number,
         userId: number
-    ): Promise<{ success: boolean; error: string }> {
-        const response = await this.requestClient.post<{}, { success: boolean; error: string }>(
+    ): Promise<OrganizationMemberChangedReturnData> {
+        const response = await this.requestClient.post<{}, OrganizationMemberChangedReturnData>(
             `${this.endpoint}/${organizationId}/remove-member/${userId}`
         );
 
@@ -168,8 +173,8 @@ export class OrganizationClient implements IOrganizationClient {
         organizationId: number,
         userId: number,
         newRole: Role
-    ): Promise<{ success: boolean; error: string }> {
-        const response = await this.requestClient.put<OrganizationUpdateMemberRole, { success: boolean; error: string }>(
+    ): Promise<OrganizationMemberChangedReturnData> {
+        const response = await this.requestClient.put<OrganizationUpdateMemberRole, OrganizationMemberChangedReturnData>(
             `${this.endpoint}/${organizationId}/change-role/${userId}`,
             { role: newRole }
         );

@@ -9,7 +9,8 @@ import {
     OrganizationMemberChangedReturnData,
     OrganizationStatus,
     OrganizationUpdateData,
-    OrganizationRole
+    OrganizationRole,
+    Role
 } from '@energyweb/origin-backend-core';
 
 interface ITmpUser {
@@ -69,7 +70,6 @@ export class OrganizationClientMock implements IOrganizationClient {
     }
 
     inviteMocked(email: string, organizationId: number, role: OrganizationRole): OrganizationInviteCreateReturnData {
-        const organization = this.storage.get(organizationId);
         this.invitationCounter++;
 
         const organizationInvitation: IOrganizationInvitation = {
@@ -114,6 +114,15 @@ export class OrganizationClientMock implements IOrganizationClient {
         };
 
         return Promise.resolve(returnData);
+    }
+
+
+    memberChangeRole(
+        organizationId: number,
+        userId: number,
+        newRole: Role
+    ): Promise<OrganizationMemberChangedReturnData> {
+        throw new Error('Method not implemented.');
     }
 
     getInvitations(): Promise<IOrganizationInvitation[]> {
