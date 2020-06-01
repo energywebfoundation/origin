@@ -68,7 +68,7 @@ export function ChangeRoleModal(props: IProps) {
 
             showNotification(`User role updated.`, NotificationType.Success);
         } catch (error) {
-            showNotification(`Could not update user role.`, NotificationType.Error);
+            showNotification(`There always needs to be an admin present.`, NotificationType.Error);
             console.error(error);
         }
 

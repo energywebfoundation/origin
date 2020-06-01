@@ -204,7 +204,7 @@ export class OrganizationService {
         ) {
             throw new BadRequestException({
                 success: false,
-                error: `Can't remove admin user from organization. There always has to be at least one admin in the organization.`
+                error: `Can't change role of admin user from organization. There always has to be at least one admin in the organization.`
             });
         }
 

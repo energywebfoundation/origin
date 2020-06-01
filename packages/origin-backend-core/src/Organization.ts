@@ -75,4 +75,4 @@ export type OrganizationMemberChangedReturnData = { success: boolean; error: str
 
 export interface OrganizationUpdateMemberRole {
     role: Role;
-};
+}
