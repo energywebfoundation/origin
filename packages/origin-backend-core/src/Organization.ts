@@ -73,6 +73,6 @@ export type OrganizationUpdateData = Pick<IOrganization, 'status'>;
 
 export type OrganizationMemberChangedReturnData = { success: boolean; error: string };
 
-export interface OrganizationUpdateMemberRole {
+export interface IOrganizationUpdateMemberRole {
     role: Role;
 }

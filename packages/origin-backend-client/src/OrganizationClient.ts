@@ -11,7 +11,7 @@ import {
     OrganizationMemberChangedReturnData,
     OrganizationRole,
     Role,
-    OrganizationUpdateMemberRole
+    IOrganizationUpdateMemberRole
 } from '@energyweb/origin-backend-core';
 
 import { IRequestClient, RequestClient } from './RequestClient';
@@ -174,7 +174,7 @@ export class OrganizationClient implements IOrganizationClient {
         userId: number,
         newRole: Role
     ): Promise<OrganizationMemberChangedReturnData> {
-        const response = await this.requestClient.put<OrganizationUpdateMemberRole, OrganizationMemberChangedReturnData>(
+        const response = await this.requestClient.put<IOrganizationUpdateMemberRole, OrganizationMemberChangedReturnData>(
             `${this.endpoint}/${organizationId}/change-role/${userId}`,
             { role: newRole }
         );

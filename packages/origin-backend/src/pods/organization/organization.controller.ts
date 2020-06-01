@@ -10,7 +10,7 @@ import {
     Role,
     SupportedEvents,
     OrganizationRole,
-    OrganizationUpdateMemberRole
+    IOrganizationUpdateMemberRole
 } from '@energyweb/origin-backend-core';
 import { Roles, RolesGuard, UserDecorator } from '@energyweb/origin-backend-utils';
 import {
@@ -271,7 +271,7 @@ export class OrganizationController {
     async changeMemberRole(
         @Param('id', new ParseIntPipe()) organizationId: number,
         @Param('userId', new ParseIntPipe()) memberId: number,
-        @Body() { role }: OrganizationUpdateMemberRole,
+        @Body() { role }: IOrganizationUpdateMemberRole,
         @UserDecorator() loggedUser: ILoggedInUser
     ): Promise<OrganizationMemberChangedReturnData> {
         await this.organizationService.changeMemberRole(loggedUser, organizationId, memberId, role);
