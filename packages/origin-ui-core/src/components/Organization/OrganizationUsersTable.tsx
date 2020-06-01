@@ -117,7 +117,7 @@ export function OrganizationUsersTable() {
         },
         {
             icon: <PermIdentityOutlined />,
-            name: 'Change Role',
+            name: 'Edit Role',
             onClick: (index: string) => changeRole(parseInt(index, 10))
         }
     ];
