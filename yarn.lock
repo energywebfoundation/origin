@@ -2828,6 +2828,11 @@
     tslib "2.0.0"
     uuid "8.0.0"
 
+"@nestjs/cqrs@7.0.0":
+  version "7.0.0"
+  resolved "https://registry.yarnpkg.com/@nestjs/cqrs/-/cqrs-7.0.0.tgz#12b70af5f06ca5ffde5fb1493f17dcfc6eed5e1d"
+  integrity sha512-ZqsQuTdTzgqpizFEgacwHXvfz2+ekGLbMWuPcXk5uDS0+rY1R1rkY8oVkHA7SG700PaV4CccG93THxGfRM9mBQ==
+
 "@nestjs/jwt@7.0.0":
   version "7.0.0"
   resolved "https://registry.yarnpkg.com/@nestjs/jwt/-/jwt-7.0.0.tgz#977390ea2d5f61cbf49d3da4df740311b98998db"

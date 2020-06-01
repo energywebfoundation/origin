@@ -8,6 +8,8 @@ import { Order } from './pods/order/order.entity';
 import { Trade } from './pods/trade/trade.entity';
 import { Transfer } from './pods/transfer/transfer.entity';
 
+export { BulkTradeExecutedEvent } from './pods/matching-engine/bulk-trade-executed.event';
+
 export { AppModule } from './app.module';
 
 export const entities = [

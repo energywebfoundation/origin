@@ -1,13 +1,13 @@
-import { Module, forwardRef } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
+import { CqrsModule } from '@nestjs/cqrs';
 
-import { TradeModule } from '../trade/trade.module';
-import { MatchingEngineService } from './matching-engine.service';
 import { OrderModule } from '../order/order.module';
 import { RunnerModule } from '../runner/runner.module';
+import { MatchingEngineService } from './matching-engine.service';
 
 @Module({
     providers: [MatchingEngineService],
     exports: [MatchingEngineService],
-    imports: [TradeModule, forwardRef(() => OrderModule), RunnerModule]
+    imports: [forwardRef(() => OrderModule), RunnerModule, CqrsModule]
 })
 export class MatchingEngineModule {}
