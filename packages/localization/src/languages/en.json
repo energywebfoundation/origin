@@ -63,7 +63,8 @@
                 "address": "Address",
                 "constructed": "Constructed",
                 "vintageCod": "Vintage / (Commercial Operation Date)",
-                "gridOperator": "Grid operator"
+                "gridOperator": "Grid operator",
+                "price": "Price"
             },
             "actions": {
                 "requestCertificates": "Request certificates",
