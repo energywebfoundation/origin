@@ -19,11 +19,6 @@ import { Transfer } from '../transfer/transfer.entity';
 import { TransferService } from '../transfer/transfer.service';
 import { AccountBalanceService } from './account-balance.service';
 
-// jest.mock('../trade/trade.service');
-// jest.mock('../transfer/transfer.service');
-// jest.mock('../order/order.service');
-// jest.mock('../bundle/bundle.service');
-
 describe('AccountBalanceService', () => {
     const userId = '1';
     const asset1 = { id: '1', address: '0x1234', tokenId: '0' } as Asset;
