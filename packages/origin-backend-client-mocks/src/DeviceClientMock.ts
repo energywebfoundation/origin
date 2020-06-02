@@ -1,7 +1,17 @@
 import { IDeviceClient } from '@energyweb/origin-backend-client';
-import { DeviceSettingsUpdateData, DeviceStatus, DeviceUpdateData, IDevice, IDeviceWithRelationsIds, IExternalDeviceId, ISmartMeterRead, ISmartMeterReadWithStatus } from '@energyweb/origin-backend-core';
+import {
+    DeviceStatus,
+    DeviceUpdateData,
+    IDevice,
+    IDeviceWithRelationsIds,
+    IExternalDeviceId,
+    ISmartMeterRead,
+    ISmartMeterReadWithStatus,
+    DeviceSettingsUpdateData
+} from '@energyweb/origin-backend-core';
 
 export class DeviceClientMock implements IDeviceClient {
+    
     
     private storage = new Map<number, IDeviceWithRelationsIds>();
 
@@ -76,11 +86,14 @@ export class DeviceClientMock implements IDeviceClient {
     }
 
     public async delete(id: number): Promise<void> {
-        
+        throw new Error("Method not implemented.");
     }
 
     public async updateDeviceSettings(id: number, device: DeviceSettingsUpdateData): Promise<void> {
-
+        throw new Error("Method not implemented.");
     }
-    
+
+    public async getMyDevice(): Promise<IDeviceWithRelationsIds[]> {
+        throw new Error("Method not implemented.");
+    }
 }

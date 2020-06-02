@@ -13,6 +13,7 @@ export interface IDeviceClient {
     getSupplyBy(facilityName: string, status: number): Promise<IDeviceWithRelationsIds[]>;
     delete(id: number): Promise<void>;
     updateDeviceSettings(id: number, device: DeviceSettingsUpdateData): Promise<void>;
+    getMyDevice(): Promise<IDeviceWithRelationsIds[]>;
 }
 
 export class DeviceClient implements IDeviceClient {
@@ -98,13 +99,13 @@ export class DeviceClient implements IDeviceClient {
         };
     }
 
-    public async getSupplyBy(facilityName: string, status: number) {
+    public async getSupplyBy(facilityName: string, status: number):Promise<IDeviceWithRelationsIds[]> {
         const { data } = await this.requestClient.get<unknown, IDeviceWithRelationsIds[]>(
             `${this.endpoint}/supplyBy?facility=${
                 facilityName ?? ''
             }&status=${status}`
         );
-        return data;
+        return data.map(device => this.cleanDeviceData(device));
     }
 
     public async delete(id: number) {
@@ -120,5 +121,12 @@ export class DeviceClient implements IDeviceClient {
         );
     }
 
+    public async getMyDevice(): Promise<IDeviceWithRelationsIds[]> {
+        const { data } = await this.requestClient.get<void, IDeviceWithRelationsIds[]>(
+            `${this.endpoint}/myDevice`
+        );
+
+        return data.map(device => this.cleanDeviceData(device));
+    }
     
 }
