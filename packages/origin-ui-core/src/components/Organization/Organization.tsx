@@ -1,9 +1,11 @@
 import React from 'react';
-import { PageContent } from '../PageContent/PageContent';
 import { useSelector } from 'react-redux';
-import { useLinks } from '../../utils/routing';
-import { getUserOffchain, getIsLeadUser } from '../../features/users/selectors';
 import { NavLink, Route, Redirect } from 'react-router-dom';
+import { Role, isRole } from '@energyweb/origin-backend-core';
+
+import { PageContent } from '../PageContent/PageContent';
+import { useLinks } from '../../utils/routing';
+import { getUserOffchain } from '../../features/users/selectors';
 import { OrganizationForm } from './OrganizationForm';
 import { OrganizationTable } from './OrganizationTable';
 import { OrganizationView } from './OrganizationView';
@@ -11,9 +13,14 @@ import { OrganizationInvite } from './OrganizationInvite';
 import { OrganizationInvitations } from './OrganizationInvitations';
 import { OrganizationUsersTable } from './OrganizationUsersTable';
 
+export const roleNames = {
+    [Role.OrganizationUser]: 'organization.invitations.roles.member',
+    [Role.OrganizationDeviceManager]: 'organization.invitations.roles.deviceManager',
+    [Role.OrganizationAdmin]: 'organization.invitations.roles.admin'
+};
+
 export function Organization() {
     const userOffchain = useSelector(getUserOffchain);
-    const isLeadUser = useSelector(getIsLeadUser);
 
     const { getOrganizationLink } = useLinks();
 
@@ -24,7 +31,7 @@ export function Organization() {
             key: 'organization-users',
             label: 'Members',
             component: OrganizationUsersTable,
-            hide: !isLoggedIn || !isLeadUser
+            hide: !isLoggedIn || !isRole(userOffchain, Role.OrganizationAdmin)
         },
         {
             key: 'organization-invitations',
@@ -36,7 +43,10 @@ export function Organization() {
             key: 'organization-invite',
             label: 'Invite',
             component: OrganizationInvite,
-            hide: !isLoggedIn || !isLeadUser || !userOffchain?.organization
+            hide:
+                !isLoggedIn ||
+                !isRole(userOffchain, Role.OrganizationAdmin) ||
+                !userOffchain?.organization
         },
         {
             key: 'organization-register',

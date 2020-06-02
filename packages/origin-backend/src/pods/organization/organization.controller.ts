@@ -4,12 +4,13 @@ import {
     isRole,
     OrganizationInviteCreateReturnData,
     OrganizationPostData,
-    OrganizationRemoveMemberReturnData,
+    OrganizationMemberChangedReturnData,
     OrganizationStatusChangedEvent,
     OrganizationUpdateData,
     Role,
     SupportedEvents,
-    OrganizationRole
+    OrganizationRole,
+    IOrganizationUpdateMemberRole
 } from '@energyweb/origin-backend-core';
 import { Roles, RolesGuard, UserDecorator } from '@energyweb/origin-backend-utils';
 import {
@@ -78,17 +79,20 @@ export class OrganizationController {
     @Get('/:id/users')
     @UseGuards(AuthGuard(), RolesGuard)
     @Roles(Role.OrganizationAdmin, Role.Admin, Role.SupportAgent)
-    async getUsers(@Param('id') id: string, @UserDecorator() loggedUser: ILoggedInUser) {
+    async getUsers(
+        @Param('id', new ParseIntPipe()) id: number,
+        @UserDecorator() loggedUser: ILoggedInUser
+    ) {
+        if (loggedUser.organizationId !== id) {
+            throw new BadRequestException('Not a member of the organization.');
+        }
+
         const organization = await this.organizationRepository.findOne(id, {
-            relations: ['users', 'leadUser']
+            relations: ['users']
         });
 
         if (!organization) {
             throw new NotFoundException(StorageErrors.NON_EXISTENT);
-        }
-
-        if (loggedUser.id !== organization.leadUser.id) {
-            throw new BadRequestException('Only lead user can view other organization members.');
         }
 
         return organization.users;
@@ -252,8 +256,25 @@ export class OrganizationController {
         @Param('id', new ParseIntPipe()) organizationId: number,
         @Param('userId', new ParseIntPipe()) memberId: number,
         @UserDecorator() loggedUser: ILoggedInUser
-    ): Promise<OrganizationRemoveMemberReturnData> {
+    ): Promise<OrganizationMemberChangedReturnData> {
         await this.organizationService.removeMember(loggedUser, organizationId, memberId);
+
+        return {
+            success: true,
+            error: null
+        };
+    }
+
+    @Put(':id/change-role/:userId')
+    @UseGuards(AuthGuard(), RolesGuard)
+    @Roles(Role.OrganizationAdmin, Role.Admin)
+    async changeMemberRole(
+        @Param('id', new ParseIntPipe()) organizationId: number,
+        @Param('userId', new ParseIntPipe()) memberId: number,
+        @Body() { role }: IOrganizationUpdateMemberRole,
+        @UserDecorator() loggedUser: ILoggedInUser
+    ): Promise<OrganizationMemberChangedReturnData> {
+        await this.organizationService.changeMemberRole(loggedUser, organizationId, memberId, role);
 
         return {
             success: true,

@@ -8,8 +8,10 @@ import {
     OrganizationInvitationStatus,
     IOrganizationWithRelationsIds,
     IUserWithRelationsIds,
-    OrganizationRemoveMemberReturnData,
-    OrganizationRole
+    OrganizationMemberChangedReturnData,
+    OrganizationRole,
+    Role,
+    IOrganizationUpdateMemberRole
 } from '@energyweb/origin-backend-core';
 
 import { IRequestClient, RequestClient } from './RequestClient';
@@ -31,7 +33,12 @@ export interface IOrganizationClient {
     removeMember(
         organizationId: number,
         userId: number
-    ): Promise<OrganizationRemoveMemberReturnData>;
+    ): Promise<OrganizationMemberChangedReturnData>;
+    memberChangeRole(
+        organizationId: number,
+        userId: number,
+        newRole: Role
+    ): Promise<OrganizationMemberChangedReturnData>
 }
 
 export class OrganizationClient implements IOrganizationClient {
@@ -145,8 +152,8 @@ export class OrganizationClient implements IOrganizationClient {
     public async removeMember(
         organizationId: number,
         userId: number
-    ): Promise<{ success: boolean; error: string }> {
-        const response = await this.requestClient.post<{}, { success: boolean; error: string }>(
+    ): Promise<OrganizationMemberChangedReturnData> {
+        const response = await this.requestClient.post<{}, OrganizationMemberChangedReturnData>(
             `${this.endpoint}/${organizationId}/remove-member/${userId}`
         );
 
@@ -158,6 +165,19 @@ export class OrganizationClient implements IOrganizationClient {
             OrganizationInviteUpdateData,
             IOrganizationInvitation
         >(`${this.endpoint}/invitation/${id}`, data);
+
+        return response.data;
+    }
+
+    public async memberChangeRole(
+        organizationId: number,
+        userId: number,
+        newRole: Role
+    ): Promise<OrganizationMemberChangedReturnData> {
+        const response = await this.requestClient.put<IOrganizationUpdateMemberRole, OrganizationMemberChangedReturnData>(
+            `${this.endpoint}/${organizationId}/change-role/${userId}`,
+            { role: newRole }
+        );
 
         return response.data;
     }

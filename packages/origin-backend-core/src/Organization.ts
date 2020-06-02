@@ -1,4 +1,4 @@
-import { IUser } from './User';
+import { IUser, Role } from './User';
 import { IDevice } from '.';
 
 export enum OrganizationStatus {
@@ -54,19 +54,16 @@ export interface IOrganizationProperties {
 }
 
 export interface IOrganization extends IOrganizationProperties {
-    leadUser: IUser | IUser['id'];
     users: Array<IUser | IUser['id']>;
     devices: Array<IDevice | IDevice['id']>;
 }
 
 export interface IOrganizationWithRelationsIds extends IOrganization {
-    leadUser: IUser['id'];
     users: Array<IUser['id']>;
     devices: Array<IDevice['id']>;
 }
 
 export interface IOrganizationWithRelations extends IOrganization {
-    leadUser: IUser;
     users: IUser[];
 }
 
@@ -74,4 +71,8 @@ export type OrganizationPostData = Omit<IOrganizationProperties, 'id' | 'status'
 
 export type OrganizationUpdateData = Pick<IOrganization, 'status'>;
 
-export type OrganizationRemoveMemberReturnData = { success: boolean; error: string };
+export type OrganizationMemberChangedReturnData = { success: boolean; error: string };
+
+export interface IOrganizationUpdateMemberRole {
+    role: Role;
+}

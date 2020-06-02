@@ -12,7 +12,8 @@ import {
     OrganizationStatus,
     ILoggedInUser,
     OrganizationRemovedMemberEvent,
-    SupportedEvents
+    SupportedEvents,
+    OrganizationMemberChangedRoleEvent
 } from '@energyweb/origin-backend-core';
 import { validate } from 'class-validator';
 import { Organization } from './organization.entity';
@@ -53,7 +54,6 @@ export class OrganizationService {
             website: data.website,
 
             status: OrganizationStatus.Submitted,
-            leadUser: { id: userId } as User,
             users: [{ id: userId } as User],
             devices: []
         });
@@ -91,12 +91,15 @@ export class OrganizationService {
     }
 
     async getDeviceManagers(id: string | number): Promise<IUserWithRelationsIds[]> {
-        const organization = await this.findOne(id);
         const members = await this.getMembers(id);
 
-        return members.filter(
-            (u) => u.id === organization.leadUser || isRole(u, Role.OrganizationDeviceManager)
-        );
+        return members.filter((u) => isRole(u, Role.OrganizationDeviceManager));
+    }
+
+    async getAdmins(id: string | number): Promise<IUserWithRelationsIds[]> {
+        const members = await this.getMembers(id);
+
+        return members.filter((u) => isRole(u, Role.OrganizationAdmin));
     }
 
     async getMembers(id: string | number): Promise<IUserWithRelationsIds[]> {
@@ -145,13 +148,16 @@ export class OrganizationService {
         }
 
         const organization = await this.repository.findOne(user.organizationId, {
-            relations: ['leadUser', 'users']
+            relations: ['users']
         });
 
-        if (organization.leadUser.id === memberId) {
+        const userToBeRemoved = await this.userService.findById(memberId);
+        const admins = await this.getAdmins(organizationId);
+
+        if (isRole(userToBeRemoved, Role.OrganizationAdmin) && admins.length < 2) {
             throw new BadRequestException({
                 success: false,
-                error: `Can't remove lead user from organization.`
+                error: `Can't remove admin user from organization. There always has to be at least one admin in the organization.`
             });
         }
 
@@ -164,15 +170,65 @@ export class OrganizationService {
 
         await this.userService.removeOrganization(memberId);
 
-        const removedUser = await this.userService.findById(memberId);
-
         const eventData: OrganizationRemovedMemberEvent = {
             organizationName: organization.name,
-            email: removedUser.email
+            email: userToBeRemoved.email
         };
 
         this.notificationService.handleEvent({
             type: SupportedEvents.ORGANIZATION_REMOVED_MEMBER,
+            data: eventData
+        });
+    }
+
+    async changeMemberRole(
+        user: ILoggedInUser,
+        organizationId: number,
+        memberId: number,
+        newRole: Role
+    ) {
+        if (organizationId !== user.organizationId) {
+            throw new BadRequestException({
+                success: false,
+                error: `You are not in the requested organization.`
+            });
+        }
+
+        const userToBeChanged = await this.userService.findById(memberId);
+        const admins = await this.getAdmins(organizationId);
+
+        if (
+            newRole !== Role.OrganizationAdmin &&
+            isRole(userToBeChanged, Role.OrganizationAdmin) &&
+            admins.length < 2
+        ) {
+            throw new BadRequestException({
+                success: false,
+                error: `Can't change role of admin user from organization. There always has to be at least one admin in the organization.`
+            });
+        }
+
+        const organization = await this.repository.findOne(user.organizationId, {
+            relations: ['users']
+        });
+
+        if (!organization.users.find((u) => u.id === memberId)) {
+            throw new BadRequestException({
+                success: false,
+                error: `User to be removed is not part of the organization.`
+            });
+        }
+
+        await this.userService.changeRole(memberId, newRole);
+
+        const eventData: OrganizationMemberChangedRoleEvent = {
+            organizationName: organization.name,
+            newRole,
+            email: userToBeChanged.email
+        };
+
+        this.notificationService.handleEvent({
+            type: SupportedEvents.ORGANIZATION_MEMBER_CHANGED_ROLE,
             data: eventData
         });
     }

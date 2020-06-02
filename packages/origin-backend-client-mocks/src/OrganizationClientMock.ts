@@ -6,10 +6,11 @@ import {
     OrganizationInvitationStatus,
     OrganizationInviteCreateReturnData,
     OrganizationPostData,
-    OrganizationRemoveMemberReturnData,
+    OrganizationMemberChangedReturnData,
     OrganizationStatus,
     OrganizationUpdateData,
-    OrganizationRole
+    OrganizationRole,
+    Role
 } from '@energyweb/origin-backend-core';
 
 interface ITmpUser {
@@ -44,25 +45,7 @@ export class OrganizationClientMock implements IOrganizationClient {
         const organization: IOrganizationWithRelationsIds = {
             id: this.idCounter,
             status: OrganizationStatus.Submitted,
-            leadUser: null,
             users: [],
-            devices: [],
-            ...data
-        };
-
-        this.storage.set(organization.id, organization);
-
-        return organization;
-    }
-
-    addMocked(data: OrganizationPostData, leadUserId: number): IOrganizationWithRelationsIds {
-        this.idCounter++;
-
-        const organization: IOrganizationWithRelationsIds = {
-            id: this.idCounter,
-            status: OrganizationStatus.Submitted,
-            leadUser: leadUserId,
-            users: [leadUserId],
             devices: [],
             ...data
         };
@@ -87,7 +70,6 @@ export class OrganizationClientMock implements IOrganizationClient {
     }
 
     inviteMocked(email: string, organizationId: number, role: OrganizationRole): OrganizationInviteCreateReturnData {
-        const organization = this.storage.get(organizationId);
         this.invitationCounter++;
 
         const organizationInvitation: IOrganizationInvitation = {
@@ -119,19 +101,28 @@ export class OrganizationClientMock implements IOrganizationClient {
     removeMember(
         organizationId: number,
         userId: number
-    ): Promise<OrganizationRemoveMemberReturnData> {
+    ): Promise<OrganizationMemberChangedReturnData> {
         const organization = this.storage.get(organizationId);
 
         organization.users = organization.users.filter((user) => user !== userId);
 
         this.storage.set(organization.id, organization);
 
-        const returnData: OrganizationRemoveMemberReturnData = {
+        const returnData: OrganizationMemberChangedReturnData = {
             success: true,
             error: ''
         };
 
         return Promise.resolve(returnData);
+    }
+
+
+    memberChangeRole(
+        organizationId: number,
+        userId: number,
+        newRole: Role
+    ): Promise<OrganizationMemberChangedReturnData> {
+        throw new Error('Method not implemented.');
     }
 
     getInvitations(): Promise<IOrganizationInvitation[]> {
