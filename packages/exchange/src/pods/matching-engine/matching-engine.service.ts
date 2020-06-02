@@ -3,6 +3,7 @@ import {
     DirectBuy,
     MatchingEngine,
     ProductFilter,
+    Trade,
     TradeExecutedEvent
 } from '@energyweb/exchange-core';
 import { LocationService } from '@energyweb/utils-general';
@@ -86,8 +87,10 @@ export class MatchingEngineService implements OnModuleInit {
         this.matchingEngine.tick();
     }
 
-    private async onTradeExecutedEvent(trades: List<TradeExecutedEvent>) {
+    private async onTradeExecutedEvent(tradeEvents: List<TradeExecutedEvent>) {
         this.logger.log('Received TradeExecutedEvent event');
+
+        const trades = tradeEvents.map<Trade>((t) => t.trade);
 
         this.eventBus.publish(new BulkTradeExecutedEvent(trades));
     }
