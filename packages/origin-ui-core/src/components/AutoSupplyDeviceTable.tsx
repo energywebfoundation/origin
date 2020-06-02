@@ -21,6 +21,7 @@ import {
     usePaginatedLoaderFiltered
 } from './Table';
 import { CustomFilterInputType, ICustomFilterDefinition } from './Table/FiltersHeader';
+import { moment } from '../utils';
 
 interface IRecord {
     device: IDevice;
@@ -56,7 +57,7 @@ export function AutoSupplyDeviceTable() {
                 parseInt(requestedFilters[1]?.selectedValue, 10) || 0
             );
         } else {
-            entities = await deviceClient.getAll();
+            entities = await deviceClient.getMyDevice();
         }
         let newPaginatedData: IRecord[] = entities.map((i) => ({
             device: i
@@ -80,19 +81,27 @@ export function AutoSupplyDeviceTable() {
         loadPage(1);
     }, [userOffchain, deviceClient]);
 
+    const currentYear = moment(new Date().valueOf());
+    const nextYear = moment(currentYear).add(1, 'years');
+
     const columns = [
         { id: 'type', label: 'Type' },
         { id: 'facility', label: 'Facility' },
         { id: 'price', label: 'Price' },
         { id: 'status', label: 'Status' },
-        { id: 'certified', label: 'To be certified for 2020/2021 (Mwh)' }
+        {
+            id: 'certified',
+            label: `To be certified for ${currentYear.format('YYYY')}/${nextYear.format(
+                'YYYY'
+            )} (Mwh)`
+        }
     ] as const;
 
     const rows = paginatedData.map(({ device }) => {
         return {
-            type: device.deviceType,
+            type: device.deviceType?.replace(new RegExp(';', 'g'), '-') ?? '-',
             facility: device.facilityName,
-            price: device.defaultAskPrice,
+            price: device.defaultAskPrice / 100,
             status: device.automaticPostForSale ? KeyStatus[1] : KeyStatus[2],
             certified: EnergyFormatter.format(device.meterStats?.uncertified?.toNumber() ?? 0)
         };
@@ -113,7 +122,7 @@ export function AutoSupplyDeviceTable() {
             name: 'Update',
             onClick: (index: string) => {
                 const { device } = paginatedData[index];
-                setEntity(device);
+                setEntity({ ...device, defaultAskPrice: device.defaultAskPrice / 100 });
                 setShowModal(true);
             }
         }
@@ -150,7 +159,7 @@ export function AutoSupplyDeviceTable() {
         try {
             await deviceClient.updateDeviceSettings(entity.id, {
                 automaticPostForSale: entity.automaticPostForSale,
-                defaultAskPrice: entity.defaultAskPrice
+                defaultAskPrice: entity.defaultAskPrice * 100
             });
             hideModal();
             loadPage(1);
@@ -194,8 +203,14 @@ export function AutoSupplyDeviceTable() {
                         label={'Price'}
                         value={entity?.defaultAskPrice}
                         className="mt-4"
+                        type="number"
+                        inputProps={{ step: 0.01 }}
                         onChange={(e) =>
-                            setEntity({ ...entity, defaultAskPrice: parseInt(e.target.value, 10) })
+                            setEntity({
+                                ...entity,
+                                defaultAskPrice:
+                                    parseFloat(parseFloat(e.target.value).toFixed(2)) ?? 0.0
+                            })
                         }
                         fullWidth
                     />
