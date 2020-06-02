@@ -185,6 +185,24 @@ export class DeviceService {
         return devices;
     }
 
+    async getMyDevice(organizationId: number, options: FindOneOptions<Device> = {}) {
+        const devices = ((await this.repository.find({
+            loadRelationIds: true,
+            where: { organization: { id: organizationId } },
+            ...options
+        })) as IDevice[]) as (ExtendedBaseEntity & IDeviceWithRelationsIds)[];
+
+        for (const device of devices) {
+            if (this.smartMeterReadingsAdapter) {
+                device.smartMeterReads = [];
+            }
+
+            device.meterStats = await this.getMeterStats(device.id.toString());
+        }
+
+        return devices;
+    }
+
     async findDeviceProductInfo(externalId: IExternalDeviceId): Promise<IDeviceProductInfo> {
         const devices = await this.repository.find();
 
@@ -330,18 +348,28 @@ export class DeviceService {
         };
     }
 
-    async getSupplyBy(facilityName: string, status: number) {
+    async getSupplyBy(organizationId: number, facilityName: string, status: number) {
         const _facilityName = `%${facilityName}%`;
         const _status = status === 1;
-        const result = await this.repository
+        const devices = ((await this.repository
             .createQueryBuilder('device')
+            .leftJoinAndSelect('device.organization', 'organization')
             .where(
-                `device.facilityName ilike :_facilityName ${
+                `organization.id = :organizationId and device.facilityName ilike :_facilityName ${
                     status > 0 ? `and device.automaticPostForSale = :_status` : ``
                 }`,
-                { _facilityName, _status }
+                { organizationId, _facilityName, _status }
             )
-            .getMany();
-        return result;
+            .getMany()) as IDevice[]) as (ExtendedBaseEntity & IDeviceWithRelationsIds)[];
+
+        for (const device of devices) {
+            if (this.smartMeterReadingsAdapter) {
+                device.smartMeterReads = [];
+            }
+
+            device.meterStats = await this.getMeterStats(device.id.toString());
+        }
+
+        return devices;
     }
 }
