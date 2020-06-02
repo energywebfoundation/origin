@@ -5,10 +5,9 @@
         "outDir": "./dist/js",
         "emitDecoratorMetadata": true,
         "experimentalDecorators": true,
-        "types": ["node", "jest"],
-        "typeRoots": ["./src/types", "./node_modules/@types", "../../node_modules/@types"]
+        "types": ["node", "mocha"]
     },
-    "include": ["src/**/*", "migrations/*", "ormconfig*.ts", "test/*"],
+    "include": ["src/**/*", "migrations/*", "ormconfig*.ts", "test/*", "types/*"],
     "references": [
         {
             "path": "../origin-backend-core/tsconfig.json"

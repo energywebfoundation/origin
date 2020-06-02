@@ -1,4 +1,5 @@
 import { INestApplication } from '@nestjs/common';
+import { expect } from 'chai';
 import { ethers } from 'ethers';
 import request from 'supertest';
 
@@ -12,7 +13,7 @@ import { RequestWithdrawalDTO } from '../src/pods/transfer/create-withdrawal.dto
 import { Transfer } from '../src/pods/transfer/transfer.entity';
 import { TransferService } from '../src/pods/transfer/transfer.service';
 import { DatabaseService } from './database.service';
-import { bootstrapTestInstance, authenticatedUser } from './exchange';
+import { authenticatedUser, bootstrapTestInstance } from './exchange';
 
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -47,13 +48,13 @@ describe('account ask order send', () => {
         return transferService.setAsConfirmed(transactionHash, 10000);
     };
 
-    beforeAll(async () => {
+    before(async () => {
         ({ transferService, accountService, databaseService, app } = await bootstrapTestInstance());
 
         await app.init();
     });
 
-    afterAll(async () => {
+    after(async () => {
         await databaseService.cleanUp();
         await app.close();
     });
@@ -98,13 +99,13 @@ describe('account ask order send', () => {
             .expect((res) => {
                 const order = res.body as Order;
 
-                expect(order.price).toBe(100);
-                expect(order.startVolume).toBe('100');
-                expect(order.assetId).toBe(deposit.asset.id);
-                expect(new Date(order.product.generationFrom)).toStrictEqual(
+                expect(order.price).equals(100);
+                expect(order.startVolume).equals('100');
+                expect(order.assetId).equals(deposit.asset.id);
+                expect(new Date(order.product.generationFrom)).deep.equals(
                     dummyAsset.generationFrom
                 );
-                expect(new Date(order.product.generationTo)).toStrictEqual(dummyAsset.generationTo);
+                expect(new Date(order.product.generationTo)).deep.equals(dummyAsset.generationTo);
             });
     });
 
@@ -148,8 +149,6 @@ describe('account ask order send', () => {
     });
 
     it('should be able to withdraw after confirming deposit', async () => {
-        jest.setTimeout(10000);
-
         await confirmDeposit();
 
         const withdrawal: RequestWithdrawalDTO = {
@@ -169,8 +168,8 @@ describe('account ask order send', () => {
             .expect((res) => {
                 const account = res.body as AccountDTO;
 
-                expect(account.address).toBe(user1Address);
-                expect(account.balances.available.length).toBe(0);
+                expect(account.address).equals(user1Address);
+                expect(account.balances.available.length).equals(0);
             });
 
         // wait to withdrawal to be finished to not mess with tx nonces
@@ -196,9 +195,9 @@ describe('account ask order send', () => {
             .expect((res) => {
                 order = res.body as Order;
 
-                expect(order.price).toBe(100);
-                expect(order.startVolume).toBe(volume);
-                expect(order.status).toBe(OrderStatus.Active);
+                expect(order.price).equals(100);
+                expect(order.startVolume).equals(volume);
+                expect(order.status).equals(OrderStatus.Active);
             });
 
         await request(app.getHttpServer())
@@ -207,8 +206,8 @@ describe('account ask order send', () => {
             .expect((res) => {
                 const cancelled = res.body as Order;
 
-                expect(cancelled.id).toBe(order.id);
-                expect(cancelled.status).toBe(OrderStatus.PendingCancellation);
+                expect(cancelled.id).equals(order.id);
+                expect(cancelled.status).equals(OrderStatus.PendingCancellation);
             });
 
         await sleep(3000);
@@ -219,8 +218,8 @@ describe('account ask order send', () => {
             .expect((res) => {
                 const cancelled = res.body as Order;
 
-                expect(cancelled.id).toBe(order.id);
-                expect(cancelled.status).toBe(OrderStatus.Cancelled);
+                expect(cancelled.id).equals(order.id);
+                expect(cancelled.status).equals(OrderStatus.Cancelled);
             });
     });
 });

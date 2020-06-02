@@ -1,19 +1,18 @@
 /* eslint-disable no-return-assign */
 import {
+    DeviceSettingsUpdateData,
     DeviceStatus,
     IDeviceWithRelationsIds,
-    DeviceSettingsUpdateData,
     Role
 } from '@energyweb/origin-backend-core';
+import { expect } from 'chai';
+import { bigNumberify } from 'ethers/utils';
+import moment from 'moment';
 import request from 'supertest';
 
-import moment from 'moment';
-import { bigNumberify } from 'ethers/utils';
-import { registerAndLogin, bootstrapTestInstance } from './origin-backend';
+import { bootstrapTestInstance, registerAndLogin } from './origin-backend';
 
 describe('Device e2e tests', () => {
-    jest.setTimeout(1000000);
-
     it('should allow to edit settings for organization member with DeviceManager role', async () => {
         const {
             app,
@@ -66,8 +65,8 @@ describe('Device e2e tests', () => {
             .expect((res) => {
                 const device = res.body as IDeviceWithRelationsIds;
 
-                expect(device.defaultAskPrice).toBe(null);
-                expect(device.automaticPostForSale).toBe(false);
+                expect(device.defaultAskPrice).equals(null);
+                expect(device.automaticPostForSale).equals(false);
             });
 
         await request(app.getHttpServer())
@@ -114,8 +113,8 @@ describe('Device e2e tests', () => {
             .expect((res) => {
                 const device = res.body as IDeviceWithRelationsIds;
 
-                expect(device.defaultAskPrice).toBe(settingWithCorrectPrice.defaultAskPrice);
-                expect(device.automaticPostForSale).toBe(true);
+                expect(device.defaultAskPrice).equals(settingWithCorrectPrice.defaultAskPrice);
+                expect(device.automaticPostForSale).equals(true);
             });
 
         await app.close();
@@ -174,8 +173,8 @@ describe('Device e2e tests', () => {
             .expect((res) => {
                 const resultDevice = res.body as IDeviceWithRelationsIds;
 
-                expect(bigNumberify(resultDevice.meterStats.certified).toNumber()).toBe(0);
-                expect(bigNumberify(resultDevice.meterStats.uncertified).toNumber()).toBe(0);
+                expect(bigNumberify(resultDevice.meterStats.certified).toNumber()).equals(0);
+                expect(bigNumberify(resultDevice.meterStats.uncertified).toNumber()).equals(0);
             });
 
         const now = moment();
@@ -221,9 +220,9 @@ describe('Device e2e tests', () => {
             .expect((res) => {
                 const resultDevice = res.body as IDeviceWithRelationsIds;
 
-                expect(bigNumberify(resultDevice.meterStats.certified).toNumber()).toBeGreaterThan(
-                    0
-                );
+                expect(
+                    bigNumberify(resultDevice.meterStats.certified).toNumber()
+                ).to.be.greaterThan(0);
             });
 
         await app.close();

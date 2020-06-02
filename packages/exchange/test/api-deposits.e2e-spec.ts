@@ -1,11 +1,12 @@
 import { INestApplication } from '@nestjs/common';
+import { expect } from 'chai';
 import request from 'supertest';
 
 import { AccountDTO } from '../src/pods/account/account.dto';
 import { AccountService } from '../src/pods/account/account.service';
 import { TransferService } from '../src/pods/transfer/transfer.service';
 import { DatabaseService } from './database.service';
-import { bootstrapTestInstance, authenticatedUser } from './exchange';
+import { authenticatedUser, bootstrapTestInstance } from './exchange';
 
 describe('account deposit confirmation', () => {
     let app: INestApplication;
@@ -40,7 +41,7 @@ describe('account deposit confirmation', () => {
         return transferService.setAsConfirmed(transactionHash, 10000);
     };
 
-    beforeAll(async () => {
+    before(async () => {
         ({ transferService, accountService, databaseService, app } = await bootstrapTestInstance());
 
         await app.init();
@@ -49,7 +50,7 @@ describe('account deposit confirmation', () => {
         user1Address = address;
     });
 
-    afterAll(async () => {
+    after(async () => {
         await databaseService.cleanUp();
         await app.close();
     });
@@ -65,8 +66,8 @@ describe('account deposit confirmation', () => {
             .expect((res) => {
                 const account = res.body as AccountDTO;
 
-                expect(account.address).toBe(user1Address);
-                expect(account.balances.available.length).toBe(0);
+                expect(account.address).equals(user1Address);
+                expect(account.balances.available.length).equals(0);
             });
     });
 
@@ -83,11 +84,11 @@ describe('account deposit confirmation', () => {
             .expect((res) => {
                 const account = res.body as AccountDTO;
 
-                expect(account.address).toBe(user1Address);
-                expect(account.balances.available.length).toBe(1);
-                expect(account.balances.available[0].amount).toEqual(amount);
+                expect(account.address).equals(user1Address);
+                expect(account.balances.available.length).equals(1);
+                expect(account.balances.available[0].amount).equals(amount);
 
-                expect(account.balances.available[0].asset).toMatchObject(
+                expect(account.balances.available[0].asset).deep.equals(
                     JSON.parse(JSON.stringify(dummyAsset))
                 );
             });

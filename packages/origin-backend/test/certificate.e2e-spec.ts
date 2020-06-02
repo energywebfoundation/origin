@@ -1,9 +1,10 @@
 /* eslint-disable no-return-assign */
-import { Role, CommitmentStatus } from '@energyweb/origin-backend-core';
+import { CommitmentStatus, Role } from '@energyweb/origin-backend-core';
 import { INestApplication } from '@nestjs/common';
+import { expect } from 'chai';
+import { bigNumberify } from 'ethers/utils';
 import request from 'supertest';
 
-import { bigNumberify } from 'ethers/utils';
 import { CertificateService } from '../src/pods/certificate/certificate.service';
 import { OrganizationService } from '../src/pods/organization/organization.service';
 import { UserService } from '../src/pods/user';
@@ -38,7 +39,7 @@ describe('Certificate e2e tests', () => {
         txHash: '0x43812963521457111f27433c6636499c50d36a6e5bea4a835b4c059aed4ac503'
     });
 
-    beforeAll(async () => {
+    before(async () => {
         ({
             app,
             userService,
@@ -49,7 +50,7 @@ describe('Certificate e2e tests', () => {
         await app.init();
     });
 
-    afterAll(async () => {
+    after(async () => {
         await app.close();
     });
 
@@ -78,7 +79,7 @@ describe('Certificate e2e tests', () => {
             .expect((res) => {
                 const { commitmentStatus } = res.body;
 
-                expect(commitmentStatus).toEqual(CommitmentStatus.CURRENT);
+                expect(commitmentStatus).equals(CommitmentStatus.CURRENT);
             });
     });
 
@@ -131,7 +132,7 @@ describe('Certificate e2e tests', () => {
             .expect((res) => {
                 const { commitmentStatus } = res.body;
 
-                expect(commitmentStatus).toEqual(CommitmentStatus.CURRENT);
+                expect(commitmentStatus).equals(CommitmentStatus.CURRENT);
             });
 
         await request(app.getHttpServer())

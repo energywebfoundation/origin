@@ -4,9 +4,9 @@
     "description": "This is a bootstrap project for Origin API",
     "main": "dist/js/src/index.js",
     "scripts": {
-        "start": "nest start",
-        "start:dev": "nest start --watch",
-        "start:debug": "nest start --debug --watch",
+        "start": "nest start -p tsconfig.json",
+        "start:dev": "nest start --watch -p tsconfig.json",
+        "start:debug": "nest start --debug --watch -p tsconfig.json",
         "start:prod": "node dist/main",
         "prebuild": "shx rm -rf dist",
         "build": "yarn build:ts",

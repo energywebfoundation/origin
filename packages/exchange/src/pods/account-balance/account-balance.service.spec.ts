@@ -1,4 +1,6 @@
 import { OrderSide } from '@energyweb/exchange-core';
+// eslint-disable-next-line import/no-extraneous-dependencies
+import { beforeEach, expect, jest } from '@jest/globals';
 import { Test, TestingModule } from '@nestjs/testing';
 import BN from 'bn.js';
 import { plainToClass } from 'class-transformer';
@@ -16,11 +18,6 @@ import { TransferDirection } from '../transfer/transfer-direction';
 import { Transfer } from '../transfer/transfer.entity';
 import { TransferService } from '../transfer/transfer.service';
 import { AccountBalanceService } from './account-balance.service';
-
-jest.mock('../trade/trade.service');
-jest.mock('../transfer/transfer.service');
-jest.mock('../order/order.service');
-jest.mock('../bundle/bundle.service');
 
 describe('AccountBalanceService', () => {
     const userId = '1';
@@ -62,11 +59,23 @@ describe('AccountBalanceService', () => {
     beforeEach(async () => {
         const module: TestingModule = await Test.createTestingModule({
             providers: [
-                AccountBalanceService,
-                TradeService,
-                TransferService,
-                OrderService,
-                BundleService
+                {
+                    provide: TradeService,
+                    useValue: { getAllByUser: jest.fn() }
+                },
+                {
+                    provide: TransferService,
+                    useValue: { getAllCompleted: jest.fn() }
+                },
+                {
+                    provide: OrderService,
+                    useValue: { getActiveOrdersBySide: jest.fn() }
+                },
+                {
+                    provide: BundleService,
+                    useValue: { getTrades: jest.fn(), getByUser: jest.fn() }
+                },
+                AccountBalanceService
             ]
         }).compile();
 
@@ -222,10 +231,10 @@ describe('AccountBalanceService', () => {
         const [assetOne, assetTwo] = res.locked;
 
         expect(assetOne.asset).toEqual(asset1);
-        expect(assetOne.amount).toMatchObject(new BN(1250));
+        expect(assetOne.amount).toEqual(new BN(1250));
 
         expect(assetTwo.asset).toEqual(asset2);
-        expect(assetTwo.amount).toMatchObject(new BN(1000));
+        expect(assetTwo.amount).toEqual(new BN(1000));
     });
 
     it('should return asset from bundles as available', async () => {
@@ -273,9 +282,9 @@ describe('AccountBalanceService', () => {
         const [assetOne, assetTwo] = res.available;
 
         expect(assetOne.asset).toEqual(asset1);
-        expect(assetOne.amount).toMatchObject(new BN(20 + 5));
+        expect(assetOne.amount).toEqual(new BN(20 + 5));
 
         expect(assetTwo.asset).toEqual(asset2);
-        expect(assetTwo.amount).toMatchObject(new BN(40 + 5));
+        expect(assetTwo.amount).toEqual(new BN(40 + 5));
     });
 });
