@@ -46,11 +46,11 @@ export class DeviceController {
         return this.deviceService.getAll();
     }
 
-    @Get('/myDevice')
+    @Get('/my-devices')
     @UseGuards(AuthGuard(), RolesGuard)
     @Roles(Role.OrganizationAdmin, Role.OrganizationDeviceManager, Role.OrganizationUser)
-    async getMyDevice(@UserDecorator() { organizationId }: ILoggedInUser) {
-        return this.deviceService.getMyDevice(organizationId);
+    async getMyDevices(@UserDecorator() { organizationId }: ILoggedInUser) {
+        return this.deviceService.getAll({ where: { organization: { id: organizationId } } });
     }
 
     @Get('supplyBy')
