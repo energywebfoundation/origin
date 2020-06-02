@@ -1,16 +1,17 @@
 import { INestApplication } from '@nestjs/common';
+import { expect } from 'chai';
 import request from 'supertest';
 
+import { AccountDTO } from '../src/pods/account/account.dto';
 import { AccountService } from '../src/pods/account/account.service';
+import { BundleTrade } from '../src/pods/bundle/bundle-trade.entity';
 import { Bundle } from '../src/pods/bundle/bundle.entity';
 import { BundleService } from '../src/pods/bundle/bundle.service';
+import { BuyBundleDTO } from '../src/pods/bundle/buy-bundle.dto';
 import { CreateBundleDTO } from '../src/pods/bundle/create-bundle.dto';
 import { TransferService } from '../src/pods/transfer/transfer.service';
 import { DatabaseService } from './database.service';
-import { bootstrapTestInstance, authenticatedUser } from './exchange';
-import { BuyBundleDTO } from '../src/pods/bundle/buy-bundle.dto';
-import { BundleTrade } from '../src/pods/bundle/bundle-trade.entity';
-import { AccountDTO } from '../src/pods/account/account.dto';
+import { authenticatedUser, bootstrapTestInstance } from './exchange';
 
 describe('Bundles', () => {
     let app: INestApplication;
@@ -53,7 +54,7 @@ describe('Bundles', () => {
         return transferService.setAsConfirmed(transactionHash, 10000);
     };
 
-    beforeAll(async () => {
+    before(async () => {
         ({
             transferService,
             accountService,
@@ -66,7 +67,7 @@ describe('Bundles', () => {
         await databaseService.cleanUp();
     });
 
-    afterAll(async () => {
+    after(async () => {
         await app.close();
     });
 
@@ -92,11 +93,10 @@ describe('Bundles', () => {
         };
 
         const assertBundle = (bundle: Bundle) => {
-            expect(bundle).toBeDefined();
-            expect(bundle.items).toHaveLength(2);
-            expect(bundle.price).toBe(bundleToCreate.price);
-            expect(bundle.userId).toBe(user1Id);
-            expect(bundle.available).toBe(`${20 * MWh}`);
+            expect(bundle.items).to.have.length(2);
+            expect(bundle.price).equals(bundleToCreate.price);
+            expect(bundle.userId).equals(user1Id);
+            expect(bundle.available).equals(`${20 * MWh}`);
         };
 
         await request(app.getHttpServer())
@@ -154,8 +154,8 @@ describe('Bundles', () => {
             .expect((res) => {
                 const bundle = res.body as Bundle;
 
-                expect(bundle.id).toBe(bundleId);
-                expect(bundle.isCancelled).toBe(true);
+                expect(bundle.id).equals(bundleId);
+                expect(bundle.isCancelled).equals(true);
             });
     });
 
@@ -190,16 +190,15 @@ describe('Bundles', () => {
             .expect((res) => {
                 const trade = res.body as BundleTrade;
 
-                expect(trade).toBeDefined();
-                expect(trade.buyerId).toBe(user1Id);
-                expect(trade.volume).toBe(`${10 * MWh}`);
-                expect(trade.items).toHaveLength(2);
+                expect(trade.buyerId).equals(user1Id);
+                expect(trade.volume).equals(`${10 * MWh}`);
+                expect(trade.items).to.have.length(2);
 
                 const itemOne = trade.items.find((item) => item.assetId === depositOne.asset.id);
                 const itemTwo = trade.items.find((item) => item.assetId === depositTwo.asset.id);
 
-                expect(itemOne.volume).toBe(`${5 * MWh}`);
-                expect(itemTwo.volume).toBe(`${5 * MWh}`);
+                expect(itemOne.volume).equals(`${5 * MWh}`);
+                expect(itemTwo.volume).equals(`${5 * MWh}`);
             });
 
         await request(app.getHttpServer())
@@ -210,13 +209,13 @@ describe('Bundles', () => {
                     balances: { available }
                 } = res.body as AccountDTO;
 
-                expect(available.length).toBe(2);
+                expect(available.length).equals(2);
 
                 const itemOne = available.find((item) => item.asset.id === depositOne.asset.id);
                 const itemTwo = available.find((item) => item.asset.id === depositTwo.asset.id);
 
-                expect(itemOne.amount).toBe(`${5 * MWh}`);
-                expect(itemTwo.amount).toBe(`${5 * MWh}`);
+                expect(itemOne.amount).equals(`${5 * MWh}`);
+                expect(itemTwo.amount).equals(`${5 * MWh}`);
             });
 
         await request(app.getHttpServer())
@@ -225,11 +224,11 @@ describe('Bundles', () => {
             .expect((res) => {
                 const trades = res.body as BundleTrade[];
 
-                expect(trades).toHaveLength(1);
+                expect(trades).to.have.length(1);
 
                 const [trade] = trades;
-                expect(trade.bundle.id).toBe(bundle.id);
-                expect(trade.buyerId).toBe(user1Id);
+                expect(trade.bundle.id).equals(bundle.id);
+                expect(trade.buyerId).equals(user1Id);
             });
     });
 
@@ -261,8 +260,8 @@ describe('Bundles', () => {
             .expect((res) => {
                 const bundles = res.body as Bundle[];
 
-                expect(bundles).toHaveLength(1);
-                expect(bundles[0].id).toBe(bundle2.id);
+                expect(bundles).to.have.length(1);
+                expect(bundles[0].id).equals(bundle2.id);
             });
     });
 });

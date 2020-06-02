@@ -4,7 +4,7 @@
     "version": "2.1.2",
     "scripts": {
         "build": "yarn config-env && node --max-old-space-size=8192 ./node_modules/.bin/webpack --config webpack/prod.config.js",
-        "build:ts": "tsc -b tsconfig.build.json --verbose --pretty",
+        "build:ts": "tsc -b tsconfig.json",
         "build:full": "yarn config-env && webpack --config webpack/prod.config.js",
         "build:container:canary": "yarn build:full && make build-canary push-dockerhub",
         "build:container:latest": "yarn build:full && make build-latest push-dockerhub",
@@ -41,7 +41,7 @@
         "sass-loader": "8.0.2",
         "source-map-loader": "0.2.4",
         "style-loader": "1.2.1",
-        "ts-jest": "26.0.0",
+        "ts-jest": "26.1.0",
         "webpack-cli": "3.3.11",
         "webpack-dev-server": "3.11.0",
         "webpack-merge": "4.2.2"

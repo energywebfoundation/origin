@@ -1,6 +1,8 @@
+/* eslint-disable no-unused-expressions */
 /* eslint-disable no-return-assign */
 import { DeviceStatus, ICertificationRequestBackend, Role } from '@energyweb/origin-backend-core';
 import { INestApplication } from '@nestjs/common';
+import { expect } from 'chai';
 import moment from 'moment';
 import request from 'supertest';
 
@@ -19,7 +21,7 @@ describe('CertificationRequest e2e tests', () => {
 
     const defaultOrganization = 'org1';
 
-    beforeAll(async () => {
+    before(async () => {
         ({
             app,
             userService,
@@ -31,7 +33,7 @@ describe('CertificationRequest e2e tests', () => {
         await app.init();
     });
 
-    afterAll(async () => {
+    after(async () => {
         await app.close();
     });
 
@@ -51,7 +53,7 @@ describe('CertificationRequest e2e tests', () => {
             .expect((res) => {
                 const requests = res.body as ICertificationRequestBackend[];
 
-                expect(requests).toHaveLength(0);
+                expect(requests).to.have.length(0);
             });
 
         const device = await deviceService.create(
@@ -106,12 +108,12 @@ describe('CertificationRequest e2e tests', () => {
             .expect((res) => {
                 const cr = res.body as ICertificationRequestBackend;
 
-                expect(cr.owner).toBe(owner);
-                expect(cr.fromTime).toBe(fromTime);
-                expect(cr.toTime).toBe(toTime);
-                expect(cr.approved).toBe(false);
-                expect(cr.revoked).toBe(false);
-                expect(cr.created).toBe(created);
+                expect(cr.owner).equals(owner);
+                expect(cr.fromTime).equals(fromTime);
+                expect(cr.toTime).equals(toTime);
+                expect(cr.approved).equals(false);
+                expect(cr.revoked).equals(false);
+                expect(cr.created).equals(created);
             });
 
         const energy = '100000';
@@ -129,8 +131,8 @@ describe('CertificationRequest e2e tests', () => {
             .expect((res) => {
                 const cr = res.body as ICertificationRequestBackend;
 
-                expect(cr.energy).toBe(energy);
-                expect(cr.files).toStrictEqual(files);
+                expect(cr.energy).equals(energy);
+                expect(cr.files).deep.equals(files);
             });
 
         await request(app.getHttpServer())
@@ -139,7 +141,7 @@ describe('CertificationRequest e2e tests', () => {
             .expect((res) => {
                 const requests = res.body as ICertificationRequestBackend[];
 
-                expect(requests).toHaveLength(1);
+                expect(requests).to.have.length(1);
             });
     });
 
@@ -187,8 +189,8 @@ describe('CertificationRequest e2e tests', () => {
         const toTime = moment().subtract(1, 'month').unix();
         const created = moment().subtract(1, 'day').unix();
 
-        expect(
-            certificationRequestService.create({
+        try {
+            await certificationRequestService.create({
                 id: 1,
                 owner,
                 fromTime,
@@ -198,8 +200,13 @@ describe('CertificationRequest e2e tests', () => {
                 revoked: false,
                 created,
                 userId: user.ownerId
-            })
-        ).rejects.toThrow();
+            });
+        } catch (e) {
+            expect(e).to.be.ok;
+            return;
+        }
+
+        expect.fail();
     });
 
     it('should allow issuer to read the certification request', async () => {
@@ -218,7 +225,7 @@ describe('CertificationRequest e2e tests', () => {
             .expect((res) => {
                 const requests = res.body as ICertificationRequestBackend[];
 
-                expect(requests).toHaveLength(1);
+                expect(requests).to.have.length(1);
             });
     });
 
@@ -238,7 +245,7 @@ describe('CertificationRequest e2e tests', () => {
             .expect((res) => {
                 const requests = res.body as ICertificationRequestBackend[];
 
-                expect(requests).toHaveLength(1);
+                expect(requests).to.have.length(1);
             });
     });
 });

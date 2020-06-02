@@ -12,9 +12,9 @@
         "start:prod": "node dist/main",
         "prebuild": "shx rm -rf dist",
         "build": "yarn build:ts",
-        "build:ts": "tsc -b tsconfig.build.json --verbose --pretty && cp migrations/initial.sql dist/js/migrations/",
+        "build:ts": "tsc -b tsconfig.json && cp migrations/initial.sql dist/js/migrations/",
         "prettier": "prettier --write --config-precedence file-override './src/**/*'",
-        "test:e2e": "yarn typeorm:run && jest --runInBand --verbose --config ./test/jest-e2e.json --forceExit",
+        "test:e2e": "yarn typeorm:run && mocha -r ts-node/register test/*.e2e-spec.ts --timeout 60000 --exit",
         "typeorm": "ts-node -r tsconfig-paths/register ./node_modules/.bin/typeorm --config ormconfig-dev.ts",
         "typeorm:migrate": "yarn typeorm migration:generate -- -n",
         "typeorm:run": "yarn typeorm migration:run",
@@ -49,7 +49,7 @@
         "@nestjs/jwt": "7.0.0",
         "@nestjs/passport": "7.0.0",
         "@nestjs/platform-express": "^7.0.0",
-        "@nestjs/typeorm": "7.0.0",
+        "@nestjs/typeorm": "7.1.0",
         "@types/node": "^12.12.31",
         "bcryptjs": "2.4.3",
         "body-parser": "1.19.0",
@@ -69,7 +69,7 @@
         "precise-proofs-js": "^1.0.2",
         "reflect-metadata": "0.1.13",
         "rxjs": "6.5.5",
-        "typeorm": "0.2.22",
+        "typeorm": "0.2.25",
         "uuid": "8.1.0"
     },
     "devDependencies": {
@@ -94,9 +94,7 @@
         "jest": "26.0.1",
         "nodemailer": "6.4.6",
         "polly-js": "1.6.5",
-        "supertest": "4.0.2",
-        "ts-jest": "26.0.0",
-        "tsconfig-paths": "3.9.0"
+        "supertest": "4.0.2"
     },
     "files": [
         "dist",

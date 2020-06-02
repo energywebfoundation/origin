@@ -1,4 +1,5 @@
 import { INestApplication } from '@nestjs/common';
+import { expect } from 'chai';
 import request from 'supertest';
 
 import { AccountService } from '../src/pods/account/account.service';
@@ -8,7 +9,7 @@ import { OrderService } from '../src/pods/order/order.service';
 import { TradeDTO } from '../src/pods/trade/trade.dto';
 import { TransferService } from '../src/pods/transfer/transfer.service';
 import { DatabaseService } from './database.service';
-import { bootstrapTestInstance, authenticatedUser } from './exchange';
+import { authenticatedUser, bootstrapTestInstance } from './exchange';
 
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -73,12 +74,12 @@ describe('Trades API', () => {
             .expect((res) => {
                 const [trade] = res.body as TradeDTO[];
 
-                expect(trade.assetId).toBe(deposit.asset.id);
-                expect(trade.product).toStrictEqual(ask.product);
+                expect(trade.assetId).equals(deposit.asset.id);
+                expect(trade.product).deep.equals(ask.product);
             });
     };
 
-    beforeAll(async () => {
+    before(async () => {
         ({
             orderService,
             accountService,
@@ -96,7 +97,7 @@ describe('Trades API', () => {
         await databaseService.truncate('transfer');
     });
 
-    afterAll(async () => {
+    after(async () => {
         await databaseService.cleanUp();
         await app.close();
     });

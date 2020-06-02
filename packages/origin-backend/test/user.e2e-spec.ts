@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-expressions */
 /* eslint-disable no-return-assign */
 import {
     buildRights,
@@ -8,6 +9,7 @@ import {
     UserRegistrationData
 } from '@energyweb/origin-backend-core';
 import { INestApplication } from '@nestjs/common';
+import { expect } from 'chai';
 import request from 'supertest';
 
 import { DatabaseService } from './database.service';
@@ -27,7 +29,7 @@ describe('User e2e tests', () => {
         telephone: '+11'
     };
 
-    beforeAll(async () => {
+    before(async () => {
         ({ app, databaseService } = await bootstrapTestInstance());
 
         await app.init();
@@ -37,7 +39,7 @@ describe('User e2e tests', () => {
         await databaseService.truncate('user');
     });
 
-    afterAll(async () => {
+    after(async () => {
         await app.close();
     });
 
@@ -48,13 +50,13 @@ describe('User e2e tests', () => {
             .expect((res) => {
                 const user = res.body as IUser;
 
-                expect(user.email).toBe(userToRegister.email);
-                expect(user.organization).toBeUndefined();
-                expect(user.rights).toBe(buildRights([Role.OrganizationAdmin]));
-                expect(user.status).toBe(Status.Pending);
-                expect(user.kycStatus).toBe(KYCStatus['Pending KYC']);
+                expect(user.email).equals(userToRegister.email);
+                expect(user.organization).to.be.undefined;
+                expect(user.rights).equals(buildRights([Role.OrganizationAdmin]));
+                expect(user.status).equals(Status.Pending);
+                expect(user.kycStatus).equals(KYCStatus['Pending KYC']);
                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                expect((user as any).password).toBeUndefined();
+                expect((user as any).password).to.be.undefined;
             });
 
         let accessToken: string;
@@ -73,7 +75,7 @@ describe('User e2e tests', () => {
             .expect((res) => {
                 const user = res.body as IUser;
 
-                expect(user.email).toBe(userToRegister.email);
+                expect(user.email).equals(userToRegister.email);
             });
     });
 

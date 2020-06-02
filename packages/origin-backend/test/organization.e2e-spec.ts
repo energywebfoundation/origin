@@ -1,32 +1,32 @@
+/* eslint-disable no-unused-expressions */
 /* eslint-disable no-return-assign */
 import {
     DeviceStatus,
-    Role,
-    UserRegistrationData,
-    OrganizationInvitationStatus,
     IOrganizationInvitation,
-    getRolesFromRights
+    OrganizationInvitationStatus,
+    getRolesFromRights,
+    Role,
+    UserRegistrationData
 } from '@energyweb/origin-backend-core';
 import { INestApplication } from '@nestjs/common';
+import { expect } from 'chai';
 import request from 'supertest';
 
 import { Device } from '../src/pods/device/device.entity';
 import { DeviceService } from '../src/pods/device/device.service';
 import { OrganizationService } from '../src/pods/organization/organization.service';
-import { UserService, TUserBaseEntity } from '../src/pods/user';
+import { TUserBaseEntity, UserService } from '../src/pods/user';
 import { DatabaseService } from './database.service';
 import { bootstrapTestInstance, registerAndLogin } from './origin-backend';
 
 describe('Organization e2e tests', () => {
-    jest.setTimeout(1000000);
-
     let app: INestApplication;
     let databaseService: DatabaseService;
     let deviceService: DeviceService;
     let organizationService: OrganizationService;
     let userService: UserService;
 
-    beforeAll(async () => {
+    before(async () => {
         ({
             app,
             databaseService,
@@ -43,7 +43,7 @@ describe('Organization e2e tests', () => {
         await databaseService.truncate('organization');
     });
 
-    afterAll(async () => {
+    after(async () => {
         await app.close();
     });
 
@@ -98,8 +98,8 @@ describe('Organization e2e tests', () => {
             .expect((res) => {
                 const [invitation] = res.body as IOrganizationInvitation[];
 
-                expect(invitation).toBeDefined();
-                expect(invitation.organization).toBe(organization.id);
+                expect(invitation).to.be.ok;
+                expect(invitation.organization).equals(organization.id);
 
                 invitationId = invitation.id;
             });
@@ -116,8 +116,8 @@ describe('Organization e2e tests', () => {
             .expect((res) => {
                 const user = res.body as TUserBaseEntity;
 
-                expect(user.organization).toBe(organization.id);
-                expect(user.rights).toBe(Role.OrganizationUser);
+                expect(user.organization).equals(organization.id);
+                expect(user.rights).equals(Role.OrganizationUser);
             });
     });
 
@@ -164,7 +164,7 @@ describe('Organization e2e tests', () => {
             .expect((res) => {
                 const devices = res.body as Device[];
 
-                expect(devices).toHaveLength(1);
+                expect(devices).to.have.length(1);
             });
     });
 
@@ -195,7 +195,7 @@ describe('Organization e2e tests', () => {
             .expect(200)
             .expect((res) => {
                 const { organization: memberOrganization } = res.body as TUserBaseEntity;
-                expect(memberOrganization).toBeUndefined();
+                expect(memberOrganization).to.be.undefined;
             });
     });
 
@@ -222,8 +222,8 @@ describe('Organization e2e tests', () => {
             .expect((res) => {
                 const [invitation] = res.body as IOrganizationInvitation[];
 
-                expect(invitation).toBeDefined();
-                expect(invitation.organization).toBe(organization.id);
+                expect(invitation).to.be.ok;
+                expect(invitation.organization).equals(organization.id);
             });
     });
 
@@ -271,7 +271,7 @@ describe('Organization e2e tests', () => {
             .expect(200)
             .expect((res) => {
                 const { rights } = res.body as TUserBaseEntity;
-                expect(getRolesFromRights(rights)).toContain(Role.OrganizationDeviceManager);
+                expect(getRolesFromRights(rights)).contain(Role.OrganizationDeviceManager);
             });
     });
 });

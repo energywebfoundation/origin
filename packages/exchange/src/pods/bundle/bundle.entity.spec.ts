@@ -1,3 +1,5 @@
+// eslint-disable-next-line import/no-extraneous-dependencies
+import { expect } from '@jest/globals';
 import BN from 'bn.js';
 
 import { BundleItem } from './bundle-item.entity';

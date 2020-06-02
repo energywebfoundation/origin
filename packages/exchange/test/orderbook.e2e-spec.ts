@@ -2,6 +2,7 @@ import { Filter } from '@energyweb/exchange-core';
 import { DeviceService } from '@energyweb/origin-backend';
 import { IDeviceProductInfo, IExternalDeviceId } from '@energyweb/origin-backend-core';
 import { INestApplication } from '@nestjs/common';
+import { expect } from 'chai';
 import moment from 'moment';
 import request from 'supertest';
 
@@ -14,7 +15,7 @@ import { OrderService } from '../src/pods/order/order.service';
 import { TradePriceInfoDTO } from '../src/pods/trade/trade-price-info.dto';
 import { TransferService } from '../src/pods/transfer/transfer.service';
 import { DatabaseService } from './database.service';
-import { bootstrapTestInstance, authenticatedUser } from './exchange';
+import { authenticatedUser, bootstrapTestInstance } from './exchange';
 
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -241,9 +242,7 @@ describe('orderbook tests', () => {
         }
     } as unknown) as DeviceService;
 
-    beforeAll(async () => {
-        jest.setTimeout(10000);
-
+    before(async () => {
         ({
             transferService,
             orderService,
@@ -263,7 +262,7 @@ describe('orderbook tests', () => {
         await sleep(2000);
     });
 
-    afterAll(async () => {
+    after(async () => {
         await databaseService.cleanUp();
         await app.close();
     });
@@ -284,10 +283,10 @@ describe('orderbook tests', () => {
             .expect((res) => {
                 const { asks, bids, lastTradedPrice } = res.body as OrderBook;
 
-                expect(asks).toHaveLength(2);
-                expect(bids).toHaveLength(2);
-                expect(lastTradedPrice.price).toBe(marineTradeLastTradePrice.price); // marine asset trade
-                expect(lastTradedPrice.assetId).toBe(marineTradeLastTradePrice.assetId); // marine asset trade
+                expect(asks).to.have.length(2);
+                expect(bids).to.have.length(2);
+                expect(lastTradedPrice.price).equals(marineTradeLastTradePrice.price); // marine asset trade
+                expect(lastTradedPrice.assetId).equals(marineTradeLastTradePrice.assetId); // marine asset trade
             });
 
         await request(app.getHttpServer())
@@ -296,8 +295,8 @@ describe('orderbook tests', () => {
             .expect((res) => {
                 const { asks, bids } = res.body as OrderBook;
 
-                expect(asks).toHaveLength(2);
-                expect(bids).toHaveLength(2);
+                expect(asks).to.have.length(2);
+                expect(bids).to.have.length(2);
             });
 
         await request(app.getHttpServer())
@@ -311,8 +310,8 @@ describe('orderbook tests', () => {
             .expect((res) => {
                 const { asks, bids } = res.body as OrderBook;
 
-                expect(asks).toHaveLength(2);
-                expect(bids).toHaveLength(1);
+                expect(asks).to.have.length(2);
+                expect(bids).to.have.length(1);
             });
 
         await request(app.getHttpServer())
@@ -326,11 +325,11 @@ describe('orderbook tests', () => {
             .expect((res) => {
                 const { asks, bids, lastTradedPrice } = res.body as OrderBook;
 
-                expect(asks).toHaveLength(0);
-                expect(bids).toHaveLength(1);
+                expect(asks).to.have.length(0);
+                expect(bids).to.have.length(1);
 
-                expect(lastTradedPrice.price).toBe(windTradeLastTradePrice.price);
-                expect(lastTradedPrice.assetId).toBe(windTradeLastTradePrice.assetId);
+                expect(lastTradedPrice.price).equals(windTradeLastTradePrice.price);
+                expect(lastTradedPrice.assetId).equals(windTradeLastTradePrice.assetId);
             });
     });
 

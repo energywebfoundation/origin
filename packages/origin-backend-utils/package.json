@@ -5,7 +5,7 @@
     "main": "dist/js/index.js",
     "scripts": {
         "build": "yarn build:ts",
-        "build:ts": "tsc -b tsconfig.build.json --verbose --pretty",
+        "build:ts": "tsc -b tsconfig.json",
         "clean": "shx rm -rf dist",
         "lint": "eslint \"src/**/*{.ts,.tsx}\"",
         "lint-fix": "eslint \"src/**/*{.ts,.tsx}\" --fix",
