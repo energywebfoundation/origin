@@ -89,7 +89,7 @@ describe('Deposits automatic posting for sale', () => {
         );
         await depositToken(registry, tokenReceiver, depositAddress, depositAmount, id);
 
-        await sleep(3000);
+        await sleep(6000);
 
         await request(app.getHttpServer())
             .get('/orders')
