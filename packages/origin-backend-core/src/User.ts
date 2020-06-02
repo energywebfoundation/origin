@@ -33,16 +33,14 @@ export function buildRights(roles: Role[]): number {
 }
 
 export function getRolesFromRights(rights: number): Role[] {
-    let userRights = rights;
-
-    if (!userRights) {
+    if (!rights) {
         return [];
     }
 
     const rolesKeys = Object.keys(Role);
     const roles: Role[] = rolesKeys.splice(0, rolesKeys.length / 2).map((value) => Number(value));
 
-    return roles.filter(role => rights&role);
+    return roles.filter((role) => rights & role);
 }
 
 export function isRole(user: { rights: number }, ...roles: Role[]): boolean {
