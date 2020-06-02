@@ -21,7 +21,7 @@ import {
     usePaginatedLoaderFiltered
 } from './Table';
 import { CustomFilterInputType, ICustomFilterDefinition } from './Table/FiltersHeader';
-import { moment } from '../utils';
+import { moment, useTranslation } from '../utils';
 
 interface IRecord {
     device: IDevice;
@@ -35,6 +35,7 @@ export const KeyStatus = {
 export function AutoSupplyDeviceTable() {
     const deviceClient = useSelector(getOffChainDataSource)?.deviceClient;
     const userOffchain = useSelector(getUserOffchain);
+    const { t } = useTranslation();
 
     const [showModal, setShowModal] = useState<boolean>(null);
     const [entity, setEntity] = useState<IDevice>(null);
@@ -81,19 +82,19 @@ export function AutoSupplyDeviceTable() {
         loadPage(1);
     }, [userOffchain, deviceClient]);
 
-    const currentYear = moment(new Date().valueOf());
-    const nextYear = moment(currentYear).add(1, 'years');
+    const currentYear = moment().format('YYYY');
+    const nextYear = moment().add(1, 'years').format('YYYY');
 
     const columns = [
-        { id: 'type', label: 'Type' },
-        { id: 'facility', label: 'Facility' },
-        { id: 'price', label: 'Price' },
-        { id: 'status', label: 'Status' },
+        { id: 'type', label: t('device.properties.type') },
+        { id: 'facility', label: t('device.properties.facilityName') },
+        { id: 'price', label: t('device.properties.price') },
+        { id: 'status', label: t('device.properties.status') },
         {
             id: 'certified',
-            label: `To be certified for ${currentYear.format('YYYY')}/${nextYear.format(
-                'YYYY'
-            )} (Mwh)`
+            label: `${t(
+                'device.properties.meterReadToBeCertified'
+            )} for ${currentYear}/${nextYear} (${EnergyFormatter.displayUnit})`
         }
     ] as const;
 
