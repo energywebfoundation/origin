@@ -101,9 +101,9 @@ export function Asks(props: Props) {
                                   <br />
                                   <br />
                                   {t('exchange.properties.generationFrom')}:{' '}
-                                  {formatDate(asset.generationFrom)} <br />
+                                  {formatDate(asset.generationFrom, false, device.timezone)} <br />
                                   {t('exchange.properties.generationTo')}:{' '}
-                                  {formatDate(asset.generationTo)}
+                                  {formatDate(asset.generationTo, false, device.timezone)}
                                   {selectedOrder?.userId !== user?.id?.toString() && (
                                       <Formik
                                           initialValues={initialFormValues}

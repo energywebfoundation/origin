@@ -111,8 +111,6 @@ export function CertificateTable(props: IProps) {
         });
 
         const filteredIEnrichedCertificateData = enrichedData.filter((enrichedCertificateData) => {
-            console.log(enrichedCertificateData.certificate);
-
             const ownerOf =
                 enrichedCertificateData.certificate.isOwned ||
                 enrichedCertificateData.certificate.source === CertificateSource.Exchange;
