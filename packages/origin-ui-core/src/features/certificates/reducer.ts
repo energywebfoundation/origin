@@ -45,7 +45,6 @@ export default function reducer(
             if (certificateExists(state, action.payload)) {
                 return state;
             }
-
             return { ...state, certificates: [...state.certificates, action.payload] };
 
         case CertificatesActions.updateCertificate:
@@ -57,7 +56,7 @@ export default function reducer(
             }
 
             const certificateIndex = state.certificates.findIndex(
-                (c) => c.id === action.payload.id
+                (c) => c.id === action.payload.id && c.source === action.payload.source
             );
 
             return {
