@@ -43,7 +43,7 @@ export function Origin() {
         if (IS_PRODUCTION) {
             middleware = applyMiddleware(routerMiddleware(newHistory), sagaMiddleware);
         } else {
-            middleware = composeWithDevTools(
+            middleware = composeWithDevTools({ trace: true, traceLimit: 50 })(
                 applyMiddleware(routerMiddleware(newHistory), sagaMiddleware)
             );
         }
