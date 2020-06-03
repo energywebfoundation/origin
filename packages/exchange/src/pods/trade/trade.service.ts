@@ -1,6 +1,7 @@
-import { Ask, Bid, ProductFilter, TradeExecutedEvent } from '@energyweb/exchange-core';
+import { Ask, Bid, ProductFilter, Trade } from '@energyweb/exchange-core';
 import { LocationService } from '@energyweb/utils-general';
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
+import { EventBus } from '@nestjs/cqrs';
 import { InjectRepository } from '@nestjs/typeorm';
 import BN from 'bn.js';
 import { List } from 'immutable';
@@ -12,7 +13,7 @@ import { Order } from '../order/order.entity';
 import { ProductDTO } from '../order/product.dto';
 import { DeviceTypeServiceWrapper } from '../runner/deviceTypeServiceWrapper';
 import { TradePriceInfoDTO } from './trade-price-info.dto';
-import { Trade } from './trade.entity';
+import { Trade as TradeEntity } from './trade.entity';
 
 type TradeCacheItem = {
     ask: Ask;
@@ -35,9 +36,10 @@ export class TradeService implements OnModuleInit {
 
     constructor(
         private readonly connection: Connection,
-        @InjectRepository(Trade)
-        private readonly repository: Repository<Trade>,
-        private readonly deviceTypeServiceWrapper: DeviceTypeServiceWrapper
+        @InjectRepository(TradeEntity)
+        private readonly repository: Repository<TradeEntity>,
+        private readonly deviceTypeServiceWrapper: DeviceTypeServiceWrapper,
+        private readonly eventBus: EventBus
     ) {}
 
     public async onModuleInit() {
@@ -46,14 +48,15 @@ export class TradeService implements OnModuleInit {
         await this.loadTradesCache();
     }
 
-    public async persist(event: List<TradeExecutedEvent>) {
+    public async persist(event: List<Trade>) {
         this.logger.log(`Persisting trades and updating orders: ${event.size}`);
         this.logger.debug(`Persisting trades and updating orders: ${JSON.stringify(event)}`);
 
         const trades: string[] = [];
 
         await this.connection.transaction(async (entityManager) => {
-            for (const { bid, ask, trade } of event) {
+            for (const trade of event) {
+                const { ask, bid } = trade;
                 await entityManager.update<Order>(Order, ask.id, {
                     currentVolume: ask.volume,
                     status: ask.volume.isZero() ? OrderStatus.Filled : OrderStatus.PartiallyFilled
@@ -63,14 +66,14 @@ export class TradeService implements OnModuleInit {
                     status: bid.volume.isZero() ? OrderStatus.Filled : OrderStatus.PartiallyFilled
                 });
 
-                const tradeToStore = new Trade({
+                const tradeToStore = new TradeEntity({
                     created: new Date(),
                     price: trade.price,
                     volume: trade.volume,
                     bid: { id: bid.id } as Order,
                     ask: { id: ask.id } as Order
                 });
-                await entityManager.insert<Trade>(Trade, tradeToStore);
+                await entityManager.insert<TradeEntity>(TradeEntity, tradeToStore);
 
                 trades.push(tradeToStore.id);
 
@@ -80,7 +83,7 @@ export class TradeService implements OnModuleInit {
             this.logger.debug(`Persisting trades and orders completed`);
         });
 
-        await this.updateTradesCache(trades);
+        await this.handlePersistedTrades(trades);
     }
 
     public getLastTradedPrice(productFilter: ProductFilter): TradePriceInfoDTO {
@@ -140,7 +143,7 @@ export class TradeService implements OnModuleInit {
         this.tradeCache = trades.map((trade) => this.toTradeCacheItem(trade));
     }
 
-    private toTradeCacheItem(trade: Trade): TradeCacheItem {
+    private toTradeCacheItem(trade: TradeEntity): TradeCacheItem {
         return {
             ask: toMatchingEngineOrder({
                 ...trade.ask,
@@ -157,11 +160,21 @@ export class TradeService implements OnModuleInit {
         };
     }
 
-    private async updateTradesCache(tradeIds: string[]) {
+    private async handlePersistedTrades(tradeIds: string[]) {
         this.logger.debug(`Updating trades cache with trade ${tradeIds}`);
         const trades = await this.repository.findByIds(tradeIds, { order: { created: 'DESC' } });
+
+        this.updateCache(trades);
+        this.emitTradePersistedEvents(trades);
+    }
+
+    private updateCache(trades: TradeEntity[]) {
         const cacheItems = trades.map((trade) => this.toTradeCacheItem(trade));
 
         this.tradeCache = [...cacheItems, ...this.tradeCache];
+    }
+
+    private emitTradePersistedEvents(trades: TradeEntity[]) {
+        this.eventBus.publishAll(trades);
     }
 }
