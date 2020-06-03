@@ -170,6 +170,33 @@ export async function getAllCertificates(
     return Promise.all(certificatePromises);
 }
 
+export async function getAllOwnedCertificates(
+    configuration: Configuration.Entity
+): Promise<Certificate[]> {
+    const {
+        registry,
+        activeUser
+    } = configuration.blockchainProperties as Configuration.BlockchainProperties<Registry, Issuer>;
+    const owner = await activeUser.getAddress();
+
+    const transfers = await getEventsFromContract(
+        registry,
+        registry.filters.TransferSingle(null, null, owner, null, null)
+    );
+    const certificateIds = [
+        ...new Set<number>(transfers.map((transfer) => transfer._id.toNumber()))
+    ];
+    const balances = await registry.balanceOfBatch(
+        Array(certificateIds.length).fill(owner),
+        certificateIds
+    );
+    const available = certificateIds.filter((id, index) => !balances[index].isZero());
+
+    const certificatePromises = available.map((id) => new Certificate(id, configuration).sync());
+
+    return Promise.all(certificatePromises);
+}
+
 export const getAllCertificateEvents = async (
     certId: number,
     configuration: Configuration.Entity
