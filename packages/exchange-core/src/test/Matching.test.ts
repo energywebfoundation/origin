@@ -170,8 +170,8 @@ describe('Matching tests', () => {
         const zipped = expected.zip(current);
 
         zipped.forEach(([t1, t2]) => {
-            assert.equal(t1.askId, t2.askId, 'Wrong askId');
-            assert.equal(t1.bidId, t2.bidId, 'Wrong bidId');
+            assert.equal(t1.ask.id, t2.ask.id, 'Wrong askId');
+            assert.equal(t1.bid.id, t2.bid.id, 'Wrong bidId');
             assert.isTrue(t1.volume.eq(t2.volume), 'Wrong volume');
             assert.equal(t1.price, t2.price, 'Wrong price');
         });
@@ -199,7 +199,7 @@ describe('Matching tests', () => {
                 clearInterval(doneTimer);
                 done();
             } else {
-                doneTimer = setTimeout(() => done(), 50);
+                doneTimer = global.setTimeout(() => done(), 50);
             }
         };
 

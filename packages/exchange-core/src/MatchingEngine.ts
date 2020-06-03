@@ -106,7 +106,7 @@ export class MatchingEngine {
     private trigger() {
         const actions = this.pendingActions;
 
-        let trades = List<TradeExecutedEvent>();
+        let trades = List<Trade>();
         let statusChange = List<ActionResultEvent>();
 
         actions.forEach((action) => {
@@ -159,7 +159,7 @@ export class MatchingEngine {
         this.pendingActions = this.pendingActions.clear();
 
         if (!trades.isEmpty()) {
-            this.trades.next(trades);
+            this.trades.next(trades.map((trade) => new TradeExecutedEvent(trade)));
         }
         if (!statusChange.isEmpty()) {
             this.actionResults.next(statusChange);
@@ -174,7 +174,7 @@ export class MatchingEngine {
         return unSorted.sortBy((o) => direction * o.price);
     }
 
-    private directBuy(bid: DirectBuy): TradeExecutedEvent {
+    private directBuy(bid: DirectBuy): Trade {
         const ask = this.asks.find((o) => o.id === bid.askId);
 
         if (ask.userId === bid.userId) {
@@ -201,9 +201,7 @@ export class MatchingEngine {
 
         this.asks = this.updateOrder(this.asks, updatedAsk);
 
-        const trade = new Trade(updatedBid, updatedAsk, tradedVolume, bid.price);
-
-        return new TradeExecutedEvent(trade, updatedAsk, updatedBid);
+        return new Trade(updatedBid, updatedAsk, tradedVolume, bid.price);
     }
 
     private match() {
@@ -251,7 +249,7 @@ export class MatchingEngine {
         );
     }
 
-    private updateOrderBook(matched: List<TradeExecutedEvent>) {
+    private updateOrderBook(matched: List<Trade>) {
         matched.forEach((m) => {
             this.asks = this.updateOrder(this.asks, m.ask);
             this.bids = this.updateOrder(this.bids, m.bid);
@@ -264,7 +262,7 @@ export class MatchingEngine {
     }
 
     private generateTrades(asks: List<Ask>, bids: List<Bid>) {
-        let executed = List<TradeExecutedEvent>();
+        let executed = List<Trade>();
 
         bids.forEach((bid) => {
             asks.forEach((ask) => {
@@ -278,11 +276,7 @@ export class MatchingEngine {
                 ask.updateWithTradedVolume(filled);
                 bid.updateWithTradedVolume(filled);
 
-                executed = executed.concat({
-                    trade: new Trade(bid, ask, filled, ask.price),
-                    ask,
-                    bid
-                });
+                executed = executed.concat(new Trade(bid, ask, filled, ask.price));
 
                 return true;
             });
