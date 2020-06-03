@@ -8,19 +8,22 @@ import {
     Typography,
     useTheme
 } from '@material-ui/core';
+import { signTypedMessage } from '@energyweb/utils-general';
 import { Skeleton } from '@material-ui/lab';
 import { Form, Formik, FormikHelpers, yupToFormErrors } from 'formik';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
 import { setLoading } from '../../features/general/actions';
-import { getOffChainDataSource } from '../../features/general/selectors';
+import { getOffChainDataSource, getEnvironment } from '../../features/general/selectors';
 import { refreshUserOffchain } from '../../features/users/actions';
 import { NotificationType, showNotification } from '../../utils/notifications';
 import { useValidation } from '../../utils/validation';
 import { KeyKYCStatus, KeyStatus } from '../AdminUsersTable';
 import { FormInput } from '../Form/FormInput';
 import { IStoreState } from '../../types';
+import { getWeb3 } from '../../features/selectors';
+import { getActiveBlockchainAccountAddress } from '../../features/users/selectors';
 
 interface IFormValues extends IUser {
     isBlockchain?: boolean;
@@ -52,6 +55,9 @@ export function UserProfile() {
     const user = useSelector(getUserOffchain);
     const userClient = useSelector(getOffChainDataSource)?.userClient;
     const dispatch = useDispatch();
+    const web3 = useSelector(getWeb3);
+    const environment = useSelector(getEnvironment);
+    const activeBlockchainAccountAddress = useSelector(getActiveBlockchainAccountAddress);
 
     const { t } = useTranslation();
     const { Yup, yupLocaleInitialized } = useValidation();
@@ -127,6 +133,40 @@ export function UserProfile() {
         formikActions.setSubmitting(false);
     }
 
+    async function signAndSend(blockchainAccountAddress: string): Promise<boolean> {
+        try {
+            if (blockchainAccountAddress === activeBlockchainAccountAddress.toLowerCase())
+                throw Error('User has blockchain account already linked.');
+
+            const signedMessage = await signTypedMessage(
+                activeBlockchainAccountAddress,
+                environment.REGISTRATION_MESSAGE_TO_SIGN,
+                web3
+            );
+
+            await userClient.updateChainAddress({ ...user, blockchainAccountAddress: '' });
+            await userClient.attachSignedMessage(signedMessage);
+
+            showNotification(
+                t('settings.feedback.blockchainAccountLinked'),
+                NotificationType.Success
+            );
+
+            return true;
+        } catch (error) {
+            if (error?.data?.message) {
+                showNotification(error?.data?.message, NotificationType.Error);
+            } else if (error?.message) {
+                console.log(error);
+                showNotification(error?.message, NotificationType.Error);
+            } else {
+                console.warn('Could not log in.', error);
+                showNotification(t('general.feedback.unknownError'), NotificationType.Error);
+            }
+        }
+        return false;
+    }
+
     const initialFormValues: IFormValues = {
         ...user,
         status: KeyStatus[user.status] ?? 'N/A',
@@ -167,7 +207,7 @@ export function UserProfile() {
             }}
         >
             {(formikProps) => {
-                const { isSubmitting, touched } = formikProps;
+                const { isSubmitting, touched, values } = formikProps;
                 const fieldDisabled = isSubmitting;
                 return (
                     <>
@@ -307,7 +347,7 @@ export function UserProfile() {
                                         <FormInput
                                             label="Address"
                                             property="blockchainAccountAddress"
-                                            disabled={fieldDisabled}
+                                            disabled={true}
                                             className="mt-3"
                                             required
                                         />
@@ -318,17 +358,24 @@ export function UserProfile() {
                                     variant="contained"
                                     color="primary"
                                     className="mt-3 right"
-                                    disabled={!touched.blockchainAccountAddress}
                                     onClick={() => {
-                                        formikProps.validateForm().then(() => {
+                                        formikProps.validateForm().then(async () => {
                                             formikProps.values.isBlockchain = true;
                                             formikProps.values.isPassword = false;
                                             formikProps.values.isProfile = false;
-                                            formikProps.submitForm();
+
+                                            const result = await signAndSend(
+                                                values.blockchainAccountAddress
+                                            );
+                                            if (result) {
+                                                formikProps.values.blockchainAccountAddress = activeBlockchainAccountAddress;
+                                                formikProps.submitForm();
+                                            }
                                         });
                                     }}
                                 >
-                                    {t('user.actions.save')}
+                                    {t('user.actions.save')} &{' '}
+                                    {t('settings.actions.verifyBlockchainAccount')}
                                 </Button>
                             </Paper>
                         </Form>
