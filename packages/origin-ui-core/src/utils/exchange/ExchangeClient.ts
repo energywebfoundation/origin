@@ -101,15 +101,12 @@ export class ExchangeClient implements IExchangeClient {
             `${this.ordersEndpoint}/ask/buy`,
             data
         );
-        console.log({
-            directBuy: response.data
-        });
 
         await sleep(Number(process.env.EXCHANGE_MATCHING_INTERVAL) || 1000);
 
-        const order = await this.getOrderById(response.data.id);
+        const { status } = await this.getOrderById(response.data.id);
 
-        return order.status;
+        return status;
     }
 
     public async getAccount() {
