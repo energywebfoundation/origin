@@ -24,7 +24,7 @@ export interface IExchangeClient {
     ): Promise<TOrderBook>;
     createAsk(data: CreateAskDTO): Promise<IOrder>;
     createBid(data: CreateBidDTO): Promise<IOrder>;
-    directBuy(data: IDirectBuyDTO): Promise<OrderStatus>;
+    directBuy(data: IDirectBuyDTO): Promise<{ success: boolean; status: OrderStatus }>;
     getAccount(): Promise<ExchangeAccount>;
     getAllTransfers(): Promise<ITransfer[]>;
     getTrades(): Promise<ITradeDTO[]>;
@@ -96,7 +96,9 @@ export class ExchangeClient implements IExchangeClient {
         return response.data;
     }
 
-    public async directBuy(data: IDirectBuyDTO): Promise<OrderStatus> {
+    public async directBuy(
+        data: IDirectBuyDTO
+    ): Promise<{ success: boolean; status: OrderStatus }> {
         const response = await this.requestClient.post<IDirectBuyDTO, IOrder>(
             `${this.ordersEndpoint}/ask/buy`,
             data
@@ -106,7 +108,10 @@ export class ExchangeClient implements IExchangeClient {
 
         const { status } = await this.getOrderById(response.data.id);
 
-        return status;
+        return {
+            success: status === OrderStatus.Filled,
+            status
+        };
     }
 
     public async getAccount() {
@@ -231,7 +236,10 @@ export const ExchangeClientMock: IExchangeClient = {
     },
 
     async directBuy() {
-        return OrderStatus.Active;
+        return {
+            success: true,
+            status: OrderStatus.Filled
+        };
     },
 
     async createAsk() {
