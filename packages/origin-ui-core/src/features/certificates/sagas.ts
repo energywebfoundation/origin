@@ -40,7 +40,7 @@ function assertIsContractTransaction(
     }
 }
 
-function* getCertificate(id: number) {
+export function* getCertificate(id: number) {
     const configuration: Configuration.Entity = yield select(getConfiguration);
 
     const certificate = new Certificate(id, configuration);
