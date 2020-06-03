@@ -15,7 +15,7 @@ interface IProps {
 }
 
 export function Exchange(props: IProps) {
-    const { currency, refreshInterval } = { refreshInterval: 5000, ...props };
+    const { currency, refreshInterval } = { refreshInterval: 3000, ...props };
 
     const user = useSelector(getUserOffchain);
     const exchangeClient = useSelector(getExchangeClient);
