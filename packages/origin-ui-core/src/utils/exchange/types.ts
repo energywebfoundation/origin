@@ -1,4 +1,4 @@
-import { Filter, Operator, OrderSide, Product } from '@energyweb/exchange-core';
+import { Filter, Operator, OrderSide, Product, OrderStatus } from '@energyweb/exchange-core';
 
 export type DeviceVintageDTO = {
     year: number;
@@ -136,4 +136,4 @@ export interface IOrder {
     userId: string;
 }
 
-export type Order = IOrder & { assetId: string };
+export type Order = IOrder & { assetId: string; status: OrderStatus };

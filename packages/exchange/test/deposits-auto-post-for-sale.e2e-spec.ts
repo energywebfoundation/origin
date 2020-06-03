@@ -1,4 +1,4 @@
-import { OrderSide } from '@energyweb/exchange-core';
+import { OrderSide, OrderStatus } from '@energyweb/exchange-core';
 import { DeviceService, ExtendedBaseEntity } from '@energyweb/origin-backend';
 import { IDeviceProductInfo, IDeviceWithRelationsIds } from '@energyweb/origin-backend-core';
 import { INestApplication } from '@nestjs/common';
@@ -8,7 +8,6 @@ import moment from 'moment';
 import request from 'supertest';
 
 import { AccountService } from '../src/pods/account/account.service';
-import { OrderStatus } from '../src/pods/order/order-status.enum';
 import { Order } from '../src/pods/order/order.entity';
 import { DatabaseService } from './database.service';
 import { authenticatedUser, bootstrapTestInstance } from './exchange';

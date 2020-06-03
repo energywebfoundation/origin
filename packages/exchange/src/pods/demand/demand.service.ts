@@ -4,10 +4,10 @@ import { InjectRepository } from '@nestjs/typeorm';
 import BN from 'bn.js';
 import { Connection, Repository } from 'typeorm';
 
+import { OrderStatus } from '@energyweb/exchange-core';
 import { ForbiddenActionError } from '../../utils/exceptions';
 import { MatchingEngineService } from '../matching-engine/matching-engine.service';
 import { CreateBidDTO } from '../order/create-bid.dto';
-import { OrderStatus } from '../order/order-status.enum';
 import { Order } from '../order/order.entity';
 import { OrderService } from '../order/order.service';
 import { CreateDemandDTO } from './create-demand.dto';

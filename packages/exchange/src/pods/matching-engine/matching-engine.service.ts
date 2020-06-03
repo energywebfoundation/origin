@@ -77,7 +77,7 @@ export class MatchingEngineService implements OnModuleInit {
         this.matchingEngine.cancelOrder(orderId);
     }
 
-    @Interval(1000)
+    @Interval(Number(process.env.EXCHANGE_MATCHING_INTERVAL) || 1000)
     private executeMatching() {
         if (!this.initialized) {
             return;

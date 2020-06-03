@@ -12,7 +12,7 @@ import {
     IDirectBuyDTO,
     IOrder
 } from '.';
-import { Filter } from '@energyweb/exchange-core';
+import { Filter, OrderStatus } from '@energyweb/exchange-core';
 
 export interface IExchangeClient {
     search(
@@ -24,7 +24,7 @@ export interface IExchangeClient {
     ): Promise<TOrderBook>;
     createAsk(data: CreateAskDTO): Promise<IOrder>;
     createBid(data: CreateBidDTO): Promise<IOrder>;
-    directBuy(data: IDirectBuyDTO): Promise<IOrder>;
+    directBuy(data: IDirectBuyDTO): Promise<OrderStatus>;
     getAccount(): Promise<ExchangeAccount>;
     getAllTransfers(): Promise<ITransfer[]>;
     getTrades(): Promise<ITradeDTO[]>;
@@ -32,6 +32,8 @@ export interface IExchangeClient {
     getOrderById(id: string): Promise<Order>;
     getOrders?(): Promise<Order[]>;
 }
+
+const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 export class ExchangeClient implements IExchangeClient {
     // eslint-disable-next-line no-useless-constructor
@@ -94,13 +96,20 @@ export class ExchangeClient implements IExchangeClient {
         return response.data;
     }
 
-    public async directBuy(data: IDirectBuyDTO): Promise<IOrder> {
+    public async directBuy(data: IDirectBuyDTO): Promise<OrderStatus> {
         const response = await this.requestClient.post<IDirectBuyDTO, IOrder>(
             `${this.ordersEndpoint}/ask/buy`,
             data
         );
+        console.log({
+            directBuy: response.data
+        });
 
-        return response.data;
+        await sleep(Number(process.env.EXCHANGE_MATCHING_INTERVAL) || 1000);
+
+        const order = await this.getOrderById(response.data.id);
+
+        return order.status;
     }
 
     public async getAccount() {
@@ -225,15 +234,7 @@ export const ExchangeClientMock: IExchangeClient = {
     },
 
     async directBuy() {
-        return ({
-            id: '',
-            price: 0,
-            userId: '',
-            product: null,
-            side: 0,
-            validFrom: '',
-            volume: ''
-        } as Partial<IOrder>) as IOrder;
+        return OrderStatus.Active;
     },
 
     async createAsk() {

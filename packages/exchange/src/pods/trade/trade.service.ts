@@ -1,4 +1,4 @@
-import { Ask, Bid, ProductFilter, TradeExecutedEvent } from '@energyweb/exchange-core';
+import { Ask, Bid, ProductFilter, TradeExecutedEvent, OrderStatus } from '@energyweb/exchange-core';
 import { LocationService } from '@energyweb/utils-general';
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -7,7 +7,6 @@ import { List } from 'immutable';
 import { Connection, Repository } from 'typeorm';
 
 import { toMatchingEngineOrder } from '../matching-engine/order-mapper';
-import { OrderStatus } from '../order/order-status.enum';
 import { Order } from '../order/order.entity';
 import { ProductDTO } from '../order/product.dto';
 import { DeviceTypeServiceWrapper } from '../runner/deviceTypeServiceWrapper';
