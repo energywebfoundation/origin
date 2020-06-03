@@ -110,10 +110,11 @@ export class NotificationService {
             );
         },
         [SupportedEvents.USER_STATUS_CHANGED]: async (data: UserStatusChangedEvent) => {
+            const url = `${process.env.UI_BASE_URL}/account/user-profile`;
             await this.sendNotificationEmail(
                 EmailTypes.USER_STATUS_CHANGED,
                 data.email,
-                `Status of your user information`
+                `Your user information has changed. Please visit <a href="${url}">link to user profile</a> to see the changes.`
             );
         }
     };
