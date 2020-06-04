@@ -56,6 +56,8 @@ describe('CertificationRequest e2e tests', () => {
                 expect(requests).to.have.length(0);
             });
 
+        const externalDeviceId = '123';
+
         const device = await deviceService.create(
             {
                 address: '',
@@ -78,7 +80,7 @@ describe('CertificationRequest e2e tests', () => {
                 typeOfPublicSupport: '',
                 deviceGroup: '',
                 smartMeterReads: [],
-                externalDeviceIds: [],
+                externalDeviceIds: [{ id: externalDeviceId, type: process.env.ISSUER_ID }],
                 automaticPostForSale: false,
                 defaultAskPrice: null
             },
@@ -90,7 +92,15 @@ describe('CertificationRequest e2e tests', () => {
         const toTime = moment().subtract(1, 'month').unix();
         const created = moment().subtract(1, 'day').unix();
 
-        let certificationRequest = await certificationRequestService.create({
+        const energy = '100000';
+        const files = ['./test.pdf', './test2.pdf'];
+
+        await certificationRequestService.queue(
+            { deviceId: externalDeviceId, fromTime, toTime, energy, files },
+            user
+        );
+
+        const certificationRequest = await certificationRequestService.create({
             id: 1,
             owner,
             fromTime,
@@ -114,23 +124,6 @@ describe('CertificationRequest e2e tests', () => {
                 expect(cr.approved).equals(false);
                 expect(cr.revoked).equals(false);
                 expect(cr.created).equals(created);
-            });
-
-        const energy = '100000';
-        const files = ['./test.pdf', './test2.pdf'];
-
-        certificationRequest = await certificationRequestService.update(
-            certificationRequest.id,
-            { energy, files },
-            user
-        );
-
-        await request(app.getHttpServer())
-            .get(`/Certificate/CertificationRequest/${certificationRequest.id}`)
-            .set('Authorization', `Bearer ${accessToken}`)
-            .expect((res) => {
-                const cr = res.body as ICertificationRequestBackend;
-
                 expect(cr.energy).equals(energy);
                 expect(cr.files).deep.equals(files);
             });
