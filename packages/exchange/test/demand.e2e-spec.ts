@@ -4,12 +4,12 @@ import { INestApplication } from '@nestjs/common';
 import { expect } from 'chai';
 import moment from 'moment';
 import request from 'supertest';
+import { OrderStatus } from '@energyweb/exchange-core';
 
 import { AccountService } from '../src/pods/account/account.service';
 import { CreateDemandDTO } from '../src/pods/demand/create-demand.dto';
 import { Demand } from '../src/pods/demand/demand.entity';
 import { DemandService } from '../src/pods/demand/demand.service';
-import { OrderStatus } from '../src/pods/order/order-status.enum';
 import { Order } from '../src/pods/order/order.entity';
 import { OrderService } from '../src/pods/order/order.service';
 import { ProductService } from '../src/pods/product/product.service';
