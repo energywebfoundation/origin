@@ -6,7 +6,7 @@ import { getI18n } from 'react-i18next';
 import { SagaIterator } from 'redux-saga';
 import { all, apply, call, delay, fork, put, select, take } from 'redux-saga/effects';
 
-import { CertificateSource } from '.';
+import { CertificateSource, updateCertificate, IResyncCertificateAction } from '.';
 import { IStoreState } from '../../types';
 import { moment, NotificationType, showNotification } from '../../utils';
 import { ExchangeAccount, IExchangeClient, ITransfer } from '../../utils/exchange';
@@ -31,6 +31,7 @@ import {
 } from './actions';
 import { getCertificateById, getCertificateFetcher, getCertificates } from './selectors';
 import { ICertificateViewItem } from './types';
+import { enhanceCertificate } from '../general/sagas';
 
 function assertIsContractTransaction(
     data: ContractTransaction | CommitmentStatus
@@ -128,7 +129,7 @@ function* fetchCertificateSaga(id: number, entitiesBeingFetched: any): SagaItera
     entitiesBeingFetched.set(id, true);
 
     try {
-        if (existingEntity.source === CertificateSource.Blockchain) {
+        if (existingEntity?.source === CertificateSource.Blockchain) {
             const fetchedEntity: Certificate = yield call(fetcher.fetch, id, configuration);
 
             if (fetchedEntity) {
@@ -147,6 +148,31 @@ function* fetchCertificateSaga(id: number, entitiesBeingFetched: any): SagaItera
     }
 
     entitiesBeingFetched.delete(id);
+}
+
+function* resyncCertificateSaga(): SagaIterator {
+    while (true) {
+        const action: IResyncCertificateAction = yield take(CertificatesActions.resyncCertificate);
+
+        if (!action.payload) {
+            continue;
+        }
+
+        const { id, assetId } = action.payload;
+
+        const certificate: Certificate = yield call(getCertificate, id);
+        const exchangeClient: IExchangeClient = yield select(getExchangeClient);
+
+        const exchangeAccount: ExchangeAccount = yield apply(
+            exchangeClient,
+            exchangeClient.getAccount,
+            null
+        );
+
+        const asset = exchangeAccount.balances.available.find((a) => a.asset.id === assetId);
+
+        yield put(updateCertificate(enhanceCertificate(asset, certificate)));
+    }
 }
 
 function* requestCertificateSaga(): SagaIterator {
@@ -381,6 +407,7 @@ export function* certificatesSaga(): SagaIterator {
         fork(requestPublishForSaleSaga),
         fork(requestClaimCertificateSaga),
         fork(requestClaimCertificateBulkSaga),
-        fork(requestCertificateApprovalSaga)
+        fork(requestCertificateApprovalSaga),
+        fork(resyncCertificateSaga)
     ]);
 }
