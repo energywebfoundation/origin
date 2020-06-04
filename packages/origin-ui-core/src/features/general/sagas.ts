@@ -40,7 +40,7 @@ import { getSearch, push } from 'connected-react-router';
 import { getConfiguration, getBaseURL } from '../selectors';
 import * as queryString from 'query-string';
 import * as Winston from 'winston';
-import { Certificate, Contracts, CertificateUtils } from '@energyweb/issuer';
+import { Certificate, Contracts, CertificateUtils, ICertificate } from '@energyweb/issuer';
 import { Configuration, DeviceTypeService } from '@energyweb/utils-general';
 import { configurationUpdated } from '../actions';
 import { ProducingDevice } from '@energyweb/device-registry';
@@ -320,18 +320,11 @@ function* initEventHandler() {
     }
 }
 
-function* enhanceCertificate(
+export function enhanceCertificate(
     { asset, amount }: AccountAsset,
-    onChainCertificates: ICertificateViewItem[]
-) {
-    const certificateId = parseInt(asset.tokenId, 10);
-    let onChainCertificate = onChainCertificates.find((c) => c.id === certificateId);
-
-    if (!onChainCertificate) {
-        onChainCertificate = yield call(getCertificate, certificateId);
-    }
-
-    const certificateItem: ICertificateViewItem = {
+    onChainCertificate: ICertificate
+): ICertificateViewItem {
+    return {
         ...onChainCertificate,
         energy: {
             publicVolume: new BigNumber(amount),
@@ -341,8 +334,20 @@ function* enhanceCertificate(
         source: CertificateSource.Exchange,
         assetId: asset.id
     };
+}
 
-    return certificateItem;
+function* findEnhancedCertificate(
+    asset: AccountAsset,
+    onChainCertificates: ICertificateViewItem[]
+) {
+    const certificateId = parseInt(asset.asset.tokenId, 10);
+    let onChainCertificate = onChainCertificates.find((c) => c.id === certificateId);
+
+    if (!onChainCertificate) {
+        onChainCertificate = yield call(getCertificate, certificateId);
+    }
+
+    return enhanceCertificate(asset, onChainCertificate);
 }
 
 function* fetchDataAfterConfigurationChange(
@@ -386,7 +391,7 @@ function* fetchDataAfterConfigurationChange(
 
     const available = yield all(
         offChainCertificates.balances.available.map((asset) =>
-            call(enhanceCertificate, asset, initializedCertificates)
+            call(findEnhancedCertificate, asset, initializedCertificates)
         )
     );
 

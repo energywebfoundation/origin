@@ -17,7 +17,7 @@ import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { requestPublishForSale } from '../../features/certificates';
+import { requestPublishForSale, resyncCertificate } from '../../features/certificates';
 import { ICertificateViewItem } from '../../features/certificates/types';
 import { getCurrencies } from '../../features/general/selectors';
 import { getUserOffchain } from '../../features/users/selectors';
@@ -71,7 +71,7 @@ export function PublishForSaleModal(props: IProps) {
     const isFormValid = validation.energyInDisplayUnit && validation.price;
 
     async function handleClose() {
-        // await certificate.sync();
+        dispatch(resyncCertificate(certificate));
         callback();
     }
 
