@@ -1,4 +1,4 @@
-import { Ask, Bid, ProductFilter, Trade, OrderStatus } from '@energyweb/exchange-core';
+import { Ask, Bid, OrderStatus, ProductFilter, Trade } from '@energyweb/exchange-core';
 import { LocationService } from '@energyweb/utils-general';
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { EventBus } from '@nestjs/cqrs';
@@ -11,6 +11,7 @@ import { toMatchingEngineOrder } from '../matching-engine/order-mapper';
 import { Order } from '../order/order.entity';
 import { ProductDTO } from '../order/product.dto';
 import { DeviceTypeServiceWrapper } from '../runner/deviceTypeServiceWrapper';
+import { TradePersistedEvent } from './trade-persisted.event';
 import { TradePriceInfoDTO } from './trade-price-info.dto';
 import { Trade as TradeEntity } from './trade.entity';
 
@@ -174,6 +175,6 @@ export class TradeService implements OnModuleInit {
     }
 
     private emitTradePersistedEvents(trades: TradeEntity[]) {
-        this.eventBus.publishAll(trades);
+        this.eventBus.publishAll(trades.map((trade) => new TradePersistedEvent(trade)));
     }
 }
