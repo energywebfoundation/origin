@@ -9,10 +9,15 @@ import { expect } from 'chai';
 import { bigNumberify } from 'ethers/utils';
 import moment from 'moment';
 import request from 'supertest';
+import dotenv from 'dotenv';
 
 import { bootstrapTestInstance, registerAndLogin } from './origin-backend';
 
 describe('Device e2e tests', () => {
+    dotenv.config({
+        path: '.env.test'
+    });
+
     it('should allow to edit settings for organization member with DeviceManager role', async () => {
         const {
             app,
@@ -138,6 +143,8 @@ describe('Device e2e tests', () => {
             [Role.OrganizationUser, Role.OrganizationDeviceManager]
         );
 
+        const externalDeviceId = '123';
+
         const device = await deviceService.create(
             {
                 address: '',
@@ -160,7 +167,7 @@ describe('Device e2e tests', () => {
                 typeOfPublicSupport: '',
                 deviceGroup: '',
                 smartMeterReads: [],
-                externalDeviceIds: [],
+                externalDeviceIds: [{ id: externalDeviceId, type: process.env.ISSUER_ID }],
                 automaticPostForSale: false,
                 defaultAskPrice: null
             },
@@ -200,11 +207,25 @@ describe('Device e2e tests', () => {
             .send(secondSmRead)
             .expect(200);
 
+        const fromTime = moment().subtract(2, 'month').unix();
+        const toTime = moment().subtract(10, 'day').unix();
+
+        await certificationRequestService.queue(
+            {
+                deviceId: externalDeviceId,
+                fromTime,
+                toTime,
+                energy: '100000',
+                files: ['./test.pdf', './test2.pdf']
+            },
+            user
+        );
+
         await certificationRequestService.create({
             id: 1,
             owner: '0xD173313A51f8fc37BcF67569b463abd89d81844f',
-            fromTime: moment().subtract(2, 'month').unix(),
-            toTime: moment().subtract(10, 'day').unix(),
+            fromTime,
+            toTime,
             device,
             approved: false,
             revoked: false,

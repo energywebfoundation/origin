@@ -5,12 +5,14 @@ import { INestApplication } from '@nestjs/common';
 import { expect } from 'chai';
 import moment from 'moment';
 import request from 'supertest';
+import dotenv from 'dotenv';
 
 import { CertificationRequestService } from '../src/pods/certificate/certification-request.service';
 import { DeviceService } from '../src/pods/device/device.service';
 import { OrganizationService } from '../src/pods/organization/organization.service';
 import { UserService } from '../src/pods/user';
 import { bootstrapTestInstance, registerAndLogin } from './origin-backend';
+import { CertificationRequestQueueItem } from '../src/pods/certificate/certification-request-queue-item.entity';
 
 describe('CertificationRequest e2e tests', () => {
     let app: INestApplication;
@@ -20,6 +22,20 @@ describe('CertificationRequest e2e tests', () => {
     let certificationRequestService: CertificationRequestService;
 
     const defaultOrganization = 'org1';
+
+    const owner = '0xD173313A51f8fc37BcF67569b463abd89d81844f';
+    const fromTime = moment().subtract(2, 'month').unix();
+    const toTime = moment().subtract(1, 'month').unix();
+    const created = moment().subtract(1, 'day').unix();
+
+    const externalDeviceId = '123';
+
+    const energy = '100000';
+    const files = ['./test.pdf', './test2.pdf'];
+
+    dotenv.config({
+        path: '.env.test'
+    });
 
     before(async () => {
         ({
@@ -78,19 +94,28 @@ describe('CertificationRequest e2e tests', () => {
                 typeOfPublicSupport: '',
                 deviceGroup: '',
                 smartMeterReads: [],
-                externalDeviceIds: [],
+                externalDeviceIds: [{ id: externalDeviceId, type: process.env.ISSUER_ID }],
                 automaticPostForSale: false,
                 defaultAskPrice: null
             },
             user
         );
 
-        const owner = '0xD173313A51f8fc37BcF67569b463abd89d81844f';
-        const fromTime = moment().subtract(2, 'month').unix();
-        const toTime = moment().subtract(1, 'month').unix();
-        const created = moment().subtract(1, 'day').unix();
+        await request(app.getHttpServer())
+            .post(`/Certificate/CertificationRequest`)
+            .set('Authorization', `Bearer ${accessToken}`)
+            .send({ deviceId: externalDeviceId, fromTime, toTime, energy, files })
+            .expect((res) => {
+                const queueItem = res.body as CertificationRequestQueueItem;
 
-        let certificationRequest = await certificationRequestService.create({
+                expect(queueItem.deviceId).deep.equals(externalDeviceId);
+                expect(queueItem.fromTime).equals(fromTime);
+                expect(queueItem.toTime).equals(toTime);
+                expect(queueItem.energy).equals(energy);
+                expect(queueItem.files).deep.equals(files);
+            });
+
+        const certificationRequest = await certificationRequestService.create({
             id: 1,
             owner,
             fromTime,
@@ -114,23 +139,6 @@ describe('CertificationRequest e2e tests', () => {
                 expect(cr.approved).equals(false);
                 expect(cr.revoked).equals(false);
                 expect(cr.created).equals(created);
-            });
-
-        const energy = '100000';
-        const files = ['./test.pdf', './test2.pdf'];
-
-        certificationRequest = await certificationRequestService.update(
-            certificationRequest.id,
-            { energy, files },
-            user
-        );
-
-        await request(app.getHttpServer())
-            .get(`/Certificate/CertificationRequest/${certificationRequest.id}`)
-            .set('Authorization', `Bearer ${accessToken}`)
-            .expect((res) => {
-                const cr = res.body as ICertificationRequestBackend;
-
                 expect(cr.energy).equals(energy);
                 expect(cr.files).deep.equals(files);
             });
@@ -183,11 +191,6 @@ describe('CertificationRequest e2e tests', () => {
             },
             user
         );
-
-        const owner = '0xD173313A51f8fc37BcF67569b463abd89d81844f';
-        const fromTime = moment().subtract(2, 'month').unix();
-        const toTime = moment().subtract(1, 'month').unix();
-        const created = moment().subtract(1, 'day').unix();
 
         try {
             await certificationRequestService.create({
@@ -246,6 +249,47 @@ describe('CertificationRequest e2e tests', () => {
                 const requests = res.body as ICertificationRequestBackend[];
 
                 expect(requests).to.have.length(1);
+            });
+    });
+
+    it('should update queue item if already exists', async () => {
+        const { accessToken } = await registerAndLogin(
+            app,
+            userService,
+            organizationService,
+            [Role.OrganizationUser, Role.OrganizationDeviceManager],
+            '1',
+            defaultOrganization
+        );
+
+        const postRequest = request(app.getHttpServer())
+            .post(`/Certificate/CertificationRequest`)
+            .set('Authorization', `Bearer ${accessToken}`);
+
+        await postRequest
+            .send({ deviceId: externalDeviceId, fromTime, toTime, energy, files })
+            .expect((res) => {
+                const queueItem = res.body as CertificationRequestQueueItem;
+
+                expect(queueItem).to.be.ok;
+            });
+
+        const newFiles = files.concat(['additional.pdf']);
+        const newEnergy = energy + 1;
+
+        await postRequest
+            .send({
+                deviceId: externalDeviceId,
+                fromTime,
+                toTime,
+                energy: newEnergy,
+                files: newFiles
+            })
+            .expect((res) => {
+                const queueItem = res.body as CertificationRequestQueueItem;
+
+                expect(queueItem.energy).equal(newEnergy);
+                expect(queueItem.files).deep.equal(newFiles);
             });
     });
 });

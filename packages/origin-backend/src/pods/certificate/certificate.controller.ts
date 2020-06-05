@@ -17,10 +17,11 @@ import {
 import { AuthGuard } from '@nestjs/passport';
 
 import { StorageErrors } from '../../enums/StorageErrors';
-import { CertificationRequestUpdateDTO } from './certification-request.dto';
+import { CertificationRequestQueueItemDTO } from './certification-request-queue-item.dto';
 import { CertificationRequest } from './certification-request.entity';
 import { CertificationRequestService } from './certification-request.service';
 import { CertificateService } from './certificate.service';
+import { CertificationRequestQueueItem } from './certification-request-queue-item.entity';
 
 const CERTIFICATION_REQUEST_ENDPOINT = '/CertificationRequest';
 
@@ -31,15 +32,14 @@ export class CertificateController {
         private readonly certificationRequestService: CertificationRequestService
     ) {}
 
-    @Post(`${CERTIFICATION_REQUEST_ENDPOINT}/:id`)
+    @Post(CERTIFICATION_REQUEST_ENDPOINT)
     @UseGuards(AuthGuard(), RolesGuard)
     @Roles(Role.OrganizationAdmin, Role.OrganizationDeviceManager)
-    async updateCertificationRequest(
-        @Param('id') id: number,
-        @Body() data: CertificationRequestUpdateDTO,
+    async queueCertificationRequestData(
+        @Body() dto: CertificationRequestQueueItemDTO,
         @UserDecorator() loggedUser: ILoggedInUser
-    ): Promise<CertificationRequest> {
-        return this.certificationRequestService.update(id, data, loggedUser);
+    ): Promise<CertificationRequestQueueItem> {
+        return this.certificationRequestService.queue(dto, loggedUser);
     }
 
     @Get(`${CERTIFICATION_REQUEST_ENDPOINT}/:id`)
@@ -50,6 +50,10 @@ export class CertificateController {
         @UserDecorator() loggedUser: ILoggedInUser
     ): Promise<CertificationRequest> {
         const request = await this.certificationRequestService.get(id);
+
+        if (!request) {
+            throw new NotFoundException(StorageErrors.NON_EXISTENT);
+        }
 
         if (loggedUser.hasRole(Role.Issuer, Role.Admin) || request.userId === loggedUser.ownerId) {
             return request;

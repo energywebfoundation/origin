@@ -10,17 +10,22 @@ import {
 import { ICertificateClient } from '@energyweb/origin-backend-client';
 
 export class CertificateClientMock implements ICertificateClient {
+    private requestQueue: CertificationRequestUpdateData[] = [];
     private requestStorage = new Map<number, ICertificationRequest>();
     private certificateStorage = new Map<number, ICertificateOwnership>();
 
-    public async updateCertificationRequest(
-        id: number,
+    public async queueCertificationRequestData(
         data: CertificationRequestUpdateData
     ): Promise<boolean> {
-        this.requestStorage.set(id, ({
-            energy: data.energy,
-            files: data.files
-        } as Partial<ICertificationRequest>) as ICertificationRequest);
+        const exists = this.requestQueue.find(queueItem => 
+            queueItem.deviceId === data.deviceId 
+            && queueItem.fromTime === data.fromTime 
+            && queueItem.toTime === data.toTime
+        );
+
+        if (!exists) {
+            this.requestQueue.push(data);
+        }
 
         return true;
     }
@@ -41,10 +46,24 @@ export class CertificateClientMock implements ICertificateClient {
     ) {
         const certificateRequest = this.requestStorage.get(id);
 
+        const queuedData = this.requestQueue.find(data => 
+            data.deviceId === reqData.deviceId 
+            && data.fromTime === reqData.fromTime 
+            && data.toTime === reqData.toTime
+        );
+
+        if (queuedData) {
+            const index = this.requestQueue.indexOf(queuedData);
+            if (index > -1) {
+                this.requestQueue.splice(index, 1);
+            }
+        }
+
         this.requestStorage.set(id, {
             id,
             ...certificateRequest,
-            ...reqData
+            ...reqData,
+            ...queuedData
         });
     }
 

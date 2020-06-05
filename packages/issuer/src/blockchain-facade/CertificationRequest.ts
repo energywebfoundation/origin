@@ -73,6 +73,14 @@ export class CertificationRequest extends PreciseProofEntity implements ICertifi
 
         await this.validateGenerationPeriod(fromTime, toTime, deviceId, configuration);
 
+        const success = await configuration.offChainDataSource.certificateClient.queueCertificationRequestData(
+            { deviceId, fromTime, toTime, energy, files }
+        );
+
+        if (!success) {
+            throw new Error('Unable to create CertificationRequest');
+        }
+
         const data = await issuer.encodeData(fromTime, toTime, deviceId);
 
         const tx = await (forAddress
@@ -86,30 +94,21 @@ export class CertificationRequest extends PreciseProofEntity implements ICertifi
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         request.id = (certificationRequested.args as any)._id.toNumber();
 
-        const success = await polly()
-            .waitAndRetry([2000, 4000, 8000, 16000])
-            .executeForPromise(() =>
-                configuration.offChainDataSource.certificateClient.updateCertificationRequest(
-                    request.id,
-                    { energy, files }
-                )
-            );
-
-        if (success) {
-            if (configuration.logger) {
-                configuration.logger.info(`CertificationRequest ${request.id} created`);
-            }
-        } else {
-            throw new Error('Unable to create CertificationRequest');
+        if (configuration.logger) {
+            configuration.logger.info(`CertificationRequest ${request.id} created`);
         }
 
         return request.sync();
     }
 
     async sync(): Promise<CertificationRequest> {
-        const offChainData = await this.configuration.offChainDataSource.certificateClient.getCertificationRequest(
-            this.id
-        );
+        const offChainData = await polly()
+            .waitAndRetry([2000, 4000, 8000, 16000])
+            .executeForPromise(() =>
+                this.configuration.offChainDataSource.certificateClient.getCertificationRequest(
+                    this.id
+                )
+            );
 
         Object.assign(this, offChainData);
 
