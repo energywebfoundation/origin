@@ -17,7 +17,15 @@ export class CertificateClientMock implements ICertificateClient {
     public async queueCertificationRequestData(
         data: CertificationRequestUpdateData
     ): Promise<boolean> {
-        this.requestQueue.push(data);
+        const exists = this.requestQueue.find(queueItem => 
+            queueItem.deviceId === data.deviceId 
+            && queueItem.fromTime === data.fromTime 
+            && queueItem.toTime === data.toTime
+        );
+
+        if (!exists) {
+            this.requestQueue.push(data);
+        }
 
         return true;
     }

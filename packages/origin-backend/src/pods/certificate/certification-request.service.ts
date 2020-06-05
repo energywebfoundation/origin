@@ -74,7 +74,20 @@ export class CertificationRequestService {
             throw new UnauthorizedException('You are not the device manager.');
         }
 
-        return this.queueRepository.save(dto);
+        let queueItem = await this.queueRepository.findOne({
+            deviceId: dto.deviceId,
+            fromTime: dto.fromTime,
+            toTime: dto.toTime
+        });
+
+        if (!queueItem) {
+            queueItem = this.queueRepository.create(dto);
+        } else {
+            queueItem.energy = dto.energy;
+            queueItem.files = dto.files;
+        }
+
+        return this.queueRepository.save(queueItem);
     }
 
     async registerApproved(id: number): Promise<CertificationRequest> {
