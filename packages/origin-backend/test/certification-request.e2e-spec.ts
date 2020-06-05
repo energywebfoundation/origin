@@ -5,6 +5,7 @@ import { INestApplication } from '@nestjs/common';
 import { expect } from 'chai';
 import moment from 'moment';
 import request from 'supertest';
+import dotenv from 'dotenv';
 
 import { CertificationRequestService } from '../src/pods/certificate/certification-request.service';
 import { DeviceService } from '../src/pods/device/device.service';
@@ -20,6 +21,10 @@ describe('CertificationRequest e2e tests', () => {
     let certificationRequestService: CertificationRequestService;
 
     const defaultOrganization = 'org1';
+
+    dotenv.config({
+        path: '.env.test'
+    });
 
     before(async () => {
         ({

@@ -33,8 +33,12 @@ export class CertificationRequestService {
             });
         }
 
+        const deviceId = cert.device.externalDeviceIds.find(
+            (externalDeviceId) => externalDeviceId.type === process.env.ISSUER_ID
+        )?.id;
+
         const queuedData = await this.queueRepository.findOne({
-            deviceId: cert.device.issuerId.id,
+            deviceId,
             fromTime: cert.fromTime,
             toTime: cert.toTime
         });

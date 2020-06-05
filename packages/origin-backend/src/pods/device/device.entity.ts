@@ -93,10 +93,4 @@ export class Device extends ExtendedBaseEntity implements IDevice {
 
     @Column({ default: false })
     automaticPostForSale: boolean;
-
-    get issuerId(): IExternalDeviceId {
-        return this.externalDeviceIds.find(
-            (externalDeviceId) => externalDeviceId.type === process.env.ISSUER_ID
-        );
-    }
 }
