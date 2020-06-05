@@ -10,7 +10,7 @@ export class CertificationRequestQueueItem extends ExtendedBaseEntity
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column('varchar', { nullable: true })
+    @Column('varchar')
     energy: string;
 
     @Column()
