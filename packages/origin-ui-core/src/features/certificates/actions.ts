@@ -8,6 +8,7 @@ import { IStoreState } from '../../types';
 export enum CertificatesActions {
     addCertificate = 'CERTIFICATE_CREATED',
     updateCertificate = 'CERTIFICATE_UPDATED',
+    resyncCertificate = 'CERTIFICATE_RESYNC',
     requestCertificates = 'REQUEST_CERTIFICATES',
     showRequestCertificatesModal = 'SHOW_REQUEST_CERTIFICATES_MODAL',
     setRequestCertificatesModalVisibility = 'SET_REQUEST_CERTIFICATES_MODAL_VISIBILITY',
@@ -43,6 +44,18 @@ export const updateCertificate = (payload: ICertificateViewItem) => ({
 });
 
 export type TUpdateCertificateAction = typeof updateCertificate;
+
+export interface IResyncCertificateAction {
+    type: CertificatesActions.resyncCertificate;
+    payload: ICertificateViewItem;
+}
+
+export const resyncCertificate = (payload: ICertificateViewItem) => ({
+    type: CertificatesActions.resyncCertificate,
+    payload
+});
+
+export type TResyncCertificateAction = typeof resyncCertificate;
 
 export interface IRequestCertificatesAction {
     type: CertificatesActions.requestCertificates;
@@ -205,6 +218,7 @@ export type TRequestCertificateApprovalAction = typeof requestCertificateApprova
 export type ICertificatesAction =
     | IAddCertificateAction
     | IUpdateCertificateAction
+    | IResyncCertificateAction
     | IRequestCertificatesAction
     | IShowRequestCertificatesModalAction
     | ISetRequestCertificatesModalVisibilityAction
