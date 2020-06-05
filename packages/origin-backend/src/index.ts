@@ -6,6 +6,7 @@ import { Device } from './pods/device/device.entity';
 import { Organization } from './pods/organization/organization.entity';
 import { OrganizationInvitation } from './pods/organization/organization-invitation.entity';
 import { User } from './pods/user/user.entity';
+import { CertificationRequestQueueItem } from './pods/certificate/certification-request-queue-item.entity';
 
 export { AppModule } from './app.module';
 export { ExtendedBaseEntity } from './pods/ExtendedBaseEntity';
@@ -20,5 +21,6 @@ export const entities = [
     User,
     OrganizationInvitation,
     CertificationRequest,
+    CertificationRequestQueueItem,
     Certificate
 ];

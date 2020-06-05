@@ -2,6 +2,7 @@ import * as Moment from 'moment';
 import { extendMoment } from 'moment-range';
 import { BigNumber, Interface } from 'ethers/utils';
 import { Event as BlockchainEvent } from 'ethers';
+import polly from 'polly-js';
 
 import { Configuration, Timestamp } from '@energyweb/utils-general';
 import {
@@ -101,9 +102,13 @@ export class CertificationRequest extends PreciseProofEntity implements ICertifi
     }
 
     async sync(): Promise<CertificationRequest> {
-        const offChainData = await this.configuration.offChainDataSource.certificateClient.getCertificationRequest(
-            this.id
-        );
+        const offChainData = await polly()
+            .waitAndRetry([2000, 4000, 8000, 16000])
+            .executeForPromise(() =>
+                this.configuration.offChainDataSource.certificateClient.getCertificationRequest(
+                    this.id
+                )
+            );
 
         Object.assign(this, offChainData);
 

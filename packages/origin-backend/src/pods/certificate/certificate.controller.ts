@@ -51,6 +51,10 @@ export class CertificateController {
     ): Promise<CertificationRequest> {
         const request = await this.certificationRequestService.get(id);
 
+        if (!request) {
+            throw new NotFoundException(StorageErrors.NON_EXISTENT);
+        }
+
         if (loggedUser.hasRole(Role.Issuer, Role.Admin) || request.userId === loggedUser.ownerId) {
             return request;
         }

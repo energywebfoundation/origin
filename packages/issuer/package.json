@@ -51,6 +51,7 @@
         "mocha": "7.2.0",
         "moment": "2.24.0",
         "moment-range": "4.0.2",
+        "polly-js": "1.6.5",
         "precise-proofs-js": "1.1.0",
         "winston": "3.2.1"
     },

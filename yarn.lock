@@ -16884,7 +16884,7 @@ polished@^3.3.1:
   dependencies:
     "@babel/runtime" "^7.6.3"
 
-polly-js@1.6.5, polly-js@^1.6.5:
+polly-js@1.6.5:
   version "1.6.5"
   resolved "https://registry.yarnpkg.com/polly-js/-/polly-js-1.6.5.tgz#78ebd7e87516eddd5da51db34290b6b8e3332aac"
   integrity sha512-gGouufZpvrYBAeGkLJfty/89hAvFYia3lCxufMj066+aT9ZnR1Edfn/cAkY71Y22EcMPGfIKV4Z4iyi/+YauwQ==
