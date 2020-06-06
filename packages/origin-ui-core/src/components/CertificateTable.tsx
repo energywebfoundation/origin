@@ -1,5 +1,5 @@
 import { ProducingDevice } from '@energyweb/device-registry';
-import { AssignmentTurnedIn, Publish } from '@material-ui/icons';
+import { AssignmentTurnedIn, Publish, Undo } from '@material-ui/icons';
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Redirect } from 'react-router-dom';
@@ -37,6 +37,7 @@ import { PublishForSaleModal } from './Modal/PublishForSaleModal';
 import { getEnvironment } from '../features';
 import { ClaimModal } from './Modal/ClaimModal';
 import { ICertificateViewItem, CertificateSource } from '../features/certificates';
+import { WithdrawModal } from './Modal/WithdrawModal';
 
 interface IProps {
     certificates?: ICertificateViewItem[];
@@ -88,6 +89,7 @@ export function CertificateTable(props: IProps) {
     const [showClaimModal, setShowClaimModal] = useState(false);
     const [selectedCertificate, setSelectedCertificate] = useState<ICertificateViewItem>(null);
     const [sellModalVisibility, setSellModalVisibility] = useState(false);
+    const [withdrawModalVisibility, setWithdrawModalVisibility] = useState(false);
 
     async function getPaginatedData({
         requestedPageSize,
@@ -205,6 +207,18 @@ export function CertificateTable(props: IProps) {
 
         setSelectedCertificates([certificate]);
         setShowClaimModal(true);
+    }
+
+    async function withdraw(rowIndex: string) {
+        const certificate = getCertificateFromRow(rowIndex);
+        setSelectedCertificate(certificate);
+        setWithdrawModalVisibility(true);
+    }
+
+    function hideWithdrawModal() {
+        loadPage(1);
+        setSelectedCertificate(null);
+        setWithdrawModalVisibility(false);
     }
 
     function showCertificateDetails(rowIndex: number) {
@@ -363,6 +377,11 @@ export function CertificateTable(props: IProps) {
                     icon: <Publish />,
                     onClick: publishForSale
                 });
+                actions.push({
+                    name: t('certificate.actions.withdraw'),
+                    icon: <Undo />,
+                    onClick: withdraw
+                });
                 break;
         }
 
@@ -499,6 +518,21 @@ export function CertificateTable(props: IProps) {
                 }
                 showModal={sellModalVisibility}
                 callback={hidePublishForSaleModal}
+            />
+
+            <WithdrawModal
+                certificate={selectedCertificate}
+                producingDevice={
+                    selectedCertificate
+                        ? producingDevices.find(
+                              (device) =>
+                                  getDeviceId(device, environment) ===
+                                  selectedCertificate.deviceId.toString()
+                          )
+                        : null
+                }
+                showModal={withdrawModalVisibility}
+                callback={hideWithdrawModal}
             />
 
             <ClaimModal

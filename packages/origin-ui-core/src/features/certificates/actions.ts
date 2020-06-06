@@ -4,6 +4,7 @@ import { BigNumber } from 'ethers/utils';
 
 import { ICertificateViewItem, CertificateSource } from '.';
 import { IStoreState } from '../../types';
+import { RequestWithdrawalDTO } from '../../utils/exchange';
 
 export enum CertificatesActions {
     addCertificate = 'CERTIFICATE_CREATED',
@@ -18,7 +19,8 @@ export enum CertificatesActions {
     requestPublishForSale = 'CERTIFICATES_REQUEST_PUBLISH_FOR_SALE',
     requestClaimCertificate = 'CERTIFICATES_REQUEST_CLAIM_CERTIFICATE',
     requestClaimCertificateBulk = 'CERTIFICATES_REQUEST_CLAIM_CERTIFICATE_BULK',
-    requestCertificateApproval = 'CERTIFICATES_REQUEST_CERTIFICATE_APPROVAL'
+    requestCertificateApproval = 'CERTIFICATES_REQUEST_CERTIFICATE_APPROVAL',
+    withdrawCertificate = 'CERTIFICATES_REQUEST_CERTIFICATE_WITHDRAWAL'
 }
 
 export interface IAddCertificateAction {
@@ -215,6 +217,18 @@ export const requestCertificateApproval = (
 
 export type TRequestCertificateApprovalAction = typeof requestCertificateApproval;
 
+export interface IRequestWithdrawCertificateAction {
+    type: CertificatesActions.withdrawCertificate;
+    payload: RequestWithdrawalDTO;
+}
+
+export const requestWithdrawCertificate = (
+    payload: IRequestWithdrawCertificateAction['payload']
+) => ({
+    type: CertificatesActions.withdrawCertificate,
+    payload
+});
+
 export type ICertificatesAction =
     | IAddCertificateAction
     | IUpdateCertificateAction
@@ -228,4 +242,5 @@ export type ICertificatesAction =
     | IRequestPublishForSaleAction
     | IRequestClaimCertificateAction
     | IRequestClaimCertificateBulkAction
-    | IRequestCertificateApprovalAction;
+    | IRequestCertificateApprovalAction
+    | IRequestWithdrawCertificateAction;

@@ -398,6 +398,7 @@ function* fetchDataAfterConfigurationChange(
     const certificates = initializedCertificates.concat(available);
 
     for (const certificate of certificates) {
+        console.log(`>>> ${update ? 'updating' : 'addding'} certificate `, certificate);
         yield put(update ? updateCertificate(certificate) : addCertificate(certificate));
     }
 }

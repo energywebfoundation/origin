@@ -27,7 +27,8 @@ import {
     IRequestClaimCertificateBulkAction,
     IRequestPublishForSaleAction,
     IShowRequestCertificatesModalAction,
-    setRequestCertificatesModalVisibility
+    setRequestCertificatesModalVisibility,
+    IRequestWithdrawCertificateAction
 } from './actions';
 import { getCertificateById, getCertificateFetcher, getCertificates } from './selectors';
 import { ICertificateViewItem } from './types';
@@ -204,7 +205,7 @@ function* requestPublishForSaleSaga(): SagaIterator {
         );
         const exchangeClient: IExchangeClient = yield select(getExchangeClient);
 
-        if (!exchangeClient) {
+        if (!exchangeClient.getAllTransfers) {
             continue;
         }
 
@@ -399,6 +400,17 @@ function* requestCertificateApprovalSaga(): SagaIterator {
     }
 }
 
+export function* withdrawSaga(): SagaIterator {
+    while (true) {
+        const action: IRequestWithdrawCertificateAction = yield take(
+            CertificatesActions.withdrawCertificate
+        );
+        console.log('>>> took withdraw action');
+        const exchangeClient: IExchangeClient = yield select(getExchangeClient);
+        yield call([exchangeClient, exchangeClient.withdraw], action.payload);
+    }
+}
+
 export function* certificatesSaga(): SagaIterator {
     yield all([
         fork(requestCertificatesSaga),
@@ -408,6 +420,7 @@ export function* certificatesSaga(): SagaIterator {
         fork(requestClaimCertificateSaga),
         fork(requestClaimCertificateBulkSaga),
         fork(requestCertificateApprovalSaga),
-        fork(resyncCertificateSaga)
+        fork(resyncCertificateSaga),
+        fork(withdrawSaga)
     ]);
 }
