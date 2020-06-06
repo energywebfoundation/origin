@@ -32,7 +32,7 @@
         "ts-node": "8.10.2",
         "typescript": "3.9.5",
         "typescript-json-schema": "0.42.0",
-        "wait-on": "5.0.0"
+        "wait-on": "5.0.1"
     },
     "scripts": {
         "build": "yarn build:static && yarn build:ts && lerna run build --scope @energyweb/origin-ui --stream",
