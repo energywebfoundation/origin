@@ -77,12 +77,12 @@ export function WithdrawModal(props: IProps) {
     async function withdraw() {
         const account = await exchangeClient.getAccount();
         const assetId = certificate.assetId;
-        const { address } = account;
+        const address = user.blockchainAccountAddress;
         const amount = account.balances.available.find((balance) => balance.asset.id === assetId)
             .amount;
         dispatch(
             requestWithdrawCertificate({
-                assetId: certificate.assetId,
+                assetId,
                 address,
                 amount
             })

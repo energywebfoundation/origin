@@ -363,13 +363,14 @@ function* fetchDataAfterConfigurationChange(
     for (const device of producingDevices) {
         yield put(producingDeviceCreatedOrUpdated(device));
     }
+    console.group('>>> fetching after configuration changed <<<');
 
     const onChainCertificates: Certificate[] = yield apply(
         Certificate,
         CertificateUtils.getAllOwnedCertificates,
         [configuration]
     );
-
+    console.log('>>> onChainCertificates:', onChainCertificates);
     const initializedCertificates = onChainCertificates
         .filter((cert) => cert.initialized)
         .map(
@@ -388,13 +389,13 @@ function* fetchDataAfterConfigurationChange(
         exchangeClient.getAccount,
         null
     );
-
+    console.log('>>> offChainCertificates:', offChainCertificates);
     const available = yield all(
         offChainCertificates.balances.available.map((asset) =>
             call(findEnhancedCertificate, asset, initializedCertificates)
         )
     );
-
+    console.groupEnd();
     const certificates = initializedCertificates.concat(available);
 
     for (const certificate of certificates) {

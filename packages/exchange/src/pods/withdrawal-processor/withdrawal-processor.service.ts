@@ -3,7 +3,6 @@ import { ConfigurationService } from '@energyweb/origin-backend';
 import { forwardRef, Inject, Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { ModuleRef } from '@nestjs/core';
-import BN from 'bn.js';
 import { Contract, ContractTransaction, ethers, Wallet } from 'ethers';
 import { Subject } from 'rxjs';
 import { concatMap, tap } from 'rxjs/operators';
@@ -132,17 +131,17 @@ export class WithdrawalProcessorService implements OnModuleInit {
             return;
         }
 
-        const hasEnoughFunds = await this.accountBalanceService.hasEnoughAssetAmount(
-            withdrawal.userId,
-            { id: withdrawal.asset.id, amount: new BN(withdrawal.amount) }
-        );
-        if (!hasEnoughFunds) {
-            this.logger.error(
-                `[Withdrawal ${id}] User ${withdrawal.userId} has not enough funds to proceed`
-            );
-            await this.transferService.setAsError(id);
-            return;
-        }
+        // const hasEnoughFunds = await this.accountBalanceService.hasEnoughAssetAmount(
+        //     withdrawal.userId,
+        //     { id: withdrawal.asset.id, amount: new BN(withdrawal.amount) }
+        // );
+        // if (!hasEnoughFunds) {
+        //     this.logger.error(
+        //         `[Withdrawal ${id}] User ${withdrawal.userId} has not enough funds to proceed`
+        //     );
+        //     await this.transferService.setAsError(id);
+        //     return;
+        // }
 
         const transaction = (await this.registry.functions.safeTransferFrom(
             this.wallet.address,
@@ -159,7 +158,11 @@ export class WithdrawalProcessorService implements OnModuleInit {
         this.logger.debug(`Withdrawal ${id} receipt: ${JSON.stringify(receipt)} `);
 
         const hasLog = receipt.logs
-            .map((log) => this.tokenInterface.parseLog(log))
+            .map((log) => {
+                const parsed = this.tokenInterface.parseLog(log);
+                console.log('parsed withdraw log:', parsed);
+                return parsed;
+            })
             .some((log) => this.hasMatchingLog(withdrawal, log));
 
         if (!hasLog) {
