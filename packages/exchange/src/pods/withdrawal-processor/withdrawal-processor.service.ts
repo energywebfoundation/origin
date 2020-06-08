@@ -177,11 +177,24 @@ export class WithdrawalProcessorService implements OnModuleInit {
     }
 
     private hasMatchingLog(withdrawal: Transfer, log: ethers.utils.LogDescription) {
+        const _to = String(log.values._to).toLowerCase();
+        console.group('hasMatchingLog');
+        console.log(
+            'topics are matched:',
+            log.topic === this.tokenInterface.events.TransferSingle.topic
+        );
+        console.log('withdrawal address:', withdrawal.address);
+        console.log('id-s are matched:', log.values._id.toString() === withdrawal.asset.tokenId);
+        console.log('from are matched:', log.values._from === this.wallet.address);
+        console.log('to are matched:', _to === withdrawal.address);
+        console.log('values are matched:', log.values._value.toString() === withdrawal.amount);
+        console.dir(_to);
+        console.groupEnd();
         return (
             log.topic === this.tokenInterface.events.TransferSingle.topic &&
             log.values._id.toString() === withdrawal.asset.tokenId &&
             log.values._from === this.wallet.address &&
-            log.values._to === withdrawal.address &&
+            _to === withdrawal.address &&
             log.values._value.toString() === withdrawal.amount
             // TODO: consider better comparison than string === string
         );

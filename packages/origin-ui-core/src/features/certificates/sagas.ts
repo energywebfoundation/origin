@@ -171,8 +171,14 @@ function* resyncCertificateSaga(): SagaIterator {
         );
 
         const asset = exchangeAccount.balances.available.find((a) => a.asset.id === assetId);
-
-        yield put(updateCertificate(enhanceCertificate(asset, certificate)));
+        if (asset) {
+            yield put(updateCertificate(enhanceCertificate(asset, certificate)));
+        } else {
+            const enhancedCertificate: ICertificateViewItem = Object.assign(certificate, {
+                source: CertificateSource.Blockchain
+            });
+            yield put(updateCertificate(enhancedCertificate));
+        }
     }
 }
 
