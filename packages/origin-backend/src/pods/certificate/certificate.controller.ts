@@ -3,7 +3,7 @@ import {
     IOwnershipCommitmentProofWithTx,
     Role
 } from '@energyweb/origin-backend-core';
-import { Roles, RolesGuard, UserDecorator } from '@energyweb/origin-backend-utils';
+import { Roles, RolesGuard, UserDecorator, UserGuard } from '@energyweb/origin-backend-utils';
 import {
     Body,
     Controller,
@@ -32,7 +32,7 @@ export class CertificateController {
     ) {}
 
     @Post(`${CERTIFICATION_REQUEST_ENDPOINT}/:id`)
-    @UseGuards(AuthGuard(), RolesGuard)
+    @UseGuards(AuthGuard(), UserGuard, RolesGuard)
     @Roles(Role.OrganizationAdmin, Role.OrganizationDeviceManager)
     async updateCertificationRequest(
         @Param('id') id: number,
@@ -43,7 +43,7 @@ export class CertificateController {
     }
 
     @Get(`${CERTIFICATION_REQUEST_ENDPOINT}/:id`)
-    @UseGuards(AuthGuard(), RolesGuard)
+    @UseGuards(AuthGuard(), UserGuard, RolesGuard)
     @Roles(Role.OrganizationAdmin, Role.OrganizationDeviceManager, Role.Issuer, Role.Admin)
     async getCertificationRequest(
         @Param('id') id: number,
@@ -64,7 +64,7 @@ export class CertificateController {
     }
 
     @Get(CERTIFICATION_REQUEST_ENDPOINT)
-    @UseGuards(AuthGuard(), RolesGuard)
+    @UseGuards(AuthGuard(), UserGuard, RolesGuard)
     @Roles(Role.OrganizationAdmin, Role.OrganizationDeviceManager, Role.Issuer, Role.Admin)
     async getAllCertificationRequests(
         @UserDecorator() loggedUser: ILoggedInUser
@@ -81,7 +81,7 @@ export class CertificateController {
     // TODO: add ownership management and roles
 
     @Get(`/:id/OwnershipCommitment`)
-    @UseGuards(AuthGuard(), RolesGuard)
+    @UseGuards(AuthGuard(), UserGuard, RolesGuard)
     @Roles(Role.OrganizationUser)
     async getOwnershipCommitment(
         @Param('id') id: number
@@ -96,7 +96,7 @@ export class CertificateController {
     }
 
     @Put(`/:id/OwnershipCommitment`)
-    @UseGuards(AuthGuard(), RolesGuard)
+    @UseGuards(AuthGuard(), UserGuard, RolesGuard)
     @Roles(Role.OrganizationUser)
     async addOwnershipCommitment(
         @Param('id') id: number,
