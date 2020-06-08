@@ -13,6 +13,7 @@ import { DeviceModule } from '../device/device.module';
 import { CertificationRequestService } from './certification-request.service';
 import { CertificationRequestWatcherService } from './certification-request-watcher.service';
 import { CertificateService } from './certificate.service';
+import { CertificationRequestQueueItem } from './certification-request-queue-item.entity';
 
 @Module({})
 export class CertificateModule {
@@ -20,7 +21,12 @@ export class CertificateModule {
         return {
             module: CertificateModule,
             imports: [
-                TypeOrmModule.forFeature([CertificationRequest, OwnershipCommitment, Certificate]),
+                TypeOrmModule.forFeature([
+                    CertificationRequest,
+                    CertificationRequestQueueItem,
+                    OwnershipCommitment,
+                    Certificate
+                ]),
                 UserModule,
                 ConfigurationModule,
                 DeviceModule.register(smartMeterReadingsAdapter)

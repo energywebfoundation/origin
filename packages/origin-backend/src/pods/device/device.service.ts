@@ -52,7 +52,7 @@ export class DeviceService {
         externalId: IExternalDeviceId
     ): Promise<ExtendedBaseEntity & IDeviceWithRelationsIds> {
         const devices = ((await this.repository.find({
-            loadEagerRelations: true
+            loadRelationIds: true
         })) as IDevice[]) as (ExtendedBaseEntity & IDeviceWithRelationsIds)[];
 
         const device = devices.find((d) =>

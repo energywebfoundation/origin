@@ -38,7 +38,6 @@
         "@energyweb/utils-general": "9.1.1",
         "ethers": "4.0.47",
         "moment": "2.24.0",
-        "polly-js": "^1.6.5",
         "winston": "3.2.1"
     },
     "devDependencies": {
