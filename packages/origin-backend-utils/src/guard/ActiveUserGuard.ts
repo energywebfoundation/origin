@@ -3,7 +3,7 @@ import { CanActivate, ExecutionContext, HttpException, Injectable } from '@nestj
 import { Reflector } from '@nestjs/core';
 
 @Injectable()
-export class UserGuard implements CanActivate {
+export class ActiveUserGuard implements CanActivate {
     constructor(private reflector: Reflector) {}
 
     canActivate(context: ExecutionContext): boolean {
@@ -12,10 +12,10 @@ export class UserGuard implements CanActivate {
             return true;
         }
 
-        console.log('test');
         const request = context.switchToHttp().getRequest();
         const user = request.user as IUserWithRelationsIds;
         const _user = user as IUserWithRelationsIds;
+
         if (_user.status === Status.Pending) {
             throw new HttpException(
                 `Only active users can perform this action. Your status is ${Status[_user.status]}`,
