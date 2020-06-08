@@ -10,7 +10,7 @@ import {
     IPaginatedLoaderHooksFetchDataParameters,
     usePaginatedLoader
 } from '../Table/PaginatedLoaderHooks';
-import { IUser, getRolesFromRights, isRole, Role } from '@energyweb/origin-backend-core';
+import { IUser, getRolesFromRights, isRole, Role, Status } from '@energyweb/origin-backend-core';
 import { roleNames } from './Organization';
 import { useTranslation } from '../../utils';
 import { ChangeRoleModal } from '../Modal/ChangeRoleModal';
@@ -40,8 +40,19 @@ export function OrganizationUsersTable() {
                 total: 0
             };
         }
-
-        const entities = await organizationClient.getMembers(userOffchain.organization.id);
+        let entities = [];
+        try {
+            entities = await organizationClient.getMembers(userOffchain.organization.id);
+        } catch (error) {
+            if (error.toJSON().message === 'Request failed with status code 412') {
+                showNotification(
+                    `Only active users can perform this action. Your status is ${
+                        Status[userOffchain.status]
+                    }`,
+                    NotificationType.Error
+                );
+            }
+        }
 
         let newPaginatedData: IRecord[] = entities.map((i) => ({
             user: i

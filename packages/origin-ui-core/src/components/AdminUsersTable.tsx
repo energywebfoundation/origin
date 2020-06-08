@@ -1,4 +1,4 @@
-import { IOrganization, IUser } from '@energyweb/origin-backend-core';
+import { IOrganization, IUser, Status } from '@energyweb/origin-backend-core';
 import { Edit } from '@material-ui/icons';
 import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
@@ -11,6 +11,7 @@ import {
     usePaginatedLoaderFiltered
 } from './Table';
 import { CustomFilterInputType, ICustomFilterDefinition } from './Table/FiltersHeader';
+import { showNotification, NotificationType } from '../utils/notifications';
 
 interface IRecord {
     user: IUser;
@@ -47,15 +48,27 @@ export function AdminUsersTable() {
             };
         }
         let entities = [];
-        if (requestedFilters.length > 0) {
-            entities = await adminClient.getUsersBy(
-                requestedFilters[2]?.selectedValue,
-                parseInt(requestedFilters[0]?.selectedValue, 10) || 0,
-                parseInt(requestedFilters[1]?.selectedValue, 10) || 0
-            );
-        } else {
-            entities = await adminClient.getAllUsers();
+        try {
+            if (requestedFilters.length > 0) {
+                entities = await adminClient.getUsersBy(
+                    requestedFilters[2]?.selectedValue,
+                    parseInt(requestedFilters[0]?.selectedValue, 10) || 0,
+                    parseInt(requestedFilters[1]?.selectedValue, 10) || 0
+                );
+            } else {
+                entities = await adminClient.getAllUsers();
+            }
+        } catch (error) {
+            if (error.toJSON().message === 'Request failed with status code 412') {
+                showNotification(
+                    `Only active users can perform this action. Your status is ${
+                        Status[userOffchain.status]
+                    }`,
+                    NotificationType.Error
+                );
+            }
         }
+
         let newPaginatedData: IRecord[] = entities.map((i) => ({
             user: i
         }));
