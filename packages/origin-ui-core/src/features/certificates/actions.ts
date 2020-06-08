@@ -4,7 +4,6 @@ import { BigNumber } from 'ethers/utils';
 
 import { ICertificateViewItem, CertificateSource } from '.';
 import { IStoreState } from '../../types';
-import { RequestWithdrawalDTO } from '../../utils/exchange';
 
 export enum CertificatesActions {
     addCertificate = 'CERTIFICATE_CREATED',
@@ -219,7 +218,12 @@ export type TRequestCertificateApprovalAction = typeof requestCertificateApprova
 
 export interface IRequestWithdrawCertificateAction {
     type: CertificatesActions.withdrawCertificate;
-    payload: RequestWithdrawalDTO;
+    payload: {
+        assetId: string;
+        address: string;
+        amount: string;
+        callback: () => void;
+    };
 }
 
 export const requestWithdrawCertificate = (

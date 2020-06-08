@@ -63,7 +63,8 @@ export function WithdrawModal(props: IProps) {
             requestWithdrawCertificate({
                 assetId,
                 address,
-                amount
+                amount,
+                callback
             })
         );
     }
