@@ -13,6 +13,7 @@ import { OrganizationService } from '../src/pods/organization/organization.servi
 import { UserService } from '../src/pods/user';
 import { bootstrapTestInstance, registerAndLogin } from './origin-backend';
 import { CertificationRequestQueueItem } from '../src/pods/certificate/certification-request-queue-item.entity';
+import { AdminService } from '../src/pods/admin/admin.service';
 
 describe('CertificationRequest e2e tests', () => {
     let app: INestApplication;
@@ -20,6 +21,7 @@ describe('CertificationRequest e2e tests', () => {
     let deviceService: DeviceService;
     let organizationService: OrganizationService;
     let certificationRequestService: CertificationRequestService;
+    let adminService: AdminService;
 
     const defaultOrganization = 'org1';
 
@@ -43,7 +45,8 @@ describe('CertificationRequest e2e tests', () => {
             userService,
             deviceService,
             organizationService,
-            certificationRequestService
+            certificationRequestService,
+            adminService
         } = await bootstrapTestInstance());
 
         await app.init();
@@ -58,6 +61,7 @@ describe('CertificationRequest e2e tests', () => {
             app,
             userService,
             organizationService,
+            adminService,
             [Role.OrganizationUser, Role.OrganizationDeviceManager],
             '1',
             defaultOrganization
@@ -158,6 +162,7 @@ describe('CertificationRequest e2e tests', () => {
             app,
             userService,
             organizationService,
+            adminService,
             [Role.OrganizationUser, Role.OrganizationDeviceManager],
             '1',
             defaultOrganization
@@ -217,6 +222,7 @@ describe('CertificationRequest e2e tests', () => {
             app,
             userService,
             organizationService,
+            adminService,
             [Role.Issuer],
             'issuer',
             'issuerOrg'
@@ -237,6 +243,7 @@ describe('CertificationRequest e2e tests', () => {
             app,
             userService,
             organizationService,
+            adminService,
             [Role.OrganizationDeviceManager],
             '2',
             defaultOrganization
@@ -257,6 +264,7 @@ describe('CertificationRequest e2e tests', () => {
             app,
             userService,
             organizationService,
+            adminService,
             [Role.OrganizationUser, Role.OrganizationDeviceManager],
             '1',
             defaultOrganization

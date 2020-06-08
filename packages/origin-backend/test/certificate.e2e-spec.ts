@@ -9,12 +9,14 @@ import { CertificateService } from '../src/pods/certificate/certificate.service'
 import { OrganizationService } from '../src/pods/organization/organization.service';
 import { UserService } from '../src/pods/user';
 import { bootstrapTestInstance, registerAndLogin } from './origin-backend';
+import { AdminService } from '../src/pods/admin/admin.service';
 
 describe('Certificate e2e tests', () => {
     let app: INestApplication;
     let userService: UserService;
     let organizationService: OrganizationService;
     let certificateService: CertificateService;
+    let adminService: AdminService;
 
     const generateCommitment = (requestor: string) => ({
         commitment: {
@@ -44,7 +46,8 @@ describe('Certificate e2e tests', () => {
             app,
             userService,
             organizationService,
-            certificateService
+            certificateService,
+            adminService
         } = await bootstrapTestInstance());
 
         await app.init();
@@ -59,6 +62,7 @@ describe('Certificate e2e tests', () => {
             app,
             userService,
             organizationService,
+            adminService,
             [Role.OrganizationUser],
             'orgUser',
             'orgUserOrg'
@@ -88,6 +92,7 @@ describe('Certificate e2e tests', () => {
             app,
             userService,
             organizationService,
+            adminService,
             [Role.OrganizationUser],
             'orgUser',
             'orgUserOrg'
@@ -112,6 +117,7 @@ describe('Certificate e2e tests', () => {
             app,
             userService,
             organizationService,
+            adminService,
             [Role.OrganizationUser],
             'orgUser',
             'orgUserOrg'
@@ -146,6 +152,7 @@ describe('Certificate e2e tests', () => {
             app,
             userService,
             organizationService,
+            adminService,
             [Role.OrganizationUser],
             'orgUser',
             'orgUserOrg'
