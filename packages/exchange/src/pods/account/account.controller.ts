@@ -1,5 +1,5 @@
 import { ILoggedInUser } from '@energyweb/origin-backend-core';
-import { UserDecorator } from '@energyweb/origin-backend-utils';
+import { UserDecorator, UserGuard } from '@energyweb/origin-backend-utils';
 import {
     Controller,
     Get,
@@ -19,7 +19,7 @@ export class AccountController {
     // TODO: explicit account creation request
     @UseInterceptors(ClassSerializerInterceptor)
     @Get()
-    @UseGuards(AuthGuard())
+    @UseGuards(AuthGuard(), UserGuard)
     public async getAccount(@UserDecorator() user: ILoggedInUser): Promise<AccountDTO> {
         const account = await this.accountService.getAccount(user.ownerId.toString());
 

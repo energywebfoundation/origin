@@ -1,5 +1,5 @@
 import { ILoggedInUser } from '@energyweb/origin-backend-core';
-import { UserDecorator } from '@energyweb/origin-backend-utils';
+import { UserDecorator, UserGuard } from '@energyweb/origin-backend-utils';
 import {
     Body,
     ClassSerializerInterceptor,
@@ -30,7 +30,7 @@ export class OrderController {
     constructor(private readonly orderService: OrderService) {}
 
     @Post('bid')
-    @UseGuards(AuthGuard())
+    @UseGuards(AuthGuard(), UserGuard)
     public async createBid(
         @UserDecorator() user: ILoggedInUser,
         @Body() newOrder: CreateBidDTO
@@ -48,7 +48,7 @@ export class OrderController {
     }
 
     @Post('ask')
-    @UseGuards(AuthGuard())
+    @UseGuards(AuthGuard(), UserGuard)
     public async createAsk(
         @UserDecorator() user: ILoggedInUser,
         @Body() newOrder: CreateAskDTO
@@ -66,7 +66,7 @@ export class OrderController {
     }
 
     @Post('ask/buy')
-    @UseGuards(AuthGuard())
+    @UseGuards(AuthGuard(), UserGuard)
     public async directBuy(
         @UserDecorator() user: ILoggedInUser,
         @Body() directBuy: DirectBuyDTO
@@ -84,14 +84,14 @@ export class OrderController {
     }
 
     @Get()
-    @UseGuards(AuthGuard())
+    @UseGuards(AuthGuard(), UserGuard)
     public async getOrders(@UserDecorator() user: ILoggedInUser): Promise<Order[]> {
         const orders = await this.orderService.getAllOrders(user.ownerId);
         return orders;
     }
 
     @Get('/:id')
-    @UseGuards(AuthGuard())
+    @UseGuards(AuthGuard(), UserGuard)
     public async getOrder(
         @UserDecorator() user: ILoggedInUser,
         @Param('id', new ParseUUIDPipe({ version: '4' })) orderId: string
@@ -101,7 +101,7 @@ export class OrderController {
     }
 
     @Post('/:id/cancel')
-    @UseGuards(AuthGuard())
+    @UseGuards(AuthGuard(), UserGuard)
     @HttpCode(202)
     public async cancelOrder(
         @UserDecorator() user: ILoggedInUser,

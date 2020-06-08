@@ -1,5 +1,5 @@
 import { ILoggedInUser } from '@energyweb/origin-backend-core';
-import { UserDecorator } from '@energyweb/origin-backend-utils';
+import { UserDecorator, UserGuard } from '@energyweb/origin-backend-utils';
 import {
     Body,
     Controller,
@@ -41,7 +41,7 @@ export class BundleController {
     }
 
     @Get()
-    @UseGuards(AuthGuard())
+    @UseGuards(AuthGuard(), UserGuard)
     public async getBundles(@UserDecorator() user: ILoggedInUser): Promise<Bundle[]> {
         try {
             const bundles = await this.bundleService.getByUser(user.ownerId.toString());
@@ -54,7 +54,7 @@ export class BundleController {
     }
 
     @Get('/trade')
-    @UseGuards(AuthGuard())
+    @UseGuards(AuthGuard(), UserGuard)
     public async getTrades(@UserDecorator() user: ILoggedInUser): Promise<BundleTrade[]> {
         try {
             const bundleTrade = await this.bundleService.getTrades(user.ownerId.toString());
@@ -67,7 +67,7 @@ export class BundleController {
     }
 
     @Post()
-    @UseGuards(AuthGuard())
+    @UseGuards(AuthGuard(), UserGuard)
     public async createBundle(
         @UserDecorator() user: ILoggedInUser,
         @Body() bundleToCreate: CreateBundleDTO
@@ -87,7 +87,7 @@ export class BundleController {
     }
 
     @Post('/buy')
-    @UseGuards(AuthGuard())
+    @UseGuards(AuthGuard(), UserGuard)
     public async buyBundle(
         @UserDecorator() user: ILoggedInUser,
         @Body() bundleToCreate: BuyBundleDTO
@@ -108,7 +108,7 @@ export class BundleController {
     }
 
     @Put('/:id/cancel')
-    @UseGuards(AuthGuard())
+    @UseGuards(AuthGuard(), UserGuard)
     public async cancelBundle(
         @UserDecorator() user: ILoggedInUser,
         @Param('id', new ParseUUIDPipe({ version: '4' })) bundleId: string

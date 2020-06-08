@@ -1,5 +1,5 @@
 import { ILoggedInUser } from '@energyweb/origin-backend-core';
-import { UserDecorator } from '@energyweb/origin-backend-utils';
+import { UserDecorator, UserGuard } from '@energyweb/origin-backend-utils';
 import {
     Body,
     Controller,
@@ -25,7 +25,7 @@ export class DemandController {
     constructor(private readonly demandService: DemandService) {}
 
     @Get('/:id')
-    @UseGuards(AuthGuard())
+    @UseGuards(AuthGuard(), UserGuard)
     public async findOne(
         @UserDecorator() { id: userId, ownerId }: ILoggedInUser,
         @Param('id', new ParseUUIDPipe({ version: '4' })) id: string
@@ -36,7 +36,7 @@ export class DemandController {
     }
 
     @Get()
-    @UseGuards(AuthGuard())
+    @UseGuards(AuthGuard(), UserGuard)
     public async getAll(@UserDecorator() { id: userId, ownerId }: ILoggedInUser) {
         this.logger.debug(`Requested all demands from userId=${userId} with ownerId=${ownerId}`);
 
@@ -44,7 +44,7 @@ export class DemandController {
     }
 
     @Post()
-    @UseGuards(AuthGuard())
+    @UseGuards(AuthGuard(), UserGuard)
     public async create(
         @UserDecorator() { id: userId, ownerId }: ILoggedInUser,
         @Body() createDemand: CreateDemandDTO
@@ -58,7 +58,7 @@ export class DemandController {
     }
 
     @Post('/:id/pause')
-    @UseGuards(AuthGuard())
+    @UseGuards(AuthGuard(), UserGuard)
     @HttpCode(202)
     public async pause(
         @UserDecorator() { id: userId, ownerId }: ILoggedInUser,
@@ -71,7 +71,7 @@ export class DemandController {
     }
 
     @Post('/:id/resume')
-    @UseGuards(AuthGuard())
+    @UseGuards(AuthGuard(), UserGuard)
     @HttpCode(202)
     public async resume(
         @UserDecorator() { id: userId, ownerId }: ILoggedInUser,
@@ -91,7 +91,7 @@ export class DemandController {
     }
 
     @Post('/:id/archive')
-    @UseGuards(AuthGuard())
+    @UseGuards(AuthGuard(), UserGuard)
     @HttpCode(202)
     public async archive(
         @UserDecorator() { id: userId, ownerId }: ILoggedInUser,
