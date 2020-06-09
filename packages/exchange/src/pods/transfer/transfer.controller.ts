@@ -24,7 +24,6 @@ export class TransferController {
         @Body() withdrawal: RequestWithdrawalDTO
     ) {
         try {
-            console.log('>>> TransferController.requestWithdrawal: ', withdrawal);
             const result = await this.transferService.requestWithdrawal(user.ownerId, withdrawal);
 
             return result;

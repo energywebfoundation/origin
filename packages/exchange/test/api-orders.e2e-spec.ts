@@ -1,6 +1,6 @@
 import { INestApplication } from '@nestjs/common';
 import { expect } from 'chai';
-import { ethers } from 'ethers';
+import { ethers, Contract } from 'ethers';
 import request from 'supertest';
 import { OrderStatus } from '@energyweb/exchange-core';
 
@@ -14,6 +14,7 @@ import { Transfer } from '../src/pods/transfer/transfer.entity';
 import { TransferService } from '../src/pods/transfer/transfer.service';
 import { DatabaseService } from './database.service';
 import { authenticatedUser, bootstrapTestInstance } from './exchange';
+import { issueToken } from './utils';
 
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -22,6 +23,7 @@ describe('account ask order send', () => {
     let transferService: TransferService;
     let databaseService: DatabaseService;
     let accountService: AccountService;
+    let issuer: Contract;
 
     const user1Id = authenticatedUser.organization;
     const dummyAsset = {
@@ -49,8 +51,13 @@ describe('account ask order send', () => {
     };
 
     before(async () => {
-        ({ transferService, accountService, databaseService, app } = await bootstrapTestInstance());
-
+        ({
+            transferService,
+            accountService,
+            databaseService,
+            app,
+            issuer
+        } = await bootstrapTestInstance());
         await app.init();
     });
 
@@ -149,14 +156,32 @@ describe('account ask order send', () => {
     });
 
     it('should be able to withdraw after confirming deposit', async () => {
-        await confirmDeposit();
+        const { generationFrom, generationTo } = dummyAsset;
 
+        const certificateId = await issueToken(
+            issuer,
+            user1Address,
+            amount,
+            generationFrom.getTime(),
+            generationTo.getTime()
+        );
+        const asset = {
+            ...dummyAsset,
+            tokenId: String(certificateId)
+        };
+        const txHash = '0x001';
+        const dep = await transferService.createDeposit({
+            address: user1Address,
+            transactionHash: txHash,
+            amount,
+            asset
+        });
+        await transferService.setAsConfirmed(txHash, 10000);
         const withdrawal: RequestWithdrawalDTO = {
-            assetId: deposit.asset.id,
+            assetId: dep.asset.id,
             amount,
             address: withdrawalAddress
         };
-
         await request(app.getHttpServer())
             .post('/transfer/withdrawal')
             .send(withdrawal)
