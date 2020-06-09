@@ -1,11 +1,9 @@
 import { INestApplication } from '@nestjs/common';
 import { expect } from 'chai';
-import { ethers, Wallet, Contract, Event as BlockchainEvent } from 'ethers';
+import { ethers, Contract } from 'ethers';
 import request from 'supertest';
 import { OrderStatus } from '@energyweb/exchange-core';
 
-import { ConfigService } from '@nestjs/config';
-import { Interface } from 'ethers/utils';
 import { AccountDTO } from '../src/pods/account/account.dto';
 import { AccountService } from '../src/pods/account/account.service';
 import { CreateAskDTO } from '../src/pods/order/create-ask.dto';
@@ -16,7 +14,7 @@ import { Transfer } from '../src/pods/transfer/transfer.entity';
 import { TransferService } from '../src/pods/transfer/transfer.service';
 import { DatabaseService } from './database.service';
 import { authenticatedUser, bootstrapTestInstance } from './exchange';
-import { IssuerJSON } from '../../issuer/src/contracts';
+import { issueToken } from './utils';
 
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -25,7 +23,6 @@ describe('account ask order send', () => {
     let transferService: TransferService;
     let databaseService: DatabaseService;
     let accountService: AccountService;
-    let configService: ConfigService;
     let issuer: Contract;
 
     const user1Id = authenticatedUser.organization;
@@ -61,7 +58,6 @@ describe('account ask order send', () => {
             app,
             issuer
         } = await bootstrapTestInstance());
-        configService = app.get<ConfigService>(ConfigService);
         await app.init();
     });
 
@@ -160,31 +156,14 @@ describe('account ask order send', () => {
     });
 
     it('should be able to withdraw after confirming deposit', async () => {
-        const { generationFrom, generationTo, deviceId } = dummyAsset;
-        const web3ProviderUrl = configService.get<string>('WEB3');
-        const provider = new ethers.providers.JsonRpcProvider(web3ProviderUrl);
-        const requestorPriv = '0xa0cd7b0d58b9b399a07b05610e54c34e7091a3af6056f6d8b7e71e72baa3b7a4';
-        const requestorWallet = new Wallet(requestorPriv, provider);
-        const issuerWithRequestor = issuer.connect(requestorWallet);
-        const data = await issuer.encodeData(
+        const { generationFrom, generationTo } = dummyAsset;
+
+        const certificateId = await issueToken(
+            issuer,
+            user1Address,
+            amount,
             generationFrom.getTime(),
-            generationTo.getTime(),
-            deviceId
-        );
-        const tx = await issuerWithRequestor.requestCertificationFor(data, user1Address, false);
-        const {
-            events: [certificationRequested]
-        } = await tx.wait();
-        const certReqId = (certificationRequested.args as any)._id.toNumber();
-        const issuerInterface = new Interface(IssuerJSON.abi);
-        const validityData = issuerInterface.functions.isRequestValid.encode([
-            certReqId.toString()
-        ]);
-        const approveTx = await issuer.approveCertificationRequest(certReqId, amount, validityData);
-        const { events } = await approveTx.wait();
-        const certificateId = Number(
-            events.find((log: BlockchainEvent) => log.event === 'CertificationRequestApproved')
-                .topics[3]
+            generationTo.getTime()
         );
         const asset = {
             ...dummyAsset,
