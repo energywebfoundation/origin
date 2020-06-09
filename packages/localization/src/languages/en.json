@@ -183,7 +183,8 @@
                 "haveToBeLoggedInUser": "You need to be a logged in user.",
                 "userHasToBePartOfApprovedOrganization": "The user should be a part of an approved organization.",
                 "userHasToHaveBlockchainAccount": "The user has to have a blockchain account attached to the account.",
-                "blockchainAccountMismatch": "Blockchain account mismatch"
+                "blockchainAccountMismatch": "Blockchain account mismatch",
+                "registerOrLoginTryAgain": "Please log in or register to the platform, then try again."
             },
             "info": {
                 "tryingToSignAndBoundIs": "You are trying to sign a transaction with account different than the one that has been linked to your account. Blockchain address bound to your user is:",
