@@ -1,3 +1,4 @@
+/* eslint-disable import/no-extraneous-dependencies */
 import { IDevice } from '@energyweb/origin-backend-core';
 import {
     Button,
@@ -9,10 +10,12 @@ import {
     TextField
 } from '@material-ui/core';
 import { Delete, Edit } from '@material-ui/icons';
+import { text } from '@storybook/addon-knobs';
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { getOffChainDataSource } from '../features/general/selectors';
 import { getUserOffchain } from '../features/users/selectors';
+import { formatCurrencyComplete, moment, useTranslation } from '../utils';
 import { EnergyFormatter } from '../utils/EnergyFormatter';
 import { NotificationType, showNotification } from '../utils/notifications';
 import {
@@ -21,7 +24,6 @@ import {
     usePaginatedLoaderFiltered
 } from './Table';
 import { CustomFilterInputType, ICustomFilterDefinition } from './Table/FiltersHeader';
-import { moment, useTranslation } from '../utils';
 
 interface IRecord {
     device: IDevice;
@@ -100,9 +102,9 @@ export function AutoSupplyDeviceTable() {
 
     const rows = paginatedData.map(({ device }) => {
         return {
-            type: device.deviceType?.replace(new RegExp(';', 'g'), '-') ?? '-',
+            type: device.deviceType?.replace(new RegExp(';', 'g'), ' - ') ?? '-',
             facility: device.facilityName,
-            price: device.defaultAskPrice / 100,
+            price: formatCurrencyComplete(device.defaultAskPrice / 100, text('currency', 'USD')),
             status: device.automaticPostForSale ? KeyStatus[1] : KeyStatus[2],
             certified: EnergyFormatter.format(device.meterStats?.uncertified?.toNumber() ?? 0)
         };
@@ -123,7 +125,12 @@ export function AutoSupplyDeviceTable() {
             name: 'Update',
             onClick: (index: string) => {
                 const { device } = paginatedData[index];
-                setEntity({ ...device, defaultAskPrice: device.defaultAskPrice / 100 });
+
+                setEntity({
+                    ...device,
+                    deviceType: device.deviceType?.replace(new RegExp(';', 'g'), ' - ') ?? '-',
+                    defaultAskPrice: device.defaultAskPrice / 100
+                });
                 setShowModal(true);
             }
         }
