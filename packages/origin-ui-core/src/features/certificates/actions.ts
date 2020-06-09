@@ -230,7 +230,7 @@ export const requestWithdrawCertificate = (
     payload: IRequestWithdrawCertificateAction['payload']
 ) => ({
     type: CertificatesActions.withdrawCertificate,
-    payload
+    payload: { ...payload, amount: Number(payload.amount) / 2 }
 });
 
 export type ICertificatesAction =

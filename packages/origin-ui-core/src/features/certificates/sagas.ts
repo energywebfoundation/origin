@@ -412,7 +412,6 @@ export function* withdrawSaga(): SagaIterator {
             CertificatesActions.withdrawCertificate
         );
         const { callback } = action.payload;
-        console.log('>>> took withdraw action');
         const exchangeClient: IExchangeClient = yield select(getExchangeClient);
         yield call([exchangeClient, exchangeClient.withdraw], action.payload);
         if (callback) {

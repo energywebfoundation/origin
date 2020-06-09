@@ -219,7 +219,6 @@ export function CertificateTable(props: IProps) {
     function hideWithdrawModal() {
         loadPage(1);
         setSelectedCertificate(null);
-        console.log('>>> hideWithdrawalModal()');
         setWithdrawModalVisibility(false);
     }
 

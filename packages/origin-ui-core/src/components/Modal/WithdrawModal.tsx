@@ -16,7 +16,7 @@ import { resyncCertificate, requestWithdrawCertificate } from '../../features/ce
 import { ICertificateViewItem } from '../../features/certificates/types';
 import { getExchangeClient } from '../../features/general/selectors';
 import { getUserOffchain } from '../../features/users/selectors';
-import { EnergyFormatter, formatDate } from '../../utils';
+import { EnergyFormatter, formatDate, countDecimals } from '../../utils';
 
 interface IProps {
     certificate: ICertificateViewItem;
@@ -34,6 +34,9 @@ export function WithdrawModal(props: IProps) {
     const [energyInDisplayUnit, setEnergyInDisplayUnit] = useState(
         EnergyFormatter.getValueInDisplayUnit(DEFAULT_ENERGY_IN_BASE_UNIT)
     );
+    const [validation, setValidation] = useState({
+        energyInDisplayUnit: true
+    });
 
     const dispatch = useDispatch();
 
@@ -52,7 +55,37 @@ export function WithdrawModal(props: IProps) {
         callback();
     }
 
+    async function validateInputs(event) {
+        switch (event.target.id) {
+            case 'energyInDisplayUnitInput':
+                const newEnergyInDisplayUnit = Number(event.target.value);
+                const newEnergyInBaseValueUnit = EnergyFormatter.getBaseValueFromValueInDisplayUnit(
+                    newEnergyInDisplayUnit
+                );
+
+                const ownedPublicVolume = certificate.energy.publicVolume;
+
+                const energyInDisplayUnitValid =
+                    newEnergyInBaseValueUnit.gte(1) &&
+                    newEnergyInBaseValueUnit.lt(ownedPublicVolume) &&
+                    countDecimals(newEnergyInDisplayUnit) <= 6;
+
+                setEnergyInDisplayUnit(newEnergyInDisplayUnit);
+
+                setValidation({
+                    ...validation,
+                    energyInDisplayUnit: energyInDisplayUnitValid
+                });
+                break;
+        }
+    }
+
+    const isFormValid = validation.energyInDisplayUnit;
+
     async function withdraw() {
+        if (!isFormValid) {
+            return;
+        }
         const account = await exchangeClient.getAccount();
         const assetId = certificate.assetId;
         const address = user.blockchainAccountAddress;
@@ -99,18 +132,20 @@ export function WithdrawModal(props: IProps) {
 
                 <TextField
                     label={EnergyFormatter.displayUnit}
+                    type="number"
                     value={energyInDisplayUnit}
                     className="mt-4"
                     id="energyInDisplayUnitInput"
+                    onChange={(e) => validateInputs(e)}
+                    placeholder="1"
                     fullWidth
-                    disabled
                 />
             </DialogContent>
             <DialogActions>
                 <Button onClick={handleClose} color="secondary">
                     Cancel
                 </Button>
-                <Button onClick={withdraw} color="primary">
+                <Button onClick={withdraw} color="primary" disabled={!isFormValid}>
                     Withdraw
                 </Button>
             </DialogActions>
