@@ -71,10 +71,10 @@ export function OrganizationInvite() {
             showNotification(`Invitation sent`, NotificationType.Success);
         } catch (error) {
             console.warn('Error while inviting user to organization', error);
-
+            const _error = { ...error };
             if (error?.response?.status === 401) {
                 showNotification('Unauthorized.', NotificationType.Error);
-            } else if (error.toJSON().message === 'Request failed with status code 412') {
+            } else if (_error.response.status === 412) {
                 showNotification(
                     `Only active users can perform this action. Your status is ${
                         Status[userOffchain.status]

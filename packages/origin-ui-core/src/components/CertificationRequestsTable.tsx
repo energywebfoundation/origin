@@ -79,7 +79,8 @@ export function CertificationRequestsTable(props: IProps) {
                 });
             }
         } catch (error) {
-            if (error.toJSON().message === 'Request failed with status code 412') {
+            const _error = { ...error };
+            if (_error.response.status === 412) {
                 showNotification(
                     `Only active users can perform this action. Your status is ${
                         Status[user.status]

@@ -5,13 +5,13 @@ import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { getOffChainDataSource } from '../features/general/selectors';
 import { getUserOffchain } from '../features/users/selectors';
+import { NotificationType, showNotification } from '../utils/notifications';
 import {
     IPaginatedLoaderHooksFetchDataParameters,
     TableMaterial,
     usePaginatedLoaderFiltered
 } from './Table';
 import { CustomFilterInputType, ICustomFilterDefinition } from './Table/FiltersHeader';
-import { showNotification, NotificationType } from '../utils/notifications';
 
 interface IRecord {
     user: IUser;
@@ -59,7 +59,9 @@ export function AdminUsersTable() {
                 entities = await adminClient.getAllUsers();
             }
         } catch (error) {
-            if (error.toJSON().message === 'Request failed with status code 412') {
+            const _error = { ...error };
+
+            if (_error.response.status === 412) {
                 showNotification(
                     `Only active users can perform this action. Your status is ${
                         Status[userOffchain.status]
