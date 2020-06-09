@@ -26,6 +26,7 @@ import {
     Checkbox,
     TableSortLabel
 } from '@material-ui/core';
+import { TableActionId } from './Actions';
 
 type TableOnSelectFunction = (id: string, selected: boolean) => void;
 
@@ -132,6 +133,8 @@ export function TableMaterial<T extends readonly ITableColumn[]>(props: IProps<T
         toggleSort,
         highlightedRowsIds: highlightedRowsIndexes
     } = props;
+    console.log('>>> rows of CertificateTable:', rows);
+    console.log('>>> columns of CertificateTable:', columns);
 
     if (selectedIds.length > rows.length) {
         setSelectedIds([]);
@@ -279,7 +282,17 @@ export function TableMaterial<T extends readonly ITableColumn[]>(props: IProps<T
                                                     key={id}
                                                     className={classes.tableCellWrappingActions}
                                                 >
-                                                    <Actions actions={actions} id={id} />
+                                                    <Actions
+                                                        actions={actions.filter((action) => {
+                                                            return !(
+                                                                action.id ===
+                                                                    TableActionId.Withdraw &&
+                                                                (row as any)?.source ===
+                                                                    'Blockchain'
+                                                            );
+                                                        })}
+                                                        id={id}
+                                                    />
                                                 </TableCell>
                                             )}
                                         </TableRow>

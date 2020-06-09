@@ -30,7 +30,8 @@ import {
     checkRecordPassesFilters,
     usePaginatedLoaderFiltered,
     IPaginatedLoaderHooksFetchDataParameters,
-    ITableAction
+    ITableAction,
+    TableActionId
 } from './Table';
 import { getCertificates } from '../features/certificates/selectors';
 import { PublishForSaleModal } from './Modal/PublishForSaleModal';
@@ -379,6 +380,7 @@ export function CertificateTable(props: IProps) {
                     onClick: publishForSale
                 });
                 actions.push({
+                    id: TableActionId.Withdraw,
                     name: t('certificate.actions.withdraw'),
                     icon: <Undo />,
                     onClick: withdraw
