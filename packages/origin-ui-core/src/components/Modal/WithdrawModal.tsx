@@ -14,7 +14,7 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { resyncCertificate, requestWithdrawCertificate } from '../../features/certificates';
 import { ICertificateViewItem } from '../../features/certificates/types';
-import { getExchangeClient, getEnvironment } from '../../features/general/selectors';
+import { getEnvironment } from '../../features/general/selectors';
 import { getUserOffchain } from '../../features/users/selectors';
 import { EnergyFormatter, formatDate, countDecimals } from '../../utils';
 import { IEnvironment } from '../../features/general';
