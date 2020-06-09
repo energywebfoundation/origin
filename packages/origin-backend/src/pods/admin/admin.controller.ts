@@ -6,7 +6,7 @@ import {
     Status,
     KYCStatus
 } from '@energyweb/origin-backend-core';
-import { Roles, RolesGuard } from '@energyweb/origin-backend-utils';
+import { Roles, RolesGuard, ActiveUserGuard } from '@energyweb/origin-backend-utils';
 import { Body, Controller, Get, Param, Put, UseGuards, Query } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 
@@ -21,14 +21,14 @@ export class AdminController {
     ) {}
 
     @Get('users')
-    @UseGuards(AuthGuard('jwt'), RolesGuard)
+    @UseGuards(AuthGuard('jwt'), ActiveUserGuard, RolesGuard)
     @Roles(Role.Admin, Role.SupportAgent)
     public async getAllUsers() {
         return this.adminService.getAllUsers();
     }
 
     @Get('usersBy')
-    @UseGuards(AuthGuard('jwt'))
+    @UseGuards(AuthGuard('jwt'), ActiveUserGuard)
     @Roles(Role.Admin, Role.SupportAgent)
     public async getUsersBy(
         @Query('orgName') orgName: string,
@@ -39,7 +39,7 @@ export class AdminController {
     }
 
     @Put('users/:id')
-    @UseGuards(AuthGuard('jwt'), RolesGuard)
+    @UseGuards(AuthGuard('jwt'), ActiveUserGuard, RolesGuard)
     @Roles(Role.Admin, Role.SupportAgent)
     public async put(@Param('id') id: string, @Body() body: IUser) {
         const user = await this.adminService.update(id, body);

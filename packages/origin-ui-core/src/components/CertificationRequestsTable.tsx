@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Role, isRole } from '@energyweb/origin-backend-core';
+import { Role, isRole, Status } from '@energyweb/origin-backend-core';
 import { useSelector, useDispatch } from 'react-redux';
 import { getProducingDevices, getConfiguration } from '../features/selectors';
 import { TableMaterial } from './Table/TableMaterial';
@@ -16,7 +16,9 @@ import {
     getDeviceLocationText,
     getDeviceGridOperatorText,
     getDeviceColumns,
-    useTranslation
+    useTranslation,
+    showNotification,
+    NotificationType
 } from '../utils';
 import { Skeleton } from '@material-ui/lab';
 import { getOffChainDataSource, getEnvironment } from '../features/general/selectors';
@@ -52,31 +54,40 @@ export function CertificationRequestsTable(props: IProps) {
                 total: 0
             };
         }
-
-        const isIssuer = isRole(user, Role.Issuer);
-
-        const requests = (await CertificationRequest.getAll(configuration)).filter(
-            (cert) => cert.initialized
-        );
-
         let newPaginatedData: IRecord[] = [];
-
-        for (const request of requests) {
-            const requestDevice = producingDevices.find(
-                // eslint-disable-next-line no-loop-func
-                (device) => device.id?.toString() === request.deviceId
+        const isIssuer = isRole(user, Role.Issuer);
+        try {
+            const requests = (await CertificationRequest.getAll(configuration)).filter(
+                (cert) => cert.initialized
             );
 
-            if (
-                request.approved !== props.approved ||
-                (!isIssuer && user?.organization.id !== requestDevice?.organization)
-            ) {
-                continue;
+            for (const request of requests) {
+                const requestDevice = producingDevices.find(
+                    // eslint-disable-next-line no-loop-func
+                    (device) => device.id?.toString() === request.deviceId
+                );
+
+                if (
+                    request.approved !== props.approved ||
+                    (!isIssuer && user?.organization.id !== requestDevice?.organization)
+                ) {
+                    continue;
+                }
+                newPaginatedData.push({
+                    request,
+                    device: requestDevice
+                });
             }
-            newPaginatedData.push({
-                request,
-                device: requestDevice
-            });
+        } catch (error) {
+            const _error = { ...error };
+            if (_error.response.status === 412) {
+                showNotification(
+                    `Only active users can perform this action. Your status is ${
+                        Status[user.status]
+                    }`,
+                    NotificationType.Error
+                );
+            }
         }
 
         const newTotal = newPaginatedData.length;

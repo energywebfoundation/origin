@@ -23,7 +23,8 @@ describe('Device e2e tests', () => {
             app,
             userService,
             deviceService,
-            organizationService
+            organizationService,
+            adminService
         } = await bootstrapTestInstance();
 
         await app.init();
@@ -32,6 +33,7 @@ describe('Device e2e tests', () => {
             app,
             userService,
             organizationService,
+            adminService,
             [Role.OrganizationUser, Role.OrganizationDeviceManager]
         );
 
@@ -131,7 +133,8 @@ describe('Device e2e tests', () => {
             userService,
             deviceService,
             organizationService,
-            certificationRequestService
+            certificationRequestService,
+            adminService
         } = await bootstrapTestInstance();
 
         await app.init();
@@ -140,6 +143,7 @@ describe('Device e2e tests', () => {
             app,
             userService,
             organizationService,
+            adminService,
             [Role.OrganizationUser, Role.OrganizationDeviceManager]
         );
 

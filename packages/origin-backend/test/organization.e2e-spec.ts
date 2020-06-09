@@ -18,6 +18,7 @@ import { OrganizationService } from '../src/pods/organization/organization.servi
 import { TUserBaseEntity, UserService } from '../src/pods/user';
 import { DatabaseService } from './database.service';
 import { bootstrapTestInstance, registerAndLogin } from './origin-backend';
+import { AdminService } from '../src/pods/admin/admin.service';
 
 describe('Organization e2e tests', () => {
     let app: INestApplication;
@@ -25,6 +26,7 @@ describe('Organization e2e tests', () => {
     let deviceService: DeviceService;
     let organizationService: OrganizationService;
     let userService: UserService;
+    let adminService: AdminService;
 
     before(async () => {
         ({
@@ -32,7 +34,8 @@ describe('Organization e2e tests', () => {
             databaseService,
             deviceService,
             organizationService,
-            userService
+            userService,
+            adminService
         } = await bootstrapTestInstance());
 
         await app.init();
@@ -52,6 +55,7 @@ describe('Organization e2e tests', () => {
             app,
             userService,
             organizationService,
+            adminService,
             [Role.OrganizationAdmin]
         );
 
@@ -126,6 +130,7 @@ describe('Organization e2e tests', () => {
             app,
             userService,
             organizationService,
+            adminService,
             [Role.OrganizationDeviceManager]
         );
 
@@ -173,6 +178,7 @@ describe('Organization e2e tests', () => {
             app,
             userService,
             organizationService,
+            adminService,
             [Role.OrganizationAdmin]
         );
 
@@ -180,6 +186,7 @@ describe('Organization e2e tests', () => {
             app,
             userService,
             organizationService,
+            adminService,
             [Role.OrganizationUser],
             'member'
         );
@@ -204,6 +211,7 @@ describe('Organization e2e tests', () => {
             app,
             userService,
             organizationService,
+            adminService,
             [Role.OrganizationAdmin]
         );
 
@@ -232,6 +240,7 @@ describe('Organization e2e tests', () => {
             app,
             userService,
             organizationService,
+            adminService,
             [Role.OrganizationAdmin]
         );
 
@@ -246,6 +255,7 @@ describe('Organization e2e tests', () => {
             app,
             userService,
             organizationService,
+            adminService,
             [Role.OrganizationAdmin]
         );
 
@@ -253,6 +263,7 @@ describe('Organization e2e tests', () => {
             app,
             userService,
             organizationService,
+            adminService,
             [Role.OrganizationUser],
             'member'
         );

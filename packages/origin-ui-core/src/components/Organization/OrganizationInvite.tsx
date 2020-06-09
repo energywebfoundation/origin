@@ -16,11 +16,12 @@ import {
     FilledInput,
     MenuItem
 } from '@material-ui/core';
-import { OrganizationRole, Role } from '@energyweb/origin-backend-core';
+import { OrganizationRole, Role, Status } from '@energyweb/origin-backend-core';
 
 import { showNotification, NotificationType } from '../../utils/notifications';
 import { setLoading } from '../../features/general/actions';
 import { FormInput } from '../Form/FormInput';
+import { getUserOffchain } from '../../features/users/selectors';
 import { getOffChainDataSource } from '../../features/general/selectors';
 import { roleNames } from './Organization';
 import { useTranslation } from '../../utils';
@@ -43,6 +44,7 @@ export function OrganizationInvite() {
     const { t } = useTranslation();
 
     const organizationClient = useSelector(getOffChainDataSource)?.organizationClient;
+    const userOffchain = useSelector(getUserOffchain);
 
     const dispatch = useDispatch();
 
@@ -69,9 +71,16 @@ export function OrganizationInvite() {
             showNotification(`Invitation sent`, NotificationType.Success);
         } catch (error) {
             console.warn('Error while inviting user to organization', error);
-
+            const _error = { ...error };
             if (error?.response?.status === 401) {
                 showNotification('Unauthorized.', NotificationType.Error);
+            } else if (_error.response.status === 412) {
+                showNotification(
+                    `Only active users can perform this action. Your status is ${
+                        Status[userOffchain.status]
+                    }`,
+                    NotificationType.Error
+                );
             } else {
                 showNotification('Could not invite user to organization.', NotificationType.Error);
             }

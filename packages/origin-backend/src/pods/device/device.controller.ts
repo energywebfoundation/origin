@@ -7,7 +7,7 @@ import {
     ISmartMeterRead,
     Role
 } from '@energyweb/origin-backend-core';
-import { Roles, RolesGuard, UserDecorator } from '@energyweb/origin-backend-utils';
+import { Roles, RolesGuard, UserDecorator, ActiveUserGuard } from '@energyweb/origin-backend-utils';
 import {
     BadRequestException,
     Body,
@@ -47,14 +47,14 @@ export class DeviceController {
     }
 
     @Get('/my-devices')
-    @UseGuards(AuthGuard(), RolesGuard)
+    @UseGuards(AuthGuard(), ActiveUserGuard, RolesGuard)
     @Roles(Role.OrganizationAdmin, Role.OrganizationDeviceManager, Role.OrganizationUser)
     async getMyDevices(@UserDecorator() { organizationId }: ILoggedInUser) {
         return this.deviceService.getAll({ where: { organization: { id: organizationId } } });
     }
 
     @Get('supplyBy')
-    @UseGuards(AuthGuard(), RolesGuard)
+    @UseGuards(AuthGuard(), ActiveUserGuard, RolesGuard)
     @Roles(Role.OrganizationAdmin, Role.OrganizationDeviceManager, Role.OrganizationUser)
     async getSupplyBy(
         @UserDecorator() { organizationId }: ILoggedInUser,
@@ -80,7 +80,7 @@ export class DeviceController {
     }
 
     @Post()
-    @UseGuards(AuthGuard(), RolesGuard)
+    @UseGuards(AuthGuard(), ActiveUserGuard, RolesGuard)
     @Roles(Role.OrganizationAdmin, Role.OrganizationDeviceManager)
     async post(@Body() body: DeviceCreateData, @UserDecorator() loggedUser: ILoggedInUser) {
         if (typeof loggedUser.organizationId === 'undefined') {
@@ -91,7 +91,7 @@ export class DeviceController {
     }
 
     @Delete('/:id')
-    @UseGuards(AuthGuard(), RolesGuard)
+    @UseGuards(AuthGuard(), ActiveUserGuard, RolesGuard)
     @Roles(Role.OrganizationAdmin, Role.OrganizationDeviceManager)
     async delete(@Param('id') id: string) {
         const existingEntity = await this.deviceService.findOne(id);
@@ -108,7 +108,7 @@ export class DeviceController {
     }
 
     @Put('/:id')
-    @UseGuards(AuthGuard(), RolesGuard)
+    @UseGuards(AuthGuard(), ActiveUserGuard, RolesGuard)
     @Roles(Role.OrganizationAdmin, Role.OrganizationDeviceManager, Role.Issuer)
     async put(
         @Param('id') id: string,
@@ -119,7 +119,7 @@ export class DeviceController {
     }
 
     @Put('/:id/settings')
-    @UseGuards(AuthGuard(), RolesGuard)
+    @UseGuards(AuthGuard(), ActiveUserGuard, RolesGuard)
     @Roles(Role.OrganizationAdmin, Role.OrganizationDeviceManager, Role.OrganizationUser)
     async updateDeviceSettings(
         @Param('id') id: string,

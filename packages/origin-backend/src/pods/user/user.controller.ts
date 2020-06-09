@@ -7,7 +7,7 @@ import {
     IUser,
     UserPasswordUpdate
 } from '@energyweb/origin-backend-core';
-import { UserDecorator } from '@energyweb/origin-backend-utils';
+import { UserDecorator, ActiveUserGuard } from '@energyweb/origin-backend-utils';
 import {
     BadRequestException,
     Body,
@@ -42,13 +42,13 @@ export class UserController {
     }
 
     @Get('me')
-    @UseGuards(AuthGuard('jwt'))
+    @UseGuards(AuthGuard('jwt'), ActiveUserGuard)
     me(@UserDecorator() user: ILoggedInUser) {
         return this.userService.findById(user.id);
     }
 
     @Put()
-    @UseGuards(AuthGuard('jwt'))
+    @UseGuards(AuthGuard('jwt'), ActiveUserGuard)
     public async update(
         @UserDecorator() user: ILoggedInUser,
         @Body() body: UserUpdateData
@@ -77,13 +77,13 @@ export class UserController {
     }
 
     @Put('profile')
-    @UseGuards(AuthGuard('jwt'))
+    @UseGuards(AuthGuard('jwt'), ActiveUserGuard)
     public async putProfile(@UserDecorator() { id }: ILoggedInUser, @Body() body: IUser) {
         return this.userService.updateProfile(id, body);
     }
 
     @Put('password')
-    @UseGuards(AuthGuard('jwt'))
+    @UseGuards(AuthGuard('jwt'), ActiveUserGuard)
     public async putPassword(
         @UserDecorator() { email }: ILoggedInUser,
         @Body() body: UserPasswordUpdate
@@ -92,7 +92,7 @@ export class UserController {
     }
 
     @Put('chainAddress')
-    @UseGuards(AuthGuard('jwt'))
+    @UseGuards(AuthGuard('jwt'), ActiveUserGuard)
     public async putChainAddress(@UserDecorator() { id }: ILoggedInUser, @Body() body: IUser) {
         return this.userService.updateBlockChainAddress(id, body);
     }

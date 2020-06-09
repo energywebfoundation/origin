@@ -12,7 +12,7 @@ import {
     OrganizationRole,
     IOrganizationUpdateMemberRole
 } from '@energyweb/origin-backend-core';
-import { Roles, RolesGuard, UserDecorator } from '@energyweb/origin-backend-utils';
+import { Roles, RolesGuard, UserDecorator, ActiveUserGuard } from '@energyweb/origin-backend-utils';
 import {
     BadRequestException,
     Body,
@@ -64,7 +64,7 @@ export class OrganizationController {
     }
 
     @Get('/invitation')
-    @UseGuards(AuthGuard())
+    @UseGuards(AuthGuard(), ActiveUserGuard)
     async getInvitations(
         @UserDecorator() loggedUser: ILoggedInUser
     ): Promise<IOrganizationInvitation[]> {
@@ -77,7 +77,7 @@ export class OrganizationController {
     }
 
     @Get('/:id/users')
-    @UseGuards(AuthGuard(), RolesGuard)
+    @UseGuards(AuthGuard(), ActiveUserGuard, RolesGuard)
     @Roles(Role.OrganizationAdmin, Role.Admin, Role.SupportAgent)
     async getUsers(
         @Param('id', new ParseIntPipe()) id: number,
@@ -99,7 +99,7 @@ export class OrganizationController {
     }
 
     @Get('/:id/devices')
-    @UseGuards(AuthGuard(), RolesGuard)
+    @UseGuards(AuthGuard(), ActiveUserGuard, RolesGuard)
     @Roles(Role.OrganizationAdmin, Role.OrganizationDeviceManager, Role.Admin, Role.SupportAgent)
     async getDevices(@Param('id') id: string, @UserDecorator() loggedUser: ILoggedInUser) {
         if (!isRole(loggedUser, Role.OrganizationDeviceManager)) {
@@ -126,7 +126,7 @@ export class OrganizationController {
     }
 
     @Post()
-    @UseGuards(AuthGuard())
+    @UseGuards(AuthGuard(), ActiveUserGuard)
     async post(@Body() body: OrganizationPostData, @UserDecorator() loggedUser: ILoggedInUser) {
         try {
             const organization = this.organizationService.create(loggedUser.id, body);
@@ -141,7 +141,7 @@ export class OrganizationController {
     }
 
     @Delete('/:id')
-    @UseGuards(AuthGuard(), RolesGuard)
+    @UseGuards(AuthGuard(), ActiveUserGuard, RolesGuard)
     @Roles(Role.Admin)
     async delete(@Param('id') id: string) {
         const existingEntity = await this.organizationService.findOne(id);
@@ -158,7 +158,7 @@ export class OrganizationController {
     }
 
     @Put('/:id')
-    @UseGuards(AuthGuard(), RolesGuard)
+    @UseGuards(AuthGuard(), ActiveUserGuard, RolesGuard)
     @Roles(Role.Admin)
     async put(@Param('id') id: string, @Body() body: OrganizationUpdateData) {
         const existingEntity = await this.organizationService.findOne(id);
@@ -197,7 +197,7 @@ export class OrganizationController {
     }
 
     @Get('/:id/invitations')
-    @UseGuards(AuthGuard())
+    @UseGuards(AuthGuard(), ActiveUserGuard)
     async getInvitationsForOrganization(
         @Param('id') organizationId: string,
         @UserDecorator() loggedUser: ILoggedInUser
@@ -223,7 +223,7 @@ export class OrganizationController {
     }
 
     @Put('/invitation/:invitationId')
-    @UseGuards(AuthGuard())
+    @UseGuards(AuthGuard(), ActiveUserGuard)
     async updateInvitation(
         @Body('status') status: IOrganizationInvitation['status'],
         @Param('invitationId') invitationId: string,
@@ -234,7 +234,7 @@ export class OrganizationController {
     }
 
     @Post('/invite')
-    @UseGuards(AuthGuard(), RolesGuard)
+    @UseGuards(AuthGuard(), ActiveUserGuard, RolesGuard)
     @Roles(Role.OrganizationAdmin, Role.Admin)
     async invite(
         @Body('email') email: string,
@@ -250,7 +250,7 @@ export class OrganizationController {
     }
 
     @Post(':id/remove-member/:userId')
-    @UseGuards(AuthGuard(), RolesGuard)
+    @UseGuards(AuthGuard(), ActiveUserGuard, RolesGuard)
     @Roles(Role.OrganizationAdmin, Role.Admin)
     async removeMember(
         @Param('id', new ParseIntPipe()) organizationId: number,
@@ -266,7 +266,7 @@ export class OrganizationController {
     }
 
     @Put(':id/change-role/:userId')
-    @UseGuards(AuthGuard(), RolesGuard)
+    @UseGuards(AuthGuard(), ActiveUserGuard, RolesGuard)
     @Roles(Role.OrganizationAdmin, Role.Admin)
     async changeMemberRole(
         @Param('id', new ParseIntPipe()) organizationId: number,
