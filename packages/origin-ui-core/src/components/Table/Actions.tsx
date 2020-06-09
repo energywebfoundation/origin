@@ -6,6 +6,8 @@ import { useTheme, createStyles, makeStyles } from '@material-ui/core';
 import { useOriginConfiguration } from '../../utils/configuration';
 
 export enum TableActionId {
+    Claim = 0,
+    PublishForSale = 1,
     Withdraw = 2
 }
 export interface ITableAction {

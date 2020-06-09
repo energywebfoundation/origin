@@ -133,8 +133,6 @@ export function TableMaterial<T extends readonly ITableColumn[]>(props: IProps<T
         toggleSort,
         highlightedRowsIds: highlightedRowsIndexes
     } = props;
-    console.log('>>> rows of CertificateTable:', rows);
-    console.log('>>> columns of CertificateTable:', columns);
 
     if (selectedIds.length > rows.length) {
         setSelectedIds([]);
@@ -285,10 +283,12 @@ export function TableMaterial<T extends readonly ITableColumn[]>(props: IProps<T
                                                     <Actions
                                                         actions={actions.filter((action) => {
                                                             return !(
-                                                                action.id ===
-                                                                    TableActionId.Withdraw &&
                                                                 (row as any)?.source ===
-                                                                    'Blockchain'
+                                                                    'Blockchain' &&
+                                                                (action.id ===
+                                                                    TableActionId.Withdraw ||
+                                                                    action.id ===
+                                                                        TableActionId.PublishForSale)
                                                             );
                                                         })}
                                                         id={id}
