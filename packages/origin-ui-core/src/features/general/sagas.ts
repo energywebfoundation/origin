@@ -392,7 +392,6 @@ function* fetchDataAfterConfigurationChange(
             call(findEnhancedCertificate, asset, initializedCertificates)
         )
     );
-    console.groupEnd();
     const certificates = initializedCertificates.concat(available);
 
     for (const certificate of certificates) {
