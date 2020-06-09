@@ -1,9 +1,11 @@
 import { INestApplication } from '@nestjs/common';
 import { expect } from 'chai';
-import { ethers } from 'ethers';
+import { ethers, Wallet, Contract, Event as BlockchainEvent } from 'ethers';
 import request from 'supertest';
 import { OrderStatus } from '@energyweb/exchange-core';
 
+import { ConfigService } from '@nestjs/config';
+import { Interface } from 'ethers/utils';
 import { AccountDTO } from '../src/pods/account/account.dto';
 import { AccountService } from '../src/pods/account/account.service';
 import { CreateAskDTO } from '../src/pods/order/create-ask.dto';
@@ -14,6 +16,7 @@ import { Transfer } from '../src/pods/transfer/transfer.entity';
 import { TransferService } from '../src/pods/transfer/transfer.service';
 import { DatabaseService } from './database.service';
 import { authenticatedUser, bootstrapTestInstance } from './exchange';
+import { IssuerJSON } from '../../issuer/src/contracts';
 
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -22,6 +25,8 @@ describe('account ask order send', () => {
     let transferService: TransferService;
     let databaseService: DatabaseService;
     let accountService: AccountService;
+    let configService: ConfigService;
+    let issuer: Contract;
 
     const user1Id = authenticatedUser.organization;
     const dummyAsset = {
@@ -49,8 +54,14 @@ describe('account ask order send', () => {
     };
 
     before(async () => {
-        ({ transferService, accountService, databaseService, app } = await bootstrapTestInstance());
-
+        ({
+            transferService,
+            accountService,
+            databaseService,
+            app,
+            issuer
+        } = await bootstrapTestInstance());
+        configService = app.get<ConfigService>(ConfigService);
         await app.init();
     });
 
@@ -149,13 +160,55 @@ describe('account ask order send', () => {
     });
 
     it('should be able to withdraw after confirming deposit', async () => {
-        await confirmDeposit();
+        const { generationFrom, generationTo, deviceId } = dummyAsset;
+        const web3ProviderUrl = configService.get<string>('WEB3');
+        const provider = new ethers.providers.JsonRpcProvider(web3ProviderUrl);
+        // const userPriv = Wallet.createRandom().privateKey;
+        const priv = '0xa0cd7b0d58b9b399a07b05610e54c34e7091a3af6056f6d8b7e71e72baa3b7a4';
+        const wallet = new Wallet(priv, provider);
+        const issuerWithSigner = issuer.connect(wallet);
+        const data = await issuer.encodeData(
+            generationFrom.getTime(),
+            generationTo.getTime(),
+            deviceId
+        );
+        const tx = await issuerWithSigner.requestCertificationFor(data, user1Address, false);
+        const {
+            events: [certificationRequested]
+        } = await tx.wait();
+        const certReqId = (certificationRequested.args as any)._id.toNumber();
+        const issuerInterface = new Interface(IssuerJSON.abi);
+        const validityData = issuerInterface.functions.isRequestValid.encode([
+            certReqId.toString()
+        ]);
+        console.log('>>> certificate request id:', certReqId);
+        const approveTx = await issuer.approveCertificationRequest(certReqId, amount, validityData);
+        const { events } = await approveTx.wait();
 
+        const certificateId = Number(
+            events.find((log: BlockchainEvent) => log.event === 'CertificationRequestApproved')
+                .topics[3]
+        );
+        console.log('>>> certificate Id:', certificateId);
+
+        const asset = {
+            ...dummyAsset,
+            tokenId: String(certificateId)
+        };
+        const txHash = '0x001';
+        const dep = await transferService.createDeposit({
+            address: user1Address,
+            transactionHash: txHash,
+            amount,
+            asset
+        });
+        await transferService.setAsConfirmed(txHash, 10000);
         const withdrawal: RequestWithdrawalDTO = {
-            assetId: deposit.asset.id,
+            assetId: dep.asset.id,
             amount,
             address: withdrawalAddress
         };
+        console.log('>>> withdrawal:', withdrawal);
 
         await request(app.getHttpServer())
             .post('/transfer/withdrawal')

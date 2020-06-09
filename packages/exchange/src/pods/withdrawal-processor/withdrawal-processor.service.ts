@@ -142,7 +142,6 @@ export class WithdrawalProcessorService implements OnModuleInit {
         //     await this.transferService.setAsError(id);
         //     return;
         // }
-
         const transaction = (await this.registry.functions.safeTransferFrom(
             this.wallet.address,
             withdrawal.address,
@@ -160,7 +159,6 @@ export class WithdrawalProcessorService implements OnModuleInit {
         const hasLog = receipt.logs
             .map((log) => {
                 const parsed = this.tokenInterface.parseLog(log);
-                console.log('parsed withdraw log:', parsed);
                 return parsed;
             })
             .some((log) => this.hasMatchingLog(withdrawal, log));
@@ -178,23 +176,17 @@ export class WithdrawalProcessorService implements OnModuleInit {
 
     private hasMatchingLog(withdrawal: Transfer, log: ethers.utils.LogDescription) {
         const _to = String(log.values._to).toLowerCase();
+        const _from = String(log.values._from).toLowerCase();
         console.group('hasMatchingLog');
-        console.log(
-            'topics are matched:',
-            log.topic === this.tokenInterface.events.TransferSingle.topic
-        );
-        console.log('withdrawal address:', withdrawal.address);
-        console.log('id-s are matched:', log.values._id.toString() === withdrawal.asset.tokenId);
-        console.log('from are matched:', log.values._from === this.wallet.address);
-        console.log('to are matched:', _to === withdrawal.address);
-        console.log('values are matched:', log.values._value.toString() === withdrawal.amount);
-        console.dir(_to);
+        console.log('>>> withdrawal:', withdrawal);
+        console.log('>>> log:', log);
+        console.log('>>> exchange wallet:', this.wallet);
         console.groupEnd();
         return (
             log.topic === this.tokenInterface.events.TransferSingle.topic &&
             log.values._id.toString() === withdrawal.asset.tokenId &&
-            log.values._from === this.wallet.address &&
-            _to === withdrawal.address &&
+            _from === this.wallet.address.toLowerCase() &&
+            _to === withdrawal.address.toLowerCase() &&
             log.values._value.toString() === withdrawal.amount
             // TODO: consider better comparison than string === string
         );
