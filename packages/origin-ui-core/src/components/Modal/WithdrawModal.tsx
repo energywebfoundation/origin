@@ -14,9 +14,10 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { resyncCertificate, requestWithdrawCertificate } from '../../features/certificates';
 import { ICertificateViewItem } from '../../features/certificates/types';
-import { getExchangeClient } from '../../features/general/selectors';
+import { getExchangeClient, getEnvironment } from '../../features/general/selectors';
 import { getUserOffchain } from '../../features/users/selectors';
 import { EnergyFormatter, formatDate, countDecimals } from '../../utils';
+import { IEnvironment } from '../../features/general';
 
 interface IProps {
     certificate: ICertificateViewItem;
@@ -24,13 +25,14 @@ interface IProps {
     showModal: boolean;
     callback: () => void;
 }
-const DEFAULT_ENERGY_IN_BASE_UNIT = bigNumberify(Number(process.env.DEFAULT_ENERGY_IN_BASE_UNIT));
 
 export function WithdrawModal(props: IProps) {
     const { certificate, callback, producingDevice, showModal } = props;
-
     const user = useSelector(getUserOffchain);
-
+    const environment: IEnvironment = useSelector(getEnvironment);
+    const DEFAULT_ENERGY_IN_BASE_UNIT = bigNumberify(
+        Number(environment?.DEFAULT_ENERGY_IN_BASE_UNIT || 1)
+    );
     const [energyInDisplayUnit, setEnergyInDisplayUnit] = useState(
         EnergyFormatter.getValueInDisplayUnit(DEFAULT_ENERGY_IN_BASE_UNIT)
     );
@@ -39,8 +41,6 @@ export function WithdrawModal(props: IProps) {
     });
 
     const dispatch = useDispatch();
-
-    const exchangeClient = useSelector(getExchangeClient);
 
     useEffect(() => {
         if (certificate) {
@@ -86,11 +86,11 @@ export function WithdrawModal(props: IProps) {
         if (!isFormValid) {
             return;
         }
-        const account = await exchangeClient.getAccount();
         const assetId = certificate.assetId;
         const address = user.blockchainAccountAddress;
-        const amount = account.balances.available.find((balance) => balance.asset.id === assetId)
-            .amount;
+        const amount = EnergyFormatter.getBaseValueFromValueInDisplayUnit(
+            energyInDisplayUnit
+        ).toString();
         dispatch(
             requestWithdrawCertificate({
                 assetId,

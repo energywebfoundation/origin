@@ -31,7 +31,6 @@ const ApprovedCertificationRequestsTable = () => <CertificationRequestsTable app
 export function Certificates() {
     const currencies = useSelector(getCurrencies);
     const user = useSelector(getUserOffchain);
-
     const { baseURL, getCertificatesLink } = useLinks();
     const { t } = useTranslation();
 

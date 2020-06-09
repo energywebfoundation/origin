@@ -37,7 +37,6 @@ export function PublishForSaleModal(props: IProps) {
 
     const currencies = useSelector(getCurrencies);
     const user = useSelector(getUserOffchain);
-
     const [energyInDisplayUnit, setEnergyInDisplayUnit] = useState(
         EnergyFormatter.getValueInDisplayUnit(DEFAULT_ENERGY_IN_BASE_UNIT)
     );
