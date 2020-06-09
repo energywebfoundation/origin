@@ -24,8 +24,7 @@ interface IProps {
     showModal: boolean;
     callback: () => void;
 }
-
-const DEFAULT_ENERGY_IN_BASE_UNIT = bigNumberify(1);
+const DEFAULT_ENERGY_IN_BASE_UNIT = bigNumberify(Number(process.env.DEFAULT_ENERGY_IN_BASE_UNIT));
 
 export function WithdrawModal(props: IProps) {
     const { certificate, callback, producingDevice, showModal } = props;

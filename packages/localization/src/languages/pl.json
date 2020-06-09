@@ -78,7 +78,7 @@
                 "returnToInbox": "Zwróć do skrzynki",
                 "buy": "Kup",
                 "request": "Żądaj",
-                "withraw": "Wycofać"
+                "withdraw": "Wycofać"
             },
             "info": {
                 "requestCertificatesFor": "Zażądaj certyfikatów dla urządzenia {facilityName}"

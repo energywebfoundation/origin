@@ -370,11 +370,13 @@ export function CertificateTable(props: IProps) {
         switch (selectedState) {
             case SelectedState.Inbox:
                 actions.push({
+                    id: TableActionId.Claim,
                     name: t('certificate.actions.claim'),
                     icon: <AssignmentTurnedIn />,
                     onClick: claimCertificate
                 });
                 actions.push({
+                    id: TableActionId.PublishForSale,
                     name: t('certificate.actions.publishForSale'),
                     icon: <Publish />,
                     onClick: publishForSale

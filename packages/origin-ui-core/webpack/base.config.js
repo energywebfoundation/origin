@@ -1,7 +1,10 @@
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
+const Dotenv = require('dotenv-webpack');
 const path = require('path');
+
+const pathToEnv = path.resolve(__dirname, '../../../', '.env');
 
 module.exports = {
     entry: './src/app.tsx',
@@ -34,7 +37,8 @@ module.exports = {
                 viewport: 'width=device-width, initial-scale=1, shrink-to-fit=no'
             }
         }),
-        new CopyWebpackPlugin([{ from: 'env-config.js', to: 'env-config.js' }])
+        new CopyWebpackPlugin([{ from: 'env-config.js', to: 'env-config.js' }]),
+        new Dotenv({ path: pathToEnv })
     ],
     module: {
         rules: [

@@ -145,10 +145,7 @@ export class WithdrawalProcessorService implements OnModuleInit {
         this.logger.debug(`Withdrawal ${id} receipt: ${JSON.stringify(receipt)} `);
 
         const hasLog = receipt.logs
-            .map((log) => {
-                const parsed = this.tokenInterface.parseLog(log);
-                return parsed;
-            })
+            .map((log) => this.tokenInterface.parseLog(log))
             .some((log) => this.hasMatchingLog(withdrawal, log));
 
         if (!hasLog) {
@@ -165,7 +162,6 @@ export class WithdrawalProcessorService implements OnModuleInit {
     private hasMatchingLog(withdrawal: Transfer, log: ethers.utils.LogDescription) {
         const _to = String(log.values._to).toLowerCase();
         const _from = String(log.values._from).toLowerCase();
-        console.groupEnd();
         return (
             log.topic === this.tokenInterface.events.TransferSingle.topic &&
             log.values._id.toString() === withdrawal.asset.tokenId &&
