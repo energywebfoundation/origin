@@ -163,16 +163,15 @@ describe('account ask order send', () => {
         const { generationFrom, generationTo, deviceId } = dummyAsset;
         const web3ProviderUrl = configService.get<string>('WEB3');
         const provider = new ethers.providers.JsonRpcProvider(web3ProviderUrl);
-        // const userPriv = Wallet.createRandom().privateKey;
-        const priv = '0xa0cd7b0d58b9b399a07b05610e54c34e7091a3af6056f6d8b7e71e72baa3b7a4';
-        const wallet = new Wallet(priv, provider);
-        const issuerWithSigner = issuer.connect(wallet);
+        const requestorPriv = '0xa0cd7b0d58b9b399a07b05610e54c34e7091a3af6056f6d8b7e71e72baa3b7a4';
+        const requestorWallet = new Wallet(requestorPriv, provider);
+        const issuerWithRequestor = issuer.connect(requestorWallet);
         const data = await issuer.encodeData(
             generationFrom.getTime(),
             generationTo.getTime(),
             deviceId
         );
-        const tx = await issuerWithSigner.requestCertificationFor(data, user1Address, false);
+        const tx = await issuerWithRequestor.requestCertificationFor(data, user1Address, false);
         const {
             events: [certificationRequested]
         } = await tx.wait();
@@ -181,16 +180,12 @@ describe('account ask order send', () => {
         const validityData = issuerInterface.functions.isRequestValid.encode([
             certReqId.toString()
         ]);
-        console.log('>>> certificate request id:', certReqId);
         const approveTx = await issuer.approveCertificationRequest(certReqId, amount, validityData);
         const { events } = await approveTx.wait();
-
         const certificateId = Number(
             events.find((log: BlockchainEvent) => log.event === 'CertificationRequestApproved')
                 .topics[3]
         );
-        console.log('>>> certificate Id:', certificateId);
-
         const asset = {
             ...dummyAsset,
             tokenId: String(certificateId)
@@ -208,8 +203,6 @@ describe('account ask order send', () => {
             amount,
             address: withdrawalAddress
         };
-        console.log('>>> withdrawal:', withdrawal);
-
         await request(app.getHttpServer())
             .post('/transfer/withdrawal')
             .send(withdrawal)

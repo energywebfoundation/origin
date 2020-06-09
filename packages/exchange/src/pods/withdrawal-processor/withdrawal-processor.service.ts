@@ -130,18 +130,6 @@ export class WithdrawalProcessorService implements OnModuleInit {
             );
             return;
         }
-
-        // const hasEnoughFunds = await this.accountBalanceService.hasEnoughAssetAmount(
-        //     withdrawal.userId,
-        //     { id: withdrawal.asset.id, amount: new BN(withdrawal.amount) }
-        // );
-        // if (!hasEnoughFunds) {
-        //     this.logger.error(
-        //         `[Withdrawal ${id}] User ${withdrawal.userId} has not enough funds to proceed`
-        //     );
-        //     await this.transferService.setAsError(id);
-        //     return;
-        // }
         const transaction = (await this.registry.functions.safeTransferFrom(
             this.wallet.address,
             withdrawal.address,
@@ -177,10 +165,6 @@ export class WithdrawalProcessorService implements OnModuleInit {
     private hasMatchingLog(withdrawal: Transfer, log: ethers.utils.LogDescription) {
         const _to = String(log.values._to).toLowerCase();
         const _from = String(log.values._from).toLowerCase();
-        console.group('hasMatchingLog');
-        console.log('>>> withdrawal:', withdrawal);
-        console.log('>>> log:', log);
-        console.log('>>> exchange wallet:', this.wallet);
         console.groupEnd();
         return (
             log.topic === this.tokenInterface.events.TransferSingle.topic &&
