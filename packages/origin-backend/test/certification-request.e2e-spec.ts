@@ -14,9 +14,11 @@ import { UserService } from '../src/pods/user';
 import { bootstrapTestInstance, registerAndLogin } from './origin-backend';
 import { CertificationRequestQueueItem } from '../src/pods/certificate/certification-request-queue-item.entity';
 import { AdminService } from '../src/pods/admin/admin.service';
+import { DatabaseService } from './database.service';
 
 describe('CertificationRequest e2e tests', () => {
     let app: INestApplication;
+    let databaseService: DatabaseService;
     let userService: UserService;
     let deviceService: DeviceService;
     let organizationService: OrganizationService;
@@ -46,7 +48,8 @@ describe('CertificationRequest e2e tests', () => {
             deviceService,
             organizationService,
             certificationRequestService,
-            adminService
+            adminService,
+            databaseService
         } = await bootstrapTestInstance());
 
         await app.init();
@@ -299,5 +302,88 @@ describe('CertificationRequest e2e tests', () => {
                 expect(queueItem.energy).equal(newEnergy);
                 expect(queueItem.files).deep.equal(newFiles);
             });
+    });
+
+    it('should properly validate a certification request', async () => {
+        await databaseService.truncate('certification_request');
+        await databaseService.truncate('device');
+
+        const { accessToken, user } = await registerAndLogin(
+            app,
+            userService,
+            organizationService,
+            adminService,
+            [Role.OrganizationDeviceManager],
+            '2',
+            defaultOrganization
+        );
+
+        const device = await deviceService.create(
+            {
+                address: '',
+                capacityInW: 1000,
+                complianceRegistry: 'I-REC',
+                country: 'EU',
+                description: '',
+                deviceType: 'Solar',
+                facilityName: 'Test',
+                gpsLatitude: '10',
+                gpsLongitude: '10',
+                gridOperator: 'OP',
+                images: '',
+                operationalSince: 2000,
+                otherGreenAttributes: '',
+                province: '',
+                region: '',
+                status: DeviceStatus.Active,
+                timezone: '',
+                typeOfPublicSupport: '',
+                deviceGroup: '',
+                smartMeterReads: [],
+                externalDeviceIds: [{ id: externalDeviceId, type: process.env.ISSUER_ID }],
+                automaticPostForSale: false,
+                defaultAskPrice: null
+            },
+            user
+        );
+
+        await request(app.getHttpServer())
+            .get(`/Certificate/CertificationRequest/validate`)
+            .set('Authorization', `Bearer ${accessToken}`)
+            .send({ fromTime, toTime, deviceId: externalDeviceId })
+            .expect((res) => {
+                expect(res.status).to.equal(200);
+
+                const { isValid } = res.body;
+                expect(isValid).to.be.true;
+            });
+
+        await request(app.getHttpServer())
+            .post(`/Certificate/CertificationRequest`)
+            .set('Authorization', `Bearer ${accessToken}`)
+            .send({ deviceId: externalDeviceId, fromTime, toTime, energy, files })
+            .expect(201);
+
+        await certificationRequestService.create({
+            id: 1,
+            owner,
+            fromTime,
+            toTime,
+            device,
+            approved: false,
+            revoked: false,
+            created,
+            userId: user.ownerId
+        });
+
+        await request(app.getHttpServer())
+            .get(`/Certificate/CertificationRequest/validate`)
+            .set('Authorization', `Bearer ${accessToken}`)
+            .send({
+                fromTime,
+                toTime,
+                deviceId: externalDeviceId
+            })
+            .expect(409);
     });
 });

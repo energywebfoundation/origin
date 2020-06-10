@@ -30,6 +30,11 @@ export type CertificationRequestUpdateData = Pick<
     'fromTime' | 'toTime' | 'deviceId' | 'energy' | 'files'
 >;
 
+export type CertificationRequestValidationData = Pick<
+    ICertificationRequest,
+    'fromTime' | 'toTime' | 'deviceId'
+>;
+
 export type CertificationRequestDataMocked = Pick<
     ICertificationRequest,
     'owner' | 'fromTime' | 'toTime' | 'created' | 'approved' | 'revoked' | 'deviceId'

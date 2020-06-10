@@ -2,11 +2,19 @@ import {
     Injectable,
     NotFoundException,
     UnprocessableEntityException,
-    UnauthorizedException
+    UnauthorizedException,
+    ConflictException
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, DeepPartial, FindOneOptions, FindManyOptions } from 'typeorm';
-import { ILoggedInUser, DeviceStatus } from '@energyweb/origin-backend-core';
+import {
+    ILoggedInUser,
+    DeviceStatus,
+    CertificationRequestValidationData
+} from '@energyweb/origin-backend-core';
+import * as Moment from 'moment';
+import { extendMoment } from 'moment-range';
+
 import { CertificationRequest } from './certification-request.entity';
 import { CertificationRequestQueueItemDTO } from './certification-request-queue-item.dto';
 import { StorageErrors } from '../../enums/StorageErrors';
@@ -127,5 +135,51 @@ export class CertificationRequestService {
 
     async getAll(options?: FindManyOptions<CertificationRequest>): Promise<CertificationRequest[]> {
         return this.repository.find({ ...options, relations: ['device'] });
+    }
+
+    async validateGenerationPeriod(
+        validationData: CertificationRequestValidationData,
+        loggedUser: ILoggedInUser
+    ): Promise<boolean> {
+        const moment = extendMoment(Moment);
+        const unix = (timestamp: number) => moment.unix(timestamp);
+
+        const { fromTime, toTime, deviceId } = validationData;
+        let device;
+
+        try {
+            device = await this.deviceService.findByExternalId({
+                type: process.env.ISSUER_ID,
+                id: deviceId
+            });
+        } catch (e) {
+            throw new NotFoundException(`Device with external ID "${deviceId}" doesn't exist.`);
+        }
+
+        if (device.organization !== loggedUser.organizationId) {
+            throw new UnauthorizedException('You are not the device manager.');
+        }
+
+        const deviceCertificationRequests = await this.getAll({
+            where: { device, revoked: false }
+        });
+
+        const generationTimeRange = moment.range(unix(fromTime), unix(toTime));
+
+        for (const certificationRequest of deviceCertificationRequests) {
+            const certificationRequestGenerationRange = moment.range(
+                unix(certificationRequest.fromTime),
+                unix(certificationRequest.toTime)
+            );
+
+            if (generationTimeRange.overlaps(certificationRequestGenerationRange)) {
+                throw new ConflictException({
+                    isValid: false,
+                    message: `Wanted generation time clashes with an existing certification request: ${certificationRequest.id}`
+                });
+            }
+        }
+
+        return true;
     }
 }
