@@ -26,7 +26,6 @@ import {
     Checkbox,
     TableSortLabel
 } from '@material-ui/core';
-import { TableActionId } from './Actions';
 
 type TableOnSelectFunction = (id: string, selected: boolean) => void;
 
@@ -75,6 +74,7 @@ interface IProps<T extends readonly ITableColumn[]> {
     customSelectCounterGenerator?: CustomCounterGeneratorFunction;
     highlightedRowsIds?: string[];
     customRow?: ICustomRow<TTableRow<GetReadonlyArrayItemType<T>['id']> & { id?: string }>;
+    allowedActions?: any;
 }
 
 export function TableMaterial<T extends readonly ITableColumn[]>(props: IProps<T>) {
@@ -131,7 +131,8 @@ export function TableMaterial<T extends readonly ITableColumn[]>(props: IProps<T
         batchableActions,
         customSelectCounterGenerator,
         toggleSort,
-        highlightedRowsIds: highlightedRowsIndexes
+        highlightedRowsIds: highlightedRowsIndexes,
+        allowedActions
     } = props;
 
     if (selectedIds.length > rows.length) {
@@ -281,13 +282,20 @@ export function TableMaterial<T extends readonly ITableColumn[]>(props: IProps<T
                                                     className={classes.tableCellWrappingActions}
                                                 >
                                                     <Actions
-                                                        actions={actions.filter((action) => {
-                                                            return !(
-                                                                (row as any)?.source ===
-                                                                    'Blockchain' &&
-                                                                action.id === TableActionId.Withdraw
-                                                            );
-                                                        })}
+                                                        actions={
+                                                            allowedActions
+                                                                ? actions.filter((action) => {
+                                                                      console.log('>>> row:', row);
+                                                                      console.log(
+                                                                          '>>> action:',
+                                                                          action
+                                                                      );
+                                                                      return allowedActions[
+                                                                          (row as any).source
+                                                                      ]?.includes(action.id);
+                                                                  })
+                                                                : actions
+                                                        }
                                                         id={id}
                                                     />
                                                 </TableCell>
