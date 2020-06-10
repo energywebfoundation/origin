@@ -77,7 +77,8 @@
                 "claim": "Claim",
                 "returnToInbox": "Zwróć do skrzynki",
                 "buy": "Kup",
-                "request": "Żądaj"
+                "request": "Żądaj",
+                "withdraw": "Wycofać"
             },
             "info": {
                 "requestCertificatesFor": "Zażądaj certyfikatów dla urządzenia {facilityName}"

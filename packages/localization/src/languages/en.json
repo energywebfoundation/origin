@@ -111,7 +111,8 @@
                 "claim": "Claim",
                 "returnToInbox": "Return to inbox",
                 "buy": "Buy",
-                "request": "Request"
+                "request": "Request",
+                "withdraw": "Withdraw"
             },
             "feedback": {
                 "returnedToInbox": "Certificate {id} has been returned to the inbox.",

@@ -137,3 +137,9 @@ export interface IOrder {
 }
 
 export type Order = IOrder & { assetId: string; status: OrderStatus };
+
+export type RequestWithdrawalDTO = {
+    readonly assetId: string;
+    readonly address: string;
+    readonly amount: string;
+};

@@ -10,7 +10,8 @@ import {
     Order,
     IAsset,
     IDirectBuyDTO,
-    IOrder
+    IOrder,
+    RequestWithdrawalDTO
 } from '.';
 import { Filter, OrderStatus } from '@energyweb/exchange-core';
 
@@ -27,6 +28,7 @@ export interface IExchangeClient {
     directBuy(data: IDirectBuyDTO): Promise<{ success: boolean; status: OrderStatus }>;
     getAccount(): Promise<ExchangeAccount>;
     getAllTransfers(): Promise<ITransfer[]>;
+    withdraw(withdrawal: RequestWithdrawalDTO): Promise<string>;
     getTrades(): Promise<ITradeDTO[]>;
     getAssetById(id: string): Promise<IAsset>;
     getOrderById(id: string): Promise<Order>;
@@ -123,6 +125,15 @@ export class ExchangeClient implements IExchangeClient {
     public async getAllTransfers() {
         const response = await this.requestClient.get<{}, ITransfer[]>(
             `${this.transferEndpoint}/all`
+        );
+
+        return response.data;
+    }
+
+    public async withdraw(withdrawal: RequestWithdrawalDTO) {
+        const response = await this.requestClient.post<{}, string>(
+            `${this.transferEndpoint}/withdrawal`,
+            withdrawal
         );
 
         return response.data;
@@ -263,6 +274,10 @@ export const ExchangeClientMock: IExchangeClient = {
     },
 
     async getOrderById() {
+        return null;
+    },
+
+    async withdraw() {
         return null;
     }
 };

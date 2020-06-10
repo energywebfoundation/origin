@@ -23,6 +23,7 @@ export interface IEnvironment {
     REGISTRATION_MESSAGE_TO_SIGN: string;
     ISSUER_ID: string;
     DEVICE_PROPERTIES_ENABLED: string;
+    DEFAULT_ENERGY_IN_BASE_UNIT: string;
 }
 
 export interface ISetLoadingAction {

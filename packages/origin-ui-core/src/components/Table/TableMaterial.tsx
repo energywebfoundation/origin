@@ -26,6 +26,7 @@ import {
     Checkbox,
     TableSortLabel
 } from '@material-ui/core';
+import { TableActionId } from './Actions';
 
 type TableOnSelectFunction = (id: string, selected: boolean) => void;
 
@@ -279,7 +280,19 @@ export function TableMaterial<T extends readonly ITableColumn[]>(props: IProps<T
                                                     key={id}
                                                     className={classes.tableCellWrappingActions}
                                                 >
-                                                    <Actions actions={actions} id={id} />
+                                                    <Actions
+                                                        actions={actions.filter((action) => {
+                                                            return !(
+                                                                (row as any)?.source ===
+                                                                    'Blockchain' &&
+                                                                (action.id ===
+                                                                    TableActionId.Withdraw ||
+                                                                    action.id ===
+                                                                        TableActionId.PublishForSale)
+                                                            );
+                                                        })}
+                                                        id={id}
+                                                    />
                                                 </TableCell>
                                             )}
                                         </TableRow>

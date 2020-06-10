@@ -369,7 +369,6 @@ function* fetchDataAfterConfigurationChange(
         CertificateUtils.getAllOwnedCertificates,
         [configuration]
     );
-
     const initializedCertificates = onChainCertificates
         .filter((cert) => cert.initialized)
         .map(
@@ -388,13 +387,11 @@ function* fetchDataAfterConfigurationChange(
         exchangeClient.getAccount,
         null
     );
-
     const available = yield all(
         offChainCertificates.balances.available.map((asset) =>
             call(findEnhancedCertificate, asset, initializedCertificates)
         )
     );
-
     const certificates = initializedCertificates.concat(available);
 
     for (const certificate of certificates) {
