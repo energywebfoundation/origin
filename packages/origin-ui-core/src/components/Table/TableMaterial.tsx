@@ -285,10 +285,7 @@ export function TableMaterial<T extends readonly ITableColumn[]>(props: IProps<T
                                                             return !(
                                                                 (row as any)?.source ===
                                                                     'Blockchain' &&
-                                                                (action.id ===
-                                                                    TableActionId.Withdraw ||
-                                                                    action.id ===
-                                                                        TableActionId.PublishForSale)
+                                                                action.id === TableActionId.Withdraw
                                                             );
                                                         })}
                                                         id={id}
