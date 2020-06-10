@@ -284,16 +284,11 @@ export function TableMaterial<T extends readonly ITableColumn[]>(props: IProps<T
                                                     <Actions
                                                         actions={
                                                             allowedActions
-                                                                ? actions.filter((action) => {
-                                                                      console.log('>>> row:', row);
-                                                                      console.log(
-                                                                          '>>> action:',
-                                                                          action
-                                                                      );
-                                                                      return allowedActions[
+                                                                ? actions.filter((action) =>
+                                                                      allowedActions[
                                                                           (row as any).source
-                                                                      ]?.includes(action.id);
-                                                                  })
+                                                                      ]?.includes(action.id)
+                                                                  )
                                                                 : actions
                                                         }
                                                         id={id}
