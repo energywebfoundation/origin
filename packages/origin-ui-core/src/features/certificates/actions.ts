@@ -171,6 +171,7 @@ export interface IRequestClaimCertificateAction {
     type: CertificatesActions.requestClaimCertificate;
     payload: {
         certificateId: Certificate['id'];
+        amount: BigNumber;
         claimData: IClaimData;
     };
 }

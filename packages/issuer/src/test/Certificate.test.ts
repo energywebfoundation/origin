@@ -311,6 +311,24 @@ describe('Certificate tests', () => {
         );
     });
 
+    it('partially claims a certificate', async () => {
+        const totalVolume = new BigNumber(1e9);
+        let certificate = await issueCertificate(totalVolume, deviceOwnerWallet.address);
+
+        setActiveUser(deviceOwnerWallet);
+        certificate = await certificate.sync();
+
+        await certificate.claim(claimData, totalVolume.div(2));
+
+        certificate = await certificate.sync();
+
+        assert.isTrue(certificate.isOwned);
+        assert.equal(certificate.energy.publicVolume.toString(), totalVolume.div(2).toString());
+
+        assert.isTrue(certificate.isClaimed);
+        assert.equal(certificate.energy.claimedVolume.toString(), totalVolume.div(2).toString());
+    });
+
     it('claims a certificate with empty beneficiary', async () => {
         const totalVolume = new BigNumber(1e9);
         let certificate = await issueCertificate(totalVolume, deviceOwnerWallet.address);
