@@ -250,7 +250,8 @@ INSERT INTO
         "blockchainAccountSignedMessage",
         notifications,
         rights,
-        "organizationId"
+        "organizationId",
+        status
     )
 VALUES
     (
@@ -267,6 +268,7 @@ VALUES
         '0x09790e96275e023b965f6b267512b5267bcb18f5b5fdaaf46de899a0f91f2a8d006c7fbaebddf5ad36c116775c961aca3c32525b6dd1529bdee41eee5e9730a71c',
         'f',
         '8',
+        '1',
         '1'
     );
 INSERT INTO
