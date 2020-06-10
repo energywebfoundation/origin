@@ -5,19 +5,13 @@ export class CertificationRequestEnergyFilesNotNull1591774915665 implements Migr
 
     public async up(queryRunner: QueryRunner): Promise<void> {
         await queryRunner.query(
-            `ALTER TABLE "certification_request_queue_item" ALTER COLUMN "files" SET NOT NULL`
-        );
-        await queryRunner.query(
-            `ALTER TABLE "certification_request_queue_item" ALTER COLUMN "files" SET DEFAULT '[]'`
+            `ALTER TABLE "certification_request_queue_item" ALTER COLUMN "files" SET NOT NULL DEFAULT '[]'`
         );
         await queryRunner.query(
             `ALTER TABLE "certification_request" ALTER COLUMN "energy" SET NOT NULL`
         );
         await queryRunner.query(
-            `ALTER TABLE "certification_request" ALTER COLUMN "files" SET NOT NULL`
-        );
-        await queryRunner.query(
-            `ALTER TABLE "certification_request" ALTER COLUMN "files" SET DEFAULT '[]'`
+            `ALTER TABLE "certification_request" ALTER COLUMN "files" SET NOT NULL DEFAULT '[]'`
         );
     }
 
