@@ -16,7 +16,7 @@ export class CertificationRequest extends ExtendedBaseEntity
     @Column()
     userId: string;
 
-    @Column('varchar', { nullable: true })
+    @Column('varchar', { nullable: false })
     energy: string;
 
     @ManyToOne(() => Device, (device) => device.certificationRequests, { nullable: false })
@@ -31,7 +31,7 @@ export class CertificationRequest extends ExtendedBaseEntity
     @Min(0)
     toTime: number;
 
-    @Column('simple-array', { nullable: true })
+    @Column('simple-array', { nullable: false, default: [] })
     files: string[];
 
     @Column()
