@@ -275,12 +275,6 @@ export class Certificate extends PreciseProofEntity implements ICertificate {
 
         const encodedClaimData = await encodeClaimData(claimData, this.configuration);
 
-        console.log({
-            amount,
-            publicVolume,
-            result: amount || publicVolume
-        });
-
         const claimTx = await registryWithSigner.safeTransferAndClaimFrom(
             activeUserAddress,
             activeUserAddress,
