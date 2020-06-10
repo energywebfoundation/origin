@@ -10,7 +10,7 @@ export class CertificationRequestQueueItem extends ExtendedBaseEntity
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column('varchar')
+    @Column('varchar', { nullable: false })
     energy: string;
 
     @Column()
@@ -24,6 +24,6 @@ export class CertificationRequestQueueItem extends ExtendedBaseEntity
     @Min(0)
     toTime: number;
 
-    @Column('simple-array', { nullable: true })
+    @Column('simple-array', { nullable: false, default: [] })
     files: string[];
 }

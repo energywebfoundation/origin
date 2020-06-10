@@ -52,7 +52,7 @@ export class CertificationRequestService {
         const certificationRequest = this.repository.create({
             ...cert,
             energy: queuedData.energy,
-            files: queuedData.files
+            files: queuedData.files ?? []
         });
 
         await this.repository.save(certificationRequest);
@@ -84,7 +84,7 @@ export class CertificationRequestService {
             queueItem = this.queueRepository.create(dto);
         } else {
             queueItem.energy = dto.energy;
-            queueItem.files = dto.files;
+            queueItem.files = dto.files ?? [];
         }
 
         return this.queueRepository.save(queueItem);
