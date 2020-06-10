@@ -489,6 +489,11 @@ export function CertificateTable(props: IProps) {
         return <Redirect push={true} to={getCertificateDetailLink(detailViewForCertificateId)} />;
     }
 
+    const allowedActions = {
+        Blockchain: [TableActionId.PublishForSale, TableActionId.Deposit, TableActionId.Claim],
+        Exchange: [TableActionId.PublishForSale, TableActionId.Withdraw]
+    };
+
     return (
         <>
             <TableMaterial
@@ -507,6 +512,7 @@ export function CertificateTable(props: IProps) {
                 currentSort={currentSort}
                 sortAscending={sortAscending}
                 toggleSort={toggleSort}
+                allowedActions={allowedActions}
             />
 
             <PublishForSaleModal
