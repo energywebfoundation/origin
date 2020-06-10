@@ -31,7 +31,7 @@ export class CertificationRequest extends ExtendedBaseEntity
     @Min(0)
     toTime: number;
 
-    @Column('simple-array', { nullable: true })
+    @Column('simple-array', { nullable: false, default: [] })
     files: string[];
 
     @Column()
