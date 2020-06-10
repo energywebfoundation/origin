@@ -14,9 +14,9 @@ import {
     TextField
 } from '@material-ui/core';
 import { bigNumberify } from 'ethers/utils';
-import moment from 'moment-timezone';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { Countries } from '@energyweb/utils-general';
 
 import {
     ICertificateViewItem,
@@ -24,7 +24,9 @@ import {
     requestClaimCertificateBulk
 } from '../../features/certificates';
 import { getUserOffchain } from '../../features/users/selectors';
-import { EnergyFormatter } from '../../utils';
+import { EnergyFormatter, countDecimals } from '../../utils';
+import { getEnvironment } from '../../features';
+import { IEnvironment } from '../../features/general';
 
 interface IProps {
     certificates: ICertificateViewItem[];
@@ -35,19 +37,58 @@ interface IProps {
 export function ClaimModal(props: IProps) {
     const { certificates, callback, showModal } = props;
 
+    const environment: IEnvironment = useSelector(getEnvironment);
+    const DEFAULT_ENERGY_IN_BASE_UNIT = bigNumberify(
+        Number(environment?.DEFAULT_ENERGY_IN_BASE_UNIT || 1)
+    );
+
     const isBulkClaim = certificates.length > 1;
     const certificateIds: number[] = certificates.map((cert) => cert.id);
 
+    const getCountryCodeFromId = (id: number) =>
+        Countries.find((country) => country.id === id)?.code;
+
     const user = useSelector(getUserOffchain);
-    const countryCodes = moment.tz.countries();
+    const countryCodes = Countries.map((country) => country.code);
 
     const [beneficiary, setBeneficiary] = useState(user?.organization?.name);
     const [address, setAddress] = useState(user?.organization?.address);
-    const [zipCode, setZipCode] = useState(null);
+    const [zipCode, setZipCode] = useState(user?.organization?.postcode);
     const [region, setRegion] = useState(null);
-    const [countryCode, setCountryCode] = useState(null);
+    const [countryCode, setCountryCode] = useState(
+        getCountryCodeFromId(user?.organization?.country)
+    );
+
+    const [energyInDisplayUnit, setEnergyInDisplayUnit] = useState(
+        EnergyFormatter.getValueInDisplayUnit(DEFAULT_ENERGY_IN_BASE_UNIT)
+    );
+
+    const energyInBaseUnit = EnergyFormatter.getBaseValueFromValueInDisplayUnit(
+        energyInDisplayUnit
+    );
+
+    const [validation, setValidation] = useState({
+        energyInDisplayUnit: true
+    });
 
     const dispatch = useDispatch();
+
+    useEffect(() => {
+        if (certificates.length > 0) {
+            setEnergyInDisplayUnit(
+                EnergyFormatter.getValueInDisplayUnit(certificates[0]?.energy.publicVolume)
+            );
+        }
+    }, [certificates, user]);
+
+    useEffect(() => {
+        if (user?.organization) {
+            setBeneficiary(user.organization.name);
+            setAddress(user.organization.address);
+            setCountryCode(getCountryCodeFromId(user.organization.country));
+            setZipCode(user.organization.postcode);
+        }
+    }, [user]);
 
     useEffect(() => {
         if (countryCode === null && countryCodes && countryCodes[0]) {
@@ -70,11 +111,40 @@ export function ClaimModal(props: IProps) {
 
         const action = isBulkClaim
             ? requestClaimCertificateBulk({ certificateIds, claimData })
-            : requestClaimCertificate({ certificateId: certificateIds[0], claimData });
+            : requestClaimCertificate({
+                  certificateId: certificateIds[0],
+                  claimData,
+                  amount: energyInBaseUnit
+              });
 
         dispatch(action);
 
         handleClose();
+    }
+
+    async function validateInputs(event) {
+        switch (event.target.id) {
+            case 'energyInDisplayUnitInput':
+                const newEnergyInDisplayUnit = Number(event.target.value);
+                const newEnergyInBaseValueUnit = EnergyFormatter.getBaseValueFromValueInDisplayUnit(
+                    newEnergyInDisplayUnit
+                );
+
+                const ownedPublicVolume = certificates[0]?.energy.publicVolume;
+
+                const energyInDisplayUnitValid =
+                    newEnergyInBaseValueUnit.gte(1) &&
+                    newEnergyInBaseValueUnit.lte(ownedPublicVolume) &&
+                    countDecimals(newEnergyInDisplayUnit) <= 6;
+
+                setEnergyInDisplayUnit(newEnergyInDisplayUnit);
+
+                setValidation({
+                    ...validation,
+                    energyInDisplayUnit: energyInDisplayUnitValid
+                });
+                break;
+        }
     }
 
     const title = `Claiming certificate${isBulkClaim ? 's' : ''} ${certificateIds?.join(
@@ -98,6 +168,17 @@ export function ClaimModal(props: IProps) {
                         You selected a total of {totalEnergy} worth of certificates.
                     </DialogContentText>
                 )}
+
+                <TextField
+                    label={EnergyFormatter.displayUnit}
+                    value={energyInDisplayUnit}
+                    type="number"
+                    placeholder="1"
+                    onChange={(e) => validateInputs(e)}
+                    className="mt-4"
+                    id="energyInDisplayUnitInput"
+                    fullWidth
+                />
 
                 <TextField
                     label="Beneficiary"
@@ -144,6 +225,12 @@ export function ClaimModal(props: IProps) {
                         ))}
                     </Select>
                 </FormControl>
+
+                <div className="text-danger">
+                    {!validation.energyInDisplayUnit && (
+                        <div>{EnergyFormatter.displayUnit} value is invalid</div>
+                    )}
+                </div>
             </DialogContent>
             <DialogActions>
                 <Button onClick={handleClose} color="secondary">

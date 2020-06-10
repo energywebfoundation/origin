@@ -22,6 +22,8 @@ import { ICertificateViewItem } from '../../features/certificates/types';
 import { getCurrencies } from '../../features/general/selectors';
 import { getUserOffchain } from '../../features/users/selectors';
 import { countDecimals, EnergyFormatter, formatDate } from '../../utils';
+import { getEnvironment } from '../../features';
+import { IEnvironment } from '../../features/general';
 
 interface IProps {
     certificate: ICertificateViewItem;
@@ -30,13 +32,16 @@ interface IProps {
     callback: () => void;
 }
 
-const DEFAULT_ENERGY_IN_BASE_UNIT = bigNumberify(1);
-
 export function PublishForSaleModal(props: IProps) {
     const { certificate, callback, producingDevice, showModal } = props;
 
     const currencies = useSelector(getCurrencies);
     const user = useSelector(getUserOffchain);
+    const environment: IEnvironment = useSelector(getEnvironment);
+
+    const DEFAULT_ENERGY_IN_BASE_UNIT = bigNumberify(
+        Number(environment?.DEFAULT_ENERGY_IN_BASE_UNIT || 1)
+    );
     const [energyInDisplayUnit, setEnergyInDisplayUnit] = useState(
         EnergyFormatter.getValueInDisplayUnit(DEFAULT_ENERGY_IN_BASE_UNIT)
     );
