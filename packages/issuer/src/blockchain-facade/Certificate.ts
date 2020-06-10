@@ -207,9 +207,7 @@ export class Certificate extends PreciseProofEntity implements ICertificate {
         const claimedEnergy = await registry.claimedBalanceOf(owner, this.id);
 
         this.energy = {
-            publicVolume: ownedEnergy.sub(claimedEnergy).lt(0)
-                ? bigNumberify(0)
-                : ownedEnergy.sub(claimedEnergy),
+            publicVolume: ownedEnergy,
             privateVolume: this.privateOwnershipCommitment[owner] ?? bigNumberify(0),
             claimedVolume: claimedEnergy
         };
@@ -276,6 +274,12 @@ export class Certificate extends PreciseProofEntity implements ICertificate {
         const activeUserAddress = await activeUser.getAddress();
 
         const encodedClaimData = await encodeClaimData(claimData, this.configuration);
+
+        console.log({
+            amount,
+            publicVolume,
+            result: amount || publicVolume
+        });
 
         const claimTx = await registryWithSigner.safeTransferAndClaimFrom(
             activeUserAddress,
