@@ -16,7 +16,7 @@ export class CertificationRequest extends ExtendedBaseEntity
     @Column()
     userId: string;
 
-    @Column('varchar', { nullable: true })
+    @Column('varchar', { nullable: false })
     energy: string;
 
     @ManyToOne(() => Device, (device) => device.certificationRequests, { nullable: false })
