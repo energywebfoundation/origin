@@ -112,7 +112,8 @@
                 "returnToInbox": "Return to inbox",
                 "buy": "Buy",
                 "request": "Request",
-                "withdraw": "Withdraw"
+                "withdraw": "Withdraw",
+                "deposit": "Deposit"
             },
             "feedback": {
                 "returnedToInbox": "Certificate {id} has been returned to the inbox.",

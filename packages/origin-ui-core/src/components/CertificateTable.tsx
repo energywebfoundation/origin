@@ -1,5 +1,5 @@
 import { ProducingDevice } from '@energyweb/device-registry';
-import { AssignmentTurnedIn, Publish, Undo } from '@material-ui/icons';
+import { AssignmentTurnedIn, Publish, Undo, BusinessCenter } from '@material-ui/icons';
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Redirect } from 'react-router-dom';
@@ -39,6 +39,7 @@ import { getEnvironment } from '../features';
 import { ClaimModal } from './Modal/ClaimModal';
 import { ICertificateViewItem, CertificateSource } from '../features/certificates';
 import { WithdrawModal } from './Modal/WithdrawModal';
+import { DepositModal } from './Modal/DepositModal';
 
 interface IProps {
     certificates?: ICertificateViewItem[];
@@ -91,6 +92,7 @@ export function CertificateTable(props: IProps) {
     const [selectedCertificate, setSelectedCertificate] = useState<ICertificateViewItem>(null);
     const [sellModalVisibility, setSellModalVisibility] = useState(false);
     const [withdrawModalVisibility, setWithdrawModalVisibility] = useState(false);
+    const [depositModalVisibility, setDepositModalVisibility] = useState(false);
 
     async function getPaginatedData({
         requestedPageSize,
@@ -220,6 +222,18 @@ export function CertificateTable(props: IProps) {
         loadPage(1);
         setSelectedCertificate(null);
         setWithdrawModalVisibility(false);
+    }
+
+    async function deposit(rowIndex: string) {
+        const certificate = getCertificateFromRow(rowIndex);
+        setSelectedCertificate(certificate);
+        setDepositModalVisibility(true);
+    }
+
+    function hideDepositModal() {
+        loadPage(1);
+        setSelectedCertificate(null);
+        setDepositModalVisibility(false);
     }
 
     function showCertificateDetails(rowIndex: number) {
@@ -386,6 +400,12 @@ export function CertificateTable(props: IProps) {
                     icon: <Undo />,
                     onClick: withdraw
                 });
+                actions.push({
+                    id: TableActionId.Deposit,
+                    name: t('certificate.actions.deposit'),
+                    icon: <BusinessCenter />,
+                    onClick: deposit
+                });
                 break;
         }
 
@@ -543,6 +563,21 @@ export function CertificateTable(props: IProps) {
                 }
                 showModal={withdrawModalVisibility}
                 callback={hideWithdrawModal}
+            />
+
+            <DepositModal
+                certificate={selectedCertificate}
+                producingDevice={
+                    selectedCertificate
+                        ? producingDevices.find(
+                              (device) =>
+                                  getDeviceId(device, environment) ===
+                                  selectedCertificate.deviceId.toString()
+                          )
+                        : null
+                }
+                showModal={depositModalVisibility}
+                callback={hideDepositModal}
             />
 
             <ClaimModal

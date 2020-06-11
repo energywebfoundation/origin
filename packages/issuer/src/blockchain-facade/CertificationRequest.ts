@@ -129,7 +129,8 @@ export class CertificationRequest extends PreciseProofEntity implements ICertifi
         const { issuer } = this.configuration
             .blockchainProperties as Configuration.BlockchainProperties<Registry, Issuer>;
         const issuerWithSigner = issuer.connect(this.configuration.blockchainProperties.activeUser);
-
+        console.log(
+        );
         if (this.isPrivate) {
             const commitment: IOwnershipCommitment = {
                 [this.owner]: this.energy

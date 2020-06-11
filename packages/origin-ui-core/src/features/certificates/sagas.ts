@@ -288,6 +288,59 @@ function* requestPublishForSaleSaga(): SagaIterator {
     }
 }
 
+function* requestDepositSaga(): SagaIterator {
+    while (true) {
+        const action: IRequestPublishForSaleAction = yield take(
+            CertificatesActions.requestDepositCertificate
+        );
+        const exchangeClient: IExchangeClient = yield select(getExchangeClient);
+
+        if (!exchangeClient.getAllTransfers) {
+            continue;
+        }
+
+        const shouldContinue: boolean = yield call(assertCorrectBlockchainAccount);
+
+        if (!shouldContinue) {
+            continue;
+        }
+
+        const { amount, certificateId, callback, source } = action.payload;
+
+        const i18n = getI18n();
+
+        yield put(setLoading(true));
+
+        try {
+            const account: ExchangeAccount = yield call([
+                exchangeClient,
+                exchangeClient.getAccount
+            ]);
+
+            if (source === CertificateSource.Blockchain) {
+                const certificate: Certificate = yield call(getCertificate, certificateId);
+
+                const transferResult: ContractTransaction | CommitmentStatus = yield call(
+                    [certificate, certificate.transfer],
+                    account.address,
+                    amount
+                );
+
+                assertIsContractTransaction(transferResult);
+            }
+        } catch (error) {
+            console.error(error);
+            showNotification(i18n.t('general.feedback.unknownError'), NotificationType.Error);
+        }
+
+        yield put(setLoading(false));
+
+        if (callback) {
+            yield call(callback);
+        }
+    }
+}
+
 function* requestClaimCertificateSaga(): SagaIterator {
     while (true) {
         const action: IRequestClaimCertificateAction = yield take(
@@ -430,6 +483,7 @@ export function* certificatesSaga(): SagaIterator {
         fork(requestClaimCertificateBulkSaga),
         fork(requestCertificateApprovalSaga),
         fork(resyncCertificateSaga),
-        fork(withdrawSaga)
+        fork(withdrawSaga),
+        fork(requestDepositSaga)
     ]);
 }

@@ -19,7 +19,8 @@ export enum CertificatesActions {
     requestClaimCertificate = 'CERTIFICATES_REQUEST_CLAIM_CERTIFICATE',
     requestClaimCertificateBulk = 'CERTIFICATES_REQUEST_CLAIM_CERTIFICATE_BULK',
     requestCertificateApproval = 'CERTIFICATES_REQUEST_CERTIFICATE_APPROVAL',
-    withdrawCertificate = 'CERTIFICATES_REQUEST_CERTIFICATE_WITHDRAWAL'
+    withdrawCertificate = 'CERTIFICATES_REQUEST_CERTIFICATE_WITHDRAWAL',
+    requestDepositCertificate = 'CERTIFICATES_REQUEST_CERTIFICATE_DEPOSIT'
 }
 
 export interface IAddCertificateAction {
@@ -230,6 +231,23 @@ export const requestWithdrawCertificate = (
     payload: IRequestWithdrawCertificateAction['payload']
 ) => ({
     type: CertificatesActions.withdrawCertificate,
+    payload
+});
+
+export interface IRequestDepositCertificateAction {
+    type: CertificatesActions.withdrawCertificate;
+    payload: {
+        certificateId: Certificate['id'];
+        amount: BigNumber;
+        source: CertificateSource;
+        callback: () => void;
+    };
+}
+
+export const requestDepositCertificate = (
+    payload: IRequestDepositCertificateAction['payload']
+) => ({
+    type: CertificatesActions.requestDepositCertificate,
     payload
 });
 

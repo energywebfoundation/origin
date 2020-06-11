@@ -78,7 +78,8 @@
                 "returnToInbox": "Zwróć do skrzynki",
                 "buy": "Kup",
                 "request": "Żądaj",
-                "withdraw": "Wycofać"
+                "withdraw": "Wycofać",
+                "deposit": "Kaucja"
             },
             "info": {
                 "requestCertificatesFor": "Zażądaj certyfikatów dla urządzenia {facilityName}"
