@@ -81,6 +81,10 @@
                 "withdraw": "Wycofać",
                 "deposit": "Kaucja"
             },
+            "feedback": {
+                "certificateDeposited": "Certificate deposited",
+                "withdrawn": "Zdeponowany certyfikat"
+            },
             "info": {
                 "requestCertificatesFor": "Zażądaj certyfikatów dla urządzenia {facilityName}"
             }

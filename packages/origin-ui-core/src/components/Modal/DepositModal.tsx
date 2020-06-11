@@ -12,11 +12,7 @@ import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import {
-    resyncCertificate,
-    requestWithdrawCertificate,
-    requestDepositCertificate
-} from '../../features/certificates';
+import { resyncCertificate, requestDepositCertificate } from '../../features/certificates';
 import { ICertificateViewItem } from '../../features/certificates/types';
 import { getEnvironment } from '../../features/general/selectors';
 import { getUserOffchain } from '../../features/users/selectors';

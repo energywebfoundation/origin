@@ -328,6 +328,10 @@ function* requestDepositSaga(): SagaIterator {
 
                 assertIsContractTransaction(transferResult);
             }
+            showNotification(
+                i18n.t('certificate.feedback.certificateDeposited'),
+                NotificationType.Success
+            );
         } catch (error) {
             console.error(error);
             showNotification(i18n.t('general.feedback.unknownError'), NotificationType.Error);
@@ -466,9 +470,16 @@ export function* withdrawSaga(): SagaIterator {
         );
         const { callback } = action.payload;
         const exchangeClient: IExchangeClient = yield select(getExchangeClient);
-        yield call([exchangeClient, exchangeClient.withdraw], action.payload);
-        if (callback) {
-            yield call(callback);
+        const i18n = getI18n();
+        try {
+            yield call([exchangeClient, exchangeClient.withdraw], action.payload);
+            if (callback) {
+                yield call(callback);
+            }
+            showNotification(i18n.t('certificate.feedback.withdrawn'), NotificationType.Success);
+        } catch (error) {
+            console.error(error);
+            showNotification(i18n.t('general.feedback.unknownError'), NotificationType.Error);
         }
     }
 }
