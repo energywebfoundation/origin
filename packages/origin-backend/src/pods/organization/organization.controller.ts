@@ -2,15 +2,14 @@ import {
     ILoggedInUser,
     IOrganizationInvitation,
     isRole,
-    OrganizationInviteCreateReturnData,
     OrganizationPostData,
-    OrganizationMemberChangedReturnData,
     OrganizationStatusChangedEvent,
     OrganizationUpdateData,
     Role,
     SupportedEvents,
     OrganizationRole,
-    IOrganizationUpdateMemberRole
+    IOrganizationUpdateMemberRole,
+    ISuccessResponse
 } from '@energyweb/origin-backend-core';
 import { Roles, RolesGuard, UserDecorator, ActiveUserGuard } from '@energyweb/origin-backend-utils';
 import {
@@ -240,12 +239,12 @@ export class OrganizationController {
         @Body('email') email: string,
         @Body('role') role: OrganizationRole,
         @UserDecorator() loggedUser: ILoggedInUser
-    ): Promise<OrganizationInviteCreateReturnData> {
+    ): Promise<ISuccessResponse> {
         await this.organizationInvitationService.invite(loggedUser, email, role);
 
         return {
             success: true,
-            error: null
+            message: null
         };
     }
 
@@ -256,12 +255,11 @@ export class OrganizationController {
         @Param('id', new ParseIntPipe()) organizationId: number,
         @Param('userId', new ParseIntPipe()) memberId: number,
         @UserDecorator() loggedUser: ILoggedInUser
-    ): Promise<OrganizationMemberChangedReturnData> {
+    ): Promise<ISuccessResponse> {
         await this.organizationService.removeMember(loggedUser, organizationId, memberId);
 
         return {
-            success: true,
-            error: null
+            success: true
         };
     }
 
@@ -273,12 +271,12 @@ export class OrganizationController {
         @Param('userId', new ParseIntPipe()) memberId: number,
         @Body() { role }: IOrganizationUpdateMemberRole,
         @UserDecorator() loggedUser: ILoggedInUser
-    ): Promise<OrganizationMemberChangedReturnData> {
+    ): Promise<ISuccessResponse> {
         await this.organizationService.changeMemberRole(loggedUser, organizationId, memberId, role);
 
         return {
             success: true,
-            error: null
+            message: null
         };
     }
 }

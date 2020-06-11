@@ -22,7 +22,8 @@
     "dependencies": {
         "@energyweb/origin-backend-client": "6.0.1",
         "@energyweb/origin-backend-core": "3.0.1",
-        "@energyweb/utils-general": "9.1.1"
+        "@energyweb/utils-general": "9.1.1",
+        "moment-range": "4.0.2"
     },
     "files": [
         "dist"

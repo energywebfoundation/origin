@@ -40,7 +40,7 @@ export class OrganizationInvitationService {
         if (typeof organizationId === 'undefined') {
             throw new BadRequestException({
                 success: false,
-                error: `User doesn't belong to any organization.`
+                message: `User doesn't belong to any organization.`
             });
         }
 
