@@ -348,14 +348,15 @@ describe('CertificationRequest e2e tests', () => {
         );
 
         await request(app.getHttpServer())
-            .get(`/Certificate/CertificationRequest/validate`)
+            .get(
+                `/Certificate/CertificationRequest/validate?fromTime=${fromTime}&toTime=${toTime}&deviceId=${externalDeviceId}`
+            )
             .set('Authorization', `Bearer ${accessToken}`)
-            .send({ fromTime, toTime, deviceId: externalDeviceId })
             .expect((res) => {
                 expect(res.status).to.equal(200);
 
-                const { isValid } = res.body;
-                expect(isValid).to.be.true;
+                const { success } = res.body;
+                expect(success).to.be.true;
             });
 
         await request(app.getHttpServer())
@@ -377,13 +378,10 @@ describe('CertificationRequest e2e tests', () => {
         });
 
         await request(app.getHttpServer())
-            .get(`/Certificate/CertificationRequest/validate`)
+            .get(
+                `/Certificate/CertificationRequest/validate?fromTime=${fromTime}&toTime=${toTime}&deviceId=${externalDeviceId}`
+            )
             .set('Authorization', `Bearer ${accessToken}`)
-            .send({
-                fromTime,
-                toTime,
-                deviceId: externalDeviceId
-            })
             .expect(409);
     });
 });

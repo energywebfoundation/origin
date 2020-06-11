@@ -72,9 +72,9 @@ export class CertificateClient implements ICertificateClient {
     public async validateGenerationPeriod(
         data: CertificationRequestValidationData
     ): Promise<ISuccessResponse> {
-        const response = await this.requestClient.post<CertificationRequestValidationData, ISuccessResponse>(
-            `${this.certificateRequestEndpoint}`,
-            data
+        const response = await this.requestClient.get<CertificationRequestValidationData, ISuccessResponse>(
+            `${this.certificateRequestEndpoint}/validate`,
+            { params: data }
         );
 
         return response.data;

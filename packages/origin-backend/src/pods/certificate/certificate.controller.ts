@@ -2,7 +2,7 @@ import {
     ILoggedInUser,
     IOwnershipCommitmentProofWithTx,
     Role,
-    CertificationRequestValidationData
+    ISuccessResponse
 } from '@energyweb/origin-backend-core';
 import { Roles, RolesGuard, UserDecorator, ActiveUserGuard } from '@energyweb/origin-backend-utils';
 import {
@@ -14,7 +14,7 @@ import {
     Post,
     UseGuards,
     Put,
-    HttpCode
+    Query
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 
@@ -47,17 +47,16 @@ export class CertificateController {
     @Get(`${CERTIFICATION_REQUEST_ENDPOINT}/validate`)
     @UseGuards(AuthGuard(), ActiveUserGuard, RolesGuard)
     @Roles(Role.OrganizationAdmin, Role.OrganizationDeviceManager)
-    @HttpCode(200)
     async validateGenerationPeriod(
-        @Body() validationData: CertificationRequestValidationData,
+        @Query('fromTime') fromTime: number,
+        @Query('toTime') toTime: number,
+        @Query('deviceId') deviceId: string,
         @UserDecorator() loggedUser: ILoggedInUser
-    ): Promise<{ isValid: boolean }> {
-        const isValid = await this.certificationRequestService.validateGenerationPeriod(
-            validationData,
+    ): Promise<ISuccessResponse> {
+        return this.certificationRequestService.validateGenerationPeriod(
+            { fromTime, toTime, deviceId },
             loggedUser
         );
-
-        return { isValid };
     }
 
     @Get(`${CERTIFICATION_REQUEST_ENDPOINT}/:id`)

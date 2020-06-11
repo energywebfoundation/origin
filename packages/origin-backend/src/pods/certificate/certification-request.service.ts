@@ -10,7 +10,8 @@ import { Repository, DeepPartial, FindOneOptions, FindManyOptions } from 'typeor
 import {
     ILoggedInUser,
     DeviceStatus,
-    CertificationRequestValidationData
+    CertificationRequestValidationData,
+    ISuccessResponse
 } from '@energyweb/origin-backend-core';
 import * as Moment from 'moment';
 import { extendMoment } from 'moment-range';
@@ -79,10 +80,19 @@ export class CertificationRequestService {
         dto: CertificationRequestQueueItemDTO,
         loggedUser: ILoggedInUser
     ): Promise<CertificationRequestQueueItem> {
-        await this.validateGenerationPeriod(dto, loggedUser);
+        const { fromTime, toTime, deviceId, energy, files } = dto;
+
+        await this.validateGenerationPeriod(
+            {
+                fromTime,
+                toTime,
+                deviceId
+            },
+            loggedUser
+        );
 
         const device = await this.deviceService.findByExternalId({
-            id: dto.deviceId,
+            id: deviceId,
             type: process.env.ISSUER_ID
         });
 
@@ -91,16 +101,16 @@ export class CertificationRequestService {
         }
 
         let queueItem = await this.queueRepository.findOne({
-            deviceId: dto.deviceId,
-            fromTime: dto.fromTime,
-            toTime: dto.toTime
+            deviceId,
+            fromTime,
+            toTime
         });
 
         if (!queueItem) {
             queueItem = this.queueRepository.create(dto);
         } else {
-            queueItem.energy = dto.energy;
-            queueItem.files = dto.files ?? [];
+            queueItem.energy = energy;
+            queueItem.files = files ?? [];
         }
 
         return this.queueRepository.save(queueItem);
@@ -148,7 +158,7 @@ export class CertificationRequestService {
     async validateGenerationPeriod(
         validationData: CertificationRequestValidationData,
         loggedUser?: ILoggedInUser
-    ): Promise<boolean> {
+    ): Promise<ISuccessResponse> {
         const moment = extendMoment(Moment);
         const unix = (timestamp: number) => moment.unix(timestamp);
 
@@ -161,12 +171,18 @@ export class CertificationRequestService {
                 id: deviceId
             });
         } catch (e) {
-            throw new NotFoundException(`Device with external ID "${deviceId}" doesn't exist.`);
+            throw new NotFoundException({
+                success: false,
+                message: `Device with external ID "${deviceId}" doesn't exist.`
+            });
         }
 
         if (loggedUser) {
             if (device.organization !== loggedUser.organizationId) {
-                throw new UnauthorizedException('You are not the device manager.');
+                throw new UnauthorizedException({
+                    success: false,
+                    message: 'You are not the device manager.'
+                });
             }
         }
 
@@ -184,12 +200,12 @@ export class CertificationRequestService {
 
             if (generationTimeRange.overlaps(certificationRequestGenerationRange)) {
                 throw new ConflictException({
-                    isValid: false,
+                    success: false,
                     message: `Wanted generation time clashes with an existing certification request: ${certificationRequest.id}`
                 });
             }
         }
 
-        return true;
+        return { success: true, message: 'The generation period is valid.' };
     }
 }
