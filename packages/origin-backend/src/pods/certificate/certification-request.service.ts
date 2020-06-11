@@ -45,6 +45,12 @@ export class CertificationRequestService {
             (externalDeviceId) => externalDeviceId.type === process.env.ISSUER_ID
         )?.id;
 
+        await this.validateGenerationPeriod({
+            fromTime: cert.fromTime,
+            toTime: cert.toTime,
+            deviceId
+        });
+
         const queuedData = await this.queueRepository.findOne({
             deviceId,
             fromTime: cert.fromTime,
@@ -73,6 +79,8 @@ export class CertificationRequestService {
         dto: CertificationRequestQueueItemDTO,
         loggedUser: ILoggedInUser
     ): Promise<CertificationRequestQueueItem> {
+        await this.validateGenerationPeriod(dto, loggedUser);
+
         const device = await this.deviceService.findByExternalId({
             id: dto.deviceId,
             type: process.env.ISSUER_ID
@@ -139,7 +147,7 @@ export class CertificationRequestService {
 
     async validateGenerationPeriod(
         validationData: CertificationRequestValidationData,
-        loggedUser: ILoggedInUser
+        loggedUser?: ILoggedInUser
     ): Promise<boolean> {
         const moment = extendMoment(Moment);
         const unix = (timestamp: number) => moment.unix(timestamp);
@@ -156,8 +164,10 @@ export class CertificationRequestService {
             throw new NotFoundException(`Device with external ID "${deviceId}" doesn't exist.`);
         }
 
-        if (device.organization !== loggedUser.organizationId) {
-            throw new UnauthorizedException('You are not the device manager.');
+        if (loggedUser) {
+            if (device.organization !== loggedUser.organizationId) {
+                throw new UnauthorizedException('You are not the device manager.');
+            }
         }
 
         const deviceCertificationRequests = await this.getAll({
