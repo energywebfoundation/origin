@@ -78,8 +78,8 @@
                 "returnToInbox": "Zwróć do skrzynki",
                 "buy": "Kup",
                 "request": "Żądaj",
-                "withdraw": "Wycofać",
-                "deposit": "Kaucja"
+                "withdraw": "Wypłać",
+                "deposit": "Wpłać"
             },
             "feedback": {
                 "certificateDeposited": "Certificate deposited",

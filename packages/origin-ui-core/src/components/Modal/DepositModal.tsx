@@ -91,7 +91,6 @@ export function DepositModal(props: IProps) {
             requestDepositCertificate({
                 certificateId: certificate.id,
                 amount,
-                source: certificate.source,
                 callback
             })
         );

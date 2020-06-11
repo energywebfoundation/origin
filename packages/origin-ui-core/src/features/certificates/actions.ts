@@ -239,7 +239,6 @@ export interface IRequestDepositCertificateAction {
     payload: {
         certificateId: Certificate['id'];
         amount: BigNumber;
-        source: CertificateSource;
         callback: () => void;
     };
 }

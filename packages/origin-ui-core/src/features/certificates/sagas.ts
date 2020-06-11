@@ -211,7 +211,7 @@ function* requestPublishForSaleSaga(): SagaIterator {
         );
         const exchangeClient: IExchangeClient = yield select(getExchangeClient);
 
-        if (!exchangeClient.getAllTransfers) {
+        if (!exchangeClient) {
             continue;
         }
 
@@ -295,7 +295,7 @@ function* requestDepositSaga(): SagaIterator {
         );
         const exchangeClient: IExchangeClient = yield select(getExchangeClient);
 
-        if (!exchangeClient.getAllTransfers) {
+        if (!exchangeClient) {
             continue;
         }
 
@@ -305,7 +305,7 @@ function* requestDepositSaga(): SagaIterator {
             continue;
         }
 
-        const { amount, certificateId, callback, source } = action.payload;
+        const { amount, certificateId, callback } = action.payload;
 
         const i18n = getI18n();
 
@@ -316,18 +316,15 @@ function* requestDepositSaga(): SagaIterator {
                 exchangeClient,
                 exchangeClient.getAccount
             ]);
+            const certificate: Certificate = yield call(getCertificate, certificateId);
 
-            if (source === CertificateSource.Blockchain) {
-                const certificate: Certificate = yield call(getCertificate, certificateId);
+            const transferResult: ContractTransaction | CommitmentStatus = yield call(
+                [certificate, certificate.transfer],
+                account.address,
+                amount
+            );
+            assertIsContractTransaction(transferResult);
 
-                const transferResult: ContractTransaction | CommitmentStatus = yield call(
-                    [certificate, certificate.transfer],
-                    account.address,
-                    amount
-                );
-
-                assertIsContractTransaction(transferResult);
-            }
             showNotification(
                 i18n.t('certificate.feedback.certificateDeposited'),
                 NotificationType.Success
