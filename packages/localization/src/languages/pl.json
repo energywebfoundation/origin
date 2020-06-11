@@ -78,7 +78,12 @@
                 "returnToInbox": "Zwróć do skrzynki",
                 "buy": "Kup",
                 "request": "Żądaj",
-                "withdraw": "Wycofać"
+                "withdraw": "Wypłać",
+                "deposit": "Wpłać"
+            },
+            "feedback": {
+                "certificateDeposited": "Certificate deposited",
+                "withdrawn": "Zdeponowany certyfikat"
             },
             "info": {
                 "requestCertificatesFor": "Zażądaj certyfikatów dla urządzenia {facilityName}"
