@@ -143,7 +143,7 @@ export class OrganizationService {
         if (organizationId !== user.organizationId) {
             throw new BadRequestException({
                 success: false,
-                error: `You are not in the requested organization.`
+                message: `You are not in the requested organization.`
             });
         }
 
@@ -157,14 +157,14 @@ export class OrganizationService {
         if (isRole(userToBeRemoved, Role.OrganizationAdmin) && admins.length < 2) {
             throw new BadRequestException({
                 success: false,
-                error: `Can't remove admin user from organization. There always has to be at least one admin in the organization.`
+                message: `Can't remove admin user from organization. There always has to be at least one admin in the organization.`
             });
         }
 
         if (!organization.users.find((u) => u.id === memberId)) {
             throw new BadRequestException({
                 success: false,
-                error: `User to be removed is not part of the organization.`
+                message: `User to be removed is not part of the organization.`
             });
         }
 
@@ -190,7 +190,7 @@ export class OrganizationService {
         if (organizationId !== user.organizationId) {
             throw new BadRequestException({
                 success: false,
-                error: `You are not in the requested organization.`
+                message: `You are not in the requested organization.`
             });
         }
 
@@ -204,7 +204,7 @@ export class OrganizationService {
         ) {
             throw new BadRequestException({
                 success: false,
-                error: `Can't change role of admin user from organization. There always has to be at least one admin in the organization.`
+                message: `Can't change role of admin user from organization. There always has to be at least one admin in the organization.`
             });
         }
 
@@ -215,7 +215,7 @@ export class OrganizationService {
         if (!organization.users.find((u) => u.id === memberId)) {
             throw new BadRequestException({
                 success: false,
-                error: `User to be removed is not part of the organization.`
+                message: `User to be removed is not part of the organization.`
             });
         }
 

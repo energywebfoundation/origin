@@ -5,7 +5,9 @@ import {
     CertificationRequestUpdateData,
     CommitmentStatus,
     IOwnershipCommitmentProofWithTx,
-    ICertificationRequestBackend
+    ICertificationRequestBackend,
+    CertificationRequestValidationData,
+    ISuccessResponse
 } from '@energyweb/origin-backend-core';
 
 import { IRequestClient, RequestClient } from './RequestClient';
@@ -20,6 +22,7 @@ export class CertificationRequestUpdateDTO {
 
 export interface ICertificateClient {
     queueCertificationRequestData(data: CertificationRequestUpdateData): Promise<boolean>;
+    validateGenerationPeriod(data: CertificationRequestValidationData): Promise<ISuccessResponse>;
     getCertificationRequest(id: number): Promise<ICertificationRequest>;
     getAllCertificationRequests(): Promise<ICertificationRequest[]>;
     getOwnershipCommitment(certificateId: number): Promise<IOwnershipCommitmentProofWithTx>;
@@ -64,6 +67,17 @@ export class CertificateClient implements ICertificateClient {
         }
 
         return success;
+    }
+
+    public async validateGenerationPeriod(
+        data: CertificationRequestValidationData
+    ): Promise<ISuccessResponse> {
+        const response = await this.requestClient.get<CertificationRequestValidationData, ISuccessResponse>(
+            `${this.certificateRequestEndpoint}/validate`,
+            { params: data }
+        );
+
+        return response.data;
     }
 
     public async getCertificationRequest(id: number): Promise<ICertificationRequest> {

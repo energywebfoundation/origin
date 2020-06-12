@@ -1,5 +1,3 @@
-import * as Moment from 'moment';
-import { extendMoment } from 'moment-range';
 import { BigNumber, Interface } from 'ethers/utils';
 import { Event as BlockchainEvent } from 'ethers';
 import polly from 'polly-js';
@@ -63,6 +61,8 @@ export class CertificationRequest extends PreciseProofEntity implements ICertifi
             );
         }
 
+        const { certificateClient } = configuration.offChainDataSource;
+
         const request = new CertificationRequest(null, configuration, isVolumePrivate);
 
         const { issuer } = configuration.blockchainProperties as Configuration.BlockchainProperties<
@@ -71,11 +71,15 @@ export class CertificationRequest extends PreciseProofEntity implements ICertifi
         >;
         const issuerWithSigner = issuer.connect(configuration.blockchainProperties.activeUser);
 
-        await this.validateGenerationPeriod(fromTime, toTime, deviceId, configuration);
+        await certificateClient.validateGenerationPeriod({ fromTime, toTime, deviceId });
 
-        const success = await configuration.offChainDataSource.certificateClient.queueCertificationRequestData(
-            { deviceId, fromTime, toTime, energy, files }
-        );
+        const success = await certificateClient.queueCertificationRequestData({
+            deviceId,
+            fromTime,
+            toTime,
+            energy,
+            files
+        });
 
         if (!success) {
             throw new Error('Unable to create CertificationRequest');
@@ -197,44 +201,5 @@ export class CertificationRequest extends PreciseProofEntity implements ICertifi
         );
 
         return Promise.all(certificationRequestPromises);
-    }
-
-    private static async validateGenerationPeriod(
-        fromTime: Timestamp,
-        toTime: Timestamp,
-        deviceId: string,
-        configuration: Configuration.Entity
-    ): Promise<boolean> {
-        const moment = extendMoment(Moment);
-        const unix = (timestamp: Timestamp) => moment.unix(timestamp);
-
-        const allCertificationRequests = await this.getAll(configuration);
-
-        const generationTimeRange = moment.range(unix(fromTime), unix(toTime));
-
-        for (const certificationRequest of allCertificationRequests) {
-            if (certificationRequest.revoked || certificationRequest.deviceId !== deviceId) {
-                continue;
-            }
-
-            const certificationRequestGenerationRange = moment.range(
-                unix(certificationRequest.fromTime),
-                unix(certificationRequest.toTime)
-            );
-
-            if (generationTimeRange.overlaps(certificationRequestGenerationRange)) {
-                throw new Error(
-                    `Generation period ` +
-                        `${unix(fromTime).format()} - ${unix(toTime).format()}` +
-                        ` overlaps with the time period of ` +
-                        `${unix(certificationRequest.fromTime).format()} - ${unix(
-                            certificationRequest.toTime
-                        ).format()}` +
-                        ` of request ${certificationRequest.id}.`
-                );
-            }
-        }
-
-        return true;
     }
 }
