@@ -12,6 +12,7 @@ import { ErrorComponent } from './ErrorComponent';
 import { useLinks } from '../utils/routing';
 import { getError, getLoading } from '../features/general/selectors';
 import { LinearProgress, makeStyles, createStyles, useTheme } from '@material-ui/core';
+import { BundlesTable } from './bundles/BundleTable';
 
 export function AppContainer() {
     const error = useSelector(getError);
@@ -23,7 +24,8 @@ export function AppContainer() {
         getDevicesLink,
         getCertificatesLink,
         getOrganizationLink,
-        getAdminLink
+        getAdminLink,
+        getBundlesLink
     } = useLinks();
 
     const useStyles = makeStyles(() =>
@@ -60,7 +62,7 @@ export function AppContainer() {
                 <Route path={getAccountLink()} component={Account} />
                 <Route path={getOrganizationLink()} component={Organization} />
                 <Route path={getAdminLink()} component={Admin} />
-
+                <Route path={getBundlesLink()} component={BundlesTable} />
                 <Route path={baseURL} component={Device} />
             </Switch>
             <RequestCertificatesModal />

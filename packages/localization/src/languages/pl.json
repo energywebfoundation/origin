@@ -19,6 +19,9 @@
                 "registerDevice": "Zarejestruj urządzenie",
                 "registerDeviceGroup": "Zarejestruj grupę urządzeń",
                 "pending": "Oczekujące"
+            },
+            "certificates": {
+                "bundles": "Wwiązki"
             }
         },
         "device": {

@@ -1,4 +1,5 @@
 import { Filter, Operator, OrderSide, Product, OrderStatus } from '@energyweb/exchange-core';
+import BN from 'bn.js';
 
 export type DeviceVintageDTO = {
     year: number;
@@ -142,4 +143,19 @@ export type RequestWithdrawalDTO = {
     readonly assetId: string;
     readonly address: string;
     readonly amount: string;
+};
+
+export type BundleItem = {
+    id: string;
+    asset: IAsset;
+    startVolume: BN;
+    currentVolume: BN;
+};
+
+export type Bundle = {
+    id: string;
+    userId: string;
+    price: number;
+    isCancelled: boolean;
+    items: BundleItem[];
 };
