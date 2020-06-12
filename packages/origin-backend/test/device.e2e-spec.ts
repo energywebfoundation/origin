@@ -179,7 +179,7 @@ describe('Device e2e tests', () => {
         );
 
         await request(app.getHttpServer())
-            .get(`/device/${device.id}`)
+            .get(`/device/${device.id}?withMeterStats=true`)
             .set('Authorization', `Bearer ${accessToken}`)
             .expect((res) => {
                 const resultDevice = res.body as IDeviceWithRelationsIds;
@@ -240,7 +240,7 @@ describe('Device e2e tests', () => {
         await certificationRequestService.registerApproved(1);
 
         await request(app.getHttpServer())
-            .get(`/device/${device.id}`)
+            .get(`/device/${device.id}?withMeterStats=true`)
             .set('Authorization', `Bearer ${accessToken}`)
             .expect((res) => {
                 const resultDevice = res.body as IDeviceWithRelationsIds;

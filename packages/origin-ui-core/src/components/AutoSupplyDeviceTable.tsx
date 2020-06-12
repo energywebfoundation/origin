@@ -60,7 +60,7 @@ export function AutoSupplyDeviceTable() {
                 parseInt(requestedFilters[1]?.selectedValue, 10) || 0
             );
         } else {
-            entities = await deviceClient.getMyDevice();
+            entities = await deviceClient.getMyDevices(true);
         }
         let newPaginatedData: IRecord[] = entities.map((i) => ({
             device: i

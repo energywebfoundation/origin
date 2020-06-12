@@ -146,14 +146,14 @@ export class Entity implements IDevice {
     }
 }
 
-export const getAllDevices = async (configuration: Configuration.Entity): Promise<Entity[]> => {
-    const allDevices = await configuration.offChainDataSource.deviceClient.getAll();
+export const getAllDevices = async (withMeterStats: boolean = false, configuration: Configuration.Entity): Promise<Entity[]> => {
+    const allDevices = await configuration.offChainDataSource.deviceClient.getAll(withMeterStats);
 
     return allDevices.map((device) => new Entity(device.id, configuration, device));
 };
 
 export const getDeviceListLength = async (configuration: Configuration.Entity) => {
-    const allDevices = await configuration.offChainDataSource.deviceClient.getAll();
+    const allDevices = await configuration.offChainDataSource.deviceClient.getAll(false);
     return allDevices.length;
 };
 
