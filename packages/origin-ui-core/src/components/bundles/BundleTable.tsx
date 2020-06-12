@@ -19,6 +19,8 @@ interface IOwnProps {
     showAddBundleButton?: boolean;
 }
 
+const BUNDLES_PER_PAGE = 25;
+
 export const BundlesTable = (props: IOwnProps) => {
     const { t } = useTranslation();
     const configuration = useSelector(getConfiguration);
@@ -50,11 +52,14 @@ export const BundlesTable = (props: IOwnProps) => {
         };
     }
 
-    const { paginatedData, loadPage, total, pageSize } = usePaginatedLoaderFiltered<Bundle>({
+    const { paginatedData, loadPage, total, pageSize, setPageSize } = usePaginatedLoaderFiltered<
+        Bundle
+    >({
         getPaginatedData: getBundles
     });
 
     useEffect(() => {
+        setPageSize(BUNDLES_PER_PAGE);
         loadPage(1);
     }, [user, configuration]);
 
