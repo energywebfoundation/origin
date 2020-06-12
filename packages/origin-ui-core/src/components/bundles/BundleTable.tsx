@@ -3,7 +3,8 @@ import {
     TableMaterial,
     IPaginatedLoaderHooksFetchDataParameters,
     IPaginatedLoaderFetchDataReturnValues,
-    usePaginatedLoaderFiltered
+    usePaginatedLoaderFiltered,
+    usePaginatedLoaderSorting
 } from '../Table';
 import { useTranslation, formatCurrencyComplete } from '../../utils';
 import { useSelector } from 'react-redux';
@@ -16,6 +17,11 @@ import { BundleDetails } from './BundleDetails';
 import { getCurrencies } from '../../features';
 
 const BUNDLES_PER_PAGE = 25;
+const BUNDLES_TOTAL_ENERGY_COLUMN_ID = 'total';
+const BUNDLES_TOTAL_ENERGY_PROPERTIES = [
+    (record: Bundle) =>
+        record.items.reduce((total, item) => total.add(item.currentVolume), new BN(0)).toNumber()
+];
 
 export const BundlesTable = () => {
     const { t } = useTranslation();
@@ -26,49 +32,8 @@ export const BundlesTable = () => {
     const [showBundleDetailsModal, setShowBundleDetailsModal] = useState<boolean>(false);
     const exchangeClient = useSelector(getExchangeClient);
 
-    const columns = [
-        { id: 'total', label: t('bundle.properties.total_energy') },
-        { id: 'solar', label: t('bundle.properties.solar') },
-        { id: 'wind', label: t('bundle.properties.wind') },
-        { id: 'hydro', label: `${t('bundle.properties.hydro')}` },
-        { id: 'other', label: t('bundle.properties.other') },
-        { id: 'price', label: `${t('bundle.properties.price')}` }
-    ];
-
-    async function getBundles({
-        requestedPageSize,
-        offset
-    }: IPaginatedLoaderHooksFetchDataParameters): Promise<IPaginatedLoaderFetchDataReturnValues> {
-        const availableBundles: Bundle[] = await exchangeClient.getAvailableBundles();
-        const total = availableBundles.length;
-        const paginatedData = availableBundles.slice(offset, offset + requestedPageSize);
-        return {
-            paginatedData,
-            total
-        };
-    }
-
-    const { paginatedData, loadPage, total, pageSize, setPageSize } = usePaginatedLoaderFiltered<
-        Bundle
-    >({
-        getPaginatedData: getBundles
-    });
-
-    useEffect(() => {
-        setPageSize(BUNDLES_PER_PAGE);
-        loadPage(1);
-    }, [user, configuration]);
-
-    type TEnergyByType = {
-        total: BN;
-        solar: BN;
-        wind: BN;
-        hydro: BN;
-        other: BN;
-    };
-
-    const energyByType = (bundle: Bundle): TEnergyByType => {
-        return bundle.items.reduce(
+    const energyByType = (bundle: Bundle): TEnergyByType =>
+        bundle.items.reduce(
             (grouped, item) => {
                 const type = devices
                     .find((device) => device.id === Number(item.asset.deviceId))
@@ -86,7 +51,6 @@ export const BundlesTable = () => {
                 other: new BN(0)
             }
         );
-    };
 
     const energyShares = (bundle: Bundle) => {
         const energy = energyByType(bundle);
@@ -96,6 +60,47 @@ export const BundlesTable = () => {
                 .map((p) => [p, energy[p].div(energy.total)])
                 .map(([p, v]) => [p, `${Number(v).toFixed(2)} %`])
         );
+    };
+
+    const { currentSort, sortAscending, sortData, toggleSort } = usePaginatedLoaderSorting({
+        currentSort: {
+            id: BUNDLES_TOTAL_ENERGY_COLUMN_ID,
+            sortProperties: BUNDLES_TOTAL_ENERGY_PROPERTIES
+        },
+        sortAscending: false
+    });
+
+    async function getPaginatedData({
+        requestedPageSize,
+        offset
+    }: IPaginatedLoaderHooksFetchDataParameters): Promise<IPaginatedLoaderFetchDataReturnValues> {
+        const availableBundles: Bundle[] = await exchangeClient.getAvailableBundles();
+        const total = availableBundles.length;
+        const paginatedData = availableBundles.slice(offset, offset + requestedPageSize);
+        sortData(paginatedData);
+        return {
+            paginatedData,
+            total
+        };
+    }
+
+    const { paginatedData, loadPage, total, pageSize, setPageSize } = usePaginatedLoaderFiltered<
+        Bundle
+    >({
+        getPaginatedData
+    });
+
+    useEffect(() => {
+        setPageSize(BUNDLES_PER_PAGE);
+        loadPage(1);
+    }, [user, configuration]);
+
+    type TEnergyByType = {
+        total: BN;
+        solar: BN;
+        wind: BN;
+        hydro: BN;
+        other: BN;
     };
 
     const currency = useSelector(getCurrencies).pop() ?? 'USD';
@@ -110,6 +115,23 @@ export const BundlesTable = () => {
         setSelectedBundle(bundle);
         setShowBundleDetailsModal(true);
     };
+
+    const columns = [
+        {
+            id: BUNDLES_TOTAL_ENERGY_COLUMN_ID,
+            label: t('bundle.properties.total_energy'),
+            sortProperties: BUNDLES_TOTAL_ENERGY_PROPERTIES
+        },
+        { id: 'solar', label: t('bundle.properties.solar') },
+        { id: 'wind', label: t('bundle.properties.wind') },
+        { id: 'hydro', label: t('bundle.properties.hydro') },
+        { id: 'other', label: t('bundle.properties.other') },
+        {
+            id: 'price',
+            label: t('bundle.properties.price'),
+            sortProperties: [(bundle: Bundle) => bundle.price]
+        }
+    ];
 
     const actions = [
         {
@@ -128,6 +150,9 @@ export const BundlesTable = () => {
                 total={total}
                 pageSize={pageSize}
                 actions={actions}
+                currentSort={currentSort}
+                sortAscending={sortAscending}
+                toggleSort={toggleSort}
             />
             <BundleDetails bundle={selectedBundle} showModal={showBundleDetailsModal} />
         </>
