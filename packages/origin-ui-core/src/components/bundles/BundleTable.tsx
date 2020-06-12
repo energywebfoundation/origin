@@ -14,14 +14,9 @@ import BN from 'bn.js';
 import { Visibility } from '@material-ui/icons';
 import { BundleDetails } from './BundleDetails';
 
-interface IOwnProps {
-    owner?: number;
-    showAddBundleButton?: boolean;
-}
-
 const BUNDLES_PER_PAGE = 25;
 
-export const BundlesTable = (props: IOwnProps) => {
+export const BundlesTable = () => {
     const { t } = useTranslation();
     const configuration = useSelector(getConfiguration);
     const user = useSelector(getUserOffchain);
