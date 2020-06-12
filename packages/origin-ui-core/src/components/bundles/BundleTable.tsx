@@ -153,6 +153,7 @@ export const BundlesTable = () => {
                 currentSort={currentSort}
                 sortAscending={sortAscending}
                 toggleSort={toggleSort}
+                handleRowClick={(rowIndex: string) => viewDetails(parseInt(rowIndex, 10))}
             />
             <BundleDetails bundle={selectedBundle} showModal={showBundleDetailsModal} />
         </>
