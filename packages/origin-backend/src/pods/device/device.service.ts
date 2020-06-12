@@ -240,20 +240,17 @@ export class DeviceService {
             throw new NotFoundException(StorageErrors.NON_EXISTENT);
         }
 
-        device.automaticPostForSale = update.automaticPostForSale;
-        if (update.automaticPostForSale) {
-            device.defaultAskPrice = update.defaultAskPrice;
-        }
+        const { defaultAskPrice, automaticPostForSale } = update;
 
         try {
-            await this.repository.save((device as unknown) as DeepPartial<Device>);
+            await this.repository.update(id, { defaultAskPrice, automaticPostForSale });
 
             return {
                 message: `Device ${id} successfully updated`
             };
         } catch (error) {
             throw new UnprocessableEntityException({
-                message: `Device ${id} could not be updated due to an error ${error.message}`
+                message: `Device ${id} could not be updated due to an error: ${error.message}`
             });
         }
     }
