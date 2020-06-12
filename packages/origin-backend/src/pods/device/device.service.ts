@@ -240,8 +240,10 @@ export class DeviceService {
             throw new NotFoundException(StorageErrors.NON_EXISTENT);
         }
 
+        const { defaultAskPrice, automaticPostForSale } = update;
+
         try {
-            await this.repository.update(id, update);
+            await this.repository.update(id, { defaultAskPrice, automaticPostForSale });
 
             return {
                 message: `Device ${id} successfully updated`
