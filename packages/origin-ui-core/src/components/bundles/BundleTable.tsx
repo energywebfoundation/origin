@@ -92,18 +92,27 @@ export const BundlesTable = (props: IOwnProps) => {
         );
     };
 
-    const energyShares = (bundle: Bundle): TEnergyByType => {
+    const energyShares = (bundle: Bundle) /* : TEnergyByType */ => {
         const energy = energyByType(bundle);
         return Object.fromEntries(
             Object.keys(energy)
                 .filter((p) => p === 'total')
-                .map((p) => energy[p].div(energy.total))
-        ) as TEnergyByType;
+                .map((p) => [p, energy[p].div(energy.total)])
+                .map(([p, v]) => [p, `${Number(v).toFixed(2)} %`])
+        ) /* as TEnergyByType */;
     };
+    const locale = 'en-En'; // retrive from storage
+    const priceFormatter = Intl.NumberFormat(locale, {
+        style: 'currency',
+        currency: 'USD',
+        currencyDisplay: 'symbol',
+        useGrouping: true,
+        maximumFractionDigits: 2
+    });
 
     const rows = paginatedData.map((bundle) => ({
         ...energyShares(bundle),
-        price: bundle.price
+        price: `$ ${priceFormatter.format(bundle.price)}`
     }));
 
     const viewDetails = (rowIndex) => {
