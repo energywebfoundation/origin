@@ -5,7 +5,7 @@ import {
     IPaginatedLoaderFetchDataReturnValues,
     usePaginatedLoaderFiltered
 } from '../Table';
-import { useTranslation } from '../../utils';
+import { useTranslation, formatCurrencyComplete } from '../../utils';
 import { useSelector } from 'react-redux';
 import { getExchangeClient, getConfiguration, getProducingDevices } from '../..';
 import { Bundle } from '../../utils/exchange';
@@ -13,6 +13,7 @@ import { getUserOffchain } from '../../features/users/selectors';
 import BN from 'bn.js';
 import { Visibility } from '@material-ui/icons';
 import { BundleDetails } from './BundleDetails';
+import { getCurrencies } from '../../features';
 
 const BUNDLES_PER_PAGE = 25;
 
@@ -87,27 +88,21 @@ export const BundlesTable = () => {
         );
     };
 
-    const energyShares = (bundle: Bundle) /* : TEnergyByType */ => {
+    const energyShares = (bundle: Bundle) => {
         const energy = energyByType(bundle);
         return Object.fromEntries(
             Object.keys(energy)
                 .filter((p) => p === 'total')
                 .map((p) => [p, energy[p].div(energy.total)])
                 .map(([p, v]) => [p, `${Number(v).toFixed(2)} %`])
-        ) /* as TEnergyByType */;
+        );
     };
-    const locale = 'en-En'; // retrive from storage
-    const priceFormatter = Intl.NumberFormat(locale, {
-        style: 'currency',
-        currency: 'USD',
-        currencyDisplay: 'symbol',
-        useGrouping: true,
-        maximumFractionDigits: 2
-    });
+
+    const currency = useSelector(getCurrencies).pop() ?? 'USD';
 
     const rows = paginatedData.map((bundle) => ({
         ...energyShares(bundle),
-        price: `$ ${priceFormatter.format(bundle.price)}`
+        price: `$ ${formatCurrencyComplete(bundle.price, currency)}`
     }));
 
     const viewDetails = (rowIndex) => {

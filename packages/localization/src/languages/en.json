@@ -354,6 +354,16 @@
                     "admin": "Admin"
                 }
             }
+        },
+        "bundle": {
+            "properties": {
+                "total_energy": "TOTAL ENERGY",
+                "solar": "SOLAR",
+                "wind": "WIND",
+                "hydro": "HYDRO",
+                "other": "OTHER",
+                "price": "Price per MWh"
+            }
         }
     }
 }
