@@ -4468,10 +4468,10 @@
     "@types/prop-types" "*"
     csstype "^2.2.0"
 
-"@types/react@16.9.35":
-  version "16.9.35"
-  resolved "https://registry.yarnpkg.com/@types/react/-/react-16.9.35.tgz#a0830d172e8aadd9bd41709ba2281a3124bbd368"
-  integrity sha512-q0n0SsWcGc8nDqH2GJfWQWUOmZSJhXV64CjVN5SvcNti3TdEaA3AH0D8DwNmMdzjMAC/78tB8nAZIlV8yTz+zQ==
+"@types/react@16.9.36":
+  version "16.9.36"
+  resolved "https://registry.yarnpkg.com/@types/react/-/react-16.9.36.tgz#ade589ff51e2a903e34ee4669e05dbfa0c1ce849"
+  integrity sha512-mGgUb/Rk/vGx4NCvquRuSH0GHBQKb1OqpGS9cT9lFxlTLHZgkksgI60TuIxubmn7JuCb+sENHhQciqa0npm0AQ==
   dependencies:
     "@types/prop-types" "*"
     csstype "^2.2.0"
@@ -17909,10 +17909,10 @@ react-hotkeys@2.0.0:
   dependencies:
     prop-types "^15.6.1"
 
-react-i18next@11.5.0:
-  version "11.5.0"
-  resolved "https://registry.yarnpkg.com/react-i18next/-/react-i18next-11.5.0.tgz#84a9bb535d44c0c1b336b94de164515c2cc2a714"
-  integrity sha512-V6rUT7MzYBdFCgUrhfr78FHRfnY3CFoR75ET9EP5Py5UPHKyaGiK1MvPx03TesLwsmIaVHlRFU/WLzqCedXevA==
+react-i18next@11.5.1:
+  version "11.5.1"
+  resolved "https://registry.yarnpkg.com/react-i18next/-/react-i18next-11.5.1.tgz#084e98555d8800d5508eccc8da1ac652df358d3e"
+  integrity sha512-2VSx+dClvmCJTgrw9Nrof4EkggMlzo4s/YZPEUAdI7gU2HTksapkGtFPARzpeTk+3k1zY+Xl6pLHc0LYvsRWAQ==
   dependencies:
     "@babel/runtime" "^7.3.1"
     html-parse-stringify2 "2.0.1"
