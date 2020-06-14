@@ -4,9 +4,8 @@ import {
     IOrganizationWithRelationsIds,
     IUserWithRelationsIds,
     OrganizationInvitationStatus,
-    OrganizationInviteCreateReturnData,
+    ISuccessResponse,
     OrganizationPostData,
-    OrganizationMemberChangedReturnData,
     OrganizationStatus,
     OrganizationUpdateData,
     OrganizationRole,
@@ -65,11 +64,11 @@ export class OrganizationClientMock implements IOrganizationClient {
         return Promise.resolve(organization);
     }
 
-    invite(email: string, role: OrganizationRole): Promise<OrganizationInviteCreateReturnData> {
+    invite(email: string, role: OrganizationRole): Promise<ISuccessResponse> {
         throw new Error('Method not implemented.');
     }
 
-    inviteMocked(email: string, organizationId: number, role: OrganizationRole): OrganizationInviteCreateReturnData {
+    inviteMocked(email: string, organizationId: number, role: OrganizationRole): ISuccessResponse {
         this.invitationCounter++;
 
         const organizationInvitation: IOrganizationInvitation = {
@@ -90,7 +89,7 @@ export class OrganizationClientMock implements IOrganizationClient {
 
         return {
             success: true,
-            error: organizationInvitation.id.toString()
+            message: organizationInvitation.id.toString()
         };
     }
 
@@ -101,16 +100,16 @@ export class OrganizationClientMock implements IOrganizationClient {
     removeMember(
         organizationId: number,
         userId: number
-    ): Promise<OrganizationMemberChangedReturnData> {
+    ): Promise<ISuccessResponse> {
         const organization = this.storage.get(organizationId);
 
         organization.users = organization.users.filter((user) => user !== userId);
 
         this.storage.set(organization.id, organization);
 
-        const returnData: OrganizationMemberChangedReturnData = {
+        const returnData: ISuccessResponse = {
             success: true,
-            error: ''
+            message: ''
         };
 
         return Promise.resolve(returnData);
@@ -121,7 +120,7 @@ export class OrganizationClientMock implements IOrganizationClient {
         organizationId: number,
         userId: number,
         newRole: Role
-    ): Promise<OrganizationMemberChangedReturnData> {
+    ): Promise<ISuccessResponse> {
         throw new Error('Method not implemented.');
     }
 

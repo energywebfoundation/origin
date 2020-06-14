@@ -28,6 +28,5 @@ export interface IOrganizationInvitationWithRelations extends IOrganizationInvit
 }
 
 export type OrganizationInviteCreateData = { email: string; role: OrganizationRole };
-export type OrganizationInviteCreateReturnData = { success: boolean; error: string };
 
 export type OrganizationInviteUpdateData = Pick<IOrganizationInvitation, 'status'>;

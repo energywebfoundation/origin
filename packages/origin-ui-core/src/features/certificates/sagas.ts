@@ -87,7 +87,15 @@ function* requestCertificatesSaga(): SagaIterator {
             }
         } catch (error) {
             console.warn('Error while requesting certificates', error);
-            showNotification(`Transaction could not be completed.`, NotificationType.Error);
+
+            if (error?.response?.status === 409) {
+                showNotification(
+                    `There is already a certificate requested for that time period.`,
+                    NotificationType.Error
+                );
+            } else {
+                showNotification(`Transaction could not be completed.`, NotificationType.Error);
+            }
         }
 
         yield put(setLoading(false));

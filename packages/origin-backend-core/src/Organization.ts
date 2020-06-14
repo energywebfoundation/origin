@@ -71,8 +71,6 @@ export type OrganizationPostData = Omit<IOrganizationProperties, 'id' | 'status'
 
 export type OrganizationUpdateData = Pick<IOrganization, 'status'>;
 
-export type OrganizationMemberChangedReturnData = { success: boolean; error: string };
-
 export interface IOrganizationUpdateMemberRole {
     role: Role;
 }
