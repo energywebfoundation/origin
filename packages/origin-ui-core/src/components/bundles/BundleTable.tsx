@@ -8,13 +8,14 @@ import {
 } from '../Table';
 import { useTranslation, formatCurrencyComplete } from '../../utils';
 import { useSelector } from 'react-redux';
-import { getExchangeClient, getConfiguration, getProducingDevices } from '../..';
+import { getConfiguration, getProducingDevices } from '../..';
 import { Bundle } from '../../utils/exchange';
 import { getUserOffchain } from '../../features/users/selectors';
 import BN from 'bn.js';
 import { Visibility } from '@material-ui/icons';
 import { BundleDetails } from './BundleDetails';
 import { getCurrencies } from '../../features';
+import { getBundles } from '../../features/bundles/selectors';
 
 const BUNDLES_PER_PAGE = 25;
 const BUNDLES_TOTAL_ENERGY_COLUMN_ID = 'total';
@@ -24,13 +25,13 @@ const BUNDLES_TOTAL_ENERGY_PROPERTIES = [
 ];
 
 export const BundlesTable = () => {
+    const bundles = useSelector(getBundles);
     const { t } = useTranslation();
     const configuration = useSelector(getConfiguration);
     const user = useSelector(getUserOffchain);
     const devices = useSelector(getProducingDevices);
     const [selectedBundle, setSelectedBundle] = useState<Bundle>(null);
     const [showBundleDetailsModal, setShowBundleDetailsModal] = useState<boolean>(false);
-    const exchangeClient = useSelector(getExchangeClient);
 
     const energyByType = (bundle: Bundle): TEnergyByType =>
         bundle.items.reduce(
@@ -74,9 +75,8 @@ export const BundlesTable = () => {
         requestedPageSize,
         offset
     }: IPaginatedLoaderHooksFetchDataParameters): Promise<IPaginatedLoaderFetchDataReturnValues> {
-        const availableBundles: Bundle[] = await exchangeClient.getAvailableBundles();
-        const total = availableBundles.length;
-        const paginatedData = availableBundles.slice(offset, offset + requestedPageSize);
+        const total = bundles.length;
+        const paginatedData = bundles.slice(offset, offset + requestedPageSize);
         sortData(paginatedData);
         return {
             paginatedData,

@@ -153,7 +153,7 @@ export type BundleItem = {
 };
 
 export type Bundle = {
-    id: string;
+    id?: string;
     userId: string;
     price: number;
     isCancelled: boolean;
