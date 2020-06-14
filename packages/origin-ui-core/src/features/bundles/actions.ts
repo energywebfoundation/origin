@@ -1,7 +1,7 @@
 import { Bundle } from '../../utils/exchange';
 
 export enum BundlesActionType {
-    STORE = 'BUNDLE_STORE'
+    STORE = 'BUNDLES_STORE'
 }
 
 export interface IBundleAction {

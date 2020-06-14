@@ -3,16 +3,10 @@ import { IBundleAction, BundlesActionType } from './actions';
 
 export interface IBundlesState {
     bundles: Bundle[];
-    createBundleModal: {
-        visible: boolean;
-    };
 }
 
 const initialState: IBundlesState = {
-    bundles: [],
-    createBundleModal: {
-        visible: false
-    }
+    bundles: []
 };
 
 export default function reducer(

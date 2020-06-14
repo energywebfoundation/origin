@@ -7,15 +7,17 @@ import {
     usePaginatedLoaderSorting
 } from '../Table';
 import { useTranslation, formatCurrencyComplete } from '../../utils';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { getConfiguration, getProducingDevices } from '../..';
 import { Bundle } from '../../utils/exchange';
 import { getUserOffchain } from '../../features/users/selectors';
 import BN from 'bn.js';
-import { Visibility } from '@material-ui/icons';
+import { Visibility, Add } from '@material-ui/icons';
 import { BundleDetails } from './BundleDetails';
 import { getCurrencies } from '../../features';
 import { getBundles } from '../../features/bundles/selectors';
+import { Fab } from '@material-ui/core';
+import { CreateBundleForm } from './CreateBundleForm';
 
 const BUNDLES_PER_PAGE = 25;
 const BUNDLES_TOTAL_ENERGY_COLUMN_ID = 'total';
@@ -32,6 +34,7 @@ export const BundlesTable = () => {
     const devices = useSelector(getProducingDevices);
     const [selectedBundle, setSelectedBundle] = useState<Bundle>(null);
     const [showBundleDetailsModal, setShowBundleDetailsModal] = useState<boolean>(false);
+    const [showCreateBundleModal, setShowCreateBundleModal] = useState(false);
 
     const energyByType = (bundle: Bundle): TEnergyByType =>
         bundle.items.reduce(
@@ -103,7 +106,7 @@ export const BundlesTable = () => {
         other: BN;
     };
 
-    const currency = useSelector(getCurrencies).pop() ?? 'USD';
+    const [currency = 'USD'] = useSelector(getCurrencies);
 
     const rows = paginatedData.map((bundle) => ({
         ...energyShares(bundle),
@@ -141,6 +144,10 @@ export const BundlesTable = () => {
         }
     ];
 
+    const hideCreateBundleModal = () => {
+        setShowCreateBundleModal(false);
+    };
+
     return (
         <>
             <TableMaterial
@@ -156,6 +163,15 @@ export const BundlesTable = () => {
                 handleRowClick={(rowIndex: string) => viewDetails(parseInt(rowIndex, 10))}
             />
             <BundleDetails bundle={selectedBundle} showModal={showBundleDetailsModal} />
+            <CreateBundleForm showModal={showCreateBundleModal} callback={hideCreateBundleModal} />
+            <Fab
+                color="primary"
+                aria-label="add"
+                style={{ position: 'relative', marginTop: '20px', float: 'right' }}
+                onClick={() => setShowCreateBundleModal(true)}
+            >
+                <Add />
+            </Fab>
         </>
     );
 };

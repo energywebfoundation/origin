@@ -10,7 +10,7 @@ export const getOffChainDataSource = (state: IStoreState) => state.general.offCh
 export const getEnvironment = (state: IStoreState) => state.general.environment;
 
 export const getCurrencies = (state: IStoreState): string[] =>
-    state.general.offChainConfiguration?.currencies;
+    state.general.offChainConfiguration?.currencies || [];
 
 export const getCompliance = (state: IStoreState): string =>
     state.general.offChainConfiguration?.complianceStandard;
