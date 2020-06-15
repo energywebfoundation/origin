@@ -12,7 +12,7 @@ module.exports = {
         sourceType: 'module',
         project: './tsconfig.json'
     },
-    plugins: ['@typescript-eslint'],
+    plugins: ['@typescript-eslint', 'react-hooks'],
     rules: {
         'array-callback-return': 'off',
         '@typescript-eslint/interface-name-prefix': [
@@ -54,7 +54,8 @@ module.exports = {
                 ts: 'never',
                 tsx: 'never'
             }
-        ]
+        ],
+        'react-hooks/rules-of-hooks': 'error',
     },
     settings: {
         'import/resolver': {

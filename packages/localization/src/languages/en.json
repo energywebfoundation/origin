@@ -30,6 +30,7 @@
                 "approved": "Approved",
                 "forDemand": "For demand",
                 "exchange": "Exchange",
+                "bundles": "Bundles",
                 "myTrades": "My trades"
             }
         },
@@ -352,6 +353,16 @@
                     "deviceManager": "Device Manager",
                     "admin": "Admin"
                 }
+            }
+        },
+        "bundle": {
+            "properties": {
+                "total_energy": "TOTAL ENERGY",
+                "solar": "SOLAR",
+                "wind": "WIND",
+                "hydro": "HYDRO",
+                "other": "OTHER",
+                "price": "Price per MWh"
             }
         }
     }

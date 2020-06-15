@@ -19,6 +19,9 @@
                 "registerDevice": "Zarejestruj urządzenie",
                 "registerDeviceGroup": "Zarejestruj grupę urządzeń",
                 "pending": "Oczekujące"
+            },
+            "certificates": {
+                "bundles": "Pakiety"
             }
         },
         "device": {
@@ -233,6 +236,16 @@
             "info": {
                 "dropHereOrClickToSelect": "Upuść pliki tutaj lub kliknij aby wybrać"
             }
+        }
+    },
+    "bundle": {
+        "properties": {
+            "total_energy": "CALKOWITEJ ENERGII",
+            "solar": "SŁONECZNY",
+            "wind": "WIATR",
+            "hydro": "HYDRO",
+            "other": "INNY",
+            "price": "Cena za MWh"
         }
     }
 }

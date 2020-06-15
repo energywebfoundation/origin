@@ -23,7 +23,8 @@ import {
     ExchangeClient,
     IExchangeClient,
     ExchangeAccount,
-    AccountAsset
+    AccountAsset,
+    Bundle
 } from '../../utils/exchange';
 import {
     IOriginConfiguration,
@@ -56,6 +57,7 @@ import { getI18n } from 'react-i18next';
 import { showNotification, NotificationType, getDevicesOwnedLink } from '../../utils';
 import { ICertificateViewItem, CertificateSource } from '../certificates';
 import { getCertificate } from '../certificates/sagas';
+import { storeBundle } from '../bundles';
 
 function createEthereumProviderAccountsChangedEventChannel(ethereumProvider: any) {
     return eventChannel<string[]>((emitter) => {
@@ -396,6 +398,11 @@ function* fetchDataAfterConfigurationChange(
 
     for (const certificate of certificates) {
         yield put(update ? updateCertificate(certificate) : addCertificate(certificate));
+    }
+
+    const bundles: Bundle[] = yield apply(exchangeClient, exchangeClient.getAvailableBundles, null);
+    for (const bundle of bundles) {
+        yield put(storeBundle(bundle));
     }
 }
 
