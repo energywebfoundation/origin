@@ -204,15 +204,19 @@ export function CertificateDetailView(props: IProps) {
         data = [
             [
                 {
-                    label: 'Certificate id',
+                    label: t('certificate.properties.id'),
                     data: selectedCertificate.id.toString()
                 },
                 {
-                    label: 'Claimed',
-                    data: selectedCertificate.isClaimed ? 'yes' : 'no'
+                    label: t('certificate.properties.claimed'),
+                    data: selectedCertificate.isClaimed
+                        ? publicVolume.add(privateVolume).gt(0)
+                            ? t('general.responses.partially')
+                            : t('general.responses.yes')
+                        : t('general.responses.no')
                 },
                 {
-                    label: 'Creation date',
+                    label: t('certificate.properties.creationDate'),
                     data: formatDate(
                         selectedCertificate.creationTime * 1000,
                         false,
@@ -222,15 +226,15 @@ export function CertificateDetailView(props: IProps) {
             ],
             [
                 {
-                    label: `Certified energy (${EnergyFormatter.displayUnit})`,
-                    data: EnergyFormatter.format(
+                    label: `${
                         selectedCertificate.isClaimed
-                            ? claimedVolume
-                            : publicVolume.add(privateVolume)
-                    )
+                            ? t('certificate.properties.remainingEnergy')
+                            : t('certificate.properties.certifiedEnergy')
+                    } (${EnergyFormatter.displayUnit})`,
+                    data: EnergyFormatter.format(publicVolume.add(privateVolume))
                 },
                 {
-                    label: 'Generation start',
+                    label: t('certificate.properties.generationDateStart'),
                     data: formatDate(
                         selectedCertificate.generationStartTime * 1000,
                         true,
@@ -238,7 +242,7 @@ export function CertificateDetailView(props: IProps) {
                     )
                 },
                 {
-                    label: 'Generation end',
+                    label: t('certificate.properties.generationDateEnd'),
                     data: formatDate(
                         selectedCertificate.generationEndTime * 1000,
                         true,
@@ -253,16 +257,25 @@ export function CertificateDetailView(props: IProps) {
                 (claim) => getAddress(claim.to) === getAddress(user.blockchainAccountAddress)
             )?.claimData;
 
+            const claimInfo = [
+                {
+                    label: `${t('certificate.properties.claimedEnergy')} (${
+                        EnergyFormatter.displayUnit
+                    })`,
+                    data: EnergyFormatter.format(claimedVolume)
+                }
+            ];
+
             if (claimData) {
-                data.push([
-                    {
-                        label: 'Claim beneficiary',
-                        data: Object.values(claimData)
-                            .filter((value) => value !== '')
-                            .join(', ')
-                    }
-                ]);
+                claimInfo.push({
+                    label: t('certificate.properties.claimBeneficiary'),
+                    data: Object.values(claimData)
+                        .filter((value) => value !== '')
+                        .join(', ')
+                });
             }
+
+            data.push(claimInfo);
         }
     }
 
@@ -289,7 +302,7 @@ export function CertificateDetailView(props: IProps) {
                         </div>
                     ) : (
                         <div className="text-center">
-                            <strong>Certificate not found</strong>
+                            <strong>{t('certificate.feedback.certificateNotFound')}</strong>
                         </div>
                     )}
                 </div>
