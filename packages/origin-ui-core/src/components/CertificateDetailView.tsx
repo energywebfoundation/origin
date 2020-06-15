@@ -10,7 +10,7 @@ import { formatDate } from '../utils/time';
 import { Skeleton } from '@material-ui/lab';
 import { makeStyles, createStyles, useTheme } from '@material-ui/core';
 import { getEnvironment } from '../features/general/selectors';
-import { EnergyFormatter } from '../utils/EnergyFormatter';
+import { EnergyFormatter, useTranslation } from '../utils';
 import { ProducingDevice } from '@energyweb/device-registry';
 import { getUserOffchain } from '../features/users/selectors';
 
@@ -26,6 +26,8 @@ interface IEnrichedEvent {
 }
 
 export function CertificateDetailView(props: IProps) {
+    const { t } = useTranslation();
+
     const { id } = props;
 
     const user = useSelector(getUserOffchain);
@@ -33,6 +35,11 @@ export function CertificateDetailView(props: IProps) {
     const producingDevices = useSelector(getProducingDevices);
     const configuration = useSelector(getConfiguration);
     const environment = useSelector(getEnvironment);
+
+    const isExchangeAddress = (address: string) =>
+        getAddress(address) === getAddress(environment.EXCHANGE_WALLET_PUB);
+    const transformIfExchangeAddress = (address: string) =>
+        isExchangeAddress(address) ? 'Exchange' : address;
 
     const [events, setEvents] = useState<IEnrichedEvent[]>([]);
 
@@ -61,25 +68,29 @@ export function CertificateDetailView(props: IProps) {
 
             switch (event.name) {
                 case 'IssuanceSingle':
-                    label = 'Certified';
-                    description = `Local issuer approved the certification request`;
+                    label = t('certificate.event.name.certified');
+                    description = t('certificate.event.description.certificationRequestApproved');
 
                     break;
                 case 'TransferSingle':
                     if (event.values._from === '0x0000000000000000000000000000000000000000') {
-                        label = 'Initial owner';
-                        description = event.values._to;
+                        label = t('certificate.event.name.initialOwner');
+                        description = transformIfExchangeAddress(event.values._to);
                     } else {
-                        const newOwner = event.values._to;
-                        const oldOwner = event.values._from;
-
-                        label = 'Changed ownership';
-                        description = `Transferred from ${oldOwner} to ${newOwner}`;
+                        label = t('certificate.event.name.changedOwnership');
+                        description = t('certificate.event.description.transferred', {
+                            amount: EnergyFormatter.format(event.values._value, true),
+                            newOwner: transformIfExchangeAddress(event.values._to),
+                            oldOwner: transformIfExchangeAddress(event.values._from)
+                        });
                     }
                     break;
                 case 'ClaimSingle':
-                    label = 'Certificate claimed';
-                    description = `Initiated by ${event.values._claimIssuer}`;
+                    label = t('certificate.event.name.claimed');
+                    description = t('certificate.event.description.claimed', {
+                        amount: EnergyFormatter.format(event.values._value, true),
+                        claimer: event.values._claimIssuer
+                    });
                     break;
 
                 default:
@@ -104,8 +115,11 @@ export function CertificateDetailView(props: IProps) {
         if (request) {
             resolvedEvents.unshift({
                 txHash: '',
-                label: 'Requested certification',
-                description: 'Device owner requested certification based on meter reads',
+                label: t('certificate.event.name.requested'),
+                description: t('certificate.event.description.requested', {
+                    deviceOwner: request.owner,
+                    amount: EnergyFormatter.format(request.energy, true)
+                }),
                 timestamp: request.created
             });
         }

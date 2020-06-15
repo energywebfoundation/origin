@@ -134,6 +134,21 @@
             },
             "info": {
                 "requestCertificatesFor": "Request certificates for {facilityName}"
+            },
+            "event": {
+                "name": {
+                    "certified": "Certified",
+                    "initialOwner": "Initial owner",
+                    "changedOwnership": "Changed ownership",
+                    "claimed": "Certificate claimed",
+                    "requested": "Requested certification"
+                },
+                "description": {
+                    "certificationRequestApproved": "Local issuer approved the certification request",
+                    "transferred": "Transferred {amount} from {oldOwner} to {newOwner}",
+                    "claimed": "Claimed {amount} by {claimer}",
+                    "requested": "Device owner {deviceOwner} requested certification of {amount}"
+                }
             }
         },
         "search": {

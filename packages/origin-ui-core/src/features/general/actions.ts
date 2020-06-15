@@ -24,6 +24,7 @@ export interface IEnvironment {
     ISSUER_ID: string;
     DEVICE_PROPERTIES_ENABLED: string;
     DEFAULT_ENERGY_IN_BASE_UNIT: string;
+    EXCHANGE_WALLET_PUB: string;
 }
 
 export interface ISetLoadingAction {
