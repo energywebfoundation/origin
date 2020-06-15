@@ -59,14 +59,13 @@ export class DeviceService {
             d.externalDeviceIds.find((id) => id.id === externalId.id && id.type === externalId.type)
         );
 
-        device.meterStats = await this.getMeterStats(device.id.toString());
-
         return device;
     }
 
     async findOne(
         id: string,
-        options: FindOneOptions<Device> = {}
+        options: FindOneOptions<Device> = {},
+        withMeterStats = false
     ): Promise<ExtendedBaseEntity & IDeviceWithRelationsIds> {
         const device = ((await this.repository.findOne(id, {
             loadRelationIds: true,
@@ -77,7 +76,9 @@ export class DeviceService {
             device.smartMeterReads = [];
         }
 
-        device.meterStats = await this.getMeterStats(device.id.toString());
+        if (withMeterStats) {
+            device.meterStats = await this.getMeterStats(device.id.toString());
+        }
 
         return device;
     }
@@ -167,6 +168,7 @@ export class DeviceService {
     }
 
     async getAll(
+        withMeterStats = false,
         options: FindOneOptions<Device> = {}
     ): Promise<Array<ExtendedBaseEntity & IDeviceWithRelationsIds>> {
         const devices = ((await this.repository.find({
@@ -179,7 +181,9 @@ export class DeviceService {
                 device.smartMeterReads = [];
             }
 
-            device.meterStats = await this.getMeterStats(device.id.toString());
+            if (withMeterStats) {
+                device.meterStats = await this.getMeterStats(device.id.toString());
+            }
         }
 
         return devices;

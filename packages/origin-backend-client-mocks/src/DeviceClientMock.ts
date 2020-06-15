@@ -11,8 +11,6 @@ import {
 } from '@energyweb/origin-backend-core';
 
 export class DeviceClientMock implements IDeviceClient {
-    
-    
     private storage = new Map<number, IDeviceWithRelationsIds>();
 
     private idCounter = 0;
@@ -27,7 +25,7 @@ export class DeviceClientMock implements IDeviceClient {
         return this.storage.get(id);
     }
 
-    async getAll(): Promise<IDeviceWithRelationsIds[]> {
+    async getAll(withMeterStats: boolean): Promise<IDeviceWithRelationsIds[]> {
         return [...this.storage.values()];
     }
 
@@ -93,7 +91,7 @@ export class DeviceClientMock implements IDeviceClient {
         throw new Error("Method not implemented.");
     }
 
-    public async getMyDevice(): Promise<IDeviceWithRelationsIds[]> {
+    public async getMyDevices(withMeterStats: boolean): Promise<IDeviceWithRelationsIds[]> {
         throw new Error("Method not implemented.");
     }
 }
