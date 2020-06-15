@@ -9,7 +9,7 @@ import { deduplicate } from '../utils/helper';
 import { formatDate } from '../utils/time';
 import { Skeleton } from '@material-ui/lab';
 import { makeStyles, createStyles, useTheme } from '@material-ui/core';
-import { getEnvironment } from '../features/general/selectors';
+import { getEnvironment, getExchangeClient } from '../features/general/selectors';
 import { EnergyFormatter, useTranslation } from '../utils';
 import { ProducingDevice } from '@energyweb/device-registry';
 import { getUserOffchain } from '../features/users/selectors';
@@ -35,11 +35,7 @@ export function CertificateDetailView(props: IProps) {
     const producingDevices = useSelector(getProducingDevices);
     const configuration = useSelector(getConfiguration);
     const environment = useSelector(getEnvironment);
-
-    const isExchangeAddress = (address: string) =>
-        getAddress(address) === getAddress(environment.EXCHANGE_WALLET_PUB);
-    const transformIfExchangeAddress = (address: string) =>
-        isExchangeAddress(address) ? 'Exchange' : address;
+    const exchangeClient = useSelector(getExchangeClient);
 
     const [events, setEvents] = useState<IEnrichedEvent[]>([]);
 
@@ -62,6 +58,24 @@ export function CertificateDetailView(props: IProps) {
             configuration
         );
 
+        const { address: exchangeDepositAddress } = await exchangeClient.getAccount();
+        const { issuer, registry } = configuration.blockchainProperties;
+
+        const transformAddress = (address: string) => {
+            switch (getAddress(address)) {
+                case environment.EXCHANGE_WALLET_PUB:
+                    return 'Exchange Wallet';
+                case exchangeDepositAddress:
+                    return 'Exchange Deposit Address';
+                case issuer.address:
+                    return 'Issuer Contract';
+                case registry.address:
+                    return 'Registry Contract';
+                default:
+                    return address;
+            }
+        };
+
         const jointEvents = allCertificateEvents.map(async (event) => {
             let label: string;
             let description: string;
@@ -75,13 +89,13 @@ export function CertificateDetailView(props: IProps) {
                 case 'TransferSingle':
                     if (event.values._from === '0x0000000000000000000000000000000000000000') {
                         label = t('certificate.event.name.initialOwner');
-                        description = transformIfExchangeAddress(event.values._to);
+                        description = transformAddress(event.values._to);
                     } else {
                         label = t('certificate.event.name.changedOwnership');
                         description = t('certificate.event.description.transferred', {
                             amount: EnergyFormatter.format(event.values._value, true),
-                            newOwner: transformIfExchangeAddress(event.values._to),
-                            oldOwner: transformIfExchangeAddress(event.values._from)
+                            newOwner: transformAddress(event.values._to),
+                            oldOwner: transformAddress(event.values._from)
                         });
                     }
                     break;
@@ -89,7 +103,7 @@ export function CertificateDetailView(props: IProps) {
                     label = t('certificate.event.name.claimed');
                     description = t('certificate.event.description.claimed', {
                         amount: EnergyFormatter.format(event.values._value, true),
-                        claimer: event.values._claimIssuer
+                        claimer: transformAddress(event.values._claimIssuer)
                     });
                     break;
 
@@ -117,7 +131,7 @@ export function CertificateDetailView(props: IProps) {
                 txHash: '',
                 label: t('certificate.event.name.requested'),
                 description: t('certificate.event.description.requested', {
-                    deviceOwner: request.owner,
+                    requestor: transformAddress(request.owner),
                     amount: EnergyFormatter.format(request.energy, true)
                 }),
                 timestamp: request.created
