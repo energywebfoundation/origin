@@ -64,13 +64,13 @@ export function CertificateDetailView(props: IProps) {
         const transformAddress = (address: string) => {
             switch (getAddress(address)) {
                 case environment.EXCHANGE_WALLET_PUB:
-                    return 'Exchange Wallet';
+                    return t('certificate.event.participants.exchange.wallet');
                 case exchangeDepositAddress:
-                    return 'Exchange Deposit Address';
+                    return t('certificate.event.participants.exchange.depositAddress');
                 case issuer.address:
-                    return 'Issuer Contract';
+                    return t('certificate.event.participants.issuerContract');
                 case registry.address:
-                    return 'Registry Contract';
+                    return t('certificate.event.participants.registryContract');
                 default:
                     return address;
             }
