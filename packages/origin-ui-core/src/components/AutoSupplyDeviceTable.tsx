@@ -9,7 +9,7 @@ import {
     MenuItem,
     TextField
 } from '@material-ui/core';
-import { Delete, Edit } from '@material-ui/icons';
+import { Edit } from '@material-ui/icons';
 import { text } from '@storybook/addon-knobs';
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
@@ -111,15 +111,6 @@ export function AutoSupplyDeviceTable() {
     });
 
     const actions = [
-        {
-            icon: <Delete />,
-            name: 'Delete',
-            onClick: async (index: string) => {
-                const { device } = paginatedData[index];
-                await deviceClient.delete(device.id);
-                loadPage(1);
-            }
-        },
         {
             icon: <Edit />,
             name: 'Update',
