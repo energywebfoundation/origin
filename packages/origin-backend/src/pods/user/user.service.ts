@@ -4,9 +4,10 @@ import {
     IUserWithRelationsIds,
     KYCStatus,
     Role,
-    Status,
+    UserStatus,
     UserPasswordUpdate,
-    UserRegistrationData
+    UserRegistrationData,
+    IUserFilter
 } from '@energyweb/origin-backend-core';
 import { recoverTypedSignatureAddress } from '@energyweb/utils-general';
 import {
@@ -19,7 +20,7 @@ import { ConfigService } from '@nestjs/config';
 import { InjectRepository } from '@nestjs/typeorm';
 import bcrypt from 'bcryptjs';
 import { validate } from 'class-validator';
-import { DeepPartial, FindConditions, Repository } from 'typeorm';
+import { DeepPartial, FindConditions, Repository, FindManyOptions } from 'typeorm';
 import { ExtendedBaseEntity } from '../ExtendedBaseEntity';
 import { User } from './user.entity';
 
@@ -34,6 +35,10 @@ export class UserService {
         private readonly repository: Repository<User>,
         private readonly config: ConfigService
     ) {}
+
+    public async getAll(options?: FindManyOptions<User>) {
+        return this.repository.find(options);
+    }
 
     public async create(data: UserRegistrationData): Promise<User> {
         const isExistingUser = await this.hasUser({ email: data.email });
@@ -53,8 +58,8 @@ export class UserService {
                 password: this.hashPassword(data.password),
                 notifications: true,
                 rights: Role.OrganizationAdmin,
-                status: Status.Pending,
-                kycStatus: KYCStatus['Pending KYC']
+                status: UserStatus.Pending,
+                kycStatus: KYCStatus.Pending
             })
         );
     }
@@ -143,7 +148,7 @@ export class UserService {
         return user;
     }
 
-    async update(id: number | string, notifications: boolean): Promise<TUserBaseEntity> {
+    async setNotifications(id: number | string, notifications: boolean): Promise<TUserBaseEntity> {
         await this.repository.update(id, { notifications });
 
         return this.findById(id);
@@ -235,6 +240,57 @@ export class UserService {
         }
 
         await this.repository.update(id, updateEntity);
+        return this.repository.findOne(id);
+    }
+
+    public async getUsersBy(filter: IUserFilter) {
+        const { orgName, status, kycStatus } = filter;
+
+        const isNullOrUndefined = (variable: any) => variable === null || variable === undefined;
+
+        const _orgName = `%${orgName ?? ''}%`;
+        const result = await this.repository
+            .createQueryBuilder('user')
+            .leftJoinAndSelect('user.organization', 'organization')
+            .where(
+                `organization.name ilike :_orgName ${
+                    isNullOrUndefined(status) ? '' : 'and user.status = :status'
+                } ${isNullOrUndefined(kycStatus) ? '' : 'and user.kycStatus = :kycStatus'}`,
+                { _orgName, status, kycStatus }
+            )
+            .getMany();
+
+        return result;
+    }
+
+    async update(id: number | string, data: IUser): Promise<ExtendedBaseEntity & IUser> {
+        const entity = await this.repository.findOne(id);
+
+        if (!entity) {
+            throw new Error(`Can't find entity.`);
+        }
+
+        const validationErrors = await validate(data, {
+            skipUndefinedProperties: true
+        });
+
+        if (validationErrors.length > 0) {
+            throw new UnprocessableEntityException({
+                success: false,
+                errors: validationErrors
+            });
+        }
+
+        await this.repository.update(id, {
+            title: data.title,
+            firstName: data.firstName,
+            lastName: data.lastName,
+            telephone: data.telephone,
+            email: data.email,
+            status: data.status,
+            kycStatus: data.kycStatus
+        });
+
         return this.repository.findOne(id);
     }
 }

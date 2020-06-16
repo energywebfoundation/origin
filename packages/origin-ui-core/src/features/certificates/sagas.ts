@@ -88,14 +88,20 @@ function* requestCertificatesSaga(): SagaIterator {
         } catch (error) {
             console.warn('Error while requesting certificates', error);
 
-            if (error?.response?.status === 409) {
-                showNotification(
-                    `There is already a certificate requested for that time period.`,
-                    NotificationType.Error
-                );
-            } else {
-                showNotification(`Transaction could not be completed.`, NotificationType.Error);
+            let errorMsg;
+
+            switch (error?.response?.status) {
+                case 409:
+                    errorMsg = `There is already a certificate requested for that time period.`;
+                    break;
+                case 412:
+                    errorMsg = `Only Active users can request certificates.`;
+                    break;
+                default:
+                    errorMsg = `Transaction could not be completed.`;
             }
+
+            showNotification(errorMsg, NotificationType.Error);
         }
 
         yield put(setLoading(false));

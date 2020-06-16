@@ -4,7 +4,7 @@ import { CustomFilterInputType, ICustomFilterDefinition } from '../components/Ta
 import { getUserOffchain } from '../features/users/selectors';
 import { useSelector } from 'react-redux';
 import { useTranslation } from '.';
-import { OrganizationStatus } from '@energyweb/origin-backend-core';
+import { OrganizationStatus, UserStatus } from '@energyweb/origin-backend-core';
 
 type TranslateFunc = (key: string) => string;
 
@@ -169,6 +169,10 @@ export function useDevicePermissions() {
             {
                 label: t('general.feedback.haveToBeLoggedInUser'),
                 passing: Boolean(user)
+            },
+            {
+                label: t('general.feedback.hasToBeActiveUser'),
+                passing: user?.status === UserStatus.Active
             },
             {
                 label: t('general.feedback.userHasToBePartOfApprovedOrganization'),

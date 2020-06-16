@@ -226,7 +226,8 @@
                 "userHasToBePartOfApprovedOrganization": "The user should be a part of an approved organization.",
                 "userHasToHaveBlockchainAccount": "The user has to have a blockchain account attached to the account.",
                 "blockchainAccountMismatch": "Blockchain account mismatch",
-                "registerOrLoginTryAgain": "Please log in or register to the platform, then try again."
+                "registerOrLoginTryAgain": "Please log in or register to the platform, then try again.",
+                "hasToBeActiveUser": "User has to be approved by the platform admin."
             },
             "info": {
                 "tryingToSignAndBoundIs": "You are trying to sign a transaction with account different than the one that has been linked to your account. Blockchain address bound to your user is:",

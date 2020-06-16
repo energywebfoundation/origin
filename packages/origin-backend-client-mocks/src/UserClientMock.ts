@@ -4,7 +4,7 @@ import {
     IUser,
     IUserWithRelationsIds,
     IUserProperties,
-    Status,
+    UserStatus,
     KYCStatus,
     Role,
     UserPasswordUpdate,
@@ -40,8 +40,8 @@ export class UserClientMock implements IUserClient {
             blockchainAccountSignedMessage: '',
             notifications: false,
             rights: Role.OrganizationAdmin,
-            status: Status.Pending,
-            kycStatus: KYCStatus['Pending KYC']
+            status: UserStatus.Pending,
+            kycStatus: KYCStatus.Pending
         };
 
         this.storage.set(this.userIdCounter, user);

@@ -1,4 +1,4 @@
-import { IUser, UserUpdateData } from '@energyweb/origin-backend-core';
+import { IUser, UserUpdateData, UserStatus, KYCStatus } from '@energyweb/origin-backend-core';
 import { Button, createStyles, Grid, makeStyles, Paper, useTheme } from '@material-ui/core';
 import { Skeleton } from '@material-ui/lab';
 import { Form, Formik, FormikHelpers } from 'formik';
@@ -9,7 +9,6 @@ import * as Yup from 'yup';
 import { setLoading } from '../features/general/actions';
 import { getOffChainDataSource } from '../features/general/selectors';
 import { NotificationType, showNotification } from '../utils/notifications';
-import { KeyKYCStatus, KeyStatus } from './AdminUsersTable';
 import { FormInput } from './Form/FormInput';
 import { FormSelect } from './Form/FormSelect';
 
@@ -111,15 +110,19 @@ export function AdminUserForm(props: IProps) {
         return <Skeleton variant="rect" height={200} />;
     }
 
-    const STATUS_OPTIONS = Object.keys(KeyStatus).map((key) => ({
-        value: key,
-        label: KeyStatus[key]
-    }));
+    const STATUS_OPTIONS = Object.keys(UserStatus)
+        .filter((key) => isNaN(Number(key)))
+        .map((key) => ({
+            value: UserStatus[key],
+            label: key
+        }));
 
-    const KYC_STATUS_OPTIONS = Object.keys(KeyKYCStatus).map((key) => ({
-        value: key,
-        label: KeyKYCStatus[key]
-    }));
+    const KYC_STATUS_OPTIONS = Object.keys(KYCStatus)
+        .filter((key) => isNaN(Number(key)))
+        .map((key) => ({
+            value: KYCStatus[key],
+            label: key
+        }));
 
     return (
         <Paper className={classes.container}>
