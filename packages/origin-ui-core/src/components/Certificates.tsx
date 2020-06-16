@@ -11,7 +11,7 @@ import { getCurrencies } from '../features/general/selectors';
 import { useTranslation } from 'react-i18next';
 import { Exchange, MyTrades } from './exchange';
 import { useLinks } from '../utils';
-import { BundlesTable } from './bundles/BundleTable';
+import { BundlesTable } from './bundles/BundlesTable';
 
 function CertificateDetailViewId(id: number) {
     return <CertificateDetailView id={id} />;

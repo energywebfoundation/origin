@@ -12,7 +12,8 @@ import {
     IDirectBuyDTO,
     IOrder,
     RequestWithdrawalDTO,
-    Bundle
+    Bundle,
+    CreateBundleDTO
 } from '.';
 import { Filter, OrderStatus } from '@energyweb/exchange-core';
 
@@ -35,6 +36,7 @@ export interface IExchangeClient {
     getOrderById(id: string): Promise<Order>;
     getOrders?(): Promise<Order[]>;
     getAvailableBundles(): Promise<Bundle[]>;
+    createBundle(bundle: CreateBundleDTO): Promise<Bundle>;
 }
 
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
@@ -167,6 +169,14 @@ export class ExchangeClient implements IExchangeClient {
         return response.data;
     }
 
+    public async createBundle(bundleDTO: CreateBundleDTO): Promise<Bundle> {
+        const created = await this.requestClient.post<CreateBundleDTO, Bundle>(
+            this.bundleEndpoint,
+            bundleDTO
+        );
+        return created.data;
+    }
+
     private get assetEndpoint() {
         return `${this.dataApiUrl}/asset`;
     }
@@ -296,6 +306,10 @@ export const ExchangeClientMock: IExchangeClient = {
     },
 
     getAvailableBundles() {
+        return null;
+    },
+
+    createBundle(bundle: CreateBundleDTO) {
         return null;
     }
 };

@@ -6,15 +6,21 @@ import {
     usePaginatedLoaderFiltered,
     usePaginatedLoaderSorting
 } from '../Table';
-import { useTranslation, formatCurrencyComplete } from '../../utils';
-import { useSelector, useDispatch } from 'react-redux';
+import {
+    useTranslation,
+    formatCurrencyComplete,
+    deviceById,
+    EnergyFormatter,
+    PowerFormatter
+} from '../../utils';
+import { useSelector } from 'react-redux';
 import { getConfiguration, getProducingDevices } from '../..';
 import { Bundle } from '../../utils/exchange';
 import { getUserOffchain } from '../../features/users/selectors';
 import BN from 'bn.js';
 import { Visibility, Add } from '@material-ui/icons';
 import { BundleDetails } from './BundleDetails';
-import { getCurrencies } from '../../features';
+import { getCurrencies, getEnvironment } from '../../features';
 import { getBundles } from '../../features/bundles/selectors';
 import { Fab } from '@material-ui/core';
 import { CreateBundleForm } from './CreateBundleForm';
@@ -29,18 +35,16 @@ const BUNDLES_TOTAL_ENERGY_PROPERTIES = [
 export const BundlesTable = () => {
     const bundles = useSelector(getBundles);
     const { t } = useTranslation();
-    const configuration = useSelector(getConfiguration);
-    const user = useSelector(getUserOffchain);
     const devices = useSelector(getProducingDevices);
     const [selectedBundle, setSelectedBundle] = useState<Bundle>(null);
     const [showBundleDetailsModal, setShowBundleDetailsModal] = useState<boolean>(false);
     const [showCreateBundleModal, setShowCreateBundleModal] = useState(false);
+    const environment = useSelector(getEnvironment);
 
     const energyByType = (bundle: Bundle): TEnergyByType =>
         bundle.items.reduce(
             (grouped, item) => {
-                const type = devices
-                    .find((device) => device.id === Number(item.asset.deviceId))
+                const type = deviceById(item.asset.deviceId, environment, devices)
                     .deviceType.split(';')[0]
                     .toLowerCase();
                 (grouped[type] || grouped.other).iadd(item.currentVolume);
@@ -58,11 +62,16 @@ export const BundlesTable = () => {
 
     const energyShares = (bundle: Bundle) => {
         const energy = energyByType(bundle);
+        console.log('>>> energy by type:', energy);
         return Object.fromEntries(
             Object.keys(energy)
-                .filter((p) => p === 'total')
-                .map((p) => [p, energy[p].div(energy.total)])
-                .map(([p, v]) => [p, `${Number(v).toFixed(2)} %`])
+                .filter((p) => p !== 'total')
+                .map((p) => [p, energy[p].mul(new BN(10000)).div(energy.total)])
+                .map(([p, v]) => {
+                    console.log('>>> share/total:', v);
+                    return [p, `${(v.toNumber() / 100).toFixed(2)}%`];
+                })
+                .concat([['total', PowerFormatter.format(energy.total.toNumber(), true)]])
         );
     };
 
@@ -90,13 +99,14 @@ export const BundlesTable = () => {
     const { paginatedData, loadPage, total, pageSize, setPageSize } = usePaginatedLoaderFiltered<
         Bundle
     >({
-        getPaginatedData
+        getPaginatedData,
+        initialPageSize: BUNDLES_PER_PAGE
     });
 
     useEffect(() => {
         setPageSize(BUNDLES_PER_PAGE);
         loadPage(1);
-    }, [user, configuration]);
+    }, [bundles]);
 
     type TEnergyByType = {
         total: BN;
@@ -108,10 +118,16 @@ export const BundlesTable = () => {
 
     const [currency = 'USD'] = useSelector(getCurrencies);
 
-    const rows = paginatedData.map((bundle) => ({
-        ...energyShares(bundle),
-        price: `$ ${formatCurrencyComplete(bundle.price, currency)}`
-    }));
+    const rows = paginatedData.map((bundle) => {
+        console.log('>>> energy shares:', energyShares(bundle));
+
+        return {
+            ...energyShares(bundle),
+            price: ` ${formatCurrencyComplete(bundle.price, currency)}`
+        };
+    });
+
+    console.log('>>> bundle rows:', rows);
 
     const viewDetails = (rowIndex) => {
         const bundle = paginatedData[rowIndex];
