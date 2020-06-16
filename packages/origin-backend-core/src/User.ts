@@ -9,17 +9,17 @@ export enum Role {
     SupportAgent = 32
 }
 
-export enum Status {
-    'Pending',
-    'Active',
-    'Suspended',
-    'Deleted'
+export enum UserStatus {
+    Pending,
+    Active,
+    Suspended,
+    Deleted
 }
 
 export enum KYCStatus {
-    'Pending KYC',
-    'KYC passed',
-    'KYC rejected'
+    Pending,
+    Passed,
+    Rejected
 }
 
 export function buildRights(roles: Role[]): number {
@@ -58,8 +58,8 @@ export interface IUserProperties {
     blockchainAccountSignedMessage: string;
     notifications: boolean;
     rights: number;
-    status: number;
-    kycStatus: number;
+    status: UserStatus;
+    kycStatus: KYCStatus;
 }
 
 export interface IUser extends IUserProperties {
@@ -83,4 +83,12 @@ export type UserUpdateData = Partial<
     Pick<IUserProperties, 'blockchainAccountSignedMessage' | 'notifications'>
 >;
 
+export type UserStatusUpdate = Partial<Pick<IUserProperties, 'status' | 'kycStatus'>>;
+
 export type UserPasswordUpdate = { email: string; oldPassword: string; newPassword: string };
+
+export interface IUserFilter {
+    orgName?: string;
+    status?: UserStatus;
+    kycStatus?: KYCStatus;
+}

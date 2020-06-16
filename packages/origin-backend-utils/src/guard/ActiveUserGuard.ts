@@ -1,4 +1,4 @@
-import { IUserWithRelationsIds, Role, Status } from '@energyweb/origin-backend-core';
+import { IUserWithRelationsIds, Role, UserStatus } from '@energyweb/origin-backend-core';
 import { CanActivate, ExecutionContext, HttpException, Injectable } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 
@@ -16,9 +16,11 @@ export class ActiveUserGuard implements CanActivate {
         const user = request.user as IUserWithRelationsIds;
         const _user = user as IUserWithRelationsIds;
 
-        if (_user.status === Status.Pending) {
+        if (_user.status !== UserStatus.Active) {
             throw new HttpException(
-                `Only active users can perform this action. Your status is ${Status[_user.status]}`,
+                `Only active users can perform this action. Your status is ${
+                    UserStatus[_user.status]
+                }`,
                 412
             );
         }

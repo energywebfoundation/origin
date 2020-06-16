@@ -5,7 +5,7 @@ import {
     OrganizationPostData,
     Role,
     UserRegistrationData,
-    Status
+    UserStatus
 } from '@energyweb/origin-backend-core';
 import { signTypedMessagePrivateKey } from '@energyweb/utils-general';
 import { Logger } from '@nestjs/common';
@@ -24,7 +24,6 @@ import { OrganizationService } from '../src/pods/organization/organization.servi
 import { UserService } from '../src/pods/user';
 import { DatabaseService } from './database.service';
 import { CertificateService } from '../src/pods/certificate/certificate.service';
-import { AdminService } from '../src/pods/admin/admin.service';
 
 const testLogger = new Logger('e2e');
 
@@ -53,7 +52,6 @@ export const bootstrapTestInstance = async () => {
     const app = moduleFixture.createNestApplication();
 
     const userService = await app.resolve<UserService>(UserService);
-    const adminService = await app.resolve<AdminService>(AdminService);
     const databaseService = await app.resolve<DatabaseService>(DatabaseService);
     const organizationService = await app.resolve<OrganizationService>(OrganizationService);
     const deviceService = await app.resolve<DeviceService>(DeviceService);
@@ -81,8 +79,7 @@ export const bootstrapTestInstance = async () => {
         deviceService,
         configurationService,
         certificateService,
-        certificationRequestService,
-        adminService
+        certificationRequestService
     };
 };
 
@@ -90,7 +87,6 @@ export const registerAndLogin = async (
     app: any,
     userService: UserService,
     organizationService: OrganizationService,
-    adminService: AdminService,
     roles: Role[] = [Role.OrganizationAdmin],
     userSeed = 'default',
     orgSeed = 'default'
@@ -111,8 +107,8 @@ export const registerAndLogin = async (
         await userService.changeRole(userId, ...roles);
 
         user = await userService.findOne({ email: userEmail });
-        user.status = Status.Active;
-        await adminService.update(userId, user);
+        user.status = UserStatus.Active;
+        await userService.update(userId, user);
         const signedMessage = await signTypedMessagePrivateKey(
             ethers.Wallet.createRandom().privateKey.substring(2),
             process.env.REGISTRATION_MESSAGE_TO_SIGN
