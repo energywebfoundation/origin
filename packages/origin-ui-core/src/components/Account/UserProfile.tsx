@@ -19,7 +19,6 @@ import { getOffChainDataSource, getEnvironment } from '../../features/general/se
 import { refreshUserOffchain } from '../../features/users/actions';
 import { NotificationType, showNotification } from '../../utils/notifications';
 import { useValidation } from '../../utils/validation';
-import { KeyKYCStatus, KeyStatus } from '../AdminUsersTable';
 import { FormInput } from '../Form/FormInput';
 import { IStoreState } from '../../types';
 import { getWeb3 } from '../../features/selectors';
@@ -167,11 +166,7 @@ export function UserProfile() {
         return false;
     }
 
-    const initialFormValues: IFormValues = {
-        ...user,
-        status: KeyStatus[user.status] ?? 'N/A',
-        kycStatus: KeyKYCStatus[user.kycStatus] ?? 'N/A'
-    };
+    const initialFormValues: IFormValues = { ...user };
 
     return (
         <Formik

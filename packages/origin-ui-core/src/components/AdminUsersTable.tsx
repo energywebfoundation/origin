@@ -1,4 +1,4 @@
-import { IOrganization, IUser, Status } from '@energyweb/origin-backend-core';
+import { IOrganization, IUser, UserStatus, KYCStatus } from '@energyweb/origin-backend-core';
 import { Edit } from '@material-ui/icons';
 import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
@@ -16,19 +16,6 @@ import { CustomFilterInputType, ICustomFilterDefinition } from './Table/FiltersH
 interface IRecord {
     user: IUser;
 }
-
-export const KeyStatus = {
-    1: 'Pending',
-    2: 'Active',
-    3: 'Suspended',
-    4: 'Deleted'
-};
-
-export const KeyKYCStatus = {
-    1: 'Pending KYC',
-    2: 'KYC passed',
-    3: 'KYC rejected'
-};
 
 export function AdminUsersTable() {
     const adminClient = useSelector(getOffChainDataSource)?.adminClient;
@@ -48,15 +35,18 @@ export function AdminUsersTable() {
             };
         }
         let entities = [];
+
+        const [statusFilter, kycStatusFilter, orgNameFilter] = requestedFilters;
+
         try {
             if (requestedFilters.length > 0) {
-                entities = await adminClient.getUsersBy(
-                    requestedFilters[2]?.selectedValue,
-                    parseInt(requestedFilters[0]?.selectedValue, 10) || 0,
-                    parseInt(requestedFilters[1]?.selectedValue, 10) || 0
-                );
+                entities = await adminClient.getUsers({
+                    orgName: orgNameFilter?.selectedValue,
+                    status: statusFilter?.selectedValue,
+                    kycStatus: kycStatusFilter?.selectedValue
+                });
             } else {
-                entities = await adminClient.getAllUsers();
+                entities = await adminClient.getUsers();
             }
         } catch (error) {
             const _error = { ...error };
@@ -64,7 +54,7 @@ export function AdminUsersTable() {
             if (_error.response.status === 412) {
                 showNotification(
                     `Only active users can perform this action. Your status is ${
-                        Status[userOffchain.status]
+                        UserStatus[userOffchain.status]
                     }`,
                     NotificationType.Error
                 );
@@ -112,8 +102,8 @@ export function AdminUsersTable() {
             firstName: user.title + ' ' + user.firstName + ' ' + user.lastName,
             organization: organization?.name ?? '',
             email: user.email,
-            status: KeyStatus[user.status],
-            kycStatus: KeyKYCStatus[user.kycStatus]
+            status: UserStatus[user.status],
+            kycStatus: KYCStatus[user.kycStatus]
         };
     });
 
@@ -128,19 +118,23 @@ export function AdminUsersTable() {
         }
     ];
 
-    const STATUS_OPTIONS = Object.keys(KeyStatus).map((key) => ({
-        value: key.toString(),
-        label: KeyStatus[key]
-    }));
+    const STATUS_OPTIONS = Object.keys(UserStatus)
+        .filter((key) => isNaN(Number(key)))
+        .map((key) => ({
+            value: UserStatus[key],
+            label: key.toString()
+        }));
 
-    const KYC_STATUS_OPTIONS = Object.keys(KeyKYCStatus).map((key) => ({
-        value: key.toString(),
-        label: KeyKYCStatus[key]
-    }));
+    const KYC_STATUS_OPTIONS = Object.keys(KYCStatus)
+        .filter((key) => isNaN(Number(key)))
+        .map((key) => ({
+            value: KYCStatus[key],
+            label: key.toString()
+        }));
 
     const filters: ICustomFilterDefinition[] = [
         {
-            property: (record: IUser) => `${record.status}`,
+            property: (record: IUser) => record.status,
             label: 'Status',
             input: {
                 type: CustomFilterInputType.dropdown,
@@ -148,7 +142,7 @@ export function AdminUsersTable() {
             }
         },
         {
-            property: (record: IUser) => `${record.status}`,
+            property: (record: IUser) => record.status,
             label: 'KYC Status',
             input: {
                 type: CustomFilterInputType.dropdown,
@@ -156,7 +150,7 @@ export function AdminUsersTable() {
             }
         },
         {
-            property: (record: IUser) => `${record.organization}`,
+            property: (record: IUser) => record.organization.toString(),
             label: 'Organization',
             input: {
                 type: CustomFilterInputType.string
