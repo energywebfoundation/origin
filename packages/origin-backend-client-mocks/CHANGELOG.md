@@ -3,6 +3,32 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [4.0.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-backend-client-mocks@3.0.1...@energyweb/origin-backend-client-mocks@4.0.0) (2020-06-16)
+
+
+### Bug Fixes
+
+* implement a certification request data queue ([78cbd4a](https://github.com/energywebfoundation/origin/commit/78cbd4a7a36959cbb0820cf17dc277f0bf5ae823))
+
+
+### chore
+
+* remove unused Lead User references ([aaae5df](https://github.com/energywebfoundation/origin/commit/aaae5df4b0abd1b69924981eb2dc8b7e5df31e63))
+
+
+### Features
+
+* Updating organization user roles ([c1096f2](https://github.com/energywebfoundation/origin/commit/c1096f28c1b48e606d5deeda7f33720613764326))
+
+
+### BREAKING CHANGES
+
+* Lead user is no longer needed to create an organization
+
+
+
+
+
 ## [3.0.1](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-backend-client-mocks@3.0.0...@energyweb/origin-backend-client-mocks@3.0.1) (2020-05-29)
 
 

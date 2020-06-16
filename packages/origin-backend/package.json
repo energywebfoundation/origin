@@ -1,6 +1,6 @@
 {
     "name": "@energyweb/origin-backend",
-    "version": "5.1.1",
+    "version": "6.0.0",
     "description": "",
     "main": "dist/js/src/index.js",
     "scripts": {
@@ -38,10 +38,10 @@
     "author": "EnergyWeb DevHub GmbH; Joseph Bagaric, joseph.bagaric@energyweb.org; Piotr Kosinski, piotr.kosinski@energyweb.org",
     "license": "GPL-3.0-or-later",
     "dependencies": {
-        "@energyweb/issuer": "2.2.0",
-        "@energyweb/origin-backend-core": "3.0.1",
-        "@energyweb/origin-backend-utils": "1.0.2",
-        "@energyweb/utils-general": "9.1.1",
+        "@energyweb/issuer": "2.3.0",
+        "@energyweb/origin-backend-core": "4.0.0",
+        "@energyweb/origin-backend-utils": "1.0.3",
+        "@energyweb/utils-general": "9.1.2",
         "@nestjs-modules/mailer": "1.4.2",
         "@nestjs/common": "7.1.0",
         "@nestjs/config": "^0.5.0",
