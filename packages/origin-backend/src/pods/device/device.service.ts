@@ -52,21 +52,20 @@ export class DeviceService {
         externalId: IExternalDeviceId
     ): Promise<ExtendedBaseEntity & IDeviceWithRelationsIds> {
         const devices = ((await this.repository.find({
-            loadEagerRelations: true
+            loadRelationIds: true
         })) as IDevice[]) as (ExtendedBaseEntity & IDeviceWithRelationsIds)[];
 
         const device = devices.find((d) =>
             d.externalDeviceIds.find((id) => id.id === externalId.id && id.type === externalId.type)
         );
 
-        device.meterStats = await this.getMeterStats(device.id.toString());
-
         return device;
     }
 
     async findOne(
         id: string,
-        options: FindOneOptions<Device> = {}
+        options: FindOneOptions<Device> = {},
+        withMeterStats = false
     ): Promise<ExtendedBaseEntity & IDeviceWithRelationsIds> {
         const device = ((await this.repository.findOne(id, {
             loadRelationIds: true,
@@ -77,7 +76,9 @@ export class DeviceService {
             device.smartMeterReads = [];
         }
 
-        device.meterStats = await this.getMeterStats(device.id.toString());
+        if (withMeterStats) {
+            device.meterStats = await this.getMeterStats(device.id.toString());
+        }
 
         return device;
     }
@@ -167,6 +168,7 @@ export class DeviceService {
     }
 
     async getAll(
+        withMeterStats = false,
         options: FindOneOptions<Device> = {}
     ): Promise<Array<ExtendedBaseEntity & IDeviceWithRelationsIds>> {
         const devices = ((await this.repository.find({
@@ -179,7 +181,9 @@ export class DeviceService {
                 device.smartMeterReads = [];
             }
 
-            device.meterStats = await this.getMeterStats(device.id.toString());
+            if (withMeterStats) {
+                device.meterStats = await this.getMeterStats(device.id.toString());
+            }
         }
 
         return devices;
@@ -240,20 +244,17 @@ export class DeviceService {
             throw new NotFoundException(StorageErrors.NON_EXISTENT);
         }
 
-        device.automaticPostForSale = update.automaticPostForSale;
-        if (update.automaticPostForSale) {
-            device.defaultAskPrice = update.defaultAskPrice;
-        }
+        const { defaultAskPrice, automaticPostForSale } = update;
 
         try {
-            await this.repository.save((device as unknown) as DeepPartial<Device>);
+            await this.repository.update(id, { defaultAskPrice, automaticPostForSale });
 
             return {
                 message: `Device ${id} successfully updated`
             };
         } catch (error) {
             throw new UnprocessableEntityException({
-                message: `Device ${id} could not be updated due to an error ${error.message}`
+                message: `Device ${id} could not be updated due to an error: ${error.message}`
             });
         }
     }
@@ -330,18 +331,28 @@ export class DeviceService {
         };
     }
 
-    async getSupplyBy(facilityName: string, status: number) {
+    async getSupplyBy(organizationId: number, facilityName: string, status: number) {
         const _facilityName = `%${facilityName}%`;
         const _status = status === 1;
-        const result = await this.repository
+        const devices = ((await this.repository
             .createQueryBuilder('device')
+            .leftJoinAndSelect('device.organization', 'organization')
             .where(
-                `device.facilityName ilike :_facilityName ${
+                `organization.id = :organizationId and device.facilityName ilike :_facilityName ${
                     status > 0 ? `and device.automaticPostForSale = :_status` : ``
                 }`,
-                { _facilityName, _status }
+                { organizationId, _facilityName, _status }
             )
-            .getMany();
-        return result;
+            .getMany()) as IDevice[]) as (ExtendedBaseEntity & IDeviceWithRelationsIds)[];
+
+        for (const device of devices) {
+            if (this.smartMeterReadingsAdapter) {
+                device.smartMeterReads = [];
+            }
+
+            device.meterStats = await this.getMeterStats(device.id.toString());
+        }
+
+        return devices;
     }
 }

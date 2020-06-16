@@ -11,6 +11,15 @@ export enum OrderSide {
     Ask
 }
 
+export enum OrderStatus {
+    Active,
+    Cancelled,
+    Filled,
+    PartiallyFilled,
+    PendingCancellation,
+    NotExecuted
+}
+
 export interface IOrder {
     id: string;
     side: OrderSide;

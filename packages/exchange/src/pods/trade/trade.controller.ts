@@ -1,5 +1,5 @@
 import { ILoggedInUser } from '@energyweb/origin-backend-core';
-import { UserDecorator } from '@energyweb/origin-backend-utils';
+import { UserDecorator, ActiveUserGuard } from '@energyweb/origin-backend-utils';
 import { Controller, Get, Logger, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 
@@ -12,7 +12,7 @@ export class TradeController {
 
     constructor(private readonly tradeService: TradeService) {}
 
-    @UseGuards(AuthGuard())
+    @UseGuards(AuthGuard(), ActiveUserGuard)
     @Get()
     public async getAll(@UserDecorator() user: ILoggedInUser): Promise<TradeDTO[]> {
         const trades = await this.tradeService.getAllByUser(user.ownerId, false);

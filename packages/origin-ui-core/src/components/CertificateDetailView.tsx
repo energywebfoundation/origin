@@ -9,8 +9,8 @@ import { deduplicate } from '../utils/helper';
 import { formatDate } from '../utils/time';
 import { Skeleton } from '@material-ui/lab';
 import { makeStyles, createStyles, useTheme } from '@material-ui/core';
-import { getEnvironment } from '../features/general/selectors';
-import { EnergyFormatter } from '../utils/EnergyFormatter';
+import { getEnvironment, getExchangeClient } from '../features/general/selectors';
+import { EnergyFormatter, useTranslation } from '../utils';
 import { ProducingDevice } from '@energyweb/device-registry';
 import { getUserOffchain } from '../features/users/selectors';
 
@@ -26,6 +26,8 @@ interface IEnrichedEvent {
 }
 
 export function CertificateDetailView(props: IProps) {
+    const { t } = useTranslation();
+
     const { id } = props;
 
     const user = useSelector(getUserOffchain);
@@ -33,6 +35,7 @@ export function CertificateDetailView(props: IProps) {
     const producingDevices = useSelector(getProducingDevices);
     const configuration = useSelector(getConfiguration);
     const environment = useSelector(getEnvironment);
+    const exchangeClient = useSelector(getExchangeClient);
 
     const [events, setEvents] = useState<IEnrichedEvent[]>([]);
 
@@ -55,31 +58,53 @@ export function CertificateDetailView(props: IProps) {
             configuration
         );
 
+        const { address: exchangeDepositAddress } = await exchangeClient.getAccount();
+        const { issuer, registry } = configuration.blockchainProperties;
+
+        const transformAddress = (address: string) => {
+            switch (getAddress(address)) {
+                case environment.EXCHANGE_WALLET_PUB:
+                    return t('certificate.event.participants.exchange.wallet');
+                case exchangeDepositAddress:
+                    return t('certificate.event.participants.exchange.depositAddress');
+                case issuer.address:
+                    return t('certificate.event.participants.issuerContract');
+                case registry.address:
+                    return t('certificate.event.participants.registryContract');
+                default:
+                    return address;
+            }
+        };
+
         const jointEvents = allCertificateEvents.map(async (event) => {
             let label: string;
             let description: string;
 
             switch (event.name) {
                 case 'IssuanceSingle':
-                    label = 'Certified';
-                    description = `Local issuer approved the certification request`;
+                    label = t('certificate.event.name.certified');
+                    description = t('certificate.event.description.certificationRequestApproved');
 
                     break;
                 case 'TransferSingle':
                     if (event.values._from === '0x0000000000000000000000000000000000000000') {
-                        label = 'Initial owner';
-                        description = event.values._to;
+                        label = t('certificate.event.name.initialOwner');
+                        description = transformAddress(event.values._to);
                     } else {
-                        const newOwner = event.values._to;
-                        const oldOwner = event.values._from;
-
-                        label = 'Changed ownership';
-                        description = `Transferred from ${oldOwner} to ${newOwner}`;
+                        label = t('certificate.event.name.changedOwnership');
+                        description = t('certificate.event.description.transferred', {
+                            amount: EnergyFormatter.format(event.values._value, true),
+                            newOwner: transformAddress(event.values._to),
+                            oldOwner: transformAddress(event.values._from)
+                        });
                     }
                     break;
                 case 'ClaimSingle':
-                    label = 'Certificate claimed';
-                    description = `Initiated by ${event.values._claimIssuer}`;
+                    label = t('certificate.event.name.claimed');
+                    description = t('certificate.event.description.claimed', {
+                        amount: EnergyFormatter.format(event.values._value, true),
+                        claimer: transformAddress(event.values._claimIssuer)
+                    });
                     break;
 
                 default:
@@ -104,8 +129,11 @@ export function CertificateDetailView(props: IProps) {
         if (request) {
             resolvedEvents.unshift({
                 txHash: '',
-                label: 'Requested certification',
-                description: 'Device owner requested certification based on meter reads',
+                label: t('certificate.event.name.requested'),
+                description: t('certificate.event.description.requested', {
+                    requestor: transformAddress(request.owner),
+                    amount: EnergyFormatter.format(request.energy, true)
+                }),
                 timestamp: request.created
             });
         }
@@ -176,15 +204,19 @@ export function CertificateDetailView(props: IProps) {
         data = [
             [
                 {
-                    label: 'Certificate id',
+                    label: t('certificate.properties.id'),
                     data: selectedCertificate.id.toString()
                 },
                 {
-                    label: 'Claimed',
-                    data: selectedCertificate.isClaimed ? 'yes' : 'no'
+                    label: t('certificate.properties.claimed'),
+                    data: selectedCertificate.isClaimed
+                        ? publicVolume.add(privateVolume).gt(0)
+                            ? t('general.responses.partially')
+                            : t('general.responses.yes')
+                        : t('general.responses.no')
                 },
                 {
-                    label: 'Creation date',
+                    label: t('certificate.properties.creationDate'),
                     data: formatDate(
                         selectedCertificate.creationTime * 1000,
                         false,
@@ -194,15 +226,15 @@ export function CertificateDetailView(props: IProps) {
             ],
             [
                 {
-                    label: `Certified energy (${EnergyFormatter.displayUnit})`,
-                    data: EnergyFormatter.format(
+                    label: `${
                         selectedCertificate.isClaimed
-                            ? claimedVolume
-                            : publicVolume.add(privateVolume)
-                    )
+                            ? t('certificate.properties.remainingEnergy')
+                            : t('certificate.properties.certifiedEnergy')
+                    } (${EnergyFormatter.displayUnit})`,
+                    data: EnergyFormatter.format(publicVolume.add(privateVolume))
                 },
                 {
-                    label: 'Generation start',
+                    label: t('certificate.properties.generationDateStart'),
                     data: formatDate(
                         selectedCertificate.generationStartTime * 1000,
                         true,
@@ -210,7 +242,7 @@ export function CertificateDetailView(props: IProps) {
                     )
                 },
                 {
-                    label: 'Generation end',
+                    label: t('certificate.properties.generationDateEnd'),
                     data: formatDate(
                         selectedCertificate.generationEndTime * 1000,
                         true,
@@ -225,16 +257,25 @@ export function CertificateDetailView(props: IProps) {
                 (claim) => getAddress(claim.to) === getAddress(user.blockchainAccountAddress)
             )?.claimData;
 
+            const claimInfo = [
+                {
+                    label: `${t('certificate.properties.claimedEnergy')} (${
+                        EnergyFormatter.displayUnit
+                    })`,
+                    data: EnergyFormatter.format(claimedVolume)
+                }
+            ];
+
             if (claimData) {
-                data.push([
-                    {
-                        label: 'Claim beneficiary',
-                        data: Object.values(claimData)
-                            .filter((value) => value !== '')
-                            .join(', ')
-                    }
-                ]);
+                claimInfo.push({
+                    label: t('certificate.properties.claimBeneficiary'),
+                    data: Object.values(claimData)
+                        .filter((value) => value !== '')
+                        .join(', ')
+                });
             }
+
+            data.push(claimInfo);
         }
     }
 
@@ -261,7 +302,7 @@ export function CertificateDetailView(props: IProps) {
                         </div>
                     ) : (
                         <div className="text-center">
-                            <strong>Certificate not found</strong>
+                            <strong>{t('certificate.feedback.certificateNotFound')}</strong>
                         </div>
                     )}
                 </div>

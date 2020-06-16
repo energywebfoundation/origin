@@ -2,16 +2,16 @@ import {
     ILoggedInUser,
     IOrganizationInvitation,
     isRole,
-    OrganizationInviteCreateReturnData,
     OrganizationPostData,
-    OrganizationRemoveMemberReturnData,
     OrganizationStatusChangedEvent,
     OrganizationUpdateData,
     Role,
     SupportedEvents,
-    OrganizationRole
+    OrganizationRole,
+    IOrganizationUpdateMemberRole,
+    ISuccessResponse
 } from '@energyweb/origin-backend-core';
-import { Roles, RolesGuard, UserDecorator } from '@energyweb/origin-backend-utils';
+import { Roles, RolesGuard, UserDecorator, ActiveUserGuard } from '@energyweb/origin-backend-utils';
 import {
     BadRequestException,
     Body,
@@ -63,7 +63,7 @@ export class OrganizationController {
     }
 
     @Get('/invitation')
-    @UseGuards(AuthGuard())
+    @UseGuards(AuthGuard(), ActiveUserGuard)
     async getInvitations(
         @UserDecorator() loggedUser: ILoggedInUser
     ): Promise<IOrganizationInvitation[]> {
@@ -76,26 +76,29 @@ export class OrganizationController {
     }
 
     @Get('/:id/users')
-    @UseGuards(AuthGuard(), RolesGuard)
+    @UseGuards(AuthGuard(), ActiveUserGuard, RolesGuard)
     @Roles(Role.OrganizationAdmin, Role.Admin, Role.SupportAgent)
-    async getUsers(@Param('id') id: string, @UserDecorator() loggedUser: ILoggedInUser) {
+    async getUsers(
+        @Param('id', new ParseIntPipe()) id: number,
+        @UserDecorator() loggedUser: ILoggedInUser
+    ) {
+        if (loggedUser.organizationId !== id) {
+            throw new BadRequestException('Not a member of the organization.');
+        }
+
         const organization = await this.organizationRepository.findOne(id, {
-            relations: ['users', 'leadUser']
+            relations: ['users']
         });
 
         if (!organization) {
             throw new NotFoundException(StorageErrors.NON_EXISTENT);
         }
 
-        if (loggedUser.id !== organization.leadUser.id) {
-            throw new BadRequestException('Only lead user can view other organization members.');
-        }
-
         return organization.users;
     }
 
     @Get('/:id/devices')
-    @UseGuards(AuthGuard(), RolesGuard)
+    @UseGuards(AuthGuard(), ActiveUserGuard, RolesGuard)
     @Roles(Role.OrganizationAdmin, Role.OrganizationDeviceManager, Role.Admin, Role.SupportAgent)
     async getDevices(@Param('id') id: string, @UserDecorator() loggedUser: ILoggedInUser) {
         if (!isRole(loggedUser, Role.OrganizationDeviceManager)) {
@@ -122,7 +125,7 @@ export class OrganizationController {
     }
 
     @Post()
-    @UseGuards(AuthGuard())
+    @UseGuards(AuthGuard(), ActiveUserGuard)
     async post(@Body() body: OrganizationPostData, @UserDecorator() loggedUser: ILoggedInUser) {
         try {
             const organization = this.organizationService.create(loggedUser.id, body);
@@ -137,7 +140,7 @@ export class OrganizationController {
     }
 
     @Delete('/:id')
-    @UseGuards(AuthGuard(), RolesGuard)
+    @UseGuards(AuthGuard(), ActiveUserGuard, RolesGuard)
     @Roles(Role.Admin)
     async delete(@Param('id') id: string) {
         const existingEntity = await this.organizationService.findOne(id);
@@ -154,7 +157,7 @@ export class OrganizationController {
     }
 
     @Put('/:id')
-    @UseGuards(AuthGuard(), RolesGuard)
+    @UseGuards(AuthGuard(), ActiveUserGuard, RolesGuard)
     @Roles(Role.Admin)
     async put(@Param('id') id: string, @Body() body: OrganizationUpdateData) {
         const existingEntity = await this.organizationService.findOne(id);
@@ -193,7 +196,7 @@ export class OrganizationController {
     }
 
     @Get('/:id/invitations')
-    @UseGuards(AuthGuard())
+    @UseGuards(AuthGuard(), ActiveUserGuard)
     async getInvitationsForOrganization(
         @Param('id') organizationId: string,
         @UserDecorator() loggedUser: ILoggedInUser
@@ -219,7 +222,7 @@ export class OrganizationController {
     }
 
     @Put('/invitation/:invitationId')
-    @UseGuards(AuthGuard())
+    @UseGuards(AuthGuard(), ActiveUserGuard)
     async updateInvitation(
         @Body('status') status: IOrganizationInvitation['status'],
         @Param('invitationId') invitationId: string,
@@ -230,34 +233,50 @@ export class OrganizationController {
     }
 
     @Post('/invite')
-    @UseGuards(AuthGuard(), RolesGuard)
+    @UseGuards(AuthGuard(), ActiveUserGuard, RolesGuard)
     @Roles(Role.OrganizationAdmin, Role.Admin)
     async invite(
         @Body('email') email: string,
         @Body('role') role: OrganizationRole,
         @UserDecorator() loggedUser: ILoggedInUser
-    ): Promise<OrganizationInviteCreateReturnData> {
+    ): Promise<ISuccessResponse> {
         await this.organizationInvitationService.invite(loggedUser, email, role);
 
         return {
             success: true,
-            error: null
+            message: null
         };
     }
 
     @Post(':id/remove-member/:userId')
-    @UseGuards(AuthGuard(), RolesGuard)
+    @UseGuards(AuthGuard(), ActiveUserGuard, RolesGuard)
     @Roles(Role.OrganizationAdmin, Role.Admin)
     async removeMember(
         @Param('id', new ParseIntPipe()) organizationId: number,
         @Param('userId', new ParseIntPipe()) memberId: number,
         @UserDecorator() loggedUser: ILoggedInUser
-    ): Promise<OrganizationRemoveMemberReturnData> {
+    ): Promise<ISuccessResponse> {
         await this.organizationService.removeMember(loggedUser, organizationId, memberId);
 
         return {
+            success: true
+        };
+    }
+
+    @Put(':id/change-role/:userId')
+    @UseGuards(AuthGuard(), ActiveUserGuard, RolesGuard)
+    @Roles(Role.OrganizationAdmin, Role.Admin)
+    async changeMemberRole(
+        @Param('id', new ParseIntPipe()) organizationId: number,
+        @Param('userId', new ParseIntPipe()) memberId: number,
+        @Body() { role }: IOrganizationUpdateMemberRole,
+        @UserDecorator() loggedUser: ILoggedInUser
+    ): Promise<ISuccessResponse> {
+        await this.organizationService.changeMemberRole(loggedUser, organizationId, memberId, role);
+
+        return {
             success: true,
-            error: null
+            message: null
         };
     }
 }

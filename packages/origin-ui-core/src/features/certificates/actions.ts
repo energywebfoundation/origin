@@ -8,6 +8,7 @@ import { IStoreState } from '../../types';
 export enum CertificatesActions {
     addCertificate = 'CERTIFICATE_CREATED',
     updateCertificate = 'CERTIFICATE_UPDATED',
+    resyncCertificate = 'CERTIFICATE_RESYNC',
     requestCertificates = 'REQUEST_CERTIFICATES',
     showRequestCertificatesModal = 'SHOW_REQUEST_CERTIFICATES_MODAL',
     setRequestCertificatesModalVisibility = 'SET_REQUEST_CERTIFICATES_MODAL_VISIBILITY',
@@ -17,7 +18,9 @@ export enum CertificatesActions {
     requestPublishForSale = 'CERTIFICATES_REQUEST_PUBLISH_FOR_SALE',
     requestClaimCertificate = 'CERTIFICATES_REQUEST_CLAIM_CERTIFICATE',
     requestClaimCertificateBulk = 'CERTIFICATES_REQUEST_CLAIM_CERTIFICATE_BULK',
-    requestCertificateApproval = 'CERTIFICATES_REQUEST_CERTIFICATE_APPROVAL'
+    requestCertificateApproval = 'CERTIFICATES_REQUEST_CERTIFICATE_APPROVAL',
+    withdrawCertificate = 'CERTIFICATES_REQUEST_CERTIFICATE_WITHDRAWAL',
+    requestDepositCertificate = 'CERTIFICATES_REQUEST_CERTIFICATE_DEPOSIT'
 }
 
 export interface IAddCertificateAction {
@@ -43,6 +46,18 @@ export const updateCertificate = (payload: ICertificateViewItem) => ({
 });
 
 export type TUpdateCertificateAction = typeof updateCertificate;
+
+export interface IResyncCertificateAction {
+    type: CertificatesActions.resyncCertificate;
+    payload: ICertificateViewItem;
+}
+
+export const resyncCertificate = (payload: ICertificateViewItem) => ({
+    type: CertificatesActions.resyncCertificate,
+    payload
+});
+
+export type TResyncCertificateAction = typeof resyncCertificate;
 
 export interface IRequestCertificatesAction {
     type: CertificatesActions.requestCertificates;
@@ -157,6 +172,7 @@ export interface IRequestClaimCertificateAction {
     type: CertificatesActions.requestClaimCertificate;
     payload: {
         certificateId: Certificate['id'];
+        amount: BigNumber;
         claimData: IClaimData;
     };
 }
@@ -202,9 +218,43 @@ export const requestCertificateApproval = (
 
 export type TRequestCertificateApprovalAction = typeof requestCertificateApproval;
 
+export interface IRequestWithdrawCertificateAction {
+    type: CertificatesActions.withdrawCertificate;
+    payload: {
+        assetId: string;
+        address: string;
+        amount: string;
+        callback: () => void;
+    };
+}
+
+export const requestWithdrawCertificate = (
+    payload: IRequestWithdrawCertificateAction['payload']
+) => ({
+    type: CertificatesActions.withdrawCertificate,
+    payload
+});
+
+export interface IRequestDepositCertificateAction {
+    type: CertificatesActions.withdrawCertificate;
+    payload: {
+        certificateId: Certificate['id'];
+        amount: BigNumber;
+        callback: () => void;
+    };
+}
+
+export const requestDepositCertificate = (
+    payload: IRequestDepositCertificateAction['payload']
+) => ({
+    type: CertificatesActions.requestDepositCertificate,
+    payload
+});
+
 export type ICertificatesAction =
     | IAddCertificateAction
     | IUpdateCertificateAction
+    | IResyncCertificateAction
     | IRequestCertificatesAction
     | IShowRequestCertificatesModalAction
     | ISetRequestCertificatesModalVisibilityAction
@@ -214,4 +264,5 @@ export type ICertificatesAction =
     | IRequestPublishForSaleAction
     | IRequestClaimCertificateAction
     | IRequestClaimCertificateBulkAction
-    | IRequestCertificateApprovalAction;
+    | IRequestCertificateApprovalAction
+    | IRequestWithdrawCertificateAction;

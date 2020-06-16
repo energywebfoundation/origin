@@ -6,7 +6,6 @@ import './styles/app.scss';
 import { Origin, OriginConfigurationProvider, createOriginConfiguration } from '.';
 
 const originConfiguration = createOriginConfiguration();
-
 render(
     <OriginConfigurationProvider value={originConfiguration}>
         <Origin />

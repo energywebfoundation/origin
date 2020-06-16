@@ -24,7 +24,7 @@
     "scripts": {
         "build": "yarn build:static && yarn build:ts",
         "build:static": "yarn compile && yarn typechain:registry && yarn typechain:issuer",
-        "build:ts": "tsc -b tsconfig.build.json --verbose --pretty && yarn copy:declarations",
+        "build:ts": "tsc -b tsconfig.json && yarn copy:declarations",
         "copy:declarations": "shx cp src/ethers/*.d.ts dist/js/src/ethers",
         "typechain:registry": "typechain --target ethers --outDir src/ethers './build/contracts/Registry.json'",
         "typechain:issuer": "typechain --target ethers --outDir src/ethers './build/contracts/Issuer.json'",
@@ -48,9 +48,8 @@
         "chai": "4.2.0",
         "dotenv": "8.2.0",
         "ethers": "4.0.47",
-        "mocha": "7.2.0",
+        "mocha": "8.0.1",
         "moment": "2.24.0",
-        "moment-range": "4.0.2",
         "polly-js": "1.6.5",
         "precise-proofs-js": "1.1.0",
         "winston": "3.2.1"

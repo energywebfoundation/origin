@@ -61,6 +61,10 @@ export function getAdminLink(baseURL: string) {
     return `${baseURL}/admin`;
 }
 
+export function getBundlesLink(baseURL: string) {
+    return `${baseURL}/bundles`;
+}
+
 export function useLinks() {
     const baseURL = useSelector(getBaseURL);
 
@@ -81,6 +85,7 @@ export function useLinks() {
         getOrganizationViewLink: (id: string) => getOrganizationViewLink(baseURL, id),
         getUserRegisterLink: () => getUserRegisterLink(baseURL),
         getAccountLoginLink: () => getAccountLoginLink(baseURL),
-        getAdminLink: () => getAdminLink(baseURL)
+        getAdminLink: () => getAdminLink(baseURL),
+        getBundlesLink: () => getBundlesLink(baseURL)
     };
 }

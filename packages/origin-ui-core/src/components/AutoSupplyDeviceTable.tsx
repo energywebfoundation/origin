@@ -1,3 +1,4 @@
+/* eslint-disable import/no-extraneous-dependencies */
 import { IDevice } from '@energyweb/origin-backend-core';
 import {
     Button,
@@ -8,11 +9,13 @@ import {
     MenuItem,
     TextField
 } from '@material-ui/core';
-import { Delete, Edit } from '@material-ui/icons';
+import { Edit } from '@material-ui/icons';
+import { text } from '@storybook/addon-knobs';
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { getOffChainDataSource } from '../features/general/selectors';
 import { getUserOffchain } from '../features/users/selectors';
+import { formatCurrencyComplete, moment, useTranslation } from '../utils';
 import { EnergyFormatter } from '../utils/EnergyFormatter';
 import { NotificationType, showNotification } from '../utils/notifications';
 import {
@@ -34,6 +37,7 @@ export const KeyStatus = {
 export function AutoSupplyDeviceTable() {
     const deviceClient = useSelector(getOffChainDataSource)?.deviceClient;
     const userOffchain = useSelector(getUserOffchain);
+    const { t } = useTranslation();
 
     const [showModal, setShowModal] = useState<boolean>(null);
     const [entity, setEntity] = useState<IDevice>(null);
@@ -56,7 +60,7 @@ export function AutoSupplyDeviceTable() {
                 parseInt(requestedFilters[1]?.selectedValue, 10) || 0
             );
         } else {
-            entities = await deviceClient.getAll();
+            entities = await deviceClient.getMyDevices(false);
         }
         let newPaginatedData: IRecord[] = entities.map((i) => ({
             device: i
@@ -80,19 +84,27 @@ export function AutoSupplyDeviceTable() {
         loadPage(1);
     }, [userOffchain, deviceClient]);
 
+    const currentYear = moment().format('YYYY');
+    const nextYear = moment().add(1, 'years').format('YYYY');
+
     const columns = [
-        { id: 'type', label: 'Type' },
-        { id: 'facility', label: 'Facility' },
-        { id: 'price', label: 'Price' },
-        { id: 'status', label: 'Status' },
-        { id: 'certified', label: 'To be certified for 2020/2021 (Mwh)' }
+        { id: 'type', label: t('device.properties.type') },
+        { id: 'facility', label: t('device.properties.facilityName') },
+        { id: 'price', label: t('device.properties.price') },
+        { id: 'status', label: t('device.properties.status') },
+        {
+            id: 'certified',
+            label: `${t(
+                'device.properties.meterReadToBeCertified'
+            )} for ${currentYear}/${nextYear} (${EnergyFormatter.displayUnit})`
+        }
     ] as const;
 
     const rows = paginatedData.map(({ device }) => {
         return {
-            type: device.deviceType,
+            type: device.deviceType?.replace(new RegExp(';', 'g'), ' - ') ?? '-',
             facility: device.facilityName,
-            price: device.defaultAskPrice,
+            price: formatCurrencyComplete(device.defaultAskPrice / 100, text('currency', 'USD')),
             status: device.automaticPostForSale ? KeyStatus[1] : KeyStatus[2],
             certified: EnergyFormatter.format(device.meterStats?.uncertified?.toNumber() ?? 0)
         };
@@ -100,20 +112,16 @@ export function AutoSupplyDeviceTable() {
 
     const actions = [
         {
-            icon: <Delete />,
-            name: 'Delete',
-            onClick: async (index: string) => {
-                const { device } = paginatedData[index];
-                await deviceClient.delete(device.id);
-                loadPage(1);
-            }
-        },
-        {
             icon: <Edit />,
             name: 'Update',
             onClick: (index: string) => {
                 const { device } = paginatedData[index];
-                setEntity(device);
+
+                setEntity({
+                    ...device,
+                    deviceType: device.deviceType?.replace(new RegExp(';', 'g'), ' - ') ?? '-',
+                    defaultAskPrice: device.defaultAskPrice / 100
+                });
                 setShowModal(true);
             }
         }
@@ -150,7 +158,7 @@ export function AutoSupplyDeviceTable() {
         try {
             await deviceClient.updateDeviceSettings(entity.id, {
                 automaticPostForSale: entity.automaticPostForSale,
-                defaultAskPrice: entity.defaultAskPrice
+                defaultAskPrice: entity.defaultAskPrice * 100
             });
             hideModal();
             loadPage(1);
@@ -194,8 +202,14 @@ export function AutoSupplyDeviceTable() {
                         label={'Price'}
                         value={entity?.defaultAskPrice}
                         className="mt-4"
+                        type="number"
+                        inputProps={{ step: 0.01 }}
                         onChange={(e) =>
-                            setEntity({ ...entity, defaultAskPrice: parseInt(e.target.value, 10) })
+                            setEntity({
+                                ...entity,
+                                defaultAskPrice:
+                                    parseFloat(parseFloat(e.target.value).toFixed(2)) ?? 0.0
+                            })
                         }
                         fullWidth
                     />

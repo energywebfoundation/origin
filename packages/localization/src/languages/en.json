@@ -30,6 +30,7 @@
                 "approved": "Approved",
                 "forDemand": "For demand",
                 "exchange": "Exchange",
+                "bundles": "Bundles",
                 "myTrades": "My trades"
             }
         },
@@ -63,7 +64,8 @@
                 "address": "Address",
                 "constructed": "Constructed",
                 "vintageCod": "Vintage / (Commercial Operation Date)",
-                "gridOperator": "Grid operator"
+                "gridOperator": "Grid operator",
+                "price": "Price"
             },
             "actions": {
                 "requestCertificates": "Request certificates",
@@ -91,16 +93,24 @@
         },
         "certificate": {
             "properties": {
+                "id": "Certificate ID",
+                "claimed": "Claimed",
+                "creationDate": "Creation Date",
+                "remainingEnergy": "Remaining (unclaimed) Energy",
                 "compliance": "Compliance",
                 "owner": "Owner",
                 "price": "Price",
                 "currency": "Currency",
-                "certifiedEnergy": "Certified energy",
-                "deviceType": "Device type",
-                "certificationDate": "Certification date",
+                "certifiedEnergy": "Certified Energy",
+                "deviceType": "Device Type",
+                "certificationDate": "Certification Date",
                 "from": "From",
                 "to": "To",
-                "source": "Source"
+                "source": "Source",
+                "generationDateStart": "Generation Start Date",
+                "generationDateEnd": "Generation End Date",
+                "claimedEnergy": "Claimed Energy",
+                "claimBeneficiary": "Claim beneficiary"
             },
             "actions": {
                 "requestCertificates": "Request certificates",
@@ -110,7 +120,9 @@
                 "claim": "Claim",
                 "returnToInbox": "Return to inbox",
                 "buy": "Buy",
-                "request": "Request"
+                "request": "Request",
+                "withdraw": "Withdraw",
+                "deposit": "Deposit"
             },
             "feedback": {
                 "returnedToInbox": "Certificate {id} has been returned to the inbox.",
@@ -125,10 +137,36 @@
                 "amountSelected": "{amount, plural, other {# selected}}",
                 "certificatePublished": "Certificate has been published for sale.",
                 "certificatesClaimed": "Certificates have been claimed.",
-                "approved": "Certification request approved."
+                "approved": "Certification request approved.",
+                "withdrawn": "Certificate withdrawn",
+                "certificateDeposited": "Certificate deposited",
+                "certificateNotFound": "Certificate not found"
             },
             "info": {
                 "requestCertificatesFor": "Request certificates for {facilityName}"
+            },
+            "event": {
+                "name": {
+                    "certified": "Certified",
+                    "initialOwner": "Initial owner",
+                    "changedOwnership": "Changed ownership",
+                    "claimed": "Certificate claimed",
+                    "requested": "Requested certification"
+                },
+                "description": {
+                    "certificationRequestApproved": "Local issuer approved the certification request",
+                    "transferred": "Transferred {amount} from {oldOwner} to {newOwner}",
+                    "claimed": "Claimed {amount} by {claimer}",
+                    "requested": "{requestor} requested certification of {amount}"
+                },
+                "participants": {
+                    "issuerContract": "Issuer Contract",
+                    "registryContract": "Registry Contract",
+                    "exchange": {
+                        "wallet": "Exchange Wallet",
+                        "depositAddress": "Exchange Deposit Address"
+                    }
+                }
             }
         },
         "search": {
@@ -167,6 +205,11 @@
             
         },
         "general": {
+            "responses": {
+                "yes": "Yes",
+                "no": "No",
+                "partially": "Partially"
+            },
             "actions": {
                 "update": "Update",
                 "continue": "Continue",
@@ -182,7 +225,8 @@
                 "haveToBeLoggedInUser": "You need to be a logged in user.",
                 "userHasToBePartOfApprovedOrganization": "The user should be a part of an approved organization.",
                 "userHasToHaveBlockchainAccount": "The user has to have a blockchain account attached to the account.",
-                "blockchainAccountMismatch": "Blockchain account mismatch"
+                "blockchainAccountMismatch": "Blockchain account mismatch",
+                "registerOrLoginTryAgain": "Please log in or register to the platform, then try again."
             },
             "info": {
                 "tryingToSignAndBoundIs": "You are trying to sign a transaction with account different than the one that has been linked to your account. Blockchain address bound to your user is:",
@@ -346,6 +390,16 @@
                     "deviceManager": "Device Manager",
                     "admin": "Admin"
                 }
+            }
+        },
+        "bundle": {
+            "properties": {
+                "total_energy": "TOTAL ENERGY",
+                "solar": "SOLAR",
+                "wind": "WIND",
+                "hydro": "HYDRO",
+                "other": "OTHER",
+                "price": "Price per MWh"
             }
         }
     }

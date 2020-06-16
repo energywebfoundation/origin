@@ -160,22 +160,25 @@ export function AccountSettings() {
 
                             <TextField
                                 label={t('settings.properties.blockchainAccount')}
-                                value={user.blockchainAccountAddress}
+                                value={user.blockchainAccountAddress ?? ''}
                                 fullWidth
                                 className="my-3"
                                 disabled
                             />
 
                             {!user.blockchainAccountAddress && (
-                                <Button
-                                    type="submit"
-                                    variant="contained"
-                                    color="primary"
-                                    className="mt-3 right"
-                                    onClick={signAndSend}
-                                >
-                                    {t('settings.actions.verifyBlockchainAccount')}
-                                </Button>
+                                <>
+                                    <br />
+                                    <Button
+                                        type="submit"
+                                        variant="contained"
+                                        color="primary"
+                                        className="mt-3 right"
+                                        onClick={signAndSend}
+                                    >
+                                        {t('settings.actions.verifyBlockchainAccount')}
+                                    </Button>
+                                </>
                             )}
                         </>
                     )}

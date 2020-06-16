@@ -1,5 +1,3 @@
-import * as Moment from 'moment';
-import { extendMoment } from 'moment-range';
 import { BigNumber, Interface } from 'ethers/utils';
 import { Event as BlockchainEvent } from 'ethers';
 import polly from 'polly-js';
@@ -63,6 +61,8 @@ export class CertificationRequest extends PreciseProofEntity implements ICertifi
             );
         }
 
+        const { certificateClient } = configuration.offChainDataSource;
+
         const request = new CertificationRequest(null, configuration, isVolumePrivate);
 
         const { issuer } = configuration.blockchainProperties as Configuration.BlockchainProperties<
@@ -71,7 +71,19 @@ export class CertificationRequest extends PreciseProofEntity implements ICertifi
         >;
         const issuerWithSigner = issuer.connect(configuration.blockchainProperties.activeUser);
 
-        await this.validateGenerationPeriod(fromTime, toTime, deviceId, configuration);
+        await certificateClient.validateGenerationPeriod({ fromTime, toTime, deviceId });
+
+        const success = await certificateClient.queueCertificationRequestData({
+            deviceId,
+            fromTime,
+            toTime,
+            energy,
+            files
+        });
+
+        if (!success) {
+            throw new Error('Unable to create CertificationRequest');
+        }
 
         const data = await issuer.encodeData(fromTime, toTime, deviceId);
 
@@ -86,30 +98,21 @@ export class CertificationRequest extends PreciseProofEntity implements ICertifi
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         request.id = (certificationRequested.args as any)._id.toNumber();
 
-        const success = await polly()
-            .waitAndRetry([2000, 4000, 8000, 16000])
-            .executeForPromise(() =>
-                configuration.offChainDataSource.certificateClient.updateCertificationRequest(
-                    request.id,
-                    { energy, files }
-                )
-            );
-
-        if (success) {
-            if (configuration.logger) {
-                configuration.logger.info(`CertificationRequest ${request.id} created`);
-            }
-        } else {
-            throw new Error('Unable to create CertificationRequest');
+        if (configuration.logger) {
+            configuration.logger.info(`CertificationRequest ${request.id} created`);
         }
 
         return request.sync();
     }
 
     async sync(): Promise<CertificationRequest> {
-        const offChainData = await this.configuration.offChainDataSource.certificateClient.getCertificationRequest(
-            this.id
-        );
+        const offChainData = await polly()
+            .waitAndRetry([2000, 4000, 8000, 16000])
+            .executeForPromise(() =>
+                this.configuration.offChainDataSource.certificateClient.getCertificationRequest(
+                    this.id
+                )
+            );
 
         Object.assign(this, offChainData);
 
@@ -130,7 +133,6 @@ export class CertificationRequest extends PreciseProofEntity implements ICertifi
         const { issuer } = this.configuration
             .blockchainProperties as Configuration.BlockchainProperties<Registry, Issuer>;
         const issuerWithSigner = issuer.connect(this.configuration.blockchainProperties.activeUser);
-
         if (this.isPrivate) {
             const commitment: IOwnershipCommitment = {
                 [this.owner]: this.energy
@@ -199,44 +201,5 @@ export class CertificationRequest extends PreciseProofEntity implements ICertifi
         );
 
         return Promise.all(certificationRequestPromises);
-    }
-
-    private static async validateGenerationPeriod(
-        fromTime: Timestamp,
-        toTime: Timestamp,
-        deviceId: string,
-        configuration: Configuration.Entity
-    ): Promise<boolean> {
-        const moment = extendMoment(Moment);
-        const unix = (timestamp: Timestamp) => moment.unix(timestamp);
-
-        const allCertificationRequests = await this.getAll(configuration);
-
-        const generationTimeRange = moment.range(unix(fromTime), unix(toTime));
-
-        for (const certificationRequest of allCertificationRequests) {
-            if (certificationRequest.revoked || certificationRequest.deviceId !== deviceId) {
-                continue;
-            }
-
-            const certificationRequestGenerationRange = moment.range(
-                unix(certificationRequest.fromTime),
-                unix(certificationRequest.toTime)
-            );
-
-            if (generationTimeRange.overlaps(certificationRequestGenerationRange)) {
-                throw new Error(
-                    `Generation period ` +
-                        `${unix(fromTime).format()} - ${unix(toTime).format()}` +
-                        ` overlaps with the time period of ` +
-                        `${unix(certificationRequest.fromTime).format()} - ${unix(
-                            certificationRequest.toTime
-                        ).format()}` +
-                        ` of request ${certificationRequest.id}.`
-                );
-            }
-        }
-
-        return true;
     }
 }

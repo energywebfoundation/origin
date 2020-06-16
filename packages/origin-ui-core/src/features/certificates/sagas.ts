@@ -6,7 +6,7 @@ import { getI18n } from 'react-i18next';
 import { SagaIterator } from 'redux-saga';
 import { all, apply, call, delay, fork, put, select, take } from 'redux-saga/effects';
 
-import { CertificateSource } from '.';
+import { CertificateSource, updateCertificate, IResyncCertificateAction } from '.';
 import { IStoreState } from '../../types';
 import { moment, NotificationType, showNotification } from '../../utils';
 import { ExchangeAccount, IExchangeClient, ITransfer } from '../../utils/exchange';
@@ -27,10 +27,12 @@ import {
     IRequestClaimCertificateBulkAction,
     IRequestPublishForSaleAction,
     IShowRequestCertificatesModalAction,
-    setRequestCertificatesModalVisibility
+    setRequestCertificatesModalVisibility,
+    IRequestWithdrawCertificateAction
 } from './actions';
 import { getCertificateById, getCertificateFetcher, getCertificates } from './selectors';
 import { ICertificateViewItem } from './types';
+import { enhanceCertificate } from '../general/sagas';
 
 function assertIsContractTransaction(
     data: ContractTransaction | CommitmentStatus
@@ -40,7 +42,7 @@ function assertIsContractTransaction(
     }
 }
 
-function* getCertificate(id: number) {
+export function* getCertificate(id: number) {
     const configuration: Configuration.Entity = yield select(getConfiguration);
 
     const certificate = new Certificate(id, configuration);
@@ -85,7 +87,15 @@ function* requestCertificatesSaga(): SagaIterator {
             }
         } catch (error) {
             console.warn('Error while requesting certificates', error);
-            showNotification(`Transaction could not be completed.`, NotificationType.Error);
+
+            if (error?.response?.status === 409) {
+                showNotification(
+                    `There is already a certificate requested for that time period.`,
+                    NotificationType.Error
+                );
+            } else {
+                showNotification(`Transaction could not be completed.`, NotificationType.Error);
+            }
         }
 
         yield put(setLoading(false));
@@ -128,7 +138,7 @@ function* fetchCertificateSaga(id: number, entitiesBeingFetched: any): SagaItera
     entitiesBeingFetched.set(id, true);
 
     try {
-        if (existingEntity.source === CertificateSource.Blockchain) {
+        if (existingEntity?.source === CertificateSource.Blockchain) {
             const fetchedEntity: Certificate = yield call(fetcher.fetch, id, configuration);
 
             if (fetchedEntity) {
@@ -147,6 +157,37 @@ function* fetchCertificateSaga(id: number, entitiesBeingFetched: any): SagaItera
     }
 
     entitiesBeingFetched.delete(id);
+}
+
+function* resyncCertificateSaga(): SagaIterator {
+    while (true) {
+        const action: IResyncCertificateAction = yield take(CertificatesActions.resyncCertificate);
+
+        if (!action.payload) {
+            continue;
+        }
+
+        const { id, assetId } = action.payload;
+
+        const certificate: Certificate = yield call(getCertificate, id);
+        const exchangeClient: IExchangeClient = yield select(getExchangeClient);
+
+        const exchangeAccount: ExchangeAccount = yield apply(
+            exchangeClient,
+            exchangeClient.getAccount,
+            null
+        );
+
+        const asset = exchangeAccount.balances.available.find((a) => a.asset.id === assetId);
+        if (asset) {
+            yield put(updateCertificate(enhanceCertificate(asset, certificate)));
+        } else {
+            const enhancedCertificate: ICertificateViewItem = Object.assign(certificate, {
+                source: CertificateSource.Blockchain
+            });
+            yield put(updateCertificate(enhancedCertificate));
+        }
+    }
 }
 
 function* requestCertificateSaga(): SagaIterator {
@@ -255,6 +296,60 @@ function* requestPublishForSaleSaga(): SagaIterator {
     }
 }
 
+function* requestDepositSaga(): SagaIterator {
+    while (true) {
+        const action: IRequestPublishForSaleAction = yield take(
+            CertificatesActions.requestDepositCertificate
+        );
+        const exchangeClient: IExchangeClient = yield select(getExchangeClient);
+
+        if (!exchangeClient) {
+            continue;
+        }
+
+        const shouldContinue: boolean = yield call(assertCorrectBlockchainAccount);
+
+        if (!shouldContinue) {
+            continue;
+        }
+
+        const { amount, certificateId, callback } = action.payload;
+
+        const i18n = getI18n();
+
+        yield put(setLoading(true));
+
+        try {
+            const account: ExchangeAccount = yield call([
+                exchangeClient,
+                exchangeClient.getAccount
+            ]);
+            const certificate: Certificate = yield call(getCertificate, certificateId);
+
+            const transferResult: ContractTransaction | CommitmentStatus = yield call(
+                [certificate, certificate.transfer],
+                account.address,
+                amount
+            );
+            assertIsContractTransaction(transferResult);
+
+            showNotification(
+                i18n.t('certificate.feedback.certificateDeposited'),
+                NotificationType.Success
+            );
+        } catch (error) {
+            console.error(error);
+            showNotification(i18n.t('general.feedback.unknownError'), NotificationType.Error);
+        }
+
+        yield put(setLoading(false));
+
+        if (callback) {
+            yield call(callback);
+        }
+    }
+}
+
 function* requestClaimCertificateSaga(): SagaIterator {
     while (true) {
         const action: IRequestClaimCertificateAction = yield take(
@@ -267,7 +362,9 @@ function* requestClaimCertificateSaga(): SagaIterator {
             continue;
         }
 
-        const { certificateId, claimData } = action.payload;
+        const { certificateId, amount, claimData } = action.payload;
+
+        yield put(setLoading(true));
         const certificate: Certificate = yield call(getCertificate, certificateId);
 
         const i18n = getI18n();
@@ -280,10 +377,18 @@ function* requestClaimCertificateSaga(): SagaIterator {
             continue;
         }
 
-        yield put(setLoading(true));
-
         try {
-            yield call([certificate, certificate.claim], claimData);
+            yield call([certificate, certificate.claim], claimData, amount);
+
+            const updatedCertificate: Certificate = yield call(getCertificate, certificateId);
+            yield put(
+                updateCertificate(
+                    Object.assign(updatedCertificate, {
+                        source: CertificateSource.Blockchain
+                    })
+                )
+            );
+
             showNotification(
                 i18n.t('certificate.feedback.claimed', { id: certificate.id }),
                 NotificationType.Success
@@ -373,6 +478,27 @@ function* requestCertificateApprovalSaga(): SagaIterator {
     }
 }
 
+export function* withdrawSaga(): SagaIterator {
+    while (true) {
+        const action: IRequestWithdrawCertificateAction = yield take(
+            CertificatesActions.withdrawCertificate
+        );
+        const { callback } = action.payload;
+        const exchangeClient: IExchangeClient = yield select(getExchangeClient);
+        const i18n = getI18n();
+        try {
+            yield call([exchangeClient, exchangeClient.withdraw], action.payload);
+            if (callback) {
+                yield call(callback);
+            }
+            showNotification(i18n.t('certificate.feedback.withdrawn'), NotificationType.Success);
+        } catch (error) {
+            console.error(error);
+            showNotification(i18n.t('general.feedback.unknownError'), NotificationType.Error);
+        }
+    }
+}
+
 export function* certificatesSaga(): SagaIterator {
     yield all([
         fork(requestCertificatesSaga),
@@ -381,6 +507,9 @@ export function* certificatesSaga(): SagaIterator {
         fork(requestPublishForSaleSaga),
         fork(requestClaimCertificateSaga),
         fork(requestClaimCertificateBulkSaga),
-        fork(requestCertificateApprovalSaga)
+        fork(requestCertificateApprovalSaga),
+        fork(resyncCertificateSaga),
+        fork(withdrawSaga),
+        fork(requestDepositSaga)
     ]);
 }

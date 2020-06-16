@@ -7,7 +7,7 @@ import {
     ISmartMeterRead,
     Role
 } from '@energyweb/origin-backend-core';
-import { Roles, RolesGuard, UserDecorator } from '@energyweb/origin-backend-utils';
+import { Roles, RolesGuard, UserDecorator, ActiveUserGuard } from '@energyweb/origin-backend-utils';
 import {
     BadRequestException,
     Body,
@@ -42,20 +42,43 @@ export class DeviceController {
     // TODO: remove sensitive information
 
     @Get()
-    async getAll() {
-        return this.deviceService.getAll();
+    async getAll(@Query('withMeterStats') withMeterStats: boolean) {
+        return this.deviceService.getAll(withMeterStats ?? false);
+    }
+
+    @Get('/my-devices')
+    @UseGuards(AuthGuard(), ActiveUserGuard, RolesGuard)
+    @Roles(Role.OrganizationAdmin, Role.OrganizationDeviceManager, Role.OrganizationUser)
+    async getMyDevices(
+        @Query('withMeterStats') withMeterStats: boolean,
+        @UserDecorator() { organizationId }: ILoggedInUser
+    ) {
+        return this.deviceService.getAll(withMeterStats ?? false, {
+            where: { organization: { id: organizationId } }
+        });
     }
 
     @Get('supplyBy')
-    @UseGuards(AuthGuard(), RolesGuard)
+    @UseGuards(AuthGuard(), ActiveUserGuard, RolesGuard)
     @Roles(Role.OrganizationAdmin, Role.OrganizationDeviceManager, Role.OrganizationUser)
-    async getSupplyBy(@Query('facility') facilityName: string, @Query('status') status: number) {
-        return this.deviceService.getSupplyBy(facilityName, status);
+    async getSupplyBy(
+        @UserDecorator() { organizationId }: ILoggedInUser,
+        @Query('facility') facilityName: string,
+        @Query('status') status: string
+    ) {
+        return this.deviceService.getSupplyBy(
+            organizationId,
+            facilityName,
+            Number.parseInt(status, 10)
+        );
     }
 
     @Get('/:id')
-    async get(@Param('id') id: string): Promise<IDeviceWithRelationsIds> {
-        const existingEntity = await this.deviceService.findOne(id);
+    async get(
+        @Param('id') id: string,
+        @Query('withMeterStats') withMeterStats: boolean
+    ): Promise<IDeviceWithRelationsIds> {
+        const existingEntity = await this.deviceService.findOne(id, {}, withMeterStats);
 
         if (!existingEntity) {
             throw new NotFoundException(StorageErrors.NON_EXISTENT);
@@ -65,7 +88,7 @@ export class DeviceController {
     }
 
     @Post()
-    @UseGuards(AuthGuard(), RolesGuard)
+    @UseGuards(AuthGuard(), ActiveUserGuard, RolesGuard)
     @Roles(Role.OrganizationAdmin, Role.OrganizationDeviceManager)
     async post(@Body() body: DeviceCreateData, @UserDecorator() loggedUser: ILoggedInUser) {
         if (typeof loggedUser.organizationId === 'undefined') {
@@ -76,7 +99,7 @@ export class DeviceController {
     }
 
     @Delete('/:id')
-    @UseGuards(AuthGuard(), RolesGuard)
+    @UseGuards(AuthGuard(), ActiveUserGuard, RolesGuard)
     @Roles(Role.OrganizationAdmin, Role.OrganizationDeviceManager)
     async delete(@Param('id') id: string) {
         const existingEntity = await this.deviceService.findOne(id);
@@ -93,7 +116,7 @@ export class DeviceController {
     }
 
     @Put('/:id')
-    @UseGuards(AuthGuard(), RolesGuard)
+    @UseGuards(AuthGuard(), ActiveUserGuard, RolesGuard)
     @Roles(Role.OrganizationAdmin, Role.OrganizationDeviceManager, Role.Issuer)
     async put(
         @Param('id') id: string,
@@ -104,7 +127,7 @@ export class DeviceController {
     }
 
     @Put('/:id/settings')
-    @UseGuards(AuthGuard(), RolesGuard)
+    @UseGuards(AuthGuard(), ActiveUserGuard, RolesGuard)
     @Roles(Role.OrganizationAdmin, Role.OrganizationDeviceManager, Role.OrganizationUser)
     async updateDeviceSettings(
         @Param('id') id: string,

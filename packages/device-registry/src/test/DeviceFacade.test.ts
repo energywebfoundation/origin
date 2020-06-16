@@ -70,12 +70,10 @@ describe('Device Facade', () => {
                 defaultAskPrice: null
             };
 
-            assert.equal(await ProducingDevice.getDeviceListLength(conf), 0);
-
             const device = await ProducingDevice.createDevice(deviceProps, conf);
             assert.deepOwnInclude(device, deviceProps);
 
-            assert.equal(await ProducingDevice.getDeviceListLength(conf), 1);
+            assert.equal((await ProducingDevice.getAllDevices(conf)).length, 1);
         });
 
         it('should log a new meter reading', async () => {

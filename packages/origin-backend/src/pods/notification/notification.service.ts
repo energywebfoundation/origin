@@ -8,7 +8,9 @@ import {
     OrganizationRemovedMemberEvent,
     DeviceStatusChangedEvent,
     DeviceStatus,
-    UserStatusChangedEvent
+    UserStatusChangedEvent,
+    OrganizationMemberChangedRoleEvent,
+    Role
 } from '@energyweb/origin-backend-core';
 import { MailService } from '../mail';
 import EmailTypes from './EmailTypes';
@@ -17,6 +19,7 @@ const SUPPORTED_EVENTS = [
     SupportedEvents.ORGANIZATION_INVITATION,
     SupportedEvents.ORGANIZATION_STATUS_CHANGED,
     SupportedEvents.ORGANIZATION_REMOVED_MEMBER,
+    SupportedEvents.ORGANIZATION_MEMBER_CHANGED_ROLE,
     SupportedEvents.DEVICE_STATUS_CHANGED,
     SupportedEvents.USER_STATUS_CHANGED
 ];
@@ -27,12 +30,14 @@ type TSupportedNotificationEvent = {
         | SupportedEvents.ORGANIZATION_INVITATION
         | SupportedEvents.ORGANIZATION_STATUS_CHANGED
         | SupportedEvents.ORGANIZATION_REMOVED_MEMBER
+        | SupportedEvents.ORGANIZATION_MEMBER_CHANGED_ROLE
         | SupportedEvents.DEVICE_STATUS_CHANGED;
     data:
         | UserStatusChangedEvent
         | OrganizationInvitationEvent
         | OrganizationStatusChangedEvent
         | OrganizationRemovedMemberEvent
+        | OrganizationMemberChangedRoleEvent
         | DeviceStatusChangedEvent;
 };
 
@@ -80,6 +85,19 @@ export class NotificationService {
                 `Organization ${data.organizationName} has removed you from the organization.`
             );
         },
+        [SupportedEvents.ORGANIZATION_MEMBER_CHANGED_ROLE]: async (
+            data: OrganizationMemberChangedRoleEvent
+        ) => {
+            const url = `${process.env.UI_BASE_URL}/account/user-profile`;
+
+            await this.sendNotificationEmail(
+                EmailTypes.ORGANIZATION_MEMBER_CHANGED_ROLE,
+                data.email,
+                `The administrator of ${data.organizationName} changed your role to ${
+                    Role[data.newRole]
+                }. Visit <a href="${url}">${url}</a> to see the details.`
+            );
+        },
         [SupportedEvents.DEVICE_STATUS_CHANGED]: async (data: DeviceStatusChangedEvent) => {
             const url = `${process.env.UI_BASE_URL}/devices/owned`;
 
@@ -92,10 +110,11 @@ export class NotificationService {
             );
         },
         [SupportedEvents.USER_STATUS_CHANGED]: async (data: UserStatusChangedEvent) => {
+            const url = `${process.env.UI_BASE_URL}/account/user-profile`;
             await this.sendNotificationEmail(
                 EmailTypes.USER_STATUS_CHANGED,
                 data.email,
-                `Status of your user information`
+                `Your user information has changed. Please visit <a href="${url}">link to user profile</a> to see the changes.`
             );
         }
     };

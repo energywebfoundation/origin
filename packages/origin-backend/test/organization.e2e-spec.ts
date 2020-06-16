@@ -1,37 +1,41 @@
+/* eslint-disable no-unused-expressions */
 /* eslint-disable no-return-assign */
 import {
     DeviceStatus,
-    Role,
-    UserRegistrationData,
+    IOrganizationInvitation,
     OrganizationInvitationStatus,
-    IOrganizationInvitation
+    getRolesFromRights,
+    Role,
+    UserRegistrationData
 } from '@energyweb/origin-backend-core';
 import { INestApplication } from '@nestjs/common';
+import { expect } from 'chai';
 import request from 'supertest';
 
 import { Device } from '../src/pods/device/device.entity';
 import { DeviceService } from '../src/pods/device/device.service';
 import { OrganizationService } from '../src/pods/organization/organization.service';
-import { UserService, TUserBaseEntity } from '../src/pods/user';
+import { TUserBaseEntity, UserService } from '../src/pods/user';
 import { DatabaseService } from './database.service';
 import { bootstrapTestInstance, registerAndLogin } from './origin-backend';
+import { AdminService } from '../src/pods/admin/admin.service';
 
 describe('Organization e2e tests', () => {
-    jest.setTimeout(1000000);
-
     let app: INestApplication;
     let databaseService: DatabaseService;
     let deviceService: DeviceService;
     let organizationService: OrganizationService;
     let userService: UserService;
+    let adminService: AdminService;
 
-    beforeAll(async () => {
+    before(async () => {
         ({
             app,
             databaseService,
             deviceService,
             organizationService,
-            userService
+            userService,
+            adminService
         } = await bootstrapTestInstance());
 
         await app.init();
@@ -42,7 +46,7 @@ describe('Organization e2e tests', () => {
         await databaseService.truncate('organization');
     });
 
-    afterAll(async () => {
+    after(async () => {
         await app.close();
     });
 
@@ -51,6 +55,7 @@ describe('Organization e2e tests', () => {
             app,
             userService,
             organizationService,
+            adminService,
             [Role.OrganizationAdmin]
         );
 
@@ -97,8 +102,8 @@ describe('Organization e2e tests', () => {
             .expect((res) => {
                 const [invitation] = res.body as IOrganizationInvitation[];
 
-                expect(invitation).toBeDefined();
-                expect(invitation.organization).toBe(organization.id);
+                expect(invitation).to.be.ok;
+                expect(invitation.organization).equals(organization.id);
 
                 invitationId = invitation.id;
             });
@@ -115,8 +120,8 @@ describe('Organization e2e tests', () => {
             .expect((res) => {
                 const user = res.body as TUserBaseEntity;
 
-                expect(user.organization).toBe(organization.id);
-                expect(user.rights).toBe(Role.OrganizationUser);
+                expect(user.organization).equals(organization.id);
+                expect(user.rights).equals(Role.OrganizationUser);
             });
     });
 
@@ -125,6 +130,7 @@ describe('Organization e2e tests', () => {
             app,
             userService,
             organizationService,
+            adminService,
             [Role.OrganizationDeviceManager]
         );
 
@@ -163,7 +169,7 @@ describe('Organization e2e tests', () => {
             .expect((res) => {
                 const devices = res.body as Device[];
 
-                expect(devices).toHaveLength(1);
+                expect(devices).to.have.length(1);
             });
     });
 
@@ -172,6 +178,7 @@ describe('Organization e2e tests', () => {
             app,
             userService,
             organizationService,
+            adminService,
             [Role.OrganizationAdmin]
         );
 
@@ -179,6 +186,7 @@ describe('Organization e2e tests', () => {
             app,
             userService,
             organizationService,
+            adminService,
             [Role.OrganizationUser],
             'member'
         );
@@ -194,7 +202,7 @@ describe('Organization e2e tests', () => {
             .expect(200)
             .expect((res) => {
                 const { organization: memberOrganization } = res.body as TUserBaseEntity;
-                expect(memberOrganization).toBeUndefined();
+                expect(memberOrganization).to.be.undefined;
             });
     });
 
@@ -203,6 +211,7 @@ describe('Organization e2e tests', () => {
             app,
             userService,
             organizationService,
+            adminService,
             [Role.OrganizationAdmin]
         );
 
@@ -221,8 +230,8 @@ describe('Organization e2e tests', () => {
             .expect((res) => {
                 const [invitation] = res.body as IOrganizationInvitation[];
 
-                expect(invitation).toBeDefined();
-                expect(invitation.organization).toBe(organization.id);
+                expect(invitation).to.be.ok;
+                expect(invitation.organization).equals(organization.id);
             });
     });
 
@@ -231,6 +240,7 @@ describe('Organization e2e tests', () => {
             app,
             userService,
             organizationService,
+            adminService,
             [Role.OrganizationAdmin]
         );
 
@@ -238,5 +248,41 @@ describe('Organization e2e tests', () => {
             .get(`/organization/${organization.id + 1}/invitations`)
             .set('Authorization', `Bearer ${accessToken}`)
             .expect(401);
+    });
+
+    it('should be able to change role for organization member when organization admin', async () => {
+        const { accessToken: adminAccessToken, organization } = await registerAndLogin(
+            app,
+            userService,
+            organizationService,
+            adminService,
+            [Role.OrganizationAdmin]
+        );
+
+        const { user: member, accessToken: memberAccessToken } = await registerAndLogin(
+            app,
+            userService,
+            organizationService,
+            adminService,
+            [Role.OrganizationUser],
+            'member'
+        );
+
+        await request(app.getHttpServer())
+            .put(`/organization/${organization.id}/change-role/${member.id}`)
+            .set('Authorization', `Bearer ${adminAccessToken}`)
+            .send({
+                role: Role.OrganizationDeviceManager
+            })
+            .expect(200);
+
+        await request(app.getHttpServer())
+            .get(`/user/me`)
+            .set('Authorization', `Bearer ${memberAccessToken}`)
+            .expect(200)
+            .expect((res) => {
+                const { rights } = res.body as TUserBaseEntity;
+                expect(getRolesFromRights(rights)).contain(Role.OrganizationDeviceManager);
+            });
     });
 });

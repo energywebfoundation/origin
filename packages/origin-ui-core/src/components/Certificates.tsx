@@ -11,6 +11,7 @@ import { getCurrencies } from '../features/general/selectors';
 import { useTranslation } from 'react-i18next';
 import { Exchange, MyTrades } from './exchange';
 import { useLinks } from '../utils';
+import { BundlesTable } from './bundles/BundleTable';
 
 function CertificateDetailViewId(id: number) {
     return <CertificateDetailView id={id} />;
@@ -21,7 +22,7 @@ function InboxCertificates() {
 }
 
 function ClaimedCertificates() {
-    return <CertificateTable selectedState={SelectedState.Claimed} />;
+    return <CertificateTable selectedState={SelectedState.Claimed} hiddenColumns={['source']} />;
 }
 
 const PendingCertificationRequestsTable = () => <CertificationRequestsTable approved={false} />;
@@ -31,7 +32,6 @@ const ApprovedCertificationRequestsTable = () => <CertificationRequestsTable app
 export function Certificates() {
     const currencies = useSelector(getCurrencies);
     const user = useSelector(getUserOffchain);
-
     const { baseURL, getCertificatesLink } = useLinks();
     const { t } = useTranslation();
 
@@ -78,6 +78,12 @@ export function Certificates() {
             label: 'navigation.certificates.exchange',
             component: ExchangeRoute,
             show: true
+        },
+        {
+            key: 'bundles',
+            label: 'navigation.certificates.bundles',
+            component: BundlesTable,
+            show: user
         },
         {
             key: 'my-trades',

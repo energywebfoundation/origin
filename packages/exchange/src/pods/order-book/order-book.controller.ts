@@ -1,5 +1,5 @@
 import { ILoggedInUser } from '@energyweb/origin-backend-core';
-import { UserDecorator } from '@energyweb/origin-backend-utils';
+import { UserDecorator, ActiveUserGuard } from '@energyweb/origin-backend-utils';
 import { Body, Controller, Post, UseGuards, HttpCode } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 
@@ -16,7 +16,7 @@ export class OrderBookController {
     ) {}
 
     @Post('/search')
-    @UseGuards(AuthGuard())
+    @UseGuards(AuthGuard(), ActiveUserGuard)
     @HttpCode(200)
     public getByProduct(
         @UserDecorator() user: ILoggedInUser,

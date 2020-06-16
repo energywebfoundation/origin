@@ -5,7 +5,14 @@ import { useTheme, createStyles, makeStyles } from '@material-ui/core';
 
 import { useOriginConfiguration } from '../../utils/configuration';
 
+export enum TableActionId {
+    Claim = 0,
+    PublishForSale = 1,
+    Withdraw = 2,
+    Deposit = 3
+}
 export interface ITableAction {
+    id?: TableActionId;
     name: string;
     icon: React.ReactNode;
     onClick: (rowId: string) => void;

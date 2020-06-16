@@ -1,19 +1,22 @@
 /* eslint-disable no-return-assign */
-import { Role, CommitmentStatus } from '@energyweb/origin-backend-core';
+import { CommitmentStatus, Role } from '@energyweb/origin-backend-core';
 import { INestApplication } from '@nestjs/common';
+import { expect } from 'chai';
+import { bigNumberify } from 'ethers/utils';
 import request from 'supertest';
 
-import { bigNumberify } from 'ethers/utils';
 import { CertificateService } from '../src/pods/certificate/certificate.service';
 import { OrganizationService } from '../src/pods/organization/organization.service';
 import { UserService } from '../src/pods/user';
 import { bootstrapTestInstance, registerAndLogin } from './origin-backend';
+import { AdminService } from '../src/pods/admin/admin.service';
 
 describe('Certificate e2e tests', () => {
     let app: INestApplication;
     let userService: UserService;
     let organizationService: OrganizationService;
     let certificateService: CertificateService;
+    let adminService: AdminService;
 
     const generateCommitment = (requestor: string) => ({
         commitment: {
@@ -38,18 +41,19 @@ describe('Certificate e2e tests', () => {
         txHash: '0x43812963521457111f27433c6636499c50d36a6e5bea4a835b4c059aed4ac503'
     });
 
-    beforeAll(async () => {
+    before(async () => {
         ({
             app,
             userService,
             organizationService,
-            certificateService
+            certificateService,
+            adminService
         } = await bootstrapTestInstance());
 
         await app.init();
     });
 
-    afterAll(async () => {
+    after(async () => {
         await app.close();
     });
 
@@ -58,6 +62,7 @@ describe('Certificate e2e tests', () => {
             app,
             userService,
             organizationService,
+            adminService,
             [Role.OrganizationUser],
             'orgUser',
             'orgUserOrg'
@@ -78,7 +83,7 @@ describe('Certificate e2e tests', () => {
             .expect((res) => {
                 const { commitmentStatus } = res.body;
 
-                expect(commitmentStatus).toEqual(CommitmentStatus.CURRENT);
+                expect(commitmentStatus).equals(CommitmentStatus.CURRENT);
             });
     });
 
@@ -87,6 +92,7 @@ describe('Certificate e2e tests', () => {
             app,
             userService,
             organizationService,
+            adminService,
             [Role.OrganizationUser],
             'orgUser',
             'orgUserOrg'
@@ -111,6 +117,7 @@ describe('Certificate e2e tests', () => {
             app,
             userService,
             organizationService,
+            adminService,
             [Role.OrganizationUser],
             'orgUser',
             'orgUserOrg'
@@ -131,7 +138,7 @@ describe('Certificate e2e tests', () => {
             .expect((res) => {
                 const { commitmentStatus } = res.body;
 
-                expect(commitmentStatus).toEqual(CommitmentStatus.CURRENT);
+                expect(commitmentStatus).equals(CommitmentStatus.CURRENT);
             });
 
         await request(app.getHttpServer())
@@ -145,6 +152,7 @@ describe('Certificate e2e tests', () => {
             app,
             userService,
             organizationService,
+            adminService,
             [Role.OrganizationUser],
             'orgUser',
             'orgUserOrg'

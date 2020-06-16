@@ -1,9 +1,10 @@
 import {
     ILoggedInUser,
     IOwnershipCommitmentProofWithTx,
-    Role
+    Role,
+    ISuccessResponse
 } from '@energyweb/origin-backend-core';
-import { Roles, RolesGuard, UserDecorator } from '@energyweb/origin-backend-utils';
+import { Roles, RolesGuard, UserDecorator, ActiveUserGuard } from '@energyweb/origin-backend-utils';
 import {
     Body,
     Controller,
@@ -12,15 +13,17 @@ import {
     Param,
     Post,
     UseGuards,
-    Put
+    Put,
+    Query
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 
 import { StorageErrors } from '../../enums/StorageErrors';
-import { CertificationRequestUpdateDTO } from './certification-request.dto';
+import { CertificationRequestQueueItemDTO } from './certification-request-queue-item.dto';
 import { CertificationRequest } from './certification-request.entity';
 import { CertificationRequestService } from './certification-request.service';
 import { CertificateService } from './certificate.service';
+import { CertificationRequestQueueItem } from './certification-request-queue-item.entity';
 
 const CERTIFICATION_REQUEST_ENDPOINT = '/CertificationRequest';
 
@@ -31,25 +34,43 @@ export class CertificateController {
         private readonly certificationRequestService: CertificationRequestService
     ) {}
 
-    @Post(`${CERTIFICATION_REQUEST_ENDPOINT}/:id`)
-    @UseGuards(AuthGuard(), RolesGuard)
+    @Post(CERTIFICATION_REQUEST_ENDPOINT)
+    @UseGuards(AuthGuard(), ActiveUserGuard, RolesGuard)
     @Roles(Role.OrganizationAdmin, Role.OrganizationDeviceManager)
-    async updateCertificationRequest(
-        @Param('id') id: number,
-        @Body() data: CertificationRequestUpdateDTO,
+    async queueCertificationRequestData(
+        @Body() dto: CertificationRequestQueueItemDTO,
         @UserDecorator() loggedUser: ILoggedInUser
-    ): Promise<CertificationRequest> {
-        return this.certificationRequestService.update(id, data, loggedUser);
+    ): Promise<CertificationRequestQueueItem> {
+        return this.certificationRequestService.queue(dto, loggedUser);
+    }
+
+    @Get(`${CERTIFICATION_REQUEST_ENDPOINT}/validate`)
+    @UseGuards(AuthGuard(), ActiveUserGuard, RolesGuard)
+    @Roles(Role.OrganizationAdmin, Role.OrganizationDeviceManager)
+    async validateGenerationPeriod(
+        @Query('fromTime') fromTime: number,
+        @Query('toTime') toTime: number,
+        @Query('deviceId') deviceId: string,
+        @UserDecorator() loggedUser: ILoggedInUser
+    ): Promise<ISuccessResponse> {
+        return this.certificationRequestService.validateGenerationPeriod(
+            { fromTime, toTime, deviceId },
+            loggedUser
+        );
     }
 
     @Get(`${CERTIFICATION_REQUEST_ENDPOINT}/:id`)
-    @UseGuards(AuthGuard(), RolesGuard)
+    @UseGuards(AuthGuard(), ActiveUserGuard, RolesGuard)
     @Roles(Role.OrganizationAdmin, Role.OrganizationDeviceManager, Role.Issuer, Role.Admin)
     async getCertificationRequest(
         @Param('id') id: number,
         @UserDecorator() loggedUser: ILoggedInUser
     ): Promise<CertificationRequest> {
         const request = await this.certificationRequestService.get(id);
+
+        if (!request) {
+            throw new NotFoundException(StorageErrors.NON_EXISTENT);
+        }
 
         if (loggedUser.hasRole(Role.Issuer, Role.Admin) || request.userId === loggedUser.ownerId) {
             return request;
@@ -64,7 +85,7 @@ export class CertificateController {
     }
 
     @Get(CERTIFICATION_REQUEST_ENDPOINT)
-    @UseGuards(AuthGuard(), RolesGuard)
+    @UseGuards(AuthGuard(), ActiveUserGuard, RolesGuard)
     @Roles(Role.OrganizationAdmin, Role.OrganizationDeviceManager, Role.Issuer, Role.Admin)
     async getAllCertificationRequests(
         @UserDecorator() loggedUser: ILoggedInUser
@@ -81,7 +102,7 @@ export class CertificateController {
     // TODO: add ownership management and roles
 
     @Get(`/:id/OwnershipCommitment`)
-    @UseGuards(AuthGuard(), RolesGuard)
+    @UseGuards(AuthGuard(), ActiveUserGuard, RolesGuard)
     @Roles(Role.OrganizationUser)
     async getOwnershipCommitment(
         @Param('id') id: number
@@ -96,7 +117,7 @@ export class CertificateController {
     }
 
     @Put(`/:id/OwnershipCommitment`)
-    @UseGuards(AuthGuard(), RolesGuard)
+    @UseGuards(AuthGuard(), ActiveUserGuard, RolesGuard)
     @Roles(Role.OrganizationUser)
     async addOwnershipCommitment(
         @Param('id') id: number,

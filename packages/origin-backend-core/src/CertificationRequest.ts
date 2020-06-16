@@ -25,7 +25,15 @@ export interface ICertificationRequestBackend extends ICertificationRequestMinim
     device: IDevice;
 }
 
-export type CertificationRequestUpdateData = Pick<ICertificationRequest, 'energy' | 'files'>;
+export type CertificationRequestUpdateData = Pick<
+    ICertificationRequest,
+    'fromTime' | 'toTime' | 'deviceId' | 'energy' | 'files'
+>;
+
+export type CertificationRequestValidationData = Pick<
+    ICertificationRequest,
+    'fromTime' | 'toTime' | 'deviceId'
+>;
 
 export type CertificationRequestDataMocked = Pick<
     ICertificationRequest,

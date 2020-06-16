@@ -19,7 +19,13 @@ import {
 } from './selectors';
 import axios, { Canceler } from 'axios';
 import { IOffChainDataSource, OffChainDataSource } from '@energyweb/origin-backend-client';
-import { ExchangeClient, IExchangeClient, ExchangeAccount } from '../../utils/exchange';
+import {
+    ExchangeClient,
+    IExchangeClient,
+    ExchangeAccount,
+    AccountAsset,
+    Bundle
+} from '../../utils/exchange';
 import {
     IOriginConfiguration,
     IOrganizationWithRelationsIds
@@ -35,7 +41,7 @@ import { getSearch, push } from 'connected-react-router';
 import { getConfiguration, getBaseURL } from '../selectors';
 import * as queryString from 'query-string';
 import * as Winston from 'winston';
-import { Certificate, Contracts, CertificateUtils } from '@energyweb/issuer';
+import { Certificate, Contracts, CertificateUtils, ICertificate } from '@energyweb/issuer';
 import { Configuration, DeviceTypeService } from '@energyweb/utils-general';
 import { configurationUpdated } from '../actions';
 import { ProducingDevice } from '@energyweb/device-registry';
@@ -50,6 +56,8 @@ import { BigNumber } from 'ethers/utils';
 import { getI18n } from 'react-i18next';
 import { showNotification, NotificationType, getDevicesOwnedLink } from '../../utils';
 import { ICertificateViewItem, CertificateSource } from '../certificates';
+import { getCertificate } from '../certificates/sagas';
+import { storeBundle } from '../bundles';
 
 function createEthereumProviderAccountsChangedEventChannel(ethereumProvider: any) {
     return eventChannel<string[]>((emitter) => {
@@ -314,6 +322,36 @@ function* initEventHandler() {
     }
 }
 
+export function enhanceCertificate(
+    { asset, amount }: AccountAsset,
+    onChainCertificate: ICertificate
+): ICertificateViewItem {
+    return {
+        ...onChainCertificate,
+        energy: {
+            publicVolume: new BigNumber(amount),
+            privateVolume: new BigNumber(0),
+            claimedVolume: new BigNumber(0)
+        },
+        source: CertificateSource.Exchange,
+        assetId: asset.id
+    };
+}
+
+function* findEnhancedCertificate(
+    asset: AccountAsset,
+    onChainCertificates: ICertificateViewItem[]
+) {
+    const certificateId = parseInt(asset.asset.tokenId, 10);
+    let onChainCertificate = onChainCertificates.find((c) => c.id === certificateId);
+
+    if (!onChainCertificate) {
+        onChainCertificate = yield call(getCertificate, certificateId);
+    }
+
+    return enhanceCertificate(asset, onChainCertificate);
+}
+
 function* fetchDataAfterConfigurationChange(
     configuration: Configuration.Entity,
     update = false
@@ -321,7 +359,7 @@ function* fetchDataAfterConfigurationChange(
     const producingDevices: ProducingDevice.Entity[] = yield apply(
         ProducingDevice,
         ProducingDevice.getAllDevices,
-        [configuration]
+        [configuration, true]
     );
 
     for (const device of producingDevices) {
@@ -330,10 +368,9 @@ function* fetchDataAfterConfigurationChange(
 
     const onChainCertificates: Certificate[] = yield apply(
         Certificate,
-        CertificateUtils.getAllCertificates,
+        CertificateUtils.getAllOwnedCertificates,
         [configuration]
     );
-
     const initializedCertificates = onChainCertificates
         .filter((cert) => cert.initialized)
         .map(
@@ -352,32 +389,20 @@ function* fetchDataAfterConfigurationChange(
         exchangeClient.getAccount,
         null
     );
-
-    const available = offChainCertificates.balances.available.map(({ asset, amount }) => {
-        const onChainCertificate = initializedCertificates.find(
-            (c) => c.id === parseInt(asset.tokenId, 10)
-        );
-
-        const certificateItem: ICertificateViewItem = {
-            ...onChainCertificate,
-            energy: {
-                publicVolume: new BigNumber(amount),
-                privateVolume: new BigNumber(0),
-                claimedVolume: new BigNumber(0)
-            },
-            source: CertificateSource.Exchange,
-            assetId: asset.id
-        };
-
-        return certificateItem;
-    });
-
+    const available = yield all(
+        offChainCertificates.balances.available.map((asset) =>
+            call(findEnhancedCertificate, asset, initializedCertificates)
+        )
+    );
     const certificates = initializedCertificates.concat(available);
-
-    console.log(`Total certificates ${certificates.length} from exchange: ${available.length}`);
 
     for (const certificate of certificates) {
         yield put(update ? updateCertificate(certificate) : addCertificate(certificate));
+    }
+
+    const bundles: Bundle[] = yield apply(exchangeClient, exchangeClient.getAvailableBundles, null);
+    for (const bundle of bundles) {
+        yield put(storeBundle(bundle));
     }
 }
 

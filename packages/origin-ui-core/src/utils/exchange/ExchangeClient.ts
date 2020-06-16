@@ -10,9 +10,11 @@ import {
     Order,
     IAsset,
     IDirectBuyDTO,
-    IOrder
+    IOrder,
+    RequestWithdrawalDTO,
+    Bundle
 } from '.';
-import { Filter } from '@energyweb/exchange-core';
+import { Filter, OrderStatus } from '@energyweb/exchange-core';
 
 export interface IExchangeClient {
     search(
@@ -24,14 +26,18 @@ export interface IExchangeClient {
     ): Promise<TOrderBook>;
     createAsk(data: CreateAskDTO): Promise<IOrder>;
     createBid(data: CreateBidDTO): Promise<IOrder>;
-    directBuy(data: IDirectBuyDTO): Promise<IOrder>;
+    directBuy(data: IDirectBuyDTO): Promise<{ success: boolean; status: OrderStatus }>;
     getAccount(): Promise<ExchangeAccount>;
     getAllTransfers(): Promise<ITransfer[]>;
+    withdraw(withdrawal: RequestWithdrawalDTO): Promise<string>;
     getTrades(): Promise<ITradeDTO[]>;
     getAssetById(id: string): Promise<IAsset>;
     getOrderById(id: string): Promise<Order>;
     getOrders?(): Promise<Order[]>;
+    getAvailableBundles(): Promise<Bundle[]>;
 }
+
+const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 export class ExchangeClient implements IExchangeClient {
     // eslint-disable-next-line no-useless-constructor
@@ -94,13 +100,22 @@ export class ExchangeClient implements IExchangeClient {
         return response.data;
     }
 
-    public async directBuy(data: IDirectBuyDTO): Promise<IOrder> {
+    public async directBuy(
+        data: IDirectBuyDTO
+    ): Promise<{ success: boolean; status: OrderStatus }> {
         const response = await this.requestClient.post<IDirectBuyDTO, IOrder>(
             `${this.ordersEndpoint}/ask/buy`,
             data
         );
 
-        return response.data;
+        await sleep(Number(process.env.EXCHANGE_MATCHING_INTERVAL) || 1000);
+
+        const { status } = await this.getOrderById(response.data.id);
+
+        return {
+            success: status === OrderStatus.Filled,
+            status
+        };
     }
 
     public async getAccount() {
@@ -112,6 +127,15 @@ export class ExchangeClient implements IExchangeClient {
     public async getAllTransfers() {
         const response = await this.requestClient.get<{}, ITransfer[]>(
             `${this.transferEndpoint}/all`
+        );
+
+        return response.data;
+    }
+
+    public async withdraw(withdrawal: RequestWithdrawalDTO) {
+        const response = await this.requestClient.post<{}, string>(
+            `${this.transferEndpoint}/withdrawal`,
+            withdrawal
         );
 
         return response.data;
@@ -131,6 +155,14 @@ export class ExchangeClient implements IExchangeClient {
 
     public async getOrderById(id: string) {
         const response = await this.requestClient.get<{}, Order>(`${this.ordersEndpoint}/${id}`);
+
+        return response.data;
+    }
+
+    public async getAvailableBundles() {
+        const response = await this.requestClient.get<{}, Bundle[]>(
+            `${this.bundleEndpoint}/available`
+        );
 
         return response.data;
     }
@@ -157,6 +189,10 @@ export class ExchangeClient implements IExchangeClient {
 
     private get tradeEndpoint() {
         return `${this.dataApiUrl}/trade`;
+    }
+
+    private get bundleEndpoint() {
+        return `${this.dataApiUrl}/bundle`;
     }
 }
 
@@ -225,15 +261,10 @@ export const ExchangeClientMock: IExchangeClient = {
     },
 
     async directBuy() {
-        return ({
-            id: '',
-            price: 0,
-            userId: '',
-            product: null,
-            side: 0,
-            validFrom: '',
-            volume: ''
-        } as Partial<IOrder>) as IOrder;
+        return {
+            success: true,
+            status: OrderStatus.Filled
+        };
     },
 
     async createAsk() {
@@ -257,6 +288,14 @@ export const ExchangeClientMock: IExchangeClient = {
     },
 
     async getOrderById() {
+        return null;
+    },
+
+    async withdraw() {
+        return null;
+    },
+
+    getAvailableBundles() {
         return null;
     }
 };

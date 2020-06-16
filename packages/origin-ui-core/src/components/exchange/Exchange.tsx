@@ -1,6 +1,12 @@
 import React, { useState } from 'react';
 import { Market, IMarketFormValues } from './Market';
-import { EnergyFormatter, moment, useTranslation, useIntervalFetch } from '../../utils';
+import {
+    EnergyFormatter,
+    moment,
+    useTranslation,
+    useIntervalFetch,
+    showNotification
+} from '../../utils';
 import { Asks, Orders } from '.';
 import { Grid } from '@material-ui/core';
 import { getUserOffchain } from '../../features/users/selectors';
@@ -15,7 +21,7 @@ interface IProps {
 }
 
 export function Exchange(props: IProps) {
-    const { currency, refreshInterval } = { refreshInterval: 5000, ...props };
+    const { currency, refreshInterval } = { refreshInterval: 3000, ...props };
 
     const user = useSelector(getUserOffchain);
     const exchangeClient = useSelector(getExchangeClient);
@@ -94,11 +100,16 @@ export function Exchange(props: IProps) {
 
         dispatch(setLoading(true));
 
-        await exchangeClient.directBuy({
+        const { success, status } = await exchangeClient.directBuy({
             askId: orderId,
             volume,
             price
         });
+
+        if (!success) {
+            showNotification('Direct buy failed.');
+            console.error(`Direct buy failed with status ${status}.`);
+        }
 
         dispatch(setLoading(false));
     }

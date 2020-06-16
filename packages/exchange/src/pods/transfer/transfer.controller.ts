@@ -1,5 +1,5 @@
 import { ILoggedInUser, Role } from '@energyweb/origin-backend-core';
-import { Roles, RolesGuard, UserDecorator } from '@energyweb/origin-backend-utils';
+import { Roles, RolesGuard, UserDecorator, ActiveUserGuard } from '@energyweb/origin-backend-utils';
 import { Body, Controller, ForbiddenException, Get, Post, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 
@@ -11,13 +11,13 @@ export class TransferController {
     constructor(private readonly transferService: TransferService) {}
 
     @Get('all')
-    @UseGuards(AuthGuard())
+    @UseGuards(AuthGuard(), ActiveUserGuard)
     public async getTransfers(@UserDecorator() { ownerId }: ILoggedInUser) {
         return this.transferService.getAll(ownerId);
     }
 
     @Post('withdrawal')
-    @UseGuards(AuthGuard(), RolesGuard)
+    @UseGuards(AuthGuard(), ActiveUserGuard, RolesGuard)
     @Roles(Role.OrganizationAdmin)
     public async requestWithdrawal(
         @UserDecorator() user: ILoggedInUser,

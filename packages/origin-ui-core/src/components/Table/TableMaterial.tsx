@@ -74,6 +74,7 @@ interface IProps<T extends readonly ITableColumn[]> {
     customSelectCounterGenerator?: CustomCounterGeneratorFunction;
     highlightedRowsIds?: string[];
     customRow?: ICustomRow<TTableRow<GetReadonlyArrayItemType<T>['id']> & { id?: string }>;
+    allowedActions?: any;
 }
 
 export function TableMaterial<T extends readonly ITableColumn[]>(props: IProps<T>) {
@@ -130,7 +131,8 @@ export function TableMaterial<T extends readonly ITableColumn[]>(props: IProps<T
         batchableActions,
         customSelectCounterGenerator,
         toggleSort,
-        highlightedRowsIds: highlightedRowsIndexes
+        highlightedRowsIds: highlightedRowsIndexes,
+        allowedActions
     } = props;
 
     if (selectedIds.length > rows.length) {
@@ -279,7 +281,18 @@ export function TableMaterial<T extends readonly ITableColumn[]>(props: IProps<T
                                                     key={id}
                                                     className={classes.tableCellWrappingActions}
                                                 >
-                                                    <Actions actions={actions} id={id} />
+                                                    <Actions
+                                                        actions={
+                                                            allowedActions
+                                                                ? actions.filter((action) =>
+                                                                      allowedActions[
+                                                                          (row as any).source
+                                                                      ]?.includes(action.id)
+                                                                  )
+                                                                : actions
+                                                        }
+                                                        id={id}
+                                                    />
                                                 </TableCell>
                                             )}
                                         </TableRow>

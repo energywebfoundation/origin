@@ -1,4 +1,4 @@
-import { OrderSide, ActionResultEvent, ActionResult } from '@energyweb/exchange-core';
+import { OrderSide, ActionResultEvent, ActionResult, OrderStatus } from '@energyweb/exchange-core';
 import { forwardRef, Inject, Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import BN from 'bn.js';
@@ -14,7 +14,6 @@ import { CreateBidDTO } from './create-bid.dto';
 import { DirectBuyDTO } from './direct-buy.dto';
 import { OrderType } from './order-type.enum';
 import { Order } from './order.entity';
-import { OrderStatus } from './order-status.enum';
 
 @Injectable()
 export class OrderService {

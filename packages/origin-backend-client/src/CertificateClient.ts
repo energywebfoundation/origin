@@ -5,19 +5,24 @@ import {
     CertificationRequestUpdateData,
     CommitmentStatus,
     IOwnershipCommitmentProofWithTx,
-    ICertificationRequestBackend
+    ICertificationRequestBackend,
+    CertificationRequestValidationData,
+    ISuccessResponse
 } from '@energyweb/origin-backend-core';
 
 import { IRequestClient, RequestClient } from './RequestClient';
 
 export class CertificationRequestUpdateDTO {
+    deviceId: string;
+    fromTime: number;
+    toTime: number;
     energy: string;
-
     files: string[];
 }
 
 export interface ICertificateClient {
-    updateCertificationRequest(id: number, data: CertificationRequestUpdateData): Promise<boolean>;
+    queueCertificationRequestData(data: CertificationRequestUpdateData): Promise<boolean>;
+    validateGenerationPeriod(data: CertificationRequestValidationData): Promise<ISuccessResponse>;
     getCertificationRequest(id: number): Promise<ICertificationRequest>;
     getAllCertificationRequests(): Promise<ICertificationRequest[]>;
     getOwnershipCommitment(certificateId: number): Promise<IOwnershipCommitmentProofWithTx>;
@@ -41,28 +46,38 @@ export class CertificateClient implements ICertificateClient {
         return `${this.certificateEndpoint}/CertificationRequest`;
     }
 
-    public async updateCertificationRequest(
-        id: number,
+    public async queueCertificationRequestData(
         data: CertificationRequestUpdateData
     ): Promise<boolean> {
         const dto: CertificationRequestUpdateDTO = {
-            energy: data.energy.toString(),
-            files: data.files
+            ...data,
+            energy: data.energy.toString()
         };
 
         const response = await this.requestClient.post<CertificationRequestUpdateDTO, boolean>(
-            `${this.certificateRequestEndpoint}/${id}`,
+            `${this.certificateRequestEndpoint}`,
             dto
         );
 
         const success = response.status >= 200 && response.status < 300;
 
         if (!success) {
-            console.error(`Unable to create certification request ${id}`);
+            console.error(`Unable to queue certification request for device ${data.deviceId}:${data.fromTime}-${data.toTime}`);
             console.error(JSON.stringify(response));
         }
 
         return success;
+    }
+
+    public async validateGenerationPeriod(
+        data: CertificationRequestValidationData
+    ): Promise<ISuccessResponse> {
+        const response = await this.requestClient.get<CertificationRequestValidationData, ISuccessResponse>(
+            `${this.certificateRequestEndpoint}/validate`,
+            { params: data }
+        );
+
+        return response.data;
     }
 
     public async getCertificationRequest(id: number): Promise<ICertificationRequest> {

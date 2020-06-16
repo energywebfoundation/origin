@@ -19,6 +19,9 @@
                 "registerDevice": "Zarejestruj urządzenie",
                 "registerDeviceGroup": "Zarejestruj grupę urządzeń",
                 "pending": "Oczekujące"
+            },
+            "certificates": {
+                "bundles": "Pakiety"
             }
         },
         "device": {
@@ -77,7 +80,13 @@
                 "claim": "Claim",
                 "returnToInbox": "Zwróć do skrzynki",
                 "buy": "Kup",
-                "request": "Żądaj"
+                "request": "Żądaj",
+                "withdraw": "Wypłać",
+                "deposit": "Wpłać"
+            },
+            "feedback": {
+                "certificateDeposited": "Certificate deposited",
+                "withdrawn": "Zdeponowany certyfikat"
             },
             "info": {
                 "requestCertificatesFor": "Zażądaj certyfikatów dla urządzenia {facilityName}"
@@ -227,6 +236,16 @@
             "info": {
                 "dropHereOrClickToSelect": "Upuść pliki tutaj lub kliknij aby wybrać"
             }
+        }
+    },
+    "bundle": {
+        "properties": {
+            "total_energy": "CALKOWITEJ ENERGII",
+            "solar": "SŁONECZNY",
+            "wind": "WIATR",
+            "hydro": "HYDRO",
+            "other": "INNY",
+            "price": "Cena za MWh"
         }
     }
 }
