@@ -2,15 +2,13 @@ import {
     IUser,
     UserUpdateData,
     IUserWithRelations,
-    KYCStatus,
-    Status
+    IUserFilter
 } from '@energyweb/origin-backend-core';
 import { IRequestClient, RequestClient } from './RequestClient';
 
 export interface IAdminClient {
     update(formData: UserUpdateData): Promise<IUserWithRelations>;
-    getAllUsers(): Promise<IUser[]>;
-    getUsersBy(orgName: string, status: Status, kycStatus: KYCStatus): Promise<IUser[]>;
+    getUsers(filter?: IUserFilter): Promise<IUser[]>;
 }
 
 export class AdminClient implements IAdminClient {
@@ -27,17 +25,12 @@ export class AdminClient implements IAdminClient {
         return response.data;
     }
 
-    public async getAllUsers() {
-        const { data } = await this.requestClient.get<unknown, IUser[]>(`${this.endpoint}/users`);
-        return data;
-    }
-
-    public async getUsersBy(orgName: string, status: Status, kycStatus: KYCStatus) {
+    public async getUsers(filter?: IUserFilter) {
         const { data } = await this.requestClient.get<unknown, IUser[]>(
-            `${this.endpoint}/usersBy?orgName=${
-                orgName ?? ''
-            }&status=${status}&kycStatus=${kycStatus}`
+            `${this.endpoint}/users`,
+            { params: filter }
         );
+
         return data;
     }
 

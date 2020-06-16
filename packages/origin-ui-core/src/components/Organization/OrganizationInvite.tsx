@@ -16,7 +16,7 @@ import {
     FilledInput,
     MenuItem
 } from '@material-ui/core';
-import { OrganizationRole, Role, Status } from '@energyweb/origin-backend-core';
+import { OrganizationRole, Role, UserStatus } from '@energyweb/origin-backend-core';
 
 import { showNotification, NotificationType } from '../../utils/notifications';
 import { setLoading } from '../../features/general/actions';
@@ -77,7 +77,7 @@ export function OrganizationInvite() {
             } else if (_error.response.status === 412) {
                 showNotification(
                     `Only active users can perform this action. Your status is ${
-                        Status[userOffchain.status]
+                        UserStatus[userOffchain.status]
                     }`,
                     NotificationType.Error
                 );
