@@ -28,8 +28,7 @@ import { CreateBundleForm } from './CreateBundleForm';
 const BUNDLES_PER_PAGE = 25;
 const BUNDLES_TOTAL_ENERGY_COLUMN_ID = 'total';
 const BUNDLES_TOTAL_ENERGY_PROPERTIES = [
-    (record: Bundle) =>
-        record.items.reduce((total, item) => total.add(item.currentVolume), new BN(0)).toNumber()
+    (record) => Number(record.total.split(EnergyFormatter.displayUnit)[0])
 ];
 
 export const BundlesTable = () => {
@@ -71,7 +70,7 @@ export const BundlesTable = () => {
                     console.log('>>> share/total:', v);
                     return [p, `${(v.toNumber() / 100).toFixed(2)}%`];
                 })
-                .concat([['total', PowerFormatter.format(energy.total.toNumber(), true)]])
+                .concat([['total', EnergyFormatter.format(energy.total.toNumber(), true)]])
         );
     };
 
@@ -89,7 +88,7 @@ export const BundlesTable = () => {
     }: IPaginatedLoaderHooksFetchDataParameters): Promise<IPaginatedLoaderFetchDataReturnValues> {
         const total = bundles.length;
         const paginatedData = bundles.slice(offset, offset + requestedPageSize);
-        sortData(paginatedData);
+        // sortData(paginatedData);
         return {
             paginatedData,
             total
@@ -126,6 +125,7 @@ export const BundlesTable = () => {
             price: ` ${formatCurrencyComplete(bundle.price, currency)}`
         };
     });
+    sortData(rows);
 
     console.log('>>> bundle rows:', rows);
 
