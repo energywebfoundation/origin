@@ -13,7 +13,8 @@ import {
     Checkbox,
     Button,
     FormControl,
-    FormControlLabel
+    FormControlLabel,
+    CardActions
 } from '@material-ui/core';
 import { ICertificateViewItem } from '../../features/certificates';
 import {
@@ -149,17 +150,20 @@ export const SelectedForSale = (props: IOwnProps) => {
                     }
                     label="Sell as bundle"
                 ></FormControlLabel>
-                <FormControl>
-                    <Button
-                        color="primary"
-                        onClick={requestCreateBundle}
-                        variant="contained"
-                        disabled={!sellAsBundle}
-                    >
-                        Sell {selected.length} certificates
-                    </Button>
-                </FormControl>
             </CardContent>
+            <CardActions>
+                <Button
+                    color="primary"
+                    onClick={requestCreateBundle}
+                    variant="contained"
+                    disabled={!sellAsBundle}
+                >
+                    Sell {selected.length} certificates
+                </Button>
+                <Button color="secondary" onClick={callback}>
+                    Cancel
+                </Button>
+            </CardActions>
         </Card>
     );
 };
