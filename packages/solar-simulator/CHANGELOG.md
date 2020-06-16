@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.1.11](https://github.com/energywebfoundation/origin/compare/@energyweb/solar-simulator@1.1.10...@energyweb/solar-simulator@1.1.11) (2020-06-16)
+
+**Note:** Version bump only for package @energyweb/solar-simulator
+
+
+
+
+
 ## [1.1.10](https://github.com/energywebfoundation/origin/compare/@energyweb/solar-simulator@1.1.9...@energyweb/solar-simulator@1.1.10) (2020-06-16)
 
 

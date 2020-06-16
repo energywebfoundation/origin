@@ -9,7 +9,7 @@
     "bugs": {
         "url": "https://github.com/energywebfoundation/origin/issues"
     },
-    "version": "0.1.9",
+    "version": "0.1.10",
     "main": "dist/js/src/index.js",
     "files": [
         "dist/js/src"
@@ -36,7 +36,7 @@
         "ethers": "4.0.47"
     },
     "devDependencies": {
-        "@energyweb/issuer": "2.3.0",
+        "@energyweb/issuer": "2.3.1",
         "truffle-typings": "1.0.8",
         "typechain": "2.0.0",
         "typechain-target-ethers": "1.0.4"
