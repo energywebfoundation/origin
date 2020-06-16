@@ -270,18 +270,7 @@ export class UserService {
             throw new Error(`Can't find entity.`);
         }
 
-        const updateEntity = this.repository.create({
-            ...entity,
-            title: data.title,
-            firstName: data.firstName,
-            lastName: data.lastName,
-            telephone: data.telephone,
-            email: data.email,
-            status: data.status,
-            kycStatus: data.kycStatus
-        });
-
-        const validationErrors = await validate(updateEntity, {
+        const validationErrors = await validate(data, {
             skipUndefinedProperties: true
         });
 
@@ -291,7 +280,16 @@ export class UserService {
                 errors: validationErrors
             });
         }
-        await this.repository.save(updateEntity);
+
+        await this.repository.update(id, {
+            title: data.title,
+            firstName: data.firstName,
+            lastName: data.lastName,
+            telephone: data.telephone,
+            email: data.email,
+            status: data.status,
+            kycStatus: data.kycStatus
+        });
 
         return this.repository.findOne(id);
     }
