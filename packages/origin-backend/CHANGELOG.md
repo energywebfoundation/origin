@@ -3,6 +3,42 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.0.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-backend@5.1.1...@energyweb/origin-backend@6.0.0) (2020-06-16)
+
+
+### Bug Fixes
+
+* **origin-backend:** explicit update ([338f65f](https://github.com/energywebfoundation/origin/commit/338f65fcce40c6392ce3f1519d2581dd4070f343))
+* **origin-backend:** fix updating device ([0e0654c](https://github.com/energywebfoundation/origin/commit/0e0654c90eff09d1e9465959ed399013283bad18))
+* Certification request validation handling ([5e0f90b](https://github.com/energywebfoundation/origin/commit/5e0f90bc2abfa2a8e26db19739f283d4eaf4c926))
+* **deps:** update dependency @nestjs/typeorm to v7.1.0 ([960d52b](https://github.com/energywebfoundation/origin/commit/960d52b0dde4709bf6da1dcf4e317f445a6c76be))
+* **deps:** update dependency typeorm to v0.2.25 ([d1ce442](https://github.com/energywebfoundation/origin/commit/d1ce4428931bdfede4d73d7016fcb1cb8d564a7d))
+* **origin-backend:** combine notNull default ([d57a048](https://github.com/energywebfoundation/origin/commit/d57a048cfc7539fa956239486c00a55723787ccc))
+* **origin-backend:** make certification request energy not nullable ([dfb8320](https://github.com/energywebfoundation/origin/commit/dfb8320a90c73b7e49e93ed04b7c434abe33cefe))
+* **origin-backend:** make files not nullable and default to [] ([62100e1](https://github.com/energywebfoundation/origin/commit/62100e11c24da8351632ad4fcd0b45c2637dad05))
+* **origin-backend:** make sure files are stored as [] ([cc0b799](https://github.com/energywebfoundation/origin/commit/cc0b79911467261eba12206122bf33b976533fac))
+* **origin-backend:** syntax nto null and default ([be8486d](https://github.com/energywebfoundation/origin/commit/be8486d81c73df981eeead020a29a9ce5e15bce1))
+* implement a certification request data queue ([78cbd4a](https://github.com/energywebfoundation/origin/commit/78cbd4a7a36959cbb0820cf17dc277f0bf5ae823))
+
+
+### chore
+
+* remove unused Lead User references ([aaae5df](https://github.com/energywebfoundation/origin/commit/aaae5df4b0abd1b69924981eb2dc8b7e5df31e63))
+
+
+### Features
+
+* Updating organization user roles ([c1096f2](https://github.com/energywebfoundation/origin/commit/c1096f28c1b48e606d5deeda7f33720613764326))
+
+
+### BREAKING CHANGES
+
+* Lead user is no longer needed to create an organization
+
+
+
+
+
 ## [5.1.1](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-backend@5.1.0...@energyweb/origin-backend@5.1.1) (2020-05-29)
 
 

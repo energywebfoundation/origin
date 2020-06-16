@@ -3,6 +3,23 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.1.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-backend-client@6.0.1...@energyweb/origin-backend-client@6.1.0) (2020-06-16)
+
+
+### Bug Fixes
+
+* Certification request validation handling ([5e0f90b](https://github.com/energywebfoundation/origin/commit/5e0f90bc2abfa2a8e26db19739f283d4eaf4c926))
+* implement a certification request data queue ([78cbd4a](https://github.com/energywebfoundation/origin/commit/78cbd4a7a36959cbb0820cf17dc277f0bf5ae823))
+
+
+### Features
+
+* Updating organization user roles ([c1096f2](https://github.com/energywebfoundation/origin/commit/c1096f28c1b48e606d5deeda7f33720613764326))
+
+
+
+
+
 ## [6.0.1](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-backend-client@6.0.0...@energyweb/origin-backend-client@6.0.1) (2020-05-29)
 
 

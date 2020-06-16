@@ -1,6 +1,6 @@
 {
     "name": "@energyweb/exchange",
-    "version": "1.1.0",
+    "version": "1.2.0",
     "description": "A service project hosting order book based exchange",
     "homepage": "https://github.com/energywebfoundation/origin/tree/master/packages/exchange#readme",
     "author": "EnergyWeb DevHub GmbH; Piotr Kosinski, piotr.kosinski@energyweb.org",
@@ -38,13 +38,13 @@
         "precommit": "lint-staged"
     },
     "dependencies": {
-        "@energyweb/exchange-core": "3.0.2",
-        "@energyweb/exchange-token-account": "0.1.8",
-        "@energyweb/issuer": "2.2.0",
-        "@energyweb/origin-backend": "5.1.1",
-        "@energyweb/origin-backend-core": "3.0.1",
-        "@energyweb/origin-backend-utils": "1.0.2",
-        "@energyweb/utils-general": "9.1.1",
+        "@energyweb/exchange-core": "3.0.3",
+        "@energyweb/exchange-token-account": "0.1.9",
+        "@energyweb/issuer": "2.3.0",
+        "@energyweb/origin-backend": "6.0.0",
+        "@energyweb/origin-backend-core": "4.0.0",
+        "@energyweb/origin-backend-utils": "1.0.3",
+        "@energyweb/utils-general": "9.1.2",
         "@nestjs/common": "7.1.0",
         "@nestjs/config": "0.5.0",
         "@nestjs/core": "7.1.0",
