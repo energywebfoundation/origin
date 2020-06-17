@@ -158,4 +158,15 @@ export type Bundle = {
     price: number;
     isCancelled: boolean;
     items: BundleItem[];
+    volume: BN;
+};
+
+export type BundleItemDTO = {
+    assetId: string;
+    volume: string;
+};
+
+export type CreateBundleDTO = {
+    price: number;
+    items: BundleItemDTO[];
 };

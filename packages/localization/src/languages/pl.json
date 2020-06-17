@@ -21,7 +21,8 @@
                 "pending": "Oczekujące"
             },
             "certificates": {
-                "bundles": "Pakiety"
+                "bundles": "Pakiety",
+                "create_bundle": "Stwórz Pakiet"
             }
         },
         "device": {
@@ -82,11 +83,13 @@
                 "buy": "Kup",
                 "request": "Żądaj",
                 "withdraw": "Wypłać",
-                "deposit": "Wpłać"
+                "deposit": "Wpłać",
+                "create_bundle": "Stwórz Pakiet"
             },
             "feedback": {
                 "certificateDeposited": "Certificate deposited",
-                "withdrawn": "Zdeponowany certyfikat"
+                "withdrawn": "Zdeponowany certyfikat",
+                "bundle_created": "Utworzono pakiet "
             },
             "info": {
                 "requestCertificatesFor": "Zażądaj certyfikatów dla urządzenia {facilityName}"

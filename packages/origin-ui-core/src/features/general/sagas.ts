@@ -57,7 +57,8 @@ import { getI18n } from 'react-i18next';
 import { showNotification, NotificationType, getDevicesOwnedLink } from '../../utils';
 import { ICertificateViewItem, CertificateSource } from '../certificates';
 import { getCertificate } from '../certificates/sagas';
-import { storeBundle } from '../bundles';
+import { storeBundle, BundlesActionType, ICreateBundleAction } from '../bundles';
+import BN from 'bn.js';
 
 function createEthereumProviderAccountsChangedEventChannel(ethereumProvider: any) {
     return eventChannel<string[]>((emitter) => {
@@ -352,6 +353,18 @@ function* findEnhancedCertificate(
     return enhanceCertificate(asset, onChainCertificate);
 }
 
+function* fetchBundles() {
+    const exchangeClient: IExchangeClient = yield select(getExchangeClient);
+    const bundles: Bundle[] = yield apply(exchangeClient, exchangeClient.getAvailableBundles, null);
+    for (const bundle of bundles) {
+        bundle.items.forEach((item) => {
+            item.currentVolume = new BN(item.currentVolume);
+            item.startVolume = new BN(item.startVolume);
+        });
+        yield put(storeBundle(bundle));
+    }
+}
+
 function* fetchDataAfterConfigurationChange(
     configuration: Configuration.Entity,
     update = false
@@ -399,11 +412,7 @@ function* fetchDataAfterConfigurationChange(
     for (const certificate of certificates) {
         yield put(update ? updateCertificate(certificate) : addCertificate(certificate));
     }
-
-    const bundles: Bundle[] = yield apply(exchangeClient, exchangeClient.getAvailableBundles, null);
-    for (const bundle of bundles) {
-        yield put(storeBundle(bundle));
-    }
+    yield call(fetchBundles);
 }
 
 function* fillContractLookupIfMissing(): SagaIterator {
@@ -554,6 +563,30 @@ function* requestDeviceCreation() {
     }
 }
 
+function* requestCreateBundle() {
+    while (true) {
+        const {
+            payload: { bundleDTO, callback }
+        }: ICreateBundleAction = yield take(BundlesActionType.CREATE);
+        yield put(setLoading(true));
+        const i18n = getI18n();
+        const exchangeClient = yield select(getExchangeClient);
+        try {
+            yield apply(exchangeClient, exchangeClient.createBundle, [bundleDTO]);
+            showNotification(
+                i18n.t('certificate.feedback.bundleCreated'),
+                NotificationType.Success
+            );
+        } catch (err) {
+            console.error(err);
+            showNotification(i18n.t('general.feedback.unknownError'), NotificationType.Error);
+        }
+        yield call(fetchBundles);
+        yield put(setLoading(false));
+        yield call(callback);
+    }
+}
+
 export function* generalSaga(): SagaIterator {
     yield all([
         fork(showAccountChangedModalOnChange),
@@ -562,6 +595,7 @@ export function* generalSaga(): SagaIterator {
         fork(fillOffchainConfiguration),
         fork(fillContractLookupIfMissing),
         fork(updateConfigurationWhenUserChanged),
-        fork(requestDeviceCreation)
+        fork(requestDeviceCreation),
+        fork(requestCreateBundle)
     ]);
 }

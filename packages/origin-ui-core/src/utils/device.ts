@@ -193,3 +193,28 @@ export function useDevicePermissions() {
         canCreateDevice
     };
 }
+
+export const deviceById = (
+    id: string,
+    environment: IEnvironment,
+    devices: ProducingDevice.Entity[]
+): ProducingDevice.Entity => {
+    return devices.find((d) => {
+        const deviceId = getDeviceId(d, environment);
+        return deviceId === id;
+    });
+};
+
+export const energyImageByType = (type: string) => {
+    const images = {
+        gaseous: '../../../assets/icon_gaseouse.svg',
+        hydro: '../../../assets/icon_hydro.svg',
+        liquid: '../../../assets/icon_liquid.svg',
+        marine: '../../../assets/icon_marine.svg',
+        solar: '../../../assets/icon_solar.svg',
+        solid: '../../../assets/icon_solid.svg',
+        thermal: '../../../assets/icon_thermal.svg',
+        wind: '../../../assets/icon_wind.svg'
+    };
+    return images[type.toLowerCase()];
+};

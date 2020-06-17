@@ -76,13 +76,11 @@ export function usePaginatedLoader<T>({
         checkIsMounted?: () => boolean
     ) {
         const offset = (page - 1) * pageSize;
-
         const { paginatedData: newPaginatedData, total: newTotal } = await getPaginatedData({
             requestedPageSize: pageSize,
             offset,
             requestedFilters
         });
-
         if (!checkIsMounted || checkIsMounted()) {
             setPaginatedData(newPaginatedData);
             setTotal(newTotal);

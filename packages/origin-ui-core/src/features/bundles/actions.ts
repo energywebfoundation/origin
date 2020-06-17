@@ -1,17 +1,37 @@
-import { Bundle } from '../../utils/exchange';
+import { Bundle, CreateBundleDTO } from '../../utils/exchange';
 
 export enum BundlesActionType {
-    STORE = 'BUNDLE_STORE'
+    CREATE = 'BUNDLES_CREATE',
+    STORE = 'BUNDLES_STORE'
 }
 
 export interface IBundleAction {
     type: BundlesActionType;
+    payload;
+    callback?: () => void;
+}
+
+export interface ICreateBundleAction extends IBundleAction {
+    payload: {
+        bundleDTO: CreateBundleDTO;
+        callback: () => void;
+    };
+}
+
+export interface IStoreBundleAction extends IBundleAction {
     payload: Bundle;
 }
 
-export const storeBundle = (bundle: Bundle) => {
+export const storeBundle = (payload: IStoreBundleAction['payload']) => {
     return {
         type: BundlesActionType.STORE,
-        payload: bundle
+        payload
+    };
+};
+
+export const createBundle = (payload: ICreateBundleAction['payload']) => {
+    return {
+        type: BundlesActionType.CREATE,
+        payload
     };
 };
