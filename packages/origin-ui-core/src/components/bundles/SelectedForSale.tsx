@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import CurrencyTextField from '@unicef/material-ui-currency-textfield';
 import {
     List,
     Card,
@@ -28,7 +29,6 @@ import {
 import { useSelector, useDispatch } from 'react-redux';
 import { BigNumber } from 'ethers/utils';
 import { formatCurrencyComplete, useTranslation, EnergyFormatter } from '../../utils';
-import CurrencyTextField from '@unicef/material-ui-currency-textfield';
 import { createBundle } from '../../features/bundles';
 import { BundleItemDTO } from '../../utils/exchange';
 
