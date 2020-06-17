@@ -1,7 +1,7 @@
 module.exports = {
     extends: '../../.eslintrc.js',
     rules: {
-        '@typescript-eslint/camelcase': 'off',
+        camelcase: 'off',
         'max-classes-per-file': 'off',
         'guard-for-in': 'off'
     },

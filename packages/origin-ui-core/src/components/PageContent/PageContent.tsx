@@ -1,7 +1,7 @@
 import React from 'react';
 import { Redirect } from 'react-router-dom';
 
-export class PageContent extends React.Component<any, {}> {
+export class PageContent extends React.Component<any, any> {
     render() {
         const { menu, redirectPath } = this.props;
         const PageComponent = menu.component;

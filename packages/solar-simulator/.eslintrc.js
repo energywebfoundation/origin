@@ -12,6 +12,6 @@ module.exports = {
                 packageDir: [__dirname, path.join(__dirname, '../../')]
             }
         ],
-        '@typescript-eslint/camelcase': 'off'
+        camelcase: 'off'
     }
 };
