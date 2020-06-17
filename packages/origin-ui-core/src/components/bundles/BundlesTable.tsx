@@ -6,24 +6,17 @@ import {
     usePaginatedLoaderFiltered,
     usePaginatedLoaderSorting
 } from '../Table';
-import {
-    useTranslation,
-    formatCurrencyComplete,
-    deviceById,
-    EnergyFormatter,
-    PowerFormatter
-} from '../../utils';
+import { useTranslation, formatCurrencyComplete, deviceById, EnergyFormatter } from '../../utils';
 import { useSelector } from 'react-redux';
-import { getConfiguration, getProducingDevices } from '../..';
+import { getProducingDevices } from '../..';
 import { Bundle } from '../../utils/exchange';
-import { getUserOffchain } from '../../features/users/selectors';
 import BN from 'bn.js';
 import { Visibility, Add } from '@material-ui/icons';
 import { BundleDetails } from './BundleDetails';
 import { getCurrencies, getEnvironment } from '../../features';
 import { getBundles } from '../../features/bundles/selectors';
-import { Fab } from '@material-ui/core';
-import { CreateBundleForm } from './CreateBundleForm';
+import { Fab, Tooltip } from '@material-ui/core';
+import { Link } from 'react-router-dom';
 
 const BUNDLES_PER_PAGE = 25;
 const BUNDLES_TOTAL_ENERGY_COLUMN_ID = 'total';
@@ -37,7 +30,6 @@ export const BundlesTable = () => {
     const devices = useSelector(getProducingDevices);
     const [selectedBundle, setSelectedBundle] = useState<Bundle>(null);
     const [showBundleDetailsModal, setShowBundleDetailsModal] = useState<boolean>(false);
-    const [showCreateBundleModal, setShowCreateBundleModal] = useState(false);
     const environment = useSelector(getEnvironment);
 
     const energyByType = (bundle: Bundle): TEnergyByType =>
@@ -61,13 +53,11 @@ export const BundlesTable = () => {
 
     const energyShares = (bundle: Bundle) => {
         const energy = energyByType(bundle);
-        console.log('>>> energy by type:', energy);
         return Object.fromEntries(
             Object.keys(energy)
                 .filter((p) => p !== 'total')
                 .map((p) => [p, energy[p].mul(new BN(10000)).div(energy.total)])
                 .map(([p, v]) => {
-                    console.log('>>> share/total:', v);
                     return [p, `${(v.toNumber() / 100).toFixed(2)}%`];
                 })
                 .concat([['total', EnergyFormatter.format(energy.total.toNumber(), true)]])
@@ -88,7 +78,6 @@ export const BundlesTable = () => {
     }: IPaginatedLoaderHooksFetchDataParameters): Promise<IPaginatedLoaderFetchDataReturnValues> {
         const total = bundles.length;
         const paginatedData = bundles.slice(offset, offset + requestedPageSize);
-        // sortData(paginatedData);
         return {
             paginatedData,
             total
@@ -118,16 +107,12 @@ export const BundlesTable = () => {
     const [currency = 'USD'] = useSelector(getCurrencies);
 
     const rows = paginatedData.map((bundle) => {
-        console.log('>>> energy shares:', energyShares(bundle));
-
         return {
             ...energyShares(bundle),
             price: ` ${formatCurrencyComplete(bundle.price, currency)}`
         };
     });
     sortData(rows);
-
-    console.log('>>> bundle rows:', rows);
 
     const viewDetails = (rowIndex) => {
         const bundle = paginatedData[rowIndex];
@@ -160,10 +145,6 @@ export const BundlesTable = () => {
         }
     ];
 
-    const hideCreateBundleModal = () => {
-        setShowCreateBundleModal(false);
-    };
-
     return (
         <>
             <TableMaterial
@@ -179,15 +160,17 @@ export const BundlesTable = () => {
                 handleRowClick={(rowIndex: string) => viewDetails(parseInt(rowIndex, 10))}
             />
             <BundleDetails bundle={selectedBundle} showModal={showBundleDetailsModal} />
-            <CreateBundleForm showModal={showCreateBundleModal} callback={hideCreateBundleModal} />
-            <Fab
-                color="primary"
-                aria-label="add"
-                style={{ position: 'relative', marginTop: '20px', float: 'right' }}
-                onClick={() => setShowCreateBundleModal(true)}
-            >
-                <Add />
-            </Fab>
+            <Link to={'/certificates/create_bundle'}>
+                <Tooltip title={t('certificate.actions.create_bundle')}>
+                    <Fab
+                        color="primary"
+                        aria-label="add"
+                        style={{ position: 'relative', marginTop: '20px', float: 'right' }}
+                    >
+                        <Add />
+                    </Fab>
+                </Tooltip>
+            </Link>
         </>
     );
 };

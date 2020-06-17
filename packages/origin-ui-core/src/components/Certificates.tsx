@@ -12,6 +12,7 @@ import { useTranslation } from 'react-i18next';
 import { Exchange, MyTrades } from './exchange';
 import { useLinks } from '../utils';
 import { BundlesTable } from './bundles/BundlesTable';
+import { CreateBundleForm } from './bundles/CreateBundleForm';
 
 function CertificateDetailViewId(id: number) {
     return <CertificateDetailView id={id} />;
@@ -83,6 +84,12 @@ export function Certificates() {
             key: 'bundles',
             label: 'navigation.certificates.bundles',
             component: BundlesTable,
+            show: user
+        },
+        {
+            key: 'create_bundle',
+            label: 'navigation.certificates.create_bundle',
+            component: CreateBundleForm,
             show: user
         },
         {
