@@ -15,10 +15,12 @@ module.exports = {
     plugins: ['@typescript-eslint'],
     rules: {
         'array-callback-return': 'off',
-        '@typescript-eslint/interface-name-prefix': [
+        '@typescript-eslint/naming-convention': [
             'error',
             {
-                prefixWithI: 'always'
+                selector: 'interface',
+                format: ['PascalCase'],
+                prefix: ['I']
             }
         ],
         '@typescript-eslint/explicit-function-return-type': 'off',

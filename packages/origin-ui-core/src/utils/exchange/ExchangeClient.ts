@@ -121,13 +121,15 @@ export class ExchangeClient implements IExchangeClient {
     }
 
     public async getAccount() {
-        const response = await this.requestClient.get<{}, ExchangeAccount>(this.accountEndpoint);
+        const response = await this.requestClient.get<unknown, ExchangeAccount>(
+            this.accountEndpoint
+        );
 
         return response.data;
     }
 
     public async getAllTransfers() {
-        const response = await this.requestClient.get<{}, ITransfer[]>(
+        const response = await this.requestClient.get<unknown, ITransfer[]>(
             `${this.transferEndpoint}/all`
         );
 
@@ -135,7 +137,7 @@ export class ExchangeClient implements IExchangeClient {
     }
 
     public async withdraw(withdrawal: RequestWithdrawalDTO) {
-        const response = await this.requestClient.post<{}, string>(
+        const response = await this.requestClient.post<unknown, string>(
             `${this.transferEndpoint}/withdrawal`,
             withdrawal
         );
@@ -144,25 +146,29 @@ export class ExchangeClient implements IExchangeClient {
     }
 
     public async getTrades() {
-        const response = await this.requestClient.get<{}, ITradeDTO[]>(this.tradeEndpoint);
+        const response = await this.requestClient.get<unknown, ITradeDTO[]>(this.tradeEndpoint);
 
         return response.data;
     }
 
     public async getAssetById(id: string) {
-        const response = await this.requestClient.get<{}, IAsset>(`${this.assetEndpoint}/${id}`);
+        const response = await this.requestClient.get<unknown, IAsset>(
+            `${this.assetEndpoint}/${id}`
+        );
 
         return response.data;
     }
 
     public async getOrderById(id: string) {
-        const response = await this.requestClient.get<{}, Order>(`${this.ordersEndpoint}/${id}`);
+        const response = await this.requestClient.get<unknown, Order>(
+            `${this.ordersEndpoint}/${id}`
+        );
 
         return response.data;
     }
 
     public async getAvailableBundles() {
-        const response = await this.requestClient.get<{}, Bundle[]>(
+        const response = await this.requestClient.get<unknown, Bundle[]>(
             `${this.bundleEndpoint}/available`
         );
 

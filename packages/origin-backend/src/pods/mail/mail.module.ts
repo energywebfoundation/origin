@@ -15,9 +15,9 @@ const mandrillTransport = require('nodemailer-mandrill-transport');
                         auth: {
                             apiKey: configService.get<string>('MANDRILL_API_KEY')
                         },
-                        // eslint-disable-next-line @typescript-eslint/camelcase
+                        // eslint-disable-next-line camelcase
                         from_email: configService.get<string>('EMAIL_FROM'),
-                        // eslint-disable-next-line @typescript-eslint/camelcase
+                        // eslint-disable-next-line camelcase
                         from_name: configService.get<string>('EMAIL_FROM_NAME'),
                         headers: {
                             'Reply-To': configService.get<string>('EMAIL_REPLY_TO')

@@ -15,10 +15,12 @@ module.exports = {
     plugins: ['@typescript-eslint', 'react-hooks'],
     rules: {
         'array-callback-return': 'off',
-        '@typescript-eslint/interface-name-prefix': [
+        '@typescript-eslint/naming-convention': [
             'error',
             {
-                prefixWithI: 'always'
+                selector: 'interface',
+                format: ['PascalCase'],
+                prefix: ['I']
             }
         ],
         '@typescript-eslint/explicit-function-return-type': 'off',
@@ -55,7 +57,7 @@ module.exports = {
                 tsx: 'never'
             }
         ],
-        'react-hooks/rules-of-hooks': 'error',
+        'react-hooks/rules-of-hooks': 'error'
     },
     settings: {
         'import/resolver': {
