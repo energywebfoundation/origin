@@ -15,8 +15,7 @@ export const getCurrencies = (state: IStoreState): string[] =>
 export const getCompliance = (state: IStoreState): string =>
     state.general.offChainConfiguration?.complianceStandard;
 
-export const getRegions = (state: IStoreState): object =>
-    state.general.offChainConfiguration?.regions;
+export const getRegions = (state: IStoreState): any => state.general.offChainConfiguration?.regions;
 
 export const getCountry = (state: IStoreState): string =>
     state.general.offChainConfiguration?.countryName;
