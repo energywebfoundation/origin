@@ -31,11 +31,7 @@ export const GroupedCertificateList = (props: IOwnProps) => {
         if (isAllSelected()) {
             return setSelected([]);
         }
-        const newSelected = [];
-        for (const c of certificates) {
-            newSelected.push(c);
-        }
-        return setSelected(newSelected);
+        return setSelected([...certificates]);
     };
 
     return (
