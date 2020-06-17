@@ -412,15 +412,6 @@ function* fetchDataAfterConfigurationChange(
     for (const certificate of certificates) {
         yield put(update ? updateCertificate(certificate) : addCertificate(certificate));
     }
-
-    // const bundles: Bundle[] = yield apply(exchangeClient, exchangeClient.getAvailableBundles, null);
-    // for (const bundle of bundles) {
-    //     bundle.items.forEach((item) => {
-    //         item.currentVolume = new BN(item.currentVolume);
-    //         item.startVolume = new BN(item.startVolume);
-    //     });
-    //     yield put(storeBundle(bundle));
-    // }
     yield call(fetchBundles);
 }
 

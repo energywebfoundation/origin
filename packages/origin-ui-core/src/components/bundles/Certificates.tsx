@@ -68,9 +68,8 @@ export const Certificates = (props: IOwnProps) => {
         return setSelected(newSelected);
     };
 
-    const isSelected = (cert: ICertificateViewItem) => {
-        return (selected.find((s) => s.id === cert.id) && true) || false;
-    };
+    const isSelected = (cert: ICertificateViewItem) =>
+        (selected.find((s) => s.id === cert.id) && true) || false;
 
     return (
         <Paper>
