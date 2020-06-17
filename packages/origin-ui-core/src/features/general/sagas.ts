@@ -572,10 +572,7 @@ function* requestCreateBundle() {
         const i18n = getI18n();
         const exchangeClient = yield select(getExchangeClient);
         try {
-            const created: Bundle = yield apply(exchangeClient, exchangeClient.createBundle, [
-                bundleDTO
-            ]);
-            console.log(`>>> Bundle ${created.id} created`);
+            yield apply(exchangeClient, exchangeClient.createBundle, [bundleDTO]);
             showNotification(
                 i18n.t('certificate.feedback.bundleCreated'),
                 NotificationType.Success

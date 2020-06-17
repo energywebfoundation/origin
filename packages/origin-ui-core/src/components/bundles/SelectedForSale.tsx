@@ -63,7 +63,7 @@ export const SelectedForSale = (props: IOwnProps) => {
         dispatch(
             createBundle({
                 bundleDTO: {
-                    price,
+                    price: price * 100,
                     items
                 },
                 callback

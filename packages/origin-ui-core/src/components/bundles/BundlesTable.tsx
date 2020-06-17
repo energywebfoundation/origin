@@ -109,7 +109,7 @@ export const BundlesTable = () => {
     const rows = paginatedData.map((bundle) => {
         return {
             ...energyShares(bundle),
-            price: ` ${formatCurrencyComplete(bundle.price, currency)}`
+            price: ` ${formatCurrencyComplete(bundle.price / 100, currency)}`
         };
     });
     sortData(rows);
