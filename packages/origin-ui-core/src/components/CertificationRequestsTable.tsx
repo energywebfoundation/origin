@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Role, isRole, Status } from '@energyweb/origin-backend-core';
+import { Role, isRole, UserStatus } from '@energyweb/origin-backend-core';
 import { useSelector, useDispatch } from 'react-redux';
 import { getProducingDevices, getConfiguration } from '../features/selectors';
 import { TableMaterial } from './Table/TableMaterial';
@@ -83,7 +83,7 @@ export function CertificationRequestsTable(props: IProps) {
             if (_error.response.status === 412) {
                 showNotification(
                     `Only active users can perform this action. Your status is ${
-                        Status[user.status]
+                        UserStatus[user.status]
                     }`,
                     NotificationType.Error
                 );

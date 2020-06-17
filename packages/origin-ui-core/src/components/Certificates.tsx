@@ -23,7 +23,7 @@ function InboxCertificates() {
 }
 
 function ClaimedCertificates() {
-    return <CertificateTable selectedState={SelectedState.Claimed} />;
+    return <CertificateTable selectedState={SelectedState.Claimed} hiddenColumns={['source']} />;
 }
 
 const PendingCertificationRequestsTable = () => <CertificationRequestsTable approved={false} />;

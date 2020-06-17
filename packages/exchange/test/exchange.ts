@@ -1,7 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Contracts } from '@energyweb/issuer';
 import { ConfigurationService, DeviceService, ExtendedBaseEntity } from '@energyweb/origin-backend';
-import { IDeviceProductInfo, IDeviceWithRelationsIds } from '@energyweb/origin-backend-core';
+import {
+    IDeviceProductInfo,
+    IDeviceWithRelationsIds,
+    UserStatus
+} from '@energyweb/origin-backend-core';
 import { RolesGuard } from '@energyweb/origin-backend-utils';
 import { CanActivate, ExecutionContext, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
@@ -52,7 +56,7 @@ const deployIssuer = async (registry: string) => {
     return contract;
 };
 
-export const authenticatedUser = { id: 1, organization: '1000' };
+export const authenticatedUser = { id: 1, organization: '1000', status: UserStatus.Active };
 
 const authGuard: CanActivate = {
     canActivate: (context: ExecutionContext) => {

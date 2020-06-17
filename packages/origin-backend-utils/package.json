@@ -1,6 +1,6 @@
 {
     "name": "@energyweb/origin-backend-utils",
-    "version": "1.0.2",
+    "version": "1.0.4",
     "description": "",
     "main": "dist/js/index.js",
     "scripts": {
@@ -28,7 +28,7 @@
         "registry": "https://registry.npmjs.org"
     },
     "dependencies": {
-        "@energyweb/origin-backend-core": "3.0.1",
+        "@energyweb/origin-backend-core": "4.0.1",
         "@nestjs/common": "7.1.0",
         "@nestjs/core": "7.1.0"
     }

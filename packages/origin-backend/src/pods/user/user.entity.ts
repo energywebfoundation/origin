@@ -2,7 +2,7 @@ import { Entity, PrimaryGeneratedColumn, Column, Unique, ManyToOne } from 'typeo
 
 import { Exclude } from 'class-transformer';
 
-import { IUser, KYCStatus, Status } from '@energyweb/origin-backend-core';
+import { IUser, KYCStatus, UserStatus } from '@energyweb/origin-backend-core';
 
 import { Organization } from '../organization/organization.entity';
 import { ExtendedBaseEntity } from '../ExtendedBaseEntity';
@@ -54,7 +54,7 @@ export class User extends ExtendedBaseEntity implements IUser {
     rights: number;
 
     @Column({ default: 0, nullable: false })
-    status: Status;
+    status: UserStatus;
 
     @Column({ default: 0, nullable: false })
     kycStatus: KYCStatus;

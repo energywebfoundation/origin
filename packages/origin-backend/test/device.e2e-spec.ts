@@ -23,8 +23,7 @@ describe('Device e2e tests', () => {
             app,
             userService,
             deviceService,
-            organizationService,
-            adminService
+            organizationService
         } = await bootstrapTestInstance();
 
         await app.init();
@@ -33,7 +32,6 @@ describe('Device e2e tests', () => {
             app,
             userService,
             organizationService,
-            adminService,
             [Role.OrganizationUser, Role.OrganizationDeviceManager]
         );
 
@@ -133,8 +131,7 @@ describe('Device e2e tests', () => {
             userService,
             deviceService,
             organizationService,
-            certificationRequestService,
-            adminService
+            certificationRequestService
         } = await bootstrapTestInstance();
 
         await app.init();
@@ -143,7 +140,6 @@ describe('Device e2e tests', () => {
             app,
             userService,
             organizationService,
-            adminService,
             [Role.OrganizationUser, Role.OrganizationDeviceManager]
         );
 
@@ -179,7 +175,7 @@ describe('Device e2e tests', () => {
         );
 
         await request(app.getHttpServer())
-            .get(`/device/${device.id}`)
+            .get(`/device/${device.id}?withMeterStats=true`)
             .set('Authorization', `Bearer ${accessToken}`)
             .expect((res) => {
                 const resultDevice = res.body as IDeviceWithRelationsIds;
@@ -240,7 +236,7 @@ describe('Device e2e tests', () => {
         await certificationRequestService.registerApproved(1);
 
         await request(app.getHttpServer())
-            .get(`/device/${device.id}`)
+            .get(`/device/${device.id}?withMeterStats=true`)
             .set('Authorization', `Bearer ${accessToken}`)
             .expect((res) => {
                 const resultDevice = res.body as IDeviceWithRelationsIds;

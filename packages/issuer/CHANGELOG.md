@@ -3,6 +3,33 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.3.1](https://github.com/energywebfoundation/origin/compare/@energyweb/issuer@2.3.0...@energyweb/issuer@2.3.1) (2020-06-16)
+
+**Note:** Version bump only for package @energyweb/issuer
+
+
+
+
+
+# [2.3.0](https://github.com/energywebfoundation/origin/compare/@energyweb/issuer@2.2.0...@energyweb/issuer@2.3.0) (2020-06-16)
+
+
+### Bug Fixes
+
+* **deps:** update dependency mocha to v8 ([11aa19a](https://github.com/energywebfoundation/origin/commit/11aa19ac0cdc0ef3038358972e3bc574891e22dc))
+* **issuer:** fix a bug with certificate showing an incorrect partial claim value ([5c0547c](https://github.com/energywebfoundation/origin/commit/5c0547c125c479f5262681e005ce96b6e0d7acf9))
+
+
+### Features
+
+* more efficient certification request validation ([2d85e0e](https://github.com/energywebfoundation/origin/commit/2d85e0e6a8888244a701e92905bf90e46852f5c9))
+* **issuer:** getAllOwnedCertificates ([e5b2fbb](https://github.com/energywebfoundation/origin/commit/e5b2fbbc286bbc936f81e35087bdc3c69abd0a38))
+* **origin-ui-core:** add deposit action ([07acf6e](https://github.com/energywebfoundation/origin/commit/07acf6e17d8df816671438d26dd90cf5f9532445))
+
+
+
+
+
 # [2.2.0](https://github.com/energywebfoundation/origin/compare/@energyweb/issuer@2.1.0...@energyweb/issuer@2.2.0) (2020-05-29)
 
 

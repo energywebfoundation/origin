@@ -5,7 +5,7 @@ import {
     IUser,
     KYCStatus,
     Role,
-    Status,
+    UserStatus,
     UserRegistrationData
 } from '@energyweb/origin-backend-core';
 import { INestApplication } from '@nestjs/common';
@@ -53,8 +53,8 @@ describe('User e2e tests', () => {
                 expect(user.email).equals(userToRegister.email);
                 expect(user.organization).to.be.undefined;
                 expect(user.rights).equals(buildRights([Role.OrganizationAdmin]));
-                expect(user.status).equals(Status.Pending);
-                expect(user.kycStatus).equals(KYCStatus['Pending KYC']);
+                expect(user.status).equals(UserStatus.Pending);
+                expect(user.kycStatus).equals(KYCStatus.Pending);
                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 expect((user as any).password).to.be.undefined;
             });

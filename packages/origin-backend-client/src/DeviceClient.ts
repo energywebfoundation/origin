@@ -5,7 +5,7 @@ import { IRequestClient, RequestClient } from './RequestClient';
 export interface IDeviceClient {
     getById(id: number): Promise<IDeviceWithRelationsIds>;
     getByExternalId(id: IExternalDeviceId): Promise<IDeviceWithRelationsIds>;
-    getAll(): Promise<IDeviceWithRelationsIds[]>;
+    getAll(withMeterStats: boolean): Promise<IDeviceWithRelationsIds[]>;
     add(device: DeviceCreateData): Promise<IDeviceWithRelationsIds>;
     update(id: number, data: DeviceUpdateData): Promise<IDevice>;
     getAllSmartMeterReadings(id: number): Promise<ISmartMeterReadWithStatus[]>;
@@ -13,7 +13,7 @@ export interface IDeviceClient {
     getSupplyBy(facilityName: string, status: number): Promise<IDeviceWithRelationsIds[]>;
     delete(id: number): Promise<void>;
     updateDeviceSettings(id: number, device: DeviceSettingsUpdateData): Promise<void>;
-    getMyDevice(): Promise<IDeviceWithRelationsIds[]>;
+    getMyDevices(withMeterStats: boolean): Promise<IDeviceWithRelationsIds[]>;
 }
 
 export class DeviceClient implements IDeviceClient {
@@ -40,8 +40,10 @@ export class DeviceClient implements IDeviceClient {
         return this.cleanDeviceData(data);
     }
 
-    public async getAll(): Promise<IDeviceWithRelationsIds[]> {
-        const { data } = await this.requestClient.get<void, IDeviceWithRelationsIds[]>(this.endpoint);
+    public async getAll(withMeterStats: boolean = false): Promise<IDeviceWithRelationsIds[]> {
+        const { data } = await this.requestClient.get<void, IDeviceWithRelationsIds[]>(
+            `${this.endpoint}?withMeterStats=${withMeterStats}`
+        );
 
         return data.map(device => this.cleanDeviceData(device));
     }
@@ -86,17 +88,29 @@ export class DeviceClient implements IDeviceClient {
      *  This method cleans them back to BigNumber.
      */
     private cleanDeviceData(device: IDeviceWithRelationsIds): IDeviceWithRelationsIds {
-        return {
-            ...device,
-            meterStats: {
-                certified: bigNumberify(device.meterStats.certified),
-                uncertified: bigNumberify(device.meterStats.uncertified)
-            },
-            smartMeterReads: device.smartMeterReads.map(smRead => ({
-                ...smRead,
-                meterReading: bigNumberify(smRead.meterReading)
-            }))
-        };
+        let cleanDevice = { ...device };
+
+        if (device.meterStats) {
+           cleanDevice = { 
+                ...cleanDevice, 
+                meterStats: {
+                    certified: bigNumberify(device.meterStats.certified),
+                    uncertified: bigNumberify(device.meterStats.uncertified)
+                }
+            };
+        }
+
+        if (device.smartMeterReads) {
+            cleanDevice = { 
+                 ...cleanDevice, 
+                 smartMeterReads: device.smartMeterReads.map(smRead => ({
+                    ...smRead,
+                    meterReading: bigNumberify(smRead.meterReading)
+                }))
+            };
+        }
+
+        return cleanDevice;
     }
 
     public async getSupplyBy(facilityName: string, status: number):Promise<IDeviceWithRelationsIds[]> {
@@ -121,9 +135,9 @@ export class DeviceClient implements IDeviceClient {
         );
     }
 
-    public async getMyDevice(): Promise<IDeviceWithRelationsIds[]> {
+    public async getMyDevices(withMeterStats: boolean = false): Promise<IDeviceWithRelationsIds[]> {
         const { data } = await this.requestClient.get<void, IDeviceWithRelationsIds[]>(
-            `${this.endpoint}/my-devices`
+            `${this.endpoint}/my-devices?withMeterStats=${withMeterStats}`
         );
 
         return data.map(device => this.cleanDeviceData(device));

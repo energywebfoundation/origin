@@ -3,6 +3,25 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.1.11](https://github.com/energywebfoundation/origin/compare/@energyweb/solar-simulator@1.1.10...@energyweb/solar-simulator@1.1.11) (2020-06-16)
+
+**Note:** Version bump only for package @energyweb/solar-simulator
+
+
+
+
+
+## [1.1.10](https://github.com/energywebfoundation/origin/compare/@energyweb/solar-simulator@1.1.9...@energyweb/solar-simulator@1.1.10) (2020-06-16)
+
+
+### Bug Fixes
+
+* **deps:** update dependency fs-extra to v9.0.1 ([79b7310](https://github.com/energywebfoundation/origin/commit/79b7310af28d225f2cbbb721ec3fd6b5e227d832))
+
+
+
+
+
 ## [1.1.9](https://github.com/energywebfoundation/origin/compare/@energyweb/solar-simulator@1.1.8...@energyweb/solar-simulator@1.1.9) (2020-05-29)
 
 

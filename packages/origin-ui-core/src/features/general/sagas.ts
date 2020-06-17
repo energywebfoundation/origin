@@ -372,7 +372,7 @@ function* fetchDataAfterConfigurationChange(
     const producingDevices: ProducingDevice.Entity[] = yield apply(
         ProducingDevice,
         ProducingDevice.getAllDevices,
-        [configuration]
+        [configuration, true]
     );
 
     for (const device of producingDevices) {

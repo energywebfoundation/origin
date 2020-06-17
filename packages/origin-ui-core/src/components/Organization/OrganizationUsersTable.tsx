@@ -10,7 +10,13 @@ import {
     IPaginatedLoaderHooksFetchDataParameters,
     usePaginatedLoader
 } from '../Table/PaginatedLoaderHooks';
-import { IUser, getRolesFromRights, isRole, Role, Status } from '@energyweb/origin-backend-core';
+import {
+    IUser,
+    getRolesFromRights,
+    isRole,
+    Role,
+    UserStatus
+} from '@energyweb/origin-backend-core';
 import { roleNames } from './Organization';
 import { useTranslation } from '../../utils';
 import { ChangeRoleModal } from '../Modal/ChangeRoleModal';
@@ -48,7 +54,7 @@ export function OrganizationUsersTable() {
             if (_error.response.status === 412) {
                 showNotification(
                     `Only active users can perform this action. Your status is ${
-                        Status[userOffchain.status]
+                        UserStatus[userOffchain.status]
                     }`,
                     NotificationType.Error
                 );

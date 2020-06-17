@@ -116,10 +116,10 @@ export function CertificateTable(props: IProps) {
         });
 
         const filteredIEnrichedCertificateData = enrichedData.filter((enrichedCertificateData) => {
-            const ownerOf =
-                enrichedCertificateData.certificate.isOwned ||
-                enrichedCertificateData.certificate.source === CertificateSource.Exchange;
-            const claimed = enrichedCertificateData.certificate.isClaimed;
+            const { source, isOwned, isClaimed } = enrichedCertificateData.certificate;
+
+            const ownerOf = isOwned || source === CertificateSource.Exchange;
+            const claimed = isClaimed && source === CertificateSource.Blockchain;
 
             return (
                 checkRecordPassesFilters(

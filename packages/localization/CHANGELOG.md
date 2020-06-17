@@ -3,6 +3,32 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.4.1](https://github.com/energywebfoundation/origin/compare/@energyweb/localization@0.4.0...@energyweb/localization@0.4.1) (2020-06-16)
+
+**Note:** Version bump only for package @energyweb/localization
+
+
+
+
+
+# [0.4.0](https://github.com/energywebfoundation/origin/compare/@energyweb/localization@0.3.2...@energyweb/localization@0.4.0) (2020-06-16)
+
+
+### Bug Fixes
+
+* **origin-ui-core:** move DEFAULT ENERGY to .env ([7a15d7f](https://github.com/energywebfoundation/origin/commit/7a15d7fd4861667081c1ea6b4013211191a99b5e))
+
+
+### Features
+
+* **origin-ui-core:** add BundleTable component ([e2b04e3](https://github.com/energywebfoundation/origin/commit/e2b04e307f448d7db4396318cb02003f001e9766))
+* **origin-ui-core:** add deposit action ([07acf6e](https://github.com/energywebfoundation/origin/commit/07acf6e17d8df816671438d26dd90cf5f9532445))
+* **oring-ui-core:** add withdraw saga ([36403c3](https://github.com/energywebfoundation/origin/commit/36403c3fb0acc50b70e7d1350bcef0e3b05062ec))
+
+
+
+
+
 ## [0.3.2](https://github.com/energywebfoundation/origin/compare/@energyweb/localization@0.3.1...@energyweb/localization@0.3.2) (2020-05-29)
 
 **Note:** Version bump only for package @energyweb/localization

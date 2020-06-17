@@ -3,6 +3,41 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.2.1](https://github.com/energywebfoundation/origin/compare/@energyweb/exchange@1.2.0...@energyweb/exchange@1.2.1) (2020-06-16)
+
+**Note:** Version bump only for package @energyweb/exchange
+
+
+
+
+
+# [1.2.0](https://github.com/energywebfoundation/origin/compare/@energyweb/exchange@1.1.0...@energyweb/exchange@1.2.0) (2020-06-16)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @nestjs/swagger to v4.5.10 ([ed9d45c](https://github.com/energywebfoundation/origin/commit/ed9d45c9e653a9cf1b0e762616ef60decbdcf5c6))
+* **deps:** update dependency @nestjs/swagger to v4.5.9 ([9a40842](https://github.com/energywebfoundation/origin/commit/9a408422324094041700053cc92b47faf040f5f1))
+* **deps:** update dependency @nestjs/typeorm to v7.1.0 ([960d52b](https://github.com/energywebfoundation/origin/commit/960d52b0dde4709bf6da1dcf4e317f445a6c76be))
+* **deps:** update dependency typeorm to v0.2.25 ([d1ce442](https://github.com/energywebfoundation/origin/commit/d1ce4428931bdfede4d73d7016fcb1cb8d564a7d))
+* **exchange:** create certificate before withdrawal ([220d3f6](https://github.com/energywebfoundation/origin/commit/220d3f6d17b7d00a0b66c5ac6567986899d94c2e))
+* **exchange:** do not post for sale when disabled ([224ce67](https://github.com/energywebfoundation/origin/commit/224ce677d60f251b6b9bd3f387c5ab0909ad60ce))
+* **exchange:** wrapper init order ([4413088](https://github.com/energywebfoundation/origin/commit/441308835ddee32b16a1660dbb5f02759e1419ac))
+* **exchange:** wrong TradePersistedEvent type emit ([688df0f](https://github.com/energywebfoundation/origin/commit/688df0f7c5a2ff6680da2009c919647d0f7032dd))
+* **origin-ui-core:** compare _to lowercased ([4c63dd8](https://github.com/energywebfoundation/origin/commit/4c63dd8cfcd9420ecf1b66e7a6d61056e35c7ff9))
+* **origin-ui-core:** move DEFAULT ENERGY to .env ([7a15d7f](https://github.com/energywebfoundation/origin/commit/7a15d7fd4861667081c1ea6b4013211191a99b5e))
+
+
+### Features
+
+* **exchange:** introduce eventbus for trades events ([02fde8b](https://github.com/energywebfoundation/origin/commit/02fde8b541f6053502a9eed1590cbf94205a6813))
+* **exchange:** TradePersistedEvent ([67d6bd5](https://github.com/energywebfoundation/origin/commit/67d6bd5cf804bdb2afa1cbd4a46a38aef73f1ec8))
+* **oring-ui-core:** add withdraw saga ([36403c3](https://github.com/energywebfoundation/origin/commit/36403c3fb0acc50b70e7d1350bcef0e3b05062ec))
+
+
+
+
+
 # [1.1.0](https://github.com/energywebfoundation/origin/compare/@energyweb/exchange@1.0.0...@energyweb/exchange@1.1.0) (2020-05-29)
 
 

@@ -3,6 +3,25 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.2.1](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-ui@2.2.0...@energyweb/origin-ui@2.2.1) (2020-06-16)
+
+**Note:** Version bump only for package @energyweb/origin-ui
+
+
+
+
+
+# [2.2.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-ui@2.1.2...@energyweb/origin-ui@2.2.0) (2020-06-16)
+
+
+### Features
+
+* **origin-ui:** add logrocket logging software ([14cc573](https://github.com/energywebfoundation/origin/commit/14cc573af3b16e63daf785b787a030c7a4b5dd80))
+
+
+
+
+
 ## [2.1.2](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-ui@2.1.1...@energyweb/origin-ui@2.1.2) (2020-05-29)
 
 

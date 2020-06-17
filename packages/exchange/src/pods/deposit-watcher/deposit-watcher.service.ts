@@ -189,6 +189,7 @@ export class DepositWatcherService implements OnModuleInit {
 
         if (!automaticPostForSale) {
             this.logger.debug(`Device ${id} does not have automaticPostForSale enabled`);
+            return;
         }
 
         const ask: CreateAskDTO = {

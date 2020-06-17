@@ -42,15 +42,20 @@ export class DeviceController {
     // TODO: remove sensitive information
 
     @Get()
-    async getAll() {
-        return this.deviceService.getAll();
+    async getAll(@Query('withMeterStats') withMeterStats: boolean) {
+        return this.deviceService.getAll(withMeterStats ?? false);
     }
 
     @Get('/my-devices')
     @UseGuards(AuthGuard(), ActiveUserGuard, RolesGuard)
     @Roles(Role.OrganizationAdmin, Role.OrganizationDeviceManager, Role.OrganizationUser)
-    async getMyDevices(@UserDecorator() { organizationId }: ILoggedInUser) {
-        return this.deviceService.getAll({ where: { organization: { id: organizationId } } });
+    async getMyDevices(
+        @Query('withMeterStats') withMeterStats: boolean,
+        @UserDecorator() { organizationId }: ILoggedInUser
+    ) {
+        return this.deviceService.getAll(withMeterStats ?? false, {
+            where: { organization: { id: organizationId } }
+        });
     }
 
     @Get('supplyBy')
@@ -69,8 +74,11 @@ export class DeviceController {
     }
 
     @Get('/:id')
-    async get(@Param('id') id: string): Promise<IDeviceWithRelationsIds> {
-        const existingEntity = await this.deviceService.findOne(id);
+    async get(
+        @Param('id') id: string,
+        @Query('withMeterStats') withMeterStats: boolean
+    ): Promise<IDeviceWithRelationsIds> {
+        const existingEntity = await this.deviceService.findOne(id, {}, withMeterStats);
 
         if (!existingEntity) {
             throw new NotFoundException(StorageErrors.NON_EXISTENT);

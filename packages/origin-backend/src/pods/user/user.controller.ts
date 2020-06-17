@@ -62,7 +62,7 @@ export class UserController {
             }
 
             if (typeof body.notifications !== 'undefined') {
-                await this.userService.update(user.id, body.notifications);
+                await this.userService.setNotifications(user.id, body.notifications);
             }
 
             return this.userService.findById(user.id);
