@@ -130,6 +130,7 @@ export const SelectedForSale = (props: IOwnProps) => {
                     outputFormat="number"
                     value={price}
                     onChange={(event, value) => setPrice(value)}
+                    minimumValue={0}
                 />
                 <Grid container justify="space-between" style={{ margin: '10px' }}>
                     <Grid item>Total Price</Grid>
