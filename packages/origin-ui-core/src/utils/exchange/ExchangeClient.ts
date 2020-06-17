@@ -309,6 +309,7 @@ export const ExchangeClientMock: IExchangeClient = {
         return null;
     },
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     createBundle(bundle: CreateBundleDTO) {
         return null;
     }

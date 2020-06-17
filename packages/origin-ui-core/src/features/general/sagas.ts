@@ -24,8 +24,7 @@ import {
     IExchangeClient,
     ExchangeAccount,
     AccountAsset,
-    Bundle,
-    CreateBundleDTO
+    Bundle
 } from '../../utils/exchange';
 import {
     IOriginConfiguration,
@@ -58,7 +57,7 @@ import { getI18n } from 'react-i18next';
 import { showNotification, NotificationType, getDevicesOwnedLink } from '../../utils';
 import { ICertificateViewItem, CertificateSource } from '../certificates';
 import { getCertificate } from '../certificates/sagas';
-import { storeBundle, BundlesActionType, IBundleAction, ICreateBundleAction } from '../bundles';
+import { storeBundle, BundlesActionType, ICreateBundleAction } from '../bundles';
 import BN from 'bn.js';
 
 function createEthereumProviderAccountsChangedEventChannel(ethereumProvider: any) {
@@ -357,7 +356,6 @@ function* findEnhancedCertificate(
 function* fetchBundles() {
     const exchangeClient: IExchangeClient = yield select(getExchangeClient);
     const bundles: Bundle[] = yield apply(exchangeClient, exchangeClient.getAvailableBundles, null);
-    console.log('>>> available bundles:', bundles);
     for (const bundle of bundles) {
         bundle.items.forEach((item) => {
             item.currentVolume = new BN(item.currentVolume);
@@ -582,14 +580,15 @@ function* requestCreateBundle() {
         yield put(setLoading(true));
         const i18n = getI18n();
         const exchangeClient = yield select(getExchangeClient);
-        console.log('>>> creating bundle from:', bundleDTO);
         try {
             const created: Bundle = yield apply(exchangeClient, exchangeClient.createBundle, [
                 bundleDTO
             ]);
-            console.log('>>> create bundle response:', created);
-            // yield put(storeBundle(created));
-            showNotification(i18n.t('bundle.feedback.bundleCreated'), NotificationType.Success);
+            console.log(`>>> Bundle ${created.id} created`);
+            showNotification(
+                i18n.t('certificate.feedback.bundleCreated'),
+                NotificationType.Success
+            );
         } catch (err) {
             console.error(err);
             showNotification(i18n.t('general.feedback.unknownError'), NotificationType.Error);

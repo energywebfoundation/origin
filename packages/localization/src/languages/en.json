@@ -31,6 +31,7 @@
                 "forDemand": "For demand",
                 "exchange": "Exchange",
                 "bundles": "Bundles",
+                "create_bundle": "Create Bundle",
                 "myTrades": "My trades"
             }
         },
@@ -114,7 +115,8 @@
                 "buy": "Buy",
                 "request": "Request",
                 "withdraw": "Withdraw",
-                "deposit": "Deposit"
+                "deposit": "Deposit",
+                "create_bundle": "Create bundle"
             },
             "feedback": {
                 "returnedToInbox": "Certificate {id} has been returned to the inbox.",
@@ -131,7 +133,8 @@
                 "certificatesClaimed": "Certificates have been claimed.",
                 "approved": "Certification request approved.",
                 "withdrawn": "Certificate withdrawn",
-                "certificateDeposited": "Certificate deposited"
+                "certificateDeposited": "Certificate deposited",
+                "bundle_created": "Bundle created"
             },
             "info": {
                 "requestCertificatesFor": "Request certificates for {facilityName}"

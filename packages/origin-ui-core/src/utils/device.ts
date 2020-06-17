@@ -5,7 +5,6 @@ import { getUserOffchain } from '../features/users/selectors';
 import { useSelector } from 'react-redux';
 import { useTranslation } from '.';
 import { OrganizationStatus } from '@energyweb/origin-backend-core';
-import { ICertificateViewItem } from '../features/certificates';
 
 type TranslateFunc = (key: string) => string;
 

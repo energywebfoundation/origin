@@ -12,7 +12,6 @@ import {
     Typography,
     Checkbox,
     Button,
-    FormControl,
     FormControlLabel,
     CardActions
 } from '@material-ui/core';
