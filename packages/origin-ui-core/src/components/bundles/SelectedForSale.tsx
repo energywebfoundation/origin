@@ -62,7 +62,7 @@ export const SelectedForSale = (props: IOwnProps) => {
         dispatch(
             createBundle({
                 bundleDTO: {
-                    price: price * 100,
+                    price: Number((price * 100).toFixed(2)),
                     items
                 },
                 callback
@@ -112,10 +112,7 @@ export const SelectedForSale = (props: IOwnProps) => {
                                         </Grid>
                                         <Grid item xs={4}>
                                             <ListItemText
-                                                primary={EnergyFormatter.format(
-                                                    energy.toNumber(),
-                                                    true
-                                                )}
+                                                primary={EnergyFormatter.format(energy, true)}
                                                 secondary={`${(
                                                     (100 * energy.toNumber()) /
                                                     totalVolume.toNumber()
@@ -130,7 +127,7 @@ export const SelectedForSale = (props: IOwnProps) => {
                 </List>
                 <Grid container justify="space-between">
                     <Grid item>Total Volume</Grid>
-                    <Grid item>{EnergyFormatter.format(totalVolume.toNumber(), true)}</Grid>
+                    <Grid item>{EnergyFormatter.format(totalVolume, true)}</Grid>
                 </Grid>
                 <CurrencyTextField
                     fullWidth

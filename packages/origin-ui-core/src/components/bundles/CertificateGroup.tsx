@@ -106,10 +106,7 @@ export const CertificateGroup = (props: IOwnProps) => {
                                                 <div>
                                                     <Typography>{type}</Typography>
                                                     <Typography>
-                                                        {EnergyFormatter.format(
-                                                            energy.toNumber(),
-                                                            true
-                                                        )}
+                                                        {EnergyFormatter.format(energy, true)}
                                                     </Typography>
                                                 </div>
                                             }
