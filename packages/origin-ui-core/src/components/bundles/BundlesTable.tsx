@@ -11,7 +11,7 @@ import { useSelector } from 'react-redux';
 import { getProducingDevices } from '../..';
 import { Bundle } from '../../utils/exchange';
 import { Visibility, Add } from '@material-ui/icons';
-import { BundleDetails } from './BundleDetails';
+import BundleDetails from './BundleDetails';
 import { getCurrencies, getEnvironment } from '../../features';
 import { getBundles } from '../../features/bundles/selectors';
 import { Fab, Tooltip } from '@material-ui/core';
@@ -160,7 +160,11 @@ export const BundlesTable = () => {
                 toggleSort={toggleSort}
                 handleRowClick={(rowIndex: string) => viewDetails(parseInt(rowIndex, 10))}
             />
-            <BundleDetails bundle={selectedBundle} showModal={showBundleDetailsModal} />
+            <BundleDetails
+                selected={selectedBundle}
+                showModal={showBundleDetailsModal}
+                callback={() => setShowBundleDetailsModal(false)}
+            />
             <Link to={'/certificates/create_bundle'}>
                 <Tooltip title={t('certificate.actions.create_bundle')}>
                     <Fab

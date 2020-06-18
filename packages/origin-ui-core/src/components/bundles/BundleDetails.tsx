@@ -1,17 +1,45 @@
 import React from 'react';
 import { Bundle } from '../../utils/exchange';
-import { Dialog, DialogTitle } from '@material-ui/core';
+import { Dialog, DialogTitle, Grid, withStyles } from '@material-ui/core';
+import { BundleContents } from './BudleContents';
+import { BundleCardContainer } from './BundleCardContainer';
 
 interface IOwnProps {
-    bundle: Bundle;
+    selected: Bundle;
     showModal: boolean;
+    callback: (showModal: boolean) => void;
+    classes;
 }
 
-export const BundleDetails = (props: IOwnProps) => {
-    const { showModal } = props;
+const BundleDetails = (props: IOwnProps) => {
+    const { selected, showModal, callback, classes } = props;
+
     return (
-        <Dialog open={showModal}>
-            <DialogTitle>{`Detailed view for ${props.bundle?.id}`}</DialogTitle>
+        <Dialog
+            open={showModal}
+            onClose={callback}
+            maxWidth="lg"
+            fullWidth={true}
+            classes={{ paper: classes.dialogPaper }}
+        >
+            <DialogTitle>BUNDLE DETAILS</DialogTitle>
+            <Grid container>
+                <Grid item xs={4}>
+                    <BundleContents />
+                </Grid>
+                <Grid item xs={8}>
+                    <BundleCardContainer />
+                </Grid>
+            </Grid>
         </Dialog>
     );
 };
+
+const styles = {
+    dialogPaper: {
+        minHeight: '80vh',
+        maxHeight: '80vh'
+    }
+};
+
+export default withStyles(styles)(BundleDetails);
