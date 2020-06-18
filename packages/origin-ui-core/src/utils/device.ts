@@ -5,6 +5,14 @@ import { getUserOffchain } from '../features/users/selectors';
 import { useSelector } from 'react-redux';
 import { useTranslation } from '.';
 import { OrganizationStatus, UserStatus } from '@energyweb/origin-backend-core';
+import gaseous from '../../assets/icon_gaseous.svg';
+import hydro from '../../assets/icon_hydro.svg';
+import liquid from '../../assets/icon_liquid.svg';
+import marine from '../../assets/icon_marine.svg';
+import solar from '../../assets/icon_solar.svg';
+import solid from '../../assets/icon_solid.svg';
+import thermal from '../../assets/icon_thermal.svg';
+import wind from '../../assets/icon_wind.svg';
 
 type TranslateFunc = (key: string) => string;
 
@@ -207,14 +215,14 @@ export const deviceById = (
 
 export const energyImageByType = (type: string) => {
     const images = {
-        gaseous: '../../../assets/icon_gaseouse.svg',
-        hydro: '../../../assets/icon_hydro.svg',
-        liquid: '../../../assets/icon_liquid.svg',
-        marine: '../../../assets/icon_marine.svg',
-        solar: '../../../assets/icon_solar.svg',
-        solid: '../../../assets/icon_solid.svg',
-        thermal: '../../../assets/icon_thermal.svg',
-        wind: '../../../assets/icon_wind.svg'
+        gaseous,
+        hydro,
+        liquid,
+        marine,
+        solar,
+        solid,
+        thermal,
+        wind
     };
     return images[type.toLowerCase()];
 };
