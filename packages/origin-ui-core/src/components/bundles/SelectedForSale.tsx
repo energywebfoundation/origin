@@ -21,7 +21,6 @@ import {
     deviceById,
     getEnvironment,
     getProducingDevices,
-    PowerFormatter,
     moment,
     energyImageByType,
     getCurrencies
@@ -76,48 +75,58 @@ export const SelectedForSale = (props: IOwnProps) => {
             <CardHeader title="SELECTED FOR SALE" />
             <CardContent>
                 <List>
-                    {selected.map((cert) => {
-                        const device = deviceById(cert.deviceId, environment, devices);
-                        const type = device.deviceType.split(';')[0];
-                        const energy = cert.energy.publicVolume;
-                        const { province, region } = device;
-                        return (
-                            <ListItem key={cert.id}>
-                                <ListItemAvatar>
-                                    <Avatar src={energyImageByType(type)}></Avatar>
-                                </ListItemAvatar>
-                                <Grid container spacing={3}>
-                                    <Grid item xs={8}>
-                                        <ListItemText
-                                            primary={
-                                                <div>
-                                                    <Typography>
-                                                        {province}, {region}
-                                                    </Typography>
-                                                    <Typography>{device.facilityName}</Typography>
-                                                </div>
-                                            }
-                                            secondary={moment(new Date(cert.creationTime)).format(
-                                                'MMM, YYYY'
-                                            )}
-                                        />
+                    {selected.map(
+                        ({
+                            id,
+                            deviceId,
+                            energy: { publicVolume, privateVolume },
+                            creationTime
+                        }) => {
+                            const energy = publicVolume.add(privateVolume);
+                            const { deviceType, province, region, facilityName } = deviceById(
+                                deviceId,
+                                environment,
+                                devices
+                            );
+                            const type = deviceType.split(';')[0];
+                            return (
+                                <ListItem key={id}>
+                                    <ListItemAvatar>
+                                        <Avatar src={energyImageByType(type)}></Avatar>
+                                    </ListItemAvatar>
+                                    <Grid container spacing={3}>
+                                        <Grid item xs={8}>
+                                            <ListItemText
+                                                primary={
+                                                    <div>
+                                                        <Typography>
+                                                            {province}, {region}
+                                                        </Typography>
+                                                        <Typography>{facilityName}</Typography>
+                                                    </div>
+                                                }
+                                                secondary={moment
+                                                    .unix(creationTime)
+                                                    .format('MMM, YYYY')}
+                                            />
+                                        </Grid>
+                                        <Grid item xs={4}>
+                                            <ListItemText
+                                                primary={EnergyFormatter.format(
+                                                    energy.toNumber(),
+                                                    true
+                                                )}
+                                                secondary={`${(
+                                                    (100 * energy.toNumber()) /
+                                                    totalVolume.toNumber()
+                                                ).toFixed(0)} %`}
+                                            />
+                                        </Grid>
                                     </Grid>
-                                    <Grid item xs={4}>
-                                        <ListItemText
-                                            primary={EnergyFormatter.format(
-                                                energy.toNumber(),
-                                                true
-                                            )}
-                                            secondary={`${(
-                                                (100 * energy.toNumber()) /
-                                                totalVolume.toNumber()
-                                            ).toFixed(0)} %`}
-                                        />
-                                    </Grid>
-                                </Grid>
-                            </ListItem>
-                        );
-                    })}
+                                </ListItem>
+                            );
+                        }
+                    )}
                 </List>
                 <Grid container justify="space-between">
                     <Grid item>Total Volume</Grid>
@@ -133,7 +142,7 @@ export const SelectedForSale = (props: IOwnProps) => {
                     outputFormat="number"
                     value={price}
                     onChange={(event, value) => setPrice(value)}
-                    minimumValue={0}
+                    minimumValue="0"
                 />
                 <Grid container justify="space-between" style={{ margin: '10px' }}>
                     <Grid item>Total Price</Grid>

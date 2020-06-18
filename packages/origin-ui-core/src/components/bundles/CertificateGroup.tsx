@@ -16,7 +16,7 @@ import {
 } from '@material-ui/core';
 import { getProducingDevices, getEnvironment } from '../..';
 import { useSelector } from 'react-redux';
-import { deviceById, PowerFormatter, energyImageByType, moment, EnergyFormatter } from '../../utils';
+import { deviceById, energyImageByType, moment, EnergyFormatter } from '../../utils';
 
 interface IOwnProps {
     certificates: ICertificateViewItem[];
@@ -121,9 +121,9 @@ export const CertificateGroup = (props: IOwnProps) => {
                                                 <div>
                                                     <Typography>Certification Date</Typography>
                                                     <Typography>
-                                                        {moment(new Date(creationTime)).format(
-                                                            'MMM, YYYY'
-                                                        )}
+                                                        {moment
+                                                            .unix(creationTime)
+                                                            .format('MMM, YYYY')}
                                                     </Typography>
                                                 </div>
                                             }

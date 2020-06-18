@@ -6,7 +6,7 @@ import {
     usePaginatedLoaderFiltered,
     usePaginatedLoaderSorting
 } from '../Table';
-import { useTranslation, formatCurrencyComplete, deviceById, EnergyFormatter, PowerFormatter } from '../../utils';
+import { useTranslation, formatCurrencyComplete, deviceById, EnergyFormatter } from '../../utils';
 import { useSelector } from 'react-redux';
 import { getProducingDevices } from '../..';
 import { Bundle } from '../../utils/exchange';
