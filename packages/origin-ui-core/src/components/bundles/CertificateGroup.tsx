@@ -16,7 +16,7 @@ import {
 } from '@material-ui/core';
 import { getProducingDevices, getEnvironment } from '../..';
 import { useSelector } from 'react-redux';
-import { deviceById, PowerFormatter, energyImageByType, moment } from '../../utils';
+import { deviceById, PowerFormatter, energyImageByType, moment, EnergyFormatter } from '../../utils';
 
 interface IOwnProps {
     certificates: ICertificateViewItem[];
@@ -106,7 +106,7 @@ export const CertificateGroup = (props: IOwnProps) => {
                                                 <div>
                                                     <Typography>{type}</Typography>
                                                     <Typography>
-                                                        {PowerFormatter.format(
+                                                        {EnergyFormatter.format(
                                                             energy.toNumber(),
                                                             true
                                                         )}

@@ -104,7 +104,10 @@ export const SelectedForSale = (props: IOwnProps) => {
                                     </Grid>
                                     <Grid item xs={4}>
                                         <ListItemText
-                                            primary={PowerFormatter.format(energy.toNumber(), true)}
+                                            primary={EnergyFormatter.format(
+                                                energy.toNumber(),
+                                                true
+                                            )}
                                             secondary={`${(
                                                 (100 * energy.toNumber()) /
                                                 totalVolume.toNumber()
@@ -118,7 +121,7 @@ export const SelectedForSale = (props: IOwnProps) => {
                 </List>
                 <Grid container justify="space-between">
                     <Grid item>Total Volume</Grid>
-                    <Grid item>{PowerFormatter.format(totalVolume.toNumber(), true)}</Grid>
+                    <Grid item>{EnergyFormatter.format(totalVolume.toNumber(), true)}</Grid>
                 </Grid>
                 <CurrencyTextField
                     fullWidth
