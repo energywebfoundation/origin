@@ -159,7 +159,7 @@ export type Bundle = {
     price: number;
     isCancelled: boolean;
     items: BundleItem[];
-    volume: BN;
+    volume: BigNumber;
 };
 
 export type BundleItemDTO = {

@@ -360,6 +360,7 @@ function* fetchBundles() {
             item.currentVolume = new BigNumber(item.currentVolume.toString());
             item.startVolume = new BigNumber(item.startVolume.toString());
         });
+        bundle.volume = new BigNumber(bundle.volume.toString());
         yield put(storeBundle(bundle));
     }
 }
