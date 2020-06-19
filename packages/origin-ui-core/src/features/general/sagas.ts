@@ -573,7 +573,7 @@ function* requestCreateBundle() {
         try {
             yield apply(exchangeClient, exchangeClient.createBundle, [bundleDTO]);
             showNotification(
-                i18n.t('certificate.feedback.bundleCreated'),
+                i18n.t('certificate.feedback.bundle_created'),
                 NotificationType.Success
             );
         } catch (err) {
