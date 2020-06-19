@@ -10,13 +10,13 @@ import { useTranslation, formatCurrencyComplete, deviceById, EnergyFormatter } f
 import { useSelector } from 'react-redux';
 import { getProducingDevices } from '../..';
 import { Bundle } from '../../utils/exchange';
-import BN from 'bn.js';
 import { Visibility, Add } from '@material-ui/icons';
 import { BundleDetails } from './BundleDetails';
 import { getCurrencies, getEnvironment } from '../../features';
 import { getBundles } from '../../features/bundles/selectors';
 import { Fab, Tooltip } from '@material-ui/core';
 import { Link } from 'react-router-dom';
+import { BigNumber } from 'ethers/utils';
 
 const BUNDLES_PER_PAGE = 25;
 const BUNDLES_TOTAL_ENERGY_COLUMN_ID = 'total';
@@ -38,16 +38,17 @@ export const BundlesTable = () => {
                 const type = deviceById(item.asset.deviceId, environment, devices)
                     .deviceType.split(';')[0]
                     .toLowerCase();
-                (grouped[type] || grouped.other).iadd(item.currentVolume);
-                grouped.total.iadd(item.currentVolume);
+                const propName = grouped[type] ? type : 'other';
+                grouped[propName] = grouped[propName].add(item.currentVolume);
+                grouped.total = grouped.total.add(item.currentVolume);
                 return grouped;
             },
             {
-                total: new BN(0),
-                solar: new BN(0),
-                hydro: new BN(0),
-                wind: new BN(0),
-                other: new BN(0)
+                total: new BigNumber(0),
+                solar: new BigNumber(0),
+                hydro: new BigNumber(0),
+                wind: new BigNumber(0),
+                other: new BigNumber(0)
             }
         );
 
@@ -56,11 +57,11 @@ export const BundlesTable = () => {
         return Object.fromEntries(
             Object.keys(energy)
                 .filter((p) => p !== 'total')
-                .map((p) => [p, energy[p].mul(new BN(10000)).div(energy.total)])
+                .map((p) => [p, energy[p].mul(new BigNumber(10000)).div(energy.total)])
                 .map(([p, v]) => {
                     return [p, `${(v.toNumber() / 100).toFixed(2)}%`];
                 })
-                .concat([['total', EnergyFormatter.format(energy.total.toNumber(), true)]])
+                .concat([['total', EnergyFormatter.format(energy.total, true)]])
         );
     };
 
@@ -97,11 +98,11 @@ export const BundlesTable = () => {
     }, [bundles]);
 
     type TEnergyByType = {
-        total: BN;
-        solar: BN;
-        wind: BN;
-        hydro: BN;
-        other: BN;
+        total: BigNumber;
+        solar: BigNumber;
+        wind: BigNumber;
+        hydro: BigNumber;
+        other: BigNumber;
     };
 
     const [currency = 'USD'] = useSelector(getCurrencies);

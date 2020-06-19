@@ -58,7 +58,6 @@ import { showNotification, NotificationType, getDevicesOwnedLink } from '../../u
 import { ICertificateViewItem, CertificateSource } from '../certificates';
 import { getCertificate } from '../certificates/sagas';
 import { storeBundle, BundlesActionType, ICreateBundleAction } from '../bundles';
-import BN from 'bn.js';
 
 function createEthereumProviderAccountsChangedEventChannel(ethereumProvider: any) {
     return eventChannel<string[]>((emitter) => {
@@ -358,9 +357,10 @@ function* fetchBundles() {
     const bundles: Bundle[] = yield apply(exchangeClient, exchangeClient.getAvailableBundles, null);
     for (const bundle of bundles) {
         bundle.items.forEach((item) => {
-            item.currentVolume = new BN(item.currentVolume);
-            item.startVolume = new BN(item.startVolume);
+            item.currentVolume = new BigNumber(item.currentVolume.toString());
+            item.startVolume = new BigNumber(item.startVolume.toString());
         });
+        bundle.volume = new BigNumber(bundle.volume.toString());
         yield put(storeBundle(bundle));
     }
 }
@@ -574,7 +574,7 @@ function* requestCreateBundle() {
         try {
             yield apply(exchangeClient, exchangeClient.createBundle, [bundleDTO]);
             showNotification(
-                i18n.t('certificate.feedback.bundleCreated'),
+                i18n.t('certificate.feedback.bundle_created'),
                 NotificationType.Success
             );
         } catch (err) {

@@ -1,5 +1,5 @@
 import { Filter, Operator, OrderSide, Product, OrderStatus } from '@energyweb/exchange-core';
-import BN from 'bn.js';
+import { BigNumber } from 'ethers/utils';
 
 export type DeviceVintageDTO = {
     year: number;
@@ -148,8 +148,8 @@ export type RequestWithdrawalDTO = {
 export type BundleItem = {
     id: string;
     asset: IAsset;
-    startVolume: BN;
-    currentVolume: BN;
+    startVolume: BigNumber;
+    currentVolume: BigNumber;
 };
 
 export type Bundle = {
@@ -158,7 +158,7 @@ export type Bundle = {
     price: number;
     isCancelled: boolean;
     items: BundleItem[];
-    volume: BN;
+    volume: BigNumber;
 };
 
 export type BundleItemDTO = {
