@@ -27,7 +27,7 @@ import {
 } from '../..';
 import { useSelector, useDispatch } from 'react-redux';
 import { BigNumber } from 'ethers/utils';
-import { formatCurrencyComplete, useTranslation, EnergyFormatter } from '../../utils';
+import { formatCurrencyComplete, useTranslation, EnergyFormatter, EnergyTypes } from '../../utils';
 import { createBundle } from '../../features/bundles';
 import { BundleItemDTO } from '../../utils/exchange';
 
@@ -88,7 +88,7 @@ export const SelectedForSale = (props: IOwnProps) => {
                                 environment,
                                 devices
                             );
-                            const type = deviceType.split(';')[0];
+                            const type = deviceType.split(';')[0].toLowerCase() as EnergyTypes;
                             return (
                                 <ListItem key={id}>
                                     <ListItemAvatar>

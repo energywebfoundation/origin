@@ -10,27 +10,28 @@ interface IOwnProps {}
 
 export const BundleCardContainer = (props: IOwnProps) => {
     const bundles = useSelector(getBundles);
-    console.log('>>> bundles: ', bundles);
+
+    const showScrollButtons = bundles.length > 5;
 
     return (
-        <Grid container direction="row" alignItems="center" wrap="nowrap">
-            <IconButton>
+        <Grid container direction="row" alignItems="stretch" wrap="nowrap" spacing={1}>
+            {showScrollButtons && (
+                <IconButton>
                     <ArrowBack />
                 </IconButton>
-            <Grid item xs={false} zeroMinWidth={true}>
-                
-            </Grid>
+            )}
             {bundles.map((bundle) => (
                 <Grid item xs={2} key={bundle.id}>
                     <BundleCard bundle={bundle} />
                 </Grid>
             ))}
-            <Grid item xs={false} zeroMinWidth={true}>
-                <IconButton>
-                    <ArrowForward />
-                </IconButton>
-            </Grid>
-            <Grid item xs={3} />
+            {showScrollButtons && (
+                <Grid item xs={false} zeroMinWidth={true}>
+                    <IconButton>
+                        <ArrowForward />
+                    </IconButton>
+                </Grid>
+            )}
         </Grid>
     );
 };

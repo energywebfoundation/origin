@@ -5,14 +5,13 @@ import { getUserOffchain } from '../features/users/selectors';
 import { useSelector } from 'react-redux';
 import { useTranslation } from '.';
 import { OrganizationStatus, UserStatus } from '@energyweb/origin-backend-core';
-import gaseous from '../../assets/icon_gaseous.svg';
-import hydro from '../../assets/icon_hydro.svg';
-import liquid from '../../assets/icon_liquid.svg';
-import marine from '../../assets/icon_marine.svg';
-import solar from '../../assets/icon_solar.svg';
-import solid from '../../assets/icon_solid.svg';
-import thermal from '../../assets/icon_thermal.svg';
-import wind from '../../assets/icon_wind.svg';
+import gaseous from '../../assets/bundles/icon-gaseous.svg';
+import hydro from '../../assets/bundles/icon-hydro.svg';
+import liquid from '../../assets/bundles/icon-liquid.svg';
+import solar from '../../assets/bundles/icon-solar.svg';
+import solid from '../../assets/bundles/icon-solid.svg';
+import thermal from '../../assets/bundles/icon-thermal.svg';
+import wind from '../../assets/bundles/icon-wind.svg';
 
 type TranslateFunc = (key: string) => string;
 
@@ -21,6 +20,17 @@ export function getDeviceId(device: ProducingDevice.Entity, environment: IEnviro
         device.externalDeviceIds?.find((i) => i.type === environment.ISSUER_ID)?.id ??
         device.id?.toString()
     );
+}
+
+export enum EnergyTypes {
+    GASEOUS = 'gaseous',
+    HYDRO = 'hydro-electric head',
+    LIQUID = 'liquid',
+    SOLAR = 'solar',
+    SOLID = 'solid',
+    THERMAL = 'thermal',
+    WIND = 'wind',
+    MARINE = 'marine'
 }
 
 export const LOCATION_TITLE_TRANSLATION_KEY = 'device.properties.regionProvince';
@@ -213,16 +223,17 @@ export const deviceById = (
     });
 };
 
-export const energyImageByType = (type: string) => {
+export const energyImageByType = (type: EnergyTypes) => {
+    console.log('>>> getting energy by type:', type);
     const images = {
-        gaseous,
-        hydro,
-        liquid,
-        marine,
-        solar,
-        solid,
-        thermal,
-        wind
+        [EnergyTypes.GASEOUS]: gaseous,
+        [EnergyTypes.HYDRO]: hydro,
+        [EnergyTypes.LIQUID]: liquid,
+        [EnergyTypes.SOLAR]: solar,
+        [EnergyTypes.SOLID]: solid,
+        [EnergyTypes.THERMAL]: thermal,
+        [EnergyTypes.WIND]: wind,
+        [EnergyTypes.MARINE]: ''
     };
-    return images[type.toLowerCase()];
+    return images[type];
 };

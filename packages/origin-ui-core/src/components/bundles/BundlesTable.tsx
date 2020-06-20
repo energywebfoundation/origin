@@ -6,9 +6,16 @@ import {
     usePaginatedLoaderFiltered,
     usePaginatedLoaderSorting
 } from '../Table';
-import { useTranslation, formatCurrencyComplete, deviceById, EnergyFormatter } from '../../utils';
+import {
+    useTranslation,
+    formatCurrencyComplete,
+    EnergyFormatter,
+    energyShares,
+    getProducingDevices
+} from '../..';
+import { EnergyTypes } from '../../utils';
 import { useSelector } from 'react-redux';
-import { getProducingDevices } from '../..';
+
 import { Bundle } from '../../utils/exchange';
 import { Visibility, Add } from '@material-ui/icons';
 import BundleDetails from './BundleDetails';
@@ -16,13 +23,14 @@ import { getCurrencies, getEnvironment } from '../../features';
 import { getBundles } from '../../features/bundles/selectors';
 import { Fab, Tooltip } from '@material-ui/core';
 import { Link } from 'react-router-dom';
-import { BigNumber } from 'ethers/utils';
 
 const BUNDLES_PER_PAGE = 25;
 const BUNDLES_TOTAL_ENERGY_COLUMN_ID = 'total';
 const BUNDLES_TOTAL_ENERGY_PROPERTIES = [
     (record) => Number(record.total.split(EnergyFormatter.displayUnit)[0])
 ];
+
+const ENERGY_COLUMNS_TO_DISPLAY = [EnergyTypes.SOLAR, EnergyTypes.WIND, EnergyTypes.HYDRO];
 
 export const BundlesTable = () => {
     const bundles = useSelector(getBundles);
@@ -31,39 +39,6 @@ export const BundlesTable = () => {
     const [selectedBundle, setSelectedBundle] = useState<Bundle>(null);
     const [showBundleDetailsModal, setShowBundleDetailsModal] = useState<boolean>(false);
     const environment = useSelector(getEnvironment);
-
-    const energyByType = (bundle: Bundle): TEnergyByType =>
-        bundle.items.reduce(
-            (grouped, item) => {
-                const type = deviceById(item.asset.deviceId, environment, devices)
-                    .deviceType.split(';')[0]
-                    .toLowerCase();
-                const propName = grouped[type] ? type : 'other';
-                grouped[propName] = grouped[propName].add(item.currentVolume);
-                grouped.total = grouped.total.add(item.currentVolume);
-                return grouped;
-            },
-            {
-                total: new BigNumber(0),
-                solar: new BigNumber(0),
-                hydro: new BigNumber(0),
-                wind: new BigNumber(0),
-                other: new BigNumber(0)
-            }
-        );
-
-    const energyShares = (bundle: Bundle) => {
-        const energy = energyByType(bundle);
-        return Object.fromEntries(
-            Object.keys(energy)
-                .filter((p) => p !== 'total')
-                .map((p) => [p, energy[p].mul(new BigNumber(10000)).div(energy.total)])
-                .map(([p, v]) => {
-                    return [p, `${(v.toNumber() / 100).toFixed(2)}%`];
-                })
-                .concat([['total', EnergyFormatter.format(energy.total, true)]])
-        );
-    };
 
     const { currentSort, sortAscending, sortData, toggleSort } = usePaginatedLoaderSorting({
         currentSort: {
@@ -97,19 +72,11 @@ export const BundlesTable = () => {
         loadPage(1);
     }, [bundles]);
 
-    type TEnergyByType = {
-        total: BigNumber;
-        solar: BigNumber;
-        wind: BigNumber;
-        hydro: BigNumber;
-        other: BigNumber;
-    };
-
     const [currency = 'USD'] = useSelector(getCurrencies);
 
     const rows = paginatedData.map((bundle) => {
         return {
-            ...energyShares(bundle),
+            ...energyShares(bundle, environment, devices, ENERGY_COLUMNS_TO_DISPLAY),
             price: ` ${formatCurrencyComplete(bundle.price / 100, currency)}`
         };
     });
@@ -127,9 +94,9 @@ export const BundlesTable = () => {
             label: t('bundle.properties.total_energy'),
             sortProperties: BUNDLES_TOTAL_ENERGY_PROPERTIES
         },
-        { id: 'solar', label: t('bundle.properties.solar') },
-        { id: 'wind', label: t('bundle.properties.wind') },
-        { id: 'hydro', label: t('bundle.properties.hydro') },
+        { id: EnergyTypes.SOLAR, label: t('bundle.properties.solar') },
+        { id: EnergyTypes.WIND, label: t('bundle.properties.wind') },
+        { id: EnergyTypes.HYDRO, label: t('bundle.properties.hydro') },
         { id: 'other', label: t('bundle.properties.other') },
         {
             id: 'price',
