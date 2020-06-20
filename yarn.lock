@@ -3135,26 +3135,26 @@
     prop-types "^15.6.1"
     react-lifecycles-compat "^3.0.4"
 
-"@react-google-maps/api@1.9.5":
-  version "1.9.5"
-  resolved "https://registry.yarnpkg.com/@react-google-maps/api/-/api-1.9.5.tgz#5b99d7397cdbb6c48c16623d63592df9a6cfffde"
-  integrity sha512-DB8Zv+ADwhHdulwec7k9yoMqpgK2VnaGD//rlZSUsDj1gafECFgxOEMcmjPSCDfFCSvX6qr5VVZJqBvrlpkm3Q==
+"@react-google-maps/api@1.9.7":
+  version "1.9.7"
+  resolved "https://registry.yarnpkg.com/@react-google-maps/api/-/api-1.9.7.tgz#337f95b0c59cdbdab5ba1824ce2761003c274f2a"
+  integrity sha512-o51/1RaN67R9I9atfwAbshh5xs1hxzvrTiysNWi8rnkUSF29Kip+1YMQ1wys+fWUmjAPCjfqzYvaJuBIkgu8mw==
   dependencies:
-    "@react-google-maps/infobox" "1.9.3"
-    "@react-google-maps/marker-clusterer" "1.9.3"
-    acorn "^7.2.0"
+    "@react-google-maps/infobox" "1.9.6"
+    "@react-google-maps/marker-clusterer" "1.9.6"
+    acorn "7.3.1"
     acorn-jsx "^5.2.0"
     invariant "2.2.4"
 
-"@react-google-maps/infobox@1.9.3":
-  version "1.9.3"
-  resolved "https://registry.yarnpkg.com/@react-google-maps/infobox/-/infobox-1.9.3.tgz#90a32d57527f5f0476f2fcb41556016b650cc4a3"
-  integrity sha512-e2EoeS+VSBsU4Gol3m3eaj9n1UGmp4Sz1ORpYHq0TJI2zRNwS7C2rGLe4aT0tHMXcaPSfkPR811IKtmc54ItUQ==
+"@react-google-maps/infobox@1.9.6":
+  version "1.9.6"
+  resolved "https://registry.yarnpkg.com/@react-google-maps/infobox/-/infobox-1.9.6.tgz#02b894c7c10c0f5567184b54ff5b307eb1704c2c"
+  integrity sha512-fR+zAC673BijGd9IJuV8sD0zEy1cLddxgyrT/SHFlNRPsnyprbH5Ox4zmfNU6UTkrQ7ULedFK7hUrgLVYKpc+Q==
 
-"@react-google-maps/marker-clusterer@1.9.3":
-  version "1.9.3"
-  resolved "https://registry.yarnpkg.com/@react-google-maps/marker-clusterer/-/marker-clusterer-1.9.3.tgz#6acb6a12cffeef04f11549aaf0a43e6135578116"
-  integrity sha512-fJoNmtHewep2wM4PnCtpPn3wImUPHBhCyz0YqOx1AxRg8zOwCOauPSMon3xKtGP7m5AmrAZpiYY51vBkubH/aA==
+"@react-google-maps/marker-clusterer@1.9.6":
+  version "1.9.6"
+  resolved "https://registry.yarnpkg.com/@react-google-maps/marker-clusterer/-/marker-clusterer-1.9.6.tgz#30087efc2594d85ffb4c6b2ccf709ad5d3590c29"
+  integrity sha512-bliu3CfMWLxMJaW8UK7+6Q1iPQoXbP9BK14yvid2pZL+OgqKgmnY6O9pazIi5Ca9NVTviNcN8WCz1TicUiABQw==
 
 "@redux-saga/core@^1.1.3":
   version "1.1.3"
@@ -3824,23 +3824,23 @@
   dependencies:
     defer-to-connect "^1.0.1"
 
-"@testing-library/dom@^7.9.0":
-  version "7.10.1"
-  resolved "https://registry.yarnpkg.com/@testing-library/dom/-/dom-7.10.1.tgz#dc2cac517b5956020d28a027c58b24b393a44320"
-  integrity sha512-shB6yx0eqoKya8V6zqV152MioYe6R4iIorT9LdGhGMZwvqny0GYMBqzKbAcxbTMlBmG0M0xaqO8AnzVEMuUamA==
+"@testing-library/dom@^7.14.2":
+  version "7.16.2"
+  resolved "https://registry.yarnpkg.com/@testing-library/dom/-/dom-7.16.2.tgz#f7a20b5548817e5c7ed26077913372d977be90af"
+  integrity sha512-4fT5l5L+5gfNhUZVCg0wnSszbRJ7A1ZHEz32v7OzH3mcY5lUsK++brI3IB2L9F5zO4kSDc2TRGEVa8v2hgl9vA==
   dependencies:
     "@babel/runtime" "^7.10.2"
     aria-query "^4.0.2"
     dom-accessibility-api "^0.4.5"
     pretty-format "^25.5.0"
 
-"@testing-library/react@10.2.1":
-  version "10.2.1"
-  resolved "https://registry.yarnpkg.com/@testing-library/react/-/react-10.2.1.tgz#f0c5ac9072ad54c29672150943f35d6617263f26"
-  integrity sha512-pv2jZhiZgN1/alz1aImhSasZAOPg3er2Kgcfg9fzuw7aKPLxVengqqR1n0CJANeErR1DqORauQaod+gGUgAJOQ==
+"@testing-library/react@10.3.0":
+  version "10.3.0"
+  resolved "https://registry.yarnpkg.com/@testing-library/react/-/react-10.3.0.tgz#d615385b8d86ef4d76142a423755d471b3673295"
+  integrity sha512-Rhn5uJK6lYHWzlGVbK6uAvheAW8AUoFYxTLGdDxgsJDaK/PYy5drWfW/6YpMMOKMw+u6jHHl4MNHlt5qLHnm0Q==
   dependencies:
     "@babel/runtime" "^7.10.2"
-    "@testing-library/dom" "^7.9.0"
+    "@testing-library/dom" "^7.14.2"
 
 "@truffle/error@^0.0.6":
   version "0.0.6"
@@ -4444,10 +4444,10 @@
     "@types/prop-types" "*"
     csstype "^2.2.0"
 
-"@types/react@16.9.36":
-  version "16.9.36"
-  resolved "https://registry.yarnpkg.com/@types/react/-/react-16.9.36.tgz#ade589ff51e2a903e34ee4669e05dbfa0c1ce849"
-  integrity sha512-mGgUb/Rk/vGx4NCvquRuSH0GHBQKb1OqpGS9cT9lFxlTLHZgkksgI60TuIxubmn7JuCb+sENHhQciqa0npm0AQ==
+"@types/react@16.9.38":
+  version "16.9.38"
+  resolved "https://registry.yarnpkg.com/@types/react/-/react-16.9.38.tgz#868405dace93a4095d3e054f4c4a1de7a1ac0680"
+  integrity sha512-pHAeZbjjNRa/hxyNuLrvbxhhnKyKNiLC6I5fRF2Zr/t/S6zS41MiyzH4+c+1I9vVfvuRt1VS2Lodjr4ZWnxrdA==
   dependencies:
     "@types/prop-types" "*"
     csstype "^2.2.0"
@@ -5098,6 +5098,11 @@ acorn-walk@^7.1.1:
   version "7.1.1"
   resolved "https://registry.yarnpkg.com/acorn-walk/-/acorn-walk-7.1.1.tgz#345f0dffad5c735e7373d2fec9a1023e6a44b83e"
   integrity sha512-wdlPY2tm/9XBr7QkKlq0WQVgiuGTX6YWPyRyBviSoScBuLfTVQhvwg6wJ369GJ/1nPfTLMfnrFIfjqVg6d+jQQ==
+
+acorn@7.3.1:
+  version "7.3.1"
+  resolved "https://registry.yarnpkg.com/acorn/-/acorn-7.3.1.tgz#85010754db53c3fbaf3b9ea3e083aa5c5d147ffd"
+  integrity sha512-tLc0wSnatxAQHVHUapaHdz72pi9KUyHjq5KyHjGg9Y8Ifdc79pTh2XvI6I1/chZbnM7QtNKzh66ooDogPZSleA==
 
 acorn@^3.1.0:
   version "3.3.0"
@@ -17959,10 +17964,10 @@ react-hotkeys@2.0.0:
   dependencies:
     prop-types "^15.6.1"
 
-react-i18next@11.5.1:
-  version "11.5.1"
-  resolved "https://registry.yarnpkg.com/react-i18next/-/react-i18next-11.5.1.tgz#084e98555d8800d5508eccc8da1ac652df358d3e"
-  integrity sha512-2VSx+dClvmCJTgrw9Nrof4EkggMlzo4s/YZPEUAdI7gU2HTksapkGtFPARzpeTk+3k1zY+Xl6pLHc0LYvsRWAQ==
+react-i18next@11.7.0:
+  version "11.7.0"
+  resolved "https://registry.yarnpkg.com/react-i18next/-/react-i18next-11.7.0.tgz#f27c4c237a274e007a48ac1210db83e33719908b"
+  integrity sha512-8tvVkpuxQlubcszZON+jmoCgiA9gCZ74OAYli9KChPhETtq8pJsANBTe9KRLRLmX3ubumgvidURWr0VvKz1tww==
   dependencies:
     "@babel/runtime" "^7.3.1"
     html-parse-stringify2 "2.0.1"
