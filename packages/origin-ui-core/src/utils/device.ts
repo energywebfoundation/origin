@@ -224,7 +224,6 @@ export const deviceById = (
 };
 
 export const energyImageByType = (type: EnergyTypes) => {
-    console.log('>>> getting energy by type:', type);
     const images = {
         [EnergyTypes.GASEOUS]: gaseous,
         [EnergyTypes.HYDRO]: hydro,

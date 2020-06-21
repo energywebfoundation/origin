@@ -84,7 +84,8 @@
                 "request": "Żądaj",
                 "withdraw": "Wypłać",
                 "deposit": "Wpłać",
-                "create_bundle": "Stwórz Pakiet"
+                "create_bundle": "Stwórz Pakiet",
+                "buy_bundle": "Kup pakiet"
             },
             "feedback": {
                 "certificateDeposited": "Certificate deposited",

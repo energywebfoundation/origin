@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Bundle } from '../../utils/exchange';
-import { Dialog, DialogTitle, Grid, withStyles } from '@material-ui/core';
+import { Dialog, DialogTitle, Grid, withStyles, Box } from '@material-ui/core';
 import { BundleContents } from './BudleContents';
 import { BundleCardContainer } from './BundleCardContainer';
 
@@ -12,25 +12,25 @@ interface IOwnProps {
 }
 
 const BundleDetails = (props: IOwnProps) => {
-    const { selected, showModal, callback, classes } = props;
+    const { showModal, callback } = props;
+    const [selected, setSelected] = useState<Bundle>(props.selected);
 
     return (
-        <Dialog
-            open={showModal}
-            onClose={callback}
-            maxWidth="lg"
-            fullWidth={true}
-            classes={{ paper: classes.dialogPaper }}
-        >
+        <Dialog open={showModal} onClose={callback} maxWidth="lg" fullWidth={true}>
             <DialogTitle>BUNDLE DETAILS</DialogTitle>
-            <Grid container>
-                <Grid item xs={4}>
-                    <BundleContents />
+            <div>
+                <Grid container>
+                    <Grid item xs={4} style={{ alignSelf: 'stretch' }}>
+                        <BundleContents bundle={selected || props.selected} />
+                    </Grid>
+                    <Grid item xs={8}>
+                        <BundleCardContainer
+                            selected={selected || props.selected}
+                            setSelected={setSelected}
+                        />
+                    </Grid>
                 </Grid>
-                <Grid item xs={8}>
-                    <BundleCardContainer />
-                </Grid>
-            </Grid>
+            </div>
         </Dialog>
     );
 };

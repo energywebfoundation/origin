@@ -12,7 +12,14 @@ import {
     SvgIcon,
     CardMedia,
     withStyles,
-    makeStyles
+    makeStyles,
+    Avatar,
+    Theme,
+    createStyles,
+    ListItemAvatar,
+    CardActions,
+    Button,
+    Box
 } from '@material-ui/core';
 import { Bundle } from '../../utils/exchange';
 import {
@@ -21,21 +28,17 @@ import {
     energyImageByType,
     getEnvironment,
     getProducingDevices,
-    energyByType
+    energyByType,
+    useTranslation,
+    getCurrencies
 } from '../..';
 import { useSelector } from 'react-redux';
-import { EnergyTypes } from '../../utils';
+import { EnergyTypes, formatCurrencyComplete } from '../../utils';
 
 interface IOwnProps {
     bundle: Bundle;
+    isSelected: boolean;
 }
-
-const useCardClasses = makeStyles({
-    root: {
-        backgroundColor: '#282828',
-        width: '100%'
-    }
-});
 
 const ENERGY_TYPES_TO_DISPLAY = [
     EnergyTypes.SOLAR,
@@ -45,18 +48,33 @@ const ENERGY_TYPES_TO_DISPLAY = [
     EnergyTypes.SOLID
 ];
 
+const cardSelectedColor = '#3c2348';
+const cardNotSelectedColor = '#404040';
+
 export const BundleCard = (props: IOwnProps) => {
-    const { bundle } = props;
+    const { bundle, isSelected } = props;
     const environment = useSelector(getEnvironment);
     const devices = useSelector(getProducingDevices);
+    const { t } = useTranslation();
+    const currency = useSelector(getCurrencies)[0];
 
     const energy = Object.entries(
         energyByType(bundle, environment, devices, ENERGY_TYPES_TO_DISPLAY)
     );
-    const cardClasses = useCardClasses();
+
+    const useImageClasses = makeStyles((theme: Theme) =>
+        createStyles({
+            root: {
+                width: theme.spacing(9),
+                height: theme.spacing(9)
+            }
+        })
+    );
+
+    const imageClasses = useImageClasses();
 
     return (
-        <Card>
+        <Card style={{ cursor: 'pointer' }}>
             <CardHeader
                 title="Total Volume"
                 subheader={EnergyFormatter.format(bundle.volume, true)}
@@ -66,29 +84,61 @@ export const BundleCard = (props: IOwnProps) => {
                     align: 'center',
                     color: 'textPrimary'
                 }}
+                style={{ backgroundColor: isSelected ? '#9a00c7' : '#3d3d3d' }}
             />
-            <CardContent>
-                <List>
+            <CardContent style={{ padding: 0 }}>
+                <List disablePadding>
                     {energy
                         .filter(([type]) => !['total', 'other'].includes(type))
                         .map(([type, volume]) => {
                             return (
-                                <ListItem key={type} disableGutters >
-                                    <Card classes={{ root: cardClasses.root }}>
-                                        <CardMedia
+                                <ListItem
+                                    key={type}
+                                    disableGutters
+                                    style={{
+                                        paddingBottom: 0,
+                                        flexDirection: 'column',
+                                        backgroundColor: isSelected
+                                            ? cardSelectedColor
+                                            : cardNotSelectedColor
+                                    }}
+                                    divider
+                                >
+                                    <ListItemAvatar>
+                                        <Avatar
                                             src={energyImageByType(type as EnergyTypes)}
-                                            component="img"
-                                        />
-                                        <CardContent>
-                                            <Typography>
-                                                {EnergyFormatter.format(volume, true)}
-                                            </Typography>
-                                        </CardContent>
-                                    </Card>
+                                            classes={{ root: imageClasses.root }}
+                                        ></Avatar>
+                                    </ListItemAvatar>
+                                    <Typography>{EnergyFormatter.format(volume, true)}</Typography>
                                 </ListItem>
                             );
                         })}
                 </List>
+
+                <ListItem
+                    style={{
+                        flexWrap: 'wrap',
+                        justifyContent: 'center',
+                        backgroundColor: isSelected ? cardSelectedColor : cardNotSelectedColor
+                    }}
+                >
+                    <Typography color="textSecondary" variant="body2" noWrap>
+                        Total price
+                    </Typography>
+                    <Typography color="textPrimary" variant="caption">
+                        {formatCurrencyComplete(
+                            (Number(EnergyFormatter.format(bundle.volume, false)) * bundle.price) /
+                                100,
+                            currency
+                        )}
+                    </Typography>
+                    {isSelected && (
+                        <Button color="primary" variant="contained">
+                            {t('certificate.actions.buy_bundle')}
+                        </Button>
+                    )}
+                </ListItem>
             </CardContent>
         </Card>
     );

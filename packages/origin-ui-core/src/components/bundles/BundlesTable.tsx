@@ -77,13 +77,15 @@ export const BundlesTable = () => {
     const rows = paginatedData.map((bundle) => {
         return {
             ...energyShares(bundle, environment, devices, ENERGY_COLUMNS_TO_DISPLAY),
-            price: ` ${formatCurrencyComplete(bundle.price / 100, currency)}`
+            price: ` ${formatCurrencyComplete(bundle.price / 100, currency)}`,
+            bundleId: bundle.id
         };
     });
     sortData(rows);
 
-    const viewDetails = (rowIndex) => {
-        const bundle = paginatedData[rowIndex];
+    const viewDetails = (rowIndex: number) => {
+        const { bundleId } = rows[rowIndex];
+        const bundle = bundles.find((b) => b.id === bundleId);
         setSelectedBundle(bundle);
         setShowBundleDetailsModal(true);
     };
