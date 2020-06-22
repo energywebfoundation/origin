@@ -14,9 +14,10 @@ export class Ask extends Order {
         product: Product,
         validFrom: Date,
         userId: string,
-        public readonly assetId: string
+        public readonly assetId: string,
+        createdAt: Date
     ) {
-        super(id, OrderSide.Ask, validFrom, product, price, volume, userId);
+        super(id, OrderSide.Ask, validFrom, product, price, volume, userId, createdAt);
 
         if (product.deviceType?.length !== 1) {
             throw new Error('Unable to create ask order. DeviceType has to be specified');
@@ -81,7 +82,7 @@ export class Ask extends Order {
         );
     }
 
-    public clone() {
+    public clone(): Ask {
         return new Ask(
             this.id,
             this.price,
@@ -89,7 +90,8 @@ export class Ask extends Order {
             this.product,
             this.validFrom,
             this.userId,
-            this.assetId
+            this.assetId,
+            this.createdAt
         );
     }
 
