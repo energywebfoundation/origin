@@ -125,7 +125,7 @@
                 "withdraw": "Withdraw",
                 "deposit": "Deposit",
                 "create_bundle": "Create bundle",
-                "buy_bundle": "Buy bundle"
+                "buy_bundle": "Buy"
             },
             "feedback": {
                 "returnedToInbox": "Certificate {id} has been returned to the inbox.",
