@@ -90,7 +90,8 @@
             "feedback": {
                 "certificateDeposited": "Certificate deposited",
                 "withdrawn": "Zdeponowany certyfikat",
-                "bundle_created": "Utworzono pakiet "
+                "bundle_created": "Utworzono pakiet ",
+                "bundle_bought": "Kupiony pakiet"
             },
             "info": {
                 "requestCertificatesFor": "Zażądaj certyfikatów dla urządzenia {facilityName}"

@@ -144,6 +144,7 @@
                 "withdrawn": "Certificate withdrawn",
                 "certificateDeposited": "Certificate deposited",
                 "bundle_created": "Bundle created",
+                "bundle_bought": "Bundle bought",
                 "certificateNotFound": "Certificate not found"
             },
             "info": {

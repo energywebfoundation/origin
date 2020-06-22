@@ -1,5 +1,6 @@
 import { Filter, Operator, OrderSide, Product, OrderStatus } from '@energyweb/exchange-core';
 import { BigNumber } from 'ethers/utils';
+import BN from 'bn.js';
 
 export type DeviceVintageDTO = {
     year: number;
@@ -169,4 +170,9 @@ export type BundleItemDTO = {
 export type CreateBundleDTO = {
     price: number;
     items: BundleItemDTO[];
+};
+
+export type BuyBundleDTO = {
+    bundleId: string;
+    volume: string;
 };

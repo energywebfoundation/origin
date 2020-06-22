@@ -3,20 +3,26 @@ import { Bundle } from '../../utils/exchange';
 import { Dialog, DialogTitle, Grid, withStyles, Box } from '@material-ui/core';
 import { BundleContents } from './BudleContents';
 import { BundleCardContainer } from './BundleCardContainer';
+import { useSelector, useDispatch } from 'react-redux';
+import { getShowBundleDetails, showBundleDetails } from '../../features/bundles';
 
 interface IOwnProps {
     selected: Bundle;
-    showModal: boolean;
-    callback: (showModal: boolean) => void;
     classes;
 }
 
 const BundleDetails = (props: IOwnProps) => {
-    const { showModal, callback } = props;
+    const showModal = useSelector(getShowBundleDetails);
     const [selected, setSelected] = useState<Bundle>(props.selected);
+    const dispatch = useDispatch();
 
     return (
-        <Dialog open={showModal} onClose={callback} maxWidth="lg" fullWidth={true}>
+        <Dialog
+            open={showModal}
+            onClose={() => dispatch(showBundleDetails(false))}
+            maxWidth="lg"
+            fullWidth={true}
+        >
             <DialogTitle>BUNDLE DETAILS</DialogTitle>
             <div>
                 <Grid container>

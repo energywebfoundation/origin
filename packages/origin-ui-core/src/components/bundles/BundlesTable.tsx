@@ -14,7 +14,7 @@ import {
     getProducingDevices
 } from '../..';
 import { EnergyTypes } from '../../utils';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 
 import { Bundle } from '../../utils/exchange';
 import { Visibility, Add } from '@material-ui/icons';
@@ -23,6 +23,7 @@ import { getCurrencies, getEnvironment } from '../../features';
 import { getBundles } from '../../features/bundles/selectors';
 import { Fab, Tooltip } from '@material-ui/core';
 import { Link } from 'react-router-dom';
+import { showBundleDetails } from '../../features/bundles';
 
 const BUNDLES_PER_PAGE = 25;
 const BUNDLES_TOTAL_ENERGY_COLUMN_ID = 'total';
@@ -37,8 +38,8 @@ export const BundlesTable = () => {
     const { t } = useTranslation();
     const devices = useSelector(getProducingDevices);
     const [selectedBundle, setSelectedBundle] = useState<Bundle>(null);
-    const [showBundleDetailsModal, setShowBundleDetailsModal] = useState<boolean>(false);
     const environment = useSelector(getEnvironment);
+    const dispatch = useDispatch();
 
     const { currentSort, sortAscending, sortData, toggleSort } = usePaginatedLoaderSorting({
         currentSort: {
@@ -87,7 +88,8 @@ export const BundlesTable = () => {
         const { bundleId } = rows[rowIndex];
         const bundle = bundles.find((b) => b.id === bundleId);
         setSelectedBundle(bundle);
-        setShowBundleDetailsModal(true);
+        // setShowBundleDetailsModal(true);
+        dispatch(showBundleDetails(true));
     };
 
     const columns = [
@@ -129,11 +131,7 @@ export const BundlesTable = () => {
                 toggleSort={toggleSort}
                 handleRowClick={(rowIndex: string) => viewDetails(parseInt(rowIndex, 10))}
             />
-            <BundleDetails
-                selected={selectedBundle}
-                showModal={showBundleDetailsModal}
-                callback={() => setShowBundleDetailsModal(false)}
-            />
+            <BundleDetails selected={selectedBundle} />
             <Link to={'/certificates/create_bundle'}>
                 <Tooltip title={t('certificate.actions.create_bundle')}>
                     <Fab

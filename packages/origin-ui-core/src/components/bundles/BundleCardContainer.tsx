@@ -1,12 +1,6 @@
 import React, { useState } from 'react';
 import { Grid, IconButton } from '@material-ui/core';
-import {
-    ArrowBack,
-    ArrowForward,
-    ArrowBackIosOutlined,
-    NavigateBeforeOutlined,
-    NavigateNextOutlined
-} from '@material-ui/icons';
+import { NavigateBeforeOutlined, NavigateNextOutlined } from '@material-ui/icons';
 import { Bundle } from '../../utils/exchange';
 import { BundleCard } from './BundleCard';
 import { useSelector } from 'react-redux';
@@ -37,12 +31,9 @@ export const BundleCardContainer = (props: IOwnProps) => {
 
     return (
         <Grid container direction="row" wrap="nowrap" spacing={1}>
-            {/* {displayFrom > 0 && ( */}
-            {/* <Grid item style={{ alignSelf: 'center' }}> */}
             <div style={{ position: 'relative' }}>
                 <IconButton
                     disabled={displayFrom <= 0}
-                    // edge="start"
                     onClick={() => setDisplayFrom(displayFrom - 1)}
                     style={{
                         position: 'absolute',
@@ -55,18 +46,14 @@ export const BundleCardContainer = (props: IOwnProps) => {
                     <NavigateBeforeOutlined fontSize="large" />
                 </IconButton>
             </div>
-            {/* </Grid> */}
-            {/* )} */}
             {bundlesToDisplay.map((bundle) => (
                 <Grid item xs={2} key={bundle.id} onClick={() => setSelected(bundle)}>
                     <BundleCard bundle={bundle} isSelected={bundle.id === selected.id} />
                 </Grid>
             ))}
-            {/* {displayFrom + BUNDLE_LIST_SIZE <= bundles.length - 1 && ( */}
             <div style={{ position: 'relative' }}>
                 <IconButton
                     disabled={displayFrom + BUNDLE_LIST_SIZE >= bundles.length}
-                    // edge="end"
                     onClick={() => setDisplayFrom(displayFrom + 1)}
                     style={{
                         position: 'absolute',
@@ -78,7 +65,6 @@ export const BundleCardContainer = (props: IOwnProps) => {
                     <NavigateNextOutlined fontSize="large" />
                 </IconButton>
             </div>
-            {/* )} */}
         </Grid>
     );
 };

@@ -32,8 +32,9 @@ import {
     useTranslation,
     getCurrencies
 } from '../..';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { EnergyTypes, formatCurrencyComplete } from '../../utils';
+import { buyBundle } from '../../features/bundles';
 
 interface IOwnProps {
     bundle: Bundle;
@@ -57,6 +58,7 @@ export const BundleCard = (props: IOwnProps) => {
     const devices = useSelector(getProducingDevices);
     const { t } = useTranslation();
     const currency = useSelector(getCurrencies)[0];
+    const dispatch = useDispatch();
 
     const energy = Object.entries(
         energyByType(bundle, environment, devices, ENERGY_TYPES_TO_DISPLAY)
@@ -70,6 +72,12 @@ export const BundleCard = (props: IOwnProps) => {
             }
         })
     );
+
+    const onBuyBundle = async () => {
+        dispatch(
+            buyBundle({ bundleDTO: { bundleId: bundle.id, volume: bundle.volume.toString() } })
+        );
+    };
 
     const imageClasses = useImageClasses();
 
@@ -134,7 +142,7 @@ export const BundleCard = (props: IOwnProps) => {
                         )}
                     </Typography>
                     {isSelected && (
-                        <Button color="primary" variant="contained">
+                        <Button color="primary" variant="contained" onClick={onBuyBundle}>
                             {t('certificate.actions.buy_bundle')}
                         </Button>
                     )}
