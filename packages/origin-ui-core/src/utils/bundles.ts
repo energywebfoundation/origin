@@ -44,3 +44,6 @@ export const energyShares = (
             .concat([['total', EnergyFormatter.format(energy.total, true)]])
     );
 };
+
+export const bundlePrice = (bundle: Bundle) =>
+    (bundle.price * Number(EnergyFormatter.format(bundle.volume, false))) / 100;

@@ -12,6 +12,7 @@ import solar from '../../assets/bundles/icon-solar.svg';
 import solid from '../../assets/bundles/icon-solid.svg';
 import thermal from '../../assets/bundles/icon-thermal.svg';
 import wind from '../../assets/bundles/icon-wind.svg';
+import marine from '../../assets/bundles/icon-marine.svg';
 
 type TranslateFunc = (key: string) => string;
 
@@ -232,7 +233,7 @@ export const energyImageByType = (type: EnergyTypes) => {
         [EnergyTypes.SOLID]: solid,
         [EnergyTypes.THERMAL]: thermal,
         [EnergyTypes.WIND]: wind,
-        [EnergyTypes.MARINE]: ''
+        [EnergyTypes.MARINE]: marine
     };
     return images[type];
 };

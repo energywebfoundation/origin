@@ -148,7 +148,8 @@
                 "certificateNotFound": "Certificate not found"
             },
             "info": {
-                "requestCertificatesFor": "Request certificates for {facilityName}"
+                "requestCertificatesFor": "Request certificates for {facilityName}",
+                "selectPriceRange": "Select price range to view more combinations"
             },
             "event": {
                 "name": {

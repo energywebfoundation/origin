@@ -94,7 +94,8 @@
                 "bundle_bought": "Kupiony pakiet"
             },
             "info": {
-                "requestCertificatesFor": "Zażądaj certyfikatów dla urządzenia {facilityName}"
+                "requestCertificatesFor": "Zażądaj certyfikatów dla urządzenia {facilityName}",
+                "selectPriceRange": "Wybierz przedział cenowy, aby wyświetlić więcej kombinacji"
             }
         },
         "search": {

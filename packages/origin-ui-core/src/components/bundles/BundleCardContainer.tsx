@@ -5,18 +5,22 @@ import { Bundle } from '../../utils/exchange';
 import { BundleCard } from './BundleCard';
 import { useSelector } from 'react-redux';
 import { getBundles } from '../../features/bundles';
+import { bundlePrice } from '../..';
 
 interface IOwnProps {
     selected: Bundle;
     setSelected: (bundle: Bundle) => void;
+    priceRange: number[];
 }
 
 const BUNDLE_LIST_SIZE = 5;
 
 export const BundleCardContainer = (props: IOwnProps) => {
-    const bundles = useSelector(getBundles);
-    const { selected, setSelected } = props;
-
+    let bundles = useSelector(getBundles);
+    const { selected, setSelected, priceRange } = props;
+    bundles = bundles.filter(
+        (bundle) => bundlePrice(bundle) >= priceRange[0] && bundlePrice(bundle) <= priceRange[1]
+    );
     const initialDisplayFrom = () => {
         if (bundles.length <= 5) {
             return 0;
@@ -36,6 +40,7 @@ export const BundleCardContainer = (props: IOwnProps) => {
                     disabled={displayFrom <= 0}
                     onClick={() => setDisplayFrom(displayFrom - 1)}
                     style={{
+                        backgroundColor: '#5a5a5a',
                         position: 'absolute',
                         top: '50%',
                         left: -30,
@@ -43,7 +48,7 @@ export const BundleCardContainer = (props: IOwnProps) => {
                     }}
                     size="medium"
                 >
-                    <NavigateBeforeOutlined fontSize="large" />
+                    <NavigateBeforeOutlined />
                 </IconButton>
             </div>
             {bundlesToDisplay.map((bundle) => (
@@ -56,13 +61,14 @@ export const BundleCardContainer = (props: IOwnProps) => {
                     disabled={displayFrom + BUNDLE_LIST_SIZE >= bundles.length}
                     onClick={() => setDisplayFrom(displayFrom + 1)}
                     style={{
+                        backgroundColor: '#5a5a5a',
                         position: 'absolute',
                         top: '50%',
                         left: -30,
                         zIndex: 10
                     }}
                 >
-                    <NavigateNextOutlined fontSize="large" />
+                    <NavigateNextOutlined />
                 </IconButton>
             </div>
         </Grid>

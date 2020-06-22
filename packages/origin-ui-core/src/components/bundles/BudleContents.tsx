@@ -46,7 +46,7 @@ export const BundleContents = (props: IOwnProps) => {
             style={{ height: '100%' }}
         >
             <IconButton
-                style={{ alignSelf: 'center' }}
+                style={{ alignSelf: 'center', backgroundColor: '#5a5a5a' }}
                 onClick={() => setDisplayFrom(displayFrom - 1)}
                 disabled={displayFrom === 0}
             >
@@ -91,7 +91,7 @@ export const BundleContents = (props: IOwnProps) => {
                 );
             })}
             <IconButton
-                style={{ alignSelf: 'center' }}
+                style={{ alignSelf: 'center', backgroundColor: '#5a5a5a' }}
                 onClick={() => setDisplayFrom(displayFrom + 1)}
                 disabled={displayFrom + OFFERS_LIST_SIZE >= bundle.items.length}
             >
