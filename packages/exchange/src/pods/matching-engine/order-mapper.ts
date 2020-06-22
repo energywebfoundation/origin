@@ -12,7 +12,8 @@ export const toMatchingEngineOrder = (order: Order) => {
               ProductDTO.toProduct(order.product),
               order.validFrom,
               order.userId,
-              order.assetId
+              order.assetId,
+              order.createdAt
           )
         : new Bid(
               order.id,
@@ -20,6 +21,7 @@ export const toMatchingEngineOrder = (order: Order) => {
               order.currentVolume,
               ProductDTO.toProduct(order.product),
               order.validFrom,
-              order.userId
+              order.userId,
+              order.createdAt
           );
 };
