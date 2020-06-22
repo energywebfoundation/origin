@@ -13,6 +13,11 @@ export { ExtendedBaseEntity } from './pods/ExtendedBaseEntity';
 export { ConfigurationService } from './pods/configuration/configuration.service';
 export { DeviceService } from './pods/device/device.service';
 
+export {
+    CertificationRequestApprovedEvent,
+    CertificationRequestRevokedEvent
+} from './pods/certificate';
+
 export const entities = [
     Device,
     OwnershipCommitment,

@@ -1,26 +1,29 @@
 import {
-    Injectable,
-    NotFoundException,
-    UnprocessableEntityException,
-    UnauthorizedException,
-    ConflictException
-} from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, DeepPartial, FindOneOptions, FindManyOptions } from 'typeorm';
-import {
-    ILoggedInUser,
-    DeviceStatus,
     CertificationRequestValidationData,
+    DeviceStatus,
+    ILoggedInUser,
     ISuccessResponse
 } from '@energyweb/origin-backend-core';
+import {
+    ConflictException,
+    Injectable,
+    NotFoundException,
+    UnauthorizedException,
+    UnprocessableEntityException
+} from '@nestjs/common';
+import { EventBus } from '@nestjs/cqrs';
+import { InjectRepository } from '@nestjs/typeorm';
 import * as Moment from 'moment';
 import { extendMoment } from 'moment-range';
+import { DeepPartial, FindManyOptions, FindOneOptions, Repository } from 'typeorm';
 
-import { CertificationRequest } from './certification-request.entity';
-import { CertificationRequestQueueItemDTO } from './certification-request-queue-item.dto';
 import { StorageErrors } from '../../enums/StorageErrors';
-import { CertificationRequestQueueItem } from './certification-request-queue-item.entity';
 import { DeviceService } from '../device/device.service';
+import { CertificationRequestQueueItemDTO } from './certification-request-queue-item.dto';
+import { CertificationRequestQueueItem } from './certification-request-queue-item.entity';
+import { CertificationRequest } from './certification-request.entity';
+import { CertificationRequestApprovedEvent } from './certification-request-approved.event';
+import { CertificationRequestRevokedEvent } from './certification-request-revoked.event';
 
 @Injectable()
 export class CertificationRequestService {
@@ -29,7 +32,8 @@ export class CertificationRequestService {
         private readonly repository: Repository<CertificationRequest>,
         @InjectRepository(CertificationRequestQueueItem)
         private readonly queueRepository: Repository<CertificationRequestQueueItem>,
-        private readonly deviceService: DeviceService
+        private readonly deviceService: DeviceService,
+        private readonly eventBus: EventBus
     ) {}
 
     async create(cert: DeepPartial<CertificationRequest>) {
@@ -126,8 +130,13 @@ export class CertificationRequestService {
         }
 
         certificationRequest.approved = true;
+        certificationRequest.approvedDate = new Date();
 
-        return this.repository.save(certificationRequest);
+        const request = await this.repository.save(certificationRequest);
+
+        this.eventBus.publish(new CertificationRequestApprovedEvent(request.id));
+
+        return request;
     }
 
     async registerRevoked(id: number): Promise<CertificationRequest> {
@@ -140,8 +149,13 @@ export class CertificationRequestService {
         }
 
         certificationRequest.revoked = true;
+        certificationRequest.revokedDate = new Date();
 
-        return this.repository.save(certificationRequest);
+        const request = await this.repository.save(certificationRequest);
+
+        this.eventBus.publish(new CertificationRequestRevokedEvent(request.id));
+
+        return request;
     }
 
     async get(

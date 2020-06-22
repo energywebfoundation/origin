@@ -27,7 +27,11 @@ export class CertificationRequest extends PreciseProofEntity implements ICertifi
 
     approved: boolean;
 
+    approvedDate: Date;
+
     revoked: boolean;
+
+    revokedDate: Date;
 
     created: Timestamp;
 

@@ -13,6 +13,8 @@ export interface ICertificationRequestMinimal {
     created: number;
     approved: boolean;
     revoked: boolean;
+    approvedDate?: Date;
+    revokedDate?: Date;
 }
 
 export interface ICertificationRequest extends ICertificationRequestMinimal {
