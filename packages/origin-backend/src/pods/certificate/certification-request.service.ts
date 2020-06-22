@@ -126,6 +126,7 @@ export class CertificationRequestService {
         }
 
         certificationRequest.approved = true;
+        certificationRequest.approvedDate = new Date();
 
         return this.repository.save(certificationRequest);
     }
@@ -140,6 +141,7 @@ export class CertificationRequestService {
         }
 
         certificationRequest.revoked = true;
+        certificationRequest.revokedDate = new Date();
 
         return this.repository.save(certificationRequest);
     }

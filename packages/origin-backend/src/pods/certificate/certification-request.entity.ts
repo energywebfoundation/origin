@@ -42,7 +42,13 @@ export class CertificationRequest extends ExtendedBaseEntity
     @IsBoolean()
     approved: boolean;
 
+    @Column({ type: 'timestamptz', nullable: true })
+    approvedDate: Date;
+
     @Column()
     @IsBoolean()
     revoked: boolean;
+
+    @Column({ type: 'timestamptz', nullable: true })
+    revokedDate: Date;
 }
