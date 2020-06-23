@@ -11,8 +11,7 @@ import {
     Theme,
     createStyles,
     ListItemAvatar,
-    Button,
-    Box
+    Button
 } from '@material-ui/core';
 import { Bundle } from '../../utils/exchange';
 import {
@@ -59,8 +58,9 @@ export const BundleCard = (props: IOwnProps) => {
     const useImageClasses = makeStyles((theme: Theme) =>
         createStyles({
             root: {
-                width: theme.spacing(9),
-                height: theme.spacing(9)
+                width: theme.spacing(6),
+                height: theme.spacing(6),
+                minWidth: 0
             }
         })
     );
@@ -103,14 +103,10 @@ export const BundleCard = (props: IOwnProps) => {
                                             : cardNotSelectedColor
                                     }}
                                     divider
+                                    alignItems="center"
                                 >
-                                    <ListItemAvatar>
-                                        <Box>
-                                            <Avatar
-                                                src={energyImageByType(type as EnergyTypes)}
-                                                classes={{ root: imageClasses.root }}
-                                            />
-                                        </Box>
+                                    <ListItemAvatar classes={{ root: imageClasses.root }}>
+                                        <Avatar src={energyImageByType(type as EnergyTypes)} />
                                     </ListItemAvatar>
                                     <Typography>{EnergyFormatter.format(volume, true)}</Typography>
                                 </ListItem>

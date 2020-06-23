@@ -42,7 +42,7 @@ export const BundleContents = (props: IOwnProps) => {
             direction="column"
             alignItems="stretch"
             justify="flex-start"
-            style={{ height: '100%' }}
+            style={{ height: '100%', position: 'relative' }}
         >
             <Box px={1}>
                 <Button
@@ -86,7 +86,6 @@ export const BundleContents = (props: IOwnProps) => {
                                             {`${moment(generationFrom).format(
                                                 'MMM, YYYY'
                                             )}->${moment(generationTo).format('MMM, YYYY')}`}
-                                            {/* {'->'} {moment(generationTo).format('MMM, YYYY')} */}
                                         </Typography>
                                     </Grid>
                                 </Grid>
@@ -95,13 +94,11 @@ export const BundleContents = (props: IOwnProps) => {
                     </Grid>
                 );
             })}
-            <Box px={1}>
+            <Box px={1} position="absolute" top="93%" width="100%">
                 <Button
                     style={{
-                        alignSelf: 'center',
                         backgroundColor: '#5a5a5a',
-                        width: '100%',
-                        justifySelf: 'end'
+                        width: '100%'
                     }}
                     onClick={() => setDisplayFrom(displayFrom + 1)}
                     disabled={displayFrom + OFFERS_LIST_SIZE >= bundle.items.length}

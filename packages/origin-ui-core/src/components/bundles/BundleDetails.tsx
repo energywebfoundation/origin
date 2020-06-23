@@ -8,7 +8,10 @@ import {
     Box,
     Typography,
     Slider,
-    DialogContent
+    DialogContent,
+    makeStyles,
+    Theme,
+    createStyles
 } from '@material-ui/core';
 import { BundleContents } from './BudleContents';
 import { BundleCardContainer } from './BundleCardContainer';
@@ -53,6 +56,7 @@ const BundleDetails = (props: IOwnProps) => {
             onClose={() => dispatch(showBundleDetails(false))}
             maxWidth="lg"
             fullWidth={true}
+            scroll="body"
         >
             <DialogTitle>BUNDLE DETAILS</DialogTitle>
             <DialogContent>

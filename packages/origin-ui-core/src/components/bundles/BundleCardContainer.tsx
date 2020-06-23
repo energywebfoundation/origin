@@ -63,7 +63,7 @@ export const BundleCardContainer = (props: IOwnProps) => {
                         backgroundColor: '#5a5a5a',
                         position: 'absolute',
                         top: '50%',
-                        left: '96%',
+                        left: '95%',
                         zIndex: 10
                     }}
                 >
