@@ -28,6 +28,11 @@ export default function reducer<T>(
                 ...state,
                 showBundleDetails: payload
             };
+        case BundlesActionType.CLEAR_BUNDLES:
+            return {
+                ...state,
+                bundles: []
+            };
         default:
             return state;
     }

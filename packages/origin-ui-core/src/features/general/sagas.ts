@@ -57,7 +57,7 @@ import { getI18n } from 'react-i18next';
 import { showNotification, NotificationType, getDevicesOwnedLink } from '../../utils';
 import { ICertificateViewItem, CertificateSource } from '../certificates';
 import { getCertificate } from '../certificates/sagas';
-import { storeBundle, BundlesActionType, ICreateBundleAction, showBundleDetails } from '../bundles';
+import { storeBundle, BundlesActionType, ICreateBundleAction, showBundleDetails, clearBundles } from '../bundles';
 
 function createEthereumProviderAccountsChangedEventChannel(ethereumProvider: any) {
     return eventChannel<string[]>((emitter) => {
@@ -353,6 +353,7 @@ function* findEnhancedCertificate(
 }
 
 function* fetchBundles() {
+    yield put(clearBundles());
     const exchangeClient: IExchangeClient = yield select(getExchangeClient);
     const bundles: Bundle[] = yield apply(exchangeClient, exchangeClient.getAvailableBundles, null);
     console.log('>>> fetched bundles:', bundles);

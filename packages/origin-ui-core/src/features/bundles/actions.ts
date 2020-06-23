@@ -4,7 +4,8 @@ export enum BundlesActionType {
     CREATE = 'BUNDLES_CREATE',
     STORE = 'BUNDLES_STORE',
     BUY = 'BUNDLES_BUY',
-    SHOW_BUNDLE_DETAILS = 'BUNDLES_SHOW_BUNDLE_DETAILS'
+    SHOW_BUNDLE_DETAILS = 'BUNDLES_SHOW_BUNDLE_DETAILS',
+    CLEAR_BUNDLES = 'BUNDLES_CLREAR_BUNDLES'
 }
 
 export interface IBundleAction {
@@ -61,3 +62,5 @@ export const showBundleDetails = (payload: IShowBundleDetailsAction['payload']) 
         payload
     };
 };
+
+export const clearBundles = () => ({ type: BundlesActionType.CLEAR_BUNDLES });
