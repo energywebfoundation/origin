@@ -11,7 +11,8 @@ import {
     Theme,
     createStyles,
     ListItemAvatar,
-    Button
+    Button,
+    Box
 } from '@material-ui/core';
 import { Bundle } from '../../utils/exchange';
 import {
@@ -104,10 +105,12 @@ export const BundleCard = (props: IOwnProps) => {
                                     divider
                                 >
                                     <ListItemAvatar>
-                                        <Avatar
-                                            src={energyImageByType(type as EnergyTypes)}
-                                            classes={{ root: imageClasses.root }}
-                                        />
+                                        <Box>
+                                            <Avatar
+                                                src={energyImageByType(type as EnergyTypes)}
+                                                classes={{ root: imageClasses.root }}
+                                            />
+                                        </Box>
                                     </ListItemAvatar>
                                     <Typography>{EnergyFormatter.format(volume, true)}</Typography>
                                 </ListItem>

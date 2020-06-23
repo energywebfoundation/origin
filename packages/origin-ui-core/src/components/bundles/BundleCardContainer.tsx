@@ -35,43 +35,50 @@ export const BundleCardContainer = (props: IOwnProps) => {
 
     return (
         <>
-            <Grid container direction="row" wrap="nowrap" spacing={1}>
-                <div style={{ position: 'relative' }}>
-                    <IconButton
-                        disabled={displayFrom <= 0}
-                        onClick={() => setDisplayFrom(displayFrom - 1)}
-                        style={{
-                            backgroundColor: '#5a5a5a',
-                            position: 'absolute',
-                            top: '50%',
-                            left: -30,
-                            zIndex: 10
-                        }}
-                        size="medium"
-                    >
-                        <NavigateBeforeOutlined />
-                    </IconButton>
-                </div>
+            <Grid
+                container
+                direction="row"
+                wrap="nowrap"
+                spacing={1}
+                style={{ position: 'relative' }}
+            >
+                <IconButton
+                    disabled={displayFrom <= 0}
+                    onClick={() => setDisplayFrom(displayFrom - 1)}
+                    style={{
+                        backgroundColor: '#5a5a5a',
+                        position: 'absolute',
+                        top: '50%',
+                        left: '-3%',
+                        zIndex: 10
+                    }}
+                    size="medium"
+                >
+                    <NavigateBeforeOutlined />
+                </IconButton>
+                <IconButton
+                    disabled={displayFrom + BUNDLE_LIST_SIZE >= bundles.length}
+                    onClick={() => setDisplayFrom(displayFrom + 1)}
+                    style={{
+                        backgroundColor: '#5a5a5a',
+                        position: 'absolute',
+                        top: '50%',
+                        left: '96%',
+                        zIndex: 10
+                    }}
+                >
+                    <NavigateNextOutlined />
+                </IconButton>
                 {bundlesToDisplay.map((bundle) => (
-                    <Grid item xs key={bundle.id} onClick={() => setSelected(bundle)}>
+                    <Grid
+                        item
+                        style={{ width: '20%' }}
+                        key={bundle.id}
+                        onClick={() => setSelected(bundle)}
+                    >
                         <BundleCard bundle={bundle} isSelected={bundle.id === selected.id} />
                     </Grid>
                 ))}
-                <div style={{ position: 'relative' }}>
-                    <IconButton
-                        disabled={displayFrom + BUNDLE_LIST_SIZE >= bundles.length}
-                        onClick={() => setDisplayFrom(displayFrom + 1)}
-                        style={{
-                            backgroundColor: '#5a5a5a',
-                            position: 'absolute',
-                            top: '50%',
-                            left: -30,
-                            zIndex: 10
-                        }}
-                    >
-                        <NavigateNextOutlined />
-                    </IconButton>
-                </div>
             </Grid>
         </>
     );
