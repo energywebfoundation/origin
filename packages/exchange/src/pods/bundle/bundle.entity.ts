@@ -53,4 +53,17 @@ export class Bundle extends ExtendedBaseEntity {
 
         return this.items.every((item) => item.currentVolume.mul(precision).mod(ratio).isZero());
     }
+
+    getUpdatedVolumes(volume: BN) {
+        const currentVolume = this.volume;
+
+        return this.items.map((item) => {
+            const traded = item.startVolume.div(currentVolume.div(volume));
+
+            return {
+                id: item.id,
+                currentVolume: item.currentVolume.sub(traded)
+            };
+        });
+    }
 }
