@@ -8,10 +8,7 @@ import {
     Box,
     Typography,
     Slider,
-    DialogContent,
-    makeStyles,
-    Theme,
-    createStyles
+    DialogContent
 } from '@material-ui/core';
 import { BundleContents } from './BudleContents';
 import { BundleCardContainer } from './BundleCardContainer';
