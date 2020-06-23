@@ -21,11 +21,11 @@ const BundleDetails = (props: IOwnProps) => {
     const bundles = useSelector(getBundles);
     const { t } = useTranslation();
 
-    const prices = bundles.map((bundle) => bundlePrice(bundle));
-    const maxPrice = Math.ceil(Math.max(...prices) / 10) * 10;
-    const minPrice = Math.floor(Math.min(...prices) / 10) * 10;
+    const prices = bundles.map((bundle) => bundlePrice(bundle)) ?? [0];
+    const maxPrice = prices.length > 0 ? Math.ceil(Math.max(...prices) / 10) * 10 : 0;
+    const minPrice = prices.length > 0 ? Math.floor(Math.min(...prices) / 10) * 10 : 100;
 
-    const [priceRange, setPriceRange] = useState<number[]>([minPrice ?? 0, maxPrice ?? 0]);
+    const [priceRange, setPriceRange] = useState<number[]>([minPrice, maxPrice]);
     const priceStep = Math.floor((maxPrice - minPrice) / (COUNT_OF_PRICE_MARKS - 1));
 
     useEffect(() => {
