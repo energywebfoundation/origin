@@ -25,7 +25,7 @@ const BundleDetails = (props: IOwnProps) => {
     const maxPrice = Math.ceil(Math.max(...prices) / 10) * 10;
     const minPrice = Math.floor(Math.min(...prices) / 10) * 10;
 
-    const [priceRange, setPriceRange] = useState<number[]>([minPrice, maxPrice]);
+    const [priceRange, setPriceRange] = useState<number[]>([minPrice ?? 0, maxPrice ?? 0]);
     const priceStep = Math.floor((maxPrice - minPrice) / (COUNT_OF_PRICE_MARKS - 1));
 
     useEffect(() => {

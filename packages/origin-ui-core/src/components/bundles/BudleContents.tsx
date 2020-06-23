@@ -1,14 +1,11 @@
 import React, { useState } from 'react';
 import {
-    List,
-    ListItem,
     Grid,
     Typography,
     Paper,
     makeStyles,
     Theme,
     createStyles,
-    IconButton,
     Button
 } from '@material-ui/core';
 import { Bundle } from '../../utils/exchange';

@@ -1,6 +1,5 @@
 import { Filter, Operator, OrderSide, Product, OrderStatus } from '@energyweb/exchange-core';
 import { BigNumber } from 'ethers/utils';
-import BN from 'bn.js';
 
 export type DeviceVintageDTO = {
     year: number;

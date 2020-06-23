@@ -57,7 +57,13 @@ import { getI18n } from 'react-i18next';
 import { showNotification, NotificationType, getDevicesOwnedLink } from '../../utils';
 import { ICertificateViewItem, CertificateSource } from '../certificates';
 import { getCertificate } from '../certificates/sagas';
-import { storeBundle, BundlesActionType, ICreateBundleAction, showBundleDetails, clearBundles } from '../bundles';
+import {
+    storeBundle,
+    BundlesActionType,
+    ICreateBundleAction,
+    showBundleDetails,
+    clearBundles
+} from '../bundles';
 
 function createEthereumProviderAccountsChangedEventChannel(ethereumProvider: any) {
     return eventChannel<string[]>((emitter) => {
@@ -356,7 +362,6 @@ function* fetchBundles() {
     yield put(clearBundles());
     const exchangeClient: IExchangeClient = yield select(getExchangeClient);
     const bundles: Bundle[] = yield apply(exchangeClient, exchangeClient.getAvailableBundles, null);
-    console.log('>>> fetched bundles:', bundles);
     for (const bundle of bundles) {
         bundle.items.forEach((item) => {
             item.currentVolume = new BigNumber(item.currentVolume.toString());

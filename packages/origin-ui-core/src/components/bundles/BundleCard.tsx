@@ -4,27 +4,18 @@ import {
     CardContent,
     CardHeader,
     Typography,
-    Grid,
-    Paper,
     ListItem,
     List,
-    ListItemIcon,
-    SvgIcon,
-    CardMedia,
-    withStyles,
     makeStyles,
     Avatar,
     Theme,
     createStyles,
     ListItemAvatar,
-    CardActions,
-    Button,
-    Box
+    Button
 } from '@material-ui/core';
 import { Bundle } from '../../utils/exchange';
 import {
     EnergyFormatter,
-    deviceById,
     energyImageByType,
     getEnvironment,
     getProducingDevices,
