@@ -117,6 +117,24 @@ describe('Bundles', () => {
 
                 assertBundle(bundle);
             });
+
+        await request(app.getHttpServer())
+            .get('/account')
+            .expect(200)
+            .expect((res) => {
+                const {
+                    balances: { available, locked }
+                } = res.body as AccountDTO;
+
+                expect(locked.length).equals(2);
+                expect(available.length).equals(0);
+
+                const itemOne = locked.find((item) => item.asset.id === depositOne.asset.id);
+                const itemTwo = locked.find((item) => item.asset.id === depositTwo.asset.id);
+
+                expect(itemOne.amount).equals(`${10 * MWh}`);
+                expect(itemTwo.amount).equals(`${10 * MWh}`);
+            });
     });
 
     it('should be able to cancel the bundle', async () => {
@@ -156,6 +174,24 @@ describe('Bundles', () => {
 
                 expect(bundle.id).equals(bundleId);
                 expect(bundle.isCancelled).equals(true);
+            });
+
+        await request(app.getHttpServer())
+            .get('/account')
+            .expect(200)
+            .expect((res) => {
+                const {
+                    balances: { available, locked }
+                } = res.body as AccountDTO;
+
+                expect(locked.length).equals(0);
+                expect(available.length).equals(2);
+
+                const itemOne = available.find((item) => item.asset.id === depositOne.asset.id);
+                const itemTwo = available.find((item) => item.asset.id === depositTwo.asset.id);
+
+                expect(itemOne.amount).equals(`${10 * MWh}`);
+                expect(itemTwo.amount).equals(`${10 * MWh}`);
             });
     });
 
@@ -206,9 +242,10 @@ describe('Bundles', () => {
             .expect(200)
             .expect((res) => {
                 const {
-                    balances: { available }
+                    balances: { available, locked }
                 } = res.body as AccountDTO;
 
+                expect(locked.length).equals(0);
                 expect(available.length).equals(2);
 
                 const itemOne = available.find((item) => item.asset.id === depositOne.asset.id);
@@ -230,6 +267,19 @@ describe('Bundles', () => {
                 expect(trade.bundle.id).equals(bundle.id);
                 expect(trade.buyerId).equals(user1Id);
             });
+
+        const {
+            balances: { available, locked }
+        } = await accountService.getAccount(user2Id);
+
+        expect(locked.length).equals(2);
+        expect(available.length).equals(0);
+
+        const itemOne = locked.find((item) => item.asset.id === depositOne.asset.id);
+        const itemTwo = locked.find((item) => item.asset.id === depositTwo.asset.id);
+
+        expect(itemOne.amount.toString(10)).equals(`${5 * MWh}`);
+        expect(itemTwo.amount.toString(10)).equals(`${5 * MWh}`);
     });
 
     it('should not return cancelled bundles', async () => {

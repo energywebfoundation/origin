@@ -9,7 +9,7 @@ import {
 import { ConfigService } from '@nestjs/config';
 import { InjectRepository } from '@nestjs/typeorm';
 import BN from 'bn.js';
-import { Repository } from 'typeorm';
+import { Repository, FindConditions } from 'typeorm';
 
 import { AccountBalanceService } from '../account-balance/account-balance.service';
 import { Asset } from '../asset/asset.entity';
@@ -41,8 +41,8 @@ export class BundleService {
         return this.bundleRepository.findOne(id);
     }
 
-    public async getByUser(userId: string): Promise<Bundle[]> {
-        return this.bundleRepository.find({ userId });
+    public async getByUser(userId: string, conditions?: FindConditions<Bundle>): Promise<Bundle[]> {
+        return this.bundleRepository.find({ ...conditions, userId });
     }
 
     public async getTrades(userId: string): Promise<BundleTrade[]> {
@@ -106,13 +106,19 @@ export class BundleService {
             throw new BadRequestException('Unable to split bundle');
         }
 
+        const volume = new BN(buyBundle.volume);
+
         const trade: BundleTrade = {
             bundle: { id: bundle.id },
             buyerId: userId,
-            volume: new BN(buyBundle.volume)
+            volume
         } as BundleTrade;
 
         const { id } = await this.bundleTradeRepository.save(trade);
+
+        const updatedItems = bundle.getUpdatedVolumes(volume);
+
+        await this.bundleRepository.save({ id: bundle.id, items: updatedItems });
 
         return this.bundleTradeRepository.findOne(id);
     }

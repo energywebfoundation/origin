@@ -213,14 +213,30 @@ describe('AccountBalanceService', () => {
         registerBundles(
             {
                 items: [
-                    { asset: asset1, currentVolume: new BN('1000') } as BundleItem,
-                    { asset: asset2, currentVolume: new BN('500') } as BundleItem
+                    {
+                        asset: asset1,
+                        currentVolume: new BN('1000'),
+                        startVolume: new BN('1000')
+                    } as BundleItem,
+                    {
+                        asset: asset2,
+                        currentVolume: new BN('500'),
+                        startVolume: new BN('500')
+                    } as BundleItem
                 ]
             },
             {
                 items: [
-                    { asset: asset1, currentVolume: new BN('250') } as BundleItem,
-                    { asset: asset2, currentVolume: new BN('500') } as BundleItem
+                    {
+                        asset: asset1,
+                        currentVolume: new BN('250'),
+                        startVolume: new BN('250')
+                    } as BundleItem,
+                    {
+                        asset: asset2,
+                        currentVolume: new BN('500'),
+                        startVolume: new BN('500')
+                    } as BundleItem
                 ]
             }
         );

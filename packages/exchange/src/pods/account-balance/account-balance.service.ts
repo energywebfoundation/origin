@@ -11,6 +11,7 @@ import { AccountAsset } from './account-asset';
 import { AccountBalance } from './account-balance';
 import { Asset } from '../asset/asset.entity';
 import { BundleService } from '../bundle/bundle.service';
+import { Bundle } from '../bundle/bundle.entity';
 
 export type AssetAmount = { id: string; amount: BN };
 
@@ -33,7 +34,10 @@ export class AccountBalanceService {
         const transfers = await this.getTransfers(userId);
         const trades = await this.getTrades(userId);
         const sellOrders = await this.getSellOrders(userId);
-        const inBundles = await this.getAssetsLockedInBundles(userId);
+
+        const userBundles = await this.getUserBundles(userId);
+        const inBundlesLocked = await this.getAssetsLockedInBundles(userBundles, false);
+        const inBundlesAvailable = await this.getAssetsLockedInBundles(userBundles, true);
         const fromBundles = await this.getAssetsFromBundles(userId);
 
         const sum = (oldVal: AccountAsset, newVal: AccountAsset) => ({
@@ -44,8 +48,10 @@ export class AccountBalanceService {
         const available = transfers
             .mergeWith(sum, trades)
             .mergeWith(sum, sellOrders)
-            .mergeWith(sum, fromBundles);
-        const locked = sellOrders.mergeWith(sum, inBundles);
+            .mergeWith(sum, fromBundles)
+            .mergeWith(sum, inBundlesAvailable);
+
+        const locked = sellOrders.mergeWith(sum, inBundlesLocked);
 
         const balances = new AccountBalance({
             available: Array.from(available.values()).filter((asset) => asset.amount.gt(new BN(0))),
@@ -77,14 +83,17 @@ export class AccountBalanceService {
         });
     }
 
-    private async getAssetsLockedInBundles(userId: string) {
-        const bundles = await this.bundleService.getByUser(userId);
+    private async getUserBundles(userId: string) {
+        return this.bundleService.getByUser(userId, { isCancelled: false });
+    }
+
+    private async getAssetsLockedInBundles(bundles: Bundle[], initialVolume: boolean) {
         const items = bundles.flatMap((bundle) => bundle.items);
 
         return this.sumByAsset(
             items,
             (bundle) => bundle.asset,
-            (order) => order.currentVolume.muln(-1)
+            (order) => (initialVolume ? order.startVolume.muln(-1) : order.currentVolume.muln(-1))
         );
     }
 
