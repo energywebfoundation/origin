@@ -6,7 +6,8 @@ import {
     makeStyles,
     Theme,
     createStyles,
-    Button
+    Button,
+    Box
 } from '@material-ui/core';
 import { Bundle } from '../../utils/exchange';
 import { useSelector } from 'react-redux';
@@ -43,17 +44,19 @@ export const BundleContents = (props: IOwnProps) => {
             justify="flex-start"
             style={{ height: '100%' }}
         >
-            <Button
-                style={{
-                    alignSelf: 'center',
-                    backgroundColor: '#5a5a5a',
-                    width: '100%'
-                }}
-                onClick={() => setDisplayFrom(displayFrom - 1)}
-                disabled={displayFrom === 0}
-            >
-                <KeyboardArrowUp />
-            </Button>
+            <Box px={1}>
+                <Button
+                    style={{
+                        alignSelf: 'center',
+                        backgroundColor: '#5a5a5a',
+                        width: '100%'
+                    }}
+                    onClick={() => setDisplayFrom(displayFrom - 1)}
+                    disabled={displayFrom === 0}
+                >
+                    <KeyboardArrowUp />
+                </Button>
+            </Box>
             {displayed.map(({ id, asset: { deviceId, generationFrom, generationTo } }) => {
                 const device = deviceById(deviceId, environment, devices);
                 return (
@@ -92,13 +95,20 @@ export const BundleContents = (props: IOwnProps) => {
                     </Grid>
                 );
             })}
-            <Button
-                style={{ alignSelf: 'center', backgroundColor: '#5a5a5a', width: '100%' }}
-                onClick={() => setDisplayFrom(displayFrom + 1)}
-                disabled={displayFrom + OFFERS_LIST_SIZE >= bundle.items.length}
-            >
-                <KeyboardArrowDown />
-            </Button>
+            <Box px={1}>
+                <Button
+                    style={{
+                        alignSelf: 'center',
+                        backgroundColor: '#5a5a5a',
+                        width: '100%',
+                        justifySelf: 'end'
+                    }}
+                    onClick={() => setDisplayFrom(displayFrom + 1)}
+                    disabled={displayFrom + OFFERS_LIST_SIZE >= bundle.items.length}
+                >
+                    <KeyboardArrowDown />
+                </Button>
+            </Box>
         </Grid>
     );
 };

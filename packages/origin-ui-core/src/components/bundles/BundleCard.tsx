@@ -107,7 +107,7 @@ export const BundleCard = (props: IOwnProps) => {
                                         <Avatar
                                             src={energyImageByType(type as EnergyTypes)}
                                             classes={{ root: imageClasses.root }}
-                                        ></Avatar>
+                                        />
                                     </ListItemAvatar>
                                     <Typography>{EnergyFormatter.format(volume, true)}</Typography>
                                 </ListItem>

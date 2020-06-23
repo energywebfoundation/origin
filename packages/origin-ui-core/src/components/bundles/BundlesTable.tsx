@@ -88,7 +88,6 @@ export const BundlesTable = () => {
         const { bundleId } = rows[rowIndex];
         const bundle = bundles.find((b) => b.id === bundleId);
         setSelectedBundle(bundle);
-        // setShowBundleDetailsModal(true);
         dispatch(showBundleDetails(true));
     };
 

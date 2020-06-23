@@ -34,43 +34,45 @@ export const BundleCardContainer = (props: IOwnProps) => {
     const bundlesToDisplay: Bundle[] = bundles.slice(displayFrom, displayFrom + BUNDLE_LIST_SIZE);
 
     return (
-        <Grid container direction="row" wrap="nowrap" spacing={1}>
-            <div style={{ position: 'relative' }}>
-                <IconButton
-                    disabled={displayFrom <= 0}
-                    onClick={() => setDisplayFrom(displayFrom - 1)}
-                    style={{
-                        backgroundColor: '#5a5a5a',
-                        position: 'absolute',
-                        top: '50%',
-                        left: -30,
-                        zIndex: 10
-                    }}
-                    size="medium"
-                >
-                    <NavigateBeforeOutlined />
-                </IconButton>
-            </div>
-            {bundlesToDisplay.map((bundle) => (
-                <Grid item xs={2} key={bundle.id} onClick={() => setSelected(bundle)}>
-                    <BundleCard bundle={bundle} isSelected={bundle.id === selected.id} />
-                </Grid>
-            ))}
-            <div style={{ position: 'relative' }}>
-                <IconButton
-                    disabled={displayFrom + BUNDLE_LIST_SIZE >= bundles.length}
-                    onClick={() => setDisplayFrom(displayFrom + 1)}
-                    style={{
-                        backgroundColor: '#5a5a5a',
-                        position: 'absolute',
-                        top: '50%',
-                        left: -30,
-                        zIndex: 10
-                    }}
-                >
-                    <NavigateNextOutlined />
-                </IconButton>
-            </div>
-        </Grid>
+        <>
+            <Grid container direction="row" wrap="nowrap" spacing={1}>
+                <div style={{ position: 'relative' }}>
+                    <IconButton
+                        disabled={displayFrom <= 0}
+                        onClick={() => setDisplayFrom(displayFrom - 1)}
+                        style={{
+                            backgroundColor: '#5a5a5a',
+                            position: 'absolute',
+                            top: '50%',
+                            left: -30,
+                            zIndex: 10
+                        }}
+                        size="medium"
+                    >
+                        <NavigateBeforeOutlined />
+                    </IconButton>
+                </div>
+                {bundlesToDisplay.map((bundle) => (
+                    <Grid item xs key={bundle.id} onClick={() => setSelected(bundle)}>
+                        <BundleCard bundle={bundle} isSelected={bundle.id === selected.id} />
+                    </Grid>
+                ))}
+                <div style={{ position: 'relative' }}>
+                    <IconButton
+                        disabled={displayFrom + BUNDLE_LIST_SIZE >= bundles.length}
+                        onClick={() => setDisplayFrom(displayFrom + 1)}
+                        style={{
+                            backgroundColor: '#5a5a5a',
+                            position: 'absolute',
+                            top: '50%',
+                            left: -30,
+                            zIndex: 10
+                        }}
+                    >
+                        <NavigateNextOutlined />
+                    </IconButton>
+                </div>
+            </Grid>
+        </>
     );
 };

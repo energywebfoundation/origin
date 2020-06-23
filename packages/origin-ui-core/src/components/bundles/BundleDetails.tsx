@@ -1,6 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { Bundle } from '../../utils/exchange';
-import { Dialog, DialogTitle, Grid, withStyles, Box, Typography, Slider } from '@material-ui/core';
+import {
+    Dialog,
+    DialogTitle,
+    Grid,
+    withStyles,
+    Box,
+    Typography,
+    Slider,
+    DialogContent
+} from '@material-ui/core';
 import { BundleContents } from './BudleContents';
 import { BundleCardContainer } from './BundleCardContainer';
 import { useSelector, useDispatch } from 'react-redux';
@@ -46,13 +55,13 @@ const BundleDetails = (props: IOwnProps) => {
             fullWidth={true}
         >
             <DialogTitle>BUNDLE DETAILS</DialogTitle>
-            <div>
+            <DialogContent>
                 <Box mb={4}>
                     <Grid container justify="flex-end">
-                        <Grid item xs={8}>
+                        <Grid item xs={7}>
                             <Grid container direction="column">
                                 <Typography>{t('certificate.info.selectPriceRange')}</Typography>
-                                <Box pt={4}>
+                                <Box pt={5}>
                                     <Slider
                                         defaultValue={[minPrice, maxPrice]}
                                         value={priceRange}
@@ -71,18 +80,20 @@ const BundleDetails = (props: IOwnProps) => {
                     </Grid>
                 </Box>
                 <Grid container>
-                    <Grid item xs={4} style={{ alignSelf: 'stretch' }}>
+                    <Grid item xs={5} style={{ alignSelf: 'stretch' }}>
                         <BundleContents bundle={selected || props.selected} />
                     </Grid>
-                    <Grid item xs={8}>
-                        <BundleCardContainer
-                            selected={selected || props.selected}
-                            setSelected={setSelected}
-                            priceRange={priceRange}
-                        />
+                    <Grid item xs={7}>
+                        <Box height="75%">
+                            <BundleCardContainer
+                                selected={selected || props.selected}
+                                setSelected={setSelected}
+                                priceRange={priceRange}
+                            />
+                        </Box>
                     </Grid>
                 </Grid>
-            </div>
+            </DialogContent>
         </Dialog>
     );
 };
