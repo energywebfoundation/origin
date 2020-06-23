@@ -355,11 +355,19 @@ function* findEnhancedCertificate(
 function* fetchBundles() {
     const exchangeClient: IExchangeClient = yield select(getExchangeClient);
     const bundles: Bundle[] = yield apply(exchangeClient, exchangeClient.getAvailableBundles, null);
+    console.log('>>> fetched bundles:', bundles);
     for (const bundle of bundles) {
         bundle.items.forEach((item) => {
             item.currentVolume = new BigNumber(item.currentVolume.toString());
             item.startVolume = new BigNumber(item.startVolume.toString());
         });
+        if (
+            bundle.items
+                .reduce((total, item) => total.add(item.currentVolume), new BigNumber(0))
+                .isZero()
+        ) {
+            continue;
+        }
         bundle.volume = new BigNumber(bundle.volume.toString());
         yield put(storeBundle(bundle));
     }

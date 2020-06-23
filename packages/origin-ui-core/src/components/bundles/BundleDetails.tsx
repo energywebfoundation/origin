@@ -33,7 +33,6 @@ const BundleDetails = (props: IOwnProps) => {
     }, [bundles]);
 
     const marks = Array.from(Array(COUNT_OF_PRICE_MARKS).keys()).map((i) => {
-        // const from = Math.min(Math.abs(priceRange[0]), minPrice - priceStep);
         const from = priceRange[0];
         const value = from + i * priceStep;
         return { value, label: String(value) };
@@ -53,16 +52,20 @@ const BundleDetails = (props: IOwnProps) => {
                         <Grid item xs={8}>
                             <Grid container direction="column">
                                 <Typography>{t('certificate.info.selectPriceRange')}</Typography>
-                                <Slider
-                                    defaultValue={[minPrice, maxPrice]}
-                                    value={priceRange}
-                                    onChange={(event, value) => setPriceRange(value as number[])}
-                                    marks={marks}
-                                    min={minPrice}
-                                    max={maxPrice}
-                                    step={priceStep}
-                                    valueLabelDisplay="on"
-                                />
+                                <Box pt={4}>
+                                    <Slider
+                                        defaultValue={[minPrice, maxPrice]}
+                                        value={priceRange}
+                                        onChange={(event, value) =>
+                                            setPriceRange(value as number[])
+                                        }
+                                        marks={marks}
+                                        min={minPrice}
+                                        max={maxPrice}
+                                        step={priceStep}
+                                        valueLabelDisplay="on"
+                                    />
+                                </Box>
                             </Grid>
                         </Grid>
                     </Grid>

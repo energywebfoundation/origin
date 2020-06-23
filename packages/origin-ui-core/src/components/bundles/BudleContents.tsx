@@ -8,7 +8,8 @@ import {
     makeStyles,
     Theme,
     createStyles,
-    IconButton
+    IconButton,
+    Button
 } from '@material-ui/core';
 import { Bundle } from '../../utils/exchange';
 import { useSelector } from 'react-redux';
@@ -45,13 +46,17 @@ export const BundleContents = (props: IOwnProps) => {
             justify="flex-start"
             style={{ height: '100%' }}
         >
-            <IconButton
-                style={{ alignSelf: 'center', backgroundColor: '#5a5a5a' }}
+            <Button
+                style={{
+                    alignSelf: 'center',
+                    backgroundColor: '#5a5a5a',
+                    width: '100%'
+                }}
                 onClick={() => setDisplayFrom(displayFrom - 1)}
                 disabled={displayFrom === 0}
             >
                 <KeyboardArrowUp />
-            </IconButton>
+            </Button>
             {displayed.map(({ id, asset: { deviceId, generationFrom, generationTo } }) => {
                 const device = deviceById(deviceId, environment, devices);
                 return (
@@ -90,13 +95,13 @@ export const BundleContents = (props: IOwnProps) => {
                     </Grid>
                 );
             })}
-            <IconButton
-                style={{ alignSelf: 'center', backgroundColor: '#5a5a5a' }}
+            <Button
+                style={{ alignSelf: 'center', backgroundColor: '#5a5a5a', width: '100%' }}
                 onClick={() => setDisplayFrom(displayFrom + 1)}
                 disabled={displayFrom + OFFERS_LIST_SIZE >= bundle.items.length}
             >
                 <KeyboardArrowDown />
-            </IconButton>
+            </Button>
         </Grid>
     );
 };

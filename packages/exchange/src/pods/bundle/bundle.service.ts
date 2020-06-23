@@ -50,7 +50,13 @@ export class BundleService {
     }
 
     public async getAvailable(): Promise<Bundle[]> {
-        return this.bundleRepository.find({ isCancelled: false });
+        console.log('>>> available bundles filtered by total');
+        return (await this.bundleRepository.find({ isCancelled: false })).filter(
+            (bundle) =>
+                !bundle.items
+                    .reduce((total, item) => total.add(item.currentVolume), new BN(0))
+                    .isZero()
+        );
     }
 
     public async create(userId: string, createBundle: CreateBundleDTO): Promise<Bundle> {

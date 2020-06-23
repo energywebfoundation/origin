@@ -128,7 +128,8 @@ export const BundleCard = (props: IOwnProps) => {
                     style={{
                         flexWrap: 'wrap',
                         justifyContent: 'center',
-                        backgroundColor: isSelected ? cardSelectedColor : cardNotSelectedColor
+                        backgroundColor: isSelected ? cardSelectedColor : cardNotSelectedColor,
+                        flexDirection: 'column'
                     }}
                 >
                     <Typography color="textSecondary" variant="body2" noWrap>
