@@ -57,7 +57,7 @@ export const BundleContents = (props: IOwnProps) => {
                     <KeyboardArrowUp />
                 </Button>
             </Box>
-            {displayed.map(({ id, asset: { deviceId, generationFrom, generationTo } }) => {
+            {displayed.map(({ asset: { id, deviceId, generationFrom, generationTo } }) => {
                 const device = deviceById(deviceId, environment, devices);
                 return (
                     <Grid item key={id}>
