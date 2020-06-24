@@ -165,7 +165,7 @@ export const SelectedForSale = (props: IOwnProps) => {
                     color="primary"
                     onClick={requestCreateBundle}
                     variant="contained"
-                    disabled={!sellAsBundle}
+                    disabled={!sellAsBundle || selected.length < 2}
                 >
                     Sell {selected.length} certificates
                 </Button>
