@@ -24,7 +24,7 @@ import {
     getCurrencies
 } from '../..';
 import { useSelector, useDispatch } from 'react-redux';
-import { EnergyTypes, formatCurrencyComplete } from '../../utils';
+import { EnergyTypes, formatCurrencyComplete, bundlePrice } from '../../utils';
 import { buyBundle } from '../../features/bundles';
 
 interface IOwnProps {
@@ -126,11 +126,7 @@ export const BundleCard = (props: IOwnProps) => {
                         Total price
                     </Typography>
                     <Typography color="textPrimary" variant="caption">
-                        {formatCurrencyComplete(
-                            (Number(EnergyFormatter.format(bundle.volume, false)) * bundle.price) /
-                                100,
-                            currency
-                        )}
+                        {formatCurrencyComplete(bundlePrice(bundle), currency)}
                     </Typography>
                     {isSelected && (
                         <Button color="primary" variant="contained" onClick={onBuyBundle}>
