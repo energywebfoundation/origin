@@ -183,6 +183,11 @@ export class ExchangeClient implements IExchangeClient {
         return created.data;
     }
 
+    public async buyBundle(bundle: { bundleId: string; volume: number }) {
+        const bundleTrade = await this.requestClient.post(`${this.bundleEndpoint}/buy`, bundle);
+        return bundleTrade.data;
+    }
+
     private get assetEndpoint() {
         return `${this.dataApiUrl}/asset`;
     }

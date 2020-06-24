@@ -1,5 +1,5 @@
 import React from 'react';
-import { Paper, Box } from '@material-ui/core';
+import { Paper, Box, Typography } from '@material-ui/core';
 import { useSelector } from 'react-redux';
 import { getCertificates, ICertificateViewItem } from '../../features/certificates';
 import { getProducingDevices, getEnvironment, deviceById } from '../..';
@@ -26,7 +26,9 @@ export const Certificates = (props: IOwnProps) => {
 
     return (
         <Paper>
-            <Box m={2}>CERTIFICATES</Box>
+            <Box m={1}>
+                <Typography variant="h5">CERTIFICATES</Typography>
+            </Box>
             <GroupedCertificateList
                 groups={certificatesByFacility()}
                 selected={selected}

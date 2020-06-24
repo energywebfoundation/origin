@@ -3,10 +3,12 @@ import { IBundleAction, BundlesActionType } from './actions';
 
 export interface IBundlesState {
     bundles: Bundle[];
+    showBundleDetails: boolean;
 }
 
 const initialState: IBundlesState = {
-    bundles: []
+    bundles: [],
+    showBundleDetails: false
 };
 
 export default function reducer<T>(
@@ -20,6 +22,16 @@ export default function reducer<T>(
             return {
                 ...state,
                 bundles
+            };
+        case BundlesActionType.SHOW_BUNDLE_DETAILS:
+            return {
+                ...state,
+                showBundleDetails: payload
+            };
+        case BundlesActionType.CLEAR_BUNDLES:
+            return {
+                ...state,
+                bundles: []
             };
         default:
             return state;

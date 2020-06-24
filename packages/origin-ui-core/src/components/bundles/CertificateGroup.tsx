@@ -16,7 +16,7 @@ import {
 } from '@material-ui/core';
 import { getProducingDevices, getEnvironment } from '../..';
 import { useSelector } from 'react-redux';
-import { deviceById, energyImageByType, moment, EnergyFormatter } from '../../utils';
+import { deviceById, energyImageByType, moment, EnergyFormatter, EnergyTypes } from '../../utils';
 
 interface IOwnProps {
     certificates: ICertificateViewItem[];
@@ -89,7 +89,7 @@ export const CertificateGroup = (props: IOwnProps) => {
                             energy: { privateVolume, publicVolume }
                         } = cert;
                         const device = deviceById(cert.deviceId, environment, devices);
-                        const type = device.deviceType.split(';')[0];
+                        const type = device.deviceType.split(';')[0].toLowerCase() as EnergyTypes;
                         const energy = publicVolume.add(privateVolume);
                         return (
                             <ListItem button key={cert.id} onClick={() => toggleSelect(cert)}>

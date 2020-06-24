@@ -124,7 +124,8 @@
                 "request": "Request",
                 "withdraw": "Withdraw",
                 "deposit": "Deposit",
-                "create_bundle": "Create bundle"
+                "create_bundle": "Create bundle",
+                "buy_bundle": "Buy"
             },
             "feedback": {
                 "returnedToInbox": "Certificate {id} has been returned to the inbox.",
@@ -143,10 +144,12 @@
                 "withdrawn": "Certificate withdrawn",
                 "certificateDeposited": "Certificate deposited",
                 "bundle_created": "Bundle created",
+                "bundle_bought": "Bundle bought",
                 "certificateNotFound": "Certificate not found"
             },
             "info": {
-                "requestCertificatesFor": "Request certificates for {facilityName}"
+                "requestCertificatesFor": "Request certificates for {facilityName}",
+                "selectPriceRange": "Select price range to view more combinations"
             },
             "event": {
                 "name": {

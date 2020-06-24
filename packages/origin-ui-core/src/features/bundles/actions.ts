@@ -1,8 +1,11 @@
-import { Bundle, CreateBundleDTO } from '../../utils/exchange';
+import { Bundle, CreateBundleDTO, BuyBundleDTO } from '../../utils/exchange';
 
 export enum BundlesActionType {
     CREATE = 'BUNDLES_CREATE',
-    STORE = 'BUNDLES_STORE'
+    STORE = 'BUNDLES_STORE',
+    BUY = 'BUNDLES_BUY',
+    SHOW_BUNDLE_DETAILS = 'BUNDLES_SHOW_BUNDLE_DETAILS',
+    CLEAR_BUNDLES = 'BUNDLES_CLREAR_BUNDLES'
 }
 
 export interface IBundleAction {
@@ -22,6 +25,16 @@ export interface IStoreBundleAction extends IBundleAction {
     payload: Bundle;
 }
 
+export interface IBuyBundleAction extends IBundleAction {
+    payload: {
+        bundleDTO: BuyBundleDTO;
+    };
+}
+
+export interface IShowBundleDetailsAction extends IBundleAction {
+    payload: boolean;
+}
+
 export const storeBundle = (payload: IStoreBundleAction['payload']) => {
     return {
         type: BundlesActionType.STORE,
@@ -35,3 +48,19 @@ export const createBundle = (payload: ICreateBundleAction['payload']) => {
         payload
     };
 };
+
+export const buyBundle = (payload: IBuyBundleAction['payload']) => {
+    return {
+        type: BundlesActionType.BUY,
+        payload
+    };
+};
+
+export const showBundleDetails = (payload: IShowBundleDetailsAction['payload']) => {
+    return {
+        type: BundlesActionType.SHOW_BUNDLE_DETAILS,
+        payload
+    };
+};
+
+export const clearBundles = () => ({ type: BundlesActionType.CLEAR_BUNDLES });

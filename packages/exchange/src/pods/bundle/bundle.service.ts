@@ -50,7 +50,9 @@ export class BundleService {
     }
 
     public async getAvailable(): Promise<Bundle[]> {
-        return this.bundleRepository.find({ isCancelled: false });
+        return (await this.bundleRepository.find({ isCancelled: false })).filter(
+            (bundle) => !bundle.available.isZero()
+        );
     }
 
     public async create(userId: string, createBundle: CreateBundleDTO): Promise<Bundle> {

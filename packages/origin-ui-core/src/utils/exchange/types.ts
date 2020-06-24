@@ -170,3 +170,8 @@ export type CreateBundleDTO = {
     price: number;
     items: BundleItemDTO[];
 };
+
+export type BuyBundleDTO = {
+    bundleId: string;
+    volume: string;
+};

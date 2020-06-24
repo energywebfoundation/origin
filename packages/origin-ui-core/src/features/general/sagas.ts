@@ -57,7 +57,13 @@ import { getI18n } from 'react-i18next';
 import { showNotification, NotificationType, getDevicesOwnedLink } from '../../utils';
 import { ICertificateViewItem, CertificateSource } from '../certificates';
 import { getCertificate } from '../certificates/sagas';
-import { storeBundle, BundlesActionType, ICreateBundleAction } from '../bundles';
+import {
+    storeBundle,
+    BundlesActionType,
+    ICreateBundleAction,
+    showBundleDetails,
+    clearBundles
+} from '../bundles';
 
 function createEthereumProviderAccountsChangedEventChannel(ethereumProvider: any) {
     return eventChannel<string[]>((emitter) => {
@@ -353,6 +359,7 @@ function* findEnhancedCertificate(
 }
 
 function* fetchBundles() {
+    yield put(clearBundles());
     const exchangeClient: IExchangeClient = yield select(getExchangeClient);
     const bundles: Bundle[] = yield apply(exchangeClient, exchangeClient.getAvailableBundles, null);
     for (const bundle of bundles) {
@@ -360,6 +367,13 @@ function* fetchBundles() {
             item.currentVolume = new BigNumber(item.currentVolume.toString());
             item.startVolume = new BigNumber(item.startVolume.toString());
         });
+        if (
+            bundle.items
+                .reduce((total, item) => total.add(item.currentVolume), new BigNumber(0))
+                .isZero()
+        ) {
+            continue;
+        }
         bundle.volume = new BigNumber(bundle.volume.toString());
         yield put(storeBundle(bundle));
     }
@@ -587,6 +601,30 @@ function* requestCreateBundle() {
     }
 }
 
+function* buyBundle() {
+    while (true) {
+        const {
+            payload: { bundleDTO }
+        } = yield take(BundlesActionType.BUY);
+        yield put(setLoading(true));
+        const i18n = getI18n();
+        const exchangeClient = yield select(getExchangeClient);
+        try {
+            yield apply(exchangeClient, exchangeClient.buyBundle, [bundleDTO]);
+            showNotification(
+                i18n.t('certificate.feedback.bundle_bought'),
+                NotificationType.Success
+            );
+        } catch (err) {
+            console.error(err);
+            showNotification(i18n.t('general.feedback.unknownError'), NotificationType.Error);
+        }
+        yield call(fetchBundles);
+        yield put(setLoading(false));
+        yield put(showBundleDetails(false));
+    }
+}
+
 export function* generalSaga(): SagaIterator {
     yield all([
         fork(showAccountChangedModalOnChange),
@@ -596,6 +634,7 @@ export function* generalSaga(): SagaIterator {
         fork(fillContractLookupIfMissing),
         fork(updateConfigurationWhenUserChanged),
         fork(requestDeviceCreation),
-        fork(requestCreateBundle)
+        fork(requestCreateBundle),
+        fork(buyBundle)
     ]);
 }
