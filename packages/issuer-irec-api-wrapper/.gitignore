@@ -1,0 +1,11 @@
+node_modules
+.DS_Store
+dist
+dist-shakeable
+.vscode
+*.log
+package-lock.json
+.env*
+!.env.example
+!.env.test
+coverage
