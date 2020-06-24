@@ -3,7 +3,7 @@ import { Bundle } from './exchange';
 import { deviceById, EnergyFormatter } from '.';
 import { BigNumber } from 'ethers/utils';
 import { EnergyTypes } from './device';
-import { Unit } from '../../../utils-general/src';
+import { Unit } from '@energyweb/utils-general';
 
 export const energyByType = (
     bundle: Bundle,
