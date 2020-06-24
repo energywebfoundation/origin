@@ -57,10 +57,10 @@ export const BundleContents = (props: IOwnProps) => {
                     <KeyboardArrowUp />
                 </Button>
             </Box>
-            {displayed.map(({ id, asset: { deviceId, generationFrom, generationTo } }) => {
+            {displayed.map(({ asset: { deviceId, generationFrom, generationTo } }, index) => {
                 const device = deviceById(deviceId, environment, devices);
                 return (
-                    <Grid item key={id}>
+                    <Grid item key={index}>
                         <Paper variant="outlined" classes={{ root: offerClasses.root }}>
                             <Grid container>
                                 <Grid item xs>
