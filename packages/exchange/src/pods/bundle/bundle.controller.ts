@@ -20,6 +20,7 @@ import { BundleService } from './bundle.service';
 import { CreateBundleDTO } from './create-bundle.dto';
 import { BuyBundleDTO } from './buy-bundle.dto';
 import { BundleTrade } from './bundle-trade.entity';
+import { BundlePublicDTO } from './bundle-public.dto';
 
 @UseInterceptors(ClassSerializerInterceptor)
 @Controller('bundle')
@@ -29,10 +30,11 @@ export class BundleController {
     constructor(private readonly bundleService: BundleService) {}
 
     @Get('/available')
-    public async getAvailableBundles(): Promise<Bundle[]> {
+    public async getAvailableBundles(): Promise<BundlePublicDTO[]> {
         try {
             const bundles = await this.bundleService.getAvailable();
-            return bundles;
+
+            return bundles.map((bundle) => new BundlePublicDTO(bundle));
         } catch (error) {
             this.logger.error(error.message);
 
