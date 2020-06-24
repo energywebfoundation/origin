@@ -185,7 +185,6 @@ export class ExchangeClient implements IExchangeClient {
 
     public async buyBundle(bundle: { bundleId: string; volume: number }) {
         const bundleTrade = await this.requestClient.post(`${this.bundleEndpoint}/buy`, bundle);
-        console.log('>>> response from buying bundle: ', bundleTrade);
         return bundleTrade.data;
     }
 
