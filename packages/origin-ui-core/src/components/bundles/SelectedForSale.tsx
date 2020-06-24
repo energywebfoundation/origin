@@ -30,7 +30,7 @@ import { BigNumber } from 'ethers/utils';
 import { formatCurrencyComplete, useTranslation, EnergyFormatter, EnergyTypes } from '../../utils';
 import { createBundle } from '../../features/bundles';
 import { BundleItemDTO } from '../../utils/exchange';
-import { Unit } from '../../../../utils-general/src';
+import { Unit } from '../../../../utils-general';
 
 interface IOwnProps {
     selected: ICertificateViewItem[];
