@@ -362,6 +362,7 @@ function* fetchBundles() {
     yield put(clearBundles());
     const exchangeClient: IExchangeClient = yield select(getExchangeClient);
     const bundles: Bundle[] = yield apply(exchangeClient, exchangeClient.getAvailableBundles, null);
+    const ownBundles = yield apply(exchangeClient, exchangeClient.getOwnBundles, null);
     for (const bundle of bundles) {
         bundle.items.forEach((item) => {
             item.currentVolume = new BigNumber(item.currentVolume.toString());

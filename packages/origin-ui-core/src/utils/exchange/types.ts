@@ -158,6 +158,7 @@ export type Bundle = {
     isCancelled: boolean;
     items: BundleItem[];
     volume: BigNumber;
+    own: boolean = false;
 };
 
 export type BundleItemDTO = {

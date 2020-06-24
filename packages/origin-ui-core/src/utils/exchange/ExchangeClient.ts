@@ -36,6 +36,7 @@ export interface IExchangeClient {
     getOrderById(id: string): Promise<Order>;
     getOrders?(): Promise<Order[]>;
     getAvailableBundles(): Promise<Bundle[]>;
+    getOwnBundles(): Promise<Bundle[]>;
     createBundle(bundle: CreateBundleDTO): Promise<Bundle>;
 }
 
@@ -171,6 +172,12 @@ export class ExchangeClient implements IExchangeClient {
         const response = await this.requestClient.get<unknown, Bundle[]>(
             `${this.bundleEndpoint}/available`
         );
+
+        return response.data;
+    }
+
+    public async getOwnBundles() {
+        const response = await this.requestClient.get<unknown, Bundle[]>(`${this.bundleEndpoint}`);
 
         return response.data;
     }
@@ -317,6 +324,10 @@ export const ExchangeClientMock: IExchangeClient = {
     },
 
     getAvailableBundles() {
+        return null;
+    },
+
+    getOwnBundles() {
         return null;
     },
 

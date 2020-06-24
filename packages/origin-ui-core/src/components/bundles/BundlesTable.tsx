@@ -31,10 +31,15 @@ const BUNDLES_TOTAL_ENERGY_PROPERTIES = [
     (record) => Number(record.total.split(EnergyFormatter.displayUnit)[0])
 ];
 
+interface IOwnProps {
+    owner: boolean;
+}
+
 const ENERGY_COLUMNS_TO_DISPLAY = [EnergyTypes.SOLAR, EnergyTypes.WIND, EnergyTypes.HYDRO];
 
-export const BundlesTable = () => {
-    const bundles = useSelector(getBundles);
+export const BundlesTable = (props: IOwnProps) => {
+    const { owner = false } = props;
+    const bundles = owner ? useSelector(getOwnBundles) : useSelector(getBundles);
     const { t } = useTranslation();
     const devices = useSelector(getProducingDevices);
     const [selectedBundle, setSelectedBundle] = useState<Bundle>(null);
