@@ -47,7 +47,8 @@ export abstract class Order implements IOrder {
         public readonly product: Product,
         public readonly price: number,
         volume: BN,
-        public readonly userId: string
+        public readonly userId: string,
+        public readonly createdAt: Date
     ) {
         if (volume.isZero() || volume.isNeg()) {
             throw new Error('Incorrect negative volume');
@@ -56,7 +57,7 @@ export abstract class Order implements IOrder {
             throw new Error('Incorrect negative price');
         }
 
-        this._volume = volume;
+        this._volume = new BN(volume);
     }
 
     public updateWithTradedVolume(tradedVolume: BN) {
