@@ -1,6 +1,6 @@
 import { ExtendedBaseEntity } from '@energyweb/origin-backend';
 import BN from 'bn.js';
-import { Transform, Expose } from 'class-transformer';
+import { Expose, Transform } from 'class-transformer';
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 import { BundleItem } from './bundle-item.entity';
@@ -16,7 +16,6 @@ export class Bundle extends ExtendedBaseEntity {
     id: string;
 
     @Column()
-    @Expose()
     userId: string;
 
     @Column()
