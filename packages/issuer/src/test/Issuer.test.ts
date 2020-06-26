@@ -58,24 +58,22 @@ describe('Issuer', () => {
             conf,
             [],
             isPrivate,
-            forAddress
+            forAddress,
+            (id: CertificationRequest['id']) =>
+                (conf.offChainDataSource.certificateClient as any).mockBlockchainData(id, {
+                    sender: forAddress || deviceOwnerWallet.address,
+                    owner: deviceOwnerWallet.address,
+                    fromTime: generationFromTime,
+                    toTime: generationToTime,
+                    created: moment().unix(),
+                    approved: false,
+                    revoked: false,
+                    deviceId: device,
+                    isPrivate
+                })
         );
 
-        (conf.offChainDataSource.certificateClient as any).mockBlockchainData(
-            certificationRequest.id,
-            {
-                sender: forAddress || deviceOwnerWallet.address,
-                owner: deviceOwnerWallet.address,
-                fromTime: generationFromTime,
-                toTime: generationToTime,
-                created: moment().unix(),
-                approved: false,
-                revoked: false,
-                deviceId: device
-            }
-        );
-
-        return certificationRequest.sync();
+        return certificationRequest;
     };
 
     it('migrates Issuer and Registry', async () => {
@@ -118,7 +116,7 @@ describe('Issuer', () => {
         const toTime = timestamp;
         const device = '1';
 
-        let certificationRequest = await createCertificationRequest(
+        const certificationRequest = await createCertificationRequest(
             energy,
             false,
             fromTime,
@@ -128,23 +126,7 @@ describe('Issuer', () => {
 
         assert.isAbove(certificationRequest.id, -1);
 
-        (conf.offChainDataSource.certificateClient as any).mockBlockchainData(
-            certificationRequest.id,
-            {
-                owner: deviceOwnerWallet.address,
-                fromTime,
-                toTime,
-                created: 123,
-                approved: false,
-                revoked: false,
-                deviceId: device
-            }
-        );
-
-        certificationRequest = await certificationRequest.sync();
-
         assert.deepOwnInclude(certificationRequest, {
-            initialized: true,
             deviceId: device,
             owner: deviceOwnerWallet.address,
             fromTime,
@@ -311,7 +293,6 @@ describe('Issuer', () => {
         assert.isAbove(Number(certificationRequest.id), -1);
 
         assert.deepOwnInclude(certificationRequest, {
-            initialized: true,
             deviceId: '1',
             owner: deviceOwnerWallet.address,
             approved: false,

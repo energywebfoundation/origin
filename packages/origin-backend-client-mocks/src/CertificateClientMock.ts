@@ -16,16 +16,19 @@ import { ICertificateClient } from '@energyweb/origin-backend-client';
 
 export class CertificateClientMock implements ICertificateClient {
     private requestQueue: CertificationRequestUpdateData[] = [];
+
     private requestStorage = new Map<number, ICertificationRequest>();
+
     private certificateStorage = new Map<number, ICertificateOwnership>();
 
     public async queueCertificationRequestData(
         data: CertificationRequestUpdateData
     ): Promise<boolean> {
-        const exists = this.requestQueue.find(queueItem => 
-            queueItem.deviceId === data.deviceId 
-            && queueItem.fromTime === data.fromTime 
-            && queueItem.toTime === data.toTime
+        const exists = this.requestQueue.find(
+            (queueItem) =>
+                queueItem.deviceId === data.deviceId &&
+                queueItem.fromTime === data.fromTime &&
+                queueItem.toTime === data.toTime
         );
 
         if (!exists) {
@@ -42,7 +45,9 @@ export class CertificateClientMock implements ICertificateClient {
         const unix = (timestamp: number) => moment.unix(timestamp);
         const { deviceId, fromTime, toTime } = data;
 
-        const deviceCertificationRequests = (await this.getAllCertificationRequests()).filter(certReq => certReq.deviceId === deviceId && !certReq.revoked);
+        const deviceCertificationRequests = (await this.getAllCertificationRequests()).filter(
+            (certReq) => certReq.deviceId === deviceId && !certReq.revoked
+        );
 
         const generationTimeRange = moment.range(unix(fromTime), unix(toTime));
 
@@ -53,7 +58,9 @@ export class CertificateClientMock implements ICertificateClient {
             );
 
             if (generationTimeRange.overlaps(certificationRequestGenerationRange)) {
-                throw new Error(`Wanted generation time clashes with an existing certification request: ${certificationRequest.id}`);
+                throw new Error(
+                    `Wanted generation time clashes with an existing certification request: ${certificationRequest.id}`
+                );
             }
         }
 
@@ -62,9 +69,7 @@ export class CertificateClientMock implements ICertificateClient {
         };
     }
 
-    public async getCertificationRequest(
-        id: number
-    ): Promise<ICertificationRequest> {
+    public async getCertificationRequest(id: number): Promise<ICertificationRequest> {
         return this.requestStorage.get(id);
     }
 
@@ -72,16 +77,14 @@ export class CertificateClientMock implements ICertificateClient {
         return [...this.requestStorage.values()];
     }
 
-    public mockBlockchainData(
-        id: number,
-        reqData: Partial<CertificationRequestDataMocked>
-    ) {
+    public mockBlockchainData(id: number, reqData: Partial<CertificationRequestDataMocked>) {
         const certificateRequest = this.requestStorage.get(id);
 
-        const queuedData = this.requestQueue.find(data => 
-            data.deviceId === reqData.deviceId 
-            && data.fromTime === reqData.fromTime 
-            && data.toTime === reqData.toTime
+        const queuedData = this.requestQueue.find(
+            (data) =>
+                data.deviceId === reqData.deviceId &&
+                data.fromTime === reqData.fromTime &&
+                data.toTime === reqData.toTime
         );
 
         if (queuedData) {
