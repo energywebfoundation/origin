@@ -225,9 +225,9 @@ export function useDevicePermissions() {
 export const deviceById = (
     id: string,
     environment: IEnvironment,
-    device: ProducingDevice.Entity[]
+    devices: ProducingDevice.Entity[]
 ): ProducingDevice.Entity => {
-    return device.find((d) => {
+    return devices.find((d) => {
         const deviceId = getDeviceId(d, environment);
         return deviceId === id;
     });
