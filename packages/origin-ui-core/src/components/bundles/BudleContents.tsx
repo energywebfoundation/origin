@@ -169,14 +169,24 @@ export const BundleContents = (props: IOwnProps) => {
                                     selected === split ? cardHeaderSelectedColor : cardHeaderColor
                                 }
                             >
-                                <Typography variant="body2" align="center" color="textSecondary">
-                                    Total Volume
-                                </Typography>
-                                <Typography variant="caption" align="center" color="textPrimary">
-                                    <Box fontWeight="fontWeightBold">
+                                <Box fontSize={fontSize}>
+                                    <Typography
+                                        variant="body2"
+                                        align="center"
+                                        color="textSecondary"
+                                    >
+                                        Total Volume
+                                    </Typography>
+                                </Box>
+                                <Box fontWeight="fontWeightBold">
+                                    <Typography
+                                        variant="caption"
+                                        align="center"
+                                        color="textPrimary"
+                                    >
                                         {EnergyFormatter.format(split.volume, true)}
-                                    </Box>
-                                </Typography>
+                                    </Typography>
+                                </Box>
                             </Box>
                         );
                     })}
@@ -218,74 +228,70 @@ export const BundleContents = (props: IOwnProps) => {
                                                         flexDirection: 'column'
                                                     }}
                                                 >
-                                                    <Typography
-                                                        color="textSecondary"
-                                                        variant="body2"
+                                                    <Box
+                                                        fontSize={fontSize}
+                                                        fontWeight="fontWeightBold"
                                                     >
-                                                        <Box
-                                                            fontSize={fontSize}
-                                                            fontWeight="fontWeightBold"
+                                                        <Typography
+                                                            color="textSecondary"
+                                                            variant="body2"
                                                         >
                                                             Facility
-                                                        </Box>
-                                                    </Typography>
-                                                    <Typography variant="caption">
-                                                        <Box
-                                                            fontSize={fontSize}
-                                                            fontWeight="fontWeightBold"
-                                                        >
-                                                            <Box
-                                                                fontSize={fontSize}
-                                                                fontWeight="fontWeightBold"
-                                                            >
-                                                                {device.facilityName}
-                                                            </Box>
-                                                        </Box>
-                                                    </Typography>
-                                                    <Typography
-                                                        color="textSecondary"
-                                                        variant="body2"
+                                                        </Typography>
+                                                    </Box>
+                                                    <Box
+                                                        fontSize={fontSize}
+                                                        fontWeight="fontWeightBold"
                                                     >
-                                                        <Box
-                                                            fontSize={fontSize}
-                                                            fontWeight="fontWeightBold"
+                                                        <Typography variant="caption">
+                                                            {device.facilityName}
+                                                        </Typography>
+                                                    </Box>
+                                                    <Box
+                                                        fontSize={fontSize}
+                                                        fontWeight="fontWeightBold"
+                                                    >
+                                                        <Typography
+                                                            color="textSecondary"
+                                                            variant="body2"
                                                         >
                                                             Location
-                                                        </Box>
-                                                    </Typography>
-                                                    <Typography>
-                                                        <Box
-                                                            fontSize={fontSize}
-                                                            fontWeight="fontWeightBold"
-                                                        >
-                                                            {device.province}
-                                                        </Box>
-                                                    </Typography>
+                                                        </Typography>
+                                                    </Box>
+                                                    <Box
+                                                        fontSize={fontSize}
+                                                        fontWeight="fontWeightBold"
+                                                    >
+                                                        <Typography>{device.province}</Typography>
+                                                    </Box>
                                                 </Box>
                                             </Box>
                                             <Box
                                                 style={{ display: 'flex', flexDirection: 'column' }}
                                             >
-                                                <Typography color="textSecondary" variant="body2">
-                                                    <Box
-                                                        fontSize={fontSize}
-                                                        fontWeight="fontWeightBold"
+                                                <Box
+                                                    fontSize={fontSize}
+                                                    fontWeight="fontWeightBold"
+                                                >
+                                                    <Typography
+                                                        color="textSecondary"
+                                                        variant="body2"
                                                     >
                                                         Generation Date
-                                                    </Box>
-                                                </Typography>
-                                                <Typography>
-                                                    <Box
-                                                        fontSize={fontSize}
-                                                        fontWeight="fontWeightBold"
-                                                    >
+                                                    </Typography>
+                                                </Box>
+                                                <Box
+                                                    fontSize={fontSize}
+                                                    fontWeight="fontWeightBold"
+                                                >
+                                                    <Typography>
                                                         {`${moment(generationFrom).format(
                                                             'MMM, YYYY'
                                                         )}->${moment(generationTo).format(
                                                             'MMM, YYYY'
                                                         )}`}
-                                                    </Box>
-                                                </Typography>
+                                                    </Typography>
+                                                </Box>
                                             </Box>
                                         </Box>
                                     </Paper>
@@ -304,9 +310,6 @@ export const BundleContents = (props: IOwnProps) => {
                                         .slice(firstSplit, firstSplit + COLUMNS_COUNT)
                                         .map((split) => {
                                             const { volume } = split.items[firstItem + itemIndex];
-                                            console.log(
-                                                bundlePrice({ price, volume: split.volume })
-                                            );
                                             const type = deviceById(deviceId, environment, devices)
                                                 .deviceType.split(';')[0]
                                                 .toLowerCase();
@@ -330,14 +333,14 @@ export const BundleContents = (props: IOwnProps) => {
                                                     <Avatar
                                                         src={energyImageByType(type as EnergyTypes)}
                                                     />
-                                                    <Typography>
-                                                        <Box
-                                                            fontWeight="fontWeightBold"
-                                                            fontSize={fontSize}
-                                                        >
+                                                    <Box
+                                                        fontWeight="fontWeightBold"
+                                                        fontSize={fontSize}
+                                                    >
+                                                        <Typography>
                                                             {EnergyFormatter.format(volume, true)}
-                                                        </Box>
-                                                    </Typography>
+                                                        </Typography>
+                                                    </Box>
                                                 </Box>
                                             );
                                         })}
@@ -379,7 +382,8 @@ export const BundleContents = (props: IOwnProps) => {
                                 style={{
                                     ...bundleStyle,
                                     borderRadius: '0 0 5% 5%',
-                                    flexDirection: 'column'
+                                    flexDirection: 'column',
+                                    alignItems: 'center'
                                 }}
                                 key={splitPrice}
                                 onClick={() => setSelected(split)}
@@ -396,15 +400,19 @@ export const BundleContents = (props: IOwnProps) => {
                                     >
                                         Total price
                                     </Typography>
-                                    <Typography
-                                        color="textPrimary"
-                                        variant="caption"
-                                        align="center"
+                                    <Box
+                                        fontWeight="fontWeightBold"
+                                        fontSize={fontSize}
+                                        textAlign="center"
                                     >
-                                        <Box fontWeight="fontWeightBold" fontSize={fontSize}>
+                                        <Typography
+                                            color="textPrimary"
+                                            variant="caption"
+                                            align="center"
+                                        >
                                             {formatCurrencyComplete(splitPrice, currency)}
-                                        </Box>
-                                    </Typography>
+                                        </Typography>
+                                    </Box>
                                     <Button
                                         color="primary"
                                         variant="contained"
