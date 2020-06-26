@@ -116,13 +116,15 @@ export class DeviceController {
             });
         }
 
-        if (loggedUser.hasRole(Role.OrganizationAdmin)) {
-            if (loggedUser.organizationId !== device.organization) {
-                throw new UnauthorizedException({
-                    success: false,
-                    message: 'You are not the organization admin.'
-                });
-            }
+        if (
+            loggedUser.organizationId !== device.organization &&
+            !loggedUser.hasRole(Role.Issuer) &&
+            !loggedUser.hasRole(Role.Admin)
+        ) {
+            throw new UnauthorizedException({
+                success: false,
+                message: 'You are not the organization admin.'
+            });
         }
 
         await this.deviceService.remove(device);
@@ -194,10 +196,10 @@ export class DeviceController {
 
     @Put('/:id/smartMeterReading')
     @UseGuards(AuthGuard(), ActiveUserGuard, RolesGuard)
-    @Roles(Role.OrganizationAdmin, Role.OrganizationDeviceManager)
+    @Roles(Role.Admin, Role.OrganizationAdmin, Role.OrganizationDeviceManager)
     async addSmartMeterRead(
         @Param('id') id: string,
-        @UserDecorator() { organizationId }: ILoggedInUser,
+        @UserDecorator() loggedUser: ILoggedInUser,
         @Body() newSmartMeterRead: ISmartMeterRead
     ): Promise<ISuccessResponse> {
         const device = await this.deviceService.findOne(id);
@@ -209,7 +211,7 @@ export class DeviceController {
             });
         }
 
-        if (device.organization !== organizationId) {
+        if (loggedUser.organizationId !== device.organization && !loggedUser.hasRole(Role.Admin)) {
             throw new UnauthorizedException({
                 success: false,
                 message: 'You are not the device manager.'
