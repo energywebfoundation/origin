@@ -176,7 +176,7 @@ export class ExchangeClient implements IExchangeClient {
         return response.data;
     }
 
-    public async getBundleSplits(bundle: Bundle):Promise<Bundle[]> {
+    public async getBundleSplits(bundle: Bundle): Promise<Bundle[]> {
         const response = await this.requestClient.get<unknown, Bundle[]>(
             `${this.bundleEndpoint}/${bundle.id}/splits`
         );
