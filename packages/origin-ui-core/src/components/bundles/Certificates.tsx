@@ -31,9 +31,9 @@ export const Certificates = (props: IOwnProps) => {
     };
 
     return (
-        <Paper>
+        <Paper elevation={0} style={{ backgroundColor: '#2d2d2d' }}>
             <Box m={1}>
-                <Typography variant="h5">CERTIFICATES</Typography>
+                <Typography variant="caption">CERTIFICATES</Typography>
             </Box>
             <GroupedCertificateList
                 groups={certificatesByFacility()}

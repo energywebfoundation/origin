@@ -22,20 +22,20 @@ export const CreateBundleForm = () => {
 
     return (
         <Paper>
-            <div>
-                <Grid container spacing={3}>
-                    <Grid item xs={6}>
-                        <Certificates selected={selected} setSelected={setSelected} />
-                    </Grid>
-                    <Grid item xs={6}>
-                        <SelectedForSale
-                            selected={selected}
-                            totalVolume={totalVolume()}
-                            callback={() => history.push(`${getCertificatesLink()}/bundles`)}
-                        />
-                    </Grid>
+            {/* <div> */}
+            <Grid container spacing={3} style={{ backgroundColor: '#333333' }}>
+                <Grid item xs={6}>
+                    <Certificates selected={selected} setSelected={setSelected} />
                 </Grid>
-            </div>
+                <Grid item xs={6}>
+                    <SelectedForSale
+                        selected={selected}
+                        totalVolume={totalVolume()}
+                        callback={() => history.push(`${getCertificatesLink()}/bundles`)}
+                    />
+                </Grid>
+            </Grid>
+            {/* </div> */}
         </Paper>
     );
 };
