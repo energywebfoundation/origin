@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import {
-    Grid,
     Typography,
     Paper,
     makeStyles,
@@ -11,7 +10,7 @@ import {
     IconButton,
     Avatar
 } from '@material-ui/core';
-import { Bundle } from '../../utils/exchange';
+import { Bundle, Split } from '../../utils/exchange';
 import { useSelector, useDispatch } from 'react-redux';
 import {
     getEnvironment,
@@ -26,20 +25,12 @@ import {
     useTranslation,
     getCurrencies
 } from '../..';
-import {
-    KeyboardArrowUp,
-    KeyboardArrowDown,
-    NavigateBeforeOutlined,
-    NavigateNextOutlined,
-    ArrowForward,
-    ArrowBack
-} from '@material-ui/icons';
+import { KeyboardArrowUp, KeyboardArrowDown, ArrowForward, ArrowBack } from '@material-ui/icons';
 import { buyBundle } from '../../features/bundles';
-import React from 'react';
 
 interface IOwnProps {
     bundle: Bundle;
-    combinations: Bundle[];
+    splits: Split[];
 }
 
 const useOfferClasses = makeStyles((theme: Theme) =>
@@ -54,12 +45,11 @@ const useOfferClasses = makeStyles((theme: Theme) =>
 
 const ROWS_COUNT = 5;
 const COLUMNS_COUNT = 5;
-const ITEMS_WIDTH = '40%';
 const cardSelectedColor = '#3a1c47';
 const cardColor = '#3e3e3e';
 const cardHeaderColor = '#3b3b3b';
 const cardHeaderSelectedColor = '#9b00c8';
-const fontSize = 7;
+const fontSize = 12;
 
 const topGridTemplateRows = `10% ${'15% '.repeat(6)}`;
 const topGridTemplateColumns = '40% 60%';
@@ -80,21 +70,22 @@ const rowStyle = {
 };
 
 export const BundleContents = (props: IOwnProps) => {
-    const { bundle, combinations } = props;
+    const {
+        bundle: { price, items, id },
+        splits
+    } = props;
     const environment = useSelector(getEnvironment);
     const devices = useSelector(getProducingDevices);
     const offerClasses = useOfferClasses();
-    const [selected, setSelected] = useState<Bundle>(null);
+    const [selected, setSelected] = useState<Split>(null);
     const [firstItem, setFirstItem] = useState<number>(0);
-    const [firstBundle, setFirstBundle] = useState<number>(0);
+    const [firstSplit, setFirstSplit] = useState<number>(0);
     const { t } = useTranslation();
     const dispatch = useDispatch();
     const currency = useSelector(getCurrencies)[0];
 
     const onBuyBundle = async () => {
-        dispatch(
-            buyBundle({ bundleDTO: { bundleId: bundle.id, volume: bundle.volume.toString() } })
-        );
+        dispatch(buyBundle({ bundleDTO: { bundleId: id, volume: selected.volume.toString() } }));
     };
 
     return (
@@ -106,10 +97,10 @@ export const BundleContents = (props: IOwnProps) => {
                 gridTemplateRows: topGridTemplateRows
             }}
         >
-            {combinations.length > 4 && (
+            {splits.length > 5 && (
                 <IconButton
-                    disabled={firstBundle <= 0}
-                    onClick={() => setFirstBundle(firstBundle - 1)}
+                    disabled={firstSplit <= 0}
+                    onClick={() => setFirstSplit(firstSplit - 1)}
                     style={{
                         backgroundColor: '#5a5a5a',
                         position: 'absolute',
@@ -122,15 +113,15 @@ export const BundleContents = (props: IOwnProps) => {
                     <ArrowBack />
                 </IconButton>
             )}
-            {combinations.length > 4 && (
+            {splits.length > 5 && (
                 <IconButton
-                    disabled={firstBundle + COLUMNS_COUNT >= combinations.length}
-                    onClick={() => setFirstBundle(firstBundle + 1)}
+                    disabled={firstSplit + COLUMNS_COUNT >= splits.length}
+                    onClick={() => setFirstSplit(firstSplit + 1)}
                     style={{
                         backgroundColor: '#5a5a5a',
                         position: 'absolute',
                         top: '50%',
-                        left: '102%',
+                        left: '97%',
                         zIndex: 10
                     }}
                 >
@@ -143,7 +134,7 @@ export const BundleContents = (props: IOwnProps) => {
                 }}
             >
                 <Box mr={0.5} display="flex" flexDirection="column" justifyContent="end">
-                    {bundle.items.length > 4 && (
+                    {items.length > 5 && (
                         <Button
                             style={{
                                 backgroundColor: '#5a5a5a',
@@ -162,42 +153,48 @@ export const BundleContents = (props: IOwnProps) => {
                         gridTemplateColumns: bundlesGridTemplatesColumns
                     }}
                 >
-                    {combinations.slice(firstBundle, firstBundle + COLUMNS_COUNT).map((comb) => (
-                        <Box
-                            py={1}
-                            key={bundlePrice(comb)}
-                            onClick={() => setSelected(comb)}
-                            style={{
-                                ...bundleStyle,
-                                borderRadius: '5% 5% 0 0'
-                            }}
-                            bgcolor={selected === comb ? cardHeaderSelectedColor : cardHeaderColor}
-                        >
-                            <Typography variant="body2" align="center" color="textSecondary">
-                                Total Volume
-                            </Typography>
-                            <Typography variant="caption" align="center" color="textPrimary">
-                                <Box fontWeight="fontWeightBold">
-                                    {EnergyFormatter.format(comb.volume, true)}
-                                </Box>
-                            </Typography>
-                        </Box>
-                    ))}
+                    {splits.slice(firstSplit, firstSplit + COLUMNS_COUNT).map((split) => {
+                        const { volume } = split;
+                        return (
+                            <Box
+                                py={1}
+                                key={bundlePrice({ volume, price })}
+                                onClick={() => setSelected(split)}
+                                style={{
+                                    ...bundleStyle,
+                                    borderRadius: '5% 5% 0 0',
+                                    flexDirection: 'column'
+                                }}
+                                bgcolor={
+                                    selected === split ? cardHeaderSelectedColor : cardHeaderColor
+                                }
+                            >
+                                <Typography variant="body2" align="center" color="textSecondary">
+                                    Total Volume
+                                </Typography>
+                                <Typography variant="caption" align="center" color="textPrimary">
+                                    <Box fontWeight="fontWeightBold">
+                                        {EnergyFormatter.format(split.volume, true)}
+                                    </Box>
+                                </Typography>
+                            </Box>
+                        );
+                    })}
                 </Box>
             </Box>
 
-            {bundle.items
+            {items
                 .slice(firstItem, firstItem + ROWS_COUNT)
                 .map(
                     (
-                        { asset: { deviceId, generationFrom, generationTo }, currentVolume },
+                        { asset: { deviceId, generationFrom, generationTo } },
                         itemIndex,
                         { length }
                     ) => {
                         const device = deviceById(deviceId, environment, devices);
                         return (
                             <Box
-                                key={JSON.stringify(`${deviceId}${generationFrom}${generationTo}`)}
+                                key={itemIndex}
                                 style={{
                                     ...rowStyle
                                 }}
@@ -225,37 +222,69 @@ export const BundleContents = (props: IOwnProps) => {
                                                         color="textSecondary"
                                                         variant="body2"
                                                     >
-                                                        Facility
+                                                        <Box
+                                                            fontSize={fontSize}
+                                                            fontWeight="fontWeightBold"
+                                                        >
+                                                            Facility
+                                                        </Box>
                                                     </Typography>
                                                     <Typography variant="caption">
                                                         <Box
                                                             fontSize={fontSize}
                                                             fontWeight="fontWeightBold"
                                                         >
-                                                            {device.facilityName}
+                                                            <Box
+                                                                fontSize={fontSize}
+                                                                fontWeight="fontWeightBold"
+                                                            >
+                                                                {device.facilityName}
+                                                            </Box>
                                                         </Box>
                                                     </Typography>
                                                     <Typography
                                                         color="textSecondary"
                                                         variant="body2"
                                                     >
-                                                        Location
+                                                        <Box
+                                                            fontSize={fontSize}
+                                                            fontWeight="fontWeightBold"
+                                                        >
+                                                            Location
+                                                        </Box>
                                                     </Typography>
-                                                    <Typography>{device.province}</Typography>
+                                                    <Typography>
+                                                        <Box
+                                                            fontSize={fontSize}
+                                                            fontWeight="fontWeightBold"
+                                                        >
+                                                            {device.province}
+                                                        </Box>
+                                                    </Typography>
                                                 </Box>
                                             </Box>
                                             <Box
                                                 style={{ display: 'flex', flexDirection: 'column' }}
                                             >
                                                 <Typography color="textSecondary" variant="body2">
-                                                    Generation Date
+                                                    <Box
+                                                        fontSize={fontSize}
+                                                        fontWeight="fontWeightBold"
+                                                    >
+                                                        Generation Date
+                                                    </Box>
                                                 </Typography>
                                                 <Typography>
-                                                    {`${moment(generationFrom).format(
-                                                        'MMM, YYYY'
-                                                    )}->${moment(generationTo).format(
-                                                        'MMM, YYYY'
-                                                    )}`}
+                                                    <Box
+                                                        fontSize={fontSize}
+                                                        fontWeight="fontWeightBold"
+                                                    >
+                                                        {`${moment(generationFrom).format(
+                                                            'MMM, YYYY'
+                                                        )}->${moment(generationTo).format(
+                                                            'MMM, YYYY'
+                                                        )}`}
+                                                    </Box>
                                                 </Typography>
                                             </Box>
                                         </Box>
@@ -271,21 +300,29 @@ export const BundleContents = (props: IOwnProps) => {
                                         borderBottomWidth: 2
                                     }}
                                 >
-                                    {combinations
-                                        .slice(firstBundle, firstBundle + COLUMNS_COUNT)
-                                        .map((comb) => {
+                                    {splits
+                                        .slice(firstSplit, firstSplit + COLUMNS_COUNT)
+                                        .map((split) => {
+                                            const { volume } = split.items[firstItem + itemIndex];
+                                            console.log(
+                                                bundlePrice({ price, volume: split.volume })
+                                            );
                                             const type = deviceById(deviceId, environment, devices)
                                                 .deviceType.split(';')[0]
                                                 .toLowerCase();
                                             return (
                                                 <Box
                                                     style={{
-                                                        ...bundleStyle
+                                                        ...bundleStyle,
+                                                        flexDirection: 'column'
                                                     }}
-                                                    key={comb.price}
-                                                    onClick={() => setSelected(comb)}
+                                                    key={bundlePrice({
+                                                        price,
+                                                        volume: split.volume
+                                                    })}
+                                                    onClick={() => setSelected(split)}
                                                     bgcolor={
-                                                        selected === comb
+                                                        selected === split
                                                             ? cardSelectedColor
                                                             : cardColor
                                                     }
@@ -294,11 +331,11 @@ export const BundleContents = (props: IOwnProps) => {
                                                         src={energyImageByType(type as EnergyTypes)}
                                                     />
                                                     <Typography>
-                                                        <Box fontWeight="fontWeightBold">
-                                                            {EnergyFormatter.format(
-                                                                currentVolume,
-                                                                true
-                                                            )}
+                                                        <Box
+                                                            fontWeight="fontWeightBold"
+                                                            fontSize={fontSize}
+                                                        >
+                                                            {EnergyFormatter.format(volume, true)}
                                                         </Box>
                                                     </Typography>
                                                 </Box>
@@ -315,14 +352,14 @@ export const BundleContents = (props: IOwnProps) => {
                 }}
             >
                 <Box mr={0.5} display="flex" flexDirection="column" justifyItems="start">
-                    {bundle.items.length > 4 && (
+                    {items.length > 5 && (
                         <Button
                             style={{
                                 backgroundColor: '#5a5a5a',
                                 width: '100%'
                             }}
                             onClick={() => setFirstItem(firstItem + 1)}
-                            disabled={firstItem + ROWS_COUNT >= bundle.items.length}
+                            disabled={firstItem + ROWS_COUNT >= items.length}
                         >
                             <KeyboardArrowDown />
                         </Button>
@@ -334,40 +371,52 @@ export const BundleContents = (props: IOwnProps) => {
                         gridTemplateColumns: bundlesGridTemplatesColumns
                     }}
                 >
-                    {combinations.map((comb) => (
-                        <Box
-                            style={{ ...bundleStyle, borderRadius: '0 0 5% 5%' }}
-                            key={comb.price}
-                            onClick={() => setSelected(comb)}
-                            bgcolor={selected === comb ? cardSelectedColor : cardColor}
-                            mr={1}
-                            pb={1}
-                        >
-                            <Box display="flex" flexDirection="column">
-                                <Typography
-                                    color="textSecondary"
-                                    variant="body2"
-                                    noWrap
-                                    align="center"
-                                >
-                                    Total price
-                                </Typography>
-                                <Typography color="textPrimary" variant="caption" align="center">
-                                    <Box fontWeight="fontWeightBold">
-                                        {formatCurrencyComplete(bundlePrice(bundle), currency)}
-                                    </Box>
-                                </Typography>
-                                <Button
-                                    color="primary"
-                                    variant="contained"
-                                    onClick={onBuyBundle}
-                                    disabled={!(selected === comb)}
-                                >
-                                    {t('certificate.actions.buy_bundle')}
-                                </Button>
+                    {splits.slice(firstSplit, firstSplit + COLUMNS_COUNT).map((split) => {
+                        const { volume } = split;
+                        const splitPrice = bundlePrice({ volume, price });
+                        return (
+                            <Box
+                                style={{
+                                    ...bundleStyle,
+                                    borderRadius: '0 0 5% 5%',
+                                    flexDirection: 'column'
+                                }}
+                                key={splitPrice}
+                                onClick={() => setSelected(split)}
+                                bgcolor={selected === split ? cardSelectedColor : cardColor}
+                                mr={1}
+                                pb={1}
+                            >
+                                <Box display="flex" flexDirection="column" fontSize={fontSize}>
+                                    <Typography
+                                        color="textSecondary"
+                                        variant="body2"
+                                        noWrap
+                                        align="center"
+                                    >
+                                        Total price
+                                    </Typography>
+                                    <Typography
+                                        color="textPrimary"
+                                        variant="caption"
+                                        align="center"
+                                    >
+                                        <Box fontWeight="fontWeightBold" fontSize={fontSize}>
+                                            {formatCurrencyComplete(splitPrice, currency)}
+                                        </Box>
+                                    </Typography>
+                                    <Button
+                                        color="primary"
+                                        variant="contained"
+                                        onClick={onBuyBundle}
+                                        disabled={!(selected === split)}
+                                    >
+                                        {t('certificate.actions.buy_bundle')}
+                                    </Button>
+                                </Box>
                             </Box>
-                        </Box>
-                    ))}
+                        );
+                    })}
                 </Box>
             </Box>
         </Box>

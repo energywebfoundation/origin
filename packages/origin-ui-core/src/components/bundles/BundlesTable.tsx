@@ -116,7 +116,6 @@ export const BundlesTable = () => {
             onClick: (row: string) => viewDetails(parseInt(row, 10))
         }
     ];
-    console.log('>>> clicked on:', selectedBundle);
 
     return (
         <>
