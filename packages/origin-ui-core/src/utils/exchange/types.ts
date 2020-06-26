@@ -146,6 +146,7 @@ export type RequestWithdrawalDTO = {
 };
 
 export type BundleItem = {
+    id: string;
     asset: IAsset;
     startVolume: BigNumber;
     currentVolume: BigNumber;

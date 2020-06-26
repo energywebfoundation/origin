@@ -197,7 +197,7 @@ export const BundleContents = (props: IOwnProps) => {
                 .slice(firstItem, firstItem + ROWS_COUNT)
                 .map(
                     (
-                        { asset: { deviceId, generationFrom, generationTo } },
+                        { id: itemId, asset: { deviceId, generationFrom, generationTo } },
                         itemIndex,
                         { length }
                     ) => {
@@ -309,7 +309,9 @@ export const BundleContents = (props: IOwnProps) => {
                                     {splits
                                         .slice(firstSplit, firstSplit + COLUMNS_COUNT)
                                         .map((split) => {
-                                            const { volume } = split.items[firstItem + itemIndex];
+                                            const { volume } = split.items.find(
+                                                ({ id: splitItemId }) => splitItemId === itemId
+                                            );
                                             const type = deviceById(deviceId, environment, devices)
                                                 .deviceType.split(';')[0]
                                                 .toLowerCase();
