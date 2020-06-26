@@ -5,7 +5,8 @@ import {
     IDeviceWithRelationsIds,
     ILoggedInUser,
     ISmartMeterRead,
-    Role
+    Role,
+    ISuccessResponse
 } from '@energyweb/origin-backend-core';
 import { Roles, RolesGuard, UserDecorator, ActiveUserGuard } from '@energyweb/origin-backend-utils';
 import {
@@ -22,7 +23,8 @@ import {
     Put,
     Query,
     UnprocessableEntityException,
-    UseGuards
+    UseGuards,
+    UnauthorizedException
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { StorageErrors } from '../../enums/StorageErrors';
@@ -100,29 +102,45 @@ export class DeviceController {
 
     @Delete('/:id')
     @UseGuards(AuthGuard(), ActiveUserGuard, RolesGuard)
-    @Roles(Role.OrganizationAdmin, Role.OrganizationDeviceManager)
-    async delete(@Param('id') id: string) {
-        const existingEntity = await this.deviceService.findOne(id);
+    @Roles(Role.Issuer, Role.Admin, Role.OrganizationAdmin)
+    async delete(
+        @Param('id') id: string,
+        @UserDecorator() loggedUser: ILoggedInUser
+    ): Promise<ISuccessResponse> {
+        const device = await this.deviceService.findOne(id);
 
-        if (!existingEntity) {
-            throw new NotFoundException(StorageErrors.NON_EXISTENT);
+        if (!device) {
+            throw new NotFoundException({
+                success: false,
+                message: StorageErrors.NON_EXISTENT
+            });
         }
 
-        await this.deviceService.remove(existingEntity);
+        if (loggedUser.hasRole(Role.OrganizationAdmin)) {
+            if (loggedUser.organizationId !== device.organization) {
+                throw new UnauthorizedException({
+                    success: false,
+                    message: 'You are not the organization admin.'
+                });
+            }
+        }
+
+        await this.deviceService.remove(device);
 
         return {
+            success: true,
             message: `Entity ${id} deleted`
         };
     }
 
     @Put('/:id')
     @UseGuards(AuthGuard(), ActiveUserGuard, RolesGuard)
-    @Roles(Role.OrganizationAdmin, Role.OrganizationDeviceManager, Role.Issuer)
-    async put(
+    @Roles(Role.Issuer, Role.Admin)
+    async updateDeviceStatus(
         @Param('id') id: string,
         @Body() body: DeviceUpdateData
     ): Promise<ExtendedBaseEntity & IDeviceWithRelationsIds> {
-        const res = await this.deviceService.update(id, body);
+        const res = await this.deviceService.updateStatus(id, body);
         return res;
     }
 
@@ -174,22 +192,32 @@ export class DeviceController {
         return existing;
     }
 
-    // TODO: who can store smart meter readings for device?
-
     @Put('/:id/smartMeterReading')
-    async addSmartMeterRead(@Param('id') id: string, @Body() newSmartMeterRead: ISmartMeterRead) {
-        const existing = await this.deviceService.findOne(id);
+    @UseGuards(AuthGuard(), ActiveUserGuard, RolesGuard)
+    @Roles(Role.OrganizationAdmin, Role.OrganizationDeviceManager)
+    async addSmartMeterRead(
+        @Param('id') id: string,
+        @UserDecorator() { organizationId }: ILoggedInUser,
+        @Body() newSmartMeterRead: ISmartMeterRead
+    ): Promise<ISuccessResponse> {
+        const device = await this.deviceService.findOne(id);
 
-        if (!existing) {
-            throw new NotFoundException(StorageErrors.NON_EXISTENT);
+        if (!device) {
+            throw new NotFoundException({
+                success: false,
+                message: StorageErrors.NON_EXISTENT
+            });
+        }
+
+        if (device.organization !== organizationId) {
+            throw new UnauthorizedException({
+                success: false,
+                message: 'You are not the device manager.'
+            });
         }
 
         try {
-            await this.deviceService.addSmartMeterReading(id, newSmartMeterRead);
-
-            return {
-                message: `Smart meter reading successfully added to device ${id}`
-            };
+            return this.deviceService.addSmartMeterReading(id, newSmartMeterRead);
         } catch (error) {
             this.logger.error('Error when saving smart meter read');
             this.logger.error({
@@ -198,6 +226,7 @@ export class DeviceController {
                 newSmartMeterRead
             });
             throw new UnprocessableEntityException({
+                success: false,
                 message: `Smart meter reading could not be added due to an unknown error for device ${id}`
             });
         }

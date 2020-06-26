@@ -125,6 +125,66 @@ describe('Device e2e tests', () => {
         await app.close();
     });
 
+    it("should not allow deleting device to another Organization's admins", async () => {
+        const {
+            app,
+            userService,
+            deviceService,
+            organizationService
+        } = await bootstrapTestInstance();
+
+        await app.init();
+
+        const { user: orgAdmin } = await registerAndLogin(app, userService, organizationService, [
+            Role.OrganizationAdmin
+        ]);
+
+        const { accessToken: accessTokenOtherOrgAdmin } = await registerAndLogin(
+            app,
+            userService,
+            organizationService,
+            [Role.OrganizationAdmin],
+            'default2',
+            'default2'
+        );
+
+        const { id: deviceId } = await deviceService.create(
+            {
+                address: '',
+                capacityInW: 1000,
+                complianceRegistry: 'I-REC',
+                country: 'EU',
+                description: '',
+                deviceType: 'Solar',
+                facilityName: 'Test',
+                gpsLatitude: '10',
+                gpsLongitude: '10',
+                gridOperator: 'OP',
+                images: '',
+                operationalSince: 2000,
+                otherGreenAttributes: '',
+                province: '',
+                region: '',
+                status: DeviceStatus.Active,
+                timezone: '',
+                typeOfPublicSupport: '',
+                deviceGroup: '',
+                smartMeterReads: [],
+                externalDeviceIds: [],
+                automaticPostForSale: false,
+                defaultAskPrice: null
+            },
+            orgAdmin
+        );
+
+        await request(app.getHttpServer())
+            .delete(`/device/${deviceId}`)
+            .set('Authorization', `Bearer ${accessTokenOtherOrgAdmin}`)
+            .expect(401);
+
+        await app.close();
+    });
+
     it('should return certified and uncertified readings', async () => {
         const {
             app,
@@ -245,6 +305,73 @@ describe('Device e2e tests', () => {
                     bigNumberify(resultDevice.meterStats.certified).toNumber()
                 ).to.be.greaterThan(0);
             });
+
+        await app.close();
+    });
+
+    it('should not allow storing smart meter readings to other organization device managers', async () => {
+        const {
+            app,
+            userService,
+            deviceService,
+            organizationService
+        } = await bootstrapTestInstance();
+
+        await app.init();
+
+        const { user } = await registerAndLogin(app, userService, organizationService, [
+            Role.OrganizationUser,
+            Role.OrganizationDeviceManager
+        ]);
+
+        const { accessToken: accessTokenDifferentDeviceManager } = await registerAndLogin(
+            app,
+            userService,
+            organizationService,
+            [Role.OrganizationUser, Role.OrganizationDeviceManager],
+            'default2',
+            'default2'
+        );
+
+        const externalDeviceId = '123';
+
+        const device = await deviceService.create(
+            {
+                address: '',
+                capacityInW: 1000,
+                complianceRegistry: 'I-REC',
+                country: 'EU',
+                description: '',
+                deviceType: 'Solar',
+                facilityName: 'Test',
+                gpsLatitude: '10',
+                gpsLongitude: '10',
+                gridOperator: 'OP',
+                images: '',
+                operationalSince: 2000,
+                otherGreenAttributes: '',
+                province: '',
+                region: '',
+                status: DeviceStatus.Active,
+                timezone: '',
+                typeOfPublicSupport: '',
+                deviceGroup: '',
+                smartMeterReads: [],
+                externalDeviceIds: [{ id: externalDeviceId, type: process.env.ISSUER_ID }],
+                automaticPostForSale: false,
+                defaultAskPrice: null
+            },
+            user
+        );
+
+        await request(app.getHttpServer())
+            .put(`/device/${device.id}/smartMeterReading`)
+            .set('Authorization', `Bearer ${accessTokenDifferentDeviceManager}`)
+            .send({
+                meterReading: 12345,
+                timestamp: moment().subtract(1, 'month').unix()
+            })
+            .expect(401);
 
         await app.close();
     });
