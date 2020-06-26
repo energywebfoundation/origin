@@ -3,7 +3,8 @@ import {
     DeviceSettingsUpdateData,
     DeviceStatus,
     IDeviceWithRelationsIds,
-    Role
+    Role,
+    ILoggedInUser
 } from '@energyweb/origin-backend-core';
 import { expect } from 'chai';
 import { bigNumberify } from 'ethers/utils';
@@ -12,30 +13,19 @@ import request from 'supertest';
 import dotenv from 'dotenv';
 
 import { bootstrapTestInstance, registerAndLogin } from './origin-backend';
+import { DeviceService } from '../src/pods/device/device.service';
 
 describe('Device e2e tests', () => {
     dotenv.config({
         path: '.env.test'
     });
 
-    it('should allow to edit settings for organization member with DeviceManager role', async () => {
-        const {
-            app,
-            userService,
-            deviceService,
-            organizationService
-        } = await bootstrapTestInstance();
-
-        await app.init();
-
-        const { accessToken, user } = await registerAndLogin(
-            app,
-            userService,
-            organizationService,
-            [Role.OrganizationUser, Role.OrganizationDeviceManager]
-        );
-
-        const { id: deviceId } = await deviceService.create(
+    const createDevice = (
+        deviceService: DeviceService,
+        user: ILoggedInUser,
+        externalDeviceId = '123'
+    ) =>
+        deviceService.create(
             {
                 address: '',
                 capacityInW: 1000,
@@ -57,12 +47,31 @@ describe('Device e2e tests', () => {
                 typeOfPublicSupport: '',
                 deviceGroup: '',
                 smartMeterReads: [],
-                externalDeviceIds: [],
+                externalDeviceIds: [{ id: externalDeviceId, type: process.env.ISSUER_ID }],
                 automaticPostForSale: false,
                 defaultAskPrice: null
             },
             user
         );
+
+    it('should allow to edit settings for organization member with DeviceManager role', async () => {
+        const {
+            app,
+            userService,
+            deviceService,
+            organizationService
+        } = await bootstrapTestInstance();
+
+        await app.init();
+
+        const { accessToken, user } = await registerAndLogin(
+            app,
+            userService,
+            organizationService,
+            [Role.OrganizationUser, Role.OrganizationDeviceManager]
+        );
+
+        const { id: deviceId } = await createDevice(deviceService, user);
 
         await request(app.getHttpServer())
             .get(`/device/${deviceId}`)
@@ -148,34 +157,7 @@ describe('Device e2e tests', () => {
             'default2'
         );
 
-        const { id: deviceId } = await deviceService.create(
-            {
-                address: '',
-                capacityInW: 1000,
-                complianceRegistry: 'I-REC',
-                country: 'EU',
-                description: '',
-                deviceType: 'Solar',
-                facilityName: 'Test',
-                gpsLatitude: '10',
-                gpsLongitude: '10',
-                gridOperator: 'OP',
-                images: '',
-                operationalSince: 2000,
-                otherGreenAttributes: '',
-                province: '',
-                region: '',
-                status: DeviceStatus.Active,
-                timezone: '',
-                typeOfPublicSupport: '',
-                deviceGroup: '',
-                smartMeterReads: [],
-                externalDeviceIds: [],
-                automaticPostForSale: false,
-                defaultAskPrice: null
-            },
-            orgAdmin
-        );
+        const { id: deviceId } = await createDevice(deviceService, orgAdmin);
 
         await request(app.getHttpServer())
             .delete(`/device/${deviceId}`)
@@ -205,34 +187,7 @@ describe('Device e2e tests', () => {
 
         const externalDeviceId = '123';
 
-        const device = await deviceService.create(
-            {
-                address: '',
-                capacityInW: 1000,
-                complianceRegistry: 'I-REC',
-                country: 'EU',
-                description: '',
-                deviceType: 'Solar',
-                facilityName: 'Test',
-                gpsLatitude: '10',
-                gpsLongitude: '10',
-                gridOperator: 'OP',
-                images: '',
-                operationalSince: 2000,
-                otherGreenAttributes: '',
-                province: '',
-                region: '',
-                status: DeviceStatus.Active,
-                timezone: '',
-                typeOfPublicSupport: '',
-                deviceGroup: '',
-                smartMeterReads: [],
-                externalDeviceIds: [{ id: externalDeviceId, type: process.env.ISSUER_ID }],
-                automaticPostForSale: false,
-                defaultAskPrice: null
-            },
-            user
-        );
+        const device = await createDevice(deviceService, user, externalDeviceId);
 
         await request(app.getHttpServer())
             .get(`/device/${device.id}?withMeterStats=true`)
@@ -333,36 +288,7 @@ describe('Device e2e tests', () => {
             'default2'
         );
 
-        const externalDeviceId = '123';
-
-        const device = await deviceService.create(
-            {
-                address: '',
-                capacityInW: 1000,
-                complianceRegistry: 'I-REC',
-                country: 'EU',
-                description: '',
-                deviceType: 'Solar',
-                facilityName: 'Test',
-                gpsLatitude: '10',
-                gpsLongitude: '10',
-                gridOperator: 'OP',
-                images: '',
-                operationalSince: 2000,
-                otherGreenAttributes: '',
-                province: '',
-                region: '',
-                status: DeviceStatus.Active,
-                timezone: '',
-                typeOfPublicSupport: '',
-                deviceGroup: '',
-                smartMeterReads: [],
-                externalDeviceIds: [{ id: externalDeviceId, type: process.env.ISSUER_ID }],
-                automaticPostForSale: false,
-                defaultAskPrice: null
-            },
-            user
-        );
+        const device = await createDevice(deviceService, user);
 
         await request(app.getHttpServer())
             .put(`/device/${device.id}/smartMeterReading`)
