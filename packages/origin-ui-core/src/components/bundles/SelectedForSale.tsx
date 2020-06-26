@@ -30,6 +30,7 @@ import { BigNumber } from 'ethers/utils';
 import { formatCurrencyComplete, useTranslation, EnergyFormatter, EnergyTypes } from '../../utils';
 import { createBundle } from '../../features/bundles';
 import { BundleItemDTO } from '../../utils/exchange';
+import { Unit } from '@energyweb/utils-general';
 
 interface IOwnProps {
     selected: ICertificateViewItem[];
@@ -145,7 +146,7 @@ export const SelectedForSale = (props: IOwnProps) => {
                     <Grid item>Total Price</Grid>
                     <Grid item>
                         {formatCurrencyComplete(
-                            Number(EnergyFormatter.format(totalVolume, false)) * price,
+                            (totalVolume.toNumber() / Unit[EnergyFormatter.displayUnit]) * price,
                             currency
                         )}
                     </Grid>
@@ -165,7 +166,7 @@ export const SelectedForSale = (props: IOwnProps) => {
                     color="primary"
                     onClick={requestCreateBundle}
                     variant="contained"
-                    disabled={!sellAsBundle}
+                    disabled={!sellAsBundle || selected.length < 2}
                 >
                     Sell {selected.length} certificates
                 </Button>

@@ -8,8 +8,20 @@ export class DirectBuy extends Bid {
         userId: string,
         price: number,
         volume: BN,
-        public readonly askId: string
+        public readonly askId: string,
+        createdAt: Date
     ) {
-        super(id, price, volume, null, new Date(), userId);
+        super(id, price, volume, null, new Date(), userId, createdAt);
+    }
+
+    public clone(): DirectBuy {
+        return new DirectBuy(
+            this.id,
+            this.userId,
+            this.price,
+            this.volume,
+            this.askId,
+            this.createdAt
+        );
     }
 }

@@ -1,7 +1,11 @@
 import React from 'react';
 import { Paper, Box, Typography } from '@material-ui/core';
 import { useSelector } from 'react-redux';
-import { getCertificates, ICertificateViewItem } from '../../features/certificates';
+import {
+    getCertificates,
+    ICertificateViewItem,
+    CertificateSource
+} from '../../features/certificates';
 import { getProducingDevices, getEnvironment, deviceById } from '../..';
 import { GroupedCertificateList } from './GroupedCertificateList';
 
@@ -12,7 +16,9 @@ interface IOwnProps {
 
 export const Certificates = (props: IOwnProps) => {
     const { selected, setSelected } = props;
-    const certificates = useSelector(getCertificates);
+    const certificates = useSelector(getCertificates).filter(
+        (cert) => cert.source === CertificateSource.Exchange
+    );
     const devices = useSelector(getProducingDevices);
     const environment = useSelector(getEnvironment);
 

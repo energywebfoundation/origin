@@ -3,6 +3,7 @@ import { Bundle } from './exchange';
 import { deviceById, EnergyFormatter } from '.';
 import { BigNumber } from 'ethers/utils';
 import { EnergyTypes } from './device';
+import { Unit } from '@energyweb/utils-general';
 
 export const energyByType = (
     bundle: Bundle,
@@ -45,5 +46,10 @@ export const energyShares = (
     );
 };
 
-export const bundlePrice = (bundle: Bundle) =>
-    (bundle.price * Number(EnergyFormatter.format(bundle.volume, false))) / 100;
+/**
+ * Unformatted price
+ *
+ * @param
+ */
+export const bundlePrice = ({ volume, price }: Bundle) =>
+    (price * volume.toNumber()) / (Unit[EnergyFormatter.displayUnit] * 100);

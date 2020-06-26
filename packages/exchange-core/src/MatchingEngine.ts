@@ -9,6 +9,7 @@ import { Bid } from './Bid';
 import { DirectBuy } from './DirectBuy';
 import { Order, OrderSide } from './Order';
 import { ProductFilter } from './ProductFilter';
+import { IPriceStrategy } from './strategy/IPriceStrategy';
 import { Trade } from './Trade';
 import { TradeExecutedEvent } from './TradeExecutedEvent';
 
@@ -18,6 +19,11 @@ export enum ActionResult {
 }
 
 export type ActionResultEvent = { orderId: string; result: ActionResult; error?: string };
+
+export type OrderBook = {
+    asks: List<Ask>;
+    bids: List<Bid>;
+};
 
 enum ActionKind {
     AddOrder,
@@ -42,33 +48,34 @@ export class MatchingEngine {
 
     constructor(
         private readonly deviceService: IDeviceTypeService,
-        private readonly locationService: ILocationService
+        private readonly locationService: ILocationService,
+        private readonly priceStrategy: IPriceStrategy
     ) {
         this.triggers.pipe(concatMap(async () => this.trigger())).subscribe();
     }
 
-    public submitOrder(order: Ask | Bid) {
+    public submitOrder(order: Ask | Bid): void {
         this.pendingActions = this.pendingActions.concat({
             kind: ActionKind.AddOrder,
-            value: order
+            value: order.clone()
         });
     }
 
-    public submitDirectBuy(directBuy: DirectBuy) {
+    public submitDirectBuy(directBuy: DirectBuy): void {
         this.pendingActions = this.pendingActions.concat({
             kind: ActionKind.AddDirectBuy,
-            value: directBuy
+            value: directBuy.clone()
         });
     }
 
-    public cancelOrder(orderId: string) {
+    public cancelOrder(orderId: string): void {
         this.pendingActions = this.pendingActions.concat({
             kind: ActionKind.CancelOrder,
             value: orderId
         });
     }
 
-    public orderBook() {
+    public orderBook(): OrderBook {
         const now = new Date();
         const validFromFilter = (order: Order) => order.validFrom <= now;
 
@@ -78,7 +85,7 @@ export class MatchingEngine {
         };
     }
 
-    public orderBookByProduct(productFilter: ProductFilter) {
+    public orderBookByProduct(productFilter: ProductFilter): OrderBook {
         const { asks, bids } = this.orderBook();
 
         const filteredAsks = asks.filter((ask) =>
@@ -91,7 +98,7 @@ export class MatchingEngine {
         return { asks: filteredAsks, bids: filteredBids };
     }
 
-    public tick() {
+    public tick(): void {
         this.triggers.next();
     }
 
@@ -196,8 +203,8 @@ export class MatchingEngine {
         }
 
         const tradedVolume = bid.volume;
-        const updatedAsk = ask.updateWithTradedVolume(bid.volume);
-        const updatedBid = bid.updateWithTradedVolume(bid.volume);
+        const updatedAsk = ask.updateWithTradedVolume(tradedVolume);
+        const updatedBid = bid.updateWithTradedVolume(tradedVolume);
 
         this.asks = this.updateOrder(this.asks, updatedAsk);
 
@@ -272,11 +279,12 @@ export class MatchingEngine {
                 }
 
                 const filled = BN.min(ask.volume, bid.volume);
+                const price = this.priceStrategy.pickPrice(ask, bid);
 
                 ask.updateWithTradedVolume(filled);
                 bid.updateWithTradedVolume(filled);
 
-                executed = executed.concat(new Trade(bid, ask, filled, ask.price));
+                executed = executed.concat(new Trade(bid, ask, filled, price));
 
                 return true;
             });

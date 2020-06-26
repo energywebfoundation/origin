@@ -10,3 +10,4 @@ export { DirectBuy } from './DirectBuy';
 export { TimeRange } from './TimeRange';
 export { Trade } from './Trade';
 export { TradeExecutedEvent } from './TradeExecutedEvent';
+export * from './MatchingEngineFactory';

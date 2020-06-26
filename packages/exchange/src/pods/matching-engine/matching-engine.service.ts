@@ -4,10 +4,13 @@ import {
     MatchingEngine,
     ProductFilter,
     Trade,
-    TradeExecutedEvent
+    TradeExecutedEvent,
+    PriceStrategy,
+    MatchingEngineFactory
 } from '@energyweb/exchange-core';
 import { LocationService } from '@energyweb/utils-general';
 import { forwardRef, Inject, Injectable, Logger, OnModuleInit } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { EventBus } from '@nestjs/cqrs';
 import { Interval } from '@nestjs/schedule';
 import { List } from 'immutable';
@@ -16,8 +19,8 @@ import { OrderType } from '../order/order-type.enum';
 import { Order } from '../order/order.entity';
 import { OrderService } from '../order/order.service';
 import { DeviceTypeServiceWrapper } from '../runner/deviceTypeServiceWrapper';
-import { toMatchingEngineOrder } from './order-mapper';
 import { BulkTradeExecutedEvent } from './bulk-trade-executed.event';
+import { toMatchingEngineOrder } from './order-mapper';
 
 @Injectable()
 export class MatchingEngineService implements OnModuleInit {
@@ -31,16 +34,26 @@ export class MatchingEngineService implements OnModuleInit {
         @Inject(forwardRef(() => OrderService))
         private readonly orderService: OrderService,
         private readonly deviceTypeServiceWrapper: DeviceTypeServiceWrapper,
-        private readonly eventBus: EventBus
+        private readonly eventBus: EventBus,
+        private readonly config: ConfigService
     ) {}
 
-    public async onModuleInit() {
-        this.logger.log(`Initializing matching engine`);
+    public async onModuleInit(): Promise<void> {
+        const priceStrategy = this.config.get<PriceStrategy>('EXCHANGE_PRICE_STRATEGY');
+
+        if (priceStrategy === undefined) {
+            throw new Error('EXCHANGE_PRICE_STRATEGY is not set');
+        }
+
+        this.logger.log(
+            `Initializing matching engine with ${PriceStrategy[priceStrategy]} strategy`
+        );
 
         const orders = await this.orderService.getAllActiveOrders();
         this.logger.log(`Submitting ${orders.length} existing orders`);
 
-        this.matchingEngine = new MatchingEngine(
+        this.matchingEngine = MatchingEngineFactory.build(
+            priceStrategy,
             this.deviceTypeServiceWrapper.deviceTypeService,
             new LocationService()
         );
@@ -108,7 +121,8 @@ export class MatchingEngineService implements OnModuleInit {
             order.userId,
             order.price,
             order.startVolume,
-            order.directBuyId
+            order.directBuyId,
+            order.createdAt
         );
     }
 }

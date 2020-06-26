@@ -18,6 +18,7 @@ import { BundleTrade } from './bundle-trade.entity';
 import { Bundle } from './bundle.entity';
 import { BuyBundleDTO } from './buy-bundle.dto';
 import { CreateBundleDTO } from './create-bundle.dto';
+import { BundleSplitDTO } from './bundle-split.dto';
 
 @Injectable()
 export class BundleService {
@@ -129,6 +130,15 @@ export class BundleService {
         await this.bundleRepository.update({ userId, id: bundleId }, { isCancelled: true });
 
         return this.get(bundleId);
+    }
+
+    public async possibleBundleSplits(bundleId: string) {
+        const bundle = await this.get(bundleId);
+
+        return new BundleSplitDTO({
+            id: bundle.id,
+            splits: bundle.possibleSplits(this.energyPerUnit)
+        });
     }
 
     private async hasEnoughAssets(userId: string, createBundle: CreateBundleDTO) {

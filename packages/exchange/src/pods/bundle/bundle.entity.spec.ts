@@ -23,23 +23,10 @@ describe('Bundle canSplit', () => {
         });
 
         expect(bundle.canSplit(new BN(100 * MWh), new BN(MWh))).toBeTruthy();
-    });
-
-    it('should allow split with partial volume', () => {
-        const bundle = new Bundle({
-            items: [
-                {
-                    startVolume: new BN(50 * MWh),
-                    currentVolume: new BN(50 * MWh)
-                } as BundleItem,
-                {
-                    startVolume: new BN(50 * MWh),
-                    currentVolume: new BN(50 * MWh)
-                } as BundleItem
-            ]
-        });
-
+        expect(bundle.canSplit(new BN(60 * MWh), new BN(MWh))).toBeTruthy();
         expect(bundle.canSplit(new BN(50 * MWh), new BN(MWh))).toBeTruthy();
+        expect(bundle.canSplit(new BN(5 * MWh), new BN(MWh))).toBeFalsy();
+        expect(bundle.canSplit(new BN(8 * MWh), new BN(MWh))).toBeTruthy();
     });
 
     it('should not allow split when split results in decimal volumes', () => {
@@ -74,5 +61,29 @@ describe('Bundle canSplit', () => {
         });
 
         expect(bundle.canSplit(new BN(1 * MWh), new BN(MWh))).toBeFalsy();
+    });
+
+    it('should return possible splits for the bundle', () => {
+        const bundle = new Bundle({
+            items: [
+                {
+                    startVolume: new BN(10 * MWh),
+                    currentVolume: new BN(10 * MWh)
+                } as BundleItem,
+                {
+                    startVolume: new BN(10 * MWh),
+                    currentVolume: new BN(10 * MWh)
+                } as BundleItem
+            ]
+        });
+
+        const splits = bundle.possibleSplits(new BN(MWh));
+
+        const expectedSplits = [2, 4, 6, 8, 10, 12, 14, 16, 18, 20].map((i) => new BN(i * MWh));
+
+        const areMatching = splits.every((split, i) => split.volume.eq(expectedSplits[i]));
+
+        expect(splits).toHaveLength(expectedSplits.length);
+        expect(areMatching).toBeTruthy();
     });
 });
