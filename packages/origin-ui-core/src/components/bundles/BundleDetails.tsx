@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Bundle } from '../../utils/exchange';
 import {
     Dialog,
@@ -8,52 +8,64 @@ import {
     Box,
     Typography,
     Slider,
-    DialogContent
+    DialogContent,
+    makeStyles,
+    createStyles
 } from '@material-ui/core';
 import { BundleContents } from './BudleContents';
-import { BundleCardContainer } from './BundleCardContainer';
 import { useSelector, useDispatch } from 'react-redux';
-import { getShowBundleDetails, showBundleDetails, getBundles } from '../../features/bundles';
-import { useTranslation, bundlePrice } from '../../utils';
+import { getShowBundleDetails, showBundleDetails } from '../../features/bundles';
+import { useTranslation, bundlePrice, formatCurrencyComplete } from '../../utils';
 
 interface IOwnProps {
-    selected: Bundle;
+    bundle: Bundle;
     classes;
 }
+
+const useDialogStyles = makeStyles(() =>
+    createStyles({
+        paper: {
+            backgroundColor: '#434343'
+        }
+    })
+);
 
 const COUNT_OF_PRICE_MARKS = 11;
 
 const BundleDetails = (props: IOwnProps) => {
+    const { bundle } = props;
+    let { splits } = bundle;
+    const price = bundle.price;
     const showModal = useSelector(getShowBundleDetails);
-    const [selected, setSelected] = useState<Bundle>(props.selected);
     const dispatch = useDispatch();
-    const bundles = useSelector(getBundles);
     const { t } = useTranslation();
+    const dialogStyles = useDialogStyles();
 
-    const prices = bundles.map((bundle) => bundlePrice(bundle)) ?? [0];
+    const prices = splits.map(({ volume }) => bundlePrice({ volume, price })) ?? [0];
     const maxPrice = prices.length > 0 ? Math.ceil(Math.max(...prices) / 10) * 10 : 0;
     const minPrice = prices.length > 0 ? Math.floor(Math.min(...prices) / 10) * 10 : 100;
 
     const [priceRange, setPriceRange] = useState<number[]>([minPrice, maxPrice]);
+    splits = splits.filter(
+        ({ volume }) =>
+            bundlePrice({ volume, price }) >= priceRange[0] &&
+            bundlePrice({ volume, price }) <= priceRange[1]
+    );
     const priceStep = Math.floor((maxPrice - minPrice) / (COUNT_OF_PRICE_MARKS - 1));
-
-    useEffect(() => {
-        setPriceRange([minPrice, maxPrice]);
-    }, [bundles]);
 
     const marks = Array.from(Array(COUNT_OF_PRICE_MARKS).keys()).map((i) => {
         const from = priceRange[0];
         const value = from + i * priceStep;
         return { value, label: String(value) };
     });
-
     return (
         <Dialog
             open={showModal}
             onClose={() => dispatch(showBundleDetails(false))}
             maxWidth="lg"
             fullWidth={true}
-            scroll="body"
+            scroll="paper"
+            classes={{ paper: dialogStyles.paper }}
         >
             <DialogTitle>BUNDLE DETAILS</DialogTitle>
             <DialogContent>
@@ -74,26 +86,17 @@ const BundleDetails = (props: IOwnProps) => {
                                         max={maxPrice}
                                         step={priceStep}
                                         valueLabelDisplay="on"
+                                        valueLabelFormat={(label) => formatCurrencyComplete(label)}
                                     />
                                 </Box>
                             </Grid>
                         </Grid>
                     </Grid>
                 </Box>
-                <Grid container>
-                    <Grid item xs={5} style={{ alignSelf: 'stretch' }}>
-                        <BundleContents bundle={selected || props.selected} />
-                    </Grid>
-                    <Grid item xs={7}>
-                        <Box height="75%">
-                            <BundleCardContainer
-                                selected={selected || props.selected}
-                                setSelected={setSelected}
-                                priceRange={priceRange}
-                            />
-                        </Box>
-                    </Grid>
-                </Grid>
+
+                <Box width="97%">
+                    <BundleContents splits={splits} bundle={bundle} />
+                </Box>
             </DialogContent>
         </Dialog>
     );

@@ -51,5 +51,5 @@ export const energyShares = (
  *
  * @param
  */
-export const bundlePrice = ({ volume, price }: Bundle) =>
+export const bundlePrice = ({ volume, price }: Partial<Bundle>) =>
     (price * volume.toNumber()) / (Unit[EnergyFormatter.displayUnit] * 100);
