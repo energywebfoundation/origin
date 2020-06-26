@@ -331,7 +331,10 @@ export const BundleContents = (props: IOwnProps) => {
                                                     }
                                                 >
                                                     <Avatar
-                                                        src={energyImageByType(type as EnergyTypes)}
+                                                        src={energyImageByType(
+                                                            type as EnergyTypes,
+                                                            selected === split
+                                                        )}
                                                     />
                                                     <Box
                                                         fontWeight="fontWeightBold"
