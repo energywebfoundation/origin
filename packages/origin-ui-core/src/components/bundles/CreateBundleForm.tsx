@@ -27,18 +27,14 @@ export const CreateBundleForm = () => {
                 style={{ backgroundColor: '#333333', gridTemplateColumns: '60% 40%' }}
             >
                 <Box mr={2} style={{ background: '#2d2d2d' }}>
-                    {/* <Grid item xs={6} > */}
                     <Certificates selected={selected} setSelected={setSelected} />
-                    {/* </Grid> */}
                 </Box>
                 <Box style={{ background: '#2d2d2d' }}>
-                    {/* <Grid item xs={6} > */}
                     <SelectedForSale
                         selected={selected}
                         totalVolume={totalVolume()}
                         callback={() => history.push(`${getCertificatesLink()}/bundles`)}
                     />
-                    {/* </Grid> */}
                 </Box>
             </Box>
         </Paper>
