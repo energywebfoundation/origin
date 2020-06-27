@@ -72,7 +72,7 @@
         "reflect-metadata": "0.1.13",
         "rxjs": "6.5.5",
         "typeorm": "0.2.25",
-        "uuid": "8.1.0"
+        "uuid": "8.2.0"
     },
     "devDependencies": {
         "@nestjs/cli": "7.4.1",
