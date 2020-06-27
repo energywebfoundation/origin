@@ -4,7 +4,6 @@ import {
     Dialog,
     DialogTitle,
     Grid,
-    withStyles,
     Box,
     Typography,
     Slider,
@@ -19,7 +18,6 @@ import { useTranslation, bundlePrice, formatCurrencyComplete } from '../../utils
 
 interface IOwnProps {
     bundle: Bundle;
-    classes;
 }
 
 const useDialogStyles = makeStyles(() =>
@@ -93,20 +91,10 @@ const BundleDetails = (props: IOwnProps) => {
                         </Grid>
                     </Grid>
                 </Box>
-
-                <Box width="97%">
-                    <BundleContents splits={splits} bundle={bundle} />
-                </Box>
+                <BundleContents splits={splits} bundle={bundle} />
             </DialogContent>
         </Dialog>
     );
 };
 
-const styles = {
-    dialogPaper: {
-        minHeight: '80vh',
-        maxHeight: '80vh'
-    }
-};
-
-export default withStyles(styles)(BundleDetails);
+export default BundleDetails;

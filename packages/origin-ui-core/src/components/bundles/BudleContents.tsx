@@ -25,7 +25,13 @@ import {
     useTranslation,
     getCurrencies
 } from '../..';
-import { KeyboardArrowUp, KeyboardArrowDown, ArrowForward, ArrowBack } from '@material-ui/icons';
+import {
+    KeyboardArrowUp,
+    KeyboardArrowDown,
+    ArrowForward,
+    ArrowBack,
+    ArrowRightAlt
+} from '@material-ui/icons';
 import { buyBundle } from '../../features/bundles';
 
 interface IOwnProps {
@@ -51,7 +57,7 @@ const cardHeaderColor = '#3b3b3b';
 const cardHeaderSelectedColor = '#9b00c8';
 const fontSize = 12;
 
-const topGridTemplateRows = `10% ${'15% '.repeat(6)}`;
+const topGridTemplateRows = 'auto';
 const topGridTemplateColumns = '40% 60%';
 const bundlesGridTemplatesColumns = '20% '.repeat(5);
 
@@ -224,7 +230,7 @@ export const BundleContents = (props: IOwnProps) => {
                                             <Box>
                                                 <Box
                                                     style={{
-                                                        display: 'flex',
+                                                        display: 'grid',
                                                         flexDirection: 'column'
                                                     }}
                                                 >
@@ -284,12 +290,10 @@ export const BundleContents = (props: IOwnProps) => {
                                                     fontSize={fontSize}
                                                     fontWeight="fontWeightBold"
                                                 >
-                                                    <Typography>
-                                                        {`${moment(generationFrom).format(
-                                                            'MMM, YYYY'
-                                                        )}->${moment(generationTo).format(
-                                                            'MMM, YYYY'
-                                                        )}`}
+                                                    <Typography color="textPrimary" variant="body2">
+                                                        {moment(generationFrom).format('MMM, YYYY')}
+                                                        <ArrowRightAlt />
+                                                        {moment(generationTo).format('MMM, YYYY')}
                                                     </Typography>
                                                 </Box>
                                             </Box>
