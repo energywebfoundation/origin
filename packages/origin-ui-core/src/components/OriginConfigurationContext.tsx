@@ -118,6 +118,7 @@ export const createMaterialThemeForOrigin = (
         materialLocale,
         {
             typography: {
+                fontSizeSm: 10,
                 fontSizeMd: 12,
                 fontSizeLg: 18
             }

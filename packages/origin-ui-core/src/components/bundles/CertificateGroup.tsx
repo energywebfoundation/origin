@@ -14,7 +14,8 @@ import {
     Avatar,
     ListItem,
     Box,
-    useTheme
+    useTheme,
+    Button
 } from '@material-ui/core';
 import { getProducingDevices, getEnvironment } from '../..';
 import { useSelector } from 'react-redux';
@@ -36,7 +37,7 @@ export const CertificateGroup = (props: IOwnProps) => {
         devices
     );
     const {
-        typography: { fontSizeMd }
+        typography: { fontSizeMd, fontSizeSm }
     } = useTheme();
 
     const isAllSelected = () => certificates.every((cert) => selected.includes(cert));
@@ -66,22 +67,37 @@ export const CertificateGroup = (props: IOwnProps) => {
     };
 
     return (
-        <Box boxShadow={1} bgcolor="#3b3b3b">
-            <Box bgcolor="#373737" display="flex" p={1} alignItems="center">
-                <FormControlLabel
-                    style={{ marginBottom: 0 }}
-                    control={<Checkbox checked={isAllSelected()} onClick={toggleSelectAll} />}
-                    label={
-                        <Box mb={0} fontSize={fontSizeMd} fontWeight="fontWeightBold">
-                            {facilityName}
-                        </Box>
-                    }
-                />
-                <Box fontSize={fontSizeMd}>
-                    {gridOperator} ({gpsLongitude}, {gpsLatitude})
-                </Box>
-            </Box>
-            <CardContent>
+        <Box boxShadow={2} bgcolor="#3b3b3b">
+            {/* <Box bgcolor="#373737" display="flex" alignItems="center"> */}
+            <Grid
+                container
+                style={{ backgroundColor: '#373737', fontSize: fontSizeMd }}
+                alignItems="center"
+            >
+                <Grid item xs={6}>
+                    <FormControlLabel
+                        style={{ marginBottom: 0, marginLeft: 0 }}
+                        control={
+                            <Checkbox
+                                color="primary"
+                                checked={isAllSelected()}
+                                onClick={toggleSelectAll}
+                            />
+                        }
+                        label={
+                            <Box mb={0} fontSize={fontSizeMd} fontWeight="fontWeightBold">
+                                {facilityName}
+                            </Box>
+                        }
+                    />
+                </Grid>
+                <Grid item xs={6}>
+                    {/* <Box fontSize={fontSizeMd}> */}
+                    {gridOperator} ({gpsLongitude}, {gpsLatitude}){/* </Box> */}
+                </Grid>
+            </Grid>
+            {/* </Box> */}
+            <List>
                 {certificates.map((cert) => {
                     const {
                         creationTime,
@@ -91,43 +107,43 @@ export const CertificateGroup = (props: IOwnProps) => {
                     const type = device.deviceType.split(';')[0].toLowerCase() as EnergyTypes;
                     const energy = publicVolume.add(privateVolume);
                     return (
-                        <ListItem button key={cert.id} onClick={() => toggleSelect(cert)}>
+                        <ListItem
+                            button
+                            key={cert.id}
+                            onClick={() => toggleSelect(cert)}
+                            style={{
+                                textTransform: 'capitalize',
+                                paddingLeft: 0,
+                                backgroundColor: isSelected(cert) ? '#3a2146' : 'inherit'
+                            }}
+                            divider
+                        >
                             <ListItemIcon>
-                                <Checkbox checked={isSelected(cert)} />
+                                <Checkbox color="primary" checked={isSelected(cert)} />
                             </ListItemIcon>
                             <ListItemAvatar>
-                                <Avatar src={energyImageByType(type)}></Avatar>
+                                <Avatar src={energyImageByType(type, isSelected(cert))}></Avatar>
                             </ListItemAvatar>
                             <Grid container>
                                 <Grid item xs={4}>
-                                    <ListItemText
-                                        primary={
-                                            <div>
-                                                <Typography>{type}</Typography>
-                                                <Typography>
-                                                    {EnergyFormatter.format(energy, true)}
-                                                </Typography>
-                                            </div>
-                                        }
-                                    />
+                                    <Box fontSize={fontSizeMd}>{type}</Box>
+                                    <Box fontSize={fontSizeMd} fontWeight="fontWeightBold">
+                                        {EnergyFormatter.format(energy, true)}
+                                    </Box>
                                 </Grid>
                                 <Grid item xs={8}>
-                                    <ListItemText
-                                        primary={
-                                            <div>
-                                                <Typography>Certification Date</Typography>
-                                                <Typography>
-                                                    {moment.unix(creationTime).format('MMM, YYYY')}
-                                                </Typography>
-                                            </div>
-                                        }
-                                    />
+                                    <Box fontSize={fontSizeSm} color="text.secondary">
+                                        Certification Date
+                                    </Box>
+                                    <Box fontSize={fontSizeMd}>
+                                        {moment.unix(creationTime).format('MMM, YYYY')}
+                                    </Box>
                                 </Grid>
                             </Grid>
                         </ListItem>
                     );
                 })}
-            </CardContent>
+            </List>
         </Box>
     );
 };

@@ -40,7 +40,10 @@ export const GroupedCertificateList = (props: IOwnProps) => {
     return (
         <Box>
             <FormControlLabel
-                control={<Checkbox checked={isAllSelected()} onClick={toggleSelectAll} />}
+                style={{ marginLeft: 0 }}
+                control={
+                    <Checkbox color="primary" checked={isAllSelected()} onClick={toggleSelectAll} />
+                }
                 label={
                     <Box fontSize={fontSizeMd} color="text.secondary">
                         Select All
