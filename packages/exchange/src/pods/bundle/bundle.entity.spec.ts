@@ -81,7 +81,39 @@ describe('Bundle canSplit', () => {
 
         const expectedSplits = [2, 4, 6, 8, 10, 12, 14, 16, 18, 20].map((i) => new BN(i * MWh));
 
-        const areMatching = splits.every((split, i) => split.volume.eq(expectedSplits[i]));
+        const areMatching = splits.every(
+            (split, i) =>
+                split.volume.eq(expectedSplits[i]) &&
+                split.items.reduce((item, s) => s.volume.add(item), new BN(0)).eq(expectedSplits[i])
+        );
+
+        expect(splits).toHaveLength(expectedSplits.length);
+        expect(areMatching).toBeTruthy();
+    });
+
+    it('should return possible splits for the bundle', () => {
+        const bundle = new Bundle({
+            items: [
+                {
+                    startVolume: new BN(45 * MWh),
+                    currentVolume: new BN(45 * MWh)
+                } as BundleItem,
+                {
+                    startVolume: new BN(100 * MWh),
+                    currentVolume: new BN(100 * MWh)
+                } as BundleItem
+            ]
+        });
+
+        const splits = bundle.possibleSplits(new BN(MWh));
+
+        const expectedSplits = [29, 2 * 29, 3 * 29, 4 * 29, 5 * 29].map((i) => new BN(i * MWh));
+
+        const areMatching = splits.every(
+            (split, i) =>
+                split.volume.eq(expectedSplits[i]) &&
+                split.items.reduce((item, s) => s.volume.add(item), new BN(0)).eq(expectedSplits[i])
+        );
 
         expect(splits).toHaveLength(expectedSplits.length);
         expect(areMatching).toBeTruthy();
