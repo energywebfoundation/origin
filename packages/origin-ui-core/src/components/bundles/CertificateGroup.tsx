@@ -1,21 +1,16 @@
 import React from 'react';
 import { ICertificateViewItem } from '../../features/certificates';
 import {
-    Card,
     FormControlLabel,
     Checkbox,
-    CardContent,
     List,
     ListItemIcon,
     ListItemAvatar,
     Grid,
-    Typography,
-    ListItemText,
     Avatar,
     ListItem,
     Box,
-    useTheme,
-    Button
+    useTheme
 } from '@material-ui/core';
 import { getProducingDevices, getEnvironment } from '../..';
 import { useSelector } from 'react-redux';

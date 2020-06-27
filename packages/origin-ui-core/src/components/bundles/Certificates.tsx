@@ -1,5 +1,5 @@
 import React from 'react';
-import { Paper, Box, Typography, useTheme } from '@material-ui/core';
+import { Box, useTheme } from '@material-ui/core';
 import { useSelector } from 'react-redux';
 import {
     getCertificates,

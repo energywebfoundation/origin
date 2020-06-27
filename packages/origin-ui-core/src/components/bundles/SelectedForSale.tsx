@@ -2,19 +2,13 @@ import React, { useState } from 'react';
 import CurrencyTextField from '@unicef/material-ui-currency-textfield';
 import {
     List,
-    Card,
-    CardHeader,
-    CardContent,
     ListItem,
     ListItemAvatar,
     Avatar,
     Grid,
-    ListItemText,
-    Typography,
     Checkbox,
     Button,
     FormControlLabel,
-    CardActions,
     Box,
     useTheme
 } from '@material-ui/core';

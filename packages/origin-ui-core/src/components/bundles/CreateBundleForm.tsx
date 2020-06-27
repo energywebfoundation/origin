@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Grid, Paper, Box } from '@material-ui/core';
+import { Paper, Box } from '@material-ui/core';
 import { Certificates } from './Certificates';
 import { SelectedForSale } from './SelectedForSale';
 import { ICertificateViewItem } from '../../features/certificates';
