@@ -4,8 +4,9 @@ export enum BundlesActionType {
     CREATE = 'BUNDLES_CREATE',
     STORE = 'BUNDLES_STORE',
     BUY = 'BUNDLES_BUY',
-    SHOW_BUNDLE_DETAILS = 'BUNDLES_SHOW_BUNDLE_DETAILS',
-    CLEAR_BUNDLES = 'BUNDLES_CLREAR_BUNDLES'
+    SHOW_DETAILS = 'BUNDLES_SHOW_BUNDLE_DETAILS',
+    CLEAR_BUNDLES = 'BUNDLES_CLREAR_BUNDLES',
+    CANCEL_BUNDLE = 'BUNDLES_CANCEL_BUNDLE'
 }
 
 export interface IBundleAction {
@@ -35,32 +36,33 @@ export interface IShowBundleDetailsAction extends IBundleAction {
     payload: boolean;
 }
 
-export const storeBundle = (payload: IStoreBundleAction['payload']) => {
-    return {
-        type: BundlesActionType.STORE,
-        payload
-    };
-};
+export interface ICancelBundleAction extends IBundleAction {
+    payload: string;
+}
 
-export const createBundle = (payload: ICreateBundleAction['payload']) => {
-    return {
-        type: BundlesActionType.CREATE,
-        payload
-    };
-};
+export const storeBundle = (payload: IStoreBundleAction['payload']) => ({
+    type: BundlesActionType.STORE,
+    payload
+});
 
-export const buyBundle = (payload: IBuyBundleAction['payload']) => {
-    return {
-        type: BundlesActionType.BUY,
-        payload
-    };
-};
+export const createBundle = (payload: ICreateBundleAction['payload']) => ({
+    type: BundlesActionType.CREATE,
+    payload
+});
 
-export const showBundleDetails = (payload: IShowBundleDetailsAction['payload']) => {
-    return {
-        type: BundlesActionType.SHOW_BUNDLE_DETAILS,
-        payload
-    };
-};
+export const buyBundle = (payload: IBuyBundleAction['payload']) => ({
+    type: BundlesActionType.BUY,
+    payload
+});
+
+export const showBundleDetails = (payload: IShowBundleDetailsAction['payload']) => ({
+    type: BundlesActionType.SHOW_DETAILS,
+    payload
+});
 
 export const clearBundles = () => ({ type: BundlesActionType.CLEAR_BUNDLES });
+
+export const cancelBundle = (payload: ICancelBundleAction['payload']) => ({
+    type: BundlesActionType.CANCEL_BUNDLE,
+    payload
+});

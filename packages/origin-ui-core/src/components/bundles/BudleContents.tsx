@@ -16,6 +16,7 @@ import { KeyboardArrowUp, KeyboardArrowDown } from '@material-ui/icons';
 
 interface IOwnProps {
     bundle: Bundle;
+    owner: boolean;
 }
 
 const useOfferClasses = makeStyles((theme: Theme) =>
@@ -29,7 +30,7 @@ const useOfferClasses = makeStyles((theme: Theme) =>
 const OFFERS_LIST_SIZE = 5;
 
 export const BundleContents = (props: IOwnProps) => {
-    const { bundle } = props;
+    const { bundle, owner } = props;
     const environment = useSelector(getEnvironment);
     const devices = useSelector(getProducingDevices);
     const offerClasses = useOfferClasses();

@@ -358,7 +358,7 @@ function* findEnhancedCertificate(
     return enhanceCertificate(asset, onChainCertificate);
 }
 
-function* fetchBundles() {
+export function* fetchBundles() {
     yield put(clearBundles());
     const exchangeClient: IExchangeClient = yield select(getExchangeClient);
     const bundles: Bundle[] = yield apply(exchangeClient, exchangeClient.getAvailableBundles, null);

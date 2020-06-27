@@ -38,6 +38,7 @@ export interface IExchangeClient {
     getAvailableBundles(): Promise<Bundle[]>;
     getOwnBundles(): Promise<Bundle[]>;
     createBundle(bundle: CreateBundleDTO): Promise<Bundle>;
+    cancelBundle(id: string): Promise<Bundle>;
 }
 
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
@@ -179,6 +180,13 @@ export class ExchangeClient implements IExchangeClient {
     public async getOwnBundles() {
         const response = await this.requestClient.get<unknown, Bundle[]>(`${this.bundleEndpoint}`);
 
+        return response.data;
+    }
+
+    public async cancelBundle(id: string): Promise<Bundle> {
+        const response = await this.requestClient.put<Bundle, string>(
+            `${this.bundleEndpoint}/${id}/cancel`
+        );
         return response.data;
     }
 
@@ -333,6 +341,11 @@ export const ExchangeClientMock: IExchangeClient = {
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     createBundle(bundle: CreateBundleDTO) {
+        return null;
+    },
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    cancelBundle(id: string) {
         return null;
     }
 };

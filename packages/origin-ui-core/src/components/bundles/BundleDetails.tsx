@@ -82,7 +82,7 @@ const BundleDetails = (props: IOwnProps) => {
                 </Box>
                 <Grid container>
                     <Grid item xs={5} style={{ alignSelf: 'stretch' }}>
-                        <BundleContents bundle={selected || props.selected} />
+                        <BundleContents bundle={selected || props.selected} owner={props.owner} />
                     </Grid>
                     <Grid item xs={7}>
                         <Box height="75%">
