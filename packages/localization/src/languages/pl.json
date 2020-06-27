@@ -22,6 +22,7 @@
             },
             "certificates": {
                 "bundles": "Pakiety",
+                "my_bundles": "Moje pakiety",
                 "create_bundle": "Stwórz Pakiet"
             }
         },

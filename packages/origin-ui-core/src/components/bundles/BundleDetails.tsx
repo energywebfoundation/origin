@@ -18,7 +18,7 @@ import { useTranslation, bundlePrice } from '../../utils';
 
 interface IOwnProps {
     selected: Bundle;
-    classes;
+    owner: boolean;
 }
 
 const COUNT_OF_PRICE_MARKS = 11;

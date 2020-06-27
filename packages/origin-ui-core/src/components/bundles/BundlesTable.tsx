@@ -39,10 +39,11 @@ const ENERGY_COLUMNS_TO_DISPLAY = [EnergyTypes.SOLAR, EnergyTypes.WIND, EnergyTy
 
 export const BundlesTable = (props: IOwnProps) => {
     const { owner = false } = props;
-    const bundles = owner ? useSelector(getOwnBundles) : useSelector(getBundles);
+    const allBundles = useSelector(getBundles);
+    const bundles = allBundles.filter((b) => (owner ? b.own : true));
     const { t } = useTranslation();
     const devices = useSelector(getProducingDevices);
-    const [selectedBundle, setSelectedBundle] = useState<Bundle>(null);
+    const [selected, setSelected] = useState<Bundle>(null);
     const environment = useSelector(getEnvironment);
     const dispatch = useDispatch();
 
@@ -76,7 +77,7 @@ export const BundlesTable = (props: IOwnProps) => {
     useEffect(() => {
         setPageSize(BUNDLES_PER_PAGE);
         loadPage(1);
-    }, [bundles]);
+    }, [allBundles, owner]);
 
     const [currency = 'USD'] = useSelector(getCurrencies);
 
@@ -92,7 +93,7 @@ export const BundlesTable = (props: IOwnProps) => {
     const viewDetails = (rowIndex: number) => {
         const { bundleId } = rows[rowIndex];
         const bundle = bundles.find((b) => b.id === bundleId);
-        setSelectedBundle(bundle);
+        setSelected(bundle);
         dispatch(showBundleDetails(true));
     };
 
@@ -135,7 +136,7 @@ export const BundlesTable = (props: IOwnProps) => {
                 toggleSort={toggleSort}
                 handleRowClick={(rowIndex: string) => viewDetails(parseInt(rowIndex, 10))}
             />
-            <BundleDetails selected={selectedBundle} />
+            <BundleDetails selected={selected} owner={owner} />
             <Link to={'/certificates/create_bundle'}>
                 <Tooltip title={t('certificate.actions.create_bundle')}>
                     <Fab
