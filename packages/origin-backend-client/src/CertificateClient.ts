@@ -14,16 +14,20 @@ import { IRequestClient, RequestClient } from './RequestClient';
 
 export class CertificationRequestUpdateDTO {
     deviceId: string;
+
     fromTime: number;
+
     toTime: number;
+
     energy: string;
+
     files: string[];
 }
 
 export interface ICertificateClient {
     queueCertificationRequestData(data: CertificationRequestUpdateData): Promise<boolean>;
     validateGenerationPeriod(data: CertificationRequestValidationData): Promise<ISuccessResponse>;
-    getCertificationRequest(id: number): Promise<ICertificationRequest>;
+    getCertificationRequest(id: ICertificationRequest['id']): Promise<ICertificationRequest>;
     getAllCertificationRequests(): Promise<ICertificationRequest[]>;
     getOwnershipCommitment(certificateId: number): Promise<IOwnershipCommitmentProofWithTx>;
     addOwnershipCommitment(

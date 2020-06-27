@@ -52,7 +52,7 @@
         "moment": "2.24.0",
         "polly-js": "1.6.5",
         "precise-proofs-js": "1.1.0",
-        "winston": "3.3.0"
+        "winston": "3.3.3"
     },
     "devDependencies": {
         "ethlint": "1.2.5",

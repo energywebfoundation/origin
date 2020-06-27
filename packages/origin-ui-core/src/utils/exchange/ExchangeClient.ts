@@ -37,6 +37,7 @@ export interface IExchangeClient {
     getOrders?(): Promise<Order[]>;
     getAvailableBundles(): Promise<Bundle[]>;
     getOwnBundles(): Promise<Bundle[]>;
+    getBundleSplits(bundle: Bundle): Promise<Bundle[]>;
     createBundle(bundle: CreateBundleDTO): Promise<Bundle>;
     cancelBundle(id: string): Promise<Bundle>;
 }
@@ -187,6 +188,13 @@ export class ExchangeClient implements IExchangeClient {
         const response = await this.requestClient.put<Bundle, string>(
             `${this.bundleEndpoint}/${id}/cancel`
         );
+    }
+      
+    public async getBundleSplits(bundle: Bundle): Promise<Bundle[]> {
+        const response = await this.requestClient.get<unknown, Bundle[]>(
+            `${this.bundleEndpoint}/${bundle.id}/splits`
+        );
+
         return response.data;
     }
 
@@ -198,7 +206,7 @@ export class ExchangeClient implements IExchangeClient {
         return created.data;
     }
 
-    public async buyBundle(bundle: { bundleId: string; volume: number }) {
+    public async buyBundle(bundle: { bundleId: string; volume: number }): Promise<any> {
         const bundleTrade = await this.requestClient.post(`${this.bundleEndpoint}/buy`, bundle);
         return bundleTrade.data;
     }
@@ -346,6 +354,11 @@ export const ExchangeClientMock: IExchangeClient = {
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     cancelBundle(id: string) {
+        return null;
+    },
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    getBundleSplits(bundle: Bundle) {
         return null;
     }
 };

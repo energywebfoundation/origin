@@ -121,10 +121,10 @@ export function CertificateDetailView(props: IProps) {
 
         const resolvedEvents = await Promise.all(jointEvents);
 
-        const request = await new CertificationRequest(
+        const request = await CertificationRequest.fetch(
             selectedCertificate.certificationRequestId,
             configuration
-        ).sync();
+        );
 
         if (request) {
             resolvedEvents.unshift({

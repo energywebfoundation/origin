@@ -21,6 +21,7 @@ import { CreateBundleDTO } from './create-bundle.dto';
 import { BuyBundleDTO } from './buy-bundle.dto';
 import { BundleTrade } from './bundle-trade.entity';
 import { BundlePublicDTO } from './bundle-public.dto';
+import { BundleSplitDTO } from './bundle-split.dto';
 
 @UseInterceptors(ClassSerializerInterceptor)
 @Controller('bundle')
@@ -118,6 +119,20 @@ export class BundleController {
         try {
             const bundle = await this.bundleService.cancel(user.ownerId.toString(), bundleId);
             return bundle;
+        } catch (error) {
+            this.logger.error(error.message);
+
+            throw error;
+        }
+    }
+
+    @Get('/:id/splits')
+    public async availableBundleSplits(
+        @Param('id', new ParseUUIDPipe({ version: '4' })) bundleId: string
+    ): Promise<BundleSplitDTO> {
+        try {
+            const splits = await this.bundleService.possibleBundleSplits(bundleId);
+            return splits;
         } catch (error) {
             this.logger.error(error.message);
 

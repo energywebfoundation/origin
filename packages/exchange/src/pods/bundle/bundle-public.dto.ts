@@ -8,10 +8,13 @@ import { BundleItem } from './bundle-item.entity';
 
 export class BundlePublicItemDTO {
     constructor(bundle: Partial<BundleItem>) {
+        this.id = bundle.id;
         this.asset = bundle.asset;
         this.startVolume = bundle.startVolume;
         this.currentVolume = bundle.currentVolume;
     }
+
+    id: string;
 
     asset: Asset;
 

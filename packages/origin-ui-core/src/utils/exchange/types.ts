@@ -146,6 +146,7 @@ export type RequestWithdrawalDTO = {
 };
 
 export type BundleItem = {
+    id: string;
     asset: IAsset;
     startVolume: BigNumber;
     currentVolume: BigNumber;
@@ -158,7 +159,8 @@ export type Bundle = {
     isCancelled: boolean;
     items: BundleItem[];
     volume: BigNumber;
-    own: boolean = false;
+    own: boolean;
+    splits?: Split[];
 };
 
 export type BundleItemDTO = {
@@ -174,4 +176,19 @@ export type CreateBundleDTO = {
 export type BuyBundleDTO = {
     bundleId: string;
     volume: string;
+};
+
+export type BundleSplits = {
+    id: string;
+    splits: Split[];
+};
+
+export type Split = {
+    volume: BigNumber;
+    items: SplitItem[];
+};
+
+export type SplitItem = {
+    id: string;
+    volume: BigNumber;
 };

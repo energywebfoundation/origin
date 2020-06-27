@@ -24,7 +24,8 @@ import {
     IExchangeClient,
     ExchangeAccount,
     AccountAsset,
-    Bundle
+    Bundle,
+    BundleSplits
 } from '../../utils/exchange';
 import {
     IOriginConfiguration,
@@ -377,6 +378,18 @@ export function* fetchBundles() {
             continue;
         }
         bundle.volume = new BigNumber(bundle.volume.toString());
+        const bundleSplits: BundleSplits = yield apply(
+            exchangeClient,
+            exchangeClient.getBundleSplits,
+            [bundle]
+        );
+        bundleSplits.splits.forEach((split) => {
+            split.volume = new BigNumber(split.volume);
+            split.items.forEach((item) => {
+                item.volume = new BigNumber(item.volume);
+            });
+        });
+        bundle.splits = bundleSplits.splits;
         yield put(storeBundle(bundle));
     }
 }

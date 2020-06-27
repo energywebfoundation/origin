@@ -4,6 +4,7 @@ import { Expose, Transform } from 'class-transformer';
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 import { BundleItem } from './bundle-item.entity';
+import { BundleSplitItemDTO, BundleSplitVolumeDTO } from './bundle-split.dto';
 
 @Entity()
 export class Bundle extends ExtendedBaseEntity {
@@ -39,18 +40,19 @@ export class Bundle extends ExtendedBaseEntity {
         return this.items.reduce((sum: BN, item) => sum.add(item.startVolume), new BN(0));
     }
 
-    canSplit(volume: BN, energyPerUnit: BN) {
-        if (
-            !volume.mod(energyPerUnit).isZero() ||
-            volume.lt(energyPerUnit.mul(new BN(this.items.length)))
-        ) {
-            return false;
-        }
+    canSplit(volume: BN, energyPerUnit: BN): boolean {
+        return this.split(volume, energyPerUnit).items.length > 0;
+    }
 
-        const precision = new BN(1000);
-        const ratio = this.volume.mul(precision).div(volume);
+    possibleSplits(energyPerUnit: BN): BundleSplitVolumeDTO[] {
+        const volume = this.available.div(energyPerUnit).toNumber();
 
-        return this.items.every((item) => item.currentVolume.mul(precision).mod(ratio).isZero());
+        const splits = [...Array(volume).keys()]
+            .map((_, i) => new BN(i + 1).mul(energyPerUnit))
+            .map((vol) => this.split(vol, energyPerUnit))
+            .filter((split) => split.items.length);
+
+        return splits;
     }
 
     getUpdatedVolumes(volume: BN) {
@@ -64,5 +66,32 @@ export class Bundle extends ExtendedBaseEntity {
                 currentVolume: item.currentVolume.sub(traded)
             };
         });
+    }
+
+    private split(volumeToBuy: BN, energyPerUnit: BN): BundleSplitVolumeDTO {
+        if (
+            !volumeToBuy.mod(energyPerUnit).isZero() ||
+            volumeToBuy.lt(energyPerUnit.mul(new BN(this.items.length)))
+        ) {
+            return new BundleSplitVolumeDTO({ volume: volumeToBuy, items: [] });
+        }
+
+        const precision = new BN(100000);
+        const ratio = volumeToBuy.mul(precision).div(this.volume);
+        const coefficient = precision.mul(energyPerUnit);
+
+        const splits = this.items.map(({ id, currentVolume }) => ({
+            id,
+            canSplit: ratio.mul(currentVolume).mod(coefficient).isZero(),
+            volume: ratio.mul(currentVolume).div(precision)
+        }));
+
+        if (!splits.every((split) => split.canSplit)) {
+            return new BundleSplitVolumeDTO({ volume: volumeToBuy, items: [] });
+        }
+
+        const items = splits.map(({ id, volume }) => new BundleSplitItemDTO({ id, volume }));
+
+        return new BundleSplitVolumeDTO({ volume: volumeToBuy, items });
     }
 }

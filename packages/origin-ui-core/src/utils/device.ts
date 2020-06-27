@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 import { ProducingDevice } from '@energyweb/device-registry';
 import { IEnvironment } from '../features/general/actions';
 import { CustomFilterInputType, ICustomFilterDefinition } from '../components/Table/FiltersHeader';
@@ -5,14 +6,22 @@ import { getUserOffchain } from '../features/users/selectors';
 import { useSelector } from 'react-redux';
 import { useTranslation } from '.';
 import { OrganizationStatus, UserStatus } from '@energyweb/origin-backend-core';
-import gaseous from '../../assets/bundles/icon-gaseous.svg';
-import hydro from '../../assets/bundles/icon-hydro.svg';
-import liquid from '../../assets/bundles/icon-liquid.svg';
-import solar from '../../assets/bundles/icon-solar.svg';
-import solid from '../../assets/bundles/icon-solid.svg';
-import thermal from '../../assets/bundles/icon-thermal.svg';
-import wind from '../../assets/bundles/icon-wind.svg';
-import marine from '../../assets/bundles/icon-marine.svg';
+import gaseous from '../../assets/device/icon-gaseous.svg';
+import hydro from '../../assets/device/icon-hydro.svg';
+import liquid from '../../assets/device/icon-liquid.svg';
+import solar from '../../assets/device/icon-solar.svg';
+import solid from '../../assets/device/icon-solid.svg';
+import thermal from '../../assets/device/icon-thermal.svg';
+import wind from '../../assets/device/icon-wind.svg';
+import marine from '../../assets/device/icon-marine.svg';
+import gaseous_selected from '../../assets/device_selected/icon-gaseous.svg';
+import hydro_selected from '../../assets/device_selected/icon-hydro.svg';
+import liquid_selected from '../../assets/device_selected/icon-liquid.svg';
+import solar_selected from '../../assets/device_selected/icon-solar.svg';
+import solid_selected from '../../assets/device_selected/icon-solid.svg';
+import thermal_selected from '../../assets/device_selected/icon-thermal.svg';
+import wind_selected from '../../assets/device_selected/icon-wind.svg';
+import marine_selected from '../../assets/device_selected/icon-marine.svg';
 
 type TranslateFunc = (key: string) => string;
 
@@ -224,16 +233,16 @@ export const deviceById = (
     });
 };
 
-export const energyImageByType = (type: EnergyTypes) => {
+export const energyImageByType = (type: EnergyTypes, selected = false): any => {
     const images = {
-        [EnergyTypes.GASEOUS]: gaseous,
-        [EnergyTypes.HYDRO]: hydro,
-        [EnergyTypes.LIQUID]: liquid,
-        [EnergyTypes.SOLAR]: solar,
-        [EnergyTypes.SOLID]: solid,
-        [EnergyTypes.THERMAL]: thermal,
-        [EnergyTypes.WIND]: wind,
-        [EnergyTypes.MARINE]: marine
+        [EnergyTypes.GASEOUS]: { regular: gaseous, selected: gaseous_selected },
+        [EnergyTypes.HYDRO]: { regular: hydro, selected: hydro_selected },
+        [EnergyTypes.LIQUID]: { reguar: liquid, selected: liquid_selected },
+        [EnergyTypes.SOLAR]: { regular: solar, selected: solar_selected },
+        [EnergyTypes.SOLID]: { regular: solid, selected: solid_selected },
+        [EnergyTypes.THERMAL]: { regular: thermal, selected: thermal_selected },
+        [EnergyTypes.WIND]: { regular: wind, selected: wind_selected },
+        [EnergyTypes.MARINE]: { reguar: marine, selected: marine_selected }
     };
-    return images[type];
+    return images[type][selected ? 'selected' : 'regular'];
 };

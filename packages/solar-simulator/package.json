@@ -46,7 +46,7 @@
         "geo-tz": "6.0.0",
         "moment": "2.24.0",
         "moment-timezone": "0.5.31",
-        "winston": "3.3.0"
+        "winston": "3.3.3"
     },
     "publishConfig": {
         "access": "public",

@@ -20,7 +20,7 @@ import { Bundle } from '../../utils/exchange';
 import { Visibility, Add } from '@material-ui/icons';
 import BundleDetails from './BundleDetails';
 import { getCurrencies, getEnvironment } from '../../features';
-import { getBundles } from '../../features/bundles/selectors';
+import { getBundles, getShowBundleDetails } from '../../features/bundles/selectors';
 import { Fab, Tooltip } from '@material-ui/core';
 import { Link } from 'react-router-dom';
 import { showBundleDetails } from '../../features/bundles';
@@ -46,6 +46,7 @@ export const BundlesTable = (props: IOwnProps) => {
     const [selected, setSelected] = useState<Bundle>(null);
     const environment = useSelector(getEnvironment);
     const dispatch = useDispatch();
+    const isBundleDetailsVisible = useSelector(getShowBundleDetails);
 
     const { currentSort, sortAscending, sortData, toggleSort } = usePaginatedLoaderSorting({
         currentSort: {
@@ -136,7 +137,7 @@ export const BundlesTable = (props: IOwnProps) => {
                 toggleSort={toggleSort}
                 handleRowClick={(rowIndex: string) => viewDetails(parseInt(rowIndex, 10))}
             />
-            <BundleDetails selected={selected} owner={owner} />
+            {isBundleDetailsVisible && <BundleDetails bundle={selectedBundle} owner={owner}/>}
             <Link to={'/certificates/create_bundle'}>
                 <Tooltip title={t('certificate.actions.create_bundle')}>
                     <Fab
