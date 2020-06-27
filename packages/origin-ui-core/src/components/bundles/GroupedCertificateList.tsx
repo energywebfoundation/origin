@@ -1,5 +1,5 @@
 import React from 'react';
-import { FormControlLabel, Checkbox, Box } from '@material-ui/core';
+import { FormControlLabel, Checkbox, Box, useTheme } from '@material-ui/core';
 import { ICertificateViewItem } from '../../features/certificates';
 import { CertificateGroup } from './CertificateGroup';
 
@@ -14,6 +14,9 @@ export const GroupedCertificateList = (props: IOwnProps) => {
     const certificates = Array.from(
         Object.values(groups).reduce((total, certs) => total.concat(certs), [])
     );
+    const {
+        typography: { fontSizeMd }
+    } = useTheme();
 
     const isAllSelected = (): boolean => {
         if (certificates.length === 0) {
@@ -35,18 +38,23 @@ export const GroupedCertificateList = (props: IOwnProps) => {
     };
 
     return (
-        <Box ml={2}>
+        <Box>
             <FormControlLabel
                 control={<Checkbox checked={isAllSelected()} onClick={toggleSelectAll} />}
-                label="Select All"
+                label={
+                    <Box fontSize={fontSizeMd} color="text.secondary">
+                        Select All
+                    </Box>
+                }
             />
-            {Object.keys(groups).map((facility) => (
-                <CertificateGroup
-                    certificates={groups[facility]}
-                    key={facility}
-                    selected={selected}
-                    setSelected={setSelected}
-                />
+            {Object.keys(groups).map((facility, index, arr) => (
+                <Box mb={index === arr.length - 1 ? 0 : 0.5} key={facility}>
+                    <CertificateGroup
+                        certificates={groups[facility]}
+                        selected={selected}
+                        setSelected={setSelected}
+                    />
+                </Box>
             ))}
         </Box>
     );

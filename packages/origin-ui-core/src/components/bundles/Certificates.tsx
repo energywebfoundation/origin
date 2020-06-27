@@ -1,5 +1,5 @@
 import React from 'react';
-import { Paper, Box, Typography } from '@material-ui/core';
+import { Paper, Box, Typography, useTheme } from '@material-ui/core';
 import { useSelector } from 'react-redux';
 import {
     getCertificates,
@@ -21,6 +21,9 @@ export const Certificates = (props: IOwnProps) => {
     );
     const devices = useSelector(getProducingDevices);
     const environment = useSelector(getEnvironment);
+    const {
+        typography: { fontSizeMd }
+    } = useTheme();
 
     const certificatesByFacility = () => {
         return certificates.reduce((grouped, cert) => {
@@ -31,15 +34,15 @@ export const Certificates = (props: IOwnProps) => {
     };
 
     return (
-        <Paper elevation={0} style={{ backgroundColor: '#2d2d2d' }}>
-            <Box m={1}>
-                <Typography variant="caption">CERTIFICATES</Typography>
+        <Box p={2}>
+            <Box fontWeight="fontWeightBold" fontSize={fontSizeMd}>
+                CERTIFICATES
             </Box>
             <GroupedCertificateList
                 groups={certificatesByFacility()}
                 selected={selected}
                 setSelected={setSelected}
             />
-        </Paper>
+        </Box>
     );
 };

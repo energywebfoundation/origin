@@ -26,7 +26,7 @@ export interface IOriginStyleConfig {
 export const createMaterialThemeForOrigin = (
     styleConfig: IOriginStyleConfig,
     language: ORIGIN_LANGUAGE
-) => {
+): Theme => {
     const materialLocale =
         {
             pl: plPL,
@@ -115,7 +115,13 @@ export const createMaterialThemeForOrigin = (
                 }
             }
         },
-        materialLocale
+        materialLocale,
+        {
+            typography: {
+                fontSizeMd: 12,
+                fontSizeLg: 18
+            }
+        }
     );
 };
 

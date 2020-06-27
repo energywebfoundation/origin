@@ -19,7 +19,6 @@ import { useTranslation, bundlePrice, formatCurrencyComplete } from '../../utils
 
 interface IOwnProps {
     bundle: Bundle;
-    classes;
 }
 
 const useDialogStyles = makeStyles(() =>
