@@ -31,7 +31,7 @@ export const CertificateGroup = (props: IOwnProps) => {
     const { certificates, selected, setSelected } = props;
     const devices = useSelector(getProducingDevices);
     const environment = useSelector(getEnvironment);
-    const { facilityName, gpsLatitude, gpsLongitude, gridOperator } = deviceById(
+    const { facilityName, gpsLatitude, gpsLongitude, gridOperator, province } = deviceById(
         certificates[0]?.deviceId,
         environment,
         devices
@@ -68,13 +68,12 @@ export const CertificateGroup = (props: IOwnProps) => {
 
     return (
         <Box boxShadow={2} bgcolor="#3b3b3b">
-            {/* <Box bgcolor="#373737" display="flex" alignItems="center"> */}
             <Grid
                 container
                 style={{ backgroundColor: '#373737', fontSize: fontSizeMd }}
                 alignItems="center"
             >
-                <Grid item xs={6}>
+                <Grid item xs={7}>
                     <FormControlLabel
                         style={{ marginBottom: 0, marginLeft: 0 }}
                         control={
@@ -86,17 +85,15 @@ export const CertificateGroup = (props: IOwnProps) => {
                         }
                         label={
                             <Box mb={0} fontSize={fontSizeMd} fontWeight="fontWeightBold">
-                                {facilityName}
+                                {province}, {facilityName}
                             </Box>
                         }
                     />
                 </Grid>
-                <Grid item xs={6}>
-                    {/* <Box fontSize={fontSizeMd}> */}
-                    {gridOperator} ({gpsLongitude}, {gpsLatitude}){/* </Box> */}
+                <Grid item xs={5}>
+                    {gridOperator} ({gpsLongitude}, {gpsLatitude})
                 </Grid>
             </Grid>
-            {/* </Box> */}
             <List>
                 {certificates.map((cert) => {
                     const {
@@ -114,24 +111,33 @@ export const CertificateGroup = (props: IOwnProps) => {
                             style={{
                                 textTransform: 'capitalize',
                                 paddingLeft: 0,
+                                paddingRight: 0,
                                 backgroundColor: isSelected(cert) ? '#3a2146' : 'inherit'
                             }}
                             divider
                         >
-                            <ListItemIcon>
-                                <Checkbox color="primary" checked={isSelected(cert)} />
-                            </ListItemIcon>
-                            <ListItemAvatar>
-                                <Avatar src={energyImageByType(type, isSelected(cert))}></Avatar>
-                            </ListItemAvatar>
                             <Grid container>
-                                <Grid item xs={4}>
+                                <Grid item xs={2}>
+                                    <ListItemIcon>
+                                        <Checkbox color="primary" checked={isSelected(cert)} />
+                                    </ListItemIcon>
+                                </Grid>
+
+                                <Grid item xs={2}>
+                                    <ListItemAvatar>
+                                        <Avatar
+                                            src={energyImageByType(type, isSelected(cert))}
+                                        ></Avatar>
+                                    </ListItemAvatar>
+                                </Grid>
+
+                                <Grid item xs={3}>
                                     <Box fontSize={fontSizeMd}>{type}</Box>
                                     <Box fontSize={fontSizeMd} fontWeight="fontWeightBold">
                                         {EnergyFormatter.format(energy, true)}
                                     </Box>
                                 </Grid>
-                                <Grid item xs={8}>
+                                <Grid item xs={5}>
                                     <Box fontSize={fontSizeSm} color="text.secondary">
                                         Certification Date
                                     </Box>
