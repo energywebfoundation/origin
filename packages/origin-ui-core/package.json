@@ -73,7 +73,7 @@
         "ts-loader": "7.0.5",
         "url-loader": "4.1.0",
         "webpack": "4.43.0",
-        "winston": "3.3.0",
+        "winston": "3.3.3",
         "yup": "0.29.1"
     },
     "devDependencies": {
