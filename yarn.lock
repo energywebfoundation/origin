@@ -10707,10 +10707,10 @@ formidable@^1.2.1:
   resolved "https://registry.yarnpkg.com/formidable/-/formidable-1.2.2.tgz#bf69aea2972982675f00865342b982986f6b8dd9"
   integrity sha512-V8gLm+41I/8kguQ4/o1D3RIHRmhYFG4pnNyonvua+40rqcEmT4+V71yaZ3B457xbbgCsCfjSPi65u/W6vK1U5Q==
 
-formik-material-ui-pickers@0.0.8:
-  version "0.0.8"
-  resolved "https://registry.yarnpkg.com/formik-material-ui-pickers/-/formik-material-ui-pickers-0.0.8.tgz#203e602b71eff4a1f28ef40c4c7989a63fc5ff07"
-  integrity sha512-4/5Fcxe+Bi/6g0nA+ZE1U/D+W8s8yEiictA5w/vLPDab9P9uoktXFjEy2TfKQhfeUP4krYIt6U2tNNZuhRwoIg==
+formik-material-ui-pickers@0.0.10:
+  version "0.0.10"
+  resolved "https://registry.yarnpkg.com/formik-material-ui-pickers/-/formik-material-ui-pickers-0.0.10.tgz#cdea5f4ba6a7c2fa6cad23db1d48aaa44235ff00"
+  integrity sha512-/UVSe477nw7Db3+3BmD19oXAlyoTZFCNq916IaOHp3OcIw1gdJy5Da9mF7uuTJbmcQkueIHK79TwwyrsV7ei/Q==
 
 formik-material-ui@2.0.1:
   version "2.0.1"
