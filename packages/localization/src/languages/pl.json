@@ -23,7 +23,7 @@
             "certificates": {
                 "bundles": "Pakiety",
                 "my_bundles": "Moje pakiety",
-                "create_bundle": "Stwórz Pakiet"
+                "create_bundle": "Stwórz pakiet"
             }
         },
         "device": {
@@ -86,13 +86,15 @@
                 "withdraw": "Wypłać",
                 "deposit": "Wpłać",
                 "create_bundle": "Stwórz Pakiet",
-                "buy_bundle": "Kup pakiet"
+                "buy_bundle": "Kup pakiet",
+                "cancel_bundle": "Anuluj"
             },
             "feedback": {
                 "certificateDeposited": "Certificate deposited",
                 "withdrawn": "Zdeponowany certyfikat",
                 "bundle_created": "Utworzono pakiet ",
-                "bundle_bought": "Kupiony pakiet"
+                "bundle_bought": "Kupiony pakiet",
+                "bundleCanceld": "Pakiet anulowany"
             },
             "info": {
                 "requestCertificatesFor": "Zażądaj certyfikatów dla urządzenia {facilityName}",

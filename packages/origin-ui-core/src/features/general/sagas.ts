@@ -365,7 +365,7 @@ export function* fetchBundles() {
     const bundles: Bundle[] = yield apply(exchangeClient, exchangeClient.getAvailableBundles, null);
     const ownBundles: Bundle[] = yield apply(exchangeClient, exchangeClient.getOwnBundles, null);
     for (const bundle of bundles) {
-        bundle.own = ownBundles.find((b) => b.id === bundle.id) ? true : false;
+        bundle.own = ownBundles.find((b) => b.id === bundle.id) !== undefined;
         bundle.items.forEach((item) => {
             item.currentVolume = new BigNumber(item.currentVolume.toString());
             item.startVolume = new BigNumber(item.startVolume.toString());

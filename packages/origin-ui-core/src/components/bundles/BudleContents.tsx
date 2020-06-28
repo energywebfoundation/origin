@@ -32,7 +32,7 @@ import {
     ArrowBack,
     ArrowRightAlt
 } from '@material-ui/icons';
-import { buyBundle } from '../../features/bundles';
+import { buyBundle, cancelBundle } from '../../features/bundles';
 
 interface IOwnProps {
     bundle: Bundle;
@@ -77,11 +77,8 @@ const rowStyle = {
 };
 
 export const BundleContents = (props: IOwnProps) => {
-    const {
-        owner,
-        bundle: { price, items, id },
-        splits
-    } = props;
+    const { owner, bundle, splits } = props;
+    const { price, items, id } = bundle;
     const environment = useSelector(getEnvironment);
     const devices = useSelector(getProducingDevices);
     const offerClasses = useOfferClasses();
@@ -96,6 +93,20 @@ export const BundleContents = (props: IOwnProps) => {
         dispatch(buyBundle({ bundleDTO: { bundleId: id, volume: selected.volume.toString() } }));
     };
 
+    const onCancelBundle = async () => {
+        dispatch(cancelBundle(id));
+    };
+
+    const action = owner
+        ? {
+              onClick: onCancelBundle,
+              label: 'certificate.actions.cancel_bundle'
+          }
+        : {
+              onClick: onBuyBundle,
+              label: 'certificate.actions.buy_bundle'
+          };
+
     return (
         <Box
             style={{
@@ -105,7 +116,7 @@ export const BundleContents = (props: IOwnProps) => {
                 gridTemplateRows: topGridTemplateRows
             }}
         >
-            {splits.length > 5 && (
+            {splits.length > COLUMNS_COUNT && (
                 <IconButton
                     disabled={firstSplit <= 0}
                     onClick={() => setFirstSplit(firstSplit - 1)}
@@ -121,7 +132,7 @@ export const BundleContents = (props: IOwnProps) => {
                     <ArrowBack />
                 </IconButton>
             )}
-            {splits.length > 5 && (
+            {splits.length > COLUMNS_COUNT && (
                 <IconButton
                     disabled={firstSplit + COLUMNS_COUNT >= splits.length}
                     onClick={() => setFirstSplit(firstSplit + 1)}
@@ -143,7 +154,7 @@ export const BundleContents = (props: IOwnProps) => {
                 }}
             >
                 <Box mr={0.5} display="flex" flexDirection="column" justifyContent="flex-end">
-                    {items.length > 5 && (
+                    {items.length > ROWS_COUNT && (
                         <Button
                             style={{
                                 backgroundColor: '#5a5a5a',
@@ -367,7 +378,7 @@ export const BundleContents = (props: IOwnProps) => {
                 }}
             >
                 <Box mr={0.5} display="flex" flexDirection="column" justifyItems="start">
-                    {items.length > 5 && (
+                    {items.length > ROWS_COUNT && (
                         <Button
                             style={{
                                 backgroundColor: '#5a5a5a',
@@ -428,10 +439,10 @@ export const BundleContents = (props: IOwnProps) => {
                                     <Button
                                         color="primary"
                                         variant="contained"
-                                        onClick={onBuyBundle}
+                                        onClick={action.onClick}
                                         disabled={!(selected === split)}
                                     >
-                                        {t('certificate.actions.buy_bundle')}
+                                        {t(action.label)}
                                     </Button>
                                 </Box>
                             </Box>

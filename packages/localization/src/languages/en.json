@@ -32,7 +32,7 @@
                 "exchange": "Exchange",
                 "bundles": "Bundles",
                 "my_bundles": "My bundles",
-                "create_bundle": "Create Bundle",
+                "create_bundle": "Create bundle",
                 "myTrades": "My trades"
             }
         },
@@ -126,7 +126,8 @@
                 "withdraw": "Withdraw",
                 "deposit": "Deposit",
                 "create_bundle": "Create bundle",
-                "buy_bundle": "Buy"
+                "buy_bundle": "Buy",
+                "cancel_bundle": "Cancel"
             },
             "feedback": {
                 "returnedToInbox": "Certificate {id} has been returned to the inbox.",
@@ -146,6 +147,7 @@
                 "certificateDeposited": "Certificate deposited",
                 "bundle_created": "Bundle created",
                 "bundle_bought": "Bundle bought",
+                "bundleCanceld": "Bundle canceled",
                 "certificateNotFound": "Certificate not found"
             },
             "info": {
