@@ -4,7 +4,6 @@ import {
     Dialog,
     DialogTitle,
     Grid,
-    withStyles,
     Box,
     Typography,
     Slider,
@@ -102,11 +101,4 @@ const BundleDetails = (props: IOwnProps) => {
     );
 };
 
-const styles = {
-    dialogPaper: {
-        minHeight: '80vh',
-        maxHeight: '80vh'
-    }
-};
-
-export default withStyles(styles)(BundleDetails);
+export default BundleDetails;
