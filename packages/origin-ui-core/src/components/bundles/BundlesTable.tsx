@@ -28,7 +28,7 @@ import { showBundleDetails } from '../../features/bundles';
 const BUNDLES_PER_PAGE = 25;
 const BUNDLES_TOTAL_ENERGY_COLUMN_ID = 'total';
 const BUNDLES_TOTAL_ENERGY_PROPERTIES = [
-    (record) => Number(record.total.split(EnergyFormatter.displayUnit)[0])
+    (record) => Number(record.total.split(EnergyFormatter.displayUnit)[0].replace(',', ''))
 ];
 
 interface IOwnProps {
@@ -108,11 +108,7 @@ export const BundlesTable = (props: IOwnProps) => {
         { id: EnergyTypes.WIND, label: t('bundle.properties.wind') },
         { id: EnergyTypes.HYDRO, label: t('bundle.properties.hydro') },
         { id: 'other', label: t('bundle.properties.other') },
-        {
-            id: 'price',
-            label: t('bundle.properties.price'),
-            sortProperties: [(bundle: Bundle) => bundle.price]
-        }
+        { id: 'price', label: t('bundle.properties.price') }
     ];
 
     const actions = [
@@ -137,7 +133,7 @@ export const BundlesTable = (props: IOwnProps) => {
                 toggleSort={toggleSort}
                 handleRowClick={(rowIndex: string) => viewDetails(parseInt(rowIndex, 10))}
             />
-            {isBundleDetailsVisible && <BundleDetails bundle={selected} owner={owner}/>}
+            {isBundleDetailsVisible && <BundleDetails bundle={selected} owner={owner} />}
             <Link to={'/certificates/create_bundle'}>
                 <Tooltip title={t('certificate.actions.create_bundle')}>
                     <Fab

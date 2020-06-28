@@ -113,10 +113,10 @@ export const BundleContents = (props: IOwnProps) => {
                         backgroundColor: '#5a5a5a',
                         position: 'absolute',
                         top: '50%',
-                        left: '37%',
+                        left: '38%',
                         zIndex: 10
                     }}
-                    size="medium"
+                    size="small"
                 >
                     <ArrowBack />
                 </IconButton>
@@ -129,9 +129,10 @@ export const BundleContents = (props: IOwnProps) => {
                         backgroundColor: '#5a5a5a',
                         position: 'absolute',
                         top: '50%',
-                        left: '97%',
+                        left: '98%',
                         zIndex: 10
                     }}
+                    size="small"
                 >
                     <ArrowForward />
                 </IconButton>
@@ -141,7 +142,7 @@ export const BundleContents = (props: IOwnProps) => {
                     ...rowStyle
                 }}
             >
-                <Box mr={0.5} display="flex" flexDirection="column" justifyContent="end">
+                <Box mr={0.5} display="flex" flexDirection="column" justifyContent="flex-end">
                     {items.length > 5 && (
                         <Button
                             style={{

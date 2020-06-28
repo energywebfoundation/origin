@@ -94,7 +94,7 @@ export function Certificates() {
         },
         {
             key: 'my_bundles',
-            label: 'navigation.certificats.my_bundles',
+            label: 'navigation.certificates.my_bundles',
             component: BundlesTable,
             props: { owner: true },
             show: user
