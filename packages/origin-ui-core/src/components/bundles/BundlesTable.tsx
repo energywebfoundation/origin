@@ -137,7 +137,7 @@ export const BundlesTable = (props: IOwnProps) => {
                 toggleSort={toggleSort}
                 handleRowClick={(rowIndex: string) => viewDetails(parseInt(rowIndex, 10))}
             />
-            {isBundleDetailsVisible && <BundleDetails bundle={selectedBundle} owner={owner}/>}
+            {isBundleDetailsVisible && <BundleDetails bundle={selected} owner={owner}/>}
             <Link to={'/certificates/create_bundle'}>
                 <Tooltip title={t('certificate.actions.create_bundle')}>
                     <Fab

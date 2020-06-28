@@ -170,7 +170,7 @@ export class ExchangeClient implements IExchangeClient {
         return response.data;
     }
 
-    public async getAvailableBundles() {
+    public async getAvailableBundles(): Promise<Bundle[]> {
         const response = await this.requestClient.get<unknown, Bundle[]>(
             `${this.bundleEndpoint}/available`
         );
@@ -178,18 +178,20 @@ export class ExchangeClient implements IExchangeClient {
         return response.data;
     }
 
-    public async getOwnBundles() {
+    public async getOwnBundles(): Promise<Bundle[]> {
         const response = await this.requestClient.get<unknown, Bundle[]>(`${this.bundleEndpoint}`);
 
         return response.data;
     }
 
     public async cancelBundle(id: string): Promise<Bundle> {
-        const response = await this.requestClient.put<Bundle, string>(
+        const response = await this.requestClient.put<unknown, Bundle>(
             `${this.bundleEndpoint}/${id}/cancel`
         );
+
+        return response.data;
     }
-      
+
     public async getBundleSplits(bundle: Bundle): Promise<Bundle[]> {
         const response = await this.requestClient.get<unknown, Bundle[]>(
             `${this.bundleEndpoint}/${bundle.id}/splits`

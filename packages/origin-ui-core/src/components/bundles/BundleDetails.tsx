@@ -95,7 +95,7 @@ const BundleDetails = (props: IOwnProps) => {
                 </Box>
 
                 <Box width="97%">
-                    <BundleContents splits={splits} bundle={bundle} />
+                    <BundleContents splits={splits} bundle={bundle} owner={props.owner} />
                 </Box>
             </DialogContent>
         </Dialog>
