@@ -91,7 +91,6 @@ export const BundleContents = (props: IOwnProps) => {
     const {
         typography: { fontSizeMd: fontSize }
     } = useTheme();
-    console.log('>>> medium font size:', fontSize);
     const onBuyBundle = async () => {
         dispatch(buyBundle({ bundleDTO: { bundleId: id, volume: selected.volume.toString() } }));
     };
