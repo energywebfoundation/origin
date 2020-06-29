@@ -9,7 +9,8 @@ import {
     Slider,
     DialogContent,
     makeStyles,
-    createStyles
+    createStyles,
+    Tooltip
 } from '@material-ui/core';
 import { BundleContents } from './BudleContents';
 import { useSelector, useDispatch } from 'react-redux';
@@ -30,6 +31,25 @@ const useDialogStyles = makeStyles(() =>
 );
 
 const COUNT_OF_PRICE_MARKS = 11;
+
+function SliderLabel(props: Props) {
+    const { children, open, value } = props;
+    const classes = makeStyles({
+        tooltip: { background: '#a400d9' }
+    })();
+
+    return (
+        <Tooltip
+            open={open}
+            enterTouchDelay={0}
+            placement="top"
+            title={value}
+            classes={{ tooltip: classes.tooltip }}
+        >
+            {children}
+        </Tooltip>
+    );
+}
 
 const BundleDetails = (props: IOwnProps) => {
     const { bundle, owner } = props;
@@ -93,6 +113,7 @@ const BundleDetails = (props: IOwnProps) => {
                                             valueLabelFormat={(label) =>
                                                 formatCurrencyComplete(label)
                                             }
+                                            ValueLabelComponent={SliderLabel}
                                         />
                                     </Box>
                                 </Grid>
