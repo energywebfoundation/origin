@@ -8,7 +8,8 @@ import {
     Button,
     Box,
     IconButton,
-    Avatar
+    Avatar,
+    useTheme
 } from '@material-ui/core';
 import { Bundle, Split } from '../../utils/exchange';
 import { useSelector, useDispatch } from 'react-redux';
@@ -56,7 +57,6 @@ const cardSelectedColor = '#3a1c47';
 const cardColor = '#3e3e3e';
 const cardHeaderColor = '#3b3b3b';
 const cardHeaderSelectedColor = '#9b00c8';
-const fontSize = 12;
 
 const topGridTemplateRows = 'auto';
 const topGridTemplateColumns = '40% 60%';
@@ -88,7 +88,10 @@ export const BundleContents = (props: IOwnProps) => {
     const { t } = useTranslation();
     const dispatch = useDispatch();
     const currency = useSelector(getCurrencies)[0];
-
+    const {
+        typography: { fontSizeMd: fontSize }
+    } = useTheme();
+    console.log('>>> medium font size:', fontSize);
     const onBuyBundle = async () => {
         dispatch(buyBundle({ bundleDTO: { bundleId: id, volume: selected.volume.toString() } }));
     };
@@ -288,6 +291,7 @@ export const BundleContents = (props: IOwnProps) => {
                                             </Box>
                                             <Box
                                                 style={{ display: 'flex', flexDirection: 'column' }}
+                                                ml={1}
                                             >
                                                 <Box
                                                     fontSize={fontSize}
@@ -359,6 +363,11 @@ export const BundleContents = (props: IOwnProps) => {
                                                     <Box
                                                         fontWeight="fontWeightBold"
                                                         fontSize={fontSize}
+                                                        color={
+                                                            selected === split
+                                                                ? 'text.primary'
+                                                                : 'text.secondary'
+                                                        }
                                                     >
                                                         <Typography>
                                                             {EnergyFormatter.format(volume, true)}
