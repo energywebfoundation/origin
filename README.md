@@ -90,7 +90,8 @@ yarn test
 
 ### Preparation
 
-1. Install [Postgres](https://www.postgresql.org/download/) and create a new database named `origin`.
+0. Make sure you are using Node 12.x.+
+1. Install [Postgres](https://www.postgresql.org/download/) 12.x+ and create a new database named `origin`.
 2. Make sure you have created a `.env` file in the root of the monorepo and that all necessary variables are set.
    Use [`.env.example`](.env.example) as an example of how the `.env` file should look.
 
