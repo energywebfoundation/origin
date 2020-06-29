@@ -1,18 +1,21 @@
+@import './variables.scss';
+
 .CreateBundleForm {
-    background-color: #333333;
+    // background-color: #333333;
+    background-color: $createBundleBg;
     .Certificates {
-        background-color: #2d2d2d;
+        background-color: $createBundleCertificatesBg;
     }
     
     .CertificateGroup {
-        background-color: #3b3b3b;
+        background-color: $createBundleCertificatesGroupBg;
         .Header {
-            background-color: #373737;
+            background-color: $createBundleCertificatesGroupHeaderBg;
         }
     }
     
     .SelectedForSaleListItem {
-        background-color: #303030;
+        background-color: $createBundleSelectedItem;
     }
 }
 

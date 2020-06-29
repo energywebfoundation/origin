@@ -62,10 +62,7 @@ export const CertificateGroup = (props: IOwnProps) => {
     };
 
     return (
-        <Box
-            className="CertificateGroup"
-            boxShadow={2}
-        >
+        <Box className="CertificateGroup" boxShadow={2}>
             <Grid
                 className="Header"
                 container
