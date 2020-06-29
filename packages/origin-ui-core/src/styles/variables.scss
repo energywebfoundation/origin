@@ -5,6 +5,12 @@ $textColorDefault: #a8a8a8 !default;
 $backgroundColorDark: #2c2c2c !default;
 $bootstrapBodyColor: white !default;
 $fieldIconColor: darken(white, 30%) !default;
+$bundleContentCardHeaderBg: #3b3b3b;
+$bundleContentSelectedCardHeaderBg: #9b00c8;
+$bundleCardContentBg: #3e3e3e;
+$bundleSelectedCardContentBg: #3a1c47;
+$scrollButtonBg: #5a5a5a;
+$bundleCardBorderBg: #434343;
 
 :export {
     primaryColor: $primaryColor;
@@ -14,4 +20,10 @@ $fieldIconColor: darken(white, 30%) !default;
     textColorDefault: $textColorDefault;
     bootstrapBodyColor: $bootstrapBodyColor;
     fieldIconColor: $fieldIconColor;
+    bundleContentCardHeaderBg: $bundleContentCardHeaderBg;
+    bundleContentSelectedCardHeaderBg: $bundleContentSelectedCardHeaderBg;
+    bundleCardContentBg: $bundleCardContentBg;
+    bundleSelectedCardContentBg: $bundleSelectedCardContentBg;
+    scrollButtonBg: $scrollButtonBg;
+    bundleCardBorderBg: $bundleCardBorderBg;
 }

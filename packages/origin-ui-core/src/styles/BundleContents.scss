@@ -1,15 +1,25 @@
+@import './variables.scss';
+
 .CardHeader {
-    background-color: #3b3b3b;
+    background-color: $bundleContentCardHeaderBg;
 }
 
 .CardContent {
-    background-color: #3e3e3e;
+    background-color: $bundleContentCardHeaderBg;
 }
 
 .SelectedCardHeader {
-    background-color: #9b00c8;
+    background-color: $bundleContentSelectedCardHeaderBg;
 }
 
 .SelectedCardContent {
-    background-color: #3a1c47;
+    background-color: $bundleSelectedCardContentBg;
+}
+
+.ScrollButton {
+    background-color: $scrollButtonBg;
+}
+
+.BundleCardBorder {
+    background-color: $bundleCardBorderBg;
 }

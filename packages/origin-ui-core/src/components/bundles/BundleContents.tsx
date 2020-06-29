@@ -123,12 +123,12 @@ export const BundleContents = (props: IOwnProps) => {
                     disabled={firstSplit <= 0}
                     onClick={() => setFirstSplit(firstSplit - 1)}
                     style={{
-                        backgroundColor: '#5a5a5a',
                         position: 'absolute',
                         top: '50%',
                         left: '38%',
                         zIndex: 10
                     }}
+                    className="ScrollButton"
                     size="small"
                 >
                     <ArrowBack />
@@ -139,12 +139,12 @@ export const BundleContents = (props: IOwnProps) => {
                     disabled={firstSplit + COLUMNS_COUNT >= splits.length}
                     onClick={() => setFirstSplit(firstSplit + 1)}
                     style={{
-                        backgroundColor: '#5a5a5a',
                         position: 'absolute',
                         top: '50%',
                         left: '98%',
                         zIndex: 10
                     }}
+                    className="ScrollButton"
                     size="small"
                 >
                     <ArrowForward />
@@ -158,8 +158,8 @@ export const BundleContents = (props: IOwnProps) => {
                 <Box mr={0.5} display="flex" flexDirection="column" justifyContent="flex-end">
                     {items.length > ROWS_COUNT && (
                         <Button
+                            className="ScrollButton"
                             style={{
-                                backgroundColor: '#5a5a5a',
                                 width: '100%'
                             }}
                             onClick={() => setFirstItem(firstItem - 1)}
@@ -321,9 +321,9 @@ export const BundleContents = (props: IOwnProps) => {
                                         gridTemplateColumns: bundlesGridTemplatesColumns,
                                         borderBottomStyle:
                                             itemIndex === length - 1 ? 'none' : 'solid',
-                                        borderBottomColor: '#434343',
                                         borderBottomWidth: 2
                                     }}
+                                    className="BundleCardBorder"
                                 >
                                     {splits
                                         .slice(firstSplit, firstSplit + COLUMNS_COUNT)
@@ -386,8 +386,8 @@ export const BundleContents = (props: IOwnProps) => {
                 <Box mr={0.5} display="flex" flexDirection="column" justifyItems="start">
                     {items.length > ROWS_COUNT && (
                         <Button
+                            className="ScrollButton"
                             style={{
-                                backgroundColor: '#5a5a5a',
                                 width: '100%'
                             }}
                             onClick={() => setFirstItem(firstItem + 1)}
