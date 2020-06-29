@@ -9,7 +9,8 @@ $createBundleBg:  #333333;
 $createBundleCertificatesBg: #2d2d2d;
 $createBundleCertificatesGroupBg: #3b3b3b;
 $createBundleCertificatesGroupHeaderBg: #373737;
-$createBundleSelectedItem: #303030;
+$createBundleCertificateForSale: #303030;
+$createBundleSelectedCertificate: #3a2146;
 
 :export {
     primaryColor: $primaryColor;
@@ -23,5 +24,6 @@ $createBundleSelectedItem: #303030;
     createBundleCertificatesBg: $createBundleCertificatesBg;
     createBundleCertificatesGroupBg: $createBundleCertificatesGroupBg;
     createBundleCertificatesGroupHeaderBg: $createBundleCertificatesGroupHeaderBg;
-    createBundleSelectedItem: $createBundleSelectedItem;
+    createBundleSelectedItem: $createBundleCertificateForSale;
+    createBundleSelectedCertificate: $createBundleSelectedCertificate;
 }

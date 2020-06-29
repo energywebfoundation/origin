@@ -12,7 +12,7 @@ import {
     makeStyles,
     createStyles
 } from '@material-ui/core';
-import { BundleContents } from './BudleContents';
+import { BundleContents } from './BundleContents';
 import { useSelector, useDispatch } from 'react-redux';
 import { getShowBundleDetails, showBundleDetails } from '../../features/bundles';
 import { useTranslation, bundlePrice, formatCurrencyComplete } from '../../utils';

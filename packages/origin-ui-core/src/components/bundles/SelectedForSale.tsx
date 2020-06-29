@@ -92,7 +92,7 @@ export const SelectedForSale = (props: IOwnProps) => {
                         const energy = publicVolume.add(privateVolume);
                         return (
                             <Box
-                                className="SelectedForSaleListItem"
+                                className="CertificateForSale"
                                 mb={index === arr.length - 1 ? 0 : 1}
                                 key={cert.id}
                             >

@@ -110,8 +110,9 @@ export const CertificateGroup = (props: IOwnProps) => {
                                 textTransform: 'capitalize',
                                 paddingLeft: 0,
                                 paddingRight: 0,
-                                backgroundColor: isSelected(cert) ? '#3a2146' : 'inherit'
+                                // backgroundColor: isSelected(cert) ? '#3a2146' : 'inherit'
                             }}
+                            className={ isSelected(cert) ? 'SelectedCertificate' : ''}
                             divider
                         >
                             <Grid container>

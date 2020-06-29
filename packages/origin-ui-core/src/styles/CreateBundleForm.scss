@@ -1,7 +1,6 @@
 @import './variables.scss';
 
 .CreateBundleForm {
-    // background-color: #333333;
     background-color: $createBundleBg;
     .Certificates {
         background-color: $createBundleCertificatesBg;
@@ -14,8 +13,12 @@
         }
     }
     
-    .SelectedForSaleListItem {
-        background-color: $createBundleSelectedItem;
+    .CertificateForSale {
+        background-color: $createBundleCertificateForSale;
+    }
+    
+    .SelectedCertificate {
+        background-color: $createBundleSelectedCertificate;
     }
 }
 
