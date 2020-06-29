@@ -32,7 +32,7 @@ const useDialogStyles = makeStyles(() =>
 
 const COUNT_OF_PRICE_MARKS = 11;
 
-function SliderLabel(props: Props) {
+function SliderLabel(props) {
     const { children, open, value } = props;
     const classes = makeStyles({
         tooltip: { background: '#a400d9' }
