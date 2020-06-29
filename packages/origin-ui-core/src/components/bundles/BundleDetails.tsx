@@ -10,8 +10,11 @@ import {
     DialogContent,
     makeStyles,
     createStyles,
-    Tooltip
+    Tooltip,
+    IconButton,
+    Theme
 } from '@material-ui/core';
+import CloseIcon from '@material-ui/icons/Close';
 import { BundleContents } from './BudleContents';
 import { useSelector, useDispatch } from 'react-redux';
 import { getShowBundleDetails, showBundleDetails } from '../../features/bundles';
@@ -22,10 +25,16 @@ interface IOwnProps {
     owner: boolean;
 }
 
-const useDialogStyles = makeStyles(() =>
+const useDialogStyles = makeStyles((theme: Theme) =>
     createStyles({
         paper: {
             backgroundColor: '#434343'
+        },
+        closeButton: {
+            position: 'absolute',
+            top: theme.spacing(1),
+            right: theme.spacing(1),
+            color: '#ffffff'
         }
     })
 );
@@ -88,7 +97,15 @@ const BundleDetails = (props: IOwnProps) => {
             scroll="paper"
             classes={{ paper: dialogStyles.paper }}
         >
-            <DialogTitle>BUNDLE DETAILS</DialogTitle>
+            <DialogTitle>
+                BUNDLE DETAILS
+                <IconButton
+                    className={dialogStyles.closeButton}
+                    onClick={() => dispatch(showBundleDetails(false))}
+                >
+                    <CloseIcon />
+                </IconButton>
+            </DialogTitle>
             <DialogContent>
                 {!owner && maxPrice !== minPrice && (
                     <Box mb={2}>
