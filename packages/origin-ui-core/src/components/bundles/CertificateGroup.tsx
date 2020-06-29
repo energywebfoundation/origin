@@ -62,10 +62,16 @@ export const CertificateGroup = (props: IOwnProps) => {
     };
 
     return (
-        <Box boxShadow={2} bgcolor="#3b3b3b">
+        <Box
+            className="CertificateGroup"
+            boxShadow={2}
+        >
             <Grid
+                className="Header"
                 container
-                style={{ backgroundColor: '#373737', fontSize: fontSizeMd }}
+                style={{
+                    fontSize: fontSizeMd
+                }}
                 alignItems="center"
             >
                 <Grid item xs={7}>
@@ -89,7 +95,7 @@ export const CertificateGroup = (props: IOwnProps) => {
                     {gridOperator} ({gpsLongitude}, {gpsLatitude})
                 </Grid>
             </Grid>
-            <List>
+            <List style={{ padding: 0 }}>
                 {certificates.map((cert) => {
                     const {
                         creationTime,

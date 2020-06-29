@@ -21,22 +21,17 @@ export const CreateBundleForm = () => {
     };
 
     return (
-        <Paper>
-            <Box
-                display="grid"
-                style={{ backgroundColor: '#333333', gridTemplateColumns: '60% 40%' }}
-            >
-                <Box mr={2} style={{ background: '#2d2d2d' }}>
-                    <Certificates selected={selected} setSelected={setSelected} />
-                </Box>
-                <Box style={{ background: '#2d2d2d' }}>
-                    <SelectedForSale
-                        selected={selected}
-                        totalVolume={totalVolume()}
-                        callback={() => history.push(`${getCertificatesLink()}/bundles`)}
-                    />
-                </Box>
+        <Box className="CreateBundleForm" display="grid" style={{ gridTemplateColumns: '60% 40%' }}>
+            <Box className="Certificates" mr={2}>
+                <Certificates selected={selected} setSelected={setSelected} />
             </Box>
-        </Paper>
+            <Box className="Certificates">
+                <SelectedForSale
+                    selected={selected}
+                    totalVolume={totalVolume()}
+                    callback={() => history.push(`${getCertificatesLink()}/bundles`)}
+                />
+            </Box>
+        </Box>
     );
 };

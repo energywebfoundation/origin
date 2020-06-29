@@ -77,7 +77,7 @@ export const SelectedForSale = (props: IOwnProps) => {
             </Box>
 
             {selected.length > 0 && (
-                <List style={{ backgroundColor: '#303030' }}>
+                <List>
                     {selected.map((cert, index, arr) => {
                         const {
                             creationTime,
@@ -91,7 +91,11 @@ export const SelectedForSale = (props: IOwnProps) => {
                         const type = deviceType.split(';')[0].toLowerCase() as EnergyTypes;
                         const energy = publicVolume.add(privateVolume);
                         return (
-                            <Box mb={index === arr.length - 1 ? 1 : 0} key={cert.id}>
+                            <Box
+                                className="SelectedForSaleListItem"
+                                mb={index === arr.length - 1 ? 0 : 1}
+                                key={cert.id}
+                            >
                                 <ListItem>
                                     <Grid container>
                                         <Grid item xs={2}>
