@@ -45,13 +45,15 @@ export class Bundle extends ExtendedBaseEntity {
     }
 
     possibleSplits(energyPerUnit: BN): BundleSplitVolumeDTO[] {
+        console.group('bundleSplit');
         const volume = this.available.div(energyPerUnit).toNumber();
-
+        console.log('>>> available:', this.available);
+        console.log('>>> available in energy units:', volume);
         const splits = [...Array(volume).keys()]
             .map((_, i) => new BN(i + 1).mul(energyPerUnit))
             .map((vol) => this.split(vol, energyPerUnit))
             .filter((split) => split.items.length);
-
+        console.groupEnd();
         return splits;
     }
 
@@ -77,13 +79,18 @@ export class Bundle extends ExtendedBaseEntity {
         }
 
         const precision = new BN(100000);
-        const ratio = volumeToBuy.mul(precision).div(this.volume);
-        const coefficient = precision.mul(energyPerUnit);
+        // const ratio = volumeToBuy.mul(precision).div(this.volume);
+        // const ratio = volumeToBuy.mul(precision).div(this.available);
+        // const coefficient = precision.mul(energyPerUnit);
 
         const splits = this.items.map(({ id, currentVolume }) => ({
             id,
-            canSplit: ratio.mul(currentVolume).mod(coefficient).isZero(),
-            volume: ratio.mul(currentVolume).div(precision)
+            // canSplit: ratio.mul(currentVolume).mod(coefficient).isZero(),
+            // volume: ratio.mul(currentVolume).div(precision)
+            canSplit:
+                currentVolume.mul(volumeToBuy).mod(this.available).isZero() &&
+                currentVolume.mul(volumeToBuy).div(this.available).mod(energyPerUnit).isZero(),
+            volume: currentVolume.mul(volumeToBuy).div(this.available)
         }));
 
         if (!splits.every((split) => split.canSplit)) {
