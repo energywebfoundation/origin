@@ -45,15 +45,11 @@ export class Bundle extends ExtendedBaseEntity {
     }
 
     possibleSplits(energyPerUnit: BN): BundleSplitVolumeDTO[] {
-        console.group('bundleSplit');
         const volume = this.available.div(energyPerUnit).toNumber();
-        console.log('>>> available:', this.available);
-        console.log('>>> available in energy units:', volume);
         const splits = [...Array(volume).keys()]
             .map((_, i) => new BN(i + 1).mul(energyPerUnit))
             .map((vol) => this.split(vol, energyPerUnit))
             .filter((split) => split.items.length);
-        console.groupEnd();
         return splits;
     }
 
@@ -78,7 +74,7 @@ export class Bundle extends ExtendedBaseEntity {
             return new BundleSplitVolumeDTO({ volume: volumeToBuy, items: [] });
         }
 
-        const precision = new BN(100000);
+        // const precision = new BN(100000);
         // const ratio = volumeToBuy.mul(precision).div(this.volume);
         // const ratio = volumeToBuy.mul(precision).div(this.available);
         // const coefficient = precision.mul(energyPerUnit);
