@@ -74,6 +74,31 @@ describe('Bundles', () => {
         return bundleService.create(userId, bundleToCreate);
     };
 
+    const createUnsplittableBundle = async (userId: string) => {
+        const { address } = await accountService.getOrCreateAccount(userId);
+        const depositOne = await createDeposit(address, `${890 * MWh}`, assetOne);
+        const depositTwo = await createDeposit(address, `${10 * MWh}`, assetTwo);
+        const depositThree = await createDeposit(address, `${1 * MWh}`, assetTwo);
+        const depositFour = await createDeposit(address, `${17 * MWh}`, assetTwo);
+
+        await confirmDeposit(depositOne.transactionHash);
+        await confirmDeposit(depositTwo.transactionHash);
+        await confirmDeposit(depositThree.transactionHash);
+        await confirmDeposit(depositFour.transactionHash);
+
+        const bundleToCreate: CreateBundleDTO = {
+            price: 165,
+            items: [
+                { assetId: depositOne.asset.id, volume: `${890 * MWh}` },
+                { assetId: depositTwo.asset.id, volume: `${10 * MWh}` },
+                { assetId: depositThree.asset.id, volume: `${1 * MWh}` },
+                { assetId: depositFour.asset.id, volume: `${17 * MWh}` }
+            ]
+        };
+
+        return bundleService.create(userId, bundleToCreate);
+    };
+
     before(async () => {
         ({
             transferService,
@@ -309,6 +334,21 @@ describe('Bundles', () => {
                 expect(splits.splits[1].volume).to.equal('4000000');
                 expect(splits.splits[2].volume).to.equal('6000000');
                 expect(splits.splits[9].volume).to.equal('20000000');
+            });
+    });
+
+    it('should return split with whole items volums when bundle is unsplittable', async () => {
+        const { id } = await createUnsplittableBundle(user1Id);
+
+        await request(app.getHttpServer())
+            .get(`/bundle/${id}/splits`)
+            .expect(200)
+            .expect((res) => {
+                const splits = res.body as BundleSplitDTO;
+
+                expect(splits.id).equals(id);
+                expect(splits.splits).to.have.length(1);
+                expect(splits.splits[0].volume).to.equal('918000000');
             });
     });
 });
