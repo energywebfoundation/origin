@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { LoadScriptNext, GoogleMap, Marker, InfoWindow } from '@react-google-maps/api';
-import { APIKEY } from './GoogleApiKey';
 import { ProducingDevice } from '@energyweb/device-registry';
 import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
@@ -9,7 +8,7 @@ import { getProducingDevices } from '../features/selectors';
 import { CircularProgress } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
 import { IOrganization } from '@energyweb/origin-backend-core';
-import { getOffChainDataSource } from '../features/general/selectors';
+import { getOffChainDataSource, getEnvironment } from '../features/general/selectors';
 
 interface IProps {
     devices?: ProducingDevice.Entity[];
@@ -17,6 +16,8 @@ interface IProps {
 }
 
 export function DeviceMap(props: IProps) {
+    const environment = useSelector(getEnvironment);
+
     const [deviceHighlighted, setDeviceHighlighted] = useState<ProducingDevice.Entity>(null);
     const [organizations, setOrganizations] = useState<IOrganization[]>();
     const [map, setMap] = useState(null);
@@ -89,7 +90,10 @@ export function DeviceMap(props: IProps) {
               };
 
     return (
-        <LoadScriptNext googleMapsApiKey={APIKEY} loadingElement={<CircularProgress />}>
+        <LoadScriptNext
+            googleMapsApiKey={environment.GOOGLE_MAPS_API_KEY}
+            loadingElement={<CircularProgress />}
+        >
             <GoogleMap
                 center={defaultCenter}
                 zoom={10}
