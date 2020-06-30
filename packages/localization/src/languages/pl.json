@@ -91,7 +91,8 @@
                 "deposit": "Wpłać",
                 "create_bundle": "Stwórz Pakiet",
                 "buy_bundle": "Kup pakiet",
-                "cancel_bundle": "Anuluj"
+                "cancel_bundle": "Anuluj",
+                "selectAll": "Zaznacz wszystko"
             },
             "feedback": {
                 "certificateDeposited": "Certificate deposited",
@@ -101,6 +102,7 @@
                 "bundleCanceld": "Pakiet anulowany"
             },
             "info": {
+                "certificates": "CERTYFIKATY",
                 "requestCertificatesFor": "Zażądaj certyfikatów dla urządzenia {facilityName}",
                 "selectPriceRange": "Wybierz przedział cenowy, aby wyświetlić więcej kombinacji"
             }
@@ -261,7 +263,14 @@
             "price": "Cena za MWh"
         },
         "info": {
-            "bundleDetails": "Szczegóły Pakietu"
+            "bundleDetails": "Szczegóły Pakietu",
+            "price": "Cena za MWh",
+            "totalVolume": "Maksymalna głośność",
+            "Sell": "Sprzedać",
+            "certificates": "certyfikaty"
+        },
+        "actions": {
+            "sellAsBundle": "Sell as bundle"
         }
     }
 }

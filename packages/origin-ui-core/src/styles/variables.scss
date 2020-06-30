@@ -15,6 +15,12 @@ $bundleCardBorderBg: #434343;
 $bundleDetailsCloseBtnBg: #ffffff;
 $bundlePriceRangeLblBg: #a400d9;
 $bundleOfferBg: #4c4c4c;
+$createBundleBg:  #333333;
+$createBundleCertificatesBg: #2d2d2d;
+$createBundleCertificatesGroupBg: #3b3b3b;
+$createBundleCertificatesGroupHeaderBg: #373737;
+$createBundleCertificateForSale: #303030;
+$createBundleSelectedCertificate: #3a2146;
 
 :export {
     primaryColor: $primaryColor;
@@ -34,4 +40,10 @@ $bundleOfferBg: #4c4c4c;
     bundleDetailsCloseBtnBg: $bundleDetailsCloseBtnBg;
     bundlePriceRangeLblBg: $bundlePriceRangeLblBg; 
     bundleOfferBg: $bundleOfferBg;
+    createBundleBg: $createBundleBg;
+    createBundleCertificatesBg: $createBundleCertificatesBg;
+    createBundleCertificatesGroupBg: $createBundleCertificatesGroupBg;
+    createBundleCertificatesGroupHeaderBg: $createBundleCertificatesGroupHeaderBg;
+    createBundleSelectedItem: $createBundleCertificateForSale;
+    createBundleSelectedCertificate: $createBundleSelectedCertificate;
 }

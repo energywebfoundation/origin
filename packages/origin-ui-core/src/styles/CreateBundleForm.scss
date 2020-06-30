@@ -1,0 +1,26 @@
+@import './variables.scss';
+
+.CreateBundleForm {
+    background-color: $createBundleBg;
+    .Certificates {
+        background-color: $createBundleCertificatesBg;
+    }
+    
+    .CertificateGroup {
+        background-color: $createBundleCertificatesGroupBg;
+        .Header {
+            background-color: $createBundleCertificatesGroupHeaderBg;
+        }
+    }
+    
+    .CertificateForSale {
+        background-color: $createBundleCertificateForSale;
+    }
+    
+    .SelectedCertificate {
+        background-color: $createBundleSelectedCertificate;
+    }
+}
+
+
+
