@@ -85,7 +85,7 @@ const BundleDetails = (props: IOwnProps) => {
             scroll="paper"
         >
             <DialogTitle>
-                BUNDLE DETAILS
+                {t('bundle.info.bundleDetails')}
                 <IconButton
                     className={`${dialogStyles.closeButton} closeButton`}
                     onClick={() => dispatch(showBundleDetails(false))}

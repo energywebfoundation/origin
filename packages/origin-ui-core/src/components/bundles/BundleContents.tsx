@@ -190,7 +190,7 @@ export const BundleContents = (props: IOwnProps) => {
                                         align="center"
                                         color="textSecondary"
                                     >
-                                        Total Volume
+                                        {t('bundle.properties.totalVolume')}
                                     </Typography>
                                 </Box>
                                 <Box fontWeight="fontWeightBold">
@@ -254,7 +254,7 @@ export const BundleContents = (props: IOwnProps) => {
                                                             color="textSecondary"
                                                             variant="body2"
                                                         >
-                                                            Facility
+                                                            {t('device.properties.facility')}
                                                         </Typography>
                                                     </Box>
                                                     <Box
@@ -273,7 +273,7 @@ export const BundleContents = (props: IOwnProps) => {
                                                             color="textSecondary"
                                                             variant="body2"
                                                         >
-                                                            Location
+                                                            {t('device.properties.location')}
                                                         </Typography>
                                                     </Box>
                                                     <Box
@@ -296,7 +296,7 @@ export const BundleContents = (props: IOwnProps) => {
                                                         color="textSecondary"
                                                         variant="body2"
                                                     >
-                                                        Generation Date
+                                                        {t('certificate.properties.generationDate')}
                                                     </Typography>
                                                 </Box>
                                                 <Box
@@ -317,8 +317,6 @@ export const BundleContents = (props: IOwnProps) => {
                                     style={{
                                         display: 'grid',
                                         gridTemplateColumns: bundlesGridTemplatesColumns
-
-                                        // borderBottomColor: '#434343'
                                     }}
                                 >
                                     {splits
@@ -425,7 +423,7 @@ export const BundleContents = (props: IOwnProps) => {
                                         noWrap
                                         align="center"
                                     >
-                                        Total price
+                                        {t('certificate.properties.totalPrice')}
                                     </Typography>
                                     <Box
                                         fontWeight="fontWeightBold"

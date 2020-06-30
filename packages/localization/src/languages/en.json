@@ -39,6 +39,7 @@
         "device": {
             "properties": {
                 "owner": "Owner",
+                "facility": "Facility",
                 "facilityName": "Facility name",
                 "regionProvince": "Region, province",
                 "type": "Type",
@@ -52,6 +53,7 @@
                 "otherGreenAttributes": "Other green attributes",
                 "deviceType": "Device type",
                 "publicSupport": "Public support",
+                "location": "Location",
                 "geoLocation": "Geo location",
                 "filesUpload": "Files Upload",
                 "registrationDate": "Registration date",
@@ -109,10 +111,12 @@
                 "from": "From",
                 "to": "To",
                 "source": "Source",
+                "generationDate":"Generation Date",
                 "generationDateStart": "Generation Start Date",
                 "generationDateEnd": "Generation End Date",
                 "claimedEnergy": "Claimed Energy",
-                "claimBeneficiary": "Claim beneficiary"
+                "claimBeneficiary": "Claim beneficiary",
+                "totalPrice": "Total Price"
             },
             "actions": {
                 "requestCertificates": "Request certificates",
@@ -410,6 +414,10 @@
                 "hydro": "HYDRO",
                 "other": "OTHER",
                 "price": "Price per MWh"
+            },
+            "info": {
+                "bundleDetails": "BUNDLE DETAILS",
+                
             }
         }
     }

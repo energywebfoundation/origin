@@ -29,6 +29,7 @@
         "device": {
             "properties": {
                 "owner": "Właściciel",
+                "facility": "Obiekt",
                 "facilityName": "Nazwa obiektu",
                 "regionProvince": "Region, prowincja",
                 "type": "Typ",
@@ -42,6 +43,7 @@
                 "otherGreenAttributes": "Pozostałe zielone atrybuty",
                 "deviceType": "Typ urządzenia",
                 "publicSupport": "Wsparcie publiczne",
+                "location": "Lokalizacja",
                 "geoLocation": "Geo-lokalizacja",
                 "registrationDate": "Data rejestracji",
                 "regions": "Regiony",
@@ -72,7 +74,9 @@
                 "certificationDate": "Data certyfikacji",
                 "from": "Od",
                 "to": "Do",
-                "source": "Źródło"
+                "source": "Źródło",
+                "generationDate":"Data generacji",
+                "totalPrice": "Cena całkowita"
             },
             "actions": {
                 "requestCertificates": "Zażądaj certyfikatów",
@@ -255,6 +259,9 @@
             "hydro": "HYDRO",
             "other": "INNY",
             "price": "Cena za MWh"
+        },
+        "info": {
+            "bundleDetails": "Szczegóły Pakietu"
         }
     }
 }
