@@ -9,8 +9,12 @@ $bundleContentCardHeaderBg: #3b3b3b;
 $bundleContentSelectedCardHeaderBg: #9b00c8;
 $bundleCardContentBg: #3e3e3e;
 $bundleSelectedCardContentBg: #3a1c47;
-$scrollButtonBg: #5a5a5a;
+$scrollButtonBg: #575757;
+$bundleDetailsBg: #434343;
 $bundleCardBorderBg: #434343;
+$bundleDetailsCloseBtnBg: #ffffff;
+$bundlePriceRangeLblBg: #a400d9;
+$bundleOfferBg: #4c4c4c;
 
 :export {
     primaryColor: $primaryColor;
@@ -26,4 +30,8 @@ $bundleCardBorderBg: #434343;
     bundleSelectedCardContentBg: $bundleSelectedCardContentBg;
     scrollButtonBg: $scrollButtonBg;
     bundleCardBorderBg: $bundleCardBorderBg;
+    bundleDetailsBg: $bundleDetailsBg;
+    bundleDetailsCloseBtnBg: $bundleDetailsCloseBtnBg;
+    bundlePriceRangeLblBg: $bundlePriceRangeLblBg; 
+    bundleOfferBg: $bundleOfferBg;
 }

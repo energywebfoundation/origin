@@ -112,6 +112,11 @@ export const createMaterialThemeForOrigin = (
                     icon: {
                         color: styleConfig.FIELD_ICON_COLOR
                     }
+                },
+                MuiTooltip: {
+                    tooltip: {
+                        backgroundColor: '#a400d9'
+                    }
                 }
             }
         },

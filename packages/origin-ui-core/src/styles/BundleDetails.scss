@@ -1,0 +1,39 @@
+@import './variables.scss';
+
+.BundleDetails {
+    .MuiPaper-root {
+        background-color: $bundleDetailsBg;
+        .closeButton {
+            color: $bundleDetailsCloseBtnBg;
+        }
+        .priceRangeSliderLabel {
+            background-color: $bundlePriceRangeLblBg;
+        }
+        .BundleOffer {
+            border-bottom-color: $bundleCardBorderBg;
+        }
+        .BundleOfferInfo {
+            background-color: $bundleOfferBg;
+        }
+        button.ScrollButton {
+            background-color: $scrollButtonBg;
+        }
+        .CardHeader {
+            background-color: $bundleContentCardHeaderBg;
+        }
+        
+        .CardContent {
+            background-color: $bundleCardContentBg;
+            border-bottom-color: $bundleCardBorderBg;
+        }
+        
+        .SelectedCardHeader {
+            background-color: $bundleContentSelectedCardHeaderBg;
+        }
+        
+        .SelectedCardContent {
+            background-color: $bundleSelectedCardContentBg;
+            border-bottom-color: $bundleCardBorderBg; 
+        }
+    }
+}

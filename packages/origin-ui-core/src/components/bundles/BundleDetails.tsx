@@ -15,7 +15,7 @@ import {
     Theme
 } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
-import { BundleContents } from './BudleContents';
+import { BundleContents } from './BundleContents';
 import { useSelector, useDispatch } from 'react-redux';
 import { getShowBundleDetails, showBundleDetails } from '../../features/bundles';
 import { useTranslation, bundlePrice, formatCurrencyComplete } from '../../utils';
@@ -27,14 +27,10 @@ interface IOwnProps {
 
 const useDialogStyles = makeStyles((theme: Theme) =>
     createStyles({
-        paper: {
-            backgroundColor: '#434343'
-        },
         closeButton: {
             position: 'absolute',
             top: theme.spacing(1),
-            right: theme.spacing(1),
-            color: '#ffffff'
+            right: theme.spacing(1)
         }
     })
 );
@@ -43,18 +39,9 @@ const COUNT_OF_PRICE_MARKS = 11;
 
 function SliderLabel(props) {
     const { children, open, value } = props;
-    const classes = makeStyles({
-        tooltip: { background: '#a400d9' }
-    })();
 
     return (
-        <Tooltip
-            open={open}
-            enterTouchDelay={0}
-            placement="top"
-            title={value}
-            classes={{ tooltip: classes.tooltip }}
-        >
+        <Tooltip open={open} enterTouchDelay={0} placement="top" title={value}>
             {children}
         </Tooltip>
     );
@@ -90,17 +77,17 @@ const BundleDetails = (props: IOwnProps) => {
     });
     return (
         <Dialog
+            className="BundleDetails"
             open={showModal}
             onClose={() => dispatch(showBundleDetails(false))}
             maxWidth="lg"
             fullWidth={true}
             scroll="paper"
-            classes={{ paper: dialogStyles.paper }}
         >
             <DialogTitle>
                 BUNDLE DETAILS
                 <IconButton
-                    className={dialogStyles.closeButton}
+                    className={`${dialogStyles.closeButton} closeButton`}
                     onClick={() => dispatch(showBundleDetails(false))}
                 >
                     <CloseIcon />

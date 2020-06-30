@@ -45,7 +45,6 @@ const useOfferClasses = makeStyles((theme: Theme) =>
     createStyles({
         root: {
             paddingLeft: theme.spacing(2),
-            backgroundColor: '#4c4c4c',
             height: '100%'
         }
     })
@@ -53,10 +52,6 @@ const useOfferClasses = makeStyles((theme: Theme) =>
 
 const ROWS_COUNT = 5;
 const COLUMNS_COUNT = 5;
-// const cardSelectedColor = '#3a1c47';
-// const cardColor = '#3e3e3e';
-// const cardHeaderColor = '#3b3b3b';
-// const cardHeaderSelectedColor = '#9b00c8';
 
 const topGridTemplateRows = 'auto';
 const topGridTemplateColumns = '40% 60%';
@@ -179,7 +174,7 @@ export const BundleContents = (props: IOwnProps) => {
                         const { volume } = split;
                         return (
                             <Box
-                                className={selected === split ? 'CardHeaderSelected' : 'CardHeader'}
+                                className={selected === split ? 'SelectedCardHeader' : 'CardHeader'}
                                 py={1}
                                 key={bundlePrice({ volume, price })}
                                 onClick={() => setSelected(split)}
@@ -226,10 +221,13 @@ export const BundleContents = (props: IOwnProps) => {
                             <Box
                                 key={itemIndex}
                                 style={{
-                                    ...rowStyle
+                                    ...rowStyle,
+                                    borderBottomStyle: itemIndex === length - 1 ? 'none' : 'solid',
+                                    borderBottomWidth: 2
                                 }}
+                                className="BundleOffer"
                             >
-                                <Box mr={0.5}>
+                                <Box mr={0.5} className="BundleOfferInfo">
                                     <Paper
                                         variant="outlined"
                                         classes={{ root: offerClasses.root }}
@@ -318,12 +316,10 @@ export const BundleContents = (props: IOwnProps) => {
                                 <Box
                                     style={{
                                         display: 'grid',
-                                        gridTemplateColumns: bundlesGridTemplatesColumns,
-                                        borderBottomStyle:
-                                            itemIndex === length - 1 ? 'none' : 'solid',
-                                        borderBottomWidth: 2
+                                        gridTemplateColumns: bundlesGridTemplatesColumns
+
+                                        // borderBottomColor: '#434343'
                                     }}
-                                    className="BundleCardBorder"
                                 >
                                     {splits
                                         .slice(firstSplit, firstSplit + COLUMNS_COUNT)
