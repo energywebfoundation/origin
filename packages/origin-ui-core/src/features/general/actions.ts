@@ -25,6 +25,7 @@ export interface IEnvironment {
     DEVICE_PROPERTIES_ENABLED: string;
     DEFAULT_ENERGY_IN_BASE_UNIT: string;
     EXCHANGE_WALLET_PUB: string;
+    GOOGLE_MAPS_API_KEY: string;
 }
 
 export interface ISetLoadingAction {

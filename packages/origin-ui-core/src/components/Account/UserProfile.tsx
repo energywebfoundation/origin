@@ -1,4 +1,4 @@
-import { IUser } from '@energyweb/origin-backend-core';
+import { IUser, UserStatus, KYCStatus } from '@energyweb/origin-backend-core';
 import {
     Button,
     createStyles,
@@ -6,11 +6,12 @@ import {
     makeStyles,
     Paper,
     Typography,
-    useTheme
+    useTheme,
+    TextField
 } from '@material-ui/core';
 import { signTypedMessage } from '@energyweb/utils-general';
 import { Skeleton } from '@material-ui/lab';
-import { Form, Formik, FormikHelpers, yupToFormErrors } from 'formik';
+import { Form, Formik, FormikHelpers, yupToFormErrors, Field } from 'formik';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
@@ -44,8 +45,8 @@ const INITIAL_FORM_VALUES: IFormValues = {
     notifications: null,
     organization: null,
     rights: 0,
-    status: 0,
-    kycStatus: 0
+    status: UserStatus.Pending,
+    kycStatus: KYCStatus.Pending
 };
 
 export const getUserOffchain = (state: IStoreState) => state.users.userOffchain;
@@ -80,7 +81,9 @@ export function UserProfile() {
     }
 
     const VALIDATION_SCHEMA_ADDRESS = Yup.object().shape({
-        blockchainAccountAddress: Yup.string().label('Address').required()
+        blockchainAccountAddress: Yup.string()
+            .label(t('user.properties.blockchainAddress'))
+            .required()
     });
 
     const VALIDATION_SCHEMA_PROFILE = Yup.object().shape({
@@ -204,15 +207,18 @@ export function UserProfile() {
             {(formikProps) => {
                 const { isSubmitting, touched, values } = formikProps;
                 const fieldDisabled = isSubmitting;
+
                 return (
                     <>
                         <Form translate="">
                             <Paper className={classes.container}>
-                                <Typography variant="h5">Basic Information</Typography>
+                                <Typography variant="h5">
+                                    {t('user.profile.subtitle.basicInformation')}
+                                </Typography>
                                 <Grid container spacing={3}>
                                     <Grid item xs={6}>
                                         <FormInput
-                                            label="First Name"
+                                            label={t('user.properties.firstName')}
                                             property="firstName"
                                             disabled={fieldDisabled}
                                             className="mt-3"
@@ -220,7 +226,7 @@ export function UserProfile() {
                                         />
 
                                         <FormInput
-                                            label="Telephone"
+                                            label={t('user.properties.telephone')}
                                             property="telephone"
                                             disabled={fieldDisabled}
                                             className="mt-3"
@@ -229,14 +235,14 @@ export function UserProfile() {
                                     </Grid>
                                     <Grid item xs={6}>
                                         <FormInput
-                                            label="Last Name"
+                                            label={t('user.properties.lastName')}
                                             property="lastName"
                                             disabled={fieldDisabled}
                                             className="mt-3"
                                             required
                                         />
                                         <FormInput
-                                            label="Email"
+                                            label={t('user.properties.email')}
                                             property="email"
                                             disabled={fieldDisabled}
                                             className="mt-3"
@@ -245,19 +251,27 @@ export function UserProfile() {
                                     </Grid>
 
                                     <Grid item xs={6}>
-                                        <FormInput
-                                            label="Status"
-                                            property="status"
+                                        <Field
+                                            label={t('user.properties.status')}
+                                            type="status"
+                                            name="status"
+                                            component={TextField}
+                                            variant="filled"
+                                            fullWidth
                                             disabled={true}
-                                            className="mt-3"
+                                            value={UserStatus[values.status]}
                                         />
                                     </Grid>
                                     <Grid item xs={6}>
-                                        <FormInput
-                                            label="KYC Status"
-                                            property="kycStatus"
+                                        <Field
+                                            label={t('user.properties.kycStatus')}
+                                            type="kycStatus"
+                                            name="kycStatus"
+                                            component={TextField}
+                                            variant="filled"
+                                            fullWidth
                                             disabled={true}
-                                            className="mt-3"
+                                            value={KYCStatus[values.kycStatus]}
                                         />
                                     </Grid>
                                 </Grid>
@@ -290,7 +304,9 @@ export function UserProfile() {
                         <br />
                         <Form translate="">
                             <Paper className={classes.container}>
-                                <Typography variant="h5">Security</Typography>
+                                <Typography variant="h5">
+                                    {t('user.profile.subtitle.security')}
+                                </Typography>
                                 <Grid container spacing={3}>
                                     <Grid item xs={6}>
                                         <FormInput
@@ -336,11 +352,13 @@ export function UserProfile() {
                         <br />
                         <Form translate="">
                             <Paper className={classes.container}>
-                                <Typography variant="h5">Blockchain Address</Typography>
+                                <Typography variant="h5">
+                                    {t('user.properties.blockchainAddress')}
+                                </Typography>
                                 <Grid container spacing={3}>
                                     <Grid item xs={6}>
                                         <FormInput
-                                            label="Address"
+                                            label={t('user.properties.blockchainAddress')}
                                             property="blockchainAccountAddress"
                                             disabled={true}
                                             className="mt-3"

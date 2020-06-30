@@ -324,7 +324,10 @@
                 "lastName": "Last name",
                 "telephone": "Telephone",
                 "email": "Email",
-                "password": "Password"
+                "password": "Password",
+                "status": "Status",
+                "kycStatus": "KYC Status",
+                "blockchainAddress": "Blockchain Address"
             },
             "actions": {
                 "register": "Register",
@@ -338,6 +341,10 @@
                 "couldNotLogIn": "Could not log in with supplied credentials."
             },
             "profile": {
+                "subtitle": {
+                    "basicInformation": "Basic Information",
+                    "security": "Security"
+                },
                 "updateProfile": "User profile updated.",
                 "errorUpdateProfile": "Error to update User profile.",
                 "updatePassword": "User password updated.",

@@ -76,7 +76,7 @@ export class Bundle extends ExtendedBaseEntity {
             return new BundleSplitVolumeDTO({ volume: volumeToBuy, items: [] });
         }
 
-        const precision = new BN(100);
+        const precision = new BN(100000);
         const ratio = volumeToBuy.mul(precision).div(this.volume);
         const coefficient = precision.mul(energyPerUnit);
 

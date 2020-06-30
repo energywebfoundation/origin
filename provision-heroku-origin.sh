@@ -19,7 +19,7 @@ heroku config:set --app ${PREFIX}-origin-api-${STAGE} \
   ISSUER_ID='Issuer ID' \
   JWT_EXPIRY_TIME='7 days' \
   REGISTRATION_MESSAGE_TO_SIGN='I register as Origin user' \
-  UI_BASE_URL=https://${PREFIX}-origin-ui-${STAGE}.herokuapp.com/ \
+  UI_BASE_URL=https://${PREFIX}-origin-ui-${STAGE}.herokuapp.com \
   WEB3='https://volta-rpc-origin-0a316ab339e3d2ee3.energyweb.org' \
   DEPLOY_KEY='<KEY>' \
   EXCHANGE_ACCOUNT_DEPLOYER_PRIV='<KEY>' \
