@@ -138,7 +138,7 @@ export const SelectedForSale = (props: IOwnProps) => {
                 <Grid container justify="space-between">
                     <Grid item>
                         <Box fontSize={fontSizeMd} color="text.secondary">
-                            Total Volume
+                            {t('bundle.properties.totalVolume')}
                         </Box>
                     </Grid>
                     <Grid item>
@@ -178,7 +178,7 @@ export const SelectedForSale = (props: IOwnProps) => {
                 }
                 label={
                     <Box color="text.secondary" fontSize={fontSizeMd}>
-                        Sell as bundle
+                        {t('bundle.actions.sellAsBundle')}
                     </Box>
                 }
             ></FormControlLabel>
@@ -189,7 +189,7 @@ export const SelectedForSale = (props: IOwnProps) => {
                 variant="contained"
                 disabled={!sellAsBundle || selected.length < 2 || price === 0}
             >
-                Sell {selected.length} certificates
+                {`${t('bundle.info.Sell')} {selected.length} ${t('bundle.info.certificates')}`}
             </Button>
         </Box>
     );
