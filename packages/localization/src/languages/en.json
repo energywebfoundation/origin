@@ -31,13 +31,15 @@
                 "forDemand": "For demand",
                 "exchange": "Exchange",
                 "bundles": "Bundles",
-                "create_bundle": "Create Bundle",
+                "my_bundles": "My bundles",
+                "create_bundle": "Create bundle",
                 "myTrades": "My trades"
             }
         },
         "device": {
             "properties": {
                 "owner": "Owner",
+                "facility": "Facility",
                 "facilityName": "Facility name",
                 "regionProvince": "Region, province",
                 "type": "Type",
@@ -51,6 +53,7 @@
                 "otherGreenAttributes": "Other green attributes",
                 "deviceType": "Device type",
                 "publicSupport": "Public support",
+                "location": "Location",
                 "geoLocation": "Geo location",
                 "filesUpload": "Files Upload",
                 "registrationDate": "Registration date",
@@ -108,10 +111,12 @@
                 "from": "From",
                 "to": "To",
                 "source": "Source",
+                "generationDate":"Generation Date",
                 "generationDateStart": "Generation Start Date",
                 "generationDateEnd": "Generation End Date",
                 "claimedEnergy": "Claimed Energy",
-                "claimBeneficiary": "Claim beneficiary"
+                "claimBeneficiary": "Claim beneficiary",
+                "totalPrice": "Total Price"
             },
             "actions": {
                 "requestCertificates": "Request certificates",
@@ -126,6 +131,7 @@
                 "deposit": "Deposit",
                 "create_bundle": "Create bundle",
                 "buy_bundle": "Buy",
+                "cancel_bundle": "Cancel",
                 "selectAll": "Select all"
             },
             "feedback": {
@@ -146,6 +152,7 @@
                 "certificateDeposited": "Certificate deposited",
                 "bundle_created": "Bundle created",
                 "bundle_bought": "Bundle bought",
+                "bundleCanceld": "Bundle canceled",
                 "certificateNotFound": "Certificate not found"
             },
             "info": {
@@ -418,12 +425,14 @@
                 "price": "Price per MWh",
                 "totalVolume": "Total Volume"
             },
+            "info": {
+                "bundleDetails": "BUNDLE DETAILS",
+                "Sell": "Sell",
+                "certificates": "certificates",
+                "price": "Price per MWh"
+            },
             "actions": {
                 "sellAsBundle": "Sell as bundle"
-            },
-            "info": {
-                "Sell": "Sell",
-                "certificates": "certificates"
             }
         }
     }

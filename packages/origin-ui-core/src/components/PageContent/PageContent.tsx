@@ -9,7 +9,7 @@ export class PageContent extends React.Component<any, any> {
         return menu ? (
             <div className="PageContentWrapper">
                 <div className="PageBody">
-                    {menu.component ? <PageComponent /> : 'Coming Soon...'}
+                    {menu.component ? <PageComponent {...menu.props} /> : 'Coming Soon...'}
                 </div>
             </div>
         ) : (

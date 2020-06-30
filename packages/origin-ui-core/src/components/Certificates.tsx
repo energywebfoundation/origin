@@ -93,6 +93,13 @@ export function Certificates() {
             show: user
         },
         {
+            key: 'my_bundles',
+            label: 'navigation.certificates.my_bundles',
+            component: BundlesTable,
+            props: { owner: true },
+            show: user
+        },
+        {
             key: 'my-trades',
             label: 'navigation.certificates.myTrades',
             component: TradesRoute,

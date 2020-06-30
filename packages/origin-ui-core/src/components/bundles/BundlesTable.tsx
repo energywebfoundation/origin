@@ -28,16 +28,22 @@ import { showBundleDetails } from '../../features/bundles';
 const BUNDLES_PER_PAGE = 25;
 const BUNDLES_TOTAL_ENERGY_COLUMN_ID = 'total';
 const BUNDLES_TOTAL_ENERGY_PROPERTIES = [
-    (record) => Number(record.total.split(EnergyFormatter.displayUnit)[0])
+    (record) => Number(record.total.split(EnergyFormatter.displayUnit)[0].replace(',', ''))
 ];
+
+interface IOwnProps {
+    owner: boolean;
+}
 
 const ENERGY_COLUMNS_TO_DISPLAY = [EnergyTypes.SOLAR, EnergyTypes.WIND, EnergyTypes.HYDRO];
 
-export const BundlesTable = () => {
-    const bundles = useSelector(getBundles);
+export const BundlesTable = (props: IOwnProps) => {
+    const { owner = false } = props;
+    const allBundles = useSelector(getBundles);
+    const bundles = allBundles.filter((b) => (owner ? b.own : true));
     const { t } = useTranslation();
     const devices = useSelector(getProducingDevices);
-    const [selectedBundle, setSelectedBundle] = useState<Bundle>(null);
+    const [selected, setSelected] = useState<Bundle>(null);
     const environment = useSelector(getEnvironment);
     const dispatch = useDispatch();
     const isBundleDetailsVisible = useSelector(getShowBundleDetails);
@@ -72,7 +78,7 @@ export const BundlesTable = () => {
     useEffect(() => {
         setPageSize(BUNDLES_PER_PAGE);
         loadPage(1);
-    }, [bundles]);
+    }, [allBundles, owner]);
 
     const [currency = 'USD'] = useSelector(getCurrencies);
 
@@ -88,7 +94,7 @@ export const BundlesTable = () => {
     const viewDetails = (rowIndex: number) => {
         const { bundleId } = rows[rowIndex];
         const bundle = bundles.find((b) => b.id === bundleId);
-        setSelectedBundle(bundle);
+        setSelected(bundle);
         dispatch(showBundleDetails(true));
     };
 
@@ -102,11 +108,7 @@ export const BundlesTable = () => {
         { id: EnergyTypes.WIND, label: t('bundle.properties.wind') },
         { id: EnergyTypes.HYDRO, label: t('bundle.properties.hydro') },
         { id: 'other', label: t('bundle.properties.other') },
-        {
-            id: 'price',
-            label: t('bundle.properties.price'),
-            sortProperties: [(bundle: Bundle) => bundle.price]
-        }
+        { id: 'price', label: t('bundle.properties.price') }
     ];
 
     const actions = [
@@ -131,7 +133,7 @@ export const BundlesTable = () => {
                 toggleSort={toggleSort}
                 handleRowClick={(rowIndex: string) => viewDetails(parseInt(rowIndex, 10))}
             />
-            {isBundleDetailsVisible && <BundleDetails bundle={selectedBundle} />}
+            {isBundleDetailsVisible && <BundleDetails bundle={selected} owner={owner} />}
             <Link to={'/certificates/create_bundle'}>
                 <Tooltip title={t('certificate.actions.create_bundle')}>
                     <Fab

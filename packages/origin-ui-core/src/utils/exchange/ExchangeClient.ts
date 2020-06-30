@@ -36,8 +36,10 @@ export interface IExchangeClient {
     getOrderById(id: string): Promise<Order>;
     getOrders?(): Promise<Order[]>;
     getAvailableBundles(): Promise<Bundle[]>;
+    getOwnBundles(): Promise<Bundle[]>;
     getBundleSplits(bundle: Bundle): Promise<Bundle[]>;
     createBundle(bundle: CreateBundleDTO): Promise<Bundle>;
+    cancelBundle(id: string): Promise<Bundle>;
 }
 
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
@@ -168,9 +170,23 @@ export class ExchangeClient implements IExchangeClient {
         return response.data;
     }
 
-    public async getAvailableBundles() {
+    public async getAvailableBundles(): Promise<Bundle[]> {
         const response = await this.requestClient.get<unknown, Bundle[]>(
             `${this.bundleEndpoint}/available`
+        );
+
+        return response.data;
+    }
+
+    public async getOwnBundles(): Promise<Bundle[]> {
+        const response = await this.requestClient.get<unknown, Bundle[]>(`${this.bundleEndpoint}`);
+
+        return response.data;
+    }
+
+    public async cancelBundle(id: string): Promise<Bundle> {
+        const response = await this.requestClient.put<unknown, Bundle>(
+            `${this.bundleEndpoint}/${id}/cancel`
         );
 
         return response.data;
@@ -329,8 +345,17 @@ export const ExchangeClientMock: IExchangeClient = {
         return null;
     },
 
+    getOwnBundles() {
+        return null;
+    },
+
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     createBundle(bundle: CreateBundleDTO) {
+        return null;
+    },
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    cancelBundle(id: string) {
         return null;
     },
 

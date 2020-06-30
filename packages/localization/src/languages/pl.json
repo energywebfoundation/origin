@@ -22,12 +22,14 @@
             },
             "certificates": {
                 "bundles": "Pakiety",
-                "create_bundle": "Stwórz Pakiet"
+                "my_bundles": "Moje pakiety",
+                "create_bundle": "Stwórz pakiet"
             }
         },
         "device": {
             "properties": {
                 "owner": "Właściciel",
+                "facility": "Obiekt",
                 "facilityName": "Nazwa obiektu",
                 "regionProvince": "Region, prowincja",
                 "type": "Typ",
@@ -41,6 +43,7 @@
                 "otherGreenAttributes": "Pozostałe zielone atrybuty",
                 "deviceType": "Typ urządzenia",
                 "publicSupport": "Wsparcie publiczne",
+                "location": "Lokalizacja",
                 "geoLocation": "Geo-lokalizacja",
                 "registrationDate": "Data rejestracji",
                 "regions": "Regiony",
@@ -71,7 +74,9 @@
                 "certificationDate": "Data certyfikacji",
                 "from": "Od",
                 "to": "Do",
-                "source": "Źródło"
+                "source": "Źródło",
+                "generationDate":"Data generacji",
+                "totalPrice": "Cena całkowita"
             },
             "actions": {
                 "requestCertificates": "Zażądaj certyfikatów",
@@ -86,13 +91,15 @@
                 "deposit": "Wpłać",
                 "create_bundle": "Stwórz Pakiet",
                 "buy_bundle": "Kup pakiet",
+                "cancel_bundle": "Anuluj",
                 "selectAll": "Zaznacz wszystko"
             },
             "feedback": {
                 "certificateDeposited": "Certificate deposited",
                 "withdrawn": "Zdeponowany certyfikat",
                 "bundle_created": "Utworzono pakiet ",
-                "bundle_bought": "Kupiony pakiet"
+                "bundle_bought": "Kupiony pakiet",
+                "bundleCanceld": "Pakiet anulowany"
             },
             "info": {
                 "certificates": "CERTYFIKATY",
@@ -256,12 +263,14 @@
             "price": "Cena za MWh",
             "totalVolume": "Maksymalna głośność"
         },
-        "actions": {
-            "sellAsBundle": "Sell as bundle"
-        },
         "info": {
+            "bundleDetails": "Szczegóły Pakietu",
+            "price": "Cena za MWh",
             "Sell": "Sprzedać",
             "certificates": "certyfikaty"
+        },
+        "actions": {
+            "sellAsBundle": "Sell as bundle"
         }
     }
 }

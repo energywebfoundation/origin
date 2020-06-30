@@ -8,7 +8,8 @@ import {
     Button,
     Box,
     IconButton,
-    Avatar
+    Avatar,
+    useTheme
 } from '@material-ui/core';
 import { Bundle, Split } from '../../utils/exchange';
 import { useSelector, useDispatch } from 'react-redux';
@@ -32,10 +33,11 @@ import {
     ArrowBack,
     ArrowRightAlt
 } from '@material-ui/icons';
-import { buyBundle } from '../../features/bundles';
+import { buyBundle, cancelBundle } from '../../features/bundles';
 
 interface IOwnProps {
     bundle: Bundle;
+    owner: boolean;
     splits: Split[];
 }
 
@@ -43,7 +45,6 @@ const useOfferClasses = makeStyles((theme: Theme) =>
     createStyles({
         root: {
             paddingLeft: theme.spacing(2),
-            backgroundColor: '#4c4c4c',
             height: '100%'
         }
     })
@@ -51,11 +52,6 @@ const useOfferClasses = makeStyles((theme: Theme) =>
 
 const ROWS_COUNT = 5;
 const COLUMNS_COUNT = 5;
-const cardSelectedColor = '#3a1c47';
-const cardColor = '#3e3e3e';
-const cardHeaderColor = '#3b3b3b';
-const cardHeaderSelectedColor = '#9b00c8';
-const fontSize = 12;
 
 const topGridTemplateRows = 'auto';
 const topGridTemplateColumns = '40% 60%';
@@ -76,10 +72,8 @@ const rowStyle = {
 };
 
 export const BundleContents = (props: IOwnProps) => {
-    const {
-        bundle: { price, items, id },
-        splits
-    } = props;
+    const { owner, bundle, splits } = props;
+    const { price, items, id } = bundle;
     const environment = useSelector(getEnvironment);
     const devices = useSelector(getProducingDevices);
     const offerClasses = useOfferClasses();
@@ -89,10 +83,26 @@ export const BundleContents = (props: IOwnProps) => {
     const { t } = useTranslation();
     const dispatch = useDispatch();
     const currency = useSelector(getCurrencies)[0];
-
+    const {
+        typography: { fontSizeMd: fontSize }
+    } = useTheme();
     const onBuyBundle = async () => {
         dispatch(buyBundle({ bundleDTO: { bundleId: id, volume: selected.volume.toString() } }));
     };
+
+    const onCancelBundle = async () => {
+        dispatch(cancelBundle(id));
+    };
+
+    const action = owner
+        ? {
+              onClick: onCancelBundle,
+              label: 'certificate.actions.cancel_bundle'
+          }
+        : {
+              onClick: onBuyBundle,
+              label: 'certificate.actions.buy_bundle'
+          };
 
     return (
         <Box
@@ -103,33 +113,34 @@ export const BundleContents = (props: IOwnProps) => {
                 gridTemplateRows: topGridTemplateRows
             }}
         >
-            {splits.length > 5 && (
+            {splits.length > COLUMNS_COUNT && (
                 <IconButton
                     disabled={firstSplit <= 0}
                     onClick={() => setFirstSplit(firstSplit - 1)}
                     style={{
-                        backgroundColor: '#5a5a5a',
                         position: 'absolute',
                         top: '50%',
-                        left: '37%',
+                        left: '38%',
                         zIndex: 10
                     }}
-                    size="medium"
+                    className="ScrollButton"
+                    size="small"
                 >
                     <ArrowBack />
                 </IconButton>
             )}
-            {splits.length > 5 && (
+            {splits.length > COLUMNS_COUNT && (
                 <IconButton
                     disabled={firstSplit + COLUMNS_COUNT >= splits.length}
                     onClick={() => setFirstSplit(firstSplit + 1)}
                     style={{
-                        backgroundColor: '#5a5a5a',
                         position: 'absolute',
                         top: '50%',
-                        left: '97%',
+                        left: '98%',
                         zIndex: 10
                     }}
+                    className="ScrollButton"
+                    size="small"
                 >
                     <ArrowForward />
                 </IconButton>
@@ -139,11 +150,11 @@ export const BundleContents = (props: IOwnProps) => {
                     ...rowStyle
                 }}
             >
-                <Box mr={0.5} display="flex" flexDirection="column" justifyContent="end">
-                    {items.length > 5 && (
+                <Box mr={0.5} display="flex" flexDirection="column" justifyContent="flex-end">
+                    {items.length > ROWS_COUNT && (
                         <Button
+                            className="ScrollButton"
                             style={{
-                                backgroundColor: '#5a5a5a',
                                 width: '100%'
                             }}
                             onClick={() => setFirstItem(firstItem - 1)}
@@ -163,6 +174,7 @@ export const BundleContents = (props: IOwnProps) => {
                         const { volume } = split;
                         return (
                             <Box
+                                className={selected === split ? 'SelectedCardHeader' : 'CardHeader'}
                                 py={1}
                                 key={bundlePrice({ volume, price })}
                                 onClick={() => setSelected(split)}
@@ -171,9 +183,6 @@ export const BundleContents = (props: IOwnProps) => {
                                     borderRadius: '5% 5% 0 0',
                                     flexDirection: 'column'
                                 }}
-                                bgcolor={
-                                    selected === split ? cardHeaderSelectedColor : cardHeaderColor
-                                }
                             >
                                 <Box fontSize={fontSize}>
                                     <Typography
@@ -181,7 +190,7 @@ export const BundleContents = (props: IOwnProps) => {
                                         align="center"
                                         color="textSecondary"
                                     >
-                                        Total Volume
+                                        {t('bundle.properties.totalVolume')}
                                     </Typography>
                                 </Box>
                                 <Box fontWeight="fontWeightBold">
@@ -212,10 +221,13 @@ export const BundleContents = (props: IOwnProps) => {
                             <Box
                                 key={itemIndex}
                                 style={{
-                                    ...rowStyle
+                                    ...rowStyle,
+                                    borderBottomStyle: itemIndex === length - 1 ? 'none' : 'solid',
+                                    borderBottomWidth: 2
                                 }}
+                                className="BundleOffer"
                             >
-                                <Box mr={0.5}>
+                                <Box mr={0.5} className="BundleOfferInfo">
                                     <Paper
                                         variant="outlined"
                                         classes={{ root: offerClasses.root }}
@@ -242,7 +254,7 @@ export const BundleContents = (props: IOwnProps) => {
                                                             color="textSecondary"
                                                             variant="body2"
                                                         >
-                                                            Facility
+                                                            {t('device.properties.facility')}
                                                         </Typography>
                                                     </Box>
                                                     <Box
@@ -261,7 +273,7 @@ export const BundleContents = (props: IOwnProps) => {
                                                             color="textSecondary"
                                                             variant="body2"
                                                         >
-                                                            Location
+                                                            {t('device.properties.location')}
                                                         </Typography>
                                                     </Box>
                                                     <Box
@@ -274,6 +286,7 @@ export const BundleContents = (props: IOwnProps) => {
                                             </Box>
                                             <Box
                                                 style={{ display: 'flex', flexDirection: 'column' }}
+                                                ml={1}
                                             >
                                                 <Box
                                                     fontSize={fontSize}
@@ -283,7 +296,7 @@ export const BundleContents = (props: IOwnProps) => {
                                                         color="textSecondary"
                                                         variant="body2"
                                                     >
-                                                        Generation Date
+                                                        {t('certificate.properties.generationDate')}
                                                     </Typography>
                                                 </Box>
                                                 <Box
@@ -303,11 +316,7 @@ export const BundleContents = (props: IOwnProps) => {
                                 <Box
                                     style={{
                                         display: 'grid',
-                                        gridTemplateColumns: bundlesGridTemplatesColumns,
-                                        borderBottomStyle:
-                                            itemIndex === length - 1 ? 'none' : 'solid',
-                                        borderBottomColor: '#434343',
-                                        borderBottomWidth: 2
+                                        gridTemplateColumns: bundlesGridTemplatesColumns
                                     }}
                                 >
                                     {splits
@@ -330,10 +339,10 @@ export const BundleContents = (props: IOwnProps) => {
                                                         volume: split.volume
                                                     })}
                                                     onClick={() => setSelected(split)}
-                                                    bgcolor={
+                                                    className={
                                                         selected === split
-                                                            ? cardSelectedColor
-                                                            : cardColor
+                                                            ? 'SelectedCardContent'
+                                                            : 'CardContent'
                                                     }
                                                 >
                                                     <Avatar
@@ -345,6 +354,11 @@ export const BundleContents = (props: IOwnProps) => {
                                                     <Box
                                                         fontWeight="fontWeightBold"
                                                         fontSize={fontSize}
+                                                        color={
+                                                            selected === split
+                                                                ? 'text.primary'
+                                                                : 'text.secondary'
+                                                        }
                                                     >
                                                         <Typography>
                                                             {EnergyFormatter.format(volume, true)}
@@ -364,10 +378,10 @@ export const BundleContents = (props: IOwnProps) => {
                 }}
             >
                 <Box mr={0.5} display="flex" flexDirection="column" justifyItems="start">
-                    {items.length > 5 && (
+                    {items.length > ROWS_COUNT && (
                         <Button
+                            className="ScrollButton"
                             style={{
-                                backgroundColor: '#5a5a5a',
                                 width: '100%'
                             }}
                             onClick={() => setFirstItem(firstItem + 1)}
@@ -396,7 +410,9 @@ export const BundleContents = (props: IOwnProps) => {
                                 }}
                                 key={splitPrice}
                                 onClick={() => setSelected(split)}
-                                bgcolor={selected === split ? cardSelectedColor : cardColor}
+                                className={
+                                    selected === split ? 'SelectedCardContent' : 'CardContent'
+                                }
                                 mr={1}
                                 pb={1}
                             >
@@ -407,7 +423,7 @@ export const BundleContents = (props: IOwnProps) => {
                                         noWrap
                                         align="center"
                                     >
-                                        Total price
+                                        {t('certificate.properties.totalPrice')}
                                     </Typography>
                                     <Box
                                         fontWeight="fontWeightBold"
@@ -425,10 +441,10 @@ export const BundleContents = (props: IOwnProps) => {
                                     <Button
                                         color="primary"
                                         variant="contained"
-                                        onClick={onBuyBundle}
+                                        onClick={action.onClick}
                                         disabled={!(selected === split)}
                                     >
-                                        {t('certificate.actions.buy_bundle')}
+                                        {t(action.label)}
                                     </Button>
                                 </Box>
                             </Box>

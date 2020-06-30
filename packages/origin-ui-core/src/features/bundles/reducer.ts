@@ -23,7 +23,7 @@ export default function reducer<T>(
                 ...state,
                 bundles
             };
-        case BundlesActionType.SHOW_BUNDLE_DETAILS:
+        case BundlesActionType.SHOW_DETAILS:
             return {
                 ...state,
                 showBundleDetails: payload

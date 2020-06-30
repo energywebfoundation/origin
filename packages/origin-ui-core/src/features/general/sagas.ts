@@ -359,11 +359,13 @@ function* findEnhancedCertificate(
     return enhanceCertificate(asset, onChainCertificate);
 }
 
-function* fetchBundles() {
+export function* fetchBundles() {
     yield put(clearBundles());
     const exchangeClient: IExchangeClient = yield select(getExchangeClient);
     const bundles: Bundle[] = yield apply(exchangeClient, exchangeClient.getAvailableBundles, null);
+    const ownBundles: Bundle[] = yield apply(exchangeClient, exchangeClient.getOwnBundles, null);
     for (const bundle of bundles) {
+        bundle.own = ownBundles.find((b) => b.id === bundle.id) !== undefined;
         bundle.items.forEach((item) => {
             item.currentVolume = new BigNumber(item.currentVolume.toString());
             item.startVolume = new BigNumber(item.startVolume.toString());
