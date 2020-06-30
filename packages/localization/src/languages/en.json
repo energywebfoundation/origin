@@ -422,14 +422,14 @@
                 "wind": "WIND",
                 "hydro": "HYDRO",
                 "other": "OTHER",
-                "price": "Price per MWh"
+                "price": "Price per MWh",
+                "totalVolume": "Total Volume"
             },
             "info": {
                 "bundleDetails": "BUNDLE DETAILS",
                 "Sell": "Sell",
                 "certificates": "certificates",
-                "price": "Price per MWh",
-                "totalVolume": "Total Volume"
+                "price": "Price per MWh"
             },
             "actions": {
                 "sellAsBundle": "Sell as bundle"

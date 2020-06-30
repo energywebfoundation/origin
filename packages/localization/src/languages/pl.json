@@ -260,12 +260,12 @@
             "wind": "WIATR",
             "hydro": "HYDRO",
             "other": "INNY",
-            "price": "Cena za MWh"
+            "price": "Cena za MWh",
+            "totalVolume": "Maksymalna głośność"
         },
         "info": {
             "bundleDetails": "Szczegóły Pakietu",
             "price": "Cena za MWh",
-            "totalVolume": "Maksymalna głośność",
             "Sell": "Sprzedać",
             "certificates": "certyfikaty"
         },
