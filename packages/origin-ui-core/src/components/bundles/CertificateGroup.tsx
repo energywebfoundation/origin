@@ -12,7 +12,7 @@ import {
     Box,
     useTheme
 } from '@material-ui/core';
-import { getProducingDevices, getEnvironment } from '../..';
+import { getProducingDevices, getEnvironment, useTranslation } from '../..';
 import { useSelector } from 'react-redux';
 import { deviceById, energyImageByType, moment, EnergyFormatter, EnergyTypes } from '../../utils';
 
@@ -34,6 +34,7 @@ export const CertificateGroup = (props: IOwnProps) => {
     const {
         typography: { fontSizeMd, fontSizeSm }
     } = useTheme();
+    const { t } = useTranslation();
 
     const isAllSelected = () => certificates.every((cert) => selected.includes(cert));
 
@@ -109,10 +110,9 @@ export const CertificateGroup = (props: IOwnProps) => {
                             style={{
                                 textTransform: 'capitalize',
                                 paddingLeft: 0,
-                                paddingRight: 0,
-                                // backgroundColor: isSelected(cert) ? '#3a2146' : 'inherit'
+                                paddingRight: 0
                             }}
-                            className={ isSelected(cert) ? 'SelectedCertificate' : ''}
+                            className={isSelected(cert) ? 'SelectedCertificate' : ''}
                             divider
                         >
                             <Grid container>
@@ -138,7 +138,7 @@ export const CertificateGroup = (props: IOwnProps) => {
                                 </Grid>
                                 <Grid item xs={5}>
                                     <Box fontSize={fontSizeSm} color="text.secondary">
-                                        Certification Date
+                                        {t('certificate.properties.certificationDate')}
                                     </Box>
                                     <Box fontSize={fontSizeMd}>
                                         {moment.unix(creationTime).format('MMM, YYYY')}

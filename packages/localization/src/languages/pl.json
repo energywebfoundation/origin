@@ -85,7 +85,8 @@
                 "withdraw": "Wypłać",
                 "deposit": "Wpłać",
                 "create_bundle": "Stwórz Pakiet",
-                "buy_bundle": "Kup pakiet"
+                "buy_bundle": "Kup pakiet",
+                "selectAll": "Zaznacz wszystko"
             },
             "feedback": {
                 "certificateDeposited": "Certificate deposited",
@@ -94,6 +95,7 @@
                 "bundle_bought": "Kupiony pakiet"
             },
             "info": {
+                "certificates": "CERTYFIKATY",
                 "requestCertificatesFor": "Zażądaj certyfikatów dla urządzenia {facilityName}",
                 "selectPriceRange": "Wybierz przedział cenowy, aby wyświetlić więcej kombinacji"
             }

@@ -2,6 +2,7 @@ import React from 'react';
 import { FormControlLabel, Checkbox, Box, useTheme } from '@material-ui/core';
 import { ICertificateViewItem } from '../../features/certificates';
 import { CertificateGroup } from './CertificateGroup';
+import { useTranslation } from '../..';
 
 interface IOwnProps {
     groups: { [key: string]: ICertificateViewItem[] };
@@ -17,6 +18,7 @@ export const GroupedCertificateList = (props: IOwnProps) => {
     const {
         typography: { fontSizeMd }
     } = useTheme();
+    const { t } = useTranslation();
 
     const isAllSelected = (): boolean => {
         if (certificates.length === 0) {
@@ -46,7 +48,7 @@ export const GroupedCertificateList = (props: IOwnProps) => {
                 }
                 label={
                     <Box fontSize={fontSizeMd} color="text.secondary">
-                        Select All
+                        {t('certificate.actions.selectAll')}
                     </Box>
                 }
             />
