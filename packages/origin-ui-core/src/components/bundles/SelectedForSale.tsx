@@ -189,7 +189,7 @@ export const SelectedForSale = (props: IOwnProps) => {
                 variant="contained"
                 disabled={!sellAsBundle || selected.length < 2 || price === 0}
             >
-                {`${t('bundle.info.Sell')} {selected.length} ${t('bundle.info.certificates')}`}
+                {`${t('bundle.info.Sell')} ${selected.length} ${t('bundle.info.certificates')}`}
             </Button>
         </Box>
     );
