@@ -2,19 +2,15 @@ import React, { useState } from 'react';
 import CurrencyTextField from '@unicef/material-ui-currency-textfield';
 import {
     List,
-    Card,
-    CardHeader,
-    CardContent,
     ListItem,
     ListItemAvatar,
     Avatar,
     Grid,
-    ListItemText,
-    Typography,
     Checkbox,
     Button,
     FormControlLabel,
-    CardActions
+    Box,
+    useTheme
 } from '@material-ui/core';
 import { ICertificateViewItem } from '../../features/certificates';
 import {
@@ -47,6 +43,9 @@ export const SelectedForSale = (props: IOwnProps) => {
     const currency = useSelector(getCurrencies)[0];
     const { t } = useTranslation();
     const dispatch = useDispatch();
+    const {
+        typography: { fontSizeMd }
+    } = useTheme();
 
     async function requestCreateBundle() {
         const items: BundleItemDTO[] = [];
@@ -72,108 +71,126 @@ export const SelectedForSale = (props: IOwnProps) => {
     }
 
     return (
-        <Card>
-            <CardHeader title="SELECTED FOR SALE" />
-            <CardContent>
+        <Box p={2} fontSize={fontSizeMd}>
+            <Box fontWeight="fontWeightBold" mb={1}>
+                SELECTED FOR SALE
+            </Box>
+
+            {selected.length > 0 && (
                 <List>
-                    {selected.map(
-                        ({
-                            id,
-                            deviceId,
-                            energy: { publicVolume, privateVolume },
-                            creationTime
-                        }) => {
-                            const energy = publicVolume.add(privateVolume);
-                            const { deviceType, province, region, facilityName } = deviceById(
-                                deviceId,
-                                environment,
-                                devices
-                            );
-                            const type = deviceType.split(';')[0].toLowerCase() as EnergyTypes;
-                            return (
-                                <ListItem key={id}>
-                                    <ListItemAvatar>
-                                        <Avatar src={energyImageByType(type)}></Avatar>
-                                    </ListItemAvatar>
-                                    <Grid container spacing={3}>
-                                        <Grid item xs={8}>
-                                            <ListItemText
-                                                primary={
-                                                    <div>
-                                                        <Typography>
-                                                            {province}, {region}
-                                                        </Typography>
-                                                        <Typography>{facilityName}</Typography>
-                                                    </div>
-                                                }
-                                                secondary={moment
-                                                    .unix(creationTime)
-                                                    .format('MMM, YYYY')}
-                                            />
+                    {selected.map((cert, index, arr) => {
+                        const {
+                            creationTime,
+                            energy: { privateVolume, publicVolume }
+                        } = cert;
+                        const { province, deviceType, facilityName } = deviceById(
+                            cert.deviceId,
+                            environment,
+                            devices
+                        );
+                        const type = deviceType.split(';')[0].toLowerCase() as EnergyTypes;
+                        const energy = publicVolume.add(privateVolume);
+                        return (
+                            <Box
+                                className="CertificateForSale"
+                                mb={index === arr.length - 1 ? 0 : 1}
+                                key={cert.id}
+                            >
+                                <ListItem>
+                                    <Grid container>
+                                        <Grid item xs={2}>
+                                            <ListItemAvatar>
+                                                <Avatar
+                                                    src={energyImageByType(type, true)}
+                                                ></Avatar>
+                                            </ListItemAvatar>
                                         </Grid>
-                                        <Grid item xs={4}>
-                                            <ListItemText
-                                                primary={EnergyFormatter.format(energy, true)}
-                                                secondary={`${(
+
+                                        <Grid item xs={5}>
+                                            <Box fontSize={fontSizeMd} fontWeight="fontWeightBold">
+                                                {province}, {facilityName}
+                                            </Box>
+                                            <Box fontSize={fontSizeMd} color="text.secondary">
+                                                {moment.unix(creationTime).format('MMM, YYYY')}
+                                            </Box>
+                                        </Grid>
+                                        <Grid item xs={5} style={{ textAlign: 'end' }}>
+                                            <Box fontSize={fontSizeMd} color="text.secondary">
+                                                {EnergyFormatter.format(energy, true)}
+                                            </Box>
+                                            <Box fontSize={fontSizeMd}>
+                                                {(
                                                     (100 * energy.toNumber()) /
                                                     totalVolume.toNumber()
-                                                ).toFixed(0)} %`}
-                                            />
+                                                ).toFixed(0)}
+                                                %
+                                            </Box>
                                         </Grid>
                                     </Grid>
                                 </ListItem>
-                            );
-                        }
-                    )}
+                            </Box>
+                        );
+                    })}
                 </List>
+            )}
+
+            <Box my={2} mx={1}>
                 <Grid container justify="space-between">
-                    <Grid item>Total Volume</Grid>
-                    <Grid item>{EnergyFormatter.format(totalVolume, true)}</Grid>
-                </Grid>
-                <CurrencyTextField
-                    fullWidth
-                    variant="filled"
-                    className="mt-3"
-                    required
-                    label={t('bundle.properties.price')}
-                    currencySymbol="$"
-                    outputFormat="number"
-                    value={price}
-                    onChange={(event, value) => setPrice(value)}
-                    minimumValue="0"
-                />
-                <Grid container justify="space-between" style={{ margin: '10px' }}>
-                    <Grid item>Total Price</Grid>
                     <Grid item>
-                        {formatCurrencyComplete(
-                            (totalVolume.toNumber() / Unit[EnergyFormatter.displayUnit]) * price,
-                            currency
-                        )}
+                        <Box fontSize={fontSizeMd} color="text.secondary">
+                            {t('bundle.properties.totalVolume')}
+                        </Box>
+                    </Grid>
+                    <Grid item>
+                        <Box fontSize={fontSizeMd} color="text.primary" fontWeight="fontWeightBold">
+                            {EnergyFormatter.format(totalVolume, true)}
+                        </Box>
                     </Grid>
                 </Grid>
-                <FormControlLabel
-                    control={
-                        <Checkbox
-                            checked={sellAsBundle}
-                            onChange={() => setSellAsBundle(!sellAsBundle)}
-                        />
-                    }
-                    label="Sell as bundle"
-                ></FormControlLabel>
-            </CardContent>
-            <CardActions>
-                <Button
-                    color="primary"
-                    onClick={requestCreateBundle}
-                    variant="contained"
-                    disabled={!sellAsBundle || selected.length < 2}
-                >
-                    Sell {selected.length} certificates
-                </Button>
-                <Button color="secondary" onClick={callback}>
-                    Cancel
-                </Button>
-            </CardActions>
-        </Card>
+            </Box>
+            <CurrencyTextField
+                fullWidth
+                variant="filled"
+                required
+                label={t('bundle.properties.price')}
+                currencySymbol="$"
+                outputFormat="number"
+                value={price}
+                onChange={(event, value) => setPrice(value)}
+                minimumValue="0"
+            />
+            <Box display="flex" mt={2} mx={1} justifyContent="space-between">
+                <Box color="text.secondary">Total Price</Box>
+                <Box fontWeight="fontWeightBold">
+                    {formatCurrencyComplete(
+                        (totalVolume.toNumber() / Unit[EnergyFormatter.displayUnit]) * price,
+                        currency
+                    )}
+                </Box>
+            </Box>
+            <FormControlLabel
+                control={
+                    <Checkbox
+                        color="primary"
+                        checked={sellAsBundle}
+                        onChange={() => setSellAsBundle(!sellAsBundle)}
+                    />
+                }
+                label={
+                    <Box color="text.secondary" fontSize={fontSizeMd}>
+                        {t('bundle.actions.sellAsBundle')}
+                    </Box>
+                }
+            ></FormControlLabel>
+            <Button
+                fullWidth
+                color="primary"
+                onClick={requestCreateBundle}
+                variant="contained"
+                disabled={!sellAsBundle || selected.length < 2 || price === 0}
+            >
+                {`${t('bundle.info.Sell')} ${selected.length} ${t('bundle.info.certificates')}`}
+            </Button>
+        </Box>
     );
 };

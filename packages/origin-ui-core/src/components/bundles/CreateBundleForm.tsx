@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Grid, Paper } from '@material-ui/core';
+import { Box } from '@material-ui/core';
 import { Certificates } from './Certificates';
 import { SelectedForSale } from './SelectedForSale';
 import { ICertificateViewItem } from '../../features/certificates';
@@ -21,21 +21,17 @@ export const CreateBundleForm = () => {
     };
 
     return (
-        <Paper>
-            <div>
-                <Grid container spacing={3}>
-                    <Grid item xs={6}>
-                        <Certificates selected={selected} setSelected={setSelected} />
-                    </Grid>
-                    <Grid item xs={6}>
-                        <SelectedForSale
-                            selected={selected}
-                            totalVolume={totalVolume()}
-                            callback={() => history.push(`${getCertificatesLink()}/bundles`)}
-                        />
-                    </Grid>
-                </Grid>
-            </div>
-        </Paper>
+        <Box className="CreateBundleForm" display="grid" style={{ gridTemplateColumns: '60% 40%' }}>
+            <Box className="Certificates" mr={2}>
+                <Certificates selected={selected} setSelected={setSelected} />
+            </Box>
+            <Box className="Certificates">
+                <SelectedForSale
+                    selected={selected}
+                    totalVolume={totalVolume()}
+                    callback={() => history.push(`${getCertificatesLink()}/bundles`)}
+                />
+            </Box>
+        </Box>
     );
 };

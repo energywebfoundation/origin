@@ -125,7 +125,8 @@
                 "withdraw": "Withdraw",
                 "deposit": "Deposit",
                 "create_bundle": "Create bundle",
-                "buy_bundle": "Buy"
+                "buy_bundle": "Buy",
+                "selectAll": "Select all"
             },
             "feedback": {
                 "returnedToInbox": "Certificate {id} has been returned to the inbox.",
@@ -148,6 +149,7 @@
                 "certificateNotFound": "Certificate not found"
             },
             "info": {
+                "certificates": "CERTIFICATES",
                 "requestCertificatesFor": "Request certificates for {facilityName}",
                 "selectPriceRange": "Select price range to view more combinations"
             },
@@ -413,7 +415,15 @@
                 "wind": "WIND",
                 "hydro": "HYDRO",
                 "other": "OTHER",
-                "price": "Price per MWh"
+                "price": "Price per MWh",
+                "totalVolume": "Total Volume"
+            },
+            "actions": {
+                "sellAsBundle": "Sell as bundle"
+            },
+            "info": {
+                "Sell": "Sell",
+                "certificates": "certificates"
             }
         }
     }

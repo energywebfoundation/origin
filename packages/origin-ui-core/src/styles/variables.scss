@@ -5,6 +5,12 @@ $textColorDefault: #a8a8a8 !default;
 $backgroundColorDark: #2c2c2c !default;
 $bootstrapBodyColor: white !default;
 $fieldIconColor: darken(white, 30%) !default;
+$createBundleBg:  #333333;
+$createBundleCertificatesBg: #2d2d2d;
+$createBundleCertificatesGroupBg: #3b3b3b;
+$createBundleCertificatesGroupHeaderBg: #373737;
+$createBundleCertificateForSale: #303030;
+$createBundleSelectedCertificate: #3a2146;
 
 :export {
     primaryColor: $primaryColor;
@@ -14,4 +20,10 @@ $fieldIconColor: darken(white, 30%) !default;
     textColorDefault: $textColorDefault;
     bootstrapBodyColor: $bootstrapBodyColor;
     fieldIconColor: $fieldIconColor;
+    createBundleBg: $createBundleBg;
+    createBundleCertificatesBg: $createBundleCertificatesBg;
+    createBundleCertificatesGroupBg: $createBundleCertificatesGroupBg;
+    createBundleCertificatesGroupHeaderBg: $createBundleCertificatesGroupHeaderBg;
+    createBundleSelectedItem: $createBundleCertificateForSale;
+    createBundleSelectedCertificate: $createBundleSelectedCertificate;
 }

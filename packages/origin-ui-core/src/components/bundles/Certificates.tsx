@@ -1,12 +1,12 @@
 import React from 'react';
-import { Paper, Box, Typography } from '@material-ui/core';
+import { Box, useTheme } from '@material-ui/core';
 import { useSelector } from 'react-redux';
 import {
     getCertificates,
     ICertificateViewItem,
     CertificateSource
 } from '../../features/certificates';
-import { getProducingDevices, getEnvironment, deviceById } from '../..';
+import { getProducingDevices, getEnvironment, deviceById, useTranslation } from '../..';
 import { GroupedCertificateList } from './GroupedCertificateList';
 
 interface IOwnProps {
@@ -21,6 +21,10 @@ export const Certificates = (props: IOwnProps) => {
     );
     const devices = useSelector(getProducingDevices);
     const environment = useSelector(getEnvironment);
+    const {
+        typography: { fontSizeMd }
+    } = useTheme();
+    const { t } = useTranslation();
 
     const certificatesByFacility = () => {
         return certificates.reduce((grouped, cert) => {
@@ -31,15 +35,15 @@ export const Certificates = (props: IOwnProps) => {
     };
 
     return (
-        <Paper>
-            <Box m={1}>
-                <Typography variant="h5">CERTIFICATES</Typography>
+        <Box p={2}>
+            <Box fontWeight="fontWeightBold" fontSize={fontSizeMd}>
+                {t('certificate.info.certificates')}
             </Box>
             <GroupedCertificateList
                 groups={certificatesByFacility()}
                 selected={selected}
                 setSelected={setSelected}
             />
-        </Paper>
+        </Box>
     );
 };
