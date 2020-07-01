@@ -62,7 +62,6 @@ const BundleDetails = (props: IOwnProps) => {
 
     const [priceRange, setPriceRange] = useState<number[]>([minPrice, maxPrice]);
 
-    splits = owner ? [splits.find((split) => split.volume.eq(bundle.volume))] : bundle.splits;
     splits = splits.filter(
         ({ volume }) =>
             bundlePrice({ volume, price }) >= priceRange[0] &&
@@ -94,7 +93,7 @@ const BundleDetails = (props: IOwnProps) => {
                 </IconButton>
             </DialogTitle>
             <DialogContent>
-                {!owner && maxPrice !== minPrice && (
+                {maxPrice !== minPrice && (
                     <Box mb={2}>
                         <Grid container justify="flex-end">
                             <Grid item xs={7}>

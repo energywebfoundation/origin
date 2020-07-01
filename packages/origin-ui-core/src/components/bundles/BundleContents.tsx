@@ -33,7 +33,7 @@ import {
     ArrowBack,
     ArrowRightAlt
 } from '@material-ui/icons';
-import { buyBundle, cancelBundle } from '../../features/bundles';
+import { buyBundle } from '../../features/bundles';
 
 interface IOwnProps {
     bundle: Bundle;
@@ -90,19 +90,10 @@ export const BundleContents = (props: IOwnProps) => {
         dispatch(buyBundle({ bundleDTO: { bundleId: id, volume: selected.volume.toString() } }));
     };
 
-    const onCancelBundle = async () => {
-        dispatch(cancelBundle(id));
+    const action = {
+        onClick: onBuyBundle,
+        label: 'certificate.actions.buy_bundle'
     };
-
-    const action = owner
-        ? {
-              onClick: onCancelBundle,
-              label: 'certificate.actions.cancel_bundle'
-          }
-        : {
-              onClick: onBuyBundle,
-              label: 'certificate.actions.buy_bundle'
-          };
 
     return (
         <Box
@@ -438,14 +429,16 @@ export const BundleContents = (props: IOwnProps) => {
                                             {formatCurrencyComplete(splitPrice, currency)}
                                         </Typography>
                                     </Box>
-                                    <Button
-                                        color="primary"
-                                        variant="contained"
-                                        onClick={action.onClick}
-                                        disabled={!(selected === split)}
-                                    >
-                                        {t(action.label)}
-                                    </Button>
+                                    {!owner && (
+                                        <Button
+                                            color="primary"
+                                            variant="contained"
+                                            onClick={action.onClick}
+                                            disabled={!(selected === split)}
+                                        >
+                                            {t(action.label)}
+                                        </Button>
+                                    )}
                                 </Box>
                             </Box>
                         );
