@@ -36,6 +36,6 @@ export class LoggedInUser implements ILoggedInUser {
 
     // This could be changed to organizationId ?? userId down the road, for now we will require a org for each users
     get ownerId() {
-        return this.organizationId.toString();
+        return (this.organizationId || this.id).toString();
     }
 }
