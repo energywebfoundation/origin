@@ -17,13 +17,13 @@ import { EnergyTypes } from '../../utils';
 import { useSelector, useDispatch } from 'react-redux';
 
 import { Bundle } from '../../utils/exchange';
-import { Visibility, Add } from '@material-ui/icons';
+import { Visibility, Add, Cancel as CancelIcon } from '@material-ui/icons';
 import BundleDetails from './BundleDetails';
 import { getCurrencies, getEnvironment } from '../../features';
 import { getBundles, getShowBundleDetails } from '../../features/bundles/selectors';
 import { Fab, Tooltip } from '@material-ui/core';
 import { Link } from 'react-router-dom';
-import { showBundleDetails } from '../../features/bundles';
+import { showBundleDetails, cancelBundle } from '../../features/bundles';
 
 const BUNDLES_PER_PAGE = 25;
 const BUNDLES_TOTAL_ENERGY_COLUMN_ID = 'total';
@@ -98,6 +98,11 @@ export const BundlesTable = (props: IOwnProps) => {
         dispatch(showBundleDetails(true));
     };
 
+    const removeBundle = (rowIndex: number) => {
+        const { bundleId } = rows[rowIndex];
+        dispatch(cancelBundle(bundleId));
+    };
+
     const columns = [
         {
             id: BUNDLES_TOTAL_ENERGY_COLUMN_ID,
@@ -116,6 +121,11 @@ export const BundlesTable = (props: IOwnProps) => {
             icon: <Visibility />,
             name: 'View details',
             onClick: (row: string) => viewDetails(parseInt(row, 10))
+        },
+        {
+            icon: <CancelIcon />,
+            name: 'Remove bundle',
+            onClick: (row: string) => removeBundle(parseInt(row, 10))
         }
     ];
 
