@@ -33,7 +33,7 @@ import {
     ArrowBack,
     ArrowRightAlt
 } from '@material-ui/icons';
-import { buyBundle, cancelBundle } from '../../features/bundles';
+import { buyBundle } from '../../features/bundles';
 
 interface IOwnProps {
     bundle: Bundle;
