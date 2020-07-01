@@ -29,3 +29,6 @@ export const getOffchainConfiguration = (state: IStoreState) => state.general.of
 
 export const getAccountMismatchModalProperties = (state: IStoreState) =>
     state.general.accountMismatchModalProperties;
+
+export const getNoAccountModalVisibility = (state: IStoreState) =>
+    state.general.noAccountModalVisibility;

@@ -1,4 +1,4 @@
-import { call, put, select, take, all, fork, cancelled, apply, cancel } from 'redux-saga/effects';
+import { call, put, select, take, all, fork, cancelled, apply } from 'redux-saga/effects';
 import { SagaIterator, eventChannel, EventChannel } from 'redux-saga';
 import {
     setEnvironment,
@@ -469,33 +469,30 @@ function* fillContractLookupIfMissing(): SagaIterator {
 
         const routerSearch: string = yield select(getSearch);
 
-        let configuration: IStoreState['configuration'];
-        try {
-            configuration = yield call(
-                initConf,
-                routerSearch,
-                offchainConfiguration,
-                offChainDataSource,
-                environment.WEB3
-            );
+        const configuration = yield call(
+            initConf,
+            routerSearch,
+            offchainConfiguration,
+            offChainDataSource,
+            environment.WEB3
+        );
 
-            const userAddress = yield apply(
+        yield put(configurationUpdated(configuration));
+
+        let userAddress: string;
+        try {
+            userAddress = yield apply(
                 configuration.blockchainProperties.activeUser,
                 configuration.blockchainProperties.activeUser.getAddress,
                 []
             );
 
-            yield put(configurationUpdated(configuration));
             yield put(setActiveBlockchainAccountAddress(userAddress));
-
-            yield put(setLoading(false));
         } catch (error) {
-            console.error('ContractsSaga::WrongNetwork', error);
-            yield put(setError(ERROR.WRONG_NETWORK_OR_CONTRACT_ADDRESS));
-            yield put(setLoading(false));
-
-            yield cancel();
+            console.error('ContractsSaga::UnableToFetchBlockchainAddress', error);
         }
+
+        yield put(setLoading(false));
 
         try {
             yield call(fetchDataAfterConfigurationChange, configuration);
