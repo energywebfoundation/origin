@@ -32,7 +32,8 @@ export const CertificateGroup = (props: IOwnProps) => {
         devices
     );
     const {
-        typography: { fontSizeMd, fontSizeSm }
+        typography: { fontSizeMd, fontSizeSm },
+        spacing
     } = useTheme();
     const { t } = useTranslation();
 
@@ -116,25 +117,27 @@ export const CertificateGroup = (props: IOwnProps) => {
                             divider
                         >
                             <Grid container>
-                                <Grid item xs={2}>
-                                    <ListItemIcon>
-                                        <Checkbox color="primary" checked={isSelected(cert)} />
-                                    </ListItemIcon>
-                                </Grid>
+                                <Grid item xs={7} container style={{ justifyItems: 'flex-start' }}>
+                                    <Grid item style={{ marginRight: spacing(2) }}>
+                                        <ListItemIcon>
+                                            <Checkbox color="primary" checked={isSelected(cert)} />
+                                        </ListItemIcon>
+                                    </Grid>
 
-                                <Grid item xs={2}>
-                                    <ListItemAvatar>
-                                        <Avatar
-                                            src={energyImageByType(type, isSelected(cert))}
-                                        ></Avatar>
-                                    </ListItemAvatar>
-                                </Grid>
+                                    <Grid item style={{ marginRight: spacing(2) }}>
+                                        <ListItemAvatar>
+                                            <Avatar
+                                                src={energyImageByType(type, isSelected(cert))}
+                                            ></Avatar>
+                                        </ListItemAvatar>
+                                    </Grid>
 
-                                <Grid item xs={3}>
-                                    <Box fontSize={fontSizeMd}>{type}</Box>
-                                    <Box fontSize={fontSizeMd} fontWeight="fontWeightBold">
-                                        {EnergyFormatter.format(energy, true)}
-                                    </Box>
+                                    <Grid item>
+                                        <Box fontSize={fontSizeMd}>{type}</Box>
+                                        <Box fontSize={fontSizeMd} fontWeight="fontWeightBold">
+                                            {EnergyFormatter.format(energy, true)}
+                                        </Box>
+                                    </Grid>
                                 </Grid>
                                 <Grid item xs={5}>
                                     <Box fontSize={fontSizeSm} color="text.secondary">
