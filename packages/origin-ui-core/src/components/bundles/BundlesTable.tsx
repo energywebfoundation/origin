@@ -121,13 +121,16 @@ export const BundlesTable = (props: IOwnProps) => {
             icon: <Visibility />,
             name: 'View details',
             onClick: (row: string) => viewDetails(parseInt(row, 10))
-        },
-        {
+        }
+    ];
+
+    if (owner) {
+        actions.push({
             icon: <CancelIcon />,
             name: 'Remove bundle',
             onClick: (row: string) => removeBundle(parseInt(row, 10))
-        }
-    ];
+        });
+    }
 
     return (
         <>
