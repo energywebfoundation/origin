@@ -272,5 +272,11 @@
         "actions": {
             "sellAsBundle": "Sell as bundle"
         }
+    },
+    "order": {
+        "properties": {
+            "volume": "Objętość",
+            
+        }
     }
 }

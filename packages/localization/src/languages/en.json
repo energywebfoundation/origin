@@ -438,6 +438,16 @@
             "actions": {
                 "sellAsBundle": "Sell as bundle"
             }
+        },
+        "order": {
+            "properties": {
+                "volume": "Volume",
+                "price": "Price",
+                "device_type": "Device type",
+                "generation_start": "Generation start",
+                "generation_end": "Generation end",
+                "filled": "Filled"
+            }
         }
     }
 }

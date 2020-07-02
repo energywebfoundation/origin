@@ -65,6 +65,7 @@ import {
     showBundleDetails,
     clearBundles
 } from '../bundles';
+import { fetchOrders } from '../orders/sagas';
 
 function createEthereumProviderAccountsChangedEventChannel(ethereumProvider: any) {
     return eventChannel<string[]>((emitter) => {
@@ -442,6 +443,7 @@ function* fetchDataAfterConfigurationChange(
         yield put(update ? updateCertificate(certificate) : addCertificate(certificate));
     }
     yield call(fetchBundles);
+    yield call(fetchOrders);
 }
 
 function* fillContractLookupIfMissing(): SagaIterator {
