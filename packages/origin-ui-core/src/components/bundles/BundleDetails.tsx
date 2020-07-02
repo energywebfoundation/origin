@@ -93,7 +93,7 @@ const BundleDetails = (props: IOwnProps) => {
                 </IconButton>
             </DialogTitle>
             <DialogContent>
-                {maxPrice !== minPrice && (
+                {prices.length > 1 && (
                     <Box mb={2}>
                         <Grid container justify="flex-end">
                             <Grid item xs={7}>
