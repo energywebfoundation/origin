@@ -10,7 +10,7 @@ import {
     FilledInput,
     Chip
 } from '@material-ui/core';
-import { DatePicker } from '@material-ui/pickers';
+import { KeyboardDatePicker } from '@material-ui/pickers';
 
 import { ICustomFilter, CustomFilterInputType } from './FiltersHeader';
 import { CustomSlider, CustomSliderThumbComponent } from '../CustomSlider';
@@ -148,7 +148,8 @@ export function IndividualFilter(props: IProps) {
             );
         case CustomFilterInputType.yearMonth:
             return (
-                <DatePicker
+                // <DatePicker
+                <KeyboardDatePicker
                     openTo="year"
                     views={['year', 'month']}
                     label={filter.label}

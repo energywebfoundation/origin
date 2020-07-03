@@ -13,6 +13,7 @@ export interface IProductDTO {
     generationFrom?: string;
     generationTo?: string;
     gridOperator?: string[];
+    externalDeviceId?: { id: string; type: string };
 }
 
 export interface ITradeDTO {

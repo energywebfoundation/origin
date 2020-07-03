@@ -26,7 +26,7 @@ export function AppContainer() {
         getCertificatesLink,
         getOrganizationLink,
         getAdminLink,
-        getBundlesLink,
+        getBundlesLink
     } = useLinks();
 
     const useStyles = makeStyles(() =>

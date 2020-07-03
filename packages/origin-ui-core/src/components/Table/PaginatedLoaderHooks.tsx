@@ -2,12 +2,12 @@ import {
     ICustomFilter,
     RecordPropertyGetterFunction,
     ITableColumn,
-    CustomFilterInputType
+    CustomFilterInputType,
+    FilterRules
 } from '.';
 import { useState } from 'react';
 import { IDeviceTypeService } from '@energyweb/utils-general';
 import { moment, Moment } from '../../utils';
-import { FilterRules } from '.';
 
 export const DEFAULT_PAGE_SIZE = 25;
 
@@ -209,6 +209,10 @@ export function checkRecordPassesFilters(
         if (typeof filteredPropertyResolvedValue !== 'undefined') {
             switch (filter.input.type) {
                 case CustomFilterInputType.string:
+                    console.log(
+                        '>>> String filter: record to filter:',
+                        filteredPropertyResolvedValue
+                    );
                     if (
                         filter.selectedValue &&
                         !filteredPropertyResolvedValue

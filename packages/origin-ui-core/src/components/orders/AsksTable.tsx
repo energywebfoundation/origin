@@ -1,5 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { useTranslation, EnergyFormatter, formatCurrencyComplete, moment } from '../../utils';
+import {
+    useTranslation,
+    EnergyFormatter,
+    formatCurrencyComplete,
+    moment,
+    deviceById
+} from '../../utils';
 import { Order } from '../../utils/exchange';
 import {
     IPaginatedLoaderHooksFetchDataParameters,
@@ -12,9 +18,11 @@ import {
     FilterRules
 } from '../Table';
 import { useSelector } from 'react-redux';
-import { getCurrencies, getConfiguration } from '../..';
+import { getCurrencies, getConfiguration, getEnvironment, getProducingDevices } from '../..';
 import { BigNumber } from 'ethers/utils';
 import { Remove, Visibility } from '@material-ui/icons';
+import { RemoveOrderConfirmation } from '../Modal/RemoveOrderConfirmation';
+import { AskDetailsModal } from '../Modal/AskDetailslModal';
 
 const ORDERS_PER_PAGE = 25;
 
@@ -25,10 +33,12 @@ interface IOwnProsp {
 export const AsksTable = (props: IOwnProsp) => {
     const { asks } = props;
     const { t } = useTranslation();
-    const [view, setView] = useState<Order>();
-    const [remove, setRemove] = useState<Order>();
+    const [askToView, setToView] = useState<Order>();
+    const [askToRemove, setToRemove] = useState<Order>();
     const configuration = useSelector(getConfiguration);
     const deviceTypeService = configuration?.deviceTypeService;
+    const environment = useSelector(getEnvironment);
+    const devices = useSelector(getProducingDevices);
 
     const columns = [
         { id: 'volume', label: t('order.properties.volume') },
@@ -39,7 +49,27 @@ export const AsksTable = (props: IOwnProsp) => {
         { id: 'filled', label: t('order.properties.filled') }
     ];
 
-    const filters: ICustomFilterDefinition[] = [
+    const getFilters = (): ICustomFilterDefinition[] => [
+        {
+            property: (record: Order) =>
+                deviceById(record.product.externalDeviceId.id, environment, devices).facilityName,
+            label: t('device.properties.facilityName'),
+            input: {
+                type: CustomFilterInputType.dropdown,
+                availableOptions: devices.map((device) => ({
+                    label: device.facilityName,
+                    value: device.facilityName
+                }))
+            }
+        },
+        {
+            property: (record: Order) => record.product.deviceType[0],
+            label: t('certificate.properties.deviceType'),
+            input: {
+                type: CustomFilterInputType.deviceType,
+                defaultOptions: []
+            }
+        },
         {
             property: (record: Order) => new Date(record.product.generationFrom).getTime() / 1000,
             label: t('certificate.properties.generationDateStart'),
@@ -54,14 +84,6 @@ export const AsksTable = (props: IOwnProsp) => {
             input: {
                 type: CustomFilterInputType.yearMonth,
                 filterRule: FilterRules.TO
-            }
-        },
-        {
-            property: (record: Order) => record.product.deviceType[0],
-            label: t('certificate.properties.deviceType'),
-            input: {
-                type: CustomFilterInputType.deviceType,
-                defaultOptions: []
             }
         }
     ];
@@ -121,13 +143,13 @@ export const AsksTable = (props: IOwnProsp) => {
     const viewDetails = (rowIndex: number) => {
         const { askId } = rows[rowIndex];
         const ask = asks.find((o) => o.id === askId);
-        setView(ask);
+        setToView(ask);
     };
 
     const removeAsk = (rowIndex: number) => {
         const { askId } = rows[rowIndex];
         const ask = asks.find((o) => o.id === askId);
-        setRemove(ask);
+        setToRemove(ask);
     };
 
     const actions = [
@@ -148,12 +170,16 @@ export const AsksTable = (props: IOwnProsp) => {
             <TableMaterial
                 columns={columns}
                 rows={rows}
-                filters={filters}
+                filters={getFilters()}
                 loadPage={loadPage}
                 total={total}
                 pageSize={pageSize}
                 actions={actions}
             />
+            {askToView && <AskDetailsModal ask={askToView} close={() => setToView(null)} />}
+            {askToRemove && (
+                <RemoveOrderConfirmation order={askToRemove} close={() => setToRemove(null)} />
+            )}
         </>
     );
 };

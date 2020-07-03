@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { FilterIcon } from '../icons/FilterIcon';
 import { IndividualFilter } from './IndividualFilter';
 import clsx from 'clsx';
 import { deepEqual } from '../../utils/helper';
+import { FilterList } from '@material-ui/icons';
 
 export enum CustomFilterInputType {
     deviceType = 'deviceType',
@@ -133,7 +133,7 @@ export function FiltersHeader(props: IProps) {
                         onClick={() => setMenuShown(!menuShown)}
                     >
                         <div className="Filter_icon">
-                            <FilterIcon />
+                            <FilterList />
                         </div>
                         Filter
                     </div>
