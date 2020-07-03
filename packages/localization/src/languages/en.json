@@ -33,7 +33,8 @@
                 "bundles": "Bundles",
                 "my_bundles": "My bundles",
                 "create_bundle": "Create bundle",
-                "myTrades": "My trades"
+                "myTrades": "My trades",
+                "myOrders": "My orders"
             }
         },
         "device": {

@@ -23,7 +23,8 @@
             "certificates": {
                 "bundles": "Pakiety",
                 "my_bundles": "Moje pakiety",
-                "create_bundle": "Stwórz pakiet"
+                "create_bundle": "Stwórz pakiet",
+                "myOrders": "Moje zamówienia"
             }
         },
         "device": {
@@ -251,32 +252,38 @@
             "info": {
                 "dropHereOrClickToSelect": "Upuść pliki tutaj lub kliknij aby wybrać"
             }
-        }
-    },
-    "bundle": {
-        "properties": {
-            "total_energy": "CALKOWITEJ ENERGII",
-            "solar": "SŁONECZNY",
-            "wind": "WIATR",
-            "hydro": "HYDRO",
-            "other": "INNY",
-            "price": "Cena za MWh",
-            "totalVolume": "Maksymalna głośność"
         },
-        "info": {
-            "bundleDetails": "Szczegóły Pakietu",
-            "price": "Cena za MWh",
-            "Sell": "Sprzedać",
-            "certificates": "certyfikaty"
+        "bundle": {
+            "properties": {
+                "total_energy": "CALKOWITEJ ENERGII",
+                "solar": "SŁONECZNY",
+                "wind": "WIATR",
+                "hydro": "HYDRO",
+                "other": "INNY",
+                "price": "Cena za MWh",
+                "totalVolume": "Maksymalna głośność"
+            },
+            "info": {
+                "bundleDetails": "Szczegóły Pakietu",
+                "price": "Cena za MWh",
+                "Sell": "Sprzedać",
+                "certificates": "certyfikaty"
+            },
+            "actions": {
+                "sellAsBundle": "Sell as bundle"
+            }
         },
-        "actions": {
-            "sellAsBundle": "Sell as bundle"
-        }
-    },
-    "order": {
-        "properties": {
-            "volume": "Objętość",
-            
+        "order": {
+            "properties": {
+                "volume": "Objętość",
+                "price": "Cena",
+                "device_type": "Typ urządzenia",
+                "generation_start": "Początek generacji",
+                "generation_end": "Koniec generacji",
+                "filled": "Zrealizowane"
+                
+            }
         }
     }
+    
 }

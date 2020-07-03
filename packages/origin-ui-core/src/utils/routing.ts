@@ -86,6 +86,6 @@ export function useLinks() {
         getUserRegisterLink: () => getUserRegisterLink(baseURL),
         getAccountLoginLink: () => getAccountLoginLink(baseURL),
         getAdminLink: () => getAdminLink(baseURL),
-        getBundlesLink: () => getBundlesLink(baseURL)
+        getBundlesLink: () => getBundlesLink(baseURL),
     };
 }

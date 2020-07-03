@@ -7,6 +7,7 @@ import { combineReducers } from 'redux';
 import { IStoreState } from '../types';
 import { connectRouter } from 'connected-react-router';
 import bundles from '../features/bundles/reducer';
+import orders from '../features/orders/reducer';
 
 export const createRootReducer = (history) =>
     combineReducers<IStoreState>({
@@ -16,5 +17,6 @@ export const createRootReducer = (history) =>
         configuration,
         users,
         router: connectRouter(history),
-        bundles
+        bundles,
+        orders
     });

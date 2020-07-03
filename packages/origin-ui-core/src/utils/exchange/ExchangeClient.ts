@@ -214,7 +214,7 @@ export class ExchangeClient implements IExchangeClient {
     }
 
     public async getOrders(): Promise<Order[]> {
-        const orders = await this.requestClient.get<unknown, Order[]>(this.orderbookEndpoint);
+        const orders = await this.requestClient.get<unknown, Order[]>(this.ordersEndpoint);
         return orders.data;
     }
 

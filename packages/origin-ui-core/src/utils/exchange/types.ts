@@ -128,7 +128,7 @@ export interface IOrder {
     id: string;
     side: OrderSide;
     validFrom: string;
-    product: Product;
+    product: IProductDTO;
     price: number;
     startVolume: string;
     currentVolume: string;

@@ -13,6 +13,12 @@ export enum CustomFilterInputType {
     yearMonth = 'yearMonth'
 }
 
+export enum FilterRules {
+    EQUAL = 'FILTER_RULES::EQUAL',
+    FROM = 'FILTER_RULES::FROM',
+    TO = 'FILTER_RULES::TO'
+}
+
 interface ICustomFilterAvailableOption {
     label: string;
     value: any;
@@ -24,6 +30,7 @@ interface ICustomFilterInput {
     defaultOptions?: string[];
     min?: number;
     max?: number;
+    filterRule?: FilterRules;
 }
 
 export type RecordPropertyGetterFunction = (record: any) => string | number;
