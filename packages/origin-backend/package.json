@@ -89,7 +89,7 @@
         "@types/passport": "1.0.3",
         "@types/passport-jwt": "3.0.3",
         "@types/passport-local": "1.0.33",
-        "@types/supertest": "2.0.9",
+        "@types/supertest": "2.0.10",
         "@types/uuid": "8.0.0",
         "@types/websocket": "1.0.0",
         "@types/ws": "7.2.5",
