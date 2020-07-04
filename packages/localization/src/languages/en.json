@@ -448,6 +448,10 @@
                 "generation_start": "Generation start",
                 "generation_end": "Generation end",
                 "filled": "Filled"
+            },
+            "info": {
+                "open_asks": "OPEN ASKS",
+                "open_bids": "OPEN BIDS"
             }
         }
     }

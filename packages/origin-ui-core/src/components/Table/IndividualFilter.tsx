@@ -148,7 +148,6 @@ export function IndividualFilter(props: IProps) {
             );
         case CustomFilterInputType.yearMonth:
             return (
-                // <DatePicker
                 <KeyboardDatePicker
                     openTo="year"
                     views={['year', 'month']}

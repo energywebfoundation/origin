@@ -4,7 +4,8 @@ import {
     EnergyFormatter,
     formatCurrencyComplete,
     moment,
-    deviceById
+    deviceById,
+    EnergyTypes
 } from '../../utils';
 import { Order } from '../../utils/exchange';
 import {
@@ -22,19 +23,19 @@ import { getCurrencies, getConfiguration, getEnvironment, getProducingDevices } 
 import { BigNumber } from 'ethers/utils';
 import { Remove, Visibility } from '@material-ui/icons';
 import { RemoveOrderConfirmation } from '../Modal/RemoveOrderConfirmation';
-import { AskDetailsModal } from '../Modal/AskDetailslModal';
+import { BidsDetailsModal } from '../Modal/BidDetalisModal';
 
 const ORDERS_PER_PAGE = 25;
 
 interface IOwnProsp {
-    asks: Order[];
+    bids: Order[];
 }
 
-export const AsksTable = (props: IOwnProsp) => {
-    const { asks } = props;
+export const BidsTable = (props: IOwnProsp) => {
+    const { bids } = props;
     const { t } = useTranslation();
-    const [askToView, setToView] = useState<Order>();
-    const [askToRemove, setToRemove] = useState<Order>();
+    const [bidToView, setToView] = useState<Order>();
+    const [bidToRemove, setToRemove] = useState<Order>();
     const configuration = useSelector(getConfiguration);
     const deviceTypeService = configuration?.deviceTypeService;
     const environment = useSelector(getEnvironment);
@@ -43,7 +44,7 @@ export const AsksTable = (props: IOwnProsp) => {
     const columns = [
         { id: 'volume', label: t('order.properties.volume') },
         { id: 'price', label: t('order.properties.price') },
-        { id: 'facilityName', label: t('device.properties.facilityName') },
+        { id: 'device_type', label: t('order.properties.device_type') },
         { id: 'generationFrom', label: t('order.properties.generation_start') },
         { id: 'generationTo', label: t('order.properties.generation_end') },
         { id: 'filled', label: t('order.properties.filled') }
@@ -51,8 +52,8 @@ export const AsksTable = (props: IOwnProsp) => {
 
     const getFilters = (): ICustomFilterDefinition[] => [
         {
-            property: (record: Order) =>
-                deviceById(record.product.externalDeviceId.id, environment, devices).facilityName,
+            property: ({ product: { externalDeviceId: deviceId } }: Order) =>
+                deviceId ? deviceById(deviceId.id, environment, devices).facilityName : undefined,
             label: t('device.properties.facilityName'),
             input: {
                 type: CustomFilterInputType.dropdown,
@@ -63,10 +64,15 @@ export const AsksTable = (props: IOwnProsp) => {
             }
         },
         {
-            property: (record: Order) => record.product.deviceType[0],
+            property: ({ product: { deviceType } }: Order) =>
+                deviceType ? record.product.deviceType[0].split(';')[0].toLowerCase() : undefined,
             label: t('certificate.properties.deviceType'),
             input: {
-                type: CustomFilterInputType.deviceType,
+                type: CustomFilterInputType.dropdown,
+                availableOptions: Object.values(EnergyTypes).map((type) => ({
+                    label: `${type[0].toUpperCase()}${type.slice(1).toLowerCase()}`,
+                    value: type
+                })),
                 defaultOptions: []
             }
         },
@@ -93,12 +99,12 @@ export const AsksTable = (props: IOwnProsp) => {
         offset,
         requestedFilters
     }: IPaginatedLoaderHooksFetchDataParameters): Promise<IPaginatedLoaderFetchDataReturnValues> {
-        const filteredBids = asks.filter((bid) => {
-            return checkRecordPassesFilters(bid, requestedFilters, deviceTypeService);
+        const filteredAsks = bids.filter((ask) => {
+            return checkRecordPassesFilters(ask, requestedFilters, deviceTypeService);
         });
         return {
-            paginatedData: filteredBids.slice(offset, offset + requestedPageSize),
-            total: filteredBids.length
+            paginatedData: filteredAsks.slice(offset, offset + requestedPageSize),
+            total: filteredAsks.length
         };
     }
 
@@ -112,29 +118,23 @@ export const AsksTable = (props: IOwnProsp) => {
     useEffect(() => {
         setPageSize(ORDERS_PER_PAGE);
         loadPage(1);
-    }, [asks]);
+    }, [bids]);
 
     const [currency = 'USD'] = useSelector(getCurrencies);
 
-    const rows = paginatedData.map((order) => {
+    const rows = paginatedData.map((bid) => {
         const {
             startVolume,
             currentVolume,
             price,
-            product: {
-                deviceType,
-                generationFrom,
-                generationTo,
-                externalDeviceId: { id: extDevId }
-            }
-        } = order;
+            product: { deviceType, generationFrom, generationTo }
+        } = bid;
         return {
             volume: EnergyFormatter.format(Number(currentVolume), true),
             price: formatCurrencyComplete(price / 100, currency),
-            facilityName: deviceById(extDevId, environment, devices).facilityName,
-            device_type: deviceType[0].split(';')[0],
-            generationFrom: moment(generationFrom).format('MMM, YYYY'),
-            generationTo: moment(generationTo).format('MMM, YYYY'),
+            device_type: deviceType ? deviceType[0].split(';')[0] : '-',
+            generationFrom: generationFrom ? moment(generationFrom).format('MMM, YYYY') : '-',
+            generationTo: generationTo ? moment(generationTo).format('MMM, YYYY') : '-',
             filled: `${
                 new BigNumber(startVolume)
                     .sub(new BigNumber(currentVolume))
@@ -142,20 +142,20 @@ export const AsksTable = (props: IOwnProsp) => {
                     .div(startVolume)
                     .toNumber() / 100
             }%`,
-            askId: order.id
+            bidId: bid.id
         };
     });
 
     const viewDetails = (rowIndex: number) => {
-        const { askId } = rows[rowIndex];
-        const ask = asks.find((o) => o.id === askId);
-        setToView(ask);
+        const { bidId } = rows[rowIndex];
+        const bid = bids.find((o) => o.id === bidId);
+        setToView(bid);
     };
 
-    const removeAsk = (rowIndex: number) => {
-        const { askId } = rows[rowIndex];
-        const ask = asks.find((o) => o.id === askId);
-        setToRemove(ask);
+    const removeBid = (rowIndex: number) => {
+        const { bidId } = rows[rowIndex];
+        const bid = bids.find((o) => o.id === bidId);
+        setToRemove(bid);
     };
 
     const actions = [
@@ -167,7 +167,7 @@ export const AsksTable = (props: IOwnProsp) => {
         {
             icon: <Remove />,
             name: 'Remove',
-            onClick: (row: string) => removeAsk(parseInt(row, 10))
+            onClick: (row: string) => removeBid(parseInt(row, 10))
         }
     ];
 
@@ -181,11 +181,11 @@ export const AsksTable = (props: IOwnProsp) => {
                 total={total}
                 pageSize={pageSize}
                 actions={actions}
-                caption={t('order.info.open_asks')}
+                caption={t('order.info.open_bids')}
             />
-            {askToView && <AskDetailsModal ask={askToView} close={() => setToView(null)} />}
-            {askToRemove && (
-                <RemoveOrderConfirmation order={askToRemove} close={() => setToRemove(null)} />
+            {bidToView && <BidsDetailsModal bid={bidToView} close={() => setToView(null)} />}
+            {bidToRemove && (
+                <RemoveOrderConfirmation order={bidToRemove} close={() => setToRemove(null)} />
             )}
         </>
     );

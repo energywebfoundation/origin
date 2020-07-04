@@ -1,15 +1,10 @@
-.FiltersHeader {
-    padding-bottom: 20px;
-}
-
 .Filter {
-    background: $backgroundColorDark;
+    // background: $backgroundColorDark;
     cursor: pointer;
     color: rgba(255, 255, 255, 0.7);
-    display: inline;
     padding: 14px;
-    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.08);
     user-select: none;
+    width: max-content;
 
     &-opened {
         display: block;

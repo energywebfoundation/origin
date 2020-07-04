@@ -24,7 +24,8 @@ import {
     createStyles,
     useTheme,
     Checkbox,
-    TableSortLabel
+    TableSortLabel,
+    Box
 } from '@material-ui/core';
 
 type TableOnSelectFunction = (id: string, selected: boolean) => void;
@@ -75,6 +76,7 @@ interface IProps<T extends readonly ITableColumn[]> {
     highlightedRowsIds?: string[];
     customRow?: ICustomRow<TTableRow<GetReadonlyArrayItemType<T>['id']> & { id?: string }>;
     allowedActions?: any;
+    caption?: string;
 }
 
 export function TableMaterial<T extends readonly ITableColumn[]>(props: IProps<T>) {
@@ -132,7 +134,8 @@ export function TableMaterial<T extends readonly ITableColumn[]>(props: IProps<T
         customSelectCounterGenerator,
         toggleSort,
         highlightedRowsIds: highlightedRowsIndexes,
-        allowedActions
+        allowedActions,
+        caption
     } = props;
 
     if (selectedIds.length > rows.length) {
@@ -174,6 +177,11 @@ export function TableMaterial<T extends readonly ITableColumn[]>(props: IProps<T
                 <div className={classes.tableWrapper}>
                     <Table>
                         <TableHead>
+                            <TableRow>
+                                <Box pl={2} pt={2} fontWeight="fontWeightBold">
+                                    {caption}
+                                </Box>
+                            </TableRow>
                             <TableRow>
                                 {showBatchableActions && (
                                     <TableCell padding="checkbox">

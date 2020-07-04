@@ -282,6 +282,10 @@
                 "generation_end": "Koniec generacji",
                 "filled": "Zrealizowane"
                 
+            },
+            "info": {
+                "open_asks": "OFERTY OTWARTE",
+                "open_bids": "CENY OTWARTE"
             }
         }
     }

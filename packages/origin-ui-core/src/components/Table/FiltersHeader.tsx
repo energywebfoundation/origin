@@ -127,7 +127,7 @@ export function FiltersHeader(props: IProps) {
             )}
 
             {standardFilters.length > 0 && (
-                <div className="FiltersHeader">
+                <div>
                     <div
                         className={`Filter ${menuShown ? 'Filter-opened' : ''}`}
                         onClick={() => setMenuShown(!menuShown)}
@@ -141,15 +141,7 @@ export function FiltersHeader(props: IProps) {
                         <div className="Filter_menu">
                             {standardFilters.map((filter, index) => {
                                 return (
-                                    <div
-                                        className={clsx('Filter_menu_item', {
-                                            'Filter_menu_item-fullWidth':
-                                                filter.input &&
-                                                filter.input.type ===
-                                                    CustomFilterInputType.deviceType
-                                        })}
-                                        key={index}
-                                    >
+                                    <div className={clsx('Filter_menu_item')} key={index}>
                                         <IndividualFilter
                                             filter={filter}
                                             changeFilterValue={changeFilterValue}
