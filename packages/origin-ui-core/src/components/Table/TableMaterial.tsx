@@ -249,7 +249,7 @@ export function TableMaterial<T extends readonly ITableColumn[]>(props: IProps<T
                                     );
                                 })}
                                 {actions && actions.length > 0 && (
-                                    <TableCell>{actionsLabel}</TableCell>
+                                    <TableCell align="center">{actionsLabel}</TableCell>
                                 )}
                             </TableRow>
                         </TableHead>
