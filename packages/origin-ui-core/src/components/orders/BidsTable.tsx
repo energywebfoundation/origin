@@ -24,7 +24,7 @@ import { BigNumber } from 'ethers/utils';
 import { Remove, Visibility } from '@material-ui/icons';
 import { RemoveOrderConfirmation } from '../Modal/RemoveOrderConfirmation';
 import { BidsDetailsModal } from '../Modal/BidDetalisModal';
-import { useTheme, Box } from '@material-ui/core';
+import { useTheme } from '@material-ui/core';
 
 const ORDERS_PER_PAGE = 5;
 
@@ -41,9 +41,6 @@ export const BidsTable = (props: IOwnProsp) => {
     const deviceTypeService = configuration?.deviceTypeService;
     const environment = useSelector(getEnvironment);
     const devices = useSelector(getProducingDevices);
-    const {
-        typography: { fontSizeMd }
-    } = useTheme();
 
     const columns = [
         { id: 'volume', label: t('order.properties.volume') },
@@ -51,7 +48,7 @@ export const BidsTable = (props: IOwnProsp) => {
         { id: 'device_type', label: t('order.properties.device_type') },
         { id: 'generationFrom', label: t('order.properties.generation_start') },
         { id: 'generationTo', label: t('order.properties.generation_end') },
-        { id: 'filled', label: t('order.properties.filled') }
+        { id: 'filled', label: t('order.properties.filled') },
     ];
 
     const getFilters = (): ICustomFilterDefinition[] => [
@@ -185,7 +182,8 @@ export const BidsTable = (props: IOwnProsp) => {
                 total={total}
                 pageSize={pageSize}
                 actions={actions}
-                caption={t('order.info.open_bids')}
+                caption={t('order.captions.open_bids')}
+                actionsLabel={t('order.captions.actions')}
             />
             {bidToView && <BidsDetailsModal bid={bidToView} close={() => setToView(null)} />}
             {bidToRemove && (

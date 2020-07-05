@@ -78,6 +78,7 @@ interface IProps<T extends readonly ITableColumn[]> {
     customRow?: ICustomRow<TTableRow<GetReadonlyArrayItemType<T>['id']> & { id?: string }>;
     allowedActions?: any;
     caption?: string;
+    actionsLabel?: string;
 }
 
 export function TableMaterial<T extends readonly ITableColumn[]>(props: IProps<T>) {
@@ -137,7 +138,8 @@ export function TableMaterial<T extends readonly ITableColumn[]>(props: IProps<T
         toggleSort,
         highlightedRowsIds: highlightedRowsIndexes,
         allowedActions,
-        caption
+        caption,
+        actionsLabel
     } = props;
 
     if (selectedIds.length > rows.length) {
@@ -246,7 +248,9 @@ export function TableMaterial<T extends readonly ITableColumn[]>(props: IProps<T
                                         </TableCell>
                                     );
                                 })}
-                                {actions && actions.length > 0 && <TableCell></TableCell>}
+                                {actions && actions.length > 0 && (
+                                    <TableCell>{actionsLabel}</TableCell>
+                                )}
                             </TableRow>
                         </TableHead>
                         <TableBody>

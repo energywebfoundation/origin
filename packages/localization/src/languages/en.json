@@ -449,9 +449,10 @@
                 "generation_end": "Generation end",
                 "filled": "Filled"
             },
-            "info": {
+            "captions": {
                 "open_asks": "OPEN ASKS",
-                "open_bids": "OPEN BIDS"
+                "open_bids": "OPEN BIDS",
+                "actions": "DZIAŁANIA"
             }
         }
     }
