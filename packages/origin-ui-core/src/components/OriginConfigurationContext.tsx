@@ -59,6 +59,9 @@ export const createMaterialThemeForOrigin = (
                         }
                     }
                 },
+                MuiFormLabel: {
+                    root: { fontSize: variables.fontSizeMd }
+                },
                 MuiChip: {
                     root: {
                         marginRight: '10px'
@@ -96,16 +99,16 @@ export const createMaterialThemeForOrigin = (
                 },
                 MuiTableCell: {
                     root: {
-                        borderBottom: '1px solid rgb(72, 72, 72)'
+                        borderBottom: '1px solid rgb(72, 72, 72)',
+                        fontSize: variables.fontSizeMd
                     },
                     body: {
                         color: styleConfig.TEXT_COLOR_DEFAULT
                     },
                     head: {
-                        color: styleConfig.WHITE,
-                        fontWeight: 'bold',
-                        borderBottom: '3px solid #252525',
-                        fontSize: '12px'
+                        color: styleConfig.TEXT_COLOR_DEFAULT,
+                        // borderBottom: '3px solid #252525',
+                        borderBottom: 'none'
                     }
                 },
                 MuiSelect: {

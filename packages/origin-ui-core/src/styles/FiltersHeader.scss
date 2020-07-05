@@ -1,5 +1,4 @@
 .Filter {
-    // background: $backgroundColorDark;
     cursor: pointer;
     color: rgba(255, 255, 255, 0.7);
     padding: 14px;
@@ -11,8 +10,7 @@
     }
 
     &_icon {
-        display: inline;
-        vertical-align: text-top;
+        display: inline-block;
         margin-right: 10px;
     }
 

@@ -24,6 +24,7 @@ import { BigNumber } from 'ethers/utils';
 import { Remove, Visibility } from '@material-ui/icons';
 import { RemoveOrderConfirmation } from '../Modal/RemoveOrderConfirmation';
 import { BidsDetailsModal } from '../Modal/BidDetalisModal';
+import { useTheme, Box } from '@material-ui/core';
 
 const ORDERS_PER_PAGE = 25;
 
@@ -40,6 +41,9 @@ export const BidsTable = (props: IOwnProsp) => {
     const deviceTypeService = configuration?.deviceTypeService;
     const environment = useSelector(getEnvironment);
     const devices = useSelector(getProducingDevices);
+    const {
+        typography: { fontSizeMd }
+    } = useTheme();
 
     const columns = [
         { id: 'volume', label: t('order.properties.volume') },
@@ -65,7 +69,7 @@ export const BidsTable = (props: IOwnProsp) => {
         },
         {
             property: ({ product: { deviceType } }: Order) =>
-                deviceType ? record.product.deviceType[0].split(';')[0].toLowerCase() : undefined,
+                deviceType ? deviceType[0].split(';')[0].toLowerCase() : undefined,
             label: t('certificate.properties.deviceType'),
             input: {
                 type: CustomFilterInputType.dropdown,

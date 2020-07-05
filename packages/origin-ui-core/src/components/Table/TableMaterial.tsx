@@ -25,7 +25,8 @@ import {
     useTheme,
     Checkbox,
     TableSortLabel,
-    Box
+    Box,
+    Typography
 } from '@material-ui/core';
 
 type TableOnSelectFunction = (id: string, selected: boolean) => void;
@@ -160,6 +161,13 @@ export function TableMaterial<T extends readonly ITableColumn[]>(props: IProps<T
             }
         })
     );
+    const theme = useTheme();
+    const {
+        palette: {
+            text: { primary: textPrimary }
+        },
+        spacing
+    } = theme;
 
     const classes = useStyles(useTheme());
 
@@ -175,13 +183,19 @@ export function TableMaterial<T extends readonly ITableColumn[]>(props: IProps<T
 
             <Paper className={classes.root}>
                 <div className={classes.tableWrapper}>
+                    <Box
+                        style={{
+                            paddingLeft: spacing(2),
+                            paddingTop: spacing(2),
+                            color: textPrimary,
+                            fontWeight: 'bold'
+                        }}
+                    >
+                        <span>{caption}</span>
+                    </Box>
                     <Table>
                         <TableHead>
-                            <TableRow>
-                                <Box pl={2} pt={2} fontWeight="fontWeightBold">
-                                    {caption}
-                                </Box>
-                            </TableRow>
+                            <TableRow></TableRow>
                             <TableRow>
                                 {showBatchableActions && (
                                     <TableCell padding="checkbox">

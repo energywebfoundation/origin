@@ -4,7 +4,8 @@ import {
     EnergyFormatter,
     formatCurrencyComplete,
     moment,
-    deviceById
+    deviceById,
+    EnergyTypes
 } from '../../utils';
 import { Order } from '../../utils/exchange';
 import {
@@ -63,10 +64,14 @@ export const AsksTable = (props: IOwnProsp) => {
             }
         },
         {
-            property: (record: Order) => record.product.deviceType[0],
+            property: (record: Order) => record.product.deviceType[0].split(';')[0].toLowerCase(),
             label: t('certificate.properties.deviceType'),
             input: {
-                type: CustomFilterInputType.deviceType,
+                type: CustomFilterInputType.dropdown,
+                availableOptions: Object.values(EnergyTypes).map((type) => ({
+                    label: `${type[0].toUpperCase()}${type.slice(1).toLowerCase()}`,
+                    value: type
+                })),
                 defaultOptions: []
             }
         },
