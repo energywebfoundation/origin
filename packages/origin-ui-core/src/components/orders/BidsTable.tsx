@@ -26,7 +26,7 @@ import { RemoveOrderConfirmation } from '../Modal/RemoveOrderConfirmation';
 import { BidsDetailsModal } from '../Modal/BidDetalisModal';
 import { useTheme, Box } from '@material-ui/core';
 
-const ORDERS_PER_PAGE = 25;
+const ORDERS_PER_PAGE = 5;
 
 interface IOwnProsp {
     bids: Order[];

@@ -25,7 +25,7 @@ import { Remove, Visibility } from '@material-ui/icons';
 import { RemoveOrderConfirmation } from '../Modal/RemoveOrderConfirmation';
 import { AskDetailsModal } from '../Modal/AskDetailslModal';
 
-const ORDERS_PER_PAGE = 25;
+const ORDERS_PER_PAGE = 5;
 
 interface IOwnProsp {
     asks: Order[];

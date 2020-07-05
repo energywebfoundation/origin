@@ -92,6 +92,7 @@ export function TableMaterial<T extends readonly ITableColumn[]>(props: IProps<T
 
     function filtersChanged(filters: ICustomFilter[]) {
         loadPage(1, filters);
+        setCurrentPage(1);
     }
 
     function itemSelectionChanged(id: string, selected: boolean) {
