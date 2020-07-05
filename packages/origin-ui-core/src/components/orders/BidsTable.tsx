@@ -24,7 +24,6 @@ import { BigNumber } from 'ethers/utils';
 import { Remove, Visibility } from '@material-ui/icons';
 import { RemoveOrderConfirmation } from '../Modal/RemoveOrderConfirmation';
 import { BidsDetailsModal } from '../Modal/BidDetalisModal';
-import { useTheme } from '@material-ui/core';
 
 const ORDERS_PER_PAGE = 5;
 
@@ -48,7 +47,7 @@ export const BidsTable = (props: IOwnProsp) => {
         { id: 'device_type', label: t('order.properties.device_type') },
         { id: 'generationFrom', label: t('order.properties.generation_start') },
         { id: 'generationTo', label: t('order.properties.generation_end') },
-        { id: 'filled', label: t('order.properties.filled') },
+        { id: 'filled', label: t('order.properties.filled') }
     ];
 
     const getFilters = (): ICustomFilterDefinition[] => [

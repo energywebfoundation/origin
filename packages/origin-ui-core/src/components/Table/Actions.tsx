@@ -34,7 +34,8 @@ export function Actions(props: IProps) {
             speedDial: {
                 position: 'absolute',
                 bottom: 'calc(50% - 14px)',
-                left: '40%'
+                left: 0,
+                right: 0
             },
             speedDialButton: {
                 width: '28px',

@@ -25,8 +25,7 @@ import {
     useTheme,
     Checkbox,
     TableSortLabel,
-    Box,
-    Typography
+    Box
 } from '@material-ui/core';
 
 type TableOnSelectFunction = (id: string, selected: boolean) => void;

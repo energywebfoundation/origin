@@ -186,7 +186,7 @@ export const AsksTable = (props: IOwnProsp) => {
                 total={total}
                 pageSize={pageSize}
                 actions={actions}
-                caption={t('order.caption.open_asks')}
+                caption={t('order.captions.open_asks')}
                 actionsLabel={t('order.captions.actions')}
             />
             {askToView && <AskDetailsModal ask={askToView} close={() => setToView(null)} />}
