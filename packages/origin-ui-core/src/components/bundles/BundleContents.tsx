@@ -72,7 +72,7 @@ const rowStyle = {
 };
 
 export const BundleContents = (props: IOwnProps) => {
-    const { owner, bundle, splits } = props;
+    const { bundle, splits } = props;
     const { price, items, id } = bundle;
     const environment = useSelector(getEnvironment);
     const devices = useSelector(getProducingDevices);
