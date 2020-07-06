@@ -429,7 +429,7 @@ export const BundleContents = (props: IOwnProps) => {
                                             {formatCurrencyComplete(splitPrice, currency)}
                                         </Typography>
                                     </Box>
-                                    {!owner && (
+                                    {!bundle.own && (
                                         <Button
                                             color="primary"
                                             variant="contained"
