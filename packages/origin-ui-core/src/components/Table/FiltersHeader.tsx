@@ -3,6 +3,7 @@ import { IndividualFilter } from './IndividualFilter';
 import clsx from 'clsx';
 import { deepEqual } from '../../utils/helper';
 import { FilterList } from '@material-ui/icons';
+import { useTheme } from '@material-ui/core';
 
 export enum CustomFilterInputType {
     deviceType = 'deviceType',
@@ -54,6 +55,7 @@ interface IProps {
 export function FiltersHeader(props: IProps) {
     const [menuShown, setMenuShown] = useState(false);
     const [processedFilters, setProcessedFilters] = useState<ICustomFilter[]>([]);
+    const { spacing } = useTheme();
 
     function changeFilterValue(targetFilter: ICustomFilter, selectedValue: any) {
         const index = processedFilters.indexOf(targetFilter);
@@ -138,7 +140,10 @@ export function FiltersHeader(props: IProps) {
                         Filter
                     </div>
                     {menuShown && (
-                        <div className="Filter_menu">
+                        <div
+                            className="Filter_menu"
+                            style={{ marginBottom: spacing(2), paddingBottom: spacing(1) }}
+                        >
                             {standardFilters.map((filter, index) => {
                                 return (
                                     <div className={clsx('Filter_menu_item')} key={index}>

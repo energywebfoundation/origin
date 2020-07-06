@@ -107,7 +107,6 @@ export const createMaterialThemeForOrigin = (
                     },
                     head: {
                         color: styleConfig.TEXT_COLOR_DEFAULT,
-                        // borderBottom: '3px solid #252525',
                         borderBottom: 'none'
                     }
                 },
@@ -119,6 +118,11 @@ export const createMaterialThemeForOrigin = (
                 MuiTooltip: {
                     tooltip: {
                         backgroundColor: '#a400d9'
+                    }
+                },
+                MuiFilledInput: {
+                    root: {
+                        backgroundColor: variables.filterItemBg
                     }
                 }
             }

@@ -21,10 +21,8 @@ $createBundleCertificatesGroupBg: #3b3b3b;
 $createBundleCertificatesGroupHeaderBg: #373737;
 $createBundleCertificateForSale: #303030;
 $createBundleSelectedCertificate: #3a2146;
-
-$fontSizeSm: 10;
-$fontSizeMd: 12;
-$fontSizeLg: 18;
+$filterBg: #3a3a3a;
+$filterItemBg: #2d2d2d;
 
 :export {
     primaryColor: $primaryColor;
@@ -50,4 +48,6 @@ $fontSizeLg: 18;
     createBundleCertificatesGroupHeaderBg: $createBundleCertificatesGroupHeaderBg;
     createBundleSelectedItem: $createBundleCertificateForSale;
     createBundleSelectedCertificate: $createBundleSelectedCertificate;
+    filterBg: $filterBg;
+    filterItemBg: $filterItemBg;
 }

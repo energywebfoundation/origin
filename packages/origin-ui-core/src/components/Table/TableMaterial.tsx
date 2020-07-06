@@ -185,16 +185,18 @@ export function TableMaterial<T extends readonly ITableColumn[]>(props: IProps<T
 
             <Paper className={classes.root}>
                 <div className={classes.tableWrapper}>
-                    <Box
-                        style={{
-                            paddingLeft: spacing(2),
-                            paddingTop: spacing(2),
-                            color: textPrimary,
-                            fontWeight: 'bold'
-                        }}
-                    >
-                        <span>{caption}</span>
-                    </Box>
+                    {caption && (
+                        <Box
+                            style={{
+                                paddingLeft: spacing(2),
+                                paddingTop: spacing(2),
+                                color: textPrimary,
+                                fontWeight: 'bold'
+                            }}
+                        >
+                            <span>{caption}</span>
+                        </Box>
+                    )}
                     <Table>
                         <TableHead>
                             <TableRow></TableRow>

@@ -285,7 +285,8 @@
             },
             "info": {
                 "open_asks": "OFERTY OTWARTE",
-                "open_bids": "CENY OTWARTE"
+                "open_bids": "CENY OTWARTE",
+                "actions": "DZIAŁANIA"
             }
         }
     }
