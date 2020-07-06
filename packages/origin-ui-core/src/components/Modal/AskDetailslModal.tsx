@@ -1,5 +1,5 @@
 import React from 'react';
-import { Dialog, Grid, IconButton, useTheme, Box } from '@material-ui/core';
+import { Dialog, Grid, IconButton, useTheme, Box, Divider, Button } from '@material-ui/core';
 import { Order } from '../../utils/exchange';
 import { Close as CloseIcon, ArrowRightAlt as ArrowRightAltIcon } from '@material-ui/icons';
 import {
@@ -15,11 +15,13 @@ import { EnergyFormatter, deviceById, useTranslation } from '../../utils';
 interface IOwnProps {
     ask: Order;
     close: () => void;
+    cancelAsk: (ask: Order) => void;
 }
 
 export const AskDetailsModal = (props: IOwnProps) => {
-    const { ask, close } = props;
+    const { ask, close, cancelAsk } = props;
     const {
+        filled,
         product: { generationFrom, generationTo, externalDeviceId }
     } = ask;
     const {
@@ -90,7 +92,13 @@ export const AskDetailsModal = (props: IOwnProps) => {
                 </Grid>
                 <Grid item style={{ alignSelf: 'start' }}>
                     <Box>{t('order.properties.filled')}</Box>
-                    <Box>{}</Box>
+                    <Box>{filled || '-'}</Box>
+                </Grid>
+                <Divider />
+                <Grid item style={{ alignSelf: 'end' }}>
+                    <Button variant="contained" color="primary" onClick={() => cancelAsk(ask)}>
+                        {t('order.actions.remove')}
+                    </Button>
                 </Grid>
             </Grid>
         </Dialog>

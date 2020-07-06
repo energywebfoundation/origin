@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { IRequestClient, RequestClient } from '@energyweb/origin-backend-client';
 import {
     TOrderBook,
@@ -35,6 +36,7 @@ export interface IExchangeClient {
     getAssetById(id: string): Promise<IAsset>;
     getOrderById(id: string): Promise<Order>;
     getOrders?(): Promise<Order[]>;
+    cancelOrder(order: Order): Promise<Order>;
     getAvailableBundles(): Promise<Bundle[]>;
     getOwnBundles(): Promise<Bundle[]>;
     getBundleSplits(bundle: Bundle): Promise<Bundle[]>;
@@ -218,6 +220,13 @@ export class ExchangeClient implements IExchangeClient {
         return orders.data;
     }
 
+    public async cancelOrder(order: Order): Promise<Order> {
+        const response = await this.requestClient.post<unknown, Order>(
+            `${this.ordersEndpoint}/${order.id}/cancel`
+        );
+        return response.data;
+    }
+
     private get assetEndpoint() {
         return `${this.dataApiUrl}/asset`;
     }
@@ -354,22 +363,23 @@ export const ExchangeClientMock: IExchangeClient = {
         return null;
     },
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     createBundle(bundle: CreateBundleDTO) {
         return null;
     },
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     cancelBundle(id: string) {
         return null;
     },
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     getBundleSplits(bundle: Bundle) {
         return null;
     },
 
     getOrders() {
+        return null;
+    },
+
+    cancelOrder(order: Order) {
         return null;
     }
 };

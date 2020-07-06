@@ -18,12 +18,13 @@ import {
     CustomFilterInputType,
     FilterRules
 } from '../Table';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { getCurrencies, getConfiguration, getEnvironment, getProducingDevices } from '../..';
 import { BigNumber } from 'ethers/utils';
 import { Remove, Visibility } from '@material-ui/icons';
 import { RemoveOrderConfirmation } from '../Modal/RemoveOrderConfirmation';
 import { AskDetailsModal } from '../Modal/AskDetailslModal';
+import { cancelOrder } from '../../features/orders/actions';
 
 const ORDERS_PER_PAGE = 5;
 
@@ -40,6 +41,7 @@ export const AsksTable = (props: IOwnProsp) => {
     const deviceTypeService = configuration?.deviceTypeService;
     const environment = useSelector(getEnvironment);
     const devices = useSelector(getProducingDevices);
+    const dispatch = useDispatch();
 
     const columns = [
         { id: 'volume', label: t('order.properties.volume') },
@@ -130,7 +132,7 @@ export const AsksTable = (props: IOwnProsp) => {
                 deviceType,
                 generationFrom,
                 generationTo,
-                externalDeviceId: { id: extDevId },
+                externalDeviceId: { id: extDevId }
             }
         } = order;
         return {
@@ -140,7 +142,7 @@ export const AsksTable = (props: IOwnProsp) => {
             device_type: deviceType[0].split(';')[0],
             generationFrom: moment(generationFrom).format('MMM, YYYY'),
             generationTo: moment(generationTo).format('MMM, YYYY'),
-            filled: `${filled} %`,
+            filled: `${filled}%`,
             askId: order.id
         };
     });
@@ -151,7 +153,7 @@ export const AsksTable = (props: IOwnProsp) => {
         setToView(ask);
     };
 
-    const removeAsk = (rowIndex: number) => {
+    const cancelAsk = (rowIndex: number) => {
         const { askId } = rows[rowIndex];
         const ask = asks.find((o) => o.id === askId);
         setToRemove(ask);
@@ -166,7 +168,7 @@ export const AsksTable = (props: IOwnProsp) => {
         {
             icon: <Remove />,
             name: 'Remove',
-            onClick: (row: string) => removeAsk(parseInt(row, 10))
+            onClick: (row: string) => cancelAsk(parseInt(row, 10))
         }
     ];
 
@@ -183,7 +185,16 @@ export const AsksTable = (props: IOwnProsp) => {
                 caption={t('order.captions.open_asks')}
                 actionsLabel={t('order.captions.actions')}
             />
-            {askToView && <AskDetailsModal ask={askToView} close={() => setToView(null)} />}
+            {askToView && (
+                <AskDetailsModal
+                    ask={askToView}
+                    close={() => setToView(null)}
+                    cancelAsk={(ask: Order) => {
+                        setToView(null);
+                        setToRemove(ask);
+                    }}
+                />
+            )}
             {askToRemove && (
                 <RemoveOrderConfirmation order={askToRemove} close={() => setToRemove(null)} />
             )}

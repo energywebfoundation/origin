@@ -15,6 +15,10 @@ export interface IStoreOrderAction extends IOrderAction {
     payload: Order;
 }
 
+export interface ICancelOrderAction extends IOrderAction {
+    payload: Order;
+}
+
 export const storeOrder = (order: IStoreOrderAction['payload']): IStoreOrderAction => ({
     type: OrdersActionsType.STORE,
     payload: order
@@ -22,4 +26,9 @@ export const storeOrder = (order: IStoreOrderAction['payload']): IStoreOrderActi
 
 export const clearOrders = (): IOrderAction => ({
     type: OrdersActionsType.CLEAR
+});
+
+export const cancelOrder = (order: Order): ICancelOrderAction => ({
+    type: OrdersActionsType.CANCEL,
+    payload: order
 });
