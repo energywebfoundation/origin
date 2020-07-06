@@ -123,14 +123,14 @@ export const AsksTable = (props: IOwnProsp) => {
 
     const rows = paginatedData.map((order) => {
         const {
-            startVolume,
             currentVolume,
             price,
+            filled,
             product: {
                 deviceType,
                 generationFrom,
                 generationTo,
-                externalDeviceId: { id: extDevId }
+                externalDeviceId: { id: extDevId },
             }
         } = order;
         return {
@@ -140,13 +140,7 @@ export const AsksTable = (props: IOwnProsp) => {
             device_type: deviceType[0].split(';')[0],
             generationFrom: moment(generationFrom).format('MMM, YYYY'),
             generationTo: moment(generationTo).format('MMM, YYYY'),
-            filled: `${
-                new BigNumber(startVolume)
-                    .sub(new BigNumber(currentVolume))
-                    .mul(100)
-                    .div(startVolume)
-                    .toNumber() / 100
-            }%`,
+            filled: `${filled} %`,
             askId: order.id
         };
     });
