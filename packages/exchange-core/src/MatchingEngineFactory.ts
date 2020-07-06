@@ -28,7 +28,10 @@ export class MatchingEngineFactory {
     }
 
     private static getStrategy(pricePickStrategy: PriceStrategy) {
-        switch (pricePickStrategy) {
+        const strategy =
+            typeof pricePickStrategy !== 'number' ? Number(pricePickStrategy) : pricePickStrategy;
+
+        switch (strategy) {
             case PriceStrategy.AskPrice:
                 return new AskPriceStrategy();
             case PriceStrategy.BasedOnOrderCreationTime:
