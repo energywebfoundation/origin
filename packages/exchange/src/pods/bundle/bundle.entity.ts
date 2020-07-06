@@ -45,6 +45,9 @@ export class Bundle extends ExtendedBaseEntity {
     }
 
     possibleSplits(energyPerUnit: BN): BundleSplitVolumeDTO[] {
+        if (this.available.lt(energyPerUnit)) {
+            return [];
+        }
         const volume = this.available.div(energyPerUnit).toNumber();
         const splits = [...Array(volume).keys()]
             .map((_, i) => new BN(i + 1).mul(energyPerUnit))
@@ -53,11 +56,9 @@ export class Bundle extends ExtendedBaseEntity {
         return splits;
     }
 
-    getUpdatedVolumes(volume: BN) {
-        const currentVolume = this.volume;
-
+    getUpdatedVolumes(volumeToBuy: BN) {
         return this.items.map((item) => {
-            const traded = item.startVolume.div(currentVolume.div(volume));
+            const traded = item.currentVolume.mul(volumeToBuy).div(this.available);
 
             return {
                 id: item.id,

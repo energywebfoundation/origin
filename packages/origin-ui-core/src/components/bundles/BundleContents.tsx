@@ -72,7 +72,7 @@ const rowStyle = {
 };
 
 export const BundleContents = (props: IOwnProps) => {
-    const { owner, bundle, splits } = props;
+    const { bundle, splits } = props;
     const { price, items, id } = bundle;
     const environment = useSelector(getEnvironment);
     const devices = useSelector(getProducingDevices);
@@ -429,7 +429,7 @@ export const BundleContents = (props: IOwnProps) => {
                                             {formatCurrencyComplete(splitPrice, currency)}
                                         </Typography>
                                     </Box>
-                                    {!owner && (
+                                    {!bundle.own && (
                                         <Button
                                             color="primary"
                                             variant="contained"
