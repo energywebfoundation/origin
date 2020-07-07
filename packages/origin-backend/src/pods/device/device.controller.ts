@@ -168,12 +168,7 @@ export class DeviceController {
             });
         }
 
-        await this.deviceService.updateSettings(id, body);
-
-        return {
-            success: true,
-            message: `Device ${id} updated.`
-        };
+        return this.deviceService.updateSettings(id, body);
     }
 
     @Get('/:id/smartMeterReading')
@@ -198,12 +193,13 @@ export class DeviceController {
         return existing;
     }
 
-    // TODO: who can store smart meter readings for device?
-
     @Put('/:id/smartMeterReading')
-    async addSmartMeterRead(
+    @UseGuards(AuthGuard(), ActiveUserGuard, RolesGuard)
+    @Roles(Role.Admin, Role.OrganizationAdmin, Role.OrganizationDeviceManager)
+    async addSmartMeterReads(
         @Param('id') id: string,
-        @Body() newSmartMeterRead: ISmartMeterRead
+        @UserDecorator() loggedUser: ILoggedInUser,
+        @Body() newSmartMeterReads: ISmartMeterRead[]
     ): Promise<ISuccessResponse> {
         const device = await this.deviceService.findOne(id);
 
@@ -214,14 +210,24 @@ export class DeviceController {
             });
         }
 
+        if (
+            loggedUser.organizationId !== device.organization &&
+            !loggedUser.hasRole(Role.Admin, Role.SupportAgent)
+        ) {
+            throw new UnauthorizedException({
+                success: false,
+                message: 'You are not the device manager.'
+            });
+        }
+
         try {
-            return this.deviceService.addSmartMeterReading(id, newSmartMeterRead);
+            return this.deviceService.addSmartMeterReadings(id, newSmartMeterReads);
         } catch (error) {
             this.logger.error('Error when saving smart meter read');
             this.logger.error({
                 error,
                 id,
-                newSmartMeterRead
+                newSmartMeterReads
             });
             throw new UnprocessableEntityException({
                 success: false,

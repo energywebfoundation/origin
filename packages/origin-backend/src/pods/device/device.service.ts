@@ -16,7 +16,8 @@ import {
     ISmartMeterReadStats,
     ISmartMeterReadWithStatus,
     SupportedEvents,
-    ISuccessResponse
+    ISuccessResponse,
+    sortLowestToHighestTimestamp
 } from '@energyweb/origin-backend-core';
 import {
     Inject,
@@ -28,7 +29,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { validate } from 'class-validator';
 import { bigNumberify } from 'ethers/utils';
 import moment from 'moment';
-import { DeepPartial, FindOneOptions, Repository } from 'typeorm';
+import { FindOneOptions, Repository } from 'typeorm';
 import { v4 as uuid } from 'uuid';
 import { SM_READS_ADAPTER } from '../../const';
 import { StorageErrors } from '../../enums/StorageErrors';
@@ -144,40 +145,51 @@ export class DeviceService {
         return device.smartMeterReads;
     }
 
-    async addSmartMeterReading(
+    async addSmartMeterReadings(
         id: string,
-        newSmartMeterRead: ISmartMeterRead
+        newSmartMeterReads: ISmartMeterRead[]
     ): Promise<ISuccessResponse> {
         const device = await this.findOne(id);
 
         if (this.smartMeterReadingsAdapter) {
-            await this.smartMeterReadingsAdapter.save(device, newSmartMeterRead);
+            try {
+                await this.smartMeterReadingsAdapter.save(device, newSmartMeterReads);
+            } catch (error) {
+                throw new UnprocessableEntityException({
+                    success: false,
+                    message: error.message
+                });
+            }
 
             return {
                 success: true,
-                message: `Smart meter reading successfully added to device ${id}`
+                message: `Smart meter readings successfully added to device ${id}`
             };
         }
 
         if (device.smartMeterReads.length > 0) {
-            if (
-                newSmartMeterRead.timestamp <=
-                device.smartMeterReads[device.smartMeterReads.length - 1].timestamp
-            ) {
-                throw new UnprocessableEntityException({
-                    success: false,
-                    message: `Smart meter reading timestamp should be higher than latest.`
-                });
-            }
+            newSmartMeterReads.forEach((newSmartMeterRead) => {
+                if (
+                    newSmartMeterRead.timestamp <=
+                    device.smartMeterReads[device.smartMeterReads.length - 1].timestamp
+                ) {
+                    throw new UnprocessableEntityException({
+                        success: false,
+                        message: `Smart meter readings timestamp should always be higher than latest.`
+                    });
+                }
+            });
         }
 
-        device.smartMeterReads = [...device.smartMeterReads, newSmartMeterRead];
-
-        await this.repository.save((device as unknown) as DeepPartial<Device>);
+        await this.repository.update(device.id, {
+            smartMeterReads: [...device.smartMeterReads, ...newSmartMeterReads].sort(
+                sortLowestToHighestTimestamp
+            )
+        });
 
         return {
             success: true,
-            message: `Smart meter reading successfully added to device ${id}`
+            message: `Smart meter readings successfully added to device ${id}`
         };
     }
 
@@ -223,10 +235,8 @@ export class DeviceService {
             throw new NotFoundException(StorageErrors.NON_EXISTENT);
         }
 
-        device.status = update.status;
-
         try {
-            await this.repository.save((device as unknown) as DeepPartial<Device>);
+            await this.repository.update(device.id, { status: update.status });
 
             const deviceManagers = await this.organizationService.getDeviceManagers(
                 device.organization
@@ -246,12 +256,13 @@ export class DeviceService {
             return device;
         } catch (error) {
             throw new UnprocessableEntityException({
+                success: false,
                 message: `Device ${id} could not be updated due to an error ${error.message}`
             });
         }
     }
 
-    async updateSettings(id: string, update: DeviceSettingsUpdateData) {
+    async updateSettings(id: string, update: DeviceSettingsUpdateData): Promise<ISuccessResponse> {
         const device = await this.findOne(id);
 
         if (!device) {
@@ -264,10 +275,12 @@ export class DeviceService {
             await this.repository.update(id, { defaultAskPrice, automaticPostForSale });
 
             return {
+                success: true,
                 message: `Device ${id} successfully updated`
             };
         } catch (error) {
             throw new UnprocessableEntityException({
+                success: false,
                 message: `Device ${id} could not be updated due to an error: ${error.message}`
             });
         }

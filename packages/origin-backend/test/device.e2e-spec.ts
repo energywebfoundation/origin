@@ -208,7 +208,7 @@ describe('Device e2e tests', () => {
         await request(app.getHttpServer())
             .put(`/device/${device.id}/smartMeterReading`)
             .set('Authorization', `Bearer ${accessToken}`)
-            .send(firstSmRead)
+            .send([firstSmRead])
             .expect(200);
 
         const secondSmRead = {
@@ -219,7 +219,7 @@ describe('Device e2e tests', () => {
         await request(app.getHttpServer())
             .put(`/device/${device.id}/smartMeterReading`)
             .set('Authorization', `Bearer ${accessToken}`)
-            .send(secondSmRead)
+            .send([secondSmRead])
             .expect(200);
 
         const fromTime = moment().subtract(2, 'month').unix();
@@ -260,6 +260,46 @@ describe('Device e2e tests', () => {
                     bigNumberify(resultDevice.meterStats.certified).toNumber()
                 ).to.be.greaterThan(0);
             });
+
+        await app.close();
+    });
+
+    it('should not allow storing smart meter readings to other organization device managers', async () => {
+        const {
+            app,
+            userService,
+            deviceService,
+            organizationService
+        } = await bootstrapTestInstance();
+
+        await app.init();
+
+        const { user } = await registerAndLogin(app, userService, organizationService, [
+            Role.OrganizationUser,
+            Role.OrganizationDeviceManager
+        ]);
+
+        const { accessToken: accessTokenDifferentDeviceManager } = await registerAndLogin(
+            app,
+            userService,
+            organizationService,
+            [Role.OrganizationUser, Role.OrganizationDeviceManager],
+            'default2',
+            'default2'
+        );
+
+        const device = await createDevice(deviceService, user);
+
+        await request(app.getHttpServer())
+            .put(`/device/${device.id}/smartMeterReading`)
+            .set('Authorization', `Bearer ${accessTokenDifferentDeviceManager}`)
+            .send([
+                {
+                    meterReading: 12345,
+                    timestamp: moment().subtract(1, 'month').unix()
+                }
+            ])
+            .expect(401);
 
         await app.close();
     });
