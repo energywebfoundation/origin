@@ -13,12 +13,16 @@ import { expect } from 'chai';
 import request from 'supertest';
 
 import { DatabaseService } from './database.service';
-import { bootstrapTestInstance } from './origin-backend';
+import { bootstrapTestInstance, registerAndLogin } from './origin-backend';
 import { omit } from './utils';
+import { UserService } from '../src/pods/user/user.service';
+import { OrganizationService } from '../src/pods/organization/organization.service';
 
 describe('User e2e tests', () => {
     let app: INestApplication;
     let databaseService: DatabaseService;
+    let userService: UserService;
+    let organizationService: OrganizationService;
 
     const userToRegister: UserRegistrationData = {
         title: 'Mr',
@@ -30,7 +34,12 @@ describe('User e2e tests', () => {
     };
 
     before(async () => {
-        ({ app, databaseService } = await bootstrapTestInstance());
+        ({
+            app,
+            databaseService,
+            userService,
+            organizationService
+        } = await bootstrapTestInstance());
 
         await app.init();
     });
@@ -99,5 +108,96 @@ describe('User e2e tests', () => {
             .post(`/user/register`)
             .send(omit(userToRegister, 'password'))
             .expect(400);
+    });
+
+    it('user should be able to get his user data', async () => {
+        const { accessToken, user } = await registerAndLogin(
+            app,
+            userService,
+            organizationService,
+            [Role.OrganizationUser, Role.OrganizationDeviceManager]
+        );
+
+        await request(app.getHttpServer())
+            .get(`/user/${user.id}`)
+            .set('Authorization', `Bearer ${accessToken}`)
+            .expect(200);
+    });
+
+    it('user should not be able to get user data of another user', async () => {
+        const { user } = await registerAndLogin(app, userService, organizationService, [
+            Role.OrganizationUser,
+            Role.OrganizationDeviceManager
+        ]);
+
+        const { accessToken: accessToken2 } = await registerAndLogin(
+            app,
+            userService,
+            organizationService,
+            [Role.OrganizationUser, Role.OrganizationDeviceManager],
+            'differentOrganization',
+            'differentOrganization'
+        );
+
+        await request(app.getHttpServer())
+            .get(`/user/${user.id}`)
+            .set('Authorization', `Bearer ${accessToken2}`)
+            .expect(401);
+    });
+
+    it('admin/support agent should be able to get user data of another user', async () => {
+        const { accessToken } = await registerAndLogin(app, userService, organizationService, [
+            Role.Admin
+        ]);
+
+        const { user } = await registerAndLogin(
+            app,
+            userService,
+            organizationService,
+            [Role.OrganizationUser, Role.OrganizationDeviceManager],
+            'differentOrganization',
+            'differentOrganization'
+        );
+
+        await request(app.getHttpServer())
+            .get(`/user/${user.id}`)
+            .set('Authorization', `Bearer ${accessToken}`)
+            .expect(200);
+    });
+
+    it('org admin should be able to get user data of another user', async () => {
+        const { accessToken } = await registerAndLogin(app, userService, organizationService, [
+            Role.OrganizationAdmin
+        ]);
+
+        const { user } = await registerAndLogin(app, userService, organizationService, [
+            Role.OrganizationUser,
+            Role.OrganizationDeviceManager
+        ]);
+
+        await request(app.getHttpServer())
+            .get(`/user/${user.id}`)
+            .set('Authorization', `Bearer ${accessToken}`)
+            .expect(200);
+    });
+
+    it('org admin should not be able to get user data from another organization', async () => {
+        const { accessToken } = await registerAndLogin(app, userService, organizationService, [
+            Role.OrganizationAdmin
+        ]);
+
+        const { user } = await registerAndLogin(
+            app,
+            userService,
+            organizationService,
+            [Role.OrganizationUser, Role.OrganizationDeviceManager],
+            'differentOrganization',
+            'differentOrganization'
+        );
+
+        await request(app.getHttpServer())
+            .get(`/user/${user.id}`)
+            .set('Authorization', `Bearer ${accessToken}`)
+            .expect(401);
     });
 });
