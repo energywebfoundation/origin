@@ -287,6 +287,10 @@
                 "open_asks": "OFERTY OTWARTE",
                 "open_bids": "CENY OTWARTE",
                 "actions": "DZIAŁANIA"
+            },
+            "actions": {
+                "view": "Widok",
+                "remove": "Usunąć"
             }
         }
     }
