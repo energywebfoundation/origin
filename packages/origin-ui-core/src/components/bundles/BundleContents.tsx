@@ -97,7 +97,7 @@ export const BundleContents = (props: IOwnProps) => {
 
     const fifthFromEnd = (arrayLength: number) => {
         return arrayLength < 5 ? 0 : arrayLength - 5;
-    }
+    };
 
     useEffect(() => {
         if (firstSplit > fifthFromEnd(splits.length)) {
