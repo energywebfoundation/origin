@@ -98,16 +98,11 @@ export class Entity implements IDevice {
         return this;
     }
 
-    async saveSmartMeterRead(
-        meterReading: BigNumberish,
-        timestamp: number = moment().unix()
-    ): Promise<void> {
-        const readingBN = bigNumberify(meterReading);
-
-        return this.configuration.offChainDataSource.deviceClient.addSmartMeterRead(this.id, {
-            meterReading: readingBN,
-            timestamp
-        });
+    async saveSmartMeterReads(smReads: ISmartMeterRead[]): Promise<void> {
+        return this.configuration.offChainDataSource.deviceClient.addSmartMeterReads(
+            this.id,
+            smReads
+        );
     }
 
     async getSmartMeterReads(): Promise<ISmartMeterRead[]> {

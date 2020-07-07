@@ -19,7 +19,7 @@ export interface IDeviceClient {
     add(device: DeviceCreateData): Promise<IDeviceWithRelationsIds>;
     update(id: number, data: DeviceUpdateData): Promise<IDevice>;
     getAllSmartMeterReadings(id: number): Promise<ISmartMeterReadWithStatus[]>;
-    addSmartMeterRead(id: number, smartMeterRead: ISmartMeterRead): Promise<void>;
+    addSmartMeterReads(id: number, smartMeterReads: ISmartMeterRead[]): Promise<void>;
     getSupplyBy(facilityName: string, status: number): Promise<IDeviceWithRelationsIds[]>;
     delete(id: number): Promise<ISuccessResponse>;
     updateDeviceSettings(id: number, device: DeviceSettingsUpdateData): Promise<ISuccessResponse>;
@@ -94,8 +94,8 @@ export class DeviceClient implements IDeviceClient {
         return meterReadingsFormatted;
     }
 
-    public async addSmartMeterRead(id: number, smartMeterRead: ISmartMeterRead): Promise<void> {
-        const response = await this.requestClient.put<ISmartMeterRead, void>(
+    public async addSmartMeterReads(id: number, smartMeterRead: ISmartMeterRead[]): Promise<void> {
+        const response = await this.requestClient.put<ISmartMeterRead[], void>(
             `${this.endpoint}/${id}/smartMeterReading`,
             smartMeterRead
         );

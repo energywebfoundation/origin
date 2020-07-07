@@ -9,7 +9,8 @@ import {
     ISmartMeterRead,
     ISmartMeterReadWithStatus,
     DeviceSettingsUpdateData,
-    ISuccessResponse
+    ISuccessResponse,
+    sortLowestToHighestTimestamp
 } from '@energyweb/origin-backend-core';
 
 export class DeviceClientMock implements IDeviceClient {
@@ -66,20 +67,16 @@ export class DeviceClientMock implements IDeviceClient {
         }));
     }
 
-    public async addSmartMeterRead(id: number, smartMeterRead: ISmartMeterRead): Promise<void> {
+    public async addSmartMeterReads(id: number, smartMeterReads: ISmartMeterRead[]): Promise<void> {
         const device = this.storage.get(id);
 
         if (!device.smartMeterReads) {
             device.smartMeterReads = [];
         }
 
-        device.smartMeterReads.push(smartMeterRead);
-        device.smartMeterReads = device.smartMeterReads.sort((a, b) => {
-            if (a.timestamp > b.timestamp) return 1;
-            if (b.timestamp > a.timestamp) return -1;
-
-            return 0;
-        });
+        device.smartMeterReads = [...device.smartMeterReads, ...smartMeterReads].sort(
+            sortLowestToHighestTimestamp
+        );
 
         this.storage.set(id, device);
     }
