@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
     Typography,
     Paper,
@@ -95,6 +95,15 @@ export const BundleContents = (props: IOwnProps) => {
         label: 'certificate.actions.buy_bundle'
     };
 
+    const fifthFromEnd = (arrayLength: number) => {
+        return arrayLength < 5 ? 0 : arrayLength - 5;
+    };
+
+    useEffect(() => {
+        if (firstSplit > fifthFromEnd(splits.length)) {
+            setFirstSplit(fifthFromEnd(splits.length));
+        }
+    }, [splits]);
     return (
         <Box
             style={{
@@ -122,7 +131,7 @@ export const BundleContents = (props: IOwnProps) => {
             )}
             {splits.length > COLUMNS_COUNT && (
                 <IconButton
-                    disabled={firstSplit + COLUMNS_COUNT >= splits.length}
+                    disabled={firstSplit >= fifthFromEnd(splits.length)}
                     onClick={() => setFirstSplit(firstSplit + 1)}
                     style={{
                         position: 'absolute',
