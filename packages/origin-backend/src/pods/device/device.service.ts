@@ -15,7 +15,8 @@ import {
     ISmartMeterReadingsAdapter,
     ISmartMeterReadStats,
     ISmartMeterReadWithStatus,
-    SupportedEvents
+    SupportedEvents,
+    ISuccessResponse
 } from '@energyweb/origin-backend-core';
 import {
     Inject,
@@ -143,12 +144,19 @@ export class DeviceService {
         return device.smartMeterReads;
     }
 
-    async addSmartMeterReading(id: string, newSmartMeterRead: ISmartMeterRead): Promise<void> {
+    async addSmartMeterReading(
+        id: string,
+        newSmartMeterRead: ISmartMeterRead
+    ): Promise<ISuccessResponse> {
         const device = await this.findOne(id);
 
         if (this.smartMeterReadingsAdapter) {
             await this.smartMeterReadingsAdapter.save(device, newSmartMeterRead);
-            return;
+
+            return {
+                success: true,
+                message: `Smart meter reading successfully added to device ${id}`
+            };
         }
 
         if (device.smartMeterReads.length > 0) {
@@ -157,6 +165,7 @@ export class DeviceService {
                 device.smartMeterReads[device.smartMeterReads.length - 1].timestamp
             ) {
                 throw new UnprocessableEntityException({
+                    success: false,
                     message: `Smart meter reading timestamp should be higher than latest.`
                 });
             }
@@ -165,6 +174,11 @@ export class DeviceService {
         device.smartMeterReads = [...device.smartMeterReads, newSmartMeterRead];
 
         await this.repository.save((device as unknown) as DeepPartial<Device>);
+
+        return {
+            success: true,
+            message: `Smart meter reading successfully added to device ${id}`
+        };
     }
 
     async getAll(
@@ -199,7 +213,7 @@ export class DeviceService {
         );
     }
 
-    async update(
+    async updateStatus(
         id: string,
         update: DeviceUpdateData
     ): Promise<ExtendedBaseEntity & IDeviceWithRelationsIds> {
