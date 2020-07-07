@@ -166,7 +166,7 @@ export const AsksTable = (props: IOwnProsp) => {
     const actions = [
         {
             icon: <Visibility />,
-            name: 'View',
+            name: 'Test view',
             onClick: (row: string) => viewDetails(parseInt(row, 10))
         },
         {

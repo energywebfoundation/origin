@@ -209,10 +209,6 @@ export function checkRecordPassesFilters(
         if (typeof filteredPropertyResolvedValue !== 'undefined') {
             switch (filter.input.type) {
                 case CustomFilterInputType.string:
-                    console.log(
-                        '>>> String filter: record to filter:',
-                        filteredPropertyResolvedValue
-                    );
                     if (
                         filter.selectedValue &&
                         !filteredPropertyResolvedValue
