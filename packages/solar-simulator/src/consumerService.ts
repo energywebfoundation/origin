@@ -63,22 +63,19 @@ export async function startConsumerService(configFilePath: string) {
         return latestSmRead?.meterReading ?? bigNumberify(0);
     }
 
-    async function saveProducingDeviceSmartMeterRead(
+    async function saveProducingDeviceSmartMeterReads(
         deviceId: string,
-        smartMeterReading: ISmartMeterRead
+        smartMeterReadings: ISmartMeterRead[]
     ) {
         console.log('-----------------------------------------------------------');
 
         try {
             let device = await new ProducingDevice.Entity(parseInt(deviceId, 10), conf).sync();
-            await device.saveSmartMeterRead(
-                smartMeterReading.meterReading,
-                smartMeterReading.timestamp
-            );
+            await device.saveSmartMeterReads(smartMeterReadings);
             device = await device.sync();
             conf.logger.verbose(
                 `Producing device ${deviceId} smart meter reading saved: ${JSON.stringify(
-                    smartMeterReading
+                    smartMeterReadings
                 )}`
             );
         } catch (e) {
@@ -131,7 +128,7 @@ export async function startConsumerService(configFilePath: string) {
                     timestamp: time.unix()
                 };
 
-                await saveProducingDeviceSmartMeterRead(device.id, smartMeterReading);
+                await saveProducingDeviceSmartMeterReads(device.id, [smartMeterReading]);
 
                 console.log(
                     `[Device ID: ${device.id}]::Save Energy Read of: ${roundedEnergy}Wh - [${energyMeasurement.measurementTime}]`
