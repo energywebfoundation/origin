@@ -1,4 +1,4 @@
-import { IUserWithRelationsIds, Role, UserStatus } from '@energyweb/origin-backend-core';
+import { IUserWithRelationsIds, UserStatus } from '@energyweb/origin-backend-core';
 import { CanActivate, ExecutionContext, HttpException, Injectable } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 
@@ -7,10 +7,11 @@ export class ActiveUserGuard implements CanActivate {
     constructor(private reflector: Reflector) {}
 
     canActivate(context: ExecutionContext): boolean {
-        const roles = this.reflector.get<Role[]>('roles', context.getHandler());
-        if (!roles) {
-            return true;
-        }
+        /* I suggest to remove this */
+        // const roles = this.reflector.get<Role[]>('roles', context.getHandler());
+        // if (!roles) {
+        //     return true;
+        // }
 
         const request = context.switchToHttp().getRequest();
         const user = request.user as IUserWithRelationsIds;
