@@ -9,7 +9,8 @@
         "clean": "shx rm -rf dist",
         "lint": "eslint \"src/**/*{.ts,.tsx}\"",
         "lint-fix": "eslint \"src/**/*{.ts,.tsx}\" --fix",
-        "prettier": "prettier --write --config-precedence file-override './src/**/*'"
+        "prettier": "prettier --write --config-precedence file-override './src/**/*'",
+        "test": "mocha -r ts-node/register src/test/*.test.ts --exit"
     },
     "repository": {
         "type": "git",
@@ -29,7 +30,7 @@
     },
     "dependencies": {
         "@energyweb/origin-backend-core": "4.0.1",
-        "@nestjs/common": "7.1.0",
-        "@nestjs/core": "7.1.0"
+        "@nestjs/common": "7.3.1",
+        "@nestjs/core": "7.3.1"
     }
 }

@@ -23,10 +23,12 @@ module.exports = {
     plugins: ['@typescript-eslint'],
     rules: {
         '@typescript-eslint/explicit-function-return-type': 'off',
-        '@typescript-eslint/interface-name-prefix': [
+        '@typescript-eslint/naming-convention': [
             'error',
             {
-                prefixWithI: 'always'
+                selector: 'interface',
+                format: ['PascalCase'],
+                prefix: ['I']
             }
         ],
         '@typescript-eslint/no-unused-vars': 'error',

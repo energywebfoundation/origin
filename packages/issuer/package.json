@@ -50,9 +50,9 @@
         "ethers": "4.0.47",
         "mocha": "8.0.1",
         "moment": "2.24.0",
-        "polly-js": "1.6.5",
+        "polly-js": "1.6.6",
         "precise-proofs-js": "1.1.0",
-        "winston": "3.2.1"
+        "winston": "3.3.3"
     },
     "devDependencies": {
         "ethlint": "1.2.5",

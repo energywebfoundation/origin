@@ -26,7 +26,7 @@ export interface IOriginStyleConfig {
 export const createMaterialThemeForOrigin = (
     styleConfig: IOriginStyleConfig,
     language: ORIGIN_LANGUAGE
-) => {
+): Theme => {
     const materialLocale =
         {
             pl: plPL,
@@ -112,10 +112,22 @@ export const createMaterialThemeForOrigin = (
                     icon: {
                         color: styleConfig.FIELD_ICON_COLOR
                     }
+                },
+                MuiTooltip: {
+                    tooltip: {
+                        backgroundColor: '#a400d9'
+                    }
                 }
             }
         },
-        materialLocale
+        materialLocale,
+        {
+            typography: {
+                fontSizeSm: 10,
+                fontSizeMd: 12,
+                fontSizeLg: 18
+            }
+        }
     );
 };
 

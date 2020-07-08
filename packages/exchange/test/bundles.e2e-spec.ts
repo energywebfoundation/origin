@@ -1,9 +1,11 @@
 import { INestApplication } from '@nestjs/common';
 import { expect } from 'chai';
 import request from 'supertest';
+import { UserStatus } from '@energyweb/origin-backend-core';
 
 import { AccountDTO } from '../src/pods/account/account.dto';
 import { AccountService } from '../src/pods/account/account.service';
+import { BundleSplitDTO } from '../src/pods/bundle/bundle-split.dto';
 import { BundleTrade } from '../src/pods/bundle/bundle-trade.entity';
 import { Bundle } from '../src/pods/bundle/bundle.entity';
 import { BundleService } from '../src/pods/bundle/bundle.service';
@@ -52,6 +54,50 @@ describe('Bundles', () => {
 
     const confirmDeposit = (transactionHash: string) => {
         return transferService.setAsConfirmed(transactionHash, 10000);
+    };
+
+    const createBundle = async (userId: string) => {
+        const { address } = await accountService.getOrCreateAccount(userId);
+        const depositOne = await createDeposit(address, `${10 * MWh}`, assetOne);
+        const depositTwo = await createDeposit(address, `${10 * MWh}`, assetTwo);
+
+        await confirmDeposit(depositOne.transactionHash);
+        await confirmDeposit(depositTwo.transactionHash);
+
+        const bundleToCreate: CreateBundleDTO = {
+            price: 1000,
+            items: [
+                { assetId: depositOne.asset.id, volume: `${10 * MWh}` },
+                { assetId: depositTwo.asset.id, volume: `${10 * MWh}` }
+            ]
+        };
+
+        return bundleService.create(userId, bundleToCreate);
+    };
+
+    const createUnsplittableBundle = async (userId: string) => {
+        const { address } = await accountService.getOrCreateAccount(userId);
+        const depositOne = await createDeposit(address, `${890 * MWh}`, assetOne);
+        const depositTwo = await createDeposit(address, `${10 * MWh}`, assetTwo);
+        const depositThree = await createDeposit(address, `${1 * MWh}`, assetTwo);
+        const depositFour = await createDeposit(address, `${17 * MWh}`, assetTwo);
+
+        await confirmDeposit(depositOne.transactionHash);
+        await confirmDeposit(depositTwo.transactionHash);
+        await confirmDeposit(depositThree.transactionHash);
+        await confirmDeposit(depositFour.transactionHash);
+
+        const bundleToCreate: CreateBundleDTO = {
+            price: 165,
+            items: [
+                { assetId: depositOne.asset.id, volume: `${890 * MWh}` },
+                { assetId: depositTwo.asset.id, volume: `${10 * MWh}` },
+                { assetId: depositThree.asset.id, volume: `${1 * MWh}` },
+                { assetId: depositFour.asset.id, volume: `${17 * MWh}` }
+            ]
+        };
+
+        return bundleService.create(userId, bundleToCreate);
     };
 
     before(async () => {
@@ -117,69 +163,64 @@ describe('Bundles', () => {
 
                 assertBundle(bundle);
             });
+
+        await request(app.getHttpServer())
+            .get('/account')
+            .expect(200)
+            .expect((res) => {
+                const {
+                    balances: { available, locked }
+                } = res.body as AccountDTO;
+
+                expect(locked.length).equals(2);
+                expect(available.length).equals(0);
+
+                const itemOne = locked.find((item) => item.asset.id === depositOne.asset.id);
+                const itemTwo = locked.find((item) => item.asset.id === depositTwo.asset.id);
+
+                expect(itemOne.amount).equals(`${10 * MWh}`);
+                expect(itemTwo.amount).equals(`${10 * MWh}`);
+            });
     });
 
     it('should be able to cancel the bundle', async () => {
-        const { address: user1Address } = await accountService.getOrCreateAccount(user1Id);
-
-        const depositOne = await createDeposit(user1Address, `${10 * MWh}`, assetOne);
-        const depositTwo = await createDeposit(user1Address, `${10 * MWh}`, assetTwo);
-
-        await confirmDeposit(depositOne.transactionHash);
-        await confirmDeposit(depositTwo.transactionHash);
-
-        const bundleToCreate: CreateBundleDTO = {
-            price: 1000,
-            items: [
-                { assetId: depositOne.asset.id, volume: `${10 * MWh}` },
-                { assetId: depositTwo.asset.id, volume: `${10 * MWh}` }
-            ]
-        };
-
-        let bundleId: string;
+        const { id, items } = await createBundle(user1Id);
 
         await request(app.getHttpServer())
-            .post('/bundle')
-            .send(bundleToCreate)
-            .expect(201)
-            .expect((res) => {
-                const bundle = res.body as Bundle;
-
-                bundleId = bundle.id;
-            });
-
-        await request(app.getHttpServer())
-            .put(`/bundle/${bundleId}/cancel`)
+            .put(`/bundle/${id}/cancel`)
             .expect(200)
             .expect((res) => {
                 const bundle = res.body as Bundle;
 
-                expect(bundle.id).equals(bundleId);
+                expect(bundle.id).equals(id);
                 expect(bundle.isCancelled).equals(true);
+            });
+
+        await request(app.getHttpServer())
+            .get('/account')
+            .expect(200)
+            .expect((res) => {
+                const {
+                    balances: { available, locked }
+                } = res.body as AccountDTO;
+
+                expect(locked.length).equals(0);
+                expect(available.length).equals(2);
+
+                const itemOne = available.find((item) => item.asset.id === items[0].asset.id);
+                const itemTwo = available.find((item) => item.asset.id === items[1].asset.id);
+
+                expect(itemOne.amount).equals(`${10 * MWh}`);
+                expect(itemTwo.amount).equals(`${10 * MWh}`);
             });
     });
 
     it('should be able to buy part of the bundle', async () => {
         const user2Id = '2';
-        const { address: user2Address } = await accountService.getOrCreateAccount(user2Id);
-        const depositOne = await createDeposit(user2Address, `${10 * MWh}`, assetOne);
-        const depositTwo = await createDeposit(user2Address, `${10 * MWh}`, assetTwo);
-
-        await confirmDeposit(depositOne.transactionHash);
-        await confirmDeposit(depositTwo.transactionHash);
-
-        const bundleToCreate: CreateBundleDTO = {
-            price: 1000,
-            items: [
-                { assetId: depositOne.asset.id, volume: `${10 * MWh}` },
-                { assetId: depositTwo.asset.id, volume: `${10 * MWh}` }
-            ]
-        };
-
-        const bundle = await bundleService.create(user2Id, bundleToCreate);
+        const { id, items } = await createBundle(user2Id);
 
         const bundleToBuy: BuyBundleDTO = {
-            bundleId: bundle.id,
+            bundleId: id,
             volume: `${10 * MWh}`
         };
 
@@ -194,8 +235,8 @@ describe('Bundles', () => {
                 expect(trade.volume).equals(`${10 * MWh}`);
                 expect(trade.items).to.have.length(2);
 
-                const itemOne = trade.items.find((item) => item.assetId === depositOne.asset.id);
-                const itemTwo = trade.items.find((item) => item.assetId === depositTwo.asset.id);
+                const itemOne = trade.items.find((item) => item.assetId === items[0].asset.id);
+                const itemTwo = trade.items.find((item) => item.assetId === items[1].asset.id);
 
                 expect(itemOne.volume).equals(`${5 * MWh}`);
                 expect(itemTwo.volume).equals(`${5 * MWh}`);
@@ -206,13 +247,14 @@ describe('Bundles', () => {
             .expect(200)
             .expect((res) => {
                 const {
-                    balances: { available }
+                    balances: { available, locked }
                 } = res.body as AccountDTO;
 
+                expect(locked.length).equals(0);
                 expect(available.length).equals(2);
 
-                const itemOne = available.find((item) => item.asset.id === depositOne.asset.id);
-                const itemTwo = available.find((item) => item.asset.id === depositTwo.asset.id);
+                const itemOne = available.find((item) => item.asset.id === items[0].asset.id);
+                const itemTwo = available.find((item) => item.asset.id === items[1].asset.id);
 
                 expect(itemOne.amount).equals(`${5 * MWh}`);
                 expect(itemTwo.amount).equals(`${5 * MWh}`);
@@ -227,9 +269,22 @@ describe('Bundles', () => {
                 expect(trades).to.have.length(1);
 
                 const [trade] = trades;
-                expect(trade.bundle.id).equals(bundle.id);
+                expect(trade.bundle.id).equals(id);
                 expect(trade.buyerId).equals(user1Id);
             });
+
+        const {
+            balances: { available, locked }
+        } = await accountService.getAccount(user2Id);
+
+        expect(locked.length).equals(2);
+        expect(available.length).equals(0);
+
+        const itemOne = locked.find((item) => item.asset.id === items[0].asset.id);
+        const itemTwo = locked.find((item) => item.asset.id === items[1].asset.id);
+
+        expect(itemOne.amount.toString(10)).equals(`${5 * MWh}`);
+        expect(itemTwo.amount.toString(10)).equals(`${5 * MWh}`);
     });
 
     it('should not return cancelled bundles', async () => {
@@ -263,5 +318,82 @@ describe('Bundles', () => {
                 expect(bundles).to.have.length(1);
                 expect(bundles[0].id).equals(bundle2.id);
             });
+    });
+
+    it('should return possible bundle splits', async () => {
+        const { id } = await createBundle(user1Id);
+
+        await request(app.getHttpServer())
+            .get(`/bundle/${id}/splits`)
+            .expect(200)
+            .expect((res) => {
+                const splits = res.body as BundleSplitDTO;
+
+                expect(splits.id).equals(id);
+                expect(splits.splits).to.have.length(10);
+                expect(splits.splits[0].volume).to.equal('2000000');
+                expect(splits.splits[1].volume).to.equal('4000000');
+                expect(splits.splits[2].volume).to.equal('6000000');
+                expect(splits.splits[9].volume).to.equal('20000000');
+            });
+    });
+
+    it('should return split with whole items volums when bundle is unsplittable', async () => {
+        const { id } = await createUnsplittableBundle(user1Id);
+
+        await request(app.getHttpServer())
+            .get(`/bundle/${id}/splits`)
+            .expect(200)
+            .expect((res) => {
+                const splits = res.body as BundleSplitDTO;
+
+                expect(splits.id).equals(id);
+                expect(splits.splits).to.have.length(1);
+                expect(splits.splits[0].volume).to.equal('918000000');
+            });
+    });
+
+    it('Inactive user should not be able to buy bundle', async () => {
+        const user2Id = '2';
+        const { id } = await createBundle(user2Id);
+        authenticatedUser.status = UserStatus.Pending;
+        const bundleToBuy: BuyBundleDTO = {
+            bundleId: id,
+            volume: `${10 * MWh}`
+        };
+        await request(app.getHttpServer()).post('/bundle/buy').send(bundleToBuy).expect(412);
+        authenticatedUser.status = UserStatus.Active;
+    });
+
+    it('Active user should be able to buy bundle', async () => {
+        const user2Id = '2';
+        const { id } = await createBundle(user2Id);
+        const bundleToBuy: BuyBundleDTO = {
+            bundleId: id,
+            volume: `${10 * MWh}`
+        };
+        await request(app.getHttpServer()).post('/bundle/buy').send(bundleToBuy).expect(201);
+    });
+
+    it('Inactive user should not be able to create bundle', async () => {
+        authenticatedUser.status = UserStatus.Pending;
+        const { address: user1Address } = await accountService.getOrCreateAccount(user1Id);
+
+        const depositOne = await createDeposit(user1Address, `${10 * MWh}`, assetOne);
+        const depositTwo = await createDeposit(user1Address, `${10 * MWh}`, assetTwo);
+
+        await confirmDeposit(depositOne.transactionHash);
+        await confirmDeposit(depositTwo.transactionHash);
+
+        const bundleToCreate: CreateBundleDTO = {
+            price: 1000,
+            items: [
+                { assetId: depositOne.asset.id, volume: `${10 * MWh}` },
+                { assetId: depositTwo.asset.id, volume: `${10 * MWh}` }
+            ]
+        };
+
+        await request(app.getHttpServer()).post('/bundle').send(bundleToCreate).expect(412);
+        authenticatedUser.status = UserStatus.Active;
     });
 });

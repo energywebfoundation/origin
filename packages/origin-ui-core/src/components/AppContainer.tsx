@@ -12,7 +12,8 @@ import { ErrorComponent } from './ErrorComponent';
 import { useLinks } from '../utils/routing';
 import { getError, getLoading } from '../features/general/selectors';
 import { LinearProgress, makeStyles, createStyles, useTheme } from '@material-ui/core';
-import { BundlesTable } from './bundles/BundleTable';
+import { BundlesTable } from './bundles/BundlesTable';
+import { NoBlockchainAccountModal } from './Modal/NoBlockchainAccountModal';
 
 export function AppContainer() {
     const error = useSelector(getError);
@@ -67,6 +68,7 @@ export function AppContainer() {
             </Switch>
             <RequestCertificatesModal />
             <AccountMismatchModal />
+            <NoBlockchainAccountModal />
         </div>
     );
 }

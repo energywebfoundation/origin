@@ -7,7 +7,8 @@ import {
     UserStatus,
     UserPasswordUpdate,
     UserRegistrationData,
-    IUserFilter
+    IUserFilter,
+    ILoggedInUser
 } from '@energyweb/origin-backend-core';
 import { recoverTypedSignatureAddress } from '@energyweb/utils-general';
 import {
@@ -292,5 +293,20 @@ export class UserService {
         });
 
         return this.repository.findOne(id);
+    }
+
+    public async canViewUserData(
+        userId: IUserWithRelationsIds['id'],
+        loggedInUser: ILoggedInUser
+    ): Promise<boolean> {
+        const user = await this.findById(userId);
+
+        const isOwnUser = loggedInUser.id === userId;
+        const isOrgAdmin =
+            loggedInUser.organizationId === user.organization &&
+            loggedInUser.hasRole(Role.OrganizationAdmin);
+        const isAdmin = loggedInUser.hasRole(Role.Issuer, Role.Admin, Role.SupportAgent);
+
+        return isOwnUser || isOrgAdmin || isAdmin;
     }
 }

@@ -27,7 +27,11 @@ export class CertificationRequest extends PreciseProofEntity implements ICertifi
 
     approved: boolean;
 
+    approvedDate: Date;
+
     revoked: boolean;
+
+    revokedDate: Date;
 
     created: Timestamp;
 
@@ -35,14 +39,14 @@ export class CertificationRequest extends PreciseProofEntity implements ICertifi
 
     energy: BigNumber;
 
-    initialized = false;
-
     constructor(
-        id: number,
+        certData: ICertificationRequest,
         configuration: Configuration.Entity,
         public isPrivate: boolean = false
     ) {
-        super(id, configuration);
+        super(certData.id, configuration);
+
+        Object.assign(this, certData);
     }
 
     public static async create(
@@ -53,7 +57,8 @@ export class CertificationRequest extends PreciseProofEntity implements ICertifi
         configuration: Configuration.Entity,
         files: string[],
         isVolumePrivate = false,
-        forAddress?: string
+        forAddress?: string,
+        callback?: (id: CertificationRequest['id']) => void
     ): Promise<CertificationRequest> {
         if (energy.gt(MAX_ENERGY_PER_CERTIFICATE)) {
             throw new Error(
@@ -62,8 +67,6 @@ export class CertificationRequest extends PreciseProofEntity implements ICertifi
         }
 
         const { certificateClient } = configuration.offChainDataSource;
-
-        const request = new CertificationRequest(null, configuration, isVolumePrivate);
 
         const { issuer } = configuration.blockchainProperties as Configuration.BlockchainProperties<
             Registry,
@@ -96,33 +99,46 @@ export class CertificationRequest extends PreciseProofEntity implements ICertifi
         } = await tx.wait();
 
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        request.id = (certificationRequested.args as any)._id.toNumber();
+        const id = (certificationRequested.args as any)._id.toNumber();
 
         if (configuration.logger) {
-            configuration.logger.info(`CertificationRequest ${request.id} created`);
+            configuration.logger.info(`CertificationRequest ${id} created.`);
         }
 
-        return request.sync();
+        if (callback) {
+            callback(id);
+        }
+
+        return CertificationRequest.fetch(id, configuration);
     }
 
-    async sync(): Promise<CertificationRequest> {
-        const offChainData = await polly()
+    public static async getAll(
+        configuration: Configuration.Entity
+    ): Promise<CertificationRequest[]> {
+        const all = await configuration.offChainDataSource.certificateClient.getAllCertificationRequests();
+
+        return all.map((certReq) => new CertificationRequest(certReq, configuration));
+    }
+
+    public static async fetch(
+        id: ICertificationRequest['id'],
+        configuration: Configuration.Entity
+    ): Promise<CertificationRequest> {
+        const certData = await polly()
             .waitAndRetry([2000, 4000, 8000, 16000])
             .executeForPromise(() =>
-                this.configuration.offChainDataSource.certificateClient.getCertificationRequest(
-                    this.id
-                )
+                configuration.offChainDataSource.certificateClient.getCertificationRequest(id)
             );
 
-        Object.assign(this, offChainData);
-
-        this.initialized = true;
-
-        if (this.configuration.logger) {
-            this.configuration.logger.verbose(`CertificationRequest ${this.id} synced`);
+        if (configuration.logger) {
+            configuration.logger.verbose(`CertificationRequest ${id} fetched.`);
         }
 
-        return this;
+        return new CertificationRequest(certData, configuration);
+    }
+
+    public async sync(): Promise<CertificationRequest> {
+        return CertificationRequest.fetch(this.id, this.configuration);
     }
 
     async approve(): Promise<number> {
@@ -189,17 +205,5 @@ export class CertificationRequest extends PreciseProofEntity implements ICertifi
         await tx.wait();
 
         return tx;
-    }
-
-    public static async getAll(
-        configuration: Configuration.Entity
-    ): Promise<CertificationRequest[]> {
-        const all = await configuration.offChainDataSource.certificateClient.getAllCertificationRequests();
-
-        const certificationRequestPromises = all.map((certReq) =>
-            new CertificationRequest(certReq.id, configuration).sync()
-        );
-
-        return Promise.all(certificationRequestPromises);
     }
 }

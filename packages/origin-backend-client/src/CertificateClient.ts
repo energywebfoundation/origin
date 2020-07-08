@@ -14,16 +14,20 @@ import { IRequestClient, RequestClient } from './RequestClient';
 
 export class CertificationRequestUpdateDTO {
     deviceId: string;
+
     fromTime: number;
+
     toTime: number;
+
     energy: string;
+
     files: string[];
 }
 
 export interface ICertificateClient {
     queueCertificationRequestData(data: CertificationRequestUpdateData): Promise<boolean>;
     validateGenerationPeriod(data: CertificationRequestValidationData): Promise<ISuccessResponse>;
-    getCertificationRequest(id: number): Promise<ICertificationRequest>;
+    getCertificationRequest(id: ICertificationRequest['id']): Promise<ICertificationRequest>;
     getAllCertificationRequests(): Promise<ICertificationRequest[]>;
     getOwnershipCommitment(certificateId: number): Promise<IOwnershipCommitmentProofWithTx>;
     addOwnershipCommitment(
@@ -62,7 +66,9 @@ export class CertificateClient implements ICertificateClient {
         const success = response.status >= 200 && response.status < 300;
 
         if (!success) {
-            console.error(`Unable to queue certification request for device ${data.deviceId}:${data.fromTime}-${data.toTime}`);
+            console.error(
+                `Unable to queue certification request for device ${data.deviceId}:${data.fromTime}-${data.toTime}`
+            );
             console.error(JSON.stringify(response));
         }
 
@@ -72,10 +78,10 @@ export class CertificateClient implements ICertificateClient {
     public async validateGenerationPeriod(
         data: CertificationRequestValidationData
     ): Promise<ISuccessResponse> {
-        const response = await this.requestClient.get<CertificationRequestValidationData, ISuccessResponse>(
-            `${this.certificateRequestEndpoint}/validate`,
-            { params: data }
-        );
+        const response = await this.requestClient.get<
+            CertificationRequestValidationData,
+            ISuccessResponse
+        >(`${this.certificateRequestEndpoint}/validate`, { params: data });
 
         return response.data;
     }
@@ -89,7 +95,9 @@ export class CertificateClient implements ICertificateClient {
             id,
             ...data,
             energy: bigNumberify(data.energy),
-            deviceId: data.device.id.toString()
+            deviceId: data.device.id.toString(),
+            approvedDate: data.approvedDate ? new Date(data.approvedDate) : null,
+            revokedDate: data.revokedDate ? new Date(data.revokedDate) : null
         };
     }
 
@@ -102,7 +110,9 @@ export class CertificateClient implements ICertificateClient {
             return {
                 ...certReq,
                 energy: bigNumberify(certReq.energy),
-                deviceId: certReq.device.id.toString()
+                deviceId: certReq.device.id.toString(),
+                approvedDate: certReq.approvedDate ? new Date(certReq.approvedDate) : null,
+                revokedDate: certReq.revokedDate ? new Date(certReq.revokedDate) : null
             };
         });
     }

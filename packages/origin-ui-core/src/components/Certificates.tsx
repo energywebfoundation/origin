@@ -1,6 +1,6 @@
 import React from 'react';
 import { Route, NavLink, Redirect } from 'react-router-dom';
-import { Role, isRole } from '@energyweb/origin-backend-core';
+import { Role, isRole, UserStatus } from '@energyweb/origin-backend-core';
 import { PageContent } from './PageContent/PageContent';
 import { CertificateTable, SelectedState } from './CertificateTable';
 import { CertificateDetailView } from './CertificateDetailView';
@@ -11,7 +11,8 @@ import { getCurrencies } from '../features/general/selectors';
 import { useTranslation } from 'react-i18next';
 import { Exchange, MyTrades } from './exchange';
 import { useLinks } from '../utils';
-import { BundlesTable } from './bundles/BundleTable';
+import { BundlesTable } from './bundles/BundlesTable';
+import { CreateBundleForm } from './bundles/CreateBundleForm';
 
 function CertificateDetailViewId(id: number) {
     return <CertificateDetailView id={id} />;
@@ -41,6 +42,7 @@ export function Certificates() {
     const TradesRoute = () => <MyTrades currency={defaultCurrency} />;
 
     const isIssuer = isRole(user, Role.Issuer);
+    const userIsActive = user && user.status === UserStatus.Active;
 
     const CertificatesMenu = [
         {
@@ -84,6 +86,19 @@ export function Certificates() {
             label: 'navigation.certificates.bundles',
             component: BundlesTable,
             show: user
+        },
+        {
+            key: 'create_bundle',
+            label: 'navigation.certificates.create_bundle',
+            component: CreateBundleForm,
+            show: userIsActive
+        },
+        {
+            key: 'my_bundles',
+            label: 'navigation.certificates.my_bundles',
+            component: BundlesTable,
+            props: { owner: true },
+            show: userIsActive
         },
         {
             key: 'my-trades',

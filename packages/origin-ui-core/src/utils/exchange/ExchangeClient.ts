@@ -12,7 +12,8 @@ import {
     IDirectBuyDTO,
     IOrder,
     RequestWithdrawalDTO,
-    Bundle
+    Bundle,
+    CreateBundleDTO
 } from '.';
 import { Filter, OrderStatus } from '@energyweb/exchange-core';
 
@@ -35,6 +36,10 @@ export interface IExchangeClient {
     getOrderById(id: string): Promise<Order>;
     getOrders?(): Promise<Order[]>;
     getAvailableBundles(): Promise<Bundle[]>;
+    getOwnBundles(): Promise<Bundle[]>;
+    getBundleSplits(bundle: Bundle): Promise<Bundle[]>;
+    createBundle(bundle: CreateBundleDTO): Promise<Bundle>;
+    cancelBundle(id: string): Promise<Bundle>;
 }
 
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
@@ -119,13 +124,15 @@ export class ExchangeClient implements IExchangeClient {
     }
 
     public async getAccount() {
-        const response = await this.requestClient.get<{}, ExchangeAccount>(this.accountEndpoint);
+        const response = await this.requestClient.get<unknown, ExchangeAccount>(
+            this.accountEndpoint
+        );
 
         return response.data;
     }
 
     public async getAllTransfers() {
-        const response = await this.requestClient.get<{}, ITransfer[]>(
+        const response = await this.requestClient.get<unknown, ITransfer[]>(
             `${this.transferEndpoint}/all`
         );
 
@@ -133,7 +140,7 @@ export class ExchangeClient implements IExchangeClient {
     }
 
     public async withdraw(withdrawal: RequestWithdrawalDTO) {
-        const response = await this.requestClient.post<{}, string>(
+        const response = await this.requestClient.post<unknown, string>(
             `${this.transferEndpoint}/withdrawal`,
             withdrawal
         );
@@ -142,29 +149,68 @@ export class ExchangeClient implements IExchangeClient {
     }
 
     public async getTrades() {
-        const response = await this.requestClient.get<{}, ITradeDTO[]>(this.tradeEndpoint);
+        const response = await this.requestClient.get<unknown, ITradeDTO[]>(this.tradeEndpoint);
 
         return response.data;
     }
 
     public async getAssetById(id: string) {
-        const response = await this.requestClient.get<{}, IAsset>(`${this.assetEndpoint}/${id}`);
+        const response = await this.requestClient.get<unknown, IAsset>(
+            `${this.assetEndpoint}/${id}`
+        );
 
         return response.data;
     }
 
     public async getOrderById(id: string) {
-        const response = await this.requestClient.get<{}, Order>(`${this.ordersEndpoint}/${id}`);
+        const response = await this.requestClient.get<unknown, Order>(
+            `${this.ordersEndpoint}/${id}`
+        );
 
         return response.data;
     }
 
-    public async getAvailableBundles() {
-        const response = await this.requestClient.get<{}, Bundle[]>(
+    public async getAvailableBundles(): Promise<Bundle[]> {
+        const response = await this.requestClient.get<unknown, Bundle[]>(
             `${this.bundleEndpoint}/available`
         );
 
         return response.data;
+    }
+
+    public async getOwnBundles(): Promise<Bundle[]> {
+        const response = await this.requestClient.get<unknown, Bundle[]>(`${this.bundleEndpoint}`);
+
+        return response.data;
+    }
+
+    public async cancelBundle(id: string): Promise<Bundle> {
+        const response = await this.requestClient.put<unknown, Bundle>(
+            `${this.bundleEndpoint}/${id}/cancel`
+        );
+
+        return response.data;
+    }
+
+    public async getBundleSplits(bundle: Bundle): Promise<Bundle[]> {
+        const response = await this.requestClient.get<unknown, Bundle[]>(
+            `${this.bundleEndpoint}/${bundle.id}/splits`
+        );
+
+        return response.data;
+    }
+
+    public async createBundle(bundleDTO: CreateBundleDTO): Promise<Bundle> {
+        const created = await this.requestClient.post<CreateBundleDTO, Bundle>(
+            this.bundleEndpoint,
+            bundleDTO
+        );
+        return created.data;
+    }
+
+    public async buyBundle(bundle: { bundleId: string; volume: number }): Promise<any> {
+        const bundleTrade = await this.requestClient.post(`${this.bundleEndpoint}/buy`, bundle);
+        return bundleTrade.data;
     }
 
     private get assetEndpoint() {
@@ -296,6 +342,25 @@ export const ExchangeClientMock: IExchangeClient = {
     },
 
     getAvailableBundles() {
+        return null;
+    },
+
+    getOwnBundles() {
+        return null;
+    },
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    createBundle(bundle: CreateBundleDTO) {
+        return null;
+    },
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    cancelBundle(id: string) {
+        return null;
+    },
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    getBundleSplits(bundle: Bundle) {
         return null;
     }
 };

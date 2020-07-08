@@ -9,7 +9,7 @@ import {
 import { ConfigService } from '@nestjs/config';
 import { InjectRepository } from '@nestjs/typeorm';
 import BN from 'bn.js';
-import { Repository } from 'typeorm';
+import { Repository, FindConditions } from 'typeorm';
 
 import { AccountBalanceService } from '../account-balance/account-balance.service';
 import { Asset } from '../asset/asset.entity';
@@ -18,6 +18,7 @@ import { BundleTrade } from './bundle-trade.entity';
 import { Bundle } from './bundle.entity';
 import { BuyBundleDTO } from './buy-bundle.dto';
 import { CreateBundleDTO } from './create-bundle.dto';
+import { BundleSplitDTO } from './bundle-split.dto';
 
 @Injectable()
 export class BundleService {
@@ -41,8 +42,8 @@ export class BundleService {
         return this.bundleRepository.findOne(id);
     }
 
-    public async getByUser(userId: string): Promise<Bundle[]> {
-        return this.bundleRepository.find({ userId });
+    public async getByUser(userId: string, conditions?: FindConditions<Bundle>): Promise<Bundle[]> {
+        return this.bundleRepository.find({ ...conditions, userId });
     }
 
     public async getTrades(userId: string): Promise<BundleTrade[]> {
@@ -50,7 +51,9 @@ export class BundleService {
     }
 
     public async getAvailable(): Promise<Bundle[]> {
-        return this.bundleRepository.find({ isCancelled: false });
+        return (await this.bundleRepository.find({ isCancelled: false })).filter(
+            (bundle) => !bundle.available.isZero()
+        );
     }
 
     public async create(userId: string, createBundle: CreateBundleDTO): Promise<Bundle> {
@@ -106,13 +109,19 @@ export class BundleService {
             throw new BadRequestException('Unable to split bundle');
         }
 
+        const volume = new BN(buyBundle.volume);
+
         const trade: BundleTrade = {
             bundle: { id: bundle.id },
             buyerId: userId,
-            volume: new BN(buyBundle.volume)
+            volume
         } as BundleTrade;
 
         const { id } = await this.bundleTradeRepository.save(trade);
+
+        const updatedItems = bundle.getUpdatedVolumes(volume);
+
+        await this.bundleRepository.save({ id: bundle.id, items: updatedItems });
 
         return this.bundleTradeRepository.findOne(id);
     }
@@ -121,6 +130,15 @@ export class BundleService {
         await this.bundleRepository.update({ userId, id: bundleId }, { isCancelled: true });
 
         return this.get(bundleId);
+    }
+
+    public async possibleBundleSplits(bundleId: string) {
+        const bundle = await this.get(bundleId);
+
+        return new BundleSplitDTO({
+            id: bundle.id,
+            splits: bundle.possibleSplits(this.energyPerUnit)
+        });
     }
 
     private async hasEnoughAssets(userId: string, createBundle: CreateBundleDTO) {

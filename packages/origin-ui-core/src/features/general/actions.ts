@@ -11,7 +11,8 @@ export enum GeneralActions {
     setOffchainConfiguration = 'GENERAL_SET_OFFCHAIN_CONFIGURATION',
     setAccountMismatchModalProperties = 'GENERAL_SET_ACCOUNT_MISMATCH_MODAL_PROPERTIES',
     accountMismatchModalResolved = 'GENERAL_ACCOUNT_MISMATCH_MODAL_RESOLVED',
-    requestDeviceCreation = 'GENERAL_REQUEST_DEVICE_CREATION'
+    requestDeviceCreation = 'GENERAL_REQUEST_DEVICE_CREATION',
+    setNoAccountModalVisibility = 'NO_ACCOUNT_MODAL_VISIBILITY'
 }
 
 export interface IEnvironment {
@@ -25,6 +26,7 @@ export interface IEnvironment {
     DEVICE_PROPERTIES_ENABLED: string;
     DEFAULT_ENERGY_IN_BASE_UNIT: string;
     EXCHANGE_WALLET_PUB: string;
+    GOOGLE_MAPS_API_KEY: string;
 }
 
 export interface ISetLoadingAction {
@@ -133,6 +135,20 @@ export const setAccountMismatchModalPropertiesAction = (
 
 export type TSetAccountMismatchModalPropertiesAction = typeof setAccountMismatchModalPropertiesAction;
 
+export interface ISetNoAccountModalVisibilityAction {
+    type: GeneralActions.setNoAccountModalVisibility;
+    payload: boolean;
+}
+
+export const setNoAccountModalVisibilityAction = (
+    payload: ISetNoAccountModalVisibilityAction['payload']
+) => ({
+    type: GeneralActions.setNoAccountModalVisibility,
+    payload
+});
+
+export type TSetNoAccountModalVisibilityAction = typeof setNoAccountModalVisibilityAction;
+
 export interface IRequestDeviceCreationAction {
     type: GeneralActions.requestDeviceCreation;
     payload: {
@@ -156,5 +172,6 @@ export type IGeneralAction =
     | ISetExchangeClientAction
     | ISetOffchainConfigurationAction
     | ISetAccountMismatchModalPropertiesAction
+    | ISetNoAccountModalVisibilityAction
     | IAccountMismatchModalResolvedAction
     | IRequestDeviceCreationAction;

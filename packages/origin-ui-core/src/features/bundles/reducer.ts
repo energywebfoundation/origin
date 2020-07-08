@@ -3,29 +3,35 @@ import { IBundleAction, BundlesActionType } from './actions';
 
 export interface IBundlesState {
     bundles: Bundle[];
-    createBundleModal: {
-        visible: boolean;
-    };
+    showBundleDetails: boolean;
 }
 
 const initialState: IBundlesState = {
     bundles: [],
-    createBundleModal: {
-        visible: false
-    }
+    showBundleDetails: false
 };
 
-export default function reducer(
+export default function reducer<T>(
     state: IBundlesState = initialState,
-    { payload, type }: IBundleAction
+    { type, payload }: IBundleAction
 ): IBundlesState {
     switch (type) {
         case BundlesActionType.STORE:
-            const bundles = [...state.bundles.filter((b) => b.id === payload.id)];
+            const bundles = [...state.bundles.filter((b) => b.id !== payload.id)];
             bundles.push(payload);
             return {
                 ...state,
                 bundles
+            };
+        case BundlesActionType.SHOW_DETAILS:
+            return {
+                ...state,
+                showBundleDetails: payload
+            };
+        case BundlesActionType.CLEAR_BUNDLES:
+            return {
+                ...state,
+                bundles: []
             };
         default:
             return state;

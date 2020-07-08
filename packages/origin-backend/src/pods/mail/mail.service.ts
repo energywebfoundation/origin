@@ -5,6 +5,7 @@ interface IIndividualMandrillMailSendStatus {
     email: string;
     status: 'sent';
     _id: string;
+    // eslint-disable-next-line camelcase
     reject_reason: string;
 }
 

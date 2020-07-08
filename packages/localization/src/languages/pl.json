@@ -21,12 +21,15 @@
                 "pending": "Oczekujące"
             },
             "certificates": {
-                "bundles": "Pakiety"
+                "bundles": "Pakiety",
+                "my_bundles": "Moje pakiety",
+                "create_bundle": "Stwórz pakiet"
             }
         },
         "device": {
             "properties": {
                 "owner": "Właściciel",
+                "facility": "Obiekt",
                 "facilityName": "Nazwa obiektu",
                 "regionProvince": "Region, prowincja",
                 "type": "Typ",
@@ -40,6 +43,7 @@
                 "otherGreenAttributes": "Pozostałe zielone atrybuty",
                 "deviceType": "Typ urządzenia",
                 "publicSupport": "Wsparcie publiczne",
+                "location": "Lokalizacja",
                 "geoLocation": "Geo-lokalizacja",
                 "registrationDate": "Data rejestracji",
                 "regions": "Regiony",
@@ -70,7 +74,9 @@
                 "certificationDate": "Data certyfikacji",
                 "from": "Od",
                 "to": "Do",
-                "source": "Źródło"
+                "source": "Źródło",
+                "generationDate":"Data generacji",
+                "totalPrice": "Cena całkowita"
             },
             "actions": {
                 "requestCertificates": "Zażądaj certyfikatów",
@@ -82,14 +88,23 @@
                 "buy": "Kup",
                 "request": "Żądaj",
                 "withdraw": "Wypłać",
-                "deposit": "Wpłać"
+                "deposit": "Wpłać",
+                "create_bundle": "Stwórz Pakiet",
+                "buy_bundle": "Kup pakiet",
+                "cancel_bundle": "Anuluj",
+                "selectAll": "Zaznacz wszystko"
             },
             "feedback": {
                 "certificateDeposited": "Certificate deposited",
-                "withdrawn": "Zdeponowany certyfikat"
+                "withdrawn": "Zdeponowany certyfikat",
+                "bundle_created": "Utworzono pakiet ",
+                "bundle_bought": "Kupiony pakiet",
+                "bundleCanceld": "Pakiet anulowany"
             },
             "info": {
-                "requestCertificatesFor": "Zażądaj certyfikatów dla urządzenia {facilityName}"
+                "certificates": "CERTYFIKATY",
+                "requestCertificatesFor": "Zażądaj certyfikatów dla urządzenia {facilityName}",
+                "selectPriceRange": "Wybierz przedział cenowy, aby wyświetlić więcej kombinacji"
             }
         },
         "search": {
@@ -245,7 +260,17 @@
             "wind": "WIATR",
             "hydro": "HYDRO",
             "other": "INNY",
-            "price": "Cena za MWh"
+            "price": "Cena za MWh",
+            "totalVolume": "Maksymalna głośność"
+        },
+        "info": {
+            "bundleDetails": "Szczegóły Pakietu",
+            "price": "Cena za MWh",
+            "Sell": "Sprzedać",
+            "certificates": "certyfikaty"
+        },
+        "actions": {
+            "sellAsBundle": "Sell as bundle"
         }
     }
 }

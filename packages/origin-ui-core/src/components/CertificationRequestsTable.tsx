@@ -57,9 +57,7 @@ export function CertificationRequestsTable(props: IProps) {
         let newPaginatedData: IRecord[] = [];
         const isIssuer = isRole(user, Role.Issuer);
         try {
-            const requests = (await CertificationRequest.getAll(configuration)).filter(
-                (cert) => cert.initialized
-            );
+            const requests = await CertificationRequest.getAll(configuration);
 
             for (const request of requests) {
                 const requestDevice = producingDevices.find(

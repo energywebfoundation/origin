@@ -35,7 +35,7 @@
         "jsonschema": "1.2.6",
         "moment": "^2.24.0",
         "precise-proofs-js": "1.1.0",
-        "winston": "3.2.1"
+        "winston": "3.3.3"
     },
     "devDependencies": {
         "@types/eth-sig-util": "2.1.0",

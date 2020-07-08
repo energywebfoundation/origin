@@ -10,13 +10,12 @@ export const getOffChainDataSource = (state: IStoreState) => state.general.offCh
 export const getEnvironment = (state: IStoreState) => state.general.environment;
 
 export const getCurrencies = (state: IStoreState): string[] =>
-    state.general.offChainConfiguration?.currencies;
+    state.general.offChainConfiguration?.currencies || ['USD'];
 
 export const getCompliance = (state: IStoreState): string =>
     state.general.offChainConfiguration?.complianceStandard;
 
-export const getRegions = (state: IStoreState): object =>
-    state.general.offChainConfiguration?.regions;
+export const getRegions = (state: IStoreState): any => state.general.offChainConfiguration?.regions;
 
 export const getCountry = (state: IStoreState): string =>
     state.general.offChainConfiguration?.countryName;
@@ -30,3 +29,6 @@ export const getOffchainConfiguration = (state: IStoreState) => state.general.of
 
 export const getAccountMismatchModalProperties = (state: IStoreState) =>
     state.general.accountMismatchModalProperties;
+
+export const getNoAccountModalVisibility = (state: IStoreState) =>
+    state.general.noAccountModalVisibility;

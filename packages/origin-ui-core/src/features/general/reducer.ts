@@ -13,6 +13,7 @@ export interface IGeneralState {
     accountMismatchModalProperties: {
         visibility: boolean;
     };
+    noAccountModalVisibility: boolean;
 }
 
 const defaultState: IGeneralState = {
@@ -24,7 +25,8 @@ const defaultState: IGeneralState = {
     offChainConfiguration: null,
     accountMismatchModalProperties: {
         visibility: false
-    }
+    },
+    noAccountModalVisibility: false
 };
 
 export default function reducer(state = defaultState, action: IGeneralAction): IGeneralState {
@@ -61,6 +63,9 @@ export default function reducer(state = defaultState, action: IGeneralAction): I
 
         case GeneralActions.setAccountMismatchModalProperties:
             return { ...state, accountMismatchModalProperties: action.payload };
+
+        case GeneralActions.setNoAccountModalVisibility:
+            return { ...state, noAccountModalVisibility: action.payload };
 
         default:
             return state;
