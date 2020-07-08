@@ -1,3 +1,4 @@
+/*  eslint-disable @typescript-eslint/no-unused-vars */
 import { IDeviceClient } from '@energyweb/origin-backend-client';
 import {
     DeviceStatus,
@@ -7,7 +8,9 @@ import {
     IExternalDeviceId,
     ISmartMeterRead,
     ISmartMeterReadWithStatus,
-    DeviceSettingsUpdateData
+    DeviceSettingsUpdateData,
+    ISuccessResponse,
+    sortLowestToHighestTimestamp
 } from '@energyweb/origin-backend-core';
 
 export class DeviceClientMock implements IDeviceClient {
@@ -58,40 +61,45 @@ export class DeviceClientMock implements IDeviceClient {
     public async getAllSmartMeterReadings(id: number): Promise<ISmartMeterReadWithStatus[]> {
         const { smartMeterReads } = this.storage.get(id);
 
-        return smartMeterReads.map(smRead => ({
+        return smartMeterReads.map((smRead) => ({
             ...smRead,
             certified: false
         }));
     }
 
-    public async addSmartMeterRead(id: number, smartMeterRead: ISmartMeterRead): Promise<void> {
+    public async addSmartMeterReads(id: number, smartMeterReads: ISmartMeterRead[]): Promise<void> {
         const device = this.storage.get(id);
 
         if (!device.smartMeterReads) {
             device.smartMeterReads = [];
         }
 
-        device.smartMeterReads.push(smartMeterRead);
-        device.smartMeterReads = device.smartMeterReads.sort((a, b) =>
-            a.timestamp > b.timestamp ? 1 : b.timestamp > a.timestamp ? -1 : 0
+        device.smartMeterReads = [...device.smartMeterReads, ...smartMeterReads].sort(
+            sortLowestToHighestTimestamp
         );
 
         this.storage.set(id, device);
     }
 
-    public async getSupplyBy(facilityName: string, status: number): Promise<IDeviceWithRelationsIds[]> {
+    public async getSupplyBy(
+        facilityName: string,
+        status: number
+    ): Promise<IDeviceWithRelationsIds[]> {
         return [...this.storage.values()];
     }
 
-    public async delete(id: number): Promise<void> {
-        throw new Error("Method not implemented.");
+    public async delete(id: number): Promise<ISuccessResponse> {
+        throw new Error('Method not implemented.');
     }
 
-    public async updateDeviceSettings(id: number, device: DeviceSettingsUpdateData): Promise<void> {
-        throw new Error("Method not implemented.");
+    public async updateDeviceSettings(
+        id: number,
+        device: DeviceSettingsUpdateData
+    ): Promise<ISuccessResponse> {
+        throw new Error('Method not implemented.');
     }
 
     public async getMyDevices(withMeterStats: boolean): Promise<IDeviceWithRelationsIds[]> {
-        throw new Error("Method not implemented.");
+        throw new Error('Method not implemented.');
     }
 }

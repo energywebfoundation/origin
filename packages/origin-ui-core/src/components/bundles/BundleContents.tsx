@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
     Typography,
     Paper,
@@ -13,6 +13,8 @@ import {
 } from '@material-ui/core';
 import { Bundle, Split } from '../../utils/exchange';
 import { useSelector, useDispatch } from 'react-redux';
+import { UserStatus } from '@energyweb/origin-backend-core';
+
 import {
     getEnvironment,
     getProducingDevices,
@@ -34,6 +36,7 @@ import {
     ArrowRightAlt
 } from '@material-ui/icons';
 import { buyBundle } from '../../features/bundles';
+import { getUserOffchain } from '../../features/users/selectors';
 
 interface IOwnProps {
     bundle: Bundle;
@@ -72,7 +75,7 @@ const rowStyle = {
 };
 
 export const BundleContents = (props: IOwnProps) => {
-    const { owner, bundle, splits } = props;
+    const { bundle, splits } = props;
     const { price, items, id } = bundle;
     const environment = useSelector(getEnvironment);
     const devices = useSelector(getProducingDevices);
@@ -94,6 +97,19 @@ export const BundleContents = (props: IOwnProps) => {
         onClick: onBuyBundle,
         label: 'certificate.actions.buy_bundle'
     };
+
+    const fifthFromEnd = (arrayLength: number) => {
+        return arrayLength < 5 ? 0 : arrayLength - 5;
+    };
+
+    useEffect(() => {
+        if (firstSplit > fifthFromEnd(splits.length)) {
+            setFirstSplit(fifthFromEnd(splits.length));
+        }
+    }, [splits]);
+
+    const { status } = useSelector(getUserOffchain);
+    const userIsActive = status === UserStatus.Active;
 
     return (
         <Box
@@ -122,7 +138,7 @@ export const BundleContents = (props: IOwnProps) => {
             )}
             {splits.length > COLUMNS_COUNT && (
                 <IconButton
-                    disabled={firstSplit + COLUMNS_COUNT >= splits.length}
+                    disabled={firstSplit >= fifthFromEnd(splits.length)}
                     onClick={() => setFirstSplit(firstSplit + 1)}
                     style={{
                         position: 'absolute',
@@ -429,7 +445,7 @@ export const BundleContents = (props: IOwnProps) => {
                                             {formatCurrencyComplete(splitPrice, currency)}
                                         </Typography>
                                     </Box>
-                                    {!owner && (
+                                    {!bundle.own && userIsActive && (
                                         <Button
                                             color="primary"
                                             variant="contained"

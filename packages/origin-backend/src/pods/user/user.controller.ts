@@ -19,7 +19,9 @@ import {
     Put,
     UseGuards,
     UseInterceptors,
-    Logger
+    Logger,
+    ParseIntPipe,
+    UnauthorizedException
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 
@@ -42,7 +44,7 @@ export class UserController {
     }
 
     @Get('me')
-    @UseGuards(AuthGuard('jwt'), ActiveUserGuard)
+    @UseGuards(AuthGuard('jwt'))
     me(@UserDecorator() user: ILoggedInUser) {
         return this.userService.findById(user.id);
     }
@@ -72,19 +74,32 @@ export class UserController {
     }
 
     @Get(':id')
-    public async get(@Param('id') id: string) {
+    @UseGuards(AuthGuard('jwt'), ActiveUserGuard)
+    public async get(
+        @Param('id', new ParseIntPipe()) id: number,
+        @UserDecorator() loggedUser: ILoggedInUser
+    ) {
+        const canViewUserData = await this.userService.canViewUserData(id, loggedUser);
+
+        if (!canViewUserData) {
+            throw new UnauthorizedException({
+                success: false,
+                message: `Unable to fetch user data. Unauthorized.`
+            });
+        }
+
         return this.userService.findById(id);
     }
 
     @Put('profile')
     @UseGuards(AuthGuard('jwt'), ActiveUserGuard)
-    public async putProfile(@UserDecorator() { id }: ILoggedInUser, @Body() body: IUser) {
+    public async updateOwnProfile(@UserDecorator() { id }: ILoggedInUser, @Body() body: IUser) {
         return this.userService.updateProfile(id, body);
     }
 
     @Put('password')
     @UseGuards(AuthGuard('jwt'), ActiveUserGuard)
-    public async putPassword(
+    public async updateOwnPassword(
         @UserDecorator() { email }: ILoggedInUser,
         @Body() body: UserPasswordUpdate
     ) {
@@ -93,7 +108,10 @@ export class UserController {
 
     @Put('chainAddress')
     @UseGuards(AuthGuard('jwt'), ActiveUserGuard)
-    public async putChainAddress(@UserDecorator() { id }: ILoggedInUser, @Body() body: IUser) {
+    public async updateOwnBlockchainAddress(
+        @UserDecorator() { id }: ILoggedInUser,
+        @Body() body: IUser
+    ) {
         return this.userService.updateBlockChainAddress(id, body);
     }
 }
