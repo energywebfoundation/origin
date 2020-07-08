@@ -1,4 +1,3 @@
-import moment from 'moment';
 import { Configuration } from '@energyweb/utils-general';
 import {
     IDevice,
@@ -10,7 +9,6 @@ import {
     IDeviceWithRelationsIds,
     ISmartMeterReadStats
 } from '@energyweb/origin-backend-core';
-import { BigNumberish, bigNumberify } from 'ethers/utils';
 
 export class Entity implements IDevice {
     status: DeviceStatus;
