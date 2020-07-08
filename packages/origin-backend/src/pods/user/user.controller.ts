@@ -44,7 +44,7 @@ export class UserController {
     }
 
     @Get('me')
-    @UseGuards(AuthGuard('jwt'),  ActiveUserGuard)
+    @UseGuards(AuthGuard('jwt') /* ActiveUserGuard */)
     me(@UserDecorator() user: ILoggedInUser) {
         return this.userService.findById(user.id);
     }
