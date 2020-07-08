@@ -353,7 +353,7 @@ describe('Bundles', () => {
             });
     });
 
-    it.only('Inactive user should not be able to buy bundle', async () => {
+    it('Inactive user should not be able to buy bundle', async () => {
         const user2Id = '2';
         const { id } = await createBundle(user2Id);
         authenticatedUser.status = UserStatus.Pending;
@@ -365,7 +365,7 @@ describe('Bundles', () => {
         authenticatedUser.status = UserStatus.Active;
     });
 
-    it.only('Active user should be able to buy bundle', async () => {
+    it('Active user should be able to buy bundle', async () => {
         const user2Id = '2';
         const { id } = await createBundle(user2Id);
         const bundleToBuy: BuyBundleDTO = {
@@ -373,5 +373,27 @@ describe('Bundles', () => {
             volume: `${10 * MWh}`
         };
         await request(app.getHttpServer()).post('/bundle/buy').send(bundleToBuy).expect(201);
+    });
+
+    it('Inactive user should not be able to create bundle', async () => {
+        authenticatedUser.status = UserStatus.Pending;
+        const { address: user1Address } = await accountService.getOrCreateAccount(user1Id);
+
+        const depositOne = await createDeposit(user1Address, `${10 * MWh}`, assetOne);
+        const depositTwo = await createDeposit(user1Address, `${10 * MWh}`, assetTwo);
+
+        await confirmDeposit(depositOne.transactionHash);
+        await confirmDeposit(depositTwo.transactionHash);
+
+        const bundleToCreate: CreateBundleDTO = {
+            price: 1000,
+            items: [
+                { assetId: depositOne.asset.id, volume: `${10 * MWh}` },
+                { assetId: depositTwo.asset.id, volume: `${10 * MWh}` }
+            ]
+        };
+
+        await request(app.getHttpServer()).post('/bundle').send(bundleToCreate).expect(412);
+        authenticatedUser.status = UserStatus.Active;
     });
 });

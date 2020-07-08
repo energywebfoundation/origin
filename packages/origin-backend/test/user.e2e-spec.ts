@@ -78,6 +78,10 @@ describe('User e2e tests', () => {
             })
             .expect((res) => ({ accessToken } = res.body));
 
+        const registeredUser = await userService.findOne({ email: userToRegister.email });
+        registeredUser.status = UserStatus.Active;
+        await userService.update(registeredUser.id, registeredUser);
+
         await request(app.getHttpServer())
             .get(`/user/me`)
             .set('Authorization', `Bearer ${accessToken}`)

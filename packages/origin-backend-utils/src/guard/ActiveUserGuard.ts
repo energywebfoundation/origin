@@ -7,12 +7,6 @@ export class ActiveUserGuard implements CanActivate {
     constructor(private reflector: Reflector) {}
 
     canActivate(context: ExecutionContext): boolean {
-        /* I suggest to remove this */
-        // const roles = this.reflector.get<Role[]>('roles', context.getHandler());
-        // if (!roles) {
-        //     return true;
-        // }
-
         const request = context.switchToHttp().getRequest();
         const user = request.user as IUserWithRelationsIds;
         const _user = user as IUserWithRelationsIds;
