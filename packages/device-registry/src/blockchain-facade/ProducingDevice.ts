@@ -1,4 +1,3 @@
-import moment from 'moment';
 import { Configuration } from '@energyweb/utils-general';
 import {
     IDevice,
@@ -10,7 +9,6 @@ import {
     IDeviceWithRelationsIds,
     ISmartMeterReadStats
 } from '@energyweb/origin-backend-core';
-import { BigNumberish, bigNumberify } from 'ethers/utils';
 
 export class Entity implements IDevice {
     status: DeviceStatus;
@@ -98,16 +96,11 @@ export class Entity implements IDevice {
         return this;
     }
 
-    async saveSmartMeterRead(
-        meterReading: BigNumberish,
-        timestamp: number = moment().unix()
-    ): Promise<void> {
-        const readingBN = bigNumberify(meterReading);
-
-        return this.configuration.offChainDataSource.deviceClient.addSmartMeterRead(this.id, {
-            meterReading: readingBN,
-            timestamp
-        });
+    async saveSmartMeterReads(smReads: ISmartMeterRead[]): Promise<void> {
+        return this.configuration.offChainDataSource.deviceClient.addSmartMeterReads(
+            this.id,
+            smReads
+        );
     }
 
     async getSmartMeterReads(): Promise<ISmartMeterRead[]> {

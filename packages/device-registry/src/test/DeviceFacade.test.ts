@@ -108,8 +108,10 @@ describe('Device Facade', () => {
         describe('Smart Meter Readings', () => {
             it('should correctly return reads', async () => {
                 let device = await new ProducingDevice.Entity(1, conf).sync();
-                await device.saveSmartMeterRead(100, SM_READ_TIMESTAMP);
-                await device.saveSmartMeterRead(300, SM_READ_TIMESTAMP + 1);
+                await device.saveSmartMeterReads([
+                    { meterReading: bigNumberify(100), timestamp: SM_READ_TIMESTAMP },
+                    { meterReading: bigNumberify(300), timestamp: SM_READ_TIMESTAMP + 1 }
+                ]);
 
                 device = await device.sync();
 
