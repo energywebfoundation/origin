@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.2.2](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-ui@2.2.1...@energyweb/origin-ui@2.2.2) (2020-07-08)
+
+
+### Bug Fixes
+
+* **deps:** update react ([64e633f](https://github.com/energywebfoundation/origin/commit/64e633fa26e171ea1ccca4c64c48c5596e327c75))
+
+
+
+
+
 ## [2.2.1](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-ui@2.2.0...@energyweb/origin-ui@2.2.1) (2020-06-16)
 
 **Note:** Version bump only for package @energyweb/origin-ui

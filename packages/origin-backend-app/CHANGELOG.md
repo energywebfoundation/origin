@@ -3,6 +3,19 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.1.5](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-backend-app@1.1.4...@energyweb/origin-backend-app@1.1.5) (2020-07-08)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @nestjs/swagger to v4.5.11 ([aa5aa8e](https://github.com/energywebfoundation/origin/commit/aa5aa8ee66485206df97c99f8bd112dc77329206))
+* **deps:** update dependency @nestjs/swagger to v4.5.12 ([427973d](https://github.com/energywebfoundation/origin/commit/427973dcd91cb0c07c3f135c637256bc2d8cc4be))
+* **deps:** update nest monorepo to v7.3.1 ([a7777b8](https://github.com/energywebfoundation/origin/commit/a7777b85aa0c56df661b1b3f24467cc8e95b2051))
+
+
+
+
+
 ## [1.1.4](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-backend-app@1.1.3...@energyweb/origin-backend-app@1.1.4) (2020-06-16)
 
 **Note:** Version bump only for package @energyweb/origin-backend-app

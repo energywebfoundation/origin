@@ -3,6 +3,23 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.4.0](https://github.com/energywebfoundation/origin/compare/@energyweb/issuer@2.3.1...@energyweb/issuer@2.4.0) (2020-07-08)
+
+
+### Bug Fixes
+
+* **deps:** update dependency winston to v3.3.0 ([12f111e](https://github.com/energywebfoundation/origin/commit/12f111ed16274e40d9ccbb4c3d6f9d8d222cb2fe))
+* **deps:** update dependency winston to v3.3.3 ([d66ad8e](https://github.com/energywebfoundation/origin/commit/d66ad8e4f8f65a8c6bed6ec95303a175771ed230))
+
+
+### Features
+
+* **issuer:** approvedDate and revokedDate added to ICertificationRequest ([20b276b](https://github.com/energywebfoundation/origin/commit/20b276b8eab5731517798eda2213e48df17636d6))
+
+
+
+
+
 ## [2.3.1](https://github.com/energywebfoundation/origin/compare/@energyweb/issuer@2.3.0...@energyweb/issuer@2.3.1) (2020-06-16)
 
 **Note:** Version bump only for package @energyweb/issuer
