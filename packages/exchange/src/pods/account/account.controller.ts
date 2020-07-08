@@ -19,7 +19,7 @@ export class AccountController {
     // TODO: explicit account creation request
     @UseInterceptors(ClassSerializerInterceptor)
     @Get()
-    @UseGuards(AuthGuard() /* ,  ActiveUserGuard */)
+    @UseGuards(AuthGuard(), ActiveUserGuard)
     public async getAccount(@UserDecorator() user: ILoggedInUser): Promise<AccountDTO> {
         const account = await this.accountService.getAccount(user.ownerId.toString());
 
