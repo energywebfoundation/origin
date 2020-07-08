@@ -3,6 +3,32 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.1.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-backend@6.0.1...@energyweb/origin-backend@6.1.0) (2020-07-08)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @nestjs/passport to v7.1.0 ([2ca9c9f](https://github.com/energywebfoundation/origin/commit/2ca9c9f57cd34871ce061f0fca2f873bf17d9e99))
+* **deps:** update dependency rxjs to v6.6.0 ([851151d](https://github.com/energywebfoundation/origin/commit/851151dd110a2b11fc9b491e491c4a152aaac807))
+* **deps:** update dependency uuid to v8.2.0 ([20ea72e](https://github.com/energywebfoundation/origin/commit/20ea72e92f79b2d919364093a127d0a15ce15040))
+* **deps:** update nest monorepo to v7.3.1 ([a7777b8](https://github.com/energywebfoundation/origin/commit/a7777b85aa0c56df661b1b3f24467cc8e95b2051))
+* **exchange:** revert fix ([b31a318](https://github.com/energywebfoundation/origin/commit/b31a318216fe6a4d4d7c373b3eb4a2219c6d946b))
+* **origin-backend:** change user status to active ([6ba9c20](https://github.com/energywebfoundation/origin/commit/6ba9c209694ae58ce493d286cec39bd58e49e821))
+* **origin-backend:** only allow certain users to get user information ([4a07737](https://github.com/energywebfoundation/origin/commit/4a077376a9c98537cf6adafcd855bf185bb5eba8))
+* **origin-backend:** permissioned smart meter reading PUT ([54db1ab](https://github.com/energywebfoundation/origin/commit/54db1ab389433179025e697740432a56ecc3bf3e))
+* **origin-backend:** remove active user check on user/me ([764e3e8](https://github.com/energywebfoundation/origin/commit/764e3e811d97b3db842e79294dc2c055a5eb09ce))
+* **origin-backend:** remove ActiveUserGuard on user/me ([219a211](https://github.com/energywebfoundation/origin/commit/219a211790bd710124dcdc1eae5884d1d0806bb1))
+
+
+### Features
+
+* **origin-backend:** approvedDate and revokedDate added to ICertificationRequest ([b4ebd19](https://github.com/energywebfoundation/origin/commit/b4ebd194266c1ab78ff48ada3347bcc514498b1b))
+* **origin-backend:** CertificationRequest approved and revoked events ([3777847](https://github.com/energywebfoundation/origin/commit/3777847412f9ca88b4510f24d9d79ee708767efb))
+
+
+
+
+
 ## [6.0.1](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-backend@6.0.0...@energyweb/origin-backend@6.0.1) (2020-06-16)
 
 **Note:** Version bump only for package @energyweb/origin-backend

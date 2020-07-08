@@ -3,6 +3,27 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.5.0](https://github.com/energywebfoundation/origin/compare/@energyweb/localization@0.4.1...@energyweb/localization@0.5.0) (2020-07-08)
+
+
+### Bug Fixes
+
+* **origin-ui-core:** add localization ([6c20906](https://github.com/energywebfoundation/origin/commit/6c20906c1dd2c796d03acff6d8971158ceee8cf3))
+* **origin-ui-core:** change total volume localiztion ([0956821](https://github.com/energywebfoundation/origin/commit/0956821b4ae67cd9fa30a42bb3139ae3bc051a47))
+
+
+### Features
+
+* **origin-ui-core:** add BundleContent ([4dedd64](https://github.com/energywebfoundation/origin/commit/4dedd640666c8c874e6167f59f3d8c2f6c1d56de))
+* **origin-ui-core:** add scroll bundle buttons ([b3f7f61](https://github.com/energywebfoundation/origin/commit/b3f7f610c3c3b870709b2e05063ce19867d560e7))
+* **origin-ui-core:** buy bundle saga ([fab5cdb](https://github.com/energywebfoundation/origin/commit/fab5cdbd9118f204bf0006942191608b11c7c3f7))
+* **origin-ui-core:** filter owned bundles ([e6074d7](https://github.com/energywebfoundation/origin/commit/e6074d7c52e368b5bb7f8701be0bda38cd1b5948))
+* **origin-ui-core:** price range selector ([5316f4c](https://github.com/energywebfoundation/origin/commit/5316f4c37618628b7053855044bd21e44b4f272c))
+
+
+
+
+
 ## [0.4.1](https://github.com/energywebfoundation/origin/compare/@energyweb/localization@0.4.0...@energyweb/localization@0.4.1) (2020-06-16)
 
 **Note:** Version bump only for package @energyweb/localization

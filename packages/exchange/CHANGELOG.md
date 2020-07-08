@@ -3,6 +3,41 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.3.0](https://github.com/energywebfoundation/origin/compare/@energyweb/exchange@1.2.1...@energyweb/exchange@1.3.0) (2020-07-08)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @nestjs/passport to v7.1.0 ([2ca9c9f](https://github.com/energywebfoundation/origin/commit/2ca9c9f57cd34871ce061f0fca2f873bf17d9e99))
+* **deps:** update dependency @nestjs/swagger to v4.5.11 ([aa5aa8e](https://github.com/energywebfoundation/origin/commit/aa5aa8ee66485206df97c99f8bd112dc77329206))
+* **deps:** update dependency @nestjs/swagger to v4.5.12 ([427973d](https://github.com/energywebfoundation/origin/commit/427973dcd91cb0c07c3f135c637256bc2d8cc4be))
+* **deps:** update dependency rxjs to v6.6.0 ([851151d](https://github.com/energywebfoundation/origin/commit/851151dd110a2b11fc9b491e491c4a152aaac807))
+* **deps:** update nest monorepo to v7.3.1 ([a7777b8](https://github.com/energywebfoundation/origin/commit/a7777b85aa0c56df661b1b3f24467cc8e95b2051))
+* **exchange:** bundles accounting ([e2e3b1c](https://github.com/energywebfoundation/origin/commit/e2e3b1ca02d014de4a6d26fa1cf4b7dff78adba7))
+* **exchange:** fix split and buy ([2841db1](https://github.com/energywebfoundation/origin/commit/2841db12df21805ce0d9d8373c6b34cacdc5dfd9))
+* **exchange:** remove ActiveUserGuard from get account ([5883e2b](https://github.com/energywebfoundation/origin/commit/5883e2b10b4a6eea8e1bec409c68ef739dc94d0f))
+* **exchange:** remove comments ([6bf30b9](https://github.com/energywebfoundation/origin/commit/6bf30b9fa9fb484a352e18f1fe35f4e9b491d1bb))
+* **exchange:** remove logs ([99e3157](https://github.com/energywebfoundation/origin/commit/99e315711ed21663924c06125c5e16f0d5cd1c2f))
+* **exchange:** remove role checking ([2755257](https://github.com/energywebfoundation/origin/commit/27552579abbb2a294f184fb5c5ee55c92e258f20))
+* **exchange:** revert fix ([b31a318](https://github.com/energywebfoundation/origin/commit/b31a318216fe6a4d4d7c373b3eb4a2219c6d946b))
+* **exchange:** rounding errors due to too low precision ([c0faf5b](https://github.com/energywebfoundation/origin/commit/c0faf5bb04436e732cd254075d77dbc250cc9670))
+* **exchange:** simplify available bundle filtering ([18f1d0e](https://github.com/energywebfoundation/origin/commit/18f1d0e3d2cba01e93142c57799877c40d471417))
+* **exchange:** update bundle on buy bundle ([d82b504](https://github.com/energywebfoundation/origin/commit/d82b504f5d96b54abc8208c4dcccee8989493362))
+* **exchange:** use mod instead of fractional of BN ([bdb1e35](https://github.com/energywebfoundation/origin/commit/bdb1e3515d8f9ec26f591de5277906f20589a4a5))
+* **exchange:** validity start/end date as string ([662d691](https://github.com/energywebfoundation/origin/commit/662d691b3843191d5f8581bac2b192eb61db5a4a))
+* **origin-backend:** change user status to active ([6ba9c20](https://github.com/energywebfoundation/origin/commit/6ba9c209694ae58ce493d286cec39bd58e49e821))
+
+
+### Features
+
+* **exchange:** add test ([13c07b2](https://github.com/energywebfoundation/origin/commit/13c07b21b284e157d99712164296c1968fba9420))
+* **exchange:** allow to configure matchingengine price picking strategy ([e2fbbe0](https://github.com/energywebfoundation/origin/commit/e2fbbe0854495e9a186adfaf0cbe8c888b799947))
+* **exchange:** Bundles possible splits API ([1b88519](https://github.com/energywebfoundation/origin/commit/1b885195b95bd1ae808a361bcbe89e5d31001d54))
+
+
+
+
+
 ## [1.2.1](https://github.com/energywebfoundation/origin/compare/@energyweb/exchange@1.2.0...@energyweb/exchange@1.2.1) (2020-06-16)
 
 **Note:** Version bump only for package @energyweb/exchange

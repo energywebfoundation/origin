@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [4.1.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-backend-core@4.0.1...@energyweb/origin-backend-core@4.1.0) (2020-07-08)
+
+
+### Bug Fixes
+
+* **origin-ui-core:** use userId as ownerId if no org ([4c3eed9](https://github.com/energywebfoundation/origin/commit/4c3eed97e1629b3bc02ba601f77872d584b0c3bb))
+
+
+### Features
+
+* **origin-backend-core:** approvedDate and revokedDate added to ICertificationRequest ([1d2d489](https://github.com/energywebfoundation/origin/commit/1d2d489bbd4adde96013509e6795c4d5f6aa9de4))
+
+
+
+
+
 ## [4.0.1](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-backend-core@4.0.0...@energyweb/origin-backend-core@4.0.1) (2020-06-16)
 
 **Note:** Version bump only for package @energyweb/origin-backend-core

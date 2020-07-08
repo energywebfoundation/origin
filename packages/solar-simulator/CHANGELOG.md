@@ -3,6 +3,23 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.2.0](https://github.com/energywebfoundation/origin/compare/@energyweb/solar-simulator@1.1.11...@energyweb/solar-simulator@1.2.0) (2020-07-08)
+
+
+### Bug Fixes
+
+* **deps:** update dependency winston to v3.3.0 ([12f111e](https://github.com/energywebfoundation/origin/commit/12f111ed16274e40d9ccbb4c3d6f9d8d222cb2fe))
+* **deps:** update dependency winston to v3.3.3 ([d66ad8e](https://github.com/energywebfoundation/origin/commit/d66ad8e4f8f65a8c6bed6ec95303a175771ed230))
+
+
+### Features
+
+* **solar-simulator:** store multiple smart meter readings at once ([90ecdbb](https://github.com/energywebfoundation/origin/commit/90ecdbb3c4eb9b53fabd9193bfd2af0367bce39e))
+
+
+
+
+
 ## [1.1.11](https://github.com/energywebfoundation/origin/compare/@energyweb/solar-simulator@1.1.10...@energyweb/solar-simulator@1.1.11) (2020-06-16)
 
 **Note:** Version bump only for package @energyweb/solar-simulator
