@@ -53,7 +53,7 @@
         "test:serial": "lerna run test:concurrent --stream && yarn test:ui",
         "test:ui": "lerna run test --scope @energyweb/origin-ui-core --stream --since master",
         "test:contracts": "lerna run test:contracts --scope @energyweb/device-registry --stream --parallel",
-        "test:backend": "lerna run --scope @energyweb/origin-backend --stream test",
+        "test:backend": "lerna run --scope @energyweb/origin-backend --scope @energyweb/origin-backend-utils --stream test",
         "test:device-registry": "lerna run --scope @energyweb/device-registry --stream test:concurrent",
         "test:utils-general": "lerna run test --scope @energyweb/utils-general --stream",
         "test:ci:contracts": "lerna run --scope @energyweb/issuer --scope @energyweb/utils-general test:concurrent --since master --parallel --stream",

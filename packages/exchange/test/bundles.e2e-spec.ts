@@ -1,6 +1,7 @@
 import { INestApplication } from '@nestjs/common';
 import { expect } from 'chai';
 import request from 'supertest';
+import { UserStatus } from '@energyweb/origin-backend-core';
 
 import { AccountDTO } from '../src/pods/account/account.dto';
 import { AccountService } from '../src/pods/account/account.service';
@@ -350,5 +351,49 @@ describe('Bundles', () => {
                 expect(splits.splits).to.have.length(1);
                 expect(splits.splits[0].volume).to.equal('918000000');
             });
+    });
+
+    it('Inactive user should not be able to buy bundle', async () => {
+        const user2Id = '2';
+        const { id } = await createBundle(user2Id);
+        authenticatedUser.status = UserStatus.Pending;
+        const bundleToBuy: BuyBundleDTO = {
+            bundleId: id,
+            volume: `${10 * MWh}`
+        };
+        await request(app.getHttpServer()).post('/bundle/buy').send(bundleToBuy).expect(412);
+        authenticatedUser.status = UserStatus.Active;
+    });
+
+    it('Active user should be able to buy bundle', async () => {
+        const user2Id = '2';
+        const { id } = await createBundle(user2Id);
+        const bundleToBuy: BuyBundleDTO = {
+            bundleId: id,
+            volume: `${10 * MWh}`
+        };
+        await request(app.getHttpServer()).post('/bundle/buy').send(bundleToBuy).expect(201);
+    });
+
+    it('Inactive user should not be able to create bundle', async () => {
+        authenticatedUser.status = UserStatus.Pending;
+        const { address: user1Address } = await accountService.getOrCreateAccount(user1Id);
+
+        const depositOne = await createDeposit(user1Address, `${10 * MWh}`, assetOne);
+        const depositTwo = await createDeposit(user1Address, `${10 * MWh}`, assetTwo);
+
+        await confirmDeposit(depositOne.transactionHash);
+        await confirmDeposit(depositTwo.transactionHash);
+
+        const bundleToCreate: CreateBundleDTO = {
+            price: 1000,
+            items: [
+                { assetId: depositOne.asset.id, volume: `${10 * MWh}` },
+                { assetId: depositTwo.asset.id, volume: `${10 * MWh}` }
+            ]
+        };
+
+        await request(app.getHttpServer()).post('/bundle').send(bundleToCreate).expect(412);
+        authenticatedUser.status = UserStatus.Active;
     });
 });

@@ -6,7 +6,8 @@ import {
     OrganizationInvitationStatus,
     getRolesFromRights,
     Role,
-    UserRegistrationData
+    UserRegistrationData,
+    UserStatus
 } from '@energyweb/origin-backend-core';
 import { INestApplication } from '@nestjs/common';
 import { expect } from 'chai';
@@ -79,6 +80,10 @@ describe('Organization e2e tests', () => {
             .expect(201);
 
         let newUserAccessToken;
+
+        const invitedUser = await userService.findOne({ email: newUserEmail });
+        invitedUser.status = UserStatus.Active;
+        await userService.update(invitedUser.id, invitedUser);
 
         await request(app.getHttpServer())
             .post('/auth/login')

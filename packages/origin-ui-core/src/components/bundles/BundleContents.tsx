@@ -13,6 +13,8 @@ import {
 } from '@material-ui/core';
 import { Bundle, Split } from '../../utils/exchange';
 import { useSelector, useDispatch } from 'react-redux';
+import { UserStatus } from '@energyweb/origin-backend-core';
+
 import {
     getEnvironment,
     getProducingDevices,
@@ -34,6 +36,7 @@ import {
     ArrowRightAlt
 } from '@material-ui/icons';
 import { buyBundle } from '../../features/bundles';
+import { getUserOffchain } from '../../features/users/selectors';
 
 interface IOwnProps {
     bundle: Bundle;
@@ -104,6 +107,10 @@ export const BundleContents = (props: IOwnProps) => {
             setFirstSplit(fifthFromEnd(splits.length));
         }
     }, [splits]);
+
+    const { status } = useSelector(getUserOffchain);
+    const userIsActive = status === UserStatus.Active;
+
     return (
         <Box
             style={{
@@ -438,7 +445,7 @@ export const BundleContents = (props: IOwnProps) => {
                                             {formatCurrencyComplete(splitPrice, currency)}
                                         </Typography>
                                     </Box>
-                                    {!bundle.own && (
+                                    {!bundle.own && userIsActive && (
                                         <Button
                                             color="primary"
                                             variant="contained"
