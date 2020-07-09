@@ -1,0 +1,10 @@
+@import './variables.scss';
+
+.OpenOrders {
+    .MuiTableRow-root {
+        background: $backgroundColorDark;
+        &:nth-child(even) {
+            background: $backgroundColorDark;
+        }
+    }
+}

@@ -18,7 +18,7 @@ export const MyOrders = () => {
         typography: { fontSizeMd }
     } = useTheme();
     return (
-        <Box fontSize={fontSizeMd}>
+        <Box fontSize={fontSizeMd} className="OpenOrders">
             <Box>
                 <BidsTable bids={bids} />
             </Box>
