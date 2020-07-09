@@ -1,5 +1,6 @@
 // eslint-disable-next-line max-classes-per-file
 import { DeviceVintage, Operator, Product } from '@energyweb/exchange-core';
+import { IExternalDeviceId } from '@energyweb/origin-backend-core';
 import { IsDateString, IsOptional, Min, Validate, ValidateNested, IsEnum } from 'class-validator';
 
 import { DeviceTypeValidator } from '../../utils/deviceTypeValidator';
@@ -37,6 +38,9 @@ export class ProductDTO {
     @IsOptional()
     @Validate(GridOperatorValidator)
     public gridOperator?: string[];
+
+    @IsOptional()
+    public externalDeviceId?: IExternalDeviceId;
 
     public static toProduct(dto: ProductDTO): Product {
         return {

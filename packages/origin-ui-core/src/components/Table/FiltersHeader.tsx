@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { FilterIcon } from '../icons/FilterIcon';
 import { IndividualFilter } from './IndividualFilter';
 import clsx from 'clsx';
 import { deepEqual } from '../../utils/helper';
+import { FilterList } from '@material-ui/icons';
+import { useTheme } from '@material-ui/core';
 
 export enum CustomFilterInputType {
     deviceType = 'deviceType',
@@ -11,6 +12,12 @@ export enum CustomFilterInputType {
     dropdown = 'dropdown',
     slider = 'slider',
     yearMonth = 'yearMonth'
+}
+
+export enum FilterRules {
+    EQUAL = 'FILTER_RULES::EQUAL',
+    FROM = 'FILTER_RULES::FROM',
+    TO = 'FILTER_RULES::TO'
 }
 
 interface ICustomFilterAvailableOption {
@@ -24,6 +31,7 @@ interface ICustomFilterInput {
     defaultOptions?: string[];
     min?: number;
     max?: number;
+    filterRule?: FilterRules;
 }
 
 export type RecordPropertyGetterFunction = (record: any) => string | number;
@@ -47,6 +55,7 @@ interface IProps {
 export function FiltersHeader(props: IProps) {
     const [menuShown, setMenuShown] = useState(false);
     const [processedFilters, setProcessedFilters] = useState<ICustomFilter[]>([]);
+    const { spacing } = useTheme();
 
     function changeFilterValue(targetFilter: ICustomFilter, selectedValue: any) {
         const index = processedFilters.indexOf(targetFilter);
@@ -120,29 +129,24 @@ export function FiltersHeader(props: IProps) {
             )}
 
             {standardFilters.length > 0 && (
-                <div className="FiltersHeader">
+                <div>
                     <div
                         className={`Filter ${menuShown ? 'Filter-opened' : ''}`}
                         onClick={() => setMenuShown(!menuShown)}
                     >
                         <div className="Filter_icon">
-                            <FilterIcon />
+                            <FilterList />
                         </div>
                         Filter
                     </div>
                     {menuShown && (
-                        <div className="Filter_menu">
+                        <div
+                            className="Filter_menu"
+                            style={{ marginBottom: spacing(2), paddingBottom: spacing(1) }}
+                        >
                             {standardFilters.map((filter, index) => {
                                 return (
-                                    <div
-                                        className={clsx('Filter_menu_item', {
-                                            'Filter_menu_item-fullWidth':
-                                                filter.input &&
-                                                filter.input.type ===
-                                                    CustomFilterInputType.deviceType
-                                        })}
-                                        key={index}
-                                    >
+                                    <div className={clsx('Filter_menu_item')} key={index}>
                                         <IndividualFilter
                                             filter={filter}
                                             changeFilterValue={changeFilterValue}

@@ -213,6 +213,11 @@ export class ExchangeClient implements IExchangeClient {
         return bundleTrade.data;
     }
 
+    public async getOrders(): Promise<Order[]> {
+        const orders = await this.requestClient.get<unknown, Order[]>(this.ordersEndpoint);
+        return orders.data;
+    }
+
     private get assetEndpoint() {
         return `${this.dataApiUrl}/asset`;
     }
@@ -361,6 +366,10 @@ export const ExchangeClientMock: IExchangeClient = {
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     getBundleSplits(bundle: Bundle) {
+        return null;
+    },
+
+    getOrders() {
         return null;
     }
 };

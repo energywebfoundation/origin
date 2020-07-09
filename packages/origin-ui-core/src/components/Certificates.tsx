@@ -13,6 +13,7 @@ import { Exchange, MyTrades } from './exchange';
 import { useLinks } from '../utils';
 import { BundlesTable } from './bundles/BundlesTable';
 import { CreateBundleForm } from './bundles/CreateBundleForm';
+import { MyOrders } from './orders/MyOrders';
 
 function CertificateDetailViewId(id: number) {
     return <CertificateDetailView id={id} />;
@@ -104,6 +105,12 @@ export function Certificates() {
             key: 'my-trades',
             label: 'navigation.certificates.myTrades',
             component: TradesRoute,
+            show: user
+        },
+        {
+            key: 'my_orders',
+            label: 'navigation.certificates.myOrders',
+            component: MyOrders,
             show: user
         }
     ];

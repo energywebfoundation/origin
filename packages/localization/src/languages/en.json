@@ -33,7 +33,8 @@
                 "bundles": "Bundles",
                 "my_bundles": "My bundles",
                 "create_bundle": "Create bundle",
-                "myTrades": "My trades"
+                "myTrades": "My trades",
+                "myOrders": "My orders"
             }
         },
         "device": {
@@ -437,6 +438,21 @@
             },
             "actions": {
                 "sellAsBundle": "Sell as bundle"
+            }
+        },
+        "order": {
+            "properties": {
+                "volume": "Volume",
+                "price": "Price",
+                "device_type": "Device type",
+                "generation_start": "Generation start",
+                "generation_end": "Generation end",
+                "filled": "Filled"
+            },
+            "captions": {
+                "open_asks": "OPEN ASKS",
+                "open_bids": "OPEN BIDS",
+                "actions": "ACTIONS"
             }
         }
     }
