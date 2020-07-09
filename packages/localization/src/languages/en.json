@@ -442,6 +442,7 @@
             }
         },
         "order": {
+            "anyValue": "Any",
             "properties": {
                 "volume": "Volume",
                 "price": "Price",
@@ -457,6 +458,13 @@
             },
             "actions": {
                 "remove": "Remove"
+            },
+            "feedback": {
+                "removeOrderConfirmation": "Are you sure you want remove?"
+            },
+            "confirmations": {
+                "no": "No",
+                "yes": "Yes"
             }
         }
     }

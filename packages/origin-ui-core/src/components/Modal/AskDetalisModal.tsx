@@ -7,7 +7,7 @@ interface IOwnProps {
     close: () => void;
 }
 
-export const BidsDetailsModal = (props: IOwnProps) => {
+export const AskDetailsModal = (props: IOwnProps) => {
     const { bid, close } = props;
     return (
         <Dialog open={bid !== null} onClose={close}>

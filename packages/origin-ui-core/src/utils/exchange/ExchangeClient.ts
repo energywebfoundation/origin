@@ -221,6 +221,7 @@ export class ExchangeClient implements IExchangeClient {
     }
 
     public async cancelOrder(order: Order): Promise<Order> {
+        console.log('>>> ExchangeClient: canceling order:', order);
         const response = await this.requestClient.post<unknown, Order>(
             `${this.ordersEndpoint}/${order.id}/cancel`
         );

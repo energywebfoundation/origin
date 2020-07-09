@@ -23,7 +23,7 @@ import { getCurrencies, getConfiguration, getEnvironment, getProducingDevices } 
 import { BigNumber } from 'ethers/utils';
 import { Remove, Visibility } from '@material-ui/icons';
 import { RemoveOrderConfirmation } from '../Modal/RemoveOrderConfirmation';
-import { AskDetailsModal } from '../Modal/AskDetailslModal';
+import { OrderDetailsModal } from '../Modal/OrderDetailslModal';
 import { cancelOrder } from '../../features/orders/actions';
 
 const ORDERS_PER_PAGE = 5;
@@ -186,10 +186,10 @@ export const AsksTable = (props: IOwnProsp) => {
                 actionsLabel={t('order.captions.actions')}
             />
             {askToView && (
-                <AskDetailsModal
-                    ask={askToView}
+                <OrderDetailsModal
+                    order={askToView}
                     close={() => setToView(null)}
-                    cancelAsk={(ask: Order) => {
+                    showCancelOrder={(ask: Order) => {
                         setToView(null);
                         setToRemove(ask);
                     }}

@@ -23,13 +23,13 @@ export function* fetchOrders(): SagaIterator {
     }
 }
 
-export function* removeOrder(): SagaIterator {
+function* cancelOrder(): SagaIterator {
     while (true) {
-        const { paylod: order } = yield take(OrdersActionsType.CANCEL);
+        const { payload } = yield take(OrdersActionsType.CANCEL);
         const exchangeClient: IExchangeClient = yield select(getExchangeClient);
         const i18n = getI18n();
         try {
-            yield apply(exchangeClient, exchangeClient.cancelOrder, [order]);
+            yield apply(exchangeClient, exchangeClient.cancelOrder, [payload]);
             showNotification(i18n.t('order.feedback.orderCanceld'), NotificationType.Success);
             yield call(fetchOrders);
         } catch (err) {
@@ -40,5 +40,5 @@ export function* removeOrder(): SagaIterator {
 }
 
 export function* ordersSaga(): SagaIterator {
-    yield all([fork(removeOrder)]);
+    yield all([fork(cancelOrder)]);
 }

@@ -275,6 +275,7 @@
             }
         },
         "order": {
+            "anyValue": "Każdy",
             "properties": {
                 "volume": "Objętość",
                 "price": "Cena",
@@ -291,6 +292,13 @@
             },
             "actions": {
                 "remove": "Usunąć"
+            },
+            "feedback": {
+                "removeOrderConfirmation": "Czy na pewno chcesz usunąć?"
+            },
+            "confirmations": {
+                "no": "Nie",
+                "yes": "Tak"
             }
         }
     }

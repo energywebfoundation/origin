@@ -122,7 +122,7 @@ export const createMaterialThemeForOrigin = (
                 },
                 MuiFilledInput: {
                     root: {
-                        backgroundColor: variables.filterItemBg
+                        backgroundColor: styleConfig.BACKGROUND_COLOR_DARK
                     }
                 }
             }

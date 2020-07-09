@@ -10,20 +10,30 @@ import {
     getProducingDevices
 } from '../..';
 import { useSelector } from 'react-redux';
+import { OrderSide } from '@energyweb/exchange-core';
 import { EnergyFormatter, deviceById, useTranslation } from '../../utils';
 
 interface IOwnProps {
-    ask: Order;
+    order: Order;
     close: () => void;
-    cancelAsk: (ask: Order) => void;
+    showCancelOrder: (order: Order) => void;
 }
 
-export const AskDetailsModal = (props: IOwnProps) => {
-    const { ask, close, cancelAsk } = props;
+export const OrderDetailsModal = (props: IOwnProps) => {
+    const { t } = useTranslation();
+    const anyOption = t('order.anyValue');
+    const { order, close, showCancelOrder } = props;
     const {
         filled,
-        product: { generationFrom, generationTo, externalDeviceId, location }
-    } = ask;
+        product: {
+            generationFrom,
+            generationTo,
+            location,
+            deviceType,
+            gridOperator = anyOption,
+            externalDeviceId
+        }
+    } = order;
     const {
         spacing,
         palette: {
@@ -32,16 +42,14 @@ export const AskDetailsModal = (props: IOwnProps) => {
         typography: { fontSizeSm, fontSizeLg }
     } = useTheme();
     const currency = useSelector(getCurrencies)[0];
-    const environment = useSelector(getEnvironment);
+    const primaryDeviceType = deviceType ? deviceType[0].split(';')[0] : anyOption;
+    const region = location ? location[0].split(';')[1] : anyOption;
     const devices = useSelector(getProducingDevices);
-    const deviceType = deviceById(externalDeviceId.id, environment, devices)
-        .deviceType.split(';')[0]
-        .toLowerCase();
-    const { t } = useTranslation();
+    const environment = useSelector(getEnvironment);
 
     return (
         <Dialog
-            open={ask !== null}
+            open={order !== null}
             onClose={close}
             style={{ fontSize: fontSizeSm }}
             className="OrderModal"
@@ -61,13 +69,13 @@ export const AskDetailsModal = (props: IOwnProps) => {
                     </Grid>
                     <Grid item style={{ alignSelf: 'start' }}>
                         <Box pb={1} fontWeight="fontWeightLight">
-                            {moment(ask.validFrom).format('MMM Do, YYYY h:mm:ss a')}
+                            {moment(order.validFrom).format('MMM Do, YYYY h:mm:ss a')}
                         </Box>
                     </Grid>
                     <Grid item container style={{ paddingBottom: spacing(1) }}>
                         <Grid item xs>
                             <Box color="text.secondary">Order No.</Box>
-                            <Box fontWeight="fontWeightLight">{ask.id}</Box>
+                            <Box fontWeight="fontWeightLight">{order.id}</Box>
                         </Grid>
                         <Grid item xs>
                             <Box
@@ -75,7 +83,7 @@ export const AskDetailsModal = (props: IOwnProps) => {
                                 fontWeight="fontWeightBold"
                                 fontSize={fontSizeLg}
                             >
-                                {formatCurrencyComplete(ask.price / 100, currency)}
+                                {formatCurrencyComplete(order.price / 100, currency)}
                             </Box>
                         </Grid>
                     </Grid>
@@ -95,9 +103,14 @@ export const AskDetailsModal = (props: IOwnProps) => {
                 >
                     <Grid item>
                         <Box fontWeight="fontWeightBold" fontSize={fontSizeLg}>
-                            {EnergyFormatter.format(ask.currentVolume, true)}
+                            {EnergyFormatter.format(order.currentVolume, true)}
                         </Box>
-                        <Box style={{ textTransform: 'capitalize' }}>{deviceType}</Box>
+                        <Box style={{ textTransform: 'capitalize' }}>{primaryDeviceType}</Box>
+                        {order.side === OrderSide.Ask && (
+                            <Box>
+                                {deviceById(externalDeviceId.id, environment, devices).facilityName}
+                            </Box>
+                        )}
                     </Grid>
                     <Grid item>
                         <Box textAlign="right" color="text.secondary">
@@ -108,41 +121,46 @@ export const AskDetailsModal = (props: IOwnProps) => {
                     </Grid>
                 </Grid>
 
-                <Box mx={1} my={1}>
-                    <Grid
-                        container
-                        style={{
-                            paddingTop: spacing(1),
-                            paddingBottom: spacing(1),
-                            paddingLeft: spacing(1),
-                            paddingRight: spacing(1)
-                        }}
-                        className="DeviceSection"
-                    >
-                        <Grid item xs={4}>
-                            <Box color="text.secondary">{t('device.properties.deviceType')}</Box>
-                            <Box
-                                fontWeight="fontWeightBold"
-                                style={{ textTransform: 'capitalize' }}
-                            >
-                                {deviceType}
-                            </Box>
+                {order.side === OrderSide.Bid && (
+                    <Box mx={1} my={1}>
+                        <Grid
+                            container
+                            style={{
+                                paddingTop: spacing(1),
+                                paddingBottom: spacing(1),
+                                paddingLeft: spacing(1),
+                                paddingRight: spacing(1)
+                            }}
+                            className="DeviceSection"
+                        >
+                            <Grid item xs={4}>
+                                <Box color="text.secondary">
+                                    {t('device.properties.deviceType')}
+                                </Box>
+                                <Box
+                                    fontWeight="fontWeightBold"
+                                    style={{ textTransform: 'capitalize' }}
+                                >
+                                    {primaryDeviceType}
+                                </Box>
+                            </Grid>
+                            <Grid item xs={4}>
+                                <Box color="text.secondary">
+                                    {t('device.properties.gridOperator')}
+                                </Box>
+                                <Box fontWeight="fontWeightBold">{gridOperator}</Box>
+                            </Grid>
+                            <Grid item xs={4}>
+                                <Box textAlign="right" color="text.secondary">
+                                    {t('device.properties.region')}
+                                </Box>
+                                <Box textAlign="right" fontWeight="fontWeightBold">
+                                    {region}
+                                </Box>
+                            </Grid>
                         </Grid>
-                        <Grid item xs={4}>
-                            <Box color="text.secondary">{t('device.properties.gridOperator')}</Box>
-                            <Box fontWeight="fontWeightBold">{ask.product.gridOperator}</Box>
-                        </Grid>
-                        <Grid item xs={4}>
-                            <Box textAlign="right" color="text.secondary">
-                                {t('device.properties.region')}
-                            </Box>
-                            <Box textAlign="right" fontWeight="fontWeightBold">
-                                {location[0].split(';')[1]}
-                            </Box>
-                        </Grid>
-                    </Grid>
-                </Box>
-
+                    </Box>
+                )}
                 <Grid
                     item
                     className="FilledSection"
@@ -167,7 +185,11 @@ export const AskDetailsModal = (props: IOwnProps) => {
                     }}
                     className="Action"
                 >
-                    <Button variant="contained" color="primary" onClick={() => cancelAsk(ask)}>
+                    <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={() => showCancelOrder(order)}
+                    >
                         {t('order.actions.remove')}
                     </Button>
                 </Grid>
