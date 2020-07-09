@@ -10,7 +10,12 @@ const moment = extendMoment(Moment);
 @Injectable()
 export class DemandTimePeriodService {
     public generateValidityDates(createDemand: CreateDemandDTO) {
-        const range = moment.range(createDemand.start, createDemand.end);
+        let { start, end } = createDemand;
+
+        start = new Date(start);
+        end = new Date(end);
+
+        const range = moment.range(start, end);
 
         const { diff, step } = this.timeFrameToTimeDiff(createDemand.periodTimeFrame);
         const validFrom = Array.from(range.by(diff, { step, excludeEnd: true })).map((v) =>
@@ -20,7 +25,7 @@ export class DemandTimePeriodService {
         return validFrom.map((v, i) => ({
             validFrom: v,
             generationFrom: v,
-            generationTo: validFrom[i + 1] || createDemand.end
+            generationTo: validFrom[i + 1] || end
         }));
     }
 

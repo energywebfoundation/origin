@@ -3,6 +3,83 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.5.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-ui-core@1.4.1...@energyweb/origin-ui-core@1.5.0) (2020-07-08)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @material-ui/core to v4.11.0 ([b67a4c7](https://github.com/energywebfoundation/origin/commit/b67a4c7f73dedb6a6112e3fe1809eea00108085d))
+* **deps:** update dependency formik-material-ui to v2.0.1 ([632cf1c](https://github.com/energywebfoundation/origin/commit/632cf1ce6059443acd24c2225c8fb018c2986ea0))
+* **deps:** update dependency formik-material-ui-pickers to v0.0.10 ([ce54b2f](https://github.com/energywebfoundation/origin/commit/ce54b2f00a6d61f922ae94ac47fa060d099bdfc1))
+* **deps:** update dependency history to v5 ([eb8d783](https://github.com/energywebfoundation/origin/commit/eb8d783101c417b8567b5e61a9ba935895145bb2))
+* **deps:** update dependency i18next to v19.5.0 ([6e665cb](https://github.com/energywebfoundation/origin/commit/6e665cb03a623bb470fecfc5e2494649ffbf26d3))
+* **deps:** update dependency i18next to v19.5.1 ([2f41ff5](https://github.com/energywebfoundation/origin/commit/2f41ff58b6a8a6da5b9381e7f7a08f553093e694))
+* **deps:** update dependency i18next to v19.5.4 ([c728b2a](https://github.com/energywebfoundation/origin/commit/c728b2adbaf708e852c221f618c91b7884a54a05))
+* **deps:** update dependency winston to v3.3.0 ([12f111e](https://github.com/energywebfoundation/origin/commit/12f111ed16274e40d9ccbb4c3d6f9d8d222cb2fe))
+* **deps:** update dependency winston to v3.3.3 ([d66ad8e](https://github.com/energywebfoundation/origin/commit/d66ad8e4f8f65a8c6bed6ec95303a175771ed230))
+* **deps:** update react ([64e633f](https://github.com/energywebfoundation/origin/commit/64e633fa26e171ea1ccca4c64c48c5596e327c75))
+* **exchange:** simplify available bundle filtering ([18f1d0e](https://github.com/energywebfoundation/origin/commit/18f1d0e3d2cba01e93142c57799877c40d471417))
+* **exchange:** update bundle on buy bundle ([d82b504](https://github.com/energywebfoundation/origin/commit/d82b504f5d96b54abc8208c4dcccee8989493362))
+* **origin-ui-core:** add bundle content scss ([23c81f5](https://github.com/energywebfoundation/origin/commit/23c81f5b7f1f387336d93f15ebfd1f68137f42b9))
+* **origin-ui-core:** add localization ([6c20906](https://github.com/energywebfoundation/origin/commit/6c20906c1dd2c796d03acff6d8971158ceee8cf3))
+* **origin-ui-core:** add remove action ([86cce18](https://github.com/energywebfoundation/origin/commit/86cce180d9a1b71e90bb146e91cf86520c07d773))
+* **origin-ui-core:** add splits price slider and remove cancel ([5dabaad](https://github.com/energywebfoundation/origin/commit/5dabaad059ee301e0aa069f64a5b4b28d82e8437))
+* **origin-ui-core:** auto item row height ([e15d398](https://github.com/energywebfoundation/origin/commit/e15d39864cf6f033861474cfbe7287700c5b1eb9))
+* **origin-ui-core:** Box child of Typography ([a50360a](https://github.com/energywebfoundation/origin/commit/a50360adefc6a576c676f566a5208ef1d3cd9a7c))
+* **origin-ui-core:** bundle item array index as react key ([bd47f04](https://github.com/energywebfoundation/origin/commit/bd47f04b3775f1a7a60eb083eb92b4d701fd5cd3))
+* **origin-ui-core:** calc total price with unformatted price ([c7318e5](https://github.com/energywebfoundation/origin/commit/c7318e500237c81b781709bfab98aad391b1eafb))
+* **origin-ui-core:** check user status before buy or create bundle ([afe38f1](https://github.com/energywebfoundation/origin/commit/afe38f1aec2cad29dadc7da362d7f2a16c41c2c7))
+* **origin-ui-core:** convert bundle volume to BigNumber ([145b715](https://github.com/energywebfoundation/origin/commit/145b7154245994fb7437c63f2f87919fa4296913))
+* **origin-ui-core:** disable camelcase eslint rule ([4dc34f0](https://github.com/energywebfoundation/origin/commit/4dc34f0d915d61dc5997574f09a982d88c355e3d))
+* **origin-ui-core:** disable sell 1 cert ([6e5d3a8](https://github.com/energywebfoundation/origin/commit/6e5d3a8d61cc29995e25f72b72f843f9abcd2579))
+* **origin-ui-core:** dont convert energy to Number ([ed48f29](https://github.com/energywebfoundation/origin/commit/ed48f296821c39e26b3ed0ccc2f97748faaff3c5))
+* **origin-ui-core:** filter onChain certs ([cb54f0f](https://github.com/energywebfoundation/origin/commit/cb54f0fb7a2cec3e2b5b641427d5b2abdc467b9b))
+* **origin-ui-core:** fix bundle created message ([55db1e0](https://github.com/energywebfoundation/origin/commit/55db1e0b05df3eea70656f5f8b624bba0f0251b3))
+* **origin-ui-core:** import from dependency ([235b62b](https://github.com/energywebfoundation/origin/commit/235b62b65dc49b1eddbf6a4a2fca32bb2f211b7e))
+* **origin-ui-core:** import images ([983b65a](https://github.com/energywebfoundation/origin/commit/983b65afd88df817b01f4d206fa4ad2a97d8a0ec))
+* **origin-ui-core:** keep colors in variables ([eb6ac9d](https://github.com/energywebfoundation/origin/commit/eb6ac9d212422cb6e98f06c44cef06ecfe54ed59))
+* **origin-ui-core:** left align cert info ([208ecd1](https://github.com/energywebfoundation/origin/commit/208ecd1c949e0dfaf5635428f17ec228ce9febb6))
+* **origin-ui-core:** lint ([9d86d7a](https://github.com/energywebfoundation/origin/commit/9d86d7ae136a2184ff92eab9c27c284c12c23306))
+* **origin-ui-core:** lint ([e8ee051](https://github.com/energywebfoundation/origin/commit/e8ee051fd4f344a14653015fad33444c77b243bf))
+* **origin-ui-core:** lint ([dcb4902](https://github.com/energywebfoundation/origin/commit/dcb4902b9237a110eddd38ac6187c12ca773c1f7))
+* **origin-ui-core:** lint ([e748e5a](https://github.com/energywebfoundation/origin/commit/e748e5afe10b5e438bf4797d8365a47867a63425))
+* **origin-ui-core:** move create bundle colors to app styles ([e4639fd](https://github.com/energywebfoundation/origin/commit/e4639fd5f9ab57e4cced18ad445693e86fd85120))
+* **origin-ui-core:** move prev item btn down ([461a858](https://github.com/energywebfoundation/origin/commit/461a858e1eb6808866f3759db4412b9cf16979c7))
+* **origin-ui-core:** not import from src ([996551c](https://github.com/energywebfoundation/origin/commit/996551c9d4d0468566e218def08838b356dd041a))
+* **origin-ui-core:** parse date from unix secs ([6bed247](https://github.com/energywebfoundation/origin/commit/6bed24781fe69c281d38c27c9e736b8dac70a7db))
+* **origin-ui-core:** remove classes prop from BundleDetails ([d7b8ae1](https://github.com/energywebfoundation/origin/commit/d7b8ae1c8d6d2da853ed787535e8ccc14323280b))
+* **origin-ui-core:** remove slider props type ([34d3e90](https://github.com/energywebfoundation/origin/commit/34d3e9024b0bcf054d603e9180d9228a023be7ac))
+* **origin-ui-core:** remove unused ([9cdd51d](https://github.com/energywebfoundation/origin/commit/9cdd51d6b9324e781134db8158a199d606bcb639))
+* **origin-ui-core:** remove unused BN import ([f0763b4](https://github.com/energywebfoundation/origin/commit/f0763b4360973c5b70400c3f022c84637301b2a4))
+* **origin-ui-core:** set first split as fifth from end ([b488116](https://github.com/energywebfoundation/origin/commit/b488116c21baf59527a17a69d413a190188ae5c5))
+* **origin-ui-core:** show energy in MWh ([0c80246](https://github.com/energywebfoundation/origin/commit/0c80246f599eab785f78ef1b34d07bdecf322239))
+* **origin-ui-core:** style certificate group ([bb7025a](https://github.com/energywebfoundation/origin/commit/bb7025a1239f2885ca95b259eb225c9d78b40441))
+* **origin-ui-core:** style certificate group header ([947072e](https://github.com/energywebfoundation/origin/commit/947072e6ea8e294c4aa5145a241b25c89f174258))
+* **origin-ui-core:** style selected for sale ([1502840](https://github.com/energywebfoundation/origin/commit/150284093318bbc63a0911f22269aba4d3bb97c2))
+* **origin-ui-core:** use bundle splits in bundle details ([0b1b178](https://github.com/energywebfoundation/origin/commit/0b1b178d9f4d1d6676cea8d8cbc1727c3fb7a1d3))
+* **origin-ui-core:** use splitted bundle in bundle details ([4d0c4eb](https://github.com/energywebfoundation/origin/commit/4d0c4eb4cec85a86290486230c39a2ba7d46359f))
+
+
+### Features
+
+* **origin-ui-core:** add bundle button ([be32894](https://github.com/energywebfoundation/origin/commit/be328944b0a9acec3a6a7d43abcdfc8e96a01946))
+* **origin-ui-core:** add BundleContent ([4dedd64](https://github.com/energywebfoundation/origin/commit/4dedd640666c8c874e6167f59f3d8c2f6c1d56de))
+* **origin-ui-core:** add my bundles tab ([b4ee9e0](https://github.com/energywebfoundation/origin/commit/b4ee9e0cd857ea72a967ff94cf302162a9cc1be3))
+* **origin-ui-core:** add scroll bundle buttons ([b3f7f61](https://github.com/energywebfoundation/origin/commit/b3f7f610c3c3b870709b2e05063ce19867d560e7))
+* **origin-ui-core:** BundleCard component ([4c302a9](https://github.com/energywebfoundation/origin/commit/4c302a980e50e2c07d3a08542eafd2f816d3ee48))
+* **origin-ui-core:** buy bundle saga ([fab5cdb](https://github.com/energywebfoundation/origin/commit/fab5cdbd9118f204bf0006942191608b11c7c3f7))
+* **origin-ui-core:** cancel bundle saga ([41da4e6](https://github.com/energywebfoundation/origin/commit/41da4e6c1187af399d064726cd9dee190b324f33))
+* **origin-ui-core:** clear bundles on bundles fetch ([49b7fa7](https://github.com/energywebfoundation/origin/commit/49b7fa741ae8ece26da885f393c61b7f48b958de))
+* **origin-ui-core:** CreateBundle component ([1f10750](https://github.com/energywebfoundation/origin/commit/1f10750d71deb1ceaac18d509fbd35a15cf25402))
+* **origin-ui-core:** filter owned bundles ([e6074d7](https://github.com/energywebfoundation/origin/commit/e6074d7c52e368b5bb7f8701be0bda38cd1b5948))
+* **origin-ui-core:** group certs by facility ([49494f4](https://github.com/energywebfoundation/origin/commit/49494f490accfaab083ec11d74a6047a8f222995))
+* **origin-ui-core:** price range selector ([5316f4c](https://github.com/energywebfoundation/origin/commit/5316f4c37618628b7053855044bd21e44b4f272c))
+* **origin-ui-core:** sort by total energy ([1e401db](https://github.com/energywebfoundation/origin/commit/1e401db4fed9ed0bbc21d9ae7feac3d5ba9375c7))
+
+
+
+
+
 ## [1.4.1](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-ui-core@1.4.0...@energyweb/origin-ui-core@1.4.1) (2020-06-16)
 
 

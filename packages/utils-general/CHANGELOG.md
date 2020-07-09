@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [9.1.4](https://github.com/energywebfoundation/origin/compare/@energyweb/utils-general@9.1.3...@energyweb/utils-general@9.1.4) (2020-07-08)
+
+
+### Bug Fixes
+
+* **deps:** update dependency winston to v3.3.0 ([12f111e](https://github.com/energywebfoundation/origin/commit/12f111ed16274e40d9ccbb4c3d6f9d8d222cb2fe))
+* **deps:** update dependency winston to v3.3.3 ([d66ad8e](https://github.com/energywebfoundation/origin/commit/d66ad8e4f8f65a8c6bed6ec95303a175771ed230))
+
+
+
+
+
 ## [9.1.3](https://github.com/energywebfoundation/origin/compare/@energyweb/utils-general@9.1.2...@energyweb/utils-general@9.1.3) (2020-06-16)
 
 **Note:** Version bump only for package @energyweb/utils-general

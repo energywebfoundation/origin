@@ -3,6 +3,24 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.1.0](https://github.com/energywebfoundation/origin/compare/@energyweb/exchange-core@3.0.4...@energyweb/exchange-core@3.1.0) (2020-07-08)
+
+
+### Bug Fixes
+
+* **deps:** update dependency rxjs to v6.6.0 ([851151d](https://github.com/energywebfoundation/origin/commit/851151dd110a2b11fc9b491e491c4a152aaac807))
+* **exchange-core:** fix lint ([96335c6](https://github.com/energywebfoundation/origin/commit/96335c671ced5233548a5d56ccc63d3f0bc5b791))
+* **exchange-core:** fix work around cast type to number before check pricePickStrategy ([9a4b16e](https://github.com/energywebfoundation/origin/commit/9a4b16e07d0133c975dd43fd44c3f32f8b46efbf))
+
+
+### Features
+
+* **exchange-core:** abstracted price picking strategies ([1f48cb2](https://github.com/energywebfoundation/origin/commit/1f48cb208078ffd107984f9fff05912f40140cb8))
+
+
+
+
+
 ## [3.0.4](https://github.com/energywebfoundation/origin/compare/@energyweb/exchange-core@3.0.3...@energyweb/exchange-core@3.0.4) (2020-06-16)
 
 **Note:** Version bump only for package @energyweb/exchange-core

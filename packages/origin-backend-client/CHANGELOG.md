@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.2.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-backend-client@6.1.1...@energyweb/origin-backend-client@6.2.0) (2020-07-08)
+
+
+### Features
+
+* **origin-backend-client:** approvedDate and revokedDate added to ICertificationRequest ([b648d2f](https://github.com/energywebfoundation/origin/commit/b648d2f343c736300465eb529655c08fecacdfe6))
+
+
+
+
+
 ## [6.1.1](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-backend-client@6.1.0...@energyweb/origin-backend-client@6.1.1) (2020-06-16)
 
 **Note:** Version bump only for package @energyweb/origin-backend-client

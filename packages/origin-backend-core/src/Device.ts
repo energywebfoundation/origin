@@ -42,7 +42,7 @@ export interface ISmartMeterReadStats {
 
 export interface ISmartMeterReadingsAdapter {
     getAll(device: IDevice): Promise<ISmartMeterRead[]>;
-    save(device: IDevice, smRead: ISmartMeterRead): Promise<void>;
+    save(device: IDevice, smReads: ISmartMeterRead[]): Promise<void>;
 }
 
 export interface IDeviceProductInfo {
@@ -92,3 +92,13 @@ export interface IDeviceWithRelations extends IDevice {
 export type DeviceCreateData = Omit<IDeviceProperties, 'id' | 'meterStats'>;
 export type DeviceUpdateData = Pick<IDevice, 'status'>;
 export type DeviceSettingsUpdateData = Pick<IDevice, 'defaultAskPrice' | 'automaticPostForSale'>;
+
+export const sortLowestToHighestTimestamp = (
+    a: ISmartMeterRead | IEnergyGenerated,
+    b: ISmartMeterRead | IEnergyGenerated
+): number => {
+    if (a.timestamp > b.timestamp) return 1;
+    if (b.timestamp > a.timestamp) return -1;
+
+    return 0;
+};
