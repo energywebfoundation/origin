@@ -234,8 +234,9 @@ export const BundleContents = (props: IOwnProps) => {
                                 }}
                                 className="BundleOffer"
                             >
-                                <Box mr={0.5} className="BundleOfferInfo">
+                                <Box mr={0.5}>
                                     <Paper
+                                        className="BundleOfferInfo"
                                         variant="outlined"
                                         classes={{ root: offerClasses.root }}
                                         elevation={1}

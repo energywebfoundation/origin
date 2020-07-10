@@ -299,7 +299,9 @@
             },
             "confirmations": {
                 "no": "Nie",
-                "yes": "Tak"
+                "yes": "Tak",
+                "view": "Widok",
+                "remove": "Usunąć"
             }
         }
     }

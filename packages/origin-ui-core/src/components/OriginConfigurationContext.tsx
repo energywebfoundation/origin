@@ -76,7 +76,8 @@ export const createMaterialThemeForOrigin = (
                 },
                 MuiTable: {
                     root: {
-                        borderBottom: `2px solid ${styleConfig.PRIMARY_COLOR}`
+                        borderBottom: `2px solid ${styleConfig.PRIMARY_COLOR}`,
+                        backgroundColor: styleConfig.BACKGROUND_COLOR_DARK
                     }
                 },
                 MuiTableHead: {
@@ -99,7 +100,7 @@ export const createMaterialThemeForOrigin = (
                 },
                 MuiTableCell: {
                     root: {
-                        borderBottom: '1px solid rgb(72, 72, 72)',
+                        borderBottom: `1px solid ${styleConfig.BACKGROUND_COLOR_DARK}`,
                         fontSize: variables.fontSizeMd
                     },
                     body: {
@@ -117,12 +118,7 @@ export const createMaterialThemeForOrigin = (
                 },
                 MuiTooltip: {
                     tooltip: {
-                        backgroundColor: '#a400d9'
-                    }
-                },
-                MuiFilledInput: {
-                    root: {
-                        backgroundColor: styleConfig.BACKGROUND_COLOR_DARK
+                        backgroundColor: styleConfig.PRIMARY_COLOR
                     }
                 }
             }

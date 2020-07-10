@@ -1,5 +1,16 @@
 @import './variables.scss';
 
+$bundleContentCardHeaderBg: lighten($backgroundColorDark, 5%);
+$bundleContentSelectedCardHeaderBg: $primaryColor;
+$bundleCardContentBg: lighten($backgroundColorDark, 7%);
+$bundleSelectedCardContentBg: darken($primaryColor, 35%);
+$scrollButtonBg: lighten($backgroundColorDark, 20%);
+$bundleDetailsBg: lighten($backgroundColorDark, 10%);
+$bundleCardBorderBg: $bundleDetailsBg;
+$bundleDetailsCloseBtnBg: $bootstrapBodyColor;
+$bundlePriceRangeLblBg: $primaryColor;
+$bundleOfferBg: lighten($backgroundColorDark, 13%);
+
 .BundleDetails {
     .MuiPaper-root {
         background-color: $bundleDetailsBg;

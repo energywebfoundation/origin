@@ -161,12 +161,12 @@ export const BidsTable = (props: IOwnProsp) => {
     const actions = [
         {
             icon: <Visibility />,
-            name: 'View',
+            name: t('order.actions.view'),
             onClick: (row: string) => viewDetails(parseInt(row, 10))
         },
         {
             icon: <Remove />,
-            name: 'Remove',
+            name: t('order.actions.remove'),
             onClick: (row: string) => removeBid(parseInt(row, 10))
         }
     ];

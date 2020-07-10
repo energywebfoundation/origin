@@ -113,7 +113,7 @@ export const CertificateGroup = (props: IOwnProps) => {
                                 paddingLeft: 0,
                                 paddingRight: 0
                             }}
-                            className={isSelected(cert) ? 'SelectedCertificate' : ''}
+                            selected={isSelected(cert)}
                             divider
                         >
                             <Grid container>
