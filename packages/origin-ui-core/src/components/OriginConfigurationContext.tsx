@@ -128,7 +128,7 @@ export const createMaterialThemeForOrigin = (
             typography: {
                 fontSizeSm: 10,
                 fontSizeMd: 12,
-                fontSizeLg: 18
+                fontSizeLg: 24
             }
         }
     );

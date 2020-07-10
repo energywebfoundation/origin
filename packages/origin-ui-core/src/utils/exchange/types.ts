@@ -137,6 +137,7 @@ export interface IOrder {
     directBuyId: string;
     assetId: string;
     userId: string;
+    filled?: number;
 }
 
 export type Order = IOrder & { assetId: string; status: OrderStatus };

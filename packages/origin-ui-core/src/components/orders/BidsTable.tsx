@@ -23,7 +23,7 @@ import { getCurrencies, getConfiguration, getEnvironment, getProducingDevices } 
 import { BigNumber } from 'ethers/utils';
 import { Remove, Visibility } from '@material-ui/icons';
 import { RemoveOrderConfirmation } from '../Modal/RemoveOrderConfirmation';
-import { BidsDetailsModal } from '../Modal/BidDetalisModal';
+import { OrderDetailsModal } from '../Modal/OrderDetailslModal';
 
 const ORDERS_PER_PAGE = 5;
 
@@ -184,7 +184,16 @@ export const BidsTable = (props: IOwnProsp) => {
                 caption={t('order.captions.open_bids')}
                 actionsLabel={t('order.captions.actions')}
             />
-            {bidToView && <BidsDetailsModal bid={bidToView} close={() => setToView(null)} />}
+            {bidToView && (
+                <OrderDetailsModal
+                    order={bidToView}
+                    close={() => setToView(null)}
+                    showCancelOrder={(bid: Order) => {
+                        setToView(null);
+                        setToRemove(bid);
+                    }}
+                />
+            )}
             {bidToRemove && (
                 <RemoveOrderConfirmation order={bidToRemove} close={() => setToRemove(null)} />
             )}

@@ -48,6 +48,7 @@
                 "geoLocation": "Geo-lokalizacja",
                 "registrationDate": "Data rejestracji",
                 "regions": "Regiony",
+                "region": "Region",
                 "provinces": "Prowincje",
                 "longitude": "Długość geograficzna",
                 "latitude": "Szerokość geograficzna",
@@ -274,6 +275,7 @@
             }
         },
         "order": {
+            "anyValue": "Każdy",
             "properties": {
                 "volume": "Objętość",
                 "price": "Cena",
@@ -283,12 +285,26 @@
                 "filled": "Zrealizowane"
                 
             },
+            "captions": {
+                "open_asks": "PYTANIA OTWARTE",
+                "open_bids": "OFERTY OTWARTE",
+                "actions": "AKCJA"
+            },
             "info": {
                 "open_asks": "OFERTY OTWARTE",
                 "open_bids": "CENY OTWARTE",
                 "actions": "DZIAŁANIA"
             },
             "actions": {
+                "remove": "Usunąć"
+            },
+            "feedback": {
+                "removeOrderConfirmation": "Czy na pewno chcesz usunąć?",
+                "orderCanceled": "Zamówienie anulowane"
+            },
+            "confirmations": {
+                "no": "Nie",
+                "yes": "Tak",
                 "view": "Widok",
                 "remove": "Usunąć"
             }

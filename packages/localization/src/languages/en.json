@@ -59,6 +59,7 @@
                 "filesUpload": "Files Upload",
                 "registrationDate": "Registration date",
                 "regions": "Regions",
+                "region": "Region",
                 "provinces": "Provinces",
                 "longitude": "Longitude",
                 "latitude": "Latitude",
@@ -441,6 +442,7 @@
             }
         },
         "order": {
+            "anyValue": "Any",
             "properties": {
                 "volume": "Volume",
                 "price": "Price",
@@ -452,7 +454,18 @@
             "captions": {
                 "open_asks": "OPEN ASKS",
                 "open_bids": "OPEN BIDS",
-                "actions": "ACTIONS"
+                "actions": "ACTION"
+            },
+            "actions": {
+                "remove": "Remove"
+            },
+            "feedback": {
+                "removeOrderConfirmation": "Are you sure you want remove?",
+                "orderCanceled": "Order canceled"
+            },
+            "confirmations": {
+                "no": "No",
+                "yes": "Yes"
             }
         }
     }

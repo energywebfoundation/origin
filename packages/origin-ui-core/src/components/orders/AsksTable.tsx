@@ -20,10 +20,9 @@ import {
 } from '../Table';
 import { useSelector } from 'react-redux';
 import { getCurrencies, getConfiguration, getEnvironment, getProducingDevices } from '../..';
-import { BigNumber } from 'ethers/utils';
 import { Remove, Visibility } from '@material-ui/icons';
 import { RemoveOrderConfirmation } from '../Modal/RemoveOrderConfirmation';
-import { AskDetailsModal } from '../Modal/AskDetailslModal';
+import { OrderDetailsModal } from '../Modal/OrderDetailslModal';
 
 const ORDERS_PER_PAGE = 5;
 
@@ -123,9 +122,9 @@ export const AsksTable = (props: IOwnProsp) => {
 
     const rows = paginatedData.map((order) => {
         const {
-            startVolume,
             currentVolume,
             price,
+            filled,
             product: {
                 deviceType,
                 generationFrom,
@@ -140,13 +139,7 @@ export const AsksTable = (props: IOwnProsp) => {
             device_type: deviceType[0].split(';')[0],
             generationFrom: moment(generationFrom).format('MMM, YYYY'),
             generationTo: moment(generationTo).format('MMM, YYYY'),
-            filled: `${
-                new BigNumber(startVolume)
-                    .sub(new BigNumber(currentVolume))
-                    .mul(100)
-                    .div(startVolume)
-                    .toNumber() / 100
-            }%`,
+            filled: `${filled}%`,
             askId: order.id
         };
     });
@@ -157,7 +150,7 @@ export const AsksTable = (props: IOwnProsp) => {
         setToView(ask);
     };
 
-    const removeAsk = (rowIndex: number) => {
+    const cancelAsk = (rowIndex: number) => {
         const { askId } = rows[rowIndex];
         const ask = asks.find((o) => o.id === askId);
         setToRemove(ask);
@@ -172,7 +165,7 @@ export const AsksTable = (props: IOwnProsp) => {
         {
             icon: <Remove />,
             name: t('order.actions.remove'),
-            onClick: (row: string) => removeAsk(parseInt(row, 10))
+            onClick: (row: string) => cancelAsk(parseInt(row, 10))
         }
     ];
 
@@ -189,7 +182,16 @@ export const AsksTable = (props: IOwnProsp) => {
                 caption={t('order.captions.open_asks')}
                 actionsLabel={t('order.captions.actions')}
             />
-            {askToView && <AskDetailsModal ask={askToView} close={() => setToView(null)} />}
+            {askToView && (
+                <OrderDetailsModal
+                    order={askToView}
+                    close={() => setToView(null)}
+                    showCancelOrder={(ask: Order) => {
+                        setToView(null);
+                        setToRemove(ask);
+                    }}
+                />
+            )}
             {askToRemove && (
                 <RemoveOrderConfirmation order={askToRemove} close={() => setToRemove(null)} />
             )}
