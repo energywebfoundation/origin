@@ -39,7 +39,7 @@ export const OrderDetailsModal = (props: IOwnProps) => {
         palette: {
             text: { primary: textPrimary }
         },
-        typography: { fontSizeSm, fontSizeLg }
+        typography: { fontSizeMd, fontSizeLg }
     } = useTheme();
     const currency = useSelector(getCurrencies)[0];
     const primaryDeviceType = deviceType ? deviceType[0].split(';')[0] : anyOption;
@@ -51,7 +51,7 @@ export const OrderDetailsModal = (props: IOwnProps) => {
         <Dialog
             open={order !== null}
             onClose={close}
-            style={{ fontSize: fontSizeSm }}
+            style={{ fontSize: fontSizeMd }}
             className="OrderModal"
             fullWidth={true}
         >
@@ -62,7 +62,7 @@ export const OrderDetailsModal = (props: IOwnProps) => {
                     direction="column"
                     style={{ paddingLeft: spacing(2), paddingRight: spacing(2) }}
                 >
-                    <Grid item style={{ alignSelf: 'end' }}>
+                    <Grid item style={{ alignSelf: 'flex-end' }}>
                         <IconButton onClick={close}>
                             <CloseIcon style={{ color: textPrimary }} />
                         </IconButton>
