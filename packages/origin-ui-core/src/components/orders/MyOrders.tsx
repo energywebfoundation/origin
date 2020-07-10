@@ -11,7 +11,9 @@ import { Box, useTheme } from '@material-ui/core';
 
 export const MyOrders = () => {
     const user = useSelector(getUserOffchain);
-    const orders: Order[] = useSelector(getOrders).filter((o) => o.userId === user.id.toString());
+    const orders: Order[] = useSelector(getOrders).filter(
+        (o) => o.userId === user.organization.id.toString()
+    );
     const asks = orders.filter((o) => o.side === OrderSide.Ask);
     const bids = orders.filter((o) => o.side === OrderSide.Bid);
     const {
