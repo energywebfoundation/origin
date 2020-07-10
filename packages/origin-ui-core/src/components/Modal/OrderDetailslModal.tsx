@@ -11,7 +11,12 @@ import {
 } from '../..';
 import { useSelector } from 'react-redux';
 import { OrderSide } from '@energyweb/exchange-core';
-import { EnergyFormatter, deviceById, useTranslation } from '../../utils';
+import {
+    EnergyFormatter,
+    deviceById,
+    useTranslation,
+    DATE_FORMAT_INCLUDING_TIME
+} from '../../utils';
 
 interface IOwnProps {
     order: Order;
@@ -69,7 +74,7 @@ export const OrderDetailsModal = (props: IOwnProps) => {
                     </Grid>
                     <Grid item style={{ alignSelf: 'start' }}>
                         <Box pb={1} fontWeight="fontWeightLight">
-                            {moment(order.validFrom).format('MMM Do, YYYY h:mm:ss a')}
+                            {moment(order.validFrom).format(DATE_FORMAT_INCLUDING_TIME)}
                         </Box>
                     </Grid>
                     <Grid item container style={{ paddingBottom: spacing(1) }}>
