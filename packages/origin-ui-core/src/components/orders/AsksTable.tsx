@@ -18,13 +18,11 @@ import {
     CustomFilterInputType,
     FilterRules
 } from '../Table';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { getCurrencies, getConfiguration, getEnvironment, getProducingDevices } from '../..';
-import { BigNumber } from 'ethers/utils';
 import { Remove, Visibility } from '@material-ui/icons';
 import { RemoveOrderConfirmation } from '../Modal/RemoveOrderConfirmation';
 import { OrderDetailsModal } from '../Modal/OrderDetailslModal';
-import { cancelOrder } from '../../features/orders/actions';
 
 const ORDERS_PER_PAGE = 5;
 
@@ -41,7 +39,6 @@ export const AsksTable = (props: IOwnProsp) => {
     const deviceTypeService = configuration?.deviceTypeService;
     const environment = useSelector(getEnvironment);
     const devices = useSelector(getProducingDevices);
-    const dispatch = useDispatch();
 
     const columns = [
         { id: 'volume', label: t('order.properties.volume') },

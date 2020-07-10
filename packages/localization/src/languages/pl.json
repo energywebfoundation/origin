@@ -294,7 +294,8 @@
                 "remove": "Usunąć"
             },
             "feedback": {
-                "removeOrderConfirmation": "Czy na pewno chcesz usunąć?"
+                "removeOrderConfirmation": "Czy na pewno chcesz usunąć?",
+                "orderCanceled": "Zamówienie anulowane"
             },
             "confirmations": {
                 "no": "Nie",

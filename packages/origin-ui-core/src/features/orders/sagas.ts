@@ -30,7 +30,7 @@ function* cancelOrder(): SagaIterator {
         const i18n = getI18n();
         try {
             yield apply(exchangeClient, exchangeClient.cancelOrder, [payload]);
-            showNotification(i18n.t('order.feedback.orderCanceld'), NotificationType.Success);
+            showNotification(i18n.t('order.feedback.orderCanceled'), NotificationType.Success);
             yield call(fetchOrders);
         } catch (err) {
             console.error(err);

@@ -460,7 +460,8 @@
                 "remove": "Remove"
             },
             "feedback": {
-                "removeOrderConfirmation": "Are you sure you want remove?"
+                "removeOrderConfirmation": "Are you sure you want remove?",
+                "orderCanceled": "Order canceled"
             },
             "confirmations": {
                 "no": "No",

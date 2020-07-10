@@ -33,7 +33,7 @@ import {
     KeyboardArrowDown,
     ArrowForward,
     ArrowBack,
-    ArrowRightAltIcon
+    ArrowRightAlt
 } from '@material-ui/icons';
 import { buyBundle } from '../../features/bundles';
 import { getUserOffchain } from '../../features/users/selectors';
@@ -312,7 +312,7 @@ export const BundleContents = (props: IOwnProps) => {
                                                 >
                                                     <Typography color="textPrimary" variant="body2">
                                                         {moment(generationFrom).format('MMM, YYYY')}
-                                                        <ArrowRightAltIcon />
+                                                        <ArrowRightAlt />
                                                         {moment(generationTo).format('MMM, YYYY')}
                                                     </Typography>
                                                 </Box>

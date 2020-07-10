@@ -54,7 +54,7 @@ export const RemoveOrderConfirmation = (props: IOwnProps) => {
                     </Grid>
                 </Grid>
             </DialogContent>
-            <DialogActions style={{ padding: spacing(2) }}>
+            <DialogActions style={{ padding: spacing(2), justifyContent: 'center' }}>
                 <Button onClick={close} variant="outlined" color="primary">
                     {t('order.confirmations.no')}
                 </Button>
