@@ -111,11 +111,13 @@ export function Header() {
                                 <Tooltip title={t('settings.registerOffchainUser')}>
                                     <PersonAdd color="primary" />
                                 </Tooltip>
+                                {t('user.actions.register')}
                             </Link>
                         </>
                     )}
                     {userOffchain ? (
                         <>
+                            {t('user.actions.login')}
                             &nbsp;
                             <Link
                                 to={getAccountLink()}
