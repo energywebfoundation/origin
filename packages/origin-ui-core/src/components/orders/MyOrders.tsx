@@ -1,18 +1,16 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { OrderSide } from '@energyweb/exchange-core';
+import { OrderSide, OrderStatus } from '@energyweb/exchange-core';
 
 import { Order } from '../../utils/exchange';
 import { getOrders } from '../../features/orders/selectors';
-import { getUserOffchain } from '../../features/users/selectors';
 import { BidsTable } from './BidsTable';
 import { AsksTable } from './AsksTable';
 import { Box, useTheme } from '@material-ui/core';
 
 export const MyOrders = () => {
-    const user = useSelector(getUserOffchain);
     const orders: Order[] = useSelector(getOrders).filter(
-        (o) => o.userId === user.organization.id.toString()
+        (o) => o.status === OrderStatus.Active || o.status === OrderStatus.PartiallyFilled
     );
     const asks = orders.filter((o) => o.side === OrderSide.Ask);
     const bids = orders.filter((o) => o.side === OrderSide.Bid);
