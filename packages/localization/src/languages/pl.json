@@ -285,6 +285,11 @@
                 "filled": "Zrealizowane"
                 
             },
+            "captions": {
+                "open_asks": "PYTANIA OTWARTE",
+                "open_bids": "OFERTY OTWARTE",
+                "actions": "AKCJA"
+            },
             "info": {
                 "open_asks": "OFERTY OTWARTE",
                 "open_bids": "CENY OTWARTE",

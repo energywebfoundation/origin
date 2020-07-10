@@ -454,7 +454,7 @@
             "captions": {
                 "open_asks": "OPEN ASKS",
                 "open_bids": "OPEN BIDS",
-                "actions": "ACTIONS"
+                "actions": "ACTION"
             },
             "actions": {
                 "remove": "Remove"
