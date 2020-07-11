@@ -91,7 +91,7 @@
         "@types/passport-local": "1.0.33",
         "@types/supertest": "2.0.10",
         "@types/uuid": "8.0.0",
-        "@types/websocket": "1.0.0",
+        "@types/websocket": "1.0.1",
         "@types/ws": "7.2.6",
         "jest": "26.1.0",
         "nodemailer": "6.4.10",
