@@ -2848,12 +2848,12 @@
   resolved "https://registry.yarnpkg.com/@nestjs/cqrs/-/cqrs-7.0.0.tgz#12b70af5f06ca5ffde5fb1493f17dcfc6eed5e1d"
   integrity sha512-ZqsQuTdTzgqpizFEgacwHXvfz2+ekGLbMWuPcXk5uDS0+rY1R1rkY8oVkHA7SG700PaV4CccG93THxGfRM9mBQ==
 
-"@nestjs/jwt@7.0.0":
-  version "7.0.0"
-  resolved "https://registry.yarnpkg.com/@nestjs/jwt/-/jwt-7.0.0.tgz#977390ea2d5f61cbf49d3da4df740311b98998db"
-  integrity sha512-2GWFcW4jl3Ey7YutEIx0d4ZkKKIeHW5BLE92jpETmdZUwI+510mSHxkByTcjAbtKdpdSubiKuyDeU9IQZ5tPEQ==
+"@nestjs/jwt@7.1.0":
+  version "7.1.0"
+  resolved "https://registry.yarnpkg.com/@nestjs/jwt/-/jwt-7.1.0.tgz#0ad6633399641cbba327e275827fcd935207930f"
+  integrity sha512-zx317Te9cTx6RjSBcOkIWeu7oHSZAVGGwyyKzIYQ6JUjG2Q+RaUGZJRn5wNkONg3K2MH4iutvDCBLBDfdaxrJw==
   dependencies:
-    "@types/jsonwebtoken" "8.3.8"
+    "@types/jsonwebtoken" "8.5.0"
     jsonwebtoken "8.5.1"
 
 "@nestjs/mapped-types@0.0.5":
@@ -4191,13 +4191,6 @@
   version "8.3.5"
   resolved "https://registry.yarnpkg.com/@types/jsonwebtoken/-/jsonwebtoken-8.3.5.tgz#ff9be1151a844095df1ff5f723651298c2c07659"
   integrity sha512-VGM1gb+LwsQ5EPevvbvdnKncajBdYqNcrvixBif1BsiDQiSF1q+j4bBTvKC6Bt9n2kqNSx+yNTY2TVJ360E7EQ==
-  dependencies:
-    "@types/node" "*"
-
-"@types/jsonwebtoken@8.3.8":
-  version "8.3.8"
-  resolved "https://registry.yarnpkg.com/@types/jsonwebtoken/-/jsonwebtoken-8.3.8.tgz#b27c9156dde2049ae03e56528a53ef5a8294aa82"
-  integrity sha512-g2ke5+AR/RKYpQxd+HJ2yisLHGuOV0uourOcPtKlcT5Zqv4wFg9vKhFpXEztN4H/6Y6RSUKioz/2PTFPP30CTA==
   dependencies:
     "@types/node" "*"
 
