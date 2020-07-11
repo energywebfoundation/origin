@@ -33,7 +33,7 @@
     "dependencies": {
         "@energyweb/issuer": "2.4.0",
         "@energyweb/origin-backend-core": "4.1.0",
-        "@types/pg": "7.14.3",
+        "@types/pg": "7.14.4",
         "commander": "^5.0.0",
         "dotenv": "8.2.0",
         "pg": "8.2.1",
