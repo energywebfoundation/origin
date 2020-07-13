@@ -53,7 +53,6 @@ export class ProductService implements OnModuleInit {
             generationFrom: generationFrom.toISOString(),
             generationTo: generationTo.toISOString(),
             gridOperator: [deviceProductInfo.gridOperator],
-            externalDeviceId
         };
 
         this.logger.debug(`Returning ${JSON.stringify(product)}`);

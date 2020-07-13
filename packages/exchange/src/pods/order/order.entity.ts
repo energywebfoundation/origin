@@ -62,7 +62,6 @@ export class Order extends ExtendedBaseEntity {
     product: ProductDTO;
 
     @ManyToOne(() => Asset, { eager: true })
-    @Exclude()
     asset: Asset;
 
     @RelationId((order: Order) => order.asset)

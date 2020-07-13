@@ -39,9 +39,6 @@ export class ProductDTO {
     @Validate(GridOperatorValidator)
     public gridOperator?: string[];
 
-    @IsOptional()
-    public externalDeviceId?: IExternalDeviceId;
-
     public static toProduct(dto: ProductDTO): Product {
         return {
             ...dto,

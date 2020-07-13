@@ -14,7 +14,6 @@ export interface IProductDTO {
     generationFrom?: string;
     generationTo?: string;
     gridOperator?: string[];
-    externalDeviceId?: IExternalDeviceId;
 }
 
 export interface ITradeDTO {
@@ -135,6 +134,7 @@ export interface IOrder {
     startVolume: string;
     currentVolume: string;
     directBuyId: string;
+    asset: IAsset;
     assetId: string;
     userId: string;
     filled?: number;

@@ -30,14 +30,8 @@ export const OrderDetailsModal = (props: IOwnProps) => {
     const { order, close, showCancelOrder } = props;
     const {
         filled,
-        product: {
-            generationFrom,
-            generationTo,
-            location,
-            deviceType,
-            gridOperator = anyOption,
-            externalDeviceId
-        }
+        asset,
+        product: { generationFrom, generationTo, location, deviceType, gridOperator = anyOption }
     } = order;
     const {
         spacing,
@@ -60,7 +54,7 @@ export const OrderDetailsModal = (props: IOwnProps) => {
             className="OrderModal"
             fullWidth={true}
         >
-            <Grid container direction="column" style={{ alignItems: 'stretch' }}>
+            <Grid container direction="column" style={{ alignItems: 'stretch' }} wrap="nowrap">
                 <Grid
                     item
                     container
@@ -113,7 +107,9 @@ export const OrderDetailsModal = (props: IOwnProps) => {
                         <Box style={{ textTransform: 'capitalize' }}>{primaryDeviceType}</Box>
                         {order.side === OrderSide.Ask && (
                             <Box>
-                                {deviceById(externalDeviceId.id, environment, devices).facilityName}
+                                {asset?.deviceId
+                                    ? deviceById(asset.deviceId, environment, devices).facilityName
+                                    : anyOption}
                             </Box>
                         )}
                     </Grid>
@@ -127,14 +123,11 @@ export const OrderDetailsModal = (props: IOwnProps) => {
                 </Grid>
 
                 {order.side === OrderSide.Bid && (
-                    <Box mx={1} my={1}>
+                    <Box m={1}>
                         <Grid
                             container
                             style={{
-                                paddingTop: spacing(1),
-                                paddingBottom: spacing(1),
-                                paddingLeft: spacing(1),
-                                paddingRight: spacing(1)
+                                padding: spacing(1)
                             }}
                             className="DeviceSection"
                         >
