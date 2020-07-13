@@ -41,7 +41,7 @@ export function UserLogin() {
 
     const { t } = useTranslation();
     const { Yup, yupLocaleInitialized } = useValidation();
-    const { getAccountLink, getCertificatesLink } = useLinks();
+    const { getCertificatesLink } = useLinks();
     const history = useHistory();
 
     const useStyles = makeStyles(() =>
