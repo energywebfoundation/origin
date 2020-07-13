@@ -99,7 +99,6 @@ export async function startConsumerService(
 
     while (true) {
         const now = moment();
-        console.log(`checking: ${previousTime.format()}`);
 
         for (const device of CONFIG.devices) {
             const energyMeasurements: IEnergyGenerated[] = await getEnergyFromCSVRows(
