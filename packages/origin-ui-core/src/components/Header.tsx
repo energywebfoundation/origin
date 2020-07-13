@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import { NavLink, Link } from 'react-router-dom';
-import { makeStyles, createStyles, useTheme, Tooltip } from '@material-ui/core';
+import { makeStyles, createStyles, useTheme, Tooltip, Typography } from '@material-ui/core';
 import { AccountCircle, Settings, PersonAdd, ExitToApp } from '@material-ui/icons';
 
 import { IUserWithRelations, Role, isRole } from '@energyweb/origin-backend-core';
@@ -111,10 +111,21 @@ export function Header() {
                                 <Tooltip title={t('settings.registerOffchainUser')}>
                                     <PersonAdd color="primary" />
                                 </Tooltip>
+                                {t('user.actions.register')}
+                            </Link>
+                            <Typography color="primary" style={{ display: 'inline' }}>
+                                {' '}
+                                /
+                            </Typography>
+                            <Link to={getAccountLoginLink()} className={classes.endIcon}>
+                                {t('user.actions.login')}
+                                <Tooltip title={t('settings.navigation.login')}>
+                                    <AccountCircle color="primary" />
+                                </Tooltip>
                             </Link>
                         </>
                     )}
-                    {userOffchain ? (
+                    {userOffchain && (
                         <>
                             &nbsp;
                             <Link
@@ -127,14 +138,6 @@ export function Header() {
                                 </Tooltip>
                             </Link>
                             <br />
-                        </>
-                    ) : (
-                        <>
-                            <Link to={getAccountLoginLink()} className={classes.endIcon}>
-                                <Tooltip title={t('settings.navigation.login')}>
-                                    <AccountCircle color="primary" />
-                                </Tooltip>
-                            </Link>
                         </>
                     )}
                     {userOffchain && (

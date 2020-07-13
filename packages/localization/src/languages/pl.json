@@ -234,7 +234,8 @@
             },
             "actions": {
                 "register": "Zarejestruj",
-                "login": "Zaloguj się"
+                "login": "Zaloguj się",
+                "save": "Zapisać"
             },
             "feedback": {
                 "userRegistered": "Użytkownik zarejestrowany.",
