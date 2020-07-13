@@ -1,5 +1,4 @@
 import { Filter, Operator, OrderSide, Product, OrderStatus } from '@energyweb/exchange-core';
-import { IExternalDeviceId } from '@energyweb/origin-backend-core';
 import { BigNumber } from 'ethers/utils';
 
 export type DeviceVintageDTO = {
