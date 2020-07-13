@@ -297,6 +297,7 @@
                 "actions": "DZIAŁANIA"
             },
             "actions": {
+                "view": "Widok",
                 "remove": "Usunąć"
             },
             "feedback": {

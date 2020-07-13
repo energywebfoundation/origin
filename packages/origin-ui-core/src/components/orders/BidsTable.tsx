@@ -52,8 +52,8 @@ export const BidsTable = (props: IOwnProsp) => {
 
     const getFilters = (): ICustomFilterDefinition[] => [
         {
-            property: ({ product: { externalDeviceId: deviceId } }: Order) =>
-                deviceId ? deviceById(deviceId.id, environment, devices).facilityName : undefined,
+            property: ({ asset: { deviceId } }: Order) =>
+                deviceId ? deviceById(deviceId, environment, devices).facilityName : undefined,
             label: t('device.properties.facilityName'),
             input: {
                 type: CustomFilterInputType.dropdown,

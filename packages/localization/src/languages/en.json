@@ -457,6 +457,7 @@
                 "actions": "ACTION"
             },
             "actions": {
+                "view": "View",
                 "remove": "Remove"
             },
             "feedback": {
