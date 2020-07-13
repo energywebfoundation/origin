@@ -279,4 +279,74 @@ describe('Organization e2e tests', () => {
                 expect(getRolesFromRights(rights)).contain(Role.OrganizationDeviceManager);
             });
     });
+
+    it('should be able to see information about own organization', async () => {
+        const { accessToken, organization } = await registerAndLogin(
+            app,
+            userService,
+            organizationService,
+            [Role.OrganizationUser]
+        );
+
+        await request(app.getHttpServer())
+            .get(`/organization/${organization.id}`)
+            .set('Authorization', `Bearer ${accessToken}`)
+            .expect(200);
+    });
+
+    it('should be not able to see information about a different organization', async () => {
+        const { accessToken } = await registerAndLogin(app, userService, organizationService, [
+            Role.OrganizationUser
+        ]);
+
+        const { organization: org2 } = await registerAndLogin(
+            app,
+            userService,
+            organizationService,
+            [Role.OrganizationUser],
+            'org2',
+            'org2'
+        );
+
+        await request(app.getHttpServer())
+            .get(`/organization/${org2.id}`)
+            .set('Authorization', `Bearer ${accessToken}`)
+            .expect(401);
+    });
+
+    it('should return all organizations if Admin or Support Agent', async () => {
+        const { accessToken } = await registerAndLogin(app, userService, organizationService, [
+            Role.Admin
+        ]);
+
+        await request(app.getHttpServer())
+            .get(`/organization`)
+            .set('Authorization', `Bearer ${accessToken}`)
+            .expect(200);
+
+        const { accessToken: accessToken2 } = await registerAndLogin(
+            app,
+            userService,
+            organizationService,
+            [Role.SupportAgent]
+        );
+
+        await request(app.getHttpServer())
+            .get(`/organization`)
+            .set('Authorization', `Bearer ${accessToken2}`)
+            .expect(200);
+    });
+
+    it('should not return all organizations if not Admin or Support Agent', async () => {
+        const { accessToken } = await registerAndLogin(app, userService, organizationService, [
+            Role.OrganizationUser,
+            Role.OrganizationDeviceManager,
+            Role.OrganizationAdmin
+        ]);
+
+        await request(app.getHttpServer())
+            .get(`/organization`)
+            .set('Authorization', `Bearer ${accessToken}`)
+            .expect(403);
+    });
 });

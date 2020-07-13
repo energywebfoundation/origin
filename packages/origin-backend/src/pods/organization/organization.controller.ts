@@ -58,6 +58,8 @@ export class OrganizationController {
     ) {}
 
     @Get()
+    @UseGuards(AuthGuard(), ActiveUserGuard, RolesGuard)
+    @Roles(Role.Admin, Role.SupportAgent)
     async getAll() {
         return this.organizationRepository.find();
     }
@@ -114,11 +116,28 @@ export class OrganizationController {
     }
 
     @Get('/:id')
-    async get(@Param('id') id: string) {
-        const existingEntity = await this.organizationService.findOne(id);
+    @UseGuards(AuthGuard(), ActiveUserGuard)
+    async get(
+        @Param('id', new ParseIntPipe()) organizationId: number,
+        @UserDecorator() loggedUser: ILoggedInUser
+    ) {
+        if (
+            loggedUser.organizationId !== organizationId &&
+            !loggedUser.hasRole(Role.Admin, Role.SupportAgent)
+        ) {
+            throw new UnauthorizedException({
+                success: false,
+                message: `Tried fetching data on organization ${organizationId}, but member of organization ${loggedUser.organizationId}`
+            });
+        }
+
+        const existingEntity = await this.organizationService.findOne(organizationId);
 
         if (!existingEntity) {
-            throw new NotFoundException(StorageErrors.NON_EXISTENT);
+            throw new NotFoundException({
+                success: false,
+                message: StorageErrors.NON_EXISTENT
+            });
         }
 
         return existingEntity;
