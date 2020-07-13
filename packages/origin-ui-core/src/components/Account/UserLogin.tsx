@@ -41,7 +41,7 @@ export function UserLogin() {
 
     const { t } = useTranslation();
     const { Yup, yupLocaleInitialized } = useValidation();
-    const { getAccountLink } = useLinks();
+    const { getAccountLink, getCertificatesLink } = useLinks();
     const history = useHistory();
 
     const useStyles = makeStyles(() =>
@@ -75,7 +75,7 @@ export function UserLogin() {
 
             dispatch(setAuthenticationToken(loginResponse.accessToken));
 
-            history.push(getAccountLink());
+            history.push(getCertificatesLink());
         } catch (error) {
             console.warn('Could not log in.', error);
             showNotification(t('user.feedback.couldNotLogIn'), NotificationType.Error);
