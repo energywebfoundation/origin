@@ -28,6 +28,12 @@ export function Organization() {
 
     const Menu = [
         {
+            key: 'my-organization',
+            label: 'My Organization',
+            component: OrganizationView,
+            hide: !isLoggedIn || !userOffchain?.organization
+        },
+        {
             key: 'organization-users',
             label: 'Members',
             component: OrganizationUsersTable,
@@ -58,7 +64,7 @@ export function Organization() {
             key: 'organization-table',
             label: 'All organizations',
             component: OrganizationTable,
-            hide: !isLoggedIn
+            hide: !isLoggedIn || !isRole(userOffchain, Role.Admin, Role.SupportAgent)
         },
         {
             key: 'organization-view',
