@@ -1,11 +1,13 @@
 import { apply, select, put, take, all, fork, call } from 'redux-saga/effects';
 import { IExchangeClient, Order } from '../../utils/exchange';
-import { getExchangeClient } from '..';
+import { getExchangeClient, getConfiguration } from '..';
 import { SagaIterator } from 'redux-saga';
 import { clearOrders, storeOrder, OrdersActionsType } from './actions';
 import { BigNumber } from 'ethers/utils';
 import { showNotification, NotificationType } from '../..';
 import { getI18n } from 'react-i18next';
+import { requestClearCertificates } from '../certificates';
+import { fetchDataAfterConfigurationChange } from '../general/sagas';
 
 export function* fetchOrders(): SagaIterator {
     yield put(clearOrders());
@@ -30,6 +32,9 @@ function* cancelOrder(): SagaIterator {
         const i18n = getI18n();
         try {
             yield apply(exchangeClient, exchangeClient.cancelOrder, [payload]);
+            const configuration = yield select(getConfiguration);
+            yield put(requestClearCertificates());
+            yield call(fetchDataAfterConfigurationChange, configuration);
             showNotification(i18n.t('order.feedback.orderCanceled'), NotificationType.Success);
             yield call(fetchOrders);
         } catch (err) {

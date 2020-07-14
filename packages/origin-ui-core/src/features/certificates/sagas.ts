@@ -286,11 +286,8 @@ function* requestPublishForSaleSaga(): SagaIterator {
             });
 
             const configuration = yield select(getConfiguration);
-            console.log('>>> configuration:', configuration);
             yield put(requestClearCertificates());
             yield call(fetchDataAfterConfigurationChange, configuration);
-            const certificates = yield select(getCertificates);
-            console.log('>>> certificates after publishing:', certificates);
             showNotification(
                 i18n.t('certificate.feedback.certificatePublished'),
                 NotificationType.Success
