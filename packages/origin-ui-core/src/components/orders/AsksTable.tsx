@@ -135,7 +135,7 @@ export const AsksTable = (props: IOwnProsp) => {
             device_type: deviceType[0].split(';')[0],
             generationFrom: moment(generationFrom).format('MMM, YYYY'),
             generationTo: moment(generationTo).format('MMM, YYYY'),
-            filled: `${filled}%`,
+            filled: `${filled * 100}%`,
             askId: order.id
         };
     });
@@ -176,7 +176,6 @@ export const AsksTable = (props: IOwnProsp) => {
                 pageSize={pageSize}
                 actions={actions}
                 caption={t('order.captions.open_asks')}
-                actionsLabel={t('order.captions.actions')}
             />
             {askToView && (
                 <OrderDetailsModal
