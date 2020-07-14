@@ -132,10 +132,14 @@ export function Market(props: IProps) {
                                     <HierarchicalMultiSelect
                                         selectedValue={values.deviceType}
                                         onChange={(value: string[]) => {
-                                            setFieldValue(
-                                                'deviceType',
-                                                value.length === 0 ? [ANY_VALUE] : value
-                                            );
+                                            const { deviceType } = values;
+                                            value =
+                                                (value.includes(ANY_VALUE) &&
+                                                    !deviceType.includes(ANY_VALUE)) ||
+                                                value.length === 0
+                                                    ? [ANY_VALUE]
+                                                    : value.filter((v) => v !== ANY_VALUE);
+                                            setFieldValue('deviceType', value);
                                         }}
                                         allValues={configuration.deviceTypeService.deviceTypes.concat(
                                             [[ANY_VALUE]]
@@ -159,19 +163,33 @@ export function Market(props: IProps) {
                                 </Grid>
                                 <DeviceSelectors
                                     location={values.location}
-                                    onLocationChange={(value) =>
+                                    onLocationChange={(value) => {
+                                        const { location } = values;
+                                        value =
+                                            (value.includes(ANY_VALUE) &&
+                                                !location.includes(ANY_VALUE)) ||
+                                            value.length === 0
+                                                ? [ANY_VALUE]
+                                                : value.filter((v) => v !== ANY_VALUE);
                                         setFieldValue(
                                             'location',
                                             value.length === 0 ? [ANY_VALUE] : value
-                                        )
-                                    }
+                                        );
+                                    }}
                                     gridOperator={values.gridOperator}
-                                    onGridOperatorChange={(value) =>
+                                    onGridOperatorChange={(value) => {
+                                        const { gridOperator } = values;
+                                        value =
+                                            (value.includes(ANY_OPERATOR) &&
+                                                !gridOperator.includes(ANY_OPERATOR)) ||
+                                            value.length === 0
+                                                ? [ANY_OPERATOR]
+                                                : value.filter((v) => v !== ANY_OPERATOR);
                                         setFieldValue(
                                             'gridOperator',
                                             value.length === 0 ? [ANY_OPERATOR] : value
-                                        )
-                                    }
+                                        );
+                                    }}
                                     disabled={fieldDisabled}
                                 ></DeviceSelectors>
                             </Grid>
