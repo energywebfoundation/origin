@@ -194,3 +194,6 @@ export type SplitItem = {
     id: string;
     volume: BigNumber;
 };
+
+export const ANY_VALUE = 'Any';
+export const ANY_OPERATOR = 'TH-ANY';
