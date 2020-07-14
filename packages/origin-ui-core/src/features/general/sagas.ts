@@ -395,7 +395,7 @@ export function* fetchBundles() {
     }
 }
 
-function* fetchDataAfterConfigurationChange(
+export function* fetchDataAfterConfigurationChange(
     configuration: Configuration.Entity,
     update = false
 ): SagaIterator {
@@ -438,7 +438,7 @@ function* fetchDataAfterConfigurationChange(
         )
     );
     const certificates = initializedCertificates.concat(available);
-
+    console.log('>>> fetchDataAfterConfigurationChanged: certificates:', certificates);
     for (const certificate of certificates) {
         yield put(update ? updateCertificate(certificate) : addCertificate(certificate));
     }
