@@ -1,4 +1,5 @@
 import { IOrganization } from './Organization';
+import { IEmailConfirmation } from './EmailConfirmation';
 
 export enum Role {
     OrganizationAdmin = 1,
@@ -64,6 +65,7 @@ export interface IUserProperties {
 
 export interface IUser extends IUserProperties {
     organization: IOrganization | IOrganization['id'];
+    emailConfirmed?: IEmailConfirmation['confirmed'];
 }
 
 export interface IUserWithRelationsIds extends IUser {

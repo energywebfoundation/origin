@@ -10,3 +10,4 @@ export * from './OwnershipCommitment';
 export * from './Certificate';
 export * from './LoggedInUser';
 export * from './UserRegistrationData';
+export * from './EmailConfirmation';
