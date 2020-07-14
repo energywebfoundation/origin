@@ -21,7 +21,8 @@ export enum CertificatesActions {
     requestCertificateApproval = 'CERTIFICATES_REQUEST_CERTIFICATE_APPROVAL',
     withdrawCertificate = 'CERTIFICATES_REQUEST_CERTIFICATE_WITHDRAWAL',
     requestDepositCertificate = 'CERTIFICATES_REQUEST_CERTIFICATE_DEPOSIT',
-    clearCertificates = 'CERTIFICATES_CLEAR_CERTIFICATES'
+    clearCertificates = 'CERTIFICATES_CLEAR_CERTIFICATES',
+    fetchCertificates = 'CERTIFICATES_FETCH_CERTIFICATES'
 }
 
 export interface IAddCertificateAction {
@@ -258,6 +259,14 @@ export interface IClearCertificatesAction {
 
 export const clearCertificates = () => ({
     type: CertificatesActions.clearCertificates
+});
+
+export interface IFetchCertificatesAction {
+    type: CertificatesActions.clearCertificates;
+}
+
+export const fetchCertificates = () => ({
+    type: CertificatesActions.fetchCertificates
 });
 
 export type ICertificatesAction =
