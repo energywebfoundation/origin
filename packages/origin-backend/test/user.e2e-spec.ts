@@ -17,12 +17,14 @@ import { bootstrapTestInstance, registerAndLogin } from './origin-backend';
 import { omit } from './utils';
 import { UserService } from '../src/pods/user/user.service';
 import { OrganizationService } from '../src/pods/organization/organization.service';
+import { EmailConfirmationService } from '../src/pods/email-confirmation/email-confirmation.service';
 
 describe('User e2e tests', () => {
     let app: INestApplication;
     let databaseService: DatabaseService;
     let userService: UserService;
     let organizationService: OrganizationService;
+    let emailConfirmationService: EmailConfirmationService;
 
     const userToRegister: UserRegistrationData = {
         title: 'Mr',
@@ -38,14 +40,15 @@ describe('User e2e tests', () => {
             app,
             databaseService,
             userService,
-            organizationService
+            organizationService,
+            emailConfirmationService
         } = await bootstrapTestInstance());
 
         await app.init();
     });
 
     beforeEach(async () => {
-        await databaseService.truncate('user');
+        await databaseService.truncate('user', 'organization', 'email_confirmation');
     });
 
     after(async () => {
@@ -203,5 +206,104 @@ describe('User e2e tests', () => {
             .get(`/user/${user.id}`)
             .set('Authorization', `Bearer ${accessToken}`)
             .expect(401);
+    });
+
+    it('new user should have confirmation token set', async () => {
+        const { user } = await registerAndLogin(app, userService, organizationService, [
+            Role.OrganizationUser
+        ]);
+
+        const { confirmed, token, expiryTimestamp } = await emailConfirmationService.get(user.id);
+
+        expect(confirmed).to.be.false;
+        expect(token.length).to.equal(128);
+        expect(expiryTimestamp).to.be.above(0);
+    });
+
+    it('user should be able to confirm email', async () => {
+        const { user, accessToken } = await registerAndLogin(
+            app,
+            userService,
+            organizationService,
+            [Role.OrganizationUser]
+        );
+
+        const { token } = await emailConfirmationService.get(user.id);
+
+        await request(app.getHttpServer())
+            .get(`/user/me`)
+            .set('Authorization', `Bearer ${accessToken}`)
+            .expect((res) => {
+                const { emailConfirmed } = res.body as IUser;
+
+                expect(emailConfirmed).to.be.false;
+            });
+
+        await request(app.getHttpServer())
+            .put(`/user/confirm-email/${token}`)
+            .set('Authorization', `Bearer ${accessToken}`)
+            .expect(200);
+
+        await request(app.getHttpServer())
+            .get(`/user/me`)
+            .set('Authorization', `Bearer ${accessToken}`)
+            .expect((res) => {
+                const { emailConfirmed } = res.body as IUser;
+
+                expect(emailConfirmed).to.be.true;
+            });
+    });
+
+    it('user should be able to re-request confirmation email', async () => {
+        const { accessToken } = await registerAndLogin(app, userService, organizationService, [
+            Role.OrganizationUser
+        ]);
+
+        await request(app.getHttpServer())
+            .put(`/user/re-send-confirm-email`)
+            .set('Authorization', `Bearer ${accessToken}`)
+            .expect(200);
+    });
+
+    it('user should not be able to re-confirm confirmed email', async () => {
+        const { user, accessToken } = await registerAndLogin(
+            app,
+            userService,
+            organizationService,
+            [Role.OrganizationUser]
+        );
+
+        const { token } = await emailConfirmationService.get(user.id);
+
+        await request(app.getHttpServer())
+            .put(`/user/confirm-email/${token}`)
+            .set('Authorization', `Bearer ${accessToken}`)
+            .expect(200);
+
+        await request(app.getHttpServer())
+            .put(`/user/confirm-email/${token}`)
+            .set('Authorization', `Bearer ${accessToken}`)
+            .expect(400);
+    });
+
+    it('user should not be able to re-confirm confirmed email', async () => {
+        const { user, accessToken } = await registerAndLogin(
+            app,
+            userService,
+            organizationService,
+            [Role.OrganizationUser]
+        );
+
+        const { token } = await emailConfirmationService.get(user.id);
+
+        await request(app.getHttpServer())
+            .put(`/user/confirm-email/${token}`)
+            .set('Authorization', `Bearer ${accessToken}`)
+            .expect(200);
+
+        await request(app.getHttpServer())
+            .put(`/user/confirm-email/${token}`)
+            .set('Authorization', `Bearer ${accessToken}`)
+            .expect(400);
     });
 });

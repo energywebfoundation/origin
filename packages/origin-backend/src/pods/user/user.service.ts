@@ -24,6 +24,7 @@ import { validate } from 'class-validator';
 import { DeepPartial, FindConditions, Repository, FindManyOptions } from 'typeorm';
 import { ExtendedBaseEntity } from '../ExtendedBaseEntity';
 import { User } from './user.entity';
+import { EmailConfirmationService } from '../email-confirmation/email-confirmation.service';
 
 export type TUserBaseEntity = ExtendedBaseEntity & IUserWithRelationsIds;
 
@@ -34,7 +35,8 @@ export class UserService {
     constructor(
         @InjectRepository(User)
         private readonly repository: Repository<User>,
-        private readonly config: ConfigService
+        private readonly config: ConfigService,
+        private readonly emailConfirmationService: EmailConfirmationService
     ) {}
 
     public async getAll(options?: FindManyOptions<User>) {
@@ -45,24 +47,31 @@ export class UserService {
         const isExistingUser = await this.hasUser({ email: data.email });
 
         if (isExistingUser) {
-            this.logger.error(`User with email ${data.email} already exists`);
-            throw new ConflictException();
+            const message = `User with email ${data.email} already exists`;
+
+            this.logger.error(message);
+            throw new ConflictException({
+                success: false,
+                message
+            });
         }
 
-        return new User(
-            await this.repository.save({
-                title: data.title,
-                firstName: data.firstName,
-                lastName: data.lastName,
-                email: data.email,
-                telephone: data.telephone,
-                password: this.hashPassword(data.password),
-                notifications: true,
-                rights: Role.OrganizationAdmin,
-                status: UserStatus.Pending,
-                kycStatus: KYCStatus.Pending
-            })
-        );
+        const user = await this.repository.save({
+            title: data.title,
+            firstName: data.firstName,
+            lastName: data.lastName,
+            email: data.email,
+            telephone: data.telephone,
+            password: this.hashPassword(data.password),
+            notifications: true,
+            rights: Role.OrganizationAdmin,
+            status: UserStatus.Pending,
+            kycStatus: KYCStatus.Pending
+        });
+
+        await this.emailConfirmationService.create(user);
+
+        return new User(user);
     }
 
     public async changeRole(userId: number, ...roles: Role[]) {
@@ -164,9 +173,17 @@ export class UserService {
     }
 
     async findOne(conditions: FindConditions<User>): Promise<TUserBaseEntity> {
-        return (this.repository.findOne(conditions, {
+        const user = await ((this.repository.findOne(conditions, {
             loadRelationIds: true
-        }) as Promise<IUser>) as Promise<TUserBaseEntity>;
+        }) as Promise<IUser>) as Promise<TUserBaseEntity>);
+
+        if (user) {
+            const { confirmed } = await this.emailConfirmationService.get(user.id);
+
+            user.emailConfirmed = confirmed;
+        }
+
+        return user;
     }
 
     private async hasUser(conditions: FindConditions<User>) {

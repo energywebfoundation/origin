@@ -10,7 +10,8 @@ import {
     DeviceStatus,
     UserStatusChangedEvent,
     OrganizationMemberChangedRoleEvent,
-    Role
+    Role,
+    ConfirmEmailEvent
 } from '@energyweb/origin-backend-core';
 import { MailService } from '../mail';
 import EmailTypes from './EmailTypes';
@@ -54,6 +55,14 @@ export class NotificationService {
     constructor(private readonly mailService: MailService) {}
 
     private handlers = {
+        [SupportedEvents.CONFIRM_EMAIL]: async (data: ConfirmEmailEvent) => {
+            const url = `${process.env.UI_BASE_URL}/account/confirm-email?${data.token}`;
+            await this.sendNotificationEmail(
+                EmailTypes.CONFIRM_EMAIL,
+                data.email,
+                `Please visit <a href="${url}">confirm your email address</a>.`
+            );
+        },
         [SupportedEvents.ORGANIZATION_INVITATION]: async (data: OrganizationInvitationEvent) => {
             const url = `${process.env.UI_BASE_URL}/organization/organization-invitations`;
 
