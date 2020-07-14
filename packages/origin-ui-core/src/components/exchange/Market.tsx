@@ -35,9 +35,9 @@ const INITIAL_FORM_VALUES: IMarketFormValues = {
     generationDateStart: null,
     generationDateEnd: null,
     price: '',
-    deviceType: [],
-    location: [],
-    gridOperator: []
+    deviceType: [ANY_VALUE],
+    location: [ANY_VALUE],
+    gridOperator: [ANY_OPERATOR]
 };
 
 interface IProps {
