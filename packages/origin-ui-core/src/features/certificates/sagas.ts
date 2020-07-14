@@ -6,7 +6,7 @@ import { getI18n } from 'react-i18next';
 import { SagaIterator } from 'redux-saga';
 import { all, apply, call, delay, fork, put, select, take } from 'redux-saga/effects';
 
-import { CertificateSource, updateCertificate, IResyncCertificateAction, requestClearCertificates } from '.';
+import { CertificateSource, updateCertificate, IResyncCertificateAction, clearCertificates } from '.';
 import { IStoreState } from '../../types';
 import { moment, NotificationType, showNotification } from '../../utils';
 import { ExchangeAccount, IExchangeClient, ITransfer } from '../../utils/exchange';
@@ -286,7 +286,7 @@ function* requestPublishForSaleSaga(): SagaIterator {
             });
 
             const configuration = yield select(getConfiguration);
-            yield put(requestClearCertificates());
+            yield put(clearCertificates());
             yield call(fetchDataAfterConfigurationChange, configuration);
             showNotification(
                 i18n.t('certificate.feedback.certificatePublished'),

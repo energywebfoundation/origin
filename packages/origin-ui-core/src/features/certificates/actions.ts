@@ -252,11 +252,11 @@ export const requestDepositCertificate = (
     payload
 });
 
-export interface IRequestClearCertificatesAction {
-    type: CertificatesActions.withdrawCertificate;
+export interface IClearCertificatesAction {
+    type: CertificatesActions.clearCertificates;
 }
 
-export const requestClearCertificates = () => ({
+export const clearCertificates = () => ({
     type: CertificatesActions.clearCertificates
 });
 
@@ -274,5 +274,5 @@ export type ICertificatesAction =
     | IRequestClaimCertificateAction
     | IRequestClaimCertificateBulkAction
     | IRequestCertificateApprovalAction
-    | IRequestClearCertificatesAction
+    | IClearCertificatesAction
     | IRequestWithdrawCertificateAction;

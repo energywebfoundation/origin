@@ -6,7 +6,7 @@ import { clearOrders, storeOrder, OrdersActionsType } from './actions';
 import { BigNumber } from 'ethers/utils';
 import { showNotification, NotificationType } from '../..';
 import { getI18n } from 'react-i18next';
-import { requestClearCertificates } from '../certificates';
+import { clearCertificates } from '../certificates';
 import { fetchDataAfterConfigurationChange } from '../general/sagas';
 
 export function* fetchOrders(): SagaIterator {
@@ -33,7 +33,7 @@ function* cancelOrder(): SagaIterator {
         try {
             yield apply(exchangeClient, exchangeClient.cancelOrder, [payload]);
             const configuration = yield select(getConfiguration);
-            yield put(requestClearCertificates());
+            yield put(clearCertificates());
             yield call(fetchDataAfterConfigurationChange, configuration);
             showNotification(i18n.t('order.feedback.orderCanceled'), NotificationType.Success);
             yield call(fetchOrders);

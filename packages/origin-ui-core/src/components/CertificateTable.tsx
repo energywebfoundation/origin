@@ -74,14 +74,13 @@ export function CertificateTable(props: IProps) {
         sortAscending: false
     });
 
-    const stateCertificates = useSelector(getCertificates);
+    const certificates = useSelector(getCertificates);
     const configuration = useSelector(getConfiguration);
     const producingDevices = useSelector(getProducingDevices);
     const environment = useSelector(getEnvironment);
 
     const { selectedState } = props;
     const hiddenColumns = props.hiddenColumns || [];
-    const certificates = props.certificates || stateCertificates;
     const deviceTypeService = configuration?.deviceTypeService;
     const { t } = useTranslation();
     const { getCertificateDetailLink } = useLinks();
@@ -192,7 +191,6 @@ export function CertificateTable(props: IProps) {
     }
 
     function hidePublishForSaleModal() {
-        loadPage(1);
         setSelectedCertificate(null);
         setSellModalVisibility(false);
     }
@@ -468,7 +466,6 @@ export function CertificateTable(props: IProps) {
             label: `${t('certificate.properties.source')}`
         }
     ] as const).filter((column) => !hiddenColumns.includes(column.id));
-
     const rows = paginatedData.map((enrichedData) => {
         let deviceType = '';
         let commissioningDate = '';
