@@ -4,6 +4,7 @@ import { HierarchicalMultiSelect } from './HierarchicalMultiSelect';
 import { Grid, GridSize } from '@material-ui/core';
 import { useSelector } from 'react-redux';
 import { getRegions, getOffchainConfiguration, getEnvironment } from '../features';
+import { ANY_VALUE, ANY_OPERATOR } from '../utils/exchange';
 
 interface IProps {
     location: string[];
@@ -29,6 +30,7 @@ export function DeviceSelectors(props: IProps) {
     } = { gridItemSize: 6 as GridSize, ...props };
 
     const regions = useSelector(getRegions);
+    regions[ANY_VALUE] = [];
     const configuration = useSelector(getOffchainConfiguration);
     const environment = useSelector(getEnvironment);
     const { t } = useTranslation();
@@ -67,9 +69,9 @@ export function DeviceSelectors(props: IProps) {
                     <HierarchicalMultiSelect
                         selectedValue={gridOperator}
                         onChange={onGridOperatorChange}
-                        options={configuration.gridOperators?.reduce(
-                            (a, b) => ({ ...a, [b]: [] }),
-                            {}
+                        options={Object.assign(
+                            configuration.gridOperators?.reduce((a, b) => ({ ...a, [b]: [] }), {}),
+                            { [ANY_OPERATOR]: [] }
                         )}
                         selectOptions={[
                             {
