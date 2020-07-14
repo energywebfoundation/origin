@@ -172,11 +172,7 @@ export function Certificates() {
                 }}
             />
 
-            <Route
-                exact={true}
-                path={getCertificatesLink()}
-                render={() => <Redirect to={defaultRedirect} />}
-            />
+            <Redirect path={getCertificatesLink()} to={defaultRedirect} />
 
             <Route
                 exact={true}
