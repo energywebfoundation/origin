@@ -138,50 +138,6 @@ export function AccountSettings() {
         <Paper>
             <Grid container spacing={3} className={classes.container}>
                 <Grid item xs={12}>
-                    {user && (
-                        <>
-                            {`${user.title} ${user.firstName} ${user.lastName}`}
-
-                            {user.organization && (
-                                <>
-                                    <br />
-                                    <br />
-                                    Organization: {user.organization.name}
-                                </>
-                            )}
-
-                            <TextField
-                                label={t('settings.properties.email')}
-                                value={user.email}
-                                fullWidth
-                                className="my-3"
-                                disabled
-                            />
-
-                            <TextField
-                                label={t('settings.properties.blockchainAccount')}
-                                value={user.blockchainAccountAddress ?? ''}
-                                fullWidth
-                                className="my-3"
-                                disabled
-                            />
-
-                            {!user.blockchainAccountAddress && (
-                                <>
-                                    <br />
-                                    <Button
-                                        type="submit"
-                                        variant="contained"
-                                        color="primary"
-                                        className="mt-3 right"
-                                        onClick={signAndSend}
-                                    >
-                                        {t('settings.actions.verifyBlockchainAccount')}
-                                    </Button>
-                                </>
-                            )}
-                        </>
-                    )}
                     <FormGroup>
                         <FormControlLabel
                             control={
