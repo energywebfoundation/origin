@@ -20,7 +20,6 @@ import {
 } from '../Table';
 import { useSelector } from 'react-redux';
 import { getCurrencies, getConfiguration, getEnvironment, getProducingDevices } from '../..';
-import { BigNumber } from 'ethers/utils';
 import { Remove, Visibility } from '@material-ui/icons';
 import { RemoveOrderConfirmation } from '../Modal/RemoveOrderConfirmation';
 import { OrderDetailsModal } from '../Modal/OrderDetailslModal';
