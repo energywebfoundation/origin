@@ -128,7 +128,7 @@ export class EmailConfirmationService {
     generateEmailToken(): IEmailConfirmationToken {
         return {
             token: crypto.randomBytes(64).toString('hex'),
-            expiryTimestamp: moment().add(8, 'day').unix()
+            expiryTimestamp: moment().add(8, 'hour').unix()
         };
     }
 }
