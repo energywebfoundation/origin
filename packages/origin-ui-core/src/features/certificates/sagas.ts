@@ -10,7 +10,8 @@ import {
     CertificateSource,
     updateCertificate,
     IResyncCertificateAction,
-    clearCertificates
+    clearCertificates,
+    reloadCertificates
 } from '.';
 import { IStoreState } from '../../types';
 import { moment, NotificationType, showNotification } from '../../utils';
@@ -289,10 +290,7 @@ function* requestPublishForSaleSaga(): SagaIterator {
                 volume: amount.toString(),
                 validFrom: moment().toISOString()
             });
-
-            const configuration = yield select(getConfiguration);
-            yield put(clearCertificates());
-            yield call(fetchDataAfterConfigurationChange, configuration);
+            yield put(reloadCertificates());
             showNotification(
                 i18n.t('certificate.feedback.certificatePublished'),
                 NotificationType.Success
