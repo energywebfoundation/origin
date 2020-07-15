@@ -10,7 +10,8 @@ import {
     UserPasswordUpdate,
     IUserWithRelations,
     IEmailConfirmationToken,
-    EmailConfirmationResponse
+    EmailConfirmationResponse,
+    ISuccessResponse
 } from '@energyweb/origin-backend-core';
 import { recoverTypedSignatureAddress } from '@energyweb/utils-general';
 
@@ -102,6 +103,10 @@ export class UserClientMock implements IUserClient {
     }
 
     confirmEmail(token: IEmailConfirmationToken['token']): Promise<EmailConfirmationResponse> {
+        throw new Error('Method not implemented.');
+    }
+
+    requestConfirmationEmail(): Promise<ISuccessResponse> {
         throw new Error('Method not implemented.');
     }
 }

@@ -10,7 +10,8 @@ import {
     IUser,
     UserPasswordUpdate,
     IEmailConfirmationToken,
-    EmailConfirmationResponse
+    EmailConfirmationResponse,
+    ISuccessResponse
 } from '@energyweb/origin-backend-core';
 
 import { IRequestClient, RequestClient } from './RequestClient';
@@ -31,6 +32,7 @@ export interface IUserClient {
     updatePassword(formData: UserPasswordUpdate): Promise<IUserWithRelations>;
     updateChainAddress(formData: IUser): Promise<IUserWithRelations>;
     confirmEmail(token: IEmailConfirmationToken['token']): Promise<EmailConfirmationResponse>;
+    requestConfirmationEmail(): Promise<ISuccessResponse>;
 }
 
 export class UserClient implements IUserClient {
@@ -139,6 +141,14 @@ export class UserClient implements IUserClient {
             IEmailConfirmationToken['token'],
             EmailConfirmationResponse
         >(`${this.userEndpoint}/confirm-email/${token}`);
+
+        return response.data;
+    }
+
+    public async requestConfirmationEmail(): Promise<ISuccessResponse> {
+        const response = await this.requestClient.put<void, ISuccessResponse>(
+            `${this.userEndpoint}/re-send-confirm-email`
+        );
 
         return response.data;
     }
