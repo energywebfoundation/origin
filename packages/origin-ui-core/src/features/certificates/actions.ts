@@ -20,7 +20,9 @@ export enum CertificatesActions {
     requestClaimCertificateBulk = 'CERTIFICATES_REQUEST_CLAIM_CERTIFICATE_BULK',
     requestCertificateApproval = 'CERTIFICATES_REQUEST_CERTIFICATE_APPROVAL',
     withdrawCertificate = 'CERTIFICATES_REQUEST_CERTIFICATE_WITHDRAWAL',
-    requestDepositCertificate = 'CERTIFICATES_REQUEST_CERTIFICATE_DEPOSIT'
+    requestDepositCertificate = 'CERTIFICATES_REQUEST_CERTIFICATE_DEPOSIT',
+    clearCertificates = 'CERTIFICATES_CLEAR_CERTIFICATES',
+    reloadCertificates = 'CERTIFICATES_RELOAD_CERTIFICATES'
 }
 
 export interface IAddCertificateAction {
@@ -251,6 +253,22 @@ export const requestDepositCertificate = (
     payload
 });
 
+export interface IClearCertificatesAction {
+    type: CertificatesActions.clearCertificates;
+}
+
+export const clearCertificates = () => ({
+    type: CertificatesActions.clearCertificates
+});
+
+export interface IReloadCertificatesAction {
+    type: CertificatesActions.reloadCertificates;
+}
+
+export const reloadCertificates = () => ({
+    type: CertificatesActions.reloadCertificates
+});
+
 export type ICertificatesAction =
     | IAddCertificateAction
     | IUpdateCertificateAction
@@ -265,4 +283,6 @@ export type ICertificatesAction =
     | IRequestClaimCertificateAction
     | IRequestClaimCertificateBulkAction
     | IRequestCertificateApprovalAction
+    | IClearCertificatesAction
+    | IReloadCertificatesAction
     | IRequestWithdrawCertificateAction;

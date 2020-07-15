@@ -101,6 +101,9 @@ export default function reducer(
                 fetcher: action.payload
             };
 
+        case CertificatesActions.clearCertificates:
+            return { ...state, certificates: [] };
+
         default:
             return state;
     }
