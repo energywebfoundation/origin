@@ -225,7 +225,8 @@
             "responses": {
                 "yes": "Yes",
                 "no": "No",
-                "partially": "Partially"
+                "partially": "Partially",
+                "ok": "Ok"
             },
             "actions": {
                 "update": "Update",

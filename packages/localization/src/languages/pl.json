@@ -141,6 +141,9 @@
             }
         },
         "general": {
+            "responses": {
+                "ok": "Dobrze"
+            },
             "actions": {
                 "update": "Zaktualizuj",
                 "continue": "Kontynuuj",

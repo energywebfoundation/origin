@@ -24,7 +24,7 @@ import { getBundles, getShowBundleDetails } from '../../features/bundles/selecto
 import { Fab, Tooltip } from '@material-ui/core';
 import { Link } from 'react-router-dom';
 import { showBundleDetails, cancelBundle, storeBundle } from '../../features/bundles';
-import { BundleBougth } from '../Modal/BundleBougth';
+import { BundleBought } from '../Modal/BundleBought';
 import { BigNumber } from 'ethers/utils';
 
 const BUNDLES_PER_PAGE = 25;
@@ -173,7 +173,7 @@ export const BundlesTable = (props: IOwnProps) => {
                     </Fab>
                 </Tooltip>
             </Link>
-            <BundleBougth open={showBundleBoughtModal} setOpen={setShowBundleBougthModal} />
+            <BundleBought open={showBundleBoughtModal} setOpen={setShowBundleBougthModal} />
         </>
     );
 };

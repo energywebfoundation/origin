@@ -17,7 +17,7 @@ interface IOwnProps {
     open: boolean;
     setOpen: (boolean) => void;
 }
-export const BundleBougth = (props: IOwnProps) => {
+export const BundleBought = (props: IOwnProps) => {
     const { open, setOpen } = props;
     const { t } = useTranslation();
     const iconStyles = makeStyles((theme: Theme) => ({
