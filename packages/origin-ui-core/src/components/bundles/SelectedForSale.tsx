@@ -12,7 +12,7 @@ import {
     Box,
     useTheme
 } from '@material-ui/core';
-import { ICertificateViewItem } from '../../features/certificates';
+import { ICertificateViewItem, reloadCertificates } from '../../features/certificates';
 import {
     deviceById,
     getEnvironment,
@@ -68,6 +68,7 @@ export const SelectedForSale = (props: IOwnProps) => {
                 callback
             })
         );
+        dispatch(reloadCertificates());
     }
 
     return (
