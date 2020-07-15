@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import { NavLink, Link } from 'react-router-dom';
-import { makeStyles, createStyles, useTheme, Tooltip, Typography } from '@material-ui/core';
+import { makeStyles, createStyles, useTheme, Tooltip, Typography, Grid } from '@material-ui/core';
 import { AccountCircle, Settings, PersonAdd, ExitToApp } from '@material-ui/icons';
 
 import { IUserWithRelations, Role, isRole } from '@energyweb/origin-backend-core';
@@ -65,6 +65,7 @@ export function Header() {
         <div className="HeaderWrapper">
             <div className="Header">
                 <NavLink to={getDevicesLink()}>{originConfiguration.logo}</NavLink>
+
                 <ul className="NavMenu nav">
                     <li>
                         <NavLink to={getDevicesLink()}>{t('header.devices')}</NavLink>
@@ -103,9 +104,9 @@ export function Header() {
                     )}
                 </ul>
 
-                <div className="ViewProfile">
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
                     {!userOffchain && (
-                        <>
+                        <Grid item>
                             &nbsp;
                             <Link className={classes.endIcon} to={getUserRegisterLink()}>
                                 <Tooltip title={t('settings.registerOffchainUser')}>
@@ -123,10 +124,11 @@ export function Header() {
                                     <AccountCircle color="primary" />
                                 </Tooltip>
                             </Link>
-                        </>
+                        </Grid>
                     )}
                     {userOffchain && (
-                        <>
+                        <Grid item>
+                            {t('settings.settings')}
                             &nbsp;
                             <Link
                                 to={getAccountLink()}
@@ -138,7 +140,7 @@ export function Header() {
                                 </Tooltip>
                             </Link>
                             <br />
-                        </>
+                        </Grid>
                     )}
                     {userOffchain && (
                         <div>
