@@ -513,7 +513,7 @@ export function* withdrawSaga(): SagaIterator {
     }
 }
 
-function* fetchCertificatesSaga(): SagaIterator {
+function* reloadCertificatesSaga(): SagaIterator {
     while (true) {
         yield take(CertificatesActions.reloadCertificates);
         yield put(clearCertificates());
@@ -534,6 +534,6 @@ export function* certificatesSaga(): SagaIterator {
         fork(resyncCertificateSaga),
         fork(withdrawSaga),
         fork(requestDepositSaga),
-        fork(fetchCertificatesSaga)
+        fork(reloadCertificatesSaga)
     ]);
 }
