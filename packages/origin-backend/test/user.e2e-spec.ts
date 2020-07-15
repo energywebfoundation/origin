@@ -6,7 +6,8 @@ import {
     KYCStatus,
     Role,
     UserStatus,
-    UserRegistrationData
+    UserRegistrationData,
+    EmailConfirmationResponse
 } from '@energyweb/origin-backend-core';
 import { INestApplication } from '@nestjs/common';
 import { expect } from 'chai';
@@ -242,7 +243,11 @@ describe('User e2e tests', () => {
         await request(app.getHttpServer())
             .put(`/user/confirm-email/${token}`)
             .set('Authorization', `Bearer ${accessToken}`)
-            .expect(200);
+            .expect((res) => {
+                const response = res.text as EmailConfirmationResponse;
+
+                expect(response).equals(EmailConfirmationResponse.Success);
+            });
 
         await request(app.getHttpServer())
             .get(`/user/me`)
@@ -278,32 +283,20 @@ describe('User e2e tests', () => {
         await request(app.getHttpServer())
             .put(`/user/confirm-email/${token}`)
             .set('Authorization', `Bearer ${accessToken}`)
-            .expect(200);
+            .expect((res) => {
+                console.log(res);
+                const response = res.text as EmailConfirmationResponse;
+
+                expect(response).equals(EmailConfirmationResponse.Success);
+            });
 
         await request(app.getHttpServer())
             .put(`/user/confirm-email/${token}`)
             .set('Authorization', `Bearer ${accessToken}`)
-            .expect(400);
-    });
+            .expect((res) => {
+                const response = res.text as EmailConfirmationResponse;
 
-    it('user should not be able to re-confirm confirmed email', async () => {
-        const { user, accessToken } = await registerAndLogin(
-            app,
-            userService,
-            organizationService,
-            [Role.OrganizationUser]
-        );
-
-        const { token } = await emailConfirmationService.get(user.id);
-
-        await request(app.getHttpServer())
-            .put(`/user/confirm-email/${token}`)
-            .set('Authorization', `Bearer ${accessToken}`)
-            .expect(200);
-
-        await request(app.getHttpServer())
-            .put(`/user/confirm-email/${token}`)
-            .set('Authorization', `Bearer ${accessToken}`)
-            .expect(400);
+                expect(response).equals(EmailConfirmationResponse.AlreadyConfirmed);
+            });
     });
 });

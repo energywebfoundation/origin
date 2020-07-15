@@ -7,7 +7,8 @@ import {
     IUser,
     UserPasswordUpdate,
     IEmailConfirmationToken,
-    ISuccessResponse
+    ISuccessResponse,
+    EmailConfirmationResponse
 } from '@energyweb/origin-backend-core';
 import { UserDecorator, ActiveUserGuard } from '@energyweb/origin-backend-utils';
 import {
@@ -122,7 +123,7 @@ export class UserController {
     @Put('confirm-email/:token')
     public async confirmToken(
         @Param('token') token: IEmailConfirmationToken['token']
-    ): Promise<ISuccessResponse> {
+    ): Promise<EmailConfirmationResponse> {
         return this.emailConfirmationService.confirmEmail(token);
     }
 

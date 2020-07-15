@@ -178,9 +178,9 @@ export class UserService {
         }) as Promise<IUser>) as Promise<TUserBaseEntity>);
 
         if (user) {
-            const { confirmed } = await this.emailConfirmationService.get(user.id);
+            const emailConfirmation = await this.emailConfirmationService.get(user.id);
 
-            user.emailConfirmed = confirmed;
+            user.emailConfirmed = emailConfirmation?.confirmed || false;
         }
 
         return user;

@@ -7,7 +7,8 @@ import {
     IUser,
     ISuccessResponse,
     ConfirmEmailEvent,
-    SupportedEvents
+    SupportedEvents,
+    EmailConfirmationResponse
 } from '@energyweb/origin-backend-core';
 import moment from 'moment';
 import { EmailConfirmation } from './email-confirmation.entity';
@@ -62,7 +63,9 @@ export class EmailConfirmationService {
         );
     }
 
-    async confirmEmail(token: IEmailConfirmationToken['token']): Promise<ISuccessResponse> {
+    async confirmEmail(
+        token: IEmailConfirmationToken['token']
+    ): Promise<EmailConfirmationResponse> {
         const emailConfirmation = await this.repository.findOne({ token });
 
         if (!emailConfirmation) {
@@ -73,27 +76,18 @@ export class EmailConfirmationService {
         }
 
         if (emailConfirmation.confirmed === true) {
-            throw new BadRequestException({
-                success: false,
-                message: `Email already confirmed`
-            });
+            return EmailConfirmationResponse.AlreadyConfirmed;
         }
 
         if (emailConfirmation.expiryTimestamp < moment().unix()) {
-            throw new BadRequestException({
-                success: false,
-                message: `Token expired`
-            });
+            return EmailConfirmationResponse.Expired;
         }
 
         await this.repository.update(emailConfirmation.id, {
             confirmed: true
         });
 
-        return {
-            success: true,
-            message: 'Email successfully confirmed'
-        };
+        return EmailConfirmationResponse.Success;
     }
 
     public async sendConfirmationEmail(email: IUser['email']): Promise<ISuccessResponse> {
