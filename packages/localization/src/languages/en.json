@@ -340,18 +340,28 @@
                 "password": "Password",
                 "status": "Status",
                 "kycStatus": "KYC Status",
-                "blockchainAddress": "Blockchain Address"
+                "blockchainAddress": "Blockchain Address",
+                "emailConfirmed": "Email Confirmed"
             },
             "actions": {
                 "register": "Register",
                 "login": "Login",
-                "save": "Save"
+                "save": "Save",
+                "resendConfirmationEmail": "Re-send confirmation email"
             },
             "feedback": {
                 "userRegistered": "User registered.",
                 "errorWhileRegisteringUser": "Error while registering user.",
                 "userLoggedIn": "User logged in.",
-                "couldNotLogIn": "Could not log in with supplied credentials."
+                "couldNotLogIn": "Could not log in with supplied credentials.",
+                "confirmationEmailResent": "Confirmation email re-sent.",
+                "confirmationEmailResentFailed": "Unable to send the confirmation email.",
+                "emailConfirmation": {
+                    "alreadyConfirmed": "Already confirmed.",
+                    "confirmed": "Email confirmed successfully.",
+                    "expired": "Confirmation link expired.",
+                    "loading:": "Loading..."
+                }
             },
             "profile": {
                 "subtitle": {
@@ -463,10 +473,6 @@
             "feedback": {
                 "removeOrderConfirmation": "Are you sure you want remove?",
                 "orderCanceled": "Order canceled"
-            },
-            "confirmations": {
-                "no": "No",
-                "yes": "Yes"
             }
         }
     }
