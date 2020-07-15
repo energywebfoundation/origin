@@ -10,8 +10,7 @@ import {
     CertificateSource,
     updateCertificate,
     IResyncCertificateAction,
-    clearCertificates,
-    IFetchCertificatesAction
+    clearCertificates
 } from '.';
 import { IStoreState } from '../../types';
 import { moment, NotificationType, showNotification } from '../../utils';
@@ -516,7 +515,7 @@ export function* withdrawSaga(): SagaIterator {
 
 function* fetchCertificatesSaga(): SagaIterator {
     while (true) {
-        yield take(CertificatesActions.fetchCertificates);
+        yield take(CertificatesActions.reloadCertificates);
         yield put(clearCertificates());
         const configuration = yield select(getConfiguration);
         yield call(fetchDataAfterConfigurationChange, configuration);

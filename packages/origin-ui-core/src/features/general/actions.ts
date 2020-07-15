@@ -12,7 +12,7 @@ export enum GeneralActions {
     setAccountMismatchModalProperties = 'GENERAL_SET_ACCOUNT_MISMATCH_MODAL_PROPERTIES',
     accountMismatchModalResolved = 'GENERAL_ACCOUNT_MISMATCH_MODAL_RESOLVED',
     requestDeviceCreation = 'GENERAL_REQUEST_DEVICE_CREATION',
-    setNoAccountModalVisibility = 'NO_ACCOUNT_MODAL_VISIBILITY',
+    setNoAccountModalVisibility = 'NO_ACCOUNT_MODAL_VISIBILITY'
 }
 
 export interface IEnvironment {

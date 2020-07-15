@@ -14,7 +14,7 @@ import { getExchangeClient, getCountry } from '../../features/general/selectors'
 import { useSelector, useDispatch } from 'react-redux';
 import { TOrderBook } from '../../utils/exchange';
 import { setLoading } from '../../features/general/actions';
-import { fetchCertificates } from '../../features/certificates';
+import { reloadCertificates } from '../../features/certificates';
 
 interface IProps {
     currency: string;
@@ -107,7 +107,7 @@ export function Exchange(props: IProps) {
             price
         });
 
-        dispatch(fetchCertificates());
+        dispatch(reloadCertificates());
 
         if (!success) {
             showNotification('Direct buy failed.');
