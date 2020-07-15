@@ -435,7 +435,8 @@
                 "bundleDetails": "BUNDLE DETAILS",
                 "Sell": "Sell",
                 "certificates": "certificates",
-                "price": "Price per MWh"
+                "price": "Price per MWh",
+                "bundleBought": "Bundle was fully purchased"
             },
             "actions": {
                 "sellAsBundle": "Sell as bundle"
