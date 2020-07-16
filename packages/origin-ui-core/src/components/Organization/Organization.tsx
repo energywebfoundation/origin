@@ -1,19 +1,17 @@
-import React, { useState } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import React from 'react';
+import { useSelector } from 'react-redux';
 import { NavLink, Route, Redirect } from 'react-router-dom';
-import { Role, isRole, IOrganizationWithRelationsIds } from '@energyweb/origin-backend-core';
+import { Role, isRole } from '@energyweb/origin-backend-core';
 
 import { PageContent } from '../PageContent/PageContent';
 import { useLinks } from '../../utils/routing';
-import { getUserOffchain, getOrganizations } from '../../features/users/selectors';
+import { getUserOffchain } from '../../features/users/selectors';
 import { OrganizationForm } from './OrganizationForm';
 import { OrganizationTable } from './OrganizationTable';
 import { OrganizationView } from './OrganizationView';
 import { OrganizationInvite } from './OrganizationInvite';
 import { OrganizationInvitations } from './OrganizationInvitations';
 import { OrganizationUsersTable } from './OrganizationUsersTable';
-import { addOrganizations } from '../../features/users/actions';
-import { getOffChainDataSource } from '../../features';
 
 export const roleNames = {
     [Role.OrganizationUser]: 'organization.invitations.roles.member',
@@ -23,30 +21,6 @@ export const roleNames = {
 
 export function Organization() {
     const user = useSelector(getUserOffchain);
-    const dispatch = useDispatch();
-    const offChainDataSource = useSelector(getOffChainDataSource);
-    const storedOrganizations = useSelector(getOrganizations);
-    const [fetching, setFetching] = useState<boolean>(false);
-
-    const fetchOrganizations = async () => {
-        setFetching(true);
-        try {
-            const organizations: IOrganizationWithRelationsIds[] = await offChainDataSource.organizationClient.getAll();
-            dispatch(addOrganizations(organizations));
-        } catch (error) {
-            console.error('Error fetching list of all organizations', error);
-        }
-        setFetching(false);
-    };
-
-    if (
-        user &&
-        (!storedOrganizations || storedOrganizations.length === 0) &&
-        !fetching &&
-        isRole(user, Role.Admin, Role.SupportAgent)
-    ) {
-        fetchOrganizations();
-    }
 
     const { getOrganizationLink } = useLinks();
 
