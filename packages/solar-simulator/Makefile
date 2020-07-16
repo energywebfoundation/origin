@@ -22,17 +22,17 @@ endif
 
 push-heroku-canary:
 ifdef HEROKU_API_KEY
-	@docker tag ${CANARY} registry.heroku.com/${HEROKU_CANARY_APP_SIM}/web
+	@docker tag ${CANARY} registry.heroku.com/${HEROKU_CANARY_APP_SIM}/worker
 	@docker login -u _ -p $(shell echo '$$HEROKU_API_KEY') registry.heroku.com
-	@docker push registry.heroku.com/${HEROKU_CANARY_APP_SIM}/web
-	@heroku container:release web -a ${HEROKU_CANARY_APP_SIM}
+	@docker push registry.heroku.com/${HEROKU_CANARY_APP_SIM}/worker
+	@heroku container:release worker -a ${HEROKU_CANARY_APP_SIM}
 endif
 
 push-heroku-stable:
 ifdef HEROKU_API_KEY
 	@docker pull ${LATEST}
-	@docker tag ${LATEST} registry.heroku.com/${HEROKU_STABLE_APP_SIM}/web
+	@docker tag ${LATEST} registry.heroku.com/${HEROKU_STABLE_APP_SIM}/worker
 	@docker login -u _ -p $(shell echo '$$HEROKU_API_KEY') registry.heroku.com
-	@docker push registry.heroku.com/${HEROKU_STABLE_APP_SIM}/web
-	@heroku container:release web -a ${HEROKU_STABLE_APP_SIM}
+	@docker push registry.heroku.com/${HEROKU_STABLE_APP_SIM}/worker
+	@heroku container:release worker -a ${HEROKU_STABLE_APP_SIM}
 endif
