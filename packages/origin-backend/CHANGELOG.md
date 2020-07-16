@@ -3,6 +3,24 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.2.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-backend@6.1.0...@energyweb/origin-backend@6.2.0) (2020-07-16)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @nestjs/jwt to v7.1.0 ([3b8864d](https://github.com/energywebfoundation/origin/commit/3b8864de4850b15418b85e950734a0e8e5152062))
+* **deps:** update nest monorepo to v7.3.2 ([875bb1b](https://github.com/energywebfoundation/origin/commit/875bb1b17fee5647d921f6771a58a4aa55aec59d))
+* **origin-backend:** fix permissions for getting Organizations ([6bee114](https://github.com/energywebfoundation/origin/commit/6bee11405fa7d7a5b7d9172fb853ab1b23351ae0))
+
+
+### Features
+
+* **origin-backend:** Confirmation Emails - auto-sending emails and confirmation endpoints ([0a33d1b](https://github.com/energywebfoundation/origin/commit/0a33d1bfd24cb3e44c3e2fc304b56e57735f513d))
+
+
+
+
+
 # [6.1.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-backend@6.0.1...@energyweb/origin-backend@6.1.0) (2020-07-08)
 
 

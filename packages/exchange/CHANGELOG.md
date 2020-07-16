@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.4.0](https://github.com/energywebfoundation/origin/compare/@energyweb/exchange@1.3.0...@energyweb/exchange@1.4.0) (2020-07-16)
+
+
+### Bug Fixes
+
+* **deps:** update nest monorepo to v7.3.2 ([875bb1b](https://github.com/energywebfoundation/origin/commit/875bb1b17fee5647d921f6771a58a4aa55aec59d))
+
+
+### Features
+
+* **origin-ui-core:** filter ask by facility ([097e9a3](https://github.com/energywebfoundation/origin/commit/097e9a30f7ab6d91ae7eeacad0735611421845fb))
+
+
+
+
+
 # [1.3.0](https://github.com/energywebfoundation/origin/compare/@energyweb/exchange@1.2.1...@energyweb/exchange@1.3.0) (2020-07-08)
 
 
