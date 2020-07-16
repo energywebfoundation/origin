@@ -5,7 +5,10 @@ import {
     UserRegistrationData,
     UserUpdateData,
     IUser,
-    UserPasswordUpdate
+    UserPasswordUpdate,
+    IEmailConfirmationToken,
+    ISuccessResponse,
+    EmailConfirmationResponse
 } from '@energyweb/origin-backend-core';
 import { UserDecorator, ActiveUserGuard } from '@energyweb/origin-backend-utils';
 import {
@@ -26,21 +29,23 @@ import {
 import { AuthGuard } from '@nestjs/passport';
 
 import { UserService } from './user.service';
+import { EmailConfirmationService } from '../email-confirmation/email-confirmation.service';
 
 @UseInterceptors(ClassSerializerInterceptor)
 @Controller('user')
 export class UserController {
     private readonly logger = new Logger(UserController.name);
 
-    constructor(private readonly userService: UserService) {}
+    constructor(
+        private readonly userService: UserService,
+        private readonly emailConfirmationService: EmailConfirmationService
+    ) {}
 
     @Post('register')
     public async register(
         @Body() userRegistrationData: UserRegistrationData
     ): Promise<UserRegisterReturnData> {
-        const user = await this.userService.create(userRegistrationData);
-
-        return user;
+        return this.userService.create(userRegistrationData);
     }
 
     @Get('me')
@@ -113,5 +118,20 @@ export class UserController {
         @Body() body: IUser
     ) {
         return this.userService.updateBlockChainAddress(id, body);
+    }
+
+    @Put('confirm-email/:token')
+    public async confirmToken(
+        @Param('token') token: IEmailConfirmationToken['token']
+    ): Promise<EmailConfirmationResponse> {
+        return this.emailConfirmationService.confirmEmail(token);
+    }
+
+    @Put('re-send-confirm-email')
+    @UseGuards(AuthGuard('jwt'))
+    public async reSendEmailConfirmation(
+        @UserDecorator() { email }: ILoggedInUser
+    ): Promise<ISuccessResponse> {
+        return this.emailConfirmationService.sendConfirmationEmail(email);
     }
 }

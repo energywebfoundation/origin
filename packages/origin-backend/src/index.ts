@@ -7,6 +7,7 @@ import { Organization } from './pods/organization/organization.entity';
 import { OrganizationInvitation } from './pods/organization/organization-invitation.entity';
 import { User } from './pods/user/user.entity';
 import { CertificationRequestQueueItem } from './pods/certificate/certification-request-queue-item.entity';
+import { EmailConfirmation } from './pods/email-confirmation/email-confirmation.entity';
 
 export { AppModule } from './app.module';
 export { ExtendedBaseEntity } from './pods/ExtendedBaseEntity';
@@ -27,5 +28,6 @@ export const entities = [
     OrganizationInvitation,
     CertificationRequest,
     CertificationRequestQueueItem,
-    Certificate
+    Certificate,
+    EmailConfirmation
 ];

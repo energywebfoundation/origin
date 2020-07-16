@@ -40,8 +40,7 @@ describe('Organization e2e tests', () => {
     });
 
     beforeEach(async () => {
-        await databaseService.truncate('user');
-        await databaseService.truncate('organization');
+        await databaseService.truncate('user', 'organization');
     });
 
     after(async () => {

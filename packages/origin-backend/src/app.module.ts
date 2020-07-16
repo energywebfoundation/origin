@@ -15,6 +15,7 @@ import { DeviceModule } from './pods/device/device.module';
 import { FileModule } from './pods/file/file.module';
 import { OrganizationModule } from './pods/organization/organization.module';
 import { UserModule } from './pods/user/user.module';
+import { EmailConfirmationModule } from './pods/email-confirmation/email-confirmation.module';
 
 const ENV_FILE_PATH = path.resolve(__dirname, '../../../../../.env');
 
@@ -36,7 +37,8 @@ export class AppModule {
                 DeviceModule.register(smartMeterReadingsAdapter),
                 AuthModule,
                 CertificateModule.register(smartMeterReadingsAdapter),
-                AdminModule
+                AdminModule,
+                EmailConfirmationModule
             ],
             controllers: [AppController],
             providers: [{ provide: APP_PIPE, useClass: ValidationPipe }]

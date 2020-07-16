@@ -297,8 +297,7 @@ describe('CertificationRequest e2e tests', () => {
     });
 
     it('should properly validate a certification request', async () => {
-        await databaseService.truncate('certification_request');
-        await databaseService.truncate('device');
+        await databaseService.truncate('certification_request', 'device');
 
         const { accessToken, user } = await registerAndLogin(
             app,

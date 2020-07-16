@@ -22,7 +22,9 @@ export class DatabaseService {
         }
     }
 
-    public async truncate(table: string) {
-        return this.connection.query(`TRUNCATE "${table}" CASCADE;`);
+    public async truncate(...tables: string[]) {
+        for (const table of tables) {
+            await this.connection.query(`TRUNCATE "${table}" CASCADE;`);
+        }
     }
 }

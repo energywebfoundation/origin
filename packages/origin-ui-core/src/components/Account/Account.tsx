@@ -9,6 +9,7 @@ import { UserRegister } from './UserRegister';
 import { UserLogin } from './UserLogin';
 import { dataTest, useLinks, useTranslation } from '../../utils';
 import { UserProfile } from './UserProfile';
+import { ConfirmEmail } from './ConfirmEmail';
 
 export function Account() {
     const userOffchain = useSelector(getUserOffchain);
@@ -42,6 +43,12 @@ export function Account() {
             label: 'settings.navigation.userProfile',
             component: UserProfile,
             hide: !isLoggedIn
+        },
+        {
+            key: 'confirm-email',
+            label: 'settings.navigation.confirmEmail',
+            component: ConfirmEmail,
+            hide: true
         }
     ];
 
@@ -74,14 +81,12 @@ export function Account() {
                 path={`${getAccountLink()}/:key/:id?`}
                 render={(props) => {
                     const key = props.match.params.key;
-                    const matches = Menu.filter((item) => {
-                        return item.key === key;
-                    });
 
                     return (
                         <PageContent
-                            menu={matches.length > 0 ? matches[0] : null}
+                            menu={Menu.find((item) => item.key === key)}
                             redirectPath={getAccountLink()}
+                            {...props}
                         />
                     );
                 }}
