@@ -114,8 +114,11 @@ export function Certificates() {
             show: user
         }
     ];
+    const authenticationToken = localStorage.getItem('AUTHENTICATION_TOKEN');
 
     function getDefaultRedirect() {
+        // if (authenticationToken && !user) {
+        // wh
         if (user) {
             if (isIssuer) {
                 return CertificatesMenu[3].key;
@@ -132,53 +135,57 @@ export function Certificates() {
     };
 
     return (
-        <div className="PageWrapper">
-            <div className="PageNav">
-                <ul className="NavMenu nav">
-                    {CertificatesMenu.map((menu) => {
-                        if (menu.show) {
-                            const link = `${getCertificatesLink()}/${menu.key}`;
+        (user || !authenticationToken) && (
+            <div className="PageWrapper">
+                <div className="PageNav">
+                    <ul className="NavMenu nav">
+                        {CertificatesMenu.map((menu) => {
+                            if (menu.show) {
+                                const link = `${getCertificatesLink()}/${menu.key}`;
 
-                            return (
-                                <li key={menu.key}>
-                                    <NavLink to={link}>{t(menu.label)}</NavLink>
-                                </li>
-                            );
+                                return (
+                                    <li key={menu.key}>
+                                        <NavLink to={link}>{t(menu.label)}</NavLink>
+                                    </li>
+                                );
+                            }
+                        })}
+                    </ul>
+                </div>
+
+                <Route
+                    path={`${getCertificatesLink()}/:key/:id?`}
+                    render={(props) => {
+                        const key = props.match.params.key;
+                        const id = props.match.params.id as string;
+                        const matches = CertificatesMenu.filter((item) => {
+                            return item.key === key;
+                        });
+                        if (matches.length > 0) {
+                            if (key === 'detail_view') {
+                                matches[0].component = () =>
+                                    CertificateDetailViewId(parseInt(id, 10));
+                            }
                         }
-                    })}
-                </ul>
+
+                        return (
+                            <PageContent
+                                menu={matches.length > 0 ? matches[0] : null}
+                                redirectPath={getCertificatesLink()}
+                            />
+                        );
+                    }}
+                />
+
+                {/* <Route exact={true} path={defaultRedirect}   */}
+                <Redirect path={getCertificatesLink()} to={defaultRedirect} />
+
+                <Route
+                    exact={true}
+                    path={`${baseURL}/`}
+                    render={() => <Redirect to={defaultRedirect} />}
+                />
             </div>
-
-            <Route
-                path={`${getCertificatesLink()}/:key/:id?`}
-                render={(props) => {
-                    const key = props.match.params.key;
-                    const id = props.match.params.id as string;
-                    const matches = CertificatesMenu.filter((item) => {
-                        return item.key === key;
-                    });
-                    if (matches.length > 0) {
-                        if (key === 'detail_view') {
-                            matches[0].component = () => CertificateDetailViewId(parseInt(id, 10));
-                        }
-                    }
-
-                    return (
-                        <PageContent
-                            menu={matches.length > 0 ? matches[0] : null}
-                            redirectPath={getCertificatesLink()}
-                        />
-                    );
-                }}
-            />
-
-            <Redirect path={getCertificatesLink()} to={defaultRedirect} />
-
-            <Route
-                exact={true}
-                path={`${baseURL}/`}
-                render={() => <Redirect to={defaultRedirect} />}
-            />
-        </div>
+        )
     );
 }

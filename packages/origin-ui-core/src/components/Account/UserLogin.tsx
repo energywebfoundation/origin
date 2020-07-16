@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
     showNotification,
     NotificationType,
@@ -24,6 +24,7 @@ import { FormInput } from '../Form/FormInput';
 import { getOffChainDataSource } from '../../features/general/selectors';
 import { setAuthenticationToken } from '../../features/users/actions';
 import { useHistory } from 'react-router-dom';
+import { getUserOffchain } from '../../features/users/selectors';
 
 interface IFormValues {
     email: string;
@@ -43,6 +44,13 @@ export function UserLogin() {
     const { Yup, yupLocaleInitialized } = useValidation();
     const { getCertificatesLink } = useLinks();
     const history = useHistory();
+    const user = useSelector(getUserOffchain);
+
+    useEffect(() => {
+        if (user) {
+            history.push(getCertificatesLink());
+        }
+    }, [user]);
 
     const useStyles = makeStyles(() =>
         createStyles({
@@ -75,7 +83,7 @@ export function UserLogin() {
 
             dispatch(setAuthenticationToken(loginResponse.accessToken));
 
-            history.push(getCertificatesLink());
+            // history.push(getCertificatesLink());
         } catch (error) {
             console.warn('Could not log in.', error);
             showNotification(t('user.feedback.couldNotLogIn'), NotificationType.Error);
