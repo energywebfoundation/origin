@@ -82,7 +82,6 @@ export function UserLogin() {
             const loginResponse = await userClient.login(values.email, values.password);
 
             dispatch(setAuthenticationToken(loginResponse.accessToken));
-
         } catch (error) {
             console.warn('Could not log in.', error);
             showNotification(t('user.feedback.couldNotLogIn'), NotificationType.Error);
