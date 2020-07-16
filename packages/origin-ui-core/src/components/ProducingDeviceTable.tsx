@@ -216,10 +216,10 @@ export function ProducingDeviceTable(props: IOwnProps) {
             configuration?.deviceTypeService?.getDisplayText(enrichedData.device.deviceType) ?? '',
         capacity: PowerFormatter.format(enrichedData.device.capacityInW),
         readCertified: EnergyFormatter.format(
-            enrichedData.device.meterStats.certified.toNumber() ?? 0
+            enrichedData.device.meterStats?.certified.toNumber() ?? 0
         ),
         readToBeCertified: EnergyFormatter.format(
-            enrichedData.device.meterStats.uncertified.toNumber() ?? 0
+            enrichedData.device.meterStats?.uncertified.toNumber() ?? 0
         ),
         status: DeviceStatus[enrichedData.device.status],
         gridOperator: enrichedData?.device?.gridOperator
