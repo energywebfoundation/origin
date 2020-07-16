@@ -33,7 +33,8 @@
                 "bundles": "Bundles",
                 "my_bundles": "My bundles",
                 "create_bundle": "Create bundle",
-                "myTrades": "My trades"
+                "myTrades": "My trades",
+                "myOrders": "My orders"
             }
         },
         "device": {
@@ -58,6 +59,7 @@
                 "filesUpload": "Files Upload",
                 "registrationDate": "Registration date",
                 "regions": "Regions",
+                "region": "Region",
                 "provinces": "Provinces",
                 "longitude": "Longitude",
                 "latitude": "Latitude",
@@ -223,7 +225,8 @@
             "responses": {
                 "yes": "Yes",
                 "no": "No",
-                "partially": "Partially"
+                "partially": "Partially",
+                "ok": "Ok"
             },
             "actions": {
                 "update": "Update",
@@ -338,18 +341,28 @@
                 "password": "Password",
                 "status": "Status",
                 "kycStatus": "KYC Status",
-                "blockchainAddress": "Blockchain Address"
+                "blockchainAddress": "Blockchain Address",
+                "emailConfirmed": "Email Confirmed"
             },
             "actions": {
                 "register": "Register",
                 "login": "Login",
-                "save": "Save"
+                "save": "Save",
+                "resendConfirmationEmail": "Re-send confirmation email"
             },
             "feedback": {
                 "userRegistered": "User registered.",
                 "errorWhileRegisteringUser": "Error while registering user.",
                 "userLoggedIn": "User logged in.",
-                "couldNotLogIn": "Could not log in with supplied credentials."
+                "couldNotLogIn": "Could not log in with supplied credentials.",
+                "confirmationEmailResent": "Confirmation email re-sent.",
+                "confirmationEmailResentFailed": "Unable to send the confirmation email.",
+                "emailConfirmation": {
+                    "alreadyConfirmed": "Already confirmed.",
+                    "confirmed": "Email confirmed successfully.",
+                    "expired": "Confirmation link expired.",
+                    "loading:": "Loading..."
+                }
             },
             "profile": {
                 "subtitle": {
@@ -433,10 +446,35 @@
                 "bundleDetails": "BUNDLE DETAILS",
                 "Sell": "Sell",
                 "certificates": "certificates",
-                "price": "Price per MWh"
+                "price": "Price per MWh",
+                "bundleBought": "Bundle was fully purchased"
             },
             "actions": {
                 "sellAsBundle": "Sell as bundle"
+            }
+        },
+        "order": {
+            "anyValue": "Any",
+            "properties": {
+                "volume": "Volume",
+                "price": "Price",
+                "device_type": "Device type",
+                "generation_start": "Generation start",
+                "generation_end": "Generation end",
+                "filled": "Filled"
+            },
+            "captions": {
+                "open_asks": "OPEN ASKS",
+                "open_bids": "OPEN BIDS",
+                "actions": "ACTION"
+            },
+            "actions": {
+                "view": "View",
+                "remove": "Remove"
+            },
+            "feedback": {
+                "removeOrderConfirmation": "Are you sure you want remove?",
+                "orderCanceled": "Order canceled"
             }
         }
     }

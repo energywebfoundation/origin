@@ -59,6 +59,9 @@ export const createMaterialThemeForOrigin = (
                         }
                     }
                 },
+                MuiFormLabel: {
+                    root: { fontSize: variables.fontSizeMd }
+                },
                 MuiChip: {
                     root: {
                         marginRight: '10px'
@@ -73,7 +76,8 @@ export const createMaterialThemeForOrigin = (
                 },
                 MuiTable: {
                     root: {
-                        borderBottom: `2px solid ${styleConfig.PRIMARY_COLOR}`
+                        borderBottom: `2px solid ${styleConfig.PRIMARY_COLOR}`,
+                        backgroundColor: styleConfig.BACKGROUND_COLOR_DARK
                     }
                 },
                 MuiTableHead: {
@@ -96,16 +100,15 @@ export const createMaterialThemeForOrigin = (
                 },
                 MuiTableCell: {
                     root: {
-                        borderBottom: '1px solid rgb(72, 72, 72)'
+                        borderBottom: `1px solid ${styleConfig.BACKGROUND_COLOR_DARK}`,
+                        fontSize: variables.fontSizeMd
                     },
                     body: {
                         color: styleConfig.TEXT_COLOR_DEFAULT
                     },
                     head: {
-                        color: styleConfig.WHITE,
-                        fontWeight: 'bold',
-                        borderBottom: '3px solid #252525',
-                        fontSize: '12px'
+                        color: styleConfig.TEXT_COLOR_DEFAULT,
+                        borderBottom: 'none'
                     }
                 },
                 MuiSelect: {
@@ -115,7 +118,7 @@ export const createMaterialThemeForOrigin = (
                 },
                 MuiTooltip: {
                     tooltip: {
-                        backgroundColor: '#a400d9'
+                        backgroundColor: styleConfig.PRIMARY_COLOR
                     }
                 }
             }
@@ -125,7 +128,7 @@ export const createMaterialThemeForOrigin = (
             typography: {
                 fontSizeSm: 10,
                 fontSizeMd: 12,
-                fontSizeLg: 18
+                fontSizeLg: 24
             }
         }
     );

@@ -8,14 +8,16 @@ import {
     KYCStatus,
     Role,
     UserPasswordUpdate,
-    IUserWithRelations
+    IUserWithRelations,
+    IEmailConfirmationToken,
+    EmailConfirmationResponse,
+    ISuccessResponse
 } from '@energyweb/origin-backend-core';
 import { recoverTypedSignatureAddress } from '@energyweb/utils-general';
 
 import { IUserClient } from '@energyweb/origin-backend-client';
 
 export class UserClientMock implements IUserClient {
-    
     private storage = new Map<number, IUserWithRelationsIds>();
 
     private userIdCounter = 0;
@@ -89,13 +91,22 @@ export class UserClientMock implements IUserClient {
     }
 
     updateProfile(formData: IUser): Promise<IUserWithRelations> {
-        
-        throw new Error("Method not implemented.");
+        throw new Error('Method not implemented.');
     }
+
     updatePassword(formData: UserPasswordUpdate): Promise<IUserWithRelations> {
-        throw new Error("Method not implemented.");
+        throw new Error('Method not implemented.');
     }
+
     updateChainAddress(formData: IUser): Promise<IUserWithRelations> {
-        throw new Error("Method not implemented.");
+        throw new Error('Method not implemented.');
+    }
+
+    confirmEmail(token: IEmailConfirmationToken['token']): Promise<EmailConfirmationResponse> {
+        throw new Error('Method not implemented.');
+    }
+
+    requestConfirmationEmail(): Promise<ISuccessResponse> {
+        throw new Error('Method not implemented.');
     }
 }

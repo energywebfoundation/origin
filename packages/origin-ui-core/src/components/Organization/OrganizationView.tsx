@@ -1,9 +1,11 @@
 import { useParams } from 'react-router-dom';
 import React, { useState, useEffect } from 'react';
-import { OrganizationForm } from './OrganizationForm';
 import { useSelector } from 'react-redux';
-import { getOffChainDataSource } from '../../features/general/selectors';
 import { IOrganization } from '@energyweb/origin-backend-core';
+
+import { OrganizationForm } from './OrganizationForm';
+import { getOffChainDataSource } from '../../features/general/selectors';
+import { getUserOffchain } from '../../features/users/selectors';
 
 interface IMatchParams {
     key?: string;
@@ -11,13 +13,14 @@ interface IMatchParams {
 }
 
 export function OrganizationView() {
+    const userOffchain = useSelector(getUserOffchain);
     const organizationClient = useSelector(getOffChainDataSource)?.organizationClient;
 
     const [entity, setEntity] = useState<IOrganization>(null);
 
     const params: IMatchParams = useParams();
 
-    async function fetchEntity(id: string) {
+    async function fetchEntity(id: string | number) {
         if (!organizationClient) {
             return setEntity(null);
         }
@@ -26,7 +29,7 @@ export function OrganizationView() {
     }
 
     useEffect(() => {
-        fetchEntity(params?.id);
+        fetchEntity(params?.id ?? userOffchain?.organization?.id);
     }, [params, organizationClient]);
 
     return <OrganizationForm entity={entity} readOnly={true} />;

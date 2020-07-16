@@ -39,10 +39,9 @@ export class OffChainDataSourceMock implements IOffChainDataSource {
     certificateClient: ICertificateClient = new CertificateClientMock();
 
     adminClient: IAdminClient;
-    
+
     constructor() {
         this.deviceClient = new DeviceClientMock();
         this.organizationClient = new OrganizationClientMock();
     }
-
 }

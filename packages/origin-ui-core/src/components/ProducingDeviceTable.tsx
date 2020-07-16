@@ -215,12 +215,8 @@ export function ProducingDeviceTable(props: IOwnProps) {
         type:
             configuration?.deviceTypeService?.getDisplayText(enrichedData.device.deviceType) ?? '',
         capacity: PowerFormatter.format(enrichedData.device.capacityInW),
-        readCertified: EnergyFormatter.format(
-            enrichedData.device.meterStats.certified.toNumber() ?? 0
-        ),
-        readToBeCertified: EnergyFormatter.format(
-            enrichedData.device.meterStats.uncertified.toNumber() ?? 0
-        ),
+        readCertified: EnergyFormatter.format(enrichedData.device.meterStats?.certified ?? 0),
+        readToBeCertified: EnergyFormatter.format(enrichedData.device.meterStats?.uncertified ?? 0),
         status: DeviceStatus[enrichedData.device.status],
         gridOperator: enrichedData?.device?.gridOperator
     }));

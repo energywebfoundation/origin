@@ -46,7 +46,8 @@ const INITIAL_FORM_VALUES: IFormValues = {
     organization: null,
     rights: 0,
     status: UserStatus.Pending,
-    kycStatus: KYCStatus.Pending
+    kycStatus: KYCStatus.Pending,
+    emailConfirmed: false
 };
 
 export const getUserOffchain = (state: IStoreState) => state.users.userOffchain;
@@ -226,6 +227,26 @@ export function UserProfile() {
                                         />
 
                                         <FormInput
+                                            label={t('user.properties.email')}
+                                            property="email"
+                                            disabled={fieldDisabled}
+                                            className="mt-3"
+                                            required
+                                        />
+
+                                        <Field
+                                            label={t('user.properties.status')}
+                                            type="status"
+                                            name="status"
+                                            component={TextField}
+                                            variant="filled"
+                                            fullWidth
+                                            disabled={true}
+                                            value={UserStatus[values.status]}
+                                            className="mt-3"
+                                        />
+
+                                        <FormInput
                                             label={t('user.properties.telephone')}
                                             property="telephone"
                                             disabled={fieldDisabled}
@@ -241,28 +262,52 @@ export function UserProfile() {
                                             className="mt-3"
                                             required
                                         />
-                                        <FormInput
-                                            label={t('user.properties.email')}
-                                            property="email"
-                                            disabled={fieldDisabled}
-                                            className="mt-3"
-                                            required
-                                        />
-                                    </Grid>
 
-                                    <Grid item xs={6}>
-                                        <Field
-                                            label={t('user.properties.status')}
-                                            type="status"
-                                            name="status"
-                                            component={TextField}
-                                            variant="filled"
-                                            fullWidth
-                                            disabled={true}
-                                            value={UserStatus[values.status]}
-                                        />
-                                    </Grid>
-                                    <Grid item xs={6}>
+                                        {values.emailConfirmed ? (
+                                            <Field
+                                                label={t('user.properties.emailConfirmed')}
+                                                type="emailConfirmed"
+                                                name="emailConfirmed"
+                                                component={TextField}
+                                                variant="filled"
+                                                fullWidth
+                                                disabled={true}
+                                                value={t(
+                                                    values.emailConfirmed
+                                                        ? 'general.responses.yes'
+                                                        : 'general.responses.no'
+                                                )}
+                                                className="mt-3"
+                                            />
+                                        ) : (
+                                            <Button
+                                                type="button"
+                                                variant="contained"
+                                                color="primary"
+                                                className="mt-4 mb-2 right"
+                                                onClick={async () => {
+                                                    const {
+                                                        success
+                                                    } = await userClient.requestConfirmationEmail();
+
+                                                    const message = t(
+                                                        success
+                                                            ? 'user.feedback.confirmationEmailResent'
+                                                            : 'user.feedback.confirmationEmailResentFailed'
+                                                    );
+
+                                                    showNotification(
+                                                        message,
+                                                        success
+                                                            ? NotificationType.Success
+                                                            : NotificationType.Error
+                                                    );
+                                                }}
+                                            >
+                                                {t('user.actions.resendConfirmationEmail')}
+                                            </Button>
+                                        )}
+
                                         <Field
                                             label={t('user.properties.kycStatus')}
                                             type="kycStatus"
@@ -272,6 +317,7 @@ export function UserProfile() {
                                             fullWidth
                                             disabled={true}
                                             value={KYCStatus[values.kycStatus]}
+                                            className="mt-3"
                                         />
                                     </Grid>
                                 </Grid>

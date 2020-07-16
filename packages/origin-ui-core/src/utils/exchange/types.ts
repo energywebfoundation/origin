@@ -128,13 +128,15 @@ export interface IOrder {
     id: string;
     side: OrderSide;
     validFrom: string;
-    product: Product;
+    product: IProductDTO;
     price: number;
     startVolume: string;
     currentVolume: string;
     directBuyId: string;
+    asset: IAsset;
     assetId: string;
     userId: string;
+    filled?: number;
 }
 
 export type Order = IOrder & { assetId: string; status: OrderStatus };
@@ -192,3 +194,6 @@ export type SplitItem = {
     id: string;
     volume: BigNumber;
 };
+
+export const ANY_VALUE = 'Any';
+export const ANY_OPERATOR = 'TH-ANY';

@@ -88,7 +88,7 @@ const currentTime = moment.tz(device.timezone);
     const MOCK_READINGS_MINUTES_INTERVAL =
         parseInt(process.env.SOLAR_SIMULATOR_PAST_READINGS_MINUTES_INTERVAL, 10) || 15;
 
-    let measurementTime = currentTime.clone().subtract(1, 'week').startOf('week');
+    let measurementTime = currentTime.clone().subtract(1, 'day').startOf('day');
     let currentMeterRead: BigNumber = bigNumberify(
         await getProducingDeviceSmartMeterRead(device.id, conf)
     );

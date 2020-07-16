@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { IRequestClient, RequestClient } from '@energyweb/origin-backend-client';
 import {
     TOrderBook,
@@ -16,6 +17,7 @@ import {
     CreateBundleDTO
 } from '.';
 import { Filter, OrderStatus } from '@energyweb/exchange-core';
+import { BundleSplits } from './types';
 
 export interface IExchangeClient {
     search(
@@ -35,9 +37,10 @@ export interface IExchangeClient {
     getAssetById(id: string): Promise<IAsset>;
     getOrderById(id: string): Promise<Order>;
     getOrders?(): Promise<Order[]>;
+    cancelOrder(order: Order): Promise<Order>;
     getAvailableBundles(): Promise<Bundle[]>;
     getOwnBundles(): Promise<Bundle[]>;
-    getBundleSplits(bundle: Bundle): Promise<Bundle[]>;
+    getBundleSplits(bundle: Bundle): Promise<BundleSplits>;
     createBundle(bundle: CreateBundleDTO): Promise<Bundle>;
     cancelBundle(id: string): Promise<Bundle>;
 }
@@ -192,8 +195,8 @@ export class ExchangeClient implements IExchangeClient {
         return response.data;
     }
 
-    public async getBundleSplits(bundle: Bundle): Promise<Bundle[]> {
-        const response = await this.requestClient.get<unknown, Bundle[]>(
+    public async getBundleSplits(bundle: Bundle): Promise<BundleSplits> {
+        const response = await this.requestClient.get<Bundle, BundleSplits>(
             `${this.bundleEndpoint}/${bundle.id}/splits`
         );
 
@@ -211,6 +214,18 @@ export class ExchangeClient implements IExchangeClient {
     public async buyBundle(bundle: { bundleId: string; volume: number }): Promise<any> {
         const bundleTrade = await this.requestClient.post(`${this.bundleEndpoint}/buy`, bundle);
         return bundleTrade.data;
+    }
+
+    public async getOrders(): Promise<Order[]> {
+        const orders = await this.requestClient.get<unknown, Order[]>(this.ordersEndpoint);
+        return orders.data;
+    }
+
+    public async cancelOrder(order: Order): Promise<Order> {
+        const response = await this.requestClient.post<unknown, Order>(
+            `${this.ordersEndpoint}/${order.id}/cancel`
+        );
+        return response.data;
     }
 
     private get assetEndpoint() {
@@ -349,18 +364,23 @@ export const ExchangeClientMock: IExchangeClient = {
         return null;
     },
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     createBundle(bundle: CreateBundleDTO) {
         return null;
     },
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     cancelBundle(id: string) {
         return null;
     },
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     getBundleSplits(bundle: Bundle) {
+        return null;
+    },
+
+    getOrders() {
+        return null;
+    },
+
+    cancelOrder(order: Order) {
         return null;
     }
 };

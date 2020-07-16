@@ -2,7 +2,8 @@ import {
     ICustomFilter,
     RecordPropertyGetterFunction,
     ITableColumn,
-    CustomFilterInputType
+    CustomFilterInputType,
+    FilterRules
 } from '.';
 import { useState } from 'react';
 import { IDeviceTypeService } from '@energyweb/utils-general';
@@ -205,7 +206,6 @@ export function checkRecordPassesFilters(
 
     for (const filter of filters) {
         const filteredPropertyResolvedValue = filter.property(record);
-
         if (typeof filteredPropertyResolvedValue !== 'undefined') {
             switch (filter.input.type) {
                 case CustomFilterInputType.string:
@@ -264,13 +264,26 @@ export function checkRecordPassesFilters(
                     if (filter.selectedValue) {
                         const year = (filter.selectedValue as Moment).year();
                         const month = (filter.selectedValue as Moment).month();
-
                         const recordDate = moment.unix(
                             parseInt(filteredPropertyResolvedValue?.toString(), 10)
                         );
-
-                        if (recordDate.month() !== month || recordDate.year() !== year) {
-                            return false;
+                        const { filterRule = FilterRules.EQUAL } = filter.input;
+                        switch (filterRule) {
+                            case FilterRules.EQUAL:
+                                if (recordDate.month() !== month || recordDate.year() !== year) {
+                                    return false;
+                                }
+                                break;
+                            case FilterRules.FROM:
+                                if (recordDate.year() < year || recordDate.month() < month) {
+                                    return false;
+                                }
+                                break;
+                            case FilterRules.TO:
+                                if (recordDate.year() > year || recordDate.month() > month) {
+                                    return false;
+                                }
+                                break;
                         }
                     }
                     break;

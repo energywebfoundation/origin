@@ -24,16 +24,11 @@ import {
     IExchangeClient,
     ExchangeAccount,
     AccountAsset,
-    Bundle,
-    BundleSplits
+    Bundle
 } from '../../utils/exchange';
-import {
-    IOriginConfiguration,
-    IOrganizationWithRelationsIds
-} from '@energyweb/origin-backend-core';
+import { IOriginConfiguration } from '@energyweb/origin-backend-core';
 import {
     setActiveBlockchainAccountAddress,
-    addOrganizations,
     UsersActions,
     ISetActiveBlockchainAccountAddressAction
 } from '../users/actions';
@@ -65,6 +60,7 @@ import {
     showBundleDetails,
     clearBundles
 } from '../bundles';
+import { fetchOrders } from '../orders/sagas';
 
 function createEthereumProviderAccountsChangedEventChannel(ethereumProvider: any) {
     return eventChannel<string[]>((emitter) => {
@@ -378,23 +374,11 @@ export function* fetchBundles() {
             continue;
         }
         bundle.volume = new BigNumber(bundle.volume.toString());
-        const bundleSplits: BundleSplits = yield apply(
-            exchangeClient,
-            exchangeClient.getBundleSplits,
-            [bundle]
-        );
-        bundleSplits.splits.forEach((split) => {
-            split.volume = new BigNumber(split.volume);
-            split.items.forEach((item) => {
-                item.volume = new BigNumber(item.volume);
-            });
-        });
-        bundle.splits = bundleSplits.splits;
         yield put(storeBundle(bundle));
     }
 }
 
-function* fetchDataAfterConfigurationChange(
+export function* fetchDataAfterConfigurationChange(
     configuration: Configuration.Entity,
     update = false
 ): SagaIterator {
@@ -437,11 +421,11 @@ function* fetchDataAfterConfigurationChange(
         )
     );
     const certificates = initializedCertificates.concat(available);
-
     for (const certificate of certificates) {
         yield put(update ? updateCertificate(certificate) : addCertificate(certificate));
     }
     yield call(fetchBundles);
+    yield call(fetchOrders);
 }
 
 function* fillContractLookupIfMissing(): SagaIterator {
@@ -491,18 +475,9 @@ function* fillContractLookupIfMissing(): SagaIterator {
         } catch (error) {
             console.error('ContractsSaga::UnableToFetchBlockchainAddress', error);
         }
-
         yield put(setLoading(false));
-
         try {
             yield call(fetchDataAfterConfigurationChange, configuration);
-            const organizations: IOrganizationWithRelationsIds[] = yield apply(
-                offChainDataSource.organizationClient,
-                offChainDataSource.organizationClient.getAll,
-                []
-            );
-
-            yield put(addOrganizations(organizations));
             yield call(initEventHandler);
         } catch (error) {
             console.error('fillContractLookupIfMissing() error', error);

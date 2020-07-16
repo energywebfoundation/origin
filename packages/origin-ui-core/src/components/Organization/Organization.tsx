@@ -20,18 +20,24 @@ export const roleNames = {
 };
 
 export function Organization() {
-    const userOffchain = useSelector(getUserOffchain);
+    const user = useSelector(getUserOffchain);
 
     const { getOrganizationLink } = useLinks();
 
-    const isLoggedIn = Boolean(userOffchain);
+    const isLoggedIn = Boolean(user);
 
     const Menu = [
+        {
+            key: 'my-organization',
+            label: 'My Organization',
+            component: OrganizationView,
+            hide: !isLoggedIn || !user?.organization
+        },
         {
             key: 'organization-users',
             label: 'Members',
             component: OrganizationUsersTable,
-            hide: !isLoggedIn || !isRole(userOffchain, Role.OrganizationAdmin)
+            hide: !isLoggedIn || !isRole(user, Role.OrganizationAdmin)
         },
         {
             key: 'organization-invitations',
@@ -43,22 +49,19 @@ export function Organization() {
             key: 'organization-invite',
             label: 'Invite',
             component: OrganizationInvite,
-            hide:
-                !isLoggedIn ||
-                !isRole(userOffchain, Role.OrganizationAdmin) ||
-                !userOffchain?.organization
+            hide: !isLoggedIn || !isRole(user, Role.OrganizationAdmin) || !user?.organization
         },
         {
             key: 'organization-register',
             label: 'Register',
             component: OrganizationForm,
-            hide: !isLoggedIn || userOffchain?.organization
+            hide: !isLoggedIn || user?.organization
         },
         {
             key: 'organization-table',
             label: 'All organizations',
             component: OrganizationTable,
-            hide: !isLoggedIn
+            hide: !isLoggedIn || !isRole(user, Role.Admin, Role.SupportAgent)
         },
         {
             key: 'organization-view',

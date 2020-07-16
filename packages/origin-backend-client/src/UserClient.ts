@@ -8,7 +8,10 @@ import {
     IUserProperties,
     IUserWithRelations,
     IUser,
-    UserPasswordUpdate
+    UserPasswordUpdate,
+    IEmailConfirmationToken,
+    EmailConfirmationResponse,
+    ISuccessResponse
 } from '@energyweb/origin-backend-core';
 
 import { IRequestClient, RequestClient } from './RequestClient';
@@ -28,6 +31,8 @@ export interface IUserClient {
     updateProfile(formData: IUser): Promise<IUserWithRelations>;
     updatePassword(formData: UserPasswordUpdate): Promise<IUserWithRelations>;
     updateChainAddress(formData: IUser): Promise<IUserWithRelations>;
+    confirmEmail(token: IEmailConfirmationToken['token']): Promise<EmailConfirmationResponse>;
+    requestConfirmationEmail(): Promise<ISuccessResponse>;
 }
 
 export class UserClient implements IUserClient {
@@ -112,18 +117,39 @@ export class UserClient implements IUserClient {
         );
         return response.data;
     }
+
     public async updatePassword(formData: UserPasswordUpdate): Promise<IUserWithRelations> {
         const response = await this.requestClient.put<UserPasswordUpdate, IUserWithRelations>(
             `${this.userEndpoint}/password`,
             formData
         );
-        return response.data;   
+        return response.data;
     }
+
     public async updateChainAddress(formData: IUser): Promise<IUserWithRelations> {
         const response = await this.requestClient.put<UserUpdateData, IUserWithRelations>(
             `${this.userEndpoint}/chainAddress`,
             formData
         );
+        return response.data;
+    }
+
+    public async confirmEmail(
+        token: IEmailConfirmationToken['token']
+    ): Promise<EmailConfirmationResponse> {
+        const response = await this.requestClient.put<
+            IEmailConfirmationToken['token'],
+            EmailConfirmationResponse
+        >(`${this.userEndpoint}/confirm-email/${token}`);
+
+        return response.data;
+    }
+
+    public async requestConfirmationEmail(): Promise<ISuccessResponse> {
+        const response = await this.requestClient.put<void, ISuccessResponse>(
+            `${this.userEndpoint}/re-send-confirm-email`
+        );
+
         return response.data;
     }
 }
