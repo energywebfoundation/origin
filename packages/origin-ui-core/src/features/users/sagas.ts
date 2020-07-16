@@ -1,4 +1,4 @@
-import { call, put, select, take, fork, all } from 'redux-saga/effects';
+import { call, put, select, take, fork, all, apply } from 'redux-saga/effects';
 import { SagaIterator } from 'redux-saga';
 import {
     UsersActions,
@@ -6,15 +6,19 @@ import {
     setUserOffchain,
     setAuthenticationToken,
     clearAuthenticationToken,
-    IRefreshUserOffchainAction
+    IRefreshUserOffchainAction,
+    addOrganizations
 } from './actions';
 import { getOffChainDataSource } from '../general/selectors';
 import { IRequestClient, IOffChainDataSource } from '@energyweb/origin-backend-client';
 import {
     IUserWithRelationsIds,
-    IOrganizationWithRelationsIds
+    IOrganizationWithRelationsIds,
+    IUserWithRelations,
+    Role
 } from '@energyweb/origin-backend-core';
 import { GeneralActions, ISetOffChainDataSourceAction } from '../general/actions';
+import { getUserOffchain } from './selectors';
 
 const LOCAL_STORAGE_KEYS = {
     AUTHENTICATION_TOKEN: 'AUTHENTICATION_TOKEN'
@@ -103,6 +107,20 @@ function* fetchOffchainUserDetails(): SagaIterator {
                     organization
                 })
             );
+            const user: IUserWithRelations = yield select(getUserOffchain);
+            if ([Role.Admin, Role.SupportAgent].includes(user.rights)) {
+                try {
+                    const organizations: IOrganizationWithRelationsIds[] = yield apply(
+                        offChainDataSource.organizationClient,
+                        offChainDataSource.organizationClient.getAll,
+                        []
+                    );
+
+                    yield put(addOrganizations(organizations));
+                } catch (error) {
+                    console.error('fillContractLookupIfMissing() error', error);
+                }
+            }
         } catch (error) {
             console.log('error', error, error.response);
 
