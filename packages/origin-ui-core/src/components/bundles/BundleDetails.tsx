@@ -48,14 +48,13 @@ function SliderLabel(props) {
 }
 
 const BundleDetails = (props: IOwnProps) => {
+    const dispatch = useDispatch();
+    const showModal = useSelector(getShowBundleDetails);
+    const { t } = useTranslation();
+    const dialogStyles = useDialogStyles();
     const { bundle, owner } = props;
     let { splits } = bundle;
     const { price } = bundle;
-    const showModal = useSelector(getShowBundleDetails);
-    const dispatch = useDispatch();
-    const { t } = useTranslation();
-    const dialogStyles = useDialogStyles();
-
     const prices = splits.map(({ volume }) => bundlePrice({ volume, price }));
     const maxPrice = Math.ceil(Math.max(...prices) / 10) * 10;
     const minPrice = Math.floor(Math.min(...prices) / 10) * 10;

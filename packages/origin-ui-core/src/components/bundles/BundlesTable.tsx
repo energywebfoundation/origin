@@ -16,14 +16,16 @@ import {
 import { EnergyTypes } from '../../utils';
 import { useSelector, useDispatch } from 'react-redux';
 
-import { Bundle } from '../../utils/exchange';
+import { Bundle, IExchangeClient } from '../../utils/exchange';
 import { Visibility, Add, Cancel as CancelIcon } from '@material-ui/icons';
 import BundleDetails from './BundleDetails';
-import { getCurrencies, getEnvironment } from '../../features';
+import { getCurrencies, getEnvironment, getExchangeClient } from '../../features';
 import { getBundles, getShowBundleDetails } from '../../features/bundles/selectors';
 import { Fab, Tooltip } from '@material-ui/core';
 import { Link } from 'react-router-dom';
-import { showBundleDetails, cancelBundle } from '../../features/bundles';
+import { showBundleDetails, cancelBundle, storeBundle } from '../../features/bundles';
+import { BundleBought } from '../Modal/BundleBought';
+import { BigNumber } from 'ethers/utils';
 
 const BUNDLES_PER_PAGE = 25;
 const BUNDLES_TOTAL_ENERGY_COLUMN_ID = 'total';
@@ -40,13 +42,17 @@ const ENERGY_COLUMNS_TO_DISPLAY = [EnergyTypes.SOLAR, EnergyTypes.WIND, EnergyTy
 export const BundlesTable = (props: IOwnProps) => {
     const { owner = false } = props;
     const allBundles = useSelector(getBundles);
-    const bundles = allBundles.filter((b) => (owner ? b.own : true));
+    const exchangeClient: IExchangeClient = useSelector(getExchangeClient);
+    const bundles = allBundles
+        .filter((b) => (owner ? b.own : true))
+        .filter((b) => !(b.splits && b.splits.length === 0));
     const { t } = useTranslation();
     const devices = useSelector(getProducingDevices);
     const [selected, setSelected] = useState<Bundle>(null);
     const environment = useSelector(getEnvironment);
     const dispatch = useDispatch();
     const isBundleDetailsVisible = useSelector(getShowBundleDetails);
+    const [showBundleBoughtModal, setShowBundleBoughtModal] = useState<boolean>(false);
 
     const { currentSort, sortAscending, sortData, toggleSort } = usePaginatedLoaderSorting({
         currentSort: {
@@ -91,9 +97,18 @@ export const BundlesTable = (props: IOwnProps) => {
     });
     sortData(rows);
 
-    const viewDetails = (rowIndex: number) => {
+    const viewDetails = async (rowIndex: number) => {
         const { bundleId } = rows[rowIndex];
         const bundle = bundles.find((b) => b.id === bundleId);
+        const { splits } = await exchangeClient.getBundleSplits(bundle);
+        bundle.splits = splits.map((s) => ({
+            volume: new BigNumber(s.volume),
+            items: s.items.map(({ id, volume }) => ({ id, volume: new BigNumber(volume) }))
+        }));
+        dispatch(storeBundle(bundle));
+        if (splits.length === 0) {
+            return setShowBundleBoughtModal(true);
+        }
         setSelected(bundle);
         dispatch(showBundleDetails(true));
     };
@@ -116,7 +131,7 @@ export const BundlesTable = (props: IOwnProps) => {
         { id: 'price', label: t('bundle.properties.price') }
     ];
 
-    const actions = [
+    const actions: any[] = [
         {
             icon: <Visibility />,
             name: 'View details',
@@ -158,6 +173,7 @@ export const BundlesTable = (props: IOwnProps) => {
                     </Fab>
                 </Tooltip>
             </Link>
+            <BundleBought open={showBundleBoughtModal} setOpen={setShowBundleBoughtModal} />
         </>
     );
 };

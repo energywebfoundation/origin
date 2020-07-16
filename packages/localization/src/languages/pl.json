@@ -141,6 +141,9 @@
             }
         },
         "general": {
+            "responses": {
+                "ok": "Dobrze"
+            },
             "actions": {
                 "update": "Zaktualizuj",
                 "continue": "Kontynuuj",
@@ -269,7 +272,8 @@
                 "bundleDetails": "Szczegóły Pakietu",
                 "price": "Cena za MWh",
                 "Sell": "Sprzedać",
-                "certificates": "certyfikaty"
+                "certificates": "certyfikaty",
+                "bundleBought": "Pakiet został w pełni zakupiony."
             },
             "actions": {
                 "sellAsBundle": "Sell as bundle"
