@@ -103,19 +103,6 @@ function* fetchOffchainUserDetails(): SagaIterator {
                     organization
                 })
             );
-            // const user: IUserWithRelations = yield select(getUserOffchain);
-            // if ([Role.Admin, Role.SupportAgent].includes(user.rights)) {
-            //     try {
-            //         const organizations: IOrganizationWithRelationsIds[] = yield apply(
-            //             offChainDataSource.organizationClient,
-            //             offChainDataSource.organizationClient.getAll,
-            //             []
-            //         );
-            //         yield put(addOrganizations(organizations));
-            //     } catch (error) {
-            //         console.error('fillContractLookupIfMissing() error', error);
-            //     }
-            // }
         } catch (error) {
             console.log('error', error, error.response);
 
