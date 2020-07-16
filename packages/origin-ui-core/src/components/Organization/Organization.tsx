@@ -43,7 +43,7 @@ export function Organization() {
         user &&
         (!storedOrganizations || storedOrganizations.length === 0) &&
         !fetching &&
-        [Role.Admin, Role.SupportAgent].includes(user.rights)
+        isRole(user, Role.Admin, Role.SupportAgent)
     ) {
         fetchOrganizations();
     }
