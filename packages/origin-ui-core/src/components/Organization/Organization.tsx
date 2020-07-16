@@ -1,17 +1,19 @@
-import React from 'react';
-import { useSelector } from 'react-redux';
+import React, { useState } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import { NavLink, Route, Redirect } from 'react-router-dom';
-import { Role, isRole } from '@energyweb/origin-backend-core';
+import { Role, isRole, IOrganizationWithRelationsIds } from '@energyweb/origin-backend-core';
 
 import { PageContent } from '../PageContent/PageContent';
 import { useLinks } from '../../utils/routing';
-import { getUserOffchain } from '../../features/users/selectors';
+import { getUserOffchain, getOrganizations } from '../../features/users/selectors';
 import { OrganizationForm } from './OrganizationForm';
 import { OrganizationTable } from './OrganizationTable';
 import { OrganizationView } from './OrganizationView';
 import { OrganizationInvite } from './OrganizationInvite';
 import { OrganizationInvitations } from './OrganizationInvitations';
 import { OrganizationUsersTable } from './OrganizationUsersTable';
+import { addOrganizations } from '../../features/users/actions';
+import { getOffChainDataSource } from '../../features';
 
 export const roleNames = {
     [Role.OrganizationUser]: 'organization.invitations.roles.member',
@@ -20,24 +22,48 @@ export const roleNames = {
 };
 
 export function Organization() {
-    const userOffchain = useSelector(getUserOffchain);
+    const user = useSelector(getUserOffchain);
+    const dispatch = useDispatch();
+    const offChainDataSource = useSelector(getOffChainDataSource);
+    const storedOrganizations = useSelector(getOrganizations);
+    const [fetching, setFetching] = useState<boolean>(false);
+
+    const fetchOrganizations = async () => {
+        setFetching(true);
+        try {
+            const organizations: IOrganizationWithRelationsIds[] = await offChainDataSource.organizationClient.getAll();
+            dispatch(addOrganizations(organizations));
+        } catch (error) {
+            console.error('Error fetching list of all organizations', error);
+        }
+        setFetching(false);
+    };
+
+    if (
+        user &&
+        (!storedOrganizations || storedOrganizations.length === 0) &&
+        !fetching &&
+        [Role.Admin, Role.SupportAgent].includes(user.rights)
+    ) {
+        fetchOrganizations();
+    }
 
     const { getOrganizationLink } = useLinks();
 
-    const isLoggedIn = Boolean(userOffchain);
+    const isLoggedIn = Boolean(user);
 
     const Menu = [
         {
             key: 'my-organization',
             label: 'My Organization',
             component: OrganizationView,
-            hide: !isLoggedIn || !userOffchain?.organization
+            hide: !isLoggedIn || !user?.organization
         },
         {
             key: 'organization-users',
             label: 'Members',
             component: OrganizationUsersTable,
-            hide: !isLoggedIn || !isRole(userOffchain, Role.OrganizationAdmin)
+            hide: !isLoggedIn || !isRole(user, Role.OrganizationAdmin)
         },
         {
             key: 'organization-invitations',
@@ -49,22 +75,19 @@ export function Organization() {
             key: 'organization-invite',
             label: 'Invite',
             component: OrganizationInvite,
-            hide:
-                !isLoggedIn ||
-                !isRole(userOffchain, Role.OrganizationAdmin) ||
-                !userOffchain?.organization
+            hide: !isLoggedIn || !isRole(user, Role.OrganizationAdmin) || !user?.organization
         },
         {
             key: 'organization-register',
             label: 'Register',
             component: OrganizationForm,
-            hide: !isLoggedIn || userOffchain?.organization
+            hide: !isLoggedIn || user?.organization
         },
         {
             key: 'organization-table',
             label: 'All organizations',
             component: OrganizationTable,
-            hide: !isLoggedIn || !isRole(userOffchain, Role.Admin, Role.SupportAgent)
+            hide: !isLoggedIn || !isRole(user, Role.Admin, Role.SupportAgent)
         },
         {
             key: 'organization-view',

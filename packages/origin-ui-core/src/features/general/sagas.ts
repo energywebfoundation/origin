@@ -26,15 +26,9 @@ import {
     AccountAsset,
     Bundle
 } from '../../utils/exchange';
-import {
-    IOriginConfiguration,
-    IOrganizationWithRelationsIds,
-    IUserWithRelations,
-    Role
-} from '@energyweb/origin-backend-core';
+import { IOriginConfiguration } from '@energyweb/origin-backend-core';
 import {
     setActiveBlockchainAccountAddress,
-    addOrganizations,
     UsersActions,
     ISetActiveBlockchainAccountAddressAction
 } from '../users/actions';
@@ -67,7 +61,6 @@ import {
     clearBundles
 } from '../bundles';
 import { fetchOrders } from '../orders/sagas';
-import { getUserOffchain } from '../users/selectors';
 
 function createEthereumProviderAccountsChangedEventChannel(ethereumProvider: any) {
     return eventChannel<string[]>((emitter) => {
@@ -482,9 +475,13 @@ function* fillContractLookupIfMissing(): SagaIterator {
         } catch (error) {
             console.error('ContractsSaga::UnableToFetchBlockchainAddress', error);
         }
-        yield call(fetchDataAfterConfigurationChange, configuration);
         yield put(setLoading(false));
-        yield call(initEventHandler);
+        try {
+            yield call(fetchDataAfterConfigurationChange, configuration);
+            yield call(initEventHandler);
+        } catch (error) {
+            console.error('fillContractLookupIfMissing() error', error);
+        }
     }
 }
 
