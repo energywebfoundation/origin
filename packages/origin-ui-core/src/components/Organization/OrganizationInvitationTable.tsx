@@ -54,7 +54,7 @@ export function OrganizationInvitationTable(props: IProps) {
             };
         }
 
-        const organizations = await organizationClient.getAll();
+        // const organizations = await organizationClient.getAll();
         let invitations: IOrganizationInvitation[] = [];
 
         if (props.email) {
@@ -67,7 +67,8 @@ export function OrganizationInvitationTable(props: IProps) {
 
         let newPaginatedData: IRecord[] = invitations.map((invitation) => ({
             invitation,
-            organization: organizations?.find((o) => o.id === invitation.organization)
+            // organization: organizations?.find((o) => o.id === invitation.organization)
+            organization: invitation.organization as IOrganization
         }));
 
         const newTotal = newPaginatedData.length;

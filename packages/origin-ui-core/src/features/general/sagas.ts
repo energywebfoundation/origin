@@ -482,7 +482,7 @@ function* fillContractLookupIfMissing(): SagaIterator {
         } catch (error) {
             console.error('ContractsSaga::UnableToFetchBlockchainAddress', error);
         }
-
+        yield call(fetchDataAfterConfigurationChange, configuration);
         yield put(setLoading(false));
         yield call(initEventHandler);
     }
