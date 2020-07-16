@@ -83,7 +83,6 @@ export function UserLogin() {
 
             dispatch(setAuthenticationToken(loginResponse.accessToken));
 
-            // history.push(getCertificatesLink());
         } catch (error) {
             console.warn('Could not log in.', error);
             showNotification(t('user.feedback.couldNotLogIn'), NotificationType.Error);

@@ -117,8 +117,6 @@ export function Certificates() {
     const authenticationToken = localStorage.getItem('AUTHENTICATION_TOKEN');
 
     function getDefaultRedirect() {
-        // if (authenticationToken && !user) {
-        // wh
         if (user) {
             if (isIssuer) {
                 return CertificatesMenu[3].key;
@@ -177,7 +175,6 @@ export function Certificates() {
                     }}
                 />
 
-                {/* <Route exact={true} path={defaultRedirect}   */}
                 <Redirect path={getCertificatesLink()} to={defaultRedirect} />
 
                 <Route
