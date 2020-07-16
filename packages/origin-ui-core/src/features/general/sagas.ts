@@ -26,13 +26,9 @@ import {
     AccountAsset,
     Bundle
 } from '../../utils/exchange';
-import {
-    IOriginConfiguration,
-    IOrganizationWithRelationsIds
-} from '@energyweb/origin-backend-core';
+import { IOriginConfiguration } from '@energyweb/origin-backend-core';
 import {
     setActiveBlockchainAccountAddress,
-    addOrganizations,
     UsersActions,
     ISetActiveBlockchainAccountAddressAction
 } from '../users/actions';
@@ -479,18 +475,9 @@ function* fillContractLookupIfMissing(): SagaIterator {
         } catch (error) {
             console.error('ContractsSaga::UnableToFetchBlockchainAddress', error);
         }
-
         yield put(setLoading(false));
-
         try {
             yield call(fetchDataAfterConfigurationChange, configuration);
-            const organizations: IOrganizationWithRelationsIds[] = yield apply(
-                offChainDataSource.organizationClient,
-                offChainDataSource.organizationClient.getAll,
-                []
-            );
-
-            yield put(addOrganizations(organizations));
             yield call(initEventHandler);
         } catch (error) {
             console.error('fillContractLookupIfMissing() error', error);
