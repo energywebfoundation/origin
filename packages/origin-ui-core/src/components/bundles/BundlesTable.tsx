@@ -52,7 +52,7 @@ export const BundlesTable = (props: IOwnProps) => {
     const environment = useSelector(getEnvironment);
     const dispatch = useDispatch();
     const isBundleDetailsVisible = useSelector(getShowBundleDetails);
-    const [showBundleBoughtModal, setShowBundleBougthModal] = useState<boolean>(false);
+    const [showBundleBoughtModal, setShowBundleBoughtModal] = useState<boolean>(false);
 
     const { currentSort, sortAscending, sortData, toggleSort } = usePaginatedLoaderSorting({
         currentSort: {
@@ -107,7 +107,7 @@ export const BundlesTable = (props: IOwnProps) => {
         }));
         dispatch(storeBundle(bundle));
         if (splits.length === 0) {
-            return setShowBundleBougthModal(true);
+            return setShowBundleBoughtModal(true);
         }
         setSelected(bundle);
         dispatch(showBundleDetails(true));
@@ -173,7 +173,7 @@ export const BundlesTable = (props: IOwnProps) => {
                     </Fab>
                 </Tooltip>
             </Link>
-            <BundleBought open={showBundleBoughtModal} setOpen={setShowBundleBougthModal} />
+            <BundleBought open={showBundleBoughtModal} setOpen={setShowBundleBoughtModal} />
         </>
     );
 };
