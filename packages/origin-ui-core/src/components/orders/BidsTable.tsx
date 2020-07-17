@@ -169,6 +169,7 @@ export const BidsTable = (props: IOwnProsp) => {
     return (
         <>
             <TableMaterial
+                handleRowClick={(row: string) => viewDetails(parseInt(row, 10))}
                 columns={columns}
                 rows={rows}
                 filters={getFilters()}
