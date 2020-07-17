@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.2.1](https://github.com/energywebfoundation/origin/compare/@energyweb/solar-simulator@1.2.0...@energyweb/solar-simulator@1.2.1) (2020-07-16)
+
+
+### Bug Fixes
+
+* **solar-simulator:** change the solar-simulator Heroku process from web to worker ([78ad5f4](https://github.com/energywebfoundation/origin/commit/78ad5f43748befa8e6e3af78793aab97a4c38b68))
+* **solar-simulator:** saving smart meter readings ([ef2a8c3](https://github.com/energywebfoundation/origin/commit/ef2a8c3d02fc97828ada1e12388508f3b7a7f70c))
+
+
+
+
+
 # [1.2.0](https://github.com/energywebfoundation/origin/compare/@energyweb/solar-simulator@1.1.11...@energyweb/solar-simulator@1.2.0) (2020-07-08)
 
 

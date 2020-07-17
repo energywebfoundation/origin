@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.1.1](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-backend-utils@1.1.0...@energyweb/origin-backend-utils@1.1.1) (2020-07-16)
+
+
+### Bug Fixes
+
+* **deps:** update nest monorepo to v7.3.2 ([875bb1b](https://github.com/energywebfoundation/origin/commit/875bb1b17fee5647d921f6771a58a4aa55aec59d))
+
+
+
+
+
 # [1.1.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-backend-utils@1.0.4...@energyweb/origin-backend-utils@1.1.0) (2020-07-08)
 
 
