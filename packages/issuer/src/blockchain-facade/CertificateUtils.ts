@@ -6,15 +6,7 @@ import { EventFilter } from 'ethers';
 import { Certificate, IClaimData } from './Certificate';
 import { Registry } from '../ethers/Registry';
 import { Issuer } from '../ethers/Issuer';
-import { getEventsFromContract } from '../utils/events';
-
-export interface IBlockchainEvent {
-    name: string;
-    transactionHash: string;
-    blockHash: string;
-    values: any;
-    timestamp: number;
-}
+import { getEventsFromContract, IBlockchainEvent } from '../utils/events';
 
 export const encodeClaimData = async (
     claimData: IClaimData,
@@ -164,7 +156,7 @@ export async function getAllCertificates(
         issuer.filters.CertificationRequestApproved(null, null, null)
     );
     const certificatePromises = certificationRequestApprovedEvents.map((event) =>
-        new Certificate(event._certificateId.toNumber(), configuration).sync()
+        new Certificate(event.values._certificateId.toNumber(), configuration).sync()
     );
 
     return Promise.all(certificatePromises);
@@ -184,7 +176,7 @@ export async function getAllOwnedCertificates(
         registry.filters.TransferSingle(null, null, owner, null, null)
     );
     const certificateIds = [
-        ...new Set<number>(transfers.map((transfer) => transfer._id.toNumber()))
+        ...new Set<number>(transfers.map((transfer) => transfer.values._id.toNumber()))
     ];
     const balances = await registry.balanceOfBatch(
         Array(certificateIds.length).fill(owner),
