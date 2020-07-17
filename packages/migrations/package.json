@@ -11,7 +11,7 @@
     "bugs": {
         "url": "https://github.com/energywebfoundation/origin/issues"
     },
-    "version": "3.1.5",
+    "version": "3.1.6",
     "main": "dist/js/src/main.js",
     "bin": {
         "origin-migrations": "./bin/migrations"
@@ -31,8 +31,8 @@
     },
     "types": "dist/js/index.d.ts",
     "dependencies": {
-        "@energyweb/issuer": "2.4.0",
-        "@energyweb/origin-backend-core": "4.1.0",
+        "@energyweb/issuer": "2.4.1",
+        "@energyweb/origin-backend-core": "4.2.0",
         "@types/pg": "7.14.4",
         "commander": "^5.0.0",
         "dotenv": "8.2.0",

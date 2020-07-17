@@ -3,6 +3,56 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.6.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-ui-core@1.5.0...@energyweb/origin-ui-core@1.6.0) (2020-07-16)
+
+
+### Bug Fixes
+
+* **deps:** update dependency i18next to v19.6.0 ([da4eb35](https://github.com/energywebfoundation/origin/commit/da4eb35064b0ba6f6374d06f51a63d82d02909e0))
+* **origin-ui-core:** calculate colors from base colors ([f011616](https://github.com/energywebfoundation/origin/commit/f01161657d75e2448d78622f996bbbd6511359cc))
+* **origin-ui-core:** center actions button ([f126feb](https://github.com/energywebfoundation/origin/commit/f126feb6712da0d4dd61b2b819bad96f7fa08158))
+* **origin-ui-core:** check if device id is present ([e9a03e2](https://github.com/energywebfoundation/origin/commit/e9a03e23958dcc077519f69d2d96c5ec360a3b47))
+* **origin-ui-core:** display filled in percentage ([99d5b3f](https://github.com/energywebfoundation/origin/commit/99d5b3ff5202f6ec2f0009b5aa3bae56b55eee63))
+* **origin-ui-core:** fetch split on bundle details ([3bbb359](https://github.com/energywebfoundation/origin/commit/3bbb3595b2aa4bcb51b97487dbea90af0153c1ed))
+* **origin-ui-core:** lint ([17a2072](https://github.com/energywebfoundation/origin/commit/17a2072f28ce274f43d9d71a4dc84674c425d1db))
+* **origin-ui-core:** lint ([ccd2b0e](https://github.com/energywebfoundation/origin/commit/ccd2b0e7dc1dd1b122777ea22bfed3251cd40fb6))
+* **origin-ui-core:** localize actions ([d2db904](https://github.com/energywebfoundation/origin/commit/d2db904212ee00154e6295995d6ce4e73681e2cb))
+* **origin-ui-core:** refetch data after conf chanded ([e9f3075](https://github.com/energywebfoundation/origin/commit/e9f3075f8e613bda1fbc523a558c5c1cbdc77638))
+* **origin-ui-core:** reload certs on bundle create and cancel ([3963a79](https://github.com/energywebfoundation/origin/commit/3963a791401e4370151d41decb67932def2f9043))
+* **origin-ui-core:** rename setShowBundleBought ([8373a82](https://github.com/energywebfoundation/origin/commit/8373a82187d5c9cd2a76924364d5acaa6aa16d34))
+* **origin-ui-core:** reset current page on filter apply ([e7118cb](https://github.com/energywebfoundation/origin/commit/e7118cbcb2571b6592d55bb6996e46f22c54c523))
+* **origin-ui-core:** rm comment ([7e52062](https://github.com/energywebfoundation/origin/commit/7e5206246c1c6bbe97bdc3ad0d2276f99cac5168))
+* **origin-ui-core:** rm stale loadPage closure ([3432169](https://github.com/energywebfoundation/origin/commit/34321693c2ba5c57ac5f5d26ac288e8e8049bfd5))
+* **origin-ui-core:** show 0 when meter stats are not accessible ([d02a900](https://github.com/energywebfoundation/origin/commit/d02a900b79e20f27edd443aa3b0bc9aa2cd98fb8))
+* **origin-ui-core:** use font size Md ([7072250](https://github.com/energywebfoundation/origin/commit/707225066fe27e0c2bd97139624f9ab85f5f6657))
+* **origin-ui-core:** use interface for existing device id ([dcefdce](https://github.com/energywebfoundation/origin/commit/dcefdcec2cd007b5154a841732dd1f58597a1462))
+* **origin-ui-core:** use organization id as order id ([ee0c8dc](https://github.com/energywebfoundation/origin/commit/ee0c8dc0ba31934f452c40f182f9558c9c88dd4e))
+
+
+### Features
+
+* **origin-ui-core:** add any val to ask props ([11ea5a2](https://github.com/energywebfoundation/origin/commit/11ea5a2de060490d6dbe4bfb0ecfe92c467c8692))
+* **origin-ui-core:** add AsksTable ([dfd26d5](https://github.com/energywebfoundation/origin/commit/dfd26d5cef56b8ff9f12232c410819b74d0ba3a7))
+* **origin-ui-core:** center actions label ([812b98e](https://github.com/energywebfoundation/origin/commit/812b98e2c414c5a038520de6354957757b122e99))
+* **origin-ui-core:** clear certificates on cancel bundle ([e2c9b26](https://github.com/energywebfoundation/origin/commit/e2c9b266c1dda336a7766c4e2f5b075429d64a5f))
+* **origin-ui-core:** Confirming emails ([ddbcd2c](https://github.com/energywebfoundation/origin/commit/ddbcd2c159e8d1e38a1a5c2f98fe4dc7b0c6e013))
+* **origin-ui-core:** exclusive any ([3f3903f](https://github.com/energywebfoundation/origin/commit/3f3903f551b45a621591fcb2ca6af18ec41782db))
+* **origin-ui-core:** fetch orgs when needed ([0ca7c95](https://github.com/energywebfoundation/origin/commit/0ca7c9587fd19b756ae5bc6e71ac485df8cfde3f))
+* **origin-ui-core:** fetchCertificates saga ([3246bb5](https://github.com/energywebfoundation/origin/commit/3246bb53b29e58a9ca5c30ec3df1c89a8424f266))
+* **origin-ui-core:** filter ask by facility ([097e9a3](https://github.com/energywebfoundation/origin/commit/097e9a30f7ab6d91ae7eeacad0735611421845fb))
+* **origin-ui-core:** filter asks by device type and generation time ([7073692](https://github.com/energywebfoundation/origin/commit/7073692dae35d7c3996a8a4f716b0d2432c050a1))
+* **origin-ui-core:** order confirmation dialog ([c287296](https://github.com/energywebfoundation/origin/commit/c2872960bc92e175e1061861e4e1c924d006d898))
+* **origin-ui-core:** remove order saga ([734aac3](https://github.com/energywebfoundation/origin/commit/734aac39b4f71bc090de588f921e9e19e95cd83d))
+* **origin-ui-core:** store orders saga ([3534d79](https://github.com/energywebfoundation/origin/commit/3534d79d8f68e498be1a2c1b1e16ceca5130931f))
+* **origin-ui-core:** style action button ([a8df5ef](https://github.com/energywebfoundation/origin/commit/a8df5efc88eb68f034ce739b03470d80ee828cfc))
+* **origin-ui-core:** style filter header ([d16452b](https://github.com/energywebfoundation/origin/commit/d16452ba1331244fc2ced83af8ad218db68d967f))
+* **origin-ui-core:** style order details modal ([70d9524](https://github.com/energywebfoundation/origin/commit/70d95240474ba8bb7693bea097c5655a758e7557))
+* **origin-ui-core:** style tables headers ([a9e24e5](https://github.com/energywebfoundation/origin/commit/a9e24e5a0ea87d9cf75fd1cb3aa05bfaea069086))
+
+
+
+
+
 # [1.5.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-ui-core@1.4.1...@energyweb/origin-ui-core@1.5.0) (2020-07-08)
 
 
