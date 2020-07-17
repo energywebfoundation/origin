@@ -105,11 +105,10 @@ describe('Certificate tests', () => {
 
         await issueCertificate(totalVolume, deviceOwnerWallet.address);
         await issueCertificate(totalVolume, traderWallet.address);
-        const blockchainAccountAddress = await conf.blockchainProperties.activeUser.getAddress();
 
         setActiveUser(traderWallet);
         const user = {
-            blockchainAccountAddress
+            blockchainAccountAddress: traderWallet.address
         } as IUserWithRelations;
         const [certificate] = await CertificateUtils.getAllOwnedCertificates(conf, user);
         assert.isDefined(certificate);
