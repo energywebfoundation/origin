@@ -8,7 +8,7 @@ import { BigNumber } from 'ethers/utils';
 import { Configuration } from '@energyweb/utils-general';
 import { OffChainDataSourceMock } from '@energyweb/origin-backend-client-mocks';
 
-import { IOwnershipCommitmentStatus } from '@energyweb/origin-backend-core';
+import { IOwnershipCommitmentStatus, IUserWithRelations } from '@energyweb/origin-backend-core';
 import { migrateIssuer, migrateRegistry } from '../migrate';
 import { Certificate, CertificateUtils, IClaimData } from '..';
 
@@ -105,14 +105,18 @@ describe('Certificate tests', () => {
 
         await issueCertificate(totalVolume, deviceOwnerWallet.address);
         await issueCertificate(totalVolume, traderWallet.address);
+        const blockchainAccountAddress = await conf.blockchainProperties.activeUser.getAddress();
 
         setActiveUser(traderWallet);
-        const [certificate] = await CertificateUtils.getAllOwnedCertificates(conf);
+        const user = {
+            blockchainAccountAddress
+        } as IUserWithRelations;
+        const [certificate] = await CertificateUtils.getAllOwnedCertificates(conf, user);
         assert.isDefined(certificate);
 
         await certificate.transfer(deviceOwnerWallet.address, totalVolume);
 
-        const myCertificates = await CertificateUtils.getAllOwnedCertificates(conf);
+        const myCertificates = await CertificateUtils.getAllOwnedCertificates(conf, user);
         assert.lengthOf(myCertificates, 0);
     });
 

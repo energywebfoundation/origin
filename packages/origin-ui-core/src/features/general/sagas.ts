@@ -61,6 +61,7 @@ import {
     clearBundles
 } from '../bundles';
 import { fetchOrders } from '../orders/sagas';
+import { getUserOffchain } from '../users/selectors';
 
 function createEthereumProviderAccountsChangedEventChannel(ethereumProvider: any) {
     return eventChannel<string[]>((emitter) => {
@@ -391,11 +392,11 @@ export function* fetchDataAfterConfigurationChange(
     for (const device of producingDevices) {
         yield put(producingDeviceCreatedOrUpdated(device));
     }
-
+    const user = yield select(getUserOffchain);
     const onChainCertificates: Certificate[] = yield apply(
         Certificate,
         CertificateUtils.getAllOwnedCertificates,
-        [configuration]
+        [configuration, user]
     );
     const initializedCertificates = onChainCertificates
         .filter((cert) => cert.initialized)

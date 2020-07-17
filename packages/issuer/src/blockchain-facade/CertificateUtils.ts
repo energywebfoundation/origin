@@ -7,6 +7,7 @@ import { Certificate, IClaimData } from './Certificate';
 import { Registry } from '../ethers/Registry';
 import { Issuer } from '../ethers/Issuer';
 import { getEventsFromContract } from '../utils/events';
+import { IUserWithRelations } from '../../../origin-backend-core/src';
 
 export interface IBlockchainEvent {
     name: string;
@@ -171,13 +172,13 @@ export async function getAllCertificates(
 }
 
 export async function getAllOwnedCertificates(
-    configuration: Configuration.Entity
+    configuration: Configuration.Entity,
+    user: IUserWithRelations
 ): Promise<Certificate[]> {
     const {
-        registry,
-        activeUser
-    } = configuration.blockchainProperties as Configuration.BlockchainProperties<Registry, Issuer>;
-    const owner = await activeUser.getAddress();
+        blockchainProperties: { registry }
+    } = configuration;
+    const owner = user.blockchainAccountAddress;
 
     const transfers = await getEventsFromContract(
         registry,
