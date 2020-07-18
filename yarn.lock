@@ -3842,14 +3842,13 @@
     dom-accessibility-api "^0.4.5"
     pretty-format "^25.5.0"
 
-"@testing-library/react@10.4.5":
-  version "10.4.5"
-  resolved "https://registry.yarnpkg.com/@testing-library/react/-/react-10.4.5.tgz#e66e004d6beb60a26b4e5d4e4d9989738d7077f3"
-  integrity sha512-M5A0W4VphBiEm4vgnq7vHC+/e4Bp/3iIOAWap1FtIiA+Zom6BtXpY3RSTOqc8bZsCcu9gFBZ/lxaiMW6uJddWg==
+"@testing-library/react@10.4.7":
+  version "10.4.7"
+  resolved "https://registry.yarnpkg.com/@testing-library/react/-/react-10.4.7.tgz#fc14847fb70a5e93576b8f7f0d1490ead02a9061"
+  integrity sha512-hUYbum3X2f1ZKusKfPaooKNYqE/GtPiQ+D2HJaJ4pkxeNJQFVUEvAvEh9+3QuLdBeTWkDMNY5NSijc5+pGdM4Q==
   dependencies:
     "@babel/runtime" "^7.10.3"
     "@testing-library/dom" "^7.17.1"
-    semver "^7.3.2"
 
 "@truffle/error@^0.0.6":
   version "0.0.6"
@@ -9487,10 +9486,10 @@ eslint-plugin-prettier@3.1.4:
   dependencies:
     prettier-linter-helpers "^1.0.0"
 
-eslint-plugin-react-hooks@4.0.7:
-  version "4.0.7"
-  resolved "https://registry.yarnpkg.com/eslint-plugin-react-hooks/-/eslint-plugin-react-hooks-4.0.7.tgz#19f9e3d07dd3a0fb9e6f0f07153707feedea8108"
-  integrity sha512-5PuW2OMHQyMLr/+MqTluYN3/NeJJ1RuvmEp5TR9Xl2gXKxvcusUZuMz8XBUtbELNaiRYWs693LQs0cljKuuHRQ==
+eslint-plugin-react-hooks@4.0.8:
+  version "4.0.8"
+  resolved "https://registry.yarnpkg.com/eslint-plugin-react-hooks/-/eslint-plugin-react-hooks-4.0.8.tgz#a9b1e3d57475ccd18276882eff3d6cba00da7a56"
+  integrity sha512-6SSb5AiMCPd8FDJrzah+Z4F44P2CdOaK026cXFV+o/xSRzfOiV1FNFeLl2z6xm3yqWOQEZ5OfVgiec90qV2xrQ==
 
 eslint-plugin-react@7.20.3:
   version "7.20.3"
@@ -17981,10 +17980,10 @@ react-draggable@^4.0.3:
     classnames "^2.2.5"
     prop-types "^15.6.0"
 
-react-dropzone@11.0.1:
-  version "11.0.1"
-  resolved "https://registry.yarnpkg.com/react-dropzone/-/react-dropzone-11.0.1.tgz#c8b6a6ed02576e5365af2e2a3f3b31df31feb213"
-  integrity sha512-x/6wqRHaR8jsrNiu/boVMIPYuoxb83Vyfv77hO7/3ZRn8Pr+KH5onsCsB8MLBa3zdJl410C5FXPUINbu16XIzw==
+react-dropzone@11.0.2:
+  version "11.0.2"
+  resolved "https://registry.yarnpkg.com/react-dropzone/-/react-dropzone-11.0.2.tgz#1a4084f520c2eafbeb24026760b3ee8f3759cfd3"
+  integrity sha512-/Wde9Il1aJ1FtWllg3N2taIeJh4aftx6UGUG8R1TmLnZit2RnDcEjcKwEEbKwgLXTTh8QQpiZWQJq45jTy1jCA==
   dependencies:
     attr-accept "^2.0.0"
     file-selector "^0.1.12"
