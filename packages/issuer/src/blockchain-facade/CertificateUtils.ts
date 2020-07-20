@@ -1,7 +1,5 @@
-import { randomBytes } from 'ethers/utils';
 import { Configuration } from '@energyweb/utils-general';
-import { Log } from 'ethers/providers';
-import { EventFilter } from 'ethers';
+import { EventFilter, utils, providers } from 'ethers';
 
 import { Certificate, IClaimData } from './Certificate';
 import { Registry } from '../ethers/Registry';
@@ -71,7 +69,7 @@ export async function claimCertificates(
     const values = certificates.map((cert) => cert.energy.publicVolume);
 
     const encodedClaimData = await encodeClaimData(claimData, configuration);
-    const data = randomBytes(32);
+    const data = utils.randomBytes(32);
 
     const {
         activeUser,
@@ -115,7 +113,7 @@ export async function transferCertificates(
     const values = certificates.map((cert) => cert.energy.publicVolume);
 
     // TO-DO: replace with proper data
-    const data = randomBytes(32);
+    const data = utils.randomBytes(32);
 
     const { activeUser } = configuration.blockchainProperties as Configuration.BlockchainProperties<
         Registry,
@@ -156,7 +154,7 @@ export async function getAllCertificates(
         issuer.filters.CertificationRequestApproved(null, null, null)
     );
     const certificatePromises = certificationRequestApprovedEvents.map((event) =>
-        new Certificate(event.values._certificateId.toNumber(), configuration).sync()
+        new Certificate(event._certificateId.toNumber(), configuration).sync()
     );
 
     return Promise.all(certificatePromises);
@@ -176,7 +174,7 @@ export async function getAllOwnedCertificates(
         registry.filters.TransferSingle(null, null, owner, null, null)
     );
     const certificateIds = [
-        ...new Set<number>(transfers.map((transfer) => transfer.values._id.toNumber()))
+        ...new Set<number>(transfers.map((transfer) => transfer._id.toNumber()))
     ];
     const balances = await registry.balanceOfBatch(
         Array(certificateIds.length).fill(owner),
@@ -204,21 +202,23 @@ export const getAllCertificateEvents = async (
             fromBlock: 0,
             toBlock: 'latest'
         });
-        const parsedLogs = await Promise.all(
-            logs.map(async (event: Log) => {
-                const { values } = registry.interface.parseLog(event);
-                const eventBlock = await registry.provider.getBlock(event.blockHash);
 
-                return {
-                    name: eventName,
-                    transactionHash: event.transactionHash,
-                    blockHash: event.blockHash,
-                    values,
-                    timestamp: eventBlock.timestamp
-                };
-            })
+        const parsedLogs = await Promise.all(
+            logs.map(
+                async (event: providers.Log): Promise<IBlockchainEvent> => {
+                    const eventBlock = await registry.provider.getBlock(event.blockHash);
+
+                    return {
+                        name: eventName,
+                        transactionHash: event.transactionHash,
+                        blockHash: event.blockHash,
+                        timestamp: eventBlock.timestamp,
+                        ...registry.interface.decodeEventLog(eventName, event.data, event.topics)
+                    };
+                }
+            )
         );
-        return parsedLogs.filter((event) => event.values._id.toNumber() === certId);
+        return parsedLogs.filter((event) => event._id.toNumber() === certId);
     };
 
     const issuanceSingleEvents = await getEvent(

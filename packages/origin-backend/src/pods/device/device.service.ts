@@ -27,7 +27,7 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { validate } from 'class-validator';
-import { bigNumberify } from 'ethers/utils';
+import { BigNumber } from 'ethers';
 import moment from 'moment';
 import { FindOneOptions, Repository } from 'typeorm';
 import { v4 as uuid } from 'uuid';
@@ -341,8 +341,8 @@ export class DeviceService {
             const { meterReading, timestamp, certified } = smReads[i];
 
             energiesGenerated.push({
-                energy: bigNumberify(meterReading).sub(
-                    isFirstReading ? 0 : bigNumberify(smReads[i - 1].meterReading)
+                energy: BigNumber.from(meterReading).sub(
+                    isFirstReading ? 0 : BigNumber.from(smReads[i - 1].meterReading)
                 ),
                 timestamp,
                 certified
@@ -350,7 +350,7 @@ export class DeviceService {
         }
 
         const sumEnergy = (energyGens: IEnergyGeneratedWithStatus[]) =>
-            energyGens.reduce((sum, energyGen) => sum.add(energyGen.energy), bigNumberify(0));
+            energyGens.reduce((sum, energyGen) => sum.add(energyGen.energy), BigNumber.from(0));
 
         return {
             certified: sumEnergy(energiesGenerated.filter((energyGen) => energyGen.certified)),

@@ -32,7 +32,7 @@ import {
     UsersActions,
     ISetActiveBlockchainAccountAddressAction
 } from '../users/actions';
-import { ethers } from 'ethers';
+import { ethers, BigNumber } from 'ethers';
 import { getSearch, push } from 'connected-react-router';
 import { getConfiguration, getBaseURL } from '../selectors';
 import * as queryString from 'query-string';
@@ -48,7 +48,6 @@ import {
     updateCertificate
 } from '../certificates/actions';
 import { IStoreState } from '../../types';
-import { BigNumber } from 'ethers/utils';
 import { getI18n } from 'react-i18next';
 import { showNotification, NotificationType, getDevicesOwnedLink } from '../../utils';
 import { ICertificateViewItem, CertificateSource } from '../certificates';
@@ -332,9 +331,9 @@ export function enhanceCertificate(
     return {
         ...onChainCertificate,
         energy: {
-            publicVolume: new BigNumber(amount),
-            privateVolume: new BigNumber(0),
-            claimedVolume: new BigNumber(0)
+            publicVolume: BigNumber.from(amount),
+            privateVolume: BigNumber.from(0),
+            claimedVolume: BigNumber.from(0)
         },
         source: CertificateSource.Exchange,
         assetId: asset.id
@@ -363,17 +362,17 @@ export function* fetchBundles() {
     for (const bundle of bundles) {
         bundle.own = ownBundles.find((b) => b.id === bundle.id) !== undefined;
         bundle.items.forEach((item) => {
-            item.currentVolume = new BigNumber(item.currentVolume.toString());
-            item.startVolume = new BigNumber(item.startVolume.toString());
+            item.currentVolume = BigNumber.from(item.currentVolume.toString());
+            item.startVolume = BigNumber.from(item.startVolume.toString());
         });
         if (
             bundle.items
-                .reduce((total, item) => total.add(item.currentVolume), new BigNumber(0))
+                .reduce((total, item) => total.add(item.currentVolume), BigNumber.from(0))
                 .isZero()
         ) {
             continue;
         }
-        bundle.volume = new BigNumber(bundle.volume.toString());
+        bundle.volume = BigNumber.from(bundle.volume.toString());
         yield put(storeBundle(bundle));
     }
 }

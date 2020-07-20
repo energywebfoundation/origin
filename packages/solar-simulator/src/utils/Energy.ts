@@ -1,7 +1,7 @@
 import moment from 'moment-timezone';
 import { IEnergyGenerated } from '@energyweb/origin-backend-core';
 
-import { BigNumber, bigNumberify } from 'ethers/utils';
+import { BigNumber } from 'ethers';
 import { IGeneratingDevice } from './GeneratingDevice';
 
 type TableRowType = string[3];
@@ -36,7 +36,7 @@ export function getEnergyFromCSVRows(
         const maxCapacityInDeviceUnit =
             device.maxCapacity * ENERGY_UNIT_TO_RATIO_MAPPING[device.energy_unit];
 
-        return bigNumberify(Math.round(parseFloat(ratio) * maxCapacityInDeviceUnit));
+        return BigNumber.from(Math.round(parseFloat(ratio) * maxCapacityInDeviceUnit));
     }
 
     function checkTimeInBounds(time: moment.Moment) {
@@ -59,7 +59,7 @@ export function getEnergyFromCSVRows(
 
     if (accumulated) {
         parsedRows.push({
-            energy: bigNumberify(0),
+            energy: BigNumber.from(0),
             timestamp: 0
         });
 

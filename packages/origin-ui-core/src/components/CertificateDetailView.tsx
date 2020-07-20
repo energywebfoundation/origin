@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { CertificationRequest, CertificateUtils } from '@energyweb/issuer';
 import { ProducingDeviceDetailView } from './ProducingDeviceDetailView';
 import { useSelector } from 'react-redux';
-import { getAddress } from 'ethers/utils';
+import { utils } from 'ethers';
 import { getConfiguration, getProducingDevices } from '../features/selectors';
 import { getCertificates } from '../features/certificates/selectors';
 import { deduplicate } from '../utils/helper';
@@ -62,7 +62,7 @@ export function CertificateDetailView(props: IProps) {
         const { issuer, registry } = configuration.blockchainProperties;
 
         const transformAddress = (address: string) => {
-            switch (getAddress(address)) {
+            switch (utils.getAddress(address)) {
                 case environment.EXCHANGE_WALLET_PUB:
                     return t('certificate.event.participants.exchange.wallet');
                 case exchangeDepositAddress:
@@ -254,7 +254,8 @@ export function CertificateDetailView(props: IProps) {
 
         if (selectedCertificate.isClaimed) {
             const claimData = selectedCertificate.claims.find(
-                (claim) => getAddress(claim.to) === getAddress(user.blockchainAccountAddress)
+                (claim) =>
+                    utils.getAddress(claim.to) === utils.getAddress(user.blockchainAccountAddress)
             )?.claimData;
 
             const claimInfo = [

@@ -23,9 +23,8 @@ import {
     initializeI18N
 } from '../../components';
 import { IDevice, DeviceStatus, ISmartMeterReadStats } from '@energyweb/origin-backend-core';
-import { bigNumberify } from 'ethers/utils';
+import { BigNumber, Signer } from 'ethers';
 import { ICertificate, Certificate } from '@energyweb/issuer';
-import { Signer } from 'ethers';
 
 export const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -269,8 +268,8 @@ export const createProducingDevice = (
 ): ProducingDevice.Entity => {
     const owner = properties.owner || '0x0';
     const meterStats = properties.meterStats ?? {
-        certified: bigNumberify(0),
-        uncertified: bigNumberify(0)
+        certified: BigNumber.from(0),
+        uncertified: BigNumber.from(0)
     };
 
     const offChainProperties = {

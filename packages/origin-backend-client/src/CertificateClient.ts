@@ -1,5 +1,5 @@
 /* eslint-disable max-classes-per-file */
-import { bigNumberify } from 'ethers/utils';
+import { BigNumber } from 'ethers';
 import {
     ICertificationRequest,
     CertificationRequestUpdateData,
@@ -94,7 +94,7 @@ export class CertificateClient implements ICertificateClient {
         return {
             id,
             ...data,
-            energy: bigNumberify(data.energy),
+            energy: BigNumber.from(data.energy),
             deviceId: data.device.id.toString(),
             approvedDate: data.approvedDate ? new Date(data.approvedDate) : null,
             revokedDate: data.revokedDate ? new Date(data.revokedDate) : null
@@ -109,7 +109,7 @@ export class CertificateClient implements ICertificateClient {
         return data.map((certReq) => {
             return {
                 ...certReq,
-                energy: bigNumberify(certReq.energy),
+                energy: BigNumber.from(certReq.energy),
                 deviceId: certReq.device.id.toString(),
                 approvedDate: certReq.approvedDate ? new Date(certReq.approvedDate) : null,
                 revokedDate: certReq.revokedDate ? new Date(certReq.revokedDate) : null

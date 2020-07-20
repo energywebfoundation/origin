@@ -3,8 +3,7 @@ import { ConfigurationService, DeviceService } from '@energyweb/origin-backend';
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { ModuleRef } from '@nestjs/core';
-import { ethers } from 'ethers';
-import { Log } from 'ethers/providers';
+import { ethers, providers, Contract } from 'ethers';
 import moment from 'moment';
 
 import { TransferService } from '../transfer/transfer.service';
@@ -23,11 +22,11 @@ export class DepositWatcherService implements OnModuleInit {
 
     private registryAddress: string;
 
-    private provider: ethers.providers.JsonRpcProvider;
+    private provider: providers.JsonRpcProvider;
 
-    private issuer: ethers.Contract;
+    private issuer: Contract;
 
-    private registry: ethers.Contract;
+    private registry: Contract;
 
     private deviceService: DeviceService;
 
@@ -64,15 +63,15 @@ export class DepositWatcherService implements OnModuleInit {
         this.registryAddress = registry;
 
         const web3ProviderUrl = this.configService.get<string>('WEB3');
-        this.provider = new ethers.providers.JsonRpcProvider(web3ProviderUrl);
+        this.provider = new providers.JsonRpcProvider(web3ProviderUrl);
 
-        this.registry = new ethers.Contract(
+        this.registry = new Contract(
             this.registryAddress,
             Contracts.RegistryJSON.abi,
             this.provider
         );
 
-        this.issuer = new ethers.Contract(issuer, Contracts.IssuerJSON.abi, this.provider);
+        this.issuer = new Contract(issuer, Contracts.IssuerJSON.abi, this.provider);
 
         const topics = [this.tokenInterface.events.TransferSingle.topic];
         const blockNumber = await this.transferService.getLastConfirmationBlock();
@@ -85,11 +84,11 @@ export class DepositWatcherService implements OnModuleInit {
                 address: this.registryAddress,
                 topics
             },
-            (event: Log) => this.processEvent(event)
+            (event: providers.Log) => this.processEvent(event)
         );
     }
 
-    private async processEvent(event: Log) {
+    private async processEvent(event: providers.Log) {
         this.logger.debug(`Discovered new event ${JSON.stringify(event)}`);
 
         const log = this.tokenInterface.parseLog(event);

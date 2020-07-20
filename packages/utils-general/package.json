@@ -30,8 +30,9 @@
     "types": "dist/js/src/index.d.ts",
     "dependencies": {
         "@energyweb/origin-backend-client": "6.2.1",
+        "chai": "^4.2.0",
         "eth-sig-util": "2.5.2",
-        "ethers": "4.0.47",
+        "ethers": "5.0.7",
         "jsonschema": "1.2.6",
         "moment": "^2.24.0",
         "precise-proofs-js": "1.1.0",

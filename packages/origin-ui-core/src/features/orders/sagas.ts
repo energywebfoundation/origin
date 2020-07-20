@@ -3,7 +3,7 @@ import { IExchangeClient, Order } from '../../utils/exchange';
 import { getExchangeClient } from '..';
 import { SagaIterator } from 'redux-saga';
 import { clearOrders, storeOrder, OrdersActionsType } from './actions';
-import { BigNumber } from 'ethers/utils';
+import { BigNumber } from 'ethers';
 import { showNotification, NotificationType } from '../..';
 import { getI18n } from 'react-i18next';
 import { reloadCertificates } from '../certificates';
@@ -15,8 +15,8 @@ export function* fetchOrders(): SagaIterator {
     for (const order of orders) {
         const { startVolume, currentVolume } = order;
         const filled =
-            new BigNumber(startVolume)
-                .sub(new BigNumber(currentVolume))
+            BigNumber.from(startVolume)
+                .sub(BigNumber.from(currentVolume))
                 .mul(100)
                 .div(startVolume)
                 .toNumber() / 100;

@@ -60,9 +60,9 @@ contract Issuer is Initializable, Ownable {
 		bytes32 hash;
 	}
 
-    function initialize(int _certificateTopic, address _registry, address _owner) public initializer {
-        require(_registry != address(0), "initialize: Cannot use address 0x0 as registry address.");
-        require(_owner != address(0), "initialize: Cannot use address 0x0 as the owner.");
+    function init(int _certificateTopic, address _registry, address _owner) public initializer {
+        require(_registry != address(0), "init: Cannot use address 0x0 as registry address.");
+        require(_owner != address(0), "init: Cannot use address 0x0 as the owner.");
 
         certificateTopic = _certificateTopic;
 

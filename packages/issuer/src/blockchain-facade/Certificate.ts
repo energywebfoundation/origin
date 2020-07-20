@@ -3,8 +3,7 @@ import {
     MAX_ENERGY_PER_CERTIFICATE,
     IOwnershipCommitmentStatus
 } from '@energyweb/origin-backend-core';
-import { Event as BlockchainEvent, ContractTransaction, ethers } from 'ethers';
-import { BigNumber, bigNumberify } from 'ethers/utils';
+import { Event as BlockchainEvent, ContractTransaction, ethers, BigNumber } from 'ethers';
 
 import { Configuration, Timestamp } from '@energyweb/utils-general';
 
@@ -178,7 +177,7 @@ export class Certificate extends PreciseProofEntity implements ICertificate {
             registry.filters.IssuanceSingle(null, null, null)
         );
         const issuanceLog = allIssuanceLogs.filter(
-            (event) => event.values._id.toString() === this.id.toString()
+            (event) => event._id.toString() === this.id.toString()
         )[0];
         const issuanceBlock = await registry.provider.getBlock(issuanceLog.blockHash);
 
@@ -194,7 +193,7 @@ export class Certificate extends PreciseProofEntity implements ICertificate {
             issuer.filters.CertificationRequestApproved(null, null, this.id)
         );
 
-        this.certificationRequestId = certificationRequestApprovedEvents[0].values._id;
+        this.certificationRequestId = certificationRequestApprovedEvents[0]._id;
         this.propertiesDocumentHash = await issuer.getCertificateCommitment(this.id);
 
         if (this.propertiesDocumentHash !== NULL_HASH) {
@@ -208,7 +207,7 @@ export class Certificate extends PreciseProofEntity implements ICertificate {
 
         this.energy = {
             publicVolume: ownedEnergy,
-            privateVolume: this.privateOwnershipCommitment[owner] ?? bigNumberify(0),
+            privateVolume: this.privateOwnershipCommitment[owner] ?? BigNumber.from(0),
             claimedVolume: claimedEnergy
         };
 
@@ -353,7 +352,7 @@ export class Certificate extends PreciseProofEntity implements ICertificate {
                 amountToTransfer
             );
             proposedOwnerShares[toAddress] = (
-                proposedOwnerShares[toAddress] ?? new BigNumber(0)
+                proposedOwnerShares[toAddress] ?? BigNumber.from(0)
             ).add(amountToTransfer);
 
             const commitmentProof = this.generateAndAddProofs(proposedOwnerShares);
@@ -422,16 +421,9 @@ export class Certificate extends PreciseProofEntity implements ICertificate {
         );
 
         claimSingleEvents
-            .filter((claimEvent) => claimEvent.values._id.toNumber() === this.id)
+            .filter((claimEvent) => claimEvent._id.toNumber() === this.id)
             .forEach(async (claimEvent) => {
-                const {
-                    _claimData,
-                    _id,
-                    _claimIssuer,
-                    _claimSubject,
-                    _topic,
-                    _value
-                } = claimEvent.values;
+                const { _claimData, _id, _claimIssuer, _claimSubject, _topic, _value } = claimEvent;
                 const claimData = await decodeClaimData(_claimData, this.configuration);
 
                 claims.push({
@@ -451,9 +443,7 @@ export class Certificate extends PreciseProofEntity implements ICertificate {
 
         claimBatchEvents
             .filter((claimBatchEvent) =>
-                claimBatchEvent.values._ids
-                    .map((idAsBN: BigNumber) => idAsBN.toNumber())
-                    .includes(this.id)
+                claimBatchEvent._ids.map((idAsBN: BigNumber) => idAsBN.toNumber()).includes(this.id)
             )
             .forEach(async (claimBatchEvent) => {
                 const {
@@ -463,7 +453,7 @@ export class Certificate extends PreciseProofEntity implements ICertificate {
                     _claimSubject,
                     _topics,
                     _values
-                } = claimBatchEvent.values;
+                } = claimBatchEvent;
                 const claimIds = _ids.map((idAsBN: BigNumber) => idAsBN.toNumber());
 
                 const index = claimIds.indexOf(this.id);

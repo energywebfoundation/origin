@@ -1,6 +1,6 @@
 import { ProducingDevice } from '@energyweb/device-registry';
 import { Certificate, CertificationRequest, IClaimData } from '@energyweb/issuer';
-import { BigNumber } from 'ethers/utils';
+import { BigNumber } from 'ethers';
 
 import { ICertificateViewItem, CertificateSource } from '.';
 import { IStoreState } from '../../types';

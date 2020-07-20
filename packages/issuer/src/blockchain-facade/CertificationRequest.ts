@@ -1,5 +1,4 @@
-import { BigNumber, Interface } from 'ethers/utils';
-import { Event as BlockchainEvent } from 'ethers';
+import { ethers, Event as BlockchainEvent, BigNumber } from 'ethers';
 import polly from 'polly-js';
 
 import { Configuration, Timestamp } from '@energyweb/utils-general';
@@ -14,7 +13,6 @@ import { PreciseProofEntity } from './PreciseProofEntity';
 import { Issuer } from '../ethers/Issuer';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { Registry } from '../ethers/Registry';
-import { IssuerJSON } from '../contracts';
 
 export class CertificationRequest extends PreciseProofEntity implements ICertificationRequest {
     owner: string;
@@ -142,13 +140,16 @@ export class CertificationRequest extends PreciseProofEntity implements ICertifi
     }
 
     async approve(): Promise<number> {
-        const issuerInterface = new Interface(IssuerJSON.abi);
-        const validityData = issuerInterface.functions.isRequestValid.encode([this.id.toString()]);
-
         let approveTx;
         const { issuer } = this.configuration
             .blockchainProperties as Configuration.BlockchainProperties<Registry, Issuer>;
+
+        const validityData = issuer.interface.encodeFunctionData('isRequestValid', [
+            this.id.toString()
+        ]);
+
         const issuerWithSigner = issuer.connect(this.configuration.blockchainProperties.activeUser);
+
         if (this.isPrivate) {
             const commitment: IOwnershipCommitment = {
                 [this.owner]: this.energy
@@ -178,15 +179,17 @@ export class CertificationRequest extends PreciseProofEntity implements ICertifi
         return certificateId;
     }
 
-    async revoke() {
+    async revoke(): Promise<ethers.ContractTransaction> {
         const { issuer } = this.configuration
             .blockchainProperties as Configuration.BlockchainProperties<Registry, Issuer>;
         const issuerWithSigner = issuer.connect(this.configuration.blockchainProperties.activeUser);
         const revokeTx = await issuerWithSigner.revokeRequest(this.id);
         await revokeTx.wait();
+
+        return revokeTx;
     }
 
-    async requestMigrateToPublic(value: BigNumber) {
+    async requestMigrateToPublic(value: BigNumber): Promise<ethers.ContractTransaction> {
         if (!this.isPrivate) {
             throw new Error('Certificate is already public.');
         }
