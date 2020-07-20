@@ -47,7 +47,7 @@
         "@energyweb/utils-general": "9.1.5",
         "chai": "4.2.0",
         "dotenv": "8.2.0",
-        "ethers": "4.0.47",
+        "ethers": "5.0.7",
         "mocha": "8.0.1",
         "moment": "2.24.0",
         "polly-js": "1.6.7",
