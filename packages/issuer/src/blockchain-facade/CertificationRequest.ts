@@ -96,8 +96,13 @@ export class CertificationRequest extends PreciseProofEntity implements ICertifi
             events: [certificationRequested]
         } = await tx.wait();
 
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const id = (certificationRequested.args as any)._id.toNumber();
+        const log = issuer.interface.decodeEventLog(
+            certificationRequested.event,
+            certificationRequested.data,
+            certificationRequested.topics
+        );
+
+        const id = log._id.toNumber();
 
         if (configuration.logger) {
             configuration.logger.info(`CertificationRequest ${id} created.`);

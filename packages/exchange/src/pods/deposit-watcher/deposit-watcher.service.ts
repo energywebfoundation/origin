@@ -72,8 +72,9 @@ export class DepositWatcherService implements OnModuleInit {
         );
 
         this.issuer = new Contract(issuer, Contracts.IssuerJSON.abi, this.provider);
-
-        const topics = [this.tokenInterface.events.TransferSingle.topic];
+        const topics = [
+            this.tokenInterface.getEventTopic(this.tokenInterface.events.TransferSingle)
+        ];
         const blockNumber = await this.transferService.getLastConfirmationBlock();
 
         this.logger.debug(`Starting from block ${blockNumber}`);
@@ -91,11 +92,12 @@ export class DepositWatcherService implements OnModuleInit {
     private async processEvent(event: providers.Log) {
         this.logger.debug(`Discovered new event ${JSON.stringify(event)}`);
 
-        const log = this.tokenInterface.parseLog(event);
+        const { name } = this.tokenInterface.parseLog(event);
+        const log = this.tokenInterface.decodeEventLog(name, event.data, event.topics);
 
         this.logger.debug(`Parsed to ${JSON.stringify(log)}`);
 
-        const { _from: from, _to: to, _value: value, _id: id } = log.values;
+        const { _from: from, _to: to, _value: value, _id: id } = log;
 
         if (to !== this.walletAddress) {
             this.logger.debug(
