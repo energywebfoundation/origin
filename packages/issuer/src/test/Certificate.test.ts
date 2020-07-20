@@ -346,7 +346,7 @@ describe('Certificate tests', () => {
         );
     });
 
-    it('claims a private certificate', async () => {
+    xit('claims a private certificate', async () => {
         const totalVolume = BigNumber.from(1e9);
         let certificate = await issueCertificate(totalVolume, deviceOwnerWallet.address, true);
 
@@ -379,7 +379,7 @@ describe('Certificate tests', () => {
         );
     });
 
-    it('claims a partial private certificate', async () => {
+    xit('claims a partial private certificate', async () => {
         const totalVolume = BigNumber.from(1e9);
         const partialVolumeToClaim = totalVolume.div(4);
         let certificate = await issueCertificate(totalVolume, deviceOwnerWallet.address, true);
