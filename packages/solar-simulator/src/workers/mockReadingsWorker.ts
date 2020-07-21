@@ -5,10 +5,10 @@ import moment from 'moment-timezone';
 import * as Winston from 'winston';
 
 import { ProducingDevice } from '@energyweb/device-registry';
-import { Configuration } from '@energyweb/utils-general';
+import { Configuration, getProviderWithFallback } from '@energyweb/utils-general';
 import { OffChainDataSource } from '@energyweb/origin-backend-client';
 import { ISmartMeterRead } from '@energyweb/origin-backend-core';
-import { Wallet, providers, BigNumber } from 'ethers';
+import { Wallet, BigNumber } from 'ethers';
 
 async function getProducingDeviceSmartMeterRead(
     deviceId: string,
@@ -62,7 +62,7 @@ const currentTime = moment.tz(device.timezone);
         Number(process.env.BACKEND_PORT)
     );
 
-    const provider = new providers.JsonRpcProvider(process.env.WEB3);
+    const provider = getProviderWithFallback(process.env.WEB3, process.env.WEB3_BACKUP);
     const issuerWallet = new Wallet(process.env.DEPLOY_KEY, provider);
 
     const conf = {

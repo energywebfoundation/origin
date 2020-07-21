@@ -1,3 +1,4 @@
+import { getProviderWithFallback } from '@energyweb/utils-general';
 import { Contracts } from '@energyweb/issuer';
 import { ConfigurationService, DeviceService } from '@energyweb/origin-backend';
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
@@ -22,7 +23,7 @@ export class DepositWatcherService implements OnModuleInit {
 
     private registryAddress: string;
 
-    private provider: providers.JsonRpcProvider;
+    private provider: providers.FallbackProvider;
 
     private issuer: Contract;
 
@@ -63,7 +64,8 @@ export class DepositWatcherService implements OnModuleInit {
         this.registryAddress = registry;
 
         const web3ProviderUrl = this.configService.get<string>('WEB3');
-        this.provider = new providers.JsonRpcProvider(web3ProviderUrl);
+        const web3BackupProviderUrl = this.configService.get<string>('WEB3_BACKUP');
+        this.provider = getProviderWithFallback(web3ProviderUrl, web3BackupProviderUrl);
 
         this.registry = new Contract(
             this.registryAddress,

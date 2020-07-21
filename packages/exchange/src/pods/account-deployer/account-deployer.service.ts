@@ -1,6 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { ethers as factory } from '@energyweb/exchange-token-account';
+import { getProviderWithFallback } from '@energyweb/utils-general';
 import { ethers } from 'ethers';
 
 @Injectable()
@@ -13,10 +14,11 @@ export class AccountDeployerService {
         const deployer = this.configService.get<string>('EXCHANGE_ACCOUNT_DEPLOYER_PRIV');
         const walletAddress = this.configService.get<string>('EXCHANGE_WALLET_PUB');
         const web3ProviderUrl = this.configService.get<string>('WEB3');
+        const web3BackupProviderUrl = this.configService.get<string>('WEB3_BACKUP');
 
         this.logger.debug(`Using ${web3ProviderUrl} for token account deployment`);
 
-        const provider = new ethers.providers.JsonRpcProvider(web3ProviderUrl);
+        const provider = getProviderWithFallback(web3ProviderUrl, web3BackupProviderUrl);
         const wallet = new ethers.Wallet(deployer, provider);
 
         const account = await new factory.TokenAccountFactory(wallet).deploy(walletAddress);

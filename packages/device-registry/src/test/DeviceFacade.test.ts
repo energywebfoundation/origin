@@ -2,10 +2,10 @@
 import 'mocha';
 import { assert } from 'chai';
 import moment from 'moment';
-import { providers, Wallet, BigNumber } from 'ethers';
+import { Wallet, BigNumber } from 'ethers';
 import dotenv from 'dotenv';
 
-import { Configuration } from '@energyweb/utils-general';
+import { Configuration, getProviderWithFallback } from '@energyweb/utils-general';
 import { OffChainDataSourceMock } from '@energyweb/origin-backend-client-mocks';
 import { DeviceStatus, IDevice } from '@energyweb/origin-backend-core';
 
@@ -17,7 +17,7 @@ describe('Device Facade', () => {
         path: '.env.test'
     });
 
-    const provider = new providers.JsonRpcProvider(process.env.WEB3);
+    const provider = getProviderWithFallback(process.env.WEB3, process.env.WEB3_BACKUP);
 
     const deployKey: string = process.env.DEPLOY_KEY;
 

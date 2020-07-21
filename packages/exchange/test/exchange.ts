@@ -8,6 +8,7 @@ import {
 } from '@energyweb/origin-backend-core';
 import { RolesGuard } from '@energyweb/origin-backend-utils';
 import { CanActivate, ExecutionContext, Logger } from '@nestjs/common';
+import { getProviderWithFallback } from '@energyweb/utils-general';
 import { ConfigService } from '@nestjs/config';
 import { AuthGuard } from '@nestjs/passport';
 import { Test } from '@nestjs/testing';
@@ -32,7 +33,7 @@ const web3 = 'http://localhost:8580';
 const registryDeployer = '0xc4b87d68ea2b91f9d3de3fcb77c299ad962f006ffb8711900cb93d94afec3dc3';
 
 const deployContract = async ({ abi, bytecode }: { abi: any; bytecode: string }) => {
-    const provider = new ethers.providers.JsonRpcProvider(web3);
+    const provider = getProviderWithFallback(web3, '');
     const wallet = new ethers.Wallet(registryDeployer, provider);
 
     const factory = new ethers.ContractFactory(abi, bytecode, wallet);

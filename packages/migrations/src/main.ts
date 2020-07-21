@@ -1,8 +1,8 @@
 import dotenv from 'dotenv';
 import program from 'commander';
-import path from 'path';
 import fs from 'fs';
 import { Client, ClientConfig } from 'pg';
+import { getProviderWithFallback } from '@energyweb/utils-general';
 
 import { ExternalDeviceIdType, IContractsLookup } from '@energyweb/origin-backend-core';
 import { deployContracts } from './deployContracts';
@@ -150,14 +150,18 @@ try {
             throw new Error('Config path is missing or path does not exist');
         }
         if (!process.env.WEB3) {
-            throw new Error('process.env.WEB3 is missing');
+            if (!process.env.WEB3_BACKUP) {
+                throw new Error('process.env.WEB3 and process.env.WEB3_BACKUP is missing');
+            }
         }
         if (!process.env.DEPLOY_KEY) {
             throw new Error('process.env.DEPLOY_KEY is missing');
         }
 
         logger.info(`Deploying contracts to ${process.env.WEB3}...`);
-        const contractsLookup = await deployContracts();
+
+        const provider = getProviderWithFallback(process.env.WEB3, process.env.WEB3_BACKUP);
+        const contractsLookup = await deployContracts(provider);
 
         await importConfiguration(dbClient, program.config, contractsLookup);
 

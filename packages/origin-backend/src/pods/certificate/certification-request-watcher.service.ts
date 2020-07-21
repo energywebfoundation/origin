@@ -3,6 +3,7 @@ import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { ModuleRef } from '@nestjs/core';
 import { ethers, providers } from 'ethers';
+import { getProviderWithFallback } from '@energyweb/utils-general';
 
 import { DeepPartial } from 'typeorm';
 import { ConfigurationService } from '../configuration';
@@ -18,7 +19,7 @@ export class CertificationRequestWatcherService implements OnModuleInit {
 
     private issuerInterface: ethers.utils.Interface;
 
-    private provider: ethers.providers.JsonRpcProvider;
+    private provider: ethers.providers.FallbackProvider;
 
     private issuer: ethers.Contract;
 
@@ -54,7 +55,8 @@ export class CertificationRequestWatcherService implements OnModuleInit {
         this.issuerInterface = new ethers.utils.Interface(Contracts.IssuerJSON.abi);
 
         const web3ProviderUrl = this.configService.get<string>('WEB3');
-        this.provider = new providers.JsonRpcProvider(web3ProviderUrl);
+        const web3BackupProviderUrl = this.configService.get<string>('WEB3_BACKUP');
+        this.provider = getProviderWithFallback(web3ProviderUrl, web3BackupProviderUrl);
 
         this.issuer = new ethers.Contract(issuer, Contracts.IssuerJSON.abi, this.provider);
 

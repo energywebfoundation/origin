@@ -524,7 +524,7 @@ function* updateConfigurationWhenUserChanged(): SagaIterator {
         const newConfiguration: Configuration.Entity = yield call(
             createConfiguration,
             address,
-            web3,
+            web3 as ethers.providers.JsonRpcProvider,
             offchainConfiguration,
             offChainDataSource,
             existingConfiguration.logger
