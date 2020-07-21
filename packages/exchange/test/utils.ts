@@ -55,4 +55,4 @@ export const depositToken = async (
     await registryWithUserAsSigner.safeTransferFrom(sender.address, to, id, amount, '0x00');
 };
 
-export const provider = getProviderWithFallback(web3, '');
+export const provider = getProviderWithFallback(web3);

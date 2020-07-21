@@ -1,21 +1,18 @@
-import { providers } from 'ethers';
+import { ethers } from 'ethers';
 
 export function getProviderWithFallback(
     primaryRpcNodeUrl: string,
-    secondaryRpcNodeUrl: string
-): providers.FallbackProvider {
-    let primaryProvider: providers.JsonRpcProvider;
-    let secondaryProvider: providers.JsonRpcProvider;
+    secondaryRpcNodeUrl?: string
+): ethers.providers.FallbackProvider {
+    const providers = [];
 
-    if (process.env.WEB3) {
-        primaryProvider = new providers.JsonRpcProvider(primaryRpcNodeUrl);
+    if (primaryRpcNodeUrl) {
+        providers.push(new ethers.providers.JsonRpcProvider(primaryRpcNodeUrl));
     }
 
-    if (process.env.WEB3_BACKUP) {
-        primaryProvider = new providers.JsonRpcProvider(secondaryRpcNodeUrl);
+    if (secondaryRpcNodeUrl) {
+        providers.push(new ethers.providers.JsonRpcProvider(secondaryRpcNodeUrl));
     }
 
-    return new providers.FallbackProvider(
-        [primaryProvider, secondaryProvider].filter((prov) => prov !== undefined)
-    );
+    return new ethers.providers.FallbackProvider(providers);
 }
