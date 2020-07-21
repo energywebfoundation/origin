@@ -382,6 +382,7 @@ export function* fetchDataAfterConfigurationChange(
     configuration: Configuration.Entity,
     update = false
 ): SagaIterator {
+    console.log('>>> fetching data after conf is changed...');
     const producingDevices: ProducingDevice.Entity[] = yield apply(
         ProducingDevice,
         ProducingDevice.getAllDevices,
@@ -404,6 +405,7 @@ export function* fetchDataAfterConfigurationChange(
             }
         ]
     );
+    console.log('>>> onchain certificates:', onChainCertificates);
     const initializedCertificates = onChainCertificates
         .filter((cert) => cert.initialized)
         .map(
@@ -422,6 +424,7 @@ export function* fetchDataAfterConfigurationChange(
         exchangeClient.getAccount,
         null
     );
+    console.log('>>> offChainCertificates:', offChainCertificates);
     const available = yield all(
         offChainCertificates.balances.available.map((asset) =>
             call(findEnhancedCertificate, asset, initializedCertificates)
