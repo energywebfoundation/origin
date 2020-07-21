@@ -43,7 +43,6 @@ const deployContract = async ({ abi, bytecode }: { abi: any; bytecode: string })
 
 const deployRegistry = async () => {
     const contract = await deployContract(Contracts.RegistryJSON);
-    await contract.functions.initialize();
 
     return contract;
 };
@@ -52,7 +51,7 @@ const deployIssuer = async (registry: string) => {
     const contract = await deployContract(Contracts.IssuerJSON);
     const wallet = new ethers.Wallet(registryDeployer);
 
-    await contract.functions.initialize(100, registry, wallet.address);
+    await contract.init(100, registry, wallet.address);
 
     return contract;
 };

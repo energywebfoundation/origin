@@ -73,7 +73,7 @@ export class DepositWatcherService implements OnModuleInit {
 
         this.issuer = new Contract(issuer, Contracts.IssuerJSON.abi, this.provider);
         const topics = [
-            this.tokenInterface.getEventTopic(this.tokenInterface.events.TransferSingle)
+            this.tokenInterface.getEventTopic(this.tokenInterface.getEvent('TransferSingle'))
         ];
         const blockNumber = await this.transferService.getLastConfirmationBlock();
 
@@ -157,9 +157,9 @@ export class DepositWatcherService implements OnModuleInit {
     }
 
     private async decodeDataField(certificateId: string) {
-        const { data } = await this.registry.functions.getCertificate(certificateId);
+        const { data } = await this.registry.getCertificate(certificateId);
 
-        const result = await this.issuer.functions.decodeData(data);
+        const result = await this.issuer.decodeData(data);
 
         return {
             generationFrom: moment.unix(result[0]).toDate(),

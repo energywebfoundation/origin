@@ -51,13 +51,7 @@ export const depositToken = async (
 ) => {
     const registryWithUserAsSigner = registry.connect(sender);
 
-    await registryWithUserAsSigner.functions.safeTransferFrom(
-        sender.address,
-        to,
-        id,
-        amount,
-        '0x0'
-    );
+    await registryWithUserAsSigner.safeTransferFrom(sender.address, to, id, amount, '0x00');
 };
 
 export const provider = new ethers.providers.JsonRpcProvider(web3);

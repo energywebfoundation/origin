@@ -130,12 +130,12 @@ export class WithdrawalProcessorService implements OnModuleInit {
             );
             return;
         }
-        const transaction = (await this.registry.functions.safeTransferFrom(
+        const transaction = (await this.registry.safeTransferFrom(
             this.wallet.address,
             withdrawal.address,
             withdrawal.asset.tokenId,
             withdrawal.amount,
-            '0x0' // TODO: consider putting withdrawal id for tracking
+            '0x00' // TODO: consider putting withdrawal id for tracking
         )) as ContractTransaction;
 
         await this.transferService.setAsUnconfirmed(id, transaction.hash);
@@ -165,7 +165,9 @@ export class WithdrawalProcessorService implements OnModuleInit {
     private hasMatchingLog(withdrawal: Transfer, log: ethers.utils.Result) {
         const _to = String(log._to).toLowerCase();
         const _from = String(log._from).toLowerCase();
-        const _topic = this.tokenInterface.getEventTopic(this.tokenInterface.events.TransferSingle);
+        const _topic = this.tokenInterface.getEventTopic(
+            this.tokenInterface.getEvent('TransferSingle')
+        );
 
         return (
             log.topic === _topic &&
