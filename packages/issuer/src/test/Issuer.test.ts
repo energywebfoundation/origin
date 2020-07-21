@@ -19,7 +19,8 @@ describe('Issuer', () => {
         path: '.env.test'
     });
 
-    const provider = getProviderWithFallback(process.env.WEB3.split(';')[0]);
+    const [web3Url] = process.env.WEB3.split(';');
+    const provider = getProviderWithFallback(web3Url);
 
     const deviceOwnerPK = '0x622d56ab7f0e75ac133722cc065260a2792bf30ea3265415fe04f3a2dba7e1ac';
     const deviceOwnerWallet = new Wallet(deviceOwnerPK, provider);

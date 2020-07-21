@@ -18,7 +18,8 @@ export function wait(milliseconds: number) {
 }
 
 async function createBlockchainConfiguration() {
-    const web3 = getProviderWithFallback(process.env.WEB3.split(';')[0]);
+    const [web3Url] = process.env.WEB3.split(';');
+    const web3 = getProviderWithFallback(web3Url);
     const issuerWallet = new Wallet(process.env.DEPLOY_KEY, web3);
 
     const logger = Winston.createLogger({

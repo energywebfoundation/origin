@@ -17,7 +17,8 @@ describe('Device Facade', () => {
         path: '.env.test'
     });
 
-    const provider = getProviderWithFallback(process.env.WEB3.split(';')[0]);
+    const [web3Url] = process.env.WEB3.split(';');
+    const provider = getProviderWithFallback(web3Url);
 
     const deployKey: string = process.env.DEPLOY_KEY;
 
