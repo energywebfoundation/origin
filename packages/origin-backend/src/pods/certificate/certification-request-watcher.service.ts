@@ -2,8 +2,7 @@ import { Contracts } from '@energyweb/issuer';
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { ModuleRef } from '@nestjs/core';
-import { ethers } from 'ethers';
-import { Log } from 'ethers/providers';
+import { ethers, providers } from 'ethers';
 
 import { DeepPartial } from 'typeorm';
 import { ConfigurationService } from '../configuration';
@@ -55,34 +54,35 @@ export class CertificationRequestWatcherService implements OnModuleInit {
         this.issuerInterface = new ethers.utils.Interface(Contracts.IssuerJSON.abi);
 
         const web3ProviderUrl = this.configService.get<string>('WEB3');
-        this.provider = new ethers.providers.JsonRpcProvider(web3ProviderUrl);
+        this.provider = new providers.JsonRpcProvider(web3ProviderUrl);
 
         this.issuer = new ethers.Contract(issuer, Contracts.IssuerJSON.abi, this.provider);
 
         this.provider.on(
             this.issuer.filters.CertificationRequested(null, null, null),
-            (event: Log) => this.registerNewRequest(event)
+            (event: providers.Log) => this.registerNewRequest(event)
         );
 
         this.provider.on(
             this.issuer.filters.CertificationRequestApproved(null, null, null),
-            (event: Log) => this.registerApproved(event)
+            (event: providers.Log) => this.registerApproved(event)
         );
 
         this.provider.on(
             this.issuer.filters.CertificationRequestRevoked(null, null),
-            (event: Log) => this.registerRevoked(event)
+            (event: providers.Log) => this.registerRevoked(event)
         );
     }
 
-    private async registerNewRequest(event: Log): Promise<void> {
+    private async registerNewRequest(event: providers.Log): Promise<void> {
         this.logger.debug(`Discovered new event ${JSON.stringify(event)}`);
 
-        const log = this.issuerInterface.parseLog(event);
+        const { name } = this.issuerInterface.parseLog(event);
+        const log = this.issuerInterface.decodeEventLog(name, event.data, event.topics);
 
         this.logger.debug(`Parsed to ${JSON.stringify(log)}`);
 
-        const { _id } = log.values;
+        const { _id } = log;
 
         const exists = await this.certificationRequestService.get(_id.toNumber());
 
@@ -135,14 +135,15 @@ export class CertificationRequestWatcherService implements OnModuleInit {
         );
     }
 
-    private async registerApproved(event: Log): Promise<void> {
+    private async registerApproved(event: providers.Log): Promise<void> {
         this.logger.debug(`Discovered new event ${JSON.stringify(event)}`);
 
-        const log = this.issuerInterface.parseLog(event);
+        const { name } = this.issuerInterface.parseLog(event);
+        const log = this.issuerInterface.decodeEventLog(name, event.data, event.topics);
 
         this.logger.debug(`Parsed to ${JSON.stringify(log)}`);
 
-        const { _id, _owner } = log.values;
+        const { _id, _owner } = log;
 
         const certificationRequest = await this.certificationRequestService.get(_id.toNumber());
 
@@ -169,14 +170,15 @@ export class CertificationRequestWatcherService implements OnModuleInit {
         );
     }
 
-    private async registerRevoked(event: Log): Promise<void> {
+    private async registerRevoked(event: providers.Log): Promise<void> {
         this.logger.debug(`Discovered new event ${JSON.stringify(event)}`);
 
-        const log = this.issuerInterface.parseLog(event);
+        const { name } = this.issuerInterface.parseLog(event);
+        const log = this.issuerInterface.decodeEventLog(name, event.data, event.topics);
 
         this.logger.debug(`Parsed to ${JSON.stringify(log)}`);
 
-        const { _id } = log.values;
+        const { _id } = log;
 
         const certificationRequest = await this.certificationRequestService.get(_id.toNumber());
 

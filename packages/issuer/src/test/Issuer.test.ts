@@ -2,12 +2,11 @@ import { assert } from 'chai';
 import dotenv from 'dotenv';
 import 'mocha';
 import moment from 'moment';
-import { BigNumber } from 'ethers/utils';
 
 import { Configuration } from '@energyweb/utils-general';
 import { OffChainDataSourceMock } from '@energyweb/origin-backend-client-mocks';
 
-import { providers, Wallet } from 'ethers';
+import { providers, Wallet, BigNumber } from 'ethers';
 import { migrateIssuer, migrateRegistry } from '../migrate';
 import { CertificationRequest } from '..';
 
@@ -97,7 +96,7 @@ describe('Issuer', () => {
     });
 
     it('gets all certification requests', async () => {
-        const totalVolume = new BigNumber(1e9);
+        const totalVolume = BigNumber.from(1e9);
 
         await createCertificationRequest(totalVolume);
         await createCertificationRequest(totalVolume);
@@ -109,7 +108,7 @@ describe('Issuer', () => {
     it('user correctly requests issuance', async () => {
         setActiveUser(deviceOwnerWallet);
 
-        const energy = new BigNumber(1e9);
+        const energy = BigNumber.from(1e9);
         const fromTime = timestamp;
         // Simulate time moving forward 1 month
         timestamp += 30 * 24 * 3600;
@@ -138,7 +137,7 @@ describe('Issuer', () => {
     });
 
     it('issuer correctly approves issuance', async () => {
-        const volume = new BigNumber(1e9);
+        const volume = BigNumber.from(1e9);
         let certificationRequest = await createCertificationRequest(volume);
 
         setActiveUser(issuerWallet);
@@ -166,7 +165,7 @@ describe('Issuer', () => {
     it('user revokes a certificationRequest', async () => {
         setActiveUser(deviceOwnerWallet);
 
-        const volume = new BigNumber(1e9);
+        const volume = BigNumber.from(1e9);
         let certificationRequest = await createCertificationRequest(volume);
 
         certificationRequest = await certificationRequest.sync();
@@ -190,7 +189,7 @@ describe('Issuer', () => {
     it('user shouldnt be able to revoke an approved certificationRequest', async () => {
         setActiveUser(deviceOwnerWallet);
 
-        const volume = new BigNumber(1e9);
+        const volume = BigNumber.from(1e9);
         let certificationRequest = await createCertificationRequest(volume);
 
         setActiveUser(issuerWallet);
@@ -231,12 +230,12 @@ describe('Issuer', () => {
         const toTime = timestamp;
         const device = '1';
 
-        await createCertificationRequest(new BigNumber(1e9), false, fromTime, toTime, device);
+        await createCertificationRequest(BigNumber.from(1e9), false, fromTime, toTime, device);
 
         let failed = false;
 
         try {
-            await createCertificationRequest(new BigNumber(1e9), false, fromTime, toTime, device);
+            await createCertificationRequest(BigNumber.from(1e9), false, fromTime, toTime, device);
         } catch (e) {
             failed = true;
         }
@@ -252,7 +251,7 @@ describe('Issuer', () => {
         timestamp += 30 * 24 * 3600;
         const toTime = timestamp;
         const device = '1';
-        const volume = new BigNumber(1e9);
+        const volume = BigNumber.from(1e9);
 
         let certificationRequest = await createCertificationRequest(
             volume,
@@ -287,7 +286,7 @@ describe('Issuer', () => {
     });
 
     it('user correctly requests private issuance', async () => {
-        const volume = new BigNumber(1e9);
+        const volume = BigNumber.from(1e9);
         const certificationRequest = await createCertificationRequest(volume, true);
 
         assert.isAbove(Number(certificationRequest.id), -1);
@@ -302,7 +301,7 @@ describe('Issuer', () => {
     });
 
     it('issuer correctly approves private issuance', async () => {
-        const volume = new BigNumber(1e9);
+        const volume = BigNumber.from(1e9);
         let certificationRequest = await createCertificationRequest(volume, true);
 
         setActiveUser(issuerWallet);
@@ -335,7 +334,7 @@ describe('Issuer', () => {
         timestamp += 30 * 24 * 3600;
         const toTime = timestamp;
         const device = '1';
-        const volume = new BigNumber(1e9);
+        const volume = BigNumber.from(1e9);
 
         const certificationRequest = await createCertificationRequest(
             volume,

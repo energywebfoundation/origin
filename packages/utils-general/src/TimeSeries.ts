@@ -11,7 +11,7 @@ export class TS {
         resolution: Resolution,
         value: number
     ): TimeSeries {
-        return [...Array(length).keys()].map(i => ({
+        return [...Array(length).keys()].map((i) => ({
             time: moment
                 .unix(startTimeStamp)
                 .startOf(resolution as moment.unitOfTime.StartOf)
@@ -36,7 +36,7 @@ export class TS {
 
     public static inRange(timeSeries: TimeSeries, startTimeStamp: number, endTimeStamp: number) {
         return timeSeries.filter(
-            timeSeriesElement =>
+            (timeSeriesElement) =>
                 timeSeriesElement.time >= startTimeStamp && timeSeriesElement.time <= endTimeStamp
         );
     }

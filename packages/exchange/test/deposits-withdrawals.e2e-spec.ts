@@ -57,9 +57,8 @@ describe('Deposits using deployed registry', () => {
     const generationFrom = moment('2020-01-01').unix();
     const generationTo = moment('2020-01-31').unix();
 
-    const getBalance = async (address: string, id: number) => {
-        return (await registry.functions.balanceOf(address, id)) as ethers.utils.BigNumber;
-    };
+    const getBalance = async (address: string, id: number): Promise<ethers.BigNumber> =>
+        registry.balanceOf(address, id);
 
     it('should be able to discover token deposit and post the ask', async () => {
         const depositAmount = '10';

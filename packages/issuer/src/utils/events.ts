@@ -3,9 +3,9 @@ import { Contract, EventFilter } from 'ethers';
 export interface IBlockchainEvent {
     transactionHash: string;
     blockHash: string;
-    values: any;
     name?: string;
     timestamp?: number;
+    [key: string]: any;
 }
 
 export const getEventsFromContract = async (
@@ -18,9 +18,15 @@ export const getEventsFromContract = async (
         toBlock: 'latest'
     });
 
-    return logs.map((log) => ({
-        values: contract.interface.parseLog(log).values,
-        blockHash: log.blockHash,
-        transactionHash: log.transactionHash
-    }));
+    const parsedLogs = logs.map((log) => {
+        const { name } = contract.interface.parseLog(log);
+
+        return {
+            ...contract.interface.decodeEventLog(name, log.data, log.topics),
+            blockHash: log.blockHash,
+            transactionHash: log.transactionHash
+        };
+    });
+
+    return parsedLogs;
 };

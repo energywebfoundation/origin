@@ -22,7 +22,7 @@ import {
     getCurrencies
 } from '../..';
 import { useSelector, useDispatch } from 'react-redux';
-import { BigNumber } from 'ethers/utils';
+import { BigNumber } from 'ethers';
 import { formatCurrencyComplete, useTranslation, EnergyFormatter, EnergyTypes } from '../../utils';
 import { createBundle } from '../../features/bundles';
 import { BundleItemDTO } from '../../utils/exchange';

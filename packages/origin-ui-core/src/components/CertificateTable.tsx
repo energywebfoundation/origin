@@ -3,7 +3,7 @@ import { AssignmentTurnedIn, Publish, Undo, BusinessCenter } from '@material-ui/
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Redirect } from 'react-router-dom';
-import { bigNumberify } from 'ethers/utils';
+import { BigNumber } from 'ethers';
 import { getConfiguration, getProducingDevices } from '../features/selectors';
 import {
     EnergyFormatter,
@@ -354,7 +354,7 @@ export function CertificateTable(props: IProps) {
                 const { publicVolume, privateVolume } = b.energy;
                 const totalOwned = publicVolume.add(privateVolume);
                 return a.add(totalOwned);
-            }, bigNumberify(0));
+            }, BigNumber.from(0));
 
             return `${t('certificate.feedback.amountSelected', {
                 amount: selectedIndexes.length

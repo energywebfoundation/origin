@@ -7,7 +7,7 @@ import {
     ILoggedInUser
 } from '@energyweb/origin-backend-core';
 import { expect } from 'chai';
-import { bigNumberify } from 'ethers/utils';
+import { BigNumber } from 'ethers';
 import moment from 'moment';
 import request from 'supertest';
 import dotenv from 'dotenv';
@@ -192,8 +192,8 @@ describe('Device e2e tests', () => {
             .expect((res) => {
                 const resultDevice = res.body as IDeviceWithRelationsIds;
 
-                expect(bigNumberify(resultDevice.meterStats.certified).toNumber()).equals(0);
-                expect(bigNumberify(resultDevice.meterStats.uncertified).toNumber()).equals(0);
+                expect(BigNumber.from(resultDevice.meterStats.certified).toNumber()).equals(0);
+                expect(BigNumber.from(resultDevice.meterStats.uncertified).toNumber()).equals(0);
             });
 
         const now = moment();
@@ -254,7 +254,7 @@ describe('Device e2e tests', () => {
                 const resultDevice = res.body as IDeviceWithRelationsIds;
 
                 expect(
-                    bigNumberify(resultDevice.meterStats.certified).toNumber()
+                    BigNumber.from(resultDevice.meterStats.certified).toNumber()
                 ).to.be.greaterThan(0);
             });
     });

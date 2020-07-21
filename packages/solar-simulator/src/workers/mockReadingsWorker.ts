@@ -8,8 +8,7 @@ import { ProducingDevice } from '@energyweb/device-registry';
 import { Configuration } from '@energyweb/utils-general';
 import { OffChainDataSource } from '@energyweb/origin-backend-client';
 import { ISmartMeterRead } from '@energyweb/origin-backend-core';
-import { bigNumberify, BigNumber } from 'ethers/utils';
-import { Wallet, providers } from 'ethers';
+import { Wallet, providers, BigNumber } from 'ethers';
 
 async function getProducingDeviceSmartMeterRead(
     deviceId: string,
@@ -20,7 +19,7 @@ async function getProducingDeviceSmartMeterRead(
     const smartMeterReadings = await device.getSmartMeterReads();
     const latestSmRead = smartMeterReadings[smartMeterReadings.length - 1];
 
-    return latestSmRead?.meterReading ?? bigNumberify(0);
+    return latestSmRead?.meterReading ?? BigNumber.from(0);
 }
 
 async function saveProducingDeviceSmartMeterReads(
@@ -89,9 +88,7 @@ const currentTime = moment.tz(device.timezone);
         parseInt(process.env.SOLAR_SIMULATOR_PAST_READINGS_MINUTES_INTERVAL, 10) || 15;
 
     let measurementTime = currentTime.clone().subtract(1, 'day').startOf('day');
-    let currentMeterRead: BigNumber = bigNumberify(
-        await getProducingDeviceSmartMeterRead(device.id, conf)
-    );
+    let currentMeterRead = BigNumber.from(await getProducingDeviceSmartMeterRead(device.id, conf));
 
     const allSmartMeterReadings: ISmartMeterRead[] = [];
 
@@ -115,7 +112,7 @@ const currentTime = moment.tz(device.timezone);
             .reduce((a, b) => a + parseFloat(b[1]), 0);
 
         const multiplier = combinedMultiplierForMatchingRows ?? 0;
-        const energyGenerated = bigNumberify(Math.round(device.maxCapacity * multiplier));
+        const energyGenerated = BigNumber.from(Math.round(device.maxCapacity * multiplier));
 
         const isValidMeterReading = energyGenerated.gt(0);
 

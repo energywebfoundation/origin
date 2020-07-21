@@ -9,7 +9,7 @@ import {
     ISmartMeterReadWithStatus,
     ISuccessResponse
 } from '@energyweb/origin-backend-core';
-import { bigNumberify } from 'ethers/utils';
+import { BigNumber } from 'ethers';
 import { IRequestClient, RequestClient } from './RequestClient';
 
 export interface IDeviceClient {
@@ -87,7 +87,7 @@ export class DeviceClient implements IDeviceClient {
         const meterReadingsFormatted: ISmartMeterReadWithStatus[] = response.data.map(
             (read: ISmartMeterReadWithStatus) => ({
                 ...read,
-                meterReading: bigNumberify(read.meterReading)
+                meterReading: BigNumber.from(read.meterReading)
             })
         );
 
@@ -114,8 +114,8 @@ export class DeviceClient implements IDeviceClient {
             cleanDevice = {
                 ...cleanDevice,
                 meterStats: {
-                    certified: bigNumberify(device.meterStats.certified),
-                    uncertified: bigNumberify(device.meterStats.uncertified)
+                    certified: BigNumber.from(device.meterStats.certified),
+                    uncertified: BigNumber.from(device.meterStats.uncertified)
                 }
             };
         }
@@ -125,7 +125,7 @@ export class DeviceClient implements IDeviceClient {
                 ...cleanDevice,
                 smartMeterReads: device.smartMeterReads.map((smRead) => ({
                     ...smRead,
-                    meterReading: bigNumberify(smRead.meterReading)
+                    meterReading: BigNumber.from(smRead.meterReading)
                 }))
             };
         }

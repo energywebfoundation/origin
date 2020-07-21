@@ -3,8 +3,7 @@ import moment from 'moment-timezone';
 import * as Winston from 'winston';
 import dotenv from 'dotenv';
 import fs from 'fs';
-import { ethers, Wallet } from 'ethers';
-import { bigNumberify, BigNumber } from 'ethers/utils';
+import { ethers, Wallet, BigNumber } from 'ethers';
 
 import { ProducingDevice } from '@energyweb/device-registry';
 import { Configuration } from '@energyweb/utils-general';
@@ -68,7 +67,7 @@ export async function startConsumerService(
         const smartMeterReadings = await device.getSmartMeterReads();
         const latestSmRead = smartMeterReadings[smartMeterReadings.length - 1];
 
-        return latestSmRead?.meterReading ?? bigNumberify(0);
+        return latestSmRead?.meterReading ?? BigNumber.from(0);
     }
 
     async function saveProducingDeviceSmartMeterReads(

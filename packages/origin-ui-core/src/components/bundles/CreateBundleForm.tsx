@@ -3,7 +3,7 @@ import { Box } from '@material-ui/core';
 import { Certificates } from './Certificates';
 import { SelectedForSale } from './SelectedForSale';
 import { ICertificateViewItem } from '../../features/certificates';
-import { BigNumber } from 'ethers/utils';
+import { BigNumber } from 'ethers';
 import { useHistory } from 'react-router-dom';
 import { useLinks } from '../../utils';
 
@@ -16,7 +16,7 @@ export const CreateBundleForm = () => {
         return selected.reduce(
             (total, { energy: { publicVolume, privateVolume } }) =>
                 total.add(publicVolume).add(privateVolume),
-            new BigNumber(0)
+            BigNumber.from(0)
         );
     };
 

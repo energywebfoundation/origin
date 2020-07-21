@@ -13,7 +13,7 @@ import { IOffChainDataSource } from '@energyweb/origin-backend-client';
 import { configurationUpdated } from '../../features';
 import { Configuration, DeviceTypeService } from '@energyweb/utils-general';
 import { OffChainDataSourceMock } from '@energyweb/origin-backend-client-mocks';
-import { bigNumberify } from 'ethers/utils';
+import { BigNumber } from 'ethers';
 
 describe('ProducingDeviceTable', () => {
     it('correctly renders and search works', async () => {
@@ -33,8 +33,8 @@ describe('ProducingDeviceTable', () => {
             id: 0,
             status: DeviceStatus.Active,
             meterStats: {
-                uncertified: bigNumberify(7777),
-                certified: bigNumberify(0)
+                uncertified: BigNumber.from(7777),
+                certified: BigNumber.from(0)
             }
         });
 
