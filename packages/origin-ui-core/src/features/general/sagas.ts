@@ -26,7 +26,7 @@ import {
     AccountAsset,
     Bundle
 } from '../../utils/exchange';
-import { IOriginConfiguration } from '@energyweb/origin-backend-core';
+import { IOriginConfiguration, IUserWithRelations } from '@energyweb/origin-backend-core';
 import {
     setActiveBlockchainAccountAddress,
     UsersActions,
@@ -34,7 +34,7 @@ import {
 } from '../users/actions';
 import { ethers } from 'ethers';
 import { getSearch, push } from 'connected-react-router';
-import { getConfiguration, getBaseURL } from '../selectors';
+import { getConfiguration, getBaseURL, getWeb3 } from '../selectors';
 import * as queryString from 'query-string';
 import * as Winston from 'winston';
 import { Certificate, Contracts, CertificateUtils, ICertificate } from '@energyweb/issuer';
@@ -392,11 +392,18 @@ export function* fetchDataAfterConfigurationChange(
     for (const device of producingDevices) {
         yield put(producingDeviceCreatedOrUpdated(device));
     }
-    const user = yield select(getUserOffchain);
+    const { blockchainAccountAddress }: IUserWithRelations = yield select(getUserOffchain);
+    const web3: ethers.providers.Web3Provider = yield select(getWeb3);
+    const activeUser = web3.getSigner(blockchainAccountAddress);
     const onChainCertificates: Certificate[] = yield apply(
         Certificate,
         CertificateUtils.getAllOwnedCertificates,
-        [configuration, user]
+        [
+            {
+                ...configuration,
+                blockchainProperties: { ...configuration.blockchainProperties, activeUser }
+            }
+        ]
     );
     const initializedCertificates = onChainCertificates
         .filter((cert) => cert.initialized)
