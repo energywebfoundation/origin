@@ -1,5 +1,6 @@
 import { ContractTransaction, Contract, ethers } from 'ethers';
 import { Contracts } from '@energyweb/issuer';
+import { getProviderWithFallback } from '@energyweb/utils-general';
 
 const registryInterface = new ethers.utils.Interface(Contracts.IssuerJSON.abi);
 
@@ -54,4 +55,4 @@ export const depositToken = async (
     await registryWithUserAsSigner.safeTransferFrom(sender.address, to, id, amount, '0x00');
 };
 
-export const provider = new ethers.providers.JsonRpcProvider(web3);
+export const provider = getProviderWithFallback(web3);

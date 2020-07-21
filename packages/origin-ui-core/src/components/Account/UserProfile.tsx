@@ -24,6 +24,7 @@ import { FormInput } from '../Form/FormInput';
 import { IStoreState } from '../../types';
 import { getWeb3 } from '../../features/selectors';
 import { getActiveBlockchainAccountAddress } from '../../features/users/selectors';
+import { providers } from 'ethers';
 
 interface IFormValues extends IUser {
     isBlockchain?: boolean;
@@ -144,7 +145,7 @@ export function UserProfile() {
             const signedMessage = await signTypedMessage(
                 activeBlockchainAccountAddress,
                 environment.REGISTRATION_MESSAGE_TO_SIGN,
-                web3
+                web3 as providers.JsonRpcProvider
             );
 
             await userClient.updateChainAddress({ ...user, blockchainAccountAddress: '' });

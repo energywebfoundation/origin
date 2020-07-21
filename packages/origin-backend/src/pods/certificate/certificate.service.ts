@@ -18,6 +18,7 @@ import {
 } from '@energyweb/origin-backend-core';
 import { Contracts } from '@energyweb/issuer';
 import { ConfigService } from '@nestjs/config';
+import { getProviderWithFallback } from '@energyweb/utils-general';
 
 import { PreciseProofs } from 'precise-proofs-js';
 import { ConfigurationService } from '../configuration/configuration.service';
@@ -158,7 +159,7 @@ export class CertificateService {
         }
 
         const web3ProviderUrl = this.configService.get<string>('WEB3');
-        const provider = new ethers.providers.JsonRpcProvider(web3ProviderUrl);
+        const provider = getProviderWithFallback(...web3ProviderUrl.split(';'));
 
         const backendWallet = new ethers.Wallet(this.configService.get<string>('DEPLOY_KEY'));
 
@@ -224,7 +225,7 @@ export class CertificateService {
         }
 
         const web3ProviderUrl = this.configService.get<string>('WEB3');
-        const provider = new ethers.providers.JsonRpcProvider(web3ProviderUrl);
+        const provider = getProviderWithFallback(...web3ProviderUrl.split(';'));
 
         const backendWallet = new ethers.Wallet(this.configService.get<string>('DEPLOY_KEY'));
 

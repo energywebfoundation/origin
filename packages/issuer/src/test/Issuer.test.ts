@@ -3,10 +3,10 @@ import dotenv from 'dotenv';
 import 'mocha';
 import moment from 'moment';
 
-import { Configuration } from '@energyweb/utils-general';
+import { Configuration, getProviderWithFallback } from '@energyweb/utils-general';
 import { OffChainDataSourceMock } from '@energyweb/origin-backend-client-mocks';
 
-import { providers, Wallet, BigNumber } from 'ethers';
+import { Wallet, BigNumber } from 'ethers';
 import { migrateIssuer, migrateRegistry } from '../migrate';
 import { CertificationRequest } from '..';
 
@@ -19,7 +19,8 @@ describe('Issuer', () => {
         path: '.env.test'
     });
 
-    const provider = new providers.JsonRpcProvider(process.env.WEB3);
+    const [web3Url] = process.env.WEB3.split(';');
+    const provider = getProviderWithFallback(web3Url);
 
     const deviceOwnerPK = '0x622d56ab7f0e75ac133722cc065260a2792bf30ea3265415fe04f3a2dba7e1ac';
     const deviceOwnerWallet = new Wallet(deviceOwnerPK, provider);
@@ -76,8 +77,8 @@ describe('Issuer', () => {
     };
 
     it('migrates Issuer and Registry', async () => {
-        const registry = await migrateRegistry(process.env.WEB3, issuerPK);
-        const issuer = await migrateIssuer(process.env.WEB3, issuerPK, registry.address);
+        const registry = await migrateRegistry(provider, issuerPK);
+        const issuer = await migrateIssuer(provider, issuerPK, registry.address);
         const version = await issuer.version();
         assert.equal(version, 'v0.1');
 

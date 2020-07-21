@@ -1,5 +1,6 @@
 import { Contracts } from '@energyweb/issuer';
 import { ConfigurationService } from '@energyweb/origin-backend';
+import { getProviderWithFallback } from '@energyweb/utils-general';
 import { forwardRef, Inject, Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { ModuleRef } from '@nestjs/core';
@@ -41,7 +42,7 @@ export class WithdrawalProcessorService implements OnModuleInit {
             throw new Error('Wallet private key not provided');
         }
         const web3ProviderUrl = this.configService.get<string>('WEB3');
-        const provider = new ethers.providers.JsonRpcProvider(web3ProviderUrl);
+        const provider = getProviderWithFallback(...web3ProviderUrl.split(';'));
 
         this.wallet = new Wallet(wallet, provider);
 

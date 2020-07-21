@@ -12,7 +12,7 @@ export interface Entity<TRegistry = any, TIssuer = any> {
 }
 
 export interface BlockchainProperties<TRegistry = any, TIssuer = any> {
-    web3?: providers.JsonRpcProvider;
+    web3?: providers.FallbackProvider | providers.JsonRpcProvider;
     registry?: TRegistry;
     issuer?: TIssuer;
     activeUser?: Signer;
