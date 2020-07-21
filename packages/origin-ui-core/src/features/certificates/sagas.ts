@@ -514,7 +514,6 @@ export function* withdrawSaga(): SagaIterator {
 function* reloadCertificatesSaga(): SagaIterator {
     while (true) {
         yield take(CertificatesActions.reloadCertificates);
-        console.log('>>> reloading certificates...');
         yield put(clearCertificates());
         const configuration = yield select(getConfiguration);
         yield call(fetchDataAfterConfigurationChange, configuration);

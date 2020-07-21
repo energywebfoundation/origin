@@ -17,7 +17,6 @@ import {
 import { GeneralActions, ISetOffChainDataSourceAction } from '../general/actions';
 import { reloadCertificates } from '../certificates';
 
-
 const LOCAL_STORAGE_KEYS = {
     AUTHENTICATION_TOKEN: 'AUTHENTICATION_TOKEN'
 };
