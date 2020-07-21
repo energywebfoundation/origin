@@ -19,7 +19,11 @@ export async function migrateIssuer(
     const issuerContract = await new factories.IssuerFactory(wallet).deploy();
     await issuerContract.deployed();
 
-    const tx = await issuerContract.init(CertificateTopic.IREC, registryAddress, wallet.address);
+    const tx = await issuerContract['initialize(int256,address,address)'](
+        CertificateTopic.IREC,
+        registryAddress,
+        wallet.address
+    );
     await tx.wait();
 
     const version = await issuerContract.version();

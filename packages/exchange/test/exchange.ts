@@ -51,7 +51,7 @@ const deployIssuer = async (registry: string) => {
     const contract = await deployContract(Contracts.IssuerJSON);
     const wallet = new ethers.Wallet(registryDeployer);
 
-    await contract.init(100, registry, wallet.address);
+    await contract['initialize(int256,address,address)'](100, registry, wallet.address);
 
     return contract;
 };
