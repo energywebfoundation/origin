@@ -35,7 +35,6 @@
         "ethers": "5.0.7",
         "jsonschema": "1.2.6",
         "moment": "^2.24.0",
-        "precise-proofs-js": "1.1.0",
         "winston": "3.3.3"
     },
     "devDependencies": {
