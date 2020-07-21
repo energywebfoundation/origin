@@ -36,9 +36,14 @@ const INITIAL_FORM_VALUES: IFormValues = {
     password: ''
 };
 
-export function UserLogin() {
+interface IOwnProps {
+    redirect?: string;
+}
+
+export function UserLogin(props: IOwnProps) {
     const userClient = useSelector(getOffChainDataSource)?.userClient;
     const dispatch = useDispatch();
+    const { redirect } = props;
 
     const { t } = useTranslation();
     const { Yup, yupLocaleInitialized } = useValidation();
@@ -48,7 +53,7 @@ export function UserLogin() {
 
     useEffect(() => {
         if (user) {
-            history.push(getCertificatesLink());
+            history.push(redirect || getCertificatesLink());
         }
     }, [user]);
 
