@@ -15,6 +15,9 @@ import {
     IOrganizationWithRelationsIds
 } from '@energyweb/origin-backend-core';
 import { GeneralActions, ISetOffChainDataSourceAction } from '../general/actions';
+import { reloadCertificates, clearCertificates } from '../certificates';
+import { clearBundles } from '../bundles';
+import { clearOrders } from '../orders/actions';
 
 const LOCAL_STORAGE_KEYS = {
     AUTHENTICATION_TOKEN: 'AUTHENTICATION_TOKEN'
@@ -103,6 +106,7 @@ function* fetchOffchainUserDetails(): SagaIterator {
                     organization
                 })
             );
+            yield put(reloadCertificates());
         } catch (error) {
             console.log('error', error, error.response);
 
@@ -130,6 +134,9 @@ function* logOutSaga(): SagaIterator {
         requestClient.authenticationToken = null;
 
         yield put(setUserOffchain(null));
+        yield put(clearCertificates());
+        yield put(clearBundles());
+        yield put(clearOrders());
     }
 }
 
