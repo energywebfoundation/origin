@@ -62,7 +62,7 @@ const currentTime = moment.tz(device.timezone);
         Number(process.env.BACKEND_PORT)
     );
 
-    const provider = getProviderWithFallback(process.env.WEB3, process.env.WEB3_BACKUP);
+    const provider = getProviderWithFallback(process.env.WEB3.split(';')[0]);
     const issuerWallet = new Wallet(process.env.DEPLOY_KEY, provider);
 
     const conf = {

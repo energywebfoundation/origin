@@ -42,8 +42,7 @@ export class WithdrawalProcessorService implements OnModuleInit {
             throw new Error('Wallet private key not provided');
         }
         const web3ProviderUrl = this.configService.get<string>('WEB3');
-        const web3BackupProviderUrl = this.configService.get<string>('WEB3_BACKUP');
-        const provider = getProviderWithFallback(web3ProviderUrl, web3BackupProviderUrl);
+        const provider = getProviderWithFallback(...web3ProviderUrl.split(';'));
 
         this.wallet = new Wallet(wallet, provider);
 

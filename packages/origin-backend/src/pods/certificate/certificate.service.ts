@@ -159,8 +159,7 @@ export class CertificateService {
         }
 
         const web3ProviderUrl = this.configService.get<string>('WEB3');
-        const web3BackupProviderUrl = this.configService.get<string>('WEB3_BACKUP');
-        const provider = getProviderWithFallback(web3ProviderUrl, web3BackupProviderUrl);
+        const provider = getProviderWithFallback(...web3ProviderUrl.split(';'));
 
         const backendWallet = new ethers.Wallet(this.configService.get<string>('DEPLOY_KEY'));
 
@@ -226,8 +225,7 @@ export class CertificateService {
         }
 
         const web3ProviderUrl = this.configService.get<string>('WEB3');
-        const web3BackupProviderUrl = this.configService.get<string>('WEB3_BACKUP');
-        const provider = getProviderWithFallback(web3ProviderUrl, web3BackupProviderUrl);
+        const provider = getProviderWithFallback(...web3ProviderUrl.split(';'));
 
         const backendWallet = new ethers.Wallet(this.configService.get<string>('DEPLOY_KEY'));
 

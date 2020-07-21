@@ -43,8 +43,7 @@ export class CertificationWatcherService implements OnModuleInit {
         }
 
         const web3ProviderUrl = this.configService.get<string>('WEB3');
-        const web3BackupProviderUrl = this.configService.get<string>('WEB3_BACKUP');
-        this.provider = getProviderWithFallback(web3ProviderUrl, web3BackupProviderUrl);
+        this.provider = getProviderWithFallback(...web3ProviderUrl.split(';'));
 
         this.issuer = new ethers.Contract(issuer, Contracts.IssuerJSON.abi, this.provider);
 
