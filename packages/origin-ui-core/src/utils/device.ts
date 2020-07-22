@@ -23,6 +23,8 @@ import thermal_selected from '../../assets/device_selected/icon-thermal.svg';
 import wind_selected from '../../assets/device_selected/icon-wind.svg';
 import marine_selected from '../../assets/device_selected/icon-marine.svg';
 
+console.dir(wind);
+
 type TranslateFunc = (key: string) => string;
 
 export function getDeviceId(device: ProducingDevice.Entity, environment: IEnvironment) {
