@@ -77,7 +77,8 @@
                 "requestCertificates": "Request certificates",
                 "approve": "Approve",
                 "registerDevice": "Register device",
-                "register": "Register"
+                "register": "Register",
+                "viewDetails": "View details"
             },
             "feedback": {
                 "imagesUploaded": "Images have been uploaded.",

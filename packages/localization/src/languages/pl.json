@@ -62,7 +62,8 @@
                 "requestCertificates": "Zażądaj certyfikatów",
                 "approve": "Zaakceptuj",
                 "registerDevice": "Zarejestruj urządzenie",
-                "register": "Zarejestruj"
+                "register": "Zarejestruj",
+                "viewDetails": "Pokaż szczegóły"
             }
         },
         "certificate": {
