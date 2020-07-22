@@ -4,7 +4,7 @@ import { Link, Redirect } from 'react-router-dom';
 import { ProducingDevice } from '@energyweb/device-registry';
 import { useSelector, useDispatch } from 'react-redux';
 import { Fab, Tooltip } from '@material-ui/core';
-import { Add, Assignment, Check, Visibility } from '@material-ui/icons';
+import { Add, Check, Visibility } from '@material-ui/icons';
 import { getProducingDevices, getBaseURL, getConfiguration } from '../features/selectors';
 import {
     TableMaterial,
@@ -17,7 +17,6 @@ import {
     CustomFilterInputType
 } from './Table';
 import { getUserOffchain, getOrganizations } from '../features/users/selectors';
-import { showRequestCertificatesModal } from '../features/certificates/actions';
 import { setLoading } from '../features/general/actions';
 import { producingDeviceCreatedOrUpdated } from '../features/producingDevices/actions';
 import {
