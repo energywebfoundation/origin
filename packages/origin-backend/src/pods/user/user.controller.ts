@@ -55,7 +55,7 @@ export class UserController {
     }
 
     @Put()
-    @UseGuards(AuthGuard('jwt'), ActiveUserGuard)
+    @UseGuards(AuthGuard('jwt'))
     public async update(
         @UserDecorator() user: ILoggedInUser,
         @Body() body: UserUpdateData
@@ -112,7 +112,7 @@ export class UserController {
     }
 
     @Put('chainAddress')
-    @UseGuards(AuthGuard('jwt'), ActiveUserGuard)
+    @UseGuards(AuthGuard('jwt'))
     public async updateOwnBlockchainAddress(
         @UserDecorator() { id }: ILoggedInUser,
         @Body() body: IUser
