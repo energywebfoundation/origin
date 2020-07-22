@@ -10,7 +10,11 @@ import {
     ISuccessResponse,
     EmailConfirmationResponse
 } from '@energyweb/origin-backend-core';
-import { UserDecorator, ActiveUserGuard } from '@energyweb/origin-backend-utils';
+import {
+    UserDecorator,
+    ActiveUserGuard,
+    NotDeletedUserGuard
+} from '@energyweb/origin-backend-utils';
 import {
     BadRequestException,
     Body,
@@ -55,7 +59,7 @@ export class UserController {
     }
 
     @Put()
-    @UseGuards(AuthGuard('jwt'))
+    @UseGuards(AuthGuard('jwt'), NotDeletedUserGuard)
     public async update(
         @UserDecorator() user: ILoggedInUser,
         @Body() body: UserUpdateData
@@ -112,7 +116,7 @@ export class UserController {
     }
 
     @Put('chainAddress')
-    @UseGuards(AuthGuard('jwt'))
+    @UseGuards(AuthGuard('jwt'), NotDeletedUserGuard)
     public async updateOwnBlockchainAddress(
         @UserDecorator() { id }: ILoggedInUser,
         @Body() body: IUser
