@@ -68,7 +68,7 @@ const BundleDetails = (props: IOwnProps) => {
     const maxPrice = Math.ceil(Math.max(...prices) / 10) * 10;
     const minPrice = Math.floor(Math.min(...prices) / 10) * 10;
     const styles = useDialogStyles();
-    
+
     const [priceRange, setPriceRange] = useState<number[]>([minPrice, maxPrice]);
 
     splits = splits.filter(
