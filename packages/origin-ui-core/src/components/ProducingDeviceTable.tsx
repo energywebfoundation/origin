@@ -4,7 +4,7 @@ import { Link, Redirect } from 'react-router-dom';
 import { ProducingDevice } from '@energyweb/device-registry';
 import { useSelector, useDispatch } from 'react-redux';
 import { Fab, Tooltip } from '@material-ui/core';
-import { Add, Check, Visibility } from '@material-ui/icons';
+import { Add, Check, Visibility, Assignment } from '@material-ui/icons';
 import { getProducingDevices, getBaseURL, getConfiguration } from '../features/selectors';
 import {
     TableMaterial,
@@ -31,6 +31,7 @@ import {
     moment
 } from '../utils';
 import { getEnvironment } from '../features';
+import { showRequestCertificatesModal } from '../features/certificates';
 
 interface IOwnProps {
     actions: {
@@ -125,6 +126,21 @@ export function ProducingDeviceTable(props: IOwnProps) {
         setDetailViewForDeviceId(device.id);
     }
 
+    async function requestCerts(rowIndex: string) {
+        const producingDevice = paginatedData[rowIndex].device;
+
+        if (producingDevice.status !== DeviceStatus.Active) {
+            return showNotification(
+                `You can only request certificates for devices with status ${
+                    DeviceStatus[DeviceStatus.Active]
+                }.`,
+                NotificationType.Error
+            );
+        }
+
+        dispatch(showRequestCertificatesModal({ producingDevice }));
+    }
+
     async function approve(rowIndex: string) {
         const producingDevice = paginatedData[rowIndex].device;
 
@@ -214,16 +230,22 @@ export function ProducingDeviceTable(props: IOwnProps) {
         );
     }
 
-    const actions: ITableAction[] = [];
+    const actions: ITableAction[] = [
+        {
+            icon: <Visibility />,
+            name: t('device.actions.viewDetails'),
+            onClick: viewDevice
+        }
+    ];
 
     if (
         props.actions.requestCertificates &&
         isRole(user, Role.OrganizationDeviceManager, Role.OrganizationAdmin)
     ) {
         actions.push({
-            icon: <Visibility />,
-            name: t('device.actions.viewDetails'),
-            onClick: viewDevice
+            icon: <Assignment />,
+            name: t('device.actions.requestCertificates'),
+            onClick: requestCerts
         });
     }
 

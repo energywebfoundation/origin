@@ -46,7 +46,7 @@ export function Device() {
                 hiddenColumns={['status']}
                 includedStatuses={[DeviceStatus.Active]}
                 actions={{
-                    requestCertificates: true
+                    // requestCertificates: true
                 }}
             />
         );
