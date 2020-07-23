@@ -1,6 +1,14 @@
 import React, { useContext } from 'react';
 import { NavLink, Link } from 'react-router-dom';
-import { makeStyles, createStyles, useTheme, Tooltip, Typography, Grid } from '@material-ui/core';
+import {
+    makeStyles,
+    createStyles,
+    useTheme,
+    Tooltip,
+    Typography,
+    Grid,
+    Theme
+} from '@material-ui/core';
 import { AccountCircle, Settings, PersonAdd, ExitToApp } from '@material-ui/icons';
 
 import { IUserWithRelations, Role, isRole } from '@energyweb/origin-backend-core';
@@ -19,7 +27,7 @@ export function getAddressDisplay(address: string, userOffchain?: IUserWithRelat
     return `${address.slice(0, 5)}...${address.slice(address.length - 3, address.length)}`;
 }
 
-const useStyles = makeStyles(() =>
+const useStyles = makeStyles((theme: Theme) =>
     createStyles({
         icon: {
             opacity: 0.3,
@@ -36,6 +44,9 @@ const useStyles = makeStyles(() =>
             marginLeft: '8px',
             verticalAlign: 'sub',
             cursor: 'pointer'
+        },
+        tooltip: {
+            backgroundColor: theme.palette.primary.main
         }
     })
 );
@@ -135,7 +146,10 @@ export function Header() {
                                 className={classes.endIcon}
                                 {...dataTest('header-link-account-settings')}
                             >
-                                <Tooltip title={t('settings.settings')}>
+                                <Tooltip
+                                    title={t('settings.settings')}
+                                    classes={{ tooltip: classes.tooltip }}
+                                >
                                     <Settings color="primary" />
                                 </Tooltip>
                             </Link>
