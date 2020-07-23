@@ -4,7 +4,7 @@ import { Link, Redirect } from 'react-router-dom';
 import { ProducingDevice } from '@energyweb/device-registry';
 import { useSelector, useDispatch } from 'react-redux';
 import { Fab, Tooltip } from '@material-ui/core';
-import { Add, Assignment, Check } from '@material-ui/icons';
+import { Add, Check, Visibility } from '@material-ui/icons';
 import { getProducingDevices, getBaseURL, getConfiguration } from '../features/selectors';
 import {
     TableMaterial,
@@ -17,7 +17,6 @@ import {
     CustomFilterInputType
 } from './Table';
 import { getUserOffchain, getOrganizations } from '../features/users/selectors';
-import { showRequestCertificatesModal } from '../features/certificates/actions';
 import { setLoading } from '../features/general/actions';
 import { producingDeviceCreatedOrUpdated } from '../features/producingDevices/actions';
 import {
@@ -126,21 +125,6 @@ export function ProducingDeviceTable(props: IOwnProps) {
         setDetailViewForDeviceId(device.id);
     }
 
-    async function requestCerts(rowIndex: string) {
-        const producingDevice = paginatedData[rowIndex].device;
-
-        if (producingDevice.status !== DeviceStatus.Active) {
-            return showNotification(
-                `You can only request certificates for devices with status ${
-                    DeviceStatus[DeviceStatus.Active]
-                }.`,
-                NotificationType.Error
-            );
-        }
-
-        dispatch(showRequestCertificatesModal({ producingDevice }));
-    }
-
     async function approve(rowIndex: string) {
         const producingDevice = paginatedData[rowIndex].device;
 
@@ -237,9 +221,9 @@ export function ProducingDeviceTable(props: IOwnProps) {
         isRole(user, Role.OrganizationDeviceManager, Role.OrganizationAdmin)
     ) {
         actions.push({
-            icon: <Assignment />,
-            name: t('device.actions.requestCertificates'),
-            onClick: requestCerts
+            icon: <Visibility />,
+            name: t('device.actions.viewDetails'),
+            onClick: viewDevice
         });
     }
 

@@ -15,7 +15,7 @@ export interface ITableAction {
     id?: TableActionId;
     name: string;
     icon: React.ReactNode;
-    onClick: (rowId: string) => void;
+    onClick: (rowId: string | number) => any;
 }
 
 interface IProps {
