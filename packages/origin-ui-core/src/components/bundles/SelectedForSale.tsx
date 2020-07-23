@@ -41,8 +41,6 @@ export const SelectedForSale = (props: IOwnProps) => {
         ...c,
         energy: { ...c.energy, volumeToBundle: c.energy.publicVolume }
     }));
-    const environment = useSelector(getEnvironment);
-    const devices = useSelector(getProducingDevices);
     const [price, setPrice] = useState(0);
     const [sellAsBundle, setSellAsBundle] = useState(false);
     const currency = useSelector(getCurrencies)[0];
@@ -61,7 +59,7 @@ export const SelectedForSale = (props: IOwnProps) => {
             } = cert;
             items.push({
                 assetId,
-                volume: volumeToBundle
+                volume: volumeToBundle.toString()
             });
         }
         dispatch(
@@ -85,17 +83,6 @@ export const SelectedForSale = (props: IOwnProps) => {
             {certificatesToBundle.length > 0 && (
                 <List>
                     {certificatesToBundle.map((cert, index, arr) => {
-                        const {
-                            creationTime,
-                            energy: { privateVolume, publicVolume }
-                        } = cert;
-                        const { province, deviceType, facilityName } = deviceById(
-                            cert.deviceId,
-                            environment,
-                            devices
-                        );
-                        const type = deviceType.split(';')[0].toLowerCase() as EnergyTypes;
-                        const energy = publicVolume.add(privateVolume);
                         return (
                             <Box
                                 className="CertificateForSale"
@@ -103,30 +90,7 @@ export const SelectedForSale = (props: IOwnProps) => {
                                 key={cert.id}
                             >
                                 <ListItem>
-                                    <Grid container>
-                                        <Grid item xs={2}>
-                                            <ListItemAvatar>
-                                                <Avatar
-                                                    src={energyImageByType(type, true)}
-                                                ></Avatar>
-                                            </ListItemAvatar>
-                                        </Grid>
-
-                                        <Grid item xs={5}>
-                                            <Box fontSize={fontSizeMd} fontWeight="fontWeightBold">
-                                                {province}, {facilityName}
-                                            </Box>
-                                            <Box fontSize={fontSizeMd} color="text.secondary">
-                                                {moment.unix(creationTime).format('MMM, YYYY')}
-                                            </Box>
-                                        </Grid>
-                                        <Grid item xs={5} style={{ textAlign: 'end' }}>
-                                            <Box fontSize={fontSizeMd} color="text.secondary">
-                                                {EnergyFormatter.format(energy, true)}
-                                            </Box>
-                                            <BundleItemEdit certificate={cert} />
-                                        </Grid>
-                                    </Grid>
+                                    <BundleItemEdit certificate={cert} totalVolume={totalVolume} />
                                 </ListItem>
                             </Box>
                         );
