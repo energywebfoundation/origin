@@ -27,7 +27,7 @@ export const CreateBundleForm = () => {
             </Box>
             <Box className="Certificates">
                 <SelectedForSale
-                    selected={selected}
+                    certificatesToBundle={selected}
                     totalVolume={totalVolume()}
                     callback={() => history.push(`${getCertificatesLink()}/bundles`)}
                 />
