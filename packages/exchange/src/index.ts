@@ -1,5 +1,3 @@
-import { APP_PIPE, APP_INTERCEPTOR } from '@nestjs/core';
-import { ValidationPipe } from '@nestjs/common';
 import { Account } from './pods/account/account.entity';
 import { Asset } from './pods/asset/asset.entity';
 import { BundleItem } from './pods/bundle/bundle-item.entity';
@@ -25,13 +23,11 @@ import { TradeModule } from './pods/trade/trade.module';
 import { TransferModule } from './pods/transfer/transfer.module';
 import { WithdrawalProcessorModule } from './pods/withdrawal-processor/withdrawal-processor.module';
 import { BundleModule } from './pods/bundle/bundle.module';
-import { EmptyResultInterceptor } from './empty-result.interceptor';
-import { HTTPLoggingInterceptor } from './utils/httpLoggingInterceptor';
 
 export { BulkTradeExecutedEvent } from './pods/matching-engine/bulk-trade-executed.event';
 export { TradePersistedEvent } from './pods/trade/trade-persisted.event';
 
-export { AppModule } from './app.module';
+export { AppModule, providers } from './app.module';
 
 export const entities = [
     Demand,
@@ -61,10 +57,4 @@ export const modules = [
     TransferModule,
     WithdrawalProcessorModule,
     BundleModule
-];
-
-export const providers = [
-    { provide: APP_PIPE, useClass: ValidationPipe },
-    { provide: APP_INTERCEPTOR, useClass: EmptyResultInterceptor },
-    { provide: APP_INTERCEPTOR, useClass: HTTPLoggingInterceptor }
 ];
