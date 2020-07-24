@@ -53,9 +53,7 @@ export const SelectedForSale = (props: IOwnProps) => {
     }, [props.certificatesToBundle]);
 
     const handleItemEdit = (cert: IBundledCertificate) => {
-        console.log('>>> SelectedForSale: certificate to update:', cert);
         setCertificatesToBundle([...certificatesToBundle.filter((c) => c.id !== cert.id), cert]);
-        
     };
 
     async function requestCreateBundle() {
