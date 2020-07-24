@@ -9,6 +9,16 @@ import { User } from './pods/user/user.entity';
 import { CertificationRequestQueueItem } from './pods/certificate/certification-request-queue-item.entity';
 import { EmailConfirmation } from './pods/email-confirmation/email-confirmation.entity';
 
+import { AuthModule } from './auth/auth.module';
+import { AdminModule } from './pods/admin/admin.module';
+import { CertificateModule } from './pods/certificate/certificate.module';
+import { ConfigurationModule } from './pods/configuration/configuration.module';
+import { DeviceModule } from './pods/device/device.module';
+import { FileModule } from './pods/file/file.module';
+import { OrganizationModule } from './pods/organization/organization.module';
+import { UserModule } from './pods/user/user.module';
+import { EmailConfirmationModule } from './pods/email-confirmation/email-confirmation.module';
+
 export { AppModule } from './app.module';
 export { ExtendedBaseEntity } from './pods/ExtendedBaseEntity';
 export { ConfigurationService } from './pods/configuration/configuration.service';
@@ -30,4 +40,16 @@ export const entities = [
     CertificationRequestQueueItem,
     Certificate,
     EmailConfirmation
+];
+
+export const modules = [
+    AuthModule,
+    AdminModule,
+    CertificateModule,
+    ConfigurationModule,
+    DeviceModule,
+    FileModule,
+    OrganizationModule,
+    UserModule,
+    EmailConfirmationModule
 ];
