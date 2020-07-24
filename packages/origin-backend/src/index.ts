@@ -1,3 +1,5 @@
+import { APP_PIPE } from '@nestjs/core';
+import { ValidationPipe } from '@nestjs/common';
 import { Certificate } from './pods/certificate/certificate.entity';
 import { CertificationRequest } from './pods/certificate/certification-request.entity';
 import { OwnershipCommitment } from './pods/certificate/ownership-commitment.entity';
@@ -53,3 +55,5 @@ export const modules = [
     UserModule,
     EmailConfirmationModule
 ];
+
+export const providers = [{ provide: APP_PIPE, useClass: ValidationPipe }];

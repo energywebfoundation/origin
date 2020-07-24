@@ -1,7 +1,6 @@
 import { ISmartMeterReadingsAdapter } from '@energyweb/origin-backend-core';
-import { DynamicModule, Module, ValidationPipe } from '@nestjs/common';
+import { DynamicModule, Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { APP_PIPE } from '@nestjs/core';
 import fs from 'fs';
 import path from 'path';
 
@@ -16,6 +15,7 @@ import { FileModule } from './pods/file/file.module';
 import { OrganizationModule } from './pods/organization/organization.module';
 import { UserModule } from './pods/user/user.module';
 import { EmailConfirmationModule } from './pods/email-confirmation/email-confirmation.module';
+import { providers } from '.';
 
 const ENV_FILE_PATH = path.resolve(__dirname, '../../../../../.env');
 
@@ -41,7 +41,7 @@ export class AppModule {
                 EmailConfirmationModule
             ],
             controllers: [AppController],
-            providers: [{ provide: APP_PIPE, useClass: ValidationPipe }]
+            providers
         };
     }
 }

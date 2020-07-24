@@ -1,11 +1,9 @@
-import { Module, ValidationPipe } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { APP_INTERCEPTOR, APP_PIPE } from '@nestjs/core';
 import { ScheduleModule } from '@nestjs/schedule';
 import fs from 'fs';
 import path from 'path';
 
-import { EmptyResultInterceptor } from './empty-result.interceptor';
 import { AccountBalanceModule } from './pods/account-balance/account-balance.module';
 import { AccountDeployerModule } from './pods/account-deployer/account-deployer.module';
 import { AccountModule } from './pods/account/account.module';
@@ -20,8 +18,9 @@ import { RunnerModule } from './pods/runner/runner.module';
 import { TradeModule } from './pods/trade/trade.module';
 import { TransferModule } from './pods/transfer/transfer.module';
 import { WithdrawalProcessorModule } from './pods/withdrawal-processor/withdrawal-processor.module';
-import { HTTPLoggingInterceptor } from './utils/httpLoggingInterceptor';
 import { BundleModule } from './pods/bundle/bundle.module';
+
+import { providers } from '.';
 
 const getEnvFilePath = () => {
     const pathsToTest = ['../../../../../.env', '../../../../../../.env'];
@@ -63,10 +62,6 @@ const getEnvFilePath = () => {
         RunnerModule,
         BundleModule
     ],
-    providers: [
-        { provide: APP_PIPE, useClass: ValidationPipe },
-        { provide: APP_INTERCEPTOR, useClass: EmptyResultInterceptor },
-        { provide: APP_INTERCEPTOR, useClass: HTTPLoggingInterceptor }
-    ]
+    providers
 })
 export class AppModule {}
