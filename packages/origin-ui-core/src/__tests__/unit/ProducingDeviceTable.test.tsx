@@ -73,7 +73,8 @@ describe('ProducingDeviceTable', () => {
         );
 
         await refresh();
-        const expected = [
+
+        assertMainTableContent([
             '',
             'Wuthering Heights facility',
             'Solar - Photovoltaic - Roof mounted',
@@ -89,8 +90,7 @@ describe('ProducingDeviceTable', () => {
             '0',
             '0',
             'View details'
-        ];
-        assertMainTableContent(expected);
+        ]);
 
         assertPagination(1, 2, 2);
 
