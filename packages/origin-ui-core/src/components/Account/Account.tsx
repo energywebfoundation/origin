@@ -14,7 +14,7 @@ import { ConfirmEmail } from './ConfirmEmail';
 export function Account() {
     const userOffchain = useSelector(getUserOffchain);
 
-    const { getAccountLink } = useLinks();
+    const { baseURL, getAccountLink } = useLinks();
     const { t } = useTranslation();
 
     const isLoggedIn = Boolean(userOffchain);
@@ -95,6 +95,11 @@ export function Account() {
             <Route
                 exact={true}
                 path={`${getAccountLink()}`}
+                render={() => <Redirect to={{ pathname: `${getAccountLink()}/${Menu[0].key}` }} />}
+            />
+            <Route
+                exact={true}
+                path={`${baseURL}/`}
                 render={() => <Redirect to={{ pathname: `${getAccountLink()}/${Menu[0].key}` }} />}
             />
         </div>

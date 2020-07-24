@@ -1,9 +1,10 @@
-import React from 'react';
-import { Certificates } from './Certificates';
-import { Route, Switch } from 'react-router-dom';
+import React, { useContext } from 'react';
+import { OriginFeature } from '@energyweb/utils-general';
+import { Certificates } from './certificates/Certificates';
+import { Switch, Route } from 'react-router-dom';
 import { Header } from './Header';
-import { Device } from './Device';
-import { Admin } from './Admin';
+import { Device } from './devices/Device';
+import { Admin } from './admin/Admin';
 import { Account } from './Account/Account';
 import { Organization } from './Organization/Organization';
 import { RequestCertificatesModal, AccountMismatchModal } from './Modal';
@@ -14,6 +15,8 @@ import { getError, getLoading } from '../features/general/selectors';
 import { LinearProgress, makeStyles, createStyles, useTheme } from '@material-ui/core';
 import { BundlesTable } from './bundles/BundlesTable';
 import { NoBlockchainAccountModal } from './Modal/NoBlockchainAccountModal';
+import { FeatureRoute } from './route/FeatureRoute';
+import { OriginConfigurationContext } from '.';
 
 export function AppContainer() {
     const error = useSelector(getError);
@@ -44,6 +47,7 @@ export function AppContainer() {
     );
 
     const classes = useStyles(useTheme());
+    const { enabledFeatures } = useContext(OriginConfigurationContext);
 
     if (error) {
         return <ErrorComponent message={error} />;
@@ -58,13 +62,34 @@ export function AppContainer() {
             )}
             <Header />
             <Switch>
-                <Route path={getDevicesLink()} component={Device} />
-                <Route path={getCertificatesLink()} component={Certificates} />
+                <FeatureRoute
+                    path={getDevicesLink()}
+                    component={Device}
+                    forFeatures={[OriginFeature.Devices]}
+                />
+                <FeatureRoute
+                    path={getCertificatesLink()}
+                    component={Certificates}
+                    forFeatures={[OriginFeature.Certificates]}
+                />
                 <Route path={getAccountLink()} component={Account} />
                 <Route path={getOrganizationLink()} component={Organization} />
                 <Route path={getAdminLink()} component={Admin} />
-                <Route path={getBundlesLink()} component={BundlesTable} />
-                <Route path={baseURL} component={Device} />
+                <FeatureRoute
+                    path={getBundlesLink()}
+                    component={BundlesTable}
+                    forFeatures={[OriginFeature.Bundles, OriginFeature.Certificates]}
+                />
+                <Route
+                    path={baseURL}
+                    component={
+                        enabledFeatures.includes(OriginFeature.Devices)
+                            ? Device
+                            : enabledFeatures.includes(OriginFeature.Certificates)
+                            ? Certificates
+                            : Account
+                    }
+                />
             </Switch>
             <RequestCertificatesModal />
             <AccountMismatchModal />

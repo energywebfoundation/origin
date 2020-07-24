@@ -22,19 +22,19 @@ import {
 import { Skeleton } from '@material-ui/lab';
 import { Unit } from '@energyweb/utils-general';
 import { DeviceStatus, IExternalDeviceId } from '@energyweb/origin-backend-core';
-import { getConfiguration } from '../features/selectors';
+import { getConfiguration } from '../../features/selectors';
 import {
     getCompliance,
     getCountry,
     getExternalDeviceIdTypes,
     requestDeviceCreation
-} from '../features/general';
-import { HierarchicalMultiSelect } from './HierarchicalMultiSelect';
+} from '../../features/general';
+import { HierarchicalMultiSelect } from '../HierarchicalMultiSelect';
 import { ProducingDevice } from '@energyweb/device-registry';
-import { PowerFormatter, useDevicePermissions, useTranslation, moment } from '../utils';
-import { FormInput } from './Form/FormInput';
+import { PowerFormatter, useDevicePermissions, useTranslation, moment } from '../../utils';
+import { FormInput } from '../Form/FormInput';
 import { DevicePermissionsFeedback } from './DevicePermissionsFeedback';
-import { Upload, IUploadedFile } from './Upload';
+import { Upload, IUploadedFile } from '../Upload';
 
 const MAX_TOTAL_CAPACITY = 5 * Unit.MW;
 

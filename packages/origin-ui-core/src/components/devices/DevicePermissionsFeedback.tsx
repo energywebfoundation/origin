@@ -1,5 +1,5 @@
 import React from 'react';
-import { IDevicePermission, useTranslation } from '../utils';
+import { IDevicePermission, useTranslation } from '../../utils';
 import {
     Typography,
     List,

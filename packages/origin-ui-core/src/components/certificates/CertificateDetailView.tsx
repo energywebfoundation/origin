@@ -1,18 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { CertificationRequest, CertificateUtils } from '@energyweb/issuer';
-import { ProducingDeviceDetailView } from './ProducingDeviceDetailView';
+import { ProducingDeviceDetailView } from '../devices/ProducingDeviceDetailView';
 import { useSelector } from 'react-redux';
 import { utils } from 'ethers';
-import { getConfiguration, getProducingDevices } from '../features/selectors';
-import { getCertificates } from '../features/certificates/selectors';
-import { deduplicate } from '../utils/helper';
-import { formatDate } from '../utils/time';
+import { getConfiguration, getProducingDevices } from '../../features/selectors';
+import { getCertificates } from '../../features/certificates/selectors';
+import { deduplicate } from '../../utils/helper';
+import { formatDate } from '../../utils/time';
 import { Skeleton } from '@material-ui/lab';
 import { makeStyles, createStyles, useTheme } from '@material-ui/core';
-import { getEnvironment, getExchangeClient } from '../features/general/selectors';
-import { EnergyFormatter, useTranslation } from '../utils';
+import { getEnvironment, getExchangeClient } from '../../features/general/selectors';
+import { EnergyFormatter, useTranslation } from '../../utils';
 import { ProducingDevice } from '@energyweb/device-registry';
-import { getUserOffchain } from '../features/users/selectors';
+import { getUserOffchain } from '../../features/users/selectors';
 
 interface IProps {
     id: number;

@@ -10,7 +10,7 @@ import {
     Theme
 } from '@material-ui/core';
 import { AccountCircle, Settings, PersonAdd, ExitToApp } from '@material-ui/icons';
-
+import { OriginFeature } from '@energyweb/utils-general';
 import { IUserWithRelations, Role, isRole } from '@energyweb/origin-backend-core';
 
 import { useSelector, useDispatch } from 'react-redux';
@@ -59,6 +59,7 @@ export function Header() {
     const classes = useStyles(useTheme());
 
     const {
+        getDefaultLink,
         getDevicesLink,
         getUserRegisterLink,
         getCertificatesLink,
@@ -68,22 +69,28 @@ export function Header() {
         getAdminLink
     } = useLinks();
 
-    const originConfiguration = useContext(OriginConfigurationContext);
+    const { enabledFeatures, logo } = useContext(OriginConfigurationContext);
 
     const { t } = useTranslation();
 
     return (
         <div className="HeaderWrapper">
             <div className="Header">
-                <NavLink to={getDevicesLink()}>{originConfiguration.logo}</NavLink>
+                <NavLink to={getDefaultLink()}>{logo}</NavLink>
 
                 <ul className="NavMenu nav">
-                    <li>
-                        <NavLink to={getDevicesLink()}>{t('header.devices')}</NavLink>
-                    </li>
-                    <li>
-                        <NavLink to={getCertificatesLink()}>{t('header.certificates')}</NavLink>
-                    </li>
+                    {enabledFeatures.includes(OriginFeature.Devices) && (
+                        <li>
+                            <NavLink to={getDevicesLink()}>{t('header.devices')}</NavLink>
+                        </li>
+                    )}
+
+                    {enabledFeatures.includes(OriginFeature.Certificates) && (
+                        <li>
+                            <NavLink to={getCertificatesLink()}>{t('header.certificates')}</NavLink>
+                        </li>
+                    )}
+
                     {isRole(
                         userOffchain,
                         Role.OrganizationAdmin,
