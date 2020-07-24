@@ -45,9 +45,7 @@ export function Device() {
             <ProducingDeviceTable
                 hiddenColumns={['status']}
                 includedStatuses={[DeviceStatus.Active]}
-                actions={{
-                    requestCertificates: true
-                }}
+                actions={{}}
             />
         );
     }
