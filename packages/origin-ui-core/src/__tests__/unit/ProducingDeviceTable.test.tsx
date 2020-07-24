@@ -73,22 +73,24 @@ describe('ProducingDeviceTable', () => {
         );
 
         await refresh();
-
-        assertMainTableContent([
+        const expected = [
             '',
             'Wuthering Heights facility',
             'Solar - Photovoltaic - Roof mounted',
             '9.877',
             '0',
             '0.777',
+            'View details',
             // next device
             '',
             'Biomass Energy Facility',
             'Gaseous - Agricultural gas',
             '0.736',
             '0',
-            '0'
-        ]);
+            '0',
+            'View details'
+        ];
+        assertMainTableContent(expected);
 
         assertPagination(1, 2, 2);
 
@@ -106,7 +108,8 @@ describe('ProducingDeviceTable', () => {
             'Gaseous - Agricultural gas',
             '0.736',
             '0',
-            '0'
+            '0',
+            'View details'
         ]);
 
         assertPagination(1, 1, 1);
@@ -121,7 +124,8 @@ describe('ProducingDeviceTable', () => {
             'Solar - Photovoltaic - Roof mounted',
             '9.877',
             '0',
-            '0.777'
+            '0.777',
+            'View details'
         ]);
 
         assertPagination(1, 1, 1);

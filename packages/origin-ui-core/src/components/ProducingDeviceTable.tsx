@@ -132,7 +132,7 @@ export function ProducingDeviceTable(props: IOwnProps) {
         if (producingDevice.status !== DeviceStatus.Active) {
             return showNotification(
                 `You can only request certificates for devices with status ${
-                    DeviceStatus[DeviceStatus.Active]
+                DeviceStatus[DeviceStatus.Active]
                 }.`,
                 NotificationType.Error
             );
@@ -198,13 +198,13 @@ export function ProducingDeviceTable(props: IOwnProps) {
             id: 'readCertified',
             label: `${t('device.properties.meterReadCertified')} for ${currentIRECYear} (${
                 EnergyFormatter.displayUnit
-            })`
+                })`
         },
         {
             id: 'readToBeCertified',
             label: `${t('device.properties.meterReadToBeCertified')} for ${currentIRECYear} (${
                 EnergyFormatter.displayUnit
-            })`
+                })`
         }
     ] as const).filter((column) => !hiddenColumns.includes(column.id));
 
@@ -230,13 +230,13 @@ export function ProducingDeviceTable(props: IOwnProps) {
         );
     }
 
-    const actions: ITableAction[] = [
-        {
-            icon: <Visibility />,
-            name: t('device.actions.viewDetails'),
-            onClick: viewDevice
-        }
-    ];
+    const actions: ITableAction[] = [];
+
+    actions.push({
+        icon: <Visibility />,
+        name: t('device.actions.viewDetails'),
+        onClick: viewDevice
+    });
 
     if (
         props.actions.requestCertificates &&
