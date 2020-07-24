@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
     Box,
     useTheme,
@@ -38,38 +38,59 @@ export interface IBundledCertificate extends ICertificateViewItem {
 
 interface IOwnProps {
     certificate: IBundledCertificate;
-    totalVolume: BigNumber;
+    totalVolume: () => BigNumber;
     onChange: (cert: IBundledCertificate) => void;
 }
 
 export const BundleItemEdit = (props: IOwnProps) => {
     const { t } = useTranslation();
-    const { certificate, totalVolume, onChange } = props;
+    const { onChange } = props;
+    let totalVolume = props.totalVolume;
+    const [certificate, setCertificate] = useState<IBundledCertificate>(props.certificate);
     const {
         creationTime,
         deviceId,
-        energy: { publicVolume, volumeToBundle }
+        energy: { volumeToBundle }
     } = certificate;
     const [selected, setSelected] = useState<boolean>(false);
     const {
-        typography: { fontSizeMd }
+        typography: { fontSizeSm, fontSizeMd },
+        spacing
     } = useTheme();
     const environment = useSelector(getEnvironment);
     const devices = useSelector(getProducingDevices);
 
+    useEffect(() => {
+        setCertificate(certificate);
+        totalVolume = props.totalVolume;
+    }, [props.certificate, props.totalVolume]);
+
     const handleChange = (event) => {
-        certificate.energy.publicVolume = event.target.value;
-        onChange(certificate);
+        setCertificate({
+            ...certificate,
+            energy: { ...certificate.energy, volumeToBundle: BigNumber.from(event.target.value) }
+        });
     };
 
     const resetVolumeToBundle = () => {
-        certificate.energy.publicVolume = BigNumber.from(0);
-        onChange(certificate);
+        setCertificate({
+            ...certificate,
+            energy: {
+                ...certificate.energy,
+                volumeToBundle: BigNumber.from(props.certificate.energy.publicVolume)
+            }
+        });
+    };
+
+    const setToZero = () => {
+        setCertificate({
+            ...certificate,
+            energy: { ...certificate.energy, volumeToBundle: BigNumber.from(0) }
+        });
     };
 
     const { province, deviceType, facilityName } = deviceById(deviceId, environment, devices);
     const type = deviceType.split(';')[0].toLowerCase() as EnergyTypes;
-    const energy = publicVolume;
 
     return (
         <Grid container direction="column">
@@ -91,25 +112,32 @@ export const BundleItemEdit = (props: IOwnProps) => {
                     </Grid>
                     <Grid item xs={!selected ? 4 : 3} style={{ textAlign: 'end' }}>
                         <Box fontSize={fontSizeMd} color="text.secondary">
-                            {EnergyFormatter.format(energy, true)}
+                            {EnergyFormatter.format(volumeToBundle, true)}
                         </Box>
                         <Box fontSize={fontSizeMd}>
-                            {((100 * volumeToBundle.toNumber()) / totalVolume.toNumber()).toFixed(
-                                0
-                            )}
+                            {(
+                                (100 * props.certificate.energy.volumeToBundle.toNumber()) /
+                                totalVolume().toNumber()
+                            ).toFixed(0)}
                             %
                         </Box>
                     </Grid>
 
                     {!selected ? (
-                        <Grid item xs={1}>
+                        <Grid item xs={1} style={{ textAlign: 'center' }}>
                             <IconButton onClick={() => setSelected(true)}>
-                                <Edit />
+                                <Edit color="primary" />
                             </IconButton>
                         </Grid>
                     ) : (
-                        <Grid item xs={1}>
-                            <Button onClick={() => setSelected(false)}>
+                        <Grid item xs={2} style={{ textAlign: 'center' }}>
+                            <Button
+                                onClick={() => {
+                                    setSelected(false);
+                                    resetVolumeToBundle();
+                                }}
+                                style={{ fontSize: fontSizeSm }}
+                            >
                                 {t('general.actions.cancel')}
                             </Button>
                         </Grid>
@@ -118,16 +146,16 @@ export const BundleItemEdit = (props: IOwnProps) => {
             </Grid>
             {selected && (
                 <Grid item container>
-                    <Grid item xs={8}>
-                        <FormControl>
-                            <InputLabel htmlFor="standard-adornment-password">Password</InputLabel>
+                    <Grid item style={{ flexGrow: 1 }}>
+                        <FormControl style={{ width: '100%' }}>
+                            <InputLabel>{t('bundle.info.editBundleVolume')}</InputLabel>
                             <Input
                                 type="text"
-                                value={publicVolume}
+                                value={volumeToBundle}
                                 onChange={handleChange}
                                 endAdornment={
-                                    <InputAdornment position="end">
-                                        <IconButton onClick={resetVolumeToBundle}>
+                                    <InputAdornment position="end" style={{ margin: spacing(1) }}>
+                                        <IconButton onClick={setToZero}>
                                             <HighlightOff />
                                         </IconButton>
                                     </InputAdornment>
@@ -135,9 +163,12 @@ export const BundleItemEdit = (props: IOwnProps) => {
                             />
                         </FormControl>
                     </Grid>
-                    <Grid item xs={4}>
+                    <Grid item xs={2} style={{ textAlign: 'center' }}>
                         <Button
-                            onClick={() => setSelected(false)}
+                            onClick={() => {
+                                setSelected(false);
+                                onChange(certificate);
+                            }}
                             variant="contained"
                             color="primary"
                         >

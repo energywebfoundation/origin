@@ -22,12 +22,11 @@ import { BundleItemEdit, IBundledCertificate } from './BundleItemEdit';
 
 interface IOwnProps {
     certificatesToBundle: ICertificateViewItem[];
-    totalVolume: BigNumber;
     callback: () => void;
 }
 
 export const SelectedForSale = (props: IOwnProps) => {
-    const { totalVolume, callback } = props;
+    const { callback } = props;
     const [certificatesToBundle, setCertificatesToBundle] = useState<IBundledCertificate[]>([]);
     const [price, setPrice] = useState(0);
     const [sellAsBundle, setSellAsBundle] = useState(false);
@@ -37,6 +36,12 @@ export const SelectedForSale = (props: IOwnProps) => {
     const {
         typography: { fontSizeMd }
     } = useTheme();
+
+    const totalVolume = () =>
+        certificatesToBundle.reduce(
+            (total, { energy: { volumeToBundle } }) => total.add(volumeToBundle),
+            BigNumber.from(0)
+        );
 
     useEffect(() => {
         setCertificatesToBundle(
@@ -48,7 +53,9 @@ export const SelectedForSale = (props: IOwnProps) => {
     }, [props.certificatesToBundle]);
 
     const handleItemEdit = (cert: IBundledCertificate) => {
-        setCertificatesToBundle([...certificatesToBundle.filter((c) => c.id === cert.id), cert]);
+        console.log('>>> SelectedForSale: certificate to update:', cert);
+        setCertificatesToBundle([...certificatesToBundle.filter((c) => c.id !== cert.id), cert]);
+        
     };
 
     async function requestCreateBundle() {
@@ -112,7 +119,7 @@ export const SelectedForSale = (props: IOwnProps) => {
                     </Grid>
                     <Grid item>
                         <Box fontSize={fontSizeMd} color="text.primary" fontWeight="fontWeightBold">
-                            {EnergyFormatter.format(totalVolume, true)}
+                            {EnergyFormatter.format(totalVolume(), true)}
                         </Box>
                     </Grid>
                 </Grid>
@@ -132,7 +139,7 @@ export const SelectedForSale = (props: IOwnProps) => {
                 <Box color="text.secondary">Total Price</Box>
                 <Box fontWeight="fontWeightBold">
                     {formatCurrencyComplete(
-                        (totalVolume.toNumber() / Unit[EnergyFormatter.displayUnit]) * price,
+                        (totalVolume().toNumber() / Unit[EnergyFormatter.displayUnit]) * price,
                         currency
                     )}
                 </Box>
