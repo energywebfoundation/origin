@@ -10,7 +10,7 @@ import {
     createStyles
 } from '@material-ui/core';
 import { useSelector, useDispatch } from 'react-redux';
-import { getConfiguration, getEnvironment } from '../features';
+import { getConfiguration, getEnvironment } from '../../features';
 import { Formik, Field, Form, FormikHelpers } from 'formik';
 import { TextField, CheckboxWithLabel } from 'formik-material-ui';
 import {
@@ -22,23 +22,23 @@ import {
     useTranslation,
     useDevicePermissions,
     Moment
-} from '../utils';
-import { FormikDatePicker } from './Form/FormikDatePicker';
+} from '../../utils';
+import { FormikDatePicker } from '../Form/FormikDatePicker';
 import {
     requestDeviceCreation,
     getExternalDeviceIdTypes,
     getCompliance,
     getCountry,
     getOffChainDataSource
-} from '../features/general';
-import { HierarchicalMultiSelect } from './HierarchicalMultiSelect';
+} from '../../features/general';
+import { HierarchicalMultiSelect } from '../HierarchicalMultiSelect';
 import { CloudUpload } from '@material-ui/icons';
 import { DeviceStatus, IExternalDeviceId } from '@energyweb/origin-backend-core';
 import { Skeleton } from '@material-ui/lab';
-import { FormInput } from './Form';
+import { FormInput } from '../Form';
 import { DeviceSelectors } from './DeviceSelectors';
 import { DevicePermissionsFeedback } from './DevicePermissionsFeedback';
-import { Upload, IUploadedFile } from './Upload';
+import { Upload, IUploadedFile } from '../Upload';
 
 interface IFormValues {
     facilityName: string;

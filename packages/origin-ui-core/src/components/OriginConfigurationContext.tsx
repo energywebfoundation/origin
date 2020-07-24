@@ -1,5 +1,6 @@
 import React, { createContext, ReactNode } from 'react';
 import { createMuiTheme, Theme } from '@material-ui/core';
+import { OriginFeature } from '@energyweb/utils-general';
 import i18n from 'i18next';
 import ICU from 'i18next-icu';
 import {
@@ -12,6 +13,7 @@ import variables from '../styles/variables.scss';
 import { OriginGenericLogo } from './icons/OriginGenericLogo';
 import { setTimeFormatLanguage } from '../utils/time';
 import { plPL, enUS } from '@material-ui/core/locale';
+import { getEnumValues } from '..';
 
 export interface IOriginStyleConfig {
     PRIMARY_COLOR: string;
@@ -192,6 +194,7 @@ export interface IOriginConfiguration {
     materialTheme: Theme;
     defaultLanguage: ORIGIN_LANGUAGE;
     language: ORIGIN_LANGUAGE;
+    enabledFeatures: OriginFeature[];
 }
 
 export function createStyleConfigFromSCSSVariables(scssVariables: any): IOriginStyleConfig {
@@ -237,7 +240,8 @@ export function createOriginConfiguration(configuration: Partial<IOriginConfigur
         customSliderStyle: createSliderStyleForOrigin(DEFAULT_STYLE_CONFIG),
         materialTheme: createMaterialThemeForOrigin(DEFAULT_STYLE_CONFIG, storedLanguage),
         defaultLanguage: 'en',
-        language: storedLanguage
+        language: storedLanguage,
+        enabledFeatures: getEnumValues(OriginFeature)
     };
 
     const newConfiguration: IOriginConfiguration = {

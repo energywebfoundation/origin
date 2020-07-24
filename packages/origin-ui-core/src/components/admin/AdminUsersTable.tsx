@@ -3,15 +3,15 @@ import { Edit } from '@material-ui/icons';
 import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import { getOffChainDataSource } from '../features/general/selectors';
-import { getUserOffchain } from '../features/users/selectors';
-import { NotificationType, showNotification } from '../utils/notifications';
+import { getOffChainDataSource } from '../../features/general/selectors';
+import { getUserOffchain } from '../../features/users/selectors';
+import { NotificationType, showNotification } from '../../utils/notifications';
 import {
     IPaginatedLoaderHooksFetchDataParameters,
     TableMaterial,
     usePaginatedLoaderFiltered
-} from './Table';
-import { CustomFilterInputType, ICustomFilterDefinition } from './Table/FiltersHeader';
+} from '../Table';
+import { CustomFilterInputType, ICustomFilterDefinition } from '../Table/FiltersHeader';
 
 interface IRecord {
     user: IUser;

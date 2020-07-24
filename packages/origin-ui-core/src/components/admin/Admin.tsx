@@ -1,8 +1,8 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { NavLink, Redirect, Route } from 'react-router-dom';
-import { useLinks } from '../utils';
-import { PageContent } from './PageContent/PageContent';
+import { useLinks } from '../../utils';
+import { PageContent } from '../PageContent/PageContent';
 import { AdminUsersTable } from './AdminUsersTable';
 import { AdminUserView } from './AdminUserView';
 

@@ -5,7 +5,7 @@ import { ProducingDevice } from '@energyweb/device-registry';
 import { useSelector, useDispatch } from 'react-redux';
 import { Fab, Tooltip } from '@material-ui/core';
 import { Add, Check, Visibility, Assignment } from '@material-ui/icons';
-import { getProducingDevices, getBaseURL, getConfiguration } from '../features/selectors';
+import { getProducingDevices, getBaseURL, getConfiguration } from '../../features/selectors';
 import {
     TableMaterial,
     ITableAction,
@@ -15,10 +15,10 @@ import {
     checkRecordPassesFilters,
     ICustomFilterDefinition,
     CustomFilterInputType
-} from './Table';
-import { getUserOffchain, getOrganizations } from '../features/users/selectors';
-import { setLoading } from '../features/general/actions';
-import { producingDeviceCreatedOrUpdated } from '../features/producingDevices/actions';
+} from '../Table';
+import { getUserOffchain, getOrganizations } from '../../features/users/selectors';
+import { setLoading } from '../../features/general/actions';
+import { producingDeviceCreatedOrUpdated } from '../../features/producingDevices/actions';
 import {
     EnergyFormatter,
     PowerFormatter,
@@ -29,9 +29,9 @@ import {
     NotificationType,
     useTranslation,
     moment
-} from '../utils';
-import { getEnvironment } from '../features';
-import { showRequestCertificatesModal } from '../features/certificates';
+} from '../../utils';
+import { getEnvironment } from '../../features';
+import { showRequestCertificatesModal } from '../../features/certificates';
 
 interface IOwnProps {
     actions: {
