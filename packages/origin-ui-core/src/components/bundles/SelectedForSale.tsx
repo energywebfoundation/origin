@@ -1,10 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import CurrencyTextField from '@unicef/material-ui-currency-textfield';
 import {
     List,
     ListItem,
-    ListItemAvatar,
-    Avatar,
     Grid,
     Checkbox,
     Button,
@@ -13,17 +11,10 @@ import {
     useTheme
 } from '@material-ui/core';
 import { ICertificateViewItem, reloadCertificates } from '../../features/certificates';
-import {
-    deviceById,
-    getEnvironment,
-    getProducingDevices,
-    moment,
-    energyImageByType,
-    getCurrencies
-} from '../..';
+import { getCurrencies } from '../..';
 import { useSelector, useDispatch } from 'react-redux';
 import { BigNumber } from 'ethers';
-import { formatCurrencyComplete, useTranslation, EnergyFormatter, EnergyTypes } from '../../utils';
+import { formatCurrencyComplete, useTranslation, EnergyFormatter } from '../../utils';
 import { createBundle } from '../../features/bundles';
 import { BundleItemDTO } from '../../utils/exchange';
 import { Unit } from '@energyweb/utils-general';
@@ -37,10 +28,7 @@ interface IOwnProps {
 
 export const SelectedForSale = (props: IOwnProps) => {
     const { totalVolume, callback } = props;
-    const certificatesToBundle: IBundledCertificate[] = props.certificatesToBundle.map((c) => ({
-        ...c,
-        energy: { ...c.energy, volumeToBundle: c.energy.publicVolume }
-    }));
+    const [certificatesToBundle, setCertificatesToBundle] = useState<IBundledCertificate[]>([]);
     const [price, setPrice] = useState(0);
     const [sellAsBundle, setSellAsBundle] = useState(false);
     const currency = useSelector(getCurrencies)[0];
@@ -50,12 +38,25 @@ export const SelectedForSale = (props: IOwnProps) => {
         typography: { fontSizeMd }
     } = useTheme();
 
+    useEffect(() => {
+        setCertificatesToBundle(
+            props.certificatesToBundle.map((c) => ({
+                ...c,
+                energy: { ...c.energy, volumeToBundle: c.energy.publicVolume }
+            }))
+        );
+    }, [props.certificatesToBundle]);
+
+    const handleItemEdit = (cert: IBundledCertificate) => {
+        setCertificatesToBundle([...certificatesToBundle.filter((c) => c.id === cert.id), cert]);
+    };
+
     async function requestCreateBundle() {
         const items: BundleItemDTO[] = [];
         for (const cert of certificatesToBundle) {
             const {
                 assetId,
-                energy: { privateVolume, publicVolume, volumeToBundle }
+                energy: { volumeToBundle }
             } = cert;
             items.push({
                 assetId,
@@ -90,7 +91,11 @@ export const SelectedForSale = (props: IOwnProps) => {
                                 key={cert.id}
                             >
                                 <ListItem>
-                                    <BundleItemEdit certificate={cert} totalVolume={totalVolume} />
+                                    <BundleItemEdit
+                                        certificate={cert}
+                                        totalVolume={totalVolume}
+                                        onChange={handleItemEdit}
+                                    />
                                 </ListItem>
                             </Box>
                         );
