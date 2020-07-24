@@ -37,10 +37,6 @@ interface IOwnProps {
     owner: boolean;
 }
 
-console.log({
-    SOLAR: EnergyTypes
-});
-
 const ENERGY_COLUMNS_TO_DISPLAY = [EnergyTypes.SOLAR, EnergyTypes.WIND, EnergyTypes.HYDRO];
 
 export const BundlesTable = (props: IOwnProps) => {
