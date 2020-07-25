@@ -3472,26 +3472,26 @@
     prop-types "^15.6.1"
     react-lifecycles-compat "^3.0.4"
 
-"@react-google-maps/api@1.9.8":
-  version "1.9.8"
-  resolved "https://registry.yarnpkg.com/@react-google-maps/api/-/api-1.9.8.tgz#312dbb7e8d174501bbcb7fabca4125297ba690b6"
-  integrity sha512-xPVlDDIqIkINoJ/vRRgLX9Qh63D3AJwbwFMhZmLqTCBxLKLG+FyvLiHXwY3pHUkOWk5bz2MyABxqgi2wIHG7mg==
+"@react-google-maps/api@1.9.9":
+  version "1.9.9"
+  resolved "https://registry.yarnpkg.com/@react-google-maps/api/-/api-1.9.9.tgz#6cf2e7429770ca9b9454224e9b48c66d315256a8"
+  integrity sha512-yy/mh0uqF5JCGGzoGYaBoFBbtdr1XKgRlQvalOQ1pITguhRwRIELOHesIJQvAOrdqgCmE3noCa838pFIPZ1Sag==
   dependencies:
-    "@react-google-maps/infobox" "1.9.8"
-    "@react-google-maps/marker-clusterer" "1.9.8"
+    "@react-google-maps/infobox" "1.9.9"
+    "@react-google-maps/marker-clusterer" "1.9.9"
     acorn "7.3.1"
     acorn-jsx "^5.2.0"
     invariant "2.2.4"
 
-"@react-google-maps/infobox@1.9.8":
-  version "1.9.8"
-  resolved "https://registry.yarnpkg.com/@react-google-maps/infobox/-/infobox-1.9.8.tgz#eed97dd077185478b9d9b871ce84357bababfc72"
-  integrity sha512-82aL6IXLv9EqX4hOumkLvOSrkQ+A6UAH35QhcYKBgWIIm05qZ2owCSfVMG14TAYvzODc9BuMr2TWnx/k3y+MFA==
+"@react-google-maps/infobox@1.9.9":
+  version "1.9.9"
+  resolved "https://registry.yarnpkg.com/@react-google-maps/infobox/-/infobox-1.9.9.tgz#cef278590524604e453cd6792a4f48f22e94c3a5"
+  integrity sha512-pneWal21CHa7eSjBLy5aG11boFXHPKvwV88K2TuwzQV1ncDOIWoZO/S9fZQc6Pzd4F0V8tf9la1c9P9audDiMQ==
 
-"@react-google-maps/marker-clusterer@1.9.8":
-  version "1.9.8"
-  resolved "https://registry.yarnpkg.com/@react-google-maps/marker-clusterer/-/marker-clusterer-1.9.8.tgz#6b61d38af96daac41014ce57be3e6e658164645d"
-  integrity sha512-IP5byj6GtOU9RNn4PxeTjxLMSnzslXjMZFVtqkxnz5YjqxpZUQ5gUx5974wcuCjpJtbYP6A1HZNhm0/AZZe7tw==
+"@react-google-maps/marker-clusterer@1.9.9":
+  version "1.9.9"
+  resolved "https://registry.yarnpkg.com/@react-google-maps/marker-clusterer/-/marker-clusterer-1.9.9.tgz#5b967d26c12a2726700720570d1afff47598d922"
+  integrity sha512-MA+Z+S77csV+httWjZhmE1pOJitmB9Jk1BnNO7ub+81jae5ipY3lf7kXpVBLeNmWy/AXs61bchuXRyzsKyLdqQ==
 
 "@redux-saga/core@^1.1.3":
   version "1.1.3"
