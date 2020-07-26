@@ -10,7 +10,8 @@ import {
     FormControl,
     InputLabel,
     Input,
-    InputAdornment
+    InputAdornment,
+    makeStyles
 } from '@material-ui/core';
 import { ICertificateViewItem } from '../../features/certificates';
 import { ICertificateEnergy } from '../../../../issuer/src';
@@ -25,8 +26,9 @@ import {
     EnergyTypes
 } from '../..';
 import { useSelector } from 'react-redux';
-import { useTranslation } from '../../utils';
+import { useTranslation, useValidation } from '../../utils';
 import { Edit, HighlightOff } from '@material-ui/icons';
+import { Formik, Field, Form } from 'formik';
 
 export interface IBundledCertificateEnergy extends ICertificateEnergy {
     volumeToBundle: BigNumber;
@@ -46,11 +48,11 @@ export const BundleItemEdit = (props: IOwnProps) => {
     const { t } = useTranslation();
     const { onChange } = props;
     let totalVolume = props.totalVolume;
-    const [certificate, setCertificate] = useState<IBundledCertificate>(props.certificate);
+    const { certificate } = props;
     const {
         creationTime,
         deviceId,
-        energy: { volumeToBundle }
+        energy: { publicVolume, volumeToBundle }
     } = certificate;
     const [selected, setSelected] = useState<boolean>(false);
     const {
@@ -59,38 +61,26 @@ export const BundleItemEdit = (props: IOwnProps) => {
     } = useTheme();
     const environment = useSelector(getEnvironment);
     const devices = useSelector(getProducingDevices);
+    const classes = makeStyles(() => ({
+        input: {
+            textAlign: 'right'
+        }
+    }))();
 
     useEffect(() => {
-        setCertificate(certificate);
         totalVolume = props.totalVolume;
-    }, [props.certificate, props.totalVolume]);
-
-    const handleChange = (event) => {
-        setCertificate({
-            ...certificate,
-            energy: { ...certificate.energy, volumeToBundle: BigNumber.from(event.target.value) }
-        });
-    };
-
-    const resetVolumeToBundle = () => {
-        setCertificate({
-            ...certificate,
-            energy: {
-                ...certificate.energy,
-                volumeToBundle: BigNumber.from(props.certificate.energy.publicVolume)
-            }
-        });
-    };
-
-    const setToZero = () => {
-        setCertificate({
-            ...certificate,
-            energy: { ...certificate.energy, volumeToBundle: BigNumber.from(0) }
-        });
-    };
+    }, [props.totalVolume]);
 
     const { province, deviceType, facilityName } = deviceById(deviceId, environment, devices);
     const type = deviceType.split(';')[0].toLowerCase() as EnergyTypes;
+
+    const { Yup } = useValidation();
+    const validationSchema = Yup.object().shape({
+        volumeToBundle: Yup.number()
+            .required()
+            .min(0)
+            .max(Number(EnergyFormatter.format(publicVolume)))
+    });
 
     return (
         <Grid container direction="column">
@@ -115,10 +105,9 @@ export const BundleItemEdit = (props: IOwnProps) => {
                             {EnergyFormatter.format(volumeToBundle, true)}
                         </Box>
                         <Box fontSize={fontSizeMd}>
-                            {(
-                                (100 * props.certificate.energy.volumeToBundle.toNumber()) /
-                                totalVolume().toNumber()
-                            ).toFixed(0)}
+                            {((100 * volumeToBundle.toNumber()) / totalVolume().toNumber()).toFixed(
+                                0
+                            )}
                             %
                         </Box>
                     </Grid>
@@ -132,10 +121,7 @@ export const BundleItemEdit = (props: IOwnProps) => {
                     ) : (
                         <Grid item xs={2} style={{ textAlign: 'center' }}>
                             <Button
-                                onClick={() => {
-                                    setSelected(false);
-                                    resetVolumeToBundle();
-                                }}
+                                onClick={() => setSelected(false)}
                                 style={{ fontSize: fontSizeSm }}
                             >
                                 {t('general.actions.cancel')}
@@ -145,37 +131,80 @@ export const BundleItemEdit = (props: IOwnProps) => {
                 </Grid>
             </Grid>
             {selected && (
-                <Grid item container>
-                    <Grid item style={{ flexGrow: 1 }}>
-                        <FormControl style={{ width: '100%' }}>
-                            <InputLabel>{t('bundle.info.editBundleVolume')}</InputLabel>
-                            <Input
-                                type="text"
-                                value={volumeToBundle}
-                                onChange={handleChange}
-                                endAdornment={
-                                    <InputAdornment position="end" style={{ margin: spacing(1) }}>
-                                        <IconButton onClick={setToZero}>
-                                            <HighlightOff />
-                                        </IconButton>
-                                    </InputAdornment>
-                                }
-                            />
-                        </FormControl>
-                    </Grid>
-                    <Grid item xs={2} style={{ textAlign: 'center' }}>
-                        <Button
-                            onClick={() => {
-                                setSelected(false);
-                                onChange(certificate);
-                            }}
-                            variant="contained"
-                            color="primary"
-                        >
-                            {t('user.actions.save')}
-                        </Button>
-                    </Grid>
-                </Grid>
+                <Formik
+                    validationSchema={validationSchema}
+                    onSubmit={(values) => {
+                        setSelected(false);
+                        onChange({
+                            ...certificate,
+                            energy: {
+                                ...certificate.energy,
+                                volumeToBundle: EnergyFormatter.getBaseValueFromValueInDisplayUnit(
+                                    Number(values.volumeToBundle)
+                                )
+                            }
+                        });
+                    }}
+                    initialValues={{
+                        volumeToBundle: EnergyFormatter.format(volumeToBundle)
+                    }}
+                >
+                    {(formikProps) => {
+                        const { isValid, setFieldValue } = formikProps;
+                        return (
+                            <Form translate="">
+                                <Grid item container>
+                                    <Grid item style={{ flexGrow: 1 }}>
+                                        <Field name="volumeToBundle">
+                                            {({ field }) => (
+                                                <FormControl style={{ width: '100%' }}>
+                                                    <InputLabel>
+                                                        {t('bundle.info.editBundleVolume')}
+                                                    </InputLabel>
+                                                    <Input
+                                                        name="volumeToBundle"
+                                                        {...field}
+                                                        classes={{ input: classes.input }}
+                                                        type="string"
+                                                        endAdornment={
+                                                            <InputAdornment
+                                                                position="end"
+                                                                style={{ marginBottom: spacing(1) }}
+                                                            >
+                                                                <IconButton
+                                                                    onClick={() =>
+                                                                        setFieldValue(
+                                                                            'volumeToBundle',
+                                                                            0
+                                                                        )
+                                                                    }
+                                                                >
+                                                                    <HighlightOff
+                                                                        style={{ fill: '#878787' }}
+                                                                    />
+                                                                </IconButton>
+                                                            </InputAdornment>
+                                                        }
+                                                    />
+                                                </FormControl>
+                                            )}
+                                        </Field>
+                                    </Grid>
+                                    <Grid item xs={2} style={{ textAlign: 'center' }}>
+                                        <Button
+                                            type="submit"
+                                            disabled={!isValid}
+                                            variant="contained"
+                                            color="primary"
+                                        >
+                                            {t('user.actions.save')}
+                                        </Button>
+                                    </Grid>
+                                </Grid>
+                            </Form>
+                        );
+                    }}
+                </Formik>
             )}
         </Grid>
     );
