@@ -56,14 +56,14 @@ export const BundleItemEdit = (props: IOwnProps) => {
     } = certificate;
     const [selected, setSelected] = useState<boolean>(false);
     const {
-        typography: { fontSizeSm, fontSizeMd },
+        typography: { fontSizeMd },
         spacing
     } = useTheme();
     const environment = useSelector(getEnvironment);
     const devices = useSelector(getProducingDevices);
     const classes = makeStyles(() => ({
         formControl: {
-            marginTop: spacing(2)
+            width: '100%'
         },
         formLabel: {
             marginTop: spacing(1),
@@ -91,7 +91,11 @@ export const BundleItemEdit = (props: IOwnProps) => {
 
     return (
         <Grid container direction="column">
-            <Grid item>
+            <Grid
+                item
+                onClick={!selected ? () => setSelected(true) : null}
+                style={{ cursor: !selected ? 'pointer' : 'auto' }}
+            >
                 <Grid container>
                     <Grid item xs={2}>
                         <ListItemAvatar>
@@ -121,18 +125,21 @@ export const BundleItemEdit = (props: IOwnProps) => {
 
                     {!selected ? (
                         <Grid item xs={1} style={{ textAlign: 'center' }}>
-                            <IconButton onClick={() => setSelected(true)}>
+                            <IconButton>
                                 <Edit color="primary" />
                             </IconButton>
                         </Grid>
                     ) : (
                         <Grid item xs={2} style={{ textAlign: 'center' }}>
-                            <Button
+                            <Box
                                 onClick={() => setSelected(false)}
-                                style={{ fontSize: fontSizeSm }}
+                                style={{
+                                    textTransform: 'uppercase',
+                                    cursor: 'pointer'
+                                }}
                             >
                                 {t('general.actions.cancel')}
-                            </Button>
+                            </Box>
                         </Grid>
                     )}
                 </Grid>
@@ -160,12 +167,11 @@ export const BundleItemEdit = (props: IOwnProps) => {
                         const { isValid, setFieldValue } = formikProps;
                         return (
                             <Form translate="">
-                                <Grid item container>
+                                <Grid item container style={{ marginTop: spacing(2) }}>
                                     <Grid item style={{ flexGrow: 1 }}>
                                         <Field name="volumeToBundle">
                                             {({ field }) => (
                                                 <FormControl
-                                                    style={{ width: '100%' }}
                                                     classes={{ root: classes.formControl }}
                                                 >
                                                     <InputLabel
