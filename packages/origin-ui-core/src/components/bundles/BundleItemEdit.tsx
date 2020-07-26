@@ -62,7 +62,14 @@ export const BundleItemEdit = (props: IOwnProps) => {
     const environment = useSelector(getEnvironment);
     const devices = useSelector(getProducingDevices);
     const classes = makeStyles(() => ({
-        input: {
+        formControl: {
+            marginTop: spacing(2)
+        },
+        formLabel: {
+            marginTop: spacing(1),
+            marginLeft: spacing(1)
+        },
+        formInput: {
             textAlign: 'right'
         }
     }))();
@@ -157,14 +164,19 @@ export const BundleItemEdit = (props: IOwnProps) => {
                                     <Grid item style={{ flexGrow: 1 }}>
                                         <Field name="volumeToBundle">
                                             {({ field }) => (
-                                                <FormControl style={{ width: '100%' }}>
-                                                    <InputLabel>
+                                                <FormControl
+                                                    style={{ width: '100%' }}
+                                                    classes={{ root: classes.formControl }}
+                                                >
+                                                    <InputLabel
+                                                        classes={{ root: classes.formLabel }}
+                                                    >
                                                         {t('bundle.info.editBundleVolume')}
                                                     </InputLabel>
                                                     <Input
                                                         name="volumeToBundle"
                                                         {...field}
-                                                        classes={{ input: classes.input }}
+                                                        classes={{ input: classes.formInput }}
                                                         type="string"
                                                         endAdornment={
                                                             <InputAdornment

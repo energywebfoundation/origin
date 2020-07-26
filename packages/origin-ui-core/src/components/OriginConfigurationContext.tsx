@@ -19,13 +19,14 @@ export interface IOriginStyleConfig {
     PRIMARY_COLOR_DARKER: string;
     TEXT_COLOR_DEFAULT: string;
     BACKGROUND_COLOR_DARK: string;
+    BACKGROUND_COLOR_DARKER: string;
     FIELD_ICON_COLOR: string;
     WHITE: string;
 }
 
 export const createMaterialThemeForOrigin = (
     styleConfig: IOriginStyleConfig,
-    language: ORIGIN_LANGUAGE
+    language: ORIGIN_LANGUAGE,
 ): Theme => {
     const materialLocale =
         {
@@ -57,6 +58,11 @@ export const createMaterialThemeForOrigin = (
                         '&:before': {
                             borderBottom: '2px solid #474747'
                         }
+                    }
+                },
+                MuiFormControl: {
+                    root: {
+                        backgroundColor: styleConfig.BACKGROUND_COLOR_DARKER
                     }
                 },
                 MuiFormLabel: {
@@ -201,6 +207,7 @@ export function createStyleConfigFromSCSSVariables(scssVariables: any): IOriginS
         PRIMARY_COLOR_DARKER: scssVariables.primaryColorDarker ?? '#894ec5',
         TEXT_COLOR_DEFAULT: scssVariables.textColorDefault ?? '#894ec5',
         BACKGROUND_COLOR_DARK: scssVariables.backgroundColorDark ?? '#894ec5',
+        BACKGROUND_COLOR_DARKER: scssVariables.backgroundColorDarker ?? '#894ec5',
         FIELD_ICON_COLOR: scssVariables.fieldIconColor ?? '#894ec5',
         WHITE: '#fff'
     };
