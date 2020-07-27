@@ -30,6 +30,7 @@ import { useTranslation, useValidation } from '../../utils';
 import { Edit, HighlightOff } from '@material-ui/icons';
 import { Formik, Field, Form } from 'formik';
 import variables from '../../styles/variables.scss';
+import bundleItemStyles from '../../styles/BundleItemEdit.scss';
 
 export interface IBundledCertificateEnergy extends ICertificateEnergy {
     volumeToBundle: BigNumber;
@@ -200,7 +201,10 @@ export const BundleItemEdit = (props: IOwnProps) => {
                                                                     }
                                                                 >
                                                                     <HighlightOff
-                                                                        style={{ fill: '#878787' }}
+                                                                        style={{
+                                                                            fill:
+                                                                                bundleItemStyles.resetButtonColor
+                                                                        }}
                                                                     />
                                                                 </IconButton>
                                                             </InputAdornment>
