@@ -120,14 +120,16 @@ export class CertificationRequest extends PreciseProofEntity implements ICertifi
     ): Promise<CertificationRequest[]> {
         const all = await configuration.offChainDataSource.certificationRequestClient.getAllCertificationRequests();
 
-        return all.map((certReq) => new CertificationRequest(certReq, configuration));
+        return all.map(
+            (certReq: ICertificationRequest) => new CertificationRequest(certReq, configuration)
+        );
     }
 
     public static async fetch(
         id: ICertificationRequest['id'],
         configuration: Configuration.Entity
     ): Promise<CertificationRequest> {
-        const certData = await polly()
+        const certData: ICertificationRequest = await polly()
             .waitAndRetry([2000, 4000, 8000, 16000])
             .executeForPromise(() =>
                 configuration.offChainDataSource.certificationRequestClient.getCertificationRequest(

@@ -94,3 +94,5 @@ export interface IUserFilter {
     status?: UserStatus;
     kycStatus?: KYCStatus;
 }
+
+export type UpdateUserResponseReturnType = IUserWithRelationsIds;

@@ -1,10 +1,9 @@
 import {
     ICertificateOwnership,
     CommitmentStatus,
-    IOwnershipCommitmentProofWithTx
+    IOwnershipCommitmentProofWithTx,
+    ICertificateClient
 } from '@energyweb/origin-backend-core';
-
-import { ICertificateClient } from '@energyweb/origin-backend-client';
 
 export class CertificateClientMock implements ICertificateClient {
     private certificateStorage = new Map<number, ICertificateOwnership>();

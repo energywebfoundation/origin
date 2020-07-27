@@ -9,10 +9,11 @@ import {
     IRefreshUserOffchainAction
 } from './actions';
 import { getOffChainDataSource } from '../general/selectors';
-import { IRequestClient, IOffChainDataSource } from '@energyweb/origin-backend-client';
 import {
     IUserWithRelationsIds,
-    IOrganizationWithRelationsIds
+    IOrganizationWithRelationsIds,
+    IOffChainDataSource,
+    IRequestClient
 } from '@energyweb/origin-backend-core';
 import { GeneralActions, ISetOffChainDataSourceAction } from '../general/actions';
 import { reloadCertificates, clearCertificates } from '../certificates';

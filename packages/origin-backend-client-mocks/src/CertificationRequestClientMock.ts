@@ -3,13 +3,12 @@ import {
     CertificationRequestUpdateData,
     CertificationRequestDataMocked,
     CertificationRequestValidationData,
-    ISuccessResponse
+    ISuccessResponse,
+    ICertificationRequestClient
 } from '@energyweb/origin-backend-core';
 
 import * as Moment from 'moment';
 import { extendMoment } from 'moment-range';
-
-import { ICertificationRequestClient } from '@energyweb/origin-backend-client';
 
 export class CertificationRequestClientMock implements ICertificationRequestClient {
     private requestQueue: CertificationRequestUpdateData[] = [];

@@ -10,35 +10,12 @@ import {
     IUserWithRelationsIds,
     OrganizationRole,
     Role,
-    IOrganizationUpdateMemberRole
+    IOrganizationUpdateMemberRole,
+    IRequestClient,
+    IOrganizationClient
 } from '@energyweb/origin-backend-core';
 
-import { IRequestClient, RequestClient } from './RequestClient';
-
-export interface IOrganizationClient {
-    getById(id: number): Promise<IOrganizationWithRelationsIds>;
-    getAll(): Promise<IOrganizationWithRelationsIds[]>;
-    add(data: OrganizationPostData): Promise<IOrganizationWithRelationsIds>;
-    update(id: number, data: OrganizationUpdateData): Promise<IOrganizationWithRelationsIds>;
-
-    invite(email: string, role: OrganizationRole): Promise<ISuccessResponse>;
-    getInvitations(): Promise<IOrganizationInvitation[]>;
-    getInvitationsToOrganization(organizationId: number): Promise<IOrganizationInvitation[]>;
-    getInvitationsForEmail(email: string): Promise<IOrganizationInvitation[]>;
-    acceptInvitation(id: number): Promise<any>;
-    rejectInvitation(id: number): Promise<any>;
-
-    getMembers(id: number): Promise<IUserWithRelationsIds[]>;
-    removeMember(
-        organizationId: number,
-        userId: number
-    ): Promise<ISuccessResponse>;
-    memberChangeRole(
-        organizationId: number,
-        userId: number,
-        newRole: Role
-    ): Promise<ISuccessResponse>
-}
+import { RequestClient } from './RequestClient';
 
 export class OrganizationClient implements IOrganizationClient {
     constructor(
@@ -148,11 +125,8 @@ export class OrganizationClient implements IOrganizationClient {
         return data;
     }
 
-    public async removeMember(
-        organizationId: number,
-        userId: number
-    ): Promise<ISuccessResponse> {
-        const response = await this.requestClient.post<{}, ISuccessResponse>(
+    public async removeMember(organizationId: number, userId: number): Promise<ISuccessResponse> {
+        const response = await this.requestClient.post<void, ISuccessResponse>(
             `${this.endpoint}/${organizationId}/remove-member/${userId}`
         );
 
@@ -173,10 +147,10 @@ export class OrganizationClient implements IOrganizationClient {
         userId: number,
         newRole: Role
     ): Promise<ISuccessResponse> {
-        const response = await this.requestClient.put<IOrganizationUpdateMemberRole, ISuccessResponse>(
-            `${this.endpoint}/${organizationId}/change-role/${userId}`,
-            { role: newRole }
-        );
+        const response = await this.requestClient.put<
+            IOrganizationUpdateMemberRole,
+            ISuccessResponse
+        >(`${this.endpoint}/${organizationId}/change-role/${userId}`, { role: newRole });
 
         return response.data;
     }

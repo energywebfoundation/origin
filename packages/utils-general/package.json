@@ -29,7 +29,7 @@
     },
     "types": "dist/js/src/index.d.ts",
     "dependencies": {
-        "@energyweb/origin-backend-client": "6.2.1",
+        "@energyweb/origin-backend-core": "4.2.0",
         "chai": "^4.2.0",
         "eth-sig-util": "2.5.2",
         "ethers": "5.0.7",

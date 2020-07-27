@@ -5,12 +5,14 @@ import {
     CertificationRequestUpdateData,
     ICertificationRequestBackend,
     CertificationRequestValidationData,
-    ISuccessResponse
+    ISuccessResponse,
+    IRequestClient,
+    ICertificationRequestClient
 } from '@energyweb/origin-backend-core';
 
-import { IRequestClient, RequestClient } from './RequestClient';
+import { RequestClient } from './RequestClient';
 
-export class CertificationRequestUpdateDTO {
+export interface ICertificationRequestUpdateDTO {
     deviceId: string;
 
     fromTime: number;
@@ -20,13 +22,6 @@ export class CertificationRequestUpdateDTO {
     energy: string;
 
     files: string[];
-}
-
-export interface ICertificationRequestClient {
-    queueCertificationRequestData(data: CertificationRequestUpdateData): Promise<boolean>;
-    validateGenerationPeriod(data: CertificationRequestValidationData): Promise<ISuccessResponse>;
-    getCertificationRequest(id: ICertificationRequest['id']): Promise<ICertificationRequest>;
-    getAllCertificationRequests(): Promise<ICertificationRequest[]>;
 }
 
 export class CertificationRequestClient implements ICertificationRequestClient {
@@ -42,12 +37,12 @@ export class CertificationRequestClient implements ICertificationRequestClient {
     public async queueCertificationRequestData(
         data: CertificationRequestUpdateData
     ): Promise<boolean> {
-        const dto: CertificationRequestUpdateDTO = {
+        const dto: ICertificationRequestUpdateDTO = {
             ...data,
             energy: data.energy.toString()
         };
 
-        const response = await this.requestClient.post<CertificationRequestUpdateDTO, boolean>(
+        const response = await this.requestClient.post<ICertificationRequestUpdateDTO, boolean>(
             `${this.certificateRequestEndpoint}`,
             dto
         );

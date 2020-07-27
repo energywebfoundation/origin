@@ -1,14 +1,11 @@
-import { CommitmentStatus, IOwnershipCommitmentProofWithTx } from '@energyweb/origin-backend-core';
+import {
+    CommitmentStatus,
+    IOwnershipCommitmentProofWithTx,
+    IRequestClient,
+    ICertificateClient
+} from '@energyweb/origin-backend-core';
 
-import { IRequestClient, RequestClient } from './RequestClient';
-
-export interface ICertificateClient {
-    getOwnershipCommitment(certificateId: number): Promise<IOwnershipCommitmentProofWithTx>;
-    addOwnershipCommitment(
-        certificateId: number,
-        data: IOwnershipCommitmentProofWithTx
-    ): Promise<CommitmentStatus>;
-}
+import { RequestClient } from './RequestClient';
 
 export class CertificateClient implements ICertificateClient {
     constructor(

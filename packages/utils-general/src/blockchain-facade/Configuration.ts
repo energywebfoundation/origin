@@ -1,7 +1,7 @@
 import * as Winston from 'winston';
 import { Signer, providers } from 'ethers';
 
-import { IOffChainDataSource } from '@energyweb/origin-backend-client';
+import { IOffChainDataSource } from '@energyweb/origin-backend-core';
 import { IDeviceTypeService } from './DeviceTypeService';
 
 export interface Entity<TRegistry = any, TIssuer = any> {

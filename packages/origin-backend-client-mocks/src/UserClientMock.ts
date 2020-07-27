@@ -11,11 +11,10 @@ import {
     IUserWithRelations,
     IEmailConfirmationToken,
     EmailConfirmationResponse,
-    ISuccessResponse
+    ISuccessResponse,
+    IUserClient
 } from '@energyweb/origin-backend-core';
 import { recoverTypedSignatureAddress } from '@energyweb/utils-general';
-
-import { IUserClient } from '@energyweb/origin-backend-client';
 
 export class UserClientMock implements IUserClient {
     private storage = new Map<number, IUserWithRelationsIds>();

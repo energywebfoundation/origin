@@ -1,10 +1,9 @@
-import { IOriginConfiguration } from '@energyweb/origin-backend-core';
-import { IRequestClient, RequestClient } from './RequestClient';
-
-export interface IConfigurationClient {
-    get(): Promise<IOriginConfiguration>;
-    update(configuration: Partial<IOriginConfiguration>): Promise<boolean>;
-}
+import {
+    IOriginConfiguration,
+    IConfigurationClient,
+    IRequestClient
+} from '@energyweb/origin-backend-core';
+import { RequestClient } from './RequestClient';
 
 export class ConfigurationClient implements IConfigurationClient {
     constructor(

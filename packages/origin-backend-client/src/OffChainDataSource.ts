@@ -1,30 +1,25 @@
 import { OriginFeature, allOriginFeatures } from '@energyweb/utils-general';
-import { CertificateClient, ICertificateClient } from './CertificateClient';
-import { ConfigurationClient, IConfigurationClient } from './ConfigurationClient';
-import { DeviceClient, IDeviceClient } from './DeviceClient';
-import { FilesClient, IFilesClient } from './FilesClient';
-import { IOrganizationClient, OrganizationClient } from './OrganizationClient';
-import { IRequestClient, RequestClient } from './RequestClient';
-import { IUserClient, UserClient } from './UserClient';
-import { IAdminClient, AdminClient } from './AdminClient';
 import {
-    CertificationRequestClient,
-    ICertificationRequestClient
-} from './CertificationRequestClient';
-
-export interface IOffChainDataSource {
-    dataApiUrl: string;
-    requestClient: IRequestClient;
-    configurationClient: IConfigurationClient;
-    userClient: IUserClient;
-    organizationClient: IOrganizationClient;
-    filesClient: IFilesClient;
-    adminClient: IAdminClient;
-
-    certificateClient?: ICertificateClient;
-    certificationRequestClient?: ICertificationRequestClient;
-    deviceClient?: IDeviceClient;
-}
+    IOffChainDataSource,
+    ICertificationRequestClient,
+    IAdminClient,
+    ICertificateClient,
+    IDeviceClient,
+    IFilesClient,
+    IOrganizationClient,
+    IRequestClient,
+    IUserClient,
+    IConfigurationClient
+} from '@energyweb/origin-backend-core';
+import { CertificateClient } from './CertificateClient';
+import { ConfigurationClient } from './ConfigurationClient';
+import { DeviceClient } from './DeviceClient';
+import { FilesClient } from './FilesClient';
+import { OrganizationClient } from './OrganizationClient';
+import { RequestClient } from './RequestClient';
+import { UserClient } from './UserClient';
+import { AdminClient } from './AdminClient';
+import { CertificationRequestClient } from './CertificationRequestClient';
 
 export class OffChainDataSource implements IOffChainDataSource {
     configurationClient: IConfigurationClient;

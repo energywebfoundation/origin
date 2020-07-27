@@ -1,16 +1,5 @@
-import {
-    IOffChainDataSource,
-    IConfigurationClient,
-    IUserClient,
-    IDeviceClient,
-    IRequestClient,
-    RequestClient,
-    IOrganizationClient,
-    IFilesClient,
-    ICertificateClient,
-    IAdminClient,
-    ICertificationRequestClient
-} from '@energyweb/origin-backend-client';
+import { RequestClient } from '@energyweb/origin-backend-client';
+import { IOffChainDataSource, IConfigurationClient, IUserClient, IDeviceClient, IOrganizationClient, IRequestClient, IFilesClient, ICertificateClient, ICertificationRequestClient, IAdminClient } from '@energyweb/origin-backend-core';
 
 import { ConfigurationClientMock } from './ConfigurationClientMock';
 import { UserClientMock } from './UserClientMock';
