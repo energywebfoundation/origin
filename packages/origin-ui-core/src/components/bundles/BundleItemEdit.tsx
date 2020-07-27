@@ -138,7 +138,9 @@ export const BundleItemEdit = (props: IOwnProps) => {
                                 onClick={() => setSelected(false)}
                                 style={{
                                     textTransform: 'uppercase',
-                                    cursor: 'pointer'
+                                    cursor: 'pointer',
+                                    transform: `scale(0.75)`,
+                                    fontWeight: 'bold'
                                 }}
                             >
                                 {t('general.actions.cancel')}
