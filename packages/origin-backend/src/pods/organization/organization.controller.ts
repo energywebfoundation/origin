@@ -65,7 +65,7 @@ export class OrganizationController {
     }
 
     @Get('/invitation')
-    @UseGuards(AuthGuard())
+    @UseGuards(AuthGuard(), ActiveUserGuard)
     async getInvitations(
         @UserDecorator() loggedUser: ILoggedInUser
     ): Promise<IOrganizationInvitation[]> {
