@@ -21,9 +21,12 @@ export interface IOriginStyleConfig {
     PRIMARY_COLOR_DARKER: string;
     TEXT_COLOR_DEFAULT: string;
     BACKGROUND_COLOR_DARK: string;
+    BACKGROUND_COLOR_DARKER: string;
     FIELD_ICON_COLOR: string;
     WHITE: string;
 }
+
+const DEFAULT_COLOR = '#894ec5';
 
 export const createMaterialThemeForOrigin = (
     styleConfig: IOriginStyleConfig,
@@ -199,12 +202,13 @@ export interface IOriginConfiguration {
 
 export function createStyleConfigFromSCSSVariables(scssVariables: any): IOriginStyleConfig {
     return {
-        PRIMARY_COLOR: scssVariables.primaryColor ?? '#894ec5',
-        PRIMARY_COLOR_DARK: scssVariables.primaryColorDark ?? '#894ec5',
-        PRIMARY_COLOR_DARKER: scssVariables.primaryColorDarker ?? '#894ec5',
-        TEXT_COLOR_DEFAULT: scssVariables.textColorDefault ?? '#894ec5',
-        BACKGROUND_COLOR_DARK: scssVariables.backgroundColorDark ?? '#894ec5',
-        FIELD_ICON_COLOR: scssVariables.fieldIconColor ?? '#894ec5',
+        PRIMARY_COLOR: scssVariables.primaryColor ?? DEFAULT_COLOR,
+        PRIMARY_COLOR_DARK: scssVariables.primaryColorDark ?? DEFAULT_COLOR,
+        PRIMARY_COLOR_DARKER: scssVariables.primaryColorDarker ?? DEFAULT_COLOR,
+        TEXT_COLOR_DEFAULT: scssVariables.textColorDefault ?? DEFAULT_COLOR,
+        BACKGROUND_COLOR_DARK: scssVariables.backgroundColorDark ?? DEFAULT_COLOR,
+        BACKGROUND_COLOR_DARKER: scssVariables.backgroundColorDarker ?? DEFAULT_COLOR,
+        FIELD_ICON_COLOR: scssVariables.fieldIconColor ?? DEFAULT_COLOR,
         WHITE: '#fff'
     };
 }

@@ -448,7 +448,8 @@
                 "Sell": "Sell",
                 "certificates": "certificates",
                 "price": "Price per MWh",
-                "bundleBought": "Bundle was fully purchased"
+                "bundleBought": "Bundle was fully purchased",
+                "editBundleVolume" : "Edit volume (MWh)"
             },
             "actions": {
                 "sellAsBundle": "Sell as bundle"
