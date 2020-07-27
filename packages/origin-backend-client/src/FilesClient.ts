@@ -1,16 +1,10 @@
 import { CancelTokenSource } from 'axios';
-import { IRequestClient, RequestClient } from './RequestClient';
-
-type onUploadProgressFunction = (progressEvent: ProgressEvent) => void;
-
-export interface IFilesClient {
-    upload(
-        files: File[] | FileList,
-        onUploadProgress?: onUploadProgressFunction,
-        cancelTokenSource?: CancelTokenSource
-    ): Promise<string[]>;
-    getLink(id: string): string;
-}
+import {
+    IFilesClient,
+    IRequestClient,
+    onUploadProgressFunction
+} from '@energyweb/origin-backend-core';
+import { RequestClient } from './RequestClient';
 
 export class FilesClient implements IFilesClient {
     constructor(

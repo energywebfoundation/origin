@@ -145,7 +145,9 @@ export const getAllDevices = async (
 ): Promise<Entity[]> => {
     const allDevices = await configuration.offChainDataSource.deviceClient.getAll(withMeterStats);
 
-    return allDevices.map((device) => new Entity(device.id, configuration, device));
+    return allDevices.map(
+        (device: IDeviceWithRelationsIds) => new Entity(device.id, configuration, device)
+    );
 };
 
 export const createDevice = async (

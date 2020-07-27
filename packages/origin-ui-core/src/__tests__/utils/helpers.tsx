@@ -15,14 +15,18 @@ import React from 'react';
 import MomentUtils from '@date-io/moment';
 import { Provider } from 'react-redux';
 import { createLogger } from 'redux-logger';
-import { IOffChainDataSource } from '@energyweb/origin-backend-client';
 import { setOffChainDataSource } from '../../features/general/actions';
 import {
     OriginConfigurationProvider,
     createOriginConfiguration,
     initializeI18N
 } from '../../components';
-import { IDevice, DeviceStatus, ISmartMeterReadStats } from '@energyweb/origin-backend-core';
+import {
+    IDevice,
+    DeviceStatus,
+    ISmartMeterReadStats,
+    IOffChainDataSource
+} from '@energyweb/origin-backend-core';
 import { BigNumber, Signer } from 'ethers';
 import { ICertificate, Certificate } from '@energyweb/issuer';
 

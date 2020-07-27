@@ -2,29 +2,16 @@ import {
     DeviceCreateData,
     DeviceSettingsUpdateData,
     DeviceUpdateData,
-    IDevice,
     IDeviceWithRelationsIds,
     IExternalDeviceId,
     ISmartMeterRead,
     ISmartMeterReadWithStatus,
-    ISuccessResponse
+    ISuccessResponse,
+    IDeviceClient,
+    IRequestClient
 } from '@energyweb/origin-backend-core';
 import { BigNumber } from 'ethers';
-import { IRequestClient, RequestClient } from './RequestClient';
-
-export interface IDeviceClient {
-    getById(id: number): Promise<IDeviceWithRelationsIds>;
-    getByExternalId(id: IExternalDeviceId): Promise<IDeviceWithRelationsIds>;
-    getAll(withMeterStats: boolean): Promise<IDeviceWithRelationsIds[]>;
-    add(device: DeviceCreateData): Promise<IDeviceWithRelationsIds>;
-    update(id: number, data: DeviceUpdateData): Promise<IDevice>;
-    getAllSmartMeterReadings(id: number): Promise<ISmartMeterReadWithStatus[]>;
-    addSmartMeterReads(id: number, smartMeterReads: ISmartMeterRead[]): Promise<void>;
-    getSupplyBy(facilityName: string, status: number): Promise<IDeviceWithRelationsIds[]>;
-    delete(id: number): Promise<ISuccessResponse>;
-    updateDeviceSettings(id: number, device: DeviceSettingsUpdateData): Promise<ISuccessResponse>;
-    getMyDevices(withMeterStats: boolean): Promise<IDeviceWithRelationsIds[]>;
-}
+import { RequestClient } from './RequestClient';
 
 export class DeviceClient implements IDeviceClient {
     constructor(

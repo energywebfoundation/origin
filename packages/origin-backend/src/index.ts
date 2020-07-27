@@ -1,14 +1,14 @@
 import { APP_PIPE } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
 import { Certificate } from './pods/certificate/certificate.entity';
-import { CertificationRequest } from './pods/certificate/certification-request.entity';
+import { CertificationRequest } from './pods/certification-request/certification-request.entity';
 import { OwnershipCommitment } from './pods/certificate/ownership-commitment.entity';
 import { Configuration } from './pods/configuration/configuration.entity';
 import { Device } from './pods/device/device.entity';
 import { Organization } from './pods/organization/organization.entity';
 import { OrganizationInvitation } from './pods/organization/organization-invitation.entity';
 import { User } from './pods/user/user.entity';
-import { CertificationRequestQueueItem } from './pods/certificate/certification-request-queue-item.entity';
+import { CertificationRequestQueueItem } from './pods/certification-request/certification-request-queue-item.entity';
 import { EmailConfirmation } from './pods/email-confirmation/email-confirmation.entity';
 
 import { AuthModule } from './auth/auth.module';
@@ -20,6 +20,7 @@ import { FileModule } from './pods/file/file.module';
 import { OrganizationModule } from './pods/organization/organization.module';
 import { UserModule } from './pods/user/user.module';
 import { EmailConfirmationModule } from './pods/email-confirmation/email-confirmation.module';
+import { CertificationRequestModule } from './pods/certification-request/certification-request.module';
 
 export { AppModule } from './app.module';
 export { ExtendedBaseEntity } from './pods/ExtendedBaseEntity';
@@ -29,7 +30,7 @@ export { DeviceService } from './pods/device/device.service';
 export {
     CertificationRequestApprovedEvent,
     CertificationRequestRevokedEvent
-} from './pods/certificate';
+} from './pods/certification-request';
 
 export const entities = [
     Device,
@@ -53,7 +54,8 @@ export const modules = [
     FileModule,
     OrganizationModule,
     UserModule,
-    EmailConfirmationModule
+    EmailConfirmationModule,
+    CertificationRequestModule
 ];
 
 export const providers = [{ provide: APP_PIPE, useClass: ValidationPipe }];

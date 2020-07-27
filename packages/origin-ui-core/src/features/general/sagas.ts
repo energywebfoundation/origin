@@ -18,7 +18,7 @@ import {
     getExchangeClient
 } from './selectors';
 import axios, { Canceler } from 'axios';
-import { IOffChainDataSource, OffChainDataSource } from '@energyweb/origin-backend-client';
+import { OffChainDataSource } from '@energyweb/origin-backend-client';
 import {
     ExchangeClient,
     IExchangeClient,
@@ -26,7 +26,11 @@ import {
     AccountAsset,
     Bundle
 } from '../../utils/exchange';
-import { IOriginConfiguration, IUserWithRelations } from '@energyweb/origin-backend-core';
+import {
+    IOriginConfiguration,
+    IUserWithRelations,
+    IOffChainDataSource
+} from '@energyweb/origin-backend-core';
 import {
     setActiveBlockchainAccountAddress,
     UsersActions,
