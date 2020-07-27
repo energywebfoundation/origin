@@ -1,6 +1,5 @@
 import {
     IOffChainDataSource,
-    IPreciseProofClient,
     IConfigurationClient,
     IUserClient,
     IDeviceClient,
@@ -9,28 +8,27 @@ import {
     IOrganizationClient,
     IFilesClient,
     ICertificateClient,
-    IAdminClient
+    IAdminClient,
+    ICertificationRequestClient
 } from '@energyweb/origin-backend-client';
 
-import { PreciseProofClientMock } from './PreciseProofClientMock';
 import { ConfigurationClientMock } from './ConfigurationClientMock';
 import { UserClientMock } from './UserClientMock';
 import { DeviceClientMock } from './DeviceClientMock';
 import { OrganizationClientMock } from './OrganizationClientMock';
 import { CertificateClientMock } from './CertificateClientMock';
+import { CertificationRequestClientMock } from './CertificationRequestClientMock';
 
 export class OffChainDataSourceMock implements IOffChainDataSource {
     dataApiUrl: string;
-
-    preciseProofClient: IPreciseProofClient = new PreciseProofClientMock();
 
     configurationClient: IConfigurationClient = new ConfigurationClientMock();
 
     userClient: IUserClient = new UserClientMock();
 
-    deviceClient: IDeviceClient;
+    deviceClient: IDeviceClient = new DeviceClientMock();
 
-    organizationClient: IOrganizationClient;
+    organizationClient: IOrganizationClient = new OrganizationClientMock();
 
     requestClient: IRequestClient = new RequestClient();
 
@@ -38,10 +36,7 @@ export class OffChainDataSourceMock implements IOffChainDataSource {
 
     certificateClient: ICertificateClient = new CertificateClientMock();
 
-    adminClient: IAdminClient;
+    certificationRequestClient: ICertificationRequestClient = new CertificationRequestClientMock();
 
-    constructor() {
-        this.deviceClient = new DeviceClientMock();
-        this.organizationClient = new OrganizationClientMock();
-    }
+    adminClient: IAdminClient;
 }
