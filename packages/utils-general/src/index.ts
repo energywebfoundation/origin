@@ -16,4 +16,4 @@ export {
 export { ILocationService, LocationService } from './blockchain-facade/LocationService';
 export * from './Signing';
 export { getProviderWithFallback } from './blockchain-facade/FallbackProvider';
-export { OriginFeature } from './OriginFeature';
+export * from './OriginFeature';

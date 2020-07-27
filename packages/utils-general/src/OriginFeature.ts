@@ -1,3 +1,5 @@
+import { getEnumValues } from './utils';
+
 export enum OriginFeature {
     Bundles = 'bundles',
     Exchange = 'exchange',
@@ -7,3 +9,5 @@ export enum OriginFeature {
     Certificates = 'certificates',
     CertificationRequests = 'certificationRequests'
 }
+
+export const allOriginFeatures = getEnumValues(OriginFeature);
