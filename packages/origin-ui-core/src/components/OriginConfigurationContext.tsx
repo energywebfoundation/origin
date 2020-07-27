@@ -24,7 +24,7 @@ export interface IOriginStyleConfig {
     WHITE: string;
 }
 
-const DEFAULT_COLOR='#894ec5';
+const DEFAULT_COLOR = '#894ec5';
 
 export const createMaterialThemeForOrigin = (
     styleConfig: IOriginStyleConfig,
