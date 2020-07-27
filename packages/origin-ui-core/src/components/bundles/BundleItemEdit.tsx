@@ -88,8 +88,8 @@ export const BundleItemEdit = (props: IOwnProps) => {
     const validationSchema = Yup.object().shape({
         volumeToBundle: Yup.number()
             .required()
-            .min(0)
-            .max(Number(EnergyFormatter.format(publicVolume)))
+            .min(1)
+            .max(EnergyFormatter.getValueInDisplayUnit(publicVolume))
     });
 
     return (
@@ -163,7 +163,7 @@ export const BundleItemEdit = (props: IOwnProps) => {
                         });
                     }}
                     initialValues={{
-                        volumeToBundle: EnergyFormatter.format(volumeToBundle)
+                        volumeToBundle: EnergyFormatter.getValueInDisplayUnit(volumeToBundle)
                     }}
                 >
                     {(formikProps) => {
