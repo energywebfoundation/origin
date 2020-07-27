@@ -65,7 +65,7 @@ export class OrganizationController {
     }
 
     @Get('/invitation')
-    @UseGuards(AuthGuard(), ActiveUserGuard)
+    @UseGuards(AuthGuard())
     async getInvitations(
         @UserDecorator() loggedUser: ILoggedInUser
     ): Promise<IOrganizationInvitation[]> {
@@ -241,7 +241,7 @@ export class OrganizationController {
     }
 
     @Put('/invitation/:invitationId')
-    @UseGuards(AuthGuard(), ActiveUserGuard)
+    @UseGuards(AuthGuard())
     async updateInvitation(
         @Body('status') status: IOrganizationInvitation['status'],
         @Param('invitationId') invitationId: string,
