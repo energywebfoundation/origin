@@ -70,7 +70,8 @@ export const BundleItemEdit = (props: IOwnProps) => {
         },
         formLabel: {
             marginTop: spacing(1),
-            marginLeft: spacing(1)
+            marginLeft: spacing(1),
+            transform: `scale(0.9)`
         },
         formInput: {
             textAlign: 'right'
@@ -216,12 +217,13 @@ export const BundleItemEdit = (props: IOwnProps) => {
                                             )}
                                         </Field>
                                     </Grid>
-                                    <Grid item xs={2} style={{ textAlign: 'center' }}>
+                                    <Grid item xs={2} container direction="column" justify="center">
                                         <Button
                                             type="submit"
                                             disabled={!isValid}
                                             variant="contained"
                                             color="primary"
+                                            style={{ marginLeft: spacing(1) }}
                                         >
                                             {t('user.actions.save')}
                                         </Button>
