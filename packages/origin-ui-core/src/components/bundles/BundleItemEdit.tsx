@@ -29,6 +29,7 @@ import { useSelector } from 'react-redux';
 import { useTranslation, useValidation } from '../../utils';
 import { Edit, HighlightOff } from '@material-ui/icons';
 import { Formik, Field, Form } from 'formik';
+import variables from '../../styles/variables.scss';
 
 export interface IBundledCertificateEnergy extends ICertificateEnergy {
     volumeToBundle: BigNumber;
@@ -63,7 +64,8 @@ export const BundleItemEdit = (props: IOwnProps) => {
     const devices = useSelector(getProducingDevices);
     const classes = makeStyles(() => ({
         formControl: {
-            width: '100%'
+            width: '100%',
+            backgroundColor: variables.backgroundColorDarker
         },
         formLabel: {
             marginTop: spacing(1),

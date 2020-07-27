@@ -26,7 +26,7 @@ export interface IOriginStyleConfig {
 
 export const createMaterialThemeForOrigin = (
     styleConfig: IOriginStyleConfig,
-    language: ORIGIN_LANGUAGE,
+    language: ORIGIN_LANGUAGE
 ): Theme => {
     const materialLocale =
         {
@@ -60,11 +60,11 @@ export const createMaterialThemeForOrigin = (
                         }
                     }
                 },
-                MuiFormControl: {
-                    root: {
-                        backgroundColor: styleConfig.BACKGROUND_COLOR_DARKER
-                    }
-                },
+                // MuiFormControl: {
+                //     root: {
+                //         backgroundColor: styleConfig.BACKGROUND_COLOR_DARKER
+                //     }
+                // },
                 MuiFormLabel: {
                     root: { fontSize: variables.fontSizeMd }
                 },
