@@ -60,11 +60,6 @@ export const createMaterialThemeForOrigin = (
                         }
                     }
                 },
-                // MuiFormControl: {
-                //     root: {
-                //         backgroundColor: styleConfig.BACKGROUND_COLOR_DARKER
-                //     }
-                // },
                 MuiFormLabel: {
                     root: { fontSize: variables.fontSizeMd }
                 },
