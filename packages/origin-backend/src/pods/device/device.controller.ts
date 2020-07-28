@@ -6,7 +6,9 @@ import {
     ILoggedInUser,
     ISmartMeterRead,
     Role,
-    ISuccessResponse
+    ISuccessResponse,
+    IDeviceWithRelations,
+    IDevice
 } from '@energyweb/origin-backend-core';
 import { Roles, RolesGuard, UserDecorator, ActiveUserGuard } from '@energyweb/origin-backend-utils';
 import {
@@ -76,11 +78,11 @@ export class DeviceController {
     }
 
     @Get('/:id')
-    async get(
+    async get<T extends boolean>(
         @Param('id') id: string,
         @Query('withMeterStats') withMeterStats: boolean,
-        @Query('loadRelationsId') loadRelationsId: boolean
-    ): Promise<IDeviceWithRelationsIds> {
+        @Query('loadRelationsId') loadRelationsId: T
+    ): Promise<ExtendedBaseEntity & IDevice> {
         const existingEntity = await this.deviceService.findOne(
             id,
             {
@@ -115,7 +117,8 @@ export class DeviceController {
         @Param('id') id: string,
         @UserDecorator() loggedUser: ILoggedInUser
     ): Promise<ISuccessResponse> {
-        const device = await this.deviceService.findOne(id);
+        const device = (await this.deviceService.findOne(id)) as ExtendedBaseEntity &
+            IDeviceWithRelationsIds;
 
         if (!device) {
             throw new NotFoundException({

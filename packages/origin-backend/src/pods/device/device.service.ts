@@ -69,11 +69,11 @@ export class DeviceService {
         options: FindOneOptions<Device> = {},
         withMeterStats = false,
         loadRelationIds = true
-    ): Promise<ExtendedBaseEntity & IDeviceWithRelationsIds> {
+    ): Promise<ExtendedBaseEntity & IDevice> {
         const device = ((await this.repository.findOne(id, {
             loadRelationIds,
             ...options
-        })) as IDevice) as ExtendedBaseEntity & IDeviceWithRelationsIds;
+        })) as IDevice) as ExtendedBaseEntity & IDevice;
 
         if (this.smartMeterReadingsAdapter) {
             device.smartMeterReads = [];
@@ -230,7 +230,7 @@ export class DeviceService {
         id: string,
         update: DeviceUpdateData
     ): Promise<ExtendedBaseEntity & IDeviceWithRelationsIds> {
-        const device = await this.findOne(id);
+        const device = (await this.findOne(id)) as ExtendedBaseEntity & IDeviceWithRelationsIds;
 
         if (!device) {
             throw new NotFoundException(StorageErrors.NON_EXISTENT);
