@@ -69,7 +69,7 @@ export function ProducingDeviceTable(props: IOwnProps) {
             const deviceWithRelations = await deviceClient.getById(device.id, false);
             enriched.push({
                 device,
-                organizationName: (deviceWithRelations as any).organization?.name,
+                organizationName: (deviceWithRelations as any)?.organization.name,
                 locationText: getDeviceLocationText(device)
             });
         }
