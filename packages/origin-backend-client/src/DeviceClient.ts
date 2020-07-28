@@ -7,13 +7,17 @@ import {
     IExternalDeviceId,
     ISmartMeterRead,
     ISmartMeterReadWithStatus,
-    ISuccessResponse
+    ISuccessResponse,
+    IDeviceWithRelations
 } from '@energyweb/origin-backend-core';
 import { BigNumber } from 'ethers';
 import { IRequestClient, RequestClient } from './RequestClient';
 
 export interface IDeviceClient {
-    getById(id: number): Promise<IDeviceWithRelationsIds>;
+    getById(
+        id: number,
+        loadRelationsId?: boolean
+    ): Promise<IDeviceWithRelationsIds | IDeviceWithRelations>;
     getByExternalId(id: IExternalDeviceId): Promise<IDeviceWithRelationsIds>;
     getAll(withMeterStats: boolean): Promise<IDeviceWithRelationsIds[]>;
     add(device: DeviceCreateData): Promise<IDeviceWithRelationsIds>;
@@ -43,8 +47,8 @@ export class DeviceClient implements IDeviceClient {
         return this.cleanDeviceData(data);
     }
 
-    public async getById(id: number): Promise<IDeviceWithRelationsIds> {
-        const url = `${this.endpoint}/${id}`;
+    public async getById(id: number, loadRelationsId = true): Promise<IDeviceWithRelationsIds> {
+        const url = `${this.endpoint}/${id}?loadRelationsId=${loadRelationsId}`;
         const { data } = await this.requestClient.get<void, IDeviceWithRelationsIds>(url);
 
         return this.cleanDeviceData(data);

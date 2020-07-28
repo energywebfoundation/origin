@@ -78,9 +78,17 @@ export class DeviceController {
     @Get('/:id')
     async get(
         @Param('id') id: string,
-        @Query('withMeterStats') withMeterStats: boolean
+        @Query('withMeterStats') withMeterStats: boolean,
+        @Query('loadRelationsId') loadRelationsId: boolean
     ): Promise<IDeviceWithRelationsIds> {
-        const existingEntity = await this.deviceService.findOne(id, {}, withMeterStats);
+        const existingEntity = await this.deviceService.findOne(
+            id,
+            {
+                relations: ['organization']
+            },
+            withMeterStats,
+            loadRelationsId
+        );
 
         if (!existingEntity) {
             throw new NotFoundException(StorageErrors.NON_EXISTENT);

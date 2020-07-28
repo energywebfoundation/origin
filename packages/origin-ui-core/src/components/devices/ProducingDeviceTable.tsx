@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Role, isRole, DeviceStatus } from '@energyweb/origin-backend-core';
+import { Role, isRole, DeviceStatus, IOrganization } from '@energyweb/origin-backend-core';
 import { Link, Redirect } from 'react-router-dom';
 import { ProducingDevice } from '@energyweb/device-registry';
 import { useSelector, useDispatch } from 'react-redux';
@@ -30,8 +30,9 @@ import {
     useTranslation,
     moment
 } from '../../utils';
-import { getEnvironment } from '../../features';
+import { getEnvironment, getOffChainDataSource } from '../../features';
 import { showRequestCertificatesModal } from '../../features/certificates';
+import { getDeviceClient } from '../../features/producingDevices/selectors';
 
 interface IOwnProps {
     actions: {
@@ -57,20 +58,19 @@ export function ProducingDeviceTable(props: IOwnProps) {
     const user = useSelector(getUserOffchain);
     const producingDevices = useSelector(getProducingDevices);
     const baseURL = useSelector(getBaseURL);
-    const organizations = useSelector(getOrganizations);
     const environment = useSelector(getEnvironment);
+    const offChainDataSource = useSelector(getOffChainDataSource);
 
     const dispatch = useDispatch();
 
-    function enrichProducingDeviceData(): IEnrichedProducingDeviceData[] {
+    async function enrichProducingDeviceData(): Promise<IEnrichedProducingDeviceData[]> {
+        const deviceClient = offChainDataSource.deviceClient;
         const enriched: IEnrichedProducingDeviceData[] = [];
-
         for (const device of producingDevices) {
-            const organization = organizations.find((o) => o.id === device.organization);
-
+            const deviceWithRelations = await deviceClient.getById(device.id, false);
             enriched.push({
                 device,
-                organizationName: organization?.name,
+                organizationName: (deviceWithRelations as any).organization?.name,
                 locationText: getDeviceLocationText(device)
             });
         }
@@ -118,7 +118,7 @@ export function ProducingDeviceTable(props: IOwnProps) {
 
     useEffect(() => {
         loadPage(1);
-    }, [user, producingDevices, organizations]);
+    }, [user, producingDevices]);
 
     function viewDevice(rowIndex: number) {
         const device = paginatedData[rowIndex].device;
@@ -207,7 +207,7 @@ export function ProducingDeviceTable(props: IOwnProps) {
             })`
         }
     ] as const).filter((column) => !hiddenColumns.includes(column.id));
-
+    
     const rows = paginatedData.map((enrichedData) => ({
         owner: enrichedData.organizationName,
         facilityName: enrichedData.device.facilityName,

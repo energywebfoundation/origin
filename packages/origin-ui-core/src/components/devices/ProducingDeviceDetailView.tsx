@@ -20,7 +20,11 @@ import { Skeleton } from '@material-ui/lab';
 import { formatDate, EnergyFormatter, PowerFormatter, useTranslation } from '../../utils';
 import { getOffChainDataSource } from '../../features/general/selectors';
 import { DeviceGroupForm } from './DeviceGroupForm';
-import { IOrganizationWithRelationsIds, IExternalDeviceId } from '@energyweb/origin-backend-core';
+import {
+    IOrganizationWithRelationsIds,
+    IExternalDeviceId,
+    IDeviceWithRelations
+} from '@energyweb/origin-backend-core';
 
 interface IProps {
     id?: number;
@@ -34,17 +38,9 @@ export function ProducingDeviceDetailView(props: IProps) {
     const producingDevices = useSelector(getProducingDevices);
     const offChainDataSource = useSelector(getOffChainDataSource);
     const organizationClient = useSelector(getOffChainDataSource)?.organizationClient;
-    const [organizations, setOrganizations] = useState<IOrganizationWithRelationsIds[]>([]);
+    const [deviceWithRelations, setDeviceWithRelations] = useState<IDeviceWithRelations>(null);
 
     const { t } = useTranslation();
-
-    useEffect(() => {
-        (async () => {
-            if (organizationClient) {
-                setOrganizations(await organizationClient.getAll());
-            }
-        })();
-    }, [organizationClient]);
 
     const useStyles = makeStyles(() =>
         createStyles({
@@ -57,7 +53,6 @@ export function ProducingDeviceDetailView(props: IProps) {
 
     const classes = useStyles(useTheme());
 
-    let owner: number = null;
     let selectedDevice: ProducingDevice.Entity = null;
 
     if (props.id !== null && props.id !== undefined) {
@@ -72,11 +67,18 @@ export function ProducingDeviceDetailView(props: IProps) {
         );
     }
 
+    useEffect(() => {
+        (async () => {
+            const deviceClient = offChainDataSource.deviceClient;
+            setDeviceWithRelations(
+                (await deviceClient.getById(selectedDevice.id, false)) as IDeviceWithRelations
+            );
+        })();
+    }, [offChainDataSource]);
+
     if (!configuration || !organizationClient || !selectedDevice) {
         return <Skeleton variant="rect" height={200} />;
     }
-
-    owner = selectedDevice.organization;
 
     let tooltip = '';
 
@@ -112,9 +114,7 @@ export function ProducingDeviceDetailView(props: IProps) {
             },
             {
                 label: t('device.properties.deviceOwner'),
-                data: owner
-                    ? organizations?.find((o) => o.id === selectedDevice?.organization)?.name
-                    : ''
+                data: deviceWithRelations?.organization.name
             },
             {
                 label: t('device.properties.complianceRegistry'),

@@ -67,10 +67,11 @@ export class DeviceService {
     async findOne(
         id: string,
         options: FindOneOptions<Device> = {},
-        withMeterStats = false
+        withMeterStats = false,
+        loadRelationIds = true
     ): Promise<ExtendedBaseEntity & IDeviceWithRelationsIds> {
         const device = ((await this.repository.findOne(id, {
-            loadRelationIds: true,
+            loadRelationIds,
             ...options
         })) as IDevice) as ExtendedBaseEntity & IDeviceWithRelationsIds;
 
