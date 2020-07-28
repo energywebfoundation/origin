@@ -9,10 +9,13 @@ import {
     IRefreshUserOffchainAction
 } from './actions';
 import { getOffChainDataSource } from '../general/selectors';
-import { IRequestClient, IOffChainDataSource } from '@energyweb/origin-backend-client';
 import {
     IUserWithRelationsIds,
-    IOrganizationWithRelationsIds
+    IOrganizationWithRelationsIds,
+    Role,
+    isRole,
+    IOffChainDataSource,
+    IRequestClient
 } from '@energyweb/origin-backend-core';
 import { GeneralActions, ISetOffChainDataSourceAction } from '../general/actions';
 import { reloadCertificates, clearCertificates } from '../certificates';
@@ -86,18 +89,23 @@ function* fetchOffchainUserDetails(): SagaIterator {
             continue;
         }
 
+        let organization: IOrganizationWithRelationsIds = null;
+
         try {
             const userProfile: IUserWithRelationsIds = yield call([userClient, userClient.me]);
 
-            let organization: IOrganizationWithRelationsIds = null;
-
-            if (typeof userProfile.organization !== 'undefined') {
+            if (
+                typeof userProfile.organization !== 'undefined' &&
+                isRole(userProfile, Role.Admin, Role.SupportAgent)
+            ) {
                 const organizationClient = offChainDataSource.organizationClient;
 
                 organization = yield call(
                     [organizationClient, organizationClient.getById],
                     userProfile.organization
                 );
+            } else {
+                organization = { id: userProfile.organization } as IOrganizationWithRelationsIds;
             }
 
             yield put(

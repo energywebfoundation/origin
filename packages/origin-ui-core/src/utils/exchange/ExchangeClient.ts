@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { IRequestClient, RequestClient } from '@energyweb/origin-backend-client';
+import { RequestClient } from '@energyweb/origin-backend-client';
 import {
     TOrderBook,
     CreateAskDTO,
@@ -18,6 +18,7 @@ import {
 } from '.';
 import { Filter, OrderStatus } from '@energyweb/exchange-core';
 import { BundleSplits } from './types';
+import { IRequestClient } from '@energyweb/origin-backend-core';
 
 export interface IExchangeClient {
     search(

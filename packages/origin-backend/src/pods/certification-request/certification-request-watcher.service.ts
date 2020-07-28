@@ -9,7 +9,7 @@ import { DeepPartial } from 'typeorm';
 import { ConfigurationService } from '../configuration';
 import { DeviceService } from '../device/device.service';
 import { CertificationRequestService } from './certification-request.service';
-import { CertificateService } from './certificate.service';
+import { CertificateService } from '../certificate/certificate.service';
 import { UserService } from '../user';
 import { Device } from '../device/device.entity';
 

@@ -12,12 +12,6 @@ export function deepEqual(a: any, b: any) {
     return a === b;
 }
 
-export function getEnumValues<T>(enumeration: T): Array<T[keyof T]> {
-    return Object.keys(enumeration)
-        .filter((k) => isNaN(Number(k)))
-        .map((k) => enumeration[k]);
-}
-
 export function deduplicate(inputArray: any[]) {
     return inputArray.filter(
         (item, index, array) =>

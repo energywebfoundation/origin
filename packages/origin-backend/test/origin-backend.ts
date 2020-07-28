@@ -17,7 +17,7 @@ import request from 'supertest';
 
 import { entities } from '../src';
 import { AppModule } from '../src/app.module';
-import { CertificationRequestService } from '../src/pods/certificate/certification-request.service';
+import { CertificationRequestService } from '../src/pods/certification-request/certification-request.service';
 import { ConfigurationService } from '../src/pods/configuration';
 import { DeviceService } from '../src/pods/device/device.service';
 import { OrganizationService } from '../src/pods/organization/organization.service';

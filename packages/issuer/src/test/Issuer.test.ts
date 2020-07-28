@@ -60,7 +60,7 @@ describe('Issuer', () => {
             isPrivate,
             forAddress,
             (id: CertificationRequest['id']) =>
-                (conf.offChainDataSource.certificateClient as any).mockBlockchainData(id, {
+                (conf.offChainDataSource.certificationRequestClient as any).mockBlockchainData(id, {
                     sender: forAddress || deviceOwnerWallet.address,
                     owner: deviceOwnerWallet.address,
                     fromTime: generationFromTime,
@@ -145,7 +145,7 @@ describe('Issuer', () => {
 
         const certificateId = await certificationRequest.approve();
 
-        (conf.offChainDataSource.certificateClient as any).mockBlockchainData(
+        (conf.offChainDataSource.certificationRequestClient as any).mockBlockchainData(
             certificationRequest.id,
             {
                 approved: true
@@ -176,7 +176,7 @@ describe('Issuer', () => {
 
         await certificationRequest.revoke();
 
-        (conf.offChainDataSource.certificateClient as any).mockBlockchainData(
+        (conf.offChainDataSource.certificationRequestClient as any).mockBlockchainData(
             certificationRequest.id,
             {
                 revoked: true
@@ -198,7 +198,7 @@ describe('Issuer', () => {
 
         await certificationRequest.approve();
 
-        (conf.offChainDataSource.certificateClient as any).mockBlockchainData(
+        (conf.offChainDataSource.certificationRequestClient as any).mockBlockchainData(
             certificationRequest.id,
             {
                 approved: true
@@ -266,7 +266,7 @@ describe('Issuer', () => {
 
         await certificationRequest.revoke();
 
-        (conf.offChainDataSource.certificateClient as any).mockBlockchainData(
+        (conf.offChainDataSource.certificationRequestClient as any).mockBlockchainData(
             certificationRequest.id,
             {
                 revoked: true
@@ -309,7 +309,7 @@ describe('Issuer', () => {
 
         const certificateId = await certificationRequest.approve();
 
-        (conf.offChainDataSource.certificateClient as any).mockBlockchainData(
+        (conf.offChainDataSource.certificationRequestClient as any).mockBlockchainData(
             certificationRequest.id,
             {
                 approved: true
