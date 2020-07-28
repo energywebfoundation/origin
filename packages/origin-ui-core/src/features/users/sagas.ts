@@ -94,7 +94,7 @@ function* fetchOffchainUserDetails(): SagaIterator {
 
             if (
                 typeof userProfile.organization !== 'undefined' &&
-                [Role.Admin || Role.SupportAgent].includes(userProfile.organization)
+                [Role.Admin || Role.SupportAgent].includes(userProfile.rights)
             ) {
                 const organizationClient = offChainDataSource.organizationClient;
 
