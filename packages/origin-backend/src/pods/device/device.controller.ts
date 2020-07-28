@@ -78,10 +78,10 @@ export class DeviceController {
     }
 
     @Get('/:id')
-    async get<T extends boolean>(
+    async get(
         @Param('id') id: string,
         @Query('withMeterStats') withMeterStats: boolean,
-        @Query('loadRelationsId') loadRelationsId: T
+        @Query('loadRelationsId') loadRelationsId: boolean
     ): Promise<ExtendedBaseEntity & IDevice> {
         const existingEntity = await this.deviceService.findOne(
             id,
