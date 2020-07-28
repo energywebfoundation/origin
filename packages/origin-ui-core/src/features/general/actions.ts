@@ -1,6 +1,9 @@
-import { IOffChainDataSource } from '@energyweb/origin-backend-client';
 import { IExchangeClient } from '../../utils/exchange';
-import { IOriginConfiguration, DeviceCreateData } from '@energyweb/origin-backend-core';
+import {
+    IOriginConfiguration,
+    DeviceCreateData,
+    IOffChainDataSource
+} from '@energyweb/origin-backend-core';
 
 export enum GeneralActions {
     setLoading = 'GENERAL_SET_LOADING',

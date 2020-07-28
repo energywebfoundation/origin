@@ -1,5 +1,4 @@
-import { IConfigurationClient } from '@energyweb/origin-backend-client';
-import { IOriginConfiguration } from '@energyweb/origin-backend-core';
+import { IOriginConfiguration, IConfigurationClient } from '@energyweb/origin-backend-core';
 
 export class ConfigurationClientMock implements IConfigurationClient {
     private configuration: IOriginConfiguration = {} as IOriginConfiguration;

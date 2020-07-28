@@ -8,8 +8,7 @@ import {
     createRenderedHelpers,
     TEST_DEVICE_TYPES
 } from '../utils/helpers';
-import { DeviceStatus } from '@energyweb/origin-backend-core';
-import { IOffChainDataSource } from '@energyweb/origin-backend-client';
+import { DeviceStatus, IOffChainDataSource } from '@energyweb/origin-backend-core';
 import { configurationUpdated } from '../../features';
 import { Configuration, DeviceTypeService } from '@energyweb/utils-general';
 import { OffChainDataSourceMock } from '@energyweb/origin-backend-client-mocks';

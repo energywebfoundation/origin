@@ -1,6 +1,6 @@
 import React, { createContext, ReactNode } from 'react';
 import { createMuiTheme, Theme } from '@material-ui/core';
-import { OriginFeature } from '@energyweb/utils-general';
+import { OriginFeature, allOriginFeatures } from '@energyweb/utils-general';
 import i18n from 'i18next';
 import ICU from 'i18next-icu';
 import {
@@ -13,7 +13,6 @@ import variables from '../styles/variables.scss';
 import { OriginGenericLogo } from './icons/OriginGenericLogo';
 import { setTimeFormatLanguage } from '../utils/time';
 import { plPL, enUS } from '@material-ui/core/locale';
-import { getEnumValues } from '..';
 
 export interface IOriginStyleConfig {
     PRIMARY_COLOR: string;
@@ -21,9 +20,12 @@ export interface IOriginStyleConfig {
     PRIMARY_COLOR_DARKER: string;
     TEXT_COLOR_DEFAULT: string;
     BACKGROUND_COLOR_DARK: string;
+    BACKGROUND_COLOR_DARKER: string;
     FIELD_ICON_COLOR: string;
     WHITE: string;
 }
+
+const DEFAULT_COLOR = '#894ec5';
 
 export const createMaterialThemeForOrigin = (
     styleConfig: IOriginStyleConfig,
@@ -199,12 +201,13 @@ export interface IOriginConfiguration {
 
 export function createStyleConfigFromSCSSVariables(scssVariables: any): IOriginStyleConfig {
     return {
-        PRIMARY_COLOR: scssVariables.primaryColor ?? '#894ec5',
-        PRIMARY_COLOR_DARK: scssVariables.primaryColorDark ?? '#894ec5',
-        PRIMARY_COLOR_DARKER: scssVariables.primaryColorDarker ?? '#894ec5',
-        TEXT_COLOR_DEFAULT: scssVariables.textColorDefault ?? '#894ec5',
-        BACKGROUND_COLOR_DARK: scssVariables.backgroundColorDark ?? '#894ec5',
-        FIELD_ICON_COLOR: scssVariables.fieldIconColor ?? '#894ec5',
+        PRIMARY_COLOR: scssVariables.primaryColor ?? DEFAULT_COLOR,
+        PRIMARY_COLOR_DARK: scssVariables.primaryColorDark ?? DEFAULT_COLOR,
+        PRIMARY_COLOR_DARKER: scssVariables.primaryColorDarker ?? DEFAULT_COLOR,
+        TEXT_COLOR_DEFAULT: scssVariables.textColorDefault ?? DEFAULT_COLOR,
+        BACKGROUND_COLOR_DARK: scssVariables.backgroundColorDark ?? DEFAULT_COLOR,
+        BACKGROUND_COLOR_DARKER: scssVariables.backgroundColorDarker ?? DEFAULT_COLOR,
+        FIELD_ICON_COLOR: scssVariables.fieldIconColor ?? DEFAULT_COLOR,
         WHITE: '#fff'
     };
 }
@@ -241,7 +244,7 @@ export function createOriginConfiguration(configuration: Partial<IOriginConfigur
         materialTheme: createMaterialThemeForOrigin(DEFAULT_STYLE_CONFIG, storedLanguage),
         defaultLanguage: 'en',
         language: storedLanguage,
-        enabledFeatures: getEnumValues(OriginFeature)
+        enabledFeatures: allOriginFeatures
     };
 
     const newConfiguration: IOriginConfiguration = {

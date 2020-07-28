@@ -1,4 +1,3 @@
-import { IOrganizationClient } from '@energyweb/origin-backend-client';
 import {
     IOrganizationInvitation,
     IOrganizationWithRelationsIds,
@@ -9,7 +8,8 @@ import {
     OrganizationStatus,
     OrganizationUpdateData,
     OrganizationRole,
-    Role
+    Role,
+    IOrganizationClient
 } from '@energyweb/origin-backend-core';
 
 interface ITmpUser {
@@ -97,10 +97,7 @@ export class OrganizationClientMock implements IOrganizationClient {
         throw new Error('Method not implemented.');
     }
 
-    removeMember(
-        organizationId: number,
-        userId: number
-    ): Promise<ISuccessResponse> {
+    removeMember(organizationId: number, userId: number): Promise<ISuccessResponse> {
         const organization = this.storage.get(organizationId);
 
         organization.users = organization.users.filter((user) => user !== userId);
@@ -114,7 +111,6 @@ export class OrganizationClientMock implements IOrganizationClient {
 
         return Promise.resolve(returnData);
     }
-
 
     memberChangeRole(
         organizationId: number,
