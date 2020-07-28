@@ -13,7 +13,8 @@ import { IRequestClient, IOffChainDataSource } from '@energyweb/origin-backend-c
 import {
     IUserWithRelationsIds,
     IOrganizationWithRelationsIds,
-    Role
+    Role,
+    isRole
 } from '@energyweb/origin-backend-core';
 import { GeneralActions, ISetOffChainDataSourceAction } from '../general/actions';
 import { reloadCertificates, clearCertificates } from '../certificates';
@@ -94,7 +95,7 @@ function* fetchOffchainUserDetails(): SagaIterator {
 
             if (
                 typeof userProfile.organization !== 'undefined' &&
-                [Role.Admin || Role.SupportAgent].includes(userProfile.rights)
+                isRole(userProfile, Role.Admin, Role.SupportAgent)
             ) {
                 const organizationClient = offChainDataSource.organizationClient;
 
