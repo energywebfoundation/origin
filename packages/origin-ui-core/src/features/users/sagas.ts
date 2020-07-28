@@ -13,7 +13,7 @@ import {
     IUserWithRelationsIds,
     IOrganizationWithRelationsIds,
     Role,
-    isRole
+    isRole,
     IOffChainDataSource,
     IRequestClient
 } from '@energyweb/origin-backend-core';
