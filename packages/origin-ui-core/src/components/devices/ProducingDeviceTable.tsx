@@ -116,7 +116,9 @@ export function ProducingDeviceTable(props: IOwnProps) {
     const { t } = useTranslation();
 
     useEffect(() => {
-        loadPage(1);
+        if (offChainDataSource) {
+            loadPage(1);
+        }
     }, [user, producingDevices]);
 
     function viewDevice(rowIndex: number) {

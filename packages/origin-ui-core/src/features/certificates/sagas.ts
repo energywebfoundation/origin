@@ -119,7 +119,6 @@ function* openRequestCertificatesModalSaga(): SagaIterator {
         const action: IShowRequestCertificatesModalAction = yield take(
             CertificatesActions.showRequestCertificatesModal
         );
-
         const device = action.payload.producingDevice;
 
         const userOffchain: IUserWithRelations = yield select(getUserOffchain);
@@ -516,6 +515,9 @@ function* reloadCertificatesSaga(): SagaIterator {
         yield take(CertificatesActions.reloadCertificates);
         yield put(clearCertificates());
         const configuration = yield select(getConfiguration);
+        if (!configuration) {
+            continue;
+        }
         yield call(fetchDataAfterConfigurationChange, configuration);
     }
 }
