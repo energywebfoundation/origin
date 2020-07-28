@@ -1,8 +1,9 @@
-import { Module, ValidationPipe } from '@nestjs/common';
+import { Module, ValidationPipe, DynamicModule } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { ScheduleModule } from '@nestjs/schedule';
 import fs from 'fs';
 import path from 'path';
+import { OriginFeature, allOriginFeatures } from '@energyweb/utils-general';
 
 import { APP_PIPE, APP_INTERCEPTOR } from '@nestjs/core';
 import { AccountBalanceModule } from './pods/account-balance/account-balance.module';
@@ -46,29 +47,41 @@ export const providers = [
     { provide: APP_INTERCEPTOR, useClass: HTTPLoggingInterceptor }
 ];
 
-@Module({
-    imports: [
-        ConfigModule.forRoot({
-            envFilePath: getEnvFilePath(),
-            isGlobal: true
-        }),
-        ScheduleModule.forRoot(),
-        MatchingEngineModule,
-        TradeModule,
-        OrderModule,
-        DemandModule,
-        OrderBookModule,
-        AssetModule,
-        TransferModule,
-        AccountModule,
-        ProductModule,
-        AccountDeployerModule,
-        AccountBalanceModule,
-        DepositWatcherModule,
-        WithdrawalProcessorModule,
-        RunnerModule,
-        BundleModule
-    ],
-    providers
-})
-export class AppModule {}
+@Module({})
+export class AppModule {
+    static register(enabledFeatures: OriginFeature[] = allOriginFeatures): DynamicModule {
+        const exchangeEnabled = enabledFeatures.includes(OriginFeature.Exchange);
+        const bundlesEnabled = exchangeEnabled && enabledFeatures.includes(OriginFeature.Bundles);
+
+        const coreExchangeModules = [
+            MatchingEngineModule,
+            TradeModule,
+            OrderModule,
+            DemandModule,
+            OrderBookModule,
+            AssetModule,
+            TransferModule,
+            AccountModule,
+            ProductModule,
+            AccountDeployerModule,
+            AccountBalanceModule,
+            DepositWatcherModule,
+            WithdrawalProcessorModule,
+            RunnerModule
+        ];
+
+        return {
+            module: AppModule,
+            imports: [
+                ConfigModule.forRoot({
+                    envFilePath: getEnvFilePath(),
+                    isGlobal: true
+                }),
+                ScheduleModule.forRoot(),
+                ...(exchangeEnabled ? coreExchangeModules : []),
+                ...(bundlesEnabled ? [BundleModule] : [])
+            ],
+            providers
+        };
+    }
+}

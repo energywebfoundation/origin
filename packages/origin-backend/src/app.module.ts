@@ -3,6 +3,7 @@ import { DynamicModule, Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import fs from 'fs';
 import path from 'path';
+import { OriginFeature, allOriginFeatures } from '@energyweb/utils-general';
 
 import { AppController } from './app.controller';
 import { AuthModule } from './auth/auth.module';
@@ -22,7 +23,14 @@ const ENV_FILE_PATH = path.resolve(__dirname, '../../../../../.env');
 
 @Module({})
 export class AppModule {
-    static register(smartMeterReadingsAdapter: ISmartMeterReadingsAdapter): DynamicModule {
+    static register(
+        smartMeterReadingsAdapter: ISmartMeterReadingsAdapter,
+        enabledFeatures: OriginFeature[] = allOriginFeatures
+    ): DynamicModule {
+        const certificatesEnabled = enabledFeatures.includes(OriginFeature.Certificates);
+        const certificationRequestEnabled =
+            certificatesEnabled && enabledFeatures.includes(OriginFeature.CertificationRequests);
+
         return {
             module: AppModule,
             imports: [
@@ -32,15 +40,19 @@ export class AppModule {
                     isGlobal: true
                 }),
                 FileModule,
+                AuthModule,
                 UserModule,
                 ConfigurationModule,
                 OrganizationModule,
-                DeviceModule.register(smartMeterReadingsAdapter),
-                AuthModule,
-                CertificateModule,
-                CertificationRequestModule.register(smartMeterReadingsAdapter),
                 AdminModule,
-                EmailConfirmationModule
+                EmailConfirmationModule,
+                ...(certificatesEnabled ? [CertificateModule] : []),
+                ...(certificationRequestEnabled
+                    ? [CertificationRequestModule.register(smartMeterReadingsAdapter)]
+                    : []),
+                ...(enabledFeatures.includes(OriginFeature.Devices)
+                    ? [DeviceModule.register(smartMeterReadingsAdapter)]
+                    : [])
             ],
             controllers: [AppController],
             providers

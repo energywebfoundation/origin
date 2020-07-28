@@ -115,7 +115,7 @@ export const bootstrapTestInstance = async (deviceServiceMock?: DeviceService) =
                 entities,
                 logging: ['info']
             }),
-            AppModule
+            AppModule.register()
         ],
         providers: [
             DatabaseService,
@@ -185,7 +185,7 @@ export const bootstrapTestInstance = async (deviceServiceMock?: DeviceService) =
     app.useLogger(testLogger);
     app.enableCors();
 
-    useContainer(app.select(AppModule), { fallbackOnErrors: true });
+    useContainer(app, { fallbackOnErrors: true });
 
     return {
         transferService,
