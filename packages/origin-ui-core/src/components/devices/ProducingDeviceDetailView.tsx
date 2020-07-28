@@ -20,11 +20,7 @@ import { Skeleton } from '@material-ui/lab';
 import { formatDate, EnergyFormatter, PowerFormatter, useTranslation } from '../../utils';
 import { getOffChainDataSource } from '../../features/general/selectors';
 import { DeviceGroupForm } from './DeviceGroupForm';
-import {
-    IOrganizationWithRelationsIds,
-    IExternalDeviceId,
-    IDeviceWithRelations
-} from '@energyweb/origin-backend-core';
+import { IExternalDeviceId, IDeviceWithRelations } from '@energyweb/origin-backend-core';
 
 interface IProps {
     id?: number;

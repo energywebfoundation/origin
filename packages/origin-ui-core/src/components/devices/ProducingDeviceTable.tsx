@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Role, isRole, DeviceStatus, IOrganization } from '@energyweb/origin-backend-core';
+import { Role, isRole, DeviceStatus } from '@energyweb/origin-backend-core';
 import { Link, Redirect } from 'react-router-dom';
 import { ProducingDevice } from '@energyweb/device-registry';
 import { useSelector, useDispatch } from 'react-redux';
@@ -16,7 +16,7 @@ import {
     ICustomFilterDefinition,
     CustomFilterInputType
 } from '../Table';
-import { getUserOffchain, getOrganizations } from '../../features/users/selectors';
+import { getUserOffchain } from '../../features/users/selectors';
 import { setLoading } from '../../features/general/actions';
 import { producingDeviceCreatedOrUpdated } from '../../features/producingDevices/actions';
 import {
@@ -32,7 +32,6 @@ import {
 } from '../../utils';
 import { getEnvironment, getOffChainDataSource } from '../../features';
 import { showRequestCertificatesModal } from '../../features/certificates';
-import { getDeviceClient } from '../../features/producingDevices/selectors';
 
 interface IOwnProps {
     actions: {
@@ -207,7 +206,7 @@ export function ProducingDeviceTable(props: IOwnProps) {
             })`
         }
     ] as const).filter((column) => !hiddenColumns.includes(column.id));
-    
+
     const rows = paginatedData.map((enrichedData) => ({
         owner: enrichedData.organizationName,
         facilityName: enrichedData.device.facilityName,

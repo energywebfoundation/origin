@@ -7,7 +7,6 @@ import {
     ISmartMeterRead,
     Role,
     ISuccessResponse,
-    IDeviceWithRelations,
     IDevice
 } from '@energyweb/origin-backend-core';
 import { Roles, RolesGuard, UserDecorator, ActiveUserGuard } from '@energyweb/origin-backend-utils';
