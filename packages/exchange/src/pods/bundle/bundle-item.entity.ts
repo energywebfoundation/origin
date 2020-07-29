@@ -3,6 +3,7 @@ import BN from 'bn.js';
 import { Transform, Exclude } from 'class-transformer';
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 
+import { Validate } from 'class-validator';
 import { BNTransformer } from '../../utils/valueTransformers';
 import { Asset } from '../asset/asset.entity';
 import { Bundle } from './bundle.entity';

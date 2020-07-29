@@ -87,10 +87,11 @@ export const BundleItemEdit = (props: IOwnProps) => {
 
     const { Yup } = useValidation();
     const validationSchema = Yup.object().shape({
-        volumeToBundle: Yup.number()
-            .required()
-            .min(1)
-            .max(EnergyFormatter.getValueInDisplayUnit(publicVolume))
+        // volumeToBundle: Yup.number()
+        //     .required()
+        //     .min(1)
+        //     .max(EnergyFormatter.getValueInDisplayUnit(publicVolume))
+        //     .integer()
     });
 
     return (
