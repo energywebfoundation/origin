@@ -89,10 +89,10 @@ function* fetchOffchainUserDetails(): SagaIterator {
             continue;
         }
 
+        let organization: IOrganizationWithRelationsIds = null;
+
         try {
             const userProfile: IUserWithRelationsIds = yield call([userClient, userClient.me]);
-
-            let organization: IOrganizationWithRelationsIds = null;
 
             if (
                 typeof userProfile.organization !== 'undefined' &&
@@ -104,6 +104,8 @@ function* fetchOffchainUserDetails(): SagaIterator {
                     [organizationClient, organizationClient.getById],
                     userProfile.organization
                 );
+            } else {
+                organization = { id: userProfile.organization } as IOrganizationWithRelationsIds;
             }
 
             yield put(

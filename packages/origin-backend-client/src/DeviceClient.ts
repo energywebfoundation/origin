@@ -8,7 +8,8 @@ import {
     ISmartMeterReadWithStatus,
     ISuccessResponse,
     IDeviceClient,
-    IRequestClient
+    IRequestClient,
+    IDevice
 } from '@energyweb/origin-backend-core';
 import { BigNumber } from 'ethers';
 import { RequestClient } from './RequestClient';
@@ -30,16 +31,16 @@ export class DeviceClient implements IDeviceClient {
         return this.cleanDeviceData(data);
     }
 
-    public async getById(id: number): Promise<IDeviceWithRelationsIds> {
-        const url = `${this.endpoint}/${id}`;
+    public async getById(id: number, loadRelationIds = true): Promise<IDeviceWithRelationsIds> {
+        const url = `${this.endpoint}/${id}?loadRelationIds=${loadRelationIds}`;
         const { data } = await this.requestClient.get<void, IDeviceWithRelationsIds>(url);
 
         return this.cleanDeviceData(data);
     }
 
-    public async getAll(withMeterStats = false): Promise<IDeviceWithRelationsIds[]> {
+    public async getAll(withMeterStats = false, loadRelationIds = true): Promise<IDevice[]> {
         const { data } = await this.requestClient.get<void, IDeviceWithRelationsIds[]>(
-            `${this.endpoint}?withMeterStats=${withMeterStats}`
+            `${this.endpoint}?withMeterStats=${withMeterStats}&loadRelationIds=${loadRelationIds}`
         );
 
         return data.map((device) => this.cleanDeviceData(device));
