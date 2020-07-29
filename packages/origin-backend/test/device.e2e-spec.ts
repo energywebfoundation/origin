@@ -83,7 +83,7 @@ describe('Device e2e tests', () => {
         await app.close();
     });
 
-    it.only('should allow to edit settings for organization member with DeviceManager role', async () => {
+    it('should allow to edit settings for organization member with DeviceManager role', async () => {
         const { accessToken, user } = await registerAndLogin(
             app,
             userService,
