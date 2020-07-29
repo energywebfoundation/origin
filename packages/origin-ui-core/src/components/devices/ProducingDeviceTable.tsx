@@ -30,7 +30,7 @@ import {
     useTranslation,
     moment
 } from '../../utils';
-import { getEnvironment, getOffChainDataSource } from '../../features';
+import { getEnvironment } from '../../features';
 import { showRequestCertificatesModal } from '../../features/certificates';
 
 interface IOwnProps {
@@ -58,7 +58,6 @@ export function ProducingDeviceTable(props: IOwnProps) {
     const producingDevices = useSelector(getProducingDevices);
     const baseURL = useSelector(getBaseURL);
     const environment = useSelector(getEnvironment);
-    const offChainDataSource = useSelector(getOffChainDataSource);
 
     const dispatch = useDispatch();
 
@@ -116,9 +115,7 @@ export function ProducingDeviceTable(props: IOwnProps) {
     const { t } = useTranslation();
 
     useEffect(() => {
-        if (offChainDataSource) {
-            loadPage(1);
-        }
+        loadPage(1);
     }, [user, producingDevices]);
 
     function viewDevice(rowIndex: number) {
