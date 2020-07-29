@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Role, isRole, DeviceStatus } from '@energyweb/origin-backend-core';
+import { Role, isRole, DeviceStatus, IOrganization } from '@energyweb/origin-backend-core';
 import { Link, Redirect } from 'react-router-dom';
 import { ProducingDevice } from '@energyweb/device-registry';
 import { useSelector, useDispatch } from 'react-redux';
@@ -63,14 +63,11 @@ export function ProducingDeviceTable(props: IOwnProps) {
     const dispatch = useDispatch();
 
     async function enrichProducingDeviceData(): Promise<IEnrichedProducingDeviceData[]> {
-        const deviceClient = offChainDataSource.deviceClient;
-        const devicesWithRelations = await deviceClient.getAll(false, false);
         const enriched: IEnrichedProducingDeviceData[] = [];
         for (const device of producingDevices) {
-            const deviceWithRelations = devicesWithRelations.find((d) => d.id === device.id);
             enriched.push({
                 device,
-                organizationName: (deviceWithRelations as any)?.organization.name,
+                organizationName: (device?.organization as IOrganization).name,
                 locationText: getDeviceLocationText(device)
             });
         }
@@ -94,7 +91,9 @@ export function ProducingDeviceTable(props: IOwnProps) {
                     requestedFilters,
                     configuration.deviceTypeService
                 ) &&
-                (!props.owner || record?.device?.organization === user?.organization?.id) &&
+                (!props.owner ||
+                    (record?.device?.organization as IOrganization).id ===
+                        user?.organization?.id) &&
                 (includedStatuses.length === 0 || includedStatuses.includes(record.device.status))
         );
 
