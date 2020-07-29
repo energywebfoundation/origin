@@ -64,9 +64,10 @@ export function ProducingDeviceTable(props: IOwnProps) {
 
     async function enrichProducingDeviceData(): Promise<IEnrichedProducingDeviceData[]> {
         const deviceClient = offChainDataSource.deviceClient;
+        const devicesWithRelations = await deviceClient.getAll(false, false);
         const enriched: IEnrichedProducingDeviceData[] = [];
         for (const device of producingDevices) {
-            const deviceWithRelations = await deviceClient.getById(device.id, false);
+            const deviceWithRelations = devicesWithRelations.find((d) => d.id === device.id);
             enriched.push({
                 device,
                 organizationName: (deviceWithRelations as any)?.organization.name,

@@ -67,9 +67,9 @@ export class DeviceService {
     async findOne(
         id: string,
         options: FindOneOptions<Device> = {},
-        withMeterStats = false,
-        loadRelationIds = true
+        withMeterStats = false
     ): Promise<ExtendedBaseEntity & IDevice> {
+        const { loadRelationIds = true } = options;
         const device = ((await this.repository.findOne(id, {
             loadRelationIds,
             ...options
@@ -197,11 +197,12 @@ export class DeviceService {
     async getAll(
         withMeterStats = false,
         options: FindOneOptions<Device> = {}
-    ): Promise<Array<ExtendedBaseEntity & IDeviceWithRelationsIds>> {
+    ): Promise<Array<ExtendedBaseEntity & IDevice>> {
+        const { loadRelationIds = true } = options;
         const devices = ((await this.repository.find({
-            loadRelationIds: true,
+            loadRelationIds,
             ...options
-        })) as IDevice[]) as (ExtendedBaseEntity & IDeviceWithRelationsIds)[];
+        })) as IDevice[]) as (ExtendedBaseEntity & IDevice)[];
 
         for (const device of devices) {
             if (this.smartMeterReadingsAdapter) {
