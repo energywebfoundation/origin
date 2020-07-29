@@ -30,6 +30,7 @@ import {
 } from '@energyweb/origin-backend-core';
 import { BigNumber, Signer } from 'ethers';
 import { ICertificate, Certificate } from '@energyweb/issuer';
+import { IProducingDeviceState } from '../../features/producingDevices/reducer';
 
 export const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -271,7 +272,7 @@ export const DEFAULT_PRODUCING_DEVICE_OFFCHAIN_PROPERTIES = ({
 
 export const createProducingDevice = (
     properties: ICreateProducingDeviceProperties
-): ProducingDevice.Entity => {
+): IProducingDeviceState => {
     const owner = properties.owner || '0x0';
     const meterStats = properties.meterStats ?? {
         certified: BigNumber.from(0),
@@ -320,7 +321,7 @@ export const createProducingDevice = (
         },
         ...offChainProperties,
         meterStats
-    } as Partial<ProducingDevice.Entity>) as ProducingDevice.Entity;
+    } as Partial<IProducingDeviceState>) as IProducingDeviceState;
 };
 
 export const createCertificate = (certificate: ICertificate): Certificate => {

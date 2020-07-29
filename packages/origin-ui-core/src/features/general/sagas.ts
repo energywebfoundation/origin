@@ -65,6 +65,7 @@ import {
 } from '../bundles';
 import { fetchOrders } from '../orders/sagas';
 import { getUserOffchain } from '../users/selectors';
+import { IProducingDeviceState } from '../producingDevices/reducer';
 
 function createEthereumProviderAccountsChangedEventChannel(ethereumProvider: any) {
     return eventChannel<string[]>((emitter) => {
@@ -386,7 +387,7 @@ export function* fetchDataAfterConfigurationChange(
     configuration: Configuration.Entity,
     update = false
 ): SagaIterator {
-    const producingDevices: ProducingDevice.Entity[] = yield apply(
+    const producingDevices: IProducingDeviceState[] = yield apply(
         ProducingDevice,
         ProducingDevice.getAllDevices,
         [configuration, true, false]
