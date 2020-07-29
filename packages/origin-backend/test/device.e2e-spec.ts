@@ -83,7 +83,7 @@ describe('Device e2e tests', () => {
         await app.close();
     });
 
-    it('should allow to edit settings for organization member with DeviceManager role', async () => {
+    it.only('should allow to edit settings for organization member with DeviceManager role', async () => {
         const { accessToken, user } = await registerAndLogin(
             app,
             userService,
@@ -98,7 +98,6 @@ describe('Device e2e tests', () => {
             .set('Authorization', `Bearer ${accessToken}`)
             .expect((res) => {
                 const device = res.body as IDeviceWithRelationsIds;
-
                 expect(device.defaultAskPrice).equals(null);
                 expect(device.automaticPostForSale).equals(false);
             });

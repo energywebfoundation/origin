@@ -25,7 +25,8 @@ import {
     IDevice,
     DeviceStatus,
     ISmartMeterReadStats,
-    IOffChainDataSource
+    IOffChainDataSource,
+    IOrganization
 } from '@energyweb/origin-backend-core';
 import { BigNumber, Signer } from 'ethers';
 import { ICertificate, Certificate } from '@energyweb/issuer';
@@ -252,6 +253,7 @@ interface ICreateProducingDeviceProperties {
     complianceRegistry?: Compliance;
     region?: string;
     province?: string;
+    organization: IOrganization;
 }
 
 export const DEFAULT_PRODUCING_DEVICE_OFFCHAIN_PROPERTIES = ({
@@ -300,7 +302,8 @@ export const createProducingDevice = (
         description: '',
         images: '',
         region: properties.region || DEFAULT_PRODUCING_DEVICE_OFFCHAIN_PROPERTIES.region,
-        province: properties.province || DEFAULT_PRODUCING_DEVICE_OFFCHAIN_PROPERTIES.province
+        province: properties.province || DEFAULT_PRODUCING_DEVICE_OFFCHAIN_PROPERTIES.province,
+        organization: properties.organization
     };
 
     return ({

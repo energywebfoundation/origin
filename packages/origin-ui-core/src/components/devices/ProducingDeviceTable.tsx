@@ -62,7 +62,7 @@ export function ProducingDeviceTable(props: IOwnProps) {
 
     const dispatch = useDispatch();
 
-    async function enrichProducingDeviceData(): Promise<IEnrichedProducingDeviceData[]> {
+    function enrichProducingDeviceData(): IEnrichedProducingDeviceData[] {
         const enriched: IEnrichedProducingDeviceData[] = [];
         for (const device of producingDevices) {
             enriched.push({

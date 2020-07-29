@@ -8,14 +8,14 @@ import {
     createRenderedHelpers,
     TEST_DEVICE_TYPES
 } from '../utils/helpers';
-import { DeviceStatus, IOffChainDataSource } from '@energyweb/origin-backend-core';
+import { DeviceStatus, IOffChainDataSource, IOrganization } from '@energyweb/origin-backend-core';
 import { configurationUpdated } from '../../features';
 import { Configuration, DeviceTypeService } from '@energyweb/utils-general';
 import { OffChainDataSourceMock } from '@energyweb/origin-backend-client-mocks';
 import { BigNumber } from 'ethers';
 
 describe('ProducingDeviceTable', () => {
-    it('correctly renders and search works', async () => {
+    it.only('correctly renders and search works', async () => {
         const offChainDataSource: IOffChainDataSource = new OffChainDataSourceMock();
 
         await offChainDataSource.configurationClient.update({
@@ -28,13 +28,18 @@ describe('ProducingDeviceTable', () => {
             logActions: false
         });
 
+        const testOrganizationName = 'Test organization name';
+
         addProducingDevice({
             id: 0,
             status: DeviceStatus.Active,
             meterStats: {
                 uncertified: BigNumber.from(7777),
                 certified: BigNumber.from(0)
-            }
+            },
+            organization: {
+                name: testOrganizationName
+            } as IOrganization
         });
 
         addProducingDevice({
@@ -47,7 +52,10 @@ describe('ProducingDeviceTable', () => {
             country: 'Thailand',
             capacityInW: 736123,
             region: 'Central',
-            province: 'Nakhon Pathom'
+            province: 'Nakhon Pathom',
+            organization: {
+                name: testOrganizationName
+            } as IOrganization
         });
 
         store.dispatch(
@@ -74,7 +82,7 @@ describe('ProducingDeviceTable', () => {
         await refresh();
 
         assertMainTableContent([
-            '',
+            testOrganizationName,
             'Wuthering Heights facility',
             'Solar - Photovoltaic - Roof mounted',
             '9.877',
@@ -82,7 +90,7 @@ describe('ProducingDeviceTable', () => {
             '0.777',
             'View details',
             // next device
-            '',
+            testOrganizationName,
             'Biomass Energy Facility',
             'Gaseous - Agricultural gas',
             '0.736',
@@ -102,7 +110,7 @@ describe('ProducingDeviceTable', () => {
         await refresh();
 
         assertMainTableContent([
-            '',
+            testOrganizationName,
             'Biomass Energy Facility',
             'Gaseous - Agricultural gas',
             '0.736',
@@ -118,7 +126,7 @@ describe('ProducingDeviceTable', () => {
         await refresh();
 
         assertMainTableContent([
-            '',
+            testOrganizationName,
             'Wuthering Heights facility',
             'Solar - Photovoltaic - Roof mounted',
             '9.877',

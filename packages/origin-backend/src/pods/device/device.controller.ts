@@ -25,8 +25,7 @@ import {
     Query,
     UnprocessableEntityException,
     UseGuards,
-    UnauthorizedException,
-    ParseBoolPipe
+    UnauthorizedException
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { StorageErrors } from '../../enums/StorageErrors';
@@ -48,11 +47,11 @@ export class DeviceController {
     @Get()
     async getAll(
         @Query('withMeterStats') withMeterStats: boolean,
-        @Query('loadRelationIds', ParseBoolPipe) loadRelationIds?: boolean
+        @Query('loadRelationIds') loadRelationIds: string | boolean = true
     ) {
         return this.deviceService.getAll(withMeterStats ?? false, {
             relations: ['organization'],
-            loadRelationIds
+            loadRelationIds: loadRelationIds === 'true' || loadRelationIds === true
         });
     }
 
@@ -87,13 +86,13 @@ export class DeviceController {
     async get(
         @Param('id') id: string,
         @Query('withMeterStats') withMeterStats: boolean,
-        @Query('loadRelationIds', ParseBoolPipe) loadRelationIds?: boolean
+        @Query('loadRelationIds') loadRelationIds: string | boolean = true
     ): Promise<ExtendedBaseEntity & IDevice> {
         const existingEntity = await this.deviceService.findOne(
             id,
             {
                 relations: ['organization'],
-                loadRelationIds
+                loadRelationIds: loadRelationIds === 'true' || loadRelationIds === true
             },
             withMeterStats
         );
