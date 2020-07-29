@@ -7,7 +7,6 @@ import { sagas } from '../../features/sagas';
 import { ReactWrapper, CommonWrapper } from 'enzyme';
 import { Compliance, Configuration } from '@energyweb/utils-general';
 
-import { ProducingDevice } from '@energyweb/device-registry';
 import { producingDeviceCreatedOrUpdated } from '../../features/producingDevices/actions';
 import { dataTestSelector, DATE_FORMAT_DMY, moment } from '../../utils';
 import { MuiPickersUtilsProvider } from '@material-ui/pickers';
@@ -25,10 +24,12 @@ import {
     IDevice,
     DeviceStatus,
     ISmartMeterReadStats,
-    IOffChainDataSource
+    IOffChainDataSource,
+    IOrganization
 } from '@energyweb/origin-backend-core';
 import { BigNumber, Signer } from 'ethers';
 import { ICertificate, Certificate } from '@energyweb/issuer';
+import { IProducingDeviceState } from '../../features/producingDevices/reducer';
 
 export const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -252,6 +253,7 @@ interface ICreateProducingDeviceProperties {
     complianceRegistry?: Compliance;
     region?: string;
     province?: string;
+    organization: IOrganization;
 }
 
 export const DEFAULT_PRODUCING_DEVICE_OFFCHAIN_PROPERTIES = ({
@@ -269,7 +271,7 @@ export const DEFAULT_PRODUCING_DEVICE_OFFCHAIN_PROPERTIES = ({
 
 export const createProducingDevice = (
     properties: ICreateProducingDeviceProperties
-): ProducingDevice.Entity => {
+): IProducingDeviceState => {
     const owner = properties.owner || '0x0';
     const meterStats = properties.meterStats ?? {
         certified: BigNumber.from(0),
@@ -300,7 +302,8 @@ export const createProducingDevice = (
         description: '',
         images: '',
         region: properties.region || DEFAULT_PRODUCING_DEVICE_OFFCHAIN_PROPERTIES.region,
-        province: properties.province || DEFAULT_PRODUCING_DEVICE_OFFCHAIN_PROPERTIES.province
+        province: properties.province || DEFAULT_PRODUCING_DEVICE_OFFCHAIN_PROPERTIES.province,
+        organization: properties.organization
     };
 
     return ({
@@ -317,7 +320,7 @@ export const createProducingDevice = (
         },
         ...offChainProperties,
         meterStats
-    } as Partial<ProducingDevice.Entity>) as ProducingDevice.Entity;
+    } as Partial<IProducingDeviceState>) as IProducingDeviceState;
 };
 
 export const createCertificate = (certificate: ICertificate): Certificate => {

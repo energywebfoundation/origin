@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Role, isRole, DeviceStatus } from '@energyweb/origin-backend-core';
+import { Role, isRole, DeviceStatus, IOrganization } from '@energyweb/origin-backend-core';
 import { Link, Redirect } from 'react-router-dom';
 import { ProducingDevice } from '@energyweb/device-registry';
 import { useSelector, useDispatch } from 'react-redux';
@@ -30,7 +30,7 @@ import {
     useTranslation,
     moment
 } from '../../utils';
-import { getEnvironment, getOffChainDataSource } from '../../features';
+import { getEnvironment } from '../../features';
 import { showRequestCertificatesModal } from '../../features/certificates';
 
 interface IOwnProps {
@@ -58,18 +58,15 @@ export function ProducingDeviceTable(props: IOwnProps) {
     const producingDevices = useSelector(getProducingDevices);
     const baseURL = useSelector(getBaseURL);
     const environment = useSelector(getEnvironment);
-    const offChainDataSource = useSelector(getOffChainDataSource);
 
     const dispatch = useDispatch();
 
-    async function enrichProducingDeviceData(): Promise<IEnrichedProducingDeviceData[]> {
-        const deviceClient = offChainDataSource.deviceClient;
+    function enrichProducingDeviceData(): IEnrichedProducingDeviceData[] {
         const enriched: IEnrichedProducingDeviceData[] = [];
         for (const device of producingDevices) {
-            const deviceWithRelations = await deviceClient.getById(device.id, false);
             enriched.push({
                 device,
-                organizationName: (deviceWithRelations as any)?.organization.name,
+                organizationName: (device?.organization as IOrganization).name,
                 locationText: getDeviceLocationText(device)
             });
         }
@@ -93,7 +90,9 @@ export function ProducingDeviceTable(props: IOwnProps) {
                     requestedFilters,
                     configuration.deviceTypeService
                 ) &&
-                (!props.owner || record?.device?.organization === user?.organization?.id) &&
+                (!props.owner ||
+                    (record?.device?.organization as IOrganization).id ===
+                        user?.organization?.id) &&
                 (includedStatuses.length === 0 || includedStatuses.includes(record.device.status))
         );
 

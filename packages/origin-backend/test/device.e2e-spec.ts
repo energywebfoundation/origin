@@ -98,7 +98,6 @@ describe('Device e2e tests', () => {
             .set('Authorization', `Bearer ${accessToken}`)
             .expect((res) => {
                 const device = res.body as IDeviceWithRelationsIds;
-
                 expect(device.defaultAskPrice).equals(null);
                 expect(device.automaticPostForSale).equals(false);
             });

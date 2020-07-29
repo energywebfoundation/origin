@@ -45,8 +45,14 @@ export class DeviceController {
     // TODO: remove sensitive information
 
     @Get()
-    async getAll(@Query('withMeterStats') withMeterStats: boolean) {
-        return this.deviceService.getAll(withMeterStats ?? false);
+    async getAll(
+        @Query('withMeterStats') withMeterStats: boolean,
+        @Query('loadRelationIds') loadRelationIds: string | boolean = true
+    ) {
+        return this.deviceService.getAll(withMeterStats ?? false, {
+            relations: ['organization'],
+            loadRelationIds: loadRelationIds === 'true' || loadRelationIds === true
+        });
     }
 
     @Get('/my-devices')
@@ -80,15 +86,15 @@ export class DeviceController {
     async get(
         @Param('id') id: string,
         @Query('withMeterStats') withMeterStats: boolean,
-        @Query('loadRelationsId') loadRelationsId: boolean
+        @Query('loadRelationIds') loadRelationIds: string | boolean = true
     ): Promise<ExtendedBaseEntity & IDevice> {
         const existingEntity = await this.deviceService.findOne(
             id,
             {
-                relations: ['organization']
+                relations: ['organization'],
+                loadRelationIds: loadRelationIds === 'true' || loadRelationIds === true
             },
-            withMeterStats,
-            loadRelationsId
+            withMeterStats
         );
 
         if (!existingEntity) {

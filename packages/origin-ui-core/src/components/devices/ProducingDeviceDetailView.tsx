@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import marker from '../../../assets/marker.svg';
 import map from '../../../assets/map.svg';
 import wind from '../../../assets/icon_wind.svg';
@@ -20,7 +20,7 @@ import { Skeleton } from '@material-ui/lab';
 import { formatDate, EnergyFormatter, PowerFormatter, useTranslation } from '../../utils';
 import { getOffChainDataSource } from '../../features/general/selectors';
 import { DeviceGroupForm } from './DeviceGroupForm';
-import { IExternalDeviceId, IDeviceWithRelations } from '@energyweb/origin-backend-core';
+import { IExternalDeviceId, IOrganization } from '@energyweb/origin-backend-core';
 
 interface IProps {
     id?: number;
@@ -34,7 +34,6 @@ export function ProducingDeviceDetailView(props: IProps) {
     const producingDevices = useSelector(getProducingDevices);
     const offChainDataSource = useSelector(getOffChainDataSource);
     const organizationClient = useSelector(getOffChainDataSource)?.organizationClient;
-    const [deviceWithRelations, setDeviceWithRelations] = useState<IDeviceWithRelations>(null);
 
     const { t } = useTranslation();
 
@@ -62,15 +61,6 @@ export function ProducingDeviceDetailView(props: IProps) {
             )
         );
     }
-
-    useEffect(() => {
-        (async () => {
-            const deviceClient = offChainDataSource.deviceClient;
-            setDeviceWithRelations(
-                (await deviceClient.getById(selectedDevice.id, false)) as IDeviceWithRelations
-            );
-        })();
-    }, [offChainDataSource]);
 
     if (!configuration || !organizationClient || !selectedDevice) {
         return <Skeleton variant="rect" height={200} />;
@@ -110,7 +100,7 @@ export function ProducingDeviceDetailView(props: IProps) {
             },
             {
                 label: t('device.properties.deviceOwner'),
-                data: deviceWithRelations?.organization.name
+                data: (selectedDevice.organization as IOrganization).name
             },
             {
                 label: t('device.properties.complianceRegistry'),

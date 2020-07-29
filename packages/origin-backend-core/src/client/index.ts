@@ -34,8 +34,7 @@ import {
     IDevice,
     ISmartMeterReadWithStatus,
     ISmartMeterRead,
-    DeviceSettingsUpdateData,
-    IDeviceWithRelations
+    DeviceSettingsUpdateData
 } from '..';
 
 export interface IAdminClient {
@@ -140,12 +139,9 @@ export interface IFilesClient {
 }
 
 export interface IDeviceClient {
-    getById(
-        id: number,
-        loadRelationsId?: boolean
-    ): Promise<IDeviceWithRelationsIds | IDeviceWithRelations>;
+    getById(id: number, loadRelationIds?: boolean): Promise<IDevice>;
     getByExternalId(id: IExternalDeviceId): Promise<IDeviceWithRelationsIds>;
-    getAll(withMeterStats: boolean): Promise<IDeviceWithRelationsIds[]>;
+    getAll(withMeterStats: boolean, loadRelationIds?: boolean): Promise<IDevice[]>;
     add(device: DeviceCreateData): Promise<IDeviceWithRelationsIds>;
     update(id: number, data: DeviceUpdateData): Promise<IDevice>;
     getAllSmartMeterReadings(id: number): Promise<ISmartMeterReadWithStatus[]>;

@@ -7,7 +7,8 @@ import {
     IExternalDeviceId,
     DeviceCreateData,
     IDeviceWithRelationsIds,
-    ISmartMeterReadStats
+    ISmartMeterReadStats,
+    IOrganization
 } from '@energyweb/origin-backend-core';
 
 export class Entity implements IDevice {
@@ -59,7 +60,7 @@ export class Entity implements IDevice {
 
     initialized: boolean;
 
-    organization: number;
+    organization: number | IOrganization;
 
     automaticPostForSale: boolean;
 
@@ -141,9 +142,13 @@ export class Entity implements IDevice {
 
 export const getAllDevices = async (
     configuration: Configuration.Entity,
-    withMeterStats = false
+    withMeterStats = false,
+    loadRelationIds?: boolean
 ): Promise<Entity[]> => {
-    const allDevices = await configuration.offChainDataSource.deviceClient.getAll(withMeterStats);
+    const allDevices = await configuration.offChainDataSource.deviceClient.getAll(
+        withMeterStats,
+        loadRelationIds
+    );
 
     return allDevices.map(
         (device: IDeviceWithRelationsIds) => new Entity(device.id, configuration, device)
