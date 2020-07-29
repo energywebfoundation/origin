@@ -37,4 +37,7 @@ export class CreateDemandDTO {
 
     @IsBoolean()
     public readonly boundToGenerationTime: boolean;
+
+    @IsBoolean()
+    public readonly excludeEnd: boolean;
 }
