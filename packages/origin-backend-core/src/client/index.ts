@@ -139,7 +139,7 @@ export interface IFilesClient {
 }
 
 export interface IDeviceClient {
-    getById(id: number, loadRelationId?: boolean): Promise<IDevice>;
+    getById(id: number, loadRelationIds?: boolean): Promise<IDevice>;
     getByExternalId(id: IExternalDeviceId): Promise<IDeviceWithRelationsIds>;
     getAll(withMeterStats: boolean, loadRelationIds?: boolean): Promise<IDevice[]>;
     add(device: DeviceCreateData): Promise<IDeviceWithRelationsIds>;
