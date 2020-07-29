@@ -2,36 +2,20 @@ import {
     OrganizationPostData,
     OrganizationUpdateData,
     OrganizationInviteCreateData,
-    OrganizationInviteCreateReturnData,
+    ISuccessResponse,
     IOrganizationInvitation,
     OrganizationInviteUpdateData,
     OrganizationInvitationStatus,
     IOrganizationWithRelationsIds,
     IUserWithRelationsIds,
-    OrganizationRemoveMemberReturnData
+    OrganizationRole,
+    Role,
+    IOrganizationUpdateMemberRole,
+    IRequestClient,
+    IOrganizationClient
 } from '@energyweb/origin-backend-core';
 
-import { IRequestClient, RequestClient } from './RequestClient';
-
-export interface IOrganizationClient {
-    getById(id: number): Promise<IOrganizationWithRelationsIds>;
-    getAll(): Promise<IOrganizationWithRelationsIds[]>;
-    add(data: OrganizationPostData): Promise<IOrganizationWithRelationsIds>;
-    update(id: number, data: OrganizationUpdateData): Promise<IOrganizationWithRelationsIds>;
-
-    invite(email: string): Promise<OrganizationInviteCreateReturnData>;
-    getInvitations(): Promise<IOrganizationInvitation[]>;
-    getInvitationsToOrganization(organizationId: number): Promise<IOrganizationInvitation[]>;
-    getInvitationsForEmail(email: string): Promise<IOrganizationInvitation[]>;
-    acceptInvitation(id: number): Promise<any>;
-    rejectInvitation(id: number): Promise<any>;
-
-    getMembers(id: number): Promise<IUserWithRelationsIds[]>;
-    removeMember(
-        organizationId: number,
-        userId: number
-    ): Promise<OrganizationRemoveMemberReturnData>;
-}
+import { RequestClient } from './RequestClient';
 
 export class OrganizationClient implements IOrganizationClient {
     constructor(
@@ -49,13 +33,15 @@ export class OrganizationClient implements IOrganizationClient {
         }
 
         const url = `${this.endpoint}/${id}`;
-        const { data } = await this.requestClient.get(url);
+        const { data } = await this.requestClient.get<unknown, IOrganizationWithRelationsIds>(url);
 
         return data;
     }
 
     public async getAll(): Promise<IOrganizationWithRelationsIds[]> {
-        const { data } = await this.requestClient.get(this.endpoint);
+        const { data } = await this.requestClient.get<unknown, IOrganizationWithRelationsIds[]>(
+            this.endpoint
+        );
 
         return data;
     }
@@ -93,25 +79,28 @@ export class OrganizationClient implements IOrganizationClient {
         });
     }
 
-    public async invite(email: string): Promise<OrganizationInviteCreateReturnData> {
+    public async invite(email: string, role: OrganizationRole): Promise<ISuccessResponse> {
         const response = await this.requestClient.post<
             OrganizationInviteCreateData,
-            OrganizationInviteCreateReturnData
+            ISuccessResponse
         >(`${this.endpoint}/invite`, {
-            email
+            email,
+            role
         });
 
         return response.data;
     }
 
     public async getInvitations(): Promise<IOrganizationInvitation[]> {
-        const { data } = await this.requestClient.get(`${this.endpoint}/invitation`);
+        const { data } = await this.requestClient.get<unknown, IOrganizationInvitation[]>(
+            `${this.endpoint}/invitation`
+        );
 
         return data;
     }
 
     public async getInvitationsForEmail(email: string): Promise<IOrganizationInvitation[]> {
-        const { data } = await this.requestClient.get(
+        const { data } = await this.requestClient.get<unknown, IOrganizationInvitation[]>(
             `${this.endpoint}/invitation?email=${encodeURIComponent(email)}`
         );
 
@@ -121,24 +110,23 @@ export class OrganizationClient implements IOrganizationClient {
     public async getInvitationsToOrganization(
         organizationId: number
     ): Promise<IOrganizationInvitation[]> {
-        const { data } = await this.requestClient.get(
-            `${this.endpoint}/invitation?organization=${organizationId}`
+        const { data } = await this.requestClient.get<unknown, IOrganizationInvitation[]>(
+            `${this.endpoint}/${organizationId}/invitations`
         );
 
         return data;
     }
 
     public async getMembers(id: number): Promise<IUserWithRelationsIds[]> {
-        const { data } = await this.requestClient.get(`${this.endpoint}/${id}/users`);
+        const { data } = await this.requestClient.get<unknown, IUserWithRelationsIds[]>(
+            `${this.endpoint}/${id}/users`
+        );
 
         return data;
     }
 
-    public async removeMember(
-        organizationId: number,
-        userId: number
-    ): Promise<{ success: boolean; error: string }> {
-        const response = await this.requestClient.post<{}, { success: boolean; error: string }>(
+    public async removeMember(organizationId: number, userId: number): Promise<ISuccessResponse> {
+        const response = await this.requestClient.post<void, ISuccessResponse>(
             `${this.endpoint}/${organizationId}/remove-member/${userId}`
         );
 
@@ -150,6 +138,19 @@ export class OrganizationClient implements IOrganizationClient {
             OrganizationInviteUpdateData,
             IOrganizationInvitation
         >(`${this.endpoint}/invitation/${id}`, data);
+
+        return response.data;
+    }
+
+    public async memberChangeRole(
+        organizationId: number,
+        userId: number,
+        newRole: Role
+    ): Promise<ISuccessResponse> {
+        const response = await this.requestClient.put<
+            IOrganizationUpdateMemberRole,
+            ISuccessResponse
+        >(`${this.endpoint}/${organizationId}/change-role/${userId}`, { role: newRole });
 
         return response.data;
     }

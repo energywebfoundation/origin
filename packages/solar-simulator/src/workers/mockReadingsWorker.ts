@@ -5,10 +5,10 @@ import moment from 'moment-timezone';
 import * as Winston from 'winston';
 
 import { ProducingDevice } from '@energyweb/device-registry';
-import { Configuration } from '@energyweb/utils-general';
+import { Configuration, getProviderWithFallback } from '@energyweb/utils-general';
 import { OffChainDataSource } from '@energyweb/origin-backend-client';
 import { ISmartMeterRead } from '@energyweb/origin-backend-core';
-import { bigNumberify, BigNumber } from 'ethers/utils';
+import { Wallet, BigNumber } from 'ethers';
 
 async function getProducingDeviceSmartMeterRead(
     deviceId: string,
@@ -19,12 +19,12 @@ async function getProducingDeviceSmartMeterRead(
     const smartMeterReadings = await device.getSmartMeterReads();
     const latestSmRead = smartMeterReadings[smartMeterReadings.length - 1];
 
-    return latestSmRead?.meterReading ?? bigNumberify(0);
+    return latestSmRead?.meterReading ?? BigNumber.from(0);
 }
 
-async function saveProducingDeviceSmartMeterRead(
+async function saveProducingDeviceSmartMeterReads(
     deviceId: number,
-    smartMeterReading: ISmartMeterRead,
+    smartMeterReadings: ISmartMeterRead[],
     conf: Configuration.Entity
 ) {
     console.log('-----------------------------------------------------------');
@@ -33,23 +33,19 @@ async function saveProducingDeviceSmartMeterRead(
 
     try {
         device = await new ProducingDevice.Entity(deviceId, conf).sync();
-        await device.saveSmartMeterRead(
-            smartMeterReading.meterReading,
-            smartMeterReading.timestamp
-        );
+        await device.saveSmartMeterReads(smartMeterReadings);
         device = await device.sync();
         conf.logger.verbose(
-            `Producing device ${deviceId} smart meter reading saved: ${JSON.stringify(
-                smartMeterReading
+            `Producing device ${deviceId} smart meter readings saved: ${JSON.stringify(
+                smartMeterReadings.length
             )}`
         );
     } catch (e) {
-        conf.logger.error(`Could not save smart meter reading for producing device\n${e}`);
+        conf.logger.error(`Could not save smart meter readings for producing device\n${e}`);
 
         console.error({
             deviceId: device.id,
-            meterReading: smartMeterReading.meterReading,
-            time: moment.unix(smartMeterReading.timestamp).format()
+            smartMeterReadings
         });
     }
 
@@ -66,8 +62,14 @@ const currentTime = moment.tz(device.timezone);
         Number(process.env.BACKEND_PORT)
     );
 
+    const [web3Url] = process.env.WEB3.split(';');
+    const provider = getProviderWithFallback(web3Url);
+    const issuerWallet = new Wallet(process.env.DEPLOY_KEY, provider);
+
     const conf = {
-        blockchainProperties: {},
+        blockchainProperties: {
+            activeUser: issuerWallet
+        },
         offChainDataSource,
         logger: Winston.createLogger({
             level: 'verbose',
@@ -76,10 +78,20 @@ const currentTime = moment.tz(device.timezone);
         })
     };
 
+    const loginResponse = await conf.offChainDataSource.userClient.login(
+        'admin@mailinator.com',
+        'test'
+    );
+
+    conf.offChainDataSource.requestClient.authenticationToken = loginResponse.accessToken;
+
     const MOCK_READINGS_MINUTES_INTERVAL =
         parseInt(process.env.SOLAR_SIMULATOR_PAST_READINGS_MINUTES_INTERVAL, 10) || 15;
 
     let measurementTime = currentTime.clone().subtract(1, 'day').startOf('day');
+    let currentMeterRead = BigNumber.from(await getProducingDeviceSmartMeterRead(device.id, conf));
+
+    const allSmartMeterReadings: ISmartMeterRead[] = [];
 
     while (measurementTime.isSameOrBefore(currentTime)) {
         const newMeasurementTime = measurementTime
@@ -101,41 +113,39 @@ const currentTime = moment.tz(device.timezone);
             .reduce((a, b) => a + parseFloat(b[1]), 0);
 
         const multiplier = combinedMultiplierForMatchingRows ?? 0;
-        const energyGenerated = bigNumberify(Math.round(device.maxCapacity * multiplier));
+        const energyGenerated = BigNumber.from(Math.round(device.maxCapacity * multiplier));
 
         const isValidMeterReading = energyGenerated.gt(0);
 
         if (isValidMeterReading) {
-            try {
-                const previousRead: BigNumber = bigNumberify(
-                    await getProducingDeviceSmartMeterRead(device.id, conf)
-                );
+            const newMeterReading = currentMeterRead.add(energyGenerated);
 
-                const smartMeterReading: ISmartMeterRead = {
-                    meterReading: previousRead.add(energyGenerated),
-                    timestamp: measurementTime.unix()
-                };
+            allSmartMeterReadings.push({
+                meterReading: newMeterReading,
+                timestamp: measurementTime.unix()
+            });
 
-                await saveProducingDeviceSmartMeterRead(device.id, smartMeterReading, conf);
-            } catch (error) {
-                conf.logger.error(`Error while trying to save meter read for device ${device.id}`);
-                if (error?.response?.data) {
-                    conf.logger.error('HTTP Error', {
-                        config: error.config,
-                        response: error?.response?.data
-                    });
-                } else {
-                    conf.logger.error(`ERROR: ${error?.message}`);
-                }
-            }
+            currentMeterRead = newMeterReading;
         }
-
-        parentPort.postMessage(
-            `[Device ID: ${device.id}]:${
-                isValidMeterReading ? 'Saved' : 'Skipped'
-            } Energy Read of: ${energyGenerated} Wh - [${measurementTime.format()}]`
-        );
 
         measurementTime = newMeasurementTime;
     }
+
+    try {
+        await saveProducingDeviceSmartMeterReads(device.id, allSmartMeterReadings, conf);
+    } catch (error) {
+        conf.logger.error(`Error while trying to save meter read for device ${device.id}`);
+        if (error?.response?.data) {
+            conf.logger.error('HTTP Error', {
+                config: error.config,
+                response: error?.response?.data
+            });
+        } else {
+            conf.logger.error(`ERROR: ${error?.message}`);
+        }
+    }
+
+    parentPort.postMessage(
+        `[Device ID: ${device.id}]: Saved ${allSmartMeterReadings.length} smart meter reads`
+    );
 })();

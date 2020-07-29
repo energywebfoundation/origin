@@ -3,6 +3,61 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [9.1.5](https://github.com/energywebfoundation/origin/compare/@energyweb/utils-general@9.1.4...@energyweb/utils-general@9.1.5) (2020-07-16)
+
+**Note:** Version bump only for package @energyweb/utils-general
+
+
+
+
+
+## [9.1.4](https://github.com/energywebfoundation/origin/compare/@energyweb/utils-general@9.1.3...@energyweb/utils-general@9.1.4) (2020-07-08)
+
+
+### Bug Fixes
+
+* **deps:** update dependency winston to v3.3.0 ([12f111e](https://github.com/energywebfoundation/origin/commit/12f111ed16274e40d9ccbb4c3d6f9d8d222cb2fe))
+* **deps:** update dependency winston to v3.3.3 ([d66ad8e](https://github.com/energywebfoundation/origin/commit/d66ad8e4f8f65a8c6bed6ec95303a175771ed230))
+
+
+
+
+
+## [9.1.3](https://github.com/energywebfoundation/origin/compare/@energyweb/utils-general@9.1.2...@energyweb/utils-general@9.1.3) (2020-06-16)
+
+**Note:** Version bump only for package @energyweb/utils-general
+
+
+
+
+
+## [9.1.2](https://github.com/energywebfoundation/origin/compare/@energyweb/utils-general@9.1.1...@energyweb/utils-general@9.1.2) (2020-06-16)
+
+**Note:** Version bump only for package @energyweb/utils-general
+
+
+
+
+
+## [9.1.1](https://github.com/energywebfoundation/origin/compare/@energyweb/utils-general@9.1.0...@energyweb/utils-general@9.1.1) (2020-05-29)
+
+**Note:** Version bump only for package @energyweb/utils-general
+
+
+
+
+
+# [9.1.0](https://github.com/energywebfoundation/origin/compare/@energyweb/utils-general@9.0.0...@energyweb/utils-general@9.1.0) (2020-05-15)
+
+
+### Features
+
+* **utils-general:** enable signing messages using private keys ([492a562](https://github.com/energywebfoundation/origin/commit/492a5624bec9a418b8cffc29d2e684ec5ed73aea))
+
+
+
+
+
 # [9.0.0](https://github.com/energywebfoundation/origin/compare/@energyweb/utils-general@8.0.0...@energyweb/utils-general@9.0.0) (2020-04-24)
 
 

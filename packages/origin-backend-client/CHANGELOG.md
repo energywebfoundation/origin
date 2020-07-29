@@ -3,6 +3,87 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.2.1](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-backend-client@6.2.0...@energyweb/origin-backend-client@6.2.1) (2020-07-16)
+
+**Note:** Version bump only for package @energyweb/origin-backend-client
+
+
+
+
+
+# [6.2.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-backend-client@6.1.1...@energyweb/origin-backend-client@6.2.0) (2020-07-08)
+
+
+### Features
+
+* **origin-backend-client:** approvedDate and revokedDate added to ICertificationRequest ([b648d2f](https://github.com/energywebfoundation/origin/commit/b648d2f343c736300465eb529655c08fecacdfe6))
+
+
+
+
+
+## [6.1.1](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-backend-client@6.1.0...@energyweb/origin-backend-client@6.1.1) (2020-06-16)
+
+**Note:** Version bump only for package @energyweb/origin-backend-client
+
+
+
+
+
+# [6.1.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-backend-client@6.0.1...@energyweb/origin-backend-client@6.1.0) (2020-06-16)
+
+
+### Bug Fixes
+
+* Certification request validation handling ([5e0f90b](https://github.com/energywebfoundation/origin/commit/5e0f90bc2abfa2a8e26db19739f283d4eaf4c926))
+* implement a certification request data queue ([78cbd4a](https://github.com/energywebfoundation/origin/commit/78cbd4a7a36959cbb0820cf17dc277f0bf5ae823))
+
+
+### Features
+
+* Updating organization user roles ([c1096f2](https://github.com/energywebfoundation/origin/commit/c1096f28c1b48e606d5deeda7f33720613764326))
+
+
+
+
+
+## [6.0.1](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-backend-client@6.0.0...@energyweb/origin-backend-client@6.0.1) (2020-05-29)
+
+
+### Bug Fixes
+
+* change URL to fetch invitations for organization ([cc0b238](https://github.com/energywebfoundation/origin/commit/cc0b238966cf8e6e3b14b485f2d4e4b6e7cec865))
+* endpoint for fetching invitations for an organization ([57e11d9](https://github.com/energywebfoundation/origin/commit/57e11d9c8b09739ff443389c71dae6c31e4bb6d3))
+* ownership commitments permissions + store original requestor ([1751d30](https://github.com/energywebfoundation/origin/commit/1751d3009d11f92d23bc9834632ef5b0ffb5bcee))
+
+
+
+
+
+# [6.0.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-backend-client@5.0.1...@energyweb/origin-backend-client@6.0.0) (2020-05-15)
+
+
+### chore
+
+* **origin-backend-client:** replace UserRegisterData ([52e9674](https://github.com/energywebfoundation/origin/commit/52e967480c426bc2aa9cc0f59b8c676ca17a4474))
+* **origin-backend-client:** rm autopublish remaining code ([9f97d04](https://github.com/energywebfoundation/origin/commit/9f97d040679e95c300f0a02fd85f18ef7e6091f5))
+
+
+### Features
+
+* add meterStats to Device for un/certified meter readings reference ([627d785](https://github.com/energywebfoundation/origin/commit/627d7855506f52cb70ee083844ef2664b9227a0b))
+* Detect and store the whole CertificationRequest on the backend ([613eb28](https://github.com/energywebfoundation/origin/commit/613eb28eeae25ec414b393f61311dbfb679351d4))
+
+
+### BREAKING CHANGES
+
+* **origin-backend-client:** UserRegisterData type replace with UserRegistrationData
+* **origin-backend-client:** autoPublish is not longer a member of IUser interface
+
+
+
+
+
 ## [5.0.1](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-backend-client@5.0.0...@energyweb/origin-backend-client@5.0.1) (2020-04-24)
 
 

@@ -13,9 +13,10 @@ export class Bid extends Order {
         volume: BN,
         product: Product,
         validFrom: Date,
-        userId: string
+        userId: string,
+        createdAt: Date
     ) {
-        super(id, OrderSide.Bid, validFrom, product, price, volume, userId);
+        super(id, OrderSide.Bid, validFrom, product, price, volume, userId, createdAt);
     }
 
     public filterBy(
@@ -60,8 +61,16 @@ export class Bid extends Order {
         );
     }
 
-    public clone() {
-        return new Bid(this.id, this.price, this.volume, this.product, this.validFrom, this.userId);
+    public clone(): Bid {
+        return new Bid(
+            this.id,
+            this.price,
+            this.volume,
+            this.product,
+            this.validFrom,
+            this.userId,
+            this.createdAt
+        );
     }
 
     private hasMatchingDeviceType(product: Product, deviceService: IDeviceTypeService) {

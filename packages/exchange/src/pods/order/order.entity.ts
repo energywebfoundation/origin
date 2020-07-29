@@ -1,4 +1,4 @@
-import { OrderSide } from '@energyweb/exchange-core';
+import { OrderSide, OrderStatus } from '@energyweb/exchange-core';
 import BN from 'bn.js';
 import { Exclude, Transform } from 'class-transformer';
 import {
@@ -18,7 +18,6 @@ import { Demand } from '../demand/demand.entity';
 import { Trade } from '../trade/trade.entity';
 import { OrderType } from './order-type.enum';
 import { ProductDTO } from './product.dto';
-import { OrderStatus } from './order-status.enum';
 
 @Entity()
 export class Order extends ExtendedBaseEntity {
@@ -63,7 +62,6 @@ export class Order extends ExtendedBaseEntity {
     product: ProductDTO;
 
     @ManyToOne(() => Asset, { eager: true })
-    @Exclude()
     asset: Asset;
 
     @RelationId((order: Order) => order.asset)

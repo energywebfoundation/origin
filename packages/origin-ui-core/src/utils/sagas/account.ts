@@ -1,7 +1,8 @@
 import {
     setAccountMismatchModalPropertiesAction,
     GeneralActions,
-    IAccountMismatchModalResolvedAction
+    IAccountMismatchModalResolvedAction,
+    setNoAccountModalVisibilityAction
 } from '../../features/general/actions';
 import { getUserOffchain, getActiveBlockchainAccountAddress } from '../../features/users/selectors';
 
@@ -12,12 +13,16 @@ export function* assertCorrectBlockchainAccount() {
     const user: IUserWithRelations = yield select(getUserOffchain);
     const activeBlockchainAddress: string = yield select(getActiveBlockchainAccountAddress);
 
-    if (
-        user &&
-        user.blockchainAccountAddress &&
-        user.blockchainAccountAddress.toLowerCase() === activeBlockchainAddress?.toLowerCase()
-    ) {
-        return true;
+    if (user) {
+        if (!user.blockchainAccountAddress || !activeBlockchainAddress) {
+            yield put(setNoAccountModalVisibilityAction(true));
+
+            return false;
+        } else if (
+            user.blockchainAccountAddress.toLowerCase() === activeBlockchainAddress?.toLowerCase()
+        ) {
+            return true;
+        }
     }
 
     yield put(

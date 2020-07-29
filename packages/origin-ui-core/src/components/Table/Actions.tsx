@@ -5,10 +5,17 @@ import { useTheme, createStyles, makeStyles } from '@material-ui/core';
 
 import { useOriginConfiguration } from '../../utils/configuration';
 
+export enum TableActionId {
+    Claim = 0,
+    PublishForSale = 1,
+    Withdraw = 2,
+    Deposit = 3
+}
 export interface ITableAction {
+    id?: TableActionId;
     name: string;
     icon: React.ReactNode;
-    onClick: (rowId: string) => void;
+    onClick: (rowId: string | number) => any;
 }
 
 interface IProps {
@@ -27,16 +34,20 @@ export function Actions(props: IProps) {
             speedDial: {
                 position: 'absolute',
                 bottom: 'calc(50% - 14px)',
-                left: '0'
+                left: 0,
+                right: 0
             },
             speedDialButton: {
                 width: '28px',
                 height: '28px',
                 minHeight: '28px',
-                backgroundColor: '#333333'
+                backgroundColor: 'inherit',
+                boxShadow: 'none',
+                color: styleConfig.PRIMARY_COLOR
             },
             speedDialIcon: {
-                fontSize: '16px'
+                fontSize: '16px',
+                backgroundColor: 'inherit'
             },
             speedDialActionButton: {
                 backgroundColor: styleConfig.PRIMARY_COLOR,
@@ -63,7 +74,7 @@ export function Actions(props: IProps) {
             ariaLabel={`speed-dial-${id}`}
             icon={
                 <SpeedDialIcon
-                    icon={<MoreHoriz />}
+                    icon={<MoreHoriz style={{ backgroundColor: 'inherit' }} />}
                     classes={{
                         icon: classes.speedDialIcon
                     }}

@@ -1,7 +1,10 @@
+/* eslint-disable no-unused-expressions */
 import { DemandStatus, TimeFrame } from '@energyweb/utils-general';
 import { INestApplication } from '@nestjs/common';
+import { expect } from 'chai';
 import moment from 'moment';
 import request from 'supertest';
+import { OrderStatus } from '@energyweb/exchange-core';
 
 import { AccountService } from '../src/pods/account/account.service';
 import { CreateDemandDTO } from '../src/pods/demand/create-demand.dto';
@@ -13,8 +16,7 @@ import { ProductService } from '../src/pods/product/product.service';
 import { TradeDTO } from '../src/pods/trade/trade.dto';
 import { TransferService } from '../src/pods/transfer/transfer.service';
 import { DatabaseService } from './database.service';
-import { bootstrapTestInstance } from './exchange';
-import { OrderStatus } from '../src/pods/order/order-status.enum';
+import { authenticatedUser, bootstrapTestInstance } from './exchange';
 
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -50,9 +52,7 @@ const confirmDeposit = () => {
 };
 
 describe('Demand orders trading', () => {
-    jest.setTimeout(10000);
-
-    beforeAll(async () => {
+    before(async () => {
         ({
             transferService,
             accountService,
@@ -66,7 +66,7 @@ describe('Demand orders trading', () => {
         await app.init();
     });
 
-    afterAll(async () => {
+    after(async () => {
         await databaseService.cleanUp();
         await app.close();
     });
@@ -77,7 +77,7 @@ describe('Demand orders trading', () => {
         await databaseService.truncate('demand');
     });
 
-    const demandOwner = '1';
+    const demandOwner = authenticatedUser.organization;
     const sellerId = '2';
     const price = 1000;
 
@@ -126,10 +126,9 @@ describe('Demand orders trading', () => {
             .expect((res) => {
                 const trades = res.body as TradeDTO[];
 
-                expect(trades).toBeDefined();
-                expect(trades).toHaveLength(1);
-                expect(trades[0].askId).toBeUndefined(); // as a buyer, I should not see the askId
-                expect(trades[0].bidId).toBe(demand.bids[0].id);
+                expect(trades).to.have.length(1);
+                expect(trades[0].askId).to.be.undefined; // as a buyer, I should not see the askId
+                expect(trades[0].bidId).equals(demand.bids[0].id);
             });
 
         await request(app.getHttpServer())
@@ -138,9 +137,8 @@ describe('Demand orders trading', () => {
             .expect((res) => {
                 const orders = res.body as Order[];
 
-                expect(orders).toBeDefined();
-                expect(orders).toHaveLength(1);
-                expect(orders[0].demandId).toBe(demand.id);
+                expect(orders).to.have.length(1);
+                expect(orders[0].demandId).equals(demand.id);
             });
     });
 
@@ -154,14 +152,14 @@ describe('Demand orders trading', () => {
 
                 const [bid1, bid2] = created.bids;
 
-                expect(created.price).toBe(createDemandWith2Bids.price);
-                expect(created.bids).toHaveLength(2);
+                expect(created.price).equals(createDemandWith2Bids.price);
+                expect(created.bids).to.have.length(2);
 
-                expect(bid1.price).toBe(createDemandWith2Bids.price);
-                expect(bid2.price).toBe(createDemandWith2Bids.price);
+                expect(bid1.price).equals(createDemandWith2Bids.price);
+                expect(bid2.price).equals(createDemandWith2Bids.price);
 
-                expect(bid1.demandId).toBe(created.id);
-                expect(bid2.demandId).toBe(created.id);
+                expect(bid1.demandId).equals(created.id);
+                expect(bid2.demandId).equals(created.id);
             });
     });
 
@@ -182,13 +180,13 @@ describe('Demand orders trading', () => {
             .expect((res) => {
                 const demand = res.body as Demand;
 
-                expect(demand.id).toBe(demandId);
-                expect(demand.status).toBe(DemandStatus.PAUSED);
+                expect(demand.id).equals(demandId);
+                expect(demand.status).equals(DemandStatus.PAUSED);
 
                 const [bid1, bid2] = demand.bids;
 
-                expect(bid1.status).toBe(OrderStatus.PendingCancellation);
-                expect(bid2.status).toBe(OrderStatus.PendingCancellation);
+                expect(bid1.status).equals(OrderStatus.PendingCancellation);
+                expect(bid2.status).equals(OrderStatus.PendingCancellation);
             });
 
         await sleep(3000);
@@ -199,13 +197,13 @@ describe('Demand orders trading', () => {
             .expect((res) => {
                 const demand = res.body as Demand;
 
-                expect(demand.id).toBe(demandId);
-                expect(demand.status).toBe(DemandStatus.PAUSED);
+                expect(demand.id).equals(demandId);
+                expect(demand.status).equals(DemandStatus.PAUSED);
 
                 const [bid1, bid2] = demand.bids;
 
-                expect(bid1.status).toBe(OrderStatus.Cancelled);
-                expect(bid2.status).toBe(OrderStatus.Cancelled);
+                expect(bid1.status).equals(OrderStatus.Cancelled);
+                expect(bid2.status).equals(OrderStatus.Cancelled);
             });
     });
 
@@ -230,8 +228,8 @@ describe('Demand orders trading', () => {
             .expect((res) => {
                 const demand = res.body as Demand;
 
-                expect(demand.id).toBe(demandId);
-                expect(demand.status).toBe(DemandStatus.ACTIVE);
+                expect(demand.id).equals(demandId);
+                expect(demand.status).equals(DemandStatus.ACTIVE);
             });
 
         await sleep(3000);
@@ -242,13 +240,13 @@ describe('Demand orders trading', () => {
             .expect((res) => {
                 const demand = res.body as Demand;
 
-                expect(demand.id).toBe(demandId);
-                expect(demand.status).toBe(DemandStatus.ACTIVE);
+                expect(demand.id).equals(demandId);
+                expect(demand.status).equals(DemandStatus.ACTIVE);
 
                 const [bid1, bid2] = demand.bids;
 
-                expect(bid1.status).toBe(OrderStatus.Active);
-                expect(bid2.status).toBe(OrderStatus.Active);
+                expect(bid1.status).equals(OrderStatus.Active);
+                expect(bid2.status).equals(OrderStatus.Active);
             });
     });
 });

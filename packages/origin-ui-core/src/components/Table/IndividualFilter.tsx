@@ -10,7 +10,7 @@ import {
     FilledInput,
     Chip
 } from '@material-ui/core';
-import { DatePicker } from '@material-ui/pickers';
+import { KeyboardDatePicker } from '@material-ui/pickers';
 
 import { ICustomFilter, CustomFilterInputType } from './FiltersHeader';
 import { CustomSlider, CustomSliderThumbComponent } from '../CustomSlider';
@@ -38,7 +38,7 @@ export function IndividualFilter(props: IProps) {
                 <FormControl fullWidth={true} variant="filled">
                     <TextField
                         onChange={(e) => props.changeFilterValue(filter, e.target.value)}
-                        value={filter.selectedValue ? filter.selectedValue : ''}
+                        value={filter.selectedValue ?? ''}
                         label={filter.label}
                         fullWidth={true}
                         variant="filled"
@@ -91,7 +91,7 @@ export function IndividualFilter(props: IProps) {
         case CustomFilterInputType.deviceType:
             return (
                 <HierarchicalMultiSelect
-                    selectedValue={filter.selectedValue ? filter.selectedValue : []}
+                    selectedValue={filter.selectedValue ?? []}
                     onChange={(e) => props.changeFilterValue(filter, e)}
                     allValues={configuration?.deviceTypeService?.deviceTypes}
                     selectOptions={[
@@ -115,13 +115,15 @@ export function IndividualFilter(props: IProps) {
                 <FormControl fullWidth={true} variant="filled">
                     <InputLabel>{filter.label}</InputLabel>
                     <Select
-                        value={filter.selectedValue ? filter.selectedValue : ''}
+                        value={filter.selectedValue ?? ''}
                         onChange={(e) => props.changeFilterValue(filter, e.target.value)}
                         fullWidth={true}
                         variant="filled"
                         input={<FilledInput />}
                     >
-                        <MenuItem value="">Any</MenuItem>
+                        <MenuItem value={null} key={-1}>
+                            Any
+                        </MenuItem>
                         {filter.input.availableOptions.map((option) => (
                             <MenuItem value={option.value} key={option.value}>
                                 {option.label}
@@ -136,7 +138,7 @@ export function IndividualFilter(props: IProps) {
                     <InputLabel shrink={true}>{filter.label}</InputLabel>
                     <CustomSlider
                         valueLabelDisplay="on"
-                        defaultValue={filter.selectedValue || [filter.input.min, filter.input.max]}
+                        defaultValue={filter.selectedValue ?? [filter.input.min, filter.input.max]}
                         min={filter.input.min}
                         max={filter.input.max}
                         ThumbComponent={CustomSliderThumbComponent}
@@ -146,7 +148,7 @@ export function IndividualFilter(props: IProps) {
             );
         case CustomFilterInputType.yearMonth:
             return (
-                <DatePicker
+                <KeyboardDatePicker
                     openTo="year"
                     views={['year', 'month']}
                     label={filter.label}

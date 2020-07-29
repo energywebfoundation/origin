@@ -1,11 +1,11 @@
 /* eslint-disable no-return-assign */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import {
-    buildRights,
     LoggedInUser,
     OrganizationPostData,
     Role,
-    UserRegisterData
+    UserRegistrationData,
+    UserStatus
 } from '@energyweb/origin-backend-core';
 import { signTypedMessagePrivateKey } from '@energyweb/utils-general';
 import { Logger } from '@nestjs/common';
@@ -17,12 +17,14 @@ import request from 'supertest';
 
 import { entities } from '../src';
 import { AppModule } from '../src/app.module';
-import { CertificationRequestService } from '../src/pods/certificate/certification-request.service';
+import { CertificationRequestService } from '../src/pods/certification-request/certification-request.service';
 import { ConfigurationService } from '../src/pods/configuration';
 import { DeviceService } from '../src/pods/device/device.service';
 import { OrganizationService } from '../src/pods/organization/organization.service';
 import { UserService } from '../src/pods/user';
 import { DatabaseService } from './database.service';
+import { CertificateService } from '../src/pods/certificate/certificate.service';
+import { EmailConfirmationService } from '../src/pods/email-confirmation/email-confirmation.service';
 
 const testLogger = new Logger('e2e');
 
@@ -55,8 +57,12 @@ export const bootstrapTestInstance = async () => {
     const organizationService = await app.resolve<OrganizationService>(OrganizationService);
     const deviceService = await app.resolve<DeviceService>(DeviceService);
     const configurationService = await app.resolve<ConfigurationService>(ConfigurationService);
+    const certificateService = await app.resolve<CertificateService>(CertificateService);
     const certificationRequestService = await app.resolve<CertificationRequestService>(
         CertificationRequestService
+    );
+    const emailConfirmationService = await app.resolve<EmailConfirmationService>(
+        EmailConfirmationService
     );
 
     app.useLogger(testLogger);
@@ -76,7 +82,9 @@ export const bootstrapTestInstance = async () => {
         organizationService,
         deviceService,
         configurationService,
-        certificationRequestService
+        certificateService,
+        certificationRequestService,
+        emailConfirmationService
     };
 };
 
@@ -92,21 +100,20 @@ export const registerAndLogin = async (
 
     let user = await userService.findOne({ email: userEmail });
     if (!user) {
-        const userRegistration: UserRegisterData = {
+        const userRegistration: UserRegistrationData = {
             email: userEmail,
             password: '123',
             firstName: 'Name',
             lastName: 'Name',
             title: 'Sir',
-            rights: buildRights(roles),
-            telephone: '991',
-            status: 0,
-            kycStatus: 0,
-            notifications: true
+            telephone: '991'
         };
-        await userService.create(userRegistration);
-        user = await userService.findOne({ email: userEmail });
+        const { id: userId } = await userService.create(userRegistration);
+        await userService.changeRole(userId, ...roles);
 
+        user = await userService.findOne({ email: userEmail });
+        user.status = UserStatus.Active;
+        await userService.update(userId, user);
         const signedMessage = await signTypedMessagePrivateKey(
             ethers.Wallet.createRandom().privateKey.substring(2),
             process.env.REGISTRATION_MESSAGE_TO_SIGN

@@ -1,39 +1,83 @@
-import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, FindConditions } from 'typeorm';
-import bcrypt from 'bcryptjs';
-import { ConfigService } from '@nestjs/config';
-
 import {
-    UserRegisterData,
-    IUserWithRelationsIds,
+    buildRights,
     IUser,
-    UserUpdateData
+    IUserWithRelationsIds,
+    KYCStatus,
+    Role,
+    UserStatus,
+    UserPasswordUpdate,
+    UserRegistrationData,
+    IUserFilter,
+    ILoggedInUser
 } from '@energyweb/origin-backend-core';
 import { recoverTypedSignatureAddress } from '@energyweb/utils-general';
-
-import { User } from './user.entity';
+import {
+    ConflictException,
+    Injectable,
+    Logger,
+    UnprocessableEntityException
+} from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+import { InjectRepository } from '@nestjs/typeorm';
+import bcrypt from 'bcryptjs';
+import { validate } from 'class-validator';
+import { DeepPartial, FindConditions, Repository, FindManyOptions } from 'typeorm';
 import { ExtendedBaseEntity } from '../ExtendedBaseEntity';
+import { User } from './user.entity';
+import { EmailConfirmationService } from '../email-confirmation/email-confirmation.service';
 
 export type TUserBaseEntity = ExtendedBaseEntity & IUserWithRelationsIds;
 
 @Injectable()
 export class UserService {
+    private readonly logger = new Logger(UserService.name);
+
     constructor(
         @InjectRepository(User)
         private readonly repository: Repository<User>,
-        private readonly config: ConfigService
+        private readonly config: ConfigService,
+        private readonly emailConfirmationService: EmailConfirmationService
     ) {}
 
-    create(data: UserRegisterData): Promise<User> {
-        const user = this.repository.create({
-            ...data,
+    public async getAll(options?: FindManyOptions<User>) {
+        return this.repository.find(options);
+    }
+
+    public async create(data: UserRegistrationData): Promise<User> {
+        const isExistingUser = await this.hasUser({ email: data.email });
+
+        if (isExistingUser) {
+            const message = `User with email ${data.email} already exists`;
+
+            this.logger.error(message);
+            throw new ConflictException({
+                success: false,
+                message
+            });
+        }
+
+        const user = await this.repository.save({
+            title: data.title,
+            firstName: data.firstName,
+            lastName: data.lastName,
+            email: data.email,
+            telephone: data.telephone,
             password: this.hashPassword(data.password),
-            blockchainAccountAddress: '',
-            blockchainAccountSignedMessage: ''
+            notifications: true,
+            rights: Role.OrganizationAdmin,
+            status: UserStatus.Pending,
+            kycStatus: KYCStatus.Pending
         });
 
-        return this.repository.save(user);
+        await this.emailConfirmationService.create(user);
+
+        return new User(user);
+    }
+
+    public async changeRole(userId: number, ...roles: Role[]) {
+        this.logger.log(`Changing user role for userId=${userId} to ${buildRights(roles)}`);
+
+        return this.repository.update(userId, { rights: buildRights(roles) });
     }
 
     async findById(id: number | string) {
@@ -87,10 +131,6 @@ export class UserService {
 
         const user = await this.findById(id);
 
-        if (!user) {
-            throw new Error(`Can't find user.`);
-        }
-
         if (user.blockchainAccountAddress) {
             throw new Error('User has blockchain account already linked.');
         }
@@ -113,45 +153,177 @@ export class UserService {
         user.blockchainAccountSignedMessage = signedMessage;
         user.blockchainAccountAddress = address;
 
-        await this.repository.save(user);
+        await this.repository.save((user as unknown) as DeepPartial<User>);
 
         return user;
     }
 
-    async update(
-        id: number | string,
-        data: Omit<UserUpdateData, 'blockchainAccountSignedMessage'>
-    ): Promise<TUserBaseEntity> {
-        const user = await this.findById(id);
+    async setNotifications(id: number | string, notifications: boolean): Promise<TUserBaseEntity> {
+        await this.repository.update(id, { notifications });
 
-        if (!user) {
-            throw new Error(`Can't find user.`);
-        }
-
-        if (typeof data.notifications === 'undefined') {
-            throw new Error(
-                `You can only update "notifications" properties of user and they're not present in the payload.`
-            );
-        }
-
-        if (typeof data.notifications !== 'undefined') {
-            if (typeof data.notifications !== 'boolean') {
-                throw new Error(`User "notifications" property has to be a boolean.`);
-            }
-
-            user.notifications = data.notifications;
-        }
-
-        return this.repository.save(user);
+        return this.findById(id);
     }
 
     async addToOrganization(userId: number, organizationId: number) {
         await this.repository.update(userId, { organization: { id: organizationId } });
     }
 
+    async removeOrganization(userId: number) {
+        await this.repository.update(userId, { organization: null });
+    }
+
     async findOne(conditions: FindConditions<User>): Promise<TUserBaseEntity> {
-        return (this.repository.findOne(conditions, {
+        const user = await ((this.repository.findOne(conditions, {
             loadRelationIds: true
-        }) as Promise<IUser>) as Promise<TUserBaseEntity>;
+        }) as Promise<IUser>) as Promise<TUserBaseEntity>);
+
+        if (user) {
+            const emailConfirmation = await this.emailConfirmationService.get(user.id);
+
+            user.emailConfirmed = emailConfirmation?.confirmed || false;
+        }
+
+        return user;
+    }
+
+    private async hasUser(conditions: FindConditions<User>) {
+        return (await this.repository.findOne(conditions)) !== undefined;
+    }
+
+    async updateProfile(id: number | string, user: IUser) {
+        const updateEntity = new User({
+            firstName: user.firstName,
+            lastName: user.lastName,
+            email: user.email,
+            telephone: user.telephone
+        });
+
+        const validationErrors = await validate(updateEntity, {
+            skipUndefinedProperties: true
+        });
+
+        if (validationErrors.length > 0) {
+            throw new UnprocessableEntityException({
+                success: false,
+                errors: validationErrors
+            });
+        }
+
+        await this.repository.update(id, updateEntity);
+        return this.repository.findOne(id);
+    }
+
+    async updatePassword(email: string, user: UserPasswordUpdate) {
+        const _user = await this.getUserAndPasswordByEmail(email);
+
+        if (_user && bcrypt.compareSync(user.oldPassword, _user.password)) {
+            const updateEntity = new User({
+                password: this.hashPassword(user.newPassword)
+            });
+
+            const validationErrors = await validate(updateEntity, {
+                skipUndefinedProperties: true
+            });
+
+            if (validationErrors.length > 0) {
+                throw new UnprocessableEntityException({
+                    success: false,
+                    errors: validationErrors
+                });
+            }
+
+            await this.repository.update(_user.id, updateEntity);
+            return this.repository.findOne(_user.id);
+        }
+        throw new ConflictException({
+            success: false,
+            errors: `This Current password are not same.`
+        });
+    }
+
+    async updateBlockChainAddress(id: number | string, user: IUser) {
+        const updateEntity = new User({
+            blockchainAccountAddress: user.blockchainAccountAddress
+        });
+
+        const validationErrors = await validate(updateEntity, {
+            skipUndefinedProperties: true
+        });
+
+        if (validationErrors.length > 0) {
+            throw new UnprocessableEntityException({
+                success: false,
+                errors: validationErrors
+            });
+        }
+
+        await this.repository.update(id, updateEntity);
+        return this.repository.findOne(id);
+    }
+
+    public async getUsersBy(filter: IUserFilter) {
+        const { orgName, status, kycStatus } = filter;
+
+        const isNullOrUndefined = (variable: any) => variable === null || variable === undefined;
+
+        const _orgName = `%${orgName ?? ''}%`;
+        const result = await this.repository
+            .createQueryBuilder('user')
+            .leftJoinAndSelect('user.organization', 'organization')
+            .where(
+                `organization.name ilike :_orgName ${
+                    isNullOrUndefined(status) ? '' : 'and user.status = :status'
+                } ${isNullOrUndefined(kycStatus) ? '' : 'and user.kycStatus = :kycStatus'}`,
+                { _orgName, status, kycStatus }
+            )
+            .getMany();
+
+        return result;
+    }
+
+    async update(id: number | string, data: IUser): Promise<ExtendedBaseEntity & IUser> {
+        const entity = await this.repository.findOne(id);
+
+        if (!entity) {
+            throw new Error(`Can't find entity.`);
+        }
+
+        const validationErrors = await validate(data, {
+            skipUndefinedProperties: true
+        });
+
+        if (validationErrors.length > 0) {
+            throw new UnprocessableEntityException({
+                success: false,
+                errors: validationErrors
+            });
+        }
+
+        await this.repository.update(id, {
+            title: data.title,
+            firstName: data.firstName,
+            lastName: data.lastName,
+            telephone: data.telephone,
+            email: data.email,
+            status: data.status,
+            kycStatus: data.kycStatus
+        });
+
+        return this.repository.findOne(id);
+    }
+
+    public async canViewUserData(
+        userId: IUserWithRelationsIds['id'],
+        loggedInUser: ILoggedInUser
+    ): Promise<boolean> {
+        const user = await this.findById(userId);
+
+        const isOwnUser = loggedInUser.id === userId;
+        const isOrgAdmin =
+            loggedInUser.organizationId === user.organization &&
+            loggedInUser.hasRole(Role.OrganizationAdmin);
+        const isAdmin = loggedInUser.hasRole(Role.Issuer, Role.Admin, Role.SupportAgent);
+
+        return isOwnUser || isOrgAdmin || isAdmin;
     }
 }

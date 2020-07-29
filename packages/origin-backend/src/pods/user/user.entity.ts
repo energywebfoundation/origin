@@ -1,7 +1,8 @@
 import { Entity, PrimaryGeneratedColumn, Column, Unique, ManyToOne } from 'typeorm';
-import { Length, IsNotEmpty } from 'class-validator';
 
-import { IUser, KYCStatus, Status } from '@energyweb/origin-backend-core';
+import { Exclude } from 'class-transformer';
+
+import { IUser, KYCStatus, UserStatus } from '@energyweb/origin-backend-core';
 
 import { Organization } from '../organization/organization.entity';
 import { ExtendedBaseEntity } from '../ExtendedBaseEntity';
@@ -9,6 +10,12 @@ import { ExtendedBaseEntity } from '../ExtendedBaseEntity';
 @Entity()
 @Unique(['email', 'blockchainAccountAddress'])
 export class User extends ExtendedBaseEntity implements IUser {
+    constructor(user: Partial<User>) {
+        super();
+
+        Object.assign(this, user);
+    }
+
     @PrimaryGeneratedColumn()
     id: number;
 
@@ -22,14 +29,13 @@ export class User extends ExtendedBaseEntity implements IUser {
     lastName: string;
 
     @Column()
-    @IsNotEmpty()
     email: string;
 
     @Column()
     telephone: string;
 
     @Column({ select: false })
-    @Length(4, 100)
+    @Exclude()
     password: string;
 
     @Column({ nullable: true })
@@ -48,7 +54,7 @@ export class User extends ExtendedBaseEntity implements IUser {
     rights: number;
 
     @Column({ default: 0, nullable: false })
-    status: Status;
+    status: UserStatus;
 
     @Column({ default: 0, nullable: false })
     kycStatus: KYCStatus;

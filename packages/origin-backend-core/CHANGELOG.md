@@ -3,6 +3,118 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [4.2.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-backend-core@4.1.0...@energyweb/origin-backend-core@4.2.0) (2020-07-16)
+
+
+### Features
+
+* **origin-backend-core:** add EmailConfirmation interfaces ([a28eca9](https://github.com/energywebfoundation/origin/commit/a28eca938407a7e9e02f0e3ce0ad69cf011dd25f))
+
+
+
+
+
+# [4.1.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-backend-core@4.0.1...@energyweb/origin-backend-core@4.1.0) (2020-07-08)
+
+
+### Bug Fixes
+
+* **origin-ui-core:** use userId as ownerId if no org ([4c3eed9](https://github.com/energywebfoundation/origin/commit/4c3eed97e1629b3bc02ba601f77872d584b0c3bb))
+
+
+### Features
+
+* **origin-backend-core:** approvedDate and revokedDate added to ICertificationRequest ([1d2d489](https://github.com/energywebfoundation/origin/commit/1d2d489bbd4adde96013509e6795c4d5f6aa9de4))
+
+
+
+
+
+## [4.0.1](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-backend-core@4.0.0...@energyweb/origin-backend-core@4.0.1) (2020-06-16)
+
+**Note:** Version bump only for package @energyweb/origin-backend-core
+
+
+
+
+
+# [4.0.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-backend-core@3.0.1...@energyweb/origin-backend-core@4.0.0) (2020-06-16)
+
+
+### Bug Fixes
+
+* implement a certification request data queue ([78cbd4a](https://github.com/energywebfoundation/origin/commit/78cbd4a7a36959cbb0820cf17dc277f0bf5ae823))
+
+
+### chore
+
+* remove unused Lead User references ([aaae5df](https://github.com/energywebfoundation/origin/commit/aaae5df4b0abd1b69924981eb2dc8b7e5df31e63))
+
+
+### Features
+
+* **origin-ui:** show user role on user table ([e1754eb](https://github.com/energywebfoundation/origin/commit/e1754ebad64973e619ba88715527dc853a28ad0b))
+* Updating organization user roles ([c1096f2](https://github.com/energywebfoundation/origin/commit/c1096f28c1b48e606d5deeda7f33720613764326))
+
+
+### BREAKING CHANGES
+
+* Lead user is no longer needed to create an organization
+
+
+
+
+
+## [3.0.1](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-backend-core@3.0.0...@energyweb/origin-backend-core@3.0.1) (2020-05-29)
+
+
+### Bug Fixes
+
+* certificate tests ([923eb7e](https://github.com/energywebfoundation/origin/commit/923eb7e2f17c9d882077a2810d738c703946aeba))
+* linting errors ([c6a6c65](https://github.com/energywebfoundation/origin/commit/c6a6c6519441582b397616b40bbe9b72cb550c98))
+* ownership commitments permissions + store original requestor ([1751d30](https://github.com/energywebfoundation/origin/commit/1751d3009d11f92d23bc9834632ef5b0ffb5bcee))
+
+
+
+
+
+# [3.0.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-backend-core@2.2.0...@energyweb/origin-backend-core@3.0.0) (2020-05-15)
+
+
+### Bug Fixes
+
+* store [] as the default for device.files ([52e5fcc](https://github.com/energywebfoundation/origin/commit/52e5fccdeb303133b3db9413fc317e4a1c60ebca))
+* **origin-backend-core:** handle no user available case ([dca1280](https://github.com/energywebfoundation/origin/commit/dca12805231c239dd347bb55544408fc47b3a266))
+
+
+### chore
+
+* **origin-backend-core:** rename user roles ([e098a30](https://github.com/energywebfoundation/origin/commit/e098a30a5f6552403cfe6aac9650f7bf1609972e))
+* **origin-backend-core:** replace UserRegisterData ([d82b9c4](https://github.com/energywebfoundation/origin/commit/d82b9c45c71000a6ad35e1b80e3a19fd59d97656))
+* **origin-backend-core:** rm autopublish remaining code ([c2a1262](https://github.com/energywebfoundation/origin/commit/c2a1262ef92597a163bfb31a00613abba2f009a0))
+
+
+### Features
+
+* **origin-backend-core:** allow to check multiple roles in LoggedInUser ([7cf391e](https://github.com/energywebfoundation/origin/commit/7cf391e7953890aa0d5a7378aecd75204dff7550))
+* add meterStats to Device for un/certified meter readings reference ([627d785](https://github.com/energywebfoundation/origin/commit/627d7855506f52cb70ee083844ef2664b9227a0b))
+* **origin-backend:** added automatic post for sale flag, API for updating settings ([a871f60](https://github.com/energywebfoundation/origin/commit/a871f601ea611ca5e51fbe7cd0d0b0fcf4d2cea3))
+* **origin-backend-core:** allow to test multiple roles ([98bcf7f](https://github.com/energywebfoundation/origin/commit/98bcf7f7b582b454d2753d372c042832bad238b0))
+* **origin-backend-core:** RolesGuard and decorator ([56d5b50](https://github.com/energywebfoundation/origin/commit/56d5b50025b26d973ccc36fc271d934ccb5376f3))
+* Detect and store the whole CertificationRequest on the backend ([613eb28](https://github.com/energywebfoundation/origin/commit/613eb28eeae25ec414b393f61311dbfb679351d4))
+* **origin-backend-core:** added LoggerInUser abstraction ([9ceb9ac](https://github.com/energywebfoundation/origin/commit/9ceb9ac2b1669d4c7e2a8fa186603f37134109d9))
+
+
+### BREAKING CHANGES
+
+* **origin-backend-core:** UserRegisterData type replace with UserRegistrationData
+* **origin-backend-core:** Role enum items renamed
+* **origin-backend-core:** autoPublish is not longer a member of IUser interface
+
+
+
+
+
 # [2.2.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-backend-core@2.1.0...@energyweb/origin-backend-core@2.2.0) (2020-04-24)
 
 

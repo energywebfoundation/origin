@@ -3,6 +3,63 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.2.3](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-ui@2.2.2...@energyweb/origin-ui@2.2.3) (2020-07-16)
+
+**Note:** Version bump only for package @energyweb/origin-ui
+
+
+
+
+
+## [2.2.2](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-ui@2.2.1...@energyweb/origin-ui@2.2.2) (2020-07-08)
+
+
+### Bug Fixes
+
+* **deps:** update react ([64e633f](https://github.com/energywebfoundation/origin/commit/64e633fa26e171ea1ccca4c64c48c5596e327c75))
+
+
+
+
+
+## [2.2.1](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-ui@2.2.0...@energyweb/origin-ui@2.2.1) (2020-06-16)
+
+**Note:** Version bump only for package @energyweb/origin-ui
+
+
+
+
+
+# [2.2.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-ui@2.1.2...@energyweb/origin-ui@2.2.0) (2020-06-16)
+
+
+### Features
+
+* **origin-ui:** add logrocket logging software ([14cc573](https://github.com/energywebfoundation/origin/commit/14cc573af3b16e63daf785b787a030c7a4b5dd80))
+
+
+
+
+
+## [2.1.2](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-ui@2.1.1...@energyweb/origin-ui@2.1.2) (2020-05-29)
+
+
+### Bug Fixes
+
+* **deps:** update dependency ts-loader to v7.0.5 ([111c753](https://github.com/energywebfoundation/origin/commit/111c75323f4137d16b56c097d4254bc1a3e430af))
+
+
+
+
+
+## [2.1.1](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-ui@2.1.0...@energyweb/origin-ui@2.1.1) (2020-05-15)
+
+**Note:** Version bump only for package @energyweb/origin-ui
+
+
+
+
+
 # [2.1.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-ui@2.0.0...@energyweb/origin-ui@2.1.0) (2020-04-24)
 
 

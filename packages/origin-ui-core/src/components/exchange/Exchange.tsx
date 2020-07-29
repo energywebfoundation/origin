@@ -1,6 +1,12 @@
 import React, { useState } from 'react';
 import { Market, IMarketFormValues } from './Market';
-import { EnergyFormatter, moment, useTranslation, useIntervalFetch } from '../../utils';
+import {
+    EnergyFormatter,
+    moment,
+    useTranslation,
+    useIntervalFetch,
+    showNotification
+} from '../../utils';
 import { Asks, Orders } from '.';
 import { Grid } from '@material-ui/core';
 import { getUserOffchain } from '../../features/users/selectors';
@@ -8,6 +14,7 @@ import { getExchangeClient, getCountry } from '../../features/general/selectors'
 import { useSelector, useDispatch } from 'react-redux';
 import { TOrderBook } from '../../utils/exchange';
 import { setLoading } from '../../features/general/actions';
+import { reloadCertificates } from '../../features/certificates';
 
 interface IProps {
     currency: string;
@@ -15,7 +22,7 @@ interface IProps {
 }
 
 export function Exchange(props: IProps) {
-    const { currency, refreshInterval } = { refreshInterval: 5000, ...props };
+    const { currency, refreshInterval } = { refreshInterval: 3000, ...props };
 
     const user = useSelector(getUserOffchain);
     const exchangeClient = useSelector(getExchangeClient);
@@ -25,7 +32,8 @@ export function Exchange(props: IProps) {
 
     const [data, setData] = useState<TOrderBook>({
         asks: [],
-        bids: []
+        bids: [],
+        lastTradedPrice: null
     });
     const [deviceType, setDeviceType] = useState<string[]>([]);
     const [location, setLocation] = useState<string[]>([]);
@@ -42,7 +50,8 @@ export function Exchange(props: IProps) {
             generationDateEnd
         )) ?? {
             asks: [],
-            bids: []
+            bids: [],
+            lastTradedPrice: null
         };
 
         if (checkIsMounted()) {
@@ -92,11 +101,18 @@ export function Exchange(props: IProps) {
 
         dispatch(setLoading(true));
 
-        await exchangeClient.directBuy({
+        const { success, status } = await exchangeClient.directBuy({
             askId: orderId,
             volume,
             price
         });
+
+        dispatch(reloadCertificates());
+
+        if (!success) {
+            showNotification('Direct buy failed.');
+            console.error(`Direct buy failed with status ${status}.`);
+        }
 
         dispatch(setLoading(false));
     }

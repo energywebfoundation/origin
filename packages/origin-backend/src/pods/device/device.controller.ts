@@ -5,9 +5,11 @@ import {
     IDeviceWithRelationsIds,
     ILoggedInUser,
     ISmartMeterRead,
-    Role
+    Role,
+    ISuccessResponse,
+    IDevice
 } from '@energyweb/origin-backend-core';
-import { Roles, RolesGuard, UserDecorator } from '@energyweb/origin-backend-utils';
+import { Roles, RolesGuard, UserDecorator, ActiveUserGuard } from '@energyweb/origin-backend-utils';
 import {
     BadRequestException,
     Body,
@@ -20,15 +22,16 @@ import {
     Param,
     Post,
     Put,
+    Query,
     UnprocessableEntityException,
-    UseGuards
+    UseGuards,
+    UnauthorizedException
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-
 import { StorageErrors } from '../../enums/StorageErrors';
+import { ExtendedBaseEntity } from '../ExtendedBaseEntity';
 import { OrganizationService } from '../organization/organization.service';
 import { DeviceService } from './device.service';
-import { ExtendedBaseEntity } from '../ExtendedBaseEntity';
 
 @Controller('/Device')
 export class DeviceController {
@@ -42,13 +45,57 @@ export class DeviceController {
     // TODO: remove sensitive information
 
     @Get()
-    async getAll() {
-        return this.deviceService.getAll();
+    async getAll(
+        @Query('withMeterStats') withMeterStats: boolean,
+        @Query('loadRelationIds') loadRelationIds: string | boolean = true
+    ) {
+        return this.deviceService.getAll(withMeterStats ?? false, {
+            relations: ['organization'],
+            loadRelationIds: loadRelationIds === 'true' || loadRelationIds === true
+        });
+    }
+
+    @Get('/my-devices')
+    @UseGuards(AuthGuard(), ActiveUserGuard, RolesGuard)
+    @Roles(Role.OrganizationAdmin, Role.OrganizationDeviceManager, Role.OrganizationUser)
+    async getMyDevices(
+        @Query('withMeterStats') withMeterStats: boolean,
+        @UserDecorator() { organizationId }: ILoggedInUser
+    ) {
+        return this.deviceService.getAll(withMeterStats ?? false, {
+            where: { organization: { id: organizationId } }
+        });
+    }
+
+    @Get('supplyBy')
+    @UseGuards(AuthGuard(), ActiveUserGuard, RolesGuard)
+    @Roles(Role.OrganizationAdmin, Role.OrganizationDeviceManager, Role.OrganizationUser)
+    async getSupplyBy(
+        @UserDecorator() { organizationId }: ILoggedInUser,
+        @Query('facility') facilityName: string,
+        @Query('status') status: string
+    ) {
+        return this.deviceService.getSupplyBy(
+            organizationId,
+            facilityName,
+            Number.parseInt(status, 10)
+        );
     }
 
     @Get('/:id')
-    async get(@Param('id') id: string): Promise<IDeviceWithRelationsIds> {
-        const existingEntity = await this.deviceService.findOne(id);
+    async get(
+        @Param('id') id: string,
+        @Query('withMeterStats') withMeterStats: boolean,
+        @Query('loadRelationIds') loadRelationIds: string | boolean = true
+    ): Promise<ExtendedBaseEntity & IDevice> {
+        const existingEntity = await this.deviceService.findOne(
+            id,
+            {
+                relations: ['organization'],
+                loadRelationIds: loadRelationIds === 'true' || loadRelationIds === true
+            },
+            withMeterStats
+        );
 
         if (!existingEntity) {
             throw new NotFoundException(StorageErrors.NON_EXISTENT);
@@ -58,7 +105,7 @@ export class DeviceController {
     }
 
     @Post()
-    @UseGuards(AuthGuard(), RolesGuard)
+    @UseGuards(AuthGuard(), ActiveUserGuard, RolesGuard)
     @Roles(Role.OrganizationAdmin, Role.OrganizationDeviceManager)
     async post(@Body() body: DeviceCreateData, @UserDecorator() loggedUser: ILoggedInUser) {
         if (typeof loggedUser.organizationId === 'undefined') {
@@ -69,41 +116,59 @@ export class DeviceController {
     }
 
     @Delete('/:id')
-    @UseGuards(AuthGuard(), RolesGuard)
-    @Roles(Role.OrganizationAdmin, Role.OrganizationDeviceManager)
-    async delete(@Param('id') id: string) {
-        const existingEntity = await this.deviceService.findOne(id);
+    @UseGuards(AuthGuard(), ActiveUserGuard, RolesGuard)
+    @Roles(Role.Issuer, Role.Admin, Role.OrganizationAdmin)
+    async delete(
+        @Param('id') id: string,
+        @UserDecorator() loggedUser: ILoggedInUser
+    ): Promise<ISuccessResponse> {
+        const device = (await this.deviceService.findOne(id)) as ExtendedBaseEntity &
+            IDeviceWithRelationsIds;
 
-        if (!existingEntity) {
-            throw new NotFoundException(StorageErrors.NON_EXISTENT);
+        if (!device) {
+            throw new NotFoundException({
+                success: false,
+                message: StorageErrors.NON_EXISTENT
+            });
         }
 
-        await this.deviceService.remove(existingEntity);
+        if (
+            loggedUser.organizationId !== device.organization &&
+            !loggedUser.hasRole(Role.Issuer) &&
+            !loggedUser.hasRole(Role.Admin)
+        ) {
+            throw new UnauthorizedException({
+                success: false,
+                message: 'You are not the organization admin.'
+            });
+        }
+
+        await this.deviceService.remove(device);
 
         return {
+            success: true,
             message: `Entity ${id} deleted`
         };
     }
 
     @Put('/:id')
-    @UseGuards(AuthGuard(), RolesGuard)
-    @Roles(Role.OrganizationAdmin, Role.OrganizationDeviceManager, Role.Issuer)
-    async put(
+    @UseGuards(AuthGuard(), ActiveUserGuard, RolesGuard)
+    @Roles(Role.Issuer, Role.Admin)
+    async updateDeviceStatus(
         @Param('id') id: string,
         @Body() body: DeviceUpdateData
     ): Promise<ExtendedBaseEntity & IDeviceWithRelationsIds> {
-        const res = await this.deviceService.update(id, body);
-        return res;
+        return this.deviceService.updateStatus(id, body);
     }
 
     @Put('/:id/settings')
-    @UseGuards(AuthGuard(), RolesGuard)
+    @UseGuards(AuthGuard(), ActiveUserGuard, RolesGuard)
     @Roles(Role.OrganizationAdmin, Role.OrganizationDeviceManager, Role.OrganizationUser)
     async updateDeviceSettings(
         @Param('id') id: string,
         @Body() body: DeviceSettingsUpdateData,
         @UserDecorator() loggedUser: ILoggedInUser
-    ) {
+    ): Promise<ISuccessResponse> {
         if (!this.organizationService.hasDevice(loggedUser.organizationId, id)) {
             throw new ForbiddenException();
         }
@@ -113,13 +178,13 @@ export class DeviceController {
             (body?.automaticPostForSale &&
                 (!Number.isInteger(body?.defaultAskPrice) || body?.defaultAskPrice === 0))
         ) {
-            throw new UnprocessableEntityException(
-                'Body is missing automaticPostForSale or defaultAskPrice'
-            );
+            throw new UnprocessableEntityException({
+                success: false,
+                message: 'Body is missing automaticPostForSale or defaultAskPrice'
+            });
         }
 
-        const res = await this.deviceService.updateSettings(id, body);
-        return res;
+        return this.deviceService.updateSettings(id, body);
     }
 
     @Get('/:id/smartMeterReading')
@@ -144,30 +209,44 @@ export class DeviceController {
         return existing;
     }
 
-    // TODO: who can store smart meter readings for device?
-
     @Put('/:id/smartMeterReading')
-    async addSmartMeterRead(@Param('id') id: string, @Body() newSmartMeterRead: ISmartMeterRead) {
-        const existing = await this.deviceService.findOne(id);
+    @UseGuards(AuthGuard(), ActiveUserGuard, RolesGuard)
+    @Roles(Role.Admin, Role.OrganizationAdmin, Role.OrganizationDeviceManager)
+    async addSmartMeterReads(
+        @Param('id') id: string,
+        @UserDecorator() loggedUser: ILoggedInUser,
+        @Body() newSmartMeterReads: ISmartMeterRead[]
+    ): Promise<ISuccessResponse> {
+        const device = await this.deviceService.findOne(id);
 
-        if (!existing) {
-            throw new NotFoundException(StorageErrors.NON_EXISTENT);
+        if (!device) {
+            throw new NotFoundException({
+                success: false,
+                message: StorageErrors.NON_EXISTENT
+            });
+        }
+
+        if (
+            loggedUser.organizationId !== device.organization &&
+            !loggedUser.hasRole(Role.Admin, Role.SupportAgent)
+        ) {
+            throw new UnauthorizedException({
+                success: false,
+                message: 'You are not the device manager.'
+            });
         }
 
         try {
-            await this.deviceService.addSmartMeterReading(id, newSmartMeterRead);
-
-            return {
-                message: `Smart meter reading successfully added to device ${id}`
-            };
+            return this.deviceService.addSmartMeterReadings(id, newSmartMeterReads);
         } catch (error) {
             this.logger.error('Error when saving smart meter read');
             this.logger.error({
                 error,
                 id,
-                newSmartMeterRead
+                newSmartMeterReads
             });
             throw new UnprocessableEntityException({
+                success: false,
                 message: `Smart meter reading could not be added due to an unknown error for device ${id}`
             });
         }

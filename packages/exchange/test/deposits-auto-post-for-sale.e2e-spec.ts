@@ -1,16 +1,16 @@
-import { OrderSide } from '@energyweb/exchange-core';
+import { OrderSide, OrderStatus } from '@energyweb/exchange-core';
 import { DeviceService, ExtendedBaseEntity } from '@energyweb/origin-backend';
 import { IDeviceProductInfo, IDeviceWithRelationsIds } from '@energyweb/origin-backend-core';
 import { INestApplication } from '@nestjs/common';
+import { expect } from 'chai';
 import { Contract, ethers } from 'ethers';
 import moment from 'moment';
 import request from 'supertest';
 
 import { AccountService } from '../src/pods/account/account.service';
-import { OrderStatus } from '../src/pods/order/order-status.enum';
 import { Order } from '../src/pods/order/order.entity';
 import { DatabaseService } from './database.service';
-import { bootstrapTestInstance } from './exchange';
+import { authenticatedUser, bootstrapTestInstance } from './exchange';
 import { depositToken, issueToken, provider } from './utils';
 
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
@@ -20,7 +20,7 @@ describe('Deposits automatic posting for sale', () => {
     let databaseService: DatabaseService;
     let accountService: AccountService;
 
-    const user1Id = '1';
+    const user1Id = authenticatedUser.organization;
 
     let registry: Contract;
     let issuer: Contract;
@@ -54,7 +54,7 @@ describe('Deposits automatic posting for sale', () => {
         }
     } as unknown) as DeviceService;
 
-    beforeAll(async () => {
+    before(async () => {
         ({ accountService, databaseService, registry, issuer, app } = await bootstrapTestInstance(
             deviceServiceMock
         ));
@@ -64,7 +64,7 @@ describe('Deposits automatic posting for sale', () => {
         ({ address: depositAddress } = await accountService.getOrCreateAccount(user1Id));
     });
 
-    afterAll(async () => {
+    after(async () => {
         await databaseService.cleanUp();
         await app.close();
     });
@@ -88,7 +88,7 @@ describe('Deposits automatic posting for sale', () => {
         );
         await depositToken(registry, tokenReceiver, depositAddress, depositAmount, id);
 
-        await sleep(3000);
+        await sleep(6000);
 
         await request(app.getHttpServer())
             .get('/orders')
@@ -96,10 +96,10 @@ describe('Deposits automatic posting for sale', () => {
             .expect((res) => {
                 const [ask] = res.body as Order[];
 
-                expect(ask.currentVolume).toBe(depositAmount);
-                expect(ask.status).toBe(OrderStatus.Active);
-                expect(ask.side).toBe(OrderSide.Ask);
-                expect(ask.price).toBe(defaultAskPrice);
+                expect(ask.currentVolume.toString(10)).equals(depositAmount);
+                expect(ask.status).equals(OrderStatus.Active);
+                expect(ask.side).equals(OrderSide.Ask);
+                expect(ask.price).equals(defaultAskPrice);
             });
     });
 });

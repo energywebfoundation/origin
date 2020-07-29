@@ -19,11 +19,18 @@
                 "registerDevice": "Zarejestruj urządzenie",
                 "registerDeviceGroup": "Zarejestruj grupę urządzeń",
                 "pending": "Oczekujące"
+            },
+            "certificates": {
+                "bundles": "Pakiety",
+                "my_bundles": "Moje pakiety",
+                "create_bundle": "Stwórz pakiet",
+                "myOrders": "Moje zamówienia"
             }
         },
         "device": {
             "properties": {
                 "owner": "Właściciel",
+                "facility": "Obiekt",
                 "facilityName": "Nazwa obiektu",
                 "regionProvince": "Region, prowincja",
                 "type": "Typ",
@@ -37,9 +44,11 @@
                 "otherGreenAttributes": "Pozostałe zielone atrybuty",
                 "deviceType": "Typ urządzenia",
                 "publicSupport": "Wsparcie publiczne",
+                "location": "Lokalizacja",
                 "geoLocation": "Geo-lokalizacja",
                 "registrationDate": "Data rejestracji",
                 "regions": "Regiony",
+                "region": "Region",
                 "provinces": "Prowincje",
                 "longitude": "Długość geograficzna",
                 "latitude": "Szerokość geograficzna",
@@ -53,7 +62,8 @@
                 "requestCertificates": "Zażądaj certyfikatów",
                 "approve": "Zaakceptuj",
                 "registerDevice": "Zarejestruj urządzenie",
-                "register": "Zarejestruj"
+                "register": "Zarejestruj",
+                "viewDetails": "Pokaż szczegóły"
             }
         },
         "certificate": {
@@ -66,7 +76,10 @@
                 "deviceType": "Typ urządzenia",
                 "certificationDate": "Data certyfikacji",
                 "from": "Od",
-                "to": "Do"
+                "to": "Do",
+                "source": "Źródło",
+                "generationDate":"Data generacji",
+                "totalPrice": "Cena całkowita"
             },
             "actions": {
                 "requestCertificates": "Zażądaj certyfikatów",
@@ -76,10 +89,26 @@
                 "claim": "Claim",
                 "returnToInbox": "Zwróć do skrzynki",
                 "buy": "Kup",
-                "request": "Żądaj"
+                "request": "Żądaj",
+                "withdraw": "Wypłać",
+                "deposit": "Wpłać",
+                "create_bundle": "Stwórz Pakiet",
+                "buy_bundle": "Kup pakiet",
+                "cancel_bundle": "Anuluj",
+                "selectAll": "Zaznacz wszystko"
+            },
+            "feedback": {
+                "certificateDeposited": "Certificate deposited",
+                "withdrawn": "Zdeponowany certyfikat",
+                "bundle_created": "Utworzono pakiet ",
+                "bundle_bought": "Kupiony pakiet",
+                "bundleCanceld": "Pakiet anulowany"
             },
             "info": {
-                "requestCertificatesFor": "Zażądaj certyfikatów dla urządzenia {facilityName}"
+                "certificates": "CERTYFIKATY",
+                "requestCertificatesFor": "Zażądaj certyfikatów dla urządzenia {facilityName}",
+                "selectPriceRange": "Wybierz przedział cenowy, aby wyświetlić więcej kombinacji",
+                "editBundleVolume" : "Edytuj wolumen (MWh)"
             }
         },
         "search": {
@@ -114,6 +143,9 @@
             }
         },
         "general": {
+            "responses": {
+                "ok": "Dobrze"
+            },
             "actions": {
                 "update": "Zaktualizuj",
                 "continue": "Kontynuuj",
@@ -207,7 +239,8 @@
             },
             "actions": {
                 "register": "Zarejestruj",
-                "login": "Zaloguj się"
+                "login": "Zaloguj się",
+                "save": "Zapisać"
             },
             "feedback": {
                 "userRegistered": "Użytkownik zarejestrowany.",
@@ -226,6 +259,64 @@
             "info": {
                 "dropHereOrClickToSelect": "Upuść pliki tutaj lub kliknij aby wybrać"
             }
+        },
+        "bundle": {
+            "properties": {
+                "total_energy": "CALKOWITEJ ENERGII",
+                "solar": "SŁONECZNY",
+                "wind": "WIATR",
+                "hydro": "HYDRO",
+                "other": "INNY",
+                "price": "Cena za MWh",
+                "totalVolume": "Maksymalna głośność"
+            },
+            "info": {
+                "bundleDetails": "Szczegóły Pakietu",
+                "price": "Cena za MWh",
+                "Sell": "Sprzedać",
+                "certificates": "certyfikaty",
+                "bundleBought": "Pakiet został w pełni zakupiony."
+            },
+            "actions": {
+                "sellAsBundle": "Sell as bundle"
+            }
+        },
+        "order": {
+            "anyValue": "Każdy",
+            "properties": {
+                "volume": "Objętość",
+                "price": "Cena",
+                "device_type": "Typ urządzenia",
+                "generation_start": "Początek generacji",
+                "generation_end": "Koniec generacji",
+                "filled": "Zrealizowane"
+                
+            },
+            "captions": {
+                "open_asks": "PYTANIA OTWARTE",
+                "open_bids": "OFERTY OTWARTE",
+                "actions": "AKCJA"
+            },
+            "info": {
+                "open_asks": "OFERTY OTWARTE",
+                "open_bids": "CENY OTWARTE",
+                "actions": "DZIAŁANIA"
+            },
+            "actions": {
+                "view": "Widok",
+                "remove": "Usunąć"
+            },
+            "feedback": {
+                "removeOrderConfirmation": "Czy na pewno chcesz usunąć?",
+                "orderCanceled": "Zamówienie anulowane"
+            },
+            "confirmations": {
+                "no": "Nie",
+                "yes": "Tak",
+                "view": "Widok",
+                "remove": "Usunąć"
+            }
         }
     }
+    
 }

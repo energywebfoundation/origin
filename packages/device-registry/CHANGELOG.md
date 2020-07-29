@@ -3,6 +3,66 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.2.5](https://github.com/energywebfoundation/origin/compare/@energyweb/device-registry@6.2.4...@energyweb/device-registry@6.2.5) (2020-07-16)
+
+**Note:** Version bump only for package @energyweb/device-registry
+
+
+
+
+
+## [6.2.4](https://github.com/energywebfoundation/origin/compare/@energyweb/device-registry@6.2.3...@energyweb/device-registry@6.2.4) (2020-07-08)
+
+
+### Bug Fixes
+
+* **deps:** update dependency winston to v3.3.0 ([12f111e](https://github.com/energywebfoundation/origin/commit/12f111ed16274e40d9ccbb4c3d6f9d8d222cb2fe))
+* **deps:** update dependency winston to v3.3.3 ([d66ad8e](https://github.com/energywebfoundation/origin/commit/d66ad8e4f8f65a8c6bed6ec95303a175771ed230))
+
+
+
+
+
+## [6.2.3](https://github.com/energywebfoundation/origin/compare/@energyweb/device-registry@6.2.2...@energyweb/device-registry@6.2.3) (2020-06-16)
+
+**Note:** Version bump only for package @energyweb/device-registry
+
+
+
+
+
+## [6.2.2](https://github.com/energywebfoundation/origin/compare/@energyweb/device-registry@6.2.1...@energyweb/device-registry@6.2.2) (2020-06-16)
+
+**Note:** Version bump only for package @energyweb/device-registry
+
+
+
+
+
+## [6.2.1](https://github.com/energywebfoundation/origin/compare/@energyweb/device-registry@6.2.0...@energyweb/device-registry@6.2.1) (2020-05-29)
+
+**Note:** Version bump only for package @energyweb/device-registry
+
+
+
+
+
+# [6.2.0](https://github.com/energywebfoundation/origin/compare/@energyweb/device-registry@6.1.0...@energyweb/device-registry@6.2.0) (2020-05-15)
+
+
+### Bug Fixes
+
+* store [] as the default for device.files ([52e5fcc](https://github.com/energywebfoundation/origin/commit/52e5fccdeb303133b3db9413fc317e4a1c60ebca))
+
+
+### Features
+
+* add meterStats to Device for un/certified meter readings reference ([627d785](https://github.com/energywebfoundation/origin/commit/627d7855506f52cb70ee083844ef2664b9227a0b))
+
+
+
+
+
 # [6.1.0](https://github.com/energywebfoundation/origin/compare/@energyweb/device-registry@6.0.0...@energyweb/device-registry@6.1.0) (2020-04-24)
 
 

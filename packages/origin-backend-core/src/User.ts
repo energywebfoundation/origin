@@ -1,4 +1,5 @@
 import { IOrganization } from './Organization';
+import { IEmailConfirmation } from './EmailConfirmation';
 
 export enum Role {
     OrganizationAdmin = 1,
@@ -9,17 +10,17 @@ export enum Role {
     SupportAgent = 32
 }
 
-export enum Status {
-    'Pending',
-    'Active',
-    'Suspended',
-    'Deleted'
+export enum UserStatus {
+    Pending,
+    Active,
+    Suspended,
+    Deleted
 }
 
 export enum KYCStatus {
-    'Pending KYC',
-    'KYC passed',
-    'KYC rejected'
+    Pending,
+    Passed,
+    Rejected
 }
 
 export function buildRights(roles: Role[]): number {
@@ -30,6 +31,17 @@ export function buildRights(roles: Role[]): number {
     return roles.reduce((a, b) => {
         return a | b;
     }, 0);
+}
+
+export function getRolesFromRights(rights: number): Role[] {
+    if (!rights) {
+        return [];
+    }
+
+    const rolesKeys = Object.keys(Role);
+    const roles: Role[] = rolesKeys.splice(0, rolesKeys.length / 2).map((value) => Number(value));
+
+    return roles.filter((role) => rights & role);
 }
 
 export function isRole(user: { rights: number }, ...roles: Role[]): boolean {
@@ -47,12 +59,13 @@ export interface IUserProperties {
     blockchainAccountSignedMessage: string;
     notifications: boolean;
     rights: number;
-    status: number;
-    kycStatus: number;
+    status: UserStatus;
+    kycStatus: KYCStatus;
 }
 
 export interface IUser extends IUserProperties {
     organization: IOrganization | IOrganization['id'];
+    emailConfirmed?: IEmailConfirmation['confirmed'];
 }
 
 export interface IUserWithRelationsIds extends IUser {
@@ -63,11 +76,6 @@ export interface IUserWithRelations extends IUser {
     organization: IOrganization;
 }
 
-export type UserRegisterData = Omit<
-    IUserProperties,
-    'id' | 'blockchainAccountAddress' | 'blockchainAccountSignedMessage'
-> & { password: string };
-
 export type UserRegisterReturnData = IUser;
 
 export type UserLoginData = { username: string; password: string };
@@ -76,3 +84,15 @@ export type UserLoginReturnData = { accessToken: string };
 export type UserUpdateData = Partial<
     Pick<IUserProperties, 'blockchainAccountSignedMessage' | 'notifications'>
 >;
+
+export type UserStatusUpdate = Partial<Pick<IUserProperties, 'status' | 'kycStatus'>>;
+
+export type UserPasswordUpdate = { email: string; oldPassword: string; newPassword: string };
+
+export interface IUserFilter {
+    orgName?: string;
+    status?: UserStatus;
+    kycStatus?: KYCStatus;
+}
+
+export type UpdateUserResponseReturnType = IUserWithRelationsIds;

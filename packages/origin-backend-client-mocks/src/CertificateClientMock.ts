@@ -1,52 +1,12 @@
 import {
-    ICertificationRequest,
-    CertificationRequestUpdateData,
     ICertificateOwnership,
     CommitmentStatus,
     IOwnershipCommitmentProofWithTx,
-    CertificationRequestDataMocked
+    ICertificateClient
 } from '@energyweb/origin-backend-core';
 
-import { ICertificateClient } from '@energyweb/origin-backend-client';
-
 export class CertificateClientMock implements ICertificateClient {
-    private requestStorage = new Map<number, ICertificationRequest>();
     private certificateStorage = new Map<number, ICertificateOwnership>();
-
-    public async updateCertificationRequest(
-        id: number,
-        data: CertificationRequestUpdateData
-    ): Promise<boolean> {
-        this.requestStorage.set(id, ({
-            energy: data.energy,
-            files: data.files
-        } as Partial<ICertificationRequest>) as ICertificationRequest);
-
-        return true;
-    }
-
-    public async getCertificationRequest(
-        id: number
-    ): Promise<ICertificationRequest> {
-        return this.requestStorage.get(id);
-    }
-
-    public async getAllCertificationRequests(): Promise<ICertificationRequest[]> {
-        return [...this.requestStorage.values()];
-    }
-
-    public mockBlockchainData(
-        id: number,
-        reqData: Partial<CertificationRequestDataMocked>
-    ) {
-        const certificateRequest = this.requestStorage.get(id);
-
-        this.requestStorage.set(id, {
-            id,
-            ...certificateRequest,
-            ...reqData
-        });
-    }
 
     public async getOwnershipCommitment(
         certificateId: number
@@ -81,6 +41,7 @@ export class CertificateClientMock implements ICertificateClient {
         if (!certificate?.currentOwnershipCommitment) {
             this.certificateStorage.set(certificateId, {
                 id: certificateId,
+                originalRequestor: '',
                 currentOwnershipCommitment: proof,
                 pendingOwnershipCommitment: null,
                 ownershipHistory: []

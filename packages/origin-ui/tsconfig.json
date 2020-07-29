@@ -1,7 +1,28 @@
 {
     "extends": "../../tsconfig.json",
     "compilerOptions": {
-        "types": ["jest"],
+        "outDir": "./dist/",
+        "module": "es2015",
+        "moduleResolution": "node",
+        "declaration": false,
         "noImplicitAny": false
-    }
+    },
+    "include": ["./src/**/*"],
+    "references": [
+        {
+            "path": "../utils-general/tsconfig.json"
+        },
+        {
+            "path": "../device-registry/tsconfig.json"
+        },
+        {
+            "path": "../origin-backend-client/tsconfig.json"
+        },
+        {
+            "path": "../origin-backend-core/tsconfig.json"
+        },
+        {
+            "path": "../origin-ui-core/tsconfig.json"
+        }
+    ]
 }

@@ -7,7 +7,7 @@ import moment from 'moment';
 import { Ask } from '../Ask';
 import { Bid } from '../Bid';
 import { DeviceVintage } from '../DeviceVintage';
-import { MatchingEngine, ActionResultEvent, ActionResult } from '../MatchingEngine';
+import { ActionResultEvent, ActionResult } from '../MatchingEngine';
 import { Operator } from '../Operator';
 import { Order } from '../Order';
 import { Product } from '../Product';
@@ -15,6 +15,7 @@ import { Trade } from '../Trade';
 import { DirectBuy } from '../DirectBuy';
 import { ProductFilter, Filter } from '../ProductFilter';
 import { TimeRange } from '../TimeRange';
+import { PriceStrategy, MatchingEngineFactory } from '../MatchingEngineFactory';
 
 interface IOrderCreationArgs {
     product?: Product;
@@ -22,6 +23,7 @@ interface IOrderCreationArgs {
     volume?: BN;
     userId?: string;
     validFrom?: Date;
+    createdAt?: Date;
 }
 
 interface ITestCase {
@@ -33,6 +35,8 @@ interface ITestCase {
     bidsAfter?: Bid[];
 
     expectedStatusChanges?: ActionResultEvent[];
+
+    priceStrategies?: PriceStrategy[];
 }
 
 describe('Matching tests', () => {
@@ -108,7 +112,8 @@ describe('Matching tests', () => {
             },
             args?.validFrom || new Date(),
             args?.userId || defaultSeller,
-            'assetId'
+            'assetId',
+            args?.createdAt || new Date()
         );
     };
 
@@ -122,7 +127,8 @@ describe('Matching tests', () => {
                 ...args?.product
             },
             args?.validFrom || new Date(),
-            args?.userId || defaultBuyer
+            args?.userId || defaultBuyer,
+            args?.createdAt || new Date()
         );
     };
 
@@ -132,7 +138,8 @@ describe('Matching tests', () => {
             args?.userId || defaultBuyer,
             args?.price || twoUSD,
             args?.volume || onekWh,
-            askId
+            askId,
+            args?.createdAt || new Date()
         );
     };
 
@@ -153,7 +160,7 @@ describe('Matching tests', () => {
 
         zipped.forEach(([a1, a2]) => {
             assert.equal(a1.id, a2.id, 'Wrong order id');
-            assert.isTrue(a1.volume.eq(a2.volume), 'Wrong volume');
+            assert.equal(a1.volume.toString(10), a2.volume.toString(10), 'Wrong volume');
             assert.equal(a1.price, a2.price, 'Wrong price');
         });
     };
@@ -170,9 +177,9 @@ describe('Matching tests', () => {
         const zipped = expected.zip(current);
 
         zipped.forEach(([t1, t2]) => {
-            assert.equal(t1.askId, t2.askId, 'Wrong askId');
-            assert.equal(t1.bidId, t2.bidId, 'Wrong bidId');
-            assert.isTrue(t1.volume.eq(t2.volume), 'Wrong volume');
+            assert.equal(t1.ask.id, t2.ask.id, 'Wrong askId');
+            assert.equal(t1.bid.id, t2.bid.id, 'Wrong bidId');
+            assert.equal(t1.volume.toString(10), t2.volume.toString(10), 'Wrong volume');
             assert.equal(t1.price, t2.price, 'Wrong price');
         });
     };
@@ -192,54 +199,60 @@ describe('Matching tests', () => {
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const executeTestCase = (testCase: ITestCase, done: any) => {
-        const matchingEngine = new MatchingEngine(deviceService, locationService);
+        const strategies = testCase?.priceStrategies ?? [
+            PriceStrategy.AskPrice,
+            PriceStrategy.BasedOnOrderCreationTime
+        ];
         let doneTimer: NodeJS.Timeout;
         const signalReady = () => {
-            if (doneTimer) {
-                clearInterval(doneTimer);
-                done();
-            } else {
-                doneTimer = setTimeout(() => done(), 50);
-            }
+            clearInterval(doneTimer);
+            doneTimer = global.setTimeout(() => done(), 50);
         };
+        const expectedTrades = List(testCase.expectedTrades);
 
-        testCase.orders.forEach((a) => {
-            if (typeof a === 'string') {
-                matchingEngine.cancelOrder(a);
-            } else if (a instanceof DirectBuy) {
-                matchingEngine.submitDirectBuy(a);
-            } else {
-                matchingEngine.submitOrder(a);
-            }
-        });
-
-        matchingEngine.trades.subscribe((res) => {
-            const expectedTrades = List(testCase.expectedTrades);
-            assertTrades(
-                expectedTrades,
-                res.map((r) => r.trade)
+        strategies.forEach((priceStrategy) => {
+            const matchingEngine = MatchingEngineFactory.build(
+                priceStrategy,
+                deviceService,
+                locationService
             );
 
-            const expectedBidsAfter = List(testCase.bidsAfter);
-            const expectedAsksAfter = List(testCase.asksAfter);
+            testCase.orders.forEach((a) => {
+                if (typeof a === 'string') {
+                    matchingEngine.cancelOrder(a);
+                } else if (a instanceof DirectBuy) {
+                    matchingEngine.submitDirectBuy(a);
+                } else {
+                    matchingEngine.submitOrder(a);
+                }
+            });
 
-            const { asks, bids } = matchingEngine.orderBook();
-            assertOrders(expectedBidsAfter, bids, 'bids');
-            assertOrders(expectedAsksAfter, asks, 'asks');
+            matchingEngine.trades.subscribe((res) => {
+                assertTrades(
+                    expectedTrades,
+                    res.map((r) => r.trade)
+                );
 
-            signalReady();
+                const expectedBidsAfter = List(testCase.bidsAfter);
+                const expectedAsksAfter = List(testCase.asksAfter);
+
+                const { asks, bids } = matchingEngine.orderBook();
+                assertOrders(expectedBidsAfter, bids, 'bids');
+                assertOrders(expectedAsksAfter, asks, 'asks');
+
+                signalReady();
+            });
+
+            matchingEngine.actionResults.subscribe((res) => {
+                const expectedStatusChanges = List(testCase.expectedStatusChanges);
+
+                assertStatusChanges(expectedStatusChanges, res);
+
+                signalReady();
+            });
+
+            matchingEngine.tick();
         });
-
-        matchingEngine.actionResults.subscribe((res) => {
-            const expectedStatusChanges = List(testCase.expectedStatusChanges);
-
-            assertStatusChanges(expectedStatusChanges, res);
-
-            signalReady();
-        });
-
-        matchingEngine.tick();
-
         if (testCase.expectedTrades.length === 0 && !testCase.expectedStatusChanges) {
             setTimeout(() => done(), 50);
         }
@@ -250,19 +263,30 @@ describe('Matching tests', () => {
         bids: Bid[],
         productFilter: ProductFilter,
         expectedAsks: Ask[],
-        expectedBids: Bid[]
+        expectedBids: Bid[],
+        priceStrategies?: PriceStrategy[]
     ) => {
-        const matchingEngine = new MatchingEngine(deviceService, locationService);
+        const strategies = priceStrategies ?? [
+            PriceStrategy.AskPrice,
+            PriceStrategy.BasedOnOrderCreationTime
+        ];
+        strategies.forEach((priceStrategy) => {
+            const matchingEngine = MatchingEngineFactory.build(
+                priceStrategy,
+                deviceService,
+                locationService
+            );
 
-        asks.forEach((b) => matchingEngine.submitOrder(b));
-        bids.forEach((a) => matchingEngine.submitOrder(a));
+            asks.forEach((b) => matchingEngine.submitOrder(b));
+            bids.forEach((a) => matchingEngine.submitOrder(a));
 
-        matchingEngine.tick();
+            matchingEngine.tick();
 
-        const orderBook = matchingEngine.orderBookByProduct(productFilter);
+            const orderBook = matchingEngine.orderBookByProduct(productFilter);
 
-        assertOrders(List<Ask>(expectedAsks), orderBook.asks, 'asks');
-        assertOrders(List<Bid>(expectedBids), orderBook.bids, 'bids');
+            assertOrders(List<Ask>(expectedAsks), orderBook.asks, 'asks');
+            assertOrders(List<Bid>(expectedBids), orderBook.bids, 'bids');
+        });
     };
 
     describe('when asks and bid have to same product', () => {
@@ -301,17 +325,6 @@ describe('Matching tests', () => {
                 },
                 done
             );
-        });
-
-        it('should trade at ask price when bid price is higher than ask', (done) => {
-            const asksBefore = [createAsk()];
-            const bidsBefore = [createBid({ price: twoUSD + 1 })];
-
-            const expectedTrades = [
-                new Trade(bidsBefore[0], asksBefore[0], asksBefore[0].volume, asksBefore[0].price)
-            ];
-
-            executeTestCase({ orders: [...asksBefore, ...bidsBefore], expectedTrades }, done);
         });
 
         it('should return 2 trades and fill all orders when having submitted 2 asks and 1 bid', (done) => {
@@ -395,7 +408,12 @@ describe('Matching tests', () => {
             const bidsAfter: Bid[] = [];
 
             executeTestCase(
-                { orders: [...asksBefore, ...bidsBefore], expectedTrades, asksAfter, bidsAfter },
+                {
+                    orders: [...asksBefore, ...bidsBefore],
+                    expectedTrades,
+                    asksAfter,
+                    bidsAfter
+                },
                 done
             );
         });
@@ -414,9 +432,122 @@ describe('Matching tests', () => {
             const bidsAfter: Bid[] = [bidsBefore[0].clone().updateWithTradedVolume(threeKWh)];
 
             executeTestCase(
-                { orders: [...asksBefore, ...bidsBefore], expectedTrades, asksAfter, bidsAfter },
+                {
+                    orders: [...asksBefore, ...bidsBefore],
+                    expectedTrades,
+                    asksAfter,
+                    bidsAfter
+                },
                 done
             );
+        });
+
+        describe('when price strategy is AskPriceStrategy', () => {
+            it('should trade at ask price when bid has higher price add was added after ask', (done) => {
+                const askCreatedAt = new Date();
+                const bidCreatedAt = moment().add(1, 'minute').toDate();
+
+                const asksBefore = [createAsk({ createdAt: askCreatedAt })];
+                const bidsBefore = [createBid({ price: twoUSD + 1, createdAt: bidCreatedAt })];
+
+                const expectedTrades = [
+                    new Trade(
+                        bidsBefore[0],
+                        asksBefore[0],
+                        asksBefore[0].volume,
+                        asksBefore[0].price
+                    )
+                ];
+
+                executeTestCase(
+                    {
+                        orders: [...asksBefore, ...bidsBefore],
+                        expectedTrades,
+                        priceStrategies: [PriceStrategy.AskPrice]
+                    },
+                    done
+                );
+            });
+
+            it('should trade at ask price when bid has higher price add was added before ask', (done) => {
+                const bidCreatedAt = new Date();
+                const askCreatedAt = moment().add(1, 'minute').toDate();
+
+                const asksBefore = [createAsk({ createdAt: askCreatedAt })];
+                const bidsBefore = [createBid({ price: twoUSD + 1, createdAt: bidCreatedAt })];
+
+                const expectedTrades = [
+                    new Trade(
+                        bidsBefore[0],
+                        asksBefore[0],
+                        asksBefore[0].volume,
+                        asksBefore[0].price
+                    )
+                ];
+
+                executeTestCase(
+                    {
+                        orders: [...asksBefore, ...bidsBefore],
+                        expectedTrades,
+                        priceStrategies: [PriceStrategy.AskPrice]
+                    },
+                    done
+                );
+            });
+        });
+
+        describe('when price strategy is OrderCreationTimePickStrategy', () => {
+            it('should trade at ask price when bid has higher price add was added after ask', (done) => {
+                const askCreatedAt = new Date();
+                const bidCreatedAt = moment().add(1, 'minute').toDate();
+
+                const asksBefore = [createAsk({ createdAt: askCreatedAt })];
+                const bidsBefore = [createBid({ price: twoUSD + 1, createdAt: bidCreatedAt })];
+
+                const expectedTrades = [
+                    new Trade(
+                        bidsBefore[0],
+                        asksBefore[0],
+                        asksBefore[0].volume,
+                        asksBefore[0].price
+                    )
+                ];
+
+                executeTestCase(
+                    {
+                        orders: [...asksBefore, ...bidsBefore],
+                        expectedTrades,
+                        priceStrategies: [PriceStrategy.BasedOnOrderCreationTime]
+                    },
+                    done
+                );
+            });
+
+            it('should trade at bid price when ask has higher price add was added after bid', (done) => {
+                const bidCreatedAt = new Date();
+                const askCreatedAt = moment().add(1, 'minute').toDate();
+
+                const asksBefore = [createAsk({ createdAt: askCreatedAt })];
+                const bidsBefore = [createBid({ price: twoUSD + 1, createdAt: bidCreatedAt })];
+
+                const expectedTrades = [
+                    new Trade(
+                        bidsBefore[0],
+                        asksBefore[0],
+                        asksBefore[0].volume,
+                        bidsBefore[0].price
+                    )
+                ];
+
+                executeTestCase(
+                    {
+                        orders: [...asksBefore, ...bidsBefore],
+                        expectedTrades,
+                        priceStrategies: [PriceStrategy.BasedOnOrderCreationTime]
+                    },
+                    done
+                );
+            });
         });
     });
 
@@ -1234,7 +1365,7 @@ describe('Matching tests', () => {
 
             const expectedTrades = [new Trade(directBuy, ask2, onekWh, ask2.price)];
 
-            const asksAfter = [ask1, ask2];
+            const asksAfter = [ask1, ask2.clone().updateWithTradedVolume(onekWh)];
 
             executeTestCase(
                 {

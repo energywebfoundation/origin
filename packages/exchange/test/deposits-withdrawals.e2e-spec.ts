@@ -1,4 +1,6 @@
+/* eslint-disable no-unused-expressions */
 import { INestApplication } from '@nestjs/common';
+import { expect } from 'chai';
 import { Contract, ethers } from 'ethers';
 import moment from 'moment';
 import request from 'supertest';
@@ -11,7 +13,7 @@ import { RequestWithdrawalDTO } from '../src/pods/transfer/create-withdrawal.dto
 import { TransferDirection } from '../src/pods/transfer/transfer-direction';
 import { Transfer } from '../src/pods/transfer/transfer.entity';
 import { DatabaseService } from './database.service';
-import { bootstrapTestInstance } from './exchange';
+import { authenticatedUser, bootstrapTestInstance } from './exchange';
 import { depositToken, issueToken, provider } from './utils';
 
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
@@ -21,14 +23,14 @@ describe('Deposits using deployed registry', () => {
     let databaseService: DatabaseService;
     let accountService: AccountService;
 
-    const user1Id = '1';
+    const user1Id = authenticatedUser.organization;
 
     let registry: Contract;
     let issuer: Contract;
 
     let depositAddress: string;
 
-    beforeAll(async () => {
+    before(async () => {
         ({
             accountService,
             databaseService,
@@ -43,7 +45,7 @@ describe('Deposits using deployed registry', () => {
         depositAddress = address;
     });
 
-    afterAll(async () => {
+    after(async () => {
         await databaseService.cleanUp();
         await app.close();
     });
@@ -55,13 +57,10 @@ describe('Deposits using deployed registry', () => {
     const generationFrom = moment('2020-01-01').unix();
     const generationTo = moment('2020-01-31').unix();
 
-    const getBalance = async (address: string, id: number) => {
-        return (await registry.functions.balanceOf(address, id)) as ethers.utils.BigNumber;
-    };
+    const getBalance = async (address: string, id: number): Promise<ethers.BigNumber> =>
+        registry.balanceOf(address, id);
 
     it('should be able to discover token deposit and post the ask', async () => {
-        jest.setTimeout(10000);
-
         const depositAmount = '10';
 
         const id = await issueToken(
@@ -82,11 +81,11 @@ describe('Deposits using deployed registry', () => {
                 const transfers = res.body as Transfer[];
                 const [tokenDeposit] = transfers;
 
-                expect(transfers).toHaveLength(1);
-                expect(tokenDeposit.userId).toBe(user1Id);
-                expect(tokenDeposit.direction).toBe(TransferDirection.Deposit);
-                expect(tokenDeposit.amount).toBe(depositAmount);
-                expect(tokenDeposit.address).toBe(depositAddress);
+                expect(transfers).to.have.length(1);
+                expect(tokenDeposit.userId).equals(user1Id);
+                expect(tokenDeposit.direction).equals(TransferDirection.Deposit);
+                expect(tokenDeposit.amount).equals(depositAmount);
+                expect(tokenDeposit.address).equals(depositAddress);
             });
 
         let assetId: string;
@@ -99,11 +98,11 @@ describe('Deposits using deployed registry', () => {
 
                 const [balance] = account.balances.available;
 
-                expect(balance.amount).toBe('10');
-                expect(new Date(balance.asset.generationFrom)).toStrictEqual(
+                expect(balance.amount).equals('10');
+                expect(new Date(balance.asset.generationFrom)).deep.equals(
                     moment.unix(generationFrom).toDate()
                 );
-                expect(new Date(balance.asset.generationTo)).toStrictEqual(
+                expect(new Date(balance.asset.generationTo)).deep.equals(
                     moment.unix(generationTo).toDate()
                 );
 
@@ -124,21 +123,19 @@ describe('Deposits using deployed registry', () => {
             .expect((res) => {
                 const order = res.body as Order;
 
-                expect(order.price).toBe(100);
-                expect(order.startVolume).toBe('10');
-                expect(order.assetId).toBe(assetId);
-                expect(new Date(order.product.generationFrom)).toStrictEqual(
+                expect(order.price).equals(100);
+                expect(order.startVolume).equals('10');
+                expect(order.assetId).equals(assetId);
+                expect(new Date(order.product.generationFrom)).deep.equals(
                     moment.unix(generationFrom).toDate()
                 );
-                expect(new Date(order.product.generationTo)).toStrictEqual(
+                expect(new Date(order.product.generationTo)).deep.equals(
                     moment.unix(generationTo).toDate()
                 );
             });
     });
 
     it('should withdraw to requested address', async () => {
-        jest.setTimeout(15000);
-
         const withdrawalAddress = ethers.Wallet.createRandom().address;
         const withdrawalAmount = '5';
         const depositAmount = '10';
@@ -157,8 +154,8 @@ describe('Deposits using deployed registry', () => {
         const res = await request(app.getHttpServer()).get('/transfer/all');
         const [, deposit] = res.body as Transfer[];
 
-        expect(deposit.id).toBeDefined();
-        expect(deposit.asset.tokenId).toBe(id.toString());
+        expect(deposit.id).to.be.ok;
+        expect(deposit.asset.tokenId).equals(id.toString());
 
         const withdrawal: RequestWithdrawalDTO = {
             assetId: deposit.asset.id,
@@ -177,6 +174,6 @@ describe('Deposits using deployed registry', () => {
 
         const endBalance = await getBalance(withdrawalAddress, id);
 
-        expect(endBalance.gt(startBalance)).toBeTruthy();
+        expect(endBalance.gt(startBalance)).to.be.true;
     });
 });

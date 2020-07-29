@@ -3,6 +3,54 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.1.12](https://github.com/energywebfoundation/origin/compare/@energyweb/exchange-token-account@0.1.11...@energyweb/exchange-token-account@0.1.12) (2020-07-16)
+
+**Note:** Version bump only for package @energyweb/exchange-token-account
+
+
+
+
+
+## [0.1.11](https://github.com/energywebfoundation/origin/compare/@energyweb/exchange-token-account@0.1.10...@energyweb/exchange-token-account@0.1.11) (2020-07-08)
+
+**Note:** Version bump only for package @energyweb/exchange-token-account
+
+
+
+
+
+## [0.1.10](https://github.com/energywebfoundation/origin/compare/@energyweb/exchange-token-account@0.1.9...@energyweb/exchange-token-account@0.1.10) (2020-06-16)
+
+**Note:** Version bump only for package @energyweb/exchange-token-account
+
+
+
+
+
+## [0.1.9](https://github.com/energywebfoundation/origin/compare/@energyweb/exchange-token-account@0.1.8...@energyweb/exchange-token-account@0.1.9) (2020-06-16)
+
+**Note:** Version bump only for package @energyweb/exchange-token-account
+
+
+
+
+
+## [0.1.8](https://github.com/energywebfoundation/origin/compare/@energyweb/exchange-token-account@0.1.7...@energyweb/exchange-token-account@0.1.8) (2020-05-29)
+
+**Note:** Version bump only for package @energyweb/exchange-token-account
+
+
+
+
+
+## [0.1.7](https://github.com/energywebfoundation/origin/compare/@energyweb/exchange-token-account@0.1.6...@energyweb/exchange-token-account@0.1.7) (2020-05-15)
+
+**Note:** Version bump only for package @energyweb/exchange-token-account
+
+
+
+
+
 ## [0.1.6](https://github.com/energywebfoundation/origin/compare/@energyweb/exchange-token-account@0.1.5...@energyweb/exchange-token-account@0.1.6) (2020-04-24)
 
 **Note:** Version bump only for package @energyweb/exchange-token-account

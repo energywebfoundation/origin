@@ -3,6 +3,149 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.2.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-backend@6.1.0...@energyweb/origin-backend@6.2.0) (2020-07-16)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @nestjs/jwt to v7.1.0 ([3b8864d](https://github.com/energywebfoundation/origin/commit/3b8864de4850b15418b85e950734a0e8e5152062))
+* **deps:** update nest monorepo to v7.3.2 ([875bb1b](https://github.com/energywebfoundation/origin/commit/875bb1b17fee5647d921f6771a58a4aa55aec59d))
+* **origin-backend:** fix permissions for getting Organizations ([6bee114](https://github.com/energywebfoundation/origin/commit/6bee11405fa7d7a5b7d9172fb853ab1b23351ae0))
+
+
+### Features
+
+* **origin-backend:** Confirmation Emails - auto-sending emails and confirmation endpoints ([0a33d1b](https://github.com/energywebfoundation/origin/commit/0a33d1bfd24cb3e44c3e2fc304b56e57735f513d))
+
+
+
+
+
+# [6.1.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-backend@6.0.1...@energyweb/origin-backend@6.1.0) (2020-07-08)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @nestjs/passport to v7.1.0 ([2ca9c9f](https://github.com/energywebfoundation/origin/commit/2ca9c9f57cd34871ce061f0fca2f873bf17d9e99))
+* **deps:** update dependency rxjs to v6.6.0 ([851151d](https://github.com/energywebfoundation/origin/commit/851151dd110a2b11fc9b491e491c4a152aaac807))
+* **deps:** update dependency uuid to v8.2.0 ([20ea72e](https://github.com/energywebfoundation/origin/commit/20ea72e92f79b2d919364093a127d0a15ce15040))
+* **deps:** update nest monorepo to v7.3.1 ([a7777b8](https://github.com/energywebfoundation/origin/commit/a7777b85aa0c56df661b1b3f24467cc8e95b2051))
+* **exchange:** revert fix ([b31a318](https://github.com/energywebfoundation/origin/commit/b31a318216fe6a4d4d7c373b3eb4a2219c6d946b))
+* **origin-backend:** change user status to active ([6ba9c20](https://github.com/energywebfoundation/origin/commit/6ba9c209694ae58ce493d286cec39bd58e49e821))
+* **origin-backend:** only allow certain users to get user information ([4a07737](https://github.com/energywebfoundation/origin/commit/4a077376a9c98537cf6adafcd855bf185bb5eba8))
+* **origin-backend:** permissioned smart meter reading PUT ([54db1ab](https://github.com/energywebfoundation/origin/commit/54db1ab389433179025e697740432a56ecc3bf3e))
+* **origin-backend:** remove active user check on user/me ([764e3e8](https://github.com/energywebfoundation/origin/commit/764e3e811d97b3db842e79294dc2c055a5eb09ce))
+* **origin-backend:** remove ActiveUserGuard on user/me ([219a211](https://github.com/energywebfoundation/origin/commit/219a211790bd710124dcdc1eae5884d1d0806bb1))
+
+
+### Features
+
+* **origin-backend:** approvedDate and revokedDate added to ICertificationRequest ([b4ebd19](https://github.com/energywebfoundation/origin/commit/b4ebd194266c1ab78ff48ada3347bcc514498b1b))
+* **origin-backend:** CertificationRequest approved and revoked events ([3777847](https://github.com/energywebfoundation/origin/commit/3777847412f9ca88b4510f24d9d79ee708767efb))
+
+
+
+
+
+## [6.0.1](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-backend@6.0.0...@energyweb/origin-backend@6.0.1) (2020-06-16)
+
+**Note:** Version bump only for package @energyweb/origin-backend
+
+
+
+
+
+# [6.0.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-backend@5.1.1...@energyweb/origin-backend@6.0.0) (2020-06-16)
+
+
+### Bug Fixes
+
+* **origin-backend:** explicit update ([338f65f](https://github.com/energywebfoundation/origin/commit/338f65fcce40c6392ce3f1519d2581dd4070f343))
+* **origin-backend:** fix updating device ([0e0654c](https://github.com/energywebfoundation/origin/commit/0e0654c90eff09d1e9465959ed399013283bad18))
+* Certification request validation handling ([5e0f90b](https://github.com/energywebfoundation/origin/commit/5e0f90bc2abfa2a8e26db19739f283d4eaf4c926))
+* **deps:** update dependency @nestjs/typeorm to v7.1.0 ([960d52b](https://github.com/energywebfoundation/origin/commit/960d52b0dde4709bf6da1dcf4e317f445a6c76be))
+* **deps:** update dependency typeorm to v0.2.25 ([d1ce442](https://github.com/energywebfoundation/origin/commit/d1ce4428931bdfede4d73d7016fcb1cb8d564a7d))
+* **origin-backend:** combine notNull default ([d57a048](https://github.com/energywebfoundation/origin/commit/d57a048cfc7539fa956239486c00a55723787ccc))
+* **origin-backend:** make certification request energy not nullable ([dfb8320](https://github.com/energywebfoundation/origin/commit/dfb8320a90c73b7e49e93ed04b7c434abe33cefe))
+* **origin-backend:** make files not nullable and default to [] ([62100e1](https://github.com/energywebfoundation/origin/commit/62100e11c24da8351632ad4fcd0b45c2637dad05))
+* **origin-backend:** make sure files are stored as [] ([cc0b799](https://github.com/energywebfoundation/origin/commit/cc0b79911467261eba12206122bf33b976533fac))
+* **origin-backend:** syntax nto null and default ([be8486d](https://github.com/energywebfoundation/origin/commit/be8486d81c73df981eeead020a29a9ce5e15bce1))
+* implement a certification request data queue ([78cbd4a](https://github.com/energywebfoundation/origin/commit/78cbd4a7a36959cbb0820cf17dc277f0bf5ae823))
+
+
+### chore
+
+* remove unused Lead User references ([aaae5df](https://github.com/energywebfoundation/origin/commit/aaae5df4b0abd1b69924981eb2dc8b7e5df31e63))
+
+
+### Features
+
+* Updating organization user roles ([c1096f2](https://github.com/energywebfoundation/origin/commit/c1096f28c1b48e606d5deeda7f33720613764326))
+
+
+### BREAKING CHANGES
+
+* Lead user is no longer needed to create an organization
+
+
+
+
+
+## [5.1.1](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-backend@5.1.0...@energyweb/origin-backend@5.1.1) (2020-05-29)
+
+
+### Bug Fixes
+
+* **origin-backend:** proper auth for getting organization invitations ([4d9d5c0](https://github.com/energywebfoundation/origin/commit/4d9d5c0cc8cdfa476e0138eeef6e6ee2c7889fdd))
+* change URL to fetch invitations for organization ([cc0b238](https://github.com/energywebfoundation/origin/commit/cc0b238966cf8e6e3b14b485f2d4e4b6e7cec865))
+* endpoint for fetching invitations for an organization ([57e11d9](https://github.com/energywebfoundation/origin/commit/57e11d9c8b09739ff443389c71dae6c31e4bb6d3))
+* **deps:** update dependency @nestjs/config to v0.5.0 ([e57cb73](https://github.com/energywebfoundation/origin/commit/e57cb73efa867020dcd4414a0ad4694995a42a80))
+* **deps:** update dependency uuid to v8 ([2342cae](https://github.com/energywebfoundation/origin/commit/2342cae4dc0c3e86e86ac4237f48f2d62943ca28))
+* **deps:** update dependency uuid to v8.1.0 ([2bcb626](https://github.com/energywebfoundation/origin/commit/2bcb626b42bcb726041dfe6ddc79bd5f73bd2060))
+* **deps:** update nest monorepo to v7.0.13 ([ea1133d](https://github.com/energywebfoundation/origin/commit/ea1133dd1efdcad9083b19b622884918dd802bee))
+* **deps:** update nest monorepo to v7.1.0 ([78be769](https://github.com/energywebfoundation/origin/commit/78be769e5b1f8a27e16bb65ff2c879b20a03bce8))
+* **origin-backend:** additional types casting ([573b27e](https://github.com/energywebfoundation/origin/commit/573b27e225b1592cf8e2093e852b76351c00d3a5))
+* **origin-backend:** allow other users to access minimal certification request data ([8d310b7](https://github.com/energywebfoundation/origin/commit/8d310b7cef51596397014a3cf87d832224727132))
+* **origin-backend:** deny creating certification requests for non-approved devices ([d8d1756](https://github.com/energywebfoundation/origin/commit/d8d175605f21fd3aac8f6e05556371ec104fa93a))
+* certificate tests ([923eb7e](https://github.com/energywebfoundation/origin/commit/923eb7e2f17c9d882077a2810d738c703946aeba))
+* ownership commitments permissions + store original requestor ([1751d30](https://github.com/energywebfoundation/origin/commit/1751d3009d11f92d23bc9834632ef5b0ffb5bcee))
+
+
+
+
+
+# [5.1.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-backend@5.0.1...@energyweb/origin-backend@5.1.0) (2020-05-15)
+
+
+### Bug Fixes
+
+* fixate tslib version to 1.11.2 to avoid typeorm issue ([274d4e9](https://github.com/energywebfoundation/origin/commit/274d4e9717f4c8f4b258a56331724330dcc3685b))
+* store [] as the default for device.files ([52e5fcc](https://github.com/energywebfoundation/origin/commit/52e5fccdeb303133b3db9413fc317e4a1c60ebca))
+* **origin-backend:** add default to status and kycstatus for user ([afc397f](https://github.com/energywebfoundation/origin/commit/afc397f37441af389666b865c088927cf0c22444))
+* **origin-backend:** add files default ([f7a265b](https://github.com/energywebfoundation/origin/commit/f7a265bd268201289d93788d310131ebc2ea56e9))
+* **origin-backend:** add nullable:false to user statuses ([090e29b](https://github.com/energywebfoundation/origin/commit/090e29b6791b47b20a702bd0f4120236b59a83b1))
+* **origin-backend:** apply ownership to certificate requests ([75408ea](https://github.com/energywebfoundation/origin/commit/75408ead45f0bf508c742975528787efa20b8db7))
+* **origin-backend:** configuration not being initialized in the tests ([2bff1f0](https://github.com/energywebfoundation/origin/commit/2bff1f087d353fbdfabb9022fccf2b07c12f105c))
+* **origin-backend:** don't run watcher service if the Issuer address is incorrect ([278bcca](https://github.com/energywebfoundation/origin/commit/278bcca8e1bd4cb27e60f9a02351ac430e00df90))
+* **origin-backend:** fix e2e test checking if certified ([b319b2c](https://github.com/energywebfoundation/origin/commit/b319b2cbba8f4cccd4f2d4154a4cbd13bfe7e099))
+* **origin-backend:** fix getting certification request ([f1d766f](https://github.com/energywebfoundation/origin/commit/f1d766f0fea9e38b8fd869904818f82b09817a15))
+* **origin-backend:** fix issues with registering/approving devices ([9a5e066](https://github.com/energywebfoundation/origin/commit/9a5e066298d5c949f840dc09b8b098b6ce31e50c))
+* **origin-backend:** migration dropping column ([00220b8](https://github.com/energywebfoundation/origin/commit/00220b800a8e5353aea4d6de1709c8e8a20e4d30))
+* **origin-backend:** smReads - calculating if certified or not ([2a9a01e](https://github.com/energywebfoundation/origin/commit/2a9a01e4d09a8a683214630dac1214c426f4f67d))
+
+
+### Features
+
+* add meterStats to Device for un/certified meter readings reference ([627d785](https://github.com/energywebfoundation/origin/commit/627d7855506f52cb70ee083844ef2664b9227a0b))
+* Detect and store the whole CertificationRequest on the backend ([613eb28](https://github.com/energywebfoundation/origin/commit/613eb28eeae25ec414b393f61311dbfb679351d4))
+* register Approved and Revoked events ([e74afec](https://github.com/energywebfoundation/origin/commit/e74afec51924a37abe39cad94e416f955474f17b))
+* **origin-backend:** added automatic post for sale flag, API for updating settings ([a871f60](https://github.com/energywebfoundation/origin/commit/a871f601ea611ca5e51fbe7cd0d0b0fcf4d2cea3))
+* **origin-backend:** price per device asset. initial e2e setup ([8479b5e](https://github.com/energywebfoundation/origin/commit/8479b5efc7e3cdba2e6f61eb6d62cb8ed4814526))
+
+
+
+
+
 ## [5.0.1](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-backend@5.0.0...@energyweb/origin-backend@5.0.1) (2020-04-24)
 
 

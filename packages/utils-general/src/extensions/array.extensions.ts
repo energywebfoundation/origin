@@ -1,4 +1,4 @@
-interface ArrayExtended<T> {
+interface IArrayExtended<T> {
     removeLast(): T;
 
     empty(): boolean;
@@ -16,9 +16,9 @@ interface ArrayExtended<T> {
     ifEmpty(action: () => void): T[];
 }
 
-export function extendArray<T>(target: any = Array.prototype): Array<T> & ArrayExtended<T> {
+export function extendArray<T>(target: any = Array.prototype): Array<T> & IArrayExtended<T> {
     // prevent custom methods to be listed in the for.. in statement
-    let methods = [
+    const methods = [
         'removeLast',
         'empty',
         'contains',
@@ -28,36 +28,36 @@ export function extendArray<T>(target: any = Array.prototype): Array<T> & ArrayE
         'ifFound',
         'ifEmpty'
     ];
-    for (let m of methods)
+    for (const m of methods)
         Object.defineProperty(target, m, {
             enumerable: false,
             writable: true
         });
 
     if (!target.removeLast) {
-        target.removeLast = function<T>(): T {
+        target.removeLast = function <T>(): T {
             if (this.length == 0) return null;
-            else if (this.length > 0) {
-                let last = this.splice(this.length - 1, 1);
+            if (this.length > 0) {
+                const last = this.splice(this.length - 1, 1);
                 return last[0];
             }
         };
     }
     if (!target.contains) {
-        target.contains = function<T>(e: T): boolean {
+        target.contains = function <T>(e: T): boolean {
             return this.indexOf(e) >= 0;
         };
     }
     if (!target.empty) {
-        target.empty = function<T>(): boolean {
+        target.empty = function <T>(): boolean {
             return this.length == 0;
         };
     }
     if (!target.findBy) {
-        target.findBy = function<T>(e: Partial<T>): T[] {
+        target.findBy = function <T>(e: Partial<T>): T[] {
             return this.filter((item: T) => {
                 let include = true;
-                for (let k in e) {
+                for (const k in e) {
                     include = include && item[k] == e[k];
                 }
                 return include;
@@ -65,12 +65,12 @@ export function extendArray<T>(target: any = Array.prototype): Array<T> & ArrayE
         };
     }
     if (!target.filterBy) {
-        target.filterBy = function<T>(e: Partial<T>): T[] {
+        target.filterBy = function <T>(e: Partial<T>): T[] {
             return this.findBy(e);
         };
     }
     if (!target.ifFound) {
-        target.ifFound = function<T>(action: (first: T) => void): T[] {
+        target.ifFound = function <T>(action: (first: T) => void): T[] {
             if (this.length > 0) {
                 action(this[0]);
             }
@@ -78,7 +78,7 @@ export function extendArray<T>(target: any = Array.prototype): Array<T> & ArrayE
         };
     }
     if (!target.ifEmpty) {
-        target.ifEmpty = function<T>(action: () => void): T[] {
+        target.ifEmpty = function <T>(action: () => void): T[] {
             if (this.length == 0) {
                 action();
             }
@@ -86,10 +86,10 @@ export function extendArray<T>(target: any = Array.prototype): Array<T> & ArrayE
         };
     }
     if (!target.sortBy) {
-        target.sortBy = function<T>(e: Partial<{ [k in keyof T]: 'asc' | 'desc' }>): T[] {
+        target.sortBy = function <T>(e: Partial<{ [k in keyof T]: 'asc' | 'desc' }>): T[] {
             let key = '';
             let sorting = 1;
-            for (let ekey in e) {
+            for (const ekey in e) {
                 key = ekey;
                 sorting = e[ekey] == 'asc' ? 1 : -1;
             }

@@ -3,6 +3,79 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.2.1](https://github.com/energywebfoundation/origin/compare/@energyweb/solar-simulator@1.2.0...@energyweb/solar-simulator@1.2.1) (2020-07-16)
+
+
+### Bug Fixes
+
+* **solar-simulator:** change the solar-simulator Heroku process from web to worker ([78ad5f4](https://github.com/energywebfoundation/origin/commit/78ad5f43748befa8e6e3af78793aab97a4c38b68))
+* **solar-simulator:** saving smart meter readings ([ef2a8c3](https://github.com/energywebfoundation/origin/commit/ef2a8c3d02fc97828ada1e12388508f3b7a7f70c))
+
+
+
+
+
+# [1.2.0](https://github.com/energywebfoundation/origin/compare/@energyweb/solar-simulator@1.1.11...@energyweb/solar-simulator@1.2.0) (2020-07-08)
+
+
+### Bug Fixes
+
+* **deps:** update dependency winston to v3.3.0 ([12f111e](https://github.com/energywebfoundation/origin/commit/12f111ed16274e40d9ccbb4c3d6f9d8d222cb2fe))
+* **deps:** update dependency winston to v3.3.3 ([d66ad8e](https://github.com/energywebfoundation/origin/commit/d66ad8e4f8f65a8c6bed6ec95303a175771ed230))
+
+
+### Features
+
+* **solar-simulator:** store multiple smart meter readings at once ([90ecdbb](https://github.com/energywebfoundation/origin/commit/90ecdbb3c4eb9b53fabd9193bfd2af0367bce39e))
+
+
+
+
+
+## [1.1.11](https://github.com/energywebfoundation/origin/compare/@energyweb/solar-simulator@1.1.10...@energyweb/solar-simulator@1.1.11) (2020-06-16)
+
+**Note:** Version bump only for package @energyweb/solar-simulator
+
+
+
+
+
+## [1.1.10](https://github.com/energywebfoundation/origin/compare/@energyweb/solar-simulator@1.1.9...@energyweb/solar-simulator@1.1.10) (2020-06-16)
+
+
+### Bug Fixes
+
+* **deps:** update dependency fs-extra to v9.0.1 ([79b7310](https://github.com/energywebfoundation/origin/commit/79b7310af28d225f2cbbb721ec3fd6b5e227d832))
+
+
+
+
+
+## [1.1.9](https://github.com/energywebfoundation/origin/compare/@energyweb/solar-simulator@1.1.8...@energyweb/solar-simulator@1.1.9) (2020-05-29)
+
+
+### Bug Fixes
+
+* **deps:** update dependency bn.js to v5.1.2 ([abe9afb](https://github.com/energywebfoundation/origin/commit/abe9afba4c6ad4d02bd8afd044f49582423e1293))
+* **deps:** update dependency csv-parse to v4.10.1 ([489628f](https://github.com/energywebfoundation/origin/commit/489628f835ef91d19af7aef0b69ef7485c4ae8cb))
+* **deps:** update dependency csv-parse to v4.9.1 ([ffc1d39](https://github.com/energywebfoundation/origin/commit/ffc1d39d0c18e7b4ab43ebaaf68199d075f14020))
+* **deps:** update dependency moment-timezone to v0.5.31 ([e3b8550](https://github.com/energywebfoundation/origin/commit/e3b855014f9cc4df425387899c689c08516067f0))
+
+
+
+
+
+## [1.1.8](https://github.com/energywebfoundation/origin/compare/@energyweb/solar-simulator@1.1.7...@energyweb/solar-simulator@1.1.8) (2020-05-15)
+
+
+### Bug Fixes
+
+* **deps:** update dependency csv-parse to v4.9.0 ([7cee527](https://github.com/energywebfoundation/origin/commit/7cee527ee1153765b7514036f865a240e50da554))
+
+
+
+
+
 ## [1.1.7](https://github.com/energywebfoundation/origin/compare/@energyweb/solar-simulator@1.1.6...@energyweb/solar-simulator@1.1.7) (2020-04-24)
 
 **Note:** Version bump only for package @energyweb/solar-simulator

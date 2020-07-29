@@ -1,4 +1,3 @@
-import moment from 'moment';
 import { Configuration } from '@energyweb/utils-general';
 import {
     IDevice,
@@ -8,9 +7,9 @@ import {
     IExternalDeviceId,
     DeviceCreateData,
     IDeviceWithRelationsIds,
-    ISmartMeterReadStats
+    ISmartMeterReadStats,
+    IOrganization
 } from '@energyweb/origin-backend-core';
-import { BigNumberish, bigNumberify } from 'ethers/utils';
 
 export class Entity implements IDevice {
     status: DeviceStatus;
@@ -61,7 +60,7 @@ export class Entity implements IDevice {
 
     initialized: boolean;
 
-    organization: number;
+    organization: number | IOrganization;
 
     automaticPostForSale: boolean;
 
@@ -98,16 +97,11 @@ export class Entity implements IDevice {
         return this;
     }
 
-    async saveSmartMeterRead(
-        meterReading: BigNumberish,
-        timestamp: number = moment().unix()
-    ): Promise<void> {
-        const readingBN = bigNumberify(meterReading);
-
-        return this.configuration.offChainDataSource.deviceClient.addSmartMeterRead(this.id, {
-            meterReading: readingBN,
-            timestamp
-        });
+    async saveSmartMeterReads(smReads: ISmartMeterRead[]): Promise<void> {
+        return this.configuration.offChainDataSource.deviceClient.addSmartMeterReads(
+            this.id,
+            smReads
+        );
     }
 
     async getSmartMeterReads(): Promise<ISmartMeterRead[]> {
@@ -146,15 +140,19 @@ export class Entity implements IDevice {
     }
 }
 
-export const getAllDevices = async (configuration: Configuration.Entity): Promise<Entity[]> => {
-    const allDevices = await configuration.offChainDataSource.deviceClient.getAll();
+export const getAllDevices = async (
+    configuration: Configuration.Entity,
+    withMeterStats = false,
+    loadRelationIds?: boolean
+): Promise<Entity[]> => {
+    const allDevices = await configuration.offChainDataSource.deviceClient.getAll(
+        withMeterStats,
+        loadRelationIds
+    );
 
-    return allDevices.map((device) => new Entity(device.id, configuration, device));
-};
-
-export const getDeviceListLength = async (configuration: Configuration.Entity) => {
-    const allDevices = await configuration.offChainDataSource.deviceClient.getAll();
-    return allDevices.length;
+    return allDevices.map(
+        (device: IDeviceWithRelationsIds) => new Entity(device.id, configuration, device)
+    );
 };
 
 export const createDevice = async (

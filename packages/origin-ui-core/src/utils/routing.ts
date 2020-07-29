@@ -1,5 +1,8 @@
 import { useSelector } from 'react-redux';
+import { OriginFeature } from '@energyweb/utils-general';
 import { getBaseURL } from '../features/selectors';
+import { useContext } from 'react';
+import { OriginConfigurationContext } from '..';
 
 export function getDevicesLink(baseURL: string) {
     return `${baseURL}/devices`;
@@ -61,11 +64,24 @@ export function getAdminLink(baseURL: string) {
     return `${baseURL}/admin`;
 }
 
+export function getBundlesLink(baseURL: string) {
+    return `${baseURL}/bundles`;
+}
+
 export function useLinks() {
     const baseURL = useSelector(getBaseURL);
 
+    const { enabledFeatures } = useContext(OriginConfigurationContext);
+
+    const defaultLink = enabledFeatures.includes(OriginFeature.Devices)
+        ? getDevicesLink
+        : enabledFeatures.includes(OriginFeature.Certificates)
+        ? getCertificatesLink
+        : getAccountLink;
+
     return {
         baseURL,
+        getDefaultLink: () => defaultLink(baseURL),
         getDevicesLink: () => getDevicesLink(baseURL),
         getDevicesAddLink: () => getDevicesAddLink(baseURL),
         getDevicesOwnedLink: () => getDevicesOwnedLink(baseURL),
@@ -81,6 +97,7 @@ export function useLinks() {
         getOrganizationViewLink: (id: string) => getOrganizationViewLink(baseURL, id),
         getUserRegisterLink: () => getUserRegisterLink(baseURL),
         getAccountLoginLink: () => getAccountLoginLink(baseURL),
-        getAdminLink: () => getAdminLink(baseURL)
+        getAdminLink: () => getAdminLink(baseURL),
+        getBundlesLink: () => getBundlesLink(baseURL)
     };
 }

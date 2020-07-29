@@ -1,11 +1,14 @@
-import { Certificate, CertificationRequest, IClaimData } from '@energyweb/issuer';
 import { ProducingDevice } from '@energyweb/device-registry';
+import { Certificate, CertificationRequest, IClaimData } from '@energyweb/issuer';
+import { BigNumber } from 'ethers';
+
+import { ICertificateViewItem, CertificateSource } from '.';
 import { IStoreState } from '../../types';
-import { BigNumber } from 'ethers/utils';
 
 export enum CertificatesActions {
     addCertificate = 'CERTIFICATE_CREATED',
     updateCertificate = 'CERTIFICATE_UPDATED',
+    resyncCertificate = 'CERTIFICATE_RESYNC',
     requestCertificates = 'REQUEST_CERTIFICATES',
     showRequestCertificatesModal = 'SHOW_REQUEST_CERTIFICATES_MODAL',
     setRequestCertificatesModalVisibility = 'SET_REQUEST_CERTIFICATES_MODAL_VISIBILITY',
@@ -15,15 +18,19 @@ export enum CertificatesActions {
     requestPublishForSale = 'CERTIFICATES_REQUEST_PUBLISH_FOR_SALE',
     requestClaimCertificate = 'CERTIFICATES_REQUEST_CLAIM_CERTIFICATE',
     requestClaimCertificateBulk = 'CERTIFICATES_REQUEST_CLAIM_CERTIFICATE_BULK',
-    requestCertificateApproval = 'CERTIFICATES_REQUEST_CERTIFICATE_APPROVAL'
+    requestCertificateApproval = 'CERTIFICATES_REQUEST_CERTIFICATE_APPROVAL',
+    withdrawCertificate = 'CERTIFICATES_REQUEST_CERTIFICATE_WITHDRAWAL',
+    requestDepositCertificate = 'CERTIFICATES_REQUEST_CERTIFICATE_DEPOSIT',
+    clearCertificates = 'CERTIFICATES_CLEAR_CERTIFICATES',
+    reloadCertificates = 'CERTIFICATES_RELOAD_CERTIFICATES'
 }
 
 export interface IAddCertificateAction {
     type: CertificatesActions.addCertificate;
-    payload: Certificate;
+    payload: ICertificateViewItem;
 }
 
-export const addCertificate = (payload: Certificate) => ({
+export const addCertificate = (payload: ICertificateViewItem) => ({
     type: CertificatesActions.addCertificate,
     payload
 });
@@ -32,15 +39,27 @@ export type TAddCertificateAction = typeof addCertificate;
 
 export interface IUpdateCertificateAction {
     type: CertificatesActions.updateCertificate;
-    payload: Certificate;
+    payload: ICertificateViewItem;
 }
 
-export const updateCertificate = (payload: Certificate) => ({
+export const updateCertificate = (payload: ICertificateViewItem) => ({
     type: CertificatesActions.updateCertificate,
     payload
 });
 
 export type TUpdateCertificateAction = typeof updateCertificate;
+
+export interface IResyncCertificateAction {
+    type: CertificatesActions.resyncCertificate;
+    payload: ICertificateViewItem;
+}
+
+export const resyncCertificate = (payload: ICertificateViewItem) => ({
+    type: CertificatesActions.resyncCertificate,
+    payload
+});
+
+export type TResyncCertificateAction = typeof resyncCertificate;
 
 export interface IRequestCertificatesAction {
     type: CertificatesActions.requestCertificates;
@@ -138,6 +157,8 @@ export interface IRequestPublishForSaleAction {
         certificateId: Certificate['id'];
         amount: BigNumber;
         price: number;
+        source: CertificateSource;
+        assetId?: string;
         callback: () => void;
     };
 }
@@ -153,6 +174,7 @@ export interface IRequestClaimCertificateAction {
     type: CertificatesActions.requestClaimCertificate;
     payload: {
         certificateId: Certificate['id'];
+        amount: BigNumber;
         claimData: IClaimData;
     };
 }
@@ -198,9 +220,59 @@ export const requestCertificateApproval = (
 
 export type TRequestCertificateApprovalAction = typeof requestCertificateApproval;
 
+export interface IRequestWithdrawCertificateAction {
+    type: CertificatesActions.withdrawCertificate;
+    payload: {
+        assetId: string;
+        address: string;
+        amount: string;
+        callback: () => void;
+    };
+}
+
+export const requestWithdrawCertificate = (
+    payload: IRequestWithdrawCertificateAction['payload']
+) => ({
+    type: CertificatesActions.withdrawCertificate,
+    payload
+});
+
+export interface IRequestDepositCertificateAction {
+    type: CertificatesActions.withdrawCertificate;
+    payload: {
+        certificateId: Certificate['id'];
+        amount: BigNumber;
+        callback: () => void;
+    };
+}
+
+export const requestDepositCertificate = (
+    payload: IRequestDepositCertificateAction['payload']
+) => ({
+    type: CertificatesActions.requestDepositCertificate,
+    payload
+});
+
+export interface IClearCertificatesAction {
+    type: CertificatesActions.clearCertificates;
+}
+
+export const clearCertificates = () => ({
+    type: CertificatesActions.clearCertificates
+});
+
+export interface IReloadCertificatesAction {
+    type: CertificatesActions.reloadCertificates;
+}
+
+export const reloadCertificates = () => ({
+    type: CertificatesActions.reloadCertificates
+});
+
 export type ICertificatesAction =
     | IAddCertificateAction
     | IUpdateCertificateAction
+    | IResyncCertificateAction
     | IRequestCertificatesAction
     | IShowRequestCertificatesModalAction
     | ISetRequestCertificatesModalVisibilityAction
@@ -210,4 +282,7 @@ export type ICertificatesAction =
     | IRequestPublishForSaleAction
     | IRequestClaimCertificateAction
     | IRequestClaimCertificateBulkAction
-    | IRequestCertificateApprovalAction;
+    | IRequestCertificateApprovalAction
+    | IClearCertificatesAction
+    | IReloadCertificatesAction
+    | IRequestWithdrawCertificateAction;

@@ -3,6 +3,94 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.4.1](https://github.com/energywebfoundation/origin/compare/@energyweb/issuer@2.4.0...@energyweb/issuer@2.4.1) (2020-07-16)
+
+**Note:** Version bump only for package @energyweb/issuer
+
+
+
+
+
+# [2.4.0](https://github.com/energywebfoundation/origin/compare/@energyweb/issuer@2.3.1...@energyweb/issuer@2.4.0) (2020-07-08)
+
+
+### Bug Fixes
+
+* **deps:** update dependency winston to v3.3.0 ([12f111e](https://github.com/energywebfoundation/origin/commit/12f111ed16274e40d9ccbb4c3d6f9d8d222cb2fe))
+* **deps:** update dependency winston to v3.3.3 ([d66ad8e](https://github.com/energywebfoundation/origin/commit/d66ad8e4f8f65a8c6bed6ec95303a175771ed230))
+
+
+### Features
+
+* **issuer:** approvedDate and revokedDate added to ICertificationRequest ([20b276b](https://github.com/energywebfoundation/origin/commit/20b276b8eab5731517798eda2213e48df17636d6))
+
+
+
+
+
+## [2.3.1](https://github.com/energywebfoundation/origin/compare/@energyweb/issuer@2.3.0...@energyweb/issuer@2.3.1) (2020-06-16)
+
+**Note:** Version bump only for package @energyweb/issuer
+
+
+
+
+
+# [2.3.0](https://github.com/energywebfoundation/origin/compare/@energyweb/issuer@2.2.0...@energyweb/issuer@2.3.0) (2020-06-16)
+
+
+### Bug Fixes
+
+* **deps:** update dependency mocha to v8 ([11aa19a](https://github.com/energywebfoundation/origin/commit/11aa19ac0cdc0ef3038358972e3bc574891e22dc))
+* **issuer:** fix a bug with certificate showing an incorrect partial claim value ([5c0547c](https://github.com/energywebfoundation/origin/commit/5c0547c125c479f5262681e005ce96b6e0d7acf9))
+
+
+### Features
+
+* more efficient certification request validation ([2d85e0e](https://github.com/energywebfoundation/origin/commit/2d85e0e6a8888244a701e92905bf90e46852f5c9))
+* **issuer:** getAllOwnedCertificates ([e5b2fbb](https://github.com/energywebfoundation/origin/commit/e5b2fbbc286bbc936f81e35087bdc3c69abd0a38))
+* **origin-ui-core:** add deposit action ([07acf6e](https://github.com/energywebfoundation/origin/commit/07acf6e17d8df816671438d26dd90cf5f9532445))
+
+
+
+
+
+# [2.2.0](https://github.com/energywebfoundation/origin/compare/@energyweb/issuer@2.1.0...@energyweb/issuer@2.2.0) (2020-05-29)
+
+
+### Bug Fixes
+
+* **deps:** update dependency mocha to v7.2.0 ([b0ee1b6](https://github.com/energywebfoundation/origin/commit/b0ee1b6300808e1bdb465f7e0459f6c11b5be2b9))
+* certificate tests ([923eb7e](https://github.com/energywebfoundation/origin/commit/923eb7e2f17c9d882077a2810d738c703946aeba))
+* linting errors ([c6a6c65](https://github.com/energywebfoundation/origin/commit/c6a6c6519441582b397616b40bbe9b72cb550c98))
+* ownership commitments permissions + store original requestor ([1751d30](https://github.com/energywebfoundation/origin/commit/1751d3009d11f92d23bc9834632ef5b0ffb5bcee))
+
+
+### Features
+
+* **issuer:** store sender for the certification request ([39d0871](https://github.com/energywebfoundation/origin/commit/39d0871b3ccc48719d3ca3dc7539c86593fffba6))
+
+
+
+
+
+# [2.1.0](https://github.com/energywebfoundation/origin/compare/@energyweb/issuer@2.0.0...@energyweb/issuer@2.1.0) (2020-05-15)
+
+
+### Bug Fixes
+
+* **issuer:** enable storing more than 32 bytes in beneficiary data ([f075dfd](https://github.com/energywebfoundation/origin/commit/f075dfd048761443093b026d3f5c185a175d352b))
+
+
+### Features
+
+* **issuer:** store all certificationRequest information on the backend ([355e51f](https://github.com/energywebfoundation/origin/commit/355e51ff00db1321283b11d1f7188304abe56fb0))
+* **issuer:** Use defined beneficiary claim data ([e89900f](https://github.com/energywebfoundation/origin/commit/e89900f20f76167480a2b317d0f85320d8e370e2))
+
+
+
+
+
 # [2.0.0](https://github.com/energywebfoundation/origin/compare/@energyweb/issuer@1.1.0...@energyweb/issuer@2.0.0) (2020-04-24)
 
 

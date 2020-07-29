@@ -8,11 +8,13 @@ import { AccountSettings } from './AccountSettings';
 import { UserRegister } from './UserRegister';
 import { UserLogin } from './UserLogin';
 import { dataTest, useLinks, useTranslation } from '../../utils';
+import { UserProfile } from './UserProfile';
+import { ConfirmEmail } from './ConfirmEmail';
 
 export function Account() {
     const userOffchain = useSelector(getUserOffchain);
 
-    const { getAccountLink } = useLinks();
+    const { baseURL, getAccountLink } = useLinks();
     const { t } = useTranslation();
 
     const isLoggedIn = Boolean(userOffchain);
@@ -35,6 +37,18 @@ export function Account() {
             label: 'settings.navigation.registerUser',
             component: UserRegister,
             hide: isLoggedIn
+        },
+        {
+            key: 'user-profile',
+            label: 'settings.navigation.userProfile',
+            component: UserProfile,
+            hide: !isLoggedIn
+        },
+        {
+            key: 'confirm-email',
+            label: 'settings.navigation.confirmEmail',
+            component: ConfirmEmail,
+            hide: true
         }
     ];
 
@@ -67,14 +81,12 @@ export function Account() {
                 path={`${getAccountLink()}/:key/:id?`}
                 render={(props) => {
                     const key = props.match.params.key;
-                    const matches = Menu.filter((item) => {
-                        return item.key === key;
-                    });
 
                     return (
                         <PageContent
-                            menu={matches.length > 0 ? matches[0] : null}
+                            menu={Menu.find((item) => item.key === key)}
                             redirectPath={getAccountLink()}
+                            {...props}
                         />
                     );
                 }}
@@ -83,6 +95,11 @@ export function Account() {
             <Route
                 exact={true}
                 path={`${getAccountLink()}`}
+                render={() => <Redirect to={{ pathname: `${getAccountLink()}/${Menu[0].key}` }} />}
+            />
+            <Route
+                exact={true}
+                path={`${baseURL}/`}
                 render={() => <Redirect to={{ pathname: `${getAccountLink()}/${Menu[0].key}` }} />}
             />
         </div>

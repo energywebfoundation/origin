@@ -1,6 +1,3 @@
-import React, { useState, useEffect } from 'react';
-import moment from 'moment';
-import { bigNumberify } from 'ethers/utils';
 import { ProducingDevice } from '@energyweb/device-registry';
 import {
     Button,
@@ -8,35 +5,43 @@ import {
     DialogActions,
     DialogContent,
     DialogTitle,
-    TextField,
+    FilledInput,
     FormControl,
     InputLabel,
-    FilledInput,
     MenuItem,
-    Select
+    Select,
+    TextField
 } from '@material-ui/core';
-import { useSelector, useDispatch } from 'react-redux';
+import { BigNumber } from 'ethers';
+import moment from 'moment';
+import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+
+import { requestPublishForSale, resyncCertificate } from '../../features/certificates';
+import { ICertificateViewItem } from '../../features/certificates/types';
 import { getCurrencies } from '../../features/general/selectors';
-import { formatDate, EnergyFormatter, countDecimals } from '../../utils';
-import { Certificate } from '@energyweb/issuer';
 import { getUserOffchain } from '../../features/users/selectors';
-import { requestPublishForSale } from '../../features/certificates';
+import { countDecimals, EnergyFormatter, formatDate } from '../../utils';
+import { getEnvironment } from '../../features';
+import { IEnvironment } from '../../features/general';
 
 interface IProps {
-    certificate: Certificate;
+    certificate: ICertificateViewItem;
     producingDevice: ProducingDevice.Entity;
     showModal: boolean;
     callback: () => void;
 }
-
-const DEFAULT_ENERGY_IN_BASE_UNIT = bigNumberify(1);
 
 export function PublishForSaleModal(props: IProps) {
     const { certificate, callback, producingDevice, showModal } = props;
 
     const currencies = useSelector(getCurrencies);
     const user = useSelector(getUserOffchain);
+    const environment: IEnvironment = useSelector(getEnvironment);
 
+    const DEFAULT_ENERGY_IN_BASE_UNIT = BigNumber.from(
+        Number(environment?.DEFAULT_ENERGY_IN_BASE_UNIT || 1)
+    );
     const [energyInDisplayUnit, setEnergyInDisplayUnit] = useState(
         EnergyFormatter.getValueInDisplayUnit(DEFAULT_ENERGY_IN_BASE_UNIT)
     );
@@ -70,7 +75,7 @@ export function PublishForSaleModal(props: IProps) {
     const isFormValid = validation.energyInDisplayUnit && validation.price;
 
     async function handleClose() {
-        await certificate.sync();
+        dispatch(resyncCertificate(certificate));
         callback();
     }
 
@@ -86,7 +91,9 @@ export function PublishForSaleModal(props: IProps) {
                 price: Math.round((parseFloat(price) + Number.EPSILON) * 100),
                 callback: () => {
                     handleClose();
-                }
+                },
+                source: certificate.source,
+                assetId: certificate.assetId
             })
         );
     }

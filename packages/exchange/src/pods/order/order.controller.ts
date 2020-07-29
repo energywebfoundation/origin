@@ -1,5 +1,5 @@
 import { ILoggedInUser } from '@energyweb/origin-backend-core';
-import { UserDecorator } from '@energyweb/origin-backend-utils';
+import { UserDecorator, ActiveUserGuard } from '@energyweb/origin-backend-utils';
 import {
     Body,
     ClassSerializerInterceptor,
@@ -30,7 +30,7 @@ export class OrderController {
     constructor(private readonly orderService: OrderService) {}
 
     @Post('bid')
-    @UseGuards(AuthGuard())
+    @UseGuards(AuthGuard(), ActiveUserGuard)
     public async createBid(
         @UserDecorator() user: ILoggedInUser,
         @Body() newOrder: CreateBidDTO
@@ -38,7 +38,7 @@ export class OrderController {
         this.logger.log(`Creating new order ${JSON.stringify(newOrder)}`);
 
         try {
-            const order = await this.orderService.createBid(user.id.toString(), newOrder);
+            const order = await this.orderService.createBid(user.ownerId, newOrder);
             return order;
         } catch (error) {
             this.logger.error(error.message);
@@ -48,7 +48,7 @@ export class OrderController {
     }
 
     @Post('ask')
-    @UseGuards(AuthGuard())
+    @UseGuards(AuthGuard(), ActiveUserGuard)
     public async createAsk(
         @UserDecorator() user: ILoggedInUser,
         @Body() newOrder: CreateAskDTO
@@ -56,7 +56,7 @@ export class OrderController {
         this.logger.log(`Creating new order ${JSON.stringify(newOrder)}`);
 
         try {
-            const order = await this.orderService.createAsk(user.id.toString(), newOrder);
+            const order = await this.orderService.createAsk(user.ownerId, newOrder);
             return order;
         } catch (error) {
             this.logger.error(error.message);
@@ -66,7 +66,7 @@ export class OrderController {
     }
 
     @Post('ask/buy')
-    @UseGuards(AuthGuard())
+    @UseGuards(AuthGuard(), ActiveUserGuard)
     public async directBuy(
         @UserDecorator() user: ILoggedInUser,
         @Body() directBuy: DirectBuyDTO
@@ -74,7 +74,7 @@ export class OrderController {
         this.logger.log(`Creating new direct order ${JSON.stringify(directBuy)}`);
 
         try {
-            const order = await this.orderService.createDirectBuy(user.id.toString(), directBuy);
+            const order = await this.orderService.createDirectBuy(user.ownerId, directBuy);
             return order;
         } catch (error) {
             this.logger.error(error.message);
@@ -84,30 +84,30 @@ export class OrderController {
     }
 
     @Get()
-    @UseGuards(AuthGuard())
+    @UseGuards(AuthGuard(), ActiveUserGuard)
     public async getOrders(@UserDecorator() user: ILoggedInUser): Promise<Order[]> {
-        const orders = await this.orderService.getAllOrders(user.id.toString());
+        const orders = await this.orderService.getAllOrders(user.ownerId);
         return orders;
     }
 
     @Get('/:id')
-    @UseGuards(AuthGuard())
+    @UseGuards(AuthGuard(), ActiveUserGuard)
     public async getOrder(
         @UserDecorator() user: ILoggedInUser,
         @Param('id', new ParseUUIDPipe({ version: '4' })) orderId: string
     ) {
-        const order = await this.orderService.findOne(user.id.toString(), orderId);
+        const order = await this.orderService.findOne(user.ownerId, orderId);
         return order;
     }
 
     @Post('/:id/cancel')
-    @UseGuards(AuthGuard())
+    @UseGuards(AuthGuard(), ActiveUserGuard)
     @HttpCode(202)
     public async cancelOrder(
         @UserDecorator() user: ILoggedInUser,
         @Param('id', new ParseUUIDPipe({ version: '4' })) orderId: string
     ) {
-        const order = await this.orderService.cancelOrder(user.id.toString(), orderId);
+        const order = await this.orderService.cancelOrder(user.ownerId, orderId);
         return order;
     }
 }

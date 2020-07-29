@@ -1,8 +1,8 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { showNotification, NotificationType } from '../../utils/notifications';
 import { useSelector, useDispatch } from 'react-redux';
 import { TableMaterial } from '../Table/TableMaterial';
-import { DeleteOutline } from '@material-ui/icons';
+import { DeleteOutline, PermIdentityOutlined } from '@material-ui/icons';
 import { getUserOffchain } from '../../features/users/selectors';
 import { setLoading } from '../../features/general/actions';
 import { getOffChainDataSource } from '../../features/general/selectors';
@@ -10,17 +10,31 @@ import {
     IPaginatedLoaderHooksFetchDataParameters,
     usePaginatedLoader
 } from '../Table/PaginatedLoaderHooks';
-import { IUser } from '@energyweb/origin-backend-core';
+import {
+    IUser,
+    getRolesFromRights,
+    isRole,
+    Role,
+    UserStatus
+} from '@energyweb/origin-backend-core';
+import { roleNames } from './Organization';
+import { useTranslation } from '../../utils';
+import { ChangeRoleModal } from '../Modal/ChangeRoleModal';
 
 interface IRecord {
     user: IUser;
 }
 
 export function OrganizationUsersTable() {
+    const { t } = useTranslation();
+
     const organizationClient = useSelector(getOffChainDataSource)?.organizationClient;
     const userOffchain = useSelector(getUserOffchain);
 
     const dispatch = useDispatch();
+
+    const [selectedUser, setSelectedUser] = useState<IUser>(null);
+    const [showUserRoleChangeModal, setShowUserRoleChangeModal] = useState(false);
 
     async function getPaginatedData({
         requestedPageSize,
@@ -32,8 +46,20 @@ export function OrganizationUsersTable() {
                 total: 0
             };
         }
-
-        const entities = await organizationClient.getMembers(userOffchain.organization.id);
+        let entities = [];
+        try {
+            entities = await organizationClient.getMembers(userOffchain.organization.id);
+        } catch (error) {
+            const _error = { ...error };
+            if (_error.response.status === 412) {
+                showNotification(
+                    `Only active users can perform this action. Your status is ${
+                        UserStatus[userOffchain.status]
+                    }`,
+                    NotificationType.Error
+                );
+            }
+        }
 
         let newPaginatedData: IRecord[] = entities.map((i) => ({
             user: i
@@ -84,36 +110,70 @@ export function OrganizationUsersTable() {
         dispatch(setLoading(false));
     }
 
+    async function changeRole(rowIndex: number) {
+        const user = paginatedData[rowIndex]?.user;
+
+        if (!isRole(userOffchain, Role.OrganizationAdmin)) {
+            showNotification(`Only the Admin can change user roles.`, NotificationType.Error);
+            return;
+        }
+
+        setSelectedUser(user);
+        setShowUserRoleChangeModal(true);
+    }
+
+    async function changeRoleCallback() {
+        setShowUserRoleChangeModal(false);
+        await loadPage(1);
+    }
+
     const actions = [
         {
             icon: <DeleteOutline />,
             name: 'Remove',
             onClick: (index: string) => remove(parseInt(index, 10))
+        },
+        {
+            icon: <PermIdentityOutlined />,
+            name: 'Edit Role',
+            onClick: (index: string) => changeRole(parseInt(index, 10))
         }
     ];
 
     const columns = [
         { id: 'firstName', label: 'First name' },
         { id: 'lastName', label: 'Last name' },
-        { id: 'email', label: 'Email' }
-    ] as const;
+        { id: 'email', label: 'Email' },
+        { id: 'role', label: 'Role' }
+    ];
 
     const rows = paginatedData.map(({ user }) => {
         return {
             firstName: user.firstName,
             lastName: user.lastName,
-            email: user.email
+            email: user.email,
+            role: getRolesFromRights(user.rights)
+                .map((roleValue) => t(roleNames[roleValue]))
+                .join(', ')
         };
     });
 
     return (
-        <TableMaterial
-            columns={columns}
-            rows={rows}
-            loadPage={loadPage}
-            total={total}
-            pageSize={pageSize}
-            actions={actions}
-        />
+        <>
+            <TableMaterial
+                columns={columns}
+                rows={rows}
+                loadPage={loadPage}
+                total={total}
+                pageSize={pageSize}
+                actions={actions}
+            />
+
+            <ChangeRoleModal
+                user={selectedUser}
+                showModal={showUserRoleChangeModal}
+                callback={changeRoleCallback}
+            />
+        </>
     );
 }

@@ -3,6 +3,76 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.1.6](https://github.com/energywebfoundation/origin/compare/@energyweb/migrations@3.1.5...@energyweb/migrations@3.1.6) (2020-07-16)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @types/pg to v7.14.4 ([f19fa0a](https://github.com/energywebfoundation/origin/commit/f19fa0a4af83d2fea010d090abdf072f69ed092d))
+* **deps:** update dependency pg to v8.3.0 ([77f0365](https://github.com/energywebfoundation/origin/commit/77f0365b3df44e3b8306b7f75b8f28080b5d63e3))
+
+
+
+
+
+## [3.1.5](https://github.com/energywebfoundation/origin/compare/@energyweb/migrations@3.1.4...@energyweb/migrations@3.1.5) (2020-07-08)
+
+
+### Bug Fixes
+
+* **deps:** update dependency winston to v3.3.0 ([12f111e](https://github.com/energywebfoundation/origin/commit/12f111ed16274e40d9ccbb4c3d6f9d8d222cb2fe))
+* **deps:** update dependency winston to v3.3.3 ([d66ad8e](https://github.com/energywebfoundation/origin/commit/d66ad8e4f8f65a8c6bed6ec95303a175771ed230))
+
+
+
+
+
+## [3.1.4](https://github.com/energywebfoundation/origin/compare/@energyweb/migrations@3.1.3...@energyweb/migrations@3.1.4) (2020-06-16)
+
+**Note:** Version bump only for package @energyweb/migrations
+
+
+
+
+
+## [3.1.3](https://github.com/energywebfoundation/origin/compare/@energyweb/migrations@3.1.2...@energyweb/migrations@3.1.3) (2020-06-16)
+
+
+### Bug Fixes
+
+* **migrations:** make the Issuer user automatically Active ([64ad76a](https://github.com/energywebfoundation/origin/commit/64ad76a80b33185e4f66b466f965b5594c413cf9))
+
+
+
+
+
+## [3.1.2](https://github.com/energywebfoundation/origin/compare/@energyweb/migrations@3.1.1...@energyweb/migrations@3.1.2) (2020-05-29)
+
+
+### Bug Fixes
+
+* **deps:** update dependency pg to v8.2.1 ([bf0f299](https://github.com/energywebfoundation/origin/commit/bf0f299569a71b7608f5ecafd4b4d8278155a60e))
+* **migrations:** build dependencies ([8c0ae6d](https://github.com/energywebfoundation/origin/commit/8c0ae6d65d043e1cf57f331efa94f08bdc98a4c7))
+
+
+
+
+
+## [3.1.1](https://github.com/energywebfoundation/origin/compare/@energyweb/migrations@3.1.0...@energyweb/migrations@3.1.1) (2020-05-15)
+
+
+### Bug Fixes
+
+* **migrations:** workaround tslib issue ([60b0551](https://github.com/energywebfoundation/origin/commit/60b055199d7fd873178b48f4b396fcd13149bc35))
+* add resolution for tslib ([5fb358f](https://github.com/energywebfoundation/origin/commit/5fb358ffe444708ccb5a5b416968fc9f6b12d9a8))
+* **migrations:** build dependencies ([3a95f34](https://github.com/energywebfoundation/origin/commit/3a95f34a7eaebb8a8dfc4ee7015696a2a07e13ad))
+* **migrations:** remove autopublish from seed.sql ([02f2e88](https://github.com/energywebfoundation/origin/commit/02f2e88a504e1fac79d4b526f954138779fd14e6))
+* **migrations:** remove autopublish from seed.sql ([0d05f3c](https://github.com/energywebfoundation/origin/commit/0d05f3c658835244c1f4012395daddc458452461))
+
+
+
+
+
 # [3.1.0](https://github.com/energywebfoundation/origin/compare/@energyweb/migrations@3.0.0...@energyweb/migrations@3.1.0) (2020-04-24)
 
 

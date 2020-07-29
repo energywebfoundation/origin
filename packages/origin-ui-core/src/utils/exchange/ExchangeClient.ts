@@ -1,4 +1,5 @@
-import { IRequestClient, RequestClient } from '@energyweb/origin-backend-client';
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import { RequestClient } from '@energyweb/origin-backend-client';
 import {
     TOrderBook,
     CreateAskDTO,
@@ -10,9 +11,14 @@ import {
     Order,
     IAsset,
     IDirectBuyDTO,
-    IOrder
+    IOrder,
+    RequestWithdrawalDTO,
+    Bundle,
+    CreateBundleDTO
 } from '.';
-import { Filter } from '@energyweb/exchange-core';
+import { Filter, OrderStatus } from '@energyweb/exchange-core';
+import { BundleSplits } from './types';
+import { IRequestClient } from '@energyweb/origin-backend-core';
 
 export interface IExchangeClient {
     search(
@@ -24,14 +30,23 @@ export interface IExchangeClient {
     ): Promise<TOrderBook>;
     createAsk(data: CreateAskDTO): Promise<IOrder>;
     createBid(data: CreateBidDTO): Promise<IOrder>;
-    directBuy(data: IDirectBuyDTO): Promise<IOrder>;
+    directBuy(data: IDirectBuyDTO): Promise<{ success: boolean; status: OrderStatus }>;
     getAccount(): Promise<ExchangeAccount>;
     getAllTransfers(): Promise<ITransfer[]>;
+    withdraw(withdrawal: RequestWithdrawalDTO): Promise<string>;
     getTrades(): Promise<ITradeDTO[]>;
     getAssetById(id: string): Promise<IAsset>;
     getOrderById(id: string): Promise<Order>;
     getOrders?(): Promise<Order[]>;
+    cancelOrder(order: Order): Promise<Order>;
+    getAvailableBundles(): Promise<Bundle[]>;
+    getOwnBundles(): Promise<Bundle[]>;
+    getBundleSplits(bundle: Bundle): Promise<BundleSplits>;
+    createBundle(bundle: CreateBundleDTO): Promise<Bundle>;
+    cancelBundle(id: string): Promise<Bundle>;
 }
+
+const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 export class ExchangeClient implements IExchangeClient {
     // eslint-disable-next-line no-useless-constructor
@@ -94,44 +109,123 @@ export class ExchangeClient implements IExchangeClient {
         return response.data;
     }
 
-    public async directBuy(data: IDirectBuyDTO): Promise<IOrder> {
+    public async directBuy(
+        data: IDirectBuyDTO
+    ): Promise<{ success: boolean; status: OrderStatus }> {
         const response = await this.requestClient.post<IDirectBuyDTO, IOrder>(
             `${this.ordersEndpoint}/ask/buy`,
             data
         );
 
-        return response.data;
+        await sleep(Number(process.env.EXCHANGE_MATCHING_INTERVAL) || 1000);
+
+        const { status } = await this.getOrderById(response.data.id);
+
+        return {
+            success: status === OrderStatus.Filled,
+            status
+        };
     }
 
     public async getAccount() {
-        const response = await this.requestClient.get<{}, ExchangeAccount>(this.accountEndpoint);
+        const response = await this.requestClient.get<unknown, ExchangeAccount>(
+            this.accountEndpoint
+        );
 
         return response.data;
     }
 
     public async getAllTransfers() {
-        const response = await this.requestClient.get<{}, ITransfer[]>(
+        const response = await this.requestClient.get<unknown, ITransfer[]>(
             `${this.transferEndpoint}/all`
         );
 
         return response.data;
     }
 
+    public async withdraw(withdrawal: RequestWithdrawalDTO) {
+        const response = await this.requestClient.post<unknown, string>(
+            `${this.transferEndpoint}/withdrawal`,
+            withdrawal
+        );
+
+        return response.data;
+    }
+
     public async getTrades() {
-        const response = await this.requestClient.get<{}, ITradeDTO[]>(this.tradeEndpoint);
+        const response = await this.requestClient.get<unknown, ITradeDTO[]>(this.tradeEndpoint);
 
         return response.data;
     }
 
     public async getAssetById(id: string) {
-        const response = await this.requestClient.get<{}, IAsset>(`${this.assetEndpoint}/${id}`);
+        const response = await this.requestClient.get<unknown, IAsset>(
+            `${this.assetEndpoint}/${id}`
+        );
 
         return response.data;
     }
 
     public async getOrderById(id: string) {
-        const response = await this.requestClient.get<{}, Order>(`${this.ordersEndpoint}/${id}`);
+        const response = await this.requestClient.get<unknown, Order>(
+            `${this.ordersEndpoint}/${id}`
+        );
 
+        return response.data;
+    }
+
+    public async getAvailableBundles(): Promise<Bundle[]> {
+        const response = await this.requestClient.get<unknown, Bundle[]>(
+            `${this.bundleEndpoint}/available`
+        );
+
+        return response.data;
+    }
+
+    public async getOwnBundles(): Promise<Bundle[]> {
+        const response = await this.requestClient.get<unknown, Bundle[]>(`${this.bundleEndpoint}`);
+
+        return response.data;
+    }
+
+    public async cancelBundle(id: string): Promise<Bundle> {
+        const response = await this.requestClient.put<unknown, Bundle>(
+            `${this.bundleEndpoint}/${id}/cancel`
+        );
+
+        return response.data;
+    }
+
+    public async getBundleSplits(bundle: Bundle): Promise<BundleSplits> {
+        const response = await this.requestClient.get<Bundle, BundleSplits>(
+            `${this.bundleEndpoint}/${bundle.id}/splits`
+        );
+
+        return response.data;
+    }
+
+    public async createBundle(bundleDTO: CreateBundleDTO): Promise<Bundle> {
+        const created = await this.requestClient.post<CreateBundleDTO, Bundle>(
+            this.bundleEndpoint,
+            bundleDTO
+        );
+        return created.data;
+    }
+
+    public async buyBundle(bundle: { bundleId: string; volume: number }): Promise<any> {
+        const bundleTrade = await this.requestClient.post(`${this.bundleEndpoint}/buy`, bundle);
+        return bundleTrade.data;
+    }
+
+    public async getOrders(): Promise<Order[]> {
+        const orders = await this.requestClient.get<unknown, Order[]>(this.ordersEndpoint);
+        return orders.data;
+    }
+
+    public async cancelOrder(order: Order): Promise<Order> {
+        const response = await this.requestClient.post<unknown, Order>(
+            `${this.ordersEndpoint}/${order.id}/cancel`
+        );
         return response.data;
     }
 
@@ -157,6 +251,10 @@ export class ExchangeClient implements IExchangeClient {
 
     private get tradeEndpoint() {
         return `${this.dataApiUrl}/trade`;
+    }
+
+    private get bundleEndpoint() {
+        return `${this.dataApiUrl}/bundle`;
     }
 }
 
@@ -225,15 +323,10 @@ export const ExchangeClientMock: IExchangeClient = {
     },
 
     async directBuy() {
-        return ({
-            id: '',
-            price: 0,
-            userId: '',
-            product: null,
-            side: 0,
-            validFrom: '',
-            volume: ''
-        } as Partial<IOrder>) as IOrder;
+        return {
+            success: true,
+            status: OrderStatus.Filled
+        };
     },
 
     async createAsk() {
@@ -257,6 +350,38 @@ export const ExchangeClientMock: IExchangeClient = {
     },
 
     async getOrderById() {
+        return null;
+    },
+
+    async withdraw() {
+        return null;
+    },
+
+    getAvailableBundles() {
+        return null;
+    },
+
+    getOwnBundles() {
+        return null;
+    },
+
+    createBundle(bundle: CreateBundleDTO) {
+        return null;
+    },
+
+    cancelBundle(id: string) {
+        return null;
+    },
+
+    getBundleSplits(bundle: Bundle) {
+        return null;
+    },
+
+    getOrders() {
+        return null;
+    },
+
+    cancelOrder(order: Order) {
         return null;
     }
 };

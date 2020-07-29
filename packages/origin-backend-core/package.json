@@ -1,11 +1,11 @@
 {
     "name": "@energyweb/origin-backend-core",
-    "version": "2.2.0",
+    "version": "4.2.0",
     "description": "",
     "main": "dist/js/src/index.js",
     "scripts": {
         "build": "yarn build:ts",
-        "build:ts": "tsc -b tsconfig.build.json --verbose --pretty",
+        "build:ts": "tsc -b tsconfig.json",
         "clean": "shx rm -rf dist",
         "lint": "eslint \"src/**/*{.ts,.tsx}\"",
         "lint-fix": "eslint \"src/**/*{.ts,.tsx}\" --fix",
@@ -28,7 +28,10 @@
         "registry": "https://registry.npmjs.org"
     },
     "dependencies": {
-        "ethers": "4.0.47",
-        "precise-proofs-js": "1.1.0"
+        "axios": "0.19.2",
+        "class-transformer": "0.2.3",
+        "class-validator": "0.12.2",
+        "ethers": "5.0.7",
+        "precise-proofs-js": "1.2.0"
     }
 }

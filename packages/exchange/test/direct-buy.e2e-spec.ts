@@ -1,4 +1,5 @@
 import { INestApplication } from '@nestjs/common';
+import { expect } from 'chai';
 import request from 'supertest';
 
 import { AccountService } from '../src/pods/account/account.service';
@@ -14,8 +15,6 @@ import { bootstrapTestInstance } from './exchange';
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 describe('DirectBuy orders tests', () => {
-    jest.setTimeout(10000);
-
     let app: INestApplication;
     let transferService: TransferService;
     let databaseService: DatabaseService;
@@ -41,7 +40,7 @@ describe('DirectBuy orders tests', () => {
         });
     };
 
-    beforeAll(async () => {
+    before(async () => {
         ({
             transferService,
             accountService,
@@ -53,7 +52,7 @@ describe('DirectBuy orders tests', () => {
         await app.init();
     });
 
-    afterAll(async () => {
+    after(async () => {
         await databaseService.cleanUp();
         await app.close();
     });
@@ -95,11 +94,9 @@ describe('DirectBuy orders tests', () => {
             .expect((res) => {
                 createdDirectBuyOrder = res.body as Order;
 
-                console.log(createdDirectBuyOrder);
-
-                expect(createdDirectBuyOrder.type).toBe(OrderType.Direct);
-                expect(createdDirectBuyOrder.price).toBe(directBuyOrder.price);
-                expect(createdDirectBuyOrder.startVolume).toBe(directBuyOrder.volume);
+                expect(createdDirectBuyOrder.type).equals(OrderType.Direct);
+                expect(createdDirectBuyOrder.price).equals(directBuyOrder.price);
+                expect(createdDirectBuyOrder.startVolume).equals(directBuyOrder.volume);
             });
 
         await sleep(5000);
@@ -111,10 +108,9 @@ describe('DirectBuy orders tests', () => {
                 const trades = res.body as TradeDTO[];
                 const [trade] = trades;
 
-                expect(trades).toBeDefined();
-                expect(trades).toHaveLength(1);
-                expect(trade.bidId).toBe(createdDirectBuyOrder.id);
-                expect(trade.volume).toBe(createdDirectBuyOrder.startVolume);
+                expect(trades).to.have.length(1);
+                expect(trade.bidId).equals(createdDirectBuyOrder.id);
+                expect(trade.volume).equals(createdDirectBuyOrder.startVolume);
             });
     });
 });

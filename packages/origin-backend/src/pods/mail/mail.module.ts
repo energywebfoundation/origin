@@ -1,9 +1,11 @@
-import { Module } from '@nestjs/common';
 import { HandlebarsAdapter, MailerModule } from '@nestjs-modules/mailer';
-import mandrillTransport from 'nodemailer-mandrill-transport';
+import { Module } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+
 import { MailService } from './mail.service';
 
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const mandrillTransport = require('nodemailer-mandrill-transport');
 @Module({
     imports: [
         MailerModule.forRootAsync({
@@ -13,9 +15,9 @@ import { MailService } from './mail.service';
                         auth: {
                             apiKey: configService.get<string>('MANDRILL_API_KEY')
                         },
-                        // eslint-disable-next-line @typescript-eslint/camelcase
+                        // eslint-disable-next-line camelcase
                         from_email: configService.get<string>('EMAIL_FROM'),
-                        // eslint-disable-next-line @typescript-eslint/camelcase
+                        // eslint-disable-next-line camelcase
                         from_name: configService.get<string>('EMAIL_FROM_NAME'),
                         headers: {
                             'Reply-To': configService.get<string>('EMAIL_REPLY_TO')

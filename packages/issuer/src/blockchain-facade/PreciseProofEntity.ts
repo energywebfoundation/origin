@@ -4,7 +4,8 @@ import {
     IOwnershipCommitmentProof,
     IOwnershipCommitment,
     CommitmentStatus,
-    IOwnershipCommitmentProofWithTx
+    IOwnershipCommitmentProofWithTx,
+    IOwnershipCommitmentStatus
 } from '@energyweb/origin-backend-core';
 
 export interface IOnChainProperties {
@@ -33,23 +34,25 @@ export abstract class PreciseProofEntity implements IOnChainProperties {
         return this.configuration.offChainDataSource.certificateClient;
     }
 
-    async saveCommitment(proof: IOwnershipCommitmentProofWithTx): Promise<CommitmentStatus> {
-        const commitmentStatus = await this.certificateClient.addOwnershipCommitment(
-            this.id,
-            proof
-        );
+    async saveCommitment(
+        proof: IOwnershipCommitmentProofWithTx
+    ): Promise<IOwnershipCommitmentStatus> {
+        const status = await this.certificateClient.addOwnershipCommitment(this.id, proof);
 
         if (this.configuration.logger) {
-            if (commitmentStatus === CommitmentStatus.REJECTED) {
+            if (status === CommitmentStatus.REJECTED) {
                 this.configuration.logger.error('Unable to save the commitment. Rejected.');
-            } else if (commitmentStatus === CommitmentStatus.CURRENT) {
+            } else if (status === CommitmentStatus.CURRENT) {
                 this.configuration.logger.verbose(
                     `Commitment saved to for Certificate #${this.id}`
                 );
             }
         }
 
-        return commitmentStatus;
+        return {
+            proof,
+            status
+        };
     }
 
     async getCommitment(): Promise<IOwnershipCommitmentProofWithTx> {
@@ -64,22 +67,6 @@ export abstract class PreciseProofEntity implements IOnChainProperties {
 
         if (this.configuration.logger) {
             this.configuration.logger.verbose(`Got commitment for Certificate #${this.id}`);
-        }
-
-        return proof;
-    }
-
-    async getPendingTransferCommitment(): Promise<IOwnershipCommitmentProofWithTx> {
-        const proof = await this.certificateClient.getPendingOwnershipCommitment(this.id);
-
-        if (!proof) {
-            throw new Error('getCommitment(): Not found.');
-        }
-
-        if (this.configuration.logger) {
-            this.configuration.logger.verbose(
-                `Got pending transfer commitment for Certificate #${this.id}`
-            );
         }
 
         return proof;

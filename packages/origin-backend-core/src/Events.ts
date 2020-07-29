@@ -1,5 +1,6 @@
 import { DeviceStatus } from './Device';
 import { OrganizationStatus } from './Organization';
+import { Role } from './User';
 
 export type NewEvent = Omit<IEvent, 'timestamp'>;
 
@@ -50,7 +51,19 @@ export type OrganizationRemovedMemberEvent = {
     email: string;
 };
 
+export type OrganizationMemberChangedRoleEvent = {
+    organizationName: string;
+    newRole: Role;
+    email: string;
+};
+
+export type ConfirmEmailEvent = {
+    email: string;
+    token: string;
+};
+
 export enum SupportedEvents {
+    CONFIRM_EMAIL = 'ConfirmEmail',
     DEVICE_STATUS_CHANGED = 'DeviceStatusChanged',
     CREATE_NEW_DEMAND = 'CreatedNewDemand',
     DEMAND_UPDATED = 'DemandUpdated',
@@ -58,10 +71,12 @@ export enum SupportedEvents {
     ORGANIZATION_STATUS_CHANGED = 'OrganizationStatusChanged',
     ORGANIZATION_INVITATION = 'OrganizationInvitation',
     ORGANIZATION_REMOVED_MEMBER = 'OrganizationRemovedMember',
+    ORGANIZATION_MEMBER_CHANGED_ROLE = 'OrganizationMemberChangedRole',
     USER_STATUS_CHANGED = 'UserStatusChanged'
 }
 
 export type SupportedEventData =
+    | ConfirmEmailEvent
     | UserStatusChangedEvent
     | DeviceStatusChangedEvent
     | CreatedNewDemand
@@ -69,4 +84,5 @@ export type SupportedEventData =
     | DemandPartiallyFilledEvent
     | OrganizationStatusChangedEvent
     | OrganizationInvitationEvent
-    | OrganizationRemovedMemberEvent;
+    | OrganizationRemovedMemberEvent
+    | OrganizationMemberChangedRoleEvent;

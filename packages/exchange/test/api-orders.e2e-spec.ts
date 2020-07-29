@@ -1,18 +1,20 @@
 import { INestApplication } from '@nestjs/common';
-import { ethers } from 'ethers';
+import { expect } from 'chai';
+import { ethers, Contract } from 'ethers';
 import request from 'supertest';
+import { OrderStatus } from '@energyweb/exchange-core';
 
 import { AccountDTO } from '../src/pods/account/account.dto';
 import { AccountService } from '../src/pods/account/account.service';
 import { CreateAskDTO } from '../src/pods/order/create-ask.dto';
 import { CreateBidDTO } from '../src/pods/order/create-bid.dto';
-import { OrderStatus } from '../src/pods/order/order-status.enum';
 import { Order } from '../src/pods/order/order.entity';
 import { RequestWithdrawalDTO } from '../src/pods/transfer/create-withdrawal.dto';
 import { Transfer } from '../src/pods/transfer/transfer.entity';
 import { TransferService } from '../src/pods/transfer/transfer.service';
 import { DatabaseService } from './database.service';
-import { bootstrapTestInstance } from './exchange';
+import { authenticatedUser, bootstrapTestInstance } from './exchange';
+import { issueToken } from './utils';
 
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -21,8 +23,9 @@ describe('account ask order send', () => {
     let transferService: TransferService;
     let databaseService: DatabaseService;
     let accountService: AccountService;
+    let issuer: Contract;
 
-    const user1Id = '1';
+    const user1Id = authenticatedUser.organization;
     const dummyAsset = {
         address: '0x9876',
         tokenId: '0',
@@ -47,13 +50,18 @@ describe('account ask order send', () => {
         return transferService.setAsConfirmed(transactionHash, 10000);
     };
 
-    beforeAll(async () => {
-        ({ transferService, accountService, databaseService, app } = await bootstrapTestInstance());
-
+    before(async () => {
+        ({
+            transferService,
+            accountService,
+            databaseService,
+            app,
+            issuer
+        } = await bootstrapTestInstance());
         await app.init();
     });
 
-    afterAll(async () => {
+    after(async () => {
         await databaseService.cleanUp();
         await app.close();
     });
@@ -98,13 +106,13 @@ describe('account ask order send', () => {
             .expect((res) => {
                 const order = res.body as Order;
 
-                expect(order.price).toBe(100);
-                expect(order.startVolume).toBe('100');
-                expect(order.assetId).toBe(deposit.asset.id);
-                expect(new Date(order.product.generationFrom)).toStrictEqual(
+                expect(order.price).equals(100);
+                expect(order.startVolume).equals('100');
+                expect(order.assetId).equals(deposit.asset.id);
+                expect(new Date(order.product.generationFrom)).deep.equals(
                     dummyAsset.generationFrom
                 );
-                expect(new Date(order.product.generationTo)).toStrictEqual(dummyAsset.generationTo);
+                expect(new Date(order.product.generationTo)).deep.equals(dummyAsset.generationTo);
             });
     });
 
@@ -148,16 +156,32 @@ describe('account ask order send', () => {
     });
 
     it('should be able to withdraw after confirming deposit', async () => {
-        jest.setTimeout(10000);
+        const { generationFrom, generationTo } = dummyAsset;
 
-        await confirmDeposit();
-
+        const certificateId = await issueToken(
+            issuer,
+            user1Address,
+            amount,
+            generationFrom.getTime(),
+            generationTo.getTime()
+        );
+        const asset = {
+            ...dummyAsset,
+            tokenId: String(certificateId)
+        };
+        const txHash = '0x001';
+        const dep = await transferService.createDeposit({
+            address: user1Address,
+            transactionHash: txHash,
+            amount,
+            asset
+        });
+        await transferService.setAsConfirmed(txHash, 10000);
         const withdrawal: RequestWithdrawalDTO = {
-            assetId: deposit.asset.id,
+            assetId: dep.asset.id,
             amount,
             address: withdrawalAddress
         };
-
         await request(app.getHttpServer())
             .post('/transfer/withdrawal')
             .send(withdrawal)
@@ -169,12 +193,8 @@ describe('account ask order send', () => {
             .expect((res) => {
                 const account = res.body as AccountDTO;
 
-                expect(account.address).toBe(user1Address);
-                expect(account.balances.available.length).toBe(1);
-                expect(account.balances.available[0].amount).toEqual('0');
-                expect(account.balances.available[0].asset).toMatchObject(
-                    JSON.parse(JSON.stringify(dummyAsset))
-                );
+                expect(account.address).equals(user1Address);
+                expect(account.balances.available.length).equals(0);
             });
 
         // wait to withdrawal to be finished to not mess with tx nonces
@@ -200,9 +220,9 @@ describe('account ask order send', () => {
             .expect((res) => {
                 order = res.body as Order;
 
-                expect(order.price).toBe(100);
-                expect(order.startVolume).toBe(volume);
-                expect(order.status).toBe(OrderStatus.Active);
+                expect(order.price).equals(100);
+                expect(order.startVolume).equals(volume);
+                expect(order.status).equals(OrderStatus.Active);
             });
 
         await request(app.getHttpServer())
@@ -211,8 +231,8 @@ describe('account ask order send', () => {
             .expect((res) => {
                 const cancelled = res.body as Order;
 
-                expect(cancelled.id).toBe(order.id);
-                expect(cancelled.status).toBe(OrderStatus.PendingCancellation);
+                expect(cancelled.id).equals(order.id);
+                expect(cancelled.status).equals(OrderStatus.PendingCancellation);
             });
 
         await sleep(3000);
@@ -223,8 +243,8 @@ describe('account ask order send', () => {
             .expect((res) => {
                 const cancelled = res.body as Order;
 
-                expect(cancelled.id).toBe(order.id);
-                expect(cancelled.status).toBe(OrderStatus.Cancelled);
+                expect(cancelled.id).equals(order.id);
+                expect(cancelled.status).equals(OrderStatus.Cancelled);
             });
     });
 });

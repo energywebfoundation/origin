@@ -1,13 +1,20 @@
 import {
     UserLoginReturnData,
-    UserRegisterData,
+    UserRegistrationData,
     IUser,
     IUserWithRelationsIds,
-    IUserProperties
+    IUserProperties,
+    UserStatus,
+    KYCStatus,
+    Role,
+    UserPasswordUpdate,
+    IUserWithRelations,
+    IEmailConfirmationToken,
+    EmailConfirmationResponse,
+    ISuccessResponse,
+    IUserClient
 } from '@energyweb/origin-backend-core';
 import { recoverTypedSignatureAddress } from '@energyweb/utils-general';
-
-import { IUserClient } from '@energyweb/origin-backend-client';
 
 export class UserClientMock implements IUserClient {
     private storage = new Map<number, IUserWithRelationsIds>();
@@ -23,7 +30,7 @@ export class UserClientMock implements IUserClient {
         throw new Error('Method not implemented.');
     }
 
-    async register(data: UserRegisterData): Promise<IUser> {
+    async register(data: UserRegistrationData): Promise<IUser> {
         this.userIdCounter++;
 
         const user: IUserWithRelationsIds = {
@@ -32,7 +39,10 @@ export class UserClientMock implements IUserClient {
             organization: null,
             blockchainAccountAddress: '',
             blockchainAccountSignedMessage: '',
-            notifications: false
+            notifications: false,
+            rights: Role.OrganizationAdmin,
+            status: UserStatus.Pending,
+            kycStatus: KYCStatus.Pending
         };
 
         this.storage.set(this.userIdCounter, user);
@@ -52,24 +62,7 @@ export class UserClientMock implements IUserClient {
         return this.storage.get(Number(id));
     }
 
-    async getUserByBlockchainAccount(
-        blockchainAccountAddress: string
-    ): Promise<IUserWithRelationsIds> {
-        const storedUsers = this.storage.values();
-
-        for (const user of storedUsers) {
-            if (
-                user.blockchainAccountAddress?.toLowerCase() ===
-                blockchainAccountAddress?.toLowerCase()
-            ) {
-                return user;
-            }
-        }
-
-        return null;
-    }
-
-    async attachSignedMessage(id: number, signedMessage: string): Promise<any> {
+    async attachSignedMessage(signedMessage: string, id?: number): Promise<any> {
         const address = await recoverTypedSignatureAddress(
             process.env.REGISTRATION_MESSAGE_TO_SIGN ?? 'I register as Origin user',
             signedMessage
@@ -85,8 +78,8 @@ export class UserClientMock implements IUserClient {
     }
 
     async updateAdditionalProperties(
-        id: number,
-        properties: Partial<Pick<IUserProperties, 'notifications'>>
+        properties: Partial<Pick<IUserProperties, 'notifications'>>,
+        id?: number
     ): Promise<any> {
         const user = this.storage.get(id);
 
@@ -94,5 +87,25 @@ export class UserClientMock implements IUserClient {
             ...user,
             ...properties
         });
+    }
+
+    updateProfile(formData: IUser): Promise<IUserWithRelations> {
+        throw new Error('Method not implemented.');
+    }
+
+    updatePassword(formData: UserPasswordUpdate): Promise<IUserWithRelations> {
+        throw new Error('Method not implemented.');
+    }
+
+    updateChainAddress(formData: IUser): Promise<IUserWithRelations> {
+        throw new Error('Method not implemented.');
+    }
+
+    confirmEmail(token: IEmailConfirmationToken['token']): Promise<EmailConfirmationResponse> {
+        throw new Error('Method not implemented.');
+    }
+
+    requestConfirmationEmail(): Promise<ISuccessResponse> {
+        throw new Error('Method not implemented.');
     }
 }

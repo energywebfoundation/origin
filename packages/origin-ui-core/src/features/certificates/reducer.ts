@@ -2,9 +2,10 @@ import { Certificate } from '@energyweb/issuer';
 import { CertificatesActions, ICertificatesAction, ICertificateFetcher } from './actions';
 import { ProducingDevice } from '@energyweb/device-registry';
 import { IStoreState } from '../../types';
+import { ICertificateViewItem } from '.';
 
 export interface ICertificatesState {
-    certificates: Certificate[];
+    certificates: ICertificateViewItem[];
     requestCertificatesModal: {
         visible: boolean;
         producingDevice: ProducingDevice.Entity;
@@ -31,8 +32,8 @@ const defaultState: ICertificatesState = {
     fetcher
 };
 
-function certificateExists(state: ICertificatesState, id: number) {
-    return state.certificates.find((i) => i.id === id);
+function certificateExists(state: ICertificatesState, { id, source }: ICertificateViewItem) {
+    return state.certificates.find((i) => i.id === id && i.source === source);
 }
 
 export default function reducer(
@@ -41,14 +42,13 @@ export default function reducer(
 ): ICertificatesState {
     switch (action.type) {
         case CertificatesActions.addCertificate:
-            if (certificateExists(state, action.payload.id)) {
+            if (certificateExists(state, action.payload)) {
                 return state;
             }
-
             return { ...state, certificates: [...state.certificates, action.payload] };
 
         case CertificatesActions.updateCertificate:
-            if (!certificateExists(state, action.payload.id)) {
+            if (!certificateExists(state, action.payload)) {
                 console.warn(
                     `Certificate Reducer: trying to update certificate with id ${action.payload.id} that does not exist in store`
                 );
@@ -56,7 +56,7 @@ export default function reducer(
             }
 
             const certificateIndex = state.certificates.findIndex(
-                (c) => c.id === action.payload.id
+                (c) => c.id === action.payload.id && c.source === action.payload.source
             );
 
             return {
@@ -100,6 +100,9 @@ export default function reducer(
                 ...state,
                 fetcher: action.payload
             };
+
+        case CertificatesActions.clearCertificates:
+            return { ...state, certificates: [] };
 
         default:
             return state;

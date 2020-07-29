@@ -1,4 +1,5 @@
-import { Filter, Operator, OrderSide, Product } from '@energyweb/exchange-core';
+import { Filter, Operator, OrderSide, Product, OrderStatus } from '@energyweb/exchange-core';
+import { BigNumber } from 'ethers';
 
 export type DeviceVintageDTO = {
     year: number;
@@ -103,9 +104,18 @@ export interface IOrderBookOrderDTO {
     assetId?: string;
 }
 
+export type TradePriceInfo = {
+    created: string;
+    volume: string;
+    price: number;
+    product: Product;
+    assetId: string;
+};
+
 export type TOrderBook = {
     asks: IOrderBookOrderDTO[];
     bids: IOrderBookOrderDTO[];
+    lastTradedPrice: TradePriceInfo;
 };
 
 export interface IDirectBuyDTO {
@@ -118,13 +128,72 @@ export interface IOrder {
     id: string;
     side: OrderSide;
     validFrom: string;
-    product: Product;
+    product: IProductDTO;
     price: number;
     startVolume: string;
     currentVolume: string;
     directBuyId: string;
+    asset: IAsset;
     assetId: string;
     userId: string;
+    filled?: number;
 }
 
-export type Order = IOrder & { assetId: string };
+export type Order = IOrder & { assetId: string; status: OrderStatus };
+
+export type RequestWithdrawalDTO = {
+    readonly assetId: string;
+    readonly address: string;
+    readonly amount: string;
+};
+
+export type BundleItem = {
+    id: string;
+    asset: IAsset;
+    startVolume: BigNumber;
+    currentVolume: BigNumber;
+};
+
+export type Bundle = {
+    id?: string;
+    userId: string;
+    price: number;
+    isCancelled: boolean;
+    items: BundleItem[];
+    volume: BigNumber;
+    own: boolean;
+    splits?: Split[];
+};
+
+export type BundleItemDTO = {
+    assetId: string;
+    volume: string;
+};
+
+export type CreateBundleDTO = {
+    price: number;
+    items: BundleItemDTO[];
+};
+
+export type BuyBundleDTO = {
+    bundleId: string;
+    volume: string;
+};
+
+export type BundleSplits = {
+    id: string;
+    splits: Split[];
+};
+
+export type Split = {
+    volume: BigNumber;
+    items: SplitItem[];
+};
+
+export type SplitItem = {
+    id: string;
+    volume: BigNumber;
+};
+
+export const ANY_VALUE = 'Any';
+export const ANY_OPERATOR = 'TH-ANY';

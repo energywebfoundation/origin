@@ -1,5 +1,6 @@
 import { Contracts } from '@energyweb/issuer';
 import { ConfigurationService } from '@energyweb/origin-backend';
+import { getProviderWithFallback } from '@energyweb/utils-general';
 import { forwardRef, Inject, Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { ModuleRef } from '@nestjs/core';
@@ -41,7 +42,7 @@ export class WithdrawalProcessorService implements OnModuleInit {
             throw new Error('Wallet private key not provided');
         }
         const web3ProviderUrl = this.configService.get<string>('WEB3');
-        const provider = new ethers.providers.JsonRpcProvider(web3ProviderUrl);
+        const provider = getProviderWithFallback(...web3ProviderUrl.split(';'));
 
         this.wallet = new Wallet(wallet, provider);
 
@@ -130,26 +131,12 @@ export class WithdrawalProcessorService implements OnModuleInit {
             );
             return;
         }
-
-        const hasEnoughFunds = await this.accountBalanceService.hasEnoughAssetAmount(
-            withdrawal.userId,
-            withdrawal.asset.id,
-            withdrawal.amount
-        );
-        if (!hasEnoughFunds) {
-            this.logger.error(
-                `[Withdrawal ${id}] User ${withdrawal.userId} has not enough funds to proceed`
-            );
-            await this.transferService.setAsError(id);
-            return;
-        }
-
-        const transaction = (await this.registry.functions.safeTransferFrom(
+        const transaction = (await this.registry.safeTransferFrom(
             this.wallet.address,
             withdrawal.address,
             withdrawal.asset.tokenId,
             withdrawal.amount,
-            '0x0' // TODO: consider putting withdrawal id for tracking
+            '0x00' // TODO: consider putting withdrawal id for tracking
         )) as ContractTransaction;
 
         await this.transferService.setAsUnconfirmed(id, transaction.hash);
@@ -159,7 +146,10 @@ export class WithdrawalProcessorService implements OnModuleInit {
         this.logger.debug(`Withdrawal ${id} receipt: ${JSON.stringify(receipt)} `);
 
         const hasLog = receipt.logs
-            .map((log) => this.tokenInterface.parseLog(log))
+            .map((log) => {
+                const { name } = this.tokenInterface.parseLog(log);
+                return this.tokenInterface.decodeEventLog(name, log.data, log.topics);
+            })
             .some((log) => this.hasMatchingLog(withdrawal, log));
 
         if (!hasLog) {
@@ -173,13 +163,19 @@ export class WithdrawalProcessorService implements OnModuleInit {
         await this.transferService.setAsConfirmed(transaction.hash, receipt.blockNumber);
     }
 
-    private hasMatchingLog(withdrawal: Transfer, log: ethers.utils.LogDescription) {
+    private hasMatchingLog(withdrawal: Transfer, log: ethers.utils.Result) {
+        const _to = String(log._to).toLowerCase();
+        const _from = String(log._from).toLowerCase();
+        const _topic = this.tokenInterface.getEventTopic(
+            this.tokenInterface.getEvent('TransferSingle')
+        );
+
         return (
-            log.topic === this.tokenInterface.events.TransferSingle.topic &&
-            log.values._id.toString() === withdrawal.asset.tokenId &&
-            log.values._from === this.wallet.address &&
-            log.values._to === withdrawal.address &&
-            log.values._value.toString() === withdrawal.amount
+            log.topic === _topic &&
+            log._id.toString() === withdrawal.asset.tokenId &&
+            _from === this.wallet.address.toLowerCase() &&
+            _to === withdrawal.address.toLowerCase() &&
+            log._value.toString() === withdrawal.amount
             // TODO: consider better comparison than string === string
         );
     }

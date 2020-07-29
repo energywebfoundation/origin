@@ -9,7 +9,7 @@
     "bugs": {
         "url": "https://github.com/energywebfoundation/origin/issues"
     },
-    "version": "0.1.6",
+    "version": "0.1.12",
     "main": "dist/js/src/index.js",
     "files": [
         "dist/js/src"
@@ -21,7 +21,7 @@
         "build": "yarn build:static && yarn build:ts && yarn copy:declarations",
         "copy:declarations": "shx cp src/ethers/*.d.ts dist/js/src/ethers",
         "build:static": "yarn compile && yarn typechain:ethers",
-        "build:ts": "tsc -b tsconfig.build.json --verbose --pretty",
+        "build:ts": "tsc -b tsconfig.json",
         "compile": "truffle compile",
         "lint": "solium -d contracts",
         "lint-fix": "solium -d contracts --fix && eslint \"src/**/*{.ts,.tsx}\" --fix",
@@ -29,17 +29,18 @@
         "test": "truffle test",
         "test:concurrent": "concurrently --success first --kill-others -n eth,test \"yarn start-ganache\"  \"wait-on tcp:8570 && yarn test\"",
         "clean": "shx rm -rf build dist src/ethers",
-        "typechain:ethers": "typechain --target ethers --outDir src/ethers './build/contracts/TokenAccount.json'"
+        "typechain:ethers": "typechain --target ethers-v5 --outDir src/ethers './build/contracts/TokenAccount.json'"
     },
     "types": "dist/js/src/index.d.ts",
     "dependencies": {
-        "ethers": "4.0.47"
+        "chai": "4.2.0",
+        "ethers": "5.0.7"
     },
     "devDependencies": {
-        "@energyweb/issuer": "2.0.0",
+        "@energyweb/issuer": "2.4.1",
+        "@typechain/ethers-v5": "0.0.3",
         "truffle-typings": "1.0.8",
-        "typechain": "2.0.0",
-        "typechain-target-ethers": "1.0.4"
+        "typechain": "2.0.0"
     },
     "gitHead": "54beaf7fe6686810de74ca290daf99cbde510f9d",
     "publishConfig": {

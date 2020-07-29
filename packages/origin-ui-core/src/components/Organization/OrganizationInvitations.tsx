@@ -1,21 +1,26 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 
-import { getUserOffchain, getIsLeadUser } from '../../features/users/selectors';
+import { getUserOffchain } from '../../features/users/selectors';
 import { OrganizationInvitationTable } from './OrganizationInvitationTable';
+import { isRole, Role } from '@energyweb/origin-backend-core';
+import { UserLogin } from '../Account/UserLogin';
 
 export function OrganizationInvitations() {
-    const userOffchain = useSelector(getUserOffchain);
-    const isLeadUser = useSelector(getIsLeadUser);
+    const user = useSelector(getUserOffchain);
+
+    if (!user) {
+        return <UserLogin redirect="/organization/organization-invitations" />;
+    }
 
     return (
         <>
-            {isLeadUser && (
+            {isRole(user, Role.OrganizationAdmin) && (
                 <>
                     Sent
                     <br />
                     <br />
-                    <OrganizationInvitationTable organizationId={userOffchain?.organization?.id} />
+                    <OrganizationInvitationTable organizationId={user?.organization?.id} />
                     <br />
                     <br />
                 </>
@@ -23,7 +28,7 @@ export function OrganizationInvitations() {
             Received
             <br />
             <br />
-            <OrganizationInvitationTable email={userOffchain?.email} />
+            <OrganizationInvitationTable email={user?.email} />
         </>
     );
 }

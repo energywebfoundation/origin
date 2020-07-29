@@ -1,6 +1,6 @@
 import program from 'commander';
 import parse from 'csv-parse/lib/sync';
-import { HDNode, bigNumberify } from 'ethers/utils';
+import { utils, BigNumber } from 'ethers';
 import fs from 'fs';
 import geoTz from 'geo-tz';
 
@@ -10,7 +10,7 @@ const configLocation = 'config/config.json';
 
 let generatedAccountIndex = CONFIG.config.ACCOUNT_GENERATION.startIndex;
 function generateNextAccount() {
-    const node = HDNode.fromMnemonic(CONFIG.config.ACCOUNT_GENERATION.mnemonic);
+    const node = utils.HDNode.fromMnemonic(CONFIG.config.ACCOUNT_GENERATION.mnemonic);
     const wallet = node.derivePath(`m/44'/60'/0'/0/${generatedAccountIndex}`);
 
     generatedAccountIndex++;
@@ -84,7 +84,7 @@ const processDevices = async (parsedContent) => {
                 owner: program.owner || '',
                 operationalSince: new Date(registrationDate).getTime() / 1000,
                 capacityInW: maxCapacity,
-                lastSmartMeterReadWh: bigNumberify(0),
+                lastSmartMeterReadWh: BigNumber.from(0),
                 active: true,
                 country,
                 address,

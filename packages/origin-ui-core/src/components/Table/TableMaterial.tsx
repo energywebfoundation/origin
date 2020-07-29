@@ -24,7 +24,8 @@ import {
     createStyles,
     useTheme,
     Checkbox,
-    TableSortLabel
+    TableSortLabel,
+    Box
 } from '@material-ui/core';
 
 type TableOnSelectFunction = (id: string, selected: boolean) => void;
@@ -74,6 +75,9 @@ interface IProps<T extends readonly ITableColumn[]> {
     customSelectCounterGenerator?: CustomCounterGeneratorFunction;
     highlightedRowsIds?: string[];
     customRow?: ICustomRow<TTableRow<GetReadonlyArrayItemType<T>['id']> & { id?: string }>;
+    allowedActions?: any;
+    caption?: string;
+    actionsLabel?: string;
 }
 
 export function TableMaterial<T extends readonly ITableColumn[]>(props: IProps<T>) {
@@ -88,6 +92,7 @@ export function TableMaterial<T extends readonly ITableColumn[]>(props: IProps<T
 
     function filtersChanged(filters: ICustomFilter[]) {
         loadPage(1, filters);
+        setCurrentPage(1);
     }
 
     function itemSelectionChanged(id: string, selected: boolean) {
@@ -130,7 +135,10 @@ export function TableMaterial<T extends readonly ITableColumn[]>(props: IProps<T
         batchableActions,
         customSelectCounterGenerator,
         toggleSort,
-        highlightedRowsIds: highlightedRowsIndexes
+        highlightedRowsIds: highlightedRowsIndexes,
+        allowedActions,
+        caption,
+        actionsLabel
     } = props;
 
     if (selectedIds.length > rows.length) {
@@ -155,6 +163,13 @@ export function TableMaterial<T extends readonly ITableColumn[]>(props: IProps<T
             }
         })
     );
+    const theme = useTheme();
+    const {
+        palette: {
+            text: { primary: textPrimary }
+        },
+        spacing
+    } = theme;
 
     const classes = useStyles(useTheme());
 
@@ -170,8 +185,21 @@ export function TableMaterial<T extends readonly ITableColumn[]>(props: IProps<T
 
             <Paper className={classes.root}>
                 <div className={classes.tableWrapper}>
+                    {caption && (
+                        <Box
+                            style={{
+                                paddingLeft: spacing(2),
+                                paddingTop: spacing(2),
+                                color: textPrimary,
+                                fontWeight: 'bold'
+                            }}
+                        >
+                            <span>{caption}</span>
+                        </Box>
+                    )}
                     <Table>
                         <TableHead>
+                            <TableRow></TableRow>
                             <TableRow>
                                 {showBatchableActions && (
                                     <TableCell padding="checkbox">
@@ -221,7 +249,9 @@ export function TableMaterial<T extends readonly ITableColumn[]>(props: IProps<T
                                         </TableCell>
                                     );
                                 })}
-                                {actions && actions.length > 0 && <TableCell></TableCell>}
+                                {actions && actions.length > 0 && (
+                                    <TableCell align="center">{actionsLabel}</TableCell>
+                                )}
                             </TableRow>
                         </TableHead>
                         <TableBody>
@@ -279,7 +309,18 @@ export function TableMaterial<T extends readonly ITableColumn[]>(props: IProps<T
                                                     key={id}
                                                     className={classes.tableCellWrappingActions}
                                                 >
-                                                    <Actions actions={actions} id={id} />
+                                                    <Actions
+                                                        actions={
+                                                            allowedActions
+                                                                ? actions.filter((action) =>
+                                                                      allowedActions[
+                                                                          (row as any).source
+                                                                      ]?.includes(action.id)
+                                                                  )
+                                                                : actions
+                                                        }
+                                                        id={id}
+                                                    />
                                                 </TableCell>
                                             )}
                                         </TableRow>
