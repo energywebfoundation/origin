@@ -7,7 +7,6 @@ import { sagas } from '../../features/sagas';
 import { ReactWrapper, CommonWrapper } from 'enzyme';
 import { Compliance, Configuration } from '@energyweb/utils-general';
 
-import { ProducingDevice } from '@energyweb/device-registry';
 import { producingDeviceCreatedOrUpdated } from '../../features/producingDevices/actions';
 import { dataTestSelector, DATE_FORMAT_DMY, moment } from '../../utils';
 import { MuiPickersUtilsProvider } from '@material-ui/pickers';
