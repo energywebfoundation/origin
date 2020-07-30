@@ -1,8 +1,10 @@
 import { ValidatorConstraint, ValidatorConstraintInterface } from 'class-validator';
 import BN from 'bn.js';
 import { ConfigService } from '@nestjs/config';
+import { Injectable } from '@nestjs/common';
 
 @ValidatorConstraint()
+@Injectable()
 export class IntUnitsOfEnergy implements ValidatorConstraintInterface {
     private energyPerUnit: BN;
 
