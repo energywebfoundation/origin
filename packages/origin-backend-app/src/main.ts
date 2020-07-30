@@ -1,5 +1,5 @@
 import { AppModule as ExchangeModule } from '@energyweb/exchange';
-import { LoggerService, ValidationPipe } from '@nestjs/common';
+import { LoggerService } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { useContainer } from 'class-validator';
@@ -49,7 +49,6 @@ export async function startAPI(logger?: LoggerService) {
 
     const document = SwaggerModule.createDocument(app, options);
     SwaggerModule.setup('swagger', app, document);
-    app.useGlobalPipes(new ValidationPipe());
     await app.listen(PORT);
 
     return app;
