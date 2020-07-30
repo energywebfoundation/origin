@@ -7,7 +7,8 @@ import {
     IsEnum,
     IsInt,
     IsPositive,
-    IsBoolean
+    IsBoolean,
+    IsOptional
 } from 'class-validator';
 
 import { PositiveBNStringValidator } from '../../utils/positiveBNStringValidator';
@@ -39,5 +40,6 @@ export class CreateDemandDTO {
     public readonly boundToGenerationTime: boolean;
 
     @IsBoolean()
+    @IsOptional()
     public readonly excludeEnd: boolean;
 }
