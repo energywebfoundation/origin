@@ -17,5 +17,6 @@ export class CreateBidDTO {
     readonly validFrom: Date;
 
     @ValidateNested()
+    @Type(() => ProductDTO)
     readonly product: ProductDTO;
 }
