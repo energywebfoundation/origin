@@ -88,7 +88,8 @@ describe('Demand orders trading', () => {
         end: moment().add(2, 'month').toDate(),
         product: { deviceType: ['Solar'] },
         volumePerPeriod: '250',
-        boundToGenerationTime: false
+        boundToGenerationTime: false,
+        excludeEnd: true
     };
 
     it('should trade the bid from the demand', async () => {
@@ -113,7 +114,8 @@ describe('Demand orders trading', () => {
             end: moment().add(1, 'month').toDate(),
             product,
             volumePerPeriod: '250',
-            boundToGenerationTime: false
+            boundToGenerationTime: false,
+            excludeEnd: true
         };
 
         const demand = await demandService.create(demandOwner, createDemand);
