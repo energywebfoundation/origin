@@ -33,6 +33,7 @@ export class CreateDemandDTO {
     public readonly end: Date;
 
     @ValidateNested()
+    @Type(() => ProductDTO)
     public readonly product: ProductDTO;
 
     @IsBoolean()
