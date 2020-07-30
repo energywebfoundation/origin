@@ -49,6 +49,7 @@ export async function startAPI(logger?: LoggerService) {
 
     const document = SwaggerModule.createDocument(app, options);
     SwaggerModule.setup('swagger', app, document);
+
     await app.listen(PORT);
 
     return app;
