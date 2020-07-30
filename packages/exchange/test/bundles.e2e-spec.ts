@@ -397,7 +397,7 @@ describe('Bundles', () => {
         authenticatedUser.status = UserStatus.Active;
     });
 
-    it.only('should not be able to create a bundle with negative volume', async () => {
+    it('should not be able to create a bundle with negative volume', async () => {
         const { address: user1Address } = await accountService.getOrCreateAccount(user1Id);
 
         const depositOne = await createDeposit(user1Address, `${10 * MWh}`, assetOne);
@@ -410,6 +410,26 @@ describe('Bundles', () => {
             price: 1000,
             items: [
                 { assetId: depositOne.asset.id, volume: `${-20 * MWh}` },
+                { assetId: depositTwo.asset.id, volume: `${10 * MWh}` }
+            ]
+        };
+
+        await request(app.getHttpServer()).post('/bundle').send(bundleToCreate).expect(400);
+    });
+
+    it('should not be able to create a bundle with decimal volume', async () => {
+        const { address: user1Address } = await accountService.getOrCreateAccount(user1Id);
+
+        const depositOne = await createDeposit(user1Address, `${10 * MWh}`, assetOne);
+        const depositTwo = await createDeposit(user1Address, `${10 * MWh}`, assetTwo);
+
+        await confirmDeposit(depositOne.transactionHash);
+        await confirmDeposit(depositTwo.transactionHash);
+
+        const bundleToCreate: CreateBundleDTO = {
+            price: 1000,
+            items: [
+                { assetId: depositOne.asset.id, volume: `${1.1 * MWh}` },
                 { assetId: depositTwo.asset.id, volume: `${10 * MWh}` }
             ]
         };
