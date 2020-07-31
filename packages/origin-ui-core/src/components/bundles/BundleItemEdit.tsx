@@ -91,6 +91,7 @@ export const BundleItemEdit = (props: IOwnProps) => {
             .required()
             .min(1)
             .max(EnergyFormatter.getValueInDisplayUnit(publicVolume))
+            .integer()
     });
 
     return (
