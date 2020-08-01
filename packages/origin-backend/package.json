@@ -94,7 +94,7 @@
         "@types/websocket": "1.0.1",
         "@types/ws": "7.2.6",
         "jest": "26.1.0",
-        "nodemailer": "6.4.10",
+        "nodemailer": "6.4.11",
         "polly-js": "1.6.7",
         "supertest": "4.0.2"
     },
