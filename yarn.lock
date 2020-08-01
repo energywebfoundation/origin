@@ -4204,10 +4204,10 @@
   dependencies:
     "@turf/helpers" "6.x"
 
-"@typechain/ethers-v5@0.0.3":
-  version "0.0.3"
-  resolved "https://registry.yarnpkg.com/@typechain/ethers-v5/-/ethers-v5-0.0.3.tgz#20a9dea64daa6dc39b73dad5d44d3de443ac236f"
-  integrity sha512-Ul8U1pkPj6nafZI3ZbYqndoH6DtCXzX2+clj2olqVZl8fwVPJuJ2Jr7tK3Q+CAH3n6dsZQiEfW7tSkiLOgbNGA==
+"@typechain/ethers-v5@0.0.4":
+  version "0.0.4"
+  resolved "https://registry.yarnpkg.com/@typechain/ethers-v5/-/ethers-v5-0.0.4.tgz#20b9944111f226051883175673ac3957c50b0a22"
+  integrity sha512-j3dOclmOZ/QPbKmZCjYzR0P7ecmdkJkQkMdPPdM8ySFZDmNSeTLKuagE0fai78c3/t0N4puTLEir0BQb9uRuig==
   dependencies:
     ethers "^5.0.2"
 

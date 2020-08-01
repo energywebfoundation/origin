@@ -38,7 +38,7 @@
     },
     "devDependencies": {
         "@energyweb/issuer": "2.4.1",
-        "@typechain/ethers-v5": "0.0.3",
+        "@typechain/ethers-v5": "0.0.4",
         "truffle-typings": "1.0.8",
         "typechain": "2.0.0"
     },
