@@ -7,14 +7,13 @@ import { Bundle } from './bundle.entity';
 import { BundleService } from './bundle.service';
 import { AccountBalanceModule } from '../account-balance/account-balance.module';
 import { BundleController } from './bundle.controller';
-import { IntUnitsOfEnergy } from '../../utils/intUnitOfEnergy';
 
 @Module({
     imports: [
         TypeOrmModule.forFeature([Bundle, BundleTrade, BundleItem]),
         forwardRef(() => AccountBalanceModule)
     ],
-    providers: [BundleService, IntUnitsOfEnergy],
+    providers: [BundleService],
     exports: [BundleService],
     controllers: [BundleController]
 })

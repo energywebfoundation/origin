@@ -14,7 +14,7 @@ import { TransferDirection } from '../src/pods/transfer/transfer-direction';
 import { Transfer } from '../src/pods/transfer/transfer.entity';
 import { DatabaseService } from './database.service';
 import { authenticatedUser, bootstrapTestInstance } from './exchange';
-import { depositToken, issueToken, provider } from './utils';
+import { depositToken, issueToken, provider, MWh } from './utils';
 
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -61,12 +61,12 @@ describe('Deposits using deployed registry', () => {
         registry.balanceOf(address, id);
 
     it('should be able to discover token deposit and post the ask', async () => {
-        const depositAmount = '10';
+        const depositAmount = `${10 * MWh}`;
 
         const id = await issueToken(
             issuer,
             tokenReceiver.address,
-            '1000',
+            `${1000 * MWh}`,
             generationFrom,
             generationTo
         );
@@ -98,7 +98,7 @@ describe('Deposits using deployed registry', () => {
 
                 const [balance] = account.balances.available;
 
-                expect(balance.amount).equals('10');
+                expect(balance.amount).equals(depositAmount);
                 expect(new Date(balance.asset.generationFrom)).deep.equals(
                     moment.unix(generationFrom).toDate()
                 );
@@ -111,7 +111,7 @@ describe('Deposits using deployed registry', () => {
 
         const createAsk: CreateAskDTO = {
             assetId,
-            volume: '10',
+            volume: `${10 * MWh}`,
             price: 100,
             validFrom: new Date()
         };
@@ -124,7 +124,7 @@ describe('Deposits using deployed registry', () => {
                 const order = res.body as Order;
 
                 expect(order.price).equals(100);
-                expect(order.startVolume).equals('10');
+                expect(order.startVolume).equals(`${10 * MWh}`);
                 expect(order.assetId).equals(assetId);
                 expect(new Date(order.product.generationFrom)).deep.equals(
                     moment.unix(generationFrom).toDate()

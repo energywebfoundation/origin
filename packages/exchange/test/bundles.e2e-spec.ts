@@ -14,6 +14,7 @@ import { CreateBundleDTO } from '../src/pods/bundle/create-bundle.dto';
 import { TransferService } from '../src/pods/transfer/transfer.service';
 import { DatabaseService } from './database.service';
 import { authenticatedUser, bootstrapTestInstance } from './exchange';
+import { MWh } from './utils';
 
 describe('Bundles', () => {
     let app: INestApplication;
@@ -23,7 +24,6 @@ describe('Bundles', () => {
     let bundleService: BundleService;
 
     const user1Id = authenticatedUser.organization;
-    const MWh = 10 ** 6;
 
     const assetOne = {
         address: '0x9876',

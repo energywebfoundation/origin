@@ -1,7 +1,7 @@
 import { IsUUID, Validate } from 'class-validator';
+import { IntUnitsOfEnergy } from '@energyweb/origin-backend-utils';
 
 import { PositiveBNStringValidator } from '../../utils/positiveBNStringValidator';
-import { IntUnitsOfEnergy } from '../../utils/intUnitOfEnergy';
 
 export class BundleItemDTO {
     @IsUUID()

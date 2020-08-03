@@ -56,3 +56,5 @@ export const depositToken = async (
 };
 
 export const provider = getProviderWithFallback(web3);
+
+export const MWh = 10 ** 6;

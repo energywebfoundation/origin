@@ -10,6 +10,7 @@ import {
     IsBoolean,
     IsOptional
 } from 'class-validator';
+import { IntUnitsOfEnergy } from '@energyweb/origin-backend-utils';
 
 import { PositiveBNStringValidator } from '../../utils/positiveBNStringValidator';
 import { ProductDTO } from '../order/product.dto';
@@ -20,6 +21,7 @@ export class CreateDemandDTO {
     public readonly price: number;
 
     @Validate(PositiveBNStringValidator)
+    @Validate(IntUnitsOfEnergy)
     public readonly volumePerPeriod: string;
 
     @IsEnum(TimeFrame)

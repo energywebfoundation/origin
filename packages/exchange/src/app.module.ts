@@ -5,6 +5,7 @@ import fs from 'fs';
 import path from 'path';
 
 import { APP_PIPE, APP_INTERCEPTOR } from '@nestjs/core';
+import { IntUnitsOfEnergy } from '@energyweb/origin-backend-utils';
 import { AccountBalanceModule } from './pods/account-balance/account-balance.module';
 import { AccountDeployerModule } from './pods/account-deployer/account-deployer.module';
 import { AccountModule } from './pods/account/account.module';
@@ -43,7 +44,8 @@ const getEnvFilePath = () => {
 export const providers = [
     { provide: APP_PIPE, useClass: ValidationPipe },
     { provide: APP_INTERCEPTOR, useClass: EmptyResultInterceptor },
-    { provide: APP_INTERCEPTOR, useClass: HTTPLoggingInterceptor }
+    { provide: APP_INTERCEPTOR, useClass: HTTPLoggingInterceptor },
+    IntUnitsOfEnergy
 ];
 
 @Module({
