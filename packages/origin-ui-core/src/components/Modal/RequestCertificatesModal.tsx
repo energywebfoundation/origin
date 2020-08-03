@@ -61,6 +61,7 @@ export function RequestCertificatesModal() {
         toDate &&
         fromDate.toDate() <= toDate.toDate() &&
         energyInBaseUnit.gt(0) &&
+        energyInDisplayUnit.split('.').length === 1 &&
         energyInBaseUnit.lt(MAX_ENERGY_PER_CERTIFICATE) &&
         cancelledFiles.length === 0 &&
         filesBeingUploaded.length === 0;

@@ -111,7 +111,7 @@ export function PublishForSaleModal(props: IProps) {
                 const energyInDisplayUnitValid =
                     newEnergyInBaseValueUnit.gte(1) &&
                     newEnergyInBaseValueUnit.lt(ownedPublicVolume) &&
-                    countDecimals(newEnergyInDisplayUnit) <= 6;
+                    countDecimals(newEnergyInDisplayUnit) === 0;
 
                 setEnergyInDisplayUnit(newEnergyInDisplayUnit);
 
