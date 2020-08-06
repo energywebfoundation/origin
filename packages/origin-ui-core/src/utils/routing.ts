@@ -1,5 +1,8 @@
 import { useSelector } from 'react-redux';
+import { OriginFeature } from '@energyweb/utils-general';
 import { getBaseURL } from '../features/selectors';
+import { useContext } from 'react';
+import { OriginConfigurationContext } from '..';
 
 export function getDevicesLink(baseURL: string) {
     return `${baseURL}/devices`;
@@ -68,8 +71,17 @@ export function getBundlesLink(baseURL: string) {
 export function useLinks() {
     const baseURL = useSelector(getBaseURL);
 
+    const { enabledFeatures } = useContext(OriginConfigurationContext);
+
+    const defaultLink = enabledFeatures.includes(OriginFeature.Devices)
+        ? getDevicesLink
+        : enabledFeatures.includes(OriginFeature.Certificates)
+        ? getCertificatesLink
+        : getAccountLink;
+
     return {
         baseURL,
+        getDefaultLink: () => defaultLink(baseURL),
         getDevicesLink: () => getDevicesLink(baseURL),
         getDevicesAddLink: () => getDevicesAddLink(baseURL),
         getDevicesOwnedLink: () => getDevicesOwnedLink(baseURL),

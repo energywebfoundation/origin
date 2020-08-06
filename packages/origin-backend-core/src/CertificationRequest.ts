@@ -1,8 +1,8 @@
-import { BigNumber, bigNumberify } from 'ethers/utils';
+import { BigNumber } from 'ethers';
 import { IDevice } from '.';
 
 // Maximum number Solidity can handle is (2^256)-1
-export const MAX_ENERGY_PER_CERTIFICATE = bigNumberify(2).pow(256).sub(1);
+export const MAX_ENERGY_PER_CERTIFICATE = BigNumber.from(2).pow(256).sub(1);
 
 export interface ICertificationRequestMinimal {
     id: number;

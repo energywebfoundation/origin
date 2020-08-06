@@ -3,11 +3,10 @@ import moment from 'moment-timezone';
 import * as Winston from 'winston';
 import dotenv from 'dotenv';
 import fs from 'fs';
-import { ethers, Wallet } from 'ethers';
-import { bigNumberify, BigNumber } from 'ethers/utils';
+import { Wallet, BigNumber } from 'ethers';
 
 import { ProducingDevice } from '@energyweb/device-registry';
-import { Configuration } from '@energyweb/utils-general';
+import { Configuration, getProviderWithFallback } from '@energyweb/utils-general';
 import { OffChainDataSource } from '@energyweb/origin-backend-client';
 import { ISmartMeterRead, IEnergyGenerated } from '@energyweb/origin-backend-core';
 import { getEnergyFromCSVRows } from './utils/Energy';
@@ -19,7 +18,8 @@ export function wait(milliseconds: number) {
 }
 
 async function createBlockchainConfiguration() {
-    const web3 = new ethers.providers.JsonRpcProvider(process.env.WEB3 ?? 'http://localhost:8545');
+    const [web3Url] = process.env.WEB3.split(';');
+    const web3 = getProviderWithFallback(web3Url);
     const issuerWallet = new Wallet(process.env.DEPLOY_KEY, web3);
 
     const logger = Winston.createLogger({
@@ -68,7 +68,7 @@ export async function startConsumerService(
         const smartMeterReadings = await device.getSmartMeterReads();
         const latestSmRead = smartMeterReadings[smartMeterReadings.length - 1];
 
-        return latestSmRead?.meterReading ?? bigNumberify(0);
+        return latestSmRead?.meterReading ?? BigNumber.from(0);
     }
 
     async function saveProducingDeviceSmartMeterReads(

@@ -2,7 +2,7 @@
 import { CommitmentStatus, Role } from '@energyweb/origin-backend-core';
 import { INestApplication } from '@nestjs/common';
 import { expect } from 'chai';
-import { bigNumberify } from 'ethers/utils';
+import { BigNumber } from 'ethers';
 import request from 'supertest';
 
 import { CertificateService } from '../src/pods/certificate/certificate.service';
@@ -18,7 +18,7 @@ describe('Certificate e2e tests', () => {
 
     const generateCommitment = (requestor: string) => ({
         commitment: {
-            [requestor]: bigNumberify(1000)
+            [requestor]: BigNumber.from(1000)
         },
         rootHash: '0x4d66a6a59ac48f27a549982a5db8a7292bc0ed64d40e12f8b83db32d54c4137f',
         leafs: [

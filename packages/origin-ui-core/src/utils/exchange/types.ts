@@ -1,5 +1,5 @@
 import { Filter, Operator, OrderSide, Product, OrderStatus } from '@energyweb/exchange-core';
-import { BigNumber } from 'ethers/utils';
+import { BigNumber } from 'ethers';
 
 export type DeviceVintageDTO = {
     year: number;

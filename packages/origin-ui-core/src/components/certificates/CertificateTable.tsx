@@ -3,8 +3,8 @@ import { AssignmentTurnedIn, Publish, Undo, BusinessCenter } from '@material-ui/
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Redirect } from 'react-router-dom';
-import { bigNumberify } from 'ethers/utils';
-import { getConfiguration, getProducingDevices } from '../features/selectors';
+import { BigNumber } from 'ethers';
+import { getConfiguration, getProducingDevices } from '../../features/selectors';
 import {
     EnergyFormatter,
     getDeviceLocationText,
@@ -19,7 +19,7 @@ import {
     getDeviceColumns,
     getDeviceSpecificPropertiesSearchTitle,
     moment
-} from '../utils';
+} from '../../utils';
 import {
     IPaginatedLoaderFetchDataReturnValues,
     TableMaterial,
@@ -32,14 +32,14 @@ import {
     IPaginatedLoaderHooksFetchDataParameters,
     ITableAction,
     TableActionId
-} from './Table';
-import { getCertificates } from '../features/certificates/selectors';
-import { PublishForSaleModal } from './Modal/PublishForSaleModal';
-import { getEnvironment } from '../features';
-import { ClaimModal } from './Modal/ClaimModal';
-import { ICertificateViewItem, CertificateSource } from '../features/certificates';
-import { WithdrawModal } from './Modal/WithdrawModal';
-import { DepositModal } from './Modal/DepositModal';
+} from '../Table';
+import { getCertificates } from '../../features/certificates/selectors';
+import { PublishForSaleModal } from '../Modal/PublishForSaleModal';
+import { getEnvironment } from '../../features';
+import { ClaimModal } from '../Modal/ClaimModal';
+import { ICertificateViewItem, CertificateSource } from '../../features/certificates';
+import { WithdrawModal } from '../Modal/WithdrawModal';
+import { DepositModal } from '../Modal/DepositModal';
 
 interface IProps {
     certificates?: ICertificateViewItem[];
@@ -354,7 +354,7 @@ export function CertificateTable(props: IProps) {
                 const { publicVolume, privateVolume } = b.energy;
                 const totalOwned = publicVolume.add(privateVolume);
                 return a.add(totalOwned);
-            }, bigNumberify(0));
+            }, BigNumber.from(0));
 
             return `${t('certificate.feedback.amountSelected', {
                 amount: selectedIndexes.length

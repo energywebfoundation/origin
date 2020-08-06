@@ -6,7 +6,8 @@ import {
     ILoggedInUser,
     ISmartMeterRead,
     Role,
-    ISuccessResponse
+    ISuccessResponse,
+    IDevice
 } from '@energyweb/origin-backend-core';
 import { Roles, RolesGuard, UserDecorator, ActiveUserGuard } from '@energyweb/origin-backend-utils';
 import {
@@ -44,8 +45,14 @@ export class DeviceController {
     // TODO: remove sensitive information
 
     @Get()
-    async getAll(@Query('withMeterStats') withMeterStats: boolean) {
-        return this.deviceService.getAll(withMeterStats ?? false);
+    async getAll(
+        @Query('withMeterStats') withMeterStats: boolean,
+        @Query('loadRelationIds') loadRelationIds: string | boolean = true
+    ) {
+        return this.deviceService.getAll(withMeterStats ?? false, {
+            relations: ['organization'],
+            loadRelationIds: loadRelationIds === 'true' || loadRelationIds === true
+        });
     }
 
     @Get('/my-devices')
@@ -78,9 +85,17 @@ export class DeviceController {
     @Get('/:id')
     async get(
         @Param('id') id: string,
-        @Query('withMeterStats') withMeterStats: boolean
-    ): Promise<IDeviceWithRelationsIds> {
-        const existingEntity = await this.deviceService.findOne(id, {}, withMeterStats);
+        @Query('withMeterStats') withMeterStats: boolean,
+        @Query('loadRelationIds') loadRelationIds: string | boolean = true
+    ): Promise<ExtendedBaseEntity & IDevice> {
+        const existingEntity = await this.deviceService.findOne(
+            id,
+            {
+                relations: ['organization'],
+                loadRelationIds: loadRelationIds === 'true' || loadRelationIds === true
+            },
+            withMeterStats
+        );
 
         if (!existingEntity) {
             throw new NotFoundException(StorageErrors.NON_EXISTENT);
@@ -107,7 +122,8 @@ export class DeviceController {
         @Param('id') id: string,
         @UserDecorator() loggedUser: ILoggedInUser
     ): Promise<ISuccessResponse> {
-        const device = await this.deviceService.findOne(id);
+        const device = (await this.deviceService.findOne(id)) as ExtendedBaseEntity &
+            IDeviceWithRelationsIds;
 
         if (!device) {
             throw new NotFoundException({

@@ -77,7 +77,8 @@
                 "requestCertificates": "Request certificates",
                 "approve": "Approve",
                 "registerDevice": "Register device",
-                "register": "Register"
+                "register": "Register",
+                "viewDetails": "View details"
             },
             "feedback": {
                 "imagesUploaded": "Images have been uploaded.",
@@ -447,7 +448,8 @@
                 "Sell": "Sell",
                 "certificates": "certificates",
                 "price": "Price per MWh",
-                "bundleBought": "Bundle was fully purchased"
+                "bundleBought": "Bundle was fully purchased",
+                "editBundleVolume" : "Edit volume (MWh)"
             },
             "actions": {
                 "sellAsBundle": "Sell as bundle"

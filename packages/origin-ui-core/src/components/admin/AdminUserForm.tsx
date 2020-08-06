@@ -6,11 +6,11 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import * as Yup from 'yup';
-import { setLoading } from '../features/general/actions';
-import { getOffChainDataSource } from '../features/general/selectors';
-import { NotificationType, showNotification } from '../utils/notifications';
-import { FormInput } from './Form/FormInput';
-import { FormSelect } from './Form/FormSelect';
+import { setLoading } from '../../features/general/actions';
+import { getOffChainDataSource } from '../../features/general/selectors';
+import { NotificationType, showNotification } from '../../utils/notifications';
+import { FormInput } from '../Form/FormInput';
+import { FormSelect } from '../Form/FormSelect';
 
 interface IProps {
     entity: IUser;

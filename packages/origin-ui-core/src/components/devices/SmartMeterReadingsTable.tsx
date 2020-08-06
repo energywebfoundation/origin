@@ -1,14 +1,14 @@
 import React, { useEffect } from 'react';
-import { bigNumberify } from 'ethers/utils';
+import { BigNumber } from 'ethers';
 import moment from 'moment-timezone';
 import { ProducingDevice } from '@energyweb/device-registry';
-import { TableMaterial } from './Table/TableMaterial';
+import { TableMaterial } from '../Table/TableMaterial';
 import {
     usePaginatedLoader,
     IPaginatedLoaderHooksFetchDataParameters
-} from './Table/PaginatedLoaderHooks';
-import { EnergyFormatter } from '../utils/EnergyFormatter';
-import { formatDate } from '../utils/time';
+} from '../Table/PaginatedLoaderHooks';
+import { EnergyFormatter } from '../../utils/EnergyFormatter';
+import { formatDate } from '../../utils/time';
 import { useTranslation } from 'react-i18next';
 
 interface IProps {
@@ -29,7 +29,7 @@ export function SmartMeterReadingsTable(props: IProps) {
         const deviceTimezone = producingDevice.timezone;
 
         const data = [];
-        let currentSmartMeterState = bigNumberify(0);
+        let currentSmartMeterState = BigNumber.from(0);
 
         for (let i = 0; i < readings.length; i++) {
             currentSmartMeterState = currentSmartMeterState.add(readings[i].energy);
@@ -78,7 +78,7 @@ export function SmartMeterReadingsTable(props: IProps) {
 
     const rows = paginatedData.map((data) => ({
         time: data[0],
-        value: EnergyFormatter.format(bigNumberify(data[1]))
+        value: EnergyFormatter.format(BigNumber.from(data[1]))
     }));
 
     return (

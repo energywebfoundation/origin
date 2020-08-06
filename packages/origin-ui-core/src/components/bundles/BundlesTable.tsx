@@ -13,7 +13,7 @@ import {
     energyShares,
     getProducingDevices
 } from '../..';
-import { EnergyTypes } from '../../utils';
+import { EnergyTypes } from '../../utils/device';
 import { useSelector, useDispatch } from 'react-redux';
 
 import { Bundle, IExchangeClient } from '../../utils/exchange';
@@ -25,7 +25,7 @@ import { Fab, Tooltip } from '@material-ui/core';
 import { Link } from 'react-router-dom';
 import { showBundleDetails, cancelBundle, storeBundle } from '../../features/bundles';
 import { BundleBought } from '../Modal/BundleBought';
-import { BigNumber } from 'ethers/utils';
+import { BigNumber } from 'ethers';
 
 const BUNDLES_PER_PAGE = 25;
 const BUNDLES_TOTAL_ENERGY_COLUMN_ID = 'total';
@@ -102,8 +102,8 @@ export const BundlesTable = (props: IOwnProps) => {
         const bundle = bundles.find((b) => b.id === bundleId);
         const { splits } = await exchangeClient.getBundleSplits(bundle);
         bundle.splits = splits.map((s) => ({
-            volume: new BigNumber(s.volume),
-            items: s.items.map(({ id, volume }) => ({ id, volume: new BigNumber(volume) }))
+            volume: BigNumber.from(s.volume),
+            items: s.items.map(({ id, volume }) => ({ id, volume: BigNumber.from(volume) }))
         }));
         dispatch(storeBundle(bundle));
         if (splits.length === 0) {

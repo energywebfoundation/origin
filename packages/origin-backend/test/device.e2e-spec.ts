@@ -7,7 +7,7 @@ import {
     ILoggedInUser
 } from '@energyweb/origin-backend-core';
 import { expect } from 'chai';
-import { bigNumberify } from 'ethers/utils';
+import { BigNumber } from 'ethers';
 import moment from 'moment';
 import request from 'supertest';
 import dotenv from 'dotenv';
@@ -17,7 +17,7 @@ import { bootstrapTestInstance, registerAndLogin } from './origin-backend';
 import { DeviceService } from '../src/pods/device/device.service';
 import { OrganizationService } from '../src/pods/organization/organization.service';
 import { UserService } from '../src/pods/user/user.service';
-import { CertificationRequestService } from '../src/pods/certificate/certification-request.service';
+import { CertificationRequestService } from '../src/pods/certification-request/certification-request.service';
 import { DatabaseService } from './database.service';
 
 describe('Device e2e tests', () => {
@@ -98,7 +98,6 @@ describe('Device e2e tests', () => {
             .set('Authorization', `Bearer ${accessToken}`)
             .expect((res) => {
                 const device = res.body as IDeviceWithRelationsIds;
-
                 expect(device.defaultAskPrice).equals(null);
                 expect(device.automaticPostForSale).equals(false);
             });
@@ -192,8 +191,8 @@ describe('Device e2e tests', () => {
             .expect((res) => {
                 const resultDevice = res.body as IDeviceWithRelationsIds;
 
-                expect(bigNumberify(resultDevice.meterStats.certified).toNumber()).equals(0);
-                expect(bigNumberify(resultDevice.meterStats.uncertified).toNumber()).equals(0);
+                expect(BigNumber.from(resultDevice.meterStats.certified).toNumber()).equals(0);
+                expect(BigNumber.from(resultDevice.meterStats.uncertified).toNumber()).equals(0);
             });
 
         const now = moment();
@@ -254,7 +253,7 @@ describe('Device e2e tests', () => {
                 const resultDevice = res.body as IDeviceWithRelationsIds;
 
                 expect(
-                    bigNumberify(resultDevice.meterStats.certified).toNumber()
+                    BigNumber.from(resultDevice.meterStats.certified).toNumber()
                 ).to.be.greaterThan(0);
             });
     });

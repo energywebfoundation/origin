@@ -1,5 +1,6 @@
 import { ContractTransaction, Contract, ethers } from 'ethers';
 import { Contracts } from '@energyweb/issuer';
+import { getProviderWithFallback } from '@energyweb/utils-general';
 
 const registryInterface = new ethers.utils.Interface(Contracts.IssuerJSON.abi);
 
@@ -22,11 +23,14 @@ export const issueToken = async (
         false
     )) as ContractTransaction).wait();
 
-    const {
-        values: { _id: requestId }
-    } = registryInterface.parseLog(requestReceipt.logs[0]);
+    const [log] = requestReceipt.logs;
 
-    const validityData = registryInterface.functions.isRequestValid.encode([requestId.toString()]);
+    const { name } = registryInterface.parseLog(log);
+    const { _id: requestId } = registryInterface.decodeEventLog(name, log.data, log.topics);
+
+    const validityData = registryInterface.encodeFunctionData('isRequestValid', [
+        requestId.toString()
+    ]);
 
     const approvalReceipt = await ((await issuer.approveCertificationRequest(
         requestId,
@@ -48,13 +52,9 @@ export const depositToken = async (
 ) => {
     const registryWithUserAsSigner = registry.connect(sender);
 
-    await registryWithUserAsSigner.functions.safeTransferFrom(
-        sender.address,
-        to,
-        id,
-        amount,
-        '0x0'
-    );
+    await registryWithUserAsSigner.safeTransferFrom(sender.address, to, id, amount, '0x00');
 };
 
-export const provider = new ethers.providers.JsonRpcProvider(web3);
+export const provider = getProviderWithFallback(web3);
+
+export const MWh = 10 ** 6;

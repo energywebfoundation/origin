@@ -2,14 +2,13 @@
 import 'mocha';
 import { assert } from 'chai';
 import moment from 'moment';
-import { providers, Wallet } from 'ethers';
+import { Wallet, BigNumber } from 'ethers';
 import dotenv from 'dotenv';
 
-import { Configuration } from '@energyweb/utils-general';
+import { Configuration, getProviderWithFallback } from '@energyweb/utils-general';
 import { OffChainDataSourceMock } from '@energyweb/origin-backend-client-mocks';
 import { DeviceStatus, IDevice } from '@energyweb/origin-backend-core';
 
-import { bigNumberify } from 'ethers/utils';
 import { ProducingDevice } from '..';
 import { logger } from '../Logger';
 
@@ -18,7 +17,8 @@ describe('Device Facade', () => {
         path: '.env.test'
     });
 
-    const provider = new providers.JsonRpcProvider(process.env.WEB3);
+    const [web3Url] = process.env.WEB3.split(';');
+    const provider = getProviderWithFallback(web3Url);
 
     const deployKey: string = process.env.DEPLOY_KEY;
 
@@ -109,8 +109,8 @@ describe('Device Facade', () => {
             it('should correctly return reads', async () => {
                 let device = await new ProducingDevice.Entity(1, conf).sync();
                 await device.saveSmartMeterReads([
-                    { meterReading: bigNumberify(100), timestamp: SM_READ_TIMESTAMP },
-                    { meterReading: bigNumberify(300), timestamp: SM_READ_TIMESTAMP + 1 }
+                    { meterReading: BigNumber.from(100), timestamp: SM_READ_TIMESTAMP },
+                    { meterReading: BigNumber.from(300), timestamp: SM_READ_TIMESTAMP + 1 }
                 ]);
 
                 device = await device.sync();
@@ -118,22 +118,22 @@ describe('Device Facade', () => {
                 const reads = await device.getSmartMeterReads();
 
                 assert.deepOwnInclude(reads[0], {
-                    meterReading: bigNumberify(100),
+                    meterReading: BigNumber.from(100),
                     timestamp: SM_READ_TIMESTAMP
                 });
                 assert.deepOwnInclude(reads[1], {
-                    meterReading: bigNumberify(300),
+                    meterReading: BigNumber.from(300),
                     timestamp: SM_READ_TIMESTAMP + 1
                 });
 
                 const energyGenerated = await device.getAmountOfEnergyGenerated();
                 assert.deepOwnInclude(energyGenerated[0], {
-                    energy: bigNumberify(100),
+                    energy: BigNumber.from(100),
                     timestamp: SM_READ_TIMESTAMP
                 });
 
                 assert.deepOwnInclude(energyGenerated[1], {
-                    energy: bigNumberify(200),
+                    energy: BigNumber.from(200),
                     timestamp: SM_READ_TIMESTAMP + 1
                 });
             });

@@ -1,6 +1,6 @@
 import { useParams, useLocation } from 'react-router-dom';
 import React, { useState, useEffect } from 'react';
-import { getOffChainDataSource } from '../features/general/selectors';
+import { getOffChainDataSource } from '../../features/general/selectors';
 import { useSelector } from 'react-redux';
 import { IUser } from '@energyweb/origin-backend-core';
 import { AdminUserForm } from './AdminUserForm';

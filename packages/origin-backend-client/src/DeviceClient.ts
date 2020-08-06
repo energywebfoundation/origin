@@ -2,29 +2,17 @@ import {
     DeviceCreateData,
     DeviceSettingsUpdateData,
     DeviceUpdateData,
-    IDevice,
     IDeviceWithRelationsIds,
     IExternalDeviceId,
     ISmartMeterRead,
     ISmartMeterReadWithStatus,
-    ISuccessResponse
+    ISuccessResponse,
+    IDeviceClient,
+    IRequestClient,
+    IDevice
 } from '@energyweb/origin-backend-core';
-import { bigNumberify } from 'ethers/utils';
-import { IRequestClient, RequestClient } from './RequestClient';
-
-export interface IDeviceClient {
-    getById(id: number): Promise<IDeviceWithRelationsIds>;
-    getByExternalId(id: IExternalDeviceId): Promise<IDeviceWithRelationsIds>;
-    getAll(withMeterStats: boolean): Promise<IDeviceWithRelationsIds[]>;
-    add(device: DeviceCreateData): Promise<IDeviceWithRelationsIds>;
-    update(id: number, data: DeviceUpdateData): Promise<IDevice>;
-    getAllSmartMeterReadings(id: number): Promise<ISmartMeterReadWithStatus[]>;
-    addSmartMeterReads(id: number, smartMeterReads: ISmartMeterRead[]): Promise<void>;
-    getSupplyBy(facilityName: string, status: number): Promise<IDeviceWithRelationsIds[]>;
-    delete(id: number): Promise<ISuccessResponse>;
-    updateDeviceSettings(id: number, device: DeviceSettingsUpdateData): Promise<ISuccessResponse>;
-    getMyDevices(withMeterStats: boolean): Promise<IDeviceWithRelationsIds[]>;
-}
+import { BigNumber } from 'ethers';
+import { RequestClient } from './RequestClient';
 
 export class DeviceClient implements IDeviceClient {
     constructor(
@@ -43,16 +31,16 @@ export class DeviceClient implements IDeviceClient {
         return this.cleanDeviceData(data);
     }
 
-    public async getById(id: number): Promise<IDeviceWithRelationsIds> {
-        const url = `${this.endpoint}/${id}`;
+    public async getById(id: number, loadRelationIds = true): Promise<IDeviceWithRelationsIds> {
+        const url = `${this.endpoint}/${id}?loadRelationIds=${loadRelationIds}`;
         const { data } = await this.requestClient.get<void, IDeviceWithRelationsIds>(url);
 
         return this.cleanDeviceData(data);
     }
 
-    public async getAll(withMeterStats = false): Promise<IDeviceWithRelationsIds[]> {
+    public async getAll(withMeterStats = false, loadRelationIds = true): Promise<IDevice[]> {
         const { data } = await this.requestClient.get<void, IDeviceWithRelationsIds[]>(
-            `${this.endpoint}?withMeterStats=${withMeterStats}`
+            `${this.endpoint}?withMeterStats=${withMeterStats}&loadRelationIds=${loadRelationIds}`
         );
 
         return data.map((device) => this.cleanDeviceData(device));
@@ -87,7 +75,7 @@ export class DeviceClient implements IDeviceClient {
         const meterReadingsFormatted: ISmartMeterReadWithStatus[] = response.data.map(
             (read: ISmartMeterReadWithStatus) => ({
                 ...read,
-                meterReading: bigNumberify(read.meterReading)
+                meterReading: BigNumber.from(read.meterReading)
             })
         );
 
@@ -114,8 +102,8 @@ export class DeviceClient implements IDeviceClient {
             cleanDevice = {
                 ...cleanDevice,
                 meterStats: {
-                    certified: bigNumberify(device.meterStats.certified),
-                    uncertified: bigNumberify(device.meterStats.uncertified)
+                    certified: BigNumber.from(device.meterStats.certified),
+                    uncertified: BigNumber.from(device.meterStats.uncertified)
                 }
             };
         }
@@ -125,7 +113,7 @@ export class DeviceClient implements IDeviceClient {
                 ...cleanDevice,
                 smartMeterReads: device.smartMeterReads.map((smRead) => ({
                     ...smRead,
-                    meterReading: bigNumberify(smRead.meterReading)
+                    meterReading: BigNumber.from(smRead.meterReading)
                 }))
             };
         }

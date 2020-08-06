@@ -13,17 +13,17 @@ import { Edit } from '@material-ui/icons';
 import { text } from '@storybook/addon-knobs';
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { getOffChainDataSource } from '../features/general/selectors';
-import { getUserOffchain } from '../features/users/selectors';
-import { formatCurrencyComplete, moment, useTranslation } from '../utils';
-import { EnergyFormatter } from '../utils/EnergyFormatter';
-import { NotificationType, showNotification } from '../utils/notifications';
+import { getOffChainDataSource } from '../../features/general/selectors';
+import { getUserOffchain } from '../../features/users/selectors';
+import { formatCurrencyComplete, moment, useTranslation } from '../../utils';
+import { EnergyFormatter } from '../../utils/EnergyFormatter';
+import { NotificationType, showNotification } from '../../utils/notifications';
 import {
     IPaginatedLoaderHooksFetchDataParameters,
     TableMaterial,
     usePaginatedLoaderFiltered
-} from './Table';
-import { CustomFilterInputType, ICustomFilterDefinition } from './Table/FiltersHeader';
+} from '../Table';
+import { CustomFilterInputType, ICustomFilterDefinition } from '../Table/FiltersHeader';
 
 interface IRecord {
     device: IDevice;

@@ -2,10 +2,9 @@ import { assert } from 'chai';
 import dotenv from 'dotenv';
 import 'mocha';
 import moment from 'moment';
-import { providers, Wallet } from 'ethers';
-import { BigNumber } from 'ethers/utils';
+import { Wallet, BigNumber } from 'ethers';
 
-import { Configuration } from '@energyweb/utils-general';
+import { Configuration, getProviderWithFallback } from '@energyweb/utils-general';
 import { OffChainDataSourceMock } from '@energyweb/origin-backend-client-mocks';
 
 import { IOwnershipCommitmentStatus } from '@energyweb/origin-backend-core';
@@ -22,7 +21,8 @@ describe('Certificate tests', () => {
         path: '.env.test'
     });
 
-    const provider = new providers.JsonRpcProvider(process.env.WEB3);
+    const [web3Url] = process.env.WEB3.split(';');
+    const provider = getProviderWithFallback(web3Url);
 
     const deviceOwnerPK = '0x622d56ab7f0e75ac133722cc065260a2792bf30ea3265415fe04f3a2dba7e1ac';
     const deviceOwnerWallet = new Wallet(deviceOwnerPK, provider);
@@ -76,8 +76,8 @@ describe('Certificate tests', () => {
     };
 
     it('migrates Registry', async () => {
-        const registry = await migrateRegistry(process.env.WEB3, issuerPK);
-        const issuer = await migrateIssuer(process.env.WEB3, issuerPK, registry.address);
+        const registry = await migrateRegistry(provider, issuerPK);
+        const issuer = await migrateIssuer(provider, issuerPK, registry.address);
 
         conf = {
             blockchainProperties: {
@@ -91,7 +91,7 @@ describe('Certificate tests', () => {
     });
 
     it('gets all certificates', async () => {
-        const totalVolume = new BigNumber(1e9);
+        const totalVolume = BigNumber.from(1e9);
 
         await issueCertificate(totalVolume, deviceOwnerWallet.address);
         await issueCertificate(totalVolume, deviceOwnerWallet.address);
@@ -101,7 +101,7 @@ describe('Certificate tests', () => {
     });
 
     it('gets all owned certificates', async () => {
-        const totalVolume = new BigNumber(1e9);
+        const totalVolume = BigNumber.from(1e9);
 
         await issueCertificate(totalVolume, deviceOwnerWallet.address);
         await issueCertificate(totalVolume, traderWallet.address);
@@ -117,7 +117,7 @@ describe('Certificate tests', () => {
     });
 
     it('issuer issues a certificate', async () => {
-        const volume = new BigNumber(1e9);
+        const volume = BigNumber.from(1e9);
         let certificate = await issueCertificate(volume, deviceOwnerWallet.address);
 
         assert.isNotNull(certificate.id);
@@ -140,7 +140,7 @@ describe('Certificate tests', () => {
     });
 
     it('transfers a certificate', async () => {
-        const totalVolume = new BigNumber(1e9);
+        const totalVolume = BigNumber.from(1e9);
         let certificate = await issueCertificate(totalVolume, deviceOwnerWallet.address);
 
         setActiveUser(deviceOwnerWallet);
@@ -166,7 +166,7 @@ describe('Certificate tests', () => {
     });
 
     it('transfers a private certificate', async () => {
-        const totalVolume = new BigNumber(1e9);
+        const totalVolume = BigNumber.from(1e9);
         let certificate = await issueCertificate(totalVolume, deviceOwnerWallet.address, true);
 
         setActiveUser(deviceOwnerWallet);
@@ -199,7 +199,7 @@ describe('Certificate tests', () => {
     });
 
     it('partially transfers a private certificate', async () => {
-        const totalVolume = new BigNumber(1e9);
+        const totalVolume = BigNumber.from(1e9);
         const partialVolumeToSend = totalVolume.div(4);
         let certificate = await issueCertificate(totalVolume, deviceOwnerWallet.address, true);
 
@@ -236,7 +236,7 @@ describe('Certificate tests', () => {
     });
 
     it('fails transferring a revoked certificate', async () => {
-        const totalVolume = new BigNumber(1e9);
+        const totalVolume = BigNumber.from(1e9);
         let certificate = await issueCertificate(totalVolume, deviceOwnerWallet.address);
 
         setActiveUser(issuerWallet);
@@ -258,7 +258,7 @@ describe('Certificate tests', () => {
     });
 
     it('fails claiming a revoked certificate', async () => {
-        const totalVolume = new BigNumber(1e9);
+        const totalVolume = BigNumber.from(1e9);
         let certificate = await issueCertificate(totalVolume, deviceOwnerWallet.address);
 
         setActiveUser(issuerWallet);
@@ -280,7 +280,7 @@ describe('Certificate tests', () => {
     });
 
     it('claims a certificate', async () => {
-        const totalVolume = new BigNumber(1e9);
+        const totalVolume = BigNumber.from(1e9);
         let certificate = await issueCertificate(totalVolume, deviceOwnerWallet.address);
 
         setActiveUser(deviceOwnerWallet);
@@ -312,7 +312,7 @@ describe('Certificate tests', () => {
     });
 
     it('partially claims a certificate', async () => {
-        const totalVolume = new BigNumber(1e9);
+        const totalVolume = BigNumber.from(1e9);
         let certificate = await issueCertificate(totalVolume, deviceOwnerWallet.address);
 
         setActiveUser(deviceOwnerWallet);
@@ -330,7 +330,7 @@ describe('Certificate tests', () => {
     });
 
     it('claims a certificate with empty beneficiary', async () => {
-        const totalVolume = new BigNumber(1e9);
+        const totalVolume = BigNumber.from(1e9);
         let certificate = await issueCertificate(totalVolume, deviceOwnerWallet.address);
 
         setActiveUser(deviceOwnerWallet);
@@ -348,7 +348,7 @@ describe('Certificate tests', () => {
     });
 
     it('claims a private certificate', async () => {
-        const totalVolume = new BigNumber(1e9);
+        const totalVolume = BigNumber.from(1e9);
         let certificate = await issueCertificate(totalVolume, deviceOwnerWallet.address, true);
 
         setActiveUser(deviceOwnerWallet);
@@ -381,7 +381,7 @@ describe('Certificate tests', () => {
     });
 
     it('claims a partial private certificate', async () => {
-        const totalVolume = new BigNumber(1e9);
+        const totalVolume = BigNumber.from(1e9);
         const partialVolumeToClaim = totalVolume.div(4);
         let certificate = await issueCertificate(totalVolume, deviceOwnerWallet.address, true);
 
@@ -428,7 +428,7 @@ describe('Certificate tests', () => {
     });
 
     it('batch transfers certificates', async () => {
-        const totalVolume = new BigNumber(1e9);
+        const totalVolume = BigNumber.from(1e9);
 
         let certificate = await issueCertificate(totalVolume, deviceOwnerWallet.address);
         let certificate2 = await issueCertificate(totalVolume, deviceOwnerWallet.address);
@@ -468,7 +468,7 @@ describe('Certificate tests', () => {
     });
 
     it('batch claims certificates', async () => {
-        const totalVolume = new BigNumber(1e9);
+        const totalVolume = BigNumber.from(1e9);
 
         let certificate = await issueCertificate(totalVolume, deviceOwnerWallet.address);
         let certificate2 = await issueCertificate(totalVolume, deviceOwnerWallet.address);

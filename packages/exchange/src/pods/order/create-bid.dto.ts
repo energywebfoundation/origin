@@ -1,11 +1,13 @@
 import { Type } from 'class-transformer';
 import { IsDate, IsInt, IsPositive, Validate, ValidateNested } from 'class-validator';
+import { IntUnitsOfEnergy } from '@energyweb/origin-backend-utils';
 
 import { PositiveBNStringValidator } from '../../utils/positiveBNStringValidator';
 import { ProductDTO } from './product.dto';
 
 export class CreateBidDTO {
     @Validate(PositiveBNStringValidator)
+    @Validate(IntUnitsOfEnergy)
     readonly volume: string;
 
     @IsInt()
@@ -17,5 +19,6 @@ export class CreateBidDTO {
     readonly validFrom: Date;
 
     @ValidateNested()
+    @Type(() => ProductDTO)
     readonly product: ProductDTO;
 }

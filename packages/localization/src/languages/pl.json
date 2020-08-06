@@ -62,7 +62,8 @@
                 "requestCertificates": "Zażądaj certyfikatów",
                 "approve": "Zaakceptuj",
                 "registerDevice": "Zarejestruj urządzenie",
-                "register": "Zarejestruj"
+                "register": "Zarejestruj",
+                "viewDetails": "Pokaż szczegóły"
             }
         },
         "certificate": {
@@ -106,7 +107,8 @@
             "info": {
                 "certificates": "CERTYFIKATY",
                 "requestCertificatesFor": "Zażądaj certyfikatów dla urządzenia {facilityName}",
-                "selectPriceRange": "Wybierz przedział cenowy, aby wyświetlić więcej kombinacji"
+                "selectPriceRange": "Wybierz przedział cenowy, aby wyświetlić więcej kombinacji",
+                "editBundleVolume" : "Edytuj wolumen (MWh)"
             }
         },
         "search": {

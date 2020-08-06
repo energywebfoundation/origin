@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { Bar } from 'react-chartjs-2';
-import { moment, formatDate } from '../utils/time';
+import { moment, formatDate } from '../../utils/time';
 import { Button, ButtonGroup } from '@material-ui/core';
 import { ProducingDevice } from '@energyweb/device-registry';
-import { reverse } from '../utils/helper';
-import { EnergyFormatter } from '../utils/EnergyFormatter';
-import { useOriginConfiguration } from '../utils/configuration';
+import { reverse } from '../../utils/helper';
+import { EnergyFormatter } from '../../utils/EnergyFormatter';
+import { useOriginConfiguration } from '../../utils/configuration';
 import { useTranslation } from 'react-i18next';
-import { bigNumberify } from 'ethers/utils';
+import { BigNumber } from 'ethers';
 
 enum TIMEFRAME {
     DAY = 'Day',
@@ -139,7 +139,7 @@ export function SmartMeterReadingsChart(props: ISmartMeterReadingsChartProps) {
                 .subtract(currentIndex, measurementUnit)
                 .tz(producingDevice.timezone);
 
-            let totalEnergy = bigNumberify(0);
+            let totalEnergy = BigNumber.from(0);
 
             for (const reading of readings) {
                 const readingDate = moment.unix(reading.timestamp).tz(producingDevice.timezone);

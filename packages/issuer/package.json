@@ -26,8 +26,8 @@
         "build:static": "yarn compile && yarn typechain:registry && yarn typechain:issuer",
         "build:ts": "tsc -b tsconfig.json && yarn copy:declarations",
         "copy:declarations": "shx cp src/ethers/*.d.ts dist/js/src/ethers",
-        "typechain:registry": "typechain --target ethers --outDir src/ethers './build/contracts/Registry.json'",
-        "typechain:issuer": "typechain --target ethers --outDir src/ethers './build/contracts/Issuer.json'",
+        "typechain:registry": "typechain --target ethers-v5 --outDir src/ethers './build/contracts/Registry.json'",
+        "typechain:issuer": "typechain --target ethers-v5 --outDir src/ethers './build/contracts/Issuer.json'",
         "clean": "shx rm -rf dist dist-shakeable build src/ethers",
         "compile": "truffle compile",
         "deploy-contracts": "truffle migrate",
@@ -47,19 +47,19 @@
         "@energyweb/utils-general": "9.1.5",
         "chai": "4.2.0",
         "dotenv": "8.2.0",
-        "ethers": "4.0.47",
-        "mocha": "8.0.1",
+        "ethers": "5.0.7",
+        "mocha": "8.1.0",
         "moment": "2.24.0",
-        "polly-js": "1.6.6",
-        "precise-proofs-js": "1.1.0",
+        "polly-js": "1.6.7",
+        "precise-proofs-js": "1.2.0",
         "winston": "3.3.3"
     },
     "devDependencies": {
+        "@typechain/ethers-v5": "0.0.4",
         "ethlint": "1.2.5",
         "ganache-cli": "6.5.1",
         "truffle-typings": "1.0.8",
-        "typechain": "2.0.0",
-        "typechain-target-ethers": "1.0.4"
+        "typechain": "2.0.0"
     },
     "publishConfig": {
         "access": "public",

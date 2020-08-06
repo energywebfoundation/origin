@@ -11,6 +11,7 @@ import { TradeDTO } from '../src/pods/trade/trade.dto';
 import { TransferService } from '../src/pods/transfer/transfer.service';
 import { DatabaseService } from './database.service';
 import { bootstrapTestInstance } from './exchange';
+import { MWh } from './utils';
 
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -31,7 +32,7 @@ describe('DirectBuy orders tests', () => {
 
     const transactionHash = `0x${((Math.random() * 0xffffff) << 0).toString(16)}`;
 
-    const createDeposit = (address: string, amount = '1000', asset = dummyAsset) => {
+    const createDeposit = (address: string, amount = `${1000 * MWh}`, asset = dummyAsset) => {
         return transferService.createDeposit({
             address,
             transactionHash,
@@ -67,14 +68,14 @@ describe('DirectBuy orders tests', () => {
 
         await orderService.createAsk(sellerId, {
             assetId: deposit.asset.id,
-            volume: '500',
+            volume: `${500 * MWh}`,
             price: 1000,
             validFrom
         });
 
         const ask2 = await orderService.createAsk(sellerId, {
             assetId: deposit.asset.id,
-            volume: '500',
+            volume: `${500 * MWh}`,
             price: 2000,
             validFrom
         });

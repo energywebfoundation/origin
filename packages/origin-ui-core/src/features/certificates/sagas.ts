@@ -1,5 +1,9 @@
 import { Certificate, CertificateUtils, CertificationRequest } from '@energyweb/issuer';
-import { CommitmentStatus, IUserWithRelations } from '@energyweb/origin-backend-core';
+import {
+    CommitmentStatus,
+    IUserWithRelations,
+    IOrganization
+} from '@energyweb/origin-backend-core';
 import { Configuration } from '@energyweb/utils-general';
 import { ContractTransaction } from 'ethers';
 import { getI18n } from 'react-i18next';
@@ -119,12 +123,11 @@ function* openRequestCertificatesModalSaga(): SagaIterator {
         const action: IShowRequestCertificatesModalAction = yield take(
             CertificatesActions.showRequestCertificatesModal
         );
-
         const device = action.payload.producingDevice;
 
         const userOffchain: IUserWithRelations = yield select(getUserOffchain);
 
-        if (device?.organization !== userOffchain?.organization?.id) {
+        if ((device?.organization as IOrganization).id !== userOffchain?.organization?.id) {
             showNotification(
                 `You need to own the device to request certificates.`,
                 NotificationType.Error
@@ -516,6 +519,9 @@ function* reloadCertificatesSaga(): SagaIterator {
         yield take(CertificatesActions.reloadCertificates);
         yield put(clearCertificates());
         const configuration = yield select(getConfiguration);
+        if (!configuration) {
+            continue;
+        }
         yield call(fetchDataAfterConfigurationChange, configuration);
     }
 }

@@ -3,12 +3,12 @@ import { LoadScriptNext, GoogleMap, Marker, InfoWindow } from '@react-google-map
 import { ProducingDevice } from '@energyweb/device-registry';
 import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { useLinks } from '../utils/routing';
-import { getProducingDevices } from '../features/selectors';
+import { useLinks } from '../../utils/routing';
+import { getProducingDevices } from '../../features/selectors';
 import { CircularProgress } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
 import { IOrganization } from '@energyweb/origin-backend-core';
-import { getOffChainDataSource, getEnvironment } from '../features/general/selectors';
+import { getOffChainDataSource, getEnvironment } from '../../features/general/selectors';
 
 interface IProps {
     devices?: ProducingDevice.Entity[];

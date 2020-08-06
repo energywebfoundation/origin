@@ -1,4 +1,3 @@
-export * from './PreciseProofClient';
 export * from './ConfigurationClient';
 export * from './OrganizationClient';
 export * from './UserClient';
@@ -7,4 +6,5 @@ export * from './DeviceClient';
 export * from './OffChainDataSource';
 export * from './FilesClient';
 export * from './CertificateClient';
+export * from './CertificationRequestClient';
 export * from './AdminClient';

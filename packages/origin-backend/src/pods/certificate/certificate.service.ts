@@ -1,6 +1,4 @@
-import { ContractTransaction, Contract, Wallet } from 'ethers';
-import { JsonRpcProvider } from 'ethers/providers';
-import { getAddress } from 'ethers/utils';
+import { ethers } from 'ethers';
 import {
     Injectable,
     NotFoundException,
@@ -20,6 +18,7 @@ import {
 } from '@energyweb/origin-backend-core';
 import { Contracts } from '@energyweb/issuer';
 import { ConfigService } from '@nestjs/config';
+import { getProviderWithFallback } from '@energyweb/utils-general';
 
 import { PreciseProofs } from 'precise-proofs-js';
 import { ConfigurationService } from '../configuration/configuration.service';
@@ -143,7 +142,7 @@ export class CertificateService {
         });
     }
 
-    async migrateToPublic(certificateId: number): Promise<ContractTransaction> {
+    async migrateToPublic(certificateId: number): Promise<ethers.Transaction> {
         const certificate = await this.get(certificateId);
 
         const {
@@ -151,7 +150,7 @@ export class CertificateService {
         } = await this.configurationService.get();
 
         try {
-            getAddress(issuerContractAddress);
+            ethers.utils.getAddress(issuerContractAddress);
         } catch (e) {
             this.logger.error(
                 `Issuer address "${issuerContractAddress}" is not a contract address. Unable to initialize.`
@@ -160,11 +159,15 @@ export class CertificateService {
         }
 
         const web3ProviderUrl = this.configService.get<string>('WEB3');
-        const provider = new JsonRpcProvider(web3ProviderUrl);
+        const provider = getProviderWithFallback(...web3ProviderUrl.split(';'));
 
-        const backendWallet = new Wallet(this.configService.get<string>('DEPLOY_KEY'));
+        const backendWallet = new ethers.Wallet(this.configService.get<string>('DEPLOY_KEY'));
 
-        const issuer = new Contract(issuerContractAddress, Contracts.IssuerJSON.abi, provider);
+        const issuer = new ethers.Contract(
+            issuerContractAddress,
+            Contracts.IssuerJSON.abi,
+            provider
+        );
         const issuerWithSigner = issuer.connect(backendWallet);
 
         const migrationRequestId = await issuerWithSigner.getMigrationRequestId(certificateId);
@@ -205,7 +208,7 @@ export class CertificateService {
         await tx.wait();
     }
 
-    async approvePrivateTransfer(certificateId: number): Promise<ContractTransaction> {
+    async approvePrivateTransfer(certificateId: number): Promise<ethers.Transaction> {
         const certificate = await this.get(certificateId);
 
         const {
@@ -213,7 +216,7 @@ export class CertificateService {
         } = await this.configurationService.get();
 
         try {
-            getAddress(issuerContractAddress);
+            ethers.utils.getAddress(issuerContractAddress);
         } catch (e) {
             this.logger.error(
                 `Issuer address "${issuerContractAddress}" is not a contract address. Unable to initialize.`
@@ -222,11 +225,15 @@ export class CertificateService {
         }
 
         const web3ProviderUrl = this.configService.get<string>('WEB3');
-        const provider = new JsonRpcProvider(web3ProviderUrl);
+        const provider = getProviderWithFallback(...web3ProviderUrl.split(';'));
 
-        const backendWallet = new Wallet(this.configService.get<string>('DEPLOY_KEY'));
+        const backendWallet = new ethers.Wallet(this.configService.get<string>('DEPLOY_KEY'));
 
-        const issuer = new Contract(issuerContractAddress, Contracts.IssuerJSON.abi, provider);
+        const issuer = new ethers.Contract(
+            issuerContractAddress,
+            Contracts.IssuerJSON.abi,
+            provider
+        );
         const issuerWithSigner = issuer.connect(backendWallet);
 
         const { commitment: previousCommitment } = certificate.currentOwnershipCommitment;

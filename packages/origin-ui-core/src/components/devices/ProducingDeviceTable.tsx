@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { Role, isRole, DeviceStatus } from '@energyweb/origin-backend-core';
+import { Role, isRole, DeviceStatus, IOrganization } from '@energyweb/origin-backend-core';
 import { Link, Redirect } from 'react-router-dom';
 import { ProducingDevice } from '@energyweb/device-registry';
 import { useSelector, useDispatch } from 'react-redux';
 import { Fab, Tooltip } from '@material-ui/core';
-import { Add, Assignment, Check } from '@material-ui/icons';
-import { getProducingDevices, getBaseURL, getConfiguration } from '../features/selectors';
+import { Add, Check, Visibility, Assignment } from '@material-ui/icons';
+import { getProducingDevices, getBaseURL, getConfiguration } from '../../features/selectors';
 import {
     TableMaterial,
     ITableAction,
@@ -15,11 +15,10 @@ import {
     checkRecordPassesFilters,
     ICustomFilterDefinition,
     CustomFilterInputType
-} from './Table';
-import { getUserOffchain, getOrganizations } from '../features/users/selectors';
-import { showRequestCertificatesModal } from '../features/certificates/actions';
-import { setLoading } from '../features/general/actions';
-import { producingDeviceCreatedOrUpdated } from '../features/producingDevices/actions';
+} from '../Table';
+import { getUserOffchain } from '../../features/users/selectors';
+import { setLoading } from '../../features/general/actions';
+import { producingDeviceCreatedOrUpdated } from '../../features/producingDevices/actions';
 import {
     EnergyFormatter,
     PowerFormatter,
@@ -30,8 +29,9 @@ import {
     NotificationType,
     useTranslation,
     moment
-} from '../utils';
-import { getEnvironment } from '../features';
+} from '../../utils';
+import { getEnvironment } from '../../features';
+import { showRequestCertificatesModal } from '../../features/certificates';
 
 interface IOwnProps {
     actions: {
@@ -57,20 +57,16 @@ export function ProducingDeviceTable(props: IOwnProps) {
     const user = useSelector(getUserOffchain);
     const producingDevices = useSelector(getProducingDevices);
     const baseURL = useSelector(getBaseURL);
-    const organizations = useSelector(getOrganizations);
     const environment = useSelector(getEnvironment);
 
     const dispatch = useDispatch();
 
     function enrichProducingDeviceData(): IEnrichedProducingDeviceData[] {
         const enriched: IEnrichedProducingDeviceData[] = [];
-
         for (const device of producingDevices) {
-            const organization = organizations.find((o) => o.id === device.organization);
-
             enriched.push({
                 device,
-                organizationName: organization?.name,
+                organizationName: (device?.organization as IOrganization).name,
                 locationText: getDeviceLocationText(device)
             });
         }
@@ -94,7 +90,9 @@ export function ProducingDeviceTable(props: IOwnProps) {
                     requestedFilters,
                     configuration.deviceTypeService
                 ) &&
-                (!props.owner || record?.device?.organization === user?.organization?.id) &&
+                (!props.owner ||
+                    (record?.device?.organization as IOrganization).id ===
+                        user?.organization?.id) &&
                 (includedStatuses.length === 0 || includedStatuses.includes(record.device.status))
         );
 
@@ -118,7 +116,7 @@ export function ProducingDeviceTable(props: IOwnProps) {
 
     useEffect(() => {
         loadPage(1);
-    }, [user, producingDevices, organizations]);
+    }, [user, producingDevices]);
 
     function viewDevice(rowIndex: number) {
         const device = paginatedData[rowIndex].device;
@@ -231,6 +229,12 @@ export function ProducingDeviceTable(props: IOwnProps) {
     }
 
     const actions: ITableAction[] = [];
+
+    actions.push({
+        icon: <Visibility />,
+        name: t('device.actions.viewDetails'),
+        onClick: viewDevice
+    });
 
     if (
         props.actions.requestCertificates &&
