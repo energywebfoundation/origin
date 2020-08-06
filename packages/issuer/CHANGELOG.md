@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.4.2](https://github.com/energywebfoundation/origin/compare/@energyweb/issuer@2.4.1...@energyweb/issuer@2.4.2) (2020-08-06)
+
+
+### Bug Fixes
+
+* **deps:** update dependency mocha to v8.1.0 ([fa63959](https://github.com/energywebfoundation/origin/commit/fa63959e14b1426108eaf9142a341e6f387ca204))
+* **issuer:** Certificate creation date always shows current time ([fc1cb51](https://github.com/energywebfoundation/origin/commit/fc1cb518906b0e5be12d5fefa315cb2b4696f749))
+
+
+
+
+
 ## [2.4.1](https://github.com/energywebfoundation/origin/compare/@energyweb/issuer@2.4.0...@energyweb/issuer@2.4.1) (2020-07-16)
 
 **Note:** Version bump only for package @energyweb/issuer

@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.1.2](https://github.com/energywebfoundation/origin/compare/@energyweb/exchange-core@3.1.1...@energyweb/exchange-core@3.1.2) (2020-08-06)
+
+
+### Bug Fixes
+
+* **deps:** update dependency rxjs to v6.6.2 ([1849e03](https://github.com/energywebfoundation/origin/commit/1849e030c7cce6bf4d4063f3c6d96d98fbb96041))
+
+
+
+
+
 ## [3.1.1](https://github.com/energywebfoundation/origin/compare/@energyweb/exchange-core@3.1.0...@energyweb/exchange-core@3.1.1) (2020-07-16)
 
 **Note:** Version bump only for package @energyweb/exchange-core

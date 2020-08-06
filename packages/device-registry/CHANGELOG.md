@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.2.6](https://github.com/energywebfoundation/origin/compare/@energyweb/device-registry@6.2.5...@energyweb/device-registry@6.2.6) (2020-08-06)
+
+**Note:** Version bump only for package @energyweb/device-registry
+
+
+
+
+
 ## [6.2.5](https://github.com/energywebfoundation/origin/compare/@energyweb/device-registry@6.2.4...@energyweb/device-registry@6.2.5) (2020-07-16)
 
 **Note:** Version bump only for package @energyweb/device-registry
