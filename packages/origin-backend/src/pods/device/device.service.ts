@@ -68,11 +68,12 @@ export class DeviceService {
         id: string,
         options: FindOneOptions<Device> = {},
         withMeterStats = false
-    ): Promise<ExtendedBaseEntity & IDeviceWithRelationsIds> {
+    ): Promise<ExtendedBaseEntity & IDevice> {
+        const { loadRelationIds = true } = options;
         const device = ((await this.repository.findOne(id, {
-            loadRelationIds: true,
+            loadRelationIds,
             ...options
-        })) as IDevice) as ExtendedBaseEntity & IDeviceWithRelationsIds;
+        })) as IDevice) as ExtendedBaseEntity & IDevice;
 
         if (this.smartMeterReadingsAdapter) {
             device.smartMeterReads = [];
@@ -196,11 +197,12 @@ export class DeviceService {
     async getAll(
         withMeterStats = false,
         options: FindOneOptions<Device> = {}
-    ): Promise<Array<ExtendedBaseEntity & IDeviceWithRelationsIds>> {
+    ): Promise<Array<ExtendedBaseEntity & IDevice>> {
+        const { loadRelationIds = true } = options;
         const devices = ((await this.repository.find({
-            loadRelationIds: true,
+            loadRelationIds,
             ...options
-        })) as IDevice[]) as (ExtendedBaseEntity & IDeviceWithRelationsIds)[];
+        })) as IDevice[]) as (ExtendedBaseEntity & IDevice)[];
 
         for (const device of devices) {
             if (this.smartMeterReadingsAdapter) {
@@ -229,7 +231,7 @@ export class DeviceService {
         id: string,
         update: DeviceUpdateData
     ): Promise<ExtendedBaseEntity & IDeviceWithRelationsIds> {
-        const device = await this.findOne(id);
+        const device = (await this.findOne(id)) as ExtendedBaseEntity & IDeviceWithRelationsIds;
 
         if (!device) {
             throw new NotFoundException(StorageErrors.NON_EXISTENT);

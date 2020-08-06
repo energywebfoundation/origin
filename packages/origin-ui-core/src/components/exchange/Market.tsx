@@ -18,7 +18,7 @@ import { useValidation, Moment, useTranslation, formatCurrencyComplete } from '.
 import { calculateTotalPrice, ANY_VALUE, ANY_OPERATOR } from '../../utils/exchange';
 import { Formik, Form } from 'formik';
 import { FormInput, FormikDatePickerWithMonthArrowsFilled, FormikEffect } from '../Form';
-import { DeviceSelectors } from '../DeviceSelectors';
+import { DeviceSelectors } from '../devices/DeviceSelectors';
 
 export interface IMarketFormValues {
     generationDateStart: Moment;

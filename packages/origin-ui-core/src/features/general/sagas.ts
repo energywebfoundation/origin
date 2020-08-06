@@ -18,7 +18,7 @@ import {
     getExchangeClient
 } from './selectors';
 import axios, { Canceler } from 'axios';
-import { IOffChainDataSource, OffChainDataSource } from '@energyweb/origin-backend-client';
+import { OffChainDataSource } from '@energyweb/origin-backend-client';
 import {
     ExchangeClient,
     IExchangeClient,
@@ -26,7 +26,11 @@ import {
     AccountAsset,
     Bundle
 } from '../../utils/exchange';
-import { IOriginConfiguration, IUserWithRelations } from '@energyweb/origin-backend-core';
+import {
+    IOriginConfiguration,
+    IUserWithRelations,
+    IOffChainDataSource
+} from '@energyweb/origin-backend-core';
 import {
     setActiveBlockchainAccountAddress,
     UsersActions,
@@ -61,6 +65,7 @@ import {
 } from '../bundles';
 import { fetchOrders } from '../orders/sagas';
 import { getUserOffchain } from '../users/selectors';
+import { IProducingDeviceState } from '../producingDevices/reducer';
 
 function createEthereumProviderAccountsChangedEventChannel(ethereumProvider: any) {
     return eventChannel<string[]>((emitter) => {
@@ -382,10 +387,10 @@ export function* fetchDataAfterConfigurationChange(
     configuration: Configuration.Entity,
     update = false
 ): SagaIterator {
-    const producingDevices: ProducingDevice.Entity[] = yield apply(
+    const producingDevices: IProducingDeviceState[] = yield apply(
         ProducingDevice,
         ProducingDevice.getAllDevices,
-        [configuration, true]
+        [configuration, true, false]
     );
 
     for (const device of producingDevices) {

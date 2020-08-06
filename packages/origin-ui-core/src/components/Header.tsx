@@ -1,8 +1,16 @@
 import React, { useContext } from 'react';
 import { NavLink, Link } from 'react-router-dom';
-import { makeStyles, createStyles, useTheme, Tooltip, Typography, Grid } from '@material-ui/core';
+import {
+    makeStyles,
+    createStyles,
+    useTheme,
+    Tooltip,
+    Typography,
+    Grid,
+    Theme
+} from '@material-ui/core';
 import { AccountCircle, Settings, PersonAdd, ExitToApp } from '@material-ui/icons';
-
+import { OriginFeature } from '@energyweb/utils-general';
 import { IUserWithRelations, Role, isRole } from '@energyweb/origin-backend-core';
 
 import { useSelector, useDispatch } from 'react-redux';
@@ -19,7 +27,7 @@ export function getAddressDisplay(address: string, userOffchain?: IUserWithRelat
     return `${address.slice(0, 5)}...${address.slice(address.length - 3, address.length)}`;
 }
 
-const useStyles = makeStyles(() =>
+const useStyles = makeStyles((theme: Theme) =>
     createStyles({
         icon: {
             opacity: 0.3,
@@ -36,6 +44,9 @@ const useStyles = makeStyles(() =>
             marginLeft: '8px',
             verticalAlign: 'sub',
             cursor: 'pointer'
+        },
+        tooltip: {
+            backgroundColor: theme.palette.primary.main
         }
     })
 );
@@ -48,6 +59,7 @@ export function Header() {
     const classes = useStyles(useTheme());
 
     const {
+        getDefaultLink,
         getDevicesLink,
         getUserRegisterLink,
         getCertificatesLink,
@@ -57,22 +69,28 @@ export function Header() {
         getAdminLink
     } = useLinks();
 
-    const originConfiguration = useContext(OriginConfigurationContext);
+    const { enabledFeatures, logo } = useContext(OriginConfigurationContext);
 
     const { t } = useTranslation();
 
     return (
         <div className="HeaderWrapper">
             <div className="Header">
-                <NavLink to={getDevicesLink()}>{originConfiguration.logo}</NavLink>
+                <NavLink to={getDefaultLink()}>{logo}</NavLink>
 
                 <ul className="NavMenu nav">
-                    <li>
-                        <NavLink to={getDevicesLink()}>{t('header.devices')}</NavLink>
-                    </li>
-                    <li>
-                        <NavLink to={getCertificatesLink()}>{t('header.certificates')}</NavLink>
-                    </li>
+                    {enabledFeatures.includes(OriginFeature.Devices) && (
+                        <li>
+                            <NavLink to={getDevicesLink()}>{t('header.devices')}</NavLink>
+                        </li>
+                    )}
+
+                    {enabledFeatures.includes(OriginFeature.Certificates) && (
+                        <li>
+                            <NavLink to={getCertificatesLink()}>{t('header.certificates')}</NavLink>
+                        </li>
+                    )}
+
                     {isRole(
                         userOffchain,
                         Role.OrganizationAdmin,
@@ -135,7 +153,10 @@ export function Header() {
                                 className={classes.endIcon}
                                 {...dataTest('header-link-account-settings')}
                             >
-                                <Tooltip title={t('settings.settings')}>
+                                <Tooltip
+                                    title={t('settings.settings')}
+                                    classes={{ tooltip: classes.tooltip }}
+                                >
                                     <Settings color="primary" />
                                 </Tooltip>
                             </Link>

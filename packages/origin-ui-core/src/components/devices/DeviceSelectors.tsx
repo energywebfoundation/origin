@@ -1,10 +1,10 @@
 import React from 'react';
-import { useTranslation, isDeviceLocationEnabled, isDeviceGridOperatorEnabled } from '../utils';
-import { HierarchicalMultiSelect } from './HierarchicalMultiSelect';
+import { useTranslation, isDeviceLocationEnabled, isDeviceGridOperatorEnabled } from '../../utils';
+import { HierarchicalMultiSelect } from '../HierarchicalMultiSelect';
 import { Grid, GridSize } from '@material-ui/core';
 import { useSelector } from 'react-redux';
-import { getRegions, getOffchainConfiguration, getEnvironment } from '../features';
-import { ANY_VALUE, ANY_OPERATOR } from '../utils/exchange';
+import { getRegions, getOffchainConfiguration, getEnvironment } from '../../features';
+import { ANY_VALUE, ANY_OPERATOR } from '../../utils/exchange';
 
 interface IProps {
     location: string[];

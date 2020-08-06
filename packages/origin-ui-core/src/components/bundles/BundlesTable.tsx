@@ -13,7 +13,7 @@ import {
     energyShares,
     getProducingDevices
 } from '../..';
-import { EnergyTypes } from '../../utils';
+import { EnergyTypes } from '../../utils/device';
 import { useSelector, useDispatch } from 'react-redux';
 
 import { Bundle, IExchangeClient } from '../../utils/exchange';

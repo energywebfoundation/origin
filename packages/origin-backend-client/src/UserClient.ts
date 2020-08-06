@@ -11,29 +11,12 @@ import {
     UserPasswordUpdate,
     IEmailConfirmationToken,
     EmailConfirmationResponse,
-    ISuccessResponse
+    ISuccessResponse,
+    IUserClient,
+    IRequestClient
 } from '@energyweb/origin-backend-core';
 
-import { IRequestClient, RequestClient } from './RequestClient';
-
-type UpdateUserResponseReturnType = IUserWithRelationsIds;
-
-export interface IUserClient {
-    login(email: string, password: string): Promise<UserLoginReturnData>;
-    logout(): Promise<void>;
-    register(data: UserRegistrationData): Promise<UserRegisterReturnData>;
-    me(): Promise<IUserWithRelationsIds>;
-    getUserById(id: string): Promise<IUserWithRelationsIds>;
-    attachSignedMessage(signedMessage: string): Promise<UpdateUserResponseReturnType>;
-    updateAdditionalProperties(
-        properties: Partial<Pick<IUserProperties, 'notifications'>>
-    ): Promise<UpdateUserResponseReturnType>;
-    updateProfile(formData: IUser): Promise<IUserWithRelations>;
-    updatePassword(formData: UserPasswordUpdate): Promise<IUserWithRelations>;
-    updateChainAddress(formData: IUser): Promise<IUserWithRelations>;
-    confirmEmail(token: IEmailConfirmationToken['token']): Promise<EmailConfirmationResponse>;
-    requestConfirmationEmail(): Promise<ISuccessResponse>;
-}
+import { RequestClient } from './RequestClient';
 
 export class UserClient implements IUserClient {
     constructor(

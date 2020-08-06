@@ -1,19 +1,21 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Route, NavLink, Redirect } from 'react-router-dom';
 import { Role, isRole, UserStatus } from '@energyweb/origin-backend-core';
-import { PageContent } from './PageContent/PageContent';
+import { OriginFeature } from '@energyweb/utils-general';
+import { PageContent } from '../PageContent/PageContent';
 import { CertificateTable, SelectedState } from './CertificateTable';
 import { CertificateDetailView } from './CertificateDetailView';
 import { CertificationRequestsTable } from './CertificationRequestsTable';
 import { useSelector } from 'react-redux';
-import { getUserOffchain } from '../features/users/selectors';
-import { getCurrencies } from '../features/general/selectors';
+import { getUserOffchain } from '../../features/users/selectors';
+import { getCurrencies } from '../../features/general/selectors';
 import { useTranslation } from 'react-i18next';
-import { Exchange, MyTrades } from './exchange';
-import { useLinks } from '../utils';
-import { BundlesTable } from './bundles/BundlesTable';
-import { CreateBundleForm } from './bundles/CreateBundleForm';
-import { MyOrders } from './orders/MyOrders';
+import { Exchange, MyTrades } from '../exchange';
+import { useLinks } from '../../utils';
+import { BundlesTable } from '../bundles/BundlesTable';
+import { CreateBundleForm } from '../bundles/CreateBundleForm';
+import { MyOrders } from '../orders/MyOrders';
+import { OriginConfigurationContext } from '..';
 
 function CertificateDetailViewId(id: number) {
     return <CertificateDetailView id={id} />;
@@ -37,6 +39,8 @@ export function Certificates() {
     const { baseURL, getCertificatesLink } = useLinks();
     const { t } = useTranslation();
 
+    const originConfiguration = useContext(OriginConfigurationContext);
+
     const defaultCurrency = (currencies && currencies[0]) ?? 'USD';
 
     const ExchangeRoute = () => <Exchange currency={defaultCurrency} />;
@@ -50,68 +54,79 @@ export function Certificates() {
             key: 'inbox',
             label: 'navigation.certificates.inbox',
             component: InboxCertificates,
-            show: user && !isIssuer
+            show: user && !isIssuer,
+            features: [OriginFeature.Certificates, OriginFeature.Buyer]
         },
         {
             key: 'claims_report',
             label: 'navigation.certificates.claimsReport',
             component: ClaimedCertificates,
-            show: user && !isIssuer
+            show: user && !isIssuer,
+            features: [OriginFeature.Certificates, OriginFeature.Buyer]
         },
         {
             key: 'detail_view',
             label: 'navigation.certificates.detailView',
             component: null,
-            show: false
+            show: false,
+            features: [OriginFeature.Certificates]
         },
         {
             key: 'pending',
             label: 'navigation.certificates.pending',
             component: PendingCertificationRequestsTable,
-            show: user
+            show: user,
+            features: [OriginFeature.Certificates, OriginFeature.CertificationRequests]
         },
         {
             key: 'approved',
             label: 'navigation.certificates.approved',
             component: ApprovedCertificationRequestsTable,
-            show: isIssuer
+            show: isIssuer,
+            features: [OriginFeature.Certificates, OriginFeature.CertificationRequests]
         },
         {
             key: 'exchange',
             label: 'navigation.certificates.exchange',
             component: ExchangeRoute,
-            show: true
+            show: true,
+            features: [OriginFeature.Exchange]
         },
         {
             key: 'bundles',
             label: 'navigation.certificates.bundles',
             component: BundlesTable,
-            show: user
+            show: user,
+            features: [OriginFeature.Exchange, OriginFeature.Bundles]
         },
         {
             key: 'create_bundle',
             label: 'navigation.certificates.create_bundle',
             component: CreateBundleForm,
-            show: userIsActive
+            show: userIsActive,
+            features: [OriginFeature.Exchange, OriginFeature.Bundles]
         },
         {
             key: 'my_bundles',
             label: 'navigation.certificates.my_bundles',
             component: BundlesTable,
             props: { owner: true },
-            show: userIsActive
+            show: userIsActive,
+            features: [OriginFeature.Exchange, OriginFeature.Bundles]
         },
         {
             key: 'my-trades',
             label: 'navigation.certificates.myTrades',
             component: TradesRoute,
-            show: user
+            show: user,
+            features: [OriginFeature.Exchange]
         },
         {
             key: 'my_orders',
             label: 'navigation.certificates.myOrders',
             component: MyOrders,
-            show: user
+            show: user,
+            features: [OriginFeature.Exchange]
         }
     ];
     const authenticationToken = localStorage.getItem('AUTHENTICATION_TOKEN');
@@ -138,7 +153,12 @@ export function Certificates() {
                 <div className="PageNav">
                     <ul className="NavMenu nav">
                         {CertificatesMenu.map((menu) => {
-                            if (menu.show) {
+                            if (
+                                menu.show &&
+                                menu.features.every((flag) =>
+                                    originConfiguration.enabledFeatures.includes(flag)
+                                )
+                            ) {
                                 const link = `${getCertificatesLink()}/${menu.key}`;
 
                                 return (

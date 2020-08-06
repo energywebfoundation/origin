@@ -1,14 +1,14 @@
 import React, { useEffect } from 'react';
 import { Role, isRole, UserStatus } from '@energyweb/origin-backend-core';
 import { useSelector, useDispatch } from 'react-redux';
-import { getProducingDevices, getConfiguration } from '../features/selectors';
-import { TableMaterial } from './Table/TableMaterial';
+import { getProducingDevices, getConfiguration } from '../../features/selectors';
+import { TableMaterial } from '../Table/TableMaterial';
 import { Check } from '@material-ui/icons';
-import { getUserOffchain } from '../features/users/selectors';
+import { getUserOffchain } from '../../features/users/selectors';
 import {
     IPaginatedLoaderHooksFetchDataParameters,
     usePaginatedLoader
-} from './Table/PaginatedLoaderHooks';
+} from '../Table/PaginatedLoaderHooks';
 import { ProducingDevice } from '@energyweb/device-registry';
 import {
     EnergyFormatter,
@@ -19,11 +19,11 @@ import {
     useTranslation,
     showNotification,
     NotificationType
-} from '../utils';
+} from '../../utils';
 import { Skeleton } from '@material-ui/lab';
-import { getOffChainDataSource, getEnvironment } from '../features/general/selectors';
+import { getOffChainDataSource, getEnvironment } from '../../features/general/selectors';
 import { CertificationRequest } from '@energyweb/issuer';
-import { requestCertificateApproval } from '../features/certificates';
+import { requestCertificateApproval } from '../../features/certificates';
 
 interface IProps {
     approved: boolean;

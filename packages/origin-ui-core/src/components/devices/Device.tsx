@@ -1,17 +1,19 @@
+import { OriginFeature } from '@energyweb/utils-general';
 import { DeviceStatus, isRole, Role } from '@energyweb/origin-backend-core';
-import React from 'react';
+import React, { useContext } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
 import { NavLink, Redirect, Route } from 'react-router-dom';
-import { getUserOffchain } from '../features/users/selectors';
-import { useLinks } from '../utils';
+import { getUserOffchain } from '../../features/users/selectors';
+import { useLinks } from '../../utils';
 import { AddDevice } from './AddDevice';
 import { AutoSupplyDeviceTable } from './AutoSupplyDeviceTable';
 import { DeviceGroupForm } from './DeviceGroupForm';
 import { DeviceMap } from './DeviceMap';
-import { PageContent } from './PageContent/PageContent';
+import { PageContent } from '../PageContent/PageContent';
 import { ProducingDeviceDetailView } from './ProducingDeviceDetailView';
 import { ProducingDeviceTable } from './ProducingDeviceTable';
+import { OriginConfigurationContext } from '../OriginConfigurationContext';
 
 export function Device() {
     const userOffchain = useSelector(getUserOffchain);
@@ -45,9 +47,7 @@ export function Device() {
             <ProducingDeviceTable
                 hiddenColumns={['status']}
                 includedStatuses={[DeviceStatus.Active]}
-                actions={{
-                    requestCertificates: true
-                }}
+                actions={{}}
             />
         );
     }
@@ -69,57 +69,73 @@ export function Device() {
         {
             key: 'production',
             label: t('navigation.devices.all'),
-            component: ProductionList
+            component: ProductionList,
+            features: [OriginFeature.Devices]
         },
         {
             key: 'production-map',
             label: t('navigation.devices.map'),
-            component: Map
+            component: Map,
+            features: [OriginFeature.Devices]
         },
         {
             key: 'owned',
             label: t('navigation.devices.my'),
             component: MyDevices,
-            roles: [Role.OrganizationDeviceManager, Role.OrganizationAdmin]
+            roles: [Role.OrganizationDeviceManager, Role.OrganizationAdmin],
+            features: [OriginFeature.Devices, OriginFeature.Seller]
         },
         {
             key: 'pending',
             label: t('navigation.devices.pending'),
             component: ProductionPendingList,
-            roles: [Role.Issuer]
+            roles: [Role.Issuer],
+            features: [OriginFeature.Devices]
         },
         {
             key: 'add',
             label: t('navigation.devices.registerDevice'),
             component: AddDevice,
-            roles: [Role.OrganizationDeviceManager, Role.OrganizationAdmin]
+            roles: [Role.OrganizationDeviceManager, Role.OrganizationAdmin],
+            features: [OriginFeature.Devices, OriginFeature.Seller]
         },
         {
             key: 'add-group',
             label: t('navigation.devices.registerDeviceGroup'),
             component: DeviceGroupForm,
-            roles: [Role.OrganizationDeviceManager, Role.OrganizationAdmin]
+            roles: [Role.OrganizationDeviceManager, Role.OrganizationAdmin],
+            features: [OriginFeature.Devices, OriginFeature.Seller]
         },
         {
             key: 'producing_detail_view',
             label: 'Production detail',
             component: null,
-            hide: true
+            hide: true,
+            features: [OriginFeature.Devices]
         },
         {
             key: 'supply',
             label: t('navigation.devices.supply'),
             component: AutoSupplyDeviceTable,
-            roles: [Role.OrganizationDeviceManager, Role.OrganizationAdmin]
+            roles: [Role.OrganizationDeviceManager, Role.OrganizationAdmin],
+            features: [OriginFeature.Devices, OriginFeature.Seller]
         }
     ];
+
+    const originConfiguration = useContext(OriginConfigurationContext);
 
     return (
         <div className="PageWrapper">
             <div className="PageNav">
                 <ul className="NavMenu nav">
                     {DevicesMenu.map((menu) => {
-                        if (menu.hide || (menu.roles && !isRole(userOffchain, ...menu.roles))) {
+                        if (
+                            menu.hide ||
+                            !menu.features.every((flag) =>
+                                originConfiguration.enabledFeatures.includes(flag)
+                            ) ||
+                            (menu.roles && !isRole(userOffchain, ...menu.roles))
+                        ) {
                             return null;
                         }
 

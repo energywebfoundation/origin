@@ -18,9 +18,9 @@ export class DemandTimePeriodService {
         const range = moment.range(start, end);
 
         const { diff, step } = this.timeFrameToTimeDiff(createDemand.periodTimeFrame);
-        const validFrom = Array.from(range.by(diff, { step, excludeEnd: true })).map((v) =>
-            v.toDate()
-        );
+        const validFrom = Array.from(
+            range.by(diff, { step, excludeEnd: createDemand.excludeEnd ?? true })
+        ).map((v) => v.toDate());
 
         return validFrom.map((v, i) => ({
             validFrom: v,

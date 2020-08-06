@@ -64,7 +64,7 @@ export class CertificationRequest extends PreciseProofEntity implements ICertifi
             );
         }
 
-        const { certificateClient } = configuration.offChainDataSource;
+        const { certificationRequestClient } = configuration.offChainDataSource;
 
         const { issuer } = configuration.blockchainProperties as Configuration.BlockchainProperties<
             Registry,
@@ -72,9 +72,9 @@ export class CertificationRequest extends PreciseProofEntity implements ICertifi
         >;
         const issuerWithSigner = issuer.connect(configuration.blockchainProperties.activeUser);
 
-        await certificateClient.validateGenerationPeriod({ fromTime, toTime, deviceId });
+        await certificationRequestClient.validateGenerationPeriod({ fromTime, toTime, deviceId });
 
-        const success = await certificateClient.queueCertificationRequestData({
+        const success = await certificationRequestClient.queueCertificationRequestData({
             deviceId,
             fromTime,
             toTime,
@@ -118,19 +118,23 @@ export class CertificationRequest extends PreciseProofEntity implements ICertifi
     public static async getAll(
         configuration: Configuration.Entity
     ): Promise<CertificationRequest[]> {
-        const all = await configuration.offChainDataSource.certificateClient.getAllCertificationRequests();
+        const all = await configuration.offChainDataSource.certificationRequestClient.getAllCertificationRequests();
 
-        return all.map((certReq) => new CertificationRequest(certReq, configuration));
+        return all.map(
+            (certReq: ICertificationRequest) => new CertificationRequest(certReq, configuration)
+        );
     }
 
     public static async fetch(
         id: ICertificationRequest['id'],
         configuration: Configuration.Entity
     ): Promise<CertificationRequest> {
-        const certData = await polly()
+        const certData: ICertificationRequest = await polly()
             .waitAndRetry([2000, 4000, 8000, 16000])
             .executeForPromise(() =>
-                configuration.offChainDataSource.certificateClient.getCertificationRequest(id)
+                configuration.offChainDataSource.certificationRequestClient.getCertificationRequest(
+                    id
+                )
             );
 
         if (configuration.logger) {

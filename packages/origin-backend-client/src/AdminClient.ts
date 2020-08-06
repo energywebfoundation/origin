@@ -2,14 +2,11 @@ import {
     IUser,
     UserUpdateData,
     IUserWithRelations,
-    IUserFilter
+    IUserFilter,
+    IAdminClient,
+    IRequestClient
 } from '@energyweb/origin-backend-core';
-import { IRequestClient, RequestClient } from './RequestClient';
-
-export interface IAdminClient {
-    update(formData: UserUpdateData): Promise<IUserWithRelations>;
-    getUsers(filter?: IUserFilter): Promise<IUser[]>;
-}
+import { RequestClient } from './RequestClient';
 
 export class AdminClient implements IAdminClient {
     constructor(
