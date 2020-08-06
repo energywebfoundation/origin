@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [9.2.0](https://github.com/energywebfoundation/origin/compare/@energyweb/utils-general@9.1.5...@energyweb/utils-general@9.2.0) (2020-08-06)
+
+
+### Features
+
+* **utils-general:** add support for Origin Features ([86b8681](https://github.com/energywebfoundation/origin/commit/86b86819227cacbe361ef75f1c425311e1770ec1))
+
+
+
+
+
 ## [9.1.5](https://github.com/energywebfoundation/origin/compare/@energyweb/utils-general@9.1.4...@energyweb/utils-general@9.1.5) (2020-07-16)
 
 **Note:** Version bump only for package @energyweb/utils-general

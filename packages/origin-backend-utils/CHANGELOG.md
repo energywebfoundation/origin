@@ -3,6 +3,23 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.2.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-backend-utils@1.1.1...@energyweb/origin-backend-utils@1.2.0) (2020-08-06)
+
+
+### Bug Fixes
+
+* **deps:** update nest monorepo to v7.4.2 ([241f045](https://github.com/energywebfoundation/origin/commit/241f04525f8d09f8bd464f979933390ad6a4bb2a))
+
+
+### Features
+
+* **origin-backend:** optional loadRelationsId of device ([ee38568](https://github.com/energywebfoundation/origin/commit/ee385688431b72dcc967544e1552e59e6ca8c9ef))
+* **origin-backend-utils:** add IntUnitsOfEnergy validator ([ca0a612](https://github.com/energywebfoundation/origin/commit/ca0a612c04addb3497a8f4a1def95e3e9640cdd3))
+
+
+
+
+
 ## [1.1.1](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-backend-utils@1.1.0...@energyweb/origin-backend-utils@1.1.1) (2020-07-16)
 
 

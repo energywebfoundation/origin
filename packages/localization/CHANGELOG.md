@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.7.0](https://github.com/energywebfoundation/origin/compare/@energyweb/localization@0.6.0...@energyweb/localization@0.7.0) (2020-08-06)
+
+
+### Features
+
+* **origin-ui-core:** recalc total volume ([f4f7c00](https://github.com/energywebfoundation/origin/commit/f4f7c005d58a421674b13b000c4740a14b6b2b9e))
+
+
+
+
+
 # [0.6.0](https://github.com/energywebfoundation/origin/compare/@energyweb/localization@0.5.0...@energyweb/localization@0.6.0) (2020-07-16)
 
 

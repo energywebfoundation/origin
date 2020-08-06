@@ -3,6 +3,23 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [4.3.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-backend-core@4.2.0...@energyweb/origin-backend-core@4.3.0) (2020-08-06)
+
+
+### Bug Fixes
+
+* **deps:** update dependency class-transformer to v0.3.1 ([e827bbb](https://github.com/energywebfoundation/origin/commit/e827bbbc6f357c135d2d803bb82ad8774914913a))
+* **origin-ui-core:** store org id for non-admin and non-support agent ([7498fb4](https://github.com/energywebfoundation/origin/commit/7498fb49c9e24856c2a8d4c8c0b57b2ca8d8923b))
+
+
+### Features
+
+* **origin-backend:** getAll Devices with relations ([b644f38](https://github.com/energywebfoundation/origin/commit/b644f38b6b6a3b7cff7039795df31d25553455fc))
+
+
+
+
+
 # [4.2.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-backend-core@4.1.0...@energyweb/origin-backend-core@4.2.0) (2020-07-16)
 
 
