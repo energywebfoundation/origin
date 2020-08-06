@@ -4,7 +4,7 @@ import { getProviderWithFallback } from '@energyweb/utils-general';
 import { forwardRef, Inject, Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { ModuleRef } from '@nestjs/core';
-import { Contract, ContractTransaction, ethers, Wallet } from 'ethers';
+import { Contract, ContractTransaction, ethers, Wallet, ContractReceipt } from 'ethers';
 import { Subject } from 'rxjs';
 import { concatMap, tap } from 'rxjs/operators';
 
@@ -81,20 +81,11 @@ export class WithdrawalProcessorService implements OnModuleInit {
             )
             .subscribe();
 
-        const acceptedWithdrawals = await this.transferService.getByStatus(
-            TransferStatus.Accepted,
-            TransferDirection.Withdrawal
-        );
-        this.logger.debug(
-            `Found ${acceptedWithdrawals.length} TransferStatus.Accepted withdrawals`
-        );
-
-        acceptedWithdrawals.forEach((withdrawal) => this.requestWithdrawal(withdrawal));
-
-        // TODO: handle unconfirmed withdrawals
+        await this.processAcceptedWithdrawals();
+        await this.processUnconfirmedWithdrawals();
     }
 
-    public requestWithdrawal(withdrawal: Transfer) {
+    public requestWithdrawal(withdrawal: Transfer): void {
         const { id } = withdrawal;
         this.logger.log(`[Withdrawal ${id}] Requested processing`);
         this.logger.debug(`[Withdrawal ${id}] Requested processing ${JSON.stringify(withdrawal)}`);
@@ -143,40 +134,66 @@ export class WithdrawalProcessorService implements OnModuleInit {
 
         const receipt = await transaction.wait();
 
-        this.logger.debug(`Withdrawal ${id} receipt: ${JSON.stringify(receipt)} `);
+        await this.handleConfirmation(withdrawal, receipt);
+    }
 
-        const hasLog = receipt.logs
-            .map((log) => {
-                const { name } = this.tokenInterface.parseLog(log);
-                return this.tokenInterface.decodeEventLog(name, log.data, log.topics);
-            })
+    private async processAcceptedWithdrawals() {
+        const withdrawals = await this.transferService.getByStatus(
+            TransferStatus.Accepted,
+            TransferDirection.Withdrawal
+        );
+        this.logger.debug(`Found ${withdrawals.length} TransferStatus.Accepted withdrawals`);
+
+        withdrawals.forEach((withdrawal) => this.requestWithdrawal(withdrawal));
+    }
+
+    private async processUnconfirmedWithdrawals() {
+        const withdrawals = await this.transferService.getByStatus(
+            TransferStatus.Unconfirmed,
+            TransferDirection.Withdrawal
+        );
+        this.logger.debug(`Found ${withdrawals.length} TransferStatus.Unconfirmed withdrawals`);
+
+        for (const withdrawal of withdrawals) {
+            const transaction = await this.wallet.provider.getTransaction(
+                withdrawal.transactionHash
+            );
+            const receipt = await transaction.wait();
+
+            await this.handleConfirmation(withdrawal, receipt);
+        }
+    }
+
+    private async handleConfirmation(
+        withdrawal: Transfer,
+        { transactionHash, logs, blockNumber }: ContractReceipt
+    ) {
+        const { id } = withdrawal;
+
+        const hasLog = logs
+            .map((log) => this.tokenInterface.parseLog(log))
+            .filter((log) => log.name === 'TransferSingle')
             .some((log) => this.hasMatchingLog(withdrawal, log));
 
         if (!hasLog) {
             this.logger.error(
-                `[Withdrawal ${id}] Expected event TransferSingle was not found in the transaction ${receipt.transactionHash}`
+                `[Withdrawal ${id}] Expected event TransferSingle was not found in the transaction ${transactionHash}`
             );
             await this.transferService.setAsError(id);
-            return;
+        } else {
+            await this.transferService.setAsConfirmed(transactionHash, blockNumber);
         }
-
-        await this.transferService.setAsConfirmed(transaction.hash, receipt.blockNumber);
     }
 
-    private hasMatchingLog(withdrawal: Transfer, log: ethers.utils.Result) {
-        const _to = String(log._to).toLowerCase();
-        const _from = String(log._from).toLowerCase();
-        const _topic = this.tokenInterface.getEventTopic(
-            this.tokenInterface.getEvent('TransferSingle')
-        );
+    private hasMatchingLog(withdrawal: Transfer, { args }: ethers.utils.LogDescription) {
+        const _to = String(args._to).toLowerCase();
+        const _from = String(args._from).toLowerCase();
 
         return (
-            log.topic === _topic &&
-            log._id.toString() === withdrawal.asset.tokenId &&
+            args._id.toString() === withdrawal.asset.tokenId &&
             _from === this.wallet.address.toLowerCase() &&
             _to === withdrawal.address.toLowerCase() &&
-            log._value.toString() === withdrawal.amount
-            // TODO: consider better comparison than string === string
+            args._value.toString() === withdrawal.amount
         );
     }
 }
