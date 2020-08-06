@@ -12,9 +12,11 @@ import { Order } from '../src/pods/order/order.entity';
 import { RequestWithdrawalDTO } from '../src/pods/transfer/create-withdrawal.dto';
 import { TransferDirection } from '../src/pods/transfer/transfer-direction';
 import { Transfer } from '../src/pods/transfer/transfer.entity';
+import { TransferService } from '../src/pods/transfer/transfer.service';
 import { DatabaseService } from './database.service';
 import { authenticatedUser, bootstrapTestInstance } from './exchange';
 import { depositToken, issueToken, provider } from './utils';
+import { TransferStatus } from '../src/pods/transfer/transfer-status';
 
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -22,6 +24,7 @@ describe('Deposits using deployed registry', () => {
     let app: INestApplication;
     let databaseService: DatabaseService;
     let accountService: AccountService;
+    let transferService: TransferService;
 
     const user1Id = authenticatedUser.organization;
 
@@ -30,10 +33,11 @@ describe('Deposits using deployed registry', () => {
 
     let depositAddress: string;
 
-    before(async () => {
+    const startExchange = async () => {
         ({
             accountService,
             databaseService,
+            transferService,
             registry,
             issuer,
             app
@@ -43,7 +47,9 @@ describe('Deposits using deployed registry', () => {
 
         const { address } = await accountService.getOrCreateAccount(user1Id);
         depositAddress = address;
-    });
+    };
+
+    before(startExchange);
 
     after(async () => {
         await databaseService.cleanUp();
@@ -175,5 +181,23 @@ describe('Deposits using deployed registry', () => {
         const endBalance = await getBalance(withdrawalAddress, id);
 
         expect(endBalance.gt(startBalance)).to.be.true;
+    });
+
+    it('should re-test unconfirmed withdrawal on start', async () => {
+        const [confirmed] = await transferService.getByStatus(
+            TransferStatus.Confirmed,
+            TransferDirection.Withdrawal
+        );
+
+        await transferService.setAsUnconfirmed(confirmed.id, confirmed.transactionHash);
+
+        await app.close();
+
+        await startExchange();
+
+        const transfer = await transferService.findOne(confirmed.id);
+
+        expect(transfer.status).to.be.equal(TransferStatus.Confirmed);
+        expect(transfer.confirmationBlock).to.be.equal(confirmed.confirmationBlock);
     });
 });
