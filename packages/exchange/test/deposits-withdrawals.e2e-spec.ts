@@ -18,7 +18,6 @@ import { authenticatedUser, bootstrapTestInstance } from './exchange';
 import { depositToken, issueToken, provider, MWh } from './utils';
 import { TransferStatus } from '../src/pods/transfer/transfer-status';
 
-
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 describe('Deposits using deployed registry', () => {
