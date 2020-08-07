@@ -94,26 +94,21 @@ function* fetchOffchainUserDetails(): SagaIterator {
         try {
             const userProfile: IUserWithRelationsIds = yield call([userClient, userClient.me]);
 
-            if (
-                typeof userProfile.organization !== 'undefined' &&
-                isRole(userProfile, Role.Admin, Role.SupportAgent)
-            ) {
+            if (typeof userProfile.organization !== 'undefined') {
                 const organizationClient = offChainDataSource.organizationClient;
 
                 organization = yield call(
                     [organizationClient, organizationClient.getById],
                     userProfile.organization
                 );
-            } else {
-                organization = { id: userProfile.organization } as IOrganizationWithRelationsIds;
-            }
 
-            yield put(
-                setUserOffchain({
-                    ...userProfile,
-                    organization
-                })
-            );
+                yield put(
+                    setUserOffchain({
+                        ...userProfile,
+                        organization
+                    })
+                );
+            }
             yield put(reloadCertificates());
         } catch (error) {
             console.log('error', error, error.response);
