@@ -9,7 +9,8 @@ import {
     OrganizationUpdateData,
     OrganizationRole,
     Role,
-    IOrganizationClient
+    IOrganizationClient,
+    IOrganization
 } from '@energyweb/origin-backend-core';
 
 interface ITmpUser {
@@ -75,7 +76,7 @@ export class OrganizationClientMock implements IOrganizationClient {
             id: this.invitationCounter,
             email,
             role,
-            organization: organizationId,
+            organization: { id: organizationId } as IOrganization,
             status: OrganizationInvitationStatus.Pending
         };
 
@@ -134,7 +135,7 @@ export class OrganizationClientMock implements IOrganizationClient {
 
     acceptInvitation(invitationId: number): Promise<any> {
         const invitation = this.invitationStorage.get(invitationId);
-        const organization = this.storage.get(invitation.organization as number);
+        const organization = this.storage.get(invitation.organization.id);
         const user = this.userStorage.find((user) => user.email === invitation.email);
 
         invitation.status = OrganizationInvitationStatus.Accepted;

@@ -103,7 +103,7 @@ describe('Organization e2e tests', () => {
                 const [invitation] = res.body as IOrganizationInvitation[];
 
                 expect(invitation).to.be.ok;
-                expect(invitation.organization).equals(organization.id);
+                expect(invitation.organization.id).equals(organization.id);
 
                 invitationId = invitation.id;
             });
@@ -227,7 +227,34 @@ describe('Organization e2e tests', () => {
                 const [invitation] = res.body as IOrganizationInvitation[];
 
                 expect(invitation).to.be.ok;
-                expect(invitation.organization).equals(organization.id);
+                expect(invitation.organization.id).equals(organization.id);
+            });
+    });
+
+    it('returned invitation should have organization relation', async () => {
+        const { accessToken, organization } = await registerAndLogin(
+            app,
+            userService,
+            organizationService,
+            [Role.OrganizationAdmin]
+        );
+
+        const newUserEmail = 'newuser@example.com';
+
+        await request(app.getHttpServer())
+            .post('/organization/invite')
+            .set('Authorization', `Bearer ${accessToken}`)
+            .send({ email: newUserEmail })
+            .expect(201);
+
+        await request(app.getHttpServer())
+            .get(`/organization/${organization.id}/invitations`)
+            .set('Authorization', `Bearer ${accessToken}`)
+            .expect(200)
+            .expect((res) => {
+                const [invitation] = res.body as IOrganizationInvitation[];
+                expect(invitation).to.be.ok;
+                expect(organization).to.include(invitation.organization);
             });
     });
 

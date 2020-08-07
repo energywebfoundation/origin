@@ -15,6 +15,7 @@ import {
     usePaginatedLoader
 } from '../Table/PaginatedLoaderHooks';
 import { getOffChainDataSource } from '../../features/general/selectors';
+import { refreshUserOffchain } from '../../features/users/actions';
 
 interface IRecord {
     organization: IOrganization;
@@ -105,7 +106,7 @@ export function OrganizationInvitationTable(props: IProps) {
             await organizationClient.acceptInvitation(invitation.id);
 
             showNotification(`Invitation accepted.`, NotificationType.Success);
-
+            dispatch(refreshUserOffchain());
             await loadPage(1);
         } catch (error) {
             showNotification(`Could not accept invitation.`, NotificationType.Error);
