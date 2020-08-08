@@ -37,7 +37,7 @@
         "@types/pg": "7.14.4",
         "commander": "^5.0.0",
         "dotenv": "8.2.0",
-        "ethers": "5.0.7",
+        "ethers": "5.0.8",
         "pg": "8.3.0",
         "winston": "3.3.3",
         "write-json-file": "4.3.0",
