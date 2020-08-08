@@ -42,7 +42,7 @@
         "@unicef/material-ui-currency-textfield": "^0.8.6",
         "axios": "0.19.2",
         "bn.js": "5.1.2",
-        "bootstrap": "4.5.0",
+        "bootstrap": "4.5.2",
         "chart.js": "2.9.3",
         "clsx": "1.1.1",
         "connected-react-router": "6.8.0",
