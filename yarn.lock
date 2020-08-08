@@ -4219,10 +4219,10 @@
   dependencies:
     "@turf/helpers" "6.x"
 
-"@typechain/ethers-v5@0.0.4":
-  version "0.0.4"
-  resolved "https://registry.yarnpkg.com/@typechain/ethers-v5/-/ethers-v5-0.0.4.tgz#20b9944111f226051883175673ac3957c50b0a22"
-  integrity sha512-j3dOclmOZ/QPbKmZCjYzR0P7ecmdkJkQkMdPPdM8ySFZDmNSeTLKuagE0fai78c3/t0N4puTLEir0BQb9uRuig==
+"@typechain/ethers-v5@1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@typechain/ethers-v5/-/ethers-v5-1.0.0.tgz#9156c9a2b078f9bb00a339631221e42c26b218df"
+  integrity sha512-CWxLmlmfM7NMT6OSq8UXZM7mSkHU1xrbNi40Hvj26S97jKnwERmNbiERgy4fXXOdVqb+zCshnZQ9X+P5WndLMA==
   dependencies:
     ethers "^5.0.2"
 
