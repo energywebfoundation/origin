@@ -365,7 +365,11 @@ export function* fetchBundles() {
     yield put(clearBundles());
     const exchangeClient: IExchangeClient = yield select(getExchangeClient);
     const bundles: Bundle[] = yield apply(exchangeClient, exchangeClient.getAvailableBundles, null);
-    const ownBundles: Bundle[] = yield apply(exchangeClient, exchangeClient.getOwnBundles, null);
+    const user = yield select(getUserOffchain);
+    const ownBundles: Bundle[] =
+        user && user.status === UserStatus.Active
+            ? yield apply(exchangeClient, exchangeClient.getOwnBundles, null)
+            : [];
     for (const bundle of bundles) {
         bundle.own = ownBundles.find((b) => b.id === bundle.id) !== undefined;
         bundle.items.forEach((item) => {
