@@ -2,7 +2,6 @@ import { AxiosRequestConfig, AxiosResponse, CancelTokenSource } from 'axios';
 import {
     IOriginConfiguration,
     UserUpdateData,
-    IUserWithRelations,
     IUserFilter,
     IUser,
     IOwnershipCommitmentProofWithTx,
@@ -14,7 +13,6 @@ import {
     UserLoginReturnData,
     UserRegisterReturnData,
     UserRegistrationData,
-    IUserWithRelationsIds,
     IUserProperties,
     UserPasswordUpdate,
     EmailConfirmationResponse,
@@ -38,7 +36,7 @@ import {
 } from '..';
 
 export interface IAdminClient {
-    update(formData: UserUpdateData): Promise<IUserWithRelations>;
+    update(formData: UserUpdateData): Promise<IUser>;
     getUsers(filter?: IUserFilter): Promise<IUser[]>;
 }
 
@@ -94,15 +92,15 @@ export interface IUserClient {
     login(email: string, password: string): Promise<UserLoginReturnData>;
     logout(): Promise<void>;
     register(data: UserRegistrationData): Promise<UserRegisterReturnData>;
-    me(): Promise<IUserWithRelationsIds>;
-    getUserById(id: string): Promise<IUserWithRelationsIds>;
+    me(): Promise<IUser>;
+    getUserById(id: string): Promise<IUser>;
     attachSignedMessage(signedMessage: string): Promise<UpdateUserResponseReturnType>;
     updateAdditionalProperties(
         properties: Partial<Pick<IUserProperties, 'notifications'>>
     ): Promise<UpdateUserResponseReturnType>;
-    updateProfile(formData: IUser): Promise<IUserWithRelations>;
-    updatePassword(formData: UserPasswordUpdate): Promise<IUserWithRelations>;
-    updateChainAddress(formData: IUser): Promise<IUserWithRelations>;
+    updateProfile(formData: IUser): Promise<IUser>;
+    updatePassword(formData: UserPasswordUpdate): Promise<IUser>;
+    updateChainAddress(formData: IUser): Promise<IUser>;
     confirmEmail(token: IEmailConfirmationToken['token']): Promise<EmailConfirmationResponse>;
     requestConfirmationEmail(): Promise<ISuccessResponse>;
 }
@@ -120,7 +118,7 @@ export interface IOrganizationClient {
     acceptInvitation(id: number): Promise<any>;
     rejectInvitation(id: number): Promise<any>;
 
-    getMembers(id: number): Promise<IUserWithRelationsIds[]>;
+    getMembers(id: number): Promise<IUser[]>;
     removeMember(organizationId: number, userId: number): Promise<ISuccessResponse>;
     memberChangeRole(
         organizationId: number,
