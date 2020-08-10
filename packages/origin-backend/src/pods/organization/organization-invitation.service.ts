@@ -35,7 +35,7 @@ export class OrganizationInvitationService {
                 error: 'Provided email address is incorrect'
             });
         }
-
+        const sender = await this.userService.findByEmail(user.email);
         const { organizationId } = user;
         if (typeof organizationId === 'undefined') {
             throw new BadRequestException({
@@ -56,7 +56,8 @@ export class OrganizationInvitationService {
             email: lowerCaseEmail,
             organization,
             role,
-            status: OrganizationInvitationStatus.Pending
+            status: OrganizationInvitationStatus.Pending,
+            sender: `${sender.firstName} ${sender.lastName}`
         });
 
         const eventData: OrganizationInvitationEvent = {

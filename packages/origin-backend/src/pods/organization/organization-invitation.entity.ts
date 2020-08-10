@@ -25,6 +25,9 @@ export class OrganizationInvitation extends ExtendedBaseEntity implements IOrgan
     @Column()
     status: OrganizationInvitationStatus;
 
+    @Column()
+    sender: string;
+
     @ManyToOne(() => Organization, (organization) => organization.users)
     organization: Organization;
 }
