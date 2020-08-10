@@ -78,7 +78,7 @@ describe('Demand orders trading', () => {
         await databaseService.truncate('demand');
     });
 
-    const demandOwner = authenticatedUser.organization;
+    const demandOwner = authenticatedUser.organization.id;
     const sellerId = '2';
     const price = 1000;
 

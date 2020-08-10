@@ -1,7 +1,6 @@
 import {
     buildRights,
     IUser,
-    IUserWithRelationsIds,
     KYCStatus,
     Role,
     UserStatus,
@@ -26,7 +25,7 @@ import { ExtendedBaseEntity } from '../ExtendedBaseEntity';
 import { User } from './user.entity';
 import { EmailConfirmationService } from '../email-confirmation/email-confirmation.service';
 
-export type TUserBaseEntity = ExtendedBaseEntity & IUserWithRelationsIds;
+export type TUserBaseEntity = ExtendedBaseEntity & IUser;
 
 @Injectable()
 export class UserService {
@@ -174,9 +173,8 @@ export class UserService {
 
     async findOne(conditions: FindConditions<User>): Promise<TUserBaseEntity> {
         const user = await ((this.repository.findOne(conditions, {
-            loadRelationIds: true
+            relations: ['organization']
         }) as Promise<IUser>) as Promise<TUserBaseEntity>);
-
         if (user) {
             const emailConfirmation = await this.emailConfirmationService.get(user.id);
 
@@ -313,14 +311,14 @@ export class UserService {
     }
 
     public async canViewUserData(
-        userId: IUserWithRelationsIds['id'],
+        userId: IUser['id'],
         loggedInUser: ILoggedInUser
     ): Promise<boolean> {
         const user = await this.findById(userId);
 
         const isOwnUser = loggedInUser.id === userId;
         const isOrgAdmin =
-            loggedInUser.organizationId === user.organization &&
+            loggedInUser.organizationId === user.organization.id &&
             loggedInUser.hasRole(Role.OrganizationAdmin);
         const isAdmin = loggedInUser.hasRole(Role.Issuer, Role.Admin, Role.SupportAgent);
 

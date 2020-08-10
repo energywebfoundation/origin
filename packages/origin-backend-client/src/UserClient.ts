@@ -4,9 +4,7 @@ import {
     UserLoginData,
     UserLoginReturnData,
     UserUpdateData,
-    IUserWithRelationsIds,
     IUserProperties,
-    IUserWithRelations,
     IUser,
     UserPasswordUpdate,
     IEmailConfirmationToken,
@@ -60,9 +58,9 @@ export class UserClient implements IUserClient {
         this.requestClient.authenticationToken = null;
     }
 
-    public async me(): Promise<IUserWithRelationsIds> {
+    public async me(): Promise<IUser> {
         const url = `${this.userEndpoint}/me`;
-        const { data } = await this.requestClient.get<unknown, IUserWithRelationsIds>(url);
+        const { data } = await this.requestClient.get<unknown, IUser>(url);
 
         return data;
     }
@@ -77,15 +75,15 @@ export class UserClient implements IUserClient {
         return this.updateUser(properties);
     }
 
-    public async getUserById(id: string): Promise<IUserWithRelationsIds> {
+    public async getUserById(id: string): Promise<IUser> {
         const url = `${this.userEndpoint}/${id}`;
-        const { data } = await this.requestClient.get<unknown, IUserWithRelationsIds>(url);
+        const { data } = await this.requestClient.get<unknown, IUser>(url);
 
         return data;
     }
 
-    private async updateUser(updatedUserInfo: UserUpdateData): Promise<IUserWithRelationsIds> {
-        const { data } = await this.requestClient.put<UserUpdateData, IUserWithRelationsIds>(
+    private async updateUser(updatedUserInfo: UserUpdateData): Promise<IUser> {
+        const { data } = await this.requestClient.put<UserUpdateData, IUser>(
             this.userEndpoint,
             updatedUserInfo
         );
@@ -93,24 +91,24 @@ export class UserClient implements IUserClient {
         return data;
     }
 
-    public async updateProfile(formData: IUser): Promise<IUserWithRelations> {
-        const response = await this.requestClient.put<UserUpdateData, IUserWithRelations>(
+    public async updateProfile(formData: IUser): Promise<IUser> {
+        const response = await this.requestClient.put<UserUpdateData, IUser>(
             `${this.userEndpoint}/profile`,
             formData
         );
         return response.data;
     }
 
-    public async updatePassword(formData: UserPasswordUpdate): Promise<IUserWithRelations> {
-        const response = await this.requestClient.put<UserPasswordUpdate, IUserWithRelations>(
+    public async updatePassword(formData: UserPasswordUpdate): Promise<IUser> {
+        const response = await this.requestClient.put<UserPasswordUpdate, IUser>(
             `${this.userEndpoint}/password`,
             formData
         );
         return response.data;
     }
 
-    public async updateChainAddress(formData: IUser): Promise<IUserWithRelations> {
-        const response = await this.requestClient.put<UserUpdateData, IUserWithRelations>(
+    public async updateChainAddress(formData: IUser): Promise<IUser> {
+        const response = await this.requestClient.put<UserUpdateData, IUser>(
             `${this.userEndpoint}/chainAddress`,
             formData
         );

@@ -57,7 +57,7 @@ const deployIssuer = async (registry: string) => {
     return contract;
 };
 
-export const authenticatedUser = { id: 1, organization: '1000', status: UserStatus.Active };
+export const authenticatedUser = { id: 1, organization: { id: '1000' }, status: UserStatus.Active };
 
 const authGuard: CanActivate = {
     canActivate: (context: ExecutionContext) => {

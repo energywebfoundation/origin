@@ -103,7 +103,7 @@ describe('Trades API', () => {
     });
 
     it('should be able to read the product information from the ask as a buyer', async () => {
-        const buyerId = authenticatedUser.organization;
+        const buyerId = authenticatedUser.organization.id;
         const sellerId = '2';
 
         await testTrade(sellerId, buyerId);
@@ -111,7 +111,7 @@ describe('Trades API', () => {
 
     it('should be able to read the product information from the ask as a seller', async () => {
         const buyerId = '2';
-        const sellerId = authenticatedUser.organization;
+        const sellerId = authenticatedUser.organization.id;
 
         await testTrade(sellerId, buyerId);
     });

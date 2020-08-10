@@ -1,7 +1,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { NavLink, Route, Redirect } from 'react-router-dom';
-import { Role, isRole } from '@energyweb/origin-backend-core';
+import { Role, isRole, UserStatus } from '@energyweb/origin-backend-core';
 
 import { PageContent } from '../PageContent/PageContent';
 import { useLinks } from '../../utils/routing';
@@ -31,13 +31,13 @@ export function Organization() {
             key: 'my-organization',
             label: 'My Organization',
             component: OrganizationView,
-            hide: !isLoggedIn || !user?.organization
+            hide: !user?.organization?.id
         },
         {
             key: 'organization-users',
             label: 'Members',
             component: OrganizationUsersTable,
-            hide: !isLoggedIn || !isRole(user, Role.OrganizationAdmin)
+            hide: !user?.organization?.id || !isRole(user, Role.OrganizationAdmin)
         },
         {
             key: 'organization-invitations',
@@ -49,19 +49,22 @@ export function Organization() {
             key: 'organization-invite',
             label: 'Invite',
             component: OrganizationInvite,
-            hide: !isLoggedIn || !isRole(user, Role.OrganizationAdmin) || !user?.organization
+            hide: user?.status !== UserStatus.Active || !isRole(user, Role.OrganizationAdmin)
         },
         {
             key: 'organization-register',
             label: 'Register',
             component: OrganizationForm,
-            hide: !isLoggedIn || user?.organization
+            hide: user?.organization?.id
         },
         {
             key: 'organization-table',
             label: 'All organizations',
             component: OrganizationTable,
-            hide: !isLoggedIn || !isRole(user, Role.Admin, Role.SupportAgent)
+            hide:
+                !isLoggedIn ||
+                user.status !== UserStatus.Active ||
+                !isRole(user, Role.Admin, Role.SupportAgent)
         },
         {
             key: 'organization-view',

@@ -28,8 +28,9 @@ import {
 } from '../../utils/exchange';
 import {
     IOriginConfiguration,
-    IUserWithRelations,
-    IOffChainDataSource
+    IUser,
+    IOffChainDataSource,
+    UserStatus
 } from '@energyweb/origin-backend-core';
 import {
     setActiveBlockchainAccountAddress,
@@ -396,45 +397,50 @@ export function* fetchDataAfterConfigurationChange(
     for (const device of producingDevices) {
         yield put(producingDeviceCreatedOrUpdated(device));
     }
-    const { blockchainAccountAddress }: IUserWithRelations = yield select(getUserOffchain);
-    const web3: ethers.providers.Web3Provider = yield select(getWeb3);
-    const activeUser = web3.getSigner(blockchainAccountAddress);
-    const onChainCertificates: Certificate[] = yield apply(
-        Certificate,
-        CertificateUtils.getAllOwnedCertificates,
-        [
-            {
-                ...configuration,
-                blockchainProperties: { ...configuration.blockchainProperties, activeUser }
+    const user = yield select(getUserOffchain);
+    if (user) {
+        const { blockchainAccountAddress, status }: IUser = user;
+        if (status === UserStatus.Active) {
+            const web3: ethers.providers.Web3Provider = yield select(getWeb3);
+            const activeUser = web3.getSigner(blockchainAccountAddress);
+            const onChainCertificates: Certificate[] = yield apply(
+                Certificate,
+                CertificateUtils.getAllOwnedCertificates,
+                [
+                    {
+                        ...configuration,
+                        blockchainProperties: { ...configuration.blockchainProperties, activeUser }
+                    }
+                ]
+            );
+            const initializedCertificates = onChainCertificates
+                .filter((cert) => cert.initialized)
+                .map(
+                    (c): ICertificateViewItem => ({
+                        ...c,
+                        isClaimed: c.isClaimed,
+                        isOwned: c.isOwned,
+                        source: CertificateSource.Blockchain
+                    })
+                );
+
+            const exchangeClient: IExchangeClient = yield select(getExchangeClient);
+
+            const offChainCertificates: ExchangeAccount = yield apply(
+                exchangeClient,
+                exchangeClient.getAccount,
+                null
+            );
+            const available = yield all(
+                offChainCertificates.balances.available.map((asset) =>
+                    call(findEnhancedCertificate, asset, initializedCertificates)
+                )
+            );
+            const certificates = initializedCertificates.concat(available);
+            for (const certificate of certificates) {
+                yield put(update ? updateCertificate(certificate) : addCertificate(certificate));
             }
-        ]
-    );
-    const initializedCertificates = onChainCertificates
-        .filter((cert) => cert.initialized)
-        .map(
-            (c): ICertificateViewItem => ({
-                ...c,
-                isClaimed: c.isClaimed,
-                isOwned: c.isOwned,
-                source: CertificateSource.Blockchain
-            })
-        );
-
-    const exchangeClient: IExchangeClient = yield select(getExchangeClient);
-
-    const offChainCertificates: ExchangeAccount = yield apply(
-        exchangeClient,
-        exchangeClient.getAccount,
-        null
-    );
-    const available = yield all(
-        offChainCertificates.balances.available.map((asset) =>
-            call(findEnhancedCertificate, asset, initializedCertificates)
-        )
-    );
-    const certificates = initializedCertificates.concat(available);
-    for (const certificate of certificates) {
-        yield put(update ? updateCertificate(certificate) : addCertificate(certificate));
+        }
     }
     yield call(fetchBundles);
     yield call(fetchOrders);

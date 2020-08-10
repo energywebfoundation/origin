@@ -23,7 +23,7 @@ describe('Bundles', () => {
     let accountService: AccountService;
     let bundleService: BundleService;
 
-    const user1Id = authenticatedUser.organization;
+    const user1Id = authenticatedUser.organization.id;
 
     const assetOne = {
         address: '0x9876',

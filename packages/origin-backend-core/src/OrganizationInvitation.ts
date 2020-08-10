@@ -20,10 +20,6 @@ export interface IOrganizationInvitationProperties {
 }
 
 export interface IOrganizationInvitation extends IOrganizationInvitationProperties {
-    organization: IOrganization | IOrganization['id'];
-}
-
-export interface IOrganizationInvitationWithRelations extends IOrganizationInvitation {
     organization: IOrganization;
 }
 

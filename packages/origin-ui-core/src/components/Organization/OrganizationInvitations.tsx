@@ -13,14 +13,16 @@ export function OrganizationInvitations() {
         return <UserLogin redirect="/organization/organization-invitations" />;
     }
 
+    const orgId = user.organization?.id;
+
     return (
         <>
-            {isRole(user, Role.OrganizationAdmin) && (
+            {isRole(user, Role.OrganizationAdmin) && orgId && (
                 <>
                     Sent
                     <br />
                     <br />
-                    <OrganizationInvitationTable organizationId={user?.organization?.id} />
+                    <OrganizationInvitationTable organizationId={orgId} />
                     <br />
                     <br />
                 </>

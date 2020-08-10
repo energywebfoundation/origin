@@ -69,16 +69,14 @@ export class OrganizationController {
     async getInvitations(
         @UserDecorator() loggedUser: ILoggedInUser
     ): Promise<IOrganizationInvitation[]> {
-        return (this.organizationInvitationRepository.find({
+        return this.organizationInvitationRepository.find({
             where: { email: loggedUser.email },
-            loadRelationIds: true
-        }) as Promise<Omit<IOrganizationInvitation, 'organization'>[]>) as Promise<
-            IOrganizationInvitation[]
-        >;
+            relations: ['organization']
+        }) as Promise<IOrganizationInvitation[]>;
     }
 
     @Get('/:id/users')
-    @UseGuards(AuthGuard(), ActiveUserGuard, RolesGuard)
+    @UseGuards(AuthGuard(), RolesGuard)
     @Roles(Role.OrganizationAdmin, Role.Admin, Role.SupportAgent)
     async getUsers(
         @Param('id', new ParseIntPipe()) id: number,
@@ -116,7 +114,7 @@ export class OrganizationController {
     }
 
     @Get('/:id')
-    @UseGuards(AuthGuard(), ActiveUserGuard)
+    @UseGuards(AuthGuard())
     async get(
         @Param('id', new ParseIntPipe()) organizationId: number,
         @UserDecorator() loggedUser: ILoggedInUser
@@ -144,8 +142,8 @@ export class OrganizationController {
     }
 
     @Post()
-    @UseGuards(AuthGuard(), ActiveUserGuard)
-    async post(@Body() body: OrganizationPostData, @UserDecorator() loggedUser: ILoggedInUser) {
+    @UseGuards(AuthGuard())
+    async register(@Body() body: OrganizationPostData, @UserDecorator() loggedUser: ILoggedInUser) {
         try {
             const organization = this.organizationService.create(loggedUser.id, body);
 
@@ -215,7 +213,7 @@ export class OrganizationController {
     }
 
     @Get('/:id/invitations')
-    @UseGuards(AuthGuard(), ActiveUserGuard)
+    @UseGuards(AuthGuard())
     async getInvitationsForOrganization(
         @Param('id') organizationId: string,
         @UserDecorator() loggedUser: ILoggedInUser
@@ -232,12 +230,10 @@ export class OrganizationController {
             throw new NotFoundException(StorageErrors.NON_EXISTENT);
         }
 
-        return (this.organizationInvitationRepository.find({
+        return this.organizationInvitationRepository.find({
             where: { organization: organizationId },
-            loadRelationIds: true
-        }) as Promise<Omit<IOrganizationInvitation, 'organization'>[]>) as Promise<
-            IOrganizationInvitation[]
-        >;
+            relations: ['organization']
+        }) as Promise<IOrganizationInvitation[]>;
     }
 
     @Put('/invitation/:invitationId')

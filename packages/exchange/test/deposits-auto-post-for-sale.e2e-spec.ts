@@ -20,7 +20,7 @@ describe('Deposits automatic posting for sale', () => {
     let databaseService: DatabaseService;
     let accountService: AccountService;
 
-    const user1Id = authenticatedUser.organization;
+    const user1Id = authenticatedUser.organization.id;
 
     let registry: Contract;
     let issuer: Contract;

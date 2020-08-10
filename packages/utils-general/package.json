@@ -32,7 +32,7 @@
         "@energyweb/origin-backend-core": "4.3.0",
         "chai": "^4.2.0",
         "eth-sig-util": "2.5.2",
-        "ethers": "5.0.7",
+        "ethers": "5.0.8",
         "jsonschema": "1.2.6",
         "moment": "2.24.0",
         "winston": "3.3.3"

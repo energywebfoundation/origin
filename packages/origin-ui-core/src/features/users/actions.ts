@@ -1,4 +1,4 @@
-import { IUserWithRelations, IOrganizationWithRelationsIds } from '@energyweb/origin-backend-core';
+import { IUser, IOrganizationWithRelationsIds } from '@energyweb/origin-backend-core';
 
 export enum UsersActions {
     setActiveBlockchainAccountAddress = 'USERS_SET_ACTIVE_BLOCKCHAIN_ACCOUNT_ADDRESS',
@@ -26,7 +26,7 @@ export type TSetActiveBlockchainAccountAddress = typeof setActiveBlockchainAccou
 
 export interface ISetUserOffchainAction {
     type: UsersActions.setUserOffchain;
-    payload: IUserWithRelations;
+    payload: IUser;
 }
 
 export const setUserOffchain = (payload: ISetUserOffchainAction['payload']) => ({

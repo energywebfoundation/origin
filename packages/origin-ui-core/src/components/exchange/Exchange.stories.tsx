@@ -15,7 +15,7 @@ import { DeviceTypeService, Configuration } from '@energyweb/utils-general';
 import MomentUtils from '@date-io/moment';
 import { MuiPickersUtilsProvider } from '@material-ui/pickers';
 import { setUserOffchain } from '../../features/users/actions';
-import { IUserWithRelations, IOriginConfiguration } from '@energyweb/origin-backend-core';
+import { IUser, IOriginConfiguration } from '@energyweb/origin-backend-core';
 import { ExchangeClient, ExchangeClientMock } from '../../utils/exchange';
 
 export default {
@@ -49,7 +49,7 @@ export const defaultView = () => {
     store.dispatch(
         setUserOffchain(({
             id: number('userOffchain.id', 1)
-        } as Partial<IUserWithRelations>) as IUserWithRelations)
+        } as Partial<IUser>) as IUser)
     );
     store.dispatch(
         setExchangeClient({

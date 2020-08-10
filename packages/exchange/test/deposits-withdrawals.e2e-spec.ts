@@ -26,7 +26,7 @@ describe('Deposits using deployed registry', () => {
     let accountService: AccountService;
     let transferService: TransferService;
 
-    const user1Id = authenticatedUser.organization;
+    const user1Id = authenticatedUser.organization.id;
 
     let registry: Contract;
     let issuer: Contract;

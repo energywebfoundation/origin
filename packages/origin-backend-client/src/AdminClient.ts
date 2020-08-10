@@ -1,7 +1,6 @@
 import {
     IUser,
     UserUpdateData,
-    IUserWithRelations,
     IUserFilter,
     IAdminClient,
     IRequestClient
@@ -14,8 +13,8 @@ export class AdminClient implements IAdminClient {
         private readonly requestClient: IRequestClient = new RequestClient()
     ) {}
 
-    async update(formData: IUser): Promise<IUserWithRelations> {
-        const { data } = await this.requestClient.put<UserUpdateData, IUserWithRelations>(
+    async update(formData: IUser): Promise<IUser> {
+        const { data } = await this.requestClient.put<UserUpdateData, IUser>(
             `${this.endpoint}/users/${formData.id}`,
             formData
         );
