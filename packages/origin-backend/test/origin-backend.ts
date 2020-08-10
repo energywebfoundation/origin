@@ -30,6 +30,29 @@ import { EmailConfirmationService } from '../src/pods/email-confirmation/email-c
 
 const testLogger = new Logger('e2e');
 
+export const getExampleOrganization = (email = 'test@example.com'): OrganizationPostData => ({
+    email,
+    code: '',
+    contact: '',
+    telephone: '',
+    address: '',
+    shareholders: '',
+    ceoName: 'John',
+    vatNumber: '',
+    postcode: '',
+    businessTypeSelect: '',
+    businessTypeInput: '',
+    activeCountries: 'EU',
+    name: 'Test',
+    ceoPassportNumber: '1',
+    companyNumber: '2',
+    headquartersCountry: 1,
+    country: 1,
+    yearOfRegistration: 2000,
+    numberOfEmployees: 1,
+    website: 'http://example.com'
+});
+
 export const bootstrapTestInstance = async () => {
     const moduleFixture = await Test.createTestingModule({
         imports: [
@@ -132,28 +155,7 @@ export const registerAndLogin = async (
     });
 
     if (!organization) {
-        const organizationRegistration = {
-            email: organizationEmail,
-            code: '',
-            contact: '',
-            telephone: '',
-            address: '',
-            shareholders: '',
-            ceoName: 'John',
-            vatNumber: '',
-            postcode: '',
-            businessTypeSelect: '',
-            businessTypeInput: '',
-            activeCountries: 'EU',
-            name: 'Test',
-            ceoPassportNumber: '1',
-            companyNumber: '2',
-            headquartersCountry: 1,
-            country: 1,
-            yearOfRegistration: 2000,
-            numberOfEmployees: 1,
-            website: 'http://example.com'
-        } as OrganizationPostData;
+        const organizationRegistration = getExampleOrganization(organizationEmail);
 
         await organizationService.create(user.id, organizationRegistration);
         organization = await organizationService.findOne(null, {

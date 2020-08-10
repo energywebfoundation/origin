@@ -18,7 +18,8 @@ import { DeviceService } from '../src/pods/device/device.service';
 import { OrganizationService } from '../src/pods/organization/organization.service';
 import { TUserBaseEntity, UserService } from '../src/pods/user';
 import { DatabaseService } from './database.service';
-import { bootstrapTestInstance, registerAndLogin } from './origin-backend';
+import { bootstrapTestInstance, registerAndLogin, getExampleOrganization } from './origin-backend';
+import { userToRegister } from './user.e2e-spec';
 
 describe('Organization e2e tests', () => {
     let app: INestApplication;
@@ -374,5 +375,26 @@ describe('Organization e2e tests', () => {
             .get(`/organization`)
             .set('Authorization', `Bearer ${accessToken}`)
             .expect(403);
+    });
+
+    it('should be able to register organization before being approved user', async () => {
+        await request(app.getHttpServer()).post(`/user/register`).send(userToRegister).expect(201);
+
+        let accessToken: string;
+
+        await request(app.getHttpServer())
+            .post('/auth/login')
+            .send({
+                username: userToRegister.email,
+                password: userToRegister.password
+            })
+            .expect((res) => ({ accessToken } = res.body));
+
+        const organization = getExampleOrganization();
+        await request(app.getHttpServer())
+            .post(`/organization`)
+            .send(organization)
+            .set('Authorization', `Bearer ${accessToken}`)
+            .expect(201);
     });
 });

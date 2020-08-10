@@ -142,8 +142,8 @@ export class OrganizationController {
     }
 
     @Post()
-    @UseGuards(AuthGuard(), ActiveUserGuard)
-    async post(@Body() body: OrganizationPostData, @UserDecorator() loggedUser: ILoggedInUser) {
+    @UseGuards(AuthGuard())
+    async register(@Body() body: OrganizationPostData, @UserDecorator() loggedUser: ILoggedInUser) {
         try {
             const organization = this.organizationService.create(loggedUser.id, body);
 
