@@ -6,7 +6,8 @@ import {
     Role,
     UserRegistrationData,
     UserStatus,
-    IOrganization
+    IOrganization,
+    OrganizationStatus
 } from '@energyweb/origin-backend-core';
 import { signTypedMessagePrivateKey } from '@energyweb/utils-general';
 import { Logger } from '@nestjs/common';
@@ -95,7 +96,8 @@ export const registerAndLogin = async (
     organizationService: OrganizationService,
     roles: Role[] = [Role.OrganizationAdmin],
     userSeed = 'default',
-    orgSeed = 'default'
+    orgSeed = 'default',
+    organizationStatus = OrganizationStatus.Submitted
 ) => {
     const userEmail = `user${userSeed}@example.com`;
 
@@ -157,6 +159,9 @@ export const registerAndLogin = async (
         organization = await organizationService.findOne(null, {
             where: { email: organizationEmail }
         });
+        if (organizationStatus !== OrganizationStatus.Submitted) {
+            await organizationService.update(organization.id, { status: organizationStatus });
+        }
     } else {
         await userService.addToOrganization(user.id, organization.id);
     }
