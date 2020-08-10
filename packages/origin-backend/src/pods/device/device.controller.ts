@@ -7,11 +7,11 @@ import {
     ISmartMeterRead,
     Role,
     ISuccessResponse,
-    IDevice
+    IDevice,
+    OrganizationStatus
 } from '@energyweb/origin-backend-core';
 import { Roles, RolesGuard, UserDecorator, ActiveUserGuard } from '@energyweb/origin-backend-utils';
 import {
-    BadRequestException,
     Body,
     Controller,
     Delete,
@@ -107,9 +107,14 @@ export class DeviceController {
     @Post()
     @UseGuards(AuthGuard(), ActiveUserGuard, RolesGuard)
     @Roles(Role.OrganizationAdmin, Role.OrganizationDeviceManager)
-    async post(@Body() body: DeviceCreateData, @UserDecorator() loggedUser: ILoggedInUser) {
+    async createDevice(@Body() body: DeviceCreateData, @UserDecorator() loggedUser: ILoggedInUser) {
         if (typeof loggedUser.organizationId === 'undefined') {
-            throw new BadRequestException('server.errors.loggedUserOrganizationEmpty');
+            throw new ForbiddenException('general.feedback.noOrganization');
+        }
+
+        const organization = await this.organizationService.findOne(loggedUser.organizationId);
+        if (organization.status !== OrganizationStatus.Active) {
+            throw new ForbiddenException('general.feedback.userHasToBePartOfApprovedOrganization');
         }
 
         return this.deviceService.create(body, loggedUser);

@@ -20,21 +20,21 @@ import { UserService } from '../src/pods/user/user.service';
 import { OrganizationService } from '../src/pods/organization/organization.service';
 import { EmailConfirmationService } from '../src/pods/email-confirmation/email-confirmation.service';
 
+export const userToRegister: UserRegistrationData = {
+    title: 'Mr',
+    firstName: 'John',
+    lastName: 'Rambo',
+    email: 'john@example.com',
+    password: 'FirstBlood',
+    telephone: '+11'
+};
+
 describe('User e2e tests', () => {
     let app: INestApplication;
     let databaseService: DatabaseService;
     let userService: UserService;
     let organizationService: OrganizationService;
     let emailConfirmationService: EmailConfirmationService;
-
-    const userToRegister: UserRegistrationData = {
-        title: 'Mr',
-        firstName: 'John',
-        lastName: 'Rambo',
-        email: 'john@example.com',
-        password: 'FirstBlood',
-        telephone: '+11'
-    };
 
     before(async () => {
         ({

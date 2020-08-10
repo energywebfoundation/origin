@@ -6,7 +6,8 @@ import {
     Role,
     UserRegistrationData,
     UserStatus,
-    IOrganization
+    IOrganization,
+    OrganizationStatus
 } from '@energyweb/origin-backend-core';
 import { signTypedMessagePrivateKey } from '@energyweb/utils-general';
 import { Logger } from '@nestjs/common';
@@ -28,6 +29,29 @@ import { CertificateService } from '../src/pods/certificate/certificate.service'
 import { EmailConfirmationService } from '../src/pods/email-confirmation/email-confirmation.service';
 
 const testLogger = new Logger('e2e');
+
+export const getExampleOrganization = (email = 'test@example.com'): OrganizationPostData => ({
+    email,
+    code: '',
+    contact: '',
+    telephone: '',
+    address: '',
+    shareholders: '',
+    ceoName: 'John',
+    vatNumber: '',
+    postcode: '',
+    businessTypeSelect: '',
+    businessTypeInput: '',
+    activeCountries: 'EU',
+    name: 'Test',
+    ceoPassportNumber: '1',
+    companyNumber: '2',
+    headquartersCountry: 1,
+    country: 1,
+    yearOfRegistration: 2000,
+    numberOfEmployees: 1,
+    website: 'http://example.com'
+});
 
 export const bootstrapTestInstance = async () => {
     const moduleFixture = await Test.createTestingModule({
@@ -95,7 +119,8 @@ export const registerAndLogin = async (
     organizationService: OrganizationService,
     roles: Role[] = [Role.OrganizationAdmin],
     userSeed = 'default',
-    orgSeed = 'default'
+    orgSeed = 'default',
+    organizationStatus = OrganizationStatus.Submitted
 ) => {
     const userEmail = `user${userSeed}@example.com`;
 
@@ -130,33 +155,15 @@ export const registerAndLogin = async (
     });
 
     if (!organization) {
-        const organizationRegistration = {
-            email: organizationEmail,
-            code: '',
-            contact: '',
-            telephone: '',
-            address: '',
-            shareholders: '',
-            ceoName: 'John',
-            vatNumber: '',
-            postcode: '',
-            businessTypeSelect: '',
-            businessTypeInput: '',
-            activeCountries: 'EU',
-            name: 'Test',
-            ceoPassportNumber: '1',
-            companyNumber: '2',
-            headquartersCountry: 1,
-            country: 1,
-            yearOfRegistration: 2000,
-            numberOfEmployees: 1,
-            website: 'http://example.com'
-        } as OrganizationPostData;
+        const organizationRegistration = getExampleOrganization(organizationEmail);
 
         await organizationService.create(user.id, organizationRegistration);
         organization = await organizationService.findOne(null, {
             where: { email: organizationEmail }
         });
+        if (organizationStatus !== OrganizationStatus.Submitted) {
+            await organizationService.update(organization.id, { status: organizationStatus });
+        }
     } else {
         await userService.addToOrganization(user.id, organization.id);
     }
