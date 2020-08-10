@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.1.8](https://github.com/energywebfoundation/origin/compare/@energyweb/migrations@3.1.7...@energyweb/migrations@3.1.8) (2020-08-10)
+
+
+### Bug Fixes
+
+* **deps:** update dependency ethers to v5.0.8 ([c69bde0](https://github.com/energywebfoundation/origin/commit/c69bde05c4f0eba5dbc49833f266af24c84c0187))
+
+
+
+
+
 ## [3.1.7](https://github.com/energywebfoundation/origin/compare/@energyweb/migrations@3.1.6...@energyweb/migrations@3.1.7) (2020-08-06)
 
 **Note:** Version bump only for package @energyweb/migrations
