@@ -79,6 +79,12 @@ export class OrganizationClient implements IOrganizationClient {
         });
     }
 
+    public async viewInvitation(id: number): Promise<any> {
+        await this.updateInvitation(id, {
+            status: OrganizationInvitationStatus.Viewed
+        });
+    }
+
     public async invite(email: string, role: OrganizationRole): Promise<ISuccessResponse> {
         const response = await this.requestClient.post<
             OrganizationInviteCreateData,

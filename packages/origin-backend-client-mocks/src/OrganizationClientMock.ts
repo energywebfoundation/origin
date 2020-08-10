@@ -69,15 +69,21 @@ export class OrganizationClientMock implements IOrganizationClient {
         throw new Error('Method not implemented.');
     }
 
-    inviteMocked(email: string, organizationId: number, role: OrganizationRole): ISuccessResponse {
+    inviteMocked(
+        email: string,
+        organization: IOrganization,
+        role: OrganizationRole,
+        sender: string
+    ): ISuccessResponse {
         this.invitationCounter++;
 
         const organizationInvitation: IOrganizationInvitation = {
             id: this.invitationCounter,
             email,
             role,
-            organization: { id: organizationId } as IOrganization,
-            status: OrganizationInvitationStatus.Pending
+            organization,
+            status: OrganizationInvitationStatus.Pending,
+            sender
         };
 
         this.invitationStorage.set(organizationInvitation.id, organizationInvitation);
@@ -149,6 +155,10 @@ export class OrganizationClientMock implements IOrganizationClient {
     }
 
     rejectInvitation(id: number): Promise<any> {
+        throw new Error('Method not implemented.');
+    }
+
+    viewInvitation(id: number): Promise<any> {
         throw new Error('Method not implemented.');
     }
 }
