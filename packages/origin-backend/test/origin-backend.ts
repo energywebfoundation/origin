@@ -5,7 +5,8 @@ import {
     OrganizationPostData,
     Role,
     UserRegistrationData,
-    UserStatus
+    UserStatus,
+    IOrganization
 } from '@energyweb/origin-backend-core';
 import { signTypedMessagePrivateKey } from '@energyweb/utils-general';
 import { Logger } from '@nestjs/common';
@@ -160,7 +161,7 @@ export const registerAndLogin = async (
         await userService.addToOrganization(user.id, organization.id);
     }
 
-    user.organization = organization.id;
+    user.organization = { id: organization.id } as IOrganization;
 
     let accessToken: string;
 

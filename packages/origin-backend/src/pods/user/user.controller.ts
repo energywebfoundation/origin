@@ -1,6 +1,5 @@
 import {
     ILoggedInUser,
-    IUserWithRelationsIds,
     UserRegisterReturnData,
     UserRegistrationData,
     UserUpdateData,
@@ -63,7 +62,7 @@ export class UserController {
     public async update(
         @UserDecorator() user: ILoggedInUser,
         @Body() body: UserUpdateData
-    ): Promise<IUserWithRelationsIds> {
+    ): Promise<IUser> {
         try {
             if (body.blockchainAccountSignedMessage) {
                 await this.userService.attachSignedMessage(

@@ -120,7 +120,7 @@ describe('Organization e2e tests', () => {
             .expect((res) => {
                 const user = res.body as TUserBaseEntity;
 
-                expect(user.organization).equals(organization.id);
+                expect(user.organization.id).equals(organization.id);
                 expect(user.rights).equals(Role.OrganizationUser);
             });
     });
@@ -199,7 +199,7 @@ describe('Organization e2e tests', () => {
             .expect(200)
             .expect((res) => {
                 const { organization: memberOrganization } = res.body as TUserBaseEntity;
-                expect(memberOrganization).to.be.undefined;
+                expect(memberOrganization).to.be.null;
             });
     });
 

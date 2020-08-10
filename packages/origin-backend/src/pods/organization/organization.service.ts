@@ -4,7 +4,6 @@ import { Repository, FindOneOptions } from 'typeorm';
 import {
     IOrganization,
     IOrganizationWithRelationsIds,
-    IUserWithRelationsIds,
     isRole,
     Role,
     OrganizationUpdateData,
@@ -13,7 +12,8 @@ import {
     ILoggedInUser,
     OrganizationRemovedMemberEvent,
     SupportedEvents,
-    OrganizationMemberChangedRoleEvent
+    OrganizationMemberChangedRoleEvent,
+    IUser
 } from '@energyweb/origin-backend-core';
 import { validate } from 'class-validator';
 import { Organization } from './organization.entity';
@@ -90,19 +90,19 @@ export class OrganizationService {
         return this.repository.remove((entity as IOrganization) as Organization);
     }
 
-    async getDeviceManagers(id: string | number): Promise<IUserWithRelationsIds[]> {
+    async getDeviceManagers(id: string | number): Promise<IUser[]> {
         const members = await this.getMembers(id);
 
         return members.filter((u) => isRole(u, Role.OrganizationDeviceManager));
     }
 
-    async getAdmins(id: string | number): Promise<IUserWithRelationsIds[]> {
+    async getAdmins(id: string | number): Promise<IUser[]> {
         const members = await this.getMembers(id);
 
         return members.filter((u) => isRole(u, Role.OrganizationAdmin));
     }
 
-    async getMembers(id: string | number): Promise<IUserWithRelationsIds[]> {
+    async getMembers(id: string | number): Promise<IUser[]> {
         const organization = await this.findOne(id);
 
         return this.userService.findByIds(organization.users);
