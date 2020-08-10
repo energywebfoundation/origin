@@ -1,10 +1,10 @@
-import { IUserWithRelations, IOrganizationWithRelationsIds } from '@energyweb/origin-backend-core';
+import { IUser, IOrganizationWithRelationsIds } from '@energyweb/origin-backend-core';
 
 import { UsersActions, IUsersAction } from './actions';
 
 export interface IUsersState {
     activeBlockchainAccountAddress: string;
-    userOffchain: IUserWithRelations;
+    userOffchain: IUser;
     organizations: IOrganizationWithRelationsIds[];
 }
 

@@ -28,7 +28,7 @@ import {
 } from '../../utils/exchange';
 import {
     IOriginConfiguration,
-    IUserWithRelations,
+    IUser,
     IOffChainDataSource,
     UserStatus
 } from '@energyweb/origin-backend-core';
@@ -399,7 +399,7 @@ export function* fetchDataAfterConfigurationChange(
     }
     const user = yield select(getUserOffchain);
     if (user) {
-        const { blockchainAccountAddress, status }: IUserWithRelations = user;
+        const { blockchainAccountAddress, status }: IUser = user;
         if (status === UserStatus.Active) {
             const web3: ethers.providers.Web3Provider = yield select(getWeb3);
             const activeUser = web3.getSigner(blockchainAccountAddress);
