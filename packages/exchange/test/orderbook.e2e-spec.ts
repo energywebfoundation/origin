@@ -32,7 +32,7 @@ describe('orderbook tests', () => {
     let orderService: OrderService;
     let accountService: AccountService;
 
-    const user1Id = authenticatedUser.organization;
+    const user1Id = authenticatedUser.organization.id;
     const user2Id = '2';
 
     const solarAsset: CreateAssetDTO = {

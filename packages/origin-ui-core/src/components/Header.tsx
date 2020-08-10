@@ -11,7 +11,7 @@ import {
 } from '@material-ui/core';
 import { AccountCircle, Settings, PersonAdd, ExitToApp } from '@material-ui/icons';
 import { OriginFeature } from '@energyweb/utils-general';
-import { IUserWithRelations, Role, isRole } from '@energyweb/origin-backend-core';
+import { IUser, Role, isRole } from '@energyweb/origin-backend-core';
 
 import { useSelector, useDispatch } from 'react-redux';
 import { useLinks, dataTest, useTranslation } from '../utils';
@@ -19,7 +19,7 @@ import { getUserOffchain } from '../features/users/selectors';
 import { clearAuthenticationToken } from '../features/users/actions';
 import { OriginConfigurationContext } from './OriginConfigurationContext';
 
-export function getAddressDisplay(address: string, userOffchain?: IUserWithRelations) {
+export function getAddressDisplay(address: string, userOffchain?: IUser) {
     if (userOffchain) {
         return `${userOffchain?.firstName} ${userOffchain?.lastName}`;
     }

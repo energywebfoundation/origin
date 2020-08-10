@@ -1,7 +1,7 @@
 import {
     IOrganizationInvitation,
     IOrganizationWithRelationsIds,
-    IUserWithRelationsIds,
+    IUser,
     OrganizationInvitationStatus,
     ISuccessResponse,
     OrganizationPostData,
@@ -94,7 +94,7 @@ export class OrganizationClientMock implements IOrganizationClient {
         };
     }
 
-    getMembers(id: number): Promise<IUserWithRelationsIds[]> {
+    getMembers(id: number): Promise<IUser[]> {
         throw new Error('Method not implemented.');
     }
 

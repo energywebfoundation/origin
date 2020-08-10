@@ -25,7 +25,7 @@ describe('account ask order send', () => {
     let accountService: AccountService;
     let issuer: Contract;
 
-    const user1Id = authenticatedUser.organization;
+    const user1Id = authenticatedUser.organization.id;
     const dummyAsset = {
         address: '0x9876',
         tokenId: '0',

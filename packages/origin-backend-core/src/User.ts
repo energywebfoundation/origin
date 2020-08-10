@@ -64,16 +64,8 @@ export interface IUserProperties {
 }
 
 export interface IUser extends IUserProperties {
-    organization: IOrganization | IOrganization['id'];
-    emailConfirmed?: IEmailConfirmation['confirmed'];
-}
-
-export interface IUserWithRelationsIds extends IUser {
-    organization: IOrganization['id'];
-}
-
-export interface IUserWithRelations extends IUser {
     organization: IOrganization;
+    emailConfirmed?: IEmailConfirmation['confirmed'];
 }
 
 export type UserRegisterReturnData = IUser;
@@ -95,4 +87,4 @@ export interface IUserFilter {
     kycStatus?: KYCStatus;
 }
 
-export type UpdateUserResponseReturnType = IUserWithRelationsIds;
+export type UpdateUserResponseReturnType = IUser;

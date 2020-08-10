@@ -14,7 +14,7 @@ describe('account deposit confirmation', () => {
     let databaseService: DatabaseService;
     let accountService: AccountService;
 
-    const user1Id = authenticatedUser.organization;
+    const user1Id = authenticatedUser.organization.id;
 
     const dummyAsset = {
         address: '0x9876',

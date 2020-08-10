@@ -7,12 +7,12 @@ import {
     OrganizationInviteUpdateData,
     OrganizationInvitationStatus,
     IOrganizationWithRelationsIds,
-    IUserWithRelationsIds,
     OrganizationRole,
     Role,
     IOrganizationUpdateMemberRole,
     IRequestClient,
-    IOrganizationClient
+    IOrganizationClient,
+    IUser
 } from '@energyweb/origin-backend-core';
 
 import { RequestClient } from './RequestClient';
@@ -117,8 +117,8 @@ export class OrganizationClient implements IOrganizationClient {
         return data;
     }
 
-    public async getMembers(id: number): Promise<IUserWithRelationsIds[]> {
-        const { data } = await this.requestClient.get<unknown, IUserWithRelationsIds[]>(
+    public async getMembers(id: number): Promise<IUser[]> {
+        const { data } = await this.requestClient.get<unknown, IUser[]>(
             `${this.endpoint}/${id}/users`
         );
 
