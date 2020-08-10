@@ -71,8 +71,9 @@ export class OrganizationController {
     ): Promise<IOrganizationInvitation[]> {
         return this.organizationInvitationRepository.find({
             where: { email: loggedUser.email },
+            loadRelationIds: false,
             relations: ['organization']
-        }) as Promise<IOrganizationInvitation[]>;
+        });
     }
 
     @Get('/:id/users')
@@ -232,8 +233,9 @@ export class OrganizationController {
 
         return this.organizationInvitationRepository.find({
             where: { organization: organizationId },
+            loadRelationIds: false,
             relations: ['organization']
-        }) as Promise<IOrganizationInvitation[]>;
+        });
     }
 
     @Put('/invitation/:invitationId')
@@ -243,7 +245,7 @@ export class OrganizationController {
         @Param('invitationId') invitationId: string,
         @UserDecorator() loggedUser: ILoggedInUser
     ) {
-        await this.organizationInvitationService.acceptOrReject(loggedUser, invitationId, status);
+        await this.organizationInvitationService.update(loggedUser, invitationId, status);
         return true;
     }
 
