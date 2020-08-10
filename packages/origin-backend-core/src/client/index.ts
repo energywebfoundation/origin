@@ -119,6 +119,7 @@ export interface IOrganizationClient {
     getInvitationsForEmail(email: string): Promise<IOrganizationInvitation[]>;
     acceptInvitation(id: number): Promise<any>;
     rejectInvitation(id: number): Promise<any>;
+    viewInvitation(id: number): Promise<any>;
 
     getMembers(id: number): Promise<IUserWithRelationsIds[]>;
     removeMember(organizationId: number, userId: number): Promise<ISuccessResponse>;
