@@ -9,14 +9,7 @@ import {
     IRefreshUserOffchainAction
 } from './actions';
 import { getOffChainDataSource } from '../general/selectors';
-import {
-    IUserWithRelationsIds,
-    IOrganizationWithRelationsIds,
-    Role,
-    isRole,
-    IOffChainDataSource,
-    IRequestClient
-} from '@energyweb/origin-backend-core';
+import { IOffChainDataSource, IRequestClient, IUser } from '@energyweb/origin-backend-core';
 import { GeneralActions, ISetOffChainDataSourceAction } from '../general/actions';
 import { reloadCertificates, clearCertificates } from '../certificates';
 import { clearBundles } from '../bundles';
@@ -89,31 +82,15 @@ function* fetchOffchainUserDetails(): SagaIterator {
             continue;
         }
 
-        let organization: IOrganizationWithRelationsIds = null;
-
         try {
-            const userProfile: IUserWithRelationsIds = yield call([userClient, userClient.me]);
-
-            if (
-                typeof userProfile.organization !== 'undefined' &&
-                isRole(userProfile, Role.Admin, Role.SupportAgent)
-            ) {
-                const organizationClient = offChainDataSource.organizationClient;
-
-                organization = yield call(
-                    [organizationClient, organizationClient.getById],
-                    userProfile.organization
-                );
-            } else {
-                organization = { id: userProfile.organization } as IOrganizationWithRelationsIds;
-            }
+            const userProfile: IUser = yield call([userClient, userClient.me]);
 
             yield put(
                 setUserOffchain({
-                    ...userProfile,
-                    organization
+                    ...userProfile
                 })
             );
+
             yield put(reloadCertificates());
         } catch (error) {
             console.log('error', error, error.response);
