@@ -3,6 +3,29 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [7.0.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-backend@6.3.0...@energyweb/origin-backend@7.0.0) (2020-08-10)
+
+
+### Bug Fixes
+
+* **deps:** update dependency ethers to v5.0.8 ([c69bde0](https://github.com/energywebfoundation/origin/commit/c69bde05c4f0eba5dbc49833f266af24c84c0187))
+* **origin-backend:** allow non-active user to register organization ([b3475a9](https://github.com/energywebfoundation/origin/commit/b3475a99fd33cd610db4d857c8d0a02f5c1945a5))
+* **origin-backend:** only active organization can register devices ([b7a1c92](https://github.com/energywebfoundation/origin/commit/b7a1c923d780ecc08ecdbe47ac7fe4fbb5497821))
+
+
+### chore
+
+* **origin-backend:** replace IUserWithRelationIds with IUser ([c2f2f8e](https://github.com/energywebfoundation/origin/commit/c2f2f8e314a2268014b3beb0658490870b281bb6))
+
+
+### BREAKING CHANGES
+
+* **origin-backend:** findOne returns user with full organization object
+
+
+
+
+
 # [6.3.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-backend@6.2.0...@energyweb/origin-backend@6.3.0) (2020-08-06)
 
 

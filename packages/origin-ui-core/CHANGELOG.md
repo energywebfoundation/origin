@@ -3,6 +3,21 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.7.1](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-ui-core@1.7.0...@energyweb/origin-ui-core@1.7.1) (2020-08-10)
+
+
+### Bug Fixes
+
+* **deps:** update dependency bootstrap to v4.5.2 ([b20fe18](https://github.com/energywebfoundation/origin/commit/b20fe1822c3655b9f32b3bd582d9b9affb5dc563))
+* **deps:** update dependency ethers to v5.0.8 ([c69bde0](https://github.com/energywebfoundation/origin/commit/c69bde05c4f0eba5dbc49833f266af24c84c0187))
+* **deps:** update dependency yup to v0.29.3 ([c9243eb](https://github.com/energywebfoundation/origin/commit/c9243ebf1e1f2b8546ee02e530d1697f017ebe62))
+* **deps:** update react ([cc3dc3d](https://github.com/energywebfoundation/origin/commit/cc3dc3db7ac4f680bafb2b8b310b21f1256e2195))
+* **origin-ui-core:** check user is active before load certs ([2bc11bc](https://github.com/energywebfoundation/origin/commit/2bc11bc9489695986d72ceb960a61ce2b69eb3ef))
+
+
+
+
+
 # [1.7.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-ui-core@1.6.0...@energyweb/origin-ui-core@1.7.0) (2020-08-06)
 
 

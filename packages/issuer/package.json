@@ -11,7 +11,7 @@
     "bugs": {
         "url": "https://github.com/energywebfoundation/origin/issues"
     },
-    "version": "2.4.2",
+    "version": "2.4.3",
     "main": "dist/js/src/index.js",
     "files": [
         "dist/js/build",
@@ -42,9 +42,9 @@
     },
     "types": "dist/js/src/index.d.ts",
     "dependencies": {
-        "@energyweb/origin-backend-client-mocks": "4.0.4",
-        "@energyweb/origin-backend-core": "4.3.0",
-        "@energyweb/utils-general": "9.2.0",
+        "@energyweb/origin-backend-client-mocks": "5.0.0",
+        "@energyweb/origin-backend-core": "5.0.0",
+        "@energyweb/utils-general": "9.2.1",
         "chai": "4.2.0",
         "dotenv": "8.2.0",
         "ethers": "5.0.8",

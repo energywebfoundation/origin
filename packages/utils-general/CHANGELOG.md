@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [9.2.1](https://github.com/energywebfoundation/origin/compare/@energyweb/utils-general@9.2.0...@energyweb/utils-general@9.2.1) (2020-08-10)
+
+
+### Bug Fixes
+
+* **deps:** update dependency ethers to v5.0.8 ([c69bde0](https://github.com/energywebfoundation/origin/commit/c69bde05c4f0eba5dbc49833f266af24c84c0187))
+
+
+
+
+
 # [9.2.0](https://github.com/energywebfoundation/origin/compare/@energyweb/utils-general@9.1.5...@energyweb/utils-general@9.2.0) (2020-08-06)
 
 

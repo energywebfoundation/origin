@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.5.1](https://github.com/energywebfoundation/origin/compare/@energyweb/exchange@1.5.0...@energyweb/exchange@1.5.1) (2020-08-10)
+
+
+### Bug Fixes
+
+* **deps:** update dependency ethers to v5.0.8 ([c69bde0](https://github.com/energywebfoundation/origin/commit/c69bde05c4f0eba5dbc49833f266af24c84c0187))
+
+
+
+
+
 # [1.5.0](https://github.com/energywebfoundation/origin/compare/@energyweb/exchange@1.4.0...@energyweb/exchange@1.5.0) (2020-08-06)
 
 

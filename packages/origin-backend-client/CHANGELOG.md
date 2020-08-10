@@ -3,6 +3,27 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [7.0.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-backend-client@6.3.0...@energyweb/origin-backend-client@7.0.0) (2020-08-10)
+
+
+### Bug Fixes
+
+* **deps:** update dependency ethers to v5.0.8 ([c69bde0](https://github.com/energywebfoundation/origin/commit/c69bde05c4f0eba5dbc49833f266af24c84c0187))
+
+
+### chore
+
+* **origin-backend-client:** replace IUserWithRelationIds with IUser ([3b9566b](https://github.com/energywebfoundation/origin/commit/3b9566bfb8d83cfce5fe2711f1bca90b683e19a5))
+
+
+### BREAKING CHANGES
+
+* **origin-backend-client:** IUser have full org object
+
+
+
+
+
 # [6.3.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-backend-client@6.2.1...@energyweb/origin-backend-client@6.3.0) (2020-08-06)
 
 
