@@ -8,7 +8,7 @@ import {
 import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { isEmail, isString } from 'class-validator';
-import { Repository } from 'typeorm';
+import { Repository, In, Not } from 'typeorm';
 
 import { NotificationService } from '../notification';
 import { Organization } from './organization.entity';
@@ -35,7 +35,7 @@ export class OrganizationInvitationService {
                 error: 'Provided email address is incorrect'
             });
         }
-
+        const sender = await this.userService.findByEmail(user.email);
         const { organizationId } = user;
         if (typeof organizationId === 'undefined') {
             throw new BadRequestException({
@@ -56,7 +56,8 @@ export class OrganizationInvitationService {
             email: lowerCaseEmail,
             organization,
             role,
-            status: OrganizationInvitationStatus.Pending
+            status: OrganizationInvitationStatus.Pending,
+            sender: `${sender.firstName} ${sender.lastName}`
         });
 
         const eventData: OrganizationInvitationEvent = {
@@ -74,7 +75,7 @@ export class OrganizationInvitationService {
         };
     }
 
-    public async acceptOrReject(
+    public async update(
         user: ILoggedInUser,
         invitationId: string,
         status: OrganizationInvitationStatus
@@ -85,22 +86,23 @@ export class OrganizationInvitationService {
             throw new BadRequestException('Incorrect invitationId');
         }
 
-        if (
-            ![
-                OrganizationInvitationStatus.Rejected,
-                OrganizationInvitationStatus.Accepted
-            ].includes(status)
-        ) {
-            throw new BadRequestException('Incorrect invitation status value');
-        }
-
         const invitation = await this.invitationRepository.findOne(invitationId, {
-            where: { email: user.email, status: OrganizationInvitationStatus.Pending },
+            where: {
+                email: user.email,
+                status: Not(
+                    In([
+                        OrganizationInvitationStatus.Accepted,
+                        OrganizationInvitationStatus.Rejected
+                    ])
+                )
+            },
             relations: ['organization']
         });
 
         if (!invitation) {
-            throw new BadRequestException('Requested invitation does not match');
+            throw new BadRequestException(
+                'Requested invitation does not exist or has already been accepted or rejected'
+            );
         }
 
         if (status === OrganizationInvitationStatus.Accepted) {
