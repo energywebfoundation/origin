@@ -1,4 +1,5 @@
 import { apply, select, put, take, all, fork, call } from 'redux-saga/effects';
+import { IUser, UserStatus } from '@energyweb/origin-backend-core';
 import { IExchangeClient, Order } from '../../utils/exchange';
 import { getExchangeClient } from '..';
 import { SagaIterator } from 'redux-saga';
@@ -7,11 +8,16 @@ import { BigNumber } from 'ethers';
 import { showNotification, NotificationType } from '../..';
 import { getI18n } from 'react-i18next';
 import { reloadCertificates } from '../certificates';
+import { getUserOffchain } from '../users/selectors';
 
 export function* fetchOrders(): SagaIterator {
     yield put(clearOrders());
     const exchangeClient: IExchangeClient = yield select(getExchangeClient);
-    const orders: Order[] = yield apply(exchangeClient, exchangeClient.getOrders, null);
+    const user: IUser = yield select(getUserOffchain);
+    const orders: Order[] =
+        user && user.status === UserStatus.Active
+            ? yield apply(exchangeClient, exchangeClient.getOrders, null)
+            : [];
     for (const order of orders) {
         const { startVolume, currentVolume } = order;
         const filled =
