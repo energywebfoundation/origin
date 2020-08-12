@@ -3,6 +3,19 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.7.2](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-ui-core@1.7.1...@energyweb/origin-ui-core@1.7.2) (2020-08-12)
+
+
+### Bug Fixes
+
+* **origin-ui-core:** check user is active before get org orders ([38dd8b3](https://github.com/energywebfoundation/origin/commit/38dd8b386099cf248b90c70471a484ee6b17be19))
+* **origin-ui-core:** check user is active before get own bundles ([bcb2475](https://github.com/energywebfoundation/origin/commit/bcb2475d306937ca5ff8defc9898d7156d29087f))
+* **origin-ui-core:** do not send Any values to Orders API ([ce134e2](https://github.com/energywebfoundation/origin/commit/ce134e23b975ee3b8925bc9565fe0b2eda27d044))
+
+
+
+
+
 ## [1.7.1](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-ui-core@1.7.0...@energyweb/origin-ui-core@1.7.1) (2020-08-10)
 
 
