@@ -104,7 +104,7 @@ psql -h localhost -p 5432 -U postgres -c "CREATE DATABASE origin"
 
 ### Running
 
-After you have the `.env` file created, run the following command:
+After you have the `.env` file created, installed dependencies (```yarn```) and build completed (```yarn build```) run the following command:
 
 ```shell
 yarn run:origin
