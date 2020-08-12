@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [5.0.1](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-backend-client-mocks@5.0.0...@energyweb/origin-backend-client-mocks@5.0.1) (2020-08-12)
+
+**Note:** Version bump only for package @energyweb/origin-backend-client-mocks
+
+
+
+
+
 # [5.0.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-backend-client-mocks@4.0.4...@energyweb/origin-backend-client-mocks@5.0.0) (2020-08-10)
 
 
