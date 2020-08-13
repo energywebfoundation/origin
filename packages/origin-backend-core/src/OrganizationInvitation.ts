@@ -23,6 +23,7 @@ export interface IOrganizationInvitationProperties {
 export interface IOrganizationInvitation extends IOrganizationInvitationProperties {
     organization: IOrganization;
     sender: string;
+    createdAt: Date;
 }
 
 export type OrganizationInviteCreateData = { email: string; role: OrganizationRole };
