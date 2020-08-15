@@ -50,9 +50,9 @@
         "swagger-ui-express": "4.1.4"
     },
     "devDependencies": {
-        "jest": "26.2.2",
+        "jest": "26.4.0",
         "supertest": "4.0.2",
-        "ts-jest": "26.1.4",
+        "ts-jest": "26.2.0",
         "tsconfig-paths": "3.9.0"
     },
     "resolutions": {
