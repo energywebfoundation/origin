@@ -1,0 +1,16 @@
+
+.LoginPage {
+    background-image: url('../../assets/bg-origin.png');
+    height: 100vh;
+    background-size: 100% 100%;
+    position: relative;
+    padding: 10px;
+    
+    .LoginForm {
+        width: 30%;
+        position: absolute;
+        top: 20%;
+        right: 10%;
+        opacity: .75;
+    }
+}
