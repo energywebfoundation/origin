@@ -6,7 +6,6 @@ import { PageContent } from '../PageContent/PageContent';
 import { getUserOffchain } from '../../features/users/selectors';
 import { AccountSettings } from './AccountSettings';
 import { UserRegister } from './UserRegister';
-import { UserLogin } from './UserLogin';
 import { dataTest, useLinks, useTranslation } from '../../utils';
 import { UserProfile } from './UserProfile';
 import { ConfirmEmail } from './ConfirmEmail';
@@ -25,12 +24,6 @@ export function Account() {
             label: 'settings.navigation.settings',
             component: AccountSettings,
             hide: !isLoggedIn
-        },
-        {
-            key: 'user-login',
-            label: 'settings.navigation.login',
-            component: UserLogin,
-            hide: isLoggedIn
         },
         {
             key: 'user-register',

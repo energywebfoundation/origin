@@ -25,7 +25,7 @@ export function getUserRegisterLink(baseURL: string) {
 }
 
 export function getAccountLoginLink(baseURL: string) {
-    return `${getAccountLink(baseURL)}/user-login`;
+    return `${baseURL}/user-login`;
 }
 
 export function getDevicesAddLink(baseURL: string) {
