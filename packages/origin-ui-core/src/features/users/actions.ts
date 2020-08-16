@@ -1,4 +1,8 @@
-import { IUser, IOrganizationWithRelationsIds } from '@energyweb/origin-backend-core';
+import {
+    IUser,
+    IOrganizationWithRelationsIds,
+    IOrganizationInvitation
+} from '@energyweb/origin-backend-core';
 
 export enum UsersActions {
     setActiveBlockchainAccountAddress = 'USERS_SET_ACTIVE_BLOCKCHAIN_ACCOUNT_ADDRESS',
@@ -7,7 +11,9 @@ export enum UsersActions {
     setAuthenticationToken = 'SET_AUTHENTICATION_TOKEN',
     clearAuthenticationToken = 'CLEAR_AUTHENTICATION_TOKEN',
     refreshUserOffchain = 'REFRESH_USER_OFFCHAIN',
-    addOrganizations = 'USERS_ADD_ORGANIZATIONS'
+    addOrganizations = 'USERS_ADD_ORGANIZATIONS',
+    setInvitations = 'USERS_SET_INVITATIONS',
+    setShowPendingInvitations = 'USERS_SET_SHOW_PENDING_INVITATIONS'
 }
 
 export interface ISetActiveBlockchainAccountAddressAction {
@@ -78,6 +84,30 @@ export const addOrganizations = (payload: IAddOrganizationsAction['payload']) =>
     payload
 });
 
+export interface ISetInvitationsAction {
+    type: UsersActions.setInvitations;
+    payload: IOrganizationInvitation[];
+}
+
+export const setInvitations = (
+    payload: ISetInvitationsAction['payload']
+): ISetInvitationsAction => ({
+    type: UsersActions.setInvitations,
+    payload
+});
+
+export interface ISetShowPendingInvitations {
+    type: UsersActions.setShowPendingInvitations;
+    payload: boolean;
+}
+
+export const setShowPendingInvitations = (
+    payload: ISetShowPendingInvitations['payload']
+): ISetShowPendingInvitations => ({
+    type: UsersActions.setShowPendingInvitations,
+    payload
+});
+
 export type TAddOrganizationsAction = typeof addOrganizations;
 
 export type IUsersAction =
@@ -86,4 +116,6 @@ export type IUsersAction =
     | ISetAuthenticationTokenAction
     | IClearAuthenticationTokenAction
     | IRefreshUserOffchainAction
-    | IAddOrganizationsAction;
+    | IAddOrganizationsAction
+    | ISetInvitationsAction
+    | ISetShowPendingInvitations;
