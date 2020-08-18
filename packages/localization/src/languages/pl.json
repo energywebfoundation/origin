@@ -260,6 +260,30 @@
                 "dropHereOrClickToSelect": "Upuść pliki tutaj lub kliknij aby wybrać"
             }
         },
+        "organization" : {
+            "registration": {
+                "registerOrganization": "Zarejestruj organizację",
+                "organizationInformation": "Informacje o organizacji",
+                "organizationName": "Nazwa organizacji",
+                "organizationAddress": "Adres organizacji",
+                "zipCode": "Zip code",
+                "city": "Miasto",
+                "country": "Kraj",
+                "businessType": "Rodzaj działalności",
+                "tradeRegistryNumber": "Numer firmy w rejestrze handlowym",
+                "vatNumber": "VAT number",
+                "uploadCompanyProof": "Prześlij dowód firmy",
+                "dragAndDropDocuments": "Przeciągnij i upuść dokument <1 /> lub <3 /> <4> Przeglądaj </4>",
+                "uploaded": "Przesłano",
+                "uploading": "Przesyłanie",
+                "completed": "Zakończony",
+                "signatoryName": "Pełne imię i nazwisko sygnatariusza",
+                "signatoryAddress": "Adres sygnatariusza",
+                "signatoryEmail": "Pojedynczy e-mail",
+                "signatoryTelephone": "Telefon sygnatariusza",
+                "uploadSignatoryId": "Prześlij identyfikator osobisty"
+            }
+        },
         "bundle": {
             "properties": {
                 "total_energy": "CALKOWITEJ ENERGII",
