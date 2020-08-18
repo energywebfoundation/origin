@@ -239,12 +239,34 @@
             },
             "actions": {
                 "register": "Zarejestruj",
+                "registerNow": "Zarejestruj się teraz",
                 "login": "Zaloguj się",
-                "save": "Zapisać"
+                "save": "Zapisać",
+                "forgotPasswordAsk": "Zapomniałeś hasła?"
             },
             "feedback": {
                 "userRegistered": "Użytkownik zarejestrowany.",
-                "errorWhileRegisteringUser": "Błąd podczas rejestracji użytkownika."
+                "errorWhileRegisteringUser": "Błąd podczas rejestracji użytkownika.",
+                "roleChanged": {
+                    "succesfullyJoinedOrg": "Pomyślnie dołączył do {{orgName}}",
+                    "asMemberYouCan": "Dołączyłeś do {{orgName}} {{admin}}. Jako członek możesz",
+                    "asDeviceManYouCan": "Dołączyłeś do {{orgName}} {{admin}}. Jako Menedżer urządzeń masz uprawnienia",
+                    "asOrgAdminYouCan": "Dołączyłeś do {{orgName}} {{admin}}. Jako Administrator organizacji masz uprawnienia",
+                    "canPlaceOrder": "Składaj zamówienia na giełdzie",
+                    "canBuyIRec": "Kupuj bezpośrednio I-REC",
+                    "canCreateAndBuyIRecBundles": "Twórz i kupuj pakiety I-REC",
+                    "canRedeemIRec": "Wykorzystaj I-REC",
+                    "canWidrawIRec": "Wypłać I-REC na własne konto uczestnika organizacji",
+                    "canRegisterDevices": "Zarejestruj urządzenia i grupy urządzeń",
+                    "canRequestIssuenceOfIRec": "Poproś o wydanie I-REC",
+                    "canConfigureAutomatedOrderCreation": "Skonfiguruj automatyczne tworzenie zamówień",
+                    "canAddOrRemoveOrgMembers": "Dodaj lub usuń członków z organizacji",
+                    "connectOrgToIRec": "Podłącz organizację do rejestru I-REC",
+                    "asAMemberYouCanAlso": "Możesz także wykonywać wszystkie czynności, które może wykonywać zwykły członek organizacji"
+                }
+            },
+            "dialog": {
+                "dontHaveAccAsk": "Nie masz konta?"
             }
         },
         "notification": {
@@ -258,6 +280,32 @@
         "file": {
             "info": {
                 "dropHereOrClickToSelect": "Upuść pliki tutaj lub kliknij aby wybrać"
+            }
+        },
+        "organization": {
+            "invitations": {
+                "roles": {
+                    "member": "Członek",
+                    "deviceManager": "Menadżer urządzeń",
+                    "admin": "Administrator"
+                },
+                "dialog": {
+                    "invitationsModalTitle": "Zaproszenie do dołączenia do [marketplace name]",
+                    "invitationMessage": "{{admin}} zaprosił Cię do dołączenia do marketplace [marketplace name] jako {{role}} w {{orgName}}. Kliknij zaakceptuj, aby dołączyć do organizacji"
+                },
+                "actions": {
+                    "later": "Może później",
+                    "accept": "Zaakceptować",
+                    "decline": "Upadek"
+                },
+                "notification": {
+                    "rejectedSuccess":"Zaproszenie odrzucone",
+                    "rejectedFailure": "Nie udało się odrzucić zaproszenia",
+                    "acceptedSuccess": "Zaproszenie przyjęte",
+                    "acceptedFailure": "Nie udało się odrzucić zaproszenia",
+                    "laterSuccess": "Zaproszenie znajdziesz na karcie Organizacje",
+                    "laterFailure": "Nie udało się przetworzyć zaproszenia"
+                }
             }
         },
         "bundle": {

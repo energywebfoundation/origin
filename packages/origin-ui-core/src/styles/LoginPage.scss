@@ -1,0 +1,24 @@
+@import './variables.scss';
+
+.LoginPage {
+    background-image: url('../../assets/bg-origin.png');
+    height: 100vh;
+    background-size: 100% 100%;
+    position: relative;
+    padding: 10px;
+    
+    .LoginForm {
+        width: 30%;
+        position: absolute;
+        top: 20%;
+        right: 10%;
+        opacity: .75;
+        input:-webkit-autofill,
+        input:-webkit-autofill:hover, 
+        input:-webkit-autofill:focus, 
+        input:-webkit-autofill:active  {
+            -webkit-box-shadow: 0 0 0 30px $backgroundColorDarker inset !important;
+            -webkit-text-fill-color: $textColorDefault !important;
+        }
+    }
+}

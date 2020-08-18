@@ -4,13 +4,13 @@ import { useSelector } from 'react-redux';
 import { getUserOffchain } from '../../features/users/selectors';
 import { OrganizationInvitationTable } from './OrganizationInvitationTable';
 import { isRole, Role } from '@energyweb/origin-backend-core';
-import { UserLogin } from '../Account/UserLogin';
+import { LoginPage } from '../Account/LoginPage';
 
 export function OrganizationInvitations() {
     const user = useSelector(getUserOffchain);
 
     if (!user) {
-        return <UserLogin redirect="/organization/organization-invitations" />;
+        return <LoginPage redirect="/organization/organization-invitations" />;
     }
 
     const orgId = user.organization?.id;
