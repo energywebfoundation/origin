@@ -455,12 +455,16 @@
                 },
                 "dialog": {
                     "invitationsModalTitle": "Invitation to join the [marketplace name]",
-                    "invitationMessage": "{{admin}} has invited you to join the [marketplace name] as a {{role}} for {{orgName}}. Click accept to join the Organization"
+                    "invitationMessage": "{{admin}} has invited you to join the [marketplace name] as a {{role}} for {{orgName}}. Click accept to join the Organization",
+                    "noInvitationModalTitle": "Thanks for registering as a user on the TK marketplace",
+                    "noInvitationMessage": "To unlock all the functionalities of the marketplace, like trading I-RECs, users also need to register an organization.",
                 },
                 "actions": {
                     "later": "Maybe later",
                     "accept": "Accept",
-                    "decline": "Decline"
+                    "decline": "Decline",
+                    "registerOrganization": "Register organization",
+                    "notNow": "Not now"
                 },
                 "notification": {
                     "rejectedSuccess":"Invitation rejected",

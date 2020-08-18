@@ -296,7 +296,9 @@
                 "actions": {
                     "later": "Może później",
                     "accept": "Zaakceptować",
-                    "decline": "Upadek"
+                    "decline": "Upadek",
+                    "registerOrganization": "Zarejestruj organizację",
+                    "notNow": "Nie teraz"
                 },
                 "notification": {
                     "rejectedSuccess":"Zaproszenie odrzucone",

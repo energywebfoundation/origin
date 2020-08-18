@@ -20,6 +20,7 @@ import { OriginConfigurationContext } from '.';
 import { LoginPage } from './Account/LoginPage';
 import { PendingInvitationsModal } from './Modal/PendingInvitationsModal';
 import { RoleChangedModal } from './Modal/RoleChangedModal';
+import { NoExistingInvitationModal } from './Modal/NoExistingInvitationModal';
 
 export function AppContainer() {
     const error = useSelector(getError);
@@ -102,6 +103,7 @@ export function AppContainer() {
                     <NoBlockchainAccountModal />
                     <PendingInvitationsModal />
                     <RoleChangedModal />
+                    <NoExistingInvitationModal />
                 </div>
             </Route>
         </Switch>
