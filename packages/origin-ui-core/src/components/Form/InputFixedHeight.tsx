@@ -17,7 +17,8 @@ export const InputFixedHeight = ({ field, form, ...props }) => {
             position: 'relative'
         },
         input: {
-            backgroundColor: `${variables.backgroundColorDarker}`
+            backgroundColor: `${variables.backgroundColorDarker}`,
+            caretColor: `${variables.textColorDefault}`
         }
     }));
     const styles = useStyles();
