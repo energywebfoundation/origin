@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import { OriginFeature } from '@energyweb/utils-general';
 import { Certificates } from './certificates/Certificates';
-import { Switch, Route } from 'react-router-dom';
+import { Switch, Route, Redirect } from 'react-router-dom';
 import { Header } from './Header';
 import { Device } from './devices/Device';
 import { Admin } from './admin/Admin';
@@ -21,10 +21,12 @@ import { LoginPage } from './Account/LoginPage';
 import { PendingInvitationsModal } from './Modal/PendingInvitationsModal';
 import { RoleChangedModal } from './Modal/RoleChangedModal';
 import { NoExistingInvitationModal } from './Modal/NoExistingInvitationModal';
+import { getUserOffchain } from '../features/users/selectors';
 
 export function AppContainer() {
     const error = useSelector(getError);
     const loading = useSelector(getLoading);
+    const user = useSelector(getUserOffchain);
 
     const {
         baseURL,
@@ -80,7 +82,14 @@ export function AppContainer() {
                             forFeatures={[OriginFeature.Certificates]}
                         />
                         <Route path={getAccountLink()} component={Account} />
-                        <Route path={getOrganizationLink()} component={Organization} />
+                        <Route
+                            path={getOrganizationLink()}
+                            render={() => {
+                                if (!user) {
+                                    return <Redirect to={`${baseURL}/user-login`} />;
+                                } else return <Organization />;
+                            }}
+                        />
                         <Route path={getAdminLink()} component={Admin} />
                         <FeatureRoute
                             path={getBundlesLink()}
