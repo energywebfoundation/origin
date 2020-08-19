@@ -91,11 +91,12 @@ export function OrganizationInvitationTable(props: IProps) {
     async function accept(rowIndex: number) {
         const invitation = paginatedData[rowIndex]?.invitation;
 
-        if (invitation.status !== OrganizationInvitationStatus.Pending) {
-            showNotification(
-                `You can only accept invitation with status pending.`,
-                NotificationType.Error
-            );
+        if (
+            [OrganizationInvitationStatus.Accepted, OrganizationInvitationStatus.Rejected].includes(
+                invitation.status
+            )
+        ) {
+            showNotification(`Invitation has already been processed`, NotificationType.Error);
 
             return;
         }
@@ -119,11 +120,12 @@ export function OrganizationInvitationTable(props: IProps) {
     async function reject(rowIndex: number) {
         const invitation = paginatedData[rowIndex]?.invitation;
 
-        if (invitation.status !== OrganizationInvitationStatus.Pending) {
-            showNotification(
-                `You can only reject invitation with status pending.`,
-                NotificationType.Error
-            );
+        if (
+            [OrganizationInvitationStatus.Accepted, OrganizationInvitationStatus.Rejected].includes(
+                invitation.status
+            )
+        ) {
+            showNotification(`Invitation has already been processed`, NotificationType.Error);
 
             return;
         }
