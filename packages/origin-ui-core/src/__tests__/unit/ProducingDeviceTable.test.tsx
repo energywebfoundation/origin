@@ -15,7 +15,7 @@ import { OffChainDataSourceMock } from '@energyweb/origin-backend-client-mocks';
 import { BigNumber } from 'ethers';
 
 describe('ProducingDeviceTable', () => {
-    it.only('correctly renders and search works', async () => {
+    it('correctly renders and search works', async () => {
         const offChainDataSource: IOffChainDataSource = new OffChainDataSourceMock();
 
         await offChainDataSource.configurationClient.update({

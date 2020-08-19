@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import { OriginFeature } from '@energyweb/utils-general';
 import { Certificates } from './certificates/Certificates';
-import { Switch, Route } from 'react-router-dom';
+import { Switch, Route, Redirect } from 'react-router-dom';
 import { Header } from './Header';
 import { Device } from './devices/Device';
 import { Admin } from './admin/Admin';
@@ -17,10 +17,15 @@ import { BundlesTable } from './bundles/BundlesTable';
 import { NoBlockchainAccountModal } from './Modal/NoBlockchainAccountModal';
 import { FeatureRoute } from './route/FeatureRoute';
 import { OriginConfigurationContext } from '.';
+import { LoginPage } from './Account/LoginPage';
+import { PendingInvitationsModal } from './Modal/PendingInvitationsModal';
+import { RoleChangedModal } from './Modal/RoleChangedModal';
+import { getUserOffchain } from '../features/users/selectors';
 
 export function AppContainer() {
     const error = useSelector(getError);
     const loading = useSelector(getLoading);
+    const user = useSelector(getUserOffchain);
 
     const {
         baseURL,
@@ -54,46 +59,60 @@ export function AppContainer() {
     }
 
     return (
-        <div className={`AppWrapper`}>
-            {loading && (
-                <div className={classes.progressWrapper}>
-                    <LinearProgress className={classes.progress} />
+        <Switch>
+            <Route path={`${baseURL}/user-login`} component={LoginPage} />
+            <Route>
+                <div className={`AppWrapper`}>
+                    {loading && (
+                        <div className={classes.progressWrapper}>
+                            <LinearProgress className={classes.progress} />
+                        </div>
+                    )}
+                    <Header />
+                    <Switch>
+                        <FeatureRoute
+                            path={getDevicesLink()}
+                            component={Device}
+                            forFeatures={[OriginFeature.Devices]}
+                        />
+                        <FeatureRoute
+                            path={getCertificatesLink()}
+                            component={Certificates}
+                            forFeatures={[OriginFeature.Certificates]}
+                        />
+                        <Route path={getAccountLink()} component={Account} />
+                        <Route
+                            path={getOrganizationLink()}
+                            render={() => {
+                                if (!user) {
+                                    return <Redirect to={`${baseURL}/user-login`} />;
+                                } else return <Organization />;
+                            }}
+                        />
+                        <Route path={getAdminLink()} component={Admin} />
+                        <FeatureRoute
+                            path={getBundlesLink()}
+                            component={BundlesTable}
+                            forFeatures={[OriginFeature.Bundles, OriginFeature.Certificates]}
+                        />
+                        <Route
+                            path={baseURL}
+                            component={
+                                enabledFeatures.includes(OriginFeature.Devices)
+                                    ? Device
+                                    : enabledFeatures.includes(OriginFeature.Certificates)
+                                    ? Certificates
+                                    : Account
+                            }
+                        />
+                    </Switch>
+                    <RequestCertificatesModal />
+                    <AccountMismatchModal />
+                    <NoBlockchainAccountModal />
+                    <PendingInvitationsModal />
+                    <RoleChangedModal />
                 </div>
-            )}
-            <Header />
-            <Switch>
-                <FeatureRoute
-                    path={getDevicesLink()}
-                    component={Device}
-                    forFeatures={[OriginFeature.Devices]}
-                />
-                <FeatureRoute
-                    path={getCertificatesLink()}
-                    component={Certificates}
-                    forFeatures={[OriginFeature.Certificates]}
-                />
-                <Route path={getAccountLink()} component={Account} />
-                <Route path={getOrganizationLink()} component={Organization} />
-                <Route path={getAdminLink()} component={Admin} />
-                <FeatureRoute
-                    path={getBundlesLink()}
-                    component={BundlesTable}
-                    forFeatures={[OriginFeature.Bundles, OriginFeature.Certificates]}
-                />
-                <Route
-                    path={baseURL}
-                    component={
-                        enabledFeatures.includes(OriginFeature.Devices)
-                            ? Device
-                            : enabledFeatures.includes(OriginFeature.Certificates)
-                            ? Certificates
-                            : Account
-                    }
-                />
-            </Switch>
-            <RequestCertificatesModal />
-            <AccountMismatchModal />
-            <NoBlockchainAccountModal />
-        </div>
+            </Route>
+        </Switch>
     );
 }
