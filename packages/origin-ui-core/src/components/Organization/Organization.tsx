@@ -6,12 +6,12 @@ import { Role, isRole, UserStatus } from '@energyweb/origin-backend-core';
 import { PageContent } from '../PageContent/PageContent';
 import { useLinks } from '../../utils/routing';
 import { getUserOffchain } from '../../features/users/selectors';
-import { OrganizationForm } from './OrganizationForm';
 import { OrganizationTable } from './OrganizationTable';
 import { OrganizationView } from './OrganizationView';
 import { OrganizationInvite } from './OrganizationInvite';
 import { OrganizationInvitations } from './OrganizationInvitations';
 import { OrganizationUsersTable } from './OrganizationUsersTable';
+import { PlatformOrganizationRegistrationForm } from './PlatformOrganizationRegistrationForm';
 
 export const roleNames = {
     [Role.OrganizationUser]: 'organization.invitations.roles.member',
@@ -54,7 +54,7 @@ export function Organization() {
         {
             key: 'organization-register',
             label: 'Register',
-            component: OrganizationForm,
+            component: PlatformOrganizationRegistrationForm,
             hide: user?.organization?.id
         },
         {

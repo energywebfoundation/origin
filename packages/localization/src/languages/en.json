@@ -470,6 +470,29 @@
                     "laterSuccess": "You can find this invitation on the Organizations tab",
                     "laterFailure": "Could not process invitation"
                 }
+            },
+            "registration": {
+                "registerOrganization": "Register organization",
+                "organizationInformation": "Organization information",
+                "organizationName": "Organization Name",
+                "organizationAddress": "Organization Address",
+                "zipCode": "Zip code",
+                "city": "City",
+                "country": "Country",
+                "businessType": "Business Type",
+                "tradeRegistryNumber": "Trade Registry Company number",
+                "vatNumber": "VAT number",
+                "uploadCompanyProof": "Upload Company Proof",
+                "dragAndDropDocuments": "Drag and Drop Document <1/> or <3/> <4>Browse</4>",
+                "uploaded": "Uploaded",
+                "uploading": "Uploading",
+                "completed": "Completed",
+                "signatoryInformation": "Authorized Signatory Information",
+                "signatoryName": "Signatory Full Name",
+                "signatoryAddress": "Signatory Address",
+                "signatoryEmail": "Singatory Email",
+                "signatoryTelephone": "Signatory Telephone",
+                "uploadSignatoryId": "Upload Singatory ID"
             }
         },
         "bundle": {
