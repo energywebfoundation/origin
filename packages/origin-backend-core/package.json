@@ -28,7 +28,7 @@
         "registry": "https://registry.npmjs.org"
     },
     "dependencies": {
-        "axios": "0.19.2",
+        "axios": "0.20.0",
         "class-transformer": "0.3.1",
         "class-validator": "0.12.2",
         "ethers": "5.0.8",

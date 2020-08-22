@@ -22,7 +22,7 @@
     "dependencies": {
         "@energyweb/origin-backend-core": "5.0.1",
         "@energyweb/utils-general": "9.2.2",
-        "axios": "0.19.2",
+        "axios": "0.20.0",
         "ethers": "5.0.8",
         "moment": "2.24.0"
     },
