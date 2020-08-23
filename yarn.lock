@@ -2,6 +2,17 @@
 # yarn lockfile v1
 
 
+"@angular-devkit/core@9.1.12":
+  version "9.1.12"
+  resolved "https://registry.yarnpkg.com/@angular-devkit/core/-/core-9.1.12.tgz#7cebce51918fe7f3462d8c58c9fbd5a3e2c3b3e7"
+  integrity sha512-D/GnBeSlmdgGn7EhuE32HuPuRAjvUuxi7Q6WywBI8PSsXKAGnrypghBwMATNnOA24//CgbW2533Y9VWHaeXdeA==
+  dependencies:
+    ajv "6.12.3"
+    fast-json-stable-stringify "2.1.0"
+    magic-string "0.25.7"
+    rxjs "6.5.4"
+    source-map "0.7.3"
+
 "@angular-devkit/core@9.1.7":
   version "9.1.7"
   resolved "https://registry.yarnpkg.com/@angular-devkit/core/-/core-9.1.7.tgz#f193ccbae4c80b34188bc9cc401c16b3ced50339"
@@ -36,6 +47,15 @@
     minimist "1.2.5"
     rxjs "6.5.4"
     symbol-observable "1.2.0"
+
+"@angular-devkit/schematics@9.1.12":
+  version "9.1.12"
+  resolved "https://registry.yarnpkg.com/@angular-devkit/schematics/-/schematics-9.1.12.tgz#bbf457f1b35941fddeeb1ee77336dd04ca60b8ba"
+  integrity sha512-+GYnUzmIy1/QpYitCC8mI7jcrViGHTtOKvvDPEFjU2nggjNEQaMmsHcdIsjrqggEc23ZZyebNAIewT8CMkJyrQ==
+  dependencies:
+    "@angular-devkit/core" "9.1.12"
+    ora "4.0.3"
+    rxjs "6.5.4"
 
 "@angular-devkit/schematics@9.1.7":
   version "9.1.7"
@@ -3241,7 +3261,17 @@
     cron "1.7.2"
     uuid "8.0.0"
 
-"@nestjs/schematics@7.0.1", "@nestjs/schematics@^7.0.1":
+"@nestjs/schematics@7.1.0":
+  version "7.1.0"
+  resolved "https://registry.yarnpkg.com/@nestjs/schematics/-/schematics-7.1.0.tgz#27e425eb2f62f20f06519527876ee6345d4f8b8c"
+  integrity sha512-f5SXUNOK24FR5HIeQOpfB4b1/+Djz1YfHf2IGN4SQtSKrh5qGmzvCxLMt9H4lfhAFbtTDIBaOTbXQM7NQlsbrQ==
+  dependencies:
+    "@angular-devkit/core" "9.1.12"
+    "@angular-devkit/schematics" "9.1.12"
+    fs-extra "9.0.1"
+    pluralize "8.0.0"
+
+"@nestjs/schematics@^7.0.1":
   version "7.0.1"
   resolved "https://registry.yarnpkg.com/@nestjs/schematics/-/schematics-7.0.1.tgz#bb729d06223d8b4df1a65e94d8fac17ef1b45657"
   integrity sha512-MOnJPqKPpuwBHDdw96gHoshd/QEYrUlLPF92xQFXm6uIOo1EGISg8OOSoji2isEtp2gHpO+bL8p/h4oPG10Fqw==
@@ -5645,6 +5675,16 @@ ajv@6.12.0, ajv@^6.12.0:
   version "6.12.0"
   resolved "https://registry.yarnpkg.com/ajv/-/ajv-6.12.0.tgz#06d60b96d87b8454a5adaba86e7854da629db4b7"
   integrity sha512-D6gFiFA0RRLyUbvijN74DWAjXSFxWKaWP7mldxkVhyhAV3+SWA9HEJPHQ2c9soIeTFJqcSdFDGFgdqs1iUU2Hw==
+  dependencies:
+    fast-deep-equal "^3.1.1"
+    fast-json-stable-stringify "^2.0.0"
+    json-schema-traverse "^0.4.1"
+    uri-js "^4.2.2"
+
+ajv@6.12.3:
+  version "6.12.3"
+  resolved "https://registry.yarnpkg.com/ajv/-/ajv-6.12.3.tgz#18c5af38a111ddeb4f2697bd78d68abc1cabd706"
+  integrity sha512-4K0cK3L1hsqk9xIb2z9vs/XU+PGJZ9PNpJRDS9YLzmNdX6jmVPfamLvTJr0aDAusnHyCHO6MjzlkAsgtqp9teA==
   dependencies:
     fast-deep-equal "^3.1.1"
     fast-json-stable-stringify "^2.0.0"
@@ -17586,6 +17626,11 @@ please-upgrade-node@^3.2.0:
   integrity sha512-gQR3WpIgNIKwBMVLkpMUeR3e1/E1y42bqDQZfql+kDeXd8COYfM8PQA4X6y7a8u9Ua9FHmsrrmirW2vHs45hWg==
   dependencies:
     semver-compare "^1.0.0"
+
+pluralize@8.0.0:
+  version "8.0.0"
+  resolved "https://registry.yarnpkg.com/pluralize/-/pluralize-8.0.0.tgz#1a6fa16a38d12a1901e0320fa017051c539ce3b1"
+  integrity sha512-Nc3IT5yHzflTfbjgqWcCPpo7DaKy4FnpB0l/zCAW0Tc7jxAiuqSxHasntB3D7887LSrA93kDJ9IXovxJYxyLCA==
 
 pn@^1.1.0:
   version "1.1.0"
