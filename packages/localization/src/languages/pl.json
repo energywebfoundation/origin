@@ -282,29 +282,7 @@
                 "dropHereOrClickToSelect": "Upuść pliki tutaj lub kliknij aby wybrać"
             }
         },
-        "organization" : {
-            "registration": {
-                "registerOrganization": "Zarejestruj organizację",
-                "organizationInformation": "Informacje o organizacji",
-                "organizationName": "Nazwa organizacji",
-                "organizationAddress": "Adres organizacji",
-                "zipCode": "Zip code",
-                "city": "Miasto",
-                "country": "Kraj",
-                "businessType": "Rodzaj działalności",
-                "tradeRegistryNumber": "Numer firmy w rejestrze handlowym",
-                "vatNumber": "VAT number",
-                "uploadCompanyProof": "Prześlij dowód firmy",
-                "dragAndDropDocuments": "Przeciągnij i upuść dokument <1 /> lub <3 /> <4> Przeglądaj </4>",
-                "uploaded": "Przesłano",
-                "uploading": "Przesyłanie",
-                "completed": "Zakończony",
-                "signatoryName": "Pełne imię i nazwisko sygnatariusza",
-                "signatoryAddress": "Adres sygnatariusza",
-                "signatoryEmail": "Pojedynczy e-mail",
-                "signatoryTelephone": "Telefon sygnatariusza",
-                "uploadSignatoryId": "Prześlij identyfikator osobisty"
-            },
+        "organization": {
             "invitations": {
                 "roles": {
                     "member": "Członek",
@@ -327,6 +305,35 @@
                     "acceptedFailure": "Nie udało się odrzucić zaproszenia",
                     "laterSuccess": "Zaproszenie znajdziesz na karcie Organizacje",
                     "laterFailure": "Nie udało się przetworzyć zaproszenia"
+                }
+            },
+            "registration": {
+                "registerOrganization": "Zarejestruj organizację",
+                "organizationInformation": "Informacje o organizacji",
+                "organizationName": "Nazwa organizacji",
+                "organizationAddress": "Adres organizacji",
+                "zipCode": "Zip code",
+                "city": "Miasto",
+                "country": "Kraj",
+                "businessType": "Rodzaj działalności",
+                "tradeRegistryNumber": "Numer firmy w rejestrze handlowym",
+                "vatNumber": "VAT number",
+                "uploadCompanyProof": "Prześlij dowód firmy",
+                "dragAndDropDocuments": "Przeciągnij i upuść dokument <1 /> lub <3 /> <4> Przeglądaj </4>",
+                "uploaded": "Przesłano",
+                "uploading": "Przesyłanie",
+                "completed": "Zakończony",
+                "signatoryName": "Pełne imię i nazwisko sygnatariusza",
+                "signatoryAddress": "Adres sygnatariusza",
+                "signatoryEmail": "Pojedynczy e-mail",
+                "signatoryTelephone": "Telefon sygnatariusza",
+                "uploadSignatoryId": "Prześlij identyfikator osobisty",
+                "titleConnectOrRegisterIREC": "Dziękujemy za zarejestrowanie organizacji na platformie TK!",
+                "contentConnectOrRegisterIREC": "Sprawdzamy Twoje dane tak szybko, jak to możliwe i skontaktujemy się z Tobą, gdy wszystko zostanie zatwierdzone i będziesz mógł rozpocząć handel. <1/> <2/> Aby zarejestrować urządzenia i poprosić o I-REC, użytkownicy muszą również połączyć się z istniejącym kontem I-REC.",
+                "actions": {
+                    "notNow": "Nie teraz",
+                    "connectIREC": "Połącz istniejące konto I-REC",
+                    "registerIREC": "Zarejestruj nowe konto I-REC"
                 }
             }
         },
