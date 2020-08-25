@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import * as Yup from 'yup';
 import { useSelector, useDispatch } from 'react-redux';
 import { getOffChainDataSource, showNotification, NotificationType, useTranslation } from '../..';
@@ -19,6 +18,7 @@ import { FormikHelpers, Formik, Form } from 'formik';
 import { setLoading } from '../../features/general';
 import { FormInput, FormCountrySelect, FormBusinessTypeSelect } from '../Form';
 import { Upload, IUploadedFile } from '../Upload';
+import { STEP_NAMES } from './OrganizationRegistrationStepper';
 
 interface IFormValues {
     organizationName: string;
@@ -84,7 +84,13 @@ const VALIDATION_SCHEMA = Yup.object({
     signatoryCountry: Yup.string().required().label('Country')
 });
 
-export function PlatformOrganizationRegistrationForm() {
+interface IProps {
+    nextStep: (step: STEP_NAMES) => void;
+}
+
+export function PlatformOrganizationRegistrationForm(props: IProps) {
+    const { nextStep } = props;
+    /* eslint-disable @typescript-eslint/no-unused-vars */
     const organizationClient = useSelector(getOffChainDataSource)?.organizationClient;
     const [companyProofs, setCompanyProofs] = useState<IUploadedFile[]>([]);
     const [signatoryId, setSignatoryId] = useState<IUploadedFile[]>([]);
@@ -101,18 +107,21 @@ export function PlatformOrganizationRegistrationForm() {
 
     const classes = useStyles(useTheme());
     const { spacing }: Theme = useTheme();
+
     async function submitForm(
         orgProps: IFormValues,
         formikActions: FormikHelpers<IFormValues>
     ): Promise<void> {
-        formikActions.setSubmitting(true);
         dispatch(setLoading(true));
 
         try {
+            formikActions.setSubmitting(true);
             /**
              * const organization = await organizationClient.registerPlatformOrganization({...orgProps, companyProofs, signatoryId});
              */
             showNotification('Organization registered.', NotificationType.Success);
+            formikActions.setSubmitting(false);
+            nextStep(STEP_NAMES.CONNECT_OR_CREATE);
         } catch (error) {
             console.warn('Error while registering an organization', error);
 
@@ -124,7 +133,6 @@ export function PlatformOrganizationRegistrationForm() {
         }
 
         dispatch(setLoading(false));
-        formikActions.setSubmitting(false);
     }
 
     return (
@@ -136,7 +144,6 @@ export function PlatformOrganizationRegistrationForm() {
                 initialValues={INITIAL_FORM_VALUES}
                 onSubmit={submitForm}
                 validationSchema={VALIDATION_SCHEMA}
-                isInitialValid={false}
             >
                 {(formikProps) => {
                     const { isValid, isSubmitting, values, errors } = formikProps;
