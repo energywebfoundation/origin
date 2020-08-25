@@ -6,10 +6,16 @@ import {
     setUserOffchain,
     setAuthenticationToken,
     clearAuthenticationToken,
-    IRefreshUserOffchainAction
+    IRefreshUserOffchainAction,
+    setInvitations
 } from './actions';
 import { getOffChainDataSource } from '../general/selectors';
-import { IOffChainDataSource, IRequestClient, IUser } from '@energyweb/origin-backend-core';
+import {
+    IOffChainDataSource,
+    IRequestClient,
+    IUser,
+    IOrganizationInvitation
+} from '@energyweb/origin-backend-core';
 import { GeneralActions, ISetOffChainDataSourceAction } from '../general/actions';
 import { reloadCertificates, clearCertificates } from '../certificates';
 import { clearBundles } from '../bundles';
@@ -90,7 +96,19 @@ function* fetchOffchainUserDetails(): SagaIterator {
                     ...userProfile
                 })
             );
-
+            const { organizationClient } = yield select(getOffChainDataSource);
+            const invitations: IOrganizationInvitation[] = yield call(
+                [organizationClient, organizationClient.getInvitations],
+                null
+            );
+            yield put(
+                setInvitations(
+                    invitations.map((inv) => ({
+                        ...inv,
+                        createdAt: new Date(inv.createdAt)
+                    }))
+                )
+            );
             yield put(reloadCertificates());
         } catch (error) {
             console.log('error', error, error.response);

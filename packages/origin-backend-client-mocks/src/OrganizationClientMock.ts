@@ -83,7 +83,8 @@ export class OrganizationClientMock implements IOrganizationClient {
             role,
             organization,
             status: OrganizationInvitationStatus.Pending,
-            sender
+            sender,
+            createdAt: new Date()
         };
 
         this.invitationStorage.set(organizationInvitation.id, organizationInvitation);

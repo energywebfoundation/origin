@@ -347,9 +347,11 @@
             },
             "actions": {
                 "register": "Register",
+                "registerNow": "Register now",
                 "login": "Login",
                 "save": "Save",
-                "resendConfirmationEmail": "Re-send confirmation email"
+                "resendConfirmationEmail": "Re-send confirmation email",
+                "forgotPasswordAsk": "Forgot password?"
             },
             "feedback": {
                 "userRegistered": "User registered.",
@@ -363,6 +365,23 @@
                     "confirmed": "Email confirmed successfully.",
                     "expired": "Confirmation link expired.",
                     "loading:": "Loading..."
+                },
+                "roleChanged": {
+                    "succesfullyJoinedOrg": "Successfully joined {{orgName}}",
+                    "asMemberYouCan": "You have successfully joined {{orgName}} of {{admin}}. As a member you can",
+                    "asDeviceManYouCan": "You have successfully joined {{orgName}} of {{admin}}. As a Device Manager you have permissions",
+                    "asOrgAdminYouCan": "You have successfully joined {{orgName}} of {{admin}}. As an Organization Admin you have permissions",
+                    "canPlaceOrder": "Place orders on the exchange",
+                    "canBuyIRec": "Directly buy I-RECs",
+                    "canCreateAndBuyIRecBundles": "Create and buy I-REC bundles",
+                    "canRedeemIRec": "Redeem I-RECs",
+                    "canWidrawIRec": "Withdraw I-RECs to organization’s own participant account",
+                    "canRegisterDevices": "Register devices and device groups",
+                    "canRequestIssuenceOfIRec": "Request the issuance of I-RECs",
+                    "canConfigureAutomatedOrderCreation": "Configure automated order creation",
+                    "canAddOrRemoveOrgMembers": "Add or remove members from the organization",
+                    "connectOrgToIRec": "Connect the organization to the I-REC registry",
+                    "asAMemberYouCanAlso": "You can also perform all actions that a regular organization member can perform"
                 }
             },
             "profile": {
@@ -376,6 +395,9 @@
                 "errorUpdatePassword": "Error to update User password.",
                 "updateChainAddress": "User blockchain address update.",
                 "errorUpdateChainAddress": "Error to update User blockchain address."
+            },
+            "dialog": {
+                "dontHaveAccAsk": "Don't have an account?"
             }
         },
         "notification": {
@@ -430,7 +452,47 @@
                     "member": "Member",
                     "deviceManager": "Device Manager",
                     "admin": "Admin"
+                },
+                "dialog": {
+                    "invitationsModalTitle": "Invitation to join the [marketplace name]",
+                    "invitationMessage": "{{admin}} has invited you to join the [marketplace name] as a {{role}} for {{orgName}}. Click accept to join the Organization"
+                },
+                "actions": {
+                    "later": "Maybe later",
+                    "accept": "Accept",
+                    "decline": "Decline"
+                },
+                "notification": {
+                    "rejectedSuccess":"Invitation rejected",
+                    "rejectedFailure": "Could not reject invitation",
+                    "acceptedSuccess": "Invitaion accepted",
+                    "acceptedFailure": "Could not reject invitation",
+                    "laterSuccess": "You can find this invitation on the Organizations tab",
+                    "laterFailure": "Could not process invitation"
                 }
+            },
+            "registration": {
+                "registerOrganization": "Register organization",
+                "organizationInformation": "Organization information",
+                "organizationName": "Organization Name",
+                "organizationAddress": "Organization Address",
+                "zipCode": "Zip code",
+                "city": "City",
+                "country": "Country",
+                "businessType": "Business Type",
+                "tradeRegistryNumber": "Trade Registry Company number",
+                "vatNumber": "VAT number",
+                "uploadCompanyProof": "Upload Company Proof",
+                "dragAndDropDocuments": "Drag and Drop Document <1/> or <3/> <4>Browse</4>",
+                "uploaded": "Uploaded",
+                "uploading": "Uploading",
+                "completed": "Completed",
+                "signatoryInformation": "Authorized Signatory Information",
+                "signatoryName": "Signatory Full Name",
+                "signatoryAddress": "Signatory Address",
+                "signatoryEmail": "Singatory Email",
+                "signatoryTelephone": "Signatory Telephone",
+                "uploadSignatoryId": "Upload Singatory ID"
             }
         },
         "bundle": {

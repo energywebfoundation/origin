@@ -397,4 +397,57 @@ describe('Organization e2e tests', () => {
             .set('Authorization', `Bearer ${accessToken}`)
             .expect(201);
     });
+
+    it('should be able to accept invitation', async () => {
+        const { accessToken, organization } = await registerAndLogin(
+            app,
+            userService,
+            organizationService,
+            [Role.OrganizationAdmin]
+        );
+
+        const email = 'invitee@example.com';
+
+        await request(app.getHttpServer())
+            .post('/organization/invite')
+            .set('Authorization', `Bearer ${accessToken}`)
+            .send({ email, role: Role.OrganizationUser })
+            .expect(201);
+
+        let invitationId = 0;
+
+        await request(app.getHttpServer())
+            .get(`/organization/${organization.id}/invitations`)
+            .set('Authorization', `Bearer ${accessToken}`)
+            .expect((res) => {
+                const invitations = res.body as IOrganizationInvitation[];
+                [{ id: invitationId }] = invitations.filter((inv) => inv.email === email);
+            });
+
+        const newUser = { ...userToRegister, email };
+
+        await request(app.getHttpServer()).post(`/user/register`).send(newUser).expect(201);
+
+        let newUserAccessToken: string;
+
+        await request(app.getHttpServer())
+            .post('/auth/login')
+            .send({
+                username: newUser.email,
+                password: newUser.password
+            })
+            .expect((res) => ({ accessToken: newUserAccessToken } = res.body));
+
+        await request(app.getHttpServer())
+            .put(`/organization/invitation/${invitationId}`)
+            .send({ status: OrganizationInvitationStatus.Accepted })
+            .set('Authorization', `Bearer ${newUserAccessToken}`)
+            .expect(200);
+
+        await request(app.getHttpServer())
+            .put(`/organization/invitation/${invitationId}`)
+            .send({ status: OrganizationInvitationStatus.Accepted })
+            .set('Authorization', `Bearer ${newUserAccessToken}`)
+            .expect(400);
+    });
 });

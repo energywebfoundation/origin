@@ -1,0 +1,7 @@
+@import './variables.scss';
+
+.PlatformOrganizationRegistrationForm {
+    .divider {
+        background-color: lighten($backgroundColorDark, 10%);
+    }
+}

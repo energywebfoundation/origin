@@ -2,18 +2,18 @@ import {
     ILoggedInUser,
     OrganizationInvitationEvent,
     OrganizationInvitationStatus,
-    SupportedEvents,
-    OrganizationRole
+    OrganizationRole,
+    SupportedEvents
 } from '@energyweb/origin-backend-core';
 import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { isEmail, isString } from 'class-validator';
-import { Repository, In, Not } from 'typeorm';
+import { Repository } from 'typeorm';
 
 import { NotificationService } from '../notification';
-import { Organization } from './organization.entity';
-import { OrganizationInvitation } from './organization-invitation.entity';
 import { UserService } from '../user';
+import { OrganizationInvitation } from './organization-invitation.entity';
+import { Organization } from './organization.entity';
 
 @Injectable()
 export class OrganizationInvitationService {
@@ -88,20 +88,21 @@ export class OrganizationInvitationService {
 
         const invitation = await this.invitationRepository.findOne(invitationId, {
             where: {
-                email: user.email,
-                status: Not(
-                    In([
-                        OrganizationInvitationStatus.Accepted,
-                        OrganizationInvitationStatus.Rejected
-                    ])
-                )
+                email: user.email
             },
             relations: ['organization']
         });
 
         if (!invitation) {
+            throw new BadRequestException('Requested invitation does not exist');
+        }
+
+        if (
+            invitation.status === OrganizationInvitationStatus.Accepted ||
+            invitation.status === OrganizationInvitationStatus.Rejected
+        ) {
             throw new BadRequestException(
-                'Requested invitation does not exist or has already been accepted or rejected'
+                'Requested invitation has already been accepted or rejected'
             );
         }
 
