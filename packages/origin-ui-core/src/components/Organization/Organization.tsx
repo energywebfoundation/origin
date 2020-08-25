@@ -11,7 +11,7 @@ import { OrganizationView } from './OrganizationView';
 import { OrganizationInvite } from './OrganizationInvite';
 import { OrganizationInvitations } from './OrganizationInvitations';
 import { OrganizationUsersTable } from './OrganizationUsersTable';
-import { OrganizationRegistrationStepper } from './OrganizationRegistrationStepper';
+import { OrganizationForm } from './OrganizationForm';
 
 export const roleNames = {
     [Role.OrganizationUser]: 'organization.invitations.roles.member',
@@ -54,7 +54,7 @@ export function Organization() {
         {
             key: 'organization-register',
             label: 'Register',
-            component: OrganizationRegistrationStepper,
+            component: OrganizationForm,
             hide: user?.organization?.id
         },
         {
