@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.2.5](https://github.com/energywebfoundation/origin/compare/@energyweb/solar-simulator@1.2.4...@energyweb/solar-simulator@1.2.5) (2020-08-25)
+
+
+### Bug Fixes
+
+* **deps:** update dependency bn.js to v5.1.3 ([368d9f3](https://github.com/energywebfoundation/origin/commit/368d9f38229885cb233f5145938f75854f55ed7b))
+
+
+
+
+
 ## [1.2.4](https://github.com/energywebfoundation/origin/compare/@energyweb/solar-simulator@1.2.3...@energyweb/solar-simulator@1.2.4) (2020-08-12)
 
 **Note:** Version bump only for package @energyweb/solar-simulator

@@ -10,7 +10,7 @@
     "bugs": {
         "url": "https://github.com/energywebfoundation/origin/issues"
     },
-    "version": "0.7.0",
+    "version": "0.8.0",
     "main": "dist/js/src/index.js",
     "files": [
         "dist/js/src"

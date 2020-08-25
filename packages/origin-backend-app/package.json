@@ -1,6 +1,6 @@
 {
     "name": "@energyweb/origin-backend-app",
-    "version": "1.1.9",
+    "version": "1.1.10",
     "description": "This is a bootstrap project for Origin API",
     "main": "dist/js/src/index.js",
     "scripts": {
@@ -33,11 +33,11 @@
     "author": "EnergyWeb DevHub GmbH; Joseph Bagaric, joseph.bagaric@energyweb.org; Piotr Kosinski, piotr.kosinski@energyweb.org",
     "license": "GPL-3.0-or-later",
     "dependencies": {
-        "@energyweb/exchange": "1.5.2",
-        "@energyweb/migrations": "3.1.9",
-        "@energyweb/origin-backend": "7.0.1",
-        "@energyweb/origin-backend-core": "5.0.1",
-        "@energyweb/utils-general": "9.2.2",
+        "@energyweb/exchange": "1.5.3",
+        "@energyweb/migrations": "3.1.10",
+        "@energyweb/origin-backend": "7.0.2",
+        "@energyweb/origin-backend-core": "5.1.0",
+        "@energyweb/utils-general": "9.2.3",
         "@nestjs/common": "7.4.2",
         "@nestjs/config": "^0.5.0",
         "@nestjs/core": "7.4.2",
