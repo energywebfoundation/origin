@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.8.0](https://github.com/energywebfoundation/origin/compare/@energyweb/localization@0.7.0...@energyweb/localization@0.8.0) (2020-08-25)
+
+
+### Features
+
+* **origin-ui-core:** localize first login invitations flow ([d6d25ed](https://github.com/energywebfoundation/origin/commit/d6d25ed648ce0edd9a90c7b9b6b12e57b00ff42c))
+* **origin-ui-core:** localize platform organizaion registration ([eb23fb8](https://github.com/energywebfoundation/origin/commit/eb23fb8cd3381260534b27b86a43de05b9915d48))
+
+
+
+
+
 # [0.7.0](https://github.com/energywebfoundation/origin/compare/@energyweb/localization@0.6.0...@energyweb/localization@0.7.0) (2020-08-06)
 
 

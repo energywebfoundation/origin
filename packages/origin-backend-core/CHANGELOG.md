@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [5.1.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-backend-core@5.0.1...@energyweb/origin-backend-core@5.1.0) (2020-08-25)
+
+
+### Features
+
+* **origin-backend:** expose createdAt in the invitation interface ([d11273b](https://github.com/energywebfoundation/origin/commit/d11273b026ba1e412db21d3ebe860c72995d01ed))
+
+
+
+
+
 ## [5.0.1](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-backend-core@5.0.0...@energyweb/origin-backend-core@5.0.1) (2020-08-12)
 
 **Note:** Version bump only for package @energyweb/origin-backend-core

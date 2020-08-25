@@ -1,7 +1,7 @@
 {
     "private": true,
     "name": "@energyweb/origin-ui",
-    "version": "2.2.6",
+    "version": "2.2.7",
     "scripts": {
         "build": "yarn config-env && node --max-old-space-size=8192 ./node_modules/.bin/webpack --config webpack/prod.config.js",
         "build:ts": "tsc -b tsconfig.json",
@@ -20,7 +20,7 @@
         "clean": "shx rm -rf dist"
     },
     "dependencies": {
-        "@energyweb/origin-ui-core": "1.7.2",
+        "@energyweb/origin-ui-core": "1.8.0",
         "extract-text-webpack-plugin": "4.0.0-beta.0",
         "file-loader": "6.0.0",
         "react": "16.13.1",

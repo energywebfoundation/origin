@@ -3,6 +3,32 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.8.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-ui-core@1.7.2...@energyweb/origin-ui-core@1.8.0) (2020-08-25)
+
+
+### Bug Fixes
+
+* **deps:** update dependency bn.js to v5.1.3 ([368d9f3](https://github.com/energywebfoundation/origin/commit/368d9f38229885cb233f5145938f75854f55ed7b))
+* **origin-ui-core:** replace pending check on accepted or rejected ([40284fb](https://github.com/energywebfoundation/origin/commit/40284fbbd3fe8bab5aa835e06ce5c36579500682))
+
+
+### Features
+
+* **origin-ui-core:** add LoginForm ([fcb0e0f](https://github.com/energywebfoundation/origin/commit/fcb0e0fcc842a3b76b6c42116e8ba17cd7079666))
+* **origin-ui-core:** add LoginPage ([eaf5fa8](https://github.com/energywebfoundation/origin/commit/eaf5fa80ac80bdf5191b17291e75909bd472cc64))
+* **origin-ui-core:** add PendingInvitationsModal ([7e8691d](https://github.com/energywebfoundation/origin/commit/7e8691d336ed126c57e61c5c1568b8f065db5029))
+* **origin-ui-core:** add PlatformOrganizationRegistrationForm ([0762087](https://github.com/energywebfoundation/origin/commit/076208776059035b6e0f98ef0587562c4d8c2910))
+* **origin-ui-core:** add RoleChangedModal ([4807fd1](https://github.com/energywebfoundation/origin/commit/4807fd19e85d557598e8c2083a101cc9d3dd93a4))
+* **origin-ui-core:** lighter cursor in InputFixedHeight ([13f2adc](https://github.com/energywebfoundation/origin/commit/13f2adc39e99c23cdc9b25e0e40561c43447077a))
+* **origin-ui-core:** move login route to base url ([2f5005a](https://github.com/energywebfoundation/origin/commit/2f5005a9cf52b3c9c9c1579f2af86bc861bedfee))
+* **origin-ui-core:** restrict access to organization for unlogged ([0ec6c2b](https://github.com/energywebfoundation/origin/commit/0ec6c2b79525b9056867be0b3095029606488cbb))
+* **origin-ui-core:** separate OrganizationView from OrganizationForm ([bbf4f14](https://github.com/energywebfoundation/origin/commit/bbf4f14de1cce06142109eadc903be87c4795f31))
+* **origin-ui-core:** store invitations ([cefe1d5](https://github.com/energywebfoundation/origin/commit/cefe1d5498a911a06600cd3731cd18c41aab7e88))
+
+
+
+
+
 ## [1.7.2](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-ui-core@1.7.1...@energyweb/origin-ui-core@1.7.2) (2020-08-12)
 
 
