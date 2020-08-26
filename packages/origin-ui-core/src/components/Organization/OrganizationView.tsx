@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
+import { useParams } from 'react-router-dom';
 import { makeStyles, createStyles, useTheme, Paper, Grid, TextField } from '@material-ui/core';
 import { Skeleton } from '@material-ui/lab';
 import { Countries } from '@energyweb/utils-general';
 import { getUserOffchain } from '../../features/users/selectors';
+import { getOffChainDataSource } from '../../features/general/selectors';
 
 interface IFormValues {
     code: string;
@@ -30,7 +32,8 @@ interface IFormValues {
 
 export function OrganizationView() {
     const userOffchain = useSelector(getUserOffchain);
-
+    const organizationClient = useSelector(getOffChainDataSource)?.organizationClient;
+    const params: { id?: string } = useParams();
     const [formValues, setFormValues] = useState<IFormValues>(null);
 
     const useStyles = makeStyles(() =>
@@ -43,22 +46,30 @@ export function OrganizationView() {
 
     const classes = useStyles(useTheme());
 
+    const setValues = (organization, activeCountriesParsed) => {
+        setFormValues({
+            ...organization,
+            headquartersCountry: Countries.find((c) => c.id === organization.headquartersCountry)
+                .name,
+            activeCountries: Countries.filter((c) => activeCountriesParsed.includes(c.id))
+                .map((country) => country.name)
+                .join(', '),
+            country: Countries.find((c) => c.id === organization.country).name
+        });
+    };
+
     useEffect(() => {
-        const organization = userOffchain?.organization;
-        if (organization) {
-            const activeCountriesParsed: number[] = JSON.parse(organization.activeCountries);
-            setFormValues({
-                ...organization,
-                headquartersCountry: Countries.find(
-                    (c) => c.id === organization.headquartersCountry
-                ).name,
-                activeCountries: Countries.filter((c) => activeCountriesParsed.includes(c.id))
-                    .map((country) => country.name)
-                    .join(', '),
-                country: Countries.find((c) => c.id === organization.country).name
-            });
-        }
-    }, [userOffchain]);
+        const getOrganization = async () => {
+            const organization = params.id
+                ? await organizationClient.getById(parseInt(params.id, 10))
+                : userOffchain?.organization;
+            if (organization) {
+                const activeCountriesParsed: number[] = JSON.parse(organization.activeCountries);
+                setValues(organization, activeCountriesParsed);
+            }
+        };
+        getOrganization();
+    }, [params]);
 
     if (!formValues) {
         return <Skeleton variant="rect" height={200} />;
