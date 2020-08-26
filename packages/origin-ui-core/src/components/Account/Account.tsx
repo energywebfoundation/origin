@@ -3,12 +3,13 @@ import { useSelector } from 'react-redux';
 import { NavLink, Route, Redirect } from 'react-router-dom';
 
 import { PageContent } from '../PageContent/PageContent';
-import { getUserOffchain } from '../../features/users/selectors';
+import { getUserOffchain, getIRECAccount } from '../../features/users/selectors';
 import { AccountSettings } from './AccountSettings';
 import { UserRegister } from './UserRegister';
 import { dataTest, useLinks, useTranslation } from '../../utils';
 import { UserProfile } from './UserProfile';
 import { ConfirmEmail } from './ConfirmEmail';
+import { IRECConnectForm } from '../Organization/IRECConnectForm';
 
 export function Account() {
     const userOffchain = useSelector(getUserOffchain);
@@ -17,6 +18,8 @@ export function Account() {
     const { t } = useTranslation();
 
     const isLoggedIn = Boolean(userOffchain);
+    const organization = useSelector(getUserOffchain)?.organization;
+    const irecAccount = useSelector(getIRECAccount);
 
     const Menu = [
         {
@@ -42,6 +45,12 @@ export function Account() {
             label: 'settings.navigation.confirmEmail',
             component: ConfirmEmail,
             hide: true
+        },
+        {
+            key: 'connect-irec',
+            label: 'settings.navigation.connectIREC',
+            component: IRECConnectForm,
+            hide: !organization || irecAccount
         }
     ];
 
