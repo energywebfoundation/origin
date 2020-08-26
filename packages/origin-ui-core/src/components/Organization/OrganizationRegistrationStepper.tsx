@@ -25,7 +25,7 @@ export const OrganizationRegistrationStepper = () => {
             case STEP_NAMES.CONNECT_OR_CREATE:
                 return <IRECConnectOrRegisterStep nextStep={(step) => setActiveStep(step)} />;
             case STEP_NAMES.CONNECT_IREC:
-                return <IRECConnectForm nextStep={setActiveStep} />;
+                return <IRECConnectForm />;
             case STEP_NAMES.REGISTER_IREC:
                 return <IRECRegisterForm nextStep={setActiveStep} />;
             case STEP_NAMES.REGISTRATION_COMPLETED:

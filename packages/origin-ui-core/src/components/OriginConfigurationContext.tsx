@@ -21,6 +21,7 @@ export interface IOriginStyleConfig {
     TEXT_COLOR_DEFAULT: string;
     BACKGROUND_COLOR_DARK: string;
     BACKGROUND_COLOR_DARKER: string;
+    BACKGROUND_COLOR_LIGHTER: string;
     FIELD_ICON_COLOR: string;
     WHITE: string;
 }
@@ -207,6 +208,7 @@ export function createStyleConfigFromSCSSVariables(scssVariables: any): IOriginS
         TEXT_COLOR_DEFAULT: scssVariables.textColorDefault ?? DEFAULT_COLOR,
         BACKGROUND_COLOR_DARK: scssVariables.backgroundColorDark ?? DEFAULT_COLOR,
         BACKGROUND_COLOR_DARKER: scssVariables.backgroundColorDarker ?? DEFAULT_COLOR,
+        BACKGROUND_COLOR_LIGHTER: scssVariables.backgroundColorLighter ?? DEFAULT_COLOR,
         FIELD_ICON_COLOR: scssVariables.fieldIconColor ?? DEFAULT_COLOR,
         WHITE: '#fff'
     };
