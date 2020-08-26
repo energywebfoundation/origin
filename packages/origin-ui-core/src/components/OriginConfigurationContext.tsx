@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 import React, { createContext, ReactNode } from 'react';
 import { createMuiTheme, Theme } from '@material-ui/core';
 import { OriginFeature, allOriginFeatures } from '@energyweb/utils-general';
@@ -27,6 +28,20 @@ export interface IOriginStyleConfig {
 }
 
 const DEFAULT_COLOR = '#894ec5';
+
+declare module '@material-ui/core/styles/createTypography' {
+    interface Typography {
+        fontSizeSm: number;
+        fontSizeLg: number;
+        fontSizeMd: number;
+    }
+
+    interface TypographyOptions {
+        fontSizeSm?: number;
+        fontSizeLg?: number;
+        fontSizeMd?: number;
+    }
+}
 
 export const createMaterialThemeForOrigin = (
     styleConfig: IOriginStyleConfig,
