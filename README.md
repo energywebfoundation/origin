@@ -102,6 +102,8 @@ psql -h localhost -p 5432 -U postgres -c "CREATE DATABASE origin"
 2. Make sure you have created a `.env` file in the root of the monorepo and that all necessary variables are set.
    Use [`.env.example`](.env.example) as an example of how the `.env` file should look.
 
+3. For custom DB credentials, ports, db name etc refer to https://github.com/energywebfoundation/origin/tree/master/packages/origin-backend-app#development
+
 ### Running
 
 After you have the `.env` file created, installed dependencies (```yarn```) and build completed (```yarn build```) run the following command:
