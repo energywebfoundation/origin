@@ -4,6 +4,7 @@ $primaryColorDarker: darken($primaryColor, 20%) !default;
 $textColorDefault: #a8a8a8 !default;
 $backgroundColorDark: #2c2c2c !default;
 $backgroundColorDarker: darken($backgroundColorDark, 5%) !default;
+$backgroundColorLighter: lighten($backgroundColorDark, 5%);
 $bootstrapBodyColor: white !default;
 $fieldIconColor: darken(white, 30%) !default;
 
@@ -17,4 +18,5 @@ $fieldIconColor: darken(white, 30%) !default;
     fieldIconColor: $fieldIconColor;
     backgroundColorDark: $backgroundColorDark;
     backgroundColorDarker: $backgroundColorDarker;
+    backgroundColorLighter: $backgroundColorLighter;
 }
