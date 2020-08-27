@@ -498,8 +498,6 @@
                 "contentConnectOrRegisterIREC": "We are checking your information as soon as possible and will contact you once everything is approved and you can start trading.<1/> <2/> In order to register devices and request I-RECs, users also need to connect to existing I-REC account.",
                 "titleIRecInfoSuccess": "Thank you for providing your I-REC account information.",
                 "contentIRecInfoSuccess": "We will connect your organization to this account shortly!",
-                "titleIRecAccountRegistered": "Thank you for registering an I-REC account!",
-                "contentIRecAccountRegistered": "We will forward your application to I-REC and inform you as soon as it is approved.",
                 "titleConnectIREC": "Requesting I-REC API Access",
                 "platformOrganizationId": "Platform Organization ID",
                 "IRECAPICredentials": "I-REC API Credentials",
@@ -507,11 +505,28 @@
                 "apiToken": "API token",
                 "clientID": "Client ID",
                 "clientSecret": "Client Secret",
+                
+                "titleRegisterIREC": "I-REC Registration information",
+                "IRECAccountType": "I-REC Account type",
+                "irecParticipantDescription": "Registrant Account for device owner",
+                "irecRegistrantDescription": "Participant Account for traders that also trade outside of marketplace",
+                "orgHeadquatersCompany": "Organization Headquaters Company",
+                "yearOfRegistration": "Year of Registration",
+                "numberOfEmployees": "Number of employees",
+                "shareholderNames": "Shareholder Names (over 10%)",
+                "orgWebsite": "Organization Website",
+                "activeCountries": "Active Countries",
+                "mainBusiness":"Main Business",
+                "ceoName":"Name of the Chief Executive Officer/General Manager",
+                "ceoPassport": "Chief Executive Officer/General Manager passport number",
+                "lastBalance": "Balance sheet total for last financial year",
+                "existingIRECOrg": "Existing IREC organization(s) to become subsidiary",
                 "actions":{
                     "notNow": "Not now",
                     "connectIREC": "Connect existing I-REC account",
                     "registerIREC": "Register new I-REC account",
-                    "connectOrganization": "Connect organization"
+                    "connectOrganization": "Connect organization",
+                    "registerOrganization": "Register organization"
                 }
             }
         },
