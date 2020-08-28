@@ -11,6 +11,7 @@ import { setAuthenticationToken } from '../../features/users/actions';
 import { useLinks, useValidation } from '../../utils';
 import { InputFixedHeight } from '../Form/InputFixedHeight';
 import EnergyWebOriginLogo from '../../../assets/EW-Origin-WhiteText.svg';
+import { FIRST_LOGIN_STORAGE_KEY } from '../Modal/LoginNoInvitationsModal';
 
 interface IFormValues {
     email: string;
@@ -65,7 +66,6 @@ export const LoginForm = (props: IOwnProps) => {
 
         try {
             const loginResponse = await userClient.login(values.email, values.password);
-
             dispatch(setAuthenticationToken(loginResponse.accessToken));
         } catch (error) {
             console.warn('Could not log in.', error);
@@ -82,7 +82,8 @@ export const LoginForm = (props: IOwnProps) => {
     });
 
     useEffect(() => {
-        if (user) {
+        const firstLoginItem = localStorage.getItem(FIRST_LOGIN_STORAGE_KEY);
+        if (user && firstLoginItem) {
             history.push(props.redirect || getCertificatesLink());
         }
     }, [user]);
