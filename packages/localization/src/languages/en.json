@@ -473,6 +473,8 @@
                 }
             },
             "registration": {
+                "loginNoInvitationsModalTitle": "Thank you for registering as a user on the [platform name] marketplace",
+                "loginNoInvitationsModalContent": "To unlock all the functionalities of the marketpalce, like trading I-REC's, users also need to register an organization",
                 "registerOrganization": "Register organization",
                 "organizationInformation": "Organization information",
                 "organizationName": "Organization Name",
@@ -511,7 +513,8 @@
                     "notNow": "Not now",
                     "connectIREC": "Connect existing I-REC account",
                     "registerIREC": "Register new I-REC account",
-                    "connectOrganization": "Connect organization"
+                    "connectOrganization": "Connect organization",
+                    "registerOrganization": "Register organization"
                 }
             }
         },

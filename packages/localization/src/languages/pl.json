@@ -309,6 +309,8 @@
                 }
             },
             "registration": {
+                "loginNoInvitationsModalTitle": "Dziękujemy za zarejestrowanie się jako użytkownik na platformie handlowej [nazwa platformy]",
+                "loginNoInvitationsModalContent": "Aby odblokować wszystkie funkcje rynku, takie jak handel I-REC, użytkownicy muszą również zarejestrować organizację",
                 "registerOrganization": "Zarejestruj organizację",
                 "organizationInformation": "Informacje o organizacji",
                 "organizationName": "Nazwa organizacji",
@@ -346,7 +348,8 @@
                     "notNow": "Nie teraz",
                     "connectIREC": "Połącz istniejące konto I-REC",
                     "registerIREC": "Zarejestruj nowe konto I-REC",
-                    "connectOrganization": "Connect organization"
+                    "connectOrganization": "Connect organization",
+                    "registerOrganization": "Zarejestruj organizację"
                 }
             }
         },
