@@ -21,6 +21,7 @@ import { LoginPage } from './Account/LoginPage';
 import { PendingInvitationsModal } from './Modal/PendingInvitationsModal';
 import { RoleChangedModal } from './Modal/RoleChangedModal';
 import { getUserOffchain } from '../features/users/selectors';
+import { LoginNoInvitationsModal } from './Modal/LoginNoInvitationsModal';
 
 export function AppContainer() {
     const error = useSelector(getError);
@@ -60,7 +61,10 @@ export function AppContainer() {
 
     return (
         <Switch>
-            <Route path={`${baseURL}/user-login`} component={LoginPage} />
+            <Route path={`${baseURL}/user-login`}>
+                <LoginPage />
+                <LoginNoInvitationsModal />
+            </Route>
             <Route>
                 <div className={`AppWrapper`}>
                     {loading && (

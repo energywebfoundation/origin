@@ -60,6 +60,10 @@ export function getOrganizationViewLink(baseURL: string, id: string) {
     return `${getOrganizationLink(baseURL)}/organization-view/${id}`;
 }
 
+export function getOrganizationRegisterLink(baseURL) {
+    return `${getOrganizationLink(baseURL)}/organization-register`;
+}
+
 export function getAdminLink(baseURL: string) {
     return `${baseURL}/admin`;
 }
@@ -95,6 +99,7 @@ export function useLinks() {
         getProducingDeviceDetailLink: (deviceId: string | number) =>
             getProducingDeviceDetailLink(baseURL, deviceId),
         getOrganizationViewLink: (id: string) => getOrganizationViewLink(baseURL, id),
+        getOrganizationRegisterLink: () => getOrganizationRegisterLink(baseURL),
         getUserRegisterLink: () => getUserRegisterLink(baseURL),
         getAccountLoginLink: () => getAccountLoginLink(baseURL),
         getAdminLink: () => getAdminLink(baseURL),
