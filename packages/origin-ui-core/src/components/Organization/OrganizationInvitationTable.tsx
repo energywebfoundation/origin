@@ -90,6 +90,10 @@ export function OrganizationInvitationTable(props: IProps) {
 
     async function accept(rowIndex: number) {
         const invitation = paginatedData[rowIndex]?.invitation;
+        const invitations = await organizationClient.getInvitationsForEmail(props.email);
+        invitations
+                .filter((inv) => inv.id !== invitation.id)
+                .forEach((inv) => organizationClient.rejectInvitation(inv.id));
 
         if (
             [OrganizationInvitationStatus.Accepted, OrganizationInvitationStatus.Rejected].includes(
