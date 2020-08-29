@@ -38,7 +38,7 @@
         "commander": "^6.0.0",
         "dotenv": "8.2.0",
         "ethers": "5.0.8",
-        "pg": "8.3.2",
+        "pg": "8.3.3",
         "winston": "3.3.3",
         "write-json-file": "4.3.0",
         "yaeti": "1.0.2"
