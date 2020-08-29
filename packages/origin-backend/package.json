@@ -50,7 +50,7 @@
         "@nestjs/jwt": "7.1.0",
         "@nestjs/passport": "7.1.0",
         "@nestjs/platform-express": "^7.0.0",
-        "@nestjs/typeorm": "7.1.0",
+        "@nestjs/typeorm": "7.1.1",
         "@types/node": "^12.12.31",
         "bcryptjs": "2.4.3",
         "body-parser": "1.19.0",
