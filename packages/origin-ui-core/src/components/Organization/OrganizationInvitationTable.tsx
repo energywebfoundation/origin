@@ -105,6 +105,10 @@ export function OrganizationInvitationTable(props: IProps) {
 
         try {
             await organizationClient.acceptInvitation(invitation.id);
+            const invitations = await organizationClient.getInvitationsForEmail(props.email);
+            invitations
+                .filter((inv) => inv.id !== invitation.id)
+                .forEach((inv) => organizationClient.rejectInvitation(inv.id));
 
             showNotification(`Invitation accepted.`, NotificationType.Success);
             dispatch(refreshUserOffchain());
