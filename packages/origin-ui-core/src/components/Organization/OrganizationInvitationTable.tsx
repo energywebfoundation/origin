@@ -146,22 +146,6 @@ export function OrganizationInvitationTable(props: IProps) {
         dispatch(setLoading(false));
     }
 
-    const actions =
-        typeof props.organizationId === 'undefined'
-            ? [
-                  {
-                      icon: <Check />,
-                      name: 'Accept',
-                      onClick: (row: string) => accept(parseInt(row, 10))
-                  },
-                  {
-                      icon: <Clear />,
-                      name: 'Reject',
-                      onClick: (row: string) => reject(parseInt(row, 10))
-                  }
-              ]
-            : [];
-
     const columns = [
         { id: 'organization', label: 'Organization' },
         { id: 'email', label: 'Email' },
@@ -175,6 +159,27 @@ export function OrganizationInvitationTable(props: IProps) {
             email: invitation.email
         };
     });
+
+    const actions =
+        typeof props.organizationId === 'undefined'
+            ? rows.map((currentRow) =>
+                  OrganizationInvitationStatus[currentRow.status] ===
+                  OrganizationInvitationStatus.Pending
+                      ? [
+                            {
+                                icon: <Check />,
+                                name: 'Accept',
+                                onClick: (row: string) => accept(parseInt(row, 10))
+                            },
+                            {
+                                icon: <Clear />,
+                                name: 'Reject',
+                                onClick: (row: string) => reject(parseInt(row, 10))
+                            }
+                        ]
+                      : []
+              )
+            : [];
 
     return (
         <TableMaterial
