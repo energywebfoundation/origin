@@ -5,13 +5,14 @@ import { Role, isRole, UserStatus } from '@energyweb/origin-backend-core';
 
 import { PageContent } from '../PageContent/PageContent';
 import { useLinks } from '../../utils/routing';
-import { getUserOffchain } from '../../features/users/selectors';
+import { getUserOffchain, getIRECAccount } from '../../features/users/selectors';
 import { OrganizationTable } from './OrganizationTable';
 import { OrganizationView } from './OrganizationView';
 import { OrganizationInvite } from './OrganizationInvite';
 import { OrganizationInvitations } from './OrganizationInvitations';
 import { OrganizationUsersTable } from './OrganizationUsersTable';
 import { OrganizationForm } from './OrganizationForm';
+import { IRECRegisterForm } from './IRECRegisterForm';
 
 export const roleNames = {
     [Role.OrganizationUser]: 'organization.invitations.roles.member',
@@ -25,6 +26,8 @@ export function Organization() {
     const { getOrganizationLink } = useLinks();
 
     const isLoggedIn = Boolean(user);
+    const organization = useSelector(getUserOffchain)?.organization;
+    const irecAccount = useSelector(getIRECAccount);
 
     const Menu = [
         {
@@ -71,6 +74,12 @@ export function Organization() {
             label: 'View',
             component: OrganizationView,
             hide: true
+        },
+        {
+            key: 'register-irec',
+            label: 'Register I-REC',
+            component: IRECRegisterForm,
+            hide: !organization || irecAccount
         }
     ];
 
