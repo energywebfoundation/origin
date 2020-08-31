@@ -16,6 +16,7 @@ import {
 } from '../Table/PaginatedLoaderHooks';
 import { getOffChainDataSource } from '../../features/general/selectors';
 import { refreshUserOffchain } from '../../features/users/actions';
+import { useTranslation } from '../..';
 
 interface IRecord {
     organization: IOrganization;
@@ -43,6 +44,7 @@ export function OrganizationInvitationTable(props: IProps) {
     const organizationClient = useSelector(getOffChainDataSource)?.organizationClient;
 
     const dispatch = useDispatch();
+    const { t } = useTranslation();
 
     async function getPaginatedData({
         requestedPageSize,
@@ -172,12 +174,12 @@ export function OrganizationInvitationTable(props: IProps) {
                       ? [
                             {
                                 icon: <Check />,
-                                name: 'Accept',
+                                name: t('organization.invitations.actions.accept'),
                                 onClick: (row: string) => accept(parseInt(row, 10))
                             },
                             {
                                 icon: <Clear />,
-                                name: 'Reject',
+                                name: t('organization.invitations.actions.decline'),
                                 onClick: (row: string) => reject(parseInt(row, 10))
                             }
                         ]
