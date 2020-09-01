@@ -267,7 +267,9 @@
                 }
             },
             "dialog": {
-                "dontHaveAccAsk": "Nie masz konta?"
+                "dontHaveAccAsk": "Nie masz konta?",
+                "userRegisteredModalTitle": "Dziękujemy za zarejestrowanie użytkownika na platformie handlowej [nazwa platformy]",
+                "userRegisteredModalContent": "Powinieneś otrzymać od nas e-mail. Aby aktywować użytkownika, potwierdź swój adres e-mail, klikając łącze potwierdzające w wiadomości e-mail"
             }
         },
         "notification": {
