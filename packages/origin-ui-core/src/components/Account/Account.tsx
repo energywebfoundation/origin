@@ -26,7 +26,7 @@ export function Account() {
             key: 'settings',
             label: 'settings.navigation.settings',
             component: AccountSettings,
-            hide: !isLoggedIn
+            hide: false
         },
         {
             key: 'user-register',

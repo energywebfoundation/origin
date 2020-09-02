@@ -123,6 +123,23 @@ export function Header() {
                 </ul>
 
                 <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
+                    <Grid item>
+                        {t('settings.settings')}
+                        &nbsp;
+                        <Link
+                            to={getAccountLink()}
+                            className={classes.endIcon}
+                            {...dataTest('header-link-account-settings')}
+                        >
+                            <Tooltip
+                                title={t('settings.settings')}
+                                classes={{ tooltip: classes.tooltip }}
+                            >
+                                <Settings color="primary" />
+                            </Tooltip>
+                        </Link>
+                        <br />
+                    </Grid>
                     {!userOffchain && (
                         <Grid item>
                             &nbsp;
@@ -142,25 +159,6 @@ export function Header() {
                                     <AccountCircle color="primary" />
                                 </Tooltip>
                             </Link>
-                        </Grid>
-                    )}
-                    {userOffchain && (
-                        <Grid item>
-                            {t('settings.settings')}
-                            &nbsp;
-                            <Link
-                                to={getAccountLink()}
-                                className={classes.endIcon}
-                                {...dataTest('header-link-account-settings')}
-                            >
-                                <Tooltip
-                                    title={t('settings.settings')}
-                                    classes={{ tooltip: classes.tooltip }}
-                                >
-                                    <Settings color="primary" />
-                                </Tooltip>
-                            </Link>
-                            <br />
                         </Grid>
                     )}
                     {userOffchain && (
