@@ -28,6 +28,7 @@ import {
     UnauthorizedException
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
+import { BigNumber } from 'ethers';
 import { StorageErrors } from '../../enums/StorageErrors';
 import { ExtendedBaseEntity } from '../ExtendedBaseEntity';
 import { OrganizationService } from '../organization/organization.service';
@@ -270,13 +271,20 @@ export class DeviceController {
     }
 
     private serializeSmartMeterReads(reads: ISmartMeterRead[]) {
-        return reads?.map((r) => ({ ...r, meterReading: r.meterReading.toString() }));
+        return reads?.map(({ timestamp, meterReading }) => ({
+            timestamp,
+            meterReading: BigNumber.from(meterReading).toString()
+        }));
     }
 
     private serializeDevices(devices: IDevice[]) {
         return devices?.map((device) => ({
             ...device,
-            smartMeterReads: this.serializeSmartMeterReads(device.smartMeterReads)
+            smartMeterReads: this.serializeSmartMeterReads(device.smartMeterReads),
+            meterStats: {
+                certified: BigNumber.from(device.meterStats.certified).toString(),
+                uncertified: BigNumber.from(device.meterStats.uncertified).toString()
+            }
         }));
     }
 }
