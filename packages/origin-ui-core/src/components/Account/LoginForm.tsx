@@ -6,7 +6,7 @@ import { IUserClient } from '@energyweb/origin-backend-core';
 import { getOffChainDataSource, showNotification, NotificationType, useTranslation } from '../..';
 import { setLoading } from '../../features/general';
 import { getUserOffchain } from '../../features/users/selectors';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useLocation } from 'react-router-dom';
 import { setAuthenticationToken } from '../../features/users/actions';
 import { useLinks, useValidation } from '../../utils';
 import { InputFixedHeight } from '../Form/InputFixedHeight';
@@ -23,11 +23,7 @@ const INITIAL_VALUES: IFormValues = {
     password: ''
 };
 
-interface IOwnProps {
-    redirect?: string;
-}
-
-export const LoginForm = (props: IOwnProps) => {
+export const LoginForm = () => {
     const dispatch = useDispatch();
     const userClient: IUserClient = useSelector(getOffChainDataSource)?.userClient;
     const user = useSelector(getUserOffchain);
@@ -36,6 +32,7 @@ export const LoginForm = (props: IOwnProps) => {
     const { getCertificatesLink } = useLinks();
     const { Yup } = useValidation();
     const { getAccountLink } = useLinks();
+    const location = useLocation();
 
     const useStyles = makeStyles((theme: Theme) => ({
         form: {
@@ -84,7 +81,7 @@ export const LoginForm = (props: IOwnProps) => {
     useEffect(() => {
         const firstLoginItem = localStorage.getItem(FIRST_LOGIN_STORAGE_KEY);
         if (user && firstLoginItem) {
-            history.push(props.redirect || getCertificatesLink());
+            history.push(location.state?.redirect || getCertificatesLink());
         }
     }, [user]);
 
@@ -94,7 +91,7 @@ export const LoginForm = (props: IOwnProps) => {
                 <img src={EnergyWebOriginLogo} />
             </div>
             <Formik
-                initialValues={initialFormValues}
+                initialValues={{ ...initialFormValues, email: location.state?.email }}
                 onSubmit={submitForm}
                 validationSchema={VALIDATION_SCHEMA}
                 isInitialValid={false}

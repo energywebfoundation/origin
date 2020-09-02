@@ -86,10 +86,17 @@ export function AppContainer() {
                         />
                         <Route path={getAccountLink()} component={Account} />
                         <Route
-                            path={getOrganizationLink()}
-                            render={() => {
+                            path={`${getOrganizationLink()}/:key/:id`}
+                            render={(props) => {
+                                const location = {
+                                    pathname: `${baseURL}/user-login`,
+                                    state: {
+                                        redirect: props.location.pathname,
+                                        email: props.match.params.id
+                                    }
+                                };
                                 if (!user) {
-                                    return <Redirect to={`${baseURL}/user-login`} />;
+                                    return <Redirect to={location} />;
                                 } else return <Organization />;
                             }}
                         />
