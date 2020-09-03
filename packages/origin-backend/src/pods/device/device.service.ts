@@ -124,12 +124,7 @@ export class DeviceService {
 
         await this.repository.save(newEntity);
 
-        const meterStats = await this.getMeterStats(newEntity.id.toString());
-
-        return {
-            ...newEntity,
-            meterStats
-        };
+        return newEntity;
     }
 
     async remove(entity: Device | (ExtendedBaseEntity & IDeviceWithRelationsIds)) {
