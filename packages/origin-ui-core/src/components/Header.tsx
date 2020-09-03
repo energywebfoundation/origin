@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { NavLink, Link } from 'react-router-dom';
+import { NavLink, Link, useHistory } from 'react-router-dom';
 import {
     makeStyles,
     createStyles,
@@ -55,6 +55,7 @@ export function Header() {
     const userOffchain = useSelector(getUserOffchain);
 
     const dispatch = useDispatch();
+    const history = useHistory();
 
     const classes = useStyles(useTheme());
 
@@ -170,7 +171,10 @@ export function Header() {
                                 <ExitToApp
                                     color="primary"
                                     className={classes.logOutIcon}
-                                    onClick={() => dispatch(clearAuthenticationToken())}
+                                    onClick={() => {
+                                        history.push(getDefaultLink());
+                                        dispatch(clearAuthenticationToken());
+                                    }}
                                 />
                             </Tooltip>
                         </div>
