@@ -3,6 +3,7 @@ import {
     IOrganizationWithRelationsIds,
     IOrganizationInvitation
 } from '@energyweb/origin-backend-core';
+import { IUsersState } from './reducer';
 
 export enum UsersActions {
     setActiveBlockchainAccountAddress = 'USERS_SET_ACTIVE_BLOCKCHAIN_ACCOUNT_ADDRESS',
@@ -13,7 +14,7 @@ export enum UsersActions {
     refreshUserOffchain = 'REFRESH_USER_OFFCHAIN',
     addOrganizations = 'USERS_ADD_ORGANIZATIONS',
     setInvitations = 'USERS_SET_INVITATIONS',
-    setShowPendingInvitations = 'USERS_SET_SHOW_PENDING_INVITATIONS'
+    setUserState = 'USERS_SET_USER_STATE'
 }
 
 export interface ISetActiveBlockchainAccountAddressAction {
@@ -96,15 +97,13 @@ export const setInvitations = (
     payload
 });
 
-export interface ISetShowPendingInvitations {
-    type: UsersActions.setShowPendingInvitations;
-    payload: boolean;
+export interface ISetUserState {
+    type: UsersActions.setUserState;
+    payload: IUsersState;
 }
 
-export const setShowPendingInvitations = (
-    payload: ISetShowPendingInvitations['payload']
-): ISetShowPendingInvitations => ({
-    type: UsersActions.setShowPendingInvitations,
+export const setUserState = (payload: ISetUserState['payload']): ISetUserState => ({
+    type: UsersActions.setUserState,
     payload
 });
 
@@ -118,4 +117,4 @@ export type IUsersAction =
     | IRefreshUserOffchainAction
     | IAddOrganizationsAction
     | ISetInvitationsAction
-    | ISetShowPendingInvitations;
+    | ISetUserState;

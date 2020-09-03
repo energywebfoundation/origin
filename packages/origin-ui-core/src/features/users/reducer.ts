@@ -64,14 +64,8 @@ export default function reducer(state = defaultState, action: IUsersAction): IUs
                 }
             };
 
-        case UsersActions.setShowPendingInvitations:
-            return {
-                ...state,
-                invitations: {
-                    ...state.invitations,
-                    showPendingInvitationsModal: action.payload as boolean
-                }
-            };
+        case UsersActions.setUserState:
+            return action.payload;
         default:
             return state;
     }
