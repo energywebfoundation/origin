@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { useHistory } from 'react-router-dom';
 import { Check, Clear } from '@material-ui/icons';
 import {
     IOrganization,
@@ -16,7 +17,7 @@ import {
 } from '../Table/PaginatedLoaderHooks';
 import { getOffChainDataSource } from '../../features/general/selectors';
 import { refreshUserOffchain } from '../../features/users/actions';
-import { useTranslation } from '../..';
+import { useTranslation, useLinks } from '../..';
 
 interface IRecord {
     organization: IOrganization;
@@ -45,6 +46,8 @@ export function OrganizationInvitationTable(props: IProps) {
 
     const dispatch = useDispatch();
     const { t } = useTranslation();
+    const history = useHistory();
+    const { getDefaultLink } = useLinks();
 
     async function getPaginatedData({
         requestedPageSize,
@@ -114,7 +117,7 @@ export function OrganizationInvitationTable(props: IProps) {
 
             showNotification(`Invitation accepted.`, NotificationType.Success);
             dispatch(refreshUserOffchain());
-            await loadPage(1);
+            history.push(getDefaultLink());
         } catch (error) {
             showNotification(`Could not accept invitation.`, NotificationType.Error);
             console.error(error);
