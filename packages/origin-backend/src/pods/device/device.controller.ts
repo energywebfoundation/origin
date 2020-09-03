@@ -55,7 +55,7 @@ export class DeviceController {
             loadRelationIds: loadRelationIds === 'true' || loadRelationIds === true
         });
 
-        return this.serializeDevices(devices);
+        return this.serializeDevices(devices, withMeterStats);
     }
 
     @Get('/my-devices')
@@ -69,7 +69,7 @@ export class DeviceController {
             where: { organization: { id: organizationId } }
         });
 
-        return this.serializeDevices(devices);
+        return this.serializeDevices(devices, withMeterStats);
     }
 
     @Get('supplyBy')
@@ -94,8 +94,8 @@ export class DeviceController {
         @Param('id') id: string,
         @Query('withMeterStats') withMeterStats: boolean,
         @Query('loadRelationIds') loadRelationIds: string | boolean = true
-    ): Promise<ExtendedBaseEntity & IDevice> {
-        const existingEntity = await this.deviceService.findOne(
+    ) {
+        const device = await this.deviceService.findOne(
             id,
             {
                 relations: ['organization'],
@@ -104,15 +104,13 @@ export class DeviceController {
             withMeterStats
         );
 
-        if (!existingEntity) {
+        if (!device) {
             throw new NotFoundException(StorageErrors.NON_EXISTENT);
         }
 
-        existingEntity.smartMeterReads = this.serializeSmartMeterReads(
-            existingEntity.smartMeterReads
-        );
+        device.smartMeterReads = this.serializeSmartMeterReads(device.smartMeterReads);
 
-        return existingEntity;
+        return this.serializeDevices([device], withMeterStats)[0];
     }
 
     @Post()
@@ -277,14 +275,16 @@ export class DeviceController {
         }));
     }
 
-    private serializeDevices(devices: IDevice[]) {
+    private serializeDevices(devices: IDevice[], withMeterStats = false) {
         return devices?.map((device) => ({
             ...device,
             smartMeterReads: this.serializeSmartMeterReads(device.smartMeterReads),
-            meterStats: {
-                certified: BigNumber.from(device.meterStats.certified).toString(),
-                uncertified: BigNumber.from(device.meterStats.uncertified).toString()
-            }
+            ...(withMeterStats && {
+                meterStats: {
+                    certified: BigNumber.from(device.meterStats.certified).toString(),
+                    uncertified: BigNumber.from(device.meterStats.uncertified).toString()
+                }
+            })
         }));
     }
 }
