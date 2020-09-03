@@ -398,7 +398,9 @@
                 "errorUpdateChainAddress": "Error to update User blockchain address."
             },
             "dialog": {
-                "dontHaveAccAsk": "Don't have an account?"
+                "dontHaveAccAsk": "Don't have an account?",
+                "userRegisteredModalTitle": "Thanks for registering a user on the [platform name] marketplace",
+                "userRegisteredModalContent": "You should have received an E-Mail from us. In order to activate your user, please confirm your E-Mail address by clicking confirmation link in the E-Mail"
             }
         },
         "notification": {

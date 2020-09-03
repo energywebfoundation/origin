@@ -18,7 +18,7 @@ export type ExternalDeviceIdType = Pick<IExternalDeviceId, 'type'> & {
 };
 
 export interface ISmartMeterRead {
-    meterReading: BigNumber;
+    meterReading: BigNumber | string;
     timestamp: number;
 }
 
@@ -36,8 +36,8 @@ export interface IEnergyGeneratedWithStatus extends IEnergyGenerated {
 }
 
 export interface ISmartMeterReadStats {
-    certified: BigNumber;
-    uncertified: BigNumber;
+    certified: BigNumber | string;
+    uncertified: BigNumber | string;
 }
 
 export interface ISmartMeterReadingsAdapter {

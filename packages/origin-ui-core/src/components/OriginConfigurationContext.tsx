@@ -261,7 +261,7 @@ export function createOriginConfiguration(configuration: Partial<IOriginConfigur
         materialTheme: createMaterialThemeForOrigin(DEFAULT_STYLE_CONFIG, storedLanguage),
         defaultLanguage: 'en',
         language: storedLanguage,
-        enabledFeatures: allOriginFeatures
+        enabledFeatures: allOriginFeatures.filter((feature) => OriginFeature.IRec !== feature)
     };
 
     const newConfiguration: IOriginConfiguration = {

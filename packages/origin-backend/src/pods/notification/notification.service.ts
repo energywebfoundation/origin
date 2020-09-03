@@ -63,7 +63,7 @@ export class NotificationService {
             await this.sendNotificationEmail(
                 EmailTypes.CONFIRM_EMAIL,
                 data.email,
-                `Please visit confirm your email address: <a href="${url}">${url}</a>.`
+                `Welcome to the marketplace! Please click the link below to verify your email address: <br/> <br/> <a href="${url}">${url}</a>.`
             );
         },
         [SupportedEvents.ORGANIZATION_INVITATION]: async (data: OrganizationInvitationEvent) => {
