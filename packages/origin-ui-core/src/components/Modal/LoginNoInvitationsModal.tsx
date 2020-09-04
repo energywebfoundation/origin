@@ -1,28 +1,20 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { Dialog, DialogTitle, DialogActions, Button, Box, Grid } from '@material-ui/core';
-import { useSelector } from 'react-redux';
-import { getUserOffchain } from '../../features/users/selectors';
 import { useTranslation, useLinks } from '../..';
 import { Trans } from 'react-i18next';
 import DraftOutlineIcon from '@material-ui/icons/DraftsOutlined';
 import { useHistory } from 'react-router-dom';
 
-export const FIRST_LOGIN_STORAGE_KEY = 'FIRST LOGIN';
+interface IProps {
+    showModal: boolean;
+    setShowModal: (showModal: boolean) => void;
+}
 
-export const LoginNoInvitationsModal = () => {
-    const user = useSelector(getUserOffchain);
-    const [showModal, setShowModal] = useState(false);
+export const LoginNoInvitationsModal = (props: IProps) => {
+    const { showModal, setShowModal } = props;
     const history = useHistory();
     const { t } = useTranslation();
     const { getOrganizationRegisterLink, getCertificatesLink } = useLinks();
-
-    useEffect(() => {
-        const firstLoginItem = localStorage.getItem(FIRST_LOGIN_STORAGE_KEY);
-        if (user && !firstLoginItem) {
-            localStorage.setItem(FIRST_LOGIN_STORAGE_KEY, 'true');
-            setShowModal(true);
-        }
-    }, [user]);
 
     const notNow = async () => {
         setShowModal(false);

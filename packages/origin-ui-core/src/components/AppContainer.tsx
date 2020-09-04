@@ -18,10 +18,8 @@ import { NoBlockchainAccountModal } from './Modal/NoBlockchainAccountModal';
 import { FeatureRoute } from './route/FeatureRoute';
 import { OriginConfigurationContext } from '.';
 import { LoginPage } from './Account/LoginPage';
-import { PendingInvitationsModal } from './Modal/PendingInvitationsModal';
 import { RoleChangedModal } from './Modal/RoleChangedModal';
 import { getUserOffchain } from '../features/users/selectors';
-import { LoginNoInvitationsModal } from './Modal/LoginNoInvitationsModal';
 
 export function AppContainer() {
     const error = useSelector(getError);
@@ -63,7 +61,6 @@ export function AppContainer() {
         <Switch>
             <Route path={`${baseURL}/user-login`}>
                 <LoginPage />
-                <LoginNoInvitationsModal />
             </Route>
             <Route>
                 <div className={`AppWrapper`}>
@@ -113,7 +110,6 @@ export function AppContainer() {
                     <RequestCertificatesModal />
                     <AccountMismatchModal />
                     <NoBlockchainAccountModal />
-                    <PendingInvitationsModal />
                     <RoleChangedModal />
                 </div>
             </Route>
