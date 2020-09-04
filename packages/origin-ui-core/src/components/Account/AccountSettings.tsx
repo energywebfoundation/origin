@@ -58,10 +58,6 @@ export function AccountSettings() {
 
     const originConfiguration = useContext(OriginConfigurationContext);
 
-    if (!user) {
-        return null;
-    }
-
     const PurpleSwitch = withStyles({
         switchBase: {
             color: originConfiguration.styleConfig.PRIMARY_COLOR,
@@ -106,21 +102,31 @@ export function AccountSettings() {
         <Paper>
             <Grid container spacing={3} className={classes.container}>
                 <Grid item xs={12}>
-                    <FormGroup>
-                        <FormControlLabel
-                            control={
-                                <PurpleSwitch
-                                    checked={notificationsEnabled}
-                                    onChange={(e, checked) => setNotificationsEnabled(checked)}
+                    {user && (
+                        <>
+                            <FormGroup>
+                                <FormControlLabel
+                                    control={
+                                        <PurpleSwitch
+                                            checked={notificationsEnabled}
+                                            onChange={(e, checked) =>
+                                                setNotificationsEnabled(checked)
+                                            }
+                                        />
+                                    }
+                                    label={t('settings.properties.notifications')}
                                 />
-                            }
-                            label={t('settings.properties.notifications')}
-                        />
-                    </FormGroup>
+                            </FormGroup>
 
-                    <Button onClick={saveChanges} color="primary" disabled={!propertiesChanged}>
-                        {t('general.actions.update')}
-                    </Button>
+                            <Button
+                                onClick={saveChanges}
+                                color="primary"
+                                disabled={!propertiesChanged}
+                            >
+                                {t('general.actions.update')}
+                            </Button>
+                        </>
+                    )}
                     <FormControl fullWidth>
                         <InputLabel>{t('settings.properties.language')}</InputLabel>
                         <Select

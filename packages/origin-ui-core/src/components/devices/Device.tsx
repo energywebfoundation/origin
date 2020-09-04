@@ -19,6 +19,9 @@ export function Device() {
     const userOffchain = useSelector(getUserOffchain);
     const { baseURL, getDevicesLink } = useLinks();
     const { t } = useTranslation();
+    const isDeviceManagerOrAdmin = () =>
+        userOffchain?.organization &&
+        isRole(userOffchain, Role.OrganizationDeviceManager, Role.OrganizationAdmin);
 
     function ProductionDetailView(id: number): JSX.Element {
         return (
@@ -70,55 +73,57 @@ export function Device() {
             key: 'production',
             label: t('navigation.devices.all'),
             component: ProductionList,
-            features: [OriginFeature.Devices]
+            features: [OriginFeature.Devices],
+            show: true
         },
         {
             key: 'production-map',
             label: t('navigation.devices.map'),
             component: Map,
-            features: [OriginFeature.Devices]
+            features: [OriginFeature.Devices],
+            show: true
         },
         {
             key: 'owned',
             label: t('navigation.devices.my'),
             component: MyDevices,
-            roles: [Role.OrganizationDeviceManager, Role.OrganizationAdmin],
-            features: [OriginFeature.Devices, OriginFeature.Seller]
+            features: [OriginFeature.Devices, OriginFeature.Seller],
+            show: isDeviceManagerOrAdmin()
         },
         {
             key: 'pending',
             label: t('navigation.devices.pending'),
             component: ProductionPendingList,
-            roles: [Role.Issuer],
-            features: [OriginFeature.Devices]
+            features: [OriginFeature.Devices],
+            show: isRole(userOffchain, Role.Issuer)
         },
         {
             key: 'add',
             label: t('navigation.devices.registerDevice'),
             component: AddDevice,
-            roles: [Role.OrganizationDeviceManager, Role.OrganizationAdmin],
-            features: [OriginFeature.Devices, OriginFeature.Seller]
+            features: [OriginFeature.Devices, OriginFeature.Seller],
+            show: isDeviceManagerOrAdmin()
         },
         {
             key: 'add-group',
             label: t('navigation.devices.registerDeviceGroup'),
             component: DeviceGroupForm,
-            roles: [Role.OrganizationDeviceManager, Role.OrganizationAdmin],
-            features: [OriginFeature.Devices, OriginFeature.Seller]
+            features: [OriginFeature.Devices, OriginFeature.Seller],
+            show: isDeviceManagerOrAdmin()
         },
         {
             key: 'producing_detail_view',
             label: 'Production detail',
             component: null,
-            hide: true,
+            show: false,
             features: [OriginFeature.Devices]
         },
         {
             key: 'supply',
             label: t('navigation.devices.supply'),
             component: AutoSupplyDeviceTable,
-            roles: [Role.OrganizationDeviceManager, Role.OrganizationAdmin],
-            features: [OriginFeature.Devices, OriginFeature.Seller]
+            features: [OriginFeature.Devices, OriginFeature.Seller],
+            show: isDeviceManagerOrAdmin()
         }
     ];
 
@@ -130,11 +135,10 @@ export function Device() {
                 <ul className="NavMenu nav">
                     {DevicesMenu.map((menu) => {
                         if (
-                            menu.hide ||
+                            !menu.show ||
                             !menu.features.every((flag) =>
                                 originConfiguration.enabledFeatures.includes(flag)
-                            ) ||
-                            (menu.roles && !isRole(userOffchain, ...menu.roles))
+                            )
                         ) {
                             return null;
                         }
