@@ -95,7 +95,7 @@
         "@types/ws": "7.2.6",
         "jest": "26.4.2",
         "nodemailer": "6.4.11",
-        "polly-js": "1.6.7",
+        "polly-js": "1.6.8",
         "supertest": "4.0.2"
     },
     "files": [

@@ -50,7 +50,7 @@
         "ethers": "5.0.8",
         "mocha": "8.1.3",
         "moment": "2.24.0",
-        "polly-js": "1.6.7",
+        "polly-js": "1.6.8",
         "precise-proofs-js": "1.2.0",
         "winston": "3.3.3"
     },
