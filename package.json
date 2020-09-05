@@ -23,7 +23,7 @@
         "ganache-cli": "6.8.2",
         "husky": "4.2.5",
         "lerna": "3.22.1",
-        "lint-staged": "10.2.13",
+        "lint-staged": "10.3.0",
         "mocha": "8.1.3",
         "prettier": "2.0.5",
         "shx": "0.3.2",
