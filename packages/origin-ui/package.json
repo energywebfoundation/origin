@@ -22,7 +22,7 @@
     "dependencies": {
         "@energyweb/origin-ui-core": "1.8.0",
         "extract-text-webpack-plugin": "4.0.0-beta.0",
-        "file-loader": "6.0.0",
+        "file-loader": "6.1.0",
         "react": "16.13.1",
         "react-dom": "16.13.1",
         "ts-loader": "7.0.5",
