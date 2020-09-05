@@ -30,9 +30,9 @@
     },
     "dependencies": {
         "@energyweb/origin-backend-core": "5.1.0",
-        "@nestjs/common": "7.4.3",
+        "@nestjs/common": "7.4.4",
         "@nestjs/config": "^0.5.0",
-        "@nestjs/core": "7.4.3",
+        "@nestjs/core": "7.4.4",
         "bn.js": "^5.1.2",
         "class-validator": "^0.12.2"
     }
