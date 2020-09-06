@@ -63,7 +63,7 @@
         "moment-range": "4.0.2",
         "pg": "^8.0.0",
         "reflect-metadata": "0.1.13",
-        "rxjs": "6.6.2",
+        "rxjs": "6.6.3",
         "swagger-ui-express": "4.1.4",
         "typeorm": "0.2.25"
     },

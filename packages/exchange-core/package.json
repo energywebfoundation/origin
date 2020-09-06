@@ -39,7 +39,7 @@
         "immutable": "4.0.0-rc.12",
         "moment": "2.24.0",
         "moment-range": "4.0.2",
-        "rxjs": "6.6.2"
+        "rxjs": "6.6.3"
     },
     "publishConfig": {
         "access": "public",
