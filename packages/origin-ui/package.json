@@ -22,7 +22,7 @@
     "dependencies": {
         "@energyweb/origin-ui-core": "1.8.0",
         "extract-text-webpack-plugin": "4.0.0-beta.0",
-        "file-loader": "6.0.0",
+        "file-loader": "6.1.0",
         "react": "16.13.1",
         "react-dom": "16.13.1",
         "ts-loader": "7.0.5",
@@ -30,7 +30,7 @@
         "webpack": "4.44.1"
     },
     "devDependencies": {
-        "@types/react": "16.9.48",
+        "@types/react": "16.9.49",
         "@types/react-dom": "16.9.8",
         "copy-webpack-plugin": "5.1.2",
         "css-loader": "3.6.0",

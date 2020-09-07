@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { NavLink, Link } from 'react-router-dom';
+import { NavLink, Link, useHistory } from 'react-router-dom';
 import {
     makeStyles,
     createStyles,
@@ -55,6 +55,7 @@ export function Header() {
     const userOffchain = useSelector(getUserOffchain);
 
     const dispatch = useDispatch();
+    const history = useHistory();
 
     const classes = useStyles(useTheme());
 
@@ -123,6 +124,23 @@ export function Header() {
                 </ul>
 
                 <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
+                    <Grid item>
+                        {t('settings.settings')}
+                        &nbsp;
+                        <Link
+                            to={getAccountLink()}
+                            className={classes.endIcon}
+                            {...dataTest('header-link-account-settings')}
+                        >
+                            <Tooltip
+                                title={t('settings.settings')}
+                                classes={{ tooltip: classes.tooltip }}
+                            >
+                                <Settings color="primary" />
+                            </Tooltip>
+                        </Link>
+                        <br />
+                    </Grid>
                     {!userOffchain && (
                         <Grid item>
                             &nbsp;
@@ -145,32 +163,16 @@ export function Header() {
                         </Grid>
                     )}
                     {userOffchain && (
-                        <Grid item>
-                            {t('settings.settings')}
-                            &nbsp;
-                            <Link
-                                to={getAccountLink()}
-                                className={classes.endIcon}
-                                {...dataTest('header-link-account-settings')}
-                            >
-                                <Tooltip
-                                    title={t('settings.settings')}
-                                    classes={{ tooltip: classes.tooltip }}
-                                >
-                                    <Settings color="primary" />
-                                </Tooltip>
-                            </Link>
-                            <br />
-                        </Grid>
-                    )}
-                    {userOffchain && (
                         <div>
                             Logged in as: {userOffchain.firstName} {userOffchain.lastName}{' '}
                             <Tooltip title="Log out">
                                 <ExitToApp
                                     color="primary"
                                     className={classes.logOutIcon}
-                                    onClick={() => dispatch(clearAuthenticationToken())}
+                                    onClick={() => {
+                                        history.push(getDefaultLink());
+                                        dispatch(clearAuthenticationToken());
+                                    }}
                                 />
                             </Tooltip>
                         </div>

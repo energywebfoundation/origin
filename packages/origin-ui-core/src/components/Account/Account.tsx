@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { useSelector } from 'react-redux';
 import { NavLink, Route, Redirect } from 'react-router-dom';
 
@@ -10,12 +10,15 @@ import { dataTest, useLinks, useTranslation } from '../../utils';
 import { UserProfile } from './UserProfile';
 import { ConfirmEmail } from './ConfirmEmail';
 import { IRECConnectForm } from '../Organization/IRECConnectForm';
+import { OriginConfigurationContext } from '..';
+import { OriginFeature } from '@energyweb/utils-general';
 
 export function Account() {
     const userOffchain = useSelector(getUserOffchain);
 
     const { baseURL, getAccountLink } = useLinks();
     const { t } = useTranslation();
+    const { enabledFeatures } = useContext(OriginConfigurationContext);
 
     const isLoggedIn = Boolean(userOffchain);
     const organization = useSelector(getUserOffchain)?.organization;
@@ -26,7 +29,7 @@ export function Account() {
             key: 'settings',
             label: 'settings.navigation.settings',
             component: AccountSettings,
-            hide: !isLoggedIn
+            hide: false
         },
         {
             key: 'user-register',
@@ -50,7 +53,7 @@ export function Account() {
             key: 'connect-irec',
             label: 'settings.navigation.connectIREC',
             component: IRECConnectForm,
-            hide: !organization || irecAccount
+            hide: !enabledFeatures.includes(OriginFeature.IRec) || !organization || irecAccount
         }
     ];
 

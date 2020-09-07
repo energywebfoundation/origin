@@ -54,7 +54,11 @@ describe('Device e2e tests', () => {
         timezone: '',
         typeOfPublicSupport: '',
         deviceGroup: '',
-        smartMeterReads: [],
+        smartMeterReads: [
+            { timestamp: 10000, meterReading: BigNumber.from(100) },
+            { timestamp: 11000, meterReading: BigNumber.from(200) },
+            { timestamp: 12000, meterReading: BigNumber.from(300) }
+        ],
         externalDeviceIds: [{ id: externalDeviceId, type: process.env.ISSUER_ID }],
         automaticPostForSale: false,
         defaultAskPrice: null
@@ -223,8 +227,13 @@ describe('Device e2e tests', () => {
             .expect((res) => {
                 const resultDevice = res.body as IDeviceWithRelationsIds;
 
+                const [firstRead] = resultDevice.smartMeterReads;
+
                 expect(BigNumber.from(resultDevice.meterStats.certified).toNumber()).equals(0);
-                expect(BigNumber.from(resultDevice.meterStats.uncertified).toNumber()).equals(0);
+                expect(BigNumber.from(resultDevice.meterStats.uncertified).toNumber()).equals(300);
+
+                expect(BigNumber.from(firstRead.timestamp).toNumber()).equals(10000);
+                expect(BigNumber.from(firstRead.meterReading).toNumber()).equals(100);
             });
 
         const now = moment();

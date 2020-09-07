@@ -7,7 +7,8 @@ export enum OriginFeature {
     Buyer = 'buyer',
     Devices = 'devices',
     Certificates = 'certificates',
-    CertificationRequests = 'certificationRequests'
+    CertificationRequests = 'certificationRequests',
+    IRec = 'irec'
 }
 
 export const allOriginFeatures = getEnumValues(OriginFeature);

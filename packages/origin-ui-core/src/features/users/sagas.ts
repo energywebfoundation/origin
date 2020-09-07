@@ -7,7 +7,7 @@ import {
     setAuthenticationToken,
     clearAuthenticationToken,
     IRefreshUserOffchainAction,
-    setInvitations
+    setUserState
 } from './actions';
 import { getOffChainDataSource } from '../general/selectors';
 import {
@@ -20,6 +20,8 @@ import { GeneralActions, ISetOffChainDataSourceAction } from '../general/actions
 import { reloadCertificates, clearCertificates } from '../certificates';
 import { clearBundles } from '../bundles';
 import { clearOrders } from '../orders/actions';
+import { getUserState } from './selectors';
+import { IUsersState } from './reducer';
 
 const LOCAL_STORAGE_KEYS = {
     AUTHENTICATION_TOKEN: 'AUTHENTICATION_TOKEN'
@@ -89,25 +91,26 @@ function* fetchOffchainUserDetails(): SagaIterator {
         }
 
         try {
-            const userProfile: IUser = yield call([userClient, userClient.me]);
+            const userOffchain: IUser = yield call([userClient, userClient.me]);
 
-            yield put(
-                setUserOffchain({
-                    ...userProfile
-                })
-            );
             const { organizationClient } = yield select(getOffChainDataSource);
             const invitations: IOrganizationInvitation[] = yield call(
                 [organizationClient, organizationClient.getInvitations],
                 null
             );
+            const userState: IUsersState = yield select(getUserState);
             yield put(
-                setInvitations(
-                    invitations.map((inv) => ({
-                        ...inv,
-                        createdAt: new Date(inv.createdAt)
-                    }))
-                )
+                setUserState({
+                    ...userState,
+                    userOffchain,
+                    invitations: {
+                        ...userState.invitations,
+                        invitations: invitations.map((inv) => ({
+                            ...inv,
+                            createdAt: new Date(inv.createdAt)
+                        }))
+                    }
+                })
             );
             yield put(reloadCertificates());
         } catch (error) {

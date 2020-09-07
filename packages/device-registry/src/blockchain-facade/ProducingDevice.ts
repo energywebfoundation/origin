@@ -10,6 +10,7 @@ import {
     ISmartMeterReadStats,
     IPublicOrganization
 } from '@energyweb/origin-backend-core';
+import { BigNumber } from 'ethers';
 
 export class Entity implements IDevice {
     status: DeviceStatus;
@@ -123,8 +124,10 @@ export class Entity implements IDevice {
             const isFirstReading = i === 0;
 
             energiesGenerated.push({
-                energy: allMeterReadings[i].meterReading.sub(
-                    isFirstReading ? 0 : allMeterReadings[i - 1].meterReading
+                energy: BigNumber.from(
+                    allMeterReadings[i].meterReading.sub(
+                        isFirstReading ? 0 : allMeterReadings[i - 1].meterReading
+                    )
                 ),
                 timestamp: allMeterReadings[i].timestamp
             });

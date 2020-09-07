@@ -1,26 +1,31 @@
 import React from 'react';
 import { Dialog, DialogTitle, DialogActions, Button, Box, useTheme, Grid } from '@material-ui/core';
 import { useSelector, useDispatch } from 'react-redux';
-import { OrganizationInvitationStatus, Role } from '@energyweb/origin-backend-core';
-import { getInvitations, getUserOffchain } from '../../features/users/selectors';
 import {
-    setShowPendingInvitations,
-    setInvitations,
-    refreshUserOffchain
-} from '../../features/users/actions';
+    OrganizationInvitationStatus,
+    Role,
+    IOrganizationInvitation
+} from '@energyweb/origin-backend-core';
+import { setInvitations, refreshUserOffchain } from '../../features/users/actions';
 import { getOffChainDataSource, showNotification, NotificationType, useTranslation } from '../..';
 import { setLoading } from '../../features/general';
 import { Trans } from 'react-i18next';
 import DraftOutlineIcon from '@material-ui/icons/DraftsOutlined';
 
-export const PendingInvitationsModal = () => {
-    const invitations = useSelector(getInvitations);
-    const user = useSelector(getUserOffchain);
-    const pending = invitations.filter((i) => i.status === OrganizationInvitationStatus.Pending);
-    const showInvitations = pending.length > 0 && user && !user.organization;
-    const invitation = showInvitations
-        ? pending.sort((a, b) => a.createdAt.getTime() - b.createdAt.getTime())[pending.length - 1]
-        : null;
+interface IProps {
+    showModal: boolean;
+    setShowModal: (showModal: boolean) => void;
+    invitations: IOrganizationInvitation[];
+}
+
+export const PendingInvitationsModal = (props: IProps) => {
+    const { showModal, setShowModal, invitations } = props;
+    const invitation =
+        invitations.length > 0
+            ? invitations.sort((a, b) => a.createdAt.getTime() - b.createdAt.getTime())[
+                  invitations.length - 1
+              ]
+            : null;
     const {
         sender: admin,
         role,
@@ -67,7 +72,7 @@ export const PendingInvitationsModal = () => {
                 )
             )
         );
-        dispatch(setShowPendingInvitations(false));
+        setShowModal(false);
         dispatch(setLoading(false));
     };
 
@@ -91,7 +96,7 @@ export const PendingInvitationsModal = () => {
             console.error(error);
         }
         dispatch(refreshUserOffchain());
-        dispatch(setShowPendingInvitations(false));
+        setShowModal(false);
         dispatch(setLoading(false));
     };
 
@@ -120,12 +125,12 @@ export const PendingInvitationsModal = () => {
                 )
             )
         );
-        dispatch(setShowPendingInvitations(false));
+        setShowModal(false);
         dispatch(setLoading(false));
     };
 
     return (
-        <Dialog open={showInvitations} onClose={() => dispatch(setShowPendingInvitations(false))}>
+        <Dialog open={showModal} onClose={() => setShowModal(false)}>
             <DialogTitle>
                 <Grid container>
                     <Grid item xs={2}>

@@ -28,6 +28,7 @@ import {
     UnauthorizedException
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
+import { BigNumber } from 'ethers';
 import { StorageErrors } from '../../enums/StorageErrors';
 import { ExtendedBaseEntity } from '../ExtendedBaseEntity';
 import { OrganizationService } from '../organization/organization.service';
@@ -49,10 +50,12 @@ export class DeviceController {
         @Query('withMeterStats') withMeterStats: boolean,
         @Query('loadRelationIds') loadRelationIds: string | boolean = true
     ) {
-        return this.deviceService.getAll(withMeterStats ?? false, {
+        const devices = await this.deviceService.getAll(withMeterStats ?? false, {
             relations: ['organization'],
             loadRelationIds: loadRelationIds === 'true' || loadRelationIds === true
         });
+
+        return this.serializeDevices(devices, withMeterStats);
     }
 
     @Get('/my-devices')
@@ -62,9 +65,11 @@ export class DeviceController {
         @Query('withMeterStats') withMeterStats: boolean,
         @UserDecorator() { organizationId }: ILoggedInUser
     ) {
-        return this.deviceService.getAll(withMeterStats ?? false, {
+        const devices = await this.deviceService.getAll(withMeterStats ?? false, {
             where: { organization: { id: organizationId } }
         });
+
+        return this.serializeDevices(devices, withMeterStats);
     }
 
     @Get('supplyBy')
@@ -75,11 +80,13 @@ export class DeviceController {
         @Query('facility') facilityName: string,
         @Query('status') status: string
     ) {
-        return this.deviceService.getSupplyBy(
+        const devices = await this.deviceService.getSupplyBy(
             organizationId,
             facilityName,
             Number.parseInt(status, 10)
         );
+
+        return this.serializeDevices(devices);
     }
 
     @Get('/:id')
@@ -87,8 +94,8 @@ export class DeviceController {
         @Param('id') id: string,
         @Query('withMeterStats') withMeterStats: boolean,
         @Query('loadRelationIds') loadRelationIds: string | boolean = true
-    ): Promise<ExtendedBaseEntity & IDevice> {
-        const existingEntity = await this.deviceService.findOne(
+    ) {
+        const device = await this.deviceService.findOne(
             id,
             {
                 relations: ['organization'],
@@ -97,11 +104,13 @@ export class DeviceController {
             withMeterStats
         );
 
-        if (!existingEntity) {
+        if (!device) {
             throw new NotFoundException(StorageErrors.NON_EXISTENT);
         }
 
-        return existingEntity;
+        device.smartMeterReads = this.serializeSmartMeterReads(device.smartMeterReads);
+
+        return this.serializeDevices([device], withMeterStats)[0];
     }
 
     @Post()
@@ -200,7 +209,9 @@ export class DeviceController {
             throw new NotFoundException(StorageErrors.NON_EXISTENT);
         }
 
-        return this.deviceService.getAllSmartMeterReadings(id);
+        const reads = await this.deviceService.getAllSmartMeterReadings(id);
+
+        return this.serializeSmartMeterReads(reads);
     }
 
     @Get('/get-by-external-id/:type/:id')
@@ -255,5 +266,25 @@ export class DeviceController {
                 message: `Smart meter reading could not be added due to an unknown error for device ${id}`
             });
         }
+    }
+
+    private serializeSmartMeterReads(reads: ISmartMeterRead[]) {
+        return reads?.map(({ timestamp, meterReading }) => ({
+            timestamp,
+            meterReading: BigNumber.from(meterReading).toString()
+        }));
+    }
+
+    private serializeDevices(devices: IDevice[], withMeterStats = false) {
+        return devices?.map((device) => ({
+            ...device,
+            smartMeterReads: this.serializeSmartMeterReads(device.smartMeterReads),
+            ...(withMeterStats && {
+                meterStats: {
+                    certified: BigNumber.from(device.meterStats.certified).toString(),
+                    uncertified: BigNumber.from(device.meterStats.uncertified).toString()
+                }
+            })
+        }));
     }
 }

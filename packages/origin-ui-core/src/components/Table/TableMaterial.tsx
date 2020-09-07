@@ -64,7 +64,7 @@ interface IProps<T extends readonly ITableColumn[]> {
     loadPage?: (page: number, filters?: ICustomFilter[]) => void | Promise<any>;
     pageSize?: number;
     total?: number;
-    actions?: ITableAction[];
+    actions?: ITableAction[] | ITableAction[][];
     onSelect?: TableOnSelectFunction;
     currentSort?: CurrentSortType;
     sortAscending?: boolean;
@@ -119,6 +119,46 @@ export function TableMaterial<T extends readonly ITableColumn[]>(props: IProps<T
         } else {
             resetSelection();
         }
+    }
+
+    function renderActions(
+        actionsArr,
+        allowed,
+        row: TTableRow<GetReadonlyArrayItemType<T>['id']>,
+        rowId: number,
+        id: string,
+        classes: Record<'root' | 'tableWrapper' | 'tableCellWrappingActions', string>
+    ) {
+        if (!actionsArr?.length) {
+            return <TableCell key={id}></TableCell>;
+        }
+
+        const is2DArray = Array.isArray(actionsArr[0]);
+
+        let finalActionsList;
+
+        if (!is2DArray) {
+            finalActionsList = actionsArr;
+        } else if (actionsArr[rowId].length > 0) {
+            finalActionsList = actionsArr[rowId];
+        } else {
+            return <TableCell key={id}></TableCell>;
+        }
+
+        return (
+            <TableCell key={id} className={classes.tableCellWrappingActions}>
+                <Actions
+                    actions={
+                        allowed
+                            ? finalActionsList.filter((action) =>
+                                  allowed[(row as any).source]?.includes(action.id)
+                              )
+                            : finalActionsList
+                    }
+                    id={id}
+                />
+            </TableCell>
+        );
     }
 
     const {
@@ -304,24 +344,13 @@ export function TableMaterial<T extends readonly ITableColumn[]>(props: IProps<T
                                                     </TableCell>
                                                 );
                                             })}
-                                            {actions && actions.length > 0 && (
-                                                <TableCell
-                                                    key={id}
-                                                    className={classes.tableCellWrappingActions}
-                                                >
-                                                    <Actions
-                                                        actions={
-                                                            allowedActions
-                                                                ? actions.filter((action) =>
-                                                                      allowedActions[
-                                                                          (row as any).source
-                                                                      ]?.includes(action.id)
-                                                                  )
-                                                                : actions
-                                                        }
-                                                        id={id}
-                                                    />
-                                                </TableCell>
+                                            {renderActions(
+                                                actions,
+                                                allowedActions,
+                                                row,
+                                                rowIndex,
+                                                id,
+                                                classes
                                             )}
                                         </TableRow>
                                         {customRow?.shouldDisplay(row) && (

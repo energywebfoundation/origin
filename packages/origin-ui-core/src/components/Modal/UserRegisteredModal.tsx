@@ -2,7 +2,7 @@ import React from 'react';
 import { Dialog, DialogTitle, DialogActions, Button, Box, Grid } from '@material-ui/core';
 import { useTranslation, useLinks } from '../..';
 import { Trans } from 'react-i18next';
-import DraftOutlineIcon from '@material-ui/icons/DraftsOutlined';
+import HowToRegIcon from '@material-ui/icons/HowToReg';
 import { useHistory } from 'react-router-dom';
 
 interface IProps {
@@ -10,21 +10,10 @@ interface IProps {
     setShowModal: (showModal: boolean) => void;
 }
 
-export const LoginNoInvitationsModal = (props: IProps) => {
-    const { showModal, setShowModal } = props;
+export const UserRegisteredModal = ({ showModal, setShowModal }: IProps) => {
     const history = useHistory();
     const { t } = useTranslation();
-    const { getOrganizationRegisterLink, getCertificatesLink } = useLinks();
-
-    const notNow = async () => {
-        setShowModal(false);
-        history.push(getCertificatesLink());
-    };
-
-    const registerOrganization = async () => {
-        setShowModal(false);
-        history.push(getOrganizationRegisterLink());
-    };
+    const { getAccountLoginLink } = useLinks();
 
     return (
         <Dialog open={showModal} onClose={() => setShowModal(false)} maxWidth="md">
@@ -32,8 +21,7 @@ export const LoginNoInvitationsModal = (props: IProps) => {
                 <Grid container>
                     <Grid item xs={2}>
                         <div style={{ position: 'relative', height: '100%', width: '100%' }}>
-                            <DraftOutlineIcon
-                                color="primary"
+                            <HowToRegIcon
                                 style={{
                                     width: '100%',
                                     height: '100%',
@@ -46,23 +34,24 @@ export const LoginNoInvitationsModal = (props: IProps) => {
                     <Grid item xs>
                         <Box pl={2}>
                             <Box style={{ fontSize: '120%' }}>
-                                {t('organization.registration.loginNoInvitationsModalTitle')}
+                                {t('user.dialog.userRegisteredModalTitle')}
                             </Box>
                             <br />
                             <br />
                             <Box style={{ fontSize: '70%', fontWeight: 'lighter' }}>
-                                <Trans i18nKey="organization.registration.loginNoInvitationsModalContent" />
+                                <Trans i18nKey="user.dialog.userRegisteredModalContent" />
                             </Box>
                         </Box>
                     </Grid>
                 </Grid>
             </DialogTitle>
             <DialogActions>
-                <Button variant="outlined" color="primary" onClick={() => notNow()}>
-                    {t('organization.registration.actions.notNow')}
-                </Button>
-                <Button variant="contained" color="primary" onClick={() => registerOrganization()}>
-                    {t('organization.registration.actions.registerOrganization')}
+                <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={() => history.push(getAccountLoginLink())}
+                >
+                    {t('general.responses.ok')}
                 </Button>
             </DialogActions>
         </Dialog>
