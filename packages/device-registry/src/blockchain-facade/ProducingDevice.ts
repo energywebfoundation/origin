@@ -8,7 +8,7 @@ import {
     DeviceCreateData,
     IDeviceWithRelationsIds,
     ISmartMeterReadStats,
-    IOrganization
+    IPublicOrganization
 } from '@energyweb/origin-backend-core';
 
 export class Entity implements IDevice {
@@ -60,7 +60,7 @@ export class Entity implements IDevice {
 
     initialized: boolean;
 
-    organization: number | IOrganization;
+    organization: number | IPublicOrganization;
 
     automaticPostForSale: boolean;
 
