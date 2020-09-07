@@ -1,6 +1,5 @@
 import {
     IOrganizationInvitation,
-    IOrganizationWithRelationsIds,
     IUser,
     OrganizationInvitationStatus,
     ISuccessResponse,
@@ -10,7 +9,7 @@ import {
     OrganizationRole,
     Role,
     IOrganizationClient,
-    IOrganization
+    IFullOrganization
 } from '@energyweb/origin-backend-core';
 
 interface ITmpUser {
@@ -19,7 +18,7 @@ interface ITmpUser {
 }
 
 export class OrganizationClientMock implements IOrganizationClient {
-    private storage = new Map<number, IOrganizationWithRelationsIds>();
+    private storage = new Map<number, IFullOrganization>();
 
     private invitationStorage = new Map<number, IOrganizationInvitation>();
 
@@ -31,22 +30,20 @@ export class OrganizationClientMock implements IOrganizationClient {
 
     private userCounter = 0;
 
-    async getById(id: number): Promise<IOrganizationWithRelationsIds> {
+    async getById(id: number): Promise<IFullOrganization> {
         return this.storage.get(id);
     }
 
-    async getAll(): Promise<IOrganizationWithRelationsIds[]> {
+    async getAll(): Promise<IFullOrganization[]> {
         return [...this.storage.values()];
     }
 
-    async add(data: OrganizationPostData): Promise<IOrganizationWithRelationsIds> {
+    async add(data: OrganizationPostData): Promise<IFullOrganization> {
         this.idCounter++;
 
-        const organization: IOrganizationWithRelationsIds = {
+        const organization: IFullOrganization = {
             id: this.idCounter,
             status: OrganizationStatus.Submitted,
-            users: [],
-            devices: [],
             ...data
         };
 
@@ -55,7 +52,7 @@ export class OrganizationClientMock implements IOrganizationClient {
         return organization;
     }
 
-    update(id: number, data: OrganizationUpdateData): Promise<IOrganizationWithRelationsIds> {
+    update(id: number, data: OrganizationUpdateData): Promise<IFullOrganization> {
         const organization = this.storage.get(id);
 
         Object.assign(organization, data);
@@ -71,7 +68,7 @@ export class OrganizationClientMock implements IOrganizationClient {
 
     inviteMocked(
         email: string,
-        organization: IOrganization,
+        organization: IFullOrganization,
         role: OrganizationRole,
         sender: string
     ): ISuccessResponse {
@@ -106,18 +103,7 @@ export class OrganizationClientMock implements IOrganizationClient {
     }
 
     removeMember(organizationId: number, userId: number): Promise<ISuccessResponse> {
-        const organization = this.storage.get(organizationId);
-
-        organization.users = organization.users.filter((user) => user !== userId);
-
-        this.storage.set(organization.id, organization);
-
-        const returnData: ISuccessResponse = {
-            success: true,
-            message: ''
-        };
-
-        return Promise.resolve(returnData);
+        throw new Error('Method not implemented.');
     }
 
     memberChangeRole(
@@ -141,18 +127,7 @@ export class OrganizationClientMock implements IOrganizationClient {
     }
 
     acceptInvitation(invitationId: number): Promise<any> {
-        const invitation = this.invitationStorage.get(invitationId);
-        const organization = this.storage.get(invitation.organization.id);
-        const user = this.userStorage.find((user) => user.email === invitation.email);
-
-        invitation.status = OrganizationInvitationStatus.Accepted;
-
-        organization.users.push(user.id);
-
-        this.invitationStorage.set(invitationId, invitation);
-        this.storage.set(organization.id, organization);
-
-        return null;
+        throw new Error('Method not implemented.');
     }
 
     rejectInvitation(id: number): Promise<any> {
