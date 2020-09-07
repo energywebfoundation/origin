@@ -18,7 +18,6 @@ import {
     EmailConfirmationResponse,
     IEmailConfirmationToken,
     UpdateUserResponseReturnType,
-    IOrganizationWithRelationsIds,
     OrganizationPostData,
     OrganizationUpdateData,
     OrganizationRole,
@@ -34,6 +33,7 @@ import {
     ISmartMeterRead,
     DeviceSettingsUpdateData
 } from '..';
+import { IFullOrganization } from '../Organization';
 
 export interface IAdminClient {
     update(formData: UserUpdateData): Promise<IUser>;
@@ -106,10 +106,10 @@ export interface IUserClient {
 }
 
 export interface IOrganizationClient {
-    getById(id: number): Promise<IOrganizationWithRelationsIds>;
-    getAll(): Promise<IOrganizationWithRelationsIds[]>;
-    add(data: OrganizationPostData): Promise<IOrganizationWithRelationsIds>;
-    update(id: number, data: OrganizationUpdateData): Promise<IOrganizationWithRelationsIds>;
+    getById(id: number): Promise<IFullOrganization>;
+    getAll(): Promise<IFullOrganization[]>;
+    add(data: OrganizationPostData): Promise<IFullOrganization>;
+    update(id: number, data: OrganizationUpdateData): Promise<IFullOrganization>;
 
     invite(email: string, role: OrganizationRole): Promise<ISuccessResponse>;
     getInvitations(): Promise<IOrganizationInvitation[]>;

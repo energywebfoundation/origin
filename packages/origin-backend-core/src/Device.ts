@@ -1,5 +1,5 @@
 import { BigNumber } from 'ethers';
-import { IOrganization } from '.';
+import { IPublicOrganization } from '.';
 
 export enum DeviceStatus {
     Submitted,
@@ -78,15 +78,15 @@ export interface IDeviceProperties extends IDeviceProductInfo {
 }
 
 export interface IDevice extends IDeviceProperties {
-    organization: IOrganization | IOrganization['id'];
+    organization: IPublicOrganization | IPublicOrganization['id'];
 }
 
 export interface IDeviceWithRelationsIds extends IDevice {
-    organization: IOrganization['id'];
+    organization: IPublicOrganization['id'];
 }
 
 export interface IDeviceWithRelations extends IDevice {
-    organization: IOrganization;
+    organization: IPublicOrganization;
 }
 
 export type DeviceCreateData = Omit<IDeviceProperties, 'id' | 'meterStats'>;
