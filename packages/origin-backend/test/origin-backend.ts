@@ -2,12 +2,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import {
     LoggedInUser,
-    OrganizationPostData,
     Role,
     UserRegistrationData,
     UserStatus,
-    IOrganization,
-    OrganizationStatus
+    OrganizationStatus,
+    IPublicOrganization
 } from '@energyweb/origin-backend-core';
 import { signTypedMessagePrivateKey } from '@energyweb/utils-general';
 import { Logger } from '@nestjs/common';
@@ -27,30 +26,26 @@ import { UserService } from '../src/pods/user';
 import { DatabaseService } from './database.service';
 import { CertificateService } from '../src/pods/certificate/certificate.service';
 import { EmailConfirmationService } from '../src/pods/email-confirmation/email-confirmation.service';
+import { NewOrganizationDTO } from '../src/pods/organization/new-organization.dto';
 
 const testLogger = new Logger('e2e');
 
-export const getExampleOrganization = (email = 'test@example.com'): OrganizationPostData => ({
-    email,
-    code: '',
-    contact: '',
-    telephone: '',
-    address: '',
-    shareholders: '',
-    ceoName: 'John',
-    vatNumber: '',
-    postcode: '',
-    businessTypeSelect: '',
-    businessTypeInput: '',
-    activeCountries: 'EU',
-    name: 'Test',
-    ceoPassportNumber: '1',
-    companyNumber: '2',
-    headquartersCountry: 1,
+export const getExampleOrganization = (email = 'test@example.com'): NewOrganizationDTO => ({
+    name: 'Example Organization',
+    address: 'Address',
+    businessType: 'Public',
+    city: 'City',
+    zipCode: 'Code',
     country: 1,
-    yearOfRegistration: 2000,
-    numberOfEmployees: 1,
-    website: 'http://example.com'
+    tradeRegistryCompanyNumber: '1234',
+    vatNumber: '1234',
+    signatoryAddress: 'Address',
+    signatoryCity: 'City',
+    signatoryCountry: 1,
+    signatoryEmail: email,
+    signatoryFullName: 'Organization Signatory',
+    signatoryPhoneNumber: '1234',
+    signatoryZipCode: 'Code'
 });
 
 export const bootstrapTestInstance = async () => {
@@ -151,7 +146,7 @@ export const registerAndLogin = async (
     const organizationEmail = `org${orgSeed}@example.com`;
 
     let organization = await organizationService.findOne(null, {
-        where: { email: organizationEmail }
+        where: { signatoryEmail: organizationEmail }
     });
 
     if (!organization) {
@@ -159,16 +154,16 @@ export const registerAndLogin = async (
 
         await organizationService.create(user.id, organizationRegistration);
         organization = await organizationService.findOne(null, {
-            where: { email: organizationEmail }
+            where: { signatoryEmail: organizationEmail }
         });
         if (organizationStatus !== OrganizationStatus.Submitted) {
-            await organizationService.update(organization.id, { status: organizationStatus });
+            await organizationService.update(organization.id, organizationStatus);
         }
     } else {
         await userService.addToOrganization(user.id, organization.id);
     }
 
-    user.organization = { id: organization.id } as IOrganization;
+    user.organization = { id: organization.id } as IPublicOrganization;
 
     let accessToken: string;
 

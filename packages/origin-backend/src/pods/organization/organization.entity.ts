@@ -1,13 +1,12 @@
 import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
-import { IsInt, IsEmail, Min, ValidateIf, IsNotEmpty, IsUrl } from 'class-validator';
-import { OrganizationStatus, IOrganization } from '@energyweb/origin-backend-core';
+import { OrganizationStatus } from '@energyweb/origin-backend-core';
 import { User } from '../user/user.entity';
-import { OrganizationInvitation } from './organization-invitation.entity';
 import { Device } from '../device/device.entity';
 import { ExtendedBaseEntity } from '../ExtendedBaseEntity';
+import { Invitation } from '../invitation/invitation.entity';
 
-@Entity()
-export class Organization extends ExtendedBaseEntity implements IOrganization {
+@Entity({ name: 'platform_organization' })
+export class Organization extends ExtendedBaseEntity {
     constructor(organization?: Partial<Organization>) {
         super();
         Object.assign(this, organization);
@@ -17,94 +16,59 @@ export class Organization extends ExtendedBaseEntity implements IOrganization {
     id: number;
 
     @Column()
-    activeCountries: string;
-
-    @Column()
-    code: string;
-
-    @Column()
     name: string;
-
-    @Column()
-    contact: string;
-
-    @Column()
-    telephone: string;
-
-    @Column()
-    @IsEmail()
-    email: string;
 
     @Column()
     address: string;
 
     @Column()
-    shareholders: string;
-
-    @Column({
-        nullable: true
-    })
-    @ValidateIf((o: Organization) => !o.companyNumber)
-    @IsNotEmpty()
-    ceoPassportNumber: string;
+    zipCode: string;
 
     @Column()
-    ceoName: string;
+    city: string;
 
-    @Column({
-        nullable: true
-    })
-    @ValidateIf((o: Organization) => !o.ceoPassportNumber)
-    @IsNotEmpty()
-    companyNumber: string;
+    @Column()
+    country: number;
+
+    @Column()
+    businessType: string;
+
+    @Column()
+    tradeRegistryCompanyNumber: string;
 
     @Column()
     vatNumber: string;
 
     @Column()
-    postcode: string;
+    signatoryFullName: string;
 
     @Column()
-    @IsInt()
-    @Min(0)
-    headquartersCountry: number;
+    signatoryAddress: string;
 
     @Column()
-    @IsInt()
-    @Min(0)
-    country: number;
+    signatoryZipCode: string;
 
     @Column()
-    businessTypeSelect: string;
-
-    @Column({
-        nullable: true
-    })
-    businessTypeInput: string;
+    signatoryCity: string;
 
     @Column()
-    @IsInt()
-    @Min(1900)
-    yearOfRegistration: number;
+    signatoryCountry: number;
 
     @Column()
-    @IsInt()
-    @Min(0)
-    numberOfEmployees: number;
+    signatoryEmail: string;
 
     @Column()
-    @IsUrl()
-    website: string;
+    signatoryPhoneNumber: string;
 
     @Column()
     status: OrganizationStatus;
 
-    @OneToMany(() => User, (user) => user.organization, { cascade: true })
+    @OneToMany(() => User, (user) => user.organization, { cascade: true, eager: true })
     users: User[];
 
-    @OneToMany(() => OrganizationInvitation, (entity) => entity.organization)
-    invitations: OrganizationInvitation[];
+    @OneToMany(() => Invitation, (entity) => entity.organization, { eager: true })
+    invitations: Invitation[];
 
-    @OneToMany(() => Device, (device) => device.organization)
+    @OneToMany(() => Device, (device) => device.organization, { eager: true })
     devices: Device[];
 }

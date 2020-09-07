@@ -78,7 +78,9 @@ export class Device extends ExtendedBaseEntity implements IDevice {
     @Column('simple-json', { nullable: true })
     externalDeviceIds: IExternalDeviceId[];
 
-    @ManyToOne(() => Organization, (organization) => organization.devices, { nullable: false })
+    @ManyToOne(() => Organization, (organization) => organization.devices, {
+        nullable: false
+    })
     @IsNotEmpty()
     organization: Organization;
 

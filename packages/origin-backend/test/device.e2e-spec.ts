@@ -77,7 +77,7 @@ describe('Device e2e tests', () => {
     });
 
     beforeEach(async () => {
-        await databaseService.truncate('user', 'organization', 'device');
+        await databaseService.truncate('user', 'platform_organization', 'device');
     });
 
     after(async () => {

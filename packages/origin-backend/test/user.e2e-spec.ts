@@ -284,7 +284,6 @@ describe('User e2e tests', () => {
             .put(`/user/confirm-email/${token}`)
             .set('Authorization', `Bearer ${accessToken}`)
             .expect((res) => {
-                console.log(res);
                 const response = res.text as EmailConfirmationResponse;
 
                 expect(response).equals(EmailConfirmationResponse.Success);

@@ -1,5 +1,5 @@
 /* eslint-disable no-return-assign */
-import { CommitmentStatus, Role } from '@energyweb/origin-backend-core';
+import { CommitmentStatus, LoggedInUser, Role } from '@energyweb/origin-backend-core';
 import { INestApplication } from '@nestjs/common';
 import { expect } from 'chai';
 import { BigNumber } from 'ethers';
@@ -8,6 +8,7 @@ import request from 'supertest';
 import { CertificateService } from '../src/pods/certificate/certificate.service';
 import { OrganizationService } from '../src/pods/organization/organization.service';
 import { UserService } from '../src/pods/user';
+import { DatabaseService } from './database.service';
 import { bootstrapTestInstance, registerAndLogin } from './origin-backend';
 
 describe('Certificate e2e tests', () => {
@@ -15,6 +16,7 @@ describe('Certificate e2e tests', () => {
     let userService: UserService;
     let organizationService: OrganizationService;
     let certificateService: CertificateService;
+    let databaseService: DatabaseService;
 
     const generateCommitment = (requestor: string) => ({
         commitment: {
@@ -44,7 +46,8 @@ describe('Certificate e2e tests', () => {
             app,
             userService,
             organizationService,
-            certificateService
+            certificateService,
+            databaseService
         } = await bootstrapTestInstance());
 
         await app.init();
@@ -54,14 +57,21 @@ describe('Certificate e2e tests', () => {
         await app.close();
     });
 
+    beforeEach(async () => {
+        await databaseService.truncate(
+            'user',
+            'platform_organization',
+            'ownership_commitment',
+            'certificate'
+        );
+    });
+
     it('should allow requestor to add ownership commitment for newly created certificate', async () => {
         const { accessToken, user } = await registerAndLogin(
             app,
             userService,
             organizationService,
-            [Role.OrganizationUser],
-            'orgUser',
-            'orgUserOrg'
+            [Role.OrganizationUser]
         );
 
         const certificateId = 1;
@@ -88,9 +98,7 @@ describe('Certificate e2e tests', () => {
             app,
             userService,
             organizationService,
-            [Role.OrganizationUser],
-            'orgUser',
-            'orgUserOrg'
+            [Role.OrganizationUser]
         );
 
         const certificateId = 1;
@@ -112,9 +120,7 @@ describe('Certificate e2e tests', () => {
             app,
             userService,
             organizationService,
-            [Role.OrganizationUser],
-            'orgUser',
-            'orgUserOrg'
+            [Role.OrganizationUser]
         );
 
         const certificateId = 1;
@@ -146,18 +152,21 @@ describe('Certificate e2e tests', () => {
             app,
             userService,
             organizationService,
-            [Role.OrganizationUser],
-            'orgUser',
-            'orgUserOrg'
+            [Role.OrganizationUser]
         );
 
         const certificateId = 1;
 
         await certificateService.create({
             id: certificateId,
-            originalRequestor: '0x123',
-            currentOwnershipCommitment: generateCommitment('0x123')
+            originalRequestor: '0x123'
         });
+
+        const currentOwnershipCommitment = generateCommitment('0x123');
+        await certificateService.addOwnershipCommitment(certificateId, currentOwnershipCommitment, {
+            ...user,
+            blockchainAccountAddress: '0x123'
+        } as LoggedInUser);
 
         // Simulate transferring the whole volume to a new address
         const newCommitment = generateCommitment(user.blockchainAccountAddress);

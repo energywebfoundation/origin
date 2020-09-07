@@ -86,7 +86,9 @@ export class UserService {
     }
 
     async findByEmail(email: string) {
-        return this.findOne({ email });
+        const lowerCaseEmail = email.toLowerCase();
+
+        return this.findOne({ email: lowerCaseEmail });
     }
 
     async getUserAndPasswordByEmail(
@@ -167,7 +169,7 @@ export class UserService {
         await this.repository.update(userId, { organization: { id: organizationId } });
     }
 
-    async removeOrganization(userId: number) {
+    async removeFromOrganization(userId: number) {
         await this.repository.update(userId, { organization: null });
     }
 

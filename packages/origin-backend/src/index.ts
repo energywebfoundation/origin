@@ -6,7 +6,7 @@ import { OwnershipCommitment } from './pods/certificate/ownership-commitment.ent
 import { Configuration } from './pods/configuration/configuration.entity';
 import { Device } from './pods/device/device.entity';
 import { Organization } from './pods/organization/organization.entity';
-import { OrganizationInvitation } from './pods/organization/organization-invitation.entity';
+import { Invitation } from './pods/invitation/invitation.entity';
 import { User } from './pods/user/user.entity';
 import { CertificationRequestQueueItem } from './pods/certification-request/certification-request-queue-item.entity';
 import { EmailConfirmation } from './pods/email-confirmation/email-confirmation.entity';
@@ -21,6 +21,7 @@ import { OrganizationModule } from './pods/organization/organization.module';
 import { UserModule } from './pods/user/user.module';
 import { EmailConfirmationModule } from './pods/email-confirmation/email-confirmation.module';
 import { CertificationRequestModule } from './pods/certification-request/certification-request.module';
+import { InvitationModule } from './pods/invitation/invitation.module';
 
 export { AppModule } from './app.module';
 export { ExtendedBaseEntity } from './pods/ExtendedBaseEntity';
@@ -38,7 +39,7 @@ export const entities = [
     Configuration,
     Organization,
     User,
-    OrganizationInvitation,
+    Invitation,
     CertificationRequest,
     CertificationRequestQueueItem,
     Certificate,
@@ -55,7 +56,8 @@ export const modules = [
     OrganizationModule,
     UserModule,
     EmailConfirmationModule,
-    CertificationRequestModule
+    CertificationRequestModule,
+    InvitationModule
 ];
 
 export const providers = [{ provide: APP_PIPE, useClass: ValidationPipe }];
