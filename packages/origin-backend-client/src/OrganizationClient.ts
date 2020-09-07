@@ -6,13 +6,13 @@ import {
     IOrganizationInvitation,
     OrganizationInviteUpdateData,
     OrganizationInvitationStatus,
-    IOrganizationWithRelationsIds,
     OrganizationRole,
     Role,
     IOrganizationUpdateMemberRole,
     IRequestClient,
     IOrganizationClient,
-    IUser
+    IUser,
+    IFullOrganization
 } from '@energyweb/origin-backend-core';
 
 import { RequestClient } from './RequestClient';
@@ -27,42 +27,37 @@ export class OrganizationClient implements IOrganizationClient {
         return `${this.dataApiUrl}/Organization`;
     }
 
-    public async getById(id: number): Promise<IOrganizationWithRelationsIds> {
+    public async getById(id: number): Promise<IFullOrganization> {
         if (typeof id === 'undefined') {
             return null;
         }
 
         const url = `${this.endpoint}/${id}`;
-        const { data } = await this.requestClient.get<unknown, IOrganizationWithRelationsIds>(url);
+        const { data } = await this.requestClient.get<unknown, IFullOrganization>(url);
 
         return data;
     }
 
-    public async getAll(): Promise<IOrganizationWithRelationsIds[]> {
-        const { data } = await this.requestClient.get<unknown, IOrganizationWithRelationsIds[]>(
-            this.endpoint
+    public async getAll(): Promise<IFullOrganization[]> {
+        const { data } = await this.requestClient.get<unknown, IFullOrganization[]>(this.endpoint);
+
+        return data;
+    }
+
+    public async add(data: OrganizationPostData): Promise<IFullOrganization> {
+        const response = await this.requestClient.post<OrganizationPostData, IFullOrganization>(
+            this.endpoint,
+            data
         );
-
-        return data;
-    }
-
-    public async add(data: OrganizationPostData): Promise<IOrganizationWithRelationsIds> {
-        const response = await this.requestClient.post<
-            OrganizationPostData,
-            IOrganizationWithRelationsIds
-        >(this.endpoint, data);
 
         return response.data;
     }
 
-    public async update(
-        id: number,
-        data: OrganizationUpdateData
-    ): Promise<IOrganizationWithRelationsIds> {
-        const response = await this.requestClient.put<
-            OrganizationUpdateData,
-            IOrganizationWithRelationsIds
-        >(`${this.endpoint}/${id}`, data);
+    public async update(id: number, data: OrganizationUpdateData): Promise<IFullOrganization> {
+        const response = await this.requestClient.put<OrganizationUpdateData, IFullOrganization>(
+            `${this.endpoint}/${id}`,
+            data
+        );
 
         return response.data;
     }
