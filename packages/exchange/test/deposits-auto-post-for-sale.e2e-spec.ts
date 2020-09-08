@@ -1,6 +1,7 @@
 import { OrderSide, OrderStatus } from '@energyweb/exchange-core';
-import { DeviceService, ExtendedBaseEntity } from '@energyweb/origin-backend';
+import { DeviceService } from '@energyweb/origin-backend';
 import { IDeviceProductInfo, IDeviceWithRelationsIds } from '@energyweb/origin-backend-core';
+import { ExtendedBaseEntity } from '@energyweb/origin-backend-utils';
 import { INestApplication } from '@nestjs/common';
 import { expect } from 'chai';
 import { Contract, ethers } from 'ethers';
