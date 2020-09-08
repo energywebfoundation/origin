@@ -27,6 +27,7 @@ import { UserService } from '../src/pods/user';
 import { DatabaseService } from './database.service';
 import { CertificateService } from '../src/pods/certificate/certificate.service';
 import { EmailConfirmationService } from '../src/pods/email-confirmation/email-confirmation.service';
+import { FileService } from '../src/pods/file/file.service';
 
 const testLogger = new Logger('e2e');
 
@@ -89,6 +90,7 @@ export const bootstrapTestInstance = async () => {
     const emailConfirmationService = await app.resolve<EmailConfirmationService>(
         EmailConfirmationService
     );
+    const fileService = await app.resolve<FileService>(FileService);
 
     app.useLogger(testLogger);
     app.enableCors();
@@ -109,7 +111,8 @@ export const bootstrapTestInstance = async () => {
         configurationService,
         certificateService,
         certificationRequestService,
-        emailConfirmationService
+        emailConfirmationService,
+        fileService
     };
 };
 
