@@ -1,8 +1,8 @@
 import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
 import { OrganizationStatus } from '@energyweb/origin-backend-core';
+import { ExtendedBaseEntity } from '@energyweb/origin-backend-utils';
 import { User } from '../user/user.entity';
 import { Device } from '../device/device.entity';
-import { ExtendedBaseEntity } from '../ExtendedBaseEntity';
 import { Invitation } from '../invitation/invitation.entity';
 
 @Entity({ name: 'platform_organization' })

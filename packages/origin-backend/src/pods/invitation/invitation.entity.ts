@@ -6,7 +6,7 @@ import {
     Role
 } from '@energyweb/origin-backend-core';
 
-import { ExtendedBaseEntity } from '../ExtendedBaseEntity';
+import { ExtendedBaseEntity } from '@energyweb/origin-backend-utils';
 import { Organization } from '../organization/organization.entity';
 
 @Entity({ name: 'organization_invitation' })

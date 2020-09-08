@@ -1,11 +1,12 @@
-import { PreciseProofs } from 'precise-proofs-js';
-import { Entity, Column, PrimaryColumn, ManyToOne } from 'typeorm';
 import {
-    IOwnershipCommitmentProofWithTx,
-    IOwnershipCommitment
+    IOwnershipCommitment,
+    IOwnershipCommitmentProofWithTx
 } from '@energyweb/origin-backend-core';
+import { ExtendedBaseEntity } from '@energyweb/origin-backend-utils';
+import { PreciseProofs } from 'precise-proofs-js';
+import { Column, Entity, ManyToOne, PrimaryColumn } from 'typeorm';
+
 import { Certificate } from './certificate.entity';
-import { ExtendedBaseEntity } from '../ExtendedBaseEntity';
 
 @Entity()
 export class OwnershipCommitment extends ExtendedBaseEntity
