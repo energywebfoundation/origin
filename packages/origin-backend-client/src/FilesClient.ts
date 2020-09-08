@@ -27,7 +27,10 @@ export class FilesClient implements IFilesClient {
             this.endpoint,
             formData,
             {
-                headers: { 'Content-type': 'multipart/form-data' },
+                headers: {
+                    ...this.requestClient.config.headers,
+                    'Content-type': 'multipart/form-data'
+                },
                 onUploadProgress,
                 cancelToken: cancelTokenSource?.token
             }
