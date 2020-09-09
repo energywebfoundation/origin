@@ -6,6 +6,7 @@ import moment from 'moment';
 import request from 'supertest';
 import { OrderStatus } from '@energyweb/exchange-core';
 
+import { DatabaseService } from '@energyweb/origin-backend-utils';
 import { AccountService } from '../src/pods/account/account.service';
 import { CreateDemandDTO } from '../src/pods/demand/create-demand.dto';
 import { Demand } from '../src/pods/demand/demand.entity';
@@ -15,7 +16,6 @@ import { OrderService } from '../src/pods/order/order.service';
 import { ProductService } from '../src/pods/product/product.service';
 import { TradeDTO } from '../src/pods/trade/trade.dto';
 import { TransferService } from '../src/pods/transfer/transfer.service';
-import { DatabaseService } from './database.service';
 import { authenticatedUser, bootstrapTestInstance } from './exchange';
 import { MWh } from './utils';
 

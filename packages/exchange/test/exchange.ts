@@ -7,7 +7,7 @@ import {
     IDeviceWithRelationsIds,
     UserStatus
 } from '@energyweb/origin-backend-core';
-import { ExtendedBaseEntity, RolesGuard } from '@energyweb/origin-backend-utils';
+import { DatabaseService, ExtendedBaseEntity, RolesGuard } from '@energyweb/origin-backend-utils';
 import { getProviderWithFallback } from '@energyweb/utils-general';
 import { CanActivate, ExecutionContext, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
@@ -25,7 +25,6 @@ import { DemandService } from '../src/pods/demand/demand.service';
 import { OrderService } from '../src/pods/order/order.service';
 import { ProductService } from '../src/pods/product/product.service';
 import { TransferService } from '../src/pods/transfer/transfer.service';
-import { DatabaseService } from './database.service';
 
 const web3 = 'http://localhost:8580';
 

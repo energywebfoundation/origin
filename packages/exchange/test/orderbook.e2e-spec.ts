@@ -6,6 +6,7 @@ import { expect } from 'chai';
 import moment from 'moment';
 import request from 'supertest';
 
+import { DatabaseService } from '@energyweb/origin-backend-utils';
 import { AccountService } from '../src/pods/account/account.service';
 import { CreateAssetDTO } from '../src/pods/asset/asset.entity';
 import { OrderBookOrderDTO } from '../src/pods/order-book/order-book-order.dto';
@@ -14,7 +15,6 @@ import { CreateBidDTO } from '../src/pods/order/create-bid.dto';
 import { OrderService } from '../src/pods/order/order.service';
 import { TradePriceInfoDTO } from '../src/pods/trade/trade-price-info.dto';
 import { TransferService } from '../src/pods/transfer/transfer.service';
-import { DatabaseService } from './database.service';
 import { authenticatedUser, bootstrapTestInstance } from './exchange';
 
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
