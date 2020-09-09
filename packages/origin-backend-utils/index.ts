@@ -7,3 +7,4 @@ export * from './src/validator/intUnitOfEnergy';
 export * from './src/interceptor/NullOrUndefinedResultInterceptor';
 export * from './src/interceptor/httpLoggingInterceptor';
 export * from './src/entity/ExtendedBaseEntity';
+export * from './src/service/database.service';
