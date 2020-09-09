@@ -1,5 +1,6 @@
 /* eslint-disable no-return-assign */
 import { CommitmentStatus, LoggedInUser, Role } from '@energyweb/origin-backend-core';
+import { DatabaseService } from '@energyweb/origin-backend-utils';
 import { INestApplication } from '@nestjs/common';
 import { expect } from 'chai';
 import { BigNumber } from 'ethers';
@@ -8,7 +9,6 @@ import request from 'supertest';
 import { CertificateService } from '../src/pods/certificate/certificate.service';
 import { OrganizationService } from '../src/pods/organization/organization.service';
 import { UserService } from '../src/pods/user';
-import { DatabaseService } from './database.service';
 import { bootstrapTestInstance, registerAndLogin } from './origin-backend';
 
 describe('Certificate e2e tests', () => {

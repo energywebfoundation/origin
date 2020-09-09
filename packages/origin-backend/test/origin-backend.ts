@@ -16,6 +16,7 @@ import dotenv from 'dotenv';
 import { ethers } from 'ethers';
 import request from 'supertest';
 
+import { DatabaseService } from '@energyweb/origin-backend-utils';
 import { entities } from '../src';
 import { AppModule } from '../src/app.module';
 import { CertificationRequestService } from '../src/pods/certification-request/certification-request.service';
@@ -23,7 +24,6 @@ import { ConfigurationService } from '../src/pods/configuration';
 import { DeviceService } from '../src/pods/device/device.service';
 import { OrganizationService } from '../src/pods/organization/organization.service';
 import { UserService } from '../src/pods/user';
-import { DatabaseService } from './database.service';
 import { CertificateService } from '../src/pods/certificate/certificate.service';
 import { EmailConfirmationService } from '../src/pods/email-confirmation/email-confirmation.service';
 import { NewOrganizationDTO } from '../src/pods/organization/new-organization.dto';

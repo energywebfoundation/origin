@@ -13,7 +13,7 @@ import { INestApplication } from '@nestjs/common';
 import { expect } from 'chai';
 import request from 'supertest';
 
-import { DatabaseService } from './database.service';
+import { DatabaseService } from '@energyweb/origin-backend-utils';
 import { bootstrapTestInstance, registerAndLogin } from './origin-backend';
 import { omit } from './utils';
 import { UserService } from '../src/pods/user/user.service';

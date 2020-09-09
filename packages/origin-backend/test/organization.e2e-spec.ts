@@ -13,13 +13,13 @@ import { INestApplication } from '@nestjs/common';
 import { expect } from 'chai';
 import request from 'supertest';
 
+import { DatabaseService } from '@energyweb/origin-backend-utils';
 import { Device } from '../src/pods/device/device.entity';
 import { DeviceService } from '../src/pods/device/device.service';
 import { OrganizationInvitationDTO } from '../src/pods/organization/organization-invitation.dto';
 import { OrganizationService } from '../src/pods/organization/organization.service';
 import { PublicOrganizationInfoDTO } from '../src/pods/organization/public-organization-info.dto';
 import { TUserBaseEntity, UserService } from '../src/pods/user';
-import { DatabaseService } from './database.service';
 import { bootstrapTestInstance, registerAndLogin, getExampleOrganization } from './origin-backend';
 import { userToRegister } from './user.e2e-spec';
 
