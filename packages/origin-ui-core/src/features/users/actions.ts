@@ -1,8 +1,4 @@
-import {
-    IUser,
-    IOrganizationWithRelationsIds,
-    IOrganizationInvitation
-} from '@energyweb/origin-backend-core';
+import { IUser, IFullOrganization, IOrganizationInvitation } from '@energyweb/origin-backend-core';
 import { IUsersState } from './reducer';
 
 export enum UsersActions {
@@ -77,7 +73,7 @@ export type TClearAuthenticationTokenAction = typeof clearAuthenticationToken;
 
 export interface IAddOrganizationsAction {
     type: UsersActions.addOrganizations;
-    payload: IOrganizationWithRelationsIds[];
+    payload: IFullOrganization[];
 }
 
 export const addOrganizations = (payload: IAddOrganizationsAction['payload']) => ({

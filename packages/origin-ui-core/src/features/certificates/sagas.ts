@@ -1,5 +1,5 @@
 import { Certificate, CertificateUtils, CertificationRequest } from '@energyweb/issuer';
-import { CommitmentStatus, IUser, IOrganization } from '@energyweb/origin-backend-core';
+import { CommitmentStatus, IUser, IPublicOrganization } from '@energyweb/origin-backend-core';
 import { Configuration } from '@energyweb/utils-general';
 import { ContractTransaction } from 'ethers';
 import { getI18n } from 'react-i18next';
@@ -123,7 +123,7 @@ function* openRequestCertificatesModalSaga(): SagaIterator {
 
         const userOffchain: IUser = yield select(getUserOffchain);
 
-        if ((device?.organization as IOrganization).id !== userOffchain?.organization?.id) {
+        if ((device?.organization as IPublicOrganization).id !== userOffchain?.organization?.id) {
             showNotification(
                 `You need to own the device to request certificates.`,
                 NotificationType.Error
