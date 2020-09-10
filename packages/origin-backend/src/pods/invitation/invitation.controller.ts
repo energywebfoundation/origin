@@ -45,8 +45,9 @@ export class InvitationController {
         @Body('status') status: IOrganizationInvitation['status'],
         @Param('id') invitationId: string,
         @UserDecorator() loggedUser: ILoggedInUser
-    ): Promise<void> {
+    ) {
         await this.organizationInvitationService.update(loggedUser, invitationId, status);
+        return true;
     }
 
     @Post()
