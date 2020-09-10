@@ -3,6 +3,11 @@ import {
     AppModule as OriginBackendModule,
     entities as OriginBackendEntities
 } from '@energyweb/origin-backend';
+import {
+    AppModule as IRECOrganizationModule,
+    entities as IRECOrganizationEntities
+} from '@energyweb/origin-organization-irec-api';
+
 import { ISmartMeterReadingsAdapter } from '@energyweb/origin-backend-core';
 import { DynamicModule, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -25,7 +30,11 @@ const OriginAppTypeOrmModule = () => {
               username: process.env.DB_USERNAME ?? 'postgres',
               password: process.env.DB_PASSWORD ?? 'postgres',
               database: process.env.DB_DATABASE ?? 'origin',
-              entities: [...OriginBackendEntities, ...ExchangeEntities],
+              entities: [
+                  ...OriginBackendEntities,
+                  ...ExchangeEntities,
+                  ...IRECOrganizationEntities
+              ],
               logging: ['info']
           });
 };
@@ -38,7 +47,8 @@ export class OriginAppModule {
             imports: [
                 OriginAppTypeOrmModule(),
                 OriginBackendModule.register(smartMeterReadingsAdapter),
-                ExchangeModule
+                ExchangeModule,
+                IRECOrganizationModule
             ]
         };
     }
