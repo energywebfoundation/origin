@@ -1,4 +1,4 @@
-import { 
+import {
     OrganizationInviteCreateData,
     ISuccessResponse,
     IOrganizationInvitation,
@@ -6,16 +6,17 @@ import {
     OrganizationInvitationStatus,
     OrganizationRole,
     IRequestClient,
-    } from '@energyweb/origin-backend-core';
-import { IInvitationClient } from '../../origin-backend-core/dist/js/src/client/index';
+    IInvitationClient
+} from '@energyweb/origin-backend-core';
+
 import { RequestClient } from './RequestClient';
 
-export class InvitationClient implements IInvitationClient { 
+export class InvitationClient implements IInvitationClient {
     constructor(
         private readonly dataApiUrl: string,
         private readonly requestClient: IRequestClient = new RequestClient()
     ) {}
-    
+
     private get endpoint() {
         return `${this.dataApiUrl}/invitation`;
     }
@@ -66,7 +67,7 @@ export class InvitationClient implements IInvitationClient {
 
         return response.data;
     }
-    
+
     public async getInvitationsForEmail(email: string): Promise<IOrganizationInvitation[]> {
         const { data } = await this.requestClient.get<unknown, IOrganizationInvitation[]>(
             `${this.endpoint}?email=${encodeURIComponent(email)}`
@@ -74,5 +75,4 @@ export class InvitationClient implements IInvitationClient {
 
         return data;
     }
-
 }
