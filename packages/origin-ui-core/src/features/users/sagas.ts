@@ -93,9 +93,9 @@ function* fetchOffchainUserDetails(): SagaIterator {
         try {
             const userOffchain: IUser = yield call([userClient, userClient.me]);
 
-            const { organizationClient } = yield select(getOffChainDataSource);
+            const { invitationClient } = yield select(getOffChainDataSource);
             const invitations: IOrganizationInvitation[] = yield call(
-                [organizationClient, organizationClient.getInvitations],
+                [invitationClient, invitationClient.getInvitations],
                 null
             );
             const userState: IUsersState = yield select(getUserState);
