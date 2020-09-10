@@ -548,8 +548,8 @@ SELECT setval(
 );
 
 SELECT setval(
-    pg_get_serial_sequence('public.organization', 'id'),
-    (SELECT MAX("id") FROM public.organization) + 1
+    pg_get_serial_sequence('public.platform_organization', 'id'),
+    (SELECT MAX("id") FROM public.platform_organization) + 1
 );
 
 SELECT setval(
