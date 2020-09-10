@@ -111,13 +111,7 @@ export interface IOrganizationClient {
     add(data: OrganizationPostData): Promise<IFullOrganization>;
     update(id: number, data: OrganizationUpdateData): Promise<IFullOrganization>;
 
-    invite(email: string, role: OrganizationRole): Promise<ISuccessResponse>;
-    getInvitations(): Promise<IOrganizationInvitation[]>;
-    getInvitationsToOrganization(organizationId: number): Promise<IOrganizationInvitation[]>;
-    getInvitationsForEmail(email: string): Promise<IOrganizationInvitation[]>;
-    acceptInvitation(id: number): Promise<any>;
-    rejectInvitation(id: number): Promise<any>;
-    viewInvitation(id: number): Promise<any>;
+    getInvitationsForOrganization(organizationId: number): Promise<IOrganizationInvitation[]>;
 
     getMembers(id: number): Promise<IUser[]>;
     removeMember(organizationId: number, userId: number): Promise<ISuccessResponse>;
@@ -126,6 +120,15 @@ export interface IOrganizationClient {
         userId: number,
         newRole: Role
     ): Promise<ISuccessResponse>;
+}
+
+export interface IInvitationClient {
+    invite(email: string, role: OrganizationRole): Promise<ISuccessResponse>;
+    getInvitations(): Promise<IOrganizationInvitation[]>;
+    acceptInvitation(id: number): Promise<ISuccessResponse>;
+    rejectInvitation(id: number): Promise<ISuccessResponse>;
+    viewInvitation(id: number): Promise<ISuccessResponse>;
+    getInvitationsForEmail(email: string): Promise<IOrganizationInvitation[]>;
 }
 
 export interface IFilesClient {
@@ -159,6 +162,7 @@ export interface IOffChainDataSource {
     organizationClient: IOrganizationClient;
     filesClient: IFilesClient;
     adminClient: IAdminClient;
+    invitationClient: IInvitationClient;
 
     certificateClient?: ICertificateClient;
     certificationRequestClient?: ICertificationRequestClient;

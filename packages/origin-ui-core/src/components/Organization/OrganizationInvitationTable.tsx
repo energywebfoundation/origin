@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { Check, Clear } from '@material-ui/icons';
 import {
-    IOrganization,
+    IPublicOrganization,
     OrganizationInvitationStatus,
     IOrganizationInvitation
 } from '@energyweb/origin-backend-core';
@@ -20,7 +20,7 @@ import { refreshUserOffchain } from '../../features/users/actions';
 import { useTranslation, useLinks } from '../..';
 
 interface IRecord {
-    organization: IOrganization;
+    organization: IPublicOrganization;
     invitation: IOrganizationInvitation;
 }
 
@@ -43,6 +43,7 @@ interface IProps {
 
 export function OrganizationInvitationTable(props: IProps) {
     const organizationClient = useSelector(getOffChainDataSource)?.organizationClient;
+    const invitationClient = useSelector(getOffChainDataSource)?.invitationClient;
 
     const dispatch = useDispatch();
     const { t } = useTranslation();
@@ -63,16 +64,16 @@ export function OrganizationInvitationTable(props: IProps) {
         let invitations: IOrganizationInvitation[] = [];
 
         if (props.email) {
-            invitations = await organizationClient.getInvitationsForEmail(props.email);
+            invitations = await invitationClient.getInvitationsForEmail(props.email);
         } else if (props.organizationId) {
-            invitations = await organizationClient.getInvitationsToOrganization(
+            invitations = await organizationClient.getInvitationsForOrganization(
                 props.organizationId
             );
         }
 
         let newPaginatedData: IRecord[] = invitations.map((invitation) => ({
             invitation,
-            organization: invitation.organization as IOrganization
+            organization: invitation.organization as IPublicOrganization
         }));
 
         const newTotal = newPaginatedData.length;
@@ -109,11 +110,11 @@ export function OrganizationInvitationTable(props: IProps) {
         dispatch(setLoading(true));
 
         try {
-            await organizationClient.acceptInvitation(invitation.id);
-            const invitations = await organizationClient.getInvitationsForEmail(props.email);
+            await invitationClient.acceptInvitation(invitation.id);
+            const invitations = await invitationClient.getInvitationsForEmail(props.email);
             invitations
                 .filter((inv) => inv.id !== invitation.id)
-                .forEach((inv) => organizationClient.rejectInvitation(inv.id));
+                .forEach((inv) => invitationClient.rejectInvitation(inv.id));
 
             showNotification(`Invitation accepted.`, NotificationType.Success);
             dispatch(refreshUserOffchain());
@@ -121,6 +122,7 @@ export function OrganizationInvitationTable(props: IProps) {
         } catch (error) {
             showNotification(`Could not accept invitation.`, NotificationType.Error);
             console.error(error);
+            console.log(error);
         }
 
         dispatch(setLoading(false));
@@ -142,7 +144,7 @@ export function OrganizationInvitationTable(props: IProps) {
         dispatch(setLoading(true));
 
         try {
-            await organizationClient.rejectInvitation(invitation.id);
+            await invitationClient.rejectInvitation(invitation.id);
 
             showNotification(`Invitation rejected.`, NotificationType.Success);
 
@@ -156,14 +158,14 @@ export function OrganizationInvitationTable(props: IProps) {
     }
 
     const columns = [
-        { id: 'organization', label: 'Organization' },
+        !props.organizationId && { id: 'organization', label: 'Organization' },
         { id: 'email', label: 'Email' },
         { id: 'status', label: 'Status' }
     ] as const;
 
     const rows = paginatedData.map(({ organization, invitation }) => {
         return {
-            organization: organization.name,
+            organization: organization?.name,
             status: getOrganizationInvitationStatusText(invitation.status),
             email: invitation.email
         };
