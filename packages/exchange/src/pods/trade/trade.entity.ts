@@ -1,6 +1,6 @@
 import BN from 'bn.js';
 import { Column, Entity, JoinTable, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
-import { ExtendedBaseEntity } from '@energyweb/origin-backend';
+import { ExtendedBaseEntity } from '@energyweb/origin-backend-utils';
 
 import { BNTransformer } from '../../utils/valueTransformers';
 import { Order } from '../order/order.entity';

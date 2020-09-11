@@ -10,7 +10,7 @@ import {
     PrimaryGeneratedColumn,
     RelationId
 } from 'typeorm';
-import { ExtendedBaseEntity } from '@energyweb/origin-backend';
+import { ExtendedBaseEntity } from '@energyweb/origin-backend-utils';
 
 import { BNTransformer } from '../../utils/valueTransformers';
 import { Asset } from '../asset/asset.entity';

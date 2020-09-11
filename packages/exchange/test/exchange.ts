@@ -1,21 +1,21 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { PriceStrategy } from '@energyweb/exchange-core';
 import { Contracts } from '@energyweb/issuer';
-import { ConfigurationService, DeviceService, ExtendedBaseEntity } from '@energyweb/origin-backend';
+import { ConfigurationService, DeviceService } from '@energyweb/origin-backend';
 import {
     IDeviceProductInfo,
     IDeviceWithRelationsIds,
     UserStatus
 } from '@energyweb/origin-backend-core';
-import { RolesGuard } from '@energyweb/origin-backend-utils';
-import { CanActivate, ExecutionContext, Logger } from '@nestjs/common';
+import { DatabaseService, ExtendedBaseEntity, RolesGuard } from '@energyweb/origin-backend-utils';
 import { getProviderWithFallback } from '@energyweb/utils-general';
+import { CanActivate, ExecutionContext, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { AuthGuard } from '@nestjs/passport';
 import { Test } from '@nestjs/testing';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { useContainer } from 'class-validator';
 import { ethers } from 'ethers';
-import { PriceStrategy } from '@energyweb/exchange-core';
 
 import { entities } from '../src';
 import { AppModule } from '../src/app.module';
@@ -25,7 +25,6 @@ import { DemandService } from '../src/pods/demand/demand.service';
 import { OrderService } from '../src/pods/order/order.service';
 import { ProductService } from '../src/pods/product/product.service';
 import { TransferService } from '../src/pods/transfer/transfer.service';
-import { DatabaseService } from './database.service';
 
 const web3 = 'http://localhost:8580';
 

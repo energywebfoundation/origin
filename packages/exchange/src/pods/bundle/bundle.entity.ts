@@ -1,4 +1,4 @@
-import { ExtendedBaseEntity } from '@energyweb/origin-backend';
+import { ExtendedBaseEntity } from '@energyweb/origin-backend-utils';
 import BN from 'bn.js';
 import { Expose, Transform } from 'class-transformer';
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';

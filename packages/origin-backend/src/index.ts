@@ -24,7 +24,6 @@ import { CertificationRequestModule } from './pods/certification-request/certifi
 import { InvitationModule } from './pods/invitation/invitation.module';
 
 export { AppModule } from './app.module';
-export { ExtendedBaseEntity } from './pods/ExtendedBaseEntity';
 export { ConfigurationService } from './pods/configuration/configuration.service';
 export { DeviceService } from './pods/device/device.service';
 

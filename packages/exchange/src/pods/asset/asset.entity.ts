@@ -1,5 +1,5 @@
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
-import { ExtendedBaseEntity } from '@energyweb/origin-backend';
+import { ExtendedBaseEntity } from '@energyweb/origin-backend-utils';
 
 export interface IAsset {
     id: string;

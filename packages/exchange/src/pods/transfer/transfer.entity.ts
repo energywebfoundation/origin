@@ -1,5 +1,5 @@
 import { Column, Entity, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
-import { ExtendedBaseEntity } from '@energyweb/origin-backend';
+import { ExtendedBaseEntity } from '@energyweb/origin-backend-utils';
 import { Asset } from '../asset/asset.entity';
 import { TransferDirection } from './transfer-direction';
 import { TransferStatus } from './transfer-status';

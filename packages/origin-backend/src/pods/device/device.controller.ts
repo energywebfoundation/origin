@@ -10,7 +10,13 @@ import {
     IDevice,
     OrganizationStatus
 } from '@energyweb/origin-backend-core';
-import { Roles, RolesGuard, UserDecorator, ActiveUserGuard } from '@energyweb/origin-backend-utils';
+import {
+    Roles,
+    RolesGuard,
+    UserDecorator,
+    ActiveUserGuard,
+    ExtendedBaseEntity
+} from '@energyweb/origin-backend-utils';
 import {
     Body,
     Controller,
@@ -30,7 +36,7 @@ import {
 import { AuthGuard } from '@nestjs/passport';
 import { BigNumber } from 'ethers';
 import { StorageErrors } from '../../enums/StorageErrors';
-import { ExtendedBaseEntity } from '../ExtendedBaseEntity';
+
 import { OrganizationService } from '../organization/organization.service';
 import { DeviceService } from './device.service';
 

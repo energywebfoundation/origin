@@ -21,7 +21,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import bcrypt from 'bcryptjs';
 import { validate } from 'class-validator';
 import { DeepPartial, FindConditions, Repository, FindManyOptions } from 'typeorm';
-import { ExtendedBaseEntity } from '../ExtendedBaseEntity';
+import { ExtendedBaseEntity } from '@energyweb/origin-backend-utils';
 import { User } from './user.entity';
 import { EmailConfirmationService } from '../email-confirmation/email-confirmation.service';
 

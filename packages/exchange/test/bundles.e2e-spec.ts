@@ -3,6 +3,7 @@ import { expect } from 'chai';
 import request from 'supertest';
 import { UserStatus } from '@energyweb/origin-backend-core';
 
+import { DatabaseService } from '@energyweb/origin-backend-utils';
 import { AccountDTO } from '../src/pods/account/account.dto';
 import { AccountService } from '../src/pods/account/account.service';
 import { BundleSplitDTO } from '../src/pods/bundle/bundle-split.dto';
@@ -12,7 +13,6 @@ import { BundleService } from '../src/pods/bundle/bundle.service';
 import { BuyBundleDTO } from '../src/pods/bundle/buy-bundle.dto';
 import { CreateBundleDTO } from '../src/pods/bundle/create-bundle.dto';
 import { TransferService } from '../src/pods/transfer/transfer.service';
-import { DatabaseService } from './database.service';
 import { authenticatedUser, bootstrapTestInstance } from './exchange';
 import { MWh } from './utils';
 
