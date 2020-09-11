@@ -18,7 +18,7 @@
             "path": "../exchange/tsconfig.json"
         },
         {
-            "path": "../organization-irec-api/tsconfig.json"
+            "path": "../origin-organization-irec-api/tsconfig.json"
         },
         {
             "path": "../utils-general/tsconfig.json"
