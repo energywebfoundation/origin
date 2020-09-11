@@ -8,26 +8,21 @@ import { getUserOffchain } from '../../features/users/selectors';
 import { getOffChainDataSource } from '../../features/general/selectors';
 
 interface IFormValues {
-    code: string;
     name: string;
-    contact: string;
-    telephone: string;
-    email: string;
     address: string;
-    shareholders: string;
-    ceoPassportNumber: string;
-    ceoName: string;
-    companyNumber: string;
+    businessType: string;
+    city: string;
+    zipCode: string;
+    country: number;
+    tradeRegistryCompanyNumber: string;
     vatNumber: string;
-    postcode: string;
-    headquartersCountry: string;
-    country: string;
-    businessTypeSelect: string;
-    businessTypeInput: string;
-    yearOfRegistration: number | '';
-    numberOfEmployees: number | '';
-    website: string;
-    activeCountries: string;
+    signatoryAddress: string;
+    signatoryCity: string;
+    signatoryCountry: number;
+    signatoryEmail: string;
+    signatoryFullName: string;
+    signatoryPhoneNumber: string;
+    signatoryZipCode: string;
 }
 
 export function OrganizationView() {
@@ -46,15 +41,11 @@ export function OrganizationView() {
 
     const classes = useStyles(useTheme());
 
-    const setValues = (organization, activeCountriesParsed) => {
+    const setValues = (organization) => {
         setFormValues({
             ...organization,
-            headquartersCountry: Countries.find((c) => c.id === organization.headquartersCountry)
-                .name,
-            activeCountries: Countries.filter((c) => activeCountriesParsed.includes(c.id))
-                .map((country) => country.name)
-                .join(', '),
-            country: Countries.find((c) => c.id === organization.country).name
+            country: Countries.find((c) => c.id === organization.country).name,
+            signatoryCountry: Countries.find((c) => c.id === organization.signatoryCountry).name
         });
     };
 
@@ -64,8 +55,7 @@ export function OrganizationView() {
                 ? await organizationClient.getById(parseInt(params.id, 10))
                 : userOffchain?.organization;
             if (organization) {
-                const activeCountriesParsed: number[] = JSON.parse(organization.activeCountries);
-                setValues(organization, activeCountriesParsed);
+                setValues(organization);
             }
         };
         getOrganization();
@@ -80,15 +70,7 @@ export function OrganizationView() {
             <Grid container spacing={3}>
                 <Grid item xs={6}>
                     <TextField
-                        label="Code"
-                        className="mt-3"
-                        value={formValues.code}
-                        fullWidth
-                        disabled
-                    />
-
-                    <TextField
-                        label="Name"
+                        label="Organization Name"
                         className="mt-3"
                         value={formValues.name}
                         fullWidth
@@ -96,43 +78,43 @@ export function OrganizationView() {
                     />
 
                     <TextField
-                        label="Headquarters Country"
-                        value={formValues.headquartersCountry}
+                        label="Organization Address"
+                        className="mt-3"
+                        value={formValues.address}
+                        fullWidth
+                        disabled
+                    />
+
+                    <TextField
+                        label="Zip Code"
+                        value={formValues.zipCode}
                         className="mt-3"
                         fullWidth
                         disabled
                     />
 
                     <TextField
-                        label="Contact"
+                        label="Country"
                         className="mt-3"
-                        value={formValues.contact}
+                        value={formValues.country}
                         fullWidth
                         disabled
                     />
 
                     <TextField
-                        label="Email"
+                        label="Business Type"
                         className="mt-3"
-                        value={formValues.email}
+                        value={formValues.businessType}
                         fullWidth
                         disabled
                     />
 
                     <TextField
-                        label="Telephone"
+                        label="Trade Registry Company Number"
                         className="mt-3"
-                        value={formValues.telephone}
+                        value={formValues.tradeRegistryCompanyNumber}
                         fullWidth
                         disabled
-                    />
-
-                    <TextField
-                        label="Company number"
-                        value={formValues.companyNumber}
-                        disabled
-                        className="mt-3"
-                        fullWidth
                     />
 
                     <TextField
@@ -144,16 +126,24 @@ export function OrganizationView() {
                     />
 
                     <TextField
-                        label="CEO name"
-                        value={formValues.ceoName}
+                        label="Signatory Full Name"
+                        value={formValues.signatoryFullName}
                         disabled
                         className="mt-3"
                         fullWidth
                     />
 
                     <TextField
-                        label="CEO passport number"
-                        value={formValues.ceoPassportNumber}
+                        label="Signatory Address"
+                        value={formValues.signatoryAddress}
+                        disabled
+                        className="mt-3"
+                        fullWidth
+                    />
+
+                    <TextField
+                        label="Signatory Zip Code"
+                        value={formValues.signatoryZipCode}
                         disabled
                         className="mt-3"
                         fullWidth
@@ -161,79 +151,38 @@ export function OrganizationView() {
                 </Grid>
                 <Grid item xs={6}>
                     <TextField
-                        label="Business type"
-                        value={formValues.businessTypeSelect}
+                        label="Signatory City"
+                        value={formValues.signatoryCity}
                         disabled
                         className="mt-3"
                         fullWidth
                     />
 
                     <TextField
-                        label="Year of registration"
-                        value={formValues.yearOfRegistration}
+                        label="Signatory Country"
+                        value={formValues.signatoryCountry}
                         disabled
                         className="mt-3"
                         fullWidth
                     />
 
                     <TextField
-                        label="Approximate number of employees"
-                        value={formValues.numberOfEmployees}
+                        label="Signatory Email"
+                        value={formValues.signatoryEmail}
                         disabled
                         className="mt-3"
                         fullWidth
                     />
 
                     <TextField
-                        label="Shareholders"
-                        value={formValues.shareholders}
-                        disabled
-                        className="mt-3"
-                        fullWidth
-                    />
-
-                    <TextField
-                        label="Website"
-                        value={formValues.website}
-                        className="mt-3"
-                        fullWidth
-                        disabled
-                    />
-
-                    <TextField
-                        label="Active countries"
-                        value={formValues.activeCountries}
-                        className="mt-3"
-                        required
-                        fullWidth
-                        disabled
-                    />
-
-                    <TextField
-                        label="Address"
-                        value={formValues.address}
-                        disabled
-                        className="mt-3"
-                        fullWidth
-                    />
-
-                    <TextField
-                        label="Postcode"
-                        value={formValues.postcode}
-                        disabled
-                        className="mt-3"
-                        fullWidth
-                    />
-
-                    <TextField
-                        label="Country"
-                        value={formValues.country}
+                        label="Signatory Telephone"
+                        value={formValues.signatoryPhoneNumber}
                         disabled
                         className="mt-3"
                         fullWidth
                     />
                 </Grid>
-            </Grid>{' '}
+            </Grid>
         </Paper>
     );
 }

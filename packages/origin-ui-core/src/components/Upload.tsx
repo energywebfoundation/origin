@@ -137,9 +137,11 @@ export function Upload(props: IProps) {
             dropzone: {
                 cursor: 'pointer',
                 background: 'rgb(40, 40, 40)',
-                minHeight: '60px',
+                minHeight: '250px',
                 lineHeight: '60px',
-                textAlign: 'center',
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
                 color: 'rgba(255, 255, 255, 0.5)',
                 marginTop: '20px'
             }
