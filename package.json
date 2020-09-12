@@ -21,7 +21,7 @@
         "eslint-plugin-import": "2.22.0",
         "eslint-plugin-prettier": "3.1.4",
         "ganache-cli": "6.8.2",
-        "husky": "4.2.5",
+        "husky": "4.3.0",
         "lerna": "3.22.1",
         "lint-staged": "10.3.0",
         "mocha": "8.1.3",
