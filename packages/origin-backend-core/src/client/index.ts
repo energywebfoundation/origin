@@ -24,7 +24,6 @@ import {
     IOrganizationInvitation,
     Role,
     onUploadProgressFunction,
-    IDeviceWithRelationsIds,
     IExternalDeviceId,
     DeviceCreateData,
     DeviceUpdateData,
@@ -142,16 +141,16 @@ export interface IFilesClient {
 
 export interface IDeviceClient {
     getById(id: number, loadRelationIds?: boolean): Promise<IDevice>;
-    getByExternalId(id: IExternalDeviceId): Promise<IDeviceWithRelationsIds>;
+    getByExternalId(id: IExternalDeviceId): Promise<IDevice>;
     getAll(withMeterStats: boolean, loadRelationIds?: boolean): Promise<IDevice[]>;
-    add(device: DeviceCreateData): Promise<IDeviceWithRelationsIds>;
+    add(device: DeviceCreateData): Promise<IDevice>;
     update(id: number, data: DeviceUpdateData): Promise<IDevice>;
     getAllSmartMeterReadings(id: number): Promise<ISmartMeterReadWithStatus[]>;
     addSmartMeterReads(id: number, smartMeterReads: ISmartMeterRead[]): Promise<void>;
-    getSupplyBy(facilityName: string, status: number): Promise<IDeviceWithRelationsIds[]>;
+    getSupplyBy(facilityName: string, status: number): Promise<IDevice[]>;
     delete(id: number): Promise<ISuccessResponse>;
     updateDeviceSettings(id: number, device: DeviceSettingsUpdateData): Promise<ISuccessResponse>;
-    getMyDevices(withMeterStats: boolean): Promise<IDeviceWithRelationsIds[]>;
+    getMyDevices(withMeterStats: boolean): Promise<IDevice[]>;
 }
 
 export interface IOffChainDataSource {
