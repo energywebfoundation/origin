@@ -35,4 +35,19 @@ export class Registration extends ExtendedBaseEntity {
 
     @Column('simple-array')
     activeCountries: string[];
+
+    @Column()
+    mainBusiness: string;
+
+    @Column()
+    ceoName: string;
+
+    @Column()
+    ceoPassportNumber: string;
+
+    @Column()
+    balanceSheetTotal: string;
+
+    @Column({ nullable: true })
+    subsidiaries?: string;
 }
