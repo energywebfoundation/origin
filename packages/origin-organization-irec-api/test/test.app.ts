@@ -9,8 +9,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { useContainer } from 'class-validator';
 
 import { AppModule } from '../src/app.module';
-import { Connect } from '../src/connect/connect.entity';
-import { ConnectService } from '../src/connect/connect.service';
 import { Registration } from '../src/registration/registration.entity';
 import { RegistrationService } from '../src/registration/registration.service';
 
@@ -66,7 +64,7 @@ export const bootstrapTestInstance = async () => {
                 username: process.env.DB_USERNAME ?? 'postgres',
                 password: process.env.DB_PASSWORD ?? 'postgres',
                 database: process.env.DB_DATABASE ?? 'origin',
-                entities: [Connect, Registration],
+                entities: [Registration],
                 logging: ['info']
             }),
             AppModule
@@ -80,7 +78,6 @@ export const bootstrapTestInstance = async () => {
     const app = moduleFixture.createNestApplication();
 
     const registrationService = await app.resolve<RegistrationService>(RegistrationService);
-    const connectService = await app.resolve<ConnectService>(ConnectService);
     const databaseService = await app.resolve<DatabaseService>(DatabaseService);
 
     app.useLogger(testLogger);
@@ -90,7 +87,6 @@ export const bootstrapTestInstance = async () => {
 
     return {
         registrationService,
-        connectService,
         databaseService,
         app
     };

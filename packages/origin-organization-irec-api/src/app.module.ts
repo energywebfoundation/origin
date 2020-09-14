@@ -5,7 +5,6 @@ import {
 import { ClassSerializerInterceptor, Module, ValidationPipe } from '@nestjs/common';
 import { APP_INTERCEPTOR, APP_PIPE } from '@nestjs/core';
 
-import { ConnectModule } from './connect/connect.module';
 import { RegistrationModule } from './registration/registration.module';
 
 export const providers = [
@@ -16,7 +15,7 @@ export const providers = [
 ];
 
 @Module({
-    imports: [ConnectModule, RegistrationModule],
+    imports: [RegistrationModule],
     providers
 })
 export class AppModule {}

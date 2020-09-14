@@ -27,7 +27,11 @@ describe('I-REC Registration tests', () => {
         headquarterCountry: 'GB',
         registrationYear: 2000,
         shareholders: 'John, Mike',
-        website: 'https://example.com'
+        website: 'https://example.com',
+        ceoName: 'John Doe',
+        ceoPassportNumber: '12345',
+        balanceSheetTotal: '$1,000,000',
+        mainBusiness: 'Solar Farm'
     } as RegistrationDTO;
 
     before(async () => {
