@@ -169,6 +169,7 @@ export class OrganizationService {
         }
 
         await this.userService.removeOrganization(memberId);
+        await this.userService.changeRole(memberId, Role.OrganizationAdmin);
 
         const eventData: OrganizationRemovedMemberEvent = {
             organizationName: organization.name,
