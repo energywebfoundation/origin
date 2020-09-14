@@ -100,7 +100,7 @@ export class CertificationRequestService {
             type: process.env.ISSUER_ID
         });
 
-        if (device.organization !== loggedUser.organizationId) {
+        if (device.organization.id !== loggedUser.organizationId) {
             throw new UnauthorizedException('You are not the device manager.');
         }
 
@@ -192,7 +192,7 @@ export class CertificationRequestService {
         }
 
         if (loggedUser) {
-            if (device.organization !== loggedUser.organizationId) {
+            if (device.organization.id !== loggedUser.organizationId) {
                 throw new UnauthorizedException({
                     success: false,
                     message: 'You are not the device manager.'
