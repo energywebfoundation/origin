@@ -135,8 +135,9 @@ export function DeviceMap(props: IProps) {
                             <br />
                             {t('deviceMap.properties.owner')}:{' '}
                             {
-                                organizations?.find((o) => o?.id === deviceHighlighted.organization)
-                                    ?.name
+                                organizations?.find(
+                                    (o) => o?.id === deviceHighlighted.organization.id
+                                )?.name
                             }
                             <br />
                             <br />

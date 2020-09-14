@@ -2,11 +2,11 @@
 import {
     DeviceSettingsUpdateData,
     DeviceStatus,
-    IDeviceWithRelationsIds,
     Role,
     ILoggedInUser,
     DeviceCreateData,
-    OrganizationStatus
+    OrganizationStatus,
+    IDevice
 } from '@energyweb/origin-backend-core';
 import { expect } from 'chai';
 import { BigNumber } from 'ethers';
@@ -133,7 +133,7 @@ describe('Device e2e tests', () => {
             .get(`/device/${deviceId}`)
             .set('Authorization', `Bearer ${accessToken}`)
             .expect((res) => {
-                const device = res.body as IDeviceWithRelationsIds;
+                const device = res.body as IDevice;
                 expect(device.defaultAskPrice).equals(null);
                 expect(device.automaticPostForSale).equals(false);
             });
@@ -180,7 +180,7 @@ describe('Device e2e tests', () => {
             .get(`/device/${deviceId}`)
             .set('Authorization', `Bearer ${accessToken}`)
             .expect((res) => {
-                const device = res.body as IDeviceWithRelationsIds;
+                const device = res.body as IDevice;
 
                 expect(device.defaultAskPrice).equals(settingWithCorrectPrice.defaultAskPrice);
                 expect(device.automaticPostForSale).equals(true);
@@ -225,7 +225,7 @@ describe('Device e2e tests', () => {
             .get(`/device/${device.id}?withMeterStats=true`)
             .set('Authorization', `Bearer ${accessToken}`)
             .expect((res) => {
-                const resultDevice = res.body as IDeviceWithRelationsIds;
+                const resultDevice = res.body as IDevice;
 
                 const [firstRead] = resultDevice.smartMeterReads;
 
@@ -291,7 +291,7 @@ describe('Device e2e tests', () => {
             .get(`/device/${device.id}?withMeterStats=true`)
             .set('Authorization', `Bearer ${accessToken}`)
             .expect((res) => {
-                const resultDevice = res.body as IDeviceWithRelationsIds;
+                const resultDevice = res.body as IDevice;
 
                 expect(
                     BigNumber.from(resultDevice.meterStats.certified).toNumber()

@@ -1,7 +1,7 @@
 import { OrderSide, OrderStatus } from '@energyweb/exchange-core';
 import { DeviceService } from '@energyweb/origin-backend';
-import { IDeviceProductInfo, IDeviceWithRelationsIds } from '@energyweb/origin-backend-core';
-import { ExtendedBaseEntity, DatabaseService } from '@energyweb/origin-backend-utils';
+import { IDeviceProductInfo, IDevice } from '@energyweb/origin-backend-core';
+import { DatabaseService } from '@energyweb/origin-backend-utils';
 import { INestApplication } from '@nestjs/common';
 import { expect } from 'chai';
 import { Contract, ethers } from 'ethers';
@@ -41,7 +41,7 @@ describe('Deposits automatic posting for sale', () => {
                 gridOperator: 'TH-PEA'
             };
         },
-        findByExternalId: async (): Promise<ExtendedBaseEntity & IDeviceWithRelationsIds> => {
+        findByExternalId: async (): Promise<IDevice> => {
             return {
                 deviceType: 'Solar;Photovoltaic;Classic silicon',
                 country: 'Thailand',
@@ -51,7 +51,7 @@ describe('Deposits automatic posting for sale', () => {
                 gridOperator: 'TH-PEA',
                 automaticPostForSale: true,
                 defaultAskPrice
-            } as ExtendedBaseEntity & IDeviceWithRelationsIds;
+            } as IDevice;
         }
     } as unknown) as DeviceService;
 

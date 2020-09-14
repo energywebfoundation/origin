@@ -2,12 +2,8 @@
 import { PriceStrategy } from '@energyweb/exchange-core';
 import { Contracts } from '@energyweb/issuer';
 import { ConfigurationService, DeviceService } from '@energyweb/origin-backend';
-import {
-    IDeviceProductInfo,
-    IDeviceWithRelationsIds,
-    UserStatus
-} from '@energyweb/origin-backend-core';
-import { DatabaseService, ExtendedBaseEntity, RolesGuard } from '@energyweb/origin-backend-utils';
+import { IDevice, IDeviceProductInfo, UserStatus } from '@energyweb/origin-backend-core';
+import { DatabaseService, RolesGuard } from '@energyweb/origin-backend-utils';
 import { getProviderWithFallback } from '@energyweb/utils-general';
 import { CanActivate, ExecutionContext, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
@@ -145,9 +141,7 @@ export const bootstrapTestInstance = async (deviceServiceMock?: DeviceService) =
                                 gridOperator: 'TH-PEA'
                             };
                         },
-                        findByExternalId: async (): Promise<
-                            ExtendedBaseEntity & IDeviceWithRelationsIds
-                        > => {
+                        findByExternalId: async (): Promise<IDevice> => {
                             return {
                                 deviceType: 'Solar;Photovoltaic;Classic silicon',
                                 country: 'Thailand',
@@ -157,7 +151,7 @@ export const bootstrapTestInstance = async (deviceServiceMock?: DeviceService) =
                                 gridOperator: 'TH-PEA',
                                 automaticPostForSale: false,
                                 defaultAskPrice: null
-                            } as ExtendedBaseEntity & IDeviceWithRelationsIds;
+                            } as IDevice;
                         }
                     } as unknown) as DeviceService)
             }

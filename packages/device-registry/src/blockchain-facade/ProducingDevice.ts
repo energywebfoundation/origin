@@ -6,7 +6,6 @@ import {
     DeviceStatus,
     IExternalDeviceId,
     DeviceCreateData,
-    IDeviceWithRelationsIds,
     ISmartMeterReadStats,
     IPublicOrganization
 } from '@energyweb/origin-backend-core';
@@ -61,17 +60,13 @@ export class Entity implements IDevice {
 
     initialized: boolean;
 
-    organization: number | IPublicOrganization;
+    organization: IPublicOrganization;
 
     automaticPostForSale: boolean;
 
     defaultAskPrice: number;
 
-    constructor(
-        public id: number,
-        public configuration: Configuration.Entity,
-        data?: IDeviceWithRelationsIds
-    ) {
+    constructor(public id: number, public configuration: Configuration.Entity, data?: IDevice) {
         if (data) {
             Object.assign(this, data);
             this.initialized = true;
@@ -153,9 +148,7 @@ export const getAllDevices = async (
         loadRelationIds
     );
 
-    return allDevices.map(
-        (device: IDeviceWithRelationsIds) => new Entity(device.id, configuration, device)
-    );
+    return allDevices.map((device: IDevice) => new Entity(device.id, configuration, device));
 };
 
 export const createDevice = async (
