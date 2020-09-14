@@ -5,7 +5,7 @@ import { SmartMeterReadingsChart } from '../../components/devices/SmartMeterRead
 import { ProducingDevice } from '@energyweb/device-registry';
 import { Bar } from 'react-chartjs-2';
 import { formatDate, EnergyFormatter, moment } from '../../utils';
-import { IDeviceWithRelationsIds, IEnergyGenerated } from '@energyweb/origin-backend-core';
+import { IDevice, IEnergyGenerated } from '@energyweb/origin-backend-core';
 import { initializeI18N } from '../../components';
 import { createRenderedHelpers } from '../utils/helpers';
 
@@ -20,7 +20,7 @@ describe('SmartMeterReadingsChart', () => {
             .map((x, i) => currentTime.clone().startOf('month').add(i, 'days'));
         const currentDayHour = currentTime.hour();
 
-        const offChainProperties: Partial<IDeviceWithRelationsIds> = {
+        const offChainProperties: Partial<IDevice> = {
             timezone: 'Asia/Bangkok'
         };
 
