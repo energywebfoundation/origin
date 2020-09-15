@@ -1,11 +1,12 @@
 /* eslint-disable no-unused-expressions */
-import dotenv from 'dotenv';
 import { expect } from 'chai';
+import dotenv from 'dotenv';
 import fs from 'fs';
+import moment from 'moment-timezone';
 
 import { IRECAPIClient } from '../src/IRECAPIClient';
+import { ApproveIssue, Issue } from '../src/Issue';
 import { Product } from '../src/Product';
-import { Issue, ApproveIssue } from '../src/Issue';
 
 dotenv.config();
 
@@ -74,11 +75,17 @@ describe('IRECAPIClient tests', () => {
     });
 
     it('should be able to request certificate', async () => {
+        const [accountItem] = await client.account.getItems(tradeAccount);
+
+        const [lastItem] = accountItem.items.sort(
+            (a, b) => b.asset.end.getTime() - a.asset.end.getTime()
+        );
+
         const request = new Issue();
         request.device = 'DEVICE001';
         request.recipient = tradeAccount;
-        request.start = new Date(2014, 0, 1);
-        request.end = new Date(2014, 0, 2);
+        request.start = lastItem.asset.end;
+        request.end = moment(lastItem.asset.end).add(1, 'day').toDate();
         request.production = 100.2;
         request.fuel = 'ES200';
 

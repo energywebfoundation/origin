@@ -10,7 +10,7 @@ import qs from 'qs';
 
 import { Account, AccountBalance, AccountTransaction } from './Account';
 import { Device } from './Device';
-import { ApproveIssue, Issue } from './Issue';
+import { ApproveIssue, Issue, IssueWithStatus } from './Issue';
 import { Redemption, Transfer } from './Transfer';
 import { AccountItem } from './Items';
 
@@ -156,6 +156,13 @@ export class IRECAPIClient {
                 const url = `${issueManagementUrl}/${code}/approve`;
 
                 await axios.put(url, classToPlain(approve), this.config);
+            },
+            getStatus: async (code: string): Promise<IssueWithStatus> => {
+                const url = `${issueManagementUrl}/${code}`;
+
+                const response = await axios.get<unknown>(url, this.config);
+
+                return plainToClass(IssueWithStatus, response.data);
             }
         };
     }
