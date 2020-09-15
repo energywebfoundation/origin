@@ -5,13 +5,14 @@ import fs from 'fs';
 
 import { IRECAPIClient } from '../src/IRECAPIClient';
 import { Product } from '../src/Product';
-import { AccountDetails, Account, AccountType } from '../src/Account';
 import { Issue, ApproveIssue } from '../src/Issue';
 
 dotenv.config();
 
 describe('IRECAPIClient tests', () => {
     let client: IRECAPIClient;
+
+    const tradeAccount = 'ACCOUNTTRADE001';
 
     before(async () => {
         client = new IRECAPIClient(process.env.IREC_API_URL);
@@ -36,6 +37,8 @@ describe('IRECAPIClient tests', () => {
 
         expect(account.code).to.equal(firstAccount.code);
         expect(account.details).to.exist;
+        expect(account.details.name).to.exist;
+        expect(account.details.active).to.be.equal(true);
         expect(account.type).to.exist;
     });
 
@@ -48,13 +51,12 @@ describe('IRECAPIClient tests', () => {
     });
 
     it('should fetch items by code', async () => {
-        const account = 'ACCOUNTTRADE001';
-        const [accountItem] = await client.account.getItems('ACCOUNTTRADE001');
+        const [accountItem] = await client.account.getItems(tradeAccount);
 
         expect(accountItem).to.exist;
         expect(accountItem.items).to.exist;
 
-        expect(accountItem.code).to.be.equal(account);
+        expect(accountItem.code).to.be.equal(tradeAccount);
 
         const [item] = accountItem.items;
 
@@ -65,32 +67,16 @@ describe('IRECAPIClient tests', () => {
         expect(item.asset.end).to.be.an.instanceOf(Date);
     });
 
-    it('should create and delete an account', async () => {
-        const details = new AccountDetails();
-        details.active = true;
-        details.countryCode = 'GB';
-        details.name = 'Test';
-        details.private = false;
-        details.restricted = false;
+    it('should fetch transactions', async () => {
+        const transactions = await client.account.getTransactions(tradeAccount);
 
-        const account = new Account();
-        account.code = `TEST_ORIGIN_${new Date().getTime()}`;
-        account.details = details;
-        account.type = AccountType.Redemption;
-
-        await client.account.create(account);
-
-        const { code } = await client.account.get(account.code);
-
-        expect(code).to.equal(account.code);
-
-        await client.account.delete(code);
+        expect(transactions).to.exist;
     });
 
     it('should be able to request certificate', async () => {
         const request = new Issue();
         request.device = 'DEVICE001';
-        request.recipient = 'ACCOUNTTRADE001';
+        request.recipient = tradeAccount;
         request.start = new Date(2014, 0, 1);
         request.end = new Date(2014, 0, 2);
         request.production = 100.2;
@@ -100,9 +86,15 @@ describe('IRECAPIClient tests', () => {
         await client.issue.submit(code, 'Note');
         await client.issue.verify(code, 'Note');
 
-        const approval = new ApproveIssue();
-        approval.issuer = 'ACCOUNTISSUE001';
-        await client.issue.approve(code, approval);
+        try {
+            const approval = new ApproveIssue();
+            approval.issuer = 'ACCOUNTISSUE001';
+            await client.issue.approve(code, approval);
+        } catch (e) {
+            if (!e.message.includes('issue request overlaps')) {
+                expect.fail();
+            }
+        }
     });
 
     it('should be able to upload pdf evidence file', async () => {

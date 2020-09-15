@@ -8,7 +8,7 @@ import FormData from 'form-data';
 import { ReadStream } from 'fs';
 import qs from 'qs';
 
-import { Account, AccountBalance, AccountDetails, AccountTransfers } from './Account';
+import { Account, AccountBalance, AccountTransaction } from './Account';
 import { Device } from './Device';
 import { ApproveIssue, Issue } from './Issue';
 import { Redemption, Transfer } from './Transfer';
@@ -69,21 +69,6 @@ export class IRECAPIClient {
         const accountManagementUrl = `${this.endPointUrl}/api/irec/account-management`;
 
         return {
-            create: async (account: Account): Promise<void> => {
-                validateOrReject(account);
-
-                await axios.post(accountManagementUrl, classToPlain(account), this.config);
-            },
-            update: async (code: string, details: AccountDetails): Promise<void> => {
-                const url = `${accountManagementUrl}/${code}`;
-
-                await axios.post(url, details);
-            },
-            delete: async (code: string): Promise<void> => {
-                const url = `${accountManagementUrl}/${code}`;
-
-                await axios.delete(url, this.config);
-            },
             getAll: async (): Promise<Account[]> => {
                 const response = await axios.get<unknown[]>(accountManagementUrl, this.config);
 
@@ -103,12 +88,12 @@ export class IRECAPIClient {
 
                 return response.data.map((account) => plainToClass(AccountBalance, account));
             },
-            getTransfers: async (code: string): Promise<AccountTransfers[]> => {
+            getTransactions: async (code: string): Promise<AccountTransaction[]> => {
                 const url = `${accountManagementUrl}/${code}/transactions`;
 
                 const response = await axios.get<unknown[]>(url, this.config);
 
-                return response.data.map((account) => plainToClass(AccountTransfers, account));
+                return response.data.map((account) => plainToClass(AccountTransaction, account));
             },
             getItems: async (code: string): Promise<AccountItem[]> => {
                 const url = `${accountManagementUrl}/${code}/items`;
