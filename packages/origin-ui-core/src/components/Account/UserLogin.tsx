@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
     showNotification,
     NotificationType,
@@ -24,6 +24,7 @@ import { FormInput } from '../Form/FormInput';
 import { getOffChainDataSource } from '../../features/general/selectors';
 import { setAuthenticationToken } from '../../features/users/actions';
 import { useHistory } from 'react-router-dom';
+import { getUserOffchain } from '../../features/users/selectors';
 
 interface IFormValues {
     email: string;
@@ -35,14 +36,26 @@ const INITIAL_FORM_VALUES: IFormValues = {
     password: ''
 };
 
-export function UserLogin() {
+interface IOwnProps {
+    redirect?: string;
+}
+
+export function UserLogin(props: IOwnProps) {
     const userClient = useSelector(getOffChainDataSource)?.userClient;
     const dispatch = useDispatch();
+    const { redirect } = props;
 
     const { t } = useTranslation();
     const { Yup, yupLocaleInitialized } = useValidation();
-    const { getAccountLink } = useLinks();
+    const { getCertificatesLink } = useLinks();
     const history = useHistory();
+    const user = useSelector(getUserOffchain);
+
+    useEffect(() => {
+        if (user) {
+            history.push(redirect || getCertificatesLink());
+        }
+    }, [user]);
 
     const useStyles = makeStyles(() =>
         createStyles({
@@ -74,8 +87,6 @@ export function UserLogin() {
             const loginResponse = await userClient.login(values.email, values.password);
 
             dispatch(setAuthenticationToken(loginResponse.accessToken));
-
-            history.push(getAccountLink());
         } catch (error) {
             console.warn('Could not log in.', error);
             showNotification(t('user.feedback.couldNotLogIn'), NotificationType.Error);

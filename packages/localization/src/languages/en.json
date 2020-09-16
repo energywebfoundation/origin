@@ -77,7 +77,8 @@
                 "requestCertificates": "Request certificates",
                 "approve": "Approve",
                 "registerDevice": "Register device",
-                "register": "Register"
+                "register": "Register",
+                "viewDetails": "View details"
             },
             "feedback": {
                 "imagesUploaded": "Images have been uploaded.",
@@ -217,7 +218,8 @@
                 "import": "Import",
                 "login": "Login",
                 "registerUser": "Register user",
-                "userProfile": "User profile"
+                "userProfile": "User profile",
+                "connectIREC": "Connect I-REC"
             }
             
         },
@@ -225,7 +227,8 @@
             "responses": {
                 "yes": "Yes",
                 "no": "No",
-                "partially": "Partially"
+                "partially": "Partially",
+                "ok": "Ok"
             },
             "actions": {
                 "update": "Update",
@@ -340,18 +343,47 @@
                 "password": "Password",
                 "status": "Status",
                 "kycStatus": "KYC Status",
-                "blockchainAddress": "Blockchain Address"
+                "blockchainAddress": "Blockchain Address",
+                "emailConfirmed": "Email Confirmed"
             },
             "actions": {
                 "register": "Register",
+                "registerNow": "Register now",
                 "login": "Login",
-                "save": "Save"
+                "save": "Save",
+                "resendConfirmationEmail": "Re-send confirmation email",
+                "forgotPasswordAsk": "Forgot password?"
             },
             "feedback": {
                 "userRegistered": "User registered.",
                 "errorWhileRegisteringUser": "Error while registering user.",
                 "userLoggedIn": "User logged in.",
-                "couldNotLogIn": "Could not log in with supplied credentials."
+                "couldNotLogIn": "Could not log in with supplied credentials.",
+                "confirmationEmailResent": "Confirmation email re-sent.",
+                "confirmationEmailResentFailed": "Unable to send the confirmation email.",
+                "emailConfirmation": {
+                    "alreadyConfirmed": "Already confirmed.",
+                    "confirmed": "Email confirmed successfully.",
+                    "expired": "Confirmation link expired.",
+                    "loading:": "Loading..."
+                },
+                "roleChanged": {
+                    "succesfullyJoinedOrg": "Successfully joined {{orgName}}",
+                    "asMemberYouCan": "You have successfully joined {{orgName}} of {{admin}}. As a member you can",
+                    "asDeviceManYouCan": "You have successfully joined {{orgName}} of {{admin}}. As a Device Manager you have permissions",
+                    "asOrgAdminYouCan": "You have successfully joined {{orgName}} of {{admin}}. As an Organization Admin you have permissions",
+                    "canPlaceOrder": "Place orders on the exchange",
+                    "canBuyIRec": "Directly buy I-RECs",
+                    "canCreateAndBuyIRecBundles": "Create and buy I-REC bundles",
+                    "canRedeemIRec": "Redeem I-RECs",
+                    "canWidrawIRec": "Withdraw I-RECs to organization’s own participant account",
+                    "canRegisterDevices": "Register devices and device groups",
+                    "canRequestIssuenceOfIRec": "Request the issuance of I-RECs",
+                    "canConfigureAutomatedOrderCreation": "Configure automated order creation",
+                    "canAddOrRemoveOrgMembers": "Add or remove members from the organization",
+                    "connectOrgToIRec": "Connect the organization to the I-REC registry",
+                    "asAMemberYouCanAlso": "You can also perform all actions that a regular organization member can perform"
+                }
             },
             "profile": {
                 "subtitle": {
@@ -364,6 +396,11 @@
                 "errorUpdatePassword": "Error to update User password.",
                 "updateChainAddress": "User blockchain address update.",
                 "errorUpdateChainAddress": "Error to update User blockchain address."
+            },
+            "dialog": {
+                "dontHaveAccAsk": "Don't have an account?",
+                "userRegisteredModalTitle": "Thanks for registering a user on the [platform name] marketplace",
+                "userRegisteredModalContent": "You should have received an E-Mail from us. In order to activate your user, please confirm your E-Mail address by clicking confirmation link in the E-Mail"
             }
         },
         "notification": {
@@ -418,6 +455,82 @@
                     "member": "Member",
                     "deviceManager": "Device Manager",
                     "admin": "Admin"
+                },
+                "dialog": {
+                    "invitationsModalTitle": "Invitation to join the [marketplace name]",
+                    "invitationMessage": "{{admin}} has invited you to join the [marketplace name] as a {{role}} for {{orgName}}. Click accept to join the Organization"
+                },
+                "actions": {
+                    "later": "Maybe later",
+                    "accept": "Accept",
+                    "decline": "Decline"
+                },
+                "notification": {
+                    "rejectedSuccess":"Invitation rejected",
+                    "rejectedFailure": "Could not reject invitation",
+                    "acceptedSuccess": "Invitaion accepted",
+                    "acceptedFailure": "Could not reject invitation",
+                    "laterSuccess": "You can find this invitation on the Organizations tab",
+                    "laterFailure": "Could not process invitation"
+                }
+            },
+            "registration": {
+                "loginNoInvitationsModalTitle": "Thank you for registering as a user on the [platform name] marketplace",
+                "loginNoInvitationsModalContent": "To unlock all the functionalities of the marketpalce, like trading I-REC's, users also need to register an organization",
+                "registerOrganization": "Register organization",
+                "organizationInformation": "Organization information",
+                "organizationName": "Organization Name",
+                "organizationAddress": "Organization Address",
+                "zipCode": "Zip code",
+                "city": "City",
+                "country": "Country",
+                "businessType": "Business Type",
+                "tradeRegistryNumber": "Trade Registry Company number",
+                "vatNumber": "VAT number",
+                "uploadCompanyProof": "Upload Company Proof",
+                "dragAndDropDocuments": "Drag and Drop Document <1/> or <3/> <4>Browse</4>",
+                "uploaded": "Uploaded",
+                "uploading": "Uploading",
+                "completed": "Completed",
+                "signatoryInformation": "Authorized Signatory Information",
+                "signatoryName": "Signatory Full Name",
+                "signatoryAddress": "Signatory Address",
+                "signatoryEmail": "Signatory Email",
+                "signatoryTelephone": "Signatory Telephone",
+                "uploadSignatoryId": "Upload Singatory ID",
+                "titleConnectOrRegisterIREC": "Thank you for registering organization on TK marketplace!",
+                "contentConnectOrRegisterIREC": "We are checking your information as soon as possible and will contact you once everything is approved and you can start trading.<1/> <2/> In order to register devices and request I-RECs, users also need to connect to existing I-REC account.",
+                "titleIRecInfoSuccess": "Thank you for providing your I-REC account information.",
+                "contentIRecInfoSuccess": "We will connect your organization to this account shortly!",
+                "titleConnectIREC": "Requesting I-REC API Access",
+                "platformOrganizationId": "Platform Organization ID",
+                "IRECAPICredentials": "I-REC API Credentials",
+                "IRECUsername": "IREC username",
+                "apiToken": "API token",
+                "clientID": "Client ID",
+                "clientSecret": "Client Secret",
+                
+                "titleRegisterIREC": "I-REC Registration information",
+                "IRECAccountType": "I-REC Account type",
+                "irecParticipantDescription": "Registrant Account for device owner",
+                "irecRegistrantDescription": "Participant Account for traders that also trade outside of marketplace",
+                "orgHeadquatersCompany": "Organization Headquaters Company",
+                "yearOfRegistration": "Year of Registration",
+                "numberOfEmployees": "Number of employees",
+                "shareholderNames": "Shareholder Names (over 10%)",
+                "orgWebsite": "Organization Website",
+                "activeCountries": "Active Countries",
+                "mainBusiness":"Main Business",
+                "ceoName":"Name of the Chief Executive Officer/General Manager",
+                "ceoPassport": "Chief Executive Officer/General Manager passport number",
+                "lastBalance": "Balance sheet total for last financial year",
+                "existingIRECOrg": "Existing IREC organization(s) to become subsidiary",
+                "actions":{
+                    "notNow": "Not now",
+                    "connectIREC": "Connect existing I-REC account",
+                    "registerIREC": "Register new I-REC account",
+                    "connectOrganization": "Connect organization",
+                    "registerOrganization": "Register organization"
                 }
             }
         },
@@ -435,7 +548,9 @@
                 "bundleDetails": "BUNDLE DETAILS",
                 "Sell": "Sell",
                 "certificates": "certificates",
-                "price": "Price per MWh"
+                "price": "Price per MWh",
+                "bundleBought": "Bundle was fully purchased",
+                "editBundleVolume" : "Edit volume (MWh)"
             },
             "actions": {
                 "sellAsBundle": "Sell as bundle"
@@ -457,15 +572,12 @@
                 "actions": "ACTION"
             },
             "actions": {
+                "view": "View",
                 "remove": "Remove"
             },
             "feedback": {
                 "removeOrderConfirmation": "Are you sure you want remove?",
                 "orderCanceled": "Order canceled"
-            },
-            "confirmations": {
-                "no": "No",
-                "yes": "Yes"
             }
         }
     }

@@ -1,6 +1,6 @@
 {
     "name": "@energyweb/origin-backend-utils",
-    "version": "1.1.0",
+    "version": "1.2.3",
     "description": "",
     "main": "dist/js/index.js",
     "scripts": {
@@ -29,8 +29,11 @@
         "registry": "https://registry.npmjs.org"
     },
     "dependencies": {
-        "@energyweb/origin-backend-core": "4.1.0",
-        "@nestjs/common": "7.3.1",
-        "@nestjs/core": "7.3.1"
+        "@energyweb/origin-backend-core": "5.1.0",
+        "@nestjs/common": "7.4.4",
+        "@nestjs/config": "^0.5.0",
+        "@nestjs/core": "7.4.4",
+        "bn.js": "^5.1.2",
+        "class-validator": "^0.12.2"
     }
 }

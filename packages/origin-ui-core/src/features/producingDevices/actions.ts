@@ -1,4 +1,4 @@
-import { ProducingDevice } from '@energyweb/device-registry';
+import { IProducingDeviceState } from './reducer';
 
 export enum ProducingDevicesActions {
     producingDeviceCreatedOrUpdated = 'PRODUCING_DEVICE_CREATED_OR_UPDATED'
@@ -6,10 +6,10 @@ export enum ProducingDevicesActions {
 
 export interface IProducingDeviceCreatedOrUpdatedAction {
     type: ProducingDevicesActions.producingDeviceCreatedOrUpdated;
-    producingDevice: ProducingDevice.Entity;
+    producingDevice: IProducingDeviceState;
 }
 
-export const producingDeviceCreatedOrUpdated = (producingDevice: ProducingDevice.Entity) => ({
+export const producingDeviceCreatedOrUpdated = (producingDevice: IProducingDeviceState) => ({
     type: ProducingDevicesActions.producingDeviceCreatedOrUpdated,
     producingDevice
 });

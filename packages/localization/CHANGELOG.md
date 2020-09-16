@@ -3,6 +3,53 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.8.0](https://github.com/energywebfoundation/origin/compare/@energyweb/localization@0.7.0...@energyweb/localization@0.8.0) (2020-08-25)
+
+
+### Features
+
+* **origin-ui-core:** localize first login invitations flow ([d6d25ed](https://github.com/energywebfoundation/origin/commit/d6d25ed648ce0edd9a90c7b9b6b12e57b00ff42c))
+* **origin-ui-core:** localize platform organizaion registration ([eb23fb8](https://github.com/energywebfoundation/origin/commit/eb23fb8cd3381260534b27b86a43de05b9915d48))
+
+
+
+
+
+# [0.7.0](https://github.com/energywebfoundation/origin/compare/@energyweb/localization@0.6.0...@energyweb/localization@0.7.0) (2020-08-06)
+
+
+### Features
+
+* **origin-ui-core:** recalc total volume ([f4f7c00](https://github.com/energywebfoundation/origin/commit/f4f7c005d58a421674b13b000c4740a14b6b2b9e))
+
+
+
+
+
+# [0.6.0](https://github.com/energywebfoundation/origin/compare/@energyweb/localization@0.5.0...@energyweb/localization@0.6.0) (2020-07-16)
+
+
+### Bug Fixes
+
+* **origin-ui-core:** fetch split on bundle details ([3bbb359](https://github.com/energywebfoundation/origin/commit/3bbb3595b2aa4bcb51b97487dbea90af0153c1ed))
+* **origin-ui-core:** localize view action label ([96e5e47](https://github.com/energywebfoundation/origin/commit/96e5e47a9ca71b7bbe774a7ccb27f37ce5a03ba6))
+
+
+### Features
+
+* **origin-ui-core:** add AsksTable ([dfd26d5](https://github.com/energywebfoundation/origin/commit/dfd26d5cef56b8ff9f12232c410819b74d0ba3a7))
+* **origin-ui-core:** filter asks by device type and generation time ([7073692](https://github.com/energywebfoundation/origin/commit/7073692dae35d7c3996a8a4f716b0d2432c050a1))
+* **origin-ui-core:** order confirmation dialog ([c287296](https://github.com/energywebfoundation/origin/commit/c2872960bc92e175e1061861e4e1c924d006d898))
+* **origin-ui-core:** remove order saga ([734aac3](https://github.com/energywebfoundation/origin/commit/734aac39b4f71bc090de588f921e9e19e95cd83d))
+* **origin-ui-core:** store orders saga ([3534d79](https://github.com/energywebfoundation/origin/commit/3534d79d8f68e498be1a2c1b1e16ceca5130931f))
+* **origin-ui-core:** style action button ([a8df5ef](https://github.com/energywebfoundation/origin/commit/a8df5efc88eb68f034ce739b03470d80ee828cfc))
+* **origin-ui-core:** style filter header ([d16452b](https://github.com/energywebfoundation/origin/commit/d16452ba1331244fc2ced83af8ad218db68d967f))
+* **origin-ui-core:** style order details modal ([70d9524](https://github.com/energywebfoundation/origin/commit/70d95240474ba8bb7693bea097c5655a758e7557))
+
+
+
+
+
 # [0.5.0](https://github.com/energywebfoundation/origin/compare/@energyweb/localization@0.4.1...@energyweb/localization@0.5.0) (2020-07-08)
 
 

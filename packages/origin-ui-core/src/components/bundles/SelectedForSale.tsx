@@ -1,10 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import CurrencyTextField from '@unicef/material-ui-currency-textfield';
 import {
     List,
     ListItem,
-    ListItemAvatar,
-    Avatar,
     Grid,
     Checkbox,
     Button,
@@ -12,32 +10,24 @@ import {
     Box,
     useTheme
 } from '@material-ui/core';
-import { ICertificateViewItem } from '../../features/certificates';
-import {
-    deviceById,
-    getEnvironment,
-    getProducingDevices,
-    moment,
-    energyImageByType,
-    getCurrencies
-} from '../..';
+import { ICertificateViewItem, reloadCertificates } from '../../features/certificates';
+import { getCurrencies } from '../..';
 import { useSelector, useDispatch } from 'react-redux';
-import { BigNumber } from 'ethers/utils';
-import { formatCurrencyComplete, useTranslation, EnergyFormatter, EnergyTypes } from '../../utils';
+import { BigNumber } from 'ethers';
+import { formatCurrencyComplete, useTranslation, EnergyFormatter } from '../../utils';
 import { createBundle } from '../../features/bundles';
 import { BundleItemDTO } from '../../utils/exchange';
 import { Unit } from '@energyweb/utils-general';
+import { BundleItemEdit, IBundledCertificate } from './BundleItemEdit';
 
 interface IOwnProps {
-    selected: ICertificateViewItem[];
-    totalVolume: BigNumber;
+    certificatesToBundle: ICertificateViewItem[];
     callback: () => void;
 }
 
 export const SelectedForSale = (props: IOwnProps) => {
-    const { selected, totalVolume, callback } = props;
-    const environment = useSelector(getEnvironment);
-    const devices = useSelector(getProducingDevices);
+    const { callback } = props;
+    const [certificatesToBundle, setCertificatesToBundle] = useState<IBundledCertificate[]>([]);
     const [price, setPrice] = useState(0);
     const [sellAsBundle, setSellAsBundle] = useState(false);
     const currency = useSelector(getCurrencies)[0];
@@ -47,16 +37,35 @@ export const SelectedForSale = (props: IOwnProps) => {
         typography: { fontSizeMd }
     } = useTheme();
 
+    const totalVolume = () =>
+        certificatesToBundle.reduce(
+            (total, { energy: { volumeToBundle } }) => total.add(volumeToBundle),
+            BigNumber.from(0)
+        );
+
+    useEffect(() => {
+        setCertificatesToBundle(
+            props.certificatesToBundle.map((c) => ({
+                ...c,
+                energy: { ...c.energy, volumeToBundle: c.energy.publicVolume }
+            }))
+        );
+    }, [props.certificatesToBundle]);
+
+    const handleItemEdit = (cert: IBundledCertificate) => {
+        setCertificatesToBundle(certificatesToBundle.map((c) => (c.id === cert.id ? cert : c)));
+    };
+
     async function requestCreateBundle() {
         const items: BundleItemDTO[] = [];
-        for (const cert of selected) {
+        for (const cert of certificatesToBundle) {
             const {
                 assetId,
-                energy: { privateVolume, publicVolume }
+                energy: { volumeToBundle }
             } = cert;
             items.push({
                 assetId,
-                volume: privateVolume.add(publicVolume).toString()
+                volume: volumeToBundle.toString()
             });
         }
         dispatch(
@@ -68,6 +77,7 @@ export const SelectedForSale = (props: IOwnProps) => {
                 callback
             })
         );
+        dispatch(reloadCertificates());
     }
 
     return (
@@ -76,20 +86,9 @@ export const SelectedForSale = (props: IOwnProps) => {
                 SELECTED FOR SALE
             </Box>
 
-            {selected.length > 0 && (
+            {certificatesToBundle.length > 0 && (
                 <List>
-                    {selected.map((cert, index, arr) => {
-                        const {
-                            creationTime,
-                            energy: { privateVolume, publicVolume }
-                        } = cert;
-                        const { province, deviceType, facilityName } = deviceById(
-                            cert.deviceId,
-                            environment,
-                            devices
-                        );
-                        const type = deviceType.split(';')[0].toLowerCase() as EnergyTypes;
-                        const energy = publicVolume.add(privateVolume);
+                    {certificatesToBundle.map((cert, index, arr) => {
                         return (
                             <Box
                                 className="CertificateForSale"
@@ -97,36 +96,11 @@ export const SelectedForSale = (props: IOwnProps) => {
                                 key={cert.id}
                             >
                                 <ListItem>
-                                    <Grid container>
-                                        <Grid item xs={2}>
-                                            <ListItemAvatar>
-                                                <Avatar
-                                                    src={energyImageByType(type, true)}
-                                                ></Avatar>
-                                            </ListItemAvatar>
-                                        </Grid>
-
-                                        <Grid item xs={5}>
-                                            <Box fontSize={fontSizeMd} fontWeight="fontWeightBold">
-                                                {province}, {facilityName}
-                                            </Box>
-                                            <Box fontSize={fontSizeMd} color="text.secondary">
-                                                {moment.unix(creationTime).format('MMM, YYYY')}
-                                            </Box>
-                                        </Grid>
-                                        <Grid item xs={5} style={{ textAlign: 'end' }}>
-                                            <Box fontSize={fontSizeMd} color="text.secondary">
-                                                {EnergyFormatter.format(energy, true)}
-                                            </Box>
-                                            <Box fontSize={fontSizeMd}>
-                                                {(
-                                                    (100 * energy.toNumber()) /
-                                                    totalVolume.toNumber()
-                                                ).toFixed(0)}
-                                                %
-                                            </Box>
-                                        </Grid>
-                                    </Grid>
+                                    <BundleItemEdit
+                                        certificate={cert}
+                                        totalVolume={totalVolume}
+                                        onChange={handleItemEdit}
+                                    />
                                 </ListItem>
                             </Box>
                         );
@@ -143,7 +117,7 @@ export const SelectedForSale = (props: IOwnProps) => {
                     </Grid>
                     <Grid item>
                         <Box fontSize={fontSizeMd} color="text.primary" fontWeight="fontWeightBold">
-                            {EnergyFormatter.format(totalVolume, true)}
+                            {EnergyFormatter.format(totalVolume(), true)}
                         </Box>
                     </Grid>
                 </Grid>
@@ -163,7 +137,7 @@ export const SelectedForSale = (props: IOwnProps) => {
                 <Box color="text.secondary">Total Price</Box>
                 <Box fontWeight="fontWeightBold">
                     {formatCurrencyComplete(
-                        (totalVolume.toNumber() / Unit[EnergyFormatter.displayUnit]) * price,
+                        (totalVolume().toNumber() / Unit[EnergyFormatter.displayUnit]) * price,
                         currency
                     )}
                 </Box>
@@ -187,9 +161,11 @@ export const SelectedForSale = (props: IOwnProps) => {
                 color="primary"
                 onClick={requestCreateBundle}
                 variant="contained"
-                disabled={!sellAsBundle || selected.length < 2 || price === 0}
+                disabled={!sellAsBundle || certificatesToBundle.length < 2 || price === 0}
             >
-                {`${t('bundle.info.Sell')} ${selected.length} ${t('bundle.info.certificates')}`}
+                {`${t('bundle.info.Sell')} ${certificatesToBundle.length} ${t(
+                    'bundle.info.certificates'
+                )}`}
             </Button>
         </Box>
     );

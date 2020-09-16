@@ -5,11 +5,10 @@ import moment from 'moment-timezone';
 import * as Winston from 'winston';
 
 import { ProducingDevice } from '@energyweb/device-registry';
-import { Configuration } from '@energyweb/utils-general';
+import { Configuration, getProviderWithFallback } from '@energyweb/utils-general';
 import { OffChainDataSource } from '@energyweb/origin-backend-client';
 import { ISmartMeterRead } from '@energyweb/origin-backend-core';
-import { bigNumberify, BigNumber } from 'ethers/utils';
-import { Wallet, providers } from 'ethers';
+import { Wallet, BigNumber } from 'ethers';
 
 async function getProducingDeviceSmartMeterRead(
     deviceId: string,
@@ -20,7 +19,7 @@ async function getProducingDeviceSmartMeterRead(
     const smartMeterReadings = await device.getSmartMeterReads();
     const latestSmRead = smartMeterReadings[smartMeterReadings.length - 1];
 
-    return latestSmRead?.meterReading ?? bigNumberify(0);
+    return BigNumber.from(latestSmRead?.meterReading ?? 0);
 }
 
 async function saveProducingDeviceSmartMeterReads(
@@ -63,7 +62,8 @@ const currentTime = moment.tz(device.timezone);
         Number(process.env.BACKEND_PORT)
     );
 
-    const provider = new providers.JsonRpcProvider(process.env.WEB3);
+    const [web3Url] = process.env.WEB3.split(';');
+    const provider = getProviderWithFallback(web3Url);
     const issuerWallet = new Wallet(process.env.DEPLOY_KEY, provider);
 
     const conf = {
@@ -88,10 +88,8 @@ const currentTime = moment.tz(device.timezone);
     const MOCK_READINGS_MINUTES_INTERVAL =
         parseInt(process.env.SOLAR_SIMULATOR_PAST_READINGS_MINUTES_INTERVAL, 10) || 15;
 
-    let measurementTime = currentTime.clone().subtract(1, 'week').startOf('week');
-    let currentMeterRead: BigNumber = bigNumberify(
-        await getProducingDeviceSmartMeterRead(device.id, conf)
-    );
+    let measurementTime = currentTime.clone().subtract(1, 'day').startOf('day');
+    let currentMeterRead = BigNumber.from(await getProducingDeviceSmartMeterRead(device.id, conf));
 
     const allSmartMeterReadings: ISmartMeterRead[] = [];
 
@@ -115,7 +113,7 @@ const currentTime = moment.tz(device.timezone);
             .reduce((a, b) => a + parseFloat(b[1]), 0);
 
         const multiplier = combinedMultiplierForMatchingRows ?? 0;
-        const energyGenerated = bigNumberify(Math.round(device.maxCapacity * multiplier));
+        const energyGenerated = BigNumber.from(Math.round(device.maxCapacity * multiplier));
 
         const isValidMeterReading = energyGenerated.gt(0);
 

@@ -18,6 +18,8 @@ import { FormCountryMultiSelect } from '../Form/FormCountryMultiSelect';
 import { getOffChainDataSource } from '../../features/general/selectors';
 import { useLinks } from '../../utils/routing';
 import { IAutocompleteMultiSelectOptionType } from '../MultiSelectAutocomplete';
+import { setUserOffchain } from '../../features/users/actions';
+import { getUserOffchain } from '../../features/users/selectors';
 
 interface IProps {
     entity: IOrganization;
@@ -121,6 +123,7 @@ export function OrganizationForm(props: IProps) {
     >(null);
     const { getOrganizationViewLink } = useLinks();
     const history = useHistory();
+    const user = useSelector(getUserOffchain);
 
     const dispatch = useDispatch();
 
@@ -150,7 +153,7 @@ export function OrganizationForm(props: IProps) {
             );
         }
 
-        if (entity) {
+        if (entity && readOnly) {
             setupFormBasedOnExistingEntity();
         }
     }, [entity]);
@@ -163,10 +166,11 @@ export function OrganizationForm(props: IProps) {
             return;
         }
 
-        formikActions.setSubmitting(true);
         dispatch(setLoading(true));
 
         try {
+            formikActions.setSubmitting(true);
+
             const formData: OrganizationPostData = {
                 ...values,
                 activeCountries: JSON.stringify(activeCountries.map((i) => i.value)),
@@ -177,6 +181,8 @@ export function OrganizationForm(props: IProps) {
             };
 
             const organization = await organizationClient.add(formData);
+            dispatch(setUserOffchain({ ...user, organization }));
+            formikActions.setSubmitting(false);
 
             history.push(getOrganizationViewLink(organization?.id?.toString()));
 
@@ -192,7 +198,6 @@ export function OrganizationForm(props: IProps) {
         }
 
         dispatch(setLoading(false));
-        formikActions.setSubmitting(false);
     }
 
     let initialFormValues: IFormValues = null;

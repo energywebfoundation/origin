@@ -1,6 +1,6 @@
 {
     "name": "@energyweb/origin-backend-client",
-    "version": "6.2.0",
+    "version": "7.0.2",
     "description": "",
     "main": "dist/js/src/index.js",
     "scripts": {
@@ -20,9 +20,10 @@
     "author": "EnergyWeb DevHub GmbH; Piotr Kosinski, piotr.kosinski@energyweb.org",
     "license": "GPL-3.0-or-later",
     "dependencies": {
-        "@energyweb/origin-backend-core": "4.1.0",
-        "axios": "0.19.2",
-        "ethers": "4.0.47",
+        "@energyweb/origin-backend-core": "5.1.0",
+        "@energyweb/utils-general": "9.2.3",
+        "axios": "0.20.0",
+        "ethers": "5.0.8",
         "moment": "2.24.0"
     },
     "files": [

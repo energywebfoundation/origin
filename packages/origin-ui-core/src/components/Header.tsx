@@ -1,9 +1,17 @@
 import React, { useContext } from 'react';
-import { NavLink, Link } from 'react-router-dom';
-import { makeStyles, createStyles, useTheme, Tooltip } from '@material-ui/core';
+import { NavLink, Link, useHistory } from 'react-router-dom';
+import {
+    makeStyles,
+    createStyles,
+    useTheme,
+    Tooltip,
+    Typography,
+    Grid,
+    Theme
+} from '@material-ui/core';
 import { AccountCircle, Settings, PersonAdd, ExitToApp } from '@material-ui/icons';
-
-import { IUserWithRelations, Role, isRole } from '@energyweb/origin-backend-core';
+import { OriginFeature } from '@energyweb/utils-general';
+import { IUser, Role, isRole } from '@energyweb/origin-backend-core';
 
 import { useSelector, useDispatch } from 'react-redux';
 import { useLinks, dataTest, useTranslation } from '../utils';
@@ -11,7 +19,7 @@ import { getUserOffchain } from '../features/users/selectors';
 import { clearAuthenticationToken } from '../features/users/actions';
 import { OriginConfigurationContext } from './OriginConfigurationContext';
 
-export function getAddressDisplay(address: string, userOffchain?: IUserWithRelations) {
+export function getAddressDisplay(address: string, userOffchain?: IUser) {
     if (userOffchain) {
         return `${userOffchain?.firstName} ${userOffchain?.lastName}`;
     }
@@ -19,7 +27,7 @@ export function getAddressDisplay(address: string, userOffchain?: IUserWithRelat
     return `${address.slice(0, 5)}...${address.slice(address.length - 3, address.length)}`;
 }
 
-const useStyles = makeStyles(() =>
+const useStyles = makeStyles((theme: Theme) =>
     createStyles({
         icon: {
             opacity: 0.3,
@@ -36,6 +44,9 @@ const useStyles = makeStyles(() =>
             marginLeft: '8px',
             verticalAlign: 'sub',
             cursor: 'pointer'
+        },
+        tooltip: {
+            backgroundColor: theme.palette.primary.main
         }
     })
 );
@@ -44,10 +55,12 @@ export function Header() {
     const userOffchain = useSelector(getUserOffchain);
 
     const dispatch = useDispatch();
+    const history = useHistory();
 
     const classes = useStyles(useTheme());
 
     const {
+        getDefaultLink,
         getDevicesLink,
         getUserRegisterLink,
         getCertificatesLink,
@@ -57,21 +70,28 @@ export function Header() {
         getAdminLink
     } = useLinks();
 
-    const originConfiguration = useContext(OriginConfigurationContext);
+    const { enabledFeatures, logo } = useContext(OriginConfigurationContext);
 
     const { t } = useTranslation();
 
     return (
         <div className="HeaderWrapper">
             <div className="Header">
-                <NavLink to={getDevicesLink()}>{originConfiguration.logo}</NavLink>
+                <NavLink to={getDefaultLink()}>{logo}</NavLink>
+
                 <ul className="NavMenu nav">
-                    <li>
-                        <NavLink to={getDevicesLink()}>{t('header.devices')}</NavLink>
-                    </li>
-                    <li>
-                        <NavLink to={getCertificatesLink()}>{t('header.certificates')}</NavLink>
-                    </li>
+                    {enabledFeatures.includes(OriginFeature.Devices) && (
+                        <li>
+                            <NavLink to={getDevicesLink()}>{t('header.devices')}</NavLink>
+                        </li>
+                    )}
+
+                    {enabledFeatures.includes(OriginFeature.Certificates) && (
+                        <li>
+                            <NavLink to={getCertificatesLink()}>{t('header.certificates')}</NavLink>
+                        </li>
+                    )}
+
                     {isRole(
                         userOffchain,
                         Role.OrganizationAdmin,
@@ -103,39 +123,44 @@ export function Header() {
                     )}
                 </ul>
 
-                <div className="ViewProfile">
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
+                    <Grid item>
+                        {t('settings.settings')}
+                        &nbsp;
+                        <Link
+                            to={getAccountLink()}
+                            className={classes.endIcon}
+                            {...dataTest('header-link-account-settings')}
+                        >
+                            <Tooltip
+                                title={t('settings.settings')}
+                                classes={{ tooltip: classes.tooltip }}
+                            >
+                                <Settings color="primary" />
+                            </Tooltip>
+                        </Link>
+                        <br />
+                    </Grid>
                     {!userOffchain && (
-                        <>
+                        <Grid item>
                             &nbsp;
                             <Link className={classes.endIcon} to={getUserRegisterLink()}>
                                 <Tooltip title={t('settings.registerOffchainUser')}>
                                     <PersonAdd color="primary" />
                                 </Tooltip>
+                                {t('user.actions.register')}
                             </Link>
-                        </>
-                    )}
-                    {userOffchain ? (
-                        <>
-                            &nbsp;
-                            <Link
-                                to={getAccountLink()}
-                                className={classes.endIcon}
-                                {...dataTest('header-link-account-settings')}
-                            >
-                                <Tooltip title={t('settings.settings')}>
-                                    <Settings color="primary" />
-                                </Tooltip>
-                            </Link>
-                            <br />
-                        </>
-                    ) : (
-                        <>
+                            <Typography color="primary" style={{ display: 'inline' }}>
+                                {' '}
+                                /
+                            </Typography>
                             <Link to={getAccountLoginLink()} className={classes.endIcon}>
+                                {t('user.actions.login')}
                                 <Tooltip title={t('settings.navigation.login')}>
                                     <AccountCircle color="primary" />
                                 </Tooltip>
                             </Link>
-                        </>
+                        </Grid>
                     )}
                     {userOffchain && (
                         <div>
@@ -144,7 +169,10 @@ export function Header() {
                                 <ExitToApp
                                     color="primary"
                                     className={classes.logOutIcon}
-                                    onClick={() => dispatch(clearAuthenticationToken())}
+                                    onClick={() => {
+                                        history.push(getDefaultLink());
+                                        dispatch(clearAuthenticationToken());
+                                    }}
                                 />
                             </Tooltip>
                         </div>

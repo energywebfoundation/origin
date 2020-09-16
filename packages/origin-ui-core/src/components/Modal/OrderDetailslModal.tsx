@@ -11,7 +11,12 @@ import {
 } from '../..';
 import { useSelector } from 'react-redux';
 import { OrderSide } from '@energyweb/exchange-core';
-import { EnergyFormatter, deviceById, useTranslation } from '../../utils';
+import {
+    EnergyFormatter,
+    deviceById,
+    useTranslation,
+    DATE_FORMAT_INCLUDING_TIME
+} from '../../utils';
 
 interface IOwnProps {
     order: Order;
@@ -25,21 +30,15 @@ export const OrderDetailsModal = (props: IOwnProps) => {
     const { order, close, showCancelOrder } = props;
     const {
         filled,
-        product: {
-            generationFrom,
-            generationTo,
-            location,
-            deviceType,
-            gridOperator = anyOption,
-            externalDeviceId
-        }
+        asset,
+        product: { generationFrom, generationTo, location, deviceType, gridOperator = anyOption }
     } = order;
     const {
         spacing,
         palette: {
             text: { primary: textPrimary }
         },
-        typography: { fontSizeSm, fontSizeLg }
+        typography: { fontSizeMd, fontSizeLg }
     } = useTheme();
     const currency = useSelector(getCurrencies)[0];
     const primaryDeviceType = deviceType ? deviceType[0].split(';')[0] : anyOption;
@@ -51,25 +50,25 @@ export const OrderDetailsModal = (props: IOwnProps) => {
         <Dialog
             open={order !== null}
             onClose={close}
-            style={{ fontSize: fontSizeSm }}
+            style={{ fontSize: fontSizeMd }}
             className="OrderModal"
             fullWidth={true}
         >
-            <Grid container direction="column" style={{ alignItems: 'stretch' }}>
+            <Grid container direction="column" style={{ alignItems: 'stretch' }} wrap="nowrap">
                 <Grid
                     item
                     container
                     direction="column"
                     style={{ paddingLeft: spacing(2), paddingRight: spacing(2) }}
                 >
-                    <Grid item style={{ alignSelf: 'end' }}>
+                    <Grid item style={{ alignSelf: 'flex-end' }}>
                         <IconButton onClick={close}>
                             <CloseIcon style={{ color: textPrimary }} />
                         </IconButton>
                     </Grid>
                     <Grid item style={{ alignSelf: 'start' }}>
                         <Box pb={1} fontWeight="fontWeightLight">
-                            {moment(order.validFrom).format('MMM Do, YYYY h:mm:ss a')}
+                            {moment(order.validFrom).format(DATE_FORMAT_INCLUDING_TIME)}
                         </Box>
                     </Grid>
                     <Grid item container style={{ paddingBottom: spacing(1) }}>
@@ -108,7 +107,9 @@ export const OrderDetailsModal = (props: IOwnProps) => {
                         <Box style={{ textTransform: 'capitalize' }}>{primaryDeviceType}</Box>
                         {order.side === OrderSide.Ask && (
                             <Box>
-                                {deviceById(externalDeviceId.id, environment, devices).facilityName}
+                                {asset?.deviceId
+                                    ? deviceById(asset.deviceId, environment, devices).facilityName
+                                    : anyOption}
                             </Box>
                         )}
                     </Grid>
@@ -122,14 +123,11 @@ export const OrderDetailsModal = (props: IOwnProps) => {
                 </Grid>
 
                 {order.side === OrderSide.Bid && (
-                    <Box mx={1} my={1}>
+                    <Box m={1}>
                         <Grid
                             container
                             style={{
-                                paddingTop: spacing(1),
-                                paddingBottom: spacing(1),
-                                paddingLeft: spacing(1),
-                                paddingRight: spacing(1)
+                                padding: spacing(1)
                             }}
                             className="DeviceSection"
                         >

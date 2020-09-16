@@ -1,35 +1,35 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { useSelector } from 'react-redux';
 import { NavLink, Route, Redirect } from 'react-router-dom';
 
 import { PageContent } from '../PageContent/PageContent';
-import { getUserOffchain } from '../../features/users/selectors';
+import { getUserOffchain, getIRECAccount } from '../../features/users/selectors';
 import { AccountSettings } from './AccountSettings';
 import { UserRegister } from './UserRegister';
-import { UserLogin } from './UserLogin';
 import { dataTest, useLinks, useTranslation } from '../../utils';
 import { UserProfile } from './UserProfile';
+import { ConfirmEmail } from './ConfirmEmail';
+import { IRECConnectForm } from '../Organization/IRECConnectForm';
+import { OriginConfigurationContext } from '..';
+import { OriginFeature } from '@energyweb/utils-general';
 
 export function Account() {
     const userOffchain = useSelector(getUserOffchain);
 
-    const { getAccountLink } = useLinks();
+    const { baseURL, getAccountLink } = useLinks();
     const { t } = useTranslation();
+    const { enabledFeatures } = useContext(OriginConfigurationContext);
 
     const isLoggedIn = Boolean(userOffchain);
+    const organization = useSelector(getUserOffchain)?.organization;
+    const irecAccount = useSelector(getIRECAccount);
 
     const Menu = [
         {
             key: 'settings',
             label: 'settings.navigation.settings',
             component: AccountSettings,
-            hide: !isLoggedIn
-        },
-        {
-            key: 'user-login',
-            label: 'settings.navigation.login',
-            component: UserLogin,
-            hide: isLoggedIn
+            hide: false
         },
         {
             key: 'user-register',
@@ -42,6 +42,18 @@ export function Account() {
             label: 'settings.navigation.userProfile',
             component: UserProfile,
             hide: !isLoggedIn
+        },
+        {
+            key: 'confirm-email',
+            label: 'settings.navigation.confirmEmail',
+            component: ConfirmEmail,
+            hide: true
+        },
+        {
+            key: 'connect-irec',
+            label: 'settings.navigation.connectIREC',
+            component: IRECConnectForm,
+            hide: !enabledFeatures.includes(OriginFeature.IRec) || !organization || irecAccount
         }
     ];
 
@@ -74,14 +86,12 @@ export function Account() {
                 path={`${getAccountLink()}/:key/:id?`}
                 render={(props) => {
                     const key = props.match.params.key;
-                    const matches = Menu.filter((item) => {
-                        return item.key === key;
-                    });
 
                     return (
                         <PageContent
-                            menu={matches.length > 0 ? matches[0] : null}
+                            menu={Menu.find((item) => item.key === key)}
                             redirectPath={getAccountLink()}
+                            {...props}
                         />
                     );
                 }}
@@ -90,6 +100,11 @@ export function Account() {
             <Route
                 exact={true}
                 path={`${getAccountLink()}`}
+                render={() => <Redirect to={{ pathname: `${getAccountLink()}/${Menu[0].key}` }} />}
+            />
+            <Route
+                exact={true}
+                path={`${baseURL}/`}
                 render={() => <Redirect to={{ pathname: `${getAccountLink()}/${Menu[0].key}` }} />}
             />
         </div>

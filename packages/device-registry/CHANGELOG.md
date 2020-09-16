@@ -3,6 +3,49 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.2.9](https://github.com/energywebfoundation/origin/compare/@energyweb/device-registry@6.2.8...@energyweb/device-registry@6.2.9) (2020-08-25)
+
+**Note:** Version bump only for package @energyweb/device-registry
+
+
+
+
+
+## [6.2.8](https://github.com/energywebfoundation/origin/compare/@energyweb/device-registry@6.2.7...@energyweb/device-registry@6.2.8) (2020-08-12)
+
+**Note:** Version bump only for package @energyweb/device-registry
+
+
+
+
+
+## [6.2.7](https://github.com/energywebfoundation/origin/compare/@energyweb/device-registry@6.2.6...@energyweb/device-registry@6.2.7) (2020-08-10)
+
+
+### Bug Fixes
+
+* **deps:** update dependency ethers to v5.0.8 ([c69bde0](https://github.com/energywebfoundation/origin/commit/c69bde05c4f0eba5dbc49833f266af24c84c0187))
+
+
+
+
+
+## [6.2.6](https://github.com/energywebfoundation/origin/compare/@energyweb/device-registry@6.2.5...@energyweb/device-registry@6.2.6) (2020-08-06)
+
+**Note:** Version bump only for package @energyweb/device-registry
+
+
+
+
+
+## [6.2.5](https://github.com/energywebfoundation/origin/compare/@energyweb/device-registry@6.2.4...@energyweb/device-registry@6.2.5) (2020-07-16)
+
+**Note:** Version bump only for package @energyweb/device-registry
+
+
+
+
+
 ## [6.2.4](https://github.com/energywebfoundation/origin/compare/@energyweb/device-registry@6.2.3...@energyweb/device-registry@6.2.4) (2020-07-08)
 
 

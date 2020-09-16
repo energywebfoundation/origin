@@ -31,6 +31,9 @@ const useDialogStyles = makeStyles((theme: Theme) =>
             position: 'absolute',
             top: theme.spacing(1),
             right: theme.spacing(1)
+        },
+        tooltip: {
+            backgroundColor: theme.palette.primary.main
         }
     })
 );
@@ -39,26 +42,32 @@ const COUNT_OF_PRICE_MARKS = 11;
 
 function SliderLabel(props) {
     const { children, open, value } = props;
+    const styles = useDialogStyles();
 
     return (
-        <Tooltip open={open} enterTouchDelay={0} placement="top" title={value}>
+        <Tooltip
+            open={open}
+            enterTouchDelay={0}
+            placement="top"
+            title={value}
+            classes={{ tooltip: styles.tooltip }}
+        >
             {children}
         </Tooltip>
     );
 }
 
 const BundleDetails = (props: IOwnProps) => {
+    const dispatch = useDispatch();
+    const showModal = useSelector(getShowBundleDetails);
+    const { t } = useTranslation();
     const { bundle, owner } = props;
     let { splits } = bundle;
     const { price } = bundle;
-    const showModal = useSelector(getShowBundleDetails);
-    const dispatch = useDispatch();
-    const { t } = useTranslation();
-    const dialogStyles = useDialogStyles();
-
     const prices = splits.map(({ volume }) => bundlePrice({ volume, price }));
     const maxPrice = Math.ceil(Math.max(...prices) / 10) * 10;
     const minPrice = Math.floor(Math.min(...prices) / 10) * 10;
+    const styles = useDialogStyles();
 
     const [priceRange, setPriceRange] = useState<number[]>([minPrice, maxPrice]);
 
@@ -86,7 +95,7 @@ const BundleDetails = (props: IOwnProps) => {
             <DialogTitle>
                 {t('bundle.info.bundleDetails')}
                 <IconButton
-                    className={`${dialogStyles.closeButton} closeButton`}
+                    className={`${styles.closeButton} closeButton`}
                     onClick={() => dispatch(showBundleDetails(false))}
                 >
                     <CloseIcon />

@@ -3,6 +3,52 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.1.10](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-backend-app@1.1.9...@energyweb/origin-backend-app@1.1.10) (2020-08-25)
+
+**Note:** Version bump only for package @energyweb/origin-backend-app
+
+
+
+
+
+## [1.1.9](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-backend-app@1.1.8...@energyweb/origin-backend-app@1.1.9) (2020-08-12)
+
+**Note:** Version bump only for package @energyweb/origin-backend-app
+
+
+
+
+
+## [1.1.8](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-backend-app@1.1.7...@energyweb/origin-backend-app@1.1.8) (2020-08-10)
+
+**Note:** Version bump only for package @energyweb/origin-backend-app
+
+
+
+
+
+## [1.1.7](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-backend-app@1.1.6...@energyweb/origin-backend-app@1.1.7) (2020-08-06)
+
+
+### Bug Fixes
+
+* **deps:** update nest monorepo to v7.4.2 ([241f045](https://github.com/energywebfoundation/origin/commit/241f04525f8d09f8bd464f979933390ad6a4bb2a))
+
+
+
+
+
+## [1.1.6](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-backend-app@1.1.5...@energyweb/origin-backend-app@1.1.6) (2020-07-16)
+
+
+### Bug Fixes
+
+* **deps:** update nest monorepo to v7.3.2 ([875bb1b](https://github.com/energywebfoundation/origin/commit/875bb1b17fee5647d921f6771a58a4aa55aec59d))
+
+
+
+
+
 ## [1.1.5](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-backend-app@1.1.4...@energyweb/origin-backend-app@1.1.5) (2020-07-08)
 
 

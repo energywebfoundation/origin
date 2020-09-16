@@ -1,6 +1,6 @@
 {
     "name": "@energyweb/origin-backend-core",
-    "version": "4.1.0",
+    "version": "5.1.0",
     "description": "",
     "main": "dist/js/src/index.js",
     "scripts": {
@@ -28,9 +28,10 @@
         "registry": "https://registry.npmjs.org"
     },
     "dependencies": {
-        "class-transformer": "0.2.3",
+        "axios": "0.20.0",
+        "class-transformer": "0.3.1",
         "class-validator": "0.12.2",
-        "ethers": "4.0.47",
-        "precise-proofs-js": "1.1.0"
+        "ethers": "5.0.8",
+        "precise-proofs-js": "1.2.0"
     }
 }

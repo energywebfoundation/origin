@@ -7,12 +7,12 @@ import moment from 'moment';
 import request from 'supertest';
 import dotenv from 'dotenv';
 
-import { CertificationRequestService } from '../src/pods/certificate/certification-request.service';
+import { CertificationRequestService } from '../src/pods/certification-request/certification-request.service';
 import { DeviceService } from '../src/pods/device/device.service';
 import { OrganizationService } from '../src/pods/organization/organization.service';
 import { UserService } from '../src/pods/user';
 import { bootstrapTestInstance, registerAndLogin } from './origin-backend';
-import { CertificationRequestQueueItem } from '../src/pods/certificate/certification-request-queue-item.entity';
+import { CertificationRequestQueueItem } from '../src/pods/certification-request/certification-request-queue-item.entity';
 import { DatabaseService } from './database.service';
 
 describe('CertificationRequest e2e tests', () => {
@@ -67,7 +67,7 @@ describe('CertificationRequest e2e tests', () => {
         );
 
         await request(app.getHttpServer())
-            .get(`/Certificate/CertificationRequest`)
+            .get(`/CertificationRequest`)
             .set('Authorization', `Bearer ${accessToken}`)
             .expect((res) => {
                 const requests = res.body as ICertificationRequestBackend[];
@@ -105,7 +105,7 @@ describe('CertificationRequest e2e tests', () => {
         );
 
         await request(app.getHttpServer())
-            .post(`/Certificate/CertificationRequest`)
+            .post(`/CertificationRequest`)
             .set('Authorization', `Bearer ${accessToken}`)
             .send({ deviceId: externalDeviceId, fromTime, toTime, energy, files })
             .expect((res) => {
@@ -131,7 +131,7 @@ describe('CertificationRequest e2e tests', () => {
         });
 
         await request(app.getHttpServer())
-            .get(`/Certificate/CertificationRequest/${certificationRequest.id}`)
+            .get(`/CertificationRequest/${certificationRequest.id}`)
             .set('Authorization', `Bearer ${accessToken}`)
             .expect((res) => {
                 const cr = res.body as ICertificationRequestBackend;
@@ -147,7 +147,7 @@ describe('CertificationRequest e2e tests', () => {
             });
 
         await request(app.getHttpServer())
-            .get(`/Certificate/CertificationRequest`)
+            .get(`/CertificationRequest`)
             .set('Authorization', `Bearer ${accessToken}`)
             .expect((res) => {
                 const requests = res.body as ICertificationRequestBackend[];
@@ -226,7 +226,7 @@ describe('CertificationRequest e2e tests', () => {
         );
 
         await request(app.getHttpServer())
-            .get(`/Certificate/CertificationRequest`)
+            .get(`/CertificationRequest`)
             .set('Authorization', `Bearer ${accessToken}`)
             .expect((res) => {
                 const requests = res.body as ICertificationRequestBackend[];
@@ -246,7 +246,7 @@ describe('CertificationRequest e2e tests', () => {
         );
 
         await request(app.getHttpServer())
-            .get(`/Certificate/CertificationRequest`)
+            .get(`/CertificationRequest`)
             .set('Authorization', `Bearer ${accessToken}`)
             .expect((res) => {
                 const requests = res.body as ICertificationRequestBackend[];
@@ -266,7 +266,7 @@ describe('CertificationRequest e2e tests', () => {
         );
 
         const postRequest = request(app.getHttpServer())
-            .post(`/Certificate/CertificationRequest`)
+            .post(`/CertificationRequest`)
             .set('Authorization', `Bearer ${accessToken}`);
 
         await postRequest
@@ -297,8 +297,7 @@ describe('CertificationRequest e2e tests', () => {
     });
 
     it('should properly validate a certification request', async () => {
-        await databaseService.truncate('certification_request');
-        await databaseService.truncate('device');
+        await databaseService.truncate('certification_request', 'device');
 
         const { accessToken, user } = await registerAndLogin(
             app,
@@ -340,7 +339,7 @@ describe('CertificationRequest e2e tests', () => {
 
         await request(app.getHttpServer())
             .get(
-                `/Certificate/CertificationRequest/validate?fromTime=${fromTime}&toTime=${toTime}&deviceId=${externalDeviceId}`
+                `/CertificationRequest/validate?fromTime=${fromTime}&toTime=${toTime}&deviceId=${externalDeviceId}`
             )
             .set('Authorization', `Bearer ${accessToken}`)
             .expect((res) => {
@@ -351,7 +350,7 @@ describe('CertificationRequest e2e tests', () => {
             });
 
         await request(app.getHttpServer())
-            .post(`/Certificate/CertificationRequest`)
+            .post(`/CertificationRequest`)
             .set('Authorization', `Bearer ${accessToken}`)
             .send({ deviceId: externalDeviceId, fromTime, toTime, energy, files })
             .expect(201);
@@ -370,7 +369,7 @@ describe('CertificationRequest e2e tests', () => {
 
         await request(app.getHttpServer())
             .get(
-                `/Certificate/CertificationRequest/validate?fromTime=${fromTime}&toTime=${toTime}&deviceId=${externalDeviceId}`
+                `/CertificationRequest/validate?fromTime=${fromTime}&toTime=${toTime}&deviceId=${externalDeviceId}`
             )
             .set('Authorization', `Bearer ${accessToken}`)
             .expect(409);

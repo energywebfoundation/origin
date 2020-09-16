@@ -1,4 +1,5 @@
 import { IOrganization } from './Organization';
+import { IEmailConfirmation } from './EmailConfirmation';
 
 export enum Role {
     OrganizationAdmin = 1,
@@ -63,15 +64,8 @@ export interface IUserProperties {
 }
 
 export interface IUser extends IUserProperties {
-    organization: IOrganization | IOrganization['id'];
-}
-
-export interface IUserWithRelationsIds extends IUser {
-    organization: IOrganization['id'];
-}
-
-export interface IUserWithRelations extends IUser {
     organization: IOrganization;
+    emailConfirmed?: IEmailConfirmation['confirmed'];
 }
 
 export type UserRegisterReturnData = IUser;
@@ -92,3 +86,5 @@ export interface IUserFilter {
     status?: UserStatus;
     kycStatus?: KYCStatus;
 }
+
+export type UpdateUserResponseReturnType = IUser;

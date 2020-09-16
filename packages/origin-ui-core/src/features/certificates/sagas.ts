@@ -1,12 +1,18 @@
 import { Certificate, CertificateUtils, CertificationRequest } from '@energyweb/issuer';
-import { CommitmentStatus, IUserWithRelations } from '@energyweb/origin-backend-core';
+import { CommitmentStatus, IUser, IOrganization } from '@energyweb/origin-backend-core';
 import { Configuration } from '@energyweb/utils-general';
 import { ContractTransaction } from 'ethers';
 import { getI18n } from 'react-i18next';
 import { SagaIterator } from 'redux-saga';
 import { all, apply, call, delay, fork, put, select, take } from 'redux-saga/effects';
 
-import { CertificateSource, updateCertificate, IResyncCertificateAction } from '.';
+import {
+    CertificateSource,
+    updateCertificate,
+    IResyncCertificateAction,
+    clearCertificates,
+    reloadCertificates
+} from '.';
 import { IStoreState } from '../../types';
 import { moment, NotificationType, showNotification } from '../../utils';
 import { ExchangeAccount, IExchangeClient, ITransfer } from '../../utils/exchange';
@@ -32,7 +38,7 @@ import {
 } from './actions';
 import { getCertificateById, getCertificateFetcher, getCertificates } from './selectors';
 import { ICertificateViewItem } from './types';
-import { enhanceCertificate } from '../general/sagas';
+import { enhanceCertificate, fetchDataAfterConfigurationChange } from '../general/sagas';
 
 function assertIsContractTransaction(
     data: ContractTransaction | CommitmentStatus
@@ -113,12 +119,11 @@ function* openRequestCertificatesModalSaga(): SagaIterator {
         const action: IShowRequestCertificatesModalAction = yield take(
             CertificatesActions.showRequestCertificatesModal
         );
-
         const device = action.payload.producingDevice;
 
-        const userOffchain: IUserWithRelations = yield select(getUserOffchain);
+        const userOffchain: IUser = yield select(getUserOffchain);
 
-        if (device?.organization !== userOffchain?.organization?.id) {
+        if ((device?.organization as IOrganization).id !== userOffchain?.organization?.id) {
             showNotification(
                 `You need to own the device to request certificates.`,
                 NotificationType.Error
@@ -284,7 +289,7 @@ function* requestPublishForSaleSaga(): SagaIterator {
                 volume: amount.toString(),
                 validFrom: moment().toISOString()
             });
-
+            yield put(reloadCertificates());
             showNotification(
                 i18n.t('certificate.feedback.certificatePublished'),
                 NotificationType.Success
@@ -505,6 +510,18 @@ export function* withdrawSaga(): SagaIterator {
     }
 }
 
+function* reloadCertificatesSaga(): SagaIterator {
+    while (true) {
+        yield take(CertificatesActions.reloadCertificates);
+        yield put(clearCertificates());
+        const configuration = yield select(getConfiguration);
+        if (!configuration) {
+            continue;
+        }
+        yield call(fetchDataAfterConfigurationChange, configuration);
+    }
+}
+
 export function* certificatesSaga(): SagaIterator {
     yield all([
         fork(requestCertificatesSaga),
@@ -516,6 +533,7 @@ export function* certificatesSaga(): SagaIterator {
         fork(requestCertificateApprovalSaga),
         fork(resyncCertificateSaga),
         fork(withdrawSaga),
-        fork(requestDepositSaga)
+        fork(requestDepositSaga),
+        fork(reloadCertificatesSaga)
     ]);
 }

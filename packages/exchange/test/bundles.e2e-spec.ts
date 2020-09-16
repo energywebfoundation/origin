@@ -14,6 +14,7 @@ import { CreateBundleDTO } from '../src/pods/bundle/create-bundle.dto';
 import { TransferService } from '../src/pods/transfer/transfer.service';
 import { DatabaseService } from './database.service';
 import { authenticatedUser, bootstrapTestInstance } from './exchange';
+import { MWh } from './utils';
 
 describe('Bundles', () => {
     let app: INestApplication;
@@ -22,8 +23,7 @@ describe('Bundles', () => {
     let accountService: AccountService;
     let bundleService: BundleService;
 
-    const user1Id = authenticatedUser.organization;
-    const MWh = 10 ** 6;
+    const user1Id = authenticatedUser.organization.id;
 
     const assetOne = {
         address: '0x9876',
@@ -395,5 +395,45 @@ describe('Bundles', () => {
 
         await request(app.getHttpServer()).post('/bundle').send(bundleToCreate).expect(412);
         authenticatedUser.status = UserStatus.Active;
+    });
+
+    it('should not be able to create a bundle with negative volume', async () => {
+        const { address: user1Address } = await accountService.getOrCreateAccount(user1Id);
+
+        const depositOne = await createDeposit(user1Address, `${10 * MWh}`, assetOne);
+        const depositTwo = await createDeposit(user1Address, `${10 * MWh}`, assetTwo);
+
+        await confirmDeposit(depositOne.transactionHash);
+        await confirmDeposit(depositTwo.transactionHash);
+
+        const bundleToCreate: CreateBundleDTO = {
+            price: 1000,
+            items: [
+                { assetId: depositOne.asset.id, volume: `${-20 * MWh}` },
+                { assetId: depositTwo.asset.id, volume: `${10 * MWh}` }
+            ]
+        };
+
+        await request(app.getHttpServer()).post('/bundle').send(bundleToCreate).expect(400);
+    });
+
+    it('should not be able to create a bundle with decimal volume', async () => {
+        const { address: user1Address } = await accountService.getOrCreateAccount(user1Id);
+
+        const depositOne = await createDeposit(user1Address, `${10 * MWh}`, assetOne);
+        const depositTwo = await createDeposit(user1Address, `${10 * MWh}`, assetTwo);
+
+        await confirmDeposit(depositOne.transactionHash);
+        await confirmDeposit(depositTwo.transactionHash);
+
+        const bundleToCreate: CreateBundleDTO = {
+            price: 1000,
+            items: [
+                { assetId: depositOne.asset.id, volume: `${1.1 * MWh}` },
+                { assetId: depositTwo.asset.id, volume: `${10 * MWh}` }
+            ]
+        };
+
+        await request(app.getHttpServer()).post('/bundle').send(bundleToCreate).expect(400);
     });
 });

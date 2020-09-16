@@ -10,7 +10,8 @@ import {
     DeviceStatus,
     UserStatusChangedEvent,
     OrganizationMemberChangedRoleEvent,
-    Role
+    Role,
+    ConfirmEmailEvent
 } from '@energyweb/origin-backend-core';
 import { MailService } from '../mail';
 import EmailTypes from './EmailTypes';
@@ -21,7 +22,8 @@ const SUPPORTED_EVENTS = [
     SupportedEvents.ORGANIZATION_REMOVED_MEMBER,
     SupportedEvents.ORGANIZATION_MEMBER_CHANGED_ROLE,
     SupportedEvents.DEVICE_STATUS_CHANGED,
-    SupportedEvents.USER_STATUS_CHANGED
+    SupportedEvents.USER_STATUS_CHANGED,
+    SupportedEvents.CONFIRM_EMAIL
 ];
 
 type TSupportedNotificationEvent = {
@@ -31,14 +33,16 @@ type TSupportedNotificationEvent = {
         | SupportedEvents.ORGANIZATION_STATUS_CHANGED
         | SupportedEvents.ORGANIZATION_REMOVED_MEMBER
         | SupportedEvents.ORGANIZATION_MEMBER_CHANGED_ROLE
-        | SupportedEvents.DEVICE_STATUS_CHANGED;
+        | SupportedEvents.DEVICE_STATUS_CHANGED
+        | SupportedEvents.CONFIRM_EMAIL;
     data:
         | UserStatusChangedEvent
         | OrganizationInvitationEvent
         | OrganizationStatusChangedEvent
         | OrganizationRemovedMemberEvent
         | OrganizationMemberChangedRoleEvent
-        | DeviceStatusChangedEvent;
+        | DeviceStatusChangedEvent
+        | ConfirmEmailEvent;
 };
 
 function assertIsSupportedEvent(event: NewEvent): asserts event is TSupportedNotificationEvent {
@@ -54,6 +58,14 @@ export class NotificationService {
     constructor(private readonly mailService: MailService) {}
 
     private handlers = {
+        [SupportedEvents.CONFIRM_EMAIL]: async (data: ConfirmEmailEvent) => {
+            const url = `${process.env.UI_BASE_URL}/account/confirm-email?token=${data.token}`;
+            await this.sendNotificationEmail(
+                EmailTypes.CONFIRM_EMAIL,
+                data.email,
+                `Welcome to the marketplace! Please click the link below to verify your email address: <br/> <br/> <a href="${url}">${url}</a>.`
+            );
+        },
         [SupportedEvents.ORGANIZATION_INVITATION]: async (data: OrganizationInvitationEvent) => {
             const url = `${process.env.UI_BASE_URL}/organization/organization-invitations`;
 

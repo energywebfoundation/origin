@@ -58,25 +58,26 @@ export class OrganizationController {
     ) {}
 
     @Get()
+    @UseGuards(AuthGuard(), ActiveUserGuard, RolesGuard)
+    @Roles(Role.Admin, Role.SupportAgent)
     async getAll() {
         return this.organizationRepository.find();
     }
 
     @Get('/invitation')
-    @UseGuards(AuthGuard(), ActiveUserGuard)
+    @UseGuards(AuthGuard())
     async getInvitations(
         @UserDecorator() loggedUser: ILoggedInUser
     ): Promise<IOrganizationInvitation[]> {
-        return (this.organizationInvitationRepository.find({
+        return this.organizationInvitationRepository.find({
             where: { email: loggedUser.email },
-            loadRelationIds: true
-        }) as Promise<Omit<IOrganizationInvitation, 'organization'>[]>) as Promise<
-            IOrganizationInvitation[]
-        >;
+            loadRelationIds: false,
+            relations: ['organization']
+        });
     }
 
     @Get('/:id/users')
-    @UseGuards(AuthGuard(), ActiveUserGuard, RolesGuard)
+    @UseGuards(AuthGuard(), RolesGuard)
     @Roles(Role.OrganizationAdmin, Role.Admin, Role.SupportAgent)
     async getUsers(
         @Param('id', new ParseIntPipe()) id: number,
@@ -114,19 +115,36 @@ export class OrganizationController {
     }
 
     @Get('/:id')
-    async get(@Param('id') id: string) {
-        const existingEntity = await this.organizationService.findOne(id);
+    @UseGuards(AuthGuard())
+    async get(
+        @Param('id', new ParseIntPipe()) organizationId: number,
+        @UserDecorator() loggedUser: ILoggedInUser
+    ) {
+        if (
+            loggedUser.organizationId !== organizationId &&
+            !loggedUser.hasRole(Role.Admin, Role.SupportAgent)
+        ) {
+            throw new UnauthorizedException({
+                success: false,
+                message: `Tried fetching data on organization ${organizationId}, but member of organization ${loggedUser.organizationId}`
+            });
+        }
+
+        const existingEntity = await this.organizationService.findOne(organizationId);
 
         if (!existingEntity) {
-            throw new NotFoundException(StorageErrors.NON_EXISTENT);
+            throw new NotFoundException({
+                success: false,
+                message: StorageErrors.NON_EXISTENT
+            });
         }
 
         return existingEntity;
     }
 
     @Post()
-    @UseGuards(AuthGuard(), ActiveUserGuard)
-    async post(@Body() body: OrganizationPostData, @UserDecorator() loggedUser: ILoggedInUser) {
+    @UseGuards(AuthGuard())
+    async register(@Body() body: OrganizationPostData, @UserDecorator() loggedUser: ILoggedInUser) {
         try {
             const organization = this.organizationService.create(loggedUser.id, body);
 
@@ -196,7 +214,7 @@ export class OrganizationController {
     }
 
     @Get('/:id/invitations')
-    @UseGuards(AuthGuard(), ActiveUserGuard)
+    @UseGuards(AuthGuard())
     async getInvitationsForOrganization(
         @Param('id') organizationId: string,
         @UserDecorator() loggedUser: ILoggedInUser
@@ -213,22 +231,21 @@ export class OrganizationController {
             throw new NotFoundException(StorageErrors.NON_EXISTENT);
         }
 
-        return (this.organizationInvitationRepository.find({
+        return this.organizationInvitationRepository.find({
             where: { organization: organizationId },
-            loadRelationIds: true
-        }) as Promise<Omit<IOrganizationInvitation, 'organization'>[]>) as Promise<
-            IOrganizationInvitation[]
-        >;
+            loadRelationIds: false,
+            relations: ['organization']
+        });
     }
 
     @Put('/invitation/:invitationId')
-    @UseGuards(AuthGuard(), ActiveUserGuard)
+    @UseGuards(AuthGuard())
     async updateInvitation(
         @Body('status') status: IOrganizationInvitation['status'],
         @Param('invitationId') invitationId: string,
         @UserDecorator() loggedUser: ILoggedInUser
     ) {
-        await this.organizationInvitationService.acceptOrReject(loggedUser, invitationId, status);
+        await this.organizationInvitationService.update(loggedUser, invitationId, status);
         return true;
     }
 

@@ -6,15 +6,22 @@ import {
     setUserOffchain,
     setAuthenticationToken,
     clearAuthenticationToken,
-    IRefreshUserOffchainAction
+    IRefreshUserOffchainAction,
+    setUserState
 } from './actions';
 import { getOffChainDataSource } from '../general/selectors';
-import { IRequestClient, IOffChainDataSource } from '@energyweb/origin-backend-client';
 import {
-    IUserWithRelationsIds,
-    IOrganizationWithRelationsIds
+    IOffChainDataSource,
+    IRequestClient,
+    IUser,
+    IOrganizationInvitation
 } from '@energyweb/origin-backend-core';
 import { GeneralActions, ISetOffChainDataSourceAction } from '../general/actions';
+import { reloadCertificates, clearCertificates } from '../certificates';
+import { clearBundles } from '../bundles';
+import { clearOrders } from '../orders/actions';
+import { getUserState } from './selectors';
+import { IUsersState } from './reducer';
 
 const LOCAL_STORAGE_KEYS = {
     AUTHENTICATION_TOKEN: 'AUTHENTICATION_TOKEN'
@@ -84,25 +91,28 @@ function* fetchOffchainUserDetails(): SagaIterator {
         }
 
         try {
-            const userProfile: IUserWithRelationsIds = yield call([userClient, userClient.me]);
+            const userOffchain: IUser = yield call([userClient, userClient.me]);
 
-            let organization: IOrganizationWithRelationsIds = null;
-
-            if (typeof userProfile.organization !== 'undefined') {
-                const organizationClient = offChainDataSource.organizationClient;
-
-                organization = yield call(
-                    [organizationClient, organizationClient.getById],
-                    userProfile.organization
-                );
-            }
-
+            const { organizationClient } = yield select(getOffChainDataSource);
+            const invitations: IOrganizationInvitation[] = yield call(
+                [organizationClient, organizationClient.getInvitations],
+                null
+            );
+            const userState: IUsersState = yield select(getUserState);
             yield put(
-                setUserOffchain({
-                    ...userProfile,
-                    organization
+                setUserState({
+                    ...userState,
+                    userOffchain,
+                    invitations: {
+                        ...userState.invitations,
+                        invitations: invitations.map((inv) => ({
+                            ...inv,
+                            createdAt: new Date(inv.createdAt)
+                        }))
+                    }
                 })
             );
+            yield put(reloadCertificates());
         } catch (error) {
             console.log('error', error, error.response);
 
@@ -130,6 +140,9 @@ function* logOutSaga(): SagaIterator {
         requestClient.authenticationToken = null;
 
         yield put(setUserOffchain(null));
+        yield put(clearCertificates());
+        yield put(clearBundles());
+        yield put(clearOrders());
     }
 }
 

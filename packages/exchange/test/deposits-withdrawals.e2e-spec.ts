@@ -12,9 +12,11 @@ import { Order } from '../src/pods/order/order.entity';
 import { RequestWithdrawalDTO } from '../src/pods/transfer/create-withdrawal.dto';
 import { TransferDirection } from '../src/pods/transfer/transfer-direction';
 import { Transfer } from '../src/pods/transfer/transfer.entity';
+import { TransferService } from '../src/pods/transfer/transfer.service';
 import { DatabaseService } from './database.service';
 import { authenticatedUser, bootstrapTestInstance } from './exchange';
-import { depositToken, issueToken, provider } from './utils';
+import { depositToken, issueToken, provider, MWh } from './utils';
+import { TransferStatus } from '../src/pods/transfer/transfer-status';
 
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -22,18 +24,20 @@ describe('Deposits using deployed registry', () => {
     let app: INestApplication;
     let databaseService: DatabaseService;
     let accountService: AccountService;
+    let transferService: TransferService;
 
-    const user1Id = authenticatedUser.organization;
+    const user1Id = authenticatedUser.organization.id;
 
     let registry: Contract;
     let issuer: Contract;
 
     let depositAddress: string;
 
-    before(async () => {
+    const startExchange = async () => {
         ({
             accountService,
             databaseService,
+            transferService,
             registry,
             issuer,
             app
@@ -43,7 +47,9 @@ describe('Deposits using deployed registry', () => {
 
         const { address } = await accountService.getOrCreateAccount(user1Id);
         depositAddress = address;
-    });
+    };
+
+    before(startExchange);
 
     after(async () => {
         await databaseService.cleanUp();
@@ -57,17 +63,16 @@ describe('Deposits using deployed registry', () => {
     const generationFrom = moment('2020-01-01').unix();
     const generationTo = moment('2020-01-31').unix();
 
-    const getBalance = async (address: string, id: number) => {
-        return (await registry.functions.balanceOf(address, id)) as ethers.utils.BigNumber;
-    };
+    const getBalance = async (address: string, id: number): Promise<ethers.BigNumber> =>
+        registry.balanceOf(address, id);
 
     it('should be able to discover token deposit and post the ask', async () => {
-        const depositAmount = '10';
+        const depositAmount = `${10 * MWh}`;
 
         const id = await issueToken(
             issuer,
             tokenReceiver.address,
-            '1000',
+            `${1000 * MWh}`,
             generationFrom,
             generationTo
         );
@@ -99,7 +104,7 @@ describe('Deposits using deployed registry', () => {
 
                 const [balance] = account.balances.available;
 
-                expect(balance.amount).equals('10');
+                expect(balance.amount).equals(depositAmount);
                 expect(new Date(balance.asset.generationFrom)).deep.equals(
                     moment.unix(generationFrom).toDate()
                 );
@@ -112,7 +117,7 @@ describe('Deposits using deployed registry', () => {
 
         const createAsk: CreateAskDTO = {
             assetId,
-            volume: '10',
+            volume: `${10 * MWh}`,
             price: 100,
             validFrom: new Date()
         };
@@ -125,7 +130,7 @@ describe('Deposits using deployed registry', () => {
                 const order = res.body as Order;
 
                 expect(order.price).equals(100);
-                expect(order.startVolume).equals('10');
+                expect(order.startVolume).equals(`${10 * MWh}`);
                 expect(order.assetId).equals(assetId);
                 expect(new Date(order.product.generationFrom)).deep.equals(
                     moment.unix(generationFrom).toDate()
@@ -176,5 +181,23 @@ describe('Deposits using deployed registry', () => {
         const endBalance = await getBalance(withdrawalAddress, id);
 
         expect(endBalance.gt(startBalance)).to.be.true;
+    });
+
+    it('should re-test unconfirmed withdrawal on start', async () => {
+        const [confirmed] = await transferService.getByStatus(
+            TransferStatus.Confirmed,
+            TransferDirection.Withdrawal
+        );
+
+        await transferService.setAsUnconfirmed(confirmed.id, confirmed.transactionHash);
+
+        await app.close();
+
+        await startExchange();
+
+        const transfer = await transferService.findOne(confirmed.id);
+
+        expect(transfer.status).to.be.equal(TransferStatus.Confirmed);
+        expect(transfer.confirmationBlock).to.be.equal(confirmed.confirmationBlock);
     });
 });

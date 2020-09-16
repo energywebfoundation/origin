@@ -27,7 +27,7 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { validate } from 'class-validator';
-import { bigNumberify } from 'ethers/utils';
+import { BigNumber } from 'ethers';
 import moment from 'moment';
 import { FindOneOptions, Repository } from 'typeorm';
 import { v4 as uuid } from 'uuid';
@@ -68,11 +68,12 @@ export class DeviceService {
         id: string,
         options: FindOneOptions<Device> = {},
         withMeterStats = false
-    ): Promise<ExtendedBaseEntity & IDeviceWithRelationsIds> {
+    ): Promise<ExtendedBaseEntity & IDevice> {
+        const { loadRelationIds = true } = options;
         const device = ((await this.repository.findOne(id, {
-            loadRelationIds: true,
+            loadRelationIds,
             ...options
-        })) as IDevice) as ExtendedBaseEntity & IDeviceWithRelationsIds;
+        })) as IDevice) as ExtendedBaseEntity & IDevice;
 
         if (this.smartMeterReadingsAdapter) {
             device.smartMeterReads = [];
@@ -123,12 +124,7 @@ export class DeviceService {
 
         await this.repository.save(newEntity);
 
-        const meterStats = await this.getMeterStats(newEntity.id.toString());
-
-        return {
-            ...newEntity,
-            meterStats
-        };
+        return newEntity;
     }
 
     async remove(entity: Device | (ExtendedBaseEntity & IDeviceWithRelationsIds)) {
@@ -196,11 +192,12 @@ export class DeviceService {
     async getAll(
         withMeterStats = false,
         options: FindOneOptions<Device> = {}
-    ): Promise<Array<ExtendedBaseEntity & IDeviceWithRelationsIds>> {
+    ): Promise<Array<ExtendedBaseEntity & IDevice>> {
+        const { loadRelationIds = true } = options;
         const devices = ((await this.repository.find({
-            loadRelationIds: true,
+            loadRelationIds,
             ...options
-        })) as IDevice[]) as (ExtendedBaseEntity & IDeviceWithRelationsIds)[];
+        })) as IDevice[]) as (ExtendedBaseEntity & IDevice)[];
 
         for (const device of devices) {
             if (this.smartMeterReadingsAdapter) {
@@ -229,7 +226,7 @@ export class DeviceService {
         id: string,
         update: DeviceUpdateData
     ): Promise<ExtendedBaseEntity & IDeviceWithRelationsIds> {
-        const device = await this.findOne(id);
+        const device = (await this.findOne(id)) as ExtendedBaseEntity & IDeviceWithRelationsIds;
 
         if (!device) {
             throw new NotFoundException(StorageErrors.NON_EXISTENT);
@@ -341,8 +338,8 @@ export class DeviceService {
             const { meterReading, timestamp, certified } = smReads[i];
 
             energiesGenerated.push({
-                energy: bigNumberify(meterReading).sub(
-                    isFirstReading ? 0 : bigNumberify(smReads[i - 1].meterReading)
+                energy: BigNumber.from(meterReading).sub(
+                    isFirstReading ? 0 : BigNumber.from(smReads[i - 1].meterReading)
                 ),
                 timestamp,
                 certified
@@ -350,7 +347,7 @@ export class DeviceService {
         }
 
         const sumEnergy = (energyGens: IEnergyGeneratedWithStatus[]) =>
-            energyGens.reduce((sum, energyGen) => sum.add(energyGen.energy), bigNumberify(0));
+            energyGens.reduce((sum, energyGen) => sum.add(energyGen.energy), BigNumber.from(0));
 
         return {
             certified: sumEnergy(energiesGenerated.filter((energyGen) => energyGen.certified)),

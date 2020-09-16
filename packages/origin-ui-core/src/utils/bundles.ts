@@ -1,7 +1,7 @@
 import { IEnvironment } from '../features/general';
 import { Bundle } from './exchange';
 import { deviceById, EnergyFormatter } from '.';
-import { BigNumber } from 'ethers/utils';
+import { BigNumber } from 'ethers';
 import { EnergyTypes } from './device';
 import { Unit } from '@energyweb/utils-general';
 
@@ -21,9 +21,9 @@ export const energyByType = (
             grouped.total = grouped.total.add(item.currentVolume);
             return grouped;
         },
-        types.reduce((acc, type) => ({ ...acc, [type]: new BigNumber(0) }), {
-            total: new BigNumber(0),
-            other: new BigNumber(0)
+        types.reduce((acc, type) => ({ ...acc, [type]: BigNumber.from(0) }), {
+            total: BigNumber.from(0),
+            other: BigNumber.from(0)
         })
     );
 };
@@ -38,7 +38,7 @@ export const energyShares = (
     return Object.fromEntries(
         Object.keys(energy)
             .filter((p) => p !== 'total')
-            .map((p) => [p, energy[p].mul(new BigNumber(10000)).div(energy.total)])
+            .map((p) => [p, energy[p].mul(BigNumber.from(10000)).div(energy.total)])
             .map(([p, v]) => {
                 return [p, `${(v.toNumber() / 100).toFixed(2)}%`];
             })

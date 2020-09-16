@@ -1,32 +1,5 @@
-import axios, { AxiosRequestConfig, AxiosResponse, CancelTokenSource } from 'axios';
-
-export interface IRequestClient {
-    authenticationToken: string;
-
-    get<T extends any, U extends any>(
-        url: string,
-        config?: AxiosRequestConfig
-    ): Promise<AxiosResponse<U>>;
-
-    post<T extends any, U extends any>(
-        url: string,
-        data?: T,
-        config?: AxiosRequestConfig
-    ): Promise<AxiosResponse<U>>;
-
-    put<T extends any, U extends any>(
-        url: string,
-        data?: T,
-        config?: AxiosRequestConfig
-    ): Promise<AxiosResponse<U>>;
-
-    delete<T extends any, U extends any>(
-        url: string,
-        config?: AxiosRequestConfig
-    ): Promise<AxiosResponse<U>>;
-
-    generateCancelToken(): CancelTokenSource;
-}
+import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
+import { IRequestClient } from '@energyweb/origin-backend-core';
 
 export class RequestClient implements IRequestClient {
     public authenticationToken: string;
@@ -51,7 +24,7 @@ export class RequestClient implements IRequestClient {
         return axios.CancelToken.source();
     }
 
-    private get config(): AxiosRequestConfig {
+    public get config(): AxiosRequestConfig {
         const config: AxiosRequestConfig = {};
 
         if (this.authenticationToken) {

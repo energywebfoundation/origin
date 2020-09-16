@@ -3,6 +3,90 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [7.0.2](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-backend@7.0.1...@energyweb/origin-backend@7.0.2) (2020-08-25)
+
+
+### Bug Fixes
+
+* **origin-backend:** invitation acceptation ([ca0ebb4](https://github.com/energywebfoundation/origin/commit/ca0ebb42bacee82661f565cad1081f22ddba26fe))
+
+
+
+
+
+## [7.0.1](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-backend@7.0.0...@energyweb/origin-backend@7.0.1) (2020-08-12)
+
+**Note:** Version bump only for package @energyweb/origin-backend
+
+
+
+
+
+# [7.0.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-backend@6.3.0...@energyweb/origin-backend@7.0.0) (2020-08-10)
+
+
+### Bug Fixes
+
+* **deps:** update dependency ethers to v5.0.8 ([c69bde0](https://github.com/energywebfoundation/origin/commit/c69bde05c4f0eba5dbc49833f266af24c84c0187))
+* **origin-backend:** allow non-active user to register organization ([b3475a9](https://github.com/energywebfoundation/origin/commit/b3475a99fd33cd610db4d857c8d0a02f5c1945a5))
+* **origin-backend:** only active organization can register devices ([b7a1c92](https://github.com/energywebfoundation/origin/commit/b7a1c923d780ecc08ecdbe47ac7fe4fbb5497821))
+
+
+### chore
+
+* **origin-backend:** replace IUserWithRelationIds with IUser ([c2f2f8e](https://github.com/energywebfoundation/origin/commit/c2f2f8e314a2268014b3beb0658490870b281bb6))
+
+
+### BREAKING CHANGES
+
+* **origin-backend:** findOne returns user with full organization object
+
+
+
+
+
+# [6.3.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-backend@6.2.0...@energyweb/origin-backend@6.3.0) (2020-08-06)
+
+
+### Bug Fixes
+
+* **deps:** update dependency class-transformer to v0.3.1 ([e827bbb](https://github.com/energywebfoundation/origin/commit/e827bbbc6f357c135d2d803bb82ad8774914913a))
+* **deps:** update dependency rxjs to v6.6.2 ([1849e03](https://github.com/energywebfoundation/origin/commit/1849e030c7cce6bf4d4063f3c6d96d98fbb96041))
+* **deps:** update dependency uuid to v8.3.0 ([f672f9f](https://github.com/energywebfoundation/origin/commit/f672f9f20647a6a1f373b7688736b69c3ed3b27e))
+* **deps:** update nest monorepo to v7.4.2 ([241f045](https://github.com/energywebfoundation/origin/commit/241f04525f8d09f8bd464f979933390ad6a4bb2a))
+* **origin-ui-core:** allow unregistered user get and put intvitaion ([bb35fb3](https://github.com/energywebfoundation/origin/commit/bb35fb312355f9a100fcd9156e81d040e2f4b997))
+* **origin-ui-core:** fix ui test ([2e1b9c2](https://github.com/energywebfoundation/origin/commit/2e1b9c28ce6447406cb43d54f9d76ab8c2f9c102))
+* **origin-ui-core:** store org id for non-admin and non-support agent ([7498fb4](https://github.com/energywebfoundation/origin/commit/7498fb49c9e24856c2a8d4c8c0b57b2ca8d8923b))
+
+
+### Features
+
+* **origin-backend:** getAll Devices with relations ([b644f38](https://github.com/energywebfoundation/origin/commit/b644f38b6b6a3b7cff7039795df31d25553455fc))
+* **origin-backend:** optional loadRelationsId of device ([ee38568](https://github.com/energywebfoundation/origin/commit/ee385688431b72dcc967544e1552e59e6ca8c9ef))
+* **origin-backend:** retypify DeviceService.findOne ([ee78b2c](https://github.com/energywebfoundation/origin/commit/ee78b2cd51f075e50e5a45b9d4a21d3c259d5941))
+
+
+
+
+
+# [6.2.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-backend@6.1.0...@energyweb/origin-backend@6.2.0) (2020-07-16)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @nestjs/jwt to v7.1.0 ([3b8864d](https://github.com/energywebfoundation/origin/commit/3b8864de4850b15418b85e950734a0e8e5152062))
+* **deps:** update nest monorepo to v7.3.2 ([875bb1b](https://github.com/energywebfoundation/origin/commit/875bb1b17fee5647d921f6771a58a4aa55aec59d))
+* **origin-backend:** fix permissions for getting Organizations ([6bee114](https://github.com/energywebfoundation/origin/commit/6bee11405fa7d7a5b7d9172fb853ab1b23351ae0))
+
+
+### Features
+
+* **origin-backend:** Confirmation Emails - auto-sending emails and confirmation endpoints ([0a33d1b](https://github.com/energywebfoundation/origin/commit/0a33d1bfd24cb3e44c3e2fc304b56e57735f513d))
+
+
+
+
+
 # [6.1.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-backend@6.0.1...@energyweb/origin-backend@6.1.0) (2020-07-08)
 
 

@@ -20,7 +20,6 @@ import {
 } from '../Table';
 import { useSelector } from 'react-redux';
 import { getCurrencies, getConfiguration, getEnvironment, getProducingDevices } from '../..';
-import { BigNumber } from 'ethers/utils';
 import { Remove, Visibility } from '@material-ui/icons';
 import { RemoveOrderConfirmation } from '../Modal/RemoveOrderConfirmation';
 import { OrderDetailsModal } from '../Modal/OrderDetailslModal';
@@ -52,8 +51,10 @@ export const BidsTable = (props: IOwnProsp) => {
 
     const getFilters = (): ICustomFilterDefinition[] => [
         {
-            property: ({ product: { externalDeviceId: deviceId } }: Order) =>
-                deviceId ? deviceById(deviceId.id, environment, devices).facilityName : undefined,
+            property: (order: Order) =>
+                order.asset?.deviceId
+                    ? deviceById(order.asset.deviceId, environment, devices).facilityName
+                    : undefined,
             label: t('device.properties.facilityName'),
             input: {
                 type: CustomFilterInputType.dropdown,
@@ -124,10 +125,10 @@ export const BidsTable = (props: IOwnProsp) => {
 
     const rows = paginatedData.map((bid) => {
         const {
-            startVolume,
             currentVolume,
             price,
-            product: { deviceType, generationFrom, generationTo }
+            product: { deviceType, generationFrom, generationTo },
+            filled
         } = bid;
         return {
             volume: EnergyFormatter.format(Number(currentVolume), true),
@@ -135,13 +136,7 @@ export const BidsTable = (props: IOwnProsp) => {
             device_type: deviceType ? deviceType[0].split(';')[0] : '-',
             generationFrom: generationFrom ? moment(generationFrom).format('MMM, YYYY') : '-',
             generationTo: generationTo ? moment(generationTo).format('MMM, YYYY') : '-',
-            filled: `${
-                new BigNumber(startVolume)
-                    .sub(new BigNumber(currentVolume))
-                    .mul(100)
-                    .div(startVolume)
-                    .toNumber() / 100
-            }%`,
+            filled: `${filled * 100}%`,
             bidId: bid.id
         };
     });
@@ -174,6 +169,7 @@ export const BidsTable = (props: IOwnProsp) => {
     return (
         <>
             <TableMaterial
+                handleRowClick={(row: string) => viewDetails(parseInt(row, 10))}
                 columns={columns}
                 rows={rows}
                 filters={getFilters()}
@@ -182,7 +178,6 @@ export const BidsTable = (props: IOwnProsp) => {
                 pageSize={pageSize}
                 actions={actions}
                 caption={t('order.captions.open_bids')}
-                actionsLabel={t('order.captions.actions')}
             />
             {bidToView && (
                 <OrderDetailsModal

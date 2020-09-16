@@ -1,13 +1,19 @@
 import {
     ILoggedInUser,
-    IUserWithRelationsIds,
     UserRegisterReturnData,
     UserRegistrationData,
     UserUpdateData,
     IUser,
-    UserPasswordUpdate
+    UserPasswordUpdate,
+    IEmailConfirmationToken,
+    ISuccessResponse,
+    EmailConfirmationResponse
 } from '@energyweb/origin-backend-core';
-import { UserDecorator, ActiveUserGuard } from '@energyweb/origin-backend-utils';
+import {
+    UserDecorator,
+    ActiveUserGuard,
+    NotDeletedUserGuard
+} from '@energyweb/origin-backend-utils';
 import {
     BadRequestException,
     Body,
@@ -26,21 +32,23 @@ import {
 import { AuthGuard } from '@nestjs/passport';
 
 import { UserService } from './user.service';
+import { EmailConfirmationService } from '../email-confirmation/email-confirmation.service';
 
 @UseInterceptors(ClassSerializerInterceptor)
 @Controller('user')
 export class UserController {
     private readonly logger = new Logger(UserController.name);
 
-    constructor(private readonly userService: UserService) {}
+    constructor(
+        private readonly userService: UserService,
+        private readonly emailConfirmationService: EmailConfirmationService
+    ) {}
 
     @Post('register')
     public async register(
         @Body() userRegistrationData: UserRegistrationData
     ): Promise<UserRegisterReturnData> {
-        const user = await this.userService.create(userRegistrationData);
-
-        return user;
+        return this.userService.create(userRegistrationData);
     }
 
     @Get('me')
@@ -50,11 +58,11 @@ export class UserController {
     }
 
     @Put()
-    @UseGuards(AuthGuard('jwt'), ActiveUserGuard)
+    @UseGuards(AuthGuard('jwt'), NotDeletedUserGuard)
     public async update(
         @UserDecorator() user: ILoggedInUser,
         @Body() body: UserUpdateData
-    ): Promise<IUserWithRelationsIds> {
+    ): Promise<IUser> {
         try {
             if (body.blockchainAccountSignedMessage) {
                 await this.userService.attachSignedMessage(
@@ -107,11 +115,26 @@ export class UserController {
     }
 
     @Put('chainAddress')
-    @UseGuards(AuthGuard('jwt'), ActiveUserGuard)
+    @UseGuards(AuthGuard('jwt'), NotDeletedUserGuard)
     public async updateOwnBlockchainAddress(
         @UserDecorator() { id }: ILoggedInUser,
         @Body() body: IUser
     ) {
         return this.userService.updateBlockChainAddress(id, body);
+    }
+
+    @Put('confirm-email/:token')
+    public async confirmToken(
+        @Param('token') token: IEmailConfirmationToken['token']
+    ): Promise<EmailConfirmationResponse> {
+        return this.emailConfirmationService.confirmEmail(token);
+    }
+
+    @Put('re-send-confirm-email')
+    @UseGuards(AuthGuard('jwt'))
+    public async reSendEmailConfirmation(
+        @UserDecorator() { email }: ILoggedInUser
+    ): Promise<ISuccessResponse> {
+        return this.emailConfirmationService.sendConfirmationEmail(email);
     }
 }

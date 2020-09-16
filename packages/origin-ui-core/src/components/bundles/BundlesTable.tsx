@@ -13,17 +13,21 @@ import {
     energyShares,
     getProducingDevices
 } from '../..';
-import { EnergyTypes } from '../../utils';
+import { EnergyTypes } from '../../utils/device';
 import { useSelector, useDispatch } from 'react-redux';
+import { Role, isRole, UserStatus } from '@energyweb/origin-backend-core';
+import { getUserOffchain } from '../../features/users/selectors';
 
-import { Bundle } from '../../utils/exchange';
+import { Bundle, IExchangeClient } from '../../utils/exchange';
 import { Visibility, Add, Cancel as CancelIcon } from '@material-ui/icons';
 import BundleDetails from './BundleDetails';
-import { getCurrencies, getEnvironment } from '../../features';
+import { getCurrencies, getEnvironment, getExchangeClient } from '../../features';
 import { getBundles, getShowBundleDetails } from '../../features/bundles/selectors';
 import { Fab, Tooltip } from '@material-ui/core';
 import { Link } from 'react-router-dom';
-import { showBundleDetails, cancelBundle } from '../../features/bundles';
+import { showBundleDetails, cancelBundle, storeBundle } from '../../features/bundles';
+import { BundleBought } from '../Modal/BundleBought';
+import { BigNumber } from 'ethers';
 
 const BUNDLES_PER_PAGE = 25;
 const BUNDLES_TOTAL_ENERGY_COLUMN_ID = 'total';
@@ -38,15 +42,21 @@ interface IOwnProps {
 const ENERGY_COLUMNS_TO_DISPLAY = [EnergyTypes.SOLAR, EnergyTypes.WIND, EnergyTypes.HYDRO];
 
 export const BundlesTable = (props: IOwnProps) => {
+    const user = useSelector(getUserOffchain);
+    const userIsActive = user && user.status === UserStatus.Active;
     const { owner = false } = props;
     const allBundles = useSelector(getBundles);
-    const bundles = allBundles.filter((b) => (owner ? b.own : true));
+    const exchangeClient: IExchangeClient = useSelector(getExchangeClient);
+    const bundles = allBundles
+        .filter((b) => (owner ? b.own : true))
+        .filter((b) => !(b.splits && b.splits.length === 0));
     const { t } = useTranslation();
     const devices = useSelector(getProducingDevices);
     const [selected, setSelected] = useState<Bundle>(null);
     const environment = useSelector(getEnvironment);
     const dispatch = useDispatch();
     const isBundleDetailsVisible = useSelector(getShowBundleDetails);
+    const [showBundleBoughtModal, setShowBundleBoughtModal] = useState<boolean>(false);
 
     const { currentSort, sortAscending, sortData, toggleSort } = usePaginatedLoaderSorting({
         currentSort: {
@@ -55,6 +65,10 @@ export const BundlesTable = (props: IOwnProps) => {
         },
         sortAscending: false
     });
+    const userIsActiveAndPartOfOrg = () =>
+        user?.organization &&
+        userIsActive &&
+        isRole(user, Role.OrganizationUser, Role.OrganizationDeviceManager, Role.OrganizationAdmin);
 
     async function getPaginatedData({
         requestedPageSize,
@@ -91,9 +105,18 @@ export const BundlesTable = (props: IOwnProps) => {
     });
     sortData(rows);
 
-    const viewDetails = (rowIndex: number) => {
+    const viewDetails = async (rowIndex: number) => {
         const { bundleId } = rows[rowIndex];
         const bundle = bundles.find((b) => b.id === bundleId);
+        const { splits } = await exchangeClient.getBundleSplits(bundle);
+        bundle.splits = splits.map((s) => ({
+            volume: BigNumber.from(s.volume),
+            items: s.items.map(({ id, volume }) => ({ id, volume: BigNumber.from(volume) }))
+        }));
+        dispatch(storeBundle(bundle));
+        if (splits.length === 0) {
+            return setShowBundleBoughtModal(true);
+        }
         setSelected(bundle);
         dispatch(showBundleDetails(true));
     };
@@ -116,7 +139,7 @@ export const BundlesTable = (props: IOwnProps) => {
         { id: 'price', label: t('bundle.properties.price') }
     ];
 
-    const actions = [
+    const actions: any[] = [
         {
             icon: <Visibility />,
             name: 'View details',
@@ -147,17 +170,20 @@ export const BundlesTable = (props: IOwnProps) => {
                 handleRowClick={(rowIndex: string) => viewDetails(parseInt(rowIndex, 10))}
             />
             {isBundleDetailsVisible && <BundleDetails bundle={selected} owner={owner} />}
-            <Link to={'/certificates/create_bundle'}>
-                <Tooltip title={t('certificate.actions.create_bundle')}>
-                    <Fab
-                        color="primary"
-                        aria-label="add"
-                        style={{ position: 'relative', marginTop: '20px', float: 'right' }}
-                    >
-                        <Add />
-                    </Fab>
-                </Tooltip>
-            </Link>
+            {userIsActiveAndPartOfOrg() && (
+                <Link to={'/certificates/create_bundle'}>
+                    <Tooltip title={t('certificate.actions.create_bundle')}>
+                        <Fab
+                            color="primary"
+                            aria-label="add"
+                            style={{ position: 'relative', marginTop: '20px', float: 'right' }}
+                        >
+                            <Add />
+                        </Fab>
+                    </Tooltip>
+                </Link>
+            )}
+            <BundleBought open={showBundleBoughtModal} setOpen={setShowBundleBoughtModal} />
         </>
     );
 };

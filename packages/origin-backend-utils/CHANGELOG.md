@@ -3,6 +3,58 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.2.3](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-backend-utils@1.2.2...@energyweb/origin-backend-utils@1.2.3) (2020-08-25)
+
+**Note:** Version bump only for package @energyweb/origin-backend-utils
+
+
+
+
+
+## [1.2.2](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-backend-utils@1.2.1...@energyweb/origin-backend-utils@1.2.2) (2020-08-12)
+
+**Note:** Version bump only for package @energyweb/origin-backend-utils
+
+
+
+
+
+## [1.2.1](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-backend-utils@1.2.0...@energyweb/origin-backend-utils@1.2.1) (2020-08-10)
+
+**Note:** Version bump only for package @energyweb/origin-backend-utils
+
+
+
+
+
+# [1.2.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-backend-utils@1.1.1...@energyweb/origin-backend-utils@1.2.0) (2020-08-06)
+
+
+### Bug Fixes
+
+* **deps:** update nest monorepo to v7.4.2 ([241f045](https://github.com/energywebfoundation/origin/commit/241f04525f8d09f8bd464f979933390ad6a4bb2a))
+
+
+### Features
+
+* **origin-backend:** optional loadRelationsId of device ([ee38568](https://github.com/energywebfoundation/origin/commit/ee385688431b72dcc967544e1552e59e6ca8c9ef))
+* **origin-backend-utils:** add IntUnitsOfEnergy validator ([ca0a612](https://github.com/energywebfoundation/origin/commit/ca0a612c04addb3497a8f4a1def95e3e9640cdd3))
+
+
+
+
+
+## [1.1.1](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-backend-utils@1.1.0...@energyweb/origin-backend-utils@1.1.1) (2020-07-16)
+
+
+### Bug Fixes
+
+* **deps:** update nest monorepo to v7.3.2 ([875bb1b](https://github.com/energywebfoundation/origin/commit/875bb1b17fee5647d921f6771a58a4aa55aec59d))
+
+
+
+
+
 # [1.1.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-backend-utils@1.0.4...@energyweb/origin-backend-utils@1.1.0) (2020-07-08)
 
 

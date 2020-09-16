@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { useHistory } from 'react-router-dom';
 import { Check, Clear } from '@material-ui/icons';
 import {
     IOrganization,
@@ -15,6 +16,8 @@ import {
     usePaginatedLoader
 } from '../Table/PaginatedLoaderHooks';
 import { getOffChainDataSource } from '../../features/general/selectors';
+import { refreshUserOffchain } from '../../features/users/actions';
+import { useTranslation, useLinks } from '../..';
 
 interface IRecord {
     organization: IOrganization;
@@ -42,6 +45,9 @@ export function OrganizationInvitationTable(props: IProps) {
     const organizationClient = useSelector(getOffChainDataSource)?.organizationClient;
 
     const dispatch = useDispatch();
+    const { t } = useTranslation();
+    const history = useHistory();
+    const { getDefaultLink } = useLinks();
 
     async function getPaginatedData({
         requestedPageSize,
@@ -54,7 +60,6 @@ export function OrganizationInvitationTable(props: IProps) {
             };
         }
 
-        const organizations = await organizationClient.getAll();
         let invitations: IOrganizationInvitation[] = [];
 
         if (props.email) {
@@ -67,7 +72,7 @@ export function OrganizationInvitationTable(props: IProps) {
 
         let newPaginatedData: IRecord[] = invitations.map((invitation) => ({
             invitation,
-            organization: organizations?.find((o) => o.id === invitation.organization)
+            organization: invitation.organization as IOrganization
         }));
 
         const newTotal = newPaginatedData.length;
@@ -91,11 +96,12 @@ export function OrganizationInvitationTable(props: IProps) {
     async function accept(rowIndex: number) {
         const invitation = paginatedData[rowIndex]?.invitation;
 
-        if (invitation.status !== OrganizationInvitationStatus.Pending) {
-            showNotification(
-                `You can only accept invitation with status pending.`,
-                NotificationType.Error
-            );
+        if (
+            [OrganizationInvitationStatus.Accepted, OrganizationInvitationStatus.Rejected].includes(
+                invitation.status
+            )
+        ) {
+            showNotification(`Invitation has already been processed`, NotificationType.Error);
 
             return;
         }
@@ -104,10 +110,14 @@ export function OrganizationInvitationTable(props: IProps) {
 
         try {
             await organizationClient.acceptInvitation(invitation.id);
+            const invitations = await organizationClient.getInvitationsForEmail(props.email);
+            invitations
+                .filter((inv) => inv.id !== invitation.id)
+                .forEach((inv) => organizationClient.rejectInvitation(inv.id));
 
             showNotification(`Invitation accepted.`, NotificationType.Success);
-
-            await loadPage(1);
+            dispatch(refreshUserOffchain());
+            history.push(getDefaultLink());
         } catch (error) {
             showNotification(`Could not accept invitation.`, NotificationType.Error);
             console.error(error);
@@ -119,11 +129,12 @@ export function OrganizationInvitationTable(props: IProps) {
     async function reject(rowIndex: number) {
         const invitation = paginatedData[rowIndex]?.invitation;
 
-        if (invitation.status !== OrganizationInvitationStatus.Pending) {
-            showNotification(
-                `You can only reject invitation with status pending.`,
-                NotificationType.Error
-            );
+        if (
+            [OrganizationInvitationStatus.Accepted, OrganizationInvitationStatus.Rejected].includes(
+                invitation.status
+            )
+        ) {
+            showNotification(`Invitation has already been processed`, NotificationType.Error);
 
             return;
         }
@@ -144,22 +155,6 @@ export function OrganizationInvitationTable(props: IProps) {
         dispatch(setLoading(false));
     }
 
-    const actions =
-        typeof props.organizationId === 'undefined'
-            ? [
-                  {
-                      icon: <Check />,
-                      name: 'Accept',
-                      onClick: (row: string) => accept(parseInt(row, 10))
-                  },
-                  {
-                      icon: <Clear />,
-                      name: 'Reject',
-                      onClick: (row: string) => reject(parseInt(row, 10))
-                  }
-              ]
-            : [];
-
     const columns = [
         { id: 'organization', label: 'Organization' },
         { id: 'email', label: 'Email' },
@@ -173,6 +168,27 @@ export function OrganizationInvitationTable(props: IProps) {
             email: invitation.email
         };
     });
+
+    const actions =
+        typeof props.organizationId === 'undefined'
+            ? rows.map((currentRow) =>
+                  OrganizationInvitationStatus[currentRow.status] ===
+                  OrganizationInvitationStatus.Pending
+                      ? [
+                            {
+                                icon: <Check />,
+                                name: t('organization.invitations.actions.accept'),
+                                onClick: (row: string) => accept(parseInt(row, 10))
+                            },
+                            {
+                                icon: <Clear />,
+                                name: t('organization.invitations.actions.decline'),
+                                onClick: (row: string) => reject(parseInt(row, 10))
+                            }
+                        ]
+                      : []
+              )
+            : [];
 
     return (
         <TableMaterial

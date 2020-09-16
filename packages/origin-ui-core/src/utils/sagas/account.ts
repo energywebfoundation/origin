@@ -6,11 +6,11 @@ import {
 } from '../../features/general/actions';
 import { getUserOffchain, getActiveBlockchainAccountAddress } from '../../features/users/selectors';
 
-import { IUserWithRelations } from '@energyweb/origin-backend-core';
+import { IUser } from '@energyweb/origin-backend-core';
 import { select, put, take } from 'redux-saga/effects';
 
 export function* assertCorrectBlockchainAccount() {
-    const user: IUserWithRelations = yield select(getUserOffchain);
+    const user: IUser = yield select(getUserOffchain);
     const activeBlockchainAddress: string = yield select(getActiveBlockchainAccountAddress);
 
     if (user) {

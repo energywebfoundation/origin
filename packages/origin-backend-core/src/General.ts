@@ -10,3 +10,5 @@ export interface ISuccessResponse {
     success: boolean;
     message?: string;
 }
+
+export type onUploadProgressFunction = (progressEvent: ProgressEvent) => void;

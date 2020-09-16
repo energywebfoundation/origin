@@ -1,6 +1,5 @@
 import { Filter, Operator, OrderSide, Product, OrderStatus } from '@energyweb/exchange-core';
-import { IExternalDeviceId } from '@energyweb/origin-backend-core';
-import { BigNumber } from 'ethers/utils';
+import { BigNumber } from 'ethers';
 
 export type DeviceVintageDTO = {
     year: number;
@@ -14,7 +13,6 @@ export interface IProductDTO {
     generationFrom?: string;
     generationTo?: string;
     gridOperator?: string[];
-    externalDeviceId?: IExternalDeviceId;
 }
 
 export interface ITradeDTO {
@@ -135,6 +133,7 @@ export interface IOrder {
     startVolume: string;
     currentVolume: string;
     directBuyId: string;
+    asset: IAsset;
     assetId: string;
     userId: string;
     filled?: number;
@@ -195,3 +194,6 @@ export type SplitItem = {
     id: string;
     volume: BigNumber;
 };
+
+export const ANY_VALUE = 'Any';
+export const ANY_OPERATOR = 'TH-ANY';

@@ -8,7 +8,7 @@
     "include": ["src/**/*", "build/**/*.json", "test/*"],
     "references": [
         {
-            "path": "../origin-backend-client/tsconfig.json"
+            "path": "../origin-backend-core/tsconfig.json"
         }
     ]
 }

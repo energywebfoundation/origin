@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { IRequestClient, RequestClient } from '@energyweb/origin-backend-client';
+import { RequestClient } from '@energyweb/origin-backend-client';
 import {
     TOrderBook,
     CreateAskDTO,
@@ -17,6 +17,8 @@ import {
     CreateBundleDTO
 } from '.';
 import { Filter, OrderStatus } from '@energyweb/exchange-core';
+import { BundleSplits } from './types';
+import { IRequestClient } from '@energyweb/origin-backend-core';
 
 export interface IExchangeClient {
     search(
@@ -39,7 +41,7 @@ export interface IExchangeClient {
     cancelOrder(order: Order): Promise<Order>;
     getAvailableBundles(): Promise<Bundle[]>;
     getOwnBundles(): Promise<Bundle[]>;
-    getBundleSplits(bundle: Bundle): Promise<Bundle[]>;
+    getBundleSplits(bundle: Bundle): Promise<BundleSplits>;
     createBundle(bundle: CreateBundleDTO): Promise<Bundle>;
     cancelBundle(id: string): Promise<Bundle>;
 }
@@ -194,8 +196,8 @@ export class ExchangeClient implements IExchangeClient {
         return response.data;
     }
 
-    public async getBundleSplits(bundle: Bundle): Promise<Bundle[]> {
-        const response = await this.requestClient.get<unknown, Bundle[]>(
+    public async getBundleSplits(bundle: Bundle): Promise<BundleSplits> {
+        const response = await this.requestClient.get<Bundle, BundleSplits>(
             `${this.bundleEndpoint}/${bundle.id}/splits`
         );
 

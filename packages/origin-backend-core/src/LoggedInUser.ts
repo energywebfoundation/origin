@@ -1,5 +1,5 @@
 import { Role } from '.';
-import { isRole, IUserWithRelationsIds } from './User';
+import { isRole, IUser } from './User';
 
 export interface ILoggedInUser {
     id: number;
@@ -12,9 +12,9 @@ export interface ILoggedInUser {
 }
 
 export class LoggedInUser implements ILoggedInUser {
-    constructor(user: IUserWithRelationsIds) {
+    constructor(user: IUser) {
         this.id = user.id;
-        this.organizationId = user.organization;
+        this.organizationId = user.organization?.id;
         this.email = user.email;
         this.blockchainAccountAddress = user.blockchainAccountAddress;
         this.rights = user.rights;

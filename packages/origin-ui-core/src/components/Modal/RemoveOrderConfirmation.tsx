@@ -56,10 +56,10 @@ export const RemoveOrderConfirmation = (props: IOwnProps) => {
             </DialogContent>
             <DialogActions style={{ padding: spacing(2), justifyContent: 'center' }}>
                 <Button onClick={close} variant="outlined" color="primary">
-                    {t('order.confirmations.no')}
+                    {t('general.responses.no')}
                 </Button>
                 <Button onClick={onCancelOrder} variant="contained" color="primary" autoFocus>
-                    {t('order.confirmations.yes')}
+                    {t('general.responses.yes')}
                 </Button>
             </DialogActions>
         </Dialog>

@@ -1,16 +1,15 @@
-import axios from 'axios';
-import { Moment } from 'moment';
+import parse from 'csv-parse/lib/sync';
 import moment from 'moment-timezone';
 import * as Winston from 'winston';
 import dotenv from 'dotenv';
 import fs from 'fs';
-import { ethers } from 'ethers';
-import { bigNumberify, BigNumber } from 'ethers/utils';
+import { Wallet, BigNumber } from 'ethers';
 
 import { ProducingDevice } from '@energyweb/device-registry';
-import { Configuration } from '@energyweb/utils-general';
+import { Configuration, getProviderWithFallback } from '@energyweb/utils-general';
 import { OffChainDataSource } from '@energyweb/origin-backend-client';
-import { ISmartMeterRead } from '@energyweb/origin-backend-core';
+import { ISmartMeterRead, IEnergyGenerated } from '@energyweb/origin-backend-core';
+import { getEnergyFromCSVRows } from './utils/Energy';
 
 export function wait(milliseconds: number) {
     return new Promise((resolve) => {
@@ -19,7 +18,9 @@ export function wait(milliseconds: number) {
 }
 
 async function createBlockchainConfiguration() {
-    const web3 = new ethers.providers.JsonRpcProvider(process.env.WEB3 ?? 'http://localhost:8545');
+    const [web3Url] = process.env.WEB3.split(';');
+    const web3 = getProviderWithFallback(web3Url);
+    const issuerWallet = new Wallet(process.env.DEPLOY_KEY, web3);
 
     const logger = Winston.createLogger({
         format: Winston.format.combine(Winston.format.colorize(), Winston.format.simple()),
@@ -29,7 +30,8 @@ async function createBlockchainConfiguration() {
 
     const conf: Configuration.Entity = {
         blockchainProperties: {
-            web3
+            web3,
+            activeUser: issuerWallet
         },
         logger,
         offChainDataSource: new OffChainDataSource(
@@ -38,19 +40,25 @@ async function createBlockchainConfiguration() {
         )
     };
 
+    const loginResponse = await conf.offChainDataSource.userClient.login(
+        'admin@mailinator.com',
+        'test'
+    );
+
+    conf.offChainDataSource.requestClient.authenticationToken = loginResponse.accessToken;
+
     console.log(`[SIMULATOR-CONSUMER] Starting`);
 
     return conf;
 }
 
-interface IEnergyMeasurement {
-    energy: number;
-    measurementTime: string;
-}
-
-export async function startConsumerService(configFilePath: string) {
-    const ENERGY_API_BASE_URL = process.env.ENERGY_API_BASE_URL || `http://localhost:3032`;
+export async function startConsumerService(
+    configFilePath: string,
+    dataFilePath: string
+): Promise<void> {
     const CONFIG = JSON.parse(fs.readFileSync(configFilePath).toString());
+    const DATA = parse(fs.readFileSync(dataFilePath), { columns: false, trim: true });
+
     const CHECK_INTERVAL = CONFIG.config.ENERGY_READ_CHECK_INTERVAL || 29000;
     const conf = await createBlockchainConfiguration();
 
@@ -60,7 +68,7 @@ export async function startConsumerService(configFilePath: string) {
         const smartMeterReadings = await device.getSmartMeterReads();
         const latestSmRead = smartMeterReadings[smartMeterReadings.length - 1];
 
-        return latestSmRead?.meterReading ?? bigNumberify(0);
+        return BigNumber.from(latestSmRead?.meterReading ?? 0);
     }
 
     async function saveProducingDeviceSmartMeterReads(
@@ -85,20 +93,6 @@ export async function startConsumerService(configFilePath: string) {
         console.log('-----------------------------------------------------------\n');
     }
 
-    async function getEnergyMeasurements(
-        deviceId: string,
-        startTime: Moment,
-        endTime: Moment
-    ): Promise<IEnergyMeasurement[]> {
-        const url = `${ENERGY_API_BASE_URL}/device/${deviceId}/energy?accumulated=true&timeStart=${encodeURIComponent(
-            startTime.unix()
-        )}&timeEnd=${encodeURIComponent(endTime.unix())}`;
-
-        console.log(`GET ${url}`);
-
-        return (await axios.get(url)).data;
-    }
-
     console.log('Starting reading of energy generation');
 
     let previousTime = moment();
@@ -107,33 +101,42 @@ export async function startConsumerService(configFilePath: string) {
         const now = moment();
 
         for (const device of CONFIG.devices) {
-            const energyMeasurements: IEnergyMeasurement[] = await getEnergyMeasurements(
-                device.id,
+            const energyMeasurements: IEnergyGenerated[] = await getEnergyFromCSVRows(
+                DATA,
+                device,
                 previousTime,
                 now
             );
 
+            if (!energyMeasurements.length) {
+                continue;
+            }
+
+            const smartMeterReadings: ISmartMeterRead[] = [];
+            let previousEnergyRead: BigNumber = await getProducingDeviceSmartMeterRead(device.id);
+
             for (const energyMeasurement of energyMeasurements) {
-                if (!energyMeasurement.energy || energyMeasurement.energy < 0) {
+                if (!energyMeasurement.energy || energyMeasurement.energy.lt(0)) {
                     continue;
                 }
 
-                const roundedEnergy: BigNumber = bigNumberify(Math.round(energyMeasurement.energy));
+                const newEnergyRead = previousEnergyRead.add(energyMeasurement.energy);
 
-                const previousRead: BigNumber = await getProducingDeviceSmartMeterRead(device.id);
-                const time = moment(energyMeasurement.measurementTime);
+                smartMeterReadings.push({
+                    meterReading: newEnergyRead,
+                    timestamp: energyMeasurement.timestamp
+                });
 
-                const smartMeterReading: ISmartMeterRead = {
-                    meterReading: previousRead.add(roundedEnergy),
-                    timestamp: time.unix()
-                };
-
-                await saveProducingDeviceSmartMeterReads(device.id, [smartMeterReading]);
-
-                console.log(
-                    `[Device ID: ${device.id}]::Save Energy Read of: ${roundedEnergy}Wh - [${energyMeasurement.measurementTime}]`
-                );
+                previousEnergyRead = newEnergyRead;
             }
+
+            await saveProducingDeviceSmartMeterReads(device.id, smartMeterReadings);
+
+            console.log(
+                `[Device ID: ${device.id}]::Saved Energy Reads : ${smartMeterReadings
+                    .map((read) => `${read.meterReading} - ${moment.unix(read.timestamp).format()}`)
+                    .join('\n')}`
+            );
         }
 
         previousTime = now;
@@ -146,5 +149,5 @@ if (require.main === module) {
     dotenv.config({
         path: '../../.env'
     });
-    startConsumerService(`${__dirname}/../config/config.json`);
+    startConsumerService(`${__dirname}/../config/config.json`, `${__dirname}/../config/data.csv`);
 }

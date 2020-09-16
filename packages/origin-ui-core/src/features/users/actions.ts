@@ -1,4 +1,9 @@
-import { IUserWithRelations, IOrganizationWithRelationsIds } from '@energyweb/origin-backend-core';
+import {
+    IUser,
+    IOrganizationWithRelationsIds,
+    IOrganizationInvitation
+} from '@energyweb/origin-backend-core';
+import { IUsersState } from './reducer';
 
 export enum UsersActions {
     setActiveBlockchainAccountAddress = 'USERS_SET_ACTIVE_BLOCKCHAIN_ACCOUNT_ADDRESS',
@@ -7,7 +12,9 @@ export enum UsersActions {
     setAuthenticationToken = 'SET_AUTHENTICATION_TOKEN',
     clearAuthenticationToken = 'CLEAR_AUTHENTICATION_TOKEN',
     refreshUserOffchain = 'REFRESH_USER_OFFCHAIN',
-    addOrganizations = 'USERS_ADD_ORGANIZATIONS'
+    addOrganizations = 'USERS_ADD_ORGANIZATIONS',
+    setInvitations = 'USERS_SET_INVITATIONS',
+    setUserState = 'USERS_SET_USER_STATE'
 }
 
 export interface ISetActiveBlockchainAccountAddressAction {
@@ -26,7 +33,7 @@ export type TSetActiveBlockchainAccountAddress = typeof setActiveBlockchainAccou
 
 export interface ISetUserOffchainAction {
     type: UsersActions.setUserOffchain;
-    payload: IUserWithRelations;
+    payload: IUser;
 }
 
 export const setUserOffchain = (payload: ISetUserOffchainAction['payload']) => ({
@@ -78,6 +85,28 @@ export const addOrganizations = (payload: IAddOrganizationsAction['payload']) =>
     payload
 });
 
+export interface ISetInvitationsAction {
+    type: UsersActions.setInvitations;
+    payload: IOrganizationInvitation[];
+}
+
+export const setInvitations = (
+    payload: ISetInvitationsAction['payload']
+): ISetInvitationsAction => ({
+    type: UsersActions.setInvitations,
+    payload
+});
+
+export interface ISetUserState {
+    type: UsersActions.setUserState;
+    payload: IUsersState;
+}
+
+export const setUserState = (payload: ISetUserState['payload']): ISetUserState => ({
+    type: UsersActions.setUserState,
+    payload
+});
+
 export type TAddOrganizationsAction = typeof addOrganizations;
 
 export type IUsersAction =
@@ -86,4 +115,6 @@ export type IUsersAction =
     | ISetAuthenticationTokenAction
     | IClearAuthenticationTokenAction
     | IRefreshUserOffchainAction
-    | IAddOrganizationsAction;
+    | IAddOrganizationsAction
+    | ISetInvitationsAction
+    | ISetUserState;

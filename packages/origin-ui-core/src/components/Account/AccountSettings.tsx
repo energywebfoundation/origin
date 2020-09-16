@@ -12,20 +12,17 @@ import {
     FormControl,
     InputLabel,
     Select,
-    TextField,
     MenuItem
 } from '@material-ui/core';
 import { useDispatch, useSelector } from 'react-redux';
 import { withStyles } from '@material-ui/core/styles';
 
-import { signTypedMessage } from '@energyweb/utils-general';
 import { AVAILABLE_ORIGIN_LANGUAGES, ORIGIN_LANGUAGE } from '@energyweb/localization';
 
 import { showNotification, NotificationType, useTranslation } from '../../utils';
-import { getOffChainDataSource, getEnvironment } from '../../features/general/selectors';
-import { getUserOffchain, getActiveBlockchainAccountAddress } from '../../features/users/selectors';
+import { getOffChainDataSource } from '../../features/general/selectors';
+import { getUserOffchain } from '../../features/users/selectors';
 import { OriginConfigurationContext, setOriginLanguage } from '../OriginConfigurationContext';
-import { getWeb3 } from '../../features/selectors';
 import { refreshUserOffchain } from '../../features/users/actions';
 import { IUserProperties } from '@energyweb/origin-backend-core';
 
@@ -48,9 +45,6 @@ export function AccountSettings() {
 
     const user = useSelector(getUserOffchain);
     const userClient = useSelector(getOffChainDataSource)?.userClient;
-    const web3 = useSelector(getWeb3);
-    const activeBlockchainAccountAddress = useSelector(getActiveBlockchainAccountAddress);
-    const environment = useSelector(getEnvironment);
 
     const [notificationsEnabled, setNotificationsEnabled] = useState(null);
 
@@ -63,10 +57,6 @@ export function AccountSettings() {
     }, [user]);
 
     const originConfiguration = useContext(OriginConfigurationContext);
-
-    if (!user) {
-        return null;
-    }
 
     const PurpleSwitch = withStyles({
         switchBase: {
@@ -108,95 +98,35 @@ export function AccountSettings() {
         showNotification(t('settings.feedback.userSettingsUpdated'), NotificationType.Success);
     }
 
-    async function signAndSend(): Promise<void> {
-        try {
-            const signedMessage = await signTypedMessage(
-                activeBlockchainAccountAddress,
-                environment.REGISTRATION_MESSAGE_TO_SIGN,
-                web3
-            );
-
-            await userClient.attachSignedMessage(signedMessage);
-
-            dispatch(refreshUserOffchain());
-
-            showNotification(
-                t('settings.feedback.blockchainAccountLinked'),
-                NotificationType.Success
-            );
-        } catch (error) {
-            if (error?.response?.data?.message) {
-                showNotification(error?.response?.data?.message, NotificationType.Error);
-            } else {
-                console.warn('Could not log in.', error);
-                showNotification(t('general.feedback.unknownError'), NotificationType.Error);
-            }
-        }
-    }
-
     return (
         <Paper>
             <Grid container spacing={3} className={classes.container}>
                 <Grid item xs={12}>
                     {user && (
                         <>
-                            {`${user.title} ${user.firstName} ${user.lastName}`}
+                            <FormGroup>
+                                <FormControlLabel
+                                    control={
+                                        <PurpleSwitch
+                                            checked={notificationsEnabled}
+                                            onChange={(e, checked) =>
+                                                setNotificationsEnabled(checked)
+                                            }
+                                        />
+                                    }
+                                    label={t('settings.properties.notifications')}
+                                />
+                            </FormGroup>
 
-                            {user.organization && (
-                                <>
-                                    <br />
-                                    <br />
-                                    Organization: {user.organization.name}
-                                </>
-                            )}
-
-                            <TextField
-                                label={t('settings.properties.email')}
-                                value={user.email}
-                                fullWidth
-                                className="my-3"
-                                disabled
-                            />
-
-                            <TextField
-                                label={t('settings.properties.blockchainAccount')}
-                                value={user.blockchainAccountAddress ?? ''}
-                                fullWidth
-                                className="my-3"
-                                disabled
-                            />
-
-                            {!user.blockchainAccountAddress && (
-                                <>
-                                    <br />
-                                    <Button
-                                        type="submit"
-                                        variant="contained"
-                                        color="primary"
-                                        className="mt-3 right"
-                                        onClick={signAndSend}
-                                    >
-                                        {t('settings.actions.verifyBlockchainAccount')}
-                                    </Button>
-                                </>
-                            )}
+                            <Button
+                                onClick={saveChanges}
+                                color="primary"
+                                disabled={!propertiesChanged}
+                            >
+                                {t('general.actions.update')}
+                            </Button>
                         </>
                     )}
-                    <FormGroup>
-                        <FormControlLabel
-                            control={
-                                <PurpleSwitch
-                                    checked={notificationsEnabled}
-                                    onChange={(e, checked) => setNotificationsEnabled(checked)}
-                                />
-                            }
-                            label={t('settings.properties.notifications')}
-                        />
-                    </FormGroup>
-
-                    <Button onClick={saveChanges} color="primary" disabled={!propertiesChanged}>
-                        {t('general.actions.update')}
-                    </Button>
                     <FormControl fullWidth>
                         <InputLabel>{t('settings.properties.language')}</InputLabel>
                         <Select

@@ -1,17 +1,31 @@
-import { IUserWithRelations, IOrganizationWithRelationsIds } from '@energyweb/origin-backend-core';
+import {
+    IUser,
+    IOrganizationWithRelationsIds,
+    IOrganizationInvitation
+} from '@energyweb/origin-backend-core';
 
 import { UsersActions, IUsersAction } from './actions';
 
 export interface IUsersState {
     activeBlockchainAccountAddress: string;
-    userOffchain: IUserWithRelations;
+    userOffchain: IUser;
     organizations: IOrganizationWithRelationsIds[];
+    irecAccount: any;
+    invitations: {
+        invitations: IOrganizationInvitation[];
+        showPendingInvitationsModal: boolean;
+    };
 }
 
 const defaultState: IUsersState = {
     activeBlockchainAccountAddress: null,
     userOffchain: null,
-    organizations: []
+    organizations: [],
+    irecAccount: null,
+    invitations: {
+        showPendingInvitationsModal: false,
+        invitations: []
+    }
 };
 
 export default function reducer(state = defaultState, action: IUsersAction): IUsersState {
@@ -41,6 +55,17 @@ export default function reducer(state = defaultState, action: IUsersAction): IUs
                 organizations
             };
 
+        case UsersActions.setInvitations:
+            return {
+                ...state,
+                invitations: {
+                    ...state.invitations,
+                    invitations: action.payload as IOrganizationInvitation[]
+                }
+            };
+
+        case UsersActions.setUserState:
+            return action.payload;
         default:
             return state;
     }

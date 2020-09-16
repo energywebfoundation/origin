@@ -7,6 +7,7 @@ import { SagaIterator } from 'redux-saga';
 import { showBundleDetails } from './actions';
 import { NotificationType, showNotification } from '../..';
 import { getI18n } from 'react-i18next';
+import { reloadCertificates } from '../certificates';
 
 function* cancelBundle(): SagaIterator {
     while (true) {
@@ -21,6 +22,7 @@ function* cancelBundle(): SagaIterator {
                 NotificationType.Success
             );
             yield put(showBundleDetails(false));
+            yield put(reloadCertificates());
             yield call(fetchBundles);
         } catch (err) {
             console.error(err);

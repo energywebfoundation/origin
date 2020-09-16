@@ -18,28 +18,28 @@ import {
     getExchangeClient
 } from './selectors';
 import axios, { Canceler } from 'axios';
-import { IOffChainDataSource, OffChainDataSource } from '@energyweb/origin-backend-client';
+import { OffChainDataSource } from '@energyweb/origin-backend-client';
 import {
     ExchangeClient,
     IExchangeClient,
     ExchangeAccount,
     AccountAsset,
-    Bundle,
-    BundleSplits
+    Bundle
 } from '../../utils/exchange';
 import {
     IOriginConfiguration,
-    IOrganizationWithRelationsIds
+    IUser,
+    IOffChainDataSource,
+    UserStatus
 } from '@energyweb/origin-backend-core';
 import {
     setActiveBlockchainAccountAddress,
-    addOrganizations,
     UsersActions,
     ISetActiveBlockchainAccountAddressAction
 } from '../users/actions';
-import { ethers } from 'ethers';
+import { ethers, BigNumber } from 'ethers';
 import { getSearch, push } from 'connected-react-router';
-import { getConfiguration, getBaseURL } from '../selectors';
+import { getConfiguration, getBaseURL, getWeb3 } from '../selectors';
 import * as queryString from 'query-string';
 import * as Winston from 'winston';
 import { Certificate, Contracts, CertificateUtils, ICertificate } from '@energyweb/issuer';
@@ -53,7 +53,6 @@ import {
     updateCertificate
 } from '../certificates/actions';
 import { IStoreState } from '../../types';
-import { BigNumber } from 'ethers/utils';
 import { getI18n } from 'react-i18next';
 import { showNotification, NotificationType, getDevicesOwnedLink } from '../../utils';
 import { ICertificateViewItem, CertificateSource } from '../certificates';
@@ -66,6 +65,8 @@ import {
     clearBundles
 } from '../bundles';
 import { fetchOrders } from '../orders/sagas';
+import { getUserOffchain } from '../users/selectors';
+import { IProducingDeviceState } from '../producingDevices/reducer';
 
 function createEthereumProviderAccountsChangedEventChannel(ethereumProvider: any) {
     return eventChannel<string[]>((emitter) => {
@@ -337,9 +338,9 @@ export function enhanceCertificate(
     return {
         ...onChainCertificate,
         energy: {
-            publicVolume: new BigNumber(amount),
-            privateVolume: new BigNumber(0),
-            claimedVolume: new BigNumber(0)
+            publicVolume: BigNumber.from(amount),
+            privateVolume: BigNumber.from(0),
+            claimedVolume: BigNumber.from(0)
         },
         source: CertificateSource.Exchange,
         assetId: asset.id
@@ -364,83 +365,86 @@ export function* fetchBundles() {
     yield put(clearBundles());
     const exchangeClient: IExchangeClient = yield select(getExchangeClient);
     const bundles: Bundle[] = yield apply(exchangeClient, exchangeClient.getAvailableBundles, null);
-    const ownBundles: Bundle[] = yield apply(exchangeClient, exchangeClient.getOwnBundles, null);
+    const user = yield select(getUserOffchain);
+    const ownBundles: Bundle[] =
+        user && user.status === UserStatus.Active
+            ? yield apply(exchangeClient, exchangeClient.getOwnBundles, null)
+            : [];
     for (const bundle of bundles) {
         bundle.own = ownBundles.find((b) => b.id === bundle.id) !== undefined;
         bundle.items.forEach((item) => {
-            item.currentVolume = new BigNumber(item.currentVolume.toString());
-            item.startVolume = new BigNumber(item.startVolume.toString());
+            item.currentVolume = BigNumber.from(item.currentVolume.toString());
+            item.startVolume = BigNumber.from(item.startVolume.toString());
         });
         if (
             bundle.items
-                .reduce((total, item) => total.add(item.currentVolume), new BigNumber(0))
+                .reduce((total, item) => total.add(item.currentVolume), BigNumber.from(0))
                 .isZero()
         ) {
             continue;
         }
-        bundle.volume = new BigNumber(bundle.volume.toString());
-        const bundleSplits: BundleSplits = yield apply(
-            exchangeClient,
-            exchangeClient.getBundleSplits,
-            [bundle]
-        );
-        bundleSplits.splits.forEach((split) => {
-            split.volume = new BigNumber(split.volume);
-            split.items.forEach((item) => {
-                item.volume = new BigNumber(item.volume);
-            });
-        });
-        bundle.splits = bundleSplits.splits;
+        bundle.volume = BigNumber.from(bundle.volume.toString());
         yield put(storeBundle(bundle));
     }
 }
 
-function* fetchDataAfterConfigurationChange(
+export function* fetchDataAfterConfigurationChange(
     configuration: Configuration.Entity,
     update = false
 ): SagaIterator {
-    const producingDevices: ProducingDevice.Entity[] = yield apply(
+    const producingDevices: IProducingDeviceState[] = yield apply(
         ProducingDevice,
         ProducingDevice.getAllDevices,
-        [configuration, true]
+        [configuration, true, false]
     );
 
     for (const device of producingDevices) {
         yield put(producingDeviceCreatedOrUpdated(device));
     }
+    const user = yield select(getUserOffchain);
+    if (user) {
+        const { blockchainAccountAddress, status }: IUser = user;
+        if (status === UserStatus.Active) {
+            const web3: ethers.providers.Web3Provider = yield select(getWeb3);
+            const activeUser = web3.getSigner(blockchainAccountAddress);
+            const onChainCertificates: Certificate[] = yield apply(
+                Certificate,
+                CertificateUtils.getAllOwnedCertificates,
+                [
+                    {
+                        ...configuration,
+                        blockchainProperties: { ...configuration.blockchainProperties, activeUser }
+                    }
+                ]
+            );
+            const initializedCertificates = onChainCertificates
+                .filter((cert) => cert.initialized)
+                .map(
+                    (c): ICertificateViewItem => ({
+                        ...c,
+                        isClaimed: c.isClaimed,
+                        isOwned: c.isOwned,
+                        source: CertificateSource.Blockchain
+                    })
+                );
 
-    const onChainCertificates: Certificate[] = yield apply(
-        Certificate,
-        CertificateUtils.getAllOwnedCertificates,
-        [configuration]
-    );
-    const initializedCertificates = onChainCertificates
-        .filter((cert) => cert.initialized)
-        .map(
-            (c): ICertificateViewItem => ({
-                ...c,
-                isClaimed: c.isClaimed,
-                isOwned: c.isOwned,
-                source: CertificateSource.Blockchain
-            })
-        );
+            const exchangeClient: IExchangeClient = yield select(getExchangeClient);
 
-    const exchangeClient: IExchangeClient = yield select(getExchangeClient);
-
-    const offChainCertificates: ExchangeAccount = yield apply(
-        exchangeClient,
-        exchangeClient.getAccount,
-        null
-    );
-    const available = yield all(
-        offChainCertificates.balances.available.map((asset) =>
-            call(findEnhancedCertificate, asset, initializedCertificates)
-        )
-    );
-    const certificates = initializedCertificates.concat(available);
-
-    for (const certificate of certificates) {
-        yield put(update ? updateCertificate(certificate) : addCertificate(certificate));
+            const offChainCertificates: ExchangeAccount = yield apply(
+                exchangeClient,
+                exchangeClient.getAccount,
+                null
+            );
+            const available = yield all(
+                offChainCertificates.balances.available.map((asset) =>
+                    call(findEnhancedCertificate, asset, initializedCertificates)
+                )
+            );
+            const certificates = initializedCertificates.concat(available);
+            for (const certificate of certificates) {
+                yield put(update ? updateCertificate(certificate) : addCertificate(certificate));
+            }
+        }
     }
     yield call(fetchBundles);
     yield call(fetchOrders);
@@ -493,18 +497,9 @@ function* fillContractLookupIfMissing(): SagaIterator {
         } catch (error) {
             console.error('ContractsSaga::UnableToFetchBlockchainAddress', error);
         }
-
         yield put(setLoading(false));
-
         try {
             yield call(fetchDataAfterConfigurationChange, configuration);
-            const organizations: IOrganizationWithRelationsIds[] = yield apply(
-                offChainDataSource.organizationClient,
-                offChainDataSource.organizationClient.getAll,
-                []
-            );
-
-            yield put(addOrganizations(organizations));
             yield call(initEventHandler);
         } catch (error) {
             console.error('fillContractLookupIfMissing() error', error);
@@ -544,7 +539,7 @@ function* updateConfigurationWhenUserChanged(): SagaIterator {
         const newConfiguration: Configuration.Entity = yield call(
             createConfiguration,
             address,
-            web3,
+            web3 as ethers.providers.JsonRpcProvider,
             offchainConfiguration,
             offChainDataSource,
             existingConfiguration.logger

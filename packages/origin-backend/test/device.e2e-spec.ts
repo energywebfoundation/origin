@@ -4,66 +4,122 @@ import {
     DeviceStatus,
     IDeviceWithRelationsIds,
     Role,
-    ILoggedInUser
+    ILoggedInUser,
+    DeviceCreateData,
+    OrganizationStatus
 } from '@energyweb/origin-backend-core';
 import { expect } from 'chai';
-import { bigNumberify } from 'ethers/utils';
+import { BigNumber } from 'ethers';
 import moment from 'moment';
 import request from 'supertest';
 import dotenv from 'dotenv';
 
+import { INestApplication } from '@nestjs/common';
 import { bootstrapTestInstance, registerAndLogin } from './origin-backend';
 import { DeviceService } from '../src/pods/device/device.service';
+import { OrganizationService } from '../src/pods/organization/organization.service';
+import { UserService } from '../src/pods/user/user.service';
+import { CertificationRequestService } from '../src/pods/certification-request/certification-request.service';
+import { DatabaseService } from './database.service';
 
 describe('Device e2e tests', () => {
     dotenv.config({
         path: '.env.test'
     });
 
-    const createDevice = (
-        deviceService: DeviceService,
-        user: ILoggedInUser,
-        externalDeviceId = '123'
-    ) =>
-        deviceService.create(
-            {
-                address: '',
-                capacityInW: 1000,
-                complianceRegistry: 'I-REC',
-                country: 'EU',
-                description: '',
-                deviceType: 'Solar',
-                facilityName: 'Test',
-                gpsLatitude: '10',
-                gpsLongitude: '10',
-                gridOperator: 'OP',
-                images: '',
-                operationalSince: 2000,
-                otherGreenAttributes: '',
-                province: '',
-                region: '',
-                status: DeviceStatus.Active,
-                timezone: '',
-                typeOfPublicSupport: '',
-                deviceGroup: '',
-                smartMeterReads: [],
-                externalDeviceIds: [{ id: externalDeviceId, type: process.env.ISSUER_ID }],
-                automaticPostForSale: false,
-                defaultAskPrice: null
-            },
-            user
-        );
+    let app: INestApplication;
+    let deviceService: DeviceService;
+    let organizationService: OrganizationService;
+    let userService: UserService;
+    let certificationRequestService: CertificationRequestService;
+    let databaseService: DatabaseService;
 
-    it('should allow to edit settings for organization member with DeviceManager role', async () => {
-        const {
+    const getExampleDevice = (externalDeviceId = '123'): DeviceCreateData => ({
+        address: '',
+        capacityInW: 1000,
+        complianceRegistry: 'I-REC',
+        country: 'EU',
+        description: '',
+        deviceType: 'Solar',
+        facilityName: 'Test',
+        gpsLatitude: '10',
+        gpsLongitude: '10',
+        gridOperator: 'OP',
+        images: '',
+        operationalSince: 2000,
+        otherGreenAttributes: '',
+        province: '',
+        region: '',
+        status: DeviceStatus.Active,
+        timezone: '',
+        typeOfPublicSupport: '',
+        deviceGroup: '',
+        smartMeterReads: [
+            { timestamp: 10000, meterReading: BigNumber.from(100) },
+            { timestamp: 11000, meterReading: BigNumber.from(200) },
+            { timestamp: 12000, meterReading: BigNumber.from(300) }
+        ],
+        externalDeviceIds: [{ id: externalDeviceId, type: process.env.ISSUER_ID }],
+        automaticPostForSale: false,
+        defaultAskPrice: null
+    });
+
+    const createDevice = (user: ILoggedInUser, externalDeviceId = '123') =>
+        deviceService.create(getExampleDevice(externalDeviceId), user);
+
+    before(async () => {
+        ({
             app,
-            userService,
             deviceService,
-            organizationService
-        } = await bootstrapTestInstance();
+            organizationService,
+            userService,
+            certificationRequestService,
+            databaseService
+        } = await bootstrapTestInstance());
 
         await app.init();
+    });
 
+    beforeEach(async () => {
+        await databaseService.truncate('user', 'organization', 'device');
+    });
+
+    after(async () => {
+        await app.close();
+    });
+
+    it('should not allow to register device for non-active organization', async () => {
+        const { accessToken } = await registerAndLogin(app, userService, organizationService, [
+            Role.OrganizationUser,
+            Role.OrganizationDeviceManager
+        ]);
+
+        await request(app.getHttpServer())
+            .post('/device')
+            .send(getExampleDevice())
+            .set('Authorization', `Bearer ${accessToken}`)
+            .expect(403);
+    });
+
+    it('should allow to register device for active organization', async () => {
+        const { accessToken } = await registerAndLogin(
+            app,
+            userService,
+            organizationService,
+            [Role.OrganizationUser, Role.OrganizationDeviceManager],
+            'default',
+            'default',
+            OrganizationStatus.Active
+        );
+
+        await request(app.getHttpServer())
+            .post('/device')
+            .send(getExampleDevice())
+            .set('Authorization', `Bearer ${accessToken}`)
+            .expect(201);
+    });
+
+    it('should allow to edit settings for organization member with DeviceManager role', async () => {
         const { accessToken, user } = await registerAndLogin(
             app,
             userService,
@@ -71,14 +127,13 @@ describe('Device e2e tests', () => {
             [Role.OrganizationUser, Role.OrganizationDeviceManager]
         );
 
-        const { id: deviceId } = await createDevice(deviceService, user);
+        const { id: deviceId } = await createDevice(user);
 
         await request(app.getHttpServer())
             .get(`/device/${deviceId}`)
             .set('Authorization', `Bearer ${accessToken}`)
             .expect((res) => {
                 const device = res.body as IDeviceWithRelationsIds;
-
                 expect(device.defaultAskPrice).equals(null);
                 expect(device.automaticPostForSale).equals(false);
             });
@@ -130,20 +185,9 @@ describe('Device e2e tests', () => {
                 expect(device.defaultAskPrice).equals(settingWithCorrectPrice.defaultAskPrice);
                 expect(device.automaticPostForSale).equals(true);
             });
-
-        await app.close();
     });
 
     it("should not allow deleting device to another Organization's admins", async () => {
-        const {
-            app,
-            userService,
-            deviceService,
-            organizationService
-        } = await bootstrapTestInstance();
-
-        await app.init();
-
         const { user: orgAdmin } = await registerAndLogin(app, userService, organizationService, [
             Role.OrganizationAdmin
         ]);
@@ -157,27 +201,15 @@ describe('Device e2e tests', () => {
             'default2'
         );
 
-        const { id: deviceId } = await createDevice(deviceService, orgAdmin);
+        const { id: deviceId } = await createDevice(orgAdmin);
 
         await request(app.getHttpServer())
             .delete(`/device/${deviceId}`)
             .set('Authorization', `Bearer ${accessTokenOtherOrgAdmin}`)
             .expect(401);
-
-        await app.close();
     });
 
     it('should return certified and uncertified readings', async () => {
-        const {
-            app,
-            userService,
-            deviceService,
-            organizationService,
-            certificationRequestService
-        } = await bootstrapTestInstance();
-
-        await app.init();
-
         const { accessToken, user } = await registerAndLogin(
             app,
             userService,
@@ -187,7 +219,7 @@ describe('Device e2e tests', () => {
 
         const externalDeviceId = '123';
 
-        const device = await createDevice(deviceService, user, externalDeviceId);
+        const device = await createDevice(user, externalDeviceId);
 
         await request(app.getHttpServer())
             .get(`/device/${device.id}?withMeterStats=true`)
@@ -195,8 +227,13 @@ describe('Device e2e tests', () => {
             .expect((res) => {
                 const resultDevice = res.body as IDeviceWithRelationsIds;
 
-                expect(bigNumberify(resultDevice.meterStats.certified).toNumber()).equals(0);
-                expect(bigNumberify(resultDevice.meterStats.uncertified).toNumber()).equals(0);
+                const [firstRead] = resultDevice.smartMeterReads;
+
+                expect(BigNumber.from(resultDevice.meterStats.certified).toNumber()).equals(0);
+                expect(BigNumber.from(resultDevice.meterStats.uncertified).toNumber()).equals(300);
+
+                expect(BigNumber.from(firstRead.timestamp).toNumber()).equals(10000);
+                expect(BigNumber.from(firstRead.meterReading).toNumber()).equals(100);
             });
 
         const now = moment();
@@ -257,23 +294,12 @@ describe('Device e2e tests', () => {
                 const resultDevice = res.body as IDeviceWithRelationsIds;
 
                 expect(
-                    bigNumberify(resultDevice.meterStats.certified).toNumber()
+                    BigNumber.from(resultDevice.meterStats.certified).toNumber()
                 ).to.be.greaterThan(0);
             });
-
-        await app.close();
     });
 
     it('should not allow storing smart meter readings to other organization device managers', async () => {
-        const {
-            app,
-            userService,
-            deviceService,
-            organizationService
-        } = await bootstrapTestInstance();
-
-        await app.init();
-
         const { user } = await registerAndLogin(app, userService, organizationService, [
             Role.OrganizationUser,
             Role.OrganizationDeviceManager
@@ -288,7 +314,7 @@ describe('Device e2e tests', () => {
             'default2'
         );
 
-        const device = await createDevice(deviceService, user);
+        const device = await createDevice(user);
 
         await request(app.getHttpServer())
             .put(`/device/${device.id}/smartMeterReading`)
@@ -300,7 +326,5 @@ describe('Device e2e tests', () => {
                 }
             ])
             .expect(401);
-
-        await app.close();
     });
 });

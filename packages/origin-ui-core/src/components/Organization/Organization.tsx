@@ -1,17 +1,20 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { useSelector } from 'react-redux';
 import { NavLink, Route, Redirect } from 'react-router-dom';
-import { Role, isRole } from '@energyweb/origin-backend-core';
+import { Role, isRole, UserStatus } from '@energyweb/origin-backend-core';
 
 import { PageContent } from '../PageContent/PageContent';
 import { useLinks } from '../../utils/routing';
-import { getUserOffchain } from '../../features/users/selectors';
-import { OrganizationForm } from './OrganizationForm';
+import { getUserOffchain, getIRECAccount, getInvitations } from '../../features/users/selectors';
 import { OrganizationTable } from './OrganizationTable';
 import { OrganizationView } from './OrganizationView';
 import { OrganizationInvite } from './OrganizationInvite';
 import { OrganizationInvitations } from './OrganizationInvitations';
 import { OrganizationUsersTable } from './OrganizationUsersTable';
+import { OrganizationForm } from './OrganizationForm';
+import { IRECRegisterForm } from './IRECRegisterForm';
+import { OriginConfigurationContext } from '..';
+import { OriginFeature } from '@energyweb/utils-general';
 
 export const roleNames = {
     [Role.OrganizationUser]: 'organization.invitations.roles.member',
@@ -20,62 +23,80 @@ export const roleNames = {
 };
 
 export function Organization() {
-    const userOffchain = useSelector(getUserOffchain);
+    const user = useSelector(getUserOffchain);
+    const invitations = useSelector(getInvitations);
+    const showInvitations: boolean =
+        user?.organization?.id && isRole(user, Role.OrganizationAdmin)
+            ? true
+            : invitations.length > 0;
 
     const { getOrganizationLink } = useLinks();
 
-    const isLoggedIn = Boolean(userOffchain);
+    const isLoggedIn = Boolean(user);
+    const userIsActive = user && user.status === UserStatus.Active;
+    const organization = useSelector(getUserOffchain)?.organization;
+    const irecAccount = useSelector(getIRECAccount);
+    const { enabledFeatures } = useContext(OriginConfigurationContext);
 
     const Menu = [
+        {
+            key: 'my-organization',
+            label: 'My Organization',
+            component: OrganizationView,
+            show: user?.organization?.id
+        },
         {
             key: 'organization-users',
             label: 'Members',
             component: OrganizationUsersTable,
-            hide: !isLoggedIn || !isRole(userOffchain, Role.OrganizationAdmin)
+            show: user?.organization?.id && isRole(user, Role.OrganizationAdmin)
         },
         {
             key: 'organization-invitations',
             label: 'Invitations',
             component: OrganizationInvitations,
-            hide: !isLoggedIn
+            show: showInvitations
         },
         {
             key: 'organization-invite',
             label: 'Invite',
             component: OrganizationInvite,
-            hide:
-                !isLoggedIn ||
-                !isRole(userOffchain, Role.OrganizationAdmin) ||
-                !userOffchain?.organization
+            show: userIsActive && user?.organization?.id && isRole(user, Role.OrganizationAdmin)
         },
         {
             key: 'organization-register',
             label: 'Register',
             component: OrganizationForm,
-            hide: !isLoggedIn || userOffchain?.organization
+            show: !user?.organization?.id
         },
         {
             key: 'organization-table',
             label: 'All organizations',
             component: OrganizationTable,
-            hide: !isLoggedIn
+            show: isLoggedIn && userIsActive && isRole(user, Role.Admin, Role.SupportAgent)
         },
         {
             key: 'organization-view',
             label: 'View',
             component: OrganizationView,
-            hide: true
+            show: false
+        },
+        {
+            key: 'register-irec',
+            label: 'Register I-REC',
+            component: IRECRegisterForm,
+            show: enabledFeatures.includes(OriginFeature.IRec) && organization && !irecAccount
         }
     ];
 
-    const firstNotHiddenRoute = Menu.filter((i) => !i.hide)[0]?.key;
+    const firstNotHiddenRoute = Menu.filter((i) => i.show)[0]?.key;
 
     return (
         <div className="PageWrapper">
             <div className="PageNav">
                 <ul className="NavMenu nav">
                     {Menu.map((menu) => {
-                        if (menu.hide) {
+                        if (!menu.show) {
                             return null;
                         }
 

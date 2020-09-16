@@ -1,5 +1,5 @@
 import { Unit } from '@energyweb/utils-general';
-import { commify, BigNumber, BigNumberish, bigNumberify } from 'ethers/utils';
+import { utils, BigNumber, BigNumberish } from 'ethers';
 
 export class EnergyFormatter {
     public static readonly displayUnit: string = 'MWh';
@@ -7,7 +7,7 @@ export class EnergyFormatter {
     public static readonly decimalPlaces: number = 3;
 
     static getValueInDisplayUnit(baseValue: BigNumberish): number {
-        const bnValue = bigNumberify(baseValue);
+        const bnValue = BigNumber.from(baseValue);
 
         const whole = bnValue.div(Unit[EnergyFormatter.displayUnit]);
         const mod = bnValue.mod(Unit[EnergyFormatter.displayUnit]);
@@ -15,12 +15,12 @@ export class EnergyFormatter {
     }
 
     static getBaseValueFromValueInDisplayUnit(valueInDisplayUnit: number): BigNumber {
-        return bigNumberify(valueInDisplayUnit * Unit[EnergyFormatter.displayUnit]);
+        return BigNumber.from(valueInDisplayUnit * Unit[EnergyFormatter.displayUnit]);
     }
 
     static format(baseValue: BigNumberish, includeDisplayUnit?: boolean): string {
-        const returnValue = bigNumberify(baseValue);
-        return `${commify(EnergyFormatter.getValueInDisplayUnit(returnValue).toString())}${
+        const returnValue = BigNumber.from(baseValue);
+        return `${utils.commify(EnergyFormatter.getValueInDisplayUnit(returnValue).toString())}${
             includeDisplayUnit ? EnergyFormatter.displayUnit : ''
         }`;
     }

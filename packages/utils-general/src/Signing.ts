@@ -1,5 +1,5 @@
 import ethSigUtil from 'eth-sig-util';
-import { JsonRpcProvider } from 'ethers/providers';
+import { providers } from 'ethers';
 
 const getData = (text: string): ethSigUtil.EIP712TypedData => {
     return {
@@ -19,7 +19,7 @@ const getData = (text: string): ethSigUtil.EIP712TypedData => {
             text
         }
     };
-}
+};
 
 export async function recoverTypedSignatureAddress(text: string, signedMessage: string) {
     return ethSigUtil.recoverTypedSignature({
@@ -31,7 +31,7 @@ export async function recoverTypedSignatureAddress(text: string, signedMessage: 
 export async function signTypedMessage(
     from: string,
     text: string,
-    web3: JsonRpcProvider
+    web3: providers.JsonRpcProvider
 ): Promise<string> {
     return web3.send('eth_signTypedData_v4', [from, JSON.stringify(getData(text))]);
 }
@@ -40,8 +40,5 @@ export async function signTypedMessagePrivateKey(
     privateKey: string,
     text: string
 ): Promise<string> {
-    return ethSigUtil.signTypedData(
-        Buffer.from(privateKey, 'hex'),
-        { data: getData(text) }
-    );
+    return ethSigUtil.signTypedData(Buffer.from(privateKey, 'hex'), { data: getData(text) });
 }

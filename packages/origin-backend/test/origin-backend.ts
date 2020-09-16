@@ -5,7 +5,9 @@ import {
     OrganizationPostData,
     Role,
     UserRegistrationData,
-    UserStatus
+    UserStatus,
+    IOrganization,
+    OrganizationStatus
 } from '@energyweb/origin-backend-core';
 import { signTypedMessagePrivateKey } from '@energyweb/utils-general';
 import { Logger } from '@nestjs/common';
@@ -17,15 +19,40 @@ import request from 'supertest';
 
 import { entities } from '../src';
 import { AppModule } from '../src/app.module';
-import { CertificationRequestService } from '../src/pods/certificate/certification-request.service';
+import { CertificationRequestService } from '../src/pods/certification-request/certification-request.service';
 import { ConfigurationService } from '../src/pods/configuration';
 import { DeviceService } from '../src/pods/device/device.service';
 import { OrganizationService } from '../src/pods/organization/organization.service';
 import { UserService } from '../src/pods/user';
 import { DatabaseService } from './database.service';
 import { CertificateService } from '../src/pods/certificate/certificate.service';
+import { EmailConfirmationService } from '../src/pods/email-confirmation/email-confirmation.service';
+import { FileService } from '../src/pods/file/file.service';
 
 const testLogger = new Logger('e2e');
+
+export const getExampleOrganization = (email = 'test@example.com'): OrganizationPostData => ({
+    email,
+    code: '',
+    contact: '',
+    telephone: '',
+    address: '',
+    shareholders: '',
+    ceoName: 'John',
+    vatNumber: '',
+    postcode: '',
+    businessTypeSelect: '',
+    businessTypeInput: '',
+    activeCountries: 'EU',
+    name: 'Test',
+    ceoPassportNumber: '1',
+    companyNumber: '2',
+    headquartersCountry: 1,
+    country: 1,
+    yearOfRegistration: 2000,
+    numberOfEmployees: 1,
+    website: 'http://example.com'
+});
 
 export const bootstrapTestInstance = async () => {
     const moduleFixture = await Test.createTestingModule({
@@ -60,6 +87,10 @@ export const bootstrapTestInstance = async () => {
     const certificationRequestService = await app.resolve<CertificationRequestService>(
         CertificationRequestService
     );
+    const emailConfirmationService = await app.resolve<EmailConfirmationService>(
+        EmailConfirmationService
+    );
+    const fileService = await app.resolve<FileService>(FileService);
 
     app.useLogger(testLogger);
     app.enableCors();
@@ -79,7 +110,9 @@ export const bootstrapTestInstance = async () => {
         deviceService,
         configurationService,
         certificateService,
-        certificationRequestService
+        certificationRequestService,
+        emailConfirmationService,
+        fileService
     };
 };
 
@@ -89,7 +122,8 @@ export const registerAndLogin = async (
     organizationService: OrganizationService,
     roles: Role[] = [Role.OrganizationAdmin],
     userSeed = 'default',
-    orgSeed = 'default'
+    orgSeed = 'default',
+    organizationStatus = OrganizationStatus.Submitted
 ) => {
     const userEmail = `user${userSeed}@example.com`;
 
@@ -124,38 +158,20 @@ export const registerAndLogin = async (
     });
 
     if (!organization) {
-        const organizationRegistration = {
-            email: organizationEmail,
-            code: '',
-            contact: '',
-            telephone: '',
-            address: '',
-            shareholders: '',
-            ceoName: 'John',
-            vatNumber: '',
-            postcode: '',
-            businessTypeSelect: '',
-            businessTypeInput: '',
-            activeCountries: 'EU',
-            name: 'Test',
-            ceoPassportNumber: '1',
-            companyNumber: '2',
-            headquartersCountry: 1,
-            country: 1,
-            yearOfRegistration: 2000,
-            numberOfEmployees: 1,
-            website: 'http://example.com'
-        } as OrganizationPostData;
+        const organizationRegistration = getExampleOrganization(organizationEmail);
 
         await organizationService.create(user.id, organizationRegistration);
         organization = await organizationService.findOne(null, {
             where: { email: organizationEmail }
         });
+        if (organizationStatus !== OrganizationStatus.Submitted) {
+            await organizationService.update(organization.id, { status: organizationStatus });
+        }
     } else {
         await userService.addToOrganization(user.id, organization.id);
     }
 
-    user.organization = organization.id;
+    user.organization = { id: organization.id } as IOrganization;
 
     let accessToken: string;
 

@@ -1,5 +1,4 @@
 /*  eslint-disable @typescript-eslint/no-unused-vars */
-import { IDeviceClient } from '@energyweb/origin-backend-client';
 import {
     DeviceStatus,
     DeviceUpdateData,
@@ -10,7 +9,8 @@ import {
     ISmartMeterReadWithStatus,
     DeviceSettingsUpdateData,
     ISuccessResponse,
-    sortLowestToHighestTimestamp
+    sortLowestToHighestTimestamp,
+    IDeviceClient
 } from '@energyweb/origin-backend-core';
 
 export class DeviceClientMock implements IDeviceClient {

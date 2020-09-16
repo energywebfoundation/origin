@@ -44,7 +44,7 @@ interface IOwnProps {
     splits: Split[];
 }
 
-const useOfferClasses = makeStyles((theme: Theme) =>
+const useStyles = makeStyles((theme: Theme) =>
     createStyles({
         root: {
             paddingLeft: theme.spacing(2),
@@ -79,7 +79,7 @@ export const BundleContents = (props: IOwnProps) => {
     const { price, items, id } = bundle;
     const environment = useSelector(getEnvironment);
     const devices = useSelector(getProducingDevices);
-    const offerClasses = useOfferClasses();
+    const offerClasses = useStyles();
     const [selected, setSelected] = useState<Split>(null);
     const [firstItem, setFirstItem] = useState<number>(0);
     const [firstSplit, setFirstSplit] = useState<number>(0);

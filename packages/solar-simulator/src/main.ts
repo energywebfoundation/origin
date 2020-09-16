@@ -2,7 +2,6 @@ import dotenv from 'dotenv';
 import program from 'commander';
 import path from 'path';
 
-import { startAPI } from './simulatorService';
 import { startConsumerService } from './consumerService';
 import { mockData } from './mockReadings';
 
@@ -40,6 +39,5 @@ function initEnv() {
         console.log('Finished deploying past energy readings');
     }
 
-    await startAPI(configFilePath, dataFilePath);
-    await startConsumerService(configFilePath);
+    await startConsumerService(configFilePath, dataFilePath);
 })();

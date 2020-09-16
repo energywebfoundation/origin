@@ -12,8 +12,9 @@ import { Grid } from '@material-ui/core';
 import { getUserOffchain } from '../../features/users/selectors';
 import { getExchangeClient, getCountry } from '../../features/general/selectors';
 import { useSelector, useDispatch } from 'react-redux';
-import { TOrderBook } from '../../utils/exchange';
+import { TOrderBook, ANY_VALUE } from '../../utils/exchange';
 import { setLoading } from '../../features/general/actions';
+import { reloadCertificates } from '../../features/certificates';
 
 interface IProps {
     currency: string;
@@ -72,11 +73,10 @@ export function Exchange(props: IProps) {
         await exchangeClient.createBid({
             price: parseFloat(values.price) * 100,
             product: {
-                deviceType: values.deviceType?.length > 0 ? values.deviceType : undefined,
-                location:
-                    values.location?.length > 0
-                        ? values.location?.map((l) => `${country};${l}`)
-                        : undefined,
+                deviceType: values.deviceType?.includes(ANY_VALUE) ? undefined : values.deviceType,
+                location: values.location?.includes(ANY_VALUE)
+                    ? undefined
+                    : values.location?.map((l) => `${country};${l}`),
                 generationFrom: generationDateStart,
                 generationTo: generationDateEnd
             },
@@ -105,6 +105,8 @@ export function Exchange(props: IProps) {
             volume,
             price
         });
+
+        dispatch(reloadCertificates());
 
         if (!success) {
             showNotification('Direct buy failed.');

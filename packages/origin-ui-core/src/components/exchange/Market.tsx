@@ -15,10 +15,10 @@ import { useSelector } from 'react-redux';
 import { getConfiguration } from '../../features';
 import { Skeleton } from '@material-ui/lab';
 import { useValidation, Moment, useTranslation, formatCurrencyComplete } from '../../utils';
-import { calculateTotalPrice } from '../../utils/exchange';
+import { calculateTotalPrice, ANY_VALUE, ANY_OPERATOR } from '../../utils/exchange';
 import { Formik, Form } from 'formik';
 import { FormInput, FormikDatePickerWithMonthArrowsFilled, FormikEffect } from '../Form';
-import { DeviceSelectors } from '../DeviceSelectors';
+import { DeviceSelectors } from '../devices/DeviceSelectors';
 
 export interface IMarketFormValues {
     generationDateStart: Moment;
@@ -35,9 +35,9 @@ const INITIAL_FORM_VALUES: IMarketFormValues = {
     generationDateStart: null,
     generationDateEnd: null,
     price: '',
-    deviceType: [],
-    location: [],
-    gridOperator: []
+    deviceType: [ANY_VALUE],
+    location: [ANY_VALUE],
+    gridOperator: [ANY_OPERATOR]
 };
 
 interface IProps {
@@ -109,17 +109,41 @@ export function Market(props: IProps) {
 
                     return (
                         <Form translate="">
-                            <FormikEffect onChange={onChange} />
+                            <FormikEffect
+                                onChange={(askProps: IMarketFormValues) => {
+                                    onChange(
+                                        Object.fromEntries(
+                                            Object.entries(askProps).map(([name, prop]) =>
+                                                prop?.some &&
+                                                prop.some((p) =>
+                                                    [ANY_VALUE, ANY_OPERATOR].includes(p)
+                                                )
+                                                    ? [name, []]
+                                                    : [name, prop]
+                                            )
+                                        ) as IMarketFormValues
+                                    );
+                                }}
+                            />
                             <Typography variant="h4">{t('exchange.info.market')}</Typography>
 
                             <Grid container spacing={3}>
                                 <Grid item xs={6}>
                                     <HierarchicalMultiSelect
                                         selectedValue={values.deviceType}
-                                        onChange={(value: string[]) =>
-                                            setFieldValue('deviceType', value)
-                                        }
-                                        allValues={configuration.deviceTypeService.deviceTypes}
+                                        onChange={(value: string[]) => {
+                                            const { deviceType } = values;
+                                            value =
+                                                (value.includes(ANY_VALUE) &&
+                                                    !deviceType.includes(ANY_VALUE)) ||
+                                                value.length === 0
+                                                    ? [ANY_VALUE]
+                                                    : value.filter((v) => v !== ANY_VALUE);
+                                            setFieldValue('deviceType', value);
+                                        }}
+                                        allValues={configuration.deviceTypeService.deviceTypes.concat(
+                                            [[ANY_VALUE]]
+                                        )}
                                         selectOptions={[
                                             {
                                                 label: t('device.properties.deviceType'),
@@ -139,11 +163,33 @@ export function Market(props: IProps) {
                                 </Grid>
                                 <DeviceSelectors
                                     location={values.location}
-                                    onLocationChange={(value) => setFieldValue('location', value)}
+                                    onLocationChange={(value) => {
+                                        const { location } = values;
+                                        value =
+                                            (value.includes(ANY_VALUE) &&
+                                                !location.includes(ANY_VALUE)) ||
+                                            value.length === 0
+                                                ? [ANY_VALUE]
+                                                : value.filter((v) => v !== ANY_VALUE);
+                                        setFieldValue(
+                                            'location',
+                                            value.length === 0 ? [ANY_VALUE] : value
+                                        );
+                                    }}
                                     gridOperator={values.gridOperator}
-                                    onGridOperatorChange={(value) =>
-                                        setFieldValue('gridOperator', value)
-                                    }
+                                    onGridOperatorChange={(value) => {
+                                        const { gridOperator } = values;
+                                        value =
+                                            (value.includes(ANY_OPERATOR) &&
+                                                !gridOperator.includes(ANY_OPERATOR)) ||
+                                            value.length === 0
+                                                ? [ANY_OPERATOR]
+                                                : value.filter((v) => v !== ANY_OPERATOR);
+                                        setFieldValue(
+                                            'gridOperator',
+                                            value.length === 0 ? [ANY_OPERATOR] : value
+                                        );
+                                    }}
                                     disabled={fieldDisabled}
                                 ></DeviceSelectors>
                             </Grid>

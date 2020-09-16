@@ -11,7 +11,7 @@
     "bugs": {
         "url": "https://github.com/energywebfoundation/origin/issues"
     },
-    "version": "2.4.0",
+    "version": "2.4.5",
     "main": "dist/js/src/index.js",
     "files": [
         "dist/js/build",
@@ -26,8 +26,8 @@
         "build:static": "yarn compile && yarn typechain:registry && yarn typechain:issuer",
         "build:ts": "tsc -b tsconfig.json && yarn copy:declarations",
         "copy:declarations": "shx cp src/ethers/*.d.ts dist/js/src/ethers",
-        "typechain:registry": "typechain --target ethers --outDir src/ethers './build/contracts/Registry.json'",
-        "typechain:issuer": "typechain --target ethers --outDir src/ethers './build/contracts/Issuer.json'",
+        "typechain:registry": "typechain --target ethers-v5 --outDir src/ethers './build/contracts/Registry.json'",
+        "typechain:issuer": "typechain --target ethers-v5 --outDir src/ethers './build/contracts/Issuer.json'",
         "clean": "shx rm -rf dist dist-shakeable build src/ethers",
         "compile": "truffle compile",
         "deploy-contracts": "truffle migrate",
@@ -42,24 +42,24 @@
     },
     "types": "dist/js/src/index.d.ts",
     "dependencies": {
-        "@energyweb/origin-backend-client-mocks": "4.0.2",
-        "@energyweb/origin-backend-core": "4.1.0",
-        "@energyweb/utils-general": "9.1.4",
+        "@energyweb/origin-backend-client-mocks": "5.1.0",
+        "@energyweb/origin-backend-core": "5.1.0",
+        "@energyweb/utils-general": "9.2.3",
         "chai": "4.2.0",
         "dotenv": "8.2.0",
-        "ethers": "4.0.47",
-        "mocha": "8.0.1",
+        "ethers": "5.0.8",
+        "mocha": "8.1.3",
         "moment": "2.24.0",
-        "polly-js": "1.6.6",
-        "precise-proofs-js": "1.1.0",
+        "polly-js": "1.6.8",
+        "precise-proofs-js": "1.2.0",
         "winston": "3.3.3"
     },
     "devDependencies": {
+        "@typechain/ethers-v5": "1.0.0",
         "ethlint": "1.2.5",
         "ganache-cli": "6.5.1",
         "truffle-typings": "1.0.8",
-        "typechain": "2.0.0",
-        "typechain-target-ethers": "1.0.4"
+        "typechain": "2.0.0"
     },
     "publishConfig": {
         "access": "public",

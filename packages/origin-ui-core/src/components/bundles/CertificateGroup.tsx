@@ -10,7 +10,9 @@ import {
     Avatar,
     ListItem,
     Box,
-    useTheme
+    useTheme,
+    makeStyles,
+    Theme
 } from '@material-ui/core';
 import { getProducingDevices, getEnvironment, useTranslation } from '../..';
 import { useSelector } from 'react-redux';
@@ -22,7 +24,14 @@ interface IOwnProps {
     setSelected: (certs: ICertificateViewItem[]) => void;
 }
 
+const useStyles = makeStyles((theme: Theme) => ({
+    icons: {
+        fill: theme.palette.error.light
+    }
+}));
+
 export const CertificateGroup = (props: IOwnProps) => {
+    const styles = useStyles();
     const { certificates, selected, setSelected } = props;
     const devices = useSelector(getProducingDevices);
     const environment = useSelector(getEnvironment);
@@ -128,6 +137,7 @@ export const CertificateGroup = (props: IOwnProps) => {
                                         <ListItemAvatar>
                                             <Avatar
                                                 src={energyImageByType(type, isSelected(cert))}
+                                                className={styles.icons}
                                             ></Avatar>
                                         </ListItemAvatar>
                                     </Grid>

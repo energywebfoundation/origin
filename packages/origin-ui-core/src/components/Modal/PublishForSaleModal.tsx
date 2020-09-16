@@ -12,7 +12,7 @@ import {
     Select,
     TextField
 } from '@material-ui/core';
-import { bigNumberify } from 'ethers/utils';
+import { BigNumber } from 'ethers';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -39,7 +39,7 @@ export function PublishForSaleModal(props: IProps) {
     const user = useSelector(getUserOffchain);
     const environment: IEnvironment = useSelector(getEnvironment);
 
-    const DEFAULT_ENERGY_IN_BASE_UNIT = bigNumberify(
+    const DEFAULT_ENERGY_IN_BASE_UNIT = BigNumber.from(
         Number(environment?.DEFAULT_ENERGY_IN_BASE_UNIT || 1)
     );
     const [energyInDisplayUnit, setEnergyInDisplayUnit] = useState(
@@ -111,7 +111,7 @@ export function PublishForSaleModal(props: IProps) {
                 const energyInDisplayUnitValid =
                     newEnergyInBaseValueUnit.gte(1) &&
                     newEnergyInBaseValueUnit.lt(ownedPublicVolume) &&
-                    countDecimals(newEnergyInDisplayUnit) <= 6;
+                    countDecimals(newEnergyInDisplayUnit) === 0;
 
                 setEnergyInDisplayUnit(newEnergyInDisplayUnit);
 

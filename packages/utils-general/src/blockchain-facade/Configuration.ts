@@ -1,8 +1,7 @@
 import * as Winston from 'winston';
-import { Signer } from 'ethers';
-import { JsonRpcProvider } from 'ethers/providers';
+import { Signer, providers } from 'ethers';
 
-import { IOffChainDataSource } from '@energyweb/origin-backend-client';
+import { IOffChainDataSource } from '@energyweb/origin-backend-core';
 import { IDeviceTypeService } from './DeviceTypeService';
 
 export interface Entity<TRegistry = any, TIssuer = any> {
@@ -13,7 +12,7 @@ export interface Entity<TRegistry = any, TIssuer = any> {
 }
 
 export interface BlockchainProperties<TRegistry = any, TIssuer = any> {
-    web3?: JsonRpcProvider;
+    web3?: providers.FallbackProvider | providers.JsonRpcProvider;
     registry?: TRegistry;
     issuer?: TIssuer;
     activeUser?: Signer;

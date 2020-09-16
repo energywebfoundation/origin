@@ -1,7 +1,6 @@
+import { IOriginConfiguration, IOffChainDataSource } from '@energyweb/origin-backend-core';
 import { GeneralActions, IGeneralAction, IEnvironment } from './actions';
-import { IOffChainDataSource } from '@energyweb/origin-backend-client';
 import { IExchangeClient } from '../../utils/exchange';
-import { IOriginConfiguration } from '@energyweb/origin-backend-core';
 
 export interface IGeneralState {
     loading: boolean;

@@ -3,8 +3,7 @@ import {
     MAX_ENERGY_PER_CERTIFICATE,
     IOwnershipCommitmentStatus
 } from '@energyweb/origin-backend-core';
-import { Event as BlockchainEvent, ContractTransaction, ethers } from 'ethers';
-import { BigNumber, bigNumberify } from 'ethers/utils';
+import { Event as BlockchainEvent, ContractTransaction, ethers, BigNumber } from 'ethers';
 
 import { Configuration, Timestamp } from '@energyweb/utils-general';
 
@@ -208,7 +207,7 @@ export class Certificate extends PreciseProofEntity implements ICertificate {
 
         this.energy = {
             publicVolume: ownedEnergy,
-            privateVolume: this.privateOwnershipCommitment[owner] ?? bigNumberify(0),
+            privateVolume: this.privateOwnershipCommitment[owner] ?? BigNumber.from(0),
             claimedVolume: claimedEnergy
         };
 
@@ -353,7 +352,7 @@ export class Certificate extends PreciseProofEntity implements ICertificate {
                 amountToTransfer
             );
             proposedOwnerShares[toAddress] = (
-                proposedOwnerShares[toAddress] ?? new BigNumber(0)
+                proposedOwnerShares[toAddress] ?? BigNumber.from(0)
             ).add(amountToTransfer);
 
             const commitmentProof = this.generateAndAddProofs(proposedOwnerShares);
@@ -424,14 +423,15 @@ export class Certificate extends PreciseProofEntity implements ICertificate {
         claimSingleEvents
             .filter((claimEvent) => claimEvent._id.toNumber() === this.id)
             .forEach(async (claimEvent) => {
-                const claimData = await decodeClaimData(claimEvent._claimData, this.configuration);
+                const { _claimData, _id, _claimIssuer, _claimSubject, _topic, _value } = claimEvent;
+                const claimData = await decodeClaimData(_claimData, this.configuration);
 
                 claims.push({
-                    id: claimEvent._id,
-                    from: claimEvent._claimIssuer,
-                    to: claimEvent._claimSubject,
-                    topic: claimEvent._topic,
-                    value: claimEvent._value,
+                    id: _id,
+                    from: _claimIssuer,
+                    to: _claimSubject,
+                    topic: _topic,
+                    value: _value,
                     claimData
                 });
             });
@@ -446,20 +446,25 @@ export class Certificate extends PreciseProofEntity implements ICertificate {
                 claimBatchEvent._ids.map((idAsBN: BigNumber) => idAsBN.toNumber()).includes(this.id)
             )
             .forEach(async (claimBatchEvent) => {
-                const claimIds = claimBatchEvent._ids.map((idAsBN: BigNumber) => idAsBN.toNumber());
+                const {
+                    _ids,
+                    _claimData,
+                    _claimIssuer,
+                    _claimSubject,
+                    _topics,
+                    _values
+                } = claimBatchEvent;
+                const claimIds = _ids.map((idAsBN: BigNumber) => idAsBN.toNumber());
 
                 const index = claimIds.indexOf(this.id);
-                const claimData = await decodeClaimData(
-                    claimBatchEvent._claimData[index],
-                    this.configuration
-                );
+                const claimData = await decodeClaimData(_claimData[index], this.configuration);
 
                 claims.push({
-                    id: claimBatchEvent._ids[index],
-                    from: claimBatchEvent._claimIssuer,
-                    to: claimBatchEvent._claimSubject,
-                    topic: claimBatchEvent._topics[index],
-                    value: claimBatchEvent._values[index],
+                    id: _ids[index],
+                    from: _claimIssuer,
+                    to: _claimSubject,
+                    topic: _topics[index],
+                    value: _values[index],
                     claimData
                 });
             });

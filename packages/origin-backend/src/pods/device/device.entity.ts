@@ -3,7 +3,7 @@ import { IsInt, Min, IsLatitude, IsLongitude, IsNotEmpty } from 'class-validator
 import { ISmartMeterRead, IExternalDeviceId, IDevice } from '@energyweb/origin-backend-core';
 import { Organization } from '../organization/organization.entity';
 import { ExtendedBaseEntity } from '../ExtendedBaseEntity';
-import { CertificationRequest } from '../certificate/certification-request.entity';
+import { CertificationRequest } from '../certification-request/certification-request.entity';
 
 @Entity()
 export class Device extends ExtendedBaseEntity implements IDevice {

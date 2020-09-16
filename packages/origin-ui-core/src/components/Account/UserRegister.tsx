@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { showNotification, NotificationType } from '../../utils/notifications';
 import {
     Paper,
@@ -21,6 +21,7 @@ import { setLoading } from '../../features/general/actions';
 import { FormInput } from '../Form/FormInput';
 import { getOffChainDataSource } from '../../features/general/selectors';
 import { useTranslation } from 'react-i18next';
+import { UserRegisteredModal } from '../Modal/UserRegisteredModal';
 
 interface IFormValues {
     titleSelect: string;
@@ -47,6 +48,7 @@ const TITLE_OPTIONS = ['Dr', 'Mr', 'Mrs', 'Ms', 'Other'];
 export function UserRegister() {
     const userClient = useSelector(getOffChainDataSource)?.userClient;
     const dispatch = useDispatch();
+    const [showUserRegisteredModal, setShowUserRegisteredModal] = useState<boolean>(false);
 
     const { t } = useTranslation();
     const { Yup, yupLocaleInitialized } = useValidation();
@@ -87,6 +89,7 @@ export function UserRegister() {
                 ...values,
                 title: values.titleSelect === 'Other' ? values.titleInput : values.titleSelect
             });
+            setShowUserRegisteredModal(true);
 
             showNotification(t('user.feedback.userRegistered'), NotificationType.Success);
         } catch (error) {
@@ -235,6 +238,10 @@ export function UserRegister() {
                     );
                 }}
             </Formik>
+            <UserRegisteredModal
+                showModal={showUserRegisteredModal}
+                setShowModal={setShowUserRegisteredModal}
+            />
         </Paper>
     );
 }

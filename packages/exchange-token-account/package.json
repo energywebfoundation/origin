@@ -9,7 +9,7 @@
     "bugs": {
         "url": "https://github.com/energywebfoundation/origin/issues"
     },
-    "version": "0.1.11",
+    "version": "0.1.16",
     "main": "dist/js/src/index.js",
     "files": [
         "dist/js/src"
@@ -29,17 +29,18 @@
         "test": "truffle test",
         "test:concurrent": "concurrently --success first --kill-others -n eth,test \"yarn start-ganache\"  \"wait-on tcp:8570 && yarn test\"",
         "clean": "shx rm -rf build dist src/ethers",
-        "typechain:ethers": "typechain --target ethers --outDir src/ethers './build/contracts/TokenAccount.json'"
+        "typechain:ethers": "typechain --target ethers-v5 --outDir src/ethers './build/contracts/TokenAccount.json'"
     },
     "types": "dist/js/src/index.d.ts",
     "dependencies": {
-        "ethers": "4.0.47"
+        "chai": "4.2.0",
+        "ethers": "5.0.8"
     },
     "devDependencies": {
-        "@energyweb/issuer": "2.4.0",
+        "@energyweb/issuer": "2.4.5",
+        "@typechain/ethers-v5": "1.0.0",
         "truffle-typings": "1.0.8",
-        "typechain": "2.0.0",
-        "typechain-target-ethers": "1.0.4"
+        "typechain": "2.0.0"
     },
     "gitHead": "54beaf7fe6686810de74ca290daf99cbde510f9d",
     "publishConfig": {

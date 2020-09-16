@@ -52,7 +52,7 @@ export const AsksTable = (props: IOwnProsp) => {
     const getFilters = (): ICustomFilterDefinition[] => [
         {
             property: (record: Order) =>
-                deviceById(record.product.externalDeviceId.id, environment, devices).facilityName,
+                deviceById(record.asset.deviceId, environment, devices).facilityName,
             label: t('device.properties.facilityName'),
             input: {
                 type: CustomFilterInputType.dropdown,
@@ -125,21 +125,17 @@ export const AsksTable = (props: IOwnProsp) => {
             currentVolume,
             price,
             filled,
-            product: {
-                deviceType,
-                generationFrom,
-                generationTo,
-                externalDeviceId: { id: extDevId }
-            }
+            asset: { deviceId },
+            product: { deviceType, generationFrom, generationTo }
         } = order;
         return {
             volume: EnergyFormatter.format(Number(currentVolume), true),
             price: formatCurrencyComplete(price / 100, currency),
-            facilityName: deviceById(extDevId, environment, devices).facilityName,
+            facilityName: deviceById(deviceId, environment, devices).facilityName,
             device_type: deviceType[0].split(';')[0],
             generationFrom: moment(generationFrom).format('MMM, YYYY'),
             generationTo: moment(generationTo).format('MMM, YYYY'),
-            filled: `${filled}%`,
+            filled: `${filled * 100}%`,
             askId: order.id
         };
     });
@@ -172,6 +168,7 @@ export const AsksTable = (props: IOwnProsp) => {
     return (
         <>
             <TableMaterial
+                handleRowClick={(row: string) => viewDetails(parseInt(row, 10))}
                 columns={columns}
                 rows={rows}
                 filters={getFilters()}
@@ -180,7 +177,6 @@ export const AsksTable = (props: IOwnProsp) => {
                 pageSize={pageSize}
                 actions={actions}
                 caption={t('order.captions.open_asks')}
-                actionsLabel={t('order.captions.actions')}
             />
             {askToView && (
                 <OrderDetailsModal

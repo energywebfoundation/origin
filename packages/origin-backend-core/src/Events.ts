@@ -57,7 +57,13 @@ export type OrganizationMemberChangedRoleEvent = {
     email: string;
 };
 
+export type ConfirmEmailEvent = {
+    email: string;
+    token: string;
+};
+
 export enum SupportedEvents {
+    CONFIRM_EMAIL = 'ConfirmEmail',
     DEVICE_STATUS_CHANGED = 'DeviceStatusChanged',
     CREATE_NEW_DEMAND = 'CreatedNewDemand',
     DEMAND_UPDATED = 'DemandUpdated',
@@ -70,6 +76,7 @@ export enum SupportedEvents {
 }
 
 export type SupportedEventData =
+    | ConfirmEmailEvent
     | UserStatusChangedEvent
     | DeviceStatusChangedEvent
     | CreatedNewDemand

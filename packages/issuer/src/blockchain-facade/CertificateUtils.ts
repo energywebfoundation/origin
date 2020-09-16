@@ -1,20 +1,10 @@
-import { randomBytes } from 'ethers/utils';
 import { Configuration } from '@energyweb/utils-general';
-import { Log } from 'ethers/providers';
-import { EventFilter } from 'ethers';
+import { EventFilter, utils, providers } from 'ethers';
 
 import { Certificate, IClaimData } from './Certificate';
 import { Registry } from '../ethers/Registry';
 import { Issuer } from '../ethers/Issuer';
-import { getEventsFromContract } from '../utils/events';
-
-export interface IBlockchainEvent {
-    name: string;
-    transactionHash: string;
-    blockHash: string;
-    values: any;
-    timestamp: number;
-}
+import { getEventsFromContract, IBlockchainEvent } from '../utils/events';
 
 export const encodeClaimData = async (
     claimData: IClaimData,
@@ -79,7 +69,7 @@ export async function claimCertificates(
     const values = certificates.map((cert) => cert.energy.publicVolume);
 
     const encodedClaimData = await encodeClaimData(claimData, configuration);
-    const data = randomBytes(32);
+    const data = utils.randomBytes(32);
 
     const {
         activeUser,
@@ -123,7 +113,7 @@ export async function transferCertificates(
     const values = certificates.map((cert) => cert.energy.publicVolume);
 
     // TO-DO: replace with proper data
-    const data = randomBytes(32);
+    const data = utils.randomBytes(32);
 
     const { activeUser } = configuration.blockchainProperties as Configuration.BlockchainProperties<
         Registry,
@@ -212,21 +202,23 @@ export const getAllCertificateEvents = async (
             fromBlock: 0,
             toBlock: 'latest'
         });
-        const parsedLogs = await Promise.all(
-            logs.map(async (event: Log) => {
-                const { values } = registry.interface.parseLog(event);
-                const eventBlock = await registry.provider.getBlock(event.blockHash);
 
-                return {
-                    name: eventName,
-                    transactionHash: event.transactionHash,
-                    blockHash: event.blockHash,
-                    values,
-                    timestamp: eventBlock.timestamp
-                };
-            })
+        const parsedLogs = await Promise.all(
+            logs.map(
+                async (event: providers.Log): Promise<IBlockchainEvent> => {
+                    const eventBlock = await registry.provider.getBlock(event.blockHash);
+
+                    return {
+                        name: eventName,
+                        transactionHash: event.transactionHash,
+                        blockHash: event.blockHash,
+                        timestamp: eventBlock.timestamp,
+                        ...registry.interface.decodeEventLog(eventName, event.data, event.topics)
+                    };
+                }
+            )
         );
-        return parsedLogs.filter((event) => event.values._id.toNumber() === certId);
+        return parsedLogs.filter((event) => event._id.toNumber() === certId);
     };
 
     const issuanceSingleEvents = await getEvent(

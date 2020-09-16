@@ -2,21 +2,20 @@ import {
     UserLoginReturnData,
     UserRegistrationData,
     IUser,
-    IUserWithRelationsIds,
     IUserProperties,
     UserStatus,
     KYCStatus,
     Role,
     UserPasswordUpdate,
-    IUserWithRelations
+    IEmailConfirmationToken,
+    EmailConfirmationResponse,
+    ISuccessResponse,
+    IUserClient
 } from '@energyweb/origin-backend-core';
 import { recoverTypedSignatureAddress } from '@energyweb/utils-general';
 
-import { IUserClient } from '@energyweb/origin-backend-client';
-
 export class UserClientMock implements IUserClient {
-    
-    private storage = new Map<number, IUserWithRelationsIds>();
+    private storage = new Map<number, IUser>();
 
     private userIdCounter = 0;
 
@@ -32,7 +31,7 @@ export class UserClientMock implements IUserClient {
     async register(data: UserRegistrationData): Promise<IUser> {
         this.userIdCounter++;
 
-        const user: IUserWithRelationsIds = {
+        const user: IUser = {
             id: this.userIdCounter,
             ...data,
             organization: null,
@@ -49,15 +48,15 @@ export class UserClientMock implements IUserClient {
         return user;
     }
 
-    updateMocked(id: number, user: IUserWithRelationsIds) {
+    updateMocked(id: number, user: IUser) {
         this.storage.set(id, user);
     }
 
-    me(): Promise<IUserWithRelationsIds> {
+    me(): Promise<IUser> {
         return {} as any;
     }
 
-    async getUserById(id: string): Promise<IUserWithRelationsIds> {
+    async getUserById(id: string): Promise<IUser> {
         return this.storage.get(Number(id));
     }
 
@@ -88,14 +87,23 @@ export class UserClientMock implements IUserClient {
         });
     }
 
-    updateProfile(formData: IUser): Promise<IUserWithRelations> {
-        
-        throw new Error("Method not implemented.");
+    updateProfile(formData: IUser): Promise<IUser> {
+        throw new Error('Method not implemented.');
     }
-    updatePassword(formData: UserPasswordUpdate): Promise<IUserWithRelations> {
-        throw new Error("Method not implemented.");
+
+    updatePassword(formData: UserPasswordUpdate): Promise<IUser> {
+        throw new Error('Method not implemented.');
     }
-    updateChainAddress(formData: IUser): Promise<IUserWithRelations> {
-        throw new Error("Method not implemented.");
+
+    updateChainAddress(formData: IUser): Promise<IUser> {
+        throw new Error('Method not implemented.');
+    }
+
+    confirmEmail(token: IEmailConfirmationToken['token']): Promise<EmailConfirmationResponse> {
+        throw new Error('Method not implemented.');
+    }
+
+    requestConfirmationEmail(): Promise<ISuccessResponse> {
+        throw new Error('Method not implemented.');
     }
 }

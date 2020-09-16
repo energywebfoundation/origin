@@ -3,6 +3,50 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.2.7](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-ui@2.2.6...@energyweb/origin-ui@2.2.7) (2020-08-25)
+
+**Note:** Version bump only for package @energyweb/origin-ui
+
+
+
+
+
+## [2.2.6](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-ui@2.2.5...@energyweb/origin-ui@2.2.6) (2020-08-12)
+
+**Note:** Version bump only for package @energyweb/origin-ui
+
+
+
+
+
+## [2.2.5](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-ui@2.2.4...@energyweb/origin-ui@2.2.5) (2020-08-10)
+
+**Note:** Version bump only for package @energyweb/origin-ui
+
+
+
+
+
+## [2.2.4](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-ui@2.2.3...@energyweb/origin-ui@2.2.4) (2020-08-06)
+
+
+### Bug Fixes
+
+* **deps:** update dependency webpack to v4.44.0 ([c854f7b](https://github.com/energywebfoundation/origin/commit/c854f7b6584d97f7f59c49ec812f8587cf9a6582))
+* **deps:** update dependency webpack to v4.44.1 ([dd05f7e](https://github.com/energywebfoundation/origin/commit/dd05f7edab8597558586dd7031f0f9287a8159f0))
+
+
+
+
+
+## [2.2.3](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-ui@2.2.2...@energyweb/origin-ui@2.2.3) (2020-07-16)
+
+**Note:** Version bump only for package @energyweb/origin-ui
+
+
+
+
+
 ## [2.2.2](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-ui@2.2.1...@energyweb/origin-ui@2.2.2) (2020-07-08)
 
 

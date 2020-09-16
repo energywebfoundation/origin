@@ -12,12 +12,6 @@ export function deepEqual(a: any, b: any) {
     return a === b;
 }
 
-export function getEnumValues<T>(enumeration: T) {
-    const enumObject = Object.keys(enumeration);
-
-    return enumObject.splice(Math.ceil(enumObject.length / 2), enumObject.length - 1);
-}
-
 export function deduplicate(inputArray: any[]) {
     return inputArray.filter(
         (item, index, array) =>

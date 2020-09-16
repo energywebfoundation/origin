@@ -3,6 +3,77 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.5.3](https://github.com/energywebfoundation/origin/compare/@energyweb/exchange@1.5.2...@energyweb/exchange@1.5.3) (2020-08-25)
+
+**Note:** Version bump only for package @energyweb/exchange
+
+
+
+
+
+## [1.5.2](https://github.com/energywebfoundation/origin/compare/@energyweb/exchange@1.5.1...@energyweb/exchange@1.5.2) (2020-08-12)
+
+**Note:** Version bump only for package @energyweb/exchange
+
+
+
+
+
+## [1.5.1](https://github.com/energywebfoundation/origin/compare/@energyweb/exchange@1.5.0...@energyweb/exchange@1.5.1) (2020-08-10)
+
+
+### Bug Fixes
+
+* **deps:** update dependency ethers to v5.0.8 ([c69bde0](https://github.com/energywebfoundation/origin/commit/c69bde05c4f0eba5dbc49833f266af24c84c0187))
+
+
+
+
+
+# [1.5.0](https://github.com/energywebfoundation/origin/compare/@energyweb/exchange@1.4.0...@energyweb/exchange@1.5.0) (2020-08-06)
+
+
+### Bug Fixes
+
+* **deps:** update dependency class-transformer to v0.3.1 ([e827bbb](https://github.com/energywebfoundation/origin/commit/e827bbbc6f357c135d2d803bb82ad8774914913a))
+* **deps:** update dependency rxjs to v6.6.2 ([1849e03](https://github.com/energywebfoundation/origin/commit/1849e030c7cce6bf4d4063f3c6d96d98fbb96041))
+* **deps:** update nest monorepo to v7.4.2 ([241f045](https://github.com/energywebfoundation/origin/commit/241f04525f8d09f8bd464f979933390ad6a4bb2a))
+* **exchange:** inject ConfigService into validator ([864af1e](https://github.com/energywebfoundation/origin/commit/864af1e6fa97d94491dd6d02d9d2322243ea4d2c))
+* **exchange:** lint ([654c44a](https://github.com/energywebfoundation/origin/commit/654c44ab4fc4f0db8bba71af91754714c55a7672))
+* **exchange:** linting ([d023034](https://github.com/energywebfoundation/origin/commit/d023034548cc7bfd9bd21a8a58228cb706620287))
+* **exchange:** type bundleItemDTO before validation ([9336c69](https://github.com/energywebfoundation/origin/commit/9336c69d317cfc17682840d2d25fd531b6e82ee4))
+* **exchange:** typify nested objects ([83ca5b8](https://github.com/energywebfoundation/origin/commit/83ca5b88b8ec26be1173879d09e6283cc1419885))
+* **exchange:** unconfirmed withdrawals processing ([86fcf4d](https://github.com/energywebfoundation/origin/commit/86fcf4d49b13d3a2c110f5077b376e5547260d29))
+
+
+### Features
+
+* **exchange:** add excludeEnd to CreateDemandDTO ([85f97ed](https://github.com/energywebfoundation/origin/commit/85f97edfdf76ffc5cb6a86b7390dc5255eabcee7))
+* **exchange:** make excludeEnd optional ([49f9650](https://github.com/energywebfoundation/origin/commit/49f96504882c2e02d04181c51391b58db1408870))
+* **exchange:** positiveBNStringValidator test ([096ac67](https://github.com/energywebfoundation/origin/commit/096ac67692302f85a973e21c1ca8b90432222406))
+* **exchange:** validate bundle order demand volume ([aca1490](https://github.com/energywebfoundation/origin/commit/aca1490e587efd49bbacc4b60ce4708517355c8e))
+* **origin-ui-core:** add intUnitsOfEnergy validator ([e6a3cfd](https://github.com/energywebfoundation/origin/commit/e6a3cfd58251c047ca077297a8ad088e4fe9dce0))
+
+
+
+
+
+# [1.4.0](https://github.com/energywebfoundation/origin/compare/@energyweb/exchange@1.3.0...@energyweb/exchange@1.4.0) (2020-07-16)
+
+
+### Bug Fixes
+
+* **deps:** update nest monorepo to v7.3.2 ([875bb1b](https://github.com/energywebfoundation/origin/commit/875bb1b17fee5647d921f6771a58a4aa55aec59d))
+
+
+### Features
+
+* **origin-ui-core:** filter ask by facility ([097e9a3](https://github.com/energywebfoundation/origin/commit/097e9a30f7ab6d91ae7eeacad0735611421845fb))
+
+
+
+
+
 # [1.3.0](https://github.com/energywebfoundation/origin/compare/@energyweb/exchange@1.2.1...@energyweb/exchange@1.3.0) (2020-07-08)
 
 

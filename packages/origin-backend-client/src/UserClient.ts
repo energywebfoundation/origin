@@ -4,31 +4,17 @@ import {
     UserLoginData,
     UserLoginReturnData,
     UserUpdateData,
-    IUserWithRelationsIds,
     IUserProperties,
-    IUserWithRelations,
     IUser,
-    UserPasswordUpdate
+    UserPasswordUpdate,
+    IEmailConfirmationToken,
+    EmailConfirmationResponse,
+    ISuccessResponse,
+    IUserClient,
+    IRequestClient
 } from '@energyweb/origin-backend-core';
 
-import { IRequestClient, RequestClient } from './RequestClient';
-
-type UpdateUserResponseReturnType = IUserWithRelationsIds;
-
-export interface IUserClient {
-    login(email: string, password: string): Promise<UserLoginReturnData>;
-    logout(): Promise<void>;
-    register(data: UserRegistrationData): Promise<UserRegisterReturnData>;
-    me(): Promise<IUserWithRelationsIds>;
-    getUserById(id: string): Promise<IUserWithRelationsIds>;
-    attachSignedMessage(signedMessage: string): Promise<UpdateUserResponseReturnType>;
-    updateAdditionalProperties(
-        properties: Partial<Pick<IUserProperties, 'notifications'>>
-    ): Promise<UpdateUserResponseReturnType>;
-    updateProfile(formData: IUser): Promise<IUserWithRelations>;
-    updatePassword(formData: UserPasswordUpdate): Promise<IUserWithRelations>;
-    updateChainAddress(formData: IUser): Promise<IUserWithRelations>;
-}
+import { RequestClient } from './RequestClient';
 
 export class UserClient implements IUserClient {
     constructor(
@@ -72,9 +58,9 @@ export class UserClient implements IUserClient {
         this.requestClient.authenticationToken = null;
     }
 
-    public async me(): Promise<IUserWithRelationsIds> {
+    public async me(): Promise<IUser> {
         const url = `${this.userEndpoint}/me`;
-        const { data } = await this.requestClient.get<unknown, IUserWithRelationsIds>(url);
+        const { data } = await this.requestClient.get<unknown, IUser>(url);
 
         return data;
     }
@@ -89,15 +75,15 @@ export class UserClient implements IUserClient {
         return this.updateUser(properties);
     }
 
-    public async getUserById(id: string): Promise<IUserWithRelationsIds> {
+    public async getUserById(id: string): Promise<IUser> {
         const url = `${this.userEndpoint}/${id}`;
-        const { data } = await this.requestClient.get<unknown, IUserWithRelationsIds>(url);
+        const { data } = await this.requestClient.get<unknown, IUser>(url);
 
         return data;
     }
 
-    private async updateUser(updatedUserInfo: UserUpdateData): Promise<IUserWithRelationsIds> {
-        const { data } = await this.requestClient.put<UserUpdateData, IUserWithRelationsIds>(
+    private async updateUser(updatedUserInfo: UserUpdateData): Promise<IUser> {
+        const { data } = await this.requestClient.put<UserUpdateData, IUser>(
             this.userEndpoint,
             updatedUserInfo
         );
@@ -105,25 +91,46 @@ export class UserClient implements IUserClient {
         return data;
     }
 
-    public async updateProfile(formData: IUser): Promise<IUserWithRelations> {
-        const response = await this.requestClient.put<UserUpdateData, IUserWithRelations>(
+    public async updateProfile(formData: IUser): Promise<IUser> {
+        const response = await this.requestClient.put<UserUpdateData, IUser>(
             `${this.userEndpoint}/profile`,
             formData
         );
         return response.data;
     }
-    public async updatePassword(formData: UserPasswordUpdate): Promise<IUserWithRelations> {
-        const response = await this.requestClient.put<UserPasswordUpdate, IUserWithRelations>(
+
+    public async updatePassword(formData: UserPasswordUpdate): Promise<IUser> {
+        const response = await this.requestClient.put<UserPasswordUpdate, IUser>(
             `${this.userEndpoint}/password`,
             formData
         );
-        return response.data;   
+        return response.data;
     }
-    public async updateChainAddress(formData: IUser): Promise<IUserWithRelations> {
-        const response = await this.requestClient.put<UserUpdateData, IUserWithRelations>(
+
+    public async updateChainAddress(formData: IUser): Promise<IUser> {
+        const response = await this.requestClient.put<UserUpdateData, IUser>(
             `${this.userEndpoint}/chainAddress`,
             formData
         );
+        return response.data;
+    }
+
+    public async confirmEmail(
+        token: IEmailConfirmationToken['token']
+    ): Promise<EmailConfirmationResponse> {
+        const response = await this.requestClient.put<
+            IEmailConfirmationToken['token'],
+            EmailConfirmationResponse
+        >(`${this.userEndpoint}/confirm-email/${token}`);
+
+        return response.data;
+    }
+
+    public async requestConfirmationEmail(): Promise<ISuccessResponse> {
+        const response = await this.requestClient.put<void, ISuccessResponse>(
+            `${this.userEndpoint}/re-send-confirm-email`
+        );
+
         return response.data;
     }
 }

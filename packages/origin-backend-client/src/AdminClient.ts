@@ -1,15 +1,11 @@
 import {
     IUser,
     UserUpdateData,
-    IUserWithRelations,
-    IUserFilter
+    IUserFilter,
+    IAdminClient,
+    IRequestClient
 } from '@energyweb/origin-backend-core';
-import { IRequestClient, RequestClient } from './RequestClient';
-
-export interface IAdminClient {
-    update(formData: UserUpdateData): Promise<IUserWithRelations>;
-    getUsers(filter?: IUserFilter): Promise<IUser[]>;
-}
+import { RequestClient } from './RequestClient';
 
 export class AdminClient implements IAdminClient {
     constructor(
@@ -17,8 +13,8 @@ export class AdminClient implements IAdminClient {
         private readonly requestClient: IRequestClient = new RequestClient()
     ) {}
 
-    async update(formData: IUser): Promise<IUserWithRelations> {
-        const { data } = await this.requestClient.put<UserUpdateData, IUserWithRelations>(
+    async update(formData: IUser): Promise<IUser> {
+        const { data } = await this.requestClient.put<UserUpdateData, IUser>(
             `${this.endpoint}/users/${formData.id}`,
             formData
         );

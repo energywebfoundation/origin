@@ -14,7 +14,7 @@ import { Transfer } from '../src/pods/transfer/transfer.entity';
 import { TransferService } from '../src/pods/transfer/transfer.service';
 import { DatabaseService } from './database.service';
 import { authenticatedUser, bootstrapTestInstance } from './exchange';
-import { issueToken } from './utils';
+import { issueToken, MWh } from './utils';
 
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -25,7 +25,7 @@ describe('account ask order send', () => {
     let accountService: AccountService;
     let issuer: Contract;
 
-    const user1Id = authenticatedUser.organization;
+    const user1Id = authenticatedUser.organization.id;
     const dummyAsset = {
         address: '0x9876',
         tokenId: '0',
@@ -37,7 +37,7 @@ describe('account ask order send', () => {
     const transactionHash = `0x${((Math.random() * 0xffffff) << 0).toString(16)}`;
     const withdrawalAddress = ethers.Wallet.createRandom().address;
 
-    const createDeposit = (address: string, amount = '1000', asset = dummyAsset) => {
+    const createDeposit = (address: string, amount = `${1000 * MWh}`, asset = dummyAsset) => {
         return transferService.createDeposit({
             address,
             transactionHash,
@@ -68,7 +68,7 @@ describe('account ask order send', () => {
 
     let deposit: Transfer;
     let user1Address: string;
-    const amount = '1000';
+    const amount = `${1000 * MWh}`;
 
     beforeEach(async () => {
         await databaseService.truncate('order');
@@ -81,7 +81,7 @@ describe('account ask order send', () => {
     it('should not be able to create ask order on unconfirmed deposit', async () => {
         const createAsk: CreateAskDTO = {
             assetId: deposit.asset.id,
-            volume: '100',
+            volume: `${100 * MWh}`,
             price: 100,
             validFrom: new Date()
         };
@@ -94,7 +94,7 @@ describe('account ask order send', () => {
 
         const createAsk: CreateAskDTO = {
             assetId: deposit.asset.id,
-            volume: '100',
+            volume: `${100 * MWh}`,
             price: 100,
             validFrom: new Date()
         };
@@ -107,7 +107,7 @@ describe('account ask order send', () => {
                 const order = res.body as Order;
 
                 expect(order.price).equals(100);
-                expect(order.startVolume).equals('100');
+                expect(order.startVolume).equals(`${100 * MWh}`);
                 expect(order.assetId).equals(deposit.asset.id);
                 expect(new Date(order.product.generationFrom)).deep.equals(
                     dummyAsset.generationFrom
@@ -119,7 +119,7 @@ describe('account ask order send', () => {
     it('should not be able to create ask order bigger than confirmed deposit', async () => {
         const createAsk: CreateAskDTO = {
             assetId: deposit.asset.id,
-            volume: '1001',
+            volume: `${1001 * MWh}`,
             price: 100,
             validFrom: new Date()
         };
@@ -130,7 +130,7 @@ describe('account ask order send', () => {
     it('should not be able to create 2nd ask order bigger than remaining deposit', async () => {
         const createAsk: CreateAskDTO = {
             assetId: deposit.asset.id,
-            volume: '1000',
+            volume: `${1000 * MWh}`,
             price: 100,
             validFrom: new Date()
         };
@@ -202,7 +202,7 @@ describe('account ask order send', () => {
     });
 
     it('should be able to create and cancel bid', async () => {
-        const volume = '1000';
+        const volume = `${1000 * MWh}`;
 
         const createBid: CreateBidDTO = {
             price: 100,
@@ -246,5 +246,29 @@ describe('account ask order send', () => {
                 expect(cancelled.id).equals(order.id);
                 expect(cancelled.status).equals(OrderStatus.Cancelled);
             });
+    });
+
+    it('should not be able to create bid order with decimal volume', async () => {
+        const volume = `${1.1 * MWh}`;
+
+        const createBid: CreateBidDTO = {
+            price: 100,
+            validFrom: new Date(),
+            volume,
+            product: { deviceType: ['Solar'] }
+        };
+
+        await request(app.getHttpServer()).post('/orders/bid').send(createBid).expect(400);
+    });
+
+    it('should not be able to create ask order with decimal volume', async () => {
+        const createAsk: CreateAskDTO = {
+            assetId: deposit.asset.id,
+            volume: `${1.1 * MWh}`,
+            price: 100,
+            validFrom: new Date()
+        };
+
+        await request(app.getHttpServer()).post('/orders/ask').send(createAsk).expect(400);
     });
 });

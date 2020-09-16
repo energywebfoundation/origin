@@ -17,6 +17,7 @@ import { TradeDTO } from '../src/pods/trade/trade.dto';
 import { TransferService } from '../src/pods/transfer/transfer.service';
 import { DatabaseService } from './database.service';
 import { authenticatedUser, bootstrapTestInstance } from './exchange';
+import { MWh } from './utils';
 
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -38,7 +39,7 @@ const dummyAsset = {
 
 const transactionHash = `0x${((Math.random() * 0xffffff) << 0).toString(16)}`;
 
-const createDeposit = (address: string, amount = '1000', asset = dummyAsset) => {
+const createDeposit = (address: string, amount = `${1000 * MWh}`, asset = dummyAsset) => {
     return transferService.createDeposit({
         address,
         transactionHash,
@@ -77,7 +78,7 @@ describe('Demand orders trading', () => {
         await databaseService.truncate('demand');
     });
 
-    const demandOwner = authenticatedUser.organization;
+    const demandOwner = authenticatedUser.organization.id;
     const sellerId = '2';
     const price = 1000;
 
@@ -87,8 +88,9 @@ describe('Demand orders trading', () => {
         start: moment().toDate(),
         end: moment().add(2, 'month').toDate(),
         product: { deviceType: ['Solar'] },
-        volumePerPeriod: '250',
-        boundToGenerationTime: false
+        volumePerPeriod: `${250 * MWh}`,
+        boundToGenerationTime: false,
+        excludeEnd: true
     };
 
     it('should trade the bid from the demand', async () => {
@@ -100,7 +102,7 @@ describe('Demand orders trading', () => {
 
         await orderService.createAsk(sellerId, {
             assetId: deposit.asset.id,
-            volume: '500',
+            volume: `${500 * MWh}`,
             price,
             validFrom
         });
@@ -112,8 +114,9 @@ describe('Demand orders trading', () => {
             start: moment().toDate(),
             end: moment().add(1, 'month').toDate(),
             product,
-            volumePerPeriod: '250',
-            boundToGenerationTime: false
+            volumePerPeriod: `${250 * MWh}`,
+            boundToGenerationTime: false,
+            excludeEnd: true
         };
 
         const demand = await demandService.create(demandOwner, createDemand);
@@ -248,5 +251,20 @@ describe('Demand orders trading', () => {
                 expect(bid1.status).equals(OrderStatus.Active);
                 expect(bid2.status).equals(OrderStatus.Active);
             });
+    });
+
+    it('should not be able to create demand with decimal volume', async () => {
+        const demand: CreateDemandDTO = {
+            price: 100,
+            periodTimeFrame: TimeFrame.monthly,
+            start: moment().toDate(),
+            end: moment().add(2, 'month').toDate(),
+            product: { deviceType: ['Solar'] },
+            volumePerPeriod: `${2.5 * MWh}`,
+            boundToGenerationTime: false,
+            excludeEnd: true
+        };
+
+        await request(app.getHttpServer()).post(`/demand`).send(demand).expect(400);
     });
 });

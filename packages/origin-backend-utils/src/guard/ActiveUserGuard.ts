@@ -1,4 +1,4 @@
-import { IUserWithRelationsIds, UserStatus } from '@energyweb/origin-backend-core';
+import { IUser, UserStatus } from '@energyweb/origin-backend-core';
 import { CanActivate, ExecutionContext, HttpException, Injectable } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 
@@ -8,8 +8,8 @@ export class ActiveUserGuard implements CanActivate {
 
     canActivate(context: ExecutionContext): boolean {
         const request = context.switchToHttp().getRequest();
-        const user = request.user as IUserWithRelationsIds;
-        const _user = user as IUserWithRelationsIds;
+        const user = request.user as IUser;
+        const _user = user as IUser;
 
         if (_user.status !== UserStatus.Active) {
             throw new HttpException(

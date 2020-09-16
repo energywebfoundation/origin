@@ -1,5 +1,5 @@
 import { PreciseProofs } from 'precise-proofs-js';
-import { BigNumber } from 'ethers/utils';
+import { BigNumber } from 'ethers';
 
 export interface IOwnershipCommitment {
     [address: string]: BigNumber;

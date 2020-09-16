@@ -13,7 +13,7 @@ import {
     Select,
     TextField
 } from '@material-ui/core';
-import { bigNumberify } from 'ethers/utils';
+import { BigNumber } from 'ethers';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Countries } from '@energyweb/utils-general';
@@ -38,7 +38,7 @@ export function ClaimModal(props: IProps) {
     const { certificates, callback, showModal } = props;
 
     const environment: IEnvironment = useSelector(getEnvironment);
-    const DEFAULT_ENERGY_IN_BASE_UNIT = bigNumberify(
+    const DEFAULT_ENERGY_IN_BASE_UNIT = BigNumber.from(
         Number(environment?.DEFAULT_ENERGY_IN_BASE_UNIT || 1)
     );
 
@@ -155,7 +155,7 @@ export function ClaimModal(props: IProps) {
         props.certificates.reduce((a, b) => {
             const energy = b.energy.publicVolume.add(b.energy.privateVolume);
             return a.add(energy);
-        }, bigNumberify(0)),
+        }, BigNumber.from(0)),
         true
     );
 

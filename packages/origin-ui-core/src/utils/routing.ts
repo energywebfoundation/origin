@@ -1,5 +1,8 @@
 import { useSelector } from 'react-redux';
+import { OriginFeature } from '@energyweb/utils-general';
 import { getBaseURL } from '../features/selectors';
+import { useContext } from 'react';
+import { OriginConfigurationContext } from '..';
 
 export function getDevicesLink(baseURL: string) {
     return `${baseURL}/devices`;
@@ -22,7 +25,7 @@ export function getUserRegisterLink(baseURL: string) {
 }
 
 export function getAccountLoginLink(baseURL: string) {
-    return `${getAccountLink(baseURL)}/user-login`;
+    return `${baseURL}/user-login`;
 }
 
 export function getDevicesAddLink(baseURL: string) {
@@ -57,6 +60,10 @@ export function getOrganizationViewLink(baseURL: string, id: string) {
     return `${getOrganizationLink(baseURL)}/organization-view/${id}`;
 }
 
+export function getOrganizationRegisterLink(baseURL) {
+    return `${getOrganizationLink(baseURL)}/organization-register`;
+}
+
 export function getAdminLink(baseURL: string) {
     return `${baseURL}/admin`;
 }
@@ -68,8 +75,17 @@ export function getBundlesLink(baseURL: string) {
 export function useLinks() {
     const baseURL = useSelector(getBaseURL);
 
+    const { enabledFeatures } = useContext(OriginConfigurationContext);
+
+    const defaultLink = enabledFeatures.includes(OriginFeature.Devices)
+        ? getDevicesLink
+        : enabledFeatures.includes(OriginFeature.Certificates)
+        ? getCertificatesLink
+        : getAccountLink;
+
     return {
         baseURL,
+        getDefaultLink: () => defaultLink(baseURL),
         getDevicesLink: () => getDevicesLink(baseURL),
         getDevicesAddLink: () => getDevicesAddLink(baseURL),
         getDevicesOwnedLink: () => getDevicesOwnedLink(baseURL),
@@ -83,6 +99,7 @@ export function useLinks() {
         getProducingDeviceDetailLink: (deviceId: string | number) =>
             getProducingDeviceDetailLink(baseURL, deviceId),
         getOrganizationViewLink: (id: string) => getOrganizationViewLink(baseURL, id),
+        getOrganizationRegisterLink: () => getOrganizationRegisterLink(baseURL),
         getUserRegisterLink: () => getUserRegisterLink(baseURL),
         getAccountLoginLink: () => getAccountLoginLink(baseURL),
         getAdminLink: () => getAdminLink(baseURL),

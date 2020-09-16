@@ -3,6 +3,68 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [7.0.2](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-backend-client@7.0.1...@energyweb/origin-backend-client@7.0.2) (2020-08-25)
+
+**Note:** Version bump only for package @energyweb/origin-backend-client
+
+
+
+
+
+## [7.0.1](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-backend-client@7.0.0...@energyweb/origin-backend-client@7.0.1) (2020-08-12)
+
+**Note:** Version bump only for package @energyweb/origin-backend-client
+
+
+
+
+
+# [7.0.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-backend-client@6.3.0...@energyweb/origin-backend-client@7.0.0) (2020-08-10)
+
+
+### Bug Fixes
+
+* **deps:** update dependency ethers to v5.0.8 ([c69bde0](https://github.com/energywebfoundation/origin/commit/c69bde05c4f0eba5dbc49833f266af24c84c0187))
+
+
+### chore
+
+* **origin-backend-client:** replace IUserWithRelationIds with IUser ([3b9566b](https://github.com/energywebfoundation/origin/commit/3b9566bfb8d83cfce5fe2711f1bca90b683e19a5))
+
+
+### BREAKING CHANGES
+
+* **origin-backend-client:** IUser have full org object
+
+
+
+
+
+# [6.3.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-backend-client@6.2.1...@energyweb/origin-backend-client@6.3.0) (2020-08-06)
+
+
+### Bug Fixes
+
+* **origin-ui-core:** store org id for non-admin and non-support agent ([7498fb4](https://github.com/energywebfoundation/origin/commit/7498fb49c9e24856c2a8d4c8c0b57b2ca8d8923b))
+
+
+### Features
+
+* **origin-backend:** getAll Devices with relations ([b644f38](https://github.com/energywebfoundation/origin/commit/b644f38b6b6a3b7cff7039795df31d25553455fc))
+* **origin-backend:** optional loadRelationsId of device ([ee38568](https://github.com/energywebfoundation/origin/commit/ee385688431b72dcc967544e1552e59e6ca8c9ef))
+
+
+
+
+
+## [6.2.1](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-backend-client@6.2.0...@energyweb/origin-backend-client@6.2.1) (2020-07-16)
+
+**Note:** Version bump only for package @energyweb/origin-backend-client
+
+
+
+
+
 # [6.2.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-backend-client@6.1.1...@energyweb/origin-backend-client@6.2.0) (2020-07-08)
 
 

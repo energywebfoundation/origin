@@ -4,7 +4,8 @@ import { Role } from './User';
 export enum OrganizationInvitationStatus {
     Pending,
     Rejected,
-    Accepted
+    Accepted,
+    Viewed
 }
 
 export type OrganizationRole =
@@ -20,11 +21,9 @@ export interface IOrganizationInvitationProperties {
 }
 
 export interface IOrganizationInvitation extends IOrganizationInvitationProperties {
-    organization: IOrganization | IOrganization['id'];
-}
-
-export interface IOrganizationInvitationWithRelations extends IOrganizationInvitation {
     organization: IOrganization;
+    sender: string;
+    createdAt: Date;
 }
 
 export type OrganizationInviteCreateData = { email: string; role: OrganizationRole };

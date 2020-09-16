@@ -1,7 +1,7 @@
 {
     "private": true,
     "name": "@energyweb/origin-ui",
-    "version": "2.2.2",
+    "version": "2.2.7",
     "scripts": {
         "build": "yarn config-env && node --max-old-space-size=8192 ./node_modules/.bin/webpack --config webpack/prod.config.js",
         "build:ts": "tsc -b tsconfig.json",
@@ -20,28 +20,29 @@
         "clean": "shx rm -rf dist"
     },
     "dependencies": {
-        "@energyweb/origin-ui-core": "1.5.0",
+        "@energyweb/origin-ui-core": "1.8.0",
         "extract-text-webpack-plugin": "4.0.0-beta.0",
-        "file-loader": "6.0.0",
+        "file-loader": "6.1.0",
         "react": "16.13.1",
         "react-dom": "16.13.1",
         "ts-loader": "7.0.5",
         "url-loader": "4.1.0",
-        "webpack": "4.43.0"
+        "webpack": "4.44.1"
     },
     "devDependencies": {
-        "@types/react": "16.9.41",
+        "@types/react": "16.9.49",
         "@types/react-dom": "16.9.8",
-        "copy-webpack-plugin": "5.1.1",
+        "copy-webpack-plugin": "5.1.2",
         "css-loader": "3.6.0",
-        "eslint-plugin-react": "7.20.3",
+        "eslint-plugin-react": "7.20.6",
         "fork-ts-checker-webpack-plugin": "4.1.6",
-        "html-webpack-plugin": "4.3.0",
+        "html-webpack-plugin": "4.4.1",
         "node-sass": "4.14.1",
+        "resolve-url-loader": "3.1.1",
         "sass-loader": "8.0.2",
         "source-map-loader": "0.2.4",
         "style-loader": "1.2.1",
-        "ts-jest": "26.1.1",
+        "ts-jest": "26.3.0",
         "webpack-cli": "3.3.12",
         "webpack-dev-server": "3.11.0",
         "webpack-merge": "4.2.2"
