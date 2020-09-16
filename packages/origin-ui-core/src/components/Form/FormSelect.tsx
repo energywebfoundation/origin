@@ -6,6 +6,7 @@ import { Select } from 'formik-material-ui';
 interface IFormSelectOption {
     value: string | number;
     label: string;
+    code?: string;
 }
 
 interface IFormSelectProps {
@@ -38,7 +39,7 @@ export function FormSelect(props: IFormSelectProps) {
                 disabled={props.disabled}
             >
                 {props.options.map((option) => (
-                    <MenuItem value={option.value} key={option.value}>
+                    <MenuItem value={option.code || option.value} key={option.value}>
                         {option.label}
                     </MenuItem>
                 ))}

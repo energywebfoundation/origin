@@ -12,12 +12,14 @@ interface IProps {
     placeholder?: string;
     className?: string;
     disabled?: boolean;
+    isoFormat?: boolean;
     max?: number;
 }
 
 const COUNTRY_OPTIONS = Countries.map((country) => ({
     value: country.id.toString(),
-    label: country.name
+    label: country.name,
+    code: country.code
 }));
 
 export function FormCountryMultiSelect(props: IProps) {
