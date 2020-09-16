@@ -78,6 +78,8 @@ export interface IRequestClient {
     ): Promise<AxiosResponse<U>>;
 
     generateCancelToken(): CancelTokenSource;
+
+    config: { headers?: any };
 }
 
 export interface ICertificationRequestClient {

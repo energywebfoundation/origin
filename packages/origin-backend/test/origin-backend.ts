@@ -1,13 +1,14 @@
 /* eslint-disable no-return-assign */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import {
+    IPublicOrganization,
     LoggedInUser,
+    OrganizationStatus,
     Role,
     UserRegistrationData,
-    UserStatus,
-    OrganizationStatus,
-    IPublicOrganization
+    UserStatus
 } from '@energyweb/origin-backend-core';
+import { DatabaseService } from '@energyweb/origin-backend-utils';
 import { signTypedMessagePrivateKey } from '@energyweb/utils-general';
 import { Logger } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
@@ -16,17 +17,17 @@ import dotenv from 'dotenv';
 import { ethers } from 'ethers';
 import request from 'supertest';
 
-import { DatabaseService } from '@energyweb/origin-backend-utils';
 import { entities } from '../src';
 import { AppModule } from '../src/app.module';
+import { CertificateService } from '../src/pods/certificate/certificate.service';
 import { CertificationRequestService } from '../src/pods/certification-request/certification-request.service';
 import { ConfigurationService } from '../src/pods/configuration';
 import { DeviceService } from '../src/pods/device/device.service';
+import { EmailConfirmationService } from '../src/pods/email-confirmation/email-confirmation.service';
+import { FileService } from '../src/pods/file/file.service';
+import { NewOrganizationDTO } from '../src/pods/organization/new-organization.dto';
 import { OrganizationService } from '../src/pods/organization/organization.service';
 import { UserService } from '../src/pods/user';
-import { CertificateService } from '../src/pods/certificate/certificate.service';
-import { EmailConfirmationService } from '../src/pods/email-confirmation/email-confirmation.service';
-import { NewOrganizationDTO } from '../src/pods/organization/new-organization.dto';
 
 const testLogger = new Logger('e2e');
 
@@ -84,6 +85,7 @@ export const bootstrapTestInstance = async () => {
     const emailConfirmationService = await app.resolve<EmailConfirmationService>(
         EmailConfirmationService
     );
+    const fileService = await app.resolve<FileService>(FileService);
 
     app.useLogger(testLogger);
     app.enableCors();
@@ -104,7 +106,8 @@ export const bootstrapTestInstance = async () => {
         configurationService,
         certificateService,
         certificationRequestService,
-        emailConfirmationService
+        emailConfirmationService,
+        fileService
     };
 };
 
