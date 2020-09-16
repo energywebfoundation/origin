@@ -5,6 +5,7 @@ import { Registration, RegistrationIRecPostData } from '.';
 export interface IIRecClient {
     getRegistrations(): Promise<Registration[]>;
     register(registration: RegistrationIRecPostData): Promise<{ id: string }>;
+    getRegistrationsById(id: number): Promise<Registration[]>;
 }
 
 export class IRecClient implements IIRecClient {
@@ -21,6 +22,13 @@ export class IRecClient implements IIRecClient {
     public async getRegistrations(): Promise<Registration[]> {
         const response = await this.requestClient.get<unknown, Registration[]>(
             this.registrationEndpoint
+        );
+        return response.data;
+    }
+
+    public async getRegistrationsById(id: number): Promise<Registration[]> {
+        const response = await this.requestClient.get<unknown, Registration[]>(
+            `${this.registrationEndpoint}/${id}`
         );
         return response.data;
     }
