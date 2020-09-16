@@ -1,12 +1,12 @@
 import { IUser, IFullOrganization, IOrganizationInvitation } from '@energyweb/origin-backend-core';
-
+import { Registration } from '../../utils/irec/types';
 import { UsersActions, IUsersAction } from './actions';
 
 export interface IUsersState {
     activeBlockchainAccountAddress: string;
     userOffchain: IUser;
     organizations: IFullOrganization[];
-    irecAccount: any;
+    iRecAccount: Registration[];
     invitations: {
         invitations: IOrganizationInvitation[];
         showPendingInvitationsModal: boolean;
@@ -17,7 +17,7 @@ const defaultState: IUsersState = {
     activeBlockchainAccountAddress: null,
     userOffchain: null,
     organizations: [],
-    irecAccount: null,
+    iRecAccount: [],
     invitations: {
         showPendingInvitationsModal: false,
         invitations: []
@@ -58,6 +58,12 @@ export default function reducer(state = defaultState, action: IUsersAction): IUs
                     ...state.invitations,
                     invitations: action.payload as IOrganizationInvitation[]
                 }
+            };
+
+        case UsersActions.setIRecAccount:
+            return {
+                ...state,
+                iRecAccount: action.payload
             };
 
         case UsersActions.setUserState:

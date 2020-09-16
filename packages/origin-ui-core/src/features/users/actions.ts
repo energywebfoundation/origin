@@ -10,7 +10,8 @@ export enum UsersActions {
     refreshUserOffchain = 'REFRESH_USER_OFFCHAIN',
     addOrganizations = 'USERS_ADD_ORGANIZATIONS',
     setInvitations = 'USERS_SET_INVITATIONS',
-    setUserState = 'USERS_SET_USER_STATE'
+    setUserState = 'USERS_SET_USER_STATE',
+    setIRecAccount = 'USERS_SET_IREC_ACCOUNT'
 }
 
 export interface ISetActiveBlockchainAccountAddressAction {
@@ -93,6 +94,17 @@ export const setInvitations = (
     payload
 });
 
+export interface ISetIRecAccountAction {
+    type: UsersActions.setIRecAccount;
+    payload;
+}
+
+export const setIRecAccount = (
+    payload: ISetIRecAccountAction['payload']
+): ISetIRecAccountAction => ({
+    type: UsersActions.setIRecAccount,
+    payload
+});
 export interface ISetUserState {
     type: UsersActions.setUserState;
     payload: IUsersState;
@@ -113,4 +125,5 @@ export type IUsersAction =
     | IRefreshUserOffchainAction
     | IAddOrganizationsAction
     | ISetInvitationsAction
-    | ISetUserState;
+    | ISetUserState
+    | ISetIRecAccountAction;
