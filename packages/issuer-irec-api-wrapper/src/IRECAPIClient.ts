@@ -14,6 +14,7 @@ import {
     RedeemTransaction,
     RedeemTransactionResult,
     Transaction,
+    TransactionResult,
     TransactionType
 } from './Account';
 import { Device } from './Device';
@@ -230,7 +231,7 @@ export class IRECAPIClient {
         };
     }
 
-    public async transfer(transfer: Transfer): Promise<void> {
+    public async transfer(transfer: Transfer): Promise<TransactionResult> {
         await validateOrReject(transfer);
 
         const url = `${this.endPointUrl}/api/irec/transfer-management`;
@@ -240,6 +241,8 @@ export class IRECAPIClient {
             classToPlain(transfer),
             this.config
         );
+
+        return plainToClass(TransactionResult, response.data.transaction);
     }
 
     public async redeem(redemption: Redemption): Promise<RedeemTransactionResult> {
