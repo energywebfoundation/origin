@@ -18,7 +18,6 @@ import { NoBlockchainAccountModal } from './Modal/NoBlockchainAccountModal';
 import { FeatureRoute } from './route/FeatureRoute';
 import { OriginConfigurationContext } from '.';
 import { LoginPage } from './Account/LoginPage';
-import { RoleChangedModal } from './Modal/RoleChangedModal';
 import { getUserOffchain } from '../features/users/selectors';
 
 export function AppContainer() {
@@ -110,7 +109,6 @@ export function AppContainer() {
                     <RequestCertificatesModal />
                     <AccountMismatchModal />
                     <NoBlockchainAccountModal />
-                    <RoleChangedModal />
                 </div>
             </Route>
         </Switch>

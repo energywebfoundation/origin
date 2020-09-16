@@ -64,6 +64,10 @@ export function getOrganizationRegisterLink(baseURL) {
     return `${getOrganizationLink(baseURL)}/organization-register`;
 }
 
+export function getOrganizationIRecRegisterLink(baseURL) {
+    return `${getOrganizationLink(baseURL)}/register-irec`;
+}
+
 export function getAdminLink(baseURL: string) {
     return `${baseURL}/admin`;
 }
@@ -100,6 +104,7 @@ export function useLinks() {
             getProducingDeviceDetailLink(baseURL, deviceId),
         getOrganizationViewLink: (id: string) => getOrganizationViewLink(baseURL, id),
         getOrganizationRegisterLink: () => getOrganizationRegisterLink(baseURL),
+        getOrganizationIRecRegisterLink: () => getOrganizationIRecRegisterLink(baseURL),
         getUserRegisterLink: () => getUserRegisterLink(baseURL),
         getAccountLoginLink: () => getAccountLoginLink(baseURL),
         getAdminLink: () => getAdminLink(baseURL),
