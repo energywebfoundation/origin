@@ -7,6 +7,7 @@ import moment from 'moment-timezone';
 import { IRECAPIClient } from '../src/IRECAPIClient';
 import { ApproveIssue, Issue } from '../src/Issue';
 import { Product } from '../src/Product';
+import { Redemption, ReservationItem } from '../src/Transfer';
 
 dotenv.config();
 
@@ -14,6 +15,8 @@ describe('IRECAPIClient tests', () => {
     let client: IRECAPIClient;
 
     const tradeAccount = 'ACCOUNTTRADE001';
+    const issueAccount = 'ACCOUNTISSUE001';
+    const redemptionAccount = 'ACCOUNTREDEMPTION001';
 
     before(async () => {
         client = new IRECAPIClient(process.env.IREC_API_URL);
@@ -56,7 +59,6 @@ describe('IRECAPIClient tests', () => {
 
         expect(accountItem).to.exist;
         expect(accountItem.items).to.exist;
-
         expect(accountItem.code).to.be.equal(tradeAccount);
 
         const [item] = accountItem.items;
@@ -84,24 +86,47 @@ describe('IRECAPIClient tests', () => {
         const request = new Issue();
         request.device = 'DEVICE001';
         request.recipient = tradeAccount;
-        request.start = lastItem.asset.end;
-        request.end = moment(lastItem.asset.end).add(1, 'day').toDate();
-        request.production = 100.2;
+        request.start = moment(lastItem.asset.end).add(1, 'day').toDate();
+        request.end = moment(lastItem.asset.end).add(2, 'day').toDate();
+        request.production = 100;
         request.fuel = 'ES200';
 
+        const beforeTransactions = await client.account.getTransactions(tradeAccount);
+
         const code = await client.issue.create(request);
+
         await client.issue.submit(code, 'Note');
         await client.issue.verify(code, 'Note');
 
-        try {
-            const approval = new ApproveIssue();
-            approval.issuer = 'ACCOUNTISSUE001';
-            await client.issue.approve(code, approval);
-        } catch (e) {
-            if (!e.message.includes('issue request overlaps')) {
-                expect.fail();
-            }
-        }
+        const approval = new ApproveIssue();
+        approval.issuer = issueAccount;
+
+        await client.issue.approve(code, approval);
+
+        const afterTransactions = await client.account.getTransactions(tradeAccount);
+
+        expect(afterTransactions).to.has.lengthOf(beforeTransactions.length + 1);
+    });
+
+    it('should be able to redeem the certificate', async () => {
+        const [account] = await client.account.getItems(tradeAccount);
+        const [newestItem] = account.items;
+
+        const reservationItem = new ReservationItem();
+        reservationItem.code = newestItem.code;
+        reservationItem.amount = 1;
+
+        const redemption = new Redemption();
+        redemption.items = [reservationItem];
+        redemption.beneficiary = 1;
+        redemption.start = new Date('2020-01-01');
+        redemption.end = new Date('2020-02-01');
+        redemption.purpose = 'Purpose';
+        redemption.sender = tradeAccount;
+        redemption.recipient = redemptionAccount;
+        redemption.approver = process.env.IREC_API_LOGIN;
+
+        await client.redeem(redemption);
     });
 
     it('should be able to upload pdf evidence file', async () => {

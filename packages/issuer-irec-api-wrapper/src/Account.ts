@@ -66,7 +66,7 @@ export class AccountBalance {
     product: Product;
 }
 
-export class AccountTransaction {
+abstract class Transaction {
     code: string;
 
     @Transform((value) => parseFloat(value), { toClassOnly: true })
@@ -81,10 +81,6 @@ export class AccountTransaction {
     @Transform((value) => value.code, { toClassOnly: true })
     @Expose({ name: 'destination_account', toClassOnly: true })
     recipient: string;
-
-    @Transform((value) => value.code, { toClassOnly: true })
-    @Expose({ name: 'transaction_type', toClassOnly: true })
-    transactionType: TransactionType;
 
     purpose: string;
 
@@ -101,4 +97,21 @@ export class AccountTransaction {
     @Expose({ name: 'period_end', toPlainOnly: true })
     @Transform((value) => moment.tz(value.date, value.timezone).toDate())
     end: Date;
+}
+
+export class AccountTransaction extends Transaction {
+    @Transform((value) => value.code, { toClassOnly: true })
+    @Expose({ name: 'transaction_type', toClassOnly: true })
+    transactionType: TransactionType;
+}
+
+export class RedeemTransaction extends Transaction {
+    @Expose({ name: 'type', toClassOnly: true })
+    transactionType: TransactionType;
+
+    @Expose({ name: 'encrypted_key', toClassOnly: true })
+    encryptedKey: string;
+
+    @Expose({ name: 'verification_key', toClassOnly: true })
+    verificationKey: string;
 }

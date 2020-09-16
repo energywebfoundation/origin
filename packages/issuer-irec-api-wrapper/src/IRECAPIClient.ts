@@ -8,7 +8,7 @@ import FormData from 'form-data';
 import { ReadStream } from 'fs';
 import qs from 'qs';
 
-import { Account, AccountBalance, AccountTransaction } from './Account';
+import { Account, AccountBalance, AccountTransaction, RedeemTransaction } from './Account';
 import { Device } from './Device';
 import { ApproveIssue, Issue, IssueWithStatus } from './Issue';
 import { Redemption, Transfer } from './Transfer';
@@ -223,12 +223,18 @@ export class IRECAPIClient {
         await axios.post<unknown>(url, classToPlain(transfer), this.config);
     }
 
-    public async redeem(redemption: Redemption): Promise<void> {
+    public async redeem(redemption: Redemption): Promise<RedeemTransaction> {
         await validateOrReject(redemption);
 
         const url = `${this.endPointUrl}/api/irec/redemption-management`;
 
-        await axios.post<unknown>(url, classToPlain(redemption), this.config);
+        const response = await axios.post<{ transaction: RedeemTransaction }>(
+            url,
+            classToPlain(redemption),
+            this.config
+        );
+
+        return plainToClass(RedeemTransaction, response.data.transaction);
     }
 
     private applyTokens(accessToken: string, refreshToken: string, expiresIn: number) {
