@@ -97,7 +97,7 @@ export function IRECOrganizationView() {
             <Grid container spacing={3}>
                 <Grid item xs={6}>
                     <TextField
-                        label="I-REC Account Type"
+                        label={t('organization.registration.IRECAccountType')}
                         className="mt-3"
                         value={formValues.accountType}
                         fullWidth
@@ -105,7 +105,7 @@ export function IRECOrganizationView() {
                     />
 
                     <TextField
-                        label="Organization Headquarters Country"
+                        label={t('organization.registration.orgHeadquatersCompany')}
                         className="mt-3"
                         value={formValues.headquarterCountry}
                         fullWidth
@@ -113,7 +113,7 @@ export function IRECOrganizationView() {
                     />
 
                     <TextField
-                        label="Year of Registration"
+                        label={t('organization.registration.yearOfRegistration')}
                         value={formValues.registrationYear}
                         className="mt-3"
                         fullWidth
@@ -121,7 +121,7 @@ export function IRECOrganizationView() {
                     />
 
                     <TextField
-                        label="Number of Employees"
+                        label={t('organization.registration.numberOfEmployees')}
                         className="mt-3"
                         value={formValues.employeesNumber}
                         fullWidth
@@ -129,7 +129,7 @@ export function IRECOrganizationView() {
                     />
 
                     <TextField
-                        label="Shareholder Names with more than 10%"
+                        label={t('organization.registration.shareholderNames')}
                         className="mt-3"
                         value={formValues.shareholders}
                         fullWidth
@@ -137,7 +137,7 @@ export function IRECOrganizationView() {
                     />
 
                     <TextField
-                        label="Website"
+                        label={t('organization.registration.orgWebsite')}
                         className="mt-3"
                         value={formValues.website}
                         fullWidth
@@ -146,7 +146,7 @@ export function IRECOrganizationView() {
                 </Grid>
                 <Grid item xs={6}>
                     <TextField
-                        label="Active Countries"
+                        label={t('organization.registration.activeCountries')}
                         value={formValues.activeCountries}
                         disabled
                         className="mt-3"
@@ -154,7 +154,7 @@ export function IRECOrganizationView() {
                     />
 
                     <TextField
-                        label="Main Business"
+                        label={t('organization.registration.mainBusiness')}
                         value={formValues.mainBusiness}
                         disabled
                         className="mt-3"
@@ -162,7 +162,7 @@ export function IRECOrganizationView() {
                     />
 
                     <TextField
-                        label="Name of Chief Executive Officer/General Manager"
+                        label={t('organization.registration.ceoName')}
                         value={formValues.ceoName}
                         disabled
                         className="mt-3"
@@ -170,7 +170,7 @@ export function IRECOrganizationView() {
                     />
 
                     <TextField
-                        label="Chief Executive Officer/General Manager passport number"
+                        label={t('organization.registration.ceoPassport')}
                         value={formValues.ceoPassportNumber}
                         disabled
                         className="mt-3"
@@ -178,7 +178,7 @@ export function IRECOrganizationView() {
                     />
 
                     <TextField
-                        label="Balance sheet total for last financial year"
+                        label={t('organization.registration.lastBalance')}
                         value={formValues.balanceSheetTotal}
                         disabled
                         className="mt-3"
@@ -187,7 +187,7 @@ export function IRECOrganizationView() {
 
                     {formValues.subsidiaries && (
                         <TextField
-                            label="Existing I-REC Registry organization(s) to become subsidiary"
+                            label={t('organization.registration.existingIRECOrg')}
                             value={formValues.subsidiaries}
                             disabled
                             className="mt-3"

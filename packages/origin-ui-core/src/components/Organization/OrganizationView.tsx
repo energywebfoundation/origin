@@ -10,7 +10,7 @@ import { OriginConfigurationContext } from '..';
 import { makeStyles, createStyles, useTheme, Paper, Grid, TextField, Box } from '@material-ui/core';
 import { Skeleton } from '@material-ui/lab';
 import { getUserOffchain } from '../../features/users/selectors';
-import { getOffChainDataSource } from '../../features/general/selectors';
+import { getOffChainDataSource, useTranslation } from '../..';
 import { IRECOrganizationView } from './IRECOrganizationView';
 
 interface IFormValues {
@@ -45,7 +45,7 @@ export function OrganizationView() {
             }
         })
     );
-
+    const { t } = useTranslation();
     const classes = useStyles(useTheme());
 
     const setBusinessType = (type) => {
@@ -90,7 +90,7 @@ export function OrganizationView() {
                 <Grid container spacing={3}>
                     <Grid item xs={6}>
                         <TextField
-                            label="Organization Name"
+                            label={t('organization.registration.organizationName')}
                             className="mt-3"
                             value={formValues.name}
                             fullWidth
@@ -98,7 +98,7 @@ export function OrganizationView() {
                         />
 
                         <TextField
-                            label="Organization Address"
+                            label={t('organization.registration.organizationAddress')}
                             className="mt-3"
                             value={formValues.address}
                             fullWidth
@@ -106,7 +106,7 @@ export function OrganizationView() {
                         />
 
                         <TextField
-                            label="Business Type"
+                            label={t('organization.registration.businessType')}
                             className="mt-3"
                             value={formValues.businessType}
                             fullWidth
@@ -114,7 +114,7 @@ export function OrganizationView() {
                         />
 
                         <TextField
-                            label="Trade Registry Company Number"
+                            label={t('organization.registration.tradeRegistryNumber')}
                             className="mt-3"
                             value={formValues.tradeRegistryCompanyNumber}
                             fullWidth
@@ -122,7 +122,7 @@ export function OrganizationView() {
                         />
 
                         <TextField
-                            label="VAT number"
+                            label={t('organization.registration.vatNumber')}
                             value={formValues.vatNumber}
                             disabled
                             className="mt-3"
@@ -131,7 +131,7 @@ export function OrganizationView() {
                     </Grid>
                     <Grid item xs={6}>
                         <TextField
-                            label="Signatory Full Name"
+                            label={t('organization.registration.signatoryName')}
                             value={formValues.signatoryFullName}
                             disabled
                             className="mt-3"
@@ -139,7 +139,7 @@ export function OrganizationView() {
                         />
 
                         <TextField
-                            label="Signatory Address"
+                            label={t('organization.registration.signatoryAddress')}
                             value={formValues.signatoryAddress}
                             disabled
                             className="mt-3"
@@ -147,7 +147,7 @@ export function OrganizationView() {
                         />
 
                         <TextField
-                            label="Signatory Email"
+                            label={t('organization.registration.signatoryEmail')}
                             value={formValues.signatoryEmail}
                             disabled
                             className="mt-3"
@@ -155,7 +155,7 @@ export function OrganizationView() {
                         />
 
                         <TextField
-                            label="Signatory Telephone"
+                            label={t('organization.registration.signatoryTelephone')}
                             value={formValues.signatoryPhoneNumber}
                             disabled
                             className="mt-3"
