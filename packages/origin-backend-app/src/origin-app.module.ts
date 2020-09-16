@@ -13,6 +13,8 @@ import { DynamicModule, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 const OriginAppTypeOrmModule = () => {
+    const entities = [...OriginBackendEntities, ...ExchangeEntities, ...IRECOrganizationEntities];
+
     return process.env.DATABASE_URL
         ? TypeOrmModule.forRoot({
               type: 'postgres',
@@ -20,7 +22,7 @@ const OriginAppTypeOrmModule = () => {
               ssl: {
                   rejectUnauthorized: false
               },
-              entities: [...OriginBackendEntities, ...ExchangeEntities],
+              entities,
               logging: ['info']
           })
         : TypeOrmModule.forRoot({
@@ -30,11 +32,7 @@ const OriginAppTypeOrmModule = () => {
               username: process.env.DB_USERNAME ?? 'postgres',
               password: process.env.DB_PASSWORD ?? 'postgres',
               database: process.env.DB_DATABASE ?? 'origin',
-              entities: [
-                  ...OriginBackendEntities,
-                  ...ExchangeEntities,
-                  ...IRECOrganizationEntities
-              ],
+              entities,
               logging: ['info']
           });
 };
