@@ -7,7 +7,9 @@ import {
     Get,
     Post,
     UseGuards,
-    UseInterceptors
+    UseInterceptors,
+    Param,
+    ParseIntPipe
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { RegistrationDTO } from './registration.dto';
@@ -27,6 +29,17 @@ export class RegistrationController {
         return this.registrationService.find(
             isAdmin ? null : loggedInUser.organizationId.toString()
         );
+    }
+
+    @Get('/:id')
+    @UseGuards(AuthGuard())
+    public getRegistrationsById(
+        @Param('id', new ParseIntPipe()) orgId: number,
+        @UserDecorator() loggedInUser: LoggedInUser
+    ): Promise<Registration[]> {
+        const isAdmin = loggedInUser.hasRole(Role.Admin, Role.SupportAgent);
+
+        return this.registrationService.find(isAdmin ? orgId.toString() : null);
     }
 
     @Post()
