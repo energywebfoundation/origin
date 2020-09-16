@@ -66,7 +66,7 @@ export class AccountBalance {
     product: Product;
 }
 
-abstract class Transaction {
+export class Transaction {
     code: string;
 
     @Transform((value) => parseFloat(value), { toClassOnly: true })
@@ -82,13 +82,30 @@ abstract class Transaction {
     @Expose({ name: 'destination_account', toClassOnly: true })
     recipient: string;
 
+    @Transform((value) => moment.tz(value.date, value.timezone).toDate())
+    time: Date;
+
+    @Transform((value) => value.code, { toClassOnly: true })
+    @Expose({ name: 'transaction_type', toClassOnly: true })
+    transactionType: TransactionType;
+}
+
+export class TransactionResult extends Transaction {
+    @Expose({ name: 'type', toClassOnly: true })
+    transactionType: TransactionType;
+
+    @Expose({ name: 'source_account', toClassOnly: true })
+    sender: string;
+
+    @Expose({ name: 'destination_account', toClassOnly: true })
+    recipient: string;
+}
+
+export class RedeemTransaction extends Transaction {
     purpose: string;
 
     @Type(() => Beneficiary)
     beneficiary: Beneficiary;
-
-    @Transform((value) => moment.tz(value.date, value.timezone).toDate())
-    time: Date;
 
     @Expose({ name: 'period_start', toPlainOnly: true })
     @Transform((value) => moment.tz(value.date, value.timezone).toDate())
@@ -99,16 +116,7 @@ abstract class Transaction {
     end: Date;
 }
 
-export class AccountTransaction extends Transaction {
-    @Transform((value) => value.code, { toClassOnly: true })
-    @Expose({ name: 'transaction_type', toClassOnly: true })
-    transactionType: TransactionType;
-}
-
-export class RedeemTransaction extends Transaction {
-    @Expose({ name: 'type', toClassOnly: true })
-    transactionType: TransactionType;
-
+export class RedeemTransactionResult extends TransactionResult {
     @Expose({ name: 'encrypted_key', toClassOnly: true })
     encryptedKey: string;
 

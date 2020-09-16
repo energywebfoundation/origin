@@ -8,7 +8,14 @@ import FormData from 'form-data';
 import { ReadStream } from 'fs';
 import qs from 'qs';
 
-import { Account, AccountBalance, AccountTransaction, RedeemTransaction } from './Account';
+import {
+    Account,
+    AccountBalance,
+    RedeemTransaction,
+    RedeemTransactionResult,
+    Transaction,
+    TransactionType
+} from './Account';
 import { Device } from './Device';
 import { ApproveIssue, Issue, IssueWithStatus } from './Issue';
 import { Redemption, Transfer } from './Transfer';
@@ -88,12 +95,20 @@ export class IRECAPIClient {
 
                 return response.data.map((account) => plainToClass(AccountBalance, account));
             },
-            getTransactions: async (code: string): Promise<AccountTransaction[]> => {
+            getTransactions: async (
+                code: string
+            ): Promise<Array<Transaction | RedeemTransaction>> => {
                 const url = `${accountManagementUrl}/${code}/transactions`;
 
-                const response = await axios.get<unknown[]>(url, this.config);
+                const response = await axios.get<any[]>(url, this.config);
 
-                return response.data.map((account) => plainToClass(AccountTransaction, account));
+                return response.data.map((transaction) => {
+                    if (transaction.transaction_type.code === TransactionType.Redemption) {
+                        return plainToClass(RedeemTransaction, transaction);
+                    }
+
+                    return plainToClass(Transaction, transaction);
+                });
             },
             getItems: async (code: string): Promise<AccountItem[]> => {
                 const url = `${accountManagementUrl}/${code}/items`;
@@ -220,21 +235,25 @@ export class IRECAPIClient {
 
         const url = `${this.endPointUrl}/api/irec/transfer-management`;
 
-        await axios.post<unknown>(url, classToPlain(transfer), this.config);
+        const response = await axios.post<{ transaction: any }>(
+            url,
+            classToPlain(transfer),
+            this.config
+        );
     }
 
-    public async redeem(redemption: Redemption): Promise<RedeemTransaction> {
+    public async redeem(redemption: Redemption): Promise<RedeemTransactionResult> {
         await validateOrReject(redemption);
 
         const url = `${this.endPointUrl}/api/irec/redemption-management`;
 
-        const response = await axios.post<{ transaction: RedeemTransaction }>(
+        const response = await axios.post<{ transaction: any }>(
             url,
             classToPlain(redemption),
             this.config
         );
 
-        return plainToClass(RedeemTransaction, response.data.transaction);
+        return plainToClass(RedeemTransactionResult, response.data.transaction);
     }
 
     private applyTokens(accessToken: string, refreshToken: string, expiresIn: number) {
