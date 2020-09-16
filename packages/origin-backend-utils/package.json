@@ -36,7 +36,7 @@
         "bn.js": "^5.1.2",
         "class-validator": "^0.12.2",
         "rxjs": "6.6.3",
-        "typeorm": "0.2.25",
+        "typeorm": "0.2.26",
         "polly-js": "1.6.8"
     }
 }
