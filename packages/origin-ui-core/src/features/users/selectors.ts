@@ -15,6 +15,6 @@ export const getInvitations = (state: IStoreState): IOrganizationInvitation[] =>
 export const getShowPendingInvitations = (state: IStoreState): boolean =>
     state.users.invitations.showPendingInvitationsModal;
 
-export const getIRECAccount = (state: IStoreState) => state.users.irecAccount;
+export const getIRecAccount = (state: IStoreState) => state.users.iRecAccount;
 
 export const getUserState = (state: IStoreState): IUsersState => state.users;

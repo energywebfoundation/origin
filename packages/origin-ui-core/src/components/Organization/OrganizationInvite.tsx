@@ -43,7 +43,7 @@ const VALIDATION_SCHEMA = Yup.object({
 export function OrganizationInvite() {
     const { t } = useTranslation();
 
-    const organizationClient = useSelector(getOffChainDataSource)?.organizationClient;
+    const invitationClient = useSelector(getOffChainDataSource)?.invitationClient;
     const userOffchain = useSelector(getUserOffchain);
 
     const dispatch = useDispatch();
@@ -66,7 +66,7 @@ export function OrganizationInvite() {
         dispatch(setLoading(true));
 
         try {
-            await organizationClient.invite(values.email, Number(values.role));
+            await invitationClient.invite(values.email, Number(values.role));
 
             showNotification(`Invitation sent`, NotificationType.Success);
         } catch (error) {

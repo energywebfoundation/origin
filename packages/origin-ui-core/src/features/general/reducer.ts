@@ -1,6 +1,7 @@
 import { IOriginConfiguration, IOffChainDataSource } from '@energyweb/origin-backend-core';
 import { GeneralActions, IGeneralAction, IEnvironment } from './actions';
 import { IExchangeClient } from '../../utils/exchange';
+import { IIRecClient } from '../../utils/irec';
 
 export interface IGeneralState {
     loading: boolean;
@@ -13,6 +14,7 @@ export interface IGeneralState {
         visibility: boolean;
     };
     noAccountModalVisibility: boolean;
+    iRecClient: IIRecClient;
 }
 
 const defaultState: IGeneralState = {
@@ -25,7 +27,8 @@ const defaultState: IGeneralState = {
     accountMismatchModalProperties: {
         visibility: false
     },
-    noAccountModalVisibility: false
+    noAccountModalVisibility: false,
+    iRecClient: null
 };
 
 export default function reducer(state = defaultState, action: IGeneralAction): IGeneralState {
@@ -65,6 +68,9 @@ export default function reducer(state = defaultState, action: IGeneralAction): I
 
         case GeneralActions.setNoAccountModalVisibility:
             return { ...state, noAccountModalVisibility: action.payload };
+
+        case GeneralActions.setIRecClient:
+            return { ...state, iRecClient: action.payload.iRecClient };
 
         default:
             return state;

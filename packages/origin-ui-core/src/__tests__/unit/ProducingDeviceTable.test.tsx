@@ -8,7 +8,11 @@ import {
     createRenderedHelpers,
     TEST_DEVICE_TYPES
 } from '../utils/helpers';
-import { DeviceStatus, IOffChainDataSource, IOrganization } from '@energyweb/origin-backend-core';
+import {
+    DeviceStatus,
+    IOffChainDataSource,
+    IPublicOrganization
+} from '@energyweb/origin-backend-core';
 import { configurationUpdated } from '../../features';
 import { Configuration, DeviceTypeService } from '@energyweb/utils-general';
 import { OffChainDataSourceMock } from '@energyweb/origin-backend-client-mocks';
@@ -39,7 +43,7 @@ describe('ProducingDeviceTable', () => {
             },
             organization: {
                 name: testOrganizationName
-            } as IOrganization
+            } as IPublicOrganization
         });
 
         addProducingDevice({
@@ -55,7 +59,7 @@ describe('ProducingDeviceTable', () => {
             province: 'Nakhon Pathom',
             organization: {
                 name: testOrganizationName
-            } as IOrganization
+            } as IPublicOrganization
         });
 
         store.dispatch(

@@ -10,13 +10,18 @@ import {
 } from '../Table/PaginatedLoaderHooks';
 import { getOffChainDataSource } from '../../features/general/selectors';
 import { Countries } from '@energyweb/utils-general';
-import { IOrganization, OrganizationStatus, Role, isRole } from '@energyweb/origin-backend-core';
+import {
+    IPublicOrganization,
+    OrganizationStatus,
+    Role,
+    isRole
+} from '@energyweb/origin-backend-core';
 import { useLinks } from '../../utils';
 import { useHistory } from 'react-router-dom';
 import { getUserOffchain } from '../../features/users/selectors';
 
 interface IRecord {
-    organization: IOrganization;
+    organization: IPublicOrganization;
 }
 
 function getOrganizationText(status: OrganizationStatus) {
@@ -126,17 +131,16 @@ export function OrganizationTable() {
 
     const columns = [
         { id: 'name', label: 'Name' },
-        { id: 'headquartersCountry', label: 'Headquarters country' },
-        { id: 'yearOfRegistration', label: 'Year of registration' },
+        { id: 'country', label: 'Country' },
+        { id: 'tradeRegistryCompanyNumber', label: 'Trade Registry Company Number' },
         { id: 'status', label: 'Status' }
     ] as const;
 
     const rows = paginatedData.map(({ organization }) => {
         return {
             name: organization.name,
-            headquartersCountry: Countries.find((i) => i.id === organization.headquartersCountry)
-                ?.name,
-            yearOfRegistration: organization.yearOfRegistration,
+            country: Countries.find((i) => i.id === organization.country)?.name,
+            tradeRegistryCompanyNumber: organization.tradeRegistryCompanyNumber,
             status: getOrganizationText(organization.status)
         };
     });

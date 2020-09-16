@@ -9,6 +9,7 @@ interface IFormCountrySelectProps {
     className?: string;
     required?: boolean;
     disabled?: boolean;
+    isoFormat?: boolean;
 }
 
 const COUNTRY_OPTIONS = Countries.map((country) => ({
@@ -16,6 +17,14 @@ const COUNTRY_OPTIONS = Countries.map((country) => ({
     label: country.name
 }));
 
+const COUNTRY_OPTIONS_ISO = Countries.map((country) => ({
+    value: country.id,
+    label: country.name,
+    code: country.code
+}));
+
 export function FormCountrySelect(props: IFormCountrySelectProps) {
-    return <FormSelect options={COUNTRY_OPTIONS} {...props} />;
+    return (
+        <FormSelect options={props.isoFormat ? COUNTRY_OPTIONS_ISO : COUNTRY_OPTIONS} {...props} />
+    );
 }

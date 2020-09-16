@@ -6,7 +6,7 @@ import {
     IRegions,
     IDeviceType
 } from '@energyweb/origin-backend-core';
-import { ExtendedBaseEntity } from '../ExtendedBaseEntity';
+import { ExtendedBaseEntity } from '@energyweb/origin-backend-utils';
 
 @Entity()
 @Check(`id = 1`)

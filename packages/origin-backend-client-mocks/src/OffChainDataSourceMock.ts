@@ -1,10 +1,23 @@
 import { RequestClient } from '@energyweb/origin-backend-client';
-import { IOffChainDataSource, IConfigurationClient, IUserClient, IDeviceClient, IOrganizationClient, IRequestClient, IFilesClient, ICertificateClient, ICertificationRequestClient, IAdminClient } from '@energyweb/origin-backend-core';
+import {
+    IOffChainDataSource,
+    IConfigurationClient,
+    IUserClient,
+    IDeviceClient,
+    IOrganizationClient,
+    IInvitationClient,
+    IRequestClient,
+    IFilesClient,
+    ICertificateClient,
+    ICertificationRequestClient,
+    IAdminClient
+} from '@energyweb/origin-backend-core';
 
 import { ConfigurationClientMock } from './ConfigurationClientMock';
 import { UserClientMock } from './UserClientMock';
 import { DeviceClientMock } from './DeviceClientMock';
 import { OrganizationClientMock } from './OrganizationClientMock';
+import { InvitationClientMock } from './InvitationClientMock';
 import { CertificateClientMock } from './CertificateClientMock';
 import { CertificationRequestClientMock } from './CertificationRequestClientMock';
 
@@ -18,6 +31,8 @@ export class OffChainDataSourceMock implements IOffChainDataSource {
     deviceClient: IDeviceClient = new DeviceClientMock();
 
     organizationClient: IOrganizationClient = new OrganizationClientMock();
+
+    invitationClient: IInvitationClient = new InvitationClientMock();
 
     requestClient: IRequestClient = new RequestClient();
 

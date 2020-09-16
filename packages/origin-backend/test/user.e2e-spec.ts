@@ -13,7 +13,7 @@ import { INestApplication } from '@nestjs/common';
 import { expect } from 'chai';
 import request from 'supertest';
 
-import { DatabaseService } from './database.service';
+import { DatabaseService } from '@energyweb/origin-backend-utils';
 import { bootstrapTestInstance, registerAndLogin } from './origin-backend';
 import { omit } from './utils';
 import { UserService } from '../src/pods/user/user.service';
@@ -284,7 +284,6 @@ describe('User e2e tests', () => {
             .put(`/user/confirm-email/${token}`)
             .set('Authorization', `Bearer ${accessToken}`)
             .expect((res) => {
-                console.log(res);
                 const response = res.text as EmailConfirmationResponse;
 
                 expect(response).equals(EmailConfirmationResponse.Success);

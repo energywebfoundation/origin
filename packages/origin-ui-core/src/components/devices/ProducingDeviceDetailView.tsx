@@ -20,7 +20,7 @@ import { Skeleton } from '@material-ui/lab';
 import { formatDate, EnergyFormatter, PowerFormatter, useTranslation } from '../../utils';
 import { getOffChainDataSource } from '../../features/general/selectors';
 import { DeviceGroupForm } from './DeviceGroupForm';
-import { IExternalDeviceId, IOrganization } from '@energyweb/origin-backend-core';
+import { IExternalDeviceId, IPublicOrganization } from '@energyweb/origin-backend-core';
 
 interface IProps {
     id?: number;
@@ -100,7 +100,7 @@ export function ProducingDeviceDetailView(props: IProps) {
             },
             {
                 label: t('device.properties.deviceOwner'),
-                data: (selectedDevice.organization as IOrganization).name
+                data: (selectedDevice.organization as IPublicOrganization).name
             },
             {
                 label: t('device.properties.complianceRegistry'),

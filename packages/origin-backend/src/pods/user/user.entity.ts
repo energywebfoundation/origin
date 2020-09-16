@@ -4,8 +4,8 @@ import { Exclude } from 'class-transformer';
 
 import { IUser, KYCStatus, UserStatus } from '@energyweb/origin-backend-core';
 
+import { ExtendedBaseEntity } from '@energyweb/origin-backend-utils';
 import { Organization } from '../organization/organization.entity';
-import { ExtendedBaseEntity } from '../ExtendedBaseEntity';
 
 @Entity()
 @Unique(['email', 'blockchainAccountAddress'])

@@ -10,11 +10,11 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 @Injectable()
-export class EmptyResultInterceptor implements NestInterceptor {
+export class NullOrUndefinedResultInterceptor implements NestInterceptor {
     intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
         return next.handle().pipe(
             map((data) => {
-                if (!data) {
+                if (data === null || data === undefined) {
                     throw new NotFoundException();
                 }
                 return data;

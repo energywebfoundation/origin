@@ -13,30 +13,27 @@ SET row_security = off;
     ORGANIZATIONS
  */
 INSERT INTO
-    public.organization (
+    public."platform_organization" (
         "createdAt",
         "updatedAt",
+        
         id,
-        "activeCountries",
-        code,
         name,
-        contact,
-        telephone,
-        email,
         address,
-        shareholders,
-        "ceoPassportNumber",
-        "ceoName",
-        "companyNumber",
-        "vatNumber",
-        postcode,
-        "headquartersCountry",
+        city,
+        "zipCode",
         country,
-        "businessTypeSelect",
-        "businessTypeInput",
-        "yearOfRegistration",
-        "numberOfEmployees",
-        website,
+        "businessType",
+        "tradeRegistryCompanyNumber",
+        "vatNumber",
+        
+        "signatoryFullName",
+        "signatoryAddress",
+        "signatoryCity",
+        "signatoryZipCode",
+        "signatoryCountry",
+        "signatoryEmail",
+        "signatoryPhoneNumber",
         status
     )
 VALUES
@@ -44,54 +41,48 @@ VALUES
         '2020-03-30 09:55:25.962333+02',
         '2020-03-30 09:55:25.962333+02',
         1,
-        '[83]',
-        '1',
-        'Issuer',
-        'Contact',
-        '1',
-        'issuer@mailinator.com',
+        'Issuer Organization',
         'Address',
-        '1',
-        '1',
+        'City',
+        'Zip code',
+        235,
+        'Issuer',
+        '1000',
+        'UK1000',
+
+        'Issuer signatory'
+        'Address',
+        'City',
+        'Zip code',
         'CEO name',
-        '',
-        'XY123456',
-        '1',
-        '83',
-        '83',
-        'Private individual',
-        '',
-        '2020',
-        '1',
-        'http://example.com',
-        '2'
+        235,
+        'issuer@mailinator.com',
+        'Phone number',
+        2
     );
 
 INSERT INTO
-    public.organization (
+    public."platform_organization" (
         "createdAt",
         "updatedAt",
+        
         id,
-        "activeCountries",
-        code,
         name,
-        contact,
-        telephone,
-        email,
         address,
-        shareholders,
-        "ceoPassportNumber",
-        "ceoName",
-        "companyNumber",
-        "vatNumber",
-        postcode,
-        "headquartersCountry",
+        city,
+        "zipCode",
         country,
-        "businessTypeSelect",
-        "businessTypeInput",
-        "yearOfRegistration",
-        "numberOfEmployees",
-        website,
+        "businessType",
+        "tradeRegistryCompanyNumber",
+        "vatNumber",
+        
+        "signatoryFullName",
+        "signatoryAddress",
+        "signatoryCity",
+        "signatoryZipCode",
+        "signatoryCountry",
+        "signatoryEmail",
+        "signatoryPhoneNumber",
         status
     )
 VALUES
@@ -99,54 +90,48 @@ VALUES
         '2020-03-30 09:55:25.962333+02',
         '2020-03-30 09:55:25.962333+02',
         2,
-        '[83]',
-        '1',
         'Device Manager Organization',
-        'Contact',
-        '1',
-        'devicemanager@mailinator.com',
         'Address',
-        '1',
-        '1',
+        'City',
+        'Zip code',
+        235,
+        'Issuer',
+        '1000',
+        'UK1000',
+
+        'Issuer signatory'
+        'Address',
+        'City',
+        'Zip code',
         'CEO name',
-        '',
-        'XY123456',
-        '1',
-        '83',
-        '83',
-        'Private individual',
-        '',
-        '2020',
-        '1',
-        'http://example.com',
-        '2'
+        235,
+        'devicemanager@mailinator.com',
+        'Phone number',
+        2
     );
 
 INSERT INTO
-    public.organization (
+    public."platform_organization" (
         "createdAt",
         "updatedAt",
+        
         id,
-        "activeCountries",
-        code,
         name,
-        contact,
-        telephone,
-        email,
         address,
-        shareholders,
-        "ceoPassportNumber",
-        "ceoName",
-        "companyNumber",
-        "vatNumber",
-        postcode,
-        "headquartersCountry",
+        city,
+        "zipCode",
         country,
-        "businessTypeSelect",
-        "businessTypeInput",
-        "yearOfRegistration",
-        "numberOfEmployees",
-        website,
+        "businessType",
+        "tradeRegistryCompanyNumber",
+        "vatNumber",
+        
+        "signatoryFullName",
+        "signatoryAddress",
+        "signatoryCity",
+        "signatoryZipCode",
+        "signatoryCountry",
+        "signatoryEmail",
+        "signatoryPhoneNumber",
         status
     )
 VALUES
@@ -154,54 +139,48 @@ VALUES
         '2020-03-30 09:55:25.962333+02',
         '2020-03-30 09:55:25.962333+02',
         3,
-        '[83]',
-        '1',
         'Device Manager Second Organization',
-        'Contact',
-        '1',
-        'devicemanager2@mailinator.com',
         'Address',
-        '1',
-        '1',
+        'City',
+        'Zip code',
+        235,
+        'Issuer',
+        '1000',
+        'UK1000',
+
+        'Issuer signatory'
+        'Address',
+        'City',
+        'Zip code',
         'CEO name',
-        '',
-        'XY123456',
-        '1',
-        '83',
-        '83',
-        'Private individual',
-        '',
-        '2020',
-        '1',
-        'http://example.com',
-        '2'
+        235,
+        'devicemanager2@mailinator.com',
+        'Phone number',
+        2
     );
 
 INSERT INTO
-    public.organization (
+    public."platform_organization" (
         "createdAt",
         "updatedAt",
+        
         id,
-        "activeCountries",
-        code,
         name,
-        contact,
-        telephone,
-        email,
         address,
-        shareholders,
-        "ceoPassportNumber",
-        "ceoName",
-        "companyNumber",
-        "vatNumber",
-        postcode,
-        "headquartersCountry",
+        city,
+        "zipCode",
         country,
-        "businessTypeSelect",
-        "businessTypeInput",
-        "yearOfRegistration",
-        "numberOfEmployees",
-        website,
+        "businessType",
+        "tradeRegistryCompanyNumber",
+        "vatNumber",
+        
+        "signatoryFullName",
+        "signatoryAddress",
+        "signatoryCity",
+        "signatoryZipCode",
+        "signatoryCountry",
+        "signatoryEmail",
+        "signatoryPhoneNumber",
         status
     )
 VALUES
@@ -209,27 +188,24 @@ VALUES
         '2020-03-30 09:55:25.962333+02',
         '2020-03-30 09:55:25.962333+02',
         4,
-        '[83]',
-        '1',
         'Trader Organization',
-        'Contact',
-        '1',
-        'trader@mailinator.com',
         'Address',
-        '1',
-        '1',
+        'City',
+        'Zip code',
+        235,
+        'Issuer',
+        '1000',
+        'UK1000',
+
+        'Issuer signatory'
+        'Address',
+        'City',
+        'Zip code',
         'CEO name',
-        '',
-        'XY123456',
-        '1',
-        '83',
-        '83',
-        'Private individual',
-        '',
-        '2020',
-        '1',
-        'http://example.com',
-        '2'
+        235,
+        'trader@mailinator.com',
+        'Phone number',
+        2
     );
 
 /*
@@ -572,8 +548,8 @@ SELECT setval(
 );
 
 SELECT setval(
-    pg_get_serial_sequence('public.organization', 'id'),
-    (SELECT MAX("id") FROM public.organization) + 1
+    pg_get_serial_sequence('public.platform_organization', 'id'),
+    (SELECT MAX("id") FROM public.platform_organization) + 1
 );
 
 SELECT setval(

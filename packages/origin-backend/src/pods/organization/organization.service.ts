@@ -1,25 +1,21 @@
-import { Injectable, UnprocessableEntityException, BadRequestException } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, FindOneOptions } from 'typeorm';
 import {
-    IOrganization,
-    IOrganizationWithRelationsIds,
     isRole,
-    Role,
-    OrganizationUpdateData,
-    OrganizationPostData,
-    OrganizationStatus,
-    ILoggedInUser,
-    OrganizationRemovedMemberEvent,
-    SupportedEvents,
+    IUser,
     OrganizationMemberChangedRoleEvent,
-    IUser
+    OrganizationRemovedMemberEvent,
+    OrganizationStatus,
+    OrganizationStatusChangedEvent,
+    Role,
+    SupportedEvents
 } from '@energyweb/origin-backend-core';
-import { validate } from 'class-validator';
-import { Organization } from './organization.entity';
-import { UserService, User } from '../user';
-import { ExtendedBaseEntity } from '../ExtendedBaseEntity';
+import { BadRequestException, Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { FindOneOptions, Repository } from 'typeorm';
+
 import { NotificationService } from '../notification';
+import { User, UserService } from '../user';
+import { NewOrganizationDTO } from './new-organization.dto';
+import { Organization } from './organization.entity';
 
 @Injectable()
 export class OrganizationService {
@@ -30,42 +26,49 @@ export class OrganizationService {
         private readonly notificationService: NotificationService
     ) {}
 
-    async create(userId: number, data: OrganizationPostData) {
+    async create(
+        userId: number,
+        organizationToRegister: NewOrganizationDTO
+    ): Promise<Organization> {
+        const {
+            name,
+            address,
+            businessType,
+            city,
+            zipCode,
+            country,
+            tradeRegistryCompanyNumber,
+            vatNumber,
+            signatoryAddress,
+            signatoryCity,
+            signatoryCountry,
+            signatoryEmail,
+            signatoryFullName,
+            signatoryPhoneNumber,
+            signatoryZipCode
+        } = organizationToRegister;
+
         const organizationToCreate = new Organization({
-            activeCountries: data.activeCountries,
-            code: data.code,
-            name: data.name,
-            contact: data.contact,
-            telephone: data.telephone,
-            email: data.email,
-            address: data.address,
-            shareholders: data.shareholders,
-            ceoPassportNumber: data.ceoPassportNumber,
-            ceoName: data.ceoName,
-            companyNumber: data.companyNumber,
-            vatNumber: data.vatNumber,
-            postcode: data.postcode,
-            headquartersCountry: data.headquartersCountry,
-            country: data.country,
-            businessTypeSelect: data.businessTypeSelect,
-            businessTypeInput: data.businessTypeInput,
-            yearOfRegistration: data.yearOfRegistration,
-            numberOfEmployees: data.numberOfEmployees,
-            website: data.website,
+            name,
+            address,
+            businessType,
+            city,
+            zipCode,
+            country,
+            tradeRegistryCompanyNumber,
+            vatNumber,
+            signatoryAddress,
+            signatoryCity,
+            signatoryCountry,
+            signatoryEmail,
+            signatoryFullName,
+            signatoryPhoneNumber,
+            signatoryZipCode,
 
             status: OrganizationStatus.Submitted,
             users: [{ id: userId } as User],
             devices: []
         });
-
-        const validationErrors = await validate(organizationToCreate);
-
-        if (validationErrors.length > 0) {
-            throw new UnprocessableEntityException({
-                success: false,
-                errors: validationErrors.map((e) => e?.toString())
-            });
-        }
 
         return this.repository.save(organizationToCreate);
     }
@@ -73,63 +76,54 @@ export class OrganizationService {
     async findOne(
         id: string | number,
         options: FindOneOptions<Organization> = {}
-    ): Promise<ExtendedBaseEntity & IOrganizationWithRelationsIds> {
-        const entity = ((await this.repository.findOne(id, {
-            loadRelationIds: true,
+    ): Promise<Organization> {
+        return this.repository.findOne(id, {
             ...options
-        })) as IOrganization) as ExtendedBaseEntity & IOrganizationWithRelationsIds;
-
-        return entity;
+        });
     }
 
-    async getAll() {
+    async getAll(): Promise<Organization[]> {
         return this.repository.find();
     }
 
-    async remove(entity: Organization | (ExtendedBaseEntity & IOrganizationWithRelationsIds)) {
-        return this.repository.remove((entity as IOrganization) as Organization);
+    async remove(organizationId: number): Promise<void> {
+        await this.repository.delete(organizationId);
     }
 
-    async getDeviceManagers(id: string | number): Promise<IUser[]> {
+    async getDeviceManagers(id: number): Promise<IUser[]> {
         const members = await this.getMembers(id);
 
         return members.filter((u) => isRole(u, Role.OrganizationDeviceManager));
     }
 
-    async getAdmins(id: string | number): Promise<IUser[]> {
-        const members = await this.getMembers(id);
-
-        return members.filter((u) => isRole(u, Role.OrganizationAdmin));
-    }
-
-    async getMembers(id: string | number): Promise<IUser[]> {
+    async getMembers(id: number): Promise<IUser[]> {
         const organization = await this.findOne(id);
 
-        return this.userService.findByIds(organization.users);
+        return organization.users;
     }
 
-    async update(
-        id: number | string,
-        data: OrganizationUpdateData
-    ): Promise<ExtendedBaseEntity & IOrganizationWithRelationsIds> {
-        const entity = await this.findOne(id);
-
-        if (!entity) {
-            throw new Error(`Can't find entity.`);
-        }
-
-        if (typeof data.status === 'undefined') {
-            throw new Error('Nothing to update');
-        }
-
+    async update(id: number, status: OrganizationStatus): Promise<Organization> {
         await this.repository.update(id, {
-            status: data.status
+            status
         });
 
-        return this.findOne(id);
+        const organization = await this.findOne(id);
+
+        const eventData: OrganizationStatusChangedEvent = {
+            organizationId: organization.id,
+            organizationEmail: organization.signatoryEmail,
+            status
+        };
+
+        this.notificationService.handleEvent({
+            type: SupportedEvents.ORGANIZATION_STATUS_CHANGED,
+            data: eventData
+        });
+
+        return organization;
     }
 
-    async hasDevice(id: number, deviceId: string) {
+    async hasDevice(id: number, deviceId: string): Promise<boolean> {
         const devicesCount = await this.repository
             .createQueryBuilder('organization')
             .leftJoinAndSelect('organization.devices', 'device')
@@ -139,27 +133,8 @@ export class OrganizationService {
         return devicesCount === 1;
     }
 
-    async removeMember(user: ILoggedInUser, organizationId: number, memberId: number) {
-        if (organizationId !== user.organizationId) {
-            throw new BadRequestException({
-                success: false,
-                message: `You are not in the requested organization.`
-            });
-        }
-
-        const organization = await this.repository.findOne(user.organizationId, {
-            relations: ['users']
-        });
-
-        const userToBeRemoved = await this.userService.findById(memberId);
-        const admins = await this.getAdmins(organizationId);
-
-        if (isRole(userToBeRemoved, Role.OrganizationAdmin) && admins.length < 2) {
-            throw new BadRequestException({
-                success: false,
-                message: `Can't remove admin user from organization. There always has to be at least one admin in the organization.`
-            });
-        }
+    async removeMember(organizationId: number, memberId: number): Promise<void> {
+        const organization = await this.findOne(organizationId);
 
         if (!organization.users.find((u) => u.id === memberId)) {
             throw new BadRequestException({
@@ -168,7 +143,17 @@ export class OrganizationService {
             });
         }
 
-        await this.userService.removeOrganization(memberId);
+        const admins = organization.users.filter((u) => isRole(u, Role.OrganizationAdmin));
+        const userToBeRemoved = await this.userService.findById(memberId);
+
+        if (isRole(userToBeRemoved, Role.OrganizationAdmin) && admins.length < 2) {
+            throw new BadRequestException({
+                success: false,
+                message: `Can't remove admin user from organization. There always has to be at least one admin in the organization.`
+            });
+        }
+
+        await this.userService.removeFromOrganization(memberId);
 
         const eventData: OrganizationRemovedMemberEvent = {
             organizationName: organization.name,
@@ -181,21 +166,18 @@ export class OrganizationService {
         });
     }
 
-    async changeMemberRole(
-        user: ILoggedInUser,
-        organizationId: number,
-        memberId: number,
-        newRole: Role
-    ) {
-        if (organizationId !== user.organizationId) {
+    async changeMemberRole(organizationId: number, memberId: number, newRole: Role): Promise<void> {
+        const organization = await this.findOne(organizationId);
+
+        if (!organization.users.find((u) => u.id === memberId)) {
             throw new BadRequestException({
                 success: false,
-                message: `You are not in the requested organization.`
+                message: `User to be removed is not part of the organization.`
             });
         }
 
         const userToBeChanged = await this.userService.findById(memberId);
-        const admins = await this.getAdmins(organizationId);
+        const admins = organization.users.filter((u) => isRole(u, Role.OrganizationAdmin));
 
         if (
             newRole !== Role.OrganizationAdmin &&
@@ -205,17 +187,6 @@ export class OrganizationService {
             throw new BadRequestException({
                 success: false,
                 message: `Can't change role of admin user from organization. There always has to be at least one admin in the organization.`
-            });
-        }
-
-        const organization = await this.repository.findOne(user.organizationId, {
-            relations: ['users']
-        });
-
-        if (!organization.users.find((u) => u.id === memberId)) {
-            throw new BadRequestException({
-                success: false,
-                message: `User to be removed is not part of the organization.`
             });
         }
 

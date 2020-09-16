@@ -17,14 +17,14 @@ import { EmailConfirmation } from './pods/email-confirmation/email-confirmation.
 import { EmailConfirmationModule } from './pods/email-confirmation/email-confirmation.module';
 import { File } from './pods/file/file.entity';
 import { FileModule } from './pods/file/file.module';
-import { OrganizationInvitation } from './pods/organization/organization-invitation.entity';
+import { Invitation } from './pods/invitation/invitation.entity';
+import { InvitationModule } from './pods/invitation/invitation.module';
 import { Organization } from './pods/organization/organization.entity';
 import { OrganizationModule } from './pods/organization/organization.module';
 import { User } from './pods/user/user.entity';
 import { UserModule } from './pods/user/user.module';
 
 export { AppModule } from './app.module';
-export { ExtendedBaseEntity } from './pods/ExtendedBaseEntity';
 export { ConfigurationService } from './pods/configuration/configuration.service';
 export { DeviceService } from './pods/device/device.service';
 
@@ -39,7 +39,7 @@ export const entities = [
     Configuration,
     Organization,
     User,
-    OrganizationInvitation,
+    Invitation,
     CertificationRequest,
     CertificationRequestQueueItem,
     Certificate,
@@ -57,7 +57,8 @@ export const modules = [
     OrganizationModule,
     UserModule,
     EmailConfirmationModule,
-    CertificationRequestModule
+    CertificationRequestModule,
+    InvitationModule
 ];
 
 export const providers = [{ provide: APP_PIPE, useClass: ValidationPipe }];

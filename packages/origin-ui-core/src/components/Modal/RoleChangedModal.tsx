@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useContext } from 'react';
 import {
     Dialog,
     DialogContent,
@@ -15,15 +15,22 @@ import {
 } from '@material-ui/core';
 import { useSelector } from 'react-redux';
 import { Role, OrganizationInvitationStatus } from '@energyweb/origin-backend-core';
+import { OriginConfigurationContext } from '..';
+import { OriginFeature } from '@energyweb/utils-general';
 import { getUserOffchain, getInvitations } from '../../features/users/selectors';
 import { useTranslation } from '../..';
 import { Trans } from 'react-i18next';
 import { Brightness1 } from '@material-ui/icons';
 import OrgAddedIcon from '../../../assets/icon-org-added.svg';
 
-export const RoleChangedModal = () => {
+interface IProps {
+    showModal?: boolean;
+    setShowModal?: (showModal: boolean) => void;
+    setShowIRec?: (showModal: boolean) => void;
+}
+
+export const RoleChangedModal = ({ showModal, setShowModal, setShowIRec }: IProps) => {
     const user = useSelector(getUserOffchain);
-    const [showModal, setShowModal] = useState(false);
     const userRef = useRef(user);
     const { t } = useTranslation();
     const {
@@ -35,6 +42,7 @@ export const RoleChangedModal = () => {
     const sender = useSelector(getInvitations).find(
         (invitation) => invitation.status === OrganizationInvitationStatus.Accepted
     )?.sender;
+    const { enabledFeatures } = useContext(OriginConfigurationContext);
 
     useEffect(() => {
         if (user?.organization && userRef.current) {
@@ -94,8 +102,15 @@ export const RoleChangedModal = () => {
         return actions.map((action) => `${prefix}.${action}`);
     };
 
+    const closeRoleModal = () => {
+        setShowModal(false);
+        if (setShowIRec && enabledFeatures.includes(OriginFeature.IRec)) {
+            setShowIRec(true);
+        }
+    };
+
     return (
-        <Dialog open={showModal} onClose={() => setShowModal(false)} scroll="body">
+        <Dialog open={showModal} onClose={() => closeRoleModal()} scroll="body">
             <DialogTitle>
                 <Grid container>
                     <Grid item xs={3}>
@@ -170,7 +185,7 @@ export const RoleChangedModal = () => {
                 </Grid>
             </DialogContent>
             <DialogActions>
-                <Button color="primary" variant="contained" onClick={() => setShowModal(false)}>
+                <Button color="primary" variant="contained" onClick={() => closeRoleModal()}>
                     {t('general.responses.ok')}
                 </Button>
             </DialogActions>

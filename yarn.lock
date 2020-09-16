@@ -21247,6 +21247,14 @@ superagent-proxy@^2.0.0:
     debug "^3.1.0"
     proxy-agent "3"
 
+superagent-use@0.1.0:
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/superagent-use/-/superagent-use-0.1.0.tgz#d28dbbbf573ba980329b4645897608bc99501cff"
+  integrity sha1-0o27v1c7qYAym0ZFiXYIvJlQHP8=
+  dependencies:
+    extend "^3.0.0"
+    methods "~1.1.2"
+
 superagent@^3.8.3:
   version "3.8.3"
   resolved "https://registry.yarnpkg.com/superagent/-/superagent-3.8.3.tgz#460ea0dbdb7d5b11bc4f78deba565f86a178e128"
@@ -21279,6 +21287,11 @@ superagent@^5.2.1:
     qs "^6.9.1"
     readable-stream "^3.4.0"
     semver "^6.3.0"
+
+supertest-capture-error@1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/supertest-capture-error/-/supertest-capture-error-1.0.0.tgz#f0586b2fca49c8bad4df9cb53d93a7f90d94f1d9"
+  integrity sha512-/W7u/L8JbGkdP+BD+pq5FDnCoOCsW1+cYEtkDzmJUafgsTr5tJ4YpVCoQQUR3njYLkGA8HfhHFr0W/S6CP+PYg==
 
 supertest@4.0.2:
   version "4.0.2"
