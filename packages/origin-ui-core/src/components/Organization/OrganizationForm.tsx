@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
 import { Formik, Form, FormikHelpers } from 'formik';
 import * as Yup from 'yup';
 import { IFullOrganization, OrganizationPostData } from '@energyweb/origin-backend-core';
@@ -25,9 +24,10 @@ import { setLoading } from '../../features/general/actions';
 import { FormInput } from '../Form/FormInput';
 import { FormCountrySelect } from '../Form/FormCountrySelect';
 import { FormBusinessTypeSelect } from '../Form/FormBusinessTypeSelect';
-import { useLinks } from '../../utils/routing';
 import { setUserOffchain } from '../../features/users/actions';
 import { getUserOffchain } from '../../features/users/selectors';
+import { RoleChangedModal } from '../Modal/RoleChangedModal';
+import { IRECConnectOrRegisterModal } from '../Modal/IRECConnectOrRegisterModal';
 
 interface IProps {
     entity: IFullOrganization;
@@ -97,11 +97,12 @@ export function OrganizationForm(props: IProps) {
     /* eslint-disable @typescript-eslint/no-unused-vars */
     const [companyProofs, setCompanyProofs] = useState<IUploadedFile[]>([]);
     const [signatoryId, setSignatoryId] = useState<IUploadedFile[]>([]);
-    const { getOrganizationViewLink } = useLinks();
-    const history = useHistory();
     const user = useSelector(getUserOffchain);
     const { t } = useTranslation();
     const dispatch = useDispatch();
+
+    const [showRoleModal, setShowRoleModal] = useState(false);
+    const [showIRecModal, setShowIRecModal] = useState(false);
 
     const useStyles = makeStyles(() =>
         createStyles({
@@ -131,12 +132,10 @@ export function OrganizationForm(props: IProps) {
         if (values.signatoryCountry === '' || values.country === '') {
             return;
         }
-
+        formikActions.setSubmitting(true);
         dispatch(setLoading(true));
 
         try {
-            formikActions.setSubmitting(true);
-
             const formData: OrganizationPostData = {
                 ...values,
                 country: values.country,
@@ -145,11 +144,11 @@ export function OrganizationForm(props: IProps) {
 
             const organization = await organizationClient.add(formData);
             dispatch(setUserOffchain({ ...user, organization }));
-            formikActions.setSubmitting(false);
 
-            history.push(getOrganizationViewLink(organization?.id?.toString()));
-
-            showNotification('Organization registered.', NotificationType.Success);
+            if (organization) {
+                setShowRoleModal(true);
+                showNotification('Organization registered.', NotificationType.Success);
+            }
         } catch (error) {
             console.warn('Error while registering an organization', error);
 
@@ -159,7 +158,7 @@ export function OrganizationForm(props: IProps) {
                 showNotification('Organization could not be created.', NotificationType.Error);
             }
         }
-
+        formikActions.setSubmitting(false);
         dispatch(setLoading(false));
     }
 
@@ -400,6 +399,12 @@ export function OrganizationForm(props: IProps) {
                     );
                 }}
             </Formik>
+            <RoleChangedModal
+                showModal={showRoleModal}
+                setShowModal={setShowRoleModal}
+                setShowIRec={setShowIRecModal}
+            />
+            <IRECConnectOrRegisterModal showModal={showIRecModal} setShowModal={setShowIRecModal} />
         </Paper>
     );
 }

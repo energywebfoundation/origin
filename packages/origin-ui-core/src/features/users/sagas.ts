@@ -9,13 +9,14 @@ import {
     IRefreshUserOffchainAction,
     setUserState
 } from './actions';
-import { getOffChainDataSource } from '../general/selectors';
+import { getOffChainDataSource, getIRecClient } from '../general/selectors';
 import {
     IOffChainDataSource,
     IRequestClient,
     IUser,
     IOrganizationInvitation
 } from '@energyweb/origin-backend-core';
+import { Registration } from '../../utils/irec/types';
 import { GeneralActions, ISetOffChainDataSourceAction } from '../general/actions';
 import { reloadCertificates, clearCertificates } from '../certificates';
 import { clearBundles } from '../bundles';
@@ -99,10 +100,17 @@ function* fetchOffchainUserDetails(): SagaIterator {
                 null
             );
             const userState: IUsersState = yield select(getUserState);
+
+            const iRecClient = yield select(getIRecClient);
+            const iRecAccount: Registration[] = userOffchain.organization
+                ? yield call([iRecClient, iRecClient.getRegistrations], null)
+                : [];
+
             yield put(
                 setUserState({
                     ...userState,
                     userOffchain,
+                    iRecAccount,
                     invitations: {
                         ...userState.invitations,
                         invitations: invitations.map((inv) => ({
@@ -112,6 +120,7 @@ function* fetchOffchainUserDetails(): SagaIterator {
                     }
                 })
             );
+
             yield put(reloadCertificates());
         } catch (error) {
             console.log('error', error, error.response);

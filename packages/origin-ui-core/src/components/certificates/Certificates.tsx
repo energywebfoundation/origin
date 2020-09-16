@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { Route, NavLink, Redirect } from 'react-router-dom';
 import { Role, isRole, UserStatus } from '@energyweb/origin-backend-core';
 import { OriginFeature } from '@energyweb/utils-general';
@@ -16,6 +16,7 @@ import { BundlesTable } from '../bundles/BundlesTable';
 import { CreateBundleForm } from '../bundles/CreateBundleForm';
 import { MyOrders } from '../orders/MyOrders';
 import { OriginConfigurationContext } from '..';
+import { RoleChangedModal } from '../Modal/RoleChangedModal';
 
 function CertificateDetailViewId(id: number) {
     return <CertificateDetailView id={id} />;
@@ -38,6 +39,7 @@ export function Certificates() {
     const user = useSelector(getUserOffchain);
     const { baseURL, getCertificatesLink } = useLinks();
     const { t } = useTranslation();
+    const [showRoleModal, setShowRoleModal] = useState(false);
 
     const originConfiguration = useContext(OriginConfigurationContext);
 
@@ -211,6 +213,7 @@ export function Certificates() {
                     path={`${baseURL}/`}
                     render={() => <Redirect to={defaultRedirect} />}
                 />
+                <RoleChangedModal showModal={showRoleModal} setShowModal={setShowRoleModal} />
             </div>
         )
     );

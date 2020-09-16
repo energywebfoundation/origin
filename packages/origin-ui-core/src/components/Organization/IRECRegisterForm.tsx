@@ -1,60 +1,65 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { getIRecClient } from '../../features/general/selectors';
+import { setLoading } from '../../features/general/actions';
+import { setIRecAccount } from '../../features/users/actions';
+import { IRECAccountType, RegistrationIRecPostData } from '../../utils/irec';
 import { Paper, Theme, useTheme, Grid, Box, Button } from '@material-ui/core';
-import { useTranslation } from '../..';
+import { showNotification, NotificationType, useTranslation } from '../..';
 import { Formik, Form, FormikHelpers } from 'formik';
 import { useValidation } from '../../utils';
 import { FormInput, FormCountrySelect, FormCountryMultiSelect } from '../Form';
 import { IAutocompleteMultiSelectOptionType } from '../MultiSelectAutocomplete';
 import irecLogo from '../../../assets/logo-i-rec.svg';
 import { FormSelect } from '../Form/FormSelect';
-
-enum IRECActor {
-    Participant = 0,
-    Registrant = 1
-}
+import { IRecAccountRegisteredModal } from '../Modal/IRecAccountRegisteredModal';
 
 interface IFormValues {
     accountType: string;
-    headquatersCompany: string;
-    yearOfRegistration: number | '';
-    numberOfEmployees: string;
-    shaholderNames: string[];
-    orgWebsite: string;
+    headquarterCountry: string;
+    registrationYear: string;
+    employeesNumber: string;
+    shareholders: string;
+    website: string;
     activeCountries: IAutocompleteMultiSelectOptionType[];
     mainBusiness: string;
     ceoName: string;
-    ceoPassport: string;
-    lastBalance: number | '';
-    existingIRECOrg: string;
+    ceoPassportNumber: string;
+    balanceSheetTotal: string;
+    subsidiaries?: string;
 }
 
 const INITIAL_VALUES: IFormValues = {
     accountType: '',
-    headquatersCompany: '',
-    yearOfRegistration: '',
-    numberOfEmployees: '',
-    shaholderNames: [],
-    orgWebsite: '',
+    headquarterCountry: '',
+    registrationYear: '',
+    employeesNumber: '',
+    shareholders: '',
+    website: '',
     activeCountries: [],
     mainBusiness: '',
     ceoName: '',
-    ceoPassport: '',
-    lastBalance: '',
-    existingIRECOrg: ''
+    ceoPassportNumber: '',
+    balanceSheetTotal: '',
+    subsidiaries: ''
 };
 
 export const IRECRegisterForm = () => {
     const { spacing }: Theme = useTheme();
     const { t } = useTranslation();
     const { Yup } = useValidation();
+    const [showIRecRegisteredModal, setShowIRecRegisteredModal] = useState<boolean>(false);
+
+    const iRecClient = useSelector(getIRecClient);
+    const dispatch = useDispatch();
 
     const accountTypeOptions = [
         {
-            value: IRECActor.Participant,
+            value: IRECAccountType.Participant,
             label: t('organization.registration.irecParticipantDescription')
         },
         {
-            value: IRECActor.Registrant,
+            value: IRECAccountType.Registrant,
             label: t('organization.registration.irecRegistrantDescription')
         }
     ];
@@ -78,45 +83,71 @@ export const IRECRegisterForm = () => {
         }
     ];
 
-    const onRegister = (
+    const onRegister = async (
         values: typeof INITIAL_VALUES,
         { setSubmitting }: FormikHelpers<typeof INITIAL_VALUES>
     ) => {
-        setSubmitting(true);
-        /**
-         * Send email notification to admin
-         *
-         * Show successfull application message window
-         */
-        setSubmitting(false);
+        if (values.headquarterCountry === '' || values.activeCountries === []) {
+            return;
+        }
+        dispatch(setLoading(true));
+
+        try {
+            setSubmitting(true);
+
+            const formData: RegistrationIRecPostData = {
+                ...values,
+                accountType: (values.accountType as unknown) as IRECAccountType,
+                registrationYear: parseInt(values.registrationYear, 10),
+                activeCountries: values.activeCountries.map((i) => i?.code)
+            };
+
+            const iRecAccount = await iRecClient.register(formData);
+
+            if (iRecAccount) {
+                setSubmitting(false);
+                dispatch(setIRecAccount(iRecAccount));
+                setShowIRecRegisteredModal(true);
+            }
+        } catch (error) {
+            console.warn('Error while registering an organization', error);
+            if (error?.response?.status === 401) {
+                showNotification('Unauthorized.', NotificationType.Error);
+            } else {
+                showNotification('Organization could not be created.', NotificationType.Error);
+            }
+        }
+        dispatch(setLoading(false));
     };
 
     const VALIDATION_SCHEME = Yup.object({
         accountType: Yup.string().required().label(t('organization.registration.IRECAccountType')),
-        headquatersCompany: Yup.string()
+        headquarterCountry: Yup.string()
             .required()
             .label(t('organization.registration.orgHeadquatersCompany')),
-        yearOfRegistration: Yup.number()
+        registrationYear: Yup.number()
             .min(1900)
             .required()
             .label(t('organization.registration.yearRegistration')),
-        numberOfEmployees: Yup.string()
+        employeesNumber: Yup.string()
             .required()
             .label(t('organization.registration.numberOfEmployees')),
-        shareholderNames: Yup.string()
+        shareholders: Yup.string()
             .required()
             .label(t('organization.registration.shareholderNames')),
-        orgWebsite: Yup.string().required().label(t('organization.registration.orgWebsite')),
+        website: Yup.string().required().label(t('organization.registration.orgWebsite')),
         activeCountries: Yup.array()
             .required()
             .label(t('organization.registration.activeCountries')),
         mainBusiness: Yup.string().required().label(t('organization.registration.mainBusiness')),
         ceoName: Yup.string().required().label(t('organization.registration.ceoName')),
-        ceoPassport: Yup.string().required().label(t('organization.registration.ceoPassport')),
-        lastBalance: Yup.number().required().label(t('organization.registration.lastBalance')),
-        existingIRECOrg: Yup.string()
+        ceoPassportNumber: Yup.string()
             .required()
-            .label(t('organization.registration.existingIRECOrg'))
+            .label(t('organization.registration.ceoPassport')),
+        balanceSheetTotal: Yup.string()
+            .required()
+            .label(t('organization.registration.lastBalance')),
+        subsidiaries: Yup.string().label(t('organization.registration.existingIRECOrg'))
     });
 
     return (
@@ -160,32 +191,33 @@ export const IRECRegisterForm = () => {
                                                 label={t(
                                                     'organization.registration.orgHeadquatersCompany'
                                                 )}
-                                                property="headquatersCompany"
-                                                currentValue={values.headquatersCompany}
+                                                property="headquarterCountry"
+                                                currentValue={values.headquarterCountry}
                                                 disabled={isSubmitting}
                                                 className="mt-3"
+                                                isoFormat={true}
                                                 required
                                             />
-                                            <Grid container>
-                                                <Grid item xs={6}>
+                                            <Grid container justify="space-between">
+                                                <Grid item xs={5}>
                                                     <FormInput
                                                         label={t(
                                                             'organization.registration.yearOfRegistration'
                                                         )}
-                                                        property="yearOfRegistration"
+                                                        property="registrationYear"
                                                         disabled={isSubmitting}
                                                         className="mt-3"
                                                         required
                                                     />
                                                 </Grid>
-                                                <Grid item xs={6}>
+                                                <Grid item xs={5}>
                                                     <FormSelect
                                                         options={numberOfEmployeesOptions}
                                                         label={t(
                                                             'organization.registration.numberOfEmployees'
                                                         )}
-                                                        property="numberOfEmployees"
-                                                        currentValue={values.numberOfEmployees}
+                                                        property="employeesNumber"
+                                                        currentValue={values.employeesNumber}
                                                         disabled={isSubmitting}
                                                         className="mt-3"
                                                         required
@@ -197,7 +229,7 @@ export const IRECRegisterForm = () => {
                                                     label={t(
                                                         'organization.registration.shareholderNames'
                                                     )}
-                                                    property="shareholderNames"
+                                                    property="shareholders"
                                                     disabled={isSubmitting}
                                                     className="mt-3"
                                                     required
@@ -208,7 +240,7 @@ export const IRECRegisterForm = () => {
                                                     label={t(
                                                         'organization.registration.orgWebsite'
                                                     )}
-                                                    property="orgWebsite"
+                                                    property="website"
                                                     disabled={isSubmitting}
                                                     className="mt-3"
                                                     required
@@ -230,6 +262,7 @@ export const IRECRegisterForm = () => {
                                                     selectedValues={values.activeCountries}
                                                     disabled={isSubmitting}
                                                     className="mt-3"
+                                                    isoFormat={true}
                                                     max={3}
                                                 />
                                             </Grid>
@@ -258,7 +291,7 @@ export const IRECRegisterForm = () => {
                                                     label={t(
                                                         'organization.registration.ceoPassport'
                                                     )}
-                                                    property="ceoPassport"
+                                                    property="ceoPassportNumber"
                                                     disabled={isSubmitting}
                                                     className="mt-3"
                                                     required
@@ -269,7 +302,7 @@ export const IRECRegisterForm = () => {
                                                     label={t(
                                                         'organization.registration.lastBalance'
                                                     )}
-                                                    property="lastBalance"
+                                                    property="balanceSheetTotal"
                                                     disabled={isSubmitting}
                                                     className="mt-3"
                                                     required
@@ -280,10 +313,9 @@ export const IRECRegisterForm = () => {
                                                     label={t(
                                                         'organization.registration.existingIRECOrg'
                                                     )}
-                                                    property="existingIRECOrg"
+                                                    property="subsidiaries"
                                                     disabled={isSubmitting}
                                                     className="mt-3"
-                                                    required
                                                 />
                                             </Grid>
                                         </Grid>
@@ -315,6 +347,10 @@ export const IRECRegisterForm = () => {
                     );
                 }}
             </Formik>
+            <IRecAccountRegisteredModal
+                showModal={showIRecRegisteredModal}
+                setShowModal={setShowIRecRegisteredModal}
+            />
         </Paper>
     );
 };

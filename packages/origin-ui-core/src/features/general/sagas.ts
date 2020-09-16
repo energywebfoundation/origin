@@ -9,7 +9,8 @@ import {
     setOffchainConfiguration,
     setError,
     setLoading,
-    IRequestDeviceCreationAction
+    IRequestDeviceCreationAction,
+    setIRecClient
 } from './actions';
 import {
     getEnvironment,
@@ -26,6 +27,7 @@ import {
     AccountAsset,
     Bundle
 } from '../../utils/exchange';
+import { IRecClient } from '../../utils/irec';
 import {
     IOriginConfiguration,
     IUser,
@@ -197,6 +199,15 @@ function* initializeOffChainDataSource(): SagaIterator {
         yield put(
             setExchangeClient({
                 exchangeClient: new ExchangeClient(
+                    newOffChainDataSource.dataApiUrl,
+                    newOffChainDataSource.requestClient
+                )
+            })
+        );
+
+        yield put(
+            setIRecClient({
+                iRecClient: new IRecClient(
                     newOffChainDataSource.dataApiUrl,
                     newOffChainDataSource.requestClient
                 )

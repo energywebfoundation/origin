@@ -1,27 +1,31 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useHistory } from 'react-router-dom';
 import { Dialog, DialogTitle, DialogActions, Button, Box, useTheme, Grid } from '@material-ui/core';
-import { useTranslation } from '../..';
+import { showNotification, NotificationType, useTranslation, useLinks } from '../..';
 import iconAdded from '../../../assets/icon-org-added.svg';
 
-export const IRecAccountRegisteredModal = () => {
-    const [isOpen, setIsOpen] = useState(true);
-    const history = useHistory();
+interface IProps {
+    showModal: boolean;
+    setShowModal: (showModal: boolean) => void;
+}
 
-    const showModal = isOpen;
+export const IRecAccountRegisteredModal = ({ showModal, setShowModal }: IProps) => {
+    const history = useHistory();
+    const { getOrganizationLink } = useLinks();
 
     const {
         typography: { fontSizeMd }
     } = useTheme();
     const { t } = useTranslation();
 
-    const closeModal = () => {
-        setIsOpen(false);
-        history.push('/');
+    const onClose = () => {
+        setShowModal(false);
+        history.push(getOrganizationLink());
+        showNotification('Organization registered.', NotificationType.Success);
     };
 
     return (
-        <Dialog open={showModal} onClose={() => closeModal()} maxWidth={'sm'} fullWidth={true}>
+        <Dialog open={showModal} onClose={() => onClose()} maxWidth={'sm'} fullWidth={true}>
             <DialogTitle>
                 <Grid container>
                     <Grid item xs={2}>
@@ -51,7 +55,7 @@ export const IRecAccountRegisteredModal = () => {
             </DialogTitle>
             <DialogActions>
                 <Box pr={2.5} pb={2.5}>
-                    <Button variant="contained" color="primary" onClick={() => closeModal()}>
+                    <Button variant="contained" color="primary" onClick={() => onClose()}>
                         {t('general.responses.ok')}
                     </Button>
                 </Box>

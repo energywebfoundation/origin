@@ -2,10 +2,12 @@ import React, { useContext } from 'react';
 import { useSelector } from 'react-redux';
 import { NavLink, Route, Redirect } from 'react-router-dom';
 import { Role, isRole, UserStatus } from '@energyweb/origin-backend-core';
+import { OriginConfigurationContext } from '..';
+import { OriginFeature } from '@energyweb/utils-general';
 
 import { PageContent } from '../PageContent/PageContent';
 import { useLinks } from '../../utils/routing';
-import { getUserOffchain, getIRECAccount, getInvitations } from '../../features/users/selectors';
+import { getUserOffchain, getIRecAccount, getInvitations } from '../../features/users/selectors';
 import { OrganizationTable } from './OrganizationTable';
 import { OrganizationView } from './OrganizationView';
 import { OrganizationInvite } from './OrganizationInvite';
@@ -13,8 +15,6 @@ import { OrganizationInvitations } from './OrganizationInvitations';
 import { OrganizationUsersTable } from './OrganizationUsersTable';
 import { OrganizationForm } from './OrganizationForm';
 import { IRECRegisterForm } from './IRECRegisterForm';
-import { OriginConfigurationContext } from '..';
-import { OriginFeature } from '@energyweb/utils-general';
 
 export const roleNames = {
     [Role.OrganizationUser]: 'organization.invitations.roles.member',
@@ -31,12 +31,12 @@ export function Organization() {
             : invitations.length > 0;
 
     const { getOrganizationLink } = useLinks();
+    const { enabledFeatures } = useContext(OriginConfigurationContext);
 
     const isLoggedIn = Boolean(user);
     const userIsActive = user && user.status === UserStatus.Active;
     const organization = useSelector(getUserOffchain)?.organization;
-    const irecAccount = useSelector(getIRECAccount);
-    const { enabledFeatures } = useContext(OriginConfigurationContext);
+    const iRecAccount = useSelector(getIRecAccount);
 
     const Menu = [
         {
@@ -85,10 +85,12 @@ export function Organization() {
             key: 'register-irec',
             label: 'Register I-REC',
             component: IRECRegisterForm,
-            show: enabledFeatures.includes(OriginFeature.IRec) && organization && !irecAccount
+            show:
+                enabledFeatures.includes(OriginFeature.IRec) &&
+                organization &&
+                iRecAccount.length === 0
         }
     ];
-
     const firstNotHiddenRoute = Menu.filter((i) => i.show)[0]?.key;
 
     return (

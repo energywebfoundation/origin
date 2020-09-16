@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { NavLink, Route, Redirect } from 'react-router-dom';
 
 import { PageContent } from '../PageContent/PageContent';
-import { getUserOffchain, getIRECAccount } from '../../features/users/selectors';
+import { getUserOffchain, getIRecAccount } from '../../features/users/selectors';
 import { AccountSettings } from './AccountSettings';
 import { UserRegister } from './UserRegister';
 import { dataTest, useLinks, useTranslation } from '../../utils';
@@ -22,7 +22,7 @@ export function Account() {
 
     const isLoggedIn = Boolean(userOffchain);
     const organization = useSelector(getUserOffchain)?.organization;
-    const irecAccount = useSelector(getIRECAccount);
+    const iRecAccount = useSelector(getIRecAccount);
 
     const Menu = [
         {
@@ -53,7 +53,11 @@ export function Account() {
             key: 'connect-irec',
             label: 'settings.navigation.connectIREC',
             component: IRECConnectForm,
-            hide: !enabledFeatures.includes(OriginFeature.IRec) || !organization || irecAccount
+            hide:
+                !enabledFeatures.includes(OriginFeature.IRec) ||
+                !enabledFeatures.includes(OriginFeature.IRecConnect) ||
+                !organization ||
+                iRecAccount
         }
     ];
 
