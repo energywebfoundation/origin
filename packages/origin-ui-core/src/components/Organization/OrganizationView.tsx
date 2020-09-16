@@ -1,11 +1,17 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
-import { makeStyles, createStyles, useTheme, Paper, Grid, TextField } from '@material-ui/core';
+import {
+    OriginFeature,
+    Countries,
+    IRECBusinessLegalStatusLabelsMap
+} from '@energyweb/utils-general';
+import { OriginConfigurationContext } from '..';
+import { makeStyles, createStyles, useTheme, Paper, Grid, TextField, Box } from '@material-ui/core';
 import { Skeleton } from '@material-ui/lab';
-import { Countries } from '@energyweb/utils-general';
 import { getUserOffchain } from '../../features/users/selectors';
 import { getOffChainDataSource } from '../../features/general/selectors';
+import { IRECOrganizationView } from './IRECOrganizationView';
 
 interface IFormValues {
     name: string;
@@ -29,21 +35,31 @@ export function OrganizationView() {
     const userOffchain = useSelector(getUserOffchain);
     const organizationClient = useSelector(getOffChainDataSource)?.organizationClient;
     const params: { id?: string } = useParams();
+    const { enabledFeatures } = useContext(OriginConfigurationContext);
     const [formValues, setFormValues] = useState<IFormValues>(null);
-
     const useStyles = makeStyles(() =>
         createStyles({
             container: {
-                padding: '10px'
+                padding: '20px',
+                marginBottom: '20px'
             }
         })
     );
 
     const classes = useStyles(useTheme());
 
+    const setBusinessType = (type) => {
+        if (parseInt(type, 10)) {
+            return IRECBusinessLegalStatusLabelsMap[type];
+        } else {
+            return type;
+        }
+    };
+
     const setValues = (organization) => {
         setFormValues({
             ...organization,
+            businessType: setBusinessType(organization.businessType),
             country: Countries.find((c) => c.id === organization.country).name,
             signatoryCountry: Countries.find((c) => c.id === organization.signatoryCountry).name
         });
@@ -66,123 +82,89 @@ export function OrganizationView() {
     }
 
     return (
-        <Paper className={classes.container}>
-            <Grid container spacing={3}>
-                <Grid item xs={6}>
-                    <TextField
-                        label="Organization Name"
-                        className="mt-3"
-                        value={formValues.name}
-                        fullWidth
-                        disabled
-                    />
-
-                    <TextField
-                        label="Organization Address"
-                        className="mt-3"
-                        value={formValues.address}
-                        fullWidth
-                        disabled
-                    />
-
-                    <TextField
-                        label="Zip Code"
-                        value={formValues.zipCode}
-                        className="mt-3"
-                        fullWidth
-                        disabled
-                    />
-
-                    <TextField
-                        label="Country"
-                        className="mt-3"
-                        value={formValues.country}
-                        fullWidth
-                        disabled
-                    />
-
-                    <TextField
-                        label="Business Type"
-                        className="mt-3"
-                        value={formValues.businessType}
-                        fullWidth
-                        disabled
-                    />
-
-                    <TextField
-                        label="Trade Registry Company Number"
-                        className="mt-3"
-                        value={formValues.tradeRegistryCompanyNumber}
-                        fullWidth
-                        disabled
-                    />
-
-                    <TextField
-                        label="VAT number"
-                        value={formValues.vatNumber}
-                        disabled
-                        className="mt-3"
-                        fullWidth
-                    />
-
-                    <TextField
-                        label="Signatory Full Name"
-                        value={formValues.signatoryFullName}
-                        disabled
-                        className="mt-3"
-                        fullWidth
-                    />
-
-                    <TextField
-                        label="Signatory Address"
-                        value={formValues.signatoryAddress}
-                        disabled
-                        className="mt-3"
-                        fullWidth
-                    />
-
-                    <TextField
-                        label="Signatory Zip Code"
-                        value={formValues.signatoryZipCode}
-                        disabled
-                        className="mt-3"
-                        fullWidth
-                    />
+        <>
+            <Paper className={classes.container}>
+                <Grid item>
+                    <Box style={{ textTransform: 'uppercase' }}>{'Organization Information'}</Box>
                 </Grid>
-                <Grid item xs={6}>
-                    <TextField
-                        label="Signatory City"
-                        value={formValues.signatoryCity}
-                        disabled
-                        className="mt-3"
-                        fullWidth
-                    />
+                <Grid container spacing={3}>
+                    <Grid item xs={6}>
+                        <TextField
+                            label="Organization Name"
+                            className="mt-3"
+                            value={formValues.name}
+                            fullWidth
+                            disabled
+                        />
 
-                    <TextField
-                        label="Signatory Country"
-                        value={formValues.signatoryCountry}
-                        disabled
-                        className="mt-3"
-                        fullWidth
-                    />
+                        <TextField
+                            label="Organization Address"
+                            className="mt-3"
+                            value={formValues.address}
+                            fullWidth
+                            disabled
+                        />
 
-                    <TextField
-                        label="Signatory Email"
-                        value={formValues.signatoryEmail}
-                        disabled
-                        className="mt-3"
-                        fullWidth
-                    />
+                        <TextField
+                            label="Business Type"
+                            className="mt-3"
+                            value={formValues.businessType}
+                            fullWidth
+                            disabled
+                        />
 
-                    <TextField
-                        label="Signatory Telephone"
-                        value={formValues.signatoryPhoneNumber}
-                        disabled
-                        className="mt-3"
-                        fullWidth
-                    />
+                        <TextField
+                            label="Trade Registry Company Number"
+                            className="mt-3"
+                            value={formValues.tradeRegistryCompanyNumber}
+                            fullWidth
+                            disabled
+                        />
+
+                        <TextField
+                            label="VAT number"
+                            value={formValues.vatNumber}
+                            disabled
+                            className="mt-3"
+                            fullWidth
+                        />
+                    </Grid>
+                    <Grid item xs={6}>
+                        <TextField
+                            label="Signatory Full Name"
+                            value={formValues.signatoryFullName}
+                            disabled
+                            className="mt-3"
+                            fullWidth
+                        />
+
+                        <TextField
+                            label="Signatory Address"
+                            value={formValues.signatoryAddress}
+                            disabled
+                            className="mt-3"
+                            fullWidth
+                        />
+
+                        <TextField
+                            label="Signatory Email"
+                            value={formValues.signatoryEmail}
+                            disabled
+                            className="mt-3"
+                            fullWidth
+                        />
+
+                        <TextField
+                            label="Signatory Telephone"
+                            value={formValues.signatoryPhoneNumber}
+                            disabled
+                            className="mt-3"
+                            fullWidth
+                        />
+                    </Grid>
                 </Grid>
-            </Grid>
-        </Paper>
+            </Paper>
+            {enabledFeatures.includes(OriginFeature.IRec) && <IRECOrganizationView />}
+        </>
     );
 }
