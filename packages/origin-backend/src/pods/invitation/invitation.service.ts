@@ -7,46 +7,29 @@ import {
 } from '@energyweb/origin-backend-core';
 import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { isEmail, isString } from 'class-validator';
 import { Repository } from 'typeorm';
 
 import { NotificationService } from '../notification';
 import { UserService } from '../user';
-import { OrganizationInvitation } from './organization-invitation.entity';
-import { Organization } from './organization.entity';
+import { Invitation } from './invitation.entity';
+import { Organization } from '../organization/organization.entity';
+import { OrganizationService } from '../organization/organization.service';
 
 @Injectable()
-export class OrganizationInvitationService {
-    private readonly logger = new Logger(OrganizationInvitationService.name);
+export class InvitationService {
+    private readonly logger = new Logger(InvitationService.name);
 
     constructor(
-        @InjectRepository(Organization)
-        private readonly organizationRepository: Repository<Organization>,
-        @InjectRepository(OrganizationInvitation)
-        private readonly invitationRepository: Repository<OrganizationInvitation>,
+        private readonly organizationService: OrganizationService,
+        @InjectRepository(Invitation)
+        private readonly invitationRepository: Repository<Invitation>,
         private readonly notificationService: NotificationService,
         private readonly userService: UserService
     ) {}
 
-    public async invite(user: ILoggedInUser, email: string, role: OrganizationRole) {
-        if (!isEmail(email)) {
-            throw new BadRequestException({
-                success: false,
-                error: 'Provided email address is incorrect'
-            });
-        }
+    public async invite(user: ILoggedInUser, email: string, role: OrganizationRole): Promise<void> {
         const sender = await this.userService.findByEmail(user.email);
-        const { organizationId } = user;
-        if (typeof organizationId === 'undefined') {
-            throw new BadRequestException({
-                success: false,
-                message: `User doesn't belong to any organization.`
-            });
-        }
-
-        const organization = await this.organizationRepository.findOne(organizationId, {
-            relations: ['invitations', 'users']
-        });
+        const organization = await this.organizationService.findOne(user.organizationId);
 
         const lowerCaseEmail = email.toLowerCase();
 
@@ -69,26 +52,20 @@ export class OrganizationInvitationService {
             type: SupportedEvents.ORGANIZATION_INVITATION,
             data: eventData
         });
-
-        return {
-            success: true
-        };
     }
 
     public async update(
         user: ILoggedInUser,
         invitationId: string,
         status: OrganizationInvitationStatus
-    ) {
+    ): Promise<void> {
         this.logger.debug(`User with userId=${user.id} requested invitationId=${invitationId}`);
 
-        if (!isString(invitationId)) {
-            throw new BadRequestException('Incorrect invitationId');
-        }
+        const lowerCaseEmail = user.email.toLowerCase();
 
         const invitation = await this.invitationRepository.findOne(invitationId, {
             where: {
-                email: user.email
+                email: lowerCaseEmail
             },
             relations: ['organization']
         });
@@ -116,15 +93,26 @@ export class OrganizationInvitationService {
         await this.invitationRepository.save(invitation);
     }
 
+    public async getUsersInvitation(email: string): Promise<Invitation[]> {
+        const lowerCaseEmail = email.toLowerCase();
+
+        return this.invitationRepository.find({
+            where: { email: lowerCaseEmail },
+            relations: ['organization']
+        });
+    }
+
     private ensureIsNotMember(email: string, organization: Organization) {
-        if (organization.users.find((u) => u.email === email)) {
+        const lowerCaseEmail = email.toLowerCase();
+
+        if (organization.users.find((u) => u.email === lowerCaseEmail)) {
             throw new BadRequestException({
                 success: false,
                 error: `Invited user already belongs to this organization.`
             });
         }
 
-        if (organization.invitations.find((u) => u.email === email)) {
+        if (organization.invitations.find((u) => u.email === lowerCaseEmail)) {
             throw new BadRequestException({
                 success: false,
                 error: `User has already been invited to this organization.`

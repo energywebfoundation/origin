@@ -1,5 +1,5 @@
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
-import { ExtendedBaseEntity } from '../ExtendedBaseEntity';
+import { ExtendedBaseEntity } from '@energyweb/origin-backend-utils';
 
 @Entity()
 export class File extends ExtendedBaseEntity {

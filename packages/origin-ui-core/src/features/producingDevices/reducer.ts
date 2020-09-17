@@ -1,9 +1,9 @@
 import { ProducingDevicesActions, IProducingDevicesAction } from './actions';
 import { ProducingDevice } from '@energyweb/device-registry';
-import { IOrganization } from '@energyweb/origin-backend-core';
+import { IPublicOrganization } from '@energyweb/origin-backend-core';
 
 export interface IProducingDeviceState extends ProducingDevice.Entity {
-    organtization: IOrganization;
+    organtization: IPublicOrganization;
 }
 
 export interface IProducingDevicesState {

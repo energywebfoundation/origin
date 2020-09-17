@@ -1,4 +1,4 @@
-import { IOrganization } from './Organization';
+import { IPublicOrganization } from './Organization';
 import { Role } from './User';
 
 export enum OrganizationInvitationStatus {
@@ -21,7 +21,7 @@ export interface IOrganizationInvitationProperties {
 }
 
 export interface IOrganizationInvitation extends IOrganizationInvitationProperties {
-    organization: IOrganization;
+    organization: IPublicOrganization;
     sender: string;
     createdAt: Date;
 }

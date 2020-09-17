@@ -4,6 +4,7 @@ import { ethers, Contract } from 'ethers';
 import request from 'supertest';
 import { OrderStatus } from '@energyweb/exchange-core';
 
+import { DatabaseService } from '@energyweb/origin-backend-utils';
 import { AccountDTO } from '../src/pods/account/account.dto';
 import { AccountService } from '../src/pods/account/account.service';
 import { CreateAskDTO } from '../src/pods/order/create-ask.dto';
@@ -12,7 +13,6 @@ import { Order } from '../src/pods/order/order.entity';
 import { RequestWithdrawalDTO } from '../src/pods/transfer/create-withdrawal.dto';
 import { Transfer } from '../src/pods/transfer/transfer.entity';
 import { TransferService } from '../src/pods/transfer/transfer.service';
-import { DatabaseService } from './database.service';
 import { authenticatedUser, bootstrapTestInstance } from './exchange';
 import { issueToken, MWh } from './utils';
 

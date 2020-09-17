@@ -3,11 +3,18 @@ import {
     AppModule as OriginBackendModule,
     entities as OriginBackendEntities
 } from '@energyweb/origin-backend';
+import {
+    AppModule as IRECOrganizationModule,
+    entities as IRECOrganizationEntities
+} from '@energyweb/origin-organization-irec-api';
+
 import { ISmartMeterReadingsAdapter } from '@energyweb/origin-backend-core';
 import { DynamicModule, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 const OriginAppTypeOrmModule = () => {
+    const entities = [...OriginBackendEntities, ...ExchangeEntities, ...IRECOrganizationEntities];
+
     return process.env.DATABASE_URL
         ? TypeOrmModule.forRoot({
               type: 'postgres',
@@ -15,7 +22,7 @@ const OriginAppTypeOrmModule = () => {
               ssl: {
                   rejectUnauthorized: false
               },
-              entities: [...OriginBackendEntities, ...ExchangeEntities],
+              entities,
               logging: ['info']
           })
         : TypeOrmModule.forRoot({
@@ -25,7 +32,7 @@ const OriginAppTypeOrmModule = () => {
               username: process.env.DB_USERNAME ?? 'postgres',
               password: process.env.DB_PASSWORD ?? 'postgres',
               database: process.env.DB_DATABASE ?? 'origin',
-              entities: [...OriginBackendEntities, ...ExchangeEntities],
+              entities,
               logging: ['info']
           });
 };
@@ -38,7 +45,8 @@ export class OriginAppModule {
             imports: [
                 OriginAppTypeOrmModule(),
                 OriginBackendModule.register(smartMeterReadingsAdapter),
-                ExchangeModule
+                ExchangeModule,
+                IRECOrganizationModule
             ]
         };
     }

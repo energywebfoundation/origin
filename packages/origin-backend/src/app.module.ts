@@ -17,6 +17,7 @@ import { UserModule } from './pods/user/user.module';
 import { EmailConfirmationModule } from './pods/email-confirmation/email-confirmation.module';
 import { providers } from '.';
 import { CertificationRequestModule } from './pods/certification-request/certification-request.module';
+import { InvitationModule } from './pods/invitation/invitation.module';
 
 const ENV_FILE_PATH = path.resolve(__dirname, '../../../../../.env');
 
@@ -35,6 +36,7 @@ export class AppModule {
                 UserModule,
                 ConfigurationModule,
                 OrganizationModule,
+                InvitationModule,
                 DeviceModule.register(smartMeterReadingsAdapter),
                 AuthModule,
                 CertificateModule,

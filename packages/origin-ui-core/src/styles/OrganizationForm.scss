@@ -1,0 +1,7 @@
+@import './variables.scss';
+
+.OrganizationForm {
+    .divider {
+        background-color: lighten($backgroundColorDark, 10%);
+    }
+}

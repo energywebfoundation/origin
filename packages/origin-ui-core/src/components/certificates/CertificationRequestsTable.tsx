@@ -67,7 +67,7 @@ export function CertificationRequestsTable(props: IProps) {
 
                 if (
                     request.approved !== props.approved ||
-                    (!isIssuer && user?.organization.id !== requestDevice?.organization)
+                    (!isIssuer && user?.organization.id !== requestDevice?.organization.id)
                 ) {
                     continue;
                 }

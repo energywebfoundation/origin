@@ -2,6 +2,7 @@ import { INestApplication } from '@nestjs/common';
 import { expect } from 'chai';
 import request from 'supertest';
 
+import { DatabaseService } from '@energyweb/origin-backend-utils';
 import { AccountService } from '../src/pods/account/account.service';
 import { DirectBuyDTO } from '../src/pods/order/direct-buy.dto';
 import { OrderType } from '../src/pods/order/order-type.enum';
@@ -9,7 +10,6 @@ import { Order } from '../src/pods/order/order.entity';
 import { OrderService } from '../src/pods/order/order.service';
 import { TradeDTO } from '../src/pods/trade/trade.dto';
 import { TransferService } from '../src/pods/transfer/transfer.service';
-import { DatabaseService } from './database.service';
 import { bootstrapTestInstance } from './exchange';
 import { MWh } from './utils';
 

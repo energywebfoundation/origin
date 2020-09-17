@@ -45,7 +45,7 @@ export function ClaimModal(props: IProps) {
     const isBulkClaim = certificates.length > 1;
     const certificateIds: number[] = certificates.map((cert) => cert.id);
 
-    const getCountryCodeFromId = (id: number) =>
+    const getCountryCodeFromId = (id: number | '') =>
         Countries.find((country) => country.id === id)?.code;
 
     const user = useSelector(getUserOffchain);
@@ -53,7 +53,7 @@ export function ClaimModal(props: IProps) {
 
     const [beneficiary, setBeneficiary] = useState(user?.organization?.name);
     const [address, setAddress] = useState(user?.organization?.address);
-    const [zipCode, setZipCode] = useState(user?.organization?.postcode);
+    const [zipCode, setZipCode] = useState(user?.organization?.zipCode);
     const [region, setRegion] = useState(null);
     const [countryCode, setCountryCode] = useState(
         getCountryCodeFromId(user?.organization?.country)
@@ -86,7 +86,7 @@ export function ClaimModal(props: IProps) {
             setBeneficiary(user.organization.name);
             setAddress(user.organization.address);
             setCountryCode(getCountryCodeFromId(user.organization.country));
-            setZipCode(user.organization.postcode);
+            setZipCode(user.organization.zipCode);
         }
     }, [user]);
 

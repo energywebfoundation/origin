@@ -35,6 +35,6 @@ export class LoggedInUser implements ILoggedInUser {
     }
 
     get ownerId() {
-        return (this.organizationId || this.id).toString();
+        return (this.organizationId ?? this.id).toString();
     }
 }

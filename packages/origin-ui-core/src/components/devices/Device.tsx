@@ -1,6 +1,6 @@
 import { OriginFeature } from '@energyweb/utils-general';
 import { DeviceStatus, isRole, Role } from '@energyweb/origin-backend-core';
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
 import { NavLink, Redirect, Route } from 'react-router-dom';
@@ -14,6 +14,7 @@ import { PageContent } from '../PageContent/PageContent';
 import { ProducingDeviceDetailView } from './ProducingDeviceDetailView';
 import { ProducingDeviceTable } from './ProducingDeviceTable';
 import { OriginConfigurationContext } from '../OriginConfigurationContext';
+import { RoleChangedModal } from '../Modal/RoleChangedModal';
 
 export function Device() {
     const userOffchain = useSelector(getUserOffchain);
@@ -22,6 +23,7 @@ export function Device() {
     const isDeviceManagerOrAdmin = () =>
         userOffchain?.organization &&
         isRole(userOffchain, Role.OrganizationDeviceManager, Role.OrganizationAdmin);
+    const [showRoleModal, setShowRoleModal] = useState(false);
 
     function ProductionDetailView(id: number): JSX.Element {
         return (
@@ -190,6 +192,7 @@ export function Device() {
                     <Redirect to={{ pathname: `${getDevicesLink()}/${DevicesMenu[0].key}` }} />
                 )}
             />
+            <RoleChangedModal showModal={showRoleModal} setShowModal={setShowRoleModal} />
         </div>
     );
 }

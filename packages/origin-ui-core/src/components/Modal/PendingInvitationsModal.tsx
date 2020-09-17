@@ -1,13 +1,20 @@
 import React from 'react';
 import { Dialog, DialogTitle, DialogActions, Button, Box, useTheme, Grid } from '@material-ui/core';
 import { useSelector, useDispatch } from 'react-redux';
+import { useHistory } from 'react-router-dom';
 import {
     OrganizationInvitationStatus,
     Role,
     IOrganizationInvitation
 } from '@energyweb/origin-backend-core';
 import { setInvitations, refreshUserOffchain } from '../../features/users/actions';
-import { getOffChainDataSource, showNotification, NotificationType, useTranslation } from '../..';
+import {
+    getOffChainDataSource,
+    showNotification,
+    NotificationType,
+    useTranslation,
+    useLinks
+} from '../..';
 import { setLoading } from '../../features/general';
 import { Trans } from 'react-i18next';
 import DraftOutlineIcon from '@material-ui/icons/DraftsOutlined';
@@ -37,17 +44,19 @@ export const PendingInvitationsModal = (props: IProps) => {
     };
 
     const dispatch = useDispatch();
-    const organizationClient = useSelector(getOffChainDataSource)?.organizationClient;
+    const invitationClient = useSelector(getOffChainDataSource)?.invitationClient;
     const { t } = useTranslation();
     const {
         typography: { fontSizeSm }
     } = useTheme();
+    const history = useHistory();
+    const { getDefaultLink } = useLinks();
 
     const reject = async () => {
         dispatch(setLoading(true));
 
         try {
-            await organizationClient.rejectInvitation(invitation.id);
+            await invitationClient.rejectInvitation(invitation.id);
 
             showNotification(
                 t('organization.invitations.notification.rejectedSuccess'),
@@ -80,23 +89,25 @@ export const PendingInvitationsModal = (props: IProps) => {
         dispatch(setLoading(true));
 
         try {
-            await organizationClient.acceptInvitation(invitation.id);
+            await invitationClient.acceptInvitation(invitation.id);
             invitations
                 .filter((inv) => inv.id !== invitation.id)
-                .forEach((inv) => organizationClient.rejectInvitation(inv.id));
+                .forEach((inv) => invitationClient.rejectInvitation(inv.id));
             showNotification(
                 t('organization.invitations.notification.acceptedSuccess'),
                 NotificationType.Success
             );
+            dispatch(refreshUserOffchain());
+            setShowModal(false);
+            history.push(getDefaultLink());
         } catch (error) {
             showNotification(
-                t('organization.invitations.notification.accesptedFailure'),
+                t('organization.invitations.notification.acceptedFailure'),
                 NotificationType.Error
             );
             console.error(error);
         }
-        dispatch(refreshUserOffchain());
-        setShowModal(false);
+
         dispatch(setLoading(false));
     };
 
@@ -104,7 +115,7 @@ export const PendingInvitationsModal = (props: IProps) => {
         dispatch(setLoading(true));
 
         try {
-            await organizationClient.viewInvitation(invitation.id);
+            await invitationClient.viewInvitation(invitation.id);
             showNotification(
                 t('organization.invitations.notification.laterSuccess'),
                 NotificationType.Success

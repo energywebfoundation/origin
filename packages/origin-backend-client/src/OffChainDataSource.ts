@@ -7,6 +7,7 @@ import {
     IDeviceClient,
     IFilesClient,
     IOrganizationClient,
+    IInvitationClient,
     IRequestClient,
     IUserClient,
     IConfigurationClient
@@ -16,6 +17,7 @@ import { ConfigurationClient } from './ConfigurationClient';
 import { DeviceClient } from './DeviceClient';
 import { FilesClient } from './FilesClient';
 import { OrganizationClient } from './OrganizationClient';
+import { InvitationClient } from './InvitationClient';
 import { RequestClient } from './RequestClient';
 import { UserClient } from './UserClient';
 import { AdminClient } from './AdminClient';
@@ -29,6 +31,8 @@ export class OffChainDataSource implements IOffChainDataSource {
     deviceClient: IDeviceClient;
 
     organizationClient: IOrganizationClient;
+
+    invitationClient: IInvitationClient;
 
     filesClient: IFilesClient;
 
@@ -47,6 +51,7 @@ export class OffChainDataSource implements IOffChainDataSource {
         this.configurationClient = new ConfigurationClient(this.dataApiUrl, this.requestClient);
         this.userClient = new UserClient(this.dataApiUrl, this.requestClient);
         this.organizationClient = new OrganizationClient(this.dataApiUrl, this.requestClient);
+        this.invitationClient = new InvitationClient(this.dataApiUrl, this.requestClient);
         this.filesClient = new FilesClient(this.dataApiUrl, this.requestClient);
         this.adminClient = new AdminClient(this.dataApiUrl, this.requestClient);
 

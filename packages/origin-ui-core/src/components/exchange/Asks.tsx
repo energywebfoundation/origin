@@ -4,7 +4,7 @@ import { getExchangeClient, getOffChainDataSource, getEnvironment } from '../../
 import React, { useState, useEffect } from 'react';
 import { formatDate, moment, useTranslation, useValidation, EnergyFormatter } from '../../utils';
 import { IAsset, IOrderBookOrderDTO, calculateTotalPrice } from '../../utils/exchange';
-import { IDeviceWithRelationsIds } from '@energyweb/origin-backend-core';
+import { IDevice } from '@energyweb/origin-backend-core';
 import { Orders } from '.';
 import { TableCell, Button, InputAdornment, Grid } from '@material-ui/core';
 import { getUserOffchain } from '../../features/users/selectors';
@@ -32,7 +32,7 @@ export function Asks(props: Props) {
 
     const [selectedOrder, setSelectedOrder] = useState<IOrderBookOrderDTO>(null);
     const [asset, setAsset] = useState<IAsset>();
-    const [device, setDevice] = useState<IDeviceWithRelationsIds>();
+    const [device, setDevice] = useState<IDevice>();
     const [buyDirectExpanded, setBuyDirectExpanded] = useState(false);
 
     async function fetchDetails(assetId: string) {

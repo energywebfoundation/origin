@@ -7,6 +7,7 @@ import { useOriginConfiguration } from '../utils/configuration';
 export interface IAutocompleteMultiSelectOptionType {
     label: string;
     value: string;
+    code?: string;
 }
 
 interface IOwnProps {
