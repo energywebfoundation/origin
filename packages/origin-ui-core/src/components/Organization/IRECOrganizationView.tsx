@@ -1,12 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { useSelector } from 'react-redux';
-import { useParams } from 'react-router-dom';
 import { makeStyles, createStyles, useTheme, Paper, Grid, TextField, Box } from '@material-ui/core';
 import { Countries } from '@energyweb/utils-general';
 import { useTranslation } from '../..';
-import { getIRecClient } from '../../features/general/selectors';
-import { getUserOffchain } from '../../features/users/selectors';
-import { Role, isRole } from '@energyweb/origin-backend-core';
 import { IRECAccountType } from '../../utils/irec';
 
 interface IValues {
@@ -26,13 +21,19 @@ interface IValues {
     subsidiaries?: string;
 }
 
-export function IRECOrganizationView() {
-    const user = useSelector(getUserOffchain);
-    const params: { id?: string } = useParams();
+export function IRECOrganizationView({ iRecOrg }) {
     const [formValues, setFormValues] = useState<IValues>(null);
-    const iRecClient = useSelector(getIRecClient);
-    const isAdminOrSupport = isRole(user, Role.Admin, Role.SupportAgent);
     const { t } = useTranslation();
+
+    const useStyles = makeStyles(() =>
+        createStyles({
+            container: {
+                padding: '20px'
+            }
+        })
+    );
+
+    const classes = useStyles(useTheme());
 
     const accountTypeCheck = (type) => {
         switch (type) {
@@ -44,16 +45,6 @@ export function IRECOrganizationView() {
                 break;
         }
     };
-
-    const useStyles = makeStyles(() =>
-        createStyles({
-            container: {
-                padding: '20px'
-            }
-        })
-    );
-
-    const classes = useStyles(useTheme());
 
     const setValues = (iRecData) => {
         setFormValues({
@@ -67,23 +58,10 @@ export function IRECOrganizationView() {
     };
 
     useEffect(() => {
-        const getIRecOrganization = async () => {
-            if (isAdminOrSupport) {
-                const iRecOrg = params.id
-                    ? await iRecClient.getRegistrationsById(parseInt(params.id, 10))
-                    : null;
-                if (iRecOrg?.length) {
-                    setValues(iRecOrg[0]);
-                }
-            } else {
-                const iRecOrg = await iRecClient.getRegistrations();
-                if (iRecOrg?.length) {
-                    setValues(iRecOrg[0]);
-                }
-            }
-        };
-        getIRecOrganization();
-    }, [params]);
+        if (iRecOrg) {
+            setValues(iRecOrg);
+        }
+    }, [iRecOrg]);
 
     if (!formValues) {
         return null;

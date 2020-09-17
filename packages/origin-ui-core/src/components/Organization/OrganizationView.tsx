@@ -9,6 +9,7 @@ import {
 import { OriginConfigurationContext } from '..';
 import { makeStyles, createStyles, useTheme, Paper, Grid, TextField, Box } from '@material-ui/core';
 import { Skeleton } from '@material-ui/lab';
+import { getIRecClient } from '../../features/general/selectors';
 import { getUserOffchain } from '../../features/users/selectors';
 import { getOffChainDataSource, useTranslation } from '../..';
 import { IRECOrganizationView } from './IRECOrganizationView';
@@ -37,6 +38,8 @@ export function OrganizationView() {
     const params: { id?: string } = useParams();
     const { enabledFeatures } = useContext(OriginConfigurationContext);
     const [formValues, setFormValues] = useState<IFormValues>(null);
+    const [iRecData, setIRecData] = useState(null);
+    const iRecClient = useSelector(getIRecClient);
     const useStyles = makeStyles(() =>
         createStyles({
             container: {
@@ -67,11 +70,24 @@ export function OrganizationView() {
 
     useEffect(() => {
         const getOrganization = async () => {
+            const iRecOrg = await iRecClient.getRegistrations();
             const organization = params.id
                 ? await organizationClient.getById(parseInt(params.id, 10))
                 : userOffchain?.organization;
             if (organization) {
                 setValues(organization);
+
+                if (params.id) {
+                    setIRecData(
+                        iRecOrg?.filter(
+                            (org) => parseInt(org.owner, 10) === parseInt(params.id, 10)
+                        )[0]
+                    );
+                } else {
+                    setIRecData(
+                        iRecOrg?.filter((org) => parseInt(org.owner, 10) === organization.id)[0]
+                    );
+                }
             }
         };
         getOrganization();
@@ -164,7 +180,9 @@ export function OrganizationView() {
                     </Grid>
                 </Grid>
             </Paper>
-            {enabledFeatures.includes(OriginFeature.IRec) && <IRECOrganizationView />}
+            {enabledFeatures.includes(OriginFeature.IRec) && (
+                <IRECOrganizationView iRecOrg={iRecData} />
+            )}
         </>
     );
 }
