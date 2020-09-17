@@ -1,13 +1,20 @@
 import React from 'react';
 import { Dialog, DialogTitle, DialogActions, Button, Box, useTheme, Grid } from '@material-ui/core';
 import { useSelector, useDispatch } from 'react-redux';
+import { useHistory } from 'react-router-dom';
 import {
     OrganizationInvitationStatus,
     Role,
     IOrganizationInvitation
 } from '@energyweb/origin-backend-core';
 import { setInvitations, refreshUserOffchain } from '../../features/users/actions';
-import { getOffChainDataSource, showNotification, NotificationType, useTranslation } from '../..';
+import {
+    getOffChainDataSource,
+    showNotification,
+    NotificationType,
+    useTranslation,
+    useLinks
+} from '../..';
 import { setLoading } from '../../features/general';
 import { Trans } from 'react-i18next';
 import DraftOutlineIcon from '@material-ui/icons/DraftsOutlined';
@@ -42,6 +49,8 @@ export const PendingInvitationsModal = (props: IProps) => {
     const {
         typography: { fontSizeSm }
     } = useTheme();
+    const history = useHistory();
+    const { getDefaultLink } = useLinks();
 
     const reject = async () => {
         dispatch(setLoading(true));
@@ -88,6 +97,9 @@ export const PendingInvitationsModal = (props: IProps) => {
                 t('organization.invitations.notification.acceptedSuccess'),
                 NotificationType.Success
             );
+            dispatch(refreshUserOffchain());
+            setShowModal(false);
+            history.push(getDefaultLink());
         } catch (error) {
             showNotification(
                 t('organization.invitations.notification.acceptedFailure'),
@@ -95,8 +107,7 @@ export const PendingInvitationsModal = (props: IProps) => {
             );
             console.error(error);
         }
-        dispatch(refreshUserOffchain());
-        setShowModal(false);
+
         dispatch(setLoading(false));
     };
 
