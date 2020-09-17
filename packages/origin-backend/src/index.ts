@@ -24,9 +24,16 @@ import { OrganizationModule } from './pods/organization/organization.module';
 import { User } from './pods/user/user.entity';
 import { UserModule } from './pods/user/user.module';
 
+export { OrganizationModule, OrganizationService } from './pods/organization';
+
 export { AppModule } from './app.module';
 export { ConfigurationService } from './pods/configuration/configuration.service';
 export { DeviceService } from './pods/device/device.service';
+
+export * from './pods/organization/events';
+export * from './pods/email-confirmation/events';
+export * from './pods/invitation/events';
+export * from './pods/device/events';
 
 export {
     CertificationRequestApprovedEvent,

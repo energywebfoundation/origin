@@ -1,19 +1,15 @@
-import {
-    isRole,
-    IUser,
-    OrganizationMemberChangedRoleEvent,
-    OrganizationRemovedMemberEvent,
-    OrganizationStatus,
-    OrganizationStatusChangedEvent,
-    Role,
-    SupportedEvents
-} from '@energyweb/origin-backend-core';
+import { isRole, IUser, OrganizationStatus, Role } from '@energyweb/origin-backend-core';
 import { BadRequestException, Injectable } from '@nestjs/common';
+import { EventBus } from '@nestjs/cqrs';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FindOneOptions, Repository } from 'typeorm';
 
-import { NotificationService } from '../notification';
 import { User, UserService } from '../user';
+import {
+    OrganizationMemberRemovedEvent,
+    OrganizationMemberRoleChangedEvent,
+    OrganizationStatusChangedEvent
+} from './events';
 import { NewOrganizationDTO } from './new-organization.dto';
 import { Organization } from './organization.entity';
 
@@ -23,7 +19,7 @@ export class OrganizationService {
         @InjectRepository(Organization)
         private readonly repository: Repository<Organization>,
         private readonly userService: UserService,
-        private readonly notificationService: NotificationService
+        private readonly eventBus: EventBus
     ) {}
 
     async create(
@@ -103,24 +99,17 @@ export class OrganizationService {
     }
 
     async update(id: number, status: OrganizationStatus): Promise<Organization> {
+        const organization = await this.findOne(id);
+
         await this.repository.update(id, {
             status
         });
 
-        const organization = await this.findOne(id);
+        this.eventBus.publish(
+            new OrganizationStatusChangedEvent(organization, status, organization.status)
+        );
 
-        const eventData: OrganizationStatusChangedEvent = {
-            organizationId: organization.id,
-            organizationEmail: organization.signatoryEmail,
-            status
-        };
-
-        this.notificationService.handleEvent({
-            type: SupportedEvents.ORGANIZATION_STATUS_CHANGED,
-            data: eventData
-        });
-
-        return organization;
+        return this.findOne(id);
     }
 
     async hasDevice(id: number, deviceId: string): Promise<boolean> {
@@ -155,15 +144,7 @@ export class OrganizationService {
 
         await this.userService.removeFromOrganization(memberId);
 
-        const eventData: OrganizationRemovedMemberEvent = {
-            organizationName: organization.name,
-            email: userToBeRemoved.email
-        };
-
-        this.notificationService.handleEvent({
-            type: SupportedEvents.ORGANIZATION_REMOVED_MEMBER,
-            data: eventData
-        });
+        this.eventBus.publish(new OrganizationMemberRemovedEvent(organization, userToBeRemoved));
     }
 
     async changeMemberRole(organizationId: number, memberId: number, newRole: Role): Promise<void> {
@@ -192,15 +173,13 @@ export class OrganizationService {
 
         await this.userService.changeRole(memberId, newRole);
 
-        const eventData: OrganizationMemberChangedRoleEvent = {
-            organizationName: organization.name,
-            newRole,
-            email: userToBeChanged.email
-        };
-
-        this.notificationService.handleEvent({
-            type: SupportedEvents.ORGANIZATION_MEMBER_CHANGED_ROLE,
-            data: eventData
-        });
+        this.eventBus.publish(
+            new OrganizationMemberRoleChangedEvent(
+                organization,
+                userToBeChanged,
+                newRole,
+                userToBeChanged.rights as Role
+            )
+        );
     }
 }

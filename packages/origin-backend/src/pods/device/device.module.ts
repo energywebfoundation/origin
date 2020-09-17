@@ -1,14 +1,14 @@
-import { Module, DynamicModule } from '@nestjs/common';
+import { ISmartMeterReadingsAdapter } from '@energyweb/origin-backend-core';
+import { DynamicModule, Module } from '@nestjs/common';
+import { CqrsModule } from '@nestjs/cqrs';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
-import { ISmartMeterReadingsAdapter } from '@energyweb/origin-backend-core';
-import { Device } from './device.entity';
-import { DeviceController } from './device.controller';
-import { DeviceService } from './device.service';
 import { SM_READS_ADAPTER } from '../../const';
-import { OrganizationModule } from '../organization/organization.module';
 import { ConfigurationModule } from '../configuration';
-import { NotificationModule } from '../notification';
+import { OrganizationModule } from '../organization/organization.module';
+import { DeviceController } from './device.controller';
+import { Device } from './device.entity';
+import { DeviceService } from './device.service';
 
 @Module({})
 export class DeviceModule {
@@ -19,7 +19,7 @@ export class DeviceModule {
                 TypeOrmModule.forFeature([Device]),
                 ConfigurationModule,
                 OrganizationModule,
-                NotificationModule
+                CqrsModule
             ],
             providers: [
                 {

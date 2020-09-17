@@ -2,7 +2,6 @@ import {
     DeviceCreateData,
     DeviceSettingsUpdateData,
     DeviceStatus,
-    DeviceStatusChangedEvent,
     DeviceUpdateData,
     ICertificationRequestBackend,
     IDevice,
@@ -14,7 +13,6 @@ import {
     ISmartMeterReadingsAdapter,
     ISmartMeterReadStats,
     ISmartMeterReadWithStatus,
-    SupportedEvents,
     ISuccessResponse,
     sortLowestToHighestTimestamp
 } from '@energyweb/origin-backend-core';
@@ -24,18 +22,20 @@ import {
     NotFoundException,
     UnprocessableEntityException
 } from '@nestjs/common';
+import { EventBus } from '@nestjs/cqrs';
 import { InjectRepository } from '@nestjs/typeorm';
 import { validate } from 'class-validator';
 import { BigNumber } from 'ethers';
 import moment from 'moment';
 import { FindOneOptions, Repository } from 'typeorm';
 import { v4 as uuid } from 'uuid';
+
 import { SM_READS_ADAPTER } from '../../const';
 import { StorageErrors } from '../../enums/StorageErrors';
 import { ConfigurationService } from '../configuration';
-import { NotificationService } from '../notification';
 import { OrganizationService } from '../organization/organization.service';
 import { Device } from './device.entity';
+import { DeviceStatusChangedEvent } from './events';
 
 @Injectable()
 export class DeviceService {
@@ -44,7 +44,7 @@ export class DeviceService {
         private readonly repository: Repository<Device>,
         private readonly configurationService: ConfigurationService,
         private readonly organizationService: OrganizationService,
-        private readonly notificationService: NotificationService,
+        private readonly eventBus: EventBus,
         @Inject(SM_READS_ADAPTER) private smartMeterReadingsAdapter?: ISmartMeterReadingsAdapter
     ) {}
 
@@ -215,31 +215,11 @@ export class DeviceService {
             throw new NotFoundException(StorageErrors.NON_EXISTENT);
         }
 
-        try {
-            await this.repository.update(device.id, { status: update.status });
+        await this.repository.update(device.id, { status: update.status });
 
-            const deviceManagers = await this.organizationService.getDeviceManagers(
-                device.organization.id
-            );
+        this.eventBus.publish(new DeviceStatusChangedEvent(device, update.status));
 
-            const event: DeviceStatusChangedEvent = {
-                deviceId: id,
-                status: device.status,
-                deviceManagersEmails: deviceManagers.map((u) => u.email)
-            };
-
-            this.notificationService.handleEvent({
-                type: SupportedEvents.DEVICE_STATUS_CHANGED,
-                data: event
-            });
-
-            return device;
-        } catch (error) {
-            throw new UnprocessableEntityException({
-                success: false,
-                message: `Device ${id} could not be updated due to an error ${error.message}`
-            });
-        }
+        return this.findOne(id);
     }
 
     async updateSettings(id: string, update: DeviceSettingsUpdateData): Promise<ISuccessResponse> {

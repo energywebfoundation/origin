@@ -1,19 +1,18 @@
 import {
     ILoggedInUser,
-    OrganizationInvitationEvent,
     OrganizationInvitationStatus,
-    OrganizationRole,
-    SupportedEvents
+    OrganizationRole
 } from '@energyweb/origin-backend-core';
 import { BadRequestException, Injectable, Logger } from '@nestjs/common';
+import { EventBus } from '@nestjs/cqrs';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
-import { NotificationService } from '../notification';
-import { UserService } from '../user';
-import { Invitation } from './invitation.entity';
 import { Organization } from '../organization/organization.entity';
 import { OrganizationService } from '../organization/organization.service';
+import { UserService } from '../user';
+import { InvitationCreatedEvent } from './events/invitation-created.event';
+import { Invitation } from './invitation.entity';
 
 @Injectable()
 export class InvitationService {
@@ -23,8 +22,8 @@ export class InvitationService {
         private readonly organizationService: OrganizationService,
         @InjectRepository(Invitation)
         private readonly invitationRepository: Repository<Invitation>,
-        private readonly notificationService: NotificationService,
-        private readonly userService: UserService
+        private readonly userService: UserService,
+        private readonly eventBus: EventBus
     ) {}
 
     public async invite(user: ILoggedInUser, email: string, role: OrganizationRole): Promise<void> {
@@ -43,15 +42,7 @@ export class InvitationService {
             sender: `${sender.firstName} ${sender.lastName}`
         });
 
-        const eventData: OrganizationInvitationEvent = {
-            email: lowerCaseEmail,
-            organizationName: organization.name
-        };
-
-        this.notificationService.handleEvent({
-            type: SupportedEvents.ORGANIZATION_INVITATION,
-            data: eventData
-        });
+        this.eventBus.publish(new InvitationCreatedEvent(organization, lowerCaseEmail));
     }
 
     public async update(
