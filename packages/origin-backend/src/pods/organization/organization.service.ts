@@ -153,7 +153,15 @@ export class OrganizationService {
             });
         }
 
+        if (!organization.users.find((u) => u.id === memberId)) {
+            throw new BadRequestException({
+                success: false,
+                message: `User to be removed is not part of the organization.`
+            });
+        }
+
         await this.userService.removeFromOrganization(memberId);
+        await this.userService.changeRole(memberId, Role.OrganizationAdmin);
 
         const eventData: OrganizationRemovedMemberEvent = {
             organizationName: organization.name,
