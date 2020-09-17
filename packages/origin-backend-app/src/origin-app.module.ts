@@ -11,6 +11,8 @@ import {
 import { ISmartMeterReadingsAdapter } from '@energyweb/origin-backend-core';
 import { DynamicModule, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { NotificationModule } from './notification/notification.module';
+import { MailModule } from './mail';
 
 const OriginAppTypeOrmModule = () => {
     const entities = [...OriginBackendEntities, ...ExchangeEntities, ...IRECOrganizationEntities];
@@ -46,7 +48,9 @@ export class OriginAppModule {
                 OriginAppTypeOrmModule(),
                 OriginBackendModule.register(smartMeterReadingsAdapter),
                 ExchangeModule,
-                IRECOrganizationModule
+                IRECOrganizationModule,
+                MailModule,
+                NotificationModule
             ]
         };
     }
