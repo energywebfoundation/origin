@@ -1,4 +1,5 @@
 import {
+    ensureOrganizationRole,
     ILoggedInUser,
     IOrganizationUpdateMemberRole,
     isRole,
@@ -222,6 +223,12 @@ export class OrganizationController {
         @UserDecorator() loggedUser: ILoggedInUser
     ): Promise<ISuccessResponse> {
         this.ensureOrganizationMemberOrAdmin(loggedUser, organizationId);
+
+        try {
+            ensureOrganizationRole(role);
+        } catch (e) {
+            throw new ForbiddenException();
+        }
 
         await this.organizationService.changeMemberRole(loggedUser.organizationId, memberId, role);
 
