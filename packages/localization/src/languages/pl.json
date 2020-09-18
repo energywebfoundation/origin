@@ -251,8 +251,10 @@
                 "roleChanged": {
                     "succesfullyJoinedOrg": "Pomyślnie dołączył do {{orgName}}",
                     "asMemberYouCan": "Dołączyłeś do {{orgName}} {{admin}}. Jako członek możesz",
-                    "asDeviceManYouCan": "Dołączyłeś do {{orgName}} {{admin}}. Jako Menedżer urządzeń masz uprawnienia",
-                    "asOrgAdminYouCan": "Dołączyłeś do {{orgName}} {{admin}}. Jako Administrator organizacji masz uprawnienia",
+                    "asDeviceManYouCan": "Dołączyłeś do {{orgName}} z {{admin}}. Jako menedżer urządzeń masz uprawnienia do",
+                    "asOrgAdminYouCan": "Dołączyłeś do {{orgName}} z {{admin}}. Jako administrator organizacji masz uprawnienia do",
+                    "canAddOrRemoveOrgMembers": "Dodaj lub usuń członków z organizacji",
+                    "canEditUserRoles": "Przydziel i edytuj role użytkowników",
                     "canPlaceOrder": "Składaj zamówienia na giełdzie",
                     "canBuyIRec": "Kupuj bezpośrednio I-REC",
                     "canCreateAndBuyIRecBundles": "Twórz i kupuj pakiety I-REC",
@@ -261,14 +263,14 @@
                     "canRegisterDevices": "Zarejestruj urządzenia i grupy urządzeń",
                     "canRequestIssuenceOfIRec": "Poproś o wydanie I-REC",
                     "canConfigureAutomatedOrderCreation": "Skonfiguruj automatyczne tworzenie zamówień",
-                    "canAddOrRemoveOrgMembers": "Dodaj lub usuń członków z organizacji",
                     "connectOrgToIRec": "Podłącz organizację do rejestru I-REC",
+                    "asDeviceManagerYouCanAlso": "Możesz także wykonywać wszystkie czynności menedżera urządzeń",
                     "asAMemberYouCanAlso": "Możesz także wykonywać wszystkie czynności, które może wykonywać zwykły członek organizacji"
                 }
             },
             "dialog": {
                 "dontHaveAccAsk": "Nie masz konta?",
-                "userRegisteredModalTitle": "Dziękujemy za zarejestrowanie użytkownika na platformie handlowej [nazwa platformy]",
+                "userRegisteredModalTitle": "Dziękujemy za zarejestrowanie użytkownika na rynku",
                 "userRegisteredModalContent": "Powinieneś otrzymać od nas e-mail. Aby aktywować użytkownika, potwierdź swój adres e-mail, klikając łącze potwierdzające w wiadomości e-mail"
             }
         },
@@ -293,8 +295,8 @@
                     "admin": "Administrator"
                 },
                 "dialog": {
-                    "invitationsModalTitle": "Zaproszenie do dołączenia do [marketplace name]",
-                    "invitationMessage": "{{admin}} zaprosił Cię do dołączenia do marketplace [marketplace name] jako {{role}} w {{orgName}}. Kliknij zaakceptuj, aby dołączyć do organizacji"
+                    "invitationsModalTitle": "Zaproszenie do dołączenia do rynku",
+                    "invitationMessage": "{{admin}} zaprosił Cię do dołączenia do rynku jako {{role}} w {{orgName}}. Kliknij zaakceptuj, aby dołączyć do organizacji"
                 },
                 "actions": {
                     "later": "Może później",
@@ -311,7 +313,7 @@
                 }
             },
             "registration": {
-                "loginNoInvitationsModalTitle": "Dziękujemy za zarejestrowanie się jako użytkownik na platformie handlowej [nazwa platformy]",
+                "loginNoInvitationsModalTitle": "Dziękujemy za zarejestrowanie się jako użytkownik na rynku",
                 "loginNoInvitationsModalContent": "Aby odblokować wszystkie funkcje rynku, takie jak handel I-REC, użytkownicy muszą również zarejestrować organizację",
                 "registerOrganization": "Zarejestruj organizację",
                 "organizationInformation": "Informacje o organizacji",
@@ -348,8 +350,8 @@
                 "clientID": "Klient ID",
                 "clientSecret": "Klient Secret",
                 "titleRegisterIREC": "Informacja o rejestracji I-REC",
-                "irecParticipantDescription": "Konto rejestrującego właściciela urządzenia",
-                "irecRegistrantDescription": "Konto uczestnika dla handlowców, którzy handlują również poza rynkiem",
+                "irecParticipantDescription": "Konto uczestnika dla handlowców, którzy handlują również poza rynkiem",
+                "irecRegistrantDescription": "Konto rejestrującego dla właścicieli urządzeń",
                 "IRECAccountType": "Typ konta I-REC",
                 "orgHeadquatersCompany": "Siedziba organizacji Firma",
                 "yearOfRegistration": "Rok rejestracji",

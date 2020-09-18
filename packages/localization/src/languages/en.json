@@ -370,8 +370,10 @@
                 "roleChanged": {
                     "succesfullyJoinedOrg": "Successfully joined {{orgName}}",
                     "asMemberYouCan": "You have successfully joined {{orgName}} of {{admin}}. As a member you can",
-                    "asDeviceManYouCan": "You have successfully joined {{orgName}} of {{admin}}. As a Device Manager you have permissions",
-                    "asOrgAdminYouCan": "You have successfully joined {{orgName}} of {{admin}}. As an Organization Admin you have permissions",
+                    "asDeviceManYouCan": "You have successfully joined {{orgName}} of {{admin}}. As a Device Manager you have permission to",
+                    "asOrgAdminYouCan": "You have successfully joined {{orgName}} of {{admin}}. As an Organization Admin you have permission to",
+                    "canAddOrRemoveOrgMembers": "Add or remove members from the organization",
+                    "canEditUserRoles": "Give and edit user roles",
                     "canPlaceOrder": "Place orders on the exchange",
                     "canBuyIRec": "Directly buy I-RECs",
                     "canCreateAndBuyIRecBundles": "Create and buy I-REC bundles",
@@ -380,8 +382,8 @@
                     "canRegisterDevices": "Register devices and device groups",
                     "canRequestIssuenceOfIRec": "Request the issuance of I-RECs",
                     "canConfigureAutomatedOrderCreation": "Configure automated order creation",
-                    "canAddOrRemoveOrgMembers": "Add or remove members from the organization",
                     "connectOrgToIRec": "Connect the organization to the I-REC registry",
+                    "asDeviceManagerYouCanAlso": "You can also perform all actions of a device manager",
                     "asAMemberYouCanAlso": "You can also perform all actions that a regular organization member can perform"
                 }
             },
@@ -399,8 +401,8 @@
             },
             "dialog": {
                 "dontHaveAccAsk": "Don't have an account?",
-                "userRegisteredModalTitle": "Thanks for registering a user on the [platform name] marketplace",
-                "userRegisteredModalContent": "You should have received an E-Mail from us. In order to activate your user, please confirm your E-Mail address by clicking confirmation link in the E-Mail"
+                "userRegisteredModalTitle": "Thanks for registering a user on the marketplace",
+                "userRegisteredModalContent": "You should have received an E-Mail from us. In order to activate your user, please confirm your E-Mail address by clicking the confirmation link in the E-Mail"
             }
         },
         "notification": {
@@ -457,8 +459,8 @@
                     "admin": "Admin"
                 },
                 "dialog": {
-                    "invitationsModalTitle": "Invitation to join the [marketplace name]",
-                    "invitationMessage": "{{admin}} has invited you to join the [marketplace name] as a {{role}} for {{orgName}}. Click accept to join the Organization"
+                    "invitationsModalTitle": "Invitation to join the marketplace",
+                    "invitationMessage": "{{admin}} has invited you to join the marketplace as a {{role}} for {{orgName}}. Click accept to join the Organization"
                 },
                 "actions": {
                     "later": "Maybe later",
@@ -475,8 +477,8 @@
                 }
             },
             "registration": {
-                "loginNoInvitationsModalTitle": "Thank you for registering as a user on the [platform name] marketplace",
-                "loginNoInvitationsModalContent": "To unlock all the functionalities of the marketpalce, like trading I-REC's, users also need to register an organization",
+                "loginNoInvitationsModalTitle": "Thank you for registering as a user on the marketplace",
+                "loginNoInvitationsModalContent": "Aby odblokować wszystkie funkcje rynku, takie jak handel I-REC, użytkownicy muszą również zarejestrować organizację",
                 "registerOrganization": "Register organization",
                 "organizationInformation": "Organization information",
                 "organizationName": "Organization Name",
@@ -515,8 +517,8 @@
                 
                 "titleRegisterIREC": "I-REC Registration information",
                 "IRECAccountType": "I-REC Account type",
-                "irecParticipantDescription": "Registrant Account for device owner",
-                "irecRegistrantDescription": "Participant Account for traders that also trade outside of marketplace",
+                "irecParticipantDescription": "Participant Account for traders that also trade outside of marketplace",
+                "irecRegistrantDescription": "Registrant Account for device owners",
                 "orgHeadquatersCompany": "Organization Headquaters Company",
                 "yearOfRegistration": "Year of Registration",
                 "numberOfEmployees": "Number of employees",

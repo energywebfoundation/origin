@@ -14,7 +14,7 @@ import {
     Box
 } from '@material-ui/core';
 import { useSelector } from 'react-redux';
-import { Role, OrganizationInvitationStatus } from '@energyweb/origin-backend-core';
+import { Role, OrganizationInvitationStatus, isRole } from '@energyweb/origin-backend-core';
 import { OriginConfigurationContext } from '..';
 import { OriginFeature } from '@energyweb/utils-general';
 import { getUserOffchain, getInvitations } from '../../features/users/selectors';
@@ -34,7 +34,7 @@ export const RoleChangedModal = ({ showModal, setShowModal, setShowIRec }: IProp
     const userRef = useRef(user);
     const { t } = useTranslation();
     const {
-        typography: { fontSizeSm },
+        typography: { fontSizeMd },
         palette: {
             text: { primary }
         }
@@ -87,13 +87,7 @@ export const RoleChangedModal = ({ showModal, setShowModal, setShowIRec }: IProp
                 ];
                 break;
             case Role.OrganizationAdmin:
-                actions = [
-                    'canRegisterDevices',
-                    'canRequestIssuenceOfIRec',
-                    'canConfigureAutomatedOrderCreation',
-                    'canAddOrRemoveOrgMembers',
-                    'connectOrgToIRec'
-                ];
+                actions = ['canAddOrRemoveOrgMembers', 'canEditUserRoles', 'connectOrgToIRec'];
                 break;
             default:
                 actions = [];
@@ -127,12 +121,12 @@ export const RoleChangedModal = ({ showModal, setShowModal, setShowIRec }: IProp
                             <br />
                             <br />
                             <Box
-                                fontSize={fontSizeSm}
+                                fontSize={fontSizeMd}
                                 fontWeight="fontWeightRegular"
                                 color="text.secondary"
                             >
                                 <Trans
-                                    style={{ fontSize: fontSizeSm }}
+                                    style={{ fontSize: fontSizeMd }}
                                     i18nKey={getAsRoleYouCan(user?.rights)}
                                     values={{
                                         orgName: user?.organization?.name,
@@ -148,7 +142,7 @@ export const RoleChangedModal = ({ showModal, setShowModal, setShowIRec }: IProp
                 <Grid container>
                     <Grid item xs={3}></Grid>
                     <Grid item xs={9}>
-                        <Box color="text.secondary" fontSize={fontSizeSm}>
+                        <Box color="text.secondary" fontSize={fontSizeMd}>
                             <List dense>
                                 {allowedActions(user?.rights).map((action) => (
                                     <ListItem key={action}>
@@ -159,8 +153,31 @@ export const RoleChangedModal = ({ showModal, setShowModal, setShowIRec }: IProp
                                     </ListItem>
                                 ))}
                             </List>
-                            {[Role.OrganizationAdmin, Role.OrganizationDeviceManager].includes(
-                                user?.rights
+                            {isRole(user, Role.OrganizationAdmin) && (
+                                <div>
+                                    {t('user.feedback.roleChanged.asDeviceManagerYouCanAlso')}
+                                    <br />
+                                    <br />
+                                    <List dense>
+                                        {allowedActions(Role.OrganizationDeviceManager).map(
+                                            (action) => (
+                                                <ListItem key={action}>
+                                                    <ListItemIcon>
+                                                        <Brightness1
+                                                            style={{ fontSize: 7, color: primary }}
+                                                        />
+                                                    </ListItemIcon>
+                                                    <ListItemText>{t(action)}</ListItemText>
+                                                </ListItem>
+                                            )
+                                        )}
+                                    </List>
+                                </div>
+                            )}
+                            {isRole(
+                                user,
+                                Role.OrganizationAdmin,
+                                Role.OrganizationDeviceManager
                             ) && (
                                 <div>
                                     {t('user.feedback.roleChanged.asAMemberYouCanAlso')}
