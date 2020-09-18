@@ -55,12 +55,12 @@ export const IRECRegisterForm = () => {
 
     const accountTypeOptions = [
         {
-            value: IRECAccountType.Participant,
-            label: t('organization.registration.irecParticipantDescription')
-        },
-        {
             value: IRECAccountType.Registrant,
             label: t('organization.registration.irecRegistrantDescription')
+        },
+        {
+            value: IRECAccountType.Participant,
+            label: t('organization.registration.irecParticipantDescription')
         }
     ];
 
