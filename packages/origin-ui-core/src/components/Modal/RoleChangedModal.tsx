@@ -14,7 +14,7 @@ import {
     Box
 } from '@material-ui/core';
 import { useSelector } from 'react-redux';
-import { Role, OrganizationInvitationStatus } from '@energyweb/origin-backend-core';
+import { Role, OrganizationInvitationStatus, isRole } from '@energyweb/origin-backend-core';
 import { OriginConfigurationContext } from '..';
 import { OriginFeature } from '@energyweb/utils-general';
 import { getUserOffchain, getInvitations } from '../../features/users/selectors';
@@ -153,7 +153,7 @@ export const RoleChangedModal = ({ showModal, setShowModal, setShowIRec }: IProp
                                     </ListItem>
                                 ))}
                             </List>
-                            {[Role.OrganizationAdmin].includes(user?.rights) && (
+                            {isRole(user, Role.OrganizationAdmin) && (
                                 <div>
                                     {t('user.feedback.roleChanged.asDeviceManagerYouCanAlso')}
                                     <br />
@@ -174,8 +174,10 @@ export const RoleChangedModal = ({ showModal, setShowModal, setShowIRec }: IProp
                                     </List>
                                 </div>
                             )}
-                            {[Role.OrganizationAdmin, Role.OrganizationDeviceManager].includes(
-                                user?.rights
+                            {isRole(
+                                user,
+                                Role.OrganizationAdmin,
+                                Role.OrganizationDeviceManager
                             ) && (
                                 <div>
                                     {t('user.feedback.roleChanged.asAMemberYouCanAlso')}
