@@ -17,6 +17,7 @@ import { CreateBundleForm } from '../bundles/CreateBundleForm';
 import { MyOrders } from '../orders/MyOrders';
 import { OriginConfigurationContext } from '..';
 import { RoleChangedModal } from '../Modal/RoleChangedModal';
+import { ConnectBlockchainAccountModal } from '../Modal/ConnectBlockchainAccountModal';
 
 function CertificateDetailViewId(id: number) {
     return <CertificateDetailView id={id} />;
@@ -40,6 +41,7 @@ export function Certificates() {
     const { baseURL, getCertificatesLink } = useLinks();
     const { t } = useTranslation();
     const [showRoleModal, setShowRoleModal] = useState(false);
+    const [showBlockchainModal, setShowBlockchainModal] = useState(false);
 
     const originConfiguration = useContext(OriginConfigurationContext);
 
@@ -213,7 +215,15 @@ export function Certificates() {
                     path={`${baseURL}/`}
                     render={() => <Redirect to={defaultRedirect} />}
                 />
-                <RoleChangedModal showModal={showRoleModal} setShowModal={setShowRoleModal} />
+                <RoleChangedModal
+                    showModal={showRoleModal}
+                    setShowModal={setShowRoleModal}
+                    setShowBlockchainModal={setShowBlockchainModal}
+                />
+                <ConnectBlockchainAccountModal
+                    showModal={showBlockchainModal}
+                    setShowModal={setShowBlockchainModal}
+                />
             </div>
         )
     );

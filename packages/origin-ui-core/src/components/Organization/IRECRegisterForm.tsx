@@ -13,6 +13,7 @@ import { IAutocompleteMultiSelectOptionType } from '../MultiSelectAutocomplete';
 import irecLogo from '../../../assets/logo-i-rec.svg';
 import { FormSelect } from '../Form/FormSelect';
 import { IRecAccountRegisteredModal } from '../Modal/IRecAccountRegisteredModal';
+import { ConnectBlockchainAccountModal } from '../Modal/ConnectBlockchainAccountModal';
 
 interface IFormValues {
     accountType: string;
@@ -49,6 +50,7 @@ export const IRECRegisterForm = () => {
     const { t } = useTranslation();
     const { Yup } = useValidation();
     const [showIRecRegisteredModal, setShowIRecRegisteredModal] = useState<boolean>(false);
+    const [showBlockchainModal, setShowBlockchainModal] = useState(false);
 
     const iRecClient = useSelector(getIRecClient);
     const dispatch = useDispatch();
@@ -350,6 +352,11 @@ export const IRECRegisterForm = () => {
             <IRecAccountRegisteredModal
                 showModal={showIRecRegisteredModal}
                 setShowModal={setShowIRecRegisteredModal}
+                setShowBlockchainModal={setShowBlockchainModal}
+            />
+            <ConnectBlockchainAccountModal
+                showModal={showBlockchainModal}
+                setShowModal={setShowBlockchainModal}
             />
         </Paper>
     );

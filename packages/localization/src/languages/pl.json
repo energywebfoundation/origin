@@ -149,12 +149,22 @@
             },
             "actions": {
                 "update": "Zaktualizuj",
+                "maybeLater": "Może później",
+                "connectAddress": "Połącz adres",
                 "continue": "Kontynuuj",
                 "cancel": "Anuluj"
             },
             "feedback": {
                 "noChangesMade": "Nie dokonano żadnych zmian.",
                 "unknownError": "Nieznany błąd"
+            },
+            "info": {
+                "tryingToSignAndBoundIs": "Próbujesz podpisać transakcję za pomocą innego konta niż to, które zostało połączone z Twoim kontem. Adres Blockchain powiązany z Twoim użytkownikiem to:",
+                "andYouAreTrying": "i próbujesz użyć adresu:",
+                "noBlockchainAccount1": "Upewnij się, że masz zainstalowane i skonfigurowane rozszerzenie przeglądarki MetaMask.",
+                "noBlockchainAccount2": "Sprawdź stronę Ustawienia użytkownika i upewnij się, że Twoje konto blockchain jest zweryfikowane.",
+                "connectBlockchainTitle": "Połącz adres Blockchain",
+                "connectBlockchainContent": "Aby odblokować wszystkie funkcje rynku, takie jak żądanie wydania certyfikatu, użytkownicy muszą połączyć adres łańcucha bloków"
             }
         },
         "importAccount": {
