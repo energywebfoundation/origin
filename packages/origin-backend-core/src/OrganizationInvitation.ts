@@ -29,3 +29,13 @@ export interface IOrganizationInvitation extends IOrganizationInvitationProperti
 export type OrganizationInviteCreateData = { email: string; role: OrganizationRole };
 
 export type OrganizationInviteUpdateData = Pick<IOrganizationInvitation, 'status'>;
+
+export const ensureOrganizationRole = (role: Role): void => {
+    if (
+        role !== Role.OrganizationAdmin &&
+        role !== Role.OrganizationDeviceManager &&
+        role !== Role.OrganizationUser
+    ) {
+        throw new Error('Not an organization role');
+    }
+};
