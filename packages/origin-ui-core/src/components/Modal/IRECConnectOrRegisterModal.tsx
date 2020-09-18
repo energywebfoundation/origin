@@ -12,6 +12,7 @@ import { OriginFeature } from '@energyweb/utils-general';
 interface IProps {
     showModal: boolean;
     setShowModal: (showModal: boolean) => void;
+    setShowBlockchainModal?: (showModal: boolean) => void;
 }
 
 export enum STEP_NAMES {
@@ -20,13 +21,18 @@ export enum STEP_NAMES {
     REGISTER_IREC = 2
 }
 
-export const IRECConnectOrRegisterModal = ({ showModal, setShowModal }: IProps) => {
+export const IRECConnectOrRegisterModal = ({
+    showModal,
+    setShowModal,
+    setShowBlockchainModal
+}: IProps) => {
     const { t } = useTranslation();
     const {
         typography: { fontSizeMd }
     } = useTheme();
     const { getOrganizationIRecRegisterLink, getOrganizationViewLink } = useLinks();
-    const orgId = useSelector(getUserOffchain)?.organization?.id;
+    const user = useSelector(getUserOffchain);
+    const orgId = user.organization?.id;
     const history = useHistory();
     const { enabledFeatures } = useContext(OriginConfigurationContext);
 
@@ -34,7 +40,11 @@ export const IRECConnectOrRegisterModal = ({ showModal, setShowModal }: IProps) 
         setShowModal(false);
         switch (step) {
             case STEP_NAMES.NOT_NOW:
-                history.push(getOrganizationViewLink(orgId.toString()));
+                if (!user.blockchainAccountAddress) {
+                    setShowBlockchainModal(true);
+                } else {
+                    history.push(getOrganizationViewLink(orgId.toString()));
+                }
                 break;
             case STEP_NAMES.REGISTER_IREC:
                 history.push(getOrganizationIRecRegisterLink());

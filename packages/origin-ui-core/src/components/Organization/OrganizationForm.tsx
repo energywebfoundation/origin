@@ -28,6 +28,7 @@ import { setUserOffchain } from '../../features/users/actions';
 import { getUserOffchain } from '../../features/users/selectors';
 import { RoleChangedModal } from '../Modal/RoleChangedModal';
 import { IRECConnectOrRegisterModal } from '../Modal/IRECConnectOrRegisterModal';
+import { ConnectBlockchainAccountModal } from '../Modal/ConnectBlockchainAccountModal';
 
 interface IProps {
     entity: IFullOrganization;
@@ -103,6 +104,7 @@ export function OrganizationForm(props: IProps) {
 
     const [showRoleModal, setShowRoleModal] = useState(false);
     const [showIRecModal, setShowIRecModal] = useState(false);
+    const [showBlockchainModal, setShowBlockchainModal] = useState(false);
 
     const useStyles = makeStyles(() =>
         createStyles({
@@ -404,7 +406,15 @@ export function OrganizationForm(props: IProps) {
                 setShowModal={setShowRoleModal}
                 setShowIRec={setShowIRecModal}
             />
-            <IRECConnectOrRegisterModal showModal={showIRecModal} setShowModal={setShowIRecModal} />
+            <IRECConnectOrRegisterModal
+                showModal={showIRecModal}
+                setShowModal={setShowIRecModal}
+                setShowBlockchainModal={setShowBlockchainModal}
+            />
+            <ConnectBlockchainAccountModal
+                showModal={showBlockchainModal}
+                setShowModal={setShowBlockchainModal}
+            />
         </Paper>
     );
 }

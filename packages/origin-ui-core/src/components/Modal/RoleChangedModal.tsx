@@ -27,9 +27,15 @@ interface IProps {
     showModal?: boolean;
     setShowModal?: (showModal: boolean) => void;
     setShowIRec?: (showModal: boolean) => void;
+    setShowBlockchainModal?: (showModal: boolean) => void;
 }
 
-export const RoleChangedModal = ({ showModal, setShowModal, setShowIRec }: IProps) => {
+export const RoleChangedModal = ({
+    showModal,
+    setShowModal,
+    setShowIRec,
+    setShowBlockchainModal
+}: IProps) => {
     const user = useSelector(getUserOffchain);
     const userRef = useRef(user);
     const { t } = useTranslation();
@@ -106,6 +112,18 @@ export const RoleChangedModal = ({ showModal, setShowModal, setShowIRec }: IProp
         setShowModal(false);
         if (setShowIRec && enabledFeatures.includes(OriginFeature.IRec)) {
             setShowIRec(true);
+        }
+
+        const { rights: newRole } = user;
+        if (
+            (!setShowIRec &&
+                newRole === Role.OrganizationAdmin &&
+                !user.blockchainAccountAddress) ||
+            (!setShowIRec &&
+                newRole === Role.OrganizationDeviceManager &&
+                !user.blockchainAccountAddress)
+        ) {
+            setShowBlockchainModal(true);
         }
     };
 

@@ -28,6 +28,10 @@ export function getAccountLoginLink(baseURL: string) {
     return `${baseURL}/user-login`;
 }
 
+export function getUserProfileLink(baseURL: string) {
+    return `${getAccountLink(baseURL)}/user-profile`;
+}
+
 export function getDevicesAddLink(baseURL: string) {
     return `${getDevicesLink(baseURL)}/add`;
 }
@@ -108,6 +112,7 @@ export function useLinks() {
         getUserRegisterLink: () => getUserRegisterLink(baseURL),
         getAccountLoginLink: () => getAccountLoginLink(baseURL),
         getAdminLink: () => getAdminLink(baseURL),
-        getBundlesLink: () => getBundlesLink(baseURL)
+        getBundlesLink: () => getBundlesLink(baseURL),
+        getUserProfileLink: () => getUserProfileLink(baseURL)
     };
 }
