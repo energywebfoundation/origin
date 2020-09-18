@@ -88,7 +88,8 @@ export function Organization() {
             show:
                 enabledFeatures.includes(OriginFeature.IRec) &&
                 organization &&
-                iRecAccount.length === 0
+                iRecAccount.length === 0 &&
+                !isRole(user, Role.Admin, Role.SupportAgent)
         }
     ];
     const firstNotHiddenRoute = Menu.filter((i) => i.show)[0]?.key;
