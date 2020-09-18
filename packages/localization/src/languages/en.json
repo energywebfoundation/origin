@@ -232,6 +232,8 @@
             },
             "actions": {
                 "update": "Update",
+                "maybeLater": "Maybe Later",
+                "connectAddress": "Connect Address",
                 "continue": "Continue",
                 "cancel": "Cancel",
                 "search": "Search",

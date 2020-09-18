@@ -149,6 +149,8 @@
             },
             "actions": {
                 "update": "Zaktualizuj",
+                "maybeLater": "Może później",
+                "connectAddress": "Połącz adres",
                 "continue": "Kontynuuj",
                 "cancel": "Anuluj"
             },
