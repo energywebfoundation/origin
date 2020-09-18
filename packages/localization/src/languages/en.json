@@ -255,7 +255,9 @@
                 "tryingToSignAndBoundIs": "You are trying to sign a transaction with account different than the one that has been linked to your account. Blockchain address bound to your user is:",
                 "andYouAreTrying": "and you are trying to use address:",
                 "noBlockchainAccount1": "Make sure you have the MetaMask browser extension installed and set up.",
-                "noBlockchainAccount2": "Check the User Settings page and make sure your blockchain account is verified."
+                "noBlockchainAccount2": "Check the User Settings page and make sure your blockchain account is verified.",
+                "connectBlockchainTitle": "Connect Blockchain Address",
+                "connectBlockchainContent": "In order to unlock all functionalities of the marketplace, like requesting certificate issuance, users have to connect a blockchain address"
             }
         },
         "importAccount": {
