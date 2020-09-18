@@ -74,10 +74,10 @@ export const ConnectBlockchainAccountModal = ({ showModal, setShowModal }: IProp
                         onClick={() => closeModal()}
                         className={classes.maybeButton}
                     >
-                        {'Maybe Later'}
+                        {t('general.actions.maybeLater')}
                     </Button>
                     <Button variant="contained" color="primary" onClick={() => connectAddress()}>
-                        {'Connect Address'}
+                        {t('general.actions.connectAddress')}
                     </Button>
                 </Box>
             </DialogActions>
