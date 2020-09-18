@@ -11,7 +11,7 @@ import { Repository } from 'typeorm';
 import { Organization } from '../organization/organization.entity';
 import { OrganizationService } from '../organization/organization.service';
 import { UserService } from '../user';
-import { InvitationCreatedEvent } from './events/invitation-created.event';
+import { InvitationCreatedEvent } from './events';
 import { Invitation } from './invitation.entity';
 
 @Injectable()
