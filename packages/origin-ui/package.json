@@ -27,7 +27,7 @@
         "react-dom": "16.13.1",
         "ts-loader": "7.0.5",
         "url-loader": "4.1.0",
-        "webpack": "4.44.1"
+        "webpack": "4.44.2"
     },
     "devDependencies": {
         "@types/react": "16.9.49",
