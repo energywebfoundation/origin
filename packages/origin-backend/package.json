@@ -108,6 +108,6 @@
         "registry": "https://registry.npmjs.org"
     },
     "resolutions": {
-        "tslib": "1.13.0"
+        "tslib": "2.0.1"
     }
 }

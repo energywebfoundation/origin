@@ -57,7 +57,7 @@
         "tsconfig-paths": "3.9.0"
     },
     "resolutions": {
-        "tslib": "1.13.0"
+        "tslib": "2.0.1"
     },
     "files": [
         "dist",
