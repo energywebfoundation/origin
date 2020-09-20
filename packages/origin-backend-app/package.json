@@ -53,7 +53,7 @@
     "devDependencies": {
         "jest": "26.4.2",
         "supertest": "4.0.2",
-        "ts-jest": "26.3.0",
+        "ts-jest": "26.4.0",
         "tsconfig-paths": "3.9.0"
     },
     "resolutions": {
