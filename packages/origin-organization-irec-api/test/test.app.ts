@@ -1,6 +1,6 @@
 /* eslint-disable import/no-extraneous-dependencies */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Role, UserStatus } from '@energyweb/origin-backend-core';
+import { IUser, Role, UserStatus } from '@energyweb/origin-backend-core';
 import { DatabaseService } from '@energyweb/origin-backend-utils';
 import { CanActivate, ExecutionContext, Logger } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
@@ -23,23 +23,28 @@ export const testUsers = new Map([
         TestUser.OrganizationAdmin,
         {
             id: 1,
-            organization: { id: '1000' },
+            organization: { id: 1000 },
             status: UserStatus.Active,
             rights: Role.OrganizationAdmin
-        }
+        } as IUser
     ],
     [
         TestUser.OtherOrganizationAdmin,
         {
             id: 2,
-            organization: { id: '1001' },
+            organization: { id: 1001 },
             status: UserStatus.Active,
             rights: Role.OrganizationAdmin
-        }
+        } as IUser
     ],
     [
         TestUser.PlatformAdmin,
-        { id: 3, organization: { id: '1002' }, status: UserStatus.Active, rights: Role.Admin }
+        {
+            id: 3,
+            organization: { id: 1002 },
+            status: UserStatus.Active,
+            rights: Role.Admin
+        } as IUser
     ]
 ]);
 
@@ -48,6 +53,7 @@ const authGuard: CanActivate = {
         const req = context.switchToHttp().getRequest();
         req.user = testUsers.get(req.headers['test-user']);
 
+        console.log(req.user);
         return true;
     }
 };

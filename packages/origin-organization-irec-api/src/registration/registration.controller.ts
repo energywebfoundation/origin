@@ -36,10 +36,7 @@ export class RegistrationController {
         @UserDecorator() loggedInUser: LoggedInUser,
         @Body() registration: RegistrationDTO
     ): Promise<{ id: string }> {
-        const id = await this.registrationService.register(
-            loggedInUser.organizationId.toString(),
-            registration
-        );
+        const id = await this.registrationService.register(loggedInUser, registration);
 
         return { id };
     }

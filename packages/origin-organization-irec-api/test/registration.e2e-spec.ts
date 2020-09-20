@@ -7,6 +7,7 @@ import { DatabaseService } from '@energyweb/origin-backend-utils';
 import { expect } from 'chai';
 import supertest from 'supertest';
 
+import { LoggedInUser } from '@energyweb/origin-backend-core';
 import { RegistrationDTO } from '../src/registration/registration.dto';
 import { bootstrapTestInstance, TestUser, testUsers } from './test.app';
 import { Registration } from '../src/registration/registration.entity';
@@ -68,8 +69,14 @@ describe('I-REC Registration tests', () => {
         const admin1 = testUsers.get(TestUser.OrganizationAdmin);
         const admin2 = testUsers.get(TestUser.OtherOrganizationAdmin);
 
-        const regId1 = await registrationService.register(admin1.organization.id, registrationForm);
-        const regId2 = await registrationService.register(admin2.organization.id, registrationForm);
+        const regId1 = await registrationService.register(
+            new LoggedInUser(admin1),
+            registrationForm
+        );
+        const regId2 = await registrationService.register(
+            new LoggedInUser(admin2),
+            registrationForm
+        );
 
         await test
             .get('/irec/registration')
