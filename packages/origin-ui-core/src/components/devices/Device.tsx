@@ -15,6 +15,7 @@ import { ProducingDeviceDetailView } from './ProducingDeviceDetailView';
 import { ProducingDeviceTable } from './ProducingDeviceTable';
 import { OriginConfigurationContext } from '../OriginConfigurationContext';
 import { RoleChangedModal } from '../Modal/RoleChangedModal';
+import { ConnectBlockchainAccountModal } from '../Modal/ConnectBlockchainAccountModal';
 
 export function Device() {
     const userOffchain = useSelector(getUserOffchain);
@@ -24,6 +25,7 @@ export function Device() {
         userOffchain?.organization &&
         isRole(userOffchain, Role.OrganizationDeviceManager, Role.OrganizationAdmin);
     const [showRoleModal, setShowRoleModal] = useState(false);
+    const [showBlockchainModal, setShowBlockchainModal] = useState(false);
 
     function ProductionDetailView(id: number): JSX.Element {
         return (
@@ -192,7 +194,15 @@ export function Device() {
                     <Redirect to={{ pathname: `${getDevicesLink()}/${DevicesMenu[0].key}` }} />
                 )}
             />
-            <RoleChangedModal showModal={showRoleModal} setShowModal={setShowRoleModal} />
+            <RoleChangedModal
+                showModal={showRoleModal}
+                setShowModal={setShowRoleModal}
+                setShowBlockchainModal={setShowBlockchainModal}
+            />
+            <ConnectBlockchainAccountModal
+                showModal={showBlockchainModal}
+                setShowModal={setShowBlockchainModal}
+            />
         </div>
     );
 }

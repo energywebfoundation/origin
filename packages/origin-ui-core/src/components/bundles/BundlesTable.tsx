@@ -139,14 +139,15 @@ export const BundlesTable = (props: IOwnProps) => {
         { id: 'price', label: t('bundle.properties.price') }
     ];
 
-    const actions: any[] = [
-        {
+    const actions: any[] = [];
+
+    if (isBundleDetailsVisible) {
+        actions.push({
             icon: <Visibility />,
             name: 'View details',
             onClick: (row: string) => viewDetails(parseInt(row, 10))
-        }
-    ];
-
+        });
+    }
     if (owner) {
         actions.push({
             icon: <CancelIcon />,

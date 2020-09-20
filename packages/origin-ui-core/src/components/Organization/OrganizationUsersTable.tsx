@@ -30,6 +30,7 @@ export function OrganizationUsersTable() {
 
     const organizationClient = useSelector(getOffChainDataSource)?.organizationClient;
     const userOffchain = useSelector(getUserOffchain);
+    const userIsActive = userOffchain && userOffchain.status === UserStatus.Active;
 
     const dispatch = useDispatch();
 
@@ -127,18 +128,22 @@ export function OrganizationUsersTable() {
         await loadPage(1);
     }
 
-    const actions = [
-        {
-            icon: <DeleteOutline />,
-            name: 'Remove',
-            onClick: (index: string) => remove(parseInt(index, 10))
-        },
-        {
-            icon: <PermIdentityOutlined />,
-            name: 'Edit Role',
-            onClick: (index: string) => changeRole(parseInt(index, 10))
-        }
-    ];
+    const actions = [];
+
+    if (userIsActive) {
+        actions.push(
+            {
+                icon: <DeleteOutline />,
+                name: 'Remove',
+                onClick: (index: string) => remove(parseInt(index, 10))
+            },
+            {
+                icon: <PermIdentityOutlined />,
+                name: 'Edit Role',
+                onClick: (index: string) => changeRole(parseInt(index, 10))
+            }
+        );
+    }
 
     const columns = [
         { id: 'firstName', label: 'First name' },

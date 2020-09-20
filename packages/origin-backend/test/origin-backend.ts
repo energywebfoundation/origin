@@ -25,6 +25,7 @@ import { ConfigurationService } from '../src/pods/configuration';
 import { DeviceService } from '../src/pods/device/device.service';
 import { EmailConfirmationService } from '../src/pods/email-confirmation/email-confirmation.service';
 import { FileService } from '../src/pods/file/file.service';
+import { InvitationService } from '../src/pods/invitation/invitation.service';
 import { NewOrganizationDTO } from '../src/pods/organization/new-organization.dto';
 import { OrganizationService } from '../src/pods/organization/organization.service';
 import { UserService } from '../src/pods/user';
@@ -86,6 +87,7 @@ export const bootstrapTestInstance = async () => {
         EmailConfirmationService
     );
     const fileService = await app.resolve<FileService>(FileService);
+    const invitationService = await app.resolve<InvitationService>(InvitationService);
 
     app.useLogger(testLogger);
     app.enableCors();
@@ -107,7 +109,8 @@ export const bootstrapTestInstance = async () => {
         certificateService,
         certificationRequestService,
         emailConfirmationService,
-        fileService
+        fileService,
+        invitationService
     };
 };
 

@@ -1,4 +1,5 @@
 import {
+    ensureOrganizationRole,
     ILoggedInUser,
     IOrganizationInvitation,
     ISuccessResponse,
@@ -10,6 +11,7 @@ import {
     BadRequestException,
     Body,
     Controller,
+    ForbiddenException,
     Get,
     Logger,
     Param,
@@ -74,6 +76,12 @@ export class InvitationController {
                 success: false,
                 message: `User doesn't belong to any organization.`
             });
+        }
+
+        try {
+            ensureOrganizationRole(role);
+        } catch (e) {
+            throw new ForbiddenException();
         }
 
         await this.organizationInvitationService.invite(loggedUser, email, role);

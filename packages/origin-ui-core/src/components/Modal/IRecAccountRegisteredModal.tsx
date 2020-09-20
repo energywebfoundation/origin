@@ -1,5 +1,7 @@
 import React from 'react';
 import { useHistory } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import { getUserOffchain } from '../../features/users/selectors';
 import { Dialog, DialogTitle, DialogActions, Button, Box, useTheme, Grid } from '@material-ui/core';
 import { showNotification, NotificationType, useTranslation, useLinks } from '../..';
 import iconAdded from '../../../assets/icon-org-added.svg';
@@ -7,11 +9,17 @@ import iconAdded from '../../../assets/icon-org-added.svg';
 interface IProps {
     showModal: boolean;
     setShowModal: (showModal: boolean) => void;
+    setShowBlockchainModal?: (showModal: boolean) => void;
 }
 
-export const IRecAccountRegisteredModal = ({ showModal, setShowModal }: IProps) => {
+export const IRecAccountRegisteredModal = ({
+    showModal,
+    setShowModal,
+    setShowBlockchainModal
+}: IProps) => {
     const history = useHistory();
     const { getOrganizationLink } = useLinks();
+    const user = useSelector(getUserOffchain);
 
     const {
         typography: { fontSizeMd }
@@ -20,8 +28,12 @@ export const IRecAccountRegisteredModal = ({ showModal, setShowModal }: IProps) 
 
     const onClose = () => {
         setShowModal(false);
-        history.push(getOrganizationLink());
         showNotification('Organization registered.', NotificationType.Success);
+        if (!user.blockchainAccountAddress) {
+            setShowBlockchainModal(true);
+        } else {
+            history.push(getOrganizationLink());
+        }
     };
 
     return (
