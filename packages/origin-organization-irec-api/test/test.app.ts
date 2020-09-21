@@ -52,8 +52,6 @@ const authGuard: CanActivate = {
     canActivate: (context: ExecutionContext) => {
         const req = context.switchToHttp().getRequest();
         req.user = testUsers.get(req.headers['test-user']);
-
-        console.log(req.user);
         return true;
     }
 };

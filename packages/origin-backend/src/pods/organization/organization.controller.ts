@@ -21,6 +21,7 @@ import {
     Delete,
     ForbiddenException,
     Get,
+    InternalServerErrorException,
     Logger,
     NotFoundException,
     Param,
@@ -42,6 +43,7 @@ import { OrganizationService } from './organization.service';
 import { Organization } from './organization.entity';
 import { FullOrganizationInfoDTO } from './full-organization-info.dto';
 import { PublicOrganizationInfoDTO } from './public-organization-info.dto';
+import { OrganizationNameAlreadyTakenError } from './organization-name-taken.error';
 
 @Controller('/Organization')
 @UseInterceptors(NullOrUndefinedResultInterceptor)
@@ -127,10 +129,15 @@ export class OrganizationController {
 
     @Post()
     @UseGuards(AuthGuard())
+    @Roles(Role.OrganizationAdmin)
     async register(
         @Body() organizationToRegister: NewOrganizationDTO,
         @UserDecorator() loggedUser: ILoggedInUser
     ): Promise<Organization> {
+        if (loggedUser.hasOrganization) {
+            throw new ForbiddenException('User is already part of an organization');
+        }
+
         try {
             const organization = await this.organizationService.create(
                 loggedUser.id,
@@ -139,10 +146,15 @@ export class OrganizationController {
 
             return organization;
         } catch (error) {
-            console.warn('Error while saving entity');
-            console.error(error);
+            this.logger.error(error);
 
-            throw new BadRequestException('Could not save organization.');
+            if (error instanceof OrganizationNameAlreadyTakenError) {
+                throw new BadRequestException({ message: error.message });
+            }
+
+            throw new InternalServerErrorException({
+                message: `Unable to register organization due an unknown error`
+            });
         }
     }
 

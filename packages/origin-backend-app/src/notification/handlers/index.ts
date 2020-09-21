@@ -5,6 +5,7 @@ import { OrganizationMemberRemovedHandler } from './organization-member-removed.
 import { OrganizationMemberRoleChangedHandler } from './organization-member-role-changed.handler';
 import { OrganizationStatusChangedHandler } from './organization-status-changed.handler';
 import { RegistrationCreatedHandler } from './registration-created.handler';
+import { OrganizationRegisteredHandler } from './organization-registered.handler';
 
 export const Handlers = [
     DeviceStatusChangedHandler,
@@ -13,5 +14,6 @@ export const Handlers = [
     OrganizationMemberRemovedHandler,
     OrganizationMemberRoleChangedHandler,
     OrganizationStatusChangedHandler,
-    RegistrationCreatedHandler
+    RegistrationCreatedHandler,
+    OrganizationRegisteredHandler
 ];

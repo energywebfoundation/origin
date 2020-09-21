@@ -17,7 +17,9 @@
         "clean": "shx rm -rf dist uploads",
         "lint": "eslint \"src/**/*{.ts,.tsx}\"",
         "lint-fix": "eslint \"src/**/*{.ts,.tsx}\" --fix",
-        "precommit": "lint-staged"
+        "precommit": "lint-staged",
+        "test:mocha": "mocha -r ts-node/register test/*.e2e-spec.ts --timeout 60000 --exit",
+        "test:e2e": "yarn test:mocha"
     },
     "bin": {
         "origin-backend-app": "./bin/origin-backend-app"
@@ -54,10 +56,9 @@
         "swagger-ui-express": "4.1.4"
     },
     "devDependencies": {
-        "jest": "26.4.2",
+        "@nestjs/testing": "7.4.4",
         "supertest": "4.0.2",
-        "ts-jest": "26.4.0",
-        "tsconfig-paths": "3.9.0"
+        "ganache-core": "2.11.3"
     },
     "resolutions": {
         "tslib": "1.13.0"

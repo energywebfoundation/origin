@@ -8,9 +8,12 @@ import { User, UserService } from '../user';
 import {
     OrganizationMemberRemovedEvent,
     OrganizationMemberRoleChangedEvent,
+    OrganizationNameAlreadyTakenEvent,
+    OrganizationRegisteredEvent,
     OrganizationStatusChangedEvent
 } from './events';
 import { NewOrganizationDTO } from './new-organization.dto';
+import { OrganizationNameAlreadyTakenError } from './organization-name-taken.error';
 import { Organization } from './organization.entity';
 
 @Injectable()
@@ -44,6 +47,14 @@ export class OrganizationService {
             signatoryZipCode
         } = organizationToRegister;
 
+        const user = await this.userService.findById(userId);
+
+        if (await this.isNameAlreadyTaken(name)) {
+            this.eventBus.publish(new OrganizationNameAlreadyTakenEvent(name, user));
+
+            throw new OrganizationNameAlreadyTakenError(name);
+        }
+
         const organizationToCreate = new Organization({
             name,
             address,
@@ -66,7 +77,11 @@ export class OrganizationService {
             devices: []
         });
 
-        return this.repository.save(organizationToCreate);
+        const stored = await this.repository.save(organizationToCreate);
+
+        this.eventBus.publish(new OrganizationRegisteredEvent(stored, user));
+
+        return stored;
     }
 
     async findOne(
@@ -189,5 +204,14 @@ export class OrganizationService {
                 userToBeChanged.rights as Role
             )
         );
+    }
+
+    private async isNameAlreadyTaken(name: string) {
+        const existingOrganizations = await this.repository
+            .createQueryBuilder()
+            .where('LOWER(name) = LOWER(:name)', { name })
+            .getCount();
+
+        return existingOrganizations > 0;
     }
 }
