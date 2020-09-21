@@ -12,7 +12,12 @@ import { OrganizationInvitationDTO } from '../src/pods/organization/organization
 import { OrganizationService } from '../src/pods/organization/organization.service';
 import { PublicOrganizationInfoDTO } from '../src/pods/organization/public-organization-info.dto';
 import { TUserBaseEntity, UserService } from '../src/pods/user';
-import { bootstrapTestInstance, getExampleOrganization, registerAndLogin } from './origin-backend';
+import {
+    bootstrapTestInstance,
+    getExampleOrganization,
+    loginUser,
+    registerAndLogin
+} from './origin-backend';
 import { userToRegister } from './user.e2e-spec';
 
 describe('Organization e2e tests', () => {
@@ -60,8 +65,6 @@ describe('Organization e2e tests', () => {
             .expect(200)
             .expect((res) => {
                 const [org] = res.body as PublicOrganizationInfoDTO[];
-
-                console.log(org);
 
                 expect(org.id).to.be.equal(organization.id);
             });
@@ -335,15 +338,7 @@ describe('Organization e2e tests', () => {
     it('should be able to register organization before being approved user', async () => {
         await request(app.getHttpServer()).post(`/user/register`).send(userToRegister).expect(201);
 
-        let accessToken: string;
-
-        await request(app.getHttpServer())
-            .post('/auth/login')
-            .send({
-                username: userToRegister.email,
-                password: userToRegister.password
-            })
-            .expect((res) => ({ accessToken } = res.body));
+        const accessToken = await loginUser(app, userToRegister.email, userToRegister.password);
 
         const organization = getExampleOrganization();
         await request(app.getHttpServer())
@@ -351,5 +346,42 @@ describe('Organization e2e tests', () => {
             .send(organization)
             .set('Authorization', `Bearer ${accessToken}`)
             .expect(201);
+    });
+
+    it('should not be able to register organization where name was already taken', async () => {
+        await request(app.getHttpServer()).post(`/user/register`).send(userToRegister).expect(201);
+
+        const accessToken = await loginUser(app, userToRegister.email, userToRegister.password);
+
+        const organization = getExampleOrganization();
+        await request(app.getHttpServer())
+            .post(`/organization`)
+            .send(organization)
+            .set('Authorization', `Bearer ${accessToken}`)
+            .expect(201);
+
+        const otherUser = { ...userToRegister, email: 'other@example.com' };
+        await request(app.getHttpServer()).post(`/user/register`).send(otherUser).expect(201);
+
+        const otherUserAccessToken = await loginUser(app, otherUser.email, otherUser.password);
+
+        await request(app.getHttpServer())
+            .post(`/organization`)
+            .send(organization)
+            .set('Authorization', `Bearer ${otherUserAccessToken}`)
+            .expect(400);
+    });
+
+    it('should be able to register organization if already part of an organization', async () => {
+        const { accessToken } = await registerAndLogin(app, userService, organizationService, [
+            Role.OrganizationAdmin
+        ]);
+
+        const organization = getExampleOrganization();
+        await request(app.getHttpServer())
+            .post(`/organization`)
+            .send({ ...organization, name: 'Other organization name' })
+            .set('Authorization', `Bearer ${accessToken}`)
+            .expect(403);
     });
 });

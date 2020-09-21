@@ -32,8 +32,11 @@ import { UserService } from '../src/pods/user';
 
 const testLogger = new Logger('e2e');
 
-export const getExampleOrganization = (email = 'test@example.com'): NewOrganizationDTO => ({
-    name: 'Example Organization',
+export const getExampleOrganization = (
+    email = 'test@example.com',
+    name = 'default'
+): NewOrganizationDTO => ({
+    name: `Example ${name} Organization`,
     address: 'Address',
     businessType: 'Public',
     city: 'City',
@@ -114,6 +117,19 @@ export const bootstrapTestInstance = async () => {
     };
 };
 
+export const loginUser = async (app: any, username: string, password: string): Promise<string> => {
+    let accessToken;
+    await request(app.getHttpServer())
+        .post('/auth/login')
+        .send({
+            username,
+            password
+        })
+        .expect((res) => ({ accessToken } = res.body));
+
+    return accessToken;
+};
+
 export const registerAndLogin = async (
     app: any,
     userService: UserService,
@@ -156,7 +172,7 @@ export const registerAndLogin = async (
     });
 
     if (!organization) {
-        const organizationRegistration = getExampleOrganization(organizationEmail);
+        const organizationRegistration = getExampleOrganization(organizationEmail, orgSeed);
 
         await organizationService.create(user.id, organizationRegistration);
         organization = await organizationService.findOne(null, {
@@ -171,15 +187,7 @@ export const registerAndLogin = async (
 
     user.organization = { id: organization.id } as IPublicOrganization;
 
-    let accessToken: string;
-
-    await request(app.getHttpServer())
-        .post('/auth/login')
-        .send({
-            username: user.email,
-            password: '123'
-        })
-        .expect((res) => ({ accessToken } = res.body));
+    const accessToken = await loginUser(app, user.email, '123');
 
     return { accessToken, user: new LoggedInUser(user), organization };
 };
