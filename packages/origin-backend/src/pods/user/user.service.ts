@@ -263,19 +263,34 @@ export class UserService {
         const { orgName, status, kycStatus } = filter;
 
         const isNullOrUndefined = (variable: any) => variable === null || variable === undefined;
-
-        const _orgName = `%${orgName ?? ''}%`;
-        const result = await this.repository
-            .createQueryBuilder('user')
-            .leftJoinAndSelect('user.organization', 'organization')
-            .where(
-                `organization.name ilike :_orgName ${
-                    isNullOrUndefined(status) ? '' : 'and user.status = :status'
-                } ${isNullOrUndefined(kycStatus) ? '' : 'and user.kycStatus = :kycStatus'}`,
-                { _orgName, status, kycStatus }
-            )
-            .getMany();
-
+        let result;
+        if (orgName === undefined || '') {
+            result = await this.repository
+                .createQueryBuilder('user')
+                .leftJoinAndSelect('user.organization', 'organization')
+                .where(
+                    `${isNullOrUndefined(status) ? '' : 'user.status = :status'} 
+            ${
+                isNullOrUndefined(kycStatus)
+                    ? ''
+                    : `${isNullOrUndefined(status) ? '' : ' and '} user.kycStatus = :kycStatus`
+            }`,
+                    { status, kycStatus }
+                )
+                .getMany();
+        } else {
+            const _orgName = `%${orgName}%`;
+            result = await this.repository
+                .createQueryBuilder('user')
+                .leftJoinAndSelect('user.organization', 'organization')
+                .where(
+                    `organization.name ilike :_orgName ${
+                        isNullOrUndefined(status) ? '' : 'and user.status = :status'
+                    } ${isNullOrUndefined(kycStatus) ? '' : 'and user.kycStatus = :kycStatus'}`,
+                    { _orgName, status, kycStatus }
+                )
+                .getMany();
+        }
         return result;
     }
 
