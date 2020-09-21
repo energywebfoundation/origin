@@ -10,18 +10,27 @@ import { OriginAppModule } from '../src';
 
 describe('Origin Backend App', () => {
     it('should run origin app', async () => {
-        ganache.server().listen(8545);
+        const privateKey = '0xdc8e1fc5a23a837105f11ca050f06bc5a88a2ad54fb49bc580232c8c82e8ff99';
+
+        ganache.provider();
+        ganache
+            .server({
+                accounts: [
+                    {
+                        secretKey: privateKey,
+                        balance: `0x${(100 * 10 ** 18).toString(16)}`
+                    }
+                ]
+            })
+            .listen(9000);
 
         const testLogger = new Logger('e2e');
 
         const configService = new ConfigService({
-            WEB3: 'http://localhost:8545',
+            WEB3: 'http://localhost:9000',
             JWT_SECRET: '123',
-            EXCHANGE_ACCOUNT_DEPLOYER_PRIV:
-                '0xd9066ff9f753a1898709b568119055660a77d9aae4d7a4ad677b8fb3d2a571e5',
-            EXCHANGE_WALLET_PUB: '0xD173313A51f8fc37BcF67569b463abd89d81844f',
-            EXCHANGE_WALLET_PRIV:
-                '0xd9066ff9f753a1898709b568119055660a77d9aae4d7a4ad677b8fb3d2a571e5',
+            EXCHANGE_ACCOUNT_DEPLOYER_PRIV: privateKey,
+            EXCHANGE_WALLET_PRIV: privateKey,
             EXCHANGE_PRICE_STRATEGY: 0
         });
 
