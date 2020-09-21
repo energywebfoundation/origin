@@ -1,11 +1,12 @@
-import { OrganizationModule } from '@energyweb/origin-backend/dist/js/src/pods/organization/organization.module';
-import { OrganizationService } from '@energyweb/origin-backend/dist/js/src/pods/organization/organization.service';
+import { OrganizationModule, UserModule } from '@energyweb/origin-backend';
 import { Module } from '@nestjs/common';
+import { CqrsModule } from '@nestjs/cqrs';
+
 import { MailModule } from '../mail';
 import { Handlers } from './handlers';
 
 @Module({
-    imports: [MailModule, OrganizationModule],
-    providers: [OrganizationService, ...Handlers]
+    imports: [MailModule, OrganizationModule, UserModule, CqrsModule],
+    providers: [...Handlers]
 })
 export class NotificationModule {}
