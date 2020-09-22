@@ -13,6 +13,7 @@ import { getIRecClient } from '../../features/general/selectors';
 import { getUserOffchain } from '../../features/users/selectors';
 import { getOffChainDataSource, useTranslation } from '../..';
 import { IRECOrganizationView } from './IRECOrganizationView';
+import { Registration } from '../../utils/irec';
 
 interface IFormValues {
     name: string;
@@ -70,23 +71,19 @@ export function OrganizationView() {
 
     useEffect(() => {
         const getOrganization = async () => {
-            const iRecOrg = await iRecClient.getRegistrations();
+            let iRecOrg: Registration[];
+            if (enabledFeatures.includes(OriginFeature.IRec)) {
+                iRecOrg = await iRecClient.getRegistrations();
+            }
             const organization = params.id
                 ? await organizationClient.getById(parseInt(params.id, 10))
                 : userOffchain?.organization;
             if (organization) {
                 setValues(organization);
 
-                if (params.id) {
-                    setIRecData(
-                        iRecOrg?.filter(
-                            (org) => parseInt(org.owner, 10) === parseInt(params.id, 10)
-                        )[0]
-                    );
-                } else {
-                    setIRecData(
-                        iRecOrg?.filter((org) => parseInt(org.owner, 10) === organization.id)[0]
-                    );
+                if (enabledFeatures.includes(OriginFeature.IRec)) {
+                    const owner = params.id ? parseInt(params.id, 10) : organization.id;
+                    setIRecData(iRecOrg?.filter((org) => parseInt(org.owner, 10) === owner)[0]);
                 }
             }
         };

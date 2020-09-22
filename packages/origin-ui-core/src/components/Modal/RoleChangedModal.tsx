@@ -49,6 +49,7 @@ export const RoleChangedModal = ({
         (invitation) => invitation.status === OrganizationInvitationStatus.Accepted
     )?.sender;
     const { enabledFeatures } = useContext(OriginConfigurationContext);
+    const iRecEnabled = enabledFeatures.includes(OriginFeature.IRec);
 
     useEffect(() => {
         if (user?.organization && userRef.current) {
@@ -73,38 +74,53 @@ export const RoleChangedModal = ({
     };
 
     const allowedActions = (rights: Role) => {
-        const prefix = 'user.feedback.roleChanged';
         let actions: string[];
         switch (rights) {
             case Role.OrganizationUser:
                 actions = [
-                    'canPlaceOrder',
-                    'canBuyIRec',
-                    'canCreateAndBuyIRecBundles',
-                    'canRedeemIRec',
-                    'canWidrawIRec'
+                    t('user.feedback.roleChanged.canPlaceOrder'),
+                    t('user.feedback.roleChanged.canBuyCertificates', {
+                        certificateType: iRecEnabled ? 'I-RECs' : 'certificates'
+                    }),
+                    t('user.feedback.roleChanged.canCreateAndBuyCertificateBundles', {
+                        certificateType: iRecEnabled ? 'I-REC' : 'certificate'
+                    }),
+                    t('user.feedback.roleChanged.canRedeemCertificates', {
+                        certificateType: iRecEnabled ? 'I-RECs' : 'certificates'
+                    }),
+                    t('user.feedback.roleChanged.canWithdrawCertificates', {
+                        certificateType: iRecEnabled ? 'I-RECs' : 'certificates'
+                    })
                 ];
                 break;
             case Role.OrganizationDeviceManager:
                 actions = [
-                    'canRegisterDevices',
-                    'canRequestIssuenceOfIRec',
-                    'canConfigureAutomatedOrderCreation'
+                    t('user.feedback.roleChanged.canRegisterDevices'),
+                    t('user.feedback.roleChanged.canRequestIssuenceOfCertificates', {
+                        certificateType: iRecEnabled ? 'I-RECs' : 'certificates'
+                    }),
+                    t('user.feedback.roleChanged.canConfigureAutomatedOrderCreation')
                 ];
                 break;
             case Role.OrganizationAdmin:
-                actions = ['canAddOrRemoveOrgMembers', 'canEditUserRoles', 'connectOrgToIRec'];
+                actions = [
+                    t('user.feedback.roleChanged.canAddOrRemoveOrgMembers'),
+                    t('user.feedback.roleChanged.canEditUserRoles')
+                ];
+                if (iRecEnabled) {
+                    actions.push(t('user.feedback.roleChanged.connectOrgToIRec'));
+                }
                 break;
             default:
                 actions = [];
                 break;
         }
-        return actions.map((action) => `${prefix}.${action}`);
+        return actions.map((action) => action);
     };
 
     const closeRoleModal = () => {
         setShowModal(false);
-        if (setShowIRec && enabledFeatures.includes(OriginFeature.IRec)) {
+        if (setShowIRec && iRecEnabled) {
             setShowIRec(true);
         }
 
@@ -167,7 +183,7 @@ export const RoleChangedModal = ({
                                         <ListItemIcon>
                                             <Brightness1 style={{ fontSize: 7, color: primary }} />
                                         </ListItemIcon>
-                                        <ListItemText>{t(action)}</ListItemText>
+                                        <ListItemText>{action}</ListItemText>
                                     </ListItem>
                                 ))}
                             </List>
