@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useTranslation, useLinks } from '../../utils';
 import { useSelector } from 'react-redux';
 import { showNotification, NotificationType } from '../../utils/notifications';
@@ -18,7 +18,7 @@ export function ConfirmEmail(props: any) {
     const user = useSelector(getUserOffchain);
 
     const history = useHistory();
-    const { getAccountLoginLink } = useLinks();
+    const { getAccountLoginLink, getDefaultLink } = useLinks();
 
     const { token } = queryString.parse(props.location.search);
 
@@ -34,6 +34,8 @@ export function ConfirmEmail(props: any) {
                 .then(() => {
                     if (!user) {
                         history.push(getAccountLoginLink());
+                    } else {
+                        history.push(getDefaultLink());
                     }
                 });
         }
@@ -55,8 +57,12 @@ export function ConfirmEmail(props: any) {
             message = 'loading';
     }
 
-    return showNotification(
-        t(`user.feedback.emailConfirmation.${message}`),
-        NotificationType.Success
+    return (
+        <>
+            {showNotification(
+                t(`user.feedback.emailConfirmation.${message}`),
+                NotificationType.Success
+            )}
+        </>
     );
 }
