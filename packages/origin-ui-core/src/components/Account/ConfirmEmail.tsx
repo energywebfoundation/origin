@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation, useLinks } from '../../utils';
 import { useSelector } from 'react-redux';
+import { showNotification, NotificationType } from '../../utils/notifications';
 
 import * as queryString from 'query-string';
 import { getOffChainDataSource } from '../..';
@@ -54,5 +55,8 @@ export function ConfirmEmail(props: any) {
             message = 'loading';
     }
 
-    return <div>{t(`user.feedback.emailConfirmation.${message}`)}</div>;
+    return showNotification(
+        t(`user.feedback.emailConfirmation.${message}`),
+        NotificationType.Success
+    );
 }
