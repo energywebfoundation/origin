@@ -369,7 +369,7 @@
                     "alreadyConfirmed": "Already confirmed.",
                     "confirmed": "Email confirmed successfully.",
                     "expired": "Confirmation link expired.",
-                    "loading:": "Loading..."
+                    "loading": "Loading..."
                 },
                 "roleChanged": {
                     "succesfullyJoinedOrg": "Successfully joined {{orgName}}",

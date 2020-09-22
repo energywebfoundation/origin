@@ -276,6 +276,12 @@
                     "connectOrgToIRec": "Podłącz organizację do rejestru I-REC",
                     "asDeviceManagerYouCanAlso": "Możesz także wykonywać wszystkie czynności menedżera urządzeń",
                     "asAMemberYouCanAlso": "Możesz także wykonywać wszystkie czynności, które może wykonywać zwykły członek organizacji"
+                },
+                "emailConfirmation": {
+                    "alreadyConfirmed": "Już potwierdzony.",
+                    "confirmed": "E-mail potwierdzony pomyślnie.",
+                    "expired": "Link potwierdzający wygasł.",
+                    "loading": "Ładowanie..."
                 }
             },
             "dialog": {
