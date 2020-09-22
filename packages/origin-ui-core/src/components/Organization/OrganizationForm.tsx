@@ -29,6 +29,7 @@ import { getUserOffchain } from '../../features/users/selectors';
 import { RoleChangedModal } from '../Modal/RoleChangedModal';
 import { IRECConnectOrRegisterModal } from '../Modal/IRECConnectOrRegisterModal';
 import { ConnectBlockchainAccountModal } from '../Modal/ConnectBlockchainAccountModal';
+import { OrganizationAlreadyExistsModal } from '../Modal/OrganizationAlreadyExistsModal';
 
 interface IProps {
     entity: IFullOrganization;
@@ -105,6 +106,7 @@ export function OrganizationForm(props: IProps) {
     const [showRoleModal, setShowRoleModal] = useState(false);
     const [showIRecModal, setShowIRecModal] = useState(false);
     const [showBlockchainModal, setShowBlockchainModal] = useState(false);
+    const [showAlreadyExistsModal, setShowAlreadyExistsModal] = useState(false);
 
     const useStyles = makeStyles(() =>
         createStyles({
@@ -156,6 +158,9 @@ export function OrganizationForm(props: IProps) {
 
             if (error?.response?.status === 401) {
                 showNotification('Unauthorized.', NotificationType.Error);
+            } else if (error?.response?.status === 400) {
+                setShowAlreadyExistsModal(true);
+                showNotification(error?.response?.data?.message, NotificationType.Error);
             } else {
                 showNotification('Organization could not be created.', NotificationType.Error);
             }
@@ -414,6 +419,10 @@ export function OrganizationForm(props: IProps) {
             <ConnectBlockchainAccountModal
                 showModal={showBlockchainModal}
                 setShowModal={setShowBlockchainModal}
+            />
+            <OrganizationAlreadyExistsModal
+                showModal={showAlreadyExistsModal}
+                setShowModal={setShowAlreadyExistsModal}
             />
         </Paper>
     );

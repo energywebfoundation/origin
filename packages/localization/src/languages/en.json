@@ -251,7 +251,8 @@
                 "blockchainAccountMismatch": "Blockchain account mismatch",
                 "noBlockchainAccount": "No blockchain account detected",
                 "registerOrLoginTryAgain": "Please log in or register to the platform, then try again.",
-                "hasToBeActiveUser": "User has to be approved by the platform admin."
+                "hasToBeActiveUser": "User has to be approved by the platform admin.",
+                "supportTeamGetInContact": "Our support team will get in contact with you shortly to sort out the issue."
             },
             "info": {
                 "tryingToSignAndBoundIs": "You are trying to sign a transaction with account different than the one that has been linked to your account. Blockchain address bound to your user is:",
@@ -504,6 +505,8 @@
                 "signatoryEmail": "Signatory Email",
                 "signatoryTelephone": "Signatory Telephone",
                 "uploadSignatoryId": "Upload Signatory ID",
+                "organizationCouldNotBeRegistered": "Sorry but this organization could not be registered.",
+                "organizationAlreadyExists": "There already exists an organization with the same information.",
                 "titleConnectOrRegisterIREC": "Thank you for registering organization on TK marketplace!",
                 "checkingInfoToApprove":"We are checking your information as soon as possible and will contact you once everything is approved and you can start trading.",
                 "contentConnectOrRegisterIREC": "In order to register devices and request I-RECs, users also need to connect to existing I-REC account.",
