@@ -482,7 +482,7 @@
             },
             "registration": {
                 "loginNoInvitationsModalTitle": "Thank you for registering as a user on the marketplace",
-                "loginNoInvitationsModalContent": "Aby odblokować wszystkie funkcje rynku, takie jak handel I-REC, użytkownicy muszą również zarejestrować organizację",
+                "loginNoInvitationsModalContent": "To unlock all the functionalities of the marketplace, like trading I-RECs, users also need to register an organization.",
                 "registerOrganization": "Register organization",
                 "organizationInformation": "Organization information",
                 "organizationName": "Organization Name",
