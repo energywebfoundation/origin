@@ -60,9 +60,6 @@
         "supertest": "4.0.2",
         "ganache-core": "2.11.3"
     },
-    "resolutions": {
-        "tslib": "1.13.0"
-    },
     "files": [
         "dist",
         "bin"
