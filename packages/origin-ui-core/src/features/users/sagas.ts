@@ -1,4 +1,5 @@
-import { call, put, select, take, fork, all } from 'redux-saga/effects';
+import { OriginFeature } from '@energyweb/utils-general';
+import { call, put, select, take, fork, all, getContext } from 'redux-saga/effects';
 import { SagaIterator } from 'redux-saga';
 import {
     UsersActions,
@@ -82,6 +83,7 @@ function* fetchOffchainUserDetails(): SagaIterator {
 
         const offChainDataSource: IOffChainDataSource = yield select(getOffChainDataSource);
         const userClient = offChainDataSource.userClient;
+        const features = yield getContext('enabledFeatures');
 
         if (
             !authenticationToken ||
@@ -101,10 +103,14 @@ function* fetchOffchainUserDetails(): SagaIterator {
             );
             const userState: IUsersState = yield select(getUserState);
 
-            const iRecClient = yield select(getIRecClient);
-            const iRecAccount: Registration[] = userOffchain.organization
-                ? yield call([iRecClient, iRecClient.getRegistrations], null)
-                : [];
+            let iRecAccount: Registration[];
+
+            if (features.includes(OriginFeature.IRecConnect)) {
+                const iRecClient = yield select(getIRecClient);
+                iRecAccount = userOffchain.organization
+                    ? yield call([iRecClient, iRecClient.getRegistrations], null)
+                    : [];
+            }
 
             yield put(
                 setUserState({
