@@ -6,11 +6,11 @@ export interface IUsersState {
     activeBlockchainAccountAddress: string;
     userOffchain: IUser;
     organizations: IFullOrganization[];
-    iRecAccount: Registration[];
     invitations: {
         invitations: IOrganizationInvitation[];
         showPendingInvitationsModal: boolean;
     };
+    iRecAccount?: Registration[];
 }
 
 const defaultState: IUsersState = {
