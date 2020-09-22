@@ -1,15 +1,20 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Paper, Button, Theme, makeStyles, Box } from '@material-ui/core';
 import { Formik, FormikHelpers, Form, Field } from 'formik';
 import { useDispatch, useSelector } from 'react-redux';
 import { IUserClient } from '@energyweb/origin-backend-core';
-import { getOffChainDataSource, showNotification, NotificationType, useTranslation } from '../..';
+import {
+    getOffChainDataSource,
+    showNotification,
+    NotificationType,
+    useTranslation,
+    OriginConfigurationContext
+} from '../..';
 import { setLoading } from '../../features/general';
 import { useHistory } from 'react-router-dom';
 import { setAuthenticationToken } from '../../features/users/actions';
 import { useLinks, useValidation } from '../../utils';
 import { InputFixedHeight } from '../Form/InputFixedHeight';
-import EnergyWebOriginLogo from '../../../assets/EW-Origin-WhiteText.svg';
 
 interface IFormValues {
     email: string;
@@ -23,6 +28,7 @@ const INITIAL_VALUES: IFormValues = {
 
 export const LoginForm = () => {
     const dispatch = useDispatch();
+    const originConfiguration = useContext(OriginConfigurationContext);
     const userClient: IUserClient = useSelector(getOffChainDataSource)?.userClient;
     const history = useHistory();
     const { t } = useTranslation();
@@ -75,9 +81,7 @@ export const LoginForm = () => {
 
     return (
         <Paper elevation={1} className="LoginForm" classes={{ root: styles.form }}>
-            <div className={styles.logo}>
-                <img src={EnergyWebOriginLogo} />
-            </div>
+            <div className={styles.logo}>{originConfiguration.logo}</div>
             <Formik
                 initialValues={initialFormValues}
                 onSubmit={submitForm}
