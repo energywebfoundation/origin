@@ -105,7 +105,7 @@ function* fetchOffchainUserDetails(): SagaIterator {
 
             let iRecAccount: Registration[];
 
-            if (features.includes(OriginFeature.IRecConnect)) {
+            if (features.includes(OriginFeature.IRec)) {
                 const iRecClient = yield select(getIRecClient);
                 iRecAccount = userOffchain.organization
                     ? yield call([iRecClient, iRecClient.getRegistrations], null)
