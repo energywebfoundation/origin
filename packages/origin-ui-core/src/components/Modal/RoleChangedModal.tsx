@@ -13,12 +13,13 @@ import {
     Grid,
     Box
 } from '@material-ui/core';
+import { useHistory } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { Role, OrganizationInvitationStatus, isRole } from '@energyweb/origin-backend-core';
 import { OriginConfigurationContext } from '..';
 import { OriginFeature } from '@energyweb/utils-general';
 import { getUserOffchain, getInvitations } from '../../features/users/selectors';
-import { useTranslation } from '../..';
+import { useTranslation, useLinks } from '../..';
 import { Trans } from 'react-i18next';
 import { Brightness1 } from '@material-ui/icons';
 import OrgAddedIcon from '../../../assets/icon-org-added.svg';
@@ -38,6 +39,8 @@ export const RoleChangedModal = ({
 }: IProps) => {
     const user = useSelector(getUserOffchain);
     const userRef = useRef(user);
+    const history = useHistory();
+    const { getOrganizationLink } = useLinks();
     const { t } = useTranslation();
     const {
         typography: { fontSizeMd },
@@ -122,6 +125,10 @@ export const RoleChangedModal = ({
         setShowModal(false);
         if (setShowIRec && iRecEnabled) {
             setShowIRec(true);
+        } else if (!user.blockchainAccountAddress) {
+            setShowBlockchainModal(true);
+        } else {
+            history.push(getOrganizationLink());
         }
 
         const { rights: newRole } = user;

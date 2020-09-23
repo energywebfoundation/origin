@@ -410,6 +410,7 @@ export function OrganizationForm(props: IProps) {
                 showModal={showRoleModal}
                 setShowModal={setShowRoleModal}
                 setShowIRec={setShowIRecModal}
+                setShowBlockchainModal={setShowBlockchainModal}
             />
             <IRECConnectOrRegisterModal
                 showModal={showIRecModal}
