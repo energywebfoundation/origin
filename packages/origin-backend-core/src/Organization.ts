@@ -27,6 +27,8 @@ export interface IFullOrganization extends IPublicOrganization {
     signatoryCountry: number;
     signatoryEmail: string;
     signatoryPhoneNumber: string;
+    signatoryDocumentIds?: string[];
+    documentIds?: string[];
 }
 
 export type OrganizationPostData = {
@@ -45,6 +47,8 @@ export type OrganizationPostData = {
     signatoryCountry: number;
     signatoryEmail: string;
     signatoryPhoneNumber: string;
+    signatoryDocumentIds?: string[];
+    documentIds?: string[];
 };
 
 export type OrganizationUpdateData = {
