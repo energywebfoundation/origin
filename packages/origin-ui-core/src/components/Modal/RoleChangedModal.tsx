@@ -179,12 +179,12 @@ export const RoleChangedModal = ({
                     </Grid>
                 </Grid>
             </DialogTitle>
-            <DialogContent>
+            <DialogContent style={{ paddingTop: 0 }}>
                 <Grid container>
                     <Grid item xs={3}></Grid>
                     <Grid item xs={9}>
                         <Box color="text.secondary" fontSize={fontSizeMd}>
-                            <List dense>
+                            <List dense style={{ paddingTop: 0 }}>
                                 {allowedActions(user?.rights).map((action) => (
                                     <ListItem key={action}>
                                         <ListItemIcon style={{ minWidth: 20 }}>
