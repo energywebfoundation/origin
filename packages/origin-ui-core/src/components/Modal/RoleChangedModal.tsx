@@ -146,7 +146,7 @@ export const RoleChangedModal = ({
 
     return (
         <Dialog open={showModal} onClose={() => closeRoleModal()} scroll="body">
-            <DialogTitle>
+            <DialogTitle style={{ paddingBottom: '0' }}>
                 <Grid container>
                     <Grid item xs={3}>
                         <img src={OrgAddedIcon} style={{ maxWidth: '100%', maxHeight: '100%' }} />
@@ -171,7 +171,7 @@ export const RoleChangedModal = ({
                                     i18nKey={getAsRoleYouCan(user?.rights)}
                                     values={{
                                         orgName: user?.organization?.name,
-                                        admin: sender
+                                        admin: sender || `${user?.firstName} ${user?.lastName}`
                                     }}
                                 />
                             </Box>
@@ -187,23 +187,23 @@ export const RoleChangedModal = ({
                             <List dense>
                                 {allowedActions(user?.rights).map((action) => (
                                     <ListItem key={action}>
-                                        <ListItemIcon>
+                                        <ListItemIcon style={{ minWidth: 20 }}>
                                             <Brightness1 style={{ fontSize: 7, color: primary }} />
                                         </ListItemIcon>
                                         <ListItemText>{action}</ListItemText>
                                     </ListItem>
                                 ))}
                             </List>
+                            <br />
+                            <br />
                             {isRole(user, Role.OrganizationAdmin) && (
                                 <div>
                                     {t('user.feedback.roleChanged.asDeviceManagerYouCanAlso')}
-                                    <br />
-                                    <br />
                                     <List dense>
                                         {allowedActions(Role.OrganizationDeviceManager).map(
                                             (action) => (
                                                 <ListItem key={action}>
-                                                    <ListItemIcon>
+                                                    <ListItemIcon style={{ minWidth: 20 }}>
                                                         <Brightness1
                                                             style={{ fontSize: 7, color: primary }}
                                                         />
@@ -213,6 +213,8 @@ export const RoleChangedModal = ({
                                             )
                                         )}
                                     </List>
+                                    <br />
+                                    <br />
                                 </div>
                             )}
                             {isRole(
@@ -222,12 +224,10 @@ export const RoleChangedModal = ({
                             ) && (
                                 <div>
                                     {t('user.feedback.roleChanged.asAMemberYouCanAlso')}
-                                    <br />
-                                    <br />
                                     <List dense>
                                         {allowedActions(Role.OrganizationUser).map((action) => (
                                             <ListItem key={action}>
-                                                <ListItemIcon>
+                                                <ListItemIcon style={{ minWidth: 20 }}>
                                                     <Brightness1
                                                         style={{ fontSize: 7, color: primary }}
                                                     />
