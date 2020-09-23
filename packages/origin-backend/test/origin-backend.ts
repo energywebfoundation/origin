@@ -174,7 +174,7 @@ export const registerAndLogin = async (
     if (!organization) {
         const organizationRegistration = getExampleOrganization(organizationEmail, orgSeed);
 
-        await organizationService.create(user.id, organizationRegistration);
+        await organizationService.create(new LoggedInUser(user), organizationRegistration);
         organization = await organizationService.findOne(null, {
             where: { signatoryEmail: organizationEmail }
         });

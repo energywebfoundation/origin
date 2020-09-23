@@ -44,6 +44,7 @@ import { Organization } from './organization.entity';
 import { FullOrganizationInfoDTO } from './full-organization-info.dto';
 import { PublicOrganizationInfoDTO } from './public-organization-info.dto';
 import { OrganizationNameAlreadyTakenError } from './organization-name-taken.error';
+import { OrganizationDocumentOwnershipMismatchError } from './organization-document-ownership-mismatch.error';
 
 @Controller('/Organization')
 @UseInterceptors(NullOrUndefinedResultInterceptor)
@@ -140,16 +141,20 @@ export class OrganizationController {
 
         try {
             const organization = await this.organizationService.create(
-                loggedUser.id,
+                loggedUser,
                 organizationToRegister
             );
 
             return organization;
         } catch (error) {
-            this.logger.error(error);
+            this.logger.error(error.message);
 
             if (error instanceof OrganizationNameAlreadyTakenError) {
                 throw new BadRequestException({ message: error.message });
+            }
+
+            if (error instanceof OrganizationDocumentOwnershipMismatchError) {
+                throw new ForbiddenException({ message: error.message });
             }
 
             throw new InternalServerErrorException({

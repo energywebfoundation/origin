@@ -1,9 +1,21 @@
-import { FILE_SUPPORTED_MIMETYPES } from '@energyweb/origin-backend-core';
-import { Controller, Post, UploadedFiles, UseGuards, UseInterceptors } from '@nestjs/common';
+import { FILE_SUPPORTED_MIMETYPES, ILoggedInUser } from '@energyweb/origin-backend-core';
+import { UserDecorator } from '@energyweb/origin-backend-utils';
+import {
+    Controller,
+    Get,
+    NotFoundException,
+    Param,
+    Post,
+    Res,
+    UploadedFiles,
+    UseGuards,
+    UseInterceptors
+} from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
-import { Request } from 'express';
+import { Request, Response } from 'express';
 import multer from 'multer';
+import { Readable } from 'stream';
 
 import { FileService } from './file.service';
 
@@ -33,13 +45,36 @@ export class FileController {
     )
     @UseGuards(AuthGuard())
     async upload(
+        @UserDecorator() user: ILoggedInUser,
         @UploadedFiles()
         uploadedFiles: {
             files: Express.Multer.File[];
         }
     ): Promise<string[]> {
-        const ids = await this.fileService.store(uploadedFiles.files);
+        return this.fileService.store(user, uploadedFiles.files);
+    }
 
-        return ids;
+    @Get(':id')
+    @UseGuards(AuthGuard())
+    async download(
+        @UserDecorator() user: ILoggedInUser,
+        @Param('id') id: string,
+        @Res() res: Response
+    ): Promise<void> {
+        const file = await this.fileService.get(user, id);
+        if (!file) {
+            throw new NotFoundException();
+        }
+
+        res.set({
+            'Content-Type': file.contentType,
+            'Content-Length': file.data.length
+        });
+
+        const stream = new Readable();
+        stream.push(file.data);
+        stream.push(null);
+
+        stream.pipe(res);
     }
 }

@@ -16,4 +16,13 @@ export class File extends ExtendedBaseEntity {
 
     @Column({ type: 'bytea' })
     data: Buffer;
+
+    @Column()
+    contentType: string;
+
+    @Column()
+    userId: string;
+
+    @Column({ nullable: true })
+    organizationId: string;
 }
