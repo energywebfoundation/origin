@@ -24,6 +24,12 @@ export class FullOrganizationInfoDTO extends PublicOrganizationInfoDTO {
     @Expose()
     signatoryPhoneNumber: string;
 
+    @Expose()
+    documentIds?: string[];
+
+    @Expose()
+    signatoryDocumentIds?: string[];
+
     public static fromPlatformOrganization(
         platformOrganization: Organization
     ): FullOrganizationInfoDTO {

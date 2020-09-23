@@ -1,4 +1,4 @@
-import { IsEmail, IsNotEmpty, IsNumber, IsString } from 'class-validator';
+import { IsEmail, IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
 
 export class NewOrganizationDTO {
     @IsNotEmpty()
@@ -60,4 +60,10 @@ export class NewOrganizationDTO {
     @IsNotEmpty()
     @IsString()
     public signatoryPhoneNumber: string;
+
+    @IsOptional()
+    public documentIds?: string[];
+
+    @IsOptional()
+    public signatoryDocumentIds?: string[];
 }

@@ -5,6 +5,7 @@ import { DatabaseService } from '@energyweb/origin-backend-utils';
 import { INestApplication } from '@nestjs/common';
 import { expect } from 'chai';
 import request from 'supertest';
+import crypto from 'crypto';
 
 import { Device } from '../src/pods/device/device.entity';
 import { DeviceService } from '../src/pods/device/device.service';
@@ -19,6 +20,7 @@ import {
     registerAndLogin
 } from './origin-backend';
 import { userToRegister } from './user.e2e-spec';
+import { NewOrganizationDTO, Organization } from '../src/pods/organization';
 
 describe('Organization e2e tests', () => {
     let app: INestApplication;
@@ -382,6 +384,105 @@ describe('Organization e2e tests', () => {
             .post(`/organization`)
             .send({ ...organization, name: 'Other organization name' })
             .set('Authorization', `Bearer ${accessToken}`)
+            .expect(403);
+    });
+
+    it('should be able to register organization with documents', async () => {
+        await request(app.getHttpServer()).post(`/user/register`).send(userToRegister).expect(201);
+
+        const accessToken = await loginUser(app, userToRegister.email, userToRegister.password);
+
+        const blob = crypto.randomBytes(16);
+        let fileId1: string;
+        let fileId2: string;
+
+        await request(app.getHttpServer())
+            .post('/file')
+            .attach('files', blob, { filename: 'blob.pdf', contentType: 'application/pdf' })
+            .attach('files', blob, { filename: 'blob2.pdf', contentType: 'application/pdf' })
+            .set('Authorization', `Bearer ${accessToken}`)
+            .expect((res) => {
+                [fileId1, fileId2] = res.body as string[];
+            });
+
+        const organization = getExampleOrganization();
+        await request(app.getHttpServer())
+            .post(`/organization`)
+            .send({
+                ...organization,
+                documentIds: [fileId1],
+                signatoryDocumentIds: [fileId2]
+            } as NewOrganizationDTO)
+            .set('Authorization', `Bearer ${accessToken}`)
+            .expect(201)
+            .expect((res) => {
+                const org = res.body as Organization;
+
+                expect(org.name).to.be.equal(organization.name);
+                expect(org.documentIds).to.be.deep.equal([fileId1]);
+                expect(org.signatoryDocumentIds).to.be.deep.equal([fileId2]);
+            });
+    });
+
+    it('should not be able to register organization with non existing documents', async () => {
+        await request(app.getHttpServer()).post(`/user/register`).send(userToRegister).expect(201);
+
+        const accessToken = await loginUser(app, userToRegister.email, userToRegister.password);
+        const organization = getExampleOrganization();
+
+        await request(app.getHttpServer())
+            .post(`/organization`)
+            .send({
+                ...organization,
+                documentIds: ['6ae855ca-8115-476e-9dfe-f6a23ede7959']
+            } as NewOrganizationDTO)
+            .set('Authorization', `Bearer ${accessToken}`)
+            .expect(403);
+
+        await request(app.getHttpServer())
+            .post(`/organization`)
+            .send({
+                ...organization,
+                signatoryDocumentIds: ['6ae855ca-8115-476e-9dfe-f6a23ede7959']
+            } as NewOrganizationDTO)
+            .set('Authorization', `Bearer ${accessToken}`)
+            .expect(403);
+    });
+
+    it('should not be able to register organization with documents that belong to other user', async () => {
+        await request(app.getHttpServer()).post(`/user/register`).send(userToRegister).expect(201);
+
+        const accessToken = await loginUser(app, userToRegister.email, userToRegister.password);
+
+        const blob = crypto.randomBytes(16);
+        let fileId: string;
+
+        await request(app.getHttpServer())
+            .post('/file')
+            .attach('files', blob, { filename: 'blob.pdf', contentType: 'application/pdf' })
+            .set('Authorization', `Bearer ${accessToken}`)
+            .expect((res) => {
+                [fileId] = res.body as string[];
+            });
+
+        const otherUserEmail = 'other@example.com';
+
+        await request(app.getHttpServer())
+            .post(`/user/register`)
+            .send({ ...userToRegister, email: otherUserEmail })
+            .expect(201);
+
+        const otherUserAccessToken = await loginUser(app, otherUserEmail, userToRegister.password);
+
+        const organization = getExampleOrganization();
+
+        await request(app.getHttpServer())
+            .post(`/organization`)
+            .send({
+                ...organization,
+                documentIds: [fileId]
+            } as NewOrganizationDTO)
+            .set('Authorization', `Bearer ${otherUserAccessToken}`)
             .expect(403);
     });
 });

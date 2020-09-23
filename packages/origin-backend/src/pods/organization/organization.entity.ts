@@ -60,6 +60,9 @@ export class Organization extends ExtendedBaseEntity {
     @Column()
     signatoryPhoneNumber: string;
 
+    @Column('simple-array', { nullable: true })
+    signatoryDocumentIds: string[];
+
     @Column()
     status: OrganizationStatus;
 
@@ -71,4 +74,7 @@ export class Organization extends ExtendedBaseEntity {
 
     @OneToMany(() => Device, (device) => device.organization, { eager: true })
     devices: Device[];
+
+    @Column('simple-array', { nullable: true })
+    documentIds: string[];
 }

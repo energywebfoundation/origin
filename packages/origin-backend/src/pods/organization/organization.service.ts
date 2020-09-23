@@ -1,8 +1,15 @@
-import { isRole, IUser, OrganizationStatus, Role } from '@energyweb/origin-backend-core';
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+    isRole,
+    IUser,
+    LoggedInUser,
+    OrganizationStatus,
+    Role
+} from '@energyweb/origin-backend-core';
+import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { EventBus } from '@nestjs/cqrs';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FindOneOptions, Repository } from 'typeorm';
+import { FileService } from '../file/file.service';
 
 import { User, UserService } from '../user';
 import {
@@ -13,22 +20,32 @@ import {
     OrganizationStatusChangedEvent
 } from './events';
 import { NewOrganizationDTO } from './new-organization.dto';
+import { OrganizationDocumentOwnershipMismatchError } from './organization-document-ownership-mismatch.error';
 import { OrganizationNameAlreadyTakenError } from './organization-name-taken.error';
 import { Organization } from './organization.entity';
 
 @Injectable()
 export class OrganizationService {
+    private readonly logger = new Logger(OrganizationService.name);
+
     constructor(
         @InjectRepository(Organization)
         private readonly repository: Repository<Organization>,
         private readonly userService: UserService,
+        private readonly fileService: FileService,
         private readonly eventBus: EventBus
     ) {}
 
     async create(
-        userId: number,
+        user: LoggedInUser,
         organizationToRegister: NewOrganizationDTO
     ): Promise<Organization> {
+        this.logger.debug(
+            `User ${JSON.stringify(user)} requested organization registration ${JSON.stringify(
+                organizationToRegister
+            )}`
+        );
+
         const {
             name,
             address,
@@ -44,15 +61,23 @@ export class OrganizationService {
             signatoryEmail,
             signatoryFullName,
             signatoryPhoneNumber,
-            signatoryZipCode
+            signatoryZipCode,
+            signatoryDocumentIds,
+            documentIds
         } = organizationToRegister;
 
-        const user = await this.userService.findById(userId);
+        let userInfo = await this.userService.findById(user.id);
 
         if (await this.isNameAlreadyTaken(name)) {
-            this.eventBus.publish(new OrganizationNameAlreadyTakenEvent(name, user));
+            this.eventBus.publish(new OrganizationNameAlreadyTakenEvent(name, userInfo));
 
             throw new OrganizationNameAlreadyTakenError(name);
+        }
+
+        const documents = [...(documentIds ?? []), ...(signatoryDocumentIds ?? [])];
+
+        if (!(await this.isDocumentOwner(user, documents))) {
+            throw new OrganizationDocumentOwnershipMismatchError();
         }
 
         const organizationToCreate = new Organization({
@@ -71,15 +96,26 @@ export class OrganizationService {
             signatoryFullName,
             signatoryPhoneNumber,
             signatoryZipCode,
+            signatoryDocumentIds,
+            documentIds,
 
             status: OrganizationStatus.Submitted,
-            users: [{ id: userId } as User],
+            users: [{ id: user.id } as User],
             devices: []
         });
 
         const stored = await this.repository.save(organizationToCreate);
+        userInfo = await this.userService.findById(user.id);
 
-        this.eventBus.publish(new OrganizationRegisteredEvent(stored, user));
+        await this.fileService.updateOrganization(new LoggedInUser(userInfo), documents);
+
+        this.eventBus.publish(new OrganizationRegisteredEvent(stored, userInfo));
+
+        this.logger.debug(
+            `User ${JSON.stringify(user)} successfully registered new organization with id ${
+                stored.id
+            }`
+        );
 
         return stored;
     }
@@ -213,5 +249,13 @@ export class OrganizationService {
             .getCount();
 
         return existingOrganizations > 0;
+    }
+
+    private async isDocumentOwner(user: LoggedInUser, documentIds: string[]) {
+        if (!documentIds?.length) {
+            return true;
+        }
+
+        return this.fileService.isOwner(user, documentIds);
     }
 }
