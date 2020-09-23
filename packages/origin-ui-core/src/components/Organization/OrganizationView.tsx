@@ -6,6 +6,7 @@ import {
     Countries,
     IRECBusinessLegalStatusLabelsMap
 } from '@energyweb/utils-general';
+import { OrganizationStatus } from '@energyweb/origin-backend-core';
 import { OriginConfigurationContext } from '..';
 import { makeStyles, createStyles, useTheme, Paper, Grid, TextField, Box } from '@material-ui/core';
 import { Skeleton } from '@material-ui/lab';
@@ -31,6 +32,7 @@ interface IFormValues {
     signatoryFullName: string;
     signatoryPhoneNumber: string;
     signatoryZipCode: string;
+    status: string;
 }
 
 export function OrganizationView() {
@@ -65,7 +67,8 @@ export function OrganizationView() {
             ...organization,
             businessType: setBusinessType(organization.businessType),
             country: Countries.find((c) => c.id === organization.country).name,
-            signatoryCountry: Countries.find((c) => c.id === organization.signatoryCountry).name
+            signatoryCountry: Countries.find((c) => c.id === organization.signatoryCountry).name,
+            status: OrganizationStatus[organization.status].toLowerCase()
         });
     };
 
@@ -170,6 +173,15 @@ export function OrganizationView() {
                         <TextField
                             label={t('organization.registration.signatoryTelephone')}
                             value={formValues.signatoryPhoneNumber}
+                            disabled
+                            className="mt-3"
+                            fullWidth
+                        />
+                        <TextField
+                            label={t('organization.registration.organizationStatus.status')}
+                            value={t(
+                                `organization.registration.organizationStatus.${formValues.status}`
+                            )}
                             disabled
                             className="mt-3"
                             fullWidth
