@@ -1,4 +1,4 @@
-import { Role } from '@energyweb/origin-backend-core';
+import { LoggedInUser, Role } from '@energyweb/origin-backend-core';
 import { INestApplication } from '@nestjs/common';
 import request from 'supertest';
 import crypto from 'crypto';
@@ -14,11 +14,19 @@ describe('User e2e tests', () => {
     let fileService: FileService;
     let organizationService: OrganizationService;
     let userService: UserService;
+    let accessToken: string;
+    let user: LoggedInUser;
+
+    const blob = crypto.randomBytes(16);
 
     before(async () => {
         ({ app, fileService, organizationService, userService } = await bootstrapTestInstance());
 
         await app.init();
+
+        ({ accessToken, user } = await registerAndLogin(app, userService, organizationService, [
+            Role.OrganizationAdmin
+        ]));
     });
 
     after(async () => {
@@ -26,11 +34,6 @@ describe('User e2e tests', () => {
     });
 
     it('should allow authenticated user to upload pdf file', async () => {
-        const { accessToken } = await registerAndLogin(app, userService, organizationService, [
-            Role.OrganizationAdmin
-        ]);
-
-        const blob = crypto.randomBytes(16);
         let fileId: string;
 
         await request(app.getHttpServer())
@@ -42,8 +45,24 @@ describe('User e2e tests', () => {
                 [fileId] = res.body as string[];
             });
 
-        const file = await fileService.get(fileId);
+        const file = await fileService.get(user, fileId);
 
         expect(file.data.toString('hex')).to.be.equal(blob.toString('hex'));
+    });
+
+    it('should allow to download a file', async () => {
+        const mimeType = 'application/pdf';
+        const fileId = await fileService.store(user, [
+            { originalname: 'blob.pdf', buffer: blob, mimetype: mimeType }
+        ]);
+
+        await request(app.getHttpServer())
+            .get(`/file/${fileId}`)
+            .set('Authorization', `Bearer ${accessToken}`)
+            .expect(200)
+            .expect((res) => {
+                expect(res.header['content-type']).to.be.equal(mimeType);
+                expect(res.body.toString('hex')).to.be.equal(blob.toString('hex'));
+            });
     });
 });
