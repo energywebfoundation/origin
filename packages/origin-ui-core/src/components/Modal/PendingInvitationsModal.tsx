@@ -4,7 +4,6 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import {
     OrganizationInvitationStatus,
-    Role,
     IOrganizationInvitation
 } from '@energyweb/origin-backend-core';
 import { setInvitations, refreshUserOffchain } from '../../features/users/actions';
@@ -18,6 +17,7 @@ import {
 import { setLoading } from '../../features/general';
 import { Trans } from 'react-i18next';
 import DraftOutlineIcon from '@material-ui/icons/DraftsOutlined';
+import { roleNames } from '../Organization/Organization';
 
 interface IProps {
     showModal: boolean;
@@ -167,7 +167,7 @@ export const PendingInvitationsModal = (props: IProps) => {
                                     i18nKey="organization.invitations.dialog.invitationMessage"
                                     values={{
                                         admin,
-                                        role: Role[role],
+                                        role: t(roleNames[role]),
                                         orgName: name
                                     }}
                                 />
