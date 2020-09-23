@@ -65,8 +65,8 @@ export function AdminUsersTable() {
             user: i
         }));
 
-        newPaginatedData = newPaginatedData.slice(offset, offset + requestedPageSize);
         const newTotal = newPaginatedData.length;
+        newPaginatedData = newPaginatedData.slice(offset, offset + requestedPageSize);
 
         return {
             paginatedData: newPaginatedData,
