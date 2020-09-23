@@ -543,6 +543,12 @@
                     "registerIREC": "Register new I-REC account",
                     "connectOrganization": "Connect organization",
                     "registerOrganization": "Register organization"
+                },
+                "organizationStatus": {
+                    "status": "Status",
+                    "submitted": "Submitted",
+                    "denied": "Denied",
+                    "active": "Active"
                 }
             }
         },
