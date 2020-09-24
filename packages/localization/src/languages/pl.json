@@ -390,6 +390,12 @@
                     "registerIREC": "Zarejestruj nowe konto I-REC",
                     "connectOrganization": "Connect organization",
                     "registerOrganization": "Zarejestruj organizację"
+                },
+                "organizationStatus": {
+                    "status": "Status",
+                    "submitted": "Przesłano",
+                    "denied": "Odmówiono",
+                    "active": "Aktywny"
                 }
             }
         },
