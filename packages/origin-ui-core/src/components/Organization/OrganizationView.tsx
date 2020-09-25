@@ -15,6 +15,7 @@ import { getUserOffchain } from '../../features/users/selectors';
 import { getOffChainDataSource, useTranslation } from '../..';
 import { IRECOrganizationView } from './IRECOrganizationView';
 import { Registration } from '../../utils/irec';
+import { DownloadDocuments } from './DownloadDocuments';
 
 interface IFormValues {
     name: string;
@@ -33,6 +34,8 @@ interface IFormValues {
     signatoryPhoneNumber: string;
     signatoryZipCode: string;
     status: string;
+    signatoryDocumentIds?: string[];
+    documentIds?: string[];
 }
 
 export function OrganizationView() {
@@ -188,6 +191,27 @@ export function OrganizationView() {
                         />
                     </Grid>
                 </Grid>
+                {formValues.documentIds?.length || formValues.signatoryDocumentIds?.length ? (
+                    <Grid item>
+                        <Box style={{ textTransform: 'uppercase', marginTop: 20 }}>
+                            {t('organization.registration.documents')}
+                        </Box>
+                    </Grid>
+                ) : null}
+
+                {formValues.documentIds && (
+                    <DownloadDocuments
+                        documents={formValues.documentIds}
+                        name={t('organization.registration.companyProof')}
+                    />
+                )}
+
+                {formValues.signatoryDocumentIds && (
+                    <DownloadDocuments
+                        documents={formValues.signatoryDocumentIds}
+                        name={t('organization.registration.signatoryId')}
+                    />
+                )}
             </Paper>
             {enabledFeatures.includes(OriginFeature.IRec) && (
                 <IRECOrganizationView iRecOrg={iRecData} />
