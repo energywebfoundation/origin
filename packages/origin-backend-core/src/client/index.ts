@@ -139,6 +139,7 @@ export interface IFilesClient {
         cancelTokenSource?: CancelTokenSource
     ): Promise<string[]>;
     getLink(id: string): string;
+    download(id: string): Promise<any>;
 }
 
 export interface IDeviceClient {
