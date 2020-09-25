@@ -12,7 +12,8 @@ import {
 import {
     UserDecorator,
     ActiveUserGuard,
-    NotDeletedUserGuard
+    NotDeletedUserGuard,
+    NullOrUndefinedResultInterceptor
 } from '@energyweb/origin-backend-utils';
 import {
     BadRequestException,
@@ -34,7 +35,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { UserService } from './user.service';
 import { EmailConfirmationService } from '../email-confirmation/email-confirmation.service';
 
-@UseInterceptors(ClassSerializerInterceptor)
+@UseInterceptors(ClassSerializerInterceptor, NullOrUndefinedResultInterceptor)
 @Controller('user')
 export class UserController {
     private readonly logger = new Logger(UserController.name);

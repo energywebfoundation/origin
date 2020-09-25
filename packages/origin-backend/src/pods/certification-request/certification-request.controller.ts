@@ -1,5 +1,11 @@
 import { ILoggedInUser, Role, ISuccessResponse } from '@energyweb/origin-backend-core';
-import { Roles, RolesGuard, UserDecorator, ActiveUserGuard } from '@energyweb/origin-backend-utils';
+import {
+    Roles,
+    RolesGuard,
+    UserDecorator,
+    ActiveUserGuard,
+    NullOrUndefinedResultInterceptor
+} from '@energyweb/origin-backend-utils';
 import {
     Body,
     Controller,
@@ -8,7 +14,8 @@ import {
     Param,
     Post,
     UseGuards,
-    Query
+    Query,
+    UseInterceptors
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 
@@ -21,6 +28,7 @@ import {
 } from '.';
 
 @Controller('/CertificationRequest')
+@UseInterceptors(NullOrUndefinedResultInterceptor)
 export class CertificationRequestController {
     constructor(private readonly certificationRequestService: CertificationRequestService) {}
 

@@ -6,7 +6,13 @@ import {
     OrganizationRole,
     Role
 } from '@energyweb/origin-backend-core';
-import { ActiveUserGuard, Roles, RolesGuard, UserDecorator } from '@energyweb/origin-backend-utils';
+import {
+    ActiveUserGuard,
+    NullOrUndefinedResultInterceptor,
+    Roles,
+    RolesGuard,
+    UserDecorator
+} from '@energyweb/origin-backend-utils';
 import {
     BadRequestException,
     Body,
@@ -17,7 +23,8 @@ import {
     Param,
     Post,
     Put,
-    UseGuards
+    UseGuards,
+    UseInterceptors
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { isEmail } from 'class-validator';
@@ -26,6 +33,7 @@ import { InvitationService } from './invitation.service';
 import { Invitation } from './invitation.entity';
 
 @Controller('/invitation')
+@UseInterceptors(NullOrUndefinedResultInterceptor)
 export class InvitationController {
     private logger = new Logger(InvitationController.name);
 
