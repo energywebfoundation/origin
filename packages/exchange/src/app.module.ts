@@ -38,8 +38,6 @@ const getEnvFilePath = () => {
     return finalPath;
 };
 
-export const providers = [IntUnitsOfEnergy];
-
 @Module({
     imports: [
         ConfigModule.forRoot({
@@ -63,6 +61,6 @@ export const providers = [IntUnitsOfEnergy];
         RunnerModule,
         BundleModule
     ],
-    providers
+    providers: [IntUnitsOfEnergy]
 })
 export class AppModule {}
