@@ -537,6 +537,9 @@
                 "ceoPassport": "Chief Executive Officer/General Manager passport number",
                 "lastBalance": "Balance sheet total for last financial year",
                 "existingIRECOrg": "Existing IREC organization(s) to become subsidiary",
+                "documents": "Documents",
+                "companyProof":"Company Proof",
+                "signatoryId": "Signatory ID",
                 "actions":{
                     "notNow": "Not now",
                     "connectIREC": "Connect existing I-REC account",

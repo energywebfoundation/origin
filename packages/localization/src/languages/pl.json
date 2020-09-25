@@ -384,6 +384,9 @@
                 "ceoPassport": "Numer paszportu dyrektora generalnego / dyrektora generalnego",
                 "lastBalance": "Suma bilansowa za ostatni rok obrotowy",
                 "existingIRECOrg": "Istniejące organizacje IREC mają stać się spółkami zależnymi",
+                "documents": "Dokumenty",
+                "companyProof":"Dowód firmy",
+                "signatoryId": "Identyfikator sygnatariusza",
                 "actions": {
                     "notNow": "Nie teraz",
                     "connectIREC": "Połącz istniejące konto I-REC",
