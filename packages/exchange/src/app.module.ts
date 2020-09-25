@@ -1,19 +1,15 @@
-import { Module, ValidationPipe } from '@nestjs/common';
+import { IntUnitsOfEnergy } from '@energyweb/origin-backend-utils';
+import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { ScheduleModule } from '@nestjs/schedule';
 import fs from 'fs';
 import path from 'path';
 
-import { APP_PIPE, APP_INTERCEPTOR } from '@nestjs/core';
-import {
-    IntUnitsOfEnergy,
-    HTTPLoggingInterceptor,
-    NullOrUndefinedResultInterceptor
-} from '@energyweb/origin-backend-utils';
 import { AccountBalanceModule } from './pods/account-balance/account-balance.module';
 import { AccountDeployerModule } from './pods/account-deployer/account-deployer.module';
 import { AccountModule } from './pods/account/account.module';
 import { AssetModule } from './pods/asset/asset.module';
+import { BundleModule } from './pods/bundle/bundle.module';
 import { DemandModule } from './pods/demand/demand.module';
 import { DepositWatcherModule } from './pods/deposit-watcher/deposit-watcher.module';
 import { MatchingEngineModule } from './pods/matching-engine/matching-engine.module';
@@ -24,7 +20,6 @@ import { RunnerModule } from './pods/runner/runner.module';
 import { TradeModule } from './pods/trade/trade.module';
 import { TransferModule } from './pods/transfer/transfer.module';
 import { WithdrawalProcessorModule } from './pods/withdrawal-processor/withdrawal-processor.module';
-import { BundleModule } from './pods/bundle/bundle.module';
 
 const getEnvFilePath = () => {
     const pathsToTest = ['../../../../../.env', '../../../../../../.env'];
@@ -43,12 +38,7 @@ const getEnvFilePath = () => {
     return finalPath;
 };
 
-export const providers = [
-    { provide: APP_PIPE, useClass: ValidationPipe },
-    { provide: APP_INTERCEPTOR, useClass: NullOrUndefinedResultInterceptor },
-    { provide: APP_INTERCEPTOR, useClass: HTTPLoggingInterceptor },
-    IntUnitsOfEnergy
-];
+export const providers = [IntUnitsOfEnergy];
 
 @Module({
     imports: [

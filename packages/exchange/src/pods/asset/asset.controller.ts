@@ -1,16 +1,20 @@
+import { NullOrUndefinedResultInterceptor } from '@energyweb/origin-backend-utils';
 import {
     ClassSerializerInterceptor,
     Controller,
     Get,
     Param,
     ParseUUIDPipe,
-    UseInterceptors
+    UseInterceptors,
+    UsePipes,
+    ValidationPipe
 } from '@nestjs/common';
 
 import { AssetService } from './asset.service';
 
 @Controller('asset')
-@UseInterceptors(ClassSerializerInterceptor)
+@UseInterceptors(ClassSerializerInterceptor, NullOrUndefinedResultInterceptor)
+@UsePipes(ValidationPipe)
 export class AssetController {
     constructor(private readonly assetService: AssetService) {}
 
