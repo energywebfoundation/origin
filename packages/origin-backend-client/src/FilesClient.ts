@@ -39,6 +39,13 @@ export class FilesClient implements IFilesClient {
         return response.data;
     }
 
+    public async download(id:string): Promise<any> {
+        const response = await this.requestClient.get<unknown, any>(`${this.endpoint}/${id}`, {
+            responseType: 'blob'
+        })
+        return response   
+    }
+
     public getLink(id: string) {
         return `${this.endpoint}/${id}`;
     }
