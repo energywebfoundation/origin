@@ -15,7 +15,6 @@ import { AuthGuard } from '@nestjs/passport';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import { Request, Response } from 'express';
 import multer from 'multer';
-import { Readable } from 'stream';
 
 import { FileService } from './file.service';
 
@@ -69,12 +68,6 @@ export class FileController {
         res.set({
             'Content-Type': file.contentType,
             'Content-Length': file.data.length
-        });
-
-        const stream = new Readable();
-        stream.push(file.data);
-        stream.push(null);
-
-        stream.pipe(res);
+        }).send(file.data);
     }
 }

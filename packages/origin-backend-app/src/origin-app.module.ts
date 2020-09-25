@@ -3,16 +3,18 @@ import {
     AppModule as OriginBackendModule,
     entities as OriginBackendEntities
 } from '@energyweb/origin-backend';
+import { ISmartMeterReadingsAdapter } from '@energyweb/origin-backend-core';
+import { HTTPLoggingInterceptor } from '@energyweb/origin-backend-utils';
 import {
     AppModule as IRECOrganizationModule,
     entities as IRECOrganizationEntities
 } from '@energyweb/origin-organization-irec-api';
-
-import { ISmartMeterReadingsAdapter } from '@energyweb/origin-backend-core';
 import { DynamicModule, Module } from '@nestjs/common';
+import { APP_INTERCEPTOR } from '@nestjs/core';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { NotificationModule } from './notification/notification.module';
+
 import { MailModule } from './mail';
+import { NotificationModule } from './notification/notification.module';
 
 const OriginAppTypeOrmModule = () => {
     const entities = [...OriginBackendEntities, ...ExchangeEntities, ...IRECOrganizationEntities];
@@ -51,7 +53,8 @@ export class OriginAppModule {
                 IRECOrganizationModule,
                 MailModule,
                 NotificationModule
-            ]
+            ],
+            providers: [{ provide: APP_INTERCEPTOR, useClass: HTTPLoggingInterceptor }]
         };
     }
 }

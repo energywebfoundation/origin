@@ -1,11 +1,17 @@
 import { IOriginConfiguration, Role } from '@energyweb/origin-backend-core';
-import { Roles, RolesGuard, ActiveUserGuard } from '@energyweb/origin-backend-utils';
-import { Body, Controller, Get, Put, UseGuards } from '@nestjs/common';
+import {
+    Roles,
+    RolesGuard,
+    ActiveUserGuard,
+    NullOrUndefinedResultInterceptor
+} from '@energyweb/origin-backend-utils';
+import { Body, Controller, Get, Put, UseGuards, UseInterceptors } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 
 import { ConfigurationService } from './configuration.service';
 
 @Controller('configuration')
+@UseInterceptors(NullOrUndefinedResultInterceptor)
 export class ConfigurationController {
     constructor(private readonly configurationService: ConfigurationService) {}
 

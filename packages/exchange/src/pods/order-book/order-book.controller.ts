@@ -1,6 +1,19 @@
 import { ILoggedInUser } from '@energyweb/origin-backend-core';
-import { UserDecorator, ActiveUserGuard } from '@energyweb/origin-backend-utils';
-import { Body, Controller, Post, UseGuards, HttpCode } from '@nestjs/common';
+import {
+    UserDecorator,
+    ActiveUserGuard,
+    NullOrUndefinedResultInterceptor
+} from '@energyweb/origin-backend-utils';
+import {
+    Body,
+    Controller,
+    Post,
+    UseGuards,
+    HttpCode,
+    UseInterceptors,
+    ValidationPipe,
+    UsePipes
+} from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 
 import { OrderBookOrderDTO } from './order-book-order.dto';
@@ -9,6 +22,8 @@ import { ProductFilterDTO } from './product-filter.dto';
 import { TradeService } from '../trade/trade.service';
 
 @Controller('orderbook')
+@UseInterceptors(NullOrUndefinedResultInterceptor)
+@UsePipes(ValidationPipe)
 export class OrderBookController {
     constructor(
         private readonly orderBookService: OrderBookService,

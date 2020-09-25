@@ -1,11 +1,26 @@
 import { IUser, IUserFilter, Role } from '@energyweb/origin-backend-core';
-import { ActiveUserGuard, Roles, RolesGuard } from '@energyweb/origin-backend-utils';
-import { Body, Controller, Get, Param, Put, Query, UseGuards } from '@nestjs/common';
+import {
+    ActiveUserGuard,
+    NullOrUndefinedResultInterceptor,
+    Roles,
+    RolesGuard
+} from '@energyweb/origin-backend-utils';
+import {
+    Body,
+    Controller,
+    Get,
+    Param,
+    Put,
+    Query,
+    UseGuards,
+    UseInterceptors
+} from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 
 import { UserService } from '../user/user.service';
 
 @Controller('admin')
+@UseInterceptors(NullOrUndefinedResultInterceptor)
 export class AdminController {
     constructor(private readonly userService: UserService) {}
 

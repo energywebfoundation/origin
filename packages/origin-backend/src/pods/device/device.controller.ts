@@ -9,7 +9,13 @@ import {
     OrganizationStatus,
     Role
 } from '@energyweb/origin-backend-core';
-import { ActiveUserGuard, Roles, RolesGuard, UserDecorator } from '@energyweb/origin-backend-utils';
+import {
+    ActiveUserGuard,
+    NullOrUndefinedResultInterceptor,
+    Roles,
+    RolesGuard,
+    UserDecorator
+} from '@energyweb/origin-backend-utils';
 import {
     Body,
     Controller,
@@ -24,7 +30,8 @@ import {
     Query,
     UnauthorizedException,
     UnprocessableEntityException,
-    UseGuards
+    UseGuards,
+    UseInterceptors
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { BigNumber } from 'ethers';
@@ -37,6 +44,7 @@ import { Device } from './device.entity';
 import { DeviceService } from './device.service';
 
 @Controller('/Device')
+@UseInterceptors(NullOrUndefinedResultInterceptor)
 export class DeviceController {
     private readonly logger = new Logger(DeviceController.name);
 

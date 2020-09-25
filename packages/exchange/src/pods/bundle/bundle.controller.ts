@@ -1,5 +1,9 @@
 import { ILoggedInUser } from '@energyweb/origin-backend-core';
-import { UserDecorator, ActiveUserGuard } from '@energyweb/origin-backend-utils';
+import {
+    UserDecorator,
+    ActiveUserGuard,
+    NullOrUndefinedResultInterceptor
+} from '@energyweb/origin-backend-utils';
 import {
     Body,
     Controller,
@@ -11,7 +15,9 @@ import {
     Get,
     Param,
     ParseUUIDPipe,
-    Put
+    Put,
+    UsePipes,
+    ValidationPipe
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 
@@ -23,8 +29,9 @@ import { BundleTrade } from './bundle-trade.entity';
 import { BundlePublicDTO } from './bundle-public.dto';
 import { BundleSplitDTO } from './bundle-split.dto';
 
-@UseInterceptors(ClassSerializerInterceptor)
 @Controller('bundle')
+@UseInterceptors(ClassSerializerInterceptor, NullOrUndefinedResultInterceptor)
+@UsePipes(ValidationPipe)
 export class BundleController {
     private readonly logger = new Logger(BundleController.name);
 

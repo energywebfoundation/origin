@@ -1,12 +1,30 @@
 import { ILoggedInUser, Role } from '@energyweb/origin-backend-core';
-import { Roles, RolesGuard, UserDecorator, ActiveUserGuard } from '@energyweb/origin-backend-utils';
-import { Body, Controller, ForbiddenException, Get, Post, UseGuards } from '@nestjs/common';
+import {
+    Roles,
+    RolesGuard,
+    UserDecorator,
+    ActiveUserGuard,
+    NullOrUndefinedResultInterceptor
+} from '@energyweb/origin-backend-utils';
+import {
+    Body,
+    Controller,
+    ForbiddenException,
+    Get,
+    Post,
+    UseGuards,
+    UseInterceptors,
+    UsePipes,
+    ValidationPipe
+} from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 
 import { RequestWithdrawalDTO } from './create-withdrawal.dto';
 import { TransferService } from './transfer.service';
 
 @Controller('transfer')
+@UseInterceptors(NullOrUndefinedResultInterceptor)
+@UsePipes(ValidationPipe)
 export class TransferController {
     constructor(private readonly transferService: TransferService) {}
 

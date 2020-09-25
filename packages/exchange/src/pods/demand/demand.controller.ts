@@ -1,5 +1,9 @@
 import { ILoggedInUser } from '@energyweb/origin-backend-core';
-import { UserDecorator, ActiveUserGuard } from '@energyweb/origin-backend-utils';
+import {
+    UserDecorator,
+    ActiveUserGuard,
+    NullOrUndefinedResultInterceptor
+} from '@energyweb/origin-backend-utils';
 import {
     Body,
     Controller,
@@ -10,7 +14,10 @@ import {
     Param,
     ParseUUIDPipe,
     Post,
-    UseGuards
+    UseGuards,
+    UseInterceptors,
+    UsePipes,
+    ValidationPipe
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 
@@ -19,6 +26,8 @@ import { CreateDemandDTO } from './create-demand.dto';
 import { DemandService } from './demand.service';
 
 @Controller('demand')
+@UseInterceptors(NullOrUndefinedResultInterceptor)
+@UsePipes(ValidationPipe)
 export class DemandController {
     private readonly logger = new Logger(DemandController.name);
 

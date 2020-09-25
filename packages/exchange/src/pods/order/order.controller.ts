@@ -1,5 +1,9 @@
 import { ILoggedInUser } from '@energyweb/origin-backend-core';
-import { UserDecorator, ActiveUserGuard } from '@energyweb/origin-backend-utils';
+import {
+    UserDecorator,
+    ActiveUserGuard,
+    NullOrUndefinedResultInterceptor
+} from '@energyweb/origin-backend-utils';
 import {
     Body,
     ClassSerializerInterceptor,
@@ -12,7 +16,9 @@ import {
     ParseUUIDPipe,
     Post,
     UseGuards,
-    UseInterceptors
+    UseInterceptors,
+    UsePipes,
+    ValidationPipe
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 
@@ -22,8 +28,9 @@ import { DirectBuyDTO } from './direct-buy.dto';
 import { Order } from './order.entity';
 import { OrderService } from './order.service';
 
-@UseInterceptors(ClassSerializerInterceptor)
 @Controller('orders')
+@UseInterceptors(ClassSerializerInterceptor, NullOrUndefinedResultInterceptor)
+@UsePipes(ValidationPipe)
 export class OrderController {
     private readonly logger = new Logger(OrderController.name);
 

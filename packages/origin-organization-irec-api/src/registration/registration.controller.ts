@@ -1,5 +1,10 @@
 import { LoggedInUser, Role } from '@energyweb/origin-backend-core';
-import { Roles, RolesGuard, UserDecorator } from '@energyweb/origin-backend-utils';
+import {
+    NullOrUndefinedResultInterceptor,
+    Roles,
+    RolesGuard,
+    UserDecorator
+} from '@energyweb/origin-backend-utils';
 import {
     Body,
     ClassSerializerInterceptor,
@@ -7,14 +12,17 @@ import {
     Get,
     Post,
     UseGuards,
-    UseInterceptors
+    UseInterceptors,
+    UsePipes,
+    ValidationPipe
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { RegistrationDTO } from './registration.dto';
 import { Registration } from './registration.entity';
 import { RegistrationService } from './registration.service';
 
-@UseInterceptors(ClassSerializerInterceptor)
+@UseInterceptors(ClassSerializerInterceptor, NullOrUndefinedResultInterceptor)
+@UsePipes(ValidationPipe)
 @Controller('irec/registration')
 export class RegistrationController {
     constructor(private readonly registrationService: RegistrationService) {}
