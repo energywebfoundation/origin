@@ -33,7 +33,7 @@
         "chai": "^4.2.0",
         "eth-sig-util": "2.5.2",
         "ethers": "5.0.8",
-        "jsonschema": "1.2.6",
+        "jsonschema": "1.2.7",
         "moment": "2.24.0",
         "winston": "3.3.3"
     },
