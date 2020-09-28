@@ -48,7 +48,7 @@ export class FileService {
         this.logger.debug(`User ${JSON.stringify(user)} requested file ${id}`);
 
         if (user.hasRole(Role.Admin, Role.SupportAgent)) {
-            this.repository.findOne(id);
+            return this.repository.findOne(id);
         }
 
         return this.repository.findOne(id, {

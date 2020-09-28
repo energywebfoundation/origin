@@ -52,6 +52,8 @@ interface IFormValues {
     signatoryFullName: string;
     signatoryPhoneNumber: string;
     signatoryZipCode: string;
+    signatoryDocumentIds?: string[];
+    documentIds?: string[];
 }
 
 const INITIAL_FORM_VALUES: IFormValues = {
@@ -69,7 +71,9 @@ const INITIAL_FORM_VALUES: IFormValues = {
     signatoryEmail: '',
     signatoryFullName: '',
     signatoryPhoneNumber: '',
-    signatoryZipCode: ''
+    signatoryZipCode: '',
+    signatoryDocumentIds: [],
+    documentIds: []
 };
 
 const VALIDATION_SCHEMA = Yup.object({
@@ -87,7 +91,9 @@ const VALIDATION_SCHEMA = Yup.object({
     signatoryEmail: Yup.string().email().required().label('Signatory Email'),
     signatoryFullName: Yup.string().required().label('Signatory Full Name'),
     signatoryPhoneNumber: Yup.string().required().label('Signatory Phone Number'),
-    signatoryZipCode: Yup.string().required().label('Signatory Zip Code')
+    signatoryZipCode: Yup.string().required().label('Signatory Zip Code'),
+    signatoryDocumentIds: Yup.array().label('Upload Signatory ID'),
+    documentIds: Yup.array().label('Upload Company Proof')
 });
 
 export function OrganizationForm(props: IProps) {
@@ -96,7 +102,6 @@ export function OrganizationForm(props: IProps) {
     const [initialFormValuesFromExistingEntity, setInitialFormValuesFromExistingEntity] = useState<
         IFormValues
     >(null);
-    /* eslint-disable @typescript-eslint/no-unused-vars */
     const [companyProofs, setCompanyProofs] = useState<IUploadedFile[]>([]);
     const [signatoryId, setSignatoryId] = useState<IUploadedFile[]>([]);
     const user = useSelector(getUserOffchain);
@@ -143,7 +148,9 @@ export function OrganizationForm(props: IProps) {
             const formData: OrganizationPostData = {
                 ...values,
                 country: values.country,
-                signatoryCountry: values.signatoryCountry
+                signatoryCountry: values.signatoryCountry,
+                documentIds: companyProofs.map((doc) => doc.uploadedName),
+                signatoryDocumentIds: signatoryId.map((doc) => doc.uploadedName)
             };
 
             const organization = await organizationClient.add(formData);
@@ -193,7 +200,8 @@ export function OrganizationForm(props: IProps) {
                     const { isValid, isSubmitting, values } = formikProps;
 
                     const fieldDisabled = isSubmitting || readOnly;
-                    const buttonDisabled = isSubmitting || !isValid;
+                    const buttonDisabled =
+                        isSubmitting || !isValid || !companyProofs.length || !signatoryId.length;
 
                     return (
                         <div>
