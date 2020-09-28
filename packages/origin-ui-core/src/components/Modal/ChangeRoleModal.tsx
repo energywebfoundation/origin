@@ -35,16 +35,12 @@ export function ChangeRoleModal(props: IProps) {
 
     const [currentUserRole] = getRolesFromRights(user?.rights);
 
-    const [selectedRole, setSelectedRole] = useState<Role>(
-        currentUserRole ?? Number(Object.keys(roleNames)[0])
-    );
+    const [selectedRole, setSelectedRole] = useState<Role>(null);
 
     const dispatch = useDispatch();
 
     useEffect(() => {
-        if (selectedRole === null && currentUserRole) {
-            setSelectedRole(currentUserRole);
-        }
+        setSelectedRole(currentUserRole);
     }, [currentUserRole]);
 
     async function handleClose() {
