@@ -51,7 +51,7 @@
         "@types/express": "4.17.4",
         "@types/node": "12.12.62",
         "@types/supertest": "2.0.10",
-        "supertest": "4.0.2",
+        "supertest": "5.0.0",
         "supertest-capture-error": "1.0.0",
         "superagent-use": "0.1.0",
         "ts-node": "8.10.2"
