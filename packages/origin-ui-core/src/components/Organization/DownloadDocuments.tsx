@@ -42,7 +42,6 @@ export const DownloadDocuments = ({ documents, name }) => {
             try {
                 const response = await filesClient.download(id);
                 if (response) {
-                    console.log(response);
                     const imageType = response.headers['content-type'];
                     const blob = new Blob([response.data], { type: imageType });
                     const url = window.URL.createObjectURL(blob);
