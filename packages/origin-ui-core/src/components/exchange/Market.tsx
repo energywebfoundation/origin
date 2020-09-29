@@ -97,8 +97,7 @@ export function Market(props: IProps) {
 
                     const fieldDisabled = isSubmitting;
 
-                    const notifyButtonEnabled =
-                        values.price && !errors?.price && !isSubmitting && !disableBidding;
+                    const notifyButtonEnabled = false;
                     const bidButtonEnabled =
                         values.price &&
                         values.energy &&
@@ -269,12 +268,14 @@ export function Market(props: IProps) {
                                     </Typography>
                                 </Grid>
                                 <Grid item xs={6}>
-                                    <Button
-                                        disabled={!notifyButtonEnabled}
-                                        onClick={() => onNotify(values)}
-                                    >
-                                        {t('exchange.actions.notify')}
-                                    </Button>
+                                    {notifyButtonEnabled && (
+                                        <Button
+                                            disabled={!notifyButtonEnabled}
+                                            onClick={() => onNotify(values)}
+                                        >
+                                            {t('exchange.actions.notify')}
+                                        </Button>
+                                    )}
                                     <Button
                                         disabled={!bidButtonEnabled}
                                         onClick={() => onBid(values)}
