@@ -524,8 +524,9 @@
                 
                 "titleRegisterIREC": "I-REC Registration information",
                 "IRECAccountType": "I-REC Account type",
-                "irecParticipantDescription": "Participant Account for traders that also trade outside of marketplace",
+                "irecParticipantDescription": "Participant Account for managing certificates outside of the marketplace",
                 "irecRegistrantDescription": "Registrant Account for device owners",
+                "irecBothDescription": "Both Registrant and Participant Account",
                 "orgHeadquatersCompany": "Organization Headquaters Company",
                 "yearOfRegistration": "Year of Registration",
                 "numberOfEmployees": "Number of employees",
