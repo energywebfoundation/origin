@@ -370,7 +370,7 @@
                 "clientSecret": "Klient Secret",
                 "titleRegisterIREC": "Informacja o rejestracji I-REC",
                 "irecParticipantDescription": "Konto uczestnika do zarządzania certyfikatami poza rynkiem",
-                "irecRegistrantDescription": "Konto rejestrującego dla właścicieli urządzeń",
+                "irecRegistrantDescription": "Konto rejestrującego do zarządzania urządzeniami",
                 "irecBothDescription": "Konto rejestrującego i uczestnika",
                 "IRECAccountType": "Typ konta I-REC",
                 "orgHeadquatersCompany": "Siedziba organizacji Firma",
