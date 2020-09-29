@@ -63,6 +63,10 @@ export const IRECRegisterForm = () => {
         {
             value: IRECAccountType.Participant,
             label: t('organization.registration.irecParticipantDescription')
+        },
+        {
+            value: IRECAccountType.Both,
+            label: t('organization.registration.irecBothDescription')
         }
     ];
 
