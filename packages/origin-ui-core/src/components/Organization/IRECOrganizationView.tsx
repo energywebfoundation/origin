@@ -43,6 +43,9 @@ export function IRECOrganizationView({ iRecOrg }) {
             case IRECAccountType.Registrant:
                 return t('organization.registration.irecRegistrantDescription');
                 break;
+            case IRECAccountType.Both:
+                return t('organization.registration.irecBothDescription');
+                break;
         }
     };
 
