@@ -89,11 +89,12 @@ export function Market(props: IProps) {
                 onSubmit={null}
             >
                 {(formikProps) => {
-                    const { isValid, isSubmitting, setFieldValue, errors, values } = formikProps;
+                    const { isSubmitting, setFieldValue, errors, values } = formikProps;
 
-                    const totalPrice = isValid
-                        ? calculateTotalPrice(values.price, values.energy)
-                        : 0;
+                    const totalPrice =
+                        values.price && values.energy
+                            ? calculateTotalPrice(values.price, values.energy)
+                            : 0;
 
                     const fieldDisabled = isSubmitting;
 

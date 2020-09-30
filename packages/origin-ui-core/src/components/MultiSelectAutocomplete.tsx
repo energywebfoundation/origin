@@ -49,7 +49,7 @@ export function MultiSelectAutocomplete(props: IOwnProps) {
 
     const classes = useStyles(useTheme());
     const [touchFlag, setTouchFlag] = useState<boolean>(null);
-    const [textValue, setTextValue] = useState<string>(null);
+    const [textValue, setTextValue] = useState<string>('');
 
     return (
         <div className={className}>
@@ -57,11 +57,12 @@ export function MultiSelectAutocomplete(props: IOwnProps) {
                 multiple
                 filterSelectedOptions
                 options={options}
+                inputValue={textValue}
                 getOptionLabel={(option) => option.label}
                 onChange={(event, value: IAutocompleteMultiSelectOptionType[]) => {
                     props.onChange(value ? value.slice(0, max ?? value.length) : value);
                     setTouchFlag(true);
-                    setTextValue(' ');
+                    setTextValue('');
                 }}
                 value={selectedValues}
                 renderTags={(value, getTagProps) =>
@@ -80,12 +81,13 @@ export function MultiSelectAutocomplete(props: IOwnProps) {
                         {...params}
                         required={required}
                         label={label}
+                        onChange={(event) => setTextValue(event.target.value)}
                         helperText={
                             touchFlag && required && props.selectedValues.length === 0
                                 ? label + ' is a required field'
                                 : ''
                         }
-                        inputProps={{ ...params.inputProps, value: textValue }}
+                        inputProps={{ ...params.inputProps }}
                         error={touchFlag && required && props.selectedValues.length === 0}
                         placeholder={placeholder}
                         fullWidth
