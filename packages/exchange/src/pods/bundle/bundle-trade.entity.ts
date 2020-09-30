@@ -33,7 +33,7 @@ export class BundleTrade extends ExtendedBaseEntity {
             (item) =>
                 new BundleTradeItemDTO(
                     item.asset,
-                    item.startVolume.div(this.bundle.volume.div(this.volume))
+                    item.startVolume.mul(this.volume).div(this.bundle.volume)
                 )
         );
     }

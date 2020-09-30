@@ -1,17 +1,19 @@
+import { UserStatus } from '@energyweb/origin-backend-core';
+import { DatabaseService } from '@energyweb/origin-backend-utils';
 import { INestApplication } from '@nestjs/common';
 import { expect } from 'chai';
 import request from 'supertest';
-import { UserStatus } from '@energyweb/origin-backend-core';
 
-import { DatabaseService } from '@energyweb/origin-backend-utils';
 import { AccountDTO } from '../src/pods/account/account.dto';
 import { AccountService } from '../src/pods/account/account.service';
+import { BundlePublicDTO } from '../src/pods/bundle/bundle-public.dto';
 import { BundleSplitDTO } from '../src/pods/bundle/bundle-split.dto';
 import { BundleTrade } from '../src/pods/bundle/bundle-trade.entity';
 import { Bundle } from '../src/pods/bundle/bundle.entity';
 import { BundleService } from '../src/pods/bundle/bundle.service';
 import { BuyBundleDTO } from '../src/pods/bundle/buy-bundle.dto';
 import { CreateBundleDTO } from '../src/pods/bundle/create-bundle.dto';
+import { Transfer } from '../src/pods/transfer/transfer.entity';
 import { TransferService } from '../src/pods/transfer/transfer.service';
 import { authenticatedUser, bootstrapTestInstance } from './exchange';
 import { MWh } from './utils';
@@ -56,48 +58,42 @@ describe('Bundles', () => {
         return transferService.setAsConfirmed(transactionHash, 10000);
     };
 
-    const createBundle = async (userId: string) => {
+    const createBundle = async (
+        userId: string,
+        items = [
+            { volume: 10, asset: assetOne },
+            { volume: 10, asset: assetTwo }
+        ]
+    ) => {
         const { address } = await accountService.getOrCreateAccount(userId);
-        const depositOne = await createDeposit(address, `${10 * MWh}`, assetOne);
-        const depositTwo = await createDeposit(address, `${10 * MWh}`, assetTwo);
 
-        await confirmDeposit(depositOne.transactionHash);
-        await confirmDeposit(depositTwo.transactionHash);
+        const deposits: Transfer[] = [];
+
+        for (const item of items) {
+            const deposit = await createDeposit(address, `${item.volume * MWh}`, item.asset);
+            await confirmDeposit(deposit.transactionHash);
+
+            deposits.push(deposit);
+        }
 
         const bundleToCreate: CreateBundleDTO = {
             price: 1000,
-            items: [
-                { assetId: depositOne.asset.id, volume: `${10 * MWh}` },
-                { assetId: depositTwo.asset.id, volume: `${10 * MWh}` }
-            ]
+            items: deposits.map((deposit) => ({
+                assetId: deposit.asset.id,
+                volume: deposit.amount
+            }))
         };
 
         return bundleService.create(userId, bundleToCreate);
     };
 
     const createUnsplittableBundle = async (userId: string) => {
-        const { address } = await accountService.getOrCreateAccount(userId);
-        const depositOne = await createDeposit(address, `${890 * MWh}`, assetOne);
-        const depositTwo = await createDeposit(address, `${10 * MWh}`, assetTwo);
-        const depositThree = await createDeposit(address, `${1 * MWh}`, assetTwo);
-        const depositFour = await createDeposit(address, `${17 * MWh}`, assetTwo);
-
-        await confirmDeposit(depositOne.transactionHash);
-        await confirmDeposit(depositTwo.transactionHash);
-        await confirmDeposit(depositThree.transactionHash);
-        await confirmDeposit(depositFour.transactionHash);
-
-        const bundleToCreate: CreateBundleDTO = {
-            price: 165,
-            items: [
-                { assetId: depositOne.asset.id, volume: `${890 * MWh}` },
-                { assetId: depositTwo.asset.id, volume: `${10 * MWh}` },
-                { assetId: depositThree.asset.id, volume: `${1 * MWh}` },
-                { assetId: depositFour.asset.id, volume: `${17 * MWh}` }
-            ]
-        };
-
-        return bundleService.create(userId, bundleToCreate);
+        return createBundle(userId, [
+            { volume: 890, asset: assetOne },
+            { volume: 10, asset: assetTwo },
+            { volume: 1, asset: assetTwo },
+            { volume: 17, asset: assetTwo }
+        ]);
     };
 
     before(async () => {
@@ -288,24 +284,8 @@ describe('Bundles', () => {
     });
 
     it('should not return cancelled bundles', async () => {
-        const { address: user1Address } = await accountService.getOrCreateAccount(user1Id);
-
-        const depositOne = await createDeposit(user1Address, `${10 * MWh}`, assetOne);
-        const depositTwo = await createDeposit(user1Address, `${10 * MWh}`, assetTwo);
-
-        await confirmDeposit(depositOne.transactionHash);
-        await confirmDeposit(depositTwo.transactionHash);
-
-        const bundleToCreate: CreateBundleDTO = {
-            price: 1000,
-            items: [
-                { assetId: depositOne.asset.id, volume: `${5 * MWh}` },
-                { assetId: depositTwo.asset.id, volume: `${5 * MWh}` }
-            ]
-        };
-
-        const bundle1 = await bundleService.create(user1Id, bundleToCreate);
-        const bundle2 = await bundleService.create(user1Id, bundleToCreate);
+        const bundle1 = await createBundle(user1Id);
+        const bundle2 = await createBundle(user1Id);
 
         await bundleService.cancel(user1Id, bundle1.id);
 
@@ -313,7 +293,7 @@ describe('Bundles', () => {
             .get('/bundle/available')
             .expect(200)
             .expect((res) => {
-                const bundles = res.body as Bundle[];
+                const bundles = res.body as BundlePublicDTO[];
 
                 expect(bundles).to.have.length(1);
                 expect(bundles[0].id).equals(bundle2.id);
@@ -435,5 +415,70 @@ describe('Bundles', () => {
         };
 
         await request(app.getHttpServer()).post('/bundle').send(bundleToCreate).expect(400);
+    });
+
+    it('should not result in decimal volumes', async () => {
+        const user2Id = '2';
+        const bundle = await createBundle(user2Id, [
+            { volume: 150, asset: assetOne },
+            { volume: 100, asset: assetTwo }
+        ]);
+
+        await request(app.getHttpServer())
+            .post('/bundle/buy')
+            .send({
+                bundleId: bundle.id,
+                volume: `${35 * MWh}`
+            })
+            .expect(201)
+            .expect((res) => {
+                const trade = res.body as BundleTrade;
+
+                expect(trade.items).has.length(2);
+                expect(trade.items[0].volume).to.be.equal(`${21 * MWh}`);
+                expect(trade.items[1].volume).to.be.equal(`${14 * MWh}`);
+            });
+
+        await request(app.getHttpServer())
+            .post('/bundle/buy')
+            .send({
+                bundleId: bundle.id,
+                volume: `${5 * MWh}`
+            })
+            .expect(201)
+            .expect((res) => {
+                const trade = res.body as BundleTrade;
+
+                expect(trade.items).has.length(2);
+                expect(trade.items[0].volume).to.be.equal(`${3 * MWh}`);
+                expect(trade.items[1].volume).to.be.equal(`${2 * MWh}`);
+            });
+
+        await request(app.getHttpServer())
+            .post('/bundle/buy')
+            .send({
+                bundleId: bundle.id,
+                volume: `${10 * MWh}`
+            })
+            .expect(201)
+            .expect((res) => {
+                const trade = res.body as BundleTrade;
+
+                expect(trade.items).has.length(2);
+                expect(trade.items[0].volume).to.be.equal(`${6 * MWh}`);
+                expect(trade.items[1].volume).to.be.equal(`${4 * MWh}`);
+            });
+
+        const boughtInTotal = 35 + 5 + 10;
+
+        await request(app.getHttpServer())
+            .get(`/bundle/available`)
+            .expect(200)
+            .expect((res) => {
+                const [activeBundle] = res.body as BundlePublicDTO[];
+
+                expect(activeBundle.available).to.be.equal(`${(250 - boughtInTotal) * MWh}`);
+                expect(activeBundle.volume).to.be.equal((250 * MWh).toString());
+            });
     });
 });

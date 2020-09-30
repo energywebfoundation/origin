@@ -9,7 +9,7 @@ import {
 import { ConfigService } from '@nestjs/config';
 import { InjectRepository } from '@nestjs/typeorm';
 import BN from 'bn.js';
-import { Repository, FindConditions } from 'typeorm';
+import { Repository, FindConditions, Connection } from 'typeorm';
 
 import { AccountBalanceService } from '../account-balance/account-balance.service';
 import { Asset } from '../asset/asset.entity';
@@ -33,7 +33,8 @@ export class BundleService {
         @InjectRepository(BundleTrade)
         private readonly bundleTradeRepository: Repository<BundleTrade>,
         @Inject(forwardRef(() => AccountBalanceService))
-        private readonly accountBalanceService: AccountBalanceService
+        private readonly accountBalanceService: AccountBalanceService,
+        private readonly connection: Connection
     ) {
         this.energyPerUnit = new BN(this.configService.get<string>('ENERGY_PER_UNIT'));
     }
@@ -101,6 +102,7 @@ export class BundleService {
         }
 
         const volumeToBuy = new BN(buyBundle.volume);
+
         if (bundle.available.lt(volumeToBuy)) {
             throw new ForbiddenException('Request volume is greater than available');
         }
@@ -109,21 +111,24 @@ export class BundleService {
             throw new BadRequestException('Unable to split bundle');
         }
 
-        const volume = new BN(buyBundle.volume);
-
         const trade: BundleTrade = {
             bundle: { id: bundle.id },
             buyerId: userId,
-            volume
+            volume: volumeToBuy
         } as BundleTrade;
 
-        const { id } = await this.bundleTradeRepository.save(trade);
+        return this.connection.transaction<BundleTrade>(async (manager) => {
+            const bundleTradeRepository = manager.getRepository<BundleTrade>(BundleTrade);
+            const bundleRepository = manager.getRepository<Bundle>(Bundle);
 
-        const updatedItems = bundle.getUpdatedVolumes(volume);
+            const { id } = await bundleTradeRepository.save(trade);
 
-        await this.bundleRepository.save({ id: bundle.id, items: updatedItems });
+            const updatedItems = bundle.getUpdatedVolumes(volumeToBuy);
 
-        return this.bundleTradeRepository.findOne(id);
+            await bundleRepository.save({ id: bundle.id, items: updatedItems });
+
+            return bundleTradeRepository.findOne(id);
+        });
     }
 
     public async cancel(userId: string, bundleId: string) {
