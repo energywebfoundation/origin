@@ -2,7 +2,7 @@ import { LoggedInUser, Role } from '@energyweb/origin-backend-core';
 import { Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import path from 'path';
-import { Connection, In, IsNull, Repository } from 'typeorm';
+import { Connection, IsNull, Repository } from 'typeorm';
 import { v4 as uuid } from 'uuid';
 
 import { File } from './file.entity';
@@ -61,22 +61,28 @@ export class FileService {
             `User ${JSON.stringify(user)} requested ownership check for ${JSON.stringify(ids)}`
         );
 
-        const filesCount = await this.repository.count({
-            where: [
-                {
-                    id: In(ids),
-                    userId: user.id.toString(),
-                    organizationId: user.organizationId?.toString()
-                },
-                {
-                    id: In(ids),
-                    userId: user.id.toString(),
-                    organizationId: IsNull()
-                }
-            ]
-        });
+        let isOwner = true;
 
-        const isOwner = ids.length === filesCount;
+        for (const documentId of ids) {
+            const count = await this.repository.count({
+                where: [
+                    {
+                        id: documentId,
+                        userId: user.id.toString(),
+                        organizationId: user.organizationId?.toString()
+                    },
+                    {
+                        id: documentId,
+                        userId: user.id.toString(),
+                        organizationId: IsNull()
+                    }
+                ]
+            });
+            if (count !== 1) {
+                isOwner = false;
+                break;
+            }
+        }
 
         this.logger.debug(
             `User ${JSON.stringify(user)} ownership for ${JSON.stringify(ids)} returns ${isOwner}}`
