@@ -54,7 +54,8 @@
         "class-validator": "0.12.2",
         "cors": "2.8.5",
         "dotenv": "8.2.0",
-        "swagger-ui-express": "4.1.4"
+        "swagger-ui-express": "4.1.4",
+        "typeorm": "0.2.26"
     },
     "devDependencies": {
         "@nestjs/testing": "7.4.4",
