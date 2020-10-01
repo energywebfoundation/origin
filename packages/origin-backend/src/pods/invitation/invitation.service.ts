@@ -11,6 +11,7 @@ import { Repository } from 'typeorm';
 import { Organization } from '../organization/organization.entity';
 import { OrganizationService } from '../organization/organization.service';
 import { UserService } from '../user';
+import { AlreadyPartOfOrganizationError } from './errors/already-part-of-organization.error';
 import { InvitationCreatedEvent } from './events';
 import { Invitation } from './invitation.entity';
 
@@ -31,6 +32,12 @@ export class InvitationService {
         const organization = await this.organizationService.findOne(user.organizationId);
 
         const lowerCaseEmail = email.toLowerCase();
+
+        const invitee = await this.userService.findByEmail(lowerCaseEmail);
+
+        if (invitee && invitee.organization) {
+            throw new AlreadyPartOfOrganizationError(lowerCaseEmail);
+        }
 
         this.ensureIsNotMember(lowerCaseEmail, organization);
 

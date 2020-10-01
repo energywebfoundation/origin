@@ -151,4 +151,28 @@ describe('Invitation e2e tests', () => {
             })
             .expect(403);
     });
+
+    it('should not allow to accept invitation by the user that is already part of the other organization', async () => {
+        const { accessToken } = await registerAndLogin(app, userService, organizationService, [
+            Role.OrganizationAdmin
+        ]);
+
+        const { user } = await registerAndLogin(
+            app,
+            userService,
+            organizationService,
+            [Role.OrganizationAdmin],
+            'second',
+            'second'
+        );
+
+        await request(app.getHttpServer())
+            .post('/invitation')
+            .set('Authorization', `Bearer ${accessToken}`)
+            .send({
+                email: user.email,
+                role: Role.OrganizationDeviceManager
+            })
+            .expect(403);
+    });
 });

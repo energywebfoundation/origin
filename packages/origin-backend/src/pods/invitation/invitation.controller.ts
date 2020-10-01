@@ -31,6 +31,7 @@ import { isEmail } from 'class-validator';
 
 import { InvitationService } from './invitation.service';
 import { Invitation } from './invitation.entity';
+import { AlreadyPartOfOrganizationError } from './errors/already-part-of-organization.error';
 
 @Controller('/invitation')
 @UseInterceptors(NullOrUndefinedResultInterceptor)
@@ -79,7 +80,7 @@ export class InvitationController {
             });
         }
 
-        if (typeof loggedUser.organizationId === 'undefined') {
+        if (!loggedUser.hasOrganization) {
             throw new BadRequestException({
                 success: false,
                 message: `User doesn't belong to any organization.`
@@ -89,10 +90,18 @@ export class InvitationController {
         try {
             ensureOrganizationRole(role);
         } catch (e) {
-            throw new ForbiddenException();
+            throw new ForbiddenException({ message: 'Unknown role was requested for the invitee' });
         }
 
-        await this.organizationInvitationService.invite(loggedUser, email, role);
+        try {
+            await this.organizationInvitationService.invite(loggedUser, email, role);
+        } catch (error) {
+            this.logger.error(error.toString());
+
+            if (error instanceof AlreadyPartOfOrganizationError) {
+                throw new ForbiddenException({ message: error.message });
+            }
+        }
 
         return {
             success: true,
