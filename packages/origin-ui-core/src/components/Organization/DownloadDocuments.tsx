@@ -4,6 +4,29 @@ import { getOffChainDataSource } from '../../features/general/selectors';
 import { makeStyles, createStyles, useTheme, Chip } from '@material-ui/core';
 import { GetApp } from '@material-ui/icons';
 
+export const downloadFile = async (client, id) => {
+    try {
+        const response = await client.download(id);
+        if (response) {
+            const imageType = response.headers['content-type'];
+            const blob = new Blob([response.data], { type: imageType });
+            const url = window.URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.setAttribute('download', name);
+            link.style.display = 'none';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            setTimeout(() => {
+                window.URL.revokeObjectURL(url);
+            }, 100);
+        }
+    } catch (error) {
+        console.log(error);
+    }
+};
+
 export const DownloadDocuments = ({ documents, name }) => {
     const offChainDataSource = useSelector(getOffChainDataSource);
     const filesClient = offChainDataSource?.filesClient;
@@ -38,35 +61,12 @@ export const DownloadDocuments = ({ documents, name }) => {
     const classes = useStyles(useTheme());
 
     const thumbs = documents.map((documentId, index) => {
-        const downloadFile = async (id) => {
-            try {
-                const response = await filesClient.download(id);
-                if (response) {
-                    const imageType = response.headers['content-type'];
-                    const blob = new Blob([response.data], { type: imageType });
-                    const url = window.URL.createObjectURL(blob);
-                    const link = document.createElement('a');
-                    link.href = url;
-                    link.setAttribute('download', name);
-                    link.style.display = 'none';
-                    document.body.appendChild(link);
-                    link.click();
-                    document.body.removeChild(link);
-                    setTimeout(() => {
-                        window.URL.revokeObjectURL(url);
-                    }, 100);
-                }
-            } catch (error) {
-                console.log(error);
-            }
-        };
-
         return (
             <Chip
                 label={`${documents.length > 1 ? `${name} ${index + 1}` : `${name}`}`}
                 variant="outlined"
                 color="primary"
-                onClick={() => downloadFile(documentId)}
+                onClick={() => downloadFile(filesClient, documentId)}
                 icon={<GetApp color="primary" />}
                 style={{ background: '#e0e0e0' }}
                 key={index}
