@@ -149,8 +149,12 @@ export function OrganizationForm(props: IProps) {
                 ...values,
                 country: values.country,
                 signatoryCountry: values.signatoryCountry,
-                documentIds: companyProofs.map((doc) => doc.uploadedName),
-                signatoryDocumentIds: signatoryId.map((doc) => doc.uploadedName)
+                documentIds: companyProofs
+                    .filter((doc) => !doc.removed)
+                    .map((doc) => doc.uploadedName),
+                signatoryDocumentIds: signatoryId
+                    .filter((doc) => !doc.removed)
+                    .map((doc) => doc.uploadedName)
             };
 
             const organization = await organizationClient.add(formData);
