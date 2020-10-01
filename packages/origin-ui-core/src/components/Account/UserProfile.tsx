@@ -141,7 +141,7 @@ export function UserProfile() {
         try {
             if (activeBlockchainAccountAddress === null) {
                 throw Error(
-                    'MetaMask Error: Please enable the Metamask extension in your browser, be logged-in, have the page connected and try to refresh.'
+                    'No blockchain connection detected, please visit <a href="https://metamask.io/" target="_blank">metamask.io</a> and follow the instructions. If you have MetaMask installed, be logged-in, have the page connected and try to refresh.'
                 );
             } else if (blockchainAccountAddress === activeBlockchainAccountAddress.toLowerCase()) {
                 throw Error('User has blockchain account already linked.');
@@ -166,11 +166,7 @@ export function UserProfile() {
                 showNotification(error?.data?.message, NotificationType.Error);
             } else if (error?.message) {
                 console.log(error);
-                const message =
-                    error?.message === 'u is null'
-                        ? 'No blockchain connection detected, please visit <a href="https://metamask.io/" target="_blank">metamask.io</a> and follow the instructions.'
-                        : error?.message;
-                showNotification(message, NotificationType.Error);
+                showNotification(error?.message, NotificationType.Error);
             } else {
                 console.warn('Could not log in.', error);
                 showNotification(t('general.feedback.unknownError'), NotificationType.Error);
