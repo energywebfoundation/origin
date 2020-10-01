@@ -139,9 +139,13 @@ export function UserProfile() {
 
     async function signAndSend(blockchainAccountAddress: string): Promise<boolean> {
         try {
-            if (blockchainAccountAddress === activeBlockchainAccountAddress.toLowerCase())
+            if (activeBlockchainAccountAddress === null) {
+                throw Error(
+                    'MetaMask Error: Please enable the Metamask extension in your browser, be logged-in, have the page connected and try to refresh.'
+                );
+            } else if (blockchainAccountAddress === activeBlockchainAccountAddress.toLowerCase()) {
                 throw Error('User has blockchain account already linked.');
-
+            }
             const signedMessage = await signTypedMessage(
                 activeBlockchainAccountAddress,
                 environment.REGISTRATION_MESSAGE_TO_SIGN,
@@ -162,7 +166,11 @@ export function UserProfile() {
                 showNotification(error?.data?.message, NotificationType.Error);
             } else if (error?.message) {
                 console.log(error);
-                showNotification(error?.message, NotificationType.Error);
+                const message =
+                    error?.message === 'u is null'
+                        ? 'No blockchain connection detected, please visit <a href="https://metamask.io/" target="_blank">metamask.io</a> and follow the instructions.'
+                        : error?.message;
+                showNotification(message, NotificationType.Error);
             } else {
                 console.warn('Could not log in.', error);
                 showNotification(t('general.feedback.unknownError'), NotificationType.Error);
