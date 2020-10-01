@@ -47,7 +47,7 @@ export class FileService {
     public async get(user: LoggedInUser, id: string): Promise<File> {
         this.logger.debug(`User ${JSON.stringify(user)} requested file ${id}`);
 
-        if (user.hasRole(Role.Admin, Role.SupportAgent)) {
+        if (user.hasRole(Role.Admin, Role.SupportAgent, Role.Issuer)) {
             return this.repository.findOne(id);
         }
 
