@@ -21,6 +21,7 @@ import { formatDate, EnergyFormatter, PowerFormatter, useTranslation } from '../
 import { getOffChainDataSource } from '../../features/general/selectors';
 import { DeviceGroupForm } from './DeviceGroupForm';
 import { IExternalDeviceId, IPublicOrganization } from '@energyweb/origin-backend-core';
+import { downloadFile } from '../Organization/DownloadDocuments';
 
 interface IProps {
     id?: number;
@@ -162,9 +163,8 @@ export function ProducingDeviceDetailView(props: IProps) {
                 li: JSON.parse(selectedDevice.files).map((f) => (
                     <li key={f}>
                         <a
-                            href={offChainDataSource.filesClient.getLink(f)}
-                            target="_blank"
-                            rel="noopener noreferrer"
+                            style={{ cursor: 'pointer', textDecoration: 'underline' }}
+                            onClick={() => downloadFile(offChainDataSource?.filesClient, f)}
                         >
                             {f}
                         </a>
