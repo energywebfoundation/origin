@@ -20,6 +20,7 @@ interface IOwnProps {
     className?: string;
     max?: number;
     required?: boolean;
+    singleChoice?: boolean;
 }
 
 export function MultiSelectAutocomplete(props: IOwnProps) {
@@ -31,7 +32,8 @@ export function MultiSelectAutocomplete(props: IOwnProps) {
         disabled,
         className,
         max,
-        required
+        required,
+        singleChoice
     } = props;
 
     const { styleConfig } = useOriginConfiguration();
@@ -62,7 +64,11 @@ export function MultiSelectAutocomplete(props: IOwnProps) {
                 onChange={(event, value: IAutocompleteMultiSelectOptionType[]) => {
                     props.onChange(value ? value.slice(0, max ?? value.length) : value);
                     setTouchFlag(true);
-                    setTextValue('');
+                    if (singleChoice) {
+                        setTextValue(' ');
+                    } else {
+                        setTextValue('');
+                    }
                 }}
                 value={selectedValues}
                 renderTags={(value, getTagProps) =>
