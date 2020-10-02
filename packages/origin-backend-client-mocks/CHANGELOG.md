@@ -3,6 +3,23 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.0.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-backend-client-mocks@5.1.0...@energyweb/origin-backend-client-mocks@6.0.0) (2020-10-02)
+
+
+### Features
+
+* **origin-backend-client-mocks:** add invitationClient ([400cb93](https://github.com/energywebfoundation/origin/commit/400cb93b2c47cad8d9a70e1fb84ad5bafb8aee6a))
+* **origin-backend-client-mocks:** redefined organization interfaces ([d023747](https://github.com/energywebfoundation/origin/commit/d0237477b28b8f434647590b0630c95e22c44061))
+
+
+### BREAKING CHANGES
+
+* **origin-backend-client-mocks:** IOrganization replaced with IPublicOrganization and IFullOrganization
+
+
+
+
+
 # [5.1.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-backend-client-mocks@5.0.1...@energyweb/origin-backend-client-mocks@5.1.0) (2020-08-25)
 
 

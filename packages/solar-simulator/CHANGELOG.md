@@ -3,6 +3,19 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.2.6](https://github.com/energywebfoundation/origin/compare/@energyweb/solar-simulator@1.2.5...@energyweb/solar-simulator@1.2.6) (2020-10-02)
+
+
+### Bug Fixes
+
+* **deps:** update dependency commander to v6 ([2f29e9f](https://github.com/energywebfoundation/origin/commit/2f29e9f43b1a56d20ef66e6a705cfbdead6f188d))
+* **deps:** update dependency commander to v6.1.0 ([3f572a4](https://github.com/energywebfoundation/origin/commit/3f572a4af6e1c312274458a6c259a233cc0e8ad3))
+* **solar-simulator:** smart meter reads serialization ([e1d5fb4](https://github.com/energywebfoundation/origin/commit/e1d5fb43a95ca8cc9e379abafafcbcccd8a03e01))
+
+
+
+
+
 ## [1.2.5](https://github.com/energywebfoundation/origin/compare/@energyweb/solar-simulator@1.2.4...@energyweb/solar-simulator@1.2.5) (2020-08-25)
 
 

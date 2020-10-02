@@ -3,6 +3,27 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.2.0](https://github.com/energywebfoundation/origin/compare/@energyweb/migrations@3.1.10...@energyweb/migrations@3.2.0) (2020-10-02)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @types/pg to v7.14.5 ([6418d44](https://github.com/energywebfoundation/origin/commit/6418d4441b71ef4d3dd1f463b7f4bc8f3b3df705))
+* **deps:** update dependency commander to v6 ([2f29e9f](https://github.com/energywebfoundation/origin/commit/2f29e9f43b1a56d20ef66e6a705cfbdead6f188d))
+* **deps:** update dependency pg to v8.3.3 ([4c441ce](https://github.com/energywebfoundation/origin/commit/4c441ce979b6d04975c9a0dc6736ee75b787d0ec))
+* **migrations:** seed platform_organizations sequence ([23965b1](https://github.com/energywebfoundation/origin/commit/23965b1a71a0db639015600adbb45c8493159cf7))
+* **migrations:** seed.sql syntax ([05feffe](https://github.com/energywebfoundation/origin/commit/05feffe7c4eb533fad5a80be6814b8bf0fc50307))
+* **migrations:** use local typeorm bin ([9bcd9e1](https://github.com/energywebfoundation/origin/commit/9bcd9e132cd0979c59bf66d0b5d41ff8a167199a))
+
+
+### Features
+
+* **migrations:** added irec-organization endpoints migrations ([c489640](https://github.com/energywebfoundation/origin/commit/c489640c186683f29760d21c4f8d7c10d4aee52c))
+
+
+
+
+
 ## [3.1.10](https://github.com/energywebfoundation/origin/compare/@energyweb/migrations@3.1.9...@energyweb/migrations@3.1.10) (2020-08-25)
 
 **Note:** Version bump only for package @energyweb/migrations

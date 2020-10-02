@@ -3,6 +3,40 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.0.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-backend-core@5.1.0...@energyweb/origin-backend-core@6.0.0) (2020-10-02)
+
+
+### Bug Fixes
+
+* **origin-backend-client:** headers override on FileClient ([f34f1f0](https://github.com/energywebfoundation/origin/commit/f34f1f04deded6fe758361ab30ab159dd3dc1c6e))
+* **origin-backend-core:** adjust interfaces ([2555d1c](https://github.com/energywebfoundation/origin/commit/2555d1c6d3b4ef5e9597253a813ddd2f13418405))
+
+
+### chore
+
+* **origin-backend-core:** replace IDeviceWithRelationsIds with IDevice ([1b6a8a7](https://github.com/energywebfoundation/origin/commit/1b6a8a749be8d58796cf584e2d44606554046780))
+
+
+### Features
+
+* **origin-backend-core:** add download to filesClient ([cc9cc24](https://github.com/energywebfoundation/origin/commit/cc9cc24a8e7f4dffef3cb0f6309078c57f1cdbfd))
+* **origin-backend-core:** add invitationClient ([1ba3453](https://github.com/energywebfoundation/origin/commit/1ba3453409a2c0ff23d07f2f9c6970775390be3f))
+* **origin-backend-core:** add role checking function ([808ed13](https://github.com/energywebfoundation/origin/commit/808ed13f57bb184a94403759f79938202f6b0a5c))
+* **origin-backend-core:** hasOrganization getter ([52dfddb](https://github.com/energywebfoundation/origin/commit/52dfddb08c72dbc04f8588f8dde04e2857bd2ada))
+* **origin-backend-core:** organization documents ([b7cbe37](https://github.com/energywebfoundation/origin/commit/b7cbe37a70040d5e2b98ad6774bfe38991d2228d))
+* **origin-backend-core:** redefined organization interfaces ([6f8dce7](https://github.com/energywebfoundation/origin/commit/6f8dce7761bba55da56ced09883458ed8cd59c7b))
+
+
+### BREAKING CHANGES
+
+* **origin-backend-core:** IDeviceWithRelationsIds not longer available
+* **origin-backend-core:** IOrganizationClient invitation methods extracted to IInvitationClient
+* **origin-backend-core:** IOrganization replaced with IPublicOrganization and IFullOrganization
+
+
+
+
+
 # [5.1.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-backend-core@5.0.1...@energyweb/origin-backend-core@5.1.0) (2020-08-25)
 
 

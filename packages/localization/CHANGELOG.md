@@ -3,6 +3,42 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.9.0](https://github.com/energywebfoundation/origin/compare/@energyweb/localization@0.8.0...@energyweb/localization@0.9.0) (2020-10-02)
+
+
+### Bug Fixes
+
+* **localization:** add localization for organization status ([ddcd3db](https://github.com/energywebfoundation/origin/commit/ddcd3db4dd535cb95d5cd5fe37ce34f2d190cf8a))
+* **localization:** change irec for certificates when irec disabled ([c1e4244](https://github.com/energywebfoundation/origin/commit/c1e4244ac4dbf947650ac0ae4f860138e5497b6a))
+* **localization:** fixed localization ([ca823f7](https://github.com/energywebfoundation/origin/commit/ca823f75fc9f3ea3dcc5673a48b6688be993665d))
+* **localization:** fixed spelling ([46e7b9b](https://github.com/energywebfoundation/origin/commit/46e7b9b58efe30c456d1a28649b44f6f549e8ced))
+* **localization:** irec modal spelling ([951d980](https://github.com/energywebfoundation/origin/commit/951d980abdae1be4f348d541a6c1870f1700edac))
+* **localization:** move error text to localization ([1b86f17](https://github.com/energywebfoundation/origin/commit/1b86f17ae83ccb8242759b9596ac389b2eb8b9da))
+* **localization:** proper language modal content ([aae3212](https://github.com/energywebfoundation/origin/commit/aae321279fc9c2619c692d2c00f8d955ed7ae18f))
+* **localization:** registrant account description ([856ea4f](https://github.com/energywebfoundation/origin/commit/856ea4fc3318faea87de84919093be739f7418e3))
+
+
+### Features
+
+* **localization:** add localization ([f4cfd78](https://github.com/energywebfoundation/origin/commit/f4cfd784aec56cb328fa92e03298087bf4d9d82f))
+* **localization:** add localization ([65ab1d8](https://github.com/energywebfoundation/origin/commit/65ab1d8b4fcb96c164aa29c8b37728cae1f5d4a4))
+* **localization:** add localization ([028236a](https://github.com/energywebfoundation/origin/commit/028236a0159edf4b8c850fdbf52bd740b7480fa0))
+* **localization:** add localization ([dbbadce](https://github.com/energywebfoundation/origin/commit/dbbadce9f9dd23277202029e9838cae7cbd061b6))
+* **localization:** add localization for buttons ([fb94121](https://github.com/energywebfoundation/origin/commit/fb941213418c726809aa38ba3e46fb29bfc25320))
+* **localization:** add localization for irec account registered modal ([a5dcaf4](https://github.com/energywebfoundation/origin/commit/a5dcaf4ce43c5dfe65e442daaa3f2e78c1cfde70))
+* **localization:** fixed spelling ([238cf5c](https://github.com/energywebfoundation/origin/commit/238cf5c62ab0f588f17b6169db7ddf7d74d0257e))
+* **localization:** localization for modal windows ([ecbd336](https://github.com/energywebfoundation/origin/commit/ecbd33667fb2b670fcf585f6a80f33cbc190f79f))
+* **localization:** localize connect or register step ([d2cbd45](https://github.com/energywebfoundation/origin/commit/d2cbd45ee682c0269948a36da3474ca0668ec940))
+* **localization:** localize connect to irec form ([163dbeb](https://github.com/energywebfoundation/origin/commit/163dbeb04dd6d8eb75cf27e1c6424ae81718d7e2))
+* **localization:** localize irec register form ([16e2d56](https://github.com/energywebfoundation/origin/commit/16e2d562dc01527a39a5bcd121b1144a05c2d962))
+* **localization:** localize login no invitations modal ([7c688bd](https://github.com/energywebfoundation/origin/commit/7c688bd73b1b0738802933418f8d44b6a5090af5))
+* **localization:** localize user successfuly registered ([65103f6](https://github.com/energywebfoundation/origin/commit/65103f67ca3d7d395b0c4c121f94c45578e8bb8c))
+* **origin-ui-core:** add localization for irec success info modal ([37de593](https://github.com/energywebfoundation/origin/commit/37de5934ed1c5390c78b05c1e2242885cb034fab))
+
+
+
+
+
 # [0.8.0](https://github.com/energywebfoundation/origin/compare/@energyweb/localization@0.7.0...@energyweb/localization@0.8.0) (2020-08-25)
 
 

@@ -3,6 +3,33 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.2.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-backend-app@1.1.10...@energyweb/origin-backend-app@1.2.0) (2020-10-02)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @nestjs/swagger to v4.6.1 ([40eb9d1](https://github.com/energywebfoundation/origin/commit/40eb9d129356ac2ebf809aec3d7a54b72f1c3530))
+* **deps:** update dependency @nestjs/typeorm to v7.1.1 ([b2253c3](https://github.com/energywebfoundation/origin/commit/b2253c3f3560b00de324fc76996530890b35837a))
+* **deps:** update dependency @nestjs/typeorm to v7.1.4 ([f0f39d4](https://github.com/energywebfoundation/origin/commit/f0f39d40dfde6c0d079575de7af4d4aed0e8f160))
+* **deps:** update nest monorepo to v7.4.3 ([f141326](https://github.com/energywebfoundation/origin/commit/f141326309427651b0ac43e4f90fcd5d62c355bc))
+* **origin-backend-app:** add missing entities from IREC Organization package ([353f7d7](https://github.com/energywebfoundation/origin/commit/353f7d7d7838c28937d9cc161ec01ca2901002e6))
+* **origin-backend-app:** add typeorm exec for migrations ([5444fb8](https://github.com/energywebfoundation/origin/commit/5444fb87c7b45eb2f144c0fa234b9a35ccb191c7))
+* **origin-backend-app:** missing env parameters for smoke test ([3b57e30](https://github.com/energywebfoundation/origin/commit/3b57e303ba73cc1e4e4117034ed523662a4c0acf))
+* **origin-backend-app:** notifcation module imports ([aaed8f5](https://github.com/energywebfoundation/origin/commit/aaed8f5589d3bcbf71d847fc91ed6d05ddbfabb3))
+* **origin-backend-app:** path to origin-orgnization-irec-api ([cbb16c9](https://github.com/energywebfoundation/origin/commit/cbb16c9f406daf39f3c9c63e6f9d98edc2d572bc))
+* **origin-backend-app:** smoke test: pre-set account for ganache-core ([4cec1f2](https://github.com/energywebfoundation/origin/commit/4cec1f2dd1546cbf2d35920579415487fa7e4aaa))
+
+
+### Features
+
+* **origin-backend-app:** added irec-organization endpoints ([9d1c83d](https://github.com/energywebfoundation/origin/commit/9d1c83d529044b8373af8e87cfb02eef45a7d197))
+* **origin-backend-app:** organization events handlers, smoke test ([23440cf](https://github.com/energywebfoundation/origin/commit/23440cfb15f2b49eb33a46d3d2d4bfa5ec7fc626))
+* **origin-backend-app:** registration created event handler ([3a986c4](https://github.com/energywebfoundation/origin/commit/3a986c432aa42348539a475e70913e9ac3774408))
+
+
+
+
+
 ## [1.1.10](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-backend-app@1.1.9...@energyweb/origin-backend-app@1.1.10) (2020-08-25)
 
 **Note:** Version bump only for package @energyweb/origin-backend-app
