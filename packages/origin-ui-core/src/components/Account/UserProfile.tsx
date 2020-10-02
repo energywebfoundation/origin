@@ -140,11 +140,9 @@ export function UserProfile() {
     async function signAndSend(blockchainAccountAddress: string): Promise<boolean> {
         try {
             if (activeBlockchainAccountAddress === null) {
-                throw Error(
-                    'No blockchain connection detected, please visit <a href="https://metamask.io/" target="_blank">metamask.io</a> and follow the instructions. If you have MetaMask installed, be logged-in, have the page connected and try to refresh.'
-                );
+                throw Error(t('user.profile.noBlockchainConnection'));
             } else if (blockchainAccountAddress === activeBlockchainAccountAddress.toLowerCase()) {
-                throw Error('User has blockchain account already linked.');
+                throw Error(t('user.profile.blockchainAlreadyLinked'));
             }
             const signedMessage = await signTypedMessage(
                 activeBlockchainAccountAddress,
