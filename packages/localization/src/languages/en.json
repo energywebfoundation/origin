@@ -402,7 +402,9 @@
                 "updatePassword": "User password updated.",
                 "errorUpdatePassword": "Error to update User password.",
                 "updateChainAddress": "User blockchain address update.",
-                "errorUpdateChainAddress": "Error to update User blockchain address."
+                "errorUpdateChainAddress": "Error to update User blockchain address.",
+                "noBlockchainConnection": "No blockchain connection detected, please visit <a href='https://metamask.io/' target='_blank'>metamask.io</a> and follow the instructions. If you have MetaMask installed, be logged-in, have the page connected and try to refresh.",
+                "blockchainAlreadyLinked": "User has blockchain account already linked."
             },
             "dialog": {
                 "dontHaveAccAsk": "Don't have an account?",
