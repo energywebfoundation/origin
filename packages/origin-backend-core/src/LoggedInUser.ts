@@ -9,6 +9,7 @@ export interface ILoggedInUser {
     rights: number;
     hasRole(...role: Role[]): boolean;
     ownerId: string;
+    hasOrganization: boolean;
 }
 
 export class LoggedInUser implements ILoggedInUser {
@@ -34,7 +35,11 @@ export class LoggedInUser implements ILoggedInUser {
         return isRole(this, ...role);
     }
 
-    get ownerId() {
-        return (this.organizationId || this.id).toString();
+    get ownerId(): string {
+        return (this.organizationId ?? this.id).toString();
+    }
+
+    get hasOrganization(): boolean {
+        return !!this.organizationId;
     }
 }

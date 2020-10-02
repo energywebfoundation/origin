@@ -269,6 +269,7 @@ export function HierarchicalMultiSelect<T>(props: IOwnProps<T>) {
                 className="mt-3"
                 disabled={disabled}
                 required={required}
+                singleChoice={singleChoice}
                 {...dataTest('hierarchical-multi-select-level-1')}
             />
             {props.selectOptions && props.selectOptions[1]?.label && levelTwoValues.length > 0 && (
@@ -282,6 +283,7 @@ export function HierarchicalMultiSelect<T>(props: IOwnProps<T>) {
                         className="mt-3"
                         disabled={disabled}
                         required={required}
+                        singleChoice={singleChoice}
                         {...dataTest('hierarchical-multi-select-level-2')}
                     />
                 </div>
@@ -297,6 +299,7 @@ export function HierarchicalMultiSelect<T>(props: IOwnProps<T>) {
                         className="mt-3"
                         disabled={disabled}
                         required={required}
+                        singleChoice={singleChoice}
                         {...dataTest('hierarchical-multi-select-level-3')}
                     />
                 </div>

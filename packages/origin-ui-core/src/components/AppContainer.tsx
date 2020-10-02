@@ -18,8 +18,6 @@ import { NoBlockchainAccountModal } from './Modal/NoBlockchainAccountModal';
 import { FeatureRoute } from './route/FeatureRoute';
 import { OriginConfigurationContext } from '.';
 import { LoginPage } from './Account/LoginPage';
-import { PendingInvitationsModal } from './Modal/PendingInvitationsModal';
-import { RoleChangedModal } from './Modal/RoleChangedModal';
 import { getUserOffchain } from '../features/users/selectors';
 
 export function AppContainer() {
@@ -60,7 +58,9 @@ export function AppContainer() {
 
     return (
         <Switch>
-            <Route path={`${baseURL}/user-login`} component={LoginPage} />
+            <Route path={`${baseURL}/user-login`}>
+                <LoginPage />
+            </Route>
             <Route>
                 <div className={`AppWrapper`}>
                     {loading && (
@@ -109,8 +109,6 @@ export function AppContainer() {
                     <RequestCertificatesModal />
                     <AccountMismatchModal />
                     <NoBlockchainAccountModal />
-                    <PendingInvitationsModal />
-                    <RoleChangedModal />
                 </div>
             </Route>
         </Switch>

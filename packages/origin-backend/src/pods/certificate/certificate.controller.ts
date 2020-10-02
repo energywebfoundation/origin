@@ -3,14 +3,30 @@ import {
     IOwnershipCommitmentProofWithTx,
     Role
 } from '@energyweb/origin-backend-core';
-import { Roles, RolesGuard, UserDecorator, ActiveUserGuard } from '@energyweb/origin-backend-utils';
-import { Body, Controller, Get, NotFoundException, Param, UseGuards, Put } from '@nestjs/common';
+import {
+    Roles,
+    RolesGuard,
+    UserDecorator,
+    ActiveUserGuard,
+    NullOrUndefinedResultInterceptor
+} from '@energyweb/origin-backend-utils';
+import {
+    Body,
+    Controller,
+    Get,
+    NotFoundException,
+    Param,
+    UseGuards,
+    Put,
+    UseInterceptors
+} from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 
 import { StorageErrors } from '../../enums/StorageErrors';
 import { CertificateService } from './certificate.service';
 
 @Controller('/Certificate')
+@UseInterceptors(NullOrUndefinedResultInterceptor)
 export class CertificateController {
     constructor(private readonly certificateService: CertificateService) {}
 

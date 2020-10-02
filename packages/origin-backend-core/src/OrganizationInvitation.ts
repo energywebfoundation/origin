@@ -1,4 +1,4 @@
-import { IOrganization } from './Organization';
+import { IPublicOrganization } from './Organization';
 import { Role } from './User';
 
 export enum OrganizationInvitationStatus {
@@ -21,7 +21,7 @@ export interface IOrganizationInvitationProperties {
 }
 
 export interface IOrganizationInvitation extends IOrganizationInvitationProperties {
-    organization: IOrganization;
+    organization: IPublicOrganization;
     sender: string;
     createdAt: Date;
 }
@@ -29,3 +29,13 @@ export interface IOrganizationInvitation extends IOrganizationInvitationProperti
 export type OrganizationInviteCreateData = { email: string; role: OrganizationRole };
 
 export type OrganizationInviteUpdateData = Pick<IOrganizationInvitation, 'status'>;
+
+export const ensureOrganizationRole = (role: Role): void => {
+    if (
+        role !== Role.OrganizationAdmin &&
+        role !== Role.OrganizationDeviceManager &&
+        role !== Role.OrganizationUser
+    ) {
+        throw new Error('Not an organization role');
+    }
+};

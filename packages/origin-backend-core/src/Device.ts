@@ -1,5 +1,5 @@
 import { BigNumber } from 'ethers';
-import { IOrganization } from '.';
+import { IPublicOrganization } from '.';
 
 export enum DeviceStatus {
     Submitted,
@@ -18,7 +18,7 @@ export type ExternalDeviceIdType = Pick<IExternalDeviceId, 'type'> & {
 };
 
 export interface ISmartMeterRead {
-    meterReading: BigNumber;
+    meterReading: BigNumber | string;
     timestamp: number;
 }
 
@@ -36,8 +36,8 @@ export interface IEnergyGeneratedWithStatus extends IEnergyGenerated {
 }
 
 export interface ISmartMeterReadStats {
-    certified: BigNumber;
-    uncertified: BigNumber;
+    certified: BigNumber | string;
+    uncertified: BigNumber | string;
 }
 
 export interface ISmartMeterReadingsAdapter {
@@ -54,7 +54,7 @@ export interface IDeviceProductInfo {
     gridOperator: string;
 }
 
-export interface IDeviceProperties extends IDeviceProductInfo {
+export interface IDevice extends IDeviceProductInfo {
     id: number;
     status: DeviceStatus;
     facilityName: string;
@@ -75,21 +75,10 @@ export interface IDeviceProperties extends IDeviceProductInfo {
     defaultAskPrice: number;
     automaticPostForSale: boolean;
     files?: string;
+    organization: IPublicOrganization;
 }
 
-export interface IDevice extends IDeviceProperties {
-    organization: IOrganization | IOrganization['id'];
-}
-
-export interface IDeviceWithRelationsIds extends IDevice {
-    organization: IOrganization['id'];
-}
-
-export interface IDeviceWithRelations extends IDevice {
-    organization: IOrganization;
-}
-
-export type DeviceCreateData = Omit<IDeviceProperties, 'id' | 'meterStats'>;
+export type DeviceCreateData = Omit<IDevice, 'id' | 'meterStats' | 'organization'>;
 export type DeviceUpdateData = Pick<IDevice, 'status'>;
 export type DeviceSettingsUpdateData = Pick<IDevice, 'defaultAskPrice' | 'automaticPostForSale'>;
 

@@ -1,4 +1,4 @@
-import { ExtendedBaseEntity } from '@energyweb/origin-backend';
+import { ExtendedBaseEntity } from '@energyweb/origin-backend-utils';
 import BN from 'bn.js';
 import { Transform, Expose } from 'class-transformer';
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
@@ -33,7 +33,7 @@ export class BundleTrade extends ExtendedBaseEntity {
             (item) =>
                 new BundleTradeItemDTO(
                     item.asset,
-                    item.startVolume.div(this.bundle.volume.div(this.volume))
+                    item.startVolume.mul(this.volume).div(this.bundle.volume)
                 )
         );
     }

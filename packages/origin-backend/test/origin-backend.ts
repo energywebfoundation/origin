@@ -1,14 +1,14 @@
 /* eslint-disable no-return-assign */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import {
+    IPublicOrganization,
     LoggedInUser,
-    OrganizationPostData,
+    OrganizationStatus,
     Role,
     UserRegistrationData,
-    UserStatus,
-    IOrganization,
-    OrganizationStatus
+    UserStatus
 } from '@energyweb/origin-backend-core';
+import { DatabaseService } from '@energyweb/origin-backend-utils';
 import { signTypedMessagePrivateKey } from '@energyweb/utils-general';
 import { Logger } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
@@ -19,38 +19,38 @@ import request from 'supertest';
 
 import { entities } from '../src';
 import { AppModule } from '../src/app.module';
+import { CertificateService } from '../src/pods/certificate/certificate.service';
 import { CertificationRequestService } from '../src/pods/certification-request/certification-request.service';
 import { ConfigurationService } from '../src/pods/configuration';
 import { DeviceService } from '../src/pods/device/device.service';
+import { EmailConfirmationService } from '../src/pods/email-confirmation/email-confirmation.service';
+import { FileService } from '../src/pods/file/file.service';
+import { InvitationService } from '../src/pods/invitation/invitation.service';
+import { NewOrganizationDTO } from '../src/pods/organization/new-organization.dto';
 import { OrganizationService } from '../src/pods/organization/organization.service';
 import { UserService } from '../src/pods/user';
-import { DatabaseService } from './database.service';
-import { CertificateService } from '../src/pods/certificate/certificate.service';
-import { EmailConfirmationService } from '../src/pods/email-confirmation/email-confirmation.service';
 
 const testLogger = new Logger('e2e');
 
-export const getExampleOrganization = (email = 'test@example.com'): OrganizationPostData => ({
-    email,
-    code: '',
-    contact: '',
-    telephone: '',
-    address: '',
-    shareholders: '',
-    ceoName: 'John',
-    vatNumber: '',
-    postcode: '',
-    businessTypeSelect: '',
-    businessTypeInput: '',
-    activeCountries: 'EU',
-    name: 'Test',
-    ceoPassportNumber: '1',
-    companyNumber: '2',
-    headquartersCountry: 1,
+export const getExampleOrganization = (
+    email = 'test@example.com',
+    name = 'default'
+): NewOrganizationDTO => ({
+    name: `Example ${name} Organization`,
+    address: 'Address',
+    businessType: 'Public',
+    city: 'City',
+    zipCode: 'Code',
     country: 1,
-    yearOfRegistration: 2000,
-    numberOfEmployees: 1,
-    website: 'http://example.com'
+    tradeRegistryCompanyNumber: '1234',
+    vatNumber: '1234',
+    signatoryAddress: 'Address',
+    signatoryCity: 'City',
+    signatoryCountry: 1,
+    signatoryEmail: email,
+    signatoryFullName: 'Organization Signatory',
+    signatoryPhoneNumber: '1234',
+    signatoryZipCode: 'Code'
 });
 
 export const bootstrapTestInstance = async () => {
@@ -89,6 +89,8 @@ export const bootstrapTestInstance = async () => {
     const emailConfirmationService = await app.resolve<EmailConfirmationService>(
         EmailConfirmationService
     );
+    const fileService = await app.resolve<FileService>(FileService);
+    const invitationService = await app.resolve<InvitationService>(InvitationService);
 
     app.useLogger(testLogger);
     app.enableCors();
@@ -109,8 +111,23 @@ export const bootstrapTestInstance = async () => {
         configurationService,
         certificateService,
         certificationRequestService,
-        emailConfirmationService
+        emailConfirmationService,
+        fileService,
+        invitationService
     };
+};
+
+export const loginUser = async (app: any, username: string, password: string): Promise<string> => {
+    let accessToken;
+    await request(app.getHttpServer())
+        .post('/auth/login')
+        .send({
+            username,
+            password
+        })
+        .expect((res) => ({ accessToken } = res.body));
+
+    return accessToken;
 };
 
 export const registerAndLogin = async (
@@ -151,34 +168,26 @@ export const registerAndLogin = async (
     const organizationEmail = `org${orgSeed}@example.com`;
 
     let organization = await organizationService.findOne(null, {
-        where: { email: organizationEmail }
+        where: { signatoryEmail: organizationEmail }
     });
 
     if (!organization) {
-        const organizationRegistration = getExampleOrganization(organizationEmail);
+        const organizationRegistration = getExampleOrganization(organizationEmail, orgSeed);
 
-        await organizationService.create(user.id, organizationRegistration);
+        await organizationService.create(new LoggedInUser(user), organizationRegistration);
         organization = await organizationService.findOne(null, {
-            where: { email: organizationEmail }
+            where: { signatoryEmail: organizationEmail }
         });
         if (organizationStatus !== OrganizationStatus.Submitted) {
-            await organizationService.update(organization.id, { status: organizationStatus });
+            await organizationService.update(organization.id, organizationStatus);
         }
     } else {
         await userService.addToOrganization(user.id, organization.id);
     }
 
-    user.organization = { id: organization.id } as IOrganization;
+    user.organization = { id: organization.id } as IPublicOrganization;
 
-    let accessToken: string;
-
-    await request(app.getHttpServer())
-        .post('/auth/login')
-        .send({
-            username: user.email,
-            password: '123'
-        })
-        .expect((res) => ({ accessToken } = res.body));
+    const accessToken = await loginUser(app, user.email, '123');
 
     return { accessToken, user: new LoggedInUser(user), organization };
 };

@@ -2,12 +2,10 @@ import {
     DeviceCreateData,
     DeviceSettingsUpdateData,
     DeviceStatus,
-    DeviceStatusChangedEvent,
     DeviceUpdateData,
     ICertificationRequestBackend,
     IDevice,
     IDeviceProductInfo,
-    IDeviceWithRelationsIds,
     IEnergyGeneratedWithStatus,
     IExternalDeviceId,
     ILoggedInUser,
@@ -15,7 +13,6 @@ import {
     ISmartMeterReadingsAdapter,
     ISmartMeterReadStats,
     ISmartMeterReadWithStatus,
-    SupportedEvents,
     ISuccessResponse,
     sortLowestToHighestTimestamp
 } from '@energyweb/origin-backend-core';
@@ -25,19 +22,20 @@ import {
     NotFoundException,
     UnprocessableEntityException
 } from '@nestjs/common';
+import { EventBus } from '@nestjs/cqrs';
 import { InjectRepository } from '@nestjs/typeorm';
 import { validate } from 'class-validator';
 import { BigNumber } from 'ethers';
 import moment from 'moment';
 import { FindOneOptions, Repository } from 'typeorm';
 import { v4 as uuid } from 'uuid';
+
 import { SM_READS_ADAPTER } from '../../const';
 import { StorageErrors } from '../../enums/StorageErrors';
 import { ConfigurationService } from '../configuration';
-import { ExtendedBaseEntity } from '../ExtendedBaseEntity';
-import { NotificationService } from '../notification';
 import { OrganizationService } from '../organization/organization.service';
 import { Device } from './device.entity';
+import { DeviceStatusChangedEvent } from './events';
 
 @Injectable()
 export class DeviceService {
@@ -46,16 +44,12 @@ export class DeviceService {
         private readonly repository: Repository<Device>,
         private readonly configurationService: ConfigurationService,
         private readonly organizationService: OrganizationService,
-        private readonly notificationService: NotificationService,
+        private readonly eventBus: EventBus,
         @Inject(SM_READS_ADAPTER) private smartMeterReadingsAdapter?: ISmartMeterReadingsAdapter
     ) {}
 
-    async findByExternalId(
-        externalId: IExternalDeviceId
-    ): Promise<ExtendedBaseEntity & IDeviceWithRelationsIds> {
-        const devices = ((await this.repository.find({
-            loadRelationIds: true
-        })) as IDevice[]) as (ExtendedBaseEntity & IDeviceWithRelationsIds)[];
+    async findByExternalId(externalId: IExternalDeviceId): Promise<IDevice> {
+        const devices = (await this.repository.find({ relations: ['organization'] })) as IDevice[];
 
         const device = devices.find((d) =>
             d.externalDeviceIds.find((id) => id.id === externalId.id && id.type === externalId.type)
@@ -64,16 +58,10 @@ export class DeviceService {
         return device;
     }
 
-    async findOne(
-        id: string,
-        options: FindOneOptions<Device> = {},
-        withMeterStats = false
-    ): Promise<ExtendedBaseEntity & IDevice> {
-        const { loadRelationIds = true } = options;
-        const device = ((await this.repository.findOne(id, {
-            loadRelationIds,
-            ...options
-        })) as IDevice) as ExtendedBaseEntity & IDevice;
+    async findOne(id: string, withMeterStats = false): Promise<IDevice> {
+        const device = (await this.repository.findOne(id, {
+            relations: ['organization']
+        })) as IDevice;
 
         if (this.smartMeterReadingsAdapter) {
             device.smartMeterReads = [];
@@ -86,7 +74,7 @@ export class DeviceService {
         return device;
     }
 
-    async create(data: DeviceCreateData, loggedUser: ILoggedInUser) {
+    async create(data: DeviceCreateData, loggedUser: ILoggedInUser): Promise<IDevice> {
         const configuration = await this.configurationService.get();
         const organization = await this.organizationService.findOne(loggedUser.organizationId);
 
@@ -124,16 +112,11 @@ export class DeviceService {
 
         await this.repository.save(newEntity);
 
-        const meterStats = await this.getMeterStats(newEntity.id.toString());
-
-        return {
-            ...newEntity,
-            meterStats
-        };
+        return this.findOne(newEntity.id.toString());
     }
 
-    async remove(entity: Device | (ExtendedBaseEntity & IDeviceWithRelationsIds)) {
-        this.repository.remove((entity as IDevice) as Device);
+    async remove(entity: Device): Promise<void> {
+        await this.repository.remove(entity);
     }
 
     async getAllSmartMeterReadings(id: string): Promise<ISmartMeterRead[]> {
@@ -194,27 +177,25 @@ export class DeviceService {
         };
     }
 
-    async getAll(
-        withMeterStats = false,
-        options: FindOneOptions<Device> = {}
-    ): Promise<Array<ExtendedBaseEntity & IDevice>> {
-        const { loadRelationIds = true } = options;
-        const devices = ((await this.repository.find({
-            loadRelationIds,
-            ...options
-        })) as IDevice[]) as (ExtendedBaseEntity & IDevice)[];
+    async getAll(withMeterStats = false, options: FindOneOptions<Device> = {}): Promise<IDevice[]> {
+        const devices = (await this.repository.find({
+            ...options,
+            relations: ['organization']
+        })) as IDevice[];
 
-        for (const device of devices) {
-            if (this.smartMeterReadingsAdapter) {
-                device.smartMeterReads = [];
-            }
+        return withMeterStats ? this.attachMeterStats(devices) : devices;
+    }
 
-            if (withMeterStats) {
-                device.meterStats = await this.getMeterStats(device.id.toString());
-            }
-        }
+    async getOrganizationDevices(
+        organizationId: number,
+        withMeterStats = false
+    ): Promise<IDevice[]> {
+        const devices = (await this.repository.find({
+            relations: ['organization'],
+            where: { organization: { id: organizationId } }
+        })) as IDevice[];
 
-        return devices;
+        return withMeterStats ? this.attachMeterStats(devices) : devices;
     }
 
     async findDeviceProductInfo(externalId: IExternalDeviceId): Promise<IDeviceProductInfo> {
@@ -227,41 +208,18 @@ export class DeviceService {
         );
     }
 
-    async updateStatus(
-        id: string,
-        update: DeviceUpdateData
-    ): Promise<ExtendedBaseEntity & IDeviceWithRelationsIds> {
-        const device = (await this.findOne(id)) as ExtendedBaseEntity & IDeviceWithRelationsIds;
+    async updateStatus(id: string, update: DeviceUpdateData): Promise<IDevice> {
+        const device = await this.findOne(id);
 
         if (!device) {
             throw new NotFoundException(StorageErrors.NON_EXISTENT);
         }
 
-        try {
-            await this.repository.update(device.id, { status: update.status });
+        await this.repository.update(device.id, { status: update.status });
 
-            const deviceManagers = await this.organizationService.getDeviceManagers(
-                device.organization
-            );
+        this.eventBus.publish(new DeviceStatusChangedEvent(device, update.status));
 
-            const event: DeviceStatusChangedEvent = {
-                deviceId: id,
-                status: device.status,
-                deviceManagersEmails: deviceManagers.map((u) => u.email)
-            };
-
-            this.notificationService.handleEvent({
-                type: SupportedEvents.DEVICE_STATUS_CHANGED,
-                data: event
-            });
-
-            return device;
-        } catch (error) {
-            throw new UnprocessableEntityException({
-                success: false,
-                message: `Device ${id} could not be updated due to an error ${error.message}`
-            });
-        }
+        return this.findOne(id);
     }
 
     async updateSettings(id: string, update: DeviceSettingsUpdateData): Promise<ISuccessResponse> {
@@ -363,7 +321,7 @@ export class DeviceService {
     async getSupplyBy(organizationId: number, facilityName: string, status: number) {
         const _facilityName = `%${facilityName}%`;
         const _status = status === 1;
-        const devices = ((await this.repository
+        const devices = (await this.repository
             .createQueryBuilder('device')
             .leftJoinAndSelect('device.organization', 'organization')
             .where(
@@ -372,7 +330,7 @@ export class DeviceService {
                 }`,
                 { organizationId, _facilityName, _status }
             )
-            .getMany()) as IDevice[]) as (ExtendedBaseEntity & IDeviceWithRelationsIds)[];
+            .getMany()) as IDevice[];
 
         for (const device of devices) {
             if (this.smartMeterReadingsAdapter) {
@@ -383,5 +341,19 @@ export class DeviceService {
         }
 
         return devices;
+    }
+
+    private async attachMeterStats(devices: IDevice[]) {
+        return Promise.all(
+            devices.map(async (d) => {
+                const device = d;
+                if (this.smartMeterReadingsAdapter) {
+                    device.smartMeterReads = [];
+                }
+                device.meterStats = await this.getMeterStats(device.id.toString());
+
+                return device;
+            })
+        );
     }
 }

@@ -24,6 +24,7 @@ import { Skeleton } from '@material-ui/lab';
 import { getOffChainDataSource, getEnvironment } from '../../features/general/selectors';
 import { CertificationRequest } from '@energyweb/issuer';
 import { requestCertificateApproval } from '../../features/certificates';
+import { downloadFile } from '../Organization/DownloadDocuments';
 
 interface IProps {
     approved: boolean;
@@ -67,7 +68,7 @@ export function CertificationRequestsTable(props: IProps) {
 
                 if (
                     request.approved !== props.approved ||
-                    (!isIssuer && user?.organization.id !== requestDevice?.organization)
+                    (!isIssuer && user?.organization.id !== requestDevice?.organization.id)
                 ) {
                     continue;
                 }
@@ -154,9 +155,8 @@ export function CertificationRequestsTable(props: IProps) {
             files: request.files.map((f) => (
                 <div key={f}>
                     <a
-                        href={offChainDataSource.filesClient.getLink(f)}
-                        target="_blank"
-                        rel="noopener noreferrer"
+                        style={{ cursor: 'pointer', textDecoration: 'underline' }}
+                        onClick={() => downloadFile(offChainDataSource?.filesClient, f)}
                     >
                         {f}
                     </a>

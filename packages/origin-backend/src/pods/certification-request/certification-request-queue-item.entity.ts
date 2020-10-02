@@ -1,6 +1,6 @@
 import { Entity, Column, Unique, PrimaryGeneratedColumn } from 'typeorm';
 import { Min } from 'class-validator';
-import { ExtendedBaseEntity } from '../ExtendedBaseEntity';
+import { ExtendedBaseEntity } from '@energyweb/origin-backend-utils';
 import { CertificationRequestQueueItemDTO } from './certification-request-queue-item.dto';
 
 @Entity()

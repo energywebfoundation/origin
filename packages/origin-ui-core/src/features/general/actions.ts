@@ -1,4 +1,5 @@
 import { IExchangeClient } from '../../utils/exchange';
+import { IIRecClient } from '../../utils/irec';
 import {
     IOriginConfiguration,
     DeviceCreateData,
@@ -15,7 +16,8 @@ export enum GeneralActions {
     setAccountMismatchModalProperties = 'GENERAL_SET_ACCOUNT_MISMATCH_MODAL_PROPERTIES',
     accountMismatchModalResolved = 'GENERAL_ACCOUNT_MISMATCH_MODAL_RESOLVED',
     requestDeviceCreation = 'GENERAL_REQUEST_DEVICE_CREATION',
-    setNoAccountModalVisibility = 'NO_ACCOUNT_MODAL_VISIBILITY'
+    setNoAccountModalVisibility = 'NO_ACCOUNT_MODAL_VISIBILITY',
+    setIRecClient = 'GENERAL_SET_IREC_CLIENT'
 }
 
 export interface IEnvironment {
@@ -167,6 +169,20 @@ export const requestDeviceCreation = (payload: IRequestDeviceCreationAction['pay
 
 export type TRequestDeviceCreationAction = typeof requestDeviceCreation;
 
+export interface ISetIRecClientAction {
+    type: GeneralActions.setIRecClient;
+    payload: {
+        iRecClient: IIRecClient;
+    };
+}
+
+export const setIRecClient = (payload: ISetIRecClientAction['payload']) => ({
+    type: GeneralActions.setIRecClient,
+    payload
+});
+
+export type TSetIRecClientAction = typeof setIRecClient;
+
 export type IGeneralAction =
     | ISetLoadingAction
     | ISetErrorAction
@@ -177,4 +193,5 @@ export type IGeneralAction =
     | ISetAccountMismatchModalPropertiesAction
     | ISetNoAccountModalVisibilityAction
     | IAccountMismatchModalResolvedAction
-    | IRequestDeviceCreationAction;
+    | IRequestDeviceCreationAction
+    | ISetIRecClientAction;

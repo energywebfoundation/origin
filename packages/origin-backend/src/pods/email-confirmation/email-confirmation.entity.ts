@@ -1,7 +1,7 @@
 import { Entity, PrimaryGeneratedColumn, Column, OneToOne, JoinColumn } from 'typeorm';
 
 import { IEmailConfirmation } from '@energyweb/origin-backend-core';
-import { ExtendedBaseEntity } from '../ExtendedBaseEntity';
+import { ExtendedBaseEntity } from '@energyweb/origin-backend-utils';
 import { User } from '../user/user.entity';
 
 @Entity()

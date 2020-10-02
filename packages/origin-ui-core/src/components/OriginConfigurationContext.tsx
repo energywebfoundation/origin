@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 import React, { createContext, ReactNode } from 'react';
 import { createMuiTheme, Theme } from '@material-ui/core';
 import { OriginFeature, allOriginFeatures } from '@energyweb/utils-general';
@@ -21,11 +22,26 @@ export interface IOriginStyleConfig {
     TEXT_COLOR_DEFAULT: string;
     BACKGROUND_COLOR_DARK: string;
     BACKGROUND_COLOR_DARKER: string;
+    BACKGROUND_COLOR_LIGHTER: string;
     FIELD_ICON_COLOR: string;
     WHITE: string;
 }
 
 const DEFAULT_COLOR = '#894ec5';
+
+declare module '@material-ui/core/styles/createTypography' {
+    interface Typography {
+        fontSizeSm: number;
+        fontSizeLg: number;
+        fontSizeMd: number;
+    }
+
+    interface TypographyOptions {
+        fontSizeSm?: number;
+        fontSizeLg?: number;
+        fontSizeMd?: number;
+    }
+}
 
 export const createMaterialThemeForOrigin = (
     styleConfig: IOriginStyleConfig,
@@ -207,6 +223,7 @@ export function createStyleConfigFromSCSSVariables(scssVariables: any): IOriginS
         TEXT_COLOR_DEFAULT: scssVariables.textColorDefault ?? DEFAULT_COLOR,
         BACKGROUND_COLOR_DARK: scssVariables.backgroundColorDark ?? DEFAULT_COLOR,
         BACKGROUND_COLOR_DARKER: scssVariables.backgroundColorDarker ?? DEFAULT_COLOR,
+        BACKGROUND_COLOR_LIGHTER: scssVariables.backgroundColorLighter ?? DEFAULT_COLOR,
         FIELD_ICON_COLOR: scssVariables.fieldIconColor ?? DEFAULT_COLOR,
         WHITE: '#fff'
     };
@@ -244,7 +261,9 @@ export function createOriginConfiguration(configuration: Partial<IOriginConfigur
         materialTheme: createMaterialThemeForOrigin(DEFAULT_STYLE_CONFIG, storedLanguage),
         defaultLanguage: 'en',
         language: storedLanguage,
-        enabledFeatures: allOriginFeatures
+        enabledFeatures: allOriginFeatures.filter(
+            (feature) => OriginFeature.IRecConnect !== feature
+        )
     };
 
     const newConfiguration: IOriginConfiguration = {

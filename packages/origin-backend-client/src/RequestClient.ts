@@ -24,7 +24,7 @@ export class RequestClient implements IRequestClient {
         return axios.CancelToken.source();
     }
 
-    private get config(): AxiosRequestConfig {
+    public get config(): AxiosRequestConfig {
         const config: AxiosRequestConfig = {};
 
         if (this.authenticationToken) {

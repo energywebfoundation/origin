@@ -1,6 +1,6 @@
 import { OriginFeature } from '@energyweb/utils-general';
 import { DeviceStatus, isRole, Role } from '@energyweb/origin-backend-core';
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
 import { NavLink, Redirect, Route } from 'react-router-dom';
@@ -14,11 +14,18 @@ import { PageContent } from '../PageContent/PageContent';
 import { ProducingDeviceDetailView } from './ProducingDeviceDetailView';
 import { ProducingDeviceTable } from './ProducingDeviceTable';
 import { OriginConfigurationContext } from '../OriginConfigurationContext';
+import { RoleChangedModal } from '../Modal/RoleChangedModal';
+import { ConnectBlockchainAccountModal } from '../Modal/ConnectBlockchainAccountModal';
 
 export function Device() {
     const userOffchain = useSelector(getUserOffchain);
     const { baseURL, getDevicesLink } = useLinks();
     const { t } = useTranslation();
+    const isDeviceManagerOrAdmin = () =>
+        userOffchain?.organization &&
+        isRole(userOffchain, Role.OrganizationDeviceManager, Role.OrganizationAdmin);
+    const [showRoleModal, setShowRoleModal] = useState(false);
+    const [showBlockchainModal, setShowBlockchainModal] = useState(false);
 
     function ProductionDetailView(id: number): JSX.Element {
         return (
@@ -70,55 +77,57 @@ export function Device() {
             key: 'production',
             label: t('navigation.devices.all'),
             component: ProductionList,
-            features: [OriginFeature.Devices]
+            features: [OriginFeature.Devices],
+            show: true
         },
         {
             key: 'production-map',
             label: t('navigation.devices.map'),
             component: Map,
-            features: [OriginFeature.Devices]
+            features: [OriginFeature.Devices],
+            show: true
         },
         {
             key: 'owned',
             label: t('navigation.devices.my'),
             component: MyDevices,
-            roles: [Role.OrganizationDeviceManager, Role.OrganizationAdmin],
-            features: [OriginFeature.Devices, OriginFeature.Seller]
+            features: [OriginFeature.Devices, OriginFeature.Seller],
+            show: isDeviceManagerOrAdmin()
         },
         {
             key: 'pending',
             label: t('navigation.devices.pending'),
             component: ProductionPendingList,
-            roles: [Role.Issuer],
-            features: [OriginFeature.Devices]
+            features: [OriginFeature.Devices],
+            show: isRole(userOffchain, Role.Issuer)
         },
         {
             key: 'add',
             label: t('navigation.devices.registerDevice'),
             component: AddDevice,
-            roles: [Role.OrganizationDeviceManager, Role.OrganizationAdmin],
-            features: [OriginFeature.Devices, OriginFeature.Seller]
+            features: [OriginFeature.Devices, OriginFeature.Seller],
+            show: isDeviceManagerOrAdmin()
         },
         {
             key: 'add-group',
             label: t('navigation.devices.registerDeviceGroup'),
             component: DeviceGroupForm,
-            roles: [Role.OrganizationDeviceManager, Role.OrganizationAdmin],
-            features: [OriginFeature.Devices, OriginFeature.Seller]
+            features: [OriginFeature.Devices, OriginFeature.Seller],
+            show: isDeviceManagerOrAdmin()
         },
         {
             key: 'producing_detail_view',
             label: 'Production detail',
             component: null,
-            hide: true,
+            show: false,
             features: [OriginFeature.Devices]
         },
         {
             key: 'supply',
             label: t('navigation.devices.supply'),
             component: AutoSupplyDeviceTable,
-            roles: [Role.OrganizationDeviceManager, Role.OrganizationAdmin],
-            features: [OriginFeature.Devices, OriginFeature.Seller]
+            features: [OriginFeature.Devices, OriginFeature.Seller],
+            show: isDeviceManagerOrAdmin()
         }
     ];
 
@@ -130,11 +139,10 @@ export function Device() {
                 <ul className="NavMenu nav">
                     {DevicesMenu.map((menu) => {
                         if (
-                            menu.hide ||
+                            !menu.show ||
                             !menu.features.every((flag) =>
                                 originConfiguration.enabledFeatures.includes(flag)
-                            ) ||
-                            (menu.roles && !isRole(userOffchain, ...menu.roles))
+                            )
                         ) {
                             return null;
                         }
@@ -185,6 +193,15 @@ export function Device() {
                 render={() => (
                     <Redirect to={{ pathname: `${getDevicesLink()}/${DevicesMenu[0].key}` }} />
                 )}
+            />
+            <RoleChangedModal
+                showModal={showRoleModal}
+                setShowModal={setShowRoleModal}
+                setShowBlockchainModal={setShowBlockchainModal}
+            />
+            <ConnectBlockchainAccountModal
+                showModal={showBlockchainModal}
+                setShowModal={setShowBlockchainModal}
             />
         </div>
     );

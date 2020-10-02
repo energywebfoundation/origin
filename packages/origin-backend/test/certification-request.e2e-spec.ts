@@ -7,13 +7,13 @@ import moment from 'moment';
 import request from 'supertest';
 import dotenv from 'dotenv';
 
+import { DatabaseService } from '@energyweb/origin-backend-utils';
 import { CertificationRequestService } from '../src/pods/certification-request/certification-request.service';
 import { DeviceService } from '../src/pods/device/device.service';
 import { OrganizationService } from '../src/pods/organization/organization.service';
 import { UserService } from '../src/pods/user';
 import { bootstrapTestInstance, registerAndLogin } from './origin-backend';
 import { CertificationRequestQueueItem } from '../src/pods/certification-request/certification-request-queue-item.entity';
-import { DatabaseService } from './database.service';
 
 describe('CertificationRequest e2e tests', () => {
     let app: INestApplication;

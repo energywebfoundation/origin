@@ -7,7 +7,7 @@ import dotenv from 'dotenv';
 
 import { Configuration, getProviderWithFallback } from '@energyweb/utils-general';
 import { OffChainDataSourceMock } from '@energyweb/origin-backend-client-mocks';
-import { DeviceStatus, IDevice } from '@energyweb/origin-backend-core';
+import { DeviceCreateData, DeviceStatus } from '@energyweb/origin-backend-core';
 
 import { ProducingDevice } from '..';
 import { logger } from '../Logger';
@@ -44,8 +44,7 @@ describe('Device Facade', () => {
 
             const FACILITY_NAME = 'Wuthering Heights Windfarm';
 
-            const deviceProps: IDevice = {
-                id: 1,
+            const deviceProps: DeviceCreateData = {
                 status: DeviceStatus.Active,
                 operationalSince: 0,
                 capacityInW: 10,
@@ -64,7 +63,6 @@ describe('Device Facade', () => {
                 images: '',
                 region: '',
                 province: '',
-                organization: 4,
                 gridOperator: '',
                 automaticPostForSale: false,
                 defaultAskPrice: null

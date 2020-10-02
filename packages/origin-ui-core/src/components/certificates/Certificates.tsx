@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { Route, NavLink, Redirect } from 'react-router-dom';
 import { Role, isRole, UserStatus } from '@energyweb/origin-backend-core';
 import { OriginFeature } from '@energyweb/utils-general';
@@ -16,6 +16,8 @@ import { BundlesTable } from '../bundles/BundlesTable';
 import { CreateBundleForm } from '../bundles/CreateBundleForm';
 import { MyOrders } from '../orders/MyOrders';
 import { OriginConfigurationContext } from '..';
+import { RoleChangedModal } from '../Modal/RoleChangedModal';
+import { ConnectBlockchainAccountModal } from '../Modal/ConnectBlockchainAccountModal';
 
 function CertificateDetailViewId(id: number) {
     return <CertificateDetailView id={id} />;
@@ -38,6 +40,8 @@ export function Certificates() {
     const user = useSelector(getUserOffchain);
     const { baseURL, getCertificatesLink } = useLinks();
     const { t } = useTranslation();
+    const [showRoleModal, setShowRoleModal] = useState(false);
+    const [showBlockchainModal, setShowBlockchainModal] = useState(false);
 
     const originConfiguration = useContext(OriginConfigurationContext);
 
@@ -49,19 +53,24 @@ export function Certificates() {
     const isIssuer = isRole(user, Role.Issuer);
     const userIsActive = user && user.status === UserStatus.Active;
 
+    const userIsActiveAndPartOfOrg = () =>
+        user?.organization &&
+        userIsActive &&
+        isRole(user, Role.OrganizationUser, Role.OrganizationDeviceManager, Role.OrganizationAdmin);
+
     const CertificatesMenu = [
         {
             key: 'inbox',
             label: 'navigation.certificates.inbox',
             component: InboxCertificates,
-            show: user && !isIssuer,
+            show: userIsActiveAndPartOfOrg(),
             features: [OriginFeature.Certificates, OriginFeature.Buyer]
         },
         {
             key: 'claims_report',
             label: 'navigation.certificates.claimsReport',
             component: ClaimedCertificates,
-            show: user && !isIssuer,
+            show: isIssuer || userIsActiveAndPartOfOrg(),
             features: [OriginFeature.Certificates, OriginFeature.Buyer]
         },
         {
@@ -75,14 +84,14 @@ export function Certificates() {
             key: 'pending',
             label: 'navigation.certificates.pending',
             component: PendingCertificationRequestsTable,
-            show: user,
+            show: (userIsActive && isIssuer) || userIsActiveAndPartOfOrg(),
             features: [OriginFeature.Certificates, OriginFeature.CertificationRequests]
         },
         {
             key: 'approved',
             label: 'navigation.certificates.approved',
             component: ApprovedCertificationRequestsTable,
-            show: isIssuer,
+            show: (userIsActive && isIssuer) || userIsActiveAndPartOfOrg(),
             features: [OriginFeature.Certificates, OriginFeature.CertificationRequests]
         },
         {
@@ -96,14 +105,14 @@ export function Certificates() {
             key: 'bundles',
             label: 'navigation.certificates.bundles',
             component: BundlesTable,
-            show: user,
+            show: true,
             features: [OriginFeature.Exchange, OriginFeature.Bundles]
         },
         {
             key: 'create_bundle',
             label: 'navigation.certificates.create_bundle',
             component: CreateBundleForm,
-            show: userIsActive,
+            show: userIsActiveAndPartOfOrg(),
             features: [OriginFeature.Exchange, OriginFeature.Bundles]
         },
         {
@@ -111,21 +120,21 @@ export function Certificates() {
             label: 'navigation.certificates.my_bundles',
             component: BundlesTable,
             props: { owner: true },
-            show: userIsActive,
+            show: userIsActiveAndPartOfOrg(),
             features: [OriginFeature.Exchange, OriginFeature.Bundles]
         },
         {
             key: 'my-trades',
             label: 'navigation.certificates.myTrades',
             component: TradesRoute,
-            show: user,
+            show: userIsActiveAndPartOfOrg(),
             features: [OriginFeature.Exchange]
         },
         {
             key: 'my_orders',
             label: 'navigation.certificates.myOrders',
             component: MyOrders,
-            show: user,
+            show: userIsActiveAndPartOfOrg(),
             features: [OriginFeature.Exchange]
         }
     ];
@@ -137,7 +146,7 @@ export function Certificates() {
                 return CertificatesMenu[3].key;
             }
 
-            return CertificatesMenu[0].key;
+            return CertificatesMenu.filter((i) => i.show)[0]?.key;
         }
 
         return CertificatesMenu[5].key;
@@ -195,12 +204,25 @@ export function Certificates() {
                     }}
                 />
 
-                <Redirect path={getCertificatesLink()} to={defaultRedirect} />
+                <Route
+                    exact={true}
+                    path={getCertificatesLink()}
+                    render={() => <Redirect to={defaultRedirect} />}
+                />
 
                 <Route
                     exact={true}
                     path={`${baseURL}/`}
                     render={() => <Redirect to={defaultRedirect} />}
+                />
+                <RoleChangedModal
+                    showModal={showRoleModal}
+                    setShowModal={setShowRoleModal}
+                    setShowBlockchainModal={setShowBlockchainModal}
+                />
+                <ConnectBlockchainAccountModal
+                    showModal={showBlockchainModal}
+                    setShowModal={setShowBlockchainModal}
                 />
             </div>
         )

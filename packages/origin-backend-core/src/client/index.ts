@@ -18,14 +18,12 @@ import {
     EmailConfirmationResponse,
     IEmailConfirmationToken,
     UpdateUserResponseReturnType,
-    IOrganizationWithRelationsIds,
     OrganizationPostData,
     OrganizationUpdateData,
     OrganizationRole,
     IOrganizationInvitation,
     Role,
     onUploadProgressFunction,
-    IDeviceWithRelationsIds,
     IExternalDeviceId,
     DeviceCreateData,
     DeviceUpdateData,
@@ -34,6 +32,7 @@ import {
     ISmartMeterRead,
     DeviceSettingsUpdateData
 } from '..';
+import { IFullOrganization } from '../Organization';
 
 export interface IAdminClient {
     update(formData: UserUpdateData): Promise<IUser>;
@@ -79,6 +78,8 @@ export interface IRequestClient {
     ): Promise<AxiosResponse<U>>;
 
     generateCancelToken(): CancelTokenSource;
+
+    config: { headers?: any };
 }
 
 export interface ICertificationRequestClient {
@@ -106,18 +107,12 @@ export interface IUserClient {
 }
 
 export interface IOrganizationClient {
-    getById(id: number): Promise<IOrganizationWithRelationsIds>;
-    getAll(): Promise<IOrganizationWithRelationsIds[]>;
-    add(data: OrganizationPostData): Promise<IOrganizationWithRelationsIds>;
-    update(id: number, data: OrganizationUpdateData): Promise<IOrganizationWithRelationsIds>;
+    getById(id: number): Promise<IFullOrganization>;
+    getAll(): Promise<IFullOrganization[]>;
+    add(data: OrganizationPostData): Promise<IFullOrganization>;
+    update(id: number, data: OrganizationUpdateData): Promise<IFullOrganization>;
 
-    invite(email: string, role: OrganizationRole): Promise<ISuccessResponse>;
-    getInvitations(): Promise<IOrganizationInvitation[]>;
-    getInvitationsToOrganization(organizationId: number): Promise<IOrganizationInvitation[]>;
-    getInvitationsForEmail(email: string): Promise<IOrganizationInvitation[]>;
-    acceptInvitation(id: number): Promise<any>;
-    rejectInvitation(id: number): Promise<any>;
-    viewInvitation(id: number): Promise<any>;
+    getInvitationsForOrganization(organizationId: number): Promise<IOrganizationInvitation[]>;
 
     getMembers(id: number): Promise<IUser[]>;
     removeMember(organizationId: number, userId: number): Promise<ISuccessResponse>;
@@ -128,6 +123,15 @@ export interface IOrganizationClient {
     ): Promise<ISuccessResponse>;
 }
 
+export interface IInvitationClient {
+    invite(email: string, role: OrganizationRole): Promise<ISuccessResponse>;
+    getInvitations(): Promise<IOrganizationInvitation[]>;
+    acceptInvitation(id: number): Promise<ISuccessResponse>;
+    rejectInvitation(id: number): Promise<ISuccessResponse>;
+    viewInvitation(id: number): Promise<ISuccessResponse>;
+    getInvitationsForEmail(email: string): Promise<IOrganizationInvitation[]>;
+}
+
 export interface IFilesClient {
     upload(
         files: File[] | FileList,
@@ -135,20 +139,21 @@ export interface IFilesClient {
         cancelTokenSource?: CancelTokenSource
     ): Promise<string[]>;
     getLink(id: string): string;
+    download(id: string): Promise<any>;
 }
 
 export interface IDeviceClient {
     getById(id: number, loadRelationIds?: boolean): Promise<IDevice>;
-    getByExternalId(id: IExternalDeviceId): Promise<IDeviceWithRelationsIds>;
+    getByExternalId(id: IExternalDeviceId): Promise<IDevice>;
     getAll(withMeterStats: boolean, loadRelationIds?: boolean): Promise<IDevice[]>;
-    add(device: DeviceCreateData): Promise<IDeviceWithRelationsIds>;
+    add(device: DeviceCreateData): Promise<IDevice>;
     update(id: number, data: DeviceUpdateData): Promise<IDevice>;
     getAllSmartMeterReadings(id: number): Promise<ISmartMeterReadWithStatus[]>;
     addSmartMeterReads(id: number, smartMeterReads: ISmartMeterRead[]): Promise<void>;
-    getSupplyBy(facilityName: string, status: number): Promise<IDeviceWithRelationsIds[]>;
+    getSupplyBy(facilityName: string, status: number): Promise<IDevice[]>;
     delete(id: number): Promise<ISuccessResponse>;
     updateDeviceSettings(id: number, device: DeviceSettingsUpdateData): Promise<ISuccessResponse>;
-    getMyDevices(withMeterStats: boolean): Promise<IDeviceWithRelationsIds[]>;
+    getMyDevices(withMeterStats: boolean): Promise<IDevice[]>;
 }
 
 export interface IOffChainDataSource {
@@ -159,6 +164,7 @@ export interface IOffChainDataSource {
     organizationClient: IOrganizationClient;
     filesClient: IFilesClient;
     adminClient: IAdminClient;
+    invitationClient: IInvitationClient;
 
     certificateClient?: ICertificateClient;
     certificationRequestClient?: ICertificationRequestClient;

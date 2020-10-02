@@ -1,70 +1,73 @@
-import multer from 'multer';
-import crypto from 'crypto';
-import path from 'path';
+import { FILE_SUPPORTED_MIMETYPES, ILoggedInUser } from '@energyweb/origin-backend-core';
+import { UserDecorator } from '@energyweb/origin-backend-utils';
 import {
     Controller,
-    Post,
-    UploadedFiles,
-    BadRequestException,
-    UseInterceptors,
     Get,
+    NotFoundException,
+    Param,
+    Post,
     Res,
-    Param
+    UploadedFiles,
+    UseGuards,
+    UseInterceptors
 } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import { Request, Response } from 'express';
-import { FILE_SUPPORTED_MIMETYPES } from '@energyweb/origin-backend-core';
+import multer from 'multer';
 
-const FILES_LOCATION = path.join(__dirname, '/../../../uploads');
+import { FileService } from './file.service';
 
-const storage = multer.diskStorage({
-    destination: FILES_LOCATION,
-
-    filename(req, file, cb) {
-        crypto.pseudoRandomBytes(10, (err, raw) => {
-            if (err) {
-                return cb(err, null);
-            }
-
-            return cb(null, raw.toString('hex') + path.extname(file.originalname));
-        });
-    }
-});
+const maxFilesLimit = parseInt(process.env.FILE_MAX_FILES, 10) || 20;
+const maxFileSize = parseInt(process.env.FILE_MAX_FILE_SIZE, 10) || 10485760;
 
 @Controller('file')
 export class FileController {
+    constructor(private readonly fileService: FileService) {}
+
     @Post()
     @UseInterceptors(
-        FileFieldsInterceptor([{ name: 'files', maxCount: 20 }], {
-            storage,
+        FileFieldsInterceptor([{ name: 'files', maxCount: maxFilesLimit }], {
+            storage: multer.memoryStorage(),
             fileFilter: (req: Request, file, callback) => {
                 if (!FILE_SUPPORTED_MIMETYPES.includes(file.mimetype)) {
                     callback(new Error('Unsupported file type'), false);
                 }
 
                 callback(null, true);
+            },
+            limits: {
+                files: maxFilesLimit,
+                fileSize: maxFileSize
             }
         })
     )
-    async post(
+    @UseGuards(AuthGuard())
+    async upload(
+        @UserDecorator() user: ILoggedInUser,
         @UploadedFiles()
         uploadedFiles: {
             files: Express.Multer.File[];
         }
-    ) {
-        const { files } = uploadedFiles;
-
-        if (typeof files === 'undefined') {
-            throw new BadRequestException('files.files array has to be defined.');
-        }
-
-        return files.map((f) => f.filename);
+    ): Promise<string[]> {
+        return this.fileService.store(user, uploadedFiles.files);
     }
 
     @Get(':id')
-    test(@Param('id') id: string, @Res() res: Response) {
-        res.sendFile(path.join(FILES_LOCATION, id));
+    @UseGuards(AuthGuard())
+    async download(
+        @UserDecorator() user: ILoggedInUser,
+        @Param('id') id: string,
+        @Res() res: Response
+    ): Promise<void> {
+        const file = await this.fileService.get(user, id);
+        if (!file) {
+            throw new NotFoundException();
+        }
 
-        return {}; // has to be sent otherwise EmptyResultInterceptor intercepts it
+        res.set({
+            'Content-Type': file.contentType,
+            'Content-Length': file.data.length
+        }).send(file.data);
     }
 }

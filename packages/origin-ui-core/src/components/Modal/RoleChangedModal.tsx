@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useContext } from 'react';
 import {
     Dialog,
     DialogContent,
@@ -13,21 +13,37 @@ import {
     Grid,
     Box
 } from '@material-ui/core';
+import { useHistory } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import { Role, OrganizationInvitationStatus } from '@energyweb/origin-backend-core';
+import { Role, OrganizationInvitationStatus, isRole } from '@energyweb/origin-backend-core';
+import { OriginConfigurationContext } from '..';
+import { OriginFeature } from '@energyweb/utils-general';
 import { getUserOffchain, getInvitations } from '../../features/users/selectors';
-import { useTranslation } from '../..';
+import { useTranslation, useLinks } from '../..';
 import { Trans } from 'react-i18next';
 import { Brightness1 } from '@material-ui/icons';
 import OrgAddedIcon from '../../../assets/icon-org-added.svg';
 
-export const RoleChangedModal = () => {
+interface IProps {
+    showModal?: boolean;
+    setShowModal?: (showModal: boolean) => void;
+    setShowIRec?: (showModal: boolean) => void;
+    setShowBlockchainModal?: (showModal: boolean) => void;
+}
+
+export const RoleChangedModal = ({
+    showModal,
+    setShowModal,
+    setShowIRec,
+    setShowBlockchainModal
+}: IProps) => {
     const user = useSelector(getUserOffchain);
-    const [showModal, setShowModal] = useState(false);
     const userRef = useRef(user);
+    const history = useHistory();
+    const { getOrganizationLink } = useLinks();
     const { t } = useTranslation();
     const {
-        typography: { fontSizeSm },
+        typography: { fontSizeMd },
         palette: {
             text: { primary }
         }
@@ -35,6 +51,8 @@ export const RoleChangedModal = () => {
     const sender = useSelector(getInvitations).find(
         (invitation) => invitation.status === OrganizationInvitationStatus.Accepted
     )?.sender;
+    const { enabledFeatures } = useContext(OriginConfigurationContext);
+    const iRecEnabled = enabledFeatures.includes(OriginFeature.IRec);
 
     useEffect(() => {
         if (user?.organization && userRef.current) {
@@ -59,44 +77,76 @@ export const RoleChangedModal = () => {
     };
 
     const allowedActions = (rights: Role) => {
-        const prefix = 'user.feedback.roleChanged';
         let actions: string[];
         switch (rights) {
             case Role.OrganizationUser:
                 actions = [
-                    'canPlaceOrder',
-                    'canBuyIRec',
-                    'canCreateAndBuyIRecBundles',
-                    'canRedeemIRec',
-                    'canWidrawIRec'
+                    t('user.feedback.roleChanged.canPlaceOrder'),
+                    t('user.feedback.roleChanged.canBuyCertificates', {
+                        certificateType: iRecEnabled ? 'I-RECs' : 'certificates'
+                    }),
+                    t('user.feedback.roleChanged.canCreateAndBuyCertificateBundles', {
+                        certificateType: iRecEnabled ? 'I-REC' : 'certificate'
+                    }),
+                    t('user.feedback.roleChanged.canRedeemCertificates', {
+                        certificateType: iRecEnabled ? 'I-RECs' : 'certificates'
+                    }),
+                    t('user.feedback.roleChanged.canWithdrawCertificates', {
+                        certificateType: iRecEnabled ? 'I-RECs' : 'certificates'
+                    })
                 ];
                 break;
             case Role.OrganizationDeviceManager:
                 actions = [
-                    'canRegisterDevices',
-                    'canRequestIssuenceOfIRec',
-                    'canConfigureAutomatedOrderCreation'
+                    t('user.feedback.roleChanged.canRegisterDevices'),
+                    t('user.feedback.roleChanged.canRequestIssuenceOfCertificates', {
+                        certificateType: iRecEnabled ? 'I-RECs' : 'certificates'
+                    }),
+                    t('user.feedback.roleChanged.canConfigureAutomatedOrderCreation')
                 ];
                 break;
             case Role.OrganizationAdmin:
                 actions = [
-                    'canRegisterDevices',
-                    'canRequestIssuenceOfIRec',
-                    'canConfigureAutomatedOrderCreation',
-                    'canAddOrRemoveOrgMembers',
-                    'connectOrgToIRec'
+                    t('user.feedback.roleChanged.canAddOrRemoveOrgMembers'),
+                    t('user.feedback.roleChanged.canEditUserRoles')
                 ];
+                if (iRecEnabled) {
+                    actions.push(t('user.feedback.roleChanged.connectOrgToIRec'));
+                }
                 break;
             default:
                 actions = [];
                 break;
         }
-        return actions.map((action) => `${prefix}.${action}`);
+        return actions.map((action) => action);
+    };
+
+    const closeRoleModal = () => {
+        setShowModal(false);
+        if (setShowIRec && iRecEnabled) {
+            setShowIRec(true);
+        } else if (!user.blockchainAccountAddress) {
+            setShowBlockchainModal(true);
+        } else {
+            history.push(getOrganizationLink());
+        }
+
+        const { rights: newRole } = user;
+        if (
+            (!setShowIRec &&
+                newRole === Role.OrganizationAdmin &&
+                !user.blockchainAccountAddress) ||
+            (!setShowIRec &&
+                newRole === Role.OrganizationDeviceManager &&
+                !user.blockchainAccountAddress)
+        ) {
+            setShowBlockchainModal(true);
+        }
     };
 
     return (
-        <Dialog open={showModal} onClose={() => setShowModal(false)} scroll="body">
-            <DialogTitle>
+        <Dialog open={showModal} onClose={() => closeRoleModal()} scroll="body">
+            <DialogTitle style={{ paddingBottom: '0' }}>
                 <Grid container>
                     <Grid item xs={3}>
                         <img src={OrgAddedIcon} style={{ maxWidth: '100%', maxHeight: '100%' }} />
@@ -112,16 +162,16 @@ export const RoleChangedModal = () => {
                             <br />
                             <br />
                             <Box
-                                fontSize={fontSizeSm}
+                                fontSize={fontSizeMd}
                                 fontWeight="fontWeightRegular"
                                 color="text.secondary"
                             >
                                 <Trans
-                                    style={{ fontSize: fontSizeSm }}
+                                    style={{ fontSize: fontSizeMd }}
                                     i18nKey={getAsRoleYouCan(user?.rights)}
                                     values={{
                                         orgName: user?.organization?.name,
-                                        admin: sender
+                                        admin: sender || `${user?.firstName} ${user?.lastName}`
                                     }}
                                 />
                             </Box>
@@ -129,32 +179,55 @@ export const RoleChangedModal = () => {
                     </Grid>
                 </Grid>
             </DialogTitle>
-            <DialogContent>
+            <DialogContent style={{ paddingTop: 0 }}>
                 <Grid container>
                     <Grid item xs={3}></Grid>
                     <Grid item xs={9}>
-                        <Box color="text.secondary" fontSize={fontSizeSm}>
-                            <List dense>
+                        <Box color="text.secondary" fontSize={fontSizeMd}>
+                            <List dense style={{ paddingTop: 0 }}>
                                 {allowedActions(user?.rights).map((action) => (
                                     <ListItem key={action}>
-                                        <ListItemIcon>
+                                        <ListItemIcon style={{ minWidth: 20 }}>
                                             <Brightness1 style={{ fontSize: 7, color: primary }} />
                                         </ListItemIcon>
-                                        <ListItemText>{t(action)}</ListItemText>
+                                        <ListItemText>{action}</ListItemText>
                                     </ListItem>
                                 ))}
                             </List>
-                            {[Role.OrganizationAdmin, Role.OrganizationDeviceManager].includes(
-                                user?.rights
+                            <br />
+                            <br />
+                            {isRole(user, Role.OrganizationAdmin) && (
+                                <div>
+                                    {t('user.feedback.roleChanged.asDeviceManagerYouCanAlso')}
+                                    <List dense>
+                                        {allowedActions(Role.OrganizationDeviceManager).map(
+                                            (action) => (
+                                                <ListItem key={action}>
+                                                    <ListItemIcon style={{ minWidth: 20 }}>
+                                                        <Brightness1
+                                                            style={{ fontSize: 7, color: primary }}
+                                                        />
+                                                    </ListItemIcon>
+                                                    <ListItemText>{t(action)}</ListItemText>
+                                                </ListItem>
+                                            )
+                                        )}
+                                    </List>
+                                    <br />
+                                    <br />
+                                </div>
+                            )}
+                            {isRole(
+                                user,
+                                Role.OrganizationAdmin,
+                                Role.OrganizationDeviceManager
                             ) && (
                                 <div>
                                     {t('user.feedback.roleChanged.asAMemberYouCanAlso')}
-                                    <br />
-                                    <br />
                                     <List dense>
                                         {allowedActions(Role.OrganizationUser).map((action) => (
                                             <ListItem key={action}>
-                                                <ListItemIcon>
+                                                <ListItemIcon style={{ minWidth: 20 }}>
                                                     <Brightness1
                                                         style={{ fontSize: 7, color: primary }}
                                                     />
@@ -170,7 +243,7 @@ export const RoleChangedModal = () => {
                 </Grid>
             </DialogContent>
             <DialogActions>
-                <Button color="primary" variant="contained" onClick={() => setShowModal(false)}>
+                <Button color="primary" variant="contained" onClick={() => closeRoleModal()}>
                     {t('general.responses.ok')}
                 </Button>
             </DialogActions>

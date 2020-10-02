@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Role, isRole, DeviceStatus, IOrganization } from '@energyweb/origin-backend-core';
+import { Role, isRole, DeviceStatus, IPublicOrganization } from '@energyweb/origin-backend-core';
 import { Link, Redirect } from 'react-router-dom';
 import { ProducingDevice } from '@energyweb/device-registry';
 import { useSelector, useDispatch } from 'react-redux';
@@ -66,7 +66,7 @@ export function ProducingDeviceTable(props: IOwnProps) {
         for (const device of producingDevices) {
             enriched.push({
                 device,
-                organizationName: (device?.organization as IOrganization).name,
+                organizationName: (device?.organization as IPublicOrganization).name,
                 locationText: getDeviceLocationText(device)
             });
         }
@@ -91,7 +91,7 @@ export function ProducingDeviceTable(props: IOwnProps) {
                     configuration.deviceTypeService
                 ) &&
                 (!props.owner ||
-                    (record?.device?.organization as IOrganization).id ===
+                    (record?.device?.organization as IPublicOrganization).id ===
                         user?.organization?.id) &&
                 (includedStatuses.length === 0 || includedStatuses.includes(record.device.status))
         );

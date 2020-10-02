@@ -27,13 +27,23 @@ export class FilesClient implements IFilesClient {
             this.endpoint,
             formData,
             {
-                headers: { 'Content-type': 'multipart/form-data' },
+                headers: {
+                    ...this.requestClient.config.headers,
+                    'Content-type': 'multipart/form-data'
+                },
                 onUploadProgress,
                 cancelToken: cancelTokenSource?.token
             }
         );
 
         return response.data;
+    }
+
+    public async download(id:string): Promise<any> {
+        const response = await this.requestClient.get<unknown, any>(`${this.endpoint}/${id}`, {
+            responseType: 'blob'
+        })
+        return response   
     }
 
     public getLink(id: string) {

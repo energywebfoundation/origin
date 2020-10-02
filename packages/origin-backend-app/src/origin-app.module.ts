@@ -4,10 +4,21 @@ import {
     entities as OriginBackendEntities
 } from '@energyweb/origin-backend';
 import { ISmartMeterReadingsAdapter } from '@energyweb/origin-backend-core';
+import { HTTPLoggingInterceptor } from '@energyweb/origin-backend-utils';
+import {
+    AppModule as IRECOrganizationModule,
+    entities as IRECOrganizationEntities
+} from '@energyweb/origin-organization-irec-api';
 import { DynamicModule, Module } from '@nestjs/common';
+import { APP_INTERCEPTOR } from '@nestjs/core';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
+import { MailModule } from './mail';
+import { NotificationModule } from './notification/notification.module';
+
 const OriginAppTypeOrmModule = () => {
+    const entities = [...OriginBackendEntities, ...ExchangeEntities, ...IRECOrganizationEntities];
+
     return process.env.DATABASE_URL
         ? TypeOrmModule.forRoot({
               type: 'postgres',
@@ -15,7 +26,7 @@ const OriginAppTypeOrmModule = () => {
               ssl: {
                   rejectUnauthorized: false
               },
-              entities: [...OriginBackendEntities, ...ExchangeEntities],
+              entities,
               logging: ['info']
           })
         : TypeOrmModule.forRoot({
@@ -25,7 +36,7 @@ const OriginAppTypeOrmModule = () => {
               username: process.env.DB_USERNAME ?? 'postgres',
               password: process.env.DB_PASSWORD ?? 'postgres',
               database: process.env.DB_DATABASE ?? 'origin',
-              entities: [...OriginBackendEntities, ...ExchangeEntities],
+              entities,
               logging: ['info']
           });
 };
@@ -38,8 +49,12 @@ export class OriginAppModule {
             imports: [
                 OriginAppTypeOrmModule(),
                 OriginBackendModule.register(smartMeterReadingsAdapter),
-                ExchangeModule
-            ]
+                ExchangeModule,
+                IRECOrganizationModule,
+                MailModule,
+                NotificationModule
+            ],
+            providers: [{ provide: APP_INTERCEPTOR, useClass: HTTPLoggingInterceptor }]
         };
     }
 }

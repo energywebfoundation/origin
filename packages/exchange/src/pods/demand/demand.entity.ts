@@ -1,4 +1,4 @@
-import { ExtendedBaseEntity } from '@energyweb/origin-backend';
+import { ExtendedBaseEntity } from '@energyweb/origin-backend-utils';
 import { TimeFrame, DemandStatus } from '@energyweb/utils-general';
 import BN from 'bn.js';
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';

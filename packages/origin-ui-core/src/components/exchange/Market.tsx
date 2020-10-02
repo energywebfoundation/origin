@@ -89,16 +89,16 @@ export function Market(props: IProps) {
                 onSubmit={null}
             >
                 {(formikProps) => {
-                    const { isValid, isSubmitting, setFieldValue, errors, values } = formikProps;
+                    const { isSubmitting, setFieldValue, errors, values } = formikProps;
 
-                    const totalPrice = isValid
-                        ? calculateTotalPrice(values.price, values.energy)
-                        : 0;
+                    const totalPrice =
+                        values.price && values.energy
+                            ? calculateTotalPrice(values.price, values.energy)
+                            : 0;
 
                     const fieldDisabled = isSubmitting;
 
-                    const notifyButtonEnabled =
-                        values.price && !errors?.price && !isSubmitting && !disableBidding;
+                    const notifyButtonEnabled = false;
                     const bidButtonEnabled =
                         values.price &&
                         values.energy &&
@@ -269,12 +269,14 @@ export function Market(props: IProps) {
                                     </Typography>
                                 </Grid>
                                 <Grid item xs={6}>
-                                    <Button
-                                        disabled={!notifyButtonEnabled}
-                                        onClick={() => onNotify(values)}
-                                    >
-                                        {t('exchange.actions.notify')}
-                                    </Button>
+                                    {notifyButtonEnabled && (
+                                        <Button
+                                            disabled={!notifyButtonEnabled}
+                                            onClick={() => onNotify(values)}
+                                        >
+                                            {t('exchange.actions.notify')}
+                                        </Button>
+                                    )}
                                     <Button
                                         disabled={!bidButtonEnabled}
                                         onClick={() => onBid(values)}

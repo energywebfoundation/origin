@@ -1,5 +1,5 @@
 import React from 'react';
-import { ArrowLeft, ArrowRight } from '@material-ui/icons';
+import { ArrowLeft, ArrowRight, Clear } from '@material-ui/icons';
 import { TextField, InputAdornment, TextFieldProps } from '@material-ui/core';
 import {
     DatePicker as DatePickerMaterial,
@@ -12,6 +12,8 @@ import { Moment, DATE_FORMAT_DMY } from '../../utils';
 interface ITextFieldWithArrowsEventHandlers {
     onLeftArrowClick: () => void;
     onRightArrowClick: () => void;
+    onClearClick?: () => void;
+    showClearButton: boolean;
 }
 
 type TextFieldWithArrowsProps = TextFieldProps & ITextFieldWithArrowsEventHandlers;
@@ -19,6 +21,8 @@ type TextFieldWithArrowsProps = TextFieldProps & ITextFieldWithArrowsEventHandle
 const TextFieldWithArrows = ({
     onLeftArrowClick,
     onRightArrowClick,
+    onClearClick,
+    showClearButton,
     ...rest
 }: TextFieldWithArrowsProps) => (
     <TextField
@@ -26,6 +30,16 @@ const TextFieldWithArrows = ({
         InputProps={{
             endAdornment: (
                 <InputAdornment position="end">
+                    {showClearButton && (
+                        <Clear
+                            style={{ cursor: 'pointer' }}
+                            onClick={(event) => {
+                                event.stopPropagation();
+
+                                onClearClick();
+                            }}
+                        />
+                    )}
                     <ArrowLeft
                         style={{ cursor: 'pointer' }}
                         onClick={(event) => {
@@ -51,6 +65,8 @@ const TextFieldWithArrows = ({
 export const FormikDatePickerWithArrows = ({
     onLeftArrowClick,
     onRightArrowClick,
+    onClearClick,
+    showClearButton,
     ...rest
 }: DatePickerProps & ITextFieldWithArrowsEventHandlers) => (
     <DatePicker
@@ -59,6 +75,8 @@ export const FormikDatePickerWithArrows = ({
             <TextFieldWithArrows
                 onLeftArrowClick={onLeftArrowClick}
                 onRightArrowClick={onRightArrowClick}
+                onClearClick={onClearClick}
+                showClearButton={showClearButton}
                 {...props}
             />
         )}
@@ -103,7 +121,11 @@ export const FormikDatePickerWithMonthArrowsFilled = ({
             component={FormikDatePickerWithArrows}
             disabled={disabled}
             views={['year', 'month']}
+            helperText={false}
+            error={false}
             format={null}
+            showClearButton={!!values[name]}
+            onClearClick={() => setFieldValue(name, null)}
             onLeftArrowClick={() =>
                 setFieldValue(
                     name,

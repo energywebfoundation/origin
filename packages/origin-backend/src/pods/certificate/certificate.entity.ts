@@ -1,7 +1,8 @@
-import { Entity, PrimaryColumn, OneToMany, OneToOne, JoinColumn, Column } from 'typeorm';
 import { ICertificateOwnership } from '@energyweb/origin-backend-core';
+import { ExtendedBaseEntity } from '@energyweb/origin-backend-utils';
+import { Column, Entity, JoinColumn, OneToMany, OneToOne, PrimaryColumn } from 'typeorm';
+
 import { OwnershipCommitment } from './ownership-commitment.entity';
-import { ExtendedBaseEntity } from '../ExtendedBaseEntity';
 
 @Entity()
 export class Certificate extends ExtendedBaseEntity implements ICertificateOwnership {

@@ -1,29 +1,35 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { useSelector } from 'react-redux';
 import { NavLink, Route, Redirect } from 'react-router-dom';
 
 import { PageContent } from '../PageContent/PageContent';
-import { getUserOffchain } from '../../features/users/selectors';
+import { getUserOffchain, getIRecAccount } from '../../features/users/selectors';
 import { AccountSettings } from './AccountSettings';
 import { UserRegister } from './UserRegister';
 import { dataTest, useLinks, useTranslation } from '../../utils';
 import { UserProfile } from './UserProfile';
 import { ConfirmEmail } from './ConfirmEmail';
+import { IRECConnectForm } from '../Organization/IRECConnectForm';
+import { OriginConfigurationContext } from '..';
+import { OriginFeature } from '@energyweb/utils-general';
 
 export function Account() {
     const userOffchain = useSelector(getUserOffchain);
 
     const { baseURL, getAccountLink } = useLinks();
     const { t } = useTranslation();
+    const { enabledFeatures } = useContext(OriginConfigurationContext);
 
     const isLoggedIn = Boolean(userOffchain);
+    const organization = useSelector(getUserOffchain)?.organization;
+    const iRecAccount = useSelector(getIRecAccount);
 
     const Menu = [
         {
             key: 'settings',
             label: 'settings.navigation.settings',
             component: AccountSettings,
-            hide: !isLoggedIn
+            hide: false
         },
         {
             key: 'user-register',
@@ -42,6 +48,16 @@ export function Account() {
             label: 'settings.navigation.confirmEmail',
             component: ConfirmEmail,
             hide: true
+        },
+        {
+            key: 'connect-irec',
+            label: 'settings.navigation.connectIREC',
+            component: IRECConnectForm,
+            hide:
+                !enabledFeatures.includes(OriginFeature.IRec) ||
+                !enabledFeatures.includes(OriginFeature.IRecConnect) ||
+                !organization ||
+                iRecAccount
         }
     ];
 

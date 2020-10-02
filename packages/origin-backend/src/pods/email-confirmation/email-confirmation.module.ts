@@ -1,11 +1,12 @@
 import { Module } from '@nestjs/common';
+import { CqrsModule } from '@nestjs/cqrs';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { EmailConfirmationService } from './email-confirmation.service';
+
 import { EmailConfirmation } from './email-confirmation.entity';
-import { NotificationModule } from '../notification';
+import { EmailConfirmationService } from './email-confirmation.service';
 
 @Module({
-    imports: [TypeOrmModule.forFeature([EmailConfirmation]), NotificationModule],
+    imports: [TypeOrmModule.forFeature([EmailConfirmation]), CqrsModule],
     providers: [EmailConfirmationService],
     controllers: [],
     exports: [EmailConfirmationService]

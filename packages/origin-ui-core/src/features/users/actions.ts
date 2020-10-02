@@ -1,8 +1,5 @@
-import {
-    IUser,
-    IOrganizationWithRelationsIds,
-    IOrganizationInvitation
-} from '@energyweb/origin-backend-core';
+import { IUser, IFullOrganization, IOrganizationInvitation } from '@energyweb/origin-backend-core';
+import { IUsersState } from './reducer';
 
 export enum UsersActions {
     setActiveBlockchainAccountAddress = 'USERS_SET_ACTIVE_BLOCKCHAIN_ACCOUNT_ADDRESS',
@@ -13,7 +10,8 @@ export enum UsersActions {
     refreshUserOffchain = 'REFRESH_USER_OFFCHAIN',
     addOrganizations = 'USERS_ADD_ORGANIZATIONS',
     setInvitations = 'USERS_SET_INVITATIONS',
-    setShowPendingInvitations = 'USERS_SET_SHOW_PENDING_INVITATIONS'
+    setUserState = 'USERS_SET_USER_STATE',
+    setIRecAccount = 'USERS_SET_IREC_ACCOUNT'
 }
 
 export interface ISetActiveBlockchainAccountAddressAction {
@@ -76,7 +74,7 @@ export type TClearAuthenticationTokenAction = typeof clearAuthenticationToken;
 
 export interface IAddOrganizationsAction {
     type: UsersActions.addOrganizations;
-    payload: IOrganizationWithRelationsIds[];
+    payload: IFullOrganization[];
 }
 
 export const addOrganizations = (payload: IAddOrganizationsAction['payload']) => ({
@@ -96,15 +94,24 @@ export const setInvitations = (
     payload
 });
 
-export interface ISetShowPendingInvitations {
-    type: UsersActions.setShowPendingInvitations;
-    payload: boolean;
+export interface ISetIRecAccountAction {
+    type: UsersActions.setIRecAccount;
+    payload;
 }
 
-export const setShowPendingInvitations = (
-    payload: ISetShowPendingInvitations['payload']
-): ISetShowPendingInvitations => ({
-    type: UsersActions.setShowPendingInvitations,
+export const setIRecAccount = (
+    payload: ISetIRecAccountAction['payload']
+): ISetIRecAccountAction => ({
+    type: UsersActions.setIRecAccount,
+    payload
+});
+export interface ISetUserState {
+    type: UsersActions.setUserState;
+    payload: IUsersState;
+}
+
+export const setUserState = (payload: ISetUserState['payload']): ISetUserState => ({
+    type: UsersActions.setUserState,
     payload
 });
 
@@ -118,4 +125,5 @@ export type IUsersAction =
     | IRefreshUserOffchainAction
     | IAddOrganizationsAction
     | ISetInvitationsAction
-    | ISetShowPendingInvitations;
+    | ISetUserState
+    | ISetIRecAccountAction;

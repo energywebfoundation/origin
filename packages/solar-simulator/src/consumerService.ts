@@ -68,7 +68,7 @@ export async function startConsumerService(
         const smartMeterReadings = await device.getSmartMeterReads();
         const latestSmRead = smartMeterReadings[smartMeterReadings.length - 1];
 
-        return latestSmRead?.meterReading ?? BigNumber.from(0);
+        return BigNumber.from(latestSmRead?.meterReading ?? 0);
     }
 
     async function saveProducingDeviceSmartMeterReads(

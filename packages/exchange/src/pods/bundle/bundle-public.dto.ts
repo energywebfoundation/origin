@@ -31,6 +31,7 @@ export class BundlePublicDTO {
         this.items = bundle.items.map((item) => new BundlePublicItemDTO(item));
         this.price = bundle.price;
         this.volume = bundle.volume;
+        this.available = bundle.available;
     }
 
     id: string;

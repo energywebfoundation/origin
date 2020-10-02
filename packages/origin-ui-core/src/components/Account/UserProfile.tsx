@@ -139,9 +139,11 @@ export function UserProfile() {
 
     async function signAndSend(blockchainAccountAddress: string): Promise<boolean> {
         try {
-            if (blockchainAccountAddress === activeBlockchainAccountAddress.toLowerCase())
-                throw Error('User has blockchain account already linked.');
-
+            if (activeBlockchainAccountAddress === null) {
+                throw Error(t('user.profile.noBlockchainConnection'));
+            } else if (blockchainAccountAddress === activeBlockchainAccountAddress.toLowerCase()) {
+                throw Error(t('user.profile.blockchainAlreadyLinked'));
+            }
             const signedMessage = await signTypedMessage(
                 activeBlockchainAccountAddress,
                 environment.REGISTRATION_MESSAGE_TO_SIGN,

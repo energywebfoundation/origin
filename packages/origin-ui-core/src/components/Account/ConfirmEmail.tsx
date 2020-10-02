@@ -1,35 +1,44 @@
 import React, { useEffect, useState } from 'react';
-import { useTranslation } from '../../utils';
+import { useTranslation, useLinks } from '../../utils';
 import { useSelector } from 'react-redux';
+import { showNotification, NotificationType } from '../../utils/notifications';
 
 import * as queryString from 'query-string';
 import { getOffChainDataSource } from '../..';
 import { EmailConfirmationResponse } from '@energyweb/origin-backend-core';
+import { useHistory } from 'react-router-dom';
+import { getUserOffchain } from '../../features/users/selectors';
 
 export function ConfirmEmail(props: any) {
     const { t } = useTranslation();
 
     const [confirmationState, setConfirmationState] = useState(null);
-    const [clientLoaded, setClientLoaded] = useState(false);
 
     const userClient = useSelector(getOffChainDataSource)?.userClient;
+    const user = useSelector(getUserOffchain);
 
-    if (userClient && !clientLoaded) {
-        setClientLoaded(true);
-    }
+    const history = useHistory();
+    const { getAccountLoginLink, getDefaultLink } = useLinks();
 
     const { token } = queryString.parse(props.location.search);
 
     useEffect(() => {
         async function confirm() {
-            if (!token || !clientLoaded) {
-                return false;
-            }
-
             return userClient.confirmEmail(token as string);
         }
-
-        confirm().then((result: EmailConfirmationResponse) => setConfirmationState(result));
+        if (userClient && token) {
+            confirm()
+                .then((result: EmailConfirmationResponse) => {
+                    setConfirmationState(result);
+                })
+                .then(() => {
+                    if (!user) {
+                        history.push(getAccountLoginLink());
+                    } else {
+                        history.push(getDefaultLink());
+                    }
+                });
+        }
     }, [userClient]);
 
     let message = null;
@@ -48,5 +57,12 @@ export function ConfirmEmail(props: any) {
             message = 'loading';
     }
 
-    return <div>{t(`user.feedback.emailConfirmation.${message}`)}</div>;
+    return (
+        <>
+            {showNotification(
+                t(`user.feedback.emailConfirmation.${message}`),
+                NotificationType.Success
+            )}
+        </>
+    );
 }

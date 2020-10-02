@@ -21,7 +21,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import bcrypt from 'bcryptjs';
 import { validate } from 'class-validator';
 import { DeepPartial, FindConditions, Repository, FindManyOptions } from 'typeorm';
-import { ExtendedBaseEntity } from '../ExtendedBaseEntity';
+import { ExtendedBaseEntity } from '@energyweb/origin-backend-utils';
 import { User } from './user.entity';
 import { EmailConfirmationService } from '../email-confirmation/email-confirmation.service';
 
@@ -86,7 +86,9 @@ export class UserService {
     }
 
     async findByEmail(email: string) {
-        return this.findOne({ email });
+        const lowerCaseEmail = email.toLowerCase();
+
+        return this.findOne({ email: lowerCaseEmail });
     }
 
     async getUserAndPasswordByEmail(
@@ -167,7 +169,7 @@ export class UserService {
         await this.repository.update(userId, { organization: { id: organizationId } });
     }
 
-    async removeOrganization(userId: number) {
+    async removeFromOrganization(userId: number) {
         await this.repository.update(userId, { organization: null });
     }
 
@@ -263,19 +265,34 @@ export class UserService {
         const { orgName, status, kycStatus } = filter;
 
         const isNullOrUndefined = (variable: any) => variable === null || variable === undefined;
-
-        const _orgName = `%${orgName ?? ''}%`;
-        const result = await this.repository
-            .createQueryBuilder('user')
-            .leftJoinAndSelect('user.organization', 'organization')
-            .where(
-                `organization.name ilike :_orgName ${
-                    isNullOrUndefined(status) ? '' : 'and user.status = :status'
-                } ${isNullOrUndefined(kycStatus) ? '' : 'and user.kycStatus = :kycStatus'}`,
-                { _orgName, status, kycStatus }
-            )
-            .getMany();
-
+        let result;
+        if (orgName === undefined || '') {
+            result = await this.repository
+                .createQueryBuilder('user')
+                .leftJoinAndSelect('user.organization', 'organization')
+                .where(
+                    `${isNullOrUndefined(status) ? '' : 'user.status = :status'} 
+            ${
+                isNullOrUndefined(kycStatus)
+                    ? ''
+                    : `${isNullOrUndefined(status) ? '' : ' and '} user.kycStatus = :kycStatus`
+            }`,
+                    { status, kycStatus }
+                )
+                .getMany();
+        } else {
+            const _orgName = `%${orgName}%`;
+            result = await this.repository
+                .createQueryBuilder('user')
+                .leftJoinAndSelect('user.organization', 'organization')
+                .where(
+                    `organization.name ilike :_orgName ${
+                        isNullOrUndefined(status) ? '' : 'and user.status = :status'
+                    } ${isNullOrUndefined(kycStatus) ? '' : 'and user.kycStatus = :kycStatus'}`,
+                    { _orgName, status, kycStatus }
+                )
+                .getMany();
+        }
         return result;
     }
 

@@ -1,4 +1,4 @@
-import { IOrganization, IUser, UserStatus, KYCStatus } from '@energyweb/origin-backend-core';
+import { IPublicOrganization, IUser, UserStatus, KYCStatus } from '@energyweb/origin-backend-core';
 import { Edit } from '@material-ui/icons';
 import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
@@ -65,8 +65,8 @@ export function AdminUsersTable() {
             user: i
         }));
 
-        newPaginatedData = newPaginatedData.slice(offset, offset + requestedPageSize);
         const newTotal = newPaginatedData.length;
+        newPaginatedData = newPaginatedData.slice(offset, offset + requestedPageSize);
 
         return {
             paginatedData: newPaginatedData,
@@ -96,7 +96,7 @@ export function AdminUsersTable() {
     ] as const;
 
     const rows = paginatedData.map(({ user }) => {
-        const organization = user.organization as IOrganization;
+        const organization = user.organization as IPublicOrganization;
 
         return {
             firstName: user.title + ' ' + user.firstName + ' ' + user.lastName,

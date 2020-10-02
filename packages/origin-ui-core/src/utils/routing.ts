@@ -28,6 +28,10 @@ export function getAccountLoginLink(baseURL: string) {
     return `${baseURL}/user-login`;
 }
 
+export function getUserProfileLink(baseURL: string) {
+    return `${getAccountLink(baseURL)}/user-profile`;
+}
+
 export function getDevicesAddLink(baseURL: string) {
     return `${getDevicesLink(baseURL)}/add`;
 }
@@ -58,6 +62,14 @@ export function getProducingDeviceDetailLink(baseURL: string, deviceId: string |
 
 export function getOrganizationViewLink(baseURL: string, id: string) {
     return `${getOrganizationLink(baseURL)}/organization-view/${id}`;
+}
+
+export function getOrganizationRegisterLink(baseURL) {
+    return `${getOrganizationLink(baseURL)}/organization-register`;
+}
+
+export function getOrganizationIRecRegisterLink(baseURL) {
+    return `${getOrganizationLink(baseURL)}/register-irec`;
 }
 
 export function getAdminLink(baseURL: string) {
@@ -95,9 +107,12 @@ export function useLinks() {
         getProducingDeviceDetailLink: (deviceId: string | number) =>
             getProducingDeviceDetailLink(baseURL, deviceId),
         getOrganizationViewLink: (id: string) => getOrganizationViewLink(baseURL, id),
+        getOrganizationRegisterLink: () => getOrganizationRegisterLink(baseURL),
+        getOrganizationIRecRegisterLink: () => getOrganizationIRecRegisterLink(baseURL),
         getUserRegisterLink: () => getUserRegisterLink(baseURL),
         getAccountLoginLink: () => getAccountLoginLink(baseURL),
         getAdminLink: () => getAdminLink(baseURL),
-        getBundlesLink: () => getBundlesLink(baseURL)
+        getBundlesLink: () => getBundlesLink(baseURL),
+        getUserProfileLink: () => getUserProfileLink(baseURL)
     };
 }

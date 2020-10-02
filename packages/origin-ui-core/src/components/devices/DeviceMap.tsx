@@ -7,7 +7,7 @@ import { useLinks } from '../../utils/routing';
 import { getProducingDevices } from '../../features/selectors';
 import { CircularProgress } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
-import { IOrganization } from '@energyweb/origin-backend-core';
+import { IPublicOrganization } from '@energyweb/origin-backend-core';
 import { getOffChainDataSource, getEnvironment } from '../../features/general/selectors';
 
 interface IProps {
@@ -19,7 +19,7 @@ export function DeviceMap(props: IProps) {
     const environment = useSelector(getEnvironment);
 
     const [deviceHighlighted, setDeviceHighlighted] = useState<ProducingDevice.Entity>(null);
-    const [organizations, setOrganizations] = useState<IOrganization[]>();
+    const [organizations, setOrganizations] = useState<IPublicOrganization[]>();
     const [map, setMap] = useState(null);
 
     const producingDevices = useSelector(getProducingDevices);
@@ -135,8 +135,9 @@ export function DeviceMap(props: IProps) {
                             <br />
                             {t('deviceMap.properties.owner')}:{' '}
                             {
-                                organizations?.find((o) => o?.id === deviceHighlighted.organization)
-                                    ?.name
+                                organizations?.find(
+                                    (o) => o?.id === deviceHighlighted.organization.id
+                                )?.name
                             }
                             <br />
                             <br />

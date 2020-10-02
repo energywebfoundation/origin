@@ -1,4 +1,5 @@
-import { call, put, select, take, fork, all } from 'redux-saga/effects';
+import { OriginFeature } from '@energyweb/utils-general';
+import { call, put, select, take, fork, all, getContext } from 'redux-saga/effects';
 import { SagaIterator } from 'redux-saga';
 import {
     UsersActions,
@@ -7,19 +8,22 @@ import {
     setAuthenticationToken,
     clearAuthenticationToken,
     IRefreshUserOffchainAction,
-    setInvitations
+    setUserState
 } from './actions';
-import { getOffChainDataSource } from '../general/selectors';
+import { getOffChainDataSource, getIRecClient } from '../general/selectors';
 import {
     IOffChainDataSource,
     IRequestClient,
     IUser,
     IOrganizationInvitation
 } from '@energyweb/origin-backend-core';
+import { Registration } from '../../utils/irec/types';
 import { GeneralActions, ISetOffChainDataSourceAction } from '../general/actions';
 import { reloadCertificates, clearCertificates } from '../certificates';
 import { clearBundles } from '../bundles';
 import { clearOrders } from '../orders/actions';
+import { getUserState } from './selectors';
+import { IUsersState } from './reducer';
 
 const LOCAL_STORAGE_KEYS = {
     AUTHENTICATION_TOKEN: 'AUTHENTICATION_TOKEN'
@@ -79,6 +83,7 @@ function* fetchOffchainUserDetails(): SagaIterator {
 
         const offChainDataSource: IOffChainDataSource = yield select(getOffChainDataSource);
         const userClient = offChainDataSource.userClient;
+        const features = yield getContext('enabledFeatures');
 
         if (
             !authenticationToken ||
@@ -89,26 +94,39 @@ function* fetchOffchainUserDetails(): SagaIterator {
         }
 
         try {
-            const userProfile: IUser = yield call([userClient, userClient.me]);
+            const userOffchain: IUser = yield call([userClient, userClient.me]);
 
-            yield put(
-                setUserOffchain({
-                    ...userProfile
-                })
-            );
-            const { organizationClient } = yield select(getOffChainDataSource);
+            const { invitationClient } = yield select(getOffChainDataSource);
             const invitations: IOrganizationInvitation[] = yield call(
-                [organizationClient, organizationClient.getInvitations],
+                [invitationClient, invitationClient.getInvitations],
                 null
             );
+            const userState: IUsersState = yield select(getUserState);
+
+            let iRecAccount: Registration[];
+
+            if (features.includes(OriginFeature.IRec)) {
+                const iRecClient = yield select(getIRecClient);
+                iRecAccount = userOffchain.organization
+                    ? yield call([iRecClient, iRecClient.getRegistrations], null)
+                    : [];
+            }
+
             yield put(
-                setInvitations(
-                    invitations.map((inv) => ({
-                        ...inv,
-                        createdAt: new Date(inv.createdAt)
-                    }))
-                )
+                setUserState({
+                    ...userState,
+                    userOffchain,
+                    iRecAccount,
+                    invitations: {
+                        ...userState.invitations,
+                        invitations: invitations.map((inv) => ({
+                            ...inv,
+                            createdAt: new Date(inv.createdAt)
+                        }))
+                    }
+                })
             );
+
             yield put(reloadCertificates());
         } catch (error) {
             console.log('error', error, error.response);

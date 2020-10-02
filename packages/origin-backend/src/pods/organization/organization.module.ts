@@ -1,22 +1,16 @@
 import { Module } from '@nestjs/common';
+import { CqrsModule } from '@nestjs/cqrs';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { FileModule } from '../file/file.module';
 
-import { Organization } from './organization.entity';
-import { OrganizationController } from './organization.controller';
 import { UserModule } from '../user/user.module';
-import { OrganizationInvitation } from './organization-invitation.entity';
+import { OrganizationController } from './organization.controller';
+import { Organization } from './organization.entity';
 import { OrganizationService } from './organization.service';
-import { NotificationModule } from '../notification';
-import { User } from '../user/user.entity';
-import { OrganizationInvitationService } from './organization-invitation.service';
 
 @Module({
-    imports: [
-        TypeOrmModule.forFeature([Organization, OrganizationInvitation, User]),
-        UserModule,
-        NotificationModule
-    ],
-    providers: [OrganizationService, OrganizationInvitationService],
+    imports: [TypeOrmModule.forFeature([Organization]), UserModule, FileModule, CqrsModule],
+    providers: [OrganizationService],
     controllers: [OrganizationController],
     exports: [OrganizationService]
 })

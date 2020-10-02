@@ -1,12 +1,26 @@
 import { ILoggedInUser } from '@energyweb/origin-backend-core';
-import { UserDecorator, ActiveUserGuard } from '@energyweb/origin-backend-utils';
-import { Controller, Get, Logger, UseGuards } from '@nestjs/common';
+import {
+    UserDecorator,
+    ActiveUserGuard,
+    NullOrUndefinedResultInterceptor
+} from '@energyweb/origin-backend-utils';
+import {
+    Controller,
+    Get,
+    Logger,
+    UseGuards,
+    UseInterceptors,
+    UsePipes,
+    ValidationPipe
+} from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 
 import { TradeDTO } from './trade.dto';
 import { TradeService } from './trade.service';
 
 @Controller('trade')
+@UseInterceptors(NullOrUndefinedResultInterceptor)
+@UsePipes(ValidationPipe)
 export class TradeController {
     private readonly logger = new Logger(TradeController.name);
 

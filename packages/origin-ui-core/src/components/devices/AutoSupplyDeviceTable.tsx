@@ -11,6 +11,7 @@ import {
 } from '@material-ui/core';
 import { Edit } from '@material-ui/icons';
 import { text } from '@storybook/addon-knobs';
+import { BigNumber } from 'ethers';
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { getOffChainDataSource } from '../../features/general/selectors';
@@ -106,7 +107,9 @@ export function AutoSupplyDeviceTable() {
             facility: device.facilityName,
             price: formatCurrencyComplete(device.defaultAskPrice / 100, text('currency', 'USD')),
             status: device.automaticPostForSale ? KeyStatus[1] : KeyStatus[2],
-            certified: EnergyFormatter.format(device.meterStats?.uncertified?.toNumber() ?? 0)
+            certified: EnergyFormatter.format(
+                BigNumber.from(device.meterStats?.uncertified ?? 0).toNumber()
+            )
         };
     });
 

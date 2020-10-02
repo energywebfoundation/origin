@@ -32,3 +32,5 @@ export const getAccountMismatchModalProperties = (state: IStoreState) =>
 
 export const getNoAccountModalVisibility = (state: IStoreState) =>
     state.general.noAccountModalVisibility;
+
+export const getIRecClient = (state: IStoreState) => state.general.iRecClient;

@@ -1,28 +1,26 @@
-import crypto from 'crypto';
-import { Logger, Injectable, ConflictException, BadRequestException } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
 import {
+    EmailConfirmationResponse,
     IEmailConfirmationToken,
-    IUser,
     ISuccessResponse,
-    ConfirmEmailEvent,
-    SupportedEvents,
-    EmailConfirmationResponse
+    IUser
 } from '@energyweb/origin-backend-core';
+import { BadRequestException, ConflictException, Injectable } from '@nestjs/common';
+import { EventBus } from '@nestjs/cqrs';
+import { InjectRepository } from '@nestjs/typeorm';
+import crypto from 'crypto';
 import moment from 'moment';
-import { EmailConfirmation } from './email-confirmation.entity';
+import { Repository } from 'typeorm';
+
 import { User } from '../user/user.entity';
-import { NotificationService } from '../notification/notification.service';
+import { EmailConfirmation } from './email-confirmation.entity';
+import { EmailConfirmationRequestedEvent } from './events';
 
 @Injectable()
 export class EmailConfirmationService {
-    private readonly logger = new Logger(EmailConfirmationService.name);
-
     constructor(
         @InjectRepository(EmailConfirmation)
         private readonly repository: Repository<EmailConfirmation>,
-        private readonly notificationService: NotificationService
+        private readonly eventBus: EventBus
     ) {}
 
     public async create(user: User): Promise<EmailConfirmation> {
@@ -110,15 +108,7 @@ export class EmailConfirmationService {
             ({ token, expiryTimestamp } = newToken);
         }
 
-        const eventData: ConfirmEmailEvent = {
-            email: email.toLowerCase(),
-            token
-        };
-
-        this.notificationService.handleEvent({
-            type: SupportedEvents.CONFIRM_EMAIL,
-            data: eventData
-        });
+        this.eventBus.publish(new EmailConfirmationRequestedEvent(email.toLowerCase(), token));
 
         return {
             success: true

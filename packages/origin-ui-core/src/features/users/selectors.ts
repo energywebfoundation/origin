@@ -1,5 +1,6 @@
 import { IStoreState } from '../../types';
 import { IOrganizationInvitation } from '@energyweb/origin-backend-core';
+import { IUsersState } from './reducer';
 
 export const getActiveBlockchainAccountAddress = (state: IStoreState) =>
     state.users.activeBlockchainAccountAddress;
@@ -13,3 +14,7 @@ export const getInvitations = (state: IStoreState): IOrganizationInvitation[] =>
 
 export const getShowPendingInvitations = (state: IStoreState): boolean =>
     state.users.invitations.showPendingInvitationsModal;
+
+export const getIRecAccount = (state: IStoreState) => state.users.iRecAccount;
+
+export const getUserState = (state: IStoreState): IUsersState => state.users;

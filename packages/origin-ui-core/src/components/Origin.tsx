@@ -38,7 +38,9 @@ export function Origin() {
 
         let middleware: StoreEnhancer;
 
-        const sagaMiddleware = createSagaMiddleware();
+        const sagaMiddleware = createSagaMiddleware({
+            context: originConfiguration
+        });
 
         if (IS_PRODUCTION) {
             middleware = applyMiddleware(routerMiddleware(newHistory), sagaMiddleware);

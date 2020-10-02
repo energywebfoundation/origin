@@ -218,7 +218,8 @@
                 "import": "Import",
                 "login": "Login",
                 "registerUser": "Register user",
-                "userProfile": "User profile"
+                "userProfile": "User profile",
+                "connectIREC": "Connect I-REC"
             }
             
         },
@@ -231,6 +232,8 @@
             },
             "actions": {
                 "update": "Update",
+                "maybeLater": "Maybe Later",
+                "connectAddress": "Connect Address",
                 "continue": "Continue",
                 "cancel": "Cancel",
                 "search": "Search",
@@ -248,13 +251,16 @@
                 "blockchainAccountMismatch": "Blockchain account mismatch",
                 "noBlockchainAccount": "No blockchain account detected",
                 "registerOrLoginTryAgain": "Please log in or register to the platform, then try again.",
-                "hasToBeActiveUser": "User has to be approved by the platform admin."
+                "hasToBeActiveUser": "User has to be approved by the platform admin.",
+                "supportTeamGetInContact": "Our support team will get in contact with you shortly to sort out the issue."
             },
             "info": {
                 "tryingToSignAndBoundIs": "You are trying to sign a transaction with account different than the one that has been linked to your account. Blockchain address bound to your user is:",
                 "andYouAreTrying": "and you are trying to use address:",
                 "noBlockchainAccount1": "Make sure you have the MetaMask browser extension installed and set up.",
-                "noBlockchainAccount2": "Check the User Settings page and make sure your blockchain account is verified."
+                "noBlockchainAccount2": "Check the User Settings page and make sure your blockchain account is verified.",
+                "connectBlockchainTitle": "Connect Blockchain Address",
+                "connectBlockchainContent": "In order to unlock all functionalities of the marketplace, like requesting certificate issuance, users have to connect a blockchain address"
             }
         },
         "importAccount": {
@@ -364,23 +370,25 @@
                     "alreadyConfirmed": "Already confirmed.",
                     "confirmed": "Email confirmed successfully.",
                     "expired": "Confirmation link expired.",
-                    "loading:": "Loading..."
+                    "loading": "Loading..."
                 },
                 "roleChanged": {
                     "succesfullyJoinedOrg": "Successfully joined {{orgName}}",
                     "asMemberYouCan": "You have successfully joined {{orgName}} of {{admin}}. As a member you can",
-                    "asDeviceManYouCan": "You have successfully joined {{orgName}} of {{admin}}. As a Device Manager you have permissions",
-                    "asOrgAdminYouCan": "You have successfully joined {{orgName}} of {{admin}}. As an Organization Admin you have permissions",
-                    "canPlaceOrder": "Place orders on the exchange",
-                    "canBuyIRec": "Directly buy I-RECs",
-                    "canCreateAndBuyIRecBundles": "Create and buy I-REC bundles",
-                    "canRedeemIRec": "Redeem I-RECs",
-                    "canWidrawIRec": "Withdraw I-RECs to organization’s own participant account",
-                    "canRegisterDevices": "Register devices and device groups",
-                    "canRequestIssuenceOfIRec": "Request the issuance of I-RECs",
-                    "canConfigureAutomatedOrderCreation": "Configure automated order creation",
+                    "asDeviceManYouCan": "You have successfully joined {{orgName}} of {{admin}}. As a Device Manager you have permission to",
+                    "asOrgAdminYouCan": "You have successfully joined {{orgName}} of {{admin}}. As an Organization Admin you have permission to",
                     "canAddOrRemoveOrgMembers": "Add or remove members from the organization",
+                    "canEditUserRoles": "Give and edit user roles",
+                    "canPlaceOrder": "Place orders on the exchange",
+                    "canBuyCertificates": "Directly buy {certificateType}",
+                    "canCreateAndBuyCertificateBundles": "Create and buy {certificateType} bundles",
+                    "canRedeemCertificates": "Redeem {certificateType}",
+                    "canWithdrawCertificates": "Withdraw {certificateType} to organization’s own participant account",
+                    "canRegisterDevices": "Register devices and device groups",
+                    "canRequestIssuenceOfCertificates": "Request the issuance of {certificateType}",
+                    "canConfigureAutomatedOrderCreation": "Configure automated order creation",
                     "connectOrgToIRec": "Connect the organization to the I-REC registry",
+                    "asDeviceManagerYouCanAlso": "You can also perform all actions of a device manager",
                     "asAMemberYouCanAlso": "You can also perform all actions that a regular organization member can perform"
                 }
             },
@@ -394,10 +402,14 @@
                 "updatePassword": "User password updated.",
                 "errorUpdatePassword": "Error to update User password.",
                 "updateChainAddress": "User blockchain address update.",
-                "errorUpdateChainAddress": "Error to update User blockchain address."
+                "errorUpdateChainAddress": "Error to update User blockchain address.",
+                "noBlockchainConnection": "No blockchain connection detected, please visit <a href='https://metamask.io/' target='_blank'>metamask.io</a> and follow the instructions. If you have MetaMask installed, be logged-in, have the page connected and try to refresh.",
+                "blockchainAlreadyLinked": "User has blockchain account already linked."
             },
             "dialog": {
-                "dontHaveAccAsk": "Don't have an account?"
+                "dontHaveAccAsk": "Don't have an account?",
+                "userRegisteredModalTitle": "Thanks for registering a user on the marketplace",
+                "userRegisteredModalContent": "You should have received an E-Mail from us. In order to activate your user, please confirm your E-Mail address by clicking the confirmation link in the E-Mail"
             }
         },
         "notification": {
@@ -454,8 +466,8 @@
                     "admin": "Admin"
                 },
                 "dialog": {
-                    "invitationsModalTitle": "Invitation to join the [marketplace name]",
-                    "invitationMessage": "{{admin}} has invited you to join the [marketplace name] as a {{role}} for {{orgName}}. Click accept to join the Organization"
+                    "invitationsModalTitle": "Invitation to join the marketplace",
+                    "invitationMessage": "{{admin}} has invited you to join the marketplace as a {{role}} for {{orgName}}. Click accept to join the Organization"
                 },
                 "actions": {
                     "later": "Maybe later",
@@ -465,13 +477,15 @@
                 "notification": {
                     "rejectedSuccess":"Invitation rejected",
                     "rejectedFailure": "Could not reject invitation",
-                    "acceptedSuccess": "Invitaion accepted",
+                    "acceptedSuccess": "Invitation accepted",
                     "acceptedFailure": "Could not reject invitation",
                     "laterSuccess": "You can find this invitation on the Organizations tab",
                     "laterFailure": "Could not process invitation"
                 }
             },
             "registration": {
+                "loginNoInvitationsModalTitle": "Thank you for registering as a user on the marketplace",
+                "loginNoInvitationsModalContent": "To unlock all the functionalities of the marketplace, like trading I-RECs, users also need to register an organization.",
                 "registerOrganization": "Register organization",
                 "organizationInformation": "Organization information",
                 "organizationName": "Organization Name",
@@ -490,9 +504,58 @@
                 "signatoryInformation": "Authorized Signatory Information",
                 "signatoryName": "Signatory Full Name",
                 "signatoryAddress": "Signatory Address",
-                "signatoryEmail": "Singatory Email",
+                "signatoryEmail": "Signatory Email",
                 "signatoryTelephone": "Signatory Telephone",
-                "uploadSignatoryId": "Upload Singatory ID"
+                "uploadSignatoryId": "Upload Signatory ID",
+                "organizationCouldNotBeRegistered": "Sorry but this organization could not be registered.",
+                "organizationAlreadyExists": "There already exists an organization with the same information.",
+                "titleConnectOrRegisterIREC": "Thank you for registering organization on marketplace!",
+                "checkingInfoToApprove":"We are checking your information as soon as possible and will contact you once everything is approved and you can start trading.",
+                "contentConnectOrRegisterIREC": "In order to register devices and request I-RECs, users also need to connect an I-REC account.",
+                "titleIRecInfoSuccess": "Thank you for providing your I-REC account information.",
+                "contentIRecInfoSuccess": "We will connect your organization to this account shortly!",
+                "titleIRecAccountRegistered": "Thank you for registering an I-REC account!",
+                "contentIRecAccountRegistered":"We will forward your application to I-REC and inform you as soon as it is approved.",
+                "titleConnectIREC": "Requesting I-REC API Access",
+                "platformOrganizationId": "Platform Organization ID",
+                "IRECAPICredentials": "I-REC API Credentials",
+                "IRECUsername": "IREC username",
+                "apiToken": "API token",
+                "clientID": "Client ID",
+                "clientSecret": "Client Secret",
+                
+                "titleRegisterIREC": "I-REC Registration information",
+                "IRECAccountType": "I-REC Account type",
+                "irecParticipantDescription": "Participant Account for managing certificates outside of the marketplace",
+                "irecRegistrantDescription": "Registrant Account for managing devices",
+                "irecBothDescription": "Both Registrant and Participant Account",
+                "orgHeadquatersCompany": "Organization Headquaters Company",
+                "yearOfRegistration": "Year of Registration",
+                "numberOfEmployees": "Number of employees",
+                "shareholderNames": "Shareholder Names (over 10%)",
+                "orgWebsite": "Organization Website",
+                "activeCountries": "Active Countries",
+                "mainBusiness":"Main Business",
+                "ceoName":"Name of the Chief Executive Officer/General Manager",
+                "ceoPassport": "Chief Executive Officer/General Manager passport number",
+                "lastBalance": "Balance sheet total for last financial year",
+                "existingIRECOrg": "Existing IREC organization(s) to become subsidiary",
+                "documents": "Documents",
+                "companyProof":"Company Proof",
+                "signatoryId": "Signatory ID",
+                "actions":{
+                    "notNow": "Not now",
+                    "connectIREC": "Connect existing I-REC account",
+                    "registerIREC": "Register new I-REC account",
+                    "connectOrganization": "Connect organization",
+                    "registerOrganization": "Register organization"
+                },
+                "organizationStatus": {
+                    "status": "Status",
+                    "submitted": "Submitted",
+                    "denied": "Denied",
+                    "active": "Active"
+                }
             }
         },
         "bundle": {

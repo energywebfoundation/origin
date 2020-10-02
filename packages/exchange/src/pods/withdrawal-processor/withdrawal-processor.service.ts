@@ -8,7 +8,6 @@ import { Contract, ContractTransaction, ethers, Wallet, ContractReceipt } from '
 import { Subject } from 'rxjs';
 import { concatMap, tap } from 'rxjs/operators';
 
-import { AccountBalanceService } from '../account-balance/account-balance.service';
 import { TransferDirection } from '../transfer/transfer-direction';
 import { TransferStatus } from '../transfer/transfer-status';
 import { Transfer } from '../transfer/transfer.entity';
@@ -30,8 +29,6 @@ export class WithdrawalProcessorService implements OnModuleInit {
         private readonly configService: ConfigService,
         @Inject(forwardRef(() => TransferService))
         private readonly transferService: TransferService,
-        @Inject(forwardRef(() => AccountBalanceService))
-        private readonly accountBalanceService: AccountBalanceService,
         private readonly moduleRef: ModuleRef
     ) {}
 
@@ -64,11 +61,15 @@ export class WithdrawalProcessorService implements OnModuleInit {
         );
 
         const balance = await this.wallet.getBalance();
-        if (balance.lt(ethers.utils.parseEther('1'))) {
+        const minBalance = ethers.utils.parseEther(
+            this.configService.get<string>('EXCHANGE_WALLET_MIN_EWT') ?? '1'
+        );
+
+        if (balance.lt(minBalance)) {
             this.logger.error(
-                `Withdrawal wallet has not enough EWT tokens, expected at least 1 but has ${ethers.utils.formatEther(
-                    balance
-                )}`
+                `Withdrawal wallet has not enough EWT tokens, expected at least ${ethers.utils.formatEther(
+                    minBalance
+                )} but has ${ethers.utils.formatEther(balance)}`
             );
 
             throw new Error('Not enough funds');

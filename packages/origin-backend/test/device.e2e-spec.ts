@@ -2,11 +2,11 @@
 import {
     DeviceSettingsUpdateData,
     DeviceStatus,
-    IDeviceWithRelationsIds,
     Role,
     ILoggedInUser,
     DeviceCreateData,
-    OrganizationStatus
+    OrganizationStatus,
+    IDevice
 } from '@energyweb/origin-backend-core';
 import { expect } from 'chai';
 import { BigNumber } from 'ethers';
@@ -15,12 +15,12 @@ import request from 'supertest';
 import dotenv from 'dotenv';
 
 import { INestApplication } from '@nestjs/common';
+import { DatabaseService } from '@energyweb/origin-backend-utils';
 import { bootstrapTestInstance, registerAndLogin } from './origin-backend';
 import { DeviceService } from '../src/pods/device/device.service';
 import { OrganizationService } from '../src/pods/organization/organization.service';
 import { UserService } from '../src/pods/user/user.service';
 import { CertificationRequestService } from '../src/pods/certification-request/certification-request.service';
-import { DatabaseService } from './database.service';
 
 describe('Device e2e tests', () => {
     dotenv.config({
@@ -54,7 +54,11 @@ describe('Device e2e tests', () => {
         timezone: '',
         typeOfPublicSupport: '',
         deviceGroup: '',
-        smartMeterReads: [],
+        smartMeterReads: [
+            { timestamp: 10000, meterReading: BigNumber.from(100) },
+            { timestamp: 11000, meterReading: BigNumber.from(200) },
+            { timestamp: 12000, meterReading: BigNumber.from(300) }
+        ],
         externalDeviceIds: [{ id: externalDeviceId, type: process.env.ISSUER_ID }],
         automaticPostForSale: false,
         defaultAskPrice: null
@@ -77,7 +81,7 @@ describe('Device e2e tests', () => {
     });
 
     beforeEach(async () => {
-        await databaseService.truncate('user', 'organization', 'device');
+        await databaseService.truncate('user', 'platform_organization', 'device');
     });
 
     after(async () => {
@@ -129,7 +133,7 @@ describe('Device e2e tests', () => {
             .get(`/device/${deviceId}`)
             .set('Authorization', `Bearer ${accessToken}`)
             .expect((res) => {
-                const device = res.body as IDeviceWithRelationsIds;
+                const device = res.body as IDevice;
                 expect(device.defaultAskPrice).equals(null);
                 expect(device.automaticPostForSale).equals(false);
             });
@@ -176,7 +180,7 @@ describe('Device e2e tests', () => {
             .get(`/device/${deviceId}`)
             .set('Authorization', `Bearer ${accessToken}`)
             .expect((res) => {
-                const device = res.body as IDeviceWithRelationsIds;
+                const device = res.body as IDevice;
 
                 expect(device.defaultAskPrice).equals(settingWithCorrectPrice.defaultAskPrice);
                 expect(device.automaticPostForSale).equals(true);
@@ -221,10 +225,15 @@ describe('Device e2e tests', () => {
             .get(`/device/${device.id}?withMeterStats=true`)
             .set('Authorization', `Bearer ${accessToken}`)
             .expect((res) => {
-                const resultDevice = res.body as IDeviceWithRelationsIds;
+                const resultDevice = res.body as IDevice;
+
+                const [firstRead] = resultDevice.smartMeterReads;
 
                 expect(BigNumber.from(resultDevice.meterStats.certified).toNumber()).equals(0);
-                expect(BigNumber.from(resultDevice.meterStats.uncertified).toNumber()).equals(0);
+                expect(BigNumber.from(resultDevice.meterStats.uncertified).toNumber()).equals(300);
+
+                expect(BigNumber.from(firstRead.timestamp).toNumber()).equals(10000);
+                expect(BigNumber.from(firstRead.meterReading).toNumber()).equals(100);
             });
 
         const now = moment();
@@ -282,7 +291,7 @@ describe('Device e2e tests', () => {
             .get(`/device/${device.id}?withMeterStats=true`)
             .set('Authorization', `Bearer ${accessToken}`)
             .expect((res) => {
-                const resultDevice = res.body as IDeviceWithRelationsIds;
+                const resultDevice = res.body as IDevice;
 
                 expect(
                     BigNumber.from(resultDevice.meterStats.certified).toNumber()

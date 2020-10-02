@@ -1,17 +1,20 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { useSelector } from 'react-redux';
 import { NavLink, Route, Redirect } from 'react-router-dom';
 import { Role, isRole, UserStatus } from '@energyweb/origin-backend-core';
+import { OriginConfigurationContext } from '..';
+import { OriginFeature } from '@energyweb/utils-general';
 
 import { PageContent } from '../PageContent/PageContent';
 import { useLinks } from '../../utils/routing';
-import { getUserOffchain } from '../../features/users/selectors';
+import { getUserOffchain, getIRecAccount, getInvitations } from '../../features/users/selectors';
 import { OrganizationTable } from './OrganizationTable';
 import { OrganizationView } from './OrganizationView';
 import { OrganizationInvite } from './OrganizationInvite';
 import { OrganizationInvitations } from './OrganizationInvitations';
 import { OrganizationUsersTable } from './OrganizationUsersTable';
-import { PlatformOrganizationRegistrationForm } from './PlatformOrganizationRegistrationForm';
+import { OrganizationForm } from './OrganizationForm';
+import { IRECRegisterForm } from './IRECRegisterForm';
 
 export const roleNames = {
     [Role.OrganizationUser]: 'organization.invitations.roles.member',
@@ -21,67 +24,82 @@ export const roleNames = {
 
 export function Organization() {
     const user = useSelector(getUserOffchain);
+    const invitations = useSelector(getInvitations);
+    const showInvitations: boolean =
+        user?.organization?.id && isRole(user, Role.OrganizationAdmin)
+            ? true
+            : invitations.length > 0;
 
     const { getOrganizationLink } = useLinks();
+    const { enabledFeatures } = useContext(OriginConfigurationContext);
 
     const isLoggedIn = Boolean(user);
+    const userIsActive = user && user.status === UserStatus.Active;
+    const organization = useSelector(getUserOffchain)?.organization;
+    const iRecAccount = useSelector(getIRecAccount);
 
     const Menu = [
         {
             key: 'my-organization',
             label: 'My Organization',
             component: OrganizationView,
-            hide: !user?.organization?.id
+            show: user?.organization?.id
         },
         {
             key: 'organization-users',
             label: 'Members',
             component: OrganizationUsersTable,
-            hide: !user?.organization?.id || !isRole(user, Role.OrganizationAdmin)
+            show: user?.organization?.id && isRole(user, Role.OrganizationAdmin)
         },
         {
             key: 'organization-invitations',
             label: 'Invitations',
             component: OrganizationInvitations,
-            hide: !isLoggedIn
+            show: showInvitations
         },
         {
             key: 'organization-invite',
             label: 'Invite',
             component: OrganizationInvite,
-            hide: user?.status !== UserStatus.Active || !isRole(user, Role.OrganizationAdmin)
+            show: userIsActive && user?.organization?.id && isRole(user, Role.OrganizationAdmin)
         },
         {
             key: 'organization-register',
             label: 'Register',
-            component: PlatformOrganizationRegistrationForm,
-            hide: user?.organization?.id
+            component: OrganizationForm,
+            show: !user?.organization?.id
         },
         {
             key: 'organization-table',
             label: 'All organizations',
             component: OrganizationTable,
-            hide:
-                !isLoggedIn ||
-                user.status !== UserStatus.Active ||
-                !isRole(user, Role.Admin, Role.SupportAgent)
+            show: isLoggedIn && userIsActive && isRole(user, Role.Admin, Role.SupportAgent)
         },
         {
             key: 'organization-view',
             label: 'View',
             component: OrganizationView,
-            hide: true
+            show: false
+        },
+        {
+            key: 'register-irec',
+            label: 'Register I-REC',
+            component: IRECRegisterForm,
+            show:
+                enabledFeatures.includes(OriginFeature.IRec) &&
+                organization &&
+                iRecAccount.length === 0 &&
+                !isRole(user, Role.Admin, Role.SupportAgent)
         }
     ];
-
-    const firstNotHiddenRoute = Menu.filter((i) => !i.hide)[0]?.key;
+    const firstNotHiddenRoute = Menu.filter((i) => i.show)[0]?.key;
 
     return (
         <div className="PageWrapper">
             <div className="PageNav">
                 <ul className="NavMenu nav">
                     {Menu.map((menu) => {
-                        if (menu.hide) {
+                        if (!menu.show) {
                             return null;
                         }
 

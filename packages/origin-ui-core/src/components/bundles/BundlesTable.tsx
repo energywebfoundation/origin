@@ -15,6 +15,8 @@ import {
 } from '../..';
 import { EnergyTypes } from '../../utils/device';
 import { useSelector, useDispatch } from 'react-redux';
+import { Role, isRole, UserStatus } from '@energyweb/origin-backend-core';
+import { getUserOffchain } from '../../features/users/selectors';
 
 import { Bundle, IExchangeClient } from '../../utils/exchange';
 import { Visibility, Add, Cancel as CancelIcon } from '@material-ui/icons';
@@ -40,6 +42,8 @@ interface IOwnProps {
 const ENERGY_COLUMNS_TO_DISPLAY = [EnergyTypes.SOLAR, EnergyTypes.WIND, EnergyTypes.HYDRO];
 
 export const BundlesTable = (props: IOwnProps) => {
+    const user = useSelector(getUserOffchain);
+    const userIsActive = user && user.status === UserStatus.Active;
     const { owner = false } = props;
     const allBundles = useSelector(getBundles);
     const exchangeClient: IExchangeClient = useSelector(getExchangeClient);
@@ -61,6 +65,10 @@ export const BundlesTable = (props: IOwnProps) => {
         },
         sortAscending: false
     });
+    const userIsActiveAndPartOfOrg = () =>
+        user?.organization &&
+        userIsActive &&
+        isRole(user, Role.OrganizationUser, Role.OrganizationDeviceManager, Role.OrganizationAdmin);
 
     async function getPaginatedData({
         requestedPageSize,
@@ -131,14 +139,15 @@ export const BundlesTable = (props: IOwnProps) => {
         { id: 'price', label: t('bundle.properties.price') }
     ];
 
-    const actions: any[] = [
-        {
+    const actions: any[] = [];
+
+    if (isBundleDetailsVisible) {
+        actions.push({
             icon: <Visibility />,
             name: 'View details',
             onClick: (row: string) => viewDetails(parseInt(row, 10))
-        }
-    ];
-
+        });
+    }
     if (owner) {
         actions.push({
             icon: <CancelIcon />,
@@ -162,17 +171,19 @@ export const BundlesTable = (props: IOwnProps) => {
                 handleRowClick={(rowIndex: string) => viewDetails(parseInt(rowIndex, 10))}
             />
             {isBundleDetailsVisible && <BundleDetails bundle={selected} owner={owner} />}
-            <Link to={'/certificates/create_bundle'}>
-                <Tooltip title={t('certificate.actions.create_bundle')}>
-                    <Fab
-                        color="primary"
-                        aria-label="add"
-                        style={{ position: 'relative', marginTop: '20px', float: 'right' }}
-                    >
-                        <Add />
-                    </Fab>
-                </Tooltip>
-            </Link>
+            {userIsActiveAndPartOfOrg() && (
+                <Link to={'/certificates/create_bundle'}>
+                    <Tooltip title={t('certificate.actions.create_bundle')}>
+                        <Fab
+                            color="primary"
+                            aria-label="add"
+                            style={{ position: 'relative', marginTop: '20px', float: 'right' }}
+                        >
+                            <Add />
+                        </Fab>
+                    </Tooltip>
+                </Link>
+            )}
             <BundleBought open={showBundleBoughtModal} setOpen={setShowBundleBoughtModal} />
         </>
     );

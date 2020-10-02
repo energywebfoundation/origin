@@ -1,228 +1,221 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { useSelector } from 'react-redux';
-import { makeStyles, createStyles, useTheme, Paper, Grid, TextField } from '@material-ui/core';
+import { useParams } from 'react-router-dom';
+import {
+    OriginFeature,
+    Countries,
+    IRECBusinessLegalStatusLabelsMap
+} from '@energyweb/utils-general';
+import { OrganizationStatus } from '@energyweb/origin-backend-core';
+import { OriginConfigurationContext } from '..';
+import { makeStyles, createStyles, useTheme, Paper, Grid, TextField, Box } from '@material-ui/core';
 import { Skeleton } from '@material-ui/lab';
-import { Countries } from '@energyweb/utils-general';
+import { getIRecClient } from '../../features/general/selectors';
 import { getUserOffchain } from '../../features/users/selectors';
+import { getOffChainDataSource, useTranslation } from '../..';
+import { IRECOrganizationView } from './IRECOrganizationView';
+import { Registration } from '../../utils/irec';
+import { DownloadDocuments } from './DownloadDocuments';
 
 interface IFormValues {
-    code: string;
     name: string;
-    contact: string;
-    telephone: string;
-    email: string;
     address: string;
-    shareholders: string;
-    ceoPassportNumber: string;
-    ceoName: string;
-    companyNumber: string;
+    businessType: string;
+    city: string;
+    zipCode: string;
+    country: number;
+    tradeRegistryCompanyNumber: string;
     vatNumber: string;
-    postcode: string;
-    headquartersCountry: string;
-    country: string;
-    businessTypeSelect: string;
-    businessTypeInput: string;
-    yearOfRegistration: number | '';
-    numberOfEmployees: number | '';
-    website: string;
-    activeCountries: string;
+    signatoryAddress: string;
+    signatoryCity: string;
+    signatoryCountry: number;
+    signatoryEmail: string;
+    signatoryFullName: string;
+    signatoryPhoneNumber: string;
+    signatoryZipCode: string;
+    status: string;
+    signatoryDocumentIds?: string[];
+    documentIds?: string[];
 }
 
 export function OrganizationView() {
     const userOffchain = useSelector(getUserOffchain);
-
+    const organizationClient = useSelector(getOffChainDataSource)?.organizationClient;
+    const params: { id?: string } = useParams();
+    const { enabledFeatures } = useContext(OriginConfigurationContext);
     const [formValues, setFormValues] = useState<IFormValues>(null);
-
+    const [iRecData, setIRecData] = useState(null);
+    const iRecClient = useSelector(getIRecClient);
     const useStyles = makeStyles(() =>
         createStyles({
             container: {
-                padding: '10px'
+                padding: '20px',
+                marginBottom: '20px'
             }
         })
     );
-
+    const { t } = useTranslation();
     const classes = useStyles(useTheme());
 
-    useEffect(() => {
-        const organization = userOffchain?.organization;
-        if (organization) {
-            const activeCountriesParsed: number[] = JSON.parse(organization.activeCountries);
-            setFormValues({
-                ...organization,
-                headquartersCountry: Countries.find(
-                    (c) => c.id === organization.headquartersCountry
-                ).name,
-                activeCountries: Countries.filter((c) => activeCountriesParsed.includes(c.id))
-                    .map((country) => country.name)
-                    .join(', '),
-                country: Countries.find((c) => c.id === organization.country).name
-            });
+    const setBusinessType = (type) => {
+        if (parseInt(type, 10)) {
+            return IRECBusinessLegalStatusLabelsMap[type];
+        } else {
+            return type;
         }
-    }, [userOffchain]);
+    };
+
+    const setValues = (organization) => {
+        setFormValues({
+            ...organization,
+            businessType: setBusinessType(organization.businessType),
+            country: Countries.find((c) => c.id === organization.country).name,
+            signatoryCountry: Countries.find((c) => c.id === organization.signatoryCountry).name,
+            status: OrganizationStatus[organization.status].toLowerCase()
+        });
+    };
+
+    useEffect(() => {
+        const getOrganization = async () => {
+            let iRecOrg: Registration[];
+            if (enabledFeatures.includes(OriginFeature.IRec)) {
+                iRecOrg = await iRecClient.getRegistrations();
+            }
+            const organization = params.id
+                ? await organizationClient.getById(parseInt(params.id, 10))
+                : userOffchain?.organization;
+            if (organization) {
+                setValues(organization);
+
+                if (enabledFeatures.includes(OriginFeature.IRec)) {
+                    const owner = params.id ? parseInt(params.id, 10) : organization.id;
+                    setIRecData(iRecOrg?.filter((org) => parseInt(org.owner, 10) === owner)[0]);
+                }
+            }
+        };
+        getOrganization();
+    }, [params]);
 
     if (!formValues) {
         return <Skeleton variant="rect" height={200} />;
     }
 
     return (
-        <Paper className={classes.container}>
-            <Grid container spacing={3}>
-                <Grid item xs={6}>
-                    <TextField
-                        label="Code"
-                        className="mt-3"
-                        value={formValues.code}
-                        fullWidth
-                        disabled
-                    />
-
-                    <TextField
-                        label="Name"
-                        className="mt-3"
-                        value={formValues.name}
-                        fullWidth
-                        disabled
-                    />
-
-                    <TextField
-                        label="Headquarters Country"
-                        value={formValues.headquartersCountry}
-                        className="mt-3"
-                        fullWidth
-                        disabled
-                    />
-
-                    <TextField
-                        label="Contact"
-                        className="mt-3"
-                        value={formValues.contact}
-                        fullWidth
-                        disabled
-                    />
-
-                    <TextField
-                        label="Email"
-                        className="mt-3"
-                        value={formValues.email}
-                        fullWidth
-                        disabled
-                    />
-
-                    <TextField
-                        label="Telephone"
-                        className="mt-3"
-                        value={formValues.telephone}
-                        fullWidth
-                        disabled
-                    />
-
-                    <TextField
-                        label="Company number"
-                        value={formValues.companyNumber}
-                        disabled
-                        className="mt-3"
-                        fullWidth
-                    />
-
-                    <TextField
-                        label="VAT number"
-                        value={formValues.vatNumber}
-                        disabled
-                        className="mt-3"
-                        fullWidth
-                    />
-
-                    <TextField
-                        label="CEO name"
-                        value={formValues.ceoName}
-                        disabled
-                        className="mt-3"
-                        fullWidth
-                    />
-
-                    <TextField
-                        label="CEO passport number"
-                        value={formValues.ceoPassportNumber}
-                        disabled
-                        className="mt-3"
-                        fullWidth
-                    />
+        <>
+            <Paper className={classes.container}>
+                <Grid item>
+                    <Box style={{ textTransform: 'uppercase' }}>{'Organization Information'}</Box>
                 </Grid>
-                <Grid item xs={6}>
-                    <TextField
-                        label="Business type"
-                        value={formValues.businessTypeSelect}
-                        disabled
-                        className="mt-3"
-                        fullWidth
-                    />
+                <Grid container spacing={3}>
+                    <Grid item xs={6}>
+                        <TextField
+                            label={t('organization.registration.organizationName')}
+                            className="mt-3"
+                            value={formValues.name}
+                            fullWidth
+                            disabled
+                        />
 
-                    <TextField
-                        label="Year of registration"
-                        value={formValues.yearOfRegistration}
-                        disabled
-                        className="mt-3"
-                        fullWidth
-                    />
+                        <TextField
+                            label={t('organization.registration.organizationAddress')}
+                            className="mt-3"
+                            value={formValues.address}
+                            fullWidth
+                            disabled
+                        />
 
-                    <TextField
-                        label="Approximate number of employees"
-                        value={formValues.numberOfEmployees}
-                        disabled
-                        className="mt-3"
-                        fullWidth
-                    />
+                        <TextField
+                            label={t('organization.registration.businessType')}
+                            className="mt-3"
+                            value={formValues.businessType}
+                            fullWidth
+                            disabled
+                        />
 
-                    <TextField
-                        label="Shareholders"
-                        value={formValues.shareholders}
-                        disabled
-                        className="mt-3"
-                        fullWidth
-                    />
+                        <TextField
+                            label={t('organization.registration.tradeRegistryNumber')}
+                            className="mt-3"
+                            value={formValues.tradeRegistryCompanyNumber}
+                            fullWidth
+                            disabled
+                        />
 
-                    <TextField
-                        label="Website"
-                        value={formValues.website}
-                        className="mt-3"
-                        fullWidth
-                        disabled
-                    />
+                        <TextField
+                            label={t('organization.registration.vatNumber')}
+                            value={formValues.vatNumber}
+                            disabled
+                            className="mt-3"
+                            fullWidth
+                        />
+                    </Grid>
+                    <Grid item xs={6}>
+                        <TextField
+                            label={t('organization.registration.signatoryName')}
+                            value={formValues.signatoryFullName}
+                            disabled
+                            className="mt-3"
+                            fullWidth
+                        />
 
-                    <TextField
-                        label="Active countries"
-                        value={formValues.activeCountries}
-                        className="mt-3"
-                        required
-                        fullWidth
-                        disabled
-                    />
+                        <TextField
+                            label={t('organization.registration.signatoryAddress')}
+                            value={formValues.signatoryAddress}
+                            disabled
+                            className="mt-3"
+                            fullWidth
+                        />
 
-                    <TextField
-                        label="Address"
-                        value={formValues.address}
-                        disabled
-                        className="mt-3"
-                        fullWidth
-                    />
+                        <TextField
+                            label={t('organization.registration.signatoryEmail')}
+                            value={formValues.signatoryEmail}
+                            disabled
+                            className="mt-3"
+                            fullWidth
+                        />
 
-                    <TextField
-                        label="Postcode"
-                        value={formValues.postcode}
-                        disabled
-                        className="mt-3"
-                        fullWidth
-                    />
-
-                    <TextField
-                        label="Country"
-                        value={formValues.country}
-                        disabled
-                        className="mt-3"
-                        fullWidth
-                    />
+                        <TextField
+                            label={t('organization.registration.signatoryTelephone')}
+                            value={formValues.signatoryPhoneNumber}
+                            disabled
+                            className="mt-3"
+                            fullWidth
+                        />
+                        <TextField
+                            label={t('organization.registration.organizationStatus.status')}
+                            value={t(
+                                `organization.registration.organizationStatus.${formValues.status}`
+                            )}
+                            disabled
+                            className="mt-3"
+                            fullWidth
+                        />
+                    </Grid>
                 </Grid>
-            </Grid>{' '}
-        </Paper>
+                {formValues.documentIds?.length || formValues.signatoryDocumentIds?.length ? (
+                    <Grid item>
+                        <Box style={{ textTransform: 'uppercase', marginTop: 20 }}>
+                            {t('organization.registration.documents')}
+                        </Box>
+                    </Grid>
+                ) : null}
+
+                {formValues.documentIds && (
+                    <DownloadDocuments
+                        documents={formValues.documentIds}
+                        name={t('organization.registration.companyProof')}
+                    />
+                )}
+
+                {formValues.signatoryDocumentIds && (
+                    <DownloadDocuments
+                        documents={formValues.signatoryDocumentIds}
+                        name={t('organization.registration.signatoryId')}
+                    />
+                )}
+            </Paper>
+            {enabledFeatures.includes(OriginFeature.IRec) && (
+                <IRECOrganizationView iRecOrg={iRecData} />
+            )}
+        </>
     );
 }

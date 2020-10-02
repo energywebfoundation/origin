@@ -1,23 +1,28 @@
+import { IUser, IUserFilter, Role } from '@energyweb/origin-backend-core';
 import {
-    IUser,
-    Role,
-    SupportedEvents,
-    UserStatusChangedEvent,
-    IUserFilter
-} from '@energyweb/origin-backend-core';
-import { Roles, RolesGuard, ActiveUserGuard } from '@energyweb/origin-backend-utils';
-import { Body, Controller, Get, Param, Put, UseGuards, Query } from '@nestjs/common';
+    ActiveUserGuard,
+    NullOrUndefinedResultInterceptor,
+    Roles,
+    RolesGuard
+} from '@energyweb/origin-backend-utils';
+import {
+    Body,
+    Controller,
+    Get,
+    Param,
+    Put,
+    Query,
+    UseGuards,
+    UseInterceptors
+} from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 
-import { NotificationService } from '../notification/notification.service';
 import { UserService } from '../user/user.service';
 
 @Controller('admin')
+@UseInterceptors(NullOrUndefinedResultInterceptor)
 export class AdminController {
-    constructor(
-        private readonly notificationService: NotificationService,
-        private readonly userService: UserService
-    ) {}
+    constructor(private readonly userService: UserService) {}
 
     @Get('users')
     @UseGuards(AuthGuard('jwt'), ActiveUserGuard, RolesGuard)
@@ -42,16 +47,6 @@ export class AdminController {
     @UseGuards(AuthGuard('jwt'), ActiveUserGuard, RolesGuard)
     @Roles(Role.Admin, Role.SupportAgent)
     public async put(@Param('id') id: string, @Body() body: IUser) {
-        const user = await this.userService.update(id, body);
-        const eventData: UserStatusChangedEvent = {
-            email: user.email
-        };
-
-        this.notificationService.handleEvent({
-            type: SupportedEvents.USER_STATUS_CHANGED,
-            data: eventData
-        });
-
-        return user;
+        return this.userService.update(id, body);
     }
 }

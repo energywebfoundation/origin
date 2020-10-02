@@ -17,7 +17,9 @@
         "clean": "shx rm -rf dist uploads",
         "lint": "eslint \"src/**/*{.ts,.tsx}\"",
         "lint-fix": "eslint \"src/**/*{.ts,.tsx}\" --fix",
-        "precommit": "lint-staged"
+        "precommit": "lint-staged",
+        "test:mocha": "mocha -r ts-node/register test/*.e2e-spec.ts --timeout 60000 --exit",
+        "test:e2e": "yarn test:mocha"
     },
     "bin": {
         "origin-backend-app": "./bin/origin-backend-app"
@@ -34,29 +36,31 @@
     "license": "GPL-3.0-or-later",
     "dependencies": {
         "@energyweb/exchange": "1.5.3",
+        "@energyweb/origin-organization-irec-api": "1.0.0",
         "@energyweb/migrations": "3.1.10",
         "@energyweb/origin-backend": "7.0.2",
         "@energyweb/origin-backend-core": "5.1.0",
+        "@energyweb/origin-backend-utils": "1.2.3",
         "@energyweb/utils-general": "9.2.3",
-        "@nestjs/common": "7.4.2",
+        "@nestjs/common": "7.4.4",
         "@nestjs/config": "^0.5.0",
-        "@nestjs/core": "7.4.2",
-        "@nestjs/swagger": "4.6.0",
-        "@nestjs/typeorm": "7.1.0",
+        "@nestjs/core": "7.4.4",
+        "@nestjs/swagger": "4.6.1",
+        "@nestjs/typeorm": "7.1.4",
+        "@nestjs/cqrs": "7.0.1",
+        "@nestjs-modules/mailer": "1.4.2",
+        "nodemailer-mandrill-transport": "1.2.0",
         "body-parser": "1.19.0",
         "class-validator": "0.12.2",
         "cors": "2.8.5",
         "dotenv": "8.2.0",
-        "swagger-ui-express": "4.1.4"
+        "swagger-ui-express": "4.1.4",
+        "typeorm": "0.2.26"
     },
     "devDependencies": {
-        "jest": "26.4.2",
-        "supertest": "4.0.2",
-        "ts-jest": "26.2.0",
-        "tsconfig-paths": "3.9.0"
-    },
-    "resolutions": {
-        "tslib": "1.13.0"
+        "@nestjs/testing": "7.4.4",
+        "supertest": "5.0.0",
+        "ganache-core": "2.11.3"
     },
     "files": [
         "dist",
