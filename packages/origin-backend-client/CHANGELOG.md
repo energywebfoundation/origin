@@ -3,6 +3,29 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [8.0.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-backend-client@7.0.2...@energyweb/origin-backend-client@8.0.0) (2020-10-02)
+
+
+### Bug Fixes
+
+* **origin-backend-client:** headers override on FileClient ([f34f1f0](https://github.com/energywebfoundation/origin/commit/f34f1f04deded6fe758361ab30ab159dd3dc1c6e))
+
+
+### Features
+
+* **origin-backend-client:** add download to filesClient ([180f57e](https://github.com/energywebfoundation/origin/commit/180f57e18769b819f4edc558ac28d2536b589c55))
+* **origin-backend-client:** add invitationClient ([0f5bed0](https://github.com/energywebfoundation/origin/commit/0f5bed0b506774eb5b77d1306faa03c0dbf0b23c))
+* **origin-backend-client:** redefined organization interfaces ([c19e8b7](https://github.com/energywebfoundation/origin/commit/c19e8b7226bb532c0c2e98d5c4732dea5898b645))
+
+
+### BREAKING CHANGES
+
+* **origin-backend-client:** IOrganization replaced with IPublicOrganization and IFullOrganization
+
+
+
+
+
 ## [7.0.2](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-backend-client@7.0.1...@energyweb/origin-backend-client@7.0.2) (2020-08-25)
 
 **Note:** Version bump only for package @energyweb/origin-backend-client

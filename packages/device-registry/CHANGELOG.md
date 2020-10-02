@@ -3,6 +3,27 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [7.0.0](https://github.com/energywebfoundation/origin/compare/@energyweb/device-registry@6.2.9...@energyweb/device-registry@7.0.0) (2020-10-02)
+
+
+### Bug Fixes
+
+* **device-registry:** smart meter reads serialization ([e5e9877](https://github.com/energywebfoundation/origin/commit/e5e987717960a36c35022cd35577ef2e522c8092))
+
+
+### Features
+
+* **device-registry:** redefined organization interfaces ([b2ec6ed](https://github.com/energywebfoundation/origin/commit/b2ec6ed7b8234b18128bd552842d58366ea56780))
+
+
+### BREAKING CHANGES
+
+* **device-registry:** IOrganization replaced with IPublicOrganization and IFullOrganization
+
+
+
+
+
 ## [6.2.9](https://github.com/energywebfoundation/origin/compare/@energyweb/device-registry@6.2.8...@energyweb/device-registry@6.2.9) (2020-08-25)
 
 **Note:** Version bump only for package @energyweb/device-registry

@@ -3,6 +3,25 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.3.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-backend-utils@1.2.3...@energyweb/origin-backend-utils@1.3.0) (2020-10-02)
+
+
+### Bug Fixes
+
+* **deps:** update nest monorepo to v7.4.3 ([f141326](https://github.com/energywebfoundation/origin/commit/f141326309427651b0ac43e4f90fcd5d62c355bc))
+* **origin-backend-utils:** update rxjs to same version as other components ([a23b42a](https://github.com/energywebfoundation/origin/commit/a23b42a1c5f9a0413e8619e419e01a51c3c0fcd6))
+
+
+### Features
+
+* **origin-backend-utils:** added Database service ([fb76726](https://github.com/energywebfoundation/origin/commit/fb76726f9ed70737f7ccd855087bfab5d9c201d2))
+* **origin-backend-utils:** added ExtendedBaseEntity and HttpLoggingInterceptor ([ee0f1d2](https://github.com/energywebfoundation/origin/commit/ee0f1d29374de827f494f351f5cb9f945574a7f5))
+* **origin-backend-utils:** NullOrUndefined result interceptor ([d1025d2](https://github.com/energywebfoundation/origin/commit/d1025d2b034f317520de03866ff4b76bb62c333a))
+
+
+
+
+
 ## [1.2.3](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-backend-utils@1.2.2...@energyweb/origin-backend-utils@1.2.3) (2020-08-25)
 
 **Note:** Version bump only for package @energyweb/origin-backend-utils

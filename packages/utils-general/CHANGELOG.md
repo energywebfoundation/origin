@@ -3,6 +3,23 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [9.3.0](https://github.com/energywebfoundation/origin/compare/@energyweb/utils-general@9.2.3...@energyweb/utils-general@9.3.0) (2020-10-02)
+
+
+### Bug Fixes
+
+* **deps:** update dependency jsonschema to v1.2.7 ([510e9fe](https://github.com/energywebfoundation/origin/commit/510e9fedce05cc017921300d6182723231bdeacc))
+
+
+### Features
+
+* **utils-general:** add IRec feature ([68e6b0d](https://github.com/energywebfoundation/origin/commit/68e6b0d04bac482d09fa8bbc6b9f3155bfac1137))
+* **utils-general:** hide irec connect ([0ce25e6](https://github.com/energywebfoundation/origin/commit/0ce25e6242b73148cc948533798b1535ff311e8d))
+
+
+
+
+
 ## [9.2.3](https://github.com/energywebfoundation/origin/compare/@energyweb/utils-general@9.2.2...@energyweb/utils-general@9.2.3) (2020-08-25)
 
 **Note:** Version bump only for package @energyweb/utils-general

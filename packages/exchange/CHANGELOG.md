@@ -3,6 +3,25 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.5.4](https://github.com/energywebfoundation/origin/compare/@energyweb/exchange@1.5.3...@energyweb/exchange@1.5.4) (2020-10-02)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @nestjs/schedule to v0.4.1 ([7ad7102](https://github.com/energywebfoundation/origin/commit/7ad710249bb04207313aac6e71508c7ecca2425a))
+* **deps:** update dependency @nestjs/swagger to v4.6.1 ([40eb9d1](https://github.com/energywebfoundation/origin/commit/40eb9d129356ac2ebf809aec3d7a54b72f1c3530))
+* **deps:** update dependency @nestjs/typeorm to v7.1.1 ([b2253c3](https://github.com/energywebfoundation/origin/commit/b2253c3f3560b00de324fc76996530890b35837a))
+* **deps:** update dependency @nestjs/typeorm to v7.1.4 ([f0f39d4](https://github.com/energywebfoundation/origin/commit/f0f39d40dfde6c0d079575de7af4d4aed0e8f160))
+* **deps:** update dependency typeorm to v0.2.26 ([bf1a256](https://github.com/energywebfoundation/origin/commit/bf1a2563a1c950bacfac2ad4633094e170db9161))
+* **deps:** update nest monorepo to v7.4.3 ([f141326](https://github.com/energywebfoundation/origin/commit/f141326309427651b0ac43e4f90fcd5d62c355bc))
+* **exchange:** bundles volume update, more tests ([a07b136](https://github.com/energywebfoundation/origin/commit/a07b136865bb47e4093ad21e1ad18d547b7f899f))
+* **exchange:** enable setting a custom minimum balance for withdrawal wallet ([ad673ca](https://github.com/energywebfoundation/origin/commit/ad673ca420d3da819b2e6f8de00a80cd053cce52))
+* **exchange:** opt-in use of pipes and interceptors ([148df53](https://github.com/energywebfoundation/origin/commit/148df531746cf2812eef9a8e36da8d37637527d1))
+
+
+
+
+
 ## [1.5.3](https://github.com/energywebfoundation/origin/compare/@energyweb/exchange@1.5.2...@energyweb/exchange@1.5.3) (2020-08-25)
 
 **Note:** Version bump only for package @energyweb/exchange

@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.4.6](https://github.com/energywebfoundation/origin/compare/@energyweb/issuer@2.4.5...@energyweb/issuer@2.4.6) (2020-10-02)
+
+
+### Bug Fixes
+
+* **deps:** update dependency mocha to v8.1.3 ([83b5450](https://github.com/energywebfoundation/origin/commit/83b54506cb8e9fd2a08fe88436956df144e1f565))
+
+
+
+
+
 ## [2.4.5](https://github.com/energywebfoundation/origin/compare/@energyweb/issuer@2.4.4...@energyweb/issuer@2.4.5) (2020-08-25)
 
 **Note:** Version bump only for package @energyweb/issuer

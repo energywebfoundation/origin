@@ -3,6 +3,54 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [8.0.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-backend@7.0.2...@energyweb/origin-backend@8.0.0) (2020-10-02)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @nestjs/typeorm to v7.1.1 ([b2253c3](https://github.com/energywebfoundation/origin/commit/b2253c3f3560b00de324fc76996530890b35837a))
+* **deps:** update dependency @nestjs/typeorm to v7.1.4 ([f0f39d4](https://github.com/energywebfoundation/origin/commit/f0f39d40dfde6c0d079575de7af4d4aed0e8f160))
+* **deps:** update dependency typeorm to v0.2.26 ([bf1a256](https://github.com/energywebfoundation/origin/commit/bf1a2563a1c950bacfac2ad4633094e170db9161))
+* **deps:** update nest monorepo to v7.4.3 ([f141326](https://github.com/energywebfoundation/origin/commit/f141326309427651b0ac43e4f90fcd5d62c355bc))
+* **origin-backend:** allow issuer role to access evidence documents ([ec41f0e](https://github.com/energywebfoundation/origin/commit/ec41f0e288198d1e8a860719d327af6853efeda4))
+* **origin-backend:** change user role after removal from organization ([80fa869](https://github.com/energywebfoundation/origin/commit/80fa869a9bcf3c80cfac5f2a55448aea34bfe101))
+* **origin-backend:** document ownership query change from IN to multiple queries ([80fc9b0](https://github.com/energywebfoundation/origin/commit/80fc9b002ad7fef1c7dad5a0dec311be3696306c))
+* **origin-backend:** filter users table for admin ([de0fa95](https://github.com/energywebfoundation/origin/commit/de0fa9544114507826c2a30d3ce08dbce28b3050))
+* **origin-backend:** opt-in use of pipes and interceptors ([459cfea](https://github.com/energywebfoundation/origin/commit/459cfea941083c55995cf87e89cc213de8ed5fff))
+* **origin-backend:** organization roles should not be able to elevate other users to restricted roles ([6e30a89](https://github.com/energywebfoundation/origin/commit/6e30a899f0433e624bf966bc9ebd56579384699d))
+* **origin-backend:** remove meterStats at newlycreated devices ([92c8b81](https://github.com/energywebfoundation/origin/commit/92c8b81cbf0f81e87df19549c7c4ae3692f55980))
+* **origin-backend:** serialize data when fetching a single device ([2847c4d](https://github.com/energywebfoundation/origin/commit/2847c4d85ec5781fb48a592ad62eca3ba42a8da7))
+* **origin-backend:** should not allow to invite users from other organizations ([2464ffe](https://github.com/energywebfoundation/origin/commit/2464ffe5404be121842dad13de68f5d4dedbd4ed))
+* **origin-backend:** smart meter reads and stats serialization ([e17d325](https://github.com/energywebfoundation/origin/commit/e17d325baeed06c049208ffa9a396a2f2b5578fa))
+* **origin-backend:** smart meter reads serialization ([87e6143](https://github.com/energywebfoundation/origin/commit/87e61439811cb8f1b2587a25789a266f001f8483))
+
+
+### chore
+
+* **origin-backend:** events publisher instead of notification service ([658b1bb](https://github.com/energywebfoundation/origin/commit/658b1bb79f2634898db1f4ecaac522491c278869))
+
+
+### Features
+
+* **origin-backend:** add invitationClient ([7d791cb](https://github.com/energywebfoundation/origin/commit/7d791cb13af6598948dd8528efff54eed697bef5))
+* **origin-backend:** add return ([bc7de0c](https://github.com/energywebfoundation/origin/commit/bc7de0c5d804ff490aab87ab07a9849614212adf))
+* **origin-backend:** change email confirmation message ([ba5f61c](https://github.com/energywebfoundation/origin/commit/ba5f61c882750cd95f66e5faf3faf34d04cef4a0))
+* **origin-backend:** download api. files ownership ([f3e2311](https://github.com/energywebfoundation/origin/commit/f3e231141aaa8da4e1c6a26060208e19291fad1d))
+* **origin-backend:** file upload service ([779c44f](https://github.com/energywebfoundation/origin/commit/779c44f80a8c3d4ba98aa6dbadbac9170c0d7c19))
+* **origin-backend:** organization registration documents integration ([c18d833](https://github.com/energywebfoundation/origin/commit/c18d83341edf1d341731561c7672a2a1f4d952dc))
+* **origin-backend:** refactor Organization into PlatformOrganization and external organizations ([cedddc8](https://github.com/energywebfoundation/origin/commit/cedddc856718332718c1ff1c203aa2a5396210c0))
+* **origin-backend:** registration events. organization registration permissions ([91f3c47](https://github.com/energywebfoundation/origin/commit/91f3c4735aca3a5dae8eb9056cdc83a8c8a26e31))
+
+
+### BREAKING CHANGES
+
+* **origin-backend:** origin-backend no longer is providing default mail sending implementation, intead an events that requires handlers are published
+* **origin-backend:** Organization entity replaced by PlatformOrganization
+
+
+
+
+
 ## [7.0.2](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-backend@7.0.1...@energyweb/origin-backend@7.0.2) (2020-08-25)
 
 
