@@ -55,7 +55,7 @@
         "dotenv": "8.2.0",
         "nodemailer-mandrill-transport": "1.2.0",
         "swagger-ui-express": "4.1.4",
-        "typeorm": "0.2.26"
+        "typeorm": "0.2.28"
     },
     "devDependencies": {
         "@nestjs/testing": "7.4.4",

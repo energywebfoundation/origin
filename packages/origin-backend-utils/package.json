@@ -37,6 +37,6 @@
         "class-validator": "^0.12.2",
         "polly-js": "1.6.8",
         "rxjs": "6.6.3",
-        "typeorm": "0.2.26"
+        "typeorm": "0.2.28"
     }
 }
