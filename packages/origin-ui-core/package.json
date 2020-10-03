@@ -49,7 +49,7 @@
         "ethers": "5.0.8",
         "extract-text-webpack-plugin": "4.0.0-beta.0",
         "file-loader": "6.1.0",
-        "formik": "2.1.5",
+        "formik": "2.1.7",
         "formik-material-ui": "2.0.1",
         "formik-material-ui-pickers": "0.0.11",
         "history": "4.10.1",
