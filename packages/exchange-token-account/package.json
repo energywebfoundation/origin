@@ -34,7 +34,7 @@
     "types": "dist/js/src/index.d.ts",
     "dependencies": {
         "chai": "4.2.0",
-        "ethers": "5.0.8"
+        "ethers": "5.0.15"
     },
     "devDependencies": {
         "@energyweb/issuer": "2.4.6",
