@@ -94,7 +94,7 @@
         "@types/react-redux": "7.1.9",
         "@types/react-router-dom": "5.1.5",
         "@types/redux-logger": "3.0.8",
-        "@types/yup": "0.29.7",
+        "@types/yup": "0.29.8",
         "babel-loader": "8.1.0",
         "copy-webpack-plugin": "5.1.2",
         "css-loader": "3.6.0",
