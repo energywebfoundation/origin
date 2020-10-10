@@ -3971,24 +3971,24 @@
     prop-types "^15.6.1"
     react-lifecycles-compat "^3.0.4"
 
-"@react-google-maps/api@1.10.1":
-  version "1.10.1"
-  resolved "https://registry.yarnpkg.com/@react-google-maps/api/-/api-1.10.1.tgz#a1ebaac789771a8a8df66803edbc1f7b22dad4c6"
-  integrity sha512-hb8urUcwZw99Cu3yQnZWUbXjR1Ym/8C21kSX6B02I29l6DXNxDbJ5Jo/T5swhnizPKY7TNhR1oTctC/HY7SQWA==
+"@react-google-maps/api@1.11.0":
+  version "1.11.0"
+  resolved "https://registry.yarnpkg.com/@react-google-maps/api/-/api-1.11.0.tgz#26fb84874fe1dac3b2e9e553b5e1661e3971a82a"
+  integrity sha512-XOlfvHqU7rwKB/Ql/3QllDsZ4Vj0+Mq0+A8Oonh1LZZdv+jLXK3MAGAxWVPhTxTgoo8IFhzOfMmI/zEyTBp2Bw==
   dependencies:
-    "@react-google-maps/infobox" "1.10.0"
-    "@react-google-maps/marker-clusterer" "1.10.0"
+    "@react-google-maps/infobox" "1.11.0"
+    "@react-google-maps/marker-clusterer" "1.11.0"
     invariant "2.2.4"
 
-"@react-google-maps/infobox@1.10.0":
-  version "1.10.0"
-  resolved "https://registry.yarnpkg.com/@react-google-maps/infobox/-/infobox-1.10.0.tgz#b1982043bb2f3b31d3d9fb703635e04efb55c674"
-  integrity sha512-MhT2nMmjeG7TCxRv/JdylDyNd/n66ggSQQhTWVjJJTtdB/xqd0T8BHCkBWDN9uF0i0yCZzMFl2P2Y1zJ+xppBg==
+"@react-google-maps/infobox@1.11.0":
+  version "1.11.0"
+  resolved "https://registry.yarnpkg.com/@react-google-maps/infobox/-/infobox-1.11.0.tgz#a8e6a1983aef9718ccf4bcf75563dddbba318289"
+  integrity sha512-wpJRP9/O3b5ifYWbCiNeG1zFRkZimn2CEXUbwRKhgnlGcYsfO1MFbekQzeF9alfNWNpsvgm1bT6zmzeCSIIsaA==
 
-"@react-google-maps/marker-clusterer@1.10.0":
-  version "1.10.0"
-  resolved "https://registry.yarnpkg.com/@react-google-maps/marker-clusterer/-/marker-clusterer-1.10.0.tgz#d7591332b11f951dd8b0c42b7495797677dc6a9e"
-  integrity sha512-3GLVgeXNStVcdiLMxzi3cBjr32ctlexLPPGQguwcYd6yPLaCcnVCwyzhV68KvL00xqOAD1c3aABV9EGgY8u6Qw==
+"@react-google-maps/marker-clusterer@1.11.0":
+  version "1.11.0"
+  resolved "https://registry.yarnpkg.com/@react-google-maps/marker-clusterer/-/marker-clusterer-1.11.0.tgz#5a618042af6f07b49d37c7e2424cc50c03989510"
+  integrity sha512-aXIlINJ5yQv+09myWFmM7vt8lQhcAIkOIxFYtCbwwByAAX17bnM3JtM+wBaC6IEi83wTAZt4mmAjfFT5gRzggA==
 
 "@redux-saga/core@^1.1.3":
   version "1.1.3"
