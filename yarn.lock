@@ -4713,10 +4713,10 @@
   dependencies:
     "@turf/helpers" "6.x"
 
-"@typechain/ethers-v5@1.0.0":
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/@typechain/ethers-v5/-/ethers-v5-1.0.0.tgz#9156c9a2b078f9bb00a339631221e42c26b218df"
-  integrity sha512-CWxLmlmfM7NMT6OSq8UXZM7mSkHU1xrbNi40Hvj26S97jKnwERmNbiERgy4fXXOdVqb+zCshnZQ9X+P5WndLMA==
+"@typechain/ethers-v5@2.0.0":
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/@typechain/ethers-v5/-/ethers-v5-2.0.0.tgz#cd3ca1590240d587ca301f4c029b67bfccd08810"
+  integrity sha512-0xdCkyGOzdqh4h5JSf+zoWx85IusEjDcPIwNEHP8mrWSnCae4rvrqB+/gtpdNfX7zjlFlZiMeePn2r63EI3Lrw==
   dependencies:
     ethers "^5.0.2"
 
