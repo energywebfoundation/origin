@@ -6,12 +6,20 @@ import { ModuleRef } from '@nestjs/core';
 
 @Injectable()
 export class ExchangeConfigurationService implements IExchangeConfigurationService {
-    private configService: ConfigurationService;
+    private _configService: ConfigurationService;
 
-    constructor(private readonly moduleRef: ModuleRef) {
-        this.configService = this.moduleRef.get<ConfigurationService>(ConfigurationService, {
+    constructor(private readonly moduleRef: ModuleRef) {}
+
+    private get configService() {
+        if (this._configService) {
+            return this._configService;
+        }
+
+        this._configService = this.moduleRef.get<ConfigurationService>(ConfigurationService, {
             strict: false
         });
+
+        return this._configService;
     }
 
     public async getDeviceTypes(): Promise<IDeviceType[]> {
