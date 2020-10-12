@@ -1,6 +1,6 @@
 import { Filter } from '@energyweb/exchange-core';
-import { DeviceService } from '@energyweb/origin-backend';
-import { IDeviceProductInfo, IExternalDeviceId } from '@energyweb/origin-backend-core';
+
+import { IExternalDeviceId } from '@energyweb/origin-backend-core';
 import { INestApplication } from '@nestjs/common';
 import { expect } from 'chai';
 import moment from 'moment';
@@ -16,6 +16,7 @@ import { OrderService } from '../src/pods/order/order.service';
 import { TradePriceInfoDTO } from '../src/pods/trade/trade-price-info.dto';
 import { TransferService } from '../src/pods/transfer/transfer.service';
 import { authenticatedUser, bootstrapTestInstance } from './exchange';
+import { IExternalDeviceService, IProductInfo } from '../src/interfaces';
 
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -200,7 +201,7 @@ describe('orderbook tests', () => {
         await sleep(2000);
     };
 
-    const productByDeviceId = new Map<string, IDeviceProductInfo>([
+    const productByDeviceId = new Map<string, IProductInfo>([
         [
             'deviceId1',
             {
@@ -237,10 +238,10 @@ describe('orderbook tests', () => {
     ]);
 
     const deviceServiceMock = ({
-        findDeviceProductInfo: async ({ id }: IExternalDeviceId): Promise<IDeviceProductInfo> => {
+        getDeviceProductInfo: async ({ id }: IExternalDeviceId): Promise<IProductInfo> => {
             return productByDeviceId.get(id);
         }
-    } as unknown) as DeviceService;
+    } as unknown) as IExternalDeviceService;
 
     before(async () => {
         ({

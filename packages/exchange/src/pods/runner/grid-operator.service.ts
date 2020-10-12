@@ -1,6 +1,6 @@
-import { ConfigurationService } from '@energyweb/origin-backend';
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import { ModuleRef } from '@nestjs/core';
+import { IExchangeConfigurationService } from '../../interfaces';
 
 @Injectable()
 export class GridOperatorService implements OnModuleInit {
@@ -9,13 +9,14 @@ export class GridOperatorService implements OnModuleInit {
     constructor(private readonly moduleRef: ModuleRef) {}
 
     public async onModuleInit() {
-        const configService = this.moduleRef.get(ConfigurationService, {
-            strict: false
-        });
+        const configService = this.moduleRef.get<IExchangeConfigurationService>(
+            IExchangeConfigurationService,
+            {
+                strict: false
+            }
+        );
 
-        const { gridOperators } = await configService.get();
-
-        this.gridOperators = gridOperators;
+        this.gridOperators = await configService.getGridOperators();
     }
 
     public areValid(gridOperators: string[]) {
