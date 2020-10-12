@@ -10,7 +10,7 @@
         "start:prod": "node dist/main",
         "prebuild": "shx rm -rf dist",
         "build": "yarn build:ts",
-        "build:ts": "tsc -b tsconfig.json && nest build -p tsconfig.json --tsc",
+        "build:ts": "tsc -b tsconfig.json",
         "build:container:canary": "make build-canary push",
         "build:container:latest": "make build-latest push",
         "prettier": "prettier --write --config-precedence file-override './src/**/*'",

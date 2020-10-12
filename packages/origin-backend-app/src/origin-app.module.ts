@@ -12,6 +12,7 @@ import {
 import { DynamicModule, Module } from '@nestjs/common';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { IntegrationModule } from './integration/integration.module';
 
 import { MailModule } from './mail';
 import { NotificationModule } from './notification/notification.module';
@@ -49,6 +50,7 @@ export class OriginAppModule {
             imports: [
                 OriginAppTypeOrmModule(),
                 OriginBackendModule.register(smartMeterReadingsAdapter),
+                IntegrationModule,
                 ExchangeModule,
                 IRECOrganizationModule,
                 MailModule,

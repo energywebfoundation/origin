@@ -1,12 +1,11 @@
 import { OrderSide, OrderStatus } from '@energyweb/exchange-core';
-import { DeviceService } from '@energyweb/origin-backend';
-import { IDeviceProductInfo, IDevice } from '@energyweb/origin-backend-core';
 import { DatabaseService } from '@energyweb/origin-backend-utils';
 import { INestApplication } from '@nestjs/common';
 import { expect } from 'chai';
 import { Contract, ethers } from 'ethers';
 import moment from 'moment';
 import request from 'supertest';
+import { IDeviceSettings, IExternalDeviceService, IProductInfo } from '../src/interfaces';
 
 import { AccountService } from '../src/pods/account/account.service';
 import { Order } from '../src/pods/order/order.entity';
@@ -30,30 +29,20 @@ describe('Deposits automatic posting for sale', () => {
 
     const defaultAskPrice = 1000;
 
-    const deviceServiceMock = ({
-        findDeviceProductInfo: async (): Promise<IDeviceProductInfo> => {
-            return {
-                deviceType: 'Solar;Photovoltaic;Classic silicon',
-                country: 'Thailand',
-                region: 'Central',
-                province: 'Nakhon Pathom',
-                operationalSince: 2016,
-                gridOperator: 'TH-PEA'
-            };
-        },
-        findByExternalId: async (): Promise<IDevice> => {
-            return {
-                deviceType: 'Solar;Photovoltaic;Classic silicon',
-                country: 'Thailand',
-                region: 'Central',
-                province: 'Nakhon Pathom',
-                operationalSince: 2016,
-                gridOperator: 'TH-PEA',
-                automaticPostForSale: true,
-                defaultAskPrice
-            } as IDevice;
-        }
-    } as unknown) as DeviceService;
+    const deviceServiceMock = {
+        getDeviceProductInfo: async (): Promise<IProductInfo> => ({
+            deviceType: 'Solar;Photovoltaic;Classic silicon',
+            country: 'Thailand',
+            region: 'Central',
+            province: 'Nakhon Pathom',
+            operationalSince: 2016,
+            gridOperator: 'TH-PEA'
+        }),
+        getDeviceSettings: async (): Promise<IDeviceSettings> => ({
+            postForSale: true,
+            postForSalePrice: defaultAskPrice
+        })
+    } as IExternalDeviceService;
 
     before(async () => {
         ({ accountService, databaseService, registry, issuer, app } = await bootstrapTestInstance(

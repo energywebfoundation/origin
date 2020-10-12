@@ -1,8 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { PriceStrategy } from '@energyweb/exchange-core';
 import { Contracts } from '@energyweb/issuer';
-import { ConfigurationService, DeviceService } from '@energyweb/origin-backend';
-import { IDevice, IDeviceProductInfo, UserStatus } from '@energyweb/origin-backend-core';
+import { UserStatus } from '@energyweb/origin-backend-core';
 import { DatabaseService, RolesGuard } from '@energyweb/origin-backend-utils';
 import { getProviderWithFallback } from '@energyweb/utils-general';
 import { CanActivate, ExecutionContext, Logger } from '@nestjs/common';
@@ -15,6 +14,12 @@ import { ethers } from 'ethers';
 
 import { entities } from '../src';
 import { AppModule } from '../src/app.module';
+import {
+    IDeviceSettings,
+    IExchangeConfigurationService,
+    IExternalDeviceService,
+    IProductInfo
+} from '../src/interfaces';
 import { AccountService } from '../src/pods/account/account.service';
 import { BundleService } from '../src/pods/bundle/bundle.service';
 import { DemandService } from '../src/pods/demand/demand.service';
@@ -81,7 +86,7 @@ const deviceTypes = [
     ['Marine', 'Tidal', 'Offshore']
 ];
 
-export const bootstrapTestInstance = async (deviceServiceMock?: DeviceService) => {
+export const bootstrapTestInstance = async (deviceServiceMock?: IExternalDeviceService) => {
     const registry = await deployRegistry();
     const issuer = await deployIssuer(registry.address);
 
@@ -115,45 +120,30 @@ export const bootstrapTestInstance = async (deviceServiceMock?: DeviceService) =
         providers: [
             DatabaseService,
             {
-                provide: ConfigurationService,
+                provide: IExchangeConfigurationService,
                 useValue: {
-                    get: () => ({
-                        deviceTypes,
-                        contractsLookup: {
-                            issuer: issuer.address,
-                            registry: registry.address
-                        }
-                    })
+                    getDeviceTypes: async () => deviceTypes,
+                    getRegistryAddress: async () => registry.address,
+                    getIssuerAddress: async () => issuer.address,
+                    getGridOperators: async () => ['TH-PEA', 'TH-MEA']
                 }
             },
             {
-                provide: DeviceService,
-                useValue:
-                    deviceServiceMock ??
-                    (({
-                        findDeviceProductInfo: async (): Promise<IDeviceProductInfo> => {
-                            return {
-                                deviceType: 'Solar;Photovoltaic;Classic silicon',
-                                country: 'Thailand',
-                                region: 'Central',
-                                province: 'Nakhon Pathom',
-                                operationalSince: 2016,
-                                gridOperator: 'TH-PEA'
-                            };
-                        },
-                        findByExternalId: async (): Promise<IDevice> => {
-                            return {
-                                deviceType: 'Solar;Photovoltaic;Classic silicon',
-                                country: 'Thailand',
-                                region: 'Central',
-                                province: 'Nakhon Pathom',
-                                operationalSince: 2016,
-                                gridOperator: 'TH-PEA',
-                                automaticPostForSale: false,
-                                defaultAskPrice: null
-                            } as IDevice;
-                        }
-                    } as unknown) as DeviceService)
+                provide: IExternalDeviceService,
+                useValue: deviceServiceMock ?? {
+                    getDeviceProductInfo: async (): Promise<IProductInfo> => ({
+                        deviceType: 'Solar;Photovoltaic;Classic silicon',
+                        country: 'Thailand',
+                        region: 'Central',
+                        province: 'Nakhon Pathom',
+                        operationalSince: 2016,
+                        gridOperator: 'TH-PEA'
+                    }),
+                    getDeviceSettings: async (): Promise<IDeviceSettings> => ({
+                        postForSale: false,
+                        postForSalePrice: null
+                    })
+                }
             }
         ]
     })
