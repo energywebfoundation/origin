@@ -6,12 +6,20 @@ import { ModuleRef } from '@nestjs/core';
 
 @Injectable()
 export class ExternalDeviceService implements IExternalDeviceService {
-    private deviceService: DeviceService;
+    private _deviceService: DeviceService;
 
-    constructor(private readonly moduleRef: ModuleRef) {
-        this.deviceService = this.moduleRef.get<DeviceService>(DeviceService, {
+    constructor(private readonly moduleRef: ModuleRef) {}
+
+    private get deviceService() {
+        if (this._deviceService) {
+            return this._deviceService;
+        }
+
+        this._deviceService = this.moduleRef.get<DeviceService>(DeviceService, {
             strict: false
         });
+
+        return this._deviceService;
     }
 
     public async getDeviceProductInfo(id: IExternalDeviceId): Promise<IProductInfo> {
