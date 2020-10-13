@@ -429,10 +429,16 @@
             "actions": {
                 "notify": "Notify",
                 "bid": "Bid",
-                "buy": "Buy"
+                "buy": "Buy",
+                "placeBidOrder": "Place Bid Order",
+                "oneTimePurchase": "One-Time Purchase",
+                "repeatedPurchase": "Repeated Purchase"
             },
             "feedback": {
-                "total": "Total"
+                "total": "Total",
+                "bidPlaced": "Bid successfully placed",
+                "demandPlaced": "Demand successfully placed",
+                "actionUnsuccessful": "Your trade action was unsuccessful"
             },
             "info": {
                 "regions": "Regions",
@@ -455,7 +461,18 @@
                 "generationDateStart": "Generation date start",
                 "generationDateEnd": "Generation date end",
                 "generationFrom": "Generation from",
-                "generationTo": "Generation to"
+                "generationTo": "Generation to",
+                "volume": "Volume",
+                "demandStartDate": "Demand Start Date",
+                "demandEndDate": "Demand End Date",
+                "totalVolume": "Total Volume",
+                "period": "Period",
+                "periodOptions": {
+                    "yearly": "Yearly",
+                    "monthly": "Monthly",
+                    "weekly": "Weekly",
+                    "daily": "Daily",
+                }
             }
         },
         "organization": {
@@ -593,15 +610,58 @@
             "captions": {
                 "open_asks": "OPEN ASKS",
                 "open_bids": "OPEN BIDS",
-                "actions": "ACTION"
+                "actions": "ACTION",
+                "demands": "DEMANDS"
             },
             "actions": {
                 "view": "View",
-                "remove": "Remove"
+                "remove": "Remove",
+                "update": "Update"
             },
             "feedback": {
                 "removeOrderConfirmation": "Are you sure you want remove?",
-                "orderCanceled": "Order canceled"
+                "orderCanceled": "Order canceled",
+                "successfullyRemoved": "Successfully removed"
+            }
+        },
+        "demand": {
+            "captions": {
+                "updateDemand": "Update Demand",
+                "totalVolume": "Total Volume",
+                "activateDemand": "Activate Demand"
+            },
+            "properties": {
+                "period": "Period",
+                "start": "Start Date",
+                "end": "End Date",
+                "volume": "Volume",
+                "status": "Status",
+                "device_type": "Device type",
+                "price": "Price",
+                "periodOptions": {
+                    "daily": "Daily",
+                    "weekly": "Weekly",
+                    "monthly": "Monthly",
+                    "yearly": "Yearly",
+                    "day": "Day",
+                    "week": "Week",
+                    "month": "Month",
+                    "year": "Year"
+                },
+                "active": "Active",
+                "paused": "Paused",
+                "archived": "Archived"
+            },
+            "actions": {
+                "update": "Update"
+            },
+            "feedback": {
+                "pauseDemand": "Demand should be paused before removing",
+                "successfullyRemoved": "Successfully removed",
+                "demandPaused": "Demand paused",
+                "demandActivated": "Demand activated",
+                "statusNotChanged": "Demand status did not change",
+                "demandUpdated": "Demand successfully updated"
             }
         }
     }
