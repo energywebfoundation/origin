@@ -14,7 +14,10 @@ import {
     IOrder,
     RequestWithdrawalDTO,
     Bundle,
-    CreateBundleDTO
+    CreateBundleDTO,
+    CreateDemandDTO,
+    IDemand,
+    Demand
 } from '.';
 import { Filter, OrderStatus } from '@energyweb/exchange-core';
 import { BundleSplits } from './types';
@@ -30,6 +33,12 @@ export interface IExchangeClient {
     ): Promise<TOrderBook>;
     createAsk(data: CreateAskDTO): Promise<IOrder>;
     createBid(data: CreateBidDTO): Promise<IOrder>;
+    createDemand(data: CreateDemandDTO): Promise<IDemand>;
+    getAllDemands(): Promise<Demand[]>;
+    updateDemand(demandId: string, updateDemand: CreateDemandDTO): Promise<Demand>;
+    pauseDemand(demandId: string): Promise<Demand>;
+    resumeDemand(demandId: string): Promise<Demand>;
+    archiveDemand(demand: Demand): Promise<Demand>;
     directBuy(data: IDirectBuyDTO): Promise<{ success: boolean; status: OrderStatus }>;
     getAccount(): Promise<ExchangeAccount>;
     getAllTransfers(): Promise<ITransfer[]>;
@@ -106,6 +115,48 @@ export class ExchangeClient implements IExchangeClient {
             data
         );
 
+        return response.data;
+    }
+
+    public async createDemand(data: CreateDemandDTO): Promise<Demand> {
+        const response = await this.requestClient.post<CreateDemandDTO, Demand>(
+            this.demandEndpoint,
+            data
+        );
+        return response.data;
+    }
+
+    public async getAllDemands(): Promise<Demand[]> {
+        const demands = await this.requestClient.get<unknown, Demand[]>(this.demandEndpoint);
+        return demands.data;
+    }
+
+    public async updateDemand(demandId: string, demandData: CreateDemandDTO): Promise<Demand> {
+        const demand = await this.requestClient.put<CreateDemandDTO, Demand>(
+            `${this.demandEndpoint}/${demandId}/update`,
+            demandData
+        );
+        return demand.data;
+    }
+
+    public async pauseDemand(demandId: string): Promise<Demand> {
+        const demand = await this.requestClient.post<unknown, Demand>(
+            `${this.demandEndpoint}/${demandId}/pause`
+        );
+        return demand.data;
+    }
+
+    public async resumeDemand(demandId: string): Promise<Demand> {
+        const demand = await this.requestClient.post<unknown, Demand>(
+            `${this.demandEndpoint}/${demandId}/resume`
+        );
+        return demand.data;
+    }
+
+    public async archiveDemand(demand: Demand): Promise<Demand> {
+        const response = await this.requestClient.post<unknown, Demand>(
+            `${this.demandEndpoint}/${demand.id}/archive`
+        );
         return response.data;
     }
 
@@ -256,6 +307,10 @@ export class ExchangeClient implements IExchangeClient {
     private get bundleEndpoint() {
         return `${this.dataApiUrl}/bundle`;
     }
+
+    private get demandEndpoint() {
+        return `${this.dataApiUrl}/demand`;
+    }
 }
 
 export const ExchangeClientMock: IExchangeClient = {
@@ -382,6 +437,30 @@ export const ExchangeClientMock: IExchangeClient = {
     },
 
     cancelOrder(order: Order) {
+        return null;
+    },
+
+    async createDemand(demand: CreateDemandDTO) {
+        return null;
+    },
+
+    async getAllDemands() {
+        return null;
+    },
+
+    async archiveDemand(demand: Demand) {
+        return null;
+    },
+
+    pauseDemand(demandId: string) {
+        return null;
+    },
+
+    resumeDemand(demandId: string) {
+        return null;
+    },
+
+    async updateDemand(demandId: string, updateDemand: CreateDemandDTO) {
         return null;
     }
 };
