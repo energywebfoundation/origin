@@ -15,6 +15,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { TOrderBook, ANY_VALUE } from '../../utils/exchange';
 import { setLoading } from '../../features/general/actions';
 import { reloadCertificates } from '../../features/certificates';
+import { createBid, createDemand } from '../../features/orders/actions';
 
 interface IProps {
     currency: string;
@@ -67,25 +68,51 @@ export function Exchange(props: IProps) {
         generationDateEnd
     ]);
 
-    async function onBid(values: IMarketFormValues) {
+    async function onBid(values: IMarketFormValues, oneTimePurchase: boolean) {
         dispatch(setLoading(true));
-
-        await exchangeClient.createBid({
-            price: parseFloat(values.price) * 100,
-            product: {
-                deviceType: values.deviceType?.includes(ANY_VALUE) ? undefined : values.deviceType,
-                location: values.location?.includes(ANY_VALUE)
-                    ? undefined
-                    : values.location?.map((l) => `${country};${l}`),
-                generationFrom: generationDateStart,
-                generationTo: generationDateEnd
-            },
-            validFrom: moment().toISOString(),
-            volume: EnergyFormatter.getBaseValueFromValueInDisplayUnit(
-                parseFloat(values.energy)
-            ).toString()
-        });
-
+        if (oneTimePurchase) {
+            dispatch(
+                createBid({
+                    price: parseFloat(values.price) * 100,
+                    product: {
+                        deviceType: values.deviceType?.includes(ANY_VALUE)
+                            ? undefined
+                            : values.deviceType,
+                        location: values.location?.includes(ANY_VALUE)
+                            ? undefined
+                            : values.location?.map((l) => `${country};${l}`),
+                        generationFrom: generationDateStart,
+                        generationTo: generationDateEnd
+                    },
+                    validFrom: moment().toISOString(),
+                    volume: EnergyFormatter.getBaseValueFromValueInDisplayUnit(
+                        parseFloat(values.energy)
+                    ).toString()
+                })
+            );
+        } else {
+            dispatch(
+                createDemand({
+                    price: parseFloat(values.price) * 100,
+                    volumePerPeriod: EnergyFormatter.getBaseValueFromValueInDisplayUnit(
+                        parseFloat(values.demandVolume)
+                    ).toString(),
+                    periodTimeFrame: values.demandPeriod,
+                    start: values.demandDateStart,
+                    end: values.demandDateEnd,
+                    product: {
+                        deviceType: values.deviceType?.includes(ANY_VALUE)
+                            ? undefined
+                            : values.deviceType,
+                        location: values.location?.includes(ANY_VALUE)
+                            ? undefined
+                            : values.location?.map((l) => `${country};${l}`)
+                    },
+                    boundToGenerationTime: false,
+                    excludeEnd: false
+                })
+            );
+        }
         dispatch(setLoading(false));
     }
 
