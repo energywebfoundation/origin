@@ -5,7 +5,7 @@ import BN from 'bn.js';
 import { List } from 'immutable';
 import { EntityManager, Repository } from 'typeorm';
 
-import { UnknownEntityError } from '../../utils/exceptions';
+import { ForbiddenActionError, UnknownEntityError } from '../../utils/exceptions';
 import { AccountBalanceService } from '../account-balance/account-balance.service';
 import { MatchingEngineService } from '../matching-engine/matching-engine.service';
 import { ProductService } from '../product/product.service';
@@ -135,10 +135,21 @@ export class OrderService {
         return new Order(order);
     }
 
-    public async cancelOrder(userId: string, orderId: string): Promise<Order> {
+    public async cancelOrder(
+        userId: string,
+        orderId: string,
+        allowDemandOrders = false
+    ): Promise<Order> {
         const order = await this.findOne(userId, orderId);
         if (!order) {
             throw new UnknownEntityError(orderId);
+        }
+
+        if (!allowDemandOrders && order.demandId) {
+            this.logger.error(
+                `Order ${orderId} is a part of the demand and cannot be cancelled individually`
+            );
+            throw new ForbiddenActionError('Unable to cancel bids that are part of the demand');
         }
 
         await this.repository.update(orderId, { status: OrderStatus.PendingCancellation });

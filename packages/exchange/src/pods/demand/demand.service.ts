@@ -140,7 +140,7 @@ export class DemandService {
             (b) => b.status === OrderStatus.Active || b.status === OrderStatus.PartiallyFilled
         );
         for (const bid of bids) {
-            await this.orderService.cancelOrder(demand.userId, bid.id);
+            await this.orderService.cancelOrder(demand.userId, bid.id, true);
         }
     }
 

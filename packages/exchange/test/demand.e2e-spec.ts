@@ -230,6 +230,13 @@ describe('Demand orders trading', () => {
             });
     });
 
+    it('should not be able to cancel individual orders from demand', async () => {
+        const demand = await demandService.create(demandOwner, createDemandWith2Bids);
+        const [bid] = demand.bids;
+
+        await request(app.getHttpServer()).post(`/orders/${bid.id}/cancel`).expect(403);
+    });
+
     it('should be able to resume paused demand', async () => {
         let demandId: string;
 
