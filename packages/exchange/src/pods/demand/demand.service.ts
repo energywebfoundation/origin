@@ -13,6 +13,7 @@ import { OrderService } from '../order/order.service';
 import { CreateDemandDTO } from './create-demand.dto';
 import { DemandTimePeriodService } from './demand-time-period.service';
 import { Demand, IDemand } from './demand.entity';
+import { DemandSummaryDTO } from './demand-summary.dto';
 
 @Injectable()
 export class DemandService {
@@ -60,6 +61,12 @@ export class DemandService {
         bids.forEach((bid) => this.matchingService.submit(bid));
 
         return this.findOne(userId, demand.id);
+    }
+
+    public createSummary(createDemand: CreateDemandDTO): DemandSummaryDTO {
+        const bids = this.prepareBids(createDemand);
+
+        return new DemandSummaryDTO(bids);
     }
 
     public async pause(userId: string, demandId: string): Promise<Demand> {
@@ -120,11 +127,11 @@ export class DemandService {
         return this.findOne(userId, demand.id);
     }
 
-    public async findOne(userId: string, id: string) {
+    public async findOne(userId: string, id: string): Promise<Demand> {
         return this.repository.findOne(id, { where: { userId } });
     }
 
-    public async getAll(userId: string) {
+    public async getAll(userId: string): Promise<Demand[]> {
         return this.repository.find({ where: { userId } });
     }
 
