@@ -122,7 +122,7 @@ export class DemandService {
         }
 
         await this.repository.update(demand.id, { status: DemandStatus.ACTIVE });
-        this.reSubmitDemandBids(demand);
+        await this.reSubmitDemandBids(demand);
 
         return this.findOne(userId, demand.id);
     }
@@ -136,19 +136,21 @@ export class DemandService {
     }
 
     private async cancelDemandBids(demand: Demand) {
-        for (const bid of demand.bids.filter(
+        const bids = demand.bids.filter(
             (b) => b.status === OrderStatus.Active || b.status === OrderStatus.PartiallyFilled
-        )) {
+        );
+        for (const bid of bids) {
             await this.orderService.cancelOrder(demand.userId, bid.id);
         }
     }
 
-    private reSubmitDemandBids(demand: Demand) {
-        for (const bid of demand.bids.filter(
+    private async reSubmitDemandBids(demand: Demand) {
+        const bids = demand.bids.filter(
             (b) =>
                 b.status === OrderStatus.Cancelled || b.status === OrderStatus.PendingCancellation
-        )) {
-            this.orderService.reactivateOrder(bid);
+        );
+        for (const bid of bids) {
+            await this.orderService.reactivateOrder(bid);
         }
     }
 
