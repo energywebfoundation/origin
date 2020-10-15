@@ -23,9 +23,6 @@
             "path": "../origin-backend-core/tsconfig.json"
         },
         {
-            "path": "../origin-backend/tsconfig.json"
-        },
-        {
             "path": "../issuer/tsconfig.json"
         }
     ]

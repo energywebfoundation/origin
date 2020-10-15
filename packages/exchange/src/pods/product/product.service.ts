@@ -1,8 +1,8 @@
-import { DeviceService } from '@energyweb/origin-backend';
-import { Injectable, OnModuleInit, Logger } from '@nestjs/common';
+import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { ModuleRef } from '@nestjs/core';
 
+import { IExternalDeviceService } from '../../interfaces';
 import { AssetService } from '../asset/asset.service';
 import { ProductDTO } from '../order/product.dto';
 
@@ -10,7 +10,7 @@ import { ProductDTO } from '../order/product.dto';
 export class ProductService implements OnModuleInit {
     private readonly logger = new Logger(ProductService.name);
 
-    private deviceService: DeviceService;
+    private deviceService: IExternalDeviceService;
 
     private issuerTypeId: string;
 
@@ -23,7 +23,9 @@ export class ProductService implements OnModuleInit {
     }
 
     public async onModuleInit() {
-        this.deviceService = this.moduleRef.get(DeviceService, { strict: false });
+        this.deviceService = this.moduleRef.get<IExternalDeviceService>(IExternalDeviceService, {
+            strict: false
+        });
     }
 
     public async getProduct(assetId: string): Promise<ProductDTO> {
@@ -34,7 +36,7 @@ export class ProductService implements OnModuleInit {
             id: deviceId,
             type: this.issuerTypeId
         };
-        const deviceProductInfo = await this.deviceService.findDeviceProductInfo(externalDeviceId);
+        const deviceProductInfo = await this.deviceService.getDeviceProductInfo(externalDeviceId);
 
         if (!deviceProductInfo) {
             this.logger.error(

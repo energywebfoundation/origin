@@ -27,6 +27,8 @@ import { BundleModule } from './pods/bundle/bundle.module';
 export { BulkTradeExecutedEvent } from './pods/matching-engine/bulk-trade-executed.event';
 export { TradePersistedEvent } from './pods/trade/trade-persisted.event';
 
+export * from './interfaces';
+
 export { AppModule } from './app.module';
 
 export const entities = [

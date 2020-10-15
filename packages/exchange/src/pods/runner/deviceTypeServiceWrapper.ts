@@ -1,7 +1,7 @@
-import { ConfigurationService } from '@energyweb/origin-backend';
 import { DeviceTypeService, IDeviceTypeService } from '@energyweb/utils-general';
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import { ModuleRef } from '@nestjs/core';
+import { IExchangeConfigurationService } from '../../interfaces';
 
 @Injectable()
 export class DeviceTypeServiceWrapper implements OnModuleInit {
@@ -10,11 +10,14 @@ export class DeviceTypeServiceWrapper implements OnModuleInit {
     constructor(private readonly moduleRef: ModuleRef) {}
 
     public async onModuleInit() {
-        const configService = this.moduleRef.get(ConfigurationService, {
-            strict: false
-        });
+        const configService = this.moduleRef.get<IExchangeConfigurationService>(
+            IExchangeConfigurationService,
+            {
+                strict: false
+            }
+        );
 
-        const { deviceTypes } = await configService.get();
+        const deviceTypes = await configService.getDeviceTypes();
 
         this._deviceTypeService = new DeviceTypeService(deviceTypes);
     }
