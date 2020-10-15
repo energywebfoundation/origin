@@ -294,4 +294,42 @@ describe('Demand orders trading', () => {
 
         await request(app.getHttpServer()).post(`/demand`).send(demand).expect(400);
     });
+
+    it('should allow you to replace your demand with new one', async () => {
+        let demandId: string;
+        await request(app.getHttpServer())
+            .post(`/demand`)
+            .send(createDemandWith2Bids)
+            .expect(201)
+            .expect((res) => {
+                ({ id: demandId } = res.body as Demand);
+            });
+
+        let newDemandId: string;
+        await request(app.getHttpServer())
+            .post(`/demand/${demandId}/replace`)
+            .send(createDemandWith2Bids)
+            .expect(201)
+            .expect((res) => {
+                ({ id: newDemandId } = res.body as Demand);
+            });
+
+        await request(app.getHttpServer())
+            .get(`/demand/${demandId}`)
+            .expect(200)
+            .expect((res) => {
+                const { status } = res.body as Demand;
+
+                expect(status).to.be.equal(DemandStatus.ARCHIVED);
+            });
+
+        await request(app.getHttpServer())
+            .get(`/demand/${newDemandId}`)
+            .expect(200)
+            .expect((res) => {
+                const { status } = res.body as Demand;
+
+                expect(status).to.be.equal(DemandStatus.ACTIVE);
+            });
+    });
 });
