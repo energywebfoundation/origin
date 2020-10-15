@@ -63,6 +63,25 @@ export class DemandService {
         return this.findOne(userId, demand.id);
     }
 
+    public async replace(
+        userId: string,
+        demandId: string,
+        createDemand: CreateDemandDTO
+    ): Promise<Demand> {
+        const demand = await this.findOne(userId, demandId);
+        if (!demand) {
+            return null;
+        }
+
+        if (demand.status === DemandStatus.ACTIVE) {
+            await this.cancelDemandBids(demand);
+        }
+
+        await this.repository.update(demand.id, { status: DemandStatus.ARCHIVED });
+
+        return this.create(userId, createDemand);
+    }
+
     public createSummary(createDemand: CreateDemandDTO): DemandSummaryDTO {
         const bids = this.prepareBids(createDemand);
 
