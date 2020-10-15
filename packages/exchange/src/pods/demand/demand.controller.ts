@@ -130,4 +130,20 @@ export class DemandController {
         const demand = await this.demandService.archive(ownerId, id);
         return demand;
     }
+
+    @Post('/:id/replace')
+    @UseGuards(AuthGuard(), ActiveUserGuard)
+    @HttpCode(201)
+    public async replace(
+        @UserDecorator() { id: userId, ownerId }: ILoggedInUser,
+        @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
+        @Body() createDemand: CreateDemandDTO
+    ): Promise<Demand> {
+        this.logger.debug(
+            `Requested demand archival from userId=${userId} with ownerId=${ownerId}`
+        );
+
+        const demand = await this.demandService.replace(ownerId, id, createDemand);
+        return demand;
+    }
 }
