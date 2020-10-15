@@ -130,7 +130,7 @@ export const DemandsTable = (props: IOwnProps) => {
         } = demand;
         return {
             volume: EnergyFormatter.format(Number(volumePerPeriod), true),
-            price: formatCurrencyComplete(price / 100, currency),
+            price: formatCurrencyComplete(parseFloat(price) / 100, currency),
             device_type: deviceType ? deviceType[0].split(';')[0] : 'Any',
             demandPeriod: configureTimeFrame(periodTimeFrame, t, false),
             demandStart: start ? configureDateFormat(start, periodTimeFrame) : '-',

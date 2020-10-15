@@ -1,10 +1,12 @@
 import React, { useEffect } from 'react';
+import { useSelector } from 'react-redux';
 import { Grid, InputAdornment, Divider } from '@material-ui/core';
 import { useValidation, useTranslation } from '../../utils';
 import { FormInput, CalendarFieldOnPeriod } from '../Form';
 import { FormSelect } from '../Form/FormSelect';
-import { calculateDemandTotalVolume } from '../../utils/exchange';
+import { getExchangeClient } from '../../features/general/selectors';
 import { periodTypeOptions } from '../../utils/demand';
+import { calculateTotalVolume } from '../../utils/exchange';
 
 export const RepeatedPurchase = (props) => {
     const {
@@ -17,6 +19,7 @@ export const RepeatedPurchase = (props) => {
     } = props;
     const { t } = useTranslation();
     const { Yup } = useValidation();
+    const exchangeClient = useSelector(getExchangeClient);
 
     const periodOptions = periodTypeOptions(t);
 
@@ -35,10 +38,17 @@ export const RepeatedPurchase = (props) => {
     useEffect(() => {
         setValidationSchema(VALIDATION_SCHEMA);
         const { demandPeriod, demandVolume, demandDateStart, demandDateEnd } = values;
-        setFieldValue(
-            'totalDemandVolume',
-            calculateDemandTotalVolume(demandPeriod, demandVolume, demandDateStart, demandDateEnd)
-        );
+
+        const setVolume = async () => {
+            const totalVolume = await calculateTotalVolume(exchangeClient, {
+                volume: demandVolume,
+                period: demandPeriod,
+                start: demandDateStart,
+                end: demandDateEnd
+            });
+            setFieldValue('totalDemandVolume', totalVolume);
+        };
+        setVolume();
     }, [values]);
 
     return (

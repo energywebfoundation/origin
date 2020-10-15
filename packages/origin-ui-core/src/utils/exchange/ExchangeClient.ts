@@ -20,7 +20,7 @@ import {
     Demand
 } from '.';
 import { Filter, OrderStatus } from '@energyweb/exchange-core';
-import { BundleSplits } from './types';
+import { BundleSplits, DemandSummaryDTO } from './types';
 import { IRequestClient } from '@energyweb/origin-backend-core';
 
 export interface IExchangeClient {
@@ -35,6 +35,7 @@ export interface IExchangeClient {
     createBid(data: CreateBidDTO): Promise<IOrder>;
     createDemand(data: CreateDemandDTO): Promise<IDemand>;
     getAllDemands(): Promise<Demand[]>;
+    summary(demand: CreateDemandDTO): Promise<DemandSummaryDTO>;
     updateDemand(demandId: string, updateDemand: CreateDemandDTO): Promise<Demand>;
     pauseDemand(demandId: string): Promise<Demand>;
     resumeDemand(demandId: string): Promise<Demand>;
@@ -118,10 +119,10 @@ export class ExchangeClient implements IExchangeClient {
         return response.data;
     }
 
-    public async createDemand(data: CreateDemandDTO): Promise<Demand> {
+    public async createDemand(demand: CreateDemandDTO): Promise<Demand> {
         const response = await this.requestClient.post<CreateDemandDTO, Demand>(
             this.demandEndpoint,
-            data
+            demand
         );
         return response.data;
     }
@@ -129,6 +130,14 @@ export class ExchangeClient implements IExchangeClient {
     public async getAllDemands(): Promise<Demand[]> {
         const demands = await this.requestClient.get<unknown, Demand[]>(this.demandEndpoint);
         return demands.data;
+    }
+
+    public async summary(demand: CreateDemandDTO) {
+        const summary = await this.requestClient.post<CreateDemandDTO, DemandSummaryDTO>(
+            `${this.demandEndpoint}/summary`,
+            demand
+        );
+        return summary.data;
     }
 
     public async updateDemand(demandId: string, demandData: CreateDemandDTO): Promise<Demand> {
@@ -445,6 +454,10 @@ export const ExchangeClientMock: IExchangeClient = {
     },
 
     async getAllDemands() {
+        return null;
+    },
+
+    async summary(demand: CreateDemandDTO) {
         return null;
     },
 

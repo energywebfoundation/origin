@@ -8,13 +8,7 @@ import { getCurrencies } from '../..';
 import { EnergyFormatter, useTranslation } from '../../utils';
 import { FormSelect } from '../Form/FormSelect';
 import { Formik, FormikHelpers, Form } from 'formik';
-import {
-    Demand,
-    DemandStatus,
-    calculateDemandTotalVolume,
-    TimeFrame,
-    IProductDTO
-} from '../../utils/exchange';
+import { Demand, DemandStatus, TimeFrame, IProductDTO, Order } from '../../utils/exchange';
 import {
     Button,
     Dialog,
@@ -29,8 +23,10 @@ import {
     Divider
 } from '@material-ui/core';
 import { Close } from '@material-ui/icons';
+import { TotalDemandVolume } from '../orders/TotalDemandVolume';
 
 interface IFormValues {
+    userId: string;
     id: string;
     periodTimeFrame: TimeFrame;
     start: Date;
@@ -38,16 +34,21 @@ interface IFormValues {
     volumePerPeriod: string;
     price: string;
     product: IProductDTO;
+    bids: Order[];
+    status: DemandStatus;
 }
 
 const INITIAL_FORM_VALUES: IFormValues = {
+    userId: '',
     id: '',
     periodTimeFrame: 2,
     start: null,
     end: null,
     volumePerPeriod: '',
     price: '',
-    product: {}
+    product: {},
+    bids: [],
+    status: null
 };
 
 interface IProps {
@@ -115,7 +116,7 @@ export function DemandUpdateModal(props: IProps) {
     const initialFormValues: IFormValues = {
         ...demand,
         volumePerPeriod: EnergyFormatter.format(Number(demand?.volumePerPeriod)),
-        price: (demand?.price / 100).toFixed(2)
+        price: (parseFloat(demand?.price) / 100).toFixed(2)
     };
 
     return (
@@ -147,21 +148,7 @@ export function DemandUpdateModal(props: IProps) {
                             <DialogContent>
                                 <Grid container>
                                     <Grid item xs={12} className="TotalVolume">
-                                        <Typography align="center">
-                                            {t('demand.captions.totalVolume')}
-                                        </Typography>
-                                        <Typography
-                                            align="center"
-                                            variant="h5"
-                                            className="Calculated"
-                                        >
-                                            {`${calculateDemandTotalVolume(
-                                                values.periodTimeFrame,
-                                                values.volumePerPeriod,
-                                                values.start,
-                                                values.end
-                                            )} ${EnergyFormatter.displayUnit}`}
-                                        </Typography>
+                                        <TotalDemandVolume demand={values} />
                                     </Grid>
                                     <Grid item xs={12}>
                                         <Box className="ActivateDemand">

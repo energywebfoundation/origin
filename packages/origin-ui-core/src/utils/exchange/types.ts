@@ -221,10 +221,22 @@ export type CreateDemandDTO = {
     excludeEnd: boolean;
 };
 
+export type DemandSummaryDTO = {
+    bids: CreateBidDTO[];
+    volume: string;
+};
+
+export interface ICalculateVolumeData {
+    volume: string;
+    period: TimeFrame;
+    start: Date;
+    end: Date;
+}
+
 export interface IDemand {
     id: string;
     userId: string;
-    price: number;
+    price: string;
     start: Date;
     end: Date;
     volumePerPeriod: string;
@@ -234,7 +246,7 @@ export interface IDemand {
     status: DemandStatus;
 }
 
-export type Demand = IDemand;
+export type Demand = IDemand & { userId: string; bids: Order[]; status: DemandStatus };
 
 export const ANY_VALUE = 'Any';
 export const ANY_OPERATOR = 'TH-ANY';
