@@ -11,6 +11,7 @@ import {
     ForbiddenException,
     Get,
     HttpCode,
+    HttpException,
     Logger,
     Param,
     ParseUUIDPipe,
@@ -22,10 +23,12 @@ import {
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { ForbiddenActionError } from '../../utils/exceptions';
+import { ensureSingleProcessOnly } from '../../utils/ensureSingleProcessOnly';
 
 import { CreateAskDTO } from './create-ask.dto';
 import { CreateBidDTO } from './create-bid.dto';
 import { DirectBuyDTO } from './direct-buy.dto';
+import { AskBeingProcessedError } from './errors/ask-being-processed.error';
 import { Order } from './order.entity';
 import { OrderService } from './order.service';
 
@@ -64,10 +67,19 @@ export class OrderController {
         this.logger.log(`Creating new order ${JSON.stringify(newOrder)}`);
 
         try {
-            const order = await this.orderService.createAsk(user.ownerId, newOrder);
+            const order = await ensureSingleProcessOnly(
+                user.ownerId,
+                'createAsk',
+                () => this.orderService.createAsk(user.ownerId, newOrder),
+                new AskBeingProcessedError()
+            );
             return order;
         } catch (error) {
             this.logger.error(error.message);
+
+            if (error instanceof AskBeingProcessedError) {
+                throw new HttpException('Another ask is currently being processed', 409);
+            }
 
             throw new ForbiddenException();
         }
