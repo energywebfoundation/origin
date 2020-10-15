@@ -99,7 +99,7 @@ function* updateDemand(): SagaIterator {
         const exchangeClient: IExchangeClient = yield select(getExchangeClient);
         const i18n = getI18n();
         try {
-            yield apply(exchangeClient, exchangeClient.updateDemand, [payload.id, payload.demand]);
+            yield apply(exchangeClient, exchangeClient.replaceDemand, [payload.id, payload.demand]);
             yield put(reloadCertificates());
             showNotification(i18n.t('demand.feedback.demandUpdated'), NotificationType.Success);
             yield call(fetchOrders);

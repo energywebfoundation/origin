@@ -36,7 +36,7 @@ export interface IExchangeClient {
     createDemand(data: CreateDemandDTO): Promise<IDemand>;
     getAllDemands(): Promise<Demand[]>;
     summary(demand: CreateDemandDTO): Promise<DemandSummaryDTO>;
-    updateDemand(demandId: string, updateDemand: CreateDemandDTO): Promise<Demand>;
+    replaceDemand(demandId: string, updateDemand: CreateDemandDTO): Promise<Demand>;
     pauseDemand(demandId: string): Promise<Demand>;
     resumeDemand(demandId: string): Promise<Demand>;
     archiveDemand(demand: Demand): Promise<Demand>;
@@ -140,9 +140,9 @@ export class ExchangeClient implements IExchangeClient {
         return summary.data;
     }
 
-    public async updateDemand(demandId: string, demandData: CreateDemandDTO): Promise<Demand> {
-        const demand = await this.requestClient.put<CreateDemandDTO, Demand>(
-            `${this.demandEndpoint}/${demandId}/update`,
+    public async replaceDemand(demandId: string, demandData: CreateDemandDTO): Promise<Demand> {
+        const demand = await this.requestClient.post<CreateDemandDTO, Demand>(
+            `${this.demandEndpoint}/${demandId}/replace`,
             demandData
         );
         return demand.data;
@@ -473,7 +473,7 @@ export const ExchangeClientMock: IExchangeClient = {
         return null;
     },
 
-    async updateDemand(demandId: string, updateDemand: CreateDemandDTO) {
+    async replaceDemand(demandId: string, updateDemand: CreateDemandDTO) {
         return null;
     }
 };

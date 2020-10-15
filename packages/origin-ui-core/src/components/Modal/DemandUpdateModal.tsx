@@ -97,8 +97,8 @@ export function DemandUpdateModal(props: IProps) {
                 excludeEnd: false
             })
         );
-        close();
         formikActions.setSubmitting(false);
+        close();
     }
 
     const VALIDATION_SCHEMA = Yup.object().shape({
