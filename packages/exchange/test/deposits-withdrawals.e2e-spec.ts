@@ -32,6 +32,14 @@ describe('Deposits using deployed registry', () => {
     let issuer: Contract;
 
     let depositAddress: string;
+    let tokenId: number;
+
+    const tokenReceiverPrivateKey =
+        '0xca77c9b06fde68bcbcc09f603c958620613f4be79f3abb4b2032131d0229462e';
+    const tokenReceiver = new ethers.Wallet(tokenReceiverPrivateKey, provider);
+
+    const generationFrom = moment('2020-01-01').unix();
+    const generationTo = moment('2020-01-31').unix();
 
     const startExchange = async () => {
         ({
@@ -45,8 +53,27 @@ describe('Deposits using deployed registry', () => {
 
         await app.init();
 
-        const { address } = await accountService.getOrCreateAccount(user1Id);
-        depositAddress = address;
+        tokenId = await issueToken(
+            issuer,
+            tokenReceiver.address,
+            `${1000 * MWh}`,
+            generationFrom,
+            generationTo
+        );
+    };
+
+    const depositToExchangeAddress = async (amount: string) => {
+        await depositToken(registry, tokenReceiver, depositAddress, amount, tokenId);
+
+        await sleep(5000);
+
+        const res = await request(app.getHttpServer()).get('/transfer/all');
+        const [transfer] = res.body as Transfer[];
+
+        expect(transfer.id).to.be.ok;
+        expect(transfer.asset.tokenId).equals(tokenId.toString());
+
+        return transfer.asset.id;
     };
 
     before(startExchange);
@@ -56,12 +83,10 @@ describe('Deposits using deployed registry', () => {
         await app.close();
     });
 
-    const tokenReceiverPrivateKey =
-        '0xca77c9b06fde68bcbcc09f603c958620613f4be79f3abb4b2032131d0229462e';
-    const tokenReceiver = new ethers.Wallet(tokenReceiverPrivateKey, provider);
-
-    const generationFrom = moment('2020-01-01').unix();
-    const generationTo = moment('2020-01-31').unix();
+    beforeEach(async () => {
+        await databaseService.truncate('order', 'transfer');
+        ({ address: depositAddress } = await accountService.getOrCreateAccount(user1Id));
+    });
 
     const getBalance = async (address: string, id: number): Promise<ethers.BigNumber> =>
         registry.balanceOf(address, id);
@@ -69,14 +94,7 @@ describe('Deposits using deployed registry', () => {
     it('should be able to discover token deposit and post the ask', async () => {
         const depositAmount = `${10 * MWh}`;
 
-        const id = await issueToken(
-            issuer,
-            tokenReceiver.address,
-            `${1000 * MWh}`,
-            generationFrom,
-            generationTo
-        );
-        await depositToken(registry, tokenReceiver, depositAddress, depositAmount, id);
+        await depositToken(registry, tokenReceiver, depositAddress, depositAmount, tokenId);
 
         await sleep(5000);
 
@@ -146,30 +164,15 @@ describe('Deposits using deployed registry', () => {
         const withdrawalAmount = '5';
         const depositAmount = '10';
 
-        const id = await issueToken(
-            issuer,
-            tokenReceiver.address,
-            '1000',
-            generationFrom,
-            generationTo
-        );
-        await depositToken(registry, tokenReceiver, depositAddress, depositAmount, id);
-
-        await sleep(5000);
-
-        const res = await request(app.getHttpServer()).get('/transfer/all');
-        const [, deposit] = res.body as Transfer[];
-
-        expect(deposit.id).to.be.ok;
-        expect(deposit.asset.tokenId).equals(id.toString());
+        const assetId = await depositToExchangeAddress(depositAmount);
 
         const withdrawal: RequestWithdrawalDTO = {
-            assetId: deposit.asset.id,
+            assetId,
             amount: withdrawalAmount,
             address: withdrawalAddress
         };
 
-        const startBalance = await getBalance(withdrawalAddress, id);
+        const startBalance = await getBalance(withdrawalAddress, tokenId);
 
         await request(app.getHttpServer())
             .post('/transfer/withdrawal')
@@ -178,12 +181,30 @@ describe('Deposits using deployed registry', () => {
 
         await sleep(5000);
 
-        const endBalance = await getBalance(withdrawalAddress, id);
+        const endBalance = await getBalance(withdrawalAddress, tokenId);
 
         expect(endBalance.gt(startBalance)).to.be.true;
     });
 
     it('should re-test unconfirmed withdrawal on start', async () => {
+        const withdrawalAddress = ethers.Wallet.createRandom().address;
+        const amount = '5';
+
+        const assetId = await depositToExchangeAddress(amount);
+
+        const withdrawal: RequestWithdrawalDTO = {
+            assetId,
+            amount,
+            address: withdrawalAddress
+        };
+
+        await request(app.getHttpServer())
+            .post('/transfer/withdrawal')
+            .send(withdrawal)
+            .expect(201);
+
+        await sleep(5000);
+
         const [confirmed] = await transferService.getByStatus(
             TransferStatus.Confirmed,
             TransferDirection.Withdrawal
@@ -199,5 +220,36 @@ describe('Deposits using deployed registry', () => {
 
         expect(transfer.status).to.be.equal(TransferStatus.Confirmed);
         expect(transfer.confirmationBlock).to.be.equal(confirmed.confirmationBlock);
+    });
+
+    it('should not allow withdraw to more than available assets', async () => {
+        const withdrawalAddress = ethers.Wallet.createRandom().address;
+        const withdrawalAmount = '10';
+        const depositAmount = '10';
+
+        const { address: depositAddress2 } = await accountService.getOrCreateAccount('user2');
+        await depositToken(registry, tokenReceiver, depositAddress2, depositAmount, tokenId);
+
+        const assetId = await depositToExchangeAddress(depositAmount);
+
+        const withdrawal: RequestWithdrawalDTO = {
+            assetId,
+            amount: withdrawalAmount,
+            address: withdrawalAddress
+        };
+
+        for (let i = 0; i < 10; i++) {
+            request(app.getHttpServer())
+                .post('/transfer/withdrawal')
+                .send(withdrawal)
+                // eslint-disable-next-line @typescript-eslint/no-empty-function
+                .end(() => {});
+        }
+
+        await sleep(5000);
+
+        const endBalance = await getBalance(withdrawalAddress, tokenId);
+
+        expect(endBalance.toString()).to.be.equal(withdrawalAmount);
     });
 });

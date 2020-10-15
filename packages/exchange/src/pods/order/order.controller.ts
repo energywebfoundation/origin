@@ -78,7 +78,7 @@ export class OrderController {
             this.logger.error(error.message);
 
             if (error instanceof AskBeingProcessedError) {
-                throw new HttpException('Another ask is currently being processed', 409);
+                throw new HttpException({ message: error.message }, 409);
             }
 
             throw new ForbiddenException();
