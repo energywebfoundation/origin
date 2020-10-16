@@ -12,12 +12,15 @@ import { ProductService } from '../product/product.service';
 import { CreateAskDTO } from './create-ask.dto';
 import { CreateBidDTO } from './create-bid.dto';
 import { DirectBuyDTO } from './direct-buy.dto';
+import { InsufficientAssetsAvailable } from './errors/insufficient-assets-available.error';
 import { OrderType } from './order-type.enum';
 import { Order } from './order.entity';
 
 @Injectable()
 export class OrderService {
     private readonly logger = new Logger(OrderService.name);
+
+    private askOrderProcessor = new Set<string>();
 
     constructor(
         @InjectRepository(Order)
@@ -89,7 +92,7 @@ export class OrderService {
                 amount: new BN(ask.volume)
             }))
         ) {
-            throw new Error('Not enough assets');
+            throw new InsufficientAssetsAvailable(ask.assetId);
         }
 
         const product = await this.productService.getProduct(ask.assetId);

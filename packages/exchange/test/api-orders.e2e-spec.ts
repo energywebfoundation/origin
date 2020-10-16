@@ -271,4 +271,33 @@ describe('account ask order send', () => {
 
         await request(app.getHttpServer()).post('/orders/ask').send(createAsk).expect(400);
     });
+
+    it('should not allow to post more asks than deposits', async () => {
+        await confirmDeposit();
+
+        const createAsk: CreateAskDTO = {
+            assetId: deposit.asset.id,
+            volume: `${1000 * MWh}`,
+            price: 100,
+            validFrom: new Date()
+        };
+
+        for (let i = 0; i < 10; i++) {
+            request(app.getHttpServer())
+                .post('/orders/ask')
+                .send(createAsk)
+                // eslint-disable-next-line @typescript-eslint/no-empty-function
+                .end(() => {});
+        }
+
+        await sleep(3000);
+
+        await request(app.getHttpServer())
+            .get('/orders')
+            .expect((res) => {
+                const orders = res.body as Order[];
+
+                expect(orders).to.have.length(1);
+            });
+    });
 });
