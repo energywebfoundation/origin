@@ -2,7 +2,7 @@ sudo: required
 dist: bionic
 language: node_js
 node_js:
-    - "12"
+    - '12'
 
 notifications:
     slack:
@@ -61,29 +61,29 @@ install:
 
 script:
     - set -e
-    - yarn lint
-    - yarn test:ci:contracts
-    - yarn test:ci:apps
-    - yarn test:ci:ui
-    - yarn test:ci:e2e
+    - if [ $TRAVIS_PULL_REQUEST != "false" ] || [ $TRAVIS_BRANCH != "master"]; then yarn lint; fi
+    - if [ $TRAVIS_PULL_REQUEST != "false" ] || [ $TRAVIS_BRANCH != "master"]; then yarn test:ci:contracts; fi
+    - if [ $TRAVIS_PULL_REQUEST != "false" ] || [ $TRAVIS_BRANCH != "master"]; then yarn test:ci:apps; fi
+    - if [ $TRAVIS_PULL_REQUEST != "false" ] || [ $TRAVIS_BRANCH != "master"]; then yarn test:ci:ui; fi
+    - if [ $TRAVIS_PULL_REQUEST != "false" ] || [ $TRAVIS_BRANCH != "master"]; then yarn test:ci:e2e; fi
 
 deploy:
     - provider: script
-      script: "git checkout master && yarn publish:canary && npx sleep 5 && yarn build:containers:canary && yarn deploy:heroku:canary"
+      script: 'git checkout master && yarn publish:canary && npx sleep 5 && yarn build:containers:canary && yarn deploy:heroku:canary'
       skip_cleanup: true
       on:
-          node: "12"
+          node: '12'
           branch: master
     - provider: script
       edge: true
-      script: "git checkout release && yarn publish:release && npx sleep 5 && yarn build:containers:release"
+      script: 'git checkout release && yarn publish:release && npx sleep 5 && yarn build:containers:release'
       on:
-          node: "12"
+          node: '12'
           branch: release
           condition: '$TRAVIS_COMMIT_MESSAGE != *"skip-deploy"*'
     - provider: script
-      script: "git checkout preview && yarn publish:preview"
+      script: 'git checkout preview && yarn publish:preview'
       skip_cleanup: true
       on:
-          node: "12"
+          node: '12'
           branch: preview
