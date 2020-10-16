@@ -61,11 +61,11 @@ install:
 
 script:
     - set -e
-    - if [[ $TRAVIS_PULL_REQUEST != "false" ]]; then yarn lint; fi
-    - if [[ $TRAVIS_PULL_REQUEST != "false" ]]; then yarn test:ci:contracts; fi
-    - if [[ $TRAVIS_PULL_REQUEST != "false" ]]; then yarn test:ci:apps; fi
-    - if [[ $TRAVIS_PULL_REQUEST != "false" ]]; then yarn test:ci:ui; fi
-    - if [[ $TRAVIS_PULL_REQUEST != "false" ]]; then yarn test:ci:e2e; fi
+    - if [ $TRAVIS_PULL_REQUEST != "false" ] || [ $TRAVIS_BRANCH != "master"]; then yarn lint; fi
+    - if [ $TRAVIS_PULL_REQUEST != "false" ] || [ $TRAVIS_BRANCH != "master"]; then yarn test:ci:contracts; fi
+    - if [ $TRAVIS_PULL_REQUEST != "false" ] || [ $TRAVIS_BRANCH != "master"]; then yarn test:ci:apps; fi
+    - if [ $TRAVIS_PULL_REQUEST != "false" ] || [ $TRAVIS_BRANCH != "master"]; then yarn test:ci:ui; fi
+    - if [ $TRAVIS_PULL_REQUEST != "false" ] || [ $TRAVIS_BRANCH != "master"]; then yarn test:ci:e2e; fi
 
 deploy:
     - provider: script
