@@ -506,6 +506,10 @@ function* fillContractLookupIfMissing(): SagaIterator {
 
             yield put(setActiveBlockchainAccountAddress(userAddress));
         } catch (error) {
+            showNotification(
+                'Please enable your MetaMask browser extension',
+                NotificationType.Error
+            );
             console.error('ContractsSaga::UnableToFetchBlockchainAddress', error);
         }
         yield put(setLoading(false));
