@@ -10,19 +10,20 @@ import {
     Button,
     useTheme
 } from '@material-ui/core';
-import { Order } from '../../utils/exchange';
+import { Order, Demand } from '../../utils/exchange';
 import { ErrorOutline } from '@material-ui/icons';
 import { useTranslation } from '../..';
 import { useDispatch } from 'react-redux';
-import { cancelOrder } from '../../features/orders/actions';
+import { cancelOrder, archiveDemand } from '../../features/orders/actions';
 
 interface IOwnProps {
-    order: Order;
+    demand?: Demand;
+    order?: Order;
     close: () => void;
 }
 
 export const RemoveOrderConfirmation = (props: IOwnProps) => {
-    const { order, close } = props;
+    const { demand, order, close } = props;
     const { t } = useTranslation();
     const useIconStyles = makeStyles((theme: Theme) => ({
         large: {
@@ -34,7 +35,11 @@ export const RemoveOrderConfirmation = (props: IOwnProps) => {
     const { spacing } = useTheme();
 
     const onCancelOrder = () => {
-        dispatch(cancelOrder(order));
+        if (order) {
+            dispatch(cancelOrder(order));
+        } else {
+            dispatch(archiveDemand(demand));
+        }
         close();
     };
 

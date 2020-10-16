@@ -1,12 +1,14 @@
-import { Order } from '../../utils/exchange';
+import { Order, Demand } from '../../utils/exchange';
 import { IOrderAction, OrdersActionsType } from './actions';
 
 export interface IOrdersState {
     orders: Order[];
+    demands: Demand[];
 }
 
 const initialState: IOrdersState = {
-    orders: []
+    orders: [],
+    demands: []
 };
 
 export default function reducer<T>(
@@ -14,17 +16,27 @@ export default function reducer<T>(
     { type, payload }: IOrderAction
 ): IOrdersState {
     switch (type) {
-        case OrdersActionsType.STORE:
+        case OrdersActionsType.STORE_ORDERS:
             const orders = [...state.orders.filter((o) => o.id !== payload.id)];
             orders.push(payload);
             return {
                 ...state,
                 orders
             };
-        case OrdersActionsType.CLEAR:
+        case OrdersActionsType.CLEAR_ORDERS:
             return {
                 ...state,
                 orders: []
+            };
+        case OrdersActionsType.STORE_DEMANDS:
+            return {
+                ...state,
+                demands: payload
+            };
+        case OrdersActionsType.CLEAR_DEMANDS:
+            return {
+                ...state,
+                demands: []
             };
         default:
             return state;

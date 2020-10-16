@@ -195,5 +195,58 @@ export type SplitItem = {
     volume: BigNumber;
 };
 
+export enum TimeFrame {
+    yearly = 0,
+    monthly = 1,
+    daily = 2,
+    weekly = 3,
+    hourly = 4,
+    halfHourly = 5
+}
+
+export enum DemandStatus {
+    ACTIVE = 0,
+    PAUSED = 1,
+    ARCHIVED = 2
+}
+
+export type CreateDemandDTO = {
+    price: number;
+    volumePerPeriod: string;
+    periodTimeFrame: TimeFrame;
+    start: Date;
+    end: Date;
+    product: IProductDTO;
+    boundToGenerationTime: boolean;
+    excludeEnd: boolean;
+};
+
+export type DemandSummaryDTO = {
+    bids: CreateBidDTO[];
+    volume: string;
+};
+
+export interface ICalculateVolumeData {
+    volume: string;
+    period: TimeFrame;
+    start: Date;
+    end: Date;
+}
+
+export interface IDemand {
+    id: string;
+    userId: string;
+    price: string;
+    start: Date;
+    end: Date;
+    volumePerPeriod: string;
+    periodTimeFrame: TimeFrame;
+    product: IProductDTO;
+    bids: Order[];
+    status: DemandStatus;
+}
+
+export type Demand = IDemand & { userId: string; bids: Order[]; status: DemandStatus };
+
 export const ANY_VALUE = 'Any';
 export const ANY_OPERATOR = 'TH-ANY';
