@@ -57,7 +57,7 @@
         "i18next-icu": "1.4.2",
         "moment": "2.24.0",
         "moment-timezone": "0.5.31",
-        "query-string": "6.13.5",
+        "query-string": "6.13.6",
         "react": "16.14.0",
         "react-chartjs-2": "2.10.0",
         "react-dom": "16.14.0",
