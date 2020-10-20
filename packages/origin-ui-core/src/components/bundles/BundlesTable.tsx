@@ -65,7 +65,7 @@ export const BundlesTable = (props: IOwnProps) => {
         },
         sortAscending: false
     });
-    const userIsActiveAndPartOfOrg = () =>
+    const userIsActiveAndPartOfOrg =
         user?.organization &&
         userIsActive &&
         isRole(user, Role.OrganizationUser, Role.OrganizationDeviceManager, Role.OrganizationAdmin);
@@ -171,7 +171,7 @@ export const BundlesTable = (props: IOwnProps) => {
                 handleRowClick={(rowIndex: string) => viewDetails(parseInt(rowIndex, 10))}
             />
             {isBundleDetailsVisible && <BundleDetails bundle={selected} owner={owner} />}
-            {userIsActiveAndPartOfOrg() && (
+            {userIsActiveAndPartOfOrg && (
                 <Link to={'/certificates/create_bundle'}>
                     <Tooltip title={t('certificate.actions.create_bundle')}>
                         <Fab

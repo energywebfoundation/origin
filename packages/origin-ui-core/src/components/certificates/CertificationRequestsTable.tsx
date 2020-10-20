@@ -99,7 +99,7 @@ export function CertificationRequestsTable(props: IProps) {
         };
     }
 
-    const { paginatedData, loadPage, total, pageSize } = usePaginatedLoader<IRecord>({
+    const { paginatedData, loadPage, total, pageSize, removeItem } = usePaginatedLoader<IRecord>({
         getPaginatedData
     });
 
@@ -114,7 +114,7 @@ export function CertificationRequestsTable(props: IProps) {
             requestCertificateApproval({
                 certificationRequest,
                 callback: () => {
-                    loadPage(1);
+                    removeItem(rowIndex);
                 }
             })
         );

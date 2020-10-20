@@ -362,6 +362,7 @@
             "feedback": {
                 "userRegistered": "User registered.",
                 "errorWhileRegisteringUser": "Error while registering user.",
+                "errorUserExists": "The user with email {userEmail} has already been registered. Please log in using the original account.",
                 "userLoggedIn": "User logged in.",
                 "couldNotLogIn": "Could not log in with supplied credentials.",
                 "confirmationEmailResent": "Confirmation email re-sent.",

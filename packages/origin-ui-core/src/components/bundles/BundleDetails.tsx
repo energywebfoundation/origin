@@ -101,7 +101,7 @@ const BundleDetails = (props: IOwnProps) => {
                     <CloseIcon />
                 </IconButton>
             </DialogTitle>
-            <DialogContent>
+            <DialogContent style={{ margin: 20 }}>
                 {prices.length > 1 && (
                     <Box mb={2}>
                         <Grid container justify="flex-end">

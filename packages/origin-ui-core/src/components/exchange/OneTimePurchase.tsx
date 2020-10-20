@@ -2,11 +2,14 @@ import React, { useEffect } from 'react';
 import { Grid, InputAdornment, Divider } from '@material-ui/core';
 import { useValidation, useTranslation } from '../../utils';
 import { FormInput, FormikDatePickerWithMonthArrowsFilled } from '../Form';
+import { useSelector } from 'react-redux';
+import { getUserOffchain } from '../../features/users/selectors';
 
 export const OneTimePurchase = (props) => {
     const { fieldDisabled, currency, setFieldValue, energyUnit, setValidationSchema } = props;
     const { t } = useTranslation();
     const { Yup } = useValidation();
+    const user = useSelector(getUserOffchain);
 
     const VALIDATION_SCHEMA = Yup.object().shape({
         generationDateStart: Yup.date().label(t('exchange.properties.generationDateStart')),
@@ -46,7 +49,7 @@ export const OneTimePurchase = (props) => {
                     <FormInput
                         label={t('exchange.properties.energy')}
                         property="energy"
-                        disabled={fieldDisabled}
+                        disabled={!user || fieldDisabled}
                         className="mt-3"
                         required
                         InputProps={{
@@ -60,7 +63,7 @@ export const OneTimePurchase = (props) => {
                     <FormInput
                         label={t('exchange.properties.price')}
                         property="price"
-                        disabled={fieldDisabled}
+                        disabled={!user || fieldDisabled}
                         className="mt-3"
                         required
                         InputProps={{

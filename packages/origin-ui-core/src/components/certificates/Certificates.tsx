@@ -53,7 +53,7 @@ export function Certificates() {
     const isIssuer = isRole(user, Role.Issuer);
     const userIsActive = user && user.status === UserStatus.Active;
 
-    const userIsActiveAndPartOfOrg = () =>
+    const userIsActiveAndPartOfOrg =
         user?.organization &&
         userIsActive &&
         isRole(user, Role.OrganizationUser, Role.OrganizationDeviceManager, Role.OrganizationAdmin);
@@ -63,14 +63,14 @@ export function Certificates() {
             key: 'inbox',
             label: 'navigation.certificates.inbox',
             component: InboxCertificates,
-            show: userIsActiveAndPartOfOrg(),
+            show: userIsActiveAndPartOfOrg,
             features: [OriginFeature.Certificates, OriginFeature.Buyer]
         },
         {
             key: 'claims_report',
             label: 'navigation.certificates.claimsReport',
             component: ClaimedCertificates,
-            show: isIssuer || userIsActiveAndPartOfOrg(),
+            show: isIssuer || userIsActiveAndPartOfOrg,
             features: [OriginFeature.Certificates, OriginFeature.Buyer]
         },
         {
@@ -84,14 +84,14 @@ export function Certificates() {
             key: 'pending',
             label: 'navigation.certificates.pending',
             component: PendingCertificationRequestsTable,
-            show: (userIsActive && isIssuer) || userIsActiveAndPartOfOrg(),
+            show: (userIsActive && isIssuer) || userIsActiveAndPartOfOrg,
             features: [OriginFeature.Certificates, OriginFeature.CertificationRequests]
         },
         {
             key: 'approved',
             label: 'navigation.certificates.approved',
             component: ApprovedCertificationRequestsTable,
-            show: (userIsActive && isIssuer) || userIsActiveAndPartOfOrg(),
+            show: (userIsActive && isIssuer) || userIsActiveAndPartOfOrg,
             features: [OriginFeature.Certificates, OriginFeature.CertificationRequests]
         },
         {
@@ -112,7 +112,7 @@ export function Certificates() {
             key: 'create_bundle',
             label: 'navigation.certificates.create_bundle',
             component: CreateBundleForm,
-            show: userIsActiveAndPartOfOrg(),
+            show: userIsActiveAndPartOfOrg,
             features: [OriginFeature.Exchange, OriginFeature.Bundles]
         },
         {
@@ -120,21 +120,21 @@ export function Certificates() {
             label: 'navigation.certificates.my_bundles',
             component: BundlesTable,
             props: { owner: true },
-            show: userIsActiveAndPartOfOrg(),
+            show: userIsActiveAndPartOfOrg,
             features: [OriginFeature.Exchange, OriginFeature.Bundles]
         },
         {
             key: 'my-trades',
             label: 'navigation.certificates.myTrades',
             component: TradesRoute,
-            show: userIsActiveAndPartOfOrg(),
+            show: userIsActiveAndPartOfOrg,
             features: [OriginFeature.Exchange]
         },
         {
             key: 'my_orders',
             label: 'navigation.certificates.myOrders',
             component: MyOrders,
-            show: userIsActiveAndPartOfOrg(),
+            show: userIsActiveAndPartOfOrg,
             features: [OriginFeature.Exchange]
         }
     ];
