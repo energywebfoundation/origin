@@ -108,7 +108,7 @@ export const BundleContents = (props: IOwnProps) => {
         }
     }, [splits]);
 
-    const { status } = useSelector(getUserOffchain);
+    const status = useSelector(getUserOffchain)?.status;
     const userIsActive = status === UserStatus.Active;
 
     return (
@@ -244,7 +244,8 @@ export const BundleContents = (props: IOwnProps) => {
                                         <Box
                                             style={{
                                                 display: 'grid',
-                                                gridTemplateColumns: '50% 50%'
+                                                gridTemplateColumns: '50% 50%',
+                                                padding: '10px'
                                             }}
                                         >
                                             <Box>
