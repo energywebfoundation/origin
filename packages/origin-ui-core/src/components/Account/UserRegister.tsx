@@ -93,8 +93,14 @@ export function UserRegister() {
 
             showNotification(t('user.feedback.userRegistered'), NotificationType.Success);
         } catch (error) {
+            const userExists = parseFloat(error.message.match(/\d/g).join('')) === 409;
+            const message = userExists
+                ? t('user.feedback.errorUserExists', {
+                      userEmail: values.email
+                  })
+                : t('user.feedback.errorWhileRegisteringUser');
             console.warn('Error while registering user', error);
-            showNotification(t('user.feedback.errorWhileRegisteringUser'), NotificationType.Error);
+            showNotification(message, NotificationType.Error);
         }
 
         dispatch(setLoading(false));
