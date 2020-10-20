@@ -156,10 +156,7 @@ export type TSetNoAccountModalVisibilityAction = typeof setNoAccountModalVisibil
 
 export interface IRequestDeviceCreationAction {
     type: GeneralActions.requestDeviceCreation;
-    payload: {
-        data: DeviceCreateData;
-        callback: () => void;
-    };
+    payload: DeviceCreateData;
 }
 
 export const requestDeviceCreation = (payload: IRequestDeviceCreationAction['payload']) => ({

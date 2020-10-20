@@ -158,37 +158,33 @@ export function AddDevice() {
 
         dispatch(
             requestDeviceCreation({
-                data: {
-                    status: DeviceStatus.Submitted,
-                    deviceType,
-                    complianceRegistry: compliance,
-                    facilityName: values.facilityName,
-                    capacityInW: PowerFormatter.getBaseValueFromValueInDisplayUnit(
-                        parseFloat(values.capacity)
-                    ),
-                    country,
-                    address: values.address,
-                    region: region || '',
-                    province: province ? province.split(';')[1] : '',
-                    gpsLatitude: values.latitude,
-                    gpsLongitude: values.longitude,
-                    timezone: 'Asia/Bangkok',
-                    operationalSince: values.commissioningDate?.unix(),
-                    otherGreenAttributes: '',
-                    typeOfPublicSupport: '',
-                    description: values.projectStory,
-                    images: JSON.stringify(imagesUploadedList),
-                    files: JSON.stringify(uploadedDocFiles.filenames),
-                    externalDeviceIds,
-                    gridOperator: (selectedGridOperator && selectedGridOperator[0]) || '',
-                    automaticPostForSale: false,
-                    defaultAskPrice: null
-                },
-                callback: () => {
-                    formikActions.setSubmitting(false);
-                }
+                status: DeviceStatus.Submitted,
+                deviceType,
+                complianceRegistry: compliance,
+                facilityName: values.facilityName,
+                capacityInW: PowerFormatter.getBaseValueFromValueInDisplayUnit(
+                    parseFloat(values.capacity)
+                ),
+                country,
+                address: values.address,
+                region: region || '',
+                province: province ? province.split(';')[1] : '',
+                gpsLatitude: values.latitude,
+                gpsLongitude: values.longitude,
+                timezone: 'Asia/Bangkok',
+                operationalSince: values.commissioningDate?.unix(),
+                otherGreenAttributes: '',
+                typeOfPublicSupport: '',
+                description: values.projectStory,
+                images: JSON.stringify(imagesUploadedList),
+                files: JSON.stringify(uploadedDocFiles.filenames),
+                externalDeviceIds,
+                gridOperator: (selectedGridOperator && selectedGridOperator[0]) || '',
+                automaticPostForSale: false,
+                defaultAskPrice: null
             })
         );
+        formikActions.setSubmitting(false);
     }
 
     async function uploadImages(files: FileList) {
