@@ -7,6 +7,7 @@ import { FormSelect } from '../Form/FormSelect';
 import { getExchangeClient } from '../../features/general/selectors';
 import { periodTypeOptions } from '../../utils/demand';
 import { calculateTotalVolume } from '../../utils/exchange';
+import { getUserOffchain } from '../../features/users/selectors';
 
 export const RepeatedPurchase = (props) => {
     const {
@@ -20,6 +21,7 @@ export const RepeatedPurchase = (props) => {
     const { t } = useTranslation();
     const { Yup } = useValidation();
     const exchangeClient = useSelector(getExchangeClient);
+    const user = useSelector(getUserOffchain);
 
     const periodOptions = periodTypeOptions(t);
 
@@ -69,7 +71,7 @@ export const RepeatedPurchase = (props) => {
                     <FormInput
                         label={t('exchange.properties.volume')}
                         property="demandVolume"
-                        disabled={fieldDisabled}
+                        disabled={!user || fieldDisabled}
                         className="mt-3"
                         required
                         InputProps={{
@@ -117,7 +119,7 @@ export const RepeatedPurchase = (props) => {
                     <FormInput
                         label={t('exchange.properties.price')}
                         property="price"
-                        disabled={fieldDisabled}
+                        disabled={!user || fieldDisabled}
                         className="mt-3"
                         required
                         InputProps={{
