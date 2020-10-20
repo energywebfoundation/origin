@@ -88,12 +88,19 @@ export function usePaginatedLoader<T>({
         }
     }
 
+    function removeItem(index: number) {
+        const newData = paginatedData.filter((d) => d !== paginatedData[index]);
+        setPaginatedData(newData);
+        setTotal(newData.length);
+    }
+
     return {
         loadPage,
         pageSize,
         paginatedData,
         setPageSize,
-        total
+        total,
+        removeItem
     };
 }
 
