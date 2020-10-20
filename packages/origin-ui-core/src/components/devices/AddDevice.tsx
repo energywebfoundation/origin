@@ -332,6 +332,7 @@ export function AddDevice() {
                                             label: t('device.info.supported')
                                         }}
                                         color="primary"
+                                        type="checkbox"
                                         component={CheckboxWithLabel}
                                         disabled={fieldDisabled}
                                     />
