@@ -259,6 +259,7 @@
             "feedback": {
                 "userRegistered": "Użytkownik zarejestrowany.",
                 "errorWhileRegisteringUser": "Błąd podczas rejestracji użytkownika.",
+                "errorUserExists": "Użytkownik z adresem e-mail {userEmail} został już zarejestrowany. Zaloguj się przy użyciu oryginalnego konta.",
                 "roleChanged": {
                     "succesfullyJoinedOrg": "Pomyślnie dołączył do {{orgName}}",
                     "asMemberYouCan": "Dołączyłeś do {{orgName}} {{admin}}. Jako członek możesz",
