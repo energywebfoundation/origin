@@ -40,7 +40,7 @@ export function AutoSupplyDeviceTable() {
     const userOffchain = useSelector(getUserOffchain);
     const { t } = useTranslation();
 
-    const [showModal, setShowModal] = useState<boolean>(null);
+    const [showModal, setShowModal] = useState<boolean>(false);
     const [entity, setEntity] = useState<IDevice>(null);
 
     async function getPaginatedData({

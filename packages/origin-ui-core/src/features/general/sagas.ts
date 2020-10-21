@@ -567,9 +567,9 @@ function* updateConfigurationWhenUserChanged(): SagaIterator {
 
 function* requestDeviceCreation() {
     while (true) {
-        const {
-            payload: { data, callback }
-        }: IRequestDeviceCreationAction = yield take(GeneralActions.requestDeviceCreation);
+        const { payload }: IRequestDeviceCreationAction = yield take(
+            GeneralActions.requestDeviceCreation
+        );
 
         const configuration: Configuration.Entity = yield select(getConfiguration);
         const baseURL: string = yield select(getBaseURL);
@@ -583,7 +583,7 @@ function* requestDeviceCreation() {
         const i18n = getI18n();
 
         try {
-            const device = yield call(ProducingDevice.createDevice, data, configuration);
+            const device = yield call(ProducingDevice.createDevice, payload, configuration);
 
             yield put(producingDeviceCreatedOrUpdated(device));
 
@@ -596,8 +596,6 @@ function* requestDeviceCreation() {
         }
 
         yield put(setLoading(false));
-
-        yield call(callback);
     }
 }
 

@@ -173,7 +173,10 @@ export function UserProfile() {
         return false;
     }
 
-    const initialFormValues: IFormValues = { ...user };
+    const initialFormValues: IFormValues = {
+        ...user,
+        blockchainAccountAddress: user.blockchainAccountAddress ? user.blockchainAccountAddress : ''
+    };
 
     return (
         <Formik
