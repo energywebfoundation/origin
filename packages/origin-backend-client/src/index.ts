@@ -5,6 +5,4 @@ export * from './RequestClient';
 export * from './DeviceClient';
 export * from './OffChainDataSource';
 export * from './FilesClient';
-export * from './CertificateClient';
-export * from './CertificationRequestClient';
 export * from './AdminClient';

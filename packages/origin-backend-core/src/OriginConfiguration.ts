@@ -9,13 +9,7 @@ export interface IRegions {
 export type IDeviceSubType = string;
 export type IDeviceType = IDeviceSubType[];
 
-export interface IContractsLookup {
-    registry: string;
-    issuer: string;
-}
-
 export interface IOriginConfiguration {
-    contractsLookup: IContractsLookup;
     countryName?: string;
     currencies?: string[];
     regions?: IRegions;
