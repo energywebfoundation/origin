@@ -8,4 +8,4 @@ export const getBaseURL = () => {
     return '';
 };
 
-export const getWeb3 = (state: IStoreState) => state.configuration?.blockchainProperties?.web3;
+export const getWeb3 = (state: IStoreState) => state.web3;
