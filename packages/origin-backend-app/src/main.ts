@@ -23,7 +23,8 @@ export async function startAPI(logger?: LoggerService) {
         return {
             'origin-backend-app': parsed.version,
             exchange: parsed.dependencies['@energyweb/exchange'],
-            'origin-backend': parsed.dependencies['@energyweb/origin-backend']
+            'origin-backend': parsed.dependencies['@energyweb/origin-backend'],
+            '@energyweb/issuer-api': parsed.dependencies['@energyweb/issuer-api']
         };
     };
 
