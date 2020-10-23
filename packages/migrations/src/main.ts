@@ -1,10 +1,11 @@
 import dotenv from 'dotenv';
 import program from 'commander';
 import fs from 'fs';
+import { ethers } from 'ethers';
 import { Client, ClientConfig } from 'pg';
 import { getProviderWithFallback } from '@energyweb/utils-general';
-
-import { ExternalDeviceIdType, IContractsLookup } from '@energyweb/origin-backend-core';
+import { ExternalDeviceIdType } from '@energyweb/origin-backend-core';
+import { IContractsLookup } from '@energyweb/issuer';
 import { deployContracts } from './deployContracts';
 import { logger } from './Logger';
 
@@ -42,11 +43,7 @@ async function connectToDB() {
     return client;
 }
 
-async function importConfiguration(
-    client: Client,
-    configPath: string,
-    contractsLookup: IContractsLookup
-) {
+async function importConfiguration(client: Client, configPath: string) {
     const parsedConfig = JSON.parse(fs.readFileSync(configPath, 'utf8').toString());
     const {
         currencies,
@@ -68,20 +65,42 @@ async function importConfiguration(
     logger.info(`Saving configuration...`);
     const newConfigurationQuery = {
         text:
-            'INSERT INTO public.configuration (id, "countryName", currencies, regions, "externalDeviceIdTypes", "contractsLookup", "complianceStandard", "deviceTypes", "gridOperators") VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)',
+            'INSERT INTO public.configuration (id, "countryName", currencies, regions, "externalDeviceIdTypes", "complianceStandard", "deviceTypes", "gridOperators") VALUES ($1, $2, $3, $4, $5, $6, $7, $8)',
         values: [
             '1',
             countryName,
             currencies.toString(),
             JSON.stringify(regions),
             JSON.stringify(externalDeviceIdTypes),
-            JSON.stringify(contractsLookup),
             complianceStandard,
             JSON.stringify(deviceTypes),
             gridOperators?.toString()
         ]
     };
     await client.query(newConfigurationQuery);
+}
+
+async function importContracts(
+    client: Client,
+    provider: ethers.providers.FallbackProvider,
+    contractsLookup: IContractsLookup
+) {
+    const [primaryRpc, fallbackRpc] = process.env.WEB3.split(';');
+
+    logger.info(`Saving contracts...`);
+    const newContractsQuery = {
+        text:
+            'INSERT INTO public.issuer_blockchain_properties ("netId", "registry", "issuer", "rpcNode", "rpcNodeFallback", "platformOperatorPrivateKey") VALUES ($1, $2, $3, $4, $5, $6)',
+        values: [
+            provider.network.chainId,
+            contractsLookup.registry,
+            contractsLookup.issuer,
+            primaryRpc,
+            fallbackRpc,
+            process.env.DEPLOY_KEY
+        ]
+    };
+    await client.query(newContractsQuery);
 }
 
 async function isFirstMigration(client: Client) {
@@ -161,9 +180,9 @@ try {
         const provider = getProviderWithFallback(...process.env.WEB3.split(';'));
         const contractsLookup = await deployContracts(provider);
 
-        await importConfiguration(dbClient, program.config, contractsLookup);
-
         await importSeed(dbClient, program.seedFile);
+        await importConfiguration(dbClient, program.config);
+        await importContracts(dbClient, provider, contractsLookup);
 
         process.exit(0);
     })();
