@@ -1,96 +1,65 @@
 import { ethers, Event as BlockchainEvent, BigNumber } from 'ethers';
-import polly from 'polly-js';
+import { Timestamp } from '@energyweb/utils-general';
 
-import { Configuration, Timestamp } from '@energyweb/utils-general';
-import {
-    ICertificationRequest,
-    IOwnershipCommitment,
-    MAX_ENERGY_PER_CERTIFICATE
-} from '@energyweb/origin-backend-core';
+import { IBlockchainProperties } from './BlockchainProperties';
+import { getEventsFromContract } from '../utils/events';
 
-import { PreciseProofEntity } from './PreciseProofEntity';
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { Issuer } from '../ethers/Issuer';
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { Registry } from '../ethers/Registry';
+// Maximum number Solidity can handle is (2^256)-1
+export const MAX_ENERGY_PER_CERTIFICATE = BigNumber.from(2).pow(256).sub(1);
 
-export class CertificationRequest extends PreciseProofEntity implements ICertificationRequest {
-    owner: string;
-
-    fromTime: Timestamp;
-
-    toTime: Timestamp;
-
+export interface ICertificationRequestBlockchain {
+    id: number;
     deviceId: string;
-
+    owner: string;
+    fromTime: number;
+    toTime: number;
+    created: number;
     approved: boolean;
-
-    approvedDate: Date;
-
     revoked: boolean;
+    approvedDate?: Date;
+    revokedDate?: Date;
+}
 
-    revokedDate: Date;
+export class CertificationRequest implements ICertificationRequestBlockchain {
+    public owner: string;
 
-    created: Timestamp;
+    public fromTime: Timestamp;
 
-    files: string[];
+    public toTime: Timestamp;
 
-    energy: BigNumber;
+    public deviceId: string;
 
-    constructor(
-        certData: ICertificationRequest,
-        configuration: Configuration.Entity,
-        public isPrivate: boolean = false
-    ) {
-        super(certData.id, configuration);
+    public approved: boolean;
 
-        Object.assign(this, certData);
-    }
+    public approvedDate: Date;
+
+    public revoked: boolean;
+
+    public revokedDate: Date;
+
+    public created: Timestamp;
+
+    public initialized = false;
+
+    constructor(public id: number, public blockchainProperties: IBlockchainProperties) {}
 
     public static async create(
         fromTime: Timestamp,
         toTime: Timestamp,
-        energy: BigNumber,
         deviceId: string,
-        configuration: Configuration.Entity,
-        files: string[],
-        isVolumePrivate = false,
-        forAddress?: string,
-        callback?: (id: CertificationRequest['id']) => void
+        blockchainProperties: IBlockchainProperties,
+        forAddress?: string
     ): Promise<CertificationRequest> {
-        if (energy.gt(MAX_ENERGY_PER_CERTIFICATE)) {
-            throw new Error(
-                `Too much energy requested. Requested: ${energy}, Max: ${MAX_ENERGY_PER_CERTIFICATE}`
-            );
-        }
+        const newCertificationRequest = new CertificationRequest(null, blockchainProperties);
 
-        const { certificationRequestClient } = configuration.offChainDataSource;
-
-        const { issuer } = configuration.blockchainProperties as Configuration.BlockchainProperties<
-            Registry,
-            Issuer
-        >;
-        const issuerWithSigner = issuer.connect(configuration.blockchainProperties.activeUser);
-
-        await certificationRequestClient.validateGenerationPeriod({ fromTime, toTime, deviceId });
-
-        const success = await certificationRequestClient.queueCertificationRequestData({
-            deviceId,
-            fromTime,
-            toTime,
-            energy,
-            files
-        });
-
-        if (!success) {
-            throw new Error('Unable to create CertificationRequest');
-        }
+        const { issuer, activeUser } = blockchainProperties;
+        const issuerWithSigner = issuer.connect(activeUser);
 
         const data = await issuer.encodeData(fromTime, toTime, deviceId);
 
         const tx = await (forAddress
-            ? issuerWithSigner.requestCertificationFor(data, forAddress, isVolumePrivate)
-            : issuerWithSigner.requestCertification(data, isVolumePrivate));
+            ? issuerWithSigner.requestCertificationFor(data, forAddress, false)
+            : issuerWithSigner.requestCertification(data, false));
 
         const {
             events: [certificationRequested]
@@ -102,81 +71,72 @@ export class CertificationRequest extends PreciseProofEntity implements ICertifi
             certificationRequested.topics
         );
 
-        const id = log._id.toNumber();
+        newCertificationRequest.id = log._id.toNumber();
 
-        if (configuration.logger) {
-            configuration.logger.info(`CertificationRequest ${id} created.`);
-        }
-
-        if (callback) {
-            callback(id);
-        }
-
-        return CertificationRequest.fetch(id, configuration);
+        return newCertificationRequest.sync();
     }
 
     public static async getAll(
-        configuration: Configuration.Entity
+        blockchainProperties: IBlockchainProperties
     ): Promise<CertificationRequest[]> {
-        const all = await configuration.offChainDataSource.certificationRequestClient.getAllCertificationRequests();
+        const { issuer } = blockchainProperties;
 
-        return all.map(
-            (certReq: ICertificationRequest) => new CertificationRequest(certReq, configuration)
+        const certificationRequestedEvents = await getEventsFromContract(
+            issuer,
+            issuer.filters.CertificationRequested(null, null, null)
+        );
+
+        return certificationRequestedEvents.map(
+            (event) => new CertificationRequest(event._id, blockchainProperties)
         );
     }
 
-    public static async fetch(
-        id: ICertificationRequest['id'],
-        configuration: Configuration.Entity
-    ): Promise<CertificationRequest> {
-        const certData: ICertificationRequest = await polly()
-            .waitAndRetry([2000, 4000, 8000, 16000])
-            .executeForPromise(() =>
-                configuration.offChainDataSource.certificationRequestClient.getCertificationRequest(
-                    id
-                )
-            );
-
-        if (configuration.logger) {
-            configuration.logger.verbose(`CertificationRequest ${id} fetched.`);
+    public async sync(): Promise<CertificationRequest> {
+        if (this.id === null) {
+            return this;
         }
 
-        return new CertificationRequest(certData, configuration);
+        const { issuer } = this.blockchainProperties;
+        const issueRequest = await issuer.getCertificationRequest(this.id);
+        const decodedData = await issuer.decodeData(issueRequest.data);
+
+        this.owner = issueRequest.owner;
+        this.fromTime = Number(decodedData['0']);
+        this.toTime = Number(decodedData['1']);
+        this.deviceId = decodedData['2'];
+        this.approved = issueRequest.approved;
+        this.revoked = issueRequest.revoked;
+
+        const certificationRequestedLogs = await getEventsFromContract(
+            issuer,
+            issuer.filters.CertificationRequested(null, this.id, null)
+        );
+
+        const creationBlock = await issuer.provider.getBlock(
+            certificationRequestedLogs[0].blockNumber
+        );
+
+        this.created = Number(creationBlock.timestamp);
+
+        this.initialized = true;
+
+        return this;
     }
 
-    public async sync(): Promise<CertificationRequest> {
-        return CertificationRequest.fetch(this.id, this.configuration);
-    }
-
-    async approve(): Promise<number> {
-        let approveTx;
-        const { issuer } = this.configuration
-            .blockchainProperties as Configuration.BlockchainProperties<Registry, Issuer>;
+    async approve(energy: BigNumber): Promise<number> {
+        const { issuer, activeUser } = this.blockchainProperties;
 
         const validityData = issuer.interface.encodeFunctionData('isRequestValid', [
             this.id.toString()
         ]);
 
-        const issuerWithSigner = issuer.connect(this.configuration.blockchainProperties.activeUser);
+        const issuerWithSigner = issuer.connect(activeUser);
 
-        if (this.isPrivate) {
-            const commitment: IOwnershipCommitment = {
-                [this.owner]: this.energy
-            };
-            const { rootHash } = this.generateAndAddProofs(commitment);
-
-            approveTx = await issuerWithSigner.approveCertificationRequestPrivate(
-                this.id,
-                rootHash,
-                validityData
-            );
-        } else {
-            approveTx = await issuerWithSigner.approveCertificationRequest(
-                this.id,
-                this.energy,
-                validityData
-            );
-        }
+        const approveTx = await issuerWithSigner.approveCertificationRequest(
+            this.id,
+            energy,
+            validityData
+        );
 
         const { events } = await approveTx.wait();
 
@@ -189,33 +149,12 @@ export class CertificationRequest extends PreciseProofEntity implements ICertifi
     }
 
     async revoke(): Promise<ethers.ContractTransaction> {
-        const { issuer } = this.configuration
-            .blockchainProperties as Configuration.BlockchainProperties<Registry, Issuer>;
-        const issuerWithSigner = issuer.connect(this.configuration.blockchainProperties.activeUser);
+        const { issuer, activeUser } = this.blockchainProperties;
+        const issuerWithSigner = issuer.connect(activeUser);
+
         const revokeTx = await issuerWithSigner.revokeRequest(this.id);
         await revokeTx.wait();
 
         return revokeTx;
-    }
-
-    async requestMigrateToPublic(value: BigNumber): Promise<ethers.ContractTransaction> {
-        if (!this.isPrivate) {
-            throw new Error('Certificate is already public.');
-        }
-        const { issuer } = this.configuration
-            .blockchainProperties as Configuration.BlockchainProperties<Registry, Issuer>;
-
-        const activeUserAddress = await this.configuration.blockchainProperties.activeUser.getAddress();
-
-        const commitment: IOwnershipCommitment = {
-            [activeUserAddress]: value
-        };
-        const { rootHash } = this.generateAndAddProofs(commitment);
-
-        const issuerWithSigner = issuer.connect(this.configuration.blockchainProperties.activeUser);
-        const tx = await issuerWithSigner.requestMigrateToPublic(this.id, rootHash);
-        await tx.wait();
-
-        return tx;
     }
 }
