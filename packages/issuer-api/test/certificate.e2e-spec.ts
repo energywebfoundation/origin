@@ -121,9 +121,6 @@ describe('Certificate tests', () => {
             .get(`/certificate/${certificateId}`)
             .expect(200)
             .expect((getResponse) => {
-                console.log({
-                    body: getResponse.body
-                });
                 const { isOwned, energy } = getResponse.body;
 
                 expect(isOwned).to.be.false;
