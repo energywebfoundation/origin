@@ -42,7 +42,7 @@ import { ICertificate, ICertificateViewItem } from './types';
 import { enhanceCertificate, fetchDataAfterConfigurationChange } from '../general/sagas';
 import { certificateEnergyStringToBN } from '../../utils/certificates';
 
-export function* getCertificate(id: number) {
+export function* getCertificate(id: number): any {
     const certificatesClient: CertificatesClient = yield select(getCertificatesClient);
 
     const certificate = yield apply(certificatesClient, certificatesClient.get, [id]);
@@ -50,7 +50,7 @@ export function* getCertificate(id: number) {
     return {
         ...certificate,
         energy: certificateEnergyStringToBN(certificate.energy)
-    } as ICertificate;
+    };
 }
 
 function* requestCertificatesSaga(): SagaIterator {
