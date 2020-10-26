@@ -28,6 +28,8 @@ export class OnChainCertificateWatcher implements OnModuleInit {
     ) {}
 
     public async onModuleInit(): Promise<void> {
+        this.logger.debug('OnModuleInit');
+
         const blockchainProperties = await this.blockchainPropertiesService.get();
         const { web3, registry } = blockchainProperties.wrap();
 
@@ -35,22 +37,29 @@ export class OnChainCertificateWatcher implements OnModuleInit {
         this.registry = registry;
 
         this.provider.on(
-            registry.filters.IssuanceSingle(null, null, null),
+            this.registry.filters.IssuanceSingle(null, null, null),
             (event: providers.Log) => this.processEvent(EventType.IssuanceSingle, event)
         );
 
         this.provider.on(
-            registry.filters.TransferSingle(null, null, null, null, null),
+            this.registry.filters.TransferSingle(null, null, null, null, null),
             (event: providers.Log) => this.processEvent(EventType.TransferSingle, event)
         );
 
         this.provider.on(
-            registry.filters.ClaimSingle(null, null, null, null, null, null),
+            this.registry.filters.ClaimSingle(null, null, null, null, null, null),
             (event: providers.Log) => this.processEvent(EventType.ClaimSingle, event)
         );
     }
 
     async processEvent(eventType: EventType, rawEvent: providers.Log): Promise<void> {
+        if (!this.provider) {
+            this.logger.debug(`Provider unavailable: ${JSON.stringify(this.provider)}`);
+            return;
+        }
+
+        this.logger.debug(`Processing event ${eventType}: ${JSON.stringify(rawEvent)}`);
+
         const event = await CertificateUtils.decodeEvent(eventType, rawEvent, this.registry);
 
         // Allow some time for the backend controllers to finish processing
@@ -82,6 +91,12 @@ export class OnChainCertificateWatcher implements OnModuleInit {
     }
 
     onApplicationShutdown(): void {
+        this.logger.debug('onApplicationShutdown');
+
+        this.provider.off(this.registry.filters.IssuanceSingle(null, null, null));
+        this.provider.off(this.registry.filters.TransferSingle(null, null, null, null, null));
+        this.provider.off(this.registry.filters.ClaimSingle(null, null, null, null, null, null));
+
         this.provider = null;
     }
 }
