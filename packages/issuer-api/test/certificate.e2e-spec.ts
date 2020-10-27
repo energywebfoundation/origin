@@ -54,7 +54,7 @@ describe('Certificate tests', () => {
         await request(app.getHttpServer())
             .post('/certificate')
             .send(certificateTestData)
-            // .expect(201)
+            .expect(201)
             .expect((res) => {
                 console.log({
                     res

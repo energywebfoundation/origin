@@ -9,7 +9,9 @@ import { SyncCertificateEvent } from '../events/sync-certificate-event';
 enum EventType {
     IssuanceSingle = 'IssuanceSingle',
     TransferSingle = 'TransferSingle',
-    ClaimSingle = 'ClaimSingle'
+    ClaimSingle = 'ClaimSingle',
+    TransferBatch = 'TransferBatch',
+    ClaimBatch = 'ClaimBatch'
 }
 
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
@@ -50,6 +52,16 @@ export class OnChainCertificateWatcher implements OnModuleInit {
             this.registry.filters.ClaimSingle(null, null, null, null, null, null),
             (event: providers.Log) => this.processEvent(EventType.ClaimSingle, event)
         );
+
+        this.provider.on(
+            this.registry.filters.TransferBatch(null, null, null, null, null),
+            (event: providers.Log) => this.processEvent(EventType.TransferSingle, event)
+        );
+
+        this.provider.on(
+            this.registry.filters.ClaimBatch(null, null, null, null, null, null),
+            (event: providers.Log) => this.processEvent(EventType.ClaimSingle, event)
+        );
     }
 
     async processEvent(eventType: EventType, rawEvent: providers.Log): Promise<void> {
@@ -81,6 +93,18 @@ export class OnChainCertificateWatcher implements OnModuleInit {
 
             case EventType.ClaimSingle:
                 this.eventBus.publish(new SyncCertificateEvent(event._id.toNumber()));
+                break;
+
+            case EventType.TransferBatch:
+                event._ids.forEach((id: any) =>
+                    this.eventBus.publish(new SyncCertificateEvent(id.toNumber()))
+                );
+                break;
+
+            case EventType.ClaimBatch:
+                event._ids.forEach((id: any) =>
+                    this.eventBus.publish(new SyncCertificateEvent(id.toNumber()))
+                );
                 break;
 
             default:
