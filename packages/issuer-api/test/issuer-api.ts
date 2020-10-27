@@ -7,10 +7,10 @@ import { AuthGuard } from '@nestjs/passport';
 import { Test } from '@nestjs/testing';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { useContainer } from 'class-validator';
+import { DatabaseService } from '@energyweb/origin-backend-utils';
 
 import { entities } from '../src';
 import { AppModule } from '../src/app.module';
-import { DatabaseService } from './database.service';
 import { BlockchainPropertiesService } from '../src/pods/blockchain/blockchain-properties.service';
 
 const web3 = 'http://localhost:8581';

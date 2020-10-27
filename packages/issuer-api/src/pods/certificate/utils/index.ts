@@ -1,11 +1,11 @@
 import { BigNumber, utils } from 'ethers';
-import { ICertificateDTO } from '../certificate.dto';
+import { CertificateDTO } from '../certificate.dto';
 import { Certificate } from '../certificate.entity';
 
 export const certificateToDto = async (
     certificate: Certificate,
     userId: string
-): Promise<ICertificateDTO> => {
+): Promise<CertificateDTO> => {
     const userAddress = utils.getAddress(userId);
 
     const publicVolume = BigNumber.from(

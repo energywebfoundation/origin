@@ -1,24 +1,46 @@
+import { IntUnitsOfEnergy, PositiveBNStringValidator } from '@energyweb/origin-backend-utils';
 import { ApiProperty } from '@nestjs/swagger';
+import {
+    IsArray,
+    IsBoolean,
+    IsInt,
+    IsPositive,
+    IsString,
+    Validate,
+    ValidateIf
+} from 'class-validator';
 
-export class ICreateCertificationRequestDTO {
-    @ApiProperty()
+export class CreateCertificationRequestDTO {
+    @ApiProperty({ type: String })
+    @IsString()
     to: string;
 
-    @ApiProperty()
+    @ApiProperty({ type: String })
+    @Validate(PositiveBNStringValidator)
+    @Validate(IntUnitsOfEnergy)
     energy: string;
 
-    @ApiProperty()
+    @ApiProperty({ type: Number })
+    @IsInt()
+    @IsPositive()
     fromTime: number;
 
-    @ApiProperty()
+    @ApiProperty({ type: Number })
+    @IsInt()
+    @IsPositive()
     toTime: number;
 
-    @ApiProperty()
+    @ApiProperty({ type: String })
+    @IsString()
     deviceId: string;
 
-    @ApiProperty({ required: false })
+    @ApiProperty({ type: [String], required: false })
+    @ValidateIf((dto: CreateCertificationRequestDTO) => !!dto.files)
+    @IsArray()
     files?: string[];
 
-    @ApiProperty()
-    isPrivate: boolean;
+    @ApiProperty({ type: Boolean, required: false })
+    @ValidateIf((dto: CreateCertificationRequestDTO) => !!dto.isPrivate)
+    @IsBoolean()
+    isPrivate?: boolean;
 }

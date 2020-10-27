@@ -5,7 +5,7 @@ import { CertificateUtils } from '@energyweb/issuer';
 import { NotFoundException } from '@nestjs/common';
 import { GetAllCertificateEventsQuery } from '../queries/get-all-certificate-events.query';
 import { Certificate } from '../certificate.entity';
-import { ICertificateEvent } from '../../../types';
+import { CertificateEvent } from '../../../types';
 import { BlockchainPropertiesService } from '../../blockchain/blockchain-properties.service';
 
 @QueryHandler(GetAllCertificateEventsQuery)
@@ -16,7 +16,7 @@ export class GetAllCertificateEventsHandler implements IQueryHandler<GetAllCerti
         private readonly blockchainPropertiesService: BlockchainPropertiesService
     ) {}
 
-    async execute({ id }: GetAllCertificateEventsQuery): Promise<ICertificateEvent[]> {
+    async execute({ id }: GetAllCertificateEventsQuery): Promise<CertificateEvent[]> {
         const certificate = await this.repository.findOne(id);
 
         if (!certificate) {

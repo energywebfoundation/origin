@@ -1,10 +1,13 @@
 import { IClaimData } from '@energyweb/issuer';
 import { ApiProperty } from '@nestjs/swagger';
+import { IsArray, IsObject } from 'class-validator';
 
 export class BulkClaimCertificatesDTO {
-    @ApiProperty()
+    @ApiProperty({ type: [Number] })
+    @IsArray()
     certificateIds: number[];
 
-    @ApiProperty()
+    @ApiProperty({ type: Object })
+    @IsObject()
     claimData: IClaimData;
 }

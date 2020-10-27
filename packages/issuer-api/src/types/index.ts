@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-export class ICertificateEvent {
+export class CertificateEvent {
     @ApiProperty()
     name: string;
 

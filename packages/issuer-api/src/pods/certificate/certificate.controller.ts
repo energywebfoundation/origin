@@ -26,10 +26,10 @@ import { ClaimCertificateCommand } from './commands/claim-certificate.command';
 import { GetCertificateByTokenIdQuery } from './queries/get-certificate-by-token.query';
 import { BulkClaimCertificatesCommand } from './commands/bulk-claim-certificates.command';
 import { BulkClaimCertificatesDTO } from './commands/bulk-claim-certificates.dto';
-import { ICertificateEvent } from '../../types';
+import { CertificateEvent } from '../../types';
 import { GetAllCertificateEventsQuery } from './queries/get-all-certificate-events.query';
-import { ICertificateDTO } from './certificate.dto';
-import { ISuccessResponseDTO } from '../../utils/success-response.dto';
+import { CertificateDTO } from './certificate.dto';
+import { SuccessResponseDTO } from '../../utils/success-response.dto';
 
 @ApiTags('certificates')
 @Controller('certificate')
@@ -40,11 +40,11 @@ export class CertificateController {
 
     @Get('/:id')
     @UseGuards(AuthGuard(), ActiveUserGuard)
-    @ApiResponse({ status: 200, type: ICertificateDTO, description: 'Returns a Certificate' })
+    @ApiResponse({ status: 200, type: CertificateDTO, description: 'Returns a Certificate' })
     public async get(
         @Param('id', new ParseIntPipe()) id: number,
         @UserDecorator() { blockchainAccountAddress }: ILoggedInUser
-    ): Promise<ICertificateDTO> {
+    ): Promise<CertificateDTO> {
         return this.queryBus.execute(new GetCertificateQuery(id, blockchainAccountAddress));
     }
 
@@ -52,13 +52,13 @@ export class CertificateController {
     @UseGuards(AuthGuard(), ActiveUserGuard)
     @ApiResponse({
         status: 200,
-        type: ICertificateDTO,
+        type: CertificateDTO,
         description: 'Returns a Certificate by token ID'
     })
     public async getByTokenId(
         @Param('tokenId', new ParseIntPipe()) tokenId: number,
         @UserDecorator() { blockchainAccountAddress }: ILoggedInUser
-    ): Promise<ICertificateDTO> {
+    ): Promise<CertificateDTO> {
         return this.queryBus.execute(
             new GetCertificateByTokenIdQuery(tokenId, blockchainAccountAddress)
         );
@@ -68,12 +68,12 @@ export class CertificateController {
     @UseGuards(AuthGuard(), ActiveUserGuard)
     @ApiResponse({
         status: 200,
-        type: [ICertificateDTO],
+        type: [CertificateDTO],
         description: 'Returns all Certificates'
     })
     public async getAll(
         @UserDecorator() { blockchainAccountAddress }: ILoggedInUser
-    ): Promise<ICertificateDTO[]> {
+    ): Promise<CertificateDTO[]> {
         return this.queryBus.execute(new GetAllCertificatesQuery(blockchainAccountAddress));
     }
 
@@ -82,14 +82,17 @@ export class CertificateController {
     @Roles(Role.Issuer)
     @ApiResponse({
         status: 201,
-        type: ICertificateDTO,
+        type: CertificateDTO,
         description: 'Returns the issued Certificate'
     })
     @ApiBody({ type: IssueCertificateDTO })
     public async issue(
         @UserDecorator() { blockchainAccountAddress }: ILoggedInUser,
         @Body() dto: IssueCertificateDTO
-    ): Promise<ICertificateDTO> {
+    ): Promise<CertificateDTO> {
+        console.log({
+            isPrivate2: dto
+        });
         return this.commandBus.execute(
             new IssueCertificateCommand(
                 dto.to,
@@ -108,14 +111,14 @@ export class CertificateController {
     @ApiBody({ type: TransferCertificateDTO })
     @ApiResponse({
         status: 200,
-        type: ISuccessResponseDTO,
+        type: SuccessResponseDTO,
         description: 'Returns whether the transfer succeeded'
     })
     public async transfer(
         @UserDecorator() { blockchainAccountAddress }: ILoggedInUser,
         @Param('id', new ParseIntPipe()) certificateId: number,
         @Body() dto: TransferCertificateDTO
-    ): Promise<ISuccessResponseDTO> {
+    ): Promise<SuccessResponseDTO> {
         return this.commandBus.execute(
             new TransferCertificateCommand(
                 certificateId,
@@ -132,14 +135,14 @@ export class CertificateController {
     @ApiBody({ type: ClaimCertificateDTO })
     @ApiResponse({
         status: 200,
-        type: ISuccessResponseDTO,
+        type: SuccessResponseDTO,
         description: 'Returns whether the claim succeeded'
     })
     public async claim(
         @UserDecorator() { blockchainAccountAddress }: ILoggedInUser,
         @Param('id', new ParseIntPipe()) certificateId: number,
         @Body() dto: ClaimCertificateDTO
-    ): Promise<ISuccessResponseDTO> {
+    ): Promise<SuccessResponseDTO> {
         return this.commandBus.execute(
             new ClaimCertificateCommand(
                 certificateId,
@@ -155,13 +158,13 @@ export class CertificateController {
     @ApiBody({ type: BulkClaimCertificatesDTO })
     @ApiResponse({
         status: 200,
-        type: ISuccessResponseDTO,
+        type: SuccessResponseDTO,
         description: 'Returns whether the bulk claim succeeded'
     })
     public async bulkClaim(
         @UserDecorator() { blockchainAccountAddress }: ILoggedInUser,
         @Body() dto: BulkClaimCertificatesDTO
-    ): Promise<ISuccessResponseDTO> {
+    ): Promise<SuccessResponseDTO> {
         return this.commandBus.execute(
             new BulkClaimCertificatesCommand(
                 dto.certificateIds,
@@ -175,12 +178,12 @@ export class CertificateController {
     @UseGuards(AuthGuard(), ActiveUserGuard)
     @ApiResponse({
         status: 200,
-        type: [ICertificateEvent],
+        type: [CertificateEvent],
         description: 'Returns all the events for a Certificate'
     })
     public async getAllEvents(
         @Param('id', new ParseIntPipe()) id: number
-    ): Promise<ICertificateEvent[]> {
+    ): Promise<CertificateEvent[]> {
         return this.queryBus.execute(new GetAllCertificateEventsQuery(id));
     }
 }

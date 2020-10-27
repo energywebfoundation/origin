@@ -5,7 +5,7 @@ import request from 'supertest';
 import { Role } from '@energyweb/origin-backend-core';
 
 import moment from 'moment';
-import { DatabaseService } from './database.service';
+import { DatabaseService } from '@energyweb/origin-backend-utils';
 import { authenticatedUser, bootstrapTestInstance, deviceManager } from './issuer-api';
 import { CERTIFICATION_REQUESTS_TABLE_NAME } from '../src/pods/certification-request/certification-request.entity';
 import { CERTIFICATES_TABLE_NAME } from '../src/pods/certificate/certificate.entity';

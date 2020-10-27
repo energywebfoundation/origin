@@ -1,7 +1,7 @@
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { ICertificateDTO } from '../certificate.dto';
+import { CertificateDTO } from '../certificate.dto';
 import { Certificate } from '../certificate.entity';
 import { GetCertificateByTokenIdQuery } from '../queries/get-certificate-by-token.query';
 import { certificateToDto } from '../utils';
@@ -13,7 +13,7 @@ export class GetCertificateByTokenIdHandler implements IQueryHandler<GetCertific
         private readonly repository: Repository<Certificate>
     ) {}
 
-    async execute({ userId, tokenId }: GetCertificateByTokenIdQuery): Promise<ICertificateDTO> {
+    async execute({ userId, tokenId }: GetCertificateByTokenIdQuery): Promise<CertificateDTO> {
         const certificate = await this.repository.findOne({ tokenId });
 
         return certificateToDto(certificate, userId);

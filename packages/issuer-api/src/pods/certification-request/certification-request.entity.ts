@@ -1,13 +1,13 @@
 import { ExtendedBaseEntity } from '@energyweb/origin-backend-utils';
 import { Column, Entity, PrimaryGeneratedColumn, Unique } from 'typeorm';
-import { IsInt, Min, IsBoolean } from 'class-validator';
-import { ICertificationRequestDTO } from './certification-request.dto';
+import { IsInt, Min, IsBoolean, IsDate, IsPositive } from 'class-validator';
+import { CertificationRequestDTO } from './certification-request.dto';
 
 export const CERTIFICATION_REQUESTS_TABLE_NAME = 'issuer_certification_request';
 
 @Entity({ name: CERTIFICATION_REQUESTS_TABLE_NAME })
 @Unique(['requestId'])
-export class CertificationRequest extends ExtendedBaseEntity implements ICertificationRequestDTO {
+export class CertificationRequest extends ExtendedBaseEntity implements CertificationRequestDTO {
     @PrimaryGeneratedColumn()
     id: number;
 
@@ -25,12 +25,12 @@ export class CertificationRequest extends ExtendedBaseEntity implements ICertifi
 
     @Column()
     @IsInt()
-    @Min(0)
+    @IsPositive()
     fromTime: number;
 
     @Column()
     @IsInt()
-    @Min(0)
+    @IsPositive()
     toTime: number;
 
     @Column('simple-array', { nullable: false, default: [] })
@@ -38,7 +38,7 @@ export class CertificationRequest extends ExtendedBaseEntity implements ICertifi
 
     @Column()
     @IsInt()
-    @Min(0)
+    @IsPositive()
     created: number;
 
     @Column()
@@ -46,6 +46,7 @@ export class CertificationRequest extends ExtendedBaseEntity implements ICertifi
     approved: boolean;
 
     @Column({ type: 'timestamptz', nullable: true })
+    @IsDate()
     approvedDate: Date;
 
     @Column()
@@ -53,6 +54,7 @@ export class CertificationRequest extends ExtendedBaseEntity implements ICertifi
     revoked: boolean;
 
     @Column({ type: 'timestamptz', nullable: true })
+    @IsDate()
     revokedDate: Date;
 
     @Column({ nullable: true })

@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { GetAllCertificatesQuery } from '../queries/get-all-certificates.query';
 import { Certificate } from '../certificate.entity';
-import { ICertificateDTO } from '../certificate.dto';
+import { CertificateDTO } from '../certificate.dto';
 import { certificateToDto } from '../utils';
 
 @QueryHandler(GetAllCertificatesQuery)
@@ -13,7 +13,7 @@ export class GetAllCertificatesHandler implements IQueryHandler<GetAllCertificat
         private readonly repository: Repository<Certificate>
     ) {}
 
-    async execute({ userId }: GetAllCertificatesQuery): Promise<ICertificateDTO[]> {
+    async execute({ userId }: GetAllCertificatesQuery): Promise<CertificateDTO[]> {
         const certificates = await this.repository.find();
 
         return Promise.all(
