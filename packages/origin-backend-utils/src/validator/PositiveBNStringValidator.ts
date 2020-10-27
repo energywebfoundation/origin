@@ -1,7 +1,9 @@
 import { ValidatorConstraint, ValidatorConstraintInterface } from 'class-validator';
 import BN from 'bn.js';
+import { Injectable } from '@nestjs/common';
 
 @ValidatorConstraint()
+@Injectable()
 export class PositiveBNStringValidator implements ValidatorConstraintInterface {
     validate(text: string) {
         try {

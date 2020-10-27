@@ -10,9 +10,8 @@ import {
     IsBoolean,
     IsOptional
 } from 'class-validator';
-import { IntUnitsOfEnergy } from '@energyweb/origin-backend-utils';
+import { IntUnitsOfEnergy, PositiveBNStringValidator } from '@energyweb/origin-backend-utils';
 
-import { PositiveBNStringValidator } from '../../utils/positiveBNStringValidator';
 import { ProductDTO } from '../order/product.dto';
 
 export class CreateDemandDTO {
