@@ -14,7 +14,8 @@
         "url": "https://github.com/energywebfoundation/origin/issues"
     },
     "scripts": {
-        "build": "yarn build:client && yarn build:ts",
+        "prebuild:ts": "tsc -b tsconfig.json && yarn build:client",
+        "build": "yarn build:ts",
         "build:ts": "tsc -b tsconfig.json",
         "build:client": "yarn client:generate:schema && yarn client:generate && yarn client:clean",
         "clean": "shx rm -rf dist dist-shakeable",

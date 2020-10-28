@@ -11,13 +11,16 @@
     "include": ["src/**/*", "test/**/*", "migrations/*", "ormconfig*.ts"],
     "references": [
         {
-            "path": "../origin-backend-core/tsconfig.json"
-        },
-        {
-            "path": "../origin-backend/tsconfig.json"
-        },
-        {
             "path": "../issuer/tsconfig.json"
+        },
+        {
+            "path": "../utils-general/tsconfig.json"
+        },
+        {
+            "path": "../origin-backend-utils/tsconfig.json"
+        },
+        {
+            "path": "../origin-backend-core/tsconfig.json"
         }
     ]
 }

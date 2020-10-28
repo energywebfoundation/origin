@@ -35,7 +35,8 @@
         "wait-on": "5.2.0"
     },
     "scripts": {
-        "build": "yarn build:static && yarn build:ts && lerna run build --scope @energyweb/origin-ui --stream",
+        "prebuild:ts": "lerna run prebuild:ts --parallel --stream",
+        "build": "yarn build:static && yarn prebuild:ts && yarn build:ts && lerna run build --scope @energyweb/origin-ui --stream",
         "build:ui": "lerna run build --scope @energyweb/origin-ui-core --stream",
         "lint": "lerna run lint --parallel --stream",
         "lint-fix": "lerna run lint-fix --parallel --stream",
