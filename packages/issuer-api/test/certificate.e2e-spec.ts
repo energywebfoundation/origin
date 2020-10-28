@@ -56,9 +56,6 @@ describe('Certificate tests', () => {
             .send(certificateTestData)
             .expect(201)
             .expect((res) => {
-                console.log({
-                    res
-                });
                 const {
                     deviceId,
                     generationStartTime,

@@ -7,7 +7,7 @@ import {
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 
-import { ISuccessResponse } from '@energyweb/origin-backend-core';
+import { ISuccessResponse, ResponseFailure, ResponseSuccess } from '@energyweb/origin-backend-core';
 import { Logger } from '@nestjs/common';
 import { CertificateCreatedEvent } from '../events/certificate-created-event';
 import { BlockchainPropertiesService } from '../../blockchain/blockchain-properties.service';
@@ -37,15 +37,9 @@ export class CertificateCreatedHandler implements IEventHandler<CertificateCreat
         );
 
         if (existingCertificate) {
-            const message = `Certificate with tokenId ${certificateId} already exists in the DB.`;
-            this.logger.log(`${message} Syncing the certificate...`);
-
-            await existingCertificate.sync();
-
-            return {
-                success: false,
-                message
-            };
+            return ResponseFailure(
+                `Certificate with tokenId ${certificateId} already exists in the DB.`
+            );
         }
 
         const cert = await new CertificateFacade(certificateId, blockchainProperties.wrap()).sync();
@@ -73,8 +67,6 @@ export class CertificateCreatedHandler implements IEventHandler<CertificateCreat
 
         await this.repository.save(certificate);
 
-        return {
-            success: true
-        };
+        return ResponseSuccess();
     }
 }

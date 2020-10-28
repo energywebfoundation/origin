@@ -2,7 +2,6 @@ import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CertificateUtils } from '@energyweb/issuer';
-import { NotFoundException } from '@nestjs/common';
 import { GetAllCertificateEventsQuery } from '../queries/get-all-certificate-events.query';
 import { Certificate } from '../certificate.entity';
 import { CertificateEvent } from '../../../types';
@@ -20,10 +19,7 @@ export class GetAllCertificateEventsHandler implements IQueryHandler<GetAllCerti
         const certificate = await this.repository.findOne(id);
 
         if (!certificate) {
-            throw new NotFoundException({
-                success: false,
-                message: `Unable to find the certificate with the ID ${id}`
-            });
+            return [];
         }
 
         const blockchainProperties = await this.blockchainPropertiesService.get();

@@ -3,8 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Certificate as CertificateFacade, PreciseProofUtils } from '@energyweb/issuer';
 import { BigNumber } from 'ethers';
-import { ISuccessResponse } from '@energyweb/origin-backend-core';
-import { BadRequestException } from '@nestjs/common';
+import { ISuccessResponse, ResponseFailure, ResponseSuccess } from '@energyweb/origin-backend-core';
 import { TransferCertificateCommand } from '../commands/transfer-certificate.command';
 import { Certificate } from '../certificate.entity';
 
@@ -41,10 +40,9 @@ export class TransferCertificateHandler implements ICommandHandler<TransferCerti
             const amountToTransfer = BigNumber.from(amount);
 
             if (amountToTransfer > senderBalance) {
-                throw new BadRequestException({
-                    success: false,
-                    message: `Sender ${from} has a balance of ${senderBalance.toString()} but wants to send ${amount}`
-                });
+                return ResponseFailure(
+                    `Sender ${from} has a balance of ${senderBalance.toString()} but wants to send ${amount}`
+                );
             }
 
             const newSenderBalance = senderBalance.sub(amountToTransfer);
@@ -60,9 +58,7 @@ export class TransferCertificateHandler implements ICommandHandler<TransferCerti
                 latestCommitment: PreciseProofUtils.generateProofs(newCommitment)
             });
 
-            return {
-                success: true
-            };
+            return ResponseSuccess();
         }
 
         try {
@@ -72,16 +68,11 @@ export class TransferCertificateHandler implements ICommandHandler<TransferCerti
                 from
             );
         } catch (error) {
-            return {
-                success: false,
-                message: JSON.stringify(error)
-            };
+            return ResponseFailure(JSON.stringify(error));
         }
 
         await certificate.sync();
 
-        return {
-            success: true
-        };
+        return ResponseSuccess();
     }
 }

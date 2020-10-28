@@ -3,8 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Certificate as CertificateFacade } from '@energyweb/issuer';
 import { BigNumber, Event as BlockchainEvent, utils } from 'ethers';
-import { ISuccessResponse } from '@energyweb/origin-backend-core';
-import { BadRequestException } from '@nestjs/common';
+import { ISuccessResponse, ResponseFailure, ResponseSuccess } from '@energyweb/origin-backend-core';
 import { PreciseProofs } from 'precise-proofs-js';
 import { ClaimCertificateCommand } from '../commands/claim-certificate.command';
 import { Certificate } from '../certificate.entity';
@@ -43,10 +42,9 @@ export class ClaimCertificateHandler implements ICommandHandler<ClaimCertificate
         const amountToClaim = amount ? BigNumber.from(amount) : claimerBalance;
 
         if (amountToClaim > claimerBalance) {
-            throw new BadRequestException({
-                success: false,
-                message: `Claimer ${checksummedForAddress} has a balance of ${claimerBalance.toString()} but wants to claim ${amount}.`
-            });
+            return ResponseFailure(
+                `Claimer ${checksummedForAddress} has a balance of ${claimerBalance.toString()} but wants to claim ${amount}.`
+            );
         }
 
         // Transfer private certificates to public
@@ -99,16 +97,11 @@ export class ClaimCertificateHandler implements ICommandHandler<ClaimCertificate
                 checksummedForAddress
             );
         } catch (error) {
-            return {
-                success: false,
-                message: JSON.stringify(error)
-            };
+            return ResponseFailure(JSON.stringify(error));
         }
 
         await certificate.sync();
 
-        return {
-            success: true
-        };
+        return ResponseSuccess();
     }
 }

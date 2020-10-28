@@ -3,16 +3,17 @@ import {
     Body,
     Controller,
     Get,
-    Logger,
     Post,
     UseGuards,
     Param,
     ParseIntPipe,
-    Put
+    Put,
+    ConflictException,
+    NotFoundException
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
-import { Role } from '@energyweb/origin-backend-core';
+import { ISuccessResponse, Role } from '@energyweb/origin-backend-core';
 
 import { ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CreateCertificationRequestCommand } from './commands/create-certification-request.command';
@@ -24,12 +25,12 @@ import { RevokeCertificationRequestCommand } from './commands/revoke-certificati
 import { GetCertificationRequestByCertificateQuery } from './queries/get-certification-request-by-certificate.query';
 import { CertificationRequestDTO } from './certification-request.dto';
 import { SuccessResponseDTO } from '../../utils/success-response.dto';
+import { ValidateCertificationRequestCommand } from './commands/validate-certification-request.command';
+import { CertificateBoundToCertificationRequestCommand } from './commands/certificate-bound-to-certification-request.command';
 
 @ApiTags('certification-requests')
 @Controller('certification-request')
 export class CertificationRequestController {
-    private readonly logger = new Logger(CertificationRequestController.name);
-
     constructor(private readonly commandBus: CommandBus, private readonly queryBus: QueryBus) {}
 
     @Get('/:id')
@@ -66,6 +67,15 @@ export class CertificationRequestController {
     public async getByCertificate(
         @Param('certificateId', new ParseIntPipe()) certificateId: number
     ): Promise<CertificationRequestDTO> {
+        const validationCheck = await this.queryBus.execute<
+            CertificateBoundToCertificationRequestCommand,
+            ISuccessResponse
+        >(new CertificateBoundToCertificationRequestCommand(certificateId));
+
+        if (!validationCheck.success) {
+            throw new NotFoundException(validationCheck);
+        }
+
         return this.queryBus.execute(new GetCertificationRequestByCertificateQuery(certificateId));
     }
 
@@ -81,6 +91,14 @@ export class CertificationRequestController {
     public async create(
         @Body() dto: CreateCertificationRequestDTO
     ): Promise<CertificationRequestDTO> {
+        const validationCheck = await this.commandBus.execute(
+            new ValidateCertificationRequestCommand(dto)
+        );
+
+        if (!validationCheck.success) {
+            throw new ConflictException(validationCheck);
+        }
+
         return this.commandBus.execute(
             new CreateCertificationRequestCommand(
                 dto.to,

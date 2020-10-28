@@ -29,9 +29,6 @@ export class IssueCertificateHandler implements ICommandHandler<IssueCertificate
         isPrivate,
         userId
     }: IssueCertificateCommand): Promise<CertificateDTO> {
-        console.log({
-            isPrivate1: isPrivate
-        });
         const blockchainProperties = await this.blockchainPropertiesService.get();
 
         let cert: CertificateFacade;

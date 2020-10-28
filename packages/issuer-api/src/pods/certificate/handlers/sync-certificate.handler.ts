@@ -2,7 +2,7 @@ import { IEventHandler, EventsHandler } from '@nestjs/cqrs';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Logger } from '@nestjs/common';
-import { ISuccessResponse } from '@energyweb/origin-backend-core';
+import { ISuccessResponse, ResponseFailure, ResponseSuccess } from '@energyweb/origin-backend-core';
 
 import { SyncCertificateEvent } from '../events/sync-certificate-event';
 import { Certificate } from '../certificate.entity';
@@ -23,10 +23,13 @@ export class SyncCertificateHandler implements IEventHandler<SyncCertificateEven
             { tokenId },
             { relations: ['blockchain'] }
         );
-        await certificate.sync();
 
-        return {
-            success: true
-        };
+        try {
+            await certificate.sync();
+        } catch (e) {
+            return ResponseFailure(e.message);
+        }
+
+        return ResponseSuccess();
     }
 }

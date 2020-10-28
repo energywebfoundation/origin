@@ -2,9 +2,8 @@ import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CertificateUtils } from '@energyweb/issuer';
-import { ISuccessResponse } from '@energyweb/origin-backend-core';
+import { ISuccessResponse, ResponseFailure, ResponseSuccess } from '@energyweb/origin-backend-core';
 import { BigNumber } from 'ethers';
-import { BadRequestException } from '@nestjs/common';
 import { BulkClaimCertificatesCommand } from '../commands/bulk-claim-certificates.command';
 import { Certificate } from '../certificate.entity';
 import { BlockchainPropertiesService } from '../../blockchain/blockchain-properties.service';
@@ -34,10 +33,7 @@ export class BulkClaimCertificatesHandler implements ICommandHandler<BulkClaimCe
                 (cert) => cert.owners[forAddress] && BigNumber.from(cert.owners[forAddress]).gt(0)
             )
         ) {
-            throw new BadRequestException({
-                success: false,
-                message: 'You have requested claiming of a certificate you do not own'
-            });
+            return ResponseSuccess('You have requested claiming of a certificate you do not own');
         }
 
         try {
@@ -48,18 +44,13 @@ export class BulkClaimCertificatesHandler implements ICommandHandler<BulkClaimCe
                 forAddress
             );
         } catch (error) {
-            return {
-                success: false,
-                message: JSON.stringify(error)
-            };
+            return ResponseFailure(JSON.stringify(error));
         }
 
         for (const cert of certificatesToClaim) {
             await cert.sync();
         }
 
-        return {
-            success: true
-        };
+        return ResponseSuccess();
     }
 }

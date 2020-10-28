@@ -7,7 +7,6 @@ import {
     IOwnershipCommitmentProof,
     Certificate as OnChainCertificate
 } from '@energyweb/issuer';
-import { BadRequestException } from '@nestjs/common';
 import { BlockchainProperties } from '../blockchain/blockchain-properties.entity';
 
 export const CERTIFICATES_TABLE_NAME = 'issuer_certificate';
@@ -74,10 +73,7 @@ export class Certificate extends ExtendedBaseEntity {
     */
     async sync(): Promise<void> {
         if (!this.blockchain || !this.tokenId) {
-            throw new BadRequestException({
-                success: false,
-                message: `Certificate ${this.id} doesn't have blockchain properties attached.`
-            });
+            return;
         }
 
         const onChainCert = await new OnChainCertificate(

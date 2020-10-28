@@ -90,9 +90,6 @@ export class CertificateController {
         @UserDecorator() { blockchainAccountAddress }: ILoggedInUser,
         @Body() dto: IssueCertificateDTO
     ): Promise<CertificateDTO> {
-        console.log({
-            isPrivate2: dto
-        });
         return this.commandBus.execute(
             new IssueCertificateCommand(
                 dto.to,

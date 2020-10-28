@@ -1,6 +1,5 @@
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
-import { NotFoundException } from '@nestjs/common';
 import { BlockchainProperties } from './blockchain-properties.entity';
 
 export class BlockchainPropertiesService {
@@ -31,14 +30,6 @@ export class BlockchainPropertiesService {
 
     public async get(): Promise<BlockchainProperties> {
         const [blockchainProperties] = await this.repository.find();
-
-        if (!blockchainProperties) {
-            throw new NotFoundException({
-                success: false,
-                message:
-                    'No blockchain properties have been saved to the database. Please initialize blockchain properties before proceeding'
-            });
-        }
 
         return blockchainProperties;
     }

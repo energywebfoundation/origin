@@ -4,6 +4,7 @@ import { ApproveCertificationRequestHandler } from './approve-certification-requ
 import { GetCertificationRequestHandler } from './get-certification-request.handler';
 import { RevokeCertificationRequestHandler } from './revoke-certification-request.handler';
 import { GetCertificationRequestByCertificateHandler } from './get-certification-request-by-certificate.handler';
+import { ValidateCertificationRequestHandler } from './validate-certification-request.handler';
 
 export const Handlers = [
     CreateCertificationRequestHandler,
@@ -11,5 +12,6 @@ export const Handlers = [
     ApproveCertificationRequestHandler,
     GetCertificationRequestHandler,
     RevokeCertificationRequestHandler,
-    GetCertificationRequestByCertificateHandler
+    GetCertificationRequestByCertificateHandler,
+    ValidateCertificationRequestHandler
 ];
