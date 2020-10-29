@@ -20,7 +20,10 @@ import {
 } from '../../features/certificates/selectors';
 import { Upload, IUploadedFile } from '../Upload';
 import { getEnvironment } from '../../features';
-import { MAX_ENERGY_PER_CERTIFICATE } from '@energyweb/origin-backend-core';
+import { BigNumber } from 'ethers';
+
+// Maximum number Solidity can handle is (2^256)-1
+export const MAX_ENERGY_PER_CERTIFICATE = BigNumber.from(2).pow(256).sub(1);
 
 export function RequestCertificatesModal() {
     const [energyInDisplayUnit, setEnergyInDisplayUnit] = useState('');

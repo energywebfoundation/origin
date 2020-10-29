@@ -11,9 +11,6 @@
     "references": [
         {
             "path": "../utils-general/tsconfig.json"
-        },
-        {
-            "path": "../origin-backend-client-mocks/tsconfig.json"
         }
     ]
 }

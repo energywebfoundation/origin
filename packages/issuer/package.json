@@ -42,8 +42,6 @@
     },
     "types": "dist/js/src/index.d.ts",
     "dependencies": {
-        "@energyweb/origin-backend-client-mocks": "6.0.0",
-        "@energyweb/origin-backend-core": "6.0.0",
         "@energyweb/utils-general": "9.3.0",
         "chai": "4.2.0",
         "dotenv": "8.2.0",

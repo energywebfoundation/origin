@@ -1,22 +1,20 @@
-import { Configuration } from '@energyweb/utils-general';
-import { EventFilter, utils, providers } from 'ethers';
+import { EventFilter, utils, providers, BigNumber, ContractTransaction, Contract } from 'ethers';
 
-import { Certificate, IClaimData } from './Certificate';
-import { Registry } from '../ethers/Registry';
-import { Issuer } from '../ethers/Issuer';
+import { Certificate, IClaimData, ICertificate } from './Certificate';
 import { getEventsFromContract, IBlockchainEvent } from '../utils/events';
+import { IBlockchainProperties } from './BlockchainProperties';
+
+export interface IShareInCertificate {
+    [address: string]: string;
+}
 
 export const encodeClaimData = async (
     claimData: IClaimData,
-    configuration: Configuration.Entity
-) => {
+    blockchainProperties: IBlockchainProperties
+): Promise<string> => {
     const { beneficiary, address, region, zipCode, countryCode } = claimData;
-    const { registry } = configuration.blockchainProperties as Configuration.BlockchainProperties<
-        Registry,
-        Issuer
-    >;
 
-    return registry.encodeClaimData(
+    return blockchainProperties.registry.encodeClaimData(
         beneficiary ?? '',
         address ?? '',
         region ?? '',
@@ -27,19 +25,15 @@ export const encodeClaimData = async (
 
 export const decodeClaimData = async (
     encodedClaimData: string,
-    configuration: Configuration.Entity
+    blockchainProperties: IBlockchainProperties
 ): Promise<IClaimData> => {
-    const { registry } = configuration.blockchainProperties as Configuration.BlockchainProperties<
-        Registry,
-        Issuer
-    >;
     const {
         _beneficiary,
         _address,
         _region,
         _zipCode,
         _countryCode
-    } = await registry.decodeClaimData(encodedClaimData);
+    } = await blockchainProperties.registry.decodeClaimData(encodedClaimData);
 
     return {
         beneficiary: _beneficiary,
@@ -53,36 +47,27 @@ export const decodeClaimData = async (
 export async function claimCertificates(
     certificateIds: number[],
     claimData: IClaimData,
-    configuration: Configuration.Entity
-) {
+    blockchainProperties: IBlockchainProperties,
+    forAddress?: string
+): Promise<ContractTransaction> {
     const certificatesPromises = certificateIds.map((certId) =>
-        new Certificate(certId, configuration).sync()
+        new Certificate(certId, blockchainProperties).sync()
     );
     const certificates = await Promise.all(certificatesPromises);
 
-    const ownsAllCertificates = certificates.every((cert) => cert.isOwned === true);
+    const { activeUser, registry } = blockchainProperties;
+    const claimer = forAddress ?? (await activeUser.getAddress());
 
-    if (!ownsAllCertificates) {
-        throw new Error(`You can only claim your own certificates`);
-    }
+    const values = certificates.map((cert) => BigNumber.from(cert.owners[claimer] ?? 0));
 
-    const values = certificates.map((cert) => cert.energy.publicVolume);
-
-    const encodedClaimData = await encodeClaimData(claimData, configuration);
+    const encodedClaimData = await encodeClaimData(claimData, blockchainProperties);
     const data = utils.randomBytes(32);
-
-    const {
-        activeUser,
-        registry
-    } = configuration.blockchainProperties as Configuration.BlockchainProperties<Registry, Issuer>;
 
     const registryWithSigner = registry.connect(activeUser);
 
-    const activeUserAddress = await activeUser.getAddress();
-
     const claimTx = await registryWithSigner.safeBatchTransferAndClaimFrom(
-        activeUserAddress,
-        activeUserAddress,
+        claimer,
+        claimer,
         certificateIds,
         values,
         data,
@@ -97,43 +82,29 @@ export async function claimCertificates(
 export async function transferCertificates(
     certificateIds: number[],
     to: string,
-    configuration: Configuration.Entity
-) {
+    blockchainProperties: IBlockchainProperties,
+    from?: string
+): Promise<ContractTransaction> {
     const certificatesPromises = certificateIds.map((certId) =>
-        new Certificate(certId, configuration).sync()
+        new Certificate(certId, blockchainProperties).sync()
     );
-    const certificates = await Promise.all(certificatesPromises);
 
-    const ownsAllCertificates = certificates.every((cert) => cert.isOwned === true);
-
-    if (!ownsAllCertificates) {
-        throw new Error(`You can only claim your own certificates`);
-    }
-
-    const values = certificates.map((cert) => cert.energy.publicVolume);
-
-    // TO-DO: replace with proper data
-    const data = utils.randomBytes(32);
-
-    const { activeUser } = configuration.blockchainProperties as Configuration.BlockchainProperties<
-        Registry,
-        Issuer
-    >;
-
-    const { registry } = configuration.blockchainProperties as Configuration.BlockchainProperties<
-        Registry,
-        Issuer
-    >;
+    const { registry, activeUser } = blockchainProperties;
     const registryWithSigner = registry.connect(activeUser);
 
     const activeUserAddress = await activeUser.getAddress();
+    const fromAddress = from ?? activeUserAddress;
+
+    const certificates = await Promise.all(certificatesPromises);
+
+    const values = certificates.map((cert) => BigNumber.from(cert.owners[fromAddress] ?? 0));
 
     const transferTx = await registryWithSigner.safeBatchTransferFrom(
-        activeUserAddress,
+        fromAddress,
         to,
         certificateIds,
         values,
-        data
+        utils.randomBytes(32) // TO-DO: replace with proper data
     );
 
     await transferTx.wait();
@@ -142,31 +113,25 @@ export async function transferCertificates(
 }
 
 export async function getAllCertificates(
-    configuration: Configuration.Entity
+    blockchainProperties: IBlockchainProperties
 ): Promise<Certificate[]> {
-    const { issuer } = configuration.blockchainProperties as Configuration.BlockchainProperties<
-        Registry,
-        Issuer
-    >;
+    const { issuer } = blockchainProperties;
 
     const certificationRequestApprovedEvents = await getEventsFromContract(
         issuer,
         issuer.filters.CertificationRequestApproved(null, null, null)
     );
     const certificatePromises = certificationRequestApprovedEvents.map((event) =>
-        new Certificate(event._certificateId.toNumber(), configuration).sync()
+        new Certificate(event._certificateId.toNumber(), blockchainProperties).sync()
     );
 
     return Promise.all(certificatePromises);
 }
 
 export async function getAllOwnedCertificates(
-    configuration: Configuration.Entity
+    blockchainProperties: IBlockchainProperties
 ): Promise<Certificate[]> {
-    const {
-        registry,
-        activeUser
-    } = configuration.blockchainProperties as Configuration.BlockchainProperties<Registry, Issuer>;
+    const { registry, activeUser } = blockchainProperties;
     const owner = await activeUser.getAddress();
 
     const transfers = await getEventsFromContract(
@@ -182,19 +147,34 @@ export async function getAllOwnedCertificates(
     );
     const available = certificateIds.filter((id, index) => !balances[index].isZero());
 
-    const certificatePromises = available.map((id) => new Certificate(id, configuration).sync());
+    const certificatePromises = available.map((id) =>
+        new Certificate(id, blockchainProperties).sync()
+    );
 
     return Promise.all(certificatePromises);
 }
 
+export async function decodeEvent(
+    eventName: string,
+    event: providers.Log,
+    contract: Contract
+): Promise<IBlockchainEvent> {
+    const eventBlock = await contract.provider.getBlock(event.blockHash);
+
+    return {
+        name: eventName,
+        transactionHash: event.transactionHash,
+        blockHash: event.blockHash,
+        timestamp: eventBlock.timestamp,
+        ...contract.interface.decodeEventLog(eventName, event.data, event.topics)
+    };
+}
+
 export const getAllCertificateEvents = async (
     certId: number,
-    configuration: Configuration.Entity
+    blockchainProperties: IBlockchainProperties
 ): Promise<IBlockchainEvent[]> => {
-    const { registry } = configuration.blockchainProperties as Configuration.BlockchainProperties<
-        Registry,
-        Issuer
-    >;
+    const { registry } = blockchainProperties;
 
     const getEvent = async (filter: EventFilter, eventName: string) => {
         const logs = await registry.provider.getLogs({
@@ -205,17 +185,8 @@ export const getAllCertificateEvents = async (
 
         const parsedLogs = await Promise.all(
             logs.map(
-                async (event: providers.Log): Promise<IBlockchainEvent> => {
-                    const eventBlock = await registry.provider.getBlock(event.blockHash);
-
-                    return {
-                        name: eventName,
-                        transactionHash: event.transactionHash,
-                        blockHash: event.blockHash,
-                        timestamp: eventBlock.timestamp,
-                        ...registry.interface.decodeEventLog(eventName, event.data, event.topics)
-                    };
-                }
+                async (event: providers.Log): Promise<IBlockchainEvent> =>
+                    decodeEvent(eventName, event, registry)
             )
         );
         return parsedLogs.filter((event) => event._id.toNumber() === certId);
@@ -238,3 +209,92 @@ export const getAllCertificateEvents = async (
 
     return [...issuanceSingleEvents, ...transferSingleEvents, ...claimSingleEvents];
 };
+
+export const calculateOwnership = async (
+    certificateId: ICertificate['id'],
+    blockchainProperties: IBlockchainProperties
+): Promise<IShareInCertificate> => {
+    const ownedShares: IShareInCertificate = {};
+    const { registry } = blockchainProperties;
+
+    const transferSingleEvents = (
+        await getEventsFromContract(
+            registry,
+            registry.filters.TransferSingle(null, null, null, null, null)
+        )
+    ).filter((event) => event._id.eq(certificateId));
+
+    const transferBatchEvents = (
+        await getEventsFromContract(
+            registry,
+            registry.filters.TransferBatch(null, null, null, null, null)
+        )
+    ).filter((e) => e._ids.some((id: BigNumber) => id.eq(certificateId)));
+
+    const allHistoricOwners = [
+        ...new Set([...transferSingleEvents, ...transferBatchEvents].map((event) => event._to))
+    ];
+
+    const allHistoricOwnersBalances = await Promise.all(
+        allHistoricOwners.map((ownerAddress) => registry.balanceOf(ownerAddress, certificateId))
+    );
+
+    allHistoricOwners.forEach((owner, index) => {
+        ownedShares[owner] = allHistoricOwnersBalances[index].toString();
+    });
+
+    return ownedShares;
+};
+
+export const calculateClaims = async (
+    certificateId: ICertificate['id'],
+    blockchainProperties: IBlockchainProperties
+): Promise<IShareInCertificate> => {
+    const claimedShares: IShareInCertificate = {};
+    const { registry } = blockchainProperties;
+
+    const claimSingleEvents = (
+        await getEventsFromContract(
+            registry,
+            registry.filters.ClaimSingle(null, null, null, null, null, null)
+        )
+    ).filter((event) => event._id.eq(certificateId));
+
+    const claimBatchEvents = (
+        await getEventsFromContract(
+            registry,
+            registry.filters.ClaimBatch(null, null, null, null, null, null)
+        )
+    ).filter((e) => e._ids.some((id: BigNumber) => id.eq(certificateId)));
+
+    const allHistoricClaimers = [
+        ...new Set([...claimSingleEvents, ...claimBatchEvents].map((event) => event._claimSubject))
+    ];
+
+    const allHistoricClaimersBalances = await Promise.all(
+        allHistoricClaimers.map((claimerAddress) =>
+            registry.claimedBalanceOf(claimerAddress, certificateId)
+        )
+    );
+
+    allHistoricClaimers.forEach((owner, index) => {
+        claimedShares[owner] = allHistoricClaimersBalances[index].toString();
+    });
+
+    return claimedShares;
+};
+
+export async function approveOperator(
+    operator: string,
+    blockchainProperties: IBlockchainProperties
+): Promise<ContractTransaction> {
+    const { activeUser, registry } = blockchainProperties;
+
+    const registryWithSigner = registry.connect(activeUser);
+
+    const approveOperatorTx = await registryWithSigner.setApprovalForAll(operator, true);
+
+    await approveOperatorTx.wait();
+
+    return approveOperatorTx;
+}

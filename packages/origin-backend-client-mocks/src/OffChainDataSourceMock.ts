@@ -8,8 +8,6 @@ import {
     IInvitationClient,
     IRequestClient,
     IFilesClient,
-    ICertificateClient,
-    ICertificationRequestClient,
     IAdminClient
 } from '@energyweb/origin-backend-core';
 
@@ -18,8 +16,6 @@ import { UserClientMock } from './UserClientMock';
 import { DeviceClientMock } from './DeviceClientMock';
 import { OrganizationClientMock } from './OrganizationClientMock';
 import { InvitationClientMock } from './InvitationClientMock';
-import { CertificateClientMock } from './CertificateClientMock';
-import { CertificationRequestClientMock } from './CertificationRequestClientMock';
 
 export class OffChainDataSourceMock implements IOffChainDataSource {
     dataApiUrl: string;
@@ -37,10 +33,6 @@ export class OffChainDataSourceMock implements IOffChainDataSource {
     requestClient: IRequestClient = new RequestClient();
 
     filesClient: IFilesClient;
-
-    certificateClient: ICertificateClient = new CertificateClientMock();
-
-    certificationRequestClient: ICertificationRequestClient = new CertificationRequestClientMock();
 
     adminClient: IAdminClient;
 }

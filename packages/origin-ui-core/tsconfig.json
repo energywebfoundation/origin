@@ -34,6 +34,9 @@
         },
         {
             "path": "../exchange-core/tsconfig.json"
+        },
+        {
+            "path": "../issuer-api-client/tsconfig.json"
         }
     ]
 }

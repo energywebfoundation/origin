@@ -8,7 +8,6 @@ import { AppController } from './app.controller';
 import { AuthModule } from './auth/auth.module';
 import createConfig from './config/configuration';
 import { AdminModule } from './pods/admin/admin.module';
-import { CertificateModule } from './pods/certificate/certificate.module';
 import { ConfigurationModule } from './pods/configuration/configuration.module';
 import { DeviceModule } from './pods/device/device.module';
 import { FileModule } from './pods/file/file.module';
@@ -16,7 +15,6 @@ import { OrganizationModule } from './pods/organization/organization.module';
 import { UserModule } from './pods/user/user.module';
 import { EmailConfirmationModule } from './pods/email-confirmation/email-confirmation.module';
 import { providers } from '.';
-import { CertificationRequestModule } from './pods/certification-request/certification-request.module';
 import { InvitationModule } from './pods/invitation/invitation.module';
 
 const ENV_FILE_PATH = path.resolve(__dirname, '../../../../../.env');
@@ -39,8 +37,6 @@ export class AppModule {
                 InvitationModule,
                 DeviceModule.register(smartMeterReadingsAdapter),
                 AuthModule,
-                CertificateModule,
-                CertificationRequestModule.register(smartMeterReadingsAdapter),
                 AdminModule,
                 EmailConfirmationModule
             ],

@@ -10,7 +10,7 @@ import {
     IRefreshUserOffchainAction,
     setUserState
 } from './actions';
-import { getOffChainDataSource, getIRecClient } from '../general/selectors';
+import { getOffChainDataSource, getIRecClient, getEnvironment } from '../general/selectors';
 import {
     IOffChainDataSource,
     IRequestClient,
@@ -18,12 +18,22 @@ import {
     IOrganizationInvitation
 } from '@energyweb/origin-backend-core';
 import { Registration } from '../../utils/irec/types';
-import { GeneralActions, ISetOffChainDataSourceAction } from '../general/actions';
-import { reloadCertificates, clearCertificates } from '../certificates';
+import { GeneralActions, IEnvironment, ISetOffChainDataSourceAction } from '../general/actions';
+import {
+    reloadCertificates,
+    clearCertificates,
+    setCertificatesClient,
+    setCertificationRequestsClient
+} from '../certificates';
 import { clearBundles } from '../bundles';
 import { clearOrders } from '../orders/actions';
 import { getUserState } from './selectors';
 import { IUsersState } from './reducer';
+import {
+    CertificatesClient,
+    CertificationRequestsClient,
+    Configuration as ClientConfiguration
+} from '@energyweb/issuer-api-client';
 
 const LOCAL_STORAGE_KEYS = {
     AUTHENTICATION_TOKEN: 'AUTHENTICATION_TOKEN'
@@ -66,6 +76,33 @@ function* persistAuthenticationToken(): SagaIterator {
         if (typeof action.payload !== 'undefined') {
             localStorage.setItem(LOCAL_STORAGE_KEYS.AUTHENTICATION_TOKEN, action.payload);
         }
+    }
+}
+
+function* updateClients(): SagaIterator {
+    while (true) {
+        const action: ISetAuthenticationTokenAction = yield take(
+            UsersActions.setAuthenticationToken
+        );
+
+        const environment: IEnvironment = yield select(getEnvironment);
+
+        const clientConfiguration = new ClientConfiguration({
+            baseOptions: {
+                headers: {
+                    Authorization: `Bearer ${action.payload}`
+                }
+            },
+            accessToken: action.payload
+        });
+        const backendUrl = `${environment.BACKEND_URL}:${environment.BACKEND_PORT}`;
+
+        yield put(setCertificatesClient(new CertificatesClient(clientConfiguration, backendUrl)));
+        yield put(
+            setCertificationRequestsClient(
+                new CertificationRequestsClient(clientConfiguration, backendUrl)
+            )
+        );
     }
 }
 
@@ -146,6 +183,7 @@ function* logOutSaga(): SagaIterator {
 
         localStorage.removeItem(LOCAL_STORAGE_KEYS.AUTHENTICATION_TOKEN);
 
+        const environment: IEnvironment = yield select(getEnvironment);
         const requestClient: IRequestClient = (yield select(getOffChainDataSource)).requestClient;
 
         if (!requestClient) {
@@ -153,6 +191,16 @@ function* logOutSaga(): SagaIterator {
         }
 
         requestClient.authenticationToken = null;
+
+        const backendUrl = `${environment.BACKEND_URL}:${environment.BACKEND_PORT}`;
+        yield put(
+            setCertificatesClient(new CertificatesClient(new ClientConfiguration(), backendUrl))
+        );
+        yield put(
+            setCertificationRequestsClient(
+                new CertificationRequestsClient(new ClientConfiguration(), backendUrl)
+            )
+        );
 
         yield put(setUserOffchain(null));
         yield put(clearCertificates());
@@ -165,6 +213,7 @@ export function* usersSaga(): SagaIterator {
     yield all([
         fork(setPreviouslyLoggedInOffchainUser),
         fork(persistAuthenticationToken),
+        fork(updateClients),
         fork(fetchOffchainUserDetails),
         fork(logOutSaga)
     ]);

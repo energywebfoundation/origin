@@ -36,6 +36,7 @@
     "license": "GPL-3.0-or-later",
     "dependencies": {
         "@energyweb/exchange": "1.5.4",
+        "@energyweb/issuer-api": "0.0.1",
         "@energyweb/migrations": "3.2.0",
         "@energyweb/origin-backend": "8.0.0",
         "@energyweb/origin-backend-core": "6.0.0",
@@ -52,7 +53,6 @@
         "body-parser": "1.19.0",
         "class-validator": "0.12.2",
         "cors": "2.8.5",
-        "dotenv": "8.2.0",
         "nodemailer-mandrill-transport": "1.2.0",
         "swagger-ui-express": "4.1.4",
         "typeorm": "0.2.28"

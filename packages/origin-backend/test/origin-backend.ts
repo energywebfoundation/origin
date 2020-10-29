@@ -19,8 +19,6 @@ import request from 'supertest';
 
 import { entities } from '../src';
 import { AppModule } from '../src/app.module';
-import { CertificateService } from '../src/pods/certificate/certificate.service';
-import { CertificationRequestService } from '../src/pods/certification-request/certification-request.service';
 import { ConfigurationService } from '../src/pods/configuration';
 import { DeviceService } from '../src/pods/device/device.service';
 import { EmailConfirmationService } from '../src/pods/email-confirmation/email-confirmation.service';
@@ -82,10 +80,6 @@ export const bootstrapTestInstance = async () => {
     const organizationService = await app.resolve<OrganizationService>(OrganizationService);
     const deviceService = await app.resolve<DeviceService>(DeviceService);
     const configurationService = await app.resolve<ConfigurationService>(ConfigurationService);
-    const certificateService = await app.resolve<CertificateService>(CertificateService);
-    const certificationRequestService = await app.resolve<CertificationRequestService>(
-        CertificationRequestService
-    );
     const emailConfirmationService = await app.resolve<EmailConfirmationService>(
         EmailConfirmationService
     );
@@ -97,9 +91,7 @@ export const bootstrapTestInstance = async () => {
 
     await databaseService.cleanUp();
 
-    await configurationService.update({
-        contractsLookup: { registry: '', issuer: '' }
-    });
+    await configurationService.update({});
 
     return {
         app,
@@ -109,8 +101,6 @@ export const bootstrapTestInstance = async () => {
         organizationService,
         deviceService,
         configurationService,
-        certificateService,
-        certificationRequestService,
         emailConfirmationService,
         fileService,
         invitationService

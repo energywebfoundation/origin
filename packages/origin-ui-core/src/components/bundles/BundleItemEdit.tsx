@@ -13,8 +13,7 @@ import {
     InputAdornment,
     makeStyles
 } from '@material-ui/core';
-import { ICertificateViewItem } from '../../features/certificates';
-import { ICertificateEnergy } from '../../../../issuer/src';
+import { ICertificateEnergy, ICertificateViewItem } from '../../features/certificates';
 import { BigNumber } from 'ethers';
 import {
     energyImageByType,
