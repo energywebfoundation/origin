@@ -105,8 +105,8 @@ async function importContracts(
 
 async function isFirstMigration(client: Client) {
     try {
-        const { rows } = await client.query('SELECT * FROM public.configuration;');
-        return rows[0]?.contractsLookup === undefined;
+        const { rows } = await client.query('SELECT * FROM public.issuer_blockchain_properties;');
+        return rows.length === 0;
     } catch (e) {
         logger.error(e.message);
         return false;
