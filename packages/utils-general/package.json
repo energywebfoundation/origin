@@ -31,7 +31,7 @@
     "dependencies": {
         "@energyweb/origin-backend-core": "6.0.0",
         "chai": "^4.2.0",
-        "eth-sig-util": "2.5.2",
+        "eth-sig-util": "2.5.3",
         "ethers": "5.0.15",
         "jsonschema": "1.4.0",
         "moment": "2.24.0",
