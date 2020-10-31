@@ -59,7 +59,7 @@
     },
     "devDependencies": {
         "@nestjs/testing": "7.4.4",
-        "ganache-core": "2.13.0",
+        "ganache-core": "2.13.1",
         "supertest": "5.0.0"
     },
     "files": [
