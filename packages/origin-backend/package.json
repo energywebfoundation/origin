@@ -94,7 +94,7 @@
         "jest": "26.6.1",
         "nodemailer": "6.4.14",
         "polly-js": "1.6.8",
-        "supertest": "5.0.0"
+        "supertest": "6.0.0"
     },
     "files": [
         "dist",
