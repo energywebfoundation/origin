@@ -16,8 +16,8 @@ import {
     InputAdornment,
     makeStyles
 } from '@material-ui/core';
-import { ICertificateEnergy, ICertificateViewItem } from '../../features/certificates';
-import { BigNumber } from 'ethers';
+import { Edit, HighlightOff } from '@material-ui/icons';
+import variables from '../../styles/variables.scss';
 import {
     energyImageByType,
     moment,
@@ -28,6 +28,7 @@ import {
     EnergyTypes,
     useTranslation,
     useValidation,
+    ICertificateEnergy,
     ICertificateViewItem
 } from '@energyweb/origin-ui-core';
 
