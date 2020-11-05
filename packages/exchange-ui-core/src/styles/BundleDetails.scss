@@ -1,0 +1,50 @@
+@import '@energyweb/origin-ui-core/dist/src/styles/variables.scss';
+
+$bundleContentCardHeaderBg: lighten($backgroundColorDark, 5%);
+$bundleContentSelectedCardHeaderBg: $primaryColor;
+$bundleCardContentBg: lighten($backgroundColorDark, 7%);
+$bundleSelectedCardContentBg: darken($primaryColor, 35%);
+$scrollButtonBg: lighten($backgroundColorDark, 20%);
+$bundleDetailsBg: lighten($backgroundColorDark, 10%);
+$bundleCardBorderBg: $bundleDetailsBg;
+$bundleDetailsCloseBtnBg: $bootstrapBodyColor;
+$bundlePriceRangeLblBg: $primaryColor;
+$bundleOfferBg: lighten($backgroundColorDark, 13%);
+
+.BundleDetails {
+    .MuiPaper-root {
+        background-color: $bundleDetailsBg;
+        .closeButton {
+            color: $bundleDetailsCloseBtnBg;
+        }
+        .priceRangeSliderLabel {
+            background-color: $bundlePriceRangeLblBg;
+        }
+        .BundleOffer {
+            border-bottom-color: $bundleCardBorderBg;
+        }
+        .BundleOfferInfo {
+            background-color: $bundleOfferBg;
+        }
+        button.ScrollButton {
+            background-color: $scrollButtonBg;
+        }
+        .CardHeader {
+            background-color: $bundleContentCardHeaderBg;
+        }
+        
+        .CardContent {
+            background-color: $bundleCardContentBg;
+            border-bottom-color: $bundleCardBorderBg;
+        }
+        
+        .SelectedCardHeader {
+            background-color: $primaryColor;
+        }
+        
+        .SelectedCardContent {
+            background-color: $bundleSelectedCardContentBg;
+            border-bottom-color: $bundleCardBorderBg; 
+        }
+    }
+}
