@@ -2,7 +2,7 @@ import { createMemoryHistory } from 'history';
 import createSagaMiddleware, { Task } from 'redux-saga';
 import { applyMiddleware, createStore } from 'redux';
 import { routerMiddleware, ConnectedRouter } from 'connected-react-router';
-import { createRootReducer } from '../../reducers';
+import { createRootReducer } from '../../reducers/createRootReducer';
 import { sagas } from '../../features/sagas';
 import { ReactWrapper, CommonWrapper } from 'enzyme';
 import { Compliance, Configuration } from '@energyweb/utils-general';

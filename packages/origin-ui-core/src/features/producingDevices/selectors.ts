@@ -1,4 +1,4 @@
-import { IStoreState } from '../../types';
+import { ICoreState } from '../../types';
 
-export const getDeviceClient = (store: IStoreState) =>
-    store.general.offChainDataSource.deviceClient;
+export const getDeviceClient = (store: ICoreState) =>
+    store.generalState.offChainDataSource.deviceClient;

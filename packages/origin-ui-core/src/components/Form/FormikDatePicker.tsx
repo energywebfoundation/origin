@@ -84,18 +84,19 @@ export const FormikDatePickerWithArrows = ({
     />
 );
 
-export const FormikDatePicker = ({
-    form: { setFieldValue },
-    field: { name, value },
-    ...rest
-}: FieldProps<DatePickerPropsMaterial>) => (
-    <DatePickerMaterial
-        onChange={(newValue) => setFieldValue(name, newValue)}
-        value={value}
-        format={DATE_FORMAT_DMY}
-        {...rest}
-    />
-);
+export const FormikDatePicker = ({ form, field, ...rest }: FieldProps<DatePickerPropsMaterial>) => {
+    const setFieldValue = form?.setFieldValue;
+    const name = field?.name;
+    const value = field?.value;
+    return (
+        <DatePickerMaterial
+            onChange={(newValue) => setFieldValue(name, newValue)}
+            value={value}
+            format={DATE_FORMAT_DMY}
+            {...rest}
+        />
+    );
+};
 
 export const FormikDatePickerWithMonthArrowsFilled = ({
     name,
@@ -108,7 +109,8 @@ export const FormikDatePickerWithMonthArrowsFilled = ({
     disabled: boolean;
     required: boolean;
 }) => {
-    const { setFieldValue, values } = useFormikContext();
+    const setFieldValue = useFormikContext()?.setFieldValue;
+    const values = useFormikContext()?.values;
 
     return (
         <Field

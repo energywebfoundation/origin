@@ -129,7 +129,7 @@ export function UserRegister() {
                     const buttonDisabled = isSubmitting || !isValid || !isTitleValid;
 
                     return (
-                        <Form translate="">
+                        <Form translate="no">
                             <Grid container spacing={3}>
                                 <Grid item xs={6}>
                                     <FormControl

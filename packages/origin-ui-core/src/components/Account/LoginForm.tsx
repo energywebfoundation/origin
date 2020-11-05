@@ -93,7 +93,7 @@ export const LoginForm = () => {
                     const buttonDisabled = isSubmitting || !isValid;
 
                     return (
-                        <Form translate="">
+                        <Form translate="no">
                             <Field
                                 label={t('user.properties.email')}
                                 name="email"

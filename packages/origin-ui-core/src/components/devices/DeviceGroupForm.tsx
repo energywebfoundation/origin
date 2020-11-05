@@ -287,7 +287,7 @@ export function DeviceGroupForm(props: IProps) {
                     const buttonDisabled = isSubmitting || !isValid || readOnly;
 
                     return (
-                        <Form translate="">
+                        <Form translate="no">
                             {!readOnly && (
                                 <>
                                     <Grid container spacing={3}>

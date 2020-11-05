@@ -1,7 +1,7 @@
 import { Certificate } from '@energyweb/issuer';
 import { CertificatesActions, ICertificatesAction, ICertificateFetcher } from './actions';
 import { ProducingDevice } from '@energyweb/device-registry';
-import { IStoreState } from '../../types';
+import { ICoreState } from '../../types';
 import { ICertificateViewItem } from '.';
 
 export interface ICertificatesState {
@@ -14,7 +14,7 @@ export interface ICertificatesState {
 }
 
 const fetcher: ICertificateFetcher = {
-    async fetch(id: number, configuration: IStoreState['configuration']) {
+    async fetch(id: number, configuration: ICoreState['configurationState']) {
         return configuration && new Certificate(id, configuration).sync();
     },
 
@@ -36,7 +36,7 @@ function certificateExists(state: ICertificatesState, { id, source }: ICertifica
     return state.certificates.find((i) => i.id === id && i.source === source);
 }
 
-export default function reducer(
+export function certificatesState(
     state = defaultState,
     action: ICertificatesAction
 ): ICertificatesState {

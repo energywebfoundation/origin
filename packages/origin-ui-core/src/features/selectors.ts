@@ -1,11 +1,12 @@
-import { IStoreState } from '../types';
+import { ICoreState } from '../types';
 
-export const getConfiguration = (state: IStoreState) => state.configuration;
+export const getConfiguration = (state: ICoreState) => state.configurationState;
 
-export const getProducingDevices = (state: IStoreState) => state.producingDevices.producingDevices;
+export const getProducingDevices = (state: ICoreState) =>
+    state.producingDevicesState.producingDevices;
 
 export const getBaseURL = () => {
     return '';
 };
 
-export const getWeb3 = (state: IStoreState) => state.configuration?.blockchainProperties?.web3;
+export const getWeb3 = (state: ICoreState) => state.configurationState?.blockchainProperties?.web3;

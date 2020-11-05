@@ -1,13 +1,13 @@
-import { IStoreState } from '../../types/index';
+import { ICoreState } from '../../types/index';
 import { ICertificatesState } from './reducer';
 
-export const getCertificates = (state: IStoreState) => state.certificates.certificates;
+export const getCertificates = (state: ICoreState) => state.certificatesState.certificates;
 
-export const getRequestCertificatesModalProducingDevice = (state: IStoreState) =>
-    state.certificates.requestCertificatesModal.producingDevice;
+export const getRequestCertificatesModalProducingDevice = (state: ICoreState) =>
+    state.certificatesState.requestCertificatesModal.producingDevice;
 
-export const getRequestCertificatesModalVisible = (state: IStoreState) =>
-    state.certificates.requestCertificatesModal.visible;
+export const getRequestCertificatesModalVisible = (state: ICoreState) =>
+    state.certificatesState.requestCertificatesModal.visible;
 
 export const getCertificateById = (
     certificates: ICertificatesState['certificates'],
@@ -20,4 +20,4 @@ export const getCertificateById = (
     return certificates.find((i) => i.id === id);
 };
 
-export const getCertificateFetcher = (state: IStoreState) => state.certificates.fetcher;
+export const getCertificateFetcher = (state: ICoreState) => state.certificatesState.fetcher;

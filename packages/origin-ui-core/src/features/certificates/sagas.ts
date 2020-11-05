@@ -13,7 +13,7 @@ import {
     clearCertificates,
     reloadCertificates
 } from '.';
-import { IStoreState } from '../../types';
+import { ICoreState } from '../../types';
 import { moment, NotificationType, showNotification } from '../../utils';
 import { ExchangeAccount, IExchangeClient, ITransfer } from '../../utils/exchange';
 import { assertCorrectBlockchainAccount } from '../../utils/sagas';
@@ -67,7 +67,7 @@ function* requestCertificatesSaga(): SagaIterator {
         yield put(setLoading(true));
 
         yield put(hideRequestCertificatesModal());
-        const configuration: IStoreState['configuration'] = yield select(getConfiguration);
+        const configuration: ICoreState['configurationState'] = yield select(getConfiguration);
 
         const { startTime, endTime, energy, files, deviceId } = action.payload;
 
@@ -143,7 +143,7 @@ function* fetchCertificateSaga(id: number, entitiesBeingFetched: any): SagaItera
 
     const existingEntity: ICertificateViewItem = yield call(getCertificateById, entities, id);
 
-    const configuration: IStoreState['configuration'] = yield select(getConfiguration);
+    const configuration: ICoreState['configurationState'] = yield select(getConfiguration);
     const fetcher: ICertificateFetcher = yield select(getCertificateFetcher);
 
     entitiesBeingFetched.set(id, true);

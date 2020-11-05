@@ -20,8 +20,6 @@ import {
 import { Registration } from '../../utils/irec/types';
 import { GeneralActions, ISetOffChainDataSourceAction } from '../general/actions';
 import { reloadCertificates, clearCertificates } from '../certificates';
-import { clearBundles } from '../bundles';
-import { clearOrders } from '../orders/actions';
 import { getUserState } from './selectors';
 import { IUsersState } from './reducer';
 
@@ -156,8 +154,6 @@ function* logOutSaga(): SagaIterator {
 
         yield put(setUserOffchain(null));
         yield put(clearCertificates());
-        yield put(clearBundles());
-        yield put(clearOrders());
     }
 }
 

@@ -3,7 +3,7 @@ import { Certificate, CertificationRequest, IClaimData } from '@energyweb/issuer
 import { BigNumber } from 'ethers';
 
 import { ICertificateViewItem, CertificateSource } from '.';
-import { IStoreState } from '../../types';
+import { ICoreState } from '../../types';
 
 export enum CertificatesActions {
     addCertificate = 'CERTIFICATE_CREATED',
@@ -134,7 +134,7 @@ export const requestCertificateEntityFetch = (
 export type TRequestUserCertificateEntityFetchAction = typeof requestCertificateEntityFetch;
 
 export interface ICertificateFetcher {
-    fetch(id: number, configuration: IStoreState['configuration']): Promise<Certificate>;
+    fetch(id: number, configuration: ICoreState['configurationState']): Promise<Certificate>;
 
     reload(entity: Certificate): Promise<Certificate>;
 }

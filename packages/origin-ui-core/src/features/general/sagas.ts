@@ -24,8 +24,7 @@ import {
     ExchangeClient,
     IExchangeClient,
     ExchangeAccount,
-    AccountAsset,
-    Bundle
+    AccountAsset
 } from '../../utils/exchange';
 import { IRecClient } from '../../utils/irec';
 import {
@@ -54,19 +53,11 @@ import {
     requestCertificateEntityFetch,
     updateCertificate
 } from '../certificates/actions';
-import { IStoreState } from '../../types';
+import { ICoreState } from '../../types';
 import { getI18n } from 'react-i18next';
 import { showNotification, NotificationType, getDevicesOwnedLink } from '../../utils';
 import { ICertificateViewItem, CertificateSource } from '../certificates';
 import { getCertificate } from '../certificates/sagas';
-import {
-    storeBundle,
-    BundlesActionType,
-    ICreateBundleAction,
-    showBundleDetails,
-    clearBundles
-} from '../bundles';
-import { fetchOrders } from '../orders/sagas';
 import { getUserOffchain } from '../users/selectors';
 import { IProducingDeviceState } from '../producingDevices/reducer';
 
@@ -254,7 +245,7 @@ async function initConf(
     offchainConfiguration: IOriginConfiguration,
     offChainDataSource: IOffChainDataSource,
     environmentWeb3: string
-): Promise<IStoreState['configuration']> {
+): Promise<ICoreState['configurationState']> {
     let web3: ethers.providers.JsonRpcProvider = null;
     const params = queryString.parse(routerSearch);
 
@@ -320,7 +311,7 @@ function createContractEventChannel(registry: any) {
 }
 
 function* initEventHandler() {
-    const configuration: IStoreState['configuration'] = yield select(getConfiguration);
+    const configuration: ICoreState['configurationState'] = yield select(getConfiguration);
 
     if (!configuration) {
         return;
@@ -370,33 +361,6 @@ function* findEnhancedCertificate(
     }
 
     return enhanceCertificate(asset, onChainCertificate);
-}
-
-export function* fetchBundles() {
-    yield put(clearBundles());
-    const exchangeClient: IExchangeClient = yield select(getExchangeClient);
-    const bundles: Bundle[] = yield apply(exchangeClient, exchangeClient.getAvailableBundles, null);
-    const user = yield select(getUserOffchain);
-    const ownBundles: Bundle[] =
-        user && user.status === UserStatus.Active
-            ? yield apply(exchangeClient, exchangeClient.getOwnBundles, null)
-            : [];
-    for (const bundle of bundles) {
-        bundle.own = ownBundles.find((b) => b.id === bundle.id) !== undefined;
-        bundle.items.forEach((item) => {
-            item.currentVolume = BigNumber.from(item.currentVolume.toString());
-            item.startVolume = BigNumber.from(item.startVolume.toString());
-        });
-        if (
-            bundle.items
-                .reduce((total, item) => total.add(item.currentVolume), BigNumber.from(0))
-                .isZero()
-        ) {
-            continue;
-        }
-        bundle.volume = BigNumber.from(bundle.volume.toString());
-        yield put(storeBundle(bundle));
-    }
 }
 
 export function* fetchDataAfterConfigurationChange(
@@ -457,8 +421,6 @@ export function* fetchDataAfterConfigurationChange(
             }
         }
     }
-    yield call(fetchBundles);
-    yield call(fetchOrders);
 }
 
 function* fillContractLookupIfMissing(): SagaIterator {
@@ -599,54 +561,6 @@ function* requestDeviceCreation() {
     }
 }
 
-function* requestCreateBundle() {
-    while (true) {
-        const {
-            payload: { bundleDTO, callback }
-        }: ICreateBundleAction = yield take(BundlesActionType.CREATE);
-        yield put(setLoading(true));
-        const i18n = getI18n();
-        const exchangeClient = yield select(getExchangeClient);
-        try {
-            yield apply(exchangeClient, exchangeClient.createBundle, [bundleDTO]);
-            showNotification(
-                i18n.t('certificate.feedback.bundle_created'),
-                NotificationType.Success
-            );
-        } catch (err) {
-            console.error(err);
-            showNotification(i18n.t('general.feedback.unknownError'), NotificationType.Error);
-        }
-        yield call(fetchBundles);
-        yield put(setLoading(false));
-        yield call(callback);
-    }
-}
-
-function* buyBundle() {
-    while (true) {
-        const {
-            payload: { bundleDTO }
-        } = yield take(BundlesActionType.BUY);
-        yield put(setLoading(true));
-        const i18n = getI18n();
-        const exchangeClient = yield select(getExchangeClient);
-        try {
-            yield apply(exchangeClient, exchangeClient.buyBundle, [bundleDTO]);
-            showNotification(
-                i18n.t('certificate.feedback.bundle_bought'),
-                NotificationType.Success
-            );
-        } catch (err) {
-            console.error(err);
-            showNotification(i18n.t('general.feedback.unknownError'), NotificationType.Error);
-        }
-        yield call(fetchBundles);
-        yield put(setLoading(false));
-        yield put(showBundleDetails(false));
-    }
-}
-
 export function* generalSaga(): SagaIterator {
     yield all([
         fork(showAccountChangedModalOnChange),
@@ -655,8 +569,6 @@ export function* generalSaga(): SagaIterator {
         fork(fillOffchainConfiguration),
         fork(fillContractLookupIfMissing),
         fork(updateConfigurationWhenUserChanged),
-        fork(requestDeviceCreation),
-        fork(requestCreateBundle),
-        fork(buyBundle)
+        fork(requestDeviceCreation)
     ]);
 }
