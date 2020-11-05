@@ -1,5 +1,4 @@
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const path = require('path');
 
@@ -12,7 +11,11 @@ module.exports = {
 
     resolve: {
         // Add '.ts' and '.tsx' as resolvable extensions.
-        extensions: ['.ts', '.tsx', '.js', '.json']
+        extensions: ['.ts', '.tsx', '.js', '.json'],
+        alias: {
+            "@material-ui/styles": path.join(__dirname, '../node_modules/@material-ui/styles'),
+            "react-redux": require.resolve("react-redux")
+        },
     },
 
     devServer: {
@@ -25,14 +28,6 @@ module.exports = {
         new ExtractTextPlugin({
             filename: 'styles.css',
             allChunks: true
-        }),
-        new HtmlWebpackPlugin({
-            title: 'Origin',
-            favicon: 'favicon.ico',
-            template: './src/index.ejs',
-            meta: {
-                viewport: 'width=device-width, initial-scale=1, shrink-to-fit=no'
-            }
         }),
         new CopyWebpackPlugin([{ from: 'env-config.js', to: 'env-config.js' }])
     ],
