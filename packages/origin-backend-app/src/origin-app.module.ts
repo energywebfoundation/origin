@@ -3,12 +3,14 @@ import {
     AppModule as OriginBackendModule,
     entities as OriginBackendEntities
 } from '@energyweb/origin-backend';
-import { ISmartMeterReadingsAdapter } from '@energyweb/origin-backend-core';
-import { HTTPLoggingInterceptor } from '@energyweb/origin-backend-utils';
 import {
     AppModule as IRECOrganizationModule,
     entities as IRECOrganizationEntities
 } from '@energyweb/origin-organization-irec-api';
+import { AppModule as IssuerModule, entities as IssuerEntities } from '@energyweb/issuer-api';
+
+import { ISmartMeterReadingsAdapter } from '@energyweb/origin-backend-core';
+import { HTTPLoggingInterceptor } from '@energyweb/origin-backend-utils';
 import { DynamicModule, Module } from '@nestjs/common';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -18,7 +20,12 @@ import { MailModule } from './mail';
 import { NotificationModule } from './notification/notification.module';
 
 const OriginAppTypeOrmModule = () => {
-    const entities = [...OriginBackendEntities, ...ExchangeEntities, ...IRECOrganizationEntities];
+    const entities = [
+        ...OriginBackendEntities,
+        ...ExchangeEntities,
+        ...IRECOrganizationEntities,
+        ...IssuerEntities
+    ];
 
     return process.env.DATABASE_URL
         ? TypeOrmModule.forRoot({
@@ -53,6 +60,7 @@ export class OriginAppModule {
                 IntegrationModule,
                 ExchangeModule,
                 IRECOrganizationModule,
+                IssuerModule,
                 MailModule,
                 NotificationModule
             ],

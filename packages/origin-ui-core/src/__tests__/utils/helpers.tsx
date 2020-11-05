@@ -5,7 +5,7 @@ import { routerMiddleware, ConnectedRouter } from 'connected-react-router';
 import { createRootReducer } from '../../reducers/createRootReducer';
 import { sagas } from '../../features/sagas';
 import { ReactWrapper, CommonWrapper } from 'enzyme';
-import { Compliance, Configuration } from '@energyweb/utils-general';
+import { Compliance } from '@energyweb/utils-general';
 
 import { producingDeviceCreatedOrUpdated } from '../../features/producingDevices/actions';
 import { dataTestSelector, DATE_FORMAT_DMY, moment } from '../../utils';
@@ -27,8 +27,7 @@ import {
     IOffChainDataSource,
     IPublicOrganization
 } from '@energyweb/origin-backend-core';
-import { BigNumber, Signer } from 'ethers';
-import { ICertificate, Certificate } from '@energyweb/issuer';
+import { BigNumber } from 'ethers';
 import { IProducingDeviceState } from '../../features/producingDevices/reducer';
 
 export const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
@@ -308,33 +307,12 @@ export const createProducingDevice = (
 
     return ({
         id: properties.id,
-        configuration: ({
-            blockchainProperties: ({
-                activeUser: {
-                    getAddress: async () => '0x0'
-                } as Partial<Signer>
-            } as Partial<Configuration.BlockchainProperties>) as Configuration.BlockchainProperties
-        } as Partial<Configuration.Entity>) as Configuration.Entity,
         owner: {
             address: owner
         },
         ...offChainProperties,
         meterStats
     } as Partial<IProducingDeviceState>) as IProducingDeviceState;
-};
-
-export const createCertificate = (certificate: ICertificate): Certificate => {
-    return {
-        id: certificate.id,
-        configuration: ({
-            blockchainProperties: {
-                activeUser: {
-                    getAddress: async () => '0x0'
-                } as Partial<Signer>
-            }
-        } as Partial<Configuration.Entity>) as Configuration.Entity,
-        ...certificate
-    } as Certificate;
 };
 
 interface ISetupStoreOptions {

@@ -3,17 +3,14 @@ import dotenv from 'dotenv';
 import 'mocha';
 import moment from 'moment';
 
-import { Configuration, getProviderWithFallback } from '@energyweb/utils-general';
-import { OffChainDataSourceMock } from '@energyweb/origin-backend-client-mocks';
+import { getProviderWithFallback } from '@energyweb/utils-general';
 
 import { Wallet, BigNumber } from 'ethers';
 import { migrateIssuer, migrateRegistry } from '../migrate';
-import { CertificationRequest } from '..';
-
-import { logger } from '../Logger';
+import { CertificationRequest, IBlockchainProperties } from '..';
 
 describe('Issuer', () => {
-    let conf: Configuration.Entity;
+    let blockchainProperties: IBlockchainProperties;
 
     dotenv.config({
         path: '.env.test'
@@ -31,12 +28,10 @@ describe('Issuer', () => {
     let timestamp = moment().subtract(10, 'year').unix();
 
     const setActiveUser = (wallet: Wallet) => {
-        conf.blockchainProperties.activeUser = wallet;
+        blockchainProperties.activeUser = wallet;
     };
 
     const createCertificationRequest = async (
-        energy: BigNumber,
-        isPrivate = false,
         fromTime?: number,
         toTime?: number,
         deviceId?: string,
@@ -53,24 +48,9 @@ describe('Issuer', () => {
         const certificationRequest = await CertificationRequest.create(
             generationFromTime,
             generationToTime,
-            energy,
             device,
-            conf,
-            [],
-            isPrivate,
-            forAddress,
-            (id: CertificationRequest['id']) =>
-                (conf.offChainDataSource.certificationRequestClient as any).mockBlockchainData(id, {
-                    sender: forAddress || deviceOwnerWallet.address,
-                    owner: deviceOwnerWallet.address,
-                    fromTime: generationFromTime,
-                    toTime: generationToTime,
-                    created: moment().unix(),
-                    approved: false,
-                    revoked: false,
-                    deviceId: device,
-                    isPrivate
-                })
+            blockchainProperties,
+            forAddress
         );
 
         return certificationRequest;
@@ -85,44 +65,32 @@ describe('Issuer', () => {
         const registryAddress = await issuer.getRegistryAddress();
         assert.equal(registryAddress, registry.address);
 
-        conf = {
-            blockchainProperties: {
-                activeUser: issuerWallet,
-                registry,
-                issuer
-            },
-            offChainDataSource: new OffChainDataSourceMock(),
-            logger
+        blockchainProperties = {
+            web3: provider,
+            activeUser: issuerWallet,
+            registry,
+            issuer
         };
     });
 
     it('gets all certification requests', async () => {
-        const totalVolume = BigNumber.from(1e9);
+        await createCertificationRequest();
+        await createCertificationRequest();
 
-        await createCertificationRequest(totalVolume);
-        await createCertificationRequest(totalVolume);
-
-        const allCertificationRequests = await CertificationRequest.getAll(conf);
+        const allCertificationRequests = await CertificationRequest.getAll(blockchainProperties);
         assert.equal(allCertificationRequests.length, 2);
     });
 
     it('user correctly requests issuance', async () => {
         setActiveUser(deviceOwnerWallet);
 
-        const energy = BigNumber.from(1e9);
         const fromTime = timestamp;
         // Simulate time moving forward 1 month
         timestamp += 30 * 24 * 3600;
         const toTime = timestamp;
         const device = '1';
 
-        const certificationRequest = await createCertificationRequest(
-            energy,
-            false,
-            fromTime,
-            toTime,
-            device
-        );
+        const certificationRequest = await createCertificationRequest(fromTime, toTime, device);
 
         assert.isAbove(certificationRequest.id, -1);
 
@@ -131,32 +99,23 @@ describe('Issuer', () => {
             owner: deviceOwnerWallet.address,
             fromTime,
             toTime,
-            approved: false,
-            isPrivate: false,
-            energy
+            approved: false
         } as Partial<CertificationRequest>);
     });
 
     it('issuer correctly approves issuance', async () => {
         const volume = BigNumber.from(1e9);
-        let certificationRequest = await createCertificationRequest(volume);
+        let certificationRequest = await createCertificationRequest();
 
         setActiveUser(issuerWallet);
 
-        const certificateId = await certificationRequest.approve();
-
-        (conf.offChainDataSource.certificationRequestClient as any).mockBlockchainData(
-            certificationRequest.id,
-            {
-                approved: true
-            }
-        );
+        const certificateId = await certificationRequest.approve(volume);
 
         certificationRequest = await certificationRequest.sync();
 
         assert.isTrue(certificationRequest.approved);
 
-        const deviceOwnerBalance = await conf.blockchainProperties.registry.balanceOf(
+        const deviceOwnerBalance = await blockchainProperties.registry.balanceOf(
             deviceOwnerWallet.address,
             certificateId
         );
@@ -166,8 +125,7 @@ describe('Issuer', () => {
     it('user revokes a certificationRequest', async () => {
         setActiveUser(deviceOwnerWallet);
 
-        const volume = BigNumber.from(1e9);
-        let certificationRequest = await createCertificationRequest(volume);
+        let certificationRequest = await createCertificationRequest();
 
         certificationRequest = await certificationRequest.sync();
 
@@ -176,12 +134,20 @@ describe('Issuer', () => {
 
         await certificationRequest.revoke();
 
-        (conf.offChainDataSource.certificationRequestClient as any).mockBlockchainData(
-            certificationRequest.id,
-            {
-                revoked: true
-            }
-        );
+        certificationRequest = await certificationRequest.sync();
+        assert.isTrue(certificationRequest.revoked);
+    });
+
+    it('issuer should be able to revoke a certificationRequest', async () => {
+        setActiveUser(issuerWallet);
+
+        let certificationRequest = await createCertificationRequest();
+
+        certificationRequest = await certificationRequest.sync();
+
+        assert.isFalse(certificationRequest.revoked);
+
+        await certificationRequest.revoke();
 
         certificationRequest = await certificationRequest.sync();
         assert.isTrue(certificationRequest.revoked);
@@ -191,19 +157,12 @@ describe('Issuer', () => {
         setActiveUser(deviceOwnerWallet);
 
         const volume = BigNumber.from(1e9);
-        let certificationRequest = await createCertificationRequest(volume);
+        let certificationRequest = await createCertificationRequest();
 
         setActiveUser(issuerWallet);
         certificationRequest = await certificationRequest.sync();
 
-        await certificationRequest.approve();
-
-        (conf.offChainDataSource.certificationRequestClient as any).mockBlockchainData(
-            certificationRequest.id,
-            {
-                approved: true
-            }
-        );
+        await certificationRequest.approve(volume);
 
         setActiveUser(deviceOwnerWallet);
         certificationRequest = await certificationRequest.sync();
@@ -222,27 +181,27 @@ describe('Issuer', () => {
         assert.isTrue(failed);
     });
 
-    it('should fail to request 2 certificates with the same generation period', async () => {
-        setActiveUser(deviceOwnerWallet);
+    // it('should fail to request 2 certificates with the same generation period', async () => {
+    //     setActiveUser(deviceOwnerWallet);
 
-        const fromTime = timestamp;
-        // Simulate time moving forward 1 month
-        timestamp += 30 * 24 * 3600;
-        const toTime = timestamp;
-        const device = '1';
+    //     const fromTime = timestamp;
+    //     // Simulate time moving forward 1 month
+    //     timestamp += 30 * 24 * 3600;
+    //     const toTime = timestamp;
+    //     const device = '1';
 
-        await createCertificationRequest(BigNumber.from(1e9), false, fromTime, toTime, device);
+    //     await createCertificationRequest(fromTime, toTime, device);
 
-        let failed = false;
+    //     let failed = false;
 
-        try {
-            await createCertificationRequest(BigNumber.from(1e9), false, fromTime, toTime, device);
-        } catch (e) {
-            failed = true;
-        }
+    //     try {
+    //         await createCertificationRequest(fromTime, toTime, device);
+    //     } catch (e) {
+    //         failed = true;
+    //     }
 
-        assert.isTrue(failed);
-    });
+    //     assert.isTrue(failed);
+    // });
 
     it('should request the same certificate after revoking one', async () => {
         setActiveUser(deviceOwnerWallet);
@@ -252,80 +211,52 @@ describe('Issuer', () => {
         timestamp += 30 * 24 * 3600;
         const toTime = timestamp;
         const device = '1';
-        const volume = BigNumber.from(1e9);
 
-        let certificationRequest = await createCertificationRequest(
-            volume,
-            false,
-            fromTime,
-            toTime,
-            device
-        );
+        let certificationRequest = await createCertificationRequest(fromTime, toTime, device);
 
         certificationRequest = await certificationRequest.sync();
 
         await certificationRequest.revoke();
 
-        (conf.offChainDataSource.certificationRequestClient as any).mockBlockchainData(
-            certificationRequest.id,
-            {
-                revoked: true
-            }
-        );
-
         certificationRequest = await certificationRequest.sync();
 
-        const newCertificationRequest = await createCertificationRequest(
-            volume,
-            false,
-            fromTime,
-            toTime,
-            device
-        );
+        const newCertificationRequest = await createCertificationRequest(fromTime, toTime, device);
 
         assert.exists(newCertificationRequest);
     });
 
-    it('user correctly requests private issuance', async () => {
-        const volume = BigNumber.from(1e9);
-        const certificationRequest = await createCertificationRequest(volume, true);
+    // it('user correctly requests private issuance', async () => {
+    //     const volume = BigNumber.from(1e9);
+    //     const certificationRequest = await createCertificationRequest(volume);
 
-        assert.isAbove(Number(certificationRequest.id), -1);
+    //     assert.isAbove(Number(certificationRequest.id), -1);
 
-        assert.deepOwnInclude(certificationRequest, {
-            deviceId: '1',
-            owner: deviceOwnerWallet.address,
-            approved: false,
-            isPrivate: true,
-            energy: volume
-        } as Partial<CertificationRequest>);
-    });
+    //     assert.deepOwnInclude(certificationRequest, {
+    //         deviceId: '1',
+    //         owner: deviceOwnerWallet.address,
+    //         approved: false,
+    //         energy: volume
+    //     } as Partial<CertificationRequest>);
+    // });
 
-    it('issuer correctly approves private issuance', async () => {
-        const volume = BigNumber.from(1e9);
-        let certificationRequest = await createCertificationRequest(volume, true);
+    // it('issuer correctly approves private issuance', async () => {
+    //     const volume = BigNumber.from(1e9);
+    //     let certificationRequest = await createCertificationRequest(volume);
 
-        setActiveUser(issuerWallet);
+    //     setActiveUser(issuerWallet);
 
-        const certificateId = await certificationRequest.approve();
+    //     const certificateId = await certificationRequest.approve();
 
-        (conf.offChainDataSource.certificationRequestClient as any).mockBlockchainData(
-            certificationRequest.id,
-            {
-                approved: true
-            }
-        );
+    //     certificationRequest = await certificationRequest.sync();
 
-        certificationRequest = await certificationRequest.sync();
+    //     assert.isTrue(certificationRequest.approved);
 
-        assert.isTrue(certificationRequest.approved);
-
-        const deviceOwnerBalance = await conf.blockchainProperties.registry.balanceOf(
-            deviceOwnerWallet.address,
-            Number(certificateId)
-        );
-        assert.equal(deviceOwnerBalance.toString(), '0');
-    });
+    //     const deviceOwnerBalance = await blockchainProperties.registry.balanceOf(
+    //         deviceOwnerWallet.address,
+    //         Number(certificateId)
+    //     );
+    //     assert.equal(deviceOwnerBalance.toString(), '0');
+    // });
 
     it('should be able to request for other address', async () => {
         setActiveUser(deviceOwnerWallet);
@@ -335,11 +266,8 @@ describe('Issuer', () => {
         timestamp += 30 * 24 * 3600;
         const toTime = timestamp;
         const device = '1';
-        const volume = BigNumber.from(1e9);
 
         const certificationRequest = await createCertificationRequest(
-            volume,
-            false,
             fromTime,
             toTime,
             device,

@@ -11,4 +11,14 @@ export interface ISuccessResponse {
     message?: string;
 }
 
+export const ResponseSuccess = (message?: string): ISuccessResponse => ({
+    success: true,
+    message
+});
+
+export const ResponseFailure = (message?: string): ISuccessResponse => ({
+    success: false,
+    message
+});
+
 export type onUploadProgressFunction = (progressEvent: ProgressEvent) => void;

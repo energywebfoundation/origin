@@ -7,7 +7,6 @@ import {
     setOffChainDataSource,
     setExchangeClient,
     setOffchainConfiguration,
-    setError,
     setLoading,
     IRequestDeviceCreationAction,
     setIRecClient
@@ -23,43 +22,49 @@ import { OffChainDataSource } from '@energyweb/origin-backend-client';
 import {
     ExchangeClient,
     IExchangeClient,
+    Bundle,
     ExchangeAccount,
     AccountAsset
 } from '../../utils/exchange';
 import { IRecClient } from '../../utils/irec';
 import {
     IOriginConfiguration,
-    IUser,
     IOffChainDataSource,
-    UserStatus
+    UserStatus,
+    IUser
 } from '@energyweb/origin-backend-core';
+import { BigNumber, ethers } from 'ethers';
 import {
-    setActiveBlockchainAccountAddress,
-    UsersActions,
-    ISetActiveBlockchainAccountAddressAction
-} from '../users/actions';
-import { ethers, BigNumber } from 'ethers';
+    CertificationRequestsClient,
+    Configuration as ClientConfiguration,
+    CertificatesClient
+} from '@energyweb/issuer-api-client';
+
+import { setActiveBlockchainAccountAddress } from '../users/actions';
 import { getSearch, push } from 'connected-react-router';
-import { getConfiguration, getBaseURL, getWeb3 } from '../selectors';
+import { getConfiguration, getBaseURL } from '../selectors';
 import * as queryString from 'query-string';
 import * as Winston from 'winston';
-import { Certificate, Contracts, CertificateUtils, ICertificate } from '@energyweb/issuer';
 import { Configuration, DeviceTypeService } from '@energyweb/utils-general';
 import { configurationUpdated } from '../actions';
 import { ProducingDevice } from '@energyweb/device-registry';
 import { producingDeviceCreatedOrUpdated } from '../producingDevices/actions';
-import {
-    addCertificate,
-    requestCertificateEntityFetch,
-    updateCertificate
-} from '../certificates/actions';
-import { ICoreState } from '../../types';
 import { getI18n } from 'react-i18next';
 import { showNotification, NotificationType, getDevicesOwnedLink } from '../../utils';
-import { ICertificateViewItem, CertificateSource } from '../certificates';
+import {
+    ICertificateViewItem,
+    CertificateSource,
+    ICertificate,
+    updateCertificate,
+    addCertificate,
+    setCertificatesClient,
+    setCertificationRequestsClient
+} from '../certificates';
 import { getCertificate } from '../certificates/sagas';
 import { getUserOffchain } from '../users/selectors';
 import { IProducingDeviceState } from '../producingDevices/reducer';
+import { getCertificatesClient } from '../certificates/selectors';
+import { certificateEnergyStringToBN } from '../../utils/certificates';
 
 function createEthereumProviderAccountsChangedEventChannel(ethereumProvider: any) {
     return eventChannel<string[]>((emitter) => {
@@ -204,16 +209,27 @@ function* initializeOffChainDataSource(): SagaIterator {
                 )
             })
         );
+
+        const clientConfiguration = new ClientConfiguration({
+            baseOptions: {
+                headers: {
+                    Authorization: `Bearer ${newOffChainDataSource.requestClient.authenticationToken}`
+                }
+            },
+            accessToken: newOffChainDataSource.requestClient.authenticationToken
+        });
+        const backendUrl = `${environment.BACKEND_URL}:${environment.BACKEND_PORT}`;
+
+        yield put(setCertificatesClient(new CertificatesClient(clientConfiguration, backendUrl)));
+        yield put(
+            setCertificationRequestsClient(
+                new CertificationRequestsClient(clientConfiguration, backendUrl)
+            )
+        );
     }
 }
 
-enum ERROR {
-    WRONG_NETWORK_OR_CONTRACT_ADDRESS = "Please make sure you've chosen correct blockchain network and the contract address is valid."
-}
-
 function createConfiguration(
-    account: string,
-    web3: ethers.providers.JsonRpcProvider,
     offchainConfiguration: IOriginConfiguration,
     offChainDataSource: IOffChainDataSource,
     logger: Winston.Logger = Winston.createLogger({
@@ -222,136 +238,38 @@ function createConfiguration(
         transports: [new Winston.transports.Console({ level: 'silly' })]
     })
 ) {
-    const signer = web3.getSigner(account);
-    const { contractsLookup } = offchainConfiguration;
-
-    const blockchainProperties: Configuration.BlockchainProperties = {
-        registry: Contracts.factories.RegistryFactory.connect(contractsLookup.registry, signer),
-        issuer: Contracts.factories.IssuerFactory.connect(contractsLookup.issuer, signer),
-        web3,
-        activeUser: signer
-    };
-
     return {
-        blockchainProperties,
         offChainDataSource,
         logger,
         deviceTypeService: new DeviceTypeService(offchainConfiguration.deviceTypes)
     };
 }
 
-async function initConf(
-    routerSearch: string,
-    offchainConfiguration: IOriginConfiguration,
-    offChainDataSource: IOffChainDataSource,
-    environmentWeb3: string
-): Promise<ICoreState['configurationState']> {
-    let web3: ethers.providers.JsonRpcProvider = null;
-    const params = queryString.parse(routerSearch);
-
-    const ethereumProvider = (window as any).ethereum;
-
-    if (params.rpc) {
-        web3 = new ethers.providers.JsonRpcProvider(params.rpc as string);
-    } else if (ethereumProvider) {
-        web3 = new ethers.providers.Web3Provider(ethereumProvider);
-        try {
-            // Request account access if needed
-            await ethereumProvider.enable();
-        } catch (error) {
-            // User denied account access...
-        }
-    } else if ((window as any).web3) {
-        web3 = new ethers.providers.Web3Provider((window as any).web3.currentProvider);
-    } else if (environmentWeb3) {
-        web3 = new ethers.providers.JsonRpcProvider(environmentWeb3);
-    }
-
-    const accounts = await web3.listAccounts();
-
-    return createConfiguration(accounts[0], web3, offchainConfiguration, offChainDataSource);
-}
-
-function createContractEventChannel(registry: any) {
-    return eventChannel<BigNumber[]>((emitter) => {
-        const onClaimSingle = (
-            claimIssuer: string,
-            claimSubject: string,
-            topic: BigNumber,
-            id: BigNumber
-        ) => {
-            emitter([id]);
-        };
-
-        const onClaimBatch = (
-            claimIssuer: string,
-            claimSubject: string,
-            topics: BigNumber[],
-            ids: BigNumber[]
-        ) => {
-            emitter(ids);
-        };
-
-        const onIssuanceSingle = async (sender: string, topic: BigNumber, id: BigNumber) => {
-            emitter([id]);
-        };
-
-        registry
-            .on('ClaimSingle', onClaimSingle)
-            .on('ClaimBatch', onClaimBatch)
-            .on('IssuanceSingle', onIssuanceSingle);
-
-        return () => {
-            registry
-                .off('ClaimSingle', onClaimSingle)
-                .off('ClaimBatch', onClaimBatch)
-                .off('IssuanceSingle', onIssuanceSingle);
-        };
-    });
-}
-
-function* initEventHandler() {
-    const configuration: ICoreState['configurationState'] = yield select(getConfiguration);
-
-    if (!configuration) {
-        return;
-    }
-
-    const channel: EventChannel<BigNumber> = yield call(
-        createContractEventChannel,
-        configuration.blockchainProperties.registry
-    );
-
-    while (true) {
-        const certificateIds: BigNumber[] = yield take(channel);
-
-        for (const id of certificateIds) {
-            if (id) {
-                yield put(requestCertificateEntityFetch(id?.toNumber()));
-            }
-        }
-    }
-}
-
 export function enhanceCertificate(
-    { asset, amount }: AccountAsset,
-    onChainCertificate: ICertificate
+    certificate: ICertificate,
+    userId: string,
+    accountAsset?: AccountAsset
 ): ICertificateViewItem {
+    const isCertificateOnExchange = accountAsset !== undefined;
+
     return {
-        ...onChainCertificate,
-        energy: {
-            publicVolume: BigNumber.from(amount),
-            privateVolume: BigNumber.from(0),
-            claimedVolume: BigNumber.from(0)
-        },
-        source: CertificateSource.Exchange,
-        assetId: asset.id
+        ...certificate,
+        energy: isCertificateOnExchange
+            ? {
+                  publicVolume: BigNumber.from(accountAsset.amount),
+                  privateVolume: BigNumber.from(0),
+                  claimedVolume: BigNumber.from(0)
+              }
+            : certificateEnergyStringToBN(certificate.energy),
+        source: isCertificateOnExchange ? CertificateSource.Exchange : CertificateSource.Blockchain,
+        assetId: accountAsset?.asset?.id
     };
 }
 
-function* findEnhancedCertificate(
+function* findEnhancedExchangeCertificate(
     asset: AccountAsset,
-    onChainCertificates: ICertificateViewItem[]
+    onChainCertificates: ICertificateViewItem[],
+    userId: string
 ) {
     const certificateId = parseInt(asset.asset.tokenId, 10);
     let onChainCertificate = onChainCertificates.find((c) => c.id === certificateId);
@@ -360,7 +278,7 @@ function* findEnhancedCertificate(
         onChainCertificate = yield call(getCertificate, certificateId);
     }
 
-    return enhanceCertificate(asset, onChainCertificate);
+    return enhanceCertificate(onChainCertificate, userId, asset);
 }
 
 export function* fetchDataAfterConfigurationChange(
@@ -380,28 +298,15 @@ export function* fetchDataAfterConfigurationChange(
     if (user) {
         const { blockchainAccountAddress, status }: IUser = user;
         if (status === UserStatus.Active) {
-            const web3: ethers.providers.Web3Provider = yield select(getWeb3);
-            const activeUser = web3.getSigner(blockchainAccountAddress);
-            const onChainCertificates: Certificate[] = yield apply(
-                Certificate,
-                CertificateUtils.getAllOwnedCertificates,
-                [
-                    {
-                        ...configuration,
-                        blockchainProperties: { ...configuration.blockchainProperties, activeUser }
-                    }
-                ]
+            const certificatesClient: CertificatesClient = yield select(getCertificatesClient);
+            const allCertificates: ICertificate[] = (yield apply(
+                certificatesClient,
+                certificatesClient.getAll,
+                []
+            )).data;
+            const enrichedCertificates = allCertificates.map(
+                (c): ICertificateViewItem => enhanceCertificate(c, blockchainAccountAddress)
             );
-            const initializedCertificates = onChainCertificates
-                .filter((cert) => cert.initialized)
-                .map(
-                    (c): ICertificateViewItem => ({
-                        ...c,
-                        isClaimed: c.isClaimed,
-                        isOwned: c.isOwned,
-                        source: CertificateSource.Blockchain
-                    })
-                );
 
             const exchangeClient: IExchangeClient = yield select(getExchangeClient);
 
@@ -412,10 +317,15 @@ export function* fetchDataAfterConfigurationChange(
             );
             const available = yield all(
                 offChainCertificates.balances.available.map((asset) =>
-                    call(findEnhancedCertificate, asset, initializedCertificates)
+                    call(
+                        findEnhancedExchangeCertificate,
+                        asset,
+                        enrichedCertificates,
+                        blockchainAccountAddress
+                    )
                 )
             );
-            const certificates = initializedCertificates.concat(available);
+            const certificates = enrichedCertificates.concat(available);
             for (const certificate of certificates) {
                 yield put(update ? updateCertificate(certificate) : addCertificate(certificate));
             }
@@ -423,7 +333,7 @@ export function* fetchDataAfterConfigurationChange(
     }
 }
 
-function* fillContractLookupIfMissing(): SagaIterator {
+function* initializeEnvironment(): SagaIterator {
     while (true) {
         yield take([
             GeneralActions.setEnvironment,
@@ -439,32 +349,39 @@ function* fillContractLookupIfMissing(): SagaIterator {
             continue;
         }
 
-        if (!offchainConfiguration.contractsLookup) {
-            yield put(setError(ERROR.WRONG_NETWORK_OR_CONTRACT_ADDRESS));
-            yield put(setLoading(false));
-
-            continue;
-        }
-
-        const routerSearch: string = yield select(getSearch);
-
-        const configuration = yield call(
-            initConf,
-            routerSearch,
+        const configuration: Configuration.Entity = yield call(
+            createConfiguration,
             offchainConfiguration,
-            offChainDataSource,
-            environment.WEB3
+            offChainDataSource
         );
 
         yield put(configurationUpdated(configuration));
 
-        let userAddress: string;
         try {
-            userAddress = yield apply(
-                configuration.blockchainProperties.activeUser,
-                configuration.blockchainProperties.activeUser.getAddress,
-                []
-            );
+            let web3: ethers.providers.JsonRpcProvider = null;
+            const routerSearch: string = yield select(getSearch);
+            const params = queryString.parse(routerSearch);
+
+            const ethereumProvider = (window as any).ethereum;
+
+            if (params.rpc) {
+                web3 = new ethers.providers.JsonRpcProvider(params.rpc as string);
+            } else if (ethereumProvider) {
+                web3 = new ethers.providers.Web3Provider(ethereumProvider);
+                try {
+                    // Request account access if needed
+                    yield call(ethereumProvider.enable);
+                } catch (error) {
+                    // User denied account access...
+                    console.error({ metaMaskError: error });
+                }
+            } else if ((window as any).web3) {
+                web3 = new ethers.providers.Web3Provider((window as any).web3.currentProvider);
+            } else if (environment.WEB3) {
+                web3 = new ethers.providers.JsonRpcProvider(environment.WEB3);
+            }
+
+            const [userAddress] = yield apply(web3, web3.listAccounts, []);
 
             yield put(setActiveBlockchainAccountAddress(userAddress));
         } catch (error) {
@@ -477,53 +394,9 @@ function* fillContractLookupIfMissing(): SagaIterator {
         yield put(setLoading(false));
         try {
             yield call(fetchDataAfterConfigurationChange, configuration);
-            yield call(initEventHandler);
         } catch (error) {
-            console.error('fillContractLookupIfMissing() error', error);
+            console.error('initializeEnvironment() error', error);
         }
-    }
-}
-
-function* updateConfigurationWhenUserChanged(): SagaIterator {
-    while (true) {
-        const { payload: address }: ISetActiveBlockchainAccountAddressAction = yield take(
-            UsersActions.setActiveBlockchainAccountAddress
-        );
-
-        const existingConfiguration: Configuration.Entity = yield select(getConfiguration);
-        const offchainConfiguration: IOriginConfiguration = yield select(getOffchainConfiguration);
-
-        if (
-            !existingConfiguration ||
-            !offchainConfiguration ||
-            !existingConfiguration?.blockchainProperties?.activeUser
-        ) {
-            continue;
-        }
-
-        const existingSignerAddress: string = yield call([
-            existingConfiguration?.blockchainProperties?.activeUser,
-            existingConfiguration?.blockchainProperties?.activeUser?.getAddress
-        ]);
-
-        if (address?.toLowerCase() === existingSignerAddress?.toLowerCase()) {
-            continue;
-        }
-
-        const web3 = existingConfiguration?.blockchainProperties?.web3;
-        const offChainDataSource = existingConfiguration?.offChainDataSource;
-
-        const newConfiguration: Configuration.Entity = yield call(
-            createConfiguration,
-            address,
-            web3 as ethers.providers.JsonRpcProvider,
-            offchainConfiguration,
-            offChainDataSource,
-            existingConfiguration.logger
-        );
-
-        yield put(configurationUpdated(newConfiguration));
-        yield call(fetchDataAfterConfigurationChange, newConfiguration, true);
     }
 }
 
@@ -567,8 +440,7 @@ export function* generalSaga(): SagaIterator {
         fork(setupEnvironment),
         fork(initializeOffChainDataSource),
         fork(fillOffchainConfiguration),
-        fork(fillContractLookupIfMissing),
-        fork(updateConfigurationWhenUserChanged),
-        fork(requestDeviceCreation)
+        fork(initializeEnvironment),
+        fork(requestDeviceCreation),
     ]);
 }

@@ -1,6 +1,5 @@
 import { IsUUID, Validate } from 'class-validator';
-
-import { PositiveBNStringValidator } from '../../utils/positiveBNStringValidator';
+import { PositiveBNStringValidator } from '@energyweb/origin-backend-utils';
 
 export class BuyBundleDTO {
     @IsUUID()

@@ -1,6 +1,5 @@
 import { providers } from 'ethers';
-import { Contracts as IssuerContracts } from '@energyweb/issuer';
-import { IContractsLookup } from '@energyweb/origin-backend-core';
+import { Contracts as IssuerContracts, IContractsLookup } from '@energyweb/issuer';
 
 export async function deployContracts(
     provider: providers.FallbackProvider

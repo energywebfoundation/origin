@@ -22,8 +22,11 @@ import {
 } from '../../utils';
 import { Skeleton } from '@material-ui/lab';
 import { getOffChainDataSource, getEnvironment } from '../../features/general/selectors';
-import { CertificationRequest } from '@energyweb/issuer';
-import { requestCertificateApproval } from '../../features/certificates';
+import {
+    getCertificationRequestsClient,
+    ICertificationRequest,
+    requestCertificateApproval
+} from '../../features/certificates';
 import { downloadFile } from '../Organization/DownloadDocuments';
 
 interface IProps {
@@ -31,7 +34,7 @@ interface IProps {
 }
 
 interface IRecord {
-    request: CertificationRequest;
+    request: ICertificationRequest;
     device: ProducingDevice.Entity;
 }
 
@@ -41,6 +44,9 @@ export function CertificationRequestsTable(props: IProps) {
     const producingDevices = useSelector(getProducingDevices);
     const offChainDataSource = useSelector(getOffChainDataSource);
     const environment = useSelector(getEnvironment);
+
+    const certificationRequestsClient = useSelector(getCertificationRequestsClient);
+
     const { t } = useTranslation();
 
     const dispatch = useDispatch();
@@ -57,13 +63,19 @@ export function CertificationRequestsTable(props: IProps) {
         }
         let newPaginatedData: IRecord[] = [];
         const isIssuer = isRole(user, Role.Issuer);
+
         try {
-            const requests = await CertificationRequest.getAll(configuration);
+            const { data: requests } = await certificationRequestsClient.getAll();
 
             for (const request of requests) {
                 const requestDevice = producingDevices.find(
                     // eslint-disable-next-line no-loop-func
-                    (device) => device.id?.toString() === request.deviceId
+                    (device) =>
+                        device.externalDeviceIds.some(
+                            (deviceExternalId) =>
+                                deviceExternalId.id === request.deviceId &&
+                                deviceExternalId.type === environment.ISSUER_ID
+                        )
                 );
 
                 if (
@@ -72,6 +84,7 @@ export function CertificationRequestsTable(props: IProps) {
                 ) {
                     continue;
                 }
+
                 newPaginatedData.push({
                     request,
                     device: requestDevice
@@ -112,7 +125,7 @@ export function CertificationRequestsTable(props: IProps) {
 
         dispatch(
             requestCertificateApproval({
-                certificationRequest,
+                certificationRequestId: certificationRequest.id,
                 callback: () => {
                     removeItem(rowIndex);
                 }

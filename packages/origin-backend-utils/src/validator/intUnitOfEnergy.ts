@@ -9,7 +9,7 @@ export class IntUnitsOfEnergy implements ValidatorConstraintInterface {
     private energyPerUnit: BN;
 
     constructor(private readonly configService: ConfigService) {
-        this.energyPerUnit = new BN(this.configService.get<string>('ENERGY_PER_UNIT'));
+        this.energyPerUnit = new BN(this.configService.get<string>('ENERGY_PER_UNIT') ?? 1);
     }
 
     validate(volume: string) {

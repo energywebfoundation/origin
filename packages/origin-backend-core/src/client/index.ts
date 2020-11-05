@@ -4,11 +4,6 @@ import {
     UserUpdateData,
     IUserFilter,
     IUser,
-    IOwnershipCommitmentProofWithTx,
-    CommitmentStatus,
-    CertificationRequestUpdateData,
-    CertificationRequestValidationData,
-    ICertificationRequest,
     ISuccessResponse,
     UserLoginReturnData,
     UserRegisterReturnData,
@@ -44,14 +39,6 @@ export interface IConfigurationClient {
     update(configuration: Partial<IOriginConfiguration>): Promise<boolean>;
 }
 
-export interface ICertificateClient {
-    getOwnershipCommitment(certificateId: number): Promise<IOwnershipCommitmentProofWithTx>;
-    addOwnershipCommitment(
-        certificateId: number,
-        data: IOwnershipCommitmentProofWithTx
-    ): Promise<CommitmentStatus>;
-}
-
 export interface IRequestClient {
     authenticationToken: string;
 
@@ -80,13 +67,6 @@ export interface IRequestClient {
     generateCancelToken(): CancelTokenSource;
 
     config: { headers?: any };
-}
-
-export interface ICertificationRequestClient {
-    queueCertificationRequestData(data: CertificationRequestUpdateData): Promise<boolean>;
-    validateGenerationPeriod(data: CertificationRequestValidationData): Promise<ISuccessResponse>;
-    getCertificationRequest(id: ICertificationRequest['id']): Promise<ICertificationRequest>;
-    getAllCertificationRequests(): Promise<ICertificationRequest[]>;
 }
 
 export interface IUserClient {
@@ -165,8 +145,5 @@ export interface IOffChainDataSource {
     filesClient: IFilesClient;
     adminClient: IAdminClient;
     invitationClient: IInvitationClient;
-
-    certificateClient?: ICertificateClient;
-    certificationRequestClient?: ICertificationRequestClient;
     deviceClient?: IDeviceClient;
 }

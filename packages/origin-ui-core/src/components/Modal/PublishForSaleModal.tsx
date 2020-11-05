@@ -21,7 +21,7 @@ import { requestPublishForSale, resyncCertificate } from '../../features/certifi
 import { ICertificateViewItem } from '../../features/certificates/types';
 import { getCurrencies } from '../../features/general/selectors';
 import { getUserOffchain } from '../../features/users/selectors';
-import { countDecimals, EnergyFormatter, formatDate } from '../../utils';
+import { countDecimals, EnergyFormatter, formatDate, useTranslation } from '../../utils';
 import { getEnvironment } from '../../features';
 import { IEnvironment } from '../../features/general';
 
@@ -34,6 +34,8 @@ interface IProps {
 
 export function PublishForSaleModal(props: IProps) {
     const { certificate, callback, producingDevice, showModal } = props;
+
+    const { t } = useTranslation();
 
     const currencies = useSelector(getCurrencies);
     const user = useSelector(getUserOffchain);
@@ -210,10 +212,10 @@ export function PublishForSaleModal(props: IProps) {
             </DialogContent>
             <DialogActions>
                 <Button onClick={handleClose} color="secondary">
-                    Cancel
+                    {t('general.actions.cancel')}
                 </Button>
                 <Button onClick={publishForSale} color="primary" disabled={!isFormValid}>
-                    Publish for sale
+                    {t('certificate.actions.publishForSale')}
                 </Button>
             </DialogActions>
         </Dialog>

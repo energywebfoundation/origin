@@ -16,9 +16,8 @@ import {
     InputAdornment,
     makeStyles
 } from '@material-ui/core';
-import { Edit, HighlightOff } from '@material-ui/icons';
-import { ICertificateEnergy } from '../../../../issuer/src';
-import variables from '../../styles/variables.scss';
+import { ICertificateEnergy, ICertificateViewItem } from '../../features/certificates';
+import { BigNumber } from 'ethers';
 import {
     energyImageByType,
     moment,

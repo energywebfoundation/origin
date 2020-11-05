@@ -41,8 +41,6 @@ cache:
 before_install:
     - sh scripts/restore-original-timestamps.sh
     - git fetch origin master:master
-
-before_script:
     - psql -c 'create database origin;' -U postgres
 
 before_deploy:

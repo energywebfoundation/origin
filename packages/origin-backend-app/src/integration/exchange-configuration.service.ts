@@ -1,5 +1,6 @@
 import { IExchangeConfigurationService } from '@energyweb/exchange';
 import { ConfigurationService } from '@energyweb/origin-backend';
+import { BlockchainPropertiesService } from '@energyweb/issuer-api';
 import { IDeviceType } from '@energyweb/origin-backend-core';
 import { Injectable } from '@nestjs/common';
 import { ModuleRef } from '@nestjs/core';
@@ -7,6 +8,8 @@ import { ModuleRef } from '@nestjs/core';
 @Injectable()
 export class ExchangeConfigurationService implements IExchangeConfigurationService {
     private _configService: ConfigurationService;
+
+    private _blockchainPropertiesService: BlockchainPropertiesService;
 
     constructor(private readonly moduleRef: ModuleRef) {}
 
@@ -22,6 +25,21 @@ export class ExchangeConfigurationService implements IExchangeConfigurationServi
         return this._configService;
     }
 
+    private get blockchainPropertiesService() {
+        if (this._blockchainPropertiesService) {
+            return this._blockchainPropertiesService;
+        }
+
+        this._blockchainPropertiesService = this.moduleRef.get<BlockchainPropertiesService>(
+            BlockchainPropertiesService,
+            {
+                strict: false
+            }
+        );
+
+        return this._blockchainPropertiesService;
+    }
+
     public async getDeviceTypes(): Promise<IDeviceType[]> {
         const { deviceTypes } = await this.configService.get();
         return deviceTypes;
@@ -33,12 +51,12 @@ export class ExchangeConfigurationService implements IExchangeConfigurationServi
     }
 
     public async getRegistryAddress(): Promise<string> {
-        const { contractsLookup } = await this.configService.get();
-        return contractsLookup.registry;
+        const { registry } = await this.blockchainPropertiesService.get();
+        return registry;
     }
 
     public async getIssuerAddress(): Promise<string> {
-        const { contractsLookup } = await this.configService.get();
-        return contractsLookup.issuer;
+        const { issuer } = await this.blockchainPropertiesService.get();
+        return issuer;
     }
 }

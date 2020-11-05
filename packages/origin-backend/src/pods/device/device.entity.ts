@@ -1,9 +1,8 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, OneToMany } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
 import { IsInt, Min, IsLatitude, IsLongitude, IsNotEmpty } from 'class-validator';
 import { ISmartMeterRead, IExternalDeviceId, IDevice } from '@energyweb/origin-backend-core';
 import { ExtendedBaseEntity } from '@energyweb/origin-backend-utils';
 import { Organization } from '../organization/organization.entity';
-import { CertificationRequest } from '../certification-request/certification-request.entity';
 
 @Entity()
 export class Device extends ExtendedBaseEntity implements IDevice {
@@ -86,9 +85,6 @@ export class Device extends ExtendedBaseEntity implements IDevice {
 
     @Column({ nullable: true })
     gridOperator: string;
-
-    @OneToMany(() => CertificationRequest, (certificationRequest) => certificationRequest.device)
-    certificationRequests: CertificationRequest[];
 
     @Column({ nullable: true })
     defaultAskPrice: number;

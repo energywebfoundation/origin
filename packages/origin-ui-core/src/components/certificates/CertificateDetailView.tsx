@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { CertificationRequest, CertificateUtils } from '@energyweb/issuer';
 import { ProducingDeviceDetailView } from '../devices/ProducingDeviceDetailView';
 import { useSelector } from 'react-redux';
 import { utils } from 'ethers';
-import { getConfiguration, getProducingDevices } from '../../features/selectors';
-import { getCertificates } from '../../features/certificates/selectors';
+import { getProducingDevices } from '../../features/selectors';
+import {
+    getCertificates,
+    getCertificatesClient,
+    getCertificationRequestsClient
+} from '../../features/certificates/selectors';
 import { deduplicate } from '../../utils/helper';
 import { formatDate } from '../../utils/time';
 import { Skeleton } from '@material-ui/lab';
@@ -12,7 +15,6 @@ import { makeStyles, createStyles, useTheme } from '@material-ui/core';
 import { getEnvironment, getExchangeClient } from '../../features/general/selectors';
 import { EnergyFormatter, useTranslation } from '../../utils';
 import { ProducingDevice } from '@energyweb/device-registry';
-import { getUserOffchain } from '../../features/users/selectors';
 
 interface IProps {
     id: number;
@@ -30,12 +32,12 @@ export function CertificateDetailView(props: IProps) {
 
     const { id } = props;
 
-    const user = useSelector(getUserOffchain);
     const certificates = useSelector(getCertificates);
     const producingDevices = useSelector(getProducingDevices);
-    const configuration = useSelector(getConfiguration);
     const environment = useSelector(getEnvironment);
     const exchangeClient = useSelector(getExchangeClient);
+    const certificatesClient = useSelector(getCertificatesClient);
+    const certificationRequestsClient = useSelector(getCertificationRequestsClient);
 
     const [events, setEvents] = useState<IEnrichedEvent[]>([]);
 
@@ -53,13 +55,10 @@ export function CertificateDetailView(props: IProps) {
         id !== null && typeof id !== 'undefined' && certificates.find((c) => c.id === id);
 
     async function enrichEvent() {
-        const allCertificateEvents = await CertificateUtils.getAllCertificateEvents(
-            selectedCertificate.id,
-            configuration
+        const { data: allCertificateEvents } = await certificatesClient.getAllEvents(
+            selectedCertificate.id
         );
-
         const { address: exchangeDepositAddress } = await exchangeClient.getAccount();
-        const { issuer, registry } = configuration.blockchainProperties;
 
         const transformAddress = (address: string) => {
             switch (utils.getAddress(address)) {
@@ -67,16 +66,12 @@ export function CertificateDetailView(props: IProps) {
                     return t('certificate.event.participants.exchange.wallet');
                 case exchangeDepositAddress:
                     return t('certificate.event.participants.exchange.depositAddress');
-                case issuer.address:
-                    return t('certificate.event.participants.issuerContract');
-                case registry.address:
-                    return t('certificate.event.participants.registryContract');
                 default:
                     return address;
             }
         };
 
-        const jointEvents = allCertificateEvents.map(async (event) => {
+        const jointEvents = allCertificateEvents.map(async (event: any) => {
             let label: string;
             let description: string;
 
@@ -87,23 +82,23 @@ export function CertificateDetailView(props: IProps) {
 
                     break;
                 case 'TransferSingle':
-                    if (event.values._from === '0x0000000000000000000000000000000000000000') {
+                    if (event._from === '0x0000000000000000000000000000000000000000') {
                         label = t('certificate.event.name.initialOwner');
-                        description = transformAddress(event.values._to);
+                        description = transformAddress(event._to);
                     } else {
                         label = t('certificate.event.name.changedOwnership');
                         description = t('certificate.event.description.transferred', {
-                            amount: EnergyFormatter.format(event.values._value, true),
-                            newOwner: transformAddress(event.values._to),
-                            oldOwner: transformAddress(event.values._from)
+                            amount: EnergyFormatter.format(event._value, true),
+                            newOwner: transformAddress(event._to),
+                            oldOwner: transformAddress(event._from)
                         });
                     }
                     break;
                 case 'ClaimSingle':
                     label = t('certificate.event.name.claimed');
                     description = t('certificate.event.description.claimed', {
-                        amount: EnergyFormatter.format(event.values._value, true),
-                        claimer: transformAddress(event.values._claimIssuer)
+                        amount: EnergyFormatter.format(event._value, true),
+                        claimer: transformAddress(event._claimIssuer)
                     });
                     break;
 
@@ -121,9 +116,8 @@ export function CertificateDetailView(props: IProps) {
 
         const resolvedEvents = await Promise.all(jointEvents);
 
-        const request = await CertificationRequest.fetch(
-            selectedCertificate.certificationRequestId,
-            configuration
+        const { data: request } = await certificationRequestsClient.getByCertificate(
+            selectedCertificate.id
         );
 
         if (request) {
@@ -199,8 +193,6 @@ export function CertificateDetailView(props: IProps) {
             </p>
         ));
 
-        const { publicVolume, privateVolume, claimedVolume } = selectedCertificate.energy;
-
         data = [
             [
                 {
@@ -210,7 +202,7 @@ export function CertificateDetailView(props: IProps) {
                 {
                     label: t('certificate.properties.claimed'),
                     data: selectedCertificate.isClaimed
-                        ? publicVolume.add(privateVolume).gt(0)
+                        ? selectedCertificate.isOwned
                             ? t('general.responses.partially')
                             : t('general.responses.yes')
                         : t('general.responses.no')
@@ -231,7 +223,7 @@ export function CertificateDetailView(props: IProps) {
                             ? t('certificate.properties.remainingEnergy')
                             : t('certificate.properties.certifiedEnergy')
                     } (${EnergyFormatter.displayUnit})`,
-                    data: EnergyFormatter.format(publicVolume.add(privateVolume))
+                    data: EnergyFormatter.format(selectedCertificate.energy.publicVolume)
                 },
                 {
                     label: t('certificate.properties.generationDateStart'),
@@ -253,24 +245,21 @@ export function CertificateDetailView(props: IProps) {
         ];
 
         if (selectedCertificate.isClaimed) {
-            const claimData = selectedCertificate.claims.find(
-                (claim) =>
-                    utils.getAddress(claim.to) === utils.getAddress(user.blockchainAccountAddress)
-            )?.claimData;
+            const [claim] = selectedCertificate.myClaims;
 
             const claimInfo = [
                 {
                     label: `${t('certificate.properties.claimedEnergy')} (${
                         EnergyFormatter.displayUnit
                     })`,
-                    data: EnergyFormatter.format(claimedVolume)
+                    data: EnergyFormatter.format(selectedCertificate.energy.claimedVolume)
                 }
             ];
 
-            if (claimData) {
+            if (claim.claimData) {
                 claimInfo.push({
                     label: t('certificate.properties.claimBeneficiary'),
-                    data: Object.values(claimData)
+                    data: Object.values(claim.claimData)
                         .filter((value) => value !== '')
                         .join(', ')
                 });

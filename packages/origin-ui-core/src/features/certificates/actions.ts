@@ -1,9 +1,8 @@
 import { ProducingDevice } from '@energyweb/device-registry';
-import { Certificate, CertificationRequest, IClaimData } from '@energyweb/issuer';
+import { Certificate, IClaimData } from '@energyweb/issuer';
+import { CertificatesClient, CertificationRequestsClient } from '@energyweb/issuer-api-client';
 import { BigNumber } from 'ethers';
-
-import { ICertificateViewItem, CertificateSource } from '.';
-import { ICoreState } from '../../types';
+import { CertificateSource, ICertificateViewItem, ICertificationRequest } from './types';
 
 export enum CertificatesActions {
     addCertificate = 'CERTIFICATE_CREATED',
@@ -14,7 +13,6 @@ export enum CertificatesActions {
     setRequestCertificatesModalVisibility = 'SET_REQUEST_CERTIFICATES_MODAL_VISIBILITY',
     hideRequestCertificatesModal = 'HIDE_REQUEST_CERTIFICATES_MODAL',
     requestCertificateEntityFetch = 'REQUEST_CERTIFICATE_ENTITY_FETCH',
-    updateFetcher = 'CERTIFICATES_UPDATE_FETCHER',
     requestPublishForSale = 'CERTIFICATES_REQUEST_PUBLISH_FOR_SALE',
     requestClaimCertificate = 'CERTIFICATES_REQUEST_CLAIM_CERTIFICATE',
     requestClaimCertificateBulk = 'CERTIFICATES_REQUEST_CLAIM_CERTIFICATE_BULK',
@@ -22,7 +20,9 @@ export enum CertificatesActions {
     withdrawCertificate = 'CERTIFICATES_REQUEST_CERTIFICATE_WITHDRAWAL',
     requestDepositCertificate = 'CERTIFICATES_REQUEST_CERTIFICATE_DEPOSIT',
     clearCertificates = 'CERTIFICATES_CLEAR_CERTIFICATES',
-    reloadCertificates = 'CERTIFICATES_RELOAD_CERTIFICATES'
+    reloadCertificates = 'CERTIFICATES_RELOAD_CERTIFICATES',
+    setCertificatesClient = 'CERTIFICATES_SET_CERTIFICATES_CLIENT',
+    setCertificationRequestsClient = 'CERTIFICATES_SET_CERTIFICATION_REQUESTS_CLIENT'
 }
 
 export interface IAddCertificateAction {
@@ -133,24 +133,6 @@ export const requestCertificateEntityFetch = (
 
 export type TRequestUserCertificateEntityFetchAction = typeof requestCertificateEntityFetch;
 
-export interface ICertificateFetcher {
-    fetch(id: number, configuration: ICoreState['configurationState']): Promise<Certificate>;
-
-    reload(entity: Certificate): Promise<Certificate>;
-}
-
-export interface IUpdateFetcherAction {
-    type: CertificatesActions.updateFetcher;
-    payload: ICertificateFetcher;
-}
-
-export const updateFetcher = (payload: IUpdateFetcherAction['payload']) => ({
-    type: CertificatesActions.updateFetcher,
-    payload
-});
-
-export type TUpdateFetcherAction = typeof updateFetcher;
-
 export interface IRequestPublishForSaleAction {
     type: CertificatesActions.requestPublishForSale;
     payload: {
@@ -206,7 +188,7 @@ export type TRequestClaimCertificateBulkAction = typeof requestClaimCertificateB
 export interface IRequestCertificateApprovalAction {
     type: CertificatesActions.requestCertificateApproval;
     payload: {
-        certificationRequest: CertificationRequest;
+        certificationRequestId: ICertificationRequest['id'];
         callback: () => void;
     };
 }
@@ -269,6 +251,32 @@ export const reloadCertificates = () => ({
     type: CertificatesActions.reloadCertificates
 });
 
+export interface ISetCertificatesClientAction {
+    type: CertificatesActions.setCertificatesClient;
+    payload: CertificatesClient;
+}
+
+export const setCertificatesClient = (payload: ISetCertificatesClientAction['payload']) => ({
+    type: CertificatesActions.setCertificatesClient,
+    payload
+});
+
+export type TSetCertificatesClientAction = typeof setCertificatesClient;
+
+export interface ISetCertificationRequestsClientAction {
+    type: CertificatesActions.setCertificationRequestsClient;
+    payload: CertificationRequestsClient;
+}
+
+export const setCertificationRequestsClient = (
+    payload: ISetCertificationRequestsClientAction['payload']
+) => ({
+    type: CertificatesActions.setCertificationRequestsClient,
+    payload
+});
+
+export type TSetCertificationRequestsClientAction = typeof setCertificationRequestsClient;
+
 export type ICertificatesAction =
     | IAddCertificateAction
     | IUpdateCertificateAction
@@ -278,11 +286,12 @@ export type ICertificatesAction =
     | ISetRequestCertificatesModalVisibilityAction
     | IHideRequestCertificatesModalAction
     | IRequestCertificateEntityFetchAction
-    | IUpdateFetcherAction
     | IRequestPublishForSaleAction
     | IRequestClaimCertificateAction
     | IRequestClaimCertificateBulkAction
     | IRequestCertificateApprovalAction
     | IClearCertificatesAction
     | IReloadCertificatesAction
-    | IRequestWithdrawCertificateAction;
+    | IRequestWithdrawCertificateAction
+    | ISetCertificatesClientAction
+    | ISetCertificationRequestsClientAction;

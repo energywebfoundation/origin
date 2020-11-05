@@ -1,7 +1,4 @@
-import { Certificate, CertificateUtils, CertificationRequest } from '@energyweb/issuer';
-import { CommitmentStatus, IUser, IPublicOrganization } from '@energyweb/origin-backend-core';
-import { Configuration } from '@energyweb/utils-general';
-import { ContractTransaction } from 'ethers';
+import { IUser, IPublicOrganization } from '@energyweb/origin-backend-core';
 import { getI18n } from 'react-i18next';
 import { SagaIterator } from 'redux-saga';
 import { all, apply, call, delay, fork, put, select, take } from 'redux-saga/effects';
@@ -13,7 +10,6 @@ import {
     clearCertificates,
     reloadCertificates
 } from '.';
-import { ICoreState } from '../../types';
 import { moment, NotificationType, showNotification } from '../../utils';
 import { ExchangeAccount, IExchangeClient, ITransfer } from '../../utils/exchange';
 import { assertCorrectBlockchainAccount } from '../../utils/sagas';
@@ -25,37 +21,36 @@ import {
     addCertificate,
     CertificatesActions,
     hideRequestCertificatesModal,
-    ICertificateFetcher,
     IRequestCertificateApprovalAction,
-    IRequestCertificateEntityFetchAction,
     IRequestCertificatesAction,
     IRequestClaimCertificateAction,
     IRequestClaimCertificateBulkAction,
     IRequestPublishForSaleAction,
     IShowRequestCertificatesModalAction,
     setRequestCertificatesModalVisibility,
-    IRequestWithdrawCertificateAction
+    IRequestWithdrawCertificateAction,
+    IRequestCertificateEntityFetchAction
 } from './actions';
-import { getCertificateById, getCertificateFetcher, getCertificates } from './selectors';
-import { ICertificateViewItem } from './types';
+import {
+    getCertificateById,
+    getCertificates,
+    getCertificatesClient,
+    getCertificationRequestsClient
+} from './selectors';
+import { CertificatesClient, CertificationRequestsClient } from '@energyweb/issuer-api-client';
+import { ICertificate, ICertificateViewItem } from './types';
 import { enhanceCertificate, fetchDataAfterConfigurationChange } from '../general/sagas';
+import { certificateEnergyStringToBN } from '../../utils/certificates';
 
-function assertIsContractTransaction(
-    data: ContractTransaction | CommitmentStatus
-): asserts data is ContractTransaction {
-    if (typeof data === 'number' || !data.hash) {
-        throw new Error(`Data.hash is not present`);
-    }
-}
+export function* getCertificate(id: number): any {
+    const certificatesClient: CertificatesClient = yield select(getCertificatesClient);
 
-export function* getCertificate(id: number) {
-    const configuration: Configuration.Entity = yield select(getConfiguration);
+    const certificate = yield apply(certificatesClient, certificatesClient.get, [id]);
 
-    const certificate = new Certificate(id, configuration);
-
-    yield call([certificate, certificate.sync]);
-
-    return certificate;
+    return {
+        ...certificate,
+        energy: certificateEnergyStringToBN(certificate.energy)
+    };
 }
 
 function* requestCertificatesSaga(): SagaIterator {
@@ -65,9 +60,7 @@ function* requestCertificatesSaga(): SagaIterator {
         );
 
         yield put(setLoading(true));
-
         yield put(hideRequestCertificatesModal());
-        const configuration: ICoreState['configurationState'] = yield select(getConfiguration);
 
         const { startTime, endTime, energy, files, deviceId } = action.payload;
 
@@ -75,18 +68,22 @@ function* requestCertificatesSaga(): SagaIterator {
             const shouldContinue: boolean = yield call(assertCorrectBlockchainAccount);
 
             if (shouldContinue) {
+                const certificationRequestsClient: CertificationRequestsClient = yield select(
+                    getCertificationRequestsClient
+                );
                 const exchangeClient: IExchangeClient = yield select(getExchangeClient);
                 const { address } = yield call([exchangeClient, exchangeClient.getAccount]);
 
-                yield apply(CertificationRequest, CertificationRequest.create, [
-                    startTime,
-                    endTime,
-                    energy,
-                    deviceId,
-                    configuration,
-                    files,
-                    false,
-                    address
+                yield apply(certificationRequestsClient, certificationRequestsClient.create, [
+                    {
+                        to: address,
+                        energy: energy.toString(),
+                        fromTime: startTime,
+                        toTime: endTime,
+                        deviceId,
+                        files,
+                        isPrivate: false
+                    }
                 ]);
 
                 showNotification(`Certificates requested.`, NotificationType.Success);
@@ -143,21 +140,16 @@ function* fetchCertificateSaga(id: number, entitiesBeingFetched: any): SagaItera
 
     const existingEntity: ICertificateViewItem = yield call(getCertificateById, entities, id);
 
-    const configuration: ICoreState['configurationState'] = yield select(getConfiguration);
-    const fetcher: ICertificateFetcher = yield select(getCertificateFetcher);
-
     entitiesBeingFetched.set(id, true);
 
     try {
         if (existingEntity?.source === CertificateSource.Blockchain) {
-            const fetchedEntity: Certificate = yield call(fetcher.fetch, id, configuration);
+            const fetchedCertificate: ICertificate = yield call(getCertificate, id);
 
-            if (fetchedEntity) {
+            if (fetchedCertificate) {
                 yield put(
                     addCertificate({
-                        ...fetchedEntity,
-                        isClaimed: fetchedEntity.isClaimed,
-                        isOwned: fetchedEntity.isOwned,
+                        ...fetchedCertificate,
                         source: CertificateSource.Blockchain
                     })
                 );
@@ -180,8 +172,9 @@ function* resyncCertificateSaga(): SagaIterator {
 
         const { id, assetId } = action.payload;
 
-        const certificate: Certificate = yield call(getCertificate, id);
+        const certificate: ICertificate = yield call(getCertificate, id);
         const exchangeClient: IExchangeClient = yield select(getExchangeClient);
+        const user = yield select(getUserOffchain);
 
         const exchangeAccount: ExchangeAccount = yield apply(
             exchangeClient,
@@ -190,14 +183,9 @@ function* resyncCertificateSaga(): SagaIterator {
         );
 
         const asset = exchangeAccount.balances.available.find((a) => a.asset.id === assetId);
-        if (asset) {
-            yield put(updateCertificate(enhanceCertificate(asset, certificate)));
-        } else {
-            const enhancedCertificate: ICertificateViewItem = Object.assign(certificate, {
-                source: CertificateSource.Blockchain
-            });
-            yield put(updateCertificate(enhancedCertificate));
-        }
+        yield put(
+            updateCertificate(enhanceCertificate(certificate, user.blockchainAccountAddress, asset))
+        );
     }
 }
 
@@ -240,6 +228,8 @@ function* requestPublishForSaleSaga(): SagaIterator {
             continue;
         }
 
+        const certificatesClient: CertificatesClient = yield select(getCertificatesClient);
+
         const { amount, certificateId, callback, price, source } = action.payload;
         let { assetId } = action.payload;
 
@@ -248,21 +238,17 @@ function* requestPublishForSaleSaga(): SagaIterator {
         yield put(setLoading(true));
 
         try {
-            const account: ExchangeAccount = yield call([
-                exchangeClient,
-                exchangeClient.getAccount
-            ]);
-
             if (source === CertificateSource.Blockchain) {
-                const certificate: Certificate = yield call(getCertificate, certificateId);
+                const account: ExchangeAccount = yield call([
+                    exchangeClient,
+                    exchangeClient.getAccount
+                ]);
 
-                const transferResult: ContractTransaction | CommitmentStatus = yield call(
-                    [certificate, certificate.transfer],
-                    account.address,
-                    amount
+                const { data: transferResult } = yield apply(
+                    certificatesClient,
+                    certificatesClient.transfer,
+                    [certificateId, { to: account.address, amount: amount.toString() }]
                 );
-
-                assertIsContractTransaction(transferResult);
 
                 while (true) {
                     const transfers: ITransfer[] = yield call([
@@ -273,7 +259,6 @@ function* requestPublishForSaleSaga(): SagaIterator {
                     const transfer = transfers.find(
                         (item) => item.transactionHash === transferResult.hash
                     );
-
                     if (transfer) {
                         assetId = transfer.asset.id;
                         break;
@@ -323,6 +308,7 @@ function* requestDepositSaga(): SagaIterator {
         if (!shouldContinue) {
             continue;
         }
+        const certificatesClient: CertificatesClient = yield select(getCertificatesClient);
 
         const { amount, certificateId, callback } = action.payload;
 
@@ -335,14 +321,11 @@ function* requestDepositSaga(): SagaIterator {
                 exchangeClient,
                 exchangeClient.getAccount
             ]);
-            const certificate: Certificate = yield call(getCertificate, certificateId);
 
-            const transferResult: ContractTransaction | CommitmentStatus = yield call(
-                [certificate, certificate.transfer],
-                account.address,
-                amount
-            );
-            assertIsContractTransaction(transferResult);
+            yield apply(certificatesClient, certificatesClient.transfer, [
+                certificateId,
+                { to: account.address, amount: amount.toString() }
+            ]);
 
             showNotification(
                 i18n.t('certificate.feedback.certificateDeposited'),
@@ -376,34 +359,34 @@ function* requestClaimCertificateSaga(): SagaIterator {
         const { certificateId, amount, claimData } = action.payload;
 
         yield put(setLoading(true));
-        const certificate: Certificate = yield call(getCertificate, certificateId);
 
         const i18n = getI18n();
 
-        if (!certificate || !certificate.isOwned) {
-            showNotification(
-                i18n.t('certificate.feedback.notOwner', { id: certificate.id }),
-                NotificationType.Error
-            );
-            continue;
-        }
+        const certificatesClient: CertificatesClient = yield select(getCertificatesClient);
 
         try {
-            yield call([certificate, certificate.claim], claimData, amount);
-
-            const updatedCertificate: Certificate = yield call(getCertificate, certificateId);
-            yield put(
-                updateCertificate(
-                    Object.assign(updatedCertificate, {
-                        source: CertificateSource.Blockchain
-                    })
-                )
+            const { data: claimResult } = yield apply(
+                certificatesClient,
+                certificatesClient.claim,
+                [
+                    certificateId,
+                    {
+                        claimData,
+                        amount: amount.toString()
+                    }
+                ]
             );
+
+            if (!claimResult.success) {
+                showNotification(`Claiming failed: ${claimResult.message}`, NotificationType.Error);
+                continue;
+            }
 
             showNotification(
-                i18n.t('certificate.feedback.claimed', { id: certificate.id }),
+                i18n.t('certificate.feedback.claimed', { id: certificateId }),
                 NotificationType.Success
             );
+            yield put(reloadCertificates());
         } catch (error) {
             console.error(error);
             showNotification(i18n.t('general.feedback.unknownError'), NotificationType.Error);
@@ -419,14 +402,13 @@ function* requestClaimCertificateBulkSaga(): SagaIterator {
             CertificatesActions.requestClaimCertificateBulk
         );
 
-        const configuration: Configuration.Entity = yield select(getConfiguration);
-
         const shouldContinue: boolean = yield call(assertCorrectBlockchainAccount);
 
-        if (!shouldContinue || !configuration) {
+        if (!shouldContinue) {
             continue;
         }
 
+        const certificatesClient: CertificatesClient = yield select(getCertificatesClient);
         const { certificateIds, claimData } = action.payload;
 
         const i18n = getI18n();
@@ -434,12 +416,13 @@ function* requestClaimCertificateBulkSaga(): SagaIterator {
         yield put(setLoading(true));
 
         try {
-            yield call(
-                CertificateUtils.claimCertificates,
-                certificateIds,
-                claimData,
-                configuration
-            );
+            yield apply(certificatesClient, certificatesClient.bulkClaim, [
+                {
+                    certificateIds: certificateIds.map((id) => id),
+                    claimData
+                }
+            ]);
+            yield put(reloadCertificates());
 
             showNotification(
                 i18n.t('certificate.feedback.certificatesClaimed'),
@@ -466,14 +449,20 @@ function* requestCertificateApprovalSaga(): SagaIterator {
             continue;
         }
 
-        const { certificationRequest, callback } = action.payload;
+        const certificationRequestsClient: CertificationRequestsClient = yield select(
+            getCertificationRequestsClient
+        );
+
+        const { certificationRequestId, callback } = action.payload;
 
         const i18n = getI18n();
 
         yield put(setLoading(true));
 
         try {
-            yield call([certificationRequest, certificationRequest.approve]);
+            yield apply(certificationRequestsClient, certificationRequestsClient.approve, [
+                certificationRequestId
+            ]);
 
             showNotification(i18n.t('certificate.feedback.approved'), NotificationType.Success);
         } catch (error) {

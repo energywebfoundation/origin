@@ -1,7 +1,6 @@
-import { Certificate } from '@energyweb/issuer';
-import { CertificatesActions, ICertificatesAction, ICertificateFetcher } from './actions';
+import { CertificatesActions, ICertificatesAction } from './actions';
 import { ProducingDevice } from '@energyweb/device-registry';
-import { ICoreState } from '../../types';
+import { CertificatesClient, CertificationRequestsClient } from '@energyweb/issuer-api-client';
 import { ICertificateViewItem } from '.';
 
 export interface ICertificatesState {
@@ -10,18 +9,9 @@ export interface ICertificatesState {
         visible: boolean;
         producingDevice: ProducingDevice.Entity;
     };
-    fetcher: ICertificateFetcher;
+    certificatesClient: CertificatesClient;
+    certificationRequestsClient: CertificationRequestsClient;
 }
-
-const fetcher: ICertificateFetcher = {
-    async fetch(id: number, configuration: ICoreState['configurationState']) {
-        return configuration && new Certificate(id, configuration).sync();
-    },
-
-    async reload(entity: Certificate) {
-        return entity?.sync();
-    }
-};
 
 const defaultState: ICertificatesState = {
     certificates: [],
@@ -29,7 +19,8 @@ const defaultState: ICertificatesState = {
         visible: false,
         producingDevice: null
     },
-    fetcher
+    certificatesClient: null,
+    certificationRequestsClient: null
 };
 
 function certificateExists(state: ICertificatesState, { id, source }: ICertificateViewItem) {
@@ -95,14 +86,20 @@ export function certificatesState(
                 }
             };
 
-        case CertificatesActions.updateFetcher:
-            return {
-                ...state,
-                fetcher: action.payload
-            };
-
         case CertificatesActions.clearCertificates:
             return { ...state, certificates: [] };
+
+        case CertificatesActions.setCertificatesClient:
+            return {
+                ...state,
+                certificatesClient: action.payload
+            };
+
+        case CertificatesActions.setCertificationRequestsClient:
+            return {
+                ...state,
+                certificationRequestsClient: action.payload
+            };
 
         default:
             return state;
