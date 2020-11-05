@@ -22,7 +22,6 @@ import { OffChainDataSource } from '@energyweb/origin-backend-client';
 import {
     ExchangeClient,
     IExchangeClient,
-    Bundle,
     ExchangeAccount,
     AccountAsset
 } from '../../utils/exchange';
@@ -441,6 +440,6 @@ export function* generalSaga(): SagaIterator {
         fork(initializeOffChainDataSource),
         fork(fillOffchainConfiguration),
         fork(initializeEnvironment),
-        fork(requestDeviceCreation),
+        fork(requestDeviceCreation)
     ]);
 }
