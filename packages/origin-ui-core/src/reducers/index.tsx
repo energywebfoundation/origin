@@ -1,6 +1,7 @@
 import certificates from '../features/certificates/reducer';
 import producingDevices from '../features/producingDevices/reducer';
 import configuration from './Configuration';
+import web3 from './Web3';
 import general from '../features/general/reducer';
 import users from '../features/users/reducer';
 import { combineReducers } from 'redux';
@@ -18,5 +19,6 @@ export const createRootReducer = (history) =>
         users,
         router: connectRouter(history),
         bundles,
-        orders
+        orders,
+        web3
     });
