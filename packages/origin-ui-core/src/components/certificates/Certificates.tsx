@@ -8,13 +8,8 @@ import { CertificateDetailView } from './CertificateDetailView';
 import { CertificationRequestsTable } from './CertificationRequestsTable';
 import { useSelector } from 'react-redux';
 import { getUserOffchain } from '../../features/users/selectors';
-import { getCurrencies } from '../../features/general/selectors';
 import { useTranslation } from 'react-i18next';
-import { Exchange, MyTrades } from '../exchange';
 import { useLinks } from '../../utils';
-import { BundlesTable } from '../bundles/BundlesTable';
-import { CreateBundleForm } from '../bundles/CreateBundleForm';
-import { MyOrders } from '../orders/MyOrders';
 import { OriginConfigurationContext } from '..';
 import { RoleChangedModal } from '../Modal/RoleChangedModal';
 import { ConnectBlockchainAccountModal } from '../Modal/ConnectBlockchainAccountModal';
@@ -36,7 +31,6 @@ const PendingCertificationRequestsTable = () => <CertificationRequestsTable appr
 const ApprovedCertificationRequestsTable = () => <CertificationRequestsTable approved={true} />;
 
 export function Certificates() {
-    const currencies = useSelector(getCurrencies);
     const user = useSelector(getUserOffchain);
     const { baseURL, getCertificatesLink } = useLinks();
     const { t } = useTranslation();
@@ -44,11 +38,6 @@ export function Certificates() {
     const [showBlockchainModal, setShowBlockchainModal] = useState(false);
 
     const originConfiguration = useContext(OriginConfigurationContext);
-
-    const defaultCurrency = (currencies && currencies[0]) ?? 'USD';
-
-    const ExchangeRoute = () => <Exchange currency={defaultCurrency} />;
-    const TradesRoute = () => <MyTrades currency={defaultCurrency} />;
 
     const isIssuer = isRole(user, Role.Issuer);
     const userIsActive = user && user.status === UserStatus.Active;
@@ -93,63 +82,16 @@ export function Certificates() {
             component: ApprovedCertificationRequestsTable,
             show: (userIsActive && isIssuer) || userIsActiveAndPartOfOrg,
             features: [OriginFeature.Certificates, OriginFeature.CertificationRequests]
-        },
-        {
-            key: 'exchange',
-            label: 'navigation.certificates.exchange',
-            component: ExchangeRoute,
-            show: true,
-            features: [OriginFeature.Exchange]
-        },
-        {
-            key: 'bundles',
-            label: 'navigation.certificates.bundles',
-            component: BundlesTable,
-            show: true,
-            features: [OriginFeature.Exchange, OriginFeature.Bundles]
-        },
-        {
-            key: 'create_bundle',
-            label: 'navigation.certificates.create_bundle',
-            component: CreateBundleForm,
-            show: userIsActiveAndPartOfOrg,
-            features: [OriginFeature.Exchange, OriginFeature.Bundles]
-        },
-        {
-            key: 'my_bundles',
-            label: 'navigation.certificates.my_bundles',
-            component: BundlesTable,
-            props: { owner: true },
-            show: userIsActiveAndPartOfOrg,
-            features: [OriginFeature.Exchange, OriginFeature.Bundles]
-        },
-        {
-            key: 'my-trades',
-            label: 'navigation.certificates.myTrades',
-            component: TradesRoute,
-            show: userIsActiveAndPartOfOrg,
-            features: [OriginFeature.Exchange]
-        },
-        {
-            key: 'my_orders',
-            label: 'navigation.certificates.myOrders',
-            component: MyOrders,
-            show: userIsActiveAndPartOfOrg,
-            features: [OriginFeature.Exchange]
         }
     ];
-    const authenticationToken = localStorage.getItem('AUTHENTICATION_TOKEN');
 
     function getDefaultRedirect() {
         if (user) {
             if (isIssuer) {
                 return CertificatesMenu[3].key;
             }
-
-            return CertificatesMenu.filter((i) => i.show)[0]?.key;
+            return CertificatesMenu[0].key;
         }
-
-        return CertificatesMenu[5].key;
     }
 
     const defaultRedirect = {
@@ -157,74 +99,71 @@ export function Certificates() {
     };
 
     return (
-        (user || !authenticationToken) && (
-            <div className="PageWrapper">
-                <div className="PageNav">
-                    <ul className="NavMenu nav">
-                        {CertificatesMenu.map((menu) => {
-                            if (
-                                menu.show &&
-                                menu.features.every((flag) =>
-                                    originConfiguration.enabledFeatures.includes(flag)
-                                )
-                            ) {
-                                const link = `${getCertificatesLink()}/${menu.key}`;
+        <div className="PageWrapper">
+            <div className="PageNav">
+                <ul className="NavMenu nav">
+                    {CertificatesMenu.map((menu) => {
+                        if (
+                            menu.show &&
+                            menu.features.every((flag) =>
+                                originConfiguration.enabledFeatures.includes(flag)
+                            )
+                        ) {
+                            const link = `${getCertificatesLink()}/${menu.key}`;
 
-                                return (
-                                    <li key={menu.key}>
-                                        <NavLink to={link}>{t(menu.label)}</NavLink>
-                                    </li>
-                                );
-                            }
-                        })}
-                    </ul>
-                </div>
-
-                <Route
-                    path={`${getCertificatesLink()}/:key/:id?`}
-                    render={(props) => {
-                        const key = props.match.params.key;
-                        const id = props.match.params.id as string;
-                        const matches = CertificatesMenu.filter((item) => {
-                            return item.key === key;
-                        });
-                        if (matches.length > 0) {
-                            if (key === 'detail_view') {
-                                matches[0].component = () =>
-                                    CertificateDetailViewId(parseInt(id, 10));
-                            }
+                            return (
+                                <li key={menu.key}>
+                                    <NavLink to={link}>{t(menu.label)}</NavLink>
+                                </li>
+                            );
                         }
-
-                        return (
-                            <PageContent
-                                menu={matches.length > 0 ? matches[0] : null}
-                                redirectPath={getCertificatesLink()}
-                            />
-                        );
-                    }}
-                />
-
-                <Route
-                    exact={true}
-                    path={getCertificatesLink()}
-                    render={() => <Redirect to={defaultRedirect} />}
-                />
-
-                <Route
-                    exact={true}
-                    path={`${baseURL}/`}
-                    render={() => <Redirect to={defaultRedirect} />}
-                />
-                <RoleChangedModal
-                    showModal={showRoleModal}
-                    setShowModal={setShowRoleModal}
-                    setShowBlockchainModal={setShowBlockchainModal}
-                />
-                <ConnectBlockchainAccountModal
-                    showModal={showBlockchainModal}
-                    setShowModal={setShowBlockchainModal}
-                />
+                    })}
+                </ul>
             </div>
-        )
+
+            <Route
+                path={`${getCertificatesLink()}/:key/:id?`}
+                render={(props) => {
+                    const key = props.match.params.key;
+                    const id = props.match.params.id as string;
+                    const matches = CertificatesMenu.filter((item) => {
+                        return item.key === key;
+                    });
+                    if (matches.length > 0) {
+                        if (key === 'detail_view') {
+                            matches[0].component = () => CertificateDetailViewId(parseInt(id, 10));
+                        }
+                    }
+
+                    return (
+                        <PageContent
+                            menu={matches.length > 0 ? matches[0] : null}
+                            redirectPath={getCertificatesLink()}
+                        />
+                    );
+                }}
+            />
+
+            <Route
+                exact={true}
+                path={getCertificatesLink()}
+                render={() => <Redirect to={defaultRedirect} />}
+            />
+
+            <Route
+                exact={true}
+                path={`${baseURL}/`}
+                render={() => <Redirect to={defaultRedirect} />}
+            />
+            <RoleChangedModal
+                showModal={showRoleModal}
+                setShowModal={setShowRoleModal}
+                setShowBlockchainModal={setShowBlockchainModal}
+            />
+            <ConnectBlockchainAccountModal
+                showModal={showBlockchainModal}
+                setShowModal={setShowBlockchainModal}
+            />
+        </div>
     );
 }

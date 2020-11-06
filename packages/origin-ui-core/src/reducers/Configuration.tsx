@@ -1,10 +1,10 @@
-import { Actions } from '../features/actions';
+import { BaseActions } from '../features/actions';
 
 const defaultState = null;
 
-export default function reducer(state = defaultState, action) {
+export function configurationState(state = defaultState, action) {
     switch (action.type) {
-        case Actions.configurationUpdated:
+        case BaseActions.configurationUpdated:
             return action.conf;
 
         default:

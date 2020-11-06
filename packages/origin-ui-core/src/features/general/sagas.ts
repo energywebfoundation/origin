@@ -22,7 +22,6 @@ import { OffChainDataSource } from '@energyweb/origin-backend-client';
 import {
     ExchangeClient,
     IExchangeClient,
-    Bundle,
     ExchangeAccount,
     AccountAsset
 } from '../../utils/exchange';
@@ -61,14 +60,6 @@ import {
     setCertificationRequestsClient
 } from '../certificates';
 import { getCertificate } from '../certificates/sagas';
-import {
-    storeBundle,
-    BundlesActionType,
-    ICreateBundleAction,
-    showBundleDetails,
-    clearBundles
-} from '../bundles';
-import { fetchOrders } from '../orders/sagas';
 import { getUserOffchain } from '../users/selectors';
 import { IProducingDeviceState } from '../producingDevices/reducer';
 import { getCertificatesClient } from '../certificates/selectors';
@@ -289,33 +280,6 @@ function* findEnhancedExchangeCertificate(
     return enhanceCertificate(onChainCertificate, userId, asset);
 }
 
-export function* fetchBundles() {
-    yield put(clearBundles());
-    const exchangeClient: IExchangeClient = yield select(getExchangeClient);
-    const bundles: Bundle[] = yield apply(exchangeClient, exchangeClient.getAvailableBundles, null);
-    const user = yield select(getUserOffchain);
-    const ownBundles: Bundle[] =
-        user && user.status === UserStatus.Active
-            ? yield apply(exchangeClient, exchangeClient.getOwnBundles, null)
-            : [];
-    for (const bundle of bundles) {
-        bundle.own = ownBundles.find((b) => b.id === bundle.id) !== undefined;
-        bundle.items.forEach((item) => {
-            item.currentVolume = BigNumber.from(item.currentVolume.toString());
-            item.startVolume = BigNumber.from(item.startVolume.toString());
-        });
-        if (
-            bundle.items
-                .reduce((total, item) => total.add(item.currentVolume), BigNumber.from(0))
-                .isZero()
-        ) {
-            continue;
-        }
-        bundle.volume = BigNumber.from(bundle.volume.toString());
-        yield put(storeBundle(bundle));
-    }
-}
-
 export function* fetchDataAfterConfigurationChange(
     configuration: Configuration.Entity,
     update = false
@@ -366,8 +330,6 @@ export function* fetchDataAfterConfigurationChange(
             }
         }
     }
-    yield call(fetchBundles);
-    yield call(fetchOrders);
 }
 
 function* initializeEnvironment(): SagaIterator {
@@ -471,54 +433,6 @@ function* requestDeviceCreation() {
     }
 }
 
-function* requestCreateBundle() {
-    while (true) {
-        const {
-            payload: { bundleDTO, callback }
-        }: ICreateBundleAction = yield take(BundlesActionType.CREATE);
-        yield put(setLoading(true));
-        const i18n = getI18n();
-        const exchangeClient = yield select(getExchangeClient);
-        try {
-            yield apply(exchangeClient, exchangeClient.createBundle, [bundleDTO]);
-            showNotification(
-                i18n.t('certificate.feedback.bundle_created'),
-                NotificationType.Success
-            );
-        } catch (err) {
-            console.error(err);
-            showNotification(i18n.t('general.feedback.unknownError'), NotificationType.Error);
-        }
-        yield call(fetchBundles);
-        yield put(setLoading(false));
-        yield call(callback);
-    }
-}
-
-function* buyBundle() {
-    while (true) {
-        const {
-            payload: { bundleDTO }
-        } = yield take(BundlesActionType.BUY);
-        yield put(setLoading(true));
-        const i18n = getI18n();
-        const exchangeClient = yield select(getExchangeClient);
-        try {
-            yield apply(exchangeClient, exchangeClient.buyBundle, [bundleDTO]);
-            showNotification(
-                i18n.t('certificate.feedback.bundle_bought'),
-                NotificationType.Success
-            );
-        } catch (err) {
-            console.error(err);
-            showNotification(i18n.t('general.feedback.unknownError'), NotificationType.Error);
-        }
-        yield call(fetchBundles);
-        yield put(setLoading(false));
-        yield put(showBundleDetails(false));
-    }
-}
-
 export function* generalSaga(): SagaIterator {
     yield all([
         fork(showAccountChangedModalOnChange),
@@ -526,8 +440,6 @@ export function* generalSaga(): SagaIterator {
         fork(initializeOffChainDataSource),
         fork(fillOffchainConfiguration),
         fork(initializeEnvironment),
-        fork(requestDeviceCreation),
-        fork(requestCreateBundle),
-        fork(buyBundle)
+        fork(requestDeviceCreation)
     ]);
 }

@@ -1,12 +1,11 @@
 import { render } from 'react-dom';
 import React from 'react';
 import './styles/app.scss';
-
+import { Origin } from './components/Origin';
 import {
-    Origin,
     OriginConfigurationProvider,
     createOriginConfiguration
-} from '@energyweb/origin-ui-core';
+} from './components/OriginConfigurationContext';
 
 const originConfiguration = createOriginConfiguration();
 

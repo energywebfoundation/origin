@@ -19,7 +19,7 @@ export const LoginPage = (props: IOwnProps) => {
         (i) => i.status === OrganizationInvitationStatus.Pending
     );
     const showInvitations = pending.length > 0 && !user?.organization?.id;
-    const { getCertificatesLink } = useLinks();
+    const { getDefaultLink } = useLinks();
     const history = useHistory();
 
     const [showRegisterOrganizationModal, setShowRegisterOrganizationModal] = useState(false);
@@ -35,7 +35,7 @@ export const LoginPage = (props: IOwnProps) => {
                     firstLoginItem = 'true';
                 }
                 if (firstLoginItem) {
-                    history.push(props.redirect || getCertificatesLink());
+                    history.push(props.redirect || getDefaultLink());
                 } else {
                     localStorage.setItem(FIRST_LOGIN_KEY, 'true');
                     setShowRegisterOrganizationModal(true);

@@ -5,3 +5,5 @@ export * from './FormikEffect';
 export * from './FormInput';
 export * from './FormikDatePicker';
 export * from './CalendarFieldOnPeriod';
+export * from './FormInput';
+export * from './FormSelect';

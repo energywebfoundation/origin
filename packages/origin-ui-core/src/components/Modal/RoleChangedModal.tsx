@@ -51,8 +51,8 @@ export const RoleChangedModal = ({
     const sender = useSelector(getInvitations).find(
         (invitation) => invitation.status === OrganizationInvitationStatus.Accepted
     )?.sender;
-    const { enabledFeatures } = useContext(OriginConfigurationContext);
-    const iRecEnabled = enabledFeatures.includes(OriginFeature.IRec);
+    const enabledFeatures = useContext(OriginConfigurationContext)?.enabledFeatures;
+    const iRecEnabled = enabledFeatures?.includes(OriginFeature.IRec);
 
     useEffect(() => {
         if (user?.organization && userRef.current) {

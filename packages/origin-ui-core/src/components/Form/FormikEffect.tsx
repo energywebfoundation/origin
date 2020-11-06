@@ -9,7 +9,7 @@ function FormikEffectComponent<T extends any>({
     onChange: (values: T) => void;
     formik?: any;
 }) {
-    const { values } = formik;
+    const values = formik?.values;
     const prevValues = usePrevious(values);
 
     useEffect(() => {

@@ -1,0 +1,33 @@
+@import '@energyweb/origin-ui-core/dist/src/styles/variables.scss';
+
+$createBundleBg: $backgroundColorDark;
+$createBundleCertificatesBg: darken($backgroundColorDark, 2%);
+$createBundleCertificatesGroupBg: lighten($backgroundColorDark, 3%);
+$createBundleCertificatesGroupHeaderBg: lighten($backgroundColorDark, 2%);
+$createBundleCertificateForSale: darken($backgroundColorDark, 1%); 
+$createBundleSelectedCertificate: darken($primaryColor, 35%);
+
+.CreateBundleForm {
+    background-color: $createBundleBg;
+    .Certificates {
+        background-color: $createBundleCertificatesBg;
+    }
+    
+    .CertificateGroup {
+        background-color: $createBundleCertificatesGroupBg;
+        .Header {
+            background-color: $createBundleCertificatesGroupHeaderBg;
+        }
+        .MuiListItem-root.Mui-selected {
+            background-color: $createBundleSelectedCertificate;
+        }
+    }
+    
+    .CertificateForSale {
+        background-color: $createBundleCertificateForSale;
+    }
+    
+    .SelectedCertificate {
+        background-color: $createBundleSelectedCertificate;
+    }
+}

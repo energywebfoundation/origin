@@ -1,0 +1,10 @@
+@import '@energyweb/origin-ui-core/dist/src/styles/variables.scss';
+
+.OpenOrders {
+    .MuiTableRow-root {
+        background: $backgroundColorDark;
+        &:nth-child(even) {
+            background: $backgroundColorDark;
+        }
+    }
+}

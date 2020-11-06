@@ -3,7 +3,7 @@ import { ProducingDevice } from '@energyweb/device-registry';
 import { IPublicOrganization } from '@energyweb/origin-backend-core';
 
 export interface IProducingDeviceState extends ProducingDevice.Entity {
-    organtization: IPublicOrganization;
+    organization: IPublicOrganization;
 }
 
 export interface IProducingDevicesState {
@@ -14,7 +14,7 @@ const defaultState: IProducingDevicesState = {
     producingDevices: []
 };
 
-export default function reducer(
+export function producingDevicesState(
     state = defaultState,
     action: IProducingDevicesAction
 ): IProducingDevicesState {
