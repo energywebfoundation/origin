@@ -29,6 +29,9 @@ describe('Certification Request tests', () => {
         ({ databaseService, app } = await bootstrapTestInstance());
 
         await app.init();
+
+        await databaseService.truncate(CERTIFICATION_REQUESTS_TABLE_NAME);
+        await databaseService.truncate(CERTIFICATES_TABLE_NAME);
     });
 
     afterEach(async () => {
