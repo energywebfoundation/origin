@@ -40,7 +40,7 @@ export const RoleChangedModal = ({
     const user = useSelector(getUserOffchain);
     const userRef = useRef(user);
     const history = useHistory();
-    const { getOrganizationLink } = useLinks();
+    const { getDefaultLink } = useLinks();
     const { t } = useTranslation();
     const {
         typography: { fontSizeMd },
@@ -128,7 +128,7 @@ export const RoleChangedModal = ({
         } else if (!user.blockchainAccountAddress) {
             setShowBlockchainModal(true);
         } else {
-            history.push(getOrganizationLink());
+            history.push(getDefaultLink());
         }
 
         const { rights: newRole } = user;
