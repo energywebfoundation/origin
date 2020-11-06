@@ -15,6 +15,6 @@ export const createRootReducer = (history) =>
         generalState,
         configurationState,
         usersState,
-        router: connectRouter(history),
-        web3State
+        web3: web3State,
+        router: connectRouter(history)
     });

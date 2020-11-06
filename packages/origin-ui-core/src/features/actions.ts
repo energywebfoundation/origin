@@ -12,8 +12,8 @@ export interface IConfigurationUpdatedAction {
 }
 
 export interface IWeb3UpdatedAction {
-    type: Actions.web3Updated;
-    web3: IStoreState['web3'];
+    type: BaseActions.web3Updated;
+    web3: ICoreState['web3'];
 }
 
 export const configurationUpdated = (conf: IConfigurationUpdatedAction['conf']) => ({
@@ -22,7 +22,7 @@ export const configurationUpdated = (conf: IConfigurationUpdatedAction['conf']) 
 });
 
 export const web3Updated = (web3: IWeb3UpdatedAction['web3']) => ({
-    type: Actions.web3Updated,
+    type: BaseActions.web3Updated,
     web3
 });
 
