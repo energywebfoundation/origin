@@ -1,14 +1,14 @@
-import { IStoreState } from '../types';
+import { ICoreState } from '../types';
 
-export enum Actions {
+export enum BaseActions {
     producingDeviceCreatedOrUpdated = 'PRODUCING_DEVICE_CREATED_OR_UPDATED',
     configurationUpdated = 'CONFIGURATION_UPDATED',
     web3Updated = 'WEB3_UPDATED'
 }
 
 export interface IConfigurationUpdatedAction {
-    type: Actions.configurationUpdated;
-    conf: IStoreState['configuration'];
+    type: BaseActions.configurationUpdated;
+    conf: ICoreState['configurationState'];
 }
 
 export interface IWeb3UpdatedAction {
@@ -17,7 +17,7 @@ export interface IWeb3UpdatedAction {
 }
 
 export const configurationUpdated = (conf: IConfigurationUpdatedAction['conf']) => ({
-    type: Actions.configurationUpdated,
+    type: BaseActions.configurationUpdated,
     conf
 });
 

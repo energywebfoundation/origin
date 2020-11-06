@@ -213,7 +213,7 @@ export function OrganizationForm(props: IProps) {
                                 {t('organization.registration.registerOrganization')}
                             </Box>
                             <Divider className="divider" />
-                            <Form translate="">
+                            <Form translate="no">
                                 <Grid container direction="column">
                                     <Grid container style={{ paddingBottom: spacing(4) }}>
                                         <Grid item xs={6}>

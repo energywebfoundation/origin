@@ -25,8 +25,6 @@ import {
     setCertificatesClient,
     setCertificationRequestsClient
 } from '../certificates';
-import { clearBundles } from '../bundles';
-import { clearOrders } from '../orders/actions';
 import { getUserState } from './selectors';
 import { IUsersState } from './reducer';
 import {
@@ -204,8 +202,6 @@ function* logOutSaga(): SagaIterator {
 
         yield put(setUserOffchain(null));
         yield put(clearCertificates());
-        yield put(clearBundles());
-        yield put(clearOrders());
     }
 }
 

@@ -27,7 +27,7 @@ function certificateExists(state: ICertificatesState, { id, source }: ICertifica
     return state.certificates.find((i) => i.id === id && i.source === source);
 }
 
-export default function reducer(
+export function certificatesState(
     state = defaultState,
     action: ICertificatesAction
 ): ICertificatesState {

@@ -250,7 +250,7 @@ export function AddDevice() {
                         );
 
                     return (
-                        <Form translate="">
+                        <Form translate="no">
                             <Grid container spacing={3}>
                                 <Grid item xs={6}>
                                     <Typography className="mt-3">
