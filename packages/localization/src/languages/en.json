@@ -527,7 +527,7 @@
                 "uploadSignatoryId": "Upload Signatory ID",
                 "organizationCouldNotBeRegistered": "Sorry but this organization could not be registered.",
                 "organizationAlreadyExists": "There already exists an organization with the same information.",
-                "titleConnectOrRegisterIREC": "Thank you for registering organization on marketplace!",
+                "titleConnectOrRegisterIREC": "Thank you for registering an organization on the marketplace!",
                 "checkingInfoToApprove":"We are checking your information as soon as possible and will contact you once everything is approved and you can start trading.",
                 "contentConnectOrRegisterIREC": "In order to register devices and request I-RECs, users also need to connect an I-REC account.",
                 "titleIRecInfoSuccess": "Thank you for providing your I-REC account information.",
