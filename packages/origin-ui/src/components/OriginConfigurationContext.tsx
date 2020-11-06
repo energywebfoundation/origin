@@ -13,6 +13,7 @@ import {
 } from '@energyweb/localization';
 import variables from '@energyweb/origin-ui-core/src/styles/variables.scss';
 import { OriginGenericLogo, setTimeFormatLanguage } from '@energyweb/origin-ui-core';
+import moment from 'moment';
 
 export interface IOriginStyleConfig {
     PRIMARY_COLOR: string;
@@ -286,6 +287,12 @@ export function createOriginConfiguration(configuration: Partial<IOriginConfigur
             );
         }
     }
+    moment.updateLocale('en', {
+        week: {
+            dow: 1,
+            doy: 4
+        }
+    });
 
     return newConfiguration;
 }
