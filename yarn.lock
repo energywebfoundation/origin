@@ -9385,7 +9385,7 @@ concat-map@0.0.1:
   resolved "https://registry.yarnpkg.com/concat-map/-/concat-map-0.0.1.tgz#d8a96bd77fd68df7793a73036a3ba0d5405d477b"
   integrity sha1-2Klr13/Wjfd5OnMDajug1UBdR3s=
 
-concat-stream@^1.5.0, concat-stream@^1.5.1, concat-stream@^1.5.2, concat-stream@^1.6.2:
+concat-stream@^1.5.0, concat-stream@^1.5.1, concat-stream@^1.5.2:
   version "1.6.2"
   resolved "https://registry.yarnpkg.com/concat-stream/-/concat-stream-1.6.2.tgz#904bdf194cd3122fc675c77fc4ac3d4ff0fd1a34"
   integrity sha512-27HBghJxjiZtIk3Ycvn/4kbJk/1uZuJFfuPEns6LaEvpvG1f0hTea8lilrouyo9mVc2GWdcEZ8OLoGmSADlrCw==
@@ -13404,23 +13404,23 @@ gensync@^1.0.0-beta.1:
   resolved "https://registry.yarnpkg.com/gensync/-/gensync-1.0.0-beta.1.tgz#58f4361ff987e5ff6e1e7a210827aa371eaac269"
   integrity sha512-r8EC6NO1sngH/zdD9fiRDLdcgnbayXah+mLgManTaIZJqEC1MZstmnox8KpnI2/fxQwrp5OpCOYWLp4rBl4Jcg==
 
-geo-tz@6.0.0:
-  version "6.0.0"
-  resolved "https://registry.yarnpkg.com/geo-tz/-/geo-tz-6.0.0.tgz#0268d294c5fffeb2e68d9b8bf2428c86deaca184"
-  integrity sha512-Kc9KN3dEM8Ye4n159w9YISWXG8HGzAMNsJZMhuuV7lJ38yt1HSGXPbY3mhDtWHeT9JTzAc0YSsUGvoHV7pk4MA==
+geo-tz@6.0.1:
+  version "6.0.1"
+  resolved "https://registry.yarnpkg.com/geo-tz/-/geo-tz-6.0.1.tgz#8049b590395c1340cb96676e3a0b14588d2834fd"
+  integrity sha512-eJCWV973A/FB9zr4eSh71BFRHXaWJX3VOw8cAMun8o5H8jrOUMWCtORfXU784e1R84re1uHqdGhCvINWBj/USw==
   dependencies:
     "@turf/boolean-point-in-polygon" "^6.0.1"
     "@turf/helpers" "^6.1.4"
-    geobuf "^3.0.1"
+    geobuf "^3.0.2"
     pbf "^3.2.1"
 
-geobuf@^3.0.1:
-  version "3.0.1"
-  resolved "https://registry.yarnpkg.com/geobuf/-/geobuf-3.0.1.tgz#1de4376f1d270c87ea7551a12b857cf89ae777ad"
-  integrity sha512-6gwj0B9oJaOVcG1HFliN/nmsUFq4FRlVmMKyykQ7lV574PeRHJH6ByB7HZtwztpDzJc8RJHUQhH5jH7Sg6EYvA==
+geobuf@^3.0.2:
+  version "3.0.2"
+  resolved "https://registry.yarnpkg.com/geobuf/-/geobuf-3.0.2.tgz#9b4debb57ce72ca2bef027223f3098c4f3975cd3"
+  integrity sha512-ASgKwEAQQRnyNFHNvpd5uAwstbVYmiTW0Caw3fBb509tNTqXyAAPMyFs5NNihsLZhLxU1j/kjFhkhLWA9djuVg==
   dependencies:
-    concat-stream "^1.6.2"
-    pbf "^3.1.0"
+    concat-stream "^2.0.0"
+    pbf "^3.2.1"
     shapefile "~0.6.6"
 
 get-caller-file@^1.0.1:
@@ -19790,7 +19790,7 @@ pause@0.0.1:
   resolved "https://registry.yarnpkg.com/pause/-/pause-0.0.1.tgz#1d408b3fdb76923b9543d96fb4c9dfd535d9cb5d"
   integrity sha1-HUCLP9t2kjuVQ9lvtMnf1TXZy10=
 
-pbf@^3.1.0, pbf@^3.2.1:
+pbf@^3.2.1:
   version "3.2.1"
   resolved "https://registry.yarnpkg.com/pbf/-/pbf-3.2.1.tgz#b4c1b9e72af966cd82c6531691115cc0409ffe2a"
   integrity sha512-ClrV7pNOn7rtmoQVF4TS1vyU0WhYRnP92fzbfF75jAIwpnzdJXf8iTd4CMEqO4yUenH6NDqLiwjqlh6QgZzgLQ==
