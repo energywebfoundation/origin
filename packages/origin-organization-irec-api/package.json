@@ -52,7 +52,7 @@
         "@types/node": "12.19.3",
         "@types/supertest": "2.0.10",
         "superagent-use": "0.1.0",
-        "supertest": "6.0.0",
+        "supertest": "6.0.1",
         "supertest-capture-error": "1.0.0",
         "ts-node": "8.10.2"
     },
