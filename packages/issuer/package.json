@@ -46,7 +46,7 @@
         "chai": "4.2.0",
         "dotenv": "8.2.0",
         "ethers": "5.0.15",
-        "mocha": "8.2.0",
+        "mocha": "8.2.1",
         "moment": "2.24.0",
         "polly-js": "1.6.8",
         "precise-proofs-js": "1.2.0",
