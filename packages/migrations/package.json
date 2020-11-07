@@ -33,7 +33,7 @@
         "@energyweb/issuer": "2.4.6",
         "@energyweb/origin-backend-core": "6.0.0",
         "@energyweb/utils-general": "9.3.0",
-        "@types/pg": "7.14.5",
+        "@types/pg": "7.14.6",
         "commander": "^6.0.0",
         "dotenv": "8.2.0",
         "ethers": "5.0.15",
