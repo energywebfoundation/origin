@@ -74,7 +74,7 @@
     },
     "devDependencies": {
         "@nestjs/cli": "7.5.1",
-        "@nestjs/schematics": "7.1.2",
+        "@nestjs/schematics": "7.2.1",
         "@nestjs/testing": "7.4.4",
         "@types/bcryptjs": "2.4.2",
         "@types/body-parser": "1.19.0",
