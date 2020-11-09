@@ -17,6 +17,7 @@ import { TradePriceInfoDTO } from '../src/pods/trade/trade-price-info.dto';
 import { TransferService } from '../src/pods/transfer/transfer.service';
 import { authenticatedUser, bootstrapTestInstance } from './exchange';
 import { IExternalDeviceService, IProductInfo } from '../src/interfaces';
+import { ProductFilterDTO } from '../src/pods/order-book/product-filter.dto';
 
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -334,51 +335,26 @@ describe('orderbook tests', () => {
             });
     });
 
-    it('should return 400 when filters are set as specific but no values provided', async () => {
-        await request(app.getHttpServer())
-            .post('/orderbook/search')
-            .send({
-                ...defaultAllFilter,
-                deviceTypeFilter: Filter.Specific
-            })
-            .expect(400);
-
-        await request(app.getHttpServer())
-            .post('/orderbook/search')
-            .send({
-                ...defaultAllFilter,
-                deviceVintageFilter: Filter.Specific
-            })
-            .expect(400);
-
-        await request(app.getHttpServer())
-            .post('/orderbook/search')
-            .send({
-                ...defaultAllFilter,
-                generationTimeFilter: Filter.Specific,
-                generationFrom: new Date().toISOString()
-            })
-            .expect(400);
-    });
-
-    it('should return 400 when provided deviceTypes are not valid', async () => {
-        await request(app.getHttpServer())
-            .post('/orderbook/search')
-            .send({
-                ...defaultAllFilter,
-                deviceTypeFilter: Filter.Specific,
-                deviceType: ['LOL']
-            })
-            .expect(400);
-    });
-
-    it('should return 400 when provided filter enum is invalid', async () => {
-        await request(app.getHttpServer())
-            .post('/orderbook/search')
-            .send({
-                ...defaultAllFilter,
-                deviceVintageFilter: ('LOL' as unknown) as Filter
-            })
-            .expect(400);
+    [
+        { ...defaultAllFilter, deviceTypeFilter: Filter.Specific },
+        { ...defaultAllFilter, deviceVintageFilter: Filter.Specific },
+        {
+            ...defaultAllFilter,
+            generationTimeFilter: Filter.Specific,
+            generationFrom: new Date().toISOString()
+        },
+        { ...defaultAllFilter, deviceTypeFilter: Filter.Specific, deviceType: ['LOL'] },
+        {
+            ...defaultAllFilter,
+            deviceVintageFilter: ('LOL' as unknown) as Filter
+        }
+    ].forEach((params: ProductFilterDTO): void => {
+        it(`should return 400 when filter is invalid: ${JSON.stringify(params)}`, async () => {
+            await request(app.getHttpServer()) //
+                .post('/orderbook/search')
+                .send(params)
+                .expect('Content-Type', /application\/json/)
+                .expect(400);
+        });
     });
 });
