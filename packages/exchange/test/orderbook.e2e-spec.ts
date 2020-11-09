@@ -277,64 +277,6 @@ describe('orderbook tests', () => {
         gridOperatorFilter: Filter.All
     };
 
-    it('should return orders based on the filter', async () => {
-        await request(app.getHttpServer())
-            .post('/orderbook/search')
-            .send(defaultAllFilter)
-            .expect(200)
-            .expect((res) => {
-                const { asks, bids, lastTradedPrice } = res.body as OrderBook;
-
-                expect(asks).to.have.length(2);
-                expect(bids).to.have.length(2);
-                expect(lastTradedPrice.price).equals(marineTradeLastTradePrice.price); // marine asset trade
-                expect(lastTradedPrice.assetId).equals(marineTradeLastTradePrice.assetId); // marine asset trade
-            });
-
-        await request(app.getHttpServer())
-            .post('/orderbook/search')
-            .expect(200)
-            .expect((res) => {
-                const { asks, bids } = res.body as OrderBook;
-
-                expect(asks).to.have.length(2);
-                expect(bids).to.have.length(2);
-            });
-
-        await request(app.getHttpServer())
-            .post('/orderbook/search')
-            .send({
-                ...defaultAllFilter,
-                deviceTypeFilter: Filter.Specific,
-                deviceType: ['Solar']
-            })
-            .expect(200)
-            .expect((res) => {
-                const { asks, bids } = res.body as OrderBook;
-
-                expect(asks).to.have.length(2);
-                expect(bids).to.have.length(1);
-            });
-
-        await request(app.getHttpServer())
-            .post('/orderbook/search')
-            .send({
-                ...defaultAllFilter,
-                deviceTypeFilter: Filter.Specific,
-                deviceType: ['Wind']
-            })
-            .expect(200)
-            .expect((res) => {
-                const { asks, bids, lastTradedPrice } = res.body as OrderBook;
-
-                expect(asks).to.have.length(0);
-                expect(bids).to.have.length(1);
-
-                expect(lastTradedPrice.price).equals(windTradeLastTradePrice.price);
-                expect(lastTradedPrice.assetId).equals(windTradeLastTradePrice.assetId);
-            });
-    });
-
     [
         { ...defaultAllFilter, deviceTypeFilter: Filter.Specific },
         { ...defaultAllFilter, deviceVintageFilter: Filter.Specific },
@@ -350,11 +292,74 @@ describe('orderbook tests', () => {
         }
     ].forEach((params: ProductFilterDTO): void => {
         it(`should return 400 when filter is invalid: ${JSON.stringify(params)}`, async () => {
-            await request(app.getHttpServer()) //
+            await request(app.getHttpServer())
                 .post('/orderbook/search')
                 .send(params)
                 .expect('Content-Type', /application\/json/)
                 .expect(400);
         });
+    });
+
+    it('should return all orders', async () => {
+        const {
+            body: { asks, bids }
+        }: { body: OrderBook } = await request(app.getHttpServer())
+            .post('/orderbook/search')
+            .expect('Content-Type', /application\/json/)
+            .expect(200);
+
+        expect(asks).to.have.length(2);
+        expect(bids).to.have.length(2);
+    });
+
+    it('should return orders filtered by default filter', async () => {
+        const {
+            body: { asks, bids, lastTradedPrice }
+        }: { body: OrderBook } = await request(app.getHttpServer())
+            .post('/orderbook/search')
+            .send(defaultAllFilter)
+            .expect('Content-Type', /application\/json/)
+            .expect(200);
+
+        expect(asks).to.have.length(2);
+        expect(bids).to.have.length(2);
+        expect(lastTradedPrice.price).equals(marineTradeLastTradePrice.price); // marine asset trade
+        expect(lastTradedPrice.assetId).equals(marineTradeLastTradePrice.assetId); // marine asset trade
+    });
+
+    it('should return orders filtered by device type (Solar)', async () => {
+        const {
+            body: { asks, bids }
+        }: { body: OrderBook } = await request(app.getHttpServer())
+            .post('/orderbook/search')
+            .send({
+                ...defaultAllFilter,
+                deviceTypeFilter: Filter.Specific,
+                deviceType: ['Solar']
+            })
+            .expect('Content-Type', /application\/json/)
+            .expect(200);
+
+        expect(asks).to.have.length(2);
+        expect(bids).to.have.length(1);
+    });
+
+    it('should return orders filtered by device type (Wind)', async () => {
+        const {
+            body: { asks, bids, lastTradedPrice }
+        }: { body: OrderBook } = await request(app.getHttpServer())
+            .post('/orderbook/search')
+            .send({
+                ...defaultAllFilter,
+                deviceTypeFilter: Filter.Specific,
+                deviceType: ['Wind']
+            })
+            .expect('Content-Type', /application\/json/)
+            .expect(200);
+
+        expect(asks).to.have.length(0);
+        expect(bids).to.have.length(1);
+        expect(lastTradedPrice.price).equals(windTradeLastTradePrice.price);
+        expect(lastTradedPrice.assetId).equals(windTradeLastTradePrice.assetId);
     });
 });
