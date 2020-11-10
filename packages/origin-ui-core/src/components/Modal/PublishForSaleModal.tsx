@@ -112,10 +112,10 @@ export function PublishForSaleModal(props: IProps) {
 
                 const energyInDisplayUnitValid =
                     newEnergyInBaseValueUnit.gte(1) &&
-                    newEnergyInBaseValueUnit.lt(ownedPublicVolume) &&
+                    newEnergyInBaseValueUnit.lte(ownedPublicVolume) &&
                     countDecimals(newEnergyInDisplayUnit) === 0;
 
-                setEnergyInDisplayUnit(newEnergyInDisplayUnit);
+                setEnergyInDisplayUnit(event.target.value);
 
                 setValidation({
                     ...validation,
