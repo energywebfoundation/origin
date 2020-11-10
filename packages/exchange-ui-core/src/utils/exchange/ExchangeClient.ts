@@ -81,8 +81,7 @@ export class ExchangeClient implements IExchangeClient {
             deviceTypeFilter: deviceTypePresent ? Filter.Specific : Filter.Unspecified,
             locationFilter: locationPresent ? Filter.Specific : Filter.Unspecified,
             gridOperatorFilter: gridOperatorPresent ? Filter.Specific : Filter.Unspecified,
-            generationTimeFilter:
-                generationFrom && generationTo ? Filter.Specific : Filter.Unspecified,
+            generationTimeFilter: generationFrom && generationTo ? Filter.Specific : Filter.All,
             deviceVintageFilter: Filter.Unspecified,
             deviceType: deviceTypePresent ? deviceType : undefined,
             location: locationPresent ? location : undefined,
