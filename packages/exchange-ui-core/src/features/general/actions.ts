@@ -25,7 +25,6 @@ export interface IExchangeGeneralAction {
     payload?;
 }
 
-// Environment
 export interface ISetEnvironmentAction {
     type: ExchangeGeneralActionType.SET_ENVIRONMENT;
     payload: IEnvironment;
@@ -35,9 +34,7 @@ export const setEnvironment = (payload: ISetEnvironmentAction['payload']) => ({
     payload
 });
 export type TSetEnvironmentAction = typeof setEnvironment;
-// Environment
 
-// Client
 export interface ISetExchangeClientAction extends IExchangeGeneralAction {
     payload: {
         exchangeClient: IExchangeClient;
@@ -47,10 +44,7 @@ export const setExchangeClient = (payload: ISetExchangeClientAction['payload']) 
     type: ExchangeGeneralActionType.SET_EXCHANGE_CLIENT,
     payload
 });
-// Client
 
-// Initialize
-export interface IInitialiazeAppAction {
-    type: ExchangeGeneralActionType.INITIALIZE_EXCHANGE_APP;
-    payload: boolean;
-}
+export const initializeExchangeApp = (): IExchangeGeneralAction => ({
+    type: ExchangeGeneralActionType.INITIALIZE_EXCHANGE_APP
+});

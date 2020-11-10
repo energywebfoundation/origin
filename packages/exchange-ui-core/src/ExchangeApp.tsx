@@ -1,5 +1,5 @@
-import React, { useContext, useState } from 'react';
-import { useSelector } from 'react-redux';
+import React, { useContext, useState, useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import { Route, NavLink, Redirect } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Role, isRole, UserStatus } from '@energyweb/origin-backend-core';
@@ -14,8 +14,15 @@ import {
     ConnectBlockchainAccountModal
 } from '@energyweb/origin-ui-core';
 import { Exchange, MyTrades, BundlesTable, CreateBundleForm, MyOrders } from './containers';
+import { initializeExchangeApp } from './features/general';
 
 export function ExchangeApp() {
+    const dispatch = useDispatch();
+
+    useEffect(() => {
+        dispatch(initializeExchangeApp());
+    }, []);
+
     const currencies = useSelector(getCurrencies);
     const user = useSelector(getUserOffchain);
     const { getExchangeLink } = useLinks();

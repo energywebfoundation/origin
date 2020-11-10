@@ -60,7 +60,7 @@ function* setupEnvironment(): SagaIterator {
     }
 }
 
-function* initializeExchangeApp(): SagaIterator {
+function* initializeExchangeClient(): SagaIterator {
     while (true) {
         yield take(ExchangeGeneralActionType.SET_ENVIRONMENT);
 
@@ -85,6 +85,17 @@ function* initializeExchangeApp(): SagaIterator {
     }
 }
 
+function* initializeExchangeApp(): SagaIterator {
+    while (true) {
+        yield take(ExchangeGeneralActionType.INITIALIZE_EXCHANGE_APP);
+        yield call(setupEnvironment);
+    }
+}
+
 export function* exchangeGeneralSaga(): SagaIterator {
-    yield all([fork(initializeExchangeApp), fork(setupEnvironment)]);
+    yield all([
+        fork(initializeExchangeClient),
+        fork(setupEnvironment),
+        fork(initializeExchangeApp)
+    ]);
 }
