@@ -11,7 +11,7 @@ import {
     setLoading
 } from '@energyweb/origin-ui-core';
 import { IExchangeClient, Bundle } from '../../utils/exchange';
-import { getExchangeClient } from '../orders';
+import { getExchangeClient } from '../general/selectors';
 import {
     BundlesActionType,
     showBundleDetails,

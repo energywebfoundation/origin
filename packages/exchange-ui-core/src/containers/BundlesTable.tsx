@@ -22,7 +22,7 @@ import {
     TableMaterial
 } from '@energyweb/origin-ui-core';
 import { Bundle, IExchangeClient } from '../utils/exchange';
-import { getExchangeClient } from '../features/orders';
+import { getExchangeClient } from '../features/general';
 import {
     getBundles,
     getShowBundleDetails,

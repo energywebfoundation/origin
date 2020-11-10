@@ -12,7 +12,7 @@ import {
     setLoading,
     reloadCertificates
 } from '@energyweb/origin-ui-core';
-import { getExchangeClient } from '../features/orders';
+import { getExchangeClient } from '../features/general';
 import { createBid, createDemand } from '../features/orders/actions';
 import { TOrderBook, ANY_VALUE } from '../utils/exchange';
 import { Asks, Bids, Market, IMarketFormValues } from '../components/exchange';

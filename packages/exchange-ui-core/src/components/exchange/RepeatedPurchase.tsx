@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { Grid, InputAdornment, Divider } from '@material-ui/core';
 import { useValidation, useTranslation, getUserOffchain } from '@energyweb/origin-ui-core';
 import { FormInput, CalendarFieldOnPeriod, FormSelect } from '../Form';
-import { getExchangeClient } from '../../features/orders';
+import { getExchangeClient } from '../../features/general';
 import { periodTypeOptions } from '../../utils/demand';
 import { calculateTotalVolume } from '../../utils/exchange';
 
