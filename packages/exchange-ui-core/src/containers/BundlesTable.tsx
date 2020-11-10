@@ -28,7 +28,8 @@ import {
     getShowBundleDetails,
     showBundleDetails,
     cancelBundle,
-    storeBundle
+    storeBundle,
+    fetchBundles
 } from '../features/bundles';
 import { BundleDetails } from '../components/bundles';
 import { BundleBought } from '../components/modal';
@@ -46,6 +47,12 @@ interface IOwnProps {
 const ENERGY_COLUMNS_TO_DISPLAY = [EnergyTypes.SOLAR, EnergyTypes.WIND, EnergyTypes.HYDRO];
 
 export const BundlesTable = (props: IOwnProps) => {
+    const dispatch = useDispatch();
+
+    useEffect(() => {
+        dispatch(fetchBundles());
+    }, []);
+
     const user = useSelector(getUserOffchain);
     const userIsActive = user && user.status === UserStatus.Active;
     const { owner = false } = props;
@@ -58,7 +65,7 @@ export const BundlesTable = (props: IOwnProps) => {
     const devices = useSelector(getProducingDevices);
     const [selected, setSelected] = useState<Bundle>(null);
     const environment = useSelector(getEnvironment);
-    const dispatch = useDispatch();
+    // const dispatch = useDispatch();
     const isBundleDetailsVisible = useSelector(getShowBundleDetails);
     const [showBundleBoughtModal, setShowBundleBoughtModal] = useState<boolean>(false);
 
