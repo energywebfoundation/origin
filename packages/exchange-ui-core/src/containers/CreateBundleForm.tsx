@@ -7,7 +7,7 @@ import { Certificates, SelectedForSale } from '../components/bundles';
 export const CreateBundleForm = () => {
     const [selected, setSelected] = useState<ICertificateViewItem[]>([]);
     const history = useHistory();
-    const { getCertificatesLink } = useLinks();
+    const { getExchangeLink } = useLinks();
 
     return (
         <Box className="CreateBundleForm" display="grid" style={{ gridTemplateColumns: '60% 40%' }}>
@@ -17,7 +17,7 @@ export const CreateBundleForm = () => {
             <Box className="Certificates">
                 <SelectedForSale
                     certificatesToBundle={selected}
-                    callback={() => history.push(`${getCertificatesLink()}/bundles`)}
+                    callback={() => history.push(`${getExchangeLink()}/bundles`)}
                 />
             </Box>
         </Box>
