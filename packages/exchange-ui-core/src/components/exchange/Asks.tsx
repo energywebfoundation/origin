@@ -11,11 +11,11 @@ import {
     useTranslation,
     useValidation,
     EnergyFormatter,
-    FormInput,
     getUserOffchain
 } from '@energyweb/origin-ui-core';
 import { getExchangeClient } from '../../features/general';
 import { IAsset, IOrderBookOrderDTO, calculateTotalPrice } from '../../utils/exchange';
+import { FormInput } from '../Form';
 import { Bids, IBidsProps } from './Bids';
 
 interface IAsksProps {
