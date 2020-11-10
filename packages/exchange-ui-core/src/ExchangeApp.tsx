@@ -1,5 +1,5 @@
-import React, { useContext, useState, useEffect } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import React, { useContext, useState } from 'react';
+import { useSelector } from 'react-redux';
 import { Route, NavLink, Redirect } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Role, isRole, UserStatus } from '@energyweb/origin-backend-core';
@@ -11,12 +11,9 @@ import {
     getUserOffchain,
     PageContent,
     RoleChangedModal,
-    ConnectBlockchainAccountModal,
-    getOffChainDataSource
+    ConnectBlockchainAccountModal
 } from '@energyweb/origin-ui-core';
 import { Exchange, MyTrades, BundlesTable, CreateBundleForm, MyOrders } from './containers';
-import { setExchangeClient } from './features/orders';
-import { ExchangeClient } from './utils/exchange';
 
 export function ExchangeApp() {
     const currencies = useSelector(getCurrencies);
@@ -27,24 +24,6 @@ export function ExchangeApp() {
     const [showBlockchainModal, setShowBlockchainModal] = useState(false);
     const originConfiguration = useContext(OriginConfigurationContext);
     const enabledFeatures = originConfiguration?.enabledFeatures;
-    const offchainData = useSelector(getOffChainDataSource);
-    const dispatch = useDispatch();
-
-    useEffect(() => {
-        const setClient = async () => {
-            dispatch(
-                setExchangeClient({
-                    exchangeClient: new ExchangeClient(
-                        offchainData?.dataApiUrl,
-                        offchainData?.requestClient
-                    )
-                })
-            );
-        };
-        if (offchainData?.dataApiUrl) {
-            setClient();
-        }
-    }, [offchainData]);
 
     const defaultCurrency = (currencies && currencies[0]) ?? 'USD';
 
@@ -145,6 +124,7 @@ export function ExchangeApp() {
                     );
                 }}
             />
+            <Route path={getExchangeLink()} render={() => <Redirect to={defaultRedirect} />} />
             <Route
                 exact={true}
                 path={getExchangeLink()}
