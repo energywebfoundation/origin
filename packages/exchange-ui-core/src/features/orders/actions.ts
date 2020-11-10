@@ -1,4 +1,4 @@
-import { Order, Demand, CreateDemandDTO, CreateBidDTO } from '../../utils/exchange';
+import { Order, Demand, CreateDemandDTO, CreateBidDTO, IDirectBuyDTO } from '../../utils/exchange';
 
 export enum OrdersActionsType {
     STORE_ORDERS = 'ORDERS_STORE',
@@ -12,7 +12,8 @@ export enum OrdersActionsType {
     RESUME_DEMAND = 'ORDERS_RESUME_DEMAND',
     ARCHIVE_DEMAND = 'ORDERS_ARCHIVE_DEMAND',
     CLEAR_DEMANDS = 'ORDERS_CLEAR_DEMANDS',
-    FETCH_ORDERS = 'FETCH_ORDERS'
+    FETCH_ORDERS = 'FETCH_ORDERS',
+    DIRECT_BUY_ORDER = 'DIRECT_BUY_ORDER'
 }
 
 export interface IOrderAction {
@@ -75,6 +76,10 @@ export interface IArchiveDemandAction extends IOrderAction {
     payload: Demand;
 }
 
+export interface IDirectBuyOrderAction extends IOrderAction {
+    payload: IDirectBuyDTO;
+}
+
 export const storeDemand = (demands: Demand[]): IStoreDemandAction => ({
     type: OrdersActionsType.STORE_DEMANDS,
     payload: demands
@@ -111,4 +116,9 @@ export const clearDemands = (): IOrderAction => ({
 
 export const fetchOrders = (): IOrderAction => ({
     type: OrdersActionsType.FETCH_ORDERS
+});
+
+export const directBuyOrder = (payload: IDirectBuyDTO): IDirectBuyOrderAction => ({
+    type: OrdersActionsType.DIRECT_BUY_ORDER,
+    payload
 });

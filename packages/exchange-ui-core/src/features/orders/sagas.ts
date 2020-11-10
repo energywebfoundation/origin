@@ -7,7 +7,8 @@ import {
     showNotification,
     NotificationType,
     reloadCertificates,
-    getUserOffchain
+    getUserOffchain,
+    setLoading
 } from '@energyweb/origin-ui-core';
 import { getExchangeClient } from '../general/selectors';
 import {
@@ -83,6 +84,29 @@ function* cancelOrder(): SagaIterator {
             console.error(err);
             showNotification(i18n.t('general.feedback.unknownError'), NotificationType.Error);
         }
+    }
+}
+
+function* buyDirect(): SagaIterator {
+    while (true) {
+        const { payload } = yield take(OrdersActionsType.DIRECT_BUY_ORDER);
+        const exchangeClient: IExchangeClient = yield select(getExchangeClient);
+        yield put(setLoading(true));
+        const i18n = getI18n();
+
+        try {
+            yield apply(exchangeClient, exchangeClient.directBuy, [payload]);
+            yield put(reloadCertificates());
+            showNotification(
+                i18n.t('exchange.feedback.directBuySuccess'),
+                NotificationType.Success
+            );
+        } catch (error) {
+            showNotification(i18n.t('exchange.feedback.directBuyError'), NotificationType.Error);
+            console.error(error);
+        }
+
+        yield put(setLoading(false));
     }
 }
 
@@ -183,6 +207,7 @@ export function* ordersSaga(): SagaIterator {
         fork(updateDemand),
         fork(pauseDemand),
         fork(resumeDemand),
-        fork(fetchOrdersAndDemands)
+        fork(fetchOrdersAndDemands),
+        fork(buyDirect)
     ]);
 }

@@ -6,14 +6,12 @@ import {
     moment,
     useTranslation,
     useIntervalFetch,
-    showNotification,
     getCountry,
     getUserOffchain,
-    setLoading,
-    reloadCertificates
+    setLoading
 } from '@energyweb/origin-ui-core';
 import { getExchangeClient } from '../features/general';
-import { createBid, createDemand } from '../features/orders/actions';
+import { createBid, createDemand, directBuyOrder } from '../features/orders';
 import { TOrderBook, ANY_VALUE } from '../utils/exchange';
 import { Asks, Bids, Market, IMarketFormValues } from '../components/exchange';
 
@@ -122,25 +120,10 @@ export function Exchange(props: IProps) {
             typeof volume === 'undefined' ||
             typeof price === 'undefined'
         ) {
-            throw new Error(`Can't buyDirect order with undefined parameters passed`);
+            throw new Error(`Can't buy direct order with undefined parameters passed`);
         }
 
-        dispatch(setLoading(true));
-
-        const { success, status } = await exchangeClient.directBuy({
-            askId: orderId,
-            volume,
-            price
-        });
-
-        dispatch(reloadCertificates());
-
-        if (!success) {
-            showNotification('Direct buy failed.');
-            console.error(`Direct buy failed with status ${status}.`);
-        }
-
-        dispatch(setLoading(false));
+        dispatch(directBuyOrder({ askId: orderId, volume, price }));
     }
 
     return (
