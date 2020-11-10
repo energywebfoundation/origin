@@ -318,7 +318,9 @@
                 "total": "Total",
                 "bidPlaced": "Oferta została złożona pomyślnie",
                 "demandPlaced": "Popyt pomyślnie umieszczony",
-                "actionUnsuccessful": "Twoja akcja handlowa nie powiodła się"
+                "actionUnsuccessful": "Twoja akcja handlowa nie powiodła się",
+                "directBuySuccess": "Bezpośredni zakup się udał",
+                "directBuyError": "Bezpośredni zakup nie powiódł się"
             },
             "info": {
                 "regions": "Regiony",
