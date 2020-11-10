@@ -16,7 +16,7 @@ import {
 import { getExchangeClient } from '../../features/general';
 import { IAsset, IOrderBookOrderDTO, calculateTotalPrice } from '../../utils/exchange';
 import { FormInput } from '../Form';
-import { Bids, IBidsProps } from './Bids';
+import { Orders, IOrdersProps } from './Orders';
 
 interface IAsksProps {
     buyDirect: (orderId: string, volume: string, price: number) => void;
@@ -25,7 +25,7 @@ interface IAsksProps {
     displayAssetDetails?: boolean;
 }
 
-type Props = IAsksProps & IBidsProps;
+type Props = IAsksProps & IOrdersProps;
 
 export function Asks(props: Props) {
     const { buyDirect, displayAssetDetails, energyUnit, currency } = props;
@@ -81,7 +81,7 @@ export function Asks(props: Props) {
     };
 
     return (
-        <Bids
+        <Orders
             handleRowClick={(newOrder) => {
                 if (selectedOrder?.id === newOrder?.id) {
                     setSelectedOrder(null);

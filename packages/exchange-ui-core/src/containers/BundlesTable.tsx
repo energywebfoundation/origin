@@ -65,7 +65,6 @@ export const BundlesTable = (props: IOwnProps) => {
     const devices = useSelector(getProducingDevices);
     const [selected, setSelected] = useState<Bundle>(null);
     const environment = useSelector(getEnvironment);
-    // const dispatch = useDispatch();
     const isBundleDetailsVisible = useSelector(getShowBundleDetails);
     const [showBundleBoughtModal, setShowBundleBoughtModal] = useState<boolean>(false);
 
