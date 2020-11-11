@@ -5,6 +5,7 @@ import { Module, ValidationPipe } from '@nestjs/common';
 import { APP_PIPE } from '@nestjs/core';
 import { IntUnitsOfEnergy } from '@energyweb/origin-backend-utils';
 import { ConfigModule } from '@nestjs/config';
+import { ScheduleModule } from '@nestjs/schedule';
 import { CertificateModule } from './pods/certificate/certificate.module';
 import { BlockchainPropertiesModule } from './pods/blockchain/blockchain-properties.module';
 import { CertificationRequestModule } from './pods/certification-request/certification-request.module';
@@ -34,6 +35,7 @@ export const providers = [{ provide: APP_PIPE, useClass: ValidationPipe }, IntUn
             envFilePath: getEnvFilePath(),
             isGlobal: true
         }),
+        ScheduleModule.forRoot(),
         CertificateModule,
         BlockchainPropertiesModule,
         CertificationRequestModule
