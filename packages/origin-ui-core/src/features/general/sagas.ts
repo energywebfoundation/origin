@@ -120,7 +120,8 @@ function prepareGetEnvironmentTask(): {
                 BACKEND_PORT: '3030',
                 BLOCKCHAIN_EXPLORER_URL: 'https://volta-explorer.energyweb.org',
                 WEB3: 'http://localhost:8545',
-                REGISTRATION_MESSAGE_TO_SIGN: 'I register as Origin user'
+                REGISTRATION_MESSAGE_TO_SIGN: 'I register as Origin user',
+                MARKET_TIMEZONE: 'Europe/Zurich'
             };
         },
         cancel: source.cancel
