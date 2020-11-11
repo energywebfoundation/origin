@@ -8,16 +8,19 @@ export const FILE_SUPPORTED_MIMETYPES = [
 
 export interface ISuccessResponse {
     success: boolean;
+    statusCode?: number;
     message?: string;
 }
 
-export const ResponseSuccess = (message?: string): ISuccessResponse => ({
+export const ResponseSuccess = (message?: string, statusCode = 200): ISuccessResponse => ({
     success: true,
+    statusCode,
     message
 });
 
-export const ResponseFailure = (message?: string): ISuccessResponse => ({
+export const ResponseFailure = (message?: string, statusCode?: number): ISuccessResponse => ({
     success: false,
+    statusCode,
     message
 });
 
