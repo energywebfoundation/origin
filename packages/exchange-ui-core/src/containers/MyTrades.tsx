@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Grid } from '@material-ui/core';
 import { useTranslation, useIntervalFetch } from '@energyweb/origin-ui-core';
-import { getExchangeClient } from '../features/orders';
+import { getExchangeClient } from '../features/general';
 import { ITradeDTO } from '../utils/exchange';
 import { Trades } from '../components/trades';
 

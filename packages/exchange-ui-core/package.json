@@ -35,6 +35,7 @@
         "@material-ui/types": "5.1.0",
         "@material-ui/styles": "^4.10.0",
         "@unicef/material-ui-currency-textfield": "^0.8.6",
+        "axios": "0.21.0",
         "bootstrap": "4.5.3",
         "ethers": "5.0.15",
         "extract-text-webpack-plugin": "4.0.0-beta.0",
