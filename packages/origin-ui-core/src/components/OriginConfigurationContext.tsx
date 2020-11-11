@@ -14,6 +14,7 @@ import variables from '../styles/variables.scss';
 import { OriginGenericLogo } from './icons/OriginGenericLogo';
 import { setTimeFormatLanguage } from '../utils/time';
 import { plPL, enUS } from '@material-ui/core/locale';
+import moment from 'moment';
 
 export interface IOriginStyleConfig {
     PRIMARY_COLOR: string;
@@ -287,6 +288,12 @@ export function createOriginConfiguration(configuration: Partial<IOriginConfigur
             );
         }
     }
+    moment.updateLocale('en', {
+        week: {
+            dow: 1,
+            doy: 4
+        }
+    });
 
     return newConfiguration;
 }

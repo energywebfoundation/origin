@@ -1,16 +1,14 @@
-import { Order, Demand, IExchangeClient } from '../../utils/exchange';
+import { Order, Demand } from '../../utils/exchange';
 import { IOrderAction, OrdersActionsType } from './actions';
 
 export interface IOrdersState {
     orders: Order[];
     demands: Demand[];
-    exchangeClient: IExchangeClient;
 }
 
 const initialState: IOrdersState = {
     orders: [],
-    demands: [],
-    exchangeClient: null
+    demands: []
 };
 
 export function ordersState<T>(
@@ -40,8 +38,6 @@ export function ordersState<T>(
                 ...state,
                 demands: []
             };
-        case OrdersActionsType.SET_EXCHANGE_CLIENT:
-            return { ...state, exchangeClient: payload.exchangeClient };
         default:
             return state;
     }

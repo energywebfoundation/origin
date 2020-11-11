@@ -13,5 +13,5 @@ export interface ICoreState {
     configurationState: Configuration.Entity;
     usersState: IUsersState;
     router: RouterState;
-    web3?: ethers.providers.JsonRpcProvider;
+    web3: ethers.providers.JsonRpcProvider;
 }

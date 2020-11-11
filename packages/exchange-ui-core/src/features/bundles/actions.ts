@@ -6,12 +6,13 @@ export enum BundlesActionType {
     BUY = 'BUNDLES_BUY',
     SHOW_DETAILS = 'BUNDLES_SHOW_BUNDLE_DETAILS',
     CLEAR_BUNDLES = 'BUNDLES_CLREAR_BUNDLES',
-    CANCEL_BUNDLE = 'BUNDLES_CANCEL_BUNDLE'
+    CANCEL_BUNDLE = 'BUNDLES_CANCEL_BUNDLE',
+    FETCH_BUNDLES = 'FETCH_BUNDLES'
 }
 
 export interface IBundleAction {
     type: BundlesActionType;
-    payload;
+    payload?;
     callback?: () => void;
 }
 
@@ -65,4 +66,8 @@ export const clearBundles = () => ({ type: BundlesActionType.CLEAR_BUNDLES });
 export const cancelBundle = (payload: ICancelBundleAction['payload']) => ({
     type: BundlesActionType.CANCEL_BUNDLE,
     payload
+});
+
+export const fetchBundles = (): IBundleAction => ({
+    type: BundlesActionType.FETCH_BUNDLES
 });

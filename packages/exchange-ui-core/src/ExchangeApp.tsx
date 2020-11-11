@@ -11,14 +11,18 @@ import {
     getUserOffchain,
     PageContent,
     RoleChangedModal,
-    ConnectBlockchainAccountModal,
-    getOffChainDataSource
+    ConnectBlockchainAccountModal
 } from '@energyweb/origin-ui-core';
 import { Exchange, MyTrades, BundlesTable, CreateBundleForm, MyOrders } from './containers';
-import { setExchangeClient } from './features/orders';
-import { ExchangeClient } from './utils/exchange';
+import { initializeExchangeApp } from './features/general';
 
 export function ExchangeApp() {
+    const dispatch = useDispatch();
+
+    useEffect(() => {
+        dispatch(initializeExchangeApp());
+    }, []);
+
     const currencies = useSelector(getCurrencies);
     const user = useSelector(getUserOffchain);
     const { getExchangeLink } = useLinks();
@@ -27,24 +31,6 @@ export function ExchangeApp() {
     const [showBlockchainModal, setShowBlockchainModal] = useState(false);
     const originConfiguration = useContext(OriginConfigurationContext);
     const enabledFeatures = originConfiguration?.enabledFeatures;
-    const offchainData = useSelector(getOffChainDataSource);
-    const dispatch = useDispatch();
-
-    useEffect(() => {
-        const setClient = async () => {
-            dispatch(
-                setExchangeClient({
-                    exchangeClient: new ExchangeClient(
-                        offchainData?.dataApiUrl,
-                        offchainData?.requestClient
-                    )
-                })
-            );
-        };
-        if (offchainData?.dataApiUrl) {
-            setClient();
-        }
-    }, [offchainData]);
 
     const defaultCurrency = (currencies && currencies[0]) ?? 'USD';
 
@@ -145,6 +131,7 @@ export function ExchangeApp() {
                     );
                 }}
             />
+            <Route path={getExchangeLink()} render={() => <Redirect to={defaultRedirect} />} />
             <Route
                 exact={true}
                 path={getExchangeLink()}
