@@ -8,7 +8,7 @@ import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 
 import { ISuccessResponse, ResponseFailure, ResponseSuccess } from '@energyweb/origin-backend-core';
-import { Logger } from '@nestjs/common';
+import { HttpStatus, Logger } from '@nestjs/common';
 import { CertificateCreatedEvent } from '../events/certificate-created-event';
 import { BlockchainPropertiesService } from '../../blockchain/blockchain-properties.service';
 import { Certificate } from '../certificate.entity';
@@ -38,7 +38,8 @@ export class CertificateCreatedHandler implements IEventHandler<CertificateCreat
 
         if (existingCertificate) {
             return ResponseFailure(
-                `Certificate with tokenId ${certificateId} already exists in the DB.`
+                `Certificate with tokenId ${certificateId} already exists in the DB.`,
+                HttpStatus.CONFLICT
             );
         }
 

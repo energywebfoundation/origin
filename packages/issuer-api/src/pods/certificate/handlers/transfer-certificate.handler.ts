@@ -4,6 +4,7 @@ import { Repository } from 'typeorm';
 import { Certificate as CertificateFacade, PreciseProofUtils } from '@energyweb/issuer';
 import { BigNumber } from 'ethers';
 import { ISuccessResponse, ResponseFailure, ResponseSuccess } from '@energyweb/origin-backend-core';
+import { HttpStatus } from '@nestjs/common';
 import { TransferCertificateCommand } from '../commands/transfer-certificate.command';
 import { Certificate } from '../certificate.entity';
 
@@ -41,7 +42,8 @@ export class TransferCertificateHandler implements ICommandHandler<TransferCerti
 
             if (amountToTransfer > senderBalance) {
                 return ResponseFailure(
-                    `Sender ${from} has a balance of ${senderBalance.toString()} but wants to send ${amount}`
+                    `Sender ${from} has a balance of ${senderBalance.toString()} but wants to send ${amount}`,
+                    HttpStatus.BAD_REQUEST
                 );
             }
 
@@ -68,7 +70,7 @@ export class TransferCertificateHandler implements ICommandHandler<TransferCerti
                 from
             );
         } catch (error) {
-            return ResponseFailure(JSON.stringify(error));
+            return ResponseFailure(JSON.stringify(error), HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
         await certificate.sync();

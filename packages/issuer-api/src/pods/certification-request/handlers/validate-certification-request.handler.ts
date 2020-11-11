@@ -4,6 +4,7 @@ import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { ISuccessResponse, ResponseFailure, ResponseSuccess } from '@energyweb/origin-backend-core';
+import { HttpStatus } from '@nestjs/common';
 import { ValidateCertificationRequestCommand } from '../commands/validate-certification-request.command';
 import { CertificationRequest } from '../certification-request.entity';
 
@@ -38,7 +39,8 @@ export class ValidateCertificationRequestHandler
 
             if (generationTimeRange.overlaps(certificationRequestGenerationRange)) {
                 return ResponseFailure(
-                    `Wanted generation time clashes with an existing certification request: ${certificationRequest.id}`
+                    `Wanted generation time clashes with an existing certification request: ${certificationRequest.id}`,
+                    HttpStatus.BAD_REQUEST
                 );
             }
         }

@@ -30,13 +30,16 @@ import { CertificateEvent } from '../../types';
 import { GetAllCertificateEventsQuery } from './queries/get-all-certificate-events.query';
 import { CertificateDTO } from './certificate.dto';
 import { SuccessResponseDTO } from '../../utils/success-response.dto';
+import { ExceptionController } from '../../utils/ExceptionController';
 
 @ApiTags('certificates')
 @Controller('certificate')
-export class CertificateController {
+export class CertificateController extends ExceptionController {
     private readonly logger = new Logger(CertificateController.name);
 
-    constructor(private readonly commandBus: CommandBus, private readonly queryBus: QueryBus) {}
+    constructor(private readonly commandBus: CommandBus, private readonly queryBus: QueryBus) {
+        super();
+    }
 
     @Get('/:id')
     @UseGuards(AuthGuard(), ActiveUserGuard)
@@ -116,7 +119,7 @@ export class CertificateController {
         @Param('id', new ParseIntPipe()) certificateId: number,
         @Body() dto: TransferCertificateDTO
     ): Promise<SuccessResponseDTO> {
-        return this.commandBus.execute(
+        const response = await this.commandBus.execute(
             new TransferCertificateCommand(
                 certificateId,
                 blockchainAccountAddress,
@@ -125,6 +128,10 @@ export class CertificateController {
                 dto.delegated
             )
         );
+
+        this.throwIfNotSuccess(response);
+
+        return response;
     }
 
     @Put('/:id/claim')
@@ -140,7 +147,7 @@ export class CertificateController {
         @Param('id', new ParseIntPipe()) certificateId: number,
         @Body() dto: ClaimCertificateDTO
     ): Promise<SuccessResponseDTO> {
-        return this.commandBus.execute(
+        const response = await this.commandBus.execute(
             new ClaimCertificateCommand(
                 certificateId,
                 dto.claimData,
@@ -148,6 +155,10 @@ export class CertificateController {
                 dto.amount
             )
         );
+
+        this.throwIfNotSuccess(response);
+
+        return response;
     }
 
     @Put('/bulk-claim')
@@ -162,13 +173,17 @@ export class CertificateController {
         @UserDecorator() { blockchainAccountAddress }: ILoggedInUser,
         @Body() dto: BulkClaimCertificatesDTO
     ): Promise<SuccessResponseDTO> {
-        return this.commandBus.execute(
+        const response = await this.commandBus.execute(
             new BulkClaimCertificatesCommand(
                 dto.certificateIds,
                 dto.claimData,
                 blockchainAccountAddress
             )
         );
+
+        this.throwIfNotSuccess(response);
+
+        return response;
     }
 
     @Get('/:id/events')

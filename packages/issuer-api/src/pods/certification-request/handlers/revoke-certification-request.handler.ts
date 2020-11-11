@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CertificationRequest as CertificationRequestFacade } from '@energyweb/issuer';
 import { ISuccessResponse, ResponseFailure, ResponseSuccess } from '@energyweb/origin-backend-core';
+import { HttpStatus } from '@nestjs/common';
 
 import { RevokeCertificationRequestCommand } from '../commands/revoke-certification-request.command';
 import { CertificationRequest } from '../certification-request.entity';
@@ -22,7 +23,8 @@ export class RevokeCertificationRequestHandler
 
         if (certificationRequest.revoked || certificationRequest.approved) {
             return ResponseFailure(
-                `Certificate #${id} can't be revoked. It has already been revoked or approved.`
+                `Certificate #${id} can't be revoked. It has already been revoked or approved.`,
+                HttpStatus.BAD_REQUEST
             );
         }
 
@@ -36,7 +38,7 @@ export class RevokeCertificationRequestHandler
         try {
             await certReq.revoke();
         } catch (e) {
-            return ResponseFailure(e.message);
+            return ResponseFailure(e.message, HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
         await this.repository.update(id, {
