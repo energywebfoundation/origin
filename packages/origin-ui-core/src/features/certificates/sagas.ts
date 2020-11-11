@@ -42,10 +42,14 @@ import { ICertificate, ICertificateViewItem } from './types';
 import { enhanceCertificate, fetchDataAfterConfigurationChange } from '../general/sagas';
 import { certificateEnergyStringToBN } from '../../utils/certificates';
 
-export function* getCertificate(id: number): any {
+export function* getCertificate(id: number, byTokenId = false): any {
     const certificatesClient: CertificatesClient = yield select(getCertificatesClient);
 
-    const certificate = yield apply(certificatesClient, certificatesClient.get, [id]);
+    const { data: certificate } = yield apply(
+        certificatesClient,
+        byTokenId ? certificatesClient.getByTokenId : certificatesClient.get,
+        [id]
+    );
 
     return {
         ...certificate,
