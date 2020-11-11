@@ -52,7 +52,9 @@ export function CertificateDetailView(props: IProps) {
     const classes = useStyles(useTheme());
 
     const selectedCertificate =
-        id !== null && typeof id !== 'undefined' && certificates.find((c) => c.id === id);
+        id !== null && typeof id !== 'undefined'
+            ? certificates.filter((c) => c.id === id).pop()
+            : null;
 
     async function enrichEvent() {
         const { data: allCertificateEvents } = await certificatesClient.getAllEvents(
