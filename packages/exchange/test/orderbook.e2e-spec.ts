@@ -363,7 +363,7 @@ describe('orderbook tests', () => {
         expect(lastTradedPrice.assetId).equals(windTradeLastTradePrice.assetId);
     });
 
-    it('should return orders filtered by generation date', async () => {
+    it.only('should return orders filtered by generation date', async () => {
         const {
             body: { asks, bids }
         }: { body: OrderBook } = await request(app.getHttpServer())
@@ -382,7 +382,7 @@ describe('orderbook tests', () => {
         expect(bids[0].product.deviceType).to.deep.equal(['Wind']);
     });
 
-    it('should return orders filtered by generation date even if timezones mismatch', async () => {
+    it.only('should return orders filtered by generation date even if timezones mismatch', async () => {
         const {
             body: { asks, bids }
         }: { body: OrderBook } = await request(app.getHttpServer())
@@ -390,11 +390,22 @@ describe('orderbook tests', () => {
             .send({
                 ...defaultAllFilter,
                 generationTimeFilter: Filter.Specific,
-                generationFrom: moment().startOf('month').add(2, 'hour').toISOString(),
-                generationTo: moment().startOf('month').add(1, 'month').add(2, 'hour').toISOString()
+                generationFrom: moment().startOf('month').add(2, 'hours').toISOString(),
+                generationTo: moment()
+                    .startOf('month')
+                    .add(1, 'month')
+                    .add(2, 'hours')
+                    .toISOString()
             })
             .expect('Content-Type', /application\/json/)
             .expect(200);
+
+        console.log({
+            generationFrom: moment().startOf('month').toISOString(),
+            generationFromMod: moment().startOf('month').add(2, 'hour').toISOString(),
+            generationTo: moment().startOf('month').add(1, 'month').toISOString(),
+            generationToMod: moment().startOf('month').add(1, 'month').add(2, 'hour').toISOString()
+        });
 
         expect(asks).to.have.length(0);
         expect(bids).to.have.length(1);
