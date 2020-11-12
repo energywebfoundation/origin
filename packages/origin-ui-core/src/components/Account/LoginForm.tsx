@@ -89,7 +89,7 @@ export const LoginForm = () => {
                 validateOnMount={true}
             >
                 {(formikProps) => {
-                    const { isValid, isSubmitting } = formikProps;
+                    const { isValid, isSubmitting, handleBlur, validateField } = formikProps;
                     const buttonDisabled = isSubmitting || !isValid;
 
                     return (
@@ -100,6 +100,10 @@ export const LoginForm = () => {
                                 type="text"
                                 required
                                 component={InputFixedHeight}
+                                onBlur={(e) => {
+                                    handleBlur(e);
+                                    validateField(e.target.name);
+                                }}
                             />
 
                             <Field
@@ -108,6 +112,10 @@ export const LoginForm = () => {
                                 required
                                 type="password"
                                 component={InputFixedHeight}
+                                onBlur={(e) => {
+                                    handleBlur(e);
+                                    validateField(e.target.name);
+                                }}
                             />
                             <Box px={1} textAlign="right">
                                 <Button className={styles.button}>

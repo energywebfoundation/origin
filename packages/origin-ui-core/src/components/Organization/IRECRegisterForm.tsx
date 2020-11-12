@@ -167,7 +167,7 @@ export const IRECRegisterForm = () => {
                 {(formikProps) => {
                     const { values, isValid, isSubmitting, setFieldValue } = formikProps;
                     const buttonDisabled = isSubmitting || !isValid;
-                    console.log(isSubmitting, isValid);
+
                     return (
                         <Form translate="no">
                             <Grid container direction="column">
