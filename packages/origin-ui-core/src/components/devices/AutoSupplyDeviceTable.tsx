@@ -206,12 +206,10 @@ export function AutoSupplyDeviceTable() {
                         value={entity?.defaultAskPrice}
                         className="mt-4"
                         type="number"
-                        inputProps={{ step: 0.01 }}
                         onChange={(e) =>
                             setEntity({
                                 ...entity,
-                                defaultAskPrice:
-                                    parseFloat(parseFloat(e.target.value).toFixed(2)) ?? 0.0
+                                defaultAskPrice: Number(e.target.value)
                             })
                         }
                         fullWidth
