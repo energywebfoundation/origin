@@ -143,8 +143,10 @@ export const DemandsTable = (props: IOwnProps) => {
     });
 
     useEffect(() => {
-        setPageSize(DEMANDS_PER_PAGE);
-        loadPage(1);
+        if (demands.length > 0) {
+            setPageSize(DEMANDS_PER_PAGE);
+            loadPage(1);
+        }
     }, [demands]);
 
     const viewDetails = (rowIndex: number) => {

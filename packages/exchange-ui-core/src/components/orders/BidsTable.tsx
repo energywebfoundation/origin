@@ -117,8 +117,10 @@ export const BidsTable = (props: IOwnProsp) => {
     });
 
     useEffect(() => {
-        setPageSize(ORDERS_PER_PAGE);
-        loadPage(1);
+        if (bids.length > 0) {
+            setPageSize(ORDERS_PER_PAGE);
+            loadPage(1);
+        }
     }, [bids]);
 
     const [currency = 'USD'] = useSelector(getCurrencies);
