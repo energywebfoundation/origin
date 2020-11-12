@@ -152,7 +152,7 @@ export function Exchange(props: IProps) {
                     }
 
                     const newGenerationDateStart = values.generationDateStart
-                        ?.utcOffset(environment.MARKET_UTC_OFFSET)
+                        ?.utcOffset(Number(environment.MARKET_UTC_OFFSET), true)
                         .startOf('month')
                         .toISOString();
 
@@ -164,7 +164,7 @@ export function Exchange(props: IProps) {
                     }
 
                     const newGenerationDateEnd = values.generationDateEnd
-                        ?.utcOffset(environment.MARKET_UTC_OFFSET)
+                        ?.utcOffset(Number(environment.MARKET_UTC_OFFSET), true)
                         .endOf('month')
                         .toISOString();
 

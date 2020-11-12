@@ -1,5 +1,6 @@
 import { ICoreState } from '../../types';
 import { ExternalDeviceIdType } from '@energyweb/origin-backend-core';
+import { IEnvironment } from './actions';
 
 export const getLoading = (state: ICoreState) => state.generalState.loading;
 
@@ -7,7 +8,7 @@ export const getError = (state: ICoreState) => state.generalState.error;
 
 export const getOffChainDataSource = (state: ICoreState) => state.generalState.offChainDataSource;
 
-export const getEnvironment = (state: ICoreState) => state.generalState.environment;
+export const getEnvironment = (state: ICoreState): IEnvironment => state.generalState.environment;
 
 export const getCurrencies = (state: ICoreState): string[] =>
     state.generalState.offChainConfiguration?.currencies || ['USD'];
