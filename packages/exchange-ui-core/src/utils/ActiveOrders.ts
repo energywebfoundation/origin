@@ -12,9 +12,7 @@ export class ActiveOrders extends Array<Order> {
     }
 
     public get bids() {
-        return this.orders.filter(
-            (o) => o.side === OrderSide.Bid && !{}.hasOwnProperty.call(o, 'demandId')
-        );
+        return this.orders.filter((o) => o.side === OrderSide.Bid && o.demandId === null);
     }
 
     public get asks() {
