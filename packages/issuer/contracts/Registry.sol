@@ -48,6 +48,10 @@ contract Registry is ERC1155Mintable, ERC1888 {
 
 		_validate(cert.issuer,  cert.validityData);
 
+        require(_to != address(0x0), "safeTransferAndClaimFrom: _to must be non-zero.");
+        require(_from == msg.sender || operatorApproval[_from][msg.sender] == true, "safeTransferAndClaimFrom: Need operator approval for 3rd party claims.");
+        require(balances[_id][_from] > 0, "safeTransferAndClaimFrom: _from balance has to be higher than 0");
+
 		if (_from != _to) {
 			safeTransferFrom(_from, _to, _id, _value, _data);
 		}
@@ -66,6 +70,10 @@ contract Registry is ERC1155Mintable, ERC1888 {
 		bytes[] calldata _claimData
 	) external {
 		uint numberOfClaims = _ids.length;
+
+        require(_to != address(0x0), "safeBatchTransferAndClaimFrom: _to address must be non-zero.");
+        require(_ids.length == _values.length, "safeBatchTransferAndClaimFrom: _ids and _values array length must match.");
+        require(_from == msg.sender || operatorApproval[_from][msg.sender] == true, "safeBatchTransferAndClaimFrom: Need operator approval for 3rd party transfers.");
 
 		require(numberOfClaims > 0, "safeBatchTransferAndClaimFrom: at least one certificate has to be present.");
 		require(

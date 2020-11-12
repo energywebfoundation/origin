@@ -291,4 +291,70 @@ describe('Certificate tests', () => {
         assert.equal(certificate.claimers[deviceOwnerWallet.address], totalVolume.toString());
         assert.equal(certificate2.claimers[deviceOwnerWallet.address], totalVolume.toString());
     });
+
+    it(`should not be able to claim another user's certificate`, async () => {
+        let certificate = await issueCertificate(totalVolume, deviceOwnerWallet.address);
+
+        setActiveUser(traderWallet);
+        certificate = await certificate.sync();
+
+        let failed = false;
+
+        try {
+            await certificate.claim(
+                claimData,
+                totalVolume,
+                deviceOwnerWallet.address,
+                traderWallet.address
+            );
+        } catch (e) {
+            failed = true;
+        }
+
+        assert.isTrue(failed);
+    });
+
+    it(`should not be able force another user to claim its certificates`, async () => {
+        let certificate = await issueCertificate(totalVolume, deviceOwnerWallet.address);
+
+        setActiveUser(traderWallet);
+        certificate = await certificate.sync();
+
+        let failed = false;
+
+        try {
+            await certificate.claim(
+                claimData,
+                totalVolume,
+                deviceOwnerWallet.address,
+                deviceOwnerWallet.address
+            );
+        } catch (e) {
+            failed = true;
+        }
+
+        assert.isTrue(failed);
+    });
+
+    it(`should not be able force another user to batch claim its certificates`, async () => {
+        const certificate = await issueCertificate(totalVolume, deviceOwnerWallet.address);
+        const certificate2 = await issueCertificate(totalVolume, deviceOwnerWallet.address);
+
+        setActiveUser(traderWallet);
+
+        let failed = false;
+
+        try {
+            await CertificateUtils.claimCertificates(
+                [certificate.id, certificate2.id],
+                claimData,
+                blockchainProperties,
+                deviceOwnerWallet.address
+            );
+        } catch (e) {
+            failed = true;
+        }
+
+        assert.isTrue(failed);
+    });
 });

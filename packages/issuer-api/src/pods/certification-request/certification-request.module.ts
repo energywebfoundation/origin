@@ -8,6 +8,7 @@ import { BlockchainPropertiesModule } from '../blockchain/blockchain-properties.
 import { Handlers } from './handlers';
 import { CertificateModule } from '../certificate/certificate.module';
 import { Certificate } from '../certificate/certificate.entity';
+import { SyncCertificationRequestsTask } from './sync-certification-request.task';
 
 @Module({
     imports: [
@@ -17,7 +18,7 @@ import { Certificate } from '../certificate/certificate.entity';
         CertificateModule
     ],
     controllers: [CertificationRequestController],
-    providers: [...Handlers],
+    providers: [...Handlers, SyncCertificationRequestsTask],
     exports: [...Handlers]
 })
 export class CertificationRequestModule {}

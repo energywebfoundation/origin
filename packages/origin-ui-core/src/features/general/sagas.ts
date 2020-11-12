@@ -274,7 +274,7 @@ function* findEnhancedExchangeCertificate(
     let onChainCertificate = onChainCertificates.find((c) => c.id === certificateId);
 
     if (!onChainCertificate) {
-        onChainCertificate = yield call(getCertificate, certificateId);
+        onChainCertificate = yield call(getCertificate, certificateId, true);
     }
 
     return enhanceCertificate(onChainCertificate, userId, asset);
