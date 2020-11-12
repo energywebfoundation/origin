@@ -45,7 +45,7 @@ import { getConfiguration, getBaseURL } from '../selectors';
 import * as queryString from 'query-string';
 import * as Winston from 'winston';
 import { Configuration, DeviceTypeService } from '@energyweb/utils-general';
-import { configurationUpdated } from '../actions';
+import { configurationUpdated, web3Updated } from '../actions';
 import { ProducingDevice } from '@energyweb/device-registry';
 import { producingDeviceCreatedOrUpdated } from '../producingDevices/actions';
 import { getI18n } from 'react-i18next';
@@ -275,7 +275,7 @@ function* findEnhancedExchangeCertificate(
     let onChainCertificate = onChainCertificates.find((c) => c.id === certificateId);
 
     if (!onChainCertificate) {
-        onChainCertificate = yield call(getCertificate, certificateId);
+        onChainCertificate = yield call(getCertificate, certificateId, true);
     }
 
     return enhanceCertificate(onChainCertificate, userId, asset);
@@ -382,7 +382,7 @@ function* initializeEnvironment(): SagaIterator {
             }
 
             const [userAddress] = yield apply(web3, web3.listAccounts, []);
-
+            yield put(web3Updated(web3));
             yield put(setActiveBlockchainAccountAddress(userAddress));
         } catch (error) {
             showNotification(

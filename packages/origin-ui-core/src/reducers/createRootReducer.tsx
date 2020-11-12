@@ -6,6 +6,7 @@ import { usersState } from '../features/users/reducer';
 import { combineReducers } from 'redux';
 import { ICoreState } from '../types';
 import { connectRouter } from 'connected-react-router';
+import { web3State } from './Web3';
 
 export const createRootReducer = (history) =>
     combineReducers<ICoreState>({
@@ -14,5 +15,6 @@ export const createRootReducer = (history) =>
         generalState,
         configurationState,
         usersState,
+        web3: web3State,
         router: connectRouter(history)
     });

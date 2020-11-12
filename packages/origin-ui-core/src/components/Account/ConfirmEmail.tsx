@@ -59,10 +59,11 @@ export function ConfirmEmail(props: any) {
 
     return (
         <>
-            {showNotification(
-                t(`user.feedback.emailConfirmation.${message}`),
-                NotificationType.Success
-            )}
+            {confirmationState !== null &&
+                showNotification(
+                    t(`user.feedback.emailConfirmation.${message}`),
+                    NotificationType.Success
+                )}
         </>
     );
 }
