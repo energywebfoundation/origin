@@ -1,4 +1,10 @@
-import { ActiveUserGuard, Roles, RolesGuard, UserDecorator } from '@energyweb/origin-backend-utils';
+import {
+    ActiveUserGuard,
+    ExceptionInterceptor,
+    Roles,
+    RolesGuard,
+    UserDecorator
+} from '@energyweb/origin-backend-utils';
 import {
     Body,
     Controller,
@@ -8,7 +14,8 @@ import {
     UseGuards,
     Param,
     ParseIntPipe,
-    Put
+    Put,
+    UseInterceptors
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
@@ -30,16 +37,14 @@ import { CertificateEvent } from '../../types';
 import { GetAllCertificateEventsQuery } from './queries/get-all-certificate-events.query';
 import { CertificateDTO } from './certificate.dto';
 import { SuccessResponseDTO } from '../../utils/success-response.dto';
-import { ExceptionController } from '../../utils/ExceptionController';
 
 @ApiTags('certificates')
 @Controller('certificate')
-export class CertificateController extends ExceptionController {
+@UseInterceptors(ExceptionInterceptor)
+export class CertificateController {
     private readonly logger = new Logger(CertificateController.name);
 
-    constructor(private readonly commandBus: CommandBus, private readonly queryBus: QueryBus) {
-        super();
-    }
+    constructor(private readonly commandBus: CommandBus, private readonly queryBus: QueryBus) {}
 
     @Get('/:id')
     @UseGuards(AuthGuard(), ActiveUserGuard)
@@ -119,7 +124,7 @@ export class CertificateController extends ExceptionController {
         @Param('id', new ParseIntPipe()) certificateId: number,
         @Body() dto: TransferCertificateDTO
     ): Promise<SuccessResponseDTO> {
-        const response = await this.commandBus.execute(
+        return this.commandBus.execute(
             new TransferCertificateCommand(
                 certificateId,
                 blockchainAccountAddress,
@@ -128,10 +133,6 @@ export class CertificateController extends ExceptionController {
                 dto.delegated
             )
         );
-
-        this.throwIfNotSuccess(response);
-
-        return response;
     }
 
     @Put('/:id/claim')
@@ -147,7 +148,7 @@ export class CertificateController extends ExceptionController {
         @Param('id', new ParseIntPipe()) certificateId: number,
         @Body() dto: ClaimCertificateDTO
     ): Promise<SuccessResponseDTO> {
-        const response = await this.commandBus.execute(
+        return this.commandBus.execute(
             new ClaimCertificateCommand(
                 certificateId,
                 dto.claimData,
@@ -155,10 +156,6 @@ export class CertificateController extends ExceptionController {
                 dto.amount
             )
         );
-
-        this.throwIfNotSuccess(response);
-
-        return response;
     }
 
     @Put('/bulk-claim')
@@ -173,17 +170,13 @@ export class CertificateController extends ExceptionController {
         @UserDecorator() { blockchainAccountAddress }: ILoggedInUser,
         @Body() dto: BulkClaimCertificatesDTO
     ): Promise<SuccessResponseDTO> {
-        const response = await this.commandBus.execute(
+        return this.commandBus.execute(
             new BulkClaimCertificatesCommand(
                 dto.certificateIds,
                 dto.claimData,
                 blockchainAccountAddress
             )
         );
-
-        this.throwIfNotSuccess(response);
-
-        return response;
     }
 
     @Get('/:id/events')

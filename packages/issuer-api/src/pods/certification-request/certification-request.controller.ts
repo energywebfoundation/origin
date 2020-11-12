@@ -1,5 +1,20 @@
-import { ActiveUserGuard, RolesGuard, Roles } from '@energyweb/origin-backend-utils';
-import { Body, Controller, Get, Post, UseGuards, Param, ParseIntPipe, Put } from '@nestjs/common';
+import {
+    ActiveUserGuard,
+    RolesGuard,
+    Roles,
+    ExceptionInterceptor
+} from '@energyweb/origin-backend-utils';
+import {
+    Body,
+    Controller,
+    Get,
+    Post,
+    UseGuards,
+    Param,
+    ParseIntPipe,
+    Put,
+    UseInterceptors
+} from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { ISuccessResponse, Role } from '@energyweb/origin-backend-core';
@@ -16,14 +31,12 @@ import { CertificationRequestDTO } from './certification-request.dto';
 import { SuccessResponseDTO } from '../../utils/success-response.dto';
 import { ValidateCertificationRequestCommand } from './commands/validate-certification-request.command';
 import { CertificateBoundToCertificationRequestCommand } from './commands/certificate-bound-to-certification-request.command';
-import { ExceptionController } from '../../utils/ExceptionController';
 
 @ApiTags('certification-requests')
 @Controller('certification-request')
-export class CertificationRequestController extends ExceptionController {
-    constructor(private readonly commandBus: CommandBus, private readonly queryBus: QueryBus) {
-        super();
-    }
+@UseInterceptors(ExceptionInterceptor)
+export class CertificationRequestController {
+    constructor(private readonly commandBus: CommandBus, private readonly queryBus: QueryBus) {}
 
     @Get('/:id')
     @UseGuards(AuthGuard(), ActiveUserGuard)
@@ -58,13 +71,15 @@ export class CertificationRequestController extends ExceptionController {
     })
     public async getByCertificate(
         @Param('certificateId', new ParseIntPipe()) certificateId: number
-    ): Promise<CertificationRequestDTO> {
+    ): Promise<CertificationRequestDTO | SuccessResponseDTO> {
         const validationCheck = await this.queryBus.execute<
             CertificateBoundToCertificationRequestCommand,
             ISuccessResponse
         >(new CertificateBoundToCertificationRequestCommand(certificateId));
 
-        this.throwIfNotSuccess(validationCheck);
+        if (!validationCheck.success) {
+            return validationCheck;
+        }
 
         return this.queryBus.execute(new GetCertificationRequestByCertificateQuery(certificateId));
     }
@@ -80,12 +95,14 @@ export class CertificationRequestController extends ExceptionController {
     @ApiBody({ type: CreateCertificationRequestDTO })
     public async create(
         @Body() dto: CreateCertificationRequestDTO
-    ): Promise<CertificationRequestDTO> {
+    ): Promise<CertificationRequestDTO | SuccessResponseDTO> {
         const validationCheck = await this.commandBus.execute(
             new ValidateCertificationRequestCommand(dto)
         );
 
-        this.throwIfNotSuccess(validationCheck);
+        if (!validationCheck.success) {
+            return validationCheck;
+        }
 
         return this.commandBus.execute(
             new CreateCertificationRequestCommand(
@@ -109,11 +126,7 @@ export class CertificationRequestController extends ExceptionController {
         description: 'Approves a Certification Request'
     })
     public async approve(@Param('id', new ParseIntPipe()) id: number): Promise<SuccessResponseDTO> {
-        const response = await this.commandBus.execute(new ApproveCertificationRequestCommand(id));
-
-        this.throwIfNotSuccess(response);
-
-        return response;
+        return this.commandBus.execute(new ApproveCertificationRequestCommand(id));
     }
 
     @Put('/:id/revoke')
@@ -125,10 +138,6 @@ export class CertificationRequestController extends ExceptionController {
         description: 'Revokes a Certification Request'
     })
     public async revoke(@Param('id', new ParseIntPipe()) id: number): Promise<SuccessResponseDTO> {
-        const response = await this.commandBus.execute(new RevokeCertificationRequestCommand(id));
-
-        this.throwIfNotSuccess(response);
-
-        return response;
+        return this.commandBus.execute(new RevokeCertificationRequestCommand(id));
     }
 }
