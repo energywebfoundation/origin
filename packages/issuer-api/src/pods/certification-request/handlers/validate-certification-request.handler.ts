@@ -40,7 +40,7 @@ export class ValidateCertificationRequestHandler
             if (generationTimeRange.overlaps(certificationRequestGenerationRange)) {
                 return ResponseFailure(
                     `Wanted generation time clashes with an existing certification request: ${certificationRequest.id}`,
-                    HttpStatus.BAD_REQUEST
+                    HttpStatus.CONFLICT
                 );
             }
         }

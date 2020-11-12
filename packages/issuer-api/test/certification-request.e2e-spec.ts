@@ -195,10 +195,7 @@ describe('Certification Request tests', () => {
 
         await request(app.getHttpServer())
             .put(`/certification-request/${certificationRequestId}/revoke`)
-            .expect(200)
-            .expect((res) => {
-                expect(res.body.success).to.be.false;
-            });
+            .expect(400);
     });
 
     it('should create a private certification request', async () => {
