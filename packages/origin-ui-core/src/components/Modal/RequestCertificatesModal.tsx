@@ -43,8 +43,12 @@ export function RequestCertificatesModal() {
     const configuration = useContext(OriginConfigurationContext);
 
     const DEFAULTS = {
-        fromDate: moment.tz(producingDevice?.timezone).startOf('day'),
-        toDate: moment.tz(producingDevice?.timezone).endOf('day')
+        fromDate: moment()
+            .utcOffset(Number(environment?.MARKET_UTC_OFFSET ?? 0), true)
+            .startOf('day'),
+        toDate: moment()
+            .utcOffset(Number(environment?.MARKET_UTC_OFFSET ?? 0), true)
+            .endOf('day')
     };
 
     const [fromDate, setFromDate] = useState(DEFAULTS.fromDate);
@@ -109,7 +113,13 @@ export function RequestCertificatesModal() {
                     <DatePicker
                         label={t('certificate.properties.from')}
                         value={fromDate}
-                        onChange={setFromDate}
+                        onChange={(date) =>
+                            setFromDate(
+                                moment(date)
+                                    .utcOffset(Number(environment.MARKET_UTC_OFFSET), true)
+                                    .startOf('day')
+                            )
+                        }
                         variant="inline"
                         inputVariant="filled"
                         className="mt-4"
@@ -120,7 +130,13 @@ export function RequestCertificatesModal() {
                     <DatePicker
                         label={t('certificate.properties.to')}
                         value={toDate}
-                        onChange={setToDate}
+                        onChange={(date) =>
+                            setToDate(
+                                moment(date)
+                                    .utcOffset(Number(environment.MARKET_UTC_OFFSET), true)
+                                    .endOf('day')
+                            )
+                        }
                         variant="inline"
                         inputVariant="filled"
                         className="mt-4"
