@@ -1,4 +1,10 @@
-import { Event as BlockchainEvent, ContractTransaction, ethers, BigNumber } from 'ethers';
+import {
+    Event as BlockchainEvent,
+    ContractTransaction,
+    ethers,
+    BigNumber,
+    ContractReceipt
+} from 'ethers';
 
 import { Timestamp } from '@energyweb/utils-general';
 
@@ -207,7 +213,7 @@ export class Certificate implements ICertificate {
         amount?: BigNumber,
         from?: string,
         to?: string
-    ): Promise<ContractTransaction> {
+    ): Promise<ContractReceipt> {
         const { activeUser, registry } = this.blockchainProperties;
         const registryWithSigner = registry.connect(activeUser);
 
@@ -231,9 +237,9 @@ export class Certificate implements ICertificate {
             encodedClaimData
         );
 
-        await claimTx.wait();
+        const txReceipt = await claimTx.wait();
 
-        return claimTx;
+        return txReceipt;
     }
 
     async transfer(to: string, amount?: BigNumber, from?: string): Promise<ContractTransaction> {
