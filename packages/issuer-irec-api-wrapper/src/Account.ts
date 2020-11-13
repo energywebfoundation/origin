@@ -82,7 +82,7 @@ export class Transaction {
     @Expose({ name: 'destination_account', toClassOnly: true })
     recipient: string;
 
-    @Transform((value) => moment(value.date).toDate())
+    @Transform((value) => moment.tz(value.date, value.timezone).toDate())
     time: Date;
 
     @Transform((value) => value.code, { toClassOnly: true })
@@ -108,11 +108,11 @@ export class RedeemTransaction extends Transaction {
     beneficiary: Beneficiary;
 
     @Expose({ name: 'period_start', toPlainOnly: true })
-    @Transform((value) => moment(value.date).toDate())
+    @Transform((value) => moment.tz(value.date, value.timezone).toDate())
     start: Date;
 
     @Expose({ name: 'period_end', toPlainOnly: true })
-    @Transform((value) => moment(value.date).toDate())
+    @Transform((value) => moment.tz(value.date, value.timezone).toDate())
     end: Date;
 }
 

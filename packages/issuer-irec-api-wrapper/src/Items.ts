@@ -14,11 +14,11 @@ export class Asset {
     country: string;
 
     @Expose({ name: 'start_date', toClassOnly: true })
-    @Transform((value) => moment(value.date).toDate())
+    @Transform((value) => moment.tz(value.date, value.timezone).toDate())
     start: Date;
 
     @Expose({ name: 'end_date', toClassOnly: true })
-    @Transform((value) => moment(value.date).toDate())
+    @Transform((value) => moment.tz(value.date, value.timezone).toDate())
     end: Date;
 
     @Expose({ name: 'device_supported', toClassOnly: true })
