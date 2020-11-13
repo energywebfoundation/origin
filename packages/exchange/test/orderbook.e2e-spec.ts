@@ -381,4 +381,26 @@ describe('orderbook tests', () => {
         expect(bids).to.have.length(1);
         expect(bids[0].product.deviceType).to.deep.equal(['Wind']);
     });
+
+    it('should return empty orders list if time mismatch', async () => {
+        const {
+            body: { asks, bids }
+        }: { body: OrderBook } = await request(app.getHttpServer())
+            .post('/orderbook/search')
+            .send({
+                ...defaultAllFilter,
+                generationTimeFilter: Filter.Specific,
+                generationFrom: moment().startOf('month').add(2, 'hours').toISOString(),
+                generationTo: moment()
+                    .startOf('month')
+                    .add(1, 'month')
+                    .add(2, 'hours')
+                    .toISOString()
+            })
+            .expect('Content-Type', /application\/json/)
+            .expect(200);
+
+        expect(asks).to.have.length(0);
+        expect(bids).to.have.length(0);
+    });
 });

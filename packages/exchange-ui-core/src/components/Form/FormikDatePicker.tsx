@@ -8,6 +8,8 @@ import {
 import { DatePicker, DatePickerProps } from 'formik-material-ui-pickers';
 import { FieldProps, Field, useFormikContext } from 'formik';
 import { Moment, DATE_FORMAT_DMY } from '@energyweb/origin-ui-core';
+import { useSelector } from 'react-redux';
+import { getEnvironment, IEnvironment } from '../../features/general';
 
 interface ITextFieldWithArrowsEventHandlers {
     onLeftArrowClick: () => void;
@@ -109,6 +111,7 @@ export const FormikDatePickerWithMonthArrowsFilled = ({
     disabled: boolean;
     required: boolean;
 }) => {
+    const environment: IEnvironment = useSelector(getEnvironment);
     const setFieldValue = useFormikContext()?.setFieldValue;
     const values = useFormikContext()?.values;
 
@@ -131,12 +134,23 @@ export const FormikDatePickerWithMonthArrowsFilled = ({
             onLeftArrowClick={() =>
                 setFieldValue(
                     name,
-                    (values[name] as Moment).clone().subtract(1, 'month').startOf('month')
+                    (values[name] as Moment)
+                        .clone()
+                        .utcOffset(Number(environment.MARKET_UTC_OFFSET), true)
+                        .subtract(1, 'month')
+                        .startOf('month')
                 )
             }
             onRightArrowClick={() =>
                 values[name] &&
-                setFieldValue(name, (values[name] as Moment).clone().add(1, 'month').endOf('month'))
+                setFieldValue(
+                    name,
+                    (values[name] as Moment)
+                        .clone()
+                        .utcOffset(Number(environment.MARKET_UTC_OFFSET), true)
+                        .add(1, 'month')
+                        .endOf('month')
+                )
             }
         />
     );

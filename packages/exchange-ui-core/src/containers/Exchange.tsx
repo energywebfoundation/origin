@@ -10,7 +10,7 @@ import {
     getUserOffchain,
     setLoading
 } from '@energyweb/origin-ui-core';
-import { getExchangeClient } from '../features/general';
+import { getEnvironment, getExchangeClient } from '../features/general';
 import { createBid, createDemand, directBuyOrder } from '../features/orders';
 import { TOrderBook, ANY_VALUE } from '../utils/exchange';
 import { Asks, Bids, Market, IMarketFormValues } from '../components/exchange';
@@ -26,6 +26,7 @@ export function Exchange(props: IProps) {
     const user = useSelector(getUserOffchain);
     const exchangeClient = useSelector(getExchangeClient);
     const country = useSelector(getCountry);
+    const environment = useSelector(getEnvironment);
     const dispatch = useDispatch();
     const { t } = useTranslation();
 
@@ -150,7 +151,8 @@ export function Exchange(props: IProps) {
                     }
 
                     const newGenerationDateStart = values.generationDateStart
-                        ?.startOf('month')
+                        ?.utcOffset(Number(environment.MARKET_UTC_OFFSET), true)
+                        .startOf('month')
                         .toISOString();
 
                     if (
@@ -161,7 +163,8 @@ export function Exchange(props: IProps) {
                     }
 
                     const newGenerationDateEnd = values.generationDateEnd
-                        ?.endOf('month')
+                        ?.utcOffset(Number(environment.MARKET_UTC_OFFSET), true)
+                        .endOf('month')
                         .toISOString();
 
                     if (

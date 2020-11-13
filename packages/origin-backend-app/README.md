@@ -53,6 +53,7 @@ MANDRILL_API_KEY:                               <API KEY>
 REGISTRATION_MESSAGE_TO_SIGN:                   <For e.g I register as Origin user>
 UI_BASE_URL:                                    <URL on which UI is deployed for e.g https://origin-ui-canary.herokuapp.com/>
 WEB3:                                           <WEB3 provider url>
+MARKET_UTC_OFFSET:                              <UTC offset in minutes (-120, -60, 0, 60, etc)>
 ```
 
 ### PostgreSQL installation using Docker
