@@ -184,6 +184,13 @@ export function PublishForSaleModal(props: IProps) {
                     className="mt-4"
                     id="priceInput"
                     fullWidth
+                    onBlur={(e) => {
+                        const parsedValue = parseFloat((e.target as any)?.value);
+
+                        if (!isNaN(parsedValue) && parsedValue > 0) {
+                            setPrice(parsedValue.toFixed(2));
+                        }
+                    }}
                 />
 
                 <FormControl fullWidth={true} variant="filled" className="mt-4">

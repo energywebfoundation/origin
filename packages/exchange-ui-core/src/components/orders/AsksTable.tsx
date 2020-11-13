@@ -114,8 +114,10 @@ export const AsksTable = (props: IOwnProsp) => {
     });
 
     useEffect(() => {
-        setPageSize(ORDERS_PER_PAGE);
-        loadPage(1);
+        if (asks.length > 0) {
+            setPageSize(ORDERS_PER_PAGE);
+            loadPage(1);
+        }
     }, [asks]);
 
     const [currency = 'USD'] = useSelector(getCurrencies);

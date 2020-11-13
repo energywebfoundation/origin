@@ -233,11 +233,10 @@ export function AddDevice() {
                 initialValues={initialFormValues}
                 onSubmit={submitForm}
                 validationSchema={VALIDATION_SCHEMA}
-                isInitialValid={false}
+                validateOnMount={true}
             >
                 {(formikProps) => {
-                    const { isValid, isSubmitting } = formikProps;
-
+                    const { isValid, isSubmitting, setFieldValue, validateField } = formikProps;
                     const fieldDisabled = isSubmitting;
                     const buttonDisabled =
                         isSubmitting ||
@@ -390,14 +389,28 @@ export function AddDevice() {
                                         className="mt-3"
                                         required
                                     >
-                                        <Field
+                                        <FormInput
                                             label={t('device.properties.latitude')}
-                                            name="latitude"
-                                            component={TextField}
+                                            property="latitude"
                                             variant="filled"
-                                            fullWidth
+                                            className="mt-1"
                                             required
                                             disabled={fieldDisabled}
+                                            wrapperProps={{
+                                                onBlur: (e) => {
+                                                    const parsedValue = parseFloat(
+                                                        (e.target as any)?.value
+                                                    );
+
+                                                    if (!isNaN(parsedValue)) {
+                                                        setFieldValue(
+                                                            'latitude',
+                                                            parsedValue.toFixed(2)
+                                                        );
+                                                    }
+                                                    validateField('latitude');
+                                                }
+                                            }}
                                         />
                                     </FormControl>
                                     <FormControl
@@ -406,14 +419,28 @@ export function AddDevice() {
                                         className="mt-3"
                                         required
                                     >
-                                        <Field
+                                        <FormInput
                                             label={t('device.properties.longitude')}
-                                            name="longitude"
-                                            component={TextField}
+                                            property="longitude"
                                             variant="filled"
-                                            fullWidth
+                                            className="mt-1"
                                             required
                                             disabled={fieldDisabled}
+                                            wrapperProps={{
+                                                onBlur: (e) => {
+                                                    const parsedValue = parseFloat(
+                                                        (e.target as any)?.value
+                                                    );
+
+                                                    if (!isNaN(parsedValue)) {
+                                                        setFieldValue(
+                                                            'longitude',
+                                                            parsedValue.toFixed(2)
+                                                        );
+                                                    }
+                                                    validateField('longitude');
+                                                }
+                                            }}
                                         />
                                     </FormControl>
                                 </Grid>

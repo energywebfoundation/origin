@@ -198,7 +198,7 @@ export function OrganizationForm(props: IProps) {
                 initialValues={initialFormValues}
                 onSubmit={submitForm}
                 validationSchema={VALIDATION_SCHEMA}
-                isInitialValid={false}
+                validateOnMount={true}
             >
                 {(formikProps) => {
                     const { isValid, isSubmitting, values } = formikProps;
