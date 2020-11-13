@@ -36,7 +36,8 @@ import { BigNumber, ethers } from 'ethers';
 import {
     CertificationRequestsClient,
     Configuration as ClientConfiguration,
-    CertificatesClient
+    CertificatesClient,
+    BlockchainPropertiesClient
 } from '@energyweb/issuer-api-client';
 
 import { setActiveBlockchainAccountAddress } from '../users/actions';
@@ -57,7 +58,8 @@ import {
     updateCertificate,
     addCertificate,
     setCertificatesClient,
-    setCertificationRequestsClient
+    setCertificationRequestsClient,
+    setBlockchainPropertiesClient
 } from '../certificates';
 import { getCertificate } from '../certificates/sagas';
 import { getUserOffchain } from '../users/selectors';
@@ -219,6 +221,11 @@ function* initializeOffChainDataSource(): SagaIterator {
         });
         const backendUrl = `${environment.BACKEND_URL}:${environment.BACKEND_PORT}`;
 
+        yield put(
+            setBlockchainPropertiesClient(
+                new BlockchainPropertiesClient(clientConfiguration, backendUrl)
+            )
+        );
         yield put(setCertificatesClient(new CertificatesClient(clientConfiguration, backendUrl)));
         yield put(
             setCertificationRequestsClient(

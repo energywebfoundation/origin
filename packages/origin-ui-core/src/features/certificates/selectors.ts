@@ -20,6 +20,9 @@ export const getCertificateById = (
     return certificates.find((i) => i.id === id);
 };
 
+export const getBlockchainPropertiesClient = (state: ICoreState) =>
+    state.certificatesState.blockchainPropertiesClient;
+
 export const getCertificatesClient = (state: ICoreState) =>
     state.certificatesState.certificatesClient;
 

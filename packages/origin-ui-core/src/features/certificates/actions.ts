@@ -1,6 +1,10 @@
 import { ProducingDevice } from '@energyweb/device-registry';
 import { Certificate, IClaimData } from '@energyweb/issuer';
-import { CertificatesClient, CertificationRequestsClient } from '@energyweb/issuer-api-client';
+import {
+    BlockchainPropertiesClient,
+    CertificatesClient,
+    CertificationRequestsClient
+} from '@energyweb/issuer-api-client';
 import { BigNumber } from 'ethers';
 import { CertificateSource, ICertificateViewItem, ICertificationRequest } from './types';
 
@@ -21,6 +25,7 @@ export enum CertificatesActions {
     requestDepositCertificate = 'CERTIFICATES_REQUEST_CERTIFICATE_DEPOSIT',
     clearCertificates = 'CERTIFICATES_CLEAR_CERTIFICATES',
     reloadCertificates = 'CERTIFICATES_RELOAD_CERTIFICATES',
+    setBlockchainPropertiesClient = 'CERTIFICATES_SET_BLOCKCHAIN_PROPERTIES_CLIENT',
     setCertificatesClient = 'CERTIFICATES_SET_CERTIFICATES_CLIENT',
     setCertificationRequestsClient = 'CERTIFICATES_SET_CERTIFICATION_REQUESTS_CLIENT'
 }
@@ -251,6 +256,20 @@ export const reloadCertificates = () => ({
     type: CertificatesActions.reloadCertificates
 });
 
+export interface ISetBlockchainPropertiesClientAction {
+    type: CertificatesActions.setBlockchainPropertiesClient;
+    payload: BlockchainPropertiesClient;
+}
+
+export const setBlockchainPropertiesClient = (
+    payload: ISetBlockchainPropertiesClientAction['payload']
+) => ({
+    type: CertificatesActions.setBlockchainPropertiesClient,
+    payload
+});
+
+export type TSetBlockchainPropertiesClientAction = typeof setBlockchainPropertiesClient;
+
 export interface ISetCertificatesClientAction {
     type: CertificatesActions.setCertificatesClient;
     payload: CertificatesClient;
@@ -293,5 +312,6 @@ export type ICertificatesAction =
     | IClearCertificatesAction
     | IReloadCertificatesAction
     | IRequestWithdrawCertificateAction
+    | ISetBlockchainPropertiesClientAction
     | ISetCertificatesClientAction
     | ISetCertificationRequestsClientAction;
