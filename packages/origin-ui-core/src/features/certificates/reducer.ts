@@ -1,6 +1,10 @@
 import { CertificatesActions, ICertificatesAction } from './actions';
 import { ProducingDevice } from '@energyweb/device-registry';
-import { CertificatesClient, CertificationRequestsClient } from '@energyweb/issuer-api-client';
+import {
+    CertificatesClient,
+    CertificationRequestsClient,
+    BlockchainPropertiesClient
+} from '@energyweb/issuer-api-client';
 import { ICertificateViewItem } from '.';
 
 export interface ICertificatesState {
@@ -9,6 +13,7 @@ export interface ICertificatesState {
         visible: boolean;
         producingDevice: ProducingDevice.Entity;
     };
+    blockchainPropertiesClient: BlockchainPropertiesClient;
     certificatesClient: CertificatesClient;
     certificationRequestsClient: CertificationRequestsClient;
 }
@@ -19,6 +24,7 @@ const defaultState: ICertificatesState = {
         visible: false,
         producingDevice: null
     },
+    blockchainPropertiesClient: null,
     certificatesClient: null,
     certificationRequestsClient: null
 };
@@ -88,6 +94,12 @@ export function certificatesState(
 
         case CertificatesActions.clearCertificates:
             return { ...state, certificates: [] };
+
+        case CertificatesActions.setBlockchainPropertiesClient:
+            return {
+                ...state,
+                blockchainPropertiesClient: action.payload
+            };
 
         case CertificatesActions.setCertificatesClient:
             return {

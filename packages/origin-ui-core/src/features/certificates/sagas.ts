@@ -1,4 +1,5 @@
 import { IUser, IPublicOrganization } from '@energyweb/origin-backend-core';
+import { Certificate, Contracts, IBlockchainProperties } from '@energyweb/issuer';
 import { getI18n } from 'react-i18next';
 import { SagaIterator } from 'redux-saga';
 import { all, apply, call, delay, fork, put, select, take } from 'redux-saga/effects';
@@ -15,7 +16,7 @@ import { ExchangeAccount, IExchangeClient, ITransfer } from '../../utils/exchang
 import { assertCorrectBlockchainAccount } from '../../utils/sagas';
 import { setLoading } from '../general/actions';
 import { getExchangeClient } from '../general/selectors';
-import { getConfiguration } from '../selectors';
+import { getConfiguration, getWeb3 } from '../selectors';
 import { getUserOffchain } from '../users/selectors';
 import {
     addCertificate,
@@ -32,15 +33,21 @@ import {
     IRequestCertificateEntityFetchAction
 } from './actions';
 import {
+    getBlockchainPropertiesClient,
     getCertificateById,
     getCertificates,
     getCertificatesClient,
     getCertificationRequestsClient
 } from './selectors';
-import { CertificatesClient, CertificationRequestsClient } from '@energyweb/issuer-api-client';
+import {
+    BlockchainPropertiesClient,
+    CertificatesClient,
+    CertificationRequestsClient
+} from '@energyweb/issuer-api-client';
 import { ICertificate, ICertificateViewItem } from './types';
 import { enhanceCertificate, fetchDataAfterConfigurationChange } from '../general/sagas';
 import { certificateEnergyStringToBN } from '../../utils/certificates';
+import { ContractReceipt, ContractTransaction, ethers } from 'ethers';
 
 export function* getCertificate(id: number, byTokenId = false): any {
     const certificatesClient: CertificatesClient = yield select(getCertificatesClient);
@@ -55,6 +62,33 @@ export function* getCertificate(id: number, byTokenId = false): any {
         ...certificate,
         energy: certificateEnergyStringToBN(certificate.energy)
     };
+}
+
+export function* getBlockchainCertificate(id: number): any {
+    const blockchainPropertiesClient: BlockchainPropertiesClient = yield select(
+        getBlockchainPropertiesClient
+    );
+
+    const { data: blockchainProperties } = yield apply(
+        blockchainPropertiesClient,
+        blockchainPropertiesClient.get,
+        []
+    );
+
+    const web3: ethers.providers.JsonRpcProvider = yield select(getWeb3);
+
+    const configuration: IBlockchainProperties = {
+        web3,
+        registry: Contracts.factories.RegistryFactory.connect(blockchainProperties.registry, web3),
+        issuer: Contracts.factories.IssuerFactory.connect(blockchainProperties.issuer, web3),
+        activeUser: web3.getSigner()
+    };
+
+    const certificate = new Certificate(id, configuration);
+
+    yield call([certificate, certificate.sync]);
+
+    return certificate;
 }
 
 function* requestCertificatesSaga(): SagaIterator {
@@ -248,10 +282,21 @@ function* requestPublishForSaleSaga(): SagaIterator {
                     exchangeClient.getAccount
                 ]);
 
-                const { data: transferResult } = yield apply(
+                const { data: certificate } = yield apply(
                     certificatesClient,
-                    certificatesClient.transfer,
-                    [certificateId, { to: account.address, amount: amount.toString() }]
+                    certificatesClient.get,
+                    [certificateId]
+                );
+
+                const onChainCertificate: Certificate = yield call(
+                    getBlockchainCertificate,
+                    certificate.tokenId
+                );
+
+                const transferResult: ContractTransaction = yield call(
+                    [onChainCertificate, onChainCertificate.transfer],
+                    account.address,
+                    amount
                 );
 
                 while (true) {
@@ -326,10 +371,16 @@ function* requestDepositSaga(): SagaIterator {
                 exchangeClient.getAccount
             ]);
 
-            yield apply(certificatesClient, certificatesClient.transfer, [
-                certificateId,
-                { to: account.address, amount: amount.toString() }
+            const { data: certificate } = yield apply(certificatesClient, certificatesClient.get, [
+                certificateId
             ]);
+
+            const onChainCertificate: Certificate = yield call(
+                getBlockchainCertificate,
+                certificate.tokenId
+            );
+
+            yield call([onChainCertificate, onChainCertificate.transfer], account.address, amount);
 
             showNotification(
                 i18n.t('certificate.feedback.certificateDeposited'),
@@ -369,20 +420,23 @@ function* requestClaimCertificateSaga(): SagaIterator {
         const certificatesClient: CertificatesClient = yield select(getCertificatesClient);
 
         try {
-            const { data: claimResult } = yield apply(
-                certificatesClient,
-                certificatesClient.claim,
-                [
-                    certificateId,
-                    {
-                        claimData,
-                        amount: amount.toString()
-                    }
-                ]
+            const { data: certificate } = yield apply(certificatesClient, certificatesClient.get, [
+                certificateId
+            ]);
+
+            const onChainCertificate: Certificate = yield call(
+                getBlockchainCertificate,
+                certificate.tokenId
             );
 
-            if (!claimResult.success) {
-                showNotification(`Claiming failed: ${claimResult.message}`, NotificationType.Error);
+            const claimResult: ContractReceipt = yield call(
+                [onChainCertificate, onChainCertificate.claim],
+                claimData,
+                amount
+            );
+
+            if (!claimResult.status) {
+                showNotification('Claiming failed.', NotificationType.Error);
                 continue;
             }
 

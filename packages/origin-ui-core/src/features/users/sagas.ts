@@ -23,11 +23,13 @@ import {
     reloadCertificates,
     clearCertificates,
     setCertificatesClient,
-    setCertificationRequestsClient
+    setCertificationRequestsClient,
+    setBlockchainPropertiesClient
 } from '../certificates';
 import { getUserState } from './selectors';
 import { IUsersState } from './reducer';
 import {
+    BlockchainPropertiesClient,
     CertificatesClient,
     CertificationRequestsClient,
     Configuration as ClientConfiguration
@@ -95,6 +97,11 @@ function* updateClients(): SagaIterator {
         });
         const backendUrl = `${environment.BACKEND_URL}:${environment.BACKEND_PORT}`;
 
+        yield put(
+            setBlockchainPropertiesClient(
+                new BlockchainPropertiesClient(clientConfiguration, backendUrl)
+            )
+        );
         yield put(setCertificatesClient(new CertificatesClient(clientConfiguration, backendUrl)));
         yield put(
             setCertificationRequestsClient(
@@ -191,6 +198,11 @@ function* logOutSaga(): SagaIterator {
         requestClient.authenticationToken = null;
 
         const backendUrl = `${environment.BACKEND_URL}:${environment.BACKEND_PORT}`;
+        yield put(
+            setBlockchainPropertiesClient(
+                new BlockchainPropertiesClient(new ClientConfiguration(), backendUrl)
+            )
+        );
         yield put(
             setCertificatesClient(new CertificatesClient(new ClientConfiguration(), backendUrl))
         );

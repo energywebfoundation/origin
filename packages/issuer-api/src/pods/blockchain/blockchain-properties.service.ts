@@ -1,6 +1,7 @@
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { BlockchainProperties } from './blockchain-properties.entity';
+import { BlockchainPropertiesDTO } from './blockchain-properties.dto';
 
 export class BlockchainPropertiesService {
     constructor(
@@ -32,5 +33,17 @@ export class BlockchainPropertiesService {
         const [blockchainProperties] = await this.repository.find();
 
         return blockchainProperties;
+    }
+
+    public async dto(): Promise<BlockchainPropertiesDTO> {
+        const [blockchainProperties] = await this.repository.find();
+
+        return {
+            netId: blockchainProperties.netId,
+            registry: blockchainProperties.registry,
+            issuer: blockchainProperties.issuer,
+            rpcNode: blockchainProperties.rpcNode,
+            rpcNodeFallback: blockchainProperties.rpcNodeFallback
+        };
     }
 }
