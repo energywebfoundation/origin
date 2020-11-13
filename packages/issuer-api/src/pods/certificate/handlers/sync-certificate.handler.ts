@@ -1,7 +1,7 @@
 import { IEventHandler, EventsHandler } from '@nestjs/cqrs';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Logger } from '@nestjs/common';
+import { HttpStatus, Logger } from '@nestjs/common';
 import { ISuccessResponse, ResponseFailure, ResponseSuccess } from '@energyweb/origin-backend-core';
 
 import { SyncCertificateEvent } from '../events/sync-certificate-event';
@@ -27,7 +27,7 @@ export class SyncCertificateHandler implements IEventHandler<SyncCertificateEven
         try {
             await certificate.sync();
         } catch (e) {
-            return ResponseFailure(e.message);
+            return ResponseFailure(e.message, HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
         return ResponseSuccess();

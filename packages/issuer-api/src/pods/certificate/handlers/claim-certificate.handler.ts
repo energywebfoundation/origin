@@ -5,6 +5,7 @@ import { Certificate as CertificateFacade } from '@energyweb/issuer';
 import { BigNumber, Event as BlockchainEvent, utils } from 'ethers';
 import { ISuccessResponse, ResponseFailure, ResponseSuccess } from '@energyweb/origin-backend-core';
 import { PreciseProofs } from 'precise-proofs-js';
+import { HttpStatus } from '@nestjs/common';
 import { ClaimCertificateCommand } from '../commands/claim-certificate.command';
 import { Certificate } from '../certificate.entity';
 
@@ -43,7 +44,8 @@ export class ClaimCertificateHandler implements ICommandHandler<ClaimCertificate
 
         if (amountToClaim > claimerBalance) {
             return ResponseFailure(
-                `Claimer ${checksummedForAddress} has a balance of ${claimerBalance.toString()} but wants to claim ${amount}.`
+                `Claimer ${checksummedForAddress} has a balance of ${claimerBalance.toString()} but wants to claim ${amount}.`,
+                HttpStatus.BAD_REQUEST
             );
         }
 
@@ -97,7 +99,7 @@ export class ClaimCertificateHandler implements ICommandHandler<ClaimCertificate
                 checksummedForAddress
             );
         } catch (error) {
-            return ResponseFailure(JSON.stringify(error));
+            return ResponseFailure(JSON.stringify(error), HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
         await certificate.sync();

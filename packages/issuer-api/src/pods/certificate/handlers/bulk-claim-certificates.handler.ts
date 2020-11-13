@@ -4,6 +4,7 @@ import { Repository } from 'typeorm';
 import { CertificateUtils } from '@energyweb/issuer';
 import { ISuccessResponse, ResponseFailure, ResponseSuccess } from '@energyweb/origin-backend-core';
 import { BigNumber } from 'ethers';
+import { HttpStatus } from '@nestjs/common';
 import { BulkClaimCertificatesCommand } from '../commands/bulk-claim-certificates.command';
 import { Certificate } from '../certificate.entity';
 import { BlockchainPropertiesService } from '../../blockchain/blockchain-properties.service';
@@ -44,7 +45,7 @@ export class BulkClaimCertificatesHandler implements ICommandHandler<BulkClaimCe
                 forAddress
             );
         } catch (error) {
-            return ResponseFailure(JSON.stringify(error));
+            return ResponseFailure(JSON.stringify(error), HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
         for (const cert of certificatesToClaim) {

@@ -4,6 +4,7 @@ import { Repository } from 'typeorm';
 import { BigNumber } from 'ethers';
 import { CertificationRequest as CertificationRequestFacade } from '@energyweb/issuer';
 import { ISuccessResponse, ResponseFailure, ResponseSuccess } from '@energyweb/origin-backend-core';
+import { HttpStatus } from '@nestjs/common';
 
 import { ApproveCertificationRequestCommand } from '../commands/approve-certification-request.command';
 import { CertificationRequest } from '../certification-request.entity';
@@ -26,7 +27,10 @@ export class ApproveCertificationRequestHandler
         const { requestId, isPrivate, energy, approved, owner } = await this.repository.findOne(id);
 
         if (approved) {
-            return ResponseFailure(`Certificate #${id} has already been approved`);
+            return ResponseFailure(
+                `Certificate #${id} has already been approved`,
+                HttpStatus.BAD_REQUEST
+            );
         }
 
         const blockchainProperties = await this.blockchainPropertiesService.get();
@@ -41,7 +45,7 @@ export class ApproveCertificationRequestHandler
         try {
             newCertificateId = await certReq.approve(BigNumber.from(isPrivate ? 0 : energy));
         } catch (e) {
-            return ResponseFailure(e.message);
+            return ResponseFailure(e.message, HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
         this.eventBus.publish(

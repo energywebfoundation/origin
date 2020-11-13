@@ -1,4 +1,9 @@
-import { ActiveUserGuard, RolesGuard, Roles } from '@energyweb/origin-backend-utils';
+import {
+    ActiveUserGuard,
+    RolesGuard,
+    Roles,
+    ExceptionInterceptor
+} from '@energyweb/origin-backend-utils';
 import {
     Body,
     Controller,
@@ -8,8 +13,7 @@ import {
     Param,
     ParseIntPipe,
     Put,
-    ConflictException,
-    NotFoundException
+    UseInterceptors
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
@@ -30,6 +34,7 @@ import { CertificateBoundToCertificationRequestCommand } from './commands/certif
 
 @ApiTags('certification-requests')
 @Controller('certification-request')
+@UseInterceptors(ExceptionInterceptor)
 export class CertificationRequestController {
     constructor(private readonly commandBus: CommandBus, private readonly queryBus: QueryBus) {}
 
@@ -66,14 +71,14 @@ export class CertificationRequestController {
     })
     public async getByCertificate(
         @Param('certificateId', new ParseIntPipe()) certificateId: number
-    ): Promise<CertificationRequestDTO> {
+    ): Promise<CertificationRequestDTO | SuccessResponseDTO> {
         const validationCheck = await this.queryBus.execute<
             CertificateBoundToCertificationRequestCommand,
             ISuccessResponse
         >(new CertificateBoundToCertificationRequestCommand(certificateId));
 
         if (!validationCheck.success) {
-            throw new NotFoundException(validationCheck);
+            return validationCheck;
         }
 
         return this.queryBus.execute(new GetCertificationRequestByCertificateQuery(certificateId));
@@ -90,13 +95,13 @@ export class CertificationRequestController {
     @ApiBody({ type: CreateCertificationRequestDTO })
     public async create(
         @Body() dto: CreateCertificationRequestDTO
-    ): Promise<CertificationRequestDTO> {
+    ): Promise<CertificationRequestDTO | SuccessResponseDTO> {
         const validationCheck = await this.commandBus.execute(
             new ValidateCertificationRequestCommand(dto)
         );
 
         if (!validationCheck.success) {
-            throw new ConflictException(validationCheck);
+            return validationCheck;
         }
 
         return this.commandBus.execute(

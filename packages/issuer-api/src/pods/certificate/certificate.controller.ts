@@ -1,4 +1,10 @@
-import { ActiveUserGuard, Roles, RolesGuard, UserDecorator } from '@energyweb/origin-backend-utils';
+import {
+    ActiveUserGuard,
+    ExceptionInterceptor,
+    Roles,
+    RolesGuard,
+    UserDecorator
+} from '@energyweb/origin-backend-utils';
 import {
     Body,
     Controller,
@@ -8,7 +14,8 @@ import {
     UseGuards,
     Param,
     ParseIntPipe,
-    Put
+    Put,
+    UseInterceptors
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
@@ -33,6 +40,7 @@ import { SuccessResponseDTO } from '../../utils/success-response.dto';
 
 @ApiTags('certificates')
 @Controller('certificate')
+@UseInterceptors(ExceptionInterceptor)
 export class CertificateController {
     private readonly logger = new Logger(CertificateController.name);
 
