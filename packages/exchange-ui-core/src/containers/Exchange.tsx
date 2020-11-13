@@ -8,10 +8,9 @@ import {
     useIntervalFetch,
     getCountry,
     getUserOffchain,
-    setLoading,
-    getEnvironment
+    setLoading
 } from '@energyweb/origin-ui-core';
-import { getExchangeClient } from '../features/general';
+import { getEnvironment, getExchangeClient } from '../features/general';
 import { createBid, createDemand, directBuyOrder } from '../features/orders';
 import { TOrderBook, ANY_VALUE } from '../utils/exchange';
 import { Asks, Bids, Market, IMarketFormValues } from '../components/exchange';
