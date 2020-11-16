@@ -11,9 +11,11 @@ Attach screenshots or diagrams, if applicable.
 - [ ] If there is a Jira task, c/p the task description to this PR
 - [ ] Assign yourself to this pull request
 - [ ] Open a DRAFT pull request if it's not ready for review yet
+- [ ] Attach appropriate labels to the PR (`enhancement`, `bug`, etc.)
 - [ ] Tag the reviewers for review
-- [ ] Attach appropriate labels to the PR (`enhancement`, `bug`, `work-in-progress`, etc.)
-- [ ] Don't force-push any changes after a review has been done by any of the reviewers, unless agreed upon with the reviewer.
 - [ ] Is the pull request an architectural change?
     - [ ] If YES, please create an ADR and add it to `/doc/architecture/decisions`
+
+### Notes
+- Don't force-push any changes after a review has been done by any of the reviewers, unless agreed upon with the reviewer.
     
