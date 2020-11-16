@@ -11,6 +11,7 @@ import {
     Validate,
     ValidateIf
 } from 'class-validator';
+import { CertificationRequestStatus } from './certification-request-status.enum';
 
 export class CertificationRequestDTO {
     @ApiProperty({ type: Number })
@@ -79,4 +80,11 @@ export class CertificationRequestDTO {
     @IsInt()
     @Min(0)
     issuedCertificateTokenId?: number;
+
+    @ApiProperty({
+        enumName: 'CertificationRequestStatus',
+        enum: CertificationRequestStatus,
+        required: false
+    })
+    status?: CertificationRequestStatus;
 }
