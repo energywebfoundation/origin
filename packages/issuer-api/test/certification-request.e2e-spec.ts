@@ -9,6 +9,7 @@ import { DatabaseService } from '@energyweb/origin-backend-utils';
 import { authenticatedUser, bootstrapTestInstance, deviceManager } from './issuer-api';
 import { CERTIFICATION_REQUESTS_TABLE_NAME } from '../src/pods/certification-request/certification-request.entity';
 import { CERTIFICATES_TABLE_NAME } from '../src/pods/certificate/certificate.entity';
+import { CertificationRequestStatus } from '../src/pods/certification-request/certification-request-status.enum';
 
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -60,17 +61,19 @@ describe('Certification Request tests', () => {
                     approved,
                     revoked,
                     files,
-                    energy
+                    energy,
+                    status
                 } = res.body;
 
                 expect(deviceId).to.equal(certificationRequestTestData.deviceId);
                 expect(fromTime).to.equal(certificationRequestTestData.fromTime);
                 expect(toTime).to.equal(certificationRequestTestData.toTime);
-                expect(created).to.be.above(1);
-                expect(requestId).to.be.above(-1);
+                expect(created).to.be.null;
+                expect(requestId).to.be.null;
                 expect(owner).to.equal(deviceManager.address);
                 expect(approved).to.be.false;
                 expect(revoked).to.be.false;
+                expect(status).to.be.equal(CertificationRequestStatus.Queued);
                 expect(JSON.stringify(files)).to.equal(
                     JSON.stringify(certificationRequestTestData.files)
                 );
@@ -107,6 +110,9 @@ describe('Certification Request tests', () => {
             .expect((res) => {
                 certificationRequestId = res.body.id;
             });
+
+        // need to wait for item to be picked up from the queue and deployed
+        await sleep(3000);
 
         authenticatedUser.rights = Role.Issuer;
 
@@ -164,6 +170,9 @@ describe('Certification Request tests', () => {
                 certificationRequestId = res.body.id;
             });
 
+        // need to wait for item to be picked up from the queue and deployed
+        await sleep(3000);
+
         authenticatedUser.rights = Role.Issuer;
 
         await request(app.getHttpServer())
@@ -183,6 +192,9 @@ describe('Certification Request tests', () => {
             .expect((res) => {
                 certificationRequestId = res.body.id;
             });
+
+        // need to wait for item to be picked up from the queue and deployed
+        await sleep(3000);
 
         authenticatedUser.rights = Role.Issuer;
 
@@ -225,6 +237,9 @@ describe('Certification Request tests', () => {
             .expect((res) => {
                 certificationRequestId = res.body.id;
             });
+
+        // need to wait for item to be picked up from the queue and deployed
+        await sleep(3000);
 
         await request(app.getHttpServer())
             .put(`/certification-request/${certificationRequestId}/approve`)

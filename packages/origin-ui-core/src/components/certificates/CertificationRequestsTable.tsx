@@ -28,6 +28,7 @@ import {
     requestCertificateApproval
 } from '../../features/certificates';
 import { downloadFile } from '../Organization/DownloadDocuments';
+import { CertificationRequestStatus } from '@energyweb/issuer-api-client';
 
 interface IProps {
     approved: boolean;
@@ -80,6 +81,7 @@ export function CertificationRequestsTable(props: IProps) {
 
                 if (
                     request.approved !== props.approved ||
+                    request.status !== CertificationRequestStatus.Executed ||
                     (!isIssuer && user?.organization.id !== requestDevice?.organization.id)
                 ) {
                     continue;

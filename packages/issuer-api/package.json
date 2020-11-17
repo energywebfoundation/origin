@@ -56,7 +56,8 @@
         "pg": "^8.0.0",
         "precise-proofs-js": "^1.2.0",
         "swagger-ui-express": "4.1.4",
-        "typeorm": "0.2.29"
+        "typeorm": "0.2.29",
+        "rxjs": "6.6.3"
     },
     "devDependencies": {
         "@nestjs/cli": "7.5.2",
