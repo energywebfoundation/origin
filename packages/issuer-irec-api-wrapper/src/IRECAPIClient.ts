@@ -132,7 +132,7 @@ export class IRECAPIClient {
 
         return {
             create: async (issue: Issue): Promise<string> => {
-                validateOrReject(issue);
+                await validateOrReject(issue);
 
                 const url = `${issueManagementUrl}/create`;
 
@@ -145,7 +145,7 @@ export class IRECAPIClient {
                 return response.data.code;
             },
             update: async (code: string, issue: Issue): Promise<void> => {
-                validateOrReject(issue, { skipMissingProperties: true });
+                await validateOrReject(issue, { skipMissingProperties: true });
 
                 const url = `${issueManagementUrl}/${code}/edit`;
 
@@ -167,7 +167,7 @@ export class IRECAPIClient {
                 await setState(code, 'withdraw', notes);
             },
             approve: async (code: string, approve: ApproveIssue): Promise<void> => {
-                validateOrReject(approve);
+                await validateOrReject(approve);
 
                 const url = `${issueManagementUrl}/${code}/approve`;
 
@@ -215,14 +215,14 @@ export class IRECAPIClient {
 
         return {
             create: async (device: Device): Promise<void> => {
-                validateOrReject(device);
+                await validateOrReject(device);
 
                 const url = `${deviceManagementUrl}/create`;
 
                 await axios.post(url, classToPlain(device), this.config);
             },
             update: async (code: string, device: Device): Promise<void> => {
-                validateOrReject(device, { skipMissingProperties: true });
+                await validateOrReject(device, { skipMissingProperties: true });
 
                 const url = `${deviceManagementUrl}/${code}/update`;
 
