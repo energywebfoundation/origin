@@ -337,8 +337,8 @@ export class IRECAPIClient {
                 Promise.reject(
                     new Error(
                         JSON.stringify({
-                            status: err.response.status,
-                            msg: err.response.data
+                            status: err?.response?.data?.status ?? 500,
+                            msg: err?.response?.data?.msg ?? err.message
                         })
                     )
                 )
