@@ -239,6 +239,83 @@ export class IRECAPIClient {
                 const response = await axios.get<unknown>(url, this.config);
 
                 return plainToClass(Device, response.data);
+            },
+            submit: async (
+                code: string,
+                { notes, fileIds }: { notes?: string; fileIds?: string[] } = {}
+            ): Promise<Device> => {
+                const url = `${deviceManagementUrl}/${code}/submit`;
+
+                const response = await axios.put<unknown>(
+                    url,
+                    { notes, file_data: fileIds?.map((id: string) => ({ file_uid: id })) ?? [] },
+                    this.config
+                );
+
+                return plainToClass(Device, response.data);
+            },
+            verify: async (
+                code: string,
+                { notes, fileIds }: { notes?: string; fileIds?: string[] } = {}
+            ): Promise<Device> => {
+                const url = `${deviceManagementUrl}/${code}/verify`;
+
+                const response = await axios.put<unknown>(
+                    url,
+                    { notes, file_data: fileIds?.map((id: string) => ({ file_uid: id })) ?? [] },
+                    this.config
+                );
+
+                return plainToClass(Device, response.data);
+            },
+            approve: async (
+                code: string,
+                { notes, fileIds }: { notes?: string; fileIds?: string[] } = {}
+            ): Promise<Device> => {
+                const url = `${deviceManagementUrl}/${code}/approve`;
+
+                const response = await axios.put<unknown>(
+                    url,
+                    { notes, file_data: fileIds?.map((id: string) => ({ file_uid: id })) ?? [] },
+                    this.config
+                );
+
+                return plainToClass(Device, response.data);
+            },
+            refer: async (
+                code: string,
+                { notes, fileIds }: { notes?: string; fileIds?: string[] } = {}
+            ): Promise<Device> => {
+                const url = `${deviceManagementUrl}/${code}/refer`;
+
+                const response = await axios.put<unknown>(
+                    url,
+                    { notes, file_data: fileIds?.map((id: string) => ({ file_uid: id })) ?? [] },
+                    this.config
+                );
+
+                return plainToClass(Device, response.data);
+            },
+            reject: async (
+                code: string,
+                { notes, fileIds }: { notes?: string; fileIds?: string[] } = {}
+            ): Promise<Device> => {
+                const url = `${deviceManagementUrl}/${code}/reject`;
+
+                const response = await axios.put<unknown>(
+                    url,
+                    { notes, file_data: fileIds?.map((id: string) => ({ file_uid: id })) ?? [] },
+                    this.config
+                );
+
+                return plainToClass(Device, response.data);
+            },
+            withdraw: async (code: string, { notes }: { notes?: string } = {}): Promise<Device> => {
+                const url = `${deviceManagementUrl}/${code}/withdraw`;
+
+                const response = await axios.put<unknown>(url, { notes }, this.config);
+
+                return plainToClass(Device, response.data);
             }
         };
     }
