@@ -1,47 +1,62 @@
-import { forwardRef, Inject, Injectable, Logger } from '@nestjs/common';
-import { Connection, EntityManager } from 'typeorm';
+import { Injectable, Logger } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Subject } from 'rxjs';
+import { concatMap } from 'rxjs/operators';
+import { Connection, EntityManager, Repository } from 'typeorm';
 
-import { AccountBalanceService } from '../account-balance/account-balance.service';
 import { AccountDeployerService } from '../account-deployer/account-deployer.service';
-import { AccountDTO } from './account.dto';
+import { AccountAlreadyExistsError } from './account-already-exists.error';
 import { Account } from './account.entity';
 
 @Injectable()
 export class AccountService {
     private readonly logger = new Logger(AccountService.name);
 
+    private readonly requestQueue = new Subject<string>();
+
     constructor(
-        @Inject(forwardRef(() => AccountBalanceService))
-        private readonly accountBalanceService: AccountBalanceService,
+        @InjectRepository(Account)
+        private readonly repository: Repository<Account>,
         private readonly connection: Connection,
         private readonly accountDeployerService: AccountDeployerService
-    ) {}
-
-    public getOrCreateAccount(userId: string, transaction?: EntityManager) {
-        if (transaction) {
-            return this.create(userId, transaction);
-        }
-
-        return this.connection.transaction((tr) => this.create(userId, tr));
+    ) {
+        this.requestQueue.pipe(concatMap((id) => this.process(id))).subscribe();
     }
 
-    private async create(userId: string, transaction: EntityManager) {
-        this.logger.debug(`Trying to find account for userId=${userId}`);
-        const repository = transaction.getRepository<Account>(Account);
+    public async create(userId: string) {
+        this.logger.debug(`User with userId=${userId} requesting account creation`);
 
-        let account = await repository.findOne(null, {
+        const account = await this.repository.findOne(null, {
             where: { userId }
         });
-        if (!account) {
-            this.logger.debug(`Account for userId=${userId} not found. Creating.`);
-            const address = await this.accountDeployerService.deployAccount();
 
-            account = await repository.save({ userId, address });
+        if (account) {
+            throw new AccountAlreadyExistsError(userId);
         }
 
-        this.logger.debug(`Returning account ${JSON.stringify(account)} `);
+        this.requestQueue.next(userId);
+    }
 
-        return account;
+    private async process(userId: string) {
+        this.logger.debug(`Processing account creation for user with userId=${userId}`);
+
+        const account = await this.repository.findOne(null, {
+            where: { userId }
+        });
+
+        if (account) {
+            this.logger.error(
+                `Account for user with userId=${userId} has already been deployed. Skipping.`
+            );
+
+            return;
+        }
+
+        const address = await this.accountDeployerService.deployAccount();
+
+        await this.repository.save({ userId, address });
+
+        this.logger.debug(`Account deployed ${JSON.stringify(account)} `);
     }
 
     public async findByAddress(address: string, transaction?: EntityManager) {
@@ -57,14 +72,9 @@ export class AccountService {
         return account;
     }
 
-    public async getAccount(userId: string): Promise<AccountDTO> {
-        const { address } = await this.getOrCreateAccount(userId);
-
-        const balances = await this.accountBalanceService.getAccountBalance(userId);
-
-        return new AccountDTO({
-            address,
-            balances
+    public async getAccount(userId: string): Promise<Account> {
+        return this.repository.findOne(null, {
+            where: { userId }
         });
     }
 }

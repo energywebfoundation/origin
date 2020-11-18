@@ -17,7 +17,7 @@ import { ProductService } from '../src/pods/product/product.service';
 import { TradeDTO } from '../src/pods/trade/trade.dto';
 import { TransferService } from '../src/pods/transfer/transfer.service';
 import { authenticatedUser, bootstrapTestInstance } from './exchange';
-import { MWh } from './utils';
+import { createDepositAddress, MWh } from './utils';
 import { DemandSummaryDTO } from '../src/pods/demand/demand-summary.dto';
 
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
@@ -96,7 +96,7 @@ describe('Demand orders trading', () => {
 
     it('should trade the bid from the demand', async () => {
         const validFrom = new Date();
-        const { address } = await accountService.getOrCreateAccount(sellerId);
+        const address = await createDepositAddress(accountService, sellerId);
 
         const deposit = await createDeposit(address);
         await confirmDeposit();

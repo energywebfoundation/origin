@@ -1,12 +1,13 @@
+import { DatabaseService } from '@energyweb/origin-backend-utils';
 import { INestApplication } from '@nestjs/common';
 import { expect } from 'chai';
 import request from 'supertest';
 
-import { DatabaseService } from '@energyweb/origin-backend-utils';
-import { AccountDTO } from '../src/pods/account/account.dto';
+import { AccountBalance } from '../src/pods/account-balance/account-balance';
 import { AccountService } from '../src/pods/account/account.service';
 import { TransferService } from '../src/pods/transfer/transfer.service';
 import { authenticatedUser, bootstrapTestInstance } from './exchange';
+import { createDepositAddress } from './utils';
 
 describe('account deposit confirmation', () => {
     let app: INestApplication;
@@ -15,6 +16,7 @@ describe('account deposit confirmation', () => {
     let accountService: AccountService;
 
     const user1Id = authenticatedUser.organization.id;
+    let user1Address = '';
 
     const dummyAsset = {
         address: '0x9876',
@@ -25,8 +27,6 @@ describe('account deposit confirmation', () => {
     };
 
     const createTransactionHash = () => `0x${((Math.random() * 0xffffff) << 0).toString(16)}`;
-
-    let user1Address: string;
 
     const createDeposit = (address: string, amount = '1000', asset = dummyAsset) => {
         return transferService.createDeposit({
@@ -46,8 +46,8 @@ describe('account deposit confirmation', () => {
 
         await app.init();
 
-        const { address } = await accountService.getOrCreateAccount(user1Id);
-        user1Address = address;
+        user1Address = await createDepositAddress(accountService, user1Id);
+        console.log(`LOG: ${user1Address}`);
     });
 
     after(async () => {
@@ -56,39 +56,33 @@ describe('account deposit confirmation', () => {
     });
 
     it('should not list unconfirmed deposit', async () => {
-        const { address } = await accountService.getOrCreateAccount(user1Id);
-
-        await createDeposit(address);
+        await createDeposit(user1Address);
 
         await request(app.getHttpServer())
-            .get('/account')
+            .get('/account-balance')
             .expect(200)
             .expect((res) => {
-                const account = res.body as AccountDTO;
+                const account = res.body as AccountBalance;
 
-                expect(account.address).equals(user1Address);
-                expect(account.balances.available.length).equals(0);
+                expect(account.available.length).equals(0);
             });
     });
 
     it('should list confirmed deposit', async () => {
         const amount = '1000';
-        const { address } = await accountService.getOrCreateAccount(user1Id);
-
-        const { transactionHash } = await createDeposit(address, amount);
+        const { transactionHash } = await createDeposit(user1Address, amount);
         await confirmDeposit(transactionHash);
 
         await request(app.getHttpServer())
-            .get('/account')
+            .get('/account-balance')
             .expect(200)
             .expect((res) => {
-                const account = res.body as AccountDTO;
+                const account = res.body as AccountBalance;
 
-                expect(account.address).equals(user1Address);
-                expect(account.balances.available.length).equals(1);
-                expect(account.balances.available[0].amount).equals(amount);
+                expect(account.available.length).equals(1);
+                expect(account.available[0].amount).equals(amount);
 
-                expect(account.balances.available[0].asset).deep.equals(
+                expect(account.available[0].asset).deep.equals(
                     JSON.parse(JSON.stringify(dummyAsset))
                 );
             });

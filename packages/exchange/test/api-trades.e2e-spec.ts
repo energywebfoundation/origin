@@ -10,6 +10,7 @@ import { OrderService } from '../src/pods/order/order.service';
 import { TradeDTO } from '../src/pods/trade/trade.dto';
 import { TransferService } from '../src/pods/transfer/transfer.service';
 import { authenticatedUser, bootstrapTestInstance } from './exchange';
+import { createDepositAddress } from './utils';
 
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -44,7 +45,7 @@ describe('Trades API', () => {
     };
 
     const testTrade = async (sellerId: string, buyerId: string) => {
-        const { address: sellerAddress } = await accountService.getOrCreateAccount(sellerId);
+        const sellerAddress = await createDepositAddress(accountService, sellerId);
 
         const deposit = await createDeposit(sellerAddress);
         await confirmDeposit();

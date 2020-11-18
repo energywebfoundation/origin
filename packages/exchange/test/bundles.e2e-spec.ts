@@ -4,7 +4,8 @@ import { INestApplication } from '@nestjs/common';
 import { expect } from 'chai';
 import request from 'supertest';
 
-import { AccountDTO } from '../src/pods/account/account.dto';
+import { AccountBalance } from '../src/pods/account-balance/account-balance';
+import { AccountBalanceService } from '../src/pods/account-balance/account-balance.service';
 import { AccountService } from '../src/pods/account/account.service';
 import { BundlePublicDTO } from '../src/pods/bundle/bundle-public.dto';
 import { BundleSplitDTO } from '../src/pods/bundle/bundle-split.dto';
@@ -16,7 +17,7 @@ import { CreateBundleDTO } from '../src/pods/bundle/create-bundle.dto';
 import { Transfer } from '../src/pods/transfer/transfer.entity';
 import { TransferService } from '../src/pods/transfer/transfer.service';
 import { authenticatedUser, bootstrapTestInstance } from './exchange';
-import { MWh } from './utils';
+import { createDepositAddress, MWh } from './utils';
 
 describe('Bundles', () => {
     let app: INestApplication;
@@ -24,6 +25,7 @@ describe('Bundles', () => {
     let databaseService: DatabaseService;
     let accountService: AccountService;
     let bundleService: BundleService;
+    let accountBalanceService: AccountBalanceService;
 
     const user1Id = authenticatedUser.organization.id;
 
@@ -65,7 +67,7 @@ describe('Bundles', () => {
             { volume: 10, asset: assetTwo }
         ]
     ) => {
-        const { address } = await accountService.getOrCreateAccount(userId);
+        const address = await createDepositAddress(accountService, userId);
 
         const deposits: Transfer[] = [];
 
@@ -100,6 +102,7 @@ describe('Bundles', () => {
         ({
             transferService,
             accountService,
+            accountBalanceService,
             databaseService,
             bundleService,
             app
@@ -118,7 +121,7 @@ describe('Bundles', () => {
     });
 
     it('should be able to create a bundle', async () => {
-        const { address: user1Address } = await accountService.getOrCreateAccount(user1Id);
+        const user1Address = await createDepositAddress(accountService, user1Id);
 
         const depositOne = await createDeposit(user1Address, `${10 * MWh}`, assetOne);
         const depositTwo = await createDeposit(user1Address, `${10 * MWh}`, assetTwo);
@@ -161,12 +164,10 @@ describe('Bundles', () => {
             });
 
         await request(app.getHttpServer())
-            .get('/account')
+            .get('/account-balance')
             .expect(200)
             .expect((res) => {
-                const {
-                    balances: { available, locked }
-                } = res.body as AccountDTO;
+                const { available, locked } = res.body as AccountBalance;
 
                 expect(locked.length).equals(2);
                 expect(available.length).equals(0);
@@ -193,12 +194,10 @@ describe('Bundles', () => {
             });
 
         await request(app.getHttpServer())
-            .get('/account')
+            .get('/account-balance')
             .expect(200)
             .expect((res) => {
-                const {
-                    balances: { available, locked }
-                } = res.body as AccountDTO;
+                const { available, locked } = res.body as AccountBalance;
 
                 expect(locked.length).equals(0);
                 expect(available.length).equals(2);
@@ -239,12 +238,10 @@ describe('Bundles', () => {
             });
 
         await request(app.getHttpServer())
-            .get('/account')
+            .get('/account-balance')
             .expect(200)
             .expect((res) => {
-                const {
-                    balances: { available, locked }
-                } = res.body as AccountDTO;
+                const { available, locked } = res.body as AccountBalance;
 
                 expect(locked.length).equals(0);
                 expect(available.length).equals(2);
@@ -269,9 +266,7 @@ describe('Bundles', () => {
                 expect(trade.buyerId).equals(user1Id);
             });
 
-        const {
-            balances: { available, locked }
-        } = await accountService.getAccount(user2Id);
+        const { available, locked } = await accountBalanceService.getAccountBalance(user2Id);
 
         expect(locked.length).equals(2);
         expect(available.length).equals(0);
@@ -357,7 +352,7 @@ describe('Bundles', () => {
 
     it('Inactive user should not be able to create bundle', async () => {
         authenticatedUser.status = UserStatus.Pending;
-        const { address: user1Address } = await accountService.getOrCreateAccount(user1Id);
+        const user1Address = await createDepositAddress(accountService, user1Id);
 
         const depositOne = await createDeposit(user1Address, `${10 * MWh}`, assetOne);
         const depositTwo = await createDeposit(user1Address, `${10 * MWh}`, assetTwo);
@@ -378,7 +373,7 @@ describe('Bundles', () => {
     });
 
     it('should not be able to create a bundle with negative volume', async () => {
-        const { address: user1Address } = await accountService.getOrCreateAccount(user1Id);
+        const user1Address = await createDepositAddress(accountService, user1Id);
 
         const depositOne = await createDeposit(user1Address, `${10 * MWh}`, assetOne);
         const depositTwo = await createDeposit(user1Address, `${10 * MWh}`, assetTwo);
@@ -398,7 +393,7 @@ describe('Bundles', () => {
     });
 
     it('should not be able to create a bundle with decimal volume', async () => {
-        const { address: user1Address } = await accountService.getOrCreateAccount(user1Id);
+        const user1Address = await createDepositAddress(accountService, user1Id);
 
         const depositOne = await createDeposit(user1Address, `${10 * MWh}`, assetOne);
         const depositTwo = await createDeposit(user1Address, `${10 * MWh}`, assetTwo);
