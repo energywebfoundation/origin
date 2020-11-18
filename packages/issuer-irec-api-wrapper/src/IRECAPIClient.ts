@@ -227,6 +227,11 @@ export class IRECAPIClient {
                 const url = `${deviceManagementUrl}/${code}/update`;
 
                 await axios.put(url, classToPlain(device), this.config);
+            },
+            getAll: async (): Promise<Device[]> => {
+                const response = await axios.get<unknown[]>(deviceManagementUrl, this.config);
+
+                return response.data.map((device) => plainToClass(Device, device));
             }
         };
     }
