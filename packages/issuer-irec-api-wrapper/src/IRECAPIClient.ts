@@ -221,10 +221,10 @@ export class IRECAPIClient {
 
                 await axios.post(url, classToPlain(device), this.config);
             },
-            update: async (code: string, device: Device): Promise<void> => {
+            edit: async (code: string, device: Device): Promise<void> => {
                 await validateOrReject(device, { skipMissingProperties: true });
 
-                const url = `${deviceManagementUrl}/${code}/update`;
+                const url = `${deviceManagementUrl}/${code}/edit`;
 
                 await axios.put(url, classToPlain(device), this.config);
             },
@@ -232,6 +232,13 @@ export class IRECAPIClient {
                 const response = await axios.get<unknown[]>(deviceManagementUrl, this.config);
 
                 return response.data.map((device) => plainToClass(Device, device));
+            },
+            get: async (code: string): Promise<Device> => {
+                const url = `${deviceManagementUrl}/${code}`;
+
+                const response = await axios.get<unknown>(url, this.config);
+
+                return plainToClass(Device, response.data);
             }
         };
     }
