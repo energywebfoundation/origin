@@ -17,7 +17,7 @@ import {
     TransactionResult,
     TransactionType
 } from './Account';
-import { Device } from './Device';
+import { Device, DeviceCreateUpdateParams } from './Device';
 import { ApproveIssue, Issue, IssueWithStatus } from './Issue';
 import { Redemption, Transfer } from './Transfer';
 import { AccountItem } from './Items';
@@ -214,14 +214,14 @@ export class IRECAPIClient {
         const deviceManagementUrl = `${this.endPointUrl}/api/irec/device-management`;
 
         return {
-            create: async (device: Device): Promise<void> => {
+            create: async (device: DeviceCreateUpdateParams): Promise<void> => {
                 await validateOrReject(device);
 
                 const url = `${deviceManagementUrl}/create`;
 
                 await axios.post(url, classToPlain(device), this.config);
             },
-            edit: async (code: string, device: Device): Promise<void> => {
+            edit: async (code: string, device: DeviceCreateUpdateParams): Promise<void> => {
                 await validateOrReject(device, { skipMissingProperties: true });
 
                 const url = `${deviceManagementUrl}/${code}/edit`;
