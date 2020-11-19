@@ -19,6 +19,7 @@ import { useTranslation, bundlePrice, formatCurrencyComplete } from '@energyweb/
 import { getShowBundleDetails, showBundleDetails } from '../../features/bundles';
 import { Bundle } from '../../utils/exchange';
 import { BundleContents } from './BundleContents';
+import { useOriginConfiguration } from '../../utils/configuration';
 
 interface IOwnProps {
     bundle: Bundle;
@@ -68,6 +69,9 @@ export const BundleDetails = (props: IOwnProps) => {
     const maxPrice = Math.ceil(Math.max(...prices) / 10) * 10;
     const minPrice = Math.floor(Math.min(...prices) / 10) * 10;
     const styles = useDialogStyles();
+    const configuration = useOriginConfiguration();
+
+    const originSimpleTextColor = configuration?.styleConfig?.SIMPLE_TEXT_COLOR;
 
     const [priceRange, setPriceRange] = useState<number[]>([minPrice, maxPrice]);
 
@@ -97,6 +101,7 @@ export const BundleDetails = (props: IOwnProps) => {
                 <IconButton
                     className={`${styles.closeButton} closeButton`}
                     onClick={() => dispatch(showBundleDetails(false))}
+                    style={{ color: originSimpleTextColor }}
                 >
                     <CloseIcon />
                 </IconButton>
