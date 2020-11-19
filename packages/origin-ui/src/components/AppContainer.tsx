@@ -12,7 +12,6 @@ import {
     Admin,
     Account,
     Organization,
-    RequestCertificatesModal,
     AccountMismatchModal,
     ErrorComponent,
     getError,
@@ -141,7 +140,6 @@ export function AppContainer(props: IProps) {
                             }}
                         />
                     </Switch>
-                    <RequestCertificatesModal />
                     <AccountMismatchModal />
                     <NoBlockchainAccountModal />
                 </div>
