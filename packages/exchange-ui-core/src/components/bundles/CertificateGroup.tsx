@@ -23,9 +23,11 @@ import {
     moment,
     EnergyFormatter,
     EnergyTypes,
-    ICertificateViewItem
+    ICertificateViewItem,
+    LightenColor
 } from '@energyweb/origin-ui-core';
 import { IOriginTypography } from '../../types/typography';
+import { useOriginConfiguration } from '../../utils/configuration';
 
 interface IOwnProps {
     certificates: ICertificateViewItem[];
@@ -49,6 +51,10 @@ export const CertificateGroup = (props: IOwnProps) => {
         environment,
         devices
     );
+    const configuration = useOriginConfiguration();
+    const originBgColor = configuration?.styleConfig?.MAIN_BACKGROUND_COLOR;
+    const bgColorLight = LightenColor(originBgColor, 2);
+    const bgColorLighten = LightenColor(originBgColor, 4);
 
     const fontSizeMd = ((useTheme().typography as unknown) as IOriginTypography)?.fontSizeMd;
     const fontSizeSm = ((useTheme().typography as unknown) as IOriginTypography)?.fontSizeSm;
@@ -88,7 +94,8 @@ export const CertificateGroup = (props: IOwnProps) => {
                 className="Header"
                 container
                 style={{
-                    fontSize: fontSizeMd
+                    fontSize: fontSizeMd,
+                    backgroundColor: bgColorLight
                 }}
                 alignItems="center"
             >
@@ -130,7 +137,8 @@ export const CertificateGroup = (props: IOwnProps) => {
                             style={{
                                 textTransform: 'capitalize',
                                 paddingLeft: 0,
-                                paddingRight: 0
+                                paddingRight: 0,
+                                backgroundColor: bgColorLighten
                             }}
                             selected={isSelected(cert)}
                             divider

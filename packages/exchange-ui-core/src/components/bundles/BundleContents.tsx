@@ -37,6 +37,7 @@ import {
 import { IOriginTypography } from '../../types/typography';
 import { buyBundle } from '../../features/bundles';
 import { Bundle, Split } from '../../utils/exchange';
+import { useOriginConfiguration } from '../../utils/configuration';
 
 interface IOwnProps {
     bundle: Bundle;
@@ -86,6 +87,8 @@ export const BundleContents = (props: IOwnProps) => {
     const { t } = useTranslation();
     const dispatch = useDispatch();
     const currency = useSelector(getCurrencies)[0];
+    const configuration = useOriginConfiguration();
+    const originSimpleTextColor = configuration?.styleConfig?.SIMPLE_TEXT_COLOR;
 
     const fontSize = ((useTheme().typography as unknown) as IOriginTypography)?.fontSizeMd;
 
@@ -128,7 +131,8 @@ export const BundleContents = (props: IOwnProps) => {
                         position: 'absolute',
                         top: '50%',
                         left: '38%',
-                        zIndex: 10
+                        zIndex: 10,
+                        color: originSimpleTextColor
                     }}
                     className="ScrollButton"
                     size="small"
@@ -144,7 +148,8 @@ export const BundleContents = (props: IOwnProps) => {
                         position: 'absolute',
                         top: '50%',
                         left: '98%',
-                        zIndex: 10
+                        zIndex: 10,
+                        color: originSimpleTextColor
                     }}
                     className="ScrollButton"
                     size="small"

@@ -17,7 +17,6 @@ import {
     makeStyles
 } from '@material-ui/core';
 import { Edit, HighlightOff } from '@material-ui/icons';
-import variables from '../../styles/variables.scss';
 import {
     energyImageByType,
     moment,
@@ -29,11 +28,11 @@ import {
     useTranslation,
     useValidation,
     ICertificateEnergy,
-    ICertificateViewItem
+    ICertificateViewItem,
+    LightenColor
 } from '@energyweb/origin-ui-core';
-
-import bundleItemStyles from '../../styles/BundleItemEdit.scss';
 import { IOriginTypography } from '../../types/typography';
+import { useOriginConfiguration } from '../../utils/configuration';
 
 export interface IBundledCertificateEnergy extends ICertificateEnergy {
     volumeToBundle: BigNumber;
@@ -60,6 +59,10 @@ export const BundleItemEdit = (props: IOwnProps) => {
         energy: { publicVolume, volumeToBundle }
     } = certificate;
     const [selected, setSelected] = useState<boolean>(false);
+    const configuration = useOriginConfiguration();
+    const textColorDefault = configuration?.styleConfig?.TEXT_COLOR_DEFAULT;
+    const originBgColor = configuration?.styleConfig?.MAIN_BACKGROUND_COLOR;
+    const bgDarker = LightenColor(originBgColor, -3);
 
     const fontSizeMd = ((useTheme().typography as unknown) as IOriginTypography)?.fontSizeMd;
     const spacing = useTheme().spacing;
@@ -69,7 +72,7 @@ export const BundleItemEdit = (props: IOwnProps) => {
     const classes = makeStyles(() => ({
         formControl: {
             width: '100%',
-            backgroundColor: variables.backgroundColorDarker
+            backgroundColor: bgDarker
         },
         formLabel: {
             marginTop: spacing(1),
@@ -209,8 +212,7 @@ export const BundleItemEdit = (props: IOwnProps) => {
                                                                 >
                                                                     <HighlightOff
                                                                         style={{
-                                                                            fill:
-                                                                                bundleItemStyles.resetButtonColor
+                                                                            fill: textColorDefault
                                                                         }}
                                                                     />
                                                                 </IconButton>

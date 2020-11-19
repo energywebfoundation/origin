@@ -12,3 +12,4 @@ export * from './test';
 export * from './bundles';
 export * from './ActiveOrders';
 export { useTranslation } from 'react-i18next';
+export * from './colors';

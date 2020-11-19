@@ -6,13 +6,10 @@ import { ProducingDevice } from '@energyweb/device-registry';
 import { Bar } from 'react-chartjs-2';
 import { formatDate, EnergyFormatter, moment } from '../../utils';
 import { IDevice, IEnergyGenerated } from '@energyweb/origin-backend-core';
-import { initializeI18N } from '../../components';
 import { createRenderedHelpers } from '../utils/helpers';
 
 describe('SmartMeterReadingsChart', () => {
     it('correctly renders', async () => {
-        initializeI18N();
-
         const currentTime = moment().tz('Asia/Bangkok');
         const currentDay = currentTime.date();
         const currentMonthDates = new Array(currentTime.daysInMonth())

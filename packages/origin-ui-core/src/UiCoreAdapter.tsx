@@ -8,7 +8,7 @@ import { History } from 'history';
 import {
     OriginConfigurationProvider,
     IOriginConfiguration
-} from './components/OriginConfigurationContext';
+} from './components/PackageConfigurationProvider';
 import { Store, CombinedState, AnyAction } from 'redux';
 import { ICoreState } from './types';
 

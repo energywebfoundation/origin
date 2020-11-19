@@ -2,16 +2,10 @@ import React from 'react';
 import { Paper, Theme, useTheme, Grid, Box, Divider, makeStyles, Button } from '@material-ui/core';
 import { useTranslation } from '../..';
 import { Formik, Form, FormikHelpers } from 'formik';
-import { useValidation } from '../../utils';
+import { useValidation, LightenColor } from '../../utils';
 import { FormInput } from '../Form';
-import variables from '../../styles/variables.scss';
 import irecLogo from '../../../assets/logo-i-rec.svg';
-
-const useStyles = makeStyles(() => ({
-    divider: {
-        backgroundColor: variables.backgroundColorLighter
-    }
-}));
+import { useOriginConfiguration } from '../../utils/configuration';
 
 const INITIAL_VALUES = {
     platformOrganizationId: '',
@@ -25,6 +19,15 @@ export const IRECConnectForm = () => {
     const { spacing }: Theme = useTheme();
     const { t } = useTranslation();
     const { Yup } = useValidation();
+    const configuration = useOriginConfiguration();
+    const dividerBgColor = LightenColor(configuration?.styleConfig?.MAIN_BACKGROUND_COLOR, 10);
+
+    const useStyles = makeStyles(() => ({
+        divider: {
+            backgroundColor: dividerBgColor
+        }
+    }));
+
     const classes = useStyles();
 
     const onConnect = (

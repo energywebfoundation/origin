@@ -1,17 +1,18 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { ErrorOutline } from '@material-ui/icons';
+import { useOriginConfiguration } from '../utils/configuration';
 
 interface IProps {
     message: string;
 }
 
-export class ErrorComponent extends Component<IProps> {
-    render() {
-        return (
-            <div className="Error">
-                <ErrorOutline className="Error_icon" />
-                <div className="Error_message">{this.props.message}</div>
-            </div>
-        );
-    }
+export function ErrorComponent(props: IProps) {
+    const textColorDefault = useOriginConfiguration()?.styleConfig?.TEXT_COLOR_DEFAULT;
+
+    return (
+        <div className="Error" style={{ color: textColorDefault }}>
+            <ErrorOutline className="Error_icon" />
+            <div className="Error_message">{props.message}</div>
+        </div>
+    );
 }

@@ -16,11 +16,6 @@ import { Provider } from 'react-redux';
 import { createLogger } from 'redux-logger';
 import { setOffChainDataSource } from '../../features/general/actions';
 import {
-    OriginConfigurationProvider,
-    createOriginConfiguration,
-    initializeI18N
-} from '../../components';
-import {
     IDevice,
     DeviceStatus,
     ISmartMeterReadStats,
@@ -229,7 +224,7 @@ const setupStoreInternal = (
         ? Object.keys(sagas).reduce((a, saga) => [...a, sagaMiddleware.run(sagas[saga])], [])
         : [];
 
-    initializeI18N('en');
+    // initializeI18N('en');
 
     return {
         store,
@@ -369,17 +364,13 @@ interface IWrapperProps {
     children: React.ReactNode;
 }
 
-const originConfiguration = createOriginConfiguration();
-
 export const WrapperComponent = (props: IWrapperProps) => {
     return (
-        <OriginConfigurationProvider value={originConfiguration}>
-            <MuiPickersUtilsProvider utils={MomentUtils}>
-                <Provider store={props.store}>
-                    <ConnectedRouter history={props.history}>{props.children}</ConnectedRouter>
-                </Provider>
-            </MuiPickersUtilsProvider>
-        </OriginConfigurationProvider>
+        <MuiPickersUtilsProvider utils={MomentUtils}>
+            <Provider store={props.store}>
+                <ConnectedRouter history={props.history}>{props.children}</ConnectedRouter>
+            </Provider>
+        </MuiPickersUtilsProvider>
     );
 };
 
