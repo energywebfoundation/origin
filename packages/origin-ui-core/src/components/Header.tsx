@@ -17,7 +17,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useLinks, dataTest, useTranslation } from '../utils';
 import { getUserOffchain } from '../features/users/selectors';
 import { clearAuthenticationToken } from '../features/users/actions';
-import { OriginConfigurationContext } from './OriginConfigurationContext';
+import { OriginConfigurationContext } from './PackageConfigurationProvider';
 
 export function getAddressDisplay(address: string, userOffchain?: IUser) {
     if (userOffchain) {

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect } from 'react';
 import { moment, DATE_FORMAT_DMY, getDeviceId, EnergyFormatter, useTranslation } from '../../utils';
 import {
     Button,
@@ -10,24 +10,23 @@ import {
 } from '@material-ui/core';
 import { DatePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
 import { useSelector, useDispatch } from 'react-redux';
-import {
-    requestCertificates,
-    hideRequestCertificatesModal
-} from '../../features/certificates/actions';
-import {
-    getRequestCertificatesModalProducingDevice,
-    getRequestCertificatesModalVisible
-} from '../../features/certificates/selectors';
+import { requestCertificates } from '../../features/certificates/actions';
 import { Upload, IUploadedFile } from '../Upload';
 import { getEnvironment } from '../../features';
 import { BigNumber } from 'ethers';
 import MomentUtils from '@date-io/moment';
-import { OriginConfigurationContext } from '../OriginConfigurationContext';
+import { useOriginConfiguration } from '../../utils/configuration';
 
 // Maximum number Solidity can handle is (2^256)-1
 export const MAX_ENERGY_PER_CERTIFICATE = BigNumber.from(2).pow(256).sub(1);
 
-export function RequestCertificatesModal() {
+interface IProps {
+    showModal: boolean;
+    setShowModal: (showModal: boolean) => void;
+    producingDevice: any;
+}
+
+export function RequestCertificatesModal(props: IProps) {
     const [energyInDisplayUnit, setEnergyInDisplayUnit] = useState('');
     const [files, setFiles] = useState<IUploadedFile[]>([]);
 
@@ -36,11 +35,9 @@ export function RequestCertificatesModal() {
         (f) => !f.removed && !f.cancelled && f.uploadProgress !== 100
     );
     const uploadedFiles = files.filter((f) => !f.removed && f.uploadedName);
-
-    const producingDevice = useSelector(getRequestCertificatesModalProducingDevice);
-    const showModal = useSelector(getRequestCertificatesModalVisible);
+    const { showModal, setShowModal, producingDevice } = props;
     const environment = useSelector(getEnvironment);
-    const configuration = useContext(OriginConfigurationContext);
+    const configuration = useOriginConfiguration();
 
     const DEFAULTS = {
         fromDate: moment()
@@ -86,7 +83,7 @@ export function RequestCertificatesModal() {
     }, [producingDevice]);
 
     function handleClose() {
-        dispatch(hideRequestCertificatesModal());
+        setShowModal(false);
     }
 
     async function requestCerts() {
@@ -103,7 +100,7 @@ export function RequestCertificatesModal() {
 
     return (
         <MuiPickersUtilsProvider utils={MomentUtils} locale={configuration?.language}>
-            <Dialog open={showModal} onClose={handleClose}>
+            <Dialog open={showModal || false} onClose={handleClose}>
                 <DialogTitle>
                     {t('certificate.info.requestCertificatesFor', {
                         facilityName: producingDevice?.facilityName ?? ''

@@ -3,6 +3,8 @@ import { useSelector } from 'react-redux';
 import { getOffChainDataSource } from '../../features/general/selectors';
 import { makeStyles, createStyles, useTheme, Chip } from '@material-ui/core';
 import { GetApp } from '@material-ui/icons';
+import { useOriginConfiguration } from '../../utils/configuration';
+import { LightenColor } from '../../utils';
 
 export const downloadFile = async (client, id) => {
     try {
@@ -30,6 +32,10 @@ export const downloadFile = async (client, id) => {
 export const DownloadDocuments = ({ documents, name }) => {
     const offChainDataSource = useSelector(getOffChainDataSource);
     const filesClient = offChainDataSource?.filesClient;
+    const configuration = useOriginConfiguration();
+    const originTextColor = configuration?.styleConfig?.TEXT_COLOR_DEFAULT;
+
+    const bgColorLight = LightenColor(originTextColor, 25);
 
     const useStyles = makeStyles(() =>
         createStyles({
@@ -43,7 +49,7 @@ export const DownloadDocuments = ({ documents, name }) => {
             thumb: {
                 display: 'inline-flex',
                 borderRadius: 2,
-                border: '1px solid #eaeaea',
+                border: `1px solid ${bgColorLight}`,
                 marginBottom: 8,
                 marginRight: 8,
                 width: 100,
@@ -68,7 +74,7 @@ export const DownloadDocuments = ({ documents, name }) => {
                 color="primary"
                 onClick={() => downloadFile(filesClient, documentId)}
                 icon={<GetApp color="primary" />}
-                style={{ background: '#e0e0e0' }}
+                style={{ background: bgColorLight }}
                 key={index}
             />
         );

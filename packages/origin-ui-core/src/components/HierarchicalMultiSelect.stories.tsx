@@ -1,12 +1,7 @@
 /* eslint-disable import/no-extraneous-dependencies */
 import React, { useState } from 'react';
 import { withKnobs, boolean, object } from '@storybook/addon-knobs';
-import { MuiThemeProvider } from '@material-ui/core';
 import { HierarchicalMultiSelect } from './HierarchicalMultiSelect';
-import {
-    createOriginConfiguration,
-    OriginConfigurationProvider
-} from './OriginConfigurationContext';
 import { DeviceTypeService, EncodedDeviceType } from '@energyweb/utils-general';
 import { TEST_DEVICE_TYPES } from '../__tests__/utils/helpers';
 
@@ -45,18 +40,6 @@ function TestWrapper() {
     );
 }
 
-const originConfiguration = createOriginConfiguration();
+export const defaultView = () => <TestWrapper />;
 
-export const defaultView = () => (
-    <OriginConfigurationProvider value={originConfiguration}>
-        <MuiThemeProvider theme={originConfiguration.materialTheme}>
-            <TestWrapper />
-        </MuiThemeProvider>
-    </OriginConfigurationProvider>
-);
-
-export const withoutTheme = () => (
-    <OriginConfigurationProvider value={originConfiguration}>
-        <TestWrapper />
-    </OriginConfigurationProvider>
-);
+export const withoutTheme = () => <TestWrapper />;

@@ -3,15 +3,8 @@
         box-shadow: 0 2px 10px rgba(0, 0, 0, 0.267125);
 
         .btn-switcher-btn {
-            background: $primaryColorDark;
-            color: white;
             font-size: 14px;
             text-transform: none;
-
-            &:hover,
-            &.selected {
-                background: $primaryColorDarker;
-            }
 
             &:focus {
                 outline: none;
