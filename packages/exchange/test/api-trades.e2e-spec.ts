@@ -1,4 +1,4 @@
-import { INestApplication } from '@nestjs/common';
+import { HttpStatus, INestApplication } from '@nestjs/common';
 import { expect } from 'chai';
 import request from 'supertest';
 
@@ -70,7 +70,7 @@ describe('Trades API', () => {
 
         await request(app.getHttpServer())
             .get('/trade')
-            .expect(200)
+            .expect(HttpStatus.OK)
             .expect((res) => {
                 const [trade] = res.body as TradeDTO[];
 
@@ -92,9 +92,7 @@ describe('Trades API', () => {
     });
 
     beforeEach(async () => {
-        await databaseService.truncate('order');
-        await databaseService.truncate('trade');
-        await databaseService.truncate('transfer');
+        await databaseService.truncate('exchange_order', 'exchange_trade', 'exchange_transfer');
     });
 
     after(async () => {

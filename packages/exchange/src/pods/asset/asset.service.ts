@@ -1,7 +1,8 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { Connection, EntityManager } from 'typeorm';
 
-import { Asset, CreateAssetDTO } from './asset.entity';
+import { Asset } from './asset.entity';
+import { CreateAssetDTO } from './create-asset.dto';
 
 @Injectable()
 export class AssetService {

@@ -12,6 +12,7 @@ import {
 } from 'typeorm';
 import { ExtendedBaseEntity } from '@energyweb/origin-backend-utils';
 
+import { IsEnum, IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
 import { BNTransformer } from '../../utils/valueTransformers';
 import { Asset } from '../asset/asset.entity';
 import { Demand } from '../demand/demand.entity';
@@ -19,7 +20,9 @@ import { Trade } from '../trade/trade.entity';
 import { OrderType } from './order-type.enum';
 import { ProductDTO } from './product.dto';
 
-@Entity()
+import { DB_TABLE_PREFIX } from '../../utils/tablePrefix';
+
+@Entity({ name: `${DB_TABLE_PREFIX}_order` })
 export class Order extends ExtendedBaseEntity {
     constructor(order: Partial<Order>) {
         super();
@@ -30,9 +33,13 @@ export class Order extends ExtendedBaseEntity {
     id: string;
 
     @Column()
+    @IsNotEmpty()
+    @IsString()
     userId: string;
 
     @Column()
+    @IsNotEmpty()
+    @IsEnum(OrderStatus)
     status: OrderStatus;
 
     @Column('bigint', { transformer: BNTransformer })
@@ -44,15 +51,22 @@ export class Order extends ExtendedBaseEntity {
     currentVolume: BN;
 
     @Column()
+    @IsNotEmpty()
+    @IsEnum(OrderSide)
     side: OrderSide;
 
     @Column()
+    @IsNotEmpty()
+    @IsNumber()
     price: number;
 
     @Column({ default: OrderType.Limit })
+    @IsEnum(OrderType)
     type: OrderType;
 
     @Column({ nullable: true, type: 'uuid' })
+    @IsOptional()
+    @IsString()
     directBuyId: string;
 
     @Column({ type: 'timestamptz' })

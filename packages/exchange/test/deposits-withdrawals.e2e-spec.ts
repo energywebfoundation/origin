@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-expressions */
-import { INestApplication } from '@nestjs/common';
+import { HttpStatus, INestApplication } from '@nestjs/common';
 import { expect } from 'chai';
 import { Contract, ethers } from 'ethers';
 import moment from 'moment';
@@ -84,7 +84,7 @@ describe('Deposits using deployed registry', () => {
     });
 
     beforeEach(async () => {
-        await databaseService.truncate('order', 'transfer');
+        await databaseService.truncate('exchange_order', 'exchange_transfer');
         ({ address: depositAddress } = await accountService.getOrCreateAccount(user1Id));
     });
 
@@ -100,7 +100,7 @@ describe('Deposits using deployed registry', () => {
 
         await request(app.getHttpServer())
             .get('/transfer/all')
-            .expect(200)
+            .expect(HttpStatus.OK)
             .expect((res) => {
                 const transfers = res.body as Transfer[];
                 const [tokenDeposit] = transfers;
@@ -116,7 +116,7 @@ describe('Deposits using deployed registry', () => {
 
         await request(app.getHttpServer())
             .get('/account')
-            .expect(200)
+            .expect(HttpStatus.OK)
             .expect((res) => {
                 const account = res.body as AccountDTO;
 
@@ -143,7 +143,7 @@ describe('Deposits using deployed registry', () => {
         await request(app.getHttpServer())
             .post('/orders/ask')
             .send(createAsk)
-            .expect(201)
+            .expect(HttpStatus.CREATED)
             .expect((res) => {
                 const order = res.body as Order;
 
@@ -177,7 +177,7 @@ describe('Deposits using deployed registry', () => {
         await request(app.getHttpServer())
             .post('/transfer/withdrawal')
             .send(withdrawal)
-            .expect(201);
+            .expect(HttpStatus.CREATED);
 
         await sleep(5000);
 
@@ -201,7 +201,7 @@ describe('Deposits using deployed registry', () => {
         await request(app.getHttpServer())
             .post('/transfer/withdrawal')
             .send(withdrawal)
-            .expect(201);
+            .expect(HttpStatus.CREATED);
 
         await sleep(5000);
 

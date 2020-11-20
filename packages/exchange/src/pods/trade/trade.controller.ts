@@ -7,27 +7,28 @@ import {
 import {
     Controller,
     Get,
-    Logger,
+    HttpStatus,
     UseGuards,
     UseInterceptors,
     UsePipes,
     ValidationPipe
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
+import { ApiResponse, ApiTags } from '@nestjs/swagger';
 
 import { TradeDTO } from './trade.dto';
 import { TradeService } from './trade.service';
 
+@ApiTags('trade')
 @Controller('trade')
 @UseInterceptors(NullOrUndefinedResultInterceptor)
 @UsePipes(ValidationPipe)
 export class TradeController {
-    private readonly logger = new Logger(TradeController.name);
-
     constructor(private readonly tradeService: TradeService) {}
 
     @UseGuards(AuthGuard(), ActiveUserGuard)
     @Get()
+    @ApiResponse({ status: HttpStatus.OK, type: [TradeDTO], description: 'Get all trades' })
     public async getAll(@UserDecorator() user: ILoggedInUser): Promise<TradeDTO[]> {
         const trades = await this.tradeService.getAllByUser(user.ownerId, false);
 

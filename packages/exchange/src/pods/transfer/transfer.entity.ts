@@ -4,7 +4,9 @@ import { Asset } from '../asset/asset.entity';
 import { TransferDirection } from './transfer-direction';
 import { TransferStatus } from './transfer-status';
 
-@Entity()
+import { DB_TABLE_PREFIX } from '../../utils/tablePrefix';
+
+@Entity({ name: `${DB_TABLE_PREFIX}_transfer` })
 export class Transfer extends ExtendedBaseEntity {
     @PrimaryGeneratedColumn('uuid')
     id: string;

@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-expressions */
 import { DemandStatus, TimeFrame } from '@energyweb/utils-general';
-import { INestApplication } from '@nestjs/common';
+import { HttpStatus, INestApplication } from '@nestjs/common';
 import { expect } from 'chai';
 import moment from 'moment';
 import request from 'supertest';
@@ -126,7 +126,7 @@ describe('Demand orders trading', () => {
 
         await request(app.getHttpServer())
             .get(`/trade`)
-            .expect(200)
+            .expect(HttpStatus.OK)
             .expect((res) => {
                 const trades = res.body as TradeDTO[];
 
@@ -137,7 +137,7 @@ describe('Demand orders trading', () => {
 
         await request(app.getHttpServer())
             .get(`/orders`)
-            .expect(200)
+            .expect(HttpStatus.OK)
             .expect((res) => {
                 const orders = res.body as Order[];
 
@@ -150,7 +150,7 @@ describe('Demand orders trading', () => {
         await request(app.getHttpServer())
             .post(`/demand`)
             .send(createDemandWith2Bids)
-            .expect(201)
+            .expect(HttpStatus.CREATED)
             .expect((res) => {
                 const created = res.body as Demand;
 
@@ -171,7 +171,7 @@ describe('Demand orders trading', () => {
         await request(app.getHttpServer())
             .post(`/demand/summary`)
             .send(createDemandWith2Bids)
-            .expect(200)
+            .expect(HttpStatus.OK)
             .expect((res) => {
                 const summary = res.body as DemandSummaryDTO;
 
@@ -192,14 +192,14 @@ describe('Demand orders trading', () => {
         await request(app.getHttpServer())
             .post(`/demand`)
             .send(createDemandWith2Bids)
-            .expect(201)
+            .expect(HttpStatus.CREATED)
             .expect((res) => {
                 demandId = (res.body as Demand).id;
             });
 
         await request(app.getHttpServer())
             .post(`/demand/${demandId}/pause`)
-            .expect(202)
+            .expect(HttpStatus.ACCEPTED)
             .expect((res) => {
                 const demand = res.body as Demand;
 
@@ -216,7 +216,7 @@ describe('Demand orders trading', () => {
 
         await request(app.getHttpServer())
             .get(`/demand/${demandId}`)
-            .expect(200)
+            .expect(HttpStatus.OK)
             .expect((res) => {
                 const demand = res.body as Demand;
 
@@ -234,7 +234,9 @@ describe('Demand orders trading', () => {
         const demand = await demandService.create(demandOwner, createDemandWith2Bids);
         const [bid] = demand.bids;
 
-        await request(app.getHttpServer()).post(`/orders/${bid.id}/cancel`).expect(403);
+        await request(app.getHttpServer())
+            .post(`/orders/${bid.id}/cancel`)
+            .expect(HttpStatus.FORBIDDEN);
     });
 
     it('should be able to resume paused demand', async () => {
@@ -243,18 +245,20 @@ describe('Demand orders trading', () => {
         await request(app.getHttpServer())
             .post(`/demand`)
             .send(createDemandWith2Bids)
-            .expect(201)
+            .expect(HttpStatus.CREATED)
             .expect((res) => {
                 demandId = (res.body as Demand).id;
             });
 
-        await request(app.getHttpServer()).post(`/demand/${demandId}/pause`).expect(202);
+        await request(app.getHttpServer())
+            .post(`/demand/${demandId}/pause`)
+            .expect(HttpStatus.ACCEPTED);
 
         await sleep(3000);
 
         await request(app.getHttpServer())
             .post(`/demand/${demandId}/resume`)
-            .expect(202)
+            .expect(HttpStatus.ACCEPTED)
             .expect((res) => {
                 const demand = res.body as Demand;
 
@@ -266,7 +270,7 @@ describe('Demand orders trading', () => {
 
         await request(app.getHttpServer())
             .get(`/demand/${demandId}`)
-            .expect(200)
+            .expect(HttpStatus.OK)
             .expect((res) => {
                 const demand = res.body as Demand;
 
@@ -292,7 +296,10 @@ describe('Demand orders trading', () => {
             excludeEnd: true
         };
 
-        await request(app.getHttpServer()).post(`/demand`).send(demand).expect(400);
+        await request(app.getHttpServer())
+            .post(`/demand`)
+            .send(demand)
+            .expect(HttpStatus.BAD_REQUEST);
     });
 
     it('should allow you to replace your demand with new one', async () => {
@@ -300,7 +307,7 @@ describe('Demand orders trading', () => {
         await request(app.getHttpServer())
             .post(`/demand`)
             .send(createDemandWith2Bids)
-            .expect(201)
+            .expect(HttpStatus.CREATED)
             .expect((res) => {
                 ({ id: demandId } = res.body as Demand);
             });
@@ -309,14 +316,14 @@ describe('Demand orders trading', () => {
         await request(app.getHttpServer())
             .post(`/demand/${demandId}/replace`)
             .send(createDemandWith2Bids)
-            .expect(201)
+            .expect(HttpStatus.CREATED)
             .expect((res) => {
                 ({ id: newDemandId } = res.body as Demand);
             });
 
         await request(app.getHttpServer())
             .get(`/demand/${demandId}`)
-            .expect(200)
+            .expect(HttpStatus.OK)
             .expect((res) => {
                 const { status } = res.body as Demand;
 
@@ -325,7 +332,7 @@ describe('Demand orders trading', () => {
 
         await request(app.getHttpServer())
             .get(`/demand/${newDemandId}`)
-            .expect(200)
+            .expect(HttpStatus.OK)
             .expect((res) => {
                 const { status } = res.body as Demand;
 
