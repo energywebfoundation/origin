@@ -1,6 +1,6 @@
 /* eslint-disable import/no-extraneous-dependencies */
 import { ConfigurationService } from '@energyweb/origin-backend';
-import { Logger } from '@nestjs/common';
+import { HttpStatus, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Test } from '@nestjs/testing';
 import request from 'supertest';
@@ -80,7 +80,7 @@ describe('Origin Backend App', () => {
 
         await app.init();
 
-        await request(app.getHttpServer()).get(`/configuration`).expect(200);
+        await request(app.getHttpServer()).get(`/configuration`).expect(HttpStatus.OK);
 
         await app.close();
     });
