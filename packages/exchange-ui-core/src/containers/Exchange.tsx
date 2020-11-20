@@ -47,7 +47,8 @@ export function Exchange(props: IProps) {
             location,
             gridOperator,
             generationDateStart,
-            generationDateEnd
+            generationDateEnd,
+            user
         )) ?? {
             asks: [],
             bids: [],
@@ -64,7 +65,8 @@ export function Exchange(props: IProps) {
         location,
         gridOperator,
         generationDateStart,
-        generationDateEnd
+        generationDateEnd,
+        exchangeClient
     ]);
 
     async function onBid(values: IMarketFormValues, oneTimePurchase: boolean) {
