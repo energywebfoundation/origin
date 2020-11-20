@@ -1,15 +1,12 @@
-import { IExchangeClient } from '../../utils/exchange';
-import { IIRecClient } from '../../utils/irec';
-import {
-    IOriginConfiguration,
-    DeviceCreateData,
-    IOffChainDataSource
-} from '@energyweb/origin-backend-core';
+import { IOriginConfiguration, DeviceCreateData } from '@energyweb/origin-backend-core';
+import { ExchangeClient } from '../../utils/clients/ExchangeClient';
+import { BackendClient } from '../../utils/clients/BackendClient';
+import { IRecClient } from '../../utils/clients/IRecClient';
 
 export enum GeneralActions {
     setLoading = 'GENERAL_SET_LOADING',
     setError = 'GENERAL_SET_ERROR',
-    setOffChainDataSource = 'GENERAL_SET_OFF_CHAIN_DATA_SOURCE',
+    setBackendClient = 'GENERAL_SET_BACKEND_CLIENT',
     setExchangeClient = 'GENERAL_SET_EXCHANGE_CLIENT',
     setEnvironment = 'GENERAL_SET_ENVIRONMENT',
     setOffchainConfiguration = 'GENERAL_SET_OFFCHAIN_CONFIGURATION',
@@ -59,17 +56,17 @@ export const setError = (payload: ISetErrorAction['payload']) => ({
 
 export type TSetError = typeof setError;
 
-export interface ISetOffChainDataSourceAction {
-    type: GeneralActions.setOffChainDataSource;
-    payload: IOffChainDataSource;
+export interface ISetBackendClientAction {
+    type: GeneralActions.setBackendClient;
+    payload: BackendClient;
 }
 
-export const setOffChainDataSource = (payload: ISetOffChainDataSourceAction['payload']) => ({
-    type: GeneralActions.setOffChainDataSource,
+export const setBackendClient = (payload: ISetBackendClientAction['payload']) => ({
+    type: GeneralActions.setBackendClient,
     payload
 });
 
-export type TSetOffChainDataSourceAction = typeof setOffChainDataSource;
+export type TSetBackendClientAction = typeof setBackendClient;
 
 export interface ISetEnvironmentAction {
     type: GeneralActions.setEnvironment;
@@ -85,9 +82,7 @@ export type TSetEnvironmentAction = typeof setEnvironment;
 
 export interface ISetExchangeClientAction {
     type: GeneralActions.setExchangeClient;
-    payload: {
-        exchangeClient: IExchangeClient;
-    };
+    payload: ExchangeClient;
 }
 
 export const setExchangeClient = (payload: ISetExchangeClientAction['payload']) => ({
@@ -169,9 +164,7 @@ export type TRequestDeviceCreationAction = typeof requestDeviceCreation;
 
 export interface ISetIRecClientAction {
     type: GeneralActions.setIRecClient;
-    payload: {
-        iRecClient: IIRecClient;
-    };
+    payload: IRecClient;
 }
 
 export const setIRecClient = (payload: ISetIRecClientAction['payload']) => ({
@@ -184,7 +177,7 @@ export type TSetIRecClientAction = typeof setIRecClient;
 export type IGeneralAction =
     | ISetLoadingAction
     | ISetErrorAction
-    | ISetOffChainDataSourceAction
+    | ISetBackendClientAction
     | ISetEnvironmentAction
     | ISetExchangeClientAction
     | ISetOffchainConfigurationAction

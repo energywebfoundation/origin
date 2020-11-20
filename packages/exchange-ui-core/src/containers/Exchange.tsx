@@ -42,20 +42,22 @@ export function Exchange(props: IProps) {
     const [generationDateEnd, setGenerationDateEnd] = useState<string>();
 
     const fetchData = async (checkIsMounted: () => boolean) => {
-        const fetchedData = (await exchangeClient?.search(
+        const { data: fetchedData } = await exchangeClient?.orderbookClient.getByProduct({
             deviceType,
             location,
             gridOperator,
-            generationDateStart,
-            generationDateEnd
-        )) ?? {
-            asks: [],
-            bids: [],
-            lastTradedPrice: null
-        };
+            generationFrom: generationDateStart,
+            generationTo: generationDateEnd
+        });
 
         if (checkIsMounted()) {
-            setData(fetchedData);
+            setData(
+                (fetchedData as TOrderBook) ?? {
+                    asks: [],
+                    bids: [],
+                    lastTradedPrice: null
+                }
+            );
         }
     };
 

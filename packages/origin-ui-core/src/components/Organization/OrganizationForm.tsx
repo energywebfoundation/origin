@@ -19,7 +19,7 @@ import {
 import { Skeleton } from '@material-ui/lab';
 
 import {
-    getOffChainDataSource,
+    getBackendClient,
     showNotification,
     NotificationType,
     useTranslation,
@@ -105,7 +105,7 @@ const VALIDATION_SCHEMA = Yup.object({
 
 export function OrganizationForm(props: IProps) {
     const { entity, readOnly } = props;
-    const organizationClient = useSelector(getOffChainDataSource)?.organizationClient;
+    const organizationClient = useSelector(getBackendClient)?.organizationClient;
     const [initialFormValuesFromExistingEntity, setInitialFormValuesFromExistingEntity] = useState<
         IFormValues
     >(null);
@@ -168,7 +168,7 @@ export function OrganizationForm(props: IProps) {
                     .map((doc) => doc.uploadedName)
             };
 
-            const organization = await organizationClient.add(formData);
+            const organization = (await organizationClient.register(formData)).data;
             dispatch(setUserOffchain({ ...user, organization }));
 
             if (organization) {

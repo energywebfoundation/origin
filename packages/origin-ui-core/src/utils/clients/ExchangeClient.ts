@@ -9,7 +9,7 @@ import {
     TradeClient,
     TransferClient
 } from '@energyweb/exchange-client';
-import { BaseClient } from '@energyweb/origin-ui-core';
+import { BaseClient } from './BaseClient';
 
 export class ExchangeClient extends BaseClient {
     accountClient: AccountClient;

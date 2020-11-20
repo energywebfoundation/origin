@@ -2,9 +2,8 @@ import React, { useContext } from 'react';
 import { Paper, Button, Theme, makeStyles, Box } from '@material-ui/core';
 import { Formik, FormikHelpers, Form, Field } from 'formik';
 import { useDispatch, useSelector } from 'react-redux';
-import { IUserClient } from '@energyweb/origin-backend-core';
 import {
-    getOffChainDataSource,
+    getBackendClient,
     showNotification,
     NotificationType,
     useTranslation,
@@ -29,7 +28,7 @@ const INITIAL_VALUES: IFormValues = {
 export const LoginForm = () => {
     const dispatch = useDispatch();
     const originConfiguration = useContext(OriginConfigurationContext);
-    const userClient: IUserClient = useSelector(getOffChainDataSource)?.userClient;
+    const authClient = useSelector(getBackendClient)?.authClient;
     const history = useHistory();
     const { t } = useTranslation();
     const { Yup } = useValidation();
@@ -63,7 +62,10 @@ export const LoginForm = () => {
         dispatch(setLoading(true));
 
         try {
-            const loginResponse = await userClient.login(values.email, values.password);
+            const { data: loginResponse } = await authClient.login({
+                username: values.email,
+                password: values.password
+            });
             dispatch(setAuthenticationToken(loginResponse.accessToken));
         } catch (error) {
             console.warn('Could not log in.', error);
