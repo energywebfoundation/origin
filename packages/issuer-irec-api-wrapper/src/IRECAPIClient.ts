@@ -243,79 +243,67 @@ export class IRECAPIClient {
             submit: async (
                 code: string,
                 { notes, fileIds }: { notes?: string; fileIds?: string[] } = {}
-            ): Promise<Device> => {
+            ): Promise<void> => {
                 const url = `${deviceManagementUrl}/${code}/submit`;
 
-                const response = await axios.put<unknown>(
+                await axios.put<unknown>(
                     url,
                     { notes, file_data: fileIds?.map((id: string) => ({ file_uid: id })) ?? [] },
                     this.config
                 );
-
-                return plainToClass(Device, response.data);
             },
             verify: async (
                 code: string,
                 { notes, fileIds }: { notes?: string; fileIds?: string[] } = {}
-            ): Promise<Device> => {
+            ): Promise<void> => {
                 const url = `${deviceManagementUrl}/${code}/verify`;
 
-                const response = await axios.put<unknown>(
+                await axios.put<unknown>(
                     url,
                     { notes, file_data: fileIds?.map((id: string) => ({ file_uid: id })) ?? [] },
                     this.config
                 );
-
-                return plainToClass(Device, response.data);
             },
             approve: async (
                 code: string,
                 { notes, fileIds }: { notes?: string; fileIds?: string[] } = {}
-            ): Promise<Device> => {
+            ): Promise<void> => {
                 const url = `${deviceManagementUrl}/${code}/approve`;
 
-                const response = await axios.put<unknown>(
+                await axios.put<unknown>(
                     url,
                     { notes, file_data: fileIds?.map((id: string) => ({ file_uid: id })) ?? [] },
                     this.config
                 );
-
-                return plainToClass(Device, response.data);
             },
             refer: async (
                 code: string,
                 { notes, fileIds }: { notes?: string; fileIds?: string[] } = {}
-            ): Promise<Device> => {
+            ): Promise<void> => {
                 const url = `${deviceManagementUrl}/${code}/refer`;
 
-                const response = await axios.put<unknown>(
+                await axios.put<unknown>(
                     url,
                     { notes, file_data: fileIds?.map((id: string) => ({ file_uid: id })) ?? [] },
                     this.config
                 );
-
-                return plainToClass(Device, response.data);
             },
             reject: async (
                 code: string,
                 { notes, fileIds }: { notes?: string; fileIds?: string[] } = {}
-            ): Promise<Device> => {
+            ): Promise<void> => {
                 const url = `${deviceManagementUrl}/${code}/reject`;
 
-                const response = await axios.put<unknown>(
+                await axios.put<unknown>(
                     url,
                     { notes, file_data: fileIds?.map((id: string) => ({ file_uid: id })) ?? [] },
                     this.config
                 );
-
-                return plainToClass(Device, response.data);
             },
-            withdraw: async (code: string, { notes }: { notes?: string } = {}): Promise<Device> => {
+            withdraw: async (code: string, { notes }: { notes?: string } = {}): Promise<void> => {
                 const url = `${deviceManagementUrl}/${code}/withdraw`;
 
-                const response = await axios.put<unknown>(url, { notes }, this.config);
-
-                return plainToClass(Device, response.data);
+                await axios.put<unknown>(url, { notes }, this.config);
             }
         };
     }
@@ -427,7 +415,10 @@ export class IRECAPIClient {
                     new Error(
                         JSON.stringify({
                             status: err?.response?.data?.status ?? 500,
-                            msg: err?.response?.data?.msg ?? err.message
+                            msg:
+                                err?.response?.data?.msg ??
+                                err?.response?.data?.title ??
+                                err.message
                         })
                     )
                 )
