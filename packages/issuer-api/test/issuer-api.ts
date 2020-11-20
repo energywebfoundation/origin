@@ -54,7 +54,7 @@ const authGuard: CanActivate = {
 
 const testLogger = new Logger('e2e');
 
-export const bootstrapTestInstance = async () => {
+export const bootstrapTestInstance: any = async () => {
     const registry = await deployRegistry();
     const issuer = await deployIssuer(registry.address);
 

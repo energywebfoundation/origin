@@ -1,7 +1,7 @@
 {
     "private": true,
     "name": "@energyweb/origin-ui",
-    "version": "2.2.8",
+    "version": "2.2.9",
     "scripts": {
         "build": "yarn build:full",
         "build:ts": "tsc -b tsconfig.json",
@@ -20,7 +20,7 @@
         "clean": "shx rm -rf dist"
     },
     "dependencies": {
-        "@energyweb/origin-ui-core": "1.9.0",
+        "@energyweb/origin-ui-core": "1.9.1",
         "@energyweb/origin-backend-core": "6.0.0",
         "@energyweb/utils-general": "9.3.0",
         "@energyweb/localization": "0.9.0",
