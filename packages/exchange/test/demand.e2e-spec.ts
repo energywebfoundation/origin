@@ -18,6 +18,7 @@ import { TradeDTO } from '../src/pods/trade/trade.dto';
 import { TransferService } from '../src/pods/transfer/transfer.service';
 import { authenticatedUser, bootstrapTestInstance } from './exchange';
 import { MWh } from './utils';
+import { DemandSummaryDTO } from '../src/pods/demand/demand-summary.dto';
 
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -166,6 +167,25 @@ describe('Demand orders trading', () => {
             });
     });
 
+    it('should be able to get the summary of demand to create', async () => {
+        await request(app.getHttpServer())
+            .post(`/demand/summary`)
+            .send(createDemandWith2Bids)
+            .expect(200)
+            .expect((res) => {
+                const summary = res.body as DemandSummaryDTO;
+
+                const [bid1, bid2] = summary.bids;
+
+                expect(summary.bids).to.have.length(2);
+
+                expect(bid1.price).equals(createDemandWith2Bids.price);
+                expect(bid2.price).equals(createDemandWith2Bids.price);
+
+                expect(summary.volume).equals(`${500 * MWh}`);
+            });
+    });
+
     it('should be able to cancel demand', async () => {
         let demandId: string;
 
@@ -208,6 +228,13 @@ describe('Demand orders trading', () => {
                 expect(bid1.status).equals(OrderStatus.Cancelled);
                 expect(bid2.status).equals(OrderStatus.Cancelled);
             });
+    });
+
+    it('should not be able to cancel individual orders from demand', async () => {
+        const demand = await demandService.create(demandOwner, createDemandWith2Bids);
+        const [bid] = demand.bids;
+
+        await request(app.getHttpServer()).post(`/orders/${bid.id}/cancel`).expect(403);
     });
 
     it('should be able to resume paused demand', async () => {
@@ -266,5 +293,43 @@ describe('Demand orders trading', () => {
         };
 
         await request(app.getHttpServer()).post(`/demand`).send(demand).expect(400);
+    });
+
+    it('should allow you to replace your demand with new one', async () => {
+        let demandId: string;
+        await request(app.getHttpServer())
+            .post(`/demand`)
+            .send(createDemandWith2Bids)
+            .expect(201)
+            .expect((res) => {
+                ({ id: demandId } = res.body as Demand);
+            });
+
+        let newDemandId: string;
+        await request(app.getHttpServer())
+            .post(`/demand/${demandId}/replace`)
+            .send(createDemandWith2Bids)
+            .expect(201)
+            .expect((res) => {
+                ({ id: newDemandId } = res.body as Demand);
+            });
+
+        await request(app.getHttpServer())
+            .get(`/demand/${demandId}`)
+            .expect(200)
+            .expect((res) => {
+                const { status } = res.body as Demand;
+
+                expect(status).to.be.equal(DemandStatus.ARCHIVED);
+            });
+
+        await request(app.getHttpServer())
+            .get(`/demand/${newDemandId}`)
+            .expect(200)
+            .expect((res) => {
+                const { status } = res.body as Demand;
+
+                expect(status).to.be.equal(DemandStatus.ACTIVE);
+            });
     });
 });

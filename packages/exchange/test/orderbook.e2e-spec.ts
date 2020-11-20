@@ -1,6 +1,6 @@
 import { Filter } from '@energyweb/exchange-core';
-import { DeviceService } from '@energyweb/origin-backend';
-import { IDeviceProductInfo, IExternalDeviceId } from '@energyweb/origin-backend-core';
+
+import { IExternalDeviceId } from '@energyweb/origin-backend-core';
 import { INestApplication } from '@nestjs/common';
 import { expect } from 'chai';
 import moment from 'moment';
@@ -16,6 +16,8 @@ import { OrderService } from '../src/pods/order/order.service';
 import { TradePriceInfoDTO } from '../src/pods/trade/trade-price-info.dto';
 import { TransferService } from '../src/pods/transfer/transfer.service';
 import { authenticatedUser, bootstrapTestInstance } from './exchange';
+import { IExternalDeviceService, IProductInfo } from '../src/interfaces';
+import { ProductFilterDTO } from '../src/pods/order-book/product-filter.dto';
 
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -200,7 +202,7 @@ describe('orderbook tests', () => {
         await sleep(2000);
     };
 
-    const productByDeviceId = new Map<string, IDeviceProductInfo>([
+    const productByDeviceId = new Map<string, IProductInfo>([
         [
             'deviceId1',
             {
@@ -237,10 +239,10 @@ describe('orderbook tests', () => {
     ]);
 
     const deviceServiceMock = ({
-        findDeviceProductInfo: async ({ id }: IExternalDeviceId): Promise<IDeviceProductInfo> => {
+        getDeviceProductInfo: async ({ id }: IExternalDeviceId): Promise<IProductInfo> => {
             return productByDeviceId.get(id);
         }
-    } as unknown) as DeviceService;
+    } as unknown) as IExternalDeviceService;
 
     before(async () => {
         ({
@@ -275,109 +277,130 @@ describe('orderbook tests', () => {
         gridOperatorFilter: Filter.All
     };
 
-    it('should return orders based on the filter', async () => {
-        await request(app.getHttpServer())
+    [
+        { ...defaultAllFilter, deviceTypeFilter: Filter.Specific },
+        { ...defaultAllFilter, deviceVintageFilter: Filter.Specific },
+        {
+            ...defaultAllFilter,
+            generationTimeFilter: Filter.Specific,
+            generationFrom: new Date().toISOString()
+        },
+        { ...defaultAllFilter, deviceTypeFilter: Filter.Specific, deviceType: ['LOL'] },
+        {
+            ...defaultAllFilter,
+            deviceVintageFilter: ('LOL' as unknown) as Filter
+        }
+    ].forEach((params: ProductFilterDTO): void => {
+        it(`should return 400 when filter is invalid: ${JSON.stringify(params)}`, async () => {
+            await request(app.getHttpServer())
+                .post('/orderbook/search')
+                .send(params)
+                .expect('Content-Type', /application\/json/)
+                .expect(400);
+        });
+    });
+
+    it('should return all orders', async () => {
+        const {
+            body: { asks, bids }
+        }: { body: OrderBook } = await request(app.getHttpServer())
+            .post('/orderbook/search')
+            .expect('Content-Type', /application\/json/)
+            .expect(200);
+
+        expect(asks).to.have.length(2);
+        expect(bids).to.have.length(2);
+    });
+
+    it('should return orders filtered by default filter', async () => {
+        const {
+            body: { asks, bids, lastTradedPrice }
+        }: { body: OrderBook } = await request(app.getHttpServer())
             .post('/orderbook/search')
             .send(defaultAllFilter)
-            .expect(200)
-            .expect((res) => {
-                const { asks, bids, lastTradedPrice } = res.body as OrderBook;
+            .expect('Content-Type', /application\/json/)
+            .expect(200);
 
-                expect(asks).to.have.length(2);
-                expect(bids).to.have.length(2);
-                expect(lastTradedPrice.price).equals(marineTradeLastTradePrice.price); // marine asset trade
-                expect(lastTradedPrice.assetId).equals(marineTradeLastTradePrice.assetId); // marine asset trade
-            });
+        expect(asks).to.have.length(2);
+        expect(bids).to.have.length(2);
+        expect(lastTradedPrice.price).equals(marineTradeLastTradePrice.price); // marine asset trade
+        expect(lastTradedPrice.assetId).equals(marineTradeLastTradePrice.assetId); // marine asset trade
+    });
 
-        await request(app.getHttpServer())
-            .post('/orderbook/search')
-            .expect(200)
-            .expect((res) => {
-                const { asks, bids } = res.body as OrderBook;
-
-                expect(asks).to.have.length(2);
-                expect(bids).to.have.length(2);
-            });
-
-        await request(app.getHttpServer())
+    it('should return orders filtered by device type (Solar)', async () => {
+        const {
+            body: { asks, bids }
+        }: { body: OrderBook } = await request(app.getHttpServer())
             .post('/orderbook/search')
             .send({
                 ...defaultAllFilter,
                 deviceTypeFilter: Filter.Specific,
                 deviceType: ['Solar']
             })
-            .expect(200)
-            .expect((res) => {
-                const { asks, bids } = res.body as OrderBook;
+            .expect('Content-Type', /application\/json/)
+            .expect(200);
 
-                expect(asks).to.have.length(2);
-                expect(bids).to.have.length(1);
-            });
+        expect(asks).to.have.length(2);
+        expect(bids).to.have.length(1);
+    });
 
-        await request(app.getHttpServer())
+    it('should return orders filtered by device type (Wind)', async () => {
+        const {
+            body: { asks, bids, lastTradedPrice }
+        }: { body: OrderBook } = await request(app.getHttpServer())
             .post('/orderbook/search')
             .send({
                 ...defaultAllFilter,
                 deviceTypeFilter: Filter.Specific,
                 deviceType: ['Wind']
             })
-            .expect(200)
-            .expect((res) => {
-                const { asks, bids, lastTradedPrice } = res.body as OrderBook;
+            .expect('Content-Type', /application\/json/)
+            .expect(200);
 
-                expect(asks).to.have.length(0);
-                expect(bids).to.have.length(1);
-
-                expect(lastTradedPrice.price).equals(windTradeLastTradePrice.price);
-                expect(lastTradedPrice.assetId).equals(windTradeLastTradePrice.assetId);
-            });
+        expect(asks).to.have.length(0);
+        expect(bids).to.have.length(1);
+        expect(lastTradedPrice.price).equals(windTradeLastTradePrice.price);
+        expect(lastTradedPrice.assetId).equals(windTradeLastTradePrice.assetId);
     });
 
-    it('should return 400 when filters are set as specific but no values provided', async () => {
-        await request(app.getHttpServer())
-            .post('/orderbook/search')
-            .send({
-                ...defaultAllFilter,
-                deviceTypeFilter: Filter.Specific
-            })
-            .expect(400);
-
-        await request(app.getHttpServer())
-            .post('/orderbook/search')
-            .send({
-                ...defaultAllFilter,
-                deviceVintageFilter: Filter.Specific
-            })
-            .expect(400);
-
-        await request(app.getHttpServer())
+    it('should return orders filtered by generation date', async () => {
+        const {
+            body: { asks, bids }
+        }: { body: OrderBook } = await request(app.getHttpServer())
             .post('/orderbook/search')
             .send({
                 ...defaultAllFilter,
                 generationTimeFilter: Filter.Specific,
-                generationFrom: new Date().toISOString()
+                generationFrom: moment().startOf('month').toISOString(),
+                generationTo: moment().startOf('month').add(1, 'month').toISOString()
             })
-            .expect(400);
+            .expect('Content-Type', /application\/json/)
+            .expect(200);
+
+        expect(asks).to.have.length(0);
+        expect(bids).to.have.length(1);
+        expect(bids[0].product.deviceType).to.deep.equal(['Wind']);
     });
 
-    it('should return 400 when provided deviceTypes are not valid', async () => {
-        await request(app.getHttpServer())
+    it('should return empty orders list if time mismatch', async () => {
+        const {
+            body: { asks, bids }
+        }: { body: OrderBook } = await request(app.getHttpServer())
             .post('/orderbook/search')
             .send({
                 ...defaultAllFilter,
-                deviceTypeFilter: Filter.Specific,
-                deviceType: ['LOL']
+                generationTimeFilter: Filter.Specific,
+                generationFrom: moment().startOf('month').add(2, 'hours').toISOString(),
+                generationTo: moment()
+                    .startOf('month')
+                    .add(1, 'month')
+                    .add(2, 'hours')
+                    .toISOString()
             })
-            .expect(400);
-    });
+            .expect('Content-Type', /application\/json/)
+            .expect(200);
 
-    it('should return 400 when provided filter enum is invalid', async () => {
-        await request(app.getHttpServer())
-            .post('/orderbook/search')
-            .send({
-                ...defaultAllFilter,
-                deviceVintageFilter: ('LOL' as unknown) as Filter
-            })
-            .expect(400);
+        expect(asks).to.have.length(0);
+        expect(bids).to.have.length(0);
     });
 });

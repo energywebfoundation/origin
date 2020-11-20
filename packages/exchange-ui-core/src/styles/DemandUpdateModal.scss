@@ -1,0 +1,50 @@
+
+.DemandUpdateModal {
+    padding: 20px;
+    .Title {
+        display: flex;
+        align-items: center;
+        text-transform: uppercase;
+        justify-content: space-between;
+        font-size: 14px;
+        font-weight: bold;
+    }
+    .TotalVolume {
+        margin: 20px;   
+        .Calculated {
+            font-weight: 600;
+        }
+    }
+    .ActivateDemand {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 20px;
+        border-radius: 8px;
+    }
+    .FieldsHolder {
+        border-radius: 8px;
+        padding: 0 20px 20px;
+        margin: 15px 0 20px;
+    }
+    .CalendarContainer {
+        display: flex;
+        justify-content: space-between;
+    }
+    .VolumeAndPriceFields {
+        input {
+            text-align: right;
+            font-size: 1rem;
+        }
+        .Adornment {
+            align-items: flex-start;
+            padding-bottom: 6px;
+        }
+    }
+    .ButtonContainer {
+        padding: 20px;
+        button {
+            font-size: 1rem;
+        }
+    }
+}

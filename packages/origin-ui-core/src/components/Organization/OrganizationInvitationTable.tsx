@@ -158,10 +158,13 @@ export function OrganizationInvitationTable(props: IProps) {
     }
 
     const columns = [
-        !props.organizationId && { id: 'organization', label: 'Organization' },
         { id: 'email', label: 'Email' },
         { id: 'status', label: 'Status' }
-    ] as const;
+    ];
+
+    if (!props.organizationId) {
+        columns.unshift({ id: 'organization', label: 'Organization' });
+    }
 
     const rows = paginatedData.map(({ organization, invitation }) => {
         return {

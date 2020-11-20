@@ -23,6 +23,9 @@
         },
         {
             "path": "../origin-ui-core/tsconfig.json"
+        },
+        {
+            "path": "../exchange-ui-core/tsconfig.json"
         }
     ]
 }

@@ -11,6 +11,7 @@ import {
     ForbiddenException,
     Get,
     HttpCode,
+    HttpException,
     Logger,
     Param,
     ParseUUIDPipe,
@@ -21,10 +22,13 @@ import {
     ValidationPipe
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
+import { ForbiddenActionError } from '../../utils/exceptions';
+import { ensureSingleProcessOnly } from '../../utils/ensureSingleProcessOnly';
 
 import { CreateAskDTO } from './create-ask.dto';
 import { CreateBidDTO } from './create-bid.dto';
 import { DirectBuyDTO } from './direct-buy.dto';
+import { AskBeingProcessedError } from './errors/ask-being-processed.error';
 import { Order } from './order.entity';
 import { OrderService } from './order.service';
 
@@ -63,10 +67,19 @@ export class OrderController {
         this.logger.log(`Creating new order ${JSON.stringify(newOrder)}`);
 
         try {
-            const order = await this.orderService.createAsk(user.ownerId, newOrder);
+            const order = await ensureSingleProcessOnly(
+                user.ownerId,
+                'createAsk',
+                () => this.orderService.createAsk(user.ownerId, newOrder),
+                new AskBeingProcessedError()
+            );
             return order;
         } catch (error) {
             this.logger.error(error.message);
+
+            if (error instanceof AskBeingProcessedError) {
+                throw new HttpException({ message: error.message }, 409);
+            }
 
             throw new ForbiddenException();
         }
@@ -102,7 +115,7 @@ export class OrderController {
     public async getOrder(
         @UserDecorator() user: ILoggedInUser,
         @Param('id', new ParseUUIDPipe({ version: '4' })) orderId: string
-    ) {
+    ): Promise<Order> {
         const order = await this.orderService.findOne(user.ownerId, orderId);
         return order;
     }
@@ -113,8 +126,15 @@ export class OrderController {
     public async cancelOrder(
         @UserDecorator() user: ILoggedInUser,
         @Param('id', new ParseUUIDPipe({ version: '4' })) orderId: string
-    ) {
-        const order = await this.orderService.cancelOrder(user.ownerId, orderId);
-        return order;
+    ): Promise<Order> {
+        try {
+            const order = await this.orderService.cancelOrder(user.ownerId, orderId);
+            return order;
+        } catch (error) {
+            if (error instanceof ForbiddenActionError) {
+                throw new ForbiddenException();
+            }
+            throw error;
+        }
     }
 }

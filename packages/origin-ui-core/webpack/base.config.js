@@ -1,10 +1,9 @@
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const path = require('path');
 
 module.exports = {
-    entry: './src/app.tsx',
+    entry: './src/index.ts',
     output: {
         filename: 'bundle.js',
         path: path.join(__dirname, '/../dist')
@@ -12,27 +11,16 @@ module.exports = {
 
     resolve: {
         // Add '.ts' and '.tsx' as resolvable extensions.
-        extensions: ['.ts', '.tsx', '.js', '.json']
-    },
-
-    devServer: {
-        port: 3000,
-        compress: true,
-        historyApiFallback: true
+        extensions: ['.ts', '.tsx', '.js', '.json'],
+        alias: {
+            "@material-ui/styles": path.join(__dirname, '../node_modules/@material-ui/styles'),
+        }
     },
 
     plugins: [
         new ExtractTextPlugin({
             filename: 'styles.css',
             allChunks: true
-        }),
-        new HtmlWebpackPlugin({
-            title: 'Origin',
-            favicon: 'favicon.ico',
-            template: './src/app.ejs',
-            meta: {
-                viewport: 'width=device-width, initial-scale=1, shrink-to-fit=no'
-            }
         }),
         new CopyWebpackPlugin([{ from: 'env-config.js', to: 'env-config.js' }])
     ],

@@ -10,7 +10,7 @@
         "start:prod": "node dist/main",
         "prebuild": "shx rm -rf dist",
         "build": "yarn build:ts",
-        "build:ts": "tsc -b tsconfig.json && nest build -p tsconfig.json --tsc",
+        "build:ts": "tsc -b tsconfig.json",
         "build:container:canary": "make build-canary push",
         "build:container:latest": "make build-latest push",
         "prettier": "prettier --write --config-precedence file-override './src/**/*'",
@@ -36,6 +36,7 @@
     "license": "GPL-3.0-or-later",
     "dependencies": {
         "@energyweb/exchange": "1.5.4",
+        "@energyweb/issuer-api": "0.0.1",
         "@energyweb/migrations": "3.2.0",
         "@energyweb/origin-backend": "8.0.0",
         "@energyweb/origin-backend-core": "6.0.0",
@@ -43,24 +44,23 @@
         "@energyweb/origin-organization-irec-api": "1.1.0",
         "@energyweb/utils-general": "9.3.0",
         "@nestjs-modules/mailer": "1.4.2",
-        "@nestjs/common": "7.4.4",
+        "@nestjs/common": "7.5.2",
         "@nestjs/config": "^0.5.0",
-        "@nestjs/core": "7.4.4",
+        "@nestjs/core": "7.5.2",
         "@nestjs/cqrs": "7.0.1",
-        "@nestjs/swagger": "4.6.1",
+        "@nestjs/swagger": "4.7.3",
         "@nestjs/typeorm": "7.1.4",
         "body-parser": "1.19.0",
         "class-validator": "0.12.2",
         "cors": "2.8.5",
-        "dotenv": "8.2.0",
         "nodemailer-mandrill-transport": "1.2.0",
         "swagger-ui-express": "4.1.4",
-        "typeorm": "0.2.26"
+        "typeorm": "0.2.29"
     },
     "devDependencies": {
-        "@nestjs/testing": "7.4.4",
-        "ganache-core": "2.11.3",
-        "supertest": "5.0.0"
+        "@nestjs/testing": "7.5.2",
+        "ganache-core": "2.13.1",
+        "supertest": "6.0.1"
     },
     "files": [
         "dist",

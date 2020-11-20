@@ -158,37 +158,33 @@ export function AddDevice() {
 
         dispatch(
             requestDeviceCreation({
-                data: {
-                    status: DeviceStatus.Submitted,
-                    deviceType,
-                    complianceRegistry: compliance,
-                    facilityName: values.facilityName,
-                    capacityInW: PowerFormatter.getBaseValueFromValueInDisplayUnit(
-                        parseFloat(values.capacity)
-                    ),
-                    country,
-                    address: values.address,
-                    region: region || '',
-                    province: province ? province.split(';')[1] : '',
-                    gpsLatitude: values.latitude,
-                    gpsLongitude: values.longitude,
-                    timezone: 'Asia/Bangkok',
-                    operationalSince: values.commissioningDate?.unix(),
-                    otherGreenAttributes: '',
-                    typeOfPublicSupport: '',
-                    description: values.projectStory,
-                    images: JSON.stringify(imagesUploadedList),
-                    files: JSON.stringify(uploadedDocFiles.filenames),
-                    externalDeviceIds,
-                    gridOperator: (selectedGridOperator && selectedGridOperator[0]) || '',
-                    automaticPostForSale: false,
-                    defaultAskPrice: null
-                },
-                callback: () => {
-                    formikActions.setSubmitting(false);
-                }
+                status: DeviceStatus.Submitted,
+                deviceType,
+                complianceRegistry: compliance,
+                facilityName: values.facilityName,
+                capacityInW: PowerFormatter.getBaseValueFromValueInDisplayUnit(
+                    parseFloat(values.capacity)
+                ),
+                country,
+                address: values.address,
+                region: region || '',
+                province: province ? province.split(';')[1] : '',
+                gpsLatitude: values.latitude,
+                gpsLongitude: values.longitude,
+                timezone: 'Asia/Bangkok',
+                operationalSince: values.commissioningDate?.unix(),
+                otherGreenAttributes: '',
+                typeOfPublicSupport: '',
+                description: values.projectStory,
+                images: JSON.stringify(imagesUploadedList),
+                files: JSON.stringify(uploadedDocFiles.filenames),
+                externalDeviceIds,
+                gridOperator: (selectedGridOperator && selectedGridOperator[0]) || '',
+                automaticPostForSale: false,
+                defaultAskPrice: null
             })
         );
+        formikActions.setSubmitting(false);
     }
 
     async function uploadImages(files: FileList) {
@@ -237,11 +233,10 @@ export function AddDevice() {
                 initialValues={initialFormValues}
                 onSubmit={submitForm}
                 validationSchema={VALIDATION_SCHEMA}
-                isInitialValid={false}
+                validateOnMount={true}
             >
                 {(formikProps) => {
-                    const { isValid, isSubmitting } = formikProps;
-
+                    const { isValid, isSubmitting, setFieldValue, validateField } = formikProps;
                     const fieldDisabled = isSubmitting;
                     const buttonDisabled =
                         isSubmitting ||
@@ -254,7 +249,7 @@ export function AddDevice() {
                         );
 
                     return (
-                        <Form translate="">
+                        <Form translate="no">
                             <Grid container spacing={3}>
                                 <Grid item xs={6}>
                                     <Typography className="mt-3">
@@ -336,6 +331,7 @@ export function AddDevice() {
                                             label: t('device.info.supported')
                                         }}
                                         color="primary"
+                                        type="checkbox"
                                         component={CheckboxWithLabel}
                                         disabled={fieldDisabled}
                                     />
@@ -393,14 +389,28 @@ export function AddDevice() {
                                         className="mt-3"
                                         required
                                     >
-                                        <Field
+                                        <FormInput
                                             label={t('device.properties.latitude')}
-                                            name="latitude"
-                                            component={TextField}
+                                            property="latitude"
                                             variant="filled"
-                                            fullWidth
+                                            className="mt-1"
                                             required
                                             disabled={fieldDisabled}
+                                            wrapperProps={{
+                                                onBlur: (e) => {
+                                                    const parsedValue = parseFloat(
+                                                        (e.target as any)?.value
+                                                    );
+
+                                                    if (!isNaN(parsedValue)) {
+                                                        setFieldValue(
+                                                            'latitude',
+                                                            parsedValue.toFixed(2)
+                                                        );
+                                                    }
+                                                    validateField('latitude');
+                                                }
+                                            }}
                                         />
                                     </FormControl>
                                     <FormControl
@@ -409,14 +419,28 @@ export function AddDevice() {
                                         className="mt-3"
                                         required
                                     >
-                                        <Field
+                                        <FormInput
                                             label={t('device.properties.longitude')}
-                                            name="longitude"
-                                            component={TextField}
+                                            property="longitude"
                                             variant="filled"
-                                            fullWidth
+                                            className="mt-1"
                                             required
                                             disabled={fieldDisabled}
+                                            wrapperProps={{
+                                                onBlur: (e) => {
+                                                    const parsedValue = parseFloat(
+                                                        (e.target as any)?.value
+                                                    );
+
+                                                    if (!isNaN(parsedValue)) {
+                                                        setFieldValue(
+                                                            'longitude',
+                                                            parsedValue.toFixed(2)
+                                                        );
+                                                    }
+                                                    validateField('longitude');
+                                                }
+                                            }}
                                         />
                                     </FormControl>
                                 </Grid>

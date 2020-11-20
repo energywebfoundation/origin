@@ -8,21 +8,25 @@ import {
     DialogTitle,
     TextField
 } from '@material-ui/core';
-import { DatePicker } from '@material-ui/pickers';
+import { DatePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
 import { useSelector, useDispatch } from 'react-redux';
-import {
-    requestCertificates,
-    hideRequestCertificatesModal
-} from '../../features/certificates/actions';
-import {
-    getRequestCertificatesModalProducingDevice,
-    getRequestCertificatesModalVisible
-} from '../../features/certificates/selectors';
+import { requestCertificates } from '../../features/certificates/actions';
 import { Upload, IUploadedFile } from '../Upload';
 import { getEnvironment } from '../../features';
-import { MAX_ENERGY_PER_CERTIFICATE } from '@energyweb/origin-backend-core';
+import { BigNumber } from 'ethers';
+import MomentUtils from '@date-io/moment';
+import { useOriginConfiguration } from '../../utils/configuration';
 
-export function RequestCertificatesModal() {
+// Maximum number Solidity can handle is (2^256)-1
+export const MAX_ENERGY_PER_CERTIFICATE = BigNumber.from(2).pow(256).sub(1);
+
+interface IProps {
+    showModal: boolean;
+    setShowModal: (showModal: boolean) => void;
+    producingDevice: any;
+}
+
+export function RequestCertificatesModal(props: IProps) {
     const [energyInDisplayUnit, setEnergyInDisplayUnit] = useState('');
     const [files, setFiles] = useState<IUploadedFile[]>([]);
 
@@ -31,14 +35,17 @@ export function RequestCertificatesModal() {
         (f) => !f.removed && !f.cancelled && f.uploadProgress !== 100
     );
     const uploadedFiles = files.filter((f) => !f.removed && f.uploadedName);
-
-    const producingDevice = useSelector(getRequestCertificatesModalProducingDevice);
-    const showModal = useSelector(getRequestCertificatesModalVisible);
+    const { showModal, setShowModal, producingDevice } = props;
     const environment = useSelector(getEnvironment);
+    const configuration = useOriginConfiguration();
 
     const DEFAULTS = {
-        fromDate: moment.tz(producingDevice?.timezone).startOf('day'),
-        toDate: moment.tz(producingDevice?.timezone).endOf('day')
+        fromDate: moment()
+            .utcOffset(Number(environment?.MARKET_UTC_OFFSET ?? 0), true)
+            .startOf('day'),
+        toDate: moment()
+            .utcOffset(Number(environment?.MARKET_UTC_OFFSET ?? 0), true)
+            .endOf('day')
     };
 
     const [fromDate, setFromDate] = useState(DEFAULTS.fromDate);
@@ -76,7 +83,7 @@ export function RequestCertificatesModal() {
     }, [producingDevice]);
 
     function handleClose() {
-        dispatch(hideRequestCertificatesModal());
+        setShowModal(false);
     }
 
     async function requestCerts() {
@@ -92,52 +99,66 @@ export function RequestCertificatesModal() {
     }
 
     return (
-        <Dialog open={showModal} onClose={handleClose}>
-            <DialogTitle>
-                {t('certificate.info.requestCertificatesFor', {
-                    facilityName: producingDevice?.facilityName ?? ''
-                })}
-            </DialogTitle>
-            <DialogContent>
-                <DatePicker
-                    label={t('certificate.properties.from')}
-                    value={fromDate}
-                    onChange={setFromDate}
-                    variant="inline"
-                    inputVariant="filled"
-                    className="mt-4"
-                    fullWidth
-                    format={DATE_FORMAT_DMY}
-                />
+        <MuiPickersUtilsProvider utils={MomentUtils} locale={configuration?.language}>
+            <Dialog open={showModal || false} onClose={handleClose}>
+                <DialogTitle>
+                    {t('certificate.info.requestCertificatesFor', {
+                        facilityName: producingDevice?.facilityName ?? ''
+                    })}
+                </DialogTitle>
+                <DialogContent>
+                    <DatePicker
+                        label={t('certificate.properties.from')}
+                        value={fromDate}
+                        onChange={(date) =>
+                            setFromDate(
+                                moment(date)
+                                    .utcOffset(Number(environment.MARKET_UTC_OFFSET), true)
+                                    .startOf('day')
+                            )
+                        }
+                        variant="inline"
+                        inputVariant="filled"
+                        className="mt-4"
+                        fullWidth
+                        format={DATE_FORMAT_DMY}
+                    />
 
-                <DatePicker
-                    label={t('certificate.properties.to')}
-                    value={toDate}
-                    onChange={setToDate}
-                    variant="inline"
-                    inputVariant="filled"
-                    className="mt-4"
-                    fullWidth
-                    format={DATE_FORMAT_DMY}
-                />
-                <TextField
-                    label={EnergyFormatter.displayUnit}
-                    value={energyInDisplayUnit}
-                    onChange={(event) => setEnergyInDisplayUnit(event.target.value)}
-                    className="mt-4"
-                    fullWidth
-                />
+                    <DatePicker
+                        label={t('certificate.properties.to')}
+                        value={toDate}
+                        onChange={(date) =>
+                            setToDate(
+                                moment(date)
+                                    .utcOffset(Number(environment.MARKET_UTC_OFFSET), true)
+                                    .endOf('day')
+                            )
+                        }
+                        variant="inline"
+                        inputVariant="filled"
+                        className="mt-4"
+                        fullWidth
+                        format={DATE_FORMAT_DMY}
+                    />
+                    <TextField
+                        label={EnergyFormatter.displayUnit}
+                        value={energyInDisplayUnit}
+                        onChange={(event) => setEnergyInDisplayUnit(event.target.value)}
+                        className="mt-4"
+                        fullWidth
+                    />
 
-                <Upload onChange={(newFiles) => setFiles(newFiles)} />
-            </DialogContent>
-            <DialogActions>
-                <Button onClick={handleClose} color="secondary">
-                    {t('general.actions.cancel')}
-                </Button>
-                <Button onClick={requestCerts} color="primary" disabled={!isFormValid}>
-                    {t('certificate.actions.request')}
-                </Button>
-            </DialogActions>
-        </Dialog>
+                    <Upload onChange={(newFiles) => setFiles(newFiles)} />
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleClose} color="secondary">
+                        {t('general.actions.cancel')}
+                    </Button>
+                    <Button onClick={requestCerts} color="primary" disabled={!isFormValid}>
+                        {t('certificate.actions.request')}
+                    </Button>
+                </DialogActions>
+            </Dialog>
+        </MuiPickersUtilsProvider>
     );
 }

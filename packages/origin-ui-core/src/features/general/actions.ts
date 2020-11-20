@@ -32,6 +32,7 @@ export interface IEnvironment {
     DEFAULT_ENERGY_IN_BASE_UNIT: string;
     EXCHANGE_WALLET_PUB: string;
     GOOGLE_MAPS_API_KEY: string;
+    MARKET_UTC_OFFSET: number;
 }
 
 export interface ISetLoadingAction {
@@ -156,10 +157,7 @@ export type TSetNoAccountModalVisibilityAction = typeof setNoAccountModalVisibil
 
 export interface IRequestDeviceCreationAction {
     type: GeneralActions.requestDeviceCreation;
-    payload: {
-        data: DeviceCreateData;
-        callback: () => void;
-    };
+    payload: DeviceCreateData;
 }
 
 export const requestDeviceCreation = (payload: IRequestDeviceCreationAction['payload']) => ({

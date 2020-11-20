@@ -1,0 +1,42 @@
+@import './variables.scss';
+
+body {
+    background: $bodyBackgroundColor;
+    color: $simpleTextColor;
+}
+
+body * {
+    font-family: $fontFamilyPrimary;
+}
+
+h1, h2, h3, h4, h5, h6, a, button * {
+    font-family: $fontFamilySecondary;
+}
+
+.AppWrapper {
+    transition: transform 0.5s;
+
+    &.Profile--open {
+        transform: translateX(-292px);
+    }
+}
+
+*::-webkit-scrollbar {
+    width: 2px;
+
+    &-track {
+        background: transparent;
+    }
+
+    &-thumb {
+        background: #888;
+
+        &:hover {
+            background: #555;
+        }
+    }
+}
+
+.cursor-pointer {
+    cursor: pointer;
+}

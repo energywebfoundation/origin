@@ -86,20 +86,24 @@ export const LoginForm = () => {
                 initialValues={initialFormValues}
                 onSubmit={submitForm}
                 validationSchema={VALIDATION_SCHEMA}
-                isInitialValid={false}
+                validateOnMount={true}
             >
                 {(formikProps) => {
-                    const { isValid, isSubmitting } = formikProps;
+                    const { isValid, isSubmitting, handleBlur, validateField } = formikProps;
                     const buttonDisabled = isSubmitting || !isValid;
 
                     return (
-                        <Form translate="">
+                        <Form translate="no">
                             <Field
                                 label={t('user.properties.email')}
                                 name="email"
                                 type="text"
                                 required
                                 component={InputFixedHeight}
+                                onBlur={(e) => {
+                                    handleBlur(e);
+                                    validateField(e.target.name);
+                                }}
                             />
 
                             <Field
@@ -108,6 +112,10 @@ export const LoginForm = () => {
                                 required
                                 type="password"
                                 component={InputFixedHeight}
+                                onBlur={(e) => {
+                                    handleBlur(e);
+                                    validateField(e.target.name);
+                                }}
                             />
                             <Box px={1} textAlign="right">
                                 <Button className={styles.button}>

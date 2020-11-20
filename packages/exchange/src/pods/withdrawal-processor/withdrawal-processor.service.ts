@@ -1,13 +1,13 @@
 import { Contracts } from '@energyweb/issuer';
-import { ConfigurationService } from '@energyweb/origin-backend';
 import { getProviderWithFallback } from '@energyweb/utils-general';
 import { forwardRef, Inject, Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { ModuleRef } from '@nestjs/core';
-import { Contract, ContractTransaction, ethers, Wallet, ContractReceipt } from 'ethers';
+import { Contract, ContractReceipt, ContractTransaction, ethers, Wallet } from 'ethers';
 import { Subject } from 'rxjs';
 import { concatMap, tap } from 'rxjs/operators';
 
+import { IExchangeConfigurationService } from '../../interfaces';
 import { TransferDirection } from '../transfer/transfer-direction';
 import { TransferStatus } from '../transfer/transfer-status';
 import { Transfer } from '../transfer/transfer.entity';
@@ -43,14 +43,14 @@ export class WithdrawalProcessorService implements OnModuleInit {
 
         this.wallet = new Wallet(wallet, provider);
 
-        const originBackendConfigurationService = this.moduleRef.get(ConfigurationService, {
-            strict: false
-        });
+        const exchangeConfigService = this.moduleRef.get<IExchangeConfigurationService>(
+            IExchangeConfigurationService,
+            {
+                strict: false
+            }
+        );
 
-        const {
-            contractsLookup: { registry }
-        } = await originBackendConfigurationService.get();
-
+        const registry = await exchangeConfigService.getRegistryAddress();
         const { abi } = Contracts.RegistryJSON;
 
         this.registry = new Contract(registry, abi, this.wallet);

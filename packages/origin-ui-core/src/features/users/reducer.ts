@@ -24,7 +24,7 @@ const defaultState: IUsersState = {
     }
 };
 
-export default function reducer(state = defaultState, action: IUsersAction): IUsersState {
+export function usersState(state = defaultState, action: IUsersAction): IUsersState {
     switch (action.type) {
         case UsersActions.setActiveBlockchainAccountAddress:
             return {

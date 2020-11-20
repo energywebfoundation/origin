@@ -34,13 +34,13 @@
     "types": "dist/js/src/index.d.ts",
     "dependencies": {
         "chai": "4.2.0",
-        "ethers": "5.0.8"
+        "ethers": "5.0.15"
     },
     "devDependencies": {
         "@energyweb/issuer": "2.4.6",
         "@typechain/ethers-v5": "1.0.0",
         "truffle-typings": "1.0.8",
-        "typechain": "2.0.0"
+        "typechain": "3.0.0"
     },
     "gitHead": "54beaf7fe6686810de74ca290daf99cbde510f9d",
     "publishConfig": {

@@ -6,6 +6,7 @@ import {
 } from '@energyweb/origin-backend-utils';
 import {
     Body,
+    ClassSerializerInterceptor,
     Controller,
     ForbiddenException,
     Get,
@@ -23,10 +24,12 @@ import { AuthGuard } from '@nestjs/passport';
 
 import { ForbiddenActionError } from '../../utils/exceptions';
 import { CreateDemandDTO } from './create-demand.dto';
+import { DemandSummaryDTO } from './demand-summary.dto';
+import { Demand } from './demand.entity';
 import { DemandService } from './demand.service';
 
 @Controller('demand')
-@UseInterceptors(NullOrUndefinedResultInterceptor)
+@UseInterceptors(ClassSerializerInterceptor, NullOrUndefinedResultInterceptor)
 @UsePipes(ValidationPipe)
 export class DemandController {
     private readonly logger = new Logger(DemandController.name);
@@ -38,7 +41,7 @@ export class DemandController {
     public async findOne(
         @UserDecorator() { id: userId, ownerId }: ILoggedInUser,
         @Param('id', new ParseUUIDPipe({ version: '4' })) id: string
-    ) {
+    ): Promise<Demand> {
         this.logger.debug(`Requested demand ${id} from userId=${userId} with ownerId=${ownerId}`);
         const demand = await this.demandService.findOne(ownerId, id);
         return demand;
@@ -46,7 +49,9 @@ export class DemandController {
 
     @Get()
     @UseGuards(AuthGuard(), ActiveUserGuard)
-    public async getAll(@UserDecorator() { id: userId, ownerId }: ILoggedInUser) {
+    public async getAll(
+        @UserDecorator() { id: userId, ownerId }: ILoggedInUser
+    ): Promise<Demand[]> {
         this.logger.debug(`Requested all demands from userId=${userId} with ownerId=${ownerId}`);
 
         return this.demandService.getAll(ownerId);
@@ -57,7 +62,7 @@ export class DemandController {
     public async create(
         @UserDecorator() { id: userId, ownerId }: ILoggedInUser,
         @Body() createDemand: CreateDemandDTO
-    ) {
+    ): Promise<Demand> {
         this.logger.debug(
             `Requested demand creation from userId=${userId} with ownerId=${ownerId}`
         );
@@ -66,13 +71,25 @@ export class DemandController {
         return demand;
     }
 
+    @Post('/summary')
+    @HttpCode(200)
+    @UseGuards(AuthGuard(), ActiveUserGuard)
+    public summary(
+        @UserDecorator() { id: userId, ownerId }: ILoggedInUser,
+        @Body() createDemand: CreateDemandDTO
+    ): DemandSummaryDTO {
+        this.logger.debug(`Requested demand summary from userId=${userId} with ownerId=${ownerId}`);
+
+        return this.demandService.createSummary(createDemand);
+    }
+
     @Post('/:id/pause')
     @UseGuards(AuthGuard(), ActiveUserGuard)
     @HttpCode(202)
     public async pause(
         @UserDecorator() { id: userId, ownerId }: ILoggedInUser,
         @Param('id', new ParseUUIDPipe({ version: '4' })) id: string
-    ) {
+    ): Promise<Demand> {
         this.logger.debug(`Requested demand pause from userId=${userId} with ownerId=${ownerId}`);
 
         const demand = await this.demandService.pause(ownerId, id);
@@ -85,7 +102,7 @@ export class DemandController {
     public async resume(
         @UserDecorator() { id: userId, ownerId }: ILoggedInUser,
         @Param('id', new ParseUUIDPipe({ version: '4' })) id: string
-    ) {
+    ): Promise<Demand> {
         this.logger.debug(`Requested demand resume from userId=${userId} with ownerId=${ownerId}`);
 
         try {
@@ -105,12 +122,28 @@ export class DemandController {
     public async archive(
         @UserDecorator() { id: userId, ownerId }: ILoggedInUser,
         @Param('id', new ParseUUIDPipe({ version: '4' })) id: string
-    ) {
+    ): Promise<Demand> {
         this.logger.debug(
             `Requested demand archival from userId=${userId} with ownerId=${ownerId}`
         );
 
         const demand = await this.demandService.archive(ownerId, id);
+        return demand;
+    }
+
+    @Post('/:id/replace')
+    @UseGuards(AuthGuard(), ActiveUserGuard)
+    @HttpCode(201)
+    public async replace(
+        @UserDecorator() { id: userId, ownerId }: ILoggedInUser,
+        @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
+        @Body() createDemand: CreateDemandDTO
+    ): Promise<Demand> {
+        this.logger.debug(
+            `Requested demand archival from userId=${userId} with ownerId=${ownerId}`
+        );
+
+        const demand = await this.demandService.replace(ownerId, id, createDemand);
         return demand;
     }
 }

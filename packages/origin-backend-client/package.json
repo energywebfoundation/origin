@@ -22,8 +22,8 @@
     "dependencies": {
         "@energyweb/origin-backend-core": "6.0.0",
         "@energyweb/utils-general": "9.3.0",
-        "axios": "0.20.0",
-        "ethers": "5.0.8",
+        "axios": "0.21.0",
+        "ethers": "5.0.15",
         "moment": "2.24.0"
     },
     "files": [

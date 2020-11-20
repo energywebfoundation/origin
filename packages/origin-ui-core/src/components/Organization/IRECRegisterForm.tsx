@@ -162,12 +162,14 @@ export const IRECRegisterForm = () => {
                 onSubmit={onRegister}
                 initialValues={INITIAL_VALUES}
                 validationSchema={VALIDATION_SCHEME}
+                validateOnMount={true}
             >
                 {(formikProps) => {
                     const { values, isValid, isSubmitting, setFieldValue } = formikProps;
                     const buttonDisabled = isSubmitting || !isValid;
+
                     return (
-                        <Form translate="">
+                        <Form translate="no">
                             <Grid container direction="column">
                                 <Grid item container>
                                     <Grid item container direction="column" xs={6}>

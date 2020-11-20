@@ -1,8 +1,6 @@
 import { Type } from 'class-transformer';
 import { IsDate, IsInt, IsPositive, IsUUID, Validate } from 'class-validator';
-import { IntUnitsOfEnergy } from '@energyweb/origin-backend-utils';
-
-import { PositiveBNStringValidator } from '../../utils/positiveBNStringValidator';
+import { IntUnitsOfEnergy, PositiveBNStringValidator } from '@energyweb/origin-backend-utils';
 
 export class CreateAskDTO {
     @Validate(PositiveBNStringValidator)

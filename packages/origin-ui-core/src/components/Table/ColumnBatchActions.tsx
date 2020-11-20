@@ -34,7 +34,7 @@ export class ColumnBatchActions extends Component<IProps> {
 
         return selectedIds.length ? (
             <div className="ColumnBatchActions">
-                <span className="ColumnBatchActions_counter">{this.counter}</span>
+                <span color="primary">{this.counter}</span>
                 <div className="ColumnBatchActions_list">
                     {batchableActions.map((action) => (
                         <Button

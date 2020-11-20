@@ -2,10 +2,10 @@
 import 'mocha';
 import { assert } from 'chai';
 import moment from 'moment';
-import { Wallet, BigNumber } from 'ethers';
+import { BigNumber } from 'ethers';
 import dotenv from 'dotenv';
 
-import { Configuration, getProviderWithFallback } from '@energyweb/utils-general';
+import { Configuration } from '@energyweb/utils-general';
 import { OffChainDataSourceMock } from '@energyweb/origin-backend-client-mocks';
 import { DeviceCreateData, DeviceStatus } from '@energyweb/origin-backend-core';
 
@@ -17,17 +17,6 @@ describe('Device Facade', () => {
         path: '.env.test'
     });
 
-    const [web3Url] = process.env.WEB3.split(';');
-    const provider = getProviderWithFallback(web3Url);
-
-    const deployKey: string = process.env.DEPLOY_KEY;
-
-    const privateKeyDeployment = deployKey.startsWith('0x') ? deployKey : `0x${deployKey}`;
-    const deploymentWallet = new Wallet(privateKeyDeployment, provider);
-
-    const deviceSmartmeterPK = '0x2dc5120c26df339dbd9861a0f39a79d87e0638d30fdedc938861beac77bbd3f5';
-    const deviceSmartmeterWallet = new Wallet(deviceSmartmeterPK, provider);
-
     let conf: Configuration.Entity;
 
     const SM_READ_TIMESTAMP = moment().unix();
@@ -35,9 +24,6 @@ describe('Device Facade', () => {
     describe('ProducingDevice', () => {
         it('should onboard a new producing device', async () => {
             conf = {
-                blockchainProperties: {
-                    activeUser: deploymentWallet
-                },
                 offChainDataSource: new OffChainDataSourceMock(),
                 logger
             };
@@ -75,7 +61,6 @@ describe('Device Facade', () => {
         });
 
         it('should log a new meter reading', async () => {
-            conf.blockchainProperties.activeUser = deviceSmartmeterWallet;
             let device = await new ProducingDevice.Entity(1, conf).sync();
 
             device = await device.sync();

@@ -1,23 +1,23 @@
-import { getProviderWithFallback } from '@energyweb/utils-general';
 import { Contracts } from '@energyweb/issuer';
-import { ConfigurationService, DeviceService } from '@energyweb/origin-backend';
+import { getProviderWithFallback } from '@energyweb/utils-general';
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { ModuleRef } from '@nestjs/core';
-import { ethers, providers, Contract } from 'ethers';
+import { Contract, ethers, providers } from 'ethers';
 import moment from 'moment';
 
-import { TransferService } from '../transfer/transfer.service';
-import { TransferStatus } from '../transfer/transfer-status';
-import { OrderService } from '../order/order.service';
+import { IExchangeConfigurationService, IExternalDeviceService } from '../../interfaces';
 import { AccountService } from '../account/account.service';
 import { CreateAskDTO } from '../order/create-ask.dto';
+import { OrderService } from '../order/order.service';
+import { TransferStatus } from '../transfer/transfer-status';
+import { TransferService } from '../transfer/transfer.service';
 
 @Injectable()
 export class DepositWatcherService implements OnModuleInit {
     private readonly logger = new Logger(DepositWatcherService.name);
 
-    private tokenInterface: ethers.utils.Interface;
+    private tokenInterface = new ethers.utils.Interface(Contracts.RegistryJSON.abi);
 
     private walletAddress: string;
 
@@ -29,9 +29,9 @@ export class DepositWatcherService implements OnModuleInit {
 
     private registry: Contract;
 
-    private deviceService: DeviceService;
-
     private issuerTypeId: string;
+
+    private deviceService: IExternalDeviceService;
 
     public constructor(
         private readonly configService: ConfigService,
@@ -46,22 +46,21 @@ export class DepositWatcherService implements OnModuleInit {
     public async onModuleInit() {
         this.logger.debug('onModuleInit');
 
-        const originBackendConfigurationService = this.moduleRef.get(ConfigurationService, {
+        this.deviceService = this.moduleRef.get<IExternalDeviceService>(IExternalDeviceService, {
             strict: false
         });
 
-        this.deviceService = this.moduleRef.get(DeviceService, {
-            strict: false
-        });
-
-        const {
-            contractsLookup: { registry, issuer }
-        } = await originBackendConfigurationService.get();
-
-        this.tokenInterface = new ethers.utils.Interface(Contracts.RegistryJSON.abi);
+        const exchangeConfigService = this.moduleRef.get<IExchangeConfigurationService>(
+            IExchangeConfigurationService,
+            {
+                strict: false
+            }
+        );
 
         this.walletAddress = this.configService.get<string>('EXCHANGE_WALLET_PUB');
-        this.registryAddress = registry;
+
+        const issuer = await exchangeConfigService.getIssuerAddress();
+        this.registryAddress = await exchangeConfigService.getRegistryAddress();
 
         const web3ProviderUrl = this.configService.get<string>('WEB3');
         this.provider = getProviderWithFallback(...web3ProviderUrl.split(';'));
@@ -73,6 +72,7 @@ export class DepositWatcherService implements OnModuleInit {
         );
 
         this.issuer = new Contract(issuer, Contracts.IssuerJSON.abi, this.provider);
+
         const topics = [
             this.tokenInterface.getEventTopic(this.tokenInterface.getEvent('TransferSingle'))
         ];
@@ -179,23 +179,19 @@ export class DepositWatcherService implements OnModuleInit {
             `Trying to post for sale deviceId=${deviceId} sender=${sender} amount=${amount} assetId=${assetId}`
         );
 
-        const {
-            id,
-            automaticPostForSale,
-            defaultAskPrice
-        } = await this.deviceService.findByExternalId({
+        const { postForSale, postForSalePrice } = await this.deviceService.getDeviceSettings({
             id: deviceId,
             type: this.issuerTypeId
         });
         const { userId } = await this.accountService.findByAddress(sender);
 
-        if (!automaticPostForSale) {
-            this.logger.debug(`Device ${id} does not have automaticPostForSale enabled`);
+        if (!postForSale) {
+            this.logger.debug(`Device ${deviceId} does not have automaticPostForSale enabled`);
             return;
         }
 
         const ask: CreateAskDTO = {
-            price: defaultAskPrice,
+            price: postForSalePrice,
             validFrom: new Date(),
             volume: amount,
             assetId

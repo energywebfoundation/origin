@@ -13,6 +13,7 @@ import { OrderService } from '../order/order.service';
 import { CreateDemandDTO } from './create-demand.dto';
 import { DemandTimePeriodService } from './demand-time-period.service';
 import { Demand, IDemand } from './demand.entity';
+import { DemandSummaryDTO } from './demand-summary.dto';
 
 @Injectable()
 export class DemandService {
@@ -60,6 +61,31 @@ export class DemandService {
         bids.forEach((bid) => this.matchingService.submit(bid));
 
         return this.findOne(userId, demand.id);
+    }
+
+    public async replace(
+        userId: string,
+        demandId: string,
+        createDemand: CreateDemandDTO
+    ): Promise<Demand> {
+        const demand = await this.findOne(userId, demandId);
+        if (!demand) {
+            return null;
+        }
+
+        if (demand.status === DemandStatus.ACTIVE) {
+            await this.cancelDemandBids(demand);
+        }
+
+        await this.repository.update(demand.id, { status: DemandStatus.ARCHIVED });
+
+        return this.create(userId, createDemand);
+    }
+
+    public createSummary(createDemand: CreateDemandDTO): DemandSummaryDTO {
+        const bids = this.prepareBids(createDemand);
+
+        return new DemandSummaryDTO(bids);
     }
 
     public async pause(userId: string, demandId: string): Promise<Demand> {
@@ -115,33 +141,35 @@ export class DemandService {
         }
 
         await this.repository.update(demand.id, { status: DemandStatus.ACTIVE });
-        this.reSubmitDemandBids(demand);
+        await this.reSubmitDemandBids(demand);
 
         return this.findOne(userId, demand.id);
     }
 
-    public async findOne(userId: string, id: string) {
+    public async findOne(userId: string, id: string): Promise<Demand> {
         return this.repository.findOne(id, { where: { userId } });
     }
 
-    public async getAll(userId: string) {
+    public async getAll(userId: string): Promise<Demand[]> {
         return this.repository.find({ where: { userId } });
     }
 
     private async cancelDemandBids(demand: Demand) {
-        for (const bid of demand.bids.filter(
+        const bids = demand.bids.filter(
             (b) => b.status === OrderStatus.Active || b.status === OrderStatus.PartiallyFilled
-        )) {
-            await this.orderService.cancelOrder(demand.userId, bid.id);
+        );
+        for (const bid of bids) {
+            await this.orderService.cancelOrder(demand.userId, bid.id, true);
         }
     }
 
-    private reSubmitDemandBids(demand: Demand) {
-        for (const bid of demand.bids.filter(
+    private async reSubmitDemandBids(demand: Demand) {
+        const bids = demand.bids.filter(
             (b) =>
                 b.status === OrderStatus.Cancelled || b.status === OrderStatus.PendingCancellation
-        )) {
-            this.orderService.reactivateOrder(bid);
+        );
+        for (const bid of bids) {
+            await this.orderService.reactivateOrder(bid);
         }
     }
 

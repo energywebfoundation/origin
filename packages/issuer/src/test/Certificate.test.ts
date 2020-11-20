@@ -4,18 +4,13 @@ import 'mocha';
 import moment from 'moment';
 import { Wallet, BigNumber } from 'ethers';
 
-import { Configuration, getProviderWithFallback } from '@energyweb/utils-general';
-import { OffChainDataSourceMock } from '@energyweb/origin-backend-client-mocks';
+import { getProviderWithFallback } from '@energyweb/utils-general';
 
-import { IOwnershipCommitmentStatus } from '@energyweb/origin-backend-core';
 import { migrateIssuer, migrateRegistry } from '../migrate';
-import { Certificate, CertificateUtils, IClaimData } from '..';
-
-import { logger } from '../Logger';
-import { MockCertificate } from './MockCertificate';
+import { Certificate, CertificateUtils, IClaimData, IBlockchainProperties } from '..';
 
 describe('Certificate tests', () => {
-    let conf: Configuration.Entity;
+    let blockchainProperties: IBlockchainProperties;
 
     dotenv.config({
         path: '.env.test'
@@ -35,6 +30,8 @@ describe('Certificate tests', () => {
 
     let timestamp = moment().subtract(10, 'year').unix();
 
+    const totalVolume = BigNumber.from(1e9);
+
     const claimData: IClaimData = {
         beneficiary: 'Testing beneficiary 1234',
         address: 'Random address 123, Somewhere',
@@ -52,10 +49,10 @@ describe('Certificate tests', () => {
     };
 
     const setActiveUser = (wallet: Wallet) => {
-        conf.blockchainProperties.activeUser = wallet;
+        blockchainProperties.activeUser = wallet;
     };
 
-    const issueCertificate = async (volume: BigNumber, address: string, isPrivate = false) => {
+    const issueCertificate = async (volume: BigNumber, address: string) => {
         setActiveUser(issuerWallet);
 
         const generationStartTime = timestamp;
@@ -70,8 +67,7 @@ describe('Certificate tests', () => {
             generationStartTime,
             generationEndTime,
             deviceId,
-            conf,
-            isPrivate
+            blockchainProperties
         );
     };
 
@@ -79,164 +75,72 @@ describe('Certificate tests', () => {
         const registry = await migrateRegistry(provider, issuerPK);
         const issuer = await migrateIssuer(provider, issuerPK, registry.address);
 
-        conf = {
-            blockchainProperties: {
-                activeUser: issuerWallet,
-                registry,
-                issuer
-            },
-            offChainDataSource: new OffChainDataSourceMock(),
-            logger
+        blockchainProperties = {
+            web3: provider,
+            activeUser: issuerWallet,
+            registry,
+            issuer
         };
     });
 
     it('gets all certificates', async () => {
-        const totalVolume = BigNumber.from(1e9);
-
         await issueCertificate(totalVolume, deviceOwnerWallet.address);
         await issueCertificate(totalVolume, deviceOwnerWallet.address);
 
-        const allCertificates = await CertificateUtils.getAllCertificates(conf);
+        const allCertificates = await CertificateUtils.getAllCertificates(blockchainProperties);
         assert.equal(allCertificates.length, 2);
     });
 
     it('gets all owned certificates', async () => {
-        const totalVolume = BigNumber.from(1e9);
-
         await issueCertificate(totalVolume, deviceOwnerWallet.address);
         await issueCertificate(totalVolume, traderWallet.address);
 
         setActiveUser(traderWallet);
-        const [certificate] = await CertificateUtils.getAllOwnedCertificates(conf);
+        const [certificate] = await CertificateUtils.getAllOwnedCertificates(blockchainProperties);
         assert.isDefined(certificate);
 
         await certificate.transfer(deviceOwnerWallet.address, totalVolume);
 
-        const myCertificates = await CertificateUtils.getAllOwnedCertificates(conf);
+        const myCertificates = await CertificateUtils.getAllOwnedCertificates(blockchainProperties);
         assert.lengthOf(myCertificates, 0);
     });
 
     it('issuer issues a certificate', async () => {
-        const volume = BigNumber.from(1e9);
-        let certificate = await issueCertificate(volume, deviceOwnerWallet.address);
+        let certificate = await issueCertificate(totalVolume, deviceOwnerWallet.address);
 
         assert.isNotNull(certificate.id);
 
         setActiveUser(issuerWallet);
         certificate = await certificate.sync();
-        assert.isFalse(certificate.isOwned);
 
-        assert.equal(certificate.energy.publicVolume.toString(), '0');
-
-        setActiveUser(deviceOwnerWallet);
-        certificate = await certificate.sync();
-        assert.isTrue(certificate.isOwned);
-        assert.equal(certificate.energy.publicVolume.toString(), volume.toString());
+        assert.equal(certificate.owners[issuerWallet.address], undefined);
+        assert.equal(certificate.owners[deviceOwnerWallet.address], totalVolume.toString());
 
         assert.deepOwnInclude(certificate, {
             initialized: true,
-            issuer: conf.blockchainProperties.issuer.address
+            issuer: blockchainProperties.issuer.address
         } as Partial<Certificate>);
     });
 
     it('transfers a certificate', async () => {
-        const totalVolume = BigNumber.from(1e9);
         let certificate = await issueCertificate(totalVolume, deviceOwnerWallet.address);
 
         setActiveUser(deviceOwnerWallet);
         certificate = await certificate.sync();
 
-        assert.equal(certificate.energy.publicVolume.toString(), totalVolume.toString());
+        assert.equal(certificate.owners[deviceOwnerWallet.address], totalVolume.toString());
 
         await certificate.transfer(traderWallet.address, totalVolume.div(4));
 
         certificate = await certificate.sync();
 
-        assert.isTrue(certificate.isOwned);
-        assert.equal(
-            certificate.energy.publicVolume.toString(),
-            totalVolume.div(4).mul(3).toString()
-        );
-
-        setActiveUser(traderWallet);
-        certificate = await certificate.sync();
-
-        assert.isTrue(certificate.isOwned);
-        assert.equal(certificate.energy.publicVolume.toString(), totalVolume.div(4).toString());
-    });
-
-    it('transfers a private certificate', async () => {
-        const totalVolume = BigNumber.from(1e9);
-        let certificate = await issueCertificate(totalVolume, deviceOwnerWallet.address, true);
-
-        setActiveUser(deviceOwnerWallet);
-        certificate = await certificate.sync();
-
-        const { proof } = (await certificate.transfer(
-            traderWallet.address,
-            totalVolume,
-            true
-        )) as IOwnershipCommitmentStatus;
-        certificate = await certificate.sync();
-
-        setActiveUser(issuerWallet);
-
-        const mockedCertificate = await new MockCertificate(certificate.id, conf).sync();
-
-        await (mockedCertificate as MockCertificate).approvePrivateTransfer(proof);
-
-        setActiveUser(deviceOwnerWallet);
-        certificate = await certificate.sync();
-
-        assert.isFalse(certificate.isOwned);
-        assert.equal(certificate.energy.privateVolume.toString(), '0');
-
-        setActiveUser(traderWallet);
-        certificate = await certificate.sync();
-
-        assert.isTrue(certificate.isOwned);
-        assert.equal(certificate.energy.privateVolume.toString(), totalVolume.toString());
-    });
-
-    it('partially transfers a private certificate', async () => {
-        const totalVolume = BigNumber.from(1e9);
-        const partialVolumeToSend = totalVolume.div(4);
-        let certificate = await issueCertificate(totalVolume, deviceOwnerWallet.address, true);
-
-        setActiveUser(deviceOwnerWallet);
-        certificate = await certificate.sync();
-
-        const { proof } = (await certificate.transfer(
-            traderWallet.address,
-            partialVolumeToSend,
-            true
-        )) as IOwnershipCommitmentStatus;
-        certificate = await certificate.sync();
-
-        setActiveUser(issuerWallet);
-
-        const mockedCertificate = await new MockCertificate(certificate.id, conf).sync();
-
-        await (mockedCertificate as MockCertificate).approvePrivateTransfer(proof);
-
-        setActiveUser(deviceOwnerWallet);
-        certificate = await certificate.sync();
-
-        assert.isTrue(certificate.isOwned);
-        assert.equal(
-            certificate.energy.privateVolume.toString(),
-            totalVolume.sub(partialVolumeToSend).toString()
-        );
-
-        setActiveUser(traderWallet);
-        certificate = await certificate.sync();
-
-        assert.isTrue(certificate.isOwned);
-        assert.equal(certificate.energy.privateVolume.toString(), partialVolumeToSend.toString());
+        assert.deepInclude(certificate.owners, {
+            [deviceOwnerWallet.address]: totalVolume.div(4).mul(3).toString(),
+            [traderWallet.address]: totalVolume.div(4).toString()
+        });
     });
 
     it('fails transferring a revoked certificate', async () => {
-        const totalVolume = BigNumber.from(1e9);
         let certificate = await issueCertificate(totalVolume, deviceOwnerWallet.address);
 
         setActiveUser(issuerWallet);
@@ -258,7 +162,6 @@ describe('Certificate tests', () => {
     });
 
     it('fails claiming a revoked certificate', async () => {
-        const totalVolume = BigNumber.from(1e9);
         let certificate = await issueCertificate(totalVolume, deviceOwnerWallet.address);
 
         setActiveUser(issuerWallet);
@@ -280,7 +183,6 @@ describe('Certificate tests', () => {
     });
 
     it('claims a certificate', async () => {
-        const totalVolume = BigNumber.from(1e9);
         let certificate = await issueCertificate(totalVolume, deviceOwnerWallet.address);
 
         setActiveUser(deviceOwnerWallet);
@@ -298,21 +200,11 @@ describe('Certificate tests', () => {
 
         certificate = await certificate.sync();
 
-        assert.isFalse(certificate.isOwned);
-        assert.equal(certificate.energy.publicVolume.toString(), '0');
-
-        assert.isTrue(certificate.isClaimed);
-        assert.equal(certificate.energy.claimedVolume.toString(), amountToSendToTrader.toString());
-
-        assert.isTrue(
-            certificate.claims.some(
-                (claim) => JSON.stringify(claim.claimData) === JSON.stringify(claimData)
-            )
-        );
+        assert.equal(certificate.owners[traderWallet.address], '0');
+        assert.equal(certificate.claimers[traderWallet.address], amountToSendToTrader.toString());
     });
 
     it('partially claims a certificate', async () => {
-        const totalVolume = BigNumber.from(1e9);
         let certificate = await issueCertificate(totalVolume, deviceOwnerWallet.address);
 
         setActiveUser(deviceOwnerWallet);
@@ -322,15 +214,14 @@ describe('Certificate tests', () => {
 
         certificate = await certificate.sync();
 
-        assert.isTrue(certificate.isOwned);
-        assert.equal(certificate.energy.publicVolume.toString(), totalVolume.div(2).toString());
-
-        assert.isTrue(certificate.isClaimed);
-        assert.equal(certificate.energy.claimedVolume.toString(), totalVolume.div(2).toString());
+        assert.equal(certificate.owners[deviceOwnerWallet.address], totalVolume.div(2).toString());
+        assert.equal(
+            certificate.claimers[deviceOwnerWallet.address],
+            totalVolume.div(2).toString()
+        );
     });
 
     it('claims a certificate with empty beneficiary', async () => {
-        const totalVolume = BigNumber.from(1e9);
         let certificate = await issueCertificate(totalVolume, deviceOwnerWallet.address);
 
         setActiveUser(deviceOwnerWallet);
@@ -340,96 +231,16 @@ describe('Certificate tests', () => {
 
         certificate = await certificate.sync();
 
+        const claims = await certificate.getClaimedData();
+
         assert.isTrue(
-            certificate.claims.some(
+            claims.some(
                 (claim) => JSON.stringify(claim.claimData) === JSON.stringify(emptyClaimData)
             )
         );
     });
 
-    it('claims a private certificate', async () => {
-        const totalVolume = BigNumber.from(1e9);
-        let certificate = await issueCertificate(totalVolume, deviceOwnerWallet.address, true);
-
-        setActiveUser(deviceOwnerWallet);
-        certificate = await certificate.sync();
-
-        await certificate.requestMigrateToPublic();
-
-        setActiveUser(issuerWallet);
-        certificate = await certificate.sync();
-
-        const mockedCertificate = await new MockCertificate(certificate.id, conf).sync();
-
-        await (mockedCertificate as MockCertificate).migrateToPublic();
-
-        setActiveUser(deviceOwnerWallet);
-        certificate = await certificate.sync();
-
-        await certificate.claim(claimData);
-
-        certificate = await certificate.sync();
-
-        assert.isTrue(certificate.isClaimed);
-        assert.equal(certificate.energy.claimedVolume.toString(), totalVolume.toString());
-
-        assert.isTrue(
-            certificate.claims.some(
-                (claim) => JSON.stringify(claim.claimData) === JSON.stringify(claimData)
-            )
-        );
-    });
-
-    it('claims a partial private certificate', async () => {
-        const totalVolume = BigNumber.from(1e9);
-        const partialVolumeToClaim = totalVolume.div(4);
-        let certificate = await issueCertificate(totalVolume, deviceOwnerWallet.address, true);
-
-        setActiveUser(deviceOwnerWallet);
-        certificate = await certificate.sync();
-
-        const { proof } = (await certificate.transfer(
-            traderWallet.address,
-            partialVolumeToClaim,
-            true
-        )) as IOwnershipCommitmentStatus;
-
-        setActiveUser(issuerWallet);
-        certificate = await certificate.sync();
-
-        let mockedCertificate = await new MockCertificate(certificate.id, conf).sync();
-        await (mockedCertificate as MockCertificate).approvePrivateTransfer(proof);
-
-        setActiveUser(traderWallet);
-        certificate = await certificate.sync();
-
-        await certificate.requestMigrateToPublic();
-
-        setActiveUser(issuerWallet);
-        certificate = await certificate.sync();
-
-        mockedCertificate = await mockedCertificate.sync();
-        await (mockedCertificate as MockCertificate).migrateToPublic();
-
-        setActiveUser(traderWallet);
-        certificate = await certificate.sync();
-
-        await certificate.claim(claimData);
-        certificate = await certificate.sync();
-
-        assert.isTrue(certificate.isClaimed);
-        assert.equal(certificate.energy.claimedVolume.toString(), partialVolumeToClaim.toString());
-
-        assert.isTrue(
-            certificate.claims.some(
-                (claim) => JSON.stringify(claim.claimData) === JSON.stringify(claimData)
-            )
-        );
-    });
-
     it('batch transfers certificates', async () => {
-        const totalVolume = BigNumber.from(1e9);
-
         let certificate = await issueCertificate(totalVolume, deviceOwnerWallet.address);
         let certificate2 = await issueCertificate(totalVolume, deviceOwnerWallet.address);
 
@@ -437,68 +248,113 @@ describe('Certificate tests', () => {
         certificate = await certificate.sync();
         certificate2 = await certificate2.sync();
 
-        assert.isTrue(certificate.isOwned);
-        assert.isTrue(certificate2.isOwned);
-        assert.equal(certificate.energy.publicVolume.toString(), totalVolume.toString());
-        assert.equal(certificate2.energy.publicVolume.toString(), totalVolume.toString());
+        assert.equal(certificate.owners[deviceOwnerWallet.address], totalVolume.toString());
+        assert.equal(certificate2.owners[deviceOwnerWallet.address], totalVolume.toString());
 
         await CertificateUtils.transferCertificates(
             [certificate.id, certificate2.id],
             traderWallet.address,
-            conf
+            blockchainProperties
         );
 
         certificate = await certificate.sync();
         certificate2 = await certificate2.sync();
 
-        assert.isFalse(certificate.isOwned);
-        assert.isFalse(certificate2.isOwned);
-        assert.equal(certificate.energy.publicVolume.toString(), '0');
-        assert.equal(certificate2.energy.publicVolume.toString(), '0');
-
-        setActiveUser(traderWallet);
-
-        certificate = await certificate.sync();
-        certificate2 = await certificate2.sync();
-
-        assert.isTrue(certificate.isOwned);
-        assert.isTrue(certificate2.isOwned);
-        assert.equal(certificate.energy.publicVolume.toString(), totalVolume.toString());
-        assert.equal(certificate2.energy.publicVolume.toString(), totalVolume.toString());
+        assert.deepInclude(certificate.owners, {
+            [deviceOwnerWallet.address]: '0',
+            [traderWallet.address]: totalVolume.toString()
+        });
+        assert.deepInclude(certificate2.owners, {
+            [deviceOwnerWallet.address]: '0',
+            [traderWallet.address]: totalVolume.toString()
+        });
     });
 
     it('batch claims certificates', async () => {
-        const totalVolume = BigNumber.from(1e9);
-
         let certificate = await issueCertificate(totalVolume, deviceOwnerWallet.address);
         let certificate2 = await issueCertificate(totalVolume, deviceOwnerWallet.address);
 
         setActiveUser(deviceOwnerWallet);
-        certificate = await certificate.sync();
 
-        assert.isFalse(certificate.isClaimed);
-        assert.isFalse(certificate2.isClaimed);
-        assert.equal(certificate.energy.claimedVolume.toString(), '0');
-        assert.equal(certificate2.energy.claimedVolume.toString(), '0');
+        assert.equal(certificate.claimers[deviceOwnerWallet.address], undefined);
+        assert.equal(certificate2.claimers[deviceOwnerWallet.address], undefined);
 
         await CertificateUtils.claimCertificates(
             [certificate.id, certificate2.id],
             claimData,
-            conf
+            blockchainProperties
         );
 
         certificate = await certificate.sync();
         certificate2 = await certificate2.sync();
 
-        assert.isTrue(certificate.isClaimed);
-        assert.isTrue(certificate2.isClaimed);
-        assert.equal(certificate.energy.claimedVolume.toString(), totalVolume.toString());
-        assert.equal(certificate2.energy.claimedVolume.toString(), totalVolume.toString());
+        assert.equal(certificate.claimers[deviceOwnerWallet.address], totalVolume.toString());
+        assert.equal(certificate2.claimers[deviceOwnerWallet.address], totalVolume.toString());
+    });
 
-        assert.isTrue(
-            certificate.claims.some(
-                (claim) => JSON.stringify(claim.claimData) === JSON.stringify(claimData)
-            )
-        );
+    it(`should not be able to claim another user's certificate`, async () => {
+        let certificate = await issueCertificate(totalVolume, deviceOwnerWallet.address);
+
+        setActiveUser(traderWallet);
+        certificate = await certificate.sync();
+
+        let failed = false;
+
+        try {
+            await certificate.claim(
+                claimData,
+                totalVolume,
+                deviceOwnerWallet.address,
+                traderWallet.address
+            );
+        } catch (e) {
+            failed = true;
+        }
+
+        assert.isTrue(failed);
+    });
+
+    it(`should not be able force another user to claim its certificates`, async () => {
+        let certificate = await issueCertificate(totalVolume, deviceOwnerWallet.address);
+
+        setActiveUser(traderWallet);
+        certificate = await certificate.sync();
+
+        let failed = false;
+
+        try {
+            await certificate.claim(
+                claimData,
+                totalVolume,
+                deviceOwnerWallet.address,
+                deviceOwnerWallet.address
+            );
+        } catch (e) {
+            failed = true;
+        }
+
+        assert.isTrue(failed);
+    });
+
+    it(`should not be able force another user to batch claim its certificates`, async () => {
+        const certificate = await issueCertificate(totalVolume, deviceOwnerWallet.address);
+        const certificate2 = await issueCertificate(totalVolume, deviceOwnerWallet.address);
+
+        setActiveUser(traderWallet);
+
+        let failed = false;
+
+        try {
+            await CertificateUtils.claimCertificates(
+                [certificate.id, certificate2.id],
+                claimData,
+                blockchainProperties,
+                deviceOwnerWallet.address
+            );
+        } catch (e) {
+            failed = true;
+        }
+
+        assert.isTrue(failed);
     });
 });

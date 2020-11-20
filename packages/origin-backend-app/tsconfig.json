@@ -22,6 +22,9 @@
         },
         {
             "path": "../utils-general/tsconfig.json"
+        },
+        {
+            "path": "../issuer-api/tsconfig.json"
         }
     ]
 }

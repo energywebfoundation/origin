@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Bar } from 'react-chartjs-2';
 import { moment, formatDate } from '../../utils/time';
-import { Button, ButtonGroup } from '@material-ui/core';
+import { Button, ButtonGroup, makeStyles, createStyles, useTheme } from '@material-ui/core';
 import { ProducingDevice } from '@energyweb/device-registry';
 import { reverse } from '../../utils/helper';
 import { EnergyFormatter } from '../../utils/EnergyFormatter';
@@ -25,6 +25,18 @@ interface ISmartMeterReadingsChartProps {
 export function SmartMeterReadingsChart(props: ISmartMeterReadingsChartProps) {
     const { producingDevice } = props;
     const originConfiguration = useOriginConfiguration();
+
+    const originBgColor = originConfiguration?.styleConfig?.MAIN_BACKGROUND_COLOR;
+
+    const useStyles = makeStyles(() =>
+        createStyles({
+            selected: {
+                backgroundColor: originBgColor
+            }
+        })
+    );
+
+    const classes = useStyles(useTheme());
 
     const { t } = useTranslation();
 
@@ -209,7 +221,7 @@ export function SmartMeterReadingsChart(props: ISmartMeterReadingsChartProps) {
                 key={index}
                 onClick={onClick}
                 color="primary"
-                className={`btn-switcher-btn ${isCurrentlySelected ? 'selected' : ''}`}
+                className={`btn-switcher-btn ${isCurrentlySelected ? classes.selected : ''}`}
             >
                 {t(`meterReads.properties.timeframes.${timeframe?.toLowerCase()}`)}
             </Button>

@@ -21,7 +21,7 @@ import { refreshUserOffchain } from '../../features/users/actions';
 import { NotificationType, showNotification } from '../../utils/notifications';
 import { useValidation } from '../../utils/validation';
 import { FormInput } from '../Form/FormInput';
-import { IStoreState } from '../../types';
+import { ICoreState } from '../../types';
 import { getWeb3 } from '../../features/selectors';
 import { getActiveBlockchainAccountAddress } from '../../features/users/selectors';
 import { providers } from 'ethers';
@@ -51,7 +51,7 @@ const INITIAL_FORM_VALUES: IFormValues = {
     emailConfirmed: false
 };
 
-export const getUserOffchain = (state: IStoreState) => state.users.userOffchain;
+export const getUserOffchain = (state: ICoreState) => state.usersState.userOffchain;
 
 export function UserProfile() {
     const user = useSelector(getUserOffchain);
@@ -173,7 +173,10 @@ export function UserProfile() {
         return false;
     }
 
-    const initialFormValues: IFormValues = { ...user };
+    const initialFormValues: IFormValues = {
+        ...user,
+        blockchainAccountAddress: user.blockchainAccountAddress ? user.blockchainAccountAddress : ''
+    };
 
     return (
         <Formik
@@ -214,7 +217,7 @@ export function UserProfile() {
 
                 return (
                     <>
-                        <Form translate="">
+                        <Form translate="no">
                             <Paper className={classes.container}>
                                 <Typography variant="h5">
                                     {t('user.profile.subtitle.basicInformation')}
@@ -351,7 +354,7 @@ export function UserProfile() {
                             </Paper>
                         </Form>
                         <br />
-                        <Form translate="">
+                        <Form translate="no">
                             <Paper className={classes.container}>
                                 <Typography variant="h5">
                                     {t('user.profile.subtitle.security')}
@@ -399,7 +402,7 @@ export function UserProfile() {
                             </Paper>
                         </Form>
                         <br />
-                        <Form translate="">
+                        <Form translate="no">
                             <Paper className={classes.container}>
                                 <Typography variant="h5">
                                     {t('user.properties.blockchainAddress')}

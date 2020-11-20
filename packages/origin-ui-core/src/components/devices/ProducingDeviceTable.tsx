@@ -31,7 +31,7 @@ import {
     moment
 } from '../../utils';
 import { getEnvironment } from '../../features';
-import { showRequestCertificatesModal } from '../../features/certificates';
+import { RequestCertificatesModal } from '../Modal/RequestCertificatesModal';
 
 interface IOwnProps {
     actions: {
@@ -58,6 +58,8 @@ export function ProducingDeviceTable(props: IOwnProps) {
     const producingDevices = useSelector(getProducingDevices);
     const baseURL = useSelector(getBaseURL);
     const environment = useSelector(getEnvironment);
+    const [showRequestCertModal, setShowRequestCertModal] = useState(false);
+    const [producingDeviceForModal, setProducingDeviceForModal] = useState(null);
 
     const dispatch = useDispatch();
 
@@ -136,7 +138,8 @@ export function ProducingDeviceTable(props: IOwnProps) {
             );
         }
 
-        dispatch(showRequestCertificatesModal({ producingDevice }));
+        setProducingDeviceForModal(producingDevice);
+        setShowRequestCertModal(true);
     }
 
     async function approve(rowIndex: string) {
@@ -280,6 +283,11 @@ export function ProducingDeviceTable(props: IOwnProps) {
                     </Tooltip>
                 </Link>
             )}
+            <RequestCertificatesModal
+                showModal={showRequestCertModal}
+                setShowModal={setShowRequestCertModal}
+                producingDevice={producingDeviceForModal}
+            />
         </>
     );
 }

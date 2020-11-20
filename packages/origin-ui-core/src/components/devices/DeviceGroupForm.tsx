@@ -224,36 +224,32 @@ export function DeviceGroupForm(props: IProps) {
 
         dispatch(
             requestDeviceCreation({
-                data: {
-                    status: DeviceStatus.Submitted,
-                    deviceType,
-                    complianceRegistry: compliance,
-                    facilityName: values.facilityName,
-                    capacityInW: sumCapacityOfDevices(values.children),
-                    country,
-                    address: '',
-                    region: '',
-                    province: '',
-                    gpsLatitude: values.children[0].latitude?.toString(),
-                    gpsLongitude: values.children[0].longitude?.toString(),
-                    timezone: 'Asia/Bangkok',
-                    operationalSince: moment().unix(),
-                    otherGreenAttributes: '',
-                    typeOfPublicSupport: '',
-                    description: '',
-                    images: JSON.stringify([]),
-                    files: JSON.stringify(uploadedFiles.filenames),
-                    deviceGroup: JSON.stringify(values.children),
-                    externalDeviceIds,
-                    gridOperator: '',
-                    automaticPostForSale: false,
-                    defaultAskPrice: null
-                },
-                callback: () => {
-                    formikActions.setSubmitting(false);
-                }
+                status: DeviceStatus.Submitted,
+                deviceType,
+                complianceRegistry: compliance,
+                facilityName: values.facilityName,
+                capacityInW: sumCapacityOfDevices(values.children),
+                country,
+                address: '',
+                region: '',
+                province: '',
+                gpsLatitude: values.children[0].latitude?.toString(),
+                gpsLongitude: values.children[0].longitude?.toString(),
+                timezone: 'Asia/Bangkok',
+                operationalSince: moment().unix(),
+                otherGreenAttributes: '',
+                typeOfPublicSupport: '',
+                description: '',
+                images: JSON.stringify([]),
+                files: JSON.stringify(uploadedFiles.filenames),
+                deviceGroup: JSON.stringify(values.children),
+                externalDeviceIds,
+                gridOperator: '',
+                automaticPostForSale: false,
+                defaultAskPrice: null
             })
         );
+        formikActions.setSubmitting(false);
     }
 
     let initialFormValues: IFormValues = null;
@@ -282,7 +278,7 @@ export function DeviceGroupForm(props: IProps) {
                 initialValues={initialFormValues}
                 onSubmit={submitForm}
                 validationSchema={VALIDATION_SCHEMA}
-                isInitialValid={false}
+                validateOnMount={true}
             >
                 {(formikProps) => {
                     const { isValid, isSubmitting, values } = formikProps;
@@ -291,7 +287,7 @@ export function DeviceGroupForm(props: IProps) {
                     const buttonDisabled = isSubmitting || !isValid || readOnly;
 
                     return (
-                        <Form translate="">
+                        <Form translate="no">
                             {!readOnly && (
                                 <>
                                     <Grid container spacing={3}>

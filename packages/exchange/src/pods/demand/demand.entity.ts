@@ -1,6 +1,7 @@
 import { ExtendedBaseEntity } from '@energyweb/origin-backend-utils';
 import { TimeFrame, DemandStatus } from '@energyweb/utils-general';
 import BN from 'bn.js';
+import { Transform } from 'class-transformer';
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 import { BNTransformer } from '../../utils/valueTransformers';
@@ -38,6 +39,7 @@ export class Demand extends ExtendedBaseEntity implements IDemand {
     end: Date;
 
     @Column('bigint', { transformer: BNTransformer })
+    @Transform((v: BN) => v.toString(10))
     volumePerPeriod: BN;
 
     @Column()

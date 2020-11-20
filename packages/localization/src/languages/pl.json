@@ -259,6 +259,7 @@
             "feedback": {
                 "userRegistered": "Użytkownik zarejestrowany.",
                 "errorWhileRegisteringUser": "Błąd podczas rejestracji użytkownika.",
+                "errorUserExists": "Użytkownik z adresem e-mail {userEmail} został już zarejestrowany. Zaloguj się przy użyciu oryginalnego konta.",
                 "roleChanged": {
                     "succesfullyJoinedOrg": "Pomyślnie dołączył do {{orgName}}",
                     "asMemberYouCan": "Dołączyłeś do {{orgName}} {{admin}}. Jako członek możesz",
@@ -302,6 +303,58 @@
         "file": {
             "info": {
                 "dropHereOrClickToSelect": "Upuść pliki tutaj lub kliknij aby wybrać"
+            }
+        },
+        "exchange": {
+            "actions": {
+                "notify": "Notyfikować",
+                "bid": "Oferta",
+                "buy": "Kup",
+                "placeBidOrder": "Złóż zamówienie",
+                "oneTimePurchase": "Zakup jednorazowy",
+                "repeatedPurchase": "Wielokrotny zakup"
+            },
+            "feedback": {
+                "total": "Total",
+                "bidPlaced": "Oferta została złożona pomyślnie",
+                "demandPlaced": "Popyt pomyślnie umieszczony",
+                "actionUnsuccessful": "Twoja akcja handlowa nie powiodła się",
+                "directBuySuccess": "Bezpośredni zakup się udał",
+                "directBuyError": "Bezpośredni zakup nie powiódł się"
+            },
+            "info": {
+                "regions": "Regiony",
+                "selectMultipleRegions": "Wybierz wiele regionów",
+                "volume": "Tom ({unit})",
+                "price": "Cena ({currency}/{energyUnit})",
+                "market": "Rynek",
+                "bids": "Oferty",
+                "asks": "Pyta",
+                "date": "Data",
+                "myTrades": "Moje transakcje",
+                "side": "Bok",
+                "buy": "Kup",
+                "sell": "Sprzedać",
+                "total": "Total"
+            },
+            "properties": {
+                "price": "Cena",
+                "energy": "Energia",
+                "generationDateStart": "Data rozpoczęcia generacji",
+                "generationDateEnd": "Data zakończenia generowania",
+                "generationFrom": "Generacja z",
+                "generationTo": "Generacja do",
+                "volume": "Tom",
+                "demandStartDate": "Data rozpoczęcia popytu",
+                "demandEndDate": "Data zakończenia popytu",
+                "totalVolume": "Całkowita objętość",
+                "period": "Okres",
+                "periodOptions": {
+                    "yearly": "Rocznie",
+                    "monthly": "Miesięczny",
+                    "weekly": "Tygodniowo",
+                    "daily": "Codziennie",
+                }
             }
         },
         "organization": {
@@ -354,7 +407,7 @@
                 "uploadSignatoryId": "Prześlij identyfikator osobisty",
                 "organizationCouldNotBeRegistered": "Przepraszamy, ale nie można zarejestrować tej organizacji.",
                 "organizationAlreadyExists": "Istnieje już organizacja z tymi samymi informacjami.",
-                "titleConnectOrRegisterIREC": "Dziękujemy za zarejestrowanie organizacji na platformie!",
+                "titleConnectOrRegisterIREC": "Dziękujemy za zarejestrowanie organizacji na rynku!",
                 "checkingInfoToApprove":"Sprawdzamy Twoje informacje tak szybko, jak to możliwe i skontaktujemy się z Tobą, gdy wszystko zostanie zatwierdzone i będziesz mógł rozpocząć handel.",
                 "contentConnectOrRegisterIREC": "Aby zarejestrować urządzenia i zażądać I-REC, użytkownicy muszą również podłączyć konto I-REC.",
                 "titleIRecInfoSuccess": "Dziękujemy za podanie informacji o koncie I-REC.",
@@ -438,7 +491,8 @@
             "captions": {
                 "open_asks": "PYTANIA OTWARTE",
                 "open_bids": "OFERTY OTWARTE",
-                "actions": "AKCJA"
+                "actions": "AKCJA",
+                "demands": "POPYT"
             },
             "info": {
                 "open_asks": "OFERTY OTWARTE",
@@ -447,17 +501,59 @@
             },
             "actions": {
                 "view": "Widok",
-                "remove": "Usunąć"
+                "remove": "Usunąć",
+                "update": "Zmodernizować"
             },
             "feedback": {
                 "removeOrderConfirmation": "Czy na pewno chcesz usunąć?",
-                "orderCanceled": "Zamówienie anulowane"
+                "orderCanceled": "Zamówienie anulowane",
+                "successfullyRemoved": "Usunięto pomyślnie"
             },
             "confirmations": {
                 "no": "Nie",
                 "yes": "Tak",
                 "view": "Widok",
                 "remove": "Usunąć"
+            }
+        },
+        "demand": {
+            "captions": {
+                "updateDemand": "Zaktualizuj popyt",
+                "totalVolume": "Całkowita objętość",
+                "activateDemand": "Aktywuj popyt"
+            },
+            "properties": {
+                "period": "Okres",
+                "start": "Data rozpoczęcia",
+                "end": "Data końcowa",
+                "volume": "Tom",
+                "status": "Status",
+                "device_type": "Rodzaj urządzenia",
+                "price": "Cena",
+                "periodOptions": {
+                    "daily": "Codziennie",
+                    "weekly": "Tygodniowo",
+                    "monthly": "Miesięczny",
+                    "yearly": "Rocznie",
+                    "day": "Dzień",
+                    "week": "Tydzień",
+                    "month": "Miesiąc",
+                    "year": "Rok"
+                },
+                "active": "Aktywny",
+                "paused": "Wstrzymano",
+                "archived": "Zarchiwizowano"
+            },
+            "actions": {
+                "update": "Zmodernizować"
+            },
+            "feedback": {
+                "pauseDemand": "Popyt powinno zostać wstrzymane przed usunięciem",
+                "successfullyRemoved": "Usunięto pomyślnie",
+                "demandPaused": "Popyt wstrzymany",
+                "demandActivated": "Popyt aktywowano",
+                "statusNotChanged": "Stan popytu nie zmienił się",
+                "demandUpdated": "Popyt zostało pomyślnie zaktualizowane"
             }
         }
     }

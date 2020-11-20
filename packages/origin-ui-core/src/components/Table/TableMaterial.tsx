@@ -1,4 +1,4 @@
-import React, { ReactNode, useState } from 'react';
+import React, { ReactNode, useState, useContext } from 'react';
 import {
     SortPropertiesType,
     CurrentSortType,
@@ -27,6 +27,9 @@ import {
     TableSortLabel,
     Box
 } from '@material-ui/core';
+import MomentUtils from '@date-io/moment';
+import { OriginConfigurationContext } from '../PackageConfigurationProvider';
+import { MuiPickersUtilsProvider } from '@material-ui/pickers';
 
 type TableOnSelectFunction = (id: string, selected: boolean) => void;
 
@@ -83,6 +86,7 @@ interface IProps<T extends readonly ITableColumn[]> {
 export function TableMaterial<T extends readonly ITableColumn[]>(props: IProps<T>) {
     const [currentPage, setCurrentPage] = useState(1);
     const [selectedIds, setSelectedIds] = useState<string[]>([]);
+    const configuration = useContext(OriginConfigurationContext);
 
     async function loadPage(page: number, filters?: ICustomFilter[]) {
         await props.loadPage(page, filters);
@@ -215,168 +219,174 @@ export function TableMaterial<T extends readonly ITableColumn[]>(props: IProps<T
 
     return (
         <>
-            <FiltersHeader filters={filters} filtersChanged={filtersChanged} />
+            <MuiPickersUtilsProvider utils={MomentUtils} locale={configuration.language}>
+                <FiltersHeader filters={filters} filtersChanged={filtersChanged} />
 
-            <ColumnBatchActions
-                batchableActions={batchableActions}
-                selectedIds={selectedIds}
-                customCounterGenerator={customSelectCounterGenerator}
-            />
+                <ColumnBatchActions
+                    batchableActions={batchableActions}
+                    selectedIds={selectedIds}
+                    customCounterGenerator={customSelectCounterGenerator}
+                />
 
-            <Paper className={classes.root}>
-                <div className={classes.tableWrapper}>
-                    {caption && (
-                        <Box
-                            style={{
-                                paddingLeft: spacing(2),
-                                paddingTop: spacing(2),
-                                color: textPrimary,
-                                fontWeight: 'bold'
-                            }}
-                        >
-                            <span>{caption}</span>
-                        </Box>
-                    )}
-                    <Table>
-                        <TableHead>
-                            <TableRow></TableRow>
-                            <TableRow>
-                                {showBatchableActions && (
-                                    <TableCell padding="checkbox">
-                                        <Checkbox
-                                            indeterminate={
-                                                selectedIds.length > 0 &&
-                                                selectedIds.length < rows.length
-                                            }
-                                            checked={
-                                                selectedIds.length !== 0 &&
-                                                selectedIds.length === rows.length
-                                            }
-                                            onChange={(e) =>
-                                                setAllItemsSelectedProperty(e.target.checked)
-                                            }
-                                            color="primary"
-                                        />
-                                    </TableCell>
-                                )}
-                                {columns.map((column) => {
-                                    const isSortable = column.sortProperties?.length > 0;
-                                    const sortedByThisColumn =
-                                        isSortable && column.id === currentSort.id;
+                <Paper className={classes.root}>
+                    <div className={classes.tableWrapper}>
+                        {caption && (
+                            <Box
+                                style={{
+                                    paddingLeft: spacing(2),
+                                    paddingTop: spacing(2),
+                                    color: textPrimary,
+                                    fontWeight: 'bold'
+                                }}
+                            >
+                                <span>{caption}</span>
+                            </Box>
+                        )}
+                        <Table>
+                            <TableHead>
+                                <TableRow></TableRow>
+                                <TableRow>
+                                    {showBatchableActions && (
+                                        <TableCell padding="checkbox">
+                                            <Checkbox
+                                                indeterminate={
+                                                    selectedIds.length > 0 &&
+                                                    selectedIds.length < rows.length
+                                                }
+                                                checked={
+                                                    selectedIds.length !== 0 &&
+                                                    selectedIds.length === rows.length
+                                                }
+                                                onChange={(e) =>
+                                                    setAllItemsSelectedProperty(e.target.checked)
+                                                }
+                                                color="primary"
+                                            />
+                                        </TableCell>
+                                    )}
+                                    {columns.map((column) => {
+                                        const isSortable = column.sortProperties?.length > 0;
+                                        const sortedByThisColumn =
+                                            isSortable && column.id === currentSort.id;
+
+                                        return (
+                                            <TableCell
+                                                key={column.id}
+                                                align={column.align}
+                                                style={{ minWidth: column.minWidth }}
+                                                sortDirection={
+                                                    sortedByThisColumn ? order : undefined
+                                                }
+                                            >
+                                                <TableSortLabel
+                                                    active={sortedByThisColumn}
+                                                    direction={order}
+                                                    onClick={() => {
+                                                        if (!column.sortProperties || !toggleSort) {
+                                                            return;
+                                                        }
+
+                                                        toggleSort(column as CurrentSortType);
+                                                    }}
+                                                    hideSortIcon={!isSortable}
+                                                    disabled={!isSortable}
+                                                >
+                                                    {column.label}
+                                                </TableSortLabel>
+                                            </TableCell>
+                                        );
+                                    })}
+                                    {actions && actions.length > 0 && (
+                                        <TableCell align="center">{actionsLabel}</TableCell>
+                                    )}
+                                </TableRow>
+                            </TableHead>
+                            <TableBody>
+                                {rows.map((row, rowIndex) => {
+                                    const id = getRowId(row, rowIndex);
+                                    const isItemSelected = selectedIds.includes(id);
+                                    const rowStyle = highlightedRowsIndexes?.includes(id)
+                                        ? {
+                                              background: '#424242'
+                                          }
+                                        : {};
 
                                     return (
-                                        <TableCell
-                                            key={column.id}
-                                            align={column.align}
-                                            style={{ minWidth: column.minWidth }}
-                                            sortDirection={sortedByThisColumn ? order : undefined}
-                                        >
-                                            <TableSortLabel
-                                                active={sortedByThisColumn}
-                                                direction={order}
-                                                onClick={() => {
-                                                    if (!column.sortProperties || !toggleSort) {
-                                                        return;
-                                                    }
-
-                                                    toggleSort(column as CurrentSortType);
-                                                }}
-                                                hideSortIcon={!isSortable}
-                                                disabled={!isSortable}
+                                        <React.Fragment key={id}>
+                                            <TableRow
+                                                hover
+                                                role="checkbox"
+                                                tabIndex={-1}
+                                                style={rowStyle}
                                             >
-                                                {column.label}
-                                            </TableSortLabel>
-                                        </TableCell>
+                                                {showBatchableActions && (
+                                                    <TableCell padding="checkbox">
+                                                        <Checkbox
+                                                            checked={isItemSelected}
+                                                            onChange={(e) =>
+                                                                itemSelectionChanged(
+                                                                    id,
+                                                                    e.target.checked
+                                                                )
+                                                            }
+                                                            color="primary"
+                                                        />
+                                                    </TableCell>
+                                                )}
+                                                {columns.map((column) => {
+                                                    const value = row[column.id];
+                                                    return (
+                                                        <TableCell
+                                                            onClick={
+                                                                handleRowClick &&
+                                                                (() => handleRowClick(id))
+                                                            }
+                                                            className={
+                                                                handleRowClick
+                                                                    ? 'cursor-pointer'
+                                                                    : ''
+                                                            }
+                                                            key={column.id}
+                                                            align={column.align}
+                                                        >
+                                                            {value}
+                                                        </TableCell>
+                                                    );
+                                                })}
+                                                {renderActions(
+                                                    actions,
+                                                    allowedActions,
+                                                    row,
+                                                    rowIndex,
+                                                    id,
+                                                    classes
+                                                )}
+                                            </TableRow>
+                                            {customRow?.shouldDisplay(row) && (
+                                                <TableRow>{customRow.display}</TableRow>
+                                            )}
+                                        </React.Fragment>
                                     );
                                 })}
-                                {actions && actions.length > 0 && (
-                                    <TableCell align="center">{actionsLabel}</TableCell>
-                                )}
-                            </TableRow>
-                        </TableHead>
-                        <TableBody>
-                            {rows.map((row, rowIndex) => {
-                                const id = getRowId(row, rowIndex);
-                                const isItemSelected = selectedIds.includes(id);
-                                const rowStyle = highlightedRowsIndexes?.includes(id)
-                                    ? {
-                                          background: '#424242'
-                                      }
-                                    : {};
-
-                                return (
-                                    <React.Fragment key={id}>
-                                        <TableRow
-                                            hover
-                                            role="checkbox"
-                                            tabIndex={-1}
-                                            style={rowStyle}
-                                        >
-                                            {showBatchableActions && (
-                                                <TableCell padding="checkbox">
-                                                    <Checkbox
-                                                        checked={isItemSelected}
-                                                        onChange={(e) =>
-                                                            itemSelectionChanged(
-                                                                id,
-                                                                e.target.checked
-                                                            )
-                                                        }
-                                                        color="primary"
-                                                    />
-                                                </TableCell>
-                                            )}
-                                            {columns.map((column) => {
-                                                const value = row[column.id];
-                                                return (
-                                                    <TableCell
-                                                        onClick={
-                                                            handleRowClick &&
-                                                            (() => handleRowClick(id))
-                                                        }
-                                                        className={
-                                                            handleRowClick ? 'cursor-pointer' : ''
-                                                        }
-                                                        key={column.id}
-                                                        align={column.align}
-                                                    >
-                                                        {value}
-                                                    </TableCell>
-                                                );
-                                            })}
-                                            {renderActions(
-                                                actions,
-                                                allowedActions,
-                                                row,
-                                                rowIndex,
-                                                id,
-                                                classes
-                                            )}
-                                        </TableRow>
-                                        {customRow?.shouldDisplay(row) && (
-                                            <TableRow>{customRow.display}</TableRow>
-                                        )}
-                                    </React.Fragment>
-                                );
-                            })}
-                        </TableBody>
-                        <TableFooter>
-                            <TableRow>
-                                <TablePagination
-                                    count={total}
-                                    rowsPerPage={pageSize}
-                                    page={zeroIndexBasedPage}
-                                    onChangePage={(event, zeroIndexBasedNewPage) => {
-                                        loadPage(zeroIndexBasedNewPage + 1);
-                                    }}
-                                    align="left"
-                                    rowsPerPageOptions={[]}
-                                />
-                            </TableRow>
-                        </TableFooter>
-                    </Table>
-                </div>
-            </Paper>
+                            </TableBody>
+                            <TableFooter>
+                                <TableRow>
+                                    <TablePagination
+                                        count={total}
+                                        rowsPerPage={pageSize}
+                                        page={zeroIndexBasedPage}
+                                        onChangePage={(event, zeroIndexBasedNewPage) => {
+                                            loadPage(zeroIndexBasedNewPage + 1);
+                                        }}
+                                        align="left"
+                                        rowsPerPageOptions={[]}
+                                    />
+                                </TableRow>
+                            </TableFooter>
+                        </Table>
+                    </div>
+                </Paper>
+            </MuiPickersUtilsProvider>
         </>
     );
 }

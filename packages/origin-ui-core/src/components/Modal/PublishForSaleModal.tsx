@@ -21,7 +21,7 @@ import { requestPublishForSale, resyncCertificate } from '../../features/certifi
 import { ICertificateViewItem } from '../../features/certificates/types';
 import { getCurrencies } from '../../features/general/selectors';
 import { getUserOffchain } from '../../features/users/selectors';
-import { countDecimals, EnergyFormatter, formatDate } from '../../utils';
+import { countDecimals, EnergyFormatter, formatDate, useTranslation } from '../../utils';
 import { getEnvironment } from '../../features';
 import { IEnvironment } from '../../features/general';
 
@@ -34,6 +34,8 @@ interface IProps {
 
 export function PublishForSaleModal(props: IProps) {
     const { certificate, callback, producingDevice, showModal } = props;
+
+    const { t } = useTranslation();
 
     const currencies = useSelector(getCurrencies);
     const user = useSelector(getUserOffchain);
@@ -110,10 +112,10 @@ export function PublishForSaleModal(props: IProps) {
 
                 const energyInDisplayUnitValid =
                     newEnergyInBaseValueUnit.gte(1) &&
-                    newEnergyInBaseValueUnit.lt(ownedPublicVolume) &&
+                    newEnergyInBaseValueUnit.lte(ownedPublicVolume) &&
                     countDecimals(newEnergyInDisplayUnit) === 0;
 
-                setEnergyInDisplayUnit(newEnergyInDisplayUnit);
+                setEnergyInDisplayUnit(event.target.value);
 
                 setValidation({
                     ...validation,
@@ -182,6 +184,13 @@ export function PublishForSaleModal(props: IProps) {
                     className="mt-4"
                     id="priceInput"
                     fullWidth
+                    onBlur={(e) => {
+                        const parsedValue = parseFloat((e.target as any)?.value);
+
+                        if (!isNaN(parsedValue) && parsedValue > 0) {
+                            setPrice(parsedValue.toFixed(2));
+                        }
+                    }}
                 />
 
                 <FormControl fullWidth={true} variant="filled" className="mt-4">
@@ -210,10 +219,10 @@ export function PublishForSaleModal(props: IProps) {
             </DialogContent>
             <DialogActions>
                 <Button onClick={handleClose} color="secondary">
-                    Cancel
+                    {t('general.actions.cancel')}
                 </Button>
                 <Button onClick={publishForSale} color="primary" disabled={!isFormValid}>
-                    Publish for sale
+                    {t('certificate.actions.publishForSale')}
                 </Button>
             </DialogActions>
         </Dialog>

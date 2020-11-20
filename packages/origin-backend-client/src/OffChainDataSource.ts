@@ -1,9 +1,7 @@
 import { OriginFeature, allOriginFeatures } from '@energyweb/utils-general';
 import {
     IOffChainDataSource,
-    ICertificationRequestClient,
     IAdminClient,
-    ICertificateClient,
     IDeviceClient,
     IFilesClient,
     IOrganizationClient,
@@ -12,7 +10,6 @@ import {
     IUserClient,
     IConfigurationClient
 } from '@energyweb/origin-backend-core';
-import { CertificateClient } from './CertificateClient';
 import { ConfigurationClient } from './ConfigurationClient';
 import { DeviceClient } from './DeviceClient';
 import { FilesClient } from './FilesClient';
@@ -21,7 +18,6 @@ import { InvitationClient } from './InvitationClient';
 import { RequestClient } from './RequestClient';
 import { UserClient } from './UserClient';
 import { AdminClient } from './AdminClient';
-import { CertificationRequestClient } from './CertificationRequestClient';
 
 export class OffChainDataSource implements IOffChainDataSource {
     configurationClient: IConfigurationClient;
@@ -35,10 +31,6 @@ export class OffChainDataSource implements IOffChainDataSource {
     invitationClient: IInvitationClient;
 
     filesClient: IFilesClient;
-
-    certificateClient: ICertificateClient;
-
-    certificationRequestClient: ICertificationRequestClient;
 
     adminClient: IAdminClient;
 
@@ -57,17 +49,6 @@ export class OffChainDataSource implements IOffChainDataSource {
 
         if (enabledFeatures.includes(OriginFeature.Devices)) {
             this.deviceClient = new DeviceClient(this.dataApiUrl, this.requestClient);
-        }
-
-        if (enabledFeatures.includes(OriginFeature.Certificates)) {
-            this.certificateClient = new CertificateClient(this.dataApiUrl, this.requestClient);
-        }
-
-        if (enabledFeatures.includes(OriginFeature.CertificationRequests)) {
-            this.certificationRequestClient = new CertificationRequestClient(
-                this.dataApiUrl,
-                this.requestClient
-            );
         }
     }
 

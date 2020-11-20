@@ -1,6 +1,6 @@
 import 'mocha';
 
-import { IContractsLookup, IOriginConfiguration } from '@energyweb/origin-backend-core';
+import { IOriginConfiguration } from '@energyweb/origin-backend-core';
 import { INestApplication } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
 import { assert } from 'chai';
@@ -10,11 +10,6 @@ import { AppModule } from '../../app.module';
 
 describe('Configuration API tests', () => {
     let app: INestApplication;
-
-    const contractsLookup: IContractsLookup = {
-        issuer: '0x123',
-        registry: '0x456'
-    };
 
     const standard = 'I-REC';
     const country = {
@@ -48,7 +43,6 @@ describe('Configuration API tests', () => {
 
         it('updates the configuration', async () => {
             const configuration: IOriginConfiguration = {
-                contractsLookup,
                 currencies: [currency, currency2],
                 countryName: country.name,
                 regions: country.regions,

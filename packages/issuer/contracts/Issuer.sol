@@ -118,7 +118,7 @@ contract Issuer is Initializable, Ownable {
     function revokeRequest(uint256 _requestId) external {
         CertificationRequest storage request = certificationRequests[_requestId];
 
-        require(msg.sender == request.owner, "revokeRequest(): Only the request creator can revoke the request.");
+        require(msg.sender == request.owner || msg.sender == Ownable.owner(), "revokeRequest(): Only the request creator can revoke the request.");
         require(!request.revoked, "revokeRequest(): Already revoked");
         require(!request.approved, "revokeRequest(): You can't revoke approved requests");
 
@@ -236,22 +236,12 @@ contract Issuer is Initializable, Ownable {
 		Migrate to public certificate (public issue)
 	*/
 
+	function requestMigrateToPublicFor(uint256 _certificateId, bytes32 _ownerAddressLeafHash, address _forAddress) external onlyOwner returns (uint256) {
+        _requestMigrateToPublicFor(_certificateId, _ownerAddressLeafHash, _forAddress);
+	}
+
 	function requestMigrateToPublic(uint256 _certificateId, bytes32 _ownerAddressLeafHash) external returns (uint256) {
-        bool exists = _migrationRequestExists(_certificateId);
-        require(!exists, "migration request for this certificate already exists");
-
-		uint256 id = ++requestMigrateToPublicNonce;
-
-		requestMigrateToPublicStorage[id] = RequestStateChange({
-			owner: msg.sender,
-			hash: _ownerAddressLeafHash,
-			certificateId: _certificateId,
-			approved: false
-		});
-
-		emit MigrateToPublicRequested(msg.sender, id);
-
-        return id;
+        _requestMigrateToPublicFor(_certificateId, _ownerAddressLeafHash, msg.sender);
 	}
 
     function getPrivateTransferRequest(uint _certificateId) external view onlyOwner returns (PrivateTransferRequest memory) {
@@ -386,4 +376,22 @@ contract Issuer is Initializable, Ownable {
 
         return !request.approved && !request.revoked;
     }
+
+    function _requestMigrateToPublicFor(uint256 _certificateId, bytes32 _ownerAddressLeafHash, address _forAddress) private returns (uint256) {
+        bool exists = _migrationRequestExists(_certificateId);
+        require(!exists, "migration request for this certificate already exists");
+
+		uint256 id = ++requestMigrateToPublicNonce;
+
+		requestMigrateToPublicStorage[id] = RequestStateChange({
+			owner: _forAddress,
+			hash: _ownerAddressLeafHash,
+			certificateId: _certificateId,
+			approved: false
+		});
+
+		emit MigrateToPublicRequested(_forAddress, id);
+
+        return id;
+	}
 }

@@ -31,7 +31,7 @@ const defaultState: IGeneralState = {
     iRecClient: null
 };
 
-export default function reducer(state = defaultState, action: IGeneralAction): IGeneralState {
+export function generalState(state = defaultState, action: IGeneralAction): IGeneralState {
     switch (action.type) {
         case GeneralActions.setLoading:
             return {

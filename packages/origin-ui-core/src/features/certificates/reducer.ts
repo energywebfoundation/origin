@@ -1,7 +1,10 @@
-import { Certificate } from '@energyweb/issuer';
-import { CertificatesActions, ICertificatesAction, ICertificateFetcher } from './actions';
+import { CertificatesActions, ICertificatesAction } from './actions';
 import { ProducingDevice } from '@energyweb/device-registry';
-import { IStoreState } from '../../types';
+import {
+    CertificatesClient,
+    CertificationRequestsClient,
+    BlockchainPropertiesClient
+} from '@energyweb/issuer-api-client';
 import { ICertificateViewItem } from '.';
 
 export interface ICertificatesState {
@@ -10,18 +13,10 @@ export interface ICertificatesState {
         visible: boolean;
         producingDevice: ProducingDevice.Entity;
     };
-    fetcher: ICertificateFetcher;
+    blockchainPropertiesClient: BlockchainPropertiesClient;
+    certificatesClient: CertificatesClient;
+    certificationRequestsClient: CertificationRequestsClient;
 }
-
-const fetcher: ICertificateFetcher = {
-    async fetch(id: number, configuration: IStoreState['configuration']) {
-        return configuration && new Certificate(id, configuration).sync();
-    },
-
-    async reload(entity: Certificate) {
-        return entity?.sync();
-    }
-};
 
 const defaultState: ICertificatesState = {
     certificates: [],
@@ -29,14 +24,16 @@ const defaultState: ICertificatesState = {
         visible: false,
         producingDevice: null
     },
-    fetcher
+    blockchainPropertiesClient: null,
+    certificatesClient: null,
+    certificationRequestsClient: null
 };
 
 function certificateExists(state: ICertificatesState, { id, source }: ICertificateViewItem) {
     return state.certificates.find((i) => i.id === id && i.source === source);
 }
 
-export default function reducer(
+export function certificatesState(
     state = defaultState,
     action: ICertificatesAction
 ): ICertificatesState {
@@ -95,14 +92,26 @@ export default function reducer(
                 }
             };
 
-        case CertificatesActions.updateFetcher:
-            return {
-                ...state,
-                fetcher: action.payload
-            };
-
         case CertificatesActions.clearCertificates:
             return { ...state, certificates: [] };
+
+        case CertificatesActions.setBlockchainPropertiesClient:
+            return {
+                ...state,
+                blockchainPropertiesClient: action.payload
+            };
+
+        case CertificatesActions.setCertificatesClient:
+            return {
+                ...state,
+                certificatesClient: action.payload
+            };
+
+        case CertificatesActions.setCertificationRequestsClient:
+            return {
+                ...state,
+                certificationRequestsClient: action.payload
+            };
 
         default:
             return state;

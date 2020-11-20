@@ -1,7 +1,6 @@
 import { Entity, PrimaryColumn, Column, Check } from 'typeorm';
 import {
     ExternalDeviceIdType,
-    IContractsLookup,
     IOriginConfiguration,
     IRegions,
     IDeviceType
@@ -25,9 +24,6 @@ export class Configuration extends ExtendedBaseEntity implements IOriginConfigur
 
     @Column('simple-json', { nullable: true })
     externalDeviceIdTypes: ExternalDeviceIdType[];
-
-    @Column('simple-json', { nullable: true })
-    contractsLookup: IContractsLookup;
 
     @Column('varchar', { nullable: true })
     complianceStandard: string;
