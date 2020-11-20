@@ -34,6 +34,7 @@
     },
     "types": "dist/js/src/index.d.ts",
     "dependencies": {
+        "@energyweb/origin-backend-client": "8.0.0",
         "@energyweb/origin-backend-core": "6.0.0",
         "@energyweb/utils-general": "9.3.0",
         "ethers": "5.0.15",
@@ -41,8 +42,6 @@
         "winston": "3.3.3"
     },
     "devDependencies": {
-        "@energyweb/origin-backend-client": "8.0.0",
-        "@energyweb/origin-backend-client-mocks": "6.0.0",
         "ethlint": "1.2.5"
     },
     "gitHead": "54beaf7fe6686810de74ca290daf99cbde510f9d",
