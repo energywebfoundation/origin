@@ -215,18 +215,31 @@ export class IRECAPIClient {
 
         return {
             create: async (device: DeviceCreateUpdateParams): Promise<void> => {
-                await validateOrReject(device);
+                const dev =
+                    device instanceof DeviceCreateUpdateParams
+                        ? device
+                        : plainToClass(DeviceCreateUpdateParams, device);
+
+                await validateOrReject(dev);
 
                 const url = `${deviceManagementUrl}/create`;
-
-                await axios.post(url, classToPlain(device), this.config);
+                console.log('-----', classToPlain(dev));
+                await axios.post(url, classToPlain(dev), this.config);
             },
-            edit: async (code: string, device: DeviceCreateUpdateParams): Promise<void> => {
-                await validateOrReject(device, { skipMissingProperties: true });
+            edit: async (
+                code: string,
+                device: Partial<DeviceCreateUpdateParams>
+            ): Promise<void> => {
+                const dev =
+                    device instanceof DeviceCreateUpdateParams
+                        ? device
+                        : plainToClass(DeviceCreateUpdateParams, device);
+
+                await validateOrReject(dev, { skipMissingProperties: true });
 
                 const url = `${deviceManagementUrl}/${code}/edit`;
 
-                await axios.put(url, classToPlain(device), this.config);
+                await axios.put(url, classToPlain(dev), this.config);
             },
             getAll: async (): Promise<Device[]> => {
                 const response = await axios.get<unknown[]>(deviceManagementUrl, this.config);
