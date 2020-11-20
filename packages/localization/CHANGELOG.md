@@ -3,6 +3,24 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.10.0](https://github.com/energywebfoundation/origin/compare/@energyweb/localization@0.9.0...@energyweb/localization@0.10.0) (2020-11-20)
+
+
+### Bug Fixes
+
+* **localization:** register i-rec wording ([46cdaad](https://github.com/energywebfoundation/origin/commit/46cdaadc9f025ed287dc9614343a31320a5bb9cf))
+
+
+### Features
+
+* **localization:** add localization ([2df93b5](https://github.com/energywebfoundation/origin/commit/2df93b58e88edc6f6aca09186b8c9019c3ad4d53))
+* **localization:** add localization ([a32d296](https://github.com/energywebfoundation/origin/commit/a32d2966cab8b8aff5dae099cfc224f0b00ffc48))
+* **localization:** add localization ([02b85ab](https://github.com/energywebfoundation/origin/commit/02b85abf3225868f9f6a748ddc29b092f26b056a))
+
+
+
+
+
 # [0.9.0](https://github.com/energywebfoundation/origin/compare/@energyweb/localization@0.8.0...@energyweb/localization@0.9.0) (2020-10-02)
 
 

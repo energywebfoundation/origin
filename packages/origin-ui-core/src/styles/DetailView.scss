@@ -5,7 +5,6 @@
 
             .PageBody {
                 padding: 12px 0;
-                background: #292929;
                 border-radius: 3px;
 
                 .history {
@@ -14,7 +13,6 @@
                     .title {
                         font-weight: 300;
                         font-size: 11px;
-                        color: #989898;
                         mix-blend-mode: normal;
                         opacity: 0.7;
                         margin-bottom: 10px;
@@ -40,7 +38,6 @@
                             .Label {
                                 font-weight: 300;
                                 font-size: 11px;
-                                color: #989898;
                                 mix-blend-mode: normal;
                                 opacity: 0.7;
                             }
@@ -48,7 +45,6 @@
                             .Data {
                                 font-size: 16px;
                                 letter-spacing: 0.0888889px;
-                                color: #ffffff;
                                 display: flex;
                                 align-items: baseline;
                                 margin-top: 6px;
@@ -56,7 +52,6 @@
                                 span {
                                     font-weight: 500;
                                     font-size: 10px;
-                                    color: #ffffff;
                                     mix-blend-mode: normal;
                                     opacity: 0.67;
                                     margin-left: 6px;
@@ -68,7 +63,6 @@
 
                                 &.Map {
                                     margin-top: 25px;
-                                    border: 5px solid #3c3c3c;
                                     box-sizing: border-box;
                                     position: relative;
 
@@ -90,7 +84,6 @@
                                 line-height: 18px;
                                 font-size: 10px;
                                 letter-spacing: 0.0555556px;
-                                color: #d5d5d5;
                                 margin-top: 3px;
                             }
                         }

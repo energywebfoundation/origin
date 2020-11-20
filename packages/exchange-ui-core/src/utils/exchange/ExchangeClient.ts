@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { RequestClient } from '@energyweb/origin-backend-client';
 import { Filter, OrderStatus } from '@energyweb/exchange-core';
-import { IRequestClient } from '@energyweb/origin-backend-core';
+import { IRequestClient, UserStatus, IUser } from '@energyweb/origin-backend-core';
 import {
     TOrderBook,
     CreateAskDTO,
@@ -30,7 +30,8 @@ export interface IExchangeClient {
         location?: string[],
         gridOperator?: string[],
         generationFrom?: string,
-        generationTo?: string
+        generationTo?: string,
+        user?: IUser
     ): Promise<TOrderBook>;
     createAsk(data: CreateAskDTO): Promise<IOrder>;
     createBid(data: CreateBidDTO): Promise<IOrder>;
@@ -71,7 +72,8 @@ export class ExchangeClient implements IExchangeClient {
         location?: string[],
         gridOperator?: string[],
         generationFrom?: string,
-        generationTo?: string
+        generationTo?: string,
+        user?: IUser
     ) {
         const deviceTypePresent = deviceType?.length > 0;
         const locationPresent = location?.length > 0;
@@ -92,7 +94,7 @@ export class ExchangeClient implements IExchangeClient {
 
         let url = `${this.orderbookEndpoint}/public/search`;
 
-        if (this.requestClient.authenticationToken) {
+        if (this.requestClient.authenticationToken && user && user.status === UserStatus.Active) {
             url = `${this.orderbookEndpoint}/search`;
         }
 

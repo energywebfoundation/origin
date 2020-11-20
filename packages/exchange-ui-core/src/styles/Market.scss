@@ -1,6 +1,3 @@
-@import '@energyweb/origin-ui-core/dist/src/styles/variables.scss';
-
-$lowerPaperBackgroundColor: darken($backgroundColorDark, 2%) !default;
 
 .Market {
     .MarketTitle {
@@ -10,14 +7,9 @@ $lowerPaperBackgroundColor: darken($backgroundColorDark, 2%) !default;
     }
     .MarketUpperPaper {
         padding: 25px 25px 0;
-        border-bottom: 4px solid $backgroundColorLighter;
     }
     .MarketLowerPaper {
-        background-color: $lowerPaperBackgroundColor;
         padding: 25px;
-    }
-    .divider {
-        background-color: $backgroundColorLighter;
     }
     .PurchaseMenuItem {
         text-transform: uppercase;

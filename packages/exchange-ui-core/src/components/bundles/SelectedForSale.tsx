@@ -25,6 +25,7 @@ import { createBundle } from '../../features/bundles';
 import { BundleItemDTO } from '../../utils/exchange';
 import { BundleItemEdit, IBundledCertificate } from './BundleItemEdit';
 import { IOriginTypography } from '../../types/typography';
+import { useOriginConfiguration } from '../../utils/configuration';
 
 interface IOwnProps {
     certificatesToBundle: ICertificateViewItem[];
@@ -39,6 +40,8 @@ export const SelectedForSale = (props: IOwnProps) => {
     const currency = useSelector(getCurrencies)[0];
     const { t } = useTranslation();
     const dispatch = useDispatch();
+    const configuration = useOriginConfiguration();
+    const originBgColor = configuration?.styleConfig?.MAIN_BACKGROUND_COLOR;
 
     const fontSizeMd = ((useTheme().typography as unknown) as IOriginTypography)?.fontSizeMd;
 
@@ -100,7 +103,7 @@ export const SelectedForSale = (props: IOwnProps) => {
                                 mb={index === arr.length - 1 ? 0 : 1}
                                 key={cert.id}
                             >
-                                <ListItem>
+                                <ListItem style={{ backgroundColor: originBgColor }}>
                                     <BundleItemEdit
                                         certificate={cert}
                                         totalVolume={totalVolume}

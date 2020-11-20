@@ -13,7 +13,7 @@ import { DeviceMap } from './DeviceMap';
 import { PageContent } from '../PageContent/PageContent';
 import { ProducingDeviceDetailView } from './ProducingDeviceDetailView';
 import { ProducingDeviceTable } from './ProducingDeviceTable';
-import { OriginConfigurationContext } from '../OriginConfigurationContext';
+import { OriginConfigurationContext } from '../PackageConfigurationProvider';
 import { RoleChangedModal } from '../Modal/RoleChangedModal';
 import { ConnectBlockchainAccountModal } from '../Modal/ConnectBlockchainAccountModal';
 

@@ -22,7 +22,7 @@ import { AVAILABLE_ORIGIN_LANGUAGES, ORIGIN_LANGUAGE } from '@energyweb/localiza
 import { showNotification, NotificationType, useTranslation } from '../../utils';
 import { getOffChainDataSource } from '../../features/general/selectors';
 import { getUserOffchain } from '../../features/users/selectors';
-import { OriginConfigurationContext, setOriginLanguage } from '../OriginConfigurationContext';
+import { OriginConfigurationContext, setOriginLanguage } from '../PackageConfigurationProvider';
 import { refreshUserOffchain } from '../../features/users/actions';
 import { IUserProperties } from '@energyweb/origin-backend-core';
 

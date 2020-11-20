@@ -11,7 +11,7 @@
     "bugs": {
         "url": "https://github.com/energywebfoundation/origin/issues"
     },
-    "version": "3.1.6",
+    "version": "3.1.7",
     "main": "dist/js/src/index.js",
     "files": [
         "dist/js/build",
@@ -34,7 +34,7 @@
     },
     "types": "dist/js/src/index.d.ts",
     "dependencies": {
-        "@energyweb/utils-general": "9.3.0",
+        "@energyweb/utils-general": "10.0.0",
         "bn.js": "5.1.3",
         "immutable": "4.0.0-rc.12",
         "moment": "2.24.0",

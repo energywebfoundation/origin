@@ -279,7 +279,7 @@ function* findEnhancedExchangeCertificate(
     userId: string
 ) {
     const certificateId = parseInt(asset.asset.tokenId, 10);
-    let onChainCertificate = onChainCertificates.find((c) => c.id === certificateId);
+    let onChainCertificate = onChainCertificates.find((c) => c.tokenId === certificateId);
 
     if (!onChainCertificate) {
         onChainCertificate = yield call(getCertificate, certificateId, true);

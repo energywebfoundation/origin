@@ -9,11 +9,13 @@ import {
     Moment,
     useTranslation,
     formatCurrencyComplete,
-    DeviceSelectors
+    DeviceSelectors,
+    LightenColor
 } from '@energyweb/origin-ui-core';
 import { calculateTotalPrice, ANY_VALUE, ANY_OPERATOR, TimeFrame } from '../../utils/exchange';
 import { OneTimePurchase } from './OneTimePurchase';
 import { RepeatedPurchase } from './RepeatedPurchase';
+import { useOriginConfiguration } from '../../utils/configuration';
 
 export interface IMarketFormValues {
     generationDateStart?: Moment;
@@ -59,6 +61,12 @@ export function Market(props: IProps) {
 
     const configuration = useSelector(getConfiguration);
     const { t } = useTranslation();
+
+    const originConfiguration = useOriginConfiguration();
+    const originBgColor = originConfiguration?.styleConfig?.MAIN_BACKGROUND_COLOR;
+
+    const bgColorLighten = LightenColor(originBgColor, 5);
+    const lowerPaperBgColor = LightenColor(originBgColor, -2);
 
     const [oneTimePurchase, setOneTimePurchase] = useState<boolean>(true);
     const [validationSchema, setValidationSchema] = useState();
@@ -123,7 +131,12 @@ export function Market(props: IProps) {
                                         );
                                     }}
                                 />
-                                <Paper className="MarketUpperPaper">
+                                <Paper
+                                    className="MarketUpperPaper"
+                                    style={{
+                                        borderBottom: `4px solid ${bgColorLighten}`
+                                    }}
+                                >
                                     <Typography variant="h5" className="MarketTitle">
                                         {t('exchange.info.market')}
                                     </Typography>
@@ -231,7 +244,10 @@ export function Market(props: IProps) {
                                     </Grid>
                                 </Paper>
 
-                                <Paper className="MarketLowerPaper">
+                                <Paper
+                                    className="MarketLowerPaper"
+                                    style={{ backgroundColor: lowerPaperBgColor }}
+                                >
                                     {oneTimePurchase ? (
                                         <OneTimePurchase
                                             fieldDisabled={fieldDisabled}

@@ -13,8 +13,9 @@ import { formatDate } from '../../utils/time';
 import { Skeleton } from '@material-ui/lab';
 import { makeStyles, createStyles, useTheme } from '@material-ui/core';
 import { getEnvironment, getExchangeClient } from '../../features/general/selectors';
-import { EnergyFormatter, useTranslation } from '../../utils';
+import { EnergyFormatter, useTranslation, LightenColor } from '../../utils';
 import { ProducingDevice } from '@energyweb/device-registry';
+import { useOriginConfiguration } from '../../utils/configuration';
 
 interface IProps {
     id: number;
@@ -48,6 +49,14 @@ export function CertificateDetailView(props: IProps) {
             }
         })
     );
+
+    const originContext = useOriginConfiguration();
+    const originBgColor = originContext?.styleConfig?.MAIN_BACKGROUND_COLOR;
+    const originTextColor = originContext?.styleConfig?.TEXT_COLOR_DEFAULT;
+    const originSimpleTextColor = originContext?.styleConfig?.SIMPLE_TEXT_COLOR;
+
+    const bgColorDarken = LightenColor(originBgColor, -2);
+    const textColorDarken = LightenColor(originTextColor, -4);
 
     const classes = useStyles(useTheme());
 
@@ -274,7 +283,7 @@ export function CertificateDetailView(props: IProps) {
     return (
         <div className="DetailViewWrapper">
             <div className="PageContentWrapper">
-                <div className="PageBody">
+                <div className="PageBody" style={{ backgroundColor: bgColorDarken }}>
                     {selectedCertificate ? (
                         <div>
                             <table>
@@ -283,8 +292,18 @@ export function CertificateDetailView(props: IProps) {
                                         <tr key={rowIndex}>
                                             {row.map((col) => (
                                                 <td key={col.label} rowSpan={1} colSpan={1}>
-                                                    <div className="Label">{col.label}</div>
-                                                    <div className="Data">{col.data}</div>
+                                                    <div
+                                                        className="Label"
+                                                        style={{ color: textColorDarken }}
+                                                    >
+                                                        {col.label}
+                                                    </div>
+                                                    <div
+                                                        className="Data"
+                                                        style={{ color: originSimpleTextColor }}
+                                                    >
+                                                        {col.data}
+                                                    </div>
                                                 </td>
                                             ))}
                                         </tr>
@@ -310,7 +329,7 @@ export function CertificateDetailView(props: IProps) {
                 )}
 
                 {selectedCertificate && (
-                    <div className="PageBody">
+                    <div className="PageBody" style={{ backgroundColor: bgColorDarken }}>
                         {eventsDisplay.length === 0 ? (
                             <div className={classes.eventsLoader}>
                                 <Skeleton variant="rect" height={50} />
