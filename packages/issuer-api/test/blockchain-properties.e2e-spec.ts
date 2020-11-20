@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-expressions */
-import { INestApplication } from '@nestjs/common';
+import { HttpStatus, INestApplication } from '@nestjs/common';
 import { expect } from 'chai';
 import request from 'supertest';
 import { DatabaseService } from '@energyweb/origin-backend-utils';
@@ -25,7 +25,7 @@ describe('BlockchainProperties tests', () => {
     it('should be able to get blockchain properties', async () => {
         await request(app.getHttpServer())
             .get('/blockchain-properties')
-            .expect(200)
+            .expect(HttpStatus.OK)
             .expect((res) => {
                 const { netId, registry, issuer, rpcNode }: BlockchainPropertiesDTO = res.body;
 

@@ -15,7 +15,8 @@ import {
     Param,
     ParseIntPipe,
     Put,
-    UseInterceptors
+    UseInterceptors,
+    HttpStatus
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
@@ -48,7 +49,11 @@ export class CertificateController {
 
     @Get('/:id')
     @UseGuards(AuthGuard(), ActiveUserGuard)
-    @ApiResponse({ status: 200, type: CertificateDTO, description: 'Returns a Certificate' })
+    @ApiResponse({
+        status: HttpStatus.OK,
+        type: CertificateDTO,
+        description: 'Returns a Certificate'
+    })
     public async get(
         @Param('id', new ParseIntPipe()) id: number,
         @UserDecorator() { blockchainAccountAddress }: ILoggedInUser
@@ -59,7 +64,7 @@ export class CertificateController {
     @Get('/token-id/:tokenId')
     @UseGuards(AuthGuard(), ActiveUserGuard)
     @ApiResponse({
-        status: 200,
+        status: HttpStatus.OK,
         type: CertificateDTO,
         description: 'Returns a Certificate by token ID'
     })
@@ -75,7 +80,7 @@ export class CertificateController {
     @Get()
     @UseGuards(AuthGuard(), ActiveUserGuard)
     @ApiResponse({
-        status: 200,
+        status: HttpStatus.OK,
         type: [CertificateDTO],
         description: 'Returns all Certificates'
     })
@@ -89,7 +94,7 @@ export class CertificateController {
     @UseGuards(AuthGuard(), ActiveUserGuard, RolesGuard)
     @Roles(Role.Issuer)
     @ApiResponse({
-        status: 201,
+        status: HttpStatus.CREATED,
         type: CertificateDTO,
         description: 'Returns the issued Certificate'
     })
@@ -115,7 +120,7 @@ export class CertificateController {
     @UseGuards(AuthGuard(), ActiveUserGuard)
     @ApiBody({ type: TransferCertificateDTO })
     @ApiResponse({
-        status: 200,
+        status: HttpStatus.OK,
         type: SuccessResponseDTO,
         description: 'Returns whether the transfer succeeded'
     })
@@ -139,7 +144,7 @@ export class CertificateController {
     @UseGuards(AuthGuard(), ActiveUserGuard)
     @ApiBody({ type: ClaimCertificateDTO })
     @ApiResponse({
-        status: 200,
+        status: HttpStatus.OK,
         type: SuccessResponseDTO,
         description: 'Returns whether the claim succeeded'
     })
@@ -162,7 +167,7 @@ export class CertificateController {
     @UseGuards(AuthGuard(), ActiveUserGuard)
     @ApiBody({ type: BulkClaimCertificatesDTO })
     @ApiResponse({
-        status: 200,
+        status: HttpStatus.OK,
         type: SuccessResponseDTO,
         description: 'Returns whether the bulk claim succeeded'
     })
@@ -182,7 +187,7 @@ export class CertificateController {
     @Get('/:id/events')
     @UseGuards(AuthGuard(), ActiveUserGuard)
     @ApiResponse({
-        status: 200,
+        status: HttpStatus.OK,
         type: [CertificateEvent],
         description: 'Returns all the events for a Certificate'
     })

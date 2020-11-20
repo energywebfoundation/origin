@@ -13,7 +13,8 @@ import {
     Param,
     ParseIntPipe,
     Put,
-    UseInterceptors
+    UseInterceptors,
+    HttpStatus
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
@@ -41,7 +42,7 @@ export class CertificationRequestController {
     @Get('/:id')
     @UseGuards(AuthGuard(), ActiveUserGuard)
     @ApiResponse({
-        status: 200,
+        status: HttpStatus.OK,
         type: CertificationRequestDTO,
         description: 'Returns a Certification Request'
     })
@@ -54,7 +55,7 @@ export class CertificationRequestController {
     @Get()
     @UseGuards(AuthGuard(), ActiveUserGuard)
     @ApiResponse({
-        status: 200,
+        status: HttpStatus.OK,
         type: [CertificationRequestDTO],
         description: 'Returns all Certification Requests'
     })
@@ -65,7 +66,7 @@ export class CertificationRequestController {
     @Get('/:certificateId')
     @UseGuards(AuthGuard(), ActiveUserGuard)
     @ApiResponse({
-        status: 200,
+        status: HttpStatus.OK,
         type: CertificationRequestDTO,
         description: 'Returns a Certification Request by a certificate ID'
     })
@@ -88,7 +89,7 @@ export class CertificationRequestController {
     @UseGuards(AuthGuard(), ActiveUserGuard, RolesGuard)
     @Roles(Role.Issuer, Role.Admin, Role.OrganizationAdmin, Role.OrganizationDeviceManager)
     @ApiResponse({
-        status: 200,
+        status: HttpStatus.OK,
         type: CertificationRequestDTO,
         description: 'Creates a Certification Request'
     })
@@ -121,7 +122,7 @@ export class CertificationRequestController {
     @UseGuards(AuthGuard(), ActiveUserGuard, RolesGuard)
     @Roles(Role.Issuer, Role.Admin)
     @ApiResponse({
-        status: 200,
+        status: HttpStatus.OK,
         type: SuccessResponseDTO,
         description: 'Approves a Certification Request'
     })
@@ -133,7 +134,7 @@ export class CertificationRequestController {
     @UseGuards(AuthGuard(), ActiveUserGuard, RolesGuard)
     @Roles(Role.Issuer, Role.Admin)
     @ApiResponse({
-        status: 200,
+        status: HttpStatus.OK,
         type: SuccessResponseDTO,
         description: 'Revokes a Certification Request'
     })

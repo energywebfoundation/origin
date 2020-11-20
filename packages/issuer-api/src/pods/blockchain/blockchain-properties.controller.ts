@@ -1,5 +1,5 @@
 import { ActiveUserGuard } from '@energyweb/origin-backend-utils';
-import { Controller, Get, UseGuards } from '@nestjs/common';
+import { Controller, Get, HttpStatus, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
 import { BlockchainPropertiesDTO } from './blockchain-properties.dto';
@@ -13,7 +13,7 @@ export class BlockchainPropertiesController {
     @Get()
     @UseGuards(AuthGuard(), ActiveUserGuard)
     @ApiResponse({
-        status: 200,
+        status: HttpStatus.OK,
         type: BlockchainPropertiesDTO,
         description: 'Returns blockchain properties'
     })
