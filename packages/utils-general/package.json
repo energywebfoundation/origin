@@ -10,7 +10,7 @@
     "bugs": {
         "url": "https://github.com/energywebfoundation/origin/issues"
     },
-    "version": "9.3.0",
+    "version": "10.0.0",
     "main": "dist/js/src/index.js",
     "files": [
         "dist/js/build",
@@ -29,7 +29,7 @@
     },
     "types": "dist/js/src/index.d.ts",
     "dependencies": {
-        "@energyweb/origin-backend-core": "6.0.0",
+        "@energyweb/origin-backend-core": "7.0.0",
         "chai": "^4.2.0",
         "eth-sig-util": "2.5.2",
         "ethers": "5.0.15",

@@ -3,6 +3,28 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [9.0.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-backend-client@8.0.0...@energyweb/origin-backend-client@9.0.0) (2020-11-20)
+
+
+### Bug Fixes
+
+* **deps:** update dependency axios to v0.21.0 ([57ecd14](https://github.com/energywebfoundation/origin/commit/57ecd14d599bebc341422d24bbf2435369846c5e))
+* **deps:** update dependency ethers to v5.0.15 ([7205cfd](https://github.com/energywebfoundation/origin/commit/7205cfd3b823730beed77fa8195b7c9c06898a88))
+
+
+### chore
+
+* remove Certificate and CertificationRequest references from origin-backend dependencies and clients ([e0a6bbe](https://github.com/energywebfoundation/origin/commit/e0a6bbe94a9343917830db5900fc2bdce37b8dff))
+
+
+### BREAKING CHANGES
+
+* Removed Certificate and CertificationRequest functionality
+
+
+
+
+
 # [8.0.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-backend-client@7.0.2...@energyweb/origin-backend-client@8.0.0) (2020-10-02)
 
 

@@ -3,6 +3,89 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.10.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-ui-core@1.9.1...@energyweb/origin-ui-core@1.10.0) (2020-11-20)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @react-google-maps/api to v1.11.0 ([ce165a0](https://github.com/energywebfoundation/origin/commit/ce165a03878a99546034d466c338077f9991ee17))
+* **deps:** update dependency @react-google-maps/api to v1.12.0 ([169a2bf](https://github.com/energywebfoundation/origin/commit/169a2bfa67810474e04b2d1f590e0947fb4f75e1))
+* **deps:** update dependency axios to v0.21.0 ([57ecd14](https://github.com/energywebfoundation/origin/commit/57ecd14d599bebc341422d24bbf2435369846c5e))
+* **deps:** update dependency bootstrap to v4.5.3 ([4a5a5de](https://github.com/energywebfoundation/origin/commit/4a5a5de0431ee1417fb0a3f5644bc184e60e52c3))
+* **deps:** update dependency chart.js to v2.9.4 ([6e37044](https://github.com/energywebfoundation/origin/commit/6e37044ddfa41c1087292ecae6086c4021ff9d62))
+* **deps:** update dependency ethers to v5.0.15 ([7205cfd](https://github.com/energywebfoundation/origin/commit/7205cfd3b823730beed77fa8195b7c9c06898a88))
+* **deps:** update dependency file-loader to v6.2.0 ([a86c071](https://github.com/energywebfoundation/origin/commit/a86c0716ba1ef5c05bed927739eb85f3cd9b845b))
+* **deps:** update dependency formik to v2.1.7 ([7740ab4](https://github.com/energywebfoundation/origin/commit/7740ab42951e7c5b2882b10fe1d477c2eb30e08e))
+* **deps:** update dependency formik to v2.2.0 ([a85ac6d](https://github.com/energywebfoundation/origin/commit/a85ac6d72ea1aaf087c223a6b4260c78cc4de508))
+* **deps:** update dependency formik to v2.2.1 ([2cd267a](https://github.com/energywebfoundation/origin/commit/2cd267a48e5f64e0e9fb2786f0555943a717e256))
+* **deps:** update dependency formik to v2.2.2 ([a19de90](https://github.com/energywebfoundation/origin/commit/a19de90833cbf8bc33d731ee6791e199c0049310))
+* **deps:** update dependency formik to v2.2.5 ([69f6748](https://github.com/energywebfoundation/origin/commit/69f6748d44b38286f5eceb0e009bdc93be9800a0))
+* **deps:** update dependency i18next to v19.8.0 ([5a9c3c3](https://github.com/energywebfoundation/origin/commit/5a9c3c3427e74152c1e42177a4f447025ecf3892))
+* **deps:** update dependency i18next to v19.8.1 ([764dfb2](https://github.com/energywebfoundation/origin/commit/764dfb2a5645c2cbad5d08f22581b2f17c001893))
+* **deps:** update dependency i18next to v19.8.2 ([f2e5a3d](https://github.com/energywebfoundation/origin/commit/f2e5a3de97bcc51ba46b9d6eeb7f1efd763156bd))
+* **deps:** update dependency i18next to v19.8.3 ([d4af48f](https://github.com/energywebfoundation/origin/commit/d4af48f3bbaa98bc9c0e5863cc897580c173aade))
+* **deps:** update dependency query-string to v6.13.5 ([a8d8c2f](https://github.com/energywebfoundation/origin/commit/a8d8c2f4cb8cc912398e8c0773b72ebe724406ac))
+* **deps:** update dependency query-string to v6.13.6 ([9ca70aa](https://github.com/energywebfoundation/origin/commit/9ca70aaeb1b1e2073ae40e88e9cfa49e1288a958))
+* **deps:** update dependency query-string to v6.13.7 ([fccddeb](https://github.com/energywebfoundation/origin/commit/fccddeb29354b30bbfd502192af55332332d6c41))
+* **deps:** update react ([1b9a499](https://github.com/energywebfoundation/origin/commit/1b9a499bd6abebd4d21d011d6565b196a6a549c3))
+* **deps:** update webpack ([8bbbf25](https://github.com/energywebfoundation/origin/commit/8bbbf253549885876a6c58fe78d45d8823020b4c))
+* **origin-ui:** generation start/end time filtering OV-418 ([4f353c0](https://github.com/energywebfoundation/origin/commit/4f353c00a8b6cc94a6c77f9175960c895c9cc453))
+* **origin-ui-core:** add missing type causing warning ([7f9362d](https://github.com/energywebfoundation/origin/commit/7f9362d20f0eaa9303ed53d33d9d666aaf8efd8f))
+* **origin-ui-core:** adjust to merged changes ([e92fb61](https://github.com/energywebfoundation/origin/commit/e92fb61455704bea179cdf2911786c7b981bf9cd))
+* **origin-ui-core:** bundle detail view for unlogged user ([47e9fb9](https://github.com/energywebfoundation/origin/commit/47e9fb9d056b9e2aec9737cb1ffccea0f4d214d4))
+* **origin-ui-core:** configure redirect for user with blockchain account ([b85626d](https://github.com/energywebfoundation/origin/commit/b85626db03eb72efa98047f5348051a21c8b793a))
+* **origin-ui-core:** confirming email shows 4 messages ([48601e7](https://github.com/energywebfoundation/origin/commit/48601e74381cb3f50b6e3a46f34fd126083a0b60))
+* **origin-ui-core:** energy input in modal ([cccb1a5](https://github.com/energywebfoundation/origin/commit/cccb1a5fcd46e7a110f36fd8594f57d5d5dce10c))
+* **origin-ui-core:** error when changing price ([c65cc0f](https://github.com/energywebfoundation/origin/commit/c65cc0fa03cb10614dad9915b2a81ac6d68f0839))
+* **origin-ui-core:** Fetch exchange certificates using tokenId ([8b759d0](https://github.com/energywebfoundation/origin/commit/8b759d0fe2b5c3dd4d6d29f510cdfd4deb296a13))
+* **origin-ui-core:** memory leak on device creation ([3173be8](https://github.com/energywebfoundation/origin/commit/3173be8cd31dbd9de3db4a89ac9d88fa6cde0c9b))
+* **origin-ui-core:** open should not be null ([6b3f23d](https://github.com/energywebfoundation/origin/commit/6b3f23d27293138b7ede357614cbbf3c89e3095b))
+* **origin-ui-core:** redirect from modal ([316da4a](https://github.com/energywebfoundation/origin/commit/316da4aad82f73292589792eed38722574f7d329))
+* **origin-ui-core:** remove function usage ([53d0bd5](https://github.com/energywebfoundation/origin/commit/53d0bd52f90ac9a52e5006a02687505dd6fbb2f6))
+* **origin-ui-core:** remove requests from table when approved ([951ba50](https://github.com/energywebfoundation/origin/commit/951ba50d5b6798b36f36310b0b132831aa4145c7))
+* **origin-ui-core:** scss include paths ([58667bd](https://github.com/energywebfoundation/origin/commit/58667bd29bd56aa62e75c944044b67841cdabb7b))
+* **origin-ui-core:** show only deployed requests ([28552a5](https://github.com/energywebfoundation/origin/commit/28552a5868e457bb3b3fc219751ec7982356c807))
+* **origin-ui-core:** unique key error ([1cfb11f](https://github.com/energywebfoundation/origin/commit/1cfb11faa6d26481c9a6aa8e54cd64dc6513a5ac))
+* **origin-ui-core:** use token Id when filtering exchange certificates ([2ffda74](https://github.com/energywebfoundation/origin/commit/2ffda74d4e840982b2a7a3726e224f557d89e9b7))
+* **origin-ui-core:** validate login form on field blur ([4a4f738](https://github.com/energywebfoundation/origin/commit/4a4f7387c060947bef070cc67be6b27c7b65f15c))
+* **origin-ui-core:** value of input should not be null ([a2bcba5](https://github.com/energywebfoundation/origin/commit/a2bcba5eea5c1916e8f1e657b9004ab197a7d8da))
+* **origin-ui-core:** web3 undefined ([874c4c5](https://github.com/energywebfoundation/origin/commit/874c4c5f4a1a818525c859f5b1c5977cdfc2f524))
+* **origin-ui-core:** wrap table into utilsprovider ([0643941](https://github.com/energywebfoundation/origin/commit/0643941070976cce515ad84ae000ab59c39bd7e4))
+
+
+### Features
+
+* **exchange:** add marketplace time zone ([240e0e4](https://github.com/energywebfoundation/origin/commit/240e0e449bf4993aeafeadff79c7acda1d9bfb16))
+* **origin-ui:** added env variable for timezone ([afad2c2](https://github.com/energywebfoundation/origin/commit/afad2c245a038d90f39e2e1bf10a81453f734295))
+* **origin-ui:** added market utc offset certification requests and modal ([7fa1d9a](https://github.com/energywebfoundation/origin/commit/7fa1d9acf9f515a10779566373d2600aaff493ff))
+* **origin-ui:** added market utc offset to exhange datepickers ([0aa1b83](https://github.com/energywebfoundation/origin/commit/0aa1b833323e1fcea481c4db9c8188ee34fc9431))
+* **origin-ui:** implemented market utc offset for exchange ui ([b1201ec](https://github.com/energywebfoundation/origin/commit/b1201ec11b532b6f38d50f6a8ac2a736c81c765c))
+* **origin-ui-core:** add demand table to My Orders ([47a96ad](https://github.com/energywebfoundation/origin/commit/47a96ade1e1f6d555a8773a3e3453257d36c0e12))
+* **origin-ui-core:** add helpers ([90ecedd](https://github.com/energywebfoundation/origin/commit/90ecedd888dd5901aedd64c4fc67a06db4f83860))
+* **origin-ui-core:** added env variable for timezone to origin-iu-core ([24641fe](https://github.com/energywebfoundation/origin/commit/24641fe49e76abe36dff7e73f6245f475177f09a))
+* **origin-ui-core:** adjust for merged changes ([b68d1a0](https://github.com/energywebfoundation/origin/commit/b68d1a077d6a4b54e055a9018a1057cd0cddfab6))
+* **origin-ui-core:** calendar input that changes on timeframe ([74fd022](https://github.com/energywebfoundation/origin/commit/74fd022977b6719e20d0989269a024def67a51bd))
+* **origin-ui-core:** connect styles ([8c7d71c](https://github.com/energywebfoundation/origin/commit/8c7d71c948221a0740dba4e74bd68f196e62c637))
+* **origin-ui-core:** demand replace ([cc1d0f7](https://github.com/energywebfoundation/origin/commit/cc1d0f79fa598a42d9a3aadfd27caea6508a18f2))
+* **origin-ui-core:** disable energy and price fields for unlogged user ([7480a81](https://github.com/energywebfoundation/origin/commit/7480a817f26cdc38488a587a4a685ec766031196))
+* **origin-ui-core:** divide one-time and repeated purchase ([d7c19af](https://github.com/energywebfoundation/origin/commit/d7c19afecadaab38df4f6dea52cb3a516ae13e2d))
+* **origin-ui-core:** get totalVolume from summary ([9b3582a](https://github.com/energywebfoundation/origin/commit/9b3582a83ef1e2763748a4664e8ed63a3f517695))
+* **origin-ui-core:** include demand into saga ([d0fec5f](https://github.com/energywebfoundation/origin/commit/d0fec5fbd29bcf78449a0b983eeaccd5181c50fc))
+* **origin-ui-core:** monday is first dow ([74630ab](https://github.com/energywebfoundation/origin/commit/74630abd38f9d11e7f0fe5a886b5de4e9901706c))
+* **origin-ui-core:** move filtering orders to ActiveOrders ([88f4077](https://github.com/energywebfoundation/origin/commit/88f4077da4be7d908f23f14a7018a744e35de97b))
+* **origin-ui-core:** notification for disabled metamask ([52cff75](https://github.com/energywebfoundation/origin/commit/52cff7564391cbd8a3e1cf2215a5e7ae80568f56))
+* **origin-ui-core:** notification for userExists error ([ec32a3a](https://github.com/energywebfoundation/origin/commit/ec32a3a04160f903dd533ca4d659269a11c38ca8))
+* **origin-ui-core:** remove demand ([ee1bfbe](https://github.com/energywebfoundation/origin/commit/ee1bfbecebf578e07497ca8d88d49022b3d87f63))
+* **origin-ui-core:** remove exchange components ([3566de9](https://github.com/energywebfoundation/origin/commit/3566de9fde9439c0d487a416b3bd994fc817c7b8))
+* **origin-ui-core:** remove unused component ([51bb06b](https://github.com/energywebfoundation/origin/commit/51bb06b75490f6e381615dd9d9c61f7dbd9562c9))
+* **origin-ui-core:** support for decimal values without leading zero ([29f16b9](https://github.com/energywebfoundation/origin/commit/29f16b97df2a20b56e25fee8f8c0a5d306495de8))
+* **origin-ui-core:** update exchangeClient ([d416f72](https://github.com/energywebfoundation/origin/commit/d416f72cdf928a9a42f8aa5196550491c82e0e54))
+* **origin-ui-core:** updaye demand modal ([7cc6f87](https://github.com/energywebfoundation/origin/commit/7cc6f8771af765b525f6a599f61081ebca72dfe3))
+
+
+
+
+
 ## [1.9.1](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-ui-core@1.9.0...@energyweb/origin-ui-core@1.9.1) (2020-11-09)
 
 **Note:** Version bump only for package @energyweb/origin-ui-core

@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [7.0.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-backend-client-mocks@6.0.0...@energyweb/origin-backend-client-mocks@7.0.0) (2020-11-20)
+
+
+### chore
+
+* remove Certificate and CertificationRequest references from origin-backend dependencies and clients ([e0a6bbe](https://github.com/energywebfoundation/origin/commit/e0a6bbe94a9343917830db5900fc2bdce37b8dff))
+
+
+### BREAKING CHANGES
+
+* Removed Certificate and CertificationRequest functionality
+
+
+
+
+
 # [6.0.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-backend-client-mocks@5.1.0...@energyweb/origin-backend-client-mocks@6.0.0) (2020-10-02)
 
 
