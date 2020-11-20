@@ -1,4 +1,4 @@
-import { IUser, IUserFilter, Role } from '@energyweb/origin-backend-core';
+import { IUserFilter, Role } from '@energyweb/origin-backend-core';
 import {
     ActiveUserGuard,
     NullOrUndefinedResultInterceptor,
@@ -9,6 +9,7 @@ import {
     Body,
     Controller,
     Get,
+    HttpStatus,
     Param,
     Put,
     Query,
@@ -16,9 +17,12 @@ import {
     UseInterceptors
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
+import { ApiResponse, ApiTags } from '@nestjs/swagger';
+import { UserDTO } from '../user/user.dto';
 
 import { UserService } from '../user/user.service';
 
+@ApiTags('admin')
 @Controller('admin')
 @UseInterceptors(NullOrUndefinedResultInterceptor)
 export class AdminController {
@@ -27,7 +31,8 @@ export class AdminController {
     @Get('users')
     @UseGuards(AuthGuard('jwt'), ActiveUserGuard, RolesGuard)
     @Roles(Role.Admin, Role.SupportAgent)
-    public async getUsers(@Query() filter?: IUserFilter) {
+    @ApiResponse({ status: HttpStatus.OK, type: [UserDTO], description: 'Gets all users' })
+    public async getUsers(@Query() filter?: IUserFilter): Promise<UserDTO[]> {
         if (Object.keys(filter).length === 0) {
             return this.userService.getAll({ relations: ['organization'] });
         }
@@ -46,7 +51,11 @@ export class AdminController {
     @Put('users/:id')
     @UseGuards(AuthGuard('jwt'), ActiveUserGuard, RolesGuard)
     @Roles(Role.Admin, Role.SupportAgent)
-    public async put(@Param('id') id: string, @Body() body: IUser) {
+    @ApiResponse({ status: HttpStatus.OK, type: UserDTO, description: 'Updates a user' })
+    public async updateUser(
+        @Param('id') id: string,
+        @Body() body: Partial<UserDTO>
+    ): Promise<UserDTO> {
         return this.userService.update(id, body);
     }
 }

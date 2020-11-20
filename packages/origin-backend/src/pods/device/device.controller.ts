@@ -5,8 +5,8 @@ import {
     IDevice,
     ILoggedInUser,
     ISmartMeterRead,
-    ISuccessResponse,
     OrganizationStatus,
+    ResponseSuccess,
     Role
 } from '@energyweb/origin-backend-core';
 import {
@@ -22,6 +22,7 @@ import {
     Delete,
     ForbiddenException,
     Get,
+    HttpStatus,
     Logger,
     NotFoundException,
     Param,
@@ -35,6 +36,16 @@ import {
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { BigNumber } from 'ethers';
+import {
+    ApiBody,
+    ApiForbiddenResponse,
+    ApiNotFoundResponse,
+    ApiQuery,
+    ApiResponse,
+    ApiTags,
+    ApiUnauthorizedResponse,
+    ApiUnprocessableEntityResponse
+} from '@nestjs/swagger';
 
 import { StorageErrors } from '../../enums/StorageErrors';
 import { Organization } from '../organization/organization.entity';
@@ -42,7 +53,11 @@ import { OrganizationService } from '../organization/organization.service';
 import { PublicOrganizationInfoDTO } from '../organization/public-organization-info.dto';
 import { Device } from './device.entity';
 import { DeviceService } from './device.service';
+import { DeviceDTO } from './device.dto';
+import { SuccessResponseDTO } from '../../utils/success-response.dto';
+import { SmartMeterReadDTO } from './smart-meter-readings.dto';
 
+@ApiTags('device')
 @Controller('/Device')
 @UseInterceptors(NullOrUndefinedResultInterceptor)
 export class DeviceController {
@@ -54,7 +69,8 @@ export class DeviceController {
     ) {}
 
     @Get()
-    async getAll(@Query('withMeterStats') withMeterStats: boolean): Promise<IDevice[]> {
+    @ApiResponse({ status: HttpStatus.OK, type: [DeviceDTO], description: 'Returns all Devices' })
+    async getAll(@Query('withMeterStats') withMeterStats?: boolean): Promise<DeviceDTO[]> {
         const devices = await this.deviceService.getAll(withMeterStats ?? false);
 
         return this.serializeDevices(devices, withMeterStats);
@@ -63,10 +79,11 @@ export class DeviceController {
     @Get('/my-devices')
     @UseGuards(AuthGuard(), ActiveUserGuard, RolesGuard)
     @Roles(Role.OrganizationAdmin, Role.OrganizationDeviceManager, Role.OrganizationUser)
+    @ApiResponse({ status: HttpStatus.OK, type: [DeviceDTO], description: 'Returns my Devices' })
     async getMyDevices(
-        @Query('withMeterStats') withMeterStats: boolean,
-        @UserDecorator() { organizationId }: ILoggedInUser
-    ): Promise<IDevice[]> {
+        @UserDecorator() { organizationId }: ILoggedInUser,
+        @Query('withMeterStats') withMeterStats?: boolean
+    ): Promise<DeviceDTO[]> {
         const devices = await this.deviceService.getOrganizationDevices(
             organizationId,
             withMeterStats ?? false
@@ -78,11 +95,12 @@ export class DeviceController {
     @Get('supplyBy')
     @UseGuards(AuthGuard(), ActiveUserGuard, RolesGuard)
     @Roles(Role.OrganizationAdmin, Role.OrganizationDeviceManager, Role.OrganizationUser)
+    @ApiResponse({ status: HttpStatus.OK, type: [DeviceDTO], description: 'Gets supply' })
     async getSupplyBy(
         @UserDecorator() { organizationId }: ILoggedInUser,
         @Query('facility') facilityName: string,
         @Query('status') status: string
-    ): Promise<IDevice[]> {
+    ): Promise<DeviceDTO[]> {
         const devices = await this.deviceService.getSupplyBy(
             organizationId,
             facilityName,
@@ -93,11 +111,22 @@ export class DeviceController {
     }
 
     @Get('/:id')
+    @ApiQuery({
+        name: 'withMeterStats',
+        description: 'Whether or not to return smart meter stats with the device',
+        required: false,
+        type: Boolean
+    })
+    @ApiResponse({ status: HttpStatus.OK, type: DeviceDTO, description: 'Returns a Device' })
+    @ApiNotFoundResponse({
+        status: HttpStatus.NOT_FOUND,
+        description: `The device with the ID doesn't exist`
+    })
     async get(
         @Param('id') id: string,
-        @Query('withMeterStats') withMeterStats: boolean
-    ): Promise<IDevice> {
-        const device = await this.deviceService.findOne(id, withMeterStats);
+        @Query('withMeterStats') withMeterStats?: boolean
+    ): Promise<DeviceDTO> {
+        const device = await this.deviceService.findOne(id, withMeterStats ?? false);
 
         if (!device) {
             throw new NotFoundException(StorageErrors.NON_EXISTENT);
@@ -105,16 +134,25 @@ export class DeviceController {
 
         device.smartMeterReads = this.serializeSmartMeterReads(device.smartMeterReads);
 
-        return this.serializeDevices([device], withMeterStats)[0];
+        return this.serializeDevices([device], withMeterStats ?? false)[0];
     }
 
     @Post()
     @UseGuards(AuthGuard(), ActiveUserGuard, RolesGuard)
     @Roles(Role.OrganizationAdmin, Role.OrganizationDeviceManager)
+    @ApiResponse({ status: HttpStatus.CREATED, type: DeviceDTO, description: 'Creates a Device' })
+    @ApiForbiddenResponse({
+        status: HttpStatus.FORBIDDEN,
+        description: `User doesn't have the correct permissions`
+    })
+    @ApiUnprocessableEntityResponse({
+        status: HttpStatus.UNPROCESSABLE_ENTITY,
+        description: 'Incorrect inputs'
+    })
     async createDevice(
         @Body() body: DeviceCreateData,
         @UserDecorator() loggedUser: ILoggedInUser
-    ): Promise<IDevice> {
+    ): Promise<DeviceDTO> {
         if (typeof loggedUser.organizationId === 'undefined') {
             throw new ForbiddenException('general.feedback.noOrganization');
         }
@@ -124,16 +162,31 @@ export class DeviceController {
             throw new ForbiddenException('general.feedback.userHasToBePartOfApprovedOrganization');
         }
 
-        return this.deviceService.create(body, loggedUser);
+        const device = await this.deviceService.create(body, loggedUser);
+
+        return this.serializeDevices([device]).pop();
     }
 
     @Delete('/:id')
     @UseGuards(AuthGuard(), ActiveUserGuard, RolesGuard)
     @Roles(Role.Issuer, Role.Admin, Role.OrganizationAdmin)
+    @ApiResponse({
+        status: HttpStatus.OK,
+        type: SuccessResponseDTO,
+        description: 'Deletes a Device'
+    })
+    @ApiNotFoundResponse({
+        status: HttpStatus.NOT_FOUND,
+        description: `The device with the ID doesn't exist`
+    })
+    @ApiUnauthorizedResponse({
+        status: HttpStatus.UNAUTHORIZED,
+        description: `You are not the organization admin`
+    })
     async delete(
         @Param('id') id: string,
         @UserDecorator() loggedUser: ILoggedInUser
-    ): Promise<ISuccessResponse> {
+    ): Promise<SuccessResponseDTO> {
         const device = await this.deviceService.findOne(id);
 
         if (!device) {
@@ -156,30 +209,43 @@ export class DeviceController {
 
         await this.deviceService.remove(device as Device);
 
-        return {
-            success: true,
-            message: `Entity ${id} deleted`
-        };
+        return ResponseSuccess(`Entity ${id} deleted`);
     }
 
     @Put('/:id')
     @UseGuards(AuthGuard(), ActiveUserGuard, RolesGuard)
     @Roles(Role.Issuer, Role.Admin)
+    @ApiResponse({
+        status: HttpStatus.OK,
+        type: DeviceDTO,
+        description: `Updates a device's status`
+    })
     async updateDeviceStatus(
         @Param('id') id: string,
         @Body() body: DeviceUpdateData
-    ): Promise<IDevice> {
-        return this.deviceService.updateStatus(id, body);
+    ): Promise<DeviceDTO> {
+        const device = await this.deviceService.updateStatus(id, body);
+
+        return this.serializeDevices([device]).pop();
     }
 
     @Put('/:id/settings')
     @UseGuards(AuthGuard(), ActiveUserGuard, RolesGuard)
     @Roles(Role.OrganizationAdmin, Role.OrganizationDeviceManager, Role.OrganizationUser)
+    @ApiResponse({
+        status: HttpStatus.OK,
+        type: SuccessResponseDTO,
+        description: `Updates device's settings`
+    })
+    @ApiUnprocessableEntityResponse({
+        status: HttpStatus.UNPROCESSABLE_ENTITY,
+        description: `Body is missing automaticPostForSale or defaultAskPrice`
+    })
     async updateDeviceSettings(
         @Param('id') id: string,
         @Body() body: DeviceSettingsUpdateData,
         @UserDecorator() loggedUser: ILoggedInUser
-    ): Promise<ISuccessResponse> {
+    ): Promise<SuccessResponseDTO> {
         if (!this.organizationService.hasDevice(loggedUser.organizationId, id)) {
             throw new ForbiddenException();
         }
@@ -199,6 +265,15 @@ export class DeviceController {
     }
 
     @Get('/:id/smartMeterReading')
+    @ApiResponse({
+        status: HttpStatus.OK,
+        type: [SmartMeterReadDTO],
+        description: `Gets smart meter readings for a Device`
+    })
+    @ApiNotFoundResponse({
+        status: HttpStatus.NOT_FOUND,
+        description: `The device with the ID doesn't exist`
+    })
     async getAllSmartMeterReadings(@Param('id') id: string): Promise<ISmartMeterRead[]> {
         const device = await this.deviceService.findOne(id);
 
@@ -212,24 +287,50 @@ export class DeviceController {
     }
 
     @Get('/get-by-external-id/:type/:id')
-    async getByExternalId(@Param('type') type: string, @Param('id') id: string): Promise<IDevice> {
+    @ApiResponse({
+        status: HttpStatus.OK,
+        type: DeviceDTO,
+        description: `Gets a Device by external device ID`
+    })
+    @ApiNotFoundResponse({
+        status: HttpStatus.NOT_FOUND,
+        description: `The device with the ID doesn't exist`
+    })
+    async getByExternalId(
+        @Param('type') type: string,
+        @Param('id') id: string
+    ): Promise<DeviceDTO> {
         const existing = await this.deviceService.findByExternalId({ id, type });
 
         if (!existing) {
             throw new NotFoundException(StorageErrors.NON_EXISTENT);
         }
 
-        return existing;
+        return this.serializeDevices([existing]).pop();
     }
 
     @Put('/:id/smartMeterReading')
     @UseGuards(AuthGuard(), ActiveUserGuard, RolesGuard)
     @Roles(Role.Admin, Role.OrganizationAdmin, Role.OrganizationDeviceManager)
+    @ApiBody({ type: [SmartMeterReadDTO], required: true })
+    @ApiResponse({
+        status: HttpStatus.OK,
+        type: SuccessResponseDTO,
+        description: `Adds smart meter readings to a Device`
+    })
+    @ApiNotFoundResponse({
+        status: HttpStatus.NOT_FOUND,
+        description: `The device with the ID doesn't exist`
+    })
+    @ApiUnauthorizedResponse({
+        status: HttpStatus.UNAUTHORIZED,
+        description: `You are not the device manager`
+    })
     async addSmartMeterReads(
         @Param('id') id: string,
         @UserDecorator() loggedUser: ILoggedInUser,
-        @Body() newSmartMeterReads: ISmartMeterRead[]
-    ): Promise<ISuccessResponse> {
+        @Body() newSmartMeterReads: SmartMeterReadDTO[]
+    ): Promise<SuccessResponseDTO> {
         const device = await this.deviceService.findOne(id);
 
         if (!device) {
@@ -272,7 +373,7 @@ export class DeviceController {
         }));
     }
 
-    private serializeDevices(devices: IDevice[], withMeterStats = false) {
+    private serializeDevices(devices: IDevice[], withMeterStats = false): DeviceDTO[] {
         return devices?.map((device) => ({
             ...device,
             smartMeterReads: this.serializeSmartMeterReads(device.smartMeterReads),
