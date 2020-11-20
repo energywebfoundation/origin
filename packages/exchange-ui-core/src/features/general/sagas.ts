@@ -10,6 +10,7 @@ import {
     ExchangeGeneralActionType
 } from './actions';
 import { getEnvironment } from './selectors';
+import { UsersActions } from '@energyweb/origin-ui-core';
 
 function prepareGetEnvironmentTask(): {
     getEnvironment: () => Promise<IEnvironment>;
@@ -63,7 +64,10 @@ function* setupEnvironment(): SagaIterator {
 
 function* initializeExchangeClient(): SagaIterator {
     while (true) {
-        yield take(ExchangeGeneralActionType.SET_ENVIRONMENT);
+        yield take([
+            ExchangeGeneralActionType.SET_ENVIRONMENT,
+            UsersActions.clearAuthenticationToken
+        ]);
 
         const environment: IEnvironment = yield select(getEnvironment);
 

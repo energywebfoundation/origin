@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { Formik, Form } from 'formik';
 import { TableCell, Button, InputAdornment, Grid } from '@material-ui/core';
-import { IDevice } from '@energyweb/origin-backend-core';
+import { IDevice, UserStatus } from '@energyweb/origin-backend-core';
 import {
     getOffChainDataSource,
     getEnvironment,
@@ -150,33 +150,36 @@ export function Asks(props: Props) {
                                                               </Grid>
                                                           )}
                                                           <Grid item xs={3}>
-                                                              <Button
-                                                                  onClick={() => {
-                                                                      if (buyDirectExpanded) {
-                                                                          buyDirect(
-                                                                              selectedOrder.id,
-                                                                              EnergyFormatter.getBaseValueFromValueInDisplayUnit(
-                                                                                  parseInt(
-                                                                                      values.energy,
-                                                                                      10
-                                                                                  )
-                                                                              )?.toString(),
-                                                                              selectedOrder.price
-                                                                          );
-                                                                      } else {
-                                                                          setBuyDirectExpanded(
-                                                                              true
-                                                                          );
-                                                                      }
-                                                                  }}
-                                                                  disabled={!isValid}
-                                                                  style={{
-                                                                      height: '72px',
-                                                                      lineHeight: '72px'
-                                                                  }}
-                                                              >
-                                                                  {t('exchange.actions.buy')}
-                                                              </Button>
+                                                              {user?.status ===
+                                                                  UserStatus.Active && (
+                                                                  <Button
+                                                                      onClick={() => {
+                                                                          if (buyDirectExpanded) {
+                                                                              buyDirect(
+                                                                                  selectedOrder.id,
+                                                                                  EnergyFormatter.getBaseValueFromValueInDisplayUnit(
+                                                                                      parseInt(
+                                                                                          values.energy,
+                                                                                          10
+                                                                                      )
+                                                                                  )?.toString(),
+                                                                                  selectedOrder.price
+                                                                              );
+                                                                          } else {
+                                                                              setBuyDirectExpanded(
+                                                                                  true
+                                                                              );
+                                                                          }
+                                                                      }}
+                                                                      disabled={!isValid}
+                                                                      style={{
+                                                                          height: '72px',
+                                                                          lineHeight: '72px'
+                                                                      }}
+                                                                  >
+                                                                      {t('exchange.actions.buy')}
+                                                                  </Button>
+                                                              )}
                                                           </Grid>
                                                       </Grid>
                                                       {buyDirectExpanded && isValid && (
