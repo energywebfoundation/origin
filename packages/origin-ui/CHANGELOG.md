@@ -3,6 +3,33 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.3.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-ui@2.2.9...@energyweb/origin-ui@2.3.0) (2020-11-20)
+
+
+### Bug Fixes
+
+* **deps:** pin dependency @material-ui/styles to 4.10.0 ([2212028](https://github.com/energywebfoundation/origin/commit/2212028e9109e20aa6366822f30e20dcbbbae06f))
+* **deps:** update dependency file-loader to v6.2.0 ([a86c071](https://github.com/energywebfoundation/origin/commit/a86c0716ba1ef5c05bed927739eb85f3cd9b845b))
+* **deps:** update react ([1b9a499](https://github.com/energywebfoundation/origin/commit/1b9a499bd6abebd4d21d011d6565b196a6a549c3))
+* **deps:** update webpack ([8bbbf25](https://github.com/energywebfoundation/origin/commit/8bbbf253549885876a6c58fe78d45d8823020b4c))
+* **origin-ui:** adjust to merged changes ([f5a57e8](https://github.com/energywebfoundation/origin/commit/f5a57e8c67e02d1ecd65f4006fde207260610c39))
+* **origin-ui:** build error on master ([83b5325](https://github.com/energywebfoundation/origin/commit/83b532536f47ffc210e04b9457d4cb336426f630))
+* **origin-ui:** typo on running node --max-old-space-size=8192 ([0a61b7b](https://github.com/energywebfoundation/origin/commit/0a61b7b2f0e24cb44b951f4dea8fff699e20e0f8))
+
+
+### Features
+
+* **exchange:** add marketplace time zone ([240e0e4](https://github.com/energywebfoundation/origin/commit/240e0e449bf4993aeafeadff79c7acda1d9bfb16))
+* **origin-ui:** added env variable for timezone ([afad2c2](https://github.com/energywebfoundation/origin/commit/afad2c245a038d90f39e2e1bf10a81453f734295))
+* **origin-ui:** create general state for exchange package ([dbe56f7](https://github.com/energywebfoundation/origin/commit/dbe56f7abe6d775308740f35fde849b7488233a9))
+* **origin-ui:** implemented market utc offset for exchange ui ([b1201ec](https://github.com/energywebfoundation/origin/commit/b1201ec11b532b6f38d50f6a8ac2a736c81c765c))
+* **origin-ui:** make package root for whole UI ([8d9a682](https://github.com/energywebfoundation/origin/commit/8d9a6829da586dba7a75a5a12ba631ca129b4e8d))
+* **origin-ui:** primary and secondary fonts ([0f6b572](https://github.com/energywebfoundation/origin/commit/0f6b5724867949b0de020cb73a560845dcb19e58))
+
+
+
+
+
 ## [2.2.9](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-ui@2.2.8...@energyweb/origin-ui@2.2.9) (2020-11-09)
 
 **Note:** Version bump only for package @energyweb/origin-ui

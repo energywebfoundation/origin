@@ -3,6 +3,31 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [10.0.0](https://github.com/energywebfoundation/origin/compare/@energyweb/utils-general@9.3.0...@energyweb/utils-general@10.0.0) (2020-11-20)
+
+
+### Bug Fixes
+
+* **deps:** update dependency ethers to v5.0.15 ([7205cfd](https://github.com/energywebfoundation/origin/commit/7205cfd3b823730beed77fa8195b7c9c06898a88))
+* **deps:** update dependency jsonschema to v1.2.11 ([58ba331](https://github.com/energywebfoundation/origin/commit/58ba331b1c8f31a479b2287159286a1aed15c4e0))
+* **deps:** update dependency jsonschema to v1.2.8 ([2858461](https://github.com/energywebfoundation/origin/commit/28584618e882f77d4ede6e1aac81adc13d22e0fe))
+* **deps:** update dependency jsonschema to v1.3.0 ([52687ef](https://github.com/energywebfoundation/origin/commit/52687efb77b2d58b5b5cf3597f6c129a216f20ed))
+* **deps:** update dependency jsonschema to v1.4.0 ([d382afa](https://github.com/energywebfoundation/origin/commit/d382afaddaefa5c9b801cd192a709f0ac4262f0a))
+
+
+### chore
+
+* **utils-general:** Remove BlockchainProperties from Configuration ([8e9b760](https://github.com/energywebfoundation/origin/commit/8e9b760f6f10036b73ce324e017fc2e7f6a64e48))
+
+
+### BREAKING CHANGES
+
+* **utils-general:** Configuration entity no longer contains BlockchainProperties
+
+
+
+
+
 # [9.3.0](https://github.com/energywebfoundation/origin/compare/@energyweb/utils-general@9.2.3...@energyweb/utils-general@9.3.0) (2020-10-02)
 
 

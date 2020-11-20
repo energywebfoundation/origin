@@ -3,6 +3,30 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.0.0](https://github.com/energywebfoundation/origin/compare/@energyweb/issuer@2.4.6...@energyweb/issuer@3.0.0) (2020-11-20)
+
+
+### Bug Fixes
+
+* **deps:** update dependency ethers to v5.0.15 ([7205cfd](https://github.com/energywebfoundation/origin/commit/7205cfd3b823730beed77fa8195b7c9c06898a88))
+* **deps:** update dependency mocha to v8.2.0 ([e318650](https://github.com/energywebfoundation/origin/commit/e3186509c94beee909dd349147ad8d3c320dc1cf))
+* **deps:** update dependency mocha to v8.2.1 ([eb0c31b](https://github.com/energywebfoundation/origin/commit/eb0c31bb1fc4671815523628bac3fa60a6a6166c))
+* **issuer:** security bug where a user could force another user to claim its certificates ([e9d742b](https://github.com/energywebfoundation/origin/commit/e9d742b1f1cbc09469f86b2e9ca929dc78eec572))
+
+
+### chore
+
+* **issuer:** replace Configuration with BlockchainProperties + remove dependency on origin-backend ([52409c3](https://github.com/energywebfoundation/origin/commit/52409c3f89ebdb00962a28c2075da85d45689fd2))
+
+
+### BREAKING CHANGES
+
+* **issuer:** The Certificate and CertificationRequest facades no linger rely on the Configuration object, but BlockchainProperties. Also removed the dependency on origin-backend
+
+
+
+
+
 ## [2.4.6](https://github.com/energywebfoundation/origin/compare/@energyweb/issuer@2.4.5...@energyweb/issuer@2.4.6) (2020-10-02)
 
 

@@ -3,6 +3,19 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.1.1](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-organization-irec-api@1.1.0...@energyweb/origin-organization-irec-api@1.1.1) (2020-11-20)
+
+
+### Bug Fixes
+
+* **deps:** update dependency typeorm to v0.2.28 ([8e9a26c](https://github.com/energywebfoundation/origin/commit/8e9a26c3a9c6218ad12fcd6c8ce6b71f767c8731))
+* **deps:** update dependency typeorm to v0.2.29 ([49232fb](https://github.com/energywebfoundation/origin/commit/49232fbd085e86a5e1df943aa917fe5ed86bff27))
+* **deps:** update nest monorepo to v7.5.2 ([adf4996](https://github.com/energywebfoundation/origin/commit/adf49962f675ef88237af96baef0093057d0697f))
+
+
+
+
+
 # 1.1.0 (2020-10-02)
 
 

@@ -1,6 +1,6 @@
 {
     "name": "@energyweb/issuer-irec-api-wrapper",
-    "version": "0.1.0-alpha.0",
+    "version": "0.1.0-alpha.1",
     "description": "A Typescript wrapper for I-REC Evident API",
     "main": "dist/index.js",
     "homepage": "https://github.com/energywebfoundation/origin/tree/master/packages/issuer-irec-api-wrapper",
