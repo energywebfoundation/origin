@@ -26,8 +26,8 @@
         "axios": "0.20.0"
     },
     "devDependencies": {
-        "@energyweb/exchange": "1.5.4",
-        "@nestjs/testing": "7.4.4",
+        "@energyweb/exchange": "1.6.0",
+        "@nestjs/testing": "7.5.2",
         "@nestjs/swagger": "4.6.1",
         "@nestjs/typeorm": "7.1.4",
         "@openapitools/openapi-generator-cli": "1.0.18-4.3.1",

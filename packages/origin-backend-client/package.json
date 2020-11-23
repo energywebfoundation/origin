@@ -1,6 +1,6 @@
 {
     "name": "@energyweb/origin-backend-client",
-    "version": "8.0.0",
+    "version": "9.0.0",
     "description": "",
     "main": "dist/js/src/index.js",
     "scripts": {
@@ -27,8 +27,8 @@
         "axios": "0.20.0"
     },
     "devDependencies": {
-        "@energyweb/origin-backend": "8.0.0",
-        "@nestjs/testing": "7.4.4",
+        "@energyweb/origin-backend": "9.0.0",
+        "@nestjs/testing": "7.5.2",
         "@nestjs/swagger": "4.6.1",
         "@nestjs/typeorm": "7.1.4",
         "@openapitools/openapi-generator-cli": "1.0.18-4.3.1",

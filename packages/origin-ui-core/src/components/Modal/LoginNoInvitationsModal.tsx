@@ -14,11 +14,11 @@ export const LoginNoInvitationsModal = (props: IProps) => {
     const { showModal, setShowModal } = props;
     const history = useHistory();
     const { t } = useTranslation();
-    const { getOrganizationRegisterLink, getCertificatesLink } = useLinks();
+    const { getOrganizationRegisterLink, getDefaultLink } = useLinks();
 
     const notNow = async () => {
         setShowModal(false);
-        history.push(getCertificatesLink());
+        history.push(getDefaultLink());
     };
 
     const registerOrganization = async () => {

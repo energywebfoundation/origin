@@ -25,6 +25,8 @@ heroku config:set --app ${PREFIX}-origin-api-${STAGE} \
   EXCHANGE_ACCOUNT_DEPLOYER_PRIV='<KEY>' \
   EXCHANGE_WALLET_PRIV='<KEY>' \
   EXCHANGE_WALLET_PUB='<KEY>' \
+  EXCHANGE_PRICE_STRATEGY=0 \
+  EXCHANGE_WALLET_MIN_EWT='0.01' \
   JWT_SECRET='<SECRET>' \
   MANDRILL_API_KEY='<KEY>' \
   ENERGY_PER_UNIT=1000000
@@ -35,4 +37,7 @@ heroku config:set --app ${PREFIX}-origin-ui-${STAGE} \
   ISSUER_ID='Issuer ID' \
   WEB3='https://volta-rpc-origin-0a316ab339e3d2ee3.energyweb.org' \
   REGISTRATION_MESSAGE_TO_SIGN='I register as Origin user' \
-  DEVICE_PROPERTIES='<PROPS>'
+  DEVICE_PROPERTIES='<PROPS>' \
+  DEFAULT_ENERGY_IN_BASE_UNIT=1
+
+

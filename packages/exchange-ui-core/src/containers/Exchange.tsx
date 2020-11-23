@@ -12,7 +12,7 @@ import {
 } from '@energyweb/origin-ui-core';
 import { getEnvironment, getExchangeClient } from '../features/general';
 import { createBid, createDemand, directBuyOrder } from '../features/orders';
-import { TOrderBook, ANY_VALUE } from '../utils/exchange';
+import { ExchangeClient, TOrderBook, ANY_VALUE } from '../utils/exchange';
 import { Asks, Bids, Market, IMarketFormValues } from '../components/exchange';
 
 interface IProps {
@@ -24,7 +24,7 @@ export function Exchange(props: IProps) {
     const { currency, refreshInterval } = { refreshInterval: 3000, ...props };
 
     const user = useSelector(getUserOffchain);
-    const exchangeClient = useSelector(getExchangeClient);
+    const exchangeClient: ExchangeClient = useSelector(getExchangeClient);
     const country = useSelector(getCountry);
     const environment = useSelector(getEnvironment);
     const dispatch = useDispatch();
@@ -66,7 +66,8 @@ export function Exchange(props: IProps) {
         location,
         gridOperator,
         generationDateStart,
-        generationDateEnd
+        generationDateEnd,
+        exchangeClient
     ]);
 
     async function onBid(values: IMarketFormValues, oneTimePurchase: boolean) {
