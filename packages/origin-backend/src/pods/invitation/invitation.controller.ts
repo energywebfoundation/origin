@@ -32,13 +32,14 @@ import {
 import { AuthGuard } from '@nestjs/passport';
 import { isEmail } from 'class-validator';
 
-import { ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { InvitationService } from './invitation.service';
 import { AlreadyPartOfOrganizationError } from './errors/already-part-of-organization.error';
 import { SuccessResponseDTO } from '../../utils/success-response.dto';
 import { InvitationDTO } from './invitation.dto';
 
 @ApiTags('invitation')
+@ApiBearerAuth('access-token')
 @Controller('/invitation')
 @UseInterceptors(NullOrUndefinedResultInterceptor)
 export class InvitationController {

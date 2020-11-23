@@ -18,13 +18,14 @@ import {
     ValidationPipe
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { ApiTags, ApiResponse } from '@nestjs/swagger';
+import { ApiTags, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
 import { NewRegistrationDTO } from './new-registration.dto';
 import { RegisterResponseDTO } from './registration-response.dto';
 import { RegistrationDTO } from './registration.dto';
 import { RegistrationService } from './registration.service';
 
 @ApiTags('irec_registration')
+@ApiBearerAuth('access-token')
 @UseInterceptors(ClassSerializerInterceptor, NullOrUndefinedResultInterceptor)
 @UsePipes(ValidationPipe)
 @Controller('irec/registration')

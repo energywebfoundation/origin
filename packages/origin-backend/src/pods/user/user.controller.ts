@@ -29,7 +29,7 @@ import {
     HttpStatus
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { ApiResponse, ApiTags, ApiParam } from '@nestjs/swagger';
+import { ApiResponse, ApiTags, ApiParam, ApiBearerAuth } from '@nestjs/swagger';
 
 import { UserService } from './user.service';
 import { EmailConfirmationService } from '../email-confirmation/email-confirmation.service';
@@ -37,6 +37,7 @@ import { UserDTO } from './user.dto';
 import { SuccessResponseDTO } from '../../utils/success-response.dto';
 
 @ApiTags('user')
+@ApiBearerAuth('access-token')
 @UseInterceptors(ClassSerializerInterceptor, NullOrUndefinedResultInterceptor)
 @Controller('user')
 export class UserController {

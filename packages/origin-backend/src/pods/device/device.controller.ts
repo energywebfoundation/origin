@@ -37,6 +37,7 @@ import {
 import { AuthGuard } from '@nestjs/passport';
 import { BigNumber } from 'ethers';
 import {
+    ApiBearerAuth,
     ApiBody,
     ApiForbiddenResponse,
     ApiNotFoundResponse,
@@ -58,6 +59,7 @@ import { SuccessResponseDTO } from '../../utils/success-response.dto';
 import { SmartMeterReadDTO } from './smart-meter-readings.dto';
 
 @ApiTags('device')
+@ApiBearerAuth('access-token')
 @Controller('/Device')
 @UseInterceptors(NullOrUndefinedResultInterceptor)
 export class DeviceController {

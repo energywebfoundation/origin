@@ -3,12 +3,13 @@ import { AuthGuard } from '@nestjs/passport';
 import { Request as ExpressRequest } from 'express';
 import { IUser } from '@energyweb/origin-backend-core';
 
-import { ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { AuthService } from './auth/auth.service';
 import { LoginReturnDataDTO } from './auth/login-return-data.dto';
 import { LoginDataDTO } from './auth/login-data.dto';
 
 @ApiTags('auth')
+@ApiBearerAuth('access-token')
 @Controller()
 export class AppController {
     constructor(private readonly authService: AuthService) {}

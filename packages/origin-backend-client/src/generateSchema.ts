@@ -32,6 +32,7 @@ export const generateSchema = async () => {
         .setTitle('Origin Backend API')
         .setDescription('Swagger documentation for the Origin Backend API')
         .setVersion('0.1')
+        .addBearerAuth({ type: 'http', scheme: 'bearer', bearerFormat: 'JWT' }, 'access-token')
         .build();
 
     const document = SwaggerModule.createDocument(app, options);

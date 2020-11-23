@@ -12,12 +12,13 @@ import {
 } from '@energyweb/origin-backend-utils';
 import { Body, Controller, Get, HttpStatus, Put, UseGuards, UseInterceptors } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 import { ConfigurationDTO } from './configuration.dto';
 import { ConfigurationService } from './configuration.service';
 
 @ApiTags('configuration')
+@ApiBearerAuth('access-token')
 @Controller('configuration')
 @UseInterceptors(NullOrUndefinedResultInterceptor)
 export class ConfigurationController {

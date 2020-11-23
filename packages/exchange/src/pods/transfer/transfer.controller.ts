@@ -21,7 +21,7 @@ import {
     ValidationPipe
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { ensureSingleProcessOnly } from '../../utils/ensureSingleProcessOnly';
 
 import { RequestWithdrawalDTO } from './create-withdrawal.dto';
@@ -30,6 +30,7 @@ import { Transfer } from './transfer.entity';
 import { TransferService } from './transfer.service';
 
 @ApiTags('transfer')
+@ApiBearerAuth('access-token')
 @Controller('transfer')
 @UseInterceptors(NullOrUndefinedResultInterceptor)
 @UsePipes(ValidationPipe)

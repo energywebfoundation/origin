@@ -22,7 +22,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { ILoggedInUser, Role } from '@energyweb/origin-backend-core';
 
-import { ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { IssueCertificateCommand } from './commands/issue-certificate.command';
 import { IssueCertificateDTO } from './commands/issue-certificate.dto';
 import { GetAllCertificatesQuery } from './queries/get-all-certificates.query';
@@ -40,6 +40,7 @@ import { CertificateDTO } from './certificate.dto';
 import { SuccessResponseDTO } from '../../utils/success-response.dto';
 
 @ApiTags('certificates')
+@ApiBearerAuth('access-token')
 @Controller('certificate')
 @UseInterceptors(ExceptionInterceptor)
 export class CertificateController {

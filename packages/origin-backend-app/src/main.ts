@@ -50,6 +50,7 @@ export async function startAPI(logger?: LoggerService) {
         .setTitle('Origin API')
         .setDescription('Swagger documentation for Origin API')
         .setVersion('1.0')
+        .addBearerAuth({ type: 'http', scheme: 'bearer', bearerFormat: 'JWT' }, 'access-token')
         .build();
 
     const document = SwaggerModule.createDocument(app, options);

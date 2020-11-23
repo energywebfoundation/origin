@@ -16,7 +16,7 @@ import {
     HttpStatus
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 import { OrderBookOrderDTO } from './order-book-order.dto';
 import { OrderBookService } from './order-book.service';
@@ -25,6 +25,7 @@ import { TradeService } from '../trade/trade.service';
 import { OrderBookDTO } from './order-book.dto';
 
 @ApiTags('orderbook')
+@ApiBearerAuth('access-token')
 @Controller('orderbook')
 @UseInterceptors(NullOrUndefinedResultInterceptor)
 @UsePipes(ValidationPipe)

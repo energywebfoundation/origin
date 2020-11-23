@@ -14,7 +14,14 @@ import {
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
-import { ApiBody, ApiConsumes, ApiNotFoundResponse, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+    ApiBearerAuth,
+    ApiBody,
+    ApiConsumes,
+    ApiNotFoundResponse,
+    ApiResponse,
+    ApiTags
+} from '@nestjs/swagger';
 import { Request, Response } from 'express';
 import multer from 'multer';
 
@@ -26,6 +33,7 @@ const maxFilesLimit = parseInt(process.env.FILE_MAX_FILES, 10) || 20;
 const maxFileSize = parseInt(process.env.FILE_MAX_FILE_SIZE, 10) || 10485760;
 
 @ApiTags('file')
+@ApiBearerAuth('access-token')
 @Controller('file')
 export class FileController {
     constructor(private readonly fileService: FileService) {}

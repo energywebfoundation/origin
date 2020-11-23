@@ -10,12 +10,13 @@ import {
     UsePipes,
     ValidationPipe
 } from '@nestjs/common';
-import { ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { AssetDTO } from './asset.dto';
 
 import { AssetService } from './asset.service';
 
 @ApiTags('asset')
+@ApiBearerAuth('access-token')
 @Controller('asset')
 @UseInterceptors(ClassSerializerInterceptor, NullOrUndefinedResultInterceptor)
 @UsePipes(ValidationPipe)

@@ -22,7 +22,7 @@ import {
     ValidationPipe
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 import { ForbiddenActionError } from '../../utils/exceptions';
 import { CreateDemandDTO } from './create-demand.dto';
@@ -31,6 +31,7 @@ import { DemandDTO } from './demand.dto';
 import { DemandService } from './demand.service';
 
 @ApiTags('demand')
+@ApiBearerAuth('access-token')
 @Controller('demand')
 @UseInterceptors(ClassSerializerInterceptor, NullOrUndefinedResultInterceptor)
 @UsePipes(ValidationPipe)

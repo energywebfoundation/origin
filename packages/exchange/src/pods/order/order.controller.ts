@@ -23,7 +23,7 @@ import {
     ValidationPipe
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { ForbiddenActionError } from '../../utils/exceptions';
 import { ensureSingleProcessOnly } from '../../utils/ensureSingleProcessOnly';
 
@@ -35,6 +35,7 @@ import { OrderService } from './order.service';
 import { OrderDTO } from './order.dto';
 
 @ApiTags('orders')
+@ApiBearerAuth('access-token')
 @Controller('orders')
 @UseInterceptors(ClassSerializerInterceptor, NullOrUndefinedResultInterceptor)
 @UsePipes(ValidationPipe)

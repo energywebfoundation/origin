@@ -36,7 +36,7 @@ import {
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 
-import { ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { StorageErrors } from '../../enums/StorageErrors';
 import { Device } from '../device/device.entity';
 import { User } from '../user';
@@ -50,6 +50,7 @@ import { OrganizationDocumentOwnershipMismatchError } from './organization-docum
 import { SuccessResponseDTO } from '../../utils/success-response.dto';
 
 @ApiTags('organization')
+@ApiBearerAuth('access-token')
 @Controller('/Organization')
 @UseInterceptors(NullOrUndefinedResultInterceptor)
 export class OrganizationController {

@@ -14,12 +14,13 @@ import {
     ValidationPipe
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 import { TradeDTO } from './trade.dto';
 import { TradeService } from './trade.service';
 
 @ApiTags('trade')
+@ApiBearerAuth('access-token')
 @Controller('trade')
 @UseInterceptors(NullOrUndefinedResultInterceptor)
 @UsePipes(ValidationPipe)

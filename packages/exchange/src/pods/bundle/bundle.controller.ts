@@ -21,7 +21,7 @@ import {
     HttpStatus
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 import { Bundle } from './bundle.entity';
 import { BundleService } from './bundle.service';
@@ -32,6 +32,7 @@ import { BundlePublicDTO } from './bundle-public.dto';
 import { BundleSplitDTO } from './bundle-split.dto';
 
 @ApiTags('bundle')
+@ApiBearerAuth('access-token')
 @Controller('bundle')
 @UseInterceptors(ClassSerializerInterceptor, NullOrUndefinedResultInterceptor)
 @UsePipes(ValidationPipe)

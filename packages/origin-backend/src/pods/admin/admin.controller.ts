@@ -17,12 +17,13 @@ import {
     UseInterceptors
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { UserDTO } from '../user/user.dto';
 
 import { UserService } from '../user/user.service';
 
 @ApiTags('admin')
+@ApiBearerAuth('access-token')
 @Controller('admin')
 @UseInterceptors(NullOrUndefinedResultInterceptor)
 export class AdminController {
