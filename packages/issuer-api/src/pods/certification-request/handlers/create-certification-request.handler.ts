@@ -97,7 +97,9 @@ export class CreateCertificationRequestHandler
                 status: CertificationRequestStatus.Executed
             });
         } catch (e) {
-            this.logger.error(`Certification request ${requestId} deployment has end if error`);
+            this.logger.error(
+                `Certification request ${requestId} deployment has failed with the error: ${e.message}`
+            );
 
             await this.repository.update(request.id, {
                 status: CertificationRequestStatus.Error
