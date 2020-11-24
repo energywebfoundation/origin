@@ -17,6 +17,7 @@ import { TransferService } from '../src/pods/transfer/transfer.service';
 import { authenticatedUser, bootstrapTestInstance } from './exchange';
 import { depositToken, issueToken, provider, MWh } from './utils';
 import { TransferStatus } from '../src/pods/transfer/transfer-status';
+import { DB_TABLE_PREFIX } from '../src/utils/tablePrefix';
 
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -84,7 +85,7 @@ describe('Deposits using deployed registry', () => {
     });
 
     beforeEach(async () => {
-        await databaseService.truncate('exchange_order', 'exchange_transfer');
+        await databaseService.truncate(`${DB_TABLE_PREFIX}_order`, `${DB_TABLE_PREFIX}_transfer`);
         ({ address: depositAddress } = await accountService.getOrCreateAccount(user1Id));
     });
 

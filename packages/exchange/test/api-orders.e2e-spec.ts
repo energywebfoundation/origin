@@ -15,6 +15,7 @@ import { Transfer } from '../src/pods/transfer/transfer.entity';
 import { TransferService } from '../src/pods/transfer/transfer.service';
 import { authenticatedUser, bootstrapTestInstance } from './exchange';
 import { issueToken, MWh } from './utils';
+import { DB_TABLE_PREFIX } from '../src/utils/tablePrefix';
 
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -71,7 +72,7 @@ describe('account ask order send', () => {
     const amount = `${1000 * MWh}`;
 
     beforeEach(async () => {
-        await databaseService.truncate('exchange_order', 'exchange_transfer');
+        await databaseService.truncate(`${DB_TABLE_PREFIX}_order`, `${DB_TABLE_PREFIX}_transfer`);
 
         ({ address: user1Address } = await accountService.getOrCreateAccount(user1Id));
         deposit = await createDeposit(user1Address);

@@ -10,6 +10,7 @@ import { OrderService } from '../src/pods/order/order.service';
 import { TradeDTO } from '../src/pods/trade/trade.dto';
 import { TransferService } from '../src/pods/transfer/transfer.service';
 import { authenticatedUser, bootstrapTestInstance } from './exchange';
+import { DB_TABLE_PREFIX } from '../src/utils/tablePrefix';
 
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -92,7 +93,11 @@ describe('Trades API', () => {
     });
 
     beforeEach(async () => {
-        await databaseService.truncate('exchange_order', 'exchange_trade', 'exchange_transfer');
+        await databaseService.truncate(
+            `${DB_TABLE_PREFIX}_order`,
+            `${DB_TABLE_PREFIX}_trade`,
+            `${DB_TABLE_PREFIX}_transfer`
+        );
     });
 
     after(async () => {

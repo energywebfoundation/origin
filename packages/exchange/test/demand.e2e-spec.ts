@@ -19,6 +19,7 @@ import { TransferService } from '../src/pods/transfer/transfer.service';
 import { authenticatedUser, bootstrapTestInstance } from './exchange';
 import { MWh } from './utils';
 import { DemandSummaryDTO } from '../src/pods/demand/demand-summary.dto';
+import { DB_TABLE_PREFIX } from '../src/utils/tablePrefix';
 
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -74,9 +75,11 @@ describe('Demand orders trading', () => {
     });
 
     beforeEach(async () => {
-        await databaseService.truncate('order');
-        await databaseService.truncate('transfer');
-        await databaseService.truncate('demand');
+        await databaseService.truncate(
+            `${DB_TABLE_PREFIX}_order`,
+            `${DB_TABLE_PREFIX}_transfer`,
+            `${DB_TABLE_PREFIX}_demand`
+        );
     });
 
     const demandOwner = authenticatedUser.organization.id;
