@@ -1,5 +1,7 @@
+import { ApiProperty } from '@nestjs/swagger';
 import BN from 'bn.js';
 import { Expose, Transform } from 'class-transformer';
+import { IsArray } from 'class-validator';
 import { CreateBidDTO } from '../order/create-bid.dto';
 
 export class DemandSummaryDTO {
@@ -7,9 +9,12 @@ export class DemandSummaryDTO {
         this.bids = bids;
     }
 
+    @ApiProperty({ type: [CreateBidDTO] })
+    @IsArray()
     @Expose()
     bids: CreateBidDTO[];
 
+    @ApiProperty({ type: String })
     @Transform((v: BN) => v.toString(10))
     @Expose()
     get volume(): BN {

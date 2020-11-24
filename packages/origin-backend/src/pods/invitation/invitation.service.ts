@@ -1,7 +1,9 @@
 import {
     ILoggedInUser,
+    ISuccessResponse,
     OrganizationInvitationStatus,
-    OrganizationRole
+    OrganizationRole,
+    ResponseSuccess
 } from '@energyweb/origin-backend-core';
 import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { EventBus } from '@nestjs/cqrs';
@@ -56,7 +58,7 @@ export class InvitationService {
         user: ILoggedInUser,
         invitationId: string,
         status: OrganizationInvitationStatus
-    ): Promise<void> {
+    ): Promise<ISuccessResponse> {
         this.logger.debug(`User with userId=${user.id} requested invitationId=${invitationId}`);
 
         const lowerCaseEmail = user.email.toLowerCase();
@@ -89,6 +91,8 @@ export class InvitationService {
         invitation.status = status;
 
         await this.invitationRepository.save(invitation);
+
+        return ResponseSuccess();
     }
 
     public async getUsersInvitation(email: string): Promise<Invitation[]> {

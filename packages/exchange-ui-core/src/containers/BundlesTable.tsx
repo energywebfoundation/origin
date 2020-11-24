@@ -21,7 +21,7 @@ import {
     getUserOffchain,
     TableMaterial
 } from '@energyweb/origin-ui-core';
-import { Bundle, IExchangeClient } from '../utils/exchange';
+import { Bundle, ExchangeClient } from '../utils/exchange';
 import { getExchangeClient } from '../features/general';
 import {
     getBundles,
@@ -48,7 +48,7 @@ const ENERGY_COLUMNS_TO_DISPLAY = [EnergyTypes.SOLAR, EnergyTypes.WIND, EnergyTy
 
 export const BundlesTable = (props: IOwnProps) => {
     const dispatch = useDispatch();
-    const exchangeClient: IExchangeClient = useSelector(getExchangeClient);
+    const exchangeClient: ExchangeClient = useSelector(getExchangeClient);
 
     useEffect(() => {
         if (exchangeClient) {
@@ -122,7 +122,9 @@ export const BundlesTable = (props: IOwnProps) => {
     const viewDetails = async (rowIndex: number) => {
         const { bundleId } = rows[rowIndex];
         const bundle = bundles.find((b) => b.id === bundleId);
-        const { splits } = await exchangeClient.getBundleSplits(bundle);
+        const {
+            data: { splits }
+        } = await exchangeClient.bundleClient.availableBundleSplits(bundle.id);
         bundle.splits = splits.map((s) => ({
             volume: BigNumber.from(s.volume),
             items: s.items.map(({ id, volume }) => ({ id, volume: BigNumber.from(volume) }))

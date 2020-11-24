@@ -1,3 +1,4 @@
+/* eslint-disable max-classes-per-file */
 import { Expose, Transform } from 'class-transformer';
 import {
     IsString,
@@ -9,6 +10,16 @@ import {
     IsLatitude,
     IsLongitude
 } from 'class-validator';
+
+export class CodeName {
+    @IsString()
+    @IsNotEmpty()
+    code: string;
+
+    @IsString()
+    @IsNotEmpty()
+    name: string;
+}
 
 export class Device {
     @IsString()

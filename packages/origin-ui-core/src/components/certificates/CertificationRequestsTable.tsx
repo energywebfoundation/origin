@@ -21,7 +21,7 @@ import {
     NotificationType
 } from '../../utils';
 import { Skeleton } from '@material-ui/lab';
-import { getOffChainDataSource, getEnvironment } from '../../features/general/selectors';
+import { getBackendClient, getEnvironment } from '../../features/general/selectors';
 import {
     getCertificationRequestsClient,
     ICertificationRequest,
@@ -43,7 +43,7 @@ export function CertificationRequestsTable(props: IProps) {
     const configuration = useSelector(getConfiguration);
     const user = useSelector(getUserOffchain);
     const producingDevices = useSelector(getProducingDevices);
-    const offChainDataSource = useSelector(getOffChainDataSource);
+    const backendClient = useSelector(getBackendClient);
     const environment = useSelector(getEnvironment);
 
     const certificationRequestsClient = useSelector(getCertificationRequestsClient);
@@ -56,7 +56,7 @@ export function CertificationRequestsTable(props: IProps) {
         requestedPageSize,
         offset
     }: IPaginatedLoaderHooksFetchDataParameters) {
-        if (!user || !offChainDataSource || producingDevices.length === 0) {
+        if (!user || !backendClient || producingDevices.length === 0) {
             return {
                 paginatedData: [],
                 total: 0
@@ -171,7 +171,7 @@ export function CertificationRequestsTable(props: IProps) {
                 <div key={f}>
                     <a
                         style={{ cursor: 'pointer', textDecoration: 'underline' }}
-                        onClick={() => downloadFile(offChainDataSource?.filesClient, f)}
+                        onClick={() => downloadFile(backendClient?.fileClient, f)}
                     >
                         {f}
                     </a>

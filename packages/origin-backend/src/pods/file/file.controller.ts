@@ -3,6 +3,7 @@ import { UserDecorator } from '@energyweb/origin-backend-utils';
 import {
     Controller,
     Get,
+    HttpStatus,
     NotFoundException,
     Param,
     Post,
@@ -13,19 +14,33 @@ import {
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
+import {
+    ApiBearerAuth,
+    ApiBody,
+    ApiConsumes,
+    ApiNotFoundResponse,
+    ApiResponse,
+    ApiTags
+} from '@nestjs/swagger';
 import { Request, Response } from 'express';
 import multer from 'multer';
 
+import { FileDto } from './file.dto';
+import { FileUploadDto } from './file-upload.dto';
 import { FileService } from './file.service';
 
 const maxFilesLimit = parseInt(process.env.FILE_MAX_FILES, 10) || 20;
 const maxFileSize = parseInt(process.env.FILE_MAX_FILE_SIZE, 10) || 10485760;
 
+@ApiTags('file')
+@ApiBearerAuth('access-token')
 @Controller('file')
 export class FileController {
     constructor(private readonly fileService: FileService) {}
 
     @Post()
+    @ApiConsumes('multipart/form-data')
+    @ApiBody({ type: FileUploadDto })
     @UseInterceptors(
         FileFieldsInterceptor([{ name: 'files', maxCount: maxFilesLimit }], {
             storage: multer.memoryStorage(),
@@ -43,6 +58,7 @@ export class FileController {
         })
     )
     @UseGuards(AuthGuard())
+    @ApiResponse({ status: HttpStatus.CREATED, type: [String], description: 'Upload a file' })
     async upload(
         @UserDecorator() user: ILoggedInUser,
         @UploadedFiles()
@@ -55,6 +71,12 @@ export class FileController {
 
     @Get(':id')
     @UseGuards(AuthGuard())
+    @ApiResponse({
+        status: HttpStatus.OK,
+        type: FileDto,
+        description: 'Download a file'
+    })
+    @ApiNotFoundResponse({ description: `The file doesn't exist` })
     async download(
         @UserDecorator() user: ILoggedInUser,
         @Param('id') id: string,
@@ -68,6 +90,8 @@ export class FileController {
         res.set({
             'Content-Type': file.contentType,
             'Content-Length': file.data.length
-        }).send(file.data);
+        }).json({
+            data: file.data
+        });
     }
 }

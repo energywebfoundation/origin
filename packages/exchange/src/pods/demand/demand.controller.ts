@@ -11,6 +11,7 @@ import {
     ForbiddenException,
     Get,
     HttpCode,
+    HttpStatus,
     Logger,
     Param,
     ParseUUIDPipe,
@@ -21,13 +22,16 @@ import {
     ValidationPipe
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
+import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 import { ForbiddenActionError } from '../../utils/exceptions';
 import { CreateDemandDTO } from './create-demand.dto';
 import { DemandSummaryDTO } from './demand-summary.dto';
-import { Demand } from './demand.entity';
+import { DemandDTO } from './demand.dto';
 import { DemandService } from './demand.service';
 
+@ApiTags('demand')
+@ApiBearerAuth('access-token')
 @Controller('demand')
 @UseInterceptors(ClassSerializerInterceptor, NullOrUndefinedResultInterceptor)
 @UsePipes(ValidationPipe)
@@ -38,10 +42,11 @@ export class DemandController {
 
     @Get('/:id')
     @UseGuards(AuthGuard(), ActiveUserGuard)
+    @ApiResponse({ status: HttpStatus.OK, type: DemandDTO, description: 'Get a demand' })
     public async findOne(
         @UserDecorator() { id: userId, ownerId }: ILoggedInUser,
         @Param('id', new ParseUUIDPipe({ version: '4' })) id: string
-    ): Promise<Demand> {
+    ): Promise<DemandDTO> {
         this.logger.debug(`Requested demand ${id} from userId=${userId} with ownerId=${ownerId}`);
         const demand = await this.demandService.findOne(ownerId, id);
         return demand;
@@ -49,9 +54,10 @@ export class DemandController {
 
     @Get()
     @UseGuards(AuthGuard(), ActiveUserGuard)
+    @ApiResponse({ status: HttpStatus.OK, type: [DemandDTO], description: 'Get all demands' })
     public async getAll(
         @UserDecorator() { id: userId, ownerId }: ILoggedInUser
-    ): Promise<Demand[]> {
+    ): Promise<DemandDTO[]> {
         this.logger.debug(`Requested all demands from userId=${userId} with ownerId=${ownerId}`);
 
         return this.demandService.getAll(ownerId);
@@ -59,21 +65,26 @@ export class DemandController {
 
     @Post()
     @UseGuards(AuthGuard(), ActiveUserGuard)
+    @ApiResponse({ status: HttpStatus.CREATED, type: DemandDTO, description: 'Create a demand' })
     public async create(
         @UserDecorator() { id: userId, ownerId }: ILoggedInUser,
         @Body() createDemand: CreateDemandDTO
-    ): Promise<Demand> {
+    ): Promise<DemandDTO> {
         this.logger.debug(
             `Requested demand creation from userId=${userId} with ownerId=${ownerId}`
         );
 
-        const demand = await this.demandService.create(ownerId, createDemand);
-        return demand;
+        return this.demandService.create(ownerId, createDemand);
     }
 
     @Post('/summary')
-    @HttpCode(200)
+    @HttpCode(HttpStatus.OK)
     @UseGuards(AuthGuard(), ActiveUserGuard)
+    @ApiResponse({
+        status: HttpStatus.OK,
+        type: DemandSummaryDTO,
+        description: 'Get a demand summary'
+    })
     public summary(
         @UserDecorator() { id: userId, ownerId }: ILoggedInUser,
         @Body() createDemand: CreateDemandDTO
@@ -85,11 +96,12 @@ export class DemandController {
 
     @Post('/:id/pause')
     @UseGuards(AuthGuard(), ActiveUserGuard)
-    @HttpCode(202)
+    @HttpCode(HttpStatus.ACCEPTED)
+    @ApiResponse({ status: HttpStatus.ACCEPTED, type: DemandDTO, description: 'Pause a Demand' })
     public async pause(
         @UserDecorator() { id: userId, ownerId }: ILoggedInUser,
         @Param('id', new ParseUUIDPipe({ version: '4' })) id: string
-    ): Promise<Demand> {
+    ): Promise<DemandDTO> {
         this.logger.debug(`Requested demand pause from userId=${userId} with ownerId=${ownerId}`);
 
         const demand = await this.demandService.pause(ownerId, id);
@@ -98,11 +110,12 @@ export class DemandController {
 
     @Post('/:id/resume')
     @UseGuards(AuthGuard(), ActiveUserGuard)
-    @HttpCode(202)
+    @HttpCode(HttpStatus.ACCEPTED)
+    @ApiResponse({ status: HttpStatus.ACCEPTED, type: DemandDTO, description: 'Resume a Demand' })
     public async resume(
         @UserDecorator() { id: userId, ownerId }: ILoggedInUser,
         @Param('id', new ParseUUIDPipe({ version: '4' })) id: string
-    ): Promise<Demand> {
+    ): Promise<DemandDTO> {
         this.logger.debug(`Requested demand resume from userId=${userId} with ownerId=${ownerId}`);
 
         try {
@@ -118,11 +131,12 @@ export class DemandController {
 
     @Post('/:id/archive')
     @UseGuards(AuthGuard(), ActiveUserGuard)
-    @HttpCode(202)
+    @HttpCode(HttpStatus.ACCEPTED)
+    @ApiResponse({ status: HttpStatus.ACCEPTED, type: DemandDTO, description: 'Archive a Demand' })
     public async archive(
         @UserDecorator() { id: userId, ownerId }: ILoggedInUser,
         @Param('id', new ParseUUIDPipe({ version: '4' })) id: string
-    ): Promise<Demand> {
+    ): Promise<DemandDTO> {
         this.logger.debug(
             `Requested demand archival from userId=${userId} with ownerId=${ownerId}`
         );
@@ -133,12 +147,13 @@ export class DemandController {
 
     @Post('/:id/replace')
     @UseGuards(AuthGuard(), ActiveUserGuard)
-    @HttpCode(201)
+    @HttpCode(HttpStatus.CREATED)
+    @ApiResponse({ status: HttpStatus.CREATED, type: DemandDTO, description: 'Replace a Demand' })
     public async replace(
         @UserDecorator() { id: userId, ownerId }: ILoggedInUser,
         @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
         @Body() createDemand: CreateDemandDTO
-    ): Promise<Demand> {
+    ): Promise<DemandDTO> {
         this.logger.debug(
             `Requested demand archival from userId=${userId} with ownerId=${ownerId}`
         );

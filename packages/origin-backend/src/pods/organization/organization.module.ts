@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { CqrsModule } from '@nestjs/cqrs';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { FileModule } from '../file/file.module';
@@ -9,7 +9,12 @@ import { Organization } from './organization.entity';
 import { OrganizationService } from './organization.service';
 
 @Module({
-    imports: [TypeOrmModule.forFeature([Organization]), UserModule, FileModule, CqrsModule],
+    imports: [
+        TypeOrmModule.forFeature([Organization]),
+        forwardRef(() => UserModule),
+        FileModule,
+        CqrsModule
+    ],
     providers: [OrganizationService],
     controllers: [OrganizationController],
     exports: [OrganizationService]

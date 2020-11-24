@@ -8,6 +8,7 @@ import { IRECAPIClient } from '../src/IRECAPIClient';
 import { ApproveIssue, Issue } from '../src/Issue';
 import { Product } from '../src/Product';
 import { Redemption, ReservationItem } from '../src/Transfer';
+import { Fuel, FuelType } from '../src/Fuel';
 
 dotenv.config();
 
@@ -139,5 +140,25 @@ describe('IRECAPIClient tests', () => {
         const url = await client.file.download(fileId);
 
         expect(url).to.exist;
+    });
+
+    it('should return all fuels', async () => {
+        const fuels: Fuel[] = await client.fuel.getAll();
+
+        expect(fuels).to.be.an('array');
+        fuels.forEach((fuel) => {
+            expect(fuel.code).to.be.a('string');
+            expect(fuel.name).to.be.a('string');
+        });
+    });
+
+    it('should return all fuel types???', async () => {
+        const types: FuelType[] = await client.fuel.getAllTypes();
+
+        expect(types).to.be.an('array');
+        types.forEach((type) => {
+            expect(type.code).to.be.a('string');
+            expect(type.name).to.be.a('string');
+        });
     });
 });

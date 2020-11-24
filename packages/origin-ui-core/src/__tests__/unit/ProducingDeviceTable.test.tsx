@@ -1,33 +1,25 @@
 import React from 'react';
 import { mount } from 'enzyme';
 import { ProducingDeviceTable } from '../../components/devices/ProducingDeviceTable';
-import { dataTestSelector } from '../../utils';
+import { BackendClient, dataTestSelector } from '../../utils';
 import {
     setupStore,
     WrapperComponent,
     createRenderedHelpers,
     TEST_DEVICE_TYPES
 } from '../utils/helpers';
-import {
-    DeviceStatus,
-    IOffChainDataSource,
-    IPublicOrganization
-} from '@energyweb/origin-backend-core';
+import { DeviceStatus, IPublicOrganization } from '@energyweb/origin-backend-core';
 import { configurationUpdated } from '../../features';
-import { Configuration, DeviceTypeService } from '@energyweb/utils-general';
-import { OffChainDataSourceMock } from '@energyweb/origin-backend-client-mocks';
+import { DeviceTypeService } from '@energyweb/utils-general';
+import { Configuration } from '@energyweb/device-registry';
 import { BigNumber } from 'ethers';
 
 describe('ProducingDeviceTable', () => {
     it('correctly renders and search works', async () => {
-        const offChainDataSource: IOffChainDataSource = new OffChainDataSourceMock();
-
-        await offChainDataSource.configurationClient.update({
-            deviceTypes: TEST_DEVICE_TYPES
-        });
-
         const { store, history, addProducingDevice } = setupStore(undefined, {
-            offChainDataSource,
+            backendClient: new BackendClient(
+                `${process.env.BACKEND_URL}:${process.env.BACKEND_PORT}`
+            ),
             mockUserFetcher: false,
             logActions: false
         });

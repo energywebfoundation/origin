@@ -49,7 +49,7 @@ export const RepeatedPurchase = (props) => {
         const { demandPeriod, demandVolume, demandDateStart, demandDateEnd } = values;
 
         const setVolume = async () => {
-            const totalVolume = await calculateTotalVolume(exchangeClient, {
+            const totalVolume = await calculateTotalVolume(exchangeClient.demandClient, {
                 volume: demandVolume,
                 period: demandPeriod,
                 start: demandDateStart,

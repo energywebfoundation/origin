@@ -69,7 +69,9 @@ export function CertificateDetailView(props: IProps) {
         const { data: allCertificateEvents } = await certificatesClient.getAllEvents(
             selectedCertificate.id
         );
-        const { address: exchangeDepositAddress } = await exchangeClient.getAccount();
+        const {
+            data: { address: exchangeDepositAddress }
+        } = await exchangeClient.accountClient.getAccount();
 
         const transformAddress = (address: string) => {
             switch (utils.getAddress(address)) {

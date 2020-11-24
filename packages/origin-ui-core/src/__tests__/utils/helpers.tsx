@@ -14,16 +14,16 @@ import React from 'react';
 import MomentUtils from '@date-io/moment';
 import { Provider } from 'react-redux';
 import { createLogger } from 'redux-logger';
-import { setOffChainDataSource } from '../../features/general/actions';
+import { setBackendClient } from '../../features/general/actions';
 import {
     IDevice,
     DeviceStatus,
     ISmartMeterReadStats,
-    IOffChainDataSource,
     IPublicOrganization
 } from '@energyweb/origin-backend-core';
 import { BigNumber } from 'ethers';
 import { IProducingDeviceState } from '../../features/producingDevices/reducer';
+import { BackendClient } from '../../utils/clients/BackendClient';
 
 export const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -190,7 +190,7 @@ export async function waitForConditionAndAssert(
 const setupStoreInternal = (
     initialHistoryEntries: string[],
     logActions = false,
-    offChainDataSource: IOffChainDataSource,
+    backendClient: BackendClient,
     runSagas = true
 ) => {
     const history = createMemoryHistory({
@@ -216,8 +216,8 @@ const setupStoreInternal = (
 
     const store = createStore(createRootReducer(history), middleware);
 
-    if (offChainDataSource) {
-        store.dispatch(setOffChainDataSource(offChainDataSource));
+    if (backendClient) {
+        store.dispatch(setBackendClient(backendClient));
     }
 
     const sagasTasks: Task[] = runSagas
@@ -313,7 +313,7 @@ export const createProducingDevice = (
 interface ISetupStoreOptions {
     mockUserFetcher: boolean;
     logActions: boolean;
-    offChainDataSource?: IOffChainDataSource;
+    backendClient?: BackendClient;
     runSagas?: boolean;
 }
 
@@ -330,7 +330,7 @@ export const setupStore = (
     const { store, history, sagasTasks } = setupStoreInternal(
         initialHistoryEntries,
         options.logActions,
-        options.offChainDataSource,
+        options.backendClient,
         options.runSagas
     );
 

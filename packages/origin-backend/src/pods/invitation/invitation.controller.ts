@@ -2,8 +2,10 @@ import {
     ensureOrganizationRole,
     ILoggedInUser,
     IOrganizationInvitation,
-    ISuccessResponse,
+    OrganizationInvitationStatus,
     OrganizationRole,
+    ResponseFailure,
+    ResponseSuccess,
     Role
 } from '@energyweb/origin-backend-core';
 import {
@@ -19,6 +21,7 @@ import {
     Controller,
     ForbiddenException,
     Get,
+    HttpStatus,
     Logger,
     Param,
     Post,
@@ -29,10 +32,14 @@ import {
 import { AuthGuard } from '@nestjs/passport';
 import { isEmail } from 'class-validator';
 
+import { ApiBearerAuth, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { InvitationService } from './invitation.service';
-import { Invitation } from './invitation.entity';
 import { AlreadyPartOfOrganizationError } from './errors/already-part-of-organization.error';
+import { SuccessResponseDTO } from '../../utils/success-response.dto';
+import { InvitationDTO } from './invitation.dto';
 
+@ApiTags('invitation')
+@ApiBearerAuth('access-token')
 @Controller('/invitation')
 @UseInterceptors(NullOrUndefinedResultInterceptor)
 export class InvitationController {
@@ -42,7 +49,12 @@ export class InvitationController {
 
     @Get()
     @UseGuards(AuthGuard())
-    async getInvitations(@UserDecorator() loggedUser: ILoggedInUser): Promise<Invitation[]> {
+    @ApiResponse({
+        status: HttpStatus.OK,
+        type: [InvitationDTO],
+        description: 'Gets all invitations for a user'
+    })
+    async getInvitations(@UserDecorator() loggedUser: ILoggedInUser): Promise<InvitationDTO[]> {
         const invitations = await this.organizationInvitationService.getUsersInvitation(
             loggedUser.email
         );
@@ -50,47 +62,55 @@ export class InvitationController {
         return invitations;
     }
 
-    @Put(':id')
+    @Put(':id/:status')
     @UseGuards(AuthGuard())
+    @ApiParam({
+        name: 'status',
+        enum: OrganizationInvitationStatus,
+        enumName: 'OrganizationInvitationStatus'
+    })
+    @ApiResponse({
+        status: HttpStatus.OK,
+        type: SuccessResponseDTO,
+        description: 'Updates an invitation'
+    })
     async updateInvitation(
-        @Body('status') status: IOrganizationInvitation['status'],
         @Param('id') invitationId: string,
+        @Param('status') status: IOrganizationInvitation['status'],
         @UserDecorator() loggedUser: ILoggedInUser
-    ): Promise<ISuccessResponse> {
-        await this.organizationInvitationService.update(loggedUser, invitationId, status);
-
-        return {
-            success: true,
-            message: null
-        };
+    ): Promise<SuccessResponseDTO> {
+        return this.organizationInvitationService.update(loggedUser, invitationId, status);
     }
 
     @Post()
     @UseGuards(AuthGuard(), ActiveUserGuard, RolesGuard)
     @Roles(Role.OrganizationAdmin, Role.Admin)
+    @ApiResponse({
+        status: HttpStatus.CREATED,
+        type: SuccessResponseDTO,
+        description: 'Invites a user'
+    })
     async invite(
         @Body('email') email: string,
         @Body('role') role: OrganizationRole,
         @UserDecorator() loggedUser: ILoggedInUser
-    ): Promise<ISuccessResponse> {
+    ): Promise<SuccessResponseDTO> {
         if (!isEmail(email)) {
-            throw new BadRequestException({
-                success: false,
-                error: 'Provided email address is incorrect'
-            });
+            throw new BadRequestException(ResponseFailure('Provided email address is incorrect'));
         }
 
         if (!loggedUser.hasOrganization) {
-            throw new BadRequestException({
-                success: false,
-                message: `User doesn't belong to any organization.`
-            });
+            throw new BadRequestException(
+                ResponseFailure(`User doesn't belong to any organization.`)
+            );
         }
 
         try {
             ensureOrganizationRole(role);
         } catch (e) {
-            throw new ForbiddenException({ message: 'Unknown role was requested for the invitee' });
+            throw new ForbiddenException(
+                ResponseFailure('Unknown role was requested for the invitee')
+            );
         }
 
         try {
@@ -103,9 +123,6 @@ export class InvitationController {
             }
         }
 
-        return {
-            success: true,
-            message: null
-        };
+        return ResponseSuccess();
     }
 }
