@@ -9,7 +9,7 @@ import {
     UserRegistrationData,
     EmailConfirmationResponse
 } from '@energyweb/origin-backend-core';
-import { INestApplication } from '@nestjs/common';
+import { HttpStatus, INestApplication } from '@nestjs/common';
 import { expect } from 'chai';
 import request from 'supertest';
 
@@ -97,7 +97,10 @@ describe('User e2e tests', () => {
     });
 
     it('should not be able to register user with the same email', async () => {
-        await request(app.getHttpServer()).post(`/user/register`).send(userToRegister).expect(201);
+        await request(app.getHttpServer())
+            .post(`/user/register`)
+            .send(userToRegister)
+            .expect(HttpStatus.CREATED);
 
         const otherUserWithSameEmail: UserRegistrationData = {
             ...userToRegister,
@@ -108,14 +111,14 @@ describe('User e2e tests', () => {
         await request(app.getHttpServer())
             .post(`/user/register`)
             .send(otherUserWithSameEmail)
-            .expect(409);
+            .expect(HttpStatus.CONFLICT);
     });
 
     it('should not be able to register user with missing input data', async () => {
         await request(app.getHttpServer())
             .post(`/user/register`)
             .send(omit(userToRegister, 'password'))
-            .expect(400);
+            .expect(HttpStatus.BAD_REQUEST);
     });
 
     it('user should be able to get his user data', async () => {
@@ -129,7 +132,7 @@ describe('User e2e tests', () => {
         await request(app.getHttpServer())
             .get(`/user/${user.id}`)
             .set('Authorization', `Bearer ${accessToken}`)
-            .expect(200);
+            .expect(HttpStatus.OK);
     });
 
     it('user should not be able to get user data of another user', async () => {
@@ -150,7 +153,7 @@ describe('User e2e tests', () => {
         await request(app.getHttpServer())
             .get(`/user/${user.id}`)
             .set('Authorization', `Bearer ${accessToken2}`)
-            .expect(401);
+            .expect(HttpStatus.UNAUTHORIZED);
     });
 
     it('admin/support agent should be able to get user data of another user', async () => {
@@ -170,7 +173,7 @@ describe('User e2e tests', () => {
         await request(app.getHttpServer())
             .get(`/user/${user.id}`)
             .set('Authorization', `Bearer ${accessToken}`)
-            .expect(200);
+            .expect(HttpStatus.OK);
     });
 
     it('org admin should be able to get user data of another user', async () => {
@@ -186,7 +189,7 @@ describe('User e2e tests', () => {
         await request(app.getHttpServer())
             .get(`/user/${user.id}`)
             .set('Authorization', `Bearer ${accessToken}`)
-            .expect(200);
+            .expect(HttpStatus.OK);
     });
 
     it('org admin should not be able to get user data from another organization', async () => {
@@ -206,7 +209,7 @@ describe('User e2e tests', () => {
         await request(app.getHttpServer())
             .get(`/user/${user.id}`)
             .set('Authorization', `Bearer ${accessToken}`)
-            .expect(401);
+            .expect(HttpStatus.UNAUTHORIZED);
     });
 
     it('new user should have confirmation token set', async () => {
@@ -267,7 +270,7 @@ describe('User e2e tests', () => {
         await request(app.getHttpServer())
             .put(`/user/re-send-confirm-email`)
             .set('Authorization', `Bearer ${accessToken}`)
-            .expect(200);
+            .expect(HttpStatus.OK);
     });
 
     it('user should not be able to re-confirm confirmed email', async () => {

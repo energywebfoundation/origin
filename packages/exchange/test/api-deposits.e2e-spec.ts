@@ -1,4 +1,4 @@
-import { INestApplication } from '@nestjs/common';
+import { HttpStatus, INestApplication } from '@nestjs/common';
 import { expect } from 'chai';
 import request from 'supertest';
 
@@ -62,7 +62,7 @@ describe('account deposit confirmation', () => {
 
         await request(app.getHttpServer())
             .get('/account')
-            .expect(200)
+            .expect(HttpStatus.OK)
             .expect((res) => {
                 const account = res.body as AccountDTO;
 
@@ -80,7 +80,7 @@ describe('account deposit confirmation', () => {
 
         await request(app.getHttpServer())
             .get('/account')
-            .expect(200)
+            .expect(HttpStatus.OK)
             .expect((res) => {
                 const account = res.body as AccountDTO;
 

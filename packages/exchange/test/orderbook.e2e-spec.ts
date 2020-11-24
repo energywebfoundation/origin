@@ -1,14 +1,13 @@
 import { Filter } from '@energyweb/exchange-core';
 
 import { IExternalDeviceId } from '@energyweb/origin-backend-core';
-import { INestApplication } from '@nestjs/common';
+import { HttpStatus, INestApplication } from '@nestjs/common';
 import { expect } from 'chai';
 import moment from 'moment';
 import request from 'supertest';
 
 import { DatabaseService } from '@energyweb/origin-backend-utils';
 import { AccountService } from '../src/pods/account/account.service';
-import { CreateAssetDTO } from '../src/pods/asset/asset.entity';
 import { OrderBookOrderDTO } from '../src/pods/order-book/order-book-order.dto';
 import { CreateAskDTO } from '../src/pods/order/create-ask.dto';
 import { CreateBidDTO } from '../src/pods/order/create-bid.dto';
@@ -17,6 +16,7 @@ import { TradePriceInfoDTO } from '../src/pods/trade/trade-price-info.dto';
 import { TransferService } from '../src/pods/transfer/transfer.service';
 import { authenticatedUser, bootstrapTestInstance } from './exchange';
 import { IExternalDeviceService, IProductInfo } from '../src/interfaces';
+import { CreateAssetDTO } from '../src/pods/asset/create-asset.dto';
 import { ProductFilterDTO } from '../src/pods/order-book/product-filter.dto';
 
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
@@ -296,7 +296,7 @@ describe('orderbook tests', () => {
                 .post('/orderbook/search')
                 .send(params)
                 .expect('Content-Type', /application\/json/)
-                .expect(400);
+                .expect(HttpStatus.BAD_REQUEST);
         });
     });
 
@@ -306,7 +306,7 @@ describe('orderbook tests', () => {
         }: { body: OrderBook } = await request(app.getHttpServer())
             .post('/orderbook/search')
             .expect('Content-Type', /application\/json/)
-            .expect(200);
+            .expect(HttpStatus.OK);
 
         expect(asks).to.have.length(2);
         expect(bids).to.have.length(2);
@@ -319,7 +319,7 @@ describe('orderbook tests', () => {
             .post('/orderbook/search')
             .send(defaultAllFilter)
             .expect('Content-Type', /application\/json/)
-            .expect(200);
+            .expect(HttpStatus.OK);
 
         expect(asks).to.have.length(2);
         expect(bids).to.have.length(2);
@@ -338,7 +338,7 @@ describe('orderbook tests', () => {
                 deviceType: ['Solar']
             })
             .expect('Content-Type', /application\/json/)
-            .expect(200);
+            .expect(HttpStatus.OK);
 
         expect(asks).to.have.length(2);
         expect(bids).to.have.length(1);
@@ -355,7 +355,7 @@ describe('orderbook tests', () => {
                 deviceType: ['Wind']
             })
             .expect('Content-Type', /application\/json/)
-            .expect(200);
+            .expect(HttpStatus.OK);
 
         expect(asks).to.have.length(0);
         expect(bids).to.have.length(1);
@@ -375,7 +375,7 @@ describe('orderbook tests', () => {
                 generationTo: moment().startOf('month').add(1, 'month').toISOString()
             })
             .expect('Content-Type', /application\/json/)
-            .expect(200);
+            .expect(HttpStatus.OK);
 
         expect(asks).to.have.length(0);
         expect(bids).to.have.length(1);
@@ -398,7 +398,7 @@ describe('orderbook tests', () => {
                     .toISOString()
             })
             .expect('Content-Type', /application\/json/)
-            .expect(200);
+            .expect(HttpStatus.OK);
 
         expect(asks).to.have.length(0);
         expect(bids).to.have.length(0);

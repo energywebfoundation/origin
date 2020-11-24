@@ -7,7 +7,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import * as Yup from 'yup';
 import { setLoading } from '../../features/general/actions';
-import { getOffChainDataSource } from '../../features/general/selectors';
+import { getBackendClient } from '../../features/general/selectors';
 import { NotificationType, showNotification } from '../../utils/notifications';
 import { FormInput } from '../Form/FormInput';
 import { FormSelect } from '../Form/FormSelect';
@@ -43,7 +43,7 @@ const VALIDATION_SCHEMA = Yup.object({
 
 export function AdminUserForm(props: IProps) {
     const { entity, readOnly } = props;
-    const adminClient = useSelector(getOffChainDataSource)?.adminClient;
+    const adminClient = useSelector(getBackendClient)?.adminClient;
 
     const [initialFormValuesFromExistingEntity, setInitialFormValuesFromExistingEntity] = useState<
         IUser
@@ -81,7 +81,7 @@ export function AdminUserForm(props: IProps) {
                 ...values
             };
 
-            await adminClient.update(formData);
+            await adminClient.updateUser(values.id.toString(), formData);
 
             history.push('manage-user');
 

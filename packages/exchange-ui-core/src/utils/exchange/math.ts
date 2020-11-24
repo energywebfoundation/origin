@@ -1,5 +1,7 @@
 import { EnergyFormatter } from '@energyweb/origin-ui-core';
-import { IExchangeClient, ICalculateVolumeData } from '.';
+import { TimeFrame } from '@energyweb/utils-general';
+import { ICalculateVolumeData } from '.';
+import { DemandClient, TimeFrame as ExchangeTimeFrame } from '@energyweb/exchange-client';
 
 export function calculateTotalPrice(priceInDisplayUnit: string, energyInDisplayUnit: string) {
     const priceAsFloat = parseFloat(priceInDisplayUnit);
@@ -12,19 +14,22 @@ export function calculateTotalPrice(priceInDisplayUnit: string, energyInDisplayU
     return (priceAsFloat * energyAsFloat).toFixed(2);
 }
 
-export async function calculateTotalVolume(client: IExchangeClient, values: ICalculateVolumeData) {
+export async function calculateTotalVolume(
+    demandClient: DemandClient,
+    values: ICalculateVolumeData
+) {
     const { volume, period, start, end } = values;
     const parsedVolume = parseFloat(volume);
 
     if (parsedVolume > 0 && period && start && end) {
-        const summary = await client?.summary({
+        const { data: summary } = await demandClient?.summary({
             price: 1 * 100,
             volumePerPeriod: EnergyFormatter.getBaseValueFromValueInDisplayUnit(
                 parsedVolume
             ).toString(),
-            periodTimeFrame: period,
-            start,
-            end,
+            periodTimeFrame: ExchangeTimeFrame[TimeFrame[period]],
+            start: start.toDateString(),
+            end: start.toDateString(),
             product: {},
             boundToGenerationTime: false,
             excludeEnd: false

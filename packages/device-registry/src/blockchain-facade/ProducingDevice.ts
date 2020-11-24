@@ -1,4 +1,3 @@
-import { Configuration } from '@energyweb/utils-general';
 import {
     IDevice,
     ISmartMeterRead,
@@ -7,9 +6,11 @@ import {
     IExternalDeviceId,
     DeviceCreateData,
     ISmartMeterReadStats,
-    IPublicOrganization
+    IPublicOrganization,
+    ISuccessResponse
 } from '@energyweb/origin-backend-core';
 import { BigNumber } from 'ethers';
+import { Configuration } from '..';
 
 export class Entity implements IDevice {
     status: DeviceStatus;
@@ -77,9 +78,7 @@ export class Entity implements IDevice {
 
     async sync(): Promise<Entity> {
         if (this.id !== null) {
-            const device = await this.configuration.offChainDataSource.deviceClient.getById(
-                this.id
-            );
+            const { data: device } = await this.configuration.deviceClient.get(this.id.toString());
 
             Object.assign(this, device);
 
@@ -93,17 +92,26 @@ export class Entity implements IDevice {
         return this;
     }
 
-    async saveSmartMeterReads(smReads: ISmartMeterRead[]): Promise<void> {
-        return this.configuration.offChainDataSource.deviceClient.addSmartMeterReads(
-            this.id,
-            smReads
+    async saveSmartMeterReads(smReads: ISmartMeterRead[]): Promise<ISuccessResponse> {
+        const { data: successResponse } = await this.configuration.deviceClient.addSmartMeterReads(
+            this.id.toString(),
+            smReads.map((smRead) => ({
+                meterReading: smRead.meterReading.toString(),
+                timestamp: smRead.timestamp
+            }))
         );
+
+        return successResponse;
     }
 
     async getSmartMeterReads(): Promise<ISmartMeterRead[]> {
-        return this.configuration.offChainDataSource.deviceClient.getAllSmartMeterReadings(
-            Number(this.id)
+        const { data } = await this.configuration.deviceClient.getAllSmartMeterReadings(
+            this.id.toString()
         );
+        return data.map((smRead) => ({
+            ...smRead,
+            meterReading: BigNumber.from(smRead.meterReading)
+        }));
     }
 
     async getAmountOfEnergyGenerated(): Promise<IEnergyGenerated[]> {
@@ -132,23 +140,34 @@ export class Entity implements IDevice {
     }
 
     async setStatus(status: DeviceStatus) {
-        return this.configuration.offChainDataSource?.deviceClient?.update(this.id, {
-            status
-        });
+        const { data: result } = await this.configuration.deviceClient?.updateDeviceStatus(
+            this.id.toString(),
+            {
+                status
+            }
+        );
+
+        return result;
     }
 }
 
 export const getAllDevices = async (
     configuration: Configuration.Entity,
-    withMeterStats = false,
-    loadRelationIds?: boolean
+    withMeterStats = false
 ): Promise<Entity[]> => {
-    const allDevices = await configuration.offChainDataSource.deviceClient.getAll(
-        withMeterStats,
-        loadRelationIds
-    );
+    const { data: allDevices } = await configuration.deviceClient.getAll(withMeterStats);
 
-    return allDevices.map((device: IDevice) => new Entity(device.id, configuration, device));
+    return allDevices.map((device) => {
+        const transformedDevice = {
+            ...device,
+            meterStats: {
+                certified: device.meterStats?.certified ?? '0',
+                uncertified: device.meterStats?.uncertified ?? '0'
+            }
+        };
+
+        return new Entity(device.id, configuration, transformedDevice);
+    });
 };
 
 export const createDevice = async (
@@ -157,7 +176,7 @@ export const createDevice = async (
 ): Promise<Entity> => {
     const producingDevice = new Entity(null, configuration);
 
-    const deviceWithId = await configuration.offChainDataSource.deviceClient.add(deviceProperties);
+    const { data: deviceWithId } = await configuration.deviceClient.createDevice(deviceProperties);
 
     producingDevice.id = deviceWithId.id;
 

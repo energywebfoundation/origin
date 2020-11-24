@@ -1,26 +1,27 @@
-import { IOriginConfiguration, IOffChainDataSource } from '@energyweb/origin-backend-core';
+import { IOriginConfiguration } from '@energyweb/origin-backend-core';
 import { GeneralActions, IGeneralAction, IEnvironment } from './actions';
-import { IExchangeClient } from '../../utils/exchange';
-import { IIRecClient } from '../../utils/irec';
+import { ExchangeClient } from '../../utils/clients/ExchangeClient';
+import { BackendClient } from '../../utils/clients/BackendClient';
+import { IRecClient } from '../../utils/clients/IRecClient';
 
 export interface IGeneralState {
     loading: boolean;
     error: string;
-    offChainDataSource: IOffChainDataSource;
+    backendClient: BackendClient;
     environment: IEnvironment;
-    exchangeClient: IExchangeClient;
+    exchangeClient: ExchangeClient;
     offChainConfiguration: IOriginConfiguration;
     accountMismatchModalProperties: {
         visibility: boolean;
     };
     noAccountModalVisibility: boolean;
-    iRecClient: IIRecClient;
+    iRecClient: IRecClient;
 }
 
 const defaultState: IGeneralState = {
     loading: true,
     error: null,
-    offChainDataSource: null,
+    backendClient: null,
     environment: null,
     exchangeClient: null,
     offChainConfiguration: null,
@@ -45,10 +46,10 @@ export function generalState(state = defaultState, action: IGeneralAction): IGen
                 error: action.payload
             };
 
-        case GeneralActions.setOffChainDataSource:
+        case GeneralActions.setBackendClient:
             return {
                 ...state,
-                offChainDataSource: action.payload
+                backendClient: action.payload
             };
 
         case GeneralActions.setEnvironment:
@@ -61,7 +62,7 @@ export function generalState(state = defaultState, action: IGeneralAction): IGen
             return { ...state, offChainConfiguration: action.payload.configuration };
 
         case GeneralActions.setExchangeClient:
-            return { ...state, exchangeClient: action.payload.exchangeClient };
+            return { ...state, exchangeClient: action.payload };
 
         case GeneralActions.setAccountMismatchModalProperties:
             return { ...state, accountMismatchModalProperties: action.payload };
@@ -70,7 +71,7 @@ export function generalState(state = defaultState, action: IGeneralAction): IGen
             return { ...state, noAccountModalVisibility: action.payload };
 
         case GeneralActions.setIRecClient:
-            return { ...state, iRecClient: action.payload.iRecClient };
+            return { ...state, iRecClient: action.payload };
 
         default:
             return state;

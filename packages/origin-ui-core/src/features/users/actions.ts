@@ -8,6 +8,7 @@ export enum UsersActions {
     setAuthenticationToken = 'SET_AUTHENTICATION_TOKEN',
     clearAuthenticationToken = 'CLEAR_AUTHENTICATION_TOKEN',
     refreshUserOffchain = 'REFRESH_USER_OFFCHAIN',
+    refreshClients = 'REFRESH_CLIENTS',
     addOrganizations = 'USERS_ADD_ORGANIZATIONS',
     setInvitations = 'USERS_SET_INVITATIONS',
     setUserState = 'USERS_SET_USER_STATE',
@@ -49,6 +50,16 @@ export const refreshUserOffchain = () => ({
 });
 
 export type TRefreshUserOffchainAction = typeof refreshUserOffchain;
+
+export interface IRefreshClientsAction {
+    type: UsersActions.refreshUserOffchain;
+}
+
+export const refreshClients = () => ({
+    type: UsersActions.refreshClients
+});
+
+export type TRefreshClientsAction = typeof refreshClients;
 
 export interface ISetAuthenticationTokenAction {
     type: UsersActions.setAuthenticationToken;
@@ -123,6 +134,7 @@ export type IUsersAction =
     | ISetAuthenticationTokenAction
     | IClearAuthenticationTokenAction
     | IRefreshUserOffchainAction
+    | IRefreshClientsAction
     | IAddOrganizationsAction
     | ISetInvitationsAction
     | ISetUserState

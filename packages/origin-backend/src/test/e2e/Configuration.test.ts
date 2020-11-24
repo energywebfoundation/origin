@@ -1,7 +1,7 @@
 import 'mocha';
 
 import { IOriginConfiguration } from '@energyweb/origin-backend-core';
-import { INestApplication } from '@nestjs/common';
+import { HttpStatus, INestApplication } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
 import { assert } from 'chai';
 import request from 'supertest';
@@ -38,7 +38,7 @@ describe('Configuration API tests', () => {
                 .get('/Configuration')
                 .set('Accept', 'application/json')
                 .expect('Content-Type', /json/)
-                .expect(404);
+                .expect(HttpStatus.NOT_FOUND);
         });
 
         it('updates the configuration', async () => {
@@ -54,13 +54,13 @@ describe('Configuration API tests', () => {
                 .send(configuration)
                 .set('Accept', 'application/json')
                 .expect('Content-Type', /json/)
-                .expect(200);
+                .expect(HttpStatus.OK);
 
             await request(app.getHttpServer())
                 .get('/Configuration')
                 .set('Accept', 'application/json')
                 .expect('Content-Type', /json/)
-                .expect(200)
+                .expect(HttpStatus.OK)
                 .expect((res) => {
                     assert.deepOwnInclude(res.body, configuration);
                 });
