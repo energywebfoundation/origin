@@ -40,7 +40,7 @@ import {
     BlockchainPropertiesClient
 } from '@energyweb/issuer-api-client';
 
-import { setActiveBlockchainAccountAddress } from '../users/actions';
+import { setActiveBlockchainAccountAddress, UsersActions } from '../users/actions';
 import { getSearch, push } from 'connected-react-router';
 import { getConfiguration, getBaseURL } from '../selectors';
 import * as queryString from 'query-string';
@@ -64,7 +64,7 @@ import {
 import { getCertificate } from '../certificates/sagas';
 import { getUserOffchain } from '../users/selectors';
 import { IProducingDeviceState } from '../producingDevices/reducer';
-import { getCertificatesClient } from '../certificates/selectors';
+import { getCertificatesClient, getBlockchainPropertiesClient } from '../certificates/selectors';
 import { certificateEnergyStringToBN } from '../../utils/certificates';
 
 function createEthereumProviderAccountsChangedEventChannel(ethereumProvider: any) {
@@ -407,6 +407,38 @@ function* initializeEnvironment(): SagaIterator {
     }
 }
 
+function* checkBlockchainNetwork(): SagaIterator {
+    while (true) {
+        yield take([UsersActions.setUserState, UsersActions.setUserOffchain]);
+
+        const user = yield select(getUserOffchain);
+        const ethereumProvider = (window as any).ethereum;
+
+        if (user && user.status === UserStatus.Active && ethereumProvider) {
+            const blockchainPropertiesClient: BlockchainPropertiesClient = yield select(
+                getBlockchainPropertiesClient
+            );
+
+            const { data: blockchainProperties } = yield apply(
+                blockchainPropertiesClient,
+                blockchainPropertiesClient.get,
+                []
+            );
+            const metamaskNetId = ethereumProvider.networkVersion;
+
+            if (
+                blockchainProperties?.netId !== 1337 &&
+                blockchainProperties?.netId !== parseInt(metamaskNetId, 10)
+            ) {
+                showNotification(
+                    `You are connected to the wrong blockchain. Please connect to ${blockchainProperties?.rpcNode}`,
+                    NotificationType.Error
+                );
+            }
+        }
+    }
+}
+
 function* requestDeviceCreation() {
     while (true) {
         const { payload }: IRequestDeviceCreationAction = yield take(
@@ -448,6 +480,7 @@ export function* generalSaga(): SagaIterator {
         fork(initializeOffChainDataSource),
         fork(fillOffchainConfiguration),
         fork(initializeEnvironment),
-        fork(requestDeviceCreation)
+        fork(requestDeviceCreation),
+        fork(checkBlockchainNetwork)
     ]);
 }
