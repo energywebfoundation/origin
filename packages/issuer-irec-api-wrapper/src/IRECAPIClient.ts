@@ -340,25 +340,6 @@ export class IRECAPIClient {
         };
     }
 
-    public get fuel() {
-        const fuelUrl = `${this.endPointUrl}/api/irec/fuels`;
-
-        return {
-            getAll: async (): Promise<Fuel[]> => {
-                const url = `${fuelUrl}/fuel`;
-                const response = await axios.get<unknown[]>(url, this.config);
-
-                return response.data.map((fuel) => plainToClass(Fuel, fuel));
-            },
-            getAllTypes: async (): Promise<FuelType[]> => {
-                const url = `${fuelUrl}/type`;
-                const response = await axios.get<unknown[]>(url, this.config);
-
-                return response.data.map((fuelType) => plainToClass(FuelType, fuelType));
-            }
-        };
-    }
-
     public async transfer(transfer: Transfer): Promise<TransactionResult> {
         await validateOrReject(transfer);
 
