@@ -1,5 +1,5 @@
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
-import { providers } from 'ethers';
+import { Contract, providers } from 'ethers';
 import { CertificateUtils, IBlockchainProperties } from '@energyweb/issuer';
 import { EventBus } from '@nestjs/cqrs';
 import { BlockchainPropertiesService } from '../../blockchain/blockchain-properties.service';
@@ -72,7 +72,11 @@ export class OnChainCertificateWatcher implements OnModuleInit {
 
         this.logger.debug(`Processing event ${eventType}: ${JSON.stringify(rawEvent)}`);
 
-        const event = await CertificateUtils.decodeEvent(eventType, rawEvent, this.registry);
+        const event = await CertificateUtils.decodeEvent(
+            eventType,
+            rawEvent,
+            this.registry as Contract
+        );
 
         // Allow some time for the backend controllers to finish processing
         // before processing blockchain events
