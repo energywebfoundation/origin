@@ -1,4 +1,4 @@
-import { IExchangeClient } from '../../utils/exchange';
+import { ExchangeClient } from '../..';
 
 export interface IEnvironment {
     MODE: string;
@@ -38,7 +38,7 @@ export type TSetEnvironmentAction = typeof setEnvironment;
 
 export interface ISetExchangeClientAction extends IExchangeGeneralAction {
     payload: {
-        exchangeClient: IExchangeClient;
+        exchangeClient: ExchangeClient;
     };
 }
 export const setExchangeClient = (payload: ISetExchangeClientAction['payload']) => ({

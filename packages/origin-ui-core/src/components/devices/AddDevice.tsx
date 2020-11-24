@@ -29,7 +29,7 @@ import {
     getExternalDeviceIdTypes,
     getCompliance,
     getCountry,
-    getOffChainDataSource
+    getBackendClient
 } from '../../features/general';
 import { HierarchicalMultiSelect } from '../HierarchicalMultiSelect';
 import { CloudUpload } from '@material-ui/icons';
@@ -68,7 +68,7 @@ export function AddDevice() {
     const configuration = useSelector(getConfiguration);
     const compliance = useSelector(getCompliance);
     const country = useSelector(getCountry);
-    const offChainDataSource = useSelector(getOffChainDataSource);
+    const backendClient = useSelector(getBackendClient);
     const externalDeviceIdTypes = useSelector(getExternalDeviceIdTypes);
     const environment = useSelector(getEnvironment);
 
@@ -200,7 +200,9 @@ export function AddDevice() {
         }
 
         try {
-            const uploadedFiles = await offChainDataSource.filesClient.upload(files);
+            const { data: uploadedFiles } = await backendClient.fileClient.upload(
+                Array.from(files) as Blob[]
+            );
 
             setImagesUploaded(true);
             setImagesUploadedList(uploadedFiles);

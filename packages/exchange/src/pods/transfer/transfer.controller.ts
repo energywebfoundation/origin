@@ -12,6 +12,7 @@ import {
     ForbiddenException,
     Get,
     HttpException,
+    HttpStatus,
     Logger,
     Post,
     UseGuards,
@@ -20,6 +21,7 @@ import {
     ValidationPipe
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
+import { ApiBearerAuth, ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { ensureSingleProcessOnly } from '../../utils/ensureSingleProcessOnly';
 
 import { RequestWithdrawalDTO } from './create-withdrawal.dto';
@@ -27,6 +29,8 @@ import { WithdrawalBeingProcessedError } from './errors/withdrawal-being-process
 import { Transfer } from './transfer.entity';
 import { TransferService } from './transfer.service';
 
+@ApiTags('transfer')
+@ApiBearerAuth('access-token')
 @Controller('transfer')
 @UseInterceptors(NullOrUndefinedResultInterceptor)
 @UsePipes(ValidationPipe)
@@ -37,13 +41,16 @@ export class TransferController {
 
     @Get('all')
     @UseGuards(AuthGuard(), ActiveUserGuard)
-    public async getTransfers(@UserDecorator() { ownerId }: ILoggedInUser): Promise<Transfer[]> {
+    @ApiResponse({ status: HttpStatus.OK, type: [Transfer], description: 'Get my transfers' })
+    public async getMyTransfers(@UserDecorator() { ownerId }: ILoggedInUser): Promise<Transfer[]> {
         return this.transferService.getAll(ownerId);
     }
 
     @Post('withdrawal')
     @UseGuards(AuthGuard(), ActiveUserGuard, RolesGuard)
     @Roles(Role.OrganizationAdmin)
+    @ApiBody({ type: RequestWithdrawalDTO })
+    @ApiResponse({ status: HttpStatus.CREATED, type: String, description: 'Request a withdrawal' })
     public async requestWithdrawal(
         @UserDecorator() user: ILoggedInUser,
         @Body() withdrawal: RequestWithdrawalDTO

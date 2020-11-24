@@ -4,14 +4,14 @@ import { Formik, Form } from 'formik';
 import { TableCell, Button, InputAdornment, Grid } from '@material-ui/core';
 import { IDevice, UserStatus } from '@energyweb/origin-backend-core';
 import {
-    getOffChainDataSource,
     getEnvironment,
     formatDate,
     moment,
     useTranslation,
     useValidation,
     EnergyFormatter,
-    getUserOffchain
+    getUserOffchain,
+    getBackendClient
 } from '@energyweb/origin-ui-core';
 import { getExchangeClient } from '../../features/general';
 import { IAsset, IOrderBookOrderDTO, calculateTotalPrice } from '../../utils/exchange';
@@ -31,7 +31,7 @@ export function Asks(props: Props) {
     const { buyDirect, displayAssetDetails, energyUnit, currency } = props;
 
     const exchangeClient = useSelector(getExchangeClient);
-    const offChainDataSource = useSelector(getOffChainDataSource);
+    const backendClient = useSelector(getBackendClient);
     const environment = useSelector(getEnvironment);
     const user = useSelector(getUserOffchain);
     const { t } = useTranslation();
@@ -49,11 +49,11 @@ export function Asks(props: Props) {
             return;
         }
 
-        const newAsset = await exchangeClient.getAssetById(selectedOrder.assetId);
-        const newDevice = await offChainDataSource.deviceClient.getByExternalId({
-            id: newAsset.deviceId,
-            type: environment.ISSUER_ID
-        });
+        const { data: newAsset } = await exchangeClient.assetClient.get(selectedOrder.assetId);
+        const { data: newDevice } = await backendClient.deviceClient.getByExternalId(
+            environment.ISSUER_ID,
+            newAsset.deviceId
+        );
 
         setAsset(newAsset);
         setDevice(newDevice);

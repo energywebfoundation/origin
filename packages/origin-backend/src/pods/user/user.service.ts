@@ -296,7 +296,7 @@ export class UserService {
         return result;
     }
 
-    async update(id: number | string, data: IUser): Promise<ExtendedBaseEntity & IUser> {
+    async update(id: number | string, data: Partial<IUser>): Promise<ExtendedBaseEntity & IUser> {
         const entity = await this.repository.findOne(id);
 
         if (!entity) {

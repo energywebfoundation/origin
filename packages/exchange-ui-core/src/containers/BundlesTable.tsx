@@ -21,7 +21,7 @@ import {
     getUserOffchain,
     TableMaterial
 } from '@energyweb/origin-ui-core';
-import { Bundle, IExchangeClient } from '../utils/exchange';
+import { Bundle, ExchangeClient } from '../utils/exchange';
 import { getExchangeClient } from '../features/general';
 import {
     getBundles,
@@ -57,7 +57,7 @@ export const BundlesTable = (props: IOwnProps) => {
     const userIsActive = user && user.status === UserStatus.Active;
     const { owner = false } = props;
     const allBundles = useSelector(getBundles);
-    const exchangeClient: IExchangeClient = useSelector(getExchangeClient);
+    const exchangeClient: ExchangeClient = useSelector(getExchangeClient);
     const bundles = allBundles
         .filter((b) => (owner ? b.own : true))
         .filter((b) => !(b.splits && b.splits.length === 0));
@@ -118,7 +118,9 @@ export const BundlesTable = (props: IOwnProps) => {
     const viewDetails = async (rowIndex: number) => {
         const { bundleId } = rows[rowIndex];
         const bundle = bundles.find((b) => b.id === bundleId);
-        const { splits } = await exchangeClient.getBundleSplits(bundle);
+        const {
+            data: { splits }
+        } = await exchangeClient.bundleClient.availableBundleSplits(bundle.id);
         bundle.splits = splits.map((s) => ({
             volume: BigNumber.from(s.volume),
             items: s.items.map(({ id, volume }) => ({ id, volume: BigNumber.from(volume) }))

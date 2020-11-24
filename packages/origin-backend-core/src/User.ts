@@ -55,12 +55,13 @@ export interface IUserProperties {
     lastName: string;
     email: string;
     telephone: string;
-    blockchainAccountAddress: string;
-    blockchainAccountSignedMessage: string;
     notifications: boolean;
     rights: number;
     status: UserStatus;
     kycStatus: KYCStatus;
+
+    blockchainAccountAddress?: string;
+    blockchainAccountSignedMessage?: string;
 }
 
 export interface IUser extends IUserProperties {
@@ -70,7 +71,6 @@ export interface IUser extends IUserProperties {
 
 export type UserRegisterReturnData = IUser;
 
-export type UserLoginData = { username: string; password: string };
 export type UserLoginReturnData = { accessToken: string };
 
 export type UserUpdateData = Partial<
