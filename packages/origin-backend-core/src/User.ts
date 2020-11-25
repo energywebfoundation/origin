@@ -79,7 +79,7 @@ export type UserUpdateData = Partial<
 
 export type UserStatusUpdate = Partial<Pick<IUserProperties, 'status' | 'kycStatus'>>;
 
-export type UserPasswordUpdate = { email: string; oldPassword: string; newPassword: string };
+export type UserPasswordUpdate = { oldPassword: string; newPassword: string };
 
 export interface IUserFilter {
     orgName?: string;

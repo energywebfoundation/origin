@@ -3,7 +3,6 @@ import {
     ILoggedInUser,
     IOrganizationInvitation,
     OrganizationInvitationStatus,
-    OrganizationRole,
     ResponseFailure,
     ResponseSuccess,
     Role
@@ -32,11 +31,12 @@ import {
 import { AuthGuard } from '@nestjs/passport';
 import { isEmail } from 'class-validator';
 
-import { ApiBearerAuth, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { InvitationService } from './invitation.service';
 import { AlreadyPartOfOrganizationError } from './errors/already-part-of-organization.error';
 import { SuccessResponseDTO } from '../../utils/success-response.dto';
 import { InvitationDTO } from './invitation.dto';
+import { InviteDTO } from './invite.dto';
 
 @ApiTags('invitation')
 @ApiBearerAuth('access-token')
@@ -85,17 +85,17 @@ export class InvitationController {
     @Post()
     @UseGuards(AuthGuard(), ActiveUserGuard, RolesGuard)
     @Roles(Role.OrganizationAdmin, Role.Admin)
+    @ApiBody({ type: InviteDTO })
     @ApiResponse({
         status: HttpStatus.CREATED,
         type: SuccessResponseDTO,
         description: 'Invites a user'
     })
     async invite(
-        @Body('email') email: string,
-        @Body('role') role: OrganizationRole,
+        @Body() dto: InviteDTO,
         @UserDecorator() loggedUser: ILoggedInUser
     ): Promise<SuccessResponseDTO> {
-        if (!isEmail(email)) {
+        if (!isEmail(dto.email)) {
             throw new BadRequestException(ResponseFailure('Provided email address is incorrect'));
         }
 
@@ -106,7 +106,7 @@ export class InvitationController {
         }
 
         try {
-            ensureOrganizationRole(role);
+            ensureOrganizationRole(dto.role);
         } catch (e) {
             throw new ForbiddenException(
                 ResponseFailure('Unknown role was requested for the invitee')
@@ -114,7 +114,7 @@ export class InvitationController {
         }
 
         try {
-            await this.organizationInvitationService.invite(loggedUser, email, role);
+            await this.organizationInvitationService.invite(loggedUser, dto.email, dto.role);
         } catch (error) {
             this.logger.error(error.toString());
 

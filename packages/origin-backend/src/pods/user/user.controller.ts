@@ -1,9 +1,5 @@
 import {
     ILoggedInUser,
-    UserRegistrationData,
-    UserUpdateData,
-    IUser,
-    UserPasswordUpdate,
     IEmailConfirmationToken,
     EmailConfirmationResponse
 } from '@energyweb/origin-backend-core';
@@ -29,12 +25,16 @@ import {
     HttpStatus
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { ApiResponse, ApiTags, ApiParam, ApiBearerAuth } from '@nestjs/swagger';
+import { ApiResponse, ApiTags, ApiParam, ApiBearerAuth, ApiBody } from '@nestjs/swagger';
 
 import { UserService } from './user.service';
 import { EmailConfirmationService } from '../email-confirmation/email-confirmation.service';
 import { UserDTO } from './user.dto';
 import { SuccessResponseDTO } from '../../utils/success-response.dto';
+import { RegisterUserDTO } from './register-user.dto';
+import { UpdateUserDTO } from './update-user.dto';
+import { UpdatePasswordDTO } from './update-password.dto';
+import { UpdateBlockchainAddressDTO } from './update-blockchain-address.dto';
 
 @ApiTags('user')
 @ApiBearerAuth('access-token')
@@ -47,8 +47,9 @@ export class UserController {
     ) {}
 
     @Post('register')
+    @ApiBody({ type: RegisterUserDTO })
     @ApiResponse({ status: HttpStatus.CREATED, type: UserDTO, description: 'Register a user' })
-    public async register(@Body() userRegistrationData: UserRegistrationData): Promise<UserDTO> {
+    public async register(@Body() userRegistrationData: RegisterUserDTO): Promise<UserDTO> {
         return this.userService.create(userRegistrationData);
     }
 
@@ -61,6 +62,7 @@ export class UserController {
 
     @Put()
     @UseGuards(AuthGuard('jwt'), NotDeletedUserGuard)
+    @ApiBody({ type: UpdateUserDTO })
     @ApiResponse({
         status: HttpStatus.OK,
         type: UserDTO,
@@ -68,7 +70,7 @@ export class UserController {
     })
     public async update(
         @UserDecorator() user: ILoggedInUser,
-        @Body() body: UserUpdateData
+        @Body() body: UpdateUserDTO
     ): Promise<UserDTO> {
         try {
             if (body.blockchainAccountSignedMessage) {
@@ -109,26 +111,29 @@ export class UserController {
 
     @Put('profile')
     @UseGuards(AuthGuard('jwt'), ActiveUserGuard)
+    @ApiBody({ type: UserDTO })
     @ApiResponse({ status: HttpStatus.OK, type: UserDTO, description: `Update your own profile` })
     public async updateOwnProfile(
         @UserDecorator() { id }: ILoggedInUser,
-        @Body() body: IUser
+        @Body() body: UserDTO
     ): Promise<UserDTO> {
         return this.userService.updateProfile(id, body);
     }
 
     @Put('password')
     @UseGuards(AuthGuard('jwt'), ActiveUserGuard)
+    @ApiBody({ type: UpdatePasswordDTO })
     @ApiResponse({ status: HttpStatus.OK, type: UserDTO, description: `Update your own password` })
     public async updateOwnPassword(
         @UserDecorator() { email }: ILoggedInUser,
-        @Body() body: UserPasswordUpdate
+        @Body() body: UpdatePasswordDTO
     ): Promise<UserDTO> {
         return this.userService.updatePassword(email, body);
     }
 
     @Put('chainAddress')
     @UseGuards(AuthGuard('jwt'), NotDeletedUserGuard)
+    @ApiBody({ type: UpdateBlockchainAddressDTO })
     @ApiResponse({
         status: HttpStatus.OK,
         type: UserDTO,
@@ -136,9 +141,9 @@ export class UserController {
     })
     public async updateOwnBlockchainAddress(
         @UserDecorator() { id }: ILoggedInUser,
-        @Body() body: IUser
+        @Body() { blockchainAccountAddress }: UpdateBlockchainAddressDTO
     ): Promise<UserDTO> {
-        return this.userService.updateBlockChainAddress(id, body);
+        return this.userService.updateBlockChainAddress(id, blockchainAccountAddress);
     }
 
     @Put('confirm-email/:token')
