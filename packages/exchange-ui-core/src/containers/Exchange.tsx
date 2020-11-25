@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Grid } from '@material-ui/core';
+import { UserStatus } from '@energyweb/origin-backend-core';
 import {
     EnergyFormatter,
     moment,
@@ -42,13 +43,23 @@ export function Exchange(props: IProps) {
     const [generationDateEnd, setGenerationDateEnd] = useState<string>();
 
     const fetchData = async (checkIsMounted: () => boolean) => {
-        const { data: fetchedData } = await exchangeClient?.orderbookClient.getByProduct({
-            deviceType,
-            location,
-            gridOperator,
-            generationFrom: generationDateStart,
-            generationTo: generationDateEnd
-        });
+        const orderBookData =
+            user && user?.status === UserStatus.Active && exchangeClient?.accessToken
+                ? await exchangeClient?.orderbookClient.getByProduct({
+                      deviceType,
+                      location,
+                      gridOperator,
+                      generationFrom: generationDateStart,
+                      generationTo: generationDateEnd
+                  })
+                : await exchangeClient?.orderbookClient.getByProductPublic({
+                      deviceType,
+                      location,
+                      gridOperator,
+                      generationFrom: generationDateStart,
+                      generationTo: generationDateEnd
+                  });
+        const fetchedData = orderBookData?.data;
 
         if (checkIsMounted()) {
             setData(
