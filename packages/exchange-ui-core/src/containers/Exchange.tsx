@@ -12,7 +12,7 @@ import {
 } from '@energyweb/origin-ui-core';
 import { getEnvironment, getExchangeClient } from '../features/general';
 import { createBid, createDemand, directBuyOrder } from '../features/orders';
-import { TOrderBook, ANY_VALUE } from '../utils/exchange';
+import { ExchangeClient, TOrderBook, ANY_VALUE } from '../utils/exchange';
 import { Asks, Bids, Market, IMarketFormValues } from '../components/exchange';
 
 interface IProps {
@@ -24,7 +24,7 @@ export function Exchange(props: IProps) {
     const { currency, refreshInterval } = { refreshInterval: 3000, ...props };
 
     const user = useSelector(getUserOffchain);
-    const exchangeClient = useSelector(getExchangeClient);
+    const exchangeClient: ExchangeClient = useSelector(getExchangeClient);
     const country = useSelector(getCountry);
     const environment = useSelector(getEnvironment);
     const dispatch = useDispatch();
@@ -42,21 +42,22 @@ export function Exchange(props: IProps) {
     const [generationDateEnd, setGenerationDateEnd] = useState<string>();
 
     const fetchData = async (checkIsMounted: () => boolean) => {
-        const fetchedData = (await exchangeClient?.search(
+        const { data: fetchedData } = await exchangeClient?.orderbookClient.getByProduct({
             deviceType,
             location,
             gridOperator,
-            generationDateStart,
-            generationDateEnd,
-            user
-        )) ?? {
-            asks: [],
-            bids: [],
-            lastTradedPrice: null
-        };
+            generationFrom: generationDateStart,
+            generationTo: generationDateEnd
+        });
 
         if (checkIsMounted()) {
-            setData(fetchedData);
+            setData(
+                (fetchedData as TOrderBook) ?? {
+                    asks: [],
+                    bids: [],
+                    lastTradedPrice: null
+                }
+            );
         }
     };
 

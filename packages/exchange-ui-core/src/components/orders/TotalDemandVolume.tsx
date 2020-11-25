@@ -17,7 +17,7 @@ export const TotalDemandVolume = (props: IProps) => {
 
     useEffect(() => {
         const setVolume = async () => {
-            const volume = await calculateTotalVolume(exchangeClient, {
+            const volume = await calculateTotalVolume(exchangeClient.demandClient, {
                 volume: demand.volumePerPeriod,
                 period: demand.periodTimeFrame,
                 start: demand.start,

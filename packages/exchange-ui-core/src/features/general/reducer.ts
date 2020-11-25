@@ -1,8 +1,8 @@
-import { IExchangeClient } from '../../utils/exchange';
+import { ExchangeClient } from '../../utils/exchange';
 import { ExchangeGeneralActionType, IExchangeGeneralAction, IEnvironment } from './actions';
 
 export interface IExchangeGeneralState {
-    exchangeClient: IExchangeClient;
+    exchangeClient: ExchangeClient;
     environment: IEnvironment;
 }
 

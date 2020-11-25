@@ -14,7 +14,7 @@ export const encodeClaimData = async (
 ): Promise<string> => {
     const { beneficiary, address, region, zipCode, countryCode } = claimData;
 
-    return blockchainProperties.registry.encodeClaimData(
+    return blockchainProperties.issuer.encodeClaimData(
         beneficiary ?? '',
         address ?? '',
         region ?? '',
@@ -33,7 +33,7 @@ export const decodeClaimData = async (
         _region,
         _zipCode,
         _countryCode
-    } = await blockchainProperties.registry.decodeClaimData(encodedClaimData);
+    } = await blockchainProperties.issuer.decodeClaimData(encodedClaimData);
 
     return {
         beneficiary: _beneficiary,

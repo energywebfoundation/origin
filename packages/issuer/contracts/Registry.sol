@@ -138,28 +138,4 @@ contract Registry is ERC1155Mintable, ERC1888 {
 	function allCertificateIds() public view returns (uint256[] memory) {
 		return _allCertificates;
     }
-
-	/*
-		Utils
-	*/
-
-	function encodeClaimData(
-		string memory _beneficiary,
-		string memory _address,
-		string memory _region,
-		string memory _zipCode,
-		string memory _countryCode
-	) public pure returns (bytes memory _claimData) {
-		return abi.encode(_beneficiary, _address, _region, _zipCode, _countryCode);
-	}
-
-	function decodeClaimData(bytes memory _claimData) public pure returns (
-		string memory _beneficiary,
-		string memory _address,
-		string memory _region,
-		string memory _zipCode,
-		string memory _countryCode
-	) {
-		return abi.decode(_claimData, (string, string, string, string, string));
-	}
 }

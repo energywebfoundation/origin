@@ -9,7 +9,7 @@
     "include": ["src/**/*"],
     "references": [
         {
-            "path": "../origin-backend-core/tsconfig.json"
+            "path": "../origin-backend/tsconfig.json"
         }
     ]
 }

@@ -14,7 +14,7 @@ import { text } from '@storybook/addon-knobs';
 import { BigNumber } from 'ethers';
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { getOffChainDataSource } from '../../features/general/selectors';
+import { getBackendClient } from '../../features/general/selectors';
 import { getUserOffchain } from '../../features/users/selectors';
 import { formatCurrencyComplete, moment, useTranslation } from '../../utils';
 import { EnergyFormatter } from '../../utils/EnergyFormatter';
@@ -36,7 +36,8 @@ export const KeyStatus = {
 };
 
 export function AutoSupplyDeviceTable() {
-    const deviceClient = useSelector(getOffChainDataSource)?.deviceClient;
+    const backendClient = useSelector(getBackendClient);
+    const deviceClient = backendClient.deviceClient;
     const userOffchain = useSelector(getUserOffchain);
     const { t } = useTranslation();
 
@@ -56,12 +57,15 @@ export function AutoSupplyDeviceTable() {
         }
         let entities = [];
         if (requestedFilters.length > 0) {
-            entities = await deviceClient.getSupplyBy(
+            const response = await deviceClient.getSupplyBy(
                 requestedFilters[0]?.selectedValue,
-                parseInt(requestedFilters[1]?.selectedValue, 10) || 0
+                requestedFilters[1]?.selectedValue || '0'
             );
+            entities = response.data;
         } else {
-            entities = await deviceClient.getMyDevices(false);
+            const { data: myDevices } = await deviceClient.getMyDevices(false);
+
+            entities = myDevices;
         }
         let newPaginatedData: IRecord[] = entities.map((i) => ({
             device: i
@@ -159,7 +163,7 @@ export function AutoSupplyDeviceTable() {
 
     async function reqAutoSupply() {
         try {
-            await deviceClient.updateDeviceSettings(entity.id, {
+            await deviceClient.updateDeviceSettings(entity.id.toString(), {
                 automaticPostForSale: entity.automaticPostForSale,
                 defaultAskPrice: entity.defaultAskPrice * 100
             });

@@ -10,7 +10,7 @@ import {
     getUserOffchain,
     setLoading
 } from '@energyweb/origin-ui-core';
-import { IExchangeClient, Bundle } from '../../utils/exchange';
+import { ExchangeClient, Bundle } from '../../utils/exchange';
 import { getExchangeClient } from '../general';
 import {
     BundlesActionType,
@@ -26,18 +26,14 @@ function* fetchBundlesSaga(): SagaIterator {
         yield take(BundlesActionType.FETCH_BUNDLES);
 
         yield put(clearBundles());
-        const exchangeClient: IExchangeClient = yield select(getExchangeClient);
+        const { bundleClient }: ExchangeClient = yield select(getExchangeClient);
 
-        const bundles: Bundle[] = yield apply(
-            exchangeClient,
-            exchangeClient.getAvailableBundles,
-            null
-        );
+        const bundles: Bundle[] = yield apply(bundleClient, bundleClient.getAvailableBundles, null);
         const user = yield select(getUserOffchain);
 
         const ownBundles: Bundle[] =
             user && user.status === UserStatus.Active
-                ? yield apply(exchangeClient, exchangeClient.getOwnBundles, null)
+                ? yield apply(bundleClient, bundleClient.getMyBundles, null)
                 : [];
 
         for (const bundle of bundles) {
@@ -111,9 +107,9 @@ function* cancelBundle(): SagaIterator {
         const action = yield take(BundlesActionType.CANCEL_BUNDLE);
         const i18n = getI18n();
         const { payload } = action;
-        const exchangeClient: IExchangeClient = yield select(getExchangeClient);
+        const { bundleClient }: ExchangeClient = yield select(getExchangeClient);
         try {
-            yield apply(exchangeClient, exchangeClient.cancelBundle, [payload]);
+            yield apply(bundleClient, bundleClient.cancelBundle, [payload]);
             showNotification(
                 i18n.t('certificate.feedback.bundleCanceld'),
                 NotificationType.Success

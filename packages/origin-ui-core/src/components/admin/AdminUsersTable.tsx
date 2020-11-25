@@ -3,7 +3,7 @@ import { Edit } from '@material-ui/icons';
 import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import { getOffChainDataSource } from '../../features/general/selectors';
+import { getBackendClient } from '../../features/general/selectors';
 import { getUserOffchain } from '../../features/users/selectors';
 import { NotificationType, showNotification } from '../../utils/notifications';
 import {
@@ -18,7 +18,7 @@ interface IRecord {
 }
 
 export function AdminUsersTable() {
-    const adminClient = useSelector(getOffChainDataSource)?.adminClient;
+    const adminClient = useSelector(getBackendClient)?.adminClient;
     const userOffchain = useSelector(getUserOffchain);
 
     const history = useHistory();
@@ -39,15 +39,15 @@ export function AdminUsersTable() {
         const [statusFilter, kycStatusFilter, orgNameFilter] = requestedFilters;
 
         try {
-            if (requestedFilters.length > 0) {
-                entities = await adminClient.getUsers({
-                    orgName: orgNameFilter?.selectedValue,
-                    status: statusFilter?.selectedValue,
-                    kycStatus: kycStatusFilter?.selectedValue
-                });
-            } else {
-                entities = await adminClient.getUsers();
-            }
+            const params = {
+                orgName: orgNameFilter?.selectedValue,
+                status: statusFilter?.selectedValue,
+                kycStatus: kycStatusFilter?.selectedValue
+            };
+
+            const { data } = await adminClient.getUsers(requestedFilters.length > 0 ? params : {});
+
+            entities = data;
         } catch (error) {
             const _error = { ...error };
 

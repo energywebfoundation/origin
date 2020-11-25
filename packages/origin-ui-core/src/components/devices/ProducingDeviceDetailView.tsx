@@ -24,7 +24,7 @@ import {
     useTranslation,
     LightenColor
 } from '../../utils';
-import { getOffChainDataSource } from '../../features/general/selectors';
+import { getBackendClient } from '../../features/general/selectors';
 import { DeviceGroupForm } from './DeviceGroupForm';
 import { IExternalDeviceId, IPublicOrganization } from '@energyweb/origin-backend-core';
 import { downloadFile } from '../Organization/DownloadDocuments';
@@ -40,8 +40,8 @@ interface IProps {
 export function ProducingDeviceDetailView(props: IProps) {
     const configuration = useSelector(getConfiguration);
     const producingDevices = useSelector(getProducingDevices);
-    const offChainDataSource = useSelector(getOffChainDataSource);
-    const organizationClient = useSelector(getOffChainDataSource)?.organizationClient;
+    const backendClient = useSelector(getBackendClient);
+    const organizationClient = useSelector(getBackendClient)?.organizationClient;
 
     const originContext = useOriginConfiguration();
     const originBgColor = originContext?.styleConfig?.MAIN_BACKGROUND_COLOR;
@@ -182,7 +182,7 @@ export function ProducingDeviceDetailView(props: IProps) {
                     <li key={f}>
                         <a
                             style={{ cursor: 'pointer', textDecoration: 'underline' }}
-                            onClick={() => downloadFile(offChainDataSource?.filesClient, f)}
+                            onClick={() => downloadFile(backendClient?.fileClient, f)}
                         >
                             {f}
                         </a>

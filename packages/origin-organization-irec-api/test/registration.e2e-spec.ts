@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-expressions */
 /* eslint-disable @typescript-eslint/no-var-requires */
 /* eslint-disable import/no-extraneous-dependencies */
-import { INestApplication } from '@nestjs/common';
+import { HttpStatus, INestApplication } from '@nestjs/common';
 import { DatabaseService } from '@energyweb/origin-backend-utils';
 
 import { expect } from 'chai';
@@ -57,7 +57,7 @@ describe('I-REC Registration tests', () => {
             .post('/irec/registration')
             .set({ 'test-user': TestUser.OrganizationAdmin })
             .send(registrationForm)
-            .expect(201)
+            .expect(HttpStatus.CREATED)
             .expect((res) => {
                 const { id } = res.body as { id: string };
 
@@ -81,7 +81,7 @@ describe('I-REC Registration tests', () => {
         await test
             .get('/irec/registration')
             .set({ 'test-user': TestUser.OrganizationAdmin })
-            .expect(200)
+            .expect(HttpStatus.OK)
             .expect((res) => {
                 const registrations = res.body as Registration[];
                 expect(registrations).to.have.length(1);
@@ -91,7 +91,7 @@ describe('I-REC Registration tests', () => {
         await test
             .get('/irec/registration')
             .set({ 'test-user': TestUser.OtherOrganizationAdmin })
-            .expect(200)
+            .expect(HttpStatus.OK)
             .expect((res) => {
                 const registrations = res.body as Registration[];
                 expect(registrations).to.have.length(1);
@@ -101,7 +101,7 @@ describe('I-REC Registration tests', () => {
         await test
             .get('/irec/registration')
             .set({ 'test-user': TestUser.PlatformAdmin })
-            .expect(200)
+            .expect(HttpStatus.OK)
             .expect((res) => {
                 const registrations = res.body as Registration[];
                 expect(registrations).to.have.length(2);

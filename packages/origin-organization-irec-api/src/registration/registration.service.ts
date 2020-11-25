@@ -4,8 +4,7 @@ import { EventBus } from '@nestjs/cqrs';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { RegistrationCreatedEvent } from './events';
-
-import { RegistrationDTO } from './registration.dto';
+import { NewRegistrationDTO } from './new-registration.dto';
 import { Registration } from './registration.entity';
 
 @Injectable()
@@ -19,9 +18,9 @@ export class RegistrationService {
         return this.repository.find(owner ? { where: { owner } } : undefined);
     }
 
-    public async register(user: ILoggedInUser, registration: RegistrationDTO): Promise<string> {
+    public async register(user: ILoggedInUser, registration: NewRegistrationDTO): Promise<string> {
         const registrationToStore = new Registration({
-            ...RegistrationDTO.sanitize(registration),
+            ...NewRegistrationDTO.sanitize(registration),
             owner: user.ownerId
         });
 

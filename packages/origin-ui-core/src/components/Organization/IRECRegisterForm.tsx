@@ -108,7 +108,7 @@ export const IRECRegisterForm = () => {
                 activeCountries: values.activeCountries.map((i) => i?.code)
             };
 
-            const iRecAccount = await iRecClient.register(formData);
+            const { data: iRecAccount } = await iRecClient.organizationClient.register(formData);
 
             if (iRecAccount) {
                 setSubmitting(false);

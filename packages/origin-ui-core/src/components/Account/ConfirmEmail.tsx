@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import { showNotification, NotificationType } from '../../utils/notifications';
 
 import * as queryString from 'query-string';
-import { getOffChainDataSource } from '../..';
+import { getBackendClient } from '../..';
 import { EmailConfirmationResponse } from '@energyweb/origin-backend-core';
 import { useHistory } from 'react-router-dom';
 import { getUserOffchain } from '../../features/users/selectors';
@@ -14,7 +14,7 @@ export function ConfirmEmail(props: any) {
 
     const [confirmationState, setConfirmationState] = useState(null);
 
-    const userClient = useSelector(getOffChainDataSource)?.userClient;
+    const userClient = useSelector(getBackendClient)?.userClient;
     const user = useSelector(getUserOffchain);
 
     const history = useHistory();
@@ -24,12 +24,12 @@ export function ConfirmEmail(props: any) {
 
     useEffect(() => {
         async function confirm() {
-            return userClient.confirmEmail(token as string);
+            return userClient.confirmToken(token as string);
         }
         if (userClient && token) {
             confirm()
-                .then((result: EmailConfirmationResponse) => {
-                    setConfirmationState(result);
+                .then((response) => {
+                    setConfirmationState(EmailConfirmationResponse[response.data]);
                 })
                 .then(() => {
                     if (!user) {

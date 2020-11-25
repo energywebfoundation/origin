@@ -14,7 +14,7 @@ import moment from 'moment';
 import request from 'supertest';
 import dotenv from 'dotenv';
 
-import { INestApplication } from '@nestjs/common';
+import { HttpStatus, INestApplication } from '@nestjs/common';
 import { DatabaseService } from '@energyweb/origin-backend-utils';
 import { bootstrapTestInstance, registerAndLogin } from './origin-backend';
 import { DeviceService } from '../src/pods/device/device.service';
@@ -95,7 +95,7 @@ describe('Device e2e tests', () => {
             .post('/device')
             .send(getExampleDevice())
             .set('Authorization', `Bearer ${accessToken}`)
-            .expect(403);
+            .expect(HttpStatus.FORBIDDEN);
     });
 
     it('should allow to register device for active organization', async () => {
@@ -138,7 +138,7 @@ describe('Device e2e tests', () => {
         await request(app.getHttpServer())
             .put(`/device/${deviceId}/settings`)
             .set('Authorization', `Bearer ${accessToken}`)
-            .expect(422);
+            .expect(HttpStatus.UNPROCESSABLE_ENTITY);
 
         const settingWithZeroPrice: DeviceSettingsUpdateData = {
             defaultAskPrice: 0,
@@ -149,7 +149,7 @@ describe('Device e2e tests', () => {
             .put(`/device/${deviceId}/settings`)
             .set('Authorization', `Bearer ${accessToken}`)
             .send(settingWithZeroPrice)
-            .expect(422);
+            .expect(HttpStatus.UNPROCESSABLE_ENTITY);
 
         const settingWithNonIntegerPrice: DeviceSettingsUpdateData = {
             defaultAskPrice: 1.3,
@@ -160,7 +160,7 @@ describe('Device e2e tests', () => {
             .put(`/device/${deviceId}/settings`)
             .set('Authorization', `Bearer ${accessToken}`)
             .send(settingWithNonIntegerPrice)
-            .expect(422);
+            .expect(HttpStatus.UNPROCESSABLE_ENTITY);
 
         const settingWithCorrectPrice: DeviceSettingsUpdateData = {
             defaultAskPrice: 1000,
@@ -171,7 +171,7 @@ describe('Device e2e tests', () => {
             .put(`/device/${deviceId}/settings`)
             .set('Authorization', `Bearer ${accessToken}`)
             .send(settingWithCorrectPrice)
-            .expect(200);
+            .expect(HttpStatus.OK);
 
         await request(app.getHttpServer())
             .get(`/device/${deviceId}`)
@@ -203,7 +203,7 @@ describe('Device e2e tests', () => {
         await request(app.getHttpServer())
             .delete(`/device/${deviceId}`)
             .set('Authorization', `Bearer ${accessTokenOtherOrgAdmin}`)
-            .expect(401);
+            .expect(HttpStatus.UNAUTHORIZED);
     });
 
     // it('should return certified and uncertified readings', async () => {
@@ -243,7 +243,7 @@ describe('Device e2e tests', () => {
     //         .put(`/device/${device.id}/smartMeterReading`)
     //         .set('Authorization', `Bearer ${accessToken}`)
     //         .send([firstSmRead])
-    //         .expect(200);
+    //         .expect(HttpStatus.OK);
 
     //     const secondSmRead = {
     //         meterReading: 54321,
@@ -254,7 +254,7 @@ describe('Device e2e tests', () => {
     //         .put(`/device/${device.id}/smartMeterReading`)
     //         .set('Authorization', `Bearer ${accessToken}`)
     //         .send([secondSmRead])
-    //         .expect(200);
+    //         .expect(HttpStatus.OK);
 
     //     const fromTime = moment().subtract(2, 'month').unix();
     //     const toTime = moment().subtract(10, 'day').unix();
@@ -322,6 +322,6 @@ describe('Device e2e tests', () => {
                     timestamp: moment().subtract(1, 'month').unix()
                 }
             ])
-            .expect(401);
+            .expect(HttpStatus.UNAUTHORIZED);
     });
 });
