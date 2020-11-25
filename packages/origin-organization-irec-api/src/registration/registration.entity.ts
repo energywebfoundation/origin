@@ -61,7 +61,7 @@ export class Registration extends ExtendedBaseEntity {
     primaryContactOrganizationPostalCode: string;
 
     @Column()
-    primaryContactOrganizationCountry: number;
+    primaryContactOrganizationCountry: string;
 
     @Column()
     primaryContactName: string;

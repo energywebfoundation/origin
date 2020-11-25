@@ -1,7 +1,7 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class IRecOrganizationContactDetails1606334384186 implements MigrationInterface {
-    name = 'IRecOrganizationContactDetails1606334384186';
+export class IRecOrganizationContactDetails1606335794845 implements MigrationInterface {
+    name = 'IRecOrganizationContactDetails1606335794845';
 
     public async up(queryRunner: QueryRunner): Promise<void> {
         await queryRunner.query(
@@ -14,7 +14,7 @@ export class IRecOrganizationContactDetails1606334384186 implements MigrationInt
             `ALTER TABLE "irec_registration" ADD "primaryContactOrganizationPostalCode" character varying NOT NULL`
         );
         await queryRunner.query(
-            `ALTER TABLE "irec_registration" ADD "primaryContactOrganizationCountry" integer NOT NULL`
+            `ALTER TABLE "irec_registration" ADD "primaryContactOrganizationCountry" character varying NOT NULL`
         );
         await queryRunner.query(
             `ALTER TABLE "irec_registration" ADD "primaryContactName" character varying NOT NULL`
