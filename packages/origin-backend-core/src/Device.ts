@@ -72,7 +72,7 @@ export interface IDevice extends IDeviceProductInfo {
     meterStats?: ISmartMeterReadStats;
     deviceGroup?: string;
     smartMeterReads?: ISmartMeterRead[];
-    defaultAskPrice: number;
+    defaultAskPrice?: number;
     automaticPostForSale: boolean;
     files?: string;
     organization: IPublicOrganization;

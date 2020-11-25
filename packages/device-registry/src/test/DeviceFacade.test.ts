@@ -83,8 +83,7 @@ describe('Device Facade', () => {
                 region: '',
                 province: '',
                 gridOperator: '',
-                automaticPostForSale: false,
-                defaultAskPrice: null
+                automaticPostForSale: false
             };
 
             const device = await ProducingDevice.createDevice(deviceProps, conf);

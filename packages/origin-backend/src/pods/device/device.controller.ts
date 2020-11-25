@@ -1,6 +1,4 @@
 import {
-    DeviceCreateData,
-    DeviceSettingsUpdateData,
     DeviceUpdateData,
     IDevice,
     ILoggedInUser,
@@ -57,6 +55,8 @@ import { DeviceService } from './device.service';
 import { DeviceDTO } from './device.dto';
 import { SuccessResponseDTO } from '../../utils/success-response.dto';
 import { SmartMeterReadDTO } from './smart-meter-readings.dto';
+import { CreateDeviceDTO } from './create-device.dto';
+import { DeviceSettingsUpdateDTO } from './device-settings-update.dto';
 
 @ApiTags('device')
 @ApiBearerAuth('access-token')
@@ -142,6 +142,7 @@ export class DeviceController {
     @Post()
     @UseGuards(AuthGuard(), ActiveUserGuard, RolesGuard)
     @Roles(Role.OrganizationAdmin, Role.OrganizationDeviceManager)
+    @ApiBody({ type: CreateDeviceDTO })
     @ApiResponse({ status: HttpStatus.CREATED, type: DeviceDTO, description: 'Creates a Device' })
     @ApiForbiddenResponse({
         status: HttpStatus.FORBIDDEN,
@@ -152,7 +153,7 @@ export class DeviceController {
         description: 'Incorrect inputs'
     })
     async createDevice(
-        @Body() body: DeviceCreateData,
+        @Body() body: CreateDeviceDTO,
         @UserDecorator() loggedUser: ILoggedInUser
     ): Promise<DeviceDTO> {
         if (typeof loggedUser.organizationId === 'undefined') {
@@ -234,6 +235,7 @@ export class DeviceController {
     @Put('/:id/settings')
     @UseGuards(AuthGuard(), ActiveUserGuard, RolesGuard)
     @Roles(Role.OrganizationAdmin, Role.OrganizationDeviceManager, Role.OrganizationUser)
+    @ApiBody({ type: DeviceSettingsUpdateDTO })
     @ApiResponse({
         status: HttpStatus.OK,
         type: SuccessResponseDTO,
@@ -245,7 +247,7 @@ export class DeviceController {
     })
     async updateDeviceSettings(
         @Param('id') id: string,
-        @Body() body: DeviceSettingsUpdateData,
+        @Body() body: DeviceSettingsUpdateDTO,
         @UserDecorator() loggedUser: ILoggedInUser
     ): Promise<SuccessResponseDTO> {
         if (!this.organizationService.hasDevice(loggedUser.organizationId, id)) {
