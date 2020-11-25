@@ -18,7 +18,7 @@ import {
     ValidationPipe
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { ApiTags, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
+import { ApiTags, ApiResponse, ApiBearerAuth, ApiBody } from '@nestjs/swagger';
 import { NewRegistrationDTO } from './new-registration.dto';
 import { RegisterResponseDTO } from './registration-response.dto';
 import { RegistrationDTO } from './registration.dto';
@@ -52,6 +52,7 @@ export class RegistrationController {
     @Post()
     @UseGuards(AuthGuard(), RolesGuard)
     @Roles(Role.OrganizationAdmin)
+    @ApiBody({ type: NewRegistrationDTO })
     @ApiResponse({
         status: HttpStatus.CREATED,
         type: RegisterResponseDTO,

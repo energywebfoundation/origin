@@ -17,7 +17,8 @@ import {
     UseInterceptors
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { UpdateUserDTO } from '../user/update-user.dto';
 import { UserDTO } from '../user/user.dto';
 
 import { UserService } from '../user/user.service';
@@ -52,10 +53,11 @@ export class AdminController {
     @Put('users/:id')
     @UseGuards(AuthGuard('jwt'), ActiveUserGuard, RolesGuard)
     @Roles(Role.Admin, Role.SupportAgent)
+    @ApiBody({ type: UpdateUserDTO })
     @ApiResponse({ status: HttpStatus.OK, type: UserDTO, description: 'Updates a user' })
     public async updateUser(
         @Param('id') id: string,
-        @Body() body: Partial<UserDTO>
+        @Body() body: UpdateUserDTO
     ): Promise<UserDTO> {
         return this.userService.update(id, body);
     }

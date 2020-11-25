@@ -22,7 +22,7 @@ import {
     ValidationPipe
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 import { ForbiddenActionError } from '../../utils/exceptions';
 import { CreateDemandDTO } from './create-demand.dto';
@@ -65,6 +65,7 @@ export class DemandController {
 
     @Post()
     @UseGuards(AuthGuard(), ActiveUserGuard)
+    @ApiBody({ type: CreateDemandDTO })
     @ApiResponse({ status: HttpStatus.CREATED, type: DemandDTO, description: 'Create a demand' })
     public async create(
         @UserDecorator() { id: userId, ownerId }: ILoggedInUser,
@@ -80,6 +81,7 @@ export class DemandController {
     @Post('/summary')
     @HttpCode(HttpStatus.OK)
     @UseGuards(AuthGuard(), ActiveUserGuard)
+    @ApiBody({ type: CreateDemandDTO })
     @ApiResponse({
         status: HttpStatus.OK,
         type: DemandSummaryDTO,
@@ -148,6 +150,7 @@ export class DemandController {
     @Post('/:id/replace')
     @UseGuards(AuthGuard(), ActiveUserGuard)
     @HttpCode(HttpStatus.CREATED)
+    @ApiBody({ type: CreateDemandDTO })
     @ApiResponse({ status: HttpStatus.CREATED, type: DemandDTO, description: 'Replace a Demand' })
     public async replace(
         @UserDecorator() { id: userId, ownerId }: ILoggedInUser,

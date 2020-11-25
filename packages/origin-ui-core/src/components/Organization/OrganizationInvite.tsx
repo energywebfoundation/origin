@@ -17,6 +17,7 @@ import {
     MenuItem
 } from '@material-ui/core';
 import { OrganizationRole, Role, UserStatus } from '@energyweb/origin-backend-core';
+import { Role as BackendClientRole } from '@energyweb/origin-backend-client';
 
 import { showNotification, NotificationType } from '../../utils/notifications';
 import { setLoading } from '../../features/general/actions';
@@ -66,7 +67,10 @@ export function OrganizationInvite() {
         dispatch(setLoading(true));
 
         try {
-            await invitationClient.invite({ email: values.email, role: Number(values.role) });
+            await invitationClient.invite({
+                email: values.email,
+                role: BackendClientRole[Role[values.role]]
+            });
 
             showNotification(`Invitation sent`, NotificationType.Success);
         } catch (error) {

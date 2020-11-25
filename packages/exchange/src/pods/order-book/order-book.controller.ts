@@ -16,7 +16,7 @@ import {
     HttpStatus
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 import { OrderBookOrderDTO } from './order-book-order.dto';
 import { OrderBookService } from './order-book.service';
@@ -38,6 +38,7 @@ export class OrderBookController {
     @Post('/search')
     @UseGuards(AuthGuard(), ActiveUserGuard)
     @HttpCode(HttpStatus.OK)
+    @ApiBody({ type: ProductFilterDTO })
     @ApiResponse({ status: HttpStatus.OK, type: OrderBookDTO, description: 'Gets the order book' })
     public getByProduct(
         @UserDecorator() user: ILoggedInUser,
@@ -48,6 +49,7 @@ export class OrderBookController {
 
     @Post('/public/search')
     @HttpCode(HttpStatus.OK)
+    @ApiBody({ type: ProductFilterDTO })
     @ApiResponse({
         status: HttpStatus.OK,
         type: OrderBookDTO,

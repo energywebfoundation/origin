@@ -141,6 +141,7 @@ describe('Invitation e2e tests', () => {
             .send({ email: 'random@example.com', role: Role.SupportAgent })
             .expect(HttpStatus.FORBIDDEN);
 
+        // TO-DO: Support sending multiple roles
         await request(app.getHttpServer())
             .post('/invitation')
             .set('Authorization', `Bearer ${accessToken}`)
@@ -148,7 +149,7 @@ describe('Invitation e2e tests', () => {
                 email: 'random@example.com',
                 role: Role.OrganizationDeviceManager | Role.SupportAgent
             })
-            .expect(HttpStatus.FORBIDDEN);
+            .expect(HttpStatus.BAD_REQUEST);
     });
 
     it('should not allow to accept invitation by the user that is already part of the other organization', async () => {

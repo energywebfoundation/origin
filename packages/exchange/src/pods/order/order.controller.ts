@@ -23,7 +23,7 @@ import {
     ValidationPipe
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { ForbiddenActionError } from '../../utils/exceptions';
 import { ensureSingleProcessOnly } from '../../utils/ensureSingleProcessOnly';
 
@@ -46,6 +46,7 @@ export class OrderController {
 
     @Post('bid')
     @UseGuards(AuthGuard(), ActiveUserGuard)
+    @ApiBody({ type: CreateBidDTO })
     @ApiResponse({ status: HttpStatus.CREATED, type: OrderDTO, description: 'Create a bid' })
     public async createBid(
         @UserDecorator() user: ILoggedInUser,
@@ -65,6 +66,7 @@ export class OrderController {
 
     @Post('ask')
     @UseGuards(AuthGuard(), ActiveUserGuard)
+    @ApiBody({ type: CreateAskDTO })
     @ApiResponse({ status: HttpStatus.CREATED, type: OrderDTO, description: 'Create an ask' })
     public async createAsk(
         @UserDecorator() user: ILoggedInUser,
@@ -93,6 +95,7 @@ export class OrderController {
 
     @Post('ask/buy')
     @UseGuards(AuthGuard(), ActiveUserGuard)
+    @ApiBody({ type: DirectBuyDTO })
     @ApiResponse({ status: HttpStatus.CREATED, type: OrderDTO, description: 'Direct buy' })
     public async directBuy(
         @UserDecorator() user: ILoggedInUser,

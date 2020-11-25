@@ -110,7 +110,6 @@ export function UserProfile() {
         try {
             if (values.isPassword) {
                 await userClient.updateOwnPassword({
-                    email: values.email,
                     oldPassword: values.currentPassword,
                     newPassword: values.newPassword
                 });
@@ -151,7 +150,7 @@ export function UserProfile() {
             );
 
             await userClient.updateOwnBlockchainAddress({ ...user, blockchainAccountAddress: '' });
-            await userClient.update(signedMessage);
+            await userClient.update({ blockchainAccountSignedMessage: signedMessage });
 
             showNotification(
                 t('settings.feedback.blockchainAccountLinked'),

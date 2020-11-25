@@ -241,9 +241,12 @@ export class UserService {
         });
     }
 
-    async updateBlockChainAddress(id: number | string, user: IUser) {
+    async updateBlockChainAddress(
+        id: number | string,
+        blockchainAccountAddress: IUser['blockchainAccountAddress']
+    ): Promise<IUser> {
         const updateEntity = new User({
-            blockchainAccountAddress: user.blockchainAccountAddress
+            blockchainAccountAddress
         });
 
         const validationErrors = await validate(updateEntity, {
