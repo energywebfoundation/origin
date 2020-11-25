@@ -42,13 +42,14 @@ export function Exchange(props: IProps) {
     const [generationDateEnd, setGenerationDateEnd] = useState<string>();
 
     const fetchData = async (checkIsMounted: () => boolean) => {
-        const { data: fetchedData } = await exchangeClient?.orderbookClient.getByProduct({
+        const orderBookData = await exchangeClient?.orderbookClient.getByProduct({
             deviceType,
             location,
             gridOperator,
             generationFrom: generationDateStart,
             generationTo: generationDateEnd
         });
+        const fetchedData = orderBookData?.data;
 
         if (checkIsMounted()) {
             setData(
