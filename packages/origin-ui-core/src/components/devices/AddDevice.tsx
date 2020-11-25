@@ -180,8 +180,7 @@ export function AddDevice() {
                 files: JSON.stringify(uploadedDocFiles.filenames),
                 externalDeviceIds,
                 gridOperator: (selectedGridOperator && selectedGridOperator[0]) || '',
-                automaticPostForSale: false,
-                defaultAskPrice: null
+                automaticPostForSale: false
             })
         );
         formikActions.setSubmitting(false);

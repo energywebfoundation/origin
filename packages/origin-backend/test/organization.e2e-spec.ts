@@ -103,8 +103,7 @@ describe('Organization e2e tests', () => {
                 deviceGroup: '',
                 smartMeterReads: [],
                 externalDeviceIds: [],
-                automaticPostForSale: false,
-                defaultAskPrice: 0
+                automaticPostForSale: false
             },
             user
         );

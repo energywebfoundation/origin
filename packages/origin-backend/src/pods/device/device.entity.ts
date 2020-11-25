@@ -119,7 +119,7 @@ export class Device extends ExtendedBaseEntity implements IDevice {
     @Column({ nullable: true })
     @IsOptional()
     @IsNumber()
-    defaultAskPrice: number;
+    defaultAskPrice?: number;
 
     @Column({ default: false })
     @IsOptional()

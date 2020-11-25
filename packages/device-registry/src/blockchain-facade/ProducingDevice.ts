@@ -65,7 +65,7 @@ export class Entity implements IDevice {
 
     automaticPostForSale: boolean;
 
-    defaultAskPrice: number;
+    defaultAskPrice?: number;
 
     constructor(public id: number, public configuration: Configuration.Entity, data?: IDevice) {
         if (data) {
@@ -176,7 +176,13 @@ export const createDevice = async (
 ): Promise<Entity> => {
     const producingDevice = new Entity(null, configuration);
 
-    const { data: deviceWithId } = await configuration.deviceClient.createDevice(deviceProperties);
+    const { data: deviceWithId } = await configuration.deviceClient.createDevice({
+        ...deviceProperties,
+        smartMeterReads: deviceProperties.smartMeterReads?.map((smRead) => ({
+            ...smRead,
+            meterReading: smRead.meterReading.toString()
+        }))
+    });
 
     producingDevice.id = deviceWithId.id;
 

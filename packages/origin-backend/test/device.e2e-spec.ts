@@ -58,8 +58,7 @@ describe('Device e2e tests', () => {
             { timestamp: 12000, meterReading: BigNumber.from(300) }
         ],
         externalDeviceIds: [{ id: externalDeviceId, type: process.env.ISSUER_ID }],
-        automaticPostForSale: false,
-        defaultAskPrice: null
+        automaticPostForSale: false
     });
 
     const createDevice = (user: ILoggedInUser, externalDeviceId = '123') =>
@@ -86,10 +85,15 @@ describe('Device e2e tests', () => {
     });
 
     it('should not allow to register device for non-active organization', async () => {
-        const { accessToken } = await registerAndLogin(app, userService, organizationService, [
-            Role.OrganizationUser,
-            Role.OrganizationDeviceManager
-        ]);
+        const { accessToken } = await registerAndLogin(
+            app,
+            userService,
+            organizationService,
+            [Role.OrganizationUser, Role.OrganizationDeviceManager],
+            'default',
+            'default',
+            OrganizationStatus.Submitted
+        );
 
         await request(app.getHttpServer())
             .post('/device')
@@ -138,7 +142,7 @@ describe('Device e2e tests', () => {
         await request(app.getHttpServer())
             .put(`/device/${deviceId}/settings`)
             .set('Authorization', `Bearer ${accessToken}`)
-            .expect(HttpStatus.UNPROCESSABLE_ENTITY);
+            .expect(HttpStatus.BAD_REQUEST);
 
         const settingWithZeroPrice: DeviceSettingsUpdateData = {
             defaultAskPrice: 0,
