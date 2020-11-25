@@ -26,26 +26,37 @@ function* fetchOrdersAndDemands(): SagaIterator {
         yield take(OrdersActionsType.FETCH_ORDERS);
         yield put(clearOrders());
         yield put(clearDemands());
-        const { ordersClient, demandClient }: ExchangeClient = yield select(getExchangeClient);
+
+        const exchangeClient: ExchangeClient = yield select(getExchangeClient);
+        const ordersClient = exchangeClient?.ordersClient;
+        const demandClient = exchangeClient?.demandClient;
         const user: IUser = yield select(getUserOffchain);
-        const orders: Order[] =
+
+        const ordersResponse =
             user && user.status === UserStatus.Active
                 ? yield apply(ordersClient, ordersClient.getMyOrders, null)
-                : [];
-        const demands: Demand[] =
+                : { data: [] };
+        const orders: Order[] = ordersResponse.data;
+
+        const demandsResponse =
             user && user.status === UserStatus.Active
                 ? yield apply(demandClient, demandClient.getAll, null)
-                : [];
+                : { data: [] };
+
+        const demands: Demand[] = demandsResponse.data;
+
         yield put(storeDemand(demands));
-        for (const order of orders) {
-            const { startVolume, currentVolume } = order;
-            const filled =
-                BigNumber.from(startVolume)
-                    .sub(BigNumber.from(currentVolume))
-                    .mul(100)
-                    .div(startVolume)
-                    .toNumber() / 100;
-            yield put(storeOrder({ ...order, filled }));
+        if (orders.length > 0) {
+            for (const order of orders) {
+                const { startVolume, currentVolume } = order;
+                const filled =
+                    BigNumber.from(startVolume)
+                        .sub(BigNumber.from(currentVolume))
+                        .mul(100)
+                        .div(startVolume)
+                        .toNumber() / 100;
+                yield put(storeOrder({ ...order, filled }));
+            }
         }
     }
 }

@@ -152,9 +152,10 @@ function* fetchOffchainUserDetails(): SagaIterator {
 
             if (features.includes(OriginFeature.IRec)) {
                 const { organizationClient } = yield select(getIRecClient);
-                iRecAccount = userOffchain.organization
+                const iRecAccountResponse = userOffchain.organization
                     ? yield call([organizationClient, organizationClient.getRegistrations], [])
-                    : [];
+                    : { data: [] };
+                iRecAccount = iRecAccountResponse.data;
             }
 
             yield put(

@@ -27,30 +27,34 @@ function* fetchBundlesSaga(): SagaIterator {
 
         yield put(clearBundles());
         const { bundleClient }: ExchangeClient = yield select(getExchangeClient);
-
-        const bundles: Bundle[] = yield apply(bundleClient, bundleClient.getAvailableBundles, null);
         const user = yield select(getUserOffchain);
 
-        const ownBundles: Bundle[] =
+        const bundleResponse = yield apply(bundleClient, bundleClient.getAvailableBundles, null);
+        const bundles: Bundle[] = bundleResponse.data;
+
+        const ownBundlesResponse =
             user && user.status === UserStatus.Active
                 ? yield apply(bundleClient, bundleClient.getMyBundles, null)
-                : [];
+                : { data: [] };
+        const ownBundles: Bundle[] = ownBundlesResponse.data;
 
-        for (const bundle of bundles) {
-            bundle.own = ownBundles.find((b) => b.id === bundle.id) !== undefined;
-            bundle.items.forEach((item) => {
-                item.currentVolume = BigNumber.from(item.currentVolume.toString());
-                item.startVolume = BigNumber.from(item.startVolume.toString());
-            });
-            if (
-                bundle.items
-                    .reduce((total, item) => total.add(item.currentVolume), BigNumber.from(0))
-                    .isZero()
-            ) {
-                continue;
+        if (bundles.length > 0) {
+            for (const bundle of bundles) {
+                bundle.own = ownBundles.find((b) => b.id === bundle.id) !== undefined;
+                bundle.items.forEach((item) => {
+                    item.currentVolume = BigNumber.from(item.currentVolume.toString());
+                    item.startVolume = BigNumber.from(item.startVolume.toString());
+                });
+                if (
+                    bundle.items
+                        .reduce((total, item) => total.add(item.currentVolume), BigNumber.from(0))
+                        .isZero()
+                ) {
+                    continue;
+                }
+                bundle.volume = BigNumber.from(bundle.volume.toString());
+                yield put(storeBundle(bundle));
             }
-            bundle.volume = BigNumber.from(bundle.volume.toString());
-            yield put(storeBundle(bundle));
         }
     }
 }
@@ -62,9 +66,9 @@ function* requestCreateBundle() {
         }: ICreateBundleAction = yield take(BundlesActionType.CREATE);
         yield put(setLoading(true));
         const i18n = getI18n();
-        const exchangeClient = yield select(getExchangeClient);
+        const { bundleClient }: ExchangeClient = yield select(getExchangeClient);
         try {
-            yield apply(exchangeClient, exchangeClient.createBundle, [bundleDTO]);
+            yield apply(bundleClient, bundleClient.createBundle, [bundleDTO]);
             showNotification(
                 i18n.t('certificate.feedback.bundle_created'),
                 NotificationType.Success
@@ -85,9 +89,9 @@ function* buyBundle() {
         } = yield take(BundlesActionType.BUY);
         yield put(setLoading(true));
         const i18n = getI18n();
-        const exchangeClient = yield select(getExchangeClient);
+        const { bundleClient }: ExchangeClient = yield select(getExchangeClient);
         try {
-            yield apply(exchangeClient, exchangeClient.buyBundle, [bundleDTO]);
+            yield apply(bundleClient, bundleClient.buyBundle, [bundleDTO]);
             showNotification(
                 i18n.t('certificate.feedback.bundle_bought'),
                 NotificationType.Success
