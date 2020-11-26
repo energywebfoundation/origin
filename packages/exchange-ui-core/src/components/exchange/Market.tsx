@@ -12,7 +12,8 @@ import {
     DeviceSelectors,
     LightenColor
 } from '@energyweb/origin-ui-core';
-import { calculateTotalPrice, ANY_VALUE, ANY_OPERATOR, TimeFrame } from '../../utils/exchange';
+import { TimeFrame } from '@energyweb/utils-general';
+import { calculateTotalPrice, ANY_VALUE, ANY_OPERATOR } from '../../utils/exchange';
 import { OneTimePurchase } from './OneTimePurchase';
 import { RepeatedPurchase } from './RepeatedPurchase';
 import { useOriginConfiguration } from '../../utils/configuration';
@@ -40,7 +41,7 @@ const INITIAL_FORM_VALUES: IMarketFormValues = {
     deviceType: [ANY_VALUE],
     location: [ANY_VALUE],
     gridOperator: [ANY_OPERATOR],
-    demandPeriod: 2,
+    demandPeriod: TimeFrame.Daily,
     demandVolume: '',
     demandDateStart: null,
     demandDateEnd: null,

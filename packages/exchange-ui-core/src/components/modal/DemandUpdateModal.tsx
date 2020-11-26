@@ -22,9 +22,10 @@ import {
     getCurrencies,
     LightenColor
 } from '@energyweb/origin-ui-core';
+import { DemandStatus, TimeFrame } from '@energyweb/utils-general';
 import { updateDemand, pauseDemand, resumeDemand } from '../../features/orders/actions';
 import { periodTypeOptions } from '../../utils/demand';
-import { Demand, DemandStatus, TimeFrame, IProductDTO, Order } from '../../utils/exchange';
+import { Demand, IProductDTO, Order } from '../../utils/exchange';
 import { CalendarFieldOnPeriod, FormInput, FormSelect } from '../Form';
 import { TotalDemandVolume } from '../orders/TotalDemandVolume';
 import { useOriginConfiguration } from '../../utils/configuration';
@@ -45,7 +46,7 @@ interface IFormValues {
 const INITIAL_FORM_VALUES: IFormValues = {
     userId: '',
     id: '',
-    periodTimeFrame: 2,
+    periodTimeFrame: TimeFrame.Daily,
     start: null,
     end: null,
     volumePerPeriod: '',
@@ -98,8 +99,8 @@ export function DemandUpdateModal(props: IProps) {
                     parseFloat(values.volumePerPeriod)
                 ).toString(),
                 periodTimeFrame: values.periodTimeFrame,
-                start: values.start,
-                end: values.end,
+                start: values.start.toISOString(),
+                end: values.end.toISOString(),
                 product: values.product,
                 boundToGenerationTime: false,
                 excludeEnd: false
