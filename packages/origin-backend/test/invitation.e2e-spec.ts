@@ -149,7 +149,7 @@ describe('Invitation e2e tests', () => {
                 email: 'random@example.com',
                 role: Role.OrganizationDeviceManager | Role.SupportAgent
             })
-            .expect(HttpStatus.BAD_REQUEST);
+            .expect(HttpStatus.FORBIDDEN);
     });
 
     it('should not allow to accept invitation by the user that is already part of the other organization', async () => {
