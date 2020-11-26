@@ -25,7 +25,7 @@ export class Device extends ExtendedBaseEntity implements IDevice {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column()
+    @Column({ nullable: false, default: DeviceStatus.Submitted })
     @IsNotEmpty()
     @IsEnum(DeviceStatus)
     status: DeviceStatus;
