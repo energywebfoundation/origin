@@ -92,10 +92,10 @@ export class InvitationController {
         description: 'Invites a user'
     })
     async invite(
-        @Body() dto: InviteDTO,
+        @Body() { email, role }: InviteDTO,
         @UserDecorator() loggedUser: ILoggedInUser
     ): Promise<SuccessResponseDTO> {
-        if (!isEmail(dto.email)) {
+        if (!isEmail(email)) {
             throw new BadRequestException(ResponseFailure('Provided email address is incorrect'));
         }
 
@@ -106,7 +106,7 @@ export class InvitationController {
         }
 
         try {
-            ensureOrganizationRole(dto.role);
+            ensureOrganizationRole(role as Role);
         } catch (e) {
             throw new ForbiddenException(
                 ResponseFailure('Unknown role was requested for the invitee')
@@ -114,7 +114,7 @@ export class InvitationController {
         }
 
         try {
-            await this.organizationInvitationService.invite(loggedUser, dto.email, dto.role);
+            await this.organizationInvitationService.invite(loggedUser, email, role);
         } catch (error) {
             this.logger.error(error.toString());
 

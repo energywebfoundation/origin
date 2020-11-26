@@ -57,7 +57,7 @@ export function ChangeRoleModal(props: IProps) {
 
         try {
             await organizationClient.changeMemberRole(userOffchain.organization.id, user.id, {
-                role: selectedRole
+                role: Number(selectedRole)
             });
 
             showNotification(`User role updated.`, NotificationType.Success);

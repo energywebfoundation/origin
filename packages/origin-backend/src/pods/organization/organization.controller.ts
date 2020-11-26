@@ -38,16 +38,16 @@ import { ApiBearerAuth, ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { StorageErrors } from '../../enums/StorageErrors';
 import { Device } from '../device/device.entity';
 import { User } from '../user';
-import { NewOrganizationDTO } from './new-organization.dto';
-import { OrganizationInvitationDTO } from './organization-invitation.dto';
+import { NewOrganizationDTO } from './dto/new-organization.dto';
+import { OrganizationInvitationDTO } from './dto/organization-invitation.dto';
 import { OrganizationService } from './organization.service';
-import { FullOrganizationInfoDTO } from './full-organization-info.dto';
-import { PublicOrganizationInfoDTO } from './public-organization-info.dto';
+import { FullOrganizationInfoDTO } from './dto/full-organization-info.dto';
+import { PublicOrganizationInfoDTO } from './dto/public-organization-info.dto';
 import { OrganizationNameAlreadyTakenError } from './organization-name-taken.error';
 import { OrganizationDocumentOwnershipMismatchError } from './organization-document-ownership-mismatch.error';
 import { SuccessResponseDTO } from '../../utils/success-response.dto';
-import { OrganizationUpdateDTO } from './organization-update.dto';
-import { UpdateMemberDTO } from './organization-update-member.dto';
+import { OrganizationUpdateDTO } from './dto/organization-update.dto';
+import { UpdateMemberDTO } from './dto/organization-update-member.dto';
 
 @ApiTags('organization')
 @ApiBearerAuth('access-token')

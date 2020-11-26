@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Expose, plainToClass } from 'class-transformer';
 import { IsArray, IsNumber, IsString } from 'class-validator';
-import { Organization } from './organization.entity';
+import { Organization } from '../organization.entity';
 import { PublicOrganizationInfoDTO } from './public-organization-info.dto';
 
 export class FullOrganizationInfoDTO extends PublicOrganizationInfoDTO {

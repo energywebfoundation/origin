@@ -1,8 +1,6 @@
 import {
     IOrganizationInvitation,
-    OrganizationInvitationStatus,
-    OrganizationRole,
-    Role
+    OrganizationInvitationStatus
 } from '@energyweb/origin-backend-core';
 import { ApiProperty } from '@nestjs/swagger';
 import { IsDate, IsEnum, IsNotEmpty, IsNumber, IsString, ValidateNested } from 'class-validator';
@@ -19,9 +17,10 @@ export class InvitationDTO implements IOrganizationInvitation {
     @IsString()
     email: string;
 
-    @ApiProperty({ enum: Role, enumName: 'Role' })
-    @IsEnum(Role)
-    role: OrganizationRole;
+    @ApiProperty({ type: Number })
+    @IsNotEmpty()
+    @IsNumber()
+    role: number;
 
     @ApiProperty({ enum: OrganizationInvitationStatus, enumName: 'OrganizationInvitationStatus' })
     @IsEnum(OrganizationInvitationStatus)
