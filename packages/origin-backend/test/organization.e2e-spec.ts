@@ -9,9 +9,9 @@ import crypto from 'crypto';
 
 import { Device } from '../src/pods/device/device.entity';
 import { DeviceService } from '../src/pods/device/device.service';
-import { OrganizationInvitationDTO } from '../src/pods/organization/organization-invitation.dto';
+import { OrganizationInvitationDTO } from '../src/pods/organization/dto/organization-invitation.dto';
 import { OrganizationService } from '../src/pods/organization/organization.service';
-import { PublicOrganizationInfoDTO } from '../src/pods/organization/public-organization-info.dto';
+import { PublicOrganizationInfoDTO } from '../src/pods/organization/dto/public-organization-info.dto';
 import { TUserBaseEntity, UserService } from '../src/pods/user';
 import {
     bootstrapTestInstance,

@@ -2,7 +2,7 @@ import { IPublicOrganization, OrganizationStatus } from '@energyweb/origin-backe
 import { ApiProperty } from '@nestjs/swagger';
 import { Expose, plainToClass } from 'class-transformer';
 import { IsEnum, IsInt, IsNumber, IsString, Min } from 'class-validator';
-import { Organization } from './organization.entity';
+import { Organization } from '../organization.entity';
 
 export class PublicOrganizationInfoDTO implements IPublicOrganization {
     @ApiProperty({ type: Number })
