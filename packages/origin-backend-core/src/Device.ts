@@ -2,9 +2,9 @@ import { BigNumber } from 'ethers';
 import { IPublicOrganization } from '.';
 
 export enum DeviceStatus {
-    Submitted,
-    Denied,
-    Active
+    Submitted = 'Submitted',
+    Denied = 'Denied',
+    Active = 'Active'
 }
 
 export interface IExternalDeviceId {
@@ -79,7 +79,6 @@ export interface IDevice extends IDeviceProductInfo {
 }
 
 export type DeviceCreateData = Omit<IDevice, 'id' | 'meterStats' | 'organization'>;
-export type DeviceUpdateData = Pick<IDevice, 'status'>;
 export type DeviceSettingsUpdateData = Pick<IDevice, 'defaultAskPrice' | 'automaticPostForSale'>;
 
 export const sortLowestToHighestTimestamp = (

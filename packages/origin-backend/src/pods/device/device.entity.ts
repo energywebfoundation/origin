@@ -8,9 +8,15 @@ import {
     IsNumber,
     IsString,
     IsBoolean,
-    IsOptional
+    IsOptional,
+    IsEnum
 } from 'class-validator';
-import { ISmartMeterRead, IExternalDeviceId, IDevice } from '@energyweb/origin-backend-core';
+import {
+    ISmartMeterRead,
+    IExternalDeviceId,
+    IDevice,
+    DeviceStatus
+} from '@energyweb/origin-backend-core';
 import { ExtendedBaseEntity } from '@energyweb/origin-backend-utils';
 import { Organization } from '../organization/organization.entity';
 
@@ -19,9 +25,10 @@ export class Device extends ExtendedBaseEntity implements IDevice {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column()
-    @IsNumber()
-    status: number;
+    @Column({ nullable: false, default: DeviceStatus.Submitted })
+    @IsNotEmpty()
+    @IsEnum(DeviceStatus)
+    status: DeviceStatus;
 
     @Column()
     @IsString()
