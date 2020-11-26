@@ -1,7 +1,7 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class Missing1606392577731 implements MigrationInterface {
-    name = 'Missing1606392577731';
+export class Missing1606398398167 implements MigrationInterface {
+    name = 'Missing1606398398167';
 
     public async up(queryRunner: QueryRunner): Promise<void> {
         await queryRunner.query(
@@ -32,10 +32,10 @@ export class Missing1606392577731 implements MigrationInterface {
             `ALTER TABLE "exchange_bundle_item" ADD CONSTRAINT "FK_ea7ef2648aeb57594f559a0d668" FOREIGN KEY ("assetId") REFERENCES "exchange_asset"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`
         );
         await queryRunner.query(
-            `ALTER TABLE "exchange_bundle_item" ADD CONSTRAINT "FK_55826177a962458e9f24c461bea" FOREIGN KEY ("bundleId") REFERENCES "bundle"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`
+            `ALTER TABLE "exchange_bundle_item" ADD CONSTRAINT "FK_55826177a962458e9f24c461bea" FOREIGN KEY ("bundleId") REFERENCES "exchange_bundle"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`
         );
         await queryRunner.query(
-            `ALTER TABLE "exchange_bundle_trade" ADD CONSTRAINT "FK_f6c1dd61858ecd0d3e2b3c5203b" FOREIGN KEY ("bundleId") REFERENCES "bundle"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`
+            `ALTER TABLE "exchange_bundle_trade" ADD CONSTRAINT "FK_f6c1dd61858ecd0d3e2b3c5203b" FOREIGN KEY ("bundleId") REFERENCES "exchange_bundle"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`
         );
         await queryRunner.query(
             `ALTER TABLE "exchange_trade" ADD CONSTRAINT "FK_32312824accf2673abf808cc917" FOREIGN KEY ("bidId") REFERENCES "exchange_order"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`
@@ -95,10 +95,10 @@ export class Missing1606392577731 implements MigrationInterface {
             `ALTER TABLE "exchange_trade" ADD CONSTRAINT "FK_9cb1744cacf77d85709606bb70e" FOREIGN KEY ("askId") REFERENCES "exchange_order"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`
         );
         await queryRunner.query(
-            `ALTER TABLE "exchange_bundle_trade" ADD CONSTRAINT "FK_84d0a546dc26d9d4d0a1f484492" FOREIGN KEY ("bundleId") REFERENCES "bundle"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`
+            `ALTER TABLE "exchange_bundle_trade" ADD CONSTRAINT "FK_84d0a546dc26d9d4d0a1f484492" FOREIGN KEY ("bundleId") REFERENCES "exchange_bundle"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`
         );
         await queryRunner.query(
-            `ALTER TABLE "exchange_bundle_item" ADD CONSTRAINT "FK_21f62678875562cfa8afe7257a2" FOREIGN KEY ("bundleId") REFERENCES "bundle"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`
+            `ALTER TABLE "exchange_bundle_item" ADD CONSTRAINT "FK_21f62678875562cfa8afe7257a2" FOREIGN KEY ("bundleId") REFERENCES "exchange_bundle"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`
         );
         await queryRunner.query(
             `ALTER TABLE "exchange_bundle_item" ADD CONSTRAINT "FK_45559b6111bf0664b49243bc67c" FOREIGN KEY ("assetId") REFERENCES "exchange_asset"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`
