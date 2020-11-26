@@ -5,7 +5,7 @@ import fs from 'fs';
 import moment from 'moment-timezone';
 
 import { IRECAPIClient } from '../src/IRECAPIClient';
-import { ApproveIssue, Issue } from '../src/Issue';
+import { ApproveIssue } from '../src/Issue';
 import { Product } from '../src/Product';
 import { Redemption, ReservationItem } from '../src/Transfer';
 import { Fuel, FuelType } from '../src/Fuel';
@@ -84,17 +84,16 @@ describe('IRECAPIClient tests', () => {
             (a, b) => b.asset.end.getTime() - a.asset.end.getTime()
         );
 
-        const request = new Issue();
-        request.device = 'DEVICE001';
-        request.recipient = tradeAccount;
-        request.start = moment(lastItem.asset.end).add(1, 'day').toDate();
-        request.end = moment(lastItem.asset.end).add(2, 'day').toDate();
-        request.production = 100;
-        request.fuel = 'ES200';
-
         const beforeTransactions = await client.account.getTransactions(tradeAccount);
 
-        const code = await client.issue.create(request);
+        const code = await client.issue.create({
+            device: 'DEVICE001',
+            recipient: tradeAccount,
+            start: moment(lastItem.asset.end).add(1, 'day').toDate(),
+            end: moment(lastItem.asset.end).add(2, 'day').toDate(),
+            production: 100,
+            fuel: 'ES200'
+        });
 
         await client.issue.submit(code, 'Note');
         await client.issue.verify(code, 'Note');

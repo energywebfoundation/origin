@@ -1,17 +1,20 @@
 /* eslint-disable no-unused-expressions */
 import { expect } from 'chai';
+import moment from 'moment';
 import dotenv from 'dotenv';
 import { validateOrReject } from 'class-validator';
 
 import { IRECAPIClient } from '../src/IRECAPIClient';
 import { Device, DeviceCreateUpdateParams, DeviceState } from '../src/Device';
+import { IssueStatus, IssueWithStatus } from '../src/Issue';
 
 dotenv.config();
 
-describe('Device API tests', () => {
+describe('API flows', () => {
     let client: IRECAPIClient;
 
     const tradeAccount = 'ACCOUNTTRADE001';
+    const issueAccount = 'ACCOUNTISSUE001';
 
     before(async () => {
         client = new IRECAPIClient(process.env.IREC_API_URL);
@@ -39,7 +42,7 @@ describe('Device API tests', () => {
             latitude: 53.405088,
             longitude: -1.744222,
             name: 'DeviceXYZ',
-            notes: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+            notes: 'Lorem ipsum dolor sit amet',
             registrantOrganization: 'ORGANISATION001',
             registrationDate: new Date('2001-09-20')
         };
@@ -79,5 +82,45 @@ describe('Device API tests', () => {
         expect(device.capacity).to.equal(1000);
         expect(device.name).to.equal('DeviceZZZ');
         expect(device.status).to.equal(DeviceState.Draft);
+    }).timeout(10000);
+
+    it('should pass create and approve issue flow', async () => {
+        const devices: Device[] = await client.device.getAll();
+        const approvedDevice = devices.find((device) => device.status === DeviceState.Approved);
+
+        const issueCode: string = await client.issue.create({
+            device: approvedDevice.code,
+            recipient: tradeAccount,
+            start: moment().add(1, 'day').toDate(),
+            end: moment().add(2, 'day').toDate(),
+            production: 10,
+            fuel: approvedDevice.fuel.code
+        });
+
+        let issue: IssueWithStatus = await client.issue.get(issueCode);
+        expect(issue.code).to.equal(issueCode);
+        expect(issue.status).to.equal(IssueStatus.Draft);
+
+        await client.issue.submit(issueCode);
+        issue = await client.issue.get(issueCode);
+        expect(issue.status).to.equal(IssueStatus.Submitted);
+
+        await client.issue.verify(issueCode);
+        issue = await client.issue.get(issueCode);
+        expect(issue.status).to.equal(IssueStatus.Verified);
+
+        await client.issue.refer(issueCode);
+        issue = await client.issue.get(issueCode);
+        expect(issue.status).to.equal(IssueStatus.Referred);
+
+        await client.issue.reject(issueCode);
+        issue = await client.issue.get(issueCode);
+        expect(issue.status).to.equal(IssueStatus.Rejected);
+
+        await client.issue.submit(issueCode);
+        await client.issue.verify(issueCode);
+        await client.issue.approve(issueCode, { issuer: issueAccount, notes: 'it is ok' });
+        issue = await client.issue.get(issueCode);
+        expect(issue.status).to.equal(IssueStatus.Approved);
     }).timeout(10000);
 });

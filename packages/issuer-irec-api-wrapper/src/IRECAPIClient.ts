@@ -133,13 +133,14 @@ export class IRECAPIClient {
 
         return {
             create: async (issue: Issue): Promise<string> => {
+                const issueParams = issue instanceof Issue ? issue : plainToClass(Issue, issue);
                 await validateOrReject(issue);
 
                 const url = `${issueManagementUrl}/create`;
 
                 const response = await axios.post<{ code: string }>(
                     url,
-                    classToPlain(issue),
+                    classToPlain(issueParams),
                     this.config
                 );
 
@@ -151,6 +152,13 @@ export class IRECAPIClient {
                 const url = `${issueManagementUrl}/${code}/edit`;
 
                 await axios.put(url, classToPlain(issue), this.config);
+            },
+            get: async (code: string): Promise<IssueWithStatus> => {
+                const url = `${issueManagementUrl}/${code}`;
+
+                const response = await axios.get<unknown>(url, this.config);
+
+                return plainToClass(IssueWithStatus, response.data);
             },
             submit: async (code: string, notes?: string): Promise<void> => {
                 await setState(code, 'submit', notes);

@@ -64,5 +64,7 @@ export class ApproveIssue {
 }
 
 export class IssueWithStatus extends Issue {
+    code: string;
+
     status: IssueStatus;
 }
