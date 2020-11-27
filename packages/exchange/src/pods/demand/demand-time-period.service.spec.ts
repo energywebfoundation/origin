@@ -11,7 +11,7 @@ describe('DemandTimePeriodService', () => {
     const mockCreateDemandDTO: CreateDemandDTO = {
         price: 100,
         volumePerPeriod: '1000',
-        periodTimeFrame: TimeFrame.monthly,
+        periodTimeFrame: TimeFrame.Monthly,
         start: moment('01-2020', 'MM-YYYY').startOf('month').toDate(),
         end: moment('03-2020', 'MM-YYYY').endOf('month').toDate(),
         product: {},
