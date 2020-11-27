@@ -19,7 +19,7 @@ import {
     OrganizationRegisteredEvent,
     OrganizationStatusChangedEvent
 } from './events';
-import { NewOrganizationDTO } from './new-organization.dto';
+import { NewOrganizationDTO } from './dto/new-organization.dto';
 import { OrganizationDocumentOwnershipMismatchError } from './organization-document-ownership-mismatch.error';
 import { OrganizationNameAlreadyTakenError } from './organization-name-taken.error';
 import { Organization } from './organization.entity';

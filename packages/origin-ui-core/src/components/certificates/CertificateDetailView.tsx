@@ -162,7 +162,7 @@ export function CertificateDetailView(props: IProps) {
 
     let data: Array<{
         label: string;
-        data: string;
+        data: string | string[];
         link?: string;
     }>[];
 
@@ -258,23 +258,28 @@ export function CertificateDetailView(props: IProps) {
         ];
 
         if (selectedCertificate.isClaimed) {
-            const [claim] = selectedCertificate.myClaims;
+            const claims = selectedCertificate.myClaims.map((c) => c.claimData);
+            const uniqueClaims = [...new Set(claims)];
 
             const claimInfo = [
                 {
                     label: `${t('certificate.properties.claimedEnergy')} (${
                         EnergyFormatter.displayUnit
                     })`,
-                    data: EnergyFormatter.format(selectedCertificate.energy.claimedVolume)
+                    data: EnergyFormatter.format(selectedCertificate.energy.claimedVolume) || ['']
                 }
             ];
 
-            if (claim.claimData) {
-                claimInfo.push({
-                    label: t('certificate.properties.claimBeneficiary'),
-                    data: Object.values(claim.claimData)
+            if (uniqueClaims.length > 0) {
+                const fieldData = uniqueClaims.map((oneBeneficiary) =>
+                    Object.values(oneBeneficiary)
                         .filter((value) => value !== '')
                         .join(', ')
+                );
+
+                claimInfo.push({
+                    label: t('certificate.properties.claimBeneficiary'),
+                    data: fieldData
                 });
             }
 
@@ -304,7 +309,29 @@ export function CertificateDetailView(props: IProps) {
                                                         className="Data"
                                                         style={{ color: originSimpleTextColor }}
                                                     >
-                                                        {col.data}
+                                                        {typeof col.data === 'string' ? (
+                                                            col.data
+                                                        ) : (
+                                                            <>
+                                                                {col.data.length > 1 ? (
+                                                                    <ol
+                                                                        style={{
+                                                                            paddingLeft: '10px'
+                                                                        }}
+                                                                    >
+                                                                        {col.data.map(
+                                                                            (text, idx) => (
+                                                                                <li key={idx}>
+                                                                                    {text}
+                                                                                </li>
+                                                                            )
+                                                                        )}
+                                                                    </ol>
+                                                                ) : (
+                                                                    col.data[0]
+                                                                )}
+                                                            </>
+                                                        )}
                                                     </div>
                                                 </td>
                                             ))}

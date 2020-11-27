@@ -104,31 +104,27 @@ function* requestCertificatesSaga(): SagaIterator {
         const { startTime, endTime, energy, files, deviceId } = action.payload;
 
         try {
-            const shouldContinue: boolean = yield call(assertCorrectBlockchainAccount);
+            const certificationRequestsClient: CertificationRequestsClient = yield select(
+                getCertificationRequestsClient
+            );
+            const { accountClient }: ExchangeClient = yield select(getExchangeClient);
+            const {
+                data: { address }
+            } = yield call([accountClient, accountClient.getAccount]);
 
-            if (shouldContinue) {
-                const certificationRequestsClient: CertificationRequestsClient = yield select(
-                    getCertificationRequestsClient
-                );
-                const { accountClient }: ExchangeClient = yield select(getExchangeClient);
-                const {
-                    data: { address }
-                } = yield call([accountClient, accountClient.getAccount]);
+            yield apply(certificationRequestsClient, certificationRequestsClient.create, [
+                {
+                    to: address,
+                    energy: energy.toString(),
+                    fromTime: startTime,
+                    toTime: endTime,
+                    deviceId,
+                    files,
+                    isPrivate: false
+                }
+            ]);
 
-                yield apply(certificationRequestsClient, certificationRequestsClient.create, [
-                    {
-                        to: address,
-                        energy: energy.toString(),
-                        fromTime: startTime,
-                        toTime: endTime,
-                        deviceId,
-                        files,
-                        isPrivate: false
-                    }
-                ]);
-
-                showNotification(`Certificates requested.`, NotificationType.Success);
-            }
+            showNotification(`Certificates requested.`, NotificationType.Success);
         } catch (error) {
             console.warn('Error while requesting certificates', error);
 
@@ -260,12 +256,6 @@ function* requestPublishForSaleSaga(): SagaIterator {
         const { accountClient, transferClient, ordersClient }: ExchangeClient = yield select(
             getExchangeClient
         );
-
-        const shouldContinue: boolean = yield call(assertCorrectBlockchainAccount);
-
-        if (!shouldContinue) {
-            continue;
-        }
 
         const certificatesClient: CertificatesClient = yield select(getCertificatesClient);
 
@@ -491,12 +481,6 @@ function* requestCertificateApprovalSaga(): SagaIterator {
         const action: IRequestCertificateApprovalAction = yield take(
             CertificatesActions.requestCertificateApproval
         );
-
-        const shouldContinue: boolean = yield call(assertCorrectBlockchainAccount);
-
-        if (!shouldContinue) {
-            continue;
-        }
 
         const certificationRequestsClient: CertificationRequestsClient = yield select(
             getCertificationRequestsClient

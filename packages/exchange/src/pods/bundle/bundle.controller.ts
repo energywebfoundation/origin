@@ -110,6 +110,7 @@ export class BundleController {
     }
 
     @Put('/buy')
+    @ApiBody({ type: BuyBundleDTO })
     @UseGuards(AuthGuard(), ActiveUserGuard)
     @ApiResponse({ status: HttpStatus.OK, type: BundleTrade, description: 'Buy a bundle' })
     public async buyBundle(

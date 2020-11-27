@@ -141,7 +141,7 @@ export function Market(props: IProps) {
                                         {t('exchange.info.market')}
                                     </Typography>
 
-                                    <Grid container spacing={3}>
+                                    <Grid container spacing={1}>
                                         <Grid item xs={12}>
                                             <HierarchicalMultiSelect
                                                 selectedValue={values.deviceType}

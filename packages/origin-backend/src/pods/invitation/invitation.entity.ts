@@ -1,5 +1,5 @@
 import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
-import { IsEmail, IsString } from 'class-validator';
+import { IsEmail, IsEnum, IsString } from 'class-validator';
 import {
     IOrganizationInvitation,
     OrganizationInvitationStatus,
@@ -20,9 +20,11 @@ export class Invitation extends ExtendedBaseEntity implements IOrganizationInvit
     email: string;
 
     @Column({ default: Role.OrganizationUser })
+    @IsEnum(Role)
     role: OrganizationRole;
 
     @Column()
+    @IsEnum(OrganizationInvitationStatus)
     status: OrganizationInvitationStatus;
 
     @Column()

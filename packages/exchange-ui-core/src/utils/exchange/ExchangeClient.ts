@@ -48,6 +48,7 @@ export class ExchangeClient extends BaseClient {
         this.demandClient = new DemandClient(config, this.backendUrl);
         this.orderbookClient = new OrderbookClient(config, this.backendUrl);
         this.ordersClient = new OrdersClient(config, this.backendUrl);
+        this.tradeClient = new TradeClient(config, this.backendUrl);
         this.transferClient = new TransferClient(config, this.backendUrl);
     }
 }

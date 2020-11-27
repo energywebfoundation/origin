@@ -1,9 +1,7 @@
 import {
     ensureOrganizationRole,
     ILoggedInUser,
-    IOrganizationUpdateMemberRole,
     isRole,
-    OrganizationUpdateData,
     ResponseFailure,
     ResponseSuccess,
     Role
@@ -36,18 +34,20 @@ import {
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 
-import { ApiBearerAuth, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { StorageErrors } from '../../enums/StorageErrors';
 import { Device } from '../device/device.entity';
 import { User } from '../user';
-import { NewOrganizationDTO } from './new-organization.dto';
-import { OrganizationInvitationDTO } from './organization-invitation.dto';
+import { NewOrganizationDTO } from './dto/new-organization.dto';
+import { OrganizationInvitationDTO } from './dto/organization-invitation.dto';
 import { OrganizationService } from './organization.service';
-import { FullOrganizationInfoDTO } from './full-organization-info.dto';
-import { PublicOrganizationInfoDTO } from './public-organization-info.dto';
+import { FullOrganizationInfoDTO } from './dto/full-organization-info.dto';
+import { PublicOrganizationInfoDTO } from './dto/public-organization-info.dto';
 import { OrganizationNameAlreadyTakenError } from './organization-name-taken.error';
 import { OrganizationDocumentOwnershipMismatchError } from './organization-document-ownership-mismatch.error';
 import { SuccessResponseDTO } from '../../utils/success-response.dto';
+import { OrganizationUpdateDTO } from './dto/organization-update.dto';
+import { UpdateMemberDTO } from './dto/organization-update-member.dto';
 
 @ApiTags('organization')
 @ApiBearerAuth('access-token')
@@ -166,6 +166,7 @@ export class OrganizationController {
     @Post()
     @UseGuards(AuthGuard())
     @Roles(Role.OrganizationAdmin)
+    @ApiBody({ type: NewOrganizationDTO })
     @ApiResponse({
         status: HttpStatus.CREATED,
         type: FullOrganizationInfoDTO,
@@ -228,6 +229,7 @@ export class OrganizationController {
     @Put('/:id')
     @UseGuards(AuthGuard(), ActiveUserGuard, RolesGuard)
     @Roles(Role.Admin)
+    @ApiBody({ type: OrganizationUpdateDTO })
     @ApiResponse({
         status: HttpStatus.OK,
         type: SuccessResponseDTO,
@@ -235,7 +237,7 @@ export class OrganizationController {
     })
     async update(
         @Param('id', new ParseIntPipe()) organizationId: number,
-        @Body() body: OrganizationUpdateData
+        @Body() body: OrganizationUpdateDTO
     ): Promise<SuccessResponseDTO> {
         const organization = await this.organizationService.findOne(organizationId);
 
@@ -284,7 +286,7 @@ export class OrganizationController {
     @Put(':id/change-role/:userId')
     @UseGuards(AuthGuard(), ActiveUserGuard, RolesGuard)
     @Roles(Role.OrganizationAdmin, Role.Admin)
-    @ApiParam({ name: 'role', enum: Role, enumName: 'Role' })
+    @ApiBody({ type: UpdateMemberDTO })
     @ApiResponse({
         status: HttpStatus.OK,
         type: SuccessResponseDTO,
@@ -293,7 +295,7 @@ export class OrganizationController {
     async changeMemberRole(
         @Param('id', new ParseIntPipe()) organizationId: number,
         @Param('userId', new ParseIntPipe()) memberId: number,
-        @Body() { role }: IOrganizationUpdateMemberRole,
+        @Body() { role }: UpdateMemberDTO,
         @UserDecorator() loggedUser: ILoggedInUser
     ): Promise<SuccessResponseDTO> {
         this.ensureOrganizationMemberOrAdmin(loggedUser, organizationId);
