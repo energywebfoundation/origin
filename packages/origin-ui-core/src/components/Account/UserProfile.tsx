@@ -214,10 +214,6 @@ export function UserProfile() {
                 const { isSubmitting, touched, values } = formikProps;
                 const fieldDisabled = isSubmitting;
 
-                console.log({
-                    values
-                });
-
                 return (
                     <>
                         <Form translate="no">
