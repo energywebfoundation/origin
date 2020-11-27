@@ -28,6 +28,20 @@ interface IFormValues {
     ceoPassportNumber: string;
     balanceSheetTotal: string;
     subsidiaries?: string;
+    primaryContactOrganizationName: string;
+    primaryContactOrganizationAddress: string;
+    primaryContactOrganizationPostalCode: string;
+    primaryContactOrganizationCountry: string;
+    primaryContactName: string;
+    primaryContactEmail: string;
+    primaryContactPhoneNumber: string;
+    primaryContactFax: string;
+    leadUserTitle: string;
+    leadUserFirstName: string;
+    leadUserLastName: string;
+    leadUserEmail: string;
+    leadUserPhoneNumber: string;
+    leadUserFax: string;
 }
 
 const INITIAL_VALUES: IFormValues = {
@@ -42,7 +56,21 @@ const INITIAL_VALUES: IFormValues = {
     ceoName: '',
     ceoPassportNumber: '',
     balanceSheetTotal: '',
-    subsidiaries: ''
+    subsidiaries: '',
+    primaryContactOrganizationName: '',
+    primaryContactOrganizationAddress: '',
+    primaryContactOrganizationPostalCode: '',
+    primaryContactOrganizationCountry: '',
+    primaryContactName: '',
+    primaryContactEmail: '',
+    primaryContactPhoneNumber: '',
+    primaryContactFax: '',
+    leadUserTitle: '',
+    leadUserFirstName: '',
+    leadUserLastName: '',
+    leadUserEmail: '',
+    leadUserPhoneNumber: '',
+    leadUserFax: ''
 };
 
 export const IRECRegisterForm = () => {
