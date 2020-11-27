@@ -1,7 +1,4 @@
 import {
-    DeviceCreateData,
-    DeviceSettingsUpdateData,
-    DeviceUpdateData,
     IDevice,
     ILoggedInUser,
     ISmartMeterRead,
@@ -51,12 +48,15 @@ import {
 import { StorageErrors } from '../../enums/StorageErrors';
 import { Organization } from '../organization/organization.entity';
 import { OrganizationService } from '../organization/organization.service';
-import { PublicOrganizationInfoDTO } from '../organization/public-organization-info.dto';
+import { PublicOrganizationInfoDTO } from '../organization/dto/public-organization-info.dto';
 import { Device } from './device.entity';
 import { DeviceService } from './device.service';
-import { DeviceDTO } from './device.dto';
+import { DeviceDTO } from './dto/device.dto';
 import { SuccessResponseDTO } from '../../utils/success-response.dto';
-import { SmartMeterReadDTO } from './smart-meter-readings.dto';
+import { SmartMeterReadDTO } from './dto/smart-meter-readings.dto';
+import { CreateDeviceDTO } from './dto/create-device.dto';
+import { DeviceSettingsUpdateDTO } from './dto/device-settings-update.dto';
+import { UpdateDeviceStatusDTO } from './dto/update-device-status.dto';
 
 @ApiTags('device')
 @ApiBearerAuth('access-token')
@@ -142,6 +142,7 @@ export class DeviceController {
     @Post()
     @UseGuards(AuthGuard(), ActiveUserGuard, RolesGuard)
     @Roles(Role.OrganizationAdmin, Role.OrganizationDeviceManager)
+    @ApiBody({ type: CreateDeviceDTO })
     @ApiResponse({ status: HttpStatus.CREATED, type: DeviceDTO, description: 'Creates a Device' })
     @ApiForbiddenResponse({
         status: HttpStatus.FORBIDDEN,
@@ -152,7 +153,7 @@ export class DeviceController {
         description: 'Incorrect inputs'
     })
     async createDevice(
-        @Body() body: DeviceCreateData,
+        @Body() body: CreateDeviceDTO,
         @UserDecorator() loggedUser: ILoggedInUser
     ): Promise<DeviceDTO> {
         if (typeof loggedUser.organizationId === 'undefined') {
@@ -217,16 +218,18 @@ export class DeviceController {
     @Put('/:id')
     @UseGuards(AuthGuard(), ActiveUserGuard, RolesGuard)
     @Roles(Role.Issuer, Role.Admin)
+    @ApiBody({ type: UpdateDeviceStatusDTO })
     @ApiResponse({
         status: HttpStatus.OK,
         type: DeviceDTO,
         description: `Updates a device's status`
     })
+    @ApiNotFoundResponse({ description: 'Non existent device', type: SuccessResponseDTO })
     async updateDeviceStatus(
         @Param('id') id: string,
-        @Body() body: DeviceUpdateData
+        @Body() { status }: UpdateDeviceStatusDTO
     ): Promise<DeviceDTO> {
-        const device = await this.deviceService.updateStatus(id, body);
+        const device = await this.deviceService.updateStatus(id, status);
 
         return this.serializeDevices([device]).pop();
     }
@@ -234,6 +237,7 @@ export class DeviceController {
     @Put('/:id/settings')
     @UseGuards(AuthGuard(), ActiveUserGuard, RolesGuard)
     @Roles(Role.OrganizationAdmin, Role.OrganizationDeviceManager, Role.OrganizationUser)
+    @ApiBody({ type: DeviceSettingsUpdateDTO })
     @ApiResponse({
         status: HttpStatus.OK,
         type: SuccessResponseDTO,
@@ -245,7 +249,7 @@ export class DeviceController {
     })
     async updateDeviceSettings(
         @Param('id') id: string,
-        @Body() body: DeviceSettingsUpdateData,
+        @Body() body: DeviceSettingsUpdateDTO,
         @UserDecorator() loggedUser: ILoggedInUser
     ): Promise<SuccessResponseDTO> {
         if (!this.organizationService.hasDevice(loggedUser.organizationId, id)) {

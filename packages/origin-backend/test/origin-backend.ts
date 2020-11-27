@@ -24,7 +24,7 @@ import { DeviceService } from '../src/pods/device/device.service';
 import { EmailConfirmationService } from '../src/pods/email-confirmation/email-confirmation.service';
 import { FileService } from '../src/pods/file/file.service';
 import { InvitationService } from '../src/pods/invitation/invitation.service';
-import { NewOrganizationDTO } from '../src/pods/organization/new-organization.dto';
+import { NewOrganizationDTO } from '../src/pods/organization/dto/new-organization.dto';
 import { OrganizationService } from '../src/pods/organization/organization.service';
 import { UserService } from '../src/pods/user';
 

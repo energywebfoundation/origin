@@ -5,9 +5,7 @@ import { Check, Clear } from '@material-ui/icons';
 import {
     IPublicOrganization,
     OrganizationInvitationStatus,
-    IOrganizationInvitation,
-    OrganizationRole,
-    Role
+    IOrganizationInvitation
 } from '@energyweb/origin-backend-core';
 
 import { showNotification, NotificationType } from '../../utils/notifications';
@@ -70,7 +68,7 @@ export function OrganizationInvitationTable(props: IProps) {
         const invitations: IOrganizationInvitation[] = (await getInvitationsFrom).data.map(
             (invitation) => ({
                 ...invitation,
-                role: Role[invitation.role] as OrganizationRole,
+                role: invitation.role,
                 createdAt: new Date(invitation.createdAt)
             })
         );

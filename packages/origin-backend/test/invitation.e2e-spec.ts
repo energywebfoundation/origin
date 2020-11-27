@@ -141,6 +141,7 @@ describe('Invitation e2e tests', () => {
             .send({ email: 'random@example.com', role: Role.SupportAgent })
             .expect(HttpStatus.FORBIDDEN);
 
+        // TO-DO: Support sending multiple roles
         await request(app.getHttpServer())
             .post('/invitation')
             .set('Authorization', `Bearer ${accessToken}`)

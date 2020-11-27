@@ -16,7 +16,7 @@ import {
     FilledInput,
     MenuItem
 } from '@material-ui/core';
-import { OrganizationRole, Role, UserStatus } from '@energyweb/origin-backend-core';
+import { Role, UserStatus } from '@energyweb/origin-backend-core';
 
 import { showNotification, NotificationType } from '../../utils/notifications';
 import { setLoading } from '../../features/general/actions';
@@ -28,7 +28,7 @@ import { useTranslation } from '../../utils';
 
 interface IFormValues {
     email: string;
-    role: OrganizationRole;
+    role: number;
 }
 
 const INITIAL_FORM_VALUES: IFormValues = {
@@ -66,7 +66,10 @@ export function OrganizationInvite() {
         dispatch(setLoading(true));
 
         try {
-            await invitationClient.invite({ email: values.email, role: Number(values.role) });
+            await invitationClient.invite({
+                email: values.email,
+                role: values.role
+            });
 
             showNotification(`Invitation sent`, NotificationType.Success);
         } catch (error) {

@@ -6,6 +6,7 @@ export class ExchangeTablePrefix1604562715444 implements MigrationInterface {
     public async up(queryRunner: QueryRunner): Promise<void> {
         await queryRunner.query(`ALTER TABLE "account" RENAME TO "exchange_account"`);
         await queryRunner.query(`ALTER TABLE "asset" RENAME TO "exchange_asset"`);
+        await queryRunner.query(`ALTER TABLE "bundle" RENAME TO "exchange_bundle"`);
         await queryRunner.query(`ALTER TABLE "bundle_item" RENAME TO "exchange_bundle_item"`);
         await queryRunner.query(`ALTER TABLE "bundle_trade" RENAME TO "exchange_bundle_trade"`);
         await queryRunner.query(`ALTER TABLE "trade" RENAME TO "exchange_trade"`);
@@ -17,6 +18,7 @@ export class ExchangeTablePrefix1604562715444 implements MigrationInterface {
     public async down(queryRunner: QueryRunner): Promise<void> {
         await queryRunner.query(`ALTER TABLE "exchange_account" RENAME TO "account"`);
         await queryRunner.query(`ALTER TABLE "exchange_asset" RENAME TO "asset"`);
+        await queryRunner.query(`ALTER TABLE "exchange_bundle" RENAME TO "bundle"`);
         await queryRunner.query(`ALTER TABLE "exchange_bundle_item" RENAME TO "bundle_item"`);
         await queryRunner.query(`ALTER TABLE "exchange_bundle_trade" RENAME TO "bundle_trade"`);
         await queryRunner.query(`ALTER TABLE "exchange_trade" RENAME TO "trade"`);

@@ -3,11 +3,12 @@ import BN from 'bn.js';
 import { Expose, Transform } from 'class-transformer';
 import { IsBoolean, IsNotEmpty, IsNumber, IsString, IsUUID } from 'class-validator';
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { DB_TABLE_PREFIX } from '../../utils/tablePrefix';
 
 import { BundleItem } from './bundle-item.entity';
 import { BundleSplitItemDTO, BundleSplitVolumeDTO } from './bundle-split.dto';
 
-@Entity()
+@Entity({ name: `${DB_TABLE_PREFIX}_bundle` })
 export class Bundle extends ExtendedBaseEntity {
     constructor(bundle: Partial<Bundle>) {
         super();
