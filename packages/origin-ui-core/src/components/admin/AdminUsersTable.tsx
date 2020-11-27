@@ -39,13 +39,11 @@ export function AdminUsersTable() {
         const [statusFilter, kycStatusFilter, orgNameFilter] = requestedFilters;
 
         try {
-            const params = {
-                orgName: orgNameFilter?.selectedValue,
-                status: statusFilter?.selectedValue,
-                kycStatus: kycStatusFilter?.selectedValue
-            };
-
-            const { data } = await adminClient.getUsers(requestedFilters.length > 0 ? params : {});
+            const { data } = await adminClient.getUsers(
+                orgNameFilter?.selectedValue,
+                statusFilter?.selectedValue,
+                kycStatusFilter?.selectedValue
+            );
 
             entities = data;
         } catch (error) {
@@ -53,9 +51,7 @@ export function AdminUsersTable() {
 
             if (_error.response.status === 412) {
                 showNotification(
-                    `Only active users can perform this action. Your status is ${
-                        UserStatus[userOffchain.status]
-                    }`,
+                    `Only active users can perform this action. Your status is ${userOffchain.status}`,
                     NotificationType.Error
                 );
             }
@@ -102,8 +98,8 @@ export function AdminUsersTable() {
             firstName: user.title + ' ' + user.firstName + ' ' + user.lastName,
             organization: organization?.name ?? '',
             email: user.email,
-            status: UserStatus[user.status],
-            kycStatus: KYCStatus[user.kycStatus]
+            status: user.status,
+            kycStatus: user.kycStatus
         };
     });
 

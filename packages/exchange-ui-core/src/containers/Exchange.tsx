@@ -111,8 +111,8 @@ export function Exchange(props: IProps) {
                         parseFloat(values.demandVolume)
                     ).toString(),
                     periodTimeFrame: values.demandPeriod,
-                    start: values.demandDateStart,
-                    end: values.demandDateEnd,
+                    start: values.demandDateStart.toISOString(),
+                    end: values.demandDateEnd.toISOString(),
                     product: {
                         deviceType: values.deviceType?.includes(ANY_VALUE)
                             ? undefined

@@ -9,7 +9,7 @@ import {
     IsString,
     ValidateNested
 } from 'class-validator';
-import { PublicOrganizationInfoDTO } from '../organization';
+import { PublicOrganizationInfoDTO } from '../../organization';
 
 export class UserDTO implements IUser {
     @ApiProperty({ type: Number })

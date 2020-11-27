@@ -1,9 +1,9 @@
 import React from 'react';
-import { TimeFrame } from '../../utils/exchange';
 import { Field } from 'formik';
 import { FormikDatePicker } from '.';
 import { InputAdornment } from '@material-ui/core';
 import { CalendarToday } from '@material-ui/icons';
+import { TimeFrame } from '@energyweb/utils-general';
 
 interface IProps {
     name: string;
@@ -17,10 +17,10 @@ export const CalendarFieldOnPeriod = (props: IProps) => {
     const view: string[] = [];
 
     switch (period) {
-        case TimeFrame.monthly:
+        case TimeFrame.Monthly:
             view.push('year', 'month');
             break;
-        case TimeFrame.yearly:
+        case TimeFrame.Yearly:
             view.push('year');
             break;
     }

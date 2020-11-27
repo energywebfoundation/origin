@@ -1,10 +1,10 @@
 export enum TimeFrame {
-    yearly,
-    monthly,
-    daily,
-    weekly,
-    hourly,
-    halfHourly
+    Yearly = 'Yearly',
+    Monthly = 'Monthly',
+    Daily = 'Daily',
+    Weekly = 'Weekly',
+    Hourly = 'Hourly',
+    HalfHourly = 'HalfHourly'
 }
 
 export enum Unit {
@@ -17,7 +17,7 @@ export enum Unit {
 }
 
 export enum DemandStatus {
-    ACTIVE,
-    PAUSED,
-    ARCHIVED
+    ACTIVE = 'ACTIVE',
+    PAUSED = 'PAUSED',
+    ARCHIVED = 'ARCHIVED'
 }
