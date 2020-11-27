@@ -131,9 +131,7 @@ export function ProducingDeviceTable(props: IOwnProps) {
 
         if (producingDevice.status !== DeviceStatus.Active) {
             return showNotification(
-                `You can only request certificates for devices with status ${
-                    DeviceStatus[DeviceStatus.Active]
-                }.`,
+                `You can only request certificates for devices with status ${DeviceStatus.Active}.`,
                 NotificationType.Error
             );
         }
@@ -218,7 +216,7 @@ export function ProducingDeviceTable(props: IOwnProps) {
         capacity: PowerFormatter.format(enrichedData.device.capacityInW),
         readCertified: EnergyFormatter.format(enrichedData.device.meterStats?.certified ?? 0),
         readToBeCertified: EnergyFormatter.format(enrichedData.device.meterStats?.uncertified ?? 0),
-        status: DeviceStatus[enrichedData.device.status],
+        status: enrichedData.device.status,
         gridOperator: enrichedData?.device?.gridOperator
     }));
 

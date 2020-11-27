@@ -214,6 +214,10 @@ export function UserProfile() {
                 const { isSubmitting, touched, values } = formikProps;
                 const fieldDisabled = isSubmitting;
 
+                console.log({
+                    values
+                });
+
                 return (
                     <>
                         <Form translate="no">
@@ -247,7 +251,7 @@ export function UserProfile() {
                                             variant="filled"
                                             fullWidth
                                             disabled={true}
-                                            value={UserStatus[values.status]}
+                                            value={values.status}
                                             className="mt-3"
                                         />
 
@@ -321,7 +325,7 @@ export function UserProfile() {
                                             variant="filled"
                                             fullWidth
                                             disabled={true}
-                                            value={KYCStatus[values.kycStatus]}
+                                            value={values.kycStatus}
                                             className="mt-3"
                                         />
                                     </Grid>

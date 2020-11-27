@@ -294,8 +294,8 @@ VALUES
         'f',
         '8',
         '1',
-        '1',
-        '1'
+        'Active',
+        'Passed'
     );
 
 INSERT INTO
@@ -333,8 +333,8 @@ VALUES
         't',
         '1',
         '2',
-        '1',
-        '1'
+        'Active',
+        'Passed'
     );
 
 INSERT INTO
@@ -372,8 +372,8 @@ VALUES
         't',
         '1',
         '3',
-        '1',
-        '1'
+        'Active',
+        'Passed'
     );
 
 INSERT INTO
@@ -411,8 +411,8 @@ VALUES
         'f',
         '1',
         '4',
-        '1',
-        '1'
+        'Active',
+        'Passed'
     );
 
 INSERT INTO
@@ -450,8 +450,8 @@ VALUES
         'f',
         '16',
         5,
-        '1',
-        '1'
+        'Active',
+        'Passed'
     );
 
 INSERT INTO
@@ -489,8 +489,8 @@ VALUES
         'f',
         '32',
         5,
-        '1',
-        '1'
+        'Active',
+        'Passed'
     );
 
 /*

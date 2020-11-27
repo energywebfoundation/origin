@@ -29,8 +29,8 @@ const INITIAL_FORM_VALUES: IUser = {
     notifications: null,
     organization: null,
     rights: 0,
-    status: 0,
-    kycStatus: 0
+    status: UserStatus.Pending,
+    kycStatus: KYCStatus.Pending
 };
 
 const VALIDATION_SCHEMA = Yup.object({
@@ -110,19 +110,15 @@ export function AdminUserForm(props: IProps) {
         return <Skeleton variant="rect" height={200} />;
     }
 
-    const STATUS_OPTIONS = Object.keys(UserStatus)
-        .filter((key) => isNaN(Number(key)))
-        .map((key) => ({
-            value: UserStatus[key],
-            label: key
-        }));
+    const STATUS_OPTIONS = Object.keys(UserStatus).map((key) => ({
+        value: key,
+        label: key
+    }));
 
-    const KYC_STATUS_OPTIONS = Object.keys(KYCStatus)
-        .filter((key) => isNaN(Number(key)))
-        .map((key) => ({
-            value: KYCStatus[key],
-            label: key
-        }));
+    const KYC_STATUS_OPTIONS = Object.keys(KYCStatus).map((key) => ({
+        value: key,
+        label: key
+    }));
 
     return (
         <Paper className={classes.container}>
