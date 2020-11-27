@@ -5,6 +5,7 @@ import { Exclude } from 'class-transformer';
 import { IUser, KYCStatus, UserStatus } from '@energyweb/origin-backend-core';
 
 import { ExtendedBaseEntity } from '@energyweb/origin-backend-utils';
+import { IsEnum } from 'class-validator';
 import { Organization } from '../organization/organization.entity';
 
 @Entity()
@@ -53,9 +54,11 @@ export class User extends ExtendedBaseEntity implements IUser {
     @Column({ default: 0, nullable: false })
     rights: number;
 
-    @Column({ default: 0, nullable: false })
+    @Column({ default: UserStatus.Pending, nullable: false })
+    @IsEnum(UserStatus)
     status: UserStatus;
 
-    @Column({ default: 0, nullable: false })
+    @Column({ default: KYCStatus.Pending, nullable: false })
+    @IsEnum(KYCStatus)
     kycStatus: KYCStatus;
 }

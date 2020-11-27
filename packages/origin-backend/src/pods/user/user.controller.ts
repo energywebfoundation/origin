@@ -29,12 +29,12 @@ import { ApiResponse, ApiTags, ApiParam, ApiBearerAuth, ApiBody } from '@nestjs/
 
 import { UserService } from './user.service';
 import { EmailConfirmationService } from '../email-confirmation/email-confirmation.service';
-import { UserDTO } from './user.dto';
+import { UserDTO } from './dto/user.dto';
 import { SuccessResponseDTO } from '../../utils/success-response.dto';
-import { RegisterUserDTO } from './register-user.dto';
-import { UpdateUserDTO } from './update-user.dto';
-import { UpdatePasswordDTO } from './update-password.dto';
-import { UpdateBlockchainAddressDTO } from './update-blockchain-address.dto';
+import { RegisterUserDTO } from './dto/register-user.dto';
+import { UpdateUserDTO } from './dto/update-user.dto';
+import { UpdatePasswordDTO } from './dto/update-password.dto';
+import { UpdateBlockchainAddressDTO } from './dto/update-blockchain-address.dto';
 
 @ApiTags('user')
 @ApiBearerAuth('access-token')

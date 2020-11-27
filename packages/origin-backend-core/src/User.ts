@@ -11,16 +11,16 @@ export enum Role {
 }
 
 export enum UserStatus {
-    Pending,
-    Active,
-    Suspended,
-    Deleted
+    Pending = 'Pending',
+    Active = 'Active',
+    Suspended = 'Suspended',
+    Deleted = 'Deleted'
 }
 
 export enum KYCStatus {
-    Pending,
-    Passed,
-    Rejected
+    Pending = 'Pending',
+    Passed = 'Passed',
+    Rejected = 'Rejected'
 }
 
 export function buildRights(roles: Role[]): number {
