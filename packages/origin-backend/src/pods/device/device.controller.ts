@@ -71,6 +71,12 @@ export class DeviceController {
     ) {}
 
     @Get()
+    @ApiQuery({
+        name: 'withMeterStats',
+        description: 'Whether or not to return smart meter stats with the device',
+        required: false,
+        type: Boolean
+    })
     @ApiResponse({ status: HttpStatus.OK, type: [DeviceDTO], description: 'Returns all Devices' })
     async getAll(@Query('withMeterStats') withMeterStats?: boolean): Promise<DeviceDTO[]> {
         const devices = await this.deviceService.getAll(withMeterStats ?? false);
@@ -81,6 +87,12 @@ export class DeviceController {
     @Get('/my-devices')
     @UseGuards(AuthGuard(), ActiveUserGuard, RolesGuard)
     @Roles(Role.OrganizationAdmin, Role.OrganizationDeviceManager, Role.OrganizationUser)
+    @ApiQuery({
+        name: 'withMeterStats',
+        description: 'Whether or not to return smart meter stats with the device',
+        required: false,
+        type: Boolean
+    })
     @ApiResponse({ status: HttpStatus.OK, type: [DeviceDTO], description: 'Returns my Devices' })
     async getMyDevices(
         @UserDecorator() { organizationId }: ILoggedInUser,
@@ -97,6 +109,8 @@ export class DeviceController {
     @Get('supplyBy')
     @UseGuards(AuthGuard(), ActiveUserGuard, RolesGuard)
     @Roles(Role.OrganizationAdmin, Role.OrganizationDeviceManager, Role.OrganizationUser)
+    @ApiQuery({ name: 'facility', type: String, description: 'Name of the facility' })
+    @ApiQuery({ name: 'status', type: String })
     @ApiResponse({ status: HttpStatus.OK, type: [DeviceDTO], description: 'Gets supply' })
     async getSupplyBy(
         @UserDecorator() { organizationId }: ILoggedInUser,

@@ -11,9 +11,7 @@ export class NotDeletedUserGuard implements CanActivate {
 
         if (user.status === UserStatus.Deleted) {
             throw new HttpException(
-                `Only not deleted users can perform this action. Your status is ${
-                    UserStatus[user.status]
-                }`,
+                `Only not deleted users can perform this action. Your status is ${user.status}`,
                 403
             );
         }

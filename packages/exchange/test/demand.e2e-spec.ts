@@ -88,7 +88,7 @@ describe('Demand orders trading', () => {
 
     const createDemandWith2Bids: CreateDemandDTO = {
         price: 100,
-        periodTimeFrame: TimeFrame.monthly,
+        periodTimeFrame: TimeFrame.Monthly,
         start: moment().toDate(),
         end: moment().add(2, 'month').toDate(),
         product: { deviceType: ['Solar'] },
@@ -114,7 +114,7 @@ describe('Demand orders trading', () => {
         const product = await productService.getProduct(deposit.asset.id);
         const createDemand: CreateDemandDTO = {
             price,
-            periodTimeFrame: TimeFrame.monthly,
+            periodTimeFrame: TimeFrame.Monthly,
             start: moment().toDate(),
             end: moment().add(1, 'month').toDate(),
             product,
@@ -290,7 +290,7 @@ describe('Demand orders trading', () => {
     it('should not be able to create demand with decimal volume', async () => {
         const demand: CreateDemandDTO = {
             price: 100,
-            periodTimeFrame: TimeFrame.monthly,
+            periodTimeFrame: TimeFrame.Monthly,
             start: moment().toDate(),
             end: moment().add(2, 'month').toDate(),
             product: { deviceType: ['Solar'] },

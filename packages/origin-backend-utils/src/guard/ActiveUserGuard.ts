@@ -13,9 +13,7 @@ export class ActiveUserGuard implements CanActivate {
 
         if (_user.status !== UserStatus.Active) {
             throw new HttpException(
-                `Only active users can perform this action. Your status is ${
-                    UserStatus[_user.status]
-                }`,
+                `Only active users can perform this action. Your status is ${_user.status}`,
                 412
             );
         }
