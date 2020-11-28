@@ -32,7 +32,21 @@ describe('I-REC Registration tests', () => {
         ceoName: 'John Doe',
         ceoPassportNumber: '12345',
         balanceSheetTotal: '$1,000,000',
-        mainBusiness: 'Solar Farm'
+        mainBusiness: 'Solar Farm',
+        primaryContactOrganizationName: 'Organization Test',
+        primaryContactOrganizationAddress: 'Adress test',
+        primaryContactOrganizationPostalCode: '123456',
+        primaryContactOrganizationCountry: 'GB',
+        primaryContactName: 'Tom',
+        primaryContactEmail: 'tom@org.mail',
+        primaryContactPhoneNumber: '987456123',
+        primaryContactFax: '987456123',
+        leadUserTitle: 'Mr',
+        leadUserFirstName: 'John',
+        leadUserLastName: 'Doe',
+        leadUserEmail: 'john@org.mail',
+        leadUserPhoneNumber: '321456789',
+        leadUserFax: '321456789'
     } as RegistrationDTO;
 
     before(async () => {
