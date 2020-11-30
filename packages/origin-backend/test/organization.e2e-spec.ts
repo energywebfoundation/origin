@@ -9,7 +9,6 @@ import crypto from 'crypto';
 
 import { Device } from '../src/pods/device/device.entity';
 import { DeviceService } from '../src/pods/device/device.service';
-import { OrganizationInvitationDTO } from '../src/pods/organization/dto/organization-invitation.dto';
 import { OrganizationService } from '../src/pods/organization/organization.service';
 import { PublicOrganizationInfoDTO } from '../src/pods/organization/dto/public-organization-info.dto';
 import { TUserBaseEntity, UserService } from '../src/pods/user';
@@ -21,6 +20,7 @@ import {
 } from './origin-backend';
 import { userToRegister } from './user.e2e-spec';
 import { NewOrganizationDTO, Organization } from '../src/pods/organization';
+import { InvitationDTO } from '../src/pods/invitation/invitation.dto';
 
 describe('Organization e2e tests', () => {
     let app: INestApplication;
@@ -171,9 +171,10 @@ describe('Organization e2e tests', () => {
             .set('Authorization', `Bearer ${accessToken}`)
             .expect(HttpStatus.OK)
             .expect((res) => {
-                const [invitation] = res.body as OrganizationInvitationDTO[];
+                const [invitation] = res.body as InvitationDTO[];
 
-                expect(invitation).to.be.ok;
+                expect(invitation.email).to.equal(newUserEmail);
+                expect(invitation.role).to.equal(Role.OrganizationUser);
             });
     });
 
