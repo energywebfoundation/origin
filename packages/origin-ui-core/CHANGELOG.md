@@ -3,6 +3,31 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.11.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-ui-core@1.10.0...@energyweb/origin-ui-core@1.11.0) (2020-11-30)
+
+
+### Bug Fixes
+
+* add a body definition to all missing @Body() in requests ([6afc5a5](https://github.com/energywebfoundation/origin/commit/6afc5a5b8eb02d9be21035b34431d88d690bcda4))
+* **origin-ui-core:** add blockchain network detection ([4d8fa43](https://github.com/energywebfoundation/origin/commit/4d8fa436660a2dcceb9dd0598f85f8f55ae508f4))
+* **origin-ui-core:** fetch irecAccount ([e81b0a2](https://github.com/energywebfoundation/origin/commit/e81b0a2be5823edcbefdd46296f0a6a16305f0aa))
+* **origin-ui-core:** hide blockchain account modal ([b648155](https://github.com/energywebfoundation/origin/commit/b64815578b7cdbcaaa573a0ee4869e1a6c346252))
+* **origin-ui-core:** multiple beneficiaries for claimed certificate ([f1e4a51](https://github.com/energywebfoundation/origin/commit/f1e4a518f56adb6ee08790767da2feeedb214f23))
+
+
+### Features
+
+* **origin-organization-irec-api:** contact details and lead user details ([80a7cbb](https://github.com/energywebfoundation/origin/commit/80a7cbb26c9a557ebf4e9c023e2fe7f1457530e0))
+* **origin-ui-core:** add blockchain networks names ([090b957](https://github.com/energywebfoundation/origin/commit/090b957fe7c430199dca6b3c04828463d8785ca0))
+* **origin-ui-core:** change modal text ([8debbde](https://github.com/energywebfoundation/origin/commit/8debbdeb5b167d14f2f000ca14b7b1d32e61e9e7))
+* **origin-ui-core:** improve paddings ([4ae3cf1](https://github.com/energywebfoundation/origin/commit/4ae3cf1599c85b80738e14d0d57118545f8340d3))
+* **origin-ui-core:** irec contact details and lead user info ([29bb3be](https://github.com/energywebfoundation/origin/commit/29bb3bebc66cb61e0fe75f888b8e9f0fd707c760))
+* **origin-ui-core:** updated type definition for irec company registration ([2c486b2](https://github.com/energywebfoundation/origin/commit/2c486b24094c551affac954e1ac2d39ce8b6c7b6))
+
+
+
+
+
 # [1.10.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-ui-core@1.9.1...@energyweb/origin-ui-core@1.10.0) (2020-11-20)
 
 

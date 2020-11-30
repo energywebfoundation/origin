@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.3.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-backend-app@1.2.1...@energyweb/origin-backend-app@1.3.0) (2020-11-30)
+
+
+### Features
+
+* **origin-backend-app:** rearrange imports ([31e47ad](https://github.com/energywebfoundation/origin/commit/31e47ad2dc6341c57ba9b0998620e7a6c6984fe0))
+
+
+
+
+
 ## [1.2.1](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-backend-app@1.2.0...@energyweb/origin-backend-app@1.2.1) (2020-11-20)
 
 

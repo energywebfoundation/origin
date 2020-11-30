@@ -1389,6 +1389,41 @@
     moment "2.24.0"
     moment-range "4.0.2"
 
+"@energyweb/origin-backend-client@9.0.0":
+  version "9.0.0"
+  resolved "https://registry.yarnpkg.com/@energyweb/origin-backend-client/-/origin-backend-client-9.0.0.tgz#856eae4e78d5ce947d8f0c13357ca55efc439051"
+  integrity sha512-Xxf/ruiOLrSzJdxUbQHEumvARzB+r5L45eZul26k8aVR8B8PThyhZ3F0GzzNmZgy3F9VHKRU3AIRbRZ9EFkniA==
+  dependencies:
+    "@energyweb/origin-backend-core" "7.0.0"
+    "@energyweb/utils-general" "10.0.0"
+    axios "0.21.0"
+    ethers "5.0.15"
+    moment "2.24.0"
+
+"@energyweb/origin-backend-core@7.0.0":
+  version "7.0.0"
+  resolved "https://registry.yarnpkg.com/@energyweb/origin-backend-core/-/origin-backend-core-7.0.0.tgz#295544a7727b450e045554e6a2b6d1f9187230b8"
+  integrity sha512-I/WIcAitb447piXVKQDSAwRhXh6+gvzEAbq3AhhBalPFA4hOU8AFY1rtUHADhOyCD33JtUC0zfSNRr68hRR5TQ==
+  dependencies:
+    axios "0.21.0"
+    class-transformer "0.3.1"
+    class-validator "0.12.2"
+    ethers "5.0.15"
+    precise-proofs-js "1.2.0"
+
+"@energyweb/utils-general@10.0.0":
+  version "10.0.0"
+  resolved "https://registry.yarnpkg.com/@energyweb/utils-general/-/utils-general-10.0.0.tgz#27c82e849e44806fd1baea806a405daf25b2c31c"
+  integrity sha512-yQAX1HFDpXo0FfrwQrL/vKZWHVQe919Ox7GCVcLBReD6DgRoJvQIsmojNUmkkLed/ChAZcYPKXRQza/02ZxFtQ==
+  dependencies:
+    "@energyweb/origin-backend-core" "7.0.0"
+    chai "^4.2.0"
+    eth-sig-util "2.5.2"
+    ethers "5.0.15"
+    jsonschema "1.4.0"
+    moment "2.24.0"
+    winston "3.3.3"
+
 "@eslint/eslintrc@^0.2.1":
   version "0.2.1"
   resolved "https://registry.yarnpkg.com/@eslint/eslintrc/-/eslintrc-0.2.1.tgz#f72069c330461a06684d119384435e12a5d76e3c"

@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.11.0](https://github.com/energywebfoundation/origin/compare/@energyweb/localization@0.10.0...@energyweb/localization@0.11.0) (2020-11-30)
+
+
+### Features
+
+* **localization:** change modal text ([446ecd0](https://github.com/energywebfoundation/origin/commit/446ecd0091f8e0e9e3aeee1e543d28d67dd2e713))
+* **localization:** irec contact details and lead user info ([194a4e3](https://github.com/energywebfoundation/origin/commit/194a4e37f946fb4622a2a6743dc3e51f7827e1ac))
+
+
+
+
+
 # [0.10.0](https://github.com/energywebfoundation/origin/compare/@energyweb/localization@0.9.0...@energyweb/localization@0.10.0) (2020-11-20)
 
 
