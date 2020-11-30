@@ -4815,12 +4815,10 @@
   dependencies:
     "@turf/helpers" "6.x"
 
-"@typechain/ethers-v5@1.0.0":
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/@typechain/ethers-v5/-/ethers-v5-1.0.0.tgz#9156c9a2b078f9bb00a339631221e42c26b218df"
-  integrity sha512-CWxLmlmfM7NMT6OSq8UXZM7mSkHU1xrbNi40Hvj26S97jKnwERmNbiERgy4fXXOdVqb+zCshnZQ9X+P5WndLMA==
-  dependencies:
-    ethers "^5.0.2"
+"@typechain/ethers-v5@4.0.0":
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/@typechain/ethers-v5/-/ethers-v5-4.0.0.tgz#2a8be5e108d23f3b8e6354d1618fdc2abcb00b07"
+  integrity sha512-Rw4WHPIuwTXWcHfmn9ICQISQhmJa6Ug5IjqPYLpsKqlED2L4W2JgQ6S9hYt4IKVmT//1yxIxD+iaa5tSQEEx1A==
 
 "@types/anymatch@*":
   version "1.3.1"
@@ -12183,7 +12181,7 @@ ethers@5.0.15:
     "@ethersproject/web" "5.0.8"
     "@ethersproject/wordlists" "5.0.5"
 
-ethers@5.0.7, ethers@^5.0.2:
+ethers@5.0.7:
   version "5.0.7"
   resolved "https://registry.yarnpkg.com/ethers/-/ethers-5.0.7.tgz#41c3d774e0a57bfde12b0198885789fb41a14976"
   integrity sha512-1Zu9s+z4BgsDAZcGIYACJdWBB6mVtCCmUonj68Njul7STcSdgwOyj0sCAxCUr2Nsmsamckr4E12q3ecvZPGAUw==
