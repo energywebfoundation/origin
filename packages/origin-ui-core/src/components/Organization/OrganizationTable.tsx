@@ -8,7 +8,7 @@ import {
     IPaginatedLoaderHooksFetchDataParameters,
     usePaginatedLoader
 } from '../Table/PaginatedLoaderHooks';
-import { getOffChainDataSource } from '../../features/general/selectors';
+import { getBackendClient } from '../../features/general/selectors';
 import { Countries } from '@energyweb/utils-general';
 import {
     IPublicOrganization,
@@ -37,7 +37,7 @@ function getOrganizationText(status: OrganizationStatus) {
 }
 
 export function OrganizationTable() {
-    const organizationClient = useSelector(getOffChainDataSource)?.organizationClient;
+    const organizationClient = useSelector(getBackendClient)?.organizationClient;
     const user = useSelector(getUserOffchain);
 
     const { getOrganizationViewLink } = useLinks();
@@ -59,7 +59,7 @@ export function OrganizationTable() {
             };
         }
 
-        const entities = await organizationClient.getAll();
+        const { data: entities } = await organizationClient.getAll();
 
         let newPaginatedData: IRecord[] = entities.map((i) => ({
             organization: i

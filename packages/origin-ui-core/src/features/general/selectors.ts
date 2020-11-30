@@ -6,7 +6,7 @@ export const getLoading = (state: ICoreState) => state.generalState.loading;
 
 export const getError = (state: ICoreState) => state.generalState.error;
 
-export const getOffChainDataSource = (state: ICoreState) => state.generalState.offChainDataSource;
+export const getBackendClient = (state: ICoreState) => state.generalState.backendClient;
 
 export const getEnvironment = (state: ICoreState): IEnvironment => state.generalState.environment;
 

@@ -1,4 +1,4 @@
-import { DemandStatus } from '../exchange';
+import { DemandStatus } from '@energyweb/utils-general';
 
 interface IDemandOption {
     label: string;

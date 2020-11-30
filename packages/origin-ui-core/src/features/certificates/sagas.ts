@@ -12,7 +12,8 @@ import {
     reloadCertificates
 } from '.';
 import { moment, NotificationType, showNotification } from '../../utils';
-import { ExchangeAccount, IExchangeClient, ITransfer } from '../../utils/exchange';
+import { ExchangeClient } from '../../utils/clients/ExchangeClient';
+
 import { assertCorrectBlockchainAccount } from '../../utils/sagas';
 import { setLoading } from '../general/actions';
 import { getExchangeClient } from '../general/selectors';
@@ -103,29 +104,27 @@ function* requestCertificatesSaga(): SagaIterator {
         const { startTime, endTime, energy, files, deviceId } = action.payload;
 
         try {
-            const shouldContinue: boolean = yield call(assertCorrectBlockchainAccount);
+            const certificationRequestsClient: CertificationRequestsClient = yield select(
+                getCertificationRequestsClient
+            );
+            const { accountClient }: ExchangeClient = yield select(getExchangeClient);
+            const {
+                data: { address }
+            } = yield call([accountClient, accountClient.getAccount]);
 
-            if (shouldContinue) {
-                const certificationRequestsClient: CertificationRequestsClient = yield select(
-                    getCertificationRequestsClient
-                );
-                const exchangeClient: IExchangeClient = yield select(getExchangeClient);
-                const { address } = yield call([exchangeClient, exchangeClient.getAccount]);
+            yield apply(certificationRequestsClient, certificationRequestsClient.create, [
+                {
+                    to: address,
+                    energy: energy.toString(),
+                    fromTime: startTime,
+                    toTime: endTime,
+                    deviceId,
+                    files,
+                    isPrivate: false
+                }
+            ]);
 
-                yield apply(certificationRequestsClient, certificationRequestsClient.create, [
-                    {
-                        to: address,
-                        energy: energy.toString(),
-                        fromTime: startTime,
-                        toTime: endTime,
-                        deviceId,
-                        files,
-                        isPrivate: false
-                    }
-                ]);
-
-                showNotification(`Certificates requested.`, NotificationType.Success);
-            }
+            showNotification(`Certificates requested.`, NotificationType.Success);
         } catch (error) {
             console.warn('Error while requesting certificates', error);
 
@@ -211,12 +210,12 @@ function* resyncCertificateSaga(): SagaIterator {
         const { id, assetId } = action.payload;
 
         const certificate: ICertificate = yield call(getCertificate, id);
-        const exchangeClient: IExchangeClient = yield select(getExchangeClient);
+        const { accountClient }: ExchangeClient = yield select(getExchangeClient);
         const user = yield select(getUserOffchain);
 
-        const exchangeAccount: ExchangeAccount = yield apply(
-            exchangeClient,
-            exchangeClient.getAccount,
+        const { data: exchangeAccount } = yield apply(
+            accountClient,
+            accountClient.getAccount,
             null
         );
 
@@ -254,17 +253,9 @@ function* requestPublishForSaleSaga(): SagaIterator {
         const action: IRequestPublishForSaleAction = yield take(
             CertificatesActions.requestPublishForSale
         );
-        const exchangeClient: IExchangeClient = yield select(getExchangeClient);
-
-        if (!exchangeClient) {
-            continue;
-        }
-
-        const shouldContinue: boolean = yield call(assertCorrectBlockchainAccount);
-
-        if (!shouldContinue) {
-            continue;
-        }
+        const { accountClient, transferClient, ordersClient }: ExchangeClient = yield select(
+            getExchangeClient
+        );
 
         const certificatesClient: CertificatesClient = yield select(getCertificatesClient);
 
@@ -277,10 +268,7 @@ function* requestPublishForSaleSaga(): SagaIterator {
 
         try {
             if (source === CertificateSource.Blockchain) {
-                const account: ExchangeAccount = yield call([
-                    exchangeClient,
-                    exchangeClient.getAccount
-                ]);
+                const { data: account } = yield call([accountClient, accountClient.getAccount]);
 
                 const { data: certificate } = yield apply(
                     certificatesClient,
@@ -300,9 +288,9 @@ function* requestPublishForSaleSaga(): SagaIterator {
                 );
 
                 while (true) {
-                    const transfers: ITransfer[] = yield call([
-                        exchangeClient,
-                        exchangeClient.getAllTransfers
+                    const { data: transfers } = yield call([
+                        transferClient,
+                        transferClient.getMyTransfers
                     ]);
 
                     const transfer = transfers.find(
@@ -317,7 +305,7 @@ function* requestPublishForSaleSaga(): SagaIterator {
                 }
             }
 
-            yield call([exchangeClient, exchangeClient.createAsk], {
+            yield call([ordersClient, ordersClient.createAsk], {
                 assetId,
                 price,
                 volume: amount.toString(),
@@ -346,11 +334,7 @@ function* requestDepositSaga(): SagaIterator {
         const action: IRequestPublishForSaleAction = yield take(
             CertificatesActions.requestDepositCertificate
         );
-        const exchangeClient: IExchangeClient = yield select(getExchangeClient);
-
-        if (!exchangeClient) {
-            continue;
-        }
+        const { accountClient }: ExchangeClient = yield select(getExchangeClient);
 
         const shouldContinue: boolean = yield call(assertCorrectBlockchainAccount);
 
@@ -366,10 +350,7 @@ function* requestDepositSaga(): SagaIterator {
         yield put(setLoading(true));
 
         try {
-            const account: ExchangeAccount = yield call([
-                exchangeClient,
-                exchangeClient.getAccount
-            ]);
+            const { data: account } = yield call([accountClient, accountClient.getAccount]);
 
             const { data: certificate } = yield apply(certificatesClient, certificatesClient.get, [
                 certificateId
@@ -501,12 +482,6 @@ function* requestCertificateApprovalSaga(): SagaIterator {
             CertificatesActions.requestCertificateApproval
         );
 
-        const shouldContinue: boolean = yield call(assertCorrectBlockchainAccount);
-
-        if (!shouldContinue) {
-            continue;
-        }
-
         const certificationRequestsClient: CertificationRequestsClient = yield select(
             getCertificationRequestsClient
         );
@@ -542,10 +517,10 @@ export function* withdrawSaga(): SagaIterator {
             CertificatesActions.withdrawCertificate
         );
         const { callback } = action.payload;
-        const exchangeClient: IExchangeClient = yield select(getExchangeClient);
+        const { transferClient }: ExchangeClient = yield select(getExchangeClient);
         const i18n = getI18n();
         try {
-            yield call([exchangeClient, exchangeClient.withdraw], action.payload);
+            yield call([transferClient, transferClient.requestWithdrawal], action.payload);
             if (callback) {
                 yield call(callback);
             }

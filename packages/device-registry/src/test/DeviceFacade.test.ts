@@ -1,15 +1,20 @@
-/* eslint-disable import/no-extraneous-dependencies */
+/* eslint-disable import/no-extraneous-dependencies  */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import 'mocha';
 import { assert } from 'chai';
 import moment from 'moment';
 import { BigNumber } from 'ethers';
 import dotenv from 'dotenv';
+import { DeviceClient } from '@energyweb/origin-backend-client';
 
-import { Configuration } from '@energyweb/utils-general';
-import { OffChainDataSourceMock } from '@energyweb/origin-backend-client-mocks';
-import { DeviceCreateData, DeviceStatus } from '@energyweb/origin-backend-core';
+import {
+    DeviceCreateData,
+    DeviceStatus,
+    IPublicOrganization,
+    ISmartMeterRead
+} from '@energyweb/origin-backend-core';
+import { Configuration, ProducingDevice } from '..';
 
-import { ProducingDevice } from '..';
 import { logger } from '../Logger';
 
 describe('Device Facade', () => {
@@ -17,17 +22,45 @@ describe('Device Facade', () => {
         path: '.env.test'
     });
 
-    let conf: Configuration.Entity;
-
     const SM_READ_TIMESTAMP = moment().unix();
+
+    const deviceId = 1;
+    const devices = new Map<string, any>();
+    const smartMeterReads = new Map<string, ISmartMeterRead[]>();
+
+    const conf: Configuration.Entity = {
+        deviceClient: {
+            createDevice: async (deviceProperties: DeviceCreateData) => {
+                const device = {
+                    id: deviceId,
+                    organization: {} as IPublicOrganization,
+                    ...deviceProperties
+                };
+                devices.set(deviceId.toString(), device);
+                return { data: device };
+            },
+            get: async (id: string) => {
+                return { data: devices.get(id) };
+            },
+            getAll: async (withMeterStats = false) => {
+                return { data: Array.from(devices.values()) ?? [] } as any;
+            },
+            addSmartMeterReads: async (id: string, smReads: ISmartMeterRead[]) => {
+                const existing = smartMeterReads.get(id) ?? [];
+                const newSmReads = [...existing, ...smReads];
+                smartMeterReads.set(id.toString(), newSmReads);
+
+                return { data: newSmReads } as any;
+            },
+            getAllSmartMeterReadings: async (id: string) => {
+                return { data: smartMeterReads.get(id) ?? [] };
+            }
+        } as Partial<DeviceClient>,
+        logger
+    } as Configuration.Entity;
 
     describe('ProducingDevice', () => {
         it('should onboard a new producing device', async () => {
-            conf = {
-                offChainDataSource: new OffChainDataSourceMock(),
-                logger
-            };
-
             const FACILITY_NAME = 'Wuthering Heights Windfarm';
 
             const deviceProps: DeviceCreateData = {
@@ -50,8 +83,7 @@ describe('Device Facade', () => {
                 region: '',
                 province: '',
                 gridOperator: '',
-                automaticPostForSale: false,
-                defaultAskPrice: null
+                automaticPostForSale: false
             };
 
             const device = await ProducingDevice.createDevice(deviceProps, conf);

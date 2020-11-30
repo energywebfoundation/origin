@@ -15,7 +15,7 @@ import {
     IPaginatedLoaderHooksFetchDataParameters,
     usePaginatedLoader
 } from '../Table/PaginatedLoaderHooks';
-import { getOffChainDataSource } from '../../features/general/selectors';
+import { getBackendClient } from '../../features/general/selectors';
 import { refreshUserOffchain } from '../../features/users/actions';
 import { useTranslation, useLinks } from '../..';
 
@@ -42,8 +42,8 @@ interface IProps {
 }
 
 export function OrganizationInvitationTable(props: IProps) {
-    const organizationClient = useSelector(getOffChainDataSource)?.organizationClient;
-    const invitationClient = useSelector(getOffChainDataSource)?.invitationClient;
+    const organizationClient = useSelector(getBackendClient)?.organizationClient;
+    const invitationClient = useSelector(getBackendClient)?.invitationClient;
 
     const dispatch = useDispatch();
     const { t } = useTranslation();
@@ -61,15 +61,17 @@ export function OrganizationInvitationTable(props: IProps) {
             };
         }
 
-        let invitations: IOrganizationInvitation[] = [];
+        const getInvitationsFrom = props.email
+            ? invitationClient.getInvitations()
+            : organizationClient.getInvitationsForOrganization(props.organizationId);
 
-        if (props.email) {
-            invitations = await invitationClient.getInvitationsForEmail(props.email);
-        } else if (props.organizationId) {
-            invitations = await organizationClient.getInvitationsForOrganization(
-                props.organizationId
-            );
-        }
+        const invitations: IOrganizationInvitation[] = (await getInvitationsFrom).data.map(
+            (invitation) => ({
+                ...invitation,
+                role: invitation.role,
+                createdAt: new Date(invitation.createdAt)
+            })
+        );
 
         let newPaginatedData: IRecord[] = invitations.map((invitation) => ({
             invitation,
@@ -110,11 +112,19 @@ export function OrganizationInvitationTable(props: IProps) {
         dispatch(setLoading(true));
 
         try {
-            await invitationClient.acceptInvitation(invitation.id);
-            const invitations = await invitationClient.getInvitationsForEmail(props.email);
+            await invitationClient.updateInvitation(
+                invitation.id.toString(),
+                OrganizationInvitationStatus.Accepted
+            );
+            const { data: invitations } = await invitationClient.getInvitations();
             invitations
                 .filter((inv) => inv.id !== invitation.id)
-                .forEach((inv) => invitationClient.rejectInvitation(inv.id));
+                .forEach((inv) =>
+                    invitationClient.updateInvitation(
+                        inv.id.toString(),
+                        OrganizationInvitationStatus.Rejected
+                    )
+                );
 
             showNotification(`Invitation accepted.`, NotificationType.Success);
             dispatch(refreshUserOffchain());
@@ -144,7 +154,10 @@ export function OrganizationInvitationTable(props: IProps) {
         dispatch(setLoading(true));
 
         try {
-            await invitationClient.rejectInvitation(invitation.id);
+            await invitationClient.updateInvitation(
+                invitation.id.toString(),
+                OrganizationInvitationStatus.Rejected
+            );
 
             showNotification(`Invitation rejected.`, NotificationType.Success);
 

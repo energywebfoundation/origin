@@ -1,7 +1,7 @@
 import React from 'react';
 import { useTranslation, isDeviceLocationEnabled, isDeviceGridOperatorEnabled } from '../../utils';
 import { HierarchicalMultiSelect } from '../HierarchicalMultiSelect';
-import { Grid, GridSize } from '@material-ui/core';
+import { Grid, GridSize, Theme, useTheme } from '@material-ui/core';
 import { useSelector } from 'react-redux';
 import { getRegions, getOffchainConfiguration, getEnvironment } from '../../features';
 import { ANY_VALUE, ANY_OPERATOR } from '../../utils/exchange';
@@ -15,6 +15,7 @@ interface IProps {
     singleChoice?: boolean;
     gridItemSize?: GridSize;
     required?: boolean;
+    inlinePadding?: boolean;
 }
 
 export function DeviceSelectors(props: IProps) {
@@ -26,7 +27,8 @@ export function DeviceSelectors(props: IProps) {
         disabled,
         singleChoice,
         gridItemSize,
-        required
+        required,
+        inlinePadding
     } = { gridItemSize: 6 as GridSize, ...props };
 
     const regions = useSelector(getRegions);
@@ -34,6 +36,7 @@ export function DeviceSelectors(props: IProps) {
     const configuration = useSelector(getOffchainConfiguration);
     const environment = useSelector(getEnvironment);
     const { t } = useTranslation();
+    const { spacing }: Theme = useTheme();
 
     if (!configuration) {
         return null;
@@ -42,7 +45,11 @@ export function DeviceSelectors(props: IProps) {
     return (
         <>
             {isDeviceLocationEnabled(environment) && (
-                <Grid item xs={gridItemSize}>
+                <Grid
+                    item
+                    xs={gridItemSize}
+                    style={{ paddingRight: inlinePadding ? spacing(1) : 0 }}
+                >
                     <HierarchicalMultiSelect
                         selectedValue={location}
                         onChange={onLocationChange}
@@ -65,7 +72,11 @@ export function DeviceSelectors(props: IProps) {
             )}
 
             {isDeviceGridOperatorEnabled(environment) && (
-                <Grid item xs={gridItemSize}>
+                <Grid
+                    item
+                    xs={gridItemSize}
+                    style={{ paddingLeft: inlinePadding ? spacing(1) : 0 }}
+                >
                     <HierarchicalMultiSelect
                         selectedValue={gridOperator}
                         onChange={onGridOperatorChange}

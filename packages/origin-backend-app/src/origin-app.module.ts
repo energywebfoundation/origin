@@ -1,8 +1,11 @@
 import { AppModule as ExchangeModule, entities as ExchangeEntities } from '@energyweb/exchange';
 import {
     AppModule as OriginBackendModule,
-    entities as OriginBackendEntities
+    entities as OriginBackendEntities,
+    OrganizationModule,
+    UserModule
 } from '@energyweb/origin-backend';
+import { CqrsModule } from '@nestjs/cqrs';
 import {
     AppModule as IRECOrganizationModule,
     entities as IRECOrganizationEntities
@@ -14,10 +17,19 @@ import { HTTPLoggingInterceptor } from '@energyweb/origin-backend-utils';
 import { DynamicModule, Module } from '@nestjs/common';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { IntegrationModule } from './integration/integration.module';
 
+import { IntegrationModule } from './integration';
 import { MailModule } from './mail';
-import { NotificationModule } from './notification/notification.module';
+import {
+    DeviceStatusChangedHandler,
+    EmailConfirmationRequestedHandler,
+    InvitationCreatedHandler,
+    OrganizationMemberRemovedHandler,
+    OrganizationMemberRoleChangedHandler,
+    OrganizationStatusChangedHandler,
+    RegistrationCreatedHandler,
+    OrganizationRegisteredHandler
+} from './index';
 
 const OriginAppTypeOrmModule = () => {
     const entities = [
@@ -62,9 +74,21 @@ export class OriginAppModule {
                 IRECOrganizationModule,
                 IssuerModule,
                 MailModule,
-                NotificationModule
+                OrganizationModule,
+                UserModule,
+                CqrsModule
             ],
-            providers: [{ provide: APP_INTERCEPTOR, useClass: HTTPLoggingInterceptor }]
+            providers: [
+                { provide: APP_INTERCEPTOR, useClass: HTTPLoggingInterceptor },
+                DeviceStatusChangedHandler,
+                EmailConfirmationRequestedHandler,
+                InvitationCreatedHandler,
+                OrganizationMemberRemovedHandler,
+                OrganizationMemberRoleChangedHandler,
+                OrganizationStatusChangedHandler,
+                RegistrationCreatedHandler,
+                OrganizationRegisteredHandler
+            ]
         };
     }
 }

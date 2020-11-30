@@ -12,6 +12,7 @@ import {
     Get,
     HttpCode,
     HttpException,
+    HttpStatus,
     Logger,
     Param,
     ParseUUIDPipe,
@@ -22,6 +23,7 @@ import {
     ValidationPipe
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
+import { ApiBearerAuth, ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { ForbiddenActionError } from '../../utils/exceptions';
 import { ensureSingleProcessOnly } from '../../utils/ensureSingleProcessOnly';
 
@@ -29,9 +31,11 @@ import { CreateAskDTO } from './create-ask.dto';
 import { CreateBidDTO } from './create-bid.dto';
 import { DirectBuyDTO } from './direct-buy.dto';
 import { AskBeingProcessedError } from './errors/ask-being-processed.error';
-import { Order } from './order.entity';
 import { OrderService } from './order.service';
+import { OrderDTO } from './order.dto';
 
+@ApiTags('orders')
+@ApiBearerAuth('access-token')
 @Controller('orders')
 @UseInterceptors(ClassSerializerInterceptor, NullOrUndefinedResultInterceptor)
 @UsePipes(ValidationPipe)
@@ -42,10 +46,12 @@ export class OrderController {
 
     @Post('bid')
     @UseGuards(AuthGuard(), ActiveUserGuard)
+    @ApiBody({ type: CreateBidDTO })
+    @ApiResponse({ status: HttpStatus.CREATED, type: OrderDTO, description: 'Create a bid' })
     public async createBid(
         @UserDecorator() user: ILoggedInUser,
         @Body() newOrder: CreateBidDTO
-    ): Promise<Order> {
+    ): Promise<OrderDTO> {
         this.logger.log(`Creating new order ${JSON.stringify(newOrder)}`);
 
         try {
@@ -60,10 +66,12 @@ export class OrderController {
 
     @Post('ask')
     @UseGuards(AuthGuard(), ActiveUserGuard)
+    @ApiBody({ type: CreateAskDTO })
+    @ApiResponse({ status: HttpStatus.CREATED, type: OrderDTO, description: 'Create an ask' })
     public async createAsk(
         @UserDecorator() user: ILoggedInUser,
         @Body() newOrder: CreateAskDTO
-    ): Promise<Order> {
+    ): Promise<OrderDTO> {
         this.logger.log(`Creating new order ${JSON.stringify(newOrder)}`);
 
         try {
@@ -87,10 +95,12 @@ export class OrderController {
 
     @Post('ask/buy')
     @UseGuards(AuthGuard(), ActiveUserGuard)
+    @ApiBody({ type: DirectBuyDTO })
+    @ApiResponse({ status: HttpStatus.CREATED, type: OrderDTO, description: 'Direct buy' })
     public async directBuy(
         @UserDecorator() user: ILoggedInUser,
         @Body() directBuy: DirectBuyDTO
-    ): Promise<Order> {
+    ): Promise<OrderDTO> {
         this.logger.log(`Creating new direct order ${JSON.stringify(directBuy)}`);
 
         try {
@@ -105,28 +115,31 @@ export class OrderController {
 
     @Get()
     @UseGuards(AuthGuard(), ActiveUserGuard)
-    public async getOrders(@UserDecorator() user: ILoggedInUser): Promise<Order[]> {
+    @ApiResponse({ status: HttpStatus.OK, type: [OrderDTO], description: 'Get my orders' })
+    public async getMyOrders(@UserDecorator() user: ILoggedInUser): Promise<OrderDTO[]> {
         const orders = await this.orderService.getAllOrders(user.ownerId);
         return orders;
     }
 
     @Get('/:id')
     @UseGuards(AuthGuard(), ActiveUserGuard)
+    @ApiResponse({ status: HttpStatus.OK, type: OrderDTO, description: 'Get order' })
     public async getOrder(
         @UserDecorator() user: ILoggedInUser,
         @Param('id', new ParseUUIDPipe({ version: '4' })) orderId: string
-    ): Promise<Order> {
+    ): Promise<OrderDTO> {
         const order = await this.orderService.findOne(user.ownerId, orderId);
         return order;
     }
 
     @Post('/:id/cancel')
     @UseGuards(AuthGuard(), ActiveUserGuard)
-    @HttpCode(202)
+    @HttpCode(HttpStatus.ACCEPTED)
+    @ApiResponse({ status: HttpStatus.ACCEPTED, type: OrderDTO, description: 'Cancel an order' })
     public async cancelOrder(
         @UserDecorator() user: ILoggedInUser,
         @Param('id', new ParseUUIDPipe({ version: '4' })) orderId: string
-    ): Promise<Order> {
+    ): Promise<OrderDTO> {
         try {
             const order = await this.orderService.cancelOrder(user.ownerId, orderId);
             return order;

@@ -13,13 +13,14 @@ import {
     Param,
     ParseIntPipe,
     Put,
-    UseInterceptors
+    UseInterceptors,
+    HttpStatus
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { ISuccessResponse, Role } from '@energyweb/origin-backend-core';
 
-import { ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CreateCertificationRequestCommand } from './commands/create-certification-request.command';
 import { CreateCertificationRequestDTO } from './commands/create-certification-request.dto';
 import { GetAllCertificationRequestsQuery } from './queries/get-all-certification-requests.query';
@@ -33,6 +34,7 @@ import { ValidateCertificationRequestCommand } from './commands/validate-certifi
 import { CertificateBoundToCertificationRequestCommand } from './commands/certificate-bound-to-certification-request.command';
 
 @ApiTags('certification-requests')
+@ApiBearerAuth('access-token')
 @Controller('certification-request')
 @UseInterceptors(ExceptionInterceptor)
 export class CertificationRequestController {
@@ -41,7 +43,7 @@ export class CertificationRequestController {
     @Get('/:id')
     @UseGuards(AuthGuard(), ActiveUserGuard)
     @ApiResponse({
-        status: 200,
+        status: HttpStatus.OK,
         type: CertificationRequestDTO,
         description: 'Returns a Certification Request'
     })
@@ -54,7 +56,7 @@ export class CertificationRequestController {
     @Get()
     @UseGuards(AuthGuard(), ActiveUserGuard)
     @ApiResponse({
-        status: 200,
+        status: HttpStatus.OK,
         type: [CertificationRequestDTO],
         description: 'Returns all Certification Requests'
     })
@@ -65,7 +67,7 @@ export class CertificationRequestController {
     @Get('/:certificateId')
     @UseGuards(AuthGuard(), ActiveUserGuard)
     @ApiResponse({
-        status: 200,
+        status: HttpStatus.OK,
         type: CertificationRequestDTO,
         description: 'Returns a Certification Request by a certificate ID'
     })
@@ -88,7 +90,7 @@ export class CertificationRequestController {
     @UseGuards(AuthGuard(), ActiveUserGuard, RolesGuard)
     @Roles(Role.Issuer, Role.Admin, Role.OrganizationAdmin, Role.OrganizationDeviceManager)
     @ApiResponse({
-        status: 200,
+        status: HttpStatus.OK,
         type: CertificationRequestDTO,
         description: 'Creates a Certification Request'
     })
@@ -121,7 +123,7 @@ export class CertificationRequestController {
     @UseGuards(AuthGuard(), ActiveUserGuard, RolesGuard)
     @Roles(Role.Issuer, Role.Admin)
     @ApiResponse({
-        status: 200,
+        status: HttpStatus.OK,
         type: SuccessResponseDTO,
         description: 'Approves a Certification Request'
     })
@@ -133,7 +135,7 @@ export class CertificationRequestController {
     @UseGuards(AuthGuard(), ActiveUserGuard, RolesGuard)
     @Roles(Role.Issuer, Role.Admin)
     @ApiResponse({
-        status: 200,
+        status: HttpStatus.OK,
         type: SuccessResponseDTO,
         description: 'Revokes a Certification Request'
     })

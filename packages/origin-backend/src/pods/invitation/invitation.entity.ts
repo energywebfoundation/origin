@@ -1,6 +1,7 @@
 import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
-import { IsEmail } from 'class-validator';
+import { IsEmail, IsEnum, IsString } from 'class-validator';
 import {
+    IOrganizationInvitation,
     OrganizationInvitationStatus,
     OrganizationRole,
     Role
@@ -10,7 +11,7 @@ import { ExtendedBaseEntity } from '@energyweb/origin-backend-utils';
 import { Organization } from '../organization/organization.entity';
 
 @Entity({ name: 'organization_invitation' })
-export class Invitation extends ExtendedBaseEntity {
+export class Invitation extends ExtendedBaseEntity implements IOrganizationInvitation {
     @PrimaryGeneratedColumn()
     id: number;
 
@@ -19,12 +20,15 @@ export class Invitation extends ExtendedBaseEntity {
     email: string;
 
     @Column({ default: Role.OrganizationUser })
+    @IsEnum(Role)
     role: OrganizationRole;
 
     @Column()
+    @IsEnum(OrganizationInvitationStatus)
     status: OrganizationInvitationStatus;
 
     @Column()
+    @IsString()
     sender: string;
 
     @ManyToOne(() => Organization, (organization) => organization.users)

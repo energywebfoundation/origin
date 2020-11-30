@@ -1,6 +1,6 @@
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
-import { Contract, providers } from 'ethers';
-import { CertificateUtils } from '@energyweb/issuer';
+import { providers } from 'ethers';
+import { CertificateUtils, IBlockchainProperties } from '@energyweb/issuer';
 import { EventBus } from '@nestjs/cqrs';
 import { BlockchainPropertiesService } from '../../blockchain/blockchain-properties.service';
 import { CertificateCreatedEvent } from '../events/certificate-created-event';
@@ -22,7 +22,7 @@ export class OnChainCertificateWatcher implements OnModuleInit {
 
     public provider: providers.FallbackProvider | providers.JsonRpcProvider;
 
-    public registry: Contract;
+    public registry: IBlockchainProperties['registry'];
 
     constructor(
         private readonly blockchainPropertiesService: BlockchainPropertiesService,

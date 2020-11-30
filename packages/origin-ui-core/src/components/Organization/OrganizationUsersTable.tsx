@@ -5,7 +5,7 @@ import { TableMaterial } from '../Table/TableMaterial';
 import { DeleteOutline, PermIdentityOutlined } from '@material-ui/icons';
 import { getUserOffchain } from '../../features/users/selectors';
 import { setLoading } from '../../features/general/actions';
-import { getOffChainDataSource } from '../../features/general/selectors';
+import { getBackendClient } from '../../features/general/selectors';
 import {
     IPaginatedLoaderHooksFetchDataParameters,
     usePaginatedLoader
@@ -28,7 +28,7 @@ interface IRecord {
 export function OrganizationUsersTable() {
     const { t } = useTranslation();
 
-    const organizationClient = useSelector(getOffChainDataSource)?.organizationClient;
+    const organizationClient = useSelector(getBackendClient)?.organizationClient;
     const userOffchain = useSelector(getUserOffchain);
     const userIsActive = userOffchain && userOffchain.status === UserStatus.Active;
 
@@ -49,14 +49,12 @@ export function OrganizationUsersTable() {
         }
         let entities = [];
         try {
-            entities = await organizationClient.getMembers(userOffchain.organization.id);
+            entities = (await organizationClient.getUsers(userOffchain.organization.id)).data;
         } catch (error) {
             const _error = { ...error };
             if (_error.response.status === 412) {
                 showNotification(
-                    `Only active users can perform this action. Your status is ${
-                        UserStatus[userOffchain.status]
-                    }`,
+                    `Only active users can perform this action. Your status is ${userOffchain.status}`,
                     NotificationType.Error
                 );
             }

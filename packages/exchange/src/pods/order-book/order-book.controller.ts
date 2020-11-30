@@ -12,15 +12,20 @@ import {
     HttpCode,
     UseInterceptors,
     ValidationPipe,
-    UsePipes
+    UsePipes,
+    HttpStatus
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
+import { ApiBearerAuth, ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 import { OrderBookOrderDTO } from './order-book-order.dto';
 import { OrderBookService } from './order-book.service';
 import { ProductFilterDTO } from './product-filter.dto';
 import { TradeService } from '../trade/trade.service';
+import { OrderBookDTO } from './order-book.dto';
 
+@ApiTags('orderbook')
+@ApiBearerAuth('access-token')
 @Controller('orderbook')
 @UseInterceptors(NullOrUndefinedResultInterceptor)
 @UsePipes(ValidationPipe)
@@ -32,20 +37,29 @@ export class OrderBookController {
 
     @Post('/search')
     @UseGuards(AuthGuard(), ActiveUserGuard)
-    @HttpCode(200)
+    @HttpCode(HttpStatus.OK)
+    @ApiBody({ type: ProductFilterDTO })
+    @ApiResponse({ status: HttpStatus.OK, type: OrderBookDTO, description: 'Gets the order book' })
     public getByProduct(
         @UserDecorator() user: ILoggedInUser,
         @Body() productFilter: ProductFilterDTO
-    ) {
+    ): OrderBookDTO {
         return this.filterOrderBook(productFilter, user.ownerId);
     }
 
     @Post('/public/search')
-    public getByProductPublic(@Body() productFilter: ProductFilterDTO) {
+    @HttpCode(HttpStatus.OK)
+    @ApiBody({ type: ProductFilterDTO })
+    @ApiResponse({
+        status: HttpStatus.OK,
+        type: OrderBookDTO,
+        description: 'Gets the public order book'
+    })
+    public getByProductPublic(@Body() productFilter: ProductFilterDTO): OrderBookDTO {
         return this.filterOrderBook(productFilter);
     }
 
-    private filterOrderBook(productFilterDTO: ProductFilterDTO, userId?: string) {
+    private filterOrderBook(productFilterDTO: ProductFilterDTO, userId?: string): OrderBookDTO {
         const productFilter = ProductFilterDTO.toProductFilter(productFilterDTO);
         const { asks, bids } = this.orderBookService.getByProduct(productFilter);
         const lastTradedPrice = this.tradeService.getLastTradedPrice(productFilter);

@@ -10,7 +10,7 @@ import {
     getUserOffchain,
     setLoading
 } from '@energyweb/origin-ui-core';
-import { IExchangeClient, Bundle } from '../../utils/exchange';
+import { ExchangeClient, Bundle } from '../../utils/exchange';
 import { getExchangeClient } from '../general';
 import {
     BundlesActionType,
@@ -26,35 +26,35 @@ function* fetchBundlesSaga(): SagaIterator {
         yield take(BundlesActionType.FETCH_BUNDLES);
 
         yield put(clearBundles());
-        const exchangeClient: IExchangeClient = yield select(getExchangeClient);
-
-        const bundles: Bundle[] = yield apply(
-            exchangeClient,
-            exchangeClient.getAvailableBundles,
-            null
-        );
+        const { bundleClient }: ExchangeClient = yield select(getExchangeClient);
         const user = yield select(getUserOffchain);
 
-        const ownBundles: Bundle[] =
-            user && user.status === UserStatus.Active
-                ? yield apply(exchangeClient, exchangeClient.getOwnBundles, null)
-                : [];
+        const bundleResponse = yield apply(bundleClient, bundleClient.getAvailableBundles, null);
+        const bundles: Bundle[] = bundleResponse.data;
 
-        for (const bundle of bundles) {
-            bundle.own = ownBundles.find((b) => b.id === bundle.id) !== undefined;
-            bundle.items.forEach((item) => {
-                item.currentVolume = BigNumber.from(item.currentVolume.toString());
-                item.startVolume = BigNumber.from(item.startVolume.toString());
-            });
-            if (
-                bundle.items
-                    .reduce((total, item) => total.add(item.currentVolume), BigNumber.from(0))
-                    .isZero()
-            ) {
-                continue;
+        const ownBundlesResponse =
+            user && user.status === UserStatus.Active
+                ? yield apply(bundleClient, bundleClient.getMyBundles, null)
+                : { data: [] };
+        const ownBundles: Bundle[] = ownBundlesResponse.data;
+
+        if (bundles.length > 0) {
+            for (const bundle of bundles) {
+                bundle.own = ownBundles.find((b) => b.id === bundle.id) !== undefined;
+                bundle.items.forEach((item) => {
+                    item.currentVolume = BigNumber.from(item.currentVolume.toString());
+                    item.startVolume = BigNumber.from(item.startVolume.toString());
+                });
+                if (
+                    bundle.items
+                        .reduce((total, item) => total.add(item.currentVolume), BigNumber.from(0))
+                        .isZero()
+                ) {
+                    continue;
+                }
+                bundle.volume = BigNumber.from(bundle.volume.toString());
+                yield put(storeBundle(bundle));
             }
-            bundle.volume = BigNumber.from(bundle.volume.toString());
-            yield put(storeBundle(bundle));
         }
     }
 }
@@ -66,9 +66,9 @@ function* requestCreateBundle() {
         }: ICreateBundleAction = yield take(BundlesActionType.CREATE);
         yield put(setLoading(true));
         const i18n = getI18n();
-        const exchangeClient = yield select(getExchangeClient);
+        const { bundleClient }: ExchangeClient = yield select(getExchangeClient);
         try {
-            yield apply(exchangeClient, exchangeClient.createBundle, [bundleDTO]);
+            yield apply(bundleClient, bundleClient.createBundle, [bundleDTO]);
             showNotification(
                 i18n.t('certificate.feedback.bundle_created'),
                 NotificationType.Success
@@ -89,9 +89,9 @@ function* buyBundle() {
         } = yield take(BundlesActionType.BUY);
         yield put(setLoading(true));
         const i18n = getI18n();
-        const exchangeClient = yield select(getExchangeClient);
+        const { bundleClient }: ExchangeClient = yield select(getExchangeClient);
         try {
-            yield apply(exchangeClient, exchangeClient.buyBundle, [bundleDTO]);
+            yield apply(bundleClient, bundleClient.buyBundle, [bundleDTO]);
             showNotification(
                 i18n.t('certificate.feedback.bundle_bought'),
                 NotificationType.Success
@@ -111,9 +111,9 @@ function* cancelBundle(): SagaIterator {
         const action = yield take(BundlesActionType.CANCEL_BUNDLE);
         const i18n = getI18n();
         const { payload } = action;
-        const exchangeClient: IExchangeClient = yield select(getExchangeClient);
+        const { bundleClient }: ExchangeClient = yield select(getExchangeClient);
         try {
-            yield apply(exchangeClient, exchangeClient.cancelBundle, [payload]);
+            yield apply(bundleClient, bundleClient.cancelBundle, [payload]);
             showNotification(
                 i18n.t('certificate.feedback.bundleCanceld'),
                 NotificationType.Success

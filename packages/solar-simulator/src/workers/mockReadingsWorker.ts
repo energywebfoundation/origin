@@ -4,9 +4,12 @@ import { parentPort, workerData } from 'worker_threads';
 import moment from 'moment-timezone';
 import * as Winston from 'winston';
 
-import { ProducingDevice } from '@energyweb/device-registry';
-import { Configuration } from '@energyweb/utils-general';
-import { OffChainDataSource } from '@energyweb/origin-backend-client';
+import { ProducingDevice, Configuration } from '@energyweb/device-registry';
+import {
+    AuthClient,
+    DeviceClient,
+    Configuration as ClientConfiguration
+} from '@energyweb/origin-backend-client';
 import { ISmartMeterRead } from '@energyweb/origin-backend-core';
 import { BigNumber } from 'ethers';
 
@@ -57,26 +60,30 @@ const { device } = workerData;
 const currentTime = moment.tz(device.timezone);
 
 (async () => {
-    const offChainDataSource = new OffChainDataSource(
-        process.env.BACKEND_URL,
-        Number(process.env.BACKEND_PORT)
-    );
+    const backendUrl = `${process.env.BACKEND_URL}:${process.env.BACKEND_PORT}`;
+    const authClient = new AuthClient(new ClientConfiguration(), backendUrl);
+    const { data: loginResponse } = await authClient.login({
+        username: 'admin@mailinator.com',
+        password: 'test'
+    });
 
-    const conf = {
-        offChainDataSource,
+    const clientConfiguration = new ClientConfiguration({
+        baseOptions: {
+            headers: {
+                Authorization: `Bearer ${loginResponse.accessToken}`
+            }
+        },
+        accessToken: loginResponse.accessToken
+    });
+
+    const conf: Configuration.Entity = {
         logger: Winston.createLogger({
             level: 'verbose',
             format: Winston.format.combine(Winston.format.colorize(), Winston.format.simple()),
             transports: [new Winston.transports.Console({ level: 'silly' })]
-        })
+        }),
+        deviceClient: new DeviceClient(clientConfiguration, backendUrl)
     };
-
-    const loginResponse = await conf.offChainDataSource.userClient.login(
-        'admin@mailinator.com',
-        'test'
-    );
-
-    conf.offChainDataSource.requestClient.authenticationToken = loginResponse.accessToken;
 
     const MOCK_READINGS_MINUTES_INTERVAL =
         parseInt(process.env.SOLAR_SIMULATOR_PAST_READINGS_MINUTES_INTERVAL, 10) || 15;

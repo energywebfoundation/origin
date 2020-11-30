@@ -294,8 +294,8 @@ VALUES
         'f',
         '8',
         '1',
-        '1',
-        '1'
+        'Active',
+        'Passed'
     );
 
 INSERT INTO
@@ -333,8 +333,8 @@ VALUES
         't',
         '1',
         '2',
-        '1',
-        '1'
+        'Active',
+        'Passed'
     );
 
 INSERT INTO
@@ -372,8 +372,8 @@ VALUES
         't',
         '1',
         '3',
-        '1',
-        '1'
+        'Active',
+        'Passed'
     );
 
 INSERT INTO
@@ -411,8 +411,8 @@ VALUES
         'f',
         '1',
         '4',
-        '1',
-        '1'
+        'Active',
+        'Passed'
     );
 
 INSERT INTO
@@ -450,8 +450,8 @@ VALUES
         'f',
         '16',
         5,
-        '1',
-        '1'
+        'Active',
+        'Passed'
     );
 
 INSERT INTO
@@ -489,8 +489,8 @@ VALUES
         'f',
         '32',
         5,
-        '1',
-        '1'
+        'Active',
+        'Passed'
     );
 
 /*
@@ -529,7 +529,7 @@ VALUES
         '2020-03-30 09:36:02.607206+02',
         '2020-03-30 09:36:02.607206+02',
         1,
-        '2',
+        'Active',
         'Wuthering Heights Windfarm',
         '',
         '',
@@ -586,7 +586,7 @@ VALUES
         '2020-03-30 09:36:02.607206+02',
         '2020-03-30 09:36:02.607206+02',
         2,
-        '2',
+        'Active',
         'Solar Facility A',
         '',
         '',
@@ -643,7 +643,7 @@ VALUES
         '2020-03-30 09:36:02.607206+02',
         '2020-03-30 09:36:02.607206+02',
         3,
-        '2',
+        'Active',
         'Biomass Facility',
         '',
         '',

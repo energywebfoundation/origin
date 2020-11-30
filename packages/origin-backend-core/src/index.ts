@@ -8,4 +8,3 @@ export * from './OriginConfiguration';
 export * from './LoggedInUser';
 export * from './UserRegistrationData';
 export * from './EmailConfirmation';
-export * from './client';

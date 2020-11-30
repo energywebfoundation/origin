@@ -37,6 +37,7 @@
         "@nestjs/core": "7.5.2",
         "@nestjs/cqrs": "7.0.1",
         "@nestjs/passport": "7.1.0",
+        "@nestjs/swagger": "4.6.1",
         "@nestjs/typeorm": "7.1.4",
         "class-transformer": "0.3.1",
         "class-validator": "0.12.2",
@@ -46,15 +47,15 @@
     },
     "devDependencies": {
         "@nestjs/cli": "7.5.2",
-        "@nestjs/schematics": "7.2.1",
+        "@nestjs/schematics": "7.2.2",
         "@nestjs/testing": "7.5.2",
         "@types/express": "4.17.4",
-        "@types/node": "12.19.4",
+        "@types/node": "12.19.7",
         "@types/supertest": "2.0.10",
         "superagent-use": "0.1.0",
         "supertest": "6.0.1",
         "supertest-capture-error": "1.0.0",
-        "ts-node": "8.10.2"
+        "ts-node": "9.0.0"
     },
     "publishConfig": {
         "access": "public",

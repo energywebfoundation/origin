@@ -7,7 +7,9 @@ import { BNTransformer } from '../../utils/valueTransformers';
 import { Bundle } from './bundle.entity';
 import { BundleTradeItemDTO } from './bundle-trade-item.dto';
 
-@Entity()
+import { DB_TABLE_PREFIX } from '../../utils/tablePrefix';
+
+@Entity({ name: `${DB_TABLE_PREFIX}_bundle_trade` })
 export class BundleTrade extends ExtendedBaseEntity {
     constructor(trade: Partial<BundleTrade>) {
         super();

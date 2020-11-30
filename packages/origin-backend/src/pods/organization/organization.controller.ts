@@ -1,10 +1,9 @@
 import {
     ensureOrganizationRole,
     ILoggedInUser,
-    IOrganizationUpdateMemberRole,
     isRole,
-    ISuccessResponse,
-    OrganizationUpdateData,
+    ResponseFailure,
+    ResponseSuccess,
     Role
 } from '@energyweb/origin-backend-core';
 import {
@@ -21,6 +20,7 @@ import {
     Delete,
     ForbiddenException,
     Get,
+    HttpStatus,
     InternalServerErrorException,
     Logger,
     NotFoundException,
@@ -34,18 +34,23 @@ import {
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 
+import { ApiBearerAuth, ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { StorageErrors } from '../../enums/StorageErrors';
 import { Device } from '../device/device.entity';
 import { User } from '../user';
-import { NewOrganizationDTO } from './new-organization.dto';
-import { OrganizationInvitationDTO } from './organization-invitation.dto';
+import { NewOrganizationDTO } from './dto/new-organization.dto';
 import { OrganizationService } from './organization.service';
-import { Organization } from './organization.entity';
-import { FullOrganizationInfoDTO } from './full-organization-info.dto';
-import { PublicOrganizationInfoDTO } from './public-organization-info.dto';
+import { FullOrganizationInfoDTO } from './dto/full-organization-info.dto';
+import { PublicOrganizationInfoDTO } from './dto/public-organization-info.dto';
 import { OrganizationNameAlreadyTakenError } from './organization-name-taken.error';
 import { OrganizationDocumentOwnershipMismatchError } from './organization-document-ownership-mismatch.error';
+import { SuccessResponseDTO } from '../../utils/success-response.dto';
+import { OrganizationUpdateDTO } from './dto/organization-update.dto';
+import { UpdateMemberDTO } from './dto/organization-update-member.dto';
+import { InvitationDTO } from '../invitation/invitation.dto';
 
+@ApiTags('organization')
+@ApiBearerAuth('access-token')
 @Controller('/Organization')
 @UseInterceptors(NullOrUndefinedResultInterceptor)
 export class OrganizationController {
@@ -56,6 +61,11 @@ export class OrganizationController {
     @Get()
     @UseGuards(AuthGuard(), ActiveUserGuard, RolesGuard)
     @Roles(Role.Admin, Role.SupportAgent)
+    @ApiResponse({
+        status: HttpStatus.OK,
+        type: [FullOrganizationInfoDTO],
+        description: 'Gets all organizations'
+    })
     async getAll(): Promise<FullOrganizationInfoDTO[]> {
         const organizations = await this.organizationService.getAll();
 
@@ -64,6 +74,11 @@ export class OrganizationController {
 
     @Get('/:id')
     @UseGuards(AuthGuard())
+    @ApiResponse({
+        status: HttpStatus.OK,
+        type: FullOrganizationInfoDTO,
+        description: 'Gets an organization'
+    })
     async get(
         @Param('id', new ParseIntPipe()) organizationId: number,
         @UserDecorator() loggedUser: ILoggedInUser
@@ -77,6 +92,11 @@ export class OrganizationController {
 
     @Get('/:id/public')
     @UseGuards(AuthGuard())
+    @ApiResponse({
+        status: HttpStatus.OK,
+        type: PublicOrganizationInfoDTO,
+        description: 'Gets a public organization'
+    })
     async getPublic(
         @Param('id', new ParseIntPipe()) organizationId: number
     ): Promise<PublicOrganizationInfoDTO> {
@@ -87,22 +107,30 @@ export class OrganizationController {
 
     @Get('/:id/invitations')
     @UseGuards(AuthGuard())
+    @ApiResponse({
+        status: HttpStatus.OK,
+        type: [InvitationDTO],
+        description: 'Gets invitations for an organization'
+    })
     async getInvitationsForOrganization(
         @Param('id', new ParseIntPipe()) organizationId: number,
         @UserDecorator() loggedUser: ILoggedInUser
-    ): Promise<OrganizationInvitationDTO[]> {
+    ): Promise<InvitationDTO[]> {
         this.ensureOrganizationMemberOrAdmin(loggedUser, organizationId);
 
         const organization = await this.organizationService.findOne(organizationId);
 
-        return organization?.invitations?.map((inv) =>
-            OrganizationInvitationDTO.fromInvitation(inv)
-        );
+        return organization?.invitations?.map((inv) => InvitationDTO.fromInvitation(inv));
     }
 
     @Get('/:id/users')
     @UseGuards(AuthGuard(), RolesGuard)
     @Roles(Role.OrganizationAdmin, Role.Admin, Role.SupportAgent)
+    @ApiResponse({
+        status: HttpStatus.OK,
+        type: [User],
+        description: 'Gets users of an organization'
+    })
     async getUsers(
         @Param('id', new ParseIntPipe()) organizationId: number,
         @UserDecorator() loggedUser: ILoggedInUser
@@ -117,6 +145,11 @@ export class OrganizationController {
     @Get('/:id/devices')
     @UseGuards(AuthGuard(), ActiveUserGuard, RolesGuard)
     @Roles(Role.OrganizationAdmin, Role.OrganizationDeviceManager, Role.Admin, Role.SupportAgent)
+    @ApiResponse({
+        status: HttpStatus.OK,
+        type: [Device],
+        description: 'Gets devices of an organization'
+    })
     async getDevices(
         @Param('id', new ParseIntPipe()) organizationId: number,
         @UserDecorator() loggedUser: ILoggedInUser
@@ -131,10 +164,16 @@ export class OrganizationController {
     @Post()
     @UseGuards(AuthGuard())
     @Roles(Role.OrganizationAdmin)
+    @ApiBody({ type: NewOrganizationDTO })
+    @ApiResponse({
+        status: HttpStatus.CREATED,
+        type: FullOrganizationInfoDTO,
+        description: 'Register an organization'
+    })
     async register(
         @Body() organizationToRegister: NewOrganizationDTO,
         @UserDecorator() loggedUser: ILoggedInUser
-    ): Promise<Organization> {
+    ): Promise<FullOrganizationInfoDTO> {
         if (loggedUser.hasOrganization) {
             throw new ForbiddenException('User is already part of an organization');
         }
@@ -166,9 +205,14 @@ export class OrganizationController {
     @Delete('/:id')
     @UseGuards(AuthGuard(), ActiveUserGuard, RolesGuard)
     @Roles(Role.Admin)
+    @ApiResponse({
+        status: HttpStatus.OK,
+        type: SuccessResponseDTO,
+        description: 'Delete an organization'
+    })
     async delete(
         @Param('id', new ParseIntPipe()) organizationId: number
-    ): Promise<ISuccessResponse> {
+    ): Promise<SuccessResponseDTO> {
         const organization = await this.organizationService.findOne(organizationId);
 
         if (!organization) {
@@ -177,18 +221,22 @@ export class OrganizationController {
 
         await this.organizationService.remove(organizationId);
 
-        return {
-            success: true
-        };
+        return ResponseSuccess();
     }
 
     @Put('/:id')
     @UseGuards(AuthGuard(), ActiveUserGuard, RolesGuard)
     @Roles(Role.Admin)
-    async put(
+    @ApiBody({ type: OrganizationUpdateDTO })
+    @ApiResponse({
+        status: HttpStatus.OK,
+        type: SuccessResponseDTO,
+        description: 'Update an organization'
+    })
+    async update(
         @Param('id', new ParseIntPipe()) organizationId: number,
-        @Body() body: OrganizationUpdateData
-    ): Promise<ISuccessResponse> {
+        @Body() body: OrganizationUpdateDTO
+    ): Promise<SuccessResponseDTO> {
         const organization = await this.organizationService.findOne(organizationId);
 
         if (!organization) {
@@ -203,42 +251,51 @@ export class OrganizationController {
             await this.organizationService.update(organizationId, body.status);
         } catch (error) {
             this.logger.error(error);
-            throw new UnprocessableEntityException({
-                message: `Entity ${organizationId} could not be updated due to an unknown error`
-            });
+            throw new UnprocessableEntityException(
+                ResponseFailure(
+                    `Entity ${organizationId} could not be updated due to an unknown error`
+                )
+            );
         }
 
-        return {
-            success: true
-        };
+        return ResponseSuccess();
     }
 
-    @Post(':id/remove-member/:memberId')
+    @Put(':id/remove-member/:memberId')
     @UseGuards(AuthGuard(), ActiveUserGuard, RolesGuard)
     @Roles(Role.OrganizationAdmin, Role.Admin)
+    @ApiResponse({
+        status: HttpStatus.OK,
+        type: SuccessResponseDTO,
+        description: 'Removes a member from an organization'
+    })
     async removeMember(
         @Param('id', new ParseIntPipe()) organizationId: number,
         @Param('memberId', new ParseIntPipe()) memberId: number,
         @UserDecorator() loggedUser: ILoggedInUser
-    ): Promise<ISuccessResponse> {
+    ): Promise<SuccessResponseDTO> {
         this.ensureOrganizationMemberOrAdmin(loggedUser, organizationId);
 
         await this.organizationService.removeMember(loggedUser.organizationId, memberId);
 
-        return {
-            success: true
-        };
+        return ResponseSuccess();
     }
 
     @Put(':id/change-role/:userId')
     @UseGuards(AuthGuard(), ActiveUserGuard, RolesGuard)
     @Roles(Role.OrganizationAdmin, Role.Admin)
+    @ApiBody({ type: UpdateMemberDTO })
+    @ApiResponse({
+        status: HttpStatus.OK,
+        type: SuccessResponseDTO,
+        description: 'Removes a member from an organization'
+    })
     async changeMemberRole(
         @Param('id', new ParseIntPipe()) organizationId: number,
         @Param('userId', new ParseIntPipe()) memberId: number,
-        @Body() { role }: IOrganizationUpdateMemberRole,
+        @Body() { role }: UpdateMemberDTO,
         @UserDecorator() loggedUser: ILoggedInUser
-    ): Promise<ISuccessResponse> {
+    ): Promise<SuccessResponseDTO> {
         this.ensureOrganizationMemberOrAdmin(loggedUser, organizationId);
 
         try {
@@ -249,9 +306,7 @@ export class OrganizationController {
 
         await this.organizationService.changeMemberRole(loggedUser.organizationId, memberId, role);
 
-        return {
-            success: true
-        };
+        return ResponseSuccess();
     }
 
     private ensureOrganizationMemberOrAdmin(user: ILoggedInUser, organizationId: number) {

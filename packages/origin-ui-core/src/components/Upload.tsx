@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { useDropzone } from 'react-dropzone';
 import { CancelTokenSource } from 'axios';
 import { makeStyles, createStyles, useTheme, Chip } from '@material-ui/core';
-import { getOffChainDataSource } from '../features/general/selectors';
+import { getBackendClient } from '../features/general/selectors';
 import { FILE_SUPPORTED_MIMETYPES } from '@energyweb/origin-backend-core';
 import { Delete, Cancel, Replay } from '@material-ui/icons';
 import { useTranslation } from 'react-i18next';
@@ -161,7 +161,7 @@ export function Upload(props: IProps) {
 
     const [files, setFiles] = useState<File[]>([]);
 
-    const offChainDataSource = useSelector(getOffChainDataSource);
+    const backendClient = useSelector(getBackendClient);
 
     const { getRootProps, getInputProps } = useDropzone({
         accept: FILE_SUPPORTED_MIMETYPES,
@@ -171,29 +171,32 @@ export function Upload(props: IProps) {
     });
 
     async function upload(file: File) {
-        const cancelToken = offChainDataSource.requestClient.generateCancelToken();
+        // TO-DO: figure out a way to cancel token
+        // const cancelToken = backendClient.requestClient.generateCancelToken();
         const fileIndex = files.indexOf(file);
 
-        dispatch({
-            type: 'setFileUploadCancelToken',
-            payload: {
-                id: fileIndex,
-                cancelToken
-            }
-        });
+        // dispatch({
+        //     type: 'setFileUploadCancelToken',
+        //     payload: {
+        //         id: fileIndex,
+        //         cancelToken
+        //     }
+        // });
 
-        const uploadedArray = await offChainDataSource.filesClient.upload(
-            [file],
-            (progressEvent) => {
-                dispatch({
-                    type: 'setFileProgress',
-                    payload: {
-                        id: fileIndex,
-                        uploadProgress: (progressEvent.loaded * 90) / progressEvent.total
-                    }
-                });
-            },
-            cancelToken
+        const { data: uploadedArray } = await backendClient.fileClient.upload(
+            [file as Blob],
+            {
+                onUploadProgress: (progressEvent) => {
+                    dispatch({
+                        type: 'setFileProgress',
+                        payload: {
+                            id: fileIndex,
+                            uploadProgress: (progressEvent.loaded * 90) / progressEvent.total
+                        }
+                    });
+                }
+            }
+            // cancelToken
         );
 
         dispatch({

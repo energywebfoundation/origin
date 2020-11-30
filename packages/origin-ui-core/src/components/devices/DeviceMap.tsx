@@ -7,8 +7,8 @@ import { useLinks } from '../../utils/routing';
 import { getProducingDevices } from '../../features/selectors';
 import { CircularProgress } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
-import { IPublicOrganization } from '@energyweb/origin-backend-core';
-import { getOffChainDataSource, getEnvironment } from '../../features/general/selectors';
+import { IPublicOrganization, OrganizationStatus } from '@energyweb/origin-backend-core';
+import { getBackendClient, getEnvironment } from '../../features/general/selectors';
 
 interface IProps {
     devices?: ProducingDevice.Entity[];
@@ -25,7 +25,7 @@ export function DeviceMap(props: IProps) {
     const producingDevices = useSelector(getProducingDevices);
 
     const { getProducingDeviceDetailLink } = useLinks();
-    const offChainDataSource = useSelector(getOffChainDataSource);
+    const backendClient = useSelector(getBackendClient);
     const { t } = useTranslation();
 
     const devices = props.devices || producingDevices;
@@ -74,9 +74,12 @@ export function DeviceMap(props: IProps) {
 
     useEffect(() => {
         (async () => {
-            setOrganizations((await offChainDataSource?.organizationClient?.getAll()) ?? []);
+            const { data: orgs } = await backendClient?.organizationClient?.getAll();
+            setOrganizations(
+                orgs.map((org) => ({ ...org, status: OrganizationStatus[org.status] })) ?? []
+            );
         })();
-    }, [offChainDataSource]);
+    }, [backendClient.organizationClient]);
 
     const defaultCenter =
         devices.length > 0

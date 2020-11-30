@@ -20,10 +20,11 @@ export function MyTrades(props: IProps) {
     const [data, setData] = useState<ITradeDTO[]>([]);
 
     const fetchData = async (checkIsMounted: () => boolean) => {
-        const fetchedData = (await exchangeClient?.getTrades()) ?? [];
+        const trades = await exchangeClient?.tradeClient.getAll();
+        const fetchedData = trades?.data;
 
         if (checkIsMounted()) {
-            setData(fetchedData);
+            setData(fetchedData ?? []);
         }
     };
 

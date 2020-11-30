@@ -5,9 +5,12 @@ import dotenv from 'dotenv';
 import fs from 'fs';
 import { BigNumber } from 'ethers';
 
-import { ProducingDevice } from '@energyweb/device-registry';
-import { Configuration } from '@energyweb/utils-general';
-import { OffChainDataSource } from '@energyweb/origin-backend-client';
+import { ProducingDevice, Configuration } from '@energyweb/device-registry';
+import {
+    DeviceClient,
+    Configuration as ClientConfiguration,
+    AuthClient
+} from '@energyweb/origin-backend-client';
 import { ISmartMeterRead, IEnergyGenerated } from '@energyweb/origin-backend-core';
 import { getEnergyFromCSVRows } from './utils/Energy';
 
@@ -24,20 +27,26 @@ async function createBlockchainConfiguration() {
         transports: [new Winston.transports.Console({ level: 'silly' })]
     });
 
+    const backendUrl = `${process.env.BACKEND_URL}:${process.env.BACKEND_PORT}`;
+    const authClient = new AuthClient(new ClientConfiguration(), backendUrl);
+    const { data: loginResponse } = await authClient.login({
+        username: 'admin@mailinator.com',
+        password: 'test'
+    });
+
+    const clientConfiguration = new ClientConfiguration({
+        baseOptions: {
+            headers: {
+                Authorization: `Bearer ${loginResponse.accessToken}`
+            }
+        },
+        accessToken: loginResponse.accessToken
+    });
+
     const conf: Configuration.Entity = {
         logger,
-        offChainDataSource: new OffChainDataSource(
-            process.env.BACKEND_URL,
-            Number(process.env.BACKEND_PORT)
-        )
+        deviceClient: new DeviceClient(clientConfiguration, backendUrl)
     };
-
-    const loginResponse = await conf.offChainDataSource.userClient.login(
-        'admin@mailinator.com',
-        'test'
-    );
-
-    conf.offChainDataSource.requestClient.authenticationToken = loginResponse.accessToken;
 
     console.log(`[SIMULATOR-CONSUMER] Starting`);
 

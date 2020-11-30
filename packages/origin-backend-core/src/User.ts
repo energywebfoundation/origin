@@ -11,16 +11,16 @@ export enum Role {
 }
 
 export enum UserStatus {
-    Pending,
-    Active,
-    Suspended,
-    Deleted
+    Pending = 'Pending',
+    Active = 'Active',
+    Suspended = 'Suspended',
+    Deleted = 'Deleted'
 }
 
 export enum KYCStatus {
-    Pending,
-    Passed,
-    Rejected
+    Pending = 'Pending',
+    Passed = 'Passed',
+    Rejected = 'Rejected'
 }
 
 export function buildRights(roles: Role[]): number {
@@ -55,12 +55,13 @@ export interface IUserProperties {
     lastName: string;
     email: string;
     telephone: string;
-    blockchainAccountAddress: string;
-    blockchainAccountSignedMessage: string;
     notifications: boolean;
     rights: number;
     status: UserStatus;
     kycStatus: KYCStatus;
+
+    blockchainAccountAddress?: string;
+    blockchainAccountSignedMessage?: string;
 }
 
 export interface IUser extends IUserProperties {
@@ -70,7 +71,6 @@ export interface IUser extends IUserProperties {
 
 export type UserRegisterReturnData = IUser;
 
-export type UserLoginData = { username: string; password: string };
 export type UserLoginReturnData = { accessToken: string };
 
 export type UserUpdateData = Partial<
@@ -79,7 +79,7 @@ export type UserUpdateData = Partial<
 
 export type UserStatusUpdate = Partial<Pick<IUserProperties, 'status' | 'kycStatus'>>;
 
-export type UserPasswordUpdate = { email: string; oldPassword: string; newPassword: string };
+export type UserPasswordUpdate = { oldPassword: string; newPassword: string };
 
 export interface IUserFilter {
     orgName?: string;

@@ -2,7 +2,6 @@ import {
     DeviceCreateData,
     DeviceSettingsUpdateData,
     DeviceStatus,
-    DeviceUpdateData,
     IDevice,
     IDeviceProductInfo,
     IEnergyGeneratedWithStatus,
@@ -13,6 +12,7 @@ import {
     ISmartMeterReadStats,
     ISmartMeterReadWithStatus,
     ISuccessResponse,
+    ResponseFailure,
     sortLowestToHighestTimestamp
 } from '@energyweb/origin-backend-core';
 import {
@@ -206,16 +206,16 @@ export class DeviceService {
         );
     }
 
-    async updateStatus(id: string, update: DeviceUpdateData): Promise<IDevice> {
+    async updateStatus(id: string, status: DeviceStatus): Promise<IDevice> {
         const device = await this.findOne(id);
 
         if (!device) {
-            throw new NotFoundException(StorageErrors.NON_EXISTENT);
+            throw new NotFoundException(ResponseFailure(StorageErrors.NON_EXISTENT));
         }
 
-        await this.repository.update(device.id, { status: update.status });
+        await this.repository.update(device.id, { status });
 
-        this.eventBus.publish(new DeviceStatusChangedEvent(device, update.status));
+        this.eventBus.publish(new DeviceStatusChangedEvent(device, status));
 
         return this.findOne(id);
     }

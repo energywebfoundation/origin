@@ -16,19 +16,19 @@ import {
     FilledInput,
     MenuItem
 } from '@material-ui/core';
-import { OrganizationRole, Role, UserStatus } from '@energyweb/origin-backend-core';
+import { Role } from '@energyweb/origin-backend-core';
 
 import { showNotification, NotificationType } from '../../utils/notifications';
 import { setLoading } from '../../features/general/actions';
 import { FormInput } from '../Form/FormInput';
 import { getUserOffchain } from '../../features/users/selectors';
-import { getOffChainDataSource } from '../../features/general/selectors';
+import { getBackendClient } from '../../features/general/selectors';
 import { roleNames } from './Organization';
 import { useTranslation } from '../../utils';
 
 interface IFormValues {
     email: string;
-    role: OrganizationRole;
+    role: number;
 }
 
 const INITIAL_FORM_VALUES: IFormValues = {
@@ -43,7 +43,7 @@ const VALIDATION_SCHEMA = Yup.object({
 export function OrganizationInvite() {
     const { t } = useTranslation();
 
-    const invitationClient = useSelector(getOffChainDataSource)?.invitationClient;
+    const invitationClient = useSelector(getBackendClient)?.invitationClient;
     const userOffchain = useSelector(getUserOffchain);
 
     const dispatch = useDispatch();
@@ -66,7 +66,10 @@ export function OrganizationInvite() {
         dispatch(setLoading(true));
 
         try {
-            await invitationClient.invite(values.email, Number(values.role));
+            await invitationClient.invite({
+                email: values.email,
+                role: values.role
+            });
 
             showNotification(`Invitation sent`, NotificationType.Success);
         } catch (error) {
@@ -76,9 +79,7 @@ export function OrganizationInvite() {
                 showNotification('Unauthorized.', NotificationType.Error);
             } else if (_error.response.status === 412) {
                 showNotification(
-                    `Only active users can perform this action. Your status is ${
-                        UserStatus[userOffchain.status]
-                    }`,
+                    `Only active users can perform this action. Your status is ${userOffchain.status}`,
                     NotificationType.Error
                 );
             } else {

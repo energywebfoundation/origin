@@ -4,7 +4,7 @@ import {
     setEnvironment,
     IEnvironment,
     GeneralActions,
-    setOffChainDataSource,
+    setBackendClient,
     setExchangeClient,
     setOffchainConfiguration,
     setLoading,
@@ -13,25 +13,13 @@ import {
 } from './actions';
 import {
     getEnvironment,
-    getOffChainDataSource,
+    getBackendClient,
     getOffchainConfiguration,
     getExchangeClient
 } from './selectors';
 import axios, { Canceler } from 'axios';
-import { OffChainDataSource } from '@energyweb/origin-backend-client';
-import {
-    ExchangeClient,
-    IExchangeClient,
-    ExchangeAccount,
-    AccountAsset
-} from '../../utils/exchange';
-import { IRecClient } from '../../utils/irec';
-import {
-    IOriginConfiguration,
-    IOffChainDataSource,
-    UserStatus,
-    IUser
-} from '@energyweb/origin-backend-core';
+import { AccountAsset } from '../../utils/exchange';
+import { IOriginConfiguration, UserStatus, IUser, IRegions } from '@energyweb/origin-backend-core';
 import { BigNumber, ethers } from 'ethers';
 import {
     CertificationRequestsClient,
@@ -40,17 +28,22 @@ import {
     BlockchainPropertiesClient
 } from '@energyweb/issuer-api-client';
 
-import { setActiveBlockchainAccountAddress } from '../users/actions';
+import { setActiveBlockchainAccountAddress, UsersActions } from '../users/actions';
 import { getSearch, push } from 'connected-react-router';
 import { getConfiguration, getBaseURL } from '../selectors';
 import * as queryString from 'query-string';
 import * as Winston from 'winston';
-import { Configuration, DeviceTypeService } from '@energyweb/utils-general';
+import { DeviceTypeService } from '@energyweb/utils-general';
 import { configurationUpdated, web3Updated } from '../actions';
-import { ProducingDevice } from '@energyweb/device-registry';
+import { Configuration, ProducingDevice } from '@energyweb/device-registry';
 import { producingDeviceCreatedOrUpdated } from '../producingDevices/actions';
 import { getI18n } from 'react-i18next';
-import { showNotification, NotificationType, getDevicesOwnedLink } from '../../utils';
+import {
+    showNotification,
+    NotificationType,
+    getDevicesOwnedLink,
+    checkNetworkName
+} from '../../utils';
 import {
     ICertificateViewItem,
     CertificateSource,
@@ -64,8 +57,16 @@ import {
 import { getCertificate } from '../certificates/sagas';
 import { getUserOffchain } from '../users/selectors';
 import { IProducingDeviceState } from '../producingDevices/reducer';
-import { getCertificatesClient } from '../certificates/selectors';
+import { getCertificatesClient, getBlockchainPropertiesClient } from '../certificates/selectors';
 import { certificateEnergyStringToBN } from '../../utils/certificates';
+import { BackendClient } from '../../utils/clients/BackendClient';
+import { LOCAL_STORAGE_KEYS } from '../users/sagas';
+import { IRecClient } from '../../utils/clients/IRecClient';
+import { ExchangeClient } from '../../utils/clients/ExchangeClient';
+
+function getStoredAuthenticationToken() {
+    return localStorage.getItem(LOCAL_STORAGE_KEYS.AUTHENTICATION_TOKEN);
+}
 
 function createEthereumProviderAccountsChangedEventChannel(ethereumProvider: any) {
     return eventChannel<string[]>((emitter) => {
@@ -131,10 +132,15 @@ function prepareGetEnvironmentTask(): {
 }
 
 async function getConfigurationFromAPI(
-    offChainDataSource: IOffChainDataSource
+    backendClient: BackendClient
 ): Promise<IOriginConfiguration> {
     try {
-        return await offChainDataSource.configurationClient.get();
+        const { data: config } = await backendClient.configurationClient.get();
+
+        return {
+            ...config,
+            regions: config.regions as IRegions
+        };
     } catch {
         return null;
     }
@@ -158,69 +164,55 @@ function* setupEnvironment(): SagaIterator {
 
 function* fillOffchainConfiguration(): SagaIterator {
     while (true) {
-        yield take([GeneralActions.setEnvironment, GeneralActions.setOffChainDataSource]);
+        yield take([GeneralActions.setEnvironment, GeneralActions.setBackendClient]);
 
         const environment: IEnvironment = yield select(getEnvironment);
-        const offChainDataSource: IOffChainDataSource = yield select(getOffChainDataSource);
+        const backendClient: BackendClient = yield select(getBackendClient);
 
-        if (!environment || !offChainDataSource) {
+        if (!environment || !backendClient) {
             continue;
         }
 
         const configuration: IOriginConfiguration = yield call(
             getConfigurationFromAPI,
-            offChainDataSource
+            backendClient
         );
 
         yield put(setOffchainConfiguration({ configuration }));
     }
 }
 
-function* initializeOffChainDataSource(): SagaIterator {
+function* initializeClients(): SagaIterator {
     while (true) {
         yield take(GeneralActions.setEnvironment);
 
         const environment: IEnvironment = yield select(getEnvironment);
-        const offChainDataSource: IOffChainDataSource = yield select(getOffChainDataSource);
 
-        if (!environment || offChainDataSource) {
+        if (!environment) {
             continue;
         }
 
-        const newOffChainDataSource = new OffChainDataSource(
-            environment.BACKEND_URL,
-            Number(environment.BACKEND_PORT)
-        );
-
-        yield put(setOffChainDataSource(newOffChainDataSource));
-
-        yield put(
-            setExchangeClient({
-                exchangeClient: new ExchangeClient(
-                    newOffChainDataSource.dataApiUrl,
-                    newOffChainDataSource.requestClient
-                )
-            })
-        );
-
-        yield put(
-            setIRecClient({
-                iRecClient: new IRecClient(
-                    newOffChainDataSource.dataApiUrl,
-                    newOffChainDataSource.requestClient
-                )
-            })
-        );
-
-        const clientConfiguration = new ClientConfiguration({
-            baseOptions: {
-                headers: {
-                    Authorization: `Bearer ${newOffChainDataSource.requestClient.authenticationToken}`
-                }
-            },
-            accessToken: newOffChainDataSource.requestClient.authenticationToken
-        });
+        const authenticationTokenFromStorage = getStoredAuthenticationToken();
         const backendUrl = `${environment.BACKEND_URL}:${environment.BACKEND_PORT}`;
+
+        yield put(setBackendClient(new BackendClient(backendUrl, authenticationTokenFromStorage)));
+        yield put(
+            setExchangeClient(new ExchangeClient(backendUrl, authenticationTokenFromStorage))
+        );
+        yield put(setIRecClient(new IRecClient(backendUrl, authenticationTokenFromStorage)));
+
+        const clientConfiguration = new ClientConfiguration(
+            authenticationTokenFromStorage
+                ? {
+                      baseOptions: {
+                          headers: {
+                              Authorization: `Bearer ${authenticationTokenFromStorage}`
+                          }
+                      },
+                      accessToken: authenticationTokenFromStorage
+                  }
+                : {}
+        );
 
         yield put(
             setBlockchainPropertiesClient(
@@ -238,15 +230,15 @@ function* initializeOffChainDataSource(): SagaIterator {
 
 function createConfiguration(
     offchainConfiguration: IOriginConfiguration,
-    offChainDataSource: IOffChainDataSource,
+    backendClient: BackendClient,
     logger: Winston.Logger = Winston.createLogger({
         level: 'verbose',
         format: Winston.format.combine(Winston.format.colorize(), Winston.format.simple()),
         transports: [new Winston.transports.Console({ level: 'silly' })]
     })
-) {
+): Configuration.Entity {
     return {
-        offChainDataSource,
+        deviceClient: backendClient.deviceClient,
         logger,
         deviceTypeService: new DeviceTypeService(offchainConfiguration.deviceTypes)
     };
@@ -295,13 +287,14 @@ export function* fetchDataAfterConfigurationChange(
     const producingDevices: IProducingDeviceState[] = yield apply(
         ProducingDevice,
         ProducingDevice.getAllDevices,
-        [configuration, true, false]
+        [configuration, true]
     );
 
     for (const device of producingDevices) {
         yield put(producingDeviceCreatedOrUpdated(device));
     }
     const user = yield select(getUserOffchain);
+
     if (user) {
         const { blockchainAccountAddress, status }: IUser = user;
         if (status === UserStatus.Active) {
@@ -315,11 +308,11 @@ export function* fetchDataAfterConfigurationChange(
                 (c): ICertificateViewItem => enhanceCertificate(c, blockchainAccountAddress)
             );
 
-            const exchangeClient: IExchangeClient = yield select(getExchangeClient);
+            const { accountClient }: ExchangeClient = yield select(getExchangeClient);
 
-            const offChainCertificates: ExchangeAccount = yield apply(
-                exchangeClient,
-                exchangeClient.getAccount,
+            const { data: offChainCertificates } = yield apply(
+                accountClient,
+                accountClient.getAccount,
                 null
             );
             const available = yield all(
@@ -344,22 +337,22 @@ function* initializeEnvironment(): SagaIterator {
     while (true) {
         yield take([
             GeneralActions.setEnvironment,
-            GeneralActions.setOffChainDataSource,
+            GeneralActions.setBackendClient,
             GeneralActions.setOffchainConfiguration
         ]);
 
         const environment: IEnvironment = yield select(getEnvironment);
-        const offChainDataSource: IOffChainDataSource = yield select(getOffChainDataSource);
+        const backendClient: BackendClient = yield select(getBackendClient);
         const offchainConfiguration: IOriginConfiguration = yield select(getOffchainConfiguration);
 
-        if (!environment || !offChainDataSource || !offchainConfiguration) {
+        if (!environment || !backendClient || !offchainConfiguration) {
             continue;
         }
 
         const configuration: Configuration.Entity = yield call(
             createConfiguration,
             offchainConfiguration,
-            offChainDataSource
+            backendClient
         );
 
         yield put(configurationUpdated(configuration));
@@ -407,6 +400,41 @@ function* initializeEnvironment(): SagaIterator {
     }
 }
 
+function* checkBlockchainNetwork(): SagaIterator {
+    while (true) {
+        yield take([UsersActions.setUserState, UsersActions.setUserOffchain]);
+
+        const user = yield select(getUserOffchain);
+        const ethereumProvider = (window as any).ethereum;
+
+        if (user && user.status === UserStatus.Active && ethereumProvider) {
+            const blockchainPropertiesClient: BlockchainPropertiesClient = yield select(
+                getBlockchainPropertiesClient
+            );
+
+            const { data: blockchainProperties } = yield apply(
+                blockchainPropertiesClient,
+                blockchainPropertiesClient.get,
+                []
+            );
+            const metamaskNetId = ethereumProvider.networkVersion;
+
+            if (
+                blockchainProperties?.netId !== 1337 &&
+                blockchainProperties?.netId !== parseInt(metamaskNetId, 10)
+            ) {
+                showNotification(
+                    `You are connected to the wrong blockchain. ${checkNetworkName(
+                        blockchainProperties?.netId
+                    )}`,
+                    NotificationType.Error,
+                    { timeOut: 10000 }
+                );
+            }
+        }
+    }
+}
+
 function* requestDeviceCreation() {
     while (true) {
         const { payload }: IRequestDeviceCreationAction = yield take(
@@ -445,9 +473,10 @@ export function* generalSaga(): SagaIterator {
     yield all([
         fork(showAccountChangedModalOnChange),
         fork(setupEnvironment),
-        fork(initializeOffChainDataSource),
+        fork(initializeClients),
         fork(fillOffchainConfiguration),
         fork(initializeEnvironment),
-        fork(requestDeviceCreation)
+        fork(requestDeviceCreation),
+        fork(checkBlockchainNetwork)
     ]);
 }

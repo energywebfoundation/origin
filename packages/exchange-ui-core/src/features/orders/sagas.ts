@@ -17,35 +17,47 @@ import {
     OrdersActionsType,
     storeDemand,
     clearDemands,
-    fetchOrders
+    fetchOrders,
+    ICreateDemandAction
 } from './actions';
-import { IExchangeClient, Order, Demand } from '../../utils/exchange';
+import { Order, Demand, ExchangeClient } from '../../utils/exchange';
 
 function* fetchOrdersAndDemands(): SagaIterator {
     while (true) {
         yield take(OrdersActionsType.FETCH_ORDERS);
         yield put(clearOrders());
         yield put(clearDemands());
-        const exchangeClient: IExchangeClient = yield select(getExchangeClient);
+
+        const exchangeClient: ExchangeClient = yield select(getExchangeClient);
+        const ordersClient = exchangeClient?.ordersClient;
+        const demandClient = exchangeClient?.demandClient;
         const user: IUser = yield select(getUserOffchain);
-        const orders: Order[] =
+
+        const ordersResponse =
             user && user.status === UserStatus.Active
-                ? yield apply(exchangeClient, exchangeClient.getOrders, null)
-                : [];
-        const demands: Demand[] =
+                ? yield apply(ordersClient, ordersClient.getMyOrders, null)
+                : { data: [] };
+        const orders: Order[] = ordersResponse.data;
+
+        const demandsResponse =
             user && user.status === UserStatus.Active
-                ? yield apply(exchangeClient, exchangeClient.getAllDemands, null)
-                : [];
+                ? yield apply(demandClient, demandClient.getAll, null)
+                : { data: [] };
+
+        const demands: Demand[] = demandsResponse.data;
+
         yield put(storeDemand(demands));
-        for (const order of orders) {
-            const { startVolume, currentVolume } = order;
-            const filled =
-                BigNumber.from(startVolume)
-                    .sub(BigNumber.from(currentVolume))
-                    .mul(100)
-                    .div(startVolume)
-                    .toNumber() / 100;
-            yield put(storeOrder({ ...order, filled }));
+        if (orders.length > 0) {
+            for (const order of orders) {
+                const { startVolume, currentVolume } = order;
+                const filled =
+                    BigNumber.from(startVolume)
+                        .sub(BigNumber.from(currentVolume))
+                        .mul(100)
+                        .div(startVolume)
+                        .toNumber() / 100;
+                yield put(storeOrder({ ...order, filled }));
+            }
         }
     }
 }
@@ -53,10 +65,10 @@ function* fetchOrdersAndDemands(): SagaIterator {
 function* createBid(): SagaIterator {
     while (true) {
         const { payload } = yield take(OrdersActionsType.CREATE_BID);
-        const exchangeClient: IExchangeClient = yield select(getExchangeClient);
+        const { ordersClient }: ExchangeClient = yield select(getExchangeClient);
         const i18n = getI18n();
         try {
-            yield apply(exchangeClient, exchangeClient.createBid, [payload]);
+            yield apply(ordersClient, ordersClient.createBid, [payload]);
             yield put(reloadCertificates());
             showNotification(i18n.t('exchange.feedback.bidPlaced'), NotificationType.Success);
             yield put(fetchOrders());
@@ -73,10 +85,10 @@ function* createBid(): SagaIterator {
 function* cancelOrder(): SagaIterator {
     while (true) {
         const { payload } = yield take(OrdersActionsType.CANCEL_ORDER);
-        const exchangeClient: IExchangeClient = yield select(getExchangeClient);
+        const { ordersClient }: ExchangeClient = yield select(getExchangeClient);
         const i18n = getI18n();
         try {
-            yield apply(exchangeClient, exchangeClient.cancelOrder, [payload]);
+            yield apply(ordersClient, ordersClient.cancelOrder, [payload]);
             yield put(reloadCertificates());
             showNotification(i18n.t('order.feedback.orderCanceled'), NotificationType.Success);
             yield put(fetchOrders());
@@ -90,12 +102,12 @@ function* cancelOrder(): SagaIterator {
 function* buyDirect(): SagaIterator {
     while (true) {
         const { payload } = yield take(OrdersActionsType.DIRECT_BUY_ORDER);
-        const exchangeClient: IExchangeClient = yield select(getExchangeClient);
+        const { ordersClient }: ExchangeClient = yield select(getExchangeClient);
         yield put(setLoading(true));
         const i18n = getI18n();
 
         try {
-            yield apply(exchangeClient, exchangeClient.directBuy, [payload]);
+            yield apply(ordersClient, ordersClient.directBuy, [payload]);
             yield put(reloadCertificates());
             showNotification(
                 i18n.t('exchange.feedback.directBuySuccess'),
@@ -112,11 +124,11 @@ function* buyDirect(): SagaIterator {
 
 function* createDemand(): SagaIterator {
     while (true) {
-        const { payload } = yield take(OrdersActionsType.CREATE_DEMAND);
-        const exchangeClient: IExchangeClient = yield select(getExchangeClient);
+        const { payload }: ICreateDemandAction = yield take(OrdersActionsType.CREATE_DEMAND);
+        const { demandClient }: ExchangeClient = yield select(getExchangeClient);
         const i18n = getI18n();
         try {
-            yield apply(exchangeClient, exchangeClient.createDemand, [payload]);
+            yield apply(demandClient, demandClient.create, [payload]);
             yield put(reloadCertificates());
             showNotification(i18n.t('exchange.feedback.demandPlaced'), NotificationType.Success);
             yield put(fetchOrders());
@@ -133,10 +145,10 @@ function* createDemand(): SagaIterator {
 function* updateDemand(): SagaIterator {
     while (true) {
         const { payload } = yield take(OrdersActionsType.UPDATE_DEMAND);
-        const exchangeClient: IExchangeClient = yield select(getExchangeClient);
+        const { demandClient }: ExchangeClient = yield select(getExchangeClient);
         const i18n = getI18n();
         try {
-            yield apply(exchangeClient, exchangeClient.replaceDemand, [payload.id, payload.demand]);
+            yield apply(demandClient, demandClient.replace, [payload.id, payload.demand]);
             yield put(reloadCertificates());
             showNotification(i18n.t('demand.feedback.demandUpdated'), NotificationType.Success);
             yield put(fetchOrders());
@@ -150,10 +162,10 @@ function* updateDemand(): SagaIterator {
 function* pauseDemand(): SagaIterator {
     while (true) {
         const { payload } = yield take(OrdersActionsType.PAUSE_DEMAND);
-        const exchangeClient: IExchangeClient = yield select(getExchangeClient);
+        const { demandClient }: ExchangeClient = yield select(getExchangeClient);
         const i18n = getI18n();
         try {
-            yield apply(exchangeClient, exchangeClient.pauseDemand, [payload]);
+            yield apply(demandClient, demandClient.pause, [payload]);
             showNotification(i18n.t('demand.feedback.demandPaused'), NotificationType.Success);
             yield put(fetchOrders());
         } catch (err) {
@@ -166,10 +178,10 @@ function* pauseDemand(): SagaIterator {
 function* resumeDemand(): SagaIterator {
     while (true) {
         const { payload } = yield take(OrdersActionsType.RESUME_DEMAND);
-        const exchangeClient: IExchangeClient = yield select(getExchangeClient);
+        const { demandClient }: ExchangeClient = yield select(getExchangeClient);
         const i18n = getI18n();
         try {
-            yield apply(exchangeClient, exchangeClient.resumeDemand, [payload]);
+            yield apply(demandClient, demandClient.resume, [payload]);
             showNotification(i18n.t('demand.feedback.demandActivated'), NotificationType.Success);
             yield put(fetchOrders());
         } catch (err) {
@@ -182,10 +194,10 @@ function* resumeDemand(): SagaIterator {
 function* archiveDemand(): SagaIterator {
     while (true) {
         const { payload } = yield take(OrdersActionsType.ARCHIVE_DEMAND);
-        const exchangeClient: IExchangeClient = yield select(getExchangeClient);
+        const { demandClient }: ExchangeClient = yield select(getExchangeClient);
         const i18n = getI18n();
         try {
-            yield apply(exchangeClient, exchangeClient.archiveDemand, [payload]);
+            yield apply(demandClient, demandClient.archive, [payload]);
             showNotification(
                 i18n.t('demand.feedback.successfullyRemoved'),
                 NotificationType.Success

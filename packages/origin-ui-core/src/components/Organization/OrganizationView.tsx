@@ -12,7 +12,7 @@ import { makeStyles, createStyles, useTheme, Paper, Grid, TextField, Box } from 
 import { Skeleton } from '@material-ui/lab';
 import { getIRecClient } from '../../features/general/selectors';
 import { getUserOffchain } from '../../features/users/selectors';
-import { getOffChainDataSource, useTranslation } from '../..';
+import { getBackendClient, useTranslation } from '../..';
 import { IRECOrganizationView } from './IRECOrganizationView';
 import { Registration } from '../../utils/irec';
 import { DownloadDocuments } from './DownloadDocuments';
@@ -40,7 +40,7 @@ interface IFormValues {
 
 export function OrganizationView() {
     const userOffchain = useSelector(getUserOffchain);
-    const organizationClient = useSelector(getOffChainDataSource)?.organizationClient;
+    const organizationClient = useSelector(getBackendClient)?.organizationClient;
     const params: { id?: string } = useParams();
     const { enabledFeatures } = useContext(OriginConfigurationContext);
     const [formValues, setFormValues] = useState<IFormValues>(null);
@@ -79,10 +79,11 @@ export function OrganizationView() {
         const getOrganization = async () => {
             let iRecOrg: Registration[];
             if (enabledFeatures.includes(OriginFeature.IRec)) {
-                iRecOrg = await iRecClient.getRegistrations();
+                const response = await iRecClient.organizationClient.getRegistrations();
+                iRecOrg = response.data;
             }
             const organization = params.id
-                ? await organizationClient.getById(parseInt(params.id, 10))
+                ? (await organizationClient.get(parseInt(params.id, 10))).data
                 : userOffchain?.organization;
             if (organization) {
                 setValues(organization);

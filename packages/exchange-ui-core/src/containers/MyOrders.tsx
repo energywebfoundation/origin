@@ -1,7 +1,8 @@
 import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Box } from '@material-ui/core';
-import { Demand, DemandStatus } from '../utils/exchange';
+import { DemandStatus } from '@energyweb/utils-general';
+import { Demand } from '../utils/exchange';
 import { ActiveOrders } from '../utils';
 import { getOrders, getDemands } from '../features/orders/selectors';
 import { BidsTable, AsksTable, DemandsTable } from '../components/orders';

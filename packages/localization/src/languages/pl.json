@@ -150,7 +150,7 @@
             "actions": {
                 "update": "Zaktualizuj",
                 "maybeLater": "Może później",
-                "connectAddress": "Połącz adres",
+                "connectBlockchainAcc": "Połącz konto Blockchain",
                 "continue": "Kontynuuj",
                 "cancel": "Anuluj"
             },
@@ -165,7 +165,7 @@
                 "noBlockchainAccount1": "Upewnij się, że masz zainstalowane i skonfigurowane rozszerzenie przeglądarki MetaMask.",
                 "noBlockchainAccount2": "Sprawdź stronę Ustawienia użytkownika i upewnij się, że Twoje konto blockchain jest zweryfikowane.",
                 "connectBlockchainTitle": "Połącz adres Blockchain",
-                "connectBlockchainContent": "Aby odblokować wszystkie funkcje rynku, takie jak żądanie wydania certyfikatu, użytkownicy muszą połączyć adres łańcucha bloków"
+                "connectBlockchainContent": "Aby odblokować wszystkie funkcje rynku, takie jak handel na giełdzie i ubieganie się o certyfikaty, użytkownicy muszą utworzyć adres depozytu giełdowego i podłączyć własny adres blockchain."
             }
         },
         "importAccount": {
@@ -437,7 +437,23 @@
                 "ceoName":"Nazwisko dyrektora generalnego / dyrektora generalnego",
                 "ceoPassport": "Numer paszportu dyrektora generalnego / dyrektora generalnego",
                 "lastBalance": "Suma bilansowa za ostatni rok obrotowy",
+                "primaryContactBlockTitle": "Podstawowe dane kontaktowe",
+                "primaryContactOrgName": "Nazwa organizacji",
+                "primaryContactOrgAddress": "Adres organizacji",
+                "primaryContactOrgPostalCode": "Kod pocztowy organizacji",
+                "primaryContactOrgCountry": "Kraj organizacji",
                 "existingIRECOrg": "Istniejące organizacje IREC mają stać się spółkami zależnymi",
+                "primaryContactName": "Nazwisko osoby kontaktowej",
+                "primaryContactEmail": "Adres e-mail osoby kontaktowej",                
+                "primaryContactPhoneNumber": "Telefon osoby kontaktowej",                
+                "primaryContactFax": "Osoba kontaktowa fax",                
+                "leadUserBlockTitle": "Dane głównego użytkownika",
+                "leadUserTitle": "Tytuł",
+                "leadUserFirstName": "Imię",
+                "leadUserLastName": "Nazwisko",
+                "leadUserEmail": "Email",
+                "leadUserPhoneNumber": "Numer telefonu",
+                "leadUserFax": "Fax",
                 "documents": "Dokumenty",
                 "companyProof":"Dowód firmy",
                 "signatoryId": "Identyfikator sygnatariusza",

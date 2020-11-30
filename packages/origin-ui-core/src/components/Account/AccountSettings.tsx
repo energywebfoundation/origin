@@ -20,7 +20,7 @@ import { withStyles } from '@material-ui/core/styles';
 import { AVAILABLE_ORIGIN_LANGUAGES, ORIGIN_LANGUAGE } from '@energyweb/localization';
 
 import { showNotification, NotificationType, useTranslation } from '../../utils';
-import { getOffChainDataSource } from '../../features/general/selectors';
+import { getBackendClient } from '../../features/general/selectors';
 import { getUserOffchain } from '../../features/users/selectors';
 import { OriginConfigurationContext, setOriginLanguage } from '../PackageConfigurationProvider';
 import { refreshUserOffchain } from '../../features/users/actions';
@@ -44,7 +44,7 @@ export function AccountSettings() {
     const classes = useStyles(useTheme());
 
     const user = useSelector(getUserOffchain);
-    const userClient = useSelector(getOffChainDataSource)?.userClient;
+    const userClient = useSelector(getBackendClient)?.userClient;
 
     const [notificationsEnabled, setNotificationsEnabled] = useState(null);
 
@@ -90,7 +90,7 @@ export function AccountSettings() {
                 newProperties.notifications = notificationsEnabled;
             }
 
-            await userClient.updateAdditionalProperties(newProperties);
+            await userClient.update(newProperties);
         }
 
         dispatch(refreshUserOffchain());
