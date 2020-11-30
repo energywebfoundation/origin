@@ -1,5 +1,6 @@
 import { Expose, plainToClass } from 'class-transformer';
 import {
+    IsEmail,
     IsEnum,
     IsIn,
     IsInt,
@@ -80,6 +81,92 @@ export class NewRegistrationDTO {
     @IsOptional()
     @IsString()
     subsidiaries?: string;
+
+    @ApiProperty({ type: String })
+    @Expose()
+    @IsString()
+    @IsNotEmpty()
+    primaryContactOrganizationName: string;
+
+    @ApiProperty({ type: String })
+    @Expose()
+    @IsString()
+    @IsNotEmpty()
+    primaryContactOrganizationAddress: string;
+
+    @ApiProperty({ type: String })
+    @Expose()
+    @IsString()
+    @IsNotEmpty()
+    primaryContactOrganizationPostalCode: string;
+
+    @ApiProperty({ type: String })
+    @Expose()
+    @IsNotEmpty()
+    @IsISO31661Alpha2()
+    primaryContactOrganizationCountry: string;
+
+    @ApiProperty({ type: String })
+    @Expose()
+    @IsString()
+    @IsNotEmpty()
+    primaryContactName: string;
+
+    @ApiProperty({ type: String })
+    @Expose()
+    @IsString()
+    @IsNotEmpty()
+    @IsEmail()
+    primaryContactEmail: string;
+
+    @ApiProperty({ type: String })
+    @Expose()
+    @IsString()
+    @IsNotEmpty()
+    primaryContactPhoneNumber: string;
+
+    @ApiProperty({ type: String })
+    @Expose()
+    @IsString()
+    @IsNotEmpty()
+    primaryContactFax: string;
+
+    @ApiProperty({ type: String })
+    @Expose()
+    @IsString()
+    @IsNotEmpty()
+    leadUserTitle: string;
+
+    @ApiProperty({ type: String })
+    @Expose()
+    @IsString()
+    @IsNotEmpty()
+    leadUserFirstName: string;
+
+    @ApiProperty({ type: String })
+    @Expose()
+    @IsString()
+    @IsNotEmpty()
+    leadUserLastName: string;
+
+    @ApiProperty({ type: String })
+    @Expose()
+    @IsString()
+    @IsNotEmpty()
+    @IsEmail()
+    leadUserEmail: string;
+
+    @ApiProperty({ type: String })
+    @Expose()
+    @IsString()
+    @IsNotEmpty()
+    leadUserPhoneNumber: string;
+
+    @ApiProperty({ type: String })
+    @Expose()
+    @IsString()
+    @IsNotEmpty()
+    leadUserFax: string;
 
     public static sanitize(registration: NewRegistrationDTO): NewRegistrationDTO {
         return plainToClass(NewRegistrationDTO, registration, { excludeExtraneousValues: true });
