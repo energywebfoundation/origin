@@ -3,8 +3,10 @@ import {
     OrganizationInvitationStatus
 } from '@energyweb/origin-backend-core';
 import { ApiProperty } from '@nestjs/swagger';
+import { plainToClass } from 'class-transformer';
 import { IsDate, IsEnum, IsNotEmpty, IsNumber, IsString, ValidateNested } from 'class-validator';
 import { PublicOrganizationInfoDTO } from '../organization';
+import { Invitation } from './invitation.entity';
 
 export class InvitationDTO implements IOrganizationInvitation {
     @ApiProperty({ type: Number })
@@ -39,4 +41,8 @@ export class InvitationDTO implements IOrganizationInvitation {
     @IsNotEmpty()
     @IsDate()
     createdAt: Date;
+
+    public static fromInvitation(invitation: Invitation): InvitationDTO {
+        return plainToClass(InvitationDTO, invitation);
+    }
 }
