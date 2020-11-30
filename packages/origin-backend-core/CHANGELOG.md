@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [7.0.1](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-backend-core@7.0.0...@energyweb/origin-backend-core@7.0.1) (2020-11-30)
+
+
+### Bug Fixes
+
+* add a body definition to all missing @Body() in requests ([6afc5a5](https://github.com/energywebfoundation/origin/commit/6afc5a5b8eb02d9be21035b34431d88d690bcda4))
+* Make DeviceStatus enum a string ([9506209](https://github.com/energywebfoundation/origin/commit/95062097c480ead34b4604b21b67395eb3c62946))
+
+
+
+
+
 # [7.0.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-backend-core@6.0.0...@energyweb/origin-backend-core@7.0.0) (2020-11-20)
 
 

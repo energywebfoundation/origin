@@ -56,14 +56,42 @@
                 "projectStory": "Opis projektu",
                 "images": "Zdjęcia",
                 "capacity": "Pojemność",
-                "address": "Adres"
+                "address": "Adres",
+                "constructed": "Zbudowana",
+                "vintageCod": "Vintage / (data operacji handlowej)",
+                "gridOperator": "Operator sieci",
+                "price": "Cena",
+                "active": "Aktywny",
+                "paused": "Wstrzymano"
             },
             "actions": {
                 "requestCertificates": "Zażądaj certyfikatów",
                 "approve": "Zaakceptuj",
                 "registerDevice": "Zarejestruj urządzenie",
                 "register": "Zarejestruj",
-                "viewDetails": "Pokaż szczegóły"
+                "viewDetails": "Pokaż szczegóły",
+                "updateSupply": "Zaktualizuj zaopatrzenie",
+                "cancel": "Anulować",
+                "update": "Aktualizacja"
+            },
+            "feedback": {
+                "imagesUploaded": "Obrazy zostały przesłane.",
+                "deviceCreated": "Urządzenie zostało pomyślnie utworzone.",
+                "pleaseSelectUpToXImages": "Wybierz maksymalnie {limit} obrazów. Wybrałeś {current}.",
+                "unexpectedErrorWhenUploadingImages": "Wystąpił nieoczekiwany błąd podczas przesyłania zdjęć.",
+                "supplyUpdatedSuccess": "Dostawa zaktualizowana pomyślnie",
+                "supplyUpdateError": "Aktualizacja materiałów eksploatacyjnych nie powiodła się"
+            },
+            "info": {
+                "general": "Generał",
+                "selectDeviceType": "Wybierz typ urządzenia",
+                "supported": "Utrzymany",
+                "pleaseFillOtherFields": "Wypełnij inne pola formularza i kontynuuj klikając \"Zarejestruj\".",
+                "uploadUpToXImages": "Prześlij do {amount} obrazów",
+                "selectRegion": "Wybierz region",
+                "selectProvince": "Wybierz prowincję",
+                "selectGridOperator": "Wybierz operatora sieci",
+                "toRegisterADevice": "Aby zarejestrować urządzenie, musisz spełnić następujące kryteria:"
             }
         },
         "certificate": {
@@ -247,19 +275,51 @@
                 "lastName": "Nazwisko",
                 "telephone": "Telefon",
                 "email": "Email",
-                "password": "Hasło"
+                "password": "Hasło",
+                "status": "Status",
+                "kycStatus": "Status KYC",
+                "exchangeAddressTitle": "Adres depozytu wymiany",
+                "blockchainAddress": "Adres Blockchain",
+                "blockchainAddresses": "Adresy Blockchain",
+                "userBlockchainAddress": "Adres użytkownika Blockchain",
+                "emailConfirmed": "E-mail potwierdzony"
             },
             "actions": {
                 "register": "Zarejestruj",
                 "registerNow": "Zarejestruj się teraz",
                 "login": "Zaloguj się",
                 "save": "Zapisać",
-                "forgotPasswordAsk": "Zapomniałeś hasła?"
+                "forgotPasswordAsk": "Zapomniałeś hasła?",
+                "createDepositAddress": "Utwórz adres wpłaty",
+                "connectBlockchain": "Połącz adres Blockchain",
+                "connectNewBlockchain": "Połącz nowy adres Blockchain"
+            },
+            "popover": {
+                "exchangeAddressWhatFor": "Ten adres łańcucha bloków identyfikuje Cię podczas wymiany certyfikatów. Potrzebujesz go do handlu certyfikatami na giełdzie.",
+                "exchangeAddressHowTo": "Platforma automatycznie generuje adres depozytu i przejmuje go pod opiekę. Nie musisz zarządzać własnym portfelem blockchain.",
+                "blockchainWhatIs": "Ten adres jest inny niż adres depozytu wymiany. Potrzebujesz tego, jeśli chcesz zarządzać platformą za pomocą własnego adresu blockchain.",
+                "blockchainWhatFor": "Adres blockchain podłączonego użytkownika jest wymagany do wycofania certyfikatów z giełdy i wycofania certyfikatów.",
+                "blockchainHowTo": "Wybierz odpowiednie konto blockchain w portfelu przeglądarki MetaMask i kliknij „Połącz adres Blockchain”, aby się połączyć. Odwiedź metamask.io, aby założyć własny portfel blockchain."
             },
             "feedback": {
                 "userRegistered": "Użytkownik zarejestrowany.",
                 "errorWhileRegisteringUser": "Błąd podczas rejestracji użytkownika.",
                 "errorUserExists": "Użytkownik z adresem e-mail {userEmail} został już zarejestrowany. Zaloguj się przy użyciu oryginalnego konta.",
+                "userLoggedIn": "Użytkownik zalogowany.",
+                "couldNotLogIn": "Nie udało się zalogować z podanymi poświadczeniami.",
+                "confirmationEmailResent": "Wiadomość e-mail z potwierdzeniem została ponownie wysłana.",
+                "confirmationEmailResentFailed": "Nie można wysłać e-maila z potwierdzeniem.",
+                "onlyActiveUsersCan": "Tylko aktywni użytkownicy mogą wykonać tę akcję",
+                "onlyMembersOfActiveOrgCan": "Tę czynność mogą wykonać tylko członkowie aktywnej organizacji",
+                "thisAccountAlreadyConnected": "Ten adres w łańcuchu bloków jest już połączony z Twoim kontem.",                
+                "exchangeAddressSuccess": "Utworzono adres depozytu wymiany.",
+                "exchangeAddressFailure": "Nie można utworzyć adresu depozytu wymiany.",
+                "emailConfirmation": {
+                    "alreadyConfirmed": "Już potwierdzony.",
+                    "confirmed": "E-mail potwierdzony pomyślnie.",
+                    "expired": "Link potwierdzający wygasł.",
+                    "loading": "Ładowanie..."
+                },
                 "roleChanged": {
                     "succesfullyJoinedOrg": "Pomyślnie dołączył do {{orgName}}",
                     "asMemberYouCan": "Dołączyłeś do {{orgName}} {{admin}}. Jako członek możesz",
@@ -278,12 +338,6 @@
                     "connectOrgToIRec": "Podłącz organizację do rejestru I-REC",
                     "asDeviceManagerYouCanAlso": "Możesz także wykonywać wszystkie czynności menedżera urządzeń",
                     "asAMemberYouCanAlso": "Możesz także wykonywać wszystkie czynności, które może wykonywać zwykły członek organizacji"
-                },
-                "emailConfirmation": {
-                    "alreadyConfirmed": "Już potwierdzony.",
-                    "confirmed": "E-mail potwierdzony pomyślnie.",
-                    "expired": "Link potwierdzający wygasł.",
-                    "loading": "Ładowanie..."
                 }
             },
             "dialog": {
@@ -437,7 +491,23 @@
                 "ceoName":"Nazwisko dyrektora generalnego / dyrektora generalnego",
                 "ceoPassport": "Numer paszportu dyrektora generalnego / dyrektora generalnego",
                 "lastBalance": "Suma bilansowa za ostatni rok obrotowy",
+                "primaryContactBlockTitle": "Podstawowe dane kontaktowe",
+                "primaryContactOrgName": "Nazwa organizacji",
+                "primaryContactOrgAddress": "Adres organizacji",
+                "primaryContactOrgPostalCode": "Kod pocztowy organizacji",
+                "primaryContactOrgCountry": "Kraj organizacji",
                 "existingIRECOrg": "Istniejące organizacje IREC mają stać się spółkami zależnymi",
+                "primaryContactName": "Nazwisko osoby kontaktowej",
+                "primaryContactEmail": "Adres e-mail osoby kontaktowej",                
+                "primaryContactPhoneNumber": "Telefon osoby kontaktowej",                
+                "primaryContactFax": "Osoba kontaktowa fax",                
+                "leadUserBlockTitle": "Dane głównego użytkownika",
+                "leadUserTitle": "Tytuł",
+                "leadUserFirstName": "Imię",
+                "leadUserLastName": "Nazwisko",
+                "leadUserEmail": "Email",
+                "leadUserPhoneNumber": "Numer telefonu",
+                "leadUserFax": "Fax",
                 "documents": "Dokumenty",
                 "companyProof":"Dowód firmy",
                 "signatoryId": "Identyfikator sygnatariusza",

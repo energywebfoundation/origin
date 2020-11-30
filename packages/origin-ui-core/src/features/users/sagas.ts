@@ -4,9 +4,10 @@ import {
     Configuration as ClientConfiguration,
     BlockchainPropertiesClient
 } from '@energyweb/issuer-api-client';
-import { OriginFeature } from '@energyweb/utils-general';
+import { OriginFeature, signTypedMessage } from '@energyweb/utils-general';
 import { UserClient } from '@energyweb/origin-backend-client';
-import { call, put, select, take, fork, all, getContext } from 'redux-saga/effects';
+import { UserStatus, OrganizationStatus } from '@energyweb/origin-backend-core';
+import { call, put, select, take, fork, all, getContext, apply, delay } from 'redux-saga/effects';
 import { SagaIterator } from 'redux-saga';
 import {
     UsersActions,
@@ -16,16 +17,23 @@ import {
     clearAuthenticationToken,
     setUserState,
     refreshUserOffchain,
-    refreshClients
+    refreshClients,
+    IUpdateUserBlockchainAction
 } from './actions';
-import { getBackendClient, getIRecClient, getEnvironment } from '../general/selectors';
+import {
+    getBackendClient,
+    getIRecClient,
+    getEnvironment,
+    getExchangeClient
+} from '../general/selectors';
 import { Registration } from '../../utils/irec/types';
 import {
     GeneralActions,
     IEnvironment,
     setBackendClient,
     setExchangeClient,
-    setIRecClient
+    setIRecClient,
+    setLoading
 } from '../general/actions';
 import {
     reloadCertificates,
@@ -34,12 +42,15 @@ import {
     setCertificationRequestsClient,
     setBlockchainPropertiesClient
 } from '../certificates';
-import { getUserState } from './selectors';
+import { getUserState, getUserOffchain } from './selectors';
 import { IUsersState } from './reducer';
 
 import { BackendClient } from '../../utils/clients/BackendClient';
 import { ExchangeClient } from '../../utils/clients/ExchangeClient';
 import { IRecClient } from '../../utils/clients/IRecClient';
+import { showNotification, NotificationType } from '../..';
+import { getI18n } from 'react-i18next';
+import { getWeb3 } from '../selectors';
 
 export const LOCAL_STORAGE_KEYS = {
     AUTHENTICATION_TOKEN: 'AUTHENTICATION_TOKEN'
@@ -129,6 +140,7 @@ function* fetchOffchainUserDetails(): SagaIterator {
     while (true) {
         yield take(UsersActions.refreshUserOffchain);
 
+        const { accountClient }: ExchangeClient = yield select(getExchangeClient);
         const backendClient: BackendClient = yield select(getBackendClient);
         const features = yield getContext('enabledFeatures');
 
@@ -148,6 +160,9 @@ function* fetchOffchainUserDetails(): SagaIterator {
             );
             const userState: IUsersState = yield select(getUserState);
 
+            const { data: account } = yield apply(accountClient, accountClient.getAccount, []);
+            const exchangeDepositAddress = account.address;
+
             let iRecAccount: Registration[];
 
             if (features.includes(OriginFeature.IRec)) {
@@ -163,6 +178,7 @@ function* fetchOffchainUserDetails(): SagaIterator {
                     ...userState,
                     userOffchain,
                     iRecAccount,
+                    exchangeDepositAddress,
                     invitations: {
                         ...userState.invitations,
                         invitations: invitations.map((inv) => ({
@@ -186,6 +202,105 @@ function* fetchOffchainUserDetails(): SagaIterator {
     }
 }
 
+function* updateBlockchainAddress(): SagaIterator {
+    while (true) {
+        const { payload }: IUpdateUserBlockchainAction = yield take(
+            UsersActions.updateUserBlockchain
+        );
+        const { user, activeAccount, callback } = payload;
+
+        yield put(setLoading(true));
+
+        const web3 = yield select(getWeb3);
+        const environment = yield select(getEnvironment);
+        const backendClient: BackendClient = yield select(getBackendClient);
+        const userClient: UserClient = backendClient.userClient;
+        const i18n = getI18n();
+
+        try {
+            if (activeAccount === null) {
+                throw Error(i18n.t('user.profile.noBlockchainConnection'));
+            } else if (user?.blockchainAccountAddress === activeAccount.toLowerCase()) {
+                throw Error(i18n.t('user.feedback.thisAccountAlreadyConnected'));
+            }
+
+            const message = yield call(
+                signTypedMessage,
+                activeAccount,
+                environment.REGISTRATION_MESSAGE_TO_SIGN,
+                web3
+            );
+
+            yield apply(userClient, userClient.updateOwnBlockchainAddress, [
+                { ...user, blockchainAccountAddress: '' }
+            ]);
+            yield apply(userClient, userClient.update, [
+                { blockchainAccountSignedMessage: message }
+            ]);
+
+            showNotification(
+                i18n.t('settings.feedback.blockchainAccountLinked'),
+                NotificationType.Success
+            );
+            yield put(refreshUserOffchain());
+            yield call(callback);
+        } catch (error) {
+            if (error?.data?.message) {
+                showNotification(error.data.message, NotificationType.Error);
+            } else if (error?.response) {
+                showNotification(error.response.data.message, NotificationType.Error);
+            } else if (error?.message) {
+                showNotification(error.message, NotificationType.Error);
+            } else {
+                console.warn('Could not log in.', error);
+                showNotification(i18n.t('general.feedback.unknownError'), NotificationType.Error);
+            }
+        }
+        yield put(setLoading(false));
+    }
+}
+
+function* createUserExchangeAddress(): SagaIterator {
+    while (true) {
+        yield take(UsersActions.createExchangeDepositAddress);
+
+        yield put(setLoading(true));
+        const user = yield select(getUserOffchain);
+        const { accountClient }: ExchangeClient = yield select(getExchangeClient);
+        const i18n = getI18n();
+
+        try {
+            if (user.status !== UserStatus.Active) {
+                throw Error(i18n.t('user.feedback.onlyActiveUsersCan'));
+            } else if (
+                !user.organization ||
+                user.organization.status !== OrganizationStatus.Active
+            ) {
+                throw Error(i18n.t('user.feedback.onlyMembersOfActiveOrgCan'));
+            }
+
+            yield apply(accountClient, accountClient.create, []);
+            yield delay(2000);
+            showNotification(
+                i18n.t('user.feedback.exchangeAddressSuccess'),
+                NotificationType.Success
+            );
+            yield put(refreshUserOffchain());
+        } catch (error) {
+            if (error?.message) {
+                showNotification(error?.message, NotificationType.Error);
+            } else {
+                console.warn('Could not create exchange deposit address.', error);
+                showNotification(
+                    i18n.t('user.feedback.exchangeAddressFailure'),
+                    NotificationType.Error
+                );
+            }
+        }
+        yield put(setLoading(false));
+    }
+}
+
 function* logOutSaga(): SagaIterator {
     while (true) {
         yield take(UsersActions.clearAuthenticationToken);
@@ -204,6 +319,8 @@ export function* usersSaga(): SagaIterator {
         fork(persistAuthenticationToken),
         fork(updateClients),
         fork(fetchOffchainUserDetails),
+        fork(updateBlockchainAddress),
+        fork(createUserExchangeAddress),
         fork(logOutSaga)
     ]);
 }

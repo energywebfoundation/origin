@@ -1,4 +1,5 @@
-import { IUser, UserStatus, KYCStatus } from '@energyweb/origin-backend-core';
+import React, { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import {
     Button,
     createStyles,
@@ -7,24 +8,31 @@ import {
     Paper,
     Typography,
     useTheme,
-    TextField
+    TextField,
+    Box
 } from '@material-ui/core';
-import { signTypedMessage } from '@energyweb/utils-general';
+import { Info } from '@material-ui/icons';
 import { Skeleton } from '@material-ui/lab';
 import { Form, Formik, FormikHelpers, yupToFormErrors, Field } from 'formik';
-import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { useDispatch, useSelector } from 'react-redux';
+import { IUser, UserStatus, KYCStatus } from '@energyweb/origin-backend-core';
 import { setLoading } from '../../features/general/actions';
-import { getBackendClient, getEnvironment } from '../../features/general/selectors';
-import { refreshUserOffchain } from '../../features/users/actions';
+import { getBackendClient, getLoading } from '../../features/general/selectors';
+import {
+    refreshUserOffchain,
+    updateUserBlockchain,
+    createExchangeDepositAddress
+} from '../../features/users';
 import { NotificationType, showNotification } from '../../utils/notifications';
 import { useValidation } from '../../utils/validation';
 import { FormInput } from '../Form/FormInput';
-import { ICoreState } from '../../types';
-import { getWeb3 } from '../../features/selectors';
-import { getActiveBlockchainAccountAddress } from '../../features/users/selectors';
-import { providers } from 'ethers';
+import {
+    getActiveBlockchainAccountAddress,
+    getUserOffchain,
+    getExchangeDepositAddress
+} from '../../features/users/selectors';
+import { IconPopover } from '../IconPopover';
+import { BackendClient } from '../../utils';
 
 interface IFormValues extends IUser {
     isBlockchain?: boolean;
@@ -32,6 +40,7 @@ interface IFormValues extends IUser {
     isProfile?: boolean;
     currentPassword?: string;
     newPassword?: string;
+    exchangeDepositAddress: string;
 }
 
 const INITIAL_FORM_VALUES: IFormValues = {
@@ -41,6 +50,7 @@ const INITIAL_FORM_VALUES: IFormValues = {
     lastName: '',
     email: '',
     telephone: '',
+    exchangeDepositAddress: '',
     blockchainAccountAddress: '',
     blockchainAccountSignedMessage: '',
     notifications: null,
@@ -51,26 +61,39 @@ const INITIAL_FORM_VALUES: IFormValues = {
     emailConfirmed: false
 };
 
-export const getUserOffchain = (state: ICoreState) => state.usersState.userOffchain;
+const useStyles = makeStyles(() =>
+    createStyles({
+        container: {
+            padding: '20px'
+        },
+        buttonAndIconHolder: {
+            paddingTop: '1rem',
+            display: 'flex',
+            alignItems: 'center'
+        },
+        infoIcon: {
+            marginLeft: '1rem'
+        }
+    })
+);
 
 export function UserProfile() {
     const user = useSelector(getUserOffchain);
-    const userClient = useSelector(getBackendClient)?.userClient;
+    const backendClient: BackendClient = useSelector(getBackendClient);
+    const userClient = backendClient?.userClient;
     const dispatch = useDispatch();
-    const web3 = useSelector(getWeb3);
-    const environment = useSelector(getEnvironment);
+    const isLoading = useSelector(getLoading);
     const activeBlockchainAccountAddress = useSelector(getActiveBlockchainAccountAddress);
-
+    const exchangeAddres = useSelector(getExchangeDepositAddress);
     const { t } = useTranslation();
     const { Yup, yupLocaleInitialized } = useValidation();
+    let changeFieldValue: (name: string, value: any) => void;
 
-    const useStyles = makeStyles(() =>
-        createStyles({
-            container: {
-                padding: '10px'
-            }
-        })
-    );
+    useEffect(() => {
+        if (typeof changeFieldValue === 'function') {
+            changeFieldValue('exchangeDepositAddress', exchangeAddres);
+        }
+    }, [exchangeAddres]);
 
     const classes = useStyles(useTheme());
 
@@ -115,10 +138,17 @@ export function UserProfile() {
                 });
                 showNotification(t('user.profile.updatePassword'), NotificationType.Success);
             } else if (values.isProfile) {
-                await userClient.updateOwnProfile(values);
+                await userClient.updateOwnProfile({
+                    firstName: values?.firstName,
+                    lastName: values?.lastName,
+                    telephone: values?.telephone,
+                    email: values?.email
+                });
                 showNotification(t('user.profile.updateProfile'), NotificationType.Success);
             } else if (values.isBlockchain) {
-                await userClient.updateOwnProfile(values);
+                await userClient.updateOwnBlockchainAddress({
+                    blockchainAccountAddress: values.blockchainAccountAddress
+                });
                 showNotification(t('user.profile.updateChainAddress'), NotificationType.Success);
             }
             dispatch(refreshUserOffchain());
@@ -136,51 +166,30 @@ export function UserProfile() {
         formikActions.setSubmitting(false);
     }
 
-    async function signAndSend(blockchainAccountAddress: string): Promise<boolean> {
-        try {
-            if (activeBlockchainAccountAddress === null) {
-                throw Error(t('user.profile.noBlockchainConnection'));
-            } else if (blockchainAccountAddress === activeBlockchainAccountAddress.toLowerCase()) {
-                throw Error(t('user.profile.blockchainAlreadyLinked'));
-            }
-            const signedMessage = await signTypedMessage(
-                activeBlockchainAccountAddress,
-                environment.REGISTRATION_MESSAGE_TO_SIGN,
-                web3 as providers.JsonRpcProvider
-            );
+    function createExchangeAddress(): void {
+        dispatch(createExchangeDepositAddress());
+    }
 
-            await userClient.updateOwnBlockchainAddress({ ...user, blockchainAccountAddress: '' });
-            await userClient.update({ blockchainAccountSignedMessage: signedMessage });
-
-            showNotification(
-                t('settings.feedback.blockchainAccountLinked'),
-                NotificationType.Success
-            );
-
-            return true;
-        } catch (error) {
-            if (error?.data?.message) {
-                showNotification(error?.data?.message, NotificationType.Error);
-            } else if (error?.message) {
-                console.log(error);
-                showNotification(error?.message, NotificationType.Error);
-            } else {
-                console.warn('Could not log in.', error);
-                showNotification(t('general.feedback.unknownError'), NotificationType.Error);
-            }
-        }
-        return false;
+    function updateBlockchainAccount(callback: () => void): void {
+        dispatch(
+            updateUserBlockchain({
+                user,
+                activeAccount: activeBlockchainAccountAddress,
+                callback
+            })
+        );
     }
 
     const initialFormValues: IFormValues = {
         ...user,
-        blockchainAccountAddress: user.blockchainAccountAddress ? user.blockchainAccountAddress : ''
+        blockchainAccountAddress: user.blockchainAccountAddress || '',
+        exchangeDepositAddress: exchangeAddres || ''
     };
 
     return (
         <Formik
             initialValues={initialFormValues}
-            isInitialValid={false}
+            validateOnMount={true}
             onSubmit={submitForm}
             validate={async (values) => {
                 const context = {};
@@ -211,8 +220,9 @@ export function UserProfile() {
             }}
         >
             {(formikProps) => {
-                const { isSubmitting, touched, values } = formikProps;
+                const { isSubmitting, touched, values, setFieldValue } = formikProps;
                 const fieldDisabled = isSubmitting;
+                changeFieldValue = setFieldValue;
 
                 return (
                     <>
@@ -404,43 +414,86 @@ export function UserProfile() {
                         <Form translate="no">
                             <Paper className={classes.container}>
                                 <Typography variant="h5">
-                                    {t('user.properties.blockchainAddress')}
+                                    {t('user.properties.blockchainAddresses')}
                                 </Typography>
-                                <Grid container spacing={3}>
-                                    <Grid item xs={6}>
-                                        <FormInput
-                                            label={t('user.properties.blockchainAddress')}
-                                            property="blockchainAccountAddress"
-                                            disabled={true}
-                                            className="mt-3"
-                                            required
+                                <Grid style={{ paddingTop: '20px', paddingBottom: '20px' }}>
+                                    <Typography variant="h6">
+                                        {t('user.properties.exchangeAddressTitle')}
+                                    </Typography>
+                                    <Box className={classes.buttonAndIconHolder}>
+                                        {exchangeAddres ? (
+                                            <Grid item xs={4}>
+                                                <FormInput
+                                                    property="exchangeDepositAddress"
+                                                    disabled={true}
+                                                />
+                                            </Grid>
+                                        ) : (
+                                            <Button
+                                                type="button"
+                                                variant="contained"
+                                                color="primary"
+                                                disabled={isLoading}
+                                                onClick={createExchangeAddress}
+                                            >
+                                                {t('user.actions.createDepositAddress')}
+                                            </Button>
+                                        )}
+                                        <IconPopover
+                                            icon={Info}
+                                            popoverText={[
+                                                t('user.popover.exchangeAddressWhatFor'),
+                                                t('user.popover.exchangeAddressHowTo')
+                                            ]}
+                                            className={classes.infoIcon}
                                         />
-                                    </Grid>
+                                    </Box>
                                 </Grid>
-                                <Button
-                                    type="button"
-                                    variant="contained"
-                                    color="primary"
-                                    className="mt-3 right"
-                                    onClick={() => {
-                                        formikProps.validateForm().then(async () => {
-                                            formikProps.values.isBlockchain = true;
-                                            formikProps.values.isPassword = false;
-                                            formikProps.values.isProfile = false;
+                                <Grid style={{ paddingTop: '20px', paddingBottom: '20px' }}>
+                                    <Typography variant="h6">
+                                        {t('user.properties.userBlockchainAddress')}
+                                    </Typography>
 
-                                            const result = await signAndSend(
-                                                values.blockchainAccountAddress
-                                            );
-                                            if (result) {
-                                                formikProps.values.blockchainAccountAddress = activeBlockchainAccountAddress;
-                                                formikProps.submitForm();
+                                    {user?.blockchainAccountAddress && (
+                                        <Grid container>
+                                            <Grid item xs={4}>
+                                                <FormInput
+                                                    property="blockchainAccountAddress"
+                                                    disabled={true}
+                                                />
+                                            </Grid>
+                                        </Grid>
+                                    )}
+                                    <Box className={classes.buttonAndIconHolder}>
+                                        <Button
+                                            type="button"
+                                            variant="contained"
+                                            color="primary"
+                                            disabled={isLoading}
+                                            onClick={() =>
+                                                updateBlockchainAccount(() => {
+                                                    setFieldValue(
+                                                        'blockchainAccountAddress',
+                                                        activeBlockchainAccountAddress
+                                                    );
+                                                })
                                             }
-                                        });
-                                    }}
-                                >
-                                    {t('user.actions.save')} &{' '}
-                                    {t('settings.actions.verifyBlockchainAccount')}
-                                </Button>
+                                        >
+                                            {!user?.blockchainAccountAddress
+                                                ? t('user.actions.connectBlockchain')
+                                                : t('user.actions.connectNewBlockchain')}
+                                        </Button>
+                                        <IconPopover
+                                            icon={Info}
+                                            popoverText={[
+                                                t('user.popover.blockchainWhatIs'),
+                                                t('user.popover.blockchainWhatFor'),
+                                                t('user.popover.blockchainHowTo')
+                                            ]}
+                                            className={classes.infoIcon}
+                                        />
+                                    </Box>
+                                </Grid>
                             </Paper>
                         </Form>
                     </>

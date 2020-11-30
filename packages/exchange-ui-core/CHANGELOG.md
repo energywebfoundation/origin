@@ -3,6 +3,35 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.2.1](https://github.com/energywebfoundation/origin/compare/@energyweb/exchange-ui-core@1.2.0...@energyweb/exchange-ui-core@1.2.1) (2020-12-04)
+
+
+### Bug Fixes
+
+* **exchange-ui-core:** fix cancelling orders from the UI ([8af5273](https://github.com/energywebfoundation/origin/commit/8af5273fc28030862943b9efa150649f4c70cb6d))
+
+
+
+
+
+# [1.2.0](https://github.com/energywebfoundation/origin/compare/@energyweb/exchange-ui-core@1.1.0...@energyweb/exchange-ui-core@1.2.0) (2020-11-30)
+
+
+### Bug Fixes
+
+* **exchange-ui-core:** fetch bundles on page refresh ([bab0c5b](https://github.com/energywebfoundation/origin/commit/bab0c5b3089d0308456e0b39fff22251b0c04e92))
+* **exchange-ui-core:** generated clients errors ([6ea678e](https://github.com/energywebfoundation/origin/commit/6ea678e7376d58a5a45b03831a3009cbd79a92ca))
+* **exchange-ui-core:** orderbook endpoints ([7500f15](https://github.com/energywebfoundation/origin/commit/7500f15a2004796b3d337b6906248e6a82111813))
+
+
+### Features
+
+* **exchange-ui-core:** improve paddings ([0b5f778](https://github.com/energywebfoundation/origin/commit/0b5f7785a198122bb4523c896c4891d5fde07fe4))
+
+
+
+
+
 # 1.1.0 (2020-11-20)
 
 

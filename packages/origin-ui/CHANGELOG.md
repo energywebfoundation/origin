@@ -3,6 +3,25 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.3.2](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-ui@2.3.1...@energyweb/origin-ui@2.3.2) (2020-12-04)
+
+**Note:** Version bump only for package @energyweb/origin-ui
+
+
+
+
+
+## [2.3.1](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-ui@2.3.0...@energyweb/origin-ui@2.3.1) (2020-11-30)
+
+
+### Bug Fixes
+
+* skip 2nd UI build before containers build ([ccd2de1](https://github.com/energywebfoundation/origin/commit/ccd2de15e5ff1943d258a0ba19dcb8df75a3e288))
+
+
+
+
+
 # [2.3.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-ui@2.2.9...@energyweb/origin-ui@2.3.0) (2020-11-20)
 
 

@@ -1,0 +1,18 @@
+{
+    "extends": "../../tsconfig.json",
+    "compilerOptions": {
+        "composite": true,
+        "rootDir": "./",
+        "outDir": "./dist/js",
+        "experimentalDecorators": true,
+        "emitDecoratorMetadata": true
+    },
+    "include": ["./src/**/*", "./test/**/*"],
+    "references": [
+        {
+            "path": "../utils-general/tsconfig.json"
+        }
+    ],
+}
+
+

@@ -1,10 +1,10 @@
 import { Module, forwardRef } from '@nestjs/common';
+import { CqrsModule } from '@nestjs/cqrs';
+import { TransferModule, AccountBalanceModule } from '@energyweb/exchange';
 import { WithdrawalProcessorService } from './withdrawal-processor.service';
-import { TransferModule } from '../transfer/transfer.module';
-import { AccountBalanceModule } from '../account-balance/account-balance.module';
 
 @Module({
-    imports: [forwardRef(() => TransferModule), forwardRef(() => AccountBalanceModule)],
+    imports: [forwardRef(() => TransferModule), forwardRef(() => AccountBalanceModule), CqrsModule],
     providers: [WithdrawalProcessorService],
     exports: [WithdrawalProcessorService]
 })

@@ -1,5 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { makeStyles, createStyles, useTheme, Paper, Grid, TextField, Box } from '@material-ui/core';
+import {
+    makeStyles,
+    createStyles,
+    useTheme,
+    Paper,
+    Grid,
+    TextField,
+    Box,
+    Theme
+} from '@material-ui/core';
 import { Countries } from '@energyweb/utils-general';
 import { useTranslation } from '../..';
 import { IRECAccountType } from '../../utils/irec';
@@ -18,12 +27,27 @@ interface IValues {
     ceoName: string;
     ceoPassportNumber: string;
     balanceSheetTotal: string;
+    primaryContactOrganizationName: string;
+    primaryContactOrganizationAddress: string;
+    primaryContactOrganizationPostalCode: string;
+    primaryContactOrganizationCountry: string;
     subsidiaries?: string;
+    primaryContactName: string;
+    primaryContactEmail: string;
+    primaryContactPhoneNumber: string;
+    primaryContactFax: string;
+    leadUserTitle: string;
+    leadUserFirstName: string;
+    leadUserLastName: string;
+    leadUserEmail: string;
+    leadUserPhoneNumber: string;
+    leadUserFax: string;
 }
 
 export function IRECOrganizationView({ iRecOrg }) {
     const [formValues, setFormValues] = useState<IValues>(null);
     const { t } = useTranslation();
+    const { spacing }: Theme = useTheme();
 
     const useStyles = makeStyles(() =>
         createStyles({
@@ -56,7 +80,10 @@ export function IRECOrganizationView({ iRecOrg }) {
             headquarterCountry: Countries.find((c) => c.code === iRecData.headquarterCountry).name,
             activeCountries: Countries.filter((c) => iRecData.activeCountries.includes(c.code))
                 .map((country) => country.name)
-                .join(', ')
+                .join(', '),
+            primaryContactOrganizationCountry: Countries.find(
+                (c) => c.code === iRecData.primaryContactOrganizationCountry
+            ).name
         });
     };
 
@@ -165,6 +192,46 @@ export function IRECOrganizationView({ iRecOrg }) {
                         className="mt-3"
                         fullWidth
                     />
+                </Grid>
+            </Grid>
+            <Grid item style={{ paddingTop: spacing(5) }}>
+                <Box style={{ textTransform: 'uppercase' }}>
+                    {t('organization.registration.primaryContactBlockTitle')}
+                </Box>
+            </Grid>
+            <Grid container spacing={3}>
+                <Grid item xs={6}>
+                    <TextField
+                        label={t('organization.registration.primaryContactOrgName')}
+                        className="mt-3"
+                        value={formValues.primaryContactOrganizationName}
+                        fullWidth
+                        disabled
+                    />
+
+                    <TextField
+                        label={t('organization.registration.primaryContactOrgAddress')}
+                        className="mt-3"
+                        value={formValues.primaryContactOrganizationAddress}
+                        fullWidth
+                        disabled
+                    />
+
+                    <TextField
+                        label={t('organization.registration.primaryContactOrgPostalCode')}
+                        value={formValues.primaryContactOrganizationPostalCode}
+                        className="mt-3"
+                        fullWidth
+                        disabled
+                    />
+
+                    <TextField
+                        label={t('organization.registration.primaryContactOrgCountry')}
+                        className="mt-3"
+                        value={formValues.primaryContactOrganizationCountry}
+                        fullWidth
+                        disabled
+                    />
 
                     {formValues.subsidiaries && (
                         <TextField
@@ -175,6 +242,96 @@ export function IRECOrganizationView({ iRecOrg }) {
                             fullWidth
                         />
                     )}
+                </Grid>
+                <Grid item xs={6}>
+                    <TextField
+                        label={t('organization.registration.primaryContactName')}
+                        className="mt-3"
+                        value={formValues.primaryContactName}
+                        fullWidth
+                        disabled
+                    />
+
+                    <TextField
+                        label={t('organization.registration.primaryContactEmail')}
+                        className="mt-3"
+                        value={formValues.primaryContactEmail}
+                        fullWidth
+                        disabled
+                    />
+
+                    <TextField
+                        label={t('organization.registration.primaryContactPhoneNumber')}
+                        value={formValues.primaryContactPhoneNumber}
+                        className="mt-3"
+                        fullWidth
+                        disabled
+                    />
+
+                    <TextField
+                        label={t('organization.registration.primaryContactFax')}
+                        className="mt-3"
+                        value={formValues.primaryContactFax}
+                        fullWidth
+                        disabled
+                    />
+                </Grid>
+            </Grid>
+            <Grid item style={{ paddingTop: spacing(5) }}>
+                <Box style={{ textTransform: 'uppercase' }}>
+                    {t('organization.registration.leadUserBlockTitle')}
+                </Box>
+            </Grid>
+            <Grid container spacing={3}>
+                <Grid item xs={6}>
+                    <TextField
+                        label={t('organization.registration.leadUserTitle')}
+                        className="mt-3"
+                        value={formValues.leadUserTitle}
+                        fullWidth
+                        disabled
+                    />
+
+                    <TextField
+                        label={t('organization.registration.leadUserFirstName')}
+                        className="mt-3"
+                        value={formValues.leadUserFirstName}
+                        fullWidth
+                        disabled
+                    />
+
+                    <TextField
+                        label={t('organization.registration.leadUserLastName')}
+                        value={formValues.leadUserLastName}
+                        className="mt-3"
+                        fullWidth
+                        disabled
+                    />
+                </Grid>
+                <Grid item xs={6}>
+                    <TextField
+                        label={t('organization.registration.leadUserEmail')}
+                        className="mt-3"
+                        value={formValues.leadUserEmail}
+                        fullWidth
+                        disabled
+                    />
+
+                    <TextField
+                        label={t('organization.registration.leadUserPhoneNumber')}
+                        className="mt-3"
+                        value={formValues.leadUserPhoneNumber}
+                        fullWidth
+                        disabled
+                    />
+
+                    <TextField
+                        label={t('organization.registration.leadUserFax')}
+                        value={formValues.leadUserFax}
+                        className="mt-3"
+                        fullWidth
+                        disabled
+                    />
                 </Grid>
             </Grid>
         </Paper>

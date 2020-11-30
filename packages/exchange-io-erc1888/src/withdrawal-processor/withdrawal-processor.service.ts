@@ -7,11 +7,13 @@ import { Contract, ContractReceipt, ContractTransaction, ethers, Wallet } from '
 import { Subject } from 'rxjs';
 import { concatMap, tap } from 'rxjs/operators';
 
-import { IExchangeConfigurationService } from '../../interfaces';
-import { TransferDirection } from '../transfer/transfer-direction';
-import { TransferStatus } from '../transfer/transfer-status';
-import { Transfer } from '../transfer/transfer.entity';
-import { TransferService } from '../transfer/transfer.service';
+import {
+    IExchangeConfigurationService,
+    TransferDirection,
+    TransferStatus,
+    Transfer,
+    TransferService
+} from '@energyweb/exchange';
 
 @Injectable()
 export class WithdrawalProcessorService implements OnModuleInit {
@@ -77,7 +79,7 @@ export class WithdrawalProcessorService implements OnModuleInit {
 
         this.withdrawalQueue
             .pipe(
-                tap((id) => this.log(id)),
+                tap((id) => this.logger.debug(`[Withdrawal ${id}] Enqueued ${id}`)),
                 concatMap((id) => this.process(id))
             )
             .subscribe();
@@ -98,10 +100,6 @@ export class WithdrawalProcessorService implements OnModuleInit {
         }
 
         this.withdrawalQueue.next(withdrawal.id);
-    }
-
-    private log(id: string) {
-        this.logger.debug(`[Withdrawal ${id}] Enqueued ${id}`);
     }
 
     private async process(id: string) {

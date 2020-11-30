@@ -6,7 +6,6 @@ import {
     Countries,
     IRECBusinessLegalStatusLabelsMap
 } from '@energyweb/utils-general';
-import { OrganizationStatus } from '@energyweb/origin-backend-core';
 import { OriginConfigurationContext } from '..';
 import { makeStyles, createStyles, useTheme, Paper, Grid, TextField, Box } from '@material-ui/core';
 import { Skeleton } from '@material-ui/lab';
@@ -71,7 +70,7 @@ export function OrganizationView() {
             businessType: setBusinessType(organization.businessType),
             country: Countries.find((c) => c.id === organization.country).name,
             signatoryCountry: Countries.find((c) => c.id === organization.signatoryCountry).name,
-            status: OrganizationStatus[organization.status].toLowerCase()
+            status: organization.status.toLowerCase()
         });
     };
 

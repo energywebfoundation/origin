@@ -1,6 +1,6 @@
 {
     "name": "@energyweb/solar-simulator",
-    "version": "1.2.7",
+    "version": "1.2.9",
     "bin": {
         "solar-simulator": "./bin/solar-simulator"
     },
@@ -27,10 +27,10 @@
     "author": "",
     "license": "GPL-3.0-or-later",
     "dependencies": {
-        "@energyweb/device-registry": "7.0.1",
-        "@energyweb/origin-backend-client": "9.0.0",
-        "@energyweb/origin-backend-core": "7.0.0",
-        "@energyweb/utils-general": "10.0.0",
+        "@energyweb/device-registry": "7.0.3",
+        "@energyweb/origin-backend-client": "10.0.1",
+        "@energyweb/origin-backend-core": "7.0.1",
+        "@energyweb/utils-general": "11.0.0",
         "@types/moment-timezone": "0.5.13",
         "axios": "0.21.0",
         "bn.js": "5.1.3",
