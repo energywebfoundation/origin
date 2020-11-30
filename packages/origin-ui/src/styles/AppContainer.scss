@@ -1,15 +1,22 @@
 @import './variables.scss';
 
 body {
-    background: #333333;
-    color: white;
+    background: $bodyBackgroundColor;
+    color: $simpleTextColor;
 }
 
 body * {
     font-family: $fontFamilyPrimary;
 }
 
-h1, h2, h3, h4, h5, h6, a, button * {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+a,
+button * {
     font-family: $fontFamilySecondary;
 }
 

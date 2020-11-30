@@ -9,4 +9,4 @@ export const getBaseURL = () => {
     return '';
 };
 
-export const getWeb3 = (state: ICoreState) => state.web3;
+export const getWeb3 = (state: ICoreState): any => state.web3;

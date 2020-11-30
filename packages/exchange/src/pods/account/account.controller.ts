@@ -16,14 +16,18 @@ import {
     HttpCode,
     Post,
     Logger,
-    InternalServerErrorException
+    InternalServerErrorException,
+    HttpStatus
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 
+import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { AccountService } from './account.service';
 import { AccountDTO } from './account.dto';
 import { AccountAlreadyExistsError } from './account-already-exists.error';
 
+@ApiTags('account')
+@ApiBearerAuth('access-token')
 @Controller('account')
 @UseInterceptors(NullOrUndefinedResultInterceptor)
 @UseInterceptors(ClassSerializerInterceptor)
@@ -35,6 +39,7 @@ export class AccountController {
 
     @Get()
     @UseGuards(AuthGuard(), ActiveUserGuard)
+    @ApiResponse({ status: HttpStatus.OK, type: AccountDTO, description: 'Get the Account' })
     public async getAccount(@UserDecorator() user: ILoggedInUser): Promise<AccountDTO> {
         const account = await this.accountService.getAccount(user.ownerId);
 

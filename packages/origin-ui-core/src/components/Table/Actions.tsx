@@ -2,7 +2,6 @@ import { SpeedDial, SpeedDialIcon, SpeedDialAction } from '@material-ui/lab';
 import { MoreHoriz } from '@material-ui/icons';
 import React, { useState } from 'react';
 import { useTheme, createStyles, makeStyles } from '@material-ui/core';
-
 import { useOriginConfiguration } from '../../utils/configuration';
 
 export enum TableActionId {

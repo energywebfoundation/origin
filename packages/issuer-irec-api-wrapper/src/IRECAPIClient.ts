@@ -21,6 +21,7 @@ import { Device } from './Device';
 import { ApproveIssue, Issue, IssueWithStatus } from './Issue';
 import { Redemption, Transfer } from './Transfer';
 import { AccountItem } from './Items';
+import { Fuel, FuelType } from './Fuel';
 
 export type AccessTokens = {
     expiryDate: Date;
@@ -231,6 +232,25 @@ export class IRECAPIClient {
         };
     }
 
+    public get fuel() {
+        const fuelUrl = `${this.endPointUrl}/api/irec/fuels`;
+
+        return {
+            getAll: async (): Promise<Fuel[]> => {
+                const url = `${fuelUrl}/fuel`;
+                const response = await axios.get<unknown[]>(url, this.config);
+
+                return response.data.map((fuel) => plainToClass(Fuel, fuel));
+            },
+            getAllTypes: async (): Promise<FuelType[]> => {
+                const url = `${fuelUrl}/type`;
+                const response = await axios.get<unknown[]>(url, this.config);
+
+                return response.data.map((fuelType) => plainToClass(FuelType, fuelType));
+            }
+        };
+    }
+
     public async transfer(transfer: Transfer): Promise<TransactionResult> {
         await validateOrReject(transfer);
 
@@ -337,8 +357,11 @@ export class IRECAPIClient {
                 Promise.reject(
                     new Error(
                         JSON.stringify({
-                            status: err.response.status,
-                            msg: err.response.data
+                            status: err?.response?.data?.status ?? 500,
+                            msg:
+                                err?.response?.data?.msg ??
+                                err?.response?.data?.title ??
+                                err.message
                         })
                     )
                 )

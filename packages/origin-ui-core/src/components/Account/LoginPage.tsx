@@ -7,6 +7,7 @@ import { useLinks } from '../..';
 import { useHistory } from 'react-router-dom';
 import { OrganizationInvitationStatus } from '@energyweb/origin-backend-core';
 import { PendingInvitationsModal } from '../Modal/PendingInvitationsModal';
+import { useOriginConfiguration } from '../../utils/configuration';
 
 interface IOwnProps {
     redirect?: string;
@@ -21,6 +22,7 @@ export const LoginPage = (props: IOwnProps) => {
     const showInvitations = pending.length > 0 && !user?.organization?.id;
     const { getDefaultLink } = useLinks();
     const history = useHistory();
+    const configuration = useOriginConfiguration();
 
     const [showRegisterOrganizationModal, setShowRegisterOrganizationModal] = useState(false);
     const [showInvitationsModal, setShowInvitationsModal] = useState(false);
@@ -48,6 +50,7 @@ export const LoginPage = (props: IOwnProps) => {
 
     return (
         <div className="LoginPage">
+            {configuration.loginPageBg}
             <LoginForm />
             <LoginNoInvitationsModal
                 showModal={showRegisterOrganizationModal}

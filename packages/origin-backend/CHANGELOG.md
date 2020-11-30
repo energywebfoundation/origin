@@ -3,6 +3,32 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [9.0.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-backend@8.0.0...@energyweb/origin-backend@9.0.0) (2020-11-20)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @nestjs/jwt to v7.2.0 ([11c90e6](https://github.com/energywebfoundation/origin/commit/11c90e63a38c131d58fbdd7b65c659f703af4dcd))
+* **deps:** update dependency ethers to v5.0.15 ([7205cfd](https://github.com/energywebfoundation/origin/commit/7205cfd3b823730beed77fa8195b7c9c06898a88))
+* **deps:** update dependency typeorm to v0.2.28 ([8e9a26c](https://github.com/energywebfoundation/origin/commit/8e9a26c3a9c6218ad12fcd6c8ce6b71f767c8731))
+* **deps:** update dependency typeorm to v0.2.29 ([49232fb](https://github.com/energywebfoundation/origin/commit/49232fbd085e86a5e1df943aa917fe5ed86bff27))
+* **deps:** update dependency uuid to v8.3.1 ([fc2cdf6](https://github.com/energywebfoundation/origin/commit/fc2cdf6bc8fb14630559fc113c1474fa0a6d0853))
+* **deps:** update nest monorepo to v7.5.2 ([adf4996](https://github.com/energywebfoundation/origin/commit/adf49962f675ef88237af96baef0093057d0697f))
+
+
+### chore
+
+* **origin-backend:** Remove having certificates and certification requests stored in the origin-backend ([5388251](https://github.com/energywebfoundation/origin/commit/53882510541e0a4febf73be895cc6ba51ed59f1c))
+
+
+### BREAKING CHANGES
+
+* **origin-backend:** /certificate and /certification-request endpoints are no longer available in origin-backend. The Configuration entity no longer contains the 'contractsLookup' property
+
+
+
+
+
 # [8.0.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-backend@7.0.2...@energyweb/origin-backend@8.0.0) (2020-10-02)
 
 

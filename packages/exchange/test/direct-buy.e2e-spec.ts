@@ -1,4 +1,4 @@
-import { INestApplication } from '@nestjs/common';
+import { HttpStatus, INestApplication } from '@nestjs/common';
 import { expect } from 'chai';
 import request from 'supertest';
 
@@ -91,7 +91,7 @@ describe('DirectBuy orders tests', () => {
         await request(app.getHttpServer())
             .post('/orders/ask/buy')
             .send(directBuyOrder)
-            .expect(201)
+            .expect(HttpStatus.CREATED)
             .expect((res) => {
                 createdDirectBuyOrder = res.body as Order;
 
@@ -104,7 +104,7 @@ describe('DirectBuy orders tests', () => {
 
         await request(app.getHttpServer())
             .get(`/trade`)
-            .expect(200)
+            .expect(HttpStatus.OK)
             .expect((res) => {
                 const trades = res.body as TradeDTO[];
                 const [trade] = trades;

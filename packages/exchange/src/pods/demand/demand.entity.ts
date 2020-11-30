@@ -2,7 +2,10 @@ import { ExtendedBaseEntity } from '@energyweb/origin-backend-utils';
 import { TimeFrame, DemandStatus } from '@energyweb/utils-general';
 import BN from 'bn.js';
 import { Transform } from 'class-transformer';
+import { IsEnum } from 'class-validator';
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+
+import { DB_TABLE_PREFIX } from '../../utils/tablePrefix';
 
 import { BNTransformer } from '../../utils/valueTransformers';
 import { Order } from '../order/order.entity';
@@ -21,7 +24,7 @@ export interface IDemand {
     status: DemandStatus;
 }
 
-@Entity()
+@Entity({ name: `${DB_TABLE_PREFIX}_demand` })
 export class Demand extends ExtendedBaseEntity implements IDemand {
     @PrimaryGeneratedColumn('uuid')
     id: string;
@@ -43,6 +46,7 @@ export class Demand extends ExtendedBaseEntity implements IDemand {
     volumePerPeriod: BN;
 
     @Column()
+    @IsEnum(TimeFrame)
     periodTimeFrame: TimeFrame;
 
     @Column('json')

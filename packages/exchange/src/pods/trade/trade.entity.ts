@@ -5,7 +5,9 @@ import { ExtendedBaseEntity } from '@energyweb/origin-backend-utils';
 import { BNTransformer } from '../../utils/valueTransformers';
 import { Order } from '../order/order.entity';
 
-@Entity()
+import { DB_TABLE_PREFIX } from '../../utils/tablePrefix';
+
+@Entity({ name: `${DB_TABLE_PREFIX}_trade` })
 export class Trade extends ExtendedBaseEntity {
     constructor(partial: Partial<Trade>) {
         super();

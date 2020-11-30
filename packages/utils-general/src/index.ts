@@ -1,6 +1,3 @@
-import * as Configuration from './blockchain-facade/Configuration';
-
-export { Configuration };
 export { validateJson } from './off-chain-data/json-validator';
 export * from './blockchain-facade/EnumExports';
 export * from './blockchain-facade/DeviceTypeService';

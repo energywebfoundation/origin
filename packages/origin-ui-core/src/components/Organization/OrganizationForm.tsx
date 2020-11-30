@@ -18,7 +18,13 @@ import {
 } from '@material-ui/core';
 import { Skeleton } from '@material-ui/lab';
 
-import { getOffChainDataSource, showNotification, NotificationType, useTranslation } from '../..';
+import {
+    getBackendClient,
+    showNotification,
+    NotificationType,
+    useTranslation,
+    LightenColor
+} from '../..';
 import { Upload, IUploadedFile } from '../Upload';
 import { setLoading } from '../../features/general/actions';
 import { FormInput } from '../Form/FormInput';
@@ -30,6 +36,7 @@ import { RoleChangedModal } from '../Modal/RoleChangedModal';
 import { IRECConnectOrRegisterModal } from '../Modal/IRECConnectOrRegisterModal';
 import { ConnectBlockchainAccountModal } from '../Modal/ConnectBlockchainAccountModal';
 import { OrganizationAlreadyExistsModal } from '../Modal/OrganizationAlreadyExistsModal';
+import { useOriginConfiguration } from '../../utils/configuration';
 
 interface IProps {
     entity: IFullOrganization;
@@ -98,7 +105,7 @@ const VALIDATION_SCHEMA = Yup.object({
 
 export function OrganizationForm(props: IProps) {
     const { entity, readOnly } = props;
-    const organizationClient = useSelector(getOffChainDataSource)?.organizationClient;
+    const organizationClient = useSelector(getBackendClient)?.organizationClient;
     const [initialFormValuesFromExistingEntity, setInitialFormValuesFromExistingEntity] = useState<
         IFormValues
     >(null);
@@ -123,6 +130,10 @@ export function OrganizationForm(props: IProps) {
 
     const classes = useStyles(useTheme());
     const { spacing }: Theme = useTheme();
+    const dividerBgColor = LightenColor(
+        useOriginConfiguration()?.styleConfig?.MAIN_BACKGROUND_COLOR,
+        10
+    );
 
     useEffect(() => {
         function setupFormBasedOnExistingEntity() {
@@ -157,7 +168,7 @@ export function OrganizationForm(props: IProps) {
                     .map((doc) => doc.uploadedName)
             };
 
-            const organization = await organizationClient.add(formData);
+            const organization = (await organizationClient.register(formData)).data;
             dispatch(setUserOffchain({ ...user, organization }));
 
             if (organization) {
@@ -212,7 +223,7 @@ export function OrganizationForm(props: IProps) {
                             <Box style={{ textTransform: 'uppercase' }} mb={2}>
                                 {t('organization.registration.registerOrganization')}
                             </Box>
-                            <Divider className="divider" />
+                            <Divider style={{ backgroundColor: dividerBgColor }} />
                             <Form translate="no">
                                 <Grid container direction="column">
                                     <Grid container style={{ paddingBottom: spacing(4) }}>
@@ -312,7 +323,7 @@ export function OrganizationForm(props: IProps) {
                                             </Box>
                                         </Grid>
                                     </Grid>
-                                    <Divider className="divider" />
+                                    <Divider style={{ backgroundColor: dividerBgColor }} />
                                     <Grid container style={{ paddingTop: spacing(3) }}>
                                         <Grid item xs={6}>
                                             <Box>

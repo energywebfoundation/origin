@@ -28,7 +28,7 @@ import {
     Box
 } from '@material-ui/core';
 import MomentUtils from '@date-io/moment';
-import { OriginConfigurationContext } from '../OriginConfigurationContext';
+import { OriginConfigurationContext } from '../PackageConfigurationProvider';
 import { MuiPickersUtilsProvider } from '@material-ui/pickers';
 
 type TableOnSelectFunction = (id: string, selected: boolean) => void;

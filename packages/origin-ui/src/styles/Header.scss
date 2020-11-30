@@ -1,0 +1,64 @@
+.HeaderWrapper {
+    height: 172px;
+    padding: 50px 94px 0px 100px;
+
+    .Header {
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-between;
+
+        .ViewProfile {
+            height: 40px;
+            line-height: 40px;
+            margin-bottom: 6px;
+
+            .MuiSelect-select {
+                padding: 6px 24px 7px 0;
+            }
+
+            &_icon {
+                margin-right: 10px;
+            }
+        }
+    }
+}
+
+.NavMenu {
+    > li {
+        width: 140px;
+        position: relative;
+        margin-bottom: 15px;
+
+        &:not(:first-child) {
+            margin-left: 16px;
+        }
+
+        a {
+            color: $textColorDefault;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 12px;
+            letter-spacing: 0.6px;
+
+            &.active {
+                color: $simpleTextColor;
+            }
+
+            &:after {
+                content: '';
+                position: absolute;
+                background: $primaryColor;
+                height: 2px;
+                width: 0;
+                left: 0;
+                bottom: -3px;
+                transition: all 0.5s;
+            }
+
+            &.active:after,
+            &:hover:after {
+                width: 100%;
+            }
+        }
+    }
+}

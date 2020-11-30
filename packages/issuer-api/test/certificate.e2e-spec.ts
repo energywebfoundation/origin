@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-expressions */
-import { INestApplication } from '@nestjs/common';
+import { HttpStatus, INestApplication } from '@nestjs/common';
 import { expect } from 'chai';
 import request from 'supertest';
 
@@ -56,7 +56,7 @@ describe('Certificate tests', () => {
         await request(app.getHttpServer())
             .post('/certificate')
             .send(certificateTestData)
-            .expect(201)
+            .expect(HttpStatus.CREATED)
             .expect((res) => {
                 const {
                     deviceId,
@@ -85,7 +85,7 @@ describe('Certificate tests', () => {
 
         await request(app.getHttpServer())
             .get(`/certificate`)
-            .expect(200)
+            .expect(HttpStatus.OK)
             .expect((res) => {
                 expect(res.body.length).to.equal(1);
             });
@@ -98,7 +98,7 @@ describe('Certificate tests', () => {
         await request(app.getHttpServer())
             .post('/certificate')
             .send(certificateTestData)
-            .expect(201)
+            .expect(HttpStatus.CREATED)
             .expect((res) => {
                 const { id, isOwned, energy } = res.body;
                 certificateId = id;
@@ -121,7 +121,7 @@ describe('Certificate tests', () => {
 
         await request(app.getHttpServer())
             .get(`/certificate/${certificateId}`)
-            .expect(200)
+            .expect(HttpStatus.OK)
             .expect((getResponse) => {
                 const { isOwned, energy } = getResponse.body;
 
@@ -147,7 +147,7 @@ describe('Certificate tests', () => {
         await request(app.getHttpServer())
             .post('/certificate')
             .send(certificateTestData)
-            .expect(201)
+            .expect(HttpStatus.CREATED)
             .expect((res) => {
                 const { id, isOwned, energy, isClaimed, myClaims } = res.body;
 
@@ -165,14 +165,14 @@ describe('Certificate tests', () => {
         await request(app.getHttpServer())
             .put(`/certificate/${certificateId}/claim`)
             .send({ claimData })
-            .expect(200)
+            .expect(HttpStatus.OK)
             .expect((claimResponse) => {
                 expect(claimResponse.body.success).to.be.true;
             });
 
         await request(app.getHttpServer())
             .get(`/certificate/${certificateId}`)
-            .expect(200)
+            .expect(HttpStatus.OK)
             .expect((getResponse) => {
                 const { isOwned, energy, isClaimed, myClaims } = getResponse.body;
 
@@ -210,7 +210,7 @@ describe('Certificate tests', () => {
         await request(app.getHttpServer())
             .post('/certificate')
             .send(certificateTestData)
-            .expect(201)
+            .expect(HttpStatus.CREATED)
             .expect((res) => {
                 certificateId1 = res.body.id;
             });
@@ -218,7 +218,7 @@ describe('Certificate tests', () => {
         await request(app.getHttpServer())
             .post('/certificate')
             .send(certificateTestData)
-            .expect(201)
+            .expect(HttpStatus.CREATED)
             .expect((res) => {
                 certificateId2 = res.body.id;
             });
@@ -228,7 +228,7 @@ describe('Certificate tests', () => {
         await request(app.getHttpServer())
             .put(`/certificate/bulk-claim`)
             .send({ claimData, certificateIds: [certificateId1, certificateId2] })
-            .expect(200)
+            .expect(HttpStatus.OK)
             .expect((claimResponse) => {
                 expect(claimResponse.body.success).to.be.true;
             });
@@ -237,7 +237,7 @@ describe('Certificate tests', () => {
 
         await request(app.getHttpServer())
             .get(`/certificate/${certificateId1}`)
-            .expect(200)
+            .expect(HttpStatus.OK)
             .expect((getResponse) => {
                 const { isOwned, energy, isClaimed, myClaims } = getResponse.body;
 
@@ -258,7 +258,7 @@ describe('Certificate tests', () => {
 
         await request(app.getHttpServer())
             .get(`/certificate/${certificateId2}`)
-            .expect(200)
+            .expect(HttpStatus.OK)
             .expect((getResponse) => {
                 const { isOwned, energy, isClaimed, myClaims } = getResponse.body;
 
@@ -287,7 +287,7 @@ describe('Certificate tests', () => {
                 ...certificateTestData,
                 isPrivate: true
             })
-            .expect(201)
+            .expect(HttpStatus.CREATED)
             .expect((res) => {
                 const { latestCommitment } = res.body;
 
@@ -307,7 +307,7 @@ describe('Certificate tests', () => {
                 ...certificateTestData,
                 isPrivate: true
             })
-            .expect(201)
+            .expect(HttpStatus.CREATED)
             .expect((res) => {
                 certificateId = res.body.id;
                 const { latestCommitment } = res.body;
@@ -326,14 +326,14 @@ describe('Certificate tests', () => {
                 to: registryDeployer.address,
                 amount: certificateTestData.energy
             })
-            .expect(200)
+            .expect(HttpStatus.OK)
             .expect((transferResponse) => {
                 expect(transferResponse.body.success).to.be.true;
             });
 
         await request(app.getHttpServer())
             .get(`/certificate/${certificateId}`)
-            .expect(200)
+            .expect(HttpStatus.OK)
             .expect((getResponse) => {
                 const { latestCommitment } = getResponse.body;
 
@@ -364,7 +364,7 @@ describe('Certificate tests', () => {
                 ...certificateTestData,
                 isPrivate: true
             })
-            .expect(201)
+            .expect(HttpStatus.CREATED)
             .expect((res) => {
                 certificateId = res.body.id;
             });
@@ -374,14 +374,14 @@ describe('Certificate tests', () => {
         await request(app.getHttpServer())
             .put(`/certificate/${certificateId}/claim`)
             .send({ claimData })
-            .expect(200)
+            .expect(HttpStatus.OK)
             .expect((claimResponse) => {
                 expect(claimResponse.body.success).to.be.true;
             });
 
         await request(app.getHttpServer())
             .get(`/certificate/${certificateId}`)
-            .expect(200)
+            .expect(HttpStatus.OK)
             .expect((getResponse) => {
                 const { isOwned, energy, isClaimed, myClaims, latestCommitment } = getResponse.body;
 
@@ -410,7 +410,7 @@ describe('Certificate tests', () => {
         await request(app.getHttpServer())
             .post('/certificate')
             .send(certificateTestData)
-            .expect(201)
+            .expect(HttpStatus.CREATED)
             .expect((res) => {
                 certificateId = res.body.id;
             });
@@ -419,7 +419,7 @@ describe('Certificate tests', () => {
 
         await request(app.getHttpServer())
             .get(`/certificate/${certificateId}/events`)
-            .expect(200)
+            .expect(HttpStatus.OK)
             .expect((eventsResponse) => {
                 const { body: events } = eventsResponse;
                 expect(events.length).to.be.above(0);

@@ -33,17 +33,17 @@ export class DemandTimePeriodService {
         timeFrame: TimeFrame
     ): { diff: Moment.unitOfTime.Diff; step?: number } {
         switch (timeFrame) {
-            case TimeFrame.yearly:
+            case TimeFrame.Yearly:
                 return { diff: 'year' };
-            case TimeFrame.monthly:
+            case TimeFrame.Monthly:
                 return { diff: 'month' };
-            case TimeFrame.weekly:
+            case TimeFrame.Weekly:
                 return { diff: 'week' };
-            case TimeFrame.daily:
+            case TimeFrame.Daily:
                 return { diff: 'day' };
-            case TimeFrame.hourly:
+            case TimeFrame.Hourly:
                 return { diff: 'hour' };
-            case TimeFrame.halfHourly:
+            case TimeFrame.HalfHourly:
                 return { diff: 'minute', step: 30 };
             default:
                 throw new Error('Unknown timeframe');

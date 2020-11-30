@@ -1,5 +1,8 @@
 @import '@energyweb/origin-ui-core/dist/src/styles/app.scss';
 @import '@energyweb/exchange-ui-core/dist/src/styles/app.scss';
+@import './variables.scss';
+@import './bootstrap.scss';
+@import './toastr.scss';
 
 .vertical-align {
     display: flex;
@@ -14,7 +17,7 @@
         display: flex;
         align-items: center;
         justify-content: space-between;
-        background: $backgroundColorDark;
+        background: $mainBackgroundColor;
 
         .NavMenu {
             > li {
@@ -44,4 +47,13 @@
     }
 }
 
+.LoginPageBackground {
+    height: 100vh;
+    width: 100%;
+    position: absolute;
+    z-index: 0;
+    padding: 0;
+}
+
 @import './AppContainer.scss';
+@import './Header.scss';

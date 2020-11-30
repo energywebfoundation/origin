@@ -245,8 +245,7 @@ export function DeviceGroupForm(props: IProps) {
                 deviceGroup: JSON.stringify(values.children),
                 externalDeviceIds,
                 gridOperator: '',
-                automaticPostForSale: false,
-                defaultAskPrice: null
+                automaticPostForSale: false
             })
         );
         formikActions.setSubmitting(false);

@@ -1,14 +1,23 @@
 import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { Grid, InputAdornment, Divider } from '@material-ui/core';
-import { useValidation, useTranslation, getUserOffchain } from '@energyweb/origin-ui-core';
+import {
+    useValidation,
+    useTranslation,
+    getUserOffchain,
+    LightenColor
+} from '@energyweb/origin-ui-core';
 import { FormInput, FormikDatePickerWithMonthArrowsFilled } from '../Form';
+import { useOriginConfiguration } from '../../utils/configuration';
 
 export const OneTimePurchase = (props) => {
     const { fieldDisabled, currency, setFieldValue, energyUnit, setValidationSchema } = props;
     const { t } = useTranslation();
     const { Yup } = useValidation();
     const user = useSelector(getUserOffchain);
+    const originConfiguration = useOriginConfiguration();
+    const originBgColor = originConfiguration?.styleConfig?.MAIN_BACKGROUND_COLOR;
+    const bgColorLighten = LightenColor(originBgColor, 5);
 
     const VALIDATION_SCHEMA = Yup.object().shape({
         generationDateStart: Yup.date().label(t('exchange.properties.generationDateStart')),
@@ -42,7 +51,7 @@ export const OneTimePurchase = (props) => {
                 </Grid>
             </Grid>
             <br />
-            <Divider variant="fullWidth" className="divider" />
+            <Divider variant="fullWidth" style={{ backgroundColor: bgColorLighten }} />
             <Grid container spacing={3}>
                 <Grid item xs={6}>
                     <FormInput

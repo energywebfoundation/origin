@@ -2,16 +2,15 @@
 /* eslint-disable no-return-assign */
 import { DeviceStatus, getRolesFromRights, Role } from '@energyweb/origin-backend-core';
 import { DatabaseService } from '@energyweb/origin-backend-utils';
-import { INestApplication } from '@nestjs/common';
+import { HttpStatus, INestApplication } from '@nestjs/common';
 import { expect } from 'chai';
 import request from 'supertest';
 import crypto from 'crypto';
 
 import { Device } from '../src/pods/device/device.entity';
 import { DeviceService } from '../src/pods/device/device.service';
-import { OrganizationInvitationDTO } from '../src/pods/organization/organization-invitation.dto';
 import { OrganizationService } from '../src/pods/organization/organization.service';
-import { PublicOrganizationInfoDTO } from '../src/pods/organization/public-organization-info.dto';
+import { PublicOrganizationInfoDTO } from '../src/pods/organization/dto/public-organization-info.dto';
 import { TUserBaseEntity, UserService } from '../src/pods/user';
 import {
     bootstrapTestInstance,
@@ -21,6 +20,7 @@ import {
 } from './origin-backend';
 import { userToRegister } from './user.e2e-spec';
 import { NewOrganizationDTO, Organization } from '../src/pods/organization';
+import { InvitationDTO } from '../src/pods/invitation/invitation.dto';
 
 describe('Organization e2e tests', () => {
     let app: INestApplication;
@@ -64,7 +64,7 @@ describe('Organization e2e tests', () => {
         await request(app.getHttpServer())
             .get('/organization')
             .set('Authorization', `Bearer ${accessToken}`)
-            .expect(200)
+            .expect(HttpStatus.OK)
             .expect((res) => {
                 const [org] = res.body as PublicOrganizationInfoDTO[];
 
@@ -103,8 +103,7 @@ describe('Organization e2e tests', () => {
                 deviceGroup: '',
                 smartMeterReads: [],
                 externalDeviceIds: [],
-                automaticPostForSale: false,
-                defaultAskPrice: 0
+                automaticPostForSale: false
             },
             user
         );
@@ -112,7 +111,7 @@ describe('Organization e2e tests', () => {
         await request(app.getHttpServer())
             .get(`/organization/${organization.id}/devices`)
             .set('Authorization', `Bearer ${accessToken}`)
-            .expect(200)
+            .expect(HttpStatus.OK)
             .expect((res) => {
                 const devices = res.body as Device[];
 
@@ -137,14 +136,14 @@ describe('Organization e2e tests', () => {
         );
 
         await request(app.getHttpServer())
-            .post(`/organization/${organization.id}/remove-member/${member.id}`)
+            .put(`/organization/${organization.id}/remove-member/${member.id}`)
             .set('Authorization', `Bearer ${adminAccessToken}`)
-            .expect(201);
+            .expect(HttpStatus.OK);
 
         await request(app.getHttpServer())
             .get(`/user/me`)
             .set('Authorization', `Bearer ${memberAccessToken}`)
-            .expect(200)
+            .expect(HttpStatus.OK)
             .expect((res) => {
                 const { organization: memberOrganization } = res.body as TUserBaseEntity;
                 expect(memberOrganization).to.be.null;
@@ -165,16 +164,17 @@ describe('Organization e2e tests', () => {
             .post('/invitation')
             .set('Authorization', `Bearer ${accessToken}`)
             .send({ email: newUserEmail, role: Role.OrganizationUser })
-            .expect(201);
+            .expect(HttpStatus.CREATED);
 
         await request(app.getHttpServer())
             .get(`/organization/${organization.id}/invitations`)
             .set('Authorization', `Bearer ${accessToken}`)
-            .expect(200)
+            .expect(HttpStatus.OK)
             .expect((res) => {
-                const [invitation] = res.body as OrganizationInvitationDTO[];
+                const [invitation] = res.body as InvitationDTO[];
 
-                expect(invitation).to.be.ok;
+                expect(invitation.email).to.equal(newUserEmail);
+                expect(invitation.role).to.equal(Role.OrganizationUser);
             });
     });
 
@@ -189,7 +189,7 @@ describe('Organization e2e tests', () => {
         await request(app.getHttpServer())
             .get(`/organization/${organization.id + 1}/invitations`)
             .set('Authorization', `Bearer ${accessToken}`)
-            .expect(403);
+            .expect(HttpStatus.FORBIDDEN);
     });
 
     it('should be able to change role for organization member when organization admin', async () => {
@@ -214,12 +214,12 @@ describe('Organization e2e tests', () => {
             .send({
                 role: Role.OrganizationDeviceManager
             })
-            .expect(200);
+            .expect(HttpStatus.OK);
 
         await request(app.getHttpServer())
             .get(`/user/me`)
             .set('Authorization', `Bearer ${memberAccessToken}`)
-            .expect(200)
+            .expect(HttpStatus.OK)
             .expect((res) => {
                 const { rights } = res.body as TUserBaseEntity;
                 expect(getRolesFromRights(rights)).contain(Role.OrganizationDeviceManager);
@@ -248,7 +248,7 @@ describe('Organization e2e tests', () => {
             .send({
                 role: Role.Admin
             })
-            .expect(403);
+            .expect(HttpStatus.FORBIDDEN);
 
         await request(app.getHttpServer())
             .put(`/organization/${organization.id}/change-role/${member.id}`)
@@ -256,7 +256,7 @@ describe('Organization e2e tests', () => {
             .send({
                 role: Role.SupportAgent
             })
-            .expect(403);
+            .expect(HttpStatus.FORBIDDEN);
 
         await request(app.getHttpServer())
             .put(`/organization/${organization.id}/change-role/${member.id}`)
@@ -264,7 +264,7 @@ describe('Organization e2e tests', () => {
             .send({
                 role: Role.Issuer
             })
-            .expect(403);
+            .expect(HttpStatus.FORBIDDEN);
     });
 
     it('should be able to see information about own organization', async () => {
@@ -278,7 +278,7 @@ describe('Organization e2e tests', () => {
         await request(app.getHttpServer())
             .get(`/organization/${organization.id}`)
             .set('Authorization', `Bearer ${accessToken}`)
-            .expect(200);
+            .expect(HttpStatus.OK);
     });
 
     it('should be not able to see information about a different organization', async () => {
@@ -298,7 +298,7 @@ describe('Organization e2e tests', () => {
         await request(app.getHttpServer())
             .get(`/organization/${org2.id}`)
             .set('Authorization', `Bearer ${accessToken}`)
-            .expect(403);
+            .expect(HttpStatus.FORBIDDEN);
     });
 
     it('should return all organizations if Admin or Support Agent', async () => {
@@ -309,7 +309,7 @@ describe('Organization e2e tests', () => {
         await request(app.getHttpServer())
             .get(`/organization`)
             .set('Authorization', `Bearer ${accessToken}`)
-            .expect(200);
+            .expect(HttpStatus.OK);
 
         const { accessToken: accessToken2 } = await registerAndLogin(
             app,
@@ -321,7 +321,7 @@ describe('Organization e2e tests', () => {
         await request(app.getHttpServer())
             .get(`/organization`)
             .set('Authorization', `Bearer ${accessToken2}`)
-            .expect(200);
+            .expect(HttpStatus.OK);
     });
 
     it('should not return all organizations if not Admin or Support Agent', async () => {
@@ -334,11 +334,14 @@ describe('Organization e2e tests', () => {
         await request(app.getHttpServer())
             .get(`/organization`)
             .set('Authorization', `Bearer ${accessToken}`)
-            .expect(403);
+            .expect(HttpStatus.FORBIDDEN);
     });
 
     it('should be able to register organization before being approved user', async () => {
-        await request(app.getHttpServer()).post(`/user/register`).send(userToRegister).expect(201);
+        await request(app.getHttpServer())
+            .post(`/user/register`)
+            .send(userToRegister)
+            .expect(HttpStatus.CREATED);
 
         const accessToken = await loginUser(app, userToRegister.email, userToRegister.password);
 
@@ -347,11 +350,14 @@ describe('Organization e2e tests', () => {
             .post(`/organization`)
             .send(organization)
             .set('Authorization', `Bearer ${accessToken}`)
-            .expect(201);
+            .expect(HttpStatus.CREATED);
     });
 
     it('should not be able to register organization where name was already taken', async () => {
-        await request(app.getHttpServer()).post(`/user/register`).send(userToRegister).expect(201);
+        await request(app.getHttpServer())
+            .post(`/user/register`)
+            .send(userToRegister)
+            .expect(HttpStatus.CREATED);
 
         const accessToken = await loginUser(app, userToRegister.email, userToRegister.password);
 
@@ -360,10 +366,13 @@ describe('Organization e2e tests', () => {
             .post(`/organization`)
             .send(organization)
             .set('Authorization', `Bearer ${accessToken}`)
-            .expect(201);
+            .expect(HttpStatus.CREATED);
 
         const otherUser = { ...userToRegister, email: 'other@example.com' };
-        await request(app.getHttpServer()).post(`/user/register`).send(otherUser).expect(201);
+        await request(app.getHttpServer())
+            .post(`/user/register`)
+            .send(otherUser)
+            .expect(HttpStatus.CREATED);
 
         const otherUserAccessToken = await loginUser(app, otherUser.email, otherUser.password);
 
@@ -371,7 +380,7 @@ describe('Organization e2e tests', () => {
             .post(`/organization`)
             .send(organization)
             .set('Authorization', `Bearer ${otherUserAccessToken}`)
-            .expect(400);
+            .expect(HttpStatus.BAD_REQUEST);
     });
 
     it('should be able to register organization if already part of an organization', async () => {
@@ -384,11 +393,14 @@ describe('Organization e2e tests', () => {
             .post(`/organization`)
             .send({ ...organization, name: 'Other organization name' })
             .set('Authorization', `Bearer ${accessToken}`)
-            .expect(403);
+            .expect(HttpStatus.FORBIDDEN);
     });
 
     it('should be able to register organization with documents', async () => {
-        await request(app.getHttpServer()).post(`/user/register`).send(userToRegister).expect(201);
+        await request(app.getHttpServer())
+            .post(`/user/register`)
+            .send(userToRegister)
+            .expect(HttpStatus.CREATED);
 
         const accessToken = await loginUser(app, userToRegister.email, userToRegister.password);
 
@@ -414,7 +426,7 @@ describe('Organization e2e tests', () => {
                 signatoryDocumentIds: [fileId2]
             } as NewOrganizationDTO)
             .set('Authorization', `Bearer ${accessToken}`)
-            .expect(201)
+            .expect(HttpStatus.CREATED)
             .expect((res) => {
                 const org = res.body as Organization;
 
@@ -425,7 +437,10 @@ describe('Organization e2e tests', () => {
     });
 
     it('should not be able to register organization with non existing documents', async () => {
-        await request(app.getHttpServer()).post(`/user/register`).send(userToRegister).expect(201);
+        await request(app.getHttpServer())
+            .post(`/user/register`)
+            .send(userToRegister)
+            .expect(HttpStatus.CREATED);
 
         const accessToken = await loginUser(app, userToRegister.email, userToRegister.password);
         const organization = getExampleOrganization();
@@ -437,7 +452,7 @@ describe('Organization e2e tests', () => {
                 documentIds: ['6ae855ca-8115-476e-9dfe-f6a23ede7959']
             } as NewOrganizationDTO)
             .set('Authorization', `Bearer ${accessToken}`)
-            .expect(403);
+            .expect(HttpStatus.FORBIDDEN);
 
         await request(app.getHttpServer())
             .post(`/organization`)
@@ -446,11 +461,14 @@ describe('Organization e2e tests', () => {
                 signatoryDocumentIds: ['6ae855ca-8115-476e-9dfe-f6a23ede7959']
             } as NewOrganizationDTO)
             .set('Authorization', `Bearer ${accessToken}`)
-            .expect(403);
+            .expect(HttpStatus.FORBIDDEN);
     });
 
     it('should not be able to register organization with documents that belong to other user', async () => {
-        await request(app.getHttpServer()).post(`/user/register`).send(userToRegister).expect(201);
+        await request(app.getHttpServer())
+            .post(`/user/register`)
+            .send(userToRegister)
+            .expect(HttpStatus.CREATED);
 
         const accessToken = await loginUser(app, userToRegister.email, userToRegister.password);
 
@@ -470,7 +488,7 @@ describe('Organization e2e tests', () => {
         await request(app.getHttpServer())
             .post(`/user/register`)
             .send({ ...userToRegister, email: otherUserEmail })
-            .expect(201);
+            .expect(HttpStatus.CREATED);
 
         const otherUserAccessToken = await loginUser(app, otherUserEmail, userToRegister.password);
 
@@ -483,6 +501,6 @@ describe('Organization e2e tests', () => {
                 documentIds: [fileId]
             } as NewOrganizationDTO)
             .set('Authorization', `Bearer ${otherUserAccessToken}`)
-            .expect(403);
+            .expect(HttpStatus.FORBIDDEN);
     });
 });

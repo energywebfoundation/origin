@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [7.0.1](https://github.com/energywebfoundation/origin/compare/@energyweb/device-registry@7.0.0...@energyweb/device-registry@7.0.1) (2020-11-20)
+
+
+### Bug Fixes
+
+* **deps:** update dependency ethers to v5.0.15 ([7205cfd](https://github.com/energywebfoundation/origin/commit/7205cfd3b823730beed77fa8195b7c9c06898a88))
+
+
+
+
+
 # [7.0.0](https://github.com/energywebfoundation/origin/compare/@energyweb/device-registry@6.2.9...@energyweb/device-registry@7.0.0) (2020-10-02)
 
 

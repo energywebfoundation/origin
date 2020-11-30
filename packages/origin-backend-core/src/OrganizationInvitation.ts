@@ -2,10 +2,10 @@ import { IPublicOrganization } from './Organization';
 import { Role } from './User';
 
 export enum OrganizationInvitationStatus {
-    Pending,
-    Rejected,
-    Accepted,
-    Viewed
+    Pending = 'Pending',
+    Rejected = 'Rejected',
+    Accepted = 'Accepted',
+    Viewed = 'Viewed'
 }
 
 export type OrganizationRole =

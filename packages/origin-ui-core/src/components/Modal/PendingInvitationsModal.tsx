@@ -8,7 +8,7 @@ import {
 } from '@energyweb/origin-backend-core';
 import { setInvitations, refreshUserOffchain } from '../../features/users/actions';
 import {
-    getOffChainDataSource,
+    getBackendClient,
     showNotification,
     NotificationType,
     useTranslation,
@@ -44,7 +44,7 @@ export const PendingInvitationsModal = (props: IProps) => {
     };
 
     const dispatch = useDispatch();
-    const invitationClient = useSelector(getOffChainDataSource)?.invitationClient;
+    const invitationClient = useSelector(getBackendClient)?.invitationClient;
     const { t } = useTranslation();
     const {
         typography: { fontSizeSm }
@@ -56,7 +56,10 @@ export const PendingInvitationsModal = (props: IProps) => {
         dispatch(setLoading(true));
 
         try {
-            await invitationClient.rejectInvitation(invitation.id);
+            await invitationClient.updateInvitation(
+                invitation.id.toString(),
+                OrganizationInvitationStatus.Rejected
+            );
 
             showNotification(
                 t('organization.invitations.notification.rejectedSuccess'),
@@ -89,10 +92,18 @@ export const PendingInvitationsModal = (props: IProps) => {
         dispatch(setLoading(true));
 
         try {
-            await invitationClient.acceptInvitation(invitation.id);
+            await invitationClient.updateInvitation(
+                invitation.id.toString(),
+                OrganizationInvitationStatus.Accepted
+            );
             invitations
                 .filter((inv) => inv.id !== invitation.id)
-                .forEach((inv) => invitationClient.rejectInvitation(inv.id));
+                .forEach((inv) =>
+                    invitationClient.updateInvitation(
+                        inv.id.toString(),
+                        OrganizationInvitationStatus.Rejected
+                    )
+                );
             showNotification(
                 t('organization.invitations.notification.acceptedSuccess'),
                 NotificationType.Success
@@ -115,7 +126,10 @@ export const PendingInvitationsModal = (props: IProps) => {
         dispatch(setLoading(true));
 
         try {
-            await invitationClient.viewInvitation(invitation.id);
+            await invitationClient.updateInvitation(
+                invitation.id.toString(),
+                OrganizationInvitationStatus.Viewed
+            );
             showNotification(
                 t('organization.invitations.notification.laterSuccess'),
                 NotificationType.Success

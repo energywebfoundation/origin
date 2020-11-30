@@ -1,6 +1,6 @@
 import { OrderStatus } from '@energyweb/exchange-core';
 import { DatabaseService } from '@energyweb/origin-backend-utils';
-import { INestApplication } from '@nestjs/common';
+import { HttpStatus, INestApplication } from '@nestjs/common';
 import { expect } from 'chai';
 import { Contract, ethers } from 'ethers';
 import request from 'supertest';
@@ -15,6 +15,7 @@ import { Transfer } from '../src/pods/transfer/transfer.entity';
 import { TransferService } from '../src/pods/transfer/transfer.service';
 import { authenticatedUser, bootstrapTestInstance } from './exchange';
 import { createDepositAddress, issueToken, MWh } from './utils';
+import { DB_TABLE_PREFIX } from '../src/utils/tablePrefix';
 
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -71,8 +72,7 @@ describe('account ask order send', () => {
     const amount = `${1000 * MWh}`;
 
     beforeEach(async () => {
-        await databaseService.truncate('order');
-        await databaseService.truncate('transfer');
+        await databaseService.truncate(`${DB_TABLE_PREFIX}_order`, `${DB_TABLE_PREFIX}_transfer`);
 
         user1Address = await createDepositAddress(accountService, user1Id);
         deposit = await createDeposit(user1Address);
@@ -86,7 +86,10 @@ describe('account ask order send', () => {
             validFrom: new Date()
         };
 
-        await request(app.getHttpServer()).post('/orders/ask').send(createAsk).expect(403);
+        await request(app.getHttpServer())
+            .post('/orders/ask')
+            .send(createAsk)
+            .expect(HttpStatus.FORBIDDEN);
     });
 
     it('should be able to create ask order on confirmed deposit', async () => {
@@ -102,7 +105,7 @@ describe('account ask order send', () => {
         await request(app.getHttpServer())
             .post('/orders/ask')
             .send(createAsk)
-            .expect(201)
+            .expect(HttpStatus.CREATED)
             .expect((res) => {
                 const order = res.body as Order;
 
@@ -124,7 +127,10 @@ describe('account ask order send', () => {
             validFrom: new Date()
         };
 
-        await request(app.getHttpServer()).post('/orders/ask').send(createAsk).expect(403);
+        await request(app.getHttpServer())
+            .post('/orders/ask')
+            .send(createAsk)
+            .expect(HttpStatus.FORBIDDEN);
     });
 
     it('should not be able to create 2nd ask order bigger than remaining deposit', async () => {
@@ -137,9 +143,15 @@ describe('account ask order send', () => {
 
         await confirmDeposit();
 
-        await request(app.getHttpServer()).post('/orders/ask').send(createAsk).expect(201);
+        await request(app.getHttpServer())
+            .post('/orders/ask')
+            .send(createAsk)
+            .expect(HttpStatus.CREATED);
 
-        await request(app.getHttpServer()).post('/orders/ask').send(createAsk).expect(403);
+        await request(app.getHttpServer())
+            .post('/orders/ask')
+            .send(createAsk)
+            .expect(HttpStatus.FORBIDDEN);
     });
 
     it('should not be able to withdraw without any deposit', async () => {
@@ -152,7 +164,7 @@ describe('account ask order send', () => {
         await request(app.getHttpServer())
             .post('/transfer/withdrawal')
             .send(withdrawal)
-            .expect(403);
+            .expect(HttpStatus.FORBIDDEN);
     });
 
     it('should be able to withdraw after confirming deposit', async () => {
@@ -185,11 +197,11 @@ describe('account ask order send', () => {
         await request(app.getHttpServer())
             .post('/transfer/withdrawal')
             .send(withdrawal)
-            .expect(201);
+            .expect(HttpStatus.CREATED);
 
         await request(app.getHttpServer())
             .get('/account-balance')
-            .expect(200)
+            .expect(HttpStatus.OK)
             .expect((res) => {
                 const account = res.body as AccountBalance;
 
@@ -215,7 +227,7 @@ describe('account ask order send', () => {
         await request(app.getHttpServer())
             .post('/orders/bid')
             .send(createBid)
-            .expect(201)
+            .expect(HttpStatus.CREATED)
             .expect((res) => {
                 order = res.body as Order;
 
@@ -226,7 +238,7 @@ describe('account ask order send', () => {
 
         await request(app.getHttpServer())
             .post(`/orders/${order.id}/cancel`)
-            .expect(202)
+            .expect(HttpStatus.ACCEPTED)
             .expect((res) => {
                 const cancelled = res.body as Order;
 
@@ -238,7 +250,7 @@ describe('account ask order send', () => {
 
         await request(app.getHttpServer())
             .get(`/orders/${order.id}`)
-            .expect(200)
+            .expect(HttpStatus.OK)
             .expect((res) => {
                 const cancelled = res.body as Order;
 
@@ -257,7 +269,10 @@ describe('account ask order send', () => {
             product: { deviceType: ['Solar'] }
         };
 
-        await request(app.getHttpServer()).post('/orders/bid').send(createBid).expect(400);
+        await request(app.getHttpServer())
+            .post('/orders/bid')
+            .send(createBid)
+            .expect(HttpStatus.BAD_REQUEST);
     });
 
     it('should not be able to create ask order with decimal volume', async () => {
@@ -268,7 +283,10 @@ describe('account ask order send', () => {
             validFrom: new Date()
         };
 
-        await request(app.getHttpServer()).post('/orders/ask').send(createAsk).expect(400);
+        await request(app.getHttpServer())
+            .post('/orders/ask')
+            .send(createAsk)
+            .expect(HttpStatus.BAD_REQUEST);
     });
 
     it('should not allow to post more asks than deposits', async () => {

@@ -16,12 +16,19 @@ import {
     Divider
 } from '@material-ui/core';
 import { Close } from '@material-ui/icons';
-import { EnergyFormatter, useTranslation, getCurrencies } from '@energyweb/origin-ui-core';
+import {
+    EnergyFormatter,
+    useTranslation,
+    getCurrencies,
+    LightenColor
+} from '@energyweb/origin-ui-core';
+import { DemandStatus, TimeFrame } from '@energyweb/utils-general';
 import { updateDemand, pauseDemand, resumeDemand } from '../../features/orders/actions';
 import { periodTypeOptions } from '../../utils/demand';
-import { Demand, DemandStatus, TimeFrame, IProductDTO, Order } from '../../utils/exchange';
+import { Demand, IProductDTO, Order } from '../../utils/exchange';
 import { CalendarFieldOnPeriod, FormInput, FormSelect } from '../Form';
 import { TotalDemandVolume } from '../orders/TotalDemandVolume';
+import { useOriginConfiguration } from '../../utils/configuration';
 
 interface IFormValues {
     userId: string;
@@ -39,7 +46,7 @@ interface IFormValues {
 const INITIAL_FORM_VALUES: IFormValues = {
     userId: '',
     id: '',
-    periodTimeFrame: 2,
+    periodTimeFrame: TimeFrame.Daily,
     start: null,
     end: null,
     volumePerPeriod: '',
@@ -63,6 +70,10 @@ export function DemandUpdateModal(props: IProps) {
     const currencies = useSelector(getCurrencies);
     const defaultCurrency = (currencies && currencies[0]) ?? 'USD';
     const periodOptions = periodTypeOptions(t, false);
+
+    const configuration = useOriginConfiguration();
+    const originBgColor = configuration?.styleConfig?.MAIN_BACKGROUND_COLOR;
+    const bgLighten = LightenColor(originBgColor, 5);
 
     async function updateStatus(id, status) {
         const newStatus = !status;
@@ -88,8 +99,8 @@ export function DemandUpdateModal(props: IProps) {
                     parseFloat(values.volumePerPeriod)
                 ).toString(),
                 periodTimeFrame: values.periodTimeFrame,
-                start: values.start,
-                end: values.end,
+                start: values.start.toISOString(),
+                end: values.end.toISOString(),
                 product: values.product,
                 boundToGenerationTime: false,
                 excludeEnd: false
@@ -149,7 +160,10 @@ export function DemandUpdateModal(props: IProps) {
                                         <TotalDemandVolume demand={values} />
                                     </Grid>
                                     <Grid item xs={12}>
-                                        <Box className="ActivateDemand">
+                                        <Box
+                                            className="ActivateDemand"
+                                            style={{ backgroundColor: bgLighten }}
+                                        >
                                             <Typography>
                                                 {t('demand.captions.activateDemand')}
                                             </Typography>
@@ -162,7 +176,12 @@ export function DemandUpdateModal(props: IProps) {
                                             />
                                         </Box>
                                     </Grid>
-                                    <Grid item xs={12} className="FieldsHolder">
+                                    <Grid
+                                        item
+                                        xs={12}
+                                        className="FieldsHolder"
+                                        style={{ backgroundColor: bgLighten }}
+                                    >
                                         <Grid item xs={12}>
                                             <FormSelect
                                                 options={periodOptions}
@@ -242,7 +261,11 @@ export function DemandUpdateModal(props: IProps) {
                                     </Grid>
                                 </Grid>
                             </DialogContent>
-                            <Divider variant="fullWidth" className="divider" />
+                            <Divider
+                                variant="fullWidth"
+                                className="divider"
+                                style={{ backgroundColor: bgLighten }}
+                            />
                             <DialogActions className="ButtonContainer">
                                 <Button
                                     color="primary"

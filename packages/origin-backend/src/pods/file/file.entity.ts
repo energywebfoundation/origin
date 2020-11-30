@@ -1,5 +1,6 @@
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 import { ExtendedBaseEntity } from '@energyweb/origin-backend-utils';
+import { IsString } from 'class-validator';
 
 @Entity()
 export class File extends ExtendedBaseEntity {
@@ -12,17 +13,21 @@ export class File extends ExtendedBaseEntity {
     id: string;
 
     @Column()
+    @IsString()
     filename: string;
 
     @Column({ type: 'bytea' })
     data: Buffer;
 
     @Column()
+    @IsString()
     contentType: string;
 
     @Column()
+    @IsString()
     userId: string;
 
     @Column({ nullable: true })
+    @IsString()
     organizationId: string;
 }

@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-expressions */
 import { DatabaseService } from '@energyweb/origin-backend-utils';
-import { INestApplication } from '@nestjs/common';
+import { HttpStatus, INestApplication } from '@nestjs/common';
 import { expect } from 'chai';
 import { Contract, ethers } from 'ethers';
 import moment from 'moment';
@@ -15,6 +15,7 @@ import { TransferDirection } from '../src/pods/transfer/transfer-direction';
 import { TransferStatus } from '../src/pods/transfer/transfer-status';
 import { Transfer } from '../src/pods/transfer/transfer.entity';
 import { TransferService } from '../src/pods/transfer/transfer.service';
+import { DB_TABLE_PREFIX } from '../src/utils/tablePrefix';
 import { authenticatedUser, bootstrapTestInstance } from './exchange';
 import { createDepositAddress, depositToken, issueToken, MWh, provider } from './utils';
 
@@ -84,7 +85,7 @@ describe('Deposits using deployed registry', () => {
     });
 
     beforeEach(async () => {
-        await databaseService.truncate('order', 'transfer');
+        await databaseService.truncate(`${DB_TABLE_PREFIX}_order`, `${DB_TABLE_PREFIX}_transfer`);
         depositAddress = await createDepositAddress(accountService, user1Id);
     });
 
@@ -100,7 +101,7 @@ describe('Deposits using deployed registry', () => {
 
         await request(app.getHttpServer())
             .get('/transfer/all')
-            .expect(200)
+            .expect(HttpStatus.OK)
             .expect((res) => {
                 const transfers = res.body as Transfer[];
                 const [tokenDeposit] = transfers;
@@ -116,7 +117,7 @@ describe('Deposits using deployed registry', () => {
 
         await request(app.getHttpServer())
             .get('/account-balance')
-            .expect(200)
+            .expect(HttpStatus.OK)
             .expect((res) => {
                 const {
                     available: [balance]
@@ -143,7 +144,7 @@ describe('Deposits using deployed registry', () => {
         await request(app.getHttpServer())
             .post('/orders/ask')
             .send(createAsk)
-            .expect(201)
+            .expect(HttpStatus.CREATED)
             .expect((res) => {
                 const order = res.body as Order;
 
@@ -177,7 +178,7 @@ describe('Deposits using deployed registry', () => {
         await request(app.getHttpServer())
             .post('/transfer/withdrawal')
             .send(withdrawal)
-            .expect(201);
+            .expect(HttpStatus.CREATED);
 
         await sleep(5000);
 
@@ -201,7 +202,7 @@ describe('Deposits using deployed registry', () => {
         await request(app.getHttpServer())
             .post('/transfer/withdrawal')
             .send(withdrawal)
-            .expect(201);
+            .expect(HttpStatus.CREATED);
 
         await sleep(5000);
 

@@ -1,7 +1,6 @@
 import { SagaIterator } from 'redux-saga';
 import { put, select, all, fork, call, cancelled, take } from 'redux-saga/effects';
 import axios, { Canceler } from 'axios';
-import { OffChainDataSource } from '@energyweb/origin-backend-client';
 import { ExchangeClient } from '../../utils/exchange';
 import {
     setExchangeClient,
@@ -10,6 +9,7 @@ import {
     ExchangeGeneralActionType
 } from './actions';
 import { getEnvironment } from './selectors';
+import { UsersActions } from '@energyweb/origin-ui-core';
 
 function prepareGetEnvironmentTask(): {
     getEnvironment: () => Promise<IEnvironment>;
@@ -63,24 +63,19 @@ function* setupEnvironment(): SagaIterator {
 
 function* initializeExchangeClient(): SagaIterator {
     while (true) {
-        yield take(ExchangeGeneralActionType.SET_ENVIRONMENT);
+        yield take([
+            ExchangeGeneralActionType.SET_ENVIRONMENT,
+            UsersActions.clearAuthenticationToken
+        ]);
 
         const environment: IEnvironment = yield select(getEnvironment);
 
-        const newOffChainDataSource = new OffChainDataSource(
-            environment.BACKEND_URL,
-            Number(environment.BACKEND_PORT)
-        );
-
         const token = localStorage.getItem('AUTHENTICATION_TOKEN');
-        newOffChainDataSource.requestClient.authenticationToken = token;
+        const backendUrl = `${environment.BACKEND_URL}:${environment.BACKEND_PORT}`;
 
         yield put(
             setExchangeClient({
-                exchangeClient: new ExchangeClient(
-                    newOffChainDataSource.dataApiUrl,
-                    newOffChainDataSource.requestClient
-                )
+                exchangeClient: new ExchangeClient(backendUrl, token)
             })
         );
     }

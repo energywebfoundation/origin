@@ -241,9 +241,12 @@ export class UserService {
         });
     }
 
-    async updateBlockChainAddress(id: number | string, user: IUser) {
+    async updateBlockChainAddress(
+        id: number | string,
+        blockchainAccountAddress: IUser['blockchainAccountAddress']
+    ): Promise<IUser> {
         const updateEntity = new User({
-            blockchainAccountAddress: user.blockchainAccountAddress
+            blockchainAccountAddress
         });
 
         const validationErrors = await validate(updateEntity, {
@@ -296,7 +299,7 @@ export class UserService {
         return result;
     }
 
-    async update(id: number | string, data: IUser): Promise<ExtendedBaseEntity & IUser> {
+    async update(id: number | string, data: Partial<IUser>): Promise<ExtendedBaseEntity & IUser> {
         const entity = await this.repository.findOne(id);
 
         if (!entity) {

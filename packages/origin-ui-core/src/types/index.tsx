@@ -1,4 +1,4 @@
-import { Configuration } from '@energyweb/utils-general';
+import { Configuration } from '@energyweb/device-registry';
 import { IGeneralState } from '../features/general/reducer';
 import { ICertificatesState } from '../features/certificates/reducer';
 import { IUsersState } from '../features/users/reducer';

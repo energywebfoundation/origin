@@ -3,6 +3,32 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.6.0](https://github.com/energywebfoundation/origin/compare/@energyweb/exchange@1.5.4...@energyweb/exchange@1.6.0) (2020-11-20)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @nestjs/swagger to v4.7.2 ([1b127f8](https://github.com/energywebfoundation/origin/commit/1b127f8504fb5a15bdcfc3abd2f0d4052cb26f73))
+* **deps:** update dependency @nestjs/swagger to v4.7.3 ([1285463](https://github.com/energywebfoundation/origin/commit/128546350457dcedfba2087441dd5b93097cdced))
+* **deps:** update dependency ethers to v5.0.15 ([7205cfd](https://github.com/energywebfoundation/origin/commit/7205cfd3b823730beed77fa8195b7c9c06898a88))
+* **deps:** update dependency typeorm to v0.2.28 ([8e9a26c](https://github.com/energywebfoundation/origin/commit/8e9a26c3a9c6218ad12fcd6c8ce6b71f767c8731))
+* **deps:** update dependency typeorm to v0.2.29 ([49232fb](https://github.com/energywebfoundation/origin/commit/49232fbd085e86a5e1df943aa917fe5ed86bff27))
+* **deps:** update nest monorepo to v7.5.2 ([adf4996](https://github.com/energywebfoundation/origin/commit/adf49962f675ef88237af96baef0093057d0697f))
+* **exchange:** ask processing throttling ([c14e100](https://github.com/energywebfoundation/origin/commit/c14e1000e560311cff121942bb208969b00af0a3))
+* **exchange:** block cancellation of bids that are part of the demand ([3ad7d22](https://github.com/energywebfoundation/origin/commit/3ad7d2226f97e918c056cc0e50a979585babba26))
+* **exchange:** withdrawal processing ([f191d29](https://github.com/energywebfoundation/origin/commit/f191d296e6e8ae09d0339cf95e8d1ea266c1c0c5))
+
+
+### Features
+
+* **exchange:** added env variable for timezone ([5baf939](https://github.com/energywebfoundation/origin/commit/5baf9392bc25f1a95ec1f6b2763cdecbf14a28a9))
+* **exchange:** demand replace ([8cc795f](https://github.com/energywebfoundation/origin/commit/8cc795f9e276d6ef9e1f76498066697881afdf75))
+* **exchange:** demand summary api ([8c7045e](https://github.com/energywebfoundation/origin/commit/8c7045e3932835cea89b82d31dca2c0992f50c8f))
+
+
+
+
+
 ## [1.5.4](https://github.com/energywebfoundation/origin/compare/@energyweb/exchange@1.5.3...@energyweb/exchange@1.5.4) (2020-10-02)
 
 

@@ -16,7 +16,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
 import { setLoading } from '../../features/general/actions';
-import { getOffChainDataSource, getEnvironment } from '../../features/general/selectors';
+import { getBackendClient, getEnvironment } from '../../features/general/selectors';
 import { refreshUserOffchain } from '../../features/users/actions';
 import { NotificationType, showNotification } from '../../utils/notifications';
 import { useValidation } from '../../utils/validation';
@@ -55,7 +55,7 @@ export const getUserOffchain = (state: ICoreState) => state.usersState.userOffch
 
 export function UserProfile() {
     const user = useSelector(getUserOffchain);
-    const userClient = useSelector(getOffChainDataSource)?.userClient;
+    const userClient = useSelector(getBackendClient)?.userClient;
     const dispatch = useDispatch();
     const web3 = useSelector(getWeb3);
     const environment = useSelector(getEnvironment);
@@ -109,17 +109,16 @@ export function UserProfile() {
 
         try {
             if (values.isPassword) {
-                await userClient.updatePassword({
-                    email: values.email,
+                await userClient.updateOwnPassword({
                     oldPassword: values.currentPassword,
                     newPassword: values.newPassword
                 });
                 showNotification(t('user.profile.updatePassword'), NotificationType.Success);
             } else if (values.isProfile) {
-                await userClient.updateProfile(values);
+                await userClient.updateOwnProfile(values);
                 showNotification(t('user.profile.updateProfile'), NotificationType.Success);
             } else if (values.isBlockchain) {
-                await userClient.updateChainAddress(values);
+                await userClient.updateOwnProfile(values);
                 showNotification(t('user.profile.updateChainAddress'), NotificationType.Success);
             }
             dispatch(refreshUserOffchain());
@@ -150,8 +149,8 @@ export function UserProfile() {
                 web3 as providers.JsonRpcProvider
             );
 
-            await userClient.updateChainAddress({ ...user, blockchainAccountAddress: '' });
-            await userClient.attachSignedMessage(signedMessage);
+            await userClient.updateOwnBlockchainAddress({ ...user, blockchainAccountAddress: '' });
+            await userClient.update({ blockchainAccountSignedMessage: signedMessage });
 
             showNotification(
                 t('settings.feedback.blockchainAccountLinked'),
@@ -248,7 +247,7 @@ export function UserProfile() {
                                             variant="filled"
                                             fullWidth
                                             disabled={true}
-                                            value={UserStatus[values.status]}
+                                            value={values.status}
                                             className="mt-3"
                                         />
 
@@ -293,8 +292,8 @@ export function UserProfile() {
                                                 className="mt-4 mb-2 right"
                                                 onClick={async () => {
                                                     const {
-                                                        success
-                                                    } = await userClient.requestConfirmationEmail();
+                                                        data: { success }
+                                                    } = await userClient.reSendEmailConfirmation();
 
                                                     const message = t(
                                                         success
@@ -322,7 +321,7 @@ export function UserProfile() {
                                             variant="filled"
                                             fullWidth
                                             disabled={true}
-                                            value={KYCStatus[values.kycStatus]}
+                                            value={values.kycStatus}
                                             className="mt-3"
                                         />
                                     </Grid>

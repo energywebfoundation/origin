@@ -17,11 +17,18 @@ import { useSelector } from 'react-redux';
 import { getProducingDevices, getConfiguration } from '../../features/selectors';
 import { makeStyles, createStyles, useTheme } from '@material-ui/core';
 import { Skeleton } from '@material-ui/lab';
-import { formatDate, EnergyFormatter, PowerFormatter, useTranslation } from '../../utils';
-import { getOffChainDataSource } from '../../features/general/selectors';
+import {
+    formatDate,
+    EnergyFormatter,
+    PowerFormatter,
+    useTranslation,
+    LightenColor
+} from '../../utils';
+import { getBackendClient } from '../../features/general/selectors';
 import { DeviceGroupForm } from './DeviceGroupForm';
 import { IExternalDeviceId, IPublicOrganization } from '@energyweb/origin-backend-core';
 import { downloadFile } from '../Organization/DownloadDocuments';
+import { useOriginConfiguration } from '../../utils/configuration';
 
 interface IProps {
     id?: number;
@@ -33,16 +40,27 @@ interface IProps {
 export function ProducingDeviceDetailView(props: IProps) {
     const configuration = useSelector(getConfiguration);
     const producingDevices = useSelector(getProducingDevices);
-    const offChainDataSource = useSelector(getOffChainDataSource);
-    const organizationClient = useSelector(getOffChainDataSource)?.organizationClient;
+    const backendClient = useSelector(getBackendClient);
+    const organizationClient = useSelector(getBackendClient)?.organizationClient;
+
+    const originContext = useOriginConfiguration();
+    const originBgColor = originContext?.styleConfig?.MAIN_BACKGROUND_COLOR;
+    const originTextColor = originContext?.styleConfig?.TEXT_COLOR_DEFAULT;
+    const originSimpleTextColor = originContext?.styleConfig?.SIMPLE_TEXT_COLOR;
 
     const { t } = useTranslation();
+
+    const bgColorDarken = LightenColor(originBgColor, -2);
+    const attributionTextColor = LightenColor(originBgColor, 20);
+    const textColorDarken = LightenColor(originTextColor, -4);
+    const textColorLighten = LightenColor(originTextColor, 52);
+    const bgColorLighten = LightenColor(originBgColor, 5);
 
     const useStyles = makeStyles(() =>
         createStyles({
             attributionText: {
                 fontSize: '10px',
-                color: '#555555'
+                color: attributionTextColor
             }
         })
     );
@@ -164,7 +182,7 @@ export function ProducingDeviceDetailView(props: IProps) {
                     <li key={f}>
                         <a
                             style={{ cursor: 'pointer', textDecoration: 'underline' }}
-                            onClick={() => downloadFile(offChainDataSource?.filesClient, f)}
+                            onClick={() => downloadFile(backendClient?.fileClient, f)}
                         >
                             {f}
                         </a>
@@ -175,7 +193,7 @@ export function ProducingDeviceDetailView(props: IProps) {
     ];
 
     const pageBody = (
-        <div className="PageBody">
+        <div className="PageBody" style={{ backgroundColor: bgColorDarken }}>
             <table>
                 <tbody>
                     {data.map((row: any, rowIndex) => (
@@ -187,13 +205,26 @@ export function ProducingDeviceDetailView(props: IProps) {
                                         rowSpan={col.rowspan || 1}
                                         colSpan={col.colspan || 1}
                                     >
-                                        <div className="Label">{col.label}</div>
-                                        <div className="Data">
-                                            {col.data} {col.tip && <span>{col.tip}</span>}
+                                        <div className="Label" style={{ color: textColorDarken }}>
+                                            {col.label}
+                                        </div>
+                                        <div
+                                            className="Data"
+                                            style={{ color: originSimpleTextColor }}
+                                        >
+                                            {col.data}{' '}
+                                            {col.tip && (
+                                                <span style={{ color: originSimpleTextColor }}>
+                                                    {col.tip}
+                                                </span>
+                                            )}
                                         </div>
 
                                         {col.ul && (
-                                            <div className="Data">
+                                            <div
+                                                className="Data"
+                                                style={{ color: originSimpleTextColor }}
+                                            >
                                                 <ul>{col.li}</ul>
                                             </div>
                                         )}
@@ -218,12 +249,22 @@ export function ProducingDeviceDetailView(props: IProps) {
                                                     )}
                                                 </div>
                                             ) : (
-                                                <div className={`Image Map`}>
+                                                <div
+                                                    className={`Image Map`}
+                                                    style={{
+                                                        border: `5px solid ${bgColorLighten}`
+                                                    }}
+                                                >
                                                     <DeviceMap devices={[selectedDevice]} />
                                                 </div>
                                             ))}
                                         {col.description && (
-                                            <div className="Description">{col.description}</div>
+                                            <div
+                                                className="Description"
+                                                style={{ color: textColorLighten }}
+                                            >
+                                                {col.description}
+                                            </div>
                                         )}
                                     </td>
                                 );
@@ -241,8 +282,8 @@ export function ProducingDeviceDetailView(props: IProps) {
                 {pageBody}
 
                 {props.showSmartMeterReadings && (
-                    <div className="PageBody p-4">
-                        <div className="PageBodyTitle">
+                    <div className="PageBody p-4" style={{ backgroundColor: bgColorDarken }}>
+                        <div className="PageBodyTitle" style={{ color: textColorDarken }}>
                             {t('meterReads.properties.smartMeterReadings')}
                         </div>
 

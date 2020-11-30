@@ -9,11 +9,14 @@ import {
     Moment,
     useTranslation,
     formatCurrencyComplete,
-    DeviceSelectors
+    DeviceSelectors,
+    LightenColor
 } from '@energyweb/origin-ui-core';
-import { calculateTotalPrice, ANY_VALUE, ANY_OPERATOR, TimeFrame } from '../../utils/exchange';
+import { TimeFrame } from '@energyweb/utils-general';
+import { calculateTotalPrice, ANY_VALUE, ANY_OPERATOR } from '../../utils/exchange';
 import { OneTimePurchase } from './OneTimePurchase';
 import { RepeatedPurchase } from './RepeatedPurchase';
+import { useOriginConfiguration } from '../../utils/configuration';
 
 export interface IMarketFormValues {
     generationDateStart?: Moment;
@@ -38,7 +41,7 @@ const INITIAL_FORM_VALUES: IMarketFormValues = {
     deviceType: [ANY_VALUE],
     location: [ANY_VALUE],
     gridOperator: [ANY_OPERATOR],
-    demandPeriod: 2,
+    demandPeriod: TimeFrame.Daily,
     demandVolume: '',
     demandDateStart: null,
     demandDateEnd: null,
@@ -59,6 +62,12 @@ export function Market(props: IProps) {
 
     const configuration = useSelector(getConfiguration);
     const { t } = useTranslation();
+
+    const originConfiguration = useOriginConfiguration();
+    const originBgColor = originConfiguration?.styleConfig?.MAIN_BACKGROUND_COLOR;
+
+    const bgColorLighten = LightenColor(originBgColor, 5);
+    const lowerPaperBgColor = LightenColor(originBgColor, -2);
 
     const [oneTimePurchase, setOneTimePurchase] = useState<boolean>(true);
     const [validationSchema, setValidationSchema] = useState();
@@ -123,12 +132,17 @@ export function Market(props: IProps) {
                                         );
                                     }}
                                 />
-                                <Paper className="MarketUpperPaper">
+                                <Paper
+                                    className="MarketUpperPaper"
+                                    style={{
+                                        borderBottom: `4px solid ${bgColorLighten}`
+                                    }}
+                                >
                                     <Typography variant="h5" className="MarketTitle">
                                         {t('exchange.info.market')}
                                     </Typography>
 
-                                    <Grid container spacing={3}>
+                                    <Grid container>
                                         <Grid item xs={12}>
                                             <HierarchicalMultiSelect
                                                 selectedValue={values.deviceType}
@@ -198,6 +212,7 @@ export function Market(props: IProps) {
                                                 );
                                             }}
                                             disabled={fieldDisabled}
+                                            inlinePadding={true}
                                         ></DeviceSelectors>
                                     </Grid>
                                     <Grid item xs={12}>
@@ -231,7 +246,10 @@ export function Market(props: IProps) {
                                     </Grid>
                                 </Paper>
 
-                                <Paper className="MarketLowerPaper">
+                                <Paper
+                                    className="MarketLowerPaper"
+                                    style={{ backgroundColor: lowerPaperBgColor }}
+                                >
                                     {oneTimePurchase ? (
                                         <OneTimePurchase
                                             fieldDisabled={fieldDisabled}

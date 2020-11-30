@@ -3,6 +3,7 @@ import React, { createContext, ReactNode } from 'react';
 import { initReactI18next } from 'react-i18next';
 import i18n from 'i18next';
 import ICU from 'i18next-icu';
+import moment from 'moment';
 import { createMuiTheme, Theme } from '@material-ui/core';
 import { plPL, enUS } from '@material-ui/core/locale';
 import { OriginFeature, allOriginFeatures } from '@energyweb/utils-general';
@@ -11,23 +12,22 @@ import {
     ORIGIN_LANGUAGE,
     AVAILABLE_ORIGIN_LANGUAGES
 } from '@energyweb/localization';
-import variables from '@energyweb/origin-ui-core/src/styles/variables.scss';
-import { OriginGenericLogo, setTimeFormatLanguage } from '@energyweb/origin-ui-core';
-import moment from 'moment';
+import { setTimeFormatLanguage, LightenColor } from '@energyweb/origin-ui-core';
+import variables from '../styles/variables.scss';
+import { OriginGenericLogo } from './OriginGenericLogo';
+import { LoginPageBackground } from './LoginPageBackground';
 
 export interface IOriginStyleConfig {
     PRIMARY_COLOR: string;
     PRIMARY_COLOR_DARK: string;
-    PRIMARY_COLOR_DARKER: string;
     TEXT_COLOR_DEFAULT: string;
-    BACKGROUND_COLOR_DARK: string;
-    BACKGROUND_COLOR_DARKER: string;
-    BACKGROUND_COLOR_LIGHTER: string;
+    SIMPLE_TEXT_COLOR: string;
+    MAIN_BACKGROUND_COLOR: string;
     FIELD_ICON_COLOR: string;
     WHITE: string;
 }
 
-const DEFAULT_COLOR = '#894ec5';
+const DEFAULT_COLOR = variables.primaryColor;
 
 declare module '@material-ui/core/styles/createTypography' {
     interface Typography {
@@ -61,7 +61,7 @@ export const createMaterialThemeForOrigin = (
                     contrastText: styleConfig.WHITE
                 },
                 background: {
-                    paper: styleConfig.BACKGROUND_COLOR_DARK,
+                    paper: styleConfig.MAIN_BACKGROUND_COLOR,
                     default: '#f44336'
                 },
                 text: {
@@ -75,7 +75,10 @@ export const createMaterialThemeForOrigin = (
                 MuiInput: {
                     underline: {
                         '&:before': {
-                            borderBottom: '2px solid #474747'
+                            borderBottom: `2px solid ${LightenColor(
+                                styleConfig.MAIN_BACKGROUND_COLOR,
+                                13
+                            )}`
                         }
                     }
                 },
@@ -87,6 +90,12 @@ export const createMaterialThemeForOrigin = (
                         marginRight: '10px'
                     }
                 },
+                MuiPaper: {
+                    root: {
+                        backgroundColor: styleConfig.MAIN_BACKGROUND_COLOR,
+                        color: styleConfig.TEXT_COLOR_DEFAULT
+                    }
+                },
                 MuiButton: {
                     contained: {
                         '&.Mui-disabled': {
@@ -96,31 +105,32 @@ export const createMaterialThemeForOrigin = (
                 },
                 MuiTable: {
                     root: {
+                        color: styleConfig.TEXT_COLOR_DEFAULT,
                         borderBottom: `2px solid ${styleConfig.PRIMARY_COLOR}`,
-                        backgroundColor: styleConfig.BACKGROUND_COLOR_DARK
+                        backgroundColor: styleConfig.MAIN_BACKGROUND_COLOR
                     }
                 },
                 MuiTableHead: {
                     root: {
                         '& > .MuiTableRow-root': {
-                            background: '#2d2d2d'
+                            background: LightenColor(styleConfig.MAIN_BACKGROUND_COLOR, 0.5)
                         }
                     }
                 },
                 MuiTableRow: {
                     root: {
-                        background: '#333333',
+                        background: LightenColor(styleConfig.MAIN_BACKGROUND_COLOR, 3.5),
                         '&:nth-child(even)': {
-                            background: '#2d2d2d'
+                            background: LightenColor(styleConfig.MAIN_BACKGROUND_COLOR, 0.5)
                         }
                     },
                     footer: {
-                        background: '#2d2d2d'
+                        background: LightenColor(styleConfig.MAIN_BACKGROUND_COLOR, 0.5)
                     }
                 },
                 MuiTableCell: {
                     root: {
-                        borderBottom: `1px solid ${styleConfig.BACKGROUND_COLOR_DARK}`,
+                        borderBottom: `1px solid ${styleConfig.MAIN_BACKGROUND_COLOR}`,
                         fontSize: variables.fontSizeMd
                     },
                     body: {
@@ -131,9 +141,27 @@ export const createMaterialThemeForOrigin = (
                         borderBottom: 'none'
                     }
                 },
+                MuiTableSortLabel: {
+                    root: {
+                        color: styleConfig.TEXT_COLOR_DEFAULT
+                    }
+                },
                 MuiSelect: {
+                    root: {
+                        color: styleConfig.SIMPLE_TEXT_COLOR
+                    },
                     icon: {
                         color: styleConfig.FIELD_ICON_COLOR
+                    }
+                },
+                MuiMenuItem: {
+                    root: {
+                        color: styleConfig.SIMPLE_TEXT_COLOR
+                    }
+                },
+                MuiTypography: {
+                    root: {
+                        color: styleConfig.SIMPLE_TEXT_COLOR
                     }
                 },
                 MuiTooltip: {
@@ -162,7 +190,7 @@ export const createSliderStyleForOrigin = (styleConfig: IOriginStyleConfig) => (
     thumb: {
         height: 27,
         width: 27,
-        backgroundColor: styleConfig.BACKGROUND_COLOR_DARK,
+        backgroundColor: styleConfig.MAIN_BACKGROUND_COLOR,
         border: '1px solid currentColor',
         marginTop: -12,
         marginLeft: -13,
@@ -190,7 +218,7 @@ export const createSliderStyleForOrigin = (styleConfig: IOriginStyleConfig) => (
         height: 3
     },
     rail: {
-        color: '#393939',
+        color: LightenColor(styleConfig.MAIN_BACKGROUND_COLOR, 6.5),
         opacity: 1,
         height: 3
     },
@@ -207,6 +235,7 @@ export const createSliderStyleForOrigin = (styleConfig: IOriginStyleConfig) => (
 
 export interface IOriginConfiguration {
     logo: ReactNode;
+    loginPageBg: ReactNode;
     styleConfig: IOriginStyleConfig;
     customSliderStyle: any;
     materialTheme: Theme;
@@ -219,11 +248,9 @@ export function createStyleConfigFromSCSSVariables(scssVariables: any): IOriginS
     return {
         PRIMARY_COLOR: scssVariables.primaryColor ?? DEFAULT_COLOR,
         PRIMARY_COLOR_DARK: scssVariables.primaryColorDark ?? DEFAULT_COLOR,
-        PRIMARY_COLOR_DARKER: scssVariables.primaryColorDarker ?? DEFAULT_COLOR,
         TEXT_COLOR_DEFAULT: scssVariables.textColorDefault ?? DEFAULT_COLOR,
-        BACKGROUND_COLOR_DARK: scssVariables.backgroundColorDark ?? DEFAULT_COLOR,
-        BACKGROUND_COLOR_DARKER: scssVariables.backgroundColorDarker ?? DEFAULT_COLOR,
-        BACKGROUND_COLOR_LIGHTER: scssVariables.backgroundColorLighter ?? DEFAULT_COLOR,
+        SIMPLE_TEXT_COLOR: scssVariables.simpleTextColor ?? DEFAULT_COLOR,
+        MAIN_BACKGROUND_COLOR: scssVariables.mainBackgroundColor ?? DEFAULT_COLOR,
         FIELD_ICON_COLOR: scssVariables.fieldIconColor ?? DEFAULT_COLOR,
         WHITE: '#fff'
     };
@@ -256,6 +283,7 @@ export function createOriginConfiguration(configuration: Partial<IOriginConfigur
 
     const DEFAULT_ORIGIN_CONFIGURATION: IOriginConfiguration = {
         logo: <OriginGenericLogo />,
+        loginPageBg: <LoginPageBackground />,
         styleConfig: DEFAULT_STYLE_CONFIG,
         customSliderStyle: createSliderStyleForOrigin(DEFAULT_STYLE_CONFIG),
         materialTheme: createMaterialThemeForOrigin(DEFAULT_STYLE_CONFIG, storedLanguage),

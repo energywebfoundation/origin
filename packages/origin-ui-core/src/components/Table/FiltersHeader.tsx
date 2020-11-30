@@ -3,7 +3,9 @@ import { IndividualFilter } from './IndividualFilter';
 import clsx from 'clsx';
 import { deepEqual } from '../../utils/helper';
 import { FilterList } from '@material-ui/icons';
-import { useTheme } from '@material-ui/core';
+import { useTheme, makeStyles, createStyles } from '@material-ui/core';
+import { useOriginConfiguration } from '../../utils/configuration';
+import { LightenColor } from '../../utils';
 
 export enum CustomFilterInputType {
     deviceType = 'deviceType',
@@ -56,6 +58,23 @@ export function FiltersHeader(props: IProps) {
     const [menuShown, setMenuShown] = useState(false);
     const [processedFilters, setProcessedFilters] = useState<ICustomFilter[]>([]);
     const { spacing } = useTheme();
+    const originConfiguration = useOriginConfiguration();
+    const originSimpleTextColor = originConfiguration?.styleConfig?.SIMPLE_TEXT_COLOR;
+    const originBgColor = originConfiguration?.styleConfig?.MAIN_BACKGROUND_COLOR;
+
+    const filterBg = LightenColor(originBgColor, 5);
+
+    const useStyles = makeStyles(() =>
+        createStyles({
+            filterOpened: {
+                display: 'block',
+                backgroundColor: filterBg,
+                width: '100%'
+            }
+        })
+    );
+
+    const classes = useStyles(useTheme());
 
     function changeFilterValue(targetFilter: ICustomFilter, selectedValue: any) {
         const index = processedFilters.indexOf(targetFilter);
@@ -131,8 +150,9 @@ export function FiltersHeader(props: IProps) {
             {standardFilters.length > 0 && (
                 <div>
                     <div
-                        className={`Filter ${menuShown ? 'Filter-opened' : ''}`}
+                        className={`Filter ${menuShown ? classes.filterOpened : ''}`}
                         onClick={() => setMenuShown(!menuShown)}
+                        style={{ color: originSimpleTextColor }}
                     >
                         <div className="Filter_icon">
                             <FilterList />
@@ -142,7 +162,11 @@ export function FiltersHeader(props: IProps) {
                     {menuShown && (
                         <div
                             className="Filter_menu"
-                            style={{ marginBottom: spacing(2), paddingBottom: spacing(1) }}
+                            style={{
+                                marginBottom: spacing(2),
+                                paddingBottom: spacing(1),
+                                backgroundColor: filterBg
+                            }}
                         >
                             {standardFilters.map((filter, index) => {
                                 return (

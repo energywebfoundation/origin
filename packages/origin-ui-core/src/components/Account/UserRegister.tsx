@@ -19,7 +19,7 @@ import { useValidation } from '../../utils/validation';
 import { TextField, Select } from 'formik-material-ui';
 import { setLoading } from '../../features/general/actions';
 import { FormInput } from '../Form/FormInput';
-import { getOffChainDataSource } from '../../features/general/selectors';
+import { getBackendClient } from '../../features/general/selectors';
 import { useTranslation } from 'react-i18next';
 import { UserRegisteredModal } from '../Modal/UserRegisteredModal';
 
@@ -46,7 +46,7 @@ const INITIAL_FORM_VALUES: IFormValues = {
 const TITLE_OPTIONS = ['Dr', 'Mr', 'Mrs', 'Ms', 'Other'];
 
 export function UserRegister() {
-    const userClient = useSelector(getOffChainDataSource)?.userClient;
+    const userClient = useSelector(getBackendClient)?.userClient;
     const dispatch = useDispatch();
     const [showUserRegisteredModal, setShowUserRegisteredModal] = useState<boolean>(false);
 

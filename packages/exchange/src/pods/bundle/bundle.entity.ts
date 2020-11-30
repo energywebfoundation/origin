@@ -1,12 +1,14 @@
 import { ExtendedBaseEntity } from '@energyweb/origin-backend-utils';
 import BN from 'bn.js';
 import { Expose, Transform } from 'class-transformer';
+import { IsBoolean, IsNotEmpty, IsNumber, IsString, IsUUID } from 'class-validator';
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { DB_TABLE_PREFIX } from '../../utils/tablePrefix';
 
 import { BundleItem } from './bundle-item.entity';
 import { BundleSplitItemDTO, BundleSplitVolumeDTO } from './bundle-split.dto';
 
-@Entity()
+@Entity({ name: `${DB_TABLE_PREFIX}_bundle` })
 export class Bundle extends ExtendedBaseEntity {
     constructor(bundle: Partial<Bundle>) {
         super();
@@ -14,15 +16,21 @@ export class Bundle extends ExtendedBaseEntity {
     }
 
     @PrimaryGeneratedColumn('uuid')
+    @IsUUID()
     id: string;
 
     @Column()
+    @IsNotEmpty()
+    @IsString()
     userId: string;
 
     @Column()
+    @IsNotEmpty()
+    @IsNumber()
     price: number;
 
     @Column()
+    @IsBoolean()
     isCancelled: boolean;
 
     @OneToMany(() => BundleItem, (bundleItem) => bundleItem.bundle, { eager: true, cascade: true })

@@ -19,6 +19,20 @@ export type Registration = {
     ceoPassportNumber: string;
     balanceSheetTotal: string;
     subsidiaries?: string;
+    primaryContactOrganizationName: string;
+    primaryContactOrganizationAddress: string;
+    primaryContactOrganizationPostalCode: string;
+    primaryContactOrganizationCountry: string;
+    primaryContactName: string;
+    primaryContactEmail: string;
+    primaryContactPhoneNumber: string;
+    primaryContactFax: string;
+    leadUserTitle: string;
+    leadUserFirstName: string;
+    leadUserLastName: string;
+    leadUserEmail: string;
+    leadUserPhoneNumber: string;
+    leadUserFax: string;
 };
 
 export type RegistrationIRecPostData = Omit<Registration, 'id' | 'owner'>;

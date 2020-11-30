@@ -1,15 +1,19 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { getOffChainDataSource } from '../../features/general/selectors';
+import { FileClient } from '@energyweb/origin-backend-client';
 import { makeStyles, createStyles, useTheme, Chip } from '@material-ui/core';
 import { GetApp } from '@material-ui/icons';
+import { useOriginConfiguration } from '../../utils/configuration';
+import { LightenColor } from '../../utils';
 
-export const downloadFile = async (client, id) => {
+import { getBackendClient } from '../../features/general/selectors';
+
+export const downloadFile = async (client: FileClient, id) => {
     try {
         const response = await client.download(id);
         if (response) {
             const imageType = response.headers['content-type'];
-            const blob = new Blob([response.data], { type: imageType });
+            const blob = new Blob([Buffer.from(response.data.data)], { type: imageType });
             const url = window.URL.createObjectURL(blob);
             const link = document.createElement('a');
             link.href = url;
@@ -28,8 +32,11 @@ export const downloadFile = async (client, id) => {
 };
 
 export const DownloadDocuments = ({ documents, name }) => {
-    const offChainDataSource = useSelector(getOffChainDataSource);
-    const filesClient = offChainDataSource?.filesClient;
+    const fileClient: FileClient = useSelector(getBackendClient)?.fileClient;
+    const configuration = useOriginConfiguration();
+    const originTextColor = configuration?.styleConfig?.TEXT_COLOR_DEFAULT;
+
+    const bgColorLight = LightenColor(originTextColor, 25);
 
     const useStyles = makeStyles(() =>
         createStyles({
@@ -43,7 +50,7 @@ export const DownloadDocuments = ({ documents, name }) => {
             thumb: {
                 display: 'inline-flex',
                 borderRadius: 2,
-                border: '1px solid #eaeaea',
+                border: `1px solid ${bgColorLight}`,
                 marginBottom: 8,
                 marginRight: 8,
                 width: 100,
@@ -66,9 +73,9 @@ export const DownloadDocuments = ({ documents, name }) => {
                 label={`${documents.length > 1 ? `${name} ${index + 1}` : `${name}`}`}
                 variant="outlined"
                 color="primary"
-                onClick={() => downloadFile(filesClient, documentId)}
+                onClick={() => downloadFile(fileClient, documentId)}
                 icon={<GetApp color="primary" />}
-                style={{ background: '#e0e0e0' }}
+                style={{ background: bgColorLight }}
                 key={index}
             />
         );

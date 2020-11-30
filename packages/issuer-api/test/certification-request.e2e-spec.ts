@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-expressions */
-import { INestApplication } from '@nestjs/common';
+import { HttpStatus, INestApplication } from '@nestjs/common';
 import { expect } from 'chai';
 import request from 'supertest';
 import { Role } from '@energyweb/origin-backend-core';
@@ -49,7 +49,7 @@ describe('Certification Request tests', () => {
         await request(app.getHttpServer())
             .post('/certification-request')
             .send(certificationRequestTestData)
-            .expect(201)
+            .expect(HttpStatus.CREATED)
             .expect((res) => {
                 const {
                     deviceId,
@@ -82,7 +82,7 @@ describe('Certification Request tests', () => {
 
         await request(app.getHttpServer())
             .get(`/certification-request`)
-            .expect(200)
+            .expect(HttpStatus.OK)
             .expect((res) => {
                 expect(res.body.length).to.equal(1);
             });
@@ -92,12 +92,12 @@ describe('Certification Request tests', () => {
         await request(app.getHttpServer())
             .post('/certification-request')
             .send(certificationRequestTestData)
-            .expect(201);
+            .expect(HttpStatus.CREATED);
 
         await request(app.getHttpServer())
             .post('/certification-request')
             .send(certificationRequestTestData)
-            .expect(409);
+            .expect(HttpStatus.CONFLICT);
     });
 
     it('should approve a certification request and a new certificate should be created', async () => {
@@ -118,7 +118,7 @@ describe('Certification Request tests', () => {
 
         await request(app.getHttpServer())
             .put(`/certification-request/${certificationRequestId}/approve`)
-            .expect(200)
+            .expect(HttpStatus.OK)
             .expect((res) => {
                 expect(res.body.success).to.be.true;
             });
@@ -127,7 +127,7 @@ describe('Certification Request tests', () => {
 
         await request(app.getHttpServer())
             .get(`/certification-request/${certificationRequestId}`)
-            .expect(200)
+            .expect(HttpStatus.OK)
             .expect((res) => {
                 newCertificateTokenId = res.body.issuedCertificateTokenId;
 
@@ -138,7 +138,7 @@ describe('Certification Request tests', () => {
 
         await request(app.getHttpServer())
             .get(`/certificate/token-id/${newCertificateTokenId}`)
-            .expect(200)
+            .expect(HttpStatus.OK)
             .expect((res) => {
                 const {
                     deviceId,
@@ -177,7 +177,7 @@ describe('Certification Request tests', () => {
 
         await request(app.getHttpServer())
             .put(`/certification-request/${certificationRequestId}/revoke`)
-            .expect(200)
+            .expect(HttpStatus.OK)
             .expect((res) => {
                 expect(res.body.success).to.be.true;
             });
@@ -200,14 +200,14 @@ describe('Certification Request tests', () => {
 
         await request(app.getHttpServer())
             .put(`/certification-request/${certificationRequestId}/revoke`)
-            .expect(200)
+            .expect(HttpStatus.OK)
             .expect((res) => {
                 expect(res.body.success).to.be.true;
             });
 
         await request(app.getHttpServer())
             .put(`/certification-request/${certificationRequestId}/revoke`)
-            .expect(400);
+            .expect(HttpStatus.BAD_REQUEST);
     });
 
     it('should create a private certification request', async () => {
@@ -217,7 +217,7 @@ describe('Certification Request tests', () => {
                 ...certificationRequestTestData,
                 isPrivate: true
             })
-            .expect(201)
+            .expect(HttpStatus.CREATED)
             .expect((res) => {
                 expect(res.body.isPrivate).to.be.true;
             });
@@ -233,7 +233,7 @@ describe('Certification Request tests', () => {
                 ...certificationRequestTestData,
                 isPrivate: true
             })
-            .expect(201)
+            .expect(HttpStatus.CREATED)
             .expect((res) => {
                 certificationRequestId = res.body.id;
             });
@@ -243,7 +243,7 @@ describe('Certification Request tests', () => {
 
         await request(app.getHttpServer())
             .put(`/certification-request/${certificationRequestId}/approve`)
-            .expect(200)
+            .expect(HttpStatus.OK)
             .expect((res) => {
                 expect(res.body.success).to.be.true;
             });
@@ -252,14 +252,14 @@ describe('Certification Request tests', () => {
 
         await request(app.getHttpServer())
             .get(`/certification-request/${certificationRequestId}`)
-            .expect(200)
+            .expect(HttpStatus.OK)
             .expect((res) => {
                 newCertificateTokenId = res.body.issuedCertificateTokenId;
             });
 
         await request(app.getHttpServer())
             .get(`/certificate/token-id/${newCertificateTokenId}`)
-            .expect(200)
+            .expect(HttpStatus.OK)
             .expect((res) => {
                 const { issuedPrivately, latestCommitment } = res.body;
 

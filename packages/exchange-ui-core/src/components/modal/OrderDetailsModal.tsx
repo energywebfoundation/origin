@@ -12,10 +12,12 @@ import {
     EnergyFormatter,
     deviceById,
     useTranslation,
-    DATE_FORMAT_INCLUDING_TIME
+    DATE_FORMAT_INCLUDING_TIME,
+    LightenColor
 } from '@energyweb/origin-ui-core';
 import { Order } from '../../utils/exchange';
 import { IOriginTypography } from '../../types/typography';
+import { useOriginConfiguration } from '../../utils/configuration';
 
 interface IOwnProps {
     order: Order;
@@ -37,6 +39,12 @@ export const OrderDetailsModal = (props: IOwnProps) => {
     const textPrimary = useTheme().palette?.text?.primary;
     const fontSizeMd = ((useTheme().typography as unknown) as IOriginTypography)?.fontSizeMd;
     const fontSizeLg = ((useTheme().typography as unknown) as IOriginTypography)?.fontSizeLg;
+
+    const configuration = useOriginConfiguration();
+    const originBgColor = configuration?.styleConfig?.MAIN_BACKGROUND_COLOR;
+
+    const bgLighten = LightenColor(originBgColor, 2);
+    const bgDarken = LightenColor(originBgColor, -2);
 
     const currency = useSelector(getCurrencies)[0];
     const primaryDeviceType = deviceType ? deviceType[0].split(';')[0] : anyOption;
@@ -94,7 +102,8 @@ export const OrderDetailsModal = (props: IOwnProps) => {
                         paddingTop: spacing(1),
                         paddingBottom: spacing(1),
                         paddingLeft: spacing(2),
-                        paddingRight: spacing(2)
+                        paddingRight: spacing(2),
+                        backgroundColor: bgLighten
                     }}
                     className="EnergySection"
                 >
@@ -125,7 +134,8 @@ export const OrderDetailsModal = (props: IOwnProps) => {
                         <Grid
                             container
                             style={{
-                                padding: spacing(1)
+                                padding: spacing(1),
+                                backgroundColor: bgDarken
                             }}
                             className="DeviceSection"
                         >
@@ -164,7 +174,8 @@ export const OrderDetailsModal = (props: IOwnProps) => {
                         paddingTop: spacing(1),
                         paddingBottom: spacing(1),
                         paddingLeft: spacing(2),
-                        paddingRight: spacing(2)
+                        paddingRight: spacing(2),
+                        backgroundColor: bgLighten
                     }}
                 >
                     <Box color="text.secondary">{t('order.properties.filled')}</Box>
@@ -177,7 +188,8 @@ export const OrderDetailsModal = (props: IOwnProps) => {
                         textAlign: 'end',
                         paddingTop: spacing(1),
                         paddingBottom: spacing(1),
-                        paddingRight: spacing(1)
+                        paddingRight: spacing(1),
+                        backgroundColor: bgLighten
                     }}
                     className="Action"
                 >

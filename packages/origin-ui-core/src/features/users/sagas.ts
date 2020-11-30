@@ -1,4 +1,11 @@
+import {
+    CertificatesClient,
+    CertificationRequestsClient,
+    Configuration as ClientConfiguration,
+    BlockchainPropertiesClient
+} from '@energyweb/issuer-api-client';
 import { OriginFeature } from '@energyweb/utils-general';
+import { UserClient } from '@energyweb/origin-backend-client';
 import { call, put, select, take, fork, all, getContext } from 'redux-saga/effects';
 import { SagaIterator } from 'redux-saga';
 import {
@@ -7,18 +14,19 @@ import {
     setUserOffchain,
     setAuthenticationToken,
     clearAuthenticationToken,
-    IRefreshUserOffchainAction,
-    setUserState
+    setUserState,
+    refreshUserOffchain,
+    refreshClients
 } from './actions';
-import { getOffChainDataSource, getIRecClient, getEnvironment } from '../general/selectors';
-import {
-    IOffChainDataSource,
-    IRequestClient,
-    IUser,
-    IOrganizationInvitation
-} from '@energyweb/origin-backend-core';
+import { getBackendClient, getIRecClient, getEnvironment } from '../general/selectors';
 import { Registration } from '../../utils/irec/types';
-import { GeneralActions, IEnvironment, ISetOffChainDataSourceAction } from '../general/actions';
+import {
+    GeneralActions,
+    IEnvironment,
+    setBackendClient,
+    setExchangeClient,
+    setIRecClient
+} from '../general/actions';
 import {
     reloadCertificates,
     clearCertificates,
@@ -28,14 +36,12 @@ import {
 } from '../certificates';
 import { getUserState } from './selectors';
 import { IUsersState } from './reducer';
-import {
-    BlockchainPropertiesClient,
-    CertificatesClient,
-    CertificationRequestsClient,
-    Configuration as ClientConfiguration
-} from '@energyweb/issuer-api-client';
 
-const LOCAL_STORAGE_KEYS = {
+import { BackendClient } from '../../utils/clients/BackendClient';
+import { ExchangeClient } from '../../utils/clients/ExchangeClient';
+import { IRecClient } from '../../utils/clients/IRecClient';
+
+export const LOCAL_STORAGE_KEYS = {
     AUTHENTICATION_TOKEN: 'AUTHENTICATION_TOKEN'
 };
 
@@ -44,25 +50,15 @@ function getStoredAuthenticationToken() {
 }
 
 function* setPreviouslyLoggedInOffchainUser(): SagaIterator {
+    yield take(GeneralActions.setEnvironment);
+
     const authenticationTokenFromStorage = getStoredAuthenticationToken();
 
-    let offChainDataSource: IOffChainDataSource = yield select(getOffChainDataSource);
+    const environment: IEnvironment = yield select(getEnvironment);
 
-    if (!offChainDataSource) {
-        const action: ISetOffChainDataSourceAction = yield take(
-            GeneralActions.setOffChainDataSource
-        );
-
-        offChainDataSource = action.payload;
-    }
-
-    const requestClient: IRequestClient = offChainDataSource.requestClient;
-
-    if (!authenticationTokenFromStorage || !requestClient) {
+    if (!authenticationTokenFromStorage || !environment) {
         return;
     }
-
-    requestClient.authenticationToken = authenticationTokenFromStorage;
 
     yield put(setAuthenticationToken(authenticationTokenFromStorage));
 }
@@ -76,26 +72,42 @@ function* persistAuthenticationToken(): SagaIterator {
         if (typeof action.payload !== 'undefined') {
             localStorage.setItem(LOCAL_STORAGE_KEYS.AUTHENTICATION_TOKEN, action.payload);
         }
+
+        yield put(refreshClients());
     }
 }
 
 function* updateClients(): SagaIterator {
     while (true) {
-        const action: ISetAuthenticationTokenAction = yield take(
-            UsersActions.setAuthenticationToken
-        );
+        yield take(UsersActions.refreshClients);
 
         const environment: IEnvironment = yield select(getEnvironment);
 
-        const clientConfiguration = new ClientConfiguration({
-            baseOptions: {
-                headers: {
-                    Authorization: `Bearer ${action.payload}`
-                }
-            },
-            accessToken: action.payload
-        });
+        if (!environment) {
+            continue;
+        }
+
+        const authenticationTokenFromStorage = getStoredAuthenticationToken();
         const backendUrl = `${environment.BACKEND_URL}:${environment.BACKEND_PORT}`;
+
+        yield put(setBackendClient(new BackendClient(backendUrl, authenticationTokenFromStorage)));
+        yield put(
+            setExchangeClient(new ExchangeClient(backendUrl, authenticationTokenFromStorage))
+        );
+        yield put(setIRecClient(new IRecClient(backendUrl, authenticationTokenFromStorage)));
+
+        const clientConfiguration = new ClientConfiguration(
+            authenticationTokenFromStorage
+                ? {
+                      baseOptions: {
+                          headers: {
+                              Authorization: `Bearer ${authenticationTokenFromStorage}`
+                          }
+                      },
+                      accessToken: authenticationTokenFromStorage
+                  }
+                : {}
+        );
 
         yield put(
             setBlockchainPropertiesClient(
@@ -108,50 +120,42 @@ function* updateClients(): SagaIterator {
                 new CertificationRequestsClient(clientConfiguration, backendUrl)
             )
         );
+
+        yield put(refreshUserOffchain());
     }
 }
 
 function* fetchOffchainUserDetails(): SagaIterator {
     while (true) {
-        const action: ISetAuthenticationTokenAction | IRefreshUserOffchainAction = yield take([
-            UsersActions.setAuthenticationToken,
-            UsersActions.refreshUserOffchain
-        ]);
+        yield take(UsersActions.refreshUserOffchain);
 
-        const authenticationToken =
-            action.type === UsersActions.setAuthenticationToken
-                ? action.payload
-                : getStoredAuthenticationToken();
-
-        const offChainDataSource: IOffChainDataSource = yield select(getOffChainDataSource);
-        const userClient = offChainDataSource.userClient;
+        const backendClient: BackendClient = yield select(getBackendClient);
         const features = yield getContext('enabledFeatures');
 
-        if (
-            !authenticationToken ||
-            !offChainDataSource ||
-            !offChainDataSource.requestClient.authenticationToken
-        ) {
+        if (!backendClient?.accessToken) {
             continue;
         }
 
-        try {
-            const userOffchain: IUser = yield call([userClient, userClient.me]);
+        const userClient: UserClient = backendClient.userClient;
 
-            const { invitationClient } = yield select(getOffChainDataSource);
-            const invitations: IOrganizationInvitation[] = yield call(
+        try {
+            const { data: userOffchain } = yield call([userClient, userClient.me]);
+
+            const { invitationClient } = backendClient;
+            const { data: invitations } = yield call(
                 [invitationClient, invitationClient.getInvitations],
-                null
+                []
             );
             const userState: IUsersState = yield select(getUserState);
 
             let iRecAccount: Registration[];
 
             if (features.includes(OriginFeature.IRec)) {
-                const iRecClient = yield select(getIRecClient);
-                iRecAccount = userOffchain.organization
-                    ? yield call([iRecClient, iRecClient.getRegistrations], null)
-                    : [];
+                const { organizationClient } = yield select(getIRecClient);
+                const iRecAccountResponse = userOffchain.organization
+                    ? yield call([organizationClient, organizationClient.getRegistrations], [])
+                    : { data: [] };
+                iRecAccount = iRecAccountResponse.data;
             }
 
             yield put(
@@ -188,30 +192,7 @@ function* logOutSaga(): SagaIterator {
 
         localStorage.removeItem(LOCAL_STORAGE_KEYS.AUTHENTICATION_TOKEN);
 
-        const environment: IEnvironment = yield select(getEnvironment);
-        const requestClient: IRequestClient = (yield select(getOffChainDataSource)).requestClient;
-
-        if (!requestClient) {
-            return;
-        }
-
-        requestClient.authenticationToken = null;
-
-        const backendUrl = `${environment.BACKEND_URL}:${environment.BACKEND_PORT}`;
-        yield put(
-            setBlockchainPropertiesClient(
-                new BlockchainPropertiesClient(new ClientConfiguration(), backendUrl)
-            )
-        );
-        yield put(
-            setCertificatesClient(new CertificatesClient(new ClientConfiguration(), backendUrl))
-        );
-        yield put(
-            setCertificationRequestsClient(
-                new CertificationRequestsClient(new ClientConfiguration(), backendUrl)
-            )
-        );
-
+        yield put(refreshClients());
         yield put(setUserOffchain(null));
         yield put(clearCertificates());
     }

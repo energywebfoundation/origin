@@ -1,6 +1,6 @@
 import { OrderSide, OrderStatus } from '@energyweb/exchange-core';
 import { DatabaseService } from '@energyweb/origin-backend-utils';
-import { INestApplication } from '@nestjs/common';
+import { HttpStatus, INestApplication } from '@nestjs/common';
 import { expect } from 'chai';
 import { Contract, ethers } from 'ethers';
 import moment from 'moment';
@@ -81,7 +81,7 @@ describe('Deposits automatic posting for sale', () => {
 
         await request(app.getHttpServer())
             .get('/orders')
-            .expect(200)
+            .expect(HttpStatus.OK)
             .expect((res) => {
                 const [ask] = res.body as Order[];
 

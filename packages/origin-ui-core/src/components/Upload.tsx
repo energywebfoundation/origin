@@ -3,10 +3,12 @@ import { useSelector } from 'react-redux';
 import { useDropzone } from 'react-dropzone';
 import { CancelTokenSource } from 'axios';
 import { makeStyles, createStyles, useTheme, Chip } from '@material-ui/core';
-import { getOffChainDataSource } from '../features/general/selectors';
+import { getBackendClient } from '../features/general/selectors';
 import { FILE_SUPPORTED_MIMETYPES } from '@energyweb/origin-backend-core';
 import { Delete, Cancel, Replay } from '@material-ui/icons';
 import { useTranslation } from 'react-i18next';
+import { useOriginConfiguration } from '../utils/configuration';
+import { LightenColor } from '../utils';
 
 interface IProps {
     onChange: (files: IUploadedFile[]) => void;
@@ -101,6 +103,13 @@ function reducer(
 export function Upload(props: IProps) {
     const [state, dispatch] = useReducer(reducer, initialState);
     const { t } = useTranslation();
+    const configuration = useOriginConfiguration();
+    const originBgColor = configuration?.styleConfig?.MAIN_BACKGROUND_COLOR;
+    const originTextColor = configuration?.styleConfig?.TEXT_COLOR_DEFAULT;
+
+    const darkenBgColor = LightenColor(originBgColor, -1);
+    const lightenBgColor = LightenColor(originBgColor, 3);
+    const bgColorLight = LightenColor(originTextColor, 25);
 
     const useStyles = makeStyles(() =>
         createStyles({
@@ -116,7 +125,7 @@ export function Upload(props: IProps) {
             thumb: {
                 display: 'inline-flex',
                 borderRadius: 2,
-                border: '1px solid #eaeaea',
+                border: `1px solid ${bgColorLight}`,
                 marginBottom: 8,
                 marginRight: 8,
                 width: 100,
@@ -136,13 +145,13 @@ export function Upload(props: IProps) {
             },
             dropzone: {
                 cursor: 'pointer',
-                background: 'rgb(40, 40, 40)',
+                background: darkenBgColor,
                 minHeight: '250px',
                 lineHeight: '60px',
                 display: 'flex',
                 justifyContent: 'center',
                 alignItems: 'center',
-                color: 'rgba(255, 255, 255, 0.5)',
+                color: originTextColor,
                 marginTop: '20px'
             }
         })
@@ -152,7 +161,7 @@ export function Upload(props: IProps) {
 
     const [files, setFiles] = useState<File[]>([]);
 
-    const offChainDataSource = useSelector(getOffChainDataSource);
+    const backendClient = useSelector(getBackendClient);
 
     const { getRootProps, getInputProps } = useDropzone({
         accept: FILE_SUPPORTED_MIMETYPES,
@@ -162,29 +171,32 @@ export function Upload(props: IProps) {
     });
 
     async function upload(file: File) {
-        const cancelToken = offChainDataSource.requestClient.generateCancelToken();
+        // TO-DO: figure out a way to cancel token
+        // const cancelToken = backendClient.requestClient.generateCancelToken();
         const fileIndex = files.indexOf(file);
 
-        dispatch({
-            type: 'setFileUploadCancelToken',
-            payload: {
-                id: fileIndex,
-                cancelToken
-            }
-        });
+        // dispatch({
+        //     type: 'setFileUploadCancelToken',
+        //     payload: {
+        //         id: fileIndex,
+        //         cancelToken
+        //     }
+        // });
 
-        const uploadedArray = await offChainDataSource.filesClient.upload(
-            [file],
-            (progressEvent) => {
-                dispatch({
-                    type: 'setFileProgress',
-                    payload: {
-                        id: fileIndex,
-                        uploadProgress: (progressEvent.loaded * 90) / progressEvent.total
-                    }
-                });
-            },
-            cancelToken
+        const { data: uploadedArray } = await backendClient.fileClient.upload(
+            [file as Blob],
+            {
+                onUploadProgress: (progressEvent) => {
+                    dispatch({
+                        type: 'setFileProgress',
+                        payload: {
+                            id: fileIndex,
+                            uploadProgress: (progressEvent.loaded * 90) / progressEvent.total
+                        }
+                    });
+                }
+            }
+            // cancelToken
         );
 
         dispatch({
@@ -253,7 +265,7 @@ export function Upload(props: IProps) {
                 }}
                 style={{
                     background: `-webkit-linear-gradient(left, ${
-                        uploadedFile.cancelled ? '#303030' : '#e0e0e0'
+                        uploadedFile.cancelled ? lightenBgColor : bgColorLight
                     } ${
                         uploadedFile.cancelled ? '100' : uploadedFile.uploadProgress
                     }%, rgba(255, 255, 255, 0) 0%)`,

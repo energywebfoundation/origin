@@ -1,15 +1,6 @@
-@import './variables.scss';
-@import './toastr.scss';
-
-$body-bg: none;
-$body-color: $bootstrapBodyColor;
-@import './bootstrap.scss';
-
 @import './ColumnBatchActions.scss';
 @import './DetailView.scss';
 @import './ErrorComponent.scss';
 @import './FiltersHeader.scss';
-@import './Header.scss';
 @import './SmartMeterReadingsChart.scss';
 @import './LoginPage.scss';
-@import './OrganizationForm.scss';

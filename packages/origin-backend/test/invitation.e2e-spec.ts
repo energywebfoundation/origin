@@ -8,7 +8,7 @@ import {
     UserStatus
 } from '@energyweb/origin-backend-core';
 import { DatabaseService } from '@energyweb/origin-backend-utils';
-import { INestApplication } from '@nestjs/common';
+import { HttpStatus, INestApplication } from '@nestjs/common';
 import { expect } from 'chai';
 import request from 'supertest';
 
@@ -62,7 +62,7 @@ describe('Invitation e2e tests', () => {
             .post('/invitation')
             .set('Authorization', `Bearer ${accessToken}`)
             .send({ email: newUserEmail, role: Role.OrganizationUser })
-            .expect(201);
+            .expect(HttpStatus.CREATED);
 
         const newUserRegistration: UserRegistrationData = {
             email: newUserEmail,
@@ -76,7 +76,7 @@ describe('Invitation e2e tests', () => {
         await request(app.getHttpServer())
             .post('/user/register')
             .send(newUserRegistration)
-            .expect(201);
+            .expect(HttpStatus.CREATED);
 
         let newUserAccessToken;
 
@@ -90,7 +90,7 @@ describe('Invitation e2e tests', () => {
                 username: newUserEmail,
                 password
             })
-            .expect(201)
+            .expect(HttpStatus.OK)
             .expect((res) => ({ accessToken: newUserAccessToken } = res.body));
 
         let invitationId;
@@ -98,7 +98,7 @@ describe('Invitation e2e tests', () => {
         await request(app.getHttpServer())
             .get(`/invitation`)
             .set('Authorization', `Bearer ${newUserAccessToken}`)
-            .expect(200)
+            .expect(HttpStatus.OK)
             .expect((res) => {
                 const [invitation] = res.body as IOrganizationInvitation[];
 
@@ -109,10 +109,9 @@ describe('Invitation e2e tests', () => {
             });
 
         await request(app.getHttpServer())
-            .put(`/invitation/${invitationId}`)
+            .put(`/invitation/${invitationId}/${OrganizationInvitationStatus.Accepted}`)
             .set('Authorization', `Bearer ${newUserAccessToken}`)
-            .send({ status: OrganizationInvitationStatus.Accepted })
-            .expect(200);
+            .expect(HttpStatus.OK);
 
         await request(app.getHttpServer())
             .get(`/user/me`)
@@ -120,7 +119,7 @@ describe('Invitation e2e tests', () => {
             .expect((res) => {
                 const user = res.body as TUserBaseEntity;
 
-                expect(user.organization.id).equals(organization.id);
+                expect(user.organization?.id).equals(organization.id);
                 expect(user.rights).equals(Role.OrganizationUser);
             });
     });
@@ -134,14 +133,15 @@ describe('Invitation e2e tests', () => {
             .post('/invitation')
             .set('Authorization', `Bearer ${accessToken}`)
             .send({ email: 'random@example.com', role: Role.Admin })
-            .expect(403);
+            .expect(HttpStatus.FORBIDDEN);
 
         await request(app.getHttpServer())
             .post('/invitation')
             .set('Authorization', `Bearer ${accessToken}`)
             .send({ email: 'random@example.com', role: Role.SupportAgent })
-            .expect(403);
+            .expect(HttpStatus.FORBIDDEN);
 
+        // TO-DO: Support sending multiple roles
         await request(app.getHttpServer())
             .post('/invitation')
             .set('Authorization', `Bearer ${accessToken}`)
@@ -149,7 +149,7 @@ describe('Invitation e2e tests', () => {
                 email: 'random@example.com',
                 role: Role.OrganizationDeviceManager | Role.SupportAgent
             })
-            .expect(403);
+            .expect(HttpStatus.FORBIDDEN);
     });
 
     it('should not allow to accept invitation by the user that is already part of the other organization', async () => {
@@ -173,6 +173,6 @@ describe('Invitation e2e tests', () => {
                 email: user.email,
                 role: Role.OrganizationDeviceManager
             })
-            .expect(403);
+            .expect(HttpStatus.FORBIDDEN);
     });
 });

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Grid } from '@material-ui/core';
+import { UserStatus } from '@energyweb/origin-backend-core';
 import {
     EnergyFormatter,
     moment,
@@ -12,7 +13,7 @@ import {
 } from '@energyweb/origin-ui-core';
 import { getEnvironment, getExchangeClient } from '../features/general';
 import { createBid, createDemand, directBuyOrder } from '../features/orders';
-import { TOrderBook, ANY_VALUE } from '../utils/exchange';
+import { ExchangeClient, TOrderBook, ANY_VALUE } from '../utils/exchange';
 import { Asks, Bids, Market, IMarketFormValues } from '../components/exchange';
 
 interface IProps {
@@ -24,7 +25,7 @@ export function Exchange(props: IProps) {
     const { currency, refreshInterval } = { refreshInterval: 3000, ...props };
 
     const user = useSelector(getUserOffchain);
-    const exchangeClient = useSelector(getExchangeClient);
+    const exchangeClient: ExchangeClient = useSelector(getExchangeClient);
     const country = useSelector(getCountry);
     const environment = useSelector(getEnvironment);
     const dispatch = useDispatch();
@@ -42,20 +43,32 @@ export function Exchange(props: IProps) {
     const [generationDateEnd, setGenerationDateEnd] = useState<string>();
 
     const fetchData = async (checkIsMounted: () => boolean) => {
-        const fetchedData = (await exchangeClient?.search(
-            deviceType,
-            location,
-            gridOperator,
-            generationDateStart,
-            generationDateEnd
-        )) ?? {
-            asks: [],
-            bids: [],
-            lastTradedPrice: null
-        };
+        const orderBookData =
+            user && user?.status === UserStatus.Active && exchangeClient?.accessToken
+                ? await exchangeClient?.orderbookClient.getByProduct({
+                      deviceType,
+                      location,
+                      gridOperator,
+                      generationFrom: generationDateStart,
+                      generationTo: generationDateEnd
+                  })
+                : await exchangeClient?.orderbookClient.getByProductPublic({
+                      deviceType,
+                      location,
+                      gridOperator,
+                      generationFrom: generationDateStart,
+                      generationTo: generationDateEnd
+                  });
+        const fetchedData = orderBookData?.data;
 
         if (checkIsMounted()) {
-            setData(fetchedData);
+            setData(
+                (fetchedData as TOrderBook) ?? {
+                    asks: [],
+                    bids: [],
+                    lastTradedPrice: null
+                }
+            );
         }
     };
 
@@ -64,7 +77,8 @@ export function Exchange(props: IProps) {
         location,
         gridOperator,
         generationDateStart,
-        generationDateEnd
+        generationDateEnd,
+        exchangeClient
     ]);
 
     async function onBid(values: IMarketFormValues, oneTimePurchase: boolean) {
@@ -97,8 +111,8 @@ export function Exchange(props: IProps) {
                         parseFloat(values.demandVolume)
                     ).toString(),
                     periodTimeFrame: values.demandPeriod,
-                    start: values.demandDateStart,
-                    end: values.demandDateEnd,
+                    start: values.demandDateStart.toISOString(),
+                    end: values.demandDateEnd.toISOString(),
                     product: {
                         deviceType: values.deviceType?.includes(ANY_VALUE)
                             ? undefined

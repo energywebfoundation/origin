@@ -1,6 +1,6 @@
 import { UserStatus } from '@energyweb/origin-backend-core';
 import { DatabaseService } from '@energyweb/origin-backend-utils';
-import { INestApplication } from '@nestjs/common';
+import { HttpStatus, INestApplication } from '@nestjs/common';
 import { expect } from 'chai';
 import request from 'supertest';
 
@@ -147,7 +147,7 @@ describe('Bundles', () => {
         await request(app.getHttpServer())
             .post('/bundle')
             .send(bundleToCreate)
-            .expect(201)
+            .expect(HttpStatus.CREATED)
             .expect((res) => {
                 const bundle = res.body as Bundle;
 
@@ -156,7 +156,7 @@ describe('Bundles', () => {
 
         await request(app.getHttpServer())
             .get('/bundle')
-            .expect(200)
+            .expect(HttpStatus.OK)
             .expect((res) => {
                 const [bundle] = res.body as Bundle[];
 
@@ -165,7 +165,7 @@ describe('Bundles', () => {
 
         await request(app.getHttpServer())
             .get('/account-balance')
-            .expect(200)
+            .expect(HttpStatus.OK)
             .expect((res) => {
                 const { available, locked } = res.body as AccountBalance;
 
@@ -185,7 +185,7 @@ describe('Bundles', () => {
 
         await request(app.getHttpServer())
             .put(`/bundle/${id}/cancel`)
-            .expect(200)
+            .expect(HttpStatus.OK)
             .expect((res) => {
                 const bundle = res.body as Bundle;
 
@@ -195,7 +195,7 @@ describe('Bundles', () => {
 
         await request(app.getHttpServer())
             .get('/account-balance')
-            .expect(200)
+            .expect(HttpStatus.OK)
             .expect((res) => {
                 const { available, locked } = res.body as AccountBalance;
 
@@ -220,9 +220,9 @@ describe('Bundles', () => {
         };
 
         await request(app.getHttpServer())
-            .post('/bundle/buy')
+            .put('/bundle/buy')
             .send(bundleToBuy)
-            .expect(201)
+            .expect(HttpStatus.OK)
             .expect((res) => {
                 const trade = res.body as BundleTrade;
 
@@ -239,7 +239,7 @@ describe('Bundles', () => {
 
         await request(app.getHttpServer())
             .get('/account-balance')
-            .expect(200)
+            .expect(HttpStatus.OK)
             .expect((res) => {
                 const { available, locked } = res.body as AccountBalance;
 
@@ -255,7 +255,7 @@ describe('Bundles', () => {
 
         await request(app.getHttpServer())
             .get('/bundle/trade')
-            .expect(200)
+            .expect(HttpStatus.OK)
             .expect((res) => {
                 const trades = res.body as BundleTrade[];
 
@@ -286,7 +286,7 @@ describe('Bundles', () => {
 
         await request(app.getHttpServer())
             .get('/bundle/available')
-            .expect(200)
+            .expect(HttpStatus.OK)
             .expect((res) => {
                 const bundles = res.body as BundlePublicDTO[];
 
@@ -300,7 +300,7 @@ describe('Bundles', () => {
 
         await request(app.getHttpServer())
             .get(`/bundle/${id}/splits`)
-            .expect(200)
+            .expect(HttpStatus.OK)
             .expect((res) => {
                 const splits = res.body as BundleSplitDTO;
 
@@ -318,7 +318,7 @@ describe('Bundles', () => {
 
         await request(app.getHttpServer())
             .get(`/bundle/${id}/splits`)
-            .expect(200)
+            .expect(HttpStatus.OK)
             .expect((res) => {
                 const splits = res.body as BundleSplitDTO;
 
@@ -336,7 +336,10 @@ describe('Bundles', () => {
             bundleId: id,
             volume: `${10 * MWh}`
         };
-        await request(app.getHttpServer()).post('/bundle/buy').send(bundleToBuy).expect(412);
+        await request(app.getHttpServer())
+            .put('/bundle/buy')
+            .send(bundleToBuy)
+            .expect(HttpStatus.PRECONDITION_FAILED);
         authenticatedUser.status = UserStatus.Active;
     });
 
@@ -347,7 +350,10 @@ describe('Bundles', () => {
             bundleId: id,
             volume: `${10 * MWh}`
         };
-        await request(app.getHttpServer()).post('/bundle/buy').send(bundleToBuy).expect(201);
+        await request(app.getHttpServer())
+            .put('/bundle/buy')
+            .send(bundleToBuy)
+            .expect(HttpStatus.OK);
     });
 
     it('Inactive user should not be able to create bundle', async () => {
@@ -368,7 +374,10 @@ describe('Bundles', () => {
             ]
         };
 
-        await request(app.getHttpServer()).post('/bundle').send(bundleToCreate).expect(412);
+        await request(app.getHttpServer())
+            .post('/bundle')
+            .send(bundleToCreate)
+            .expect(HttpStatus.PRECONDITION_FAILED);
         authenticatedUser.status = UserStatus.Active;
     });
 
@@ -389,7 +398,10 @@ describe('Bundles', () => {
             ]
         };
 
-        await request(app.getHttpServer()).post('/bundle').send(bundleToCreate).expect(400);
+        await request(app.getHttpServer())
+            .post('/bundle')
+            .send(bundleToCreate)
+            .expect(HttpStatus.BAD_REQUEST);
     });
 
     it('should not be able to create a bundle with decimal volume', async () => {
@@ -409,7 +421,10 @@ describe('Bundles', () => {
             ]
         };
 
-        await request(app.getHttpServer()).post('/bundle').send(bundleToCreate).expect(400);
+        await request(app.getHttpServer())
+            .post('/bundle')
+            .send(bundleToCreate)
+            .expect(HttpStatus.BAD_REQUEST);
     });
 
     it('should not result in decimal volumes', async () => {
@@ -420,12 +435,12 @@ describe('Bundles', () => {
         ]);
 
         await request(app.getHttpServer())
-            .post('/bundle/buy')
+            .put('/bundle/buy')
             .send({
                 bundleId: bundle.id,
                 volume: `${35 * MWh}`
             })
-            .expect(201)
+            .expect(HttpStatus.OK)
             .expect((res) => {
                 const trade = res.body as BundleTrade;
 
@@ -435,12 +450,12 @@ describe('Bundles', () => {
             });
 
         await request(app.getHttpServer())
-            .post('/bundle/buy')
+            .put('/bundle/buy')
             .send({
                 bundleId: bundle.id,
                 volume: `${5 * MWh}`
             })
-            .expect(201)
+            .expect(HttpStatus.OK)
             .expect((res) => {
                 const trade = res.body as BundleTrade;
 
@@ -450,12 +465,12 @@ describe('Bundles', () => {
             });
 
         await request(app.getHttpServer())
-            .post('/bundle/buy')
+            .put('/bundle/buy')
             .send({
                 bundleId: bundle.id,
                 volume: `${10 * MWh}`
             })
-            .expect(201)
+            .expect(HttpStatus.OK)
             .expect((res) => {
                 const trade = res.body as BundleTrade;
 
@@ -468,7 +483,7 @@ describe('Bundles', () => {
 
         await request(app.getHttpServer())
             .get(`/bundle/available`)
-            .expect(200)
+            .expect(HttpStatus.OK)
             .expect((res) => {
                 const [activeBundle] = res.body as BundlePublicDTO[];
 

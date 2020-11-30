@@ -1,3 +1,6 @@
+import { ApiProperty } from '@nestjs/swagger';
+
 export class AccountDTO {
-    public constructor(public address: string) {}
+    @ApiProperty({ type: String })
+    public address: string;
 }

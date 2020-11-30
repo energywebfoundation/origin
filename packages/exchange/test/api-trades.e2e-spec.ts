@@ -1,4 +1,4 @@
-import { INestApplication } from '@nestjs/common';
+import { HttpStatus, INestApplication } from '@nestjs/common';
 import { expect } from 'chai';
 import request from 'supertest';
 
@@ -11,6 +11,7 @@ import { TradeDTO } from '../src/pods/trade/trade.dto';
 import { TransferService } from '../src/pods/transfer/transfer.service';
 import { authenticatedUser, bootstrapTestInstance } from './exchange';
 import { createDepositAddress } from './utils';
+import { DB_TABLE_PREFIX } from '../src/utils/tablePrefix';
 
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -71,7 +72,7 @@ describe('Trades API', () => {
 
         await request(app.getHttpServer())
             .get('/trade')
-            .expect(200)
+            .expect(HttpStatus.OK)
             .expect((res) => {
                 const [trade] = res.body as TradeDTO[];
 
@@ -93,9 +94,11 @@ describe('Trades API', () => {
     });
 
     beforeEach(async () => {
-        await databaseService.truncate('order');
-        await databaseService.truncate('trade');
-        await databaseService.truncate('transfer');
+        await databaseService.truncate(
+            `${DB_TABLE_PREFIX}_order`,
+            `${DB_TABLE_PREFIX}_trade`,
+            `${DB_TABLE_PREFIX}_transfer`
+        );
     });
 
     after(async () => {

@@ -17,7 +17,7 @@ import { Role, IUser, getRolesFromRights, isRole } from '@energyweb/origin-backe
 import { getUserOffchain } from '../../features/users/selectors';
 import { roleNames } from '../Organization/Organization';
 import { NotificationType, showNotification, useTranslation } from '../../utils';
-import { setLoading, getOffChainDataSource } from '../../features/general';
+import { setLoading, getBackendClient } from '../../features/general';
 
 interface IProps {
     user: IUser;
@@ -30,7 +30,7 @@ export function ChangeRoleModal(props: IProps) {
 
     const { user, callback, showModal } = props;
 
-    const organizationClient = useSelector(getOffChainDataSource)?.organizationClient;
+    const organizationClient = useSelector(getBackendClient)?.organizationClient;
     const userOffchain = useSelector(getUserOffchain);
 
     const [currentUserRole] = getRolesFromRights(user?.rights);
@@ -56,11 +56,9 @@ export function ChangeRoleModal(props: IProps) {
         dispatch(setLoading(true));
 
         try {
-            await organizationClient.memberChangeRole(
-                userOffchain.organization.id,
-                user.id,
-                Number(selectedRole)
-            );
+            await organizationClient.changeMemberRole(userOffchain.organization.id, user.id, {
+                role: Number(selectedRole)
+            });
 
             showNotification(`User role updated.`, NotificationType.Success);
         } catch (error) {
