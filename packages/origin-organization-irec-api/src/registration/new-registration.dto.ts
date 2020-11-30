@@ -1,5 +1,6 @@
 import { Expose, plainToClass } from 'class-transformer';
 import {
+    IsEmail,
     IsEnum,
     IsIn,
     IsInt,
@@ -115,6 +116,7 @@ export class NewRegistrationDTO {
     @Expose()
     @IsString()
     @IsNotEmpty()
+    @IsEmail()
     primaryContactEmail: string;
 
     @ApiProperty({ type: String })
@@ -151,6 +153,7 @@ export class NewRegistrationDTO {
     @Expose()
     @IsString()
     @IsNotEmpty()
+    @IsEmail()
     leadUserEmail: string;
 
     @ApiProperty({ type: String })
