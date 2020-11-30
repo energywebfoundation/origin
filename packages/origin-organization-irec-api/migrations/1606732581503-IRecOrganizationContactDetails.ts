@@ -1,50 +1,50 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class IRecOrganizationContactDetails1606335794845 implements MigrationInterface {
-    name = 'IRecOrganizationContactDetails1606335794845';
+export class IRecOrganizationContactDetails1606732581503 implements MigrationInterface {
+    name = 'IRecOrganizationContactDetails1606732581503';
 
     public async up(queryRunner: QueryRunner): Promise<void> {
         await queryRunner.query(
-            `ALTER TABLE "irec_registration" ADD "primaryContactOrganizationName" character varying NOT NULL`
+            `ALTER TABLE "irec_registration" ADD "primaryContactOrganizationName" character varying NOT NULL DEFAULT ''`
         );
         await queryRunner.query(
-            `ALTER TABLE "irec_registration" ADD "primaryContactOrganizationAddress" character varying NOT NULL`
+            `ALTER TABLE "irec_registration" ADD "primaryContactOrganizationAddress" character varying NOT NULL DEFAULT ''`
         );
         await queryRunner.query(
-            `ALTER TABLE "irec_registration" ADD "primaryContactOrganizationPostalCode" character varying NOT NULL`
+            `ALTER TABLE "irec_registration" ADD "primaryContactOrganizationPostalCode" character varying NOT NULL DEFAULT ''`
         );
         await queryRunner.query(
-            `ALTER TABLE "irec_registration" ADD "primaryContactOrganizationCountry" character varying NOT NULL`
+            `ALTER TABLE "irec_registration" ADD "primaryContactOrganizationCountry" character varying NOT NULL DEFAULT ''`
         );
         await queryRunner.query(
-            `ALTER TABLE "irec_registration" ADD "primaryContactName" character varying NOT NULL`
+            `ALTER TABLE "irec_registration" ADD "primaryContactName" character varying NOT NULL DEFAULT ''`
         );
         await queryRunner.query(
-            `ALTER TABLE "irec_registration" ADD "primaryContactEmail" character varying NOT NULL`
+            `ALTER TABLE "irec_registration" ADD "primaryContactEmail" character varying NOT NULL DEFAULT ''`
         );
         await queryRunner.query(
-            `ALTER TABLE "irec_registration" ADD "primaryContactPhoneNumber" character varying NOT NULL`
+            `ALTER TABLE "irec_registration" ADD "primaryContactPhoneNumber" character varying NOT NULL DEFAULT ''`
         );
         await queryRunner.query(
-            `ALTER TABLE "irec_registration" ADD "primaryContactFax" character varying NOT NULL`
+            `ALTER TABLE "irec_registration" ADD "primaryContactFax" character varying NOT NULL DEFAULT ''`
         );
         await queryRunner.query(
-            `ALTER TABLE "irec_registration" ADD "leadUserTitle" character varying NOT NULL`
+            `ALTER TABLE "irec_registration" ADD "leadUserTitle" character varying NOT NULL DEFAULT ''`
         );
         await queryRunner.query(
-            `ALTER TABLE "irec_registration" ADD "leadUserFirstName" character varying NOT NULL`
+            `ALTER TABLE "irec_registration" ADD "leadUserFirstName" character varying NOT NULL DEFAULT ''`
         );
         await queryRunner.query(
-            `ALTER TABLE "irec_registration" ADD "leadUserLastName" character varying NOT NULL`
+            `ALTER TABLE "irec_registration" ADD "leadUserLastName" character varying NOT NULL DEFAULT ''`
         );
         await queryRunner.query(
-            `ALTER TABLE "irec_registration" ADD "leadUserEmail" character varying NOT NULL`
+            `ALTER TABLE "irec_registration" ADD "leadUserEmail" character varying NOT NULL DEFAULT ''`
         );
         await queryRunner.query(
-            `ALTER TABLE "irec_registration" ADD "leadUserPhoneNumber" character varying NOT NULL`
+            `ALTER TABLE "irec_registration" ADD "leadUserPhoneNumber" character varying NOT NULL DEFAULT ''`
         );
         await queryRunner.query(
-            `ALTER TABLE "irec_registration" ADD "leadUserFax" character varying NOT NULL`
+            `ALTER TABLE "irec_registration" ADD "leadUserFax" character varying NOT NULL DEFAULT ''`
         );
     }
 
