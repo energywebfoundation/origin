@@ -3,6 +3,23 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.7.0](https://github.com/energywebfoundation/origin/compare/@energyweb/exchange@1.6.0...@energyweb/exchange@1.7.0) (2020-11-30)
+
+
+### Bug Fixes
+
+* add a body definition to all missing @Body() in requests ([6afc5a5](https://github.com/energywebfoundation/origin/commit/6afc5a5b8eb02d9be21035b34431d88d690bcda4))
+
+
+### Features
+
+* **exchange:** rich Swagger definitions + add prefix to all exchange tables ([9c94e46](https://github.com/energywebfoundation/origin/commit/9c94e46ae42ecbcb6fcde3d08bab0155fd8c7fd7))
+* **origin-organisation-irec-api:** added contact details fields ([b0bb283](https://github.com/energywebfoundation/origin/commit/b0bb2839b3da5d4ed684293c8aed262c8221d67a))
+
+
+
+
+
 # [1.6.0](https://github.com/energywebfoundation/origin/compare/@energyweb/exchange@1.5.4...@energyweb/exchange@1.6.0) (2020-11-20)
 
 

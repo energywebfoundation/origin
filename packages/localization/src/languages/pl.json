@@ -247,14 +247,27 @@
                 "lastName": "Nazwisko",
                 "telephone": "Telefon",
                 "email": "Email",
-                "password": "Hasło"
+                "password": "Hasło",
+                "status": "Status",
+                "kycStatus": "Status KYC",
+                "blockchainAddress": "Adres Blockchain",
+                "blockchainAddresses": "Adresy Blockchain",
+                "userBlockchainAddress": "Adres użytkownika Blockchain",
+                "emailConfirmed": "E-mail potwierdzony"
             },
             "actions": {
                 "register": "Zarejestruj",
                 "registerNow": "Zarejestruj się teraz",
                 "login": "Zaloguj się",
                 "save": "Zapisać",
-                "forgotPasswordAsk": "Zapomniałeś hasła?"
+                "forgotPasswordAsk": "Zapomniałeś hasła?",
+                "connectBlockchain": "Połącz adres Blockchain",
+                "connectNewBlockchain": "Połącz nowy adres Blockchain"
+            },
+            "popover": {
+                "blockchainWhatIs": "Ten adres jest inny niż adres depozytu wymiany. Potrzebujesz tego, jeśli chcesz zarządzać platformą za pomocą własnego adresu blockchain.",
+                "blockchainWhatFor": "Adres blockchain podłączonego użytkownika jest wymagany do wycofania certyfikatów z giełdy i wycofania certyfikatów.",
+                "blockchainHowTo": "Wybierz odpowiednie konto blockchain w portfelu przeglądarki MetaMask i kliknij „Połącz adres Blockchain”, aby się połączyć. Odwiedź metamask.io, aby założyć własny portfel blockchain."
             },
             "feedback": {
                 "userRegistered": "Użytkownik zarejestrowany.",

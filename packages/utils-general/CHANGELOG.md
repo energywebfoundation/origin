@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [11.0.0](https://github.com/energywebfoundation/origin/compare/@energyweb/utils-general@10.0.0...@energyweb/utils-general@11.0.0) (2020-11-30)
+
+
+### chore
+
+* **utils-general:** remove Configuration ([99800a6](https://github.com/energywebfoundation/origin/commit/99800a6a2058198041e30cb110768cd0bdc1427c))
+
+
+### BREAKING CHANGES
+
+* **utils-general:** Configuration is no longer a part of utils-general
+
+
+
+
+
 # [10.0.0](https://github.com/energywebfoundation/origin/compare/@energyweb/utils-general@9.3.0...@energyweb/utils-general@10.0.0) (2020-11-20)
 
 

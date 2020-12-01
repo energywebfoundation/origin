@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.2.2](https://github.com/energywebfoundation/origin/compare/@energyweb/migrations@3.2.1...@energyweb/migrations@3.2.2) (2020-11-30)
+
+
+### Bug Fixes
+
+* Make DeviceStatus enum a string ([9506209](https://github.com/energywebfoundation/origin/commit/95062097c480ead34b4604b21b67395eb3c62946))
+
+
+
+
+
 ## [3.2.1](https://github.com/energywebfoundation/origin/compare/@energyweb/migrations@3.2.0...@energyweb/migrations@3.2.1) (2020-11-20)
 
 
