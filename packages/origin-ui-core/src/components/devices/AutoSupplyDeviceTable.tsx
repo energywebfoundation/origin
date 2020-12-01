@@ -16,7 +16,7 @@ import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { getBackendClient } from '../../features/general/selectors';
 import { getUserOffchain } from '../../features/users/selectors';
-import { formatCurrencyComplete, moment, useTranslation } from '../../utils';
+import { BackendClient, formatCurrencyComplete, moment, useTranslation } from '../../utils';
 import { EnergyFormatter } from '../../utils/EnergyFormatter';
 import { NotificationType, showNotification } from '../../utils/notifications';
 import {
@@ -36,8 +36,7 @@ export const KeyStatus = {
 };
 
 export function AutoSupplyDeviceTable() {
-    const backendClient = useSelector(getBackendClient);
-    const deviceClient = backendClient.deviceClient;
+    const { deviceClient }: BackendClient = useSelector(getBackendClient);
     const userOffchain = useSelector(getUserOffchain);
     const { t } = useTranslation();
 

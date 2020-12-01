@@ -95,9 +95,7 @@ export class DemandService {
         }
         if (demand.status !== DemandStatus.ACTIVE) {
             throw new ForbiddenActionError(
-                `Demand ${demand.id} expected status is DemandStatus.ACTIVE but had ${
-                    DemandStatus[demand.status]
-                }`
+                `Demand ${demand.id} expected status is ${DemandStatus.ACTIVE} but had ${demand.status}`
             );
         }
 
@@ -114,9 +112,7 @@ export class DemandService {
         }
         if (demand.status === DemandStatus.ARCHIVED || demand.status === DemandStatus.ACTIVE) {
             throw new ForbiddenActionError(
-                `Demand ${demand.id} expected status is DemandStatus.PAUSED but had ${
-                    DemandStatus[demand.status]
-                }`
+                `Demand ${demand.id} expected status is DemandStatus.PAUSED but had ${demand.status}`
             );
         }
 
@@ -133,9 +129,7 @@ export class DemandService {
             demand.status !== DemandStatus.PAUSED ||
             demand.bids.some((bid) => bid.status === OrderStatus.PendingCancellation)
         ) {
-            const msg = `Demand ${demand.id} expected status is DemandStatus.PAUSED but had ${
-                DemandStatus[demand.status]
-            }`;
+            const msg = `Demand ${demand.id} expected status is DemandStatus.PAUSED but had ${demand.status}`;
             this.logger.error(msg);
             throw new ForbiddenActionError(msg);
         }

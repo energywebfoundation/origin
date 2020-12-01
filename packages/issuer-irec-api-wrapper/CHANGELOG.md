@@ -3,6 +3,19 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.1.0-alpha.2](https://github.com/energywebfoundation/origin/compare/@energyweb/issuer-irec-api-wrapper@0.1.0-alpha.1...@energyweb/issuer-irec-api-wrapper@0.1.0-alpha.2) (2020-11-30)
+
+
+### Features
+
+* **issuer-irec-api-wrapper:** added fuel api with tests ([db3ed92](https://github.com/energywebfoundation/origin/commit/db3ed921924b4b5ffb8ffb21ea2b956adcdb9a1e))
+* **issuer-irec-api-wrapper:** codename schema ([0bf1573](https://github.com/energywebfoundation/origin/commit/0bf1573f9a02df425b546a60db0ad36ded42a842))
+* **issuer-irec-api-wrapper:** fuel methods ([c96c2c3](https://github.com/energywebfoundation/origin/commit/c96c2c3c4eee6228b12d8acb1d993f1437e35c5b))
+
+
+
+
+
 # [0.1.0-alpha.1](https://github.com/energywebfoundation/origin/compare/@energyweb/issuer-irec-api-wrapper@0.1.0-alpha.0...@energyweb/issuer-irec-api-wrapper@0.1.0-alpha.1) (2020-11-20)
 
 

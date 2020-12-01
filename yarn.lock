@@ -1389,6 +1389,41 @@
     moment "2.24.0"
     moment-range "4.0.2"
 
+"@energyweb/origin-backend-client@9.0.0":
+  version "9.0.0"
+  resolved "https://registry.yarnpkg.com/@energyweb/origin-backend-client/-/origin-backend-client-9.0.0.tgz#856eae4e78d5ce947d8f0c13357ca55efc439051"
+  integrity sha512-Xxf/ruiOLrSzJdxUbQHEumvARzB+r5L45eZul26k8aVR8B8PThyhZ3F0GzzNmZgy3F9VHKRU3AIRbRZ9EFkniA==
+  dependencies:
+    "@energyweb/origin-backend-core" "7.0.0"
+    "@energyweb/utils-general" "10.0.0"
+    axios "0.21.0"
+    ethers "5.0.15"
+    moment "2.24.0"
+
+"@energyweb/origin-backend-core@7.0.0":
+  version "7.0.0"
+  resolved "https://registry.yarnpkg.com/@energyweb/origin-backend-core/-/origin-backend-core-7.0.0.tgz#295544a7727b450e045554e6a2b6d1f9187230b8"
+  integrity sha512-I/WIcAitb447piXVKQDSAwRhXh6+gvzEAbq3AhhBalPFA4hOU8AFY1rtUHADhOyCD33JtUC0zfSNRr68hRR5TQ==
+  dependencies:
+    axios "0.21.0"
+    class-transformer "0.3.1"
+    class-validator "0.12.2"
+    ethers "5.0.15"
+    precise-proofs-js "1.2.0"
+
+"@energyweb/utils-general@10.0.0":
+  version "10.0.0"
+  resolved "https://registry.yarnpkg.com/@energyweb/utils-general/-/utils-general-10.0.0.tgz#27c82e849e44806fd1baea806a405daf25b2c31c"
+  integrity sha512-yQAX1HFDpXo0FfrwQrL/vKZWHVQe919Ox7GCVcLBReD6DgRoJvQIsmojNUmkkLed/ChAZcYPKXRQza/02ZxFtQ==
+  dependencies:
+    "@energyweb/origin-backend-core" "7.0.0"
+    chai "^4.2.0"
+    eth-sig-util "2.5.2"
+    ethers "5.0.15"
+    jsonschema "1.4.0"
+    moment "2.24.0"
+    winston "3.3.3"
+
 "@eslint/eslintrc@^0.2.1":
   version "0.2.1"
   resolved "https://registry.yarnpkg.com/@eslint/eslintrc/-/eslintrc-0.2.1.tgz#f72069c330461a06684d119384435e12a5d76e3c"
@@ -5216,10 +5251,10 @@
   resolved "https://registry.yarnpkg.com/@types/node/-/node-12.12.11.tgz#bec2961975888d964196bf0016a2f984d793d3ce"
   integrity sha512-O+x6uIpa6oMNTkPuHDa9MhMMehlxLAd5QcOvKRjAFsBVpeFWTOPnXbDvILvFgFFZfQ1xh1EZi1FbXxUix+zpsQ==
 
-"@types/node@12.19.6":
-  version "12.19.6"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-12.19.6.tgz#fbf249fa46487dd8c7386d785231368b92a33a53"
-  integrity sha512-U2VopDdmBoYBmtm8Rz340mvvSz34VgX/K9+XCuckvcLGMkt3rbMX8soqFOikIPlPBc5lmw8By9NUK7bEFSBFlQ==
+"@types/node@12.19.7":
+  version "12.19.7"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-12.19.7.tgz#cf8b6ac088dd9182ac9a1d765f787a8d12490c04"
+  integrity sha512-zvjOU1g4CpPilbTDUATnZCUb/6lARMRAqzT7ILwl1P3YvU2leEcZ2+fw9+Jrw/paXB1CgQyXTrN4hWDtqT9O2A==
 
 "@types/node@^10.1.0", "@types/node@^10.12.18", "@types/node@^10.3.2":
   version "10.17.5"

@@ -39,7 +39,6 @@ import { StorageErrors } from '../../enums/StorageErrors';
 import { Device } from '../device/device.entity';
 import { User } from '../user';
 import { NewOrganizationDTO } from './dto/new-organization.dto';
-import { OrganizationInvitationDTO } from './dto/organization-invitation.dto';
 import { OrganizationService } from './organization.service';
 import { FullOrganizationInfoDTO } from './dto/full-organization-info.dto';
 import { PublicOrganizationInfoDTO } from './dto/public-organization-info.dto';
@@ -48,6 +47,7 @@ import { OrganizationDocumentOwnershipMismatchError } from './organization-docum
 import { SuccessResponseDTO } from '../../utils/success-response.dto';
 import { OrganizationUpdateDTO } from './dto/organization-update.dto';
 import { UpdateMemberDTO } from './dto/organization-update-member.dto';
+import { InvitationDTO } from '../invitation/invitation.dto';
 
 @ApiTags('organization')
 @ApiBearerAuth('access-token')
@@ -109,20 +109,18 @@ export class OrganizationController {
     @UseGuards(AuthGuard())
     @ApiResponse({
         status: HttpStatus.OK,
-        type: [OrganizationInvitationDTO],
+        type: [InvitationDTO],
         description: 'Gets invitations for an organization'
     })
     async getInvitationsForOrganization(
         @Param('id', new ParseIntPipe()) organizationId: number,
         @UserDecorator() loggedUser: ILoggedInUser
-    ): Promise<OrganizationInvitationDTO[]> {
+    ): Promise<InvitationDTO[]> {
         this.ensureOrganizationMemberOrAdmin(loggedUser, organizationId);
 
         const organization = await this.organizationService.findOne(organizationId);
 
-        return organization?.invitations?.map((inv) =>
-            OrganizationInvitationDTO.fromInvitation(inv)
-        );
+        return organization?.invitations?.map((inv) => InvitationDTO.fromInvitation(inv));
     }
 
     @Get('/:id/users')

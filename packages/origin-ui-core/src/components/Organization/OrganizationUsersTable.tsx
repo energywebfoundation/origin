@@ -54,9 +54,7 @@ export function OrganizationUsersTable() {
             const _error = { ...error };
             if (_error.response.status === 412) {
                 showNotification(
-                    `Only active users can perform this action. Your status is ${
-                        UserStatus[userOffchain.status]
-                    }`,
+                    `Only active users can perform this action. Your status is ${userOffchain.status}`,
                     NotificationType.Error
                 );
             }

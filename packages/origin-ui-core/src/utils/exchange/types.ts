@@ -1,4 +1,5 @@
 import { Filter, Operator, OrderSide, Product, OrderStatus } from '@energyweb/exchange-core';
+import { DemandStatus, TimeFrame } from '@energyweb/utils-general';
 import { BigNumber } from 'ethers';
 
 export type DeviceVintageDTO = {
@@ -193,32 +194,6 @@ export type Split = {
 export type SplitItem = {
     id: string;
     volume: BigNumber;
-};
-
-export enum TimeFrame {
-    yearly = 0,
-    monthly = 1,
-    daily = 2,
-    weekly = 3,
-    hourly = 4,
-    halfHourly = 5
-}
-
-export enum DemandStatus {
-    ACTIVE = 0,
-    PAUSED = 1,
-    ARCHIVED = 2
-}
-
-export type CreateDemandDTO = {
-    price: number;
-    volumePerPeriod: string;
-    periodTimeFrame: TimeFrame;
-    start: Date;
-    end: Date;
-    product: IProductDTO;
-    boundToGenerationTime: boolean;
-    excludeEnd: boolean;
 };
 
 export type DemandSummaryDTO = {

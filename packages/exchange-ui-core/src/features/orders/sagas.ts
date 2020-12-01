@@ -17,7 +17,8 @@ import {
     OrdersActionsType,
     storeDemand,
     clearDemands,
-    fetchOrders
+    fetchOrders,
+    ICreateDemandAction
 } from './actions';
 import { Order, Demand, ExchangeClient } from '../../utils/exchange';
 
@@ -123,7 +124,7 @@ function* buyDirect(): SagaIterator {
 
 function* createDemand(): SagaIterator {
     while (true) {
-        const { payload } = yield take(OrdersActionsType.CREATE_DEMAND);
+        const { payload }: ICreateDemandAction = yield take(OrdersActionsType.CREATE_DEMAND);
         const { demandClient }: ExchangeClient = yield select(getExchangeClient);
         const i18n = getI18n();
         try {

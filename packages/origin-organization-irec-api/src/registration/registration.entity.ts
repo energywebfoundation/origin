@@ -50,4 +50,46 @@ export class Registration extends ExtendedBaseEntity {
 
     @Column({ nullable: true })
     subsidiaries?: string;
+
+    @Column({ default: '' })
+    primaryContactOrganizationName: string;
+
+    @Column({ default: '' })
+    primaryContactOrganizationAddress: string;
+
+    @Column({ default: '' })
+    primaryContactOrganizationPostalCode: string;
+
+    @Column({ default: '' })
+    primaryContactOrganizationCountry: string;
+
+    @Column({ default: '' })
+    primaryContactName: string;
+
+    @Column({ default: '' })
+    primaryContactEmail: string;
+
+    @Column({ default: '' })
+    primaryContactPhoneNumber: string;
+
+    @Column({ default: '' })
+    primaryContactFax: string;
+
+    @Column({ default: '' })
+    leadUserTitle: string;
+
+    @Column({ default: '' })
+    leadUserFirstName: string;
+
+    @Column({ default: '' })
+    leadUserLastName: string;
+
+    @Column({ default: '' })
+    leadUserEmail: string;
+
+    @Column({ default: '' })
+    leadUserPhoneNumber: string;
+
+    @Column({ default: '' })
+    leadUserFax: string;
 }

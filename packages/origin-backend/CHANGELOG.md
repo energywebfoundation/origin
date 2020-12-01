@@ -3,6 +3,19 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [9.0.1](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-backend@9.0.0...@energyweb/origin-backend@9.0.1) (2020-11-30)
+
+
+### Bug Fixes
+
+* **origin-backend:** fix issue where controller returns empty org invites ([79eb3d1](https://github.com/energywebfoundation/origin/commit/79eb3d1c5a4ecfc8a31b8eeeabe1b8dd1c014e0c))
+* add a body definition to all missing @Body() in requests ([6afc5a5](https://github.com/energywebfoundation/origin/commit/6afc5a5b8eb02d9be21035b34431d88d690bcda4))
+* Make DeviceStatus enum a string ([9506209](https://github.com/energywebfoundation/origin/commit/95062097c480ead34b4604b21b67395eb3c62946))
+
+
+
+
+
 # [9.0.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-backend@8.0.0...@energyweb/origin-backend@9.0.0) (2020-11-20)
 
 

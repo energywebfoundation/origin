@@ -1,4 +1,4 @@
-import { TimeFrame } from '../exchange';
+import { TimeFrame } from '@energyweb/utils-general';
 import moment from 'moment-timezone';
 
 interface IPeriodOption {
@@ -13,38 +13,38 @@ export const periodTypeOptions = (
     if (ending) {
         return [
             {
-                value: TimeFrame.daily,
+                value: TimeFrame.Daily,
                 label: translate('exchange.properties.periodOptions.daily')
             },
             {
-                value: TimeFrame.weekly,
+                value: TimeFrame.Weekly,
                 label: translate('exchange.properties.periodOptions.weekly')
             },
             {
-                value: TimeFrame.monthly,
+                value: TimeFrame.Monthly,
                 label: translate('exchange.properties.periodOptions.monthly')
             },
             {
-                value: TimeFrame.yearly,
+                value: TimeFrame.Yearly,
                 label: translate('exchange.properties.periodOptions.yearly')
             }
         ];
     } else {
         return [
             {
-                value: TimeFrame.daily,
+                value: TimeFrame.Daily,
                 label: translate('demand.properties.periodOptions.day')
             },
             {
-                value: TimeFrame.weekly,
+                value: TimeFrame.Weekly,
                 label: translate('demand.properties.periodOptions.week')
             },
             {
-                value: TimeFrame.monthly,
+                value: TimeFrame.Monthly,
                 label: translate('demand.properties.periodOptions.month')
             },
             {
-                value: TimeFrame.yearly,
+                value: TimeFrame.Yearly,
                 label: translate('demand.properties.periodOptions.year')
             }
         ];
@@ -58,24 +58,24 @@ export const configureTimeFrame = (
 ): string => {
     if (ending) {
         switch (timeframe) {
-            case TimeFrame.daily:
+            case TimeFrame.Daily:
                 return translate('demand.properties.periodOptions.daily');
-            case TimeFrame.weekly:
+            case TimeFrame.Weekly:
                 return translate('demand.properties.periodOptions.weekly');
-            case TimeFrame.monthly:
+            case TimeFrame.Monthly:
                 return translate('demand.properties.periodOptions.monthly');
-            case TimeFrame.yearly:
+            case TimeFrame.Yearly:
                 return translate('demand.properties.periodOptions.yearly');
         }
     } else {
         switch (timeframe) {
-            case TimeFrame.daily:
+            case TimeFrame.Daily:
                 return translate('demand.properties.periodOptions.day');
-            case TimeFrame.weekly:
+            case TimeFrame.Weekly:
                 return translate('demand.properties.periodOptions.week');
-            case TimeFrame.monthly:
+            case TimeFrame.Monthly:
                 return translate('demand.properties.periodOptions.month');
-            case TimeFrame.yearly:
+            case TimeFrame.Yearly:
                 return translate('demand.properties.periodOptions.year');
         }
     }
@@ -83,11 +83,11 @@ export const configureTimeFrame = (
 
 export const configureDateFormat = (date: Date, period: TimeFrame): string => {
     switch (period) {
-        case TimeFrame.daily || TimeFrame.weekly:
+        case TimeFrame.Daily || TimeFrame.Weekly:
             return moment(date).format('DD MMM, YYYY');
-        case TimeFrame.monthly:
+        case TimeFrame.Monthly:
             return moment(date).format('MMM, YYYY');
-        case TimeFrame.yearly:
+        case TimeFrame.Yearly:
             return moment(date).format('YYYY');
         default:
             return moment(date).format('DD MMM, YYYY');

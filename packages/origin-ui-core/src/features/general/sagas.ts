@@ -38,7 +38,12 @@ import { configurationUpdated, web3Updated } from '../actions';
 import { Configuration, ProducingDevice } from '@energyweb/device-registry';
 import { producingDeviceCreatedOrUpdated } from '../producingDevices/actions';
 import { getI18n } from 'react-i18next';
-import { showNotification, NotificationType, getDevicesOwnedLink } from '../../utils';
+import {
+    showNotification,
+    NotificationType,
+    getDevicesOwnedLink,
+    checkNetworkName
+} from '../../utils';
 import {
     ICertificateViewItem,
     CertificateSource,
@@ -419,8 +424,11 @@ function* checkBlockchainNetwork(): SagaIterator {
                 blockchainProperties?.netId !== parseInt(metamaskNetId, 10)
             ) {
                 showNotification(
-                    `You are connected to the wrong blockchain. Please connect to ${blockchainProperties?.rpcNode}`,
-                    NotificationType.Error
+                    `You are connected to the wrong blockchain. ${checkNetworkName(
+                        blockchainProperties?.netId
+                    )}`,
+                    NotificationType.Error,
+                    { timeOut: 10000 }
                 );
             }
         }
