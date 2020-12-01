@@ -24,6 +24,7 @@ import { useValidation } from '../../utils/validation';
 import { FormInput } from '../Form/FormInput';
 import { getActiveBlockchainAccountAddress, getUserOffchain } from '../../features/users/selectors';
 import { IconPopover } from '../IconPopover';
+import { BackendClient } from '../../utils';
 
 interface IFormValues extends IUser {
     isBlockchain?: boolean;
@@ -68,7 +69,8 @@ const useStyles = makeStyles(() =>
 
 export function UserProfile() {
     const user = useSelector(getUserOffchain);
-    const userClient = useSelector(getBackendClient)?.userClient;
+    const backendClient: BackendClient = useSelector(getBackendClient);
+    const userClient = backendClient?.userClient;
     const dispatch = useDispatch();
     const isLoading = useSelector(getLoading);
     const activeBlockchainAccountAddress = useSelector(getActiveBlockchainAccountAddress);
@@ -119,10 +121,17 @@ export function UserProfile() {
                 });
                 showNotification(t('user.profile.updatePassword'), NotificationType.Success);
             } else if (values.isProfile) {
-                await userClient.updateOwnProfile(values);
+                await userClient.updateOwnProfile({
+                    firstName: values?.firstName,
+                    lastName: values?.lastName,
+                    telephone: values?.telephone,
+                    email: values?.email
+                });
                 showNotification(t('user.profile.updateProfile'), NotificationType.Success);
             } else if (values.isBlockchain) {
-                await userClient.updateOwnProfile(values);
+                await userClient.updateOwnBlockchainAddress({
+                    blockchainAccountAddress: values.blockchainAccountAddress
+                });
                 showNotification(t('user.profile.updateChainAddress'), NotificationType.Success);
             }
             dispatch(refreshUserOffchain());

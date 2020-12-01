@@ -25,7 +25,14 @@ import {
     HttpStatus
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { ApiResponse, ApiTags, ApiParam, ApiBearerAuth, ApiBody } from '@nestjs/swagger';
+import {
+    ApiResponse,
+    ApiTags,
+    ApiParam,
+    ApiBearerAuth,
+    ApiBody,
+    ApiUnprocessableEntityResponse
+} from '@nestjs/swagger';
 
 import { UserService } from './user.service';
 import { EmailConfirmationService } from '../email-confirmation/email-confirmation.service';
@@ -35,6 +42,7 @@ import { RegisterUserDTO } from './dto/register-user.dto';
 import { UpdateUserDTO } from './dto/update-user.dto';
 import { UpdatePasswordDTO } from './dto/update-password.dto';
 import { UpdateBlockchainAddressDTO } from './dto/update-blockchain-address.dto';
+import { UpdateUserProfileDTO } from './dto/update-user-profile.dto';
 
 @ApiTags('user')
 @ApiBearerAuth('access-token')
@@ -111,13 +119,14 @@ export class UserController {
 
     @Put('profile')
     @UseGuards(AuthGuard('jwt'), ActiveUserGuard)
-    @ApiBody({ type: UserDTO })
+    @ApiBody({ type: UpdateUserProfileDTO })
     @ApiResponse({ status: HttpStatus.OK, type: UserDTO, description: `Update your own profile` })
+    @ApiUnprocessableEntityResponse({ description: 'Input data validation failed' })
     public async updateOwnProfile(
         @UserDecorator() { id }: ILoggedInUser,
-        @Body() body: UserDTO
+        @Body() dto: UpdateUserProfileDTO
     ): Promise<UserDTO> {
-        return this.userService.updateProfile(id, body);
+        return this.userService.updateProfile(id, dto);
     }
 
     @Put('password')
