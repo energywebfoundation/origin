@@ -49,7 +49,7 @@
         "@nestjs/jwt": "7.2.0",
         "@nestjs/passport": "7.1.0",
         "@nestjs/platform-express": "^7.0.0",
-        "@nestjs/swagger": "4.6.1",
+        "@nestjs/swagger": "4.7.3",
         "@nestjs/typeorm": "7.1.4",
         "@types/node": "^12.12.31",
         "bcryptjs": "2.4.3",
