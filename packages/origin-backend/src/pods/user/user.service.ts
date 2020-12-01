@@ -24,6 +24,7 @@ import { DeepPartial, FindConditions, Repository, FindManyOptions } from 'typeor
 import { ExtendedBaseEntity } from '@energyweb/origin-backend-utils';
 import { User } from './user.entity';
 import { EmailConfirmationService } from '../email-confirmation/email-confirmation.service';
+import { UpdateUserProfileDTO } from './dto/update-user-profile.dto';
 
 export type TUserBaseEntity = ExtendedBaseEntity & IUser;
 
@@ -190,12 +191,15 @@ export class UserService {
         return (await this.repository.findOne(conditions)) !== undefined;
     }
 
-    async updateProfile(id: number | string, user: IUser) {
+    async updateProfile(
+        id: number | string,
+        { firstName, lastName, email, telephone }: UpdateUserProfileDTO
+    ): Promise<User> {
         const updateEntity = new User({
-            firstName: user.firstName,
-            lastName: user.lastName,
-            email: user.email,
-            telephone: user.telephone
+            firstName,
+            lastName,
+            email,
+            telephone
         });
 
         const validationErrors = await validate(updateEntity, {
