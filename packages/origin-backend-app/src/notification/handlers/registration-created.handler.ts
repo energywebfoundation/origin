@@ -24,15 +24,15 @@ export class RegistrationCreatedHandler implements IEventHandler<RegistrationCre
         let form = '';
 
         for (const [key, value] of Object.entries(registration)) {
-            form += `${key}: ${value} </br>`;
+            form += `${key}: ${value} <br />`;
         }
 
         const result = await this.mailService.send({
             to: emails,
             subject: `[Origin] I-REC registration request`,
-            html: `"User ${user.email} from organization ${user.organization.name} [id=${user.organization.id}] has requested to be connected to the I-REC registry with the following data: </br>
-            
-            ${form}`
+            html: `"User ${user.email} from organization ${user.organization.name} [id=${user.organization.id}] 
+                has requested to be connected to the I-REC registry with the following data: <br />
+                ${form}`
         });
 
         if (result) {
