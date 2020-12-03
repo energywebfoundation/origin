@@ -36,22 +36,7 @@ export class MailService {
                 ...sendMailOptions
             });
 
-            if (!result.messageId) {
-                return true;
-            }
-
-            const allSucceeded = result.accepted.every((e) => e.status === 'sent');
-
-            if (allSucceeded) {
-                this.logger.log(`Sent email with id: ${result.messageId}. `);
-                this.logger.log(result);
-                return true;
-            }
-
-            this.logger.error(`Error when sending email.`);
-            this.logger.error(result);
-
-            return false;
+            return !!result.messageId;
         } catch (error) {
             this.logger.error(`Error when sending email.`);
             this.logger.error(error);
