@@ -155,7 +155,7 @@ export const PendingInvitationsModal = (props: IProps) => {
     };
 
     return (
-        <Dialog open={showModal} onClose={() => setShowModal(false)}>
+        <Dialog open={showModal}>
             <DialogTitle>
                 <Grid container>
                     <Grid item xs={2}>
