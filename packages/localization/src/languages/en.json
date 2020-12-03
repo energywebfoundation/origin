@@ -381,6 +381,7 @@
                 "confirmationEmailResent": "Confirmation email re-sent.",
                 "confirmationEmailResentFailed": "Unable to send the confirmation email.",
                 "onlyActiveUsersCan": "Only active users can perform this action",
+                "onlyMembersOfActiveOrgCan": "Only members of active organization can perform this action",
                 "thisAccountAlreadyConnected": "This blockchain address is already connected to your account.",
                 "exchangeAddressSuccess": "Exchange Deposit Address created successfully.",
                 "exchangeAddressFailure": "Exchange Deposit Address could not be created.",

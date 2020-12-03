@@ -282,6 +282,7 @@
                 "confirmationEmailResent": "Wiadomość e-mail z potwierdzeniem została ponownie wysłana.",
                 "confirmationEmailResentFailed": "Nie można wysłać e-maila z potwierdzeniem.",
                 "onlyActiveUsersCan": "Tylko aktywni użytkownicy mogą wykonać tę akcję",
+                "onlyMembersOfActiveOrgCan": "Tę czynność mogą wykonać tylko członkowie aktywnej organizacji",
                 "thisAccountAlreadyConnected": "Ten adres w łańcuchu bloków jest już połączony z Twoim kontem.",                
                 "exchangeAddressSuccess": "Utworzono adres depozytu wymiany.",
                 "exchangeAddressFailure": "Nie można utworzyć adresu depozytu wymiany.",
