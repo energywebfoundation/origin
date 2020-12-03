@@ -13,7 +13,6 @@ import {
     ValidationPipe,
     UsePipes,
     BadRequestException,
-    HttpCode,
     Post,
     Logger,
     InternalServerErrorException,
@@ -38,23 +37,23 @@ export class AccountController {
     constructor(private readonly accountService: AccountService) {}
 
     @Get()
-    @UseGuards(AuthGuard(), ActiveUserGuard)
+    @UseGuards(AuthGuard())
     @ApiResponse({ status: HttpStatus.OK, type: AccountDTO, description: 'Get the Account' })
-    public async getAccount(@UserDecorator() user: ILoggedInUser): Promise<AccountDTO> {
-        const account = await this.accountService.getAccount(user.ownerId);
+    public async getAccount(@UserDecorator() { ownerId }: ILoggedInUser): Promise<AccountDTO> {
+        const account = await this.accountService.getAccount(ownerId);
 
-        if (!account) {
-            throw new BadRequestException({ message: 'Your account was not yet created' });
-        }
+        const response = account || { address: '' };
 
-        return account;
+        return response;
     }
 
     @Post()
-    @HttpCode(202)
-    public async create(@UserDecorator() user: ILoggedInUser): Promise<void> {
+    @UseGuards(AuthGuard(), ActiveUserGuard)
+    @ApiResponse({ status: HttpStatus.ACCEPTED, description: 'Created the Exchange Account' })
+    public async create(@UserDecorator() { ownerId }: ILoggedInUser): Promise<boolean> {
         try {
-            await this.accountService.create(user.ownerId);
+            await this.accountService.create(ownerId);
+            return true;
         } catch (error) {
             this.logger.error(error.message);
 
