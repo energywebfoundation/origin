@@ -39,12 +39,11 @@ export class AccountService {
 
     private async process(userId: string) {
         this.logger.debug(`Processing account creation for user with userId=${userId}`);
-
-        const account = await this.repository.findOne(null, {
+        const accountExists = await this.repository.findOne(null, {
             where: { userId }
         });
 
-        if (account) {
+        if (accountExists) {
             this.logger.error(
                 `Account for user with userId=${userId} has already been deployed. Skipping.`
             );
@@ -56,7 +55,7 @@ export class AccountService {
 
         await this.repository.save({ userId, address });
 
-        this.logger.debug(`Account deployed ${JSON.stringify(account)} `);
+        this.logger.debug(`Account deployed ${JSON.stringify(address)} `);
     }
 
     public async findByAddress(address: string, transaction?: EntityManager) {
