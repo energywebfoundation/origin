@@ -229,10 +229,12 @@ function* updateBlockchainAddress(): SagaIterator {
             yield call(callback);
         } catch (error) {
             if (error?.data?.message) {
-                showNotification(error?.data?.message, NotificationType.Error);
+                showNotification(error.data.message, NotificationType.Error);
+            } else if (error?.response) {
+                showNotification(error.response.data.message, NotificationType.Error);
             } else if (error?.message) {
-                console.log(error);
-                showNotification(error?.message, NotificationType.Error);
+                console.log('here it is', error.response.data.message);
+                showNotification(error.message, NotificationType.Error);
             } else {
                 console.warn('Could not log in.', error);
                 showNotification(i18n.t('general.feedback.unknownError'), NotificationType.Error);
