@@ -6,7 +6,7 @@ import {
 } from '@energyweb/issuer-api-client';
 import { OriginFeature, signTypedMessage } from '@energyweb/utils-general';
 import { UserClient } from '@energyweb/origin-backend-client';
-import { call, put, select, take, fork, all, getContext, apply } from 'redux-saga/effects';
+import { call, put, select, take, fork, all, getContext, apply, delay } from 'redux-saga/effects';
 import { SagaIterator } from 'redux-saga';
 import {
     UsersActions,
@@ -19,7 +19,12 @@ import {
     refreshClients,
     IUpdateUserBlockchainAction
 } from './actions';
-import { getBackendClient, getIRecClient, getEnvironment } from '../general/selectors';
+import {
+    getBackendClient,
+    getIRecClient,
+    getEnvironment,
+    getExchangeClient
+} from '../general/selectors';
 import { Registration } from '../../utils/irec/types';
 import {
     GeneralActions,
@@ -134,6 +139,7 @@ function* fetchOffchainUserDetails(): SagaIterator {
     while (true) {
         yield take(UsersActions.refreshUserOffchain);
 
+        const { accountClient }: ExchangeClient = yield select(getExchangeClient);
         const backendClient: BackendClient = yield select(getBackendClient);
         const features = yield getContext('enabledFeatures');
 
@@ -153,6 +159,9 @@ function* fetchOffchainUserDetails(): SagaIterator {
             );
             const userState: IUsersState = yield select(getUserState);
 
+            const { data: account } = yield apply(accountClient, accountClient.getAccount, []);
+            const exchangeDepositAddress = account.address;
+
             let iRecAccount: Registration[];
 
             if (features.includes(OriginFeature.IRec)) {
@@ -168,6 +177,7 @@ function* fetchOffchainUserDetails(): SagaIterator {
                     ...userState,
                     userOffchain,
                     iRecAccount,
+                    exchangeDepositAddress,
                     invitations: {
                         ...userState.invitations,
                         invitations: invitations.map((inv) => ({
@@ -242,6 +252,34 @@ function* updateBlockchainAddress(): SagaIterator {
     }
 }
 
+function* createUserExchangeAddress(): SagaIterator {
+    while (true) {
+        yield take(UsersActions.createExchangeDepositAddress);
+
+        yield put(setLoading(true));
+
+        const { accountClient }: ExchangeClient = yield select(getExchangeClient);
+        const i18n = getI18n();
+
+        try {
+            yield apply(accountClient, accountClient.create, []);
+            yield delay(2000);
+            showNotification(
+                i18n.t('user.feedback.exchangeAddressSuccess'),
+                NotificationType.Success
+            );
+            yield put(refreshUserOffchain());
+        } catch (error) {
+            console.warn('Could not create exchange deposit address.', error);
+            showNotification(
+                i18n.t('user.feedback.exchangeAddressFailure'),
+                NotificationType.Error
+            );
+        }
+        yield put(setLoading(false));
+    }
+}
+
 function* logOutSaga(): SagaIterator {
     while (true) {
         yield take(UsersActions.clearAuthenticationToken);
@@ -261,6 +299,7 @@ export function* usersSaga(): SagaIterator {
         fork(updateClients),
         fork(fetchOffchainUserDetails),
         fork(updateBlockchainAddress),
+        fork(createUserExchangeAddress),
         fork(logOutSaga)
     ]);
 }
