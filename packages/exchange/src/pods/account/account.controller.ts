@@ -2,7 +2,8 @@ import { ILoggedInUser } from '@energyweb/origin-backend-core';
 import {
     UserDecorator,
     ActiveUserGuard,
-    NullOrUndefinedResultInterceptor
+    NullOrUndefinedResultInterceptor,
+    ActiveOrganizationGuard
 } from '@energyweb/origin-backend-utils';
 import {
     Controller,
@@ -48,7 +49,7 @@ export class AccountController {
     }
 
     @Post()
-    @UseGuards(AuthGuard(), ActiveUserGuard)
+    @UseGuards(AuthGuard(), ActiveUserGuard, ActiveOrganizationGuard)
     @ApiResponse({ status: HttpStatus.ACCEPTED, description: 'Created the Exchange Account' })
     public async create(@UserDecorator() { ownerId }: ILoggedInUser): Promise<boolean> {
         try {
