@@ -6,6 +6,7 @@ import {
 } from '@energyweb/issuer-api-client';
 import { OriginFeature, signTypedMessage } from '@energyweb/utils-general';
 import { UserClient } from '@energyweb/origin-backend-client';
+import { UserStatus, OrganizationStatus } from '@energyweb/origin-backend-core';
 import { call, put, select, take, fork, all, getContext, apply, delay } from 'redux-saga/effects';
 import { SagaIterator } from 'redux-saga';
 import {
@@ -41,7 +42,7 @@ import {
     setCertificationRequestsClient,
     setBlockchainPropertiesClient
 } from '../certificates';
-import { getUserState } from './selectors';
+import { getUserState, getUserOffchain } from './selectors';
 import { IUsersState } from './reducer';
 
 import { BackendClient } from '../../utils/clients/BackendClient';
@@ -217,6 +218,12 @@ function* updateBlockchainAddress(): SagaIterator {
         const i18n = getI18n();
 
         try {
+            if (activeAccount === null) {
+                throw Error(i18n.t('user.profile.noBlockchainConnection'));
+            } else if (user?.blockchainAccountAddress === activeAccount.toLowerCase()) {
+                throw Error(i18n.t('user.feedback.thisAccountAlreadyConnected'));
+            }
+
             const message = yield call(
                 signTypedMessage,
                 activeAccount,
@@ -257,11 +264,20 @@ function* createUserExchangeAddress(): SagaIterator {
         yield take(UsersActions.createExchangeDepositAddress);
 
         yield put(setLoading(true));
-
+        const user = yield select(getUserOffchain);
         const { accountClient }: ExchangeClient = yield select(getExchangeClient);
         const i18n = getI18n();
 
         try {
+            if (user.status !== UserStatus.Active) {
+                throw Error(i18n.t('user.feedback.onlyActiveUsersCan'));
+            } else if (
+                !user.organization ||
+                user.organization.status !== OrganizationStatus.Active
+            ) {
+                throw Error(i18n.t('user.feedback.onlyMembersOfActiveOrgCan'));
+            }
+
             yield apply(accountClient, accountClient.create, []);
             yield delay(2000);
             showNotification(
@@ -270,11 +286,15 @@ function* createUserExchangeAddress(): SagaIterator {
             );
             yield put(refreshUserOffchain());
         } catch (error) {
-            console.warn('Could not create exchange deposit address.', error);
-            showNotification(
-                i18n.t('user.feedback.exchangeAddressFailure'),
-                NotificationType.Error
-            );
+            if (error?.message) {
+                showNotification(error?.message, NotificationType.Error);
+            } else {
+                console.warn('Could not create exchange deposit address.', error);
+                showNotification(
+                    i18n.t('user.feedback.exchangeAddressFailure'),
+                    NotificationType.Error
+                );
+            }
         }
         yield put(setLoading(false));
     }

@@ -166,40 +166,18 @@ export function UserProfile() {
         formikActions.setSubmitting(false);
     }
 
-    function createExchangeAddress() {
-        try {
-            if (user.status !== UserStatus.Active) {
-                throw Error(t('user.feedback.onlyActiveUsersCan'));
-            }
-            dispatch(createExchangeDepositAddress());
-        } catch (error) {
-            if (error?.message) {
-                showNotification(error?.message, NotificationType.Error);
-            }
-        }
+    function createExchangeAddress(): void {
+        dispatch(createExchangeDepositAddress());
     }
 
     function updateBlockchainAccount(callback: () => void): void {
-        try {
-            if (activeBlockchainAccountAddress === null) {
-                throw Error(t('user.profile.noBlockchainConnection'));
-            } else if (
-                user?.blockchainAccountAddress === activeBlockchainAccountAddress.toLowerCase()
-            ) {
-                throw Error(t('user.feedback.thisAccountAlreadyConnected'));
-            }
-            dispatch(
-                updateUserBlockchain({
-                    user,
-                    activeAccount: activeBlockchainAccountAddress,
-                    callback
-                })
-            );
-        } catch (error) {
-            if (error?.message) {
-                showNotification(error?.message, NotificationType.Error);
-            }
-        }
+        dispatch(
+            updateUserBlockchain({
+                user,
+                activeAccount: activeBlockchainAccountAddress,
+                callback
+            })
+        );
     }
 
     const initialFormValues: IFormValues = {
