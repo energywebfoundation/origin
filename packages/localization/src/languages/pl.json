@@ -250,6 +250,7 @@
                 "password": "Hasło",
                 "status": "Status",
                 "kycStatus": "Status KYC",
+                "exchangeAddressTitle": "Adres depozytu wymiany",
                 "blockchainAddress": "Adres Blockchain",
                 "blockchainAddresses": "Adresy Blockchain",
                 "userBlockchainAddress": "Adres użytkownika Blockchain",
@@ -261,10 +262,13 @@
                 "login": "Zaloguj się",
                 "save": "Zapisać",
                 "forgotPasswordAsk": "Zapomniałeś hasła?",
+                "createDepositAddress": "Utwórz adres wpłaty",
                 "connectBlockchain": "Połącz adres Blockchain",
                 "connectNewBlockchain": "Połącz nowy adres Blockchain"
             },
             "popover": {
+                "exchangeAddressWhatFor": "Ten adres łańcucha bloków identyfikuje Cię podczas wymiany certyfikatów. Potrzebujesz go do handlu certyfikatami na giełdzie.",
+                "exchangeAddressHowTo": "Platforma automatycznie generuje adres depozytu i przejmuje go pod opiekę. Nie musisz zarządzać własnym portfelem blockchain.",
                 "blockchainWhatIs": "Ten adres jest inny niż adres depozytu wymiany. Potrzebujesz tego, jeśli chcesz zarządzać platformą za pomocą własnego adresu blockchain.",
                 "blockchainWhatFor": "Adres blockchain podłączonego użytkownika jest wymagany do wycofania certyfikatów z giełdy i wycofania certyfikatów.",
                 "blockchainHowTo": "Wybierz odpowiednie konto blockchain w portfelu przeglądarki MetaMask i kliknij „Połącz adres Blockchain”, aby się połączyć. Odwiedź metamask.io, aby założyć własny portfel blockchain."
@@ -273,6 +277,20 @@
                 "userRegistered": "Użytkownik zarejestrowany.",
                 "errorWhileRegisteringUser": "Błąd podczas rejestracji użytkownika.",
                 "errorUserExists": "Użytkownik z adresem e-mail {userEmail} został już zarejestrowany. Zaloguj się przy użyciu oryginalnego konta.",
+                "userLoggedIn": "Użytkownik zalogowany.",
+                "couldNotLogIn": "Nie udało się zalogować z podanymi poświadczeniami.",
+                "confirmationEmailResent": "Wiadomość e-mail z potwierdzeniem została ponownie wysłana.",
+                "confirmationEmailResentFailed": "Nie można wysłać e-maila z potwierdzeniem.",
+                "onlyActiveUsersCan": "Tylko aktywni użytkownicy mogą wykonać tę akcję",
+                "thisAccountAlreadyConnected": "Ten adres w łańcuchu bloków jest już połączony z Twoim kontem.",                
+                "exchangeAddressSuccess": "Utworzono adres depozytu wymiany.",
+                "exchangeAddressFailure": "Nie można utworzyć adresu depozytu wymiany.",
+                "emailConfirmation": {
+                    "alreadyConfirmed": "Już potwierdzony.",
+                    "confirmed": "E-mail potwierdzony pomyślnie.",
+                    "expired": "Link potwierdzający wygasł.",
+                    "loading": "Ładowanie..."
+                },
                 "roleChanged": {
                     "succesfullyJoinedOrg": "Pomyślnie dołączył do {{orgName}}",
                     "asMemberYouCan": "Dołączyłeś do {{orgName}} {{admin}}. Jako członek możesz",
@@ -291,12 +309,6 @@
                     "connectOrgToIRec": "Podłącz organizację do rejestru I-REC",
                     "asDeviceManagerYouCanAlso": "Możesz także wykonywać wszystkie czynności menedżera urządzeń",
                     "asAMemberYouCanAlso": "Możesz także wykonywać wszystkie czynności, które może wykonywać zwykły członek organizacji"
-                },
-                "emailConfirmation": {
-                    "alreadyConfirmed": "Już potwierdzony.",
-                    "confirmed": "E-mail potwierdzony pomyślnie.",
-                    "expired": "Link potwierdzający wygasł.",
-                    "loading": "Ładowanie..."
                 }
             },
             "dialog": {
