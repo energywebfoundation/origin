@@ -18,11 +18,11 @@ const useStyles = makeStyles((theme) => ({
 interface IProps {
     icon: React.ReactType;
     popoverText: string[];
-    classObj?: string;
+    className?: string;
 }
 
 export function IconPopover(props: IProps) {
-    const { popoverText, classObj, icon: Icon } = props;
+    const { popoverText, className, icon: Icon } = props;
     const classes = useStyles();
     const [anchorEl, setAnchorEl] = useState(null);
 
@@ -44,7 +44,7 @@ export function IconPopover(props: IProps) {
     ));
 
     return (
-        <div className={classObj}>
+        <div className={className}>
             <Icon
                 aria-owns={open ? 'mouse-over-popover' : undefined}
                 aria-haspopup="true"
