@@ -23,11 +23,11 @@
         "client:clean": "find src/ -type f  ! -name \"*.ts\"  -delete"
     },
     "dependencies": {
-        "axios": "0.20.0"
+        "axios": "0.21.0"
     },
     "devDependencies": {
         "@energyweb/exchange": "1.7.0",
-        "@nestjs/swagger": "4.6.1",
+        "@nestjs/swagger": "4.7.3",
         "@nestjs/testing": "7.5.2",
         "@nestjs/typeorm": "7.1.4",
         "@openapitools/openapi-generator-cli": "1.0.18-4.3.1",
