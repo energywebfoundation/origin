@@ -11,13 +11,17 @@ import {
     UseGuards,
     UseInterceptors,
     UsePipes,
-    ValidationPipe
+    ValidationPipe,
+    HttpStatus
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 
-import { AccountBalance } from './account-balance';
+import { ApiResponse, ApiTags, ApiBearerAuth } from '@nestjs/swagger';
+import { AccountBalanceDTO } from './account-balance.dto';
 import { AccountBalanceService } from './account-balance.service';
 
+@ApiTags('account-balance')
+@ApiBearerAuth('access-token')
 @Controller('account-balance')
 @UseInterceptors(NullOrUndefinedResultInterceptor)
 @UseInterceptors(ClassSerializerInterceptor)
@@ -27,7 +31,12 @@ export class AccountBalanceController {
 
     @Get()
     @UseGuards(AuthGuard(), ActiveUserGuard)
-    public async get(@UserDecorator() user: ILoggedInUser): Promise<AccountBalance> {
+    @ApiResponse({
+        status: HttpStatus.OK,
+        type: AccountBalanceDTO,
+        description: 'Get the Account Balance'
+    })
+    public async get(@UserDecorator() user: ILoggedInUser): Promise<AccountBalanceDTO> {
         return this.accountBalanceService.getAccountBalance(user.ownerId);
     }
 }
