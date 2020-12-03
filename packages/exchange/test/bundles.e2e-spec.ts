@@ -4,7 +4,7 @@ import { HttpStatus, INestApplication } from '@nestjs/common';
 import { expect } from 'chai';
 import request from 'supertest';
 
-import { AccountBalance } from '../src/pods/account-balance/account-balance';
+import { AccountBalanceDTO } from '../src/pods/account-balance/account-balance.dto';
 import { AccountBalanceService } from '../src/pods/account-balance/account-balance.service';
 import { AccountService } from '../src/pods/account/account.service';
 import { BundlePublicDTO } from '../src/pods/bundle/bundle-public.dto';
@@ -167,7 +167,7 @@ describe('Bundles', () => {
             .get('/account-balance')
             .expect(HttpStatus.OK)
             .expect((res) => {
-                const { available, locked } = res.body as AccountBalance;
+                const { available, locked } = res.body as AccountBalanceDTO;
 
                 expect(locked.length).equals(2);
                 expect(available.length).equals(0);
@@ -197,7 +197,7 @@ describe('Bundles', () => {
             .get('/account-balance')
             .expect(HttpStatus.OK)
             .expect((res) => {
-                const { available, locked } = res.body as AccountBalance;
+                const { available, locked } = res.body as AccountBalanceDTO;
 
                 expect(locked.length).equals(0);
                 expect(available.length).equals(2);
@@ -241,7 +241,7 @@ describe('Bundles', () => {
             .get('/account-balance')
             .expect(HttpStatus.OK)
             .expect((res) => {
-                const { available, locked } = res.body as AccountBalance;
+                const { available, locked } = res.body as AccountBalanceDTO;
 
                 expect(locked.length).equals(0);
                 expect(available.length).equals(2);

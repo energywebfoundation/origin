@@ -5,7 +5,7 @@ import { expect } from 'chai';
 import { Contract, ethers } from 'ethers';
 import request from 'supertest';
 
-import { AccountBalance } from '../src/pods/account-balance/account-balance';
+import { AccountBalanceDTO } from '../src/pods/account-balance/account-balance.dto';
 import { AccountService } from '../src/pods/account/account.service';
 import { CreateAskDTO } from '../src/pods/order/create-ask.dto';
 import { CreateBidDTO } from '../src/pods/order/create-bid.dto';
@@ -203,7 +203,7 @@ describe('account ask order send', () => {
             .get('/account-balance')
             .expect(HttpStatus.OK)
             .expect((res) => {
-                const account = res.body as AccountBalance;
+                const account = res.body as AccountBalanceDTO;
 
                 expect(account.available.length).equals(0);
             });

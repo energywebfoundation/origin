@@ -3,7 +3,7 @@ import { HttpStatus, INestApplication } from '@nestjs/common';
 import { expect } from 'chai';
 import request from 'supertest';
 
-import { AccountBalance } from '../src/pods/account-balance/account-balance';
+import { AccountBalanceDTO } from '../src/pods/account-balance/account-balance.dto';
 import { AccountService } from '../src/pods/account/account.service';
 import { TransferService } from '../src/pods/transfer/transfer.service';
 import { authenticatedUser, bootstrapTestInstance } from './exchange';
@@ -62,7 +62,7 @@ describe('account deposit confirmation', () => {
             .get('/account-balance')
             .expect(HttpStatus.OK)
             .expect((res) => {
-                const account = res.body as AccountBalance;
+                const account = res.body as AccountBalanceDTO;
 
                 expect(account.available.length).equals(0);
             });
@@ -77,7 +77,7 @@ describe('account deposit confirmation', () => {
             .get('/account-balance')
             .expect(HttpStatus.OK)
             .expect((res) => {
-                const account = res.body as AccountBalance;
+                const account = res.body as AccountBalanceDTO;
 
                 expect(account.available.length).equals(1);
                 expect(account.available[0].amount).equals(amount);

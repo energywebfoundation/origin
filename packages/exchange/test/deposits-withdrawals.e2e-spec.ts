@@ -6,7 +6,7 @@ import { Contract, ethers } from 'ethers';
 import moment from 'moment';
 import request from 'supertest';
 
-import { AccountBalance } from '../src/pods/account-balance/account-balance';
+import { AccountBalanceDTO } from '../src/pods/account-balance/account-balance.dto';
 import { AccountService } from '../src/pods/account/account.service';
 import { CreateAskDTO } from '../src/pods/order/create-ask.dto';
 import { Order } from '../src/pods/order/order.entity';
@@ -121,7 +121,7 @@ describe('Deposits using deployed registry', () => {
             .expect((res) => {
                 const {
                     available: [balance]
-                } = res.body as AccountBalance;
+                } = res.body as AccountBalanceDTO;
 
                 expect(balance.amount).equals(depositAmount);
                 expect(new Date(balance.asset.generationFrom)).deep.equals(
