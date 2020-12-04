@@ -112,6 +112,10 @@ function* requestCertificatesSaga(): SagaIterator {
                 data: { address }
             } = yield call([accountClient, accountClient.getAccount]);
 
+            if (!address) {
+                throw Error('Only users with Exchange Deposit Address can request certificates.');
+            }
+
             yield apply(certificationRequestsClient, certificationRequestsClient.create, [
                 {
                     to: address,
