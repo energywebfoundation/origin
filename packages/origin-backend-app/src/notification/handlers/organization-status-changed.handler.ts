@@ -1,5 +1,4 @@
 import { OrganizationStatusChangedEvent } from '@energyweb/origin-backend';
-import { OrganizationStatus } from '@energyweb/origin-backend-core';
 import { Logger } from '@nestjs/common';
 import { EventsHandler, IEventHandler } from '@nestjs/cqrs';
 import { MailService } from '../../mail';
@@ -18,7 +17,7 @@ export class OrganizationStatusChangedHandler
         const result = await this.mailService.send({
             to: organization.signatoryEmail,
             subject: `[Origin] Update on the registration process`,
-            html: `Status of your registration changed to ${OrganizationStatus[status]}. To find out more please visit <a href="${url}">${url}</a>`
+            html: `Status of your registration changed to ${status}. To find out more please visit <a href="${url}">${url}</a>`
         });
 
         if (result) {

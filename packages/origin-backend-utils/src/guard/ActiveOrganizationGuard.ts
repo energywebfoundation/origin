@@ -19,9 +19,7 @@ export class ActiveOrganizationGuard implements CanActivate {
 
         if (user.organization.status !== OrganizationStatus.Active) {
             throw new HttpException(
-                `Only active organizations can perform this action. Your status is ${
-                    OrganizationStatus[user.organization.status]
-                }`,
+                `Only active organizations can perform this action. Your status is ${user.organization.status}`,
                 HttpStatus.FORBIDDEN
             );
         }

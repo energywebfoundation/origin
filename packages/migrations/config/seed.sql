@@ -73,7 +73,7 @@ VALUES
         235,
         'issuer@mailinator.com',
         'Phone number',
-        2
+        'Active'
     );
 
 INSERT INTO
@@ -118,7 +118,7 @@ VALUES
         235,
         'devicemanager@mailinator.com',
         'Phone number',
-        2
+        'Active'
     );
 
 INSERT INTO
@@ -163,7 +163,7 @@ VALUES
         235,
         'devicemanager2@mailinator.com',
         'Phone number',
-        2
+        'Active'
     );
 
 INSERT INTO
@@ -208,7 +208,7 @@ VALUES
         235,
         'trader@mailinator.com',
         'Phone number',
-        2
+        'Active'
     );
 
 INSERT INTO
@@ -253,7 +253,7 @@ VALUES
         235,
         'admin@mailinator.com',
         'Phone number',
-        2
+        'Active'
     );
 
 /*
