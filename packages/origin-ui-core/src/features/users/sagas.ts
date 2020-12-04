@@ -233,7 +233,6 @@ function* updateBlockchainAddress(): SagaIterator {
             } else if (error?.response) {
                 showNotification(error.response.data.message, NotificationType.Error);
             } else if (error?.message) {
-                console.log('here it is', error.response.data.message);
                 showNotification(error.message, NotificationType.Error);
             } else {
                 console.warn('Could not log in.', error);
