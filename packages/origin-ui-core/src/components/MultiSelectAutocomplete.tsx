@@ -64,11 +64,7 @@ export function MultiSelectAutocomplete(props: IOwnProps) {
                 onChange={(event, value: IAutocompleteMultiSelectOptionType[]) => {
                     props.onChange(value ? value.slice(0, max ?? value.length) : value);
                     setTouchFlag(true);
-                    if (singleChoice) {
-                        setTextValue(' ');
-                    } else {
-                        setTextValue('');
-                    }
+                    setTextValue('');
                 }}
                 value={selectedValues}
                 renderTags={(value, getTagProps) =>
@@ -95,7 +91,7 @@ export function MultiSelectAutocomplete(props: IOwnProps) {
                         }
                         inputProps={{ ...params.inputProps }}
                         error={touchFlag && required && props.selectedValues.length === 0}
-                        placeholder={placeholder}
+                        placeholder={singleChoice && touchFlag ? '' : placeholder}
                         fullWidth
                         variant="filled"
                     />

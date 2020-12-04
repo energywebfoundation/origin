@@ -107,10 +107,6 @@ export function Account() {
                 render={() => <Redirect to={{ pathname: `${getAccountLink()}/${Menu[0].key}` }} />}
             />
             <Route
-                path={`${getAccountLink()}`}
-                render={() => <Redirect to={{ pathname: `${getAccountLink()}/${Menu[0].key}` }} />}
-            />
-            <Route
                 exact={true}
                 path={`${baseURL}/`}
                 render={() => <Redirect to={{ pathname: `${getAccountLink()}/${Menu[0].key}` }} />}

@@ -156,7 +156,7 @@ export function OrganizationUsersTable() {
             lastName: user.lastName,
             email: user.email,
             role: getRolesFromRights(user.rights)
-                .map((roleValue) => t(roleNames[roleValue]))
+                .map((role) => t(roleNames.filter((roleName) => roleName.value === role)[0].label))
                 .join(', ')
         };
     });
