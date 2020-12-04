@@ -101,7 +101,6 @@ export class CreateDeviceDTO implements DeviceCreateData {
 
     @ApiProperty({ type: String })
     @IsString()
-    @IsNotEmpty()
     gridOperator: string;
 
     @ApiProperty({ type: [SmartMeterReadDTO], required: false })
