@@ -24,6 +24,13 @@ export function Account() {
     const organization = useSelector(getUserOffchain)?.organization;
     const iRecAccount = useSelector(getIRecAccount);
 
+    console.log({
+        enabledIrec: !enabledFeatures.includes(OriginFeature.IRec),
+        enabledIrecConnect: !enabledFeatures.includes(OriginFeature.IRecConnect),
+        organization,
+        iRecAccount
+    });
+
     const Menu = [
         {
             key: 'settings',
@@ -55,9 +62,7 @@ export function Account() {
             component: IRECConnectForm,
             hide:
                 !enabledFeatures.includes(OriginFeature.IRec) ||
-                !enabledFeatures.includes(OriginFeature.IRecConnect) ||
-                !organization ||
-                iRecAccount
+                !enabledFeatures.includes(OriginFeature.IRecConnect)
         }
     ];
 

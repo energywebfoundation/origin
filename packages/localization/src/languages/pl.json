@@ -428,8 +428,6 @@
                 "titleIRecAccountRegistered": "Dziękujemy za zarejestrowanie konta I-REC!",
                 "contentIRecAccountRegistered":"Prześlemy Twoją aplikację do I-REC i poinformujemy Cię, gdy tylko zostanie zatwierdzona.",
                 "titleConnectIREC": "Żądanie dostępu do I-REC API",
-                "platformOrganizationId": "ID organizacji platformy",
-                "IRECAPICredentials": "I-REC API Kwalifikacje",
                 "IRECUsername": "IREC nazwaUżytkownika.",
                 "apiToken": "API znak",
                 "clientID": "Klient ID",

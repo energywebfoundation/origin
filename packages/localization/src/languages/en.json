@@ -546,8 +546,6 @@
                 "titleIRecAccountRegistered": "Thank you for registering an I-REC account!",
                 "contentIRecAccountRegistered":"We will forward your application to I-REC and inform you as soon as it is approved.",
                 "titleConnectIREC": "Requesting I-REC API Access",
-                "platformOrganizationId": "Platform Organization ID",
-                "IRECAPICredentials": "I-REC API Credentials",
                 "IRECUsername": "IREC username",
                 "apiToken": "API token",
                 "clientID": "Client ID",
