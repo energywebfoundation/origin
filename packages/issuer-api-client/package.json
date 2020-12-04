@@ -1,6 +1,6 @@
 {
     "name": "@energyweb/issuer-api-client",
-    "version": "0.1.1",
+    "version": "0.1.2",
     "description": "Client library interacting with the Issuer API",
     "homepage": "https://github.com/energywebfoundation/origin/tree/master/packages/issuer-api-client#readme",
     "author": "EnergyWeb DevHub GmbH; Joseph Bagaric, joseph.bagaric@energyweb.org",
@@ -26,7 +26,7 @@
         "axios": "0.21.0"
     },
     "devDependencies": {
-        "@energyweb/issuer-api": "0.1.1",
+        "@energyweb/issuer-api": "0.1.2",
         "@nestjs/swagger": "4.7.3",
         "@nestjs/testing": "7.5.2",
         "@nestjs/typeorm": "7.1.4",
