@@ -71,20 +71,27 @@
                 "constructed": "Constructed",
                 "vintageCod": "Vintage / (Commercial Operation Date)",
                 "gridOperator": "Grid operator",
-                "price": "Price"
+                "price": "Price",
+                "active": "Active",
+                "paused": "Paused"
             },
             "actions": {
                 "requestCertificates": "Request certificates",
                 "approve": "Approve",
                 "registerDevice": "Register device",
                 "register": "Register",
-                "viewDetails": "View details"
+                "viewDetails": "View details",
+                "updateSupply": "Update Supply",
+                "cancel": "Cancel",
+                "update": "Update"
             },
             "feedback": {
                 "imagesUploaded": "Images have been uploaded.",
                 "deviceCreated": "Device successfully created.",
                 "pleaseSelectUpToXImages": "Please select up to {limit} images. You've selected {actual}.",
-                "unexpectedErrorWhenUploadingImages": "Unexpected error occurred when uploading images."
+                "unexpectedErrorWhenUploadingImages": "Unexpected error occurred when uploading images.",
+                "supplyUpdatedSuccess": "Supply updated successfully",
+                "supplyUpdateError": "Supply updating failed"
             },
             "info": {
                 "general": "General",
