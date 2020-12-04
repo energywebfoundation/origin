@@ -132,9 +132,9 @@ export function OrganizationInvite() {
                                             variant="filled"
                                             input={<FilledInput />}
                                         >
-                                            {Object.keys(roleNames).map((role) => (
-                                                <MenuItem key={role} value={role}>
-                                                    {t(roleNames[role])}
+                                            {roleNames.map((role) => (
+                                                <MenuItem key={role.label} value={role.value}>
+                                                    {t(role.label)}
                                                 </MenuItem>
                                             ))}
                                         </Select>
