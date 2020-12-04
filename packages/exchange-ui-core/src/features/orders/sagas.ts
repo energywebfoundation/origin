@@ -84,11 +84,14 @@ function* createBid(): SagaIterator {
 
 function* cancelOrder(): SagaIterator {
     while (true) {
-        const { payload } = yield take(OrdersActionsType.CANCEL_ORDER);
+        const {
+            payload: { id: orderId }
+        } = yield take(OrdersActionsType.CANCEL_ORDER);
+
         const { ordersClient }: ExchangeClient = yield select(getExchangeClient);
         const i18n = getI18n();
         try {
-            yield apply(ordersClient, ordersClient.cancelOrder, [payload]);
+            yield apply(ordersClient, ordersClient.cancelOrder, [orderId]);
             yield put(reloadCertificates());
             showNotification(i18n.t('order.feedback.orderCanceled'), NotificationType.Success);
             yield put(fetchOrders());

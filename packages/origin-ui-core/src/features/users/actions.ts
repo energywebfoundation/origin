@@ -12,7 +12,8 @@ export enum UsersActions {
     addOrganizations = 'USERS_ADD_ORGANIZATIONS',
     setInvitations = 'USERS_SET_INVITATIONS',
     setUserState = 'USERS_SET_USER_STATE',
-    setIRecAccount = 'USERS_SET_IREC_ACCOUNT'
+    setIRecAccount = 'USERS_SET_IREC_ACCOUNT',
+    updateUserBlockchain = 'UPDATE_USER_BLOCKCHAIN'
 }
 
 export interface ISetActiveBlockchainAccountAddressAction {
@@ -123,6 +124,22 @@ export interface ISetUserState {
 
 export const setUserState = (payload: ISetUserState['payload']): ISetUserState => ({
     type: UsersActions.setUserState,
+    payload
+});
+
+export interface IUpdateUserBlockchainAction {
+    type: UsersActions.updateUserBlockchain;
+    payload: {
+        user: IUser;
+        activeAccount: string;
+        callback: () => void;
+    };
+}
+
+export const updateUserBlockchain = (
+    payload: IUpdateUserBlockchainAction['payload']
+): IUpdateUserBlockchainAction => ({
+    type: UsersActions.updateUserBlockchain,
     payload
 });
 

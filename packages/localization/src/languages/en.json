@@ -71,20 +71,27 @@
                 "constructed": "Constructed",
                 "vintageCod": "Vintage / (Commercial Operation Date)",
                 "gridOperator": "Grid operator",
-                "price": "Price"
+                "price": "Price",
+                "active": "Active",
+                "paused": "Paused"
             },
             "actions": {
                 "requestCertificates": "Request certificates",
                 "approve": "Approve",
                 "registerDevice": "Register device",
                 "register": "Register",
-                "viewDetails": "View details"
+                "viewDetails": "View details",
+                "updateSupply": "Update Supply",
+                "cancel": "Cancel",
+                "update": "Update"
             },
             "feedback": {
                 "imagesUploaded": "Images have been uploaded.",
                 "deviceCreated": "Device successfully created.",
                 "pleaseSelectUpToXImages": "Please select up to {limit} images. You've selected {actual}.",
-                "unexpectedErrorWhenUploadingImages": "Unexpected error occurred when uploading images."
+                "unexpectedErrorWhenUploadingImages": "Unexpected error occurred when uploading images.",
+                "supplyUpdatedSuccess": "Supply updated successfully",
+                "supplyUpdateError": "Supply updating failed"
             },
             "info": {
                 "general": "General",
@@ -349,6 +356,8 @@
                 "status": "Status",
                 "kycStatus": "KYC Status",
                 "blockchainAddress": "Blockchain Address",
+                "blockchainAddresses": "Blockchain Addresses",
+                "userBlockchainAddress": "User Blockchain Address",
                 "emailConfirmed": "Email Confirmed"
             },
             "actions": {
@@ -357,7 +366,14 @@
                 "login": "Login",
                 "save": "Save",
                 "resendConfirmationEmail": "Re-send confirmation email",
-                "forgotPasswordAsk": "Forgot password?"
+                "forgotPasswordAsk": "Forgot password?",
+                "connectBlockchain": "Connect Blockchain Address",
+                "connectNewBlockchain": "Connect New Blockchain Address"
+            },
+            "popover": {
+                "blockchainWhatIs": "This address is separate from the exchange deposit address. You need it if you want to manage the platform with your own blockchain address.",
+                "blockchainWhatFor": "A connected user blockchain address is required to withdraw certificates from the exchange and retire certificates.",
+                "blockchainHowTo": "Select the right blockchain account in your MetaMask browser wallet and click “Connect Blockchain Address” to connect. Visit metamask.io to set up your own blockchain wallet."
             },
             "feedback": {
                 "userRegistered": "User registered.",
