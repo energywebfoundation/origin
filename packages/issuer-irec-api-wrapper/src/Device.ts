@@ -46,6 +46,7 @@ export class Device {
     account: CodeName;
 
     @IsPositive()
+    @Transform((value: string) => Number(value), { toClassOnly: true })
     capacity: number;
 
     @IsNotEmpty()
@@ -94,9 +95,11 @@ export class Device {
     notes?: string;
 
     @IsLatitude()
+    @Transform((value: string) => Number(value), { toClassOnly: true })
     latitude: number;
 
     @IsLongitude()
+    @Transform((value: string) => Number(value), { toClassOnly: true })
     longitude: number;
 
     @IsOptional()

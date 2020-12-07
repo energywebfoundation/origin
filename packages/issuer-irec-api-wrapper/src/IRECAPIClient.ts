@@ -223,7 +223,7 @@ export class IRECAPIClient {
         const deviceManagementUrl = `${this.endPointUrl}/api/irec/device-management`;
 
         return {
-            create: async (device: DeviceCreateUpdateParams): Promise<void> => {
+            create: async (device: DeviceCreateUpdateParams): Promise<Device> => {
                 const dev =
                     device instanceof DeviceCreateUpdateParams
                         ? device
@@ -232,7 +232,9 @@ export class IRECAPIClient {
                 await validateOrReject(dev);
 
                 const url = `${deviceManagementUrl}/create`;
-                await axios.post(url, classToPlain(dev), this.config);
+                const response = await axios.post(url, classToPlain(dev), this.config);
+
+                return plainToClass(Device, response.data);
             },
             edit: async (
                 code: string,
@@ -450,8 +452,8 @@ export class IRECAPIClient {
     private enableErrorHandler() {
         axios.interceptors.response.use(
             (res) => res,
-            (err) =>
-                Promise.reject(
+            (err) => {
+                return Promise.reject(
                     new Error(
                         JSON.stringify({
                             status: err?.response?.data?.status ?? 500,
@@ -461,7 +463,8 @@ export class IRECAPIClient {
                                 err.message
                         })
                     )
-                )
+                );
+            }
         );
     }
 }
