@@ -1,20 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { MailerService, ISendMailOptions } from '@nestjs-modules/mailer';
 import { ConfigService } from '@nestjs/config';
-
-interface IIndividualMandrillMailSendStatus {
-    email: string;
-    status: 'sent';
-    _id: string;
-    // eslint-disable-next-line camelcase
-    reject_reason: string;
-}
-
-interface IMandrillMailSendStatus {
-    messageId: string;
-    accepted: IIndividualMandrillMailSendStatus[];
-    rejected: IIndividualMandrillMailSendStatus[];
-}
+import { SentMessageInfo } from 'mandrill-nodemailer-transport';
 
 @Injectable()
 export class MailService {
@@ -27,7 +14,7 @@ export class MailService {
 
     async send(sendMailOptions: ISendMailOptions) {
         try {
-            const result: IMandrillMailSendStatus = await this.mailerService.sendMail({
+            const result: SentMessageInfo = await this.mailerService.sendMail({
                 from: {
                     name: this.configService.get<string>('EMAIL_FROM_NAME'),
                     address: this.configService.get<string>('EMAIL_FROM')
@@ -36,7 +23,20 @@ export class MailService {
                 ...sendMailOptions
             });
 
-            return !!result.messageId;
+            const allSucceeded = result?.response.every((m) =>
+                ['sent', 'queued', 'scheduled'].includes(m.status)
+            );
+
+            if (allSucceeded) {
+                this.logger.log(`Sent email with id: ${result.messageId}.`);
+                this.logger.log(result.response);
+                return true;
+            }
+
+            this.logger.error(`Error when sending email.`);
+            this.logger.error(result.response);
+
+            return false;
         } catch (error) {
             this.logger.error(`Error when sending email.`);
             this.logger.error(error);
