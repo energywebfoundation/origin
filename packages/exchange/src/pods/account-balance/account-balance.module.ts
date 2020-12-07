@@ -4,6 +4,7 @@ import { OrderModule } from '../order/order.module';
 import { TradeModule } from '../trade/trade.module';
 import { TransferModule } from '../transfer/transfer.module';
 import { BundleModule } from '../bundle/bundle.module';
+import { AccountBalanceController } from './account-balance.controller';
 
 @Module({
     providers: [AccountBalanceService],
@@ -13,6 +14,7 @@ import { BundleModule } from '../bundle/bundle.module';
         TradeModule,
         TransferModule,
         forwardRef(() => BundleModule)
-    ]
+    ],
+    controllers: [AccountBalanceController]
 })
 export class AccountBalanceModule {}

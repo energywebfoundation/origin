@@ -1,23 +1,23 @@
 /* eslint-disable no-unused-expressions */
+import { DatabaseService } from '@energyweb/origin-backend-utils';
 import { HttpStatus, INestApplication } from '@nestjs/common';
 import { expect } from 'chai';
 import { Contract, ethers } from 'ethers';
 import moment from 'moment';
 import request from 'supertest';
 
-import { DatabaseService } from '@energyweb/origin-backend-utils';
-import { AccountDTO } from '../src/pods/account/account.dto';
+import { AccountBalanceDTO } from '../src/pods/account-balance/account-balance.dto';
 import { AccountService } from '../src/pods/account/account.service';
 import { CreateAskDTO } from '../src/pods/order/create-ask.dto';
 import { Order } from '../src/pods/order/order.entity';
 import { RequestWithdrawalDTO } from '../src/pods/transfer/create-withdrawal.dto';
 import { TransferDirection } from '../src/pods/transfer/transfer-direction';
+import { TransferStatus } from '../src/pods/transfer/transfer-status';
 import { Transfer } from '../src/pods/transfer/transfer.entity';
 import { TransferService } from '../src/pods/transfer/transfer.service';
-import { authenticatedUser, bootstrapTestInstance } from './exchange';
-import { depositToken, issueToken, provider, MWh } from './utils';
-import { TransferStatus } from '../src/pods/transfer/transfer-status';
 import { DB_TABLE_PREFIX } from '../src/utils/tablePrefix';
+import { authenticatedUser, bootstrapTestInstance } from './exchange';
+import { createDepositAddress, depositToken, issueToken, MWh, provider } from './utils';
 
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -86,7 +86,7 @@ describe('Deposits using deployed registry', () => {
 
     beforeEach(async () => {
         await databaseService.truncate(`${DB_TABLE_PREFIX}_order`, `${DB_TABLE_PREFIX}_transfer`);
-        ({ address: depositAddress } = await accountService.getOrCreateAccount(user1Id));
+        depositAddress = await createDepositAddress(accountService, user1Id);
     });
 
     const getBalance = async (address: string, id: number): Promise<ethers.BigNumber> =>
@@ -116,12 +116,12 @@ describe('Deposits using deployed registry', () => {
         let assetId: string;
 
         await request(app.getHttpServer())
-            .get('/account')
+            .get('/account-balance')
             .expect(HttpStatus.OK)
             .expect((res) => {
-                const account = res.body as AccountDTO;
-
-                const [balance] = account.balances.available;
+                const {
+                    available: [balance]
+                } = res.body as AccountBalanceDTO;
 
                 expect(balance.amount).equals(depositAmount);
                 expect(new Date(balance.asset.generationFrom)).deep.equals(
@@ -228,7 +228,7 @@ describe('Deposits using deployed registry', () => {
         const withdrawalAmount = '10';
         const depositAmount = '10';
 
-        const { address: depositAddress2 } = await accountService.getOrCreateAccount('user2');
+        const depositAddress2 = await createDepositAddress(accountService, 'user2');
         await depositToken(registry, tokenReceiver, depositAddress2, depositAmount, tokenId);
 
         const assetId = await depositToExchangeAddress(depositAmount);

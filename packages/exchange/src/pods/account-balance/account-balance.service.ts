@@ -7,8 +7,8 @@ import { OrderService } from '../order/order.service';
 import { TradeService } from '../trade/trade.service';
 import { TransferDirection } from '../transfer/transfer-direction';
 import { TransferService } from '../transfer/transfer.service';
-import { AccountAsset } from './account-asset';
-import { AccountBalance } from './account-balance';
+import { AccountAssetDTO } from './account-asset.dto';
+import { AccountBalanceDTO } from './account-balance.dto';
 import { Asset } from '../asset/asset.entity';
 import { BundleService } from '../bundle/bundle.service';
 import { Bundle } from '../bundle/bundle.entity';
@@ -28,7 +28,7 @@ export class AccountBalanceService {
         private readonly bundleService: BundleService
     ) {}
 
-    public async getAccountBalance(userId: string): Promise<AccountBalance> {
+    public async getAccountBalance(userId: string): Promise<AccountBalanceDTO> {
         this.logger.debug(`[UserId: ${userId}] Requested account balance:`);
 
         const transfers = await this.getTransfers(userId);
@@ -40,7 +40,7 @@ export class AccountBalanceService {
         const inBundlesAvailable = await this.getAssetsLockedInBundles(userBundles, true);
         const fromBundles = await this.getAssetsFromBundles(userId);
 
-        const sum = (oldVal: AccountAsset, newVal: AccountAsset) => ({
+        const sum = (oldVal: AccountAssetDTO, newVal: AccountAssetDTO) => ({
             ...oldVal,
             amount: oldVal.amount.add(newVal.amount)
         });
@@ -53,10 +53,10 @@ export class AccountBalanceService {
 
         const locked = sellOrders.mergeWith(sum, inBundlesLocked);
 
-        const balances = new AccountBalance({
+        const balances = new AccountBalanceDTO({
             available: Array.from(available.values()).filter((asset) => asset.amount.gt(new BN(0))),
             locked: Array.from(locked.values()).map(
-                (asset) => new AccountAsset({ ...asset, amount: asset.amount.abs() })
+                (asset) => new AccountAssetDTO({ ...asset, amount: asset.amount.abs() })
             )
         });
 
@@ -148,7 +148,7 @@ export class AccountBalanceService {
         records: T[],
         assetSelector: (t: T) => Asset,
         amountSelector: (t: T) => BN
-    ): Map<string, AccountAsset> {
+    ): Map<string, AccountAssetDTO> {
         return records.reduce((res, current) => {
             const asset = assetSelector(current);
             const { id } = asset;
@@ -158,7 +158,7 @@ export class AccountBalanceService {
 
             const amount = accountAsset.amount.add(currentAmount);
 
-            return res.set(id, new AccountAsset({ ...accountAsset, amount }));
-        }, Map<string, AccountAsset>());
+            return res.set(id, new AccountAssetDTO({ ...accountAsset, amount }));
+        }, Map<string, AccountAssetDTO>());
     }
 }

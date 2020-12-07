@@ -355,6 +355,7 @@
                 "password": "Password",
                 "status": "Status",
                 "kycStatus": "KYC Status",
+                "exchangeAddressTitle": "Exchange Deposit Address",
                 "blockchainAddress": "Blockchain Address",
                 "blockchainAddresses": "Blockchain Addresses",
                 "userBlockchainAddress": "User Blockchain Address",
@@ -367,10 +368,13 @@
                 "save": "Save",
                 "resendConfirmationEmail": "Re-send confirmation email",
                 "forgotPasswordAsk": "Forgot password?",
+                "createDepositAddress": "Create Deposit Address",
                 "connectBlockchain": "Connect Blockchain Address",
                 "connectNewBlockchain": "Connect New Blockchain Address"
             },
             "popover": {
+                "exchangeAddressWhatFor": "This blockchain address identifies you on the certificate exchange. You need it to trade certificates on the exchange.",
+                "exchangeAddressHowTo": "The platform automatically generates the deposit address and takes custody of it. You do not have to manage your own blockchain wallet.",
                 "blockchainWhatIs": "This address is separate from the exchange deposit address. You need it if you want to manage the platform with your own blockchain address.",
                 "blockchainWhatFor": "A connected user blockchain address is required to withdraw certificates from the exchange and retire certificates.",
                 "blockchainHowTo": "Select the right blockchain account in your MetaMask browser wallet and click “Connect Blockchain Address” to connect. Visit metamask.io to set up your own blockchain wallet."
@@ -383,6 +387,11 @@
                 "couldNotLogIn": "Could not log in with supplied credentials.",
                 "confirmationEmailResent": "Confirmation email re-sent.",
                 "confirmationEmailResentFailed": "Unable to send the confirmation email.",
+                "onlyActiveUsersCan": "Only active users can perform this action",
+                "onlyMembersOfActiveOrgCan": "Only members of active organization can perform this action",
+                "thisAccountAlreadyConnected": "This blockchain address is already connected to your account.",
+                "exchangeAddressSuccess": "Exchange Deposit Address created successfully.",
+                "exchangeAddressFailure": "Exchange Deposit Address could not be created.",
                 "emailConfirmation": {
                     "alreadyConfirmed": "Already confirmed.",
                     "confirmed": "Email confirmed successfully.",
