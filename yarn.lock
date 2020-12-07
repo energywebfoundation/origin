@@ -17473,10 +17473,10 @@ mamacro@^0.0.3:
   resolved "https://registry.yarnpkg.com/mamacro/-/mamacro-0.0.3.tgz#ad2c9576197c9f1abf308d0787865bd975a3f3e4"
   integrity sha512-qMEwh+UujcQ+kbz3T6V+wAmO2U8veoq2w+3wY8MquqwVA3jChfwY+Tk52GZKDfACEPjuZ7r2oJLejwpt8jtwTA==
 
-mandrill-nodemailer-transport@1.1.0:
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/mandrill-nodemailer-transport/-/mandrill-nodemailer-transport-1.1.0.tgz#257dbcfb0a082b391646a6098d8929bc0e03b46d"
-  integrity sha512-M+IjPDIz8KU4b/9DBQe+pef+3kqWB0dKQv02WVpuelAVe51dYTSZxqH2VCApbK78SYi7NnxRlLlSSlqRF1Nl2A==
+mandrill-nodemailer-transport@1.2.1:
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/mandrill-nodemailer-transport/-/mandrill-nodemailer-transport-1.2.1.tgz#17b08f32ede494a64bdee7b3a9a265c5aca26449"
+  integrity sha512-WbaktdfwE9/Hv5IBwMK7fyvfqT4n8FKCzuv7ncDNtp3H2SSt6p67l2J8uL+HIxXCS6wp/vpjToFWny6FC/SmOA==
 
 map-age-cleaner@^0.1.1:
   version "0.1.3"
