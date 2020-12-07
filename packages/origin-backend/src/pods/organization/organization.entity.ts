@@ -82,7 +82,7 @@ export class Organization extends ExtendedBaseEntity implements IPublicOrganizat
     @IsArray()
     signatoryDocumentIds: string[];
 
-    @Column()
+    @Column({ default: OrganizationStatus.Submitted })
     @IsEnum(OrganizationStatus)
     status: OrganizationStatus;
 

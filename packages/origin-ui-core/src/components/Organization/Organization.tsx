@@ -16,11 +16,20 @@ import { OrganizationUsersTable } from './OrganizationUsersTable';
 import { OrganizationForm } from './OrganizationForm';
 import { IRECRegisterForm } from './IRECRegisterForm';
 
-export const roleNames = {
-    [Role.OrganizationUser]: 'organization.invitations.roles.member',
-    [Role.OrganizationDeviceManager]: 'organization.invitations.roles.deviceManager',
-    [Role.OrganizationAdmin]: 'organization.invitations.roles.admin'
-};
+export const roleNames = [
+    {
+        value: Role.OrganizationAdmin,
+        label: 'organization.invitations.roles.admin'
+    },
+    {
+        value: Role.OrganizationDeviceManager,
+        label: 'organization.invitations.roles.deviceManager'
+    },
+    {
+        value: Role.OrganizationUser,
+        label: 'organization.invitations.roles.member'
+    }
+];
 
 export function Organization() {
     const user = useSelector(getUserOffchain);

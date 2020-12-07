@@ -1,9 +1,9 @@
 import { Role } from './User';
 
 export enum OrganizationStatus {
-    Submitted = 0,
-    Denied = 1,
-    Active = 2
+    Submitted = 'Submitted',
+    Denied = 'Denied',
+    Active = 'Active'
 }
 
 export interface IPublicOrganization {

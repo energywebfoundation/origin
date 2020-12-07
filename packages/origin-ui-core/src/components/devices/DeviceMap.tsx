@@ -7,7 +7,7 @@ import { useLinks } from '../../utils/routing';
 import { getProducingDevices } from '../../features/selectors';
 import { CircularProgress } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
-import { IPublicOrganization, OrganizationStatus } from '@energyweb/origin-backend-core';
+import { IPublicOrganization } from '@energyweb/origin-backend-core';
 import { getBackendClient, getEnvironment } from '../../features/general/selectors';
 
 interface IProps {
@@ -75,9 +75,7 @@ export function DeviceMap(props: IProps) {
     useEffect(() => {
         (async () => {
             const { data: orgs } = await backendClient?.organizationClient?.getAll();
-            setOrganizations(
-                orgs.map((org) => ({ ...org, status: OrganizationStatus[org.status] })) ?? []
-            );
+            setOrganizations(orgs.map((org) => ({ ...org, status: org.status })) ?? []);
         })();
     }, [backendClient.organizationClient]);
 
