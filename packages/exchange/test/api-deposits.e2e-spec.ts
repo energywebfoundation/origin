@@ -47,7 +47,6 @@ describe('account deposit confirmation', () => {
         await app.init();
 
         user1Address = await createDepositAddress(accountService, user1Id);
-        console.log(`LOG: ${user1Address}`);
     });
 
     after(async () => {

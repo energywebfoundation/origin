@@ -1,30 +1,31 @@
 import { ILoggedInUser } from '@energyweb/origin-backend-core';
 import {
-    UserDecorator,
+    ActiveOrganizationGuard,
     ActiveUserGuard,
     NullOrUndefinedResultInterceptor,
-    ActiveOrganizationGuard
+    UserDecorator
 } from '@energyweb/origin-backend-utils';
 import {
+    ClassSerializerInterceptor,
+    ConflictException,
     Controller,
     Get,
+    HttpCode,
+    HttpStatus,
+    InternalServerErrorException,
+    Logger,
+    Post,
     UseGuards,
     UseInterceptors,
-    ClassSerializerInterceptor,
-    ValidationPipe,
     UsePipes,
-    BadRequestException,
-    Post,
-    Logger,
-    InternalServerErrorException,
-    HttpStatus
+    ValidationPipe
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
+import { ApiBearerAuth, ApiConflictResponse, ApiResponse, ApiTags } from '@nestjs/swagger';
 
-import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { AccountService } from './account.service';
-import { AccountDTO } from './account.dto';
 import { AccountAlreadyExistsError } from './account-already-exists.error';
+import { AccountDTO } from './account.dto';
+import { AccountService } from './account.service';
 
 @ApiTags('account')
 @ApiBearerAuth('access-token')
@@ -49,8 +50,10 @@ export class AccountController {
     }
 
     @Post()
+    @HttpCode(HttpStatus.ACCEPTED)
     @UseGuards(AuthGuard(), ActiveUserGuard, ActiveOrganizationGuard)
     @ApiResponse({ status: HttpStatus.ACCEPTED, description: 'Created the Exchange Account' })
+    @ApiConflictResponse({ description: 'Account already exists' })
     public async create(@UserDecorator() { ownerId }: ILoggedInUser): Promise<boolean> {
         try {
             await this.accountService.create(ownerId);
@@ -59,7 +62,7 @@ export class AccountController {
             this.logger.error(error.message);
 
             if (error instanceof AccountAlreadyExistsError) {
-                throw new BadRequestException({ message: error.message });
+                throw new ConflictException({ message: error.message });
             }
 
             throw new InternalServerErrorException({
