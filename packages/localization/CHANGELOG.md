@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.12.0](https://github.com/energywebfoundation/origin/compare/@energyweb/localization@0.11.0...@energyweb/localization@0.12.0) (2020-12-04)
+
+
+### Features
+
+* **localization:** add localization for modal ([82531b1](https://github.com/energywebfoundation/origin/commit/82531b1d3d64b603a17f74bc42ad1e0b90cdea2d))
+* **localization:** user blockchain account connection ([aa33773](https://github.com/energywebfoundation/origin/commit/aa33773d49cead3d1711fb2fde9348751a39d679))
+
+
+
+
+
 # [0.11.0](https://github.com/energywebfoundation/origin/compare/@energyweb/localization@0.10.0...@energyweb/localization@0.11.0) (2020-11-30)
 
 

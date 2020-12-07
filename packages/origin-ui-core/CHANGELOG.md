@@ -3,6 +3,28 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.12.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-ui-core@1.11.0...@energyweb/origin-ui-core@1.12.0) (2020-12-04)
+
+
+### Bug Fixes
+
+* **origin-ui-core:** device type bug ([0503fc1](https://github.com/energywebfoundation/origin/commit/0503fc127eeb3dcb63a747f43ff8f89ef91eecf8))
+* **origin-ui-core:** leaving invitation modal without selecting an option ([868bf13](https://github.com/energywebfoundation/origin/commit/868bf13b710583bb67c187a82c5e95eac3dc1c6f))
+* **origin-ui-core:** send correct date to update user profile ([c2a1406](https://github.com/energywebfoundation/origin/commit/c2a14067512ba87cb69f2e6f2615e3dec9789b44))
+* **origin-ui-core:** sending role as string instead of number ([8f0eae8](https://github.com/energywebfoundation/origin/commit/8f0eae82a92561fbaf03765932f7c2d2c85e197d))
+* **origin-ui-core:** wrong links to settings page ([1360a3a](https://github.com/energywebfoundation/origin/commit/1360a3a6a8793d18cc2eee05b8e860d410e78e27))
+
+
+### Features
+
+* **origin-ui-core:** configure redirect from non-accessable routes ([72eb1c0](https://github.com/energywebfoundation/origin/commit/72eb1c0ae2b25d60ca0dad0ab52eab372ad2a5cc))
+* **origin-ui-core:** connecting to used blockchain account warning ([7deaebe](https://github.com/energywebfoundation/origin/commit/7deaebe28fb548d74c0bfafbd6a71f1f788e5f5f))
+* **origin-ui-core:** user blockchain account connection ([c390faf](https://github.com/energywebfoundation/origin/commit/c390fafce1c3632537d5553b15ba31af07304c95))
+
+
+
+
+
 # [1.11.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-ui-core@1.10.0...@energyweb/origin-ui-core@1.11.0) (2020-11-30)
 
 
