@@ -60,3 +60,21 @@ export const modules = [
     WithdrawalProcessorModule,
     BundleModule
 ];
+
+export {
+    AccountBalanceModule,
+    AccountDeployerModule,
+    AccountModule,
+    AssetModule,
+    DemandModule,
+    DepositWatcherModule,
+    MatchingEngineModule,
+    OrderBookModule,
+    OrderModule,
+    ProductModule,
+    RunnerModule,
+    TradeModule,
+    TransferModule,
+    WithdrawalProcessorModule,
+    BundleModule
+};
