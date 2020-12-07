@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.2.1](https://github.com/energywebfoundation/origin/compare/@energyweb/exchange-ui-core@1.2.0...@energyweb/exchange-ui-core@1.2.1) (2020-12-04)
+
+
+### Bug Fixes
+
+* **exchange-ui-core:** fix cancelling orders from the UI ([8af5273](https://github.com/energywebfoundation/origin/commit/8af5273fc28030862943b9efa150649f4c70cb6d))
+
+
+
+
+
 # [1.2.0](https://github.com/energywebfoundation/origin/compare/@energyweb/exchange-ui-core@1.1.0...@energyweb/exchange-ui-core@1.2.0) (2020-11-30)
 
 
