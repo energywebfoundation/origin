@@ -181,7 +181,10 @@ export const PendingInvitationsModal = (props: IProps) => {
                                     i18nKey="organization.invitations.dialog.invitationMessage"
                                     values={{
                                         admin,
-                                        role: t(roleNames[role]),
+                                        role: t(
+                                            roleNames.filter((roleObj) => roleObj.value === role)[0]
+                                                ?.label
+                                        ),
                                         orgName: name
                                     }}
                                 />
