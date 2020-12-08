@@ -1,3 +1,4 @@
+export * from './trade-accounting.service';
 export * from './trade-executed-event.handler';
 export * from './trade-persisted.event';
 export * from './trade-price-info.dto';

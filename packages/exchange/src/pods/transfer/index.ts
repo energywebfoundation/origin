@@ -1,6 +1,7 @@
 export * from './create-deposit.dto';
 export * from './create-withdrawal.dto';
 export * from './errors';
+export * from './transfer-accounting.service';
 export * from './transfer-direction';
 export * from './transfer-status';
 export * from './transfer.controller';
