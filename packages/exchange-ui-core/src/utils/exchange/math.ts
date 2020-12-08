@@ -28,7 +28,7 @@ export async function calculateTotalVolume(
             ).toString(),
             periodTimeFrame: period,
             start: start.toISOString(),
-            end: start.toISOString(),
+            end: end.toISOString(),
             product: {},
             boundToGenerationTime: false,
             excludeEnd: false
