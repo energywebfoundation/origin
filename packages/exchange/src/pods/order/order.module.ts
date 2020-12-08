@@ -7,14 +7,15 @@ import { MatchingEngineModule } from '../matching-engine/matching-engine.module'
 import { OrderController } from './order.controller';
 import { ProductModule } from '../product/product.module';
 import { AccountBalanceModule } from '../account-balance/account-balance.module';
+import { OrderAccountingService } from './order-accounting.service';
 
 @Module({
-    providers: [OrderService],
+    providers: [OrderService, OrderAccountingService],
     exports: [OrderService],
     imports: [
         TypeOrmModule.forFeature([Order]),
         forwardRef(() => MatchingEngineModule),
-        forwardRef(() => AccountBalanceModule),
+        AccountBalanceModule,
         ProductModule
     ],
     controllers: [OrderController]
