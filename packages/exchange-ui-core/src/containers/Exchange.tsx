@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Grid } from '@material-ui/core';
+import { Filter } from '@energyweb/exchange-core';
+import { ProductFilterDTO } from '@energyweb/exchange-client';
 import { UserStatus } from '@energyweb/origin-backend-core';
 import {
     EnergyFormatter,
@@ -42,23 +44,26 @@ export function Exchange(props: IProps) {
     const [generationDateStart, setGenerationDateStart] = useState<string>();
     const [generationDateEnd, setGenerationDateEnd] = useState<string>();
 
+    const orderbookFilter: ProductFilterDTO = {
+        deviceType: deviceType.length > 0 ? deviceType : undefined,
+        location: location.length > 0 ? location : undefined,
+        gridOperator: gridOperator.length > 0 ? gridOperator : undefined,
+        generationFrom: generationDateStart ?? undefined,
+        generationTo: generationDateEnd ?? undefined,
+        deviceTypeFilter: deviceType.length > 0 ? Filter.Specific : Filter.All,
+        locationFilter: location.length > 0 ? Filter.Specific : Filter.All,
+        gridOperatorFilter: gridOperator.length > 0 ? Filter.Specific : Filter.All,
+        generationTimeFilter:
+            generationDateStart && generationDateEnd ? Filter.Specific : Filter.All,
+        deviceVintageFilter: Filter.All
+    };
+
     const fetchData = async (checkIsMounted: () => boolean) => {
         const orderBookData =
             user && user?.status === UserStatus.Active && exchangeClient?.accessToken
-                ? await exchangeClient?.orderbookClient.getByProduct({
-                      deviceType,
-                      location,
-                      gridOperator,
-                      generationFrom: generationDateStart,
-                      generationTo: generationDateEnd
-                  })
-                : await exchangeClient?.orderbookClient.getByProductPublic({
-                      deviceType,
-                      location,
-                      gridOperator,
-                      generationFrom: generationDateStart,
-                      generationTo: generationDateEnd
-                  });
+                ? await exchangeClient?.orderbookClient.getByProduct(orderbookFilter)
+                : await exchangeClient?.orderbookClient.getByProductPublic(orderbookFilter);
+
         const fetchedData = orderBookData?.data;
 
         if (checkIsMounted()) {
@@ -129,6 +134,38 @@ export function Exchange(props: IProps) {
         dispatch(setLoading(false));
     }
 
+    function handleMarketValuesChange(values: IMarketFormValues): void {
+        if (JSON.stringify(values.deviceType) !== JSON.stringify(deviceType)) {
+            setDeviceType(values.deviceType);
+        }
+
+        const newLocation = values.location.map((l) => `${country};${l}`);
+        if (JSON.stringify(newLocation) !== JSON.stringify(location)) {
+            setLocation(newLocation);
+        }
+
+        const newGridOperator = values.gridOperator;
+        if (JSON.stringify(newGridOperator) !== JSON.stringify(gridOperator)) {
+            setGridOperator(newGridOperator);
+        }
+
+        const newGenerationDateStart = values.generationDateStart
+            ?.utcOffset(Number(environment.MARKET_UTC_OFFSET), true)
+            .startOf('month')
+            .toISOString();
+        if (JSON.stringify(newGenerationDateStart) !== JSON.stringify(generationDateStart)) {
+            setGenerationDateStart(newGenerationDateStart);
+        }
+
+        const newGenerationDateEnd = values.generationDateEnd
+            ?.utcOffset(Number(environment.MARKET_UTC_OFFSET), true)
+            .endOf('month')
+            .toISOString();
+        if (JSON.stringify(newGenerationDateEnd) !== JSON.stringify(generationDateEnd)) {
+            setGenerationDateEnd(newGenerationDateEnd);
+        }
+    }
+
     async function buyDirect(orderId: string, volume: string, price: number) {
         if (
             typeof orderId === 'undefined' ||
@@ -147,46 +184,7 @@ export function Exchange(props: IProps) {
                 onBid={onBid}
                 // eslint-disable-next-line @typescript-eslint/no-empty-function
                 onNotify={() => {}}
-                onChange={(values) => {
-                    if (JSON.stringify(values.deviceType) !== JSON.stringify(deviceType)) {
-                        setDeviceType(values.deviceType);
-                    }
-
-                    const newLocation = values.location.map((l) => `${country};${l}`);
-
-                    if (JSON.stringify(newLocation) !== JSON.stringify(location)) {
-                        setLocation(newLocation);
-                    }
-
-                    const newGridOperator = values.gridOperator;
-
-                    if (JSON.stringify(newGridOperator) !== JSON.stringify(gridOperator)) {
-                        setGridOperator(newGridOperator);
-                    }
-
-                    const newGenerationDateStart = values.generationDateStart
-                        ?.utcOffset(Number(environment.MARKET_UTC_OFFSET), true)
-                        .startOf('month')
-                        .toISOString();
-
-                    if (
-                        JSON.stringify(newGenerationDateStart) !==
-                        JSON.stringify(generationDateStart)
-                    ) {
-                        setGenerationDateStart(newGenerationDateStart);
-                    }
-
-                    const newGenerationDateEnd = values.generationDateEnd
-                        ?.utcOffset(Number(environment.MARKET_UTC_OFFSET), true)
-                        .endOf('month')
-                        .toISOString();
-
-                    if (
-                        JSON.stringify(newGenerationDateEnd) !== JSON.stringify(generationDateEnd)
-                    ) {
-                        setGenerationDateEnd(newGenerationDateEnd);
-                    }
-                }}
+                onChange={(values) => handleMarketValuesChange(values)}
                 energyUnit={EnergyFormatter.displayUnit}
                 currency={currency}
                 disableBidding={!user}
