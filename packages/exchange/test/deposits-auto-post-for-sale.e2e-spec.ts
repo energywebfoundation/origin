@@ -11,7 +11,7 @@ import { AccountService } from '../src/pods/account/account.service';
 import { Order } from '../src/pods/order/order.entity';
 
 import { authenticatedUser, bootstrapTestInstance } from './exchange';
-import { depositToken, issueToken, provider } from './utils';
+import { createDepositAddress, depositToken, issueToken, provider } from './utils';
 
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -50,8 +50,7 @@ describe('Deposits automatic posting for sale', () => {
         ));
 
         await app.init();
-
-        ({ address: depositAddress } = await accountService.getOrCreateAccount(user1Id));
+        depositAddress = await createDepositAddress(accountService, user1Id);
     });
 
     after(async () => {

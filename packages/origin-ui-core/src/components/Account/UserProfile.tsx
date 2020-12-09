@@ -1,4 +1,5 @@
-import { IUser, UserStatus, KYCStatus } from '@energyweb/origin-backend-core';
+import React, { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import {
     Button,
     createStyles,
@@ -13,16 +14,23 @@ import {
 import { Info } from '@material-ui/icons';
 import { Skeleton } from '@material-ui/lab';
 import { Form, Formik, FormikHelpers, yupToFormErrors, Field } from 'formik';
-import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { useDispatch, useSelector } from 'react-redux';
+import { IUser, UserStatus, KYCStatus } from '@energyweb/origin-backend-core';
 import { setLoading } from '../../features/general/actions';
 import { getBackendClient, getLoading } from '../../features/general/selectors';
-import { refreshUserOffchain, updateUserBlockchain } from '../../features/users';
+import {
+    refreshUserOffchain,
+    updateUserBlockchain,
+    createExchangeDepositAddress
+} from '../../features/users';
 import { NotificationType, showNotification } from '../../utils/notifications';
 import { useValidation } from '../../utils/validation';
 import { FormInput } from '../Form/FormInput';
-import { getActiveBlockchainAccountAddress, getUserOffchain } from '../../features/users/selectors';
+import {
+    getActiveBlockchainAccountAddress,
+    getUserOffchain,
+    getExchangeDepositAddress
+} from '../../features/users/selectors';
 import { IconPopover } from '../IconPopover';
 import { BackendClient } from '../../utils';
 
@@ -32,6 +40,7 @@ interface IFormValues extends IUser {
     isProfile?: boolean;
     currentPassword?: string;
     newPassword?: string;
+    exchangeDepositAddress: string;
 }
 
 const INITIAL_FORM_VALUES: IFormValues = {
@@ -41,6 +50,7 @@ const INITIAL_FORM_VALUES: IFormValues = {
     lastName: '',
     email: '',
     telephone: '',
+    exchangeDepositAddress: '',
     blockchainAccountAddress: '',
     blockchainAccountSignedMessage: '',
     notifications: null,
@@ -74,9 +84,16 @@ export function UserProfile() {
     const dispatch = useDispatch();
     const isLoading = useSelector(getLoading);
     const activeBlockchainAccountAddress = useSelector(getActiveBlockchainAccountAddress);
-
+    const exchangeAddres = useSelector(getExchangeDepositAddress);
     const { t } = useTranslation();
     const { Yup, yupLocaleInitialized } = useValidation();
+    let changeFieldValue: (name: string, value: any) => void;
+
+    useEffect(() => {
+        if (typeof changeFieldValue === 'function') {
+            changeFieldValue('exchangeDepositAddress', exchangeAddres);
+        }
+    }, [exchangeAddres]);
 
     const classes = useStyles(useTheme());
 
@@ -149,30 +166,24 @@ export function UserProfile() {
         formikActions.setSubmitting(false);
     }
 
-    function updateBlockchainAccount(blockchainAccountAddress: string, callback: () => void): void {
-        try {
-            if (activeBlockchainAccountAddress === null) {
-                throw Error(t('user.profile.noBlockchainConnection'));
-            } else if (blockchainAccountAddress === activeBlockchainAccountAddress.toLowerCase()) {
-                throw Error(t('user.profile.blockchainAlreadyLinked'));
-            }
-            dispatch(
-                updateUserBlockchain({
-                    user,
-                    activeAccount: activeBlockchainAccountAddress,
-                    callback
-                })
-            );
-        } catch (error) {
-            if (error?.message) {
-                showNotification(error?.message, NotificationType.Error);
-            }
-        }
+    function createExchangeAddress(): void {
+        dispatch(createExchangeDepositAddress());
+    }
+
+    function updateBlockchainAccount(callback: () => void): void {
+        dispatch(
+            updateUserBlockchain({
+                user,
+                activeAccount: activeBlockchainAccountAddress,
+                callback
+            })
+        );
     }
 
     const initialFormValues: IFormValues = {
         ...user,
-        blockchainAccountAddress: user.blockchainAccountAddress ? user.blockchainAccountAddress : ''
+        blockchainAccountAddress: user.blockchainAccountAddress || '',
+        exchangeDepositAddress: exchangeAddres || ''
     };
 
     return (
@@ -211,6 +222,7 @@ export function UserProfile() {
             {(formikProps) => {
                 const { isSubmitting, touched, values, setFieldValue } = formikProps;
                 const fieldDisabled = isSubmitting;
+                changeFieldValue = setFieldValue;
 
                 return (
                     <>
@@ -406,6 +418,39 @@ export function UserProfile() {
                                 </Typography>
                                 <Grid style={{ paddingTop: '20px', paddingBottom: '20px' }}>
                                     <Typography variant="h6">
+                                        {t('user.properties.exchangeAddressTitle')}
+                                    </Typography>
+                                    <Box className={classes.buttonAndIconHolder}>
+                                        {exchangeAddres ? (
+                                            <Grid item xs={4}>
+                                                <FormInput
+                                                    property="exchangeDepositAddress"
+                                                    disabled={true}
+                                                />
+                                            </Grid>
+                                        ) : (
+                                            <Button
+                                                type="button"
+                                                variant="contained"
+                                                color="primary"
+                                                disabled={isLoading}
+                                                onClick={createExchangeAddress}
+                                            >
+                                                {t('user.actions.createDepositAddress')}
+                                            </Button>
+                                        )}
+                                        <IconPopover
+                                            icon={Info}
+                                            popoverText={[
+                                                t('user.popover.exchangeAddressWhatFor'),
+                                                t('user.popover.exchangeAddressHowTo')
+                                            ]}
+                                            className={classes.infoIcon}
+                                        />
+                                    </Box>
+                                </Grid>
+                                <Grid style={{ paddingTop: '20px', paddingBottom: '20px' }}>
+                                    <Typography variant="h6">
                                         {t('user.properties.userBlockchainAddress')}
                                     </Typography>
 
@@ -415,8 +460,6 @@ export function UserProfile() {
                                                 <FormInput
                                                     property="blockchainAccountAddress"
                                                     disabled={true}
-                                                    className="mt-3"
-                                                    required
                                                 />
                                             </Grid>
                                         </Grid>
@@ -427,23 +470,14 @@ export function UserProfile() {
                                             variant="contained"
                                             color="primary"
                                             disabled={isLoading}
-                                            onClick={() => {
-                                                formikProps.validateForm().then(() => {
-                                                    formikProps.values.isBlockchain = true;
-                                                    formikProps.values.isPassword = false;
-                                                    formikProps.values.isProfile = false;
-
-                                                    updateBlockchainAccount(
-                                                        values.blockchainAccountAddress,
-                                                        () => {
-                                                            setFieldValue(
-                                                                'blockchainAccountAddress',
-                                                                activeBlockchainAccountAddress
-                                                            );
-                                                        }
+                                            onClick={() =>
+                                                updateBlockchainAccount(() => {
+                                                    setFieldValue(
+                                                        'blockchainAccountAddress',
+                                                        activeBlockchainAccountAddress
                                                     );
-                                                });
-                                            }}
+                                                })
+                                            }
                                         >
                                             {!user?.blockchainAccountAddress
                                                 ? t('user.actions.connectBlockchain')
@@ -456,7 +490,7 @@ export function UserProfile() {
                                                 t('user.popover.blockchainWhatFor'),
                                                 t('user.popover.blockchainHowTo')
                                             ]}
-                                            classObj={classes.infoIcon}
+                                            className={classes.infoIcon}
                                         />
                                     </Box>
                                 </Grid>

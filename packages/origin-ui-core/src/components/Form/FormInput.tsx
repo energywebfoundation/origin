@@ -5,7 +5,7 @@ import { TextField, TextFieldProps } from 'formik-material-ui';
 
 interface IProps extends Omit<TextFieldProps, 'variant' | 'form' | 'field' | 'meta'> {
     property: string;
-    className: string;
+    className?: string;
     label?: string;
     variant?: FormControlTypeMap['props']['variant'];
     required?: boolean;

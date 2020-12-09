@@ -1,11 +1,11 @@
+import { OrderStatus } from '@energyweb/exchange-core';
+import { DatabaseService } from '@energyweb/origin-backend-utils';
 import { HttpStatus, INestApplication } from '@nestjs/common';
 import { expect } from 'chai';
-import { ethers, Contract } from 'ethers';
+import { Contract, ethers } from 'ethers';
 import request from 'supertest';
-import { OrderStatus } from '@energyweb/exchange-core';
 
-import { DatabaseService } from '@energyweb/origin-backend-utils';
-import { AccountDTO } from '../src/pods/account/account.dto';
+import { AccountBalanceDTO } from '../src/pods/account-balance/account-balance.dto';
 import { AccountService } from '../src/pods/account/account.service';
 import { CreateAskDTO } from '../src/pods/order/create-ask.dto';
 import { CreateBidDTO } from '../src/pods/order/create-bid.dto';
@@ -14,7 +14,7 @@ import { RequestWithdrawalDTO } from '../src/pods/transfer/create-withdrawal.dto
 import { Transfer } from '../src/pods/transfer/transfer.entity';
 import { TransferService } from '../src/pods/transfer/transfer.service';
 import { authenticatedUser, bootstrapTestInstance } from './exchange';
-import { issueToken, MWh } from './utils';
+import { createDepositAddress, issueToken, MWh } from './utils';
 import { DB_TABLE_PREFIX } from '../src/utils/tablePrefix';
 
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
@@ -74,7 +74,7 @@ describe('account ask order send', () => {
     beforeEach(async () => {
         await databaseService.truncate(`${DB_TABLE_PREFIX}_order`, `${DB_TABLE_PREFIX}_transfer`);
 
-        ({ address: user1Address } = await accountService.getOrCreateAccount(user1Id));
+        user1Address = await createDepositAddress(accountService, user1Id);
         deposit = await createDeposit(user1Address);
     });
 
@@ -200,13 +200,12 @@ describe('account ask order send', () => {
             .expect(HttpStatus.CREATED);
 
         await request(app.getHttpServer())
-            .get('/account')
+            .get('/account-balance')
             .expect(HttpStatus.OK)
             .expect((res) => {
-                const account = res.body as AccountDTO;
+                const account = res.body as AccountBalanceDTO;
 
-                expect(account.address).equals(user1Address);
-                expect(account.balances.available.length).equals(0);
+                expect(account.available.length).equals(0);
             });
 
         // wait to withdrawal to be finished to not mess with tx nonces

@@ -62,7 +62,7 @@ export function MultiSelectAutocomplete(props: IOwnProps) {
         if (selectedValues.length > 0) {
             setRequiredState(false);
         } else {
-            setRequiredState(true);
+            setRequiredState(required);
         }
     }, [selectedValues]);
 

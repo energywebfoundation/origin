@@ -308,15 +308,14 @@ export function* fetchDataAfterConfigurationChange(
                 (c): ICertificateViewItem => enhanceCertificate(c, blockchainAccountAddress)
             );
 
-            const { accountClient }: ExchangeClient = yield select(getExchangeClient);
+            const { accountBalanceClient }: ExchangeClient = yield select(getExchangeClient);
 
-            const { data: offChainCertificates } = yield apply(
-                accountClient,
-                accountClient.getAccount,
-                null
-            );
-            const available = yield all(
-                offChainCertificates.balances.available.map((asset) =>
+            const {
+                data: { available }
+            } = yield apply(accountBalanceClient, accountBalanceClient.get, null);
+
+            const enhanced = yield all(
+                available.map((asset) =>
                     call(
                         findEnhancedExchangeCertificate,
                         asset,
@@ -325,7 +324,7 @@ export function* fetchDataAfterConfigurationChange(
                     )
                 )
             );
-            const certificates = enrichedCertificates.concat(available);
+            const certificates = enrichedCertificates.concat(enhanced);
             for (const certificate of certificates) {
                 yield put(update ? updateCertificate(certificate) : addCertificate(certificate));
             }

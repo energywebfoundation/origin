@@ -5,7 +5,7 @@ import { ValidateNested } from 'class-validator';
 
 import { Asset } from '../asset/asset.entity';
 
-export class AccountAsset {
+export class AccountAssetDTO {
     @ApiProperty({ type: Asset })
     @ValidateNested()
     @Type(() => Asset)
@@ -15,7 +15,7 @@ export class AccountAsset {
     @Transform((value: BN) => value.toString(10))
     public amount: BN;
 
-    public constructor(accountAsset: Partial<AccountAsset>) {
+    public constructor(accountAsset: Partial<AccountAssetDTO>) {
         Object.assign(this, accountAsset);
     }
 }

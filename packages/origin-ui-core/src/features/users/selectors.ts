@@ -18,3 +18,6 @@ export const getShowPendingInvitations = (state: ICoreState): boolean =>
 export const getIRecAccount = (state: ICoreState) => state.usersState.iRecAccount;
 
 export const getUserState = (state: ICoreState): IUsersState => state.usersState;
+
+export const getExchangeDepositAddress = (state: ICoreState) =>
+    state.usersState.exchangeDepositAddress;
