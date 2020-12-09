@@ -38,7 +38,7 @@ export function UpdateSupplyModal(props: IProps) {
             loadPage(1);
             showNotification(t('device.feedback.supplyUpdatedSuccess'), NotificationType.Success);
         } catch (error) {
-            showNotification(t('device.feedback.supplyUpdatedError'), NotificationType.Error);
+            showNotification(t('device.feedback.supplyUpdateError'), NotificationType.Error);
         }
     }
 

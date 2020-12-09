@@ -112,6 +112,10 @@ function* requestCertificatesSaga(): SagaIterator {
                 data: { address }
             } = yield call([accountClient, accountClient.getAccount]);
 
+            if (!address) {
+                throw Error('Only users with Exchange Deposit Address can request certificates.');
+            }
+
             yield apply(certificationRequestsClient, certificationRequestsClient.create, [
                 {
                     to: address,
@@ -210,16 +214,15 @@ function* resyncCertificateSaga(): SagaIterator {
         const { id, assetId } = action.payload;
 
         const certificate: ICertificate = yield call(getCertificate, id);
-        const { accountClient }: ExchangeClient = yield select(getExchangeClient);
         const user = yield select(getUserOffchain);
 
-        const { data: exchangeAccount } = yield apply(
-            accountClient,
-            accountClient.getAccount,
-            null
-        );
+        const { accountBalanceClient }: ExchangeClient = yield select(getExchangeClient);
 
-        const asset = exchangeAccount.balances.available.find((a) => a.asset.id === assetId);
+        const {
+            data: { available }
+        } = yield apply(accountBalanceClient, accountBalanceClient.get, null);
+
+        const asset = available.find((a) => a.asset.id === assetId);
         yield put(
             updateCertificate(enhanceCertificate(certificate, user.blockchainAccountAddress, asset))
         );

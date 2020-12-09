@@ -18,6 +18,7 @@ import { authenticatedUser, bootstrapTestInstance } from './exchange';
 import { IExternalDeviceService, IProductInfo } from '../src/interfaces';
 import { CreateAssetDTO } from '../src/pods/asset/create-asset.dto';
 import { ProductFilterDTO } from '../src/pods/order-book/product-filter.dto';
+import { createDepositAddress } from './utils';
 
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -255,7 +256,7 @@ describe('orderbook tests', () => {
 
         await app.init();
 
-        const { address } = await accountService.getOrCreateAccount(user1Id);
+        const address = await createDepositAddress(accountService, user1Id);
         await createTrades(address);
 
         await createAsks(address);

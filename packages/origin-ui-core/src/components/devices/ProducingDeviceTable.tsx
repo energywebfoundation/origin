@@ -16,7 +16,7 @@ import {
     ICustomFilterDefinition,
     CustomFilterInputType
 } from '../Table';
-import { getUserOffchain } from '../../features/users/selectors';
+import { getUserOffchain, getExchangeDepositAddress } from '../../features/users/selectors';
 import { setLoading } from '../../features/general/actions';
 import { producingDeviceCreatedOrUpdated } from '../../features/producingDevices/actions';
 import {
@@ -58,6 +58,7 @@ export function ProducingDeviceTable(props: IOwnProps) {
     const producingDevices = useSelector(getProducingDevices);
     const baseURL = useSelector(getBaseURL);
     const environment = useSelector(getEnvironment);
+    const exchangeDepositAddress = useSelector(getExchangeDepositAddress);
     const [showRequestCertModal, setShowRequestCertModal] = useState(false);
     const [producingDeviceForModal, setProducingDeviceForModal] = useState(null);
 
@@ -238,6 +239,7 @@ export function ProducingDeviceTable(props: IOwnProps) {
     });
 
     if (
+        exchangeDepositAddress &&
         props.actions.requestCertificates &&
         isRole(user, Role.OrganizationDeviceManager, Role.OrganizationAdmin)
     ) {
