@@ -45,17 +45,17 @@ export function Exchange(props: IProps) {
     const [generationDateEnd, setGenerationDateEnd] = useState<string>();
 
     const orderbookFilter: ProductFilterDTO = {
+        deviceTypeFilter: deviceType.length > 0 ? Filter.Specific : Filter.Unspecified,
+        locationFilter: location.length > 0 ? Filter.Specific : Filter.Unspecified,
+        gridOperatorFilter: gridOperator.length > 0 ? Filter.Specific : Filter.Unspecified,
+        generationTimeFilter:
+            generationDateStart && generationDateEnd ? Filter.Specific : Filter.Unspecified,
+        deviceVintageFilter: Filter.Unspecified,
         deviceType: deviceType.length > 0 ? deviceType : undefined,
         location: location.length > 0 ? location : undefined,
         gridOperator: gridOperator.length > 0 ? gridOperator : undefined,
         generationFrom: generationDateStart ?? undefined,
-        generationTo: generationDateEnd ?? undefined,
-        deviceTypeFilter: deviceType.length > 0 ? Filter.Specific : Filter.All,
-        locationFilter: location.length > 0 ? Filter.Specific : Filter.All,
-        gridOperatorFilter: gridOperator.length > 0 ? Filter.Specific : Filter.All,
-        generationTimeFilter:
-            generationDateStart && generationDateEnd ? Filter.Specific : Filter.All,
-        deviceVintageFilter: Filter.All
+        generationTo: generationDateEnd ?? undefined
     };
 
     const fetchData = async (checkIsMounted: () => boolean) => {
