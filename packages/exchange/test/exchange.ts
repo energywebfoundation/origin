@@ -20,6 +20,7 @@ import {
     IExternalDeviceService,
     IProductInfo
 } from '../src/interfaces';
+import { AccountBalanceService } from '../src/pods/account-balance/account-balance.service';
 import { AccountService } from '../src/pods/account/account.service';
 import { BundleService } from '../src/pods/bundle/bundle.service';
 import { DemandService } from '../src/pods/demand/demand.service';
@@ -159,6 +160,7 @@ export const bootstrapTestInstance = async (deviceServiceMock?: IExternalDeviceS
 
     const transferService = await app.resolve<TransferService>(TransferService);
     const accountService = await app.resolve<AccountService>(AccountService);
+    const accountBalanceService = await app.resolve<AccountBalanceService>(AccountBalanceService);
     const databaseService = await app.resolve<DatabaseService>(DatabaseService);
     const demandService = await app.resolve<DemandService>(DemandService);
     const orderService = await app.resolve<OrderService>(OrderService);
@@ -173,6 +175,7 @@ export const bootstrapTestInstance = async (deviceServiceMock?: IExternalDeviceS
     return {
         transferService,
         accountService,
+        accountBalanceService,
         databaseService,
         demandService,
         orderService,

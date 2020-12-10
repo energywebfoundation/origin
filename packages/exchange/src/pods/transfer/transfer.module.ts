@@ -4,19 +4,20 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AccountBalanceModule } from '../account-balance/account-balance.module';
 import { AccountModule } from '../account/account.module';
 import { AssetModule } from '../asset/asset.module';
-import { WithdrawalProcessorModule } from '../withdrawal-processor/withdrawal-processor.module';
+import { TransferAccountingService } from './transfer-accounting.service';
 import { TransferController } from './transfer.controller';
 import { Transfer } from './transfer.entity';
 import { TransferService } from './transfer.service';
+import { CqrsModule } from '@nestjs/cqrs';
 
 @Module({
-    providers: [TransferService],
+    providers: [TransferService, TransferAccountingService],
     imports: [
         TypeOrmModule.forFeature([Transfer]),
         AssetModule,
         forwardRef(() => AccountModule),
-        forwardRef(() => AccountBalanceModule),
-        forwardRef(() => WithdrawalProcessorModule)
+        AccountBalanceModule,
+        CqrsModule
     ],
     exports: [TransferService],
     controllers: [TransferController]

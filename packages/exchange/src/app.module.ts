@@ -11,7 +11,6 @@ import { AccountModule } from './pods/account/account.module';
 import { AssetModule } from './pods/asset/asset.module';
 import { BundleModule } from './pods/bundle/bundle.module';
 import { DemandModule } from './pods/demand/demand.module';
-import { DepositWatcherModule } from './pods/deposit-watcher/deposit-watcher.module';
 import { MatchingEngineModule } from './pods/matching-engine/matching-engine.module';
 import { OrderBookModule } from './pods/order-book/order-book.module';
 import { OrderModule } from './pods/order/order.module';
@@ -19,7 +18,6 @@ import { ProductModule } from './pods/product/product.module';
 import { RunnerModule } from './pods/runner/runner.module';
 import { TradeModule } from './pods/trade/trade.module';
 import { TransferModule } from './pods/transfer/transfer.module';
-import { WithdrawalProcessorModule } from './pods/withdrawal-processor/withdrawal-processor.module';
 
 const getEnvFilePath = () => {
     const pathsToTest = ['../../../../../.env', '../../../../../../.env'];
@@ -56,8 +54,6 @@ const getEnvFilePath = () => {
         ProductModule,
         AccountDeployerModule,
         AccountBalanceModule,
-        DepositWatcherModule,
-        WithdrawalProcessorModule,
         RunnerModule,
         BundleModule
     ],

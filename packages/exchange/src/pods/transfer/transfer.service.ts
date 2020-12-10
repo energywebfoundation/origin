@@ -7,12 +7,14 @@ import { AccountBalanceService } from '../account-balance/account-balance.servic
 import { AccountService } from '../account/account.service';
 import { Asset } from '../asset/asset.entity';
 import { AssetService } from '../asset/asset.service';
-import { WithdrawalProcessorService } from '../withdrawal-processor/withdrawal-processor.service';
 import { CreateDepositDTO } from './create-deposit.dto';
 import { RequestWithdrawalDTO } from './create-withdrawal.dto';
 import { TransferDirection } from './transfer-direction';
 import { TransferStatus } from './transfer-status';
 import { Transfer } from './transfer.entity';
+import { EventBus } from '@nestjs/cqrs';
+import { BulkTradeExecutedEvent } from '../matching-engine';
+import { WithdrawalRequestedEvent } from './withdrawal-requested.event';
 
 @Injectable()
 export class TransferService {
@@ -27,8 +29,7 @@ export class TransferService {
         private readonly connection: Connection,
         @Inject(forwardRef(() => AccountBalanceService))
         private readonly accountBalanceService: AccountBalanceService,
-        @Inject(forwardRef(() => WithdrawalProcessorService))
-        private readonly withdrawalProcessorService: WithdrawalProcessorService
+        private readonly eventBus: EventBus
     ) {}
 
     public async getAll(userId: string) {
@@ -84,7 +85,7 @@ export class TransferService {
 
             this.logger.debug(`Created new withdrawal with id=${storedWithdrawal.id}`);
 
-            this.withdrawalProcessorService.requestWithdrawal(storedWithdrawal);
+            this.eventBus.publish(new WithdrawalRequestedEvent(storedWithdrawal));
 
             return storedWithdrawal.id;
         } catch (error) {

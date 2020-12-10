@@ -1,4 +1,4 @@
-import { OrderSide, ActionResultEvent, ActionResult, OrderStatus } from '@energyweb/exchange-core';
+import { ActionResult, ActionResultEvent, OrderSide, OrderStatus } from '@energyweb/exchange-core';
 import { forwardRef, Inject, Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import BN from 'bn.js';
@@ -19,8 +19,6 @@ import { Order } from './order.entity';
 @Injectable()
 export class OrderService {
     private readonly logger = new Logger(OrderService.name);
-
-    private askOrderProcessor = new Set<string>();
 
     constructor(
         @InjectRepository(Order)

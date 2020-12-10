@@ -1,6 +1,8 @@
-import { ContractTransaction, Contract, ethers } from 'ethers';
 import { Contracts } from '@energyweb/issuer';
 import { getProviderWithFallback } from '@energyweb/utils-general';
+import { Contract, ContractTransaction, ethers } from 'ethers';
+import polly from 'polly-js';
+import { AccountService } from '../src/pods/account/account.service';
 
 const registryInterface = new ethers.utils.Interface(Contracts.IssuerJSON.abi);
 
@@ -43,18 +45,27 @@ export const issueToken = async (
     return args[2].toString();
 };
 
-export const depositToken = async (
-    registry: Contract,
-    sender: ethers.Wallet,
-    to: string,
-    amount: string,
-    id: number
-) => {
-    const registryWithUserAsSigner = registry.connect(sender);
-
-    await registryWithUserAsSigner.safeTransferFrom(sender.address, to, id, amount, '0x00');
-};
-
 export const provider = getProviderWithFallback(web3);
 
 export const MWh = 10 ** 6;
+
+export const createDepositAddress = async (accountService: AccountService, userId: string) => {
+    const account = await accountService.getAccount(userId);
+
+    if (account) {
+        return account.address;
+    }
+
+    await accountService.create(userId);
+    const { address } = await polly()
+        .waitAndRetry(5)
+        .executeForPromise(async () => {
+            const a = await accountService.getAccount(userId);
+            if (!a) {
+                throw new Error('No account');
+            }
+            return a;
+        });
+
+    return address;
+};
