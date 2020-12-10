@@ -3,6 +3,30 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.4.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-backend-app@1.3.0...@energyweb/origin-backend-app@1.4.0) (2020-12-04)
+
+
+### Features
+
+* **origin-backend-app:** new mandrill transport lib with attachments support ([60bd910](https://github.com/energywebfoundation/origin/commit/60bd9108bf09bd4815b2bfcd1bcba54b5f528562))
+* **origin-backend-app:** updated irec reg email template ([846bd0b](https://github.com/energywebfoundation/origin/commit/846bd0b88904fd9e4720e16794d412a0c7b028df))
+* **origin-backend-app:** updated send message result processing ([6c8407d](https://github.com/energywebfoundation/origin/commit/6c8407dd9451f79a4942cdbddd71e3aef5cc5cd8))
+
+
+
+
+
+# [1.3.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-backend-app@1.2.1...@energyweb/origin-backend-app@1.3.0) (2020-11-30)
+
+
+### Features
+
+* **origin-backend-app:** rearrange imports ([31e47ad](https://github.com/energywebfoundation/origin/commit/31e47ad2dc6341c57ba9b0998620e7a6c6984fe0))
+
+
+
+
+
 ## [1.2.1](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-backend-app@1.2.0...@energyweb/origin-backend-app@1.2.1) (2020-11-20)
 
 

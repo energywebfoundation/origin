@@ -1,4 +1,5 @@
 import { AppModule as ExchangeModule, entities as ExchangeEntities } from '@energyweb/exchange';
+import { ExchangeErc1888Module } from '@energyweb/exchange-io-erc1888';
 import {
     AppModule as OriginBackendModule,
     entities as OriginBackendEntities,
@@ -71,6 +72,7 @@ export class OriginAppModule {
                 OriginBackendModule.register(smartMeterReadingsAdapter),
                 IntegrationModule,
                 ExchangeModule,
+                ExchangeErc1888Module,
                 IRECOrganizationModule,
                 IssuerModule,
                 MailModule,

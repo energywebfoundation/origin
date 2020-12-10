@@ -10,12 +10,13 @@ import {
     Order,
     IDeviceSettings,
     IExternalDeviceService,
-    IProductInfo
+    IProductInfo,
+    testUtils
 } from '@energyweb/exchange';
 
 import { authenticatedUser, bootstrapTestInstance } from './exchange';
-import { createDepositAddress, depositToken, issueToken, provider } from './utils';
 
+const { createDepositAddress, depositToken, issueToken, provider } = testUtils;
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 describe('Deposits automatic posting for sale', () => {
@@ -70,7 +71,6 @@ describe('Deposits automatic posting for sale', () => {
 
     it('should automatically post deposit token to sell', async () => {
         const depositAmount = '10';
-
         const id = await issueToken(
             issuer,
             tokenReceiver.address,

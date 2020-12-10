@@ -14,12 +14,13 @@ import {
     TransferStatus,
     Transfer,
     TransferService,
-    DB_TABLE_PREFIX
+    DB_TABLE_PREFIX,
+    testUtils
 } from '@energyweb/exchange';
 
 import { authenticatedUser, bootstrapTestInstance } from './exchange';
-import { createDepositAddress, depositToken, issueToken, MWh, provider } from './utils';
 
+const { createDepositAddress, depositToken, issueToken, MWh, provider } = testUtils;
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 describe('Deposits using deployed registry', () => {
@@ -72,6 +73,7 @@ describe('Deposits using deployed registry', () => {
         const res = await request(app.getHttpServer()).get('/transfer/all');
         const [transfer] = res.body as Transfer[];
 
+        // eslint-disable-next-line no-unused-expressions
         expect(transfer.id).to.be.ok;
         expect(transfer.asset.tokenId).equals(tokenId.toString());
 

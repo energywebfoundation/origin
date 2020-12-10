@@ -45,6 +45,18 @@ export const issueToken = async (
     return args[2].toString();
 };
 
+export const depositToken = async (
+    registry: Contract,
+    sender: ethers.Wallet,
+    to: string,
+    amount: string,
+    id: number
+) => {
+    const registryWithUserAsSigner = registry.connect(sender);
+
+    await registryWithUserAsSigner.safeTransferFrom(sender.address, to, id, amount, '0x00');
+};
+
 export const provider = getProviderWithFallback(web3);
 
 export const MWh = 10 ** 6;

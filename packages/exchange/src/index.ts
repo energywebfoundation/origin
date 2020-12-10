@@ -24,6 +24,7 @@ export * from './app.module';
 export * from './interfaces';
 export * from './pods';
 export * from './utils';
+export * as testUtils from '../test/utils';
 
 export {
     WithdrawalRequestedEvent,
