@@ -1,24 +1,26 @@
-/* eslint-disable no-unused-expressions */
 import { DatabaseService } from '@energyweb/origin-backend-utils';
 import { HttpStatus, INestApplication } from '@nestjs/common';
 import { expect } from 'chai';
 import { Contract, ethers } from 'ethers';
 import moment from 'moment';
 import request from 'supertest';
+import {
+    AccountBalanceDTO,
+    AccountService,
+    CreateAskDTO,
+    Order,
+    RequestWithdrawalDTO,
+    TransferDirection,
+    TransferStatus,
+    Transfer,
+    TransferService,
+    DB_TABLE_PREFIX,
+    testUtils
+} from '@energyweb/exchange';
 
-import { AccountBalanceDTO } from '../src/pods/account-balance/account-balance.dto';
-import { AccountService } from '../src/pods/account/account.service';
-import { CreateAskDTO } from '../src/pods/order/create-ask.dto';
-import { Order } from '../src/pods/order/order.entity';
-import { RequestWithdrawalDTO } from '../src/pods/transfer/create-withdrawal.dto';
-import { TransferDirection } from '../src/pods/transfer/transfer-direction';
-import { TransferStatus } from '../src/pods/transfer/transfer-status';
-import { Transfer } from '../src/pods/transfer/transfer.entity';
-import { TransferService } from '../src/pods/transfer/transfer.service';
-import { DB_TABLE_PREFIX } from '../src/utils/tablePrefix';
 import { authenticatedUser, bootstrapTestInstance } from './exchange';
-import { createDepositAddress, depositToken, issueToken, MWh, provider } from './utils';
 
+const { createDepositAddress, depositToken, issueToken, MWh, provider } = testUtils;
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 describe('Deposits using deployed registry', () => {
@@ -71,6 +73,7 @@ describe('Deposits using deployed registry', () => {
         const res = await request(app.getHttpServer()).get('/transfer/all');
         const [transfer] = res.body as Transfer[];
 
+        // eslint-disable-next-line no-unused-expressions
         expect(transfer.id).to.be.ok;
         expect(transfer.asset.tokenId).equals(tokenId.toString());
 
@@ -184,7 +187,7 @@ describe('Deposits using deployed registry', () => {
 
         const endBalance = await getBalance(withdrawalAddress, tokenId);
 
-        expect(endBalance.gt(startBalance)).to.be.true;
+        expect(endBalance.gt(startBalance)).to.equal(true);
     });
 
     it('should re-test unconfirmed withdrawal on start', async () => {
@@ -223,7 +226,7 @@ describe('Deposits using deployed registry', () => {
         expect(transfer.confirmationBlock).to.be.equal(confirmed.confirmationBlock);
     });
 
-    it('should not allow withdraw to more than available assets', async () => {
+    it('should not allow withdrawing to more than available assets', async () => {
         const withdrawalAddress = ethers.Wallet.createRandom().address;
         const withdrawalAmount = '10';
         const depositAmount = '10';

@@ -8,3 +8,4 @@ export * from './transfer.controller';
 export * from './transfer.entity';
 export * from './transfer.module';
 export * from './transfer.service';
+export * from './withdrawal-requested.event';

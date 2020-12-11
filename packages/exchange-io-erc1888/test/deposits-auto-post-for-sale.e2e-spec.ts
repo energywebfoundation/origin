@@ -5,14 +5,18 @@ import { expect } from 'chai';
 import { Contract, ethers } from 'ethers';
 import moment from 'moment';
 import request from 'supertest';
-import { IDeviceSettings, IExternalDeviceService, IProductInfo } from '../src/interfaces';
-
-import { AccountService } from '../src/pods/account/account.service';
-import { Order } from '../src/pods/order/order.entity';
+import {
+    AccountService,
+    Order,
+    IDeviceSettings,
+    IExternalDeviceService,
+    IProductInfo,
+    testUtils
+} from '@energyweb/exchange';
 
 import { authenticatedUser, bootstrapTestInstance } from './exchange';
-import { createDepositAddress, depositToken, issueToken, provider } from './utils';
 
+const { createDepositAddress, depositToken, issueToken, provider } = testUtils;
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 describe('Deposits automatic posting for sale', () => {
@@ -67,7 +71,6 @@ describe('Deposits automatic posting for sale', () => {
 
     it('should automatically post deposit token to sell', async () => {
         const depositAmount = '10';
-
         const id = await issueToken(
             issuer,
             tokenReceiver.address,

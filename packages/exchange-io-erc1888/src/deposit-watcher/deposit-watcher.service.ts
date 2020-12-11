@@ -6,12 +6,15 @@ import { ModuleRef } from '@nestjs/core';
 import { Contract, ethers, providers } from 'ethers';
 import moment from 'moment';
 
-import { IExchangeConfigurationService, IExternalDeviceService } from '../../interfaces';
-import { AccountService } from '../account/account.service';
-import { CreateAskDTO } from '../order/create-ask.dto';
-import { OrderService } from '../order/order.service';
-import { TransferStatus } from '../transfer/transfer-status';
-import { TransferService } from '../transfer/transfer.service';
+import {
+    IExchangeConfigurationService,
+    IExternalDeviceService,
+    AccountService,
+    CreateAskDTO,
+    OrderService,
+    TransferStatus,
+    TransferService
+} from '@energyweb/exchange';
 
 @Injectable()
 export class DepositWatcherService implements OnModuleInit {
