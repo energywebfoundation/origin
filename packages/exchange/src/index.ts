@@ -19,9 +19,6 @@ import { RunnerModule } from './pods/runner/runner.module';
 import { Trade } from './pods/trade/trade.entity';
 import { TradeModule } from './pods/trade/trade.module';
 import { TransferModule, Transfer } from './pods/transfer';
-import { Transfer } from './pods/transfer/transfer.entity';
-import { TransferModule } from './pods/transfer/transfer.module';
-import { WithdrawalProcessorModule } from './pods/withdrawal-processor/withdrawal-processor.module';
 
 export * from './app.module';
 export * from './interfaces';

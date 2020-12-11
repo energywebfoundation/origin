@@ -1,5 +1,6 @@
 import { forwardRef, Inject, Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { EventBus } from '@nestjs/cqrs';
 import BN from 'bn.js';
 import { Connection, EntityManager, FindOneOptions, Repository } from 'typeorm';
 
@@ -12,8 +13,6 @@ import { RequestWithdrawalDTO } from './create-withdrawal.dto';
 import { TransferDirection } from './transfer-direction';
 import { TransferStatus } from './transfer-status';
 import { Transfer } from './transfer.entity';
-import { EventBus } from '@nestjs/cqrs';
-import { BulkTradeExecutedEvent } from '../matching-engine';
 import { WithdrawalRequestedEvent } from './withdrawal-requested.event';
 
 @Injectable()
