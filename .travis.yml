@@ -49,6 +49,7 @@ before_deploy:
     - git remote set-url origin "https://${GITHUB_TOKEN}@github.com/energywebfoundation/origin.git" > /dev/null 2>&1
     - git reset --hard
     - echo "//registry.npmjs.org/:_authToken=\${NPM_TOKEN}" >> $HOME/.npmrc 2> /dev/null
+    - npm whoami
     - wget -qO- https://toolbelt.heroku.com/install-ubuntu.sh | sh
 
 install:
