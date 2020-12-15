@@ -1,10 +1,6 @@
 import BN from 'bn.js';
-import * as Moment from 'moment';
-import { extendMoment } from 'moment-range';
 
-import { Product } from './Product';
-
-const moment = extendMoment(Moment);
+import { IMatchableProduct } from './IMatchableProduct';
 
 export enum OrderSide {
     Bid,
@@ -24,12 +20,23 @@ export interface IOrder {
     id: string;
     side: OrderSide;
     validFrom: Date;
-    product: Product;
     price: number;
     volume: BN;
+    userId: string;
+    isFilled: boolean;
+    createdAt: Date;
+    assetId?: string;
 }
 
-export abstract class Order implements IOrder {
+export interface IMatchableOrder<TProduct, TProductFilter> extends IOrder {
+    filterBy(productFilter: TProductFilter): boolean;
+    matches(order: IMatchableOrder<TProduct, TProductFilter>): boolean;
+    clone(): IMatchableOrder<TProduct, TProductFilter>;
+    updateWithTradedVolume(tradedVolume: BN): IMatchableOrder<TProduct, TProductFilter>;
+    product: TProduct;
+}
+
+export class Order<TProduct, TProductFilter> implements IMatchableOrder<TProduct, TProductFilter> {
     private _volume: BN;
 
     public get volume() {
@@ -40,15 +47,16 @@ export abstract class Order implements IOrder {
         return this.volume.isZero();
     }
 
-    protected constructor(
+    constructor(
         public readonly id: string,
         public readonly side: OrderSide,
         public readonly validFrom: Date,
-        public readonly product: Product,
+        private readonly matchableProduct: IMatchableProduct<TProduct, TProductFilter>,
         public readonly price: number,
         volume: BN,
         public readonly userId: string,
-        public readonly createdAt: Date
+        public readonly createdAt: Date,
+        public readonly assetId?: string
     ) {
         if (volume.isZero() || volume.isNeg()) {
             throw new Error('Incorrect negative volume');
@@ -69,10 +77,28 @@ export abstract class Order implements IOrder {
         return this;
     }
 
-    public static hasMatchingGenerationTimes(bidProduct: Product, askProduct: Product) {
-        const bidRange = moment.range(bidProduct.generationTime.from, bidProduct.generationTime.to);
-        const askRange = moment.range(askProduct.generationTime.from, askProduct.generationTime.to);
+    public filterBy(productFilter: TProductFilter): boolean {
+        return this.matchableProduct.filter(productFilter);
+    }
 
-        return bidRange.contains(askRange);
+    public matches(order: Order<TProduct, TProductFilter>): boolean {
+        return this.matchableProduct.matches(order.matchableProduct.product);
+    }
+
+    public clone(): Order<TProduct, TProductFilter> {
+        return new Order(
+            this.id,
+            this.side,
+            this.validFrom,
+            this.matchableProduct,
+            this.price,
+            this.volume,
+            this.userId,
+            this.createdAt
+        );
+    }
+
+    public get product(): TProduct {
+        return this.matchableProduct.product;
     }
 }
