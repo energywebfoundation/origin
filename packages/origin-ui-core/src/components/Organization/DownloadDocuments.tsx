@@ -17,7 +17,7 @@ export const downloadFile = async (client: FileClient, id) => {
             const url = window.URL.createObjectURL(blob);
             const link = document.createElement('a');
             link.href = url;
-            link.setAttribute('download', name);
+            link.setAttribute('download', 'name');
             link.style.display = 'none';
             document.body.appendChild(link);
             link.click();
