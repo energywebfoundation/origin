@@ -165,13 +165,13 @@ export function CertificationRequestsTable(props: IProps) {
             type: configuration.deviceTypeService.getDisplayText(device?.deviceType),
             capacity: PowerFormatter.format(device?.capacityInW),
             meterRead: EnergyFormatter.format(request.energy),
-            files: request.files.map((f) => (
-                <div key={f}>
+            files: request.files.map((fileId) => (
+                <div key={fileId}>
                     <a
                         style={{ cursor: 'pointer', textDecoration: 'underline' }}
-                        onClick={() => downloadFile(backendClient?.fileClient, f)}
+                        onClick={() => downloadFile(backendClient?.fileClient, fileId, fileId)}
                     >
-                        {f}
+                        {fileId}
                     </a>
                 </div>
             ))
