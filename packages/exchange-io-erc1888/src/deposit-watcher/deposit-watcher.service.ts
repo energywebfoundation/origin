@@ -17,7 +17,7 @@ import {
 } from '@energyweb/exchange';
 
 @Injectable()
-export class DepositWatcherService implements OnModuleInit {
+export class DepositWatcherService<TProduct> implements OnModuleInit {
     private readonly logger = new Logger(DepositWatcherService.name);
 
     private tokenInterface = new ethers.utils.Interface(Contracts.RegistryJSON.abi);
@@ -39,7 +39,7 @@ export class DepositWatcherService implements OnModuleInit {
     public constructor(
         private readonly configService: ConfigService,
         private readonly transferService: TransferService,
-        private readonly orderService: OrderService,
+        private readonly orderService: OrderService<TProduct>,
         private readonly accountService: AccountService,
         private readonly moduleRef: ModuleRef
     ) {

@@ -17,10 +17,19 @@ import {
     DB_TABLE_PREFIX,
     testUtils
 } from '@energyweb/exchange';
+import { ExchangeErc1888Module } from '../src';
+import { TestProduct } from '@energyweb/exchange/test/product/get-product.handler';
 
-import { authenticatedUser, bootstrapTestInstance } from './exchange';
+const {
+    authenticatedUser,
+    createDepositAddress,
+    depositToken,
+    issueToken,
+    provider,
+    bootstrapTestInstance,
+    MWh
+} = testUtils;
 
-const { createDepositAddress, depositToken, issueToken, MWh, provider } = testUtils;
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 describe('Deposits using deployed registry', () => {
@@ -52,7 +61,7 @@ describe('Deposits using deployed registry', () => {
             registry,
             issuer,
             app
-        } = await bootstrapTestInstance());
+        } = await bootstrapTestInstance(null, [ExchangeErc1888Module]));
 
         await app.init();
 
@@ -154,12 +163,7 @@ describe('Deposits using deployed registry', () => {
                 expect(order.price).equals(100);
                 expect(order.startVolume).equals(`${10 * MWh}`);
                 expect(order.assetId).equals(assetId);
-                expect(new Date(order.product.generationFrom)).deep.equals(
-                    moment.unix(generationFrom).toDate()
-                );
-                expect(new Date(order.product.generationTo)).deep.equals(
-                    moment.unix(generationTo).toDate()
-                );
+                expect(order.product).equals(TestProduct);
             });
     });
 

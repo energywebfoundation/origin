@@ -11,8 +11,18 @@
     "references": [
         {
             "path": "../utils-general/tsconfig.json"
+        },
+        {
+            "path": "../exchange/tsconfig.json"
+        },
+        {
+            "path": "../exchange-core/tsconfig.json"
+        },
+        {
+            "path": "../origin-backend-core/tsconfig.json"
+        },
+        {
+            "path": "../origin-backend-utils/tsconfig.json"
         }
-    ],
+    ]
 }
-
-
