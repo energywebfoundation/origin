@@ -10,9 +10,9 @@ export interface IAccountableAsset {
 }
 
 export abstract class AccountBalanceAssetService implements IAccountableAsset {
-    abstract async lockedAssets(ownerId: string): Promise<Map<string, AccountAssetDTO>>;
+    abstract lockedAssets(ownerId: string): Promise<Map<string, AccountAssetDTO>>;
 
-    abstract async availableAssets(ownerId: string): Promise<Map<string, AccountAssetDTO>>;
+    abstract availableAssets(ownerId: string): Promise<Map<string, AccountAssetDTO>>;
 
     protected sumByAsset<T>(
         records: T[],
