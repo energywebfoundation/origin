@@ -8,7 +8,7 @@ import { LightenColor } from '../../utils';
 
 import { getBackendClient } from '../../features/general/selectors';
 
-export const downloadFile = async (client: FileClient, id) => {
+export const downloadFile = async (client: FileClient, id: string, name: string) => {
     try {
         const response = await client.download(id);
         if (response) {
@@ -17,7 +17,7 @@ export const downloadFile = async (client: FileClient, id) => {
             const url = window.URL.createObjectURL(blob);
             const link = document.createElement('a');
             link.href = url;
-            link.setAttribute('download', 'name');
+            link.setAttribute('download', name);
             link.style.display = 'none';
             document.body.appendChild(link);
             link.click();
@@ -31,7 +31,13 @@ export const downloadFile = async (client: FileClient, id) => {
     }
 };
 
-export const DownloadDocuments = ({ documents, name }) => {
+interface IProps {
+    documents: string[];
+    name: string;
+}
+
+export const DownloadDocuments = (props: IProps) => {
+    const { documents, name } = props;
     const fileClient: FileClient = useSelector(getBackendClient)?.fileClient;
     const configuration = useOriginConfiguration();
     const originTextColor = configuration?.styleConfig?.TEXT_COLOR_DEFAULT;
@@ -73,7 +79,7 @@ export const DownloadDocuments = ({ documents, name }) => {
                 label={`${documents.length > 1 ? `${name} ${index + 1}` : `${name}`}`}
                 variant="outlined"
                 color="primary"
-                onClick={() => downloadFile(fileClient, documentId)}
+                onClick={() => downloadFile(fileClient, documentId, name)}
                 icon={<GetApp color="primary" />}
                 style={{ background: bgColorLight }}
                 key={index}
