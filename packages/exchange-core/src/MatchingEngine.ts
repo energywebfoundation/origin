@@ -234,8 +234,6 @@ export class MatchingEngine<TProduct, TProductFilter> {
                 }))
             )} `
         );
-        // TODO: check if needed
-        // this.updateOrderBook(executed);
 
         return executed;
     }
@@ -279,13 +277,6 @@ export class MatchingEngine<TProduct, TProductFilter> {
             order
         );
     }
-
-    // private updateOrderBook(matched: List<Trade>) {
-    //     matched.forEach((m) => {
-    //         this.asks = this.updateOrder(this.asks, m.ask);
-    //         this.bids = this.updateOrder(this.bids, m.bid);
-    //     });
-    // }
 
     private cleanOrderBook() {
         this.asks = this.asks.filterNot((ask) => ask.isFilled);
