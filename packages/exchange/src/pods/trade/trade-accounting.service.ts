@@ -9,9 +9,9 @@ import {
 } from '../account-balance';
 
 @Injectable()
-export class TradeAccountingService extends AccountBalanceAssetService {
+export class TradeAccountingService<TProduct, TProductFilter> extends AccountBalanceAssetService {
     constructor(
-        private readonly tradeService: TradeService,
+        private readonly tradeService: TradeService<TProduct, TProductFilter>,
         accountBalanceService: AccountBalanceService
     ) {
         super();

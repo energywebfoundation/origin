@@ -1,13 +1,14 @@
-import { forwardRef, Module } from '@nestjs/common';
+import { Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
 import { CqrsModule } from '@nestjs/cqrs';
+import { OrderModule } from '../order';
+import { CancelOrderHandler, SubmitOrderHandler } from './handlers';
 
-import { OrderModule } from '../order/order.module';
-import { RunnerModule } from '../runner/runner.module';
 import { MatchingEngineService } from './matching-engine.service';
 
 @Module({
-    providers: [MatchingEngineService],
+    providers: [MatchingEngineService, SubmitOrderHandler, CancelOrderHandler],
     exports: [MatchingEngineService],
-    imports: [forwardRef(() => OrderModule), RunnerModule, CqrsModule]
+    imports: [OrderModule, CqrsModule, ConfigModule]
 })
 export class MatchingEngineModule {}

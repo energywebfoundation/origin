@@ -39,10 +39,10 @@ import { OrderDTO } from './order.dto';
 @Controller('orders')
 @UseInterceptors(ClassSerializerInterceptor, NullOrUndefinedResultInterceptor)
 @UsePipes(ValidationPipe)
-export class OrderController {
-    private readonly logger = new Logger(OrderController.name);
+export abstract class BaseOrderController<TProduct> {
+    protected readonly logger = new Logger(BaseOrderController.name);
 
-    constructor(private readonly orderService: OrderService) {}
+    constructor(private readonly orderService: OrderService<TProduct>) {}
 
     @Post('bid')
     @UseGuards(AuthGuard(), ActiveUserGuard)
@@ -50,8 +50,8 @@ export class OrderController {
     @ApiResponse({ status: HttpStatus.CREATED, type: OrderDTO, description: 'Create a bid' })
     public async createBid(
         @UserDecorator() user: ILoggedInUser,
-        @Body() newOrder: CreateBidDTO
-    ): Promise<OrderDTO> {
+        @Body() newOrder: CreateBidDTO<TProduct>
+    ): Promise<OrderDTO<TProduct>> {
         this.logger.log(`Creating new order ${JSON.stringify(newOrder)}`);
 
         try {
@@ -71,7 +71,7 @@ export class OrderController {
     public async createAsk(
         @UserDecorator() user: ILoggedInUser,
         @Body() newOrder: CreateAskDTO
-    ): Promise<OrderDTO> {
+    ): Promise<OrderDTO<TProduct>> {
         this.logger.log(`Creating new order ${JSON.stringify(newOrder)}`);
 
         try {
@@ -100,7 +100,7 @@ export class OrderController {
     public async directBuy(
         @UserDecorator() user: ILoggedInUser,
         @Body() directBuy: DirectBuyDTO
-    ): Promise<OrderDTO> {
+    ): Promise<OrderDTO<TProduct>> {
         this.logger.log(`Creating new direct order ${JSON.stringify(directBuy)}`);
 
         try {
@@ -116,7 +116,7 @@ export class OrderController {
     @Get()
     @UseGuards(AuthGuard(), ActiveUserGuard)
     @ApiResponse({ status: HttpStatus.OK, type: [OrderDTO], description: 'Get my orders' })
-    public async getMyOrders(@UserDecorator() user: ILoggedInUser): Promise<OrderDTO[]> {
+    public async getMyOrders(@UserDecorator() user: ILoggedInUser): Promise<OrderDTO<TProduct>[]> {
         const orders = await this.orderService.getAllOrders(user.ownerId);
         return orders;
     }
@@ -127,7 +127,7 @@ export class OrderController {
     public async getOrder(
         @UserDecorator() user: ILoggedInUser,
         @Param('id', new ParseUUIDPipe({ version: '4' })) orderId: string
-    ): Promise<OrderDTO> {
+    ): Promise<OrderDTO<TProduct>> {
         const order = await this.orderService.findOne(user.ownerId, orderId);
         return order;
     }
@@ -139,7 +139,7 @@ export class OrderController {
     public async cancelOrder(
         @UserDecorator() user: ILoggedInUser,
         @Param('id', new ParseUUIDPipe({ version: '4' })) orderId: string
-    ): Promise<OrderDTO> {
+    ): Promise<OrderDTO<TProduct>> {
         try {
             const order = await this.orderService.cancelOrder(user.ownerId, orderId);
             return order;

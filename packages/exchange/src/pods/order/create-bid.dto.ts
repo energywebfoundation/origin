@@ -1,11 +1,10 @@
 import { Type } from 'class-transformer';
-import { IsDate, IsInt, IsNotEmpty, IsPositive, Validate, ValidateNested } from 'class-validator';
+import { IsDate, IsInt, IsNotEmpty, IsPositive, Validate } from 'class-validator';
 import { IntUnitsOfEnergy, PositiveBNStringValidator } from '@energyweb/origin-backend-utils';
 
 import { ApiProperty } from '@nestjs/swagger';
-import { ProductDTO } from './product.dto';
 
-export class CreateBidDTO {
+export class CreateBidDTO<TProduct> {
     @ApiProperty({ type: String })
     @IsNotEmpty()
     @Validate(PositiveBNStringValidator)
@@ -24,9 +23,5 @@ export class CreateBidDTO {
     @Type(() => Date)
     readonly validFrom: Date;
 
-    @ApiProperty({ type: ProductDTO })
-    @IsNotEmpty()
-    @ValidateNested()
-    @Type(() => ProductDTO)
-    readonly product: ProductDTO;
+    readonly product: TProduct;
 }

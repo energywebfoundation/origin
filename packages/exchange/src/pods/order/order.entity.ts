@@ -18,7 +18,6 @@ import { Asset } from '../asset/asset.entity';
 import { Demand } from '../demand/demand.entity';
 import { Trade } from '../trade/trade.entity';
 import { OrderType } from './order-type.enum';
-import { ProductDTO } from './product.dto';
 
 import { DB_TABLE_PREFIX } from '../../utils/tablePrefix';
 
@@ -73,7 +72,7 @@ export class Order extends ExtendedBaseEntity {
     validFrom: Date;
 
     @Column('json')
-    product: ProductDTO;
+    product: any;
 
     @ManyToOne(() => Asset, { eager: true })
     asset: Asset;

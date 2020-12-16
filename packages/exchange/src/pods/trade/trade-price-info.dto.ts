@@ -3,10 +3,8 @@ import BN from 'bn.js';
 import { Transform } from 'class-transformer';
 import { IsDate, IsNotEmpty, IsNumber, IsString, ValidateNested } from 'class-validator';
 
-import { ProductDTO } from '../order/product.dto';
-
-export class TradePriceInfoDTO {
-    constructor(partial: Partial<TradePriceInfoDTO>) {
+export class TradePriceInfoDTO<TProduct> {
+    constructor(partial: Partial<TradePriceInfoDTO<TProduct>>) {
         Object.assign(this, partial);
     }
 
@@ -23,9 +21,9 @@ export class TradePriceInfoDTO {
     @IsNumber()
     public price: number;
 
-    @ApiProperty({ type: ProductDTO })
+    // @ApiProperty({ type: ProductDTO })
     @ValidateNested()
-    public product: ProductDTO;
+    public product: TProduct;
 
     @ApiProperty({ type: String })
     @IsNotEmpty()

@@ -10,11 +10,10 @@ import {
     IsUUID,
     ValidateNested
 } from 'class-validator';
-import { ProductDTO } from '../order/product.dto';
 import { IDemand } from './demand.entity';
 import { Order } from '../order/order.entity';
 
-export class DemandDTO implements IDemand {
+export class DemandDTO<TProduct> implements IDemand {
     @ApiProperty({ type: String })
     @IsUUID()
     id: string;
@@ -48,9 +47,9 @@ export class DemandDTO implements IDemand {
     @IsEnum(TimeFrame)
     periodTimeFrame: TimeFrame;
 
-    @ApiProperty({ type: ProductDTO })
+    // @ApiProperty({ type: ProductDTO })
     @ValidateNested()
-    product: ProductDTO;
+    product: TProduct;
 
     @ApiProperty({ type: [Order] })
     bids: Order[];

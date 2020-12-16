@@ -14,9 +14,8 @@ import {
 import { IntUnitsOfEnergy, PositiveBNStringValidator } from '@energyweb/origin-backend-utils';
 
 import { ApiProperty } from '@nestjs/swagger';
-import { ProductDTO } from '../order/product.dto';
 
-export class CreateDemandDTO {
+export class CreateDemandDTO<TProduct> {
     @ApiProperty({ type: Number })
     @IsNotEmpty()
     @IsInt()
@@ -46,10 +45,8 @@ export class CreateDemandDTO {
     @Type(() => Date)
     public readonly end: Date;
 
-    @ApiProperty({ type: ProductDTO })
     @ValidateNested()
-    @Type(() => ProductDTO)
-    public readonly product: ProductDTO;
+    public readonly product: TProduct;
 
     @ApiProperty({ type: Boolean })
     @IsBoolean()

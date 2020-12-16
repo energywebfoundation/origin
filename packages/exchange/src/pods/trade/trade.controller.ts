@@ -24,13 +24,13 @@ import { TradeService } from './trade.service';
 @Controller('trade')
 @UseInterceptors(NullOrUndefinedResultInterceptor)
 @UsePipes(ValidationPipe)
-export class TradeController {
-    constructor(private readonly tradeService: TradeService) {}
+export class TradeController<TProduct, TProductFilter> {
+    constructor(private readonly tradeService: TradeService<TProduct, TProductFilter>) {}
 
     @UseGuards(AuthGuard(), ActiveUserGuard)
     @Get()
     @ApiResponse({ status: HttpStatus.OK, type: [TradeDTO], description: 'Get all trades' })
-    public async getAll(@UserDecorator() user: ILoggedInUser): Promise<TradeDTO[]> {
+    public async getAll(@UserDecorator() user: ILoggedInUser): Promise<TradeDTO<TProduct>[]> {
         const trades = await this.tradeService.getAllByUser(user.ownerId, false);
 
         return trades.map((trade) =>

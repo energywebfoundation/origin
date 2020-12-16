@@ -35,10 +35,10 @@ import { DemandService } from './demand.service';
 @Controller('demand')
 @UseInterceptors(ClassSerializerInterceptor, NullOrUndefinedResultInterceptor)
 @UsePipes(ValidationPipe)
-export class DemandController {
+export class DemandController<TProduct> {
     private readonly logger = new Logger(DemandController.name);
 
-    constructor(private readonly demandService: DemandService) {}
+    constructor(private readonly demandService: DemandService<TProduct>) {}
 
     @Get('/:id')
     @UseGuards(AuthGuard(), ActiveUserGuard)
@@ -46,7 +46,7 @@ export class DemandController {
     public async findOne(
         @UserDecorator() { id: userId, ownerId }: ILoggedInUser,
         @Param('id', new ParseUUIDPipe({ version: '4' })) id: string
-    ): Promise<DemandDTO> {
+    ): Promise<DemandDTO<TProduct>> {
         this.logger.debug(`Requested demand ${id} from userId=${userId} with ownerId=${ownerId}`);
         const demand = await this.demandService.findOne(ownerId, id);
         return demand;
@@ -57,7 +57,7 @@ export class DemandController {
     @ApiResponse({ status: HttpStatus.OK, type: [DemandDTO], description: 'Get all demands' })
     public async getAll(
         @UserDecorator() { id: userId, ownerId }: ILoggedInUser
-    ): Promise<DemandDTO[]> {
+    ): Promise<DemandDTO<TProduct>[]> {
         this.logger.debug(`Requested all demands from userId=${userId} with ownerId=${ownerId}`);
 
         return this.demandService.getAll(ownerId);
@@ -69,8 +69,8 @@ export class DemandController {
     @ApiResponse({ status: HttpStatus.CREATED, type: DemandDTO, description: 'Create a demand' })
     public async create(
         @UserDecorator() { id: userId, ownerId }: ILoggedInUser,
-        @Body() createDemand: CreateDemandDTO
-    ): Promise<DemandDTO> {
+        @Body() createDemand: CreateDemandDTO<TProduct>
+    ): Promise<DemandDTO<TProduct>> {
         this.logger.debug(
             `Requested demand creation from userId=${userId} with ownerId=${ownerId}`
         );
@@ -89,8 +89,8 @@ export class DemandController {
     })
     public summary(
         @UserDecorator() { id: userId, ownerId }: ILoggedInUser,
-        @Body() createDemand: CreateDemandDTO
-    ): DemandSummaryDTO {
+        @Body() createDemand: CreateDemandDTO<TProduct>
+    ): DemandSummaryDTO<TProduct> {
         this.logger.debug(`Requested demand summary from userId=${userId} with ownerId=${ownerId}`);
 
         return this.demandService.createSummary(createDemand);
@@ -103,7 +103,7 @@ export class DemandController {
     public async pause(
         @UserDecorator() { id: userId, ownerId }: ILoggedInUser,
         @Param('id', new ParseUUIDPipe({ version: '4' })) id: string
-    ): Promise<DemandDTO> {
+    ): Promise<DemandDTO<TProduct>> {
         this.logger.debug(`Requested demand pause from userId=${userId} with ownerId=${ownerId}`);
 
         const demand = await this.demandService.pause(ownerId, id);
@@ -117,7 +117,7 @@ export class DemandController {
     public async resume(
         @UserDecorator() { id: userId, ownerId }: ILoggedInUser,
         @Param('id', new ParseUUIDPipe({ version: '4' })) id: string
-    ): Promise<DemandDTO> {
+    ): Promise<DemandDTO<TProduct>> {
         this.logger.debug(`Requested demand resume from userId=${userId} with ownerId=${ownerId}`);
 
         try {
@@ -138,7 +138,7 @@ export class DemandController {
     public async archive(
         @UserDecorator() { id: userId, ownerId }: ILoggedInUser,
         @Param('id', new ParseUUIDPipe({ version: '4' })) id: string
-    ): Promise<DemandDTO> {
+    ): Promise<DemandDTO<TProduct>> {
         this.logger.debug(
             `Requested demand archival from userId=${userId} with ownerId=${ownerId}`
         );
@@ -155,8 +155,8 @@ export class DemandController {
     public async replace(
         @UserDecorator() { id: userId, ownerId }: ILoggedInUser,
         @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
-        @Body() createDemand: CreateDemandDTO
-    ): Promise<DemandDTO> {
+        @Body() createDemand: CreateDemandDTO<TProduct>
+    ): Promise<DemandDTO<TProduct>> {
         this.logger.debug(
             `Requested demand archival from userId=${userId} with ownerId=${ownerId}`
         );

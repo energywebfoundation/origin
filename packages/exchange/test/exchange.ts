@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { PriceStrategy } from '@energyweb/exchange-core';
 import { Contracts } from '@energyweb/issuer';
 import { UserStatus } from '@energyweb/origin-backend-core';
 import { DatabaseService, RolesGuard } from '@energyweb/origin-backend-utils';
@@ -25,8 +24,10 @@ import { AccountService } from '../src/pods/account/account.service';
 import { BundleService } from '../src/pods/bundle/bundle.service';
 import { DemandService } from '../src/pods/demand/demand.service';
 import { OrderService } from '../src/pods/order/order.service';
-import { ProductService } from '../src/pods/product/product.service';
 import { TransferService } from '../src/pods/transfer/transfer.service';
+
+import { OrderModule as TestOrderModule } from './order/order.module';
+import { ProductModule as TestProductModule } from './product/product.module';
 
 const web3 = 'http://localhost:8580';
 
@@ -71,23 +72,10 @@ const authGuard: CanActivate = {
 
 const testLogger = new Logger('e2e');
 
-const deviceTypes = [
-    ['Solar'],
-    ['Solar', 'Photovoltaic'],
-    ['Solar', 'Photovoltaic', 'Roof mounted'],
-    ['Solar', 'Photovoltaic', 'Ground mounted'],
-    ['Solar', 'Photovoltaic', 'Classic silicon'],
-    ['Solar', 'Concentration'],
-    ['Wind'],
-    ['Wind', 'Onshore'],
-    ['Wind', 'Offshore'],
-    ['Marine'],
-    ['Marine', 'Tidal'],
-    ['Marine', 'Tidal', 'Inshore'],
-    ['Marine', 'Tidal', 'Offshore']
-];
-
-export const bootstrapTestInstance = async (deviceServiceMock?: IExternalDeviceService) => {
+export const bootstrapTestInstance = async (
+    deviceServiceMock?: IExternalDeviceService,
+    modules: any[] = []
+) => {
     const registry = await deployRegistry();
     const issuer = await deployIssuer(registry.address);
 
@@ -101,7 +89,7 @@ export const bootstrapTestInstance = async (deviceServiceMock?: IExternalDeviceS
         EXCHANGE_WALLET_PRIV: '0xd9bc30dc17023fbb68fe3002e0ff9107b241544fd6d60863081c55e383f1b5a3',
         ISSUER_ID: 'Issuer ID',
         ENERGY_PER_UNIT: 1000000,
-        EXCHANGE_PRICE_STRATEGY: PriceStrategy.AskPrice
+        EXCHANGE_PRICE_STRATEGY: 0
     });
 
     const moduleFixture = await Test.createTestingModule({
@@ -116,17 +104,18 @@ export const bootstrapTestInstance = async (deviceServiceMock?: IExternalDeviceS
                 entities,
                 logging: ['info']
             }),
-            AppModule
+            AppModule,
+            TestOrderModule,
+            TestProductModule,
+            ...modules
         ],
         providers: [
             DatabaseService,
             {
                 provide: IExchangeConfigurationService,
                 useValue: {
-                    getDeviceTypes: async () => deviceTypes,
                     getRegistryAddress: async () => registry.address,
-                    getIssuerAddress: async () => issuer.address,
-                    getGridOperators: async () => ['TH-PEA', 'TH-MEA']
+                    getIssuerAddress: async () => issuer.address
                 }
             },
             {
@@ -162,9 +151,8 @@ export const bootstrapTestInstance = async (deviceServiceMock?: IExternalDeviceS
     const accountService = await app.resolve<AccountService>(AccountService);
     const accountBalanceService = await app.resolve<AccountBalanceService>(AccountBalanceService);
     const databaseService = await app.resolve<DatabaseService>(DatabaseService);
-    const demandService = await app.resolve<DemandService>(DemandService);
-    const orderService = await app.resolve<OrderService>(OrderService);
-    const productService = await app.resolve<ProductService>(ProductService);
+    const demandService = await app.resolve<DemandService<string>>(DemandService);
+    const orderService = await app.resolve<OrderService<string>>(OrderService);
     const bundleService = await app.resolve<BundleService>(BundleService);
 
     app.useLogger(testLogger);
@@ -179,7 +167,6 @@ export const bootstrapTestInstance = async (deviceServiceMock?: IExternalDeviceS
         databaseService,
         demandService,
         orderService,
-        productService,
         bundleService,
         registry,
         issuer,

@@ -11,20 +11,16 @@ import { BundleModule } from './pods/bundle/bundle.module';
 import { Demand } from './pods/demand/demand.entity';
 import { DemandModule } from './pods/demand/demand.module';
 import { MatchingEngineModule } from './pods/matching-engine/matching-engine.module';
-import { OrderBookModule } from './pods/order-book/order-book.module';
 import { Order } from './pods/order/order.entity';
-import { OrderModule } from './pods/order/order.module';
-import { ProductModule } from './pods/product/product.module';
-import { RunnerModule } from './pods/runner/runner.module';
 import { Trade } from './pods/trade/trade.entity';
 import { TradeModule } from './pods/trade/trade.module';
-import { TransferModule, Transfer } from './pods/transfer';
+import { Transfer, TransferModule } from './pods/transfer';
 
 export * from './app.module';
 export * from './interfaces';
 export * from './pods';
 export * from './utils';
-export * as testUtils from '../test/utils';
+export * as testUtils from '../test';
 
 export {
     WithdrawalRequestedEvent,
@@ -41,10 +37,6 @@ export {
     AssetModule,
     DemandModule,
     MatchingEngineModule,
-    OrderBookModule,
-    OrderModule,
-    ProductModule,
-    RunnerModule,
     TradeModule,
     TransferModule,
     BundleModule
@@ -71,10 +63,6 @@ export const modules = [
     AssetModule,
     DemandModule,
     MatchingEngineModule,
-    OrderBookModule,
-    OrderModule,
-    ProductModule,
-    RunnerModule,
     TradeModule,
     TransferModule,
     BundleModule
