@@ -1,14 +1,14 @@
 import {
     ActionResultEvent,
-    DirectBuy,
-    MatchingEngine,
-    Trade,
-    TradeExecutedEvent,
     AskPriceStrategy,
+    DirectBuy,
+    IMatchableOrder,
+    MatchingEngine,
     OrderCreationTimePickStrategy,
-    IMatchableOrder
+    Trade,
+    TradeExecutedEvent
 } from '@energyweb/exchange-core';
-import { forwardRef, Inject, Injectable, Logger, OnModuleInit } from '@nestjs/common';
+import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { EventBus, QueryBus } from '@nestjs/cqrs';
 import { Interval } from '@nestjs/schedule';

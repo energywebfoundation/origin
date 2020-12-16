@@ -1,5 +1,5 @@
 import { ActionResult, ActionResultEvent, OrderSide, OrderStatus } from '@energyweb/exchange-core';
-import { forwardRef, Inject, Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { InjectRepository } from '@nestjs/typeorm';
 import BN from 'bn.js';
