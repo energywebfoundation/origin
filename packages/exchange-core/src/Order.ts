@@ -1,43 +1,11 @@
 import BN from 'bn.js';
 
+import { IMatchableOrder } from './IMatchableOrder';
 import { IMatchableProduct } from './IMatchableProduct';
-
-export enum OrderSide {
-    Bid = 'Bid',
-    Ask = 'Ask'
-}
-
-export enum OrderStatus {
-    Active = 'Active',
-    Cancelled = 'Cancelled',
-    Filled = 'Filled',
-    PartiallyFilled = 'PartiallyFilled',
-    PendingCancellation = 'PendingCancellation',
-    NotExecuted = 'NotExecuted'
-}
-
-export interface IOrder {
-    id: string;
-    side: OrderSide;
-    validFrom: Date;
-    price: number;
-    volume: BN;
-    userId: string;
-    isFilled: boolean;
-    createdAt: Date;
-    assetId?: string;
-}
-
-export interface IMatchableOrder<TProduct, TProductFilter> extends IOrder {
-    filterBy(productFilter: TProductFilter): boolean;
-    matches(order: IMatchableOrder<TProduct, TProductFilter>): boolean;
-    clone(): IMatchableOrder<TProduct, TProductFilter>;
-    updateWithTradedVolume(tradedVolume: BN): IMatchableOrder<TProduct, TProductFilter>;
-    product: TProduct;
-}
+import { OrderSide } from './OrderSide';
 
 export class Order<TProduct, TProductFilter> implements IMatchableOrder<TProduct, TProductFilter> {
-    private _volume: BN;
+    protected _volume: BN;
 
     public get volume() {
         return this._volume;
@@ -51,7 +19,7 @@ export class Order<TProduct, TProductFilter> implements IMatchableOrder<TProduct
         public readonly id: string,
         public readonly side: OrderSide,
         public readonly validFrom: Date,
-        private readonly matchableProduct: IMatchableProduct<TProduct, TProductFilter>,
+        protected readonly matchableProduct: IMatchableProduct<TProduct, TProductFilter>,
         public readonly price: number,
         volume: BN,
         public readonly userId: string,
@@ -81,8 +49,8 @@ export class Order<TProduct, TProductFilter> implements IMatchableOrder<TProduct
         return this.matchableProduct.filter(productFilter);
     }
 
-    public matches(order: Order<TProduct, TProductFilter>): boolean {
-        return this.matchableProduct.matches(order.matchableProduct.product);
+    public matches(order: IMatchableOrder<TProduct, TProductFilter>): boolean {
+        return this.matchableProduct.matches(order.product);
     }
 
     public clone(): Order<TProduct, TProductFilter> {

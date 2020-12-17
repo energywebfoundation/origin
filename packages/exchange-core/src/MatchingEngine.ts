@@ -1,12 +1,12 @@
+import { Logger } from '@nestjs/common';
 import BN from 'bn.js';
 import { List } from 'immutable';
 import { Subject } from 'rxjs';
 import { concatMap } from 'rxjs/operators';
 
-import { Logger } from '@nestjs/common';
-
 import { DirectBuy } from './DirectBuy';
-import { IMatchableOrder, OrderSide } from './Order';
+import { IMatchableOrder } from './IMatchableOrder';
+import { OrderSide } from './OrderSide';
 import { IPriceStrategy } from './strategy/IPriceStrategy';
 import { Trade } from './Trade';
 import { TradeExecutedEvent } from './TradeExecutedEvent';
@@ -316,8 +316,8 @@ export class MatchingEngine<TProduct, TProductFilter> {
         ask: IMatchableOrder<TProduct, TProductFilter>
     ) {
         const hasProductMatched = bid.matches(ask);
-        const hasAskVolume = !ask.volume.isNeg() && !ask.volume.isZero();
-        const hasBidVolume = !bid.volume.isNeg() && !bid.volume.isZero();
+        const hasAskVolume = !ask.volume.isNeg() && !ask.isFilled;
+        const hasBidVolume = !bid.volume.isNeg() && !bid.isFilled;
         const hasPriceMatched = ask.price <= bid.price;
         const sameOwner = bid.userId === ask.userId;
 
