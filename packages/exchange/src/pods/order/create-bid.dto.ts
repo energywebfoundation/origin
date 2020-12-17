@@ -23,5 +23,6 @@ export class CreateBidDTO<TProduct> {
     @Type(() => Date)
     readonly validFrom: Date;
 
+    @IsNotEmpty()
     readonly product: TProduct;
 }

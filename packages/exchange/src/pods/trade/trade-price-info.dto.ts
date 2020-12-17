@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import BN from 'bn.js';
 import { Transform } from 'class-transformer';
-import { IsDate, IsNotEmpty, IsNumber, IsString, ValidateNested } from 'class-validator';
+import { IsDate, IsNotEmpty, IsNumber, IsString } from 'class-validator';
 
 export class TradePriceInfoDTO<TProduct> {
     constructor(partial: Partial<TradePriceInfoDTO<TProduct>>) {
@@ -21,8 +21,6 @@ export class TradePriceInfoDTO<TProduct> {
     @IsNumber()
     public price: number;
 
-    // @ApiProperty({ type: ProductDTO })
-    @ValidateNested()
     public product: TProduct;
 
     @ApiProperty({ type: String })

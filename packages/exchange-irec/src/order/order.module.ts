@@ -14,8 +14,8 @@ import { OrderController } from './order.controller';
 
 @Module({
     providers: [OrderService, OrderAccountingService, GetMappedOrderHandler],
-    exports: [OrderService],
-    imports: [TypeOrmModule.forFeature([Order]), AccountBalanceModule, RunnerModule, CqrsModule],
+    exports: [OrderService, GetMappedOrderHandler],
+    imports: [TypeOrmModule.forFeature([Order]), AccountBalanceModule, CqrsModule, RunnerModule],
     controllers: [OrderController]
 })
 export class OrderModule {}

@@ -3,7 +3,6 @@ import { Type } from 'class-transformer';
 import {
     IsDate,
     Validate,
-    ValidateNested,
     IsEnum,
     IsInt,
     IsPositive,
@@ -45,8 +44,7 @@ export class CreateDemandDTO<TProduct> {
     @Type(() => Date)
     public readonly end: Date;
 
-    @ApiProperty({ type: 'object' })
-    @ValidateNested()
+    @IsNotEmpty()
     public readonly product: TProduct;
 
     @ApiProperty({ type: Boolean })

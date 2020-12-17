@@ -402,8 +402,6 @@ describe('orderbook tests', () => {
         expect(asks).to.have.length(0);
         expect(bids).to.have.length(1);
 
-        console.log(bids);
-
         expect(bids[0].product.deviceType).to.deep.equal(['Wind']);
     });
 

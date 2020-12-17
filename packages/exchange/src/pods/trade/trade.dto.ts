@@ -1,12 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import {
-    IsDateString,
-    IsNotEmpty,
-    IsNumber,
-    IsUUID,
-    Validate,
-    ValidateNested
-} from 'class-validator';
+import { IsDateString, IsNotEmpty, IsNumber, IsUUID, Validate } from 'class-validator';
 import { IntUnitsOfEnergy, PositiveBNStringValidator } from '@energyweb/origin-backend-utils';
 import { Trade } from './trade.entity';
 
@@ -41,9 +34,6 @@ export class TradeDTO<TProduct> {
     @IsNotEmpty()
     public askId: string;
 
-    // @ApiProperty({ type: ProductDTO })
-    @ValidateNested()
-    @IsNotEmpty()
     public product: TProduct;
 
     @ApiProperty({ type: String })

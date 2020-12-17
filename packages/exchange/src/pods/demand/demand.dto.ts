@@ -1,15 +1,7 @@
 import { DemandStatus, TimeFrame } from '@energyweb/utils-general';
 import { ApiProperty } from '@nestjs/swagger';
 import BN from 'bn.js';
-import {
-    IsDate,
-    IsEnum,
-    IsNotEmpty,
-    IsNumber,
-    IsString,
-    IsUUID,
-    ValidateNested
-} from 'class-validator';
+import { IsDate, IsEnum, IsNotEmpty, IsNumber, IsString, IsUUID } from 'class-validator';
 import { IDemand } from './demand.entity';
 import { Order } from '../order/order.entity';
 
@@ -47,8 +39,6 @@ export class DemandDTO<TProduct> implements IDemand {
     @IsEnum(TimeFrame)
     periodTimeFrame: TimeFrame;
 
-    // @ApiProperty({ type: ProductDTO })
-    @ValidateNested()
     product: TProduct;
 
     @ApiProperty({ type: [Order] })
