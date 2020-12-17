@@ -3,6 +3,7 @@ import moment from 'moment';
 import { AskPriceStrategy, DirectBuy, IMatchableOrder, Order, OrderSide, Trade } from '../src';
 import { TestProduct } from './Product';
 import { Testing } from '../src/Testing';
+import { OneTimeMatchOrder } from '../src/OneTimeMatchOrder';
 
 type Bid = IMatchableOrder<string, string>;
 type Ask = Bid;
@@ -38,6 +39,19 @@ describe('Matching tests', () => {
 
     const createAsk = (args?: IOrderCreationArgs) => {
         return new Order<string, string>(
+            (initialOrderId++).toString(),
+            OrderSide.Ask,
+            args?.validFrom || new Date(),
+            matchableProduct,
+            args?.price || twoUSD,
+            args?.volume || onekWh,
+            args?.userId || defaultSeller,
+            args?.createdAt || new Date()
+        );
+    };
+
+    const createOneTimeMatchAsk = (args?: IOrderCreationArgs) => {
+        return new OneTimeMatchOrder<string, string>(
             (initialOrderId++).toString(),
             OrderSide.Ask,
             args?.validFrom || new Date(),
@@ -292,6 +306,42 @@ describe('Matching tests', () => {
             },
             done
         );
+    });
+
+    describe('when matching with one time match asks', () => {
+        it('should return 1 trade when having 1 ask and 2 bids', (done) => {
+            const asksBefore = [createOneTimeMatchAsk({ volume: twoKWh })];
+            const bidsBefore = [createBid(), createBid({ volume: twoKWh, price: twoUSD * 2 })];
+
+            const expectedTrades = [
+                new Trade(bidsBefore[0], asksBefore[0], onekWh, asksBefore[0].price)
+            ];
+
+            const bidsAfter = [bidsBefore[1]];
+
+            testing.executeTestCase(
+                { orders: [...asksBefore, ...bidsBefore], bidsAfter, expectedTrades },
+                done
+            );
+        });
+
+        it('should return 2 trade when having 2 ask and 2 bids', (done) => {
+            const asksBefore = [
+                createOneTimeMatchAsk({ volume: twoKWh }),
+                createOneTimeMatchAsk({ volume: twoKWh })
+            ];
+            const bidsBefore = [createBid(), createBid({ volume: twoKWh, price: twoUSD * 2 })];
+
+            const expectedTrades = [
+                new Trade(bidsBefore[0], asksBefore[0], onekWh, asksBefore[0].price),
+                new Trade(bidsBefore[1], asksBefore[1], twoKWh, asksBefore[1].price)
+            ];
+
+            testing.executeTestCase(
+                { orders: [...asksBefore, ...bidsBefore], expectedTrades },
+                done
+            );
+        });
     });
 
     describe('when price strategy is AskPriceStrategy', () => {

@@ -1,7 +1,7 @@
 import BN from 'bn.js';
 
 import { DirectBuy } from '.';
-import { IOrder } from './Order';
+import { IOrder } from './IOrder';
 
 export class Trade {
     constructor(

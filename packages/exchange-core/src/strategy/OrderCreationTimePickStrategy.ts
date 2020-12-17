@@ -1,4 +1,4 @@
-import { IOrder } from '../Order';
+import { IOrder } from '../IOrder';
 import { IPriceStrategy } from './IPriceStrategy';
 
 export class OrderCreationTimePickStrategy implements IPriceStrategy {
