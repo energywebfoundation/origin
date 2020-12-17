@@ -30,13 +30,13 @@
             "path": "../issuer/tsconfig.json"
         },
         {
-            "path": "../exchange-core/tsconfig.json"
-        },
-        {
             "path": "../issuer-api-client/tsconfig.json"
         },
         {
             "path": "../exchange-client/tsconfig.json"
+        },
+        {
+            "path": "../exchange-irec-client/tsconfig.json"
         },
         {
             "path": "../origin-organization-irec-api-client/tsconfig.json"

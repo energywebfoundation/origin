@@ -3,17 +3,17 @@ import BN from 'bn.js';
 import { IMatchableProduct } from './IMatchableProduct';
 
 export enum OrderSide {
-    Bid,
-    Ask
+    Bid = 'Bid',
+    Ask = 'Ask'
 }
 
 export enum OrderStatus {
-    Active,
-    Cancelled,
-    Filled,
-    PartiallyFilled,
-    PendingCancellation,
-    NotExecuted
+    Active = 'Active',
+    Cancelled = 'Cancelled',
+    Filled = 'Filled',
+    PartiallyFilled = 'PartiallyFilled',
+    PendingCancellation = 'PendingCancellation',
+    NotExecuted = 'NotExecuted'
 }
 
 export interface IOrder {

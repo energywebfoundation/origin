@@ -2,7 +2,7 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { Dialog, Grid, IconButton, useTheme, Box, Divider, Button } from '@material-ui/core';
 import { Close as CloseIcon, ArrowRightAlt as ArrowRightAltIcon } from '@material-ui/icons';
-import { OrderSide } from '@energyweb/exchange-core';
+import { OrderSide } from '@energyweb/exchange-irec-client';
 import {
     moment,
     formatCurrencyComplete,

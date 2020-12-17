@@ -45,6 +45,7 @@ export class CreateDemandDTO<TProduct> {
     @Type(() => Date)
     public readonly end: Date;
 
+    @ApiProperty({ type: 'object' })
     @ValidateNested()
     public readonly product: TProduct;
 

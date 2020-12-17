@@ -1,4 +1,4 @@
-import { OrderSide, OrderStatus } from '@energyweb/exchange-core';
+import { OrderSide, OrderStatus } from '@energyweb/exchange-irec-client';
 import { Order } from './exchange';
 
 export class ActiveOrders extends Array<Order> {
