@@ -4,14 +4,12 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { OrderModule } from '../order';
 
 import { DemandTimePeriodService } from './demand-time-period.service';
-import { DemandController } from './demand.controller';
 import { Demand } from './demand.entity';
 import { DemandService } from './demand.service';
 
 @Module({
     providers: [DemandService, DemandTimePeriodService],
     exports: [DemandService],
-    imports: [TypeOrmModule.forFeature([Demand]), OrderModule, CqrsModule],
-    controllers: [DemandController]
+    imports: [TypeOrmModule.forFeature([Demand]), OrderModule, CqrsModule]
 })
 export class DemandModule {}

@@ -35,8 +35,8 @@ import { DemandService } from './demand.service';
 @Controller('demand')
 @UseInterceptors(ClassSerializerInterceptor, NullOrUndefinedResultInterceptor)
 @UsePipes(ValidationPipe)
-export class DemandController<TProduct> {
-    private readonly logger = new Logger(DemandController.name);
+export abstract class BaseDemandController<TProduct> {
+    private readonly logger = new Logger(BaseDemandController.name);
 
     constructor(private readonly demandService: DemandService<TProduct>) {}
 

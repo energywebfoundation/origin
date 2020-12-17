@@ -13,19 +13,14 @@ import { ethers } from 'ethers';
 
 import { entities } from '../src';
 import { AppModule } from '../src/app.module';
-import {
-    IDeviceSettings,
-    IExchangeConfigurationService,
-    IExternalDeviceService,
-    IProductInfo
-} from '../src/interfaces';
+import { IExchangeConfigurationService } from '../src/interfaces';
 import { AccountBalanceService } from '../src/pods/account-balance/account-balance.service';
 import { AccountService } from '../src/pods/account/account.service';
 import { BundleService } from '../src/pods/bundle/bundle.service';
 import { DemandService } from '../src/pods/demand/demand.service';
 import { OrderService } from '../src/pods/order/order.service';
 import { TransferService } from '../src/pods/transfer/transfer.service';
-
+import { DemandModule as TestDemandModule } from './demand/demand.module';
 import { OrderModule as TestOrderModule } from './order/order.module';
 import { ProductModule as TestProductModule } from './product/product.module';
 
@@ -72,10 +67,7 @@ const authGuard: CanActivate = {
 
 const testLogger = new Logger('e2e');
 
-export const bootstrapTestInstance = async (
-    deviceServiceMock?: IExternalDeviceService,
-    modules: any[] = []
-) => {
+export const bootstrapTestInstance = async (modules: any[] = []) => {
     const registry = await deployRegistry();
     const issuer = await deployIssuer(registry.address);
 
@@ -107,6 +99,7 @@ export const bootstrapTestInstance = async (
             AppModule,
             TestOrderModule,
             TestProductModule,
+            TestDemandModule,
             ...modules
         ],
         providers: [
@@ -116,23 +109,6 @@ export const bootstrapTestInstance = async (
                 useValue: {
                     getRegistryAddress: async () => registry.address,
                     getIssuerAddress: async () => issuer.address
-                }
-            },
-            {
-                provide: IExternalDeviceService,
-                useValue: deviceServiceMock ?? {
-                    getDeviceProductInfo: async (): Promise<IProductInfo> => ({
-                        deviceType: 'Solar;Photovoltaic;Classic silicon',
-                        country: 'Thailand',
-                        region: 'Central',
-                        province: 'Nakhon Pathom',
-                        operationalSince: 2016,
-                        gridOperator: 'TH-PEA'
-                    }),
-                    getDeviceSettings: async (): Promise<IDeviceSettings> => ({
-                        postForSale: false,
-                        postForSalePrice: null
-                    })
                 }
             }
         ]

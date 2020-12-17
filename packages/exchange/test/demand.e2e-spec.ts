@@ -19,6 +19,7 @@ import { authenticatedUser, bootstrapTestInstance } from './exchange';
 import { createDepositAddress, MWh } from './utils';
 import { DemandSummaryDTO } from '../src/pods/demand/demand-summary.dto';
 import { DB_TABLE_PREFIX } from '../src/utils/tablePrefix';
+import { TestProduct } from './product/get-product.handler';
 
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -108,13 +109,12 @@ describe('Demand orders trading', () => {
             validFrom
         });
 
-        // const product = await productService.getProduct(deposit.asset.id);
         const createDemand: CreateDemandDTO<string> = {
             price,
             periodTimeFrame: TimeFrame.Monthly,
             start: moment().toDate(),
             end: moment().add(1, 'month').toDate(),
-            product: '',
+            product: TestProduct,
             volumePerPeriod: `${250 * MWh}`,
             boundToGenerationTime: false,
             excludeEnd: true
