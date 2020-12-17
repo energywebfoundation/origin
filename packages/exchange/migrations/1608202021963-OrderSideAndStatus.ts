@@ -46,13 +46,9 @@ export class OrderSide1608202021963 implements MigrationInterface {
             await queryRunner.query(
                 `UPDATE "exchange_order" SET status = '${getNewOrderStatus(
                     parseInt(oldOrder.status, 10)
-                )}' WHERE id = '${oldOrder.id}'`
-            );
-
-            await queryRunner.query(
-                `UPDATE "exchange_order" SET side = '${getNewOrderSide(
-                    parseInt(oldOrder.side, 10)
-                )}' WHERE id = '${oldOrder.id}'`
+                )}', side = '${getNewOrderSide(parseInt(oldOrder.side, 10))}' WHERE id = '${
+                    oldOrder.id
+                }'`
             );
         });
 
@@ -72,13 +68,9 @@ export class OrderSide1608202021963 implements MigrationInterface {
             await queryRunner.query(
                 `UPDATE "exchange_order" SET status = ${Object.keys(OrderStatus).indexOf(
                     oldOrder.status
-                )} WHERE id = '${oldOrder.id}'`
-            );
-
-            await queryRunner.query(
-                `UPDATE "exchange_order" SET side = ${Object.keys(OrderSide).indexOf(
-                    oldOrder.side
-                )} WHERE id = '${oldOrder.id}'`
+                )}, side = ${Object.keys(OrderSide).indexOf(oldOrder.side)} WHERE id = '${
+                    oldOrder.id
+                }'`
             );
         });
 
