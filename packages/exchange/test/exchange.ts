@@ -13,7 +13,12 @@ import { ethers } from 'ethers';
 
 import { entities } from '../src';
 import { AppModule } from '../src/app.module';
-import { IExchangeConfigurationService } from '../src/interfaces';
+import {
+    IDeviceSettings,
+    IExchangeConfigurationService,
+    IExternalDeviceService,
+    IProductInfo
+} from '../src/interfaces';
 import { AccountBalanceService } from '../src/pods/account-balance/account-balance.service';
 import { AccountService } from '../src/pods/account/account.service';
 import { BundleService } from '../src/pods/bundle/bundle.service';
@@ -67,7 +72,10 @@ const authGuard: CanActivate = {
 
 const testLogger = new Logger('e2e');
 
-export const bootstrapTestInstance = async (modules: any[] = []) => {
+export const bootstrapTestInstance = async (
+    deviceServiceMock?: IExternalDeviceService,
+    modules: any[] = []
+) => {
     const registry = await deployRegistry();
     const issuer = await deployIssuer(registry.address);
 
@@ -109,6 +117,23 @@ export const bootstrapTestInstance = async (modules: any[] = []) => {
                 useValue: {
                     getRegistryAddress: async () => registry.address,
                     getIssuerAddress: async () => issuer.address
+                }
+            },
+            {
+                provide: IExternalDeviceService,
+                useValue: deviceServiceMock ?? {
+                    getDeviceProductInfo: async (): Promise<IProductInfo> => ({
+                        deviceType: 'Solar;Photovoltaic;Classic silicon',
+                        country: 'Thailand',
+                        region: 'Central',
+                        province: 'Nakhon Pathom',
+                        operationalSince: 2016,
+                        gridOperator: 'TH-PEA'
+                    }),
+                    getDeviceSettings: async (): Promise<IDeviceSettings> => ({
+                        postForSale: false,
+                        postForSalePrice: null
+                    })
                 }
             }
         ]
