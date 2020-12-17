@@ -234,7 +234,7 @@ export class IRECAPIClient {
                 const url = `${deviceManagementUrl}/create`;
                 const response = await axios.post(url, classToPlain(dev), this.config);
 
-                return plainToClass(Device, response.data);
+                return plainToClass(Device, response.data?.device);
             },
             edit: async (
                 code: string,

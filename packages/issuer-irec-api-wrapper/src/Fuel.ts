@@ -1,5 +1,15 @@
 /* eslint-disable max-classes-per-file */
-import { CodeName } from './Device';
+import { IsNotEmpty, IsString } from 'class-validator';
+
+export class CodeName {
+    @IsString()
+    @IsNotEmpty()
+    code: string;
+
+    @IsString()
+    @IsNotEmpty()
+    name: string;
+}
 
 export class Fuel extends CodeName {}
 

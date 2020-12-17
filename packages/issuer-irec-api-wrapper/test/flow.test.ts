@@ -6,7 +6,7 @@ import { validateOrReject } from 'class-validator';
 
 import { IRECAPIClient } from '../src/IRECAPIClient';
 import { Device, DeviceCreateUpdateParams, DeviceState } from '../src/Device';
-import { IssueStatus, IssueWithStatus } from '../src/Issue';
+import { Issue, IssueStatus, IssueWithStatus } from '../src/Issue';
 
 dotenv.config();
 
@@ -27,12 +27,9 @@ describe('API flows', () => {
     });
 
     it('should pass create and approve device flow', async () => {
-        const deviceCode = `TestDevice${Date.now()}`;
-
         const params: DeviceCreateUpdateParams = {
             address: '1 Wind Farm Avenue, London',
             capacity: 500,
-            code: deviceCode,
             commissioningDate: new Date('2001-08-10'),
             countryCode: 'GB',
             defaultAccount: tradeAccount,
@@ -46,26 +43,27 @@ describe('API flows', () => {
             registrantOrganization: 'ORGANISATION001',
             registrationDate: new Date('2001-09-20')
         };
-        await client.device.create(params);
+        const createdDevice: Device = await client.device.create(params);
 
-        let device: Device = await client.device.get(deviceCode);
+        let device: Device = await client.device.get(createdDevice.code);
+        const deviceCode: string = device.code;
         expect(device.code).to.equal(deviceCode);
         expect(device.name).to.equal(params.name);
-        expect(device.capacity).to.equal(params.capacity);
+        expect(Number(device.capacity)).to.equal(Number(params.capacity));
         expect(device.status).to.equal(DeviceState.Draft);
-        await validateOrReject(device);
 
+        await validateOrReject(device);
         await client.device.submit(deviceCode, { notes: 'Some submit note' });
         device = await client.device.get(deviceCode);
-        expect(device.status).to.equal(DeviceState.Submitted);
+        expect(device.status).to.equal(DeviceState.InProgress);
 
         await client.device.verify(deviceCode, { notes: 'Some verify note' });
         device = await client.device.get(deviceCode);
-        expect(device.status).to.equal(DeviceState.Verified);
+        expect(device.status).to.equal(DeviceState.InProgress);
 
         await client.device.refer(deviceCode, { notes: 'Some refer note' });
         device = await client.device.get(deviceCode);
-        expect(device.status).to.equal(DeviceState.Referred);
+        expect(device.status).to.equal(DeviceState.InProgress);
 
         await client.device.reject(deviceCode, { notes: 'Some reject note' });
         device = await client.device.get(deviceCode);
@@ -87,15 +85,17 @@ describe('API flows', () => {
     it('should pass create and approve issue flow', async () => {
         const devices: Device[] = await client.device.getAll();
         const approvedDevice = devices.find((device) => device.status === DeviceState.Approved);
-
-        const issueCode: string = await client.issue.create({
+        const issueParams: Issue = {
             device: approvedDevice.code,
             recipient: tradeAccount,
             start: moment().add(1, 'day').toDate(),
             end: moment().add(2, 'day').toDate(),
             production: 10,
-            fuel: approvedDevice.fuel.code
-        });
+            fuel: approvedDevice.fuel,
+            notes: 'Some note'
+        };
+
+        const issueCode: string = await client.issue.create(issueParams);
 
         let issue: IssueWithStatus = await client.issue.get(issueCode);
         expect(issue.code).to.equal(issueCode);
