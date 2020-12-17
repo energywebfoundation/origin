@@ -1,4 +1,4 @@
-import { CreateDemandDTO } from '@energyweb/exchange-client';
+import { CreateDemandDTO } from '@energyweb/exchange-irec-client';
 import { Order, Demand, CreateBidDTO, IDirectBuyDTO } from '../../utils/exchange';
 
 export enum OrdersActionsType {

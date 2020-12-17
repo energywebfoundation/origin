@@ -22,7 +22,7 @@
         "prettier": "prettier --write --config-precedence file-override './src/**/*'",
         "lint": "eslint \"src/**/*{.ts,.tsx}\" \"test/**/*{.ts,.tsx}\"",
         "lint-fix": "eslint \"src/**/*{.ts,.tsx}\" \"test/**/*{.ts,.tsx}\" --fix",
-        "test": "jest --env 'node'",
+        "test": "jest --env 'node' --passWithNoTests",
         "test:concurrent": "yarn test",
         "test:watch": "jest --watch",
         "test:cov": "jest --coverage",
