@@ -1,11 +1,17 @@
-.HeaderWrapper {
-    height: 172px;
-    padding: 50px 94px 0px 100px;
+@import './variables.scss';
+
+$linkHoverColor: lighten($mainBackgroundColor, 10%);
+$headerBgColor: lighten($mainBackgroundColor, 5%);
 
     .Header {
+        height: 120px;
+        width: 100%;
+        z-index: 2;
+        background: $headerBgColor;
         display: flex;
-        align-items: flex-end;
-        justify-content: space-between;
+        align-items: center;
+        justify-content: flex-end;
+        padding-right: 35px;
 
         .ViewProfile {
             height: 40px;
@@ -20,45 +26,18 @@
                 margin-right: 10px;
             }
         }
-    }
-}
-
-.NavMenu {
-    > li {
-        width: 140px;
-        position: relative;
-        margin-bottom: 15px;
-
-        &:not(:first-child) {
-            margin-left: 16px;
-        }
-
-        a {
-            color: $textColorDefault;
-            text-decoration: none;
-            font-weight: 500;
-            font-size: 12px;
-            letter-spacing: 0.6px;
-
-            &.active {
-                color: $simpleTextColor;
+        .UserActionsLinks {
+            a {
+                text-decoration: none;
+                color: $textColorDefault;
+                padding: 10px 20px;
+                border-radius: 5px;
+                transition: all .2s ease;
             }
-
-            &:after {
-                content: '';
-                position: absolute;
-                background: $primaryColor;
-                height: 2px;
-                width: 0;
-                left: 0;
-                bottom: -3px;
-                transition: all 0.5s;
-            }
-
-            &.active:after,
-            &:hover:after {
-                width: 100%;
+            a:hover {
+                cursor: pointer;
+                background-color: $linkHoverColor;
             }
         }
     }
-}
+
