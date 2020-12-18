@@ -28,6 +28,7 @@ import { TransferService } from '../src/pods/transfer/transfer.service';
 import { DemandModule as TestDemandModule } from './demand/demand.module';
 import { OrderModule as TestOrderModule } from './order/order.module';
 import { ProductModule as TestProductModule } from './product/product.module';
+import { TradeModule as TestTradeModule } from './trade/trade.module';
 
 const web3 = 'http://localhost:8580';
 
@@ -108,6 +109,7 @@ export const bootstrapTestInstance = async (
             TestOrderModule,
             TestProductModule,
             TestDemandModule,
+            TestTradeModule,
             ...modules
         ],
         providers: [
