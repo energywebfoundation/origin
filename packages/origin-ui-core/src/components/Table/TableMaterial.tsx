@@ -76,7 +76,7 @@ interface IProps<T extends readonly ITableColumn[]> {
     handleRowClick?: (rowId: string) => void;
     batchableActions?: IBatchableAction[];
     customSelectCounterGenerator?: CustomCounterGeneratorFunction;
-    highlightedRowsIds?: string[];
+    highlightedRowsIds?: number[];
     customRow?: ICustomRow<TTableRow<GetReadonlyArrayItemType<T>['id']> & { id?: string }>;
     allowedActions?: any;
     caption?: string;
@@ -179,7 +179,7 @@ export function TableMaterial<T extends readonly ITableColumn[]>(props: IProps<T
         batchableActions,
         customSelectCounterGenerator,
         toggleSort,
-        highlightedRowsIds: highlightedRowsIndexes,
+        highlightedRowsIds: highlightedRowsIndexes = [],
         allowedActions,
         caption,
         actionsLabel
@@ -216,6 +216,7 @@ export function TableMaterial<T extends readonly ITableColumn[]>(props: IProps<T
     } = theme;
 
     const classes = useStyles(useTheme());
+    const originPrimaryColor = configuration?.styleConfig?.PRIMARY_COLOR;
 
     return (
         <>
@@ -305,12 +306,14 @@ export function TableMaterial<T extends readonly ITableColumn[]>(props: IProps<T
                                 {rows.map((row, rowIndex) => {
                                     const id = getRowId(row, rowIndex);
                                     const isItemSelected = selectedIds.includes(id);
-                                    const rowStyle = highlightedRowsIndexes?.includes(id)
+                                    const rowStyle = highlightedRowsIndexes.includes(rowIndex)
                                         ? {
-                                              background: '#424242'
+                                              outlineWidth: '1px',
+                                              outlineStyle: 'solid',
+                                              outlineColor: originPrimaryColor,
+                                              outlineOffset: '-1px'
                                           }
                                         : {};
-
                                     return (
                                         <React.Fragment key={id}>
                                             <TableRow
