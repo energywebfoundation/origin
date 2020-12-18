@@ -9,20 +9,27 @@ import {
     useIntervalFetch,
     getCountry,
     getUserOffchain,
-    setLoading
+    setLoading,
+    getCurrencies
 } from '@energyweb/origin-ui-core';
 import { getEnvironment, getExchangeClient } from '../features/general';
 import { createBid, createDemand, directBuyOrder } from '../features/orders';
-import { ExchangeClient, TOrderBook, ANY_VALUE } from '../utils/exchange';
+import {
+    ExchangeClient,
+    TOrderBook,
+    ANY_VALUE,
+    ANY_OPERATOR,
+    getOrdersTotalVolume,
+    IOrdersTotalVolume
+} from '../utils/exchange';
 import { Asks, Bids, Market, IMarketFormValues } from '../components/exchange';
 
-interface IProps {
-    currency: string;
-    refreshInterval?: number;
-}
+export function Exchange() {
+    const currencies = useSelector(getCurrencies);
+    const defaultCurrency = (currencies && currencies[0]) ?? 'USD';
 
-export function Exchange(props: IProps) {
-    const { currency, refreshInterval } = { refreshInterval: 3000, ...props };
+    const refreshInterval = 3000;
+    const currency = defaultCurrency;
 
     const user = useSelector(getUserOffchain);
     const exchangeClient: ExchangeClient = useSelector(getExchangeClient);
@@ -36,6 +43,7 @@ export function Exchange(props: IProps) {
         bids: [],
         lastTradedPrice: null
     });
+    const [totalOrders, setTotalOrders] = useState<IOrdersTotalVolume>(null);
     const [deviceType, setDeviceType] = useState<string[]>([]);
     const [location, setLocation] = useState<string[]>([]);
     const [gridOperator, setGridOperator] = useState<string[]>([]);
@@ -61,6 +69,8 @@ export function Exchange(props: IProps) {
                   });
         const fetchedData = orderBookData?.data;
 
+        const orderBookTotalOrders = await getOrdersTotalVolume(exchangeClient, user);
+
         if (checkIsMounted()) {
             setData(
                 (fetchedData as TOrderBook) ?? {
@@ -69,6 +79,7 @@ export function Exchange(props: IProps) {
                     lastTradedPrice: null
                 }
             );
+            setTotalOrders(orderBookTotalOrders);
         }
     };
 
@@ -91,6 +102,9 @@ export function Exchange(props: IProps) {
                         deviceType: values.deviceType?.includes(ANY_VALUE)
                             ? undefined
                             : values.deviceType,
+                        gridOperator: values.gridOperator?.includes(ANY_OPERATOR)
+                            ? undefined
+                            : values.gridOperator,
                         location: values.location?.includes(ANY_VALUE)
                             ? undefined
                             : values.location?.map((l) => `${country};${l}`),
@@ -117,6 +131,9 @@ export function Exchange(props: IProps) {
                         deviceType: values.deviceType?.includes(ANY_VALUE)
                             ? undefined
                             : values.deviceType,
+                        gridOperator: values.gridOperator?.includes(ANY_OPERATOR)
+                            ? undefined
+                            : values.gridOperator,
                         location: values.location?.includes(ANY_VALUE)
                             ? undefined
                             : values.location?.map((l) => `${country};${l}`)
@@ -143,76 +160,89 @@ export function Exchange(props: IProps) {
 
     return (
         <div>
-            <Market
-                onBid={onBid}
-                // eslint-disable-next-line @typescript-eslint/no-empty-function
-                onNotify={() => {}}
-                onChange={(values) => {
-                    if (JSON.stringify(values.deviceType) !== JSON.stringify(deviceType)) {
-                        setDeviceType(values.deviceType);
-                    }
+            <Grid container>
+                <Grid item xs={9}>
+                    <Market
+                        onBid={onBid}
+                        // eslint-disable-next-line @typescript-eslint/no-empty-function
+                        onNotify={() => {}}
+                        onChange={(values) => {
+                            if (JSON.stringify(values.deviceType) !== JSON.stringify(deviceType)) {
+                                setDeviceType(values.deviceType);
+                            }
 
-                    const newLocation = values.location.map((l) => `${country};${l}`);
+                            const newLocation = values.location.map((l) => `${country};${l}`);
 
-                    if (JSON.stringify(newLocation) !== JSON.stringify(location)) {
-                        setLocation(newLocation);
-                    }
+                            if (JSON.stringify(newLocation) !== JSON.stringify(location)) {
+                                setLocation(newLocation);
+                            }
 
-                    const newGridOperator = values.gridOperator;
+                            const newGridOperator = values.gridOperator;
 
-                    if (JSON.stringify(newGridOperator) !== JSON.stringify(gridOperator)) {
-                        setGridOperator(newGridOperator);
-                    }
+                            if (JSON.stringify(newGridOperator) !== JSON.stringify(gridOperator)) {
+                                setGridOperator(newGridOperator);
+                            }
 
-                    const newGenerationDateStart = values.generationDateStart
-                        ?.utcOffset(Number(environment.MARKET_UTC_OFFSET), true)
-                        .startOf('month')
-                        .toISOString();
+                            const newGenerationDateStart = values.generationDateStart
+                                ?.utcOffset(Number(environment.MARKET_UTC_OFFSET), true)
+                                .startOf('month')
+                                .toISOString();
 
-                    if (
-                        JSON.stringify(newGenerationDateStart) !==
-                        JSON.stringify(generationDateStart)
-                    ) {
-                        setGenerationDateStart(newGenerationDateStart);
-                    }
+                            if (
+                                JSON.stringify(newGenerationDateStart) !==
+                                JSON.stringify(generationDateStart)
+                            ) {
+                                setGenerationDateStart(newGenerationDateStart);
+                            }
 
-                    const newGenerationDateEnd = values.generationDateEnd
-                        ?.utcOffset(Number(environment.MARKET_UTC_OFFSET), true)
-                        .endOf('month')
-                        .toISOString();
+                            const newGenerationDateEnd = values.generationDateEnd
+                                ?.utcOffset(Number(environment.MARKET_UTC_OFFSET), true)
+                                .endOf('month')
+                                .toISOString();
 
-                    if (
-                        JSON.stringify(newGenerationDateEnd) !== JSON.stringify(generationDateEnd)
-                    ) {
-                        setGenerationDateEnd(newGenerationDateEnd);
-                    }
-                }}
-                energyUnit={EnergyFormatter.displayUnit}
-                currency={currency}
-                disableBidding={!user}
-            />
-            <br />
-            <br />
-            <Grid container spacing={3}>
-                <Grid item xs={6}>
-                    <Asks
-                        data={data.asks}
-                        currency={currency}
-                        title={t('exchange.info.asks')}
-                        highlightOrdersUserId={user?.id?.toString()}
-                        displayAssetDetails={true}
-                        buyDirect={buyDirect}
+                            if (
+                                JSON.stringify(newGenerationDateEnd) !==
+                                JSON.stringify(generationDateEnd)
+                            ) {
+                                setGenerationDateEnd(newGenerationDateEnd);
+                            }
+                        }}
                         energyUnit={EnergyFormatter.displayUnit}
-                    />
-                </Grid>
-                <Grid item xs={6}>
-                    <Bids
-                        data={data.bids}
                         currency={currency}
-                        title={t('exchange.info.bids')}
-                        highlightOrdersUserId={user?.id?.toString()}
+                        disableBidding={!user}
                     />
                 </Grid>
+                <Grid item xs={3}></Grid>
+            </Grid>
+            <br />
+            <br />
+            <Grid container>
+                <Grid item xs={9}>
+                    <Grid container spacing={3}>
+                        <Grid item xs={6}>
+                            <Asks
+                                data={data.asks}
+                                currency={currency}
+                                title={t('exchange.info.asks')}
+                                highlightOrdersUserId={user?.id?.toString()}
+                                displayAssetDetails={true}
+                                buyDirect={buyDirect}
+                                energyUnit={EnergyFormatter.displayUnit}
+                                ordersTotalVolume={totalOrders?.totalAsks}
+                            />
+                        </Grid>
+                        <Grid item xs={6}>
+                            <Bids
+                                data={data.bids}
+                                currency={currency}
+                                title={t('exchange.info.bids')}
+                                highlightOrdersUserId={user?.id?.toString()}
+                                ordersTotalVolume={totalOrders?.totalBids}
+                            />
+                        </Grid>
+                    </Grid>
+                </Grid>
+                <Grid item xs={3}></Grid>
             </Grid>
         </div>
     );
