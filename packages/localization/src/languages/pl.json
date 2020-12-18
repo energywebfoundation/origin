@@ -5,6 +5,7 @@
             "certificates": "Certyfikaty",
             "demands": "Oferty",
             "organizations": "Organizacje",
+            "exchange": "Rynek",
             "admin": "Admin",
             "supportAgent": "Support Agents"
         },
@@ -288,6 +289,7 @@
                 "register": "Zarejestruj",
                 "registerNow": "Zarejestruj się teraz",
                 "login": "Zaloguj się",
+                "logout": "Wyloguj",
                 "save": "Zapisać",
                 "forgotPasswordAsk": "Zapomniałeś hasła?",
                 "createDepositAddress": "Utwórz adres wpłaty",
@@ -380,22 +382,26 @@
                 "regions": "Regiony",
                 "selectMultipleRegions": "Wybierz wiele regionów",
                 "volume": "Tom ({unit})",
-                "price": "Cena ({currency}/{energyUnit})",
+                "price": "Cena",
                 "market": "Rynek",
                 "bids": "Oferty",
                 "asks": "Pyta",
+                "type": "Typ",
                 "date": "Data",
                 "myTrades": "Moje transakcje",
                 "side": "Bok",
                 "buy": "Kup",
                 "sell": "Sprzedać",
-                "total": "Total"
+                "total": "Total",
+                "matching": "Pasujący"
             },
             "properties": {
                 "price": "Cena",
                 "energy": "Energia",
                 "generationDateStart": "Data rozpoczęcia generacji",
                 "generationDateEnd": "Data zakończenia generowania",
+                "generationStart": "Początek generacji",
+                "generationEnd": "Koniec generacji",
                 "generationFrom": "Generacja z",
                 "generationTo": "Generacja do",
                 "volume": "Tom",
@@ -409,6 +415,12 @@
                     "weekly": "Tygodniowo",
                     "daily": "Codziennie",
                 }
+            },
+            "popover": {
+                "asksDescription": "Poniżej zobaczysz oferty sprzedaży, które odpowiadają kryteriom certyfikatu zdefiniowanym w filtrze rynku.",
+                "asksFurtherInstructions": "Aby zobaczyć wszystkie dostępne zapytania, usuń ustawione filtry rynkowe. Aby zobaczyć listę swoich aktywnych zapytań, przejdź do \"Moje zamówienia\".",
+                "bidsDescription": "Poniżej zobaczysz wszystkie oferty kupna, które odpowiadają kryteriom certyfikatu zdefiniowanym w filtrze rynku.",
+                "bidsFurtherInstructions": "Aby zobaczyć bardziej szczegółowe stawki, ustaw odpowiednie filtry rynkowe. Aby zobaczyć listę swoich aktywnych ofert, przejdź do \"Moje zamówienia\"."
             }
         },
         "organization": {
@@ -572,7 +584,8 @@
             "actions": {
                 "view": "Widok",
                 "remove": "Usunąć",
-                "update": "Zmodernizować"
+                "update": "Zmodernizować",
+                "viewMarket": "Wyświetl Market"
             },
             "feedback": {
                 "removeOrderConfirmation": "Czy na pewno chcesz usunąć?",
