@@ -1,29 +1,27 @@
-import { GetMappedOrderQuery } from '@energyweb/exchange';
-import { IMatchableOrder, Order, OrderSide } from '@energyweb/exchange-core';
+import { IOrderMapperService, Order } from '@energyweb/exchange';
+import { IMatchableOrder, OrderSide, Order as MatchingEngineOrder } from '@energyweb/exchange-core';
 import {
-    IRECProduct,
-    IRECProductFilter,
     AskProduct,
-    BidProduct
+    BidProduct,
+    IRECProduct,
+    IRECProductFilter
 } from '@energyweb/exchange-core-irec';
 import { LocationService } from '@energyweb/utils-general';
-import { Logger } from '@nestjs/common';
-import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
-import { ProductDTO } from '../product';
+import { Injectable, Logger } from '@nestjs/common';
+import { ProductDTO } from '../product/product.dto';
+
 import { DeviceTypeServiceWrapper } from '../runner';
 
-@QueryHandler(GetMappedOrderQuery)
-export class GetMappedOrderHandler implements IQueryHandler<GetMappedOrderQuery> {
-    private readonly logger = new Logger(GetMappedOrderHandler.name);
+@Injectable()
+export class OrderMapperService implements IOrderMapperService<IRECProduct, IRECProductFilter> {
+    private readonly logger = new Logger(OrderMapperService.name);
 
     private locationService = new LocationService();
 
     constructor(private readonly deviceTypeServiceWrapper: DeviceTypeServiceWrapper) {}
 
-    async execute({
-        order
-    }: GetMappedOrderQuery): Promise<IMatchableOrder<IRECProduct, IRECProductFilter>> {
-        this.logger.log(`Mapping order query`);
+    async map(order: Order): Promise<IMatchableOrder<IRECProduct, IRECProductFilter>> {
+        this.logger.debug(`Mapping order to matching engine order: ${JSON.stringify(order)}`);
 
         const irecProduct = ProductDTO.toProduct(order.product);
         const product =
@@ -39,7 +37,7 @@ export class GetMappedOrderHandler implements IQueryHandler<GetMappedOrderQuery>
                       this.locationService
                   );
 
-        return new Order(
+        return new MatchingEngineOrder(
             order.id,
             order.side,
             order.validFrom,

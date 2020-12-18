@@ -1,21 +1,13 @@
-import {
-    AccountBalanceModule,
-    Order,
-    OrderAccountingService,
-    OrderService
-} from '@energyweb/exchange';
+import { IOrderMapperService, OrderModule as BaseOrderModule } from '@energyweb/exchange';
 import { Module } from '@nestjs/common';
-import { CqrsModule } from '@nestjs/cqrs';
-import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { RunnerModule } from '../runner';
-import { GetMappedOrderHandler } from './get-mapped-order.handler';
+import { OrderMapperService } from './order-mapper.service';
 import { OrderController } from './order.controller';
 
 @Module({
-    providers: [OrderService, OrderAccountingService, GetMappedOrderHandler],
-    exports: [OrderService, GetMappedOrderHandler],
-    imports: [TypeOrmModule.forFeature([Order]), AccountBalanceModule, CqrsModule, RunnerModule],
+    providers: [{ provide: IOrderMapperService, useClass: OrderMapperService }],
+    imports: [BaseOrderModule, RunnerModule],
     controllers: [OrderController]
 })
 export class OrderModule {}
