@@ -15,6 +15,8 @@ import {
 } from '@energyweb/exchange';
 import { ExchangeErc1888Module } from '../src';
 
+const web3 = 'http://localhost:8590';
+
 const {
     authenticatedUser,
     createDepositAddress,
@@ -61,7 +63,7 @@ describe('Deposits automatic posting for sale', () => {
             registry,
             issuer,
             app
-        } = await bootstrapTestInstance(deviceServiceMock, [ExchangeErc1888Module]));
+        } = await bootstrapTestInstance(web3, deviceServiceMock, [ExchangeErc1888Module]));
 
         await app.init();
         depositAddress = await createDepositAddress(accountService, user1Id);

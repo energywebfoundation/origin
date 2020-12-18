@@ -23,7 +23,7 @@ import { AppModule as ExchangeIRECModule } from '../src/app.module';
 
 import { ProductDTO } from '../src/product';
 
-const web3 = 'http://localhost:8580';
+const web3 = 'http://localhost:8591';
 
 export const authenticatedUser = { id: 1, organization: { id: '1000' }, status: UserStatus.Active };
 

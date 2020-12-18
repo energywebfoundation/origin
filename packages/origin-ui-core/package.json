@@ -19,10 +19,8 @@
         "clean": "shx rm -rf dist",
         "test": "exit 0 && yarn config-env && jest",
         "test:unit": "yarn config-env && jest -c jest.config.unit.js",
-        "test:e2e": "yarn config-env && jest -c jest.config.e2e.js",
         "test:watch": "yarn config-env && jest -u --watchAll",
-        "test:unit:watch": "yarn config-env && jest -u --watchAll -c jest.config.unit.js",
-        "test:e2e:watch": "yarn config-env && jest -u --watchAll -c jest.config.e2e.js"
+        "test:unit:watch": "yarn config-env && jest -u --watchAll -c jest.config.unit.js"
     },
     "dependencies": {
         "@date-io/moment": "1.3.13",

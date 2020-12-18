@@ -17,8 +17,10 @@ import {
     DB_TABLE_PREFIX,
     testUtils
 } from '@energyweb/exchange';
-import { ExchangeErc1888Module } from '../src';
 import { TestProduct } from '@energyweb/exchange/test/product/get-product.handler';
+import { ExchangeErc1888Module } from '../src';
+
+const web3 = 'http://localhost:8590';
 
 const {
     authenticatedUser,
@@ -61,7 +63,7 @@ describe('Deposits using deployed registry', () => {
             registry,
             issuer,
             app
-        } = await bootstrapTestInstance(null, [ExchangeErc1888Module]));
+        } = await bootstrapTestInstance(web3, null, [ExchangeErc1888Module]));
 
         await app.init();
 

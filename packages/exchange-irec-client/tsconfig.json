@@ -12,6 +12,9 @@
     "references": [
         {
             "path": "../exchange/tsconfig.json"
+        },
+        {
+            "path": "../exchange-irec/tsconfig.json"
         }
     ]
 }

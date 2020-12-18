@@ -30,12 +30,12 @@ import { OrderModule as TestOrderModule } from './order/order.module';
 import { ProductModule as TestProductModule } from './product/product.module';
 import { TradeModule as TestTradeModule } from './trade/trade.module';
 
-const web3 = 'http://localhost:8580';
+const WEB3 = 'http://localhost:8580';
 
 // ganache account 2
 const registryDeployer = '0xc4b87d68ea2b91f9d3de3fcb77c299ad962f006ffb8711900cb93d94afec3dc3';
 
-const deployContract = async ({ abi, bytecode }: { abi: any; bytecode: string }) => {
+const deployContract = async (web3: string, { abi, bytecode }: { abi: any; bytecode: string }) => {
     const provider = getProviderWithFallback(web3);
     const wallet = new ethers.Wallet(registryDeployer, provider);
 
@@ -45,14 +45,14 @@ const deployContract = async ({ abi, bytecode }: { abi: any; bytecode: string })
     return contract.deployed();
 };
 
-const deployRegistry = async () => {
-    const contract = await deployContract(Contracts.RegistryJSON);
+const deployRegistry = async (web3: string) => {
+    const contract = await deployContract(web3, Contracts.RegistryJSON);
 
     return contract;
 };
 
-const deployIssuer = async (registry: string) => {
-    const contract = await deployContract(Contracts.IssuerJSON);
+const deployIssuer = async (web3: string, registry: string) => {
+    const contract = await deployContract(web3, Contracts.IssuerJSON);
     const wallet = new ethers.Wallet(registryDeployer);
 
     await contract['initialize(int256,address,address)'](100, registry, wallet.address);
@@ -74,11 +74,14 @@ const authGuard: CanActivate = {
 const testLogger = new Logger('e2e');
 
 export const bootstrapTestInstance = async (
+    web3 = WEB3,
     deviceServiceMock?: IExternalDeviceService,
     modules: any[] = []
 ) => {
-    const registry = await deployRegistry();
-    const issuer = await deployIssuer(registry.address);
+    testLogger.debug(`Using ${web3}`);
+
+    const registry = await deployRegistry(web3);
+    const issuer = await deployIssuer(web3, registry.address);
 
     const configService = new ConfigService({
         WEB3: web3,
