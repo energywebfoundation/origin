@@ -1,9 +1,9 @@
 import { IRECProduct } from './IRECProduct';
 
 export enum Filter {
-    All,
-    Specific,
-    Unspecified
+    All = 'All',
+    Specific = 'Specific',
+    Unspecified = 'Unspecified'
 }
 
 export class IRECProductFilter extends IRECProduct {
