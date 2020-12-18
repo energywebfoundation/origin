@@ -3,10 +3,14 @@ import {
     AssetClient,
     BundleClient,
     Configuration,
-    TradeClient,
     TransferClient
 } from '@energyweb/exchange-client';
-import { DemandClient, OrderbookClient, OrdersClient } from '@energyweb/exchange-irec-client';
+import {
+    DemandClient,
+    OrderbookClient,
+    OrdersClient,
+    TradeClient
+} from '@energyweb/exchange-irec-client';
 import { BaseClient } from '@energyweb/origin-ui-core';
 
 export class ExchangeClient extends BaseClient {
