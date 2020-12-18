@@ -1,37 +1,69 @@
 import React, { useEffect } from 'react';
-import { Typography } from '@material-ui/core';
+import { Typography, Paper, makeStyles, createStyles, Grid } from '@material-ui/core';
+import { Info } from '@material-ui/icons';
 import {
     useTranslation,
     EnergyFormatter,
     TableMaterial,
     ICustomRow,
     IPaginatedLoaderHooksFetchDataParameters,
-    usePaginatedLoaderFiltered
+    usePaginatedLoaderFiltered,
+    LightenColor,
+    IconPopover,
+    IconSize
 } from '@energyweb/origin-ui-core';
 import { IOrderBookOrderDTO } from '../../utils/exchange';
+import { useOriginConfiguration } from '../../utils/configuration';
+import { DeviceTypeIcons } from './DeviceTypeIcons';
 
 export interface IOrdersProps {
     data: IOrderBookOrderDTO[];
-    currency: string;
     title: string;
     highlightOrdersUserId: string;
+    ordersTotalVolume: number;
+    currency?: string;
+    popoverText?: string[];
     handleRowClick?: (order: IOrderBookOrderDTO) => void;
     customRow?: ICustomRow<any>;
+    reverseRows?: boolean;
 }
 
 export function Orders(props: IOrdersProps) {
-    const { currency, data, title, highlightOrdersUserId, handleRowClick, customRow } = props;
+    const {
+        data,
+        title,
+        highlightOrdersUserId,
+        handleRowClick,
+        customRow,
+        reverseRows = false,
+        ordersTotalVolume,
+        popoverText = []
+    } = props;
 
     const { t } = useTranslation();
+    const originBgColor = useOriginConfiguration()?.styleConfig?.MAIN_BACKGROUND_COLOR;
+    const paperColor = LightenColor(originBgColor, 0.5);
+
+    const useStyles = makeStyles(() =>
+        createStyles({
+            paper: {
+                backgroundColor: paperColor
+            },
+            iconPopover: {
+                '& button': {
+                    outline: 'none'
+                }
+            }
+        })
+    );
+    const classes = useStyles();
 
     async function getPaginatedData({
         requestedPageSize,
         offset
     }: IPaginatedLoaderHooksFetchDataParameters) {
         let newPaginatedData = data;
-
         const newTotal = newPaginatedData.length;
-
         newPaginatedData = newPaginatedData.slice(offset, offset + requestedPageSize);
 
         return {
@@ -48,45 +80,75 @@ export function Orders(props: IOrdersProps) {
 
     useEffect(() => {
         let isMounted = true;
-
         const checkIsMounted = () => isMounted;
-
         loadPage(1, null, checkIsMounted);
-
         return () => {
             isMounted = false;
         };
     }, [props.data]);
 
     const columns = [
-        { id: 'volume', label: t('exchange.info.volume', { unit: EnergyFormatter.displayUnit }) },
-        {
-            id: 'price',
-            label: t('exchange.info.price', { currency, energyUnit: EnergyFormatter.displayUnit })
-        }
-    ] as const;
+        { id: 'price', label: t('exchange.info.price') },
+        { id: 'volume', label: EnergyFormatter.displayUnit },
+        { id: 'type', label: t('exchange.info.type') }
+    ];
 
     const highlightedRowsIndexes = [];
-    const rows = paginatedData.map(({ id, price, volume, userId }, index) => {
-        if (typeof userId !== 'undefined' && userId !== null && userId === highlightOrdersUserId) {
-            highlightedRowsIndexes.push(index);
-        }
+    const rows = paginatedData.map(
+        ({ id, price, volume, userId, product: { deviceType } }, index) => {
+            if (
+                typeof userId !== 'undefined' &&
+                userId !== null &&
+                userId === highlightOrdersUserId
+            ) {
+                highlightedRowsIndexes.push(index);
+            }
 
-        return {
-            id,
-            volume: EnergyFormatter.format(volume),
-            price: (price / 100).toFixed(2)
-        };
-    });
+            const type = <DeviceTypeIcons deviceType={deviceType} />;
+
+            return {
+                id,
+                price: (price / 100).toFixed(2),
+                volume: EnergyFormatter.format(volume),
+                type
+            };
+        }
+    );
 
     return (
-        <>
-            <Typography variant="h3" gutterBottom>
-                {title}
-            </Typography>
+        <Paper className={classes.paper}>
+            <Grid container className="orderbookHeader">
+                <Grid item xs={3} className="headerItem">
+                    <Typography variant="h5" className="title" gutterBottom>
+                        {title}
+                    </Typography>
+                </Grid>
+
+                <Grid item xs={6} className="headerItem matching">
+                    {ordersTotalVolume > 0 ? (
+                        <Typography>
+                            {paginatedData.length}
+                            {' / '}
+                            {ordersTotalVolume} {'  '}
+                            {t('exchange.info.matching')}
+                        </Typography>
+                    ) : null}
+                </Grid>
+
+                <Grid item xs={3} className="headerItem icon">
+                    <IconPopover
+                        icon={Info}
+                        iconSize={IconSize.Medium}
+                        className={classes.iconPopover}
+                        popoverText={popoverText}
+                        clickable={true}
+                    />
+                </Grid>
+            </Grid>
+
             <TableMaterial
-                columns={columns}
-                rows={rows}
+                columns={reverseRows ? columns.reverse() : columns}
+                rows={reverseRows ? rows.reverse() : rows}
                 loadPage={loadPage}
                 total={total}
                 pageSize={pageSize}
@@ -100,6 +162,6 @@ export function Orders(props: IOrdersProps) {
                 }
                 customRow={customRow}
             />
-        </>
+        </Paper>
     );
 }
