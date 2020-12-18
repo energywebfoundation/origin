@@ -1,12 +1,13 @@
 import { IMatchableOrder, OrderStatus, Trade } from '@energyweb/exchange-core';
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
-import { EventBus, QueryBus } from '@nestjs/cqrs';
+import { ModuleRef } from '@nestjs/core';
+import { EventBus } from '@nestjs/cqrs';
 import { InjectRepository } from '@nestjs/typeorm';
 import BN from 'bn.js';
 import { List } from 'immutable';
 import { Connection, Repository } from 'typeorm';
 
-import { GetMappedOrderQuery } from '../matching-engine/queries/get-mapped-order.query';
+import { IOrderMapperService } from '../../interfaces/IOrderMapperService';
 import { Order } from '../order/order.entity';
 import { TradePersistedEvent } from './trade-persisted.event';
 import { TradePriceInfoDTO } from './trade-price-info.dto';
@@ -29,16 +30,25 @@ export class TradeService<TProduct, TProductFilter> implements OnModuleInit {
 
     private tradeCache: TradeCacheItem<TProduct, TProductFilter>[];
 
+    private orderMapperService: IOrderMapperService<TProduct, TProductFilter>;
+
     constructor(
         private readonly connection: Connection,
         @InjectRepository(TradeEntity)
         private readonly repository: Repository<TradeEntity>,
         private readonly eventBus: EventBus,
-        private readonly queryBus: QueryBus
+        private readonly moduleRef: ModuleRef
     ) {}
 
     public async onModuleInit() {
         this.logger.log(`Initializing trade service`);
+
+        this.orderMapperService = this.moduleRef.get<IOrderMapperService<TProduct, TProductFilter>>(
+            IOrderMapperService,
+            {
+                strict: false
+            }
+        );
 
         await this.loadTradesCache();
     }
@@ -130,19 +140,15 @@ export class TradeService<TProduct, TProductFilter> implements OnModuleInit {
     private async toTradeCacheItem(
         trade: TradeEntity
     ): Promise<TradeCacheItem<TProduct, TProductFilter>> {
-        const ask = await this.queryBus.execute(
-            new GetMappedOrderQuery({
-                ...trade.ask,
-                currentVolume: trade.ask.startVolume
-            } as Order)
-        );
+        const ask = await this.orderMapperService.map({
+            ...trade.ask,
+            currentVolume: trade.ask.startVolume
+        } as Order);
 
-        const bid = await this.queryBus.execute(
-            new GetMappedOrderQuery({
-                ...trade.bid,
-                currentVolume: trade.bid.startVolume
-            } as Order)
-        );
+        const bid = await this.orderMapperService.map({
+            ...trade.bid,
+            currentVolume: trade.bid.startVolume
+        } as Order);
 
         return {
             ask,

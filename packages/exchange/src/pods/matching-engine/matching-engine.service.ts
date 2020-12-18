@@ -2,7 +2,6 @@ import {
     ActionResultEvent,
     AskPriceStrategy,
     DirectBuy,
-    IMatchableOrder,
     MatchingEngine,
     OrderCreationTimePickStrategy,
     Trade,
@@ -10,15 +9,16 @@ import {
 } from '@energyweb/exchange-core';
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { EventBus, QueryBus } from '@nestjs/cqrs';
+import { ModuleRef } from '@nestjs/core';
+import { EventBus } from '@nestjs/cqrs';
 import { Interval } from '@nestjs/schedule';
 import { List } from 'immutable';
 
+import { IOrderMapperService } from '../../interfaces/IOrderMapperService';
 import { OrderType } from '../order/order-type.enum';
 import { Order } from '../order/order.entity';
 import { OrderService } from '../order/order.service';
 import { BulkTradeExecutedEvent } from './bulk-trade-executed.event';
-import { GetMappedOrderQuery } from './queries/get-mapped-order.query';
 
 @Injectable()
 export class MatchingEngineService<TProduct, TProductFilter> implements OnModuleInit {
@@ -28,14 +28,23 @@ export class MatchingEngineService<TProduct, TProductFilter> implements OnModule
 
     private matchingEngine: MatchingEngine<TProduct, TProductFilter>;
 
+    private orderMapperService: IOrderMapperService<TProduct, TProductFilter>;
+
     constructor(
         private readonly orderService: OrderService<TProduct>,
         private readonly eventBus: EventBus,
-        private readonly queryBus: QueryBus,
-        private readonly config: ConfigService
+        private readonly config: ConfigService,
+        private readonly moduleRef: ModuleRef
     ) {}
 
     public async onModuleInit(): Promise<void> {
+        this.orderMapperService = this.moduleRef.get<IOrderMapperService<TProduct, TProductFilter>>(
+            IOrderMapperService,
+            {
+                strict: false
+            }
+        );
+
         const priceStrategyIndex = this.config.get<number>('EXCHANGE_PRICE_STRATEGY');
         const priceStrategy =
             priceStrategyIndex === 0 ? new AskPriceStrategy() : new OrderCreationTimePickStrategy();
@@ -56,10 +65,7 @@ export class MatchingEngineService<TProduct, TProductFilter> implements OnModule
         for (const order of orders) {
             this.logger.log(`Submitting order ${order.id}`);
 
-            const mappedOrder = await this.queryBus.execute<
-                GetMappedOrderQuery,
-                IMatchableOrder<TProduct, TProductFilter>
-            >(new GetMappedOrderQuery(order));
+            const mappedOrder = await this.orderMapperService.map(order);
 
             this.matchingEngine.submitOrder(mappedOrder);
         }
@@ -77,10 +83,7 @@ export class MatchingEngineService<TProduct, TProductFilter> implements OnModule
         this.logger.debug(`Submitting order ${JSON.stringify(order)}`);
 
         if (order.type === OrderType.Limit) {
-            const mappedOrder = await this.queryBus.execute<
-                GetMappedOrderQuery,
-                IMatchableOrder<TProduct, TProductFilter>
-            >(new GetMappedOrderQuery(order));
+            const mappedOrder = await this.orderMapperService.map(order);
 
             this.matchingEngine.submitOrder(mappedOrder);
         } else if (order.type === OrderType.Direct) {

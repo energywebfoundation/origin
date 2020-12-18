@@ -23,9 +23,9 @@ const getNewOrderStatus = (oldStatus: number): OrderStatus => {
 const getNewOrderSide = (oldSide: number): OrderSide => {
     switch (oldSide) {
         case 0:
-            return OrderSide.Ask;
-        case 1:
             return OrderSide.Bid;
+        case 1:
+            return OrderSide.Ask;
         default:
             return OrderSide.Bid;
     }
