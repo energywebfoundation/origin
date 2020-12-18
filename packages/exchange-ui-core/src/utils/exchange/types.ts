@@ -1,6 +1,7 @@
 import { Filter, Operator, OrderSide, Product, OrderStatus } from '@energyweb/exchange-core';
 import { DemandStatus, TimeFrame } from '@energyweb/utils-general';
 import { BigNumber } from 'ethers';
+import { Moment } from 'moment';
 
 export type DeviceVintageDTO = {
     year: number;
@@ -205,8 +206,8 @@ export type DemandSummaryDTO = {
 export interface ICalculateVolumeData {
     volume: string;
     period: TimeFrame;
-    start: Date;
-    end: Date;
+    start: Moment;
+    end: Moment;
 }
 
 export interface IDemand {
