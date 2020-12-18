@@ -27,6 +27,9 @@
         },
         {
             "path": "../exchange/tsconfig.json"
+        },
+        {
+            "path": "../exchange-core-irec/tsconfig.json"
         }
     ]
 }
