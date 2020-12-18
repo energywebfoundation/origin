@@ -47,7 +47,9 @@ export const OrderDetailsModal = (props: IOwnProps) => {
     const bgDarken = LightenColor(originBgColor, -2);
 
     const currency = useSelector(getCurrencies)[0];
-    const primaryDeviceType = deviceType ? deviceType[0].split(';')[0] : anyOption;
+    const deviceTypeFormatted = (deviceArr: string[]): string =>
+        deviceArr.filter((type) => !type.includes(';')).join(', ');
+    const primaryDeviceType = deviceType ? deviceTypeFormatted(deviceType) : anyOption;
     const region = location ? location[0].split(';')[1] : anyOption;
     const devices = useSelector(getProducingDevices);
     const environment = useSelector(getEnvironment);
