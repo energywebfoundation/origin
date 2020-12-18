@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Expose, plainToClass } from 'class-transformer';
-import { IsArray, IsNumber, IsString } from 'class-validator';
+import { IsArray, IsISO31661Alpha2, IsString } from 'class-validator';
 import { Organization } from '../organization.entity';
 import { PublicOrganizationInfoDTO } from './public-organization-info.dto';
 
@@ -25,10 +25,10 @@ export class FullOrganizationInfoDTO extends PublicOrganizationInfoDTO {
     @Expose()
     signatoryCity: string;
 
-    @ApiProperty({ type: Number })
-    @IsNumber()
+    @ApiProperty({ type: String })
+    @IsISO31661Alpha2()
     @Expose()
-    signatoryCountry: number;
+    signatoryCountry: string;
 
     @ApiProperty({ type: String })
     @IsString()
