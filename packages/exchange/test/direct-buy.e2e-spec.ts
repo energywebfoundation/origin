@@ -20,7 +20,7 @@ describe('DirectBuy orders tests', () => {
     let transferService: TransferService;
     let databaseService: DatabaseService;
     let accountService: AccountService;
-    let orderService: OrderService;
+    let orderService: OrderService<string>;
 
     const dummyAsset = {
         address: '0x9876',
@@ -106,7 +106,7 @@ describe('DirectBuy orders tests', () => {
             .get(`/trade`)
             .expect(HttpStatus.OK)
             .expect((res) => {
-                const trades = res.body as TradeDTO[];
+                const trades = res.body as TradeDTO<string>[];
                 const [trade] = trades;
 
                 expect(trades).to.have.length(1);

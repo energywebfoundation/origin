@@ -3,18 +3,18 @@ import { IsArray, ValidateNested } from 'class-validator';
 import { TradePriceInfoDTO } from '../trade/trade-price-info.dto';
 import { OrderBookOrderDTO } from './order-book-order.dto';
 
-export class OrderBookDTO {
+export class OrderBookDTO<TProduct> {
     @ApiProperty({ type: [OrderBookOrderDTO] })
     @IsArray()
     @ValidateNested()
-    asks: OrderBookOrderDTO[];
+    asks: OrderBookOrderDTO<TProduct>[];
 
     @ApiProperty({ type: [OrderBookOrderDTO] })
     @IsArray()
     @ValidateNested()
-    bids: OrderBookOrderDTO[];
+    bids: OrderBookOrderDTO<TProduct>[];
 
     @ApiProperty({ type: TradePriceInfoDTO })
     @ValidateNested()
-    lastTradedPrice: TradePriceInfoDTO;
+    lastTradedPrice: TradePriceInfoDTO<TProduct>;
 }

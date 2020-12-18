@@ -13,8 +13,8 @@ describe('TradeAccountingService', () => {
     const userId = '1';
     const asset1 = { id: '1', address: '0x1234', tokenId: '0' } as Asset;
 
-    let service: TradeAccountingService;
-    let tradeService: TradeService;
+    let service: TradeAccountingService<string, string>;
+    let tradeService: TradeService<string, string>;
 
     const registerTrade = (...trades: Partial<Trade>[]) => {
         jest.spyOn(tradeService, 'getAllByUser').mockImplementation(async () => trades as Trade[]);
@@ -35,8 +35,8 @@ describe('TradeAccountingService', () => {
             ]
         }).compile();
 
-        service = module.get<TradeAccountingService>(TradeAccountingService);
-        tradeService = module.get<TradeService>(TradeService);
+        service = module.get<TradeAccountingService<string, string>>(TradeAccountingService);
+        tradeService = module.get<TradeService<string, string>>(TradeService);
 
         registerTrade();
     });

@@ -1,34 +1,35 @@
+import { OrderStatus } from '@energyweb/exchange-core';
 import { DemandStatus } from '@energyweb/utils-general';
 import { Injectable, Logger } from '@nestjs/common';
+import { CommandBus } from '@nestjs/cqrs';
 import { InjectRepository } from '@nestjs/typeorm';
 import BN from 'bn.js';
 import { Connection, Repository } from 'typeorm';
 
-import { OrderStatus } from '@energyweb/exchange-core';
 import { ForbiddenActionError } from '../../utils/exceptions';
-import { MatchingEngineService } from '../matching-engine/matching-engine.service';
+import { SubmitOrderCommand } from '../order/commands/submit-order.command';
 import { CreateBidDTO } from '../order/create-bid.dto';
 import { Order } from '../order/order.entity';
 import { OrderService } from '../order/order.service';
 import { CreateDemandDTO } from './create-demand.dto';
+import { DemandSummaryDTO } from './demand-summary.dto';
 import { DemandTimePeriodService } from './demand-time-period.service';
 import { Demand, IDemand } from './demand.entity';
-import { DemandSummaryDTO } from './demand-summary.dto';
 
 @Injectable()
-export class DemandService {
+export class DemandService<TProduct> {
     private readonly logger = new Logger(DemandService.name);
 
     constructor(
         @InjectRepository(Demand)
         private readonly repository: Repository<Demand>,
-        private readonly orderService: OrderService,
-        private readonly matchingService: MatchingEngineService,
+        private readonly orderService: OrderService<TProduct>,
         private readonly connection: Connection,
-        private readonly demandTimePeriodService: DemandTimePeriodService
+        private readonly demandTimePeriodService: DemandTimePeriodService<TProduct>,
+        private readonly commandBus: CommandBus
     ) {}
 
-    public async create(userId: string, createDemand: CreateDemandDTO): Promise<Demand> {
+    public async create(userId: string, createDemand: CreateDemandDTO<TProduct>): Promise<Demand> {
         const bidsToCreate = this.prepareBids(createDemand);
 
         let demand: Demand;
@@ -58,7 +59,9 @@ export class DemandService {
             );
         });
 
-        bids.forEach((bid) => this.matchingService.submit(bid));
+        for (const bid of bids) {
+            await this.commandBus.execute(new SubmitOrderCommand(bid));
+        }
 
         return this.findOne(userId, demand.id);
     }
@@ -66,7 +69,7 @@ export class DemandService {
     public async replace(
         userId: string,
         demandId: string,
-        createDemand: CreateDemandDTO
+        createDemand: CreateDemandDTO<TProduct>
     ): Promise<Demand> {
         const demand = await this.findOne(userId, demandId);
         if (!demand) {
@@ -82,7 +85,7 @@ export class DemandService {
         return this.create(userId, createDemand);
     }
 
-    public createSummary(createDemand: CreateDemandDTO): DemandSummaryDTO {
+    public createSummary(createDemand: CreateDemandDTO<TProduct>): DemandSummaryDTO<TProduct> {
         const bids = this.prepareBids(createDemand);
 
         return new DemandSummaryDTO(bids);
@@ -167,10 +170,10 @@ export class DemandService {
         }
     }
 
-    private prepareBids(createDemand: CreateDemandDTO) {
+    private prepareBids(createDemand: CreateDemandDTO<TProduct>) {
         const validityDates = this.demandTimePeriodService.generateValidityDates(createDemand);
         return validityDates.map(
-            ({ validFrom, generationFrom, generationTo }): CreateBidDTO => ({
+            ({ validFrom, generationFrom, generationTo }): CreateBidDTO<TProduct> => ({
                 volume: createDemand.volumePerPeriod,
                 price: createDemand.price,
                 validFrom,

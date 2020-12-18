@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Grid } from '@material-ui/core';
-import { Filter } from '@energyweb/exchange-core';
-import { ProductFilterDTO } from '@energyweb/exchange-client';
+import { ProductFilterDTO, Filter } from '@energyweb/exchange-irec-client';
 import { UserStatus } from '@energyweb/origin-backend-core';
 import {
     EnergyFormatter,

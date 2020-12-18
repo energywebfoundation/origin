@@ -10,9 +10,9 @@ import {
 import { OrderService } from './order.service';
 
 @Injectable()
-export class OrderAccountingService extends AccountBalanceAssetService {
+export class OrderAccountingService<TProduct> extends AccountBalanceAssetService {
     constructor(
-        private readonly orderService: OrderService,
+        private readonly orderService: OrderService<TProduct>,
         accountBalanceService: AccountBalanceService
     ) {
         super();

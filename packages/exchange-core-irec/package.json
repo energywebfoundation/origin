@@ -1,0 +1,50 @@
+{
+    "name": "@energyweb/exchange-core-irec",
+    "description": "An IREC based EACs product and matching",
+    "author": "EnergyWeb DevHub GmbH; Piotr Kosinski, piotr.kosinski@energyweb.org",
+    "license": "GPL-3.0-or-later",
+    "homepage": "https://github.com/energywebfoundation/origin/tree/master/packages/exchange-core#readme",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/energywebfoundation/origin.git"
+    },
+    "bugs": {
+        "url": "https://github.com/energywebfoundation/origin/issues"
+    },
+    "version": "1.0.0",
+    "main": "dist/js/src/index.js",
+    "files": [
+        "dist/js/build",
+        "dist/js/src",
+        "dist/js/schemas"
+    ],
+    "directories": {
+        "test": "test"
+    },
+    "scripts": {
+        "build": "yarn build:ts",
+        "build:ts": "tsc -b tsconfig.json",
+        "lint": "eslint \"src/**/*{.ts,.tsx}\"",
+        "lint-fix": "eslint \"src/**/*{.ts,.tsx}\" --fix",
+        "test": "mocha -r ts-node/register test/*.test.ts --exit",
+        "test:concurrent": "yarn test",
+        "prettier": "prettier --write --config-precedence file-override './src/**/*'",
+        "clean": "shx rm -rf build dist dist-shakeable schemas",
+        "precommit": "lint-staged"
+    },
+    "types": "dist/js/src/index.d.ts",
+    "dependencies": {
+        "@energyweb/utils-general": "11.0.0",
+        "@energyweb/exchange-core": "3.1.8",
+        "@nestjs/common": "7.5.2",
+        "bn.js": "5.1.3",
+        "immutable": "4.0.0-rc.12",
+        "moment": "2.24.0",
+        "moment-range": "4.0.2",
+        "rxjs": "6.6.3"
+    },
+    "publishConfig": {
+        "access": "public",
+        "registry": "https://registry.npmjs.org"
+    }
+}

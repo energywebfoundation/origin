@@ -17,7 +17,7 @@ const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 describe('Trades API', () => {
     let app: INestApplication;
-    let orderService: OrderService;
+    let orderService: OrderService<string>;
     let transferService: TransferService;
     let databaseService: DatabaseService;
     let accountService: AccountService;
@@ -58,11 +58,11 @@ describe('Trades API', () => {
             validFrom: new Date()
         };
 
-        const createBid: CreateBidDTO = {
+        const createBid: CreateBidDTO<string> = {
             price: 100,
             validFrom: new Date(),
             volume: '100',
-            product: { deviceType: ['Solar'] }
+            product: "{ deviceType: ['Solar'] }"
         };
 
         const ask = await orderService.createAsk(sellerId, createAsk);
@@ -74,7 +74,7 @@ describe('Trades API', () => {
             .get('/trade')
             .expect(HttpStatus.OK)
             .expect((res) => {
-                const [trade] = res.body as TradeDTO[];
+                const [trade] = res.body as TradeDTO<string>[];
 
                 expect(trade.assetId).equals(deposit.asset.id);
                 expect(trade.product).deep.equals(ask.product);

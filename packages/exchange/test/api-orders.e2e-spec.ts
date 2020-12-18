@@ -2,20 +2,19 @@ import { OrderStatus } from '@energyweb/exchange-core';
 import { DatabaseService } from '@energyweb/origin-backend-utils';
 import { HttpStatus, INestApplication } from '@nestjs/common';
 import { expect } from 'chai';
-import { Contract, ethers } from 'ethers';
 import request from 'supertest';
 
-import { AccountBalanceDTO } from '../src/pods/account-balance/account-balance.dto';
 import { AccountService } from '../src/pods/account/account.service';
 import { CreateAskDTO } from '../src/pods/order/create-ask.dto';
 import { CreateBidDTO } from '../src/pods/order/create-bid.dto';
 import { Order } from '../src/pods/order/order.entity';
-import { RequestWithdrawalDTO } from '../src/pods/transfer/create-withdrawal.dto';
 import { Transfer } from '../src/pods/transfer/transfer.entity';
 import { TransferService } from '../src/pods/transfer/transfer.service';
-import { authenticatedUser, bootstrapTestInstance } from './exchange';
-import { createDepositAddress, issueToken, MWh } from './utils';
 import { DB_TABLE_PREFIX } from '../src/utils/tablePrefix';
+import { authenticatedUser, bootstrapTestInstance } from './exchange';
+import { OrderDTO } from './order/order.dto';
+import { TestProduct } from './product/get-product.handler';
+import { createDepositAddress, MWh } from './utils';
 
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -24,7 +23,6 @@ describe('account ask order send', () => {
     let transferService: TransferService;
     let databaseService: DatabaseService;
     let accountService: AccountService;
-    let issuer: Contract;
 
     const user1Id = authenticatedUser.organization.id;
     const dummyAsset = {
@@ -36,7 +34,6 @@ describe('account ask order send', () => {
     };
 
     const transactionHash = `0x${((Math.random() * 0xffffff) << 0).toString(16)}`;
-    const withdrawalAddress = ethers.Wallet.createRandom().address;
 
     const createDeposit = (address: string, amount = `${1000 * MWh}`, asset = dummyAsset) => {
         return transferService.createDeposit({
@@ -52,13 +49,7 @@ describe('account ask order send', () => {
     };
 
     before(async () => {
-        ({
-            transferService,
-            accountService,
-            databaseService,
-            app,
-            issuer
-        } = await bootstrapTestInstance());
+        ({ transferService, accountService, databaseService, app } = await bootstrapTestInstance());
         await app.init();
     });
 
@@ -69,7 +60,6 @@ describe('account ask order send', () => {
 
     let deposit: Transfer;
     let user1Address: string;
-    const amount = `${1000 * MWh}`;
 
     beforeEach(async () => {
         await databaseService.truncate(`${DB_TABLE_PREFIX}_order`, `${DB_TABLE_PREFIX}_transfer`);
@@ -107,15 +97,12 @@ describe('account ask order send', () => {
             .send(createAsk)
             .expect(HttpStatus.CREATED)
             .expect((res) => {
-                const order = res.body as Order;
+                const order = res.body as OrderDTO;
 
                 expect(order.price).equals(100);
                 expect(order.startVolume).equals(`${100 * MWh}`);
                 expect(order.assetId).equals(deposit.asset.id);
-                expect(new Date(order.product.generationFrom)).deep.equals(
-                    dummyAsset.generationFrom
-                );
-                expect(new Date(order.product.generationTo)).deep.equals(dummyAsset.generationTo);
+                expect(order.product).equals(TestProduct);
             });
     });
 
@@ -154,82 +141,24 @@ describe('account ask order send', () => {
             .expect(HttpStatus.FORBIDDEN);
     });
 
-    it('should not be able to withdraw without any deposit', async () => {
-        const withdrawal: RequestWithdrawalDTO = {
-            assetId: deposit.asset.id,
-            amount,
-            address: withdrawalAddress
-        };
-
-        await request(app.getHttpServer())
-            .post('/transfer/withdrawal')
-            .send(withdrawal)
-            .expect(HttpStatus.FORBIDDEN);
-    });
-
-    it('should be able to withdraw after confirming deposit', async () => {
-        const { generationFrom, generationTo } = dummyAsset;
-
-        const certificateId = await issueToken(
-            issuer,
-            user1Address,
-            amount,
-            generationFrom.getTime(),
-            generationTo.getTime()
-        );
-        const asset = {
-            ...dummyAsset,
-            tokenId: String(certificateId)
-        };
-        const txHash = '0x001';
-        const dep = await transferService.createDeposit({
-            address: user1Address,
-            transactionHash: txHash,
-            amount,
-            asset
-        });
-        await transferService.setAsConfirmed(txHash, 10000);
-        const withdrawal: RequestWithdrawalDTO = {
-            assetId: dep.asset.id,
-            amount,
-            address: withdrawalAddress
-        };
-        await request(app.getHttpServer())
-            .post('/transfer/withdrawal')
-            .send(withdrawal)
-            .expect(HttpStatus.CREATED);
-
-        await request(app.getHttpServer())
-            .get('/account-balance')
-            .expect(HttpStatus.OK)
-            .expect((res) => {
-                const account = res.body as AccountBalanceDTO;
-
-                expect(account.available.length).equals(0);
-            });
-
-        // wait to withdrawal to be finished to not mess with tx nonces
-        await sleep(5000);
-    });
-
     it('should be able to create and cancel bid', async () => {
         const volume = `${1000 * MWh}`;
 
-        const createBid: CreateBidDTO = {
+        const createBid: CreateBidDTO<string> = {
             price: 100,
             validFrom: new Date(),
             volume,
-            product: { deviceType: ['Solar'] }
+            product: TestProduct
         };
 
-        let order: Order;
+        let order: OrderDTO;
 
         await request(app.getHttpServer())
             .post('/orders/bid')
             .send(createBid)
             .expect(HttpStatus.CREATED)
             .expect((res) => {
-                order = res.body as Order;
+                order = res.body as OrderDTO;
 
                 expect(order.price).equals(100);
                 expect(order.startVolume).equals(volume);
@@ -262,11 +191,11 @@ describe('account ask order send', () => {
     it('should not be able to create bid order with decimal volume', async () => {
         const volume = `${1.1 * MWh}`;
 
-        const createBid: CreateBidDTO = {
+        const createBid: CreateBidDTO<string> = {
             price: 100,
             validFrom: new Date(),
             volume,
-            product: { deviceType: ['Solar'] }
+            product: "{ deviceType: ['Solar'] }"
         };
 
         await request(app.getHttpServer())
