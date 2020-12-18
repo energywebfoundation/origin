@@ -308,7 +308,6 @@ export const IRECRegisterForm = () => {
                                                 currentValue={values.headquarterCountry}
                                                 disabled={isSubmitting}
                                                 className="mt-3"
-                                                isoFormat={true}
                                                 required
                                             />
                                             <Grid container justify="space-between">
@@ -457,7 +456,6 @@ export const IRECRegisterForm = () => {
                                                 }
                                                 disabled={isSubmitting}
                                                 className="mt-3"
-                                                isoFormat={true}
                                                 required
                                             />
                                             <FormInput

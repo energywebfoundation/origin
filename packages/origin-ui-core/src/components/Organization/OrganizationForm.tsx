@@ -49,12 +49,12 @@ interface IFormValues {
     businessType: string;
     city: string;
     zipCode: string;
-    country: number | '';
+    country: string;
     tradeRegistryCompanyNumber: string;
     vatNumber: string;
     signatoryAddress: string;
     signatoryCity: string;
-    signatoryCountry: number | '';
+    signatoryCountry: string;
     signatoryEmail: string;
     signatoryFullName: string;
     signatoryPhoneNumber: string;
