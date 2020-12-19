@@ -90,7 +90,7 @@
         "@storybook/storybook-deployer": "2.8.7",
         "@testing-library/react": "10.4.9",
         "@types/enzyme": "3.10.8",
-        "@types/jest": "26.0.16",
+        "@types/jest": "26.0.19",
         "@types/react": "16.14.1",
         "@types/react-dom": "16.9.10",
         "@types/react-redux": "7.1.11",
