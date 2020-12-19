@@ -13153,10 +13153,10 @@ formik-material-ui@2.0.1:
   resolved "https://registry.yarnpkg.com/formik-material-ui/-/formik-material-ui-2.0.1.tgz#29d1e2903e54c722f90ddacbaa1e3d253c2c6b72"
   integrity sha512-kX+SJuFj9AdjLk7sfZczDfJIK8W/MnNtHWFZ182LkhN4743IFho7+VYycd2QL9qnEEv7vdZhbEm1ts+wp3nPEg==
 
-formik@2.2.5:
-  version "2.2.5"
-  resolved "https://registry.yarnpkg.com/formik/-/formik-2.2.5.tgz#addf4ed7a15ebddf22c883a3d358cd27c8a91a55"
-  integrity sha512-KkOsyYmh5xsow+wlbdL9QSkqvbiHSb1RIToBKiooCFW4lyypn+ZlHGjTuuOqUWBqZaI5nCEupeI275Mo6tFBzg==
+formik@2.2.6:
+  version "2.2.6"
+  resolved "https://registry.yarnpkg.com/formik/-/formik-2.2.6.tgz#378a4bafe4b95caf6acf6db01f81f3fe5147559d"
+  integrity sha512-Kxk2zQRafy56zhLmrzcbryUpMBvT0tal5IvcifK5+4YNGelKsnrODFJ0sZQRMQboblWNym4lAW3bt+tf2vApSA==
   dependencies:
     deepmerge "^2.1.1"
     hoist-non-react-statics "^3.3.0"
