@@ -13143,10 +13143,10 @@ formidable@^1.2.1, formidable@^1.2.2:
   resolved "https://registry.yarnpkg.com/formidable/-/formidable-1.2.2.tgz#bf69aea2972982675f00865342b982986f6b8dd9"
   integrity sha512-V8gLm+41I/8kguQ4/o1D3RIHRmhYFG4pnNyonvua+40rqcEmT4+V71yaZ3B457xbbgCsCfjSPi65u/W6vK1U5Q==
 
-formik-material-ui-pickers@0.0.11:
-  version "0.0.11"
-  resolved "https://registry.yarnpkg.com/formik-material-ui-pickers/-/formik-material-ui-pickers-0.0.11.tgz#c73d6d42170d2dd18ebe34f3b6b4549dbc8b447a"
-  integrity sha512-YVY5v0585rHlDneNBEQ1YnJVNhgieqbJjnojvB2GgeR/4Za5P0UdGpo5V9WvajtaAFJRpm7U9/TTcoUl5uiyxQ==
+formik-material-ui-pickers@0.0.12:
+  version "0.0.12"
+  resolved "https://registry.yarnpkg.com/formik-material-ui-pickers/-/formik-material-ui-pickers-0.0.12.tgz#a53ed18a0a258c2283bba44e769c73ebbed8dd9b"
+  integrity sha512-Xac992DrLW7MWn+L7Qcc8R4VkJjevaXU7iM3byLbnvM+pIWYGbUWIJrhejGevRgPAZn9Nj17Q8aH1peA33tpng==
 
 formik-material-ui@2.0.1:
   version "2.0.1"
