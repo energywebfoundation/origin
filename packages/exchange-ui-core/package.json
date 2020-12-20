@@ -42,7 +42,7 @@
         "ethers": "5.0.15",
         "extract-text-webpack-plugin": "4.0.0-beta.0",
         "formik": "2.2.6",
-        "formik-material-ui": "2.0.1",
+        "formik-material-ui": "3.0.1",
         "formik-material-ui-pickers": "0.0.12",
         "history": "4.10.1",
         "i18next": "19.8.3",
