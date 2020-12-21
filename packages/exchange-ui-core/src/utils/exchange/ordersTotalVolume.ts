@@ -30,6 +30,6 @@ export async function getOrdersTotalVolume(
             totalBids: orderbookData?.data.bids.length
         };
     } catch (error) {
-        console.log('Unable to get orders total volume due to error:', error);
+        console.error('Unable to get orders total volume due to error:', error);
     }
 }
