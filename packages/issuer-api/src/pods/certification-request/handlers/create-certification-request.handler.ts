@@ -1,5 +1,5 @@
 import { CertificationRequest as CertificationRequestFacade } from '@energyweb/issuer';
-import { Logger } from '@nestjs/common';
+import { BadRequestException, Logger } from '@nestjs/common';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Subject } from 'rxjs';
@@ -11,6 +11,12 @@ import { CertificationRequestStatus } from '../certification-request-status.enum
 import { CertificationRequestDTO } from '../certification-request.dto';
 import { CertificationRequest } from '../certification-request.entity';
 import { CreateCertificationRequestCommand } from '../commands/create-certification-request.command';
+
+const eth = /^(0x)[0-9a-f]{40}$/i;
+
+function isValidEthereumAddress(to: string) {
+    return typeof to === 'string' && eth.test(to);
+}
 
 @CommandHandler(CreateCertificationRequestCommand)
 export class CreateCertificationRequestHandler
@@ -36,6 +42,12 @@ export class CreateCertificationRequestHandler
         files,
         isPrivate
     }: CreateCertificationRequestCommand): Promise<CertificationRequestDTO> {
+        if (!isValidEthereumAddress(to)) {
+            throw new BadRequestException(
+                'Invalid "to" parameter, it has to be ethereum address string'
+            );
+        }
+
         const certificationRequest = this.repository.create({
             deviceId,
             energy,
