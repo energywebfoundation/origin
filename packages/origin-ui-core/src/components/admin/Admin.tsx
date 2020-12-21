@@ -10,7 +10,7 @@ export function Admin() {
     const { baseURL, getAdminLink } = useLinks();
     const { t } = useTranslation();
 
-    const DevicesMenu = [
+    const adminMenu = [
         {
             key: 'manage-user',
             label: t('navigation.admin.users'),
@@ -28,7 +28,7 @@ export function Admin() {
         <div className="PageWrapper">
             <div className="PageNav">
                 <ul className="NavMenu nav">
-                    {DevicesMenu.map((menu) => {
+                    {adminMenu.map((menu) => {
                         if (menu.hide) {
                             return null;
                         }
@@ -46,7 +46,7 @@ export function Admin() {
                 path={`${getAdminLink()}/:key/:id?`}
                 render={(props) => {
                     const key = props.match.params.key;
-                    const matches = DevicesMenu.filter((item) => {
+                    const matches = adminMenu.filter((item) => {
                         return item.key === key;
                     });
 
@@ -62,14 +62,14 @@ export function Admin() {
                 exact={true}
                 path={getAdminLink()}
                 render={() => (
-                    <Redirect to={{ pathname: `${getAdminLink()}/${DevicesMenu[0].key}` }} />
+                    <Redirect to={{ pathname: `${getAdminLink()}/${adminMenu[0].key}` }} />
                 )}
             />
             <Route
                 exact={true}
                 path={`${baseURL}/`}
                 render={() => (
-                    <Redirect to={{ pathname: `${getAdminLink()}/${DevicesMenu[0].key}` }} />
+                    <Redirect to={{ pathname: `${getAdminLink()}/${adminMenu[0].key}` }} />
                 )}
             />
         </div>
