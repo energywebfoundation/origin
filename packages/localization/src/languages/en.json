@@ -585,6 +585,7 @@
                 "clientSecret": "Client Secret",
                 
                 "titleRegisterIREC": "I-REC Registration information",
+                "irecInformation": "I-REC Information",
                 "IRECAccountType": "I-REC Account type",
                 "irecParticipantDescription": "Participant Account for managing certificates outside of the marketplace",
                 "irecRegistrantDescription": "Registrant Account for managing devices",

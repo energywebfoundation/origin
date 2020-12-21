@@ -488,6 +488,7 @@
                 "clientID": "Klient ID",
                 "clientSecret": "Klient Secret",
                 "titleRegisterIREC": "Informacja o rejestracji I-REC",
+                "irecInformation": "Informacje I-REC",
                 "irecParticipantDescription": "Konto uczestnika do zarządzania certyfikatami poza rynkiem",
                 "irecRegistrantDescription": "Konto rejestrującego do zarządzania urządzeniami",
                 "irecBothDescription": "Konto rejestrującego i uczestnika",
