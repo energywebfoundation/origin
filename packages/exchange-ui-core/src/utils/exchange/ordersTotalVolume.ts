@@ -1,4 +1,4 @@
-import { Filter } from '@energyweb/exchange-core';
+import { Filter } from '@energyweb/exchange-irec-client';
 import { UserStatus, IUser } from '@energyweb/origin-backend-core';
 import { ExchangeClient } from './ExchangeClient';
 
