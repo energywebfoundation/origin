@@ -54,7 +54,7 @@
         "formik": "2.2.6",
         "formik-material-ui": "2.0.1",
         "formik-material-ui-pickers": "0.0.12",
-        "history": "4.10.1",
+        "history": "5.0.0",
         "i18next": "19.8.4",
         "i18next-icu": "1.4.2",
         "moment": "2.24.0",
