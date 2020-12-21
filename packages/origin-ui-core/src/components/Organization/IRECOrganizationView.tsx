@@ -100,7 +100,9 @@ export function IRECOrganizationView({ iRecOrg }) {
     return (
         <Paper className={classes.container}>
             <Grid item>
-                <Box style={{ textTransform: 'uppercase' }}>{'I-REC Information'}</Box>
+                <Box style={{ textTransform: 'uppercase' }}>
+                    {t('organization.registration.irecInformation')}
+                </Box>
             </Grid>
             <Grid container spacing={3}>
                 <Grid item xs={6}>
