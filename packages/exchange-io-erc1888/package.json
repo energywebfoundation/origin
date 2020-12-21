@@ -48,7 +48,6 @@
     },
     "devDependencies": {
         "@nestjs/cli": "7.5.4",
-        "@nestjs/testing": "7.6.3",
         "class-validator": "0.12.2",
         "@types/node": "12.19.9",
         "@types/supertest": "2.0.10",
