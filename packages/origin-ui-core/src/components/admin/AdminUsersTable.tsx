@@ -13,7 +13,7 @@ import {
 } from '../Table';
 import { CustomFilterInputType, ICustomFilterDefinition } from '../Table/FiltersHeader';
 
-interface IRecord {
+export interface IRecord {
     user: IUser;
 }
 
