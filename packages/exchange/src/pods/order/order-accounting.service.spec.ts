@@ -14,8 +14,8 @@ describe('OrderAccountingService', () => {
     const userId = '1';
     const asset1 = { id: '1', address: '0x1234', tokenId: '0' } as Asset;
 
-    let service: OrderAccountingService;
-    let orderService: OrderService;
+    let service: OrderAccountingService<string>;
+    let orderService: OrderService<string>;
 
     const registerOrder = (...orders: Partial<Order>[]) => {
         jest.spyOn(orderService, 'getActiveOrdersBySide').mockImplementation(
@@ -38,8 +38,8 @@ describe('OrderAccountingService', () => {
             ]
         }).compile();
 
-        service = module.get<OrderAccountingService>(OrderAccountingService);
-        orderService = module.get<OrderService>(OrderService);
+        service = module.get<OrderAccountingService<string>>(OrderAccountingService);
+        orderService = module.get<OrderService<string>>(OrderService);
     });
 
     it('should return asks as available with negative sign', async () => {

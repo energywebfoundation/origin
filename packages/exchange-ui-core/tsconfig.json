@@ -24,6 +24,12 @@
         },
         {
             "path": "../origin-ui-core/tsconfig.json"
+        },
+        {
+            "path": "../exchange-client/tsconfig.json"
+        },
+        {
+            "path": "../exchange-irec-client/tsconfig.json"
         }
     ]
 }

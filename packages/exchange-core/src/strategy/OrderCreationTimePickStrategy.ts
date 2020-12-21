@@ -1,8 +1,8 @@
+import { IOrder } from '../IOrder';
 import { IPriceStrategy } from './IPriceStrategy';
-import { Ask, Bid } from '..';
 
 export class OrderCreationTimePickStrategy implements IPriceStrategy {
-    pickPrice(ask: Ask, bid: Bid): number {
+    pickPrice(ask: IOrder, bid: IOrder): number {
         return ask.createdAt > bid.createdAt ? bid.price : ask.price;
     }
 }

@@ -1,7 +1,7 @@
-import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { IPublicOrganization, OrganizationStatus } from '@energyweb/origin-backend-core';
 import { ExtendedBaseEntity } from '@energyweb/origin-backend-utils';
-import { IsString, IsNumber, IsArray, IsEnum } from 'class-validator';
+import { IsArray, IsEnum, IsISO31661Alpha2, IsString } from 'class-validator';
 import { Optional } from '@nestjs/common';
 import { User } from '../user/user.entity';
 import { Device } from '../device/device.entity';
@@ -34,8 +34,8 @@ export class Organization extends ExtendedBaseEntity implements IPublicOrganizat
     city: string;
 
     @Column()
-    @IsNumber()
-    country: number;
+    @IsISO31661Alpha2()
+    country: string;
 
     @Column()
     @IsString()
@@ -66,8 +66,8 @@ export class Organization extends ExtendedBaseEntity implements IPublicOrganizat
     signatoryCity: string;
 
     @Column()
-    @IsNumber()
-    signatoryCountry: number;
+    @IsISO31661Alpha2()
+    signatoryCountry: string;
 
     @Column()
     @IsString()

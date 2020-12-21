@@ -1,14 +1,12 @@
-import { IDeviceTypeService, ILocationService } from '@energyweb/utils-general';
+import { Logger } from '@nestjs/common';
 import BN from 'bn.js';
 import { List } from 'immutable';
 import { Subject } from 'rxjs';
 import { concatMap } from 'rxjs/operators';
 
-import { Ask } from './Ask';
-import { Bid } from './Bid';
 import { DirectBuy } from './DirectBuy';
-import { Order, OrderSide } from './Order';
-import { ProductFilter } from './ProductFilter';
+import { IMatchableOrder } from './IMatchableOrder';
+import { OrderSide } from './OrderSide';
 import { IPriceStrategy } from './strategy/IPriceStrategy';
 import { Trade } from './Trade';
 import { TradeExecutedEvent } from './TradeExecutedEvent';
@@ -20,9 +18,9 @@ export enum ActionResult {
 
 export type ActionResultEvent = { orderId: string; result: ActionResult; error?: string };
 
-export type OrderBook = {
-    asks: List<Ask>;
-    bids: List<Bid>;
+export type OrderBook<TProduct, TProductFilter> = {
+    asks: List<IMatchableOrder<TProduct, TProductFilter>>;
+    bids: List<IMatchableOrder<TProduct, TProductFilter>>;
 };
 
 enum ActionKind {
@@ -31,12 +29,23 @@ enum ActionKind {
     CancelOrder
 }
 
-type OrderBookAction = { kind: ActionKind; value: Order | DirectBuy | string };
+type OrderBookAction<TProduct, TProductFilter> = {
+    kind: ActionKind;
+    value: IMatchableOrder<TProduct, TProductFilter> | DirectBuy | string;
+};
 
-export class MatchingEngine {
-    private bids: List<Bid> = List<Bid>();
+const prettyJSON = (input: any) => JSON.stringify(input, null, 2);
 
-    private asks: List<Ask> = List<Ask>();
+export class MatchingEngine<TProduct, TProductFilter> {
+    private logger = new Logger(MatchingEngine.name);
+
+    private bids: List<IMatchableOrder<TProduct, TProductFilter>> = List<
+        IMatchableOrder<TProduct, TProductFilter>
+    >();
+
+    private asks: List<IMatchableOrder<TProduct, TProductFilter>> = List<
+        IMatchableOrder<TProduct, TProductFilter>
+    >();
 
     private readonly triggers = new Subject();
 
@@ -44,17 +53,14 @@ export class MatchingEngine {
 
     public actionResults = new Subject<List<ActionResultEvent>>();
 
-    private pendingActions = List<OrderBookAction>();
+    private pendingActions = List<OrderBookAction<TProduct, TProductFilter>>();
 
-    constructor(
-        private readonly deviceService: IDeviceTypeService,
-        private readonly locationService: ILocationService,
-        private readonly priceStrategy: IPriceStrategy
-    ) {
+    constructor(private readonly priceStrategy: IPriceStrategy) {
         this.triggers.pipe(concatMap(async () => this.trigger())).subscribe();
     }
 
-    public submitOrder(order: Ask | Bid): void {
+    public submitOrder(order: IMatchableOrder<TProduct, TProductFilter>): void {
+        this.logger.debug(`Submitting order: ${prettyJSON(order)}`);
         this.pendingActions = this.pendingActions.concat({
             kind: ActionKind.AddOrder,
             value: order.clone()
@@ -62,6 +68,7 @@ export class MatchingEngine {
     }
 
     public submitDirectBuy(directBuy: DirectBuy): void {
+        this.logger.debug(`Submitting direct buy: ${prettyJSON(directBuy)}`);
         this.pendingActions = this.pendingActions.concat({
             kind: ActionKind.AddDirectBuy,
             value: directBuy.clone()
@@ -69,15 +76,17 @@ export class MatchingEngine {
     }
 
     public cancelOrder(orderId: string): void {
+        this.logger.debug(`Submitting cancel order: ${orderId}`);
         this.pendingActions = this.pendingActions.concat({
             kind: ActionKind.CancelOrder,
             value: orderId
         });
     }
 
-    public orderBook(): OrderBook {
+    public orderBook(): OrderBook<TProduct, TProductFilter> {
         const now = new Date();
-        const validFromFilter = (order: Order) => order.validFrom <= now;
+        const validFromFilter = (order: IMatchableOrder<TProduct, TProductFilter>) =>
+            order.validFrom <= now;
 
         return {
             asks: this.asks.filter(validFromFilter),
@@ -85,15 +94,11 @@ export class MatchingEngine {
         };
     }
 
-    public orderBookByProduct(productFilter: ProductFilter): OrderBook {
+    public orderBookByProduct(productFilter: TProductFilter): OrderBook<TProduct, TProductFilter> {
         const { asks, bids } = this.orderBook();
 
-        const filteredAsks = asks.filter((ask) =>
-            ask.filterBy(productFilter, this.deviceService, this.locationService)
-        );
-        const filteredBids = bids.filter((bid) =>
-            bid.filterBy(productFilter, this.deviceService, this.locationService)
-        );
+        const filteredAsks = asks.filter((ask) => ask.filterBy(productFilter));
+        const filteredBids = bids.filter((bid) => bid.filterBy(productFilter));
 
         return { asks: filteredAsks, bids: filteredBids };
     }
@@ -102,11 +107,11 @@ export class MatchingEngine {
         this.triggers.next();
     }
 
-    private insertOrder(order: Order) {
+    private insertOrder(order: IMatchableOrder<TProduct, TProductFilter>) {
         if (order.side === OrderSide.Ask) {
-            this.asks = this.insert(this.asks, order as Ask);
+            this.asks = this.insert(this.asks, order);
         } else {
-            this.bids = this.insert(this.bids, order as Bid);
+            this.bids = this.insert(this.bids, order);
         }
     }
 
@@ -120,7 +125,7 @@ export class MatchingEngine {
             switch (action.kind) {
                 case ActionKind.AddOrder: {
                     try {
-                        const order = action.value as Order;
+                        const order = action.value as IMatchableOrder<TProduct, TProductFilter>;
 
                         this.insertOrder(order);
                         trades = trades.concat(this.match());
@@ -174,7 +179,10 @@ export class MatchingEngine {
         return true;
     }
 
-    private insert<T extends Order>(orderBook: List<T>, order: T) {
+    private insert(
+        orderBook: List<IMatchableOrder<TProduct, TProductFilter>>,
+        order: IMatchableOrder<TProduct, TProductFilter>
+    ) {
         const unSorted = orderBook.concat(order);
         const direction = order.side === OrderSide.Ask ? 1 : -1;
 
@@ -212,9 +220,20 @@ export class MatchingEngine {
     }
 
     private match() {
+        this.logger.debug(`Triggering match`);
         const { bids, asks } = this.orderBook();
+        this.logger.debug(`Order book view: asks: ${prettyJSON(asks)} bids: ${prettyJSON(bids)}`);
         const executed = this.generateTrades(asks, bids);
-        this.updateOrderBook(executed);
+        this.logger.debug(
+            `Executed trades: ${prettyJSON(
+                executed.map((t) => ({
+                    ask: t.ask.id,
+                    bid: t.bid.id,
+                    vol: t.volume.toString(10),
+                    price: t.price
+                }))
+            )} `
+        );
 
         return executed;
     }
@@ -238,10 +257,10 @@ export class MatchingEngine {
         };
     }
 
-    private findAndRemove<T extends Order>(
-        source: List<T>,
+    private findAndRemove(
+        source: List<IMatchableOrder<TProduct, TProductFilter>>,
         orderId: string
-    ): { result: boolean; modified?: List<T> } {
+    ): { result: boolean; modified?: List<IMatchableOrder<TProduct, TProductFilter>> } {
         const key = source.findKey((o) => o.id === orderId);
 
         return key !== undefined
@@ -249,18 +268,14 @@ export class MatchingEngine {
             : { result: false };
     }
 
-    private updateOrder<T extends Order>(source: List<T>, order: T) {
+    private updateOrder(
+        source: List<IMatchableOrder<TProduct, TProductFilter>>,
+        order: IMatchableOrder<TProduct, TProductFilter>
+    ) {
         return source.set(
             source.findIndex((o) => o.id === order.id),
             order
         );
-    }
-
-    private updateOrderBook(matched: List<Trade>) {
-        matched.forEach((m) => {
-            this.asks = this.updateOrder(this.asks, m.ask);
-            this.bids = this.updateOrder(this.bids, m.bid);
-        });
     }
 
     private cleanOrderBook() {
@@ -268,7 +283,10 @@ export class MatchingEngine {
         this.bids = this.bids.filterNot((bid) => bid.isFilled);
     }
 
-    private generateTrades(asks: List<Ask>, bids: List<Bid>) {
+    private generateTrades(
+        asks: List<IMatchableOrder<TProduct, TProductFilter>>,
+        bids: List<IMatchableOrder<TProduct, TProductFilter>>
+    ) {
         let executed = List<Trade>();
 
         bids.forEach((bid) => {
@@ -293,13 +311,21 @@ export class MatchingEngine {
         return executed;
     }
 
-    private matches(bid: Bid, ask: Ask) {
-        const hasProductMatched = bid.matches(ask, this.deviceService, this.locationService);
-        const hasAskVolume = !ask.volume.isNeg() && !ask.volume.isZero();
-        const hasBidVolume = !bid.volume.isNeg() && !bid.volume.isZero();
-
+    private matches(
+        bid: IMatchableOrder<TProduct, TProductFilter>,
+        ask: IMatchableOrder<TProduct, TProductFilter>
+    ) {
+        const hasProductMatched = bid.matches(ask);
+        const hasAskVolume = !ask.volume.isNeg() && !ask.isFilled;
+        const hasBidVolume = !bid.volume.isNeg() && !bid.isFilled;
         const hasPriceMatched = ask.price <= bid.price;
         const sameOwner = bid.userId === ask.userId;
+
+        this.logger.debug(
+            `[ask: ${ask.id} <-> bid: ${
+                bid.id
+            }] hasProductMatched: ${hasProductMatched} hasAskVolume: ${hasAskVolume} hasBidVolume: ${hasBidVolume} hasPriceMatched: ${hasPriceMatched} notSameOwner: ${!sameOwner}`
+        );
 
         return hasPriceMatched && hasAskVolume && hasBidVolume && hasProductMatched && !sameOwner;
     }

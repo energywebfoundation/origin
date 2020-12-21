@@ -68,8 +68,8 @@ export function OrganizationView() {
         setFormValues({
             ...organization,
             businessType: setBusinessType(organization.businessType),
-            country: Countries.find((c) => c.id === organization.country).name,
-            signatoryCountry: Countries.find((c) => c.id === organization.signatoryCountry).name,
+            country: Countries.find((c) => c.code === organization.country).name,
+            signatoryCountry: Countries.find((c) => c.code === organization.signatoryCountry).name,
             status: organization.status.toLowerCase()
         });
     };

@@ -27,13 +27,13 @@
     },
     "devDependencies": {
         "@energyweb/issuer-api": "0.1.2",
-        "@nestjs/swagger": "4.7.3",
-        "@nestjs/testing": "7.5.2",
-        "@nestjs/typeorm": "7.1.4",
+        "@nestjs/swagger": "4.7.8",
+        "@nestjs/testing": "7.6.3",
+        "@nestjs/typeorm": "7.1.5",
         "@openapitools/openapi-generator-cli": "1.0.18-4.3.1",
         "json-to-pretty-yaml": "1.2.2",
         "prettier": "2.1.2",
-        "ts-node": "9.1.0"
+        "ts-node": "9.1.1"
     },
     "publishConfig": {
         "access": "public",

@@ -1,5 +1,5 @@
-import { Ask, Bid } from '..';
+import { IOrder } from '../IOrder';
 
 export interface IPriceStrategy {
-    pickPrice(ask: Ask, bid: Bid): number;
+    pickPrice(ask: IOrder, bid: IOrder): number;
 }

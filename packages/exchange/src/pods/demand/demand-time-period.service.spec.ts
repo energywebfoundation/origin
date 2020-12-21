@@ -8,13 +8,13 @@ import { DemandTimePeriodService } from './demand-time-period.service';
 
 describe('DemandTimePeriodService', () => {
     const demandTimePeriod = new DemandTimePeriodService();
-    const mockCreateDemandDTO: CreateDemandDTO = {
+    const mockCreateDemandDTO: CreateDemandDTO<string> = {
         price: 100,
         volumePerPeriod: '1000',
         periodTimeFrame: TimeFrame.Monthly,
         start: moment('01-2020', 'MM-YYYY').startOf('month').toDate(),
         end: moment('03-2020', 'MM-YYYY').endOf('month').toDate(),
-        product: {},
+        product: '',
         boundToGenerationTime: false,
         excludeEnd: true
     };

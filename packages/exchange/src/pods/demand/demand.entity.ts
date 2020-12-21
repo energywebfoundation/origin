@@ -9,7 +9,6 @@ import { DB_TABLE_PREFIX } from '../../utils/tablePrefix';
 
 import { BNTransformer } from '../../utils/valueTransformers';
 import { Order } from '../order/order.entity';
-import { ProductDTO } from '../order/product.dto';
 
 export interface IDemand {
     id: string;
@@ -19,7 +18,7 @@ export interface IDemand {
     end: Date;
     volumePerPeriod: BN;
     periodTimeFrame: TimeFrame;
-    product: ProductDTO;
+    product: any;
     bids: Order[];
     status: DemandStatus;
 }
@@ -50,7 +49,7 @@ export class Demand extends ExtendedBaseEntity implements IDemand {
     periodTimeFrame: TimeFrame;
 
     @Column('json')
-    product: ProductDTO;
+    product: any;
 
     @OneToMany(() => Order, (order) => order.demand, {
         eager: true

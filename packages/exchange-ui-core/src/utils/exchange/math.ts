@@ -1,6 +1,6 @@
 import { EnergyFormatter } from '@energyweb/origin-ui-core';
 import { ICalculateVolumeData } from '.';
-import { DemandClient } from '@energyweb/exchange-client';
+import { DemandClient } from '@energyweb/exchange-irec-client';
 
 export function calculateTotalPrice(priceInDisplayUnit: string, energyInDisplayUnit: string) {
     const priceAsFloat = parseFloat(priceInDisplayUnit);

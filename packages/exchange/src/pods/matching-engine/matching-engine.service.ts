@@ -1,68 +1,74 @@
 import {
     ActionResultEvent,
+    AskPriceStrategy,
     DirectBuy,
     MatchingEngine,
-    ProductFilter,
+    OrderCreationTimePickStrategy,
     Trade,
-    TradeExecutedEvent,
-    PriceStrategy,
-    MatchingEngineFactory
+    TradeExecutedEvent
 } from '@energyweb/exchange-core';
-import { LocationService } from '@energyweb/utils-general';
-import { forwardRef, Inject, Injectable, Logger, OnModuleInit } from '@nestjs/common';
+import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { ModuleRef } from '@nestjs/core';
 import { EventBus } from '@nestjs/cqrs';
 import { Interval } from '@nestjs/schedule';
 import { List } from 'immutable';
 
+import { IOrderMapperService } from '../../interfaces/IOrderMapperService';
 import { OrderType } from '../order/order-type.enum';
 import { Order } from '../order/order.entity';
 import { OrderService } from '../order/order.service';
-import { DeviceTypeServiceWrapper } from '../runner/deviceTypeServiceWrapper';
 import { BulkTradeExecutedEvent } from './bulk-trade-executed.event';
-import { toMatchingEngineOrder } from './order-mapper';
 
 @Injectable()
-export class MatchingEngineService implements OnModuleInit {
+export class MatchingEngineService<TProduct, TProductFilter> implements OnModuleInit {
     private initialized = false;
 
     private readonly logger = new Logger(MatchingEngineService.name);
 
-    private matchingEngine: MatchingEngine;
+    private matchingEngine: MatchingEngine<TProduct, TProductFilter>;
+
+    private orderMapperService: IOrderMapperService<TProduct, TProductFilter>;
 
     constructor(
-        @Inject(forwardRef(() => OrderService))
-        private readonly orderService: OrderService,
-        private readonly deviceTypeServiceWrapper: DeviceTypeServiceWrapper,
+        private readonly orderService: OrderService<TProduct>,
         private readonly eventBus: EventBus,
-        private readonly config: ConfigService
+        private readonly config: ConfigService,
+        private readonly moduleRef: ModuleRef
     ) {}
 
     public async onModuleInit(): Promise<void> {
-        const priceStrategy = this.config.get<PriceStrategy>('EXCHANGE_PRICE_STRATEGY');
+        this.orderMapperService = this.moduleRef.get<IOrderMapperService<TProduct, TProductFilter>>(
+            IOrderMapperService,
+            {
+                strict: false
+            }
+        );
+
+        const priceStrategyIndex = this.config.get<number>('EXCHANGE_PRICE_STRATEGY');
+        const priceStrategy =
+            priceStrategyIndex === 0 ? new AskPriceStrategy() : new OrderCreationTimePickStrategy();
 
         if (priceStrategy === undefined) {
             throw new Error('EXCHANGE_PRICE_STRATEGY is not set');
         }
 
         this.logger.log(
-            `Initializing matching engine with ${PriceStrategy[priceStrategy]} strategy`
+            `Initializing matching engine with ${priceStrategy.constructor.name} strategy`
         );
 
         const orders = await this.orderService.getAllActiveOrders();
         this.logger.log(`Submitting ${orders.length} existing orders`);
 
-        this.matchingEngine = MatchingEngineFactory.build(
-            priceStrategy,
-            this.deviceTypeServiceWrapper.deviceTypeService,
-            new LocationService()
-        );
+        this.matchingEngine = new MatchingEngine(priceStrategy);
 
-        orders.forEach((order) => {
+        for (const order of orders) {
             this.logger.log(`Submitting order ${order.id}`);
 
-            this.matchingEngine.submitOrder(toMatchingEngineOrder(order));
-        });
+            const mappedOrder = await this.orderMapperService.map(order);
+
+            this.matchingEngine.submitOrder(mappedOrder);
+        }
 
         this.matchingEngine.trades.subscribe(async (trades) => this.onTradeExecutedEvent(trades));
         this.matchingEngine.actionResults.subscribe(async (actionResultEvents) =>
@@ -72,18 +78,20 @@ export class MatchingEngineService implements OnModuleInit {
         this.initialized = true;
     }
 
-    public submit(order: Order) {
+    public async submit(order: Order) {
         this.logger.log(`Submitting order ${order.id}`);
         this.logger.debug(`Submitting order ${JSON.stringify(order)}`);
 
         if (order.type === OrderType.Limit) {
-            this.matchingEngine.submitOrder(toMatchingEngineOrder(order));
+            const mappedOrder = await this.orderMapperService.map(order);
+
+            this.matchingEngine.submitOrder(mappedOrder);
         } else if (order.type === OrderType.Direct) {
             this.matchingEngine.submitDirectBuy(this.toDirectBuy(order));
         }
     }
 
-    public query(productFilter: ProductFilter) {
+    public query(productFilter: TProductFilter) {
         return this.matchingEngine.orderBookByProduct(productFilter);
     }
 
