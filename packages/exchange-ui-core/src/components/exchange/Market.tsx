@@ -24,7 +24,12 @@ import {
     moment
 } from '@energyweb/origin-ui-core';
 import { TimeFrame } from '@energyweb/utils-general';
-import { calculateTotalPrice, ANY_VALUE, ANY_OPERATOR } from '../../utils/exchange';
+import {
+    calculateTotalPrice,
+    ANY_VALUE,
+    ANY_OPERATOR,
+    MarketRedirectFilter
+} from '../../utils/exchange';
 import { OneTimePurchase } from './OneTimePurchase';
 import { RepeatedPurchase } from './RepeatedPurchase';
 import { useOriginConfiguration } from '../../utils/configuration';
@@ -117,7 +122,7 @@ export function Market(props: IProps) {
                 redirectGridOperator,
                 redirectGenerationFrom,
                 redirectGenerationTo
-            } = redirectData.state;
+            } = redirectData.state as MarketRedirectFilter;
 
             const locationWithoutCountry =
                 redirectLocation[0] !== ANY_VALUE

@@ -231,5 +231,13 @@ export interface IDemand {
 
 export type Demand = IDemand & { userId: string; bids: Order[]; status: DemandStatus };
 
+export type MarketRedirectFilter = {
+    redirectDeviceType: string[];
+    redirectLocation: string[];
+    redirectGridOperator: string[];
+    redirectGenerationFrom: Date;
+    redirectGenerationTo: Date;
+};
+
 export const ANY_VALUE = 'Any';
 export const ANY_OPERATOR = 'TH-ANY';
