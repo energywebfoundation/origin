@@ -13139,10 +13139,10 @@ formik-material-ui-pickers@0.0.12:
   resolved "https://registry.yarnpkg.com/formik-material-ui-pickers/-/formik-material-ui-pickers-0.0.12.tgz#a53ed18a0a258c2283bba44e769c73ebbed8dd9b"
   integrity sha512-Xac992DrLW7MWn+L7Qcc8R4VkJjevaXU7iM3byLbnvM+pIWYGbUWIJrhejGevRgPAZn9Nj17Q8aH1peA33tpng==
 
-formik-material-ui@2.0.1:
-  version "2.0.1"
-  resolved "https://registry.yarnpkg.com/formik-material-ui/-/formik-material-ui-2.0.1.tgz#29d1e2903e54c722f90ddacbaa1e3d253c2c6b72"
-  integrity sha512-kX+SJuFj9AdjLk7sfZczDfJIK8W/MnNtHWFZ182LkhN4743IFho7+VYycd2QL9qnEEv7vdZhbEm1ts+wp3nPEg==
+formik-material-ui@3.0.1:
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/formik-material-ui/-/formik-material-ui-3.0.1.tgz#189407885c411fb202514eb9993a4d9ea46ce82a"
+  integrity sha512-N8oxZIdhY70npRv86IfF6Zaaps9RL3a37XRdq02WDroB3XZC1mXs6lA/zQ09ZYFWYJp/UjI80SKVpVa/xJOJJA==
 
 formik@2.2.6:
   version "2.2.6"
