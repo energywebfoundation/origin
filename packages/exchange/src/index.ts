@@ -10,21 +10,37 @@ import { Bundle } from './pods/bundle/bundle.entity';
 import { BundleModule } from './pods/bundle/bundle.module';
 import { Demand } from './pods/demand/demand.entity';
 import { DemandModule } from './pods/demand/demand.module';
-import { DepositWatcherModule } from './pods/deposit-watcher/deposit-watcher.module';
 import { MatchingEngineModule } from './pods/matching-engine/matching-engine.module';
-import { OrderBookModule } from './pods/order-book/order-book.module';
 import { Order } from './pods/order/order.entity';
-import { OrderModule } from './pods/order/order.module';
-import { ProductModule } from './pods/product/product.module';
-import { RunnerModule } from './pods/runner/runner.module';
 import { Trade } from './pods/trade/trade.entity';
 import { TradeModule } from './pods/trade/trade.module';
-import { Transfer } from './pods/transfer/transfer.entity';
-import { TransferModule } from './pods/transfer/transfer.module';
-import { WithdrawalProcessorModule } from './pods/withdrawal-processor/withdrawal-processor.module';
+import { Transfer, TransferModule } from './pods/transfer';
 
 export * from './app.module';
 export * from './interfaces';
+export * from './pods';
+export * from './utils';
+export * as testUtils from '../test';
+
+export {
+    WithdrawalRequestedEvent,
+    Transfer,
+    TransferDirection,
+    TransferStatus,
+    TransferService
+} from './pods/transfer';
+
+export {
+    AccountBalanceModule,
+    AccountDeployerModule,
+    AccountModule,
+    AssetModule,
+    DemandModule,
+    MatchingEngineModule,
+    TradeModule,
+    TransferModule,
+    BundleModule
+};
 export * from './pods';
 export * from './utils';
 
@@ -46,14 +62,8 @@ export const modules = [
     AccountModule,
     AssetModule,
     DemandModule,
-    DepositWatcherModule,
     MatchingEngineModule,
-    OrderBookModule,
-    OrderModule,
-    ProductModule,
-    RunnerModule,
     TradeModule,
     TransferModule,
-    WithdrawalProcessorModule,
     BundleModule
 ];

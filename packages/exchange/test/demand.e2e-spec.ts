@@ -13,13 +13,13 @@ import { Demand } from '../src/pods/demand/demand.entity';
 import { DemandService } from '../src/pods/demand/demand.service';
 import { Order } from '../src/pods/order/order.entity';
 import { OrderService } from '../src/pods/order/order.service';
-import { ProductService } from '../src/pods/product/product.service';
 import { TradeDTO } from '../src/pods/trade/trade.dto';
 import { TransferService } from '../src/pods/transfer/transfer.service';
 import { authenticatedUser, bootstrapTestInstance } from './exchange';
 import { createDepositAddress, MWh } from './utils';
 import { DemandSummaryDTO } from '../src/pods/demand/demand-summary.dto';
 import { DB_TABLE_PREFIX } from '../src/utils/tablePrefix';
+import { TestProduct } from './product/get-product.handler';
 
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -27,9 +27,8 @@ let app: INestApplication;
 let transferService: TransferService;
 let databaseService: DatabaseService;
 let accountService: AccountService;
-let demandService: DemandService;
-let orderService: OrderService;
-let productService: ProductService;
+let demandService: DemandService<string>;
+let orderService: OrderService<string>;
 
 const dummyAsset = {
     address: '0x9876',
@@ -62,7 +61,6 @@ describe('Demand orders trading', () => {
             databaseService,
             demandService,
             orderService,
-            productService,
             app
         } = await bootstrapTestInstance());
 
@@ -86,12 +84,12 @@ describe('Demand orders trading', () => {
     const sellerId = '2';
     const price = 1000;
 
-    const createDemandWith2Bids: CreateDemandDTO = {
+    const createDemandWith2Bids: CreateDemandDTO<string> = {
         price: 100,
         periodTimeFrame: TimeFrame.Monthly,
         start: moment().toDate(),
         end: moment().add(2, 'month').toDate(),
-        product: { deviceType: ['Solar'] },
+        product: "{ deviceType: ['Solar'] }",
         volumePerPeriod: `${250 * MWh}`,
         boundToGenerationTime: false,
         excludeEnd: true
@@ -111,13 +109,12 @@ describe('Demand orders trading', () => {
             validFrom
         });
 
-        const product = await productService.getProduct(deposit.asset.id);
-        const createDemand: CreateDemandDTO = {
+        const createDemand: CreateDemandDTO<string> = {
             price,
             periodTimeFrame: TimeFrame.Monthly,
             start: moment().toDate(),
             end: moment().add(1, 'month').toDate(),
-            product,
+            product: TestProduct,
             volumePerPeriod: `${250 * MWh}`,
             boundToGenerationTime: false,
             excludeEnd: true
@@ -131,7 +128,7 @@ describe('Demand orders trading', () => {
             .get(`/trade`)
             .expect(HttpStatus.OK)
             .expect((res) => {
-                const trades = res.body as TradeDTO[];
+                const trades = res.body as TradeDTO<string>[];
 
                 expect(trades).to.have.length(1);
                 expect(trades[0].askId).to.be.undefined; // as a buyer, I should not see the askId
@@ -176,7 +173,7 @@ describe('Demand orders trading', () => {
             .send(createDemandWith2Bids)
             .expect(HttpStatus.OK)
             .expect((res) => {
-                const summary = res.body as DemandSummaryDTO;
+                const summary = res.body as DemandSummaryDTO<string>;
 
                 const [bid1, bid2] = summary.bids;
 
@@ -288,12 +285,12 @@ describe('Demand orders trading', () => {
     });
 
     it('should not be able to create demand with decimal volume', async () => {
-        const demand: CreateDemandDTO = {
+        const demand: CreateDemandDTO<string> = {
             price: 100,
             periodTimeFrame: TimeFrame.Monthly,
             start: moment().toDate(),
             end: moment().add(2, 'month').toDate(),
-            product: { deviceType: ['Solar'] },
+            product: "{ deviceType: ['Solar'] }",
             volumePerPeriod: `${2.5 * MWh}`,
             boundToGenerationTime: false,
             excludeEnd: true

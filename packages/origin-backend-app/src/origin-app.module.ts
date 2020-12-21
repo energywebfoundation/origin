@@ -1,35 +1,36 @@
 import { AppModule as ExchangeModule, entities as ExchangeEntities } from '@energyweb/exchange';
+import { ExchangeErc1888Module } from '@energyweb/exchange-io-erc1888';
+import { AppModule as ExchangeIRECModule } from '@energyweb/exchange-irec';
+import { AppModule as IssuerModule, entities as IssuerEntities } from '@energyweb/issuer-api';
 import {
     AppModule as OriginBackendModule,
     entities as OriginBackendEntities,
     OrganizationModule,
     UserModule
 } from '@energyweb/origin-backend';
-import { CqrsModule } from '@nestjs/cqrs';
+import { ISmartMeterReadingsAdapter } from '@energyweb/origin-backend-core';
+import { HTTPLoggingInterceptor } from '@energyweb/origin-backend-utils';
 import {
     AppModule as IRECOrganizationModule,
     entities as IRECOrganizationEntities
 } from '@energyweb/origin-organization-irec-api';
-import { AppModule as IssuerModule, entities as IssuerEntities } from '@energyweb/issuer-api';
-
-import { ISmartMeterReadingsAdapter } from '@energyweb/origin-backend-core';
-import { HTTPLoggingInterceptor } from '@energyweb/origin-backend-utils';
 import { DynamicModule, Module } from '@nestjs/common';
 import { APP_INTERCEPTOR } from '@nestjs/core';
+import { CqrsModule } from '@nestjs/cqrs';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
-import { IntegrationModule } from './integration';
-import { MailModule } from './mail';
 import {
     DeviceStatusChangedHandler,
     EmailConfirmationRequestedHandler,
     InvitationCreatedHandler,
     OrganizationMemberRemovedHandler,
     OrganizationMemberRoleChangedHandler,
+    OrganizationRegisteredHandler,
     OrganizationStatusChangedHandler,
-    RegistrationCreatedHandler,
-    OrganizationRegisteredHandler
-} from './index';
+    RegistrationCreatedHandler
+} from '.';
+import { IntegrationModule } from './integration';
+import { MailModule } from './mail';
 
 const OriginAppTypeOrmModule = () => {
     const entities = [
@@ -70,10 +71,12 @@ export class OriginAppModule {
                 OriginAppTypeOrmModule(),
                 OriginBackendModule.register(smartMeterReadingsAdapter),
                 IntegrationModule,
+                MailModule,
                 ExchangeModule,
+                ExchangeErc1888Module,
+                ExchangeIRECModule,
                 IRECOrganizationModule,
                 IssuerModule,
-                MailModule,
                 OrganizationModule,
                 UserModule,
                 CqrsModule

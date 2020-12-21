@@ -1,16 +1,8 @@
-import { Bid, Ask } from '@energyweb/exchange-core';
+import { IMatchableOrder } from '@energyweb/exchange-core';
 import { ApiProperty } from '@nestjs/swagger';
-import {
-    IsNotEmpty,
-    IsNumber,
-    IsOptional,
-    IsString,
-    IsUUID,
-    ValidateNested
-} from 'class-validator';
-import { ProductDTO } from '../order/product.dto';
+import { IsNotEmpty, IsNumber, IsOptional, IsString, IsUUID } from 'class-validator';
 
-export class OrderBookOrderDTO {
+export class OrderBookOrderDTO<TProduct> {
     @ApiProperty({ type: String })
     @IsNotEmpty()
     @IsUUID()
@@ -24,9 +16,7 @@ export class OrderBookOrderDTO {
     @IsString()
     volume: string;
 
-    @ApiProperty({ type: ProductDTO })
-    @ValidateNested()
-    product: ProductDTO;
+    product: TProduct;
 
     @ApiProperty({ type: String })
     @IsString()
@@ -37,9 +27,15 @@ export class OrderBookOrderDTO {
     @IsString()
     assetId?: string;
 
-    public static fromOrder(order: Bid | Ask, userId?: string): OrderBookOrderDTO {
+    public static fromOrder<TProduct, TProductFilter>(
+        order: IMatchableOrder<TProduct, TProductFilter>,
+        userId?: string
+    ): OrderBookOrderDTO<TProduct> {
         return {
-            ...order,
+            id: order.id,
+            price: order.price,
+            product: order.product,
+            assetId: order.assetId,
             volume: order.volume.toString(10),
             userId: order.userId === userId ? order.userId : undefined
         };

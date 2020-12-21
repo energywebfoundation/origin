@@ -181,9 +181,7 @@ export const AsksTable = (props: IOwnProsp) => {
     const viewMarket = (rowIndex: number) => {
         const { askId } = rows[rowIndex];
         const ask = asks.find((o) => o.id === askId);
-        // console.log(ask);
         const prepared = prepareRedirectFilters(ask);
-        // console.log(prepared.location);
         history.push(`${getExchangeLink()}/view-market`, {
             redirectDeviceType: prepared.deviceType,
             redirectLocation: prepared.location,

@@ -5,7 +5,7 @@
         "rootDir": "./",
         "outDir": "./dist/js"
     },
-    "include": ["./src/**/**/*"],
+    "include": ["./src/**/**/*", "./test/*"],
     "references": [
         {
             "path": "../utils-general/tsconfig.json"

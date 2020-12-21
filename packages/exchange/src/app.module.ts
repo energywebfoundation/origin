@@ -2,8 +2,6 @@ import { IntUnitsOfEnergy } from '@energyweb/origin-backend-utils';
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { ScheduleModule } from '@nestjs/schedule';
-import fs from 'fs';
-import path from 'path';
 
 import { AccountBalanceModule } from './pods/account-balance/account-balance.module';
 import { AccountDeployerModule } from './pods/account-deployer/account-deployer.module';
@@ -11,55 +9,25 @@ import { AccountModule } from './pods/account/account.module';
 import { AssetModule } from './pods/asset/asset.module';
 import { BundleModule } from './pods/bundle/bundle.module';
 import { DemandModule } from './pods/demand/demand.module';
-import { DepositWatcherModule } from './pods/deposit-watcher/deposit-watcher.module';
 import { MatchingEngineModule } from './pods/matching-engine/matching-engine.module';
-import { OrderBookModule } from './pods/order-book/order-book.module';
-import { OrderModule } from './pods/order/order.module';
-import { ProductModule } from './pods/product/product.module';
-import { RunnerModule } from './pods/runner/runner.module';
+import { OrderModule } from './pods/order';
 import { TradeModule } from './pods/trade/trade.module';
 import { TransferModule } from './pods/transfer/transfer.module';
-import { WithdrawalProcessorModule } from './pods/withdrawal-processor/withdrawal-processor.module';
-
-const getEnvFilePath = () => {
-    const pathsToTest = ['../../../../../.env', '../../../../../../.env'];
-
-    let finalPath = null;
-
-    for (const pathToTest of pathsToTest) {
-        const resolvedPath = path.resolve(__dirname, pathToTest);
-
-        if (__dirname.includes('dist/js') && fs.existsSync(resolvedPath)) {
-            finalPath = resolvedPath;
-            break;
-        }
-    }
-
-    return finalPath;
-};
 
 @Module({
     imports: [
-        ConfigModule.forRoot({
-            envFilePath: getEnvFilePath(),
-            isGlobal: true
-        }),
+        ConfigModule,
         ScheduleModule.forRoot(),
         MatchingEngineModule,
         TradeModule,
-        OrderModule,
-        DemandModule,
-        OrderBookModule,
-        AssetModule,
         TransferModule,
+        DemandModule,
+        AssetModule,
         AccountModule,
-        ProductModule,
         AccountDeployerModule,
         AccountBalanceModule,
-        DepositWatcherModule,
-        WithdrawalProcessorModule,
-        RunnerModule,
-        BundleModule
+        BundleModule,
+        OrderModule
     ],
     providers: [IntUnitsOfEnergy]
 })

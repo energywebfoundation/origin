@@ -67,7 +67,7 @@ interface IProps<T extends readonly ITableColumn[]> {
     loadPage?: (page: number, filters?: ICustomFilter[]) => void | Promise<any>;
     pageSize?: number;
     total?: number;
-    actions?: ITableAction[] | ITableAction[][];
+    actions?: (ITableAction | ITableAction[] | ((row: any) => ITableAction))[];
     onSelect?: TableOnSelectFunction;
     currentSort?: CurrentSortType;
     sortAscending?: boolean;
@@ -148,6 +148,15 @@ export function TableMaterial<T extends readonly ITableColumn[]>(props: IProps<T
         } else {
             return <TableCell key={id}></TableCell>;
         }
+
+        finalActionsList = finalActionsList
+            .map((ac) => {
+                if (typeof ac === 'function') {
+                    return ac(row);
+                }
+                return ac;
+            })
+            .filter((ac) => Boolean(ac));
 
         return (
             <TableCell key={id} className={classes.tableCellWrappingActions}>
