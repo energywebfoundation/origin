@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { Remove, Visibility } from '@material-ui/icons';
+import { useHistory } from 'react-router-dom';
+import { Remove, Visibility, Search } from '@material-ui/icons';
 import {
     useTranslation,
     EnergyFormatter,
@@ -19,9 +20,10 @@ import {
     ICustomFilterDefinition,
     CustomFilterInputType,
     FilterRules,
-    TableMaterial
+    TableMaterial,
+    useLinks
 } from '@energyweb/origin-ui-core';
-import { Order } from '../../utils/exchange';
+import { Order, ANY_VALUE, ANY_OPERATOR } from '../../utils/exchange';
 import { RemoveOrderConfirmation, OrderDetailsModal } from '../modal';
 
 const ORDERS_PER_PAGE = 5;
@@ -39,6 +41,8 @@ export const BidsTable = (props: IOwnProsp) => {
     const deviceTypeService = configuration?.deviceTypeService;
     const environment = useSelector(getEnvironment);
     const devices = useSelector(getProducingDevices);
+    const { getExchangeLink } = useLinks();
+    const history = useHistory();
 
     const columns = [
         { id: 'volume', label: t('order.properties.volume') },
@@ -132,11 +136,17 @@ export const BidsTable = (props: IOwnProsp) => {
             product: { deviceType, generationFrom, generationTo },
             filled
         } = bid;
+        const deviceTypeFormatted = (deviceArr: string[]): string =>
+            deviceArr.filter((type) => !type.includes(';')).join(', ');
         return {
             volume: EnergyFormatter.format(Number(currentVolume), true),
             price: formatCurrencyComplete(price / 100, currency),
-            device_type: deviceType ? deviceType[0].split(';')[0] : '-',
-            generationFrom: generationFrom ? moment(generationFrom).format('MMM, YYYY') : '-',
+            device_type: deviceType ? deviceTypeFormatted(deviceType) : '-',
+            generationFrom: generationFrom
+                ? moment(generationFrom)
+                      .utcOffset(Number(environment.MARKET_UTC_OFFSET))
+                      .format('MMM, YYYY')
+                : '-',
             generationTo: generationTo ? moment(generationTo).format('MMM, YYYY') : '-',
             filled: `${filled * 100}%`,
             bidId: bid.id
@@ -155,7 +165,24 @@ export const BidsTable = (props: IOwnProsp) => {
         setToRemove(bid);
     };
 
+    const viewMarket = (rowIndex: number) => {
+        const { bidId } = rows[rowIndex];
+        const bid = bids.find((o) => o.id === bidId);
+        history.push(`${getExchangeLink()}/view-market`, {
+            redirectDeviceType: bid.product.deviceType || [ANY_VALUE],
+            redirectLocation: bid.product.location || [ANY_VALUE],
+            redirectGridOperator: bid.product.gridOperator || [ANY_OPERATOR],
+            redirectGenerationFrom: bid.product.generationFrom,
+            redirectGenerationTo: bid.product.generationTo
+        });
+    };
+
     const actions = [
+        {
+            icon: <Search />,
+            name: t('order.actions.viewMarket'),
+            onClick: (row: string) => viewMarket(parseInt(row, 10))
+        },
         {
             icon: <Visibility />,
             name: t('order.actions.view'),

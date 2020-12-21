@@ -15,8 +15,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Role, IUser, getRolesFromRights, isRole } from '@energyweb/origin-backend-core';
 
 import { getUserOffchain } from '../../features/users/selectors';
-import { roleNames } from '../Organization/Organization';
-import { NotificationType, showNotification, useTranslation } from '../../utils';
+import { NotificationType, showNotification, useTranslation, roleNames } from '../../utils';
 import { setLoading, getBackendClient } from '../../features/general';
 
 interface IProps {
@@ -76,7 +75,7 @@ export function ChangeRoleModal(props: IProps) {
             <DialogTitle>{`Change role for ${user?.firstName} ${user?.lastName}`}</DialogTitle>
             <DialogContent>
                 <FormControl fullWidth={true} variant="filled" className="mt-4">
-                    <InputLabel>New Role</InputLabel>
+                    <InputLabel>{t('organization.invitations.dialog.newRole')}</InputLabel>
                     <Select
                         value={selectedRole}
                         onChange={(e) => setSelectedRole(e.target.value as number)}
@@ -94,10 +93,10 @@ export function ChangeRoleModal(props: IProps) {
             </DialogContent>
             <DialogActions>
                 <Button onClick={handleClose} color="secondary">
-                    Cancel
+                    {t('organization.invitations.actions.cancel')}
                 </Button>
                 <Button onClick={changeRole} color="primary">
-                    Change
+                    {t('organization.invitations.actions.change')}
                 </Button>
             </DialogActions>
         </Dialog>

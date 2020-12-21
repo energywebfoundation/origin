@@ -25,6 +25,8 @@ export interface IOriginStyleConfig {
     MAIN_BACKGROUND_COLOR: string;
     FIELD_ICON_COLOR: string;
     WHITE: string;
+    FONT_FAMILY_PRIMARY: string;
+    FONT_FAMILY_SECONDARY: string;
 }
 
 const DEFAULT_COLOR = variables.primaryColor;
@@ -162,6 +164,12 @@ export const createMaterialThemeForOrigin = (
                 MuiTypography: {
                     root: {
                         color: styleConfig.SIMPLE_TEXT_COLOR
+                    },
+                    h5: {
+                        fontFamily: styleConfig.FONT_FAMILY_SECONDARY
+                    },
+                    body1: {
+                        fontFamily: styleConfig.FONT_FAMILY_SECONDARY
                     }
                 },
                 MuiTooltip: {
@@ -252,7 +260,9 @@ export function createStyleConfigFromSCSSVariables(scssVariables: any): IOriginS
         SIMPLE_TEXT_COLOR: scssVariables.simpleTextColor ?? DEFAULT_COLOR,
         MAIN_BACKGROUND_COLOR: scssVariables.mainBackgroundColor ?? DEFAULT_COLOR,
         FIELD_ICON_COLOR: scssVariables.fieldIconColor ?? DEFAULT_COLOR,
-        WHITE: '#fff'
+        WHITE: '#fff',
+        FONT_FAMILY_PRIMARY: scssVariables.fontFamilyPrimary,
+        FONT_FAMILY_SECONDARY: scssVariables.fontFamilySecondary
     };
 }
 

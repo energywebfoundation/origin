@@ -23,8 +23,7 @@ import { setLoading } from '../../features/general/actions';
 import { FormInput } from '../Form/FormInput';
 import { getUserOffchain } from '../../features/users/selectors';
 import { getBackendClient } from '../../features/general/selectors';
-import { roleNames } from './Organization';
-import { useTranslation } from '../../utils';
+import { useTranslation, roleNames } from '../../utils';
 
 interface IFormValues {
     email: string;

@@ -7,6 +7,7 @@ import {
 } from '@energyweb/exchange-irec-client';
 import { DemandStatus, TimeFrame } from '@energyweb/utils-general';
 import { BigNumber } from 'ethers';
+import { Moment } from 'moment';
 
 export type DeviceVintageDTO = {
     year: number;
@@ -211,8 +212,8 @@ export type DemandSummaryDTO = {
 export interface ICalculateVolumeData {
     volume: string;
     period: TimeFrame;
-    start: Date;
-    end: Date;
+    start: Moment;
+    end: Moment;
 }
 
 export interface IDemand {
@@ -229,6 +230,14 @@ export interface IDemand {
 }
 
 export type Demand = IDemand & { userId: string; bids: Order[]; status: DemandStatus };
+
+export type MarketRedirectFilter = {
+    redirectDeviceType: string[];
+    redirectLocation: string[];
+    redirectGridOperator: string[];
+    redirectGenerationFrom: Date;
+    redirectGenerationTo: Date;
+};
 
 export const ANY_VALUE = 'Any';
 export const ANY_OPERATOR = 'TH-ANY';
