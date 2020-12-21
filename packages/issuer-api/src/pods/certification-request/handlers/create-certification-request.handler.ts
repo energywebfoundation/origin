@@ -5,18 +5,13 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Subject } from 'rxjs';
 import { concatMap } from 'rxjs/operators';
 import { Repository } from 'typeorm';
+import { isAddress, getAddress } from 'ethers/lib/utils';
 
 import { BlockchainPropertiesService } from '../../blockchain/blockchain-properties.service';
 import { CertificationRequestStatus } from '../certification-request-status.enum';
 import { CertificationRequestDTO } from '../certification-request.dto';
 import { CertificationRequest } from '../certification-request.entity';
 import { CreateCertificationRequestCommand } from '../commands/create-certification-request.command';
-
-const eth = /^(0x)[0-9a-f]{40}$/i;
-
-function isValidEthereumAddress(to: string) {
-    return typeof to === 'string' && eth.test(to);
-}
 
 @CommandHandler(CreateCertificationRequestCommand)
 export class CreateCertificationRequestHandler
@@ -42,7 +37,7 @@ export class CreateCertificationRequestHandler
         files,
         isPrivate
     }: CreateCertificationRequestCommand): Promise<CertificationRequestDTO> {
-        if (!isValidEthereumAddress(to)) {
+        if (!isAddress(to)) {
             throw new BadRequestException(
                 'Invalid "to" parameter, it has to be ethereum address string'
             );
@@ -58,7 +53,7 @@ export class CreateCertificationRequestHandler
             files,
             isPrivate: isPrivate ?? false,
             status: CertificationRequestStatus.Queued,
-            owner: to
+            owner: getAddress(to) // it returns checksum address
         });
 
         const stored = await this.repository.save(certificationRequest);
