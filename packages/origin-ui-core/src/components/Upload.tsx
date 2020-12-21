@@ -307,8 +307,18 @@ export function Upload(props: IProps) {
 
     return (
         <section>
-            <div {...getRootProps({ className: classes.dropzone })}>
-                <input {...getInputProps()} />
+            <div
+                {...getRootProps({ className: classes.dropzone })}
+                style={{
+                    ...(getRootProps().style as React.CSSProperties)
+                }}
+            >
+                <input
+                    {...getInputProps()}
+                    style={{
+                        ...(getInputProps().style as React.CSSProperties)
+                    }}
+                />
                 <p>{t('file.info.dropHereOrClickToSelect')}</p>
             </div>
             <aside className={classes.thumbsContainer}>{thumbs}</aside>
