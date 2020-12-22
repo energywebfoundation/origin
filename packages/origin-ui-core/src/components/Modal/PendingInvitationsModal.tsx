@@ -12,12 +12,12 @@ import {
     showNotification,
     NotificationType,
     useTranslation,
-    useLinks
+    useLinks,
+    roleNames
 } from '../..';
 import { setLoading } from '../../features/general';
 import { Trans } from 'react-i18next';
 import DraftOutlineIcon from '@material-ui/icons/DraftsOutlined';
-import { roleNames } from '../Organization/Organization';
 
 interface IProps {
     showModal: boolean;

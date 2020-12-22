@@ -31,7 +31,7 @@ import {
     getUserOffchain,
     getExchangeDepositAddress
 } from '../../features/users/selectors';
-import { IconPopover } from '../IconPopover';
+import { IconPopover, IconSize } from '../IconPopover';
 import { BackendClient } from '../../utils';
 
 interface IFormValues extends IUser {
@@ -441,6 +441,7 @@ export function UserProfile() {
                                         )}
                                         <IconPopover
                                             icon={Info}
+                                            iconSize={IconSize.Large}
                                             popoverText={[
                                                 t('user.popover.exchangeAddressWhatFor'),
                                                 t('user.popover.exchangeAddressHowTo')
@@ -485,6 +486,7 @@ export function UserProfile() {
                                         </Button>
                                         <IconPopover
                                             icon={Info}
+                                            iconSize={IconSize.Large}
                                             popoverText={[
                                                 t('user.popover.blockchainWhatIs'),
                                                 t('user.popover.blockchainWhatFor'),

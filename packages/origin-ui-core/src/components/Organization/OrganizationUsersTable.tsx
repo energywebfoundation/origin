@@ -17,8 +17,7 @@ import {
     Role,
     UserStatus
 } from '@energyweb/origin-backend-core';
-import { roleNames } from './Organization';
-import { useTranslation } from '../../utils';
+import { useTranslation, roleNames } from '../../utils';
 import { ChangeRoleModal } from '../Modal/ChangeRoleModal';
 import { IRecord } from '../admin/AdminUsersTable';
 
