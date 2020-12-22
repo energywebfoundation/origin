@@ -12,7 +12,7 @@ import {
 } from '@energyweb/exchange';
 import { UserStatus } from '@energyweb/origin-backend-core';
 import { DatabaseService, RolesGuard } from '@energyweb/origin-backend-utils';
-import { CanActivate, ExecutionContext, Logger } from '@nestjs/common';
+import { CanActivate, ExecutionContext } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AuthGuard } from '@nestjs/passport';
 import { Test } from '@nestjs/testing';
@@ -35,8 +35,6 @@ const authGuard: CanActivate = {
         return true;
     }
 };
-
-const testLogger = new Logger('e2e');
 
 const deviceTypes = [
     ['Solar'],
@@ -129,7 +127,7 @@ export const bootstrapTestInstance = async (deviceServiceMock?: IExternalDeviceS
     const databaseService = await app.resolve<DatabaseService>(DatabaseService);
     const orderService = await app.resolve<OrderService<ProductDTO>>(OrderService);
 
-    app.useLogger(testLogger);
+    app.useLogger(['log']);
     app.enableCors();
 
     useContainer(app.select(AppModule), { fallbackOnErrors: true });
