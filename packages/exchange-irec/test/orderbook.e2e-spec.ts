@@ -334,6 +334,17 @@ describe('orderbook tests', () => {
         expect(bids).to.have.length(2);
     });
 
+    it('returned asks should have assetId', async () => {
+        const {
+            body: { asks }
+        }: { body: OrderBook } = await request(app.getHttpServer())
+            .post('/orderbook/search')
+            .expect('Content-Type', /application\/json/)
+            .expect(HttpStatus.OK);
+
+        asks.forEach((ask) => expect(ask).to.have.property('assetId'));
+    });
+
     it('should return orders filtered by default filter', async () => {
         const {
             body: { asks, bids, lastTradedPrice }

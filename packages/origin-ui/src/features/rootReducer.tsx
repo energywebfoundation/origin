@@ -8,12 +8,8 @@ import {
     usersState,
     web3State
 } from '@energyweb/origin-ui-core';
-import {
-    bundlesState,
-    ordersState,
-    exchangeGeneralState,
-    IStoreState
-} from '@energyweb/exchange-ui-core';
+import { bundlesState, ordersState, exchangeGeneralState } from '@energyweb/exchange-ui-core';
+import { IStoreState } from '../types';
 
 export const createRootReducer = (history) =>
     combineReducers<IStoreState>({

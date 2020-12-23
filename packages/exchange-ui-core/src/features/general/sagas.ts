@@ -1,6 +1,7 @@
+import axios, { Canceler } from 'axios';
 import { SagaIterator } from 'redux-saga';
 import { put, select, all, fork, call, cancelled, take } from 'redux-saga/effects';
-import axios, { Canceler } from 'axios';
+import { UsersActions } from '@energyweb/origin-ui-core';
 import { ExchangeClient } from '../../utils/exchange';
 import {
     setExchangeClient,
@@ -9,7 +10,6 @@ import {
     ExchangeGeneralActionType
 } from './actions';
 import { getEnvironment } from './selectors';
-import { UsersActions } from '@energyweb/origin-ui-core';
 
 function prepareGetEnvironmentTask(): {
     getEnvironment: () => Promise<IEnvironment>;

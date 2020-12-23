@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { Formik, Form } from 'formik';
-import { TableCell, Button, InputAdornment, Grid } from '@material-ui/core';
+import { TableCell, Button, InputAdornment, Grid, Typography } from '@material-ui/core';
 import { IDevice, UserStatus } from '@energyweb/origin-backend-core';
 import {
     getEnvironment,
@@ -11,24 +11,25 @@ import {
     useValidation,
     EnergyFormatter,
     getUserOffchain,
-    getBackendClient
+    getBackendClient,
+    LightenColor
 } from '@energyweb/origin-ui-core';
 import { getExchangeClient } from '../../features/general';
 import { IAsset, IOrderBookOrderDTO, calculateTotalPrice } from '../../utils/exchange';
+import { useOriginConfiguration } from '../../utils/configuration';
 import { FormInput } from '../Form';
 import { Orders, IOrdersProps } from './Orders';
 
 interface IAsksProps {
     buyDirect: (orderId: string, volume: string, price: number) => void;
     energyUnit: string;
-
     displayAssetDetails?: boolean;
 }
 
 type Props = IAsksProps & IOrdersProps;
 
 export function Asks(props: Props) {
-    const { buyDirect, displayAssetDetails, energyUnit, currency } = props;
+    const { buyDirect, displayAssetDetails, energyUnit, currency, ordersTotalVolume } = props;
 
     const exchangeClient = useSelector(getExchangeClient);
     const backendClient = useSelector(getBackendClient);
@@ -36,6 +37,11 @@ export function Asks(props: Props) {
     const user = useSelector(getUserOffchain);
     const { t } = useTranslation();
     const { Yup } = useValidation();
+
+    const popoverText = [
+        t('exchange.popover.asksDescription'),
+        t('exchange.popover.asksFurtherInstructions')
+    ];
 
     const [selectedOrder, setSelectedOrder] = useState<IOrderBookOrderDTO>(null);
     const [asset, setAsset] = useState<IAsset>();
@@ -77,11 +83,17 @@ export function Asks(props: Props) {
     });
 
     const initialFormValues = {
-        energy: '1'
+        energy: ''
     };
+
+    const originBgColor = useOriginConfiguration()?.styleConfig.MAIN_BACKGROUND_COLOR;
+    const customRowBgColor = LightenColor(originBgColor, -3);
 
     return (
         <Orders
+            reverseRows={true}
+            ordersTotalVolume={ordersTotalVolume}
+            popoverText={popoverText}
             handleRowClick={(newOrder) => {
                 if (selectedOrder?.id === newOrder?.id) {
                     setSelectedOrder(null);
@@ -94,23 +106,45 @@ export function Asks(props: Props) {
                     ? {
                           shouldDisplay: (row: { id: string }) => row?.id === selectedOrder?.id,
                           display: (
-                              <TableCell colSpan={2}>
-                                  {t('device.properties.facilityName')}: {device?.facilityName}
-                                  <br />
-                                  <br />
-                                  {t('device.properties.constructed')}:{' '}
-                                  {device?.operationalSince &&
-                                      moment.unix(device.operationalSince).year()}
-                                  <br />
-                                  <br />
-                                  {t('device.properties.deviceType')}:{' '}
-                                  {device?.deviceType?.split(';').join(' - ')}
-                                  <br />
-                                  <br />
-                                  {t('exchange.properties.generationFrom')}:{' '}
-                                  {formatDate(asset.generationFrom, false, device.timezone)} <br />
-                                  {t('exchange.properties.generationTo')}:{' '}
-                                  {formatDate(asset.generationTo, false, device.timezone)}
+                              <TableCell colSpan={4} style={{ backgroundColor: customRowBgColor }}>
+                                  {t('device.properties.facilityName')}
+                                  <Typography paragraph>{device?.facilityName}</Typography>
+
+                                  {t('device.properties.constructed')}
+                                  <Typography paragraph>
+                                      {device?.operationalSince &&
+                                          moment.unix(device.operationalSince).year()}
+                                  </Typography>
+
+                                  {t('device.properties.deviceType')}
+                                  <Typography paragraph>
+                                      {device?.deviceType?.split(';').join(' - ')}
+                                  </Typography>
+
+                                  <Grid container>
+                                      <Grid item xs={6}>
+                                          {t('exchange.properties.generationStart')}
+                                          <Typography paragraph>
+                                              {formatDate(
+                                                  asset.generationFrom,
+                                                  false,
+                                                  device.timezone
+                                              )}
+                                          </Typography>
+                                      </Grid>
+
+                                      <Grid item xs={6}>
+                                          {t('exchange.properties.generationEnd')}
+                                          <Typography paragraph>
+                                              {formatDate(
+                                                  asset.generationTo,
+                                                  false,
+                                                  device.timezone
+                                              )}
+                                          </Typography>
+                                      </Grid>
+                                  </Grid>
+
                                   {selectedOrder?.userId !== user?.id?.toString() && (
                                       <Formik
                                           initialValues={initialFormValues}
@@ -119,26 +153,30 @@ export function Asks(props: Props) {
                                           onSubmit={null}
                                       >
                                           {(formikProps) => {
-                                              const { isValid, values } = formikProps;
+                                              const {
+                                                  isValid,
+                                                  values,
+                                                  resetForm,
+                                                  dirty
+                                              } = formikProps;
 
                                               return (
                                                   <Form translate="no">
                                                       <Grid
                                                           container
-                                                          spacing={0}
                                                           direction="row"
                                                           alignItems="center"
-                                                          justify="center"
+                                                          justify="flex-end"
+                                                          spacing={1}
                                                       >
                                                           {buyDirectExpanded && (
                                                               <Grid item xs={9}>
                                                                   <FormInput
+                                                                      property="energy"
+                                                                      required
                                                                       label={t(
                                                                           'exchange.properties.energy'
                                                                       )}
-                                                                      property="energy"
-                                                                      className="mt-3"
-                                                                      required
                                                                       InputProps={{
                                                                           endAdornment: (
                                                                               <InputAdornment position="end">
@@ -149,9 +187,8 @@ export function Asks(props: Props) {
                                                                   />
                                                               </Grid>
                                                           )}
-                                                          <Grid item xs={3}>
-                                                              {user?.status ===
-                                                                  UserStatus.Active && (
+                                                          {user?.status === UserStatus.Active && (
+                                                              <Grid item xs={3}>
                                                                   <Button
                                                                       onClick={() => {
                                                                           if (buyDirectExpanded) {
@@ -165,34 +202,44 @@ export function Asks(props: Props) {
                                                                                   )?.toString(),
                                                                                   selectedOrder.price
                                                                               );
+                                                                              resetForm();
+                                                                              setBuyDirectExpanded(
+                                                                                  false
+                                                                              );
                                                                           } else {
                                                                               setBuyDirectExpanded(
                                                                                   true
                                                                               );
                                                                           }
                                                                       }}
-                                                                      disabled={!isValid}
+                                                                      disabled={
+                                                                          !isValid ||
+                                                                          (buyDirectExpanded &&
+                                                                              !dirty)
+                                                                      }
+                                                                      variant="outlined"
+                                                                      color="primary"
                                                                       style={{
-                                                                          height: '72px',
-                                                                          lineHeight: '72px'
+                                                                          fontWeight: 600,
+                                                                          outline: 'none'
                                                                       }}
                                                                   >
                                                                       {t('exchange.actions.buy')}
                                                                   </Button>
-                                                              )}
-                                                          </Grid>
+                                                              </Grid>
+                                                          )}
                                                       </Grid>
                                                       {buyDirectExpanded && isValid && (
-                                                          <>
+                                                          <Typography className="mt-2">
                                                               {t('exchange.feedback.total')}:{' '}
                                                               {calculateTotalPrice(
                                                                   (
                                                                       selectedOrder.price / 100
                                                                   ).toString(),
                                                                   values.energy
-                                                              )}
+                                                              )}{' '}
                                                               {currency}
-                                                          </>
+                                                          </Typography>
                                                       )}
                                                   </Form>
                                               );
