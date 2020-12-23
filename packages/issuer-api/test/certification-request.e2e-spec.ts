@@ -3,6 +3,7 @@ import { HttpStatus, INestApplication } from '@nestjs/common';
 import { expect } from 'chai';
 import request from 'supertest';
 import { Role } from '@energyweb/origin-backend-core';
+import { getAddress } from 'ethers/lib/utils';
 
 import moment from 'moment';
 import { DatabaseService } from '@energyweb/origin-backend-utils';
@@ -45,13 +46,21 @@ describe('Certification Request tests', () => {
         await app.close();
     });
 
-    it('should create a certification request + entry in the DB', async () => {
+    it('should return 400 BadRequest if "to" address is invalid', async () => {
         await request(app.getHttpServer())
             .post('/certification-request')
-            .send(certificationRequestTestData)
-            .expect(HttpStatus.CREATED)
-            .expect((res) => {
-                const {
+            .send({ ...certificationRequestTestData, to: 'invalid one' })
+            .expect(HttpStatus.BAD_REQUEST);
+    });
+
+    [
+        certificationRequestTestData,
+        { ...certificationRequestTestData, to: '0x0089d53f703f7e0843953d48133f74ce247184c2' },
+        { ...certificationRequestTestData, to: '0x7CB57B5A97EABE94205C07890BE4C1AD31E486A8' }
+    ].forEach((certReqData) => {
+        it(`should create a certification request + entry in the DB: ${certReqData.to}`, async () => {
+            const {
+                body: {
                     deviceId,
                     fromTime,
                     toTime,
@@ -63,29 +72,31 @@ describe('Certification Request tests', () => {
                     files,
                     energy,
                     status
-                } = res.body;
+                }
+            } = await request(app.getHttpServer())
+                .post('/certification-request')
+                .send(certReqData)
+                .expect(HttpStatus.CREATED);
 
-                expect(deviceId).to.equal(certificationRequestTestData.deviceId);
-                expect(fromTime).to.equal(certificationRequestTestData.fromTime);
-                expect(toTime).to.equal(certificationRequestTestData.toTime);
-                expect(created).to.be.null;
-                expect(requestId).to.be.null;
-                expect(owner).to.equal(deviceManager.address);
-                expect(approved).to.be.false;
-                expect(revoked).to.be.false;
-                expect(status).to.be.equal(CertificationRequestStatus.Queued);
-                expect(JSON.stringify(files)).to.equal(
-                    JSON.stringify(certificationRequestTestData.files)
-                );
-                expect(energy).to.equal(certificationRequestTestData.energy);
-            });
+            expect(deviceId).to.equal(certReqData.deviceId);
+            expect(fromTime).to.equal(certReqData.fromTime);
+            expect(toTime).to.equal(certReqData.toTime);
+            expect(created).to.be.null;
+            expect(requestId).to.be.null;
+            expect(owner).to.equal(getAddress(certReqData.to));
+            expect(approved).to.be.false;
+            expect(revoked).to.be.false;
+            expect(status).to.be.equal(CertificationRequestStatus.Queued);
+            expect(JSON.stringify(files)).to.equal(JSON.stringify(certReqData.files));
+            expect(energy).to.equal(certReqData.energy);
 
-        await request(app.getHttpServer())
-            .get(`/certification-request`)
-            .expect(HttpStatus.OK)
-            .expect((res) => {
-                expect(res.body.length).to.equal(1);
-            });
+            const { body: requests } = await request(app.getHttpServer())
+                .get(`/certification-request`)
+                .expect(HttpStatus.OK);
+
+            const cr: any = requests.find((req: any) => req.owner === getAddress(certReqData.to));
+            expect(cr).to.be.not.empty;
+        });
     });
 
     it('should not be able to request certification request twice for the same time period', async () => {
