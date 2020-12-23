@@ -7,8 +7,16 @@ import { ActiveOrders } from '../utils';
 import { getOrders, getDemands } from '../features/orders/selectors';
 import { BidsTable, AsksTable, DemandsTable } from '../components/orders';
 import { fetchOrders } from '../features/orders';
+import { useDevicePermissions } from '@energyweb/origin-ui-core';
+import { Requirements } from '@energyweb/origin-ui-core/dist/src/components/Requirements';
 
 export const MyOrders = () => {
+    const { canCreateDevice } = useDevicePermissions();
+
+    if (!canCreateDevice?.value) {
+        return <Requirements />;
+    }
+
     const dispatch = useDispatch();
 
     useEffect(() => {

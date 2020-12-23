@@ -20,7 +20,7 @@ export function DevicePermissionsFeedback(props: IProps) {
     return (
         <>
             <Typography variant="body1" className="mt-3" gutterBottom>
-                {t('device.info.toRegisterADevice')}
+                {t('info.needToFulfilCriteria')}
             </Typography>
             <List>
                 {canCreateDevice?.rules.map((rule) => (

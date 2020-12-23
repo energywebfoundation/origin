@@ -413,7 +413,7 @@
                     "yearly": "Rocznie",
                     "monthly": "Miesięczny",
                     "weekly": "Tygodniowo",
-                    "daily": "Codziennie",
+                    "daily": "Codziennie"
                 }
             },
             "popover": {
@@ -639,6 +639,9 @@
                 "statusNotChanged": "Stan popytu nie zmienił się",
                 "demandUpdated": "Popyt zostało pomyślnie zaktualizowane"
             }
+        },
+        "info": {
+            "needToFulfilCriteria": "Aby wejść na tą stronę, musisz spełnić wymienione kryteria"
         }
     }
     

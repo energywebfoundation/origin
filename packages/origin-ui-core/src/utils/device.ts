@@ -2,7 +2,7 @@
 import { ProducingDevice } from '@energyweb/device-registry';
 import { IEnvironment } from '../features/general/actions';
 import { CustomFilterInputType, ICustomFilterDefinition } from '../components/Table/FiltersHeader';
-import { getUserOffchain } from '../features/users/selectors';
+import { getExchangeDepositAddress, getUserOffchain } from '../features/users/selectors';
 import { useSelector } from 'react-redux';
 import { useTranslation } from '.';
 import { OrganizationStatus, UserStatus } from '@energyweb/origin-backend-core';
@@ -189,6 +189,7 @@ export interface IDevicePermission {
 
 export function useDevicePermissions() {
     const user = useSelector(getUserOffchain);
+    const exchangeAddress = useSelector(getExchangeDepositAddress);
     const { t } = useTranslation();
 
     const canCreateDevice: IDevicePermission = {
@@ -209,8 +210,8 @@ export function useDevicePermissions() {
                     user?.organization?.status === OrganizationStatus.Active
             },
             {
-                label: t('general.feedback.userHasToHaveBlockchainAccount'),
-                passing: Boolean(user?.blockchainAccountAddress)
+                label: t('general.feedback.organizationHasToHaveExchangeDeposit'),
+                passing: Boolean(exchangeAddress)
             }
         ]
     };

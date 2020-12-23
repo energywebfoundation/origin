@@ -37,8 +37,8 @@ import { DeviceStatus, IExternalDeviceId } from '@energyweb/origin-backend-core'
 import { Skeleton } from '@material-ui/lab';
 import { FormInput } from '../Form';
 import { DeviceSelectors } from './DeviceSelectors';
-import { DevicePermissionsFeedback } from './DevicePermissionsFeedback';
 import { Upload, IUploadedFile } from '../Upload';
+import { Requirements } from '../Requirements';
 
 interface IFormValues {
     facilityName: string;
@@ -219,11 +219,7 @@ export function AddDevice() {
     }
 
     if (!canCreateDevice?.value) {
-        return (
-            <Paper className={classes.container}>
-                <DevicePermissionsFeedback canCreateDevice={canCreateDevice} />
-            </Paper>
-        );
+        return <Requirements />;
     }
 
     const initialFormValues: IFormValues = INITIAL_FORM_VALUES;

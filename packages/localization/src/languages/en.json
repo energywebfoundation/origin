@@ -255,6 +255,7 @@
                 "noOrganization": "You need to be a part of an organization. You can create it or join existing one.",
                 "haveToBeLoggedInUser": "You need to be a logged in user.",
                 "userHasToBePartOfApprovedOrganization": "The user should be a part of an approved organization.",
+                "organizationHasToHaveExchangeDeposit": "The organization has to have a blockchain exchange deposit address attached to the account.",
                 "userHasToHaveBlockchainAccount": "The user has to have a blockchain account attached to the account.",
                 "blockchainAccountMismatch": "Blockchain account mismatch",
                 "noBlockchainAccount": "No blockchain account detected",
@@ -505,7 +506,7 @@
                     "yearly": "Yearly",
                     "monthly": "Monthly",
                     "weekly": "Weekly",
-                    "daily": "Daily",
+                    "daily": "Daily"
                 }
             },
             "popover": {
@@ -724,6 +725,9 @@
                 "statusNotChanged": "Demand status did not change",
                 "demandUpdated": "Demand successfully updated"
             }
+        },
+        "info": {
+            "needToFulfilCriteria": "To access this page, you need to fulfill following criteria"
         }
     }
 }
