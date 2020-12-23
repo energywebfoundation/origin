@@ -139,7 +139,9 @@ export const AsksTable = (props: IOwnProsp) => {
             price: formatCurrencyComplete(price / 100, currency),
             facilityName: deviceById(deviceId, environment, devices).facilityName,
             device_type: deviceType[0].split(';')[0],
-            generationFrom: moment(generationFrom).format('MMM, YYYY'),
+            generationFrom: moment(generationFrom)
+                .utcOffset(Number(environment.MARKET_UTC_OFFSET))
+                .format('MMM, YYYY'),
             generationTo: moment(generationTo).format('MMM, YYYY'),
             filled: `${filled * 100}%`,
             askId: order.id
