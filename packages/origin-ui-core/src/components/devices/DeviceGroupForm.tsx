@@ -31,7 +31,7 @@ import {
 } from '../../features/general';
 import { HierarchicalMultiSelect } from '../HierarchicalMultiSelect';
 import { ProducingDevice } from '@energyweb/device-registry';
-import { PowerFormatter, useDevicePermissions, useTranslation, moment } from '../../utils';
+import { PowerFormatter, useTranslation, moment, usePermissions } from '../../utils';
 import { FormInput } from '../Form/FormInput';
 import { Upload, IUploadedFile } from '../Upload';
 import { Requirements } from '../Requirements';
@@ -102,7 +102,7 @@ export function DeviceGroupForm(props: IProps) {
     const compliance = useSelector(getCompliance);
     const country = useSelector(getCountry);
     const externalDeviceIdTypes = useSelector(getExternalDeviceIdTypes);
-    const { canCreateDevice } = useDevicePermissions();
+    const { canAccessPage } = usePermissions();
     const [initialFormValuesFromExistingEntity, setInitialFormValuesFromExistingEntity] = useState<
         IFormValues
     >(null);
@@ -269,7 +269,7 @@ export function DeviceGroupForm(props: IProps) {
         return <Skeleton variant="rect" height={200} />;
     }
 
-    if (!readOnly && !canCreateDevice?.value) {
+    if (!readOnly && !canAccessPage?.value) {
         return <Requirements />;
     }
 

@@ -15,3 +15,4 @@ export { useTranslation } from 'react-i18next';
 export * from './colors';
 export * from './blockchainNetwork';
 export * from './organizationRoles';
+export * from './permissions';

@@ -20,7 +20,7 @@ import {
     NotificationType,
     useValidation,
     useTranslation,
-    useDevicePermissions,
+    usePermissions,
     Moment
 } from '../../utils';
 import { FormikDatePicker } from '../Form/FormikDatePicker';
@@ -81,7 +81,7 @@ export function AddDevice() {
     const [selectedGridOperator, setSelectedGridOperator] = useState<string[]>([]);
     const [imagesUploaded, setImagesUploaded] = useState(false);
     const [imagesUploadedList, setImagesUploadedList] = useState<string[]>([]);
-    const { canCreateDevice } = useDevicePermissions();
+    const { canAccessPage } = usePermissions();
 
     const [docfiles, setFiles] = useState<IUploadedFile[]>([]);
     const uploadedDocFiles = docfiles
@@ -218,7 +218,7 @@ export function AddDevice() {
         return <Skeleton variant="rect" height={200} />;
     }
 
-    if (!canCreateDevice?.value) {
+    if (!canAccessPage?.value) {
         return <Requirements />;
     }
 

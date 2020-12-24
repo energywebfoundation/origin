@@ -3,7 +3,7 @@ import { isRole, UserStatus, Role, IUser } from '@energyweb/origin-backend-core'
 import { OriginFeature } from '@energyweb/utils-general';
 import { CertificateTable, SelectedState } from './CertificateTable';
 import { CertificationRequestsTable } from './CertificationRequestsTable';
-import { useDevicePermissions } from '../../utils';
+import { usePermissions } from '../../utils';
 import { Requirements } from '../Requirements';
 
 interface ICertificateMenuItem {
@@ -15,9 +15,9 @@ interface ICertificateMenuItem {
 }
 
 function InboxCertificates() {
-    const { canCreateDevice } = useDevicePermissions();
+    const { canAccessPage } = usePermissions();
 
-    if (!canCreateDevice?.value) {
+    if (!canAccessPage?.value) {
         return <Requirements />;
     }
 
@@ -25,9 +25,9 @@ function InboxCertificates() {
 }
 
 function ClaimedCertificates() {
-    const { canCreateDevice } = useDevicePermissions();
+    const { canAccessPage } = usePermissions();
 
-    if (!canCreateDevice?.value) {
+    if (!canAccessPage?.value) {
         return <Requirements />;
     }
 
@@ -35,9 +35,9 @@ function ClaimedCertificates() {
 }
 
 function PendingCertificationRequestsTable() {
-    const { canCreateDevice } = useDevicePermissions();
+    const { canAccessPage } = usePermissions();
 
-    if (!canCreateDevice?.value) {
+    if (!canAccessPage?.value) {
         return <Requirements />;
     }
 
@@ -45,9 +45,9 @@ function PendingCertificationRequestsTable() {
 }
 
 function ApprovedCertificationRequestsTable() {
-    const { canCreateDevice } = useDevicePermissions();
+    const { canAccessPage } = usePermissions();
 
-    if (!canCreateDevice?.value) {
+    if (!canAccessPage?.value) {
         return <Requirements />;
     }
 
