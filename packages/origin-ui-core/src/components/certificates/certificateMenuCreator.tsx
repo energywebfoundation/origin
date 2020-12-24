@@ -3,6 +3,8 @@ import { isRole, UserStatus, Role, IUser } from '@energyweb/origin-backend-core'
 import { OriginFeature } from '@energyweb/utils-general';
 import { CertificateTable, SelectedState } from './CertificateTable';
 import { CertificationRequestsTable } from './CertificationRequestsTable';
+import { useDevicePermissions } from '../../utils';
+import { Requirements } from '../Requirements';
 
 interface ICertificateMenuItem {
     key: string;
@@ -13,18 +15,42 @@ interface ICertificateMenuItem {
 }
 
 function InboxCertificates() {
+    const { canCreateDevice } = useDevicePermissions();
+
+    if (!canCreateDevice?.value) {
+        return <Requirements />;
+    }
+
     return <CertificateTable selectedState={SelectedState.Inbox} />;
 }
 
 function ClaimedCertificates() {
+    const { canCreateDevice } = useDevicePermissions();
+
+    if (!canCreateDevice?.value) {
+        return <Requirements />;
+    }
+
     return <CertificateTable selectedState={SelectedState.Claimed} hiddenColumns={['source']} />;
 }
 
 function PendingCertificationRequestsTable() {
+    const { canCreateDevice } = useDevicePermissions();
+
+    if (!canCreateDevice?.value) {
+        return <Requirements />;
+    }
+
     return <CertificationRequestsTable approved={false} />;
 }
 
 function ApprovedCertificationRequestsTable() {
+    const { canCreateDevice } = useDevicePermissions();
+
+    if (!canCreateDevice?.value) {
+        return <Requirements />;
+    }
+
     return <CertificationRequestsTable approved={true} />;
 }
 

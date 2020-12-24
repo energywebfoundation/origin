@@ -33,8 +33,8 @@ import { HierarchicalMultiSelect } from '../HierarchicalMultiSelect';
 import { ProducingDevice } from '@energyweb/device-registry';
 import { PowerFormatter, useDevicePermissions, useTranslation, moment } from '../../utils';
 import { FormInput } from '../Form/FormInput';
-import { DevicePermissionsFeedback } from './DevicePermissionsFeedback';
 import { Upload, IUploadedFile } from '../Upload';
+import { Requirements } from '../Requirements';
 import { DeviceSelectors } from './DeviceSelectors';
 
 const MAX_TOTAL_CAPACITY = 5 * Unit.MW;
@@ -270,11 +270,7 @@ export function DeviceGroupForm(props: IProps) {
     }
 
     if (!readOnly && !canCreateDevice?.value) {
-        return (
-            <Paper className={classes.container}>
-                <DevicePermissionsFeedback canCreateDevice={canCreateDevice} />
-            </Paper>
-        );
+        return <Requirements />;
     }
 
     return (
