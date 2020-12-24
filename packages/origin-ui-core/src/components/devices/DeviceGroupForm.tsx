@@ -35,6 +35,7 @@ import { PowerFormatter, useDevicePermissions, useTranslation, moment } from '..
 import { FormInput } from '../Form/FormInput';
 import { Upload, IUploadedFile } from '../Upload';
 import { Requirements } from '../Requirements';
+import { DeviceSelectors } from './DeviceSelectors';
 
 const MAX_TOTAL_CAPACITY = 5 * Unit.MW;
 
@@ -109,6 +110,8 @@ export function DeviceGroupForm(props: IProps) {
     const dispatch = useDispatch();
 
     const selectedDeviceType = ['Solar', 'Solar;Photovoltaic'];
+    const [selectedLocation, setSelectedLocation] = useState<string[]>([]);
+    const [selectedGridOperator, setSelectedGridOperator] = useState<string[]>([]);
 
     const useStyles = makeStyles(() =>
         createStyles({
@@ -116,7 +119,7 @@ export function DeviceGroupForm(props: IProps) {
                 padding: '10px'
             },
             selectContainer: {
-                paddingTop: '10px'
+                margin: '10px 0'
             }
         })
     );
@@ -221,6 +224,7 @@ export function DeviceGroupForm(props: IProps) {
                 type
             };
         });
+        const [region, province] = selectedLocation;
 
         dispatch(
             requestDeviceCreation({
@@ -231,8 +235,8 @@ export function DeviceGroupForm(props: IProps) {
                 capacityInW: sumCapacityOfDevices(values.children),
                 country,
                 address: '',
-                region: '',
-                province: '',
+                region: region || '',
+                province: province ? province.split(';')[1] : '',
                 gpsLatitude: values.children[0].latitude?.toString(),
                 gpsLongitude: values.children[0].longitude?.toString(),
                 timezone: 'Asia/Bangkok',
@@ -244,12 +248,14 @@ export function DeviceGroupForm(props: IProps) {
                 files: JSON.stringify(uploadedFiles.filenames),
                 deviceGroup: JSON.stringify(values.children),
                 externalDeviceIds,
-                gridOperator: '',
+                gridOperator: (selectedGridOperator && selectedGridOperator[0]) || '',
                 automaticPostForSale: false
             })
         );
         formikActions.setSubmitting(false);
     }
+    const deviceSelectorsFilled =
+        selectedLocation.length === 2 && selectedGridOperator.length === 1;
 
     let initialFormValues: IFormValues = null;
 
@@ -277,9 +283,9 @@ export function DeviceGroupForm(props: IProps) {
             >
                 {(formikProps) => {
                     const { isValid, isSubmitting, values } = formikProps;
-
                     const fieldDisabled = isSubmitting || readOnly;
-                    const buttonDisabled = isSubmitting || !isValid || readOnly;
+                    const buttonDisabled =
+                        isSubmitting || !isValid || readOnly || !deviceSelectorsFilled;
 
                     return (
                         <Form translate="no">
@@ -327,6 +333,18 @@ export function DeviceGroupForm(props: IProps) {
                                                     ]}
                                                     disabled={true}
                                                     singleChoice={true}
+                                                />
+                                            </div>
+                                            <div className={classes.selectContainer}>
+                                                <DeviceSelectors
+                                                    location={selectedLocation}
+                                                    onLocationChange={setSelectedLocation}
+                                                    gridOperator={selectedGridOperator}
+                                                    onGridOperatorChange={setSelectedGridOperator}
+                                                    gridItemSize={12}
+                                                    singleChoice={true}
+                                                    disabled={fieldDisabled}
+                                                    required={true}
                                                 />
                                             </div>
                                         </Grid>

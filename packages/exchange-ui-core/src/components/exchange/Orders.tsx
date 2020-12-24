@@ -94,26 +94,20 @@ export function Orders(props: IOrdersProps) {
     ];
 
     const highlightedRowsIndexes = [];
-    const rows = paginatedData.map(
-        ({ id, price, volume, userId, product: { deviceType } }, index) => {
-            if (
-                typeof userId !== 'undefined' &&
-                userId !== null &&
-                userId === highlightOrdersUserId
-            ) {
-                highlightedRowsIndexes.push(index);
-            }
-
-            const type = <DeviceTypeIcons deviceType={deviceType} />;
-
-            return {
-                id,
-                price: (price / 100).toFixed(2),
-                volume: EnergyFormatter.format(volume),
-                type
-            };
+    const rows = paginatedData.map(({ id, price, volume, userId, product: { deviceType } }) => {
+        if (typeof userId !== 'undefined' && userId !== null && userId === highlightOrdersUserId) {
+            highlightedRowsIndexes.push(id);
         }
-    );
+
+        const type = <DeviceTypeIcons deviceType={deviceType} />;
+
+        return {
+            id,
+            price: (price / 100).toFixed(2),
+            volume: EnergyFormatter.format(volume),
+            type
+        };
+    });
 
     return (
         <Paper className={classes.paper}>

@@ -23,7 +23,7 @@ import {
     TableMaterial,
     useLinks
 } from '@energyweb/origin-ui-core';
-import { Order } from '../../utils/exchange';
+import { Order, ANY_VALUE, ANY_OPERATOR } from '../../utils/exchange';
 import { RemoveOrderConfirmation, OrderDetailsModal } from '../modal';
 
 const ORDERS_PER_PAGE = 5;
@@ -139,31 +139,42 @@ export const AsksTable = (props: IOwnProsp) => {
             price: formatCurrencyComplete(price / 100, currency),
             facilityName: deviceById(deviceId, environment, devices).facilityName,
             device_type: deviceType[0].split(';')[0],
-            generationFrom: moment(generationFrom).format('MMM, YYYY'),
+            generationFrom: moment(generationFrom)
+                .utcOffset(Number(environment.MARKET_UTC_OFFSET))
+                .format('MMM, YYYY'),
             generationTo: moment(generationTo).format('MMM, YYYY'),
             filled: `${filled * 100}%`,
             askId: order.id
         };
     });
 
-    function prepareRedirectFilters(ask: Order): { deviceType: string[]; location: string[] } {
-        const deviceType = [ask.product.deviceType[0]];
+    function prepareRedirectFilters(
+        ask: Order
+    ): { deviceType: string[]; location: string[]; gridOperator: string[] } {
+        const newType = [ask.product.deviceType[0]];
         const separatedTypes = ask.product.deviceType[0].split(';');
         if (separatedTypes.length === 2) {
-            deviceType.unshift(separatedTypes[0]);
+            newType.unshift(separatedTypes[0]);
         }
         if (separatedTypes.length === 3) {
-            deviceType.unshift(separatedTypes.slice(0, -1).join(';'));
-            deviceType.unshift(separatedTypes[0]);
+            newType.unshift(separatedTypes.slice(0, -1).join(';'));
+            newType.unshift(separatedTypes[0]);
         }
 
+        const deviceType = ask.product.deviceType[0].length > 1 ? newType : [ANY_VALUE];
+
+        const isEmptyLocation = ask.product.location[0].split(';')[1].length < 1;
         const upperLevel = ask.product.location[0].split(';').slice(0, -1).join(';');
         const lowerLevel = ask.product.location[0];
-        const location = [upperLevel, lowerLevel];
+        const location = isEmptyLocation ? [ANY_VALUE] : [upperLevel, lowerLevel];
+
+        const gridOperator =
+            ask.product.gridOperator[0].length > 0 ? ask.product.gridOperator : [ANY_OPERATOR];
 
         return {
             deviceType,
-            location
+            location,
+            gridOperator
         };
     }
 
@@ -185,7 +196,7 @@ export const AsksTable = (props: IOwnProsp) => {
         history.push(`${getExchangeLink()}/view-market`, {
             redirectDeviceType: prepared.deviceType,
             redirectLocation: prepared.location,
-            redirectGridOperator: ask.product.gridOperator,
+            redirectGridOperator: prepared.gridOperator,
             redirectGenerationFrom: ask.product.generationFrom,
             redirectGenerationTo: ask.product.generationTo
         });

@@ -76,7 +76,7 @@ interface IProps<T extends readonly ITableColumn[]> {
     handleRowClick?: (rowId: string) => void;
     batchableActions?: IBatchableAction[];
     customSelectCounterGenerator?: CustomCounterGeneratorFunction;
-    highlightedRowsIds?: number[];
+    highlightedRowsIds?: string[];
     customRow?: ICustomRow<TTableRow<GetReadonlyArrayItemType<T>['id']> & { id?: string }>;
     allowedActions?: any;
     caption?: string;
@@ -134,7 +134,7 @@ export function TableMaterial<T extends readonly ITableColumn[]>(props: IProps<T
         classes: Record<'root' | 'tableWrapper' | 'tableCellWrappingActions', string>
     ) {
         if (!actionsArr?.length) {
-            return <TableCell key={id}></TableCell>;
+            return;
         }
 
         const is2DArray = Array.isArray(actionsArr[0]);
@@ -203,7 +203,7 @@ export function TableMaterial<T extends readonly ITableColumn[]>(props: IProps<T
     const order = sortAscending ? 'asc' : 'desc';
 
     const showBatchableActions = batchableActions && batchableActions.length > 0;
-
+    const originPrimaryColor = configuration?.styleConfig?.PRIMARY_COLOR;
     const useStyles = makeStyles(() =>
         createStyles({
             root: {
@@ -213,6 +213,14 @@ export function TableMaterial<T extends readonly ITableColumn[]>(props: IProps<T
             tableCellWrappingActions: {
                 position: 'relative',
                 minWidth: '56px'
+            },
+            highlightedRow: {
+                outline: `1px solid ${originPrimaryColor}`,
+                outlineOffset: '-1px',
+                '&[tabindex="-1"]:focus:not(:focus-visible)': {
+                    outline: `1px solid ${originPrimaryColor} !important`,
+                    outlineOffset: '-1px !important'
+                }
             }
         })
     );
@@ -225,7 +233,6 @@ export function TableMaterial<T extends readonly ITableColumn[]>(props: IProps<T
     } = theme;
 
     const classes = useStyles(useTheme());
-    const originPrimaryColor = configuration?.styleConfig?.PRIMARY_COLOR;
 
     return (
         <>
@@ -315,21 +322,14 @@ export function TableMaterial<T extends readonly ITableColumn[]>(props: IProps<T
                                 {rows.map((row, rowIndex) => {
                                     const id = getRowId(row, rowIndex);
                                     const isItemSelected = selectedIds.includes(id);
-                                    const rowStyle = highlightedRowsIndexes.includes(rowIndex)
-                                        ? {
-                                              outlineWidth: '1px',
-                                              outlineStyle: 'solid',
-                                              outlineColor: originPrimaryColor,
-                                              outlineOffset: '-1px'
-                                          }
-                                        : {};
+                                    const rowStyle = highlightedRowsIndexes.includes(id);
                                     return (
                                         <React.Fragment key={id}>
                                             <TableRow
                                                 hover
                                                 role="checkbox"
                                                 tabIndex={-1}
-                                                style={rowStyle}
+                                                className={rowStyle ? classes.highlightedRow : null}
                                             >
                                                 {showBatchableActions && (
                                                     <TableCell padding="checkbox">
