@@ -36,7 +36,7 @@
         "@material-ui/styles": "^4.10.0",
         "@material-ui/types": "5.1.0",
         "@unicef/material-ui-currency-textfield": "^0.8.6",
-        "axios": "0.21.0",
+        "axios": "0.21.1",
         "bootstrap": "4.5.3",
         "connected-react-router": "6.8.0",
         "ethers": "5.0.15",
