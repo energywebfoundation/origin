@@ -1,10 +1,12 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
 import { isRole, UserStatus, Role, IUser } from '@energyweb/origin-backend-core';
 import { OriginFeature } from '@energyweb/utils-general';
 import { CertificateTable, SelectedState } from './CertificateTable';
 import { CertificationRequestsTable } from './CertificationRequestsTable';
-import { useDevicePermissions } from '../../utils';
+import { usePermissions } from '../../utils';
 import { Requirements } from '../Requirements';
+import { getUserOffchain } from '../../features';
 
 interface ICertificateMenuItem {
     key: string;
@@ -15,9 +17,9 @@ interface ICertificateMenuItem {
 }
 
 function InboxCertificates() {
-    const { canCreateDevice } = useDevicePermissions();
+    const { canAccessPage } = usePermissions();
 
-    if (!canCreateDevice?.value) {
+    if (!canAccessPage?.value) {
         return <Requirements />;
     }
 
@@ -25,9 +27,11 @@ function InboxCertificates() {
 }
 
 function ClaimedCertificates() {
-    const { canCreateDevice } = useDevicePermissions();
+    const { canAccessPage } = usePermissions();
+    const user = useSelector(getUserOffchain);
+    const isIssuer = isRole(user, Role.Issuer);
 
-    if (!canCreateDevice?.value) {
+    if (!canAccessPage?.value && !isIssuer) {
         return <Requirements />;
     }
 
@@ -35,9 +39,11 @@ function ClaimedCertificates() {
 }
 
 function PendingCertificationRequestsTable() {
-    const { canCreateDevice } = useDevicePermissions();
+    const { canAccessPage } = usePermissions();
+    const user = useSelector(getUserOffchain);
+    const isIssuer = isRole(user, Role.Issuer);
 
-    if (!canCreateDevice?.value) {
+    if (!canAccessPage?.value && !isIssuer) {
         return <Requirements />;
     }
 
@@ -45,9 +51,11 @@ function PendingCertificationRequestsTable() {
 }
 
 function ApprovedCertificationRequestsTable() {
-    const { canCreateDevice } = useDevicePermissions();
+    const user = useSelector(getUserOffchain);
+    const isIssuer = isRole(user, Role.Issuer);
+    const { canAccessPage } = usePermissions();
 
-    if (!canCreateDevice?.value) {
+    if (!canAccessPage?.value && !isIssuer) {
         return <Requirements />;
     }
 

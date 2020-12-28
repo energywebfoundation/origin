@@ -1,7 +1,7 @@
 import { createStyles, makeStyles, Paper } from '@material-ui/core';
-import { DevicePermissionsFeedback } from './devices/DevicePermissionsFeedback';
+import { PermissionsFeedback } from './PermissionsFeedback';
 import React from 'react';
-import { useDevicePermissions } from '../utils';
+import { usePermissions } from '../utils';
 
 export function Requirements() {
     const useStyles = makeStyles(() =>
@@ -11,12 +11,12 @@ export function Requirements() {
             }
         })
     );
-    const { canCreateDevice } = useDevicePermissions();
+    const { canAccessPage } = usePermissions();
     const classes = useStyles();
 
     return (
         <Paper className={classes?.container}>
-            <DevicePermissionsFeedback canCreateDevice={canCreateDevice} />
+            <PermissionsFeedback canAccessPage={canAccessPage} />
         </Paper>
     );
 }

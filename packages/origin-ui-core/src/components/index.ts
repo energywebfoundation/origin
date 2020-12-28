@@ -3,6 +3,8 @@ export * from './CustomSlider';
 export * from './HierarchicalMultiSelect';
 export * from './ErrorComponent';
 export * from './IconPopover';
+export * from './Requirements';
+export * from './PermissionsFeedback';
 
 export * from './Account';
 export * from './admin';

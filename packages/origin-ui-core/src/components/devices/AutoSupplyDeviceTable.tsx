@@ -11,7 +11,7 @@ import {
     BackendClient,
     formatCurrencyComplete,
     moment,
-    useDevicePermissions,
+    usePermissions,
     useTranslation
 } from '../../utils';
 import { EnergyFormatter } from '../../utils/EnergyFormatter';
@@ -155,9 +155,9 @@ export function AutoSupplyDeviceTable() {
         }
     ];
 
-    const { canCreateDevice } = useDevicePermissions();
+    const { canAccessPage } = usePermissions();
 
-    if (!canCreateDevice?.value) {
+    if (!canAccessPage?.value) {
         return <Requirements />;
     }
 
