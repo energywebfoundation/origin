@@ -212,6 +212,10 @@ export function useDevicePermissions() {
             {
                 label: t('general.feedback.organizationHasToHaveExchangeDeposit'),
                 passing: Boolean(exchangeAddress)
+            },
+            {
+                label: t('general.feedback.userHasToHaveBlockchainAccount'),
+                passing: Boolean(user?.blockchainAccountAddress)
             }
         ]
     };
