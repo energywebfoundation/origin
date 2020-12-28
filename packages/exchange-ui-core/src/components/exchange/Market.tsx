@@ -13,7 +13,6 @@ import {
     createStyles,
     useTheme
 } from '@material-ui/core';
-import { FormikEffect, HierarchicalMultiSelect } from '../Form';
 import {
     getConfiguration,
     Moment,
@@ -21,7 +20,8 @@ import {
     formatCurrencyComplete,
     DeviceSelectors,
     LightenColor,
-    moment
+    moment,
+    getExchangeDepositAddress
 } from '@energyweb/origin-ui-core';
 import { TimeFrame } from '@energyweb/utils-general';
 import {
@@ -30,6 +30,7 @@ import {
     ANY_OPERATOR,
     MarketRedirectFilter
 } from '../../utils/exchange';
+import { FormikEffect, HierarchicalMultiSelect } from '../Form';
 import { OneTimePurchase } from './OneTimePurchase';
 import { RepeatedPurchase } from './RepeatedPurchase';
 import { useOriginConfiguration } from '../../utils/configuration';
@@ -80,6 +81,7 @@ export function Market(props: IProps) {
     const environment = useSelector(getEnvironment);
     const configuration = useSelector(getConfiguration);
     const { t } = useTranslation();
+    const exchangeAddress = useSelector(getExchangeDepositAddress);
 
     const originConfiguration = useOriginConfiguration();
     const originBgColor = originConfiguration?.styleConfig?.MAIN_BACKGROUND_COLOR;
@@ -194,7 +196,8 @@ export function Market(props: IProps) {
                               !errors?.price &&
                               !errors?.energy &&
                               !disableBidding &&
-                              !isSubmitting
+                              !isSubmitting &&
+                              Boolean(exchangeAddress)
                             : values.demandPeriod &&
                               values.demandVolume &&
                               values.demandDateStart &&
@@ -202,7 +205,8 @@ export function Market(props: IProps) {
                               values.totalDemandVolume &&
                               values.price &&
                               !disableBidding &&
-                              !isSubmitting;
+                              !isSubmitting &&
+                              Boolean(exchangeAddress);
 
                         return (
                             <Form translate="no">
