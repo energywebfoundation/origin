@@ -422,7 +422,7 @@ export function UserProfile() {
                                     </Typography>
                                     <Box className={classes.buttonAndIconHolder}>
                                         {exchangeAddress ? (
-                                            <Grid item xs={4}>
+                                            <Grid item lg={4} md={10} xs={12}>
                                                 <FormInput
                                                     property="exchangeDepositAddress"
                                                     disabled={true}
@@ -457,7 +457,7 @@ export function UserProfile() {
 
                                     {user?.blockchainAccountAddress && (
                                         <Grid container>
-                                            <Grid item xs={4}>
+                                            <Grid item lg={4} md={10} xs={12}>
                                                 <FormInput
                                                     property="blockchainAccountAddress"
                                                     disabled={true}
