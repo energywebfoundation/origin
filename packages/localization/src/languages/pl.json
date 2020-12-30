@@ -493,7 +493,7 @@
                 "irecRegistrantDescription": "Konto rejestrującego do zarządzania urządzeniami",
                 "irecBothDescription": "Konto rejestrującego i uczestnika",
                 "IRECAccountType": "Typ konta I-REC",
-                "orgHeadquatersCompany": "Siedziba organizacji Firma",
+                "orgHeadquartersCountry": "Kraj siedziby organizacji",
                 "yearOfRegistration": "Rok rejestracji",
                 "numberOfEmployees": "Liczba pracowników",
                 "shareholderNames": "Nazwiska akcjonariuszy (ponad 10%)",

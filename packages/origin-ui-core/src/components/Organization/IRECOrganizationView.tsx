@@ -115,7 +115,7 @@ export function IRECOrganizationView({ iRecOrg }) {
                     />
 
                     <TextField
-                        label={t('organization.registration.orgHeadquatersCompany')}
+                        label={t('organization.registration.orgHeadquartersCountry')}
                         className="mt-3"
                         value={formValues.headquarterCountry}
                         fullWidth
