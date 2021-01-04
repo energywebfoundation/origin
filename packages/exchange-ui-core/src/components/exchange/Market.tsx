@@ -20,8 +20,7 @@ import {
     formatCurrencyComplete,
     DeviceSelectors,
     LightenColor,
-    moment,
-    getExchangeDepositAddress
+    moment
 } from '@energyweb/origin-ui-core';
 import { TimeFrame } from '@energyweb/utils-general';
 import {
@@ -81,7 +80,6 @@ export function Market(props: IProps) {
     const environment = useSelector(getEnvironment);
     const configuration = useSelector(getConfiguration);
     const { t } = useTranslation();
-    const exchangeAddress = useSelector(getExchangeDepositAddress);
 
     const originConfiguration = useOriginConfiguration();
     const originBgColor = originConfiguration?.styleConfig?.MAIN_BACKGROUND_COLOR;
@@ -196,8 +194,7 @@ export function Market(props: IProps) {
                               !errors?.price &&
                               !errors?.energy &&
                               !disableBidding &&
-                              !isSubmitting &&
-                              Boolean(exchangeAddress)
+                              !isSubmitting
                             : values.demandPeriod &&
                               values.demandVolume &&
                               values.demandDateStart &&
@@ -205,8 +202,7 @@ export function Market(props: IProps) {
                               values.totalDemandVolume &&
                               values.price &&
                               !disableBidding &&
-                              !isSubmitting &&
-                              Boolean(exchangeAddress);
+                              !isSubmitting;
 
                         return (
                             <Form translate="no">
