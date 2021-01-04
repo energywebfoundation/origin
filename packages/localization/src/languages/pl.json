@@ -291,6 +291,8 @@
                 "login": "Zaloguj się",
                 "logout": "Wyloguj",
                 "save": "Zapisać",
+                "edit": "Edytuj",
+                "cancel": "Anuluj",
                 "forgotPasswordAsk": "Zapomniałeś hasła?",
                 "createDepositAddress": "Utwórz adres wpłaty",
                 "connectBlockchain": "Połącz adres Blockchain",
