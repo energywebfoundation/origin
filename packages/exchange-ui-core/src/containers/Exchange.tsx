@@ -11,7 +11,8 @@ import {
     getCountry,
     getUserOffchain,
     setLoading,
-    getCurrencies
+    getCurrencies,
+    getExchangeDepositAddress
 } from '@energyweb/origin-ui-core';
 import { getEnvironment, getExchangeClient } from '../features/general';
 import { createBid, createDemand, directBuyOrder } from '../features/orders';
@@ -34,6 +35,7 @@ export function Exchange() {
 
     const user = useSelector(getUserOffchain);
     const exchangeClient: ExchangeClient = useSelector(getExchangeClient);
+    const exchangeAddress = useSelector(getExchangeDepositAddress);
     const country = useSelector(getCountry);
     const environment = useSelector(getEnvironment);
     const dispatch = useDispatch();
@@ -205,7 +207,7 @@ export function Exchange() {
                         onChange={(values) => handleMarketValuesChange(values)}
                         energyUnit={EnergyFormatter.displayUnit}
                         currency={currency}
-                        disableBidding={!user}
+                        disableBidding={!user || !exchangeAddress}
                     />
                     <br />
                     <br />

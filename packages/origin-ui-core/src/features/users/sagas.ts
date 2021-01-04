@@ -280,7 +280,7 @@ function* createUserExchangeAddress(): SagaIterator {
             }
 
             yield apply(accountClient, accountClient.create, []);
-            yield delay(2000);
+            yield delay(4000);
             showNotification(
                 i18n.t('user.feedback.exchangeAddressSuccess'),
                 NotificationType.Success

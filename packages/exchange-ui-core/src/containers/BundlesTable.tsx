@@ -20,7 +20,8 @@ import {
     usePaginatedLoaderSorting,
     getUserOffchain,
     TableMaterial,
-    useDevicePermissions
+    usePermissions,
+    Requirements
 } from '@energyweb/origin-ui-core';
 import { Bundle, ExchangeClient } from '../utils/exchange';
 import { getExchangeClient } from '../features/general';
@@ -34,7 +35,6 @@ import {
 } from '../features/bundles';
 import { BundleDetails } from '../components/bundles';
 import { BundleBought } from '../components/modal';
-import { Requirements } from '@energyweb/origin-ui-core/dist/src/components/Requirements';
 
 const BUNDLES_PER_PAGE = 25;
 const BUNDLES_TOTAL_ENERGY_COLUMN_ID = 'total';
@@ -174,10 +174,9 @@ export const BundlesTable = (props: IBundleTableProps) => {
         });
     }
 
-    const { canCreateDevice } = useDevicePermissions();
+    const { canAccessPage } = usePermissions();
 
-    // To show only for My Bundles page
-    if (owner && !canCreateDevice?.value) {
+    if (owner && !canAccessPage?.value) {
         return <Requirements />;
     }
 

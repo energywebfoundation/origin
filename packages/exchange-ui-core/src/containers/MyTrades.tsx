@@ -5,17 +5,17 @@ import {
     useTranslation,
     useIntervalFetch,
     getCurrencies,
-    useDevicePermissions
+    usePermissions,
+    Requirements
 } from '@energyweb/origin-ui-core';
 import { getExchangeClient } from '../features/general';
 import { ITradeDTO } from '../utils/exchange';
 import { Trades } from '../components/trades';
-import { Requirements } from '@energyweb/origin-ui-core/dist/src/components/Requirements';
 
 export function MyTrades() {
-    const { canCreateDevice } = useDevicePermissions();
+    const { canAccessPage } = usePermissions();
 
-    if (!canCreateDevice?.value) {
+    if (!canAccessPage?.value) {
         return <Requirements />;
     }
     const currencies = useSelector(getCurrencies);

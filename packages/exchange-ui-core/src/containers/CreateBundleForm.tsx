@@ -5,11 +5,11 @@ import {
     useLinks,
     ICertificateViewItem,
     LightenColor,
-    useDevicePermissions
+    usePermissions,
+    Requirements
 } from '@energyweb/origin-ui-core';
 import { Certificates, SelectedForSale } from '../components/bundles';
 import { useOriginConfiguration } from '../utils/configuration';
-import { Requirements } from '@energyweb/origin-ui-core/dist/src/components/Requirements';
 
 export const CreateBundleForm = () => {
     const [selected, setSelected] = useState<ICertificateViewItem[]>([]);
@@ -19,9 +19,9 @@ export const CreateBundleForm = () => {
     const originBgColor = configuration?.styleConfig?.MAIN_BACKGROUND_COLOR;
     const bgColorDarker = LightenColor(originBgColor, -2);
 
-    const { canCreateDevice } = useDevicePermissions();
+    const { canAccessPage } = usePermissions();
 
-    if (!canCreateDevice?.value) {
+    if (!canAccessPage?.value) {
         return <Requirements />;
     }
 

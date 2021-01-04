@@ -84,16 +84,16 @@ export function UserProfile() {
     const dispatch = useDispatch();
     const isLoading = useSelector(getLoading);
     const activeBlockchainAccountAddress = useSelector(getActiveBlockchainAccountAddress);
-    const exchangeAddres = useSelector(getExchangeDepositAddress);
+    const exchangeAddress = useSelector(getExchangeDepositAddress);
     const { t } = useTranslation();
     const { Yup, yupLocaleInitialized } = useValidation();
     let changeFieldValue: (name: string, value: any) => void;
 
     useEffect(() => {
         if (typeof changeFieldValue === 'function') {
-            changeFieldValue('exchangeDepositAddress', exchangeAddres);
+            changeFieldValue('exchangeDepositAddress', exchangeAddress);
         }
-    }, [exchangeAddres]);
+    }, [exchangeAddress]);
 
     const classes = useStyles(useTheme());
 
@@ -183,7 +183,7 @@ export function UserProfile() {
     const initialFormValues: IFormValues = {
         ...user,
         blockchainAccountAddress: user.blockchainAccountAddress || '',
-        exchangeDepositAddress: exchangeAddres || ''
+        exchangeDepositAddress: exchangeAddress || ''
     };
 
     return (
@@ -421,8 +421,8 @@ export function UserProfile() {
                                         {t('user.properties.exchangeAddressTitle')}
                                     </Typography>
                                     <Box className={classes.buttonAndIconHolder}>
-                                        {exchangeAddres ? (
-                                            <Grid item xs={4}>
+                                        {exchangeAddress ? (
+                                            <Grid item lg={4} md={10} xs={12}>
                                                 <FormInput
                                                     property="exchangeDepositAddress"
                                                     disabled={true}
@@ -457,7 +457,7 @@ export function UserProfile() {
 
                                     {user?.blockchainAccountAddress && (
                                         <Grid container>
-                                            <Grid item xs={4}>
+                                            <Grid item lg={4} md={10} xs={12}>
                                                 <FormInput
                                                     property="blockchainAccountAddress"
                                                     disabled={true}

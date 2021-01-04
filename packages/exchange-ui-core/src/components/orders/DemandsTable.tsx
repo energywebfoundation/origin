@@ -14,8 +14,7 @@ import {
     ICustomFilterDefinition,
     CustomFilterInputType,
     FilterRules,
-    TableMaterial,
-    useDevicePermissions
+    TableMaterial
 } from '@energyweb/origin-ui-core';
 import {
     configureTimeFrame,
@@ -26,7 +25,6 @@ import {
 } from '../../utils/demand';
 import { Demand } from '../../utils/exchange';
 import { RemoveOrderConfirmation, DemandUpdateModal } from '../modal';
-import { Requirements } from '@energyweb/origin-ui-core/dist/src/components/Requirements';
 
 const DEMANDS_PER_PAGE = 5;
 
@@ -35,12 +33,6 @@ interface IOwnProps {
 }
 
 export const DemandsTable = (props: IOwnProps) => {
-    const { canCreateDevice } = useDevicePermissions();
-
-    if (!canCreateDevice?.value) {
-        return <Requirements />;
-    }
-
     const { demands } = props;
     const { t } = useTranslation();
 

@@ -13,7 +13,6 @@ import {
     createStyles,
     useTheme
 } from '@material-ui/core';
-import { FormikEffect, HierarchicalMultiSelect } from '../Form';
 import {
     getConfiguration,
     Moment,
@@ -30,6 +29,7 @@ import {
     ANY_OPERATOR,
     MarketRedirectFilter
 } from '../../utils/exchange';
+import { FormikEffect, HierarchicalMultiSelect } from '../Form';
 import { OneTimePurchase } from './OneTimePurchase';
 import { RepeatedPurchase } from './RepeatedPurchase';
 import { useOriginConfiguration } from '../../utils/configuration';
