@@ -1,6 +1,6 @@
 {
     "name": "@energyweb/origin-energy-api",
-    "version": "0.1.0",
+    "version": "0.0.1",
     "description": "An API for Smart meter reads",
     "homepage": "https://github.com/energywebfoundation/origin/tree/master/packages/origin-energy-api#readme",
     "author": "EnergyWeb DevHub GmbH; Aravind Cheziyan, aravind.cheziyan@energyweb.org; Piotr Kosinski, piotr.kosinski@energyweb.org",
