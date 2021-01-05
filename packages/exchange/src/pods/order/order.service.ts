@@ -7,7 +7,6 @@ import { List } from 'immutable';
 import { EntityManager, Repository } from 'typeorm';
 
 import { ForbiddenActionError, UnknownEntityError } from '../../utils/exceptions';
-import { AccountBalanceService } from '../account-balance/account-balance.service';
 import { CancelOrderCommand } from './commands/cancel-order.command';
 import { SubmitOrderCommand } from './commands/submit-order.command';
 import { CreateAskDTO } from './create-ask.dto';
@@ -17,6 +16,7 @@ import { InsufficientAssetsAvailable } from './errors/insufficient-assets-availa
 import { OrderType } from './order-type.enum';
 import { Order } from './order.entity';
 import { GetProductQuery } from './queries/get-product.query';
+import { HasEnoughAssetAmountQuery } from './queries/has-enough-asset-amount.query';
 
 @Injectable()
 export class OrderService<TProduct> {
@@ -25,7 +25,6 @@ export class OrderService<TProduct> {
     constructor(
         @InjectRepository(Order)
         private readonly repository: Repository<Order>,
-        private readonly accountBalanceService: AccountBalanceService,
         private readonly queryBus: QueryBus,
         private readonly commandBus: CommandBus
     ) {}
@@ -84,12 +83,19 @@ export class OrderService<TProduct> {
     public async createAsk(userId: string, ask: CreateAskDTO): Promise<Order> {
         this.logger.debug(`Requested ask creation for user:${userId} ask:${JSON.stringify(ask)}`);
 
-        if (
-            !(await this.accountBalanceService.hasEnoughAssetAmount(userId, {
-                id: ask.assetId,
-                amount: new BN(ask.volume)
-            }))
-        ) {
+        const hasEnoughAssetAmount = await this.queryBus.execute<
+            HasEnoughAssetAmountQuery,
+            boolean
+        >(
+            new HasEnoughAssetAmountQuery(userId, [
+                {
+                    id: ask.assetId,
+                    amount: new BN(ask.volume)
+                }
+            ])
+        );
+
+        if (!hasEnoughAssetAmount) {
             throw new InsufficientAssetsAvailable(ask.assetId);
         }
 
