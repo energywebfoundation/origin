@@ -1,3 +1,4 @@
+export * from './bundle-accounting.module';
 export * from './bundle-accounting.service';
 export * from './bundle-item.dto';
 export * from './bundle-item.entity';

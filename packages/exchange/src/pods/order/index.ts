@@ -3,6 +3,7 @@ export * from './create-ask.dto';
 export * from './create-bid.dto';
 export * from './direct-buy.dto';
 export * from './errors';
+export * from './order-accounting.module';
 export * from './order-accounting.service';
 export * from './order-type.enum';
 export * from './order.dto';

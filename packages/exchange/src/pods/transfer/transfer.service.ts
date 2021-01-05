@@ -1,13 +1,13 @@
-import { forwardRef, Inject, Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
+import { EventBus, QueryBus } from '@nestjs/cqrs';
 import { InjectRepository } from '@nestjs/typeorm';
-import { EventBus } from '@nestjs/cqrs';
 import BN from 'bn.js';
 import { Connection, EntityManager, FindOneOptions, Repository } from 'typeorm';
 
-import { AccountBalanceService } from '../account-balance/account-balance.service';
 import { AccountService } from '../account/account.service';
 import { Asset } from '../asset/asset.entity';
 import { AssetService } from '../asset/asset.service';
+import { HasEnoughAssetAmountQuery } from '../order/queries/has-enough-asset-amount.query';
 import { CreateDepositDTO } from './create-deposit.dto';
 import { RequestWithdrawalDTO } from './create-withdrawal.dto';
 import { TransferDirection } from './transfer-direction';
@@ -23,12 +23,10 @@ export class TransferService {
         @InjectRepository(Transfer)
         private readonly repository: Repository<Transfer>,
         private readonly assetService: AssetService,
-        @Inject(forwardRef(() => AccountService))
         private readonly accountService: AccountService,
         private readonly connection: Connection,
-        @Inject(forwardRef(() => AccountBalanceService))
-        private readonly accountBalanceService: AccountBalanceService,
-        private readonly eventBus: EventBus
+        private readonly eventBus: EventBus,
+        private readonly queryBus: QueryBus
     ) {}
 
     public async getAll(userId: string) {
@@ -57,10 +55,14 @@ export class TransferService {
         withdrawalDTO: RequestWithdrawalDTO,
         transaction?: EntityManager
     ) {
-        const hasEnoughFunds = await this.accountBalanceService.hasEnoughAssetAmount(userId, {
-            id: withdrawalDTO.assetId,
-            amount: new BN(withdrawalDTO.amount)
-        });
+        const hasEnoughFunds = await this.queryBus.execute(
+            new HasEnoughAssetAmountQuery(userId, [
+                {
+                    id: withdrawalDTO.assetId,
+                    amount: new BN(withdrawalDTO.amount)
+                }
+            ])
+        );
 
         if (!hasEnoughFunds) {
             throw new Error('Not enough funds');
