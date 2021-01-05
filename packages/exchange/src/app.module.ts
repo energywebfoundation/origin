@@ -11,7 +11,7 @@ import { BundleAccountingModule, BundleModule } from './pods/bundle';
 import { DemandModule } from './pods/demand/demand.module';
 import { MatchingEngineModule } from './pods/matching-engine/matching-engine.module';
 import { OrderAccountingModule, OrderModule } from './pods/order';
-import { TradeModule } from './pods/trade/trade.module';
+import { TradeModule, TradeAccountingModule } from './pods/trade';
 import { TransferAccountingModule, TransferModule } from './pods/transfer';
 
 @Module({
@@ -20,6 +20,7 @@ import { TransferAccountingModule, TransferModule } from './pods/transfer';
         ScheduleModule.forRoot(),
         MatchingEngineModule,
         TradeModule,
+        TradeAccountingModule,
         TransferModule,
         TransferAccountingModule,
         DemandModule,
