@@ -80,8 +80,12 @@ export class OrderService<TProduct> {
         return orders;
     }
 
-    public async createAsk(userId: string, ask: CreateAskDTO): Promise<Order> {
-        this.logger.debug(`Requested ask creation for user:${userId} ask:${JSON.stringify(ask)}`);
+    public async createAsk(userId: string, ask: CreateAskDTO, product?: TProduct): Promise<Order> {
+        this.logger.debug(
+            `Requested ask creation for user:${userId} ask:${JSON.stringify(
+                ask
+            )} product:${JSON.stringify(product)}`
+        );
 
         const hasEnoughAssetAmount = await this.queryBus.execute<
             HasEnoughAssetAmountQuery,
@@ -99,14 +103,16 @@ export class OrderService<TProduct> {
             throw new InsufficientAssetsAvailable(ask.assetId);
         }
 
-        const product = await this.queryBus.execute<GetProductQuery, TProduct>(
-            new GetProductQuery(ask.assetId)
-        );
+        const resolvedProduct =
+            product ??
+            (await this.queryBus.execute<GetProductQuery, TProduct>(
+                new GetProductQuery(ask.assetId)
+            ));
 
         const order = await this.repository.save({
             userId,
             validFrom: new Date(ask.validFrom),
-            product,
+            product: resolvedProduct,
             side: OrderSide.Ask,
             status: OrderStatus.Active,
             startVolume: new BN(ask.volume),
