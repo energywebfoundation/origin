@@ -7,8 +7,9 @@ import {
     ReadDTO,
     ReadsService
 } from '@energyweb/energy-api-influxdb';
-import { Body, Controller, Get, HttpStatus, Param, Post, Query } from '@nestjs/common';
+import { Body, Controller, Get, HttpStatus, Param, Post, Query, UseGuards } from '@nestjs/common';
 import { ApiBody, ApiCreatedResponse, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { AuthGuard } from '@nestjs/passport';
 
 @Controller('meter-reads')
 @ApiTags('meter-reads')
@@ -18,6 +19,7 @@ export class ReadsController extends BaseReadsController {
     }
 
     @Get('/:meter')
+    @UseGuards(AuthGuard())
     @ApiResponse({
         status: HttpStatus.OK,
         type: [ReadDTO],
@@ -31,6 +33,7 @@ export class ReadsController extends BaseReadsController {
     }
 
     @Get('/:meter/difference')
+    @UseGuards(AuthGuard())
     @ApiResponse({
         status: HttpStatus.OK,
         type: [ReadDTO],
@@ -44,6 +47,7 @@ export class ReadsController extends BaseReadsController {
     }
 
     @Get('/:meter/aggregate')
+    @UseGuards(AuthGuard())
     @ApiResponse({
         status: HttpStatus.OK,
         type: [AggregatedReadDTO],
@@ -58,6 +62,7 @@ export class ReadsController extends BaseReadsController {
 
     @Post('/:meter')
     @ApiBody({ type: MeasurementDTO })
+    @UseGuards(AuthGuard())
     @ApiCreatedResponse({ description: 'Creates meter reads' })
     public async storeReads(
         @Param('meter') meterId: string,

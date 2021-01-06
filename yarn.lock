@@ -1235,16 +1235,16 @@
   resolved "https://registry.yarnpkg.com/@emotion/weak-memoize/-/weak-memoize-0.2.5.tgz#8eed982e2ee6f7f4e44c253e12962980791efd46"
   integrity sha512-6U71C2Wp7r5XtFtQzYrW5iKFT67OixrSxjI4MptCHzdSVlgabczzqLe0ZSgnub/5Kp4hSbpDB1tMytZY9pwxxA==
 
-"@energyweb/energy-api-influxdb@0.6.0":
-  version "0.6.0"
-  resolved "https://registry.yarnpkg.com/@energyweb/energy-api-influxdb/-/energy-api-influxdb-0.6.0.tgz#a8e94943045d9d14582ee4e919388aa8f28f3466"
-  integrity sha512-EBj11gwrIGyn310ZEhCuX9MrnxMPDmDFQu/jCEyoe+ajMIyDGwtYnAKv0wo1vWvW/RpTU3ksx82+ohN3MGCJkg==
+"@energyweb/energy-api-influxdb@0.6.1":
+  version "0.6.1"
+  resolved "https://registry.yarnpkg.com/@energyweb/energy-api-influxdb/-/energy-api-influxdb-0.6.1.tgz#8447386a6d1d606b9b6d89951e02891d65e0bebf"
+  integrity sha512-tDPw5oV9Ex7bKfXYAyrEE6WC+dzVGfLf9v5oo5Bgyi9rTfpLvA/MXMWRb22oSS7fta+ZtoEUigtHvLWjg321LA==
   dependencies:
     "@influxdata/influxdb-client" "1.9.0"
-    "@nestjs/common" "7.5.5"
+    "@nestjs/common" "7.6.3"
     "@nestjs/config" "0.6.1"
-    "@nestjs/core" "7.5.5"
-    "@nestjs/swagger" "4.7.5"
+    "@nestjs/core" "7.6.3"
+    "@nestjs/swagger" "4.7.8"
     class-transformer "0.3.1"
     class-validator "0.12.2"
     reflect-metadata "0.1.13"
@@ -3901,16 +3901,6 @@
     webpack "5.9.0"
     webpack-node-externals "2.5.2"
 
-"@nestjs/common@7.5.5":
-  version "7.5.5"
-  resolved "https://registry.yarnpkg.com/@nestjs/common/-/common-7.5.5.tgz#9c8bfcbe32ef7768d87cb458084271f7e38cc32e"
-  integrity sha512-dubDHjashfARGV8zhcANTsL5o0ZPm2xTB/BI12wgwTjCnM8WkaFqXpSCngqJyB3/XTFwllkP2g1ok6TwAZcSJw==
-  dependencies:
-    axios "0.21.0"
-    iterare "1.2.1"
-    tslib "2.0.3"
-    uuid "8.3.1"
-
 "@nestjs/common@7.6.3":
   version "7.6.3"
   resolved "https://registry.yarnpkg.com/@nestjs/common/-/common-7.6.3.tgz#95cd05af4f8f023b7ba34fd27e9fa5f3ce2b8da7"
@@ -3931,19 +3921,6 @@
     lodash.get "4.4.2"
     lodash.has "4.5.2"
     lodash.set "4.3.2"
-    uuid "8.3.1"
-
-"@nestjs/core@7.5.5":
-  version "7.5.5"
-  resolved "https://registry.yarnpkg.com/@nestjs/core/-/core-7.5.5.tgz#718b267174e292f82d15a2fde1f993b3dfd640f4"
-  integrity sha512-ktGOTgBSL8PoInLqcPWC8mPeCCHBaaEJX6LmzfbjHWCPRZqu96kiiQ1a245yTo/ifYrtaqQ7gAaHJpcszEAYwg==
-  dependencies:
-    "@nuxtjs/opencollective" "0.3.2"
-    fast-safe-stringify "2.0.7"
-    iterare "1.2.1"
-    object-hash "2.0.3"
-    path-to-regexp "3.2.0"
-    tslib "2.0.3"
     uuid "8.3.1"
 
 "@nestjs/core@7.6.3":
@@ -4021,15 +3998,6 @@
     "@angular-devkit/schematics" "11.0.1"
     fs-extra "9.0.1"
     pluralize "8.0.0"
-
-"@nestjs/swagger@4.7.5":
-  version "4.7.5"
-  resolved "https://registry.yarnpkg.com/@nestjs/swagger/-/swagger-4.7.5.tgz#3f1ef36a81921decbbc384e46be2c515c63ce438"
-  integrity sha512-Qoj7lnvWoCIdJL50b85fdc+v2X9OY8HXaN9ngbBxAAfqLch0YfHgGdU95oBAtV6GYKbAGBqMCsmogr1TzWENwQ==
-  dependencies:
-    "@nestjs/mapped-types" "0.1.1"
-    lodash "4.17.20"
-    path-to-regexp "3.2.0"
 
 "@nestjs/swagger@4.7.8":
   version "4.7.8"

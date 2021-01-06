@@ -1,11 +1,12 @@
 {
     "name": "@energyweb/origin-energy-api-client",
-    "version": "0.0.1",
+    "version": "1.0.0",
     "description": "Client library interacting with the Origin Energy API",
     "homepage": "https://github.com/energywebfoundation/origin/tree/master/packages/origin-energy-api-client#readme",
     "author": "EnergyWeb DevHub GmbH; Aravind Cheziyan, aravind.cheziyan@energyweb.org; Piotr Kosinski, piotr.kosinski@energyweb.org",
     "license": "GPL-3.0-or-later",
     "main": "dist/js/src/index.js",
+    "private": true,
     "repository": {
         "type": "git",
         "url": "git+https://github.com/energywebfoundation/origin.git"
@@ -24,7 +25,7 @@
     },
     "dependencies": {
         "axios": "0.21.0",
-        "@energyweb/origin-energy-api": "0.1.0"
+        "@energyweb/origin-energy-api": "1.0.0"
     },
     "devDependencies": {       
         "@nestjs/swagger": "4.7.8",
