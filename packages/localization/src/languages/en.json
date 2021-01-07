@@ -369,6 +369,8 @@
                 "login": "Login",
                 "logout": "Logout",
                 "save": "Save",
+                "edit": "Edit",
+                "cancel": "Cancel",
                 "resendConfirmationEmail": "Re-send confirmation email",
                 "forgotPasswordAsk": "Forgot password?",
                 "createDepositAddress": "Create Deposit Address",
@@ -423,8 +425,13 @@
             },
             "profile": {
                 "subtitle": {
-                    "basicInformation": "Basic Information",
-                    "security": "Security"
+                    "basicInformation": "User Information",
+                    "email": "Email",
+                    "security": "Change Password"
+                },
+                "actions": {
+                    "changeEmail": "Change Email",
+                    "changePassword": "Change Password"
                 },
                 "updateProfile": "User profile updated.",
                 "errorUpdateProfile": "Error to update User profile.",
