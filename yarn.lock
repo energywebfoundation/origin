@@ -4258,25 +4258,25 @@
     prop-types "^15.6.1"
     react-lifecycles-compat "^3.0.4"
 
-"@react-google-maps/api@2.0.2":
-  version "2.0.2"
-  resolved "https://registry.yarnpkg.com/@react-google-maps/api/-/api-2.0.2.tgz#021c49ab86c22c172289d1cc9a4c3db7ad8824c9"
-  integrity sha512-6TkU+Vj3ikCmBmzq95BNlNBJSw4lIgodQEfSR3+GJaVdaehZHSEQLIr7NwdVKU8VPrIbRWSr3nDGCjI8KpSMow==
+"@react-google-maps/api@2.1.0":
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/@react-google-maps/api/-/api-2.1.0.tgz#b62f8cf5aa59f166fffb5285d9549a42bcc84e0b"
+  integrity sha512-lpN6gzLeSoERbgSzgw5ZC8JN0QFJZsSJs8newntQVn5A56mhdSY0BVwdLKXEWIIOTTv1WDimAgWB0seagcLymg==
   dependencies:
     "@googlemaps/js-api-loader" "1.11.1"
-    "@react-google-maps/infobox" "2.0.1"
-    "@react-google-maps/marker-clusterer" "2.0.1"
+    "@react-google-maps/infobox" "2.1.0"
+    "@react-google-maps/marker-clusterer" "2.1.0"
     invariant "2.2.4"
 
-"@react-google-maps/infobox@2.0.1":
-  version "2.0.1"
-  resolved "https://registry.yarnpkg.com/@react-google-maps/infobox/-/infobox-2.0.1.tgz#28410ba7412dd4282c23b2b76c7e2fc58ba31b10"
-  integrity sha512-zD3njoqlgemS5+BHz2GWuzAf+m1kj45hUTWOUM1uV1xhDhf+KMtf39ETcDWK/kdmbwcbtmIs0ua19HjWSraVng==
+"@react-google-maps/infobox@2.1.0":
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/@react-google-maps/infobox/-/infobox-2.1.0.tgz#17d7b2d4bd381333a064ac1cec9cd4d438050216"
+  integrity sha512-rs1UqDWkkLMgoQsFfo72h3vpAQfMnsN0A1H0ZyiQNWyZ2fvqHhRPP40EhmChVsGlyC9L8zoOvplc41eCnylysA==
 
-"@react-google-maps/marker-clusterer@2.0.1":
-  version "2.0.1"
-  resolved "https://registry.yarnpkg.com/@react-google-maps/marker-clusterer/-/marker-clusterer-2.0.1.tgz#b06122dd6bb1df68d24d21b432fe9b9125da6bf0"
-  integrity sha512-WkYdFJ/Cr0D0T4i66hLLtMOxzUX5y/a73wyp9To3noRTt8XIYSue4q7CfdNYF0oZrpy/WQSwjCYyFZ9NxKe3cQ==
+"@react-google-maps/marker-clusterer@2.1.0":
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/@react-google-maps/marker-clusterer/-/marker-clusterer-2.1.0.tgz#01ef2b42512ac2a7ac74ac0ca8afc43cac2f32c9"
+  integrity sha512-50IuHUxssJocP2+oPnkxAfjjR1Gw14vgREofYBWAi9l8qgizRO5G432SMFR1gEhgRyDcUph7HWOYZJXAT9mMdQ==
 
 "@redux-saga/core@^1.1.3":
   version "1.1.3"
@@ -4921,10 +4921,10 @@
     lz-string "^1.4.4"
     pretty-format "^26.6.2"
 
-"@testing-library/react@11.2.2":
-  version "11.2.2"
-  resolved "https://registry.yarnpkg.com/@testing-library/react/-/react-11.2.2.tgz#099c6c195140ff069211143cb31c0f8337bdb7b7"
-  integrity sha512-jaxm0hwUjv+hzC+UFEywic7buDC9JQ1q3cDsrWVSDAPmLotfA6E6kUHlYm/zOeGCac6g48DR36tFHxl7Zb+N5A==
+"@testing-library/react@11.2.3":
+  version "11.2.3"
+  resolved "https://registry.yarnpkg.com/@testing-library/react/-/react-11.2.3.tgz#9971ede1c8465a231d7982eeca3c39fc362d5443"
+  integrity sha512-BirBUGPkTW28ULuCwIbYo0y2+0aavHczBT6N9r3LrsswEW3pg25l1wgoE7I8QBIy1upXWkwKpYdWY7NYYP0Bxw==
   dependencies:
     "@babel/runtime" "^7.12.5"
     "@testing-library/dom" "^7.28.1"
