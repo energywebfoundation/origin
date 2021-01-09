@@ -8,7 +8,7 @@
         "@types/chai": "4.2.14",
         "@types/dotenv": "6.1.1",
         "@types/mocha": "8.2.0",
-        "@types/node": "12.19.11",
+        "@types/node": "12.19.12",
         "@typescript-eslint/eslint-plugin": "3.10.1",
         "@typescript-eslint/parser": "3.10.1",
         "chai": "4.2.0",
