@@ -5,6 +5,7 @@
             "certificates": "Certyfikaty",
             "demands": "Oferty",
             "organizations": "Organizacje",
+            "exchange": "Rynek",
             "admin": "Admin",
             "supportAgent": "Support Agents"
         },
@@ -288,7 +289,10 @@
                 "register": "Zarejestruj",
                 "registerNow": "Zarejestruj się teraz",
                 "login": "Zaloguj się",
+                "logout": "Wyloguj",
                 "save": "Zapisać",
+                "edit": "Edytuj",
+                "cancel": "Anuluj",
                 "forgotPasswordAsk": "Zapomniałeś hasła?",
                 "createDepositAddress": "Utwórz adres wpłaty",
                 "connectBlockchain": "Połącz adres Blockchain",
@@ -380,22 +384,26 @@
                 "regions": "Regiony",
                 "selectMultipleRegions": "Wybierz wiele regionów",
                 "volume": "Tom ({unit})",
-                "price": "Cena ({currency}/{energyUnit})",
+                "price": "Cena",
                 "market": "Rynek",
                 "bids": "Oferty",
                 "asks": "Pyta",
+                "type": "Typ",
                 "date": "Data",
                 "myTrades": "Moje transakcje",
                 "side": "Bok",
                 "buy": "Kup",
                 "sell": "Sprzedać",
-                "total": "Total"
+                "total": "Total",
+                "matching": "Pasujący"
             },
             "properties": {
                 "price": "Cena",
                 "energy": "Energia",
                 "generationDateStart": "Data rozpoczęcia generacji",
                 "generationDateEnd": "Data zakończenia generowania",
+                "generationStart": "Początek generacji",
+                "generationEnd": "Koniec generacji",
                 "generationFrom": "Generacja z",
                 "generationTo": "Generacja do",
                 "volume": "Tom",
@@ -407,8 +415,14 @@
                     "yearly": "Rocznie",
                     "monthly": "Miesięczny",
                     "weekly": "Tygodniowo",
-                    "daily": "Codziennie",
+                    "daily": "Codziennie"
                 }
+            },
+            "popover": {
+                "asksDescription": "Poniżej zobaczysz oferty sprzedaży, które odpowiadają kryteriom certyfikatu zdefiniowanym w filtrze rynku.",
+                "asksFurtherInstructions": "Aby zobaczyć wszystkie dostępne zapytania, usuń ustawione filtry rynkowe. Aby zobaczyć listę swoich aktywnych zapytań, przejdź do \"Moje zamówienia\".",
+                "bidsDescription": "Poniżej zobaczysz wszystkie oferty kupna, które odpowiadają kryteriom certyfikatu zdefiniowanym w filtrze rynku.",
+                "bidsFurtherInstructions": "Aby zobaczyć bardziej szczegółowe stawki, ustaw odpowiednie filtry rynkowe. Aby zobaczyć listę swoich aktywnych ofert, przejdź do \"Moje zamówienia\"."
             }
         },
         "organization": {
@@ -476,11 +490,12 @@
                 "clientID": "Klient ID",
                 "clientSecret": "Klient Secret",
                 "titleRegisterIREC": "Informacja o rejestracji I-REC",
+                "irecInformation": "Informacje I-REC",
                 "irecParticipantDescription": "Konto uczestnika do zarządzania certyfikatami poza rynkiem",
                 "irecRegistrantDescription": "Konto rejestrującego do zarządzania urządzeniami",
                 "irecBothDescription": "Konto rejestrującego i uczestnika",
                 "IRECAccountType": "Typ konta I-REC",
-                "orgHeadquatersCompany": "Siedziba organizacji Firma",
+                "orgHeadquartersCountry": "Kraj siedziby organizacji",
                 "yearOfRegistration": "Rok rejestracji",
                 "numberOfEmployees": "Liczba pracowników",
                 "shareholderNames": "Nazwiska akcjonariuszy (ponad 10%)",
@@ -572,7 +587,8 @@
             "actions": {
                 "view": "Widok",
                 "remove": "Usunąć",
-                "update": "Zmodernizować"
+                "update": "Zmodernizować",
+                "viewMarket": "Wyświetl Market"
             },
             "feedback": {
                 "removeOrderConfirmation": "Czy na pewno chcesz usunąć?",
@@ -625,6 +641,9 @@
                 "statusNotChanged": "Stan popytu nie zmienił się",
                 "demandUpdated": "Popyt zostało pomyślnie zaktualizowane"
             }
+        },
+        "info": {
+            "needToFulfilCriteria": "Aby wejść na tą stronę, musisz spełnić wymienione kryteria"
         }
     }
     

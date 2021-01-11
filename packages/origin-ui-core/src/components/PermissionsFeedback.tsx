@@ -1,5 +1,5 @@
 import React from 'react';
-import { IDevicePermission, useTranslation } from '../../utils';
+import { useTranslation, IPermission } from '../utils';
 import {
     Typography,
     List,
@@ -10,20 +10,20 @@ import {
 } from '@material-ui/core';
 
 interface IProps {
-    canCreateDevice: IDevicePermission;
+    canAccessPage: IPermission;
 }
 
-export function DevicePermissionsFeedback(props: IProps) {
-    const { canCreateDevice } = props;
+export function PermissionsFeedback(props: IProps) {
+    const { canAccessPage } = props;
     const { t } = useTranslation();
 
     return (
         <>
             <Typography variant="body1" className="mt-3" gutterBottom>
-                {t('device.info.toRegisterADevice')}
+                {t('info.needToFulfilCriteria')}
             </Typography>
             <List>
-                {canCreateDevice?.rules.map((rule) => (
+                {canAccessPage?.rules.map((rule) => (
                     <ListItem key={rule.label} role={undefined} dense>
                         <ListItemIcon>
                             <Checkbox

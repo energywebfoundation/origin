@@ -19,7 +19,9 @@ import {
     usePaginatedLoaderFiltered,
     usePaginatedLoaderSorting,
     getUserOffchain,
-    TableMaterial
+    TableMaterial,
+    usePermissions,
+    Requirements
 } from '@energyweb/origin-ui-core';
 import { Bundle, ExchangeClient } from '../utils/exchange';
 import { getExchangeClient } from '../features/general';
@@ -40,13 +42,13 @@ const BUNDLES_TOTAL_ENERGY_PROPERTIES = [
     (record) => Number(record.total.split(EnergyFormatter.displayUnit)[0].replace(',', ''))
 ];
 
-interface IOwnProps {
+export interface IBundleTableProps {
     owner: boolean;
 }
 
 const ENERGY_COLUMNS_TO_DISPLAY = [EnergyTypes.SOLAR, EnergyTypes.WIND, EnergyTypes.HYDRO];
 
-export const BundlesTable = (props: IOwnProps) => {
+export const BundlesTable = (props: IBundleTableProps) => {
     const dispatch = useDispatch();
     const exchangeClient: ExchangeClient = useSelector(getExchangeClient);
 
@@ -170,6 +172,12 @@ export const BundlesTable = (props: IOwnProps) => {
             name: 'Remove bundle',
             onClick: (row: string) => removeBundle(parseInt(row, 10))
         });
+    }
+
+    const { canAccessPage } = usePermissions();
+
+    if (owner && !canAccessPage?.value) {
+        return <Requirements />;
     }
 
     return (

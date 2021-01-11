@@ -7,7 +7,13 @@ import { text } from '@storybook/addon-knobs';
 import { IDevice } from '@energyweb/origin-backend-core';
 import { getBackendClient } from '../../features/general/selectors';
 import { getUserOffchain } from '../../features/users/selectors';
-import { BackendClient, formatCurrencyComplete, moment, useTranslation } from '../../utils';
+import {
+    BackendClient,
+    formatCurrencyComplete,
+    moment,
+    usePermissions,
+    useTranslation
+} from '../../utils';
 import { EnergyFormatter } from '../../utils/EnergyFormatter';
 import {
     IPaginatedLoaderHooksFetchDataParameters,
@@ -16,6 +22,7 @@ import {
 } from '../Table';
 import { CustomFilterInputType, ICustomFilterDefinition } from '../Table/FiltersHeader';
 import { UpdateSupplyModal } from '../Modal/UpdateSupplyModal';
+import { Requirements } from '@energyweb/origin-ui-core/src/components/Requirements';
 
 interface IRecord {
     device: IDevice;
@@ -147,6 +154,12 @@ export function AutoSupplyDeviceTable() {
             }
         }
     ];
+
+    const { canAccessPage } = usePermissions();
+
+    if (!canAccessPage?.value) {
+        return <Requirements />;
+    }
 
     return (
         <>

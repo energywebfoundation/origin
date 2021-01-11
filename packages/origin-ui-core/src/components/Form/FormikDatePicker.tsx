@@ -95,6 +95,7 @@ export const FormikDatePicker = ({ form, field, ...rest }: FieldProps<DatePicker
             onChange={(newValue) => setFieldValue(name, newValue)}
             value={value}
             format={DATE_FORMAT_DMY}
+            autoOk={true}
             {...rest}
         />
     );

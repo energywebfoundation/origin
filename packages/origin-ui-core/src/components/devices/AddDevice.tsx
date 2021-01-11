@@ -20,7 +20,7 @@ import {
     NotificationType,
     useValidation,
     useTranslation,
-    useDevicePermissions,
+    usePermissions,
     Moment
 } from '../../utils';
 import { FormikDatePicker } from '../Form/FormikDatePicker';
@@ -37,8 +37,8 @@ import { DeviceStatus, IExternalDeviceId } from '@energyweb/origin-backend-core'
 import { Skeleton } from '@material-ui/lab';
 import { FormInput } from '../Form';
 import { DeviceSelectors } from './DeviceSelectors';
-import { DevicePermissionsFeedback } from './DevicePermissionsFeedback';
 import { Upload, IUploadedFile } from '../Upload';
+import { Requirements } from '../Requirements';
 
 interface IFormValues {
     facilityName: string;
@@ -81,7 +81,7 @@ export function AddDevice() {
     const [selectedGridOperator, setSelectedGridOperator] = useState<string[]>([]);
     const [imagesUploaded, setImagesUploaded] = useState(false);
     const [imagesUploadedList, setImagesUploadedList] = useState<string[]>([]);
-    const { canCreateDevice } = useDevicePermissions();
+    const { canAccessPage } = usePermissions();
 
     const [docfiles, setFiles] = useState<IUploadedFile[]>([]);
     const uploadedDocFiles = docfiles
@@ -218,12 +218,8 @@ export function AddDevice() {
         return <Skeleton variant="rect" height={200} />;
     }
 
-    if (!canCreateDevice?.value) {
-        return (
-            <Paper className={classes.container}>
-                <DevicePermissionsFeedback canCreateDevice={canCreateDevice} />
-            </Paper>
-        );
+    if (!canAccessPage?.value) {
+        return <Requirements />;
     }
 
     const initialFormValues: IFormValues = INITIAL_FORM_VALUES;

@@ -72,6 +72,7 @@ export const FormikDatePickerWithArrows = ({
     ...rest
 }: DatePickerProps & ITextFieldWithArrowsEventHandlers) => (
     <DatePicker
+        autoOk={true}
         format={DATE_FORMAT_DMY}
         TextFieldComponent={(props: TextFieldProps) => (
             <TextFieldWithArrows

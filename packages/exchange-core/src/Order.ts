@@ -62,7 +62,8 @@ export class Order<TProduct, TProductFilter> implements IMatchableOrder<TProduct
             this.price,
             this.volume,
             this.userId,
-            this.createdAt
+            this.createdAt,
+            this.assetId
         );
     }
 

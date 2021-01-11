@@ -4,6 +4,7 @@
             "devices": "Devices",
             "certificates": "Certificates",
             "demands": "Demands",
+            "exchange": "Exchange",
             "organizations": "Organizations",
             "admin": "Admin",
             "supportAgent": "Support Agents"
@@ -254,6 +255,7 @@
                 "noOrganization": "You need to be a part of an organization. You can create it or join existing one.",
                 "haveToBeLoggedInUser": "You need to be a logged in user.",
                 "userHasToBePartOfApprovedOrganization": "The user should be a part of an approved organization.",
+                "organizationHasToHaveExchangeDeposit": "The organization has to have a blockchain exchange deposit address attached to the account.",
                 "userHasToHaveBlockchainAccount": "The user has to have a blockchain account attached to the account.",
                 "blockchainAccountMismatch": "Blockchain account mismatch",
                 "noBlockchainAccount": "No blockchain account detected",
@@ -365,7 +367,10 @@
                 "register": "Register",
                 "registerNow": "Register now",
                 "login": "Login",
+                "logout": "Logout",
                 "save": "Save",
+                "edit": "Edit",
+                "cancel": "Cancel",
                 "resendConfirmationEmail": "Re-send confirmation email",
                 "forgotPasswordAsk": "Forgot password?",
                 "createDepositAddress": "Create Deposit Address",
@@ -420,8 +425,13 @@
             },
             "profile": {
                 "subtitle": {
-                    "basicInformation": "Basic Information",
-                    "security": "Security"
+                    "basicInformation": "User Information",
+                    "email": "Email",
+                    "security": "Change Password"
+                },
+                "actions": {
+                    "changeEmail": "Change Email",
+                    "changePassword": "Change Password"
                 },
                 "updateProfile": "User profile updated.",
                 "errorUpdateProfile": "Error to update User profile.",
@@ -472,22 +482,26 @@
                 "regions": "Regions",
                 "selectMultipleRegions": "Select multiple regions",
                 "volume": "Volume ({unit})",
-                "price": "Price ({currency}/{energyUnit})",
+                "price": "Price",
                 "market": "Market",
                 "bids": "Bids",
                 "asks": "Asks",
+                "type": "Type",
                 "date": "Date",
                 "myTrades": "My trades",
                 "side": "Side",
                 "buy": "Buy",
                 "sell": "Sell",
-                "total": "Total"
+                "total": "Total",
+                "matching": "Matching"
             },
             "properties": {
                 "price": "Price",
                 "energy": "Energy",
                 "generationDateStart": "Generation date start",
                 "generationDateEnd": "Generation date end",
+                "generationStart": "Generation Start",
+                "generationEnd": "Generation End",
                 "generationFrom": "Generation from",
                 "generationTo": "Generation to",
                 "volume": "Volume",
@@ -499,8 +513,14 @@
                     "yearly": "Yearly",
                     "monthly": "Monthly",
                     "weekly": "Weekly",
-                    "daily": "Daily",
+                    "daily": "Daily"
                 }
+            },
+            "popover": {
+                "asksDescription": "Below you see the sell offers that are matching the certificate criteria you defined in the market filter.",
+                "asksFurtherInstructions": "To see all available asks, remove the set market filters. To see a list of your active asks go to \"My Orders\".",
+                "bidsDescription": "Below you see all the buy offers that are matching the certificate criteria you defined in the market filter.",
+                "bidsFurtherInstructions": "To see more specific bids, set the appropriate market filters. To see a list of your active bids go to \"My Orders\"."
             }
         },
         "organization": {
@@ -512,12 +532,15 @@
                 },
                 "dialog": {
                     "invitationsModalTitle": "Invitation to join the marketplace",
-                    "invitationMessage": "{{admin}} has invited you to join the marketplace as a {{role}} for {{orgName}}. Click accept to join the Organization"
+                    "invitationMessage": "{{admin}} has invited you to join the marketplace as a {{role}} for {{orgName}}. Click accept to join the Organization",
+                    "newRole": "New Role"
                 },
                 "actions": {
                     "later": "Maybe later",
                     "accept": "Accept",
-                    "decline": "Decline"
+                    "decline": "Decline",
+                    "cancel": "Cancel",
+                    "change": "Change"
                 },
                 "notification": {
                     "rejectedSuccess":"Invitation rejected",
@@ -570,11 +593,12 @@
                 "clientSecret": "Client Secret",
                 
                 "titleRegisterIREC": "I-REC Registration information",
+                "irecInformation": "I-REC Information",
                 "IRECAccountType": "I-REC Account type",
                 "irecParticipantDescription": "Participant Account for managing certificates outside of the marketplace",
                 "irecRegistrantDescription": "Registrant Account for managing devices",
                 "irecBothDescription": "Both Registrant and Participant Account",
-                "orgHeadquatersCompany": "Organization Headquaters Company",
+                "orgHeadquartersCountry": "Organization Headquarters Country",
                 "yearOfRegistration": "Year of Registration",
                 "numberOfEmployees": "Number of employees",
                 "shareholderNames": "Shareholder Names (over 10%)",
@@ -660,7 +684,8 @@
             "actions": {
                 "view": "View",
                 "remove": "Remove",
-                "update": "Update"
+                "update": "Update",
+                "viewMarket": "View Market"
             },
             "feedback": {
                 "removeOrderConfirmation": "Are you sure you want remove?",
@@ -707,6 +732,9 @@
                 "statusNotChanged": "Demand status did not change",
                 "demandUpdated": "Demand successfully updated"
             }
+        },
+        "info": {
+            "needToFulfilCriteria": "To access this page, you need to fulfill following criteria"
         }
     }
 }

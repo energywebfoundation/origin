@@ -1,9 +1,8 @@
-import { forwardRef, Module } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
+import { CqrsModule } from '@nestjs/cqrs';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
-import { AccountBalanceModule } from '../account-balance/account-balance.module';
-import { BundleAccountingService } from './bundle-accounting.service';
 import { BundleItem } from './bundle-item.entity';
 import { BundleTrade } from './bundle-trade.entity';
 import { BundleController } from './bundle.controller';
@@ -14,9 +13,9 @@ import { BundleService } from './bundle.service';
     imports: [
         ConfigModule,
         TypeOrmModule.forFeature([Bundle, BundleTrade, BundleItem]),
-        forwardRef(() => AccountBalanceModule)
+        CqrsModule
     ],
-    providers: [BundleService, BundleAccountingService],
+    providers: [BundleService],
     exports: [BundleService],
     controllers: [BundleController]
 })

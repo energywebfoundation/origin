@@ -75,7 +75,7 @@ export class BidProduct implements IMatchableProduct<IRECProduct, IRECProductFil
         }
 
         if (!this.product.location?.length) {
-            return false;
+            return true;
         }
 
         return (
@@ -93,7 +93,7 @@ export class BidProduct implements IMatchableProduct<IRECProduct, IRECProductFil
         }
 
         if (!this.product.deviceType?.length) {
-            return false;
+            return true;
         }
 
         return (
@@ -147,7 +147,7 @@ export class BidProduct implements IMatchableProduct<IRECProduct, IRECProductFil
         }
 
         if (!this.product.gridOperator?.length) {
-            return false;
+            return true;
         }
 
         return this.product.gridOperator.some((bidGridOperator) =>

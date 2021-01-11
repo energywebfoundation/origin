@@ -4,6 +4,7 @@ import {
     IsArray,
     IsBoolean,
     IsInt,
+    IsNotEmpty,
     IsPositive,
     IsString,
     Validate,
@@ -13,6 +14,7 @@ import {
 export class CreateCertificationRequestDTO {
     @ApiProperty({ type: String })
     @IsString()
+    @IsNotEmpty()
     to: string;
 
     @ApiProperty({ type: String })

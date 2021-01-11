@@ -23,12 +23,12 @@
         "client:clean": "find src/ -type f  ! -name \"*.ts\"  -delete"
     },
     "dependencies": {
-        "axios": "0.21.0"
+        "axios": "0.21.1"
     },
     "devDependencies": {
         "@energyweb/origin-organization-irec-api": "1.2.1",
-        "@nestjs/swagger": "4.7.8",
-        "@nestjs/testing": "7.6.3",
+        "@nestjs/swagger": "4.7.9",
+        "@nestjs/testing": "7.6.5",
         "@nestjs/typeorm": "7.1.5",
         "@openapitools/openapi-generator-cli": "1.0.18-4.3.1",
         "json-to-pretty-yaml": "1.2.2",

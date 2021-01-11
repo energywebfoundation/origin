@@ -24,6 +24,7 @@ import { ExchangeApp, ExchangeAdapter } from '@energyweb/exchange-ui-core';
 import { useLinks } from '../routing';
 import { OriginConfigurationContext } from './OriginConfigurationContext';
 import { Header } from './Header';
+import { SidebarMenu } from './SidebarMenu';
 
 interface IProps {
     history: History;
@@ -81,7 +82,8 @@ export function AppContainer(props: IProps) {
                 position: 'fixed',
                 top: '0',
                 left: '0',
-                width: '100vw'
+                width: '100vw',
+                zIndex: 100
             }
         })
     );
@@ -111,6 +113,7 @@ export function AppContainer(props: IProps) {
                         </div>
                     )}
                     <Header />
+                    <SidebarMenu />
                     <Switch>
                         <Route path={getDevicesLink()}>{devicesRoute}</Route>
                         {((enabledFeatures.includes(OriginFeature.Certificates) &&

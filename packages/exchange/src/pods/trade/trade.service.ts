@@ -64,11 +64,11 @@ export class TradeService<TProduct, TProductFilter> implements OnModuleInit {
                 const { ask, bid } = trade;
                 await entityManager.update<Order>(Order, ask.id, {
                     currentVolume: ask.volume,
-                    status: ask.volume.isZero() ? OrderStatus.Filled : OrderStatus.PartiallyFilled
+                    status: ask.isFilled ? OrderStatus.Filled : OrderStatus.PartiallyFilled
                 });
                 await entityManager.update<Order>(Order, bid.id, {
                     currentVolume: bid.volume,
-                    status: bid.volume.isZero() ? OrderStatus.Filled : OrderStatus.PartiallyFilled
+                    status: bid.isFilled ? OrderStatus.Filled : OrderStatus.PartiallyFilled
                 });
 
                 const tradeToStore = new TradeEntity({

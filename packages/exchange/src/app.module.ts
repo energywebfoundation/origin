@@ -7,12 +7,12 @@ import { AccountBalanceModule } from './pods/account-balance/account-balance.mod
 import { AccountDeployerModule } from './pods/account-deployer/account-deployer.module';
 import { AccountModule } from './pods/account/account.module';
 import { AssetModule } from './pods/asset/asset.module';
-import { BundleModule } from './pods/bundle/bundle.module';
+import { BundleAccountingModule, BundleModule } from './pods/bundle';
 import { DemandModule } from './pods/demand/demand.module';
 import { MatchingEngineModule } from './pods/matching-engine/matching-engine.module';
-import { OrderModule } from './pods/order';
-import { TradeModule } from './pods/trade/trade.module';
-import { TransferModule } from './pods/transfer/transfer.module';
+import { OrderAccountingModule, OrderModule } from './pods/order';
+import { TradeModule, TradeAccountingModule } from './pods/trade';
+import { TransferAccountingModule, TransferModule } from './pods/transfer';
 
 @Module({
     imports: [
@@ -20,14 +20,18 @@ import { TransferModule } from './pods/transfer/transfer.module';
         ScheduleModule.forRoot(),
         MatchingEngineModule,
         TradeModule,
+        TradeAccountingModule,
         TransferModule,
+        TransferAccountingModule,
         DemandModule,
         AssetModule,
         AccountModule,
         AccountDeployerModule,
         AccountBalanceModule,
         BundleModule,
-        OrderModule
+        BundleAccountingModule,
+        OrderModule,
+        OrderAccountingModule
     ],
     providers: [IntUnitsOfEnergy]
 })

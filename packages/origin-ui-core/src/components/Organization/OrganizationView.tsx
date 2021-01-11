@@ -37,26 +37,28 @@ interface IFormValues {
     documentIds?: string[];
 }
 
+const useStyles = makeStyles(() =>
+    createStyles({
+        container: {
+            padding: '20px',
+            marginBottom: '20px'
+        }
+    })
+);
+
 export function OrganizationView() {
     const userOffchain = useSelector(getUserOffchain);
     const organizationClient = useSelector(getBackendClient)?.organizationClient;
     const params: { id?: string } = useParams();
     const { enabledFeatures } = useContext(OriginConfigurationContext);
     const [formValues, setFormValues] = useState<IFormValues>(null);
-    const [iRecData, setIRecData] = useState(null);
+    const [iRecData, setIRecData] = useState<Registration>(null);
     const iRecClient = useSelector(getIRecClient);
-    const useStyles = makeStyles(() =>
-        createStyles({
-            container: {
-                padding: '20px',
-                marginBottom: '20px'
-            }
-        })
-    );
+
     const { t } = useTranslation();
     const classes = useStyles(useTheme());
 
-    const setBusinessType = (type) => {
+    const setBusinessType = (type: string) => {
         if (parseInt(type, 10)) {
             return IRECBusinessLegalStatusLabelsMap[type];
         } else {
@@ -104,7 +106,9 @@ export function OrganizationView() {
         <>
             <Paper className={classes.container}>
                 <Grid item>
-                    <Box style={{ textTransform: 'uppercase' }}>{'Organization Information'}</Box>
+                    <Box style={{ textTransform: 'uppercase' }}>
+                        {t('organization.registration.organizationInformation')}
+                    </Box>
                 </Grid>
                 <Grid container spacing={3}>
                     <Grid item xs={6}>

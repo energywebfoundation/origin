@@ -1,7 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { Typography } from '@material-ui/core';
-import { EnergyFormatter, useTranslation, getExchangeClient } from '@energyweb/origin-ui-core';
+import {
+    EnergyFormatter,
+    useTranslation,
+    getExchangeClient,
+    moment
+} from '@energyweb/origin-ui-core';
 import { Demand, calculateTotalVolume } from '../../utils/exchange';
 
 interface IProps {
@@ -20,8 +25,8 @@ export const TotalDemandVolume = (props: IProps) => {
             const volume = await calculateTotalVolume(exchangeClient.demandClient, {
                 volume: demand.volumePerPeriod,
                 period: demand.periodTimeFrame,
-                start: demand.start,
-                end: demand.end
+                start: moment(demand.start),
+                end: moment(demand.end)
             });
             setTotalVolume(volume);
         };

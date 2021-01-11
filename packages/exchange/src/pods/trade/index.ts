@@ -1,4 +1,5 @@
 export * from './base-trade.controller';
+export * from './trade-accounting.module';
 export * from './trade-accounting.service';
 export * from './trade-executed-event.handler';
 export * from './trade-persisted.event';

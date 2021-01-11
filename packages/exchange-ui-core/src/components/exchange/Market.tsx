@@ -1,22 +1,39 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
+import { useLocation } from 'react-router-dom';
 import { Formik, Form } from 'formik';
 import { Skeleton } from '@material-ui/lab';
-import { Paper, Typography, Grid, Button, Box } from '@material-ui/core';
-import { FormikEffect, HierarchicalMultiSelect } from '../Form';
+import {
+    Paper,
+    Typography,
+    Grid,
+    Button,
+    Box,
+    makeStyles,
+    createStyles,
+    useTheme
+} from '@material-ui/core';
 import {
     getConfiguration,
     Moment,
     useTranslation,
     formatCurrencyComplete,
     DeviceSelectors,
-    LightenColor
+    LightenColor,
+    moment
 } from '@energyweb/origin-ui-core';
 import { TimeFrame } from '@energyweb/utils-general';
-import { calculateTotalPrice, ANY_VALUE, ANY_OPERATOR } from '../../utils/exchange';
+import {
+    calculateTotalPrice,
+    ANY_VALUE,
+    ANY_OPERATOR,
+    MarketRedirectFilter
+} from '../../utils/exchange';
+import { FormikEffect, HierarchicalMultiSelect } from '../Form';
 import { OneTimePurchase } from './OneTimePurchase';
 import { RepeatedPurchase } from './RepeatedPurchase';
 import { useOriginConfiguration } from '../../utils/configuration';
+import { getEnvironment } from '../../features/general';
 
 export interface IMarketFormValues {
     generationDateStart?: Moment;
@@ -60,14 +77,80 @@ interface IProps {
 export function Market(props: IProps) {
     const { onBid, currency, energyUnit, onNotify, onChange, disableBidding } = props;
 
+    const environment = useSelector(getEnvironment);
     const configuration = useSelector(getConfiguration);
     const { t } = useTranslation();
 
     const originConfiguration = useOriginConfiguration();
     const originBgColor = originConfiguration?.styleConfig?.MAIN_BACKGROUND_COLOR;
-
+    const originSimpleColor = originConfiguration?.styleConfig?.SIMPLE_TEXT_COLOR;
+    const originPrimaryColor = originConfiguration?.styleConfig?.PRIMARY_COLOR;
+    const originTextColorDefault = originConfiguration?.styleConfig?.TEXT_COLOR_DEFAULT;
     const bgColorLighten = LightenColor(originBgColor, 5);
     const lowerPaperBgColor = LightenColor(originBgColor, -2);
+    const useStyles = makeStyles(() =>
+        createStyles({
+            disabled: {
+                color: originTextColorDefault,
+                '&:hover:after': {
+                    background: originPrimaryColor
+                },
+                '&:hover': {
+                    color: originSimpleColor
+                }
+            },
+            enabled: {
+                color: originSimpleColor,
+                '&:after': {
+                    background: originPrimaryColor
+                },
+                '&:hover': {
+                    color: originSimpleColor
+                }
+            }
+        })
+    );
+    const classes = useStyles(useTheme());
+
+    const redirectData = useLocation();
+    let changeFieldValue: (name: string, value: any) => void;
+    useEffect(() => {
+        if (redirectData.state && typeof changeFieldValue === 'function') {
+            const {
+                redirectDeviceType,
+                redirectLocation,
+                redirectGridOperator,
+                redirectGenerationFrom,
+                redirectGenerationTo
+            } = redirectData.state as MarketRedirectFilter;
+
+            const locationWithoutCountry =
+                redirectLocation[0] !== ANY_VALUE
+                    ? redirectLocation.map((location) => {
+                          const formattedArr = location.split(';').slice(1).join(';');
+                          if (formattedArr.length > 0) {
+                              return formattedArr;
+                          }
+                      })
+                    : redirectLocation;
+
+            changeFieldValue('deviceType', redirectDeviceType);
+            changeFieldValue('location', locationWithoutCountry);
+            changeFieldValue('gridOperator', redirectGridOperator);
+            changeFieldValue(
+                'generationDateStart',
+                redirectGenerationFrom
+                    ? moment(redirectGenerationFrom).utcOffset(
+                          Number(environment.MARKET_UTC_OFFSET)
+                      )
+                    : null
+            );
+            changeFieldValue(
+                'generationDateEnd',
+                redirectGenerationTo ? moment(redirectGenerationTo) : null
+            );
+        }
+    }, [redirectData]);
 
     const [oneTimePurchase, setOneTimePurchase] = useState<boolean>(true);
     const [validationSchema, setValidationSchema] = useState();
@@ -80,8 +163,7 @@ export function Market(props: IProps) {
 
     return (
         <Grid container className="Market">
-            <Grid item xs={3}></Grid>
-            <Grid item xs={6}>
+            <Grid item xs={12}>
                 <Formik
                     initialValues={initialFormValues}
                     validationSchema={validationSchema}
@@ -89,7 +171,15 @@ export function Market(props: IProps) {
                     onSubmit={null}
                 >
                     {(formikProps) => {
-                        const { isSubmitting, setFieldValue, errors, values } = formikProps;
+                        const {
+                            isSubmitting,
+                            setFieldValue,
+                            errors,
+                            values,
+                            resetForm
+                        } = formikProps;
+
+                        changeFieldValue = setFieldValue;
 
                         const totalPrice = oneTimePurchase
                             ? calculateTotalPrice(values.price, values.energy)
@@ -217,7 +307,7 @@ export function Market(props: IProps) {
                                     </Grid>
                                     <Grid item xs={12}>
                                         <ul
-                                            className="NavMenu nav"
+                                            className="MarketNavigation nav"
                                             style={{ justifyContent: 'center' }}
                                         >
                                             <li
@@ -226,7 +316,11 @@ export function Market(props: IProps) {
                                             >
                                                 <a
                                                     onClick={() => setOneTimePurchase(true)}
-                                                    className={oneTimePurchase ? 'active' : ''}
+                                                    className={
+                                                        oneTimePurchase
+                                                            ? `${classes.enabled} active`
+                                                            : classes.disabled
+                                                    }
                                                 >
                                                     {t('exchange.actions.oneTimePurchase')}
                                                 </a>
@@ -237,7 +331,11 @@ export function Market(props: IProps) {
                                             >
                                                 <a
                                                     onClick={() => setOneTimePurchase(false)}
-                                                    className={!oneTimePurchase ? 'active' : ''}
+                                                    className={
+                                                        !oneTimePurchase
+                                                            ? `${classes.enabled} active`
+                                                            : classes.disabled
+                                                    }
                                                 >
                                                     {t('exchange.actions.repeatedPurchase')}
                                                 </a>
@@ -294,7 +392,10 @@ export function Market(props: IProps) {
                                                     color="primary"
                                                     variant="contained"
                                                     disabled={!bidButtonEnabled}
-                                                    onClick={() => onBid(values, oneTimePurchase)}
+                                                    onClick={() => {
+                                                        resetForm();
+                                                        onBid(values, oneTimePurchase);
+                                                    }}
                                                 >
                                                     {t('exchange.actions.placeBidOrder')}
                                                 </Button>
@@ -307,7 +408,6 @@ export function Market(props: IProps) {
                     }}
                 </Formik>
             </Grid>
-            <Grid item xs={3}></Grid>
         </Grid>
     );
 }

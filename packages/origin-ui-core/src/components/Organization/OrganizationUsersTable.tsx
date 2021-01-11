@@ -17,13 +17,9 @@ import {
     Role,
     UserStatus
 } from '@energyweb/origin-backend-core';
-import { roleNames } from './Organization';
-import { useTranslation } from '../../utils';
+import { useTranslation, roleNames } from '../../utils';
 import { ChangeRoleModal } from '../Modal/ChangeRoleModal';
-
-interface IRecord {
-    user: IUser;
-}
+import { IRecord } from '../admin/AdminUsersTable';
 
 export function OrganizationUsersTable() {
     const { t } = useTranslation();

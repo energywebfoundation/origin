@@ -3,6 +3,7 @@ export * from './IMatchableOrder';
 export * from './IMatchableProduct';
 export * from './IOrder';
 export * from './MatchingEngine';
+export * from './OneTimeMatchOrder';
 export * from './Order';
 export * from './OrderSide';
 export * from './OrderStatus';
