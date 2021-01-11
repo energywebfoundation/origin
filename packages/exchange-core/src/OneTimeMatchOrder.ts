@@ -25,7 +25,8 @@ export class OneTimeMatchOrder<TProduct, TProductFilter> extends Order<TProduct,
             this.price,
             this.volume,
             this.userId,
-            this.createdAt
+            this.createdAt,
+            this.assetId
         );
     }
 }
