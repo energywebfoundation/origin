@@ -139,7 +139,7 @@ export function OrganizationTable() {
     const rows = paginatedData.map(({ organization }) => {
         return {
             name: organization.name,
-            country: Countries.find((i) => i.id === organization.country)?.name,
+            country: Countries.find((i) => i.code === organization.country)?.name,
             tradeRegistryCompanyNumber: organization.tradeRegistryCompanyNumber,
             status: getOrganizationText(organization.status)
         };

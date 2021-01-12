@@ -8,8 +8,8 @@ import { CreateDemandDTO } from './create-demand.dto';
 const moment = extendMoment(Moment);
 
 @Injectable()
-export class DemandTimePeriodService {
-    public generateValidityDates(createDemand: CreateDemandDTO) {
+export class DemandTimePeriodService<TProduct> {
+    public generateValidityDates(createDemand: CreateDemandDTO<TProduct>) {
         let { start, end } = createDemand;
 
         start = new Date(start);

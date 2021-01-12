@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Box } from '@material-ui/core';
 import { DemandStatus } from '@energyweb/utils-general';
+import { usePermissions, Requirements } from '@energyweb/origin-ui-core';
 import { Demand } from '../utils/exchange';
 import { ActiveOrders } from '../utils';
 import { getOrders, getDemands } from '../features/orders/selectors';
@@ -9,6 +10,12 @@ import { BidsTable, AsksTable, DemandsTable } from '../components/orders';
 import { fetchOrders } from '../features/orders';
 
 export const MyOrders = () => {
+    const { canAccessPage } = usePermissions();
+
+    if (!canAccessPage?.value) {
+        return <Requirements />;
+    }
+
     const dispatch = useDispatch();
 
     useEffect(() => {

@@ -1,9 +1,9 @@
 import { Role } from './User';
 
 export enum OrganizationStatus {
-    Submitted = 0,
-    Denied = 1,
-    Active = 2
+    Submitted = 'Submitted',
+    Denied = 'Denied',
+    Active = 'Active'
 }
 
 export interface IPublicOrganization {
@@ -12,7 +12,7 @@ export interface IPublicOrganization {
     address: string;
     zipCode: string;
     city: string;
-    country: number;
+    country: string;
     businessType: string;
     tradeRegistryCompanyNumber: string;
     vatNumber: string;
@@ -24,7 +24,7 @@ export interface IFullOrganization extends IPublicOrganization {
     signatoryAddress: string;
     signatoryZipCode: string;
     signatoryCity: string;
-    signatoryCountry: number;
+    signatoryCountry: string;
     signatoryEmail: string;
     signatoryPhoneNumber: string;
     signatoryDocumentIds?: string[];
@@ -36,7 +36,7 @@ export type OrganizationPostData = {
     address: string;
     zipCode: string;
     city: string;
-    country: number;
+    country: string;
     businessType: string;
     tradeRegistryCompanyNumber: string;
     vatNumber: string;
@@ -44,7 +44,7 @@ export type OrganizationPostData = {
     signatoryAddress: string;
     signatoryZipCode: string;
     signatoryCity: string;
-    signatoryCountry: number;
+    signatoryCountry: string;
     signatoryEmail: string;
     signatoryPhoneNumber: string;
     signatoryDocumentIds?: string[];

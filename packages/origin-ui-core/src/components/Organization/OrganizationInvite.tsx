@@ -23,8 +23,7 @@ import { setLoading } from '../../features/general/actions';
 import { FormInput } from '../Form/FormInput';
 import { getUserOffchain } from '../../features/users/selectors';
 import { getBackendClient } from '../../features/general/selectors';
-import { roleNames } from './Organization';
-import { useTranslation } from '../../utils';
+import { useTranslation, roleNames } from '../../utils';
 
 interface IFormValues {
     email: string;
@@ -132,9 +131,9 @@ export function OrganizationInvite() {
                                             variant="filled"
                                             input={<FilledInput />}
                                         >
-                                            {Object.keys(roleNames).map((role) => (
-                                                <MenuItem key={role} value={role}>
-                                                    {t(roleNames[role])}
+                                            {roleNames.map((role) => (
+                                                <MenuItem key={role.label} value={role.value}>
+                                                    {t(role.label)}
                                                 </MenuItem>
                                             ))}
                                         </Select>

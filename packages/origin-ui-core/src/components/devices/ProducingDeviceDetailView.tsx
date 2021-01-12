@@ -178,13 +178,13 @@ export function ProducingDeviceDetailView(props: IProps) {
                 rowspan: 3,
                 colspan: 2,
                 ul: true,
-                li: JSON.parse(selectedDevice.files).map((f) => (
-                    <li key={f}>
+                li: JSON.parse(selectedDevice.files).map((fileId) => (
+                    <li key={fileId}>
                         <a
                             style={{ cursor: 'pointer', textDecoration: 'underline' }}
-                            onClick={() => downloadFile(backendClient?.fileClient, f)}
+                            onClick={() => downloadFile(backendClient?.fileClient, fileId, fileId)}
                         >
-                            {f}
+                            {fileId}
                         </a>
                     </li>
                 ))
@@ -278,29 +278,26 @@ export function ProducingDeviceDetailView(props: IProps) {
 
     return (
         <div className="DetailViewWrapper">
-            <div className="PageContentWrapper">
-                {pageBody}
+            <div className="PageContentWrapper">{pageBody}</div>
+            {props.showSmartMeterReadings && (
+                <div className="PageBody p-4" style={{ backgroundColor: bgColorDarken }}>
+                    <div className="PageBodyTitle" style={{ color: textColorDarken }}>
+                        {t('meterReads.properties.smartMeterReadings')}
+                    </div>
 
-                {props.showSmartMeterReadings && (
-                    <div className="PageBody p-4" style={{ backgroundColor: bgColorDarken }}>
-                        <div className="PageBodyTitle" style={{ color: textColorDarken }}>
-                            {t('meterReads.properties.smartMeterReadings')}
-                        </div>
+                    <div className="container-fluid">
+                        <div className="row">
+                            <div className="col-lg-4">
+                                <SmartMeterReadingsTable producingDevice={selectedDevice} />
+                            </div>
 
-                        <div className="container-fluid">
-                            <div className="row">
-                                <div className="col-lg-4">
-                                    <SmartMeterReadingsTable producingDevice={selectedDevice} />
-                                </div>
-
-                                <div className="col-lg-8">
-                                    <SmartMeterReadingsChart producingDevice={selectedDevice} />
-                                </div>
+                            <div className="col-lg-8">
+                                <SmartMeterReadingsChart producingDevice={selectedDevice} />
                             </div>
                         </div>
                     </div>
-                )}
-            </div>
+                </div>
+            )}
             {selectedDevice?.deviceGroup && (
                 <DeviceGroupForm device={selectedDevice} readOnly={true} />
             )}

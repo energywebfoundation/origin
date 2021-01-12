@@ -4,6 +4,7 @@ import { getBackendClient } from '../../features/general/selectors';
 import { useSelector } from 'react-redux';
 import { IUser } from '@energyweb/origin-backend-core';
 import { AdminUserForm } from './AdminUserForm';
+import { IRecord } from './AdminUsersTable';
 
 interface IMatchParams {
     key?: string;
@@ -13,7 +14,7 @@ interface IMatchParams {
 export function AdminUserView() {
     const adminClient = useSelector(getBackendClient)?.adminClient;
 
-    const location = useLocation();
+    const location = useLocation<IRecord>();
     const [entity, setEntity] = useState<IUser>(null);
     const params: IMatchParams = useParams();
 

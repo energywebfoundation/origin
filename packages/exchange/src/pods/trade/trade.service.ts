@@ -1,25 +1,23 @@
-import { Ask, Bid, OrderStatus, ProductFilter, Trade } from '@energyweb/exchange-core';
-import { LocationService } from '@energyweb/utils-general';
+import { IMatchableOrder, OrderStatus, Trade } from '@energyweb/exchange-core';
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
+import { ModuleRef } from '@nestjs/core';
 import { EventBus } from '@nestjs/cqrs';
 import { InjectRepository } from '@nestjs/typeorm';
 import BN from 'bn.js';
 import { List } from 'immutable';
 import { Connection, Repository } from 'typeorm';
 
-import { toMatchingEngineOrder } from '../matching-engine/order-mapper';
+import { IOrderMapperService } from '../../interfaces/IOrderMapperService';
 import { Order } from '../order/order.entity';
-import { ProductDTO } from '../order/product.dto';
-import { DeviceTypeServiceWrapper } from '../runner/deviceTypeServiceWrapper';
 import { TradePersistedEvent } from './trade-persisted.event';
 import { TradePriceInfoDTO } from './trade-price-info.dto';
 import { Trade as TradeEntity } from './trade.entity';
 
-type TradeCacheItem = {
-    ask: Ask;
-    bid: Bid;
+type TradeCacheItem<TProduct, TProductFilter> = {
+    ask: IMatchableOrder<TProduct, TProductFilter>;
+    bid: IMatchableOrder<TProduct, TProductFilter>;
     price: number;
-    product: ProductDTO;
+    product: any;
     volume: BN;
     created: Date;
 };
@@ -27,23 +25,30 @@ type TradeCacheItem = {
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 @Injectable()
-export class TradeService implements OnModuleInit {
+export class TradeService<TProduct, TProductFilter> implements OnModuleInit {
     private readonly logger = new Logger(TradeService.name);
 
-    private readonly locationService = new LocationService();
+    private tradeCache: TradeCacheItem<TProduct, TProductFilter>[];
 
-    private tradeCache: TradeCacheItem[];
+    private orderMapperService: IOrderMapperService<TProduct, TProductFilter>;
 
     constructor(
         private readonly connection: Connection,
         @InjectRepository(TradeEntity)
         private readonly repository: Repository<TradeEntity>,
-        private readonly deviceTypeServiceWrapper: DeviceTypeServiceWrapper,
-        private readonly eventBus: EventBus
+        private readonly eventBus: EventBus,
+        private readonly moduleRef: ModuleRef
     ) {}
 
     public async onModuleInit() {
         this.logger.log(`Initializing trade service`);
+
+        this.orderMapperService = this.moduleRef.get<IOrderMapperService<TProduct, TProductFilter>>(
+            IOrderMapperService,
+            {
+                strict: false
+            }
+        );
 
         await this.loadTradesCache();
     }
@@ -59,11 +64,11 @@ export class TradeService implements OnModuleInit {
                 const { ask, bid } = trade;
                 await entityManager.update<Order>(Order, ask.id, {
                     currentVolume: ask.volume,
-                    status: ask.volume.isZero() ? OrderStatus.Filled : OrderStatus.PartiallyFilled
+                    status: ask.isFilled ? OrderStatus.Filled : OrderStatus.PartiallyFilled
                 });
                 await entityManager.update<Order>(Order, bid.id, {
                     currentVolume: bid.volume,
-                    status: bid.volume.isZero() ? OrderStatus.Filled : OrderStatus.PartiallyFilled
+                    status: bid.isFilled ? OrderStatus.Filled : OrderStatus.PartiallyFilled
                 });
 
                 const tradeToStore = new TradeEntity({
@@ -86,22 +91,11 @@ export class TradeService implements OnModuleInit {
         await this.handlePersistedTrades(trades);
     }
 
-    public getLastTradedPrice(productFilter: ProductFilter): TradePriceInfoDTO {
+    public getLastTradedPrice(productFilter: TProductFilter): TradePriceInfoDTO<TProduct> {
         this.logger.debug(`Finding last traded price for ${JSON.stringify(productFilter)}`);
 
         const lastTrade = this.tradeCache.find(({ ask, bid }) => {
-            return (
-                ask.filterBy(
-                    productFilter,
-                    this.deviceTypeServiceWrapper.deviceTypeService,
-                    this.locationService
-                ) &&
-                bid.filterBy(
-                    productFilter,
-                    this.deviceTypeServiceWrapper.deviceTypeService,
-                    this.locationService
-                )
-            );
+            return ask.filterBy(productFilter) && bid.filterBy(productFilter);
         });
 
         return new TradePriceInfoDTO({
@@ -140,19 +134,25 @@ export class TradeService implements OnModuleInit {
 
         this.logger.debug(`Found ${trades.length} trades to load`);
 
-        this.tradeCache = trades.map((trade) => this.toTradeCacheItem(trade));
+        this.tradeCache = await Promise.all(trades.map((trade) => this.toTradeCacheItem(trade)));
     }
 
-    private toTradeCacheItem(trade: TradeEntity): TradeCacheItem {
+    private async toTradeCacheItem(
+        trade: TradeEntity
+    ): Promise<TradeCacheItem<TProduct, TProductFilter>> {
+        const ask = await this.orderMapperService.map({
+            ...trade.ask,
+            currentVolume: trade.ask.startVolume
+        } as Order);
+
+        const bid = await this.orderMapperService.map({
+            ...trade.bid,
+            currentVolume: trade.bid.startVolume
+        } as Order);
+
         return {
-            ask: toMatchingEngineOrder({
-                ...trade.ask,
-                currentVolume: trade.ask.startVolume
-            } as Order) as Ask,
-            bid: toMatchingEngineOrder({
-                ...trade.bid,
-                currentVolume: trade.bid.startVolume
-            } as Order) as Bid,
+            ask,
+            bid,
             price: trade.price,
             created: trade.created,
             volume: trade.volume,
@@ -164,12 +164,12 @@ export class TradeService implements OnModuleInit {
         this.logger.debug(`Updating trades cache with trade ${tradeIds}`);
         const trades = await this.repository.findByIds(tradeIds, { order: { created: 'DESC' } });
 
-        this.updateCache(trades);
+        await this.updateCache(trades);
         this.emitTradePersistedEvents(trades);
     }
 
-    private updateCache(trades: TradeEntity[]) {
-        const cacheItems = trades.map((trade) => this.toTradeCacheItem(trade));
+    private async updateCache(trades: TradeEntity[]) {
+        const cacheItems = await Promise.all(trades.map((trade) => this.toTradeCacheItem(trade)));
 
         this.tradeCache = [...cacheItems, ...this.tradeCache];
     }

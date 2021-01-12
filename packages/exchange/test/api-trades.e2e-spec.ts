@@ -10,13 +10,14 @@ import { OrderService } from '../src/pods/order/order.service';
 import { TradeDTO } from '../src/pods/trade/trade.dto';
 import { TransferService } from '../src/pods/transfer/transfer.service';
 import { authenticatedUser, bootstrapTestInstance } from './exchange';
+import { createDepositAddress } from './utils';
 import { DB_TABLE_PREFIX } from '../src/utils/tablePrefix';
 
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 describe('Trades API', () => {
     let app: INestApplication;
-    let orderService: OrderService;
+    let orderService: OrderService<string>;
     let transferService: TransferService;
     let databaseService: DatabaseService;
     let accountService: AccountService;
@@ -45,7 +46,7 @@ describe('Trades API', () => {
     };
 
     const testTrade = async (sellerId: string, buyerId: string) => {
-        const { address: sellerAddress } = await accountService.getOrCreateAccount(sellerId);
+        const sellerAddress = await createDepositAddress(accountService, sellerId);
 
         const deposit = await createDeposit(sellerAddress);
         await confirmDeposit();
@@ -57,11 +58,11 @@ describe('Trades API', () => {
             validFrom: new Date()
         };
 
-        const createBid: CreateBidDTO = {
+        const createBid: CreateBidDTO<string> = {
             price: 100,
             validFrom: new Date(),
             volume: '100',
-            product: { deviceType: ['Solar'] }
+            product: "{ deviceType: ['Solar'] }"
         };
 
         const ask = await orderService.createAsk(sellerId, createAsk);
@@ -73,7 +74,7 @@ describe('Trades API', () => {
             .get('/trade')
             .expect(HttpStatus.OK)
             .expect((res) => {
-                const [trade] = res.body as TradeDTO[];
+                const [trade] = res.body as TradeDTO<string>[];
 
                 expect(trade.assetId).equals(deposit.asset.id);
                 expect(trade.product).deep.equals(ask.product);

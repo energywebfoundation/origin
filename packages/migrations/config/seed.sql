@@ -62,7 +62,7 @@ VALUES
         'Address',
         'City',
         'Zip code',
-        235,
+        'GB',
         'Issuer',
         '1000',
         'UK1000',
@@ -70,10 +70,10 @@ VALUES
         'Address',
         'City',
         'Zip code',
-        235,
+        'GB',
         'issuer@mailinator.com',
         'Phone number',
-        2
+        'Active'
     );
 
 INSERT INTO
@@ -107,7 +107,7 @@ VALUES
         'Address',
         'City',
         'Zip code',
-        235,
+        'GB',
         'Issuer',
         '1000',
         'UK1000',
@@ -115,10 +115,10 @@ VALUES
         'Address',
         'City',
         'Zip code',
-        235,
+        'GB',
         'devicemanager@mailinator.com',
         'Phone number',
-        2
+        'Active'
     );
 
 INSERT INTO
@@ -152,7 +152,7 @@ VALUES
         'Address',
         'City',
         'Zip code',
-        235,
+        'GB',
         'Issuer',
         '1000',
         'UK1000',
@@ -160,10 +160,10 @@ VALUES
         'Address',
         'City',
         'Zip code',
-        235,
+        'GB',
         'devicemanager2@mailinator.com',
         'Phone number',
-        2
+        'Active'
     );
 
 INSERT INTO
@@ -197,7 +197,7 @@ VALUES
         'Address',
         'City',
         'Zip code',
-        235,
+        'GB',
         'Issuer',
         '1000',
         'UK1000',
@@ -205,10 +205,10 @@ VALUES
         'Address',
         'City',
         'Zip code',
-        235,
+        'GB',
         'trader@mailinator.com',
         'Phone number',
-        2
+        'Active'
     );
 
 INSERT INTO
@@ -242,7 +242,7 @@ VALUES
         'Address',
         'City',
         'Zip code',
-        235,
+        'GB',
         'Issuer',
         '1000',
         'UK1000',
@@ -250,10 +250,10 @@ VALUES
         'Address',
         'City',
         'Zip code',
-        235,
+        'GB',
         'admin@mailinator.com',
         'Phone number',
-        2
+        'Active'
     );
 
 /*

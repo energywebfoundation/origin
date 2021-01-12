@@ -1,0 +1,28 @@
+.orderbookHeader {
+    padding: 15px 20px;
+
+    .headerItem {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+       
+        .title {
+            text-transform: uppercase;
+            margin: 0;
+            font-weight: 600;
+            font-size: 20px;
+            letter-spacing: 0.1rem;
+        }
+
+        &.matching {
+            justify-content: center;
+            text-transform: uppercase;
+        }
+
+        &.icon {
+            justify-content: flex-end;
+        }
+
+    }
+
+}

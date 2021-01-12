@@ -1,34 +1,34 @@
 import React, { useEffect, useState } from 'react';
-import { Role, isRole, DeviceStatus, IPublicOrganization } from '@energyweb/origin-backend-core';
+import { DeviceStatus, IPublicOrganization, isRole, Role } from '@energyweb/origin-backend-core';
 import { Link, Redirect } from 'react-router-dom';
 import { ProducingDevice } from '@energyweb/device-registry';
-import { useSelector, useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Fab, Tooltip } from '@material-ui/core';
-import { Add, Check, Visibility, Assignment } from '@material-ui/icons';
-import { getProducingDevices, getBaseURL, getConfiguration } from '../../features/selectors';
+import { Add, Assignment, Check, Visibility } from '@material-ui/icons';
+import { getBaseURL, getConfiguration, getProducingDevices } from '../../features/selectors';
 import {
-    TableMaterial,
-    ITableAction,
-    usePaginatedLoaderFiltered,
-    IPaginatedLoaderHooksFetchDataParameters,
-    IPaginatedLoaderFetchDataReturnValues,
     checkRecordPassesFilters,
+    CustomFilterInputType,
     ICustomFilterDefinition,
-    CustomFilterInputType
+    IPaginatedLoaderFetchDataReturnValues,
+    IPaginatedLoaderHooksFetchDataParameters,
+    ITableAction,
+    TableMaterial,
+    usePaginatedLoaderFiltered
 } from '../Table';
-import { getUserOffchain } from '../../features/users/selectors';
+import { getExchangeDepositAddress, getUserOffchain } from '../../features/users/selectors';
 import { setLoading } from '../../features/general/actions';
 import { producingDeviceCreatedOrUpdated } from '../../features/producingDevices/actions';
 import {
     EnergyFormatter,
-    PowerFormatter,
-    getDeviceLocationText,
     getDeviceColumns,
+    getDeviceLocationText,
     getProducingDeviceDetailLink,
-    showNotification,
+    moment,
     NotificationType,
-    useTranslation,
-    moment
+    PowerFormatter,
+    showNotification,
+    useTranslation
 } from '../../utils';
 import { getEnvironment } from '../../features';
 import { RequestCertificatesModal } from '../Modal/RequestCertificatesModal';
@@ -50,6 +50,18 @@ interface IEnrichedProducingDeviceData {
     locationText: string;
 }
 
+interface IDeviceRowData {
+    owner: string;
+    readCertified: string;
+    readToBeCertified: string;
+    gridOperator: string;
+    facilityName: string;
+    type: string;
+    deviceLocation: string;
+    capacity: string;
+    status: DeviceStatus;
+}
+
 export function ProducingDeviceTable(props: IOwnProps) {
     const [detailViewForDeviceId, setDetailViewForDeviceId] = useState(null);
 
@@ -58,6 +70,7 @@ export function ProducingDeviceTable(props: IOwnProps) {
     const producingDevices = useSelector(getProducingDevices);
     const baseURL = useSelector(getBaseURL);
     const environment = useSelector(getEnvironment);
+    const exchangeDepositAddress = useSelector(getExchangeDepositAddress);
     const [showRequestCertModal, setShowRequestCertModal] = useState(false);
     const [producingDeviceForModal, setProducingDeviceForModal] = useState(null);
 
@@ -207,7 +220,7 @@ export function ProducingDeviceTable(props: IOwnProps) {
         }
     ] as const).filter((column) => !hiddenColumns.includes(column.id));
 
-    const rows = paginatedData.map((enrichedData) => ({
+    const rows: IDeviceRowData[] = paginatedData.map((enrichedData) => ({
         owner: enrichedData.organizationName,
         facilityName: enrichedData.device.facilityName,
         deviceLocation: enrichedData.locationText,
@@ -229,7 +242,7 @@ export function ProducingDeviceTable(props: IOwnProps) {
         );
     }
 
-    const actions: ITableAction[] = [];
+    const actions: (ITableAction | ((row: IDeviceRowData) => ITableAction))[] = [];
 
     actions.push({
         icon: <Visibility />,
@@ -238,13 +251,18 @@ export function ProducingDeviceTable(props: IOwnProps) {
     });
 
     if (
+        exchangeDepositAddress &&
         props.actions.requestCertificates &&
         isRole(user, Role.OrganizationDeviceManager, Role.OrganizationAdmin)
     ) {
-        actions.push({
-            icon: <Assignment />,
-            name: t('device.actions.requestCertificates'),
-            onClick: requestCerts
+        actions.push((rowData) => {
+            if (rowData.status === DeviceStatus.Active) {
+                return {
+                    icon: <Assignment />,
+                    name: t('device.actions.requestCertificates'),
+                    onClick: requestCerts
+                };
+            }
         });
     }
 

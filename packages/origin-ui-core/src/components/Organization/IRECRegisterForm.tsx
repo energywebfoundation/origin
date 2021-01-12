@@ -194,7 +194,7 @@ export const IRECRegisterForm = () => {
         accountType: Yup.string().required().label(t('organization.registration.IRECAccountType')),
         headquarterCountry: Yup.string()
             .required()
-            .label(t('organization.registration.orgHeadquatersCompany')),
+            .label(t('organization.registration.orgHeadquartersCountry')),
         registrationYear: Yup.number()
             .min(1900)
             .required()
@@ -302,13 +302,12 @@ export const IRECRegisterForm = () => {
 
                                             <FormCountrySelect
                                                 label={t(
-                                                    'organization.registration.orgHeadquatersCompany'
+                                                    'organization.registration.orgHeadquartersCountry'
                                                 )}
                                                 property="headquarterCountry"
                                                 currentValue={values.headquarterCountry}
                                                 disabled={isSubmitting}
                                                 className="mt-3"
-                                                isoFormat={true}
                                                 required
                                             />
                                             <Grid container justify="space-between">
@@ -457,7 +456,6 @@ export const IRECRegisterForm = () => {
                                                 }
                                                 disabled={isSubmitting}
                                                 className="mt-3"
-                                                isoFormat={true}
                                                 required
                                             />
                                             <FormInput

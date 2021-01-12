@@ -1,10 +1,11 @@
 import { CertificationRequest as CertificationRequestFacade } from '@energyweb/issuer';
-import { Logger } from '@nestjs/common';
+import { BadRequestException, Logger } from '@nestjs/common';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Subject } from 'rxjs';
 import { concatMap } from 'rxjs/operators';
 import { Repository } from 'typeorm';
+import { isAddress, getAddress } from 'ethers/lib/utils';
 
 import { BlockchainPropertiesService } from '../../blockchain/blockchain-properties.service';
 import { CertificationRequestStatus } from '../certification-request-status.enum';
@@ -36,6 +37,12 @@ export class CreateCertificationRequestHandler
         files,
         isPrivate
     }: CreateCertificationRequestCommand): Promise<CertificationRequestDTO> {
+        if (!isAddress(to)) {
+            throw new BadRequestException(
+                'Invalid "to" parameter, it has to be ethereum address string'
+            );
+        }
+
         const certificationRequest = this.repository.create({
             deviceId,
             energy,
@@ -46,7 +53,7 @@ export class CreateCertificationRequestHandler
             files,
             isPrivate: isPrivate ?? false,
             status: CertificationRequestStatus.Queued,
-            owner: to
+            owner: getAddress(to) // it returns checksum address
         });
 
         const stored = await this.repository.save(certificationRequest);

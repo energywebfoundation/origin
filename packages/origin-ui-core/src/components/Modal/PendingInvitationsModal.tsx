@@ -12,12 +12,12 @@ import {
     showNotification,
     NotificationType,
     useTranslation,
-    useLinks
+    useLinks,
+    roleNames
 } from '../..';
 import { setLoading } from '../../features/general';
 import { Trans } from 'react-i18next';
 import DraftOutlineIcon from '@material-ui/icons/DraftsOutlined';
-import { roleNames } from '../Organization/Organization';
 
 interface IProps {
     showModal: boolean;
@@ -155,7 +155,7 @@ export const PendingInvitationsModal = (props: IProps) => {
     };
 
     return (
-        <Dialog open={showModal} onClose={() => setShowModal(false)}>
+        <Dialog open={showModal}>
             <DialogTitle>
                 <Grid container>
                     <Grid item xs={2}>
@@ -181,7 +181,10 @@ export const PendingInvitationsModal = (props: IProps) => {
                                     i18nKey="organization.invitations.dialog.invitationMessage"
                                     values={{
                                         admin,
-                                        role: t(roleNames[role]),
+                                        role: t(
+                                            roleNames.filter((roleObj) => roleObj.value === role)[0]
+                                                ?.label
+                                        ),
                                         orgName: name
                                     }}
                                 />

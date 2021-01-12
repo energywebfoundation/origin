@@ -18,6 +18,12 @@
             "path": "../exchange/tsconfig.json"
         },
         {
+            "path": "../exchange-irec/tsconfig.json"
+        },
+        {
+            "path": "../exchange-io-erc1888/tsconfig.json"
+        },
+        {
             "path": "../origin-organization-irec-api/tsconfig.json"
         },
         {

@@ -4,15 +4,15 @@ import { Expose, Transform } from 'class-transformer';
 import { IsArray } from 'class-validator';
 import { CreateBidDTO } from '../order/create-bid.dto';
 
-export class DemandSummaryDTO {
-    constructor(bids: CreateBidDTO[]) {
+export class DemandSummaryDTO<TProduct> {
+    constructor(bids: CreateBidDTO<TProduct>[]) {
         this.bids = bids;
     }
 
     @ApiProperty({ type: [CreateBidDTO] })
     @IsArray()
     @Expose()
-    bids: CreateBidDTO[];
+    bids: CreateBidDTO<TProduct>[];
 
     @ApiProperty({ type: String })
     @Transform((v: BN) => v.toString(10))

@@ -100,7 +100,9 @@ export function IRECOrganizationView({ iRecOrg }) {
     return (
         <Paper className={classes.container}>
             <Grid item>
-                <Box style={{ textTransform: 'uppercase' }}>{'I-REC Information'}</Box>
+                <Box style={{ textTransform: 'uppercase' }}>
+                    {t('organization.registration.irecInformation')}
+                </Box>
             </Grid>
             <Grid container spacing={3}>
                 <Grid item xs={6}>
@@ -113,7 +115,7 @@ export function IRECOrganizationView({ iRecOrg }) {
                     />
 
                     <TextField
-                        label={t('organization.registration.orgHeadquatersCompany')}
+                        label={t('organization.registration.orgHeadquartersCountry')}
                         className="mt-3"
                         value={formValues.headquarterCountry}
                         fullWidth

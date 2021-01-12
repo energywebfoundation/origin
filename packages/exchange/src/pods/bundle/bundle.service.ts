@@ -1,24 +1,18 @@
-import {
-    BadRequestException,
-    ForbiddenException,
-    forwardRef,
-    Inject,
-    Injectable,
-    Logger
-} from '@nestjs/common';
+import { BadRequestException, ForbiddenException, Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { QueryBus } from '@nestjs/cqrs';
 import { InjectRepository } from '@nestjs/typeorm';
 import BN from 'bn.js';
-import { Repository, FindConditions, Connection } from 'typeorm';
+import { Connection, FindConditions, Repository } from 'typeorm';
 
-import { AccountBalanceService } from '../account-balance/account-balance.service';
 import { Asset } from '../asset/asset.entity';
+import { HasEnoughAssetAmountQuery } from '../order/queries/has-enough-asset-amount.query';
 import { BundleItem } from './bundle-item.entity';
+import { BundleSplitDTO } from './bundle-split.dto';
 import { BundleTrade } from './bundle-trade.entity';
 import { Bundle } from './bundle.entity';
 import { BuyBundleDTO } from './buy-bundle.dto';
 import { CreateBundleDTO } from './create-bundle.dto';
-import { BundleSplitDTO } from './bundle-split.dto';
 
 @Injectable()
 export class BundleService {
@@ -32,9 +26,8 @@ export class BundleService {
         private readonly bundleRepository: Repository<Bundle>,
         @InjectRepository(BundleTrade)
         private readonly bundleTradeRepository: Repository<BundleTrade>,
-        @Inject(forwardRef(() => AccountBalanceService))
-        private readonly accountBalanceService: AccountBalanceService,
-        private readonly connection: Connection
+        private readonly connection: Connection,
+        private readonly queryBus: QueryBus
     ) {
         this.energyPerUnit = new BN(this.configService.get<string>('ENERGY_PER_UNIT'));
     }
@@ -152,6 +145,6 @@ export class BundleService {
             amount: new BN(item.volume)
         }));
 
-        return this.accountBalanceService.hasEnoughAssetAmount(userId, ...assets);
+        return this.queryBus.execute(new HasEnoughAssetAmountQuery(userId, assets));
     }
 }

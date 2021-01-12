@@ -1,17 +1,9 @@
 import { ApiProperty } from '@nestjs/swagger';
-import {
-    IsDateString,
-    IsNotEmpty,
-    IsNumber,
-    IsUUID,
-    Validate,
-    ValidateNested
-} from 'class-validator';
+import { IsDateString, IsNotEmpty, IsNumber, IsUUID, Validate } from 'class-validator';
 import { IntUnitsOfEnergy, PositiveBNStringValidator } from '@energyweb/origin-backend-utils';
-import { ProductDTO } from '../order/product.dto';
 import { Trade } from './trade.entity';
 
-export class TradeDTO {
+export class TradeDTO<TProduct> {
     @ApiProperty({ type: String })
     @IsUUID()
     @IsNotEmpty()
@@ -42,17 +34,18 @@ export class TradeDTO {
     @IsNotEmpty()
     public askId: string;
 
-    @ApiProperty({ type: ProductDTO })
-    @ValidateNested()
-    @IsNotEmpty()
-    public product: ProductDTO;
+    public product: TProduct;
 
     @ApiProperty({ type: String })
     @IsUUID()
     @IsNotEmpty()
     public assetId: string;
 
-    public static fromTrade(trade: Trade, assetId: string, product: ProductDTO): TradeDTO {
+    public static fromTrade<TProduct>(
+        trade: Trade,
+        assetId: string,
+        product: TProduct
+    ): TradeDTO<TProduct> {
         return {
             id: trade.id,
             created: trade.created.toISOString(),

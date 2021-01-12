@@ -67,7 +67,7 @@ interface IProps<T extends readonly ITableColumn[]> {
     loadPage?: (page: number, filters?: ICustomFilter[]) => void | Promise<any>;
     pageSize?: number;
     total?: number;
-    actions?: ITableAction[] | ITableAction[][];
+    actions?: (ITableAction | ITableAction[] | ((row: any) => ITableAction))[];
     onSelect?: TableOnSelectFunction;
     currentSort?: CurrentSortType;
     sortAscending?: boolean;
@@ -134,7 +134,7 @@ export function TableMaterial<T extends readonly ITableColumn[]>(props: IProps<T
         classes: Record<'root' | 'tableWrapper' | 'tableCellWrappingActions', string>
     ) {
         if (!actionsArr?.length) {
-            return <TableCell key={id}></TableCell>;
+            return;
         }
 
         const is2DArray = Array.isArray(actionsArr[0]);
@@ -148,6 +148,15 @@ export function TableMaterial<T extends readonly ITableColumn[]>(props: IProps<T
         } else {
             return <TableCell key={id}></TableCell>;
         }
+
+        finalActionsList = finalActionsList
+            .map((ac) => {
+                if (typeof ac === 'function') {
+                    return ac(row);
+                }
+                return ac;
+            })
+            .filter((ac) => Boolean(ac));
 
         return (
             <TableCell key={id} className={classes.tableCellWrappingActions}>
@@ -179,7 +188,7 @@ export function TableMaterial<T extends readonly ITableColumn[]>(props: IProps<T
         batchableActions,
         customSelectCounterGenerator,
         toggleSort,
-        highlightedRowsIds: highlightedRowsIndexes,
+        highlightedRowsIds: highlightedRowsIndexes = [],
         allowedActions,
         caption,
         actionsLabel
@@ -194,7 +203,7 @@ export function TableMaterial<T extends readonly ITableColumn[]>(props: IProps<T
     const order = sortAscending ? 'asc' : 'desc';
 
     const showBatchableActions = batchableActions && batchableActions.length > 0;
-
+    const originPrimaryColor = configuration?.styleConfig?.PRIMARY_COLOR;
     const useStyles = makeStyles(() =>
         createStyles({
             root: {
@@ -204,6 +213,14 @@ export function TableMaterial<T extends readonly ITableColumn[]>(props: IProps<T
             tableCellWrappingActions: {
                 position: 'relative',
                 minWidth: '56px'
+            },
+            highlightedRow: {
+                outline: `1px solid ${originPrimaryColor}`,
+                outlineOffset: '-1px',
+                '&[tabindex="-1"]:focus:not(:focus-visible)': {
+                    outline: `1px solid ${originPrimaryColor} !important`,
+                    outlineOffset: '-1px !important'
+                }
             }
         })
     );
@@ -305,19 +322,14 @@ export function TableMaterial<T extends readonly ITableColumn[]>(props: IProps<T
                                 {rows.map((row, rowIndex) => {
                                     const id = getRowId(row, rowIndex);
                                     const isItemSelected = selectedIds.includes(id);
-                                    const rowStyle = highlightedRowsIndexes?.includes(id)
-                                        ? {
-                                              background: '#424242'
-                                          }
-                                        : {};
-
+                                    const rowStyle = highlightedRowsIndexes.includes(id);
                                     return (
                                         <React.Fragment key={id}>
                                             <TableRow
                                                 hover
                                                 role="checkbox"
                                                 tabIndex={-1}
-                                                style={rowStyle}
+                                                className={rowStyle ? classes.highlightedRow : null}
                                             >
                                                 {showBatchableActions && (
                                                     <TableCell padding="checkbox">
