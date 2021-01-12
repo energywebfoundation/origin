@@ -1260,6 +1260,22 @@
   resolved "https://registry.yarnpkg.com/@emotion/weak-memoize/-/weak-memoize-0.2.5.tgz#8eed982e2ee6f7f4e44c253e12962980791efd46"
   integrity sha512-6U71C2Wp7r5XtFtQzYrW5iKFT67OixrSxjI4MptCHzdSVlgabczzqLe0ZSgnub/5Kp4hSbpDB1tMytZY9pwxxA==
 
+"@energyweb/energy-api-influxdb@0.6.1":
+  version "0.6.1"
+  resolved "https://registry.yarnpkg.com/@energyweb/energy-api-influxdb/-/energy-api-influxdb-0.6.1.tgz#8447386a6d1d606b9b6d89951e02891d65e0bebf"
+  integrity sha512-tDPw5oV9Ex7bKfXYAyrEE6WC+dzVGfLf9v5oo5Bgyi9rTfpLvA/MXMWRb22oSS7fta+ZtoEUigtHvLWjg321LA==
+  dependencies:
+    "@influxdata/influxdb-client" "1.9.0"
+    "@nestjs/common" "7.6.3"
+    "@nestjs/config" "0.6.1"
+    "@nestjs/core" "7.6.3"
+    "@nestjs/swagger" "4.7.8"
+    class-transformer "0.3.1"
+    class-validator "0.12.2"
+    reflect-metadata "0.1.13"
+    rimraf "3.0.2"
+    rxjs "6.6.3"
+
 "@energyweb/origin-backend-client-mocks@7.0.0":
   version "7.0.0"
   resolved "https://registry.yarnpkg.com/@energyweb/origin-backend-client-mocks/-/origin-backend-client-mocks-7.0.0.tgz#cf14ef6e99ee7d9a3e592ebe06f30de5a9245744"
@@ -2760,6 +2776,11 @@
   resolved "https://registry.yarnpkg.com/@icons/material/-/material-0.2.4.tgz#e90c9f71768b3736e76d7dd6783fc6c2afa88bc8"
   integrity sha512-QPcGmICAPbGLGb6F/yNf/KzKqvFx8z5qx3D1yFqVAjoFmXK35EgyW+cJ57Te3CNsmzblwtzakLGFqHPqrfb4Tw==
 
+"@influxdata/influxdb-client@1.9.0":
+  version "1.9.0"
+  resolved "https://registry.yarnpkg.com/@influxdata/influxdb-client/-/influxdb-client-1.9.0.tgz#0178d88c325550fd18cfa54821dd273b3466798a"
+  integrity sha512-wJ+qfGukxMxpDE5d2XHiOspKheWTb1PdPOd2eD3MVuh8hjr6fqyJ3zuacTp/WVubeyppPhM4vYcDjkKCg1OEhA==
+
 "@istanbuljs/load-nyc-config@^1.0.0":
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/@istanbuljs/load-nyc-config/-/load-nyc-config-1.1.0.tgz#fd3db1d59ecf7cf121e80650bb86712f9b55eced"
@@ -3888,6 +3909,16 @@
     webpack "5.9.0"
     webpack-node-externals "2.5.2"
 
+"@nestjs/common@7.6.3":
+  version "7.6.3"
+  resolved "https://registry.yarnpkg.com/@nestjs/common/-/common-7.6.3.tgz#95cd05af4f8f023b7ba34fd27e9fa5f3ce2b8da7"
+  integrity sha512-y6aOMZfWSBnAPi2g/UuhK0IIGNafIvgxAmOVjw9punui1mFpkBe0c0hkEnUOG3iDEVncqooqEgln48D160JA5g==
+  dependencies:
+    axios "0.21.0"
+    iterare "1.2.1"
+    tslib "2.0.3"
+    uuid "8.3.2"
+
 "@nestjs/common@7.6.5":
   version "7.6.5"
   resolved "https://registry.yarnpkg.com/@nestjs/common/-/common-7.6.5.tgz#d6e9435453eef2d1b492384ca27fa23358744949"
@@ -3909,6 +3940,19 @@
     lodash.has "4.5.2"
     lodash.set "4.3.2"
     uuid "8.3.1"
+
+"@nestjs/core@7.6.3":
+  version "7.6.3"
+  resolved "https://registry.yarnpkg.com/@nestjs/core/-/core-7.6.3.tgz#0b3c3518b6ec5e2ca3d5751820d4142639e3c24f"
+  integrity sha512-sOtIcuEYoj0PXhF/aULIXAUS5SW9wYLGkIAtkk8DMjW2CJJkCuAPIQk7LIqAS6tRDnXTluexnQ6artolVd/iDg==
+  dependencies:
+    "@nuxtjs/opencollective" "0.3.2"
+    fast-safe-stringify "2.0.7"
+    iterare "1.2.1"
+    object-hash "2.0.3"
+    path-to-regexp "3.2.0"
+    tslib "2.0.3"
+    uuid "8.3.2"
 
 "@nestjs/core@7.6.5":
   version "7.6.5"
@@ -3996,6 +4040,15 @@
     fs-extra "9.0.1"
     pluralize "8.0.0"
 
+"@nestjs/swagger@4.7.8":
+  version "4.7.8"
+  resolved "https://registry.yarnpkg.com/@nestjs/swagger/-/swagger-4.7.8.tgz#4a7512263edd7d29165797bbddbf4e5763a9197e"
+  integrity sha512-mX955BiwkHUn8IKpqijCDGubx/vmUmADbK1D5pqo9o4hIdweKdqFK8ie6NkL5JNTxO2XOZfj6Dh6WUnDdCCEQg==
+  dependencies:
+    "@nestjs/mapped-types" "0.1.1"
+    lodash "4.17.20"
+    path-to-regexp "3.2.0"
+
 "@nestjs/swagger@4.7.9":
   version "4.7.9"
   resolved "https://registry.yarnpkg.com/@nestjs/swagger/-/swagger-4.7.9.tgz#062305c0f8875cd1af1924f210ee3f4bcd2f397e"
@@ -4004,6 +4057,14 @@
     "@nestjs/mapped-types" "0.1.1"
     lodash "4.17.20"
     path-to-regexp "3.2.0"
+
+"@nestjs/testing@7.6.3":
+  version "7.6.3"
+  resolved "https://registry.yarnpkg.com/@nestjs/testing/-/testing-7.6.3.tgz#011f8061375eed9761788e0d773b80215f7ec159"
+  integrity sha512-rc8Xh/Kq5VXKws0tQYahAxM6gXt310qJBpxTlhVWdXOjGSTYU6jCoZNLYYc3DgOsrBgEDF2db38Fy4h3ck7oLQ==
+  dependencies:
+    optional "0.1.4"
+    tslib "2.0.3"
 
 "@nestjs/testing@7.6.5":
   version "7.6.5"
@@ -14759,6 +14820,11 @@ inflight@^1.0.4:
     once "^1.3.0"
     wrappy "1"
 
+influx@5.6.3:
+  version "5.6.3"
+  resolved "https://registry.yarnpkg.com/influx/-/influx-5.6.3.tgz#53bf79da6a8607b427744cf033aa3c2e7a12cd35"
+  integrity sha512-j2biV776HXb2IbIcp2G24w50IqIWENDnKitm0Vj54vlpw9EfGzY7x7ndCRZSGzzm4fyDLSDQ+/cypZQpuDQxyA==
+
 inherits@2, inherits@2.0.4, inherits@^2.0.1, inherits@^2.0.3, inherits@^2.0.4, inherits@~2.0.1, inherits@~2.0.3, inherits@~2.0.4:
   version "2.0.4"
   resolved "https://registry.yarnpkg.com/inherits/-/inherits-2.0.4.tgz#0fa2c64f932917c3433a0ded55363aae37416b7c"
@@ -18898,6 +18964,11 @@ object-copy@^0.1.0:
     copy-descriptor "^0.1.0"
     define-property "^0.2.5"
     kind-of "^3.0.3"
+
+object-hash@2.0.3:
+  version "2.0.3"
+  resolved "https://registry.yarnpkg.com/object-hash/-/object-hash-2.0.3.tgz#d12db044e03cd2ca3d77c0570d87225b02e1e6ea"
+  integrity sha512-JPKn0GMu+Fa3zt3Bmr66JhokJU5BaNBIh4ZeTlaCBzrBsOeXzwcKKAK1tbLiPKgvwmPXsDvvLHoWh5Bm7ofIYg==
 
 object-hash@2.1.1:
   version "2.1.1"
@@ -26703,17 +26774,10 @@ webpack-virtual-modules@^0.2.2:
   dependencies:
     debug "^3.0.0"
 
-<<<<<<< HEAD
-webpack@5.12.3:
-  version "5.12.3"
-  resolved "https://registry.yarnpkg.com/webpack/-/webpack-5.12.3.tgz#2682aeb6bdf5622a365ef855392f8fa338bcaa28"
-  integrity sha512-7tiQmcTnKhZwbf7X7sEfXe0pgkGjUZjT6JfYkZHvvIb4/ZsXl1rJu5PxsJoN7W3v5sNSP/8TgBoiOdDqVdvK5w==
-=======
 webpack@5.13.0:
   version "5.13.0"
   resolved "https://registry.yarnpkg.com/webpack/-/webpack-5.13.0.tgz#275351b043bd212562f4390e903619d07d5a2fcf"
   integrity sha512-NPhMEtfhSVegp1FNPkCM1MPygDm0GHwpreG10dh//0Gr0epfB0br9nlgEfxSghxJqrQ7j9XzgO91CGGLWZiHeA==
->>>>>>> 35f5df948c5559975eb98a0948ef57186f868bb7
   dependencies:
     "@types/eslint-scope" "^3.7.0"
     "@types/estree" "^0.0.45"
@@ -26723,11 +26787,7 @@ webpack@5.13.0:
     acorn "^8.0.4"
     browserslist "^4.14.5"
     chrome-trace-event "^1.0.2"
-<<<<<<< HEAD
-    enhanced-resolve "^5.3.1"
-=======
     enhanced-resolve "^5.6.0"
->>>>>>> 35f5df948c5559975eb98a0948ef57186f868bb7
     eslint-scope "^5.1.1"
     events "^3.2.0"
     glob-to-regexp "^0.4.1"
