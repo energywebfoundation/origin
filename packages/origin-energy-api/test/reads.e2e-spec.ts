@@ -10,7 +10,7 @@ import { Aggregate } from '@energyweb/energy-api-influxdb/dist/reads/aggregate.e
 import { request, authGuard } from './request';
 import { ReadsController } from '../src/reads/reads.controller';
 
-describe('ReadsController (e2e)', () => {
+describe.skip('ReadsController (e2e)', () => {
     let app: INestApplication;
 
     const INFLUXDB_URL = 'http://localhost:8086';
