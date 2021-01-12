@@ -10,13 +10,13 @@ import { Aggregate } from '@energyweb/energy-api-influxdb/dist/reads/aggregate.e
 import { request, authGuard } from './request';
 import { ReadsController } from '../src/reads/reads.controller';
 
-describe.skip('ReadsController (e2e)', () => {
+describe('ReadsController (e2e)', () => {
     let app: INestApplication;
 
-    const INFLUXDB_URL = 'http://localhost:8086';
-    const INFLUXDB_TOKEN = 'admin:admin';
-    const INFLUXDB_ORG = 'org';
-    const INFLUXDB_BUCKET = 'energy/autogen';
+    const INFLUXDB_URL = process.env.INFLUXDB_URL ?? 'http://localhost:8086';
+    const INFLUXDB_TOKEN = process.env.INFLUXDB_TOKEN ?? 'admin:admin';
+    const INFLUXDB_ORG = process.env.INFLUXDB_ORG ?? 'org';
+    const INFLUXDB_BUCKET = process.env.INFLUXDB_BUCKET ?? 'energy/autogen';
 
     const configService = new ConfigService({
         INFLUXDB_URL,
