@@ -3,10 +3,11 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { Test, TestingModule } from '@nestjs/testing';
 import { expect } from 'chai';
 import { InfluxDB } from 'influx';
+import { AuthGuard } from '@nestjs/passport';
 
 import { MeasurementDTO, ReadDTO, ReadsService, Unit } from '@energyweb/energy-api-influxdb';
 import { Aggregate } from '@energyweb/energy-api-influxdb/dist/reads/aggregate.enum';
-import { request } from './request';
+import { request, authGuard } from './request';
 import { ReadsController } from '../src/reads/reads.controller';
 
 describe('ReadsController (e2e)', () => {
@@ -32,6 +33,8 @@ describe('ReadsController (e2e)', () => {
         })
             .overrideProvider(ConfigService)
             .useValue(configService)
+            .overrideGuard(AuthGuard('default'))
+            .useValue(authGuard)
             .compile();
 
         app = moduleFixture.createNestApplication();
