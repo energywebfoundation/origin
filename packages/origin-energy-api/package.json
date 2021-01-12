@@ -26,7 +26,8 @@
     },
     "dependencies": {
         "@energyweb/energy-api-influxdb": "0.6.1",
-        "@nestjs/common": "7.6.3",
+        "@energyweb/origin-backend-core": "7.0.1",
+        "@nestjs/common": "7.6.5",
         "@nestjs/config": "0.6.1",
         "@nestjs/core": "7.6.3",
         "@nestjs/swagger": "4.7.8",

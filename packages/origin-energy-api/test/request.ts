@@ -1,6 +1,8 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-var-requires */
-import { INestApplication } from '@nestjs/common';
+import { INestApplication, CanActivate, ExecutionContext } from '@nestjs/common';
 import supertest from 'supertest';
+import { UserStatus } from '@energyweb/origin-backend-core';
 
 const use = require('superagent-use');
 const captureError = require('supertest-capture-error');
@@ -14,3 +16,14 @@ export const request = (app: INestApplication): supertest.SuperTest<supertest.Te
             error.stack = '';
         })
     );
+
+const authenticatedUser = { id: 1, organization: { id: '1000' }, status: UserStatus.Active };
+
+export const authGuard: CanActivate = {
+    canActivate: (context: ExecutionContext) => {
+        const req = context.switchToHttp().getRequest();
+        req.user = authenticatedUser;
+
+        return true;
+    }
+};

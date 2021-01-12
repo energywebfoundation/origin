@@ -3904,6 +3904,16 @@
     webpack "5.9.0"
     webpack-node-externals "2.5.2"
 
+"@nestjs/common@7.6.3":
+  version "7.6.3"
+  resolved "https://registry.yarnpkg.com/@nestjs/common/-/common-7.6.3.tgz#95cd05af4f8f023b7ba34fd27e9fa5f3ce2b8da7"
+  integrity sha512-y6aOMZfWSBnAPi2g/UuhK0IIGNafIvgxAmOVjw9punui1mFpkBe0c0hkEnUOG3iDEVncqooqEgln48D160JA5g==
+  dependencies:
+    axios "0.21.0"
+    iterare "1.2.1"
+    tslib "2.0.3"
+    uuid "8.3.2"
+
 "@nestjs/common@7.6.5":
   version "7.6.5"
   resolved "https://registry.yarnpkg.com/@nestjs/common/-/common-7.6.5.tgz#d6e9435453eef2d1b492384ca27fa23358744949"
@@ -3925,6 +3935,19 @@
     lodash.has "4.5.2"
     lodash.set "4.3.2"
     uuid "8.3.1"
+
+"@nestjs/core@7.6.3":
+  version "7.6.3"
+  resolved "https://registry.yarnpkg.com/@nestjs/core/-/core-7.6.3.tgz#0b3c3518b6ec5e2ca3d5751820d4142639e3c24f"
+  integrity sha512-sOtIcuEYoj0PXhF/aULIXAUS5SW9wYLGkIAtkk8DMjW2CJJkCuAPIQk7LIqAS6tRDnXTluexnQ6artolVd/iDg==
+  dependencies:
+    "@nuxtjs/opencollective" "0.3.2"
+    fast-safe-stringify "2.0.7"
+    iterare "1.2.1"
+    object-hash "2.0.3"
+    path-to-regexp "3.2.0"
+    tslib "2.0.3"
+    uuid "8.3.2"
 
 "@nestjs/core@7.6.5":
   version "7.6.5"
@@ -4012,6 +4035,15 @@
     fs-extra "9.0.1"
     pluralize "8.0.0"
 
+"@nestjs/swagger@4.7.8":
+  version "4.7.8"
+  resolved "https://registry.yarnpkg.com/@nestjs/swagger/-/swagger-4.7.8.tgz#4a7512263edd7d29165797bbddbf4e5763a9197e"
+  integrity sha512-mX955BiwkHUn8IKpqijCDGubx/vmUmADbK1D5pqo9o4hIdweKdqFK8ie6NkL5JNTxO2XOZfj6Dh6WUnDdCCEQg==
+  dependencies:
+    "@nestjs/mapped-types" "0.1.1"
+    lodash "4.17.20"
+    path-to-regexp "3.2.0"
+
 "@nestjs/swagger@4.7.9":
   version "4.7.9"
   resolved "https://registry.yarnpkg.com/@nestjs/swagger/-/swagger-4.7.9.tgz#062305c0f8875cd1af1924f210ee3f4bcd2f397e"
@@ -4020,6 +4052,14 @@
     "@nestjs/mapped-types" "0.1.1"
     lodash "4.17.20"
     path-to-regexp "3.2.0"
+
+"@nestjs/testing@7.6.3":
+  version "7.6.3"
+  resolved "https://registry.yarnpkg.com/@nestjs/testing/-/testing-7.6.3.tgz#011f8061375eed9761788e0d773b80215f7ec159"
+  integrity sha512-rc8Xh/Kq5VXKws0tQYahAxM6gXt310qJBpxTlhVWdXOjGSTYU6jCoZNLYYc3DgOsrBgEDF2db38Fy4h3ck7oLQ==
+  dependencies:
+    optional "0.1.4"
+    tslib "2.0.3"
 
 "@nestjs/testing@7.6.5":
   version "7.6.5"
@@ -14517,16 +14557,12 @@ inflight@^1.0.4:
     once "^1.3.0"
     wrappy "1"
 
-<<<<<<< HEAD
-inherits@2, inherits@2.0.4, inherits@^2.0.1, inherits@^2.0.3, inherits@^2.0.4, inherits@~2.0.1, inherits@~2.0.3, inherits@~2.0.4:
-=======
 influx@5.6.3:
   version "5.6.3"
   resolved "https://registry.yarnpkg.com/influx/-/influx-5.6.3.tgz#53bf79da6a8607b427744cf033aa3c2e7a12cd35"
   integrity sha512-j2biV776HXb2IbIcp2G24w50IqIWENDnKitm0Vj54vlpw9EfGzY7x7ndCRZSGzzm4fyDLSDQ+/cypZQpuDQxyA==
 
-inherits@2, inherits@2.0.4, inherits@^2.0.1, inherits@^2.0.3, inherits@~2.0.0, inherits@~2.0.1, inherits@~2.0.3, inherits@~2.0.4:
->>>>>>> e8cc083ab80ca148322bc51898252666963e6444
+inherits@2, inherits@2.0.4, inherits@^2.0.1, inherits@^2.0.3, inherits@^2.0.4, inherits@~2.0.1, inherits@~2.0.3, inherits@~2.0.4:
   version "2.0.4"
   resolved "https://registry.yarnpkg.com/inherits/-/inherits-2.0.4.tgz#0fa2c64f932917c3433a0ded55363aae37416b7c"
   integrity sha512-k/vGaX4/Yla3WzyMCvTQOXYeIHvqOKtnqBduzTHpzpQZzAskKMhZ2K+EnBiSM9zGSoIFeMpXKxa4dYeZIQqewQ==
@@ -18646,6 +18682,11 @@ object-copy@^0.1.0:
     copy-descriptor "^0.1.0"
     define-property "^0.2.5"
     kind-of "^3.0.3"
+
+object-hash@2.0.3:
+  version "2.0.3"
+  resolved "https://registry.yarnpkg.com/object-hash/-/object-hash-2.0.3.tgz#d12db044e03cd2ca3d77c0570d87225b02e1e6ea"
+  integrity sha512-JPKn0GMu+Fa3zt3Bmr66JhokJU5BaNBIh4ZeTlaCBzrBsOeXzwcKKAK1tbLiPKgvwmPXsDvvLHoWh5Bm7ofIYg==
 
 object-hash@2.1.1:
   version "2.1.1"
@@ -27296,29 +27337,3 @@ yup@0.32.8:
     nanoclone "^0.2.1"
     property-expr "^2.0.4"
     toposort "^2.0.2"
-
-"@energyweb/energy-api-influxdb@0.6.1":
-  version "0.6.1"
-  resolved "https://registry.yarnpkg.com/@energyweb/energy-api-influxdb/-/energy-api-influxdb-0.6.1.tgz#8447386a6d1d606b9b6d89951e02891d65e0bebf"
-  integrity sha512-tDPw5oV9Ex7bKfXYAyrEE6WC+dzVGfLf9v5oo5Bgyi9rTfpLvA/MXMWRb22oSS7fta+ZtoEUigtHvLWjg321LA==
-  dependencies:
-    "@influxdata/influxdb-client" "1.9.0"
-    "@nestjs/common" "7.6.3"
-    "@nestjs/config" "0.6.1"
-    "@nestjs/core" "7.6.3"
-    "@nestjs/swagger" "4.7.8"
-    class-transformer "0.3.1"
-    class-validator "0.12.2"
-    reflect-metadata "0.1.13"
-    rimraf "3.0.2"
-    rxjs "6.6.3"
-
-"@influxdata/influxdb-client@1.9.0":
-  version "1.9.0"
-  resolved "https://registry.yarnpkg.com/@influxdata/influxdb-client/-/influxdb-client-1.9.0.tgz#0178d88c325550fd18cfa54821dd273b3466798a"
-  integrity sha512-wJ+qfGukxMxpDE5d2XHiOspKheWTb1PdPOd2eD3MVuh8hjr6fqyJ3zuacTp/WVubeyppPhM4vYcDjkKCg1OEhA==
-
-influx@5.6.3:
-  version "5.6.3"
-  resolved "https://registry.yarnpkg.com/influx/-/influx-5.6.3.tgz#53bf79da6a8607b427744cf033aa3c2e7a12cd35"
-  integrity sha512-j2biV776HXb2IbIcp2G24w50IqIWENDnKitm0Vj54vlpw9EfGzY7x7ndCRZSGzzm4fyDLSDQ+/cypZQpuDQxyA==
