@@ -34,6 +34,7 @@ import { ConfigurationService } from '../configuration';
 import { OrganizationService } from '../organization/organization.service';
 import { Device } from './device.entity';
 import { DeviceStatusChangedEvent } from './events';
+import { DeviceCreatedEvent } from './events/device-created.event';
 
 @Injectable()
 export class DeviceService {
@@ -110,7 +111,11 @@ export class DeviceService {
 
         await this.repository.save(newEntity);
 
-        return this.findOne(newEntity.id.toString());
+        const device = await this.findOne(newEntity.id.toString());
+
+        this.eventBus.publish(new DeviceCreatedEvent(device));
+
+        return device;
     }
 
     async remove(entity: Device): Promise<void> {
