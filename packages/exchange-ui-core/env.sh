@@ -6,11 +6,11 @@ REQUIRED_VARIABLES=(
 )
 
 # Recreate config file
-rm -rf ./env-config.js
-touch ./env-config.js
+rm -rf ./env-config.json
+touch ./env-config.json
 
 # Add assignment
-echo "{" >> ./env-config.js
+echo "{" >> ./env-config.json
 
 envToRead=.env
 rootEnvFile=../../.env
@@ -27,16 +27,16 @@ for i in "${REQUIRED_VARIABLES[@]}"
     value=$(printf '%s\n' "${!varname}")
 
     if [ -z "$value" ]; then
-      if test -f $rootEnvFile; then
-        value=$(grep -e '^'$varname'=.*' $rootEnvFile | cut -d '=' -f2 | xargs)
+      if test -f $envToRead; then
+        value=$(grep -e '^'$varname'=.*' $envToRead | cut -d '=' -f2 | xargs)
       fi
     fi
 
     if [[ $i == $last ]]; then
-        echo "    \"$varname\": \"$value\"" >> ./env-config.js
+        echo "    \"$varname\": \"$value\"" >> ./env-config.json
       else
-        echo "    \"$varname\": \"$value\"," >> ./env-config.js
+        echo "    \"$varname\": \"$value\"," >> ./env-config.json
     fi
   done
 
-echo "}" >> ./env-config.js
+echo "}" >> ./env-config.json
