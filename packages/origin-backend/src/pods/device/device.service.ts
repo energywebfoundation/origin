@@ -113,7 +113,7 @@ export class DeviceService {
 
         const device = await this.findOne(newEntity.id.toString());
 
-        this.eventBus.publish(new DeviceCreatedEvent(device));
+        this.eventBus.publish(new DeviceCreatedEvent(device, loggedUser.id));
 
         return device;
     }
