@@ -32,6 +32,7 @@ import { TransferCertificateDTO } from './commands/transfer-certificate.dto';
 import { ClaimCertificateDTO } from './commands/claim-certificate.dto';
 import { ClaimCertificateCommand } from './commands/claim-certificate.command';
 import { GetCertificateByTokenIdQuery } from './queries/get-certificate-by-token.query';
+import { GetAggregateCertifiedEnergyByDeviceIdQuery } from './queries/get-aggregate-certified-energy-by-device.query';
 import { BulkClaimCertificatesCommand } from './commands/bulk-claim-certificates.command';
 import { BulkClaimCertificatesDTO } from './commands/bulk-claim-certificates.dto';
 import { CertificateEvent } from '../../types';
@@ -89,6 +90,22 @@ export class CertificateController {
         @UserDecorator() { blockchainAccountAddress }: ILoggedInUser
     ): Promise<CertificateDTO[]> {
         return this.queryBus.execute(new GetAllCertificatesQuery(blockchainAccountAddress));
+    }
+
+    @Get('/issuer/certified/:deviceId')
+    @UseGuards(AuthGuard(), ActiveUserGuard)
+    @ApiResponse({
+        status: HttpStatus.OK,
+        type: String,
+        description: 'Returns SUM of certified energy by device ID'
+    })
+    public async getAggregateCertifiedEnergyByDeviceId(
+        @Param('deviceId') deviceId: string,
+        @UserDecorator() { blockchainAccountAddress }: ILoggedInUser
+    ): Promise<string> {
+        return this.queryBus.execute(
+            new GetAggregateCertifiedEnergyByDeviceIdQuery(deviceId, blockchainAccountAddress)
+        );
     }
 
     @Post()
