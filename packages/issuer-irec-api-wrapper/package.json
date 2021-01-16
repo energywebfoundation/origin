@@ -27,7 +27,7 @@
         "form-data": "3.0.0",
         "moment": "2.27.0",
         "moment-timezone": "0.5.32",
-        "qs": "6.9.4",
+        "qs": "6.9.6",
         "reflect-metadata": "0.1.13"
     }
 }
