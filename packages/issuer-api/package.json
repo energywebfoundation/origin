@@ -49,7 +49,7 @@
         "@nestjs/schedule": "0.4.1",
         "@nestjs/swagger": "4.7.11",
         "@nestjs/typeorm": "7.1.5",
-        "class-validator": "0.12.2",
+        "class-validator": "0.13.1",
         "ethers": "5.0.15",
         "moment": "2.24.0",
         "moment-range": "4.0.2",
