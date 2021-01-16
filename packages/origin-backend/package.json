@@ -70,7 +70,7 @@
         "precise-proofs-js": "1.2.0",
         "reflect-metadata": "0.1.13",
         "rxjs": "6.6.3",
-        "typeorm": "0.2.29",
+        "typeorm": "0.2.30",
         "uuid": "8.3.2"
     },
     "devDependencies": {
