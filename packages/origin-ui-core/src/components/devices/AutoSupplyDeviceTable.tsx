@@ -22,7 +22,7 @@ import {
 } from '../Table';
 import { CustomFilterInputType, ICustomFilterDefinition } from '../Table/FiltersHeader';
 import { UpdateSupplyModal } from '../Modal/UpdateSupplyModal';
-import { Requirements } from '@energyweb/origin-ui-core/src/components/Requirements';
+import { Requirements } from '../Requirements';
 
 interface IRecord {
     device: IDevice;
