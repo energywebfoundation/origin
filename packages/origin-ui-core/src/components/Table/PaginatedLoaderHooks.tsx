@@ -282,12 +282,18 @@ export function checkRecordPassesFilters(
                                 }
                                 break;
                             case FilterRules.FROM:
-                                if (recordDate.year() < year || recordDate.month() < month) {
+                                if (
+                                    recordDate.year() < year ||
+                                    (recordDate.year() === year && recordDate.month() < month)
+                                ) {
                                     return false;
                                 }
                                 break;
                             case FilterRules.TO:
-                                if (recordDate.year() > year || recordDate.month() > month) {
+                                if (
+                                    recordDate.year() > year ||
+                                    (recordDate.year() === year && recordDate.month() > month)
+                                ) {
                                     return false;
                                 }
                                 break;
