@@ -16,13 +16,15 @@ import {
     ParseIntPipe,
     Put,
     UseInterceptors,
-    HttpStatus
+    HttpStatus,
+    Query
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { ILoggedInUser, Role } from '@energyweb/origin-backend-core';
 
 import { ApiBearerAuth, ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
+import moment from 'moment';
 import { IssueCertificateCommand } from './commands/issue-certificate.command';
 import { IssueCertificateDTO } from './commands/issue-certificate.dto';
 import { GetAllCertificatesQuery } from './queries/get-all-certificates.query';
@@ -101,11 +103,20 @@ export class CertificateController {
     })
     public async getAggregateCertifiedEnergyByDeviceId(
         @Param('deviceId') deviceId: string,
-        @Param('startDate') startDate: number,
-        @Param('endDate') endDate: number
+        @Query('start') start: string,
+        @Query('end') end: string,
+        @UserDecorator() { blockchainAccountAddress }: ILoggedInUser
     ): Promise<string> {
+        const startDateToUnix = moment(start).unix();
+        const endDateToUnix = moment(end).unix();
+
         return this.queryBus.execute(
-            new GetAggregateCertifiedEnergyByDeviceIdQuery(deviceId, startDate, endDate)
+            new GetAggregateCertifiedEnergyByDeviceIdQuery(
+                deviceId,
+                startDateToUnix,
+                endDateToUnix,
+                blockchainAccountAddress
+            )
         );
     }
 
