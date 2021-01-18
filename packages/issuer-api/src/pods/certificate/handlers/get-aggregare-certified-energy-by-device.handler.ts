@@ -1,24 +1,32 @@
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { Certificate } from '../certificate.entity';
+import { LessThanOrEqual, MoreThanOrEqual, Repository } from 'typeorm';
+import { IssueCertificateDTO } from '../commands/issue-certificate.dto';
 import { GetAggregateCertifiedEnergyByDeviceIdQuery } from '../queries/get-aggregate-certified-energy-by-device.query';
-import { certificateToDto } from '../utils';
 
 @QueryHandler(GetAggregateCertifiedEnergyByDeviceIdQuery)
 export class GetAggregateCertifiedEnergyDeviceIdHandler
     implements IQueryHandler<GetAggregateCertifiedEnergyByDeviceIdQuery> {
     constructor(
-        @InjectRepository(Certificate)
-        private readonly repository: Repository<Certificate>
+        @InjectRepository(IssueCertificateDTO)
+        private readonly repository: Repository<IssueCertificateDTO>
     ) {}
 
     async execute({
-        userId,
-        deviceId
+        deviceId,
+        startDate,
+        endDate
     }: GetAggregateCertifiedEnergyByDeviceIdQuery): Promise<string> {
-        const certificate = await this.repository.findOne({ deviceId });
+        const energies = await this.repository.find({
+            deviceId,
+            fromTime: MoreThanOrEqual(startDate),
+            toTime: LessThanOrEqual(endDate)
+        });
 
-        return certificateToDto(certificate, userId);
+        if (!energies) {
+            return '0';
+        }
+
+        return `${energies.reduce((a, b) => a + (parseInt(b.energy, 10) || 0), 0)}`;
     }
 }

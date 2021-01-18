@@ -101,10 +101,11 @@ export class CertificateController {
     })
     public async getAggregateCertifiedEnergyByDeviceId(
         @Param('deviceId') deviceId: string,
-        @UserDecorator() { blockchainAccountAddress }: ILoggedInUser
+        @Param('startDate') startDate: number,
+        @Param('endDate') endDate: number
     ): Promise<string> {
         return this.queryBus.execute(
-            new GetAggregateCertifiedEnergyByDeviceIdQuery(deviceId, blockchainAccountAddress)
+            new GetAggregateCertifiedEnergyByDeviceIdQuery(deviceId, startDate, endDate)
         );
     }
 
