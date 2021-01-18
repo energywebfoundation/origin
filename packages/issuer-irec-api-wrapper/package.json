@@ -23,11 +23,11 @@
     "dependencies": {
         "axios": "0.21.1",
         "class-transformer": "0.3.1",
-        "class-validator": "0.12.2",
+        "class-validator": "0.13.1",
         "form-data": "3.0.0",
         "moment": "2.27.0",
         "moment-timezone": "0.5.32",
-        "qs": "6.9.4",
+        "qs": "6.9.6",
         "reflect-metadata": "0.1.13"
     }
 }
