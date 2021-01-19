@@ -7,6 +7,7 @@ import moment from 'moment';
 import { IClaimData, IClaim } from '@energyweb/issuer';
 import { Role } from '@energyweb/origin-backend-core';
 import { DatabaseService } from '@energyweb/origin-backend-utils';
+import { BigNumber, constants } from 'ethers';
 import {
     authenticatedUser,
     bootstrapTestInstance,
@@ -27,6 +28,36 @@ const certificateTestData = {
 
 const setUserRole = (role: Role) => {
     authenticatedUser.rights = role;
+};
+
+const createCertificates = async (app: INestApplication) => {
+    certificateTestData.deviceId = moment().unix().toString();
+
+    await request(app.getHttpServer())
+        .post('/certificate')
+        .send(certificateTestData)
+        .expect(HttpStatus.CREATED)
+        .expect((res) => {
+            const { deviceId, generationStartTime, generationEndTime, energy } = res.body;
+
+            expect(certificateTestData.deviceId).to.equal(deviceId);
+            expect(certificateTestData.fromTime).to.equal(generationStartTime);
+            expect(certificateTestData.toTime).to.equal(generationEndTime);
+            expect(certificateTestData.energy).to.equal(energy.publicVolume);
+        });
+
+    await request(app.getHttpServer())
+        .post('/certificate')
+        .send(certificateTestData)
+        .expect(HttpStatus.CREATED)
+        .expect((res) => {
+            const { deviceId, generationStartTime, generationEndTime, energy } = res.body;
+
+            expect(certificateTestData.deviceId).to.equal(deviceId);
+            expect(certificateTestData.fromTime).to.equal(generationStartTime);
+            expect(certificateTestData.toTime).to.equal(generationEndTime);
+            expect(certificateTestData.energy).to.equal(energy.publicVolume);
+        });
 };
 
 describe('Certificate tests', () => {
@@ -423,6 +454,30 @@ describe('Certificate tests', () => {
             .expect((eventsResponse) => {
                 const { body: events } = eventsResponse;
                 expect(events.length).to.be.above(0);
+            });
+    });
+
+    it('should return sum of all certified energy for a given device id', async () => {
+        setUserRole(Role.Issuer);
+
+        await createCertificates(app);
+
+        setUserRole(Role.OrganizationDeviceManager);
+
+        const startDate = moment.unix(certificateTestData.fromTime).toISOString();
+        const endDate = moment.unix(certificateTestData.toTime).toISOString();
+
+        await request(app.getHttpServer())
+            .get(
+                `/certificate/issuer/certified/${certificateTestData.deviceId}?start=${startDate}&end=${endDate}`
+            )
+            .expect(HttpStatus.OK)
+            .expect((res) => {
+                expect(res.text).to.equal(
+                    `${BigNumber.from(constants.Two).mul(
+                        BigNumber.from(certificateTestData.energy)
+                    )}`
+                );
             });
     });
 });
