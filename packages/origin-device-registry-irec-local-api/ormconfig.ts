@@ -24,7 +24,7 @@ const config: ConnectionOptions = {
     synchronize: false,
     migrationsRun: true,
     migrations: [`${__dirname}/migrations/*.js`],
-    migrationsTableName: 'migrations_device_registry_irec'
+    migrationsTableName: 'migrations_device_registry_irec_local'
 };
 
 export = config;

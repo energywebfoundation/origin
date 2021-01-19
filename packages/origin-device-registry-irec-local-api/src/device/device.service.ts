@@ -6,7 +6,7 @@ import { FindManyOptions, Repository } from 'typeorm';
 
 import { Device } from './device.entity';
 import { CreateDeviceDTO } from './dto/create-device.dto';
-import { DeviceStatusChangedEvent } from './events';
+import { DeviceStatusChangedEvent, DeviceCreatedEvent } from './events';
 
 @Injectable()
 export class DeviceService {
@@ -27,6 +27,8 @@ export class DeviceService {
         });
 
         const storedDevice = await this.repository.save(deviceToStore);
+
+        this.eventBus.publish(new DeviceCreatedEvent(storedDevice, user.id));
 
         return storedDevice;
     }

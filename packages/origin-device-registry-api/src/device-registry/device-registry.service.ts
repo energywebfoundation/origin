@@ -24,6 +24,10 @@ export class DeviceRegistryService {
         return this.repository.find(options);
     }
 
+    async findOne(id: string): Promise<Device> {
+        return this.repository.findOne(id);
+    }
+
     public async register(user: ILoggedInUser, newDevice: NewDeviceDTO): Promise<string> {
         await this.validateRegistration(user, newDevice);
 

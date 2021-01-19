@@ -67,6 +67,5 @@
     "files": [
         "dist",
         "bin"
-    ],
-    "private": true
+    ]
 }
