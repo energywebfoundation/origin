@@ -1,5 +1,6 @@
 import { ILoggedInUser, Role } from '@energyweb/origin-backend-core';
 import {
+    ActiveOrganizationGuard,
     ActiveUserGuard,
     NullOrUndefinedResultInterceptor,
     Roles,
@@ -80,7 +81,7 @@ export class DeviceController {
     }
 
     @Post()
-    @UseGuards(AuthGuard(), ActiveUserGuard, RolesGuard)
+    @UseGuards(AuthGuard(), ActiveUserGuard, RolesGuard, ActiveOrganizationGuard)
     @Roles(Role.OrganizationAdmin, Role.OrganizationDeviceManager)
     @ApiBody({ type: CreateDeviceDTO })
     @ApiResponse({ status: HttpStatus.CREATED, type: DeviceDTO, description: 'Creates a Device' })

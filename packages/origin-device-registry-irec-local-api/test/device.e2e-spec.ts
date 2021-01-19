@@ -55,7 +55,7 @@ describe('Device e2e tests', () => {
             .post('/irec/device-registry')
             .send(exampleDevice)
             .set({ 'test-user': TestUser.SubmittedOrganizationAdmin })
-            .expect(HttpStatus.PRECONDITION_FAILED);
+            .expect(HttpStatus.FORBIDDEN);
     });
 
     it('should not allow organization admin to approve the device', async () => {
