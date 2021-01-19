@@ -16,13 +16,15 @@ import {
     ParseIntPipe,
     Put,
     UseInterceptors,
-    HttpStatus
+    HttpStatus,
+    Query
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { ILoggedInUser, Role } from '@energyweb/origin-backend-core';
 
 import { ApiBearerAuth, ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
+import moment from 'moment';
 import { IssueCertificateCommand } from './commands/issue-certificate.command';
 import { IssueCertificateDTO } from './commands/issue-certificate.dto';
 import { GetAllCertificatesQuery } from './queries/get-all-certificates.query';
@@ -32,6 +34,7 @@ import { TransferCertificateDTO } from './commands/transfer-certificate.dto';
 import { ClaimCertificateDTO } from './commands/claim-certificate.dto';
 import { ClaimCertificateCommand } from './commands/claim-certificate.command';
 import { GetCertificateByTokenIdQuery } from './queries/get-certificate-by-token.query';
+import { GetAggregateCertifiedEnergyByDeviceIdQuery } from './queries/get-aggregate-certified-energy-by-device.query';
 import { BulkClaimCertificatesCommand } from './commands/bulk-claim-certificates.command';
 import { BulkClaimCertificatesDTO } from './commands/bulk-claim-certificates.dto';
 import { CertificateEvent } from '../../types';
@@ -89,6 +92,32 @@ export class CertificateController {
         @UserDecorator() { blockchainAccountAddress }: ILoggedInUser
     ): Promise<CertificateDTO[]> {
         return this.queryBus.execute(new GetAllCertificatesQuery(blockchainAccountAddress));
+    }
+
+    @Get('/issuer/certified/:deviceId')
+    @UseGuards(AuthGuard(), ActiveUserGuard)
+    @ApiResponse({
+        status: HttpStatus.OK,
+        type: String,
+        description: 'Returns SUM of certified energy by device ID'
+    })
+    public async getAggregateCertifiedEnergyByDeviceId(
+        @Param('deviceId') deviceId: string,
+        @Query('start') start: string,
+        @Query('end') end: string,
+        @UserDecorator() { blockchainAccountAddress }: ILoggedInUser
+    ): Promise<string> {
+        const startDateToUnix = moment(start).unix();
+        const endDateToUnix = moment(end).unix();
+
+        return this.queryBus.execute(
+            new GetAggregateCertifiedEnergyByDeviceIdQuery(
+                deviceId,
+                startDateToUnix,
+                endDateToUnix,
+                blockchainAccountAddress
+            )
+        );
     }
 
     @Post()
