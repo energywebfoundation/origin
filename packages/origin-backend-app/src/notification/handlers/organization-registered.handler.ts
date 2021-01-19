@@ -1,7 +1,8 @@
-import { OrganizationRegisteredEvent, UserService } from '@energyweb/origin-backend';
-import { Role } from '@energyweb/origin-backend-core';
 import { Logger } from '@nestjs/common';
 import { EventsHandler, IEventHandler } from '@nestjs/cqrs';
+import { OrganizationRegisteredEvent, UserService } from '@energyweb/origin-backend';
+import { Role } from '@energyweb/origin-backend-core';
+import { RegistrationService } from '@energyweb/origin-organization-irec-api';
 
 import { MailService } from '../../mail';
 
@@ -11,14 +12,19 @@ export class OrganizationRegisteredHandler implements IEventHandler<Organization
 
     constructor(
         private readonly mailService: MailService,
-        private readonly userService: UserService
+        private readonly userService: UserService,
+        private readonly registrationService: RegistrationService
     ) {}
 
     public async handle(event: OrganizationRegisteredEvent): Promise<void> {
         const { organization, member } = event;
 
         const admins = await this.userService.getAll({ where: { rights: Role.Admin } });
-        const emails = admins.map((a) => a.email);
+        const registrations = await this.registrationService.find(String(organization.id));
+        const emails = [
+            ...registrations.map((r) => r.leadUserEmail),
+            ...admins.map((a) => a.email)
+        ];
 
         const result = await this.mailService.send({
             to: emails,
