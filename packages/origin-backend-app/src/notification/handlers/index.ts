@@ -6,3 +6,4 @@ export { OrganizationMemberRoleChangedHandler } from './organization-member-role
 export { OrganizationStatusChangedHandler } from './organization-status-changed.handler';
 export { RegistrationCreatedHandler } from './registration-created.handler';
 export { OrganizationRegisteredHandler } from './organization-registered.handler';
+export { DeviceCreatedHandler } from './device-created.handler';

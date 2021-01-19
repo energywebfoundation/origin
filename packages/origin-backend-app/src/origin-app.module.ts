@@ -20,6 +20,7 @@ import { CqrsModule } from '@nestjs/cqrs';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import {
+    DeviceCreatedHandler,
     DeviceStatusChangedHandler,
     EmailConfirmationRequestedHandler,
     InvitationCreatedHandler,
@@ -83,6 +84,7 @@ export class OriginAppModule {
             ],
             providers: [
                 { provide: APP_INTERCEPTOR, useClass: HTTPLoggingInterceptor },
+                DeviceCreatedHandler,
                 DeviceStatusChangedHandler,
                 EmailConfirmationRequestedHandler,
                 InvitationCreatedHandler,
