@@ -1,11 +1,11 @@
-import { Role } from '.';
+import { IBlockchainAccount, Role } from '.';
 import { isRole, IUser } from './User';
 
 export interface ILoggedInUser {
     id: number;
     organizationId: number;
     email: string;
-    blockchainAccountAddress: string;
+    blockchainAccounts: IBlockchainAccount[];
     rights: number;
     hasRole(...role: Role[]): boolean;
     ownerId: string;
@@ -17,7 +17,7 @@ export class LoggedInUser implements ILoggedInUser {
         this.id = user.id;
         this.organizationId = user.organization?.id;
         this.email = user.email;
-        this.blockchainAccountAddress = user.blockchainAccountAddress;
+        this.blockchainAccounts = user.blockchainAccounts;
         this.rights = user.rights;
     }
 
@@ -27,7 +27,7 @@ export class LoggedInUser implements ILoggedInUser {
 
     email: string;
 
-    blockchainAccountAddress: string;
+    blockchainAccounts: IBlockchainAccount[];
 
     rights: number;
 

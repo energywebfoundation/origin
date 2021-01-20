@@ -7,7 +7,8 @@ import {
     UserPasswordUpdate,
     UserRegistrationData,
     IUserFilter,
-    ILoggedInUser
+    ILoggedInUser,
+    BlockchainAccountType
 } from '@energyweb/origin-backend-core';
 import { recoverTypedSignatureAddress } from '@energyweb/utils-general';
 import {
@@ -25,6 +26,7 @@ import { ExtendedBaseEntity } from '@energyweb/origin-backend-utils';
 import { User } from './user.entity';
 import { EmailConfirmationService } from '../email-confirmation/email-confirmation.service';
 import { UpdateUserProfileDTO } from './dto/update-user-profile.dto';
+import { BlockchainAccountDTO } from './dto/blockchain-account.dto';
 
 export type TUserBaseEntity = ExtendedBaseEntity & IUser;
 
@@ -126,34 +128,30 @@ export class UserService {
         return bcrypt.hashSync(password, this.config.get<number>('PASSWORD_HASH_COST'));
     }
 
-    async attachSignedMessage(id: number | string, signedMessage: string) {
+    async updateBlockchainAddress(
+        id: number | string,
+        signedMessage: BlockchainAccountDTO['signedMessage']
+    ) {
         if (!signedMessage) {
             throw new Error('Signed message is empty.');
         }
 
         const user = await this.findById(id);
 
-        if (user.blockchainAccountAddress) {
-            throw new Error('User has blockchain account already linked.');
-        }
-
         const address = await recoverTypedSignatureAddress(
             this.config.get<string>('REGISTRATION_MESSAGE_TO_SIGN'),
             signedMessage
         );
 
-        const alreadyExistingUserWithAddress = await this.repository.findOne({
-            blockchainAccountAddress: address
-        });
-
-        if (alreadyExistingUserWithAddress) {
-            throw new Error(
-                `This blockchain address has already been linked to a different account.`
-            );
+        if (user.blockchainAccounts.some((account) => account.address === address)) {
+            throw new Error('User has blockchain account already linked.');
         }
 
-        user.blockchainAccountSignedMessage = signedMessage;
-        user.blockchainAccountAddress = address;
+        user.blockchainAccounts.push({
+            address,
+            type: BlockchainAccountType.User,
+            signedMessage
+        });
 
         await this.repository.save((user as unknown) as DeepPartial<User>);
 
@@ -243,29 +241,6 @@ export class UserService {
             success: false,
             errors: `This Current password are not same.`
         });
-    }
-
-    async updateBlockChainAddress(
-        id: number | string,
-        blockchainAccountAddress: IUser['blockchainAccountAddress']
-    ): Promise<IUser> {
-        const updateEntity = new User({
-            blockchainAccountAddress
-        });
-
-        const validationErrors = await validate(updateEntity, {
-            skipUndefinedProperties: true
-        });
-
-        if (validationErrors.length > 0) {
-            throw new UnprocessableEntityException({
-                success: false,
-                errors: validationErrors
-            });
-        }
-
-        await this.repository.update(id, updateEntity);
-        return this.repository.findOne(id);
     }
 
     public async getUsersBy(filter: IUserFilter) {

@@ -1,5 +1,6 @@
 import { IPublicOrganization } from './Organization';
 import { IEmailConfirmation } from './EmailConfirmation';
+import { IBlockchainAccount } from './BlockchainAccount';
 
 export enum Role {
     OrganizationAdmin = 1,
@@ -60,8 +61,7 @@ export interface IUserProperties {
     status: UserStatus;
     kycStatus: KYCStatus;
 
-    blockchainAccountAddress?: string;
-    blockchainAccountSignedMessage?: string;
+    blockchainAccounts: IBlockchainAccount[];
 }
 
 export interface IUser extends IUserProperties {
@@ -72,10 +72,6 @@ export interface IUser extends IUserProperties {
 export type UserRegisterReturnData = IUser;
 
 export type UserLoginReturnData = { accessToken: string };
-
-export type UserUpdateData = Partial<
-    Pick<IUserProperties, 'blockchainAccountSignedMessage' | 'notifications'>
->;
 
 export type UserStatusUpdate = Partial<Pick<IUserProperties, 'status' | 'kycStatus'>>;
 

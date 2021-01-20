@@ -1,34 +1,11 @@
 import { UserRegistrationData } from '@energyweb/origin-backend-core';
-import { ApiProperty } from '@nestjs/swagger';
-import { Transform } from 'class-transformer';
-import { IsEmail, IsNotEmpty, IsString } from 'class-validator';
+import { ApiProperty, PickType } from '@nestjs/swagger';
+import { IsNotEmpty, IsString } from 'class-validator';
+import { UserDTO } from './user.dto';
 
-export class RegisterUserDTO implements UserRegistrationData {
-    @ApiProperty({ type: String })
-    @IsNotEmpty()
-    @IsString()
-    title: string;
-
-    @ApiProperty({ type: String })
-    @IsNotEmpty()
-    @IsString()
-    firstName: string;
-
-    @ApiProperty({ type: String })
-    @IsNotEmpty()
-    @IsString()
-    lastName: string;
-
-    @ApiProperty({ type: String })
-    @IsEmail()
-    @Transform((value: string) => value.toLowerCase())
-    email: string;
-
-    @ApiProperty({ type: String })
-    @IsNotEmpty()
-    @IsString()
-    telephone: string;
-
+export class RegisterUserDTO
+    extends PickType(UserDTO, ['title', 'firstName', 'lastName', 'email', 'telephone'] as const)
+    implements UserRegistrationData {
     @ApiProperty({ type: String })
     @IsNotEmpty()
     @IsString()

@@ -1,8 +1,10 @@
 import { IPublicOrganization, IUser, KYCStatus, UserStatus } from '@energyweb/origin-backend-core';
 import { ApiProperty } from '@nestjs/swagger';
+import { Transform } from 'class-transformer';
 import {
     IsBoolean,
     IsEnum,
+    IsEmail,
     IsNotEmpty,
     IsNumber,
     IsOptional,
@@ -10,6 +12,7 @@ import {
     ValidateNested
 } from 'class-validator';
 import { PublicOrganizationInfoDTO } from '../../organization';
+import { BlockchainAccountDTO } from './blockchain-account.dto';
 
 export class UserDTO implements IUser {
     @ApiProperty({ type: Number })
@@ -33,7 +36,8 @@ export class UserDTO implements IUser {
 
     @ApiProperty({ type: String })
     @IsNotEmpty()
-    @IsString()
+    @IsEmail()
+    @Transform((value: string) => value.toLowerCase())
     email: string;
 
     @ApiProperty({ type: String })
@@ -68,13 +72,7 @@ export class UserDTO implements IUser {
     @IsBoolean()
     emailConfirmed?: boolean;
 
-    @ApiProperty({ type: String, required: false })
-    @IsOptional()
-    @IsString()
-    blockchainAccountAddress?: string;
-
-    @ApiProperty({ type: String, required: false })
-    @IsOptional()
-    @IsString()
-    blockchainAccountSignedMessage?: string;
+    @ApiProperty({ type: [BlockchainAccountDTO] })
+    @ValidateNested()
+    blockchainAccounts: BlockchainAccountDTO[];
 }
