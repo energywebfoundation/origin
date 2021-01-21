@@ -21,7 +21,11 @@ export class FileService {
         private readonly connection: Connection
     ) {}
 
-    public async store(user: LoggedInUser, files: FileUpload[]): Promise<string[]> {
+    public async store(
+        user: LoggedInUser,
+        files: FileUpload[],
+        isPublic = false
+    ): Promise<string[]> {
         this.logger.debug(`User ${JSON.stringify(user)} requested store for ${files.length} files`);
 
         const storedFile: string[] = [];
@@ -32,7 +36,8 @@ export class FileService {
                     data: file.buffer,
                     contentType: file.mimetype,
                     userId: user.id.toString(),
-                    organizationId: user.organizationId?.toString()
+                    organizationId: user.organizationId?.toString(),
+                    isPublic
                 });
                 await entityManager.insert<File>(File, fileToStore);
 
@@ -44,15 +49,26 @@ export class FileService {
         return storedFile;
     }
 
-    public async get(user: LoggedInUser, id: string): Promise<File> {
+    public async get(id: string, user: LoggedInUser = null): Promise<File> {
         this.logger.debug(`User ${JSON.stringify(user)} requested file ${id}`);
 
-        if (user.hasRole(Role.Admin, Role.SupportAgent, Role.Issuer)) {
-            return this.repository.findOne(id);
+        if (user) {
+            if (user.hasRole(Role.Admin, Role.SupportAgent, Role.Issuer)) {
+                return this.repository.findOne(id);
+            }
+
+            return this.repository.findOne(id, {
+                where: {
+                    userId: user.id.toString(),
+                    organizationId: user.organizationId?.toString()
+                }
+            });
         }
 
         return this.repository.findOne(id, {
-            where: { userId: user.id.toString(), organizationId: user.organizationId?.toString() }
+            where: {
+                isPublic: true
+            }
         });
     }
 
