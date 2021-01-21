@@ -7,3 +7,4 @@ export { OrganizationStatusChangedHandler } from './organization-status-changed.
 export { RegistrationCreatedHandler } from './registration-created.handler';
 export { OrganizationRegisteredHandler } from './organization-registered.handler';
 export { DeviceCreatedHandler } from './device-created.handler';
+export { CertificateApprovedHandler } from './certificate-approved.handler';

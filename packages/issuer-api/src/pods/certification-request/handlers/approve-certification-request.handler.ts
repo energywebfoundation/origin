@@ -63,15 +63,15 @@ export class ApproveCertificationRequestHandler
             return ResponseFailure(e.message, HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
-        this.eventBus.publish(
-            new CertificateCreatedEvent(newCertificateId, isPrivate ? { owner, energy } : null)
-        );
-
         await this.repository.update(id, {
             approved: true,
             approvedDate: new Date(),
             issuedCertificateTokenId: newCertificateId
         });
+
+        this.eventBus.publish(
+            new CertificateCreatedEvent(newCertificateId, isPrivate ? { owner, energy } : null)
+        );
 
         return ResponseSuccess(`Successfully approved certificationRequest ${id}.`);
     }
