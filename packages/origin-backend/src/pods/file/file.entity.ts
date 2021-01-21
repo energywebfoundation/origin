@@ -1,6 +1,6 @@
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 import { ExtendedBaseEntity } from '@energyweb/origin-backend-utils';
-import { IsString } from 'class-validator';
+import { IsBoolean, IsString } from 'class-validator';
 
 @Entity()
 export class File extends ExtendedBaseEntity {
@@ -30,4 +30,8 @@ export class File extends ExtendedBaseEntity {
     @Column({ nullable: true })
     @IsString()
     organizationId: string;
+
+    @Column({ default: false })
+    @IsBoolean()
+    isPublic: boolean;
 }
