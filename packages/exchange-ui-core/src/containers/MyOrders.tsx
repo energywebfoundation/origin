@@ -32,7 +32,7 @@ export const MyOrders = () => {
             <Box mt={3}>
                 <DemandsTable demands={demands} />
             </Box>
-            <Box>
+            <Box mt={3}>
                 <BidsTable bids={orders.bids} />
             </Box>
             <Box mt={3}>
