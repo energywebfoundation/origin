@@ -23,7 +23,9 @@ export class DeviceService {
     async create(user: ILoggedInUser, newDevice: CreateDeviceDTO): Promise<Device> {
         const deviceToStore = new Device({
             ...CreateDeviceDTO.sanitize(newDevice),
-            ownerId: user.ownerId
+            ownerId: user.ownerId,
+            registrantOrganization: 'MYORG',
+            issuer: 'ISSUER'
         });
 
         const storedDevice = await this.repository.save(deviceToStore);

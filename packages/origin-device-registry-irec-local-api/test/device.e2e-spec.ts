@@ -3,9 +3,10 @@ import { DeviceStatus } from '@energyweb/origin-backend-core';
 import { DatabaseService } from '@energyweb/origin-backend-utils';
 import { HttpStatus, INestApplication } from '@nestjs/common';
 import dotenv from 'dotenv';
-import request from 'supertest';
+import supertest from 'supertest';
 
 import { CreateDeviceDTO } from '../src/device';
+import { request } from './request';
 import { bootstrapTestInstance, TestUser } from './test.app';
 
 describe('Device e2e tests', () => {
@@ -15,31 +16,31 @@ describe('Device e2e tests', () => {
 
     let app: INestApplication;
     let databaseService: DatabaseService;
+    let test: supertest.SuperTest<supertest.Test>;
 
     const exampleDevice: CreateDeviceDTO = {
-        address: '',
-        capacityInW: 1000,
-        complianceRegistry: 'I-REC',
-        country: 'EU',
-        description: '',
-        deviceType: 'Solar',
-        facilityName: 'Test',
-        gpsLatitude: '10',
-        gpsLongitude: '10',
+        name: 'Test solar device',
+        code: 'TESTDEVICE001',
+        defaultAccount: 'MYTRADEACCOUNT001',
+        deviceType: 'TC140',
+        fuel: 'ES100',
+        countryCode: 'TH',
+        capacity: 1000,
+        commissioningDate: new Date('2020-01-01'),
+        registrationDate: new Date('2020-01-02'),
+        address: '1 Wind Farm Avenue, Thailand',
+        latitude: '10',
+        longitude: '10',
         gridOperator: 'OP',
-        images: '',
-        operationalSince: 2000,
-        otherGreenAttributes: '',
-        province: '',
-        region: '',
-        timezone: '',
-        typeOfPublicSupport: ''
+        timezone: 'Asia/Bangkok'
     };
 
     before(async () => {
         ({ app, databaseService } = await bootstrapTestInstance());
 
         await app.init();
+
+        test = request(app);
     });
 
     beforeEach(async () => {
@@ -51,7 +52,7 @@ describe('Device e2e tests', () => {
     });
 
     it('should not allow to register device for non-active organization', async () => {
-        await request(app.getHttpServer())
+        await test
             .post('/irec/device-registry')
             .send(exampleDevice)
             .set({ 'test-user': TestUser.SubmittedOrganizationAdmin })
@@ -59,12 +60,12 @@ describe('Device e2e tests', () => {
     });
 
     it('should not allow organization admin to approve the device', async () => {
-        const { body } = await request(app.getHttpServer())
+        const { body } = await test
             .post('/irec/device-registry')
             .send(exampleDevice)
             .set({ 'test-user': TestUser.OrganizationAdmin });
 
-        await request(app.getHttpServer())
+        await test
             .put(`/irec/device-registry/${body.id}`)
             .send({ status: DeviceStatus.Active })
             .set({ 'test-user': TestUser.OrganizationAdmin })
@@ -72,7 +73,7 @@ describe('Device e2e tests', () => {
     });
 
     it('should allow to register device for active organization', async () => {
-        await request(app.getHttpServer())
+        await test
             .post('/irec/device-registry')
             .send(exampleDevice)
             .set({ 'test-user': TestUser.OrganizationAdmin })
@@ -80,12 +81,12 @@ describe('Device e2e tests', () => {
     });
 
     it('should allow platform admin to approve the device', async () => {
-        const { body } = await request(app.getHttpServer())
+        const { body } = await test
             .post('/irec/device-registry')
             .send(exampleDevice)
             .set({ 'test-user': TestUser.OrganizationAdmin });
 
-        await request(app.getHttpServer())
+        await test
             .put(`/irec/device-registry/${body.id}`)
             .send({ status: DeviceStatus.Active })
             .set({ 'test-user': TestUser.PlatformAdmin })

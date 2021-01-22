@@ -15,59 +15,56 @@ export class Device extends ExtendedBaseEntity {
     @Column()
     ownerId: string;
 
-    @Column({ nullable: false, default: DeviceStatus.Submitted })
-    status: DeviceStatus;
+    @Column()
+    code: string;
 
     @Column()
-    facilityName: string;
+    name: string;
 
     @Column()
-    description: string;
-
-    @Column()
-    images: string;
-
-    @Column({ default: '[]' })
-    files: string;
-
-    @Column()
-    address: string;
-
-    @Column()
-    region: string;
-
-    @Column()
-    province: string;
-
-    @Column()
-    country: string;
-
-    @Column()
-    operationalSince: number;
-
-    @Column()
-    capacityInW: number;
-
-    @Column()
-    gpsLatitude: string;
-
-    @Column()
-    gpsLongitude: string;
-
-    @Column()
-    timezone: string;
+    defaultAccount: string;
 
     @Column()
     deviceType: string;
 
     @Column()
-    complianceRegistry: string;
+    fuel: string;
 
     @Column()
-    otherGreenAttributes: string;
+    countryCode: string;
 
     @Column()
-    typeOfPublicSupport: string;
+    registrantOrganization: string;
+
+    @Column()
+    issuer: string;
+
+    @Column()
+    capacity: number;
+
+    @Column()
+    commissioningDate: Date;
+
+    @Column()
+    registrationDate: Date;
+
+    @Column()
+    address: string;
+
+    @Column()
+    latitude: string;
+
+    @Column()
+    longitude: string;
+
+    @Column({ nullable: true })
+    notes: string;
+
+    @Column({ nullable: false, default: DeviceStatus.Submitted })
+    status: DeviceStatus;
+
+    @Column()
+    timezone: string;
 
     @Column({ nullable: true })
     gridOperator: string;

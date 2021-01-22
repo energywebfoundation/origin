@@ -1,66 +1,34 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Expose, plainToClass } from 'class-transformer';
-import { IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
+import { Expose, plainToClass, Type } from 'class-transformer';
+import {
+    IsDate,
+    IsISO31661Alpha2,
+    IsLatitude,
+    IsLongitude,
+    IsNotEmpty,
+    IsNumber,
+    IsOptional,
+    IsString
+} from 'class-validator';
 
 export class CreateDeviceDTO {
     @ApiProperty({ type: String })
     @IsString()
     @IsNotEmpty()
     @Expose()
-    facilityName: string;
-
-    @ApiProperty({ type: String })
-    @IsString()
-    @Expose()
-    description: string;
-
-    @ApiProperty({ type: String })
-    @IsString()
-    @Expose()
-    images: string;
-
-    @ApiProperty({ type: String })
-    @IsString()
-    @Expose()
-    address: string;
-
-    @ApiProperty({ type: Number })
-    @IsNumber()
-    @IsNotEmpty()
-    @Expose()
-    capacityInW: number;
+    name: string;
 
     @ApiProperty({ type: String })
     @IsString()
     @IsNotEmpty()
     @Expose()
-    gpsLatitude: string;
+    code: string;
 
     @ApiProperty({ type: String })
     @IsString()
     @IsNotEmpty()
     @Expose()
-    gpsLongitude: string;
-
-    @ApiProperty({ type: String })
-    @IsString()
-    @Expose()
-    timezone: string;
-
-    @ApiProperty({ type: String })
-    @IsString()
-    @Expose()
-    complianceRegistry: string;
-
-    @ApiProperty({ type: String })
-    @IsString()
-    @Expose()
-    otherGreenAttributes: string;
-
-    @ApiProperty({ type: String })
-    @IsString()
-    @Expose()
-    typeOfPublicSupport: string;
+    defaultAccount: string;
 
     @ApiProperty({ type: String })
     @IsString()
@@ -70,37 +38,66 @@ export class CreateDeviceDTO {
 
     @ApiProperty({ type: String })
     @IsString()
-    @Expose()
-    region: string;
-
-    @ApiProperty({ type: String })
-    @IsString()
-    @Expose()
-    province: string;
-
-    @ApiProperty({ type: String })
-    @IsString()
     @IsNotEmpty()
     @Expose()
-    country: string;
+    fuel: string;
+
+    @ApiProperty({ type: String })
+    @IsString()
+    @IsISO31661Alpha2()
+    @Expose()
+    countryCode: string;
 
     @ApiProperty({ type: Number })
     @IsNumber()
     @IsNotEmpty()
     @Expose()
-    operationalSince: number;
+    capacity: number;
+
+    @ApiProperty({ type: Date })
+    @IsNotEmpty()
+    @IsDate()
+    @Expose()
+    @Type(() => Date)
+    commissioningDate: Date;
+
+    @ApiProperty({ type: Date })
+    @IsNotEmpty()
+    @IsDate()
+    @Expose()
+    @Type(() => Date)
+    registrationDate: Date;
+
+    @ApiProperty({ type: String })
+    @IsNotEmpty()
+    @Expose()
+    address: string;
+
+    @ApiProperty({ type: String })
+    @IsLatitude()
+    @Expose()
+    latitude: string;
+
+    @ApiProperty({ type: String })
+    @IsLongitude()
+    @Expose()
+    longitude: string;
+
+    @ApiProperty({ type: String })
+    @IsOptional()
+    @Expose()
+    notes?: string;
+
+    @ApiProperty({ type: String })
+    @IsString()
+    @Expose()
+    timezone: string;
 
     @ApiProperty({ type: String })
     @IsString()
     @IsNotEmpty()
     @Expose()
     gridOperator: string;
-
-    @ApiProperty({ type: String, required: false })
-    @IsString()
-    @IsOptional()
-    @Expose()
-    files?: string;
 
     public static sanitize(device: CreateDeviceDTO): CreateDeviceDTO {
         return plainToClass(CreateDeviceDTO, device, { excludeExtraneousValues: true });

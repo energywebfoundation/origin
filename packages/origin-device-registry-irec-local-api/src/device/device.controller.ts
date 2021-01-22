@@ -60,7 +60,7 @@ export class DeviceController {
     @ApiResponse({ status: HttpStatus.OK, type: [DeviceDTO], description: 'Returns my Devices' })
     async getMyDevices(@UserDecorator() { ownerId }: ILoggedInUser): Promise<DeviceDTO[]> {
         const devices = await this.deviceService.findAll({ where: { ownerId } });
-        // TODO: consider adding files property
+
         return devices?.map((device) => plainToClass(DeviceDTO, device));
     }
 

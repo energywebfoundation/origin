@@ -1,3 +1,4 @@
+import { DeviceStatus } from '@energyweb/origin-backend-core';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class DeviceDTO {
@@ -8,52 +9,55 @@ export class DeviceDTO {
     ownerId: string;
 
     @ApiProperty({ type: String })
-    facilityName: string;
+    code: string;
 
     @ApiProperty({ type: String })
-    description: string;
+    name: string;
 
     @ApiProperty({ type: String })
-    images: string;
-
-    @ApiProperty({ type: String })
-    address: string;
-
-    @ApiProperty({ type: Number })
-    capacityInW: number;
-
-    @ApiProperty({ type: String })
-    gpsLatitude: string;
-
-    @ApiProperty({ type: String })
-    gpsLongitude: string;
-
-    @ApiProperty({ type: String })
-    timezone: string;
-
-    @ApiProperty({ type: String })
-    complianceRegistry: string;
-
-    @ApiProperty({ type: String })
-    otherGreenAttributes: string;
-
-    @ApiProperty({ type: String })
-    typeOfPublicSupport: string;
+    defaultAccount: string;
 
     @ApiProperty({ type: String })
     deviceType: string;
 
     @ApiProperty({ type: String })
-    region: string;
+    fuel: string;
 
     @ApiProperty({ type: String })
-    province: string;
+    countryCode: string;
 
     @ApiProperty({ type: String })
-    country: string;
+    registrantOrganization: string;
+
+    @ApiProperty({ type: String })
+    issuer: string;
 
     @ApiProperty({ type: Number })
-    operationalSince: number;
+    capacity: number;
+
+    @ApiProperty({ type: Date })
+    commissioningDate: Date;
+
+    @ApiProperty({ type: Date })
+    registrationDate: Date;
+
+    @ApiProperty({ type: String })
+    address: string;
+
+    @ApiProperty({ type: String })
+    latitude: string;
+
+    @ApiProperty({ type: String })
+    longitude: string;
+
+    @ApiProperty({ type: String })
+    notes: string;
+
+    @ApiProperty({ enum: DeviceStatus, enumName: 'DeviceStatus' })
+    status: DeviceStatus;
+
+    @ApiProperty({ type: String })
+    timezone: string;
 
     @ApiProperty({ type: String })
     gridOperator: string;
