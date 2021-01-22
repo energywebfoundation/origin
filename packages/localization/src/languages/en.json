@@ -14,6 +14,7 @@
                 "users": "Manage Users"
             },
             "devices": {
+                "import": "Device import",
                 "all": "All devices",
                 "map": "Map view",
                 "my": "My devices",
@@ -67,6 +68,8 @@
                 "story": "Story",
                 "projectStory": "Project story",
                 "images": "Images",
+                "projectImages": "Project images",
+                "country": "Country",
                 "capacity": "Capacity",
                 "address": "Address",
                 "constructed": "Constructed",
@@ -84,6 +87,8 @@
                 "viewDetails": "View details",
                 "updateSupply": "Update Supply",
                 "cancel": "Cancel",
+                "import": "Import",
+                "saveData": "Save data",
                 "update": "Update"
             },
             "feedback": {
@@ -103,7 +108,10 @@
                 "selectRegion": "Select region",
                 "selectProvince": "Select province",
                 "selectGridOperator": "Select grid operator",
-                "toRegisterADevice": "To register a device you need to fulfill following criteria:"
+                "toRegisterADevice": "To register a device you need to fulfill following criteria:",
+                "importDevice": "Import Device",
+                "importedDevices": "Imported Devices",
+                "attachDeviceData": "Attach optional device data"
             }
         },
         "certificate": {

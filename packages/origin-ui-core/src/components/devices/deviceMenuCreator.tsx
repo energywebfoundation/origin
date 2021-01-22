@@ -7,6 +7,7 @@ import { DeviceMap } from './DeviceMap';
 import { DeviceGroupForm } from './DeviceGroupForm';
 import { AutoSupplyDeviceTable } from './AutoSupplyDeviceTable';
 import { AddDevice } from './AddDevice';
+import { ImportDevice } from './import/ImportDevices';
 
 interface IDeviceMenuItem {
     key: string;
@@ -111,6 +112,13 @@ export const deviceMenuCreator = (user: IUser, t: TFunction): IDeviceMenuItem[] 
             component: AutoSupplyDeviceTable,
             features: [OriginFeature.Devices, OriginFeature.Seller],
             show: isDeviceManagerOrAdmin()
+        },
+        {
+            key: 'import',
+            label: t('navigation.devices.import'),
+            component: ImportDevice,
+            features: [OriginFeature.DevicesImport],
+            show: true
         }
     ];
 };
