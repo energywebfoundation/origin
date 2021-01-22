@@ -58,13 +58,6 @@ export const deviceMenuCreator = (user: IUser, t: TFunction): IDeviceMenuItem[] 
 
     return [
         {
-            key: 'import',
-            label: t('navigation.devices.import'),
-            component: ImportDevice,
-            features: [OriginFeature.DevicesImport],
-            show: true
-        },
-        {
             key: 'production',
             label: t('navigation.devices.all'),
             component: ProductionList,
@@ -119,6 +112,13 @@ export const deviceMenuCreator = (user: IUser, t: TFunction): IDeviceMenuItem[] 
             component: AutoSupplyDeviceTable,
             features: [OriginFeature.Devices, OriginFeature.Seller],
             show: isDeviceManagerOrAdmin()
+        },
+        {
+            key: 'import',
+            label: t('navigation.devices.import'),
+            component: ImportDevice,
+            features: [OriginFeature.DevicesImport],
+            show: true
         }
     ];
 };
