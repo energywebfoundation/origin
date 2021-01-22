@@ -3,14 +3,18 @@ import { Logger } from '@nestjs/common';
 import { ModuleRef } from '@nestjs/core';
 import { DeviceService, UserService } from '@energyweb/origin-backend';
 import { Role } from '@energyweb/origin-backend-core';
-import { CertificateCreatedEvent, GetCertificationRequestQuery } from '@energyweb/issuer-api';
+import {
+    CertificateRequestApprovedEvent,
+    GetCertificationRequestQuery
+} from '@energyweb/issuer-api';
 import { RegistrationService } from '@energyweb/origin-organization-irec-api';
 import { ConfigService } from '@nestjs/config';
 import { MailService } from '../../mail';
 
-@EventsHandler(CertificateCreatedEvent)
-export class CertificateApprovedHandler implements IEventHandler<CertificateCreatedEvent> {
-    private readonly logger = new Logger(CertificateApprovedHandler.name);
+@EventsHandler(CertificateRequestApprovedEvent)
+export class CertificateRequestApprovedHandler
+    implements IEventHandler<CertificateRequestApprovedEvent> {
+    private readonly logger = new Logger(CertificateRequestApprovedHandler.name);
 
     private readonly issuerTypeId: string;
 
@@ -39,16 +43,12 @@ export class CertificateApprovedHandler implements IEventHandler<CertificateCrea
         return this._deviceService;
     }
 
-    public async handle(event: CertificateCreatedEvent): Promise<void> {
-        const { certificateId } = event;
+    public async handle(event: CertificateRequestApprovedEvent): Promise<void> {
+        const { certificateRequestId } = event;
 
         const certificationRequest = await this.queryBus.execute(
-            new GetCertificationRequestQuery(certificateId)
+            new GetCertificationRequestQuery(certificateRequestId)
         );
-
-        if (!certificationRequest.approved) {
-            return;
-        }
 
         const device = await this.deviceService.findByExternalId({
             id: certificationRequest.deviceId,
@@ -69,8 +69,7 @@ export class CertificateApprovedHandler implements IEventHandler<CertificateCrea
         const from = new Date(certificationRequest.fromTime * 1000).toISOString();
         const to = new Date(certificationRequest.toTime * 1000).toISOString();
         const result = await this.mailService.send({
-            to: [...emails, 'admin@arkan.club'],
-            // to: emails,
+            to: emails,
             subject: `Certificate request approved`,
             html:
                 `Your certificate with the volume of ${certificationRequest.energy} Watt ` +

@@ -3,7 +3,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { CqrsModule } from '@nestjs/cqrs';
 import { Handlers } from './handlers';
-import { Events } from './queries';
 import { CertificationRequest } from './certification-request.entity';
 import { CertificationRequestController } from './certification-request.controller';
 import { BlockchainPropertiesModule } from '../blockchain/blockchain-properties.module';
@@ -19,7 +18,7 @@ import { SyncCertificationRequestsTask } from './sync-certification-request.task
         CertificateModule
     ],
     controllers: [CertificationRequestController],
-    providers: [...Handlers, ...Events, SyncCertificationRequestsTask],
-    exports: [...Handlers, ...Events]
+    providers: [...Handlers, SyncCertificationRequestsTask],
+    exports: [...Handlers]
 })
 export class CertificationRequestModule {}

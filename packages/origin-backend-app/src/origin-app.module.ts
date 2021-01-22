@@ -21,7 +21,7 @@ import { CqrsModule } from '@nestjs/cqrs';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import {
-    CertificateApprovedHandler,
+    CertificateRequestApprovedHandler,
     DeviceCreatedHandler,
     DeviceStatusChangedHandler,
     EmailConfirmationRequestedHandler,
@@ -87,7 +87,7 @@ export class OriginAppModule {
             ],
             providers: [
                 { provide: APP_INTERCEPTOR, useClass: HTTPLoggingInterceptor },
-                CertificateApprovedHandler,
+                CertificateRequestApprovedHandler,
                 DeviceCreatedHandler,
                 DeviceStatusChangedHandler,
                 EmailConfirmationRequestedHandler,

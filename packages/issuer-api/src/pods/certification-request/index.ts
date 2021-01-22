@@ -1,3 +1,4 @@
+export * from './events';
 export * from './handlers';
 export * from './queries';
 export { CertificationRequestDTO } from './certification-request.dto';

@@ -36,10 +36,9 @@ export class DeviceCreatedHandler implements IEventHandler<DeviceCreatedEvent> {
 
         const result = await this.mailService.send({
             to: emails,
-            subject: `New device/device groupd created`,
-            html: `Created new device/device group for organization ${user.organization.name}.<br />
-                In the attachment, you can find all the device details.
-                <br />${form}`
+            subject: `New device/device group created`,
+            html: `Created new device/device group for organization ${user.organization.name}.
+                <br />Device details:<br />${form}`
         });
 
         if (result) {
