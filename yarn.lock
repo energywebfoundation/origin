@@ -3941,6 +3941,18 @@
     lodash.set "4.3.2"
     uuid "8.3.1"
 
+"@nestjs/config@0.6.2":
+  version "0.6.2"
+  resolved "https://registry.yarnpkg.com/@nestjs/config/-/config-0.6.2.tgz#484c200d2d7177cb9e4a0ef9ec3863e39595bbeb"
+  integrity sha512-vn7MWw7SGYyaSBqdSx6FjVhumFg0XK97gcTnaznKKzm1OZychuEjk2QIEFuehfQvdWtppHXOha0TgVKSGvODQg==
+  dependencies:
+    dotenv "8.2.0"
+    dotenv-expand "5.1.0"
+    lodash.get "4.4.2"
+    lodash.has "4.5.2"
+    lodash.set "4.3.2"
+    uuid "8.3.2"
+
 "@nestjs/core@7.6.3":
   version "7.6.3"
   resolved "https://registry.yarnpkg.com/@nestjs/core/-/core-7.6.3.tgz#0b3c3518b6ec5e2ca3d5751820d4142639e3c24f"
