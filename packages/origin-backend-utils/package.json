@@ -35,7 +35,7 @@
         "@nestjs/core": "7.6.5",
         "bn.js": "^5.1.2",
         "class-validator": "^0.13.0",
-        "polly-js": "1.7.0",
+        "polly-js": "1.8.0",
         "rxjs": "6.6.3",
         "typeorm": "0.2.30"
     }

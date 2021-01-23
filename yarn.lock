@@ -20231,10 +20231,10 @@ polished@^3.4.4:
   dependencies:
     "@babel/runtime" "^7.9.2"
 
-polly-js@1.7.0:
-  version "1.7.0"
-  resolved "https://registry.yarnpkg.com/polly-js/-/polly-js-1.7.0.tgz#73750c537c103726e8eb46bf550ba265fb01c07c"
-  integrity sha512-iDiup93catJ/BuKjT3C97Uot2cO141FnKFotov1QF83nynmTUqx/3v3lsdGAyF4q+p8JzdhFZZO71Mm/wrax+Q==
+polly-js@1.8.0:
+  version "1.8.0"
+  resolved "https://registry.yarnpkg.com/polly-js/-/polly-js-1.8.0.tgz#bd2f6ec17439399669824d5a49f4029f76f9691c"
+  integrity sha512-OdQnlK1dp+68wqp+yLcqWBjTeKh5S4Mn78cfbNCw95JKGaSAI+iUW5kFrROQbbVoWBDU5bho2XB1klOmIonVaA==
 
 popper.js@1.16.1-lts:
   version "1.16.1-lts"
