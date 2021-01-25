@@ -7,8 +7,8 @@ export interface IOrdersState {
 }
 
 const initialState: IOrdersState = {
-    orders: [],
-    demands: []
+    orders: null,
+    demands: null
 };
 
 export function ordersState<T>(

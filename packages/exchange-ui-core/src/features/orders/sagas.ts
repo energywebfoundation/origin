@@ -25,8 +25,6 @@ import { Order, Demand, ExchangeClient } from '../../utils/exchange';
 function* fetchOrdersAndDemands(): SagaIterator {
     while (true) {
         yield take(OrdersActionsType.FETCH_ORDERS);
-        yield put(clearOrders());
-        yield put(clearDemands());
 
         const exchangeClient: ExchangeClient = yield select(getExchangeClient);
         const ordersClient = exchangeClient?.ordersClient;
@@ -45,8 +43,10 @@ function* fetchOrdersAndDemands(): SagaIterator {
                 : { data: [] };
 
         const demands: Demand[] = demandsResponse.data;
-
+        yield put(clearDemands());
         yield put(storeDemands(demands));
+
+        yield put(clearOrders());
         if (orders.length > 0) {
             const ordersWithFilledInfo = orders.map((order) => {
                 const { startVolume, currentVolume } = order;
@@ -58,7 +58,6 @@ function* fetchOrdersAndDemands(): SagaIterator {
                         .toNumber() / 100;
                 return { ...order, filled };
             });
-
             yield put(storeOrders(ordersWithFilledInfo));
         }
     }

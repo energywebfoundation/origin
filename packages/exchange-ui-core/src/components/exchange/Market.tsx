@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
 import { Formik, Form } from 'formik';
-import { Skeleton } from '@material-ui/lab';
 import {
     Paper,
     Typography,
@@ -67,7 +66,7 @@ const INITIAL_FORM_VALUES: IMarketFormValues = {
 
 interface IProps {
     onBid: (values: IMarketFormValues, oneTimePurchase: boolean) => void;
-    onNotify: (values: IMarketFormValues) => void;
+    onNotify?: (values: IMarketFormValues) => void;
     onChange: (values: IMarketFormValues) => void;
     currency: string;
     energyUnit: string;
@@ -154,10 +153,6 @@ export function Market(props: IProps) {
 
     const [oneTimePurchase, setOneTimePurchase] = useState<boolean>(true);
     const [validationSchema, setValidationSchema] = useState();
-
-    if (!configuration?.deviceTypeService?.deviceTypes) {
-        return <Skeleton variant="rect" height={200} />;
-    }
 
     const initialFormValues = INITIAL_FORM_VALUES;
 

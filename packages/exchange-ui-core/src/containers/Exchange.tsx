@@ -12,7 +12,9 @@ import {
     getUserOffchain,
     setLoading,
     getCurrencies,
-    getExchangeDepositAddress
+    getExchangeDepositAddress,
+    TableFallback,
+    getConfiguration
 } from '@energyweb/origin-ui-core';
 import { getEnvironment, getExchangeClient } from '../features/general';
 import { createBid, createDemand, directBuyOrder } from '../features/orders';
@@ -25,6 +27,7 @@ import {
     IOrdersTotalVolume
 } from '../utils/exchange';
 import { Asks, Bids, Market, IMarketFormValues } from '../components/exchange';
+import { Skeleton } from '@material-ui/lab';
 
 export function Exchange() {
     const currencies = useSelector(getCurrencies);
@@ -38,6 +41,7 @@ export function Exchange() {
     const exchangeAddress = useSelector(getExchangeDepositAddress);
     const country = useSelector(getCountry);
     const environment = useSelector(getEnvironment);
+    const configuration = useSelector(getConfiguration);
     const dispatch = useDispatch();
     const { t } = useTranslation();
 
@@ -200,15 +204,17 @@ export function Exchange() {
         <div>
             <Grid container>
                 <Grid item xs={9}>
-                    <Market
-                        onBid={onBid}
-                        // eslint-disable-next-line @typescript-eslint/no-empty-function
-                        onNotify={() => {}}
-                        onChange={(values) => handleMarketValuesChange(values)}
-                        energyUnit={EnergyFormatter.displayUnit}
-                        currency={currency}
-                        disableBidding={!user || !exchangeAddress}
-                    />
+                    {!configuration?.deviceTypeService?.deviceTypes ? (
+                        <Skeleton variant="rect" height={200} />
+                    ) : (
+                        <Market
+                            onBid={onBid}
+                            onChange={(values) => handleMarketValuesChange(values)}
+                            energyUnit={EnergyFormatter.displayUnit}
+                            currency={currency}
+                            disableBidding={!user || !exchangeAddress}
+                        />
+                    )}
                     <br />
                     <br />
                 </Grid>
@@ -217,25 +223,33 @@ export function Exchange() {
                     <Grid item xs={9}>
                         <Grid container spacing={3}>
                             <Grid item xs={6}>
-                                <Asks
-                                    data={data.asks}
-                                    currency={currency}
-                                    title={t('exchange.info.asks')}
-                                    highlightOrdersUserId={user?.id?.toString()}
-                                    displayAssetDetails={true}
-                                    buyDirect={buyDirect}
-                                    energyUnit={EnergyFormatter.displayUnit}
-                                    ordersTotalVolume={totalOrders?.totalAsks}
-                                />
+                                {!configuration?.deviceTypeService?.deviceTypes ? (
+                                    <TableFallback />
+                                ) : (
+                                    <Asks
+                                        data={data.asks}
+                                        currency={currency}
+                                        title={t('exchange.info.asks')}
+                                        highlightOrdersUserId={user?.id?.toString()}
+                                        displayAssetDetails={true}
+                                        buyDirect={buyDirect}
+                                        energyUnit={EnergyFormatter.displayUnit}
+                                        ordersTotalVolume={totalOrders?.totalAsks}
+                                    />
+                                )}
                             </Grid>
                             <Grid item xs={6}>
-                                <Bids
-                                    data={data.bids}
-                                    currency={currency}
-                                    title={t('exchange.info.bids')}
-                                    highlightOrdersUserId={user?.id?.toString()}
-                                    ordersTotalVolume={totalOrders?.totalBids}
-                                />
+                                {!configuration?.deviceTypeService?.deviceTypes ? (
+                                    <TableFallback />
+                                ) : (
+                                    <Bids
+                                        data={data.bids}
+                                        currency={currency}
+                                        title={t('exchange.info.bids')}
+                                        highlightOrdersUserId={user?.id?.toString()}
+                                        ordersTotalVolume={totalOrders?.totalBids}
+                                    />
+                                )}
                             </Grid>
                         </Grid>
                     </Grid>
