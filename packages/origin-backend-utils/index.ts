@@ -5,6 +5,7 @@ export * from './src/guard/RolesGuard';
 export * from './src/guard/ActiveUserGuard';
 export * from './src/guard/NotDeletedUserGuard';
 export * from './src/guard/ActiveOrganizationGuard';
+export * from './src/guard/BlockchainAccountGuard';
 export * from './src/validator/intUnitOfEnergy';
 export * from './src/validator/PositiveBNStringValidator';
 export * from './src/interceptor/NullOrUndefinedResultInterceptor';

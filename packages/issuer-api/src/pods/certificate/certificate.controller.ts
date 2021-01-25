@@ -1,9 +1,10 @@
 import {
     ActiveUserGuard,
+    BlockchainAccountGuard,
+    BlockchainAccountsDecorator,
     ExceptionInterceptor,
     Roles,
-    RolesGuard,
-    UserDecorator
+    RolesGuard
 } from '@energyweb/origin-backend-utils';
 import {
     Body,
@@ -21,7 +22,7 @@ import {
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
-import { ILoggedInUser, Role } from '@energyweb/origin-backend-core';
+import { IBlockchainAccount, Role } from '@energyweb/origin-backend-core';
 
 import { ApiBearerAuth, ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
 import moment from 'moment';
@@ -52,7 +53,7 @@ export class CertificateController {
     constructor(private readonly commandBus: CommandBus, private readonly queryBus: QueryBus) {}
 
     @Get('/:id')
-    @UseGuards(AuthGuard(), ActiveUserGuard)
+    @UseGuards(AuthGuard(), ActiveUserGuard, BlockchainAccountGuard)
     @ApiResponse({
         status: HttpStatus.OK,
         type: CertificateDTO,
@@ -60,13 +61,13 @@ export class CertificateController {
     })
     public async get(
         @Param('id', new ParseIntPipe()) id: number,
-        @UserDecorator() { blockchainAccountAddress }: ILoggedInUser
+        @BlockchainAccountsDecorator() blockchainAccount: IBlockchainAccount
     ): Promise<CertificateDTO> {
-        return this.queryBus.execute(new GetCertificateQuery(id, blockchainAccountAddress));
+        return this.queryBus.execute(new GetCertificateQuery(id, blockchainAccount.address));
     }
 
     @Get('/token-id/:tokenId')
-    @UseGuards(AuthGuard(), ActiveUserGuard)
+    @UseGuards(AuthGuard(), ActiveUserGuard, BlockchainAccountGuard)
     @ApiResponse({
         status: HttpStatus.OK,
         type: CertificateDTO,
@@ -74,28 +75,28 @@ export class CertificateController {
     })
     public async getByTokenId(
         @Param('tokenId', new ParseIntPipe()) tokenId: number,
-        @UserDecorator() { blockchainAccountAddress }: ILoggedInUser
+        @BlockchainAccountsDecorator() blockchainAccount: IBlockchainAccount
     ): Promise<CertificateDTO> {
         return this.queryBus.execute(
-            new GetCertificateByTokenIdQuery(tokenId, blockchainAccountAddress)
+            new GetCertificateByTokenIdQuery(tokenId, blockchainAccount.address)
         );
     }
 
     @Get()
-    @UseGuards(AuthGuard(), ActiveUserGuard)
+    @UseGuards(AuthGuard(), ActiveUserGuard, BlockchainAccountGuard)
     @ApiResponse({
         status: HttpStatus.OK,
         type: [CertificateDTO],
         description: 'Returns all Certificates'
     })
     public async getAll(
-        @UserDecorator() { blockchainAccountAddress }: ILoggedInUser
+        @BlockchainAccountsDecorator() blockchainAccount: IBlockchainAccount
     ): Promise<CertificateDTO[]> {
-        return this.queryBus.execute(new GetAllCertificatesQuery(blockchainAccountAddress));
+        return this.queryBus.execute(new GetAllCertificatesQuery(blockchainAccount.address));
     }
 
     @Get('/issuer/certified/:deviceId')
-    @UseGuards(AuthGuard(), ActiveUserGuard)
+    @UseGuards(AuthGuard(), ActiveUserGuard, BlockchainAccountGuard)
     @ApiResponse({
         status: HttpStatus.OK,
         type: String,
@@ -105,7 +106,7 @@ export class CertificateController {
         @Param('deviceId') deviceId: string,
         @Query('start') start: string,
         @Query('end') end: string,
-        @UserDecorator() { blockchainAccountAddress }: ILoggedInUser
+        @BlockchainAccountsDecorator() blockchainAccount: IBlockchainAccount
     ): Promise<string> {
         const startDateToUnix = moment(start).unix();
         const endDateToUnix = moment(end).unix();
@@ -115,13 +116,13 @@ export class CertificateController {
                 deviceId,
                 startDateToUnix,
                 endDateToUnix,
-                blockchainAccountAddress
+                blockchainAccount.address
             )
         );
     }
 
     @Post()
-    @UseGuards(AuthGuard(), ActiveUserGuard, RolesGuard)
+    @UseGuards(AuthGuard(), ActiveUserGuard, RolesGuard, BlockchainAccountGuard)
     @Roles(Role.Issuer)
     @ApiResponse({
         status: HttpStatus.CREATED,
@@ -130,7 +131,7 @@ export class CertificateController {
     })
     @ApiBody({ type: IssueCertificateDTO })
     public async issue(
-        @UserDecorator() { blockchainAccountAddress }: ILoggedInUser,
+        @BlockchainAccountsDecorator() blockchainAccount: IBlockchainAccount,
         @Body() dto: IssueCertificateDTO
     ): Promise<CertificateDTO> {
         return this.commandBus.execute(
@@ -140,14 +141,14 @@ export class CertificateController {
                 dto.fromTime,
                 dto.toTime,
                 dto.deviceId,
-                blockchainAccountAddress,
+                blockchainAccount.address,
                 dto.isPrivate
             )
         );
     }
 
     @Put('/:id/transfer')
-    @UseGuards(AuthGuard(), ActiveUserGuard)
+    @UseGuards(AuthGuard(), ActiveUserGuard, BlockchainAccountGuard)
     @ApiBody({ type: TransferCertificateDTO })
     @ApiResponse({
         status: HttpStatus.OK,
@@ -155,14 +156,14 @@ export class CertificateController {
         description: 'Returns whether the transfer succeeded'
     })
     public async transfer(
-        @UserDecorator() { blockchainAccountAddress }: ILoggedInUser,
+        @BlockchainAccountsDecorator() blockchainAccount: IBlockchainAccount,
         @Param('id', new ParseIntPipe()) certificateId: number,
         @Body() dto: TransferCertificateDTO
     ): Promise<SuccessResponseDTO> {
         return this.commandBus.execute(
             new TransferCertificateCommand(
                 certificateId,
-                blockchainAccountAddress,
+                blockchainAccount.address,
                 dto.to,
                 dto.amount,
                 dto.delegated
@@ -171,7 +172,7 @@ export class CertificateController {
     }
 
     @Put('/:id/claim')
-    @UseGuards(AuthGuard(), ActiveUserGuard)
+    @UseGuards(AuthGuard(), ActiveUserGuard, BlockchainAccountGuard)
     @ApiBody({ type: ClaimCertificateDTO })
     @ApiResponse({
         status: HttpStatus.OK,
@@ -179,7 +180,7 @@ export class CertificateController {
         description: 'Returns whether the claim succeeded'
     })
     public async claim(
-        @UserDecorator() { blockchainAccountAddress }: ILoggedInUser,
+        @BlockchainAccountsDecorator() blockchainAccount: IBlockchainAccount,
         @Param('id', new ParseIntPipe()) certificateId: number,
         @Body() dto: ClaimCertificateDTO
     ): Promise<SuccessResponseDTO> {
@@ -187,14 +188,14 @@ export class CertificateController {
             new ClaimCertificateCommand(
                 certificateId,
                 dto.claimData,
-                blockchainAccountAddress,
+                blockchainAccount.address,
                 dto.amount
             )
         );
     }
 
     @Put('/bulk-claim')
-    @UseGuards(AuthGuard(), ActiveUserGuard)
+    @UseGuards(AuthGuard(), ActiveUserGuard, BlockchainAccountGuard)
     @ApiBody({ type: BulkClaimCertificatesDTO })
     @ApiResponse({
         status: HttpStatus.OK,
@@ -202,20 +203,20 @@ export class CertificateController {
         description: 'Returns whether the bulk claim succeeded'
     })
     public async bulkClaim(
-        @UserDecorator() { blockchainAccountAddress }: ILoggedInUser,
+        @BlockchainAccountsDecorator() blockchainAccount: IBlockchainAccount,
         @Body() dto: BulkClaimCertificatesDTO
     ): Promise<SuccessResponseDTO> {
         return this.commandBus.execute(
             new BulkClaimCertificatesCommand(
                 dto.certificateIds,
                 dto.claimData,
-                blockchainAccountAddress
+                blockchainAccount.address
             )
         );
     }
 
     @Get('/:id/events')
-    @UseGuards(AuthGuard(), ActiveUserGuard)
+    @UseGuards(AuthGuard(), ActiveUserGuard, BlockchainAccountGuard)
     @ApiResponse({
         status: HttpStatus.OK,
         type: [CertificateEvent],

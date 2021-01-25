@@ -1,3 +1,5 @@
+import { IUser } from './User';
+
 export enum BlockchainAccountType {
     User = 'User',
     Exchange = 'Exchange'
@@ -13,3 +15,31 @@ export interface IBlockchainAccount {
     type: BlockchainAccountType;
     signedMessage?: string;
 }
+
+export const sortByBlockchainAccountPriority = (
+    currentAccount: IBlockchainAccount,
+    nextAccount: IBlockchainAccount
+): number => {
+    const currentAccountPriority = BLOCKCHAIN_ACCOUNT_PRIORITY[currentAccount.type];
+    const nextAccountPriority = BLOCKCHAIN_ACCOUNT_PRIORITY[nextAccount.type];
+
+    if (currentAccountPriority < nextAccountPriority) {
+        return -1;
+    }
+    if (currentAccountPriority > nextAccountPriority) {
+        return 1;
+    }
+
+    return 0;
+};
+
+export const getHighestPriorityBlockchainAccount = (user: IUser): IBlockchainAccount => {
+    const { blockchainAccounts } = user as IUser;
+    const orderedBlockchainAccounts = blockchainAccounts.sort(sortByBlockchainAccountPriority);
+
+    if (orderedBlockchainAccounts.length < 1) {
+        throw Error('No blockchain accounts attached to user');
+    }
+
+    return orderedBlockchainAccounts[0];
+};

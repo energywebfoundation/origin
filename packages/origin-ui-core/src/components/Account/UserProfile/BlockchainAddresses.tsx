@@ -25,15 +25,15 @@ export function BlockchainAddresses(): JSX.Element {
     const dispatch = useDispatch();
     const activeBlockchainAccountAddress = useSelector(getActiveBlockchainAccountAddress);
     const isLoading = useSelector(getLoading);
-    const exchangeAddres = useSelector(getExchangeDepositAddress);
+    const exchangeAddress = useSelector(getExchangeDepositAddress);
     const user = useSelector(getUserOffchain);
     let changeFieldValue: (name: string, value: any) => void;
 
     useEffect(() => {
         if (typeof changeFieldValue === 'function') {
-            changeFieldValue('exchangeDepositAddress', exchangeAddres);
+            changeFieldValue('exchangeDepositAddress', exchangeAddress);
         }
-    }, [exchangeAddres]);
+    }, [exchangeAddress]);
 
     const VALIDATION_SCHEMA = Yup.object().shape({
         blockchainAccountAddress: Yup.string()
@@ -43,7 +43,7 @@ export function BlockchainAddresses(): JSX.Element {
 
     const INITIAL_VALUES = {
         blockchainAccountAddress: user.blockchainAccountAddress || '',
-        exchangeDepositAddress: exchangeAddres || ''
+        exchangeDepositAddress: exchangeAddress || ''
     };
 
     async function submitForm(
@@ -78,7 +78,7 @@ export function BlockchainAddresses(): JSX.Element {
         }
     }
 
-    function createExchangeAddress(): void {
+    function createexchangeAddresss(): void {
         dispatch(createExchangeDepositAddress());
     }
 
@@ -110,10 +110,10 @@ export function BlockchainAddresses(): JSX.Element {
                             </Typography>
                             <Grid style={{ paddingTop: '20px', paddingBottom: '20px' }}>
                                 <Typography variant="h6">
-                                    {t('user.properties.exchangeAddressTitle')}
+                                    {t('user.properties.exchangeAddresssTitle')}
                                 </Typography>
                                 <Box className="buttonAndIconHolder">
-                                    {exchangeAddres ? (
+                                    {exchangeAddress ? (
                                         <Grid item lg={4} md={10} xs={12}>
                                             <FormInput
                                                 property="exchangeDepositAddress"
@@ -126,7 +126,7 @@ export function BlockchainAddresses(): JSX.Element {
                                             variant="contained"
                                             color="primary"
                                             disabled={isLoading}
-                                            onClick={createExchangeAddress}
+                                            onClick={createexchangeAddresss}
                                         >
                                             {t('user.actions.createDepositAddress')}
                                         </Button>
@@ -135,8 +135,8 @@ export function BlockchainAddresses(): JSX.Element {
                                         icon={Info}
                                         iconSize={IconSize.Large}
                                         popoverText={[
-                                            t('user.popover.exchangeAddressWhatFor'),
-                                            t('user.popover.exchangeAddressHowTo')
+                                            t('user.popover.exchangeAddresssWhatFor'),
+                                            t('user.popover.exchangeAddresssHowTo')
                                         ]}
                                         className="infoIcon"
                                     />

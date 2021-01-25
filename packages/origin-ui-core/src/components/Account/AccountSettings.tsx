@@ -24,7 +24,6 @@ import { getBackendClient } from '../../features/general/selectors';
 import { getUserOffchain } from '../../features/users/selectors';
 import { OriginConfigurationContext, setOriginLanguage } from '../PackageConfigurationProvider';
 import { refreshUserOffchain } from '../../features/users/actions';
-import { IUserProperties } from '@energyweb/origin-backend-core';
 
 export function AccountSettings() {
     const dispatch = useDispatch();
@@ -84,13 +83,7 @@ export function AccountSettings() {
         }
 
         if (notificationChanged) {
-            const newProperties: Partial<IUserProperties> = {};
-
-            if (notificationChanged) {
-                newProperties.notifications = notificationsEnabled;
-            }
-
-            await userClient.update(newProperties);
+            await userClient.update({ notifications: notificationsEnabled });
         }
 
         dispatch(refreshUserOffchain());
