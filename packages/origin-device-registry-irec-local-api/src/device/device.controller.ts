@@ -37,6 +37,7 @@ import { plainToClass } from 'class-transformer';
 import { SuccessResponseDTO } from '../utils/success-response.dto';
 import { DeviceService } from './device.service';
 import { CreateDeviceDTO, DeviceDTO, UpdateDeviceStatusDTO } from './dto';
+import { PublicDeviceDTO } from './dto/public-device.dto';
 
 @ApiTags('device')
 @ApiBearerAuth('access-token')
@@ -48,10 +49,26 @@ export class DeviceController {
 
     @Get()
     @ApiResponse({ status: HttpStatus.OK, type: [DeviceDTO], description: 'Returns all Devices' })
-    async getAll(): Promise<DeviceDTO[]> {
+    async getAll(): Promise<PublicDeviceDTO[]> {
         const devices = await this.deviceService.findAll();
 
-        return devices?.map((device) => plainToClass(DeviceDTO, device));
+        return devices?.map((device) => plainToClass(PublicDeviceDTO, device));
+    }
+
+    @Get('/:id')
+    @ApiResponse({ status: HttpStatus.OK, type: DeviceDTO, description: 'Returns a Device' })
+    @ApiNotFoundResponse({
+        status: HttpStatus.NOT_FOUND,
+        description: `The device with the ID doesn't exist`
+    })
+    async get(@Param('id') id: string): Promise<PublicDeviceDTO> {
+        const device = await this.deviceService.findOne(id);
+
+        if (!device) {
+            throw new NotFoundException();
+        }
+
+        return plainToClass(PublicDeviceDTO, device, { excludeExtraneousValues: true });
     }
 
     @Get('/my-devices')
@@ -62,22 +79,6 @@ export class DeviceController {
         const devices = await this.deviceService.findAll({ where: { ownerId } });
 
         return devices?.map((device) => plainToClass(DeviceDTO, device));
-    }
-
-    @Get('/:id')
-    @ApiResponse({ status: HttpStatus.OK, type: DeviceDTO, description: 'Returns a Device' })
-    @ApiNotFoundResponse({
-        status: HttpStatus.NOT_FOUND,
-        description: `The device with the ID doesn't exist`
-    })
-    async get(@Param('id') id: string): Promise<DeviceDTO> {
-        const device = await this.deviceService.findOne(id);
-
-        if (!device) {
-            throw new NotFoundException();
-        }
-
-        return plainToClass(DeviceDTO, device);
     }
 
     @Post()

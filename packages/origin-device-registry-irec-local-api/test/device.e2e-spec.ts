@@ -3,11 +3,13 @@ import { DeviceStatus } from '@energyweb/origin-backend-core';
 import { DatabaseService } from '@energyweb/origin-backend-utils';
 import { HttpStatus, INestApplication } from '@nestjs/common';
 import dotenv from 'dotenv';
+import { expect } from 'chai';
 import supertest from 'supertest';
 
 import { CreateDeviceDTO } from '../src/device';
 import { request } from './request';
 import { bootstrapTestInstance, TestUser } from './test.app';
+import { PublicDeviceDTO } from '../src/device/dto/public-device.dto';
 
 describe('Device e2e tests', () => {
     dotenv.config({
@@ -91,5 +93,19 @@ describe('Device e2e tests', () => {
             .send({ status: DeviceStatus.Active })
             .set({ 'test-user': TestUser.PlatformAdmin })
             .expect(HttpStatus.OK);
+    });
+
+    it('should not expose all fields as public devices', async () => {
+        const { body } = await test
+            .post('/irec/device-registry')
+            .send(exampleDevice)
+            .set({ 'test-user': TestUser.OrganizationAdmin });
+
+        await test.get(`/irec/device-registry/${body.id}`).expect((res) => {
+            const device = res.body as PublicDeviceDTO;
+
+            expect((device as any).defaultAccount).to.be.undefined;
+            expect(device.name).to.not.be.undefined;
+        });
     });
 });
