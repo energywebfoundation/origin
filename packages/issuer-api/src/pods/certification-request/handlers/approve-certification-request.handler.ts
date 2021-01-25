@@ -11,6 +11,7 @@ import { CertificationRequest } from '../certification-request.entity';
 import { BlockchainPropertiesService } from '../../blockchain/blockchain-properties.service';
 import { CertificateCreatedEvent } from '../../certificate/events/certificate-created-event';
 import { CertificationRequestStatus } from '../certification-request-status.enum';
+import { CertificateRequestApprovedEvent } from '../events';
 
 @CommandHandler(ApproveCertificationRequestCommand)
 export class ApproveCertificationRequestHandler
@@ -63,15 +64,17 @@ export class ApproveCertificationRequestHandler
             return ResponseFailure(e.message, HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
-        this.eventBus.publish(
-            new CertificateCreatedEvent(newCertificateId, isPrivate ? { owner, energy } : null)
-        );
-
         await this.repository.update(id, {
             approved: true,
             approvedDate: new Date(),
             issuedCertificateTokenId: newCertificateId
         });
+
+        this.eventBus.publish(
+            new CertificateCreatedEvent(newCertificateId, isPrivate ? { owner, energy } : null)
+        );
+
+        this.eventBus.publish(new CertificateRequestApprovedEvent(id));
 
         return ResponseSuccess(`Successfully approved certificationRequest ${id}.`);
     }

@@ -12,7 +12,8 @@ import { ISmartMeterReadingsAdapter } from '@energyweb/origin-backend-core';
 import { HTTPLoggingInterceptor } from '@energyweb/origin-backend-utils';
 import {
     AppModule as IRECOrganizationModule,
-    entities as IRECOrganizationEntities
+    entities as IRECOrganizationEntities,
+    RegistrationModule
 } from '@energyweb/origin-organization-irec-api';
 import { DynamicModule, Module } from '@nestjs/common';
 import { APP_INTERCEPTOR } from '@nestjs/core';
@@ -20,6 +21,8 @@ import { CqrsModule } from '@nestjs/cqrs';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import {
+    CertificateRequestApprovedHandler,
+    DeviceCreatedHandler,
     DeviceStatusChangedHandler,
     EmailConfirmationRequestedHandler,
     InvitationCreatedHandler,
@@ -79,10 +82,13 @@ export class OriginAppModule {
                 IssuerModule,
                 OrganizationModule,
                 UserModule,
-                CqrsModule
+                CqrsModule,
+                RegistrationModule
             ],
             providers: [
                 { provide: APP_INTERCEPTOR, useClass: HTTPLoggingInterceptor },
+                CertificateRequestApprovedHandler,
+                DeviceCreatedHandler,
                 DeviceStatusChangedHandler,
                 EmailConfirmationRequestedHandler,
                 InvitationCreatedHandler,
