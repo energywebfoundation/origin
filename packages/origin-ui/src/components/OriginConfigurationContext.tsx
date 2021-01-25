@@ -299,9 +299,9 @@ export function createOriginConfiguration(configuration: Partial<IOriginConfigur
         materialTheme: createMaterialThemeForOrigin(DEFAULT_STYLE_CONFIG, storedLanguage),
         defaultLanguage: 'en',
         language: storedLanguage,
-        enabledFeatures: allOriginFeatures.filter(
-            (feature) => OriginFeature.IRecConnect !== feature
-        )
+        enabledFeatures: allOriginFeatures.filter((feature) => {
+            return ![OriginFeature.IRecConnect, OriginFeature.DevicesImport].includes(feature);
+        })
     };
 
     const newConfiguration: IOriginConfiguration = {

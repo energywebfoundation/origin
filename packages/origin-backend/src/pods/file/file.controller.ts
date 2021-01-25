@@ -82,7 +82,7 @@ export class FileController {
         @Param('id') id: string,
         @Res() res: Response
     ): Promise<void> {
-        const file = await this.fileService.get(user, id);
+        const file = await this.fileService.get(id, user);
         if (!file) {
             throw new NotFoundException();
         }
@@ -93,5 +93,57 @@ export class FileController {
         }).json({
             data: file.data
         });
+    }
+
+    @Get('/public/:id')
+    @ApiResponse({
+        status: HttpStatus.OK,
+        type: FileDto,
+        description: 'Download a file anonymously'
+    })
+    @ApiNotFoundResponse({ description: `The file doesn't exist` })
+    async downloadAnonymously(@Param('id') id: string, @Res() res: Response): Promise<void> {
+        const file = await this.fileService.get(id);
+        if (!file) {
+            throw new NotFoundException();
+        }
+
+        res.set({
+            'Content-Type': file.contentType,
+            'Content-Length': file.data.length
+        }).json({
+            data: file.data
+        });
+    }
+
+    @Post('/public')
+    @ApiConsumes('multipart/form-data')
+    @ApiBody({ type: FileUploadDto })
+    @UseInterceptors(
+        FileFieldsInterceptor([{ name: 'files', maxCount: maxFilesLimit }], {
+            storage: multer.memoryStorage(),
+            fileFilter: (req: Request, file, callback) => {
+                if (!FILE_SUPPORTED_MIMETYPES.includes(file.mimetype)) {
+                    callback(new Error('Unsupported file type'), false);
+                }
+
+                callback(null, true);
+            },
+            limits: {
+                files: maxFilesLimit,
+                fileSize: maxFileSize
+            }
+        })
+    )
+    @UseGuards(AuthGuard())
+    @ApiResponse({ status: HttpStatus.CREATED, type: [String], description: 'Upload a file' })
+    async uploadAnonymously(
+        @UserDecorator() user: ILoggedInUser,
+        @UploadedFiles()
+        uploadedFiles: {
+            files: Express.Multer.File[];
+        }
+    ): Promise<string[]> {
+        return this.fileService.store(user, uploadedFiles.files, true);
     }
 }
