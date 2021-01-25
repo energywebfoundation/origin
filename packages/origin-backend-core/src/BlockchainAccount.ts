@@ -35,11 +35,11 @@ export const sortByBlockchainAccountPriority = (
 
 export const getHighestPriorityBlockchainAccount = (user: IUser): IBlockchainAccount => {
     const { blockchainAccounts } = user as IUser;
-    const orderedBlockchainAccounts = blockchainAccounts.sort(sortByBlockchainAccountPriority);
+    const [blockchainAccount] = blockchainAccounts.sort(sortByBlockchainAccountPriority);
 
-    if (orderedBlockchainAccounts.length < 1) {
+    if (!blockchainAccount) {
         throw Error('No blockchain accounts attached to user');
     }
 
-    return orderedBlockchainAccounts[0];
+    return blockchainAccount;
 };
