@@ -19,7 +19,7 @@ export function ordersState<T>(
         case OrdersActionsType.STORE_ORDERS:
             const allOrders: Order[] = [...state.orders].concat(payload);
             const set: Set<string> = new Set();
-            allOrders.map((order) => {
+            allOrders.forEach((order) => {
                 set.add(JSON.stringify(order));
             });
             const orders: Order[] = Array.from(set).map((order) => JSON.parse(order));
