@@ -1,12 +1,21 @@
-import { Entity, PrimaryGeneratedColumn, Column, Unique, ManyToOne } from 'typeorm';
+import {
+    Entity,
+    PrimaryGeneratedColumn,
+    Column,
+    Unique,
+    ManyToOne,
+    JoinTable,
+    ManyToMany
+} from 'typeorm';
 
 import { Exclude } from 'class-transformer';
 
-import { IBlockchainAccount, IUser, KYCStatus, UserStatus } from '@energyweb/origin-backend-core';
+import { IUser, KYCStatus, UserStatus } from '@energyweb/origin-backend-core';
 
 import { ExtendedBaseEntity } from '@energyweb/origin-backend-utils';
 import { IsEnum } from 'class-validator';
 import { Organization } from '../organization/organization.entity';
+import { BlockchainAccount } from './blockchain-account.entity';
 
 @Entity()
 @Unique(['email'])
@@ -39,8 +48,9 @@ export class User extends ExtendedBaseEntity implements IUser {
     @Exclude()
     password: string;
 
-    @Column('simple-json', { nullable: true })
-    blockchainAccounts: IBlockchainAccount[];
+    @ManyToMany(() => BlockchainAccount, (blockchainAccount) => blockchainAccount.users)
+    @JoinTable()
+    blockchainAccounts: BlockchainAccount[];
 
     @Column({ nullable: true })
     notifications: boolean;

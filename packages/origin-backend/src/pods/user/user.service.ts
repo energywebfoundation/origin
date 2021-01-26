@@ -12,6 +12,7 @@ import {
 } from '@energyweb/origin-backend-core';
 import { recoverTypedSignatureAddress } from '@energyweb/utils-general';
 import {
+    BadRequestException,
     ConflictException,
     Injectable,
     Logger,
@@ -21,12 +22,13 @@ import { ConfigService } from '@nestjs/config';
 import { InjectRepository } from '@nestjs/typeorm';
 import bcrypt from 'bcryptjs';
 import { validate } from 'class-validator';
-import { DeepPartial, FindConditions, Repository, FindManyOptions } from 'typeorm';
+import { FindConditions, Repository, FindManyOptions } from 'typeorm';
 import { ExtendedBaseEntity } from '@energyweb/origin-backend-utils';
 import { User } from './user.entity';
 import { EmailConfirmationService } from '../email-confirmation/email-confirmation.service';
 import { UpdateUserProfileDTO } from './dto/update-user-profile.dto';
-import { BlockchainAccountDTO } from './dto/blockchain-account.dto';
+import { BindBlockchainAccountDTO } from './dto/bind-blockchain-account.dto';
+import { BlockchainAccount } from './blockchain-account.entity';
 
 export type TUserBaseEntity = ExtendedBaseEntity & IUser;
 
@@ -37,6 +39,8 @@ export class UserService {
     constructor(
         @InjectRepository(User)
         private readonly repository: Repository<User>,
+        @InjectRepository(BlockchainAccount)
+        private readonly blockchainAccountRepository: Repository<BlockchainAccount>,
         private readonly config: ConfigService,
         private readonly emailConfirmationService: EmailConfirmationService
     ) {}
@@ -130,10 +134,10 @@ export class UserService {
 
     async updateBlockchainAddress(
         id: number | string,
-        signedMessage: BlockchainAccountDTO['signedMessage']
-    ) {
+        signedMessage: BindBlockchainAccountDTO['signedMessage']
+    ): Promise<ExtendedBaseEntity & IUser> {
         if (!signedMessage) {
-            throw new Error('Signed message is empty.');
+            throw new BadRequestException('Signed message is empty.');
         }
 
         const user = await this.findById(id);
@@ -143,17 +147,22 @@ export class UserService {
             signedMessage
         );
 
-        if (user.blockchainAccounts.some((account) => account.address === address)) {
+        if (
+            user.blockchainAccounts &&
+            user.blockchainAccounts?.some((account) => account.address === address)
+        ) {
             throw new Error('User has blockchain account already linked.');
         }
 
-        user.blockchainAccounts.push({
+        const blockchainAccount = await this.blockchainAccountRepository.save({
             address,
             type: BlockchainAccountType.User,
             signedMessage
         });
 
-        await this.repository.save((user as unknown) as DeepPartial<User>);
+        user.blockchainAccounts = [blockchainAccount];
+
+        await this.repository.save(user);
 
         return user;
     }

@@ -15,6 +15,7 @@ import { Invitation } from './pods/invitation/invitation.entity';
 import { InvitationModule } from './pods/invitation/invitation.module';
 import { Organization } from './pods/organization/organization.entity';
 import { OrganizationModule } from './pods/organization/organization.module';
+import { BlockchainAccount } from './pods/user/blockchain-account.entity';
 import { User } from './pods/user/user.entity';
 import { UserModule } from './pods/user/user.module';
 
@@ -34,6 +35,7 @@ export const entities = [
     Device,
     Configuration,
     Organization,
+    BlockchainAccount,
     User,
     Invitation,
     EmailConfirmation,
