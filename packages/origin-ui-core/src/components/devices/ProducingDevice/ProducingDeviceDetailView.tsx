@@ -1,20 +1,20 @@
 import React from 'react';
-import marker from '../../../assets/marker.svg';
-import map from '../../../assets/map.svg';
-import wind from '../../../assets/icon_wind.svg';
-import hydro from '../../../assets/icon_hydro.svg';
-import iconThermal from '../../../assets/icon_thermal.svg';
-import iconSolid from '../../../assets/icon_solid.svg';
-import iconLiquid from '../../../assets/icon_liquid.svg';
-import iconGaseous from '../../../assets/icon_gaseous.svg';
-import iconMarine from '../../../assets/icon_marine.svg';
-import solar from '../../../assets/icon_solar.svg';
+import marker from '../../../../assets/marker.svg';
+import map from '../../../../assets/map.svg';
+import wind from '../../../../assets/icon_wind.svg';
+import hydro from '../../../../assets/icon_hydro.svg';
+import iconThermal from '../../../../assets/icon_thermal.svg';
+import iconSolid from '../../../../assets/icon_solid.svg';
+import iconLiquid from '../../../../assets/icon_liquid.svg';
+import iconGaseous from '../../../../assets/icon_gaseous.svg';
+import iconMarine from '../../../../assets/icon_marine.svg';
+import solar from '../../../../assets/icon_solar.svg';
 import { ProducingDevice } from '@energyweb/device-registry';
-import { DeviceMap } from './DeviceMap';
-import { SmartMeterReadingsTable } from './SmartMeterReadingsTable';
-import { SmartMeterReadingsChart } from './SmartMeterReadingsChart';
+import { DeviceMap } from '../DeviceMap';
+import { SmartMeterReadingsTable } from '../SmartMeterReadings/SmartMeterReadingsTable';
+import { SmartMeterReadingsChart } from '../SmartMeterReadings/SmartMeterReadingsChart';
 import { useSelector } from 'react-redux';
-import { getProducingDevices, getConfiguration } from '../../features/selectors';
+import { getProducingDevices, getConfiguration } from '../../../features/selectors';
 import { makeStyles, createStyles, useTheme } from '@material-ui/core';
 import { Skeleton } from '@material-ui/lab';
 import {
@@ -23,12 +23,12 @@ import {
     PowerFormatter,
     useTranslation,
     LightenColor
-} from '../../utils';
-import { getBackendClient } from '../../features/general/selectors';
-import { DeviceGroupForm } from './DeviceGroupForm';
+} from '../../../utils';
+import { getBackendClient } from '../../../features/general/selectors';
+import { DeviceGroupForm } from '../DeviceGroupForm';
 import { IExternalDeviceId, IPublicOrganization } from '@energyweb/origin-backend-core';
-import { downloadFile } from '../Organization/DownloadDocuments';
-import { useOriginConfiguration } from '../../utils/configuration';
+import { downloadFile } from '../../Organization/DownloadDocuments';
+import { useOriginConfiguration } from '../../../utils/configuration';
 
 interface IProps {
     id?: number;

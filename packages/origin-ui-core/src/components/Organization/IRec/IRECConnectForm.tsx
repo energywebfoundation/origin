@@ -1,11 +1,11 @@
 import React from 'react';
 import { Paper, Theme, useTheme, Grid, Box, Divider, makeStyles, Button } from '@material-ui/core';
-import { useTranslation } from '../..';
+import { useTranslation } from '../../..';
 import { Formik, Form, FormikHelpers } from 'formik';
-import { useValidation, LightenColor } from '../../utils';
-import { FormInput } from '../Form';
-import irecLogo from '../../../assets/logo-i-rec.svg';
-import { useOriginConfiguration } from '../../utils/configuration';
+import { useValidation, LightenColor } from '../../../utils';
+import { FormInput } from '../../Form';
+import irecLogo from '../../../../assets/logo-i-rec.svg';
+import { useOriginConfiguration } from '../../../utils/configuration';
 
 const INITIAL_VALUES = {
     platformOrganizationId: '',

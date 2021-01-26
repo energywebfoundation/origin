@@ -1,6 +1,6 @@
 import React from 'react';
 import { mount } from 'enzyme';
-import { ProducingDeviceTable } from '../../components/devices/ProducingDeviceTable';
+import { ProducingDeviceTable } from '../../components/devices/ProducingDevice/ProducingDeviceTable';
 import { BackendClient, dataTestSelector } from '../../utils';
 import {
     setupStore,

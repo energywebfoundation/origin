@@ -8,16 +8,16 @@ import {
     IOrganizationInvitation
 } from '@energyweb/origin-backend-core';
 
-import { showNotification, NotificationType } from '../../utils/notifications';
-import { TableMaterial } from '../Table/TableMaterial';
-import { setLoading } from '../../features/general/actions';
+import { showNotification, NotificationType } from '../../../utils/notifications';
+import { TableMaterial } from '../../Table/TableMaterial';
+import { setLoading } from '../../../features/general/actions';
 import {
     IPaginatedLoaderHooksFetchDataParameters,
     usePaginatedLoader
-} from '../Table/PaginatedLoaderHooks';
-import { getBackendClient } from '../../features/general/selectors';
-import { refreshUserOffchain } from '../../features/users/actions';
-import { useTranslation, useLinks } from '../..';
+} from '../../Table/PaginatedLoaderHooks';
+import { getBackendClient } from '../../../features/general/selectors';
+import { refreshUserOffchain } from '../../../features/users/actions';
+import { useTranslation, useLinks } from '../../..';
 
 interface IRecord {
     organization: IPublicOrganization;

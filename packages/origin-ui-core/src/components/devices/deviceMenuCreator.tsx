@@ -2,12 +2,12 @@ import React from 'react';
 import { TFunction } from 'i18next';
 import { DeviceStatus, IUser, isRole, Role } from '@energyweb/origin-backend-core';
 import { OriginFeature } from '@energyweb/utils-general';
-import { ProducingDeviceTable } from './ProducingDeviceTable';
+import { ProducingDeviceTable } from './ProducingDevice/ProducingDeviceTable';
 import { DeviceMap } from './DeviceMap';
 import { DeviceGroupForm } from './DeviceGroupForm';
 import { AutoSupplyDeviceTable } from './AutoSupplyDeviceTable';
 import { AddDevice } from './AddDevice';
-import { ImportDevice } from './import/ImportDevices';
+import { ImportDevice } from './ImportDevice/ImportDevices';
 
 interface IDeviceMenuItem {
     key: string;

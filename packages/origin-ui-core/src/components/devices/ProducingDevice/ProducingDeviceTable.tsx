@@ -5,7 +5,7 @@ import { ProducingDevice } from '@energyweb/device-registry';
 import { useDispatch, useSelector } from 'react-redux';
 import { Fab, Tooltip } from '@material-ui/core';
 import { Add, Assignment, Check, Visibility } from '@material-ui/icons';
-import { getBaseURL, getConfiguration, getProducingDevices } from '../../features/selectors';
+import { getBaseURL, getConfiguration, getProducingDevices } from '../../../features/selectors';
 import {
     checkRecordPassesFilters,
     CustomFilterInputType,
@@ -15,10 +15,10 @@ import {
     ITableAction,
     TableMaterial,
     usePaginatedLoaderFiltered
-} from '../Table';
-import { getExchangeDepositAddress, getUserOffchain } from '../../features/users/selectors';
-import { setLoading } from '../../features/general/actions';
-import { producingDeviceCreatedOrUpdated } from '../../features/producingDevices/actions';
+} from '../../Table';
+import { getExchangeDepositAddress, getUserOffchain } from '../../../features/users/selectors';
+import { setLoading } from '../../../features/general/actions';
+import { producingDeviceCreatedOrUpdated } from '../../../features/producingDevices/actions';
 import {
     EnergyFormatter,
     getDeviceColumns,
@@ -29,9 +29,9 @@ import {
     PowerFormatter,
     showNotification,
     useTranslation
-} from '../../utils';
-import { getEnvironment } from '../../features';
-import { RequestCertificatesModal } from '../Modal/RequestCertificatesModal';
+} from '../../../utils';
+import { getEnvironment } from '../../../features';
+import { RequestCertificatesModal } from '../../Modal/RequestCertificatesModal';
 
 interface IOwnProps {
     actions: {
@@ -73,7 +73,6 @@ export function ProducingDeviceTable(props: IOwnProps) {
     const exchangeDepositAddress = useSelector(getExchangeDepositAddress);
     const [showRequestCertModal, setShowRequestCertModal] = useState(false);
     const [producingDeviceForModal, setProducingDeviceForModal] = useState(null);
-
     const dispatch = useDispatch();
 
     function enrichProducingDeviceData(): IEnrichedProducingDeviceData[] {
