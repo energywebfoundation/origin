@@ -7,7 +7,7 @@ export interface IBundlesState {
 }
 
 const initialState: IBundlesState = {
-    bundles: [],
+    bundles: null,
     showBundleDetails: false
 };
 

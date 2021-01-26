@@ -5,7 +5,7 @@ import { Redirect, Route } from 'react-router-dom';
 import { getUserOffchain } from '../../features/users/selectors';
 import { useLinks } from '../../utils';
 import { PageContent } from '../PageContent/PageContent';
-import { ProducingDeviceDetailView } from './ProducingDeviceDetailView';
+import { ProducingDeviceDetailView } from './ProducingDevice/ProducingDeviceDetailView';
 import { RoleChangedModal } from '../Modal/RoleChangedModal';
 import { ConnectBlockchainAccountModal } from '../Modal/ConnectBlockchainAccountModal';
 import { deviceMenuCreator } from './deviceMenuCreator';

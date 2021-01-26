@@ -21,7 +21,8 @@ import {
     getUserOffchain,
     TableMaterial,
     usePermissions,
-    Requirements
+    Requirements,
+    TableFallback
 } from '@energyweb/origin-ui-core';
 import { Bundle, ExchangeClient } from '../utils/exchange';
 import { getExchangeClient } from '../features/general';
@@ -62,9 +63,12 @@ export const BundlesTable = (props: IBundleTableProps) => {
     const userIsActive = user && user.status === UserStatus.Active;
     const { owner = false } = props;
     const allBundles = useSelector(getBundles);
-    const bundles = allBundles
-        .filter((b) => (owner ? b.own : true))
-        .filter((b) => !(b.splits && b.splits.length === 0));
+
+    const bundles = !allBundles
+        ? []
+        : allBundles
+              .filter((b) => (owner ? b.own : true))
+              .filter((b) => !(b.splits && b.splits.length === 0));
     const { t } = useTranslation();
     const devices = useSelector(getProducingDevices);
     const [selected, setSelected] = useState<Bundle>(null);
@@ -104,7 +108,7 @@ export const BundlesTable = (props: IBundleTableProps) => {
     });
 
     useEffect(() => {
-        if (allBundles.length > 0) {
+        if (allBundles?.length > 0) {
             setPageSize(BUNDLES_PER_PAGE);
             loadPage(1);
         }
@@ -182,18 +186,22 @@ export const BundlesTable = (props: IBundleTableProps) => {
 
     return (
         <>
-            <TableMaterial
-                columns={columns}
-                rows={rows}
-                loadPage={loadPage}
-                total={total}
-                pageSize={pageSize}
-                actions={actions}
-                currentSort={currentSort}
-                sortAscending={sortAscending}
-                toggleSort={toggleSort}
-                handleRowClick={(rowIndex: string) => viewDetails(parseInt(rowIndex, 10))}
-            />
+            {allBundles === null ? (
+                <TableFallback />
+            ) : (
+                <TableMaterial
+                    columns={columns}
+                    rows={rows}
+                    loadPage={loadPage}
+                    total={total}
+                    pageSize={pageSize}
+                    actions={actions}
+                    currentSort={currentSort}
+                    sortAscending={sortAscending}
+                    toggleSort={toggleSort}
+                    handleRowClick={(rowIndex: string) => viewDetails(parseInt(rowIndex, 10))}
+                />
+            )}
             {isBundleDetailsVisible && <BundleDetails bundle={selected} owner={owner} />}
             {userIsActiveAndPartOfOrg && (
                 <Link to={'/exchange/create_bundle'}>

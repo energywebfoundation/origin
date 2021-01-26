@@ -1,4 +1,4 @@
-import { IEventHandler, EventsHandler } from '@nestjs/cqrs';
+import { EventsHandler, IEventHandler } from '@nestjs/cqrs';
 import {
     Certificate as CertificateFacade,
     IOwnershipCommitmentProof,

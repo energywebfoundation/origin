@@ -13,9 +13,9 @@ import {
 import { getExchangeClient } from '../general/selectors';
 import {
     clearOrders,
-    storeOrder,
+    storeOrders,
     OrdersActionsType,
-    storeDemand,
+    storeDemands,
     clearDemands,
     fetchOrders,
     ICreateDemandAction
@@ -25,8 +25,6 @@ import { Order, Demand, ExchangeClient } from '../../utils/exchange';
 function* fetchOrdersAndDemands(): SagaIterator {
     while (true) {
         yield take(OrdersActionsType.FETCH_ORDERS);
-        yield put(clearOrders());
-        yield put(clearDemands());
 
         const exchangeClient: ExchangeClient = yield select(getExchangeClient);
         const ordersClient = exchangeClient?.ordersClient;
@@ -45,10 +43,12 @@ function* fetchOrdersAndDemands(): SagaIterator {
                 : { data: [] };
 
         const demands: Demand[] = demandsResponse.data;
+        yield put(clearDemands());
+        yield put(storeDemands(demands));
 
-        yield put(storeDemand(demands));
+        yield put(clearOrders());
         if (orders.length > 0) {
-            for (const order of orders) {
+            const ordersWithFilledInfo = orders.map((order) => {
                 const { startVolume, currentVolume } = order;
                 const filled =
                     BigNumber.from(startVolume)
@@ -56,8 +56,9 @@ function* fetchOrdersAndDemands(): SagaIterator {
                         .mul(100)
                         .div(startVolume)
                         .toNumber() / 100;
-                yield put(storeOrder({ ...order, filled }));
-            }
+                return { ...order, filled };
+            });
+            yield put(storeOrders(ordersWithFilledInfo));
         }
     }
 }
@@ -200,7 +201,7 @@ function* archiveDemand(): SagaIterator {
         const { demandClient }: ExchangeClient = yield select(getExchangeClient);
         const i18n = getI18n();
         try {
-            yield apply(demandClient, demandClient.archive, [payload]);
+            yield apply(demandClient, demandClient.archive, [payload.id]);
             showNotification(
                 i18n.t('demand.feedback.successfullyRemoved'),
                 NotificationType.Success

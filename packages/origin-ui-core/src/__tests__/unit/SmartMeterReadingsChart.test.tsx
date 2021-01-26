@@ -1,7 +1,7 @@
 import React from 'react';
 import { mount } from 'enzyme';
 import { BigNumber } from 'ethers';
-import { SmartMeterReadingsChart } from '../../components/devices/SmartMeterReadingsChart';
+import { SmartMeterReadingsChart } from '../../components/devices/SmartMeterReadings/SmartMeterReadingsChart';
 import { ProducingDevice } from '@energyweb/device-registry';
 import { Bar } from 'react-chartjs-2';
 import { formatDate, EnergyFormatter, moment } from '../../utils';

@@ -8,11 +8,11 @@ import {
 import { OriginFeature } from '@energyweb/utils-general';
 import { OrganizationView } from './OrganizationView';
 import { OrganizationUsersTable } from './OrganizationUsersTable';
-import { OrganizationInvitations } from './OrganizationInvitations';
-import { OrganizationInvite } from './OrganizationInvite';
+import { OrganizationInvitations } from './Invitation/OrganizationInvitations';
+import { OrganizationInvite } from './Invitation/OrganizationInvite';
 import { OrganizationForm } from './OrganizationForm';
 import { OrganizationTable } from './OrganizationTable';
-import { IRECRegisterForm } from './IRECRegisterForm';
+import { IRECRegisterForm } from './IRec/IRECRegisterForm';
 import { Registration } from '../../utils/irec';
 
 interface IOrganizationMenuItem {
