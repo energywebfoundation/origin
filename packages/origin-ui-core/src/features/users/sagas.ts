@@ -51,6 +51,7 @@ import { IRecClient } from '../../utils/clients/IRecClient';
 import { showNotification, NotificationType } from '../..';
 import { getI18n } from 'react-i18next';
 import { getWeb3 } from '../selectors';
+import { getBlockchainAccount } from '../../utils/user';
 
 export const LOCAL_STORAGE_KEYS = {
     AUTHENTICATION_TOKEN: 'AUTHENTICATION_TOKEN'
@@ -220,7 +221,7 @@ function* updateBlockchainAddress(): SagaIterator {
         try {
             if (activeAccount === null) {
                 throw Error(i18n.t('user.profile.noBlockchainConnection'));
-            } else if (user?.blockchainAccountAddress === activeAccount.toLowerCase()) {
+            } else if (getBlockchainAccount(user)?.address === activeAccount.toLowerCase()) {
                 throw Error(i18n.t('user.feedback.thisAccountAlreadyConnected'));
             }
 
@@ -232,10 +233,7 @@ function* updateBlockchainAddress(): SagaIterator {
             );
 
             yield apply(userClient, userClient.updateOwnBlockchainAddress, [
-                { ...user, blockchainAccountAddress: '' }
-            ]);
-            yield apply(userClient, userClient.update, [
-                { blockchainAccountSignedMessage: message }
+                { signedMessage: message }
             ]);
 
             showNotification(

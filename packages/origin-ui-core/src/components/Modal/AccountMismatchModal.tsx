@@ -15,6 +15,7 @@ import {
 } from '../../features/general/actions';
 import { getUserOffchain, getActiveBlockchainAccountAddress } from '../../features/users/selectors';
 import { useTranslation } from '../../utils';
+import { getBlockchainAccount } from '../../utils/user';
 
 export function AccountMismatchModal() {
     const { visibility } = useSelector(getAccountMismatchModalProperties);
@@ -54,7 +55,7 @@ export function AccountMismatchModal() {
                         {t('general.info.tryingToSignAndBoundIs')}
                         <br />
                         <br />
-                        {user?.blockchainAccountAddress?.toLowerCase()}
+                        {getBlockchainAccount(user)?.address?.toLowerCase()}
                         <br />
                         <br />
                         {t('general.info.andYouAreTrying')}

@@ -8,6 +8,7 @@ import { getUserOffchain } from '../../features/users/selectors';
 import { useHistory } from 'react-router-dom';
 import { OriginConfigurationContext } from '..';
 import { OriginFeature } from '@energyweb/utils-general';
+import { getBlockchainAccount } from '../../utils/user';
 
 interface IProps {
     showModal: boolean;
@@ -40,7 +41,7 @@ export const IRECConnectOrRegisterModal = ({
         setShowModal(false);
         switch (step) {
             case STEP_NAMES.NOT_NOW:
-                if (!user.blockchainAccountAddress) {
+                if (!getBlockchainAccount(user)) {
                     setShowBlockchainModal(true);
                 } else {
                     history.push(getOrganizationViewLink(orgId.toString()));

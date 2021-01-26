@@ -5,6 +5,7 @@ import { getUserOffchain } from '../../features/users/selectors';
 import { Dialog, DialogTitle, DialogActions, Button, Box, useTheme, Grid } from '@material-ui/core';
 import { showNotification, NotificationType, useTranslation, useLinks } from '../..';
 import iconAdded from '../../../assets/icon-org-added.svg';
+import { getBlockchainAccount } from '../../utils/user';
 
 interface IProps {
     showModal: boolean;
@@ -29,7 +30,7 @@ export const IRecAccountRegisteredModal = ({
     const onClose = () => {
         setShowModal(false);
         showNotification('Organization registered.', NotificationType.Success);
-        if (!user.blockchainAccountAddress) {
+        if (!getBlockchainAccount(user)) {
             setShowBlockchainModal(true);
         } else {
             history.push(getOrganizationLink());

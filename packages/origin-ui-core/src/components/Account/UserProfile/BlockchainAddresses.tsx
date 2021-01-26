@@ -1,6 +1,6 @@
-import { BackendClient, NotificationType, showNotification, useValidation } from '../../../utils';
+import { NotificationType, showNotification, useValidation } from '../../../utils';
 import { Form, Formik, FormikHelpers, FormikProps, yupToFormErrors } from 'formik';
-import { getBackendClient, getLoading, setLoading } from '../../../features/general';
+import { getLoading, setLoading } from '../../../features/general';
 import {
     createExchangeDepositAddress,
     getActiveBlockchainAccountAddress,
@@ -16,10 +16,9 @@ import { Box, Button, Grid, Paper, Typography } from '@material-ui/core';
 import { FormInput } from '../../Form';
 import { IconPopover, IconSize } from '../../IconPopover';
 import { Info } from '@material-ui/icons';
+import { getBlockchainAccount, getExchangeAccount } from '../../../utils/user';
 
 export function BlockchainAddresses(): JSX.Element {
-    const backendClient: BackendClient = useSelector(getBackendClient);
-    const userClient = backendClient?.userClient;
     const { Yup } = useValidation();
     const { t } = useTranslation();
     const dispatch = useDispatch();
@@ -42,8 +41,8 @@ export function BlockchainAddresses(): JSX.Element {
     });
 
     const INITIAL_VALUES = {
-        blockchainAccountAddress: user.blockchainAccountAddress || '',
-        exchangeDepositAddress: exchangeAddress || ''
+        blockchainAccountAddress: getBlockchainAccount(user) || '',
+        exchangeDepositAddress: getExchangeAccount(user) || ''
     };
 
     async function submitForm(
@@ -54,9 +53,7 @@ export function BlockchainAddresses(): JSX.Element {
         dispatch(setLoading(true));
 
         try {
-            await userClient.updateOwnBlockchainAddress({
-                blockchainAccountAddress: values.blockchainAccountAddress
-            });
+            // await userClient.updateOwnBlockchainAddress({});
             showNotification(t('user.profile.updateChainAddress'), NotificationType.Success);
             dispatch(refreshUserOffchain());
         } catch (error) {
@@ -147,7 +144,7 @@ export function BlockchainAddresses(): JSX.Element {
                                     {t('user.properties.userBlockchainAddress')}
                                 </Typography>
 
-                                {user?.blockchainAccountAddress && (
+                                {getBlockchainAccount(user) && (
                                     <Grid container>
                                         <Grid item lg={4} md={10} xs={12}>
                                             <FormInput
@@ -172,7 +169,7 @@ export function BlockchainAddresses(): JSX.Element {
                                             })
                                         }
                                     >
-                                        {!user?.blockchainAccountAddress
+                                        {!getBlockchainAccount(user)
                                             ? t('user.actions.connectBlockchain')
                                             : t('user.actions.connectNewBlockchain')}
                                     </Button>

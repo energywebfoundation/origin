@@ -23,6 +23,7 @@ import { useTranslation, useLinks } from '../..';
 import { Trans } from 'react-i18next';
 import { Brightness1 } from '@material-ui/icons';
 import OrgAddedIcon from '../../../assets/icon-org-added.svg';
+import { getBlockchainAccount } from '../../utils/user';
 
 interface IProps {
     showModal?: boolean;
@@ -125,7 +126,7 @@ export const RoleChangedModal = ({
         setShowModal(false);
         if (setShowIRec && iRecEnabled) {
             setShowIRec(true);
-        } else if (!user.blockchainAccountAddress) {
+        } else if (!getBlockchainAccount(user)) {
             setShowBlockchainModal(true);
         } else {
             history.push(getDefaultLink());
@@ -133,12 +134,10 @@ export const RoleChangedModal = ({
 
         const { rights: newRole } = user;
         if (
-            (!setShowIRec &&
-                newRole === Role.OrganizationAdmin &&
-                !user.blockchainAccountAddress) ||
+            (!setShowIRec && newRole === Role.OrganizationAdmin && !getBlockchainAccount(user)) ||
             (!setShowIRec &&
                 newRole === Role.OrganizationDeviceManager &&
-                !user.blockchainAccountAddress)
+                !getBlockchainAccount(user))
         ) {
             setShowBlockchainModal(true);
         }

@@ -42,7 +42,7 @@ import { RegisterUserDTO } from './dto/register-user.dto';
 import { UpdateUserDTO } from './dto/update-user.dto';
 import { UpdatePasswordDTO } from './dto/update-password.dto';
 import { UpdateUserProfileDTO } from './dto/update-user-profile.dto';
-import { BlockchainAccountDTO } from './dto/blockchain-account.dto';
+import { BindBlockchainAccountDTO } from './dto/bind-blockchain-account.dto';
 
 @ApiTags('user')
 @ApiBearerAuth('access-token')
@@ -135,7 +135,7 @@ export class UserController {
 
     @Put('chainAddress')
     @UseGuards(AuthGuard('jwt'), NotDeletedUserGuard)
-    @ApiBody({ type: BlockchainAccountDTO })
+    @ApiBody({ type: BindBlockchainAccountDTO })
     @ApiResponse({
         status: HttpStatus.OK,
         type: UserDTO,
@@ -143,7 +143,7 @@ export class UserController {
     })
     public async updateOwnBlockchainAddress(
         @UserDecorator() { id }: ILoggedInUser,
-        @Body() { signedMessage }: BlockchainAccountDTO
+        @Body() { signedMessage }: BindBlockchainAccountDTO
     ): Promise<UserDTO> {
         return this.userService.updateBlockchainAddress(id, signedMessage);
     }

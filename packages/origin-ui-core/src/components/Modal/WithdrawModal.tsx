@@ -18,6 +18,7 @@ import { getEnvironment } from '../../features/general/selectors';
 import { getUserOffchain } from '../../features/users/selectors';
 import { EnergyFormatter, formatDate, countDecimals } from '../../utils';
 import { IEnvironment } from '../../features/general';
+import { getBlockchainAccount } from '../../utils/user';
 
 interface IProps {
     certificate: ICertificateViewItem;
@@ -87,7 +88,7 @@ export function WithdrawModal(props: IProps) {
             return;
         }
         const assetId = certificate.assetId;
-        const address = user.blockchainAccountAddress;
+        const address = getBlockchainAccount(user)?.address;
         const amount = EnergyFormatter.getBaseValueFromValueInDisplayUnit(
             energyInDisplayUnit
         ).toString();

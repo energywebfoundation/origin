@@ -63,6 +63,7 @@ import { BackendClient } from '../../utils/clients/BackendClient';
 import { LOCAL_STORAGE_KEYS } from '../users/sagas';
 import { IRecClient } from '../../utils/clients/IRecClient';
 import { ExchangeClient } from '../../utils/clients/ExchangeClient';
+import { getBlockchainAccount } from '../../utils/user';
 
 function getStoredAuthenticationToken() {
     return localStorage.getItem(LOCAL_STORAGE_KEYS.AUTHENTICATION_TOKEN);
@@ -296,7 +297,7 @@ export function* fetchDataAfterConfigurationChange(
     const user = yield select(getUserOffchain);
 
     if (user) {
-        const { blockchainAccountAddress, status }: IUser = user;
+        const { status }: IUser = user;
         if (status === UserStatus.Active) {
             const certificatesClient: CertificatesClient = yield select(getCertificatesClient);
             const allCertificates: ICertificate[] = (yield apply(
@@ -305,7 +306,8 @@ export function* fetchDataAfterConfigurationChange(
                 []
             )).data;
             const enrichedCertificates = allCertificates.map(
-                (c): ICertificateViewItem => enhanceCertificate(c, blockchainAccountAddress)
+                (c): ICertificateViewItem =>
+                    enhanceCertificate(c, getBlockchainAccount(user)?.address)
             );
 
             const { accountBalanceClient }: ExchangeClient = yield select(getExchangeClient);
@@ -320,7 +322,7 @@ export function* fetchDataAfterConfigurationChange(
                         findEnhancedExchangeCertificate,
                         asset,
                         enrichedCertificates,
-                        blockchainAccountAddress
+                        getBlockchainAccount(user)?.address
                     )
                 )
             );
