@@ -18,12 +18,12 @@ import {
 } from '@material-ui/core';
 import { Role } from '@energyweb/origin-backend-core';
 
-import { showNotification, NotificationType } from '../../utils/notifications';
-import { setLoading } from '../../features/general/actions';
-import { FormInput } from '../Form/FormInput';
-import { getUserOffchain } from '../../features/users/selectors';
-import { getBackendClient } from '../../features/general/selectors';
-import { useTranslation, roleNames } from '../../utils';
+import { showNotification, NotificationType } from '../../../utils/notifications';
+import { setLoading } from '../../../features/general/actions';
+import { FormInput } from '../../Form/FormInput';
+import { getUserOffchain } from '../../../features/users/selectors';
+import { getBackendClient } from '../../../features/general/selectors';
+import { useTranslation, roleNames } from '../../../utils';
 
 interface IFormValues {
     email: string;

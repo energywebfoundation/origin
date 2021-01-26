@@ -2,13 +2,13 @@ import React, { useEffect } from 'react';
 import { BigNumber } from 'ethers';
 import moment from 'moment-timezone';
 import { ProducingDevice } from '@energyweb/device-registry';
-import { TableMaterial } from '../Table/TableMaterial';
+import { TableMaterial } from '../../Table/TableMaterial';
 import {
     usePaginatedLoader,
     IPaginatedLoaderHooksFetchDataParameters
-} from '../Table/PaginatedLoaderHooks';
-import { EnergyFormatter } from '../../utils/EnergyFormatter';
-import { formatDate } from '../../utils/time';
+} from '../../Table/PaginatedLoaderHooks';
+import { EnergyFormatter } from '../../../utils/EnergyFormatter';
+import { formatDate } from '../../../utils/time';
 import { useTranslation } from 'react-i18next';
 
 interface IProps {

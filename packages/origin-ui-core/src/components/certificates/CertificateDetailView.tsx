@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ProducingDeviceDetailView } from '../devices/ProducingDeviceDetailView';
+import { ProducingDeviceDetailView } from '../devices/ProducingDevice/ProducingDeviceDetailView';
 import { useSelector } from 'react-redux';
 import { utils } from 'ethers';
 import { getProducingDevices } from '../../features/selectors';

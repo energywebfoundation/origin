@@ -4,7 +4,7 @@ import { AccountSettings } from './AccountSettings';
 import { UserRegister } from './UserRegister';
 import { UserProfile } from './UserProfile';
 import { ConfirmEmail } from './ConfirmEmail';
-import { IRECConnectForm } from '../Organization/IRECConnectForm';
+import { IRECConnectForm } from '../Organization/IRec/IRECConnectForm';
 import { Registration } from '../../utils/irec';
 
 interface IAccountMenuItem {

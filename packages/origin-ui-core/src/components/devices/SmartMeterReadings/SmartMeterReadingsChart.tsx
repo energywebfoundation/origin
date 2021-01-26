@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { Bar } from 'react-chartjs-2';
-import { moment, formatDate } from '../../utils/time';
+import { moment, formatDate } from '../../../utils/time';
 import { Button, ButtonGroup, makeStyles, createStyles, useTheme } from '@material-ui/core';
 import { ProducingDevice } from '@energyweb/device-registry';
-import { reverse } from '../../utils/helper';
-import { EnergyFormatter } from '../../utils/EnergyFormatter';
-import { useOriginConfiguration } from '../../utils/configuration';
+import { reverse } from '../../../utils/helper';
+import { EnergyFormatter } from '../../../utils/EnergyFormatter';
+import { useOriginConfiguration } from '../../../utils/configuration';
 import { useTranslation } from 'react-i18next';
 import { BigNumber } from 'ethers';
 

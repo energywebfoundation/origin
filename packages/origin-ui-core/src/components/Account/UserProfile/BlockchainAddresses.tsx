@@ -114,7 +114,7 @@ export function BlockchainAddresses(): JSX.Element {
                                 </Typography>
                                 <Box className="buttonAndIconHolder">
                                     {exchangeAddres ? (
-                                        <Grid item lg={4} md={10} xs={12}>
+                                        <Grid item lg={6} md={10} xs={12}>
                                             <FormInput
                                                 property="exchangeDepositAddress"
                                                 disabled={true}
@@ -149,7 +149,7 @@ export function BlockchainAddresses(): JSX.Element {
 
                                 {user?.blockchainAccountAddress && (
                                     <Grid container>
-                                        <Grid item lg={4} md={10} xs={12}>
+                                        <Grid item lg={6} md={10} xs={12}>
                                             <FormInput
                                                 property="blockchainAccountAddress"
                                                 disabled={true}

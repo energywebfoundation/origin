@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { getIRecClient } from '../../features/general/selectors';
-import { setLoading } from '../../features/general/actions';
-import { setIRecAccount } from '../../features/users/actions';
-import { IRECAccountType, RegistrationIRecPostData } from '../../utils/irec';
+import { getIRecClient } from '../../../features/general/selectors';
+import { setLoading } from '../../../features/general/actions';
+import { setIRecAccount } from '../../../features/users/actions';
+import { IRECAccountType, RegistrationIRecPostData } from '../../../utils/irec';
 import {
     Paper,
     Theme,
@@ -15,16 +15,16 @@ import {
     makeStyles,
     createStyles
 } from '@material-ui/core';
-import { showNotification, NotificationType, useTranslation } from '../..';
+import { showNotification, NotificationType, useTranslation } from '../../..';
 import { Formik, Form, FormikHelpers } from 'formik';
-import { useValidation, LightenColor } from '../../utils';
-import { FormInput, FormCountrySelect, FormCountryMultiSelect } from '../Form';
-import { IAutocompleteMultiSelectOptionType } from '../MultiSelectAutocomplete';
-import irecLogo from '../../../assets/logo-i-rec.svg';
-import { FormSelect } from '../Form/FormSelect';
-import { IRecAccountRegisteredModal } from '../Modal/IRecAccountRegisteredModal';
-import { ConnectBlockchainAccountModal } from '../Modal/ConnectBlockchainAccountModal';
-import { useOriginConfiguration } from '../../utils/configuration';
+import { useValidation, LightenColor } from '../../../utils';
+import { FormInput, FormCountrySelect, FormCountryMultiSelect } from '../../Form';
+import { IAutocompleteMultiSelectOptionType } from '../../MultiSelectAutocomplete';
+import irecLogo from '../../../../assets/logo-i-rec.svg';
+import { FormSelect } from '../../Form/FormSelect';
+import { IRecAccountRegisteredModal } from '../../Modal/IRecAccountRegisteredModal';
+import { ConnectBlockchainAccountModal } from '../../Modal/ConnectBlockchainAccountModal';
+import { useOriginConfiguration } from '../../../utils/configuration';
 
 interface IFormValues {
     accountType: string;

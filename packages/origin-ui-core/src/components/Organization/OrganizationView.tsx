@@ -8,11 +8,10 @@ import {
 } from '@energyweb/utils-general';
 import { OriginConfigurationContext } from '..';
 import { makeStyles, createStyles, useTheme, Paper, Grid, TextField, Box } from '@material-ui/core';
-import { Skeleton } from '@material-ui/lab';
 import { getIRecClient } from '../../features/general/selectors';
 import { getUserOffchain } from '../../features/users/selectors';
 import { getBackendClient, useTranslation } from '../..';
-import { IRECOrganizationView } from './IRECOrganizationView';
+import { IRECOrganizationView } from './IRec/IRECOrganizationView';
 import { Registration } from '../../utils/irec';
 import { DownloadDocuments } from './DownloadDocuments';
 
@@ -99,7 +98,7 @@ export function OrganizationView() {
     }, [params]);
 
     if (!formValues) {
-        return <Skeleton variant="rect" height={200} />;
+        return <></>;
     }
 
     return (

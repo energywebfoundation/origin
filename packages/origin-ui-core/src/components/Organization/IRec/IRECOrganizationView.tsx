@@ -10,8 +10,8 @@ import {
     Theme
 } from '@material-ui/core';
 import { Countries } from '@energyweb/utils-general';
-import { useTranslation } from '../..';
-import { IRECAccountType } from '../../utils/irec';
+import { useTranslation } from '../../..';
+import { IRECAccountType } from '../../../utils/irec';
 
 interface IValues {
     id: string;
