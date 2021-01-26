@@ -1,4 +1,4 @@
 export * from './ActiveOrders';
-export * from './ActiveDemands';
+export * from './Demands';
 export * from './demand';
 export * from './exchange';

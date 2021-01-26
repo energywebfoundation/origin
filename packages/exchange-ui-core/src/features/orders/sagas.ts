@@ -201,7 +201,7 @@ function* archiveDemand(): SagaIterator {
         const { demandClient }: ExchangeClient = yield select(getExchangeClient);
         const i18n = getI18n();
         try {
-            yield apply(demandClient, demandClient.archive, [payload]);
+            yield apply(demandClient, demandClient.archive, [payload.id]);
             showNotification(
                 i18n.t('demand.feedback.successfullyRemoved'),
                 NotificationType.Success
