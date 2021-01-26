@@ -235,6 +235,7 @@ export function Exchange() {
                                         buyDirect={buyDirect}
                                         energyUnit={EnergyFormatter.displayUnit}
                                         ordersTotalVolume={totalOrders?.totalAsks}
+                                        directBuydisabled={!exchangeAddress}
                                     />
                                 )}
                             </Grid>
