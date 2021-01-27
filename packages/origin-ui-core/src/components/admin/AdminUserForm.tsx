@@ -76,7 +76,7 @@ export function AdminUserForm(props: IProps) {
         dispatch(setLoading(true));
 
         try {
-            await adminClient.updateUser(values.id.toString(), {
+            await adminClient.updateUser(values.id, {
                 notifications: values.notifications
             });
 

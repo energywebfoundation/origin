@@ -11,6 +11,7 @@ import {
     Get,
     HttpStatus,
     Param,
+    ParseIntPipe,
     Put,
     Query,
     UseGuards,
@@ -75,7 +76,7 @@ export class AdminController {
     @ApiBody({ type: UpdateUserDTO })
     @ApiResponse({ status: HttpStatus.OK, type: UserDTO, description: 'Updates a user' })
     public async updateUser(
-        @Param('id') id: string,
+        @Param('id', new ParseIntPipe()) id: number,
         @Body() body: UpdateUserDTO
     ): Promise<UserDTO> {
         return this.userService.update(id, body);

@@ -46,7 +46,7 @@ export class UserService {
     ) {}
 
     public async getAll(options?: FindManyOptions<User>) {
-        return this.repository.find(options);
+        return this.repository.find({ ...options, relations: ['blockchainAccounts'] });
     }
 
     public async create(data: UserRegistrationData): Promise<User> {
@@ -107,16 +107,6 @@ export class UserService {
                 select: ['id', 'email', 'password']
             }
         );
-    }
-
-    async findByBlockchainAccount(blockchainAccountAddress: string) {
-        return (this.repository
-            .createQueryBuilder('user')
-            .where('LOWER(user.blockchainAccountAddress) = LOWER(:blockchainAccountAddress)', {
-                blockchainAccountAddress
-            })
-            .loadAllRelationIds()
-            .getOne() as Promise<IUser>) as Promise<TUserBaseEntity>;
     }
 
     async findByIds(
@@ -183,8 +173,9 @@ export class UserService {
 
     async findOne(conditions: FindConditions<User>): Promise<TUserBaseEntity> {
         const user = await ((this.repository.findOne(conditions, {
-            relations: ['organization']
+            relations: ['organization', 'blockchainAccounts']
         }) as Promise<IUser>) as Promise<TUserBaseEntity>);
+
         if (user) {
             const emailConfirmation = await this.emailConfirmationService.get(user.id);
 
@@ -195,13 +186,13 @@ export class UserService {
     }
 
     private async hasUser(conditions: FindConditions<User>) {
-        return (await this.repository.findOne(conditions)) !== undefined;
+        return (await this.findOne(conditions)) !== undefined;
     }
 
     async updateProfile(
-        id: number | string,
+        id: number,
         { firstName, lastName, email, telephone }: UpdateUserProfileDTO
-    ): Promise<User> {
+    ): Promise<ExtendedBaseEntity & IUser> {
         const updateEntity = new User({
             firstName,
             lastName,
@@ -221,10 +212,14 @@ export class UserService {
         }
 
         await this.repository.update(id, updateEntity);
-        return this.repository.findOne(id);
+
+        return this.findOne({ id });
     }
 
-    async updatePassword(email: string, user: UserPasswordUpdate) {
+    async updatePassword(
+        email: string,
+        user: UserPasswordUpdate
+    ): Promise<ExtendedBaseEntity & IUser> {
         const _user = await this.getUserAndPasswordByEmail(email);
 
         if (_user && bcrypt.compareSync(user.oldPassword, _user.password)) {
@@ -244,11 +239,12 @@ export class UserService {
             }
 
             await this.repository.update(_user.id, updateEntity);
-            return this.repository.findOne(_user.id);
+            return this.findOne({ id: _user.id });
         }
+
         throw new ConflictException({
             success: false,
-            errors: `This Current password are not same.`
+            errors: `Incorrect current password.`
         });
     }
 
@@ -287,8 +283,8 @@ export class UserService {
         return result;
     }
 
-    async update(id: number | string, data: Partial<IUser>): Promise<ExtendedBaseEntity & IUser> {
-        const entity = await this.repository.findOne(id);
+    async update(id: number, data: Partial<IUser>): Promise<ExtendedBaseEntity & IUser> {
+        const entity = await this.findOne({ id });
 
         if (!entity) {
             throw new Error(`Can't find entity.`);
@@ -315,7 +311,7 @@ export class UserService {
             kycStatus: data.kycStatus
         });
 
-        return this.repository.findOne(id);
+        return this.findOne({ id });
     }
 
     public async canViewUserData(

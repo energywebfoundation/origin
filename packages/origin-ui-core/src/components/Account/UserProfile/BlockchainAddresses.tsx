@@ -41,8 +41,8 @@ export function BlockchainAddresses(): JSX.Element {
     });
 
     const INITIAL_VALUES = {
-        blockchainAccountAddress: getBlockchainAccount(user) || '',
-        exchangeDepositAddress: getExchangeAccount(user) || ''
+        blockchainAccountAddress: getBlockchainAccount(user).address || '',
+        exchangeDepositAddress: getExchangeAccount(user).address || ''
     };
 
     async function submitForm(
@@ -75,7 +75,7 @@ export function BlockchainAddresses(): JSX.Element {
         }
     }
 
-    function createexchangeAddresss(): void {
+    function createExchangeAddresss(): void {
         dispatch(createExchangeDepositAddress());
     }
 
@@ -107,7 +107,7 @@ export function BlockchainAddresses(): JSX.Element {
                             </Typography>
                             <Grid style={{ paddingTop: '20px', paddingBottom: '20px' }}>
                                 <Typography variant="h6">
-                                    {t('user.properties.exchangeAddresssTitle')}
+                                    {t('user.properties.exchangeAddressTitle')}
                                 </Typography>
                                 <Box className="buttonAndIconHolder">
                                     {exchangeAddress ? (
@@ -123,7 +123,7 @@ export function BlockchainAddresses(): JSX.Element {
                                             variant="contained"
                                             color="primary"
                                             disabled={isLoading}
-                                            onClick={createexchangeAddresss}
+                                            onClick={createExchangeAddresss}
                                         >
                                             {t('user.actions.createDepositAddress')}
                                         </Button>
