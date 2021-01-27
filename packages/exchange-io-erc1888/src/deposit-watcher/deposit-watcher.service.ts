@@ -12,9 +12,13 @@ import {
     AccountService,
     CreateAskDTO,
     OrderService,
-    TransferStatus,
-    TransferService
+    TransferService,
+    DepositDiscoveredEvent,
+    CreateDepositDTO,
+    DepositApprovedEvent,
+    TransferStatus
 } from '@energyweb/exchange';
+import { EventBus } from '@nestjs/cqrs';
 
 @Injectable()
 export class DepositWatcherService<TProduct> implements OnModuleInit {
@@ -41,12 +45,13 @@ export class DepositWatcherService<TProduct> implements OnModuleInit {
         private readonly transferService: TransferService,
         private readonly orderService: OrderService<TProduct>,
         private readonly accountService: AccountService,
+        private readonly eventBus: EventBus,
         private readonly moduleRef: ModuleRef
     ) {
         this.issuerTypeId = this.configService.get<string>('ISSUER_ID');
     }
 
-    public async onModuleInit() {
+    public async onModuleInit(): Promise<void> {
         this.logger.debug('onModuleInit');
 
         this.deviceService = this.moduleRef.get<IExternalDeviceService>(IExternalDeviceService, {
@@ -93,26 +98,10 @@ export class DepositWatcherService<TProduct> implements OnModuleInit {
         );
     }
 
-    private async processEvent(event: providers.Log) {
-        this.logger.debug(`Discovered new event ${JSON.stringify(event)}`);
-
-        const { name } = this.tokenInterface.parseLog(event);
-        const log = this.tokenInterface.decodeEventLog(name, event.data, event.topics);
-
-        this.logger.debug(`Parsed to ${JSON.stringify(log)}`);
-
-        const { _from: from, _to: to, _value: value, _id: id } = log;
-
-        if (to !== this.walletAddress) {
-            this.logger.debug(
-                `This transfer is to other address ${to} than wallet address ${this.walletAddress}`
-            );
-            return;
-        }
-
-        const { transactionHash } = event;
-
+    public async storeDeposit(deposit: CreateDepositDTO): Promise<void> {
         try {
+            const { transactionHash, address, amount, asset } = deposit;
+
             let transfer = await this.transferService.findOne(null, {
                 where: { transactionHash }
             });
@@ -123,41 +112,81 @@ export class DepositWatcherService<TProduct> implements OnModuleInit {
                         TransferStatus[transfer.status]
                     } `
                 );
-
                 return;
             }
 
-            const { generationFrom, generationTo, deviceId } = await this.decodeDataField(
-                id.toString()
-            );
-
-            const amount = value.toString();
-
             transfer = await this.transferService.createDeposit({
                 transactionHash,
-                address: from as string,
+                address,
                 amount,
-                asset: {
-                    address: this.registryAddress,
-                    tokenId: id.toString(),
-                    deviceId,
-                    generationFrom,
-                    generationTo
-                }
+                asset
             });
 
             const receipt = await this.provider.waitForTransaction(transactionHash);
 
             await this.transferService.setAsConfirmed(transactionHash, receipt.blockNumber);
-
             this.logger.debug(
-                `Successfully created deposit of tokenId=${id} from=${from} with value=${value} for user=${transfer.userId} `
+                `Successfully created deposit of tokenId=${asset.tokenId} from=${address} with value=${amount} for user=${transfer.userId} `
             );
 
-            await this.tryPostForSale(deviceId, from, amount, transfer.asset.id);
+            this.eventBus.publish(
+                new DepositApprovedEvent(asset.deviceId, address, amount, transfer.asset.id)
+            );
         } catch (error) {
             this.logger.error(error.message);
         }
+    }
+
+    public async postForSale(
+        deviceId: string,
+        address: string,
+        amount: string,
+        assetId: string
+    ): Promise<void> {
+        try {
+            await this.tryPostForSale(deviceId, address, amount, assetId);
+        } catch (error) {
+            this.logger.error(error.message);
+        }
+    }
+
+    private async processEvent(event: providers.Log) {
+        this.logger.debug(`Discovered new event ${JSON.stringify(event)}`);
+
+        const { name } = this.tokenInterface.parseLog(event);
+        const log = this.tokenInterface.decodeEventLog(name, event.data, event.topics);
+
+        this.logger.debug(`Parsed to ${JSON.stringify(log)}`);
+
+        const { transactionHash } = event;
+
+        const { _from: from, _to: to, _value: value, _id: id } = log;
+
+        if (to !== this.walletAddress) {
+            this.logger.debug(
+                `This transfer is to other address ${to} than wallet address ${this.walletAddress}`
+            );
+            return;
+        }
+
+        const { generationFrom, generationTo, deviceId } = await this.decodeDataField(
+            id.toString()
+        );
+
+        const deposit: CreateDepositDTO = {
+            transactionHash,
+            address: from as string,
+            amount: value as string,
+            asset: {
+                address: this.registryAddress,
+                tokenId: id.toString(),
+                deviceId,
+                generationFrom,
+                generationTo
+            }
+        };
+
+        this.eventBus.publish(new DepositDiscoveredEvent(deposit));
     }
 
     private async decodeDataField(certificateId: string) {
