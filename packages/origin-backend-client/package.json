@@ -1,6 +1,6 @@
 {
     "name": "@energyweb/origin-backend-client",
-    "version": "10.0.0",
+    "version": "10.0.1",
     "description": "",
     "main": "dist/js/src/index.js",
     "scripts": {
@@ -24,17 +24,17 @@
     "author": "EnergyWeb DevHub GmbH; Piotr Kosinski, piotr.kosinski@energyweb.org",
     "license": "GPL-3.0-or-later",
     "dependencies": {
-        "axios": "0.21.0"
+        "axios": "0.21.1"
     },
     "devDependencies": {
-        "@energyweb/origin-backend": "9.0.1",
-        "@nestjs/swagger": "4.7.3",
-        "@nestjs/testing": "7.5.2",
-        "@nestjs/typeorm": "7.1.4",
+        "@energyweb/origin-backend": "9.0.2",
+        "@nestjs/swagger": "4.7.12",
+        "@nestjs/testing": "7.6.5",
+        "@nestjs/typeorm": "7.1.5",
         "@openapitools/openapi-generator-cli": "1.0.18-4.3.1",
         "json-to-pretty-yaml": "1.2.2",
         "prettier": "2.0.5",
-        "ts-node": "9.0.0"
+        "ts-node": "9.1.1"
     },
     "files": [
         "dist"

@@ -20,7 +20,8 @@ import {
     EnergyFormatter,
     useTranslation,
     getCurrencies,
-    LightenColor
+    LightenColor,
+    moment
 } from '@energyweb/origin-ui-core';
 import { DemandStatus, TimeFrame } from '@energyweb/utils-general';
 import { updateDemand, pauseDemand, resumeDemand } from '../../features/orders/actions';
@@ -99,8 +100,8 @@ export function DemandUpdateModal(props: IProps) {
                     parseFloat(values.volumePerPeriod)
                 ).toString(),
                 periodTimeFrame: values.periodTimeFrame,
-                start: values.start.toISOString(),
-                end: values.end.toISOString(),
+                start: moment(values.start).toISOString(),
+                end: moment(values.end).toISOString(),
                 product: values.product,
                 boundToGenerationTime: false,
                 excludeEnd: false
@@ -111,7 +112,7 @@ export function DemandUpdateModal(props: IProps) {
     }
 
     const VALIDATION_SCHEMA = Yup.object().shape({
-        periodTimeFrame: Yup.number().label(t('demand.properties.period')),
+        periodTimeFrame: Yup.string().label(t('demand.properties.period')),
         volumePerPeriod: Yup.number()
             .required()
             .positive()

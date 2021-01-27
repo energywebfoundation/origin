@@ -11,7 +11,7 @@ import { OrderService } from '../src/pods/order/order.service';
 import { TradeDTO } from '../src/pods/trade/trade.dto';
 import { TransferService } from '../src/pods/transfer/transfer.service';
 import { bootstrapTestInstance } from './exchange';
-import { MWh } from './utils';
+import { createDepositAddress, MWh } from './utils';
 
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -20,7 +20,7 @@ describe('DirectBuy orders tests', () => {
     let transferService: TransferService;
     let databaseService: DatabaseService;
     let accountService: AccountService;
-    let orderService: OrderService;
+    let orderService: OrderService<string>;
 
     const dummyAsset = {
         address: '0x9876',
@@ -61,7 +61,7 @@ describe('DirectBuy orders tests', () => {
     it('should allow to buy a selected ask', async () => {
         const validFrom = new Date();
         const sellerId = '2';
-        const { address } = await accountService.getOrCreateAccount(sellerId);
+        const address = await createDepositAddress(accountService, sellerId);
 
         const deposit = await createDeposit(address);
         await transferService.setAsConfirmed(transactionHash, 10000);
@@ -106,7 +106,7 @@ describe('DirectBuy orders tests', () => {
             .get(`/trade`)
             .expect(HttpStatus.OK)
             .expect((res) => {
-                const trades = res.body as TradeDTO[];
+                const trades = res.body as TradeDTO<string>[];
                 const [trade] = trades;
 
                 expect(trades).to.have.length(1);

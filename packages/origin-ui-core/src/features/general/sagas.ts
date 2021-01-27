@@ -106,14 +106,14 @@ function prepareGetEnvironmentTask(): {
     return {
         getEnvironment: async () => {
             try {
-                const response = await axios.get('env-config.js', {
+                const response = await axios.get('env-config.json', {
                     cancelToken: source.token
                 });
 
                 return response.data;
             } catch (error) {
                 if (!axios.isCancel(error)) {
-                    console.warn('Error while fetching env-config.js', error?.message ?? error);
+                    console.warn('Error while fetching env-config.json', error?.message ?? error);
                 }
             }
 
@@ -308,15 +308,14 @@ export function* fetchDataAfterConfigurationChange(
                 (c): ICertificateViewItem => enhanceCertificate(c, blockchainAccountAddress)
             );
 
-            const { accountClient }: ExchangeClient = yield select(getExchangeClient);
+            const { accountBalanceClient }: ExchangeClient = yield select(getExchangeClient);
 
-            const { data: offChainCertificates } = yield apply(
-                accountClient,
-                accountClient.getAccount,
-                null
-            );
-            const available = yield all(
-                offChainCertificates.balances.available.map((asset) =>
+            const {
+                data: { available }
+            } = yield apply(accountBalanceClient, accountBalanceClient.get, null);
+
+            const enhanced = yield all(
+                available.map((asset) =>
                     call(
                         findEnhancedExchangeCertificate,
                         asset,
@@ -325,7 +324,7 @@ export function* fetchDataAfterConfigurationChange(
                     )
                 )
             );
-            const certificates = enrichedCertificates.concat(available);
+            const certificates = enrichedCertificates.concat(enhanced);
             for (const certificate of certificates) {
                 yield put(update ? updateCertificate(certificate) : addCertificate(certificate));
             }

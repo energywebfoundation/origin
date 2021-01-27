@@ -7,10 +7,10 @@ import { ConnectedRouter } from 'connected-react-router';
 import { History } from 'history';
 import { OriginConfigurationProvider, IOriginConfiguration } from '@energyweb/origin-ui-core';
 import { Store, CombinedState, AnyAction } from 'redux';
-import { IStoreState } from './types';
+import { IExchangeState } from './types';
 
 interface IProps {
-    store: Store<CombinedState<IStoreState>, AnyAction>;
+    store: Store<CombinedState<IExchangeState>, AnyAction>;
     configuration: IOriginConfiguration;
     history: History;
     component: React.ReactElement;

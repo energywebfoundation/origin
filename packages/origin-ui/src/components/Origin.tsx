@@ -17,7 +17,7 @@ import MomentUtils from '@date-io/moment';
 import { MuiThemeProvider } from '@material-ui/core/styles';
 import { MuiPickersUtilsProvider } from '@material-ui/pickers';
 import { sagas } from '../features/sagas';
-import { IStoreState } from '@energyweb/exchange-ui-core';
+import { IStoreState } from '../types';
 import { createRootReducer } from '../features/rootReducer';
 import { OriginConfigurationContext, initializeI18N } from './OriginConfigurationContext';
 import { AppContainer } from './AppContainer';

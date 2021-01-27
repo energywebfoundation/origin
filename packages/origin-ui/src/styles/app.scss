@@ -10,6 +10,8 @@
 }
 
 .PageWrapper {
+    margin-left: 300px;
+    z-index: 1;
     .PageFooter,
     .PageNav {
         padding: 0 95px;
@@ -18,17 +20,10 @@
         align-items: center;
         justify-content: space-between;
         background: $mainBackgroundColor;
-
-        .NavMenu {
-            > li {
-                margin-bottom: 0;
-            }
-        }
     }
 
     .PageContentWrapper {
-        padding: 63px 95px;
-
+        padding: 50px;
         .PageBody {
             .PageBodyTitle {
                 text-align: center;
@@ -57,3 +52,4 @@
 
 @import './AppContainer.scss';
 @import './Header.scss';
+@import './SidebarMenu.scss';

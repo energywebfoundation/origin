@@ -4,6 +4,7 @@ import { UsersActions, IUsersAction } from './actions';
 
 export interface IUsersState {
     activeBlockchainAccountAddress: string;
+    exchangeDepositAddress: string;
     userOffchain: IUser;
     organizations: IFullOrganization[];
     invitations: {
@@ -15,6 +16,7 @@ export interface IUsersState {
 
 const defaultState: IUsersState = {
     activeBlockchainAccountAddress: null,
+    exchangeDepositAddress: null,
     userOffchain: null,
     organizations: [],
     iRecAccount: [],

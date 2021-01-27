@@ -1,4 +1,4 @@
-import { OrderSide, OrderStatus } from '@energyweb/exchange-core';
+import { OrderSide, OrderStatus } from '@energyweb/exchange-irec-client';
 import { Order } from './exchange';
 
 export class ActiveOrders extends Array<Order> {
@@ -6,9 +6,11 @@ export class ActiveOrders extends Array<Order> {
 
     constructor(orders: Order[]) {
         super();
-        this.orders = orders.filter(
-            (o) => o.status === OrderStatus.Active || o.status === OrderStatus.PartiallyFilled
-        );
+        this.orders = orders
+            ? orders.filter(
+                  (o) => o.status === OrderStatus.Active || o.status === OrderStatus.PartiallyFilled
+              )
+            : [];
     }
 
     public get bids() {

@@ -48,7 +48,7 @@
         "ethers": "5.0.15",
         "mocha": "8.2.1",
         "moment": "2.24.0",
-        "polly-js": "1.6.8",
+        "polly-js": "1.8.0",
         "precise-proofs-js": "1.2.0",
         "winston": "3.3.3"
     },
@@ -57,7 +57,7 @@
         "ethlint": "1.2.5",
         "ganache-cli": "6.5.1",
         "truffle-typings": "1.0.8",
-        "typechain": "3.0.0"
+        "typechain": "4.0.1"
     },
     "publishConfig": {
         "access": "public",

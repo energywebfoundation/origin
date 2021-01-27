@@ -19,7 +19,10 @@ import {
     usePaginatedLoaderFiltered,
     usePaginatedLoaderSorting,
     getUserOffchain,
-    TableMaterial
+    TableMaterial,
+    usePermissions,
+    Requirements,
+    TableFallback
 } from '@energyweb/origin-ui-core';
 import { Bundle, ExchangeClient } from '../utils/exchange';
 import { getExchangeClient } from '../features/general';
@@ -40,13 +43,13 @@ const BUNDLES_TOTAL_ENERGY_PROPERTIES = [
     (record) => Number(record.total.split(EnergyFormatter.displayUnit)[0].replace(',', ''))
 ];
 
-interface IOwnProps {
+export interface IBundleTableProps {
     owner: boolean;
 }
 
 const ENERGY_COLUMNS_TO_DISPLAY = [EnergyTypes.SOLAR, EnergyTypes.WIND, EnergyTypes.HYDRO];
 
-export const BundlesTable = (props: IOwnProps) => {
+export const BundlesTable = (props: IBundleTableProps) => {
     const dispatch = useDispatch();
     const exchangeClient: ExchangeClient = useSelector(getExchangeClient);
 
@@ -60,9 +63,12 @@ export const BundlesTable = (props: IOwnProps) => {
     const userIsActive = user && user.status === UserStatus.Active;
     const { owner = false } = props;
     const allBundles = useSelector(getBundles);
-    const bundles = allBundles
-        .filter((b) => (owner ? b.own : true))
-        .filter((b) => !(b.splits && b.splits.length === 0));
+
+    const bundles = !allBundles
+        ? []
+        : allBundles
+              .filter((b) => (owner ? b.own : true))
+              .filter((b) => !(b.splits && b.splits.length === 0));
     const { t } = useTranslation();
     const devices = useSelector(getProducingDevices);
     const [selected, setSelected] = useState<Bundle>(null);
@@ -102,7 +108,7 @@ export const BundlesTable = (props: IOwnProps) => {
     });
 
     useEffect(() => {
-        if (allBundles.length > 0) {
+        if (allBundles?.length > 0) {
             setPageSize(BUNDLES_PER_PAGE);
             loadPage(1);
         }
@@ -172,20 +178,30 @@ export const BundlesTable = (props: IOwnProps) => {
         });
     }
 
+    const { canAccessPage } = usePermissions();
+
+    if (owner && !canAccessPage?.value) {
+        return <Requirements />;
+    }
+
     return (
         <>
-            <TableMaterial
-                columns={columns}
-                rows={rows}
-                loadPage={loadPage}
-                total={total}
-                pageSize={pageSize}
-                actions={actions}
-                currentSort={currentSort}
-                sortAscending={sortAscending}
-                toggleSort={toggleSort}
-                handleRowClick={(rowIndex: string) => viewDetails(parseInt(rowIndex, 10))}
-            />
+            {allBundles === null ? (
+                <TableFallback />
+            ) : (
+                <TableMaterial
+                    columns={columns}
+                    rows={rows}
+                    loadPage={loadPage}
+                    total={total}
+                    pageSize={pageSize}
+                    actions={actions}
+                    currentSort={currentSort}
+                    sortAscending={sortAscending}
+                    toggleSort={toggleSort}
+                    handleRowClick={(rowIndex: string) => viewDetails(parseInt(rowIndex, 10))}
+                />
+            )}
             {isBundleDetailsVisible && <BundleDetails bundle={selected} owner={owner} />}
             {userIsActiveAndPartOfOrg && (
                 <Link to={'/exchange/create_bundle'}>

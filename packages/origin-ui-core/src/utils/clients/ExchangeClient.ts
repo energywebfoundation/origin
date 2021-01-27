@@ -1,18 +1,23 @@
 import {
     AccountClient,
+    AccountBalanceClient,
     AssetClient,
     BundleClient,
     Configuration,
-    DemandClient,
-    OrderbookClient,
-    OrdersClient,
-    TradeClient,
     TransferClient
 } from '@energyweb/exchange-client';
+import {
+    OrderbookClient,
+    OrdersClient,
+    DemandClient,
+    TradeClient
+} from '@energyweb/exchange-irec-client';
 import { BaseClient } from './BaseClient';
 
 export class ExchangeClient extends BaseClient {
     accountClient: AccountClient;
+
+    accountBalanceClient: AccountBalanceClient;
 
     assetClient: AssetClient;
 
@@ -43,6 +48,7 @@ export class ExchangeClient extends BaseClient {
         );
 
         this.accountClient = new AccountClient(config, this.backendUrl);
+        this.accountBalanceClient = new AccountBalanceClient(config, this.backendUrl);
         this.assetClient = new AssetClient(config, this.backendUrl);
         this.bundleClient = new BundleClient(config, this.backendUrl);
         this.demandClient = new DemandClient(config, this.backendUrl);

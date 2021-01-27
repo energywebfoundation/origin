@@ -1,5 +1,5 @@
-import { IStoreState } from '../../types';
+import { IExchangeState } from '../../types';
 
-export const getBundles = (state: IStoreState) => state.bundlesState.bundles;
+export const getBundles = (state: IExchangeState) => state.bundlesState.bundles;
 
-export const getShowBundleDetails = (state: IStoreState) => state.bundlesState.showBundleDetails;
+export const getShowBundleDetails = (state: IExchangeState) => state.bundlesState.showBundleDetails;

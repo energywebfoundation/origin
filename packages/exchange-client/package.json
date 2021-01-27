@@ -1,6 +1,6 @@
 {
     "name": "@energyweb/exchange-client",
-    "version": "0.1.0",
+    "version": "0.1.1",
     "description": "Client library interacting with the Exchange",
     "homepage": "https://github.com/energywebfoundation/origin/tree/master/packages/exchange-client#readme",
     "author": "EnergyWeb DevHub GmbH; Joseph Bagaric, joseph.bagaric@energyweb.org",
@@ -23,17 +23,17 @@
         "client:clean": "find src/ -type f  ! -name \"*.ts\"  -delete"
     },
     "dependencies": {
-        "axios": "0.21.0"
+        "axios": "0.21.1"
     },
     "devDependencies": {
-        "@energyweb/exchange": "1.7.0",
-        "@nestjs/swagger": "4.7.3",
-        "@nestjs/testing": "7.5.2",
-        "@nestjs/typeorm": "7.1.4",
+        "@energyweb/exchange": "1.7.1",
+        "@nestjs/swagger": "4.7.12",
+        "@nestjs/testing": "7.6.5",
+        "@nestjs/typeorm": "7.1.5",
         "@openapitools/openapi-generator-cli": "1.0.18-4.3.1",
         "json-to-pretty-yaml": "1.2.2",
         "prettier": "2.1.2",
-        "ts-node": "9.0.0"
+        "ts-node": "9.1.1"
     },
     "publishConfig": {
         "access": "public",

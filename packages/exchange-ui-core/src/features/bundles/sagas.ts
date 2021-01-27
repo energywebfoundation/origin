@@ -25,7 +25,6 @@ function* fetchBundlesSaga(): SagaIterator {
     while (true) {
         yield take(BundlesActionType.FETCH_BUNDLES);
 
-        yield put(clearBundles());
         const { bundleClient }: ExchangeClient = yield select(getExchangeClient);
         const user = yield select(getUserOffchain);
 
@@ -38,6 +37,7 @@ function* fetchBundlesSaga(): SagaIterator {
                 : { data: [] };
         const ownBundles: Bundle[] = ownBundlesResponse.data;
 
+        yield put(clearBundles());
         if (bundles.length > 0) {
             for (const bundle of bundles) {
                 bundle.own = ownBundles.find((b) => b.id === bundle.id) !== undefined;

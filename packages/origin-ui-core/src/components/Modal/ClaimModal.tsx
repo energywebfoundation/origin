@@ -45,8 +45,8 @@ export function ClaimModal(props: IProps) {
     const isBulkClaim = certificates.length > 1;
     const certificateIds: number[] = certificates.map((cert) => cert.id);
 
-    const getCountryCodeFromId = (id: number | '') =>
-        Countries.find((country) => country.id === id)?.code;
+    const getCountryCodeFromId = (code: string) =>
+        Countries.find((country) => country.code === code)?.code;
 
     const user = useSelector(getUserOffchain);
     const countryCodes = Countries.map((country) => country.code);

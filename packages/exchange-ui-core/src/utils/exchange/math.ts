@@ -1,6 +1,6 @@
+import { DemandClient } from '@energyweb/exchange-irec-client';
 import { EnergyFormatter } from '@energyweb/origin-ui-core';
 import { ICalculateVolumeData } from '.';
-import { DemandClient } from '@energyweb/exchange-client';
 
 export function calculateTotalPrice(priceInDisplayUnit: string, energyInDisplayUnit: string) {
     const priceAsFloat = parseFloat(priceInDisplayUnit);
@@ -18,7 +18,7 @@ export async function calculateTotalVolume(
     values: ICalculateVolumeData
 ) {
     const { volume, period, start, end } = values;
-    const parsedVolume = parseFloat(volume);
+    const parsedVolume = parseFloat(volume.split(',').join(''));
 
     if (parsedVolume > 0 && period && start && end) {
         const { data: summary } = await demandClient?.summary({
@@ -28,12 +28,12 @@ export async function calculateTotalVolume(
             ).toString(),
             periodTimeFrame: period,
             start: start.toISOString(),
-            end: start.toISOString(),
+            end: end.toISOString(),
             product: {},
             boundToGenerationTime: false,
             excludeEnd: false
         });
-        return EnergyFormatter.format(Number(summary?.volume));
+        return EnergyFormatter.format(Number(summary?.volume)).split(',').join('');
     } else {
         return '';
     }

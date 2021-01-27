@@ -13,7 +13,8 @@ export enum UsersActions {
     setInvitations = 'USERS_SET_INVITATIONS',
     setUserState = 'USERS_SET_USER_STATE',
     setIRecAccount = 'USERS_SET_IREC_ACCOUNT',
-    updateUserBlockchain = 'UPDATE_USER_BLOCKCHAIN'
+    updateUserBlockchain = 'UPDATE_USER_BLOCKCHAIN',
+    createExchangeDepositAddress = 'CREATE_EXCHANGE_DEPOSIT_ADDRESS'
 }
 
 export interface ISetActiveBlockchainAccountAddressAction {
@@ -143,6 +144,14 @@ export const updateUserBlockchain = (
     payload
 });
 
+export interface ICreateExchangeDepositAddressAction {
+    type: UsersActions.createExchangeDepositAddress;
+}
+
+export const createExchangeDepositAddress = (): ICreateExchangeDepositAddressAction => ({
+    type: UsersActions.createExchangeDepositAddress
+});
+
 export type TAddOrganizationsAction = typeof addOrganizations;
 
 export type IUsersAction =
@@ -155,4 +164,6 @@ export type IUsersAction =
     | IAddOrganizationsAction
     | ISetInvitationsAction
     | ISetUserState
-    | ISetIRecAccountAction;
+    | ISetIRecAccountAction
+    | IUpdateUserBlockchainAction
+    | ICreateExchangeDepositAddressAction;

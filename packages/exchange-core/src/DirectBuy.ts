@@ -1,18 +1,22 @@
 import BN from 'bn.js';
 
-import { Bid } from './Bid';
-
-export class DirectBuy extends Bid {
-    constructor(
-        id: string,
-        userId: string,
-        price: number,
-        volume: BN,
-        public readonly askId: string,
-        createdAt: Date
-    ) {
-        super(id, price, volume, null, new Date(), userId, createdAt);
+export class DirectBuy {
+    public get volume() {
+        return this._volume;
     }
+
+    public get isFilled() {
+        return this.volume.isZero();
+    }
+
+    constructor(
+        public readonly id: string,
+        public readonly userId: string,
+        public readonly price: number,
+        private _volume: BN,
+        public readonly askId: string,
+        public readonly createdAt: Date
+    ) {}
 
     public clone(): DirectBuy {
         return new DirectBuy(
@@ -23,5 +27,14 @@ export class DirectBuy extends Bid {
             this.askId,
             this.createdAt
         );
+    }
+
+    public updateWithTradedVolume(tradedVolume: BN) {
+        if (tradedVolume.gt(this.volume)) {
+            throw new Error('Order overmatched');
+        }
+        this._volume = this._volume.sub(tradedVolume);
+
+        return this;
     }
 }

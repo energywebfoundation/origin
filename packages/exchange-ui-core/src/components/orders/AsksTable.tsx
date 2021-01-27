@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { Remove, Visibility } from '@material-ui/icons';
+import { useHistory } from 'react-router-dom';
+import { Remove, Visibility, Search } from '@material-ui/icons';
 import {
     useTranslation,
     EnergyFormatter,
@@ -19,9 +20,10 @@ import {
     ICustomFilterDefinition,
     CustomFilterInputType,
     FilterRules,
-    TableMaterial
+    TableMaterial,
+    useLinks
 } from '@energyweb/origin-ui-core';
-import { Order } from '../../utils/exchange';
+import { Order, ANY_VALUE, ANY_OPERATOR } from '../../utils/exchange';
 import { RemoveOrderConfirmation, OrderDetailsModal } from '../modal';
 
 const ORDERS_PER_PAGE = 5;
@@ -39,6 +41,8 @@ export const AsksTable = (props: IOwnProsp) => {
     const deviceTypeService = configuration?.deviceTypeService;
     const environment = useSelector(getEnvironment);
     const devices = useSelector(getProducingDevices);
+    const { getExchangeLink } = useLinks();
+    const history = useHistory();
 
     const columns = [
         { id: 'volume', label: t('order.properties.volume') },
@@ -49,7 +53,7 @@ export const AsksTable = (props: IOwnProsp) => {
         { id: 'filled', label: t('order.properties.filled') }
     ];
 
-    const getFilters = (): ICustomFilterDefinition[] => [
+    const getTableFilters = (): ICustomFilterDefinition[] => [
         {
             property: (record: Order) =>
                 deviceById(record.asset.deviceId, environment, devices).facilityName,
@@ -135,12 +139,44 @@ export const AsksTable = (props: IOwnProsp) => {
             price: formatCurrencyComplete(price / 100, currency),
             facilityName: deviceById(deviceId, environment, devices).facilityName,
             device_type: deviceType[0].split(';')[0],
-            generationFrom: moment(generationFrom).format('MMM, YYYY'),
+            generationFrom: moment(generationFrom)
+                .utcOffset(Number(environment.MARKET_UTC_OFFSET))
+                .format('MMM, YYYY'),
             generationTo: moment(generationTo).format('MMM, YYYY'),
             filled: `${filled * 100}%`,
             askId: order.id
         };
     });
+
+    function prepareRedirectFilters(
+        ask: Order
+    ): { deviceType: string[]; location: string[]; gridOperator: string[] } {
+        const newType = [ask.product.deviceType[0]];
+        const separatedTypes = ask.product.deviceType[0].split(';');
+        if (separatedTypes.length === 2) {
+            newType.unshift(separatedTypes[0]);
+        }
+        if (separatedTypes.length === 3) {
+            newType.unshift(separatedTypes.slice(0, -1).join(';'));
+            newType.unshift(separatedTypes[0]);
+        }
+
+        const deviceType = ask.product.deviceType[0].length > 1 ? newType : [ANY_VALUE];
+
+        const isEmptyLocation = ask.product.location[0].split(';')[1].length < 1;
+        const upperLevel = ask.product.location[0].split(';').slice(0, -1).join(';');
+        const lowerLevel = ask.product.location[0];
+        const location = isEmptyLocation ? [ANY_VALUE] : [upperLevel, lowerLevel];
+
+        const gridOperator =
+            ask.product.gridOperator[0].length > 0 ? ask.product.gridOperator : [ANY_OPERATOR];
+
+        return {
+            deviceType,
+            location,
+            gridOperator
+        };
+    }
 
     const viewDetails = (rowIndex: number) => {
         const { askId } = rows[rowIndex];
@@ -153,8 +189,25 @@ export const AsksTable = (props: IOwnProsp) => {
         const ask = asks.find((o) => o.id === askId);
         setToRemove(ask);
     };
+    const viewMarket = (rowIndex: number) => {
+        const { askId } = rows[rowIndex];
+        const ask = asks.find((o) => o.id === askId);
+        const prepared = prepareRedirectFilters(ask);
+        history.push(`${getExchangeLink()}/view-market`, {
+            redirectDeviceType: prepared.deviceType,
+            redirectLocation: prepared.location,
+            redirectGridOperator: prepared.gridOperator,
+            redirectGenerationFrom: ask.product.generationFrom,
+            redirectGenerationTo: ask.product.generationTo
+        });
+    };
 
     const actions = [
+        {
+            icon: <Search />,
+            name: t('order.actions.viewMarket'),
+            onClick: (row: string) => viewMarket(parseInt(row, 10))
+        },
         {
             icon: <Visibility />,
             name: t('order.actions.view'),
@@ -173,7 +226,7 @@ export const AsksTable = (props: IOwnProsp) => {
                 handleRowClick={(row: string) => viewDetails(parseInt(row, 10))}
                 columns={columns}
                 rows={rows}
-                filters={getFilters()}
+                filters={getTableFilters()}
                 loadPage={loadPage}
                 total={total}
                 pageSize={pageSize}

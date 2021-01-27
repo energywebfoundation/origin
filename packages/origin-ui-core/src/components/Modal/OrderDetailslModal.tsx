@@ -10,7 +10,7 @@ import {
     getProducingDevices
 } from '../..';
 import { useSelector } from 'react-redux';
-import { OrderSide } from '@energyweb/exchange-core';
+import { OrderSide } from '@energyweb/exchange-irec-client';
 import {
     EnergyFormatter,
     deviceById,

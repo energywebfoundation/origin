@@ -1,6 +1,13 @@
-import { Filter, Operator, OrderSide, Product, OrderStatus } from '@energyweb/exchange-core';
+import {
+    Filter,
+    Operator,
+    ProductDTO,
+    OrderSide,
+    OrderStatus
+} from '@energyweb/exchange-irec-client';
 import { DemandStatus, TimeFrame } from '@energyweb/utils-general';
 import { BigNumber } from 'ethers';
+import { Moment } from 'moment';
 
 export type DeviceVintageDTO = {
     year: number;
@@ -100,7 +107,7 @@ export interface IOrderBookOrderDTO {
     id: string;
     price: number;
     volume: string;
-    product: Product;
+    product: ProductDTO;
     userId: string;
     assetId?: string;
 }
@@ -109,7 +116,7 @@ export type TradePriceInfo = {
     created: string;
     volume: string;
     price: number;
-    product: Product;
+    product: ProductDTO;
     assetId: string;
 };
 
@@ -205,8 +212,8 @@ export type DemandSummaryDTO = {
 export interface ICalculateVolumeData {
     volume: string;
     period: TimeFrame;
-    start: Date;
-    end: Date;
+    start: Moment;
+    end: Moment;
 }
 
 export interface IDemand {
@@ -223,6 +230,14 @@ export interface IDemand {
 }
 
 export type Demand = IDemand & { userId: string; bids: Order[]; status: DemandStatus };
+
+export type MarketRedirectFilter = {
+    redirectDeviceType: string[];
+    redirectLocation: string[];
+    redirectGridOperator: string[];
+    redirectGenerationFrom: Date;
+    redirectGenerationTo: Date;
+};
 
 export const ANY_VALUE = 'Any';
 export const ANY_OPERATOR = 'TH-ANY';

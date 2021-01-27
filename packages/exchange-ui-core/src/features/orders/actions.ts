@@ -1,4 +1,4 @@
-import { CreateDemandDTO } from '@energyweb/exchange-client';
+import { CreateDemandDTO } from '@energyweb/exchange-irec-client';
 import { Order, Demand, CreateBidDTO, IDirectBuyDTO } from '../../utils/exchange';
 
 export enum OrdersActionsType {
@@ -22,8 +22,8 @@ export interface IOrderAction {
     payload?;
 }
 
-export interface IStoreOrderAction extends IOrderAction {
-    payload: Order;
+export interface IStoreOrdersAction extends IOrderAction {
+    payload: Order[];
 }
 
 export interface ICreateBidAction extends IOrderAction {
@@ -34,9 +34,9 @@ export interface ICancelOrderAction extends IOrderAction {
     payload: Order;
 }
 
-export const storeOrder = (order: IStoreOrderAction['payload']): IStoreOrderAction => ({
+export const storeOrders = (orders: IStoreOrdersAction['payload']): IStoreOrdersAction => ({
     type: OrdersActionsType.STORE_ORDERS,
-    payload: order
+    payload: orders
 });
 
 export const createBid = (bid: ICreateBidAction['payload']): ICreateBidAction => ({
@@ -81,7 +81,7 @@ export interface IDirectBuyOrderAction extends IOrderAction {
     payload: IDirectBuyDTO;
 }
 
-export const storeDemand = (demands: Demand[]): IStoreDemandAction => ({
+export const storeDemands = (demands: Demand[]): IStoreDemandAction => ({
     type: OrdersActionsType.STORE_DEMANDS,
     payload: demands
 });

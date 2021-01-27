@@ -1,11 +1,12 @@
 import BN from 'bn.js';
 
-import { Ask, Bid, DirectBuy } from '.';
+import { DirectBuy } from '.';
+import { IOrder } from './IOrder';
 
 export class Trade {
     constructor(
-        public readonly bid: Bid | DirectBuy,
-        public readonly ask: Ask,
+        public readonly bid: IOrder | DirectBuy,
+        public readonly ask: IOrder,
         volume: BN,
         public readonly price: number
     ) {

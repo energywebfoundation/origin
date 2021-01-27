@@ -17,13 +17,9 @@ import {
     Role,
     UserStatus
 } from '@energyweb/origin-backend-core';
-import { roleNames } from './Organization';
-import { useTranslation } from '../../utils';
+import { useTranslation, roleNames } from '../../utils';
 import { ChangeRoleModal } from '../Modal/ChangeRoleModal';
-
-interface IRecord {
-    user: IUser;
-}
+import { IRecord } from '../admin/AdminUsersTable';
 
 export function OrganizationUsersTable() {
     const { t } = useTranslation();
@@ -156,7 +152,7 @@ export function OrganizationUsersTable() {
             lastName: user.lastName,
             email: user.email,
             role: getRolesFromRights(user.rights)
-                .map((roleValue) => t(roleNames[roleValue]))
+                .map((role) => t(roleNames.filter((roleName) => roleName.value === role)[0].label))
                 .join(', ')
         };
     });

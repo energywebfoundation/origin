@@ -26,7 +26,7 @@
         "build:ts": "tsc -b tsconfig.json",
         "lint": "eslint \"src/**/*{.ts,.tsx}\"",
         "lint-fix": "eslint \"src/**/*{.ts,.tsx}\" --fix",
-        "test": "mocha -r ts-node/register src/test/*.test.ts --exit",
+        "test": "mocha -r ts-node/register test/*.test.ts --exit",
         "test:concurrent": "yarn test",
         "prettier": "prettier --write --config-precedence file-override './src/**/*'",
         "clean": "shx rm -rf build dist dist-shakeable schemas",
@@ -35,6 +35,7 @@
     "types": "dist/js/src/index.d.ts",
     "dependencies": {
         "@energyweb/utils-general": "11.0.0",
+        "@nestjs/common": "7.6.5",
         "bn.js": "5.1.3",
         "immutable": "4.0.0-rc.12",
         "moment": "2.24.0",

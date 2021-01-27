@@ -1,30 +1,28 @@
 /* eslint-disable import/no-extraneous-dependencies */
-import { IDevice } from '@energyweb/origin-backend-core';
-import {
-    Button,
-    Dialog,
-    DialogActions,
-    DialogContent,
-    DialogTitle,
-    MenuItem,
-    TextField
-} from '@material-ui/core';
-import { Edit } from '@material-ui/icons';
-import { text } from '@storybook/addon-knobs';
-import { BigNumber } from 'ethers';
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
+import { BigNumber } from 'ethers';
+import { Edit } from '@material-ui/icons';
+import { text } from '@storybook/addon-knobs';
+import { IDevice } from '@energyweb/origin-backend-core';
 import { getBackendClient } from '../../features/general/selectors';
 import { getUserOffchain } from '../../features/users/selectors';
-import { BackendClient, formatCurrencyComplete, moment, useTranslation } from '../../utils';
+import {
+    BackendClient,
+    formatCurrencyComplete,
+    moment,
+    usePermissions,
+    useTranslation
+} from '../../utils';
 import { EnergyFormatter } from '../../utils/EnergyFormatter';
-import { NotificationType, showNotification } from '../../utils/notifications';
 import {
     IPaginatedLoaderHooksFetchDataParameters,
     TableMaterial,
     usePaginatedLoaderFiltered
 } from '../Table';
 import { CustomFilterInputType, ICustomFilterDefinition } from '../Table/FiltersHeader';
+import { UpdateSupplyModal } from '../Modal/UpdateSupplyModal';
+import { Requirements } from '../Requirements';
 
 interface IRecord {
     device: IDevice;
@@ -36,7 +34,8 @@ export const KeyStatus = {
 };
 
 export function AutoSupplyDeviceTable() {
-    const { deviceClient }: BackendClient = useSelector(getBackendClient);
+    const backendClient: BackendClient = useSelector(getBackendClient);
+    const deviceClient = backendClient?.deviceClient;
     const userOffchain = useSelector(getUserOffchain);
     const { t } = useTranslation();
 
@@ -156,22 +155,10 @@ export function AutoSupplyDeviceTable() {
         }
     ];
 
-    function hideModal() {
-        setShowModal(false);
-    }
+    const { canAccessPage } = usePermissions();
 
-    async function reqAutoSupply() {
-        try {
-            await deviceClient.updateDeviceSettings(entity.id.toString(), {
-                automaticPostForSale: entity.automaticPostForSale,
-                defaultAskPrice: entity.defaultAskPrice * 100
-            });
-            hideModal();
-            loadPage(1);
-            showNotification('Supply updated.', NotificationType.Success);
-        } catch (error) {
-            showNotification('Error to update Supply', NotificationType.Error);
-        }
+    if (!canAccessPage?.value) {
+        return <Requirements />;
     }
 
     return (
@@ -185,65 +172,13 @@ export function AutoSupplyDeviceTable() {
                 actions={actions}
                 filters={filters}
             />
-            <Dialog open={showModal}>
-                <DialogTitle>{'Update Supply'}</DialogTitle>
-                <DialogContent>
-                    <TextField
-                        label={'Type'}
-                        value={entity?.deviceType}
-                        className="mt-4"
-                        disabled={true}
-                        fullWidth
-                    />
-
-                    <TextField
-                        label={'Facility'}
-                        value={entity?.facilityName}
-                        className="mt-4"
-                        disabled={true}
-                        fullWidth
-                    />
-
-                    <TextField
-                        label={'Price'}
-                        value={entity?.defaultAskPrice}
-                        className="mt-4"
-                        type="number"
-                        onChange={(e) =>
-                            setEntity({
-                                ...entity,
-                                defaultAskPrice: Number(e.target.value)
-                            })
-                        }
-                        fullWidth
-                    />
-
-                    <TextField
-                        label={'Status'}
-                        value={entity?.automaticPostForSale ? KeyStatus[1] : KeyStatus[2]}
-                        className="mt-4"
-                        fullWidth
-                        onChange={(e) =>
-                            setEntity({
-                                ...entity,
-                                automaticPostForSale: e.target.value !== 'Paused'
-                            })
-                        }
-                        select
-                    >
-                        <MenuItem value={'Active'}>Active</MenuItem>
-                        <MenuItem value={'Paused'}>Paused</MenuItem>
-                    </TextField>
-                </DialogContent>
-                <DialogActions>
-                    <Button onClick={hideModal} color="secondary">
-                        {'cancel'}
-                    </Button>
-                    <Button onClick={reqAutoSupply} color="primary">
-                        {'update'}
-                    </Button>
-                </DialogActions>
-            </Dialog>
+            <UpdateSupplyModal
+                showModal={showModal}
+                setShowModal={setShowModal}
+                entity={entity}
+                setEntity={setEntity}
+                loadPage={loadPage}
+            />
         </>
     );
 }

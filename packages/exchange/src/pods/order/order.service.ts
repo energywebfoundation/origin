@@ -1,38 +1,35 @@
-import { OrderSide, ActionResultEvent, ActionResult, OrderStatus } from '@energyweb/exchange-core';
-import { forwardRef, Inject, Injectable, Logger } from '@nestjs/common';
+import { ActionResult, ActionResultEvent, OrderSide, OrderStatus } from '@energyweb/exchange-core';
+import { Injectable, Logger } from '@nestjs/common';
+import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { InjectRepository } from '@nestjs/typeorm';
 import BN from 'bn.js';
 import { List } from 'immutable';
 import { EntityManager, Repository } from 'typeorm';
 
 import { ForbiddenActionError, UnknownEntityError } from '../../utils/exceptions';
-import { AccountBalanceService } from '../account-balance/account-balance.service';
-import { MatchingEngineService } from '../matching-engine/matching-engine.service';
-import { ProductService } from '../product/product.service';
+import { CancelOrderCommand } from './commands/cancel-order.command';
+import { SubmitOrderCommand } from './commands/submit-order.command';
 import { CreateAskDTO } from './create-ask.dto';
 import { CreateBidDTO } from './create-bid.dto';
 import { DirectBuyDTO } from './direct-buy.dto';
 import { InsufficientAssetsAvailable } from './errors/insufficient-assets-available.error';
 import { OrderType } from './order-type.enum';
 import { Order } from './order.entity';
+import { GetProductQuery } from './queries/get-product.query';
+import { HasEnoughAssetAmountQuery } from './queries/has-enough-asset-amount.query';
 
 @Injectable()
-export class OrderService {
+export class OrderService<TProduct> {
     private readonly logger = new Logger(OrderService.name);
-
-    private askOrderProcessor = new Set<string>();
 
     constructor(
         @InjectRepository(Order)
         private readonly repository: Repository<Order>,
-        @Inject(forwardRef(() => MatchingEngineService))
-        private readonly matchingEngineService: MatchingEngineService,
-        @Inject(forwardRef(() => AccountBalanceService))
-        private readonly accountBalanceService: AccountBalanceService,
-        private readonly productService: ProductService
+        private readonly queryBus: QueryBus,
+        private readonly commandBus: CommandBus
     ) {}
 
-    public async createBid(userId: string, bid: CreateBidDTO): Promise<Order> {
+    public async createBid(userId: string, bid: CreateBidDTO<TProduct>): Promise<Order> {
         this.logger.debug(`Requested bid creation for user:${userId} bid:${JSON.stringify(bid)}`);
 
         const order = await this.repository.save({
@@ -46,14 +43,14 @@ export class OrderService {
             product: bid.product
         });
 
-        this.matchingEngineService.submit(order);
+        await this.commandBus.execute(new SubmitOrderCommand(order));
 
         return new Order(order);
     }
 
     public async createDemandBids(
         userId: string,
-        bids: CreateBidDTO[],
+        bids: CreateBidDTO<TProduct>[],
         demandId: string,
         transaction: EntityManager
     ): Promise<Order[]> {
@@ -83,24 +80,39 @@ export class OrderService {
         return orders;
     }
 
-    public async createAsk(userId: string, ask: CreateAskDTO): Promise<Order> {
-        this.logger.debug(`Requested ask creation for user:${userId} ask:${JSON.stringify(ask)}`);
+    public async createAsk(userId: string, ask: CreateAskDTO, product?: TProduct): Promise<Order> {
+        this.logger.debug(
+            `Requested ask creation for user:${userId} ask:${JSON.stringify(
+                ask
+            )} product:${JSON.stringify(product)}`
+        );
 
-        if (
-            !(await this.accountBalanceService.hasEnoughAssetAmount(userId, {
-                id: ask.assetId,
-                amount: new BN(ask.volume)
-            }))
-        ) {
+        const hasEnoughAssetAmount = await this.queryBus.execute<
+            HasEnoughAssetAmountQuery,
+            boolean
+        >(
+            new HasEnoughAssetAmountQuery(userId, [
+                {
+                    id: ask.assetId,
+                    amount: new BN(ask.volume)
+                }
+            ])
+        );
+
+        if (!hasEnoughAssetAmount) {
             throw new InsufficientAssetsAvailable(ask.assetId);
         }
 
-        const product = await this.productService.getProduct(ask.assetId);
+        const resolvedProduct =
+            product ??
+            (await this.queryBus.execute<GetProductQuery, TProduct>(
+                new GetProductQuery(ask.assetId)
+            ));
 
         const order = await this.repository.save({
             userId,
             validFrom: new Date(ask.validFrom),
-            product,
+            product: resolvedProduct,
             side: OrderSide.Ask,
             status: OrderStatus.Active,
             startVolume: new BN(ask.volume),
@@ -109,7 +121,7 @@ export class OrderService {
             price: ask.price
         });
 
-        this.matchingEngineService.submit(order);
+        await this.commandBus.execute(new SubmitOrderCommand(order));
 
         return new Order(order);
     }
@@ -133,7 +145,7 @@ export class OrderService {
             product: {}
         });
 
-        this.matchingEngineService.submit(order);
+        await this.commandBus.execute(new SubmitOrderCommand(order));
 
         return new Order(order);
     }
@@ -157,7 +169,7 @@ export class OrderService {
 
         await this.repository.update(orderId, { status: OrderStatus.PendingCancellation });
 
-        this.matchingEngineService.cancel(orderId);
+        await this.commandBus.execute(new CancelOrderCommand(orderId));
 
         return new Order({ ...order, status: OrderStatus.PendingCancellation });
     }
@@ -165,7 +177,7 @@ export class OrderService {
     public async submit(order: Order): Promise<void> {
         this.logger.debug(`Submitting order:${JSON.stringify(order)}`);
 
-        this.matchingEngineService.submit(order);
+        await this.commandBus.execute(new SubmitOrderCommand(order));
     }
 
     public async getAllOrders(userId: string): Promise<Order[]> {
@@ -236,7 +248,7 @@ export class OrderService {
         await this.updateStatus(order.id, OrderStatus.Active);
         const updated = await this.findOne(order.userId, order.id);
 
-        this.matchingEngineService.submit(updated);
+        await this.commandBus.execute(new SubmitOrderCommand(updated));
     }
 
     private updateStatus(orderId: string, status: OrderStatus) {

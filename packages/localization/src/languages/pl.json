@@ -5,6 +5,7 @@
             "certificates": "Certyfikaty",
             "demands": "Oferty",
             "organizations": "Organizacje",
+            "exchange": "Rynek",
             "admin": "Admin",
             "supportAgent": "Support Agents"
         },
@@ -56,14 +57,42 @@
                 "projectStory": "Opis projektu",
                 "images": "Zdjęcia",
                 "capacity": "Pojemność",
-                "address": "Adres"
+                "address": "Adres",
+                "constructed": "Zbudowana",
+                "vintageCod": "Vintage / (data operacji handlowej)",
+                "gridOperator": "Operator sieci",
+                "price": "Cena",
+                "active": "Aktywny",
+                "paused": "Wstrzymano"
             },
             "actions": {
                 "requestCertificates": "Zażądaj certyfikatów",
                 "approve": "Zaakceptuj",
                 "registerDevice": "Zarejestruj urządzenie",
                 "register": "Zarejestruj",
-                "viewDetails": "Pokaż szczegóły"
+                "viewDetails": "Pokaż szczegóły",
+                "updateSupply": "Zaktualizuj zaopatrzenie",
+                "cancel": "Anulować",
+                "update": "Aktualizacja"
+            },
+            "feedback": {
+                "imagesUploaded": "Obrazy zostały przesłane.",
+                "deviceCreated": "Urządzenie zostało pomyślnie utworzone.",
+                "pleaseSelectUpToXImages": "Wybierz maksymalnie {limit} obrazów. Wybrałeś {current}.",
+                "unexpectedErrorWhenUploadingImages": "Wystąpił nieoczekiwany błąd podczas przesyłania zdjęć.",
+                "supplyUpdatedSuccess": "Dostawa zaktualizowana pomyślnie",
+                "supplyUpdateError": "Aktualizacja materiałów eksploatacyjnych nie powiodła się"
+            },
+            "info": {
+                "general": "Generał",
+                "selectDeviceType": "Wybierz typ urządzenia",
+                "supported": "Utrzymany",
+                "pleaseFillOtherFields": "Wypełnij inne pola formularza i kontynuuj klikając \"Zarejestruj\".",
+                "uploadUpToXImages": "Prześlij do {amount} obrazów",
+                "selectRegion": "Wybierz region",
+                "selectProvince": "Wybierz prowincję",
+                "selectGridOperator": "Wybierz operatora sieci",
+                "toRegisterADevice": "Aby zarejestrować urządzenie, musisz spełnić następujące kryteria:"
             }
         },
         "certificate": {
@@ -250,6 +279,7 @@
                 "password": "Hasło",
                 "status": "Status",
                 "kycStatus": "Status KYC",
+                "exchangeAddressTitle": "Adres depozytu wymiany",
                 "blockchainAddress": "Adres Blockchain",
                 "blockchainAddresses": "Adresy Blockchain",
                 "userBlockchainAddress": "Adres użytkownika Blockchain",
@@ -259,12 +289,18 @@
                 "register": "Zarejestruj",
                 "registerNow": "Zarejestruj się teraz",
                 "login": "Zaloguj się",
+                "logout": "Wyloguj",
                 "save": "Zapisać",
+                "edit": "Edytuj",
+                "cancel": "Anuluj",
                 "forgotPasswordAsk": "Zapomniałeś hasła?",
+                "createDepositAddress": "Utwórz adres wpłaty",
                 "connectBlockchain": "Połącz adres Blockchain",
                 "connectNewBlockchain": "Połącz nowy adres Blockchain"
             },
             "popover": {
+                "exchangeAddressWhatFor": "Ten adres łańcucha bloków identyfikuje Cię podczas wymiany certyfikatów. Potrzebujesz go do handlu certyfikatami na giełdzie.",
+                "exchangeAddressHowTo": "Platforma automatycznie generuje adres depozytu i przejmuje go pod opiekę. Nie musisz zarządzać własnym portfelem blockchain.",
                 "blockchainWhatIs": "Ten adres jest inny niż adres depozytu wymiany. Potrzebujesz tego, jeśli chcesz zarządzać platformą za pomocą własnego adresu blockchain.",
                 "blockchainWhatFor": "Adres blockchain podłączonego użytkownika jest wymagany do wycofania certyfikatów z giełdy i wycofania certyfikatów.",
                 "blockchainHowTo": "Wybierz odpowiednie konto blockchain w portfelu przeglądarki MetaMask i kliknij „Połącz adres Blockchain”, aby się połączyć. Odwiedź metamask.io, aby założyć własny portfel blockchain."
@@ -273,6 +309,21 @@
                 "userRegistered": "Użytkownik zarejestrowany.",
                 "errorWhileRegisteringUser": "Błąd podczas rejestracji użytkownika.",
                 "errorUserExists": "Użytkownik z adresem e-mail {userEmail} został już zarejestrowany. Zaloguj się przy użyciu oryginalnego konta.",
+                "userLoggedIn": "Użytkownik zalogowany.",
+                "couldNotLogIn": "Nie udało się zalogować z podanymi poświadczeniami.",
+                "confirmationEmailResent": "Wiadomość e-mail z potwierdzeniem została ponownie wysłana.",
+                "confirmationEmailResentFailed": "Nie można wysłać e-maila z potwierdzeniem.",
+                "onlyActiveUsersCan": "Tylko aktywni użytkownicy mogą wykonać tę akcję",
+                "onlyMembersOfActiveOrgCan": "Tę czynność mogą wykonać tylko członkowie aktywnej organizacji",
+                "thisAccountAlreadyConnected": "Ten adres w łańcuchu bloków jest już połączony z Twoim kontem.",                
+                "exchangeAddressSuccess": "Utworzono adres depozytu wymiany.",
+                "exchangeAddressFailure": "Nie można utworzyć adresu depozytu wymiany.",
+                "emailConfirmation": {
+                    "alreadyConfirmed": "Już potwierdzony.",
+                    "confirmed": "E-mail potwierdzony pomyślnie.",
+                    "expired": "Link potwierdzający wygasł.",
+                    "loading": "Ładowanie..."
+                },
                 "roleChanged": {
                     "succesfullyJoinedOrg": "Pomyślnie dołączył do {{orgName}}",
                     "asMemberYouCan": "Dołączyłeś do {{orgName}} {{admin}}. Jako członek możesz",
@@ -291,12 +342,6 @@
                     "connectOrgToIRec": "Podłącz organizację do rejestru I-REC",
                     "asDeviceManagerYouCanAlso": "Możesz także wykonywać wszystkie czynności menedżera urządzeń",
                     "asAMemberYouCanAlso": "Możesz także wykonywać wszystkie czynności, które może wykonywać zwykły członek organizacji"
-                },
-                "emailConfirmation": {
-                    "alreadyConfirmed": "Już potwierdzony.",
-                    "confirmed": "E-mail potwierdzony pomyślnie.",
-                    "expired": "Link potwierdzający wygasł.",
-                    "loading": "Ładowanie..."
                 }
             },
             "dialog": {
@@ -339,22 +384,26 @@
                 "regions": "Regiony",
                 "selectMultipleRegions": "Wybierz wiele regionów",
                 "volume": "Tom ({unit})",
-                "price": "Cena ({currency}/{energyUnit})",
+                "price": "Cena",
                 "market": "Rynek",
                 "bids": "Oferty",
                 "asks": "Pyta",
+                "type": "Typ",
                 "date": "Data",
                 "myTrades": "Moje transakcje",
                 "side": "Bok",
                 "buy": "Kup",
                 "sell": "Sprzedać",
-                "total": "Total"
+                "total": "Total",
+                "matching": "Pasujący"
             },
             "properties": {
                 "price": "Cena",
                 "energy": "Energia",
                 "generationDateStart": "Data rozpoczęcia generacji",
                 "generationDateEnd": "Data zakończenia generowania",
+                "generationStart": "Początek generacji",
+                "generationEnd": "Koniec generacji",
                 "generationFrom": "Generacja z",
                 "generationTo": "Generacja do",
                 "volume": "Tom",
@@ -366,8 +415,14 @@
                     "yearly": "Rocznie",
                     "monthly": "Miesięczny",
                     "weekly": "Tygodniowo",
-                    "daily": "Codziennie",
+                    "daily": "Codziennie"
                 }
+            },
+            "popover": {
+                "asksDescription": "Poniżej zobaczysz oferty sprzedaży, które odpowiadają kryteriom certyfikatu zdefiniowanym w filtrze rynku.",
+                "asksFurtherInstructions": "Aby zobaczyć wszystkie dostępne zapytania, usuń ustawione filtry rynkowe. Aby zobaczyć listę swoich aktywnych zapytań, przejdź do \"Moje zamówienia\".",
+                "bidsDescription": "Poniżej zobaczysz wszystkie oferty kupna, które odpowiadają kryteriom certyfikatu zdefiniowanym w filtrze rynku.",
+                "bidsFurtherInstructions": "Aby zobaczyć bardziej szczegółowe stawki, ustaw odpowiednie filtry rynkowe. Aby zobaczyć listę swoich aktywnych ofert, przejdź do \"Moje zamówienia\"."
             }
         },
         "organization": {
@@ -433,11 +488,12 @@
                 "clientID": "Klient ID",
                 "clientSecret": "Klient Secret",
                 "titleRegisterIREC": "Informacja o rejestracji I-REC",
+                "irecInformation": "Informacje I-REC",
                 "irecParticipantDescription": "Konto uczestnika do zarządzania certyfikatami poza rynkiem",
                 "irecRegistrantDescription": "Konto rejestrującego do zarządzania urządzeniami",
                 "irecBothDescription": "Konto rejestrującego i uczestnika",
                 "IRECAccountType": "Typ konta I-REC",
-                "orgHeadquatersCompany": "Siedziba organizacji Firma",
+                "orgHeadquartersCountry": "Kraj siedziby organizacji",
                 "yearOfRegistration": "Rok rejestracji",
                 "numberOfEmployees": "Liczba pracowników",
                 "shareholderNames": "Nazwiska akcjonariuszy (ponad 10%)",
@@ -529,7 +585,8 @@
             "actions": {
                 "view": "Widok",
                 "remove": "Usunąć",
-                "update": "Zmodernizować"
+                "update": "Zmodernizować",
+                "viewMarket": "Wyświetl Market"
             },
             "feedback": {
                 "removeOrderConfirmation": "Czy na pewno chcesz usunąć?",
@@ -582,6 +639,9 @@
                 "statusNotChanged": "Stan popytu nie zmienił się",
                 "demandUpdated": "Popyt zostało pomyślnie zaktualizowane"
             }
+        },
+        "info": {
+            "needToFulfilCriteria": "Aby wejść na tą stronę, musisz spełnić wymienione kryteria"
         }
     }
     
