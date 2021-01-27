@@ -13,28 +13,34 @@ import {
     CreateAskDTO,
     OrderService,
     TransferStatus,
-    TransferService
+    TransferService,
+    Transfer,
+    TransferDirection
 } from '@energyweb/exchange';
+import { concatMap, tap } from 'rxjs/operators';
+import { Subject } from 'rxjs';
 
 @Injectable()
 export class DepositWatcherService<TProduct> implements OnModuleInit {
     private readonly logger = new Logger(DepositWatcherService.name);
 
-    private tokenInterface = new ethers.utils.Interface(Contracts.RegistryJSON.abi);
+    private registry: ethers.Contract;
 
     private walletAddress: string;
 
-    private registryAddress: string;
+    private tokenInterface: ethers.utils.Interface;
 
     private provider: providers.FallbackProvider;
 
     private issuer: Contract;
 
-    private registry: Contract;
-
     private issuerTypeId: string;
 
     private deviceService: IExternalDeviceService;
+
+    private registryAddress: string;
+
+    private readonly depositQueue = new Subject<string>();
 
     public constructor(
         private readonly configService: ConfigService,
@@ -48,10 +54,14 @@ export class DepositWatcherService<TProduct> implements OnModuleInit {
 
     public async onModuleInit() {
         this.logger.debug('onModuleInit');
-
         this.deviceService = this.moduleRef.get<IExternalDeviceService>(IExternalDeviceService, {
             strict: false
         });
+
+        this.walletAddress = this.configService.get<string>('EXCHANGE_WALLET_PUB');
+
+        const web3ProviderUrl = this.configService.get<string>('WEB3');
+        this.provider = getProviderWithFallback(...web3ProviderUrl.split(';'));
 
         const exchangeConfigService = this.moduleRef.get<IExchangeConfigurationService>(
             IExchangeConfigurationService,
@@ -60,68 +70,63 @@ export class DepositWatcherService<TProduct> implements OnModuleInit {
             }
         );
 
-        this.walletAddress = this.configService.get<string>('EXCHANGE_WALLET_PUB');
-
-        const issuer = await exchangeConfigService.getIssuerAddress();
         this.registryAddress = await exchangeConfigService.getRegistryAddress();
+        const { abi } = Contracts.RegistryJSON;
 
-        const web3ProviderUrl = this.configService.get<string>('WEB3');
-        this.provider = getProviderWithFallback(...web3ProviderUrl.split(';'));
+        this.registry = new Contract(this.registryAddress, abi, this.provider);
 
-        this.registry = new Contract(
-            this.registryAddress,
-            Contracts.RegistryJSON.abi,
-            this.provider
-        );
+        this.tokenInterface = new ethers.utils.Interface(abi);
 
-        this.issuer = new Contract(issuer, Contracts.IssuerJSON.abi, this.provider);
-
-        const topics = [
-            this.tokenInterface.getEventTopic(this.tokenInterface.getEvent('TransferSingle'))
-        ];
         const blockNumber = await this.transferService.getLastConfirmationBlock();
 
         this.logger.debug(`Starting from block ${blockNumber}`);
 
-        this.provider.resetEventsBlock(blockNumber);
-        this.provider.on(
-            {
-                address: this.registryAddress,
-                topics
-            },
-            (event: providers.Log) => this.processEvent(event)
-        );
+        this.depositQueue
+            .pipe(
+                tap((id) => this.logger.debug(`[Deposit ${id}] enqueued ${id}`)),
+                concatMap((id) => this.process(id))
+            )
+            .subscribe();
     }
 
-    private async processEvent(event: providers.Log) {
-        this.logger.debug(`Discovered new event ${JSON.stringify(event)}`);
+    public requestDeposit(deposit: Transfer): void {
+        const { id } = deposit;
+        this.logger.log(`[Deposit ${id}] requested processing`);
+        this.logger.debug(`[Deposit ${id}] requested processing ${JSON.stringify(deposit)}`);
 
-        const { name } = this.tokenInterface.parseLog(event);
-        const log = this.tokenInterface.decodeEventLog(name, event.data, event.topics);
+        if (deposit.direction !== TransferDirection.Deposit) {
+            this.logger.error(`[Deposit ${id}] expected but got withdrawal`);
 
-        this.logger.debug(`Parsed to ${JSON.stringify(log)}`);
-
-        const { _from: from, _to: to, _value: value, _id: id } = log;
-
-        if (to !== this.walletAddress) {
-            this.logger.debug(
-                `This transfer is to other address ${to} than wallet address ${this.walletAddress}`
-            );
-            return;
+            throw new Error('Expected deposit but got withdrawal');
         }
 
-        const { transactionHash } = event;
+        this.depositQueue.next(deposit.id);
+    }
+
+    private async process(id: string) {
+        this.logger.debug(`[Deposit ${id}] starting processing`);
 
         try {
-            let transfer = await this.transferService.findOne(null, {
-                where: { transactionHash }
-            });
+            let deposit = await this.transferService.findOne(id);
 
-            if (transfer) {
+            if (!deposit) {
+                this.logger.error(`[Deposit ${id}] Unknown deposit. Skipping.`);
+                return;
+            }
+
+            this.logger.debug(`[Deposit ${id}] ${JSON.stringify(deposit)}`);
+
+            if (deposit.address !== this.walletAddress) {
                 this.logger.debug(
-                    `Deposit with transactionHash ${transactionHash} already exists and has status ${
-                        TransferStatus[transfer.status]
-                    } `
+                    `This transfer is to other address ${deposit.address} than wallet address ${this.walletAddress}`
+                );
+            }
+
+            if (deposit) {
+                this.logger.debug(
+                    `Deposit with transactionHash ${
+                        deposit.transactionHash
+                    } already exists and has status ${TransferStatus[deposit.status]} `
                 );
 
                 return;
@@ -131,11 +136,11 @@ export class DepositWatcherService<TProduct> implements OnModuleInit {
                 id.toString()
             );
 
-            const amount = value.toString();
+            const { amount, transactionHash } = deposit;
 
-            transfer = await this.transferService.createDeposit({
+            deposit = await this.transferService.createDeposit({
                 transactionHash,
-                address: from as string,
+                address: deposit.address,
                 amount,
                 asset: {
                     address: this.registryAddress,
@@ -151,10 +156,10 @@ export class DepositWatcherService<TProduct> implements OnModuleInit {
             await this.transferService.setAsConfirmed(transactionHash, receipt.blockNumber);
 
             this.logger.debug(
-                `Successfully created deposit of tokenId=${id} from=${from} with value=${value} for user=${transfer.userId} `
+                `Successfully created deposit of tokenId=${deposit.id} from=${deposit.address} with value=${deposit.amount} for user=${deposit.userId} `
             );
 
-            await this.tryPostForSale(deviceId, from, amount, transfer.asset.id);
+            await this.tryPostForSale(deviceId, deposit.address, amount, deposit.asset.id);
         } catch (error) {
             this.logger.error(error.message);
         }

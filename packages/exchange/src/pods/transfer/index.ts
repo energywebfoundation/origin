@@ -10,3 +10,4 @@ export * from './transfer.entity';
 export * from './transfer.module';
 export * from './transfer.service';
 export * from './withdrawal-requested.event';
+export * from './deposited.event';
