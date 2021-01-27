@@ -13,7 +13,8 @@ export enum CustomFilterInputType {
     multiselect = 'multiselect',
     dropdown = 'dropdown',
     slider = 'slider',
-    yearMonth = 'yearMonth'
+    yearMonth = 'yearMonth',
+    day = 'day'
 }
 
 export enum FilterRules {
