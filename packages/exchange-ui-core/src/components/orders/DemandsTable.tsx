@@ -82,7 +82,7 @@ export const DemandsTable = (props: IOwnProps) => {
             property: (demand: Demand) => new Date(demand.start).getTime() / 1000,
             label: t('demand.properties.start'),
             input: {
-                type: CustomFilterInputType.yearMonth,
+                type: CustomFilterInputType.day,
                 filterRule: FilterRules.FROM
             }
         },
@@ -90,7 +90,7 @@ export const DemandsTable = (props: IOwnProps) => {
             property: (demand: Demand) => new Date(demand.end).getTime() / 1000,
             label: t('demand.properties.end'),
             input: {
-                type: CustomFilterInputType.yearMonth,
+                type: CustomFilterInputType.day,
                 filterRule: FilterRules.TO
             }
         }
@@ -101,12 +101,12 @@ export const DemandsTable = (props: IOwnProps) => {
         offset,
         requestedFilters
     }: IPaginatedLoaderHooksFetchDataParameters): Promise<IPaginatedLoaderFetchDataReturnValues> {
-        const filteredAsks = demands.filter((ask) => {
+        const filteredDemands = demands.filter((ask) => {
             return checkRecordPassesFilters(ask, requestedFilters, deviceTypeService);
         });
         return {
-            paginatedData: filteredAsks.slice(offset, offset + requestedPageSize),
-            total: filteredAsks.length
+            paginatedData: filteredDemands.slice(offset, offset + requestedPageSize),
+            total: filteredDemands.length
         };
     }
 
