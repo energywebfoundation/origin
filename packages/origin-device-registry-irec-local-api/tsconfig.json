@@ -1,0 +1,23 @@
+{
+    "extends": "../../tsconfig.json",
+    "compilerOptions": {
+        "composite": true,
+        "outDir": "./dist/js",
+        "emitDecoratorMetadata": true,
+        "experimentalDecorators": true,
+        "lib": ["es2019"],
+        "types": ["node", "mocha"]
+    },
+    "include": ["src/**/*", "test/**/*", "migrations/*", "ormconfig*.ts"],
+    "references": [
+        {
+            "path": "../origin-backend-core/tsconfig.json"
+        },
+        {
+            "path": "../origin-backend-utils/tsconfig.json"
+        },
+        {
+            "path": "../origin-device-registry-api/tsconfig.json"
+        }
+    ]
+}

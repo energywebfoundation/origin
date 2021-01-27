@@ -1,38 +1,17 @@
-SET
-    statement_timeout = 0;
-
-SET
-    lock_timeout = 0;
-
-SET
-    idle_in_transaction_session_timeout = 0;
-
-SET
-    client_encoding = 'UTF8';
-
-SET
-    standard_conforming_strings = on;
-
-SELECT
-    pg_catalog.set_config('search_path', '', false);
-
-SET
-    check_function_bodies = false;
-
-SET
-    xmloption = content;
-
-SET
-    client_min_messages = warning;
-
-SET
-    row_security = off;
-
+SET statement_timeout = 0;
+SET lock_timeout = 0;
+SET idle_in_transaction_session_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SELECT pg_catalog.set_config('search_path', '', false);
+SET check_function_bodies = false;
+SET xmloption = content;
+SET client_min_messages = warning;
+SET row_security = off;
 /*
  ORGANIZATIONS
  */
-INSERT INTO
-    public."platform_organization" (
+INSERT INTO public."platform_organization" (
         "createdAt",
         "updatedAt",
         id,
@@ -53,8 +32,7 @@ INSERT INTO
         "signatoryPhoneNumber",
         status
     )
-VALUES
-    (
+VALUES (
         '2020-03-30 09:55:25.962333+02',
         '2020-03-30 09:55:25.962333+02',
         1,
@@ -75,9 +53,7 @@ VALUES
         'Phone number',
         'Active'
     );
-
-INSERT INTO
-    public."platform_organization" (
+INSERT INTO public."platform_organization" (
         "createdAt",
         "updatedAt",
         id,
@@ -98,8 +74,7 @@ INSERT INTO
         "signatoryPhoneNumber",
         status
     )
-VALUES
-    (
+VALUES (
         '2020-03-30 09:55:25.962333+02',
         '2020-03-30 09:55:25.962333+02',
         2,
@@ -120,9 +95,7 @@ VALUES
         'Phone number',
         'Active'
     );
-
-INSERT INTO
-    public."platform_organization" (
+INSERT INTO public."platform_organization" (
         "createdAt",
         "updatedAt",
         id,
@@ -143,8 +116,7 @@ INSERT INTO
         "signatoryPhoneNumber",
         status
     )
-VALUES
-    (
+VALUES (
         '2020-03-30 09:55:25.962333+02',
         '2020-03-30 09:55:25.962333+02',
         3,
@@ -165,9 +137,7 @@ VALUES
         'Phone number',
         'Active'
     );
-
-INSERT INTO
-    public."platform_organization" (
+INSERT INTO public."platform_organization" (
         "createdAt",
         "updatedAt",
         id,
@@ -188,8 +158,7 @@ INSERT INTO
         "signatoryPhoneNumber",
         status
     )
-VALUES
-    (
+VALUES (
         '2020-03-30 09:55:25.962333+02',
         '2020-03-30 09:55:25.962333+02',
         4,
@@ -210,9 +179,7 @@ VALUES
         'Phone number',
         'Active'
     );
-
-INSERT INTO
-    public."platform_organization" (
+INSERT INTO public."platform_organization" (
         "createdAt",
         "updatedAt",
         id,
@@ -233,8 +200,7 @@ INSERT INTO
         "signatoryPhoneNumber",
         status
     )
-VALUES
-    (
+VALUES (
         '2020-03-30 09:55:25.962333+02',
         '2020-03-30 09:55:25.962333+02',
         5,
@@ -255,12 +221,10 @@ VALUES
         'Phone number',
         'Active'
     );
-
 /*
  USERS
  */
-INSERT INTO
-    public."user" (
+INSERT INTO public."user" (
         "createdAt",
         "updatedAt",
         id,
@@ -278,8 +242,7 @@ INSERT INTO
         status,
         "kycStatus"
     )
-VALUES
-    (
+VALUES (
         '2020-03-30 10:08:33.510625+02',
         '2020-03-30 10:08:33.652639+02',
         1,
@@ -297,9 +260,7 @@ VALUES
         'Active',
         'Passed'
     );
-
-INSERT INTO
-    public."user" (
+INSERT INTO public."user" (
         "createdAt",
         "updatedAt",
         id,
@@ -317,8 +278,7 @@ INSERT INTO
         status,
         "kycStatus"
     )
-VALUES
-    (
+VALUES (
         '2020-03-30 10:08:33.510625+02',
         '2020-03-30 10:08:33.652639+02',
         2,
@@ -336,9 +296,7 @@ VALUES
         'Active',
         'Passed'
     );
-
-INSERT INTO
-    public."user" (
+INSERT INTO public."user" (
         "createdAt",
         "updatedAt",
         id,
@@ -356,8 +314,7 @@ INSERT INTO
         status,
         "kycStatus"
     )
-VALUES
-    (
+VALUES (
         '2020-03-30 10:08:33.510625+02',
         '2020-03-30 10:08:33.652639+02',
         3,
@@ -375,9 +332,7 @@ VALUES
         'Active',
         'Passed'
     );
-
-INSERT INTO
-    public."user" (
+INSERT INTO public."user" (
         "createdAt",
         "updatedAt",
         id,
@@ -395,8 +350,7 @@ INSERT INTO
         status,
         "kycStatus"
     )
-VALUES
-    (
+VALUES (
         '2020-03-30 10:08:33.510625+02',
         '2020-03-30 10:08:33.652639+02',
         4,
@@ -414,9 +368,7 @@ VALUES
         'Active',
         'Passed'
     );
-
-INSERT INTO
-    "public"."user"(
+INSERT INTO "public"."user"(
         "createdAt",
         "updatedAt",
         "id",
@@ -434,8 +386,7 @@ INSERT INTO
         "status",
         "kycStatus"
     )
-VALUES
-    (
+VALUES (
         '2020-03-30 08:08:33.510625+00',
         '2020-03-30 08:08:33.652639+00',
         5,
@@ -453,9 +404,7 @@ VALUES
         'Active',
         'Passed'
     );
-
-INSERT INTO
-    "public"."user"(
+INSERT INTO "public"."user"(
         "createdAt",
         "updatedAt",
         "id",
@@ -473,8 +422,7 @@ INSERT INTO
         "status",
         "kycStatus"
     )
-VALUES
-    (
+VALUES (
         '2020-03-30 08:08:33.510625+00',
         '2020-03-30 08:08:33.652639+00',
         6,
@@ -492,12 +440,7 @@ VALUES
         'Active',
         'Passed'
     );
-
-/*
- DEVICES
- */
-INSERT INTO
-    public.device (
+INSERT INTO public.device (
         "createdAt",
         "updatedAt",
         id,
@@ -524,8 +467,7 @@ INSERT INTO
         "organizationId",
         "gridOperator"
     )
-VALUES
-    (
+VALUES (
         '2020-03-30 09:36:02.607206+02',
         '2020-03-30 09:36:02.607206+02',
         1,
@@ -552,9 +494,7 @@ VALUES
         '2',
         'TH-PEA'
     );
-
-INSERT INTO
-    public.device (
+INSERT INTO public.device (
         "createdAt",
         "updatedAt",
         id,
@@ -581,8 +521,7 @@ INSERT INTO
         "organizationId",
         "gridOperator"
     )
-VALUES
-    (
+VALUES (
         '2020-03-30 09:36:02.607206+02',
         '2020-03-30 09:36:02.607206+02',
         2,
@@ -609,9 +548,7 @@ VALUES
         '3',
         'TH-MEA'
     );
-
-INSERT INTO
-    public.device (
+INSERT INTO public.device (
         "createdAt",
         "updatedAt",
         id,
@@ -638,8 +575,7 @@ INSERT INTO
         "organizationId",
         "gridOperator"
     )
-VALUES
-    (
+VALUES (
         '2020-03-30 09:36:02.607206+02',
         '2020-03-30 09:36:02.607206+02',
         3,
@@ -666,36 +602,225 @@ VALUES
         '2',
         'TH-PEA'
     );
-
-SELECT
-    setval(
+SELECT setval(
         pg_get_serial_sequence('public.user', 'id'),
         (
-            SELECT
-                MAX("id")
-            FROM
-                public.user
+            SELECT MAX("id")
+            FROM public.user
         ) + 1
     );
-
-SELECT
-    setval(
+SELECT setval(
         pg_get_serial_sequence('public.platform_organization', 'id'),
         (
-            SELECT
-                MAX("id")
-            FROM
-                public.platform_organization
+            SELECT MAX("id")
+            FROM public.platform_organization
         ) + 1
     );
-
-SELECT
-    setval(
+SELECT setval(
         pg_get_serial_sequence('public.device', 'id'),
         (
-            SELECT
-                MAX("id")
-            FROM
-                public.device
+            SELECT MAX("id")
+            FROM public.device
         ) + 1
+    );
+/*
+ DEVICE REGISTRIES
+ */
+INSERT INTO public."irec_device_registry_device" (
+        "createdAt",
+        "updatedAt",
+        "id",
+        "ownerId",
+        "code",
+        "name",
+        "defaultAccount",
+        "deviceType",
+        "fuel",
+        "countryCode",
+        "registrantOrganization",
+        "issuer",
+        "capacity",
+        "commissioningDate",
+        "registrationDate",
+        "address",
+        "latitude",
+        "longitude",
+        "notes",
+        "status",
+        "timezone",
+        "gridOperator"
+    )
+VALUES (
+        '2020-03-30 09:36:02.607206+02',
+        '2020-03-30 09:36:02.607206+02',
+        '0e01b315-4f80-4d65-ab9d-84232769ef9d',
+        '1',
+        'TESTDEVICE001',
+        'Wuthering Heights Windfarm',
+        'ORG001TRADE001',
+        'TC210',
+        'ES200',
+        'TH',
+        'ORG001',
+        'ISSER001',
+        '10000',
+        '2020-01-01T00:00:00.000Z',
+        '2020-01-02T00:00:00.000Z',
+        '95 Moo 7, Sa Si Mum Sub-district, Kamphaeng Saen District, Nakhon Province 73140',
+        '14.059500',
+        '99.977800',
+        'Notes...',
+        'Active',
+        'Asia/Bangkok',
+        'TH-PEA'
+    );
+INSERT INTO public."device_registry_device" (
+        "createdAt",
+        "updatedAt",
+        "id",
+        "owner",
+        "externalRegistryId",
+        "smartMeterId",
+        "description"
+    )
+VALUES (
+        '2020-03-30 09:36:02.607206+02',
+        '2020-03-30 09:36:02.607206+02',
+        'be2df88a-90c2-4dad-9de4-8ef423a7d3f0',
+        '1',
+        '0e01b315-4f80-4d65-ab9d-84232769ef9d',
+        'METER001',
+        'Wuthering Heights Windfarm description'
+    );
+INSERT INTO public."irec_device_registry_device" (
+        "createdAt",
+        "updatedAt",
+        "id",
+        "ownerId",
+        "code",
+        "name",
+        "defaultAccount",
+        "deviceType",
+        "fuel",
+        "countryCode",
+        "registrantOrganization",
+        "issuer",
+        "capacity",
+        "commissioningDate",
+        "registrationDate",
+        "address",
+        "latitude",
+        "longitude",
+        "notes",
+        "status",
+        "timezone",
+        "gridOperator"
+    )
+VALUES (
+        '2020-03-30 09:36:02.607206+02',
+        '2020-03-30 09:36:02.607206+02',
+        'd242c965-81a0-4917-afa1-f5217937afd6',
+        '2',
+        'TESTDEVICE002',
+        'Solar Facility A',
+        'ORG002TRADE001',
+        'TC140',
+        'ES100',
+        'TH',
+        'ORG002',
+        'ISSER001',
+        '70000',
+        '2020-01-01T00:00:00.000Z',
+        '2020-01-02T00:00:00.000Z',
+        '1 Wind Farm Avenue, Thailand',
+        '15.1739',
+        '101.4928',
+        'Notes...',
+        'Active',
+        'Asia/Bangkok',
+        'TH-MEA'
+    );
+INSERT INTO public."device_registry_device" (
+        "createdAt",
+        "updatedAt",
+        "id",
+        "owner",
+        "externalRegistryId",
+        "smartMeterId",
+        "description"
+    )
+VALUES (
+        '2020-03-30 09:36:02.607206+02',
+        '2020-03-30 09:36:02.607206+02',
+        '5c9c6eb4-af2c-4336-8aae-1d579194bb4f',
+        '2',
+        'd242c965-81a0-4917-afa1-f5217937afd6',
+        'METER002',
+        'Solar Facility A description'
+    );
+INSERT INTO public."irec_device_registry_device" (
+        "createdAt",
+        "updatedAt",
+        "id",
+        "ownerId",
+        "code",
+        "name",
+        "defaultAccount",
+        "deviceType",
+        "fuel",
+        "countryCode",
+        "registrantOrganization",
+        "issuer",
+        "capacity",
+        "commissioningDate",
+        "registrationDate",
+        "address",
+        "latitude",
+        "longitude",
+        "notes",
+        "status",
+        "timezone",
+        "gridOperator"
+    )
+VALUES (
+        '2020-03-30 09:36:02.607206+02',
+        '2020-03-30 09:36:02.607206+02',
+        'd49f7fed-2f79-4d10-8985-41a0c3e9ba03',
+        '3',
+        'TESTDEVICE003',
+        'Biomass Facility',
+        'ORG003TRADE001',
+        'TC140',
+        'ES560',
+        'TH',
+        'ORG003',
+        'ISSER001',
+        '10000',
+        '2020-01-01T00:00:00.000Z',
+        '2020-01-02T00:00:00.000Z',
+        '95 Moo 7, Sa Si Mum Sub-district, Kamphaeng Saen District, Nakhon Province 73140',
+        '14.059500',
+        '99.977800',
+        'Notes...',
+        'Active',
+        'Asia/Bangkok',
+        'TH-PEA'
+    );
+INSERT INTO public."device_registry_device" (
+        "createdAt",
+        "updatedAt",
+        "id",
+        "owner",
+        "externalRegistryId",
+        "smartMeterId",
+        "description"
+    )
+VALUES (
+        '2020-03-30 09:36:02.607206+02',
+        '2020-03-30 09:36:02.607206+02',
+        '7f8fa2f6-d95a-4237-8e53-d9876318e077',
+        '3',
+        'd49f7fed-2f79-4d10-8985-41a0c3e9ba03',
+        'METER003',
+        'Biomass Facility description'
     );
