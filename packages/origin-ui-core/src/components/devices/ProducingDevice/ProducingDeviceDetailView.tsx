@@ -1,34 +1,35 @@
-import React from 'react';
-import marker from '../../../../assets/marker.svg';
-import map from '../../../../assets/map.svg';
-import wind from '../../../../assets/icon_wind.svg';
-import hydro from '../../../../assets/icon_hydro.svg';
-import iconThermal from '../../../../assets/icon_thermal.svg';
-import iconSolid from '../../../../assets/icon_solid.svg';
-import iconLiquid from '../../../../assets/icon_liquid.svg';
+import { ProducingDevice } from '@energyweb/device-registry';
+import { IExternalDeviceId } from '@energyweb/origin-backend-core';
+import { createStyles, makeStyles, useTheme } from '@material-ui/core';
+import { Skeleton } from '@material-ui/lab';
+import React, { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
+
 import iconGaseous from '../../../../assets/icon_gaseous.svg';
+import hydro from '../../../../assets/icon_hydro.svg';
+import iconLiquid from '../../../../assets/icon_liquid.svg';
 import iconMarine from '../../../../assets/icon_marine.svg';
 import solar from '../../../../assets/icon_solar.svg';
-import { ProducingDevice } from '@energyweb/device-registry';
-import { DeviceMap } from '../DeviceMap';
-import { SmartMeterReadingsTable } from '../SmartMeterReadings/SmartMeterReadingsTable';
-import { SmartMeterReadingsChart } from '../SmartMeterReadings/SmartMeterReadingsChart';
-import { useSelector } from 'react-redux';
-import { getProducingDevices, getConfiguration } from '../../../features/selectors';
-import { makeStyles, createStyles, useTheme } from '@material-ui/core';
-import { Skeleton } from '@material-ui/lab';
-import {
-    formatDate,
-    EnergyFormatter,
-    PowerFormatter,
-    useTranslation,
-    LightenColor
-} from '../../../utils';
+import iconSolid from '../../../../assets/icon_solid.svg';
+import iconThermal from '../../../../assets/icon_thermal.svg';
+import wind from '../../../../assets/icon_wind.svg';
+import map from '../../../../assets/map.svg';
+import marker from '../../../../assets/marker.svg';
 import { getBackendClient } from '../../../features/general/selectors';
-import { DeviceGroupForm } from '../DeviceGroupForm';
-import { IExternalDeviceId, IPublicOrganization } from '@energyweb/origin-backend-core';
-import { downloadFile } from '../../Organization/DownloadDocuments';
+import { getConfiguration, getProducingDevices } from '../../../features/selectors';
+import {
+    EnergyFormatter,
+    formatDate,
+    LightenColor,
+    PowerFormatter,
+    useTranslation
+} from '../../../utils';
 import { useOriginConfiguration } from '../../../utils/configuration';
+import { downloadFile } from '../../Organization/DownloadDocuments';
+import { DeviceGroupForm } from '../DeviceGroupForm';
+import { DeviceMap } from '../DeviceMap';
+import { SmartMeterReadingsChart } from '../SmartMeterReadings/SmartMeterReadingsChart';
+import { SmartMeterReadingsTable } from '../SmartMeterReadings/SmartMeterReadingsTable';
 
 interface IProps {
     id?: number;
@@ -49,6 +50,7 @@ export function ProducingDeviceDetailView(props: IProps) {
     const originSimpleTextColor = originContext?.styleConfig?.SIMPLE_TEXT_COLOR;
 
     const { t } = useTranslation();
+    const [organizationName, setOrganizationName] = useState('');
 
     const bgColorDarken = LightenColor(originBgColor, -2);
     const attributionTextColor = LightenColor(originBgColor, 20);
@@ -85,6 +87,18 @@ export function ProducingDeviceDetailView(props: IProps) {
         return <Skeleton variant="rect" height={200} />;
     }
 
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    useEffect(() => {
+        const fetchOrganizationName = async () => {
+            const {
+                data: { name }
+            } = await organizationClient.getPublic(selectedDevice.organizationId);
+
+            setOrganizationName(name);
+        };
+        fetchOrganizationName();
+    }, []);
+
     let tooltip = '';
 
     const selectedDeviceType = selectedDevice.deviceType;
@@ -119,7 +133,7 @@ export function ProducingDeviceDetailView(props: IProps) {
             },
             {
                 label: t('device.properties.deviceOwner'),
-                data: (selectedDevice.organization as IPublicOrganization).name
+                data: organizationName ?? ''
             },
             {
                 label: t('device.properties.complianceRegistry'),
