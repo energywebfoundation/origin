@@ -10,7 +10,6 @@ import {
     Body,
     Controller,
     Get,
-    Logger,
     Post,
     UseGuards,
     Param,
@@ -48,8 +47,6 @@ import { SuccessResponseDTO } from '../../utils/success-response.dto';
 @Controller('certificate')
 @UseInterceptors(ExceptionInterceptor)
 export class CertificateController {
-    private readonly logger = new Logger(CertificateController.name);
-
     constructor(private readonly commandBus: CommandBus, private readonly queryBus: QueryBus) {}
 
     @Get('/:id')

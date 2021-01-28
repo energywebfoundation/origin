@@ -41,8 +41,8 @@ export function BlockchainAddresses(): JSX.Element {
     });
 
     const INITIAL_VALUES = {
-        blockchainAccountAddress: getBlockchainAccount(user).address || '',
-        exchangeDepositAddress: getExchangeAccount(user).address || ''
+        blockchainAccountAddress: getBlockchainAccount(user)?.address || '',
+        exchangeDepositAddress: getExchangeAccount(user)?.address || ''
     };
 
     async function submitForm(
@@ -75,7 +75,7 @@ export function BlockchainAddresses(): JSX.Element {
         }
     }
 
-    function createExchangeAddresss(): void {
+    function createExchangeAddress(): void {
         dispatch(createExchangeDepositAddress());
     }
 
@@ -123,7 +123,7 @@ export function BlockchainAddresses(): JSX.Element {
                                             variant="contained"
                                             color="primary"
                                             disabled={isLoading}
-                                            onClick={createExchangeAddresss}
+                                            onClick={createExchangeAddress}
                                         >
                                             {t('user.actions.createDepositAddress')}
                                         </Button>
@@ -132,8 +132,8 @@ export function BlockchainAddresses(): JSX.Element {
                                         icon={Info}
                                         iconSize={IconSize.Large}
                                         popoverText={[
-                                            t('user.popover.exchangeAddresssWhatFor'),
-                                            t('user.popover.exchangeAddresssHowTo')
+                                            t('user.popover.exchangeAddressWhatFor'),
+                                            t('user.popover.exchangeAddressHowTo')
                                         ]}
                                         className="infoIcon"
                                     />

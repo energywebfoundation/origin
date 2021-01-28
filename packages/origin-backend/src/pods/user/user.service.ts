@@ -86,10 +86,8 @@ export class UserService {
         return this.repository.update(userId, { rights: buildRights(roles) });
     }
 
-    async findById(id: number | string) {
-        const parsedId = typeof id === 'string' ? Number(id) : id;
-
-        return this.findOne({ id: parsedId });
+    async findById(id: number) {
+        return this.findOne({ id });
     }
 
     async findByEmail(email: string) {
@@ -123,7 +121,7 @@ export class UserService {
     }
 
     async updateBlockchainAddress(
-        id: number | string,
+        id: number,
         signedMessage: BindBlockchainAccountDTO['signedMessage']
     ): Promise<ExtendedBaseEntity & IUser> {
         if (!signedMessage) {
@@ -157,7 +155,7 @@ export class UserService {
         return user;
     }
 
-    async setNotifications(id: number | string, notifications: boolean): Promise<TUserBaseEntity> {
+    async setNotifications(id: number, notifications: boolean): Promise<TUserBaseEntity> {
         await this.repository.update(id, { notifications });
 
         return this.findById(id);
