@@ -302,6 +302,7 @@ export function createOriginConfiguration(configuration: Partial<IOriginConfigur
         enabledFeatures: allOriginFeatures.filter((feature) => {
             return ![OriginFeature.IRecConnect, OriginFeature.DevicesImport].includes(feature);
         })
+        // enabledFeatures: allOriginFeatures
     };
 
     const newConfiguration: IOriginConfiguration = {

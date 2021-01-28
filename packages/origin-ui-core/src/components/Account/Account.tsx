@@ -7,15 +7,21 @@ import { getUserOffchain, getIRecAccount } from '../../features/users/selectors'
 import { useLinks } from '../../utils';
 import { OriginConfigurationContext } from '..';
 import { accountMenuCreator } from './accountMenuCreator';
+import { OriginFeature } from '@energyweb/utils-general';
 
 export function Account() {
     const user = useSelector(getUserOffchain);
     const iRecAccount = useSelector(getIRecAccount);
     const { enabledFeatures } = useContext(OriginConfigurationContext);
     const { baseURL, getAccountLink } = useLinks();
-
+    const organization = useSelector(getUserOffchain)?.organization;
     const accountMenuList = accountMenuCreator(user, enabledFeatures, iRecAccount);
-
+    console.log({
+        enabledIrec: !enabledFeatures.includes(OriginFeature.IRec),
+        enabledIrecConnect: !enabledFeatures.includes(OriginFeature.IRecConnect),
+        organization,
+        iRecAccount
+    });
     return (
         <div className="PageWrapper">
             <Route
