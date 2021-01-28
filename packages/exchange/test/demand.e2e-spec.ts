@@ -40,11 +40,17 @@ const dummyAsset = {
 
 const transactionHash = `0x${((Math.random() * 0xffffff) << 0).toString(16)}`;
 
-const createDeposit = (address: string, amount = `${1000 * MWh}`, asset = dummyAsset) => {
+const createDeposit = (
+    address: string,
+    amount = `${1000 * MWh}`,
+    asset = dummyAsset,
+    blockNumber = 123456
+) => {
     return transferService.createDeposit({
         address,
         transactionHash,
         amount,
+        blockNumber,
         asset
     });
 };
