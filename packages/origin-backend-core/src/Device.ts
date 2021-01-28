@@ -75,10 +75,10 @@ export interface IDevice extends IDeviceProductInfo {
     defaultAskPrice?: number;
     automaticPostForSale: boolean;
     files?: string;
-    organization: IPublicOrganization;
+    organizationId: number;
 }
 
-export type DeviceCreateData = Omit<IDevice, 'id' | 'meterStats' | 'organization'>;
+export type DeviceCreateData = Omit<IDevice, 'id' | 'meterStats' | 'organizationId'>;
 export type DeviceSettingsUpdateData = Pick<IDevice, 'defaultAskPrice' | 'automaticPostForSale'>;
 
 export const sortLowestToHighestTimestamp = (
