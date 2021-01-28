@@ -25,7 +25,7 @@ const config: ConnectionOptions = {
     synchronize: false,
     migrationsRun: true,
     migrations: ['migrations/*.ts'],
-    migrationsTableName: 'migrations_device_registry_irec',
+    migrationsTableName: 'migrations_device_registry_irec_local',
     cli: {
         migrationsDir: 'migrations'
     }
