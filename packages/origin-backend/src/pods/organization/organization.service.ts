@@ -100,8 +100,7 @@ export class OrganizationService {
             documentIds,
 
             status: OrganizationStatus.Submitted,
-            users: [{ id: user.id } as User],
-            devices: []
+            users: [{ id: user.id } as User]
         });
 
         const stored = await this.repository.save(organizationToCreate);
@@ -161,16 +160,6 @@ export class OrganizationService {
         );
 
         return this.findOne(id);
-    }
-
-    async hasDevice(id: number, deviceId: string): Promise<boolean> {
-        const devicesCount = await this.repository
-            .createQueryBuilder('organization')
-            .leftJoinAndSelect('organization.devices', 'device')
-            .where('device.id = :deviceId AND organization.id = :id', { id, deviceId })
-            .getCount();
-
-        return devicesCount === 1;
     }
 
     async removeMember(organizationId: number, memberId: number): Promise<void> {

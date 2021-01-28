@@ -1,16 +1,16 @@
 /* eslint-disable no-unused-expressions */
 /* eslint-disable no-return-assign */
-import { DeviceStatus, getRolesFromRights, Role } from '@energyweb/origin-backend-core';
+import { getRolesFromRights, Role } from '@energyweb/origin-backend-core';
 import { DatabaseService } from '@energyweb/origin-backend-utils';
 import { HttpStatus, INestApplication } from '@nestjs/common';
 import { expect } from 'chai';
-import request from 'supertest';
 import crypto from 'crypto';
+import request from 'supertest';
 
-import { Device } from '../src/pods/device/device.entity';
-import { DeviceService } from '../src/pods/device/device.service';
-import { OrganizationService } from '../src/pods/organization/organization.service';
+import { InvitationDTO } from '../src/pods/invitation/invitation.dto';
+import { NewOrganizationDTO, Organization } from '../src/pods/organization';
 import { PublicOrganizationInfoDTO } from '../src/pods/organization/dto/public-organization-info.dto';
+import { OrganizationService } from '../src/pods/organization/organization.service';
 import { TUserBaseEntity, UserService } from '../src/pods/user';
 import {
     bootstrapTestInstance,
@@ -19,13 +19,10 @@ import {
     registerAndLogin
 } from './origin-backend';
 import { userToRegister } from './user.e2e-spec';
-import { NewOrganizationDTO, Organization } from '../src/pods/organization';
-import { InvitationDTO } from '../src/pods/invitation/invitation.dto';
 
 describe('Organization e2e tests', () => {
     let app: INestApplication;
     let databaseService: DatabaseService;
-    let deviceService: DeviceService;
     let organizationService: OrganizationService;
     let userService: UserService;
 
@@ -34,7 +31,6 @@ describe('Organization e2e tests', () => {
             ({
                 app,
                 databaseService,
-                deviceService,
                 organizationService,
                 userService
             } = await bootstrapTestInstance());
@@ -69,53 +65,6 @@ describe('Organization e2e tests', () => {
                 const [org] = res.body as PublicOrganizationInfoDTO[];
 
                 expect(org.id).to.be.equal(organization.id);
-            });
-    });
-
-    it('should return organization devices only', async () => {
-        const { accessToken, user, organization } = await registerAndLogin(
-            app,
-            userService,
-            organizationService,
-            [Role.OrganizationDeviceManager]
-        );
-
-        await deviceService.create(
-            {
-                address: '',
-                capacityInW: 1000,
-                complianceRegistry: 'I-REC',
-                country: 'EU',
-                description: '',
-                deviceType: 'Solar',
-                facilityName: 'Test',
-                gpsLatitude: '10',
-                gpsLongitude: '10',
-                gridOperator: 'OP',
-                images: '',
-                operationalSince: 2000,
-                otherGreenAttributes: '',
-                province: '',
-                region: '',
-                status: DeviceStatus.Active,
-                timezone: '',
-                typeOfPublicSupport: '',
-                deviceGroup: '',
-                smartMeterReads: [],
-                externalDeviceIds: [],
-                automaticPostForSale: false
-            },
-            user
-        );
-
-        await request(app.getHttpServer())
-            .get(`/organization/${organization.id}/devices`)
-            .set('Authorization', `Bearer ${accessToken}`)
-            .expect(HttpStatus.OK)
-            .expect((res) => {
-                const devices = res.body as Device[];
-
-                expect(devices).to.have.length(1);
             });
     });
 

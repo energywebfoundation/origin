@@ -4,7 +4,6 @@ import { ExtendedBaseEntity } from '@energyweb/origin-backend-utils';
 import { IsArray, IsEnum, IsISO31661Alpha2, IsString } from 'class-validator';
 import { Optional } from '@nestjs/common';
 import { User } from '../user/user.entity';
-import { Device } from '../device/device.entity';
 import { Invitation } from '../invitation/invitation.entity';
 
 @Entity({ name: 'platform_organization' })
@@ -91,9 +90,6 @@ export class Organization extends ExtendedBaseEntity implements IPublicOrganizat
 
     @OneToMany(() => Invitation, (entity) => entity.organization, { eager: true })
     invitations: Invitation[];
-
-    @OneToMany(() => Device, (device) => device.organization, { eager: true })
-    devices: Device[];
 
     @Column('simple-array', { nullable: true })
     @Optional()
