@@ -1,5 +1,4 @@
 import { BigNumber } from 'ethers';
-import { IPublicOrganization } from '.';
 
 export enum DeviceStatus {
     Submitted = 'Submitted',
