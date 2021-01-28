@@ -9,19 +9,13 @@ import moment from 'moment';
 
 import {
     IExchangeConfigurationService,
-    IExternalDeviceService,
-    AccountService,
-    CreateAskDTO,
-    OrderService,
     TransferService,
     DepositDiscoveredEvent,
-    CreateDepositDTO,
-    DepositApprovedEvent,
-    TransferStatus
+    CreateDepositDTO
 } from '@energyweb/exchange';
 
 @Injectable()
-export class DepositWatcherService<TProduct> implements OnModuleInit {
+export class DepositWatcherService implements OnModuleInit {
     private readonly logger = new Logger(DepositWatcherService.name);
 
     private tokenInterface = new ethers.utils.Interface(Contracts.RegistryJSON.abi);
@@ -36,27 +30,15 @@ export class DepositWatcherService<TProduct> implements OnModuleInit {
 
     private registry: Contract;
 
-    private issuerTypeId: string;
-
-    private deviceService: IExternalDeviceService;
-
     public constructor(
         private readonly configService: ConfigService,
         private readonly transferService: TransferService,
-        private readonly orderService: OrderService<TProduct>,
-        private readonly accountService: AccountService,
         private readonly eventBus: EventBus,
         private readonly moduleRef: ModuleRef
-    ) {
-        this.issuerTypeId = this.configService.get<string>('ISSUER_ID');
-    }
+    ) {}
 
     public async onModuleInit(): Promise<void> {
         this.logger.debug('onModuleInit');
-
-        this.deviceService = this.moduleRef.get<IExternalDeviceService>(IExternalDeviceService, {
-            strict: false
-        });
 
         const exchangeConfigService = this.moduleRef.get<IExchangeConfigurationService>(
             IExchangeConfigurationService,
@@ -98,58 +80,6 @@ export class DepositWatcherService<TProduct> implements OnModuleInit {
         );
     }
 
-    public async storeDeposit(deposit: CreateDepositDTO): Promise<void> {
-        try {
-            const { transactionHash, address, amount, asset } = deposit;
-
-            let transfer = await this.transferService.findOne(null, {
-                where: { transactionHash }
-            });
-
-            if (transfer) {
-                this.logger.debug(
-                    `Deposit with transactionHash ${transactionHash} already exists and has status ${
-                        TransferStatus[transfer.status]
-                    } `
-                );
-                return;
-            }
-
-            transfer = await this.transferService.createDeposit({
-                transactionHash,
-                address,
-                amount,
-                asset
-            });
-
-            const receipt = await this.provider.waitForTransaction(transactionHash);
-
-            await this.transferService.setAsConfirmed(transactionHash, receipt.blockNumber);
-            this.logger.debug(
-                `Successfully created deposit of tokenId=${asset.tokenId} from=${address} with value=${amount} for user=${transfer.userId} `
-            );
-
-            this.eventBus.publish(
-                new DepositApprovedEvent(asset.deviceId, address, amount, transfer.asset.id)
-            );
-        } catch (error) {
-            this.logger.error(error.message);
-        }
-    }
-
-    public async postForSale(
-        deviceId: string,
-        address: string,
-        amount: string,
-        assetId: string
-    ): Promise<void> {
-        try {
-            await this.tryPostForSale(deviceId, address, amount, assetId);
-        } catch (error) {
-            this.logger.error(error.message);
-        }
-    }
-
     private async processEvent(event: providers.Log) {
         this.logger.debug(`Discovered new event ${JSON.stringify(event)}`);
 
@@ -173,10 +103,13 @@ export class DepositWatcherService<TProduct> implements OnModuleInit {
             id.toString()
         );
 
+        const receipt = await this.provider.waitForTransaction(transactionHash);
+
         const deposit: CreateDepositDTO = {
             transactionHash,
             address: from as string,
             amount: value as string,
+            blockNumber: receipt.blockNumber,
             asset: {
                 address: this.registryAddress,
                 tokenId: id.toString(),
@@ -199,35 +132,5 @@ export class DepositWatcherService<TProduct> implements OnModuleInit {
             generationTo: moment.unix(result[1]).toDate(),
             deviceId: result[2]
         };
-    }
-
-    private async tryPostForSale(
-        deviceId: string,
-        sender: string,
-        amount: string,
-        assetId: string
-    ) {
-        this.logger.debug(
-            `Trying to post for sale deviceId=${deviceId} sender=${sender} amount=${amount} assetId=${assetId}`
-        );
-
-        const { postForSale, postForSalePrice } = await this.deviceService.getDeviceSettings({
-            id: deviceId,
-            type: this.issuerTypeId
-        });
-        const { userId } = await this.accountService.findByAddress(sender);
-
-        if (!postForSale) {
-            this.logger.debug(`Device ${deviceId} does not have automaticPostForSale enabled`);
-            return;
-        }
-
-        const ask: CreateAskDTO = {
-            price: postForSalePrice,
-            validFrom: new Date(),
-            volume: amount,
-            assetId
-        };
-        await this.orderService.createAsk(userId, ask);
     }
 }

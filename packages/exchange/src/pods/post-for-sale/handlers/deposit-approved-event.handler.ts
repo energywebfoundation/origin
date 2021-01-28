@@ -1,13 +1,13 @@
 import { EventsHandler, IEventHandler } from '@nestjs/cqrs';
 import { Logger } from '@nestjs/common';
-import { DepositApprovedEvent } from '@energyweb/exchange';
-import { DepositWatcherService } from '../deposit-watcher.service';
+import { PostForSaleService } from '../post-for-sale.service';
+import { DepositApprovedEvent } from '../../transfer/deposit-approved.event';
 
 @EventsHandler(DepositApprovedEvent)
 export class DepositApprovedEventHandler implements IEventHandler<DepositApprovedEvent> {
     private readonly logger = new Logger(DepositApprovedEventHandler.name);
 
-    constructor(private readonly depositWatcherService: DepositWatcherService<string>) {}
+    constructor(private readonly postForSaleService: PostForSaleService<string>) {}
 
     public async handle({
         deviceId,
@@ -19,6 +19,6 @@ export class DepositApprovedEventHandler implements IEventHandler<DepositApprove
             `Deposit approved event raised for sale deviceId=${deviceId} sender=${address} amount=${amount} assetId=${assetId}`
         );
 
-        this.depositWatcherService.postForSale(deviceId, address, amount, assetId);
+        this.postForSaleService.postForSale(deviceId, address, amount, assetId);
     }
 }

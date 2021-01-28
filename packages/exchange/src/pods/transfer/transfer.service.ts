@@ -10,6 +10,7 @@ import { AssetService } from '../asset/asset.service';
 import { HasEnoughAssetAmountQuery } from '../order/queries/has-enough-asset-amount.query';
 import { CreateDepositDTO } from './create-deposit.dto';
 import { RequestWithdrawalDTO } from './create-withdrawal.dto';
+import { DepositApprovedEvent } from './deposit-approved.event';
 import { TransferDirection } from './transfer-direction';
 import { TransferStatus } from './transfer-status';
 import { Transfer } from './transfer.entity';
@@ -153,5 +154,43 @@ export class TransferService {
         this.logger.debug(`Last known confirmation block is ${blockNumber}`);
 
         return blockNumber;
+    }
+
+    public async storeDeposit(deposit: CreateDepositDTO): Promise<void> {
+        try {
+            const { transactionHash, address, amount, asset, blockNumber } = deposit;
+
+            let transfer = await this.findOne(null, {
+                where: { transactionHash }
+            });
+
+            if (transfer) {
+                this.logger.debug(
+                    `Deposit with transactionHash ${transactionHash} already exists and has status ${
+                        TransferStatus[transfer.status]
+                    } `
+                );
+                return;
+            }
+
+            transfer = await this.createDeposit({
+                transactionHash,
+                address,
+                amount,
+                blockNumber,
+                asset
+            });
+
+            await this.setAsConfirmed(transactionHash, blockNumber);
+            this.logger.debug(
+                `Successfully created deposit of tokenId=${asset.tokenId} from=${address} with value=${amount} for user=${transfer.userId} `
+            );
+
+            this.eventBus.publish(
+                new DepositApprovedEvent(asset.deviceId, address, amount, transfer.asset.id)
+            );
+        } catch (error) {
+            this.logger.error(error.message);
+        }
     }
 }
