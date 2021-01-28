@@ -2,7 +2,7 @@ import { ProducingDevice } from '@energyweb/device-registry';
 import { IExternalDeviceId } from '@energyweb/origin-backend-core';
 import { createStyles, makeStyles, useTheme } from '@material-ui/core';
 import { Skeleton } from '@material-ui/lab';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 
 import iconGaseous from '../../../../assets/icon_gaseous.svg';
@@ -50,7 +50,6 @@ export function ProducingDeviceDetailView(props: IProps) {
     const originSimpleTextColor = originContext?.styleConfig?.SIMPLE_TEXT_COLOR;
 
     const { t } = useTranslation();
-    const [organizationName, setOrganizationName] = useState('');
 
     const bgColorDarken = LightenColor(originBgColor, -2);
     const attributionTextColor = LightenColor(originBgColor, 20);
@@ -70,6 +69,7 @@ export function ProducingDeviceDetailView(props: IProps) {
     const classes = useStyles(useTheme());
 
     let selectedDevice: ProducingDevice.Entity = null;
+    const [organizationName, setOrganizationName] = useState('');
 
     if (props.id !== null && props.id !== undefined) {
         selectedDevice = producingDevices.find((p) => p.id === props.id);
@@ -83,21 +83,19 @@ export function ProducingDeviceDetailView(props: IProps) {
         );
     }
 
+    const fetchOrganizationName = async (orgId: number) => {
+        if (orgId) {
+            const {
+                data: { name }
+            } = await organizationClient.getPublic(orgId);
+            setOrganizationName(name);
+        }
+    };
+    fetchOrganizationName(selectedDevice?.organizationId);
+
     if (!configuration || !organizationClient || !selectedDevice) {
         return <Skeleton variant="rect" height={200} />;
     }
-
-    // eslint-disable-next-line react-hooks/rules-of-hooks
-    useEffect(() => {
-        const fetchOrganizationName = async () => {
-            const {
-                data: { name }
-            } = await organizationClient.getPublic(selectedDevice.organizationId);
-
-            setOrganizationName(name);
-        };
-        fetchOrganizationName();
-    }, []);
 
     let tooltip = '';
 
