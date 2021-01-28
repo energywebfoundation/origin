@@ -6,7 +6,6 @@ import {
     IExternalDeviceId,
     DeviceCreateData,
     ISmartMeterReadStats,
-    IPublicOrganization,
     ISuccessResponse
 } from '@energyweb/origin-backend-core';
 import { BigNumber } from 'ethers';
@@ -61,7 +60,7 @@ export class Entity implements IDevice {
 
     initialized: boolean;
 
-    organization: IPublicOrganization;
+    organizationId: number;
 
     automaticPostForSale: boolean;
 

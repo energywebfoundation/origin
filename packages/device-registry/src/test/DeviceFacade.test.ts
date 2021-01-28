@@ -33,7 +33,7 @@ describe('Device Facade', () => {
             createDevice: async (deviceProperties: DeviceCreateData) => {
                 const device = {
                     id: deviceId,
-                    organization: {} as IPublicOrganization,
+                    organizationId: 0,
                     ...deviceProperties
                 };
                 devices.set(deviceId.toString(), device);
