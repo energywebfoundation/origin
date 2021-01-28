@@ -2,6 +2,7 @@ import { Contracts } from '@energyweb/issuer';
 import { getProviderWithFallback } from '@energyweb/utils-general';
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { EventBus } from '@nestjs/cqrs';
 import { ModuleRef } from '@nestjs/core';
 import { Contract, ethers, providers } from 'ethers';
 import moment from 'moment';
@@ -18,7 +19,6 @@ import {
     DepositApprovedEvent,
     TransferStatus
 } from '@energyweb/exchange';
-import { EventBus } from '@nestjs/cqrs';
 
 @Injectable()
 export class DepositWatcherService<TProduct> implements OnModuleInit {
