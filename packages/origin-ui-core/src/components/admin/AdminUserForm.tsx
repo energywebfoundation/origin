@@ -1,4 +1,4 @@
-import { IUser, UserUpdateData, UserStatus, KYCStatus } from '@energyweb/origin-backend-core';
+import { IUser, UserStatus, KYCStatus } from '@energyweb/origin-backend-core';
 import { Button, createStyles, Grid, makeStyles, Paper, useTheme } from '@material-ui/core';
 import { Skeleton } from '@material-ui/lab';
 import { Form, Formik, FormikHelpers } from 'formik';
@@ -77,11 +77,9 @@ export function AdminUserForm(props: IProps) {
         dispatch(setLoading(true));
 
         try {
-            const formData: UserUpdateData = {
-                ...values
-            };
-
-            await adminClient.updateUser(values.id.toString(), formData);
+            await adminClient.updateUser(values.id, {
+                notifications: values.notifications
+            });
 
             history.push('manage-user');
 
