@@ -41,8 +41,8 @@ import { SuccessResponseDTO } from '../../utils/success-response.dto';
 import { RegisterUserDTO } from './dto/register-user.dto';
 import { UpdateUserDTO } from './dto/update-user.dto';
 import { UpdatePasswordDTO } from './dto/update-password.dto';
-import { UpdateBlockchainAddressDTO } from './dto/update-blockchain-address.dto';
 import { UpdateUserProfileDTO } from './dto/update-user-profile.dto';
+import { BindBlockchainAccountDTO } from './dto/bind-blockchain-account.dto';
 
 @ApiTags('user')
 @ApiBearerAuth('access-token')
@@ -81,13 +81,6 @@ export class UserController {
         @Body() body: UpdateUserDTO
     ): Promise<UserDTO> {
         try {
-            if (body.blockchainAccountSignedMessage) {
-                await this.userService.attachSignedMessage(
-                    user.id,
-                    body.blockchainAccountSignedMessage
-                );
-            }
-
             if (typeof body.notifications !== 'undefined') {
                 await this.userService.setNotifications(user.id, body.notifications);
             }
@@ -142,7 +135,7 @@ export class UserController {
 
     @Put('chainAddress')
     @UseGuards(AuthGuard('jwt'), NotDeletedUserGuard)
-    @ApiBody({ type: UpdateBlockchainAddressDTO })
+    @ApiBody({ type: BindBlockchainAccountDTO })
     @ApiResponse({
         status: HttpStatus.OK,
         type: UserDTO,
@@ -150,9 +143,9 @@ export class UserController {
     })
     public async updateOwnBlockchainAddress(
         @UserDecorator() { id }: ILoggedInUser,
-        @Body() { blockchainAccountAddress }: UpdateBlockchainAddressDTO
+        @Body() { signedMessage }: BindBlockchainAccountDTO
     ): Promise<UserDTO> {
-        return this.userService.updateBlockChainAddress(id, blockchainAccountAddress);
+        return this.userService.updateBlockchainAddress(id, signedMessage);
     }
 
     @Put('confirm-email/:token')
