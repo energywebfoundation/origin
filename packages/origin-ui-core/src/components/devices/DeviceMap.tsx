@@ -1,14 +1,15 @@
-import React, { useState, useEffect } from 'react';
-import { LoadScriptNext, GoogleMap, Marker, InfoWindow } from '@react-google-maps/api';
 import { ProducingDevice } from '@energyweb/device-registry';
+import { IPublicOrganization } from '@energyweb/origin-backend-core';
+import { CircularProgress } from '@material-ui/core';
+import { GoogleMap, InfoWindow, LoadScriptNext, Marker } from '@react-google-maps/api';
+import React, { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { useLinks } from '../../utils/routing';
-import { getProducingDevices } from '../../features/selectors';
-import { CircularProgress } from '@material-ui/core';
-import { useTranslation } from 'react-i18next';
-import { IPublicOrganization } from '@energyweb/origin-backend-core';
+
 import { getBackendClient, getEnvironment } from '../../features/general/selectors';
+import { getProducingDevices } from '../../features/selectors';
+import { useLinks } from '../../utils/routing';
 
 interface IProps {
     devices?: ProducingDevice.Entity[];
@@ -137,7 +138,7 @@ export function DeviceMap(props: IProps) {
                             {t('deviceMap.properties.owner')}:{' '}
                             {
                                 organizations?.find(
-                                    (o) => o?.id === deviceHighlighted.organization.id
+                                    (o) => o?.id === deviceHighlighted.organizationId
                                 )?.name
                             }
                             <br />

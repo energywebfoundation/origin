@@ -5,7 +5,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { SM_READS_ADAPTER } from '../../const';
 import { ConfigurationModule } from '../configuration';
-import { OrganizationModule } from '../organization/organization.module';
 import { DeviceController } from './device.controller';
 import { Device } from './device.entity';
 import { DeviceService } from './device.service';
@@ -15,12 +14,7 @@ export class DeviceModule {
     static register(smartMeterReadingsAdapter: ISmartMeterReadingsAdapter): DynamicModule {
         return {
             module: DeviceModule,
-            imports: [
-                TypeOrmModule.forFeature([Device]),
-                ConfigurationModule,
-                OrganizationModule,
-                CqrsModule
-            ],
+            imports: [TypeOrmModule.forFeature([Device]), ConfigurationModule, CqrsModule],
             providers: [
                 {
                     provide: SM_READS_ADAPTER,
