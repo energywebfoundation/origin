@@ -20,7 +20,7 @@ import {
 import { AuthGuard } from '@nestjs/passport';
 import { ApiQuery, ApiBearerAuth, ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
 
-import { UpdateUserDTO } from '../user/dto/update-user.dto';
+import { UpdateUserDTO } from './dto/update-user.dto';
 import { UserDTO } from '../user/dto/user.dto';
 
 import { UserService } from '../user/user.service';
@@ -74,7 +74,7 @@ export class AdminController {
     @UseGuards(AuthGuard('jwt'), ActiveUserGuard, RolesGuard)
     @Roles(Role.Admin, Role.SupportAgent)
     @ApiBody({ type: UpdateUserDTO })
-    @ApiResponse({ status: HttpStatus.OK, type: UserDTO, description: 'Updates a user' })
+    @ApiResponse({ status: HttpStatus.OK, type: UserDTO, description: 'Updates a user (admin)' })
     public async updateUser(
         @Param('id', new ParseIntPipe()) id: number,
         @Body() body: UpdateUserDTO

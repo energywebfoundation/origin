@@ -39,7 +39,7 @@ import { EmailConfirmationService } from '../email-confirmation/email-confirmati
 import { UserDTO } from './dto/user.dto';
 import { SuccessResponseDTO } from '../../utils/success-response.dto';
 import { RegisterUserDTO } from './dto/register-user.dto';
-import { UpdateUserDTO } from './dto/update-user.dto';
+import { UpdateOwnUserSettingsDTO } from './dto/update-own-user-settings.dto';
 import { UpdatePasswordDTO } from './dto/update-password.dto';
 import { UpdateUserProfileDTO } from './dto/update-user-profile.dto';
 import { BindBlockchainAccountDTO } from './dto/bind-blockchain-account.dto';
@@ -70,15 +70,15 @@ export class UserController {
 
     @Put()
     @UseGuards(AuthGuard('jwt'), NotDeletedUserGuard)
-    @ApiBody({ type: UpdateUserDTO })
+    @ApiBody({ type: UpdateOwnUserSettingsDTO })
     @ApiResponse({
         status: HttpStatus.OK,
         type: UserDTO,
-        description: `Update a user's profile (admin)`
+        description: `Update you own user settings`
     })
-    public async update(
+    public async updateOwnUserSettings(
         @UserDecorator() user: ILoggedInUser,
-        @Body() body: UpdateUserDTO
+        @Body() body: UpdateOwnUserSettingsDTO
     ): Promise<UserDTO> {
         try {
             if (typeof body.notifications !== 'undefined') {

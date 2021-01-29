@@ -27,6 +27,7 @@ import { User } from './user.entity';
 import { EmailConfirmationService } from '../email-confirmation/email-confirmation.service';
 import { UpdateUserProfileDTO } from './dto/update-user-profile.dto';
 import { BindBlockchainAccountDTO } from './dto/bind-blockchain-account.dto';
+import { UpdateUserDTO } from '../admin/dto/update-user.dto';
 
 export type TUserBaseEntity = ExtendedBaseEntity & IUser;
 
@@ -275,7 +276,7 @@ export class UserService {
         return result;
     }
 
-    async update(id: number, data: Partial<IUser>): Promise<ExtendedBaseEntity & IUser> {
+    async update(id: number, data: UpdateUserDTO): Promise<ExtendedBaseEntity & IUser> {
         const entity = await this.findOne({ id });
 
         if (!entity) {
