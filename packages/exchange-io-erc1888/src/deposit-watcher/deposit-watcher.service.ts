@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Contracts } from '@energyweb/issuer';
 import { getProviderWithFallback } from '@energyweb/utils-general';
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
@@ -11,7 +10,7 @@ import moment from 'moment';
 import {
     IExchangeConfigurationService,
     TransferService,
-    // DepositDiscoveredEvent,
+    DepositDiscoveredEvent,
     CreateDepositDTO
 } from '@energyweb/exchange';
 
@@ -110,7 +109,7 @@ export class DepositWatcherService implements OnModuleInit {
             transactionHash,
             address: from as string,
             amount: value as string,
-            // blockNumber: receipt.blockNumber,
+            blockNumber: receipt.blockNumber,
             asset: {
                 address: this.registryAddress,
                 tokenId: id.toString(),
@@ -120,7 +119,7 @@ export class DepositWatcherService implements OnModuleInit {
             }
         };
 
-        // this.eventBus.publish(new DepositDiscoveredEvent(deposit));
+        this.eventBus.publish(new DepositDiscoveredEvent(deposit));
     }
 
     private async decodeDataField(certificateId: string) {

@@ -47,11 +47,17 @@ describe('Bundles', () => {
 
     const createTransactionHash = () => `0x${((Math.random() * 0xffffff) << 0).toString(16)}`;
 
-    const createDeposit = (address: string, amount = '1000', asset = assetOne) => {
+    const createDeposit = (
+        address: string,
+        amount = '1000',
+        asset = assetOne,
+        blockNumber = 123456
+    ) => {
         return transferService.createDeposit({
             address,
             transactionHash: createTransactionHash(),
             amount,
+            blockNumber,
             asset
         });
     };

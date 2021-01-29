@@ -62,11 +62,17 @@ describe('orderbook tests', () => {
         generationTo: new Date('2020-01-31')
     };
 
-    const createDeposit = async (address: string, amount = '1000', asset: CreateAssetDTO) => {
+    const createDeposit = async (
+        address: string,
+        amount = '1000',
+        asset: CreateAssetDTO,
+        blockNumber = 123456
+    ) => {
         const deposit = await transferService.createDeposit({
             address,
             transactionHash: `0x${((Math.random() * 0xffffff) << 0).toString(16)}`,
             amount,
+            blockNumber,
             asset
         });
 
