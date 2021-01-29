@@ -1,6 +1,6 @@
 import { PositiveBNStringValidator } from '@energyweb/origin-backend-utils';
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsString, Validate, ValidateNested } from 'class-validator';
+import { IsInt, IsNotEmpty, IsPositive, IsString, Validate, ValidateNested } from 'class-validator';
 import { CreateAssetDTO } from '../asset/create-asset.dto';
 
 export class CreateDepositDTO {
@@ -21,4 +21,10 @@ export class CreateDepositDTO {
     @ApiProperty({ type: String })
     @Validate(PositiveBNStringValidator)
     public readonly amount: string;
+
+    @ApiProperty({ type: Number })
+    @IsNotEmpty()
+    @IsInt()
+    @IsPositive()
+    public readonly blockNumber: number;
 }
