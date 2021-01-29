@@ -2,11 +2,11 @@ import {
     IDevice,
     ILoggedInUser,
     ISmartMeterRead,
-    OrganizationStatus,
     ResponseSuccess,
     Role
 } from '@energyweb/origin-backend-core';
 import {
+    ActiveOrganizationGuard,
     ActiveUserGuard,
     NullOrUndefinedResultInterceptor,
     Roles,
@@ -32,7 +32,6 @@ import {
     UseInterceptors
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { BigNumber } from 'ethers';
 import {
     ApiBearerAuth,
     ApiBody,
@@ -44,18 +43,16 @@ import {
     ApiUnauthorizedResponse,
     ApiUnprocessableEntityResponse
 } from '@nestjs/swagger';
+import { BigNumber } from 'ethers';
 
 import { StorageErrors } from '../../enums/StorageErrors';
-import { Organization } from '../organization/organization.entity';
-import { OrganizationService } from '../organization/organization.service';
-import { PublicOrganizationInfoDTO } from '../organization/dto/public-organization-info.dto';
+import { SuccessResponseDTO } from '../../utils/success-response.dto';
 import { Device } from './device.entity';
 import { DeviceService } from './device.service';
-import { DeviceDTO } from './dto/device.dto';
-import { SuccessResponseDTO } from '../../utils/success-response.dto';
-import { SmartMeterReadDTO } from './dto/smart-meter-readings.dto';
 import { CreateDeviceDTO } from './dto/create-device.dto';
 import { DeviceSettingsUpdateDTO } from './dto/device-settings-update.dto';
+import { DeviceDTO } from './dto/device.dto';
+import { SmartMeterReadDTO } from './dto/smart-meter-readings.dto';
 import { UpdateDeviceStatusDTO } from './dto/update-device-status.dto';
 
 @ApiTags('device')
@@ -65,10 +62,7 @@ import { UpdateDeviceStatusDTO } from './dto/update-device-status.dto';
 export class DeviceController {
     private readonly logger = new Logger(DeviceController.name);
 
-    constructor(
-        private readonly deviceService: DeviceService,
-        private readonly organizationService: OrganizationService
-    ) {}
+    constructor(private readonly deviceService: DeviceService) {}
 
     @Get()
     @ApiQuery({
@@ -154,7 +148,7 @@ export class DeviceController {
     }
 
     @Post()
-    @UseGuards(AuthGuard(), ActiveUserGuard, RolesGuard)
+    @UseGuards(AuthGuard(), ActiveUserGuard, RolesGuard, ActiveOrganizationGuard)
     @Roles(Role.OrganizationAdmin, Role.OrganizationDeviceManager)
     @ApiBody({ type: CreateDeviceDTO })
     @ApiResponse({ status: HttpStatus.CREATED, type: DeviceDTO, description: 'Creates a Device' })
@@ -172,11 +166,6 @@ export class DeviceController {
     ): Promise<DeviceDTO> {
         if (typeof loggedUser.organizationId === 'undefined') {
             throw new ForbiddenException('general.feedback.noOrganization');
-        }
-
-        const organization = await this.organizationService.findOne(loggedUser.organizationId);
-        if (organization.status !== OrganizationStatus.Active) {
-            throw new ForbiddenException('general.feedback.userHasToBePartOfApprovedOrganization');
         }
 
         const device = await this.deviceService.create(body, loggedUser);
@@ -214,7 +203,7 @@ export class DeviceController {
         }
 
         if (
-            loggedUser.organizationId !== device.organization.id &&
+            loggedUser.organizationId !== device.organizationId &&
             !loggedUser.hasRole(Role.Issuer) &&
             !loggedUser.hasRole(Role.Admin)
         ) {
@@ -266,7 +255,9 @@ export class DeviceController {
         @Body() body: DeviceSettingsUpdateDTO,
         @UserDecorator() loggedUser: ILoggedInUser
     ): Promise<SuccessResponseDTO> {
-        if (!this.organizationService.hasDevice(loggedUser.organizationId, id)) {
+        const device = await this.deviceService.findOne(id);
+
+        if (loggedUser.organizationId !== device.organizationId) {
             throw new ForbiddenException();
         }
 
@@ -361,7 +352,7 @@ export class DeviceController {
         }
 
         if (
-            loggedUser.organizationId !== device.organization.id &&
+            loggedUser.organizationId !== device.organizationId &&
             !loggedUser.hasRole(Role.Admin, Role.SupportAgent)
         ) {
             throw new UnauthorizedException({
@@ -402,10 +393,7 @@ export class DeviceController {
                     certified: BigNumber.from(device.meterStats.certified).toString(),
                     uncertified: BigNumber.from(device.meterStats.uncertified).toString()
                 }
-            }),
-            organization: PublicOrganizationInfoDTO.fromPlatformOrganization(
-                device.organization as Organization
-            )
+            })
         }));
     }
 }

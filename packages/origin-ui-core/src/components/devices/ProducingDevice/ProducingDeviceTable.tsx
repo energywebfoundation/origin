@@ -1,24 +1,16 @@
-import React, { useEffect, useState } from 'react';
-import { DeviceStatus, IPublicOrganization, isRole, Role } from '@energyweb/origin-backend-core';
-import { Link, Redirect } from 'react-router-dom';
 import { ProducingDevice } from '@energyweb/device-registry';
-import { useDispatch, useSelector } from 'react-redux';
+import { DeviceStatus, isRole, Role } from '@energyweb/origin-backend-core';
 import { Fab, Tooltip } from '@material-ui/core';
 import { Add, Assignment, Check, Visibility } from '@material-ui/icons';
-import { getBaseURL, getConfiguration, getProducingDevices } from '../../../features/selectors';
-import {
-    checkRecordPassesFilters,
-    CustomFilterInputType,
-    ICustomFilterDefinition,
-    IPaginatedLoaderFetchDataReturnValues,
-    IPaginatedLoaderHooksFetchDataParameters,
-    ITableAction,
-    TableMaterial,
-    usePaginatedLoaderFiltered
-} from '../../Table';
-import { getExchangeDepositAddress, getUserOffchain } from '../../../features/users/selectors';
+import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { Link, Redirect } from 'react-router-dom';
+
+import { getBackendClient, getEnvironment } from '../../../features';
 import { setLoading } from '../../../features/general/actions';
 import { producingDeviceCreatedOrUpdated } from '../../../features/producingDevices/actions';
+import { getBaseURL, getConfiguration, getProducingDevices } from '../../../features/selectors';
+import { getExchangeDepositAddress, getUserOffchain } from '../../../features/users/selectors';
 import {
     EnergyFormatter,
     getDeviceColumns,
@@ -30,8 +22,17 @@ import {
     showNotification,
     useTranslation
 } from '../../../utils';
-import { getEnvironment } from '../../../features';
 import { RequestCertificatesModal } from '../../Modal/RequestCertificatesModal';
+import {
+    checkRecordPassesFilters,
+    CustomFilterInputType,
+    ICustomFilterDefinition,
+    IPaginatedLoaderFetchDataReturnValues,
+    IPaginatedLoaderHooksFetchDataParameters,
+    ITableAction,
+    TableMaterial,
+    usePaginatedLoaderFiltered
+} from '../../Table';
 
 interface IOwnProps {
     actions: {
@@ -74,13 +75,29 @@ export function ProducingDeviceTable(props: IOwnProps) {
     const [showRequestCertModal, setShowRequestCertModal] = useState(false);
     const [producingDeviceForModal, setProducingDeviceForModal] = useState(null);
     const dispatch = useDispatch();
+    const organizationClient = useSelector(getBackendClient)?.organizationClient;
+    const organizationCache = new Map<number, string>();
 
-    function enrichProducingDeviceData(): IEnrichedProducingDeviceData[] {
+    async function fetchOrganizationName(id: number): Promise<string> {
+        if (organizationCache.has(id)) {
+            return organizationCache.get(id);
+        }
+
+        const {
+            data: { name }
+        } = await organizationClient.getPublic(id);
+
+        organizationCache.set(id, name);
+
+        return name;
+    }
+
+    async function enrichProducingDeviceData(): Promise<IEnrichedProducingDeviceData[]> {
         const enriched: IEnrichedProducingDeviceData[] = [];
         for (const device of producingDevices) {
             enriched.push({
                 device,
-                organizationName: (device?.organization as IPublicOrganization).name,
+                organizationName: await fetchOrganizationName(device?.organizationId),
                 locationText: getDeviceLocationText(device)
             });
         }
@@ -104,9 +121,7 @@ export function ProducingDeviceTable(props: IOwnProps) {
                     requestedFilters,
                     configuration.deviceTypeService
                 ) &&
-                (!props.owner ||
-                    (record?.device?.organization as IPublicOrganization).id ===
-                        user?.organization?.id) &&
+                (!props.owner || record?.device?.organizationId === user?.organization?.id) &&
                 (includedStatuses.length === 0 || includedStatuses.includes(record.device.status))
         );
 

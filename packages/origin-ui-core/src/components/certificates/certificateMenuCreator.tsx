@@ -7,6 +7,7 @@ import { CertificationRequestsTable } from './CertificationRequestsTable';
 import { usePermissions } from '../../utils';
 import { Requirements } from '../Requirements';
 import { getUserOffchain } from '../../features';
+import { CertificateImport } from './Import/CertificateImport';
 
 interface ICertificateMenuItem {
     key: string;
@@ -105,6 +106,17 @@ export const certificatesMenuCreator = (user: IUser): ICertificateMenuItem[] => 
             component: ApprovedCertificationRequestsTable,
             show: (userIsActive && isIssuer) || userIsActiveAndPartOfOrg,
             features: [OriginFeature.Certificates, OriginFeature.CertificationRequests]
+        },
+        {
+            key: 'import',
+            label: 'navigation.certificates.import',
+            component: CertificateImport,
+            show: true || (userIsActive && isIssuer) || userIsActiveAndPartOfOrg,
+            features: [
+                OriginFeature.Certificates,
+                OriginFeature.CertificationRequests,
+                OriginFeature.CertificatesImport
+            ]
         }
     ];
 };

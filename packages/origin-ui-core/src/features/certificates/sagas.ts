@@ -1,21 +1,28 @@
-import { IUser, IPublicOrganization } from '@energyweb/origin-backend-core';
 import { Certificate, Contracts, IBlockchainProperties } from '@energyweb/issuer';
+import {
+    BlockchainPropertiesClient,
+    CertificatesClient,
+    CertificationRequestsClient
+} from '@energyweb/issuer-api-client';
+import { IUser } from '@energyweb/origin-backend-core';
+import { ContractReceipt, ContractTransaction, ethers } from 'ethers';
 import { getI18n } from 'react-i18next';
 import { SagaIterator } from 'redux-saga';
 import { all, apply, call, delay, fork, put, select, take } from 'redux-saga/effects';
 
 import {
     CertificateSource,
-    updateCertificate,
-    IResyncCertificateAction,
     clearCertificates,
-    reloadCertificates
+    IResyncCertificateAction,
+    reloadCertificates,
+    updateCertificate
 } from '.';
 import { moment, NotificationType, showNotification } from '../../utils';
+import { certificateEnergyStringToBN } from '../../utils/certificates';
 import { ExchangeClient } from '../../utils/clients/ExchangeClient';
-
 import { assertCorrectBlockchainAccount } from '../../utils/sagas';
 import { setLoading } from '../general/actions';
+import { enhanceCertificate, fetchDataAfterConfigurationChange } from '../general/sagas';
 import { getExchangeClient } from '../general/selectors';
 import { getConfiguration, getWeb3 } from '../selectors';
 import { getUserOffchain } from '../users/selectors';
@@ -24,14 +31,14 @@ import {
     CertificatesActions,
     hideRequestCertificatesModal,
     IRequestCertificateApprovalAction,
+    IRequestCertificateEntityFetchAction,
     IRequestCertificatesAction,
     IRequestClaimCertificateAction,
     IRequestClaimCertificateBulkAction,
     IRequestPublishForSaleAction,
-    IShowRequestCertificatesModalAction,
-    setRequestCertificatesModalVisibility,
     IRequestWithdrawCertificateAction,
-    IRequestCertificateEntityFetchAction
+    IShowRequestCertificatesModalAction,
+    setRequestCertificatesModalVisibility
 } from './actions';
 import {
     getBlockchainPropertiesClient,
@@ -40,15 +47,7 @@ import {
     getCertificatesClient,
     getCertificationRequestsClient
 } from './selectors';
-import {
-    BlockchainPropertiesClient,
-    CertificatesClient,
-    CertificationRequestsClient
-} from '@energyweb/issuer-api-client';
 import { ICertificate, ICertificateViewItem } from './types';
-import { enhanceCertificate, fetchDataAfterConfigurationChange } from '../general/sagas';
-import { certificateEnergyStringToBN } from '../../utils/certificates';
-import { ContractReceipt, ContractTransaction, ethers } from 'ethers';
 
 export function* getCertificate(id: number, byTokenId = false): any {
     const certificatesClient: CertificatesClient = yield select(getCertificatesClient);
@@ -161,7 +160,7 @@ function* openRequestCertificatesModalSaga(): SagaIterator {
 
         const userOffchain: IUser = yield select(getUserOffchain);
 
-        if ((device?.organization as IPublicOrganization).id !== userOffchain?.organization?.id) {
+        if (device?.organizationId !== userOffchain?.organization?.id) {
             showNotification(
                 `You need to own the device to request certificates.`,
                 NotificationType.Error

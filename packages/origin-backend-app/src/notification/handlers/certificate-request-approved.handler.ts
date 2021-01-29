@@ -57,10 +57,10 @@ export class CertificateRequestApprovedHandler
         const organizationAdmins = await this.userService.getAll({
             where: {
                 rights: Role.OrganizationAdmin,
-                organization: device.organization.id
+                organizationId: device.organizationId
             }
         });
-        const registrations = await this.registrationService.find(String(device.organization.id));
+        const registrations = await this.registrationService.find(String(device.organizationId));
 
         const emails = registrations.length
             ? registrations.map((r) => r.leadUserEmail)
