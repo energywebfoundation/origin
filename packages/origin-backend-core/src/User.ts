@@ -73,10 +73,6 @@ export type UserRegisterReturnData = IUser;
 
 export type UserLoginReturnData = { accessToken: string };
 
-export type UserUpdateData = Partial<
-    Pick<IUserProperties, 'blockchainAccountSignedMessage' | 'notifications'>
->;
-
 export type UserStatusUpdate = Partial<Pick<IUserProperties, 'status' | 'kycStatus'>>;
 
 export type UserPasswordUpdate = { oldPassword: string; newPassword: string };
