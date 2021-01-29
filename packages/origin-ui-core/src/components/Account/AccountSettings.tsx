@@ -83,7 +83,7 @@ export function AccountSettings() {
         }
 
         if (notificationChanged) {
-            await userClient.update({ notifications: notificationsEnabled });
+            await userClient.updateOwnUserSettings({ notifications: notificationsEnabled });
         }
 
         dispatch(refreshUserOffchain());

@@ -17,18 +17,13 @@ interface IProps {
     readOnly: boolean;
 }
 
-const INITIAL_FORM_VALUES: IUser = {
-    id: 0,
+const INITIAL_FORM_VALUES = {
+    id: null,
     title: '',
     firstName: '',
     lastName: '',
     email: '',
     telephone: '',
-    blockchainAccountAddress: '',
-    blockchainAccountSignedMessage: '',
-    notifications: null,
-    organization: null,
-    rights: 0,
     status: UserStatus.Pending,
     kycStatus: KYCStatus.Pending
 };
@@ -77,9 +72,7 @@ export function AdminUserForm(props: IProps) {
         dispatch(setLoading(true));
 
         try {
-            await adminClient.updateUser(values.id, {
-                notifications: values.notifications
-            });
+            await adminClient.updateUser(values.id, values);
 
             history.push('manage-user');
 
