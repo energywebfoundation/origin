@@ -32,7 +32,7 @@
         "@material-ui/styles": "4.11.3",
         "connected-react-router": "6.8.0",
         "history": "4.10.1",
-        "i18next": "19.8.4",
+        "i18next": "19.8.5",
         "i18next-icu": "1.4.2",
         "moment": "2.24.0",
         "react": "17.0.1",
