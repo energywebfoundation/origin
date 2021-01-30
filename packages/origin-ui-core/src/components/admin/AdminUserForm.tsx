@@ -1,4 +1,4 @@
-import { IUser, UserUpdateData, UserStatus, KYCStatus } from '@energyweb/origin-backend-core';
+import { IUser, UserStatus, KYCStatus } from '@energyweb/origin-backend-core';
 import { Button, createStyles, Grid, makeStyles, Paper, useTheme } from '@material-ui/core';
 import { Skeleton } from '@material-ui/lab';
 import { Form, Formik, FormikHelpers } from 'formik';
@@ -17,18 +17,13 @@ interface IProps {
     readOnly: boolean;
 }
 
-const INITIAL_FORM_VALUES: IUser = {
-    id: 0,
+const INITIAL_FORM_VALUES = {
+    id: null,
     title: '',
     firstName: '',
     lastName: '',
     email: '',
     telephone: '',
-    blockchainAccountAddress: '',
-    blockchainAccountSignedMessage: '',
-    notifications: null,
-    organization: null,
-    rights: 0,
     status: UserStatus.Pending,
     kycStatus: KYCStatus.Pending
 };
@@ -77,11 +72,7 @@ export function AdminUserForm(props: IProps) {
         dispatch(setLoading(true));
 
         try {
-            const formData: UserUpdateData = {
-                ...values
-            };
-
-            await adminClient.updateUser(values.id.toString(), formData);
+            await adminClient.updateUser(values.id, values);
 
             history.push('manage-user');
 
