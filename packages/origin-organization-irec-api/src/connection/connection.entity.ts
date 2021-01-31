@@ -1,6 +1,8 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { ExtendedBaseEntity } from '@energyweb/origin-backend-utils';
 import { IsDate, IsNotEmpty, IsString } from 'class-validator';
+
+import { Registration } from '../registration';
 
 @Entity({ name: 'irec_connection' })
 export class Connection extends ExtendedBaseEntity {
@@ -21,4 +23,9 @@ export class Connection extends ExtendedBaseEntity {
     @IsNotEmpty()
     @IsDate()
     expiryDate: Date;
+
+    @OneToOne(() => Registration)
+    @JoinColumn()
+    @IsNotEmpty()
+    registration: Registration;
 }

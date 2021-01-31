@@ -1,9 +1,9 @@
-import { Role } from '@energyweb/origin-backend-core';
-import { Roles, RolesGuard } from '@energyweb/origin-backend-utils';
+import { ILoggedInUser, Role } from '@energyweb/origin-backend-core';
+import { Roles, RolesGuard, UserDecorator } from '@energyweb/origin-backend-utils';
 import { Body, Controller, Post, UseGuards, UsePipes, ValidationPipe } from '@nestjs/common';
 import { CommandBus } from '@nestjs/cqrs';
 import { AuthGuard } from '@nestjs/passport';
-import { ApiTags, ApiBearerAuth, ApiBody, ApiCreatedResponse } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiCreatedResponse, ApiTags } from '@nestjs/swagger';
 import { CreateConnectionCommand } from './commands/create-connection.command';
 import { ConnectionDTO } from './dto/connection.dto';
 import { CreateConnectionDTO } from './dto/create-connection.dto';
@@ -23,7 +23,10 @@ export class ConnectionController {
         type: ConnectionDTO,
         description: 'Creates a connection to I-REC'
     })
-    public async register(@Body() credentials: CreateConnectionDTO): Promise<ConnectionDTO> {
-        return this.commandBus.execute(new CreateConnectionCommand(credentials));
+    public async register(
+        @UserDecorator() user: ILoggedInUser,
+        @Body() credentials: CreateConnectionDTO
+    ): Promise<ConnectionDTO> {
+        return this.commandBus.execute(new CreateConnectionCommand(user, credentials));
     }
 }
