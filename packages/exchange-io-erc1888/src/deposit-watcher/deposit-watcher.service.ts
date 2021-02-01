@@ -107,8 +107,8 @@ export class DepositWatcherService implements OnModuleInit {
 
         const deposit: CreateDepositDTO = {
             transactionHash,
-            address: from as string,
-            amount: value as string,
+            address: from,
+            amount: value.toString(),
             blockNumber: receipt.blockNumber,
             asset: {
                 address: this.registryAddress,
