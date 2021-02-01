@@ -1,5 +1,5 @@
-import { Connection } from './connection/connection.entity';
-import { Registration } from './registration/registration.entity';
+import { Connection } from './connection';
+import { Registration } from './registration';
 
 export * from './app.module';
 export * from './registration';

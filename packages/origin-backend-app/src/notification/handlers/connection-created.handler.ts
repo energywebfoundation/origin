@@ -1,11 +1,8 @@
 import { EventsHandler, IEventHandler } from '@nestjs/cqrs';
 import { Logger } from '@nestjs/common';
 import { Role } from '@energyweb/origin-backend-core';
-import { OrganizationService, UserService } from '@energyweb/origin-backend';
-import {
-    ConnectionCreatedEvent,
-    RegistrationService
-} from '@energyweb/origin-organization-irec-api';
+import { UserService } from '@energyweb/origin-backend';
+import { ConnectionCreatedEvent } from '@energyweb/origin-organization-irec-api';
 import { MailService } from '../../mail';
 
 @EventsHandler(ConnectionCreatedEvent)
@@ -14,15 +11,12 @@ export class ConnectionCreatedHandler implements IEventHandler<ConnectionCreated
 
     constructor(
         private readonly mailService: MailService,
-        private readonly userService: UserService,
-        private readonly registrationService: RegistrationService,
-        private readonly organizationService: OrganizationService
+        private readonly userService: UserService
     ) {}
 
     public async handle(event: ConnectionCreatedEvent): Promise<void> {
         const { organizationId, registration } = event;
 
-        const organization = await this.organizationService.findOne(organizationId);
         const organizationAdmins = await this.userService.getAll({
             where: {
                 rights: Role.OrganizationAdmin,
@@ -33,8 +27,10 @@ export class ConnectionCreatedHandler implements IEventHandler<ConnectionCreated
 
         const result = await this.mailService.send({
             to: emails,
-            subject: `IREC connection created`,
-            html: `Created connection to IREC API for organization ${organization.name}.`
+            subject: `IREC account connected`,
+            html: `Your organization is now successfully connected to the I-REC Account.
+                If you have not done so, please consider also connecting your blockchain account,
+                in order to unlock all functionalities of the marketplace.`
         });
 
         if (result) {
