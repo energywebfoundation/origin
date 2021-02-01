@@ -11,6 +11,7 @@ import {
 } from '@energyweb/origin-backend-core';
 import { recoverTypedSignatureAddress } from '@energyweb/utils-general';
 import {
+    BadRequestException,
     ConflictException,
     Injectable,
     Logger,
@@ -20,11 +21,13 @@ import { ConfigService } from '@nestjs/config';
 import { InjectRepository } from '@nestjs/typeorm';
 import bcrypt from 'bcryptjs';
 import { validate } from 'class-validator';
-import { DeepPartial, FindConditions, Repository, FindManyOptions } from 'typeorm';
+import { FindConditions, Repository, FindManyOptions } from 'typeorm';
 import { ExtendedBaseEntity } from '@energyweb/origin-backend-utils';
 import { User } from './user.entity';
 import { EmailConfirmationService } from '../email-confirmation/email-confirmation.service';
 import { UpdateUserProfileDTO } from './dto/update-user-profile.dto';
+import { BindBlockchainAccountDTO } from './dto/bind-blockchain-account.dto';
+import { UpdateUserDTO } from '../admin/dto/update-user.dto';
 
 export type TUserBaseEntity = ExtendedBaseEntity & IUser;
 
@@ -80,10 +83,8 @@ export class UserService {
         return this.repository.update(userId, { rights: buildRights(roles) });
     }
 
-    async findById(id: number | string) {
-        const parsedId = typeof id === 'string' ? Number(id) : id;
-
-        return this.findOne({ id: parsedId });
+    async findById(id: number) {
+        return this.findOne({ id });
     }
 
     async findByEmail(email: string) {
@@ -103,16 +104,6 @@ export class UserService {
         );
     }
 
-    async findByBlockchainAccount(blockchainAccountAddress: string) {
-        return (this.repository
-            .createQueryBuilder('user')
-            .where('LOWER(user.blockchainAccountAddress) = LOWER(:blockchainAccountAddress)', {
-                blockchainAccountAddress
-            })
-            .loadAllRelationIds()
-            .getOne() as Promise<IUser>) as Promise<TUserBaseEntity>;
-    }
-
     async findByIds(
         ids: number[],
         conditions: FindConditions<User> = {}
@@ -126,16 +117,15 @@ export class UserService {
         return bcrypt.hashSync(password, this.config.get<number>('PASSWORD_HASH_COST'));
     }
 
-    async attachSignedMessage(id: number | string, signedMessage: string) {
+    async updateBlockchainAddress(
+        id: number,
+        signedMessage: BindBlockchainAccountDTO['signedMessage']
+    ): Promise<ExtendedBaseEntity & IUser> {
         if (!signedMessage) {
-            throw new Error('Signed message is empty.');
+            throw new BadRequestException('Signed message is empty.');
         }
 
         const user = await this.findById(id);
-
-        if (user.blockchainAccountAddress) {
-            throw new Error('User has blockchain account already linked.');
-        }
 
         const address = await recoverTypedSignatureAddress(
             this.config.get<string>('REGISTRATION_MESSAGE_TO_SIGN'),
@@ -155,12 +145,12 @@ export class UserService {
         user.blockchainAccountSignedMessage = signedMessage;
         user.blockchainAccountAddress = address;
 
-        await this.repository.save((user as unknown) as DeepPartial<User>);
+        await this.repository.save(user);
 
         return user;
     }
 
-    async setNotifications(id: number | string, notifications: boolean): Promise<TUserBaseEntity> {
+    async setNotifications(id: number, notifications: boolean): Promise<TUserBaseEntity> {
         await this.repository.update(id, { notifications });
 
         return this.findById(id);
@@ -178,6 +168,7 @@ export class UserService {
         const user = await ((this.repository.findOne(conditions, {
             relations: ['organization']
         }) as Promise<IUser>) as Promise<TUserBaseEntity>);
+
         if (user) {
             const emailConfirmation = await this.emailConfirmationService.get(user.id);
 
@@ -188,13 +179,13 @@ export class UserService {
     }
 
     private async hasUser(conditions: FindConditions<User>) {
-        return (await this.repository.findOne(conditions)) !== undefined;
+        return (await this.findOne(conditions)) !== undefined;
     }
 
     async updateProfile(
-        id: number | string,
+        id: number,
         { firstName, lastName, email, telephone }: UpdateUserProfileDTO
-    ): Promise<User> {
+    ): Promise<ExtendedBaseEntity & IUser> {
         const updateEntity = new User({
             firstName,
             lastName,
@@ -214,10 +205,14 @@ export class UserService {
         }
 
         await this.repository.update(id, updateEntity);
-        return this.repository.findOne(id);
+
+        return this.findOne({ id });
     }
 
-    async updatePassword(email: string, user: UserPasswordUpdate) {
+    async updatePassword(
+        email: string,
+        user: UserPasswordUpdate
+    ): Promise<ExtendedBaseEntity & IUser> {
         const _user = await this.getUserAndPasswordByEmail(email);
 
         if (_user && bcrypt.compareSync(user.oldPassword, _user.password)) {
@@ -237,35 +232,13 @@ export class UserService {
             }
 
             await this.repository.update(_user.id, updateEntity);
-            return this.repository.findOne(_user.id);
+            return this.findOne({ id: _user.id });
         }
+
         throw new ConflictException({
             success: false,
-            errors: `This Current password are not same.`
+            errors: `Incorrect current password.`
         });
-    }
-
-    async updateBlockChainAddress(
-        id: number | string,
-        blockchainAccountAddress: IUser['blockchainAccountAddress']
-    ): Promise<IUser> {
-        const updateEntity = new User({
-            blockchainAccountAddress
-        });
-
-        const validationErrors = await validate(updateEntity, {
-            skipUndefinedProperties: true
-        });
-
-        if (validationErrors.length > 0) {
-            throw new UnprocessableEntityException({
-                success: false,
-                errors: validationErrors
-            });
-        }
-
-        await this.repository.update(id, updateEntity);
-        return this.repository.findOne(id);
     }
 
     public async getUsersBy(filter: IUserFilter) {
@@ -303,8 +276,8 @@ export class UserService {
         return result;
     }
 
-    async update(id: number | string, data: Partial<IUser>): Promise<ExtendedBaseEntity & IUser> {
-        const entity = await this.repository.findOne(id);
+    async update(id: number, data: UpdateUserDTO): Promise<ExtendedBaseEntity & IUser> {
+        const entity = await this.findOne({ id });
 
         if (!entity) {
             throw new Error(`Can't find entity.`);
@@ -331,7 +304,7 @@ export class UserService {
             kycStatus: data.kycStatus
         });
 
-        return this.repository.findOne(id);
+        return this.findOne({ id });
     }
 
     public async canViewUserData(

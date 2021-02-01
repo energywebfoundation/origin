@@ -28,11 +28,17 @@ describe('account deposit confirmation', () => {
 
     const createTransactionHash = () => `0x${((Math.random() * 0xffffff) << 0).toString(16)}`;
 
-    const createDeposit = (address: string, amount = '1000', asset = dummyAsset) => {
+    const createDeposit = (
+        address: string,
+        amount = '1000',
+        asset = dummyAsset,
+        blockNumber = 123456
+    ) => {
         return transferService.createDeposit({
             address,
             transactionHash: createTransactionHash(),
             amount,
+            blockNumber,
             asset
         });
     };

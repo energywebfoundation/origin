@@ -36,7 +36,8 @@
                 "my_bundles": "My bundles",
                 "create_bundle": "Create bundle",
                 "myTrades": "My trades",
-                "myOrders": "My orders"
+                "myOrders": "My orders",
+                "import": "Certificate import"
             }
         },
         "device": {
@@ -151,7 +152,12 @@
                 "create_bundle": "Create bundle",
                 "buy_bundle": "Buy",
                 "cancel_bundle": "Cancel",
-                "selectAll": "Select all"
+                "selectAccount": "Select account",
+                "selectAll": "Select all",
+                "importNCertificates": "Import {count} Certificate(s)",
+                "ok": "Ok",
+                "confirm": "Confirm",
+                "cancel": "Cancel"
             },
             "feedback": {
                 "returnedToInbox": "Certificate {id} has been returned to the inbox.",
@@ -177,7 +183,10 @@
             "info": {
                 "certificates": "CERTIFICATES",
                 "requestCertificatesFor": "Request certificates for {facilityName}",
-                "selectPriceRange": "Select price range to view more combinations"
+                "selectPriceRange": "Select price range to view more combinations",
+                "certificatesToImport": "Certificates to import",
+                "selectedForImport": "Selected for import",
+                "selectCertificate": "Select Certificate"
             },
             "event": {
                 "name": {

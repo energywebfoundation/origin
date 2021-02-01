@@ -300,7 +300,11 @@ export function createOriginConfiguration(configuration: Partial<IOriginConfigur
         defaultLanguage: 'en',
         language: storedLanguage,
         enabledFeatures: allOriginFeatures.filter((feature) => {
-            return ![OriginFeature.IRecConnect, OriginFeature.DevicesImport].includes(feature);
+            return ![
+                OriginFeature.IRecConnect,
+                OriginFeature.DevicesImport,
+                OriginFeature.CertificatesImport
+            ].includes(feature);
         })
         // enabledFeatures: allOriginFeatures
     };

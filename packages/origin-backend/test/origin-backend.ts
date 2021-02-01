@@ -152,7 +152,7 @@ export const registerAndLogin = async (
             process.env.REGISTRATION_MESSAGE_TO_SIGN
         );
 
-        user = await userService.attachSignedMessage(user.id, signedMessage);
+        user = await userService.updateBlockchainAddress(user.id, signedMessage);
     }
 
     const organizationEmail = `org${orgSeed}@example.com`;

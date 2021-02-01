@@ -1,12 +1,11 @@
-import { BackendClient, NotificationType, showNotification, useValidation } from '../../../utils';
-import { Form, Formik, FormikHelpers, FormikProps, yupToFormErrors } from 'formik';
-import { getBackendClient, getLoading, setLoading } from '../../../features/general';
+import { useValidation } from '../../../utils';
+import { Form, Formik, FormikProps, yupToFormErrors } from 'formik';
+import { getLoading } from '../../../features/general';
 import {
     createExchangeDepositAddress,
     getActiveBlockchainAccountAddress,
     getExchangeDepositAddress,
     getUserOffchain,
-    refreshUserOffchain,
     updateUserBlockchain
 } from '../../../features/users';
 import { useTranslation } from 'react-i18next';
@@ -18,22 +17,20 @@ import { IconPopover, IconSize } from '../../IconPopover';
 import { Info } from '@material-ui/icons';
 
 export function BlockchainAddresses(): JSX.Element {
-    const backendClient: BackendClient = useSelector(getBackendClient);
-    const userClient = backendClient?.userClient;
     const { Yup } = useValidation();
     const { t } = useTranslation();
     const dispatch = useDispatch();
     const activeBlockchainAccountAddress = useSelector(getActiveBlockchainAccountAddress);
     const isLoading = useSelector(getLoading);
-    const exchangeAddres = useSelector(getExchangeDepositAddress);
+    const exchangeAddress = useSelector(getExchangeDepositAddress);
     const user = useSelector(getUserOffchain);
     let changeFieldValue: (name: string, value: any) => void;
 
     useEffect(() => {
         if (typeof changeFieldValue === 'function') {
-            changeFieldValue('exchangeDepositAddress', exchangeAddres);
+            changeFieldValue('exchangeDepositAddress', exchangeAddress);
         }
-    }, [exchangeAddres]);
+    }, [exchangeAddress]);
 
     const VALIDATION_SCHEMA = Yup.object().shape({
         blockchainAccountAddress: Yup.string()
@@ -43,29 +40,8 @@ export function BlockchainAddresses(): JSX.Element {
 
     const INITIAL_VALUES = {
         blockchainAccountAddress: user.blockchainAccountAddress || '',
-        exchangeDepositAddress: exchangeAddres || ''
+        exchangeDepositAddress: exchangeAddress || ''
     };
-
-    async function submitForm(
-        values: typeof INITIAL_VALUES,
-        formikActions: FormikHelpers<typeof INITIAL_VALUES>
-    ): Promise<void> {
-        formikActions.setSubmitting(true);
-        dispatch(setLoading(true));
-
-        try {
-            await userClient.updateOwnBlockchainAddress({
-                blockchainAccountAddress: values.blockchainAccountAddress
-            });
-            showNotification(t('user.profile.updateChainAddress'), NotificationType.Success);
-            dispatch(refreshUserOffchain());
-        } catch (error) {
-            showNotification(t('user.profile.errorUpdateChainAddress'), NotificationType.Error);
-        }
-
-        dispatch(setLoading(false));
-        formikActions.setSubmitting(false);
-    }
 
     async function ValidationHandler(values: typeof INITIAL_VALUES) {
         try {
@@ -96,7 +72,7 @@ export function BlockchainAddresses(): JSX.Element {
         <Formik
             initialValues={INITIAL_VALUES}
             validateOnMount={true}
-            onSubmit={submitForm}
+            onSubmit={() => null}
             validate={ValidationHandler}
         >
             {(formikProps: FormikProps<typeof INITIAL_VALUES>) => {
@@ -113,7 +89,7 @@ export function BlockchainAddresses(): JSX.Element {
                                     {t('user.properties.exchangeAddressTitle')}
                                 </Typography>
                                 <Box className="buttonAndIconHolder">
-                                    {exchangeAddres ? (
+                                    {exchangeAddress ? (
                                         <Grid item lg={6} md={10} xs={12}>
                                             <FormInput
                                                 property="exchangeDepositAddress"

@@ -45,7 +45,7 @@
         "formik-material-ui": "3.0.1",
         "formik-material-ui-pickers": "0.0.12",
         "history": "4.10.1",
-        "i18next": "19.8.4",
+        "i18next": "19.8.5",
         "i18next-icu": "1.4.2",
         "moment": "2.24.0",
         "moment-timezone": "0.5.32",
@@ -62,7 +62,7 @@
         "toastr": "2.1.4",
         "ts-loader": "8.0.14",
         "url-loader": "4.1.1",
-        "webpack": "5.17.0",
+        "webpack": "5.19.0",
         "yup": "0.32.8"
     },
     "devDependencies": {
@@ -103,7 +103,7 @@
         "sass-loader": "10.1.1",
         "source-map-loader": "2.0.0",
         "style-loader": "2.0.0",
-        "ts-jest": "26.4.4",
+        "ts-jest": "26.5.0",
         "webpack-cli": "4.4.0",
         "webpack-dev-server": "3.11.2",
         "webpack-merge": "5.7.3"

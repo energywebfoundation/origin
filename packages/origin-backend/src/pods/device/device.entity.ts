@@ -1,4 +1,4 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 import {
     IsInt,
     Min,
@@ -18,7 +18,6 @@ import {
     DeviceStatus
 } from '@energyweb/origin-backend-core';
 import { ExtendedBaseEntity } from '@energyweb/origin-backend-utils';
-import { Organization } from '../organization/organization.entity';
 
 @Entity()
 export class Device extends ExtendedBaseEntity implements IDevice {
@@ -112,11 +111,9 @@ export class Device extends ExtendedBaseEntity implements IDevice {
     @IsOptional()
     externalDeviceIds: IExternalDeviceId[];
 
-    @ManyToOne(() => Organization, (organization) => organization.devices, {
-        nullable: false
-    })
     @IsNotEmpty()
-    organization: Organization;
+    @Column()
+    organizationId: number;
 
     @Column({ nullable: true })
     @IsOptional()
