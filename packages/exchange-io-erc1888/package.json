@@ -42,7 +42,7 @@
         "@nestjs/cqrs": "7.0.1",
         "@nestjs/passport": "7.1.5",
         "@nestjs/typeorm": "7.1.5",
-        "ethers": "5.0.15",
+        "ethers": "5.0.27",
         "moment": "2.29.1",
         "rxjs": "6.6.3"
     },
