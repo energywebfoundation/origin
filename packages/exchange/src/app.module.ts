@@ -11,6 +11,7 @@ import { BundleAccountingModule, BundleModule } from './pods/bundle';
 import { DemandModule } from './pods/demand/demand.module';
 import { MatchingEngineModule } from './pods/matching-engine/matching-engine.module';
 import { OrderAccountingModule, OrderModule } from './pods/order';
+import { PostForSaleModule } from './pods/post-for-sale/post-for-sale.module';
 import { TradeModule, TradeAccountingModule } from './pods/trade';
 import { TransferAccountingModule, TransferModule } from './pods/transfer';
 
@@ -31,7 +32,8 @@ import { TransferAccountingModule, TransferModule } from './pods/transfer';
         BundleModule,
         BundleAccountingModule,
         OrderModule,
-        OrderAccountingModule
+        OrderAccountingModule,
+        PostForSaleModule
     ],
     providers: [IntUnitsOfEnergy]
 })

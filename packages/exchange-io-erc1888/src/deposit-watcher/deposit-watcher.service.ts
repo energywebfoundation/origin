@@ -92,6 +92,12 @@ export class DepositWatcherService implements OnModuleInit {
 
         const { _from: from, _to: to, _value: value, _id: id } = log;
 
+        if (!value || !from || !to) {
+            this.logger.error(`Received an incorrect even: ${JSON.stringify(event)}`);
+
+            return;
+        }
+
         if (to !== this.walletAddress) {
             this.logger.debug(
                 `This transfer is to other address ${to} than wallet address ${this.walletAddress}`
