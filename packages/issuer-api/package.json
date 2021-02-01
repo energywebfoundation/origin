@@ -51,7 +51,7 @@
         "@nestjs/typeorm": "7.1.5",
         "class-validator": "0.13.1",
         "ethers": "5.0.27",
-        "moment": "2.24.0",
+        "moment": "2.29.1",
         "moment-range": "4.0.2",
         "pg": "^8.0.0",
         "precise-proofs-js": "^1.2.0",
