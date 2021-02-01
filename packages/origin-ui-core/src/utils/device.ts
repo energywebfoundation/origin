@@ -21,7 +21,7 @@ import marine_selected from '../../assets/device_selected/icon-marine.svg';
 
 type TranslateFunc = (key: string) => string;
 
-export function getDeviceId(device: ProducingDevice.Entity, environment: IEnvironment) {
+export function getDeviceId(device: any, environment: IEnvironment) {
     return (
         device.externalDeviceIds?.find((i) => i.type === environment.ISSUER_ID)?.id ??
         device.id?.toString()
