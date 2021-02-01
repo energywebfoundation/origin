@@ -7,8 +7,8 @@ export interface IOrdersState {
 }
 
 const initialState: IOrdersState = {
-    orders: [],
-    demands: []
+    orders: null,
+    demands: null
 };
 
 export function ordersState<T>(
@@ -17,8 +17,12 @@ export function ordersState<T>(
 ): IOrdersState {
     switch (type) {
         case OrdersActionsType.STORE_ORDERS:
-            const orders = [...state.orders.filter((o) => o.id !== payload.id)];
-            orders.push(payload);
+            const allOrders: Order[] = [...state.orders].concat(payload);
+            const set: Set<string> = new Set();
+            allOrders.forEach((order) => {
+                set.add(JSON.stringify(order));
+            });
+            const orders: Order[] = Array.from(set).map((order) => JSON.parse(order));
             return {
                 ...state,
                 orders

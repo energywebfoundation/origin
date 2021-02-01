@@ -31,6 +31,12 @@
         },
         {
             "path": "../issuer-api/tsconfig.json"
+        },
+        {
+            "path": "../origin-device-registry-api/tsconfig.json"
+        },
+        {
+            "path": "../origin-device-registry-irec-local-api/tsconfig.json"
         }
     ]
 }

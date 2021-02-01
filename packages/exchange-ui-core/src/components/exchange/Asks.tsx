@@ -24,12 +24,20 @@ interface IAsksProps {
     buyDirect: (orderId: string, volume: string, price: number) => void;
     energyUnit: string;
     displayAssetDetails?: boolean;
+    directBuydisabled?: boolean;
 }
 
 type Props = IAsksProps & IOrdersProps;
 
 export function Asks(props: Props) {
-    const { buyDirect, displayAssetDetails, energyUnit, currency, ordersTotalVolume } = props;
+    const {
+        buyDirect,
+        displayAssetDetails,
+        energyUnit,
+        currency,
+        ordersTotalVolume,
+        directBuydisabled = false
+    } = props;
 
     const exchangeClient = useSelector(getExchangeClient);
     const backendClient = useSelector(getBackendClient);
@@ -213,6 +221,7 @@ export function Asks(props: Props) {
                                                                           }
                                                                       }}
                                                                       disabled={
+                                                                          directBuydisabled ||
                                                                           !isValid ||
                                                                           (buyDirectExpanded &&
                                                                               !dirty)

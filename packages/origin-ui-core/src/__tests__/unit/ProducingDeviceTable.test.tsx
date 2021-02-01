@@ -1,6 +1,6 @@
 import React from 'react';
 import { mount } from 'enzyme';
-import { ProducingDeviceTable } from '../../components/devices/ProducingDeviceTable';
+import { ProducingDeviceTable } from '../../components/devices/ProducingDevice/ProducingDeviceTable';
 import { BackendClient, dataTestSelector } from '../../utils';
 import {
     setupStore,
@@ -8,7 +8,7 @@ import {
     createRenderedHelpers,
     TEST_DEVICE_TYPES
 } from '../utils/helpers';
-import { DeviceStatus, IPublicOrganization } from '@energyweb/origin-backend-core';
+import { DeviceStatus } from '@energyweb/origin-backend-core';
 import { configurationUpdated } from '../../features';
 import { DeviceTypeService } from '@energyweb/utils-general';
 import { Configuration } from '@energyweb/device-registry';
@@ -33,9 +33,7 @@ describe('ProducingDeviceTable', () => {
                 uncertified: BigNumber.from(7777),
                 certified: BigNumber.from(0)
             },
-            organization: {
-                name: testOrganizationName
-            } as IPublicOrganization
+            organizationId: 0
         });
 
         addProducingDevice({
@@ -49,9 +47,7 @@ describe('ProducingDeviceTable', () => {
             capacityInW: 736123,
             region: 'Central',
             province: 'Nakhon Pathom',
-            organization: {
-                name: testOrganizationName
-            } as IPublicOrganization
+            organizationId: 1
         });
 
         store.dispatch(

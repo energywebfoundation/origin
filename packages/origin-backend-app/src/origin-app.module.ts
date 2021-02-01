@@ -3,6 +3,15 @@ import { ExchangeErc1888Module } from '@energyweb/exchange-io-erc1888';
 import { AppModule as ExchangeIRECModule } from '@energyweb/exchange-irec';
 import { AppModule as IssuerModule, entities as IssuerEntities } from '@energyweb/issuer-api';
 import {
+    AppModule as OriginDeviceRegistry,
+    entities as OriginDeviceEntities
+} from '@energyweb/origin-device-registry-api';
+import {
+    AppModule as IRECDeviceRegistry,
+    entities as IRECDeviceEntities
+} from '@energyweb/origin-device-registry-irec-local-api';
+
+import {
     AppModule as OriginBackendModule,
     entities as OriginBackendEntities,
     OrganizationModule,
@@ -12,7 +21,8 @@ import { ISmartMeterReadingsAdapter } from '@energyweb/origin-backend-core';
 import { HTTPLoggingInterceptor } from '@energyweb/origin-backend-utils';
 import {
     AppModule as IRECOrganizationModule,
-    entities as IRECOrganizationEntities
+    entities as IRECOrganizationEntities,
+    RegistrationModule
 } from '@energyweb/origin-organization-irec-api';
 import { DynamicModule, Module } from '@nestjs/common';
 import { APP_INTERCEPTOR } from '@nestjs/core';
@@ -20,6 +30,8 @@ import { CqrsModule } from '@nestjs/cqrs';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import {
+    CertificateRequestApprovedHandler,
+    DeviceCreatedHandler,
     DeviceStatusChangedHandler,
     EmailConfirmationRequestedHandler,
     InvitationCreatedHandler,
@@ -37,7 +49,9 @@ const OriginAppTypeOrmModule = () => {
         ...OriginBackendEntities,
         ...ExchangeEntities,
         ...IRECOrganizationEntities,
-        ...IssuerEntities
+        ...IssuerEntities,
+        ...OriginDeviceEntities,
+        ...IRECDeviceEntities
     ];
 
     return process.env.DATABASE_URL
@@ -78,11 +92,16 @@ export class OriginAppModule {
                 IRECOrganizationModule,
                 IssuerModule,
                 OrganizationModule,
+                OriginDeviceRegistry,
+                IRECDeviceRegistry,
                 UserModule,
-                CqrsModule
+                CqrsModule,
+                RegistrationModule
             ],
             providers: [
                 { provide: APP_INTERCEPTOR, useClass: HTTPLoggingInterceptor },
+                CertificateRequestApprovedHandler,
+                DeviceCreatedHandler,
                 DeviceStatusChangedHandler,
                 EmailConfirmationRequestedHandler,
                 InvitationCreatedHandler,

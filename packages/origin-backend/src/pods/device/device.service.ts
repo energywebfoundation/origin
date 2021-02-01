@@ -31,7 +31,6 @@ import { v4 as uuid } from 'uuid';
 import { SM_READS_ADAPTER } from '../../const';
 import { StorageErrors } from '../../enums/StorageErrors';
 import { ConfigurationService } from '../configuration';
-import { OrganizationService } from '../organization/organization.service';
 import { Device } from './device.entity';
 import { DeviceStatusChangedEvent } from './events';
 import { DeviceCreatedEvent } from './events/device-created.event';
@@ -42,13 +41,13 @@ export class DeviceService {
         @InjectRepository(Device)
         private readonly repository: Repository<Device>,
         private readonly configurationService: ConfigurationService,
-        private readonly organizationService: OrganizationService,
+
         private readonly eventBus: EventBus,
         @Inject(SM_READS_ADAPTER) private smartMeterReadingsAdapter?: ISmartMeterReadingsAdapter
     ) {}
 
     async findByExternalId(externalId: IExternalDeviceId): Promise<IDevice> {
-        const devices = (await this.repository.find({ relations: ['organization'] })) as IDevice[];
+        const devices = (await this.repository.find()) as IDevice[];
 
         const device = devices.find((d) =>
             d.externalDeviceIds.find((id) => id.id === externalId.id && id.type === externalId.type)
@@ -58,9 +57,7 @@ export class DeviceService {
     }
 
     async findOne(id: string, withMeterStats = false): Promise<IDevice> {
-        const device = (await this.repository.findOne(id, {
-            relations: ['organization']
-        })) as IDevice;
+        const device = (await this.repository.findOne(id)) as IDevice;
 
         if (this.smartMeterReadingsAdapter) {
             device.smartMeterReads = [];
@@ -75,7 +72,6 @@ export class DeviceService {
 
     async create(data: DeviceCreateData, loggedUser: ILoggedInUser): Promise<IDevice> {
         const configuration = await this.configurationService.get();
-        const organization = await this.organizationService.findOne(loggedUser.organizationId);
 
         const newEntity = new Device();
 
@@ -84,7 +80,7 @@ export class DeviceService {
             status: data.status ?? DeviceStatus.Submitted,
             smartMeterReads: data.smartMeterReads ?? [],
             deviceGroup: data.deviceGroup ?? '',
-            organization,
+            organizationId: loggedUser.organizationId,
             externalDeviceIds: data.externalDeviceIds
                 ? data.externalDeviceIds.map(({ id, type }) => {
                       if (
@@ -113,7 +109,7 @@ export class DeviceService {
 
         const device = await this.findOne(newEntity.id.toString());
 
-        this.eventBus.publish(new DeviceCreatedEvent(device));
+        this.eventBus.publish(new DeviceCreatedEvent(device, loggedUser.id));
 
         return device;
     }
@@ -182,8 +178,7 @@ export class DeviceService {
 
     async getAll(withMeterStats = false, options: FindOneOptions<Device> = {}): Promise<IDevice[]> {
         const devices = (await this.repository.find({
-            ...options,
-            relations: ['organization']
+            ...options
         })) as IDevice[];
 
         return withMeterStats ? this.attachMeterStats(devices) : devices;
@@ -194,8 +189,7 @@ export class DeviceService {
         withMeterStats = false
     ): Promise<IDevice[]> {
         const devices = (await this.repository.find({
-            relations: ['organization'],
-            where: { organization: { id: organizationId } }
+            where: { organizationId }
         })) as IDevice[];
 
         return withMeterStats ? this.attachMeterStats(devices) : devices;
@@ -288,9 +282,8 @@ export class DeviceService {
         const _status = status === 1;
         const devices = (await this.repository
             .createQueryBuilder('device')
-            .leftJoinAndSelect('device.organization', 'organization')
             .where(
-                `organization.id = :organizationId and device.facilityName ilike :_facilityName ${
+                `organizationId = :organizationId and device.facilityName ilike :_facilityName ${
                     status > 0 ? `and device.automaticPostForSale = :_status` : ``
                 }`,
                 { organizationId, _facilityName, _status }

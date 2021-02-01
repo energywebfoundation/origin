@@ -33,21 +33,20 @@ import {
     UseInterceptors
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-
 import { ApiBearerAuth, ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
+
 import { StorageErrors } from '../../enums/StorageErrors';
-import { Device } from '../device/device.entity';
-import { User } from '../user';
-import { NewOrganizationDTO } from './dto/new-organization.dto';
-import { OrganizationService } from './organization.service';
-import { FullOrganizationInfoDTO } from './dto/full-organization-info.dto';
-import { PublicOrganizationInfoDTO } from './dto/public-organization-info.dto';
-import { OrganizationNameAlreadyTakenError } from './organization-name-taken.error';
-import { OrganizationDocumentOwnershipMismatchError } from './organization-document-ownership-mismatch.error';
 import { SuccessResponseDTO } from '../../utils/success-response.dto';
-import { OrganizationUpdateDTO } from './dto/organization-update.dto';
-import { UpdateMemberDTO } from './dto/organization-update-member.dto';
 import { InvitationDTO } from '../invitation/invitation.dto';
+import { User } from '../user';
+import { FullOrganizationInfoDTO } from './dto/full-organization-info.dto';
+import { NewOrganizationDTO } from './dto/new-organization.dto';
+import { UpdateMemberDTO } from './dto/organization-update-member.dto';
+import { OrganizationUpdateDTO } from './dto/organization-update.dto';
+import { PublicOrganizationInfoDTO } from './dto/public-organization-info.dto';
+import { OrganizationDocumentOwnershipMismatchError } from './organization-document-ownership-mismatch.error';
+import { OrganizationNameAlreadyTakenError } from './organization-name-taken.error';
+import { OrganizationService } from './organization.service';
 
 @ApiTags('organization')
 @ApiBearerAuth('access-token')
@@ -91,7 +90,6 @@ export class OrganizationController {
     }
 
     @Get('/:id/public')
-    @UseGuards(AuthGuard())
     @ApiResponse({
         status: HttpStatus.OK,
         type: PublicOrganizationInfoDTO,
@@ -140,25 +138,6 @@ export class OrganizationController {
         const organization = await this.organizationService.findOne(organizationId);
 
         return organization?.users;
-    }
-
-    @Get('/:id/devices')
-    @UseGuards(AuthGuard(), ActiveUserGuard, RolesGuard)
-    @Roles(Role.OrganizationAdmin, Role.OrganizationDeviceManager, Role.Admin, Role.SupportAgent)
-    @ApiResponse({
-        status: HttpStatus.OK,
-        type: [Device],
-        description: 'Gets devices of an organization'
-    })
-    async getDevices(
-        @Param('id', new ParseIntPipe()) organizationId: number,
-        @UserDecorator() loggedUser: ILoggedInUser
-    ): Promise<Device[]> {
-        this.ensureOrganizationMemberOrAdmin(loggedUser, organizationId);
-
-        const organization = await this.organizationService.findOne(organizationId);
-
-        return organization?.devices;
     }
 
     @Post()
