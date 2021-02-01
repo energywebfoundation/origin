@@ -303,11 +303,8 @@ export function createOriginConfiguration(configuration: Partial<IOriginConfigur
             return ![
                 OriginFeature.IRecConnect,
                 OriginFeature.DevicesImport,
-<<<<<<< HEAD
-                OriginFeature.IRecUIApp
-=======
+                OriginFeature.IRecUIApp,
                 OriginFeature.CertificatesImport
->>>>>>> ec5aa08791af0abfe3b1ee059657518dff68c05e
             ].includes(feature);
         })
     };
