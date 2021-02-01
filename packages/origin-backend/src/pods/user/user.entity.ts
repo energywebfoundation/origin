@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, Unique, ManyToOne } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
 
 import { Exclude } from 'class-transformer';
 
@@ -9,7 +9,6 @@ import { IsEnum } from 'class-validator';
 import { Organization } from '../organization/organization.entity';
 
 @Entity()
-@Unique(['email', 'blockchainAccountAddress'])
 export class User extends ExtendedBaseEntity implements IUser {
     constructor(user: Partial<User>) {
         super();
@@ -29,7 +28,7 @@ export class User extends ExtendedBaseEntity implements IUser {
     @Column()
     lastName: string;
 
-    @Column()
+    @Column({ unique: true })
     email: string;
 
     @Column()
@@ -39,7 +38,7 @@ export class User extends ExtendedBaseEntity implements IUser {
     @Exclude()
     password: string;
 
-    @Column({ nullable: true })
+    @Column({ nullable: true, unique: true })
     blockchainAccountAddress: string;
 
     @Column({ nullable: true })

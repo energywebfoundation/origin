@@ -9,3 +9,4 @@ export * from './order';
 export * from './order-book';
 export * from './trade';
 export * from './transfer';
+export * from './post-for-sale';

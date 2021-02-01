@@ -8,6 +8,7 @@ export enum OriginFeature {
     Devices = 'devices',
     DevicesImport = 'devicesImport',
     Certificates = 'certificates',
+    CertificatesImport = 'certificatesImport',
     CertificationRequests = 'certificationRequests',
     IRec = 'irec',
     IRecConnect = 'irecConnect',
