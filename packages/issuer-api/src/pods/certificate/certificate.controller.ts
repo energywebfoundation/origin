@@ -25,6 +25,7 @@ import { Role } from '@energyweb/origin-backend-core';
 
 import { ApiBearerAuth, ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
 import moment from 'moment';
+import { BigNumber } from 'ethers';
 import { IssueCertificateCommand } from './commands/issue-certificate.command';
 import { IssueCertificateDTO } from './commands/issue-certificate.dto';
 import { GetAllCertificatesQuery } from './queries/get-all-certificates.query';
@@ -91,7 +92,6 @@ export class CertificateController {
     }
 
     @Get('/issuer/certified/:deviceId')
-    @UseGuards(AuthGuard(), ActiveUserGuard, BlockchainAccountGuard)
     @ApiResponse({
         status: HttpStatus.OK,
         type: String,
@@ -100,20 +100,17 @@ export class CertificateController {
     public async getAggregateCertifiedEnergyByDeviceId(
         @Param('deviceId') deviceId: string,
         @Query('start') start: string,
-        @Query('end') end: string,
-        @BlockchainAccountDecorator() blockchainAddress: string
+        @Query('end') end: string
     ): Promise<string> {
         const startDateToUnix = moment(start).unix();
         const endDateToUnix = moment(end).unix();
 
-        return this.queryBus.execute(
-            new GetAggregateCertifiedEnergyByDeviceIdQuery(
-                deviceId,
-                startDateToUnix,
-                endDateToUnix,
-                blockchainAddress
-            )
-        );
+        const result = await this.queryBus.execute<
+            GetAggregateCertifiedEnergyByDeviceIdQuery,
+            BigNumber
+        >(new GetAggregateCertifiedEnergyByDeviceIdQuery(deviceId, startDateToUnix, endDateToUnix));
+
+        return result.toString();
     }
 
     @Post()

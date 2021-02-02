@@ -38,7 +38,7 @@
         "@energyweb/origin-backend-core": "7.0.1",
         "@energyweb/utils-general": "11.0.0",
         "ethers": "5.0.27",
-        "moment": "2.24.0",
+        "moment": "2.29.1",
         "winston": "3.3.3"
     },
     "devDependencies": {

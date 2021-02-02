@@ -4,7 +4,6 @@ import { LessThanOrEqual, MoreThanOrEqual, Repository } from 'typeorm';
 import { BigNumber, constants } from 'ethers';
 import { GetAggregateCertifiedEnergyByDeviceIdQuery } from '../queries/get-aggregate-certified-energy-by-device.query';
 import { Certificate } from '../certificate.entity';
-import { certificateToDto } from '../utils';
 
 @QueryHandler(GetAggregateCertifiedEnergyByDeviceIdQuery)
 export class GetAggregateCertifiedEnergyDeviceIdHandler
@@ -15,11 +14,10 @@ export class GetAggregateCertifiedEnergyDeviceIdHandler
     ) {}
 
     async execute({
-        userId,
         deviceId,
         startDate,
         endDate
-    }: GetAggregateCertifiedEnergyByDeviceIdQuery): Promise<string> {
+    }: GetAggregateCertifiedEnergyByDeviceIdQuery): Promise<BigNumber> {
         const certificates = await this.repository.find({
             where: {
                 deviceId,
@@ -29,19 +27,14 @@ export class GetAggregateCertifiedEnergyDeviceIdHandler
         });
 
         if (!certificates) {
-            return '0';
+            return BigNumber.from(constants.Zero);
         }
 
-        const energies = Promise.all(
-            certificates.map((certificate) => certificateToDto(certificate, userId))
-        );
-
-        return `${(await energies).reduce(
-            (a, b) =>
-                BigNumber.from(a).add(
-                    BigNumber.from(b.energy.publicVolume) || BigNumber.from(constants.Zero)
-                ),
-            BigNumber.from(constants.Zero)
-        )}`;
+        return certificates
+            .flatMap((c) => Object.values(c.owners))
+            .reduce(
+                (a, b) => BigNumber.from(a).add(BigNumber.from(b)),
+                BigNumber.from(constants.Zero)
+            );
     }
 }

@@ -14,7 +14,6 @@ module.exports = {
         // Add '.ts' and '.tsx' as resolvable extensions.
         extensions: ['.ts', '.tsx', '.js', '.json'],
         alias: {
-            "@material-ui/styles": path.join(__dirname, '../node_modules/@material-ui/styles'),
             "react-redux": require.resolve("react-redux")
         },
         fallback: {
