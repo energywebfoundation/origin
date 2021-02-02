@@ -18,8 +18,8 @@ import {
     getBackendClient,
     moment,
     // SHOULD BE REMOVED
-    getConfiguration
-    // getCertificatesClient
+    getConfiguration,
+    getCertificatesClient
 } from '@energyweb/origin-ui-core';
 import { ComposedPublicDevice } from '../../types';
 import { useOriginConfiguration } from '../../utils/configuration';
@@ -40,7 +40,7 @@ export function DeviceDetailView(props: IProps) {
     const configuration = useSelector(getConfiguration);
     const allDevices = useSelector(getAllDevices);
     const backendClient = useSelector(getBackendClient);
-    // const certificatesClient = useSelector(getCertificatesClient);
+    const certificatesClient = useSelector(getCertificatesClient);
     const organizationClient = backendClient?.organizationClient;
 
     const originContext = useOriginConfiguration();
@@ -102,11 +102,11 @@ export function DeviceDetailView(props: IProps) {
     useEffect(() => {
         const getMeterRead = async (id: string): Promise<void> => {
             if (id) {
-                const meterReads = '0';
-                // expects 4 args: id, start??, end??, blockchain account
-                // const {
-                //     data: meterReads
-                // } = await certificatesClient.getAggregateCertifiedEnergyByDeviceId(id);
+                const start = new Date(new Date().getFullYear(), 0, 1).toISOString();
+                const end = new Date(new Date().getFullYear(), 11, 31).toISOString();
+                const {
+                    data: meterReads
+                } = await certificatesClient?.getAggregateCertifiedEnergyByDeviceId(id, start, end);
                 setMeterReadCertified(meterReads);
             }
         };

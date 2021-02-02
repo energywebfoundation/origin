@@ -4432,30 +4432,10 @@
     "@react-google-maps/marker-clusterer" "2.1.1"
     invariant "2.2.4"
 
-"@react-google-maps/api@2.1.1":
-  version "2.1.1"
-  resolved "https://registry.yarnpkg.com/@react-google-maps/api/-/api-2.1.1.tgz#0d195632927c72867b0cfcfec7eaef4b79f3bacc"
-  integrity sha512-Z/dcaDDfZD4DFnE1GhdHOIFHZ+VocEt6Ixe82f0f9tL/J0CZBQvfJ3V8RogY9fVraxdKIwnQx75U0O1JVqqBnw==
-  dependencies:
-    "@googlemaps/js-api-loader" "1.11.1"
-    "@react-google-maps/infobox" "2.1.1"
-    "@react-google-maps/marker-clusterer" "2.1.1"
-    invariant "2.2.4"
-
-"@react-google-maps/infobox@2.1.0":
-  version "2.1.0"
-  resolved "https://registry.yarnpkg.com/@react-google-maps/infobox/-/infobox-2.1.0.tgz#17d7b2d4bd381333a064ac1cec9cd4d438050216"
-  integrity sha512-rs1UqDWkkLMgoQsFfo72h3vpAQfMnsN0A1H0ZyiQNWyZ2fvqHhRPP40EhmChVsGlyC9L8zoOvplc41eCnylysA==
-
 "@react-google-maps/infobox@2.1.1":
   version "2.1.1"
   resolved "https://registry.yarnpkg.com/@react-google-maps/infobox/-/infobox-2.1.1.tgz#1d2f20f00725f087edc031c3291fcc4c08edae7c"
   integrity sha512-x/+Td4Wsw+ziEcLjgQketCphuueLZ4vQLFkLrUBVzsHj4as4at79GsdVwoAdKIkBc5BDYJZw3ZGSr/SnWSObeg==
-
-"@react-google-maps/marker-clusterer@2.1.0":
-  version "2.1.0"
-  resolved "https://registry.yarnpkg.com/@react-google-maps/marker-clusterer/-/marker-clusterer-2.1.0.tgz#01ef2b42512ac2a7ac74ac0ca8afc43cac2f32c9"
-  integrity sha512-50IuHUxssJocP2+oPnkxAfjjR1Gw14vgREofYBWAi9l8qgizRO5G432SMFR1gEhgRyDcUph7HWOYZJXAT9mMdQ==
 
 "@react-google-maps/marker-clusterer@2.1.1":
   version "2.1.1"
@@ -14832,13 +14812,6 @@ i18next-icu@1.4.2:
   integrity sha512-EqHafx/sL8eoEowwqi5P6cXtLrzJXBKI4RmV+UaMXlpIJNfckVsq873F2KkMKkApxiw2ATj46C8MurmhMsHQGw==
   dependencies:
     intl-messageformat "2.2.0"
-
-i18next@19.8.5:
-  version "19.8.5"
-  resolved "https://registry.yarnpkg.com/i18next/-/i18next-19.8.5.tgz#8275c98ab98faffa348de2c34c2fd80ffeadb999"
-  integrity sha512-mDuH/mvnNXZmvqxl3akSZuJtbX7ou7M66kzfXQTfRngTZ9cAjktlx4yVzA+gS9VPZp51eZOQAGfEDbFcnyvliw==
-  dependencies:
-    "@babel/runtime" "^7.12.0"
 
 i18next@19.8.5:
   version "19.8.5"
