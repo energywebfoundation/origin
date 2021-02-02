@@ -21,9 +21,11 @@ import {
     configureStatus,
     configureDateFormat,
     periodTypeOptions,
-    demandTypeOptions
+    demandTypeOptions,
+    useDemandDependantFilters
 } from '../../utils/demand';
 import { Demand } from '../../utils/exchange';
+
 import { RemoveOrderConfirmation, DemandUpdateModal } from '../modal';
 
 const DEMANDS_PER_PAGE = 5;
@@ -43,6 +45,7 @@ export const DemandsTable = (props: IOwnProps) => {
     const deviceTypeService = configuration?.deviceTypeService;
     const periodOptions = periodTypeOptions(t, false);
     const demandOptions = demandTypeOptions(t);
+    const demandDependantFilters = useDemandDependantFilters();
 
     const columns = [
         { id: 'volume', label: t('demand.properties.volume') },
@@ -82,7 +85,7 @@ export const DemandsTable = (props: IOwnProps) => {
             property: (demand: Demand) => new Date(demand.start).getTime() / 1000,
             label: t('demand.properties.start'),
             input: {
-                type: CustomFilterInputType.day,
+                type: CustomFilterInputType.yearMonth,
                 filterRule: FilterRules.FROM
             }
         },
@@ -90,7 +93,7 @@ export const DemandsTable = (props: IOwnProps) => {
             property: (demand: Demand) => new Date(demand.end).getTime() / 1000,
             label: t('demand.properties.end'),
             input: {
-                type: CustomFilterInputType.day,
+                type: CustomFilterInputType.yearMonth,
                 filterRule: FilterRules.TO
             }
         }
@@ -186,6 +189,7 @@ export const DemandsTable = (props: IOwnProps) => {
                 pageSize={pageSize}
                 actions={actions}
                 caption={t('order.captions.demands')}
+                dependantFilters={demandDependantFilters}
             />
             {demandToView && (
                 <DemandUpdateModal demand={demandToView} close={() => setToView(null)} />
