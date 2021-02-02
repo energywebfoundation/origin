@@ -93,7 +93,7 @@ export class DepositWatcherService implements OnModuleInit {
         const { _from: from, _to: to, _value: value, _id: id } = log;
 
         if (!value || !from || !to) {
-            this.logger.error(`Received an incorrect even: ${JSON.stringify(event)}`);
+            this.logger.error(`Received an incorrect event: ${JSON.stringify(event)}`);
 
             return;
         }
