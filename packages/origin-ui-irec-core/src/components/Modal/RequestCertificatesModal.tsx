@@ -121,7 +121,7 @@ export function RequestCertificatesModal(props: IProps) {
                         value={fromDate}
                         onChange={(date) =>
                             setFromDate(
-                                moment(date)
+                                date
                                     .utcOffset(Number(environment.MARKET_UTC_OFFSET), true)
                                     .startOf('day')
                             )
@@ -138,7 +138,7 @@ export function RequestCertificatesModal(props: IProps) {
                         value={toDate}
                         onChange={(date) =>
                             setToDate(
-                                moment(date)
+                                date
                                     .utcOffset(Number(environment.MARKET_UTC_OFFSET), true)
                                     .endOf('day')
                             )
