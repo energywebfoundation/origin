@@ -1,29 +1,31 @@
 /* eslint-disable no-unused-expressions */
 import { expect } from 'chai';
-import moment from 'moment';
 import dotenv from 'dotenv';
 import { validateOrReject } from 'class-validator';
+import moment from 'moment/moment';
 
 import { IRECAPIClient } from '../src/IRECAPIClient';
 import { Device, DeviceCreateUpdateParams, DeviceState } from '../src/Device';
+import { credentials, getClient } from './helpers';
+import { Organisation } from '../src/Organisation';
 import { Issue, IssueStatus, IssueWithStatus } from '../src/Issue';
 
 dotenv.config();
 
 describe('API flows', () => {
-    let client: IRECAPIClient;
+    let issuerClient: IRECAPIClient;
+    // let participantClient: IRECAPIClient;
+    let registrantClient: IRECAPIClient;
+    let registrantOrg: Organisation;
 
     const tradeAccount = 'ACCOUNTTRADE001';
     const issueAccount = 'ACCOUNTISSUE001';
 
     before(async () => {
-        client = new IRECAPIClient(process.env.IREC_API_URL);
-        await client.login(
-            process.env.IREC_API_LOGIN,
-            process.env.IREC_API_PASSWORD,
-            process.env.IREC_API_CLIENT_ID,
-            process.env.IREC_API_CLIENT_SECRET
-        );
+        issuerClient = await getClient(credentials.issuer);
+        // participantClient = await getClient(credentials.participant);
+        registrantClient = await getClient(credentials.registrant);
+        registrantOrg = await registrantClient.organisation.get();
     });
 
     it('should pass create and approve device flow', async () => {
@@ -40,12 +42,12 @@ describe('API flows', () => {
             longitude: -1.744222,
             name: 'DeviceXYZ',
             notes: 'Lorem ipsum dolor sit amet',
-            registrantOrganization: 'ORGANISATION001',
+            registrantOrganization: registrantOrg.code,
             registrationDate: new Date('2001-09-20')
         };
-        const createdDevice: Device = await client.device.create(params);
+        const createdDevice: Device = await registrantClient.device.create(params);
 
-        let device: Device = await client.device.get(createdDevice.code);
+        let device: Device = await registrantClient.device.get(createdDevice.code);
         const deviceCode: string = device.code;
         expect(device.code).to.equal(deviceCode);
         expect(device.name).to.equal(params.name);
@@ -53,37 +55,37 @@ describe('API flows', () => {
         expect(device.status).to.equal(DeviceState.Draft);
 
         await validateOrReject(device);
-        await client.device.submit(deviceCode, { notes: 'Some submit note' });
-        device = await client.device.get(deviceCode);
+        await registrantClient.device.submit(deviceCode, { notes: 'Some submit note' });
+        device = await registrantClient.device.get(deviceCode);
         expect(device.status).to.equal(DeviceState.InProgress);
 
-        await client.device.verify(deviceCode, { notes: 'Some verify note' });
-        device = await client.device.get(deviceCode);
+        await issuerClient.device.verify(deviceCode, { notes: 'Some verify note' });
+        device = await registrantClient.device.get(deviceCode);
         expect(device.status).to.equal(DeviceState.InProgress);
 
-        await client.device.refer(deviceCode, { notes: 'Some refer note' });
-        device = await client.device.get(deviceCode);
+        await issuerClient.device.refer(deviceCode, { notes: 'Some refer note' });
+        device = await registrantClient.device.get(deviceCode);
         expect(device.status).to.equal(DeviceState.InProgress);
 
-        await client.device.reject(deviceCode, { notes: 'Some reject note' });
-        device = await client.device.get(deviceCode);
+        await issuerClient.device.reject(deviceCode, { notes: 'Some reject note' });
+        device = await registrantClient.device.get(deviceCode);
         expect(device.status).to.equal(DeviceState.Rejected);
 
-        await client.device.submit(deviceCode, { notes: 'Some submit note 2' });
-        await client.device.verify(deviceCode, { notes: 'Some verify note 2' });
-        await client.device.approve(deviceCode, { notes: 'Some approve note' });
-        device = await client.device.get(deviceCode);
+        await registrantClient.device.submit(deviceCode, { notes: 'Some submit note 2' });
+        await issuerClient.device.verify(deviceCode, { notes: 'Some verify note 2' });
+        await issuerClient.device.approve(deviceCode, { notes: 'Some approve note' });
+        device = await registrantClient.device.get(deviceCode);
         expect(device.status).to.equal(DeviceState.Approved);
 
-        await client.device.edit(deviceCode, { capacity: 1000, name: 'DeviceZZZ' });
-        device = await client.device.get(deviceCode);
+        await registrantClient.device.edit(deviceCode, { capacity: 1000, name: 'DeviceZZZ' });
+        device = await registrantClient.device.get(deviceCode);
         expect(device.capacity).to.equal(1000);
         expect(device.name).to.equal('DeviceZZZ');
         expect(device.status).to.equal(DeviceState.Draft);
     }).timeout(10000);
 
     it('should pass create and approve issue flow', async () => {
-        const devices: Device[] = await client.device.getAll();
+        const devices: Device[] = await registrantClient.device.getAll();
         const approvedDevice = devices.find((device) => device.status === DeviceState.Approved);
         const issueParams: Issue = {
             device: approvedDevice.code,
@@ -95,32 +97,35 @@ describe('API flows', () => {
             notes: 'Some note'
         };
 
-        const issueCode: string = await client.issue.create(issueParams);
+        const issueCode: string = await registrantClient.issue.create(issueParams);
 
-        let issue: IssueWithStatus = await client.issue.get(issueCode);
+        let issue: IssueWithStatus = await registrantClient.issue.get(issueCode);
         expect(issue.code).to.equal(issueCode);
         expect(issue.status).to.equal(IssueStatus.Draft);
 
-        await client.issue.submit(issueCode);
-        issue = await client.issue.get(issueCode);
+        await registrantClient.issue.submit(issueCode);
+        issue = await registrantClient.issue.get(issueCode);
         expect(issue.status).to.equal(IssueStatus.Submitted);
 
-        await client.issue.verify(issueCode);
-        issue = await client.issue.get(issueCode);
+        await registrantClient.issue.verify(issueCode);
+        issue = await registrantClient.issue.get(issueCode);
         expect(issue.status).to.equal(IssueStatus.Verified);
 
-        await client.issue.refer(issueCode);
-        issue = await client.issue.get(issueCode);
+        await registrantClient.issue.refer(issueCode);
+        issue = await registrantClient.issue.get(issueCode);
         expect(issue.status).to.equal(IssueStatus.Referred);
 
-        await client.issue.reject(issueCode);
-        issue = await client.issue.get(issueCode);
+        await registrantClient.issue.reject(issueCode);
+        issue = await registrantClient.issue.get(issueCode);
         expect(issue.status).to.equal(IssueStatus.Rejected);
 
-        await client.issue.submit(issueCode);
-        await client.issue.verify(issueCode);
-        await client.issue.approve(issueCode, { issuer: issueAccount, notes: 'it is ok' });
-        issue = await client.issue.get(issueCode);
+        await registrantClient.issue.submit(issueCode);
+        await registrantClient.issue.verify(issueCode);
+        await registrantClient.issue.approve(issueCode, {
+            issuer: issueAccount,
+            notes: 'it is ok'
+        });
+        issue = await registrantClient.issue.get(issueCode);
         expect(issue.status).to.equal(IssueStatus.Approved);
     }).timeout(10000);
 });

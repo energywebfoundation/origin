@@ -20,8 +20,9 @@ import {
 import { Device, DeviceCreateUpdateParams } from './Device';
 import { ApproveIssue, Issue, IssueWithStatus } from './Issue';
 import { Redemption, Transfer } from './Transfer';
-import { AccountItem } from './Items';
+import { AccountItem, CodeName } from './Items';
 import { Fuel, FuelType } from './Fuel';
+import { Organisation } from './Organisation';
 
 export type AccessTokens = {
     expiryDate: Date;
@@ -118,6 +119,34 @@ export class IRECAPIClient {
                 const response = await axios.get<unknown[]>(url, this.config);
 
                 return response.data.map((item) => plainToClass(AccountItem, item));
+            }
+        };
+    }
+
+    public get organisation() {
+        const organisationUrl = `${this.endPointUrl}/api/irec/organisation`;
+
+        return {
+            get: async (): Promise<Organisation> => {
+                const response = await axios.get<unknown>(organisationUrl, this.config);
+
+                return plainToClass(Organisation, response.data);
+            },
+            getRegistrants: async (): Promise<CodeName[]> => {
+                const response = await axios.get<unknown[]>(
+                    `${organisationUrl}/registrants`,
+                    this.config
+                );
+
+                return response.data.map((org) => plainToClass(CodeName, org));
+            },
+            getIssuers: async (): Promise<CodeName[]> => {
+                const response = await axios.get<unknown[]>(
+                    `${organisationUrl}/issuers`,
+                    this.config
+                );
+
+                return response.data.map((org) => plainToClass(CodeName, org));
             }
         };
     }

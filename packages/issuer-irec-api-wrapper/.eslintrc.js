@@ -10,6 +10,7 @@ module.exports = {
             }
         ],
         'no-useless-constructor': 'off',
-        'no-empty': 'off'
+        'no-empty': 'off',
+        'max-classes-per-file': 'off'
     }
 };
