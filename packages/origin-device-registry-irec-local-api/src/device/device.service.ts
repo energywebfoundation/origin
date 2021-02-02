@@ -8,8 +8,16 @@ import { Device } from './device.entity';
 import { CreateDeviceDTO } from './dto/create-device.dto';
 import { DeviceStatusChangedEvent, DeviceCreatedEvent } from './events';
 
+export const IDeviceServiceIREC = Symbol('IDeviceServiceIREC');
+export interface IDeviceServiceIREC {
+    findOne(id: string): Promise<Device>;
+    create(user: ILoggedInUser, newDevice: CreateDeviceDTO): Promise<Device>;
+    findAll(options?: FindManyOptions<Device>): Promise<Device[]>;
+    updateStatus(id: string, status: DeviceStatus): Promise<Device>;
+}
+
 @Injectable()
-export class DeviceService {
+export class DeviceService implements IDeviceServiceIREC {
     constructor(
         @InjectRepository(Device)
         private readonly repository: Repository<Device>,

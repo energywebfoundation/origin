@@ -1,7 +1,7 @@
 import { EventsHandler, IEventHandler, QueryBus } from '@nestjs/cqrs';
 import { Logger } from '@nestjs/common';
 import { ModuleRef } from '@nestjs/core';
-import { DeviceService, UserService } from '@energyweb/origin-backend';
+import { UserService, IDeviceService } from '@energyweb/origin-backend';
 import { Role } from '@energyweb/origin-backend-core';
 import {
     CertificateRequestApprovedEvent,
@@ -18,7 +18,7 @@ export class CertificateRequestApprovedHandler
 
     private readonly issuerTypeId: string;
 
-    private _deviceService: DeviceService;
+    private _deviceService: IDeviceService;
 
     constructor(
         private readonly mailService: MailService,
@@ -36,7 +36,7 @@ export class CertificateRequestApprovedHandler
             return this._deviceService;
         }
 
-        this._deviceService = this.moduleRef.get<DeviceService>(DeviceService, {
+        this._deviceService = this.moduleRef.get<IDeviceService>(IDeviceService, {
             strict: false
         });
 

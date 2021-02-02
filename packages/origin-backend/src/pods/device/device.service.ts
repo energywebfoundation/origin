@@ -35,8 +35,15 @@ import { Device } from './device.entity';
 import { DeviceStatusChangedEvent } from './events';
 import { DeviceCreatedEvent } from './events/device-created.event';
 
+export const IDeviceService = Symbol('IDeviceService');
+export interface IDeviceService {
+    create(data: DeviceCreateData, loggedUser: ILoggedInUser): Promise<IDevice>;
+    findByExternalId(externalId: IExternalDeviceId): Promise<IDevice>;
+    findDeviceProductInfo(externalId: IExternalDeviceId): Promise<IDeviceProductInfo>;
+}
+
 @Injectable()
-export class DeviceService {
+export class DeviceService implements IDeviceService {
     constructor(
         @InjectRepository(Device)
         private readonly repository: Repository<Device>,

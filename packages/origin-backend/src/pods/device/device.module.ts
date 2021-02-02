@@ -7,7 +7,12 @@ import { SM_READS_ADAPTER } from '../../const';
 import { ConfigurationModule } from '../configuration';
 import { DeviceController } from './device.controller';
 import { Device } from './device.entity';
-import { DeviceService } from './device.service';
+import { DeviceService, IDeviceService } from './device.service';
+
+const deviceService = {
+    provide: IDeviceService,
+    useClass: DeviceService
+};
 
 @Module({})
 export class DeviceModule {
@@ -20,10 +25,11 @@ export class DeviceModule {
                     provide: SM_READS_ADAPTER,
                     useValue: smartMeterReadingsAdapter
                 },
-                DeviceService
+                DeviceService,
+                deviceService
             ],
             controllers: [DeviceController],
-            exports: [DeviceService]
+            exports: [DeviceService, deviceService]
         };
     }
 }

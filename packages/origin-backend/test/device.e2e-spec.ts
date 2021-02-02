@@ -17,7 +17,7 @@ import dotenv from 'dotenv';
 import { HttpStatus, INestApplication } from '@nestjs/common';
 import { DatabaseService } from '@energyweb/origin-backend-utils';
 import { bootstrapTestInstance, registerAndLogin } from './origin-backend';
-import { DeviceService } from '../src/pods/device/device.service';
+import { IDeviceService } from '../src/pods/device/device.service';
 import { OrganizationService } from '../src/pods/organization/organization.service';
 import { UserService } from '../src/pods/user/user.service';
 
@@ -27,7 +27,7 @@ describe('Device e2e tests', () => {
     });
 
     let app: INestApplication;
-    let deviceService: DeviceService;
+    let deviceService: IDeviceService;
     let organizationService: OrganizationService;
     let userService: UserService;
     let databaseService: DatabaseService;

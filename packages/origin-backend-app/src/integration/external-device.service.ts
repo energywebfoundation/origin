@@ -1,12 +1,12 @@
 import { IDeviceSettings, IExternalDeviceService, IProductInfo } from '@energyweb/exchange';
-import { DeviceService } from '@energyweb/origin-backend';
+import { IDeviceService } from '@energyweb/origin-backend';
 import { IExternalDeviceId } from '@energyweb/origin-backend-core';
 import { Injectable } from '@nestjs/common';
 import { ModuleRef } from '@nestjs/core';
 
 @Injectable()
 export class ExternalDeviceService implements IExternalDeviceService {
-    private _deviceService: DeviceService;
+    private _deviceService: IDeviceService;
 
     constructor(private readonly moduleRef: ModuleRef) {}
 
@@ -15,7 +15,7 @@ export class ExternalDeviceService implements IExternalDeviceService {
             return this._deviceService;
         }
 
-        this._deviceService = this.moduleRef.get<DeviceService>(DeviceService, {
+        this._deviceService = this.moduleRef.get<IDeviceService>(IDeviceService, {
             strict: false
         });
 

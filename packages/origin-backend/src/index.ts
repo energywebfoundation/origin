@@ -29,6 +29,7 @@ export * from './pods/email-confirmation/events';
 export * from './pods/invitation/events';
 export * from './pods/device/events';
 export * from './pods/user';
+export * from './pods/device/device.service';
 
 export const entities = [
     Device,
