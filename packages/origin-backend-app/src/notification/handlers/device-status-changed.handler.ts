@@ -15,7 +15,7 @@ export class DeviceStatusChangedHandler implements IEventHandler<DeviceStatusCha
     public async handle(event: DeviceStatusChangedEvent): Promise<void> {
         const { device, status } = event;
 
-        const members = await this.organizationService.getDeviceManagers(device.organization.id);
+        const members = await this.organizationService.getDeviceManagers(device.organizationId);
         const emails = members.map((member) => member.email);
 
         const url = `${process.env.UI_BASE_URL}/devices/owned`;

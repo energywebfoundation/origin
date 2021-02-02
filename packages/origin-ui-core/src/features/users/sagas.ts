@@ -232,10 +232,7 @@ function* updateBlockchainAddress(): SagaIterator {
             );
 
             yield apply(userClient, userClient.updateOwnBlockchainAddress, [
-                { ...user, blockchainAccountAddress: '' }
-            ]);
-            yield apply(userClient, userClient.update, [
-                { blockchainAccountSignedMessage: message }
+                { signedMessage: message }
             ]);
 
             showNotification(

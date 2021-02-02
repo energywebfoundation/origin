@@ -1,28 +1,23 @@
-import { createMemoryHistory } from 'history';
-import createSagaMiddleware, { Task } from 'redux-saga';
-import { applyMiddleware, createStore } from 'redux';
-import { routerMiddleware, ConnectedRouter } from 'connected-react-router';
-import { createRootReducer } from '../../reducers/createRootReducer';
-import { sagas } from '../../features/sagas';
-import { ReactWrapper, CommonWrapper } from 'enzyme';
-import { Compliance } from '@energyweb/utils-general';
-
-import { producingDeviceCreatedOrUpdated } from '../../features/producingDevices/actions';
-import { dataTestSelector, DATE_FORMAT_DMY, moment } from '../../utils';
-import { MuiPickersUtilsProvider } from '@material-ui/pickers';
-import React from 'react';
 import MomentUtils from '@date-io/moment';
-import { Provider } from 'react-redux';
-import { createLogger } from 'redux-logger';
-import { setBackendClient } from '../../features/general/actions';
-import {
-    IDevice,
-    DeviceStatus,
-    ISmartMeterReadStats,
-    IPublicOrganization
-} from '@energyweb/origin-backend-core';
+import { DeviceStatus, IDevice, ISmartMeterReadStats } from '@energyweb/origin-backend-core';
+import { Compliance } from '@energyweb/utils-general';
+import { MuiPickersUtilsProvider } from '@material-ui/pickers';
+import { ConnectedRouter, routerMiddleware } from 'connected-react-router';
+import { CommonWrapper, ReactWrapper } from 'enzyme';
 import { BigNumber } from 'ethers';
+import { createMemoryHistory } from 'history';
+import React from 'react';
+import { Provider } from 'react-redux';
+import { applyMiddleware, createStore } from 'redux';
+import { createLogger } from 'redux-logger';
+import createSagaMiddleware, { Task } from 'redux-saga';
+
+import { setBackendClient } from '../../features/general/actions';
+import { producingDeviceCreatedOrUpdated } from '../../features/producingDevices/actions';
 import { IProducingDeviceState } from '../../features/producingDevices/reducer';
+import { sagas } from '../../features/sagas';
+import { createRootReducer } from '../../reducers/createRootReducer';
+import { dataTestSelector, DATE_FORMAT_DMY, moment } from '../../utils';
 import { BackendClient } from '../../utils/clients/BackendClient';
 
 export const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
@@ -247,7 +242,7 @@ interface ICreateProducingDeviceProperties {
     complianceRegistry?: Compliance;
     region?: string;
     province?: string;
-    organization: IPublicOrganization;
+    organizationId: number;
 }
 
 export const DEFAULT_PRODUCING_DEVICE_OFFCHAIN_PROPERTIES = ({
@@ -297,7 +292,7 @@ export const createProducingDevice = (
         images: '',
         region: properties.region || DEFAULT_PRODUCING_DEVICE_OFFCHAIN_PROPERTIES.region,
         province: properties.province || DEFAULT_PRODUCING_DEVICE_OFFCHAIN_PROPERTIES.province,
-        organization: properties.organization
+        organizationId: properties.organizationId
     };
 
     return ({
