@@ -1,12 +1,9 @@
 import { Contracts } from '@energyweb/issuer';
-import { getProviderWithFallback } from '@energyweb/utils-general';
 import { Contract, ContractTransaction, ethers } from 'ethers';
 import polly from 'polly-js';
 import { AccountService } from '../src/pods/account/account.service';
 
 const registryInterface = new ethers.utils.Interface(Contracts.IssuerJSON.abi);
-
-const web3 = 'http://localhost:8580';
 
 export const issueToken = async (
     issuer: Contract,
@@ -54,14 +51,15 @@ export const depositToken = async (
 ) => {
     const registryWithUserAsSigner = registry.connect(sender);
 
-    await registryWithUserAsSigner.safeTransferFrom(sender.address, to, id, amount, '0x00');
+    return registryWithUserAsSigner.safeTransferFrom(sender.address, to, id, amount, '0x00');
 };
-
-export const provider = getProviderWithFallback(web3);
 
 export const MWh = 10 ** 6;
 
-export const createDepositAddress = async (accountService: AccountService, userId: string) => {
+export const createDepositAddress = async (
+    accountService: AccountService,
+    userId: string
+): Promise<string> => {
     const account = await accountService.getAccount(userId);
 
     if (account) {

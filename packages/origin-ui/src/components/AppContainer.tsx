@@ -25,6 +25,7 @@ import { useLinks } from '../routing';
 import { OriginConfigurationContext } from './OriginConfigurationContext';
 import { Header } from './Header';
 import { SidebarMenu } from './SidebarMenu';
+import { IRecCoreAdapter, IRecApp } from '@energyweb/origin-ui-irec-core';
 
 interface IProps {
     history: History;
@@ -36,6 +37,7 @@ export function AppContainer(props: IProps) {
     const user = useSelector(getUserOffchain);
     const config = useContext(OriginConfigurationContext);
     const store = useStore();
+    const { enabledFeatures } = useContext(OriginConfigurationContext);
 
     const shareContextCore = (component) => (
         <UiCoreAdapter
@@ -47,7 +49,7 @@ export function AppContainer(props: IProps) {
     );
 
     const certificatesRoute = shareContextCore(<Certificates />);
-    const devicesRoute = shareContextCore(<Device />);
+    const devicesCoreRoute = shareContextCore(<Device />);
     const loginPageRoute = shareContextCore(<LoginPage />);
     const accountRoute = shareContextCore(<Account />);
     const organizationRoute = shareContextCore(<Organization />);
@@ -62,6 +64,19 @@ export function AppContainer(props: IProps) {
         />
     );
     const exchangeRoute = shareContextExchange(<ExchangeApp />);
+
+    const shareContextIRec = (component) => (
+        <IRecCoreAdapter
+            store={store}
+            configuration={config}
+            history={props.history}
+            component={component}
+        />
+    );
+    const iRecDeviceRoute = shareContextIRec(<IRecApp />);
+    const deviceRoute = !enabledFeatures.includes(OriginFeature.IRecUIApp)
+        ? devicesCoreRoute
+        : iRecDeviceRoute;
 
     const {
         baseURL,
@@ -89,7 +104,6 @@ export function AppContainer(props: IProps) {
     );
 
     const classes = useStyles(useTheme());
-    const { enabledFeatures } = useContext(OriginConfigurationContext);
 
     const isIssuer = isRole(user, Role.Issuer);
     const userIsActive = user && user.status === UserStatus.Active;
@@ -115,7 +129,7 @@ export function AppContainer(props: IProps) {
                     <Header />
                     <SidebarMenu />
                     <Switch>
-                        <Route path={getDevicesLink()}>{devicesRoute}</Route>
+                        <Route path={getDevicesLink()}>{deviceRoute}</Route>
                         {((enabledFeatures.includes(OriginFeature.Certificates) &&
                             userIsActiveAndPartOfOrg) ||
                             isIssuer) && (
@@ -136,7 +150,7 @@ export function AppContainer(props: IProps) {
                             path={baseURL}
                             render={() => {
                                 return enabledFeatures.includes(OriginFeature.Devices)
-                                    ? devicesRoute
+                                    ? deviceRoute
                                     : enabledFeatures.includes(OriginFeature.Exchange)
                                     ? exchangeRoute
                                     : accountRoute;

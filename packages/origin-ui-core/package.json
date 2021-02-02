@@ -57,7 +57,7 @@
         "history": "4.10.1",
         "i18next": "19.8.5",
         "i18next-icu": "1.4.2",
-        "moment": "2.24.0",
+        "moment": "2.29.1",
         "moment-timezone": "0.5.32",
         "query-string": "6.13.8",
         "react": "17.0.1",

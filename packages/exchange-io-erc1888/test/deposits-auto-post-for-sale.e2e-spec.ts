@@ -13,6 +13,7 @@ import {
     IProductInfo,
     testUtils
 } from '@energyweb/exchange';
+import { getProviderWithFallback } from '@energyweb/utils-general';
 import { ExchangeErc1888Module } from '../src';
 
 const web3 = 'http://localhost:8590';
@@ -22,7 +23,6 @@ const {
     createDepositAddress,
     depositToken,
     issueToken,
-    provider,
     bootstrapTestInstance
 } = testUtils;
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
@@ -76,7 +76,7 @@ describe('Deposits automatic posting for sale', () => {
 
     const tokenReceiverPrivateKey =
         '0xca77c9b06fde68bcbcc09f603c958620613f4be79f3abb4b2032131d0229462e';
-    const tokenReceiver = new ethers.Wallet(tokenReceiverPrivateKey, provider);
+    const tokenReceiver = new ethers.Wallet(tokenReceiverPrivateKey, getProviderWithFallback(web3));
 
     const generationFrom = moment('2020-01-01').unix();
     const generationTo = moment('2020-01-31').unix();

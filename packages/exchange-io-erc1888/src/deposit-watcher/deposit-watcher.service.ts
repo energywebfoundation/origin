@@ -92,6 +92,12 @@ export class DepositWatcherService implements OnModuleInit {
 
         const { _from: from, _to: to, _value: value, _id: id } = log;
 
+        if (!value || !from || !to) {
+            this.logger.error(`Received an incorrect event: ${JSON.stringify(event)}`);
+
+            return;
+        }
+
         if (to !== this.walletAddress) {
             this.logger.debug(
                 `This transfer is to other address ${to} than wallet address ${this.walletAddress}`
@@ -107,8 +113,8 @@ export class DepositWatcherService implements OnModuleInit {
 
         const deposit: CreateDepositDTO = {
             transactionHash,
-            address: from as string,
-            amount: value as string,
+            address: from,
+            amount: value.toString(),
             blockNumber: receipt.blockNumber,
             asset: {
                 address: this.registryAddress,
