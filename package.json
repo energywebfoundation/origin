@@ -39,6 +39,7 @@
         "build:ui": "lerna run build --scope @energyweb/origin-ui --stream",
         "build:ui-core": "lerna run build --scope @energyweb/origin-ui-core --stream",
         "build:exchange-ui": "lerna run build --scope @energyweb/origin-ui --stream",
+        "build:ui-irec": "lerna run build --scope @energyweb/origin-ui-irec-core --stream",
         "lint": "lerna run lint --parallel --stream",
         "lint-fix": "lerna run lint-fix --parallel --stream",
         "clean": "lerna run clean --parallel",

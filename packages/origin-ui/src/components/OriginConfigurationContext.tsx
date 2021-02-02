@@ -303,6 +303,7 @@ export function createOriginConfiguration(configuration: Partial<IOriginConfigur
             return ![
                 OriginFeature.IRecConnect,
                 OriginFeature.DevicesImport,
+                OriginFeature.IRecUIApp,
                 OriginFeature.CertificatesImport
             ].includes(feature);
         })

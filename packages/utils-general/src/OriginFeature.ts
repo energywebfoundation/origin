@@ -11,7 +11,8 @@ export enum OriginFeature {
     CertificatesImport = 'certificatesImport',
     CertificationRequests = 'certificationRequests',
     IRec = 'irec',
-    IRecConnect = 'irecConnect'
+    IRecConnect = 'irecConnect',
+    IRecUIApp = 'iRecUIApp'
 }
 
 export const allOriginFeatures = getEnumValues(OriginFeature);

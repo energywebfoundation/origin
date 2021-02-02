@@ -5,6 +5,7 @@ export * from './ErrorComponent';
 export * from './IconPopover';
 export * from './Requirements';
 export * from './PermissionsFeedback';
+export * from './Upload';
 
 export * from './Account';
 export * from './admin';

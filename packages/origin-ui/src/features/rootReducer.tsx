@@ -9,6 +9,7 @@ import {
     web3State
 } from '@energyweb/origin-ui-core';
 import { bundlesState, ordersState, exchangeGeneralState } from '@energyweb/exchange-ui-core';
+import { iRecGeneralState, iRecDevicesState } from '@energyweb/origin-ui-irec-core';
 import { IStoreState } from '../types';
 
 export const createRootReducer = (history) =>
@@ -22,5 +23,7 @@ export const createRootReducer = (history) =>
         bundlesState,
         ordersState,
         exchangeGeneralState,
-        web3: web3State
+        web3: web3State,
+        iRecGeneralState,
+        iRecDevicesState
     });
