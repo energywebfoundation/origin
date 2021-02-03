@@ -38,7 +38,7 @@ describe('API flows', () => {
         console.log('registrantOrg', registrantOrg);
     });
 
-    it.only('should pass create and approve device flow', async () => {
+    it('should pass create and approve device flow', async () => {
         const params: DeviceCreateUpdateParams = {
             address: '1 Wind Farm Avenue, London',
             capacity: 500,
@@ -94,19 +94,19 @@ describe('API flows', () => {
         expect(device.status).to.equal(DeviceState.Draft);
     }).timeout(10000);
 
-    it('should pass create and approve issue flow', async () => {
+    it.only('should pass create and approve issue flow', async () => {
         const devices: Device[] = await registrantClient.device.getAll();
         const approvedDevice = devices.find((device) => device.status === DeviceState.Approved);
+
         const issueParams: Issue = {
             device: approvedDevice.code,
             recipient: tradeAccount,
-            start: moment().add(1, 'day').toDate(),
-            end: moment().add(2, 'day').toDate(),
+            start: moment().subtract(2, 'day').toDate(),
+            end: moment().subtract(1, 'day').toDate(),
             production: 10,
             fuel: approvedDevice.fuel,
             notes: 'Some note'
         };
-
         const issueCode: string = await registrantClient.issue.create(issueParams);
 
         let issue: IssueWithStatus = await registrantClient.issue.get(issueCode);

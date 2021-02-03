@@ -83,7 +83,7 @@ export class IRECAPIClient {
     }
 
     public get account() {
-        const accountManagementUrl = `${this.endPointUrl}/api/irec/account-management`;
+        const accountManagementUrl = `${this.endPointUrl}/api/irec/v1/account-management`;
 
         return {
             getAll: async (): Promise<Account[]> => {
@@ -170,7 +170,8 @@ export class IRECAPIClient {
         const setState = async (code: string, action: string, notes?: string) => {
             const url = `${issueManagementUrl}/${code}/${action}`;
 
-            await this.axiosInstance.put(url, { notes }, this.config);
+            const resp = await this.axiosInstance.put(url, { notes }, this.config);
+            console.log(resp.data);
         };
 
         return {
@@ -179,7 +180,7 @@ export class IRECAPIClient {
                 await validateOrReject(issue);
 
                 const url = `${issueManagementUrl}/create`;
-
+                console.log(classToPlain(issueParams));
                 const response = await this.axiosInstance.post<{ code: string }>(
                     url,
                     classToPlain(issueParams),
@@ -500,7 +501,7 @@ export class IRECAPIClient {
                 return Promise.reject(
                     new Error(
                         JSON.stringify({
-                            status: err?.response?.data?.status ?? 500,
+                            status: err?.response?.data?.status ?? err?.response?.status ?? 500,
                             msg:
                                 err?.response?.data?.msg ??
                                 err?.response?.data?.title ??
