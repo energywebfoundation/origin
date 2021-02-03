@@ -1,0 +1,16 @@
+{
+    "extends": "../../../tsconfig.json",
+    "compilerOptions": {
+        "composite": true,
+        "outDir": "./dist/js"
+    },
+    "include": ["src/**/*"],
+    "references": [
+        {
+            "path": "../../traceability/issuer/tsconfig.json"
+        },
+        {
+            "path": "../../origin-backend-core/tsconfig.json"
+        }
+    ]
+}

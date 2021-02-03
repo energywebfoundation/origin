@@ -73,7 +73,15 @@
         "deploy:heroku:stable": "lerna run deploy:container:heroku:stable --scope @energyweb/migrations --stream && lerna run deploy:container:heroku:stable --scope @energyweb/origin-ui --scope @energyweb/solar-simulator --stream"
     },
     "workspaces": [
-        "packages/*"
+        "packages/*",
+        "packages/apps/*",
+        "packages/devices/*",
+        "packages/organizations/*",
+        "packages/tools/*",
+        "packages/traceability/*",
+        "packages/trade/*",
+        "packages/ui/*",
+        "packages/utils/*"
     ],
     "engines": {
         "node": "12"

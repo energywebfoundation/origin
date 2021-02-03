@@ -1,15 +1,16 @@
 {
-    "name": "@energyweb/origin-backend-core",
-    "version": "7.0.1",
+    "name": "@energyweb/origin-backend-utils",
+    "version": "1.4.0",
     "description": "",
-    "main": "dist/js/src/index.js",
+    "main": "dist/js/index.js",
     "scripts": {
         "build": "yarn build:ts",
         "build:ts": "tsc -b tsconfig.json",
         "clean": "shx rm -rf dist",
         "lint": "eslint \"src/**/*{.ts,.tsx}\" --quiet",
         "lint-fix": "eslint \"src/**/*{.ts,.tsx}\" --fix",
-        "prettier": "prettier --write --config-precedence file-override './src/**/*'"
+        "prettier": "prettier --write --config-precedence file-override './src/**/*'",
+        "test": "mocha -r ts-node/register src/test/*.test.ts --exit"
     },
     "repository": {
         "type": "git",
@@ -28,10 +29,14 @@
         "registry": "https://registry.npmjs.org"
     },
     "dependencies": {
-        "axios": "0.21.1",
-        "class-transformer": "0.3.1",
-        "class-validator": "0.13.1",
-        "ethers": "5.0.27",
-        "precise-proofs-js": "1.2.0"
+        "@energyweb/origin-backend-core": "7.0.1",
+        "@nestjs/common": "7.6.7",
+        "@nestjs/config": "^0.6.0",
+        "@nestjs/core": "7.6.7",
+        "bn.js": "^5.1.2",
+        "class-validator": "^0.13.0",
+        "polly-js": "1.8.0",
+        "rxjs": "6.6.3",
+        "typeorm": "0.2.30"
     }
 }

@@ -4,7 +4,7 @@
     "description": "",
     "main": "dist/js/src/index.js",
     "scripts": {
-        "lint": "eslint \"src/**/*{.ts,.tsx}\"",
+        "lint": "eslint \"src/**/*{.ts,.tsx}\" --quiet",
         "lint-fix": "eslint \"src/**/*{.ts,.tsx}\" --fix",
         "start": "nest start",
         "start:dev": "nest start --watch",
