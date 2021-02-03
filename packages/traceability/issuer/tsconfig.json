@@ -1,0 +1,16 @@
+{
+    "extends": "../../../tsconfig.json",
+    "compilerOptions": {
+        "composite": true,
+        "rootDir": "./",
+        "outDir": "./dist/js",
+        "resolveJsonModule": true,
+        "types": ["mocha", "node", "truffle-typings"]
+    },
+    "include": ["./src/**/*", "./dist/ts/**/*", "./schemas/*.json", "./build/**/*.json"],
+    "references": [
+        {
+            "path": "../../utils/utils-general/tsconfig.json"
+        }
+    ]
+}
