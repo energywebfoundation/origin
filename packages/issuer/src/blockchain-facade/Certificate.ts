@@ -1,10 +1,4 @@
-import {
-    Event as BlockchainEvent,
-    ContractTransaction,
-    ethers,
-    BigNumber,
-    ContractReceipt
-} from 'ethers';
+import { Event as BlockchainEvent, ContractTransaction, ethers, BigNumber } from 'ethers';
 
 import { Timestamp } from '@energyweb/utils-general';
 
@@ -213,7 +207,7 @@ export class Certificate implements ICertificate {
         amount?: BigNumber,
         from?: string,
         to?: string
-    ): Promise<ContractReceipt> {
+    ): Promise<ContractTransaction> {
         const { activeUser, registry } = this.blockchainProperties;
         const registryWithSigner = registry.connect(activeUser);
 
@@ -228,7 +222,15 @@ export class Certificate implements ICertificate {
 
         const encodedClaimData = await encodeClaimData(claimData, this.blockchainProperties);
 
-        const claimTx = await registryWithSigner.safeTransferAndClaimFrom(
+        console.log({
+            from: from ?? activeUserAddress,
+            to: claimAddress,
+            amountSent: amount ?? ownedVolume,
+            amount,
+            ownedVolume
+        });
+
+        return registryWithSigner.safeTransferAndClaimFrom(
             from ?? activeUserAddress,
             claimAddress,
             this.id,
@@ -236,10 +238,6 @@ export class Certificate implements ICertificate {
             this.data,
             encodedClaimData
         );
-
-        const txReceipt = await claimTx.wait();
-
-        return txReceipt;
     }
 
     async transfer(to: string, amount?: BigNumber, from?: string): Promise<ContractTransaction> {
@@ -255,27 +253,20 @@ export class Certificate implements ICertificate {
 
         const registryWithSigner = registry.connect(activeUser);
 
-        const tx = await registryWithSigner.safeTransferFrom(
+        return registryWithSigner.safeTransferFrom(
             fromAddress,
             toAddress,
             this.id,
             amount ?? ownedVolume,
             this.data
         );
-
-        await tx.wait();
-
-        return tx;
     }
 
     async revoke(): Promise<ContractTransaction> {
         const { issuer } = this.blockchainProperties;
         const issuerWithSigner = issuer.connect(this.blockchainProperties.activeUser);
 
-        const tx = await issuerWithSigner.revokeCertificate(this.id);
-        await tx.wait();
-
-        return tx;
+        return issuerWithSigner.revokeCertificate(this.id);
     }
 
     async isRevoked(): Promise<boolean> {

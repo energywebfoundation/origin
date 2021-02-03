@@ -10,6 +10,7 @@ import {
     CreateAskDTO,
     Order,
     RequestWithdrawalDTO,
+    RequestClaimDTO,
     TransferDirection,
     TransferStatus,
     Transfer,
@@ -261,5 +262,31 @@ describe('Deposits using deployed registry', () => {
         const endBalance = await getBalance(withdrawalAddress, tokenId);
 
         expect(endBalance.toString()).to.be.equal(withdrawalAmount);
+    });
+
+    it('should claim to exchange deposit address', async () => {
+        const depositAmount = '10';
+        const claimAmount = '5';
+
+        const assetId = await depositToExchangeAddress(depositAmount);
+
+        const claim: RequestClaimDTO = {
+            assetId,
+            amount: claimAmount,
+            address: depositAddress
+        };
+
+        const startBalance = await getBalance(depositAddress, tokenId);
+
+        await request(app.getHttpServer())
+            .post('/transfer/claim')
+            .send(claim)
+            .expect(HttpStatus.CREATED);
+
+        await sleep(5000);
+
+        const endBalance = await getBalance(depositAddress, tokenId);
+
+        expect(endBalance.gt(startBalance)).to.equal(true);
     });
 });

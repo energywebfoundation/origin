@@ -1,7 +1,7 @@
 import { PositiveBNStringValidator } from '@energyweb/origin-backend-utils';
 import { ApiProperty } from '@nestjs/swagger';
 import { IsInt, IsNotEmpty, IsPositive, IsString, Validate, ValidateNested } from 'class-validator';
-import { CreateAssetDTO } from '../asset/create-asset.dto';
+import { CreateAssetDTO } from '../../asset/create-asset.dto';
 
 export class CreateDepositDTO {
     @ApiProperty({ type: CreateAssetDTO })
