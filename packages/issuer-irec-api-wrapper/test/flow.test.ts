@@ -14,8 +14,11 @@ dotenv.config();
 
 describe('API flows', () => {
     let issuerClient: IRECAPIClient;
-    // let participantClient: IRECAPIClient;
+    let participantClient: IRECAPIClient;
     let registrantClient: IRECAPIClient;
+
+    let issuerOrg: Organisation;
+    let participantOrg: Organisation;
     let registrantOrg: Organisation;
 
     const tradeAccount = 'ACCOUNTTRADE001';
@@ -23,12 +26,19 @@ describe('API flows', () => {
 
     before(async () => {
         issuerClient = await getClient(credentials.issuer);
-        // participantClient = await getClient(credentials.participant);
+        participantClient = await getClient(credentials.participant);
         registrantClient = await getClient(credentials.registrant);
+
+        issuerOrg = await issuerClient.organisation.get();
+        participantOrg = await participantClient.organisation.get();
         registrantOrg = await registrantClient.organisation.get();
+
+        console.log('issuerOrg', issuerOrg);
+        console.log('participantOrg', participantOrg);
+        console.log('registrantOrg', registrantOrg);
     });
 
-    it('should pass create and approve device flow', async () => {
+    it.only('should pass create and approve device flow', async () => {
         const params: DeviceCreateUpdateParams = {
             address: '1 Wind Farm Avenue, London',
             capacity: 500,
@@ -37,7 +47,7 @@ describe('API flows', () => {
             defaultAccount: tradeAccount,
             deviceType: 'T020001',
             fuel: 'ES200',
-            issuer: 'ORGANISATION006',
+            issuer: issuerOrg.code,
             latitude: 53.405088,
             longitude: -1.744222,
             name: 'DeviceXYZ',
