@@ -21,9 +21,11 @@ import {
     configureStatus,
     configureDateFormat,
     periodTypeOptions,
-    demandTypeOptions
+    demandTypeOptions,
+    useDemandDependantFilters
 } from '../../utils/demand';
 import { Demand } from '../../utils/exchange';
+
 import { RemoveOrderConfirmation, DemandUpdateModal } from '../modal';
 
 const DEMANDS_PER_PAGE = 5;
@@ -43,6 +45,7 @@ export const DemandsTable = (props: IOwnProps) => {
     const deviceTypeService = configuration?.deviceTypeService;
     const periodOptions = periodTypeOptions(t, false);
     const demandOptions = demandTypeOptions(t);
+    const demandDependantFilters = useDemandDependantFilters();
 
     const columns = [
         { id: 'volume', label: t('demand.properties.volume') },
@@ -101,12 +104,12 @@ export const DemandsTable = (props: IOwnProps) => {
         offset,
         requestedFilters
     }: IPaginatedLoaderHooksFetchDataParameters): Promise<IPaginatedLoaderFetchDataReturnValues> {
-        const filteredAsks = demands.filter((ask) => {
+        const filteredDemands = demands.filter((ask) => {
             return checkRecordPassesFilters(ask, requestedFilters, deviceTypeService);
         });
         return {
-            paginatedData: filteredAsks.slice(offset, offset + requestedPageSize),
-            total: filteredAsks.length
+            paginatedData: filteredDemands.slice(offset, offset + requestedPageSize),
+            total: filteredDemands.length
         };
     }
 
@@ -186,6 +189,7 @@ export const DemandsTable = (props: IOwnProps) => {
                 pageSize={pageSize}
                 actions={actions}
                 caption={t('order.captions.demands')}
+                dependantFilters={demandDependantFilters}
             />
             {demandToView && (
                 <DemandUpdateModal demand={demandToView} close={() => setToView(null)} />

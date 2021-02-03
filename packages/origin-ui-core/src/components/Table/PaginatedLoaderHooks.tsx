@@ -300,6 +300,34 @@ export function checkRecordPassesFilters(
                         }
                     }
                     break;
+                case CustomFilterInputType.day:
+                    if (filter.selectedValue) {
+                        const filterDate = filter.selectedValue.startOf('day').unix();
+                        const recordDate = moment
+                            .unix(parseInt(filteredPropertyResolvedValue?.toString(), 10))
+                            .startOf('day')
+                            .unix();
+
+                        const { filterRule = FilterRules.EQUAL } = filter.input;
+                        switch (filterRule) {
+                            case FilterRules.EQUAL:
+                                if (filterDate !== recordDate) {
+                                    return false;
+                                }
+                                break;
+                            case FilterRules.FROM:
+                                if (filterDate > recordDate) {
+                                    return false;
+                                }
+                                break;
+                            case FilterRules.TO:
+                                if (filterDate < recordDate) {
+                                    return false;
+                                }
+                                break;
+                        }
+                    }
+                    break;
             }
         }
     }

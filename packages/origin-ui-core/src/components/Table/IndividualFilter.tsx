@@ -8,15 +8,17 @@ import {
     MenuItem,
     TextField,
     FilledInput,
-    Chip
+    Chip,
+    InputAdornment
 } from '@material-ui/core';
-import { KeyboardDatePicker } from '@material-ui/pickers';
+import { DatePicker } from '@material-ui/pickers';
 
 import { ICustomFilter, CustomFilterInputType } from './FiltersHeader';
 import { CustomSlider, CustomSliderThumbComponent } from '../CustomSlider';
 import { dataTest } from '../../utils';
 import { HierarchicalMultiSelect } from '../HierarchicalMultiSelect';
 import { getConfiguration } from '../../features/selectors';
+import { CalendarToday } from '@material-ui/icons';
 
 interface IProps {
     filter: ICustomFilter;
@@ -148,7 +150,8 @@ export function IndividualFilter(props: IProps) {
             );
         case CustomFilterInputType.yearMonth:
             return (
-                <KeyboardDatePicker
+                <DatePicker
+                    autoOk
                     openTo="year"
                     views={['year', 'month']}
                     label={filter.label}
@@ -157,6 +160,33 @@ export function IndividualFilter(props: IProps) {
                     variant="inline"
                     inputVariant="filled"
                     fullWidth={true}
+                    InputProps={{
+                        endAdornment: (
+                            <InputAdornment position="end">
+                                <CalendarToday />
+                            </InputAdornment>
+                        )
+                    }}
+                />
+            );
+        case CustomFilterInputType.day:
+            return (
+                <DatePicker
+                    autoOk
+                    label={filter.label}
+                    value={filter.selectedValue}
+                    onChange={(date: Moment) => props.changeFilterValue(filter, date)}
+                    variant="inline"
+                    inputVariant="filled"
+                    format="DD MMM YYYY"
+                    fullWidth={true}
+                    InputProps={{
+                        endAdornment: (
+                            <InputAdornment position="end">
+                                <CalendarToday />
+                            </InputAdornment>
+                        )
+                    }}
                 />
             );
     }

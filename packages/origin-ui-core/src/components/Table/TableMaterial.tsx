@@ -81,6 +81,7 @@ interface IProps<T extends readonly ITableColumn[]> {
     allowedActions?: any;
     caption?: string;
     actionsLabel?: string;
+    dependantFilters?: (filters: ICustomFilter[]) => ICustomFilter[];
 }
 
 export function TableMaterial<T extends readonly ITableColumn[]>(props: IProps<T>) {
@@ -191,7 +192,8 @@ export function TableMaterial<T extends readonly ITableColumn[]>(props: IProps<T
         highlightedRowsIds: highlightedRowsIndexes = [],
         allowedActions,
         caption,
-        actionsLabel
+        actionsLabel,
+        dependantFilters
     } = props;
 
     if (selectedIds.length > rows.length) {
@@ -237,7 +239,11 @@ export function TableMaterial<T extends readonly ITableColumn[]>(props: IProps<T
     return (
         <>
             <MuiPickersUtilsProvider utils={MomentUtils} locale={configuration.language}>
-                <FiltersHeader filters={filters} filtersChanged={filtersChanged} />
+                <FiltersHeader
+                    filters={filters}
+                    filtersChanged={filtersChanged}
+                    dependantFilters={dependantFilters}
+                />
 
                 <ColumnBatchActions
                     batchableActions={batchableActions}

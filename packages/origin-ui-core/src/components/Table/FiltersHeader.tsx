@@ -13,7 +13,8 @@ export enum CustomFilterInputType {
     multiselect = 'multiselect',
     dropdown = 'dropdown',
     slider = 'slider',
-    yearMonth = 'yearMonth'
+    yearMonth = 'yearMonth',
+    day = 'day'
 }
 
 export enum FilterRules {
@@ -52,6 +53,7 @@ export interface ICustomFilter extends ICustomFilterDefinition {
 interface IProps {
     filters: ICustomFilterDefinition[];
     filtersChanged: (filters: ICustomFilter[]) => void;
+    dependantFilters?: (filters: ICustomFilter[]) => ICustomFilter[];
 }
 
 export function FiltersHeader(props: IProps) {
@@ -61,6 +63,7 @@ export function FiltersHeader(props: IProps) {
     const originConfiguration = useOriginConfiguration();
     const originSimpleTextColor = originConfiguration?.styleConfig?.SIMPLE_TEXT_COLOR;
     const originBgColor = originConfiguration?.styleConfig?.MAIN_BACKGROUND_COLOR;
+    const { dependantFilters } = props;
 
     const filterBg = LightenColor(originBgColor, 5);
 
@@ -130,14 +133,17 @@ export function FiltersHeader(props: IProps) {
 
     useEffect(() => {
         setupProcessedFilters();
-    }, [props.filters]);
+    }, []);
 
     if (processedFilters.length === 0) {
         return null;
     }
 
     const searchFilter = processedFilters.find((f) => f.search);
-    const standardFilters = processedFilters.filter((f) => !f.search);
+    const nonSearchFilters = processedFilters.filter((f) => !f.search);
+    const filtersWithDependency = dependantFilters ? dependantFilters(nonSearchFilters) : null;
+
+    const standardFilters = filtersWithDependency ?? nonSearchFilters;
 
     return (
         <>
