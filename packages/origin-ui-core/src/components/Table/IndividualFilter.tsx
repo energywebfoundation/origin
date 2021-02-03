@@ -11,7 +11,7 @@ import {
     Chip,
     InputAdornment
 } from '@material-ui/core';
-import { KeyboardDatePicker, DatePicker } from '@material-ui/pickers';
+import { DatePicker } from '@material-ui/pickers';
 
 import { ICustomFilter, CustomFilterInputType } from './FiltersHeader';
 import { CustomSlider, CustomSliderThumbComponent } from '../CustomSlider';
@@ -150,7 +150,7 @@ export function IndividualFilter(props: IProps) {
             );
         case CustomFilterInputType.yearMonth:
             return (
-                <KeyboardDatePicker
+                <DatePicker
                     autoOk
                     openTo="year"
                     views={['year', 'month']}
@@ -160,6 +160,13 @@ export function IndividualFilter(props: IProps) {
                     variant="inline"
                     inputVariant="filled"
                     fullWidth={true}
+                    InputProps={{
+                        endAdornment: (
+                            <InputAdornment position="end">
+                                <CalendarToday />
+                            </InputAdornment>
+                        )
+                    }}
                 />
             );
         case CustomFilterInputType.day:
