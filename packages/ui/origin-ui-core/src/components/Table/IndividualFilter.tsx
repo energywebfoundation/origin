@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { SyntheticEvent } from 'react';
 import { useSelector } from 'react-redux';
 import { Moment } from 'moment';
 import {
@@ -9,7 +9,9 @@ import {
     TextField,
     FilledInput,
     Chip,
-    InputAdornment
+    InputAdornment,
+    makeStyles,
+    createStyles
 } from '@material-ui/core';
 import { DatePicker } from '@material-ui/pickers';
 
@@ -18,17 +20,33 @@ import { CustomSlider, CustomSliderThumbComponent } from '../CustomSlider';
 import { dataTest } from '../../utils';
 import { HierarchicalMultiSelect } from '../HierarchicalMultiSelect';
 import { getConfiguration } from '../../features/selectors';
-import { CalendarToday } from '@material-ui/icons';
+import { CalendarToday, Clear } from '@material-ui/icons';
 
 interface IProps {
     filter: ICustomFilter;
     changeFilterValue: (targetFilter: ICustomFilter, selectedValue: any) => void;
 }
 
+const useStyles = makeStyles(() =>
+    createStyles({
+        clearIcon: {
+            cursor: 'pointer',
+            marginRight: '15px'
+        }
+    })
+);
+
 export function IndividualFilter(props: IProps) {
-    const { filter } = props;
+    const { filter, changeFilterValue } = props;
 
     const configuration = useSelector(getConfiguration);
+
+    const handleFilterClear = (event: SyntheticEvent, resetValueCallback: () => void): void => {
+        event.stopPropagation();
+        resetValueCallback();
+    };
+
+    const classes = useStyles();
 
     if (!filter) {
         return null;
@@ -39,7 +57,7 @@ export function IndividualFilter(props: IProps) {
             return (
                 <FormControl fullWidth={true} variant="filled">
                     <TextField
-                        onChange={(e) => props.changeFilterValue(filter, e.target.value)}
+                        onChange={(e) => changeFilterValue(filter, e.target.value)}
                         value={filter.selectedValue ?? ''}
                         label={filter.label}
                         fullWidth={true}
@@ -55,7 +73,7 @@ export function IndividualFilter(props: IProps) {
                     <Select
                         multiple
                         value={filter.selectedValue}
-                        onChange={(e) => props.changeFilterValue(filter, e.target.value)}
+                        onChange={(e) => changeFilterValue(filter, e.target.value)}
                         input={<FilledInput />}
                         renderValue={(selected) => (
                             <>
@@ -94,7 +112,7 @@ export function IndividualFilter(props: IProps) {
             return (
                 <HierarchicalMultiSelect
                     selectedValue={filter.selectedValue ?? []}
-                    onChange={(e) => props.changeFilterValue(filter, e)}
+                    onChange={(e) => changeFilterValue(filter, e)}
                     allValues={configuration?.deviceTypeService?.deviceTypes}
                     selectOptions={[
                         {
@@ -118,7 +136,7 @@ export function IndividualFilter(props: IProps) {
                     <InputLabel>{filter.label}</InputLabel>
                     <Select
                         value={filter.selectedValue ?? ''}
-                        onChange={(e) => props.changeFilterValue(filter, e.target.value)}
+                        onChange={(e) => changeFilterValue(filter, e.target.value)}
                         fullWidth={true}
                         variant="filled"
                         input={<FilledInput />}
@@ -144,7 +162,7 @@ export function IndividualFilter(props: IProps) {
                         min={filter.input.min}
                         max={filter.input.max}
                         ThumbComponent={CustomSliderThumbComponent}
-                        onChangeCommitted={(event, value) => props.changeFilterValue(filter, value)}
+                        onChangeCommitted={(event, value) => changeFilterValue(filter, value)}
                     />
                 </div>
             );
@@ -156,13 +174,23 @@ export function IndividualFilter(props: IProps) {
                     views={['year', 'month']}
                     label={filter.label}
                     value={filter.selectedValue}
-                    onChange={(date: Moment) => props.changeFilterValue(filter, date)}
+                    onChange={(date: Moment) => changeFilterValue(filter, date)}
                     variant="inline"
                     inputVariant="filled"
                     fullWidth={true}
                     InputProps={{
                         endAdornment: (
                             <InputAdornment position="end">
+                                {filter.selectedValue && (
+                                    <Clear
+                                        className={classes.clearIcon}
+                                        onClick={(event) =>
+                                            handleFilterClear(event, () =>
+                                                changeFilterValue(filter, null)
+                                            )
+                                        }
+                                    />
+                                )}
                                 <CalendarToday />
                             </InputAdornment>
                         )
@@ -175,7 +203,7 @@ export function IndividualFilter(props: IProps) {
                     autoOk
                     label={filter.label}
                     value={filter.selectedValue}
-                    onChange={(date: Moment) => props.changeFilterValue(filter, date)}
+                    onChange={(date: Moment) => changeFilterValue(filter, date)}
                     variant="inline"
                     inputVariant="filled"
                     format="DD MMM YYYY"
@@ -183,6 +211,16 @@ export function IndividualFilter(props: IProps) {
                     InputProps={{
                         endAdornment: (
                             <InputAdornment position="end">
+                                {filter.selectedValue && (
+                                    <Clear
+                                        className={classes.clearIcon}
+                                        onClick={(event) =>
+                                            handleFilterClear(event, () =>
+                                                changeFilterValue(filter, null)
+                                            )
+                                        }
+                                    />
+                                )}
                                 <CalendarToday />
                             </InputAdornment>
                         )
