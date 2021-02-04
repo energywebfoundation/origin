@@ -163,6 +163,12 @@ export class WithdrawalProcessorService implements OnModuleInit {
                 null,
                 transfer.address
             );
+        } else {
+            throw Error(
+                `Unable to process transfer with direction ${
+                    TransferDirection[transfer.direction]
+                }.`
+            );
         }
 
         await this.transferService.setAsUnconfirmed(id, result.hash);
