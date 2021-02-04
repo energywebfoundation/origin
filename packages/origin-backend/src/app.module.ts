@@ -17,7 +17,7 @@ import { EmailConfirmationModule } from './pods/email-confirmation/email-confirm
 import { providers } from '.';
 import { InvitationModule } from './pods/invitation/invitation.module';
 
-const ENV_FILE_PATH = path.resolve(__dirname, '../../../../../.env');
+const ENV_FILE_PATH = path.resolve(__dirname, '../../../.env');
 
 @Module({})
 export class AppModule {
