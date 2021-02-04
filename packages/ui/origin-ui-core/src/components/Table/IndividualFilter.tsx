@@ -74,7 +74,24 @@ export function IndividualFilter(props: IProps) {
                         multiple
                         value={filter.selectedValue}
                         onChange={(e) => changeFilterValue(filter, e.target.value)}
-                        input={<FilledInput />}
+                        input={
+                            <FilledInput
+                                endAdornment={
+                                    <>
+                                        {filter.selectedValue.length > 0 && (
+                                            <Clear
+                                                className={classes.clearIcon}
+                                                onClick={(event) =>
+                                                    handleFilterClear(event, () =>
+                                                        changeFilterValue(filter, [])
+                                                    )
+                                                }
+                                            />
+                                        )}
+                                    </>
+                                }
+                            />
+                        }
                         MenuProps={{
                             anchorOrigin: {
                                 vertical: 'bottom',
