@@ -20,7 +20,6 @@ import request from 'supertest';
 import { entities } from '../src';
 import { AppModule } from '../src/app.module';
 import { ConfigurationService } from '../src/pods/configuration';
-import { DeviceService } from '../src/pods/device/device.service';
 import { EmailConfirmationService } from '../src/pods/email-confirmation/email-confirmation.service';
 import { FileService } from '../src/pods/file/file.service';
 import { InvitationService } from '../src/pods/invitation/invitation.service';
@@ -64,7 +63,7 @@ export const bootstrapTestInstance = async () => {
                 entities,
                 logging: ['info']
             }),
-            AppModule.register(null)
+            AppModule
         ],
         providers: [DatabaseService]
     }).compile();
@@ -78,7 +77,6 @@ export const bootstrapTestInstance = async () => {
     const userService = await app.resolve<UserService>(UserService);
     const databaseService = await app.resolve<DatabaseService>(DatabaseService);
     const organizationService = await app.resolve<OrganizationService>(OrganizationService);
-    const deviceService = await app.resolve<DeviceService>(DeviceService);
     const configurationService = await app.resolve<ConfigurationService>(ConfigurationService);
     const emailConfirmationService = await app.resolve<EmailConfirmationService>(
         EmailConfirmationService
@@ -99,7 +97,6 @@ export const bootstrapTestInstance = async () => {
         userService,
         testLogger,
         organizationService,
-        deviceService,
         configurationService,
         emailConfirmationService,
         fileService,

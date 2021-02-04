@@ -5,8 +5,6 @@ import { AuthModule } from './auth/auth.module';
 import { AdminModule } from './pods/admin/admin.module';
 import { Configuration } from './pods/configuration/configuration.entity';
 import { ConfigurationModule } from './pods/configuration/configuration.module';
-import { Device } from './pods/device/device.entity';
-import { DeviceModule } from './pods/device/device.module';
 import { EmailConfirmation } from './pods/email-confirmation/email-confirmation.entity';
 import { EmailConfirmationModule } from './pods/email-confirmation/email-confirmation.module';
 import { File } from './pods/file/file.entity';
@@ -22,29 +20,18 @@ export { OrganizationModule, OrganizationService } from './pods/organization';
 
 export { AppModule } from './app.module';
 export { ConfigurationService } from './pods/configuration/configuration.service';
-export { DeviceService } from './pods/device/device.service';
 
 export * from './pods/organization/events';
 export * from './pods/email-confirmation/events';
 export * from './pods/invitation/events';
-export * from './pods/device/events';
 export * from './pods/user';
 
-export const entities = [
-    Device,
-    Configuration,
-    Organization,
-    User,
-    Invitation,
-    EmailConfirmation,
-    File
-];
+export const entities = [Configuration, Organization, User, Invitation, EmailConfirmation, File];
 
 export const modules = [
     AuthModule,
     AdminModule,
     ConfigurationModule,
-    DeviceModule,
     FileModule,
     OrganizationModule,
     UserModule,
