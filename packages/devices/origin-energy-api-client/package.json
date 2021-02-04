@@ -24,7 +24,7 @@
         "client:clean": "find src/ -type f  ! -name \"*.ts\"  -delete"
     },
     "dependencies": {
-        "axios": "0.21.0",
+        "axios": "0.21.1",
         "@energyweb/origin-energy-api": "1.0.0"
     },
     "devDependencies": {       
