@@ -5,13 +5,10 @@ import moment from 'moment-timezone';
 import * as Winston from 'winston';
 
 import { ProducingDevice, Configuration } from '@energyweb/device-registry';
-import {
-    AuthClient,
-    DeviceClient,
-    Configuration as ClientConfiguration
-} from '@energyweb/origin-backend-client';
+import { AuthClient, Configuration as ClientConfiguration } from '@energyweb/origin-backend-client';
 import { ISmartMeterRead } from '@energyweb/origin-backend-core';
 import { BigNumber } from 'ethers';
+import { DeviceClient } from '@energyweb/origin-device-registry-irec-form-api-client';
 
 async function getProducingDeviceSmartMeterRead(
     deviceId: string,

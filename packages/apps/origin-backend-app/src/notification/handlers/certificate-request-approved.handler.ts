@@ -1,14 +1,16 @@
-import { EventsHandler, IEventHandler, QueryBus } from '@nestjs/cqrs';
-import { Logger } from '@nestjs/common';
-import { ModuleRef } from '@nestjs/core';
-import { DeviceService, UserService } from '@energyweb/origin-backend';
-import { Role } from '@energyweb/origin-backend-core';
 import {
     CertificateRequestApprovedEvent,
     GetCertificationRequestQuery
 } from '@energyweb/issuer-api';
+import { UserService } from '@energyweb/origin-backend';
+import { Role } from '@energyweb/origin-backend-core';
+import { DeviceService } from '@energyweb/origin-device-registry-irec-form-api';
 import { RegistrationService } from '@energyweb/origin-organization-irec-api';
+import { Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { ModuleRef } from '@nestjs/core';
+import { EventsHandler, IEventHandler, QueryBus } from '@nestjs/cqrs';
+
 import { MailService } from '../../mail';
 
 @EventsHandler(CertificateRequestApprovedEvent)

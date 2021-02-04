@@ -1,5 +1,5 @@
 import { IDeviceSettings, IExternalDeviceService, IProductInfo } from '@energyweb/exchange';
-import { DeviceService } from '@energyweb/origin-backend';
+import { DeviceService } from '@energyweb/origin-device-registry-irec-form-api';
 import { IExternalDeviceId } from '@energyweb/origin-backend-core';
 import { Injectable } from '@nestjs/common';
 import { ModuleRef } from '@nestjs/core';

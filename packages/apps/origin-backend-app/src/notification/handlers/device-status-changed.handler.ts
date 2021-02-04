@@ -1,6 +1,8 @@
-import { DeviceStatusChangedEvent, OrganizationService } from '@energyweb/origin-backend';
+import { OrganizationService } from '@energyweb/origin-backend';
+import { DeviceStatusChangedEvent } from '@energyweb/origin-device-registry-irec-form-api';
 import { Logger } from '@nestjs/common';
 import { EventsHandler, IEventHandler } from '@nestjs/cqrs';
+
 import { MailService } from '../../mail';
 
 @EventsHandler(DeviceStatusChangedEvent)

@@ -1,20 +1,15 @@
 /* eslint-disable import/no-extraneous-dependencies  */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import 'mocha';
+
+import { DeviceCreateData, DeviceStatus, ISmartMeterRead } from '@energyweb/origin-backend-core';
+import { DeviceClient } from '@energyweb/origin-device-registry-irec-form-api-client';
 import { assert } from 'chai';
-import moment from 'moment';
-import { BigNumber } from 'ethers';
 import dotenv from 'dotenv';
-import { DeviceClient } from '@energyweb/origin-backend-client';
+import { BigNumber } from 'ethers';
+import moment from 'moment';
 
-import {
-    DeviceCreateData,
-    DeviceStatus,
-    IPublicOrganization,
-    ISmartMeterRead
-} from '@energyweb/origin-backend-core';
 import { Configuration, ProducingDevice } from '..';
-
 import { logger } from '../Logger';
 
 describe('Device Facade', () => {
