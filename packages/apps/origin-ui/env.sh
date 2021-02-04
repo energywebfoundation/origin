@@ -23,7 +23,7 @@ touch ./env-config.json
 echo "{" >> ./env-config.json
 
 envToRead=.env
-rootEnvFile=../../.env
+rootEnvFile=../../../.env
 if [ ! -e "$envToRead" ]; then
     envToRead=$rootEnvFile
 fi
