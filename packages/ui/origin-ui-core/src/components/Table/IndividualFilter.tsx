@@ -75,6 +75,17 @@ export function IndividualFilter(props: IProps) {
                         value={filter.selectedValue}
                         onChange={(e) => changeFilterValue(filter, e.target.value)}
                         input={<FilledInput />}
+                        MenuProps={{
+                            anchorOrigin: {
+                                vertical: 'bottom',
+                                horizontal: 'left'
+                            },
+                            transformOrigin: {
+                                vertical: 'top',
+                                horizontal: 'left'
+                            },
+                            getContentAnchorEl: null
+                        }}
                         renderValue={(selected) => (
                             <>
                                 {(selected as string[]).map((value) => (
