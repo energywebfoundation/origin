@@ -1,12 +1,12 @@
-import { Expose, Type, Transform } from 'class-transformer';
+import { Expose, Transform } from 'class-transformer';
 import {
-    ValidateNested,
+    IsDate,
     IsNotEmpty,
-    IsString,
-    IsPositive,
-    IsOptional,
     IsNumber,
-    IsDate
+    IsOptional,
+    IsPositive,
+    IsString,
+    ValidateNested
 } from 'class-validator';
 
 export class ReservationItem {
@@ -41,7 +41,6 @@ export class Transfer {
     }
 
     @Expose({ name: 'reservation_items', toPlainOnly: true })
-    @Type(() => ReservationItem)
     @ValidateNested()
     items: ReservationItem[];
 

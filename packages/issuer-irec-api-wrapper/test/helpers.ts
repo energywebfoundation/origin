@@ -1,4 +1,8 @@
+import dotenv from 'dotenv';
+import { expect } from 'chai';
 import { IRECAPIClient } from '../src/IRECAPIClient';
+
+dotenv.config();
 
 export type LoginParams = {
     apiUrl: string;
@@ -44,3 +48,22 @@ export const credentials: Record<string, LoginParams> = {
         clientSecret: process.env.IREC_API_PARTICIPANT_CLIENT_SECRET
     }
 };
+
+export function validateOrganization(org: any): void {
+    expect(org.code).to.be.a('string');
+    expect(org.name).to.be.a('string');
+    expect(org.address).to.be.a('string');
+    expect(org.primaryContact).to.be.a('string');
+    expect(org.telephone).to.be.a('string');
+    expect(org.email).to.be.a('string');
+    expect(org.regNum).to.be.a('string');
+    expect(org.vatNum).to.be.a('string');
+    expect(org.regAddress).to.be.a('string');
+    expect(org.country).to.be.a('string');
+    expect(org.roles).to.be.a('string');
+}
+
+export function validateCodeName(org: any): void {
+    expect(org.code).to.be.a('string');
+    expect(org.name).to.be.a('string');
+}

@@ -1,6 +1,5 @@
 /* eslint-disable no-unused-expressions */
 import { expect } from 'chai';
-import dotenv from 'dotenv';
 import { validateOrReject } from 'class-validator';
 import moment from 'moment/moment';
 
@@ -9,8 +8,6 @@ import { Device, DeviceCreateUpdateParams, DeviceState } from '../src/Device';
 import { credentials, getClient } from './helpers';
 import { Organisation } from '../src/Organisation';
 import { Issue, IssueStatus, IssueWithStatus } from '../src/Issue';
-
-dotenv.config();
 
 describe('API flows', () => {
     let issuerClient: IRECAPIClient;
@@ -94,7 +91,7 @@ describe('API flows', () => {
         expect(device.status).to.equal(DeviceState.Draft);
     }).timeout(10000);
 
-    it.only('should pass create and approve issue flow', async () => {
+    it('should pass create and approve issue flow', async () => {
         const devices: Device[] = await registrantClient.device.getAll();
         const approvedDevice = devices.find((device) => device.status === DeviceState.Approved);
 

@@ -1,6 +1,5 @@
 /* eslint-disable no-unused-expressions */
 import { expect } from 'chai';
-import dotenv from 'dotenv';
 import fs from 'fs';
 import moment from 'moment-timezone';
 
@@ -9,72 +8,72 @@ import { ApproveIssue } from '../src/Issue';
 import { Product } from '../src/Product';
 import { Redemption, ReservationItem } from '../src/Transfer';
 import { Fuel, FuelType } from '../src/Fuel';
+import { credentials, getClient, validateCodeName, validateOrganization } from './helpers';
 
-dotenv.config();
-
-describe('IRECAPIClient tests', () => {
+describe('IREC API', () => {
     let client: IRECAPIClient;
+    // let issuerClient: IRECAPIClient;
+    let participantClient: IRECAPIClient;
+    let registrantClient: IRECAPIClient;
 
     const tradeAccount = 'ACCOUNTTRADE001';
     const issueAccount = 'ACCOUNTISSUE001';
     const redemptionAccount = 'ACCOUNTREDEMPTION001';
 
     before(async () => {
-        client = new IRECAPIClient(process.env.IREC_API_URL);
-        await client.login(
-            process.env.IREC_API_LOGIN,
-            process.env.IREC_API_PASSWORD,
-            process.env.IREC_API_CLIENT_ID,
-            process.env.IREC_API_CLIENT_SECRET
-        );
+        // issuerClient = await getClient(credentials.issuer);
+        participantClient = await getClient(credentials.participant);
+        registrantClient = await getClient(credentials.registrant);
     });
 
-    it(`should fetch all accounts`, async () => {
-        const [firstAccount] = await client.account.getAll();
+    describe('Account', () => {
+        it(`should fetch all accounts`, async () => {
+            const [firstAccount] = await participantClient.account.getAll();
 
-        expect(firstAccount.details).to.exist;
-        expect(firstAccount.type).to.exist;
-    });
+            expect(firstAccount.details).to.exist;
+            expect(firstAccount.type).to.exist;
+        });
 
-    it('should fetch account by code', async () => {
-        const [firstAccount] = await client.account.getAll();
-        const account = await client.account.get(firstAccount.code);
+        it('should fetch account by code', async () => {
+            const [firstAccount] = await participantClient.account.getAll();
+            const account = await participantClient.account.get(firstAccount.code);
 
-        expect(account.code).to.equal(firstAccount.code);
-        expect(account.details).to.exist;
-        expect(account.details.name).to.exist;
-        expect(account.details.active).to.be.equal(true);
-        expect(account.type).to.exist;
-    });
+            expect(account.code).to.equal(firstAccount.code);
+            expect(account.details).to.exist;
+            expect(account.details.name).to.exist;
+            expect(account.details.active).to.be.equal(true);
+            expect(account.type).to.exist;
+        });
 
-    it('should fetch balance by code', async () => {
-        const [firstAccount] = await client.account.getAll();
-        const [accountBalance] = await client.account.getBalance(firstAccount.code);
+        it('should fetch balance by code', async () => {
+            const [firstAccount] = await client.account.getAll();
+            const [accountBalance] = await client.account.getBalance(firstAccount.code);
 
-        expect(accountBalance.code).to.equal(firstAccount.code);
-        expect(accountBalance.product).to.be.instanceOf(Product);
-    });
+            expect(accountBalance.code).to.equal(firstAccount.code);
+            expect(accountBalance.product).to.be.instanceOf(Product);
+        });
 
-    it('should fetch items by code', async () => {
-        const [accountItem] = await client.account.getItems(tradeAccount);
+        it('should fetch items by code', async () => {
+            const [accountItem] = await client.account.getItems(tradeAccount);
 
-        expect(accountItem).to.exist;
-        expect(accountItem.items).to.exist;
-        expect(accountItem.code).to.be.equal(tradeAccount);
+            expect(accountItem).to.exist;
+            expect(accountItem.items).to.exist;
+            expect(accountItem.code).to.be.equal(tradeAccount);
 
-        const [item] = accountItem.items;
+            const [item] = accountItem.items;
 
-        expect(item.code).to.exist;
-        expect(item.asset).to.exist;
+            expect(item.code).to.exist;
+            expect(item.asset).to.exist;
 
-        expect(item.asset.start).to.be.an.instanceOf(Date);
-        expect(item.asset.end).to.be.an.instanceOf(Date);
-    });
+            expect(item.asset.start).to.be.an.instanceOf(Date);
+            expect(item.asset.end).to.be.an.instanceOf(Date);
+        });
 
-    it('should fetch transactions', async () => {
-        const transactions = await client.account.getTransactions(tradeAccount);
+        it('should fetch transactions', async () => {
+            const transactions = await client.account.getTransactions(tradeAccount);
 
-        expect(transactions).to.exist;
+            expect(transactions).to.exist;
+        });
     });
 
     it('should be able to request certificate', async () => {
@@ -141,23 +140,42 @@ describe('IRECAPIClient tests', () => {
         expect(url).to.exist;
     });
 
-    it('should return all fuels', async () => {
-        const fuels: Fuel[] = await client.fuel.getAll();
+    describe('Organization', () => {
+        it('should return own organization info', async () => {
+            const org = await registrantClient.organisation.get();
+            validateOrganization(org);
+        });
 
-        expect(fuels).to.be.an('array');
-        fuels.forEach((fuel) => {
-            expect(fuel.code).to.be.a('string');
-            expect(fuel.name).to.be.a('string');
+        it('should return registrant organizations', async () => {
+            const org: unknown[] = await registrantClient.organisation.getRegistrants();
+            org.forEach(validateCodeName);
+        });
+
+        it('should return issuer organizations', async () => {
+            const org: unknown[] = await registrantClient.organisation.getIssuers();
+            org.forEach(validateCodeName);
         });
     });
 
-    it('should return all fuel types???', async () => {
-        const types: FuelType[] = await client.fuel.getAllTypes();
+    describe('Fuel', () => {
+        it('should return all fuels', async () => {
+            const fuels: Fuel[] = await registrantClient.fuel.getAll();
 
-        expect(types).to.be.an('array');
-        types.forEach((type) => {
-            expect(type.code).to.be.a('string');
-            expect(type.name).to.be.a('string');
+            expect(fuels).to.be.an('array');
+            fuels.forEach((fuel) => {
+                expect(fuel.code).to.be.a('string');
+                expect(fuel.name).to.be.a('string');
+            });
+        });
+
+        it('should return all fuel types', async () => {
+            const types: FuelType[] = await registrantClient.fuel.getAllTypes();
+
+            expect(types).to.be.an('array');
+            types.forEach((type) => {
+                expect(type.code).to.be.a('string');
+                expect(type.name).to.be.a('string');
+            });
         });
     });
 });
