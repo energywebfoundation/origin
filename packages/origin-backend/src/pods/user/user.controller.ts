@@ -23,7 +23,9 @@ import {
     Put,
     UnauthorizedException,
     UseGuards,
-    UseInterceptors
+    UseInterceptors,
+    UsePipes,
+    ValidationPipe
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import {
@@ -47,6 +49,7 @@ import { UserService } from './user.service';
 @ApiTags('user')
 @ApiBearerAuth('access-token')
 @UseInterceptors(ClassSerializerInterceptor, NullOrUndefinedResultInterceptor)
+@UsePipes(ValidationPipe)
 @Controller('user')
 export class UserController {
     constructor(

@@ -10,7 +10,6 @@ import {
 } from '@energyweb/origin-backend-core';
 import { DatabaseService } from '@energyweb/origin-backend-utils';
 import { signTypedMessagePrivateKey } from '@energyweb/utils-general';
-import { Logger } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import dotenv from 'dotenv';
@@ -26,8 +25,6 @@ import { InvitationService } from '../src/pods/invitation/invitation.service';
 import { NewOrganizationDTO } from '../src/pods/organization/dto/new-organization.dto';
 import { OrganizationService } from '../src/pods/organization/organization.service';
 import { UserService } from '../src/pods/user';
-
-const testLogger = new Logger('e2e');
 
 export const getExampleOrganization = (
     email = 'test@example.com',
@@ -84,7 +81,7 @@ export const bootstrapTestInstance = async () => {
     const fileService = await app.resolve<FileService>(FileService);
     const invitationService = await app.resolve<InvitationService>(InvitationService);
 
-    app.useLogger(testLogger);
+    app.useLogger(['log', 'error']);
     app.enableCors();
 
     await databaseService.cleanUp();
@@ -95,7 +92,6 @@ export const bootstrapTestInstance = async () => {
         app,
         databaseService,
         userService,
-        testLogger,
         organizationService,
         configurationService,
         emailConfirmationService,
