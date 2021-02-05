@@ -11,11 +11,9 @@ import { Issue, IssueStatus, IssueWithStatus } from '../src/Issue';
 
 describe('API flows', () => {
     let issuerClient: IRECAPIClient;
-    let participantClient: IRECAPIClient;
     let registrantClient: IRECAPIClient;
 
     let issuerOrg: Organisation;
-    let participantOrg: Organisation;
     let registrantOrg: Organisation;
 
     const tradeAccount = 'ACCOUNTTRADE001';
@@ -23,16 +21,10 @@ describe('API flows', () => {
 
     before(async () => {
         issuerClient = await getClient(credentials.issuer);
-        participantClient = await getClient(credentials.participant);
         registrantClient = await getClient(credentials.registrant);
 
         issuerOrg = await issuerClient.organisation.get();
-        participantOrg = await participantClient.organisation.get();
         registrantOrg = await registrantClient.organisation.get();
-
-        console.log('issuerOrg', issuerOrg);
-        console.log('participantOrg', participantOrg);
-        console.log('registrantOrg', registrantOrg);
     });
 
     it('should pass create and approve device flow', async () => {
@@ -91,7 +83,7 @@ describe('API flows', () => {
         expect(device.status).to.equal(DeviceState.Draft);
     }).timeout(10000);
 
-    it('should pass create and approve issue flow', async () => {
+    it.skip('should pass create and approve issue flow', async () => {
         const devices: Device[] = await registrantClient.device.getAll();
         const approvedDevice = devices.find((device) => device.status === DeviceState.Approved);
 

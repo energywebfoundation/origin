@@ -170,8 +170,7 @@ export class IRECAPIClient {
         const setState = async (code: string, action: string, notes?: string) => {
             const url = `${issueManagementUrl}/${code}/${action}`;
 
-            const resp = await this.axiosInstance.put(url, { notes }, this.config);
-            console.log(resp.data);
+            await this.axiosInstance.put(url, { notes }, this.config);
         };
 
         return {
@@ -180,7 +179,6 @@ export class IRECAPIClient {
                 await validateOrReject(issue);
 
                 const url = `${issueManagementUrl}/create`;
-                console.log(classToPlain(issueParams));
                 const response = await this.axiosInstance.post<{ code: string }>(
                     url,
                     classToPlain(issueParams),
