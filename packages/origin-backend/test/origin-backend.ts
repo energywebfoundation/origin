@@ -10,7 +10,6 @@ import {
 } from '@energyweb/origin-backend-core';
 import { DatabaseService } from '@energyweb/origin-backend-utils';
 import { signTypedMessagePrivateKey } from '@energyweb/utils-general';
-import { Logger } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import dotenv from 'dotenv';
@@ -20,15 +19,12 @@ import request from 'supertest';
 import { entities } from '../src';
 import { AppModule } from '../src/app.module';
 import { ConfigurationService } from '../src/pods/configuration';
-import { DeviceService } from '../src/pods/device/device.service';
 import { EmailConfirmationService } from '../src/pods/email-confirmation/email-confirmation.service';
 import { FileService } from '../src/pods/file/file.service';
 import { InvitationService } from '../src/pods/invitation/invitation.service';
 import { NewOrganizationDTO } from '../src/pods/organization/dto/new-organization.dto';
 import { OrganizationService } from '../src/pods/organization/organization.service';
 import { UserService } from '../src/pods/user';
-
-const testLogger = new Logger('e2e');
 
 export const getExampleOrganization = (
     email = 'test@example.com',
@@ -64,7 +60,7 @@ export const bootstrapTestInstance = async () => {
                 entities,
                 logging: ['info']
             }),
-            AppModule.register(null)
+            AppModule
         ],
         providers: [DatabaseService]
     }).compile();
@@ -78,7 +74,6 @@ export const bootstrapTestInstance = async () => {
     const userService = await app.resolve<UserService>(UserService);
     const databaseService = await app.resolve<DatabaseService>(DatabaseService);
     const organizationService = await app.resolve<OrganizationService>(OrganizationService);
-    const deviceService = await app.resolve<DeviceService>(DeviceService);
     const configurationService = await app.resolve<ConfigurationService>(ConfigurationService);
     const emailConfirmationService = await app.resolve<EmailConfirmationService>(
         EmailConfirmationService
@@ -86,7 +81,7 @@ export const bootstrapTestInstance = async () => {
     const fileService = await app.resolve<FileService>(FileService);
     const invitationService = await app.resolve<InvitationService>(InvitationService);
 
-    app.useLogger(testLogger);
+    app.useLogger(['log', 'error']);
     app.enableCors();
 
     await databaseService.cleanUp();
@@ -97,9 +92,7 @@ export const bootstrapTestInstance = async () => {
         app,
         databaseService,
         userService,
-        testLogger,
         organizationService,
-        deviceService,
         configurationService,
         emailConfirmationService,
         fileService,

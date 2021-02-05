@@ -13,3 +13,5 @@ export * from './src/interceptor/ExceptionInterceptor';
 export * from './src/interceptor/httpLoggingInterceptor';
 export * from './src/entity/ExtendedBaseEntity';
 export * from './src/service/database.service';
+export * from './src/enums';
+export * from './src/utils';

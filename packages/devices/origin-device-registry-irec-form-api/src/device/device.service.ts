@@ -15,6 +15,9 @@ import {
     ResponseFailure,
     sortLowestToHighestTimestamp
 } from '@energyweb/origin-backend-core';
+import { StorageErrors } from '@energyweb/origin-backend-utils';
+import { SM_READS_ADAPTER } from '@energyweb/origin-backend/src/const';
+import { ConfigurationService } from '@energyweb/origin-backend/src/pods/configuration';
 import {
     Inject,
     Injectable,
@@ -28,9 +31,6 @@ import { BigNumber } from 'ethers';
 import { FindOneOptions, Repository } from 'typeorm';
 import { v4 as uuid } from 'uuid';
 
-import { SM_READS_ADAPTER } from '../../const';
-import { StorageErrors } from '../../enums/StorageErrors';
-import { ConfigurationService } from '../configuration';
 import { Device } from './device.entity';
 import { DeviceStatusChangedEvent } from './events';
 import { DeviceCreatedEvent } from './events/device-created.event';

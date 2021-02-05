@@ -11,7 +11,9 @@ import {
     NullOrUndefinedResultInterceptor,
     Roles,
     RolesGuard,
-    UserDecorator
+    UserDecorator,
+    StorageErrors,
+    SuccessResponseDTO
 } from '@energyweb/origin-backend-utils';
 import {
     Body,
@@ -45,8 +47,6 @@ import {
 } from '@nestjs/swagger';
 import { BigNumber } from 'ethers';
 
-import { StorageErrors } from '../../enums/StorageErrors';
-import { SuccessResponseDTO } from '../../utils/success-response.dto';
 import { Device } from './device.entity';
 import { DeviceService } from './device.service';
 import { CreateDeviceDTO } from './dto/create-device.dto';

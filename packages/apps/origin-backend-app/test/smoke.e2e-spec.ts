@@ -1,6 +1,6 @@
 /* eslint-disable import/no-extraneous-dependencies */
 import { ConfigurationService } from '@energyweb/origin-backend';
-import { HttpStatus, Logger } from '@nestjs/common';
+import { HttpStatus } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Test } from '@nestjs/testing';
 import request from 'supertest';
@@ -33,8 +33,6 @@ describe('Origin Backend App', () => {
         const provider = getProviderWithFallback(rpcUrl);
         const registry = await Contracts.migrateRegistry(provider, privateKey);
         const issuer = await Contracts.migrateIssuer(provider, privateKey, registry.address);
-
-        const testLogger = new Logger('e2e');
 
         const config: Record<string, string | number> = {
             WEB3: rpcUrl,
@@ -76,7 +74,7 @@ describe('Origin Backend App', () => {
 
         const app = moduleFixture.createNestApplication();
         app.enableShutdownHooks();
-        app.useLogger(testLogger);
+        app.useLogger(['log', 'error']);
 
         await app.init();
 

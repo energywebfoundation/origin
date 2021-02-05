@@ -34,7 +34,7 @@
     },
     "types": "dist/js/src/index.d.ts",
     "dependencies": {
-        "@energyweb/origin-backend-client": "10.0.1",
+        "@energyweb/origin-device-registry-irec-form-api-client": "1.0.0",
         "@energyweb/origin-backend-core": "7.0.1",
         "@energyweb/utils-general": "11.0.0",
         "ethers": "5.0.27",

@@ -2,13 +2,13 @@ import {
     AdminClient,
     ConfigurationClient,
     Configuration,
-    DeviceClient,
     FileClient,
     InvitationClient,
     OrganizationClient,
     UserClient,
     AuthClient
 } from '@energyweb/origin-backend-client';
+import { DeviceClient } from '@energyweb/origin-device-registry-irec-form-api-client';
 import { BaseClient } from './BaseClient';
 
 export class BackendClient extends BaseClient {

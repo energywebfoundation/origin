@@ -11,6 +11,8 @@ import {
     NullOrUndefinedResultInterceptor,
     Roles,
     RolesGuard,
+    StorageErrors,
+    SuccessResponseDTO,
     UserDecorator
 } from '@energyweb/origin-backend-utils';
 import {
@@ -35,8 +37,6 @@ import {
 import { AuthGuard } from '@nestjs/passport';
 import { ApiBearerAuth, ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
 
-import { StorageErrors } from '../../enums/StorageErrors';
-import { SuccessResponseDTO } from '../../utils/success-response.dto';
 import { InvitationDTO } from '../invitation/invitation.dto';
 import { User } from '../user';
 import { FullOrganizationInfoDTO } from './dto/full-organization-info.dto';

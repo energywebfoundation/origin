@@ -1,17 +1,14 @@
+import { Configuration, ProducingDevice } from '@energyweb/device-registry';
+import { AuthClient, Configuration as ClientConfiguration } from '@energyweb/origin-backend-client';
+import { IEnergyGenerated, ISmartMeterRead } from '@energyweb/origin-backend-core';
+import { DeviceClient } from '@energyweb/origin-device-registry-irec-form-api-client';
 import parse from 'csv-parse/lib/sync';
+import dotenv from 'dotenv';
+import { BigNumber } from 'ethers';
+import fs from 'fs';
 import moment from 'moment-timezone';
 import * as Winston from 'winston';
-import dotenv from 'dotenv';
-import fs from 'fs';
-import { BigNumber } from 'ethers';
 
-import { ProducingDevice, Configuration } from '@energyweb/device-registry';
-import {
-    DeviceClient,
-    Configuration as ClientConfiguration,
-    AuthClient
-} from '@energyweb/origin-backend-client';
-import { ISmartMeterRead, IEnergyGenerated } from '@energyweb/origin-backend-core';
 import { getEnergyFromCSVRows } from './utils/Energy';
 
 export function wait(milliseconds: number) {

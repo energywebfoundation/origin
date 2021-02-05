@@ -1,13 +1,14 @@
 import {
-    ILoggedInUser,
+    EmailConfirmationResponse,
     IEmailConfirmationToken,
-    EmailConfirmationResponse
+    ILoggedInUser
 } from '@energyweb/origin-backend-core';
 import {
-    UserDecorator,
     ActiveUserGuard,
     NotDeletedUserGuard,
-    NullOrUndefinedResultInterceptor
+    NullOrUndefinedResultInterceptor,
+    SuccessResponseDTO,
+    UserDecorator
 } from '@energyweb/origin-backend-utils';
 import {
     BadRequestException,
@@ -15,38 +16,40 @@ import {
     ClassSerializerInterceptor,
     Controller,
     Get,
+    HttpStatus,
     Param,
+    ParseIntPipe,
     Post,
     Put,
+    UnauthorizedException,
     UseGuards,
     UseInterceptors,
-    ParseIntPipe,
-    UnauthorizedException,
-    HttpStatus
+    UsePipes,
+    ValidationPipe
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import {
-    ApiResponse,
-    ApiTags,
-    ApiParam,
     ApiBearerAuth,
     ApiBody,
+    ApiParam,
+    ApiResponse,
+    ApiTags,
     ApiUnprocessableEntityResponse
 } from '@nestjs/swagger';
 
-import { UserService } from './user.service';
 import { EmailConfirmationService } from '../email-confirmation/email-confirmation.service';
-import { UserDTO } from './dto/user.dto';
-import { SuccessResponseDTO } from '../../utils/success-response.dto';
+import { BindBlockchainAccountDTO } from './dto/bind-blockchain-account.dto';
 import { RegisterUserDTO } from './dto/register-user.dto';
 import { UpdateOwnUserSettingsDTO } from './dto/update-own-user-settings.dto';
 import { UpdatePasswordDTO } from './dto/update-password.dto';
 import { UpdateUserProfileDTO } from './dto/update-user-profile.dto';
-import { BindBlockchainAccountDTO } from './dto/bind-blockchain-account.dto';
+import { UserDTO } from './dto/user.dto';
+import { UserService } from './user.service';
 
 @ApiTags('user')
 @ApiBearerAuth('access-token')
 @UseInterceptors(ClassSerializerInterceptor, NullOrUndefinedResultInterceptor)
+@UsePipes(ValidationPipe)
 @Controller('user')
 export class UserController {
     constructor(

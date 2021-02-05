@@ -1,21 +1,23 @@
 /* eslint-disable import/no-extraneous-dependencies */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { IUser, Role, UserStatus } from '@energyweb/origin-backend-core';
+import { IUser, OrganizationStatus, Role, UserStatus } from '@energyweb/origin-backend-core';
 import { DatabaseService } from '@energyweb/origin-backend-utils';
+import {
+    Configuration,
+    ConfigurationModule
+} from '@energyweb/origin-backend/src/pods/configuration';
 import { CanActivate, ExecutionContext } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { Test } from '@nestjs/testing';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { useContainer } from 'class-validator';
 
-import { AppModule } from '../src/app.module';
-import { Registration } from '../src/registration/registration.entity';
-import { RegistrationService } from '../src/registration/registration.service';
+import { DeviceModule, DeviceService, Device } from '../src/device';
 
 export enum TestUser {
     OrganizationAdmin = '0',
     OtherOrganizationAdmin = '1',
-    PlatformAdmin = '2'
+    PlatformAdmin = '2',
+    SubmittedOrganizationAdmin = '3'
 }
 
 export const testUsers = new Map([
@@ -23,7 +25,16 @@ export const testUsers = new Map([
         TestUser.OrganizationAdmin,
         {
             id: 1,
-            organization: { id: 1000 },
+            organization: { id: 1000, status: OrganizationStatus.Active },
+            status: UserStatus.Active,
+            rights: Role.OrganizationAdmin
+        } as IUser
+    ],
+    [
+        TestUser.SubmittedOrganizationAdmin,
+        {
+            id: 1,
+            organization: { id: 1000, status: OrganizationStatus.Submitted },
             status: UserStatus.Active,
             rights: Role.OrganizationAdmin
         } as IUser
@@ -32,7 +43,7 @@ export const testUsers = new Map([
         TestUser.OtherOrganizationAdmin,
         {
             id: 2,
-            organization: { id: 1001 },
+            organization: { id: 1001, status: OrganizationStatus.Active },
             status: UserStatus.Active,
             rights: Role.OrganizationAdmin
         } as IUser
@@ -41,7 +52,7 @@ export const testUsers = new Map([
         TestUser.PlatformAdmin,
         {
             id: 3,
-            organization: { id: 1002 },
+            organization: { id: 1002, status: OrganizationStatus.Active },
             status: UserStatus.Active,
             rights: Role.Admin
         } as IUser
@@ -66,10 +77,11 @@ export const bootstrapTestInstance = async () => {
                 username: process.env.DB_USERNAME ?? 'postgres',
                 password: process.env.DB_PASSWORD ?? 'postgres',
                 database: process.env.DB_DATABASE ?? 'origin',
-                entities: [Registration],
+                entities: [Device, Configuration],
                 logging: ['info']
             }),
-            AppModule
+            ConfigurationModule,
+            DeviceModule.register(null)
         ],
         providers: [DatabaseService]
     })
@@ -79,16 +91,14 @@ export const bootstrapTestInstance = async () => {
 
     const app = moduleFixture.createNestApplication();
 
-    const registrationService = await app.resolve<RegistrationService>(RegistrationService);
+    const deviceService = await app.resolve<DeviceService>(DeviceService);
     const databaseService = await app.resolve<DatabaseService>(DatabaseService);
 
     app.useLogger(['log', 'error']);
     app.enableCors();
 
-    useContainer(app.select(AppModule), { fallbackOnErrors: true });
-
     return {
-        registrationService,
+        deviceService,
         databaseService,
         app
     };

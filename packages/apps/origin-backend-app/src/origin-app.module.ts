@@ -10,6 +10,10 @@ import {
     AppModule as IRECDeviceRegistry,
     entities as IRECDeviceEntities
 } from '@energyweb/origin-device-registry-irec-local-api';
+import {
+    AppModule as IRECFormDeviceRegistry,
+    entities as IRECFormDeviceEntities
+} from '@energyweb/origin-device-registry-irec-form-api';
 
 import {
     AppModule as OriginBackendModule,
@@ -51,7 +55,8 @@ const OriginAppTypeOrmModule = () => {
         ...IRECOrganizationEntities,
         ...IssuerEntities,
         ...OriginDeviceEntities,
-        ...IRECDeviceEntities
+        ...IRECDeviceEntities,
+        ...IRECFormDeviceEntities
     ];
 
     return process.env.DATABASE_URL
@@ -83,7 +88,8 @@ export class OriginAppModule {
             module: OriginAppModule,
             imports: [
                 OriginAppTypeOrmModule(),
-                OriginBackendModule.register(smartMeterReadingsAdapter),
+                OriginBackendModule,
+                IRECFormDeviceRegistry.register(smartMeterReadingsAdapter),
                 IntegrationModule,
                 MailModule,
                 ExchangeModule,

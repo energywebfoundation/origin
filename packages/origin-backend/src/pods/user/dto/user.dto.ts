@@ -2,6 +2,7 @@ import { IPublicOrganization, IUser, KYCStatus, UserStatus } from '@energyweb/or
 import { ApiProperty } from '@nestjs/swagger';
 import {
     IsBoolean,
+    IsEmail,
     IsEnum,
     IsNotEmpty,
     IsNumber,
@@ -32,7 +33,7 @@ export class UserDTO implements IUser {
     lastName: string;
 
     @ApiProperty({ type: String })
-    @IsNotEmpty()
+    @IsEmail()
     @IsString()
     email: string;
 
