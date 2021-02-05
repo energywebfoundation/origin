@@ -55,6 +55,25 @@ export const BidsTable = (props: IOwnProsp) => {
 
     const getFilters = (): ICustomFilterDefinition[] => [
         {
+            property: ({ product: { deviceType } }: Order) => {
+                return deviceType
+                    ? deviceType
+                          .filter((device) => !device.includes(';'))
+                          .join(', ')
+                          .toLowerCase()
+                    : undefined;
+            },
+            label: t('certificate.properties.deviceType'),
+            input: {
+                type: CustomFilterInputType.multiselect,
+                availableOptions: Object.values(EnergyTypes).map((type) => ({
+                    label: `${type[0].toUpperCase()}${type.slice(1).toLowerCase()}`,
+                    value: type
+                })),
+                defaultOptions: []
+            }
+        },
+        {
             property: (order: Order) =>
                 order.asset?.deviceId
                     ? deviceById(order.asset.deviceId, environment, devices).facilityName
@@ -66,19 +85,6 @@ export const BidsTable = (props: IOwnProsp) => {
                     label: device.facilityName,
                     value: device.facilityName
                 }))
-            }
-        },
-        {
-            property: ({ product: { deviceType } }: Order) =>
-                deviceType ? deviceType[0].split(';')[0].toLowerCase() : undefined,
-            label: t('certificate.properties.deviceType'),
-            input: {
-                type: CustomFilterInputType.dropdown,
-                availableOptions: Object.values(EnergyTypes).map((type) => ({
-                    label: `${type[0].toUpperCase()}${type.slice(1).toLowerCase()}`,
-                    value: type
-                })),
-                defaultOptions: []
             }
         },
         {
