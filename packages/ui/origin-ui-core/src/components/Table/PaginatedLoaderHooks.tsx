@@ -227,7 +227,16 @@ export function checkRecordPassesFilters(
                     }
                     break;
                 case CustomFilterInputType.multiselect:
-                    return filter.selectedValue.includes(filteredPropertyResolvedValue);
+                    if (
+                        filter.selectedValue.length &&
+                        !filteredPropertyResolvedValue
+                            .toString()
+                            .split(', ')
+                            .some((prop) => filter.selectedValue.includes(prop))
+                    ) {
+                        return false;
+                    }
+                    break;
                 case CustomFilterInputType.deviceType:
                     if (!deviceTypeService) {
                         throw new Error(
