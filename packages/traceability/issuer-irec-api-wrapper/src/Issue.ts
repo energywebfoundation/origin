@@ -1,4 +1,3 @@
-/* eslint-disable max-classes-per-file */
 import { Expose, Transform } from 'class-transformer';
 import { IsDate, IsPositive, IsOptional, IsString, IsNotEmpty } from 'class-validator';
 
@@ -14,28 +13,28 @@ export enum IssueStatus {
 }
 
 export class Issue {
-    @Expose({ name: 'device_code' })
+    @Expose({ name: 'device_code', toPlainOnly: true })
     @IsString()
     @IsNotEmpty()
     device: string;
 
-    @Expose({ name: 'fuel_code' })
+    @Expose({ name: 'fuel_code', toPlainOnly: true })
     @IsString()
     @IsNotEmpty()
     fuel: string;
 
-    @Expose({ name: 'recipient_account_code' })
+    @Expose({ name: 'recipient_account_code', toPlainOnly: true })
     @IsString()
     @IsNotEmpty()
     recipient: string;
 
-    @Expose({ name: 'start_date' })
+    @Expose({ name: 'start_date', toPlainOnly: true })
     @Transform((value: Date) => value.toISOString().split('T')[0], { toPlainOnly: true })
     @Transform((value: string) => new Date(value), { toClassOnly: true })
     @IsDate()
     start: Date;
 
-    @Expose({ name: 'end_date' })
+    @Expose({ name: 'end_date', toPlainOnly: true })
     @Transform((value: Date) => value.toISOString().split('T')[0], { toPlainOnly: true })
     @Transform((value: string) => new Date(value), { toClassOnly: true })
     @IsDate()
@@ -64,5 +63,7 @@ export class ApproveIssue {
 }
 
 export class IssueWithStatus extends Issue {
+    code: string;
+
     status: IssueStatus;
 }
