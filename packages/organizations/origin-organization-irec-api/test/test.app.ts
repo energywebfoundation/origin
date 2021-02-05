@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { IUser, Role, UserStatus } from '@energyweb/origin-backend-core';
 import { DatabaseService } from '@energyweb/origin-backend-utils';
-import { CanActivate, ExecutionContext, Logger } from '@nestjs/common';
+import { CanActivate, ExecutionContext } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { Test } from '@nestjs/testing';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -56,8 +56,6 @@ const authGuard: CanActivate = {
     }
 };
 
-const testLogger = new Logger('e2e');
-
 export const bootstrapTestInstance = async () => {
     const moduleFixture = await Test.createTestingModule({
         imports: [
@@ -84,7 +82,7 @@ export const bootstrapTestInstance = async () => {
     const registrationService = await app.resolve<RegistrationService>(RegistrationService);
     const databaseService = await app.resolve<DatabaseService>(DatabaseService);
 
-    app.useLogger(testLogger);
+    app.useLogger(['log', 'error']);
     app.enableCors();
 
     useContainer(app.select(AppModule), { fallbackOnErrors: true });

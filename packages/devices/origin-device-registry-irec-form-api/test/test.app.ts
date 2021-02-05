@@ -6,7 +6,7 @@ import {
     Configuration,
     ConfigurationModule
 } from '@energyweb/origin-backend/src/pods/configuration';
-import { CanActivate, ExecutionContext, Logger } from '@nestjs/common';
+import { CanActivate, ExecutionContext } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { Test } from '@nestjs/testing';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -67,8 +67,6 @@ const authGuard: CanActivate = {
     }
 };
 
-const testLogger = new Logger('e2e');
-
 export const bootstrapTestInstance = async () => {
     const moduleFixture = await Test.createTestingModule({
         imports: [
@@ -96,7 +94,7 @@ export const bootstrapTestInstance = async () => {
     const deviceService = await app.resolve<DeviceService>(DeviceService);
     const databaseService = await app.resolve<DatabaseService>(DatabaseService);
 
-    app.useLogger(testLogger);
+    app.useLogger(['log', 'error']);
     app.enableCors();
 
     return {

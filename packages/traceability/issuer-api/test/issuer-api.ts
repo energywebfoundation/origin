@@ -1,13 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Contracts, CertificateUtils } from '@energyweb/issuer';
+import { CertificateUtils, Contracts } from '@energyweb/issuer';
 import { Role, UserStatus } from '@energyweb/origin-backend-core';
-import { CanActivate, ExecutionContext, Logger } from '@nestjs/common';
+import { DatabaseService } from '@energyweb/origin-backend-utils';
 import { getProviderWithFallback } from '@energyweb/utils-general';
+import { CanActivate, ExecutionContext } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { Test } from '@nestjs/testing';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { useContainer } from 'class-validator';
-import { DatabaseService } from '@energyweb/origin-backend-utils';
 
 import { entities } from '../src';
 import { AppModule } from '../src/app.module';
@@ -51,8 +51,6 @@ const authGuard: CanActivate = {
         return true;
     }
 };
-
-const testLogger = new Logger('e2e');
 
 export const bootstrapTestInstance: any = async () => {
     const registry = await deployRegistry();
@@ -99,7 +97,7 @@ export const bootstrapTestInstance: any = async () => {
         blockchainProperties.wrap(deviceManager.privateKey)
     );
 
-    app.useLogger(testLogger);
+    app.useLogger(['log', 'error']);
     app.enableCors();
 
     useContainer(app.select(AppModule), { fallbackOnErrors: true });

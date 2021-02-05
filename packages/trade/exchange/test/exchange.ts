@@ -3,7 +3,7 @@ import { Contracts } from '@energyweb/issuer';
 import { UserStatus } from '@energyweb/origin-backend-core';
 import { DatabaseService, RolesGuard } from '@energyweb/origin-backend-utils';
 import { getProviderWithFallback } from '@energyweb/utils-general';
-import { CanActivate, ExecutionContext, Logger } from '@nestjs/common';
+import { CanActivate, ExecutionContext } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { AuthGuard } from '@nestjs/passport';
 import { Test } from '@nestjs/testing';
@@ -71,15 +71,11 @@ const authGuard: CanActivate = {
     }
 };
 
-const testLogger = new Logger('e2e');
-
 export const bootstrapTestInstance = async (
     web3 = WEB3,
     deviceServiceMock?: IExternalDeviceService,
     modules: any[] = []
 ) => {
-    testLogger.debug(`Using ${web3}`);
-
     const registry = await deployRegistry(web3);
     const issuer = await deployIssuer(web3, registry.address);
 
@@ -161,7 +157,7 @@ export const bootstrapTestInstance = async (
     const orderService = await app.resolve<OrderService<string>>(OrderService);
     const bundleService = await app.resolve<BundleService>(BundleService);
 
-    app.useLogger(testLogger);
+    app.useLogger(['log', 'error']);
     app.enableCors();
 
     useContainer(app.select(AppModule), { fallbackOnErrors: true });
