@@ -1,0 +1,9 @@
+dist/
+node_modules
+assets
+nginx
+jest.config.js
+webpack
+
+# declaration files
+*.d.ts 

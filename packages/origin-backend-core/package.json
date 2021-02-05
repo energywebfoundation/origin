@@ -7,7 +7,7 @@
         "build": "yarn build:ts",
         "build:ts": "tsc -b tsconfig.json",
         "clean": "shx rm -rf dist",
-        "lint": "eslint \"src/**/*{.ts,.tsx}\"",
+        "lint": "eslint \"src/**/*{.ts,.tsx}\" --quiet",
         "lint-fix": "eslint \"src/**/*{.ts,.tsx}\" --fix",
         "prettier": "prettier --write --config-precedence file-override './src/**/*'"
     },
@@ -31,7 +31,7 @@
         "axios": "0.21.1",
         "class-transformer": "0.3.1",
         "class-validator": "0.13.1",
-        "ethers": "5.0.15",
+        "ethers": "5.0.27",
         "precise-proofs-js": "1.2.0"
     }
 }

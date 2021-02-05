@@ -1,0 +1,95 @@
+.PageWrapper {
+    .DetailViewWrapper {
+        .PageContentWrapper {
+            padding: 15px 0 0;
+
+            .PageBody {
+                padding: 12px 0;
+                border-radius: 3px;
+
+                .history {
+                    margin-left: 26px;
+                    margin-top: 15px;
+                    .title {
+                        font-weight: 300;
+                        font-size: 11px;
+                        mix-blend-mode: normal;
+                        opacity: 0.7;
+                        margin-bottom: 10px;
+                    }
+                    .timestamp {
+                        font-size: 11px;
+                    }
+                }
+
+                table:not(.MuiTable-root) {
+                    table-layout: fixed;
+                    width: 100%;
+
+                    tr {
+                        td {
+                            vertical-align: top;
+                            padding: 18px 26px;
+
+                            &:not(:last-child) {
+                                border-right: 1px solid rgba(216, 216, 216, 0.14);
+                            }
+
+                            .Label {
+                                font-weight: 300;
+                                font-size: 11px;
+                                mix-blend-mode: normal;
+                                opacity: 0.7;
+                            }
+
+                            .Data {
+                                font-size: 16px;
+                                letter-spacing: 0.0888889px;
+                                display: flex;
+                                align-items: baseline;
+                                margin-top: 6px;
+
+                                span {
+                                    font-weight: 500;
+                                    font-size: 10px;
+                                    mix-blend-mode: normal;
+                                    opacity: 0.67;
+                                    margin-left: 6px;
+                                }
+                            }
+
+                            .Image {
+                                margin-top: 35px;
+
+                                &.Map {
+                                    margin-top: 25px;
+                                    box-sizing: border-box;
+                                    position: relative;
+
+                                    img {
+                                        &:not(.Marker) {
+                                            width: 100%;
+                                        }
+
+                                        &.Marker {
+                                            position: absolute;
+                                            left: calc(50% - 8px);
+                                            top: calc(50% - 12px);
+                                        }
+                                    }
+                                }
+                            }
+
+                            .Description {
+                                line-height: 18px;
+                                font-size: 10px;
+                                letter-spacing: 0.0555556px;
+                                margin-top: 3px;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

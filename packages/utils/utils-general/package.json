@@ -1,0 +1,49 @@
+{
+    "name": "@energyweb/utils-general",
+    "description": "",
+    "license": "GPL-3.0-or-later",
+    "homepage": "https://github.com/energywebfoundation/origin/tree/master/packages/utils-general#readme",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/energywebfoundation/origin.git"
+    },
+    "bugs": {
+        "url": "https://github.com/energywebfoundation/origin/issues"
+    },
+    "version": "11.0.0",
+    "main": "dist/js/src/index.js",
+    "files": [
+        "dist/js/build",
+        "dist/js/src"
+    ],
+    "directories": {
+        "test": "test"
+    },
+    "scripts": {
+        "build": "yarn build:ts",
+        "build:ts": "tsc -b tsconfig.json",
+        "prettier": "prettier --write --config-precedence file-override './src/**/*'",
+        "test": "TS_NODE_PROJECT=\"tsconfig.json\" mocha -r ts-node/register src/test/*.test.ts --exit",
+        "test:watch": "TS_NODE_PROJECT=\"tsconfig.json\" mocha -r ts-node/register src/test/*.test.ts --watch --watch-extensions ts",
+        "clean": "shx rm -rf dist"
+    },
+    "types": "dist/js/src/index.d.ts",
+    "dependencies": {
+        "@energyweb/origin-backend-core": "7.0.1",
+        "chai": "^4.2.0",
+        "eth-sig-util": "2.5.2",
+        "ethers": "5.0.27",
+        "jsonschema": "1.4.0",
+        "moment": "2.29.1",
+        "winston": "3.3.3"
+    },
+    "devDependencies": {
+        "@types/eth-sig-util": "2.1.0",
+        "ethlint": "1.2.5"
+    },
+    "gitHead": "54beaf7fe6686810de74ca290daf99cbde510f9d",
+    "publishConfig": {
+        "access": "public",
+        "registry": "https://registry.npmjs.org"
+    }
+}
