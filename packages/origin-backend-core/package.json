@@ -31,7 +31,7 @@
         "axios": "0.21.1",
         "class-transformer": "0.3.1",
         "class-validator": "0.13.1",
-        "ethers": "5.0.27",
+        "ethers": "5.0.29",
         "precise-proofs-js": "1.2.0"
     }
 }
