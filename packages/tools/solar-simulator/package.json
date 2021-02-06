@@ -46,7 +46,7 @@
         "fs-extra": "9.1.0",
         "geo-tz": "6.0.1",
         "moment": "2.29.1",
-        "moment-timezone": "0.5.32",
+        "moment-timezone": "0.5.33",
         "winston": "3.3.3"
     },
     "publishConfig": {
