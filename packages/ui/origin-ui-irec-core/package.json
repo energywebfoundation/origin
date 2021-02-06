@@ -48,10 +48,10 @@
         "axios": "0.21.1",
         "@date-io/moment": "2.10.6",
         "@react-google-maps/api": "2.1.1",
-        "i18next": "19.8.5"
+        "i18next": "19.8.7"
     },
     "devDependencies": {
-        "@types/react": "17.0.0",
+        "@types/react": "17.0.1",
         "@types/react-dom": "17.0.0",
         "@types/react-redux": "7.1.16",
         "@types/react-router-dom": "5.1.7",
