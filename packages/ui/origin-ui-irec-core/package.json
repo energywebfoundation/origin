@@ -43,7 +43,7 @@
         "formik": "2.2.6",
         "formik-material-ui": "3.0.1",
         "formik-material-ui-pickers": "0.0.12",
-        "ethers": "5.0.15",
+        "ethers": "5.0.29",
         "bootstrap": "4.6.0",
         "axios": "0.21.1",
         "@date-io/moment": "2.10.6",

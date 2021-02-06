@@ -47,7 +47,7 @@
         "reflect-metadata": "0.1.13",
         "rxjs": "6.6.3",
         "typeorm": "0.2.30",
-        "ethers": "5.0.27",
+        "ethers": "5.0.29",
         "uuid": "8.3.2"
     },
     "devDependencies": {
