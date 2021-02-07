@@ -75,7 +75,7 @@
         "toastr": "2.1.4",
         "ts-loader": "8.0.15",
         "url-loader": "4.1.1",
-        "webpack": "5.21.1",
+        "webpack": "5.21.2",
         "winston": "3.3.3",
         "yup": "0.32.8"
     },
