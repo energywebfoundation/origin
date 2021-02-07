@@ -8,7 +8,6 @@ import irecLogo from '../../../../assets/logo-i-rec.svg';
 import { useOriginConfiguration } from '../../../utils/configuration';
 
 const INITIAL_VALUES = {
-    platformOrganizationId: '',
     irecUsername: '',
     apiToken: '',
     clientID: '',
@@ -45,9 +44,6 @@ export const IRECConnectForm = () => {
     };
 
     const VALIDATION_SCHEME = Yup.object({
-        platformOrganizationId: Yup.string()
-            .required()
-            .label(t('organization.registration.platformOrganizationId')),
         irecUsername: Yup.string().required().label(t('organization.registration.IRECUsername')),
         apiToken: Yup.string().required().label(t('organization.registration.apiToken')),
         clientID: Yup.string().required().label(t('organization.registration.clientId')),
@@ -81,30 +77,6 @@ export const IRECConnectForm = () => {
                                             <br />
                                             <Divider className={classes.divider} />
                                             <br />
-                                        </Grid>
-                                        <Grid item>
-                                            <Box>
-                                                {t(
-                                                    'organization.registration.organizationInformation'
-                                                )}
-                                            </Box>
-                                        </Grid>
-                                        <Grid item style={{ paddingLeft: spacing(1) }}>
-                                            <FormInput
-                                                label={t(
-                                                    'organization.registration.platformOrganizationId'
-                                                )}
-                                                property="platformOrganizationId"
-                                                className="mt-3"
-                                            />
-                                        </Grid>
-                                        <Grid item>
-                                            <br />
-                                            <Divider className={classes.divider} />
-                                            <br />
-                                        </Grid>
-                                        <Grid item>
-                                            {t('organization.registration.IRECAPICredentials')}
                                         </Grid>
 
                                         <Grid container direction="column">
