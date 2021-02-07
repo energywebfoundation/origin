@@ -29,7 +29,7 @@
     "devDependencies": {
         "@energyweb/origin-backend": "9.0.2",
         "@nestjs/swagger": "4.7.12",
-        "@nestjs/testing": "7.6.7",
+        "@nestjs/testing": "7.6.11",
         "@nestjs/typeorm": "7.1.5",
         "@openapitools/openapi-generator-cli": "1.0.18-4.3.1",
         "json-to-pretty-yaml": "1.2.2",
