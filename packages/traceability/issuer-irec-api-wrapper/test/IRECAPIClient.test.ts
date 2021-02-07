@@ -3,11 +3,16 @@ import { expect } from 'chai';
 import fs from 'fs';
 import moment from 'moment-timezone';
 
-import { IRECAPIClient } from '../src/IRECAPIClient';
-import { ApproveIssue } from '../src/Issue';
-import { Product } from '../src/Product';
-import { Redemption, ReservationItem } from '../src/Transfer';
-import { Fuel, FuelType } from '../src/Fuel';
+import {
+    ApproveIssue,
+    Fuel,
+    FuelType,
+    IRECAPIClient,
+    Product,
+    Redemption,
+    ReservationItem
+} from '../src';
+
 import { credentials, getClient, validateCodeName, validateOrganization } from './helpers';
 
 describe('IREC API', () => {
