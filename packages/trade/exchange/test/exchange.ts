@@ -9,7 +9,6 @@ import { AuthGuard } from '@nestjs/passport';
 import { Test } from '@nestjs/testing';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { useContainer } from 'class-validator';
-import { ethers } from 'ethers';
 
 import { entities } from '../src';
 import { AppModule } from '../src/app.module';
@@ -35,31 +34,6 @@ const WEB3 = 'http://localhost:8580';
 // ganache account 2
 const registryDeployer = '0xc4b87d68ea2b91f9d3de3fcb77c299ad962f006ffb8711900cb93d94afec3dc3';
 
-const deployContract = async (web3: string, { abi, bytecode }: { abi: any; bytecode: string }) => {
-    const provider = getProviderWithFallback(web3);
-    const wallet = new ethers.Wallet(registryDeployer, provider);
-
-    const factory = new ethers.ContractFactory(abi, bytecode, wallet);
-    const contract = await factory.deploy();
-
-    return contract.deployed();
-};
-
-const deployRegistry = async (web3: string) => {
-    const contract = await deployContract(web3, Contracts.RegistryJSON);
-
-    return contract;
-};
-
-const deployIssuer = async (web3: string, registry: string) => {
-    const contract = await deployContract(web3, Contracts.IssuerJSON);
-    const wallet = new ethers.Wallet(registryDeployer);
-
-    await contract['initialize(int256,address,address)'](100, registry, wallet.address);
-
-    return contract;
-};
-
 export const authenticatedUser = { id: 1, organization: { id: '1000' }, status: UserStatus.Active };
 
 const authGuard: CanActivate = {
@@ -76,8 +50,10 @@ export const bootstrapTestInstance = async (
     deviceServiceMock?: IExternalDeviceService,
     modules: any[] = []
 ) => {
-    const registry = await deployRegistry(web3);
-    const issuer = await deployIssuer(web3, registry.address);
+    const provider = getProviderWithFallback(web3);
+
+    const registry = await Contracts.migrateRegistry(provider, registryDeployer);
+    const issuer = await Contracts.migrateIssuer(provider, registryDeployer, registry.address);
 
     const configService = new ConfigService({
         WEB3: web3,
@@ -163,6 +139,7 @@ export const bootstrapTestInstance = async (
     useContainer(app.select(AppModule), { fallbackOnErrors: true });
 
     return {
+        configService,
         transferService,
         accountService,
         accountBalanceService,

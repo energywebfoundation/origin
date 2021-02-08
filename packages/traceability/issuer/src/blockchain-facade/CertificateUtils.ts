@@ -292,9 +292,5 @@ export async function approveOperator(
 
     const registryWithSigner = registry.connect(activeUser);
 
-    const approveOperatorTx = await registryWithSigner.setApprovalForAll(operator, true);
-
-    await approveOperatorTx.wait();
-
-    return approveOperatorTx;
+    return registryWithSigner.setApprovalForAll(operator, true);
 }

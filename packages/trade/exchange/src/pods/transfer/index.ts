@@ -1,5 +1,6 @@
-export * from './create-deposit.dto';
-export * from './create-withdrawal.dto';
+export * from './dto/create-deposit.dto';
+export * from './dto/create-withdrawal.dto';
+export * from './dto/request-claim.dto';
 export * from './errors';
 export * from './transfer-accounting.module';
 export * from './transfer-accounting.service';
@@ -10,6 +11,7 @@ export * from './transfer.entity';
 export * from './transfer.module';
 export * from './transfer.service';
 export * from './withdrawal-requested.event';
+export * from './claim-requested.event';
 export * from './deposit-discovered.event';
 export * from './deposit-approved.event';
 export * from './handlers';
