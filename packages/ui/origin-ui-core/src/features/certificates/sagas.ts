@@ -412,13 +412,15 @@ function* requestClaimCertificateSaga(): SagaIterator {
                 certificate.tokenId
             );
 
-            const claimResult: ContractReceipt = yield call(
+            const claimResult: ContractTransaction = yield call(
                 [onChainCertificate, onChainCertificate.claim],
                 claimData,
                 amount
             );
 
-            if (!claimResult.status) {
+            const txResult: ContractReceipt = yield call([claimResult, claimResult.wait]);
+
+            if (!txResult.status) {
                 showNotification('Claiming failed.', NotificationType.Error);
                 continue;
             }
