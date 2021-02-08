@@ -62,7 +62,7 @@ describe('I-REC Registration tests', () => {
         await databaseService.truncate('irec_connection');
     });
 
-    it.skip('should create and return new IREC connection', async () => {
+    it('should create and return new IREC connection', async () => {
         const { body: registration } = await test
             .post('/irec/registration')
             .send(registrationForm)
@@ -78,12 +78,12 @@ describe('I-REC Registration tests', () => {
                 clientSecret: 'test'
             })
             .set({ 'test-user': TestUser.OrganizationAdmin })
-            .expect(HttpStatus.OK);
+            .expect(HttpStatus.CREATED);
 
         expect(connection.registrationId).to.equal(registration.id);
         expect(connection.accessToken).to.be.a('string');
         expect(connection.refreshToken).to.be.a('string');
-        expect(connection.expiryDate).to.be.instanceof(Date);
+        expect(connection.expiryDate).to.be.a('string');
 
         const { body: connections } = await test
             .get('/irec/connection')

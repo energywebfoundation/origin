@@ -12,6 +12,7 @@ import { AppModule } from '../src/app.module';
 import { Connection } from '../src/connection/connection.entity';
 import { Registration } from '../src/registration/registration.entity';
 import { RegistrationService } from '../src/registration/registration.service';
+import { IrecConnectionService } from '../src';
 
 export enum TestUser {
     OrganizationAdmin = '0',
@@ -76,6 +77,14 @@ export const bootstrapTestInstance = async () => {
     })
         .overrideGuard(AuthGuard('default'))
         .useValue(authGuard)
+        .overrideProvider(IrecConnectionService)
+        .useValue({
+            login: () => ({
+                expiryDate: new Date(),
+                accessToken: 'someAccessToken',
+                refreshToken: 'someRefreshToken'
+            })
+        })
         .compile();
 
     const app = moduleFixture.createNestApplication();

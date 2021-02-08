@@ -2,12 +2,12 @@ import { CommandHandler, EventBus, ICommandHandler } from '@nestjs/cqrs';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { BadRequestException } from '@nestjs/common';
-import { IRECAPIClient } from '@energyweb/issuer-irec-api-wrapper';
 import { CreateConnectionCommand } from '../commands/create-connection.command';
 import { Connection } from '../connection.entity';
 import { ConnectionDTO } from '../dto/connection.dto';
 import { ConnectionCreatedEvent } from '../events/connection-created.event';
 import { RegistrationService } from '../../registration';
+import { IrecConnectionService } from '../irec-connection.service';
 
 @CommandHandler(CreateConnectionCommand)
 export class CreateConnectionHandler implements ICommandHandler<CreateConnectionCommand> {
@@ -15,15 +15,20 @@ export class CreateConnectionHandler implements ICommandHandler<CreateConnection
         @InjectRepository(Connection)
         private readonly repository: Repository<Connection>,
         private readonly registrationService: RegistrationService,
-        private readonly eventBus: EventBus
+        private readonly eventBus: EventBus,
+        private readonly irecConnectionService: IrecConnectionService
     ) {}
 
     async execute({
         user: { organizationId },
         credentials: { userName, password, clientId, clientSecret }
     }: CreateConnectionCommand): Promise<ConnectionDTO> {
-        const client = new IRECAPIClient(process.env.IREC_API_URL);
-        const loginResult = await client.login(userName, password, clientId, clientSecret);
+        const loginResult = await this.irecConnectionService.login({
+            userName,
+            password,
+            clientId,
+            clientSecret
+        });
 
         const [registration] = await this.registrationService.find(String(organizationId));
         if (!registration) {
