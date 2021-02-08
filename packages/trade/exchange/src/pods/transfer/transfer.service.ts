@@ -8,13 +8,15 @@ import { AccountService } from '../account/account.service';
 import { Asset } from '../asset/asset.entity';
 import { AssetService } from '../asset/asset.service';
 import { HasEnoughAssetAmountQuery } from '../order/queries/has-enough-asset-amount.query';
-import { CreateDepositDTO } from './create-deposit.dto';
-import { RequestWithdrawalDTO } from './create-withdrawal.dto';
+import { CreateDepositDTO } from './dto/create-deposit.dto';
+import { RequestWithdrawalDTO } from './dto/create-withdrawal.dto';
 import { DepositApprovedEvent } from './deposit-approved.event';
 import { TransferDirection } from './transfer-direction';
 import { TransferStatus } from './transfer-status';
 import { Transfer } from './transfer.entity';
 import { WithdrawalRequestedEvent } from './withdrawal-requested.event';
+import { RequestClaimDTO } from './dto/request-claim.dto';
+import { ClaimRequestedEvent } from './claim-requested.event';
 
 @Injectable()
 export class TransferService {
@@ -53,27 +55,16 @@ export class TransferService {
 
     public async requestWithdrawal(
         userId: string,
-        withdrawalDTO: RequestWithdrawalDTO,
+        { assetId, amount, address }: RequestWithdrawalDTO,
         transaction?: EntityManager
-    ) {
-        const hasEnoughFunds = await this.queryBus.execute(
-            new HasEnoughAssetAmountQuery(userId, [
-                {
-                    id: withdrawalDTO.assetId,
-                    amount: new BN(withdrawalDTO.amount)
-                }
-            ])
-        );
-
-        if (!hasEnoughFunds) {
-            throw new Error('Not enough funds');
-        }
+    ): Promise<Transfer['id']> {
+        await this.validateEnoughFunds(userId, assetId, amount);
 
         const withdrawal: Partial<Transfer> = {
             userId,
-            amount: withdrawalDTO.amount,
-            address: withdrawalDTO.address,
-            asset: { id: withdrawalDTO.assetId } as Asset,
+            amount,
+            address,
+            asset: { id: assetId } as Asset,
             status: TransferStatus.Accepted,
             direction: TransferDirection.Withdrawal
         };
@@ -90,6 +81,43 @@ export class TransferService {
             this.eventBus.publish(new WithdrawalRequestedEvent(storedWithdrawal));
 
             return storedWithdrawal.id;
+        } catch (error) {
+            this.logger.error(error.message);
+
+            throw error;
+        }
+    }
+
+    public async requestClaim(
+        userId: string,
+        { amount, assetId }: RequestClaimDTO,
+        transaction?: EntityManager
+    ): Promise<Transfer['id']> {
+        await this.validateEnoughFunds(userId, assetId, amount);
+
+        const { address } = await this.accountService.getAccount(userId);
+
+        const claim: Partial<Transfer> = {
+            userId,
+            amount,
+            address,
+            asset: { id: assetId } as Asset,
+            status: TransferStatus.Accepted,
+            direction: TransferDirection.Claim
+        };
+
+        const manager = transaction || this.repository.manager;
+
+        try {
+            const storedClaim = await manager.transaction((tr) =>
+                tr.getRepository<Transfer>(Transfer).save(claim)
+            );
+
+            this.logger.debug(`Created new claim with id=${storedClaim.id}`);
+
+            this.eventBus.publish(new ClaimRequestedEvent(storedClaim));
+
+            return storedClaim.id;
         } catch (error) {
             this.logger.error(error.message);
 
@@ -191,6 +219,20 @@ export class TransferService {
             );
         } catch (error) {
             this.logger.error(error.message);
+        }
+    }
+
+    private async validateEnoughFunds(
+        userId: string,
+        assetId: string,
+        amount: string
+    ): Promise<void> {
+        const hasEnoughFunds = await this.queryBus.execute(
+            new HasEnoughAssetAmountQuery(userId, [{ id: assetId, amount: new BN(amount) }])
+        );
+
+        if (!hasEnoughFunds) {
+            throw new Error('Not enough funds');
         }
     }
 }

@@ -2,7 +2,7 @@ import { PositiveBNStringValidator } from '@energyweb/origin-backend-utils';
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, IsUUID, Validate } from 'class-validator';
 
-import { ETHAddressValidator } from '../../utils/ethAddressValidator';
+import { ETHAddressValidator } from '../../../utils/ethAddressValidator';
 
 export class RequestWithdrawalDTO {
     @ApiProperty({ type: String })

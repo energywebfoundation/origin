@@ -24,6 +24,7 @@ export * as testUtils from '../test';
 
 export {
     WithdrawalRequestedEvent,
+    ClaimRequestedEvent,
     Transfer,
     TransferDirection,
     TransferStatus,

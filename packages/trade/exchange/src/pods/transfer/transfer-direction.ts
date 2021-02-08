@@ -1,4 +1,5 @@
 export enum TransferDirection {
     Deposit,
-    Withdrawal
+    Withdrawal,
+    Claim
 }

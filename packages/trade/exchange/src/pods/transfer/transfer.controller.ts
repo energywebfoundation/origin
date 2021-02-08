@@ -8,10 +8,10 @@ import {
 } from '@energyweb/origin-backend-utils';
 import {
     Body,
+    ConflictException,
     Controller,
     ForbiddenException,
     Get,
-    HttpException,
     HttpStatus,
     Logger,
     Post,
@@ -24,7 +24,9 @@ import { AuthGuard } from '@nestjs/passport';
 import { ApiBearerAuth, ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { ensureSingleProcessOnly } from '../../utils/ensureSingleProcessOnly';
 
-import { RequestWithdrawalDTO } from './create-withdrawal.dto';
+import { RequestWithdrawalDTO } from './dto/create-withdrawal.dto';
+import { RequestClaimDTO } from './dto/request-claim.dto';
+import { ClaimBeingProcessedError } from './errors/claim-being-processed.error';
 import { WithdrawalBeingProcessedError } from './errors/withdrawal-being-processed.error';
 import { Transfer } from './transfer.entity';
 import { TransferService } from './transfer.service';
@@ -68,7 +70,36 @@ export class TransferController {
             this.logger.error(error.message);
 
             if (error instanceof WithdrawalBeingProcessedError) {
-                throw new HttpException({ message: error.message }, 409);
+                throw new ConflictException({ message: error.message });
+            }
+
+            throw new ForbiddenException();
+        }
+    }
+
+    @Post('claim')
+    @UseGuards(AuthGuard(), ActiveUserGuard, RolesGuard)
+    @Roles(Role.OrganizationAdmin)
+    @ApiBody({ type: RequestClaimDTO })
+    @ApiResponse({ status: HttpStatus.CREATED, type: String, description: 'Request a claim' })
+    public async requestClaim(
+        @UserDecorator() { ownerId }: ILoggedInUser,
+        @Body() claim: RequestClaimDTO
+    ): Promise<string> {
+        try {
+            const result = await ensureSingleProcessOnly(
+                ownerId,
+                'requestClaim',
+                () => this.transferService.requestClaim(ownerId, claim),
+                new ClaimBeingProcessedError()
+            );
+
+            return result;
+        } catch (error) {
+            this.logger.error(error.message);
+
+            if (error instanceof ClaimBeingProcessedError) {
+                throw new ConflictException({ message: error.message });
             }
 
             throw new ForbiddenException();
