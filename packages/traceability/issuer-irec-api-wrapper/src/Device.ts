@@ -1,92 +1,106 @@
-/* eslint-disable max-classes-per-file */
 import { Expose, Transform } from 'class-transformer';
 import {
-    IsString,
+    IsDate,
+    IsIn,
+    IsLatitude,
+    IsLongitude,
     IsNotEmpty,
-    IsBoolean,
     IsOptional,
     IsPositive,
-    IsDate,
-    IsLatitude,
-    IsLongitude
+    IsString
 } from 'class-validator';
 
-export class CodeName {
-    @IsString()
-    @IsNotEmpty()
-    code: string;
-
-    @IsString()
-    @IsNotEmpty()
-    name: string;
+export enum DeviceState {
+    Draft = 'Draft',
+    InProgress = 'In-progress',
+    Rejected = 'Rejected',
+    Approved = 'Approved'
 }
 
-export class Device {
+export class DeviceCreateUpdateParams {
+    @IsOptional()
     @IsString()
-    @IsNotEmpty()
-    code: string;
+    name?: string;
 
-    @IsString()
-    @IsNotEmpty()
-    name: string;
-
+    @IsOptional()
     @Expose({ name: 'default_account_code', toPlainOnly: true })
     @IsString()
-    @IsNotEmpty()
-    defaultAccount: string;
+    defaultAccount?: string;
 
+    @IsOptional()
     @Expose({ name: 'device_type_code', toPlainOnly: true })
     @IsString()
-    @IsNotEmpty()
-    deviceType: string;
+    deviceType?: string;
 
+    @IsOptional()
     @Expose({ name: 'fuel_code', toPlainOnly: true })
     @IsString()
-    @IsNotEmpty()
-    fuel: string;
+    fuel?: string;
 
+    @IsOptional()
     @Expose({ name: 'country_code', toPlainOnly: true })
     @IsString()
-    @IsNotEmpty()
-    countryCode: string;
+    countryCode?: string;
 
-    @Expose({ name: 'device_type_code', toPlainOnly: true })
+    @IsOptional()
+    @Expose({ name: 'registrant_organisation_code', toPlainOnly: true })
     @IsString()
-    @IsNotEmpty()
-    registrantOrganization: string;
+    registrantOrganization?: string;
 
+    @IsOptional()
+    @Expose({ name: 'issuer_code', toPlainOnly: true })
+    @IsString()
+    issuer?: string;
+
+    @IsOptional()
+    @Transform((value: string) => Number(value))
     @IsPositive()
-    capacity: number;
+    capacity?: number;
 
+    @IsOptional()
     @Expose({ name: 'commissioning_date', toPlainOnly: true })
-    @Transform((value: Date) => value.toISOString().split('T')[0], { toPlainOnly: true })
+    @Transform((value: Date) => value?.toISOString().split('T')[0], {
+        toPlainOnly: true
+    })
+    @Transform((value: string) => new Date(value), { toClassOnly: true })
     @IsDate()
-    commissioningDate: Date;
+    commissioningDate?: Date;
 
+    @IsOptional()
     @Expose({ name: 'registration_date', toPlainOnly: true })
-    @Transform((value: Date) => value.toISOString().split('T')[0], { toPlainOnly: true })
+    @Transform((value: Date) => value?.toISOString().split('T')[0], { toPlainOnly: true })
+    @Transform((value: string) => new Date(value), { toClassOnly: true })
     @IsDate()
-    registrationDate: Date;
+    registrationDate?: Date;
 
+    @IsOptional()
     @IsString()
-    @IsNotEmpty()
-    address: string;
+    address?: string;
 
+    @IsOptional()
     @IsLatitude()
-    latitude: number;
+    latitude?: number;
 
+    @IsOptional()
     @IsLongitude()
-    longitude: number;
-
-    @IsOptional()
-    @IsBoolean()
-    active?: boolean;
-
-    @IsOptional()
-    @IsBoolean()
-    supported: boolean;
+    longitude?: number;
 
     @IsOptional()
     @IsString()
     notes?: string;
+}
+
+export class Device extends DeviceCreateUpdateParams {
+    @IsString()
+    @IsNotEmpty()
+    code: string;
+
+    @IsNotEmpty()
+    @IsString()
+    @IsIn(Object.values(DeviceState))
+    status:
+        | DeviceState.Approved
+        | DeviceState.Draft
+        | DeviceState.InProgress
+        | DeviceState.Rejected;
 }

@@ -1,5 +1,4 @@
-/* eslint-disable max-classes-per-file */
-import { CodeName } from './Device';
+import { CodeName } from './Items';
 
 export class Fuel extends CodeName {}
 

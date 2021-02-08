@@ -1,4 +1,3 @@
-/* eslint-disable max-classes-per-file */
 import { Type, Expose, Transform } from 'class-transformer';
 import { IsString, IsNotEmpty, ValidateNested, IsEnum } from 'class-validator';
 import moment from 'moment-timezone';
