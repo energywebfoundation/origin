@@ -16,7 +16,6 @@ import { setTimeFormatLanguage, LightenColor } from '@energyweb/origin-ui-core';
 import variables from '../styles/variables.scss';
 import { OriginGenericLogo } from './OriginGenericLogo';
 import { LoginPageBackground } from './LoginPageBackground';
-import env from '../../env-config.json';
 
 export interface IOriginStyleConfig {
     PRIMARY_COLOR: string;
@@ -292,10 +291,6 @@ export function createOriginConfiguration(configuration: Partial<IOriginConfigur
 
     const storedLanguage = getOriginLanguage();
 
-    const disabledFeatures: OriginFeature[] = env.DISABLED_UI_FEATURES.split(';').map(
-        (feature) => OriginFeature[feature]
-    );
-
     const DEFAULT_ORIGIN_CONFIGURATION: IOriginConfiguration = {
         logo: <OriginGenericLogo />,
         loginPageBg: <LoginPageBackground />,
@@ -305,7 +300,12 @@ export function createOriginConfiguration(configuration: Partial<IOriginConfigur
         defaultLanguage: 'en',
         language: storedLanguage,
         enabledFeatures: allOriginFeatures.filter((feature) => {
-            return !disabledFeatures.includes(feature);
+            return ![
+                OriginFeature.IRecConnect,
+                OriginFeature.DevicesImport,
+                OriginFeature.IRecUIApp,
+                OriginFeature.CertificatesImport
+            ].includes(feature);
         })
     };
 
