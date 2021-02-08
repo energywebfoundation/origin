@@ -1,17 +1,14 @@
 /* eslint-disable import/no-extraneous-dependencies */
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { Configuration, ConfigurationModule } from '@energyweb/origin-backend';
 import { IUser, OrganizationStatus, Role, UserStatus } from '@energyweb/origin-backend-core';
 import { DatabaseService } from '@energyweb/origin-backend-utils';
-import {
-    Configuration,
-    ConfigurationModule
-} from '@energyweb/origin-backend/src/pods/configuration';
 import { CanActivate, ExecutionContext } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { Test } from '@nestjs/testing';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
-import { DeviceModule, DeviceService, Device } from '../src/device';
+import { Device, DeviceModule, DeviceService } from '../src/device';
 
 export enum TestUser {
     OrganizationAdmin = '0',

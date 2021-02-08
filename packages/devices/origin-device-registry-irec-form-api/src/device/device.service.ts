@@ -1,3 +1,4 @@
+import { ConfigurationService } from '@energyweb/origin-backend';
 import {
     DeviceCreateData,
     DeviceSettingsUpdateData,
@@ -16,8 +17,6 @@ import {
     sortLowestToHighestTimestamp
 } from '@energyweb/origin-backend-core';
 import { StorageErrors } from '@energyweb/origin-backend-utils';
-import { SM_READS_ADAPTER } from '@energyweb/origin-backend/src/const';
-import { ConfigurationService } from '@energyweb/origin-backend/src/pods/configuration';
 import {
     Inject,
     Injectable,
@@ -34,6 +33,8 @@ import { v4 as uuid } from 'uuid';
 import { Device } from './device.entity';
 import { DeviceStatusChangedEvent } from './events';
 import { DeviceCreatedEvent } from './events/device-created.event';
+
+export const SM_READS_ADAPTER = 'SM_READS_ADAPTER';
 
 @Injectable()
 export class DeviceService {
