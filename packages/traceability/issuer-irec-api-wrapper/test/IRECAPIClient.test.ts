@@ -17,7 +17,6 @@ import { credentials, getClient, validateCodeName, validateOrganization } from '
 
 describe('IREC API', () => {
     let client: IRECAPIClient;
-    // let issuerClient: IRECAPIClient;
     let participantClient: IRECAPIClient;
     let registrantClient: IRECAPIClient;
 
@@ -26,7 +25,6 @@ describe('IREC API', () => {
     const redemptionAccount = 'ACCOUNTREDEMPTION001';
 
     before(async () => {
-        // issuerClient = await getClient(credentials.issuer);
         participantClient = await getClient(credentials.participant);
         registrantClient = await getClient(credentials.registrant);
     });
