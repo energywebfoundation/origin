@@ -19,7 +19,7 @@ import { UserModule } from './pods/user/user.module';
 export { OrganizationModule, OrganizationService } from './pods/organization';
 
 export { AppModule } from './app.module';
-export { ConfigurationService } from './pods/configuration/configuration.service';
+export { Configuration, ConfigurationModule, ConfigurationService } from './pods/configuration';
 
 export * from './pods/organization/events';
 export * from './pods/email-confirmation/events';

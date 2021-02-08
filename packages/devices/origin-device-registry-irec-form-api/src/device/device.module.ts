@@ -1,13 +1,12 @@
 import { ISmartMeterReadingsAdapter } from '@energyweb/origin-backend-core';
-import { SM_READS_ADAPTER } from '@energyweb/origin-backend/src/const';
-import { ConfigurationModule } from '@energyweb/origin-backend/src/pods/configuration';
+import { ConfigurationModule } from '@energyweb/origin-backend';
 import { DynamicModule, Module } from '@nestjs/common';
 import { CqrsModule } from '@nestjs/cqrs';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { DeviceController } from './device.controller';
 import { Device } from './device.entity';
-import { DeviceService } from './device.service';
+import { DeviceService, SM_READS_ADAPTER } from './device.service';
 
 @Module({})
 export class DeviceModule {
