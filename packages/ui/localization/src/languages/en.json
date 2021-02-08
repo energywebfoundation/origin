@@ -155,7 +155,10 @@
                 "selectAccount": "Select account",
                 "selectAll": "Select all",
                 "importNCertificates": "Import {count} Certificate(s)",
+                "withdrawNCertificates": "Withdraw {count} Certificate(s)",
+                "sellNCertificates": "Sell {count} Certificate(s)",
                 "ok": "Ok",
+                "view": "View",
                 "confirm": "Confirm",
                 "cancel": "Cancel"
             },
@@ -186,6 +189,8 @@
                 "selectPriceRange": "Select price range to view more combinations",
                 "certificatesToImport": "Certificates to import",
                 "selectedForImport": "Selected for import",
+                "selectedForSale": "Selected for sale",
+                "selectedForWithdraw": "Selected for withdraw",
                 "selectCertificate": "Select Certificate"
             },
             "event": {
