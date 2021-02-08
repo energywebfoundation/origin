@@ -1,7 +1,7 @@
 import { DatabaseService } from '@energyweb/origin-backend-utils';
 import { HttpStatus, INestApplication } from '@nestjs/common';
 import { expect } from 'chai';
-import { Contract, ethers } from 'ethers';
+import { ethers } from 'ethers';
 import moment from 'moment';
 import request from 'supertest';
 import {
@@ -10,6 +10,7 @@ import {
     CreateAskDTO,
     Order,
     RequestWithdrawalDTO,
+    RequestClaimDTO,
     TransferDirection,
     TransferStatus,
     Transfer,
@@ -19,6 +20,10 @@ import {
 } from '@energyweb/exchange';
 import { TestProduct } from '@energyweb/exchange/test/product/get-product.handler';
 import { getProviderWithFallback } from '@energyweb/utils-general';
+import { Registry } from '@energyweb/issuer/src/ethers/Registry';
+import { Issuer } from '@energyweb/issuer/src/ethers/Issuer';
+import { ConfigService } from '@nestjs/config';
+import { Certificate } from '@energyweb/issuer';
 import { ExchangeErc1888Module } from '../src';
 
 const web3 = 'http://localhost:8590';
@@ -39,11 +44,12 @@ describe('Deposits using deployed registry', () => {
     let databaseService: DatabaseService;
     let accountService: AccountService;
     let transferService: TransferService;
+    let configService: ConfigService;
 
     const user1Id = authenticatedUser.organization.id;
 
-    let registry: Contract;
-    let issuer: Contract;
+    let registry: Registry;
+    let issuer: Issuer;
 
     let depositAddress: string;
     let tokenId: number;
@@ -60,6 +66,7 @@ describe('Deposits using deployed registry', () => {
             accountService,
             databaseService,
             transferService,
+            configService,
             registry,
             issuer,
             app
@@ -105,6 +112,8 @@ describe('Deposits using deployed registry', () => {
 
     const getBalance = async (address: string, id: number): Promise<ethers.BigNumber> =>
         registry.balanceOf(address, id);
+    const getClaimedBalance = async (address: string, id: number): Promise<ethers.BigNumber> =>
+        registry.claimedBalanceOf(address, id);
 
     it('should be able to discover token deposit and post the ask', async () => {
         const depositAmount = `${10 * MWh}`;
@@ -261,5 +270,41 @@ describe('Deposits using deployed registry', () => {
         const endBalance = await getBalance(withdrawalAddress, tokenId);
 
         expect(endBalance.toString()).to.be.equal(withdrawalAmount);
+    });
+
+    it('should claim from the exchange', async () => {
+        const tokenAmount = '10';
+        const exchangeAddress = configService.get('EXCHANGE_WALLET_PUB');
+
+        const assetId = await depositToExchangeAddress(tokenAmount);
+
+        const claim: RequestClaimDTO = {
+            assetId,
+            amount: tokenAmount
+        };
+
+        const balance = await getBalance(exchangeAddress, tokenId);
+
+        expect(balance.toNumber()).to.be.above(Number(tokenAmount));
+
+        await request(app.getHttpServer())
+            .post('/transfer/claim')
+            .send(claim)
+            .expect(HttpStatus.CREATED);
+
+        await sleep(5000);
+
+        const claimedBalance = await getClaimedBalance(exchangeAddress, tokenId);
+
+        expect(claimedBalance.toString()).to.equal(tokenAmount);
+
+        const certificate = await new Certificate(Number(tokenId), {
+            registry,
+            issuer,
+            web3: getProviderWithFallback(web3)
+        }).sync();
+
+        const [claimDetails] = await certificate.getClaimedData();
+        expect(claimDetails.claimData.beneficiary).to.equal(depositAddress);
     });
 });

@@ -32,7 +32,7 @@ export class TransferAccountingService extends AccountBalanceAssetService {
             transfers,
             (transfer) => transfer.asset,
             (transfer) => {
-                const sign = transfer.direction === TransferDirection.Withdrawal ? -1 : 1;
+                const sign = transfer.direction === TransferDirection.Deposit ? 1 : -1;
                 return new BN(transfer.amount).mul(new BN(sign));
             }
         );

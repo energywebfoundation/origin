@@ -1,7 +1,4 @@
-import {
-    Configuration,
-    ConfigurationModule
-} from '@energyweb/origin-backend/src/pods/configuration';
+import { Configuration, ConfigurationModule } from '@energyweb/origin-backend';
 import { AppModule, entities } from '@energyweb/origin-device-registry-irec-form-api';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { Test } from '@nestjs/testing';

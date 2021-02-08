@@ -1,1 +1,0 @@
-export const SM_READS_ADAPTER = 'SM_READS_ADAPTER';

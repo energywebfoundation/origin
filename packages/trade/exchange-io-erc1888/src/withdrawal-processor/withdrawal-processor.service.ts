@@ -1,9 +1,8 @@
-import { Contracts } from '@energyweb/issuer';
 import { getProviderWithFallback } from '@energyweb/utils-general';
 import { forwardRef, Inject, Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { ModuleRef } from '@nestjs/core';
-import { Contract, ContractReceipt, ContractTransaction, ethers, Wallet } from 'ethers';
+import { BigNumber, ContractReceipt, ContractTransaction, ethers, Wallet } from 'ethers';
 import { Subject } from 'rxjs';
 import { concatMap, tap } from 'rxjs/operators';
 
@@ -14,6 +13,7 @@ import {
     Transfer,
     TransferService
 } from '@energyweb/exchange';
+import { Certificate, Contracts, IBlockchainProperties } from '@energyweb/issuer';
 
 @Injectable()
 export class WithdrawalProcessorService implements OnModuleInit {
@@ -21,11 +21,9 @@ export class WithdrawalProcessorService implements OnModuleInit {
 
     private wallet: ethers.Wallet;
 
-    private readonly withdrawalQueue = new Subject<string>();
+    private readonly transferQueue = new Subject<string>();
 
-    private registry: ethers.Contract;
-
-    private tokenInterface: ethers.utils.Interface;
+    private blockchainProperties: IBlockchainProperties;
 
     public constructor(
         private readonly configService: ConfigService,
@@ -35,15 +33,13 @@ export class WithdrawalProcessorService implements OnModuleInit {
     ) {}
 
     public async onModuleInit() {
-        const wallet = this.configService.get<string>('EXCHANGE_WALLET_PRIV');
-        if (!wallet) {
+        const walletPrivateKey = this.configService.get<string>('EXCHANGE_WALLET_PRIV');
+        if (!walletPrivateKey) {
             this.logger.error('Wallet private key not provided');
             throw new Error('Wallet private key not provided');
         }
         const web3ProviderUrl = this.configService.get<string>('WEB3');
         const provider = getProviderWithFallback(...web3ProviderUrl.split(';'));
-
-        this.wallet = new Wallet(wallet, provider);
 
         const exchangeConfigService = this.moduleRef.get<IExchangeConfigurationService>(
             IExchangeConfigurationService,
@@ -52,14 +48,19 @@ export class WithdrawalProcessorService implements OnModuleInit {
             }
         );
 
-        const registry = await exchangeConfigService.getRegistryAddress();
-        const { abi } = Contracts.RegistryJSON;
+        this.wallet = new Wallet(walletPrivateKey, provider);
+        const registryAddress = await exchangeConfigService.getRegistryAddress();
+        const issuerAddress = await exchangeConfigService.getIssuerAddress();
 
-        this.registry = new Contract(registry, abi, this.wallet);
-        this.tokenInterface = new ethers.utils.Interface(abi);
+        this.blockchainProperties = {
+            web3: provider,
+            registry: Contracts.factories.RegistryFactory.connect(registryAddress, this.wallet),
+            issuer: Contracts.factories.IssuerFactory.connect(issuerAddress, this.wallet),
+            activeUser: this.wallet
+        };
 
         this.logger.log(
-            `Initializing withdrawal processor for ${this.registry.address} using ${this.wallet.address}`
+            `Initializing transfer processor for ${this.blockchainProperties.registry.address} using ${this.wallet.address}`
         );
 
         const balance = await this.wallet.getBalance();
@@ -69,7 +70,7 @@ export class WithdrawalProcessorService implements OnModuleInit {
 
         if (balance.lt(minBalance)) {
             this.logger.error(
-                `Withdrawal wallet has not enough EWT tokens, expected at least ${ethers.utils.formatEther(
+                `Transfer wallet has not enough EWT tokens, expected at least ${ethers.utils.formatEther(
                     minBalance
                 )} but has ${ethers.utils.formatEther(balance)}`
             );
@@ -77,15 +78,17 @@ export class WithdrawalProcessorService implements OnModuleInit {
             throw new Error('Not enough funds');
         }
 
-        this.withdrawalQueue
+        this.transferQueue
             .pipe(
-                tap((id) => this.logger.debug(`[Withdrawal ${id}] Enqueued ${id}`)),
+                tap((id) => this.logger.debug(`[Transfer ${id}] Enqueued ${id}`)),
                 concatMap((id) => this.process(id))
             )
             .subscribe();
 
         await this.processAcceptedWithdrawals();
+        await this.processAcceptedClaims();
         await this.processUnconfirmedWithdrawals();
+        await this.processUnconfirmedClaims();
     }
 
     public requestWithdrawal(withdrawal: Transfer): void {
@@ -94,46 +97,83 @@ export class WithdrawalProcessorService implements OnModuleInit {
         this.logger.debug(`[Withdrawal ${id}] Requested processing ${JSON.stringify(withdrawal)}`);
 
         if (withdrawal.direction !== TransferDirection.Withdrawal) {
-            this.logger.error(`[Withdrawal ${id}] Expected withdrawal but got deposit`);
+            this.logger.error(
+                `[Withdrawal ${id}] Expected ${
+                    TransferDirection[TransferDirection.Withdrawal]
+                } but got ${withdrawal.direction}`
+            );
 
-            throw new Error('Expected withdrawal but got deposit');
+            throw new Error('Expected transfer but got deposit');
         }
 
-        this.withdrawalQueue.next(withdrawal.id);
+        this.transferQueue.next(withdrawal.id);
+    }
+
+    public requestClaim(claim: Transfer): void {
+        const { id } = claim;
+        this.logger.log(`[Claim ${id}] Requested processing`);
+        this.logger.debug(`[Claim ${id}] Requested processing ${JSON.stringify(claim)}`);
+
+        if (claim.direction !== TransferDirection.Claim) {
+            this.logger.error(
+                `[Claim ${id}] Expected ${TransferDirection[TransferDirection.Claim]} but got ${
+                    claim.direction
+                }`
+            );
+
+            throw new Error('Expected transfer but got deposit');
+        }
+
+        this.transferQueue.next(claim.id);
     }
 
     private async process(id: string) {
-        this.logger.debug(`[Withdrawal ${id}] Starting processing`);
-        const withdrawal = await this.transferService.findOne(id);
+        this.logger.debug(`[Transfer ${id}] Starting processing`);
+        const transfer = await this.transferService.findOne(id);
 
-        if (!withdrawal) {
-            this.logger.error(`[Withdrawal ${id}] Unknown withdrawal. Skipping.`);
+        if (!transfer) {
+            this.logger.error(`[Transfer ${id}] Unknown transfer. Skipping.`);
             return;
         }
 
-        this.logger.debug(`[Withdrawal ${id}] ${JSON.stringify(withdrawal)}`);
+        this.logger.debug(`[Transfer ${id}] ${JSON.stringify(transfer)}`);
 
-        if (withdrawal.status !== TransferStatus.Accepted) {
+        if (transfer.status !== TransferStatus.Accepted) {
             this.logger.error(
-                `[Withdrawal ${id}] Expected status Accepted but got ${
-                    TransferStatus[withdrawal.status]
-                } instead`
+                `[Transfer ${id}] Expected status ${
+                    TransferStatus[TransferStatus.Accepted]
+                } but got ${TransferStatus[transfer.status]} instead`
             );
             return;
         }
-        const transaction = (await this.registry.safeTransferFrom(
-            this.wallet.address,
-            withdrawal.address,
-            withdrawal.asset.tokenId,
-            withdrawal.amount,
-            '0x00' // TODO: consider putting withdrawal id for tracking
-        )) as ContractTransaction;
 
-        await this.transferService.setAsUnconfirmed(id, transaction.hash);
+        let result: ContractTransaction;
 
-        const receipt = await transaction.wait();
+        const certificate = await new Certificate(
+            Number(transfer.asset.tokenId),
+            this.blockchainProperties
+        ).sync();
 
-        await this.handleConfirmation(withdrawal, receipt);
+        if (transfer.direction === TransferDirection.Withdrawal) {
+            result = await certificate.transfer(transfer.address, BigNumber.from(transfer.amount));
+        } else if (transfer.direction === TransferDirection.Claim) {
+            result = await certificate.claim(
+                { beneficiary: transfer.address },
+                BigNumber.from(transfer.amount)
+            );
+        } else {
+            throw Error(
+                `Unable to process transfer with direction ${
+                    TransferDirection[transfer.direction]
+                }.`
+            );
+        }
+
+        await this.transferService.setAsUnconfirmed(id, result.hash);
+
+        const receipt = await result.wait();
+
+        await this.handleConfirmation(transfer, receipt);
     }
 
     private async processAcceptedWithdrawals() {
@@ -141,9 +181,19 @@ export class WithdrawalProcessorService implements OnModuleInit {
             TransferStatus.Accepted,
             TransferDirection.Withdrawal
         );
-        this.logger.debug(`Found ${withdrawals.length} TransferStatus.Accepted withdrawals`);
+        this.logger.debug(`Found ${withdrawals.length} ${TransferStatus.Accepted} withdrawals`);
 
         withdrawals.forEach((withdrawal) => this.requestWithdrawal(withdrawal));
+    }
+
+    private async processAcceptedClaims() {
+        const claims = await this.transferService.getByStatus(
+            TransferStatus.Accepted,
+            TransferDirection.Claim
+        );
+        this.logger.debug(`Found ${claims.length} ${TransferStatus.Accepted} claims`);
+
+        claims.forEach((claim) => this.requestClaim(claim));
     }
 
     private async processUnconfirmedWithdrawals() {
@@ -151,7 +201,7 @@ export class WithdrawalProcessorService implements OnModuleInit {
             TransferStatus.Unconfirmed,
             TransferDirection.Withdrawal
         );
-        this.logger.debug(`Found ${withdrawals.length} TransferStatus.Unconfirmed withdrawals`);
+        this.logger.debug(`Found ${withdrawals.length} ${TransferStatus.Unconfirmed} withdrawals`);
 
         for (const withdrawal of withdrawals) {
             const transaction = await this.wallet.provider.getTransaction(
@@ -163,36 +213,54 @@ export class WithdrawalProcessorService implements OnModuleInit {
         }
     }
 
-    private async handleConfirmation(
-        withdrawal: Transfer,
-        { transactionHash, logs, blockNumber }: ContractReceipt
-    ) {
-        const { id } = withdrawal;
+    private async processUnconfirmedClaims() {
+        const claims = await this.transferService.getByStatus(
+            TransferStatus.Unconfirmed,
+            TransferDirection.Claim
+        );
+        this.logger.debug(`Found ${claims.length} ${TransferStatus.Unconfirmed} claims`);
 
-        const hasLog = logs
-            .map((log) => this.tokenInterface.parseLog(log))
-            .filter((log) => log.name === 'TransferSingle')
-            .some((log) => this.hasMatchingLog(withdrawal, log));
+        for (const claim of claims) {
+            const transaction = await this.wallet.provider.getTransaction(claim.transactionHash);
+            const receipt = await transaction.wait();
 
-        if (!hasLog) {
-            this.logger.error(
-                `[Withdrawal ${id}] Expected event TransferSingle was not found in the transaction ${transactionHash}`
-            );
-            await this.transferService.setAsError(id);
-        } else {
-            await this.transferService.setAsConfirmed(transactionHash, blockNumber);
+            await this.handleConfirmation(claim, receipt);
         }
     }
 
-    private hasMatchingLog(withdrawal: Transfer, { args }: ethers.utils.LogDescription) {
+    private async handleConfirmation(
+        transfer: Transfer,
+        { transactionHash, logs, blockNumber }: ContractReceipt
+    ) {
+        const { id } = transfer;
+
+        const logName =
+            transfer.direction === TransferDirection.Withdrawal ? 'TransferSingle' : 'ClaimSingle';
+
+        const hasLog = logs
+            .map((log) => this.blockchainProperties.registry.interface.parseLog(log))
+            .filter((log) => log.name === logName)
+            .some((log) => this.hasMatchingLog(transfer, log));
+
+        if (!hasLog) {
+            this.logger.error(
+                `[Transaction ${id}] Expected event ${logName} was not found in the transaction ${transactionHash}`
+            );
+            return this.transferService.setAsError(id);
+        }
+
+        return this.transferService.setAsConfirmed(transactionHash, blockNumber);
+    }
+
+    private hasMatchingLog(transfer: Transfer, { args }: ethers.utils.LogDescription) {
         const _to = String(args._to).toLowerCase();
         const _from = String(args._from).toLowerCase();
 
         return (
-            args._id.toString() === withdrawal.asset.tokenId &&
+            args._id.toString() === transfer.asset.tokenId &&
             _from === this.wallet.address.toLowerCase() &&
-            _to === withdrawal.address.toLowerCase() &&
-            args._value.toString() === withdrawal.amount
+            _to === transfer.address.toLowerCase() &&
+            args._value.toString() === transfer.amount
         );
     }
 }
