@@ -1,11 +1,14 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { EventBus } from '@nestjs/cqrs';
+import { CommandBus, EventBus } from '@nestjs/cqrs';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { CertificationRequest as CertificationRequestOnChain } from '@energyweb/issuer';
+import { BlockchainPropertiesService } from '../blockchain/blockchain-properties.service';
 import { Certificate } from '../certificate/certificate.entity';
 import { CertificateCreatedEvent } from '../certificate/events/certificate-created-event';
 import { CertificationRequest } from './certification-request.entity';
+import { ApproveCertificationRequestCommand } from './commands/approve-certification-request.command';
 
 @Injectable()
 export class SyncCertificationRequestsTask {
@@ -16,14 +19,14 @@ export class SyncCertificationRequestsTask {
         private readonly repository: Repository<CertificationRequest>,
         @InjectRepository(Certificate)
         private readonly certificateRepository: Repository<Certificate>,
+        private readonly blockchainPropertiesService: BlockchainPropertiesService,
+        private readonly commandBus: CommandBus,
         private readonly eventBus: EventBus
     ) {}
 
     @Cron(CronExpression.EVERY_MINUTE)
     async syncCertificates(): Promise<void> {
-        this.logger.debug(
-            `Checking if all certification requests have a corresponding certificate in the db...`
-        );
+        await this.validateApproved();
 
         const approvedCertRequests = await this.repository.find({
             where: {
@@ -56,7 +59,34 @@ export class SyncCertificationRequestsTask {
                 );
             }
         }
+    }
 
-        this.logger.debug(`Done checking certification requests.`);
+    /**
+     * Checks if a certificate marked as not approved is actually
+     * approved on-chain.
+     */
+    async validateApproved(): Promise<void> {
+        const unapprovedCertRequests = await this.repository.find({
+            where: {
+                approved: false
+            }
+        });
+
+        const blockchainProperties = await this.blockchainPropertiesService.get();
+
+        unapprovedCertRequests.forEach(async (certReq) => {
+            const onchain = await new CertificationRequestOnChain(
+                certReq.requestId,
+                blockchainProperties.wrap()
+            ).sync();
+
+            if (onchain.approved) {
+                this.logger.warn(
+                    `Certification Request ${certReq.id} is unapproved but should be approved. Fixing...`
+                );
+                await this.commandBus.execute(new ApproveCertificationRequestCommand(certReq.id));
+                this.logger.warn(`Certification Request ${certReq.id} is now set to approved`);
+            }
+        });
     }
 }
