@@ -71,14 +71,11 @@ export interface IDevice extends IDeviceProductInfo {
     meterStats?: ISmartMeterReadStats;
     deviceGroup?: string;
     smartMeterReads?: ISmartMeterRead[];
-    defaultAskPrice?: number;
-    automaticPostForSale: boolean;
     files?: string;
     organizationId: number;
 }
 
 export type DeviceCreateData = Omit<IDevice, 'id' | 'meterStats' | 'organizationId'>;
-export type DeviceSettingsUpdateData = Pick<IDevice, 'defaultAskPrice' | 'automaticPostForSale'>;
 
 export const sortLowestToHighestTimestamp = (
     a: ISmartMeterRead | IEnergyGenerated,
