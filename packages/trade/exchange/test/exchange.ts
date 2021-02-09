@@ -13,7 +13,6 @@ import { useContainer } from 'class-validator';
 import { entities, SupplyService } from '../src';
 import { AppModule } from '../src/app.module';
 import {
-    IDeviceSettings,
     IExchangeConfigurationService,
     IExternalDeviceService,
     IProductInfo
@@ -106,10 +105,6 @@ export const bootstrapTestInstance = async (
                         province: 'Nakhon Pathom',
                         operationalSince: 2016,
                         gridOperator: 'TH-PEA'
-                    }),
-                    getDeviceSettings: async (): Promise<IDeviceSettings> => ({
-                        postForSale: false,
-                        postForSalePrice: null
                     })
                 }
             }
