@@ -10,14 +10,15 @@ import {
     requestWithdrawCertificate
 } from '../../features/certificates';
 import { getEnvironment, getProducingDevices, getUserOffchain } from '../../features';
-import { getDeviceId } from '../../utils';
+import { EnergyFormatter, getDeviceId } from '../../utils';
 import { IInboxCertificateData, IInboxItemData, InboxItem } from './Inbox/InboxItem';
-import { InboxSelectedItem } from './Inbox/InboxSelectedItem';
 import TextField from '@material-ui/core/TextField';
 import { BigNumber } from 'ethers';
 import { makeStyles } from '@material-ui/styles';
+import { InboxItemPreview } from './Inbox/InboxItemPreview';
+import { SelectedInboxList } from './Inbox/SelectedInboxList';
 
-export function CertificateInbox(): JSX.Element {
+export function ExchangeInbox(): JSX.Element {
     const configuration = useOriginConfiguration();
     const { t } = useTranslation();
 
@@ -28,11 +29,15 @@ export function CertificateInbox(): JSX.Element {
     const [allSelected, setAllSelected] = useState<boolean>(false);
     const [selectedCerts, setSelectedCerts] = useState<string[]>([]);
     const [selectedDevices, setSelectedDevices] = useState<string[]>([]);
-    const [totalVolume, setTotalVolume] = useState(0);
+    const [totalVolume, setTotalVolume] = useState(BigNumber.from(0));
 
     const [tabIndex, setTabIndex] = useState(0);
     const [price, setPrice] = useState(0);
     const [viewData, setViewData] = useState<IInboxItemData[]>([]);
+    const [modalData, setModalData] = useState<ICertificateViewItem>(null);
+
+    const user = useSelector(getUserOffchain);
+    const dispatch = useDispatch();
 
     const updateView = () => {
         const newViewData = producingDevices
@@ -54,7 +59,7 @@ export function CertificateInbox(): JSX.Element {
                     capacity: item.device.capacityInW,
 
                     certificates: item.certs.map((cert) => {
-                        const en = cert.energy.publicVolume.toNumber() / 1000000;
+                        const en = cert.energy.publicVolume;
                         return {
                             id: cert.id.toString(),
                             dateStart: cert.generationStartTime,
@@ -73,44 +78,42 @@ export function CertificateInbox(): JSX.Element {
     };
 
     useEffect(() => {
-        console.log('certificates updated');
         updateView();
     }, [certificates]);
 
-    function getSelectedCertificates(): IInboxCertificateData[] {
-        const cs: Record<string, IInboxCertificateData> = {};
-        viewData.forEach((d) => {
-            d.certificates.forEach((c) => {
-                cs[c.id] = c;
+    const getSelectedCertificates = (): IInboxCertificateData[] => {
+        const allCerts: Record<string, IInboxCertificateData> = {};
+        viewData.forEach((device) => {
+            device.certificates.forEach((cert) => {
+                allCerts[cert.id] = cert;
             });
         });
 
         const certs: IInboxCertificateData[] = [];
 
         selectedCerts.map((cId) => {
-            if (cs[cId]) {
-                certs.push(cs[cId]);
+            if (allCerts[cId]) {
+                certs.push(allCerts[cId]);
             }
         });
 
         return certs;
-    }
+    };
 
-    function updateTotalVolume() {
-        let total = 0;
+    const updateTotalVolume = () => {
+        let total = BigNumber.from(0);
 
         getSelectedCertificates().forEach((c) => {
-            total += c.energy;
+            total = total.add(c.energy);
         });
 
         setTotalVolume(total);
-    }
+    };
 
     useEffect(() => {
         updateTotalVolume();
     }, [selectedCerts]);
 
-    // toggle on/off selection on all certificates
     const selectAll = () => {
         if (allSelected) {
             setAllSelected(false);
@@ -138,18 +141,16 @@ export function CertificateInbox(): JSX.Element {
 
     const updateDeviceSelection = (deviceId: string, newState: string[]) => {
         const device = viewData.find((d) => d.id === deviceId);
-        const currentState = areAllDeviceCertSelected(device, newState);
+        const allDevicesCertSelected = areAllDeviceCertSelected(device, newState);
 
-        if (currentState) {
-            // select
+        if (allDevicesCertSelected) {
             setSelectedDevices([...selectedDevices, deviceId]);
         } else {
-            // deselect
             setSelectedDevices(selectedDevices.filter((d) => d !== deviceId));
         }
     };
 
-    const checkCertficiate = (certId: string, deviceId: string) => {
+    const checkCertificate = (certId: string, deviceId: string) => {
         let newState: string[];
 
         if (selectedCerts.includes(certId)) {
@@ -165,13 +166,10 @@ export function CertificateInbox(): JSX.Element {
 
     const checkDevice = (deviceId: string) => {
         const device = viewData.find((d) => d.id === deviceId);
-        const currentState = areAllDeviceCertSelected(device, selectedCerts);
 
         const newSelected: string[] = [...selectedCerts];
 
-        // if currently all are selectedCerts
-        if (currentState) {
-            // uncheck all
+        if (selectedDevices.includes(deviceId)) {
             device.certificates.forEach((c) => {
                 if (newSelected.includes(c.id)) {
                     newSelected.splice(newSelected.indexOf(c.id), 1);
@@ -181,7 +179,6 @@ export function CertificateInbox(): JSX.Element {
             setSelectedDevices(selectedDevices.filter((d) => d !== deviceId));
             setAllSelected(false);
         } else {
-            // check all
             device.certificates.forEach((c) => {
                 if (!newSelected.includes(c.id)) {
                     newSelected.push(c.id);
@@ -246,26 +243,10 @@ export function CertificateInbox(): JSX.Element {
 
     const classes = useStyles();
 
-    const TabsHeader = (): JSX.Element => {
-        return (
-            <Tabs
-                value={tabIndex}
-                onChange={(ev, index) => setTabIndex(index)}
-                indicatorColor="primary"
-                textColor="primary"
-                variant="scrollable"
-                scrollButtons="auto"
-            >
-                <Tab label="Sell" />
-                <Tab label="Withdraw" />
-            </Tabs>
-        );
-    };
-
     const setEnergyForCertificate = (
         device: IInboxItemData,
         cert: IInboxCertificateData,
-        value: number
+        value: BigNumber
     ) => {
         const newViewData = viewData.map((d) => {
             if (d.id === device.id) {
@@ -285,42 +266,6 @@ export function CertificateInbox(): JSX.Element {
         setViewData(newViewData);
     };
 
-    const SelectedCertificatesList = (): JSX.Element => {
-        const selectedDeviceCertPairs: [IInboxItemData, IInboxCertificateData][] = [];
-
-        viewData.forEach((d) => {
-            d.certificates.forEach((c) => {
-                if (selectedCerts.includes(c.id)) {
-                    selectedDeviceCertPairs.push([d, c]);
-                }
-            });
-        });
-
-        return (
-            <>
-                {selectedDeviceCertPairs.map(([d, c]) => {
-                    return (
-                        <InboxSelectedItem
-                            key={c.id}
-                            cert={c}
-                            device={d}
-                            setEnergy={(v) => setEnergyForCertificate(d, c, v)}
-                        />
-                    );
-                })}
-
-                {selectedDeviceCertPairs.length === 0 && (
-                    <div className={classes.selectedItemsEmpty}>
-                        {t('certificate.info.selectCertificate')}
-                    </div>
-                )}
-            </>
-        );
-    };
-
-    const user = useSelector(getUserOffchain);
-    const dispatch = useDispatch();
-
     async function publishForSale() {
         const certs = getSelectedCertificates();
 
@@ -328,7 +273,7 @@ export function CertificateInbox(): JSX.Element {
             dispatch(
                 requestPublishForSale({
                     certificateId: parseInt(certificate.id, 10),
-                    amount: BigNumber.from(certificate.energy * 1000000),
+                    amount: certificate.energy,
                     price: Math.round((price + Number.EPSILON) * 100),
                     callback: () => {
                         updateView();
@@ -346,7 +291,7 @@ export function CertificateInbox(): JSX.Element {
 
         certs.forEach((certificate) => {
             const assetId = certificate.assetId;
-            const amount = (certificate.energy * 1000000).toString();
+            const amount = certificate.energy.toString();
             dispatch(
                 requestWithdrawCertificate({
                     assetId,
@@ -360,8 +305,27 @@ export function CertificateInbox(): JSX.Element {
         });
     }
 
+    const SelectedCertificatesList = (): [IInboxItemData, IInboxCertificateData][] => {
+        const selectedDeviceCertPairs: [IInboxItemData, IInboxCertificateData][] = [];
+
+        viewData.forEach((d) => {
+            d.certificates.forEach((c) => {
+                if (selectedCerts.includes(c.id)) {
+                    selectedDeviceCertPairs.push([d, c]);
+                }
+            });
+        });
+
+        return selectedDeviceCertPairs;
+    };
+
     return (
         <div>
+            <InboxItemPreview
+                open={modalData !== null}
+                setOpen={() => setModalData(null)}
+                data={modalData}
+            />
             <Grid container spacing={3}>
                 <Grid item xs={12} md={7}>
                     <div className={classes.box}>
@@ -384,24 +348,42 @@ export function CertificateInbox(): JSX.Element {
                                 selected={selectedCerts}
                                 selectedDevices={selectedDevices}
                                 onDeviceSelect={checkDevice}
-                                onCertificateSelect={checkCertficiate}
+                                onCertificateSelect={checkCertificate}
+                                onViewClick={(id) =>
+                                    setModalData(certificates.find((c) => c.id.toString() === id))
+                                }
                             />
                         ))}
                     </div>
                 </Grid>
                 <Grid item xs={12} md={5}>
-                    <TabsHeader />
+                    <Tabs
+                        value={tabIndex}
+                        onChange={(ev, index) => setTabIndex(index)}
+                        indicatorColor="primary"
+                        textColor="primary"
+                        variant="scrollable"
+                        scrollButtons="auto"
+                    >
+                        <Tab label="Sell" />
+                        <Tab label="Withdraw" />
+                    </Tabs>
                     <div className={classes.box}>
                         {tabIndex === 0 && (
                             <div style={{ display: 'flex', flexDirection: 'column' }}>
                                 <Typography className={classes.header}>
                                     {t('certificate.info.selectedForSale')}
                                 </Typography>
-                                <SelectedCertificatesList />
+                                <SelectedInboxList
+                                    pairs={SelectedCertificatesList()}
+                                    setEnergy={setEnergyForCertificate}
+                                />
                                 <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                                    <div className={classes.text_2}>Total volume: </div>
+                                    <div className={classes.text_2}>
+                                        {t('certificate.info.totalVolume')}:{' '}
+                                    </div>
                                     <div className={classes.text_1} style={{ fontSize: 16 }}>
-                                        {totalVolume}MWh
+                                        ${EnergyFormatter.format(totalVolume, true)}
                                     </div>
                                 </div>
                                 <TextField
@@ -414,9 +396,11 @@ export function CertificateInbox(): JSX.Element {
                                     }}
                                 />
                                 <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                                    <div className={classes.text_2}>Total price: </div>
+                                    <div className={classes.text_2}>
+                                        {t('certificate.info.totalPrice')}:{' '}
+                                    </div>
                                     <div className={classes.text_1} style={{ fontSize: 16 }}>
-                                        ${totalVolume * price}
+                                        ${EnergyFormatter.format(totalVolume.mul(price))}
                                     </div>
                                 </div>
 
@@ -439,11 +423,14 @@ export function CertificateInbox(): JSX.Element {
                                 <Typography className={classes.header}>
                                     {t('certificate.info.selectedForWithdraw')}
                                 </Typography>
-                                <SelectedCertificatesList />
+                                <SelectedInboxList
+                                    pairs={SelectedCertificatesList()}
+                                    setEnergy={setEnergyForCertificate}
+                                />
                                 <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                                     <div className={classes.text_2}>Total volume: </div>
                                     <div className={classes.text_1} style={{ fontSize: 16 }}>
-                                        {totalVolume}MWh
+                                        ${EnergyFormatter.format(totalVolume.mul(price))}
                                     </div>
                                 </div>
 

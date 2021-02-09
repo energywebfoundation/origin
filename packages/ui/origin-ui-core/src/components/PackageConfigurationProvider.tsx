@@ -7,6 +7,7 @@ import { ORIGIN_LANGUAGE } from '@energyweb/localization';
 export interface IOriginStyleConfig {
     PRIMARY_COLOR: string;
     PRIMARY_COLOR_DARK: string;
+    PRIMARY_COLOR_DIM: string;
     TEXT_COLOR_DEFAULT: string;
     SIMPLE_TEXT_COLOR: string;
     MAIN_BACKGROUND_COLOR: string;

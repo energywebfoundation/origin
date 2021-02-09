@@ -8,7 +8,7 @@ import { usePermissions } from '../../utils';
 import { Requirements } from '../Requirements';
 import { getUserOffchain } from '../../features';
 import { CertificateImport } from './Import/CertificateImport';
-import { CertificateInbox } from './CertificatesInbox';
+import { ExchangeInbox } from './CertificatesInbox';
 
 interface ICertificateMenuItem {
     key: string;
@@ -81,9 +81,9 @@ export const certificatesMenuCreator = (user: IUser): ICertificateMenuItem[] => 
             features: [OriginFeature.Certificates, OriginFeature.Buyer]
         },
         {
-            key: 'inbox2',
-            label: 'inbox2',
-            component: CertificateInbox,
+            key: 'Exchange-inbox',
+            label: 'navigation.certificates.exchangeInbox',
+            component: ExchangeInbox,
             show: userIsActiveAndPartOfOrg,
             features: [OriginFeature.Certificates, OriginFeature.Buyer]
         },

@@ -1,16 +1,17 @@
 import React, { useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { useOriginConfiguration } from '../../../utils/configuration';
-import { LightenColor, useTranslation } from '../../../utils';
+import { EnergyFormatter, LightenColor, useTranslation } from '../../../utils';
 import { IInboxCertificateData, IInboxItemData } from './InboxItem';
 import { DeviceIcon } from '../../DeviceIcon';
 import { Button, IconButton, TextField } from '@material-ui/core';
 import EditIcon from '@material-ui/icons/Edit';
+import { BigNumber } from 'ethers';
 
 export function InboxSelectedItem(props: {
     cert: IInboxCertificateData;
     device: IInboxItemData;
-    setEnergy: (value: number) => void;
+    setEnergy: (value: BigNumber) => void;
 }): JSX.Element {
     const { cert, device, setEnergy } = props;
     const configuration = useOriginConfiguration();
@@ -66,11 +67,11 @@ export function InboxSelectedItem(props: {
     const classes = useStyles();
 
     const [editMode, setEditMode] = useState(false);
-    const [MVhValue, setMVh] = useState<number>(cert.energy);
+    const [MWhValue, setMWh] = useState<number>(cert.energy.toNumber());
     const { t } = useTranslation();
 
     function saveForm() {
-        setEnergy(MVhValue);
+        setEnergy(BigNumber.from(MWhValue));
     }
 
     return (
@@ -82,7 +83,11 @@ export function InboxSelectedItem(props: {
                     <div className={classes.text_1}>{device.name}</div>
                 </div>
 
-                {!editMode && <div className={classes.text_2}>{cert.energy}MVh</div>}
+                {!editMode && (
+                    <div className={classes.text_2}>
+                        {EnergyFormatter.format(cert.energy, true)}
+                    </div>
+                )}
 
                 {!editMode && (
                     <IconButton
@@ -106,7 +111,7 @@ export function InboxSelectedItem(props: {
                             setEditMode(false);
                         }}
                     >
-                        <span>cancel</span>
+                        <span>{t('certificate.actions.cancel')}</span>
                     </Button>
                 )}
             </div>
@@ -115,13 +120,13 @@ export function InboxSelectedItem(props: {
                     <TextField
                         type={'number'}
                         style={{ flex: '1', marginRight: '10px', background: '#292929' }}
-                        value={MVhValue}
+                        value={MWhValue}
                         aria-valuemin={1}
-                        aria-valuemax={cert.maxEnergy}
-                        onChange={(event) => setMVh(parseInt(event.target.value, 10))}
+                        aria-valuemax={cert.maxEnergy.toNumber()}
+                        onChange={(event) => setMWh(parseInt(event.target.value, 10))}
                     />
                     <Button color="primary" variant="contained" size="small" onClick={saveForm}>
-                        {t('Save')}
+                        {t('certificate.actions.save')}
                     </Button>
                 </div>
             )}

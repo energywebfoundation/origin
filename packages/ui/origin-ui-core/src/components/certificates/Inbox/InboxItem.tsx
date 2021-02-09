@@ -2,9 +2,10 @@ import React from 'react';
 import { Checkbox, Button } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import { useOriginConfiguration } from '../../../utils/configuration';
-import { formatDate, LightenColor, moment, useTranslation } from '../../../utils';
+import { EnergyFormatter, formatDate, LightenColor, moment, useTranslation } from '../../../utils';
 import { DeviceIcon } from '../../DeviceIcon';
 import { CertificateSource } from '../../../features/certificates';
+import { BigNumber } from 'ethers';
 
 export interface IInboxItemData {
     id: string;
@@ -19,8 +20,8 @@ export interface IInboxCertificateData {
     id: string;
     dateStart: number;
     dateEnd: number;
-    energy: number;
-    maxEnergy: number;
+    energy: BigNumber;
+    maxEnergy: BigNumber;
     source: CertificateSource;
     assetId: string;
 }
@@ -31,11 +32,23 @@ export function InboxItem(props: {
     selectedDevices: string[];
     onDeviceSelect: (id: string) => void;
     onCertificateSelect: (id: string, deviceId: string) => void;
+    onViewClick: (id: string) => void;
 }): JSX.Element {
-    const { device, selected, onDeviceSelect, onCertificateSelect, selectedDevices } = props;
+    const {
+        device,
+        selected,
+        onDeviceSelect,
+        onCertificateSelect,
+        selectedDevices,
+        onViewClick
+    } = props;
     const configuration = useOriginConfiguration();
 
-    const { MAIN_BACKGROUND_COLOR, SIMPLE_TEXT_COLOR } = configuration?.styleConfig;
+    const {
+        MAIN_BACKGROUND_COLOR,
+        SIMPLE_TEXT_COLOR,
+        PRIMARY_COLOR_DIM
+    } = configuration?.styleConfig;
 
     const useStyles = makeStyles({
         device: {
@@ -65,7 +78,7 @@ export function InboxItem(props: {
         },
 
         selected: {
-            background: '#362C45'
+            background: PRIMARY_COLOR_DIM
         },
 
         text_1: {
@@ -151,7 +164,7 @@ export function InboxItem(props: {
                                     style={{ marginBottom: '12px', opacity: '.5' }}
                                     className={classes.text_1}
                                 >
-                                    {cert.energy}MWh
+                                    ${EnergyFormatter.format(cert.energy, true)}
                                 </div>
 
                                 <div>
@@ -167,7 +180,7 @@ export function InboxItem(props: {
                             <div className={classes.verticalCenter}>
                                 <Button
                                     variant="outlined"
-                                    onClick={() => null}
+                                    onClick={() => onViewClick(cert.id)}
                                     size="small"
                                     color="primary"
                                 >
