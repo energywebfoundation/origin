@@ -120,7 +120,8 @@ export class CertificationRequest implements ICertificationRequestBlockchain {
             issuer.filters.CertificationRequestApproved(null, this.id, null)
         );
 
-        this.issuedCertificateTokenId = certificationApprovedLogs[0]?._certificateId ?? null;
+        this.issuedCertificateTokenId =
+            certificationApprovedLogs[0]?._certificateId.toNumber() ?? null;
 
         const creationBlock = await issuer.provider.getBlock(
             certificationRequestedLogs[0].blockNumber
