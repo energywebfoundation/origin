@@ -58,15 +58,22 @@ export class ApproveCertificationRequestHandler
 
         let newCertificateId;
 
-        try {
-            newCertificateId = await certReq.approve(BigNumber.from(isPrivate ? 0 : energy));
-        } catch (e) {
-            return ResponseFailure(e.message, HttpStatus.INTERNAL_SERVER_ERROR);
+        if (certReq.approved) {
+            this.logger.warn(
+                `Certification Request ${certReq.id} is unapproved but should be set to approved. Fixing...`
+            );
+            newCertificateId = certReq.issuedCertificateTokenId;
+        } else {
+            try {
+                newCertificateId = await certReq.approve(BigNumber.from(isPrivate ? 0 : energy));
+            } catch (e) {
+                return ResponseFailure(e.message, HttpStatus.INTERNAL_SERVER_ERROR);
+            }
         }
 
         await this.repository.update(id, {
             approved: true,
-            approvedDate: new Date(),
+            approvedDate: certReq.approvedDate ?? new Date(),
             issuedCertificateTokenId: newCertificateId
         });
 

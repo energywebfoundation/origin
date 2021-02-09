@@ -9,8 +9,10 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { useContainer } from 'class-validator';
 
 import { AppModule } from '../src/app.module';
+import { Connection } from '../src/connection/connection.entity';
 import { Registration } from '../src/registration/registration.entity';
 import { RegistrationService } from '../src/registration/registration.service';
+import { IrecConnectionService } from '../src';
 
 export enum TestUser {
     OrganizationAdmin = '0',
@@ -66,7 +68,7 @@ export const bootstrapTestInstance = async () => {
                 username: process.env.DB_USERNAME ?? 'postgres',
                 password: process.env.DB_PASSWORD ?? 'postgres',
                 database: process.env.DB_DATABASE ?? 'origin',
-                entities: [Registration],
+                entities: [Registration, Connection],
                 logging: ['info']
             }),
             AppModule
@@ -75,6 +77,14 @@ export const bootstrapTestInstance = async () => {
     })
         .overrideGuard(AuthGuard('default'))
         .useValue(authGuard)
+        .overrideProvider(IrecConnectionService)
+        .useValue({
+            login: () => ({
+                expiryDate: new Date(),
+                accessToken: 'someAccessToken',
+                refreshToken: 'someRefreshToken'
+            })
+        })
         .compile();
 
     const app = moduleFixture.createNestApplication();
