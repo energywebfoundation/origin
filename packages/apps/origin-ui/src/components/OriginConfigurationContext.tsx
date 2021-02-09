@@ -20,6 +20,7 @@ import { LoginPageBackground } from './LoginPageBackground';
 export interface IOriginStyleConfig {
     PRIMARY_COLOR: string;
     PRIMARY_COLOR_DARK: string;
+    PRIMARY_COLOR_DIM: string;
     TEXT_COLOR_DEFAULT: string;
     SIMPLE_TEXT_COLOR: string;
     MAIN_BACKGROUND_COLOR: string;
@@ -257,6 +258,7 @@ export function createStyleConfigFromSCSSVariables(scssVariables: any): IOriginS
     return {
         PRIMARY_COLOR: scssVariables.primaryColor ?? DEFAULT_COLOR,
         PRIMARY_COLOR_DARK: scssVariables.primaryColorDark ?? DEFAULT_COLOR,
+        PRIMARY_COLOR_DIM: scssVariables.primaryColorDim ?? DEFAULT_COLOR,
         TEXT_COLOR_DEFAULT: scssVariables.textColorDefault ?? DEFAULT_COLOR,
         SIMPLE_TEXT_COLOR: scssVariables.simpleTextColor ?? DEFAULT_COLOR,
         MAIN_BACKGROUND_COLOR: scssVariables.mainBackgroundColor ?? DEFAULT_COLOR,
