@@ -7,10 +7,6 @@ import {
     entities as OriginDeviceEntities
 } from '@energyweb/origin-device-registry-api';
 import {
-    AppModule as IRECDeviceRegistry,
-    entities as IRECDeviceEntities
-} from '@energyweb/origin-device-registry-irec-local-api';
-import {
     AppModule as IRECFormDeviceRegistry,
     entities as IRECFormDeviceEntities
 } from '@energyweb/origin-device-registry-irec-form-api';
@@ -55,7 +51,6 @@ const OriginAppTypeOrmModule = () => {
         ...IRECOrganizationEntities,
         ...IssuerEntities,
         ...OriginDeviceEntities,
-        ...IRECDeviceEntities,
         ...IRECFormDeviceEntities
     ];
 
@@ -99,7 +94,6 @@ export class OriginAppModule {
                 IssuerModule,
                 OrganizationModule,
                 OriginDeviceRegistry,
-                IRECDeviceRegistry,
                 UserModule,
                 CqrsModule,
                 RegistrationModule
