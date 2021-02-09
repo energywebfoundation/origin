@@ -30,6 +30,7 @@ export interface IEnvironment {
     EXCHANGE_WALLET_PUB: string;
     GOOGLE_MAPS_API_KEY: string;
     MARKET_UTC_OFFSET: number;
+    DISABLED_UI_FEATURES: string;
 }
 
 export interface ISetLoadingAction {

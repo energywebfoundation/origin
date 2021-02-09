@@ -4,10 +4,10 @@ import './styles/app.scss';
 import { Origin } from './components/Origin';
 import {
     OriginConfigurationProvider,
-    createOriginConfiguration
+    useConfigurationCreation
 } from './components/OriginConfigurationContext';
 
-const originConfiguration = createOriginConfiguration();
+const originConfiguration = useConfigurationCreation();
 
 render(
     <OriginConfigurationProvider value={originConfiguration}>
