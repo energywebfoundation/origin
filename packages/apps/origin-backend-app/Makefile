@@ -16,9 +16,3 @@ build-canary:
 build-latest:
 	@docker build --no-cache -t ${NAME}:${TAG_LATEST} .
 	@docker tag ${NAME}:${TAG_LATEST} ${LATEST}
-
-push:
-ifdef DOCKER_USER
-	@docker login -u ${DOCKER_USER} -p $(shell echo '$$DOCKER_PASS')
-	@docker push ${NAME}
-endif
