@@ -1,5 +1,5 @@
 import { ILoggedInUser } from '@energyweb/origin-backend-core';
 
-export class GetConnectionsCommand {
+export class GetConnectionCommand {
     constructor(public readonly user: ILoggedInUser) {}
 }

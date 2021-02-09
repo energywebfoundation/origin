@@ -15,7 +15,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { ApiBearerAuth, ApiBody, ApiCreatedResponse, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 import { ConnectionDTO, CreateConnectionDTO } from './dto';
-import { CreateConnectionCommand, GetConnectionsCommand } from './commands';
+import { CreateConnectionCommand, GetConnectionCommand } from './commands';
 
 @ApiTags('irec_connection')
 @ApiBearerAuth('access-token')
@@ -48,6 +48,6 @@ export class ConnectionController {
         description: 'Get a IREC connection info'
     })
     public async getAll(@UserDecorator() user: ILoggedInUser): Promise<ConnectionDTO> {
-        return this.commandBus.execute(new GetConnectionsCommand(user));
+        return this.commandBus.execute(new GetConnectionCommand(user));
     }
 }

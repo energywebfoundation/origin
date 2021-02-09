@@ -80,20 +80,18 @@ describe('I-REC Registration tests', () => {
             .set({ 'test-user': TestUser.OrganizationAdmin })
             .expect(HttpStatus.CREATED);
 
-        expect(connection.registrationId).to.equal(registration.id);
+        expect(connection.registration.id).to.equal(registration.id);
         expect(connection.accessToken).to.be.a('string');
         expect(connection.refreshToken).to.be.a('string');
         expect(connection.expiryDate).to.be.a('string');
-
-        const { body: connections } = await test
+        const { body: connection2 } = await test
             .get('/irec/connection')
             .set({ 'test-user': TestUser.OrganizationAdmin })
             .expect(HttpStatus.OK);
 
-        expect(connections).to.have.lengthOf(1);
-        expect(connection.registrationId).to.equal(connections[0].registrationId);
-        expect(connection.accessToken).to.equal(connections[0].accessToken);
-        expect(connection.refreshToken).to.equal(connections[0].refreshToken);
-        expect(String(connection.expiryDate)).to.equal(String(connections[0].expiryDate));
+        expect(connection.accessToken).to.equal(connection2.accessToken);
+        expect(connection.refreshToken).to.equal(connection2.refreshToken);
+        expect(String(connection.expiryDate)).to.equal(String(connection2.expiryDate));
+        expect(connection.registration.id).to.equal(connection2.registration.id);
     });
 });

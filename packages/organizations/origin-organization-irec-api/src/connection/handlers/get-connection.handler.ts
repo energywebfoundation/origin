@@ -2,27 +2,28 @@ import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Connection } from '../connection.entity';
-import { ConnectionDTO } from '../dto/connection.dto';
+import { ConnectionDTO } from '../dto';
 import { RegistrationService } from '../../registration';
-import { GetConnectionsCommand } from '../commands';
+import { GetConnectionCommand } from '../commands';
 
-@CommandHandler(GetConnectionsCommand)
-export class GetConnectionHandler implements ICommandHandler<GetConnectionsCommand> {
+@CommandHandler(GetConnectionCommand)
+export class GetConnectionHandler implements ICommandHandler<GetConnectionCommand> {
     constructor(
         @InjectRepository(Connection)
         private readonly repository: Repository<Connection>,
         private readonly registrationService: RegistrationService
     ) {}
 
-    async execute({ user: { organizationId } }: GetConnectionsCommand): Promise<ConnectionDTO[]> {
+    async execute({ user: { organizationId } }: GetConnectionCommand): Promise<ConnectionDTO> {
         const [registration] = await this.registrationService.find(String(organizationId));
         if (!registration) {
-            return [];
+            return undefined;
         }
-        const connections = await this.repository.find({
-            where: { registrationId: registration.id }
+        const connections = await this.repository.findOne({
+            where: { registration: registration.id },
+            relations: ['registration']
         });
 
-        return connections.map((c) => ConnectionDTO.wrap(c));
+        return ConnectionDTO.wrap(connections);
     }
 }
