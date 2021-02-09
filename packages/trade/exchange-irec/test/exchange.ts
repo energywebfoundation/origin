@@ -3,7 +3,6 @@ import {
     AccountService,
     AppModule,
     entities,
-    IDeviceSettings,
     IExchangeConfigurationService,
     IExternalDeviceService,
     IProductInfo,
@@ -103,10 +102,6 @@ export const bootstrapTestInstance = async (deviceServiceMock?: IExternalDeviceS
                         province: 'Nakhon Pathom',
                         operationalSince: 2016,
                         gridOperator: 'TH-PEA'
-                    }),
-                    getDeviceSettings: async (): Promise<IDeviceSettings> => ({
-                        postForSale: false,
-                        postForSalePrice: null
                     })
                 }
             }
