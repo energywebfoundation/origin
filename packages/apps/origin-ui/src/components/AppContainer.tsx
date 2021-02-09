@@ -1,10 +1,10 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { useSelector, useStore } from 'react-redux';
 import { Switch, Route, Redirect } from 'react-router-dom';
 import { History } from 'history';
 import { LinearProgress, makeStyles, createStyles, useTheme } from '@material-ui/core';
 import { UserStatus, isRole, Role } from '@energyweb/origin-backend-core';
-import { OriginFeature } from '@energyweb/utils-general';
+import { OriginFeature, allOriginFeatures } from '@energyweb/utils-general';
 import {
     Certificates,
     UiCoreAdapter,
@@ -18,7 +18,8 @@ import {
     getLoading,
     NoBlockchainAccountModal,
     LoginPage,
-    getUserOffchain
+    getUserOffchain,
+    getEnvironment
 } from '@energyweb/origin-ui-core';
 import { ExchangeApp, ExchangeAdapter } from '@energyweb/exchange-ui-core';
 import { useLinks } from '../routing';
@@ -37,7 +38,25 @@ export function AppContainer(props: IProps) {
     const user = useSelector(getUserOffchain);
     const config = useContext(OriginConfigurationContext);
     const store = useStore();
-    const { enabledFeatures } = useContext(OriginConfigurationContext);
+
+    const originConfiguration = useContext(OriginConfigurationContext);
+    const enabledFeatures = originConfiguration?.enabledFeatures;
+    const changeContext = originConfiguration?.changeContext;
+    const environment = useSelector(getEnvironment);
+    useEffect(() => {
+        if (environment?.DISABLED_UI_FEATURES) {
+            const disabledFeatures = environment?.DISABLED_UI_FEATURES.split(';').map(
+                (feature) => OriginFeature[feature]
+            );
+            const newEnabledFeatures = allOriginFeatures.filter(
+                (feature) => !disabledFeatures.includes(feature)
+            );
+            const isEqual = enabledFeatures.join(',') === newEnabledFeatures.join(',');
+            if (!isEqual) {
+                changeContext({ ...originConfiguration, enabledFeatures: newEnabledFeatures });
+            }
+        }
+    }, [environment]);
 
     const shareContextCore = (component) => (
         <UiCoreAdapter
@@ -114,6 +133,10 @@ export function AppContainer(props: IProps) {
 
     if (error) {
         return <ErrorComponent message={error} />;
+    }
+
+    if (environment === null) {
+        return <></>;
     }
 
     return (
