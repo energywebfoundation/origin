@@ -74,6 +74,9 @@ export function ExchangeInbox(): JSX.Element {
             });
 
         setViewData(newViewData);
+        setAllSelected(false);
+        setSelectedCerts([]);
+        setSelectedDevices([]);
         setPrice(0);
     };
 
