@@ -1,6 +1,6 @@
 /* eslint-disable import/no-extraneous-dependencies */
 import { ConfigurationService } from '@energyweb/origin-backend';
-import { HttpStatus } from '@nestjs/common';
+import { HttpStatus, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Test } from '@nestjs/testing';
 import request from 'supertest';
@@ -9,7 +9,7 @@ import ganache from 'ganache-core';
 import { BlockchainPropertiesService } from '@energyweb/issuer-api';
 import { Contracts } from '@energyweb/issuer';
 import { getProviderWithFallback } from '@energyweb/utils-general';
-import { OriginAppModule } from '../src';
+import { OriginAppModule } from '../src/origin-app.module';
 
 describe('Origin Backend App', () => {
     it('should run origin app', async () => {
@@ -74,7 +74,7 @@ describe('Origin Backend App', () => {
 
         const app = moduleFixture.createNestApplication();
         app.enableShutdownHooks();
-        app.useLogger(['log', 'error', 'debug']);
+        app.useLogger(new Logger('e2e'));
 
         await app.init();
 
