@@ -480,4 +480,32 @@ describe('Certificate tests', () => {
                 );
             });
     });
+
+    it('should get certificates without a blockchain account attached', async () => {
+        let certificateId: number;
+
+        setUserRole(Role.Issuer);
+
+        const blockchainAddress = authenticatedUser.blockchainAccountAddress;
+
+        await request(app.getHttpServer())
+            .post('/certificate')
+            .send(certificateTestData)
+            .expect(HttpStatus.CREATED)
+            .expect((res) => {
+                certificateId = res.body.id;
+            });
+
+        setUserRole(Role.OrganizationDeviceManager);
+
+        authenticatedUser.blockchainAccountAddress = null;
+
+        await request(app.getHttpServer())
+            .get(`/certificate/${certificateId}`)
+            .expect(HttpStatus.OK);
+
+        await request(app.getHttpServer()).get(`/certificate`).expect(HttpStatus.OK);
+
+        authenticatedUser.blockchainAccountAddress = blockchainAddress;
+    });
 });

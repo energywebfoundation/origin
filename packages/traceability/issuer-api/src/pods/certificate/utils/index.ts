@@ -4,18 +4,22 @@ import { Certificate } from '../certificate.entity';
 
 export const certificateToDto = async (
     certificate: Certificate,
-    userId: string
+    userId?: string
 ): Promise<CertificateDTO> => {
-    const userAddress = utils.getAddress(userId);
+    let userAddress: string;
+
+    if (userId) {
+        userAddress = utils.getAddress(userId);
+    }
 
     const publicVolume = BigNumber.from(
-        certificate.issuedPrivately ? 0 : certificate.owners[userAddress] ?? 0
+        certificate.issuedPrivately || !userId ? 0 : certificate.owners[userAddress] ?? 0
     );
     const privateVolume = BigNumber.from(
-        certificate.issuedPrivately ? certificate.owners[userAddress] ?? 0 : 0
+        certificate.issuedPrivately && userId ? certificate.owners[userAddress] ?? 0 : 0
     );
     const claimedVolume = BigNumber.from(
-        certificate.claimers ? certificate.claimers[userAddress] ?? 0 : 0
+        certificate.claimers && userId ? certificate.claimers[userAddress] ?? 0 : 0
     );
 
     return {
