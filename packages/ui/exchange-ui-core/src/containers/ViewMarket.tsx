@@ -29,7 +29,7 @@ import {
 import { Asks, Bids, Market, IMarketFormValues } from '../components/exchange';
 import { Skeleton } from '@material-ui/lab';
 
-export function Exchange() {
+export function ViewMarket() {
     const currencies = useSelector(getCurrencies);
     const defaultCurrency = (currencies && currencies[0]) ?? 'USD';
 
