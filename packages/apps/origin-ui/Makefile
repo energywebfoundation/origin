@@ -10,12 +10,6 @@ build-canary:
 build-latest:
 	@docker build --no-cache -t ${LATEST} .
 
-push-dockerhub:
-ifdef DOCKER_USER
-	@docker login -u ${DOCKER_USER} -p $(shell echo '$$DOCKER_PASS')
-	@docker push ${NAME}
-endif
-
 push-heroku-canary:
 ifdef HEROKU_API_KEY
 	@docker tag ${CANARY} registry.heroku.com/${HEROKU_CANARY_APP_UI}/web
@@ -26,7 +20,6 @@ endif
 
 push-heroku-stable:
 ifdef HEROKU_API_KEY
-	@docker pull ${LATEST}
 	@docker tag ${LATEST} registry.heroku.com/${HEROKU_STABLE_APP_UI}/web
 	@docker login -u _ -p $(shell echo '$$HEROKU_API_KEY') registry.heroku.com
 	@docker push registry.heroku.com/${HEROKU_STABLE_APP_UI}/web
