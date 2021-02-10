@@ -74,7 +74,7 @@ describe('Origin Backend App', () => {
 
         const app = moduleFixture.createNestApplication();
         app.enableShutdownHooks();
-        app.useLogger(['log', 'error']);
+        app.useLogger(['log', 'error', 'debug']);
 
         await app.init();
 

@@ -37,9 +37,6 @@
         },
         {
             "path": "../../devices/origin-device-registry-irec-local-api/tsconfig.json"
-        },
-        {
-            "path": "../../devices/origin-device-registry-irec-form-api/tsconfig.json"
         }
     ]
 }
