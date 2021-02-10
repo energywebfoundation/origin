@@ -164,7 +164,7 @@ export function InboxItem(props: {
                                     style={{ marginBottom: '12px', opacity: '.5' }}
                                     className={classes.text_1}
                                 >
-                                    ${EnergyFormatter.format(cert.energy, true)}
+                                    {EnergyFormatter.format(cert.energy, true)}
                                 </div>
 
                                 <div>

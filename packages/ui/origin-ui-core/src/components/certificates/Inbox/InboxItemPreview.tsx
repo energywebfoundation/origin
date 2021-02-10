@@ -3,13 +3,13 @@ import React from 'react';
 import { useOriginConfiguration } from '../../../utils/configuration';
 import { makeStyles } from '@material-ui/core/styles';
 import { EnergyFormatter, formatDate, LightenColor, moment } from '../../../utils';
-import { ICertificateViewItem } from '../../../features/certificates';
 import { useTranslation } from 'react-i18next';
+import { IInboxCertificateData } from './InboxItem';
 
 export function InboxItemPreview(props: {
     open: boolean;
     setOpen: (state: boolean) => void;
-    data: ICertificateViewItem;
+    data: IInboxCertificateData;
 }): JSX.Element {
     const configuration = useOriginConfiguration();
 
@@ -45,15 +45,17 @@ export function InboxItemPreview(props: {
                 <div className={classes.modalContent}>
                     {data && (
                         <div className={classes.modalWindow} style={{ position: 'relative' }}>
-                            <p>{data.deviceId}</p>
-                            <p>${EnergyFormatter.format(data.energy.publicVolume, true)}</p>
+                            <p>{data.id}</p>
+                            <p>{EnergyFormatter.format(data.energy, true)}</p>
                             <p>
-                                {formatDate(moment.unix(data.generationStartTime))}
+                                {formatDate(moment.unix(data.dateStart))}
                                 {' - '}
-                                {formatDate(moment.unix(data.generationEndTime))}
+                                {formatDate(moment.unix(data.dateEnd))}
                             </p>
 
-                            <Button>{t('certificate.actions.close')}</Button>
+                            <Button onClick={() => setOpen(null)}>
+                                {t('certificate.actions.close')}
+                            </Button>
                         </div>
                     )}
                 </div>

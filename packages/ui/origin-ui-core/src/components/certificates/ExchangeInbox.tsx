@@ -34,7 +34,7 @@ export function ExchangeInbox(): JSX.Element {
     const [tabIndex, setTabIndex] = useState(0);
     const [price, setPrice] = useState(0);
     const [viewData, setViewData] = useState<IInboxItemData[]>([]);
-    const [modalData, setModalData] = useState<ICertificateViewItem>(null);
+    const [modalData, setModalData] = useState<IInboxCertificateData>(null);
 
     const user = useSelector(getUserOffchain);
     const dispatch = useDispatch();
@@ -114,7 +114,7 @@ export function ExchangeInbox(): JSX.Element {
         updateTotalVolume();
     }, [selectedCerts]);
 
-    const selectAll = () => {
+    const onSelectAllChecked = () => {
         if (allSelected) {
             setAllSelected(false);
             setSelectedDevices([]);
@@ -122,7 +122,9 @@ export function ExchangeInbox(): JSX.Element {
         } else {
             setAllSelected(true);
             setSelectedDevices(producingDevices.map((d) => d.id.toString()));
-            setSelectedCerts(certificates.map((c) => c.id.toString()));
+            setSelectedCerts(
+                certificates.filter((c) => c.assetId !== undefined).map((c) => c.id.toString())
+            );
         }
     };
 
@@ -144,9 +146,14 @@ export function ExchangeInbox(): JSX.Element {
         const allDevicesCertSelected = areAllDeviceCertSelected(device, newState);
 
         if (allDevicesCertSelected) {
-            setSelectedDevices([...selectedDevices, deviceId]);
+            const newDevicesState = [...selectedDevices, deviceId];
+            setSelectedDevices(newDevicesState);
+            if (newDevicesState.length >= viewData.length) {
+                setAllSelected(true);
+            }
         } else {
             setSelectedDevices(selectedDevices.filter((d) => d !== deviceId));
+            setAllSelected(false);
         }
     };
 
@@ -185,7 +192,11 @@ export function ExchangeInbox(): JSX.Element {
                 }
             });
             setSelectedCerts(newSelected);
-            setSelectedDevices([...selectedDevices, deviceId]);
+            const newDevicesState = [...selectedDevices, deviceId];
+            setSelectedDevices(newDevicesState);
+            if (newDevicesState.length >= viewData.length) {
+                setAllSelected(true);
+            }
         }
     };
 
@@ -330,13 +341,13 @@ export function ExchangeInbox(): JSX.Element {
                 <Grid item xs={12} md={7}>
                     <div className={classes.box}>
                         <Typography className={classes.header}>
-                            {t('certificate.info.certificatesToImport')}
+                            {t('certificate.info.exchangeInbox')}
                         </Typography>
                         <div className={classes.selectAll}>
                             <Checkbox
                                 color={'primary'}
-                                value={allSelected}
-                                onChange={() => selectAll()}
+                                checked={allSelected}
+                                onChange={() => onSelectAllChecked()}
                             />
                             <span>{t('certificate.actions.selectAll')}</span>
                         </div>
@@ -350,7 +361,7 @@ export function ExchangeInbox(): JSX.Element {
                                 onDeviceSelect={checkDevice}
                                 onCertificateSelect={checkCertificate}
                                 onViewClick={(id) =>
-                                    setModalData(certificates.find((c) => c.id.toString() === id))
+                                    setModalData(device.certificates.find((c) => c.id === id))
                                 }
                             />
                         ))}
