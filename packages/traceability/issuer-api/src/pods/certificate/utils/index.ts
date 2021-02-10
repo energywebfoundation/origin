@@ -13,10 +13,12 @@ export const certificateToDto = async (
     }
 
     const publicVolume = BigNumber.from(
-        certificate.issuedPrivately || !userId ? 0 : certificate.owners[userAddress] ?? 0
+        !certificate.issuedPrivately && userId ? certificate.owners[userAddress] ?? 0 : 0
     );
     const privateVolume = BigNumber.from(
-        certificate.issuedPrivately && userId ? certificate.owners[userAddress] ?? 0 : 0
+        certificate.issuedPrivately && userId
+            ? certificate.latestCommitment.commitment[userAddress] ?? 0
+            : 0
     );
     const claimedVolume = BigNumber.from(
         certificate.claimers && userId ? certificate.claimers[userAddress] ?? 0 : 0
@@ -39,7 +41,6 @@ export const certificateToDto = async (
         isOwned: publicVolume.add(privateVolume).gt(0),
         myClaims:
             certificate.claims?.filter((claim) => utils.getAddress(claim.to) === userAddress) ?? [],
-        latestCommitment: certificate.latestCommitment,
         issuedPrivately: certificate.issuedPrivately
     };
 };

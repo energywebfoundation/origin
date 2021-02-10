@@ -38,12 +38,11 @@ const createCertificates = async (app: INestApplication) => {
         .send(certificateTestData)
         .expect(HttpStatus.CREATED)
         .expect((res) => {
-            const { deviceId, generationStartTime, generationEndTime, energy } = res.body;
+            const { deviceId, generationStartTime, generationEndTime } = res.body;
 
             expect(certificateTestData.deviceId).to.equal(deviceId);
             expect(certificateTestData.fromTime).to.equal(generationStartTime);
             expect(certificateTestData.toTime).to.equal(generationEndTime);
-            expect(certificateTestData.energy).to.equal(energy.publicVolume);
         });
 
     await request(app.getHttpServer())
@@ -51,12 +50,11 @@ const createCertificates = async (app: INestApplication) => {
         .send(certificateTestData)
         .expect(HttpStatus.CREATED)
         .expect((res) => {
-            const { deviceId, generationStartTime, generationEndTime, energy } = res.body;
+            const { deviceId, generationStartTime, generationEndTime } = res.body;
 
             expect(certificateTestData.deviceId).to.equal(deviceId);
             expect(certificateTestData.fromTime).to.equal(generationStartTime);
             expect(certificateTestData.toTime).to.equal(generationEndTime);
-            expect(certificateTestData.energy).to.equal(energy.publicVolume);
         });
 };
 
@@ -312,67 +310,55 @@ describe('Certificate tests', () => {
     it('should create a private certificate', async () => {
         setUserRole(Role.Issuer);
 
-        await request(app.getHttpServer())
+        const {
+            body: { energy }
+        } = await request(app.getHttpServer())
             .post('/certificate')
             .send({
                 ...certificateTestData,
                 isPrivate: true
             })
-            .expect(HttpStatus.CREATED)
-            .expect((res) => {
-                const { latestCommitment } = res.body;
+            .expect(HttpStatus.CREATED);
 
-                expect(latestCommitment.commitment[deviceManager.address]).to.equal(
-                    certificateTestData.energy
-                );
-            });
+        expect(energy.privateVolume).to.equal(certificateTestData.energy);
     });
 
     it('should transfer a private certificate', async () => {
-        let certificateId;
         setUserRole(Role.Issuer);
 
-        await request(app.getHttpServer())
+        const {
+            body: { id, energy: senderEnergy }
+        } = await request(app.getHttpServer())
             .post('/certificate')
             .send({
                 ...certificateTestData,
                 isPrivate: true
             })
-            .expect(HttpStatus.CREATED)
-            .expect((res) => {
-                certificateId = res.body.id;
-                const { latestCommitment } = res.body;
+            .expect(HttpStatus.CREATED);
 
-                expect(latestCommitment.commitment[deviceManager.address]).to.equal(
-                    certificateTestData.energy
-                );
-                expect(latestCommitment.commitment[registryDeployer.address]).to.equal(undefined);
-            });
+        expect(senderEnergy.privateVolume).to.equal(certificateTestData.energy);
 
         setUserRole(Role.OrganizationDeviceManager);
 
-        await request(app.getHttpServer())
-            .put(`/certificate/${certificateId}/transfer`)
+        const {
+            body: { success: transferSuccess }
+        } = await request(app.getHttpServer())
+            .put(`/certificate/${id}/transfer`)
             .send({
                 to: registryDeployer.address,
                 amount: certificateTestData.energy
             })
-            .expect(HttpStatus.OK)
-            .expect((transferResponse) => {
-                expect(transferResponse.body.success).to.be.true;
-            });
+            .expect(HttpStatus.OK);
 
-        await request(app.getHttpServer())
-            .get(`/certificate/${certificateId}`)
-            .expect(HttpStatus.OK)
-            .expect((getResponse) => {
-                const { latestCommitment } = getResponse.body;
+        expect(transferSuccess).to.be.true;
 
-                expect(latestCommitment.commitment[deviceManager.address]).to.equal('0');
-                expect(latestCommitment.commitment[registryDeployer.address]).to.equal(
-                    certificateTestData.energy
-                );
-            });
+        authenticatedUser.blockchainAccountAddress = registryDeployer.address;
+
+        const {
+            body: { energy: receiverEnergy }
+        } = await request(app.getHttpServer()).get(`/certificate/${id}`).expect(HttpStatus.OK);
+
+        expect(receiverEnergy.privateVolume).to.equal(certificateTestData.energy);
     });
 
     xit('should claim a private certificate', async () => {
@@ -466,6 +452,8 @@ describe('Certificate tests', () => {
 
         const startDate = moment.unix(certificateTestData.fromTime).toISOString();
         const endDate = moment.unix(certificateTestData.toTime).toISOString();
+
+        authenticatedUser.blockchainAccountAddress = deviceManager.address;
 
         await request(app.getHttpServer())
             .get(
