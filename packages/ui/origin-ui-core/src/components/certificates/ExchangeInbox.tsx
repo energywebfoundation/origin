@@ -395,7 +395,7 @@ export function ExchangeInbox(): JSX.Element {
                                         {t('certificate.info.totalVolume')}:{' '}
                                     </div>
                                     <div className={classes.text_1} style={{ fontSize: 16 }}>
-                                        ${EnergyFormatter.format(totalVolume, true)}
+                                        {EnergyFormatter.format(totalVolume, true)}
                                     </div>
                                 </div>
                                 <TextField
@@ -445,7 +445,7 @@ export function ExchangeInbox(): JSX.Element {
                                 <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                                     <div className={classes.text_2}>Total volume: </div>
                                     <div className={classes.text_1} style={{ fontSize: 16 }}>
-                                        ${EnergyFormatter.format(totalVolume.mul(price))}
+                                        {EnergyFormatter.format(totalVolume, true)}
                                     </div>
                                 </div>
 
