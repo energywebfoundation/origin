@@ -15,7 +15,7 @@ describe('Origin Backend App', () => {
     it('should run origin app', async () => {
         const privateKey = '0xdc8e1fc5a23a837105f11ca050f06bc5a88a2ad54fb49bc580232c8c82e8ff99';
 
-        const PORT = 9000;
+        const PORT = 9010;
 
         ganache.provider();
         ganache
