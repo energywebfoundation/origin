@@ -116,11 +116,12 @@ export class SupplyController {
     public async remove(
         @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
         @UserDecorator() { ownerId }: ILoggedInUser
-    ): Promise<void> {
+    ): Promise<boolean> {
         const result = await this.supplyService.remove(ownerId, id);
 
         if (!result) {
             throw new NotFoundException();
         }
+        return true;
     }
 }
