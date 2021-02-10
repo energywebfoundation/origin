@@ -59,7 +59,7 @@ export class CertificateRequestApprovedHandler
         const organizationAdmins = await this.userService.getAll({
             where: {
                 rights: Role.OrganizationAdmin,
-                organizationId: device.organizationId
+                organization: device.organizationId
             }
         });
         const registrations = await this.registrationService.find(String(device.organizationId));
