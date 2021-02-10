@@ -191,6 +191,7 @@
                 "requestCertificatesFor": "Request certificates for {facilityName}",
                 "selectPriceRange": "Select price range to view more combinations",
                 "certificatesToImport": "Certificates to import",
+                "exchangeInbox": "Exchange inbox",
                 "selectedForImport": "Selected for import",
                 "selectedForSale": "Selected for sale",
                 "selectedForWithdraw": "Selected for withdraw",
