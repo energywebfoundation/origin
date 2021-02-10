@@ -29,5 +29,9 @@
         "moment-timezone": "0.5.33",
         "qs": "6.9.6",
         "reflect-metadata": "0.1.13"
+    },
+    "publishConfig": {
+        "access": "public",
+        "registry": "https://registry.npmjs.org"
     }
 }
