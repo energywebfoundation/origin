@@ -7,6 +7,7 @@ import { DeviceIcon } from '../../DeviceIcon';
 import { Button, IconButton, TextField } from '@material-ui/core';
 import EditIcon from '@material-ui/icons/Edit';
 import { BigNumber } from 'ethers';
+import { Unit } from '@energyweb/utils-general';
 
 export function InboxSelectedItem(props: {
     cert: IInboxCertificateData;
@@ -67,11 +68,12 @@ export function InboxSelectedItem(props: {
     const classes = useStyles();
 
     const [editMode, setEditMode] = useState(false);
-    const [MWhValue, setMWh] = useState<number>(cert.energy.toNumber());
+    const [MWhValue, setMWh] = useState<number>(cert.energy.toNumber() / Unit.MWh);
     const { t } = useTranslation();
 
     function saveForm() {
-        setEnergy(BigNumber.from(MWhValue));
+        setEnergy(BigNumber.from(MWhValue).mul(Unit.MWh));
+        setEditMode(false);
     }
 
     return (
@@ -108,6 +110,7 @@ export function InboxSelectedItem(props: {
                         size={'small'}
                         onClick={(event) => {
                             event.preventDefault();
+                            setMWh(cert.energy.toNumber() / Unit.MWh);
                             setEditMode(false);
                         }}
                     >
@@ -121,9 +124,12 @@ export function InboxSelectedItem(props: {
                         type={'number'}
                         style={{ flex: '1', marginRight: '10px', background: '#292929' }}
                         value={MWhValue}
-                        aria-valuemin={1}
-                        aria-valuemax={cert.maxEnergy.toNumber()}
-                        onChange={(event) => setMWh(parseInt(event.target.value, 10))}
+                        onChange={(event) => {
+                            const max = cert.maxEnergy.toNumber() / Unit.MWh;
+                            let value = parseInt(event.target.value, 10);
+                            value = Math.min(max, Math.max(value, 1));
+                            setMWh(value);
+                        }}
                     />
                     <Button color="primary" variant="contained" size="small" onClick={saveForm}>
                         {t('certificate.actions.save')}

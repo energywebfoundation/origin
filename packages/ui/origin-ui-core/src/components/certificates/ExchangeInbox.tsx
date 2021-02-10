@@ -275,6 +275,7 @@ export function ExchangeInbox(): JSX.Element {
         });
 
         setViewData(newViewData);
+        updateTotalVolume();
     };
 
     async function publishForSale() {
@@ -399,7 +400,7 @@ export function ExchangeInbox(): JSX.Element {
                                 </div>
                                 <TextField
                                     style={{ margin: '24px 0' }}
-                                    type={'number'}
+                                    type="number"
                                     value={price}
                                     onChange={(ev) => {
                                         const newValue = parseFloat(ev.target.value);
@@ -420,12 +421,15 @@ export function ExchangeInbox(): JSX.Element {
                                     variant="contained"
                                     size="small"
                                     style={{ marginTop: '14px' }}
-                                    disabled={selectedCerts.length === 0}
+                                    disabled={
+                                        selectedCerts.length === 0 || selectedCerts.length > 1
+                                    }
                                     onClick={() => publishForSale()}
                                 >
                                     {t('certificate.actions.sellNCertificates', {
                                         count: selectedCerts.length
                                     })}
+                                    {selectedCerts.length > 1 && ' *'}
                                 </Button>
                             </div>
                         )}
@@ -450,13 +454,22 @@ export function ExchangeInbox(): JSX.Element {
                                     variant="contained"
                                     size="small"
                                     style={{ marginTop: '14px' }}
-                                    disabled={selectedCerts.length === 0}
+                                    disabled={
+                                        selectedCerts.length === 0 || selectedCerts.length > 1
+                                    }
                                     onClick={() => withdraw()}
                                 >
                                     {t('certificate.actions.withdrawNCertificates', {
                                         count: selectedCerts.length
                                     })}
+                                    {selectedCerts.length > 1 && ' *'}
                                 </Button>
+                            </div>
+                        )}
+                        {selectedCerts.length > 1 && (
+                            <div>
+                                * Bulk certificate actions are currently unavailable. Select single
+                                certificate to continue
                             </div>
                         )}
                     </div>
