@@ -11,7 +11,7 @@ const initialState: IBundlesState = {
     showBundleDetails: false
 };
 
-export function bundlesState<T>(
+export function bundlesState(
     state: IBundlesState = initialState,
     { type, payload }: IBundleAction
 ): IBundlesState {

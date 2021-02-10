@@ -1,4 +1,4 @@
-/* eslint-disable camelcase */
+/* eslint-disable camelcase, @typescript-eslint/no-unused-vars */
 import { ProducingDevice } from '@energyweb/device-registry';
 import { IEnvironment } from '../features/general/actions';
 import { CustomFilterInputType, ICustomFilterDefinition } from '../components/Table/FiltersHeader';

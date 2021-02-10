@@ -53,7 +53,11 @@ module.exports = {
                 tsx: 'never'
             }
         ],
-        'no-useless-constructor': 'off'
+        'no-useless-constructor': 'off',
+        'no-shadow': 'off',
+        '@typescript-eslint/no-shadow': 'error',
+        'no-use-before-define': 'off',
+        '@typescript-eslint/no-use-before-define': 'error'
     },
     settings: {
         'import/resolver': {
