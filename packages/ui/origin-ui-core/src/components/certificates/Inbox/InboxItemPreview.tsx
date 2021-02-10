@@ -46,7 +46,7 @@ export function InboxItemPreview(props: {
                     {data && (
                         <div className={classes.modalWindow} style={{ position: 'relative' }}>
                             <p>{data.id}</p>
-                            <p>{EnergyFormatter.format(data.energy, true)}</p>
+                            <p>{EnergyFormatter.format(data.maxEnergy, true)}</p>
                             <p>
                                 {formatDate(moment.unix(data.dateStart))}
                                 {' - '}
