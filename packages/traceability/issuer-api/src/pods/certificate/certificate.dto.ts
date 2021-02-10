@@ -1,4 +1,4 @@
-import { IClaim, IOwnershipCommitmentProof } from '@energyweb/issuer';
+import { IClaim } from '@energyweb/issuer';
 import { ApiProperty } from '@nestjs/swagger';
 import {
     IsArray,
@@ -66,10 +66,6 @@ export class CertificateDTO {
     @ApiProperty({ type: String, required: false })
     @ValidateIf((dto: CertificateDTO) => !!dto.creationBlockHash)
     creationBlockHash?: string;
-
-    @ApiProperty({ required: false })
-    @ValidateIf((dto: CertificateDTO) => !!dto.latestCommitment)
-    latestCommitment?: IOwnershipCommitmentProof;
 
     @ApiProperty({ type: Boolean, required: false })
     @ValidateIf((dto: CertificateDTO) => !!dto.issuedPrivately)

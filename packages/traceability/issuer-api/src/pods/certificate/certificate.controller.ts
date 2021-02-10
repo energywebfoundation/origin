@@ -51,7 +51,7 @@ export class CertificateController {
     constructor(private readonly commandBus: CommandBus, private readonly queryBus: QueryBus) {}
 
     @Get('/:id')
-    @UseGuards(AuthGuard(), ActiveUserGuard, BlockchainAccountGuard)
+    @UseGuards(AuthGuard(), ActiveUserGuard)
     @ApiResponse({
         status: HttpStatus.OK,
         type: CertificateDTO,
@@ -65,7 +65,7 @@ export class CertificateController {
     }
 
     @Get('/token-id/:tokenId')
-    @UseGuards(AuthGuard(), ActiveUserGuard, BlockchainAccountGuard)
+    @UseGuards(AuthGuard(), ActiveUserGuard)
     @ApiResponse({
         status: HttpStatus.OK,
         type: CertificateDTO,
@@ -79,7 +79,7 @@ export class CertificateController {
     }
 
     @Get()
-    @UseGuards(AuthGuard(), ActiveUserGuard, BlockchainAccountGuard)
+    @UseGuards(AuthGuard(), ActiveUserGuard)
     @ApiResponse({
         status: HttpStatus.OK,
         type: [CertificateDTO],
@@ -199,7 +199,7 @@ export class CertificateController {
     }
 
     @Get('/:id/events')
-    @UseGuards(AuthGuard(), ActiveUserGuard, BlockchainAccountGuard)
+    @UseGuards(AuthGuard(), ActiveUserGuard)
     @ApiResponse({
         status: HttpStatus.OK,
         type: [CertificateEvent],
