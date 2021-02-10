@@ -3833,10 +3833,10 @@
     "@octokit/openapi-types" "^3.4.1"
     "@types/node" ">= 8"
 
-"@openapitools/openapi-generator-cli@1.0.18-4.3.1":
-  version "1.0.18-4.3.1"
-  resolved "https://registry.yarnpkg.com/@openapitools/openapi-generator-cli/-/openapi-generator-cli-1.0.18-4.3.1.tgz#77aa30f7d2eb6c46050f92ff3d1710da9fb77709"
-  integrity sha512-t5OFeIfbD5bUQH3/5xoCHr96ay9nIKPgtlkN9YrX7Ce4q8NdSUU/bl83MJjzU8qcdDiwZtuUgqTM2Y4FLOi9CA==
+"@openapitools/openapi-generator-cli@1.0.18-5.0.0-beta2":
+  version "1.0.18-5.0.0-beta2"
+  resolved "https://registry.yarnpkg.com/@openapitools/openapi-generator-cli/-/openapi-generator-cli-1.0.18-5.0.0-beta2.tgz#706042107c9bbfecd824503730f95d1d9eee9d1d"
+  integrity sha512-zcuOcVKuQ/wp5immG4l3/w5koLHLy+NCoFPK4RQ2iz34kHgtaRfXzNIroulHWLUNuoWgx9y2zYecEITX6ndGMA==
 
 "@openzeppelin/cli@2.8.2":
   version "2.8.2"
