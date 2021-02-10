@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/naming-convention */
-import React, { createContext, ReactNode } from 'react';
+import React, { createContext, ReactNode, useState, SetStateAction, Dispatch } from 'react';
 import { initReactI18next } from 'react-i18next';
 import i18n from 'i18next';
 import ICU from 'i18next-icu';
@@ -250,6 +250,7 @@ export interface IOriginConfiguration {
     defaultLanguage: ORIGIN_LANGUAGE;
     language: ORIGIN_LANGUAGE;
     enabledFeatures: OriginFeature[];
+    changeContext: Dispatch<SetStateAction<IOriginConfiguration>>;
 }
 
 export function createStyleConfigFromSCSSVariables(scssVariables: any): IOriginStyleConfig {
@@ -286,7 +287,7 @@ export function setOriginLanguage(language: ORIGIN_LANGUAGE) {
     location.reload();
 }
 
-export function createOriginConfiguration(configuration: Partial<IOriginConfiguration> = {}) {
+export function useConfigurationCreation(configuration: Partial<IOriginConfiguration> = {}) {
     const DEFAULT_STYLE_CONFIG = createStyleConfigFromSCSSVariables(variables);
 
     const storedLanguage = getOriginLanguage();
@@ -306,7 +307,8 @@ export function createOriginConfiguration(configuration: Partial<IOriginConfigur
                 OriginFeature.IRecUIApp,
                 OriginFeature.CertificatesImport
             ].includes(feature);
-        })
+        }),
+        changeContext: null
     };
 
     const newConfiguration: IOriginConfiguration = {
@@ -346,8 +348,10 @@ interface IProps {
 }
 
 export function OriginConfigurationProvider(props: IProps) {
+    const [context, setContext] = useState<IOriginConfiguration>(props.value);
+    const value = { ...context, changeContext: setContext };
     return (
-        <OriginConfigurationContext.Provider value={props.value}>
+        <OriginConfigurationContext.Provider value={value}>
             {props.children}
         </OriginConfigurationContext.Provider>
     );

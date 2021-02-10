@@ -29,17 +29,17 @@ export class MailService {
 
             if (allSucceeded) {
                 this.logger.log(`Sent email with id: ${result.messageId}.`);
-                this.logger.log(result.response);
+                this.logger.log(JSON.stringify(result.response));
                 return true;
             }
 
             this.logger.error(`Error when sending email.`);
-            this.logger.error(result.response);
+            this.logger.error(JSON.stringify(result.response));
 
             return false;
         } catch (error) {
             this.logger.error(`Error when sending email.`);
-            this.logger.error(error);
+            this.logger.error(JSON.stringify(error));
         }
 
         return false;

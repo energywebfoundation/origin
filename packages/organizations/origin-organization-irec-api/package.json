@@ -30,6 +30,7 @@
         "precommit": "lint-staged"
     },
     "dependencies": {
+        "@energyweb/issuer-irec-api-wrapper": "0.1.0",
         "@energyweb/origin-backend-core": "7.0.1",
         "@energyweb/origin-backend-utils": "1.4.0",
         "@nestjs/common": "7.6.11",

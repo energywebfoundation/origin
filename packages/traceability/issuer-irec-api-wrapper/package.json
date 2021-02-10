@@ -2,8 +2,8 @@
     "name": "@energyweb/issuer-irec-api-wrapper",
     "version": "0.1.0",
     "description": "A Typescript wrapper for I-REC Evident API",
-    "main": "dist/js/src/index.js",
-    "types": "dist/js/src/index.d.ts",
+    "main": "dist/src/index.js",
+    "types": "dist/src/index.d.ts",
     "homepage": "https://github.com/energywebfoundation/origin/tree/master/packages/issuer-irec-api-wrapper",
     "repository": {
         "type": "git",
@@ -11,7 +11,6 @@
     },
     "author": "EnergyWeb DevHub GmbH; Piotr Kosiński, piotr.kosinski@energyweb.org",
     "license": "GPL-3.0-or-later",
-    "private": true,
     "scripts": {
         "build": "yarn build:ts",
         "build:ts": "tsc -b tsconfig.json",
@@ -30,5 +29,9 @@
         "moment-timezone": "0.5.33",
         "qs": "6.9.6",
         "reflect-metadata": "0.1.13"
+    },
+    "publishConfig": {
+        "access": "public",
+        "registry": "https://registry.npmjs.org"
     }
 }

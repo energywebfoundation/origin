@@ -5,10 +5,9 @@ LATEST 				= ${NAME}:latest
 CANARY 				= ${NAME}:canary
 
 build-canary:
-	@docker build --no-cache -f deployment/migrations/canary/Dockerfile -t ${CANARY} .
+	@docker build -f deployment/migrations/canary/Dockerfile -t ${CANARY} .
 
 build-stable:
-	@docker pull energyweb/origin-backend-app:latest
 	@docker build --no-cache -f deployment/migrations/stable/Dockerfile -t ${LATEST} .
 
 push-heroku-canary:
