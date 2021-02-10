@@ -11,7 +11,7 @@ const initialState: IExchangeGeneralState = {
     environment: null
 };
 
-export function exchangeGeneralState<T>(
+export function exchangeGeneralState(
     state: IExchangeGeneralState = initialState,
     { type, payload }: IExchangeGeneralAction
 ): IExchangeGeneralState {

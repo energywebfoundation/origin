@@ -56,7 +56,11 @@ module.exports = {
                 ts: 'never',
                 tsx: 'never'
             }
-        ]
+        ],
+        'no-shadow': 'off',
+        '@typescript-eslint/no-shadow': 'error',
+        'no-use-before-define': 'off',
+        '@typescript-eslint/no-use-before-define': 'error'
     },
     settings: {
         'import/resolver': {

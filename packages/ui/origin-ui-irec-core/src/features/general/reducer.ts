@@ -12,7 +12,7 @@ const initialState: IIRecGeneralState = {
     deviceClient: null
 };
 
-export function iRecGeneralState<T>(
+export function iRecGeneralState(
     state: IIRecGeneralState = initialState,
     { type, payload }: IDeviceGeneralAction
 ): IIRecGeneralState {
