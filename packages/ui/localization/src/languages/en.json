@@ -37,7 +37,8 @@
                 "create_bundle": "Create bundle",
                 "myTrades": "My trades",
                 "myOrders": "My orders",
-                "import": "Certificate import"
+                "import": "Certificate import",
+                "exchangeInbox": "Exchange Inbox"
             }
         },
         "device": {
@@ -155,8 +156,13 @@
                 "selectAccount": "Select account",
                 "selectAll": "Select all",
                 "importNCertificates": "Import {count} Certificate(s)",
+                "withdrawNCertificates": "Withdraw {count} Certificate(s)",
+                "sellNCertificates": "Sell {count} Certificate(s)",
                 "ok": "Ok",
+                "view": "View",
                 "confirm": "Confirm",
+                "save": "Save",
+                "close": "Close",
                 "cancel": "Cancel"
             },
             "feedback": {
@@ -185,8 +191,13 @@
                 "requestCertificatesFor": "Request certificates for {facilityName}",
                 "selectPriceRange": "Select price range to view more combinations",
                 "certificatesToImport": "Certificates to import",
+                "exchangeInbox": "Exchange inbox",
                 "selectedForImport": "Selected for import",
-                "selectCertificate": "Select Certificate"
+                "selectedForSale": "Selected for sale",
+                "selectedForWithdraw": "Selected for withdraw",
+                "selectCertificate": "Select Certificate",
+                "totalVolume": "Total volume",
+                "totalPrice": "Total price"
             },
             "event": {
                 "name": {
