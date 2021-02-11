@@ -51,6 +51,7 @@ before_deploy:
     - echo "//registry.npmjs.org/:_authToken=\${NPM_TOKEN}" >> $HOME/.npmrc 2> /dev/null
     - npm whoami
     - wget -qO- https://toolbelt.heroku.com/install-ubuntu.sh | sh
+    - echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
 
 install:
     - set -e
