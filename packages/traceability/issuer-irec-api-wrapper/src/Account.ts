@@ -1,5 +1,5 @@
-import { Type, Expose, Transform } from 'class-transformer';
-import { IsString, IsNotEmpty, ValidateNested, IsEnum } from 'class-validator';
+import { Expose, Transform } from 'class-transformer';
+import { IsEnum, IsNotEmpty, IsString, ValidateNested } from 'class-validator';
 import moment from 'moment-timezone';
 import { Product } from './Product';
 
@@ -41,7 +41,6 @@ export class Account {
     @IsNotEmpty()
     code: string;
 
-    @Type(() => AccountDetails)
     @Expose({ name: 'account_details' })
     @Transform((value) => value[0], { toClassOnly: true })
     @ValidateNested()
@@ -61,7 +60,6 @@ export class AccountBalance {
     @Expose({ name: 'account', toClassOnly: true })
     code: string;
 
-    @Type(() => Product)
     product: Product;
 }
 
@@ -103,7 +101,6 @@ export class TransactionResult extends Transaction {
 export class RedeemTransaction extends Transaction {
     purpose: string;
 
-    @Type(() => Beneficiary)
     beneficiary: Beneficiary;
 
     @Expose({ name: 'period_start', toPlainOnly: true })

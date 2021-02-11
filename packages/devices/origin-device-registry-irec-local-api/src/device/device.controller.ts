@@ -36,8 +36,13 @@ import { plainToClass } from 'class-transformer';
 
 import { SuccessResponseDTO } from '../utils/success-response.dto';
 import { DeviceService } from './device.service';
-import { CreateDeviceDTO, DeviceDTO, UpdateDeviceStatusDTO } from './dto';
-import { PublicDeviceDTO } from './dto/public-device.dto';
+import {
+    CodeNameDTO,
+    CreateDeviceDTO,
+    DeviceDTO,
+    PublicDeviceDTO,
+    UpdateDeviceStatusDTO
+} from './dto';
 
 @ApiTags('device')
 @ApiBearerAuth('access-token')
@@ -52,10 +57,36 @@ export class DeviceController {
     async getAll(): Promise<PublicDeviceDTO[]> {
         const devices = await this.deviceService.findAll();
 
-        return devices?.map((device) => plainToClass(PublicDeviceDTO, device));
+        return devices?.map((device) =>
+            plainToClass(PublicDeviceDTO, device, { excludeExtraneousValues: true })
+        );
     }
 
-    @Get('/:id')
+    @Get('/device-type')
+    @ApiResponse({
+        status: HttpStatus.OK,
+        type: [CodeNameDTO],
+        description: 'Returns all IREC fuels'
+    })
+    getFuels(): CodeNameDTO[] {
+        const deviceTypes = this.deviceService.getDeviceTypes();
+
+        return deviceTypes.map((deviceType) => plainToClass(CodeNameDTO, deviceType));
+    }
+
+    @Get('/fuel-type')
+    @ApiResponse({
+        status: HttpStatus.OK,
+        type: [CodeNameDTO],
+        description: 'Returns all IREC fuels types'
+    })
+    getFuelTypes(): CodeNameDTO[] {
+        const fuelTypes = this.deviceService.getFuelTypes();
+
+        return fuelTypes.map((fuelType) => plainToClass(CodeNameDTO, fuelType));
+    }
+
+    @Get('/device/:id')
     @ApiResponse({ status: HttpStatus.OK, type: DeviceDTO, description: 'Returns a Device' })
     @ApiNotFoundResponse({
         status: HttpStatus.NOT_FOUND,
@@ -103,7 +134,7 @@ export class DeviceController {
         return plainToClass(DeviceDTO, device);
     }
 
-    @Put('/:id')
+    @Put('/device/:id')
     @UseGuards(AuthGuard(), ActiveUserGuard, RolesGuard)
     @Roles(Role.Issuer, Role.Admin)
     @ApiBody({ type: UpdateDeviceStatusDTO })
