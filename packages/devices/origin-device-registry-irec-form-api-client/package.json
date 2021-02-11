@@ -18,7 +18,7 @@
         "build:ts": "tsc -b tsconfig.json && yarn build:client",
         "build:client": "yarn client:generate:schema && yarn client:generate && yarn client:clean",
         "clean": "shx rm -rf dist dist-shakeable",
-        "client:generate": "openapi-generator generate -g typescript-axios -i src/schema.yaml -o src --api-name-suffix Client --remove-operation-id-prefix",
+        "client:generate": "openapi-generator-cli generate -g typescript-axios -i src/schema.yaml -o src --api-name-suffix Client --remove-operation-id-prefix",
         "client:generate:schema": "ts-node src/generateSchema.ts",
         "client:clean": "find src/ -type f  ! -name \"*.ts\"  -delete"
     },
@@ -31,7 +31,7 @@
         "@nestjs/swagger": "4.7.11",
         "@nestjs/testing": "7.6.11",
         "@nestjs/typeorm": "7.1.5",
-        "@openapitools/openapi-generator-cli": "1.0.18-4.3.1",
+        "@openapitools/openapi-generator-cli": "2.1.23",
         "json-to-pretty-yaml": "1.2.2",
         "prettier": "2.1.2",
         "ts-node": "9.1.1"

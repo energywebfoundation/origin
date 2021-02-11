@@ -8,8 +8,8 @@
     "scripts": {
         "build": "yarn build:ts",
         "build:ts": "tsc -b tsconfig.json && cp config/data.csv dist/js/config/data.csv",
-        "build:container:canary": "make build-canary push",
-        "build:container:latest": "make build-latest push",
+        "build:container:canary": "make build-canary",
+        "build:container:latest": "make build-latest",
         "start": "ts-node src/main.ts",
         "start-simulation": "ts-node src/simulatorService.ts",
         "start-consuming-api": "ts-node src/consumerService.ts",

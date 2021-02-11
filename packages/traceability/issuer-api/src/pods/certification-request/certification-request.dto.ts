@@ -87,4 +87,7 @@ export class CertificationRequestDTO {
         required: false
     })
     status?: CertificationRequestStatus;
+
+    @ApiProperty({ type: Boolean, required: false })
+    isPrivate?: boolean;
 }

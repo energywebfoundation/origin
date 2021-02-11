@@ -8,6 +8,7 @@ import { usePermissions } from '../../utils';
 import { Requirements } from '../Requirements';
 import { getUserOffchain } from '../../features';
 import { CertificateImport } from './Import/CertificateImport';
+import { ExchangeInbox } from './ExchangeInbox';
 
 interface ICertificateMenuItem {
     key: string;
@@ -80,18 +81,18 @@ export const certificatesMenuCreator = (user: IUser): ICertificateMenuItem[] => 
             features: [OriginFeature.Certificates, OriginFeature.Buyer]
         },
         {
+            key: 'Exchange-inbox',
+            label: 'navigation.certificates.exchangeInbox',
+            component: ExchangeInbox,
+            show: userIsActiveAndPartOfOrg,
+            features: [OriginFeature.Certificates, OriginFeature.Buyer]
+        },
+        {
             key: 'claims_report',
             label: 'navigation.certificates.claimsReport',
             component: ClaimedCertificates,
             show: isIssuer || userIsActiveAndPartOfOrg,
             features: [OriginFeature.Certificates, OriginFeature.Buyer]
-        },
-        {
-            key: 'detail_view',
-            label: 'navigation.certificates.detailView',
-            component: null,
-            show: false,
-            features: [OriginFeature.Certificates]
         },
         {
             key: 'pending',
@@ -111,12 +112,19 @@ export const certificatesMenuCreator = (user: IUser): ICertificateMenuItem[] => 
             key: 'import',
             label: 'navigation.certificates.import',
             component: CertificateImport,
-            show: true || (userIsActive && isIssuer) || userIsActiveAndPartOfOrg,
+            show: (userIsActive && isIssuer) || userIsActiveAndPartOfOrg,
             features: [
                 OriginFeature.Certificates,
                 OriginFeature.CertificationRequests,
                 OriginFeature.CertificatesImport
             ]
+        },
+        {
+            key: 'detail_view',
+            label: 'navigation.certificates.detailView',
+            component: null,
+            show: false,
+            features: [OriginFeature.Certificates]
         }
     ];
 };

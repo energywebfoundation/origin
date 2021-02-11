@@ -11,7 +11,7 @@ const initialState: IIRecDevicesState = {
     myDevices: null
 };
 
-export function iRecDevicesState<T>(
+export function iRecDevicesState(
     state: IIRecDevicesState = initialState,
     { type, payload }: IDevicesAction
 ): IIRecDevicesState {

@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/naming-convention */
-import React, { createContext, ReactNode } from 'react';
+import React, { createContext, ReactNode, useState, SetStateAction, Dispatch } from 'react';
 import { initReactI18next } from 'react-i18next';
 import i18n from 'i18next';
 import ICU from 'i18next-icu';
@@ -20,6 +20,7 @@ import { LoginPageBackground } from './LoginPageBackground';
 export interface IOriginStyleConfig {
     PRIMARY_COLOR: string;
     PRIMARY_COLOR_DARK: string;
+    PRIMARY_COLOR_DIM: string;
     TEXT_COLOR_DEFAULT: string;
     SIMPLE_TEXT_COLOR: string;
     MAIN_BACKGROUND_COLOR: string;
@@ -250,12 +251,14 @@ export interface IOriginConfiguration {
     defaultLanguage: ORIGIN_LANGUAGE;
     language: ORIGIN_LANGUAGE;
     enabledFeatures: OriginFeature[];
+    changeContext: Dispatch<SetStateAction<IOriginConfiguration>>;
 }
 
 export function createStyleConfigFromSCSSVariables(scssVariables: any): IOriginStyleConfig {
     return {
         PRIMARY_COLOR: scssVariables.primaryColor ?? DEFAULT_COLOR,
         PRIMARY_COLOR_DARK: scssVariables.primaryColorDark ?? DEFAULT_COLOR,
+        PRIMARY_COLOR_DIM: scssVariables.primaryColorDim ?? DEFAULT_COLOR,
         TEXT_COLOR_DEFAULT: scssVariables.textColorDefault ?? DEFAULT_COLOR,
         SIMPLE_TEXT_COLOR: scssVariables.simpleTextColor ?? DEFAULT_COLOR,
         MAIN_BACKGROUND_COLOR: scssVariables.mainBackgroundColor ?? DEFAULT_COLOR,
@@ -286,7 +289,7 @@ export function setOriginLanguage(language: ORIGIN_LANGUAGE) {
     location.reload();
 }
 
-export function createOriginConfiguration(configuration: Partial<IOriginConfiguration> = {}) {
+export function useConfigurationCreation(configuration: Partial<IOriginConfiguration> = {}) {
     const DEFAULT_STYLE_CONFIG = createStyleConfigFromSCSSVariables(variables);
 
     const storedLanguage = getOriginLanguage();
@@ -306,7 +309,8 @@ export function createOriginConfiguration(configuration: Partial<IOriginConfigur
                 OriginFeature.IRecUIApp,
                 OriginFeature.CertificatesImport
             ].includes(feature);
-        })
+        }),
+        changeContext: null
     };
 
     const newConfiguration: IOriginConfiguration = {
@@ -346,8 +350,10 @@ interface IProps {
 }
 
 export function OriginConfigurationProvider(props: IProps) {
+    const [context, setContext] = useState<IOriginConfiguration>(props.value);
+    const value = { ...context, changeContext: setContext };
     return (
-        <OriginConfigurationContext.Provider value={props.value}>
+        <OriginConfigurationContext.Provider value={value}>
             {props.children}
         </OriginConfigurationContext.Provider>
     );

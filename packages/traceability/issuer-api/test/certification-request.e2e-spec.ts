@@ -112,63 +112,50 @@ describe('Certification Request tests', () => {
     });
 
     it('should approve a certification request and a new certificate should be created', async () => {
-        let certificationRequestId;
-        let newCertificateTokenId;
-
-        await request(app.getHttpServer())
+        const {
+            body: { id: certificationRequestId }
+        } = await request(app.getHttpServer())
             .post('/certification-request')
-            .send(certificationRequestTestData)
-            .expect((res) => {
-                certificationRequestId = res.body.id;
-            });
+            .send(certificationRequestTestData);
 
         // need to wait for item to be picked up from the queue and deployed
         await sleep(3000);
 
         authenticatedUser.rights = Role.Issuer;
 
-        await request(app.getHttpServer())
+        const {
+            body: { success }
+        } = await request(app.getHttpServer())
             .put(`/certification-request/${certificationRequestId}/approve`)
-            .expect(HttpStatus.OK)
-            .expect((res) => {
-                expect(res.body.success).to.be.true;
-            });
+            .expect(HttpStatus.OK);
+
+        expect(success).to.be.true;
 
         authenticatedUser.rights = Role.OrganizationDeviceManager;
+        authenticatedUser.blockchainAccountAddress = deviceManager.address;
 
-        await request(app.getHttpServer())
+        const {
+            body: { issuedCertificateTokenId: newCertificateTokenId }
+        } = await request(app.getHttpServer())
             .get(`/certification-request/${certificationRequestId}`)
-            .expect(HttpStatus.OK)
-            .expect((res) => {
-                newCertificateTokenId = res.body.issuedCertificateTokenId;
+            .expect(HttpStatus.OK);
 
-                expect(newCertificateTokenId).to.be.above(-1);
-            });
+        expect(newCertificateTokenId).to.be.above(-1);
 
         await sleep(1000);
 
-        await request(app.getHttpServer())
+        const { body: certificate } = await request(app.getHttpServer())
             .get(`/certificate/token-id/${newCertificateTokenId}`)
-            .expect(HttpStatus.OK)
-            .expect((res) => {
-                const {
-                    deviceId,
-                    generationStartTime,
-                    generationEndTime,
-                    creationTime,
-                    creationBlockHash,
-                    tokenId,
-                    isOwned
-                } = res.body;
+            .expect(HttpStatus.OK);
 
-                expect(deviceId).to.equal(certificationRequestTestData.deviceId);
-                expect(generationStartTime).to.equal(certificationRequestTestData.fromTime);
-                expect(generationEndTime).to.equal(certificationRequestTestData.toTime);
-                expect(creationTime).to.be.above(1);
-                expect(creationBlockHash);
-                expect(tokenId).to.be.above(-1);
-                expect(isOwned).to.be.true;
-            });
+        expect(certificate.deviceId).to.equal(certificationRequestTestData.deviceId);
+        expect(certificate.generationStartTime).to.equal(certificationRequestTestData.fromTime);
+        expect(certificate.generationEndTime).to.equal(certificationRequestTestData.toTime);
+        expect(certificate.creationTime).to.be.above(1);
+        expect(certificate.creationBlockHash);
+        expect(certificate.tokenId).to.be.above(-1);
+        expect(certificate.issuedPrivately).to.be.false;
+        expect(certificate.isOwned).to.be.true;
     });
 
     it('should revoke a certification request', async () => {
@@ -235,49 +222,46 @@ describe('Certification Request tests', () => {
     });
 
     it('should approve a private certification request', async () => {
-        let certificationRequestId;
-        let newCertificateTokenId;
-
-        await request(app.getHttpServer())
+        const {
+            body: { id: certificationRequestId, isPrivate }
+        } = await request(app.getHttpServer())
             .post('/certification-request')
             .send({
                 ...certificationRequestTestData,
                 isPrivate: true
             })
-            .expect(HttpStatus.CREATED)
-            .expect((res) => {
-                certificationRequestId = res.body.id;
-            });
+            .expect(HttpStatus.CREATED);
 
         // need to wait for item to be picked up from the queue and deployed
         await sleep(3000);
 
-        await request(app.getHttpServer())
+        expect(isPrivate).to.be.true;
+
+        const {
+            body: { success }
+        } = await request(app.getHttpServer())
             .put(`/certification-request/${certificationRequestId}/approve`)
-            .expect(HttpStatus.OK)
-            .expect((res) => {
-                expect(res.body.success).to.be.true;
-            });
+            .expect(HttpStatus.OK);
+
+        expect(success).to.be.true;
 
         await sleep(1000);
 
-        await request(app.getHttpServer())
+        const {
+            body: { issuedCertificateTokenId: newCertificateTokenId }
+        } = await request(app.getHttpServer())
             .get(`/certification-request/${certificationRequestId}`)
-            .expect(HttpStatus.OK)
-            .expect((res) => {
-                newCertificateTokenId = res.body.issuedCertificateTokenId;
-            });
+            .expect(HttpStatus.OK);
 
-        await request(app.getHttpServer())
+        authenticatedUser.blockchainAccountAddress = deviceManager.address;
+
+        const {
+            body: { energy, issuedPrivately }
+        } = await request(app.getHttpServer())
             .get(`/certificate/token-id/${newCertificateTokenId}`)
-            .expect(HttpStatus.OK)
-            .expect((res) => {
-                const { issuedPrivately, latestCommitment } = res.body;
+            .expect(HttpStatus.OK);
 
-                expect(latestCommitment.commitment[deviceManager.address]).to.equal(
-                    certificationRequestTestData.energy
-                );
-                expect(issuedPrivately).to.be.true;
-            });
+        expect(issuedPrivately).to.be.true;
+        expect(energy.privateVolume).to.equal(certificationRequestTestData.energy);
     });
 });

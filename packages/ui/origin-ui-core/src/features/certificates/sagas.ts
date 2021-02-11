@@ -525,6 +525,7 @@ export function* withdrawSaga(): SagaIterator {
         const i18n = getI18n();
         try {
             yield call([transferClient, transferClient.requestWithdrawal], action.payload);
+            yield put(reloadCertificates());
             if (callback) {
                 yield call(callback);
             }

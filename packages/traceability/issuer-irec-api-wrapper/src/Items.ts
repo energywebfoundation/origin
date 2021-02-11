@@ -1,6 +1,6 @@
-/* eslint-disable max-classes-per-file */
 import { Transform, Type, Expose } from 'class-transformer';
 import moment from 'moment-timezone';
+import { IsNotEmpty, IsString } from 'class-validator';
 
 import { Product } from './Product';
 
@@ -49,4 +49,14 @@ export class AccountItem {
 
     @Type(() => Item)
     items: Item[];
+}
+
+export class CodeName {
+    @IsString()
+    @IsNotEmpty()
+    code: string;
+
+    @IsString()
+    @IsNotEmpty()
+    name: string;
 }

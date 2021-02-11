@@ -5,7 +5,7 @@
         "outDir": "./dist/js",
         "emitDecoratorMetadata": true,
         "experimentalDecorators": true,
-        "lib": ["es2019"],
+        "target": "ES2019",
         "types": ["node", "mocha"]
     },
     "include": ["src/**/*", "test/**/*", "migrations/*", "ormconfig*.ts"],
@@ -15,6 +15,9 @@
         },
         {
             "path": "../../utils/origin-backend-utils/tsconfig.json"
+        },
+        {
+            "path": "../../traceability/issuer-irec-api-wrapper/tsconfig.json"
         }
     ]
 }

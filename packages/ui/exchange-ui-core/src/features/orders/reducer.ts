@@ -11,7 +11,7 @@ const initialState: IOrdersState = {
     demands: null
 };
 
-export function ordersState<T>(
+export function ordersState(
     state: IOrdersState = initialState,
     { type, payload }: IOrderAction
 ): IOrdersState {

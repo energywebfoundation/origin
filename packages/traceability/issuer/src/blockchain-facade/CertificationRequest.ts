@@ -18,6 +18,7 @@ export interface ICertificationRequestBlockchain {
     revoked: boolean;
     approvedDate?: Date;
     revokedDate?: Date;
+    issuedCertificateTokenId?: number;
 }
 
 export class CertificationRequest implements ICertificationRequestBlockchain {
@@ -38,6 +39,8 @@ export class CertificationRequest implements ICertificationRequestBlockchain {
     public revokedDate: Date;
 
     public created: Timestamp;
+
+    public issuedCertificateTokenId: number;
 
     public initialized = false;
 
@@ -112,6 +115,14 @@ export class CertificationRequest implements ICertificationRequestBlockchain {
             issuer.filters.CertificationRequested(null, this.id, null)
         );
 
+        const certificationApprovedLogs = await getEventsFromContract(
+            issuer,
+            issuer.filters.CertificationRequestApproved(null, this.id, null)
+        );
+
+        this.issuedCertificateTokenId =
+            certificationApprovedLogs[0]?._certificateId.toNumber() ?? null;
+
         const creationBlock = await issuer.provider.getBlock(
             certificationRequestedLogs[0].blockNumber
         );
@@ -123,7 +134,7 @@ export class CertificationRequest implements ICertificationRequestBlockchain {
         return this;
     }
 
-    async approve(energy: BigNumber): Promise<number> {
+    async approve(energy: BigNumber): Promise<CertificationRequest['issuedCertificateTokenId']> {
         const { issuer, activeUser } = this.blockchainProperties;
 
         const validityData = issuer.interface.encodeFunctionData('isRequestValid', [
@@ -144,6 +155,8 @@ export class CertificationRequest implements ICertificationRequestBlockchain {
             events.find((log: BlockchainEvent) => log.event === 'CertificationRequestApproved')
                 .topics[3]
         );
+
+        this.issuedCertificateTokenId = certificateId;
 
         return certificateId;
     }

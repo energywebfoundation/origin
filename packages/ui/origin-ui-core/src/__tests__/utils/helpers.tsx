@@ -343,11 +343,6 @@ export const setupStore = (
     };
 };
 
-interface ISetCurrentUserProperties {
-    id: string;
-    organization?: string;
-}
-
 export const createRefreshFunction = (rendered: CommonWrapper) => async () => {
     await flushPromises();
     rendered.update();

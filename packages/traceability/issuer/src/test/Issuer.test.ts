@@ -114,6 +114,7 @@ describe('Issuer', () => {
         certificationRequest = await certificationRequest.sync();
 
         assert.isTrue(certificationRequest.approved);
+        assert.isAbove(certificationRequest.issuedCertificateTokenId, 0);
 
         const deviceOwnerBalance = await blockchainProperties.registry.balanceOf(
             deviceOwnerWallet.address,
