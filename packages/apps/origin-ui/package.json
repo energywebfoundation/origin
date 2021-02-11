@@ -31,6 +31,7 @@
         "@material-ui/icons": "4.11.2",
         "@material-ui/pickers": "3.2.10",
         "@material-ui/styles": "4.11.3",
+        "bootstrap": "4.6.0",
         "connected-react-router": "6.8.0",
         "history": "4.10.1",
         "i18next": "19.8.7",
