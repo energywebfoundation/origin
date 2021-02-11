@@ -39,7 +39,6 @@
         "@energyweb/exchange-io-erc1888": "1.0.0",
         "@energyweb/exchange-irec": "1.0.0",
         "@energyweb/issuer-api": "0.1.2",
-        "@energyweb/migrations": "3.2.2",
         "@energyweb/origin-backend": "9.0.2",
         "@energyweb/origin-backend-core": "7.0.1",
         "@energyweb/origin-backend-utils": "1.4.0",

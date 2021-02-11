@@ -32,9 +32,11 @@
         "ts-node": "9.1.1",
         "typescript": "4.1.3",
         "typescript-json-schema": "0.48.0",
-        "wait-on": "5.2.1"
+        "wait-on": "5.2.1",
+        "depcheck": "1.2.0"
     },
     "scripts": {
+        "depcheck": "lerna exec \"depcheck --skip-missing\" --stream --concurrency 1 --no-bail",
         "build": "yarn build:static && yarn build:ts && lerna run build --scope @energyweb/origin-ui --stream",
         "build:ui": "lerna run build --scope @energyweb/origin-ui --stream",
         "build:ui-core": "lerna run build --scope @energyweb/origin-ui-core --stream",

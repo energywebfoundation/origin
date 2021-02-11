@@ -48,7 +48,6 @@
         "ethers": "5.0.29",
         "mocha": "8.2.1",
         "moment": "2.29.1",
-        "polly-js": "1.8.0",
         "precise-proofs-js": "1.2.0",
         "winston": "3.3.3"
     },

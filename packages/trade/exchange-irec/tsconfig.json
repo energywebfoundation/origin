@@ -14,16 +14,10 @@
             "path": "../exchange-core/tsconfig.json"
         },
         {
-            "path": "../exchange-token-account/tsconfig.json"
-        },
-        {
             "path": "../../utils/utils-general/tsconfig.json"
         },
         {
             "path": "../../origin-backend-core/tsconfig.json"
-        },
-        {
-            "path": "../../traceability/issuer/tsconfig.json"
         },
         {
             "path": "../exchange/tsconfig.json"

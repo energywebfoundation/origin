@@ -33,7 +33,6 @@
         "@energyweb/origin-backend-core": "7.0.1",
         "@energyweb/origin-backend": "9.0.2",
         "@energyweb/origin-backend-utils": "1.4.0",
-        "@energyweb/origin-device-registry-api": "0.0.1",
         "@nestjs/common": "7.6.11",
         "@nestjs/config": "0.6.3",
         "@nestjs/core": "7.6.11",

@@ -14,10 +14,10 @@
             "path": "../../origin-backend-core/tsconfig.json"
         },
         {
-            "path": "../../utils/origin-backend-utils/tsconfig.json"
+            "path": "../../origin-backend/tsconfig.json"
         },
         {
-            "path": "../origin-device-registry-api/tsconfig.json"
+            "path": "../../utils/origin-backend-utils/tsconfig.json"
         }
     ]
 }
