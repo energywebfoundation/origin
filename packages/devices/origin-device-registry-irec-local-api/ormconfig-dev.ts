@@ -28,7 +28,8 @@ const config: ConnectionOptions = {
     migrationsTableName: 'migrations_device_registry_irec_local',
     cli: {
         migrationsDir: 'migrations'
-    }
+    },
+    logging: true
 };
 
 export = config;
