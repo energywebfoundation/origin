@@ -5,7 +5,7 @@ const initialState: ISupplyState = {
     supplies: null
 };
 
-export function supplyState<T>(
+export function supplyState(
     state: ISupplyState = initialState,
     { type, payload }: ISupplyAction
 ): ISupplyState {
