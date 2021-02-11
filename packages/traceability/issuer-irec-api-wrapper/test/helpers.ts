@@ -60,7 +60,9 @@ export function validateOrganization(org: any): void {
     expect(org.vatNum).to.be.a('string');
     expect(org.regAddress).to.be.a('string');
     expect(org.country).to.be.a('string');
-    expect(org.roles).to.be.a('string');
+    expect(org.roles).to.be.an('array');
+    org.roles.forEach((role: any) => expect(role).to.be.a('string'));
+    expect(org.roles).to.be.an('array');
 }
 
 export function validateCodeName(org: any): void {
