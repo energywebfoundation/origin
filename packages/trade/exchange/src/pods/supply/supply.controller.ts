@@ -25,14 +25,16 @@ import {
     ValidationPipe
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { ApiResponse } from '@nestjs/swagger';
+import { ApiResponse, ApiTags, ApiBearerAuth } from '@nestjs/swagger';
 
 import { CreateSupplyDto } from './dto/create-supply.dto';
 import { UpdateSupplyDto } from './dto/update-supply.dto';
 import { DeviceAlreadyUsedError } from './errors/device-already-used.error';
-import { Supply } from './supply.entity';
 import { SupplyService } from './supply.service';
+import { SupplyDto } from './dto/supply.dto';
 
+@ApiTags('supply')
+@ApiBearerAuth('access-token')
 @Controller('supply')
 @UseInterceptors(ClassSerializerInterceptor, NullOrUndefinedResultInterceptor)
 @UsePipes(ValidationPipe)
@@ -41,12 +43,16 @@ export class SupplyController {
 
     @Post()
     @UseGuards(AuthGuard(), ActiveUserGuard, RolesGuard)
-    @ApiResponse({ status: HttpStatus.OK, type: [Supply], description: 'Returns device supply id' })
+    @ApiResponse({
+        status: HttpStatus.OK,
+        type: [SupplyDto],
+        description: 'Returns device supply id'
+    })
     @Roles(Role.OrganizationAdmin, Role.OrganizationDeviceManager)
     public async create(
         @UserDecorator() { ownerId }: ILoggedInUser,
         @Body() createSupplyDto: CreateSupplyDto
-    ): Promise<Supply> {
+    ): Promise<SupplyDto> {
         try {
             const supply = await this.supplyService.create(ownerId, createSupplyDto);
             return supply;
@@ -62,11 +68,11 @@ export class SupplyController {
     @UseGuards(AuthGuard(), ActiveUserGuard, RolesGuard)
     @ApiResponse({
         status: HttpStatus.OK,
-        type: [Supply],
+        type: [SupplyDto],
         description: 'Returns all device supply settings'
     })
     @Roles(Role.OrganizationAdmin, Role.OrganizationDeviceManager)
-    public findAll(@UserDecorator() { ownerId }: ILoggedInUser): Promise<Supply[]> {
+    public findAll(@UserDecorator() { ownerId }: ILoggedInUser): Promise<SupplyDto[]> {
         return this.supplyService.findAll(ownerId);
     }
 
@@ -74,14 +80,14 @@ export class SupplyController {
     @UseGuards(AuthGuard(), ActiveUserGuard, RolesGuard)
     @ApiResponse({
         status: HttpStatus.OK,
-        type: [Supply],
+        type: [SupplyDto],
         description: 'Returns device supply settings'
     })
     @Roles(Role.OrganizationAdmin, Role.OrganizationDeviceManager)
     public findOne(
         @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
         @UserDecorator() { ownerId }: ILoggedInUser
-    ): Promise<Supply> {
+    ): Promise<SupplyDto> {
         return this.supplyService.findOne(ownerId, id);
     }
 
@@ -89,7 +95,7 @@ export class SupplyController {
     @UseGuards(AuthGuard(), ActiveUserGuard, RolesGuard)
     @ApiResponse({
         status: HttpStatus.OK,
-        type: [Supply],
+        type: [SupplyDto],
         description: 'Returns device supply settings'
     })
     @Roles(Role.OrganizationAdmin, Role.OrganizationDeviceManager)
@@ -97,7 +103,7 @@ export class SupplyController {
         @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
         @UserDecorator() { ownerId }: ILoggedInUser,
         @Body() updateSupplyDto: UpdateSupplyDto
-    ): Promise<Supply> {
+    ): Promise<SupplyDto> {
         return this.supplyService.update(ownerId, id, updateSupplyDto);
     }
 
@@ -110,11 +116,12 @@ export class SupplyController {
     public async remove(
         @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
         @UserDecorator() { ownerId }: ILoggedInUser
-    ): Promise<void> {
+    ): Promise<boolean> {
         const result = await this.supplyService.remove(ownerId, id);
 
         if (!result) {
             throw new NotFoundException();
         }
+        return true;
     }
 }

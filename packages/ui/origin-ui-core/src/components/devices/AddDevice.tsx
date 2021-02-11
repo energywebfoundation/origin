@@ -179,8 +179,7 @@ export function AddDevice() {
                 images: JSON.stringify(imagesUploadedList),
                 files: JSON.stringify(uploadedDocFiles.filenames),
                 externalDeviceIds,
-                gridOperator: (selectedGridOperator && selectedGridOperator[0]) || '',
-                automaticPostForSale: false
+                gridOperator: (selectedGridOperator && selectedGridOperator[0]) || ''
             })
         );
         formikActions.setSubmitting(false);

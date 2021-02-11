@@ -29,6 +29,7 @@
         "@energyweb/origin-backend-core": "7.0.1",
         "@energyweb/origin-ui-core": "1.12.0",
         "@energyweb/utils-general": "11.0.0",
+        "@energyweb/origin-device-registry-irec-form-api-client": "1.0.1-alpha.12009.0",
         "@material-ui/core": "4.11.3",
         "@material-ui/icons": "4.11.2",
         "@material-ui/lab": "4.0.0-alpha.57",

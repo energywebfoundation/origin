@@ -1259,6 +1259,13 @@
     ethers "5.0.15"
     precise-proofs-js "1.2.0"
 
+"@energyweb/origin-device-registry-irec-form-api-client@1.0.1-alpha.12009.0":
+  version "1.0.1-alpha.12009.0"
+  resolved "https://registry.yarnpkg.com/@energyweb/origin-device-registry-irec-form-api-client/-/origin-device-registry-irec-form-api-client-1.0.1-alpha.12009.0.tgz#58f61514f2e4257034e7e7800cbe9876403076b6"
+  integrity sha512-uamePwPp2O8VqMFW3/paQvzVC5MoUq7cchoYBG1sG8wsG7mSB4fMB9QuFjzO1Of3RCwkhGTKB/3hx1Nof69FSw==
+  dependencies:
+    axios "0.21.1"
+
 "@energyweb/utils-general@10.0.0":
   version "10.0.0"
   resolved "https://registry.yarnpkg.com/@energyweb/utils-general/-/utils-general-10.0.0.tgz#27c82e849e44806fd1baea806a405daf25b2c31c"
