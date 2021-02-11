@@ -1,0 +1,54 @@
+{
+    "name": "@energyweb/migrations-irec",
+    "description": "Migrations for deploying the Origin SDK smart contracts for I-REC API integration",
+    "license": "GPL-3.0-or-later",
+    "author": "",
+    "homepage": "https://github.com/energywebfoundation/origin/tree/master/packages/migrations-irec#readme",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/energywebfoundation/origin.git"
+    },
+    "bugs": {
+        "url": "https://github.com/energywebfoundation/origin/issues"
+    },
+    "version": "1.0.0",
+    "main": "dist/js/src/main.js",
+    "bin": {
+        "origin-migrations": "./bin/migrations"
+    },
+    "scripts": {
+        "build": "yarn build:ts",
+        "build:ts": "tsc -b tsconfig.json",
+        "start": "ts-node src/main.ts",
+        "start:defaultConfigs": "yarn start -c ./config/demo-config.json -s ./config/seed.sql -e ../../../.env",
+        "start-all": "concurrently --restart-tries 3 --restart-after 1500 -n eth,deploy \"yarn start-ganache\" \"wait-on tcp:8553 && yarn start:redeploy\"",
+        "start-ganache": "ganache-cli -q -m \"chalk park staff buzz chair purchase wise oak receive avoid avoid home\" -l 8000000 -e 1000000 -a 40 -h 0.0.0.0 -p 8553",
+        "prettier": "prettier --write --config-precedence file-override './src/**/*'",
+        "clean": "shx rm -rf dist",
+        "deploy:container:heroku:canary": "make build-canary push-heroku-canary",
+        "deploy:container:heroku:stable": "make build-stable push-heroku-stable"
+    },
+    "types": "dist/js/index.d.ts",
+    "dependencies": {
+        "@energyweb/issuer": "3.0.1",
+        "@energyweb/origin-backend-core": "7.0.1",
+        "@energyweb/utils-general": "11.0.0",
+        "@types/pg": "7.14.9",
+        "commander": "^6.0.0",
+        "dotenv": "8.2.0",
+        "ethers": "5.0.29",
+        "pg": "8.5.1",
+        "winston": "3.3.3",
+        "write-json-file": "4.3.0",
+        "yaeti": "1.0.2"
+    },
+    "publishConfig": {
+        "access": "public",
+        "registry": "https://registry.npmjs.org"
+    },
+    "files": [
+        "bin",
+        "dist/js/src"
+    ],
+    "private": true
+}
