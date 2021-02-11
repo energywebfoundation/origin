@@ -19,15 +19,15 @@ import {
     checkRecordPassesFilters,
     getCurrencies
 } from '@energyweb/origin-ui-core';
-import { UpdateSupplyModal, RemoveSupplyConfirmation } from '../components/modal';
 import { getEnvironment } from '../features/general';
-import { IDeviceWithSupply, ISupplyTableRecord } from '../types';
 import { getSupplies, fetchSupplies } from '../features/supply';
+import { IDeviceWithSupply, ISupplyTableRecord } from '../types';
+import { UpdateSupplyModal, RemoveSupplyConfirmation } from '../components/modal';
 
-export const KeyStatus = {
-    Active: 'Active',
-    Paused: 'Paused'
-};
+export enum SupplyStatus {
+    Active = 'Active',
+    Paused = 'Paused'
+}
 
 export function SupplyTable() {
     const backendClient = useSelector(getBackendClient);
@@ -68,14 +68,24 @@ export function SupplyTable() {
             );
             if (matchingSupply) {
                 return {
-                    ...device,
+                    facilityName: device.facilityName,
+                    deviceType: device.deviceType,
+                    toBeCertified: device.meterStats?.uncertified,
+                    externalDeviceIds: device.externalDeviceIds,
                     active: matchingSupply.active,
                     price: matchingSupply.price,
                     supplyId: matchingSupply.id,
                     supplyCreated: true
                 };
             } else {
-                return { ...device, supplyCreated: false };
+                return {
+                    facilityName: device.facilityName,
+                    deviceType: device.deviceType,
+                    toBeCertified: device.meterStats?.uncertified,
+                    price: 0,
+                    externalDeviceIds: device.externalDeviceIds,
+                    supplyCreated: false
+                };
             }
         });
         entities = devicesEnrichedWithSupply;
@@ -133,13 +143,11 @@ export function SupplyTable() {
 
     const rows = paginatedData.map(({ device }) => {
         return {
-            type: device.deviceType?.replace(new RegExp(';', 'g'), ' - ') ?? '-',
+            type: device.deviceType.replace(new RegExp(';', 'g'), ' - ') ?? '-',
             facility: device.facilityName,
             price: formatCurrencyComplete(device.price || 0 / 100, defaultCurrency),
-            status: device.active ? KeyStatus.Active : KeyStatus.Paused,
-            certified: EnergyFormatter.format(
-                BigNumber.from(device.meterStats?.uncertified ?? 0).toNumber()
-            )
+            status: device.active ? SupplyStatus.Active : SupplyStatus.Paused,
+            certified: EnergyFormatter.format(BigNumber.from(device.toBeCertified ?? 0).toNumber())
         };
     });
 
@@ -147,8 +155,7 @@ export function SupplyTable() {
         const { device } = paginatedData[index];
         setEntity({
             ...device,
-            deviceType: device.deviceType?.replace(new RegExp(';', 'g'), ' - ') ?? '-',
-            defaultAskPrice: device.defaultAskPrice / 100
+            deviceType: device.deviceType?.replace(new RegExp(';', 'g'), ' - ') ?? '-'
         });
         setShowModal(true);
     };
@@ -171,11 +178,6 @@ export function SupplyTable() {
         }
     ];
 
-    const STATUS_OPTIONS = Object.keys(KeyStatus).map((key) => ({
-        value: KeyStatus[key],
-        label: key.toString()
-    }));
-
     const filters: ICustomFilterDefinition[] = [
         {
             property: (device: IDeviceWithSupply) => device.facilityName.toString(),
@@ -186,11 +188,14 @@ export function SupplyTable() {
         },
         {
             property: (device: IDeviceWithSupply) =>
-                device.active ? KeyStatus.Active : KeyStatus.Paused,
+                device.active ? SupplyStatus.Active : SupplyStatus.Paused,
             label: t('exchange.supply.status'),
             input: {
                 type: CustomFilterInputType.dropdown,
-                availableOptions: STATUS_OPTIONS
+                availableOptions: Object.values(SupplyStatus).map((value) => ({
+                    value,
+                    label: value
+                }))
             }
         }
     ];
@@ -215,12 +220,14 @@ export function SupplyTable() {
                 actions={actions}
                 filters={filters}
             />
-            <UpdateSupplyModal
-                showModal={showUpdateModal}
-                setShowModal={setShowModal}
-                entity={entity}
-                setEntity={setEntity}
-            />
+            {entity && (
+                <UpdateSupplyModal
+                    showModal={showUpdateModal}
+                    setShowModal={setShowModal}
+                    entity={entity}
+                    setEntity={setEntity}
+                />
+            )}
             {supplyToRemove && (
                 <RemoveSupplyConfirmation device={supplyToRemove} close={() => setToRemove(null)} />
             )}

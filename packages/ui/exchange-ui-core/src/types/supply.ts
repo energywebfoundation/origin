@@ -1,7 +1,13 @@
-import { SupplyDto, UpdateSupplyDto } from '@energyweb/exchange-client';
-import { IDevice } from '@energyweb/origin-backend-core';
+import { UpdateSupplyDto } from '@energyweb/exchange-client';
+import { IExternalDeviceId } from '@energyweb/origin-backend-core';
 
-export interface IDeviceWithSupply extends IDevice, Partial<Pick<SupplyDto, 'active' | 'price'>> {
+export interface IDeviceWithSupply {
+    facilityName: string;
+    deviceType: string;
+    toBeCertified: string;
+    externalDeviceIds: IExternalDeviceId[];
+    price: number;
+    active?: boolean;
     supplyId?: string;
     supplyCreated: boolean;
 }

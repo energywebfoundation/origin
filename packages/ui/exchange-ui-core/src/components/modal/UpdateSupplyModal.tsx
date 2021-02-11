@@ -11,9 +11,9 @@ import {
 } from '@material-ui/core';
 import { useTranslation } from '@energyweb/origin-ui-core';
 import { getEnvironment } from '../../features/general';
-import { IDeviceWithSupply } from '../../types';
-import { KeyStatus } from '../../containers/SupplyTable';
 import { createSupply, updateSupply } from '../../features/supply';
+import { IDeviceWithSupply } from '../../types';
+import { SupplyStatus } from '../../containers/SupplyTable';
 
 interface IProps {
     showModal: boolean;
@@ -48,7 +48,7 @@ export function UpdateSupplyModal(props: IProps) {
             <DialogContent>
                 <TextField
                     label={t('exchange.supply.type')}
-                    value={entity?.deviceType}
+                    value={entity.deviceType}
                     className="mt-4"
                     disabled={true}
                     fullWidth
@@ -56,7 +56,7 @@ export function UpdateSupplyModal(props: IProps) {
 
                 <TextField
                     label={t('exchange.supply.facility')}
-                    value={entity?.facilityName}
+                    value={entity.facilityName}
                     className="mt-4"
                     disabled={true}
                     fullWidth
@@ -64,7 +64,7 @@ export function UpdateSupplyModal(props: IProps) {
 
                 <TextField
                     label={t('exchange.supply.price')}
-                    value={entity?.price || 0}
+                    value={entity.price || 0}
                     className="mt-4"
                     type="number"
                     onChange={(e) =>
@@ -78,26 +78,26 @@ export function UpdateSupplyModal(props: IProps) {
 
                 <TextField
                     label={t('exchange.supply.status')}
-                    value={entity?.active ? KeyStatus.Active : KeyStatus.Paused}
+                    value={entity.active ? SupplyStatus.Active : SupplyStatus.Paused}
                     className="mt-4"
                     fullWidth
                     onChange={(e) =>
                         setEntity({
                             ...entity,
-                            active: e.target.value === KeyStatus.Active
+                            active: e.target.value === SupplyStatus.Active
                         })
                     }
                     select
                 >
-                    <MenuItem value={KeyStatus.Active}>{t('exchange.supply.active')}</MenuItem>
-                    <MenuItem value={KeyStatus.Paused}>{t('exchange.supply.paused')}</MenuItem>
+                    <MenuItem value={SupplyStatus.Active}>{t('exchange.supply.active')}</MenuItem>
+                    <MenuItem value={SupplyStatus.Paused}>{t('exchange.supply.paused')}</MenuItem>
                 </TextField>
             </DialogContent>
             <DialogActions>
                 <Button onClick={() => setShowModal(false)} color="secondary">
                     {t('exchange.supply.cancel')}
                 </Button>
-                <Button onClick={requestAutoSupply} color="primary">
+                <Button onClick={requestAutoSupply} disabled={entity.price < 1} color="primary">
                     {t('exchange.supply.update')}
                 </Button>
             </DialogActions>
