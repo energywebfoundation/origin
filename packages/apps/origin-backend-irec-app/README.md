@@ -4,15 +4,15 @@
   <br>
   EnergyWeb Origin
   <br>
-  <h2 align="center">Origin-Backend-App</h2>
+  <h2 align="center">Origin-Backend-IREC-App</h2>
   <br>
 </h1>
 
-**Origin-Backend-App** package provides is a runner for a nest.js application that consist of **Origin-Backend** and **Exchange** packages.
+**Origin-Backend-IREC-App** package provides is a runner for a nest.js application that consist of **Origin-Backend** and **Exchange** packages.
 
 ## Development
 
-Exchange project is currently not meant to be run as a separate nest application. In order to run exchange project please refer to https://github.com/energywebfoundation/origin/tree/master/packages/origin-backend-app
+Exchange project is currently not meant to be run as a separate nest application. In order to run exchange project please refer to https://github.com/energywebfoundation/origin/tree/master/packages/origin-backend-irec-app
 
 `yarn start` to start the origin backend and exchange as one application Note: this will not run the migrations for origin-backend and exchange.
 
