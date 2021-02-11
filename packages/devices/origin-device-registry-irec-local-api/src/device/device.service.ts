@@ -7,6 +7,8 @@ import { FindManyOptions, Repository } from 'typeorm';
 import { Device } from './device.entity';
 import { CreateDeviceDTO } from './dto/create-device.dto';
 import { DeviceStatusChangedEvent, DeviceCreatedEvent } from './events';
+import { IREC_FUEL_TYPES, IREC_FUELS } from './Fuels';
+import { CodeNameDTO } from './dto';
 
 @Injectable()
 export class DeviceService {
@@ -51,5 +53,13 @@ export class DeviceService {
         this.eventBus.publish(new DeviceStatusChangedEvent(device, status));
 
         return this.findOne(id);
+    }
+
+    getDeviceTypes(): CodeNameDTO[] {
+        return IREC_FUELS;
+    }
+
+    getFuelTypes(): CodeNameDTO[] {
+        return IREC_FUEL_TYPES;
     }
 }

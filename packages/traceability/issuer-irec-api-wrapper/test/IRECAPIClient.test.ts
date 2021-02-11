@@ -16,8 +16,8 @@ import {
 import { credentials, getClient, validateCodeName, validateOrganization } from './helpers';
 
 describe('IREC API', () => {
-    let client: IRECAPIClient;
     let participantClient: IRECAPIClient;
+    let issuerClient: IRECAPIClient;
     let registrantClient: IRECAPIClient;
 
     const tradeAccount = 'ACCOUNTTRADE001';
@@ -26,6 +26,7 @@ describe('IREC API', () => {
 
     before(async () => {
         participantClient = await getClient(credentials.participant);
+        issuerClient = await getClient(credentials.issuer);
         registrantClient = await getClient(credentials.registrant);
     });
 
@@ -49,15 +50,15 @@ describe('IREC API', () => {
         });
 
         it('should fetch balance by code', async () => {
-            const [firstAccount] = await client.account.getAll();
-            const [accountBalance] = await client.account.getBalance(firstAccount.code);
+            const [firstAccount] = await participantClient.account.getAll();
+            const [accountBalance] = await participantClient.account.getBalance(firstAccount.code);
 
             expect(accountBalance.code).to.equal(firstAccount.code);
             expect(accountBalance.product).to.be.instanceOf(Product);
         });
 
         it('should fetch items by code', async () => {
-            const [accountItem] = await client.account.getItems(tradeAccount);
+            const [accountItem] = await participantClient.account.getItems(tradeAccount);
 
             expect(accountItem).to.exist;
             expect(accountItem.items).to.exist;
@@ -73,22 +74,22 @@ describe('IREC API', () => {
         });
 
         it('should fetch transactions', async () => {
-            const transactions = await client.account.getTransactions(tradeAccount);
+            const transactions = await participantClient.account.getTransactions(tradeAccount);
 
             expect(transactions).to.exist;
         });
     });
 
     it('should be able to request certificate', async () => {
-        const [accountItem] = await client.account.getItems(tradeAccount);
+        const [accountItem] = await participantClient.account.getItems(tradeAccount);
 
         const [lastItem] = accountItem.items.sort(
             (a, b) => b.asset.end.getTime() - a.asset.end.getTime()
         );
 
-        const beforeTransactions = await client.account.getTransactions(tradeAccount);
+        const beforeTransactions = await participantClient.account.getTransactions(tradeAccount);
 
-        const code = await client.issue.create({
+        const code = await registrantClient.issue.create({
             device: 'DEVICE001',
             recipient: tradeAccount,
             start: moment(lastItem.asset.end).add(1, 'day').toDate(),
@@ -97,21 +98,21 @@ describe('IREC API', () => {
             fuel: 'ES200'
         });
 
-        await client.issue.submit(code, 'Note');
-        await client.issue.verify(code, 'Note');
+        await participantClient.issue.submit(code, 'Note');
+        await participantClient.issue.verify(code, 'Note');
 
         const approval = new ApproveIssue();
         approval.issuer = issueAccount;
 
-        await client.issue.approve(code, approval);
+        await participantClient.issue.approve(code, approval);
 
-        const afterTransactions = await client.account.getTransactions(tradeAccount);
+        const afterTransactions = await registrantClient.account.getTransactions(tradeAccount);
 
         expect(afterTransactions).to.has.lengthOf(beforeTransactions.length + 1);
     });
 
     it('should be able to redeem the certificate', async () => {
-        const [account] = await client.account.getItems(tradeAccount);
+        const [account] = await participantClient.account.getItems(tradeAccount);
         const [newestItem] = account.items;
 
         const reservationItem = new ReservationItem();
@@ -128,17 +129,17 @@ describe('IREC API', () => {
         redemption.recipient = redemptionAccount;
         redemption.approver = process.env.IREC_API_LOGIN;
 
-        await client.redeem(redemption);
+        await participantClient.redeem(redemption);
     });
 
     it('should be able to upload pdf evidence file', async () => {
         const file = fs.createReadStream(`${__dirname}/file-sample_150kB.pdf`);
 
-        const [fileId] = await client.file.upload([file]);
+        const [fileId] = await registrantClient.file.upload([file]);
 
         expect(fileId).to.exist;
 
-        const url = await client.file.download(fileId);
+        const url = await registrantClient.file.download(fileId);
 
         expect(url).to.exist;
     });
@@ -150,7 +151,7 @@ describe('IREC API', () => {
         });
 
         it('should return registrant organizations', async () => {
-            const org: unknown[] = await registrantClient.organisation.getRegistrants();
+            const org: unknown[] = await issuerClient.organisation.getRegistrants();
             org.forEach(validateCodeName);
         });
 

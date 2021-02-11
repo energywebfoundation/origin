@@ -68,7 +68,7 @@ describe('Device e2e tests', () => {
             .set({ 'test-user': TestUser.OrganizationAdmin });
 
         await test
-            .put(`/irec/device-registry/${body.id}`)
+            .put(`/irec/device-registry/device/${body.id}`)
             .send({ status: DeviceStatus.Active })
             .set({ 'test-user': TestUser.OrganizationAdmin })
             .expect(HttpStatus.FORBIDDEN);
@@ -89,7 +89,7 @@ describe('Device e2e tests', () => {
             .set({ 'test-user': TestUser.OrganizationAdmin });
 
         await test
-            .put(`/irec/device-registry/${body.id}`)
+            .put(`/irec/device-registry/device/${body.id}`)
             .send({ status: DeviceStatus.Active })
             .set({ 'test-user': TestUser.PlatformAdmin })
             .expect(HttpStatus.OK);
@@ -101,11 +101,39 @@ describe('Device e2e tests', () => {
             .send(exampleDevice)
             .set({ 'test-user': TestUser.OrganizationAdmin });
 
-        await test.get(`/irec/device-registry/${body.id}`).expect((res) => {
-            const device = res.body as PublicDeviceDTO;
+        const { body: device }: { body: PublicDeviceDTO } = await test.get(
+            `/irec/device-registry/device/${body.id}`
+        );
+        expect((device as any).defaultAccount).to.be.undefined;
+        expect(device.name).to.not.be.undefined;
 
-            expect((device as any).defaultAccount).to.be.undefined;
-            expect(device.name).to.not.be.undefined;
+        const { body: devices }: { body: PublicDeviceDTO[] } = await test.get(
+            `/irec/device-registry`
+        );
+
+        expect(devices).to.have.lengthOf(1);
+        expect(devices[0]).to.deep.equal(device);
+    });
+
+    it('should return irec device types', async () => {
+        const { body: fuels } = await test.get('/irec/device-registry/device-type');
+
+        expect(fuels).to.be.an('array');
+        fuels.forEach((fuel: any) => {
+            expect(fuel).to.be.an('object');
+            expect(fuel.code).to.be.a('string');
+            expect(fuel.name).to.be.a('string');
+        });
+    });
+
+    it('should return irec fuels types', async () => {
+        const { body: fuelTypes } = await test.get('/irec/device-registry/fuel-type');
+
+        expect(fuelTypes).to.be.an('array');
+        fuelTypes.forEach((fuelType: any) => {
+            expect(fuelType).to.be.an('object');
+            expect(fuelType.code).to.be.a('string');
+            expect(fuelType.name).to.be.a('string');
         });
     });
 });

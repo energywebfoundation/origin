@@ -1,4 +1,4 @@
-import { Transform, Type, Expose } from 'class-transformer';
+import { Expose, Transform } from 'class-transformer';
 import moment from 'moment-timezone';
 import { IsNotEmpty, IsString } from 'class-validator';
 
@@ -37,17 +37,14 @@ export class Item {
 
     volume: number;
 
-    @Type(() => Asset)
     asset: Asset;
 
-    @Type(() => Product)
     product: Product;
 }
 
 export class AccountItem {
     code: string;
 
-    @Type(() => Item)
     items: Item[];
 }
 
