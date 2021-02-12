@@ -3,6 +3,27 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [10.0.2](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-backend-client@10.0.1...@energyweb/origin-backend-client@10.0.2) (2021-02-12)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @nestjs/swagger to v4.7.11 ([90a5a0f](https://github.com/energywebfoundation/origin/commit/90a5a0fe978476f56713471352c255ab70b16676))
+* **deps:** update dependency @nestjs/swagger to v4.7.12 ([990033f](https://github.com/energywebfoundation/origin/commit/990033f3bf6dafbb055a203e1ce4eb7ab58cdbfa))
+* **deps:** update dependency @nestjs/swagger to v4.7.8 ([ee20067](https://github.com/energywebfoundation/origin/commit/ee20067ed8fe387d1c5d64986cfb005ec234d28e))
+* **deps:** update dependency @nestjs/swagger to v4.7.9 ([a1d5023](https://github.com/energywebfoundation/origin/commit/a1d5023882b0547583a057b6aab6c4fd6cea8064))
+* **deps:** update dependency @nestjs/typeorm to v7.1.5 ([2ebd4a6](https://github.com/energywebfoundation/origin/commit/2ebd4a6250e3bb8f81d058f0881eaf9b07667f30))
+* **deps:** update dependency axios to v0.21.1 ([8c14cbe](https://github.com/energywebfoundation/origin/commit/8c14cbe3954973f648a07b34a177e20fe2394638))
+* **deps:** update nest monorepo to v7.6.11 ([daee156](https://github.com/energywebfoundation/origin/commit/daee156b9c315c527311f0c78ffbdf4226b6785a))
+* **deps:** update nest monorepo to v7.6.4 ([97c8e99](https://github.com/energywebfoundation/origin/commit/97c8e992cd0380aec4e10f8427f421feba2ca6e4))
+* **deps:** update nest monorepo to v7.6.5 ([614ba6a](https://github.com/energywebfoundation/origin/commit/614ba6af649b0d10e3708940321e3d7c956f717a))
+* **deps:** update nest monorepo to v7.6.7 ([18630b7](https://github.com/energywebfoundation/origin/commit/18630b7b6b59079786b4b4499696a177f3e2c997))
+* **origin-backend-client:** fix file upload regression ([839b75a](https://github.com/energywebfoundation/origin/commit/839b75a09b576c955839039a2ea731a177a3e9a2))
+
+
+
+
+
 ## [10.0.1](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-backend-client@10.0.0...@energyweb/origin-backend-client@10.0.1) (2020-12-04)
 
 **Note:** Version bump only for package @energyweb/origin-backend-client

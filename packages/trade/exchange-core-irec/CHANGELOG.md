@@ -8,5 +8,5 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 ### Bug Fixes
 
-* **deps:** update dependency @nestjs/config to v0.6.3 ([4991dfb](https://github.com/energywebfoundation/origin/commit/4991dfb918ce7efb6d0a8bd72a011c825b3aec46))
 * **deps:** update nest monorepo to v7.6.11 ([daee156](https://github.com/energywebfoundation/origin/commit/daee156b9c315c527311f0c78ffbdf4226b6785a))
+* **exchange-core-irec:** match if gen time is included in requested product ([c869e35](https://github.com/energywebfoundation/origin/commit/c869e35b550c88f2ff53ee94ee98a5b40f4dce5f))
