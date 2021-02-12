@@ -3,6 +3,54 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [10.0.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-backend@9.0.2...@energyweb/origin-backend@10.0.0) (2021-02-12)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @nestjs/config to v0.6.1 ([19db13c](https://github.com/energywebfoundation/origin/commit/19db13ca5afccc12f19a0c7b66f9fd104714ff84))
+* **deps:** update dependency @nestjs/passport to v7.1.5 ([8e5df18](https://github.com/energywebfoundation/origin/commit/8e5df18bf802ce34f00dbb01f1dce96f4428c692))
+* **deps:** update dependency @nestjs/swagger to v4.7.11 ([90a5a0f](https://github.com/energywebfoundation/origin/commit/90a5a0fe978476f56713471352c255ab70b16676))
+* **deps:** update dependency @nestjs/swagger to v4.7.12 ([990033f](https://github.com/energywebfoundation/origin/commit/990033f3bf6dafbb055a203e1ce4eb7ab58cdbfa))
+* **deps:** update dependency @nestjs/swagger to v4.7.8 ([ee20067](https://github.com/energywebfoundation/origin/commit/ee20067ed8fe387d1c5d64986cfb005ec234d28e))
+* **deps:** update dependency @nestjs/swagger to v4.7.9 ([a1d5023](https://github.com/energywebfoundation/origin/commit/a1d5023882b0547583a057b6aab6c4fd6cea8064))
+* **deps:** update dependency @nestjs/typeorm to v7.1.5 ([2ebd4a6](https://github.com/energywebfoundation/origin/commit/2ebd4a6250e3bb8f81d058f0881eaf9b07667f30))
+* **deps:** update dependency class-validator to v0.13.1 ([d10cdae](https://github.com/energywebfoundation/origin/commit/d10cdae069ad8cdafe5c6ad5984efd65af040cbd))
+* **deps:** update dependency ethers to v5.0.27 ([4a152d8](https://github.com/energywebfoundation/origin/commit/4a152d83e97f9e0b08ef38071a619005e27d5b7b))
+* **deps:** update dependency ethers to v5.0.29 ([149041b](https://github.com/energywebfoundation/origin/commit/149041b4ca3648f1decf9e1acb5f7bb5d6fd721a))
+* **deps:** update dependency typeorm to v0.2.30 ([7d1311b](https://github.com/energywebfoundation/origin/commit/7d1311b2e5a5721d220ff9bbf0ca86fb63e02148))
+* **deps:** update dependency uuid to v8.3.2 ([6f05397](https://github.com/energywebfoundation/origin/commit/6f053977786f96e5cdd15e6221eb8179536e9f02))
+* **deps:** update nest monorepo to v7.6.11 ([daee156](https://github.com/energywebfoundation/origin/commit/daee156b9c315c527311f0c78ffbdf4226b6785a))
+* **deps:** update nest monorepo to v7.6.4 ([97c8e99](https://github.com/energywebfoundation/origin/commit/97c8e992cd0380aec4e10f8427f421feba2ca6e4))
+* **deps:** update nest monorepo to v7.6.5 ([614ba6a](https://github.com/energywebfoundation/origin/commit/614ba6af649b0d10e3708940321e3d7c956f717a))
+* **deps:** update nest monorepo to v7.6.7 ([18630b7](https://github.com/energywebfoundation/origin/commit/18630b7b6b59079786b4b4499696a177f3e2c997))
+
+
+### chore
+
+* **origin-backend:** device management moved to separate package ([99ce6ef](https://github.com/energywebfoundation/origin/commit/99ce6efa7c75913f8a1e3e5497c35d91f6d90cf3))
+* **origin-backend:** remove Organization reference in Device entity ([670b5c0](https://github.com/energywebfoundation/origin/commit/670b5c0c4675ea1783da38f8ef5e307ced6c6593))
+
+
+### Features
+
+* **origin-backend:** Add new field to the File table with new migration file ([b96169f](https://github.com/energywebfoundation/origin/commit/b96169fcba53606f386fec991c6b5e1c14f66409))
+* **origin-backend:** added device created event ([a5cbfd6](https://github.com/energywebfoundation/origin/commit/a5cbfd65a374b907bcd76e86b4c24b1d0f1f66eb))
+* **origin-backend:** changed country type to iso 3166 aplpha 2 ([c65d107](https://github.com/energywebfoundation/origin/commit/c65d107f8c7b1acd7c4ee7787febb1414f960f23))
+* **origin-backend:** Implement download of public documents anonymously and upload of public documents by authenticated users ([fe195f2](https://github.com/energywebfoundation/origin/commit/fe195f250adfaa79f89dd69d068c585ebb8ccd42))
+* **origin-backend:** migration to change country type to iso 3166 alpha 2 string. BREAKING CHANGE ([fe47983](https://github.com/energywebfoundation/origin/commit/fe47983f48e4b04040c4795a8c1968ad73cf5a0d))
+* **origin-ui-core:** changed country type to iso 3166 alpha 2 ([de05f6a](https://github.com/energywebfoundation/origin/commit/de05f6a15a76838eec7744df9e8f005586a413a7))
+
+
+### BREAKING CHANGES
+
+* **origin-backend:** Device pod has been moved to @energyweb/origin-device-registry-irec-form-api
+* **origin-backend:** Organization not longer returned as a part of Device entity, GET /organization/:id/devices is not longer available
+
+
+
+
+
 ## [9.0.2](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-backend@9.0.1...@energyweb/origin-backend@9.0.2) (2020-12-04)
 
 **Note:** Version bump only for package @energyweb/origin-backend

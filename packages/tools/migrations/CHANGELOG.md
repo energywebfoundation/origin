@@ -3,6 +3,19 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.2.3](https://github.com/energywebfoundation/origin/compare/@energyweb/migrations@3.2.2...@energyweb/migrations@3.2.3) (2021-02-12)
+
+
+### Bug Fixes
+
+* migrations ([9f9ea84](https://github.com/energywebfoundation/origin/commit/9f9ea840dddd79c550c880aee62f5ae85297fc8f))
+* skip dockerhub push due to reliability issues ([7981387](https://github.com/energywebfoundation/origin/commit/798138790ff8db351364edc5b7759288d354d186))
+* **deps:** update dependency ethers to v5.0.29 ([149041b](https://github.com/energywebfoundation/origin/commit/149041b4ca3648f1decf9e1acb5f7bb5d6fd721a))
+
+
+
+
+
 ## [3.2.2](https://github.com/energywebfoundation/origin/compare/@energyweb/migrations@3.2.1...@energyweb/migrations@3.2.2) (2020-11-30)
 
 

@@ -3,6 +3,19 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.13.0](https://github.com/energywebfoundation/origin/compare/@energyweb/localization@0.12.0...@energyweb/localization@0.13.0) (2021-02-12)
+
+
+### Features
+
+* **localization:** code review fixes ([bdeb126](https://github.com/energywebfoundation/origin/commit/bdeb1263cd16b5acc85c0efbe22ab032a950d1e9))
+* **localization:** new certificate inbox page ([2f21de1](https://github.com/energywebfoundation/origin/commit/2f21de10730cb4799dde901e31c46346290caf68))
+* **localization:** new certificate inbox page ([64bb3e8](https://github.com/energywebfoundation/origin/commit/64bb3e86cd19effc506b6b985ab989d20e751321))
+
+
+
+
+
 # [0.12.0](https://github.com/energywebfoundation/origin/compare/@energyweb/localization@0.11.0...@energyweb/localization@0.12.0) (2020-12-04)
 
 

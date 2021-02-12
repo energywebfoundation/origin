@@ -3,6 +3,39 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.13.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-ui-core@1.12.0...@energyweb/origin-ui-core@1.13.0) (2021-02-12)
+
+
+### Bug Fixes
+
+* **deps:** update dependency ethers to v5.0.29 ([149041b](https://github.com/energywebfoundation/origin/commit/149041b4ca3648f1decf9e1acb5f7bb5d6fd721a))
+* **deps:** update dependency i18next to v19.8.7 ([6616021](https://github.com/energywebfoundation/origin/commit/6616021d005358d3998159c2066e9aaf22c9412e))
+* **deps:** update dependency moment-timezone to v0.5.33 ([54f255b](https://github.com/energywebfoundation/origin/commit/54f255bdd186827271d50c1aee2967f3c3e928a9))
+* **deps:** update dependency webpack to v5.21.2 ([16c5b14](https://github.com/energywebfoundation/origin/commit/16c5b147b0c278127ca38590771ff15d849b966a))
+* **deps:** update webpack ([f323b5b](https://github.com/energywebfoundation/origin/commit/f323b5babca7089944cea81e244f0da0c81ab28b))
+* **origin-ui-core:** inconsistent data fetch on exchange address creation ([0e130dd](https://github.com/energywebfoundation/origin/commit/0e130dd87f6e6828c7fd76b59420584ffb8a1786))
+* **origin-ui-core:** withdrawn total volume 0 ([f9648f5](https://github.com/energywebfoundation/origin/commit/f9648f513a6cedf09cad2c2e7eb087f42b4851f8))
+
+
+### Features
+
+* **origin-irec-organization-api:** added connection module ([09da211](https://github.com/energywebfoundation/origin/commit/09da2113acfb27d95dc442aadee6be2f36e257c8))
+* **origin-ui-core:** add clear button for multiselect filter ([6d93b95](https://github.com/energywebfoundation/origin/commit/6d93b95d1f44c5a9b9bb4093c6c9f95288172f19))
+* **origin-ui-core:** add clear button for table date filters ([8264d8d](https://github.com/energywebfoundation/origin/commit/8264d8dafb5ba0b62f6f7f17e47b47a9156e70ec))
+* **origin-ui-core:** code review bug fixes ([324982c](https://github.com/energywebfoundation/origin/commit/324982cb3b715214ad240557a82f46b7420deffd))
+* **origin-ui-core:** code review fixes ([45daa71](https://github.com/energywebfoundation/origin/commit/45daa711ad8dc11eed088d9976a55c6f2e251b10))
+* **origin-ui-core:** code review fixes ([a9be4c7](https://github.com/energywebfoundation/origin/commit/a9be4c73cd96898b0bcf42ec006d1373d0c417d3))
+* **origin-ui-core:** extend environment interface ([19e00a8](https://github.com/energywebfoundation/origin/commit/19e00a83e72fed7e7654d9002d6a509bb3a91e81))
+* **origin-ui-core:** inbox page refresh fix ([de37d3b](https://github.com/energywebfoundation/origin/commit/de37d3be4e4d8fa161126c4493ec7a6d56bdc1ac))
+* **origin-ui-core:** modal energy value fix ([01458cd](https://github.com/energywebfoundation/origin/commit/01458cd8868dd256250dbbb8a626dc3a5ad594c6))
+* **origin-ui-core:** new certificate inbox page ([328851a](https://github.com/energywebfoundation/origin/commit/328851af627809cd0ec45880c0f11bc8752b2772))
+* store the I-REC connection ([427761a](https://github.com/energywebfoundation/origin/commit/427761ac9eeb6c088c8c3f4275f1ed6287810c0e))
+* **origin-ui-core:** table filter multiselect ([a1a19f3](https://github.com/energywebfoundation/origin/commit/a1a19f3e7568eb538a40c275aad6b1394caccd03))
+
+
+
+
+
 # [1.12.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-ui-core@1.11.0...@energyweb/origin-ui-core@1.12.0) (2020-12-04)
 
 
