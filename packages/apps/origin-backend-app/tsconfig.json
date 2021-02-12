@@ -1,0 +1,39 @@
+{
+    "extends": "../../../tsconfig.json",
+    "compilerOptions": {
+        "composite": true,
+        "outDir": "./dist/js",
+        "emitDecoratorMetadata": true,
+        "experimentalDecorators": true
+    },
+    "include": ["src/**/*", "ormconfig.json"],
+    "references": [
+        {
+            "path": "../../origin-backend-core/tsconfig.json"
+        },
+        {
+            "path": "../../origin-backend/tsconfig.json"
+        },
+        {
+            "path": "../../trade/exchange/tsconfig.json"
+        },
+        {
+            "path": "../../trade/exchange-irec/tsconfig.json"
+        },
+        {
+            "path": "../../trade/exchange-io-erc1888/tsconfig.json"
+        },
+        {
+            "path": "../../organizations/origin-organization-irec-api/tsconfig.json"
+        },
+        {
+            "path": "../../utils/utils-general/tsconfig.json"
+        },
+        {
+            "path": "../../traceability/issuer-api/tsconfig.json"
+        },
+        {
+            "path": "../../devices/origin-device-registry-irec-form-api/tsconfig.json"
+        }
+    ]
+}

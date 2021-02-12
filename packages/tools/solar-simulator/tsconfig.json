@@ -1,0 +1,27 @@
+{
+    "extends": "../../../tsconfig.json",
+    "compilerOptions": {
+        "composite": true,
+        "rootDir": "./",
+        "outDir": "./dist/js",
+        "noImplicitAny": false
+    },
+    "include": ["./src/**/*", "./config/*.json"],
+    "references": [
+        {
+            "path": "../../origin-backend-core/tsconfig.json"
+        },
+        {
+            "path": "../../utils/utils-general/tsconfig.json"
+        },
+        {
+            "path": "../../device-registry/tsconfig.json"
+        },
+        {
+            "path": "../../origin-backend-client/tsconfig.json"
+        },
+        {
+            "path": "../../devices/origin-device-registry-irec-form-api-client/tsconfig.json"
+        }
+    ]
+}

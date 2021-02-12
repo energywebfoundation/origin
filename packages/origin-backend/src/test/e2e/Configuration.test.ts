@@ -23,7 +23,7 @@ describe('Configuration API tests', () => {
 
     before(async () => {
         const moduleRef = await Test.createTestingModule({
-            imports: [AppModule.register(null)]
+            imports: [AppModule]
         }).compile();
 
         app = moduleRef.createNestApplication();

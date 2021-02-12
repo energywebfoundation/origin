@@ -12,6 +12,7 @@ import {
     NullOrUndefinedResultInterceptor,
     Roles,
     RolesGuard,
+    SuccessResponseDTO,
     UserDecorator
 } from '@energyweb/origin-backend-utils';
 import {
@@ -34,7 +35,6 @@ import { isEmail } from 'class-validator';
 import { ApiBearerAuth, ApiBody, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { InvitationService } from './invitation.service';
 import { AlreadyPartOfOrganizationError } from './errors/already-part-of-organization.error';
-import { SuccessResponseDTO } from '../../utils/success-response.dto';
 import { InvitationDTO } from './invitation.dto';
 import { InviteDTO } from './invite.dto';
 

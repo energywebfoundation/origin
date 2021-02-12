@@ -13,10 +13,10 @@
             "path": "../origin-backend-core/tsconfig.json"
         },
         {
-            "path": "../utils-general/tsconfig.json"
+            "path": "../utils/utils-general/tsconfig.json"
         },
         {
-            "path": "../origin-backend-utils/tsconfig.json"
+            "path": "../utils/origin-backend-utils/tsconfig.json"
         }
     ]
 }

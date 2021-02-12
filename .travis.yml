@@ -20,24 +20,6 @@ env:
 git:
     depth: false
 
-cache:
-    yarn: true
-    # directories:
-    #     - packages/utils-general/build
-    #     - packages/utils-general/dist
-    #     - packages/origin-backend/dist
-    #     - packages/origin-backend-client/dist
-    #     - packages/origin-backend-app/dist
-    #     - packages/device-registry/schemas
-    #     - packages/device-registry/build
-    #     - packages/device-registry/dist
-    #     - packages/exchange/dist
-    #     - packages/exchange-core/dist
-    #     - packages/exchange-token-account/dist
-    #     - packages/exchange-token-account/build
-    #     - packages/issuer/build
-    #     - packages/issuer/dist
-
 before_install:
     - sh scripts/restore-original-timestamps.sh
     - git fetch origin master:master
@@ -49,7 +31,9 @@ before_deploy:
     - git remote set-url origin "https://${GITHUB_TOKEN}@github.com/energywebfoundation/origin.git" > /dev/null 2>&1
     - git reset --hard
     - echo "//registry.npmjs.org/:_authToken=\${NPM_TOKEN}" >> $HOME/.npmrc 2> /dev/null
+    - npm whoami
     - wget -qO- https://toolbelt.heroku.com/install-ubuntu.sh | sh
+    - echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
 
 install:
     - set -e
@@ -58,7 +42,6 @@ install:
 script:
     - set -e
     - yarn build
-    - yarn build:ui
     - if [ $TRAVIS_PULL_REQUEST != "false" ] || [ $TRAVIS_BRANCH != "master"]; then yarn lint; fi
     - if [ $TRAVIS_PULL_REQUEST != "false" ] || [ $TRAVIS_BRANCH != "master"]; then yarn test:ci:contracts; fi
     - if [ $TRAVIS_PULL_REQUEST != "false" ] || [ $TRAVIS_BRANCH != "master"]; then yarn test:ci:apps; fi

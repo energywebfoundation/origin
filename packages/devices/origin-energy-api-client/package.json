@@ -1,0 +1,49 @@
+{
+    "name": "@energyweb/origin-energy-api-client",
+    "version": "1.0.0",
+    "description": "Client library interacting with the Origin Energy API",
+    "homepage": "https://github.com/energywebfoundation/origin/tree/master/packages/origin-energy-api-client#readme",
+    "author": "EnergyWeb DevHub GmbH; Aravind Cheziyan, aravind.cheziyan@energyweb.org; Piotr Kosinski, piotr.kosinski@energyweb.org",
+    "license": "GPL-3.0-or-later",
+    "main": "dist/js/src/index.js",
+    "private": true,
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/energywebfoundation/origin.git"
+    },
+    "bugs": {
+        "url": "https://github.com/energywebfoundation/origin/issues"
+    },
+    "scripts": {
+        "build": "yarn build:ts",
+        "build:ts": "tsc -b tsconfig.json && yarn build:client",
+        "build:client": "yarn client:generate:schema && yarn client:generate && yarn client:clean",
+        "clean": "shx rm -rf dist dist-shakeable",
+        "client:generate": "openapi-generator-cli generate -g typescript-axios -i src/schema.yaml -o src --api-name-suffix Client --remove-operation-id-prefix",
+        "client:generate:schema": "ts-node src/generateSchema.ts",
+        "client:clean": "find src/ -type f  ! -name \"*.ts\"  -delete"
+    },
+    "dependencies": {
+        "axios": "0.21.1",
+        "@energyweb/origin-energy-api": "1.0.0"
+    },
+    "devDependencies": {
+        "@nestjs/swagger": "4.7.12",
+        "@nestjs/testing": "7.6.11",
+        "@nestjs/typeorm": "7.1.5",
+        "@openapitools/openapi-generator-cli": "2.1.23",
+        "json-to-pretty-yaml": "1.2.2",
+        "prettier": "2.1.2",
+        "ts-node": "9.1.1"
+    },
+    "publishConfig": {
+        "access": "public",
+        "registry": "https://registry.npmjs.org"
+    },
+    "files": [
+        "dist"
+    ],
+    "resolutions": {
+        "tslib": "1.14.1"
+    }
+}

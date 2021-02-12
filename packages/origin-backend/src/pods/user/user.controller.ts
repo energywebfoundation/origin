@@ -1,13 +1,14 @@
 import {
-    ILoggedInUser,
+    EmailConfirmationResponse,
     IEmailConfirmationToken,
-    EmailConfirmationResponse
+    ILoggedInUser
 } from '@energyweb/origin-backend-core';
 import {
-    UserDecorator,
     ActiveUserGuard,
     NotDeletedUserGuard,
-    NullOrUndefinedResultInterceptor
+    NullOrUndefinedResultInterceptor,
+    SuccessResponseDTO,
+    UserDecorator
 } from '@energyweb/origin-backend-utils';
 import {
     BadRequestException,
@@ -15,38 +16,40 @@ import {
     ClassSerializerInterceptor,
     Controller,
     Get,
+    HttpStatus,
     Param,
+    ParseIntPipe,
     Post,
     Put,
+    UnauthorizedException,
     UseGuards,
     UseInterceptors,
-    ParseIntPipe,
-    UnauthorizedException,
-    HttpStatus
+    UsePipes,
+    ValidationPipe
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import {
-    ApiResponse,
-    ApiTags,
-    ApiParam,
     ApiBearerAuth,
     ApiBody,
+    ApiParam,
+    ApiResponse,
+    ApiTags,
     ApiUnprocessableEntityResponse
 } from '@nestjs/swagger';
 
-import { UserService } from './user.service';
 import { EmailConfirmationService } from '../email-confirmation/email-confirmation.service';
-import { UserDTO } from './dto/user.dto';
-import { SuccessResponseDTO } from '../../utils/success-response.dto';
+import { BindBlockchainAccountDTO } from './dto/bind-blockchain-account.dto';
 import { RegisterUserDTO } from './dto/register-user.dto';
-import { UpdateUserDTO } from './dto/update-user.dto';
+import { UpdateOwnUserSettingsDTO } from './dto/update-own-user-settings.dto';
 import { UpdatePasswordDTO } from './dto/update-password.dto';
-import { UpdateBlockchainAddressDTO } from './dto/update-blockchain-address.dto';
 import { UpdateUserProfileDTO } from './dto/update-user-profile.dto';
+import { UserDTO } from './dto/user.dto';
+import { UserService } from './user.service';
 
 @ApiTags('user')
 @ApiBearerAuth('access-token')
 @UseInterceptors(ClassSerializerInterceptor, NullOrUndefinedResultInterceptor)
+@UsePipes(ValidationPipe)
 @Controller('user')
 export class UserController {
     constructor(
@@ -70,24 +73,17 @@ export class UserController {
 
     @Put()
     @UseGuards(AuthGuard('jwt'), NotDeletedUserGuard)
-    @ApiBody({ type: UpdateUserDTO })
+    @ApiBody({ type: UpdateOwnUserSettingsDTO })
     @ApiResponse({
         status: HttpStatus.OK,
         type: UserDTO,
-        description: `Update a user's profile (admin)`
+        description: `Update you own user settings`
     })
-    public async update(
+    public async updateOwnUserSettings(
         @UserDecorator() user: ILoggedInUser,
-        @Body() body: UpdateUserDTO
+        @Body() body: UpdateOwnUserSettingsDTO
     ): Promise<UserDTO> {
         try {
-            if (body.blockchainAccountSignedMessage) {
-                await this.userService.attachSignedMessage(
-                    user.id,
-                    body.blockchainAccountSignedMessage
-                );
-            }
-
             if (typeof body.notifications !== 'undefined') {
                 await this.userService.setNotifications(user.id, body.notifications);
             }
@@ -142,7 +138,7 @@ export class UserController {
 
     @Put('chainAddress')
     @UseGuards(AuthGuard('jwt'), NotDeletedUserGuard)
-    @ApiBody({ type: UpdateBlockchainAddressDTO })
+    @ApiBody({ type: BindBlockchainAccountDTO })
     @ApiResponse({
         status: HttpStatus.OK,
         type: UserDTO,
@@ -150,9 +146,9 @@ export class UserController {
     })
     public async updateOwnBlockchainAddress(
         @UserDecorator() { id }: ILoggedInUser,
-        @Body() { blockchainAccountAddress }: UpdateBlockchainAddressDTO
+        @Body() { signedMessage }: BindBlockchainAccountDTO
     ): Promise<UserDTO> {
-        return this.userService.updateBlockChainAddress(id, blockchainAccountAddress);
+        return this.userService.updateBlockchainAddress(id, signedMessage);
     }
 
     @Put('confirm-email/:token')

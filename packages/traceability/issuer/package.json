@@ -1,0 +1,66 @@
+{
+    "name": "@energyweb/issuer",
+    "description": "",
+    "license": "GPL-3.0-or-later",
+    "author": "",
+    "homepage": "https://github.com/energywebfoundation/origin/tree/master/packages/issuer",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/energywebfoundation/origin.git"
+    },
+    "bugs": {
+        "url": "https://github.com/energywebfoundation/origin/issues"
+    },
+    "version": "3.0.1",
+    "main": "dist/js/src/index.js",
+    "files": [
+        "dist/js/build",
+        "dist/js/src",
+        "dist/js/schemas"
+    ],
+    "directories": {
+        "test": "test"
+    },
+    "scripts": {
+        "build": "yarn build:static && yarn build:ts",
+        "build:static": "yarn compile && yarn typechain:registry && yarn typechain:issuer",
+        "build:ts": "tsc -b tsconfig.json && yarn copy:declarations",
+        "copy:declarations": "shx cp src/ethers/*.d.ts dist/js/src/ethers",
+        "typechain:registry": "typechain --target ethers-v5 --outDir src/ethers './build/contracts/Registry.json'",
+        "typechain:issuer": "typechain --target ethers-v5 --outDir src/ethers './build/contracts/Issuer.json'",
+        "clean": "shx rm -rf dist dist-shakeable build src/ethers",
+        "compile": "truffle compile",
+        "deploy-contracts": "truffle migrate",
+        "start-ganache": "ganache-cli -q -m 'chalk park staff buzz chair purchase wise oak receive avoid avoid home' -l 8000000 -e 1000000 -a 20 -p 8560",
+        "test": "mocha -r ts-node/register src/test/*.test.ts --timeout 600000 --exit",
+        "test:concurrent": "concurrently --success first --kill-others -n eth,test \"yarn start-ganache\" \"wait-on tcp:8560 && yarn test\"",
+        "test:contracts": "yarn test:concurrent",
+        "prettier": "prettier --write --config-precedence file-override './src/**/*'",
+        "lint": "eslint \"src/**/*{.ts,.tsx}\" --quiet",
+        "lint-fix": "eslint \"src/**/*{.ts,.tsx}\" --fix",
+        "precommit": "lint-staged"
+    },
+    "types": "dist/js/src/index.d.ts",
+    "dependencies": {
+        "@energyweb/utils-general": "11.0.0",
+        "chai": "4.3.0",
+        "dotenv": "8.2.0",
+        "ethers": "5.0.29",
+        "mocha": "8.2.1",
+        "moment": "2.29.1",
+        "polly-js": "1.8.0",
+        "precise-proofs-js": "1.2.0",
+        "winston": "3.3.3"
+    },
+    "devDependencies": {
+        "@typechain/ethers-v5": "1.0.0",
+        "ethlint": "1.2.5",
+        "ganache-cli": "6.5.1",
+        "truffle-typings": "1.0.8",
+        "typechain": "4.0.1"
+    },
+    "publishConfig": {
+        "access": "public",
+        "registry": "https://registry.npmjs.org"
+    }
+}
