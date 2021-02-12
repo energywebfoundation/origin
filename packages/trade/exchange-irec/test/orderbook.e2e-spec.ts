@@ -422,6 +422,40 @@ describe('orderbook tests', () => {
         expect(bids[0].product.deviceType).to.deep.equal(['Wind']);
     });
 
+    it('should return asks filtered by generation date if filter is included in asks', async () => {
+        const {
+            body: { asks }
+        }: { body: OrderBook } = await request(app.getHttpServer())
+            .post('/orderbook/search')
+            .send({
+                ...defaultAllFilter,
+                generationTimeFilter: Filter.Specific,
+                generationFrom: new Date('2020-01-02').toISOString(),
+                generationTo: new Date('2020-01-05').toISOString()
+            })
+            .expect('Content-Type', /application\/json/)
+            .expect(HttpStatus.OK);
+
+        expect(asks).to.have.length(2);
+    });
+
+    it('should return asks filtered by generation date if filter is broader than asks', async () => {
+        const {
+            body: { asks }
+        }: { body: OrderBook } = await request(app.getHttpServer())
+            .post('/orderbook/search')
+            .send({
+                ...defaultAllFilter,
+                generationTimeFilter: Filter.Specific,
+                generationFrom: new Date('2019-01-01').toISOString(),
+                generationTo: new Date('2021-01-31').toISOString()
+            })
+            .expect('Content-Type', /application\/json/)
+            .expect(HttpStatus.OK);
+
+        expect(asks).to.have.length(2);
+    });
+
     it('should return empty orders list if time mismatch', async () => {
         const {
             body: { asks, bids }
