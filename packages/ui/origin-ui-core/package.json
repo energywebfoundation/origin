@@ -57,7 +57,7 @@
         "formik-material-ui-pickers": "0.0.12",
         "history": "4.10.1",
         "i18next": "19.8.7",
-        "i18next-icu": "1.4.2",
+        "i18next-icu": "2.0.0",
         "moment": "2.29.1",
         "moment-timezone": "0.5.33",
         "query-string": "6.13.8",

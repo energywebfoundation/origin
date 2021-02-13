@@ -37,7 +37,7 @@
         "history": "4.10.1",
         "https-browserify": "1.0.0",
         "i18next": "19.8.7",
-        "i18next-icu": "1.4.2",
+        "i18next-icu": "2.0.0",
         "moment": "2.29.1",
         "os-browserify": "0.3.0",
         "path-browserify": "1.0.1",
