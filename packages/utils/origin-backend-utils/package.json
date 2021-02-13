@@ -33,7 +33,7 @@
         "@nestjs/common": "7.6.11",
         "@nestjs/config": "^0.6.0",
         "@nestjs/core": "7.6.11",
-        "@nestjs/swagger": "4.7.12",
+        "@nestjs/swagger": "4.7.13",
         "bn.js": "^5.1.2",
         "class-validator": "^0.13.0",
         "polly-js": "1.8.0",
