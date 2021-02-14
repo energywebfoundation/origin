@@ -28,7 +28,7 @@
     "devDependencies": {
         "@energyweb/origin-organization-irec-api": "1.3.0",
         "@nestjs/swagger": "4.7.13",
-        "@nestjs/testing": "7.6.11",
+        "@nestjs/testing": "7.6.12",
         "@nestjs/typeorm": "7.1.5",
         "@openapitools/openapi-generator-cli": "2.1.23",
         "json-to-pretty-yaml": "1.2.2",
