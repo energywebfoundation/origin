@@ -57,7 +57,7 @@
         "cors": "2.8.5",
         "mandrill-nodemailer-transport": "1.2.1",
         "swagger-ui-express": "4.1.6",
-        "typeorm": "0.2.30"
+        "typeorm": "0.2.31"
     },
     "devDependencies": {
         "@nestjs/testing": "7.6.11",
