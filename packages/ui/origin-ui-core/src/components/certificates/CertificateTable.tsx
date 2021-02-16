@@ -198,14 +198,6 @@ export function CertificateTable(props: IProps) {
     async function claimCertificate(rowIndex: string) {
         const certificate = getCertificateFromRow(rowIndex);
 
-        if (certificate.source === CertificateSource.Exchange) {
-            showNotification(
-                'Claiming certificate from the exchange is currently not supported',
-                NotificationType.Error
-            );
-            return;
-        }
-
         setSelectedCertificates([certificate]);
         setShowClaimModal(true);
     }
@@ -495,10 +487,7 @@ export function CertificateTable(props: IProps) {
                     : publicVolume.add(privateVolume)
             ),
             gridOperator: enrichedData?.gridOperatorText,
-            source:
-                enrichedData.certificate.source === CertificateSource.Exchange
-                    ? 'Exchange'
-                    : 'Blockchain'
+            source: enrichedData.certificate.source
         };
     });
 
@@ -508,7 +497,7 @@ export function CertificateTable(props: IProps) {
 
     const allowedActions = {
         Blockchain: [TableActionId.PublishForSale, TableActionId.Deposit, TableActionId.Claim],
-        Exchange: [TableActionId.PublishForSale, TableActionId.Withdraw]
+        Exchange: [TableActionId.PublishForSale, TableActionId.Withdraw, TableActionId.Claim]
     };
 
     return (

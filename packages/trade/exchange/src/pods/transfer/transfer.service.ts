@@ -8,15 +8,16 @@ import { AccountService } from '../account/account.service';
 import { Asset } from '../asset/asset.entity';
 import { AssetService } from '../asset/asset.service';
 import { HasEnoughAssetAmountQuery } from '../order/queries/has-enough-asset-amount.query';
-import { CreateDepositDTO } from './dto/create-deposit.dto';
-import { RequestWithdrawalDTO } from './dto/create-withdrawal.dto';
-import { DepositApprovedEvent } from './deposit-approved.event';
+import {
+    CreateDepositDTO,
+    RequestWithdrawalDTO,
+    RequestClaimDTO
+    // RequestBulkClaimDTO
+} from './dto';
+import { DepositApprovedEvent, WithdrawalRequestedEvent, ClaimRequestedEvent } from './events';
 import { TransferDirection } from './transfer-direction';
 import { TransferStatus } from './transfer-status';
 import { Transfer } from './transfer.entity';
-import { WithdrawalRequestedEvent } from './withdrawal-requested.event';
-import { RequestClaimDTO } from './dto/request-claim.dto';
-import { ClaimRequestedEvent } from './claim-requested.event';
 
 @Injectable()
 export class TransferService {
@@ -124,6 +125,43 @@ export class TransferService {
             throw error;
         }
     }
+
+    // public async requestBulkClaim(
+    //     userId: string,
+    //     { assetIds }: RequestBulkClaimDTO,
+    //     transaction?: EntityManager
+    // ): Promise<Transfer['id']> {
+    //     await this.validateEnoughFunds(userId, assetId, amount);
+
+    //     const { address } = await this.accountService.getAccount(userId);
+
+    //     const claim: Partial<Transfer> = {
+    //         userId,
+    //         amount,
+    //         address,
+    //         asset: { id: assetId } as Asset,
+    //         status: TransferStatus.Accepted,
+    //         direction: TransferDirection.Claim
+    //     };
+
+    //     const manager = transaction || this.repository.manager;
+
+    //     try {
+    //         const storedClaim = await manager.transaction((tr) =>
+    //             tr.getRepository<Transfer>(Transfer).save(claim)
+    //         );
+
+    //         this.logger.debug(`Created new claim with id=${storedClaim.id}`);
+
+    //         this.eventBus.publish(new ClaimRequestedEvent(storedClaim));
+
+    //         return storedClaim.id;
+    //     } catch (error) {
+    //         this.logger.error(error.message);
+
+    //         throw error;
+    //     }
+    // }
 
     public async createDeposit(depositDTO: CreateDepositDTO) {
         this.logger.debug(`Requested deposit creation for ${JSON.stringify(depositDTO)}`);

@@ -160,7 +160,7 @@ export type TRequestPublishForSaleAction = typeof requestPublishForSale;
 export interface IRequestClaimCertificateAction {
     type: CertificatesActions.requestClaimCertificate;
     payload: {
-        certificateId: Certificate['id'];
+        certificate: ICertificateViewItem;
         amount: BigNumber;
         claimData: IClaimData;
     };

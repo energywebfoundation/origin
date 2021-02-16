@@ -49,8 +49,8 @@ export interface ICertificateEnergy {
 }
 
 export enum CertificateSource {
-    Blockchain,
-    Exchange
+    Blockchain = 'Blockchain',
+    Exchange = 'Exchange'
 }
 
 export interface ICertificateViewItem extends ICertificate {

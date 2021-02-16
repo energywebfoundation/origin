@@ -43,7 +43,6 @@ export function ClaimModal(props: IProps) {
     );
 
     const isBulkClaim = certificates.length > 1;
-    const certificateIds: number[] = certificates.map((cert) => cert.id);
 
     const getCountryCodeFromId = (code: string) =>
         Countries.find((country) => country.code === code)?.code;
@@ -110,9 +109,12 @@ export function ClaimModal(props: IProps) {
         };
 
         const action = isBulkClaim
-            ? requestClaimCertificateBulk({ certificateIds, claimData })
+            ? requestClaimCertificateBulk({
+                  certificateIds: certificates.map((cert) => cert.id),
+                  claimData
+              })
             : requestClaimCertificate({
-                  certificateId: certificateIds[0],
+                  certificate: certificates[0],
                   claimData,
                   amount: energyInBaseUnit
               });
@@ -147,9 +149,9 @@ export function ClaimModal(props: IProps) {
         }
     }
 
-    const title = `Claiming certificate${isBulkClaim ? 's' : ''} ${certificateIds?.join(
-        ', '
-    )} in the name of:`;
+    const title = `Claiming certificate${isBulkClaim ? 's' : ''} ${certificates
+        .map((cert) => cert.id)
+        .join(', ')} in the name of:`;
 
     const totalEnergy = EnergyFormatter.format(
         props.certificates.reduce((a, b) => {

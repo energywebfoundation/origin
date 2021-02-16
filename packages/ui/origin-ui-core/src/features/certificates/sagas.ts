@@ -394,7 +394,7 @@ function* requestClaimCertificateSaga(): SagaIterator {
             continue;
         }
 
-        const { certificateId, amount, claimData } = action.payload;
+        const { certificate, amount, claimData } = action.payload;
 
         yield put(setLoading(true));
 
@@ -403,30 +403,34 @@ function* requestClaimCertificateSaga(): SagaIterator {
         const certificatesClient: CertificatesClient = yield select(getCertificatesClient);
 
         try {
-            const { data: certificate } = yield apply(certificatesClient, certificatesClient.get, [
-                certificateId
-            ]);
+            if (certificate.source === CertificateSource.Blockchain) {
+                const { data: onChainCertificate } = yield apply(
+                    certificatesClient,
+                    certificatesClient.get,
+                    [certificate.id]
+                );
 
-            const onChainCertificate: Certificate = yield call(
-                getBlockchainCertificate,
-                certificate.tokenId
-            );
+                const onChainCertificateFacade: Certificate = yield call(
+                    getBlockchainCertificate,
+                    onChainCertificate.tokenId
+                );
 
-            const claimResult: ContractTransaction = yield call(
-                [onChainCertificate, onChainCertificate.claim],
-                claimData,
-                amount
-            );
+                const claimResult: ContractTransaction = yield call(
+                    [onChainCertificateFacade, onChainCertificateFacade.claim],
+                    claimData,
+                    amount
+                );
 
-            const txResult: ContractReceipt = yield call([claimResult, claimResult.wait]);
+                const txResult: ContractReceipt = yield call([claimResult, claimResult.wait]);
 
-            if (!txResult.status) {
-                showNotification('Claiming failed.', NotificationType.Error);
-                continue;
+                if (!txResult.status) {
+                    showNotification('Claiming failed.', NotificationType.Error);
+                    continue;
+                }
             }
 
             showNotification(
-                i18n.t('certificate.feedback.claimed', { id: certificateId }),
+                i18n.t('certificate.feedback.claimed', { id: certificate.id }),
                 NotificationType.Success
             );
             yield put(reloadCertificates());
