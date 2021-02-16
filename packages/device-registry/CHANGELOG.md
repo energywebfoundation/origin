@@ -3,6 +3,28 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [8.0.0](https://github.com/energywebfoundation/origin/compare/@energyweb/device-registry@7.0.3...@energyweb/device-registry@8.0.0) (2021-02-12)
+
+
+### Bug Fixes
+
+* **deps:** update dependency ethers to v5.0.27 ([4a152d8](https://github.com/energywebfoundation/origin/commit/4a152d83e97f9e0b08ef38071a619005e27d5b7b))
+* **deps:** update dependency ethers to v5.0.29 ([149041b](https://github.com/energywebfoundation/origin/commit/149041b4ca3648f1decf9e1acb5f7bb5d6fd721a))
+
+
+### chore
+
+* **device-registry:** replace Organization with id ([da94652](https://github.com/energywebfoundation/origin/commit/da94652a283dd729a21df3f90d6d647850437f5c))
+
+
+### BREAKING CHANGES
+
+* **device-registry:** Organization is not longer a member of ProducingDevice.Entity
+
+
+
+
+
 ## [7.0.3](https://github.com/energywebfoundation/origin/compare/@energyweb/device-registry@7.0.2...@energyweb/device-registry@7.0.3) (2020-12-04)
 
 **Note:** Version bump only for package @energyweb/device-registry

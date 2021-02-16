@@ -3,6 +3,35 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [8.0.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-backend-core@7.0.1...@energyweb/origin-backend-core@8.0.0) (2021-02-12)
+
+
+### Bug Fixes
+
+* **deps:** update dependency axios to v0.21.1 ([8c14cbe](https://github.com/energywebfoundation/origin/commit/8c14cbe3954973f648a07b34a177e20fe2394638))
+* **deps:** update dependency class-validator to v0.13.1 ([d10cdae](https://github.com/energywebfoundation/origin/commit/d10cdae069ad8cdafe5c6ad5984efd65af040cbd))
+* **deps:** update dependency ethers to v5.0.27 ([4a152d8](https://github.com/energywebfoundation/origin/commit/4a152d83e97f9e0b08ef38071a619005e27d5b7b))
+* **deps:** update dependency ethers to v5.0.29 ([149041b](https://github.com/energywebfoundation/origin/commit/149041b4ca3648f1decf9e1acb5f7bb5d6fd721a))
+
+
+### chore
+
+* **origin-backend-core:** replace Organization with id ([2b28bce](https://github.com/energywebfoundation/origin/commit/2b28bce037916e16e309e8098c83749570ef62fb))
+
+
+### Features
+
+* **origin-backend:** changed country type to iso 3166 aplpha 2 ([c65d107](https://github.com/energywebfoundation/origin/commit/c65d107f8c7b1acd7c4ee7787febb1414f960f23))
+
+
+### BREAKING CHANGES
+
+* **origin-backend-core:** Organization is not longer a member of IDevice
+
+
+
+
+
 ## [7.0.1](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-backend-core@7.0.0...@energyweb/origin-backend-core@7.0.1) (2020-11-30)
 
 

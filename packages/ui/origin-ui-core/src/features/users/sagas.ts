@@ -7,7 +7,7 @@ import {
 import { OriginFeature, signTypedMessage } from '@energyweb/utils-general';
 import { UserClient } from '@energyweb/origin-backend-client';
 import { UserStatus, OrganizationStatus } from '@energyweb/origin-backend-core';
-import { call, put, select, take, fork, all, getContext, apply, delay } from 'redux-saga/effects';
+import { call, put, select, take, fork, all, getContext, apply } from 'redux-saga/effects';
 import { SagaIterator } from 'redux-saga';
 import {
     UsersActions,
@@ -51,6 +51,7 @@ import { IRecClient } from '../../utils/clients/IRecClient';
 import { showNotification, NotificationType } from '../..';
 import { getI18n } from 'react-i18next';
 import { getWeb3 } from '../selectors';
+import { pollExchangeAddress } from '../../utils/pollExchangeAddress';
 
 export const LOCAL_STORAGE_KEYS = {
     AUTHENTICATION_TOKEN: 'AUTHENTICATION_TOKEN'
@@ -277,12 +278,16 @@ function* createUserExchangeAddress(): SagaIterator {
             }
 
             yield apply(accountClient, accountClient.create, []);
-            yield delay(4000);
-            showNotification(
-                i18n.t('user.feedback.exchangeAddressSuccess'),
-                NotificationType.Success
-            );
-            yield put(refreshUserOffchain());
+
+            const isAddressAssigned = yield call(pollExchangeAddress, accountClient, 2000);
+
+            if (isAddressAssigned) {
+                yield put(refreshUserOffchain());
+                showNotification(
+                    i18n.t('user.feedback.exchangeAddressSuccess'),
+                    NotificationType.Success
+                );
+            }
         } catch (error) {
             if (error?.message) {
                 showNotification(error?.message, NotificationType.Error);

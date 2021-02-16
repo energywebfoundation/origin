@@ -1,6 +1,6 @@
 {
     "name": "@energyweb/origin-device-registry-api-client",
-    "version": "0.0.1",
+    "version": "0.0.2",
     "description": "Client library interacting with the Origin Device Registry ",
     "homepage": "https://github.com/energywebfoundation/origin/tree/master/packages/origin-device-registry-api-client#readme",
     "author": "EnergyWeb DevHub GmbH; Piotr Kosinski, piotr.kosinski@energyweb.org",
@@ -26,9 +26,9 @@
         "axios": "0.21.1"
     },
     "devDependencies": {
-        "@energyweb/origin-device-registry-api": "0.0.1",
-        "@nestjs/swagger": "4.7.11",
-        "@nestjs/testing": "7.6.11",
+        "@energyweb/origin-device-registry-api": "0.0.2",
+        "@nestjs/swagger": "4.7.13",
+        "@nestjs/testing": "7.6.12",
         "@nestjs/typeorm": "7.1.5",
         "@openapitools/openapi-generator-cli": "2.1.23",
         "json-to-pretty-yaml": "1.2.2",

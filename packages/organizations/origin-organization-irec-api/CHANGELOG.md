@@ -3,6 +3,25 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.3.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-organization-irec-api@1.2.1...@energyweb/origin-organization-irec-api@1.3.0) (2021-02-12)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @nestjs/config to v0.6.3 ([4991dfb](https://github.com/energywebfoundation/origin/commit/4991dfb918ce7efb6d0a8bd72a011c825b3aec46))
+* **deps:** update nest monorepo to v7.6.11 ([daee156](https://github.com/energywebfoundation/origin/commit/daee156b9c315c527311f0c78ffbdf4226b6785a))
+* **origin-organization-irec-api:** fix get connection endpoint ([14ad8b8](https://github.com/energywebfoundation/origin/commit/14ad8b8ee9d2215d349f48cecb4cf6912234b041))
+
+
+### Features
+
+* **origin-irec-organization-api:** added connection as a service, updated tests ([c48e607](https://github.com/energywebfoundation/origin/commit/c48e6073afcaa8677df50d58cc14c6320f456b51))
+* **origin-irec-organization-api:** added connection module ([09da211](https://github.com/energywebfoundation/origin/commit/09da2113acfb27d95dc442aadee6be2f36e257c8))
+
+
+
+
+
 ## [1.2.1](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-organization-irec-api@1.2.0...@energyweb/origin-organization-irec-api@1.2.1) (2020-12-04)
 
 **Note:** Version bump only for package @energyweb/origin-organization-irec-api
