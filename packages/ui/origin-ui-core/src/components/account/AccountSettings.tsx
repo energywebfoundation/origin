@@ -21,7 +21,7 @@ import { AVAILABLE_ORIGIN_LANGUAGES, ORIGIN_LANGUAGE } from '@energyweb/localiza
 import { showNotification, NotificationType } from '../../utils';
 import { getBackendClient } from '../../features/general';
 import { getUserOffchain, refreshUserOffchain } from '../../features/users';
-import { OriginConfigurationContext, setOriginLanguage } from '../PackageConfigurationProvider';
+import { OriginConfigurationContext, setOriginLanguage } from '../../PackageConfigurationProvider';
 
 export function AccountSettings() {
     const dispatch = useDispatch();

@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { isRole, Role, UserStatus } from '@energyweb/origin-backend-core';
 import { OriginFeature } from '@energyweb/utils-general';
 import { getUserOffchain, getIRecAccount, getInvitations } from '../../features/users';
-import { OriginConfigurationContext } from '../PackageConfigurationProvider';
+import { OriginConfigurationContext } from '../../PackageConfigurationProvider';
 import { OrganizationInvitations } from './Invitation/OrganizationInvitations';
 import { OrganizationInvite } from './Invitation/OrganizationInvite';
 import { IRECRegisterForm } from './IRec/IRECRegisterForm';

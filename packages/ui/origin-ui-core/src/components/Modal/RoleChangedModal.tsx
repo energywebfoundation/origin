@@ -21,7 +21,7 @@ import { Role, OrganizationInvitationStatus, isRole } from '@energyweb/origin-ba
 import { OriginFeature } from '@energyweb/utils-general';
 import { getUserOffchain, getInvitations } from '../../features/users';
 import { useLinks } from '../../utils/routing';
-import { OriginConfigurationContext } from '../PackageConfigurationProvider';
+import { OriginConfigurationContext } from '../../PackageConfigurationProvider';
 import OrgAddedIcon from '../../../assets/icon-org-added.svg';
 
 interface IProps {

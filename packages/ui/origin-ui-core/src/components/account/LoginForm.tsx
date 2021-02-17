@@ -10,7 +10,7 @@ import { showNotification, NotificationType } from '../../utils/notifications';
 import { useValidation } from '../../utils/validation';
 import { useLinks } from '../../utils/routing';
 import { InputFixedHeight } from '../Form/InputFixedHeight';
-import { OriginConfigurationContext } from '../PackageConfigurationProvider';
+import { OriginConfigurationContext } from '../../PackageConfigurationProvider';
 
 interface IFormValues {
     email: string;

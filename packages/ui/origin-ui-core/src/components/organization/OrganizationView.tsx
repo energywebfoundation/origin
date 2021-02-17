@@ -11,7 +11,7 @@ import { makeStyles, createStyles, useTheme, Paper, Grid, TextField, Box } from 
 import { getIRecClient, getBackendClient } from '../../features/general';
 import { getUserOffchain } from '../../features/users';
 import { Registration } from '../../utils/irec';
-import { OriginConfigurationContext } from '../PackageConfigurationProvider';
+import { OriginConfigurationContext } from '../../PackageConfigurationProvider';
 import { Download } from '../Documents';
 import { IRECOrganizationView } from './IRec/IRECOrganizationView';
 

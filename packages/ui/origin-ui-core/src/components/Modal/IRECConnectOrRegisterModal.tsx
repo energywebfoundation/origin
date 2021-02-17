@@ -6,7 +6,7 @@ import { Dialog, DialogTitle, DialogActions, Grid, Box, Button, useTheme } from 
 import { OriginFeature } from '@energyweb/utils-general';
 import { getUserOffchain } from '../../features/users';
 import { useLinks } from '../../utils/routing';
-import { OriginConfigurationContext } from '../PackageConfigurationProvider';
+import { OriginConfigurationContext } from '../../PackageConfigurationProvider';
 import OrgAddedIcon from '../../../assets/icon-org-added.svg';
 
 interface IProps {

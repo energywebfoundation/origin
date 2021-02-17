@@ -1,5 +1,3 @@
-export * from './PackageConfigurationProvider';
-
 export * from './account';
 export * from './admin';
 export * from './certificates';

@@ -14,6 +14,7 @@ import { Route } from 'react-router-dom';
 import { routerMiddleware, ConnectedRouter } from 'connected-react-router';
 import { createBrowserHistory, History } from 'history';
 import MomentUtils from '@date-io/moment';
+import { i18n } from 'i18next';
 import { MuiThemeProvider } from '@material-ui/core/styles';
 import { MuiPickersUtilsProvider } from '@material-ui/pickers';
 import { sagas } from '../features/sagas';
@@ -26,6 +27,7 @@ export function Origin() {
     const originConfiguration = useContext(OriginConfigurationContext);
     const [store, setStore] = useState<Store<CombinedState<IStoreState>, AnyAction>>(null);
     const [history, setHistory] = useState<History>(null);
+    const [i18next, seti18next] = useState<i18n>(null);
 
     useEffect(() => {
         if (store) {
@@ -57,7 +59,8 @@ export function Origin() {
             sagaMiddleware.run(sagas[saga]);
         });
 
-        initializeI18N(originConfiguration.language);
+        const i18nInstance = initializeI18N(originConfiguration.language);
+        seti18next(i18nInstance);
     });
 
     if (!originConfiguration) {
@@ -76,7 +79,7 @@ export function Origin() {
                 <Provider store={store}>
                     <ConnectedRouter history={history}>
                         <Route path="/">
-                            <AppContainer history={history} />
+                            <AppContainer history={history} i18nInstance={i18next} />
                         </Route>
                     </ConnectedRouter>
                 </Provider>
