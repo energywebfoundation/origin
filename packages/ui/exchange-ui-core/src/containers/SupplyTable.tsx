@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { useTranslation } from 'react-i18next';
 import { BigNumber } from 'ethers';
 import { Edit, Remove } from '@material-ui/icons';
 import {
@@ -7,7 +8,6 @@ import {
     formatCurrencyComplete,
     moment,
     usePermissions,
-    useTranslation,
     EnergyFormatter,
     IPaginatedLoaderHooksFetchDataParameters,
     TableMaterial,

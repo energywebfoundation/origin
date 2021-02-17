@@ -1,5 +1,5 @@
 import React from 'react';
-import { useTranslation } from '@energyweb/origin-ui-core';
+import { useTranslation } from 'react-i18next';
 import { Orders, IOrdersProps } from './Orders';
 
 export function Bids(props: IOrdersProps) {

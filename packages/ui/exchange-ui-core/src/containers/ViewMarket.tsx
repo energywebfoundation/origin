@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { useTranslation } from 'react-i18next';
 import { Grid } from '@material-ui/core';
 import { ProductFilterDTO, Filter } from '@energyweb/exchange-irec-client';
 import { UserStatus } from '@energyweb/origin-backend-core';
 import {
     EnergyFormatter,
     moment,
-    useTranslation,
     useIntervalFetch,
     getCountry,
     getUserOffchain,

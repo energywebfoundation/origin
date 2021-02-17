@@ -1,5 +1,6 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
+import { useTranslation } from 'react-i18next';
 import {
     Dialog,
     DialogContent,
@@ -12,7 +13,7 @@ import {
     useTheme
 } from '@material-ui/core';
 import { ErrorOutline } from '@material-ui/icons';
-import { useTranslation, showNotification, NotificationType } from '@energyweb/origin-ui-core';
+import { showNotification, NotificationType } from '@energyweb/origin-ui-core';
 import { removeSupply } from '../../features/supply';
 import { IDeviceWithSupply } from '../../types';
 

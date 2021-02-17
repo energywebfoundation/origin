@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import {
     DialogTitle,
     DialogActions,
@@ -11,7 +12,6 @@ import {
     Grid
 } from '@material-ui/core';
 import { RemoveCircle } from '@material-ui/icons';
-import { useTranslation } from '@energyweb/origin-ui-core';
 
 interface IOwnProps {
     open: boolean;

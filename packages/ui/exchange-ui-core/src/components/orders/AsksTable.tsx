@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { Remove, Visibility, Search } from '@material-ui/icons';
 import {
-    useTranslation,
     EnergyFormatter,
     formatCurrencyComplete,
     moment,
