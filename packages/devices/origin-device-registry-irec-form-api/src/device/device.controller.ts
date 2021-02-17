@@ -11,9 +11,9 @@ import {
     NullOrUndefinedResultInterceptor,
     Roles,
     RolesGuard,
-    UserDecorator,
     StorageErrors,
-    SuccessResponseDTO
+    SuccessResponseDTO,
+    UserDecorator
 } from '@energyweb/origin-backend-utils';
 import {
     Body,
@@ -50,7 +50,6 @@ import { BigNumber } from 'ethers';
 import { Device } from './device.entity';
 import { DeviceService } from './device.service';
 import { CreateDeviceDTO } from './dto/create-device.dto';
-import { DeviceSettingsUpdateDTO } from './dto/device-settings-update.dto';
 import { DeviceDTO } from './dto/device.dto';
 import { SmartMeterReadDTO } from './dto/smart-meter-readings.dto';
 import { UpdateDeviceStatusDTO } from './dto/update-device-status.dto';
@@ -98,26 +97,6 @@ export class DeviceController {
         );
 
         return this.serializeDevices(devices, withMeterStats);
-    }
-
-    @Get('supplyBy')
-    @UseGuards(AuthGuard(), ActiveUserGuard, RolesGuard)
-    @Roles(Role.OrganizationAdmin, Role.OrganizationDeviceManager, Role.OrganizationUser)
-    @ApiQuery({ name: 'facility', type: String, description: 'Name of the facility' })
-    @ApiQuery({ name: 'status', type: String })
-    @ApiResponse({ status: HttpStatus.OK, type: [DeviceDTO], description: 'Gets supply' })
-    async getSupplyBy(
-        @UserDecorator() { organizationId }: ILoggedInUser,
-        @Query('facility') facilityName: string,
-        @Query('status') status: string
-    ): Promise<DeviceDTO[]> {
-        const devices = await this.deviceService.getSupplyBy(
-            organizationId,
-            facilityName,
-            Number.parseInt(status, 10)
-        );
-
-        return this.serializeDevices(devices);
     }
 
     @Get('/:id')
@@ -235,44 +214,6 @@ export class DeviceController {
         const device = await this.deviceService.updateStatus(id, status);
 
         return this.serializeDevices([device]).pop();
-    }
-
-    @Put('/:id/settings')
-    @UseGuards(AuthGuard(), ActiveUserGuard, RolesGuard)
-    @Roles(Role.OrganizationAdmin, Role.OrganizationDeviceManager, Role.OrganizationUser)
-    @ApiBody({ type: DeviceSettingsUpdateDTO })
-    @ApiResponse({
-        status: HttpStatus.OK,
-        type: SuccessResponseDTO,
-        description: `Updates device's settings`
-    })
-    @ApiUnprocessableEntityResponse({
-        status: HttpStatus.UNPROCESSABLE_ENTITY,
-        description: `Body is missing automaticPostForSale or defaultAskPrice`
-    })
-    async updateDeviceSettings(
-        @Param('id') id: string,
-        @Body() body: DeviceSettingsUpdateDTO,
-        @UserDecorator() loggedUser: ILoggedInUser
-    ): Promise<SuccessResponseDTO> {
-        const device = await this.deviceService.findOne(id);
-
-        if (loggedUser.organizationId !== device.organizationId) {
-            throw new ForbiddenException();
-        }
-
-        if (
-            body?.automaticPostForSale === undefined ||
-            (body?.automaticPostForSale &&
-                (!Number.isInteger(body?.defaultAskPrice) || body?.defaultAskPrice === 0))
-        ) {
-            throw new UnprocessableEntityException({
-                success: false,
-                message: 'Body is missing automaticPostForSale or defaultAskPrice'
-            });
-        }
-
-        return this.deviceService.updateSettings(id, body);
     }
 
     @Get('/:id/smartMeterReading')

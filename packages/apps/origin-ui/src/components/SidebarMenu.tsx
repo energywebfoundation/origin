@@ -15,7 +15,7 @@ import {
     adminMenuCreator,
     accountMenuCreator
 } from '@energyweb/origin-ui-core';
-import { exchangeMenuCreator } from '@energyweb/exchange-ui-core';
+import { useExchangeMenu } from '@energyweb/exchange-ui-core';
 import { OriginConfigurationContext } from './OriginConfigurationContext';
 import { useLinks } from '../routing';
 import { SidebarSubMenu } from './SidebarSubMenu';
@@ -82,7 +82,7 @@ export function SidebarMenu() {
 
     const deviceMenuList = deviceMenuCreator(user, t);
     const certificateMenuList = certificatesMenuCreator(user);
-    const exchangeMenuList = exchangeMenuCreator(user);
+    const exchangeMenuList = useExchangeMenu();
     const organizationMenuList = organizationMenuCreator(
         user,
         invitations,

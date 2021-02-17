@@ -1,4 +1,4 @@
-import { IDeviceSettings, IExternalDeviceService, IProductInfo } from '@energyweb/exchange';
+import { IExternalDeviceService, IProductInfo } from '@energyweb/exchange';
 import { DeviceService } from '@energyweb/origin-device-registry-irec-local-api';
 import { IExternalDeviceId } from '@energyweb/origin-backend-core';
 import { Injectable } from '@nestjs/common';
@@ -33,14 +33,6 @@ export class ExternalDeviceService implements IExternalDeviceService {
             country: device.countryCode,
             operationalSince: device.commissioningDate.getTime(),
             gridOperator: device.gridOperator
-        };
-    }
-
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    public async getDeviceSettings(id: IExternalDeviceId): Promise<IDeviceSettings> {
-        return {
-            postForSale: false,
-            postForSalePrice: 0
         };
     }
 }

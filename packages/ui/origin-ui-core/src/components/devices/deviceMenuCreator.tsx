@@ -5,7 +5,6 @@ import { OriginFeature } from '@energyweb/utils-general';
 import { ProducingDeviceTable } from './ProducingDevice/ProducingDeviceTable';
 import { DeviceMap } from './DeviceMap';
 import { DeviceGroupForm } from './DeviceGroupForm';
-import { AutoSupplyDeviceTable } from './AutoSupplyDeviceTable';
 import { AddDevice } from './AddDevice';
 import { ImportDevice } from './ImportDevice/ImportDevices';
 
@@ -105,13 +104,6 @@ export const deviceMenuCreator = (user: IUser, t: TFunction): IDeviceMenuItem[] 
             component: null,
             show: false,
             features: [OriginFeature.Devices]
-        },
-        {
-            key: 'supply',
-            label: t('navigation.devices.supply'),
-            component: AutoSupplyDeviceTable,
-            features: [OriginFeature.Devices, OriginFeature.Seller],
-            show: isDeviceManagerOrAdmin()
         },
         {
             key: 'import',

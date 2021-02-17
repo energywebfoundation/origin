@@ -20,8 +20,7 @@
                 "my": "My devices",
                 "registerDevice": "Register device",
                 "registerDeviceGroup": "Register device group",
-                "pending": "Pending",
-                "supply": "Supply"
+                "pending": "Pending"
             },
             "certificates": {
                 "inbox": "Inbox",
@@ -30,15 +29,17 @@
                 "detailView": "Detail view",
                 "pending": "Pending",
                 "approved": "Approved",
-                "forDemand": "For demand",
-                "exchange": "Exchange",
+                "import": "Certificate import",
+                "exchangeInbox": "Exchange inbox"
+            },
+            "exchange": {
+                "view_market": "View market",
                 "bundles": "Bundles",
                 "my_bundles": "My bundles",
                 "create_bundle": "Create bundle",
-                "myTrades": "My trades",
-                "myOrders": "My orders",
-                "import": "Certificate import",
-                "exchangeInbox": "Exchange Inbox"
+                "my_trades": "My trades",
+                "my_orders": "My orders",
+                "supply": "Supply"
             }
         },
         "device": {
@@ -97,9 +98,7 @@
                 "imagesUploaded": "Images have been uploaded.",
                 "deviceCreated": "Device successfully created.",
                 "pleaseSelectUpToXImages": "Please select up to {limit} images. You've selected {actual}.",
-                "unexpectedErrorWhenUploadingImages": "Unexpected error occurred when uploading images.",
-                "supplyUpdatedSuccess": "Supply updated successfully",
-                "supplyUpdateError": "Supply updating failed"
+                "unexpectedErrorWhenUploadingImages": "Unexpected error occurred when uploading images."
             },
             "info": {
                 "general": "General",
@@ -543,6 +542,29 @@
                     "weekly": "Weekly",
                     "daily": "Daily"
                 }
+            },
+            "supply": {
+                "type":"Type",
+                "facilityName":"Facility name",
+                "price": "Price",
+                "status": "Status",
+                "meterReadToBeCertified": "To be certified",
+                "update": "Update",
+                "remove": "Remove",
+                "facility": "Facility",
+                "updateSupply": "Update Supply",
+                "active": "Active",
+                "paused": "Paused",
+                "cancel": "Cancel",
+                "removeSupplyConfirmation": "Are you sure you want remove?",
+                "fetchSupplyError": "Error while receiving supply settings",
+                "supplySettingsMissing": "This device is missing supply settings",
+                "supplyCreatedSuccess": "Supply created successfully",
+                "supplyCreateError": "Supply creation failed",
+                "supplyUpdatedSuccess": "Supply updated successfully",
+                "supplyUpdateError": "Supply updating failed",
+                "supplyRemovedSuccess": "Supply removed successfully",
+                "supplyRemoveError": "Supply removal failed"
             },
             "popover": {
                 "asksDescription": "Below you see the sell offers that are matching the certificate criteria you defined in the market filter.",

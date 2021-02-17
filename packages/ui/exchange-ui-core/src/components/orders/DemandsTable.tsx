@@ -104,8 +104,8 @@ export const DemandsTable = (props: IOwnProps) => {
         offset,
         requestedFilters
     }: IPaginatedLoaderHooksFetchDataParameters): Promise<IPaginatedLoaderFetchDataReturnValues> {
-        const filteredDemands = demands.filter((ask) => {
-            return checkRecordPassesFilters(ask, requestedFilters, deviceTypeService);
+        const filteredDemands = demands.filter((demand) => {
+            return checkRecordPassesFilters(demand, requestedFilters, deviceTypeService);
         });
         return {
             paginatedData: filteredDemands.slice(offset, offset + requestedPageSize),

@@ -1,6 +1,15 @@
+import { useSelector } from 'react-redux';
 import { UserStatus, isRole, Role, IUser } from '@energyweb/origin-backend-core';
 import { OriginFeature } from '@energyweb/utils-general';
-import { Exchange, BundlesTable, CreateBundleForm, MyOrders, MyTrades } from './containers';
+import { getUserOffchain } from '@energyweb/origin-ui-core';
+import {
+    ViewMarket,
+    BundlesTable,
+    CreateBundleForm,
+    MyOrders,
+    MyTrades,
+    SupplyTable
+} from './containers';
 import { IBundleTableProps } from './containers/BundlesTable';
 
 interface IExchangeMenuItem {
@@ -12,7 +21,8 @@ interface IExchangeMenuItem {
     props?: IBundleTableProps;
 }
 
-export const exchangeMenuCreator = (user: IUser): IExchangeMenuItem[] => {
+export const useExchangeMenu = (): IExchangeMenuItem[] => {
+    const user: IUser = useSelector(getUserOffchain);
     const userIsActive = user && user.status === UserStatus.Active;
 
     const userIsActiveAndPartOfOrg =
@@ -23,28 +33,28 @@ export const exchangeMenuCreator = (user: IUser): IExchangeMenuItem[] => {
     return [
         {
             key: 'view-market',
-            label: 'navigation.certificates.exchange',
-            component: Exchange,
+            label: 'navigation.exchange.view_market',
+            component: ViewMarket,
             show: true,
             features: [OriginFeature.Exchange]
         },
         {
             key: 'bundles',
-            label: 'navigation.certificates.bundles',
+            label: 'navigation.exchange.bundles',
             component: BundlesTable,
             show: true,
             features: [OriginFeature.Exchange, OriginFeature.Bundles]
         },
         {
             key: 'create_bundle',
-            label: 'navigation.certificates.create_bundle',
+            label: 'navigation.exchange.create_bundle',
             component: CreateBundleForm,
             show: userIsActiveAndPartOfOrg,
             features: [OriginFeature.Exchange, OriginFeature.Bundles]
         },
         {
             key: 'my_bundles',
-            label: 'navigation.certificates.my_bundles',
+            label: 'navigation.exchange.my_bundles',
             component: BundlesTable,
             props: { owner: true },
             show: userIsActiveAndPartOfOrg,
@@ -52,15 +62,22 @@ export const exchangeMenuCreator = (user: IUser): IExchangeMenuItem[] => {
         },
         {
             key: 'my-trades',
-            label: 'navigation.certificates.myTrades',
+            label: 'navigation.exchange.my_trades',
             component: MyTrades,
             show: userIsActiveAndPartOfOrg,
             features: [OriginFeature.Exchange]
         },
         {
             key: 'my_orders',
-            label: 'navigation.certificates.myOrders',
+            label: 'navigation.exchange.my_orders',
             component: MyOrders,
+            show: userIsActiveAndPartOfOrg,
+            features: [OriginFeature.Exchange]
+        },
+        {
+            key: 'supply',
+            label: 'navigation.exchange.supply',
+            component: SupplyTable,
             show: userIsActiveAndPartOfOrg,
             features: [OriginFeature.Exchange]
         }

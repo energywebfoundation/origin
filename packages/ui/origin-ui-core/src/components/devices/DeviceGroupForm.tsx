@@ -248,8 +248,7 @@ export function DeviceGroupForm(props: IProps) {
                 files: JSON.stringify(uploadedFiles.filenames),
                 deviceGroup: JSON.stringify(values.children),
                 externalDeviceIds,
-                gridOperator: (selectedGridOperator && selectedGridOperator[0]) || '',
-                automaticPostForSale: false
+                gridOperator: (selectedGridOperator && selectedGridOperator[0]) || ''
             })
         );
         formikActions.setSubmitting(false);
