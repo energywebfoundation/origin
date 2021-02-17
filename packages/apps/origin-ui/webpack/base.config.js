@@ -14,8 +14,7 @@ module.exports = {
         // Add '.ts' and '.tsx' as resolvable extensions.
         extensions: ['.ts', '.tsx', '.js', '.json'],
         alias: {
-            "@material-ui/styles": path.join(__dirname, '../node_modules/@material-ui/styles'),
-            "react-redux": require.resolve("react-redux")
+            'react-redux': require.resolve('react-redux')
         },
         fallback: {
             stream: require.resolve('stream-browserify'),
@@ -39,7 +38,7 @@ module.exports = {
 
     plugins: [
         new MiniCssExtractPlugin({ filename: 'styles.css' }),
-        new CopyWebpackPlugin({ 
+        new CopyWebpackPlugin({
             patterns: [{ from: 'env-config.json', to: 'env-config.json' }]
         }),
         new webpack.ProvidePlugin({
@@ -86,7 +85,7 @@ module.exports = {
             {
                 test: /\.m?js/,
                 resolve: {
-                  fullySpecified: false
+                    fullySpecified: false
                 }
             },
 

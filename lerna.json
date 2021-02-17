@@ -1,12 +1,10 @@
 {
-  "packages": [
-    "packages/*"
-  ],
-  "version": "independent",
-  "publishConfig" : {
-    "access" : "public",
-    "registry": "https://registry.npmjs.org"
-  },
-  "npmClient": "yarn",
-  "useWorkspaces": true
+    "packages": ["packages/**"],
+    "version": "independent",
+    "publishConfig": {
+        "access": "public",
+        "registry": "https://registry.npmjs.org"
+    },
+    "npmClient": "yarn",
+    "useWorkspaces": true
 }

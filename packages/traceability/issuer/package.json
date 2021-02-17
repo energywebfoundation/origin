@@ -45,17 +45,15 @@
         "@energyweb/utils-general": "11.0.1",
         "chai": "4.3.0",
         "dotenv": "8.2.0",
-        "ethers": "5.0.29",
+        "ethers": "5.0.31",
         "mocha": "8.3.0",
         "moment": "2.29.1",
-        "polly-js": "1.8.0",
         "precise-proofs-js": "1.2.0",
         "winston": "3.3.3"
     },
     "devDependencies": {
         "@typechain/ethers-v5": "1.0.0",
         "ethlint": "1.2.5",
-        "ganache-cli": "6.5.1",
         "truffle-typings": "1.0.8",
         "typechain": "4.0.1"
     },
