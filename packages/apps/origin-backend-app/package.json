@@ -35,6 +35,7 @@
     "author": "EnergyWeb DevHub GmbH; Joseph Bagaric, joseph.bagaric@energyweb.org; Piotr Kosinski, piotr.kosinski@energyweb.org",
     "license": "GPL-3.0-or-later",
     "dependencies": {
+        "@energyweb/migrations": "3.2.3",
         "@energyweb/exchange": "1.8.0",
         "@energyweb/exchange-io-erc1888": "1.1.0",
         "@energyweb/exchange-irec": "1.0.1",
