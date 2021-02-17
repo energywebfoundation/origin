@@ -1,15 +1,10 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { Form, Formik } from 'formik';
 import { Button, Modal, Typography } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import Close from '@material-ui/icons/Close';
-import {
-    FormInput,
-    FormSelect,
-    LightenColor,
-    useTranslation,
-    Upload
-} from '@energyweb/origin-ui-core';
+import { FormInput, FormSelect, LightenColor, Upload } from '@energyweb/origin-ui-core';
 import { useOriginConfiguration } from '../../utils/configuration';
 
 export function ImportDeviceModal(props: {

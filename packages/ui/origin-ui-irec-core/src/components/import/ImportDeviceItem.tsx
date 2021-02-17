@@ -1,7 +1,8 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { Button } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
-import { LightenColor, useTranslation } from '@energyweb/origin-ui-core';
+import { LightenColor } from '@energyweb/origin-ui-core';
 import { useOriginConfiguration } from '../../utils/configuration';
 
 export interface IDevice {
