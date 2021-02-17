@@ -57,7 +57,7 @@
         "bn.js": "^5.1.1",
         "class-transformer": "0.3.1",
         "class-validator": "0.13.1",
-        "ethers": "5.0.29",
+        "ethers": "5.0.31",
         "immutable": "4.0.0-rc.12",
         "moment": "2.29.1",
         "moment-range": "4.0.2",

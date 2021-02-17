@@ -31,7 +31,7 @@
     "dependencies": {
         "chai": "^4.2.0",
         "eth-sig-util": "2.5.4",
-        "ethers": "5.0.29",
+        "ethers": "5.0.31",
         "jsonschema": "1.4.0",
         "moment": "2.29.1",
         "winston": "3.3.3"

@@ -59,7 +59,7 @@
         "yup": "0.32.8",
         "chart.js": "2.9.4",
         "clsx": "1.1.1",
-        "ethers": "5.0.29",
+        "ethers": "5.0.31",
         "moment": "2.29.1",
         "moment-timezone": "0.5.33",
         "@date-io/moment": "1.3.13",
