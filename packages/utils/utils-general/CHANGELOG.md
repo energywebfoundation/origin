@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [11.0.1](https://github.com/energywebfoundation/origin/compare/@energyweb/utils-general@11.0.0...@energyweb/utils-general@11.0.1) (2021-02-12)
+
+
+### Bug Fixes
+
+* **deps:** update dependency eth-sig-util to v2.5.4 ([9277545](https://github.com/energywebfoundation/origin/commit/9277545353ce051d8b1a9de06618f4b72e08458d))
+* **deps:** update dependency ethers to v5.0.29 ([149041b](https://github.com/energywebfoundation/origin/commit/149041b4ca3648f1decf9e1acb5f7bb5d6fd721a))
+
+
+
+
+
 # [11.0.0](https://github.com/energywebfoundation/origin/compare/@energyweb/utils-general@10.0.0...@energyweb/utils-general@11.0.0) (2020-11-30)
 
 

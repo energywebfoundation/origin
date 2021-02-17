@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.1.3](https://github.com/energywebfoundation/origin/compare/@energyweb/issuer-api-client@0.1.2...@energyweb/issuer-api-client@0.1.3) (2021-02-12)
+
+
+### Bug Fixes
+
+* **deps:** update nest monorepo to v7.6.11 ([daee156](https://github.com/energywebfoundation/origin/commit/daee156b9c315c527311f0c78ffbdf4226b6785a))
+
+
+
+
+
 ## [0.1.2](https://github.com/energywebfoundation/origin/compare/@energyweb/issuer-api-client@0.1.1...@energyweb/issuer-api-client@0.1.2) (2020-12-04)
 
 **Note:** Version bump only for package @energyweb/issuer-api-client

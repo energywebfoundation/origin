@@ -20,24 +20,6 @@ env:
 git:
     depth: false
 
-cache:
-    yarn: true
-    # directories:
-    #     - packages/utils-general/build
-    #     - packages/utils-general/dist
-    #     - packages/origin-backend/dist
-    #     - packages/origin-backend-client/dist
-    #     - packages/origin-backend-app/dist
-    #     - packages/device-registry/schemas
-    #     - packages/device-registry/build
-    #     - packages/device-registry/dist
-    #     - packages/exchange/dist
-    #     - packages/exchange-core/dist
-    #     - packages/exchange-token-account/dist
-    #     - packages/exchange-token-account/build
-    #     - packages/issuer/build
-    #     - packages/issuer/dist
-
 before_install:
     - sh scripts/restore-original-timestamps.sh
     - git fetch origin master:master
@@ -51,6 +33,7 @@ before_deploy:
     - echo "//registry.npmjs.org/:_authToken=\${NPM_TOKEN}" >> $HOME/.npmrc 2> /dev/null
     - npm whoami
     - wget -qO- https://toolbelt.heroku.com/install-ubuntu.sh | sh
+    - echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
 
 install:
     - set -e

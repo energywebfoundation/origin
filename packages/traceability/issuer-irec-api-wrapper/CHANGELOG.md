@@ -3,6 +3,25 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.2.0](https://github.com/energywebfoundation/origin/compare/@energyweb/issuer-irec-api-wrapper@0.1.0-alpha.2...@energyweb/issuer-irec-api-wrapper@0.2.0) (2021-02-12)
+
+
+### Bug Fixes
+
+* migrations ([9f9ea84](https://github.com/energywebfoundation/origin/commit/9f9ea840dddd79c550c880aee62f5ae85297fc8f))
+* **deps:** update dependency moment-timezone to v0.5.33 ([54f255b](https://github.com/energywebfoundation/origin/commit/54f255bdd186827271d50c1aee2967f3c3e928a9))
+
+
+### Features
+
+* **issuer-irec-api-wrapper:** added org, device and fuel methods, added flow tests ([67e5744](https://github.com/energywebfoundation/origin/commit/67e57444f2e2593ae7a1440aa53a7504d0cb01b6))
+* **origin-device-registry-irec-local-api:** add endpoints to get device and fuel types ([6ff6b7f](https://github.com/energywebfoundation/origin/commit/6ff6b7fb15d7813140ea701846736a1f779ba788))
+* **origin-irec-organization-api:** added connection module ([09da211](https://github.com/energywebfoundation/origin/commit/09da2113acfb27d95dc442aadee6be2f36e257c8))
+
+
+
+
+
 # [0.1.0-alpha.2](https://github.com/energywebfoundation/origin/compare/@energyweb/issuer-irec-api-wrapper@0.1.0-alpha.1...@energyweb/issuer-irec-api-wrapper@0.1.0-alpha.2) (2020-11-30)
 
 

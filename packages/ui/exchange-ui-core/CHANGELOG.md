@@ -3,6 +3,26 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.3.0](https://github.com/energywebfoundation/origin/compare/@energyweb/exchange-ui-core@1.2.1...@energyweb/exchange-ui-core@1.3.0) (2021-02-12)
+
+
+### Bug Fixes
+
+* **deps:** update dependency ethers to v5.0.29 ([149041b](https://github.com/energywebfoundation/origin/commit/149041b4ca3648f1decf9e1acb5f7bb5d6fd721a))
+* **deps:** update dependency i18next to v19.8.7 ([6616021](https://github.com/energywebfoundation/origin/commit/6616021d005358d3998159c2066e9aaf22c9412e))
+* **deps:** update dependency moment-timezone to v0.5.33 ([54f255b](https://github.com/energywebfoundation/origin/commit/54f255bdd186827271d50c1aee2967f3c3e928a9))
+* **deps:** update dependency webpack to v5.21.2 ([16c5b14](https://github.com/energywebfoundation/origin/commit/16c5b147b0c278127ca38590771ff15d849b966a))
+* **deps:** update webpack ([f323b5b](https://github.com/energywebfoundation/origin/commit/f323b5babca7089944cea81e244f0da0c81ab28b))
+
+
+### Features
+
+* **exchange-ui-core:** bids table multiple device filter ([5856bf7](https://github.com/energywebfoundation/origin/commit/5856bf773e7ddbdd63c26e1e374e5300956c75c8))
+
+
+
+
+
 ## [1.2.1](https://github.com/energywebfoundation/origin/compare/@energyweb/exchange-ui-core@1.2.0...@energyweb/exchange-ui-core@1.2.1) (2020-12-04)
 
 

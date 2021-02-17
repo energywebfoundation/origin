@@ -1,6 +1,6 @@
 {
     "name": "@energyweb/origin-ui-irec-core",
-    "version": "0.0.1",
+    "version": "0.0.2",
     "main": "dist/src/index.js",
     "scripts": {
         "build": "yarn build:static && yarn build:ts",
@@ -15,11 +15,11 @@
         "clean": "shx rm -rf dist"
     },
     "dependencies": {
-        "@energyweb/utils-general": "11.0.0",
-        "@energyweb/origin-ui-core": "1.12.0",
-        "@energyweb/origin-backend-core": "7.0.1",
-        "@energyweb/origin-device-registry-api-client": "0.0.1",
-        "@energyweb/origin-device-registry-irec-local-api-client": "0.0.1",
+        "@energyweb/utils-general": "11.0.1",
+        "@energyweb/origin-ui-core": "1.13.0",
+        "@energyweb/origin-backend-core": "8.0.0",
+        "@energyweb/origin-device-registry-api-client": "0.0.2",
+        "@energyweb/origin-device-registry-irec-local-api-client": "0.0.2",
         "react": "17.0.1",
         "react-dom": "17.0.1",
         "react-router-dom": "5.2.0",

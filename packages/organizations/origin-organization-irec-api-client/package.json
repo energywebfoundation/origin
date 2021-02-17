@@ -1,6 +1,6 @@
 {
     "name": "@energyweb/origin-organization-irec-api-client",
-    "version": "0.1.1",
+    "version": "0.1.2",
     "description": "Client library interacting with the Origin Organization IREC API",
     "homepage": "https://github.com/energywebfoundation/origin/tree/master/packages/origin-organization-irec-api-client#readme",
     "author": "EnergyWeb DevHub GmbH; Joseph Bagaric, joseph.bagaric@energyweb.org",
@@ -26,9 +26,9 @@
         "axios": "0.21.1"
     },
     "devDependencies": {
-        "@energyweb/origin-organization-irec-api": "1.2.1",
-        "@nestjs/swagger": "4.7.12",
-        "@nestjs/testing": "7.6.11",
+        "@energyweb/origin-organization-irec-api": "1.3.0",
+        "@nestjs/swagger": "4.7.13",
+        "@nestjs/testing": "7.6.12",
         "@nestjs/typeorm": "7.1.5",
         "@openapitools/openapi-generator-cli": "2.1.23",
         "json-to-pretty-yaml": "1.2.2",

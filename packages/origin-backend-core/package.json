@@ -1,6 +1,6 @@
 {
     "name": "@energyweb/origin-backend-core",
-    "version": "7.0.1",
+    "version": "8.0.0",
     "description": "",
     "main": "dist/js/src/index.js",
     "scripts": {

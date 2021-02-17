@@ -3,6 +3,24 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.1.0](https://github.com/energywebfoundation/origin/compare/@energyweb/issuer@3.0.1...@energyweb/issuer@3.1.0) (2021-02-12)
+
+
+### Bug Fixes
+
+* **deps:** update dependency chai to v4.3.0 ([aaa7dd8](https://github.com/energywebfoundation/origin/commit/aaa7dd8fb9afa14612e1a9fbaec32a4e370d7c2c))
+* **deps:** update dependency ethers to v5.0.29 ([149041b](https://github.com/energywebfoundation/origin/commit/149041b4ca3648f1decf9e1acb5f7bb5d6fd721a))
+* **issuer:** issuedCertificateTokenId is BigNumber but should be number ([9ed9521](https://github.com/energywebfoundation/origin/commit/9ed9521d3cde8e7801bc6a44d1a23bd65f22baa1))
+
+
+### Features
+
+* **issuer:** Track the issued certificate ID as a part of an approved CertificationRequest ([b3a500d](https://github.com/energywebfoundation/origin/commit/b3a500db052da4ef53d812425b0a1ce2967450e3))
+
+
+
+
+
 ## [3.0.1](https://github.com/energywebfoundation/origin/compare/@energyweb/issuer@3.0.0...@energyweb/issuer@3.0.1) (2020-11-30)
 
 **Note:** Version bump only for package @energyweb/issuer
