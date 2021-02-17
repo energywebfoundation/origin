@@ -29,7 +29,6 @@
     },
     "types": "dist/js/src/index.d.ts",
     "dependencies": {
-        "@energyweb/origin-backend-core": "8.0.0",
         "chai": "^4.2.0",
         "eth-sig-util": "2.5.4",
         "ethers": "5.0.29",
@@ -38,8 +37,7 @@
         "winston": "3.3.3"
     },
     "devDependencies": {
-        "@types/eth-sig-util": "2.1.0",
-        "ethlint": "1.2.5"
+        "@types/eth-sig-util": "2.1.0"
     },
     "gitHead": "54beaf7fe6686810de74ca290daf99cbde510f9d",
     "publishConfig": {

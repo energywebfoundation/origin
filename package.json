@@ -14,13 +14,14 @@
         "chai": "4.3.0",
         "concurrently": "5.3.0",
         "cross-env": "7.0.3",
+        "depcheck": "1.2.0",
         "dotenv": "8.2.0",
         "eslint": "7.20.0",
         "eslint-config-airbnb-base": "14.2.1",
         "eslint-config-prettier": "7.2.0",
         "eslint-plugin-import": "2.22.1",
         "eslint-plugin-prettier": "3.3.1",
-        "ganache-cli": "6.8.2",
+        "ganache-cli": "6.12.2",
         "husky": "4.3.8",
         "lerna": "3.22.1",
         "lint-staged": "10.5.4",
@@ -35,6 +36,7 @@
         "wait-on": "5.2.1"
     },
     "scripts": {
+        "depcheck": "lerna exec \"depcheck --skip-missing\" --stream --concurrency 1 --no-bail",
         "build": "yarn build:static && yarn build:ts && lerna run build --scope @energyweb/origin-ui --stream",
         "build:ui": "lerna run build --scope @energyweb/origin-ui --stream",
         "build:ui-core": "lerna run build --scope @energyweb/origin-ui-core --stream",
@@ -84,7 +86,7 @@
         "packages/utils/*"
     ],
     "engines": {
-        "node": "12"
+        "node": "14"
     },
     "husky": {
         "hooks": {

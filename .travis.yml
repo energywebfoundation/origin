@@ -2,7 +2,7 @@ sudo: required
 dist: bionic
 language: node_js
 node_js:
-    - '12'
+    - '14'
 
 notifications:
     slack:
@@ -52,18 +52,18 @@ deploy:
       script: 'git checkout master && yarn publish:canary && npx sleep 5 && yarn build:containers:canary && yarn deploy:heroku:canary'
       skip_cleanup: true
       on:
-          node: '12'
+          node: '14'
           branch: master
     - provider: script
       edge: true
       script: 'git checkout release && yarn publish:release && npx sleep 5 && yarn build:containers:release'
       on:
-          node: '12'
+          node: '14'
           branch: release
           condition: '$TRAVIS_COMMIT_MESSAGE != *"skip-deploy"*'
     - provider: script
       script: 'git checkout preview && yarn publish:preview'
       skip_cleanup: true
       on:
-          node: '12'
+          node: '14'
           branch: preview
