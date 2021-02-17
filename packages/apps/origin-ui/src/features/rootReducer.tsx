@@ -29,7 +29,7 @@ export const createRootReducer = (history) =>
         ordersState,
         exchangeGeneralState,
         supplyState,
-        web3: web3State,
+        web3State,
         iRecGeneralState,
         iRecDevicesState
     });
