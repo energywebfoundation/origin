@@ -1,4 +1,8 @@
-import { ProducingDevice } from '@energyweb/device-registry';
+import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useTranslation } from 'react-i18next';
+import { BigNumber } from 'ethers';
+import moment from 'moment';
 import {
     Button,
     Dialog,
@@ -12,18 +16,17 @@ import {
     Select,
     TextField
 } from '@material-ui/core';
-import { BigNumber } from 'ethers';
-import moment from 'moment';
-import React, { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-
-import { requestPublishForSale, resyncCertificate } from '../../features/certificates';
-import { ICertificateViewItem } from '../../features/certificates/types';
-import { getCurrencies } from '../../features/general/selectors';
-import { getUserOffchain } from '../../features/users/selectors';
-import { countDecimals, EnergyFormatter, formatDate, useTranslation } from '../../utils';
-import { getEnvironment } from '../../features';
-import { IEnvironment } from '../../features/general';
+import { ProducingDevice } from '@energyweb/device-registry';
+import {
+    requestPublishForSale,
+    resyncCertificate,
+    ICertificateViewItem
+} from '../../features/certificates';
+import { getCurrencies, IEnvironment, getEnvironment } from '../../features/general';
+import { getUserOffchain } from '../../features/users';
+import { formatDate } from '../../utils/time';
+import { countDecimals } from '../../utils/helper';
+import { EnergyFormatter } from '../../utils/EnergyFormatter';
 
 interface IProps {
     certificate: ICertificateViewItem;

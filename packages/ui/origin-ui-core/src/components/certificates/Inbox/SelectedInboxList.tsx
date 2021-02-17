@@ -1,10 +1,10 @@
-import { InboxSelectedItem } from './InboxSelectedItem';
 import React from 'react';
-import { BigNumber } from 'ethers';
-import { IInboxCertificateData, IInboxItemData } from './InboxItem';
 import { useTranslation } from 'react-i18next';
-import { makeStyles } from '@material-ui/styles';
+import { BigNumber } from 'ethers';
+import { makeStyles } from '@material-ui/core';
 import { useOriginConfiguration } from '../../../utils/configuration';
+import { InboxSelectedItem } from './InboxSelectedItem';
+import { IInboxCertificateData, IInboxItemData } from './InboxItem';
 
 export function SelectedInboxList(prop: {
     pairs: [IInboxItemData, IInboxCertificateData][];

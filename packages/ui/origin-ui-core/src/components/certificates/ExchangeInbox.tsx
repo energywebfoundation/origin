@@ -1,22 +1,36 @@
 import React, { useEffect, useState } from 'react';
-import { useOriginConfiguration } from '../../utils/configuration';
-import { Button, Checkbox, Grid, Tab, Tabs, Typography } from '@material-ui/core';
-import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
+import { useTranslation } from 'react-i18next';
+import { BigNumber } from 'ethers';
+import {
+    Button,
+    Checkbox,
+    Grid,
+    Tab,
+    Tabs,
+    Typography,
+    makeStyles,
+    TextField
+} from '@material-ui/core';
 import {
     getCertificates,
     ICertificateViewItem,
     requestPublishForSale,
     requestWithdrawCertificate
 } from '../../features/certificates';
-import { getEnvironment, getProducingDevices, getUserOffchain } from '../../features';
-import { EnergyFormatter, getDeviceId } from '../../utils';
-import { IInboxCertificateData, IInboxItemData, InboxItem } from './Inbox/InboxItem';
-import TextField from '@material-ui/core/TextField';
-import { BigNumber } from 'ethers';
-import { makeStyles } from '@material-ui/styles';
-import { InboxItemPreview } from './Inbox/InboxItemPreview';
-import { SelectedInboxList } from './Inbox/SelectedInboxList';
+import { getProducingDevices } from '../../features/devices';
+import { getEnvironment } from '../../features/general';
+import { getUserOffchain } from '../../features/users';
+import { useOriginConfiguration } from '../../utils/configuration';
+import { EnergyFormatter } from '../../utils/EnergyFormatter';
+import { getDeviceId } from '../../utils/device';
+import {
+    IInboxCertificateData,
+    IInboxItemData,
+    InboxItem,
+    InboxItemPreview,
+    SelectedInboxList
+} from './Inbox';
 
 export function ExchangeInbox(): JSX.Element {
     const configuration = useOriginConfiguration();

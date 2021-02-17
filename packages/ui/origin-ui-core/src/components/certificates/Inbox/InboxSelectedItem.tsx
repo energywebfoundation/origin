@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
-import { makeStyles } from '@material-ui/core/styles';
-import { useOriginConfiguration } from '../../../utils/configuration';
-import { EnergyFormatter, LightenColor, useTranslation } from '../../../utils';
-import { IInboxCertificateData, IInboxItemData } from './InboxItem';
-import { DeviceIcon } from '../../DeviceIcon';
-import { Button, IconButton, TextField } from '@material-ui/core';
-import EditIcon from '@material-ui/icons/Edit';
+import { useTranslation } from 'react-i18next';
 import { BigNumber } from 'ethers';
+import { Button, IconButton, TextField, makeStyles } from '@material-ui/core';
+import EditIcon from '@material-ui/icons/Edit';
 import { Unit } from '@energyweb/utils-general';
+import { useOriginConfiguration } from '../../../utils/configuration';
+import { LightenColor } from '../../../utils/colors';
+import { EnergyFormatter } from '../../../utils/EnergyFormatter';
+import { DeviceIcon } from '../../Icons';
+import { IInboxCertificateData, IInboxItemData } from './InboxItem';
 
 export function InboxSelectedItem(props: {
     cert: IInboxCertificateData;

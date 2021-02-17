@@ -1,2 +1,2 @@
 export * from './Certificates';
-export * from './certificateMenuCreator';
+export * from './certificateMenu';

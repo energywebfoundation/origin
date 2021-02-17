@@ -1,4 +1,7 @@
 import React, { useRef, useEffect, useContext } from 'react';
+import { useSelector } from 'react-redux';
+import { useHistory } from 'react-router-dom';
+import { useTranslation, Trans } from 'react-i18next';
 import {
     Dialog,
     DialogContent,
@@ -13,15 +16,12 @@ import {
     Grid,
     Box
 } from '@material-ui/core';
-import { useHistory } from 'react-router-dom';
-import { useSelector } from 'react-redux';
-import { Role, OrganizationInvitationStatus, isRole } from '@energyweb/origin-backend-core';
-import { OriginConfigurationContext } from '..';
-import { OriginFeature } from '@energyweb/utils-general';
-import { getUserOffchain, getInvitations } from '../../features/users/selectors';
-import { useTranslation, useLinks } from '../..';
-import { Trans } from 'react-i18next';
 import { Brightness1 } from '@material-ui/icons';
+import { Role, OrganizationInvitationStatus, isRole } from '@energyweb/origin-backend-core';
+import { OriginFeature } from '@energyweb/utils-general';
+import { getUserOffchain, getInvitations } from '../../features/users';
+import { useLinks } from '../../utils/routing';
+import { OriginConfigurationContext } from '../PackageConfigurationProvider';
 import OrgAddedIcon from '../../../assets/icon-org-added.svg';
 
 interface IProps {

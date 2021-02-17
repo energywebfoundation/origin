@@ -1,14 +1,13 @@
 import React, { useState } from 'react';
+import { useSelector } from 'react-redux';
 import { Route, Redirect } from 'react-router-dom';
 import { Role, isRole } from '@energyweb/origin-backend-core';
-import { PageContent } from '../PageContent/PageContent';
-import { CertificateDetailView } from './CertificateDetailView';
-import { useSelector } from 'react-redux';
-import { getUserOffchain } from '../../features/users/selectors';
-import { useLinks } from '../../utils';
-import { RoleChangedModal } from '../Modal/RoleChangedModal';
-import { ConnectBlockchainAccountModal } from '../Modal/ConnectBlockchainAccountModal';
-import { certificatesMenuCreator } from './certificateMenuCreator';
+import { getUserOffchain } from '../../features/users';
+import { useLinks } from '../../utils/routing';
+import { PageContent } from '../Layout';
+import { RoleChangedModal, ConnectBlockchainAccountModal } from '../Modal';
+import { CertificateDetailView } from './DetailView';
+import { useCertificatesMenu } from './certificateMenu';
 
 function CertificateDetailViewId(id: number) {
     return <CertificateDetailView id={id} />;
@@ -22,7 +21,7 @@ export function Certificates() {
 
     const isIssuer = isRole(user, Role.Issuer);
 
-    const certificateMenuList = certificatesMenuCreator(user);
+    const certificateMenuList = useCertificatesMenu();
 
     function getDefaultRedirect() {
         if (user) {

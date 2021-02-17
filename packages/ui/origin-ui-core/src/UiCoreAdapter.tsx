@@ -1,15 +1,15 @@
 import React from 'react';
-import { MuiThemeProvider } from '@material-ui/core';
-import { MuiPickersUtilsProvider } from '@material-ui/pickers';
-import MomentUtils from '@date-io/moment';
+import { Store, CombinedState, AnyAction } from 'redux';
 import { Provider } from 'react-redux';
 import { ConnectedRouter } from 'connected-react-router';
 import { History } from 'history';
+import { MuiThemeProvider } from '@material-ui/core';
+import { MuiPickersUtilsProvider } from '@material-ui/pickers';
+import MomentUtils from '@date-io/moment';
 import {
     OriginConfigurationProvider,
     IOriginConfiguration
 } from './components/PackageConfigurationProvider';
-import { Store, CombinedState, AnyAction } from 'redux';
 import { ICoreState } from './types';
 
 interface IProps {

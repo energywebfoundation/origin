@@ -1,19 +1,14 @@
 import React, { useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import { useSelector } from 'react-redux';
 import { Redirect, Route } from 'react-router-dom';
-import { getUserOffchain } from '../../features/users/selectors';
 import { useLinks } from '../../utils';
-import { PageContent } from '../PageContent/PageContent';
+import { PageContent } from '../Layout/PageContent';
 import { ProducingDeviceDetailView } from './ProducingDevice/ProducingDeviceDetailView';
 import { RoleChangedModal } from '../Modal/RoleChangedModal';
 import { ConnectBlockchainAccountModal } from '../Modal/ConnectBlockchainAccountModal';
-import { deviceMenuCreator } from './deviceMenuCreator';
+import { useDeviceMenu } from './deviceMenu';
 
 export function Device() {
-    const userOffchain = useSelector(getUserOffchain);
     const { baseURL, getDevicesLink } = useLinks();
-    const { t } = useTranslation();
     const [showRoleModal, setShowRoleModal] = useState(false);
     const [showBlockchainModal, setShowBlockchainModal] = useState(false);
 
@@ -27,7 +22,7 @@ export function Device() {
         );
     }
 
-    const deviceMenuList = deviceMenuCreator(userOffchain, t);
+    const deviceMenuList = useDeviceMenu();
 
     return (
         <div className="PageWrapper">

@@ -1,6 +1,6 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { Dialog, DialogTitle, DialogActions, Button, Box, useTheme, Grid } from '@material-ui/core';
-import { useTranslation } from '../..';
 import iconAdded from '../../../assets/icon-org-added.svg';
 
 interface IProps {
