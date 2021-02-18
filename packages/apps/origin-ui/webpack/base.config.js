@@ -14,7 +14,8 @@ module.exports = {
         // Add '.ts' and '.tsx' as resolvable extensions.
         extensions: ['.ts', '.tsx', '.js', '.json'],
         alias: {
-            'react-redux': require.resolve('react-redux')
+            'react-redux': require.resolve('react-redux'),
+            'react-i18next': require.resolve('../node_modules/react-i18next')
         },
         fallback: {
             stream: require.resolve('stream-browserify'),
