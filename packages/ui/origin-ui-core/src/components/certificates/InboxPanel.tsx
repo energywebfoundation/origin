@@ -39,7 +39,7 @@ export function InboxPanel(props: {
     const { t } = useTranslation();
 
     const allCertificates: ICertificateViewItem[] = useSelector(getCertificates);
-    let certificates: ICertificateViewItem[];
+    const [certificates, setCertificates] = useState<ICertificateViewItem[]>([]);
     const producingDevices = useSelector(getProducingDevices);
     const environment = useSelector(getEnvironment);
 
@@ -54,11 +54,15 @@ export function InboxPanel(props: {
 
     const user = useSelector(getUserOffchain);
 
-    const updateView = () => {
-        certificates = allCertificates
-            .filter((c) => c.source === mode)
-            .filter((c) => c.energy.publicVolume.toNumber() !== 0);
+    useEffect(() => {
+        setCertificates(
+            allCertificates
+                .filter((c) => c.source === mode)
+                .filter((c) => c.energy.publicVolume.toNumber() !== 0)
+        );
+    }, [allCertificates]);
 
+    const updateView = () => {
         const newViewData = producingDevices
             .map((device) => {
                 const deviceId = getDeviceId(device, environment);
@@ -98,7 +102,7 @@ export function InboxPanel(props: {
 
     useEffect(() => {
         updateView();
-    }, [allCertificates, producingDevices, user]);
+    }, [certificates, producingDevices, user]);
 
     const getSelectedCertificates = (): IInboxCertificateData[] => {
         const allCerts: Record<string, IInboxCertificateData> = {};
