@@ -30,7 +30,8 @@
                 "pending": "Pending",
                 "approved": "Approved",
                 "import": "Certificate import",
-                "exchangeInbox": "Exchange inbox"
+                "exchangeInbox": "Exchange inbox",
+                "blockchainInbox": "Blockchain inbox"
             },
             "exchange": {
                 "view_market": "View market",
@@ -39,7 +40,10 @@
                 "create_bundle": "Create bundle",
                 "my_trades": "My trades",
                 "my_orders": "My orders",
-                "supply": "Supply"
+                "supply": "Supply",
+                "import": "Certificate import",
+                "exchangeInbox": "Exchange Inbox",
+                "blockchainInbox": "Blockchain Inbox"
             }
         },
         "device": {
@@ -136,7 +140,12 @@
                 "generationDateEnd": "Generation End Date",
                 "claimedEnergy": "Claimed Energy",
                 "claimBeneficiary": "Claim beneficiary",
-                "totalPrice": "Total Price"
+                "totalPrice": "Total Price",
+                "country": "Country",
+                "beneficiary": "Beneficiary",
+                "address": "Address",
+                "region": "Region",
+                "zip": "ZIP"
             },
             "actions": {
                 "requestCertificates": "Request certificates",
@@ -157,6 +166,8 @@
                 "importNCertificates": "Import {count} Certificate(s)",
                 "withdrawNCertificates": "Withdraw {count} Certificate(s)",
                 "sellNCertificates": "Sell {count} Certificate(s)",
+                "retireNCertificates": "Retire {count} Certificate(s)",
+                "depositNCertificates": "Deposit {count} Certificate(s)",
                 "ok": "Ok",
                 "view": "View",
                 "confirm": "Confirm",
@@ -194,9 +205,12 @@
                 "selectedForImport": "Selected for import",
                 "selectedForSale": "Selected for sale",
                 "selectedForWithdraw": "Selected for withdraw",
+                "selectedForRetirement": "Selected for retirement",
+                "selectedForDeposit": "Selected for deposit",
                 "selectCertificate": "Select Certificate",
                 "totalVolume": "Total volume",
-                "totalPrice": "Total price"
+                "totalPrice": "Total price",
+                "retireForBeneficiary": "Retire for beneficiary"
             },
             "event": {
                 "name": {
