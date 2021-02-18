@@ -6,8 +6,6 @@ import { Provider } from 'react-redux';
 import { Store, CombinedState, AnyAction } from 'redux';
 import { ConnectedRouter } from 'connected-react-router';
 import { History } from 'history';
-import { I18nextProvider } from 'react-i18next';
-import { i18n } from 'i18next';
 import { OriginConfigurationProvider, IOriginConfiguration } from '@energyweb/origin-ui-core';
 import { IIRecAppState } from './types';
 
@@ -16,7 +14,6 @@ interface IProps {
     configuration: IOriginConfiguration;
     history: History;
     component: React.ReactElement;
-    i18nInstance: i18n;
 }
 
 export function IRecCoreAdapter(props: IProps) {
@@ -31,9 +28,7 @@ export function IRecCoreAdapter(props: IProps) {
                         >
                             <Provider store={props.store}>
                                 <ConnectedRouter history={props.history}>
-                                    <I18nextProvider i18n={props.i18nInstance}>
-                                        {props.component}
-                                    </I18nextProvider>
+                                    {props.component}
                                 </ConnectedRouter>
                             </Provider>
                         </MuiPickersUtilsProvider>
