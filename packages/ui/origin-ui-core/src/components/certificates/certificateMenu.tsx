@@ -4,11 +4,12 @@ import { isRole, UserStatus, Role } from '@energyweb/origin-backend-core';
 import { OriginFeature } from '@energyweb/utils-general';
 import { getUserOffchain } from '../../features/users';
 import { CertificatesInbox } from './CertificatesInbox';
-import { ExchangeInbox } from './ExchangeInbox';
 import { ClaimedCertificates } from './ClaimedCertificates';
 import { PendingCertificates } from './PendingCertificates';
 import { ApprovedCertificates } from './ApprovedCertificates';
 import { CertificateImport } from './Import/CertificateImport';
+import { ExchangeInboxPage } from './ExchangeInboxPage';
+import { BlockchainInboxPage } from './BlockchainInboxPage';
 
 interface ICertificateMenuItem {
     key: string;
@@ -38,7 +39,14 @@ export const useCertificatesMenu = (): ICertificateMenuItem[] => {
         {
             key: 'exchange_inbox',
             label: 'navigation.certificates.exchangeInbox',
-            component: ExchangeInbox,
+            component: ExchangeInboxPage,
+            show: userIsActiveAndPartOfOrg,
+            features: [OriginFeature.Certificates, OriginFeature.Buyer]
+        },
+        {
+            key: 'blockchain-inbox',
+            label: 'navigation.certificates.blockchainInbox',
+            component: BlockchainInboxPage,
             show: userIsActiveAndPartOfOrg,
             features: [OriginFeature.Certificates, OriginFeature.Buyer]
         },

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { BigNumber } from 'ethers';
 import { Button, IconButton, TextField, makeStyles } from '@material-ui/core';
@@ -9,6 +9,7 @@ import { LightenColor } from '../../../utils/colors';
 import { EnergyFormatter } from '../../../utils/EnergyFormatter';
 import { DeviceIcon } from '../../Icons';
 import { IInboxCertificateData, IInboxItemData } from './InboxItem';
+import { InboxItemEditContext } from '../InboxPanel';
 
 export function InboxSelectedItem(props: {
     cert: IInboxCertificateData;
@@ -68,13 +69,16 @@ export function InboxSelectedItem(props: {
 
     const classes = useStyles();
 
-    const [editMode, setEditMode] = useState(false);
+    const [localEditMode, setLocalEditMode] = useState(false);
     const [MWhValue, setMWh] = useState<number>(cert.energy.toNumber() / Unit.MWh);
     const { t } = useTranslation();
 
+    const { isEditing, setIsEditing } = useContext(InboxItemEditContext);
+
     function saveForm() {
         setEnergy(BigNumber.from(MWhValue).mul(Unit.MWh));
-        setEditMode(false);
+        setLocalEditMode(false);
+        setIsEditing(false);
     }
 
     return (
@@ -86,40 +90,43 @@ export function InboxSelectedItem(props: {
                     <div className={classes.text_1}>{device.name}</div>
                 </div>
 
-                {!editMode && (
+                {!localEditMode && (
                     <div className={classes.text_2}>
                         {EnergyFormatter.format(cert.energy, true)}
                     </div>
                 )}
 
-                {!editMode && (
+                {!localEditMode && (
                     <IconButton
                         className={classes.editButton}
                         size={'small'}
+                        disabled={isEditing}
                         onClick={(event) => {
                             event.preventDefault();
-                            setEditMode(true);
+                            setLocalEditMode(true);
+                            setIsEditing(true);
                         }}
                     >
-                        <EditIcon color={'primary'} />
+                        <EditIcon color={isEditing ? 'disabled' : 'primary'} />
                     </IconButton>
                 )}
 
-                {editMode && (
+                {localEditMode && (
                     <Button
                         className={classes.editButton}
                         size={'small'}
                         onClick={(event) => {
                             event.preventDefault();
                             setMWh(cert.energy.toNumber() / Unit.MWh);
-                            setEditMode(false);
+                            setLocalEditMode(false);
+                            setIsEditing(false);
                         }}
                     >
                         <span>{t('certificate.actions.cancel')}</span>
                     </Button>
                 )}
             </div>
-            {editMode && (
+            {localEditMode && (
                 <div className={classes.form}>
                     <TextField
                         type={'number'}
