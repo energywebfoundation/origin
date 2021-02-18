@@ -1,8 +1,8 @@
 import React, { useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Typography, Paper, makeStyles, createStyles, Grid } from '@material-ui/core';
 import { Info } from '@material-ui/icons';
 import {
-    useTranslation,
     EnergyFormatter,
     TableMaterial,
     ICustomRow,

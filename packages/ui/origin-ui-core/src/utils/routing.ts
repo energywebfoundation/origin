@@ -1,5 +1,8 @@
 import { useSelector } from 'react-redux';
-import { getBaseURL } from '../features/selectors';
+
+export const getBaseURL = () => {
+    return '';
+};
 
 export function getDevicesLink(baseURL: string) {
     return `${baseURL}/devices`;

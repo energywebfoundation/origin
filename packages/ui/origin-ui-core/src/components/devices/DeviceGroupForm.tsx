@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { useTranslation } from 'react-i18next';
 import { Formik, Field, Form, FormikHelpers, FieldArray } from 'formik';
 import * as Yup from 'yup';
 import { TextField } from 'formik-material-ui';
-import { useSelector, useDispatch } from 'react-redux';
 import {
     Paper,
     Typography,
@@ -21,20 +22,21 @@ import {
 } from '@material-ui/core';
 import { Skeleton } from '@material-ui/lab';
 import { Unit } from '@energyweb/utils-general';
+import { ProducingDevice } from '@energyweb/device-registry';
 import { DeviceStatus, IExternalDeviceId } from '@energyweb/origin-backend-core';
-import { getConfiguration } from '../../features/selectors';
 import {
     getCompliance,
     getCountry,
     getExternalDeviceIdTypes,
     requestDeviceCreation
 } from '../../features/general';
-import { HierarchicalMultiSelect } from '../HierarchicalMultiSelect';
-import { ProducingDevice } from '@energyweb/device-registry';
-import { PowerFormatter, useTranslation, moment, usePermissions } from '../../utils';
-import { FormInput } from '../Form/FormInput';
-import { Upload, IUploadedFile } from '../Upload';
-import { Requirements } from '../Requirements';
+import { getConfiguration } from '../../features/configuration';
+import { moment } from '../../utils/time';
+import { usePermissions } from '../../utils/permissions';
+import { PowerFormatter } from '../../utils/PowerFormatter';
+import { HierarchicalMultiSelect, FormInput } from '../Form';
+import { Upload, IUploadedFile } from '../Documents';
+import { Requirements } from '../Layout';
 import { DeviceSelectors } from './DeviceSelectors';
 
 const MAX_TOTAL_CAPACITY = 5 * Unit.MW;

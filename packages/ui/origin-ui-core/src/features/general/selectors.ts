@@ -37,3 +37,5 @@ export const getNoAccountModalVisibility = (state: ICoreState) =>
     state.generalState.noAccountModalVisibility;
 
 export const getIRecClient = (state: ICoreState) => state.generalState.iRecClient;
+
+export const getDeviceClient = (store: ICoreState) => store.generalState.backendClient.deviceClient;

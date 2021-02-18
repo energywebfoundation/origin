@@ -1,15 +1,13 @@
 import React from 'react';
-import { useTranslation } from 'react-i18next';
 import { Redirect, Route } from 'react-router-dom';
-import { useLinks } from '../../utils';
-import { PageContent } from '../PageContent/PageContent';
-import { adminMenuCreator } from './adminMenuCreator';
+import { useLinks } from '../../utils/routing';
+import { PageContent } from '../Layout';
+import { useAdminMenu } from './adminMenu';
 
 export function Admin() {
     const { baseURL, getAdminLink } = useLinks();
-    const { t } = useTranslation();
 
-    const adminMenuList = adminMenuCreator(t);
+    const adminMenuList = useAdminMenu();
 
     return (
         <div className="PageWrapper">

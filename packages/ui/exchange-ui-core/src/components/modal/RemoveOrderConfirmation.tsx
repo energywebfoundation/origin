@@ -1,5 +1,6 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
+import { useTranslation } from 'react-i18next';
 import {
     Dialog,
     DialogContent,
@@ -12,7 +13,6 @@ import {
     useTheme
 } from '@material-ui/core';
 import { ErrorOutline } from '@material-ui/icons';
-import { useTranslation } from '@energyweb/origin-ui-core';
 import { cancelOrder, archiveDemand } from '../../features/orders/actions';
 import { Order, Demand } from '../../utils/exchange';
 

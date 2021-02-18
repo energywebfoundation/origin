@@ -2,6 +2,7 @@ import React, { useContext, useEffect } from 'react';
 import { useSelector, useStore } from 'react-redux';
 import { Switch, Route, Redirect } from 'react-router-dom';
 import { History } from 'history';
+import { i18n } from 'i18next';
 import { LinearProgress, makeStyles, createStyles, useTheme } from '@material-ui/core';
 import { UserStatus, isRole, Role } from '@energyweb/origin-backend-core';
 import { OriginFeature, allOriginFeatures } from '@energyweb/utils-general';
@@ -30,6 +31,7 @@ import { IRecCoreAdapter, IRecApp } from '@energyweb/origin-ui-irec-core';
 
 interface IProps {
     history: History;
+    i18nInstance: i18n;
 }
 
 export function AppContainer(props: IProps) {
@@ -64,6 +66,7 @@ export function AppContainer(props: IProps) {
             configuration={config}
             history={props.history}
             component={component}
+            i18nInstance={props.i18nInstance}
         />
     );
 
@@ -80,6 +83,7 @@ export function AppContainer(props: IProps) {
             configuration={config}
             history={props.history}
             component={component}
+            i18nInstance={props.i18nInstance}
         />
     );
     const exchangeRoute = shareContextExchange(<ExchangeApp />);
@@ -90,6 +94,7 @@ export function AppContainer(props: IProps) {
             configuration={config}
             history={props.history}
             component={component}
+            i18nInstance={props.i18nInstance}
         />
     );
     const iRecDeviceRoute = shareContextIRec(<IRecApp />);

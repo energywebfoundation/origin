@@ -1,9 +1,10 @@
-import { Button, Modal } from '@material-ui/core';
 import React from 'react';
-import { useOriginConfiguration } from '../../../utils/configuration';
-import { makeStyles } from '@material-ui/core/styles';
-import { EnergyFormatter, formatDate, LightenColor, moment } from '../../../utils';
 import { useTranslation } from 'react-i18next';
+import { Button, Modal, makeStyles } from '@material-ui/core';
+import { useOriginConfiguration } from '../../../utils/configuration';
+import { LightenColor } from '../../../utils/colors';
+import { EnergyFormatter } from '../../../utils/EnergyFormatter';
+import { formatDate, moment } from '../../../utils/time';
 import { IInboxCertificateData } from './InboxItem';
 
 export function InboxItemPreview(props: {

@@ -1,7 +1,7 @@
 import { useSelector } from 'react-redux';
+import { useTranslation } from 'react-i18next';
 import { OrganizationStatus, UserStatus } from '@energyweb/origin-backend-core';
 import { getUserOffchain, getExchangeDepositAddress } from '../features/users';
-import { useTranslation } from '.';
 
 export interface IPermissionRule {
     label: string;

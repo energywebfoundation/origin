@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
     Paper,
     Typography,
@@ -21,7 +22,6 @@ import {
     showNotification,
     NotificationType,
     useValidation,
-    useTranslation,
     usePermissions,
     Moment,
     FormikDatePicker,

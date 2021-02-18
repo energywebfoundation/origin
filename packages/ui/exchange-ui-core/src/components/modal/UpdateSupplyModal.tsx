@@ -1,5 +1,6 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { useTranslation } from 'react-i18next';
 import {
     Dialog,
     DialogTitle,
@@ -9,7 +10,6 @@ import {
     Button,
     MenuItem
 } from '@material-ui/core';
-import { useTranslation } from '@energyweb/origin-ui-core';
 import { getEnvironment } from '../../features/general';
 import { createSupply, updateSupply } from '../../features/supply';
 import { IDeviceWithSupply } from '../../types';

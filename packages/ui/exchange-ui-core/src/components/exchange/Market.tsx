@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { Formik, Form } from 'formik';
 import {
     Paper,
@@ -15,7 +16,6 @@ import {
 import {
     getConfiguration,
     Moment,
-    useTranslation,
     formatCurrencyComplete,
     DeviceSelectors,
     LightenColor,

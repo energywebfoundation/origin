@@ -1,5 +1,6 @@
 import React from 'react';
 import { useHistory } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import {
     Dialog,
     DialogTitle,
@@ -11,7 +12,7 @@ import {
     makeStyles,
     createStyles
 } from '@material-ui/core';
-import { useTranslation, useLinks } from '../..';
+import { useLinks } from '../../utils/routing';
 
 interface IProps {
     showModal?: boolean;

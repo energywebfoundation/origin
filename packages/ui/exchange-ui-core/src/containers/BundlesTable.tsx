@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { BigNumber } from 'ethers';
 import { Fab, Tooltip } from '@material-ui/core';
 import { Visibility, Add, Cancel as CancelIcon } from '@material-ui/icons';
 import { Role, isRole, UserStatus } from '@energyweb/origin-backend-core';
 import {
-    useTranslation,
     formatCurrencyComplete,
     EnergyFormatter,
     energyShares,

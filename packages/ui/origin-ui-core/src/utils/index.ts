@@ -11,7 +11,6 @@ export * from './currency';
 export * from './test';
 export * from './bundles';
 export * from './clients';
-export { useTranslation } from 'react-i18next';
 export * from './colors';
 export * from './blockchainNetwork';
 export * from './organizationRoles';
