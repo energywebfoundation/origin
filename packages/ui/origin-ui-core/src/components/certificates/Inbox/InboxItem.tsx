@@ -19,7 +19,7 @@ export interface IInboxItemData {
 }
 
 export interface IInboxCertificateData {
-    id: string;
+    id: number;
     dateStart: number;
     dateEnd: number;
     energy: BigNumber;
@@ -30,11 +30,11 @@ export interface IInboxCertificateData {
 
 export function InboxItem(props: {
     device: IInboxItemData;
-    selected: string[];
+    selected: number[];
     selectedDevices: string[];
     onDeviceSelect: (id: string) => void;
-    onCertificateSelect: (id: string, deviceId: string) => void;
-    onViewClick: (id: string) => void;
+    onCertificateSelect: (id: number, deviceId: string) => void;
+    onViewClick: (id: number) => void;
 }): JSX.Element {
     const {
         device,
