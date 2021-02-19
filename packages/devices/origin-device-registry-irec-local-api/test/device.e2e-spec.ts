@@ -6,10 +6,9 @@ import dotenv from 'dotenv';
 import { expect } from 'chai';
 import supertest from 'supertest';
 
-import { CreateDeviceDTO } from '../src/device';
+import { CreateDeviceDTO, PublicDeviceDTO } from '../src';
 import { request } from './request';
 import { bootstrapTestInstance, TestUser } from './test.app';
-import { PublicDeviceDTO } from '../src/device/dto/public-device.dto';
 
 describe('Device e2e tests', () => {
     dotenv.config({
@@ -22,7 +21,6 @@ describe('Device e2e tests', () => {
 
     const exampleDevice: CreateDeviceDTO = {
         name: 'Test solar device',
-        code: 'TESTDEVICE001',
         defaultAccount: 'MYTRADEACCOUNT001',
         deviceType: 'TC140',
         fuel: 'ES100',

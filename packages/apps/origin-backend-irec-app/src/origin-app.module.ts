@@ -26,6 +26,7 @@ import { Module } from '@nestjs/common';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { CqrsModule } from '@nestjs/cqrs';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { ScheduleModule } from '@nestjs/schedule';
 
 import {
     CertificateRequestApprovedHandler,
@@ -76,6 +77,7 @@ const OriginAppTypeOrmModule = () => {
 
 @Module({
     imports: [
+        ScheduleModule.forRoot(),
         OriginAppTypeOrmModule(),
         OriginBackendModule,
         IRECDeviceRegistry,

@@ -7,6 +7,7 @@ import { validateOrReject } from 'class-validator';
 import FormData from 'form-data';
 import { ReadStream } from 'fs';
 import qs from 'qs';
+import EventEmitter from 'events';
 
 import {
     Account,
@@ -30,7 +31,11 @@ export type AccessTokens = {
     refreshToken: string;
 };
 
-export class IRECAPIClient {
+export declare interface IRECAPIClient {
+    on(event: 'tokensRefreshed', listener: (accessTokens: AccessTokens) => void): this;
+}
+
+export class IRECAPIClient extends EventEmitter {
     private config: AxiosRequestConfig;
 
     private interceptorId = NaN;
@@ -38,6 +43,7 @@ export class IRECAPIClient {
     private axiosInstance: AxiosInstance;
 
     public constructor(private readonly endPointUrl: string, private accessTokens?: AccessTokens) {
+        super();
         this.axiosInstance = axios.create({
             baseURL: endPointUrl,
             timeout: 30000
@@ -457,6 +463,7 @@ export class IRECAPIClient {
             response.data.refresh_token,
             response.data.expires_in
         );
+        this.emit('tokensRefreshed', this.accessTokens);
 
         return this.accessTokens;
     }
