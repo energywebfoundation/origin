@@ -85,7 +85,7 @@
         "ts-jest": "26.5.0",
         "@storybook/react": "6.1.17",
         "@storybook/storybook-deployer": "2.8.7",
-        "@storybook/addon-knobs": "6.1.17"
+        "@storybook/addon-knobs": "6.1.18"
     },
     "repository": {
         "type": "git",
