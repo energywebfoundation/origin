@@ -1245,16 +1245,16 @@
   resolved "https://registry.yarnpkg.com/@emotion/weak-memoize/-/weak-memoize-0.2.5.tgz#8eed982e2ee6f7f4e44c253e12962980791efd46"
   integrity sha512-6U71C2Wp7r5XtFtQzYrW5iKFT67OixrSxjI4MptCHzdSVlgabczzqLe0ZSgnub/5Kp4hSbpDB1tMytZY9pwxxA==
 
-"@energyweb/energy-api-influxdb@0.6.1":
-  version "0.6.1"
-  resolved "https://registry.yarnpkg.com/@energyweb/energy-api-influxdb/-/energy-api-influxdb-0.6.1.tgz#8447386a6d1d606b9b6d89951e02891d65e0bebf"
-  integrity sha512-tDPw5oV9Ex7bKfXYAyrEE6WC+dzVGfLf9v5oo5Bgyi9rTfpLvA/MXMWRb22oSS7fta+ZtoEUigtHvLWjg321LA==
+"@energyweb/energy-api-influxdb@0.7.0":
+  version "0.7.0"
+  resolved "https://registry.yarnpkg.com/@energyweb/energy-api-influxdb/-/energy-api-influxdb-0.7.0.tgz#da2af8a4e8e0a256a33ee176c6943f25d3c1baaa"
+  integrity sha512-p4F5eu+3w+RdBzfci6jUnBMfBmhoSLoiTUI5JCsq7SLmp6nqEbKwsGL+vCTtfDpSajzokZlR8MfJf1W+i+beow==
   dependencies:
     "@influxdata/influxdb-client" "1.9.0"
-    "@nestjs/common" "7.6.3"
-    "@nestjs/config" "0.6.1"
-    "@nestjs/core" "7.6.3"
-    "@nestjs/swagger" "4.7.8"
+    "@nestjs/common" "7.6.12"
+    "@nestjs/config" "0.6.3"
+    "@nestjs/core" "7.6.12"
+    "@nestjs/swagger" "4.7.13"
     class-transformer "0.3.1"
     class-validator "0.12.2"
     reflect-metadata "0.1.13"
@@ -3094,28 +3094,6 @@
     tslib "2.1.0"
     uuid "8.3.2"
 
-"@nestjs/common@7.6.3":
-  version "7.6.3"
-  resolved "https://registry.yarnpkg.com/@nestjs/common/-/common-7.6.3.tgz#95cd05af4f8f023b7ba34fd27e9fa5f3ce2b8da7"
-  integrity sha512-y6aOMZfWSBnAPi2g/UuhK0IIGNafIvgxAmOVjw9punui1mFpkBe0c0hkEnUOG3iDEVncqooqEgln48D160JA5g==
-  dependencies:
-    axios "0.21.0"
-    iterare "1.2.1"
-    tslib "2.0.3"
-    uuid "8.3.2"
-
-"@nestjs/config@0.6.1":
-  version "0.6.1"
-  resolved "https://registry.yarnpkg.com/@nestjs/config/-/config-0.6.1.tgz#26e4bfd4b2f9d3a6b6bed6445a2a1e766abdf1c6"
-  integrity sha512-sSIEbHp0xV7bneG2/CePqJh60ELojsBXBPuRM40AcVQwuDRQQ4RAnLT5uaJbWB2xFQjQwik4zejN+27t1cCiBQ==
-  dependencies:
-    dotenv "8.2.0"
-    dotenv-expand "5.1.0"
-    lodash.get "4.4.2"
-    lodash.has "4.5.2"
-    lodash.set "4.3.2"
-    uuid "8.3.1"
-
 "@nestjs/config@0.6.3", "@nestjs/config@^0.6.0":
   version "0.6.3"
   resolved "https://registry.yarnpkg.com/@nestjs/config/-/config-0.6.3.tgz#ab0c0dccf79696509ced463a888567219c2e5b7d"
@@ -3141,19 +3119,6 @@
     tslib "2.1.0"
     uuid "8.3.2"
 
-"@nestjs/core@7.6.3":
-  version "7.6.3"
-  resolved "https://registry.yarnpkg.com/@nestjs/core/-/core-7.6.3.tgz#0b3c3518b6ec5e2ca3d5751820d4142639e3c24f"
-  integrity sha512-sOtIcuEYoj0PXhF/aULIXAUS5SW9wYLGkIAtkk8DMjW2CJJkCuAPIQk7LIqAS6tRDnXTluexnQ6artolVd/iDg==
-  dependencies:
-    "@nuxtjs/opencollective" "0.3.2"
-    fast-safe-stringify "2.0.7"
-    iterare "1.2.1"
-    object-hash "2.0.3"
-    path-to-regexp "3.2.0"
-    tslib "2.0.3"
-    uuid "8.3.2"
-
 "@nestjs/cqrs@7.0.1":
   version "7.0.1"
   resolved "https://registry.yarnpkg.com/@nestjs/cqrs/-/cqrs-7.0.1.tgz#35b1137ad8fa54329c8ee4cea035ff55d9c2a98a"
@@ -3166,11 +3131,6 @@
   dependencies:
     "@types/jsonwebtoken" "8.5.0"
     jsonwebtoken "8.5.1"
-
-"@nestjs/mapped-types@0.1.1":
-  version "0.1.1"
-  resolved "https://registry.yarnpkg.com/@nestjs/mapped-types/-/mapped-types-0.1.1.tgz#2fa9ff0f1ddbe66d5d1c80ae59df21c0ed0d1361"
-  integrity sha512-FROYmmZ2F+tLJP/aHasPMX40iUHQPtEAzOAcfAp21baebN5iLUrdyTuphoXjIqubfPFSwtnAGpVm9kLJjQ//ig==
 
 "@nestjs/mapped-types@0.3.0":
   version "0.3.0"
@@ -3227,15 +3187,6 @@
   integrity sha512-KqFjkx6NOhRVRU4EBu42es/SjopqDwnAfgBCUPer+rKoMUCDMp/hF6dRoH7Z874whPho9pzGcAXBNMxo4/AGdg==
   dependencies:
     "@nestjs/mapped-types" "0.3.0"
-    lodash "4.17.20"
-    path-to-regexp "3.2.0"
-
-"@nestjs/swagger@4.7.8":
-  version "4.7.8"
-  resolved "https://registry.yarnpkg.com/@nestjs/swagger/-/swagger-4.7.8.tgz#4a7512263edd7d29165797bbddbf4e5763a9197e"
-  integrity sha512-mX955BiwkHUn8IKpqijCDGubx/vmUmADbK1D5pqo9o4hIdweKdqFK8ie6NkL5JNTxO2XOZfj6Dh6WUnDdCCEQg==
-  dependencies:
-    "@nestjs/mapped-types" "0.1.1"
     lodash "4.17.20"
     path-to-regexp "3.2.0"
 
@@ -6624,13 +6575,6 @@ aws4@^1.8.0:
   version "1.11.0"
   resolved "https://registry.yarnpkg.com/aws4/-/aws4-1.11.0.tgz#d61f46d83b2519250e2784daf5b09479a8b41c59"
   integrity sha512-xh1Rl34h6Fi1DC2WWKfxUTVqRsNnr6LsKz2+hfwDxQJWmrx8+c7ylaqBMcHfl1U1r2dsifOvKX3LQuLNZ+XSvA==
-
-axios@0.21.0:
-  version "0.21.0"
-  resolved "https://registry.yarnpkg.com/axios/-/axios-0.21.0.tgz#26df088803a2350dff2c27f96fef99fe49442aca"
-  integrity sha512-fmkJBknJKoZwem3/IKSSLpkdNXZeBu5Q7GA/aRsr2btgrptmSCxi2oFjZHqGdK9DoTil9PIHlPIZw2EcRJXRvw==
-  dependencies:
-    follow-redirects "^1.10.0"
 
 axios@0.21.1, axios@^0.21.1:
   version "0.21.1"
@@ -18293,11 +18237,6 @@ object-copy@^0.1.0:
     copy-descriptor "^0.1.0"
     define-property "^0.2.5"
     kind-of "^3.0.3"
-
-object-hash@2.0.3:
-  version "2.0.3"
-  resolved "https://registry.yarnpkg.com/object-hash/-/object-hash-2.0.3.tgz#d12db044e03cd2ca3d77c0570d87225b02e1e6ea"
-  integrity sha512-JPKn0GMu+Fa3zt3Bmr66JhokJU5BaNBIh4ZeTlaCBzrBsOeXzwcKKAK1tbLiPKgvwmPXsDvvLHoWh5Bm7ofIYg==
 
 object-hash@2.1.1:
   version "2.1.1"
