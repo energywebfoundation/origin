@@ -43,7 +43,7 @@
         "formik": "2.2.6",
         "formik-material-ui": "3.0.1",
         "formik-material-ui-pickers": "0.0.12",
-        "yup": "0.32.8",
+        "yup": "0.32.9",
         "history": "4.10.1",
         "i18next": "19.8.9",
         "moment": "2.29.1",

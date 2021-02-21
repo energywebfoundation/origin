@@ -37,7 +37,7 @@
         "history": "4.10.1",
         "formik": "2.2.6",
         "formik-material-ui": "3.0.1",
-        "yup": "0.32.8",
+        "yup": "0.32.9",
         "ethers": "5.0.31",
         "axios": "0.21.1",
         "@date-io/moment": "2.10.6",
