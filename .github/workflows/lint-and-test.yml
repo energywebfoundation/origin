@@ -45,6 +45,7 @@ jobs:
         sh scripts/restore-original-timestamps.sh
 
     - name: Build application
+      # lerna doesn't work without additional fetch
       run: |
         git fetch origin master:master
         yarn
