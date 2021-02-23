@@ -27,7 +27,7 @@ import { FormInput, FormCountrySelect, FormBusinessTypeSelect } from '../Form';
 import {
     RoleChangedModal,
     IRECConnectOrRegisterModal,
-    ConnectBlockchainAccountModal,
+    RegisterThankYouMessageModal,
     OrganizationAlreadyExistsModal
 } from '../Modal';
 
@@ -433,7 +433,7 @@ export function OrganizationForm(props: IProps) {
                 setShowModal={setShowIRecModal}
                 setShowBlockchainModal={setShowBlockchainModal}
             />
-            <ConnectBlockchainAccountModal
+            <RegisterThankYouMessageModal
                 showModal={showBlockchainModal}
                 setShowModal={setShowBlockchainModal}
             />

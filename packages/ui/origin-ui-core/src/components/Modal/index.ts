@@ -14,3 +14,4 @@ export * from './IRECConnectOrRegisterModal';
 export * from './OrganizationAlreadyExistsModal';
 export * from './ChangeRoleModal';
 export * from './IRecAccountRegisteredModal';
+export * from './RegisterThankYouMessageModal';
