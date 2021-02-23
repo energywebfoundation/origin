@@ -1,4 +1,4 @@
-name: Deploy
+name: Deploy master
 
 on:
   push:
@@ -37,10 +37,8 @@ jobs:
     - name: Build application
       # lerna doesn't work without additional fetch
       run: |
-        git fetch origin master:master
         yarn
         yarn build
-
 
     - name: Set creds to npm 
       run: |
