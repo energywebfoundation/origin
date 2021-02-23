@@ -71,7 +71,7 @@
         "build:containers:canary": "lerna run build:container:canary --stream",
         "build:containers:release": "lerna run build:container:latest --stream",
         "publish:preview": "lerna publish --yes --skip-git --exact --cd-version=prerelease --pre-dist-tag preview --preid=preview.$TRAVIS_BUILD_NUMBER",
-        "deploy:heroku:canary": "lerna run deploy:container:heroku:canary --scope @energyweb/migrations --stream && lerna run deploy:container:heroku:canary --scope @energyweb/origin-ui --scope @energyweb/solar-simulator --stream ",
+        "deploy:heroku:canary": "lerna run deploy:container:heroku:canary --stream",
         "deploy:heroku:stable": "lerna run deploy:container:heroku:stable --scope @energyweb/migrations --stream && lerna run deploy:container:heroku:stable --scope @energyweb/origin-ui --scope @energyweb/solar-simulator --stream"
     },
     "workspaces": [
