@@ -17,7 +17,8 @@
         "lint-fix": "eslint \"src/**/*{.ts,.tsx}\" --fix",
         "precommit": "lint-staged",
         "test:mocha": "mocha -r ts-node/register test/*.e2e-spec.ts --timeout 60000 --exit",
-        "test:e2e": "yarn test:mocha"
+        "test:e2e": "yarn test:mocha",
+        "build:container:canary": "make build-canary"
     },
     "bin": {
         "origin-backend-app": "./bin/origin-backend-app"
@@ -72,6 +73,5 @@
     "publishConfig": {
         "access": "public",
         "registry": "https://registry.npmjs.org"
-    },
-    "private": "true"
+    }
 }
