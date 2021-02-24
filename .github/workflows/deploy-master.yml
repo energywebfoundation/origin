@@ -42,14 +42,21 @@ jobs:
       with:
         node-version: '14'
 
+    - name: "Generate unique id"
+      id: generate_unique_id
+      uses: ./.github/actions/build_id
+
     - name: Restore timestamp
       run: |
         sh scripts/restore-original-timestamps.sh
 
-    - name: Build application
+    - name: Install application
       # lerna doesn't work without additional fetch
       run: |
         yarn
+
+    - name: Build application
+      run: |
         yarn build
 
     - name: Set creds to npm 
@@ -67,3 +74,5 @@ jobs:
         npx sleep 5 
         yarn build:containers:canary 
         yarn deploy:heroku:canary
+      env:
+        BUILD_ID: ${{steps.generate_unique_id.outputs.unique_id}}

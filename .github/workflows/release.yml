@@ -47,11 +47,14 @@ jobs:
       run: |
         sh scripts/restore-original-timestamps.sh
 
-    - name: Build application
+    - name: Install application
       # lerna doesn't work without additional fetch
       run: |
         git fetch origin master:master
         yarn
+
+    - name: Build application
+      run: |
         yarn build
 
     - name: Set creds to npm 
