@@ -15,15 +15,6 @@ jobs:
         with:
           access_token: ${{ github.token }}
 
-  # unique_id:
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: Generate unique id
-  #       id: unique_id
-  #       run: echo "::set-output name=id::${GITHUB_ACTION}_$(date +%s)"
-  #   outputs:
-  #     unique_id: ${{ steps.unique_id.outputs.id }}
-
   run-tests:
     services:
       postgres:
@@ -39,7 +30,6 @@ jobs:
         ports:
           - 5432:5432
     runs-on: ubuntu-latest
-    # needs: [cancel-previous, unique_id] 
     needs: cancel-previous 
     steps:
     - uses: actions/checkout@v2
