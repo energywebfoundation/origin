@@ -6,14 +6,14 @@ interface IProps {
     setShowModal?: (showModal: boolean) => void;
 }
 
-export const ConnectBlockchainAccountModal = ({ showModal, setShowModal }: IProps) => {
+export const CreateDepositAddressModal = ({ showModal, setShowModal }: IProps) => {
     return (
         <GenericGoToUserSettingModal
             showModal={showModal}
             setShowModal={setShowModal}
-            title={'general.info.connectBlockchainTitle'}
-            content={'general.info.connectBlockchainContent'}
-            button={'general.actions.maybeLater'}
+            title={'general.info.createExchangeDepositAddressTitle'}
+            content={'general.info.createExchangeDepositAddressContent'}
+            button={'general.actions.createDepositAddress'}
         />
     );
 };
