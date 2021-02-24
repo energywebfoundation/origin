@@ -7,7 +7,11 @@
         "experimentalDecorators": true,
         "emitDecoratorMetadata": true
     },
-    "include": ["./src/**/*", "./test/**/*"],
+    "include": [
+        "./src/**/*",
+        "./test/**/*",
+        "../exchange/test/deposits-auto-post-for-sale.e2e-spec.ts"
+    ],
     "references": [
         {
             "path": "../../utils/utils-general/tsconfig.json"

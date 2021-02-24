@@ -2,7 +2,7 @@ import React from 'react';
 import {
     MultiSelectAutocomplete,
     IAutocompleteMultiSelectOptionType
-} from '../MultiSelectAutocomplete';
+} from './MultiSelectAutocomplete';
 import { Countries } from '@energyweb/utils-general';
 
 interface IProps {

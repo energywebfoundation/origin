@@ -1,4 +1,6 @@
 import React from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { useTranslation } from 'react-i18next';
 import {
     Button,
     Dialog,
@@ -7,14 +9,12 @@ import {
     DialogTitle,
     DialogContentText
 } from '@material-ui/core';
-import { useSelector, useDispatch } from 'react-redux';
-import { getAccountMismatchModalProperties } from '../../features/general/selectors';
 import {
+    getAccountMismatchModalProperties,
     setAccountMismatchModalPropertiesAction,
     accountMismatchModalResolvedAction
-} from '../../features/general/actions';
-import { getUserOffchain, getActiveBlockchainAccountAddress } from '../../features/users/selectors';
-import { useTranslation } from '../../utils';
+} from '../../features/general';
+import { getUserOffchain, getActiveBlockchainAccountAddress } from '../../features/users';
 
 export function AccountMismatchModal() {
     const { visibility } = useSelector(getAccountMismatchModalProperties);

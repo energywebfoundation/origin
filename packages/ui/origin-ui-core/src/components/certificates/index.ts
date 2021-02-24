@@ -1,2 +1,4 @@
 export * from './Certificates';
-export * from './certificateMenuCreator';
+export * from './certificateMenu';
+export { BlockchainInboxPage } from './BlockchainInboxPage';
+export { ExchangeInboxPage } from './ExchangeInboxPage';

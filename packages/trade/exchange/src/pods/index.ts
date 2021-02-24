@@ -7,6 +7,6 @@ export * from './demand';
 export * from './matching-engine';
 export * from './order';
 export * from './order-book';
+export * from './supply';
 export * from './trade';
 export * from './transfer';
-export * from './post-for-sale';

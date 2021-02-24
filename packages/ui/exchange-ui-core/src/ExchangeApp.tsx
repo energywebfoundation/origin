@@ -10,7 +10,7 @@ import {
     refreshUserOffchain
 } from '@energyweb/origin-ui-core';
 import { initializeExchangeApp, getExchangeClient } from './features/general';
-import { exchangeMenuCreator } from './exchangeMenuCreator';
+import { useExchangeMenu } from './exchangeMenu';
 
 export function ExchangeApp() {
     const dispatch = useDispatch();
@@ -28,7 +28,7 @@ export function ExchangeApp() {
         }
     }, [userOffchain]);
 
-    const exchangeMenuList = exchangeMenuCreator(userOffchain);
+    const exchangeMenuList = useExchangeMenu();
 
     const defaultRedirect = {
         pathname: `${getExchangeLink()}/${exchangeMenuList[0].key}`

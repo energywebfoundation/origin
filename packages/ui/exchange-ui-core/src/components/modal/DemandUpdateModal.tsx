@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { useTranslation } from 'react-i18next';
 import { Formik, FormikHelpers, Form } from 'formik';
 import * as Yup from 'yup';
 import {
@@ -16,13 +17,7 @@ import {
     Divider
 } from '@material-ui/core';
 import { Close } from '@material-ui/icons';
-import {
-    EnergyFormatter,
-    useTranslation,
-    getCurrencies,
-    LightenColor,
-    moment
-} from '@energyweb/origin-ui-core';
+import { EnergyFormatter, getCurrencies, LightenColor, moment } from '@energyweb/origin-ui-core';
 import { DemandStatus, TimeFrame } from '@energyweb/utils-general';
 import { updateDemand, pauseDemand, resumeDemand } from '../../features/orders/actions';
 import { periodTypeOptions } from '../../utils/demand';

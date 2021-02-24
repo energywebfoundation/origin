@@ -1,14 +1,7 @@
 {
     "extends": ["config:base"],
     "schedule": ["every weekend"],
-    "ignoreDeps": [
-        "@energyweb/device-registry",
-        "@energyweb/utils-general",
-        "@energyweb/origin-backend",
-        "ganache-cli",
-        "solc",
-        "@date-io/moment"
-    ],
+    "ignoreDeps": ["solc", "@date-io/moment"],
     "labels": ["dependencies"],
     "packageRules": [
         {

@@ -1,10 +1,9 @@
 import React from 'react';
-import { Button, Modal, Typography } from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
-import { LightenColor } from '../../../utils';
-import { useOriginConfiguration } from '../../../utils/configuration';
 import { useTranslation } from 'react-i18next';
+import { Button, Modal, Typography, makeStyles } from '@material-ui/core';
 import SyncAltIcon from '@material-ui/icons/SyncAlt';
+import { LightenColor } from '../../../utils/colors';
+import { useOriginConfiguration } from '../../../utils/configuration';
 
 export function CertificateImportSuccessModal(props: {
     open: boolean;

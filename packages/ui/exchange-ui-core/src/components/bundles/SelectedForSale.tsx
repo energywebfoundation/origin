@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { useTranslation } from 'react-i18next';
 import { BigNumber } from 'ethers';
 import CurrencyTextField from '@unicef/material-ui-currency-textfield';
 import {
@@ -18,7 +19,6 @@ import {
     ICertificateViewItem,
     reloadCertificates,
     formatCurrencyComplete,
-    useTranslation,
     EnergyFormatter
 } from '@energyweb/origin-ui-core';
 import { createBundle } from '../../features/bundles';

@@ -3,7 +3,8 @@ import {
     AssetClient,
     BundleClient,
     Configuration,
-    TransferClient
+    TransferClient,
+    SupplyClient
 } from '@energyweb/exchange-client';
 import {
     DemandClient,
@@ -30,6 +31,8 @@ export class ExchangeClient extends BaseClient {
 
     transferClient: TransferClient;
 
+    supplyClient: SupplyClient;
+
     setup(accessToken?: string) {
         const config = new Configuration(
             accessToken
@@ -52,5 +55,6 @@ export class ExchangeClient extends BaseClient {
         this.ordersClient = new OrdersClient(config, this.backendUrl);
         this.tradeClient = new TradeClient(config, this.backendUrl);
         this.transferClient = new TransferClient(config, this.backendUrl);
+        this.supplyClient = new SupplyClient(config, this.backendUrl);
     }
 }

@@ -1,9 +1,15 @@
 import React, { useState } from 'react';
-import { Button, Checkbox, Grid, Typography, FormControlLabel } from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
-import { useOriginConfiguration } from '../../../utils/configuration';
-import { useTranslation } from '../../../utils';
+import { useTranslation } from 'react-i18next';
 import { Form, Formik } from 'formik';
+import {
+    Button,
+    Checkbox,
+    Grid,
+    Typography,
+    FormControlLabel,
+    makeStyles
+} from '@material-ui/core';
+import { useOriginConfiguration } from '../../../utils/configuration';
 import { FormSelect } from '../../Form';
 import { CertificateImportItem } from './CertificateImportItem';
 import { CertificateImportSelectedItem } from './CertificateImportSelectedItem';

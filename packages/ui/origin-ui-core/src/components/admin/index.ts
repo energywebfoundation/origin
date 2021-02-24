@@ -1,2 +1,2 @@
 export * from './Admin';
-export * from './adminMenuCreator';
+export * from './adminMenu';

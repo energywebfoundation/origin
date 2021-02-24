@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Grid, Typography } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import { Pagination } from '@material-ui/lab';
 import {
     CustomFilterInputType,
     FiltersHeader,
-    ICustomFilterDefinition,
-    useTranslation
+    ICustomFilterDefinition
 } from '@energyweb/origin-ui-core';
 import { useOriginConfiguration } from '../utils/configuration';
 import { IDevice, ImportDeviceItem } from '../components/import';

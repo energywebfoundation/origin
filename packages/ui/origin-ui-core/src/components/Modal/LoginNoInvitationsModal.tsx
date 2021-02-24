@@ -1,9 +1,9 @@
 import React from 'react';
-import { Dialog, DialogTitle, DialogActions, Button, Box, Grid } from '@material-ui/core';
-import { useTranslation, useLinks } from '../..';
-import { Trans } from 'react-i18next';
-import DraftOutlineIcon from '@material-ui/icons/DraftsOutlined';
+import { useTranslation, Trans } from 'react-i18next';
 import { useHistory } from 'react-router-dom';
+import { Dialog, DialogTitle, DialogActions, Button, Box, Grid } from '@material-ui/core';
+import DraftOutlineIcon from '@material-ui/icons/DraftsOutlined';
+import { useLinks } from '../../utils/routing';
 
 interface IProps {
     showModal: boolean;

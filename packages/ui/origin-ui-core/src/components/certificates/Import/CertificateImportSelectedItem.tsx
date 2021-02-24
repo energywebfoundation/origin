@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import { makeStyles } from '@material-ui/core/styles';
-import { useOriginConfiguration } from '../../../utils/configuration';
-import { LightenColor, useTranslation } from '../../../utils';
+import { useTranslation } from 'react-i18next';
+import { Button, IconButton, TextField, makeStyles } from '@material-ui/core';
 import EditIcon from '@material-ui/icons/Edit';
-import { Button, IconButton, TextField } from '@material-ui/core';
+import { useOriginConfiguration } from '../../../utils/configuration';
+import { LightenColor } from '../../../utils/colors';
 import { ICertificate } from './CertificateImport';
 
 export function CertificateImportSelectedItem(props: { cert: ICertificate }): JSX.Element {

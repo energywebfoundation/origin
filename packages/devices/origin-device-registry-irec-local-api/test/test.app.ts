@@ -3,6 +3,9 @@
 import { IUser, OrganizationStatus, Role, UserStatus } from '@energyweb/origin-backend-core';
 import { DatabaseService } from '@energyweb/origin-backend-utils';
 import { CanActivate, ExecutionContext } from '@nestjs/common';
+import { Configuration } from '@energyweb/origin-backend';
+import { Connection, Registration } from '@energyweb/origin-organization-irec-api';
+
 import { AuthGuard } from '@nestjs/passport';
 import { Test } from '@nestjs/testing';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -74,7 +77,7 @@ export const bootstrapTestInstance = async () => {
                 username: process.env.DB_USERNAME ?? 'postgres',
                 password: process.env.DB_PASSWORD ?? 'postgres',
                 database: process.env.DB_DATABASE ?? 'origin',
-                entities: [Device],
+                entities: [Device, Connection, Registration],
                 logging: ['info']
             }),
             DeviceModule

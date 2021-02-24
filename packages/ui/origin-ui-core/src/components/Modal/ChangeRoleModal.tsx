@@ -1,3 +1,6 @@
+import React, { useState, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useTranslation } from 'react-i18next';
 import {
     Button,
     Dialog,
@@ -10,13 +13,11 @@ import {
     MenuItem,
     Select
 } from '@material-ui/core';
-import React, { useState, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 import { Role, IUser, getRolesFromRights, isRole } from '@energyweb/origin-backend-core';
-
-import { getUserOffchain } from '../../features/users/selectors';
-import { NotificationType, showNotification, useTranslation, roleNames } from '../../utils';
+import { getUserOffchain } from '../../features/users';
 import { setLoading, getBackendClient } from '../../features/general';
+import { NotificationType, showNotification } from '../../utils/notifications';
+import { roleNames } from '../../utils/organizationRoles';
 
 interface IProps {
     user: IUser;

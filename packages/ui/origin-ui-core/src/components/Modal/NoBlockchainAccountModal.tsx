@@ -1,4 +1,6 @@
 import React from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { useTranslation } from 'react-i18next';
 import {
     Button,
     Dialog,
@@ -8,10 +10,10 @@ import {
     DialogContentText,
     Grid
 } from '@material-ui/core';
-import { useSelector, useDispatch } from 'react-redux';
-import { getNoAccountModalVisibility } from '../../features/general/selectors';
-import { setNoAccountModalVisibilityAction } from '../../features/general/actions';
-import { useTranslation } from '../../utils';
+import {
+    setNoAccountModalVisibilityAction,
+    getNoAccountModalVisibility
+} from '../../features/general';
 
 export function NoBlockchainAccountModal() {
     const visibility = useSelector(getNoAccountModalVisibility);

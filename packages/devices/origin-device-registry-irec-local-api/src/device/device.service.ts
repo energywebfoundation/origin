@@ -1,25 +1,17 @@
 import { DeviceStatus, ILoggedInUser } from '@energyweb/origin-backend-core';
-import { ForbiddenException, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { CommandBus, EventBus } from '@nestjs/cqrs';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FindManyOptions, Repository } from 'typeorm';
-import {
-    AccessTokens,
-    DeviceCreateUpdateParams,
-    IRECAPIClient,
-    Device as IrecDevice
-} from '@energyweb/issuer-irec-api-wrapper';
-import {
-    GetConnectionCommand,
-    RefreshTokensCommand,
-    RegistrationService
-} from '@energyweb/origin-organization-irec-api';
+import { DeviceCreateUpdateParams } from '@energyweb/issuer-irec-api-wrapper';
+import { RegistrationService } from '@energyweb/origin-organization-irec-api';
 
 import { Device } from './device.entity';
 import { CodeNameDTO, CreateDeviceDTO } from './dto';
 import { DeviceCreatedEvent, DeviceStatusChangedEvent } from './events';
 import { IREC_FUEL_TYPES, IREC_FUELS } from './Fuels';
+import { IrecDeviceService } from './irec-device.service';
 
 @Injectable()
 export class DeviceService {
@@ -29,28 +21,9 @@ export class DeviceService {
         private readonly eventBus: EventBus,
         private readonly registrationService: RegistrationService,
         private readonly commandBus: CommandBus,
-        private readonly configService: ConfigService
+        private readonly configService: ConfigService,
+        private readonly irecDeviceService: IrecDeviceService
     ) {}
-
-    private async getIrecClient(user: ILoggedInUser) {
-        const [irecConnection] = await this.commandBus.execute(new GetConnectionCommand(user));
-
-        if (!irecConnection) {
-            throw new ForbiddenException('User does not have an IREC connection');
-        }
-
-        const client = new IRECAPIClient(process.env.IREC_API_URL, {
-            accessToken: irecConnection.accessToken,
-            refreshToken: irecConnection.refreshToken,
-            expiryDate: irecConnection.expiryDate
-        });
-
-        client.on('tokensRefreshed', (accessToken: AccessTokens) => {
-            this.commandBus.execute(new RefreshTokensCommand(user, accessToken));
-        });
-
-        return client;
-    }
 
     async findOne(id: string): Promise<Device> {
         return this.repository.findOne(id);
@@ -65,7 +38,7 @@ export class DeviceService {
             issuer: this.configService.get<string>('IREC_ISSUER_ORGANIZATION_CODE')
         };
 
-        const irecDevice = await this.createIrecDevice(user, deviceData);
+        const irecDevice = await this.irecDeviceService.createIrecDevice(user, deviceData);
 
         const deviceToStore = new Device({
             ...deviceData,
@@ -78,14 +51,6 @@ export class DeviceService {
         this.eventBus.publish(new DeviceCreatedEvent(storedDevice, user.id));
 
         return storedDevice;
-    }
-
-    private async createIrecDevice(
-        user: ILoggedInUser,
-        deviceData: DeviceCreateUpdateParams
-    ): Promise<IrecDevice> {
-        const irecClient = await this.getIrecClient(user);
-        return irecClient.device.create(deviceData);
     }
 
     async findAll(options?: FindManyOptions<Device>): Promise<Device[]> {

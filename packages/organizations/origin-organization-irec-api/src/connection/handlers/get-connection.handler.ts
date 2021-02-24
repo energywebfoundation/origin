@@ -27,11 +27,11 @@ export class GetConnectionHandler implements ICommandHandler<GetConnectionComman
         if (!registration) {
             return undefined;
         }
-        const connections = await this.repository.findOne({
+        const connection = await this.repository.findOne({
             where: { registration: registration.id },
             relations: ['registration']
         });
 
-        return ConnectionDTO.wrap(connections);
+        return ConnectionDTO.wrap(connection);
     }
 }

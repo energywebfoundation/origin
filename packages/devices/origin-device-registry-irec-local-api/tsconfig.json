@@ -5,7 +5,7 @@
         "outDir": "./dist/js",
         "emitDecoratorMetadata": true,
         "experimentalDecorators": true,
-        "target": "ES2019",
+        "target": "ES2020",
         "types": ["node", "mocha"]
     },
     "include": ["src/**/*", "test/**/*", "migrations/*", "ormconfig*.ts"],
@@ -18,6 +18,9 @@
         },
         {
             "path": "../origin-device-registry-api/tsconfig.json"
+        },
+        {
+            "path": "../../organizations/origin-organization-irec-api/tsconfig.json"
         }
     ]
 }

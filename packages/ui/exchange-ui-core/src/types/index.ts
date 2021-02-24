@@ -1,9 +1,3 @@
-import { IOrdersState } from '../features/orders';
-import { IBundlesState } from '../features/bundles';
-import { IExchangeGeneralState } from '../features/general';
-
-export interface IExchangeState {
-    exchangeGeneralState: IExchangeGeneralState;
-    bundlesState: IBundlesState;
-    ordersState: IOrdersState;
-}
+export * from './IExchangeState';
+export * from './typography';
+export * from './supply';

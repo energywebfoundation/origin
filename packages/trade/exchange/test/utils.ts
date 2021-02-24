@@ -10,10 +10,9 @@ export const issueToken = async (
     address: string,
     amount: string,
     generationFrom: number,
-    generationTo: number
+    generationTo: number,
+    deviceId = 'QWERTY123'
 ) => {
-    const deviceId = 'QWERTY123';
-
     const data = await issuer.encodeData(generationFrom, generationTo, deviceId);
 
     const requestReceipt = await ((await issuer.requestCertificationFor(
