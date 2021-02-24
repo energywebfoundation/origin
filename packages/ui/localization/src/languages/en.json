@@ -313,7 +313,7 @@
                 "connectBlockchainTitle": "Connect Blockchain Address",
                 "connectBlockchainContent": "In order to unlock all functionalities of the marketplace, like trading on the exchange and claiming certificates, users have to create an exchange deposit address and connect their own blockchain address.",
                 "registerThankYouModalTitle": "Thank you for registering!",
-                "registerThankYouModalContent": "Your registration is reviewed by the platform administrator and you will notified when your account is activated."
+                "registerThankYouModalContent": "Your registration is reviewed by the platform administrator and you will be notified when your account is activated."
             }
         },
         "importAccount": {
