@@ -36,52 +36,7 @@
             "autoinstallerName": "rush-prettier",
             // This will invoke common/autoinstallers/rush-prettier/node_modules/.bin/pretty-quick
             "shellCommand": "pretty-quick --staged"
-        },
-        {
-            "name": "start:deploy",
-            "commandKind": "global",
-            "summary": "Rush deploy",
-            "shellCommand": "concurrently -n ganache, ui \"(cd apps/origin-ui && rushx start)\"",
-            // "shellCommand": "concurrently -n ganache,backend,ui \"(cd apps/pjm-api && rushx start-ganache)\" \"(cd apps/pjm-api && rushx start:dev)\" \"(cd apps/pjm-ui && rushx start)\"",
-            "autoinstallerName": "rush-tools",
-            "safeForSimultaneousRushProcesses": true
         }
-        // {
-        //     "commandKind": "global",
-        //     "name": "migrate",
-        //     "summary": "Migrates the database schema",
-        //     "shellCommand": "cd apps/pjm-api && yarn migrate",
-        //     "autoinstallerName": "rush-tools",
-        //     "safeForSimultaneousRushProcesses": true
-        // },
-        // {
-        //     "commandKind": "bulk",
-        //     "name": "test:e2e",
-        //     "summary": "Run all test:e2e in packages",
-        //     "safeForSimultaneousRushProcesses": false,
-        //     "enableParallelism": false,
-        //     "ignoreMissingScript": true,
-        //     "allowWarningsInSuccessfulBuild": true
-        // },
-        // {
-        //     "commandKind": "global",
-        //     "name": "predeploy",
-        //     "summary": "Prepare files for deployment",
-        //     "shellCommand": "cd apps/pjm-ui && rushx build:full",
-
-        //     "autoinstallerName": "rush-tools",
-
-        //     "safeForSimultaneousRushProcesses": true
-        // },
-        // {
-        //     "commandKind": "bulk",
-        //     "name": "deploy:heroku",
-        //     "summary": "Deploys the UI and API to Heroku",
-        //     "safeForSimultaneousRushProcesses": false,
-        //     "enableParallelism": false,
-        //     "ignoreMissingScript": true,
-        //     "allowWarningsInSuccessfulBuild": true
-        // }
         // {
         //   /**
         //    * (Required) Determines the type of custom command.
