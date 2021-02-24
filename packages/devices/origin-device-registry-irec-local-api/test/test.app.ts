@@ -107,7 +107,9 @@ export const bootstrapTestInstance = async () => {
                     code: '100500',
                     status: DeviceState.Draft
                 };
-            }
+            },
+            // eslint-disable-next-line @typescript-eslint/no-empty-function
+            update: async (): Promise<void> => {}
         })
         .compile();
 

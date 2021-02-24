@@ -1,5 +1,5 @@
 import { ILoggedInUser } from '@energyweb/origin-backend-core';
-import { DeviceState, DeviceCreateUpdateParams } from '@energyweb/issuer-irec-api-wrapper';
+import { DeviceCreateUpdateParams, DeviceState } from '@energyweb/issuer-irec-api-wrapper';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { CommandBus, EventBus } from '@nestjs/cqrs';
@@ -9,7 +9,7 @@ import { FindManyOptions, Repository } from 'typeorm';
 import { RegistrationService } from '@energyweb/origin-organization-irec-api';
 
 import { Device } from './device.entity';
-import { CodeNameDTO, CreateDeviceDTO } from './dto';
+import { CodeNameDTO, CreateDeviceDTO, UpdateDeviceDTO } from './dto';
 import { DeviceCreatedEvent, DeviceStatusChangedEvent } from './events';
 import { IREC_FUEL_TYPES, IREC_FUELS } from './Fuels';
 import { IrecDeviceService } from './irec-device.service';
@@ -69,6 +69,20 @@ export class DeviceService {
         await this.repository.update(device.id, { status });
 
         this.eventBus.publish(new DeviceStatusChangedEvent(device, status));
+
+        return this.findOne(id);
+    }
+
+    async update(user: ILoggedInUser, id: string, deviceData: UpdateDeviceDTO): Promise<Device> {
+        const device = await this.findOne(id);
+
+        if (!device) {
+            return null;
+        }
+
+        await this.irecDeviceService.update(user, device.code, deviceData);
+
+        await this.repository.update(device.id, { ...device, status: DeviceState.Draft });
 
         return this.findOne(id);
     }

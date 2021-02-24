@@ -67,7 +67,7 @@ describe('Device e2e tests', () => {
             .set({ 'test-user': TestUser.OrganizationAdmin });
 
         await test
-            .put(`/irec/device-registry/device/${body.id}`)
+            .put(`/irec/device-registry/device/${body.id}/status`)
             .send({ status: DeviceStatus.Active })
             .set({ 'test-user': TestUser.OrganizationAdmin })
             .expect(HttpStatus.FORBIDDEN);
@@ -88,7 +88,7 @@ describe('Device e2e tests', () => {
             .set({ 'test-user': TestUser.OrganizationAdmin });
 
         await test
-            .put(`/irec/device-registry/device/${body.id}`)
+            .put(`/irec/device-registry/device/${body.id}/status`)
             .send({ status: DeviceState.Approved })
             .set({ 'test-user': TestUser.PlatformAdmin })
             .expect(HttpStatus.OK);

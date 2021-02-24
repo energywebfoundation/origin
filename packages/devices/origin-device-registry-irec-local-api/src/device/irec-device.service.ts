@@ -49,4 +49,10 @@ export class IrecDeviceService {
         await irecClient.device.submit(irecDevice.code);
         return irecDevice;
     }
+
+    async update(user: ILoggedInUser, code: string, device: Partial<IrecDevice>): Promise<void> {
+        const irecClient = await this.getIrecClient(user);
+        await irecClient.device.edit(code, device);
+        await irecClient.device.submit(code);
+    }
 }

@@ -41,6 +41,7 @@ import {
     CreateDeviceDTO,
     DeviceDTO,
     PublicDeviceDTO,
+    UpdateDeviceDTO,
     UpdateDeviceStatusDTO
 } from './dto';
 
@@ -134,7 +135,7 @@ export class DeviceController {
         return plainToClass(DeviceDTO, device);
     }
 
-    @Put('/device/:id')
+    @Put('/device/:id/status')
     @UseGuards(AuthGuard(), ActiveUserGuard, RolesGuard)
     @Roles(Role.Issuer, Role.Admin)
     @ApiBody({ type: UpdateDeviceStatusDTO })
@@ -145,6 +146,25 @@ export class DeviceController {
     })
     @ApiNotFoundResponse({ description: 'Non existent device', type: SuccessResponseDTO })
     async updateDeviceStatus(
+        @Param('id') id: string,
+        @Body() { status }: UpdateDeviceStatusDTO
+    ): Promise<DeviceDTO> {
+        const device = await this.deviceService.updateStatus(id, status);
+
+        return plainToClass(DeviceDTO, device);
+    }
+
+    @Put('/device/:id')
+    @UseGuards(AuthGuard(), ActiveUserGuard, RolesGuard)
+    @Roles(Role.OrganizationAdmin, Role.OrganizationDeviceManager)
+    @ApiBody({ type: UpdateDeviceDTO })
+    @ApiResponse({
+        status: HttpStatus.OK,
+        type: DeviceDTO,
+        description: `Updates a device data`
+    })
+    @ApiNotFoundResponse({ description: 'Non existent device', type: SuccessResponseDTO })
+    async updateDevice(
         @Param('id') id: string,
         @Body() { status }: UpdateDeviceStatusDTO
     ): Promise<DeviceDTO> {
