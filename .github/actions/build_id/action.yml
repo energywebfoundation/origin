@@ -1,0 +1,12 @@
+name: 'Unique id'
+description: 'Create unique id'
+runs:
+  using: "composite"
+  steps: 
+    - id: "unique_id"
+      run: echo "::set-output name=id::${GITHUB_ACTION}_$(date +%s)"
+      shell: bash 
+outputs:
+  unique_id:
+    description: "Unique id"
+    value: ${{ steps.unique_id.outputs.id }}
