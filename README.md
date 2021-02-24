@@ -10,17 +10,32 @@
 **Origin** is a set of toolkits that together provide a system for issuance and management of Energy Attribute Certificates (EACs). This repository is an entry point to Origin systems. It has a goal of explaining briefly the whole system and providing you with insight and info where to explore next.
 
 <p align="center">
-![Build](https://github.com/energywebfoundation/origin/actions/workflows/ci.yml/badge.svg)
+![Build](https://github.com/energywebfoundation/origin/actions/workflows/deploy-master.yml/badge.svg)
 </p>
 
 ## Table of Contents
 
--   [Packages](#packages)
--   [Installation](#installation)
--   [Energy Attribute Certificates](#energy-attribute-certificates)
--   [Key modules and components](#key-modules-and-components)
--   [Deployment](#deployment)
--   [Contribution guidelines](#contribution-guidelines)
+- [Table of Contents](#table-of-contents)
+- [Packages](#packages)
+  - [SDK Releases](#sdk-releases)
+  - [Applications, Infrastructure and Demo](#applications-infrastructure-and-demo)
+  - [Packages types](#packages-types)
+    - [Stable](#stable)
+    - [Canary](#canary)
+    - [Preview](#preview)
+- [Installation](#installation)
+- [Build](#build)
+- [Test](#test)
+- [Run demo](#run-demo)
+  - [Preparation](#preparation)
+  - [Running](#running)
+  - [Heroku environment provisioning](#heroku-environment-provisioning)
+- [Energy Attribute Certificates](#energy-attribute-certificates)
+- [Key modules and components](#key-modules-and-components)
+  - [Key repositories](#key-repositories)
+  - [Other components](#other-components)
+- [Deployment](#deployment)
+- [Contribution guidelines](#contribution-guidelines)
 
 ## Packages
 
