@@ -45,7 +45,7 @@ export class IrecDeviceService {
         deviceData: DeviceCreateUpdateParams
     ): Promise<IrecDevice> {
         const irecClient = await this.getIrecClient(user);
-        const irecDevice = irecClient.device.create(deviceData);
+        const irecDevice = await irecClient.device.create(deviceData);
         await irecClient.device.submit(irecDevice.code);
         return irecDevice;
     }

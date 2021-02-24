@@ -1,10 +1,10 @@
-import { DeviceStatus } from '@energyweb/origin-backend-core';
+import { DeviceState } from '@energyweb/issuer-irec-api-wrapper';
 import { ApiProperty } from '@nestjs/swagger';
 import { IsEnum, IsNotEmpty } from 'class-validator';
 
 export class UpdateDeviceStatusDTO {
-    @ApiProperty({ enum: DeviceStatus, enumName: 'DeviceStatus' })
-    @IsEnum(DeviceStatus)
+    @ApiProperty({ enum: DeviceState, enumName: 'DeviceStatus' })
+    @IsEnum(DeviceState)
     @IsNotEmpty()
-    status: DeviceStatus;
+    status: DeviceState;
 }

@@ -2,6 +2,7 @@
 import { DeviceStatus } from '@energyweb/origin-backend-core';
 import { DatabaseService } from '@energyweb/origin-backend-utils';
 import { HttpStatus, INestApplication } from '@nestjs/common';
+import { DeviceState } from '@energyweb/issuer-irec-api-wrapper';
 import dotenv from 'dotenv';
 import { expect } from 'chai';
 import supertest from 'supertest';
@@ -88,7 +89,7 @@ describe('Device e2e tests', () => {
 
         await test
             .put(`/irec/device-registry/device/${body.id}`)
-            .send({ status: DeviceStatus.Active })
+            .send({ status: DeviceState.Approved })
             .set({ 'test-user': TestUser.PlatformAdmin })
             .expect(HttpStatus.OK);
     });

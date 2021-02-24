@@ -1,10 +1,11 @@
-import { DeviceStatus, ILoggedInUser } from '@energyweb/origin-backend-core';
+import { ILoggedInUser } from '@energyweb/origin-backend-core';
+import { DeviceState, DeviceCreateUpdateParams } from '@energyweb/issuer-irec-api-wrapper';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { CommandBus, EventBus } from '@nestjs/cqrs';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FindManyOptions, Repository } from 'typeorm';
-import { DeviceCreateUpdateParams } from '@energyweb/issuer-irec-api-wrapper';
+
 import { RegistrationService } from '@energyweb/origin-organization-irec-api';
 
 import { Device } from './device.entity';
@@ -57,7 +58,7 @@ export class DeviceService {
         return this.repository.find(options);
     }
 
-    async updateStatus(id: string, status: DeviceStatus): Promise<Device> {
+    async updateStatus(id: string, status: DeviceState): Promise<Device> {
         // TODO: change it. IREC logic is different
         const device = await this.findOne(id);
 
