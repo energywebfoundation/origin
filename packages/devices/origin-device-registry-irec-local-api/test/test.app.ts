@@ -1,9 +1,14 @@
 /* eslint-disable import/no-extraneous-dependencies */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { IUser, OrganizationStatus, Role, UserStatus } from '@energyweb/origin-backend-core';
+import {
+    ILoggedInUser,
+    IUser,
+    OrganizationStatus,
+    Role,
+    UserStatus
+} from '@energyweb/origin-backend-core';
 import { DatabaseService } from '@energyweb/origin-backend-utils';
 import { CanActivate, ExecutionContext } from '@nestjs/common';
-import { Configuration } from '@energyweb/origin-backend';
 import { Connection, Registration } from '@energyweb/origin-organization-irec-api';
 
 import { AuthGuard } from '@nestjs/passport';
@@ -11,7 +16,12 @@ import { Test } from '@nestjs/testing';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { useContainer } from 'class-validator';
 
-import { DeviceModule, DeviceService, Device } from '../src/device';
+import {
+    DeviceCreateUpdateParams,
+    Device as IrecDevice,
+    DeviceState
+} from '@energyweb/issuer-irec-api-wrapper';
+import { Device, DeviceModule, DeviceService, IrecDeviceService } from '../src/device';
 
 export enum TestUser {
     OrganizationAdmin = '0',
@@ -86,6 +96,19 @@ export const bootstrapTestInstance = async () => {
     })
         .overrideGuard(AuthGuard('default'))
         .useValue(authGuard)
+        .overrideProvider(IrecDeviceService)
+        .useValue({
+            createIrecDevice: async (
+                user: ILoggedInUser,
+                deviceData: DeviceCreateUpdateParams
+            ): Promise<IrecDevice> => {
+                return {
+                    ...deviceData,
+                    code: '100500',
+                    status: DeviceState.Draft
+                };
+            }
+        })
         .compile();
 
     const app = moduleFixture.createNestApplication();
