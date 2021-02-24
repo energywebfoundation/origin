@@ -284,6 +284,7 @@
                 "update": "Update",
                 "maybeLater": "Maybe Later",
                 "connectBlockchainAcc": "Connect Blockchain Account",
+                "createDepositAddress": "Create Address",
                 "continue": "Continue",
                 "cancel": "Cancel",
                 "search": "Search",
@@ -311,7 +312,9 @@
                 "noBlockchainAccount1": "Make sure you have the MetaMask browser extension installed and set up.",
                 "noBlockchainAccount2": "Check the User Settings page and make sure your blockchain account is verified.",
                 "connectBlockchainTitle": "Connect Blockchain Address",
-                "connectBlockchainContent": "In order to unlock all functionalities of the marketplace, like trading on the exchange and claiming certificates, users have to create an exchange deposit address and connect their own blockchain address."
+                "connectBlockchainContent": "In order to unlock all functionalities of the marketplace, like trading on the exchange and claiming certificates, users have to create an exchange deposit address and connect their own blockchain address.",
+                "createExchangeDepositAddressTitle": "Create Exchange Deposit Address",
+                "createExchangeDepositAddressContent": "In order to unlock all functionalities of the marketplace, like trading on the exchange and claiming certificates, users have to create an exchange deposit address. "
             }
         },
         "importAccount": {
