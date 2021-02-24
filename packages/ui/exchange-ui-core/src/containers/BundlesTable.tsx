@@ -100,9 +100,13 @@ export const BundlesTable = (props: IBundleTableProps) => {
         };
     }
 
-    const { paginatedData, loadPage, total, pageSize, setPageSize } = usePaginatedLoaderFiltered<
-        Bundle
-    >({
+    const {
+        paginatedData,
+        loadPage,
+        total,
+        pageSize,
+        setPageSize
+    } = usePaginatedLoaderFiltered<Bundle>({
         getPaginatedData,
         initialPageSize: BUNDLES_PER_PAGE
     });

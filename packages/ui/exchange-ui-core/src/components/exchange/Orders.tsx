@@ -72,9 +72,12 @@ export function Orders(props: IOrdersProps) {
         };
     }
 
-    const { paginatedData, loadPage, total, pageSize } = usePaginatedLoaderFiltered<
-        IOrderBookOrderDTO
-    >({
+    const {
+        paginatedData,
+        loadPage,
+        total,
+        pageSize
+    } = usePaginatedLoaderFiltered<IOrderBookOrderDTO>({
         getPaginatedData
     });
 

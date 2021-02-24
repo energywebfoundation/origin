@@ -108,11 +108,12 @@ export function DeviceTable(props: IOwnProps) {
         };
     }
 
-    const { paginatedData, loadPage, total, pageSize } = usePaginatedLoaderFiltered<
-        IEnrichedDeviceData
-    >({
-        getPaginatedData
-    });
+    const {
+        paginatedData,
+        loadPage,
+        total,
+        pageSize
+    } = usePaginatedLoaderFiltered<IEnrichedDeviceData>({ getPaginatedData });
 
     const { t } = useTranslation();
 

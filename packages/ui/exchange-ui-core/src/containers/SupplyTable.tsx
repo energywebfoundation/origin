@@ -107,9 +107,12 @@ export function SupplyTable() {
         };
     }
 
-    const { paginatedData, loadPage, total, pageSize } = usePaginatedLoaderFiltered<
-        ISupplyTableRecord
-    >({
+    const {
+        paginatedData,
+        loadPage,
+        total,
+        pageSize
+    } = usePaginatedLoaderFiltered<ISupplyTableRecord>({
         getPaginatedData
     });
 

@@ -119,9 +119,13 @@ export const BidsTable = (props: IOwnProsp) => {
         };
     }
 
-    const { paginatedData, loadPage, total, pageSize, setPageSize } = usePaginatedLoaderFiltered<
-        Order
-    >({
+    const {
+        paginatedData,
+        loadPage,
+        total,
+        pageSize,
+        setPageSize
+    } = usePaginatedLoaderFiltered<Order>({
         getPaginatedData,
         initialPageSize: ORDERS_PER_PAGE
     });
