@@ -65,7 +65,8 @@
         "@date-io/moment": "1.3.13",
         "query-string": "6.13.8",
         "toastr": "2.1.4",
-        "winston": "3.3.3"
+        "winston": "3.3.3",
+        "@svgr/webpack": "^5.5.0"
     },
     "devDependencies": {
         "@types/enzyme": "3.10.8",

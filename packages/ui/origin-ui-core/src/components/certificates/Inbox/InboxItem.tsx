@@ -49,9 +49,12 @@ export function InboxItem(props: {
     const {
         MAIN_BACKGROUND_COLOR,
         SIMPLE_TEXT_COLOR,
+        TEXT_COLOR_DEFAULT,
         PRIMARY_COLOR_DIM,
         PRIMARY_COLOR
     } = configuration?.styleConfig;
+
+    const unselectedIconColor = LightenColor(TEXT_COLOR_DEFAULT, -7);
 
     const useStyles = makeStyles({
         device: {
@@ -163,7 +166,7 @@ export function InboxItem(props: {
                             <div
                                 className={classes.iconContainer}
                                 style={{
-                                    fill: isSelected ? PRIMARY_COLOR : '#969696'
+                                    fill: isSelected ? PRIMARY_COLOR : unselectedIconColor
                                 }}
                             >
                                 <DeviceIcon type={device.type} className={classes.icon} />
