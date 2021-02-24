@@ -26,5 +26,10 @@
     "publishConfig": {
         "access": "public",
         "registry": "https://registry.npmjs.org"
+    },
+    "devDependencies": {
+        "@types/mocha": "^8.2.1",
+        "@types/node": "^12.20.4",
+        "mocha": "8.3.0"
     }
 }

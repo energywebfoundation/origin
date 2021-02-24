@@ -85,7 +85,10 @@
         "ts-jest": "26.5.1",
         "@storybook/react": "6.1.17",
         "@storybook/storybook-deployer": "2.8.7",
-        "@storybook/addon-knobs": "6.1.18"
+        "@storybook/addon-knobs": "6.1.18",
+        "@types/mocha": "^8.2.1",
+        "@types/node": "^12.20.4",
+        "mocha": "8.3.0"
     },
     "repository": {
         "type": "git",

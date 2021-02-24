@@ -33,7 +33,10 @@
         "@openapitools/openapi-generator-cli": "2.1.24",
         "json-to-pretty-yaml": "1.2.2",
         "prettier": "2.2.1",
-        "ts-node": "9.1.1"
+        "ts-node": "9.1.1",
+        "@types/mocha": "^8.2.1",
+        "@types/node": "^12.20.4",
+        "mocha": "8.3.0"
     },
     "publishConfig": {
         "access": "public",

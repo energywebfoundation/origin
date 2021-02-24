@@ -42,7 +42,10 @@
         "winston": "3.3.3"
     },
     "devDependencies": {
-        "ethlint": "1.2.5"
+        "ethlint": "1.2.5",
+        "@types/mocha": "^8.2.1",
+        "@types/node": "^12.20.4",
+        "mocha": "8.3.0"
     },
     "gitHead": "54beaf7fe6686810de74ca290daf99cbde510f9d",
     "publishConfig": {

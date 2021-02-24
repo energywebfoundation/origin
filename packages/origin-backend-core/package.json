@@ -31,5 +31,10 @@
         "class-transformer": "0.3.1",
         "class-validator": "0.13.1",
         "ethers": "5.0.31"
+    },
+    "devDependencies": {
+        "@types/mocha": "^8.2.1",
+        "@types/node": "^12.20.4",
+        "mocha": "8.3.0"
     }
 }
