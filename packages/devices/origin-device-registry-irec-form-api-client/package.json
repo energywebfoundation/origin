@@ -37,7 +37,8 @@
         "ts-node": "9.1.1",
         "@types/mocha": "^8.2.1",
         "@types/node": "^12.20.4",
-        "mocha": "8.3.0"
+        "mocha": "8.3.0",
+        "@nestjs/passport": "7.1.5"
     },
     "publishConfig": {
         "access": "public",

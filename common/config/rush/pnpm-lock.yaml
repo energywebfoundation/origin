@@ -1,6 +1,8 @@
 dependencies:
     '@energyweb/energy-api-influxdb': 0.7.0_swagger-ui-express@4.1.6
     '@energyweb/migrations-irec': 1.0.2-alpha.13398.0
+    '@ethersproject/contracts': 5.0.11
+    '@ethersproject/providers': 5.0.23
     '@material-ui/core': 4.11.3_react-dom@17.0.1+react@17.0.1
     '@material-ui/icons': 4.11.2_c640d2d0176bfcab1d99b942ffa7ebe7
     '@material-ui/lab': 4.0.0-alpha.57_c640d2d0176bfcab1d99b942ffa7ebe7
@@ -37,20 +39,20 @@ dependencies:
     '@rush-temp/migrations-irec': file:projects/migrations-irec.tgz
     '@rush-temp/origin-backend': file:projects/origin-backend.tgz_163cd5ecc5491177807cc9c34c8a37e4
     '@rush-temp/origin-backend-app': file:projects/origin-backend-app.tgz_a37e0bd25d4b0982ca778c4913318b2b
-    '@rush-temp/origin-backend-client': file:projects/origin-backend-client.tgz_9b37890039b73df5f060dec3ad140706
+    '@rush-temp/origin-backend-client': file:projects/origin-backend-client.tgz_ae1b90ce845afe7f0be2be58b20c1633
     '@rush-temp/origin-backend-core': file:projects/origin-backend-core.tgz
     '@rush-temp/origin-backend-irec-app': file:projects/origin-backend-irec-app.tgz_a37e0bd25d4b0982ca778c4913318b2b
     '@rush-temp/origin-backend-utils': file:projects/origin-backend-utils.tgz_ecee3803c8b8f044f89d8b4440ef7fcd
     '@rush-temp/origin-device-registry-api': file:projects/origin-device-registry-api.tgz_8128758b58063ea874b1685065e631c6
-    '@rush-temp/origin-device-registry-api-client': file:projects/origin-device-registry-api-client.tgz_9b37890039b73df5f060dec3ad140706
+    '@rush-temp/origin-device-registry-api-client': file:projects/origin-device-registry-api-client.tgz_70fc1f5901943df09e211dd92f99e982
     '@rush-temp/origin-device-registry-irec-form-api': file:projects/origin-device-registry-irec-form-api.tgz_8128758b58063ea874b1685065e631c6
-    '@rush-temp/origin-device-registry-irec-form-api-client': file:projects/origin-device-registry-irec-form-api-client.tgz_9b37890039b73df5f060dec3ad140706
+    '@rush-temp/origin-device-registry-irec-form-api-client': file:projects/origin-device-registry-irec-form-api-client.tgz_70fc1f5901943df09e211dd92f99e982
     '@rush-temp/origin-device-registry-irec-local-api': file:projects/origin-device-registry-irec-local-api.tgz_8128758b58063ea874b1685065e631c6
-    '@rush-temp/origin-device-registry-irec-local-api-client': file:projects/origin-device-registry-irec-local-api-client.tgz_9b37890039b73df5f060dec3ad140706
+    '@rush-temp/origin-device-registry-irec-local-api-client': file:projects/origin-device-registry-irec-local-api-client.tgz_70fc1f5901943df09e211dd92f99e982
     '@rush-temp/origin-energy-api': file:projects/origin-energy-api.tgz_b559761ec3c647bb225ca7aa5b8dcca3
-    '@rush-temp/origin-energy-api-client': file:projects/origin-energy-api-client.tgz_9b37890039b73df5f060dec3ad140706
+    '@rush-temp/origin-energy-api-client': file:projects/origin-energy-api-client.tgz_70fc1f5901943df09e211dd92f99e982
     '@rush-temp/origin-organization-irec-api': file:projects/origin-organization-irec-api.tgz_8128758b58063ea874b1685065e631c6
-    '@rush-temp/origin-organization-irec-api-client': file:projects/origin-organization-irec-api-client.tgz_9b37890039b73df5f060dec3ad140706
+    '@rush-temp/origin-organization-irec-api-client': file:projects/origin-organization-irec-api-client.tgz_ae1b90ce845afe7f0be2be58b20c1633
     '@rush-temp/origin-ui': file:projects/origin-ui.tgz_a2ce0b462ad5a17c517de2c0e0db0e36
     '@rush-temp/origin-ui-core': file:projects/origin-ui-core.tgz_511642f8f9f16dbc319cf5a6e27e2c39
     '@rush-temp/origin-ui-irec-core': file:projects/origin-ui-irec-core.tgz_immutable@4.0.0-rc.12
@@ -63,6 +65,7 @@ dependencies:
     '@typechain/ethers-v5': 1.0.0_typechain@4.0.2
     '@types/bcryptjs': 2.4.2
     '@types/body-parser': 1.19.0
+    '@types/chai': 4.2.15
     '@types/cors': 2.8.10
     '@types/dotenv': 6.1.1
     '@types/enzyme': 3.10.8
@@ -194,6 +197,7 @@ dependencies:
     webpack-dev-server: 3.11.2_webpack-cli@4.5.0+webpack@5.23.0
     webpack-merge: 5.7.3
     winston: 3.3.3
+    winston-transport: 4.4.0
     write-json-file: 4.3.0
     yaeti: 1.0.2
     yup: 0.32.9
@@ -1354,7 +1358,7 @@ packages:
             '@babel/plugin-transform-unicode-regex': 7.12.13_@babel+core@7.13.1
             '@babel/preset-modules': 0.1.4_@babel+core@7.13.1
             '@babel/types': 7.13.0
-            babel-plugin-polyfill-corejs2: 0.1.5_@babel+core@7.13.1
+            babel-plugin-polyfill-corejs2: 0.1.6_@babel+core@7.13.1
             babel-plugin-polyfill-corejs3: 0.1.4_@babel+core@7.13.1
             babel-plugin-polyfill-regenerator: 0.1.3_@babel+core@7.13.1
             core-js-compat: 3.9.0
@@ -4641,13 +4645,13 @@ packages:
             integrity: sha512-LiMQ6EOPob/4yUL66SZzu6Yh77cbzJFYll+ZfaPiPPFswtIlA/Fs1MzdKYA7JApHU49zQTbJGX3PDmCpIdDBRQ==
     /@types/bn.js/4.11.6:
         dependencies:
-            '@types/node': 14.14.31
+            '@types/node': 12.20.4
         dev: false
         resolution:
             integrity: sha512-pqr857jrp2kPuO9uRjZ3PwnJTjoQy+fcdxvBTvHm6dkmEL9q+hDD/2j/0ELOBPtPnS8LjCX0gI9nbl8lVkadpg==
     /@types/bn.js/5.1.0:
         dependencies:
-            '@types/node': 14.14.31
+            '@types/node': 12.20.4
         dev: false
         resolution:
             integrity: sha512-QSSVYj7pYFN49kW77o2s9xTCwZ8F2xLbjLLSEVh8D2F4JUhZtPAGOFLTD+ffqksBx/u4cE/KImFjyhqCjn/LIA==
@@ -4729,7 +4733,7 @@ packages:
             integrity: sha512-GWX0s/FFGWl6lO2nbd9nq3fh1x47vmLL/p4yDG1+VgCqrip1ErQrbHlTZThtEc6JrcmwCKB2H1de32Hdo3JdJg==
     /@types/express-serve-static-core/4.17.18:
         dependencies:
-            '@types/node': 14.14.31
+            '@types/node': 12.20.4
             '@types/qs': 6.9.5
             '@types/range-parser': 1.2.3
         dev: false
@@ -5085,7 +5089,7 @@ packages:
     /@types/serve-static/1.13.9:
         dependencies:
             '@types/mime': 1.3.2
-            '@types/node': 14.14.31
+            '@types/node': 12.20.4
         dev: false
         resolution:
             integrity: sha512-ZFqF6qa48XsPdjXV5Gsz0Zqmux2PerNd3a/ktL45mHpa19cuMi/cL8tcxdAx497yRh+QtYPuofjT9oWw9P7nkA==
@@ -6431,8 +6435,8 @@ packages:
     /autoprefixer/9.8.6:
         dependencies:
             browserslist: 4.16.3
-            caniuse-lite: 1.0.30001191
-            colorette: 1.2.1
+            caniuse-lite: 1.0.30001192
+            colorette: 1.2.2
             normalize-range: 0.1.2
             num2fraction: 1.2.2
             postcss: 7.0.35
@@ -6821,7 +6825,7 @@ packages:
             '@babel/core': ^7.1.0
         resolution:
             integrity: sha512-squySRkf+6JGnvjoUtDEjSREJEBirnXi9NqP6rjSYsylxQxqBTz+pkmf395i9E2zsvmYUaI40BHo6SqZUdydlw==
-    /babel-plugin-polyfill-corejs2/0.1.5_@babel+core@7.13.1:
+    /babel-plugin-polyfill-corejs2/0.1.6_@babel+core@7.13.1:
         dependencies:
             '@babel/compat-data': 7.13.6
             '@babel/core': 7.13.1
@@ -6831,7 +6835,7 @@ packages:
         peerDependencies:
             '@babel/core': ^7.0.0-0
         resolution:
-            integrity: sha512-5IzdFIjYWqlOFVr/hMYUpc+5fbfuvJTAISwIY58jhH++ZtawtNlcJnxAixlk8ahVwHCz1ipW/kpXYliEBp66wg==
+            integrity: sha512-1PfghLDuzX5lFY6XXO0hrfxwYf0LD9YajMWeQBGNaPNLQ35paV7YB4hlFW+HfwFS5kcp4rtPI/237xLfQ1ah8A==
     /babel-plugin-polyfill-corejs3/0.1.4_@babel+core@7.13.1:
         dependencies:
             '@babel/core': 7.13.1
@@ -7587,7 +7591,7 @@ packages:
             integrity: sha512-Z942RysHXmJrhqk88FmKBVq/v5tqmSkDz7p54G/MGyjMnCFFnC79XWNbg+Vta8W6Wb2qtSZTSxIGkJrRpCFEiA==
     /browserslist/3.2.8:
         dependencies:
-            caniuse-lite: 1.0.30001191
+            caniuse-lite: 1.0.30001192
             electron-to-chromium: 1.3.673
         dev: false
         hasBin: true
@@ -7595,7 +7599,7 @@ packages:
             integrity: sha512-WHVocJYavUwVgVViC0ORikPHQquXwVh939TaelZ4WDqpWgTX/FsGhl/+P4qBUAGcRvtOgDgC+xftNWWp2RUTAQ==
     /browserslist/4.10.0:
         dependencies:
-            caniuse-lite: 1.0.30001191
+            caniuse-lite: 1.0.30001192
             electron-to-chromium: 1.3.673
             node-releases: 1.1.71
             pkg-up: 3.1.0
@@ -7605,8 +7609,8 @@ packages:
             integrity: sha512-TpfK0TDgv71dzuTsEAlQiHeWQ/tiPqgNZVdv046fvNtBZrjbv2O3TsWCDU0AWGJJKCF/KsjNdLzR9hXOsh/CfA==
     /browserslist/4.16.3:
         dependencies:
-            caniuse-lite: 1.0.30001191
-            colorette: 1.2.1
+            caniuse-lite: 1.0.30001192
+            colorette: 1.2.2
             electron-to-chromium: 1.3.673
             escalade: 3.1.1
             node-releases: 1.1.71
@@ -7926,10 +7930,10 @@ packages:
             node: '>=10'
         resolution:
             integrity: sha512-c7wVvbw3f37nuobQNtgsgG9POC9qMbNuMQmTCqZv23b6MIz0fcYpBiOlv9gEN/hdLdnZTDQhg6e9Dq5M1vKvfg==
-    /caniuse-lite/1.0.30001191:
+    /caniuse-lite/1.0.30001192:
         dev: false
         resolution:
-            integrity: sha512-xJJqzyd+7GCJXkcoBiQ1GuxEiOBCLQ0aVW9HMekifZsAVGdj5eJ4mFB9fEhSHipq9IOk/QXFJUiIr9lZT+EsGw==
+            integrity: sha512-63OrUnwJj5T1rUmoyqYTdRWBqFFxZFlyZnRRjDR8NSUQFB6A+j/uBORU/SyJ5WzDLg4SPiZH40hQCBNdZ/jmAw==
     /capture-exit/2.0.0:
         dependencies:
             rsvp: 4.8.5
@@ -8574,10 +8578,10 @@ packages:
         dev: false
         resolution:
             integrity: sha512-jCpd5+s0s0t7p3pHQKpnJ0TpQKKdleP71LWcA0aqiljpiuAkOSUFN/dyH8ZwF0hRmFlrIuRhufds1QyEP9EB+w==
-    /colorette/1.2.1:
+    /colorette/1.2.2:
         dev: false
         resolution:
-            integrity: sha512-puCDz0CzydiSYOrnXpz/PKd69zRrribezjtE9yd4zvytoRc8+RY/KJPvtPFKZS3E3wP6neGyMe0vOTlHO5L3Pw==
+            integrity: sha512-MKGMzyfeuutC/ZJ1cba9NqcNpfeqMUcYmyF1ZFY6/Cn7CNSAKx6a+s48sqLqyAiZuaP2TcqMhoo+dlwFnVxT9w==
     /colors/1.4.0:
         dev: false
         engines:
@@ -10564,7 +10568,7 @@ packages:
             integrity: sha512-bfttrr3/7gG4E02HoWTDUcDDslN003OlOoBxk9virpAZQ1ja/jDgwkWB8QfJF7ojuEowrqy+lzp9VcJG7/k5bQ==
     /eth-lib/0.2.7:
         dependencies:
-            bn.js: 4.12.0
+            bn.js: 4.11.8
             elliptic: 6.5.4
             xhr-request-promise: 0.1.3
         dev: false
@@ -18017,7 +18021,7 @@ packages:
             integrity: sha512-3QT8bBJeX/S5zKTTjTCIjRF3If4avAT6kqxcASlTWEtAFCb9NH0OUxNDfgZSWdP5fJnBYCMEWkIFfWeugjzYMg==
     /postcss/8.2.6:
         dependencies:
-            colorette: 1.2.1
+            colorette: 1.2.2
             nanoid: 3.1.20
             source-map: 0.6.1
         dev: false
@@ -21200,14 +21204,14 @@ packages:
             node: '>=8'
         resolution:
             integrity: sha512-zoE5/e+dnEijk6ASB6/qrK+oYdm2do1hjoLWrqUC/8WEIW1gbxFcKuBof7sW8ArN6e+AYvsE8HBGiVRWL/F5CA==
-    /swagger-ui-dist/3.43.0:
+    /swagger-ui-dist/3.44.0:
         dev: false
         resolution:
-            integrity: sha512-PtE+g23bNbYv8qqAVoPBqNQth8hU5Sl5ZsQ7gHXlO5jlCt31dVTiKI9ArHIT1b23ZzUYTnKsFgPYYFoiWyNCAw==
+            integrity: sha512-xqz5rNDKexAEIYST50+Z4fUu7CbJVpALoRJdKOZfddQX+0hAjN9T9bVGRlI054gst62F8SqQAcS84tdcwmSe8A==
     /swagger-ui-express/4.1.6_express@4.17.1:
         dependencies:
             express: 4.17.1
-            swagger-ui-dist: 3.43.0
+            swagger-ui-dist: 3.44.0
         dev: false
         engines:
             node: '>= v0.10.32'
@@ -23499,7 +23503,7 @@ packages:
             '@webpack-cli/configtest': 1.0.1_webpack-cli@4.5.0+webpack@5.23.0
             '@webpack-cli/info': 1.2.2_webpack-cli@4.5.0
             '@webpack-cli/serve': 1.3.0_28340414f8e095389370177a265d7b92
-            colorette: 1.2.1
+            colorette: 1.2.2
             commander: 7.1.0
             enquirer: 2.3.6
             execa: 5.0.0
@@ -24460,17 +24464,22 @@ packages:
             integrity: sha1-JAzNv9AgP6hCsTDe77FBQSLIzFA=
     file:projects/device-registry.tgz:
         dependencies:
+            '@types/chai': 4.2.15
+            '@types/dotenv': 6.1.1
             '@types/mocha': 8.2.1
             '@types/node': 12.20.4
+            chai: 4.3.0
+            dotenv: 8.2.0
             ethers: 5.0.31
             ethlint: 1.2.5
             mocha: 8.3.0
             moment: 2.29.1
             winston: 3.3.3
+            winston-transport: 4.4.0
         dev: false
         name: '@rush-temp/device-registry'
         resolution:
-            integrity: sha512-p9UmzOn6seKmFC39OFSwBt41BB5UtQC92KX2GOKLi4SnUiMCWV9og7Ma2d8y6vElDsVUj9eZEDl9SFMhOUbIdw==
+            integrity: sha512-UbwTJu6i7JsgTFrjP8kJv0tNWrV3inqfd9mN0JTh618GEUhevDAR8MNaI8g1KsccGbLbUPgPC3o6xxUWtA81qA==
             tarball: file:projects/device-registry.tgz
         version: 0.0.0
     file:projects/exchange-client.tgz_9b37890039b73df5f060dec3ad140706:
@@ -24864,7 +24873,10 @@ packages:
         version: 0.0.0
     file:projects/issuer.tgz:
         dependencies:
+            '@ethersproject/contracts': 5.0.11
+            '@ethersproject/providers': 5.0.23
             '@typechain/ethers-v5': 1.0.0_typechain@4.0.2
+            '@types/dotenv': 6.1.1
             '@types/mocha': 8.2.1
             '@types/node': 12.20.4
             chai: 4.3.0
@@ -24879,10 +24891,11 @@ packages:
             truffle-typings: 1.0.8
             typechain: 4.0.2
             winston: 3.3.3
+            winston-transport: 4.4.0
         dev: false
         name: '@rush-temp/issuer'
         resolution:
-            integrity: sha512-FKgqPjdycrsD46U4BAedhkXhyIj7nJu5UVbjwmAqkCGulh1Mdz3EW7AfW8ZA/gHN82jvQRAllJn7EMweV8fd1w==
+            integrity: sha512-boPhpOxwXGOvARcevVsGh+H8cFyjCuPRtBdohueNHrnNhLis6ZE79ZdvM8aXtBO/3cFIpOO3iTgaKdawbzNRQg==
             tarball: file:projects/issuer.tgz
         version: 0.0.0
     file:projects/localization.tgz:
@@ -24968,7 +24981,7 @@ packages:
             integrity: sha512-68fC8RnQtUSoLug/StVtcFWUyaM5P9TL+tGhLnKjAGtM2WqUoeo3o4EQxmyly7tXR1LzOwxtaHv68xz/k1i7Nw==
             tarball: file:projects/origin-backend-app.tgz
         version: 0.0.0
-    file:projects/origin-backend-client.tgz_9b37890039b73df5f060dec3ad140706:
+    file:projects/origin-backend-client.tgz_ae1b90ce845afe7f0be2be58b20c1633:
         dependencies:
             '@nestjs/swagger': 4.7.13_ddfead43f77eda4656e2ba23605922fc
             '@nestjs/testing': 7.6.12_73c28f87771bbbd0c6784e8a1ef1188d
@@ -24981,6 +24994,7 @@ packages:
             mocha: 8.3.0
             prettier: 2.2.1
             ts-node: 9.1.1
+            typeorm: 0.2.31
         dev: false
         id: file:projects/origin-backend-client.tgz
         name: '@rush-temp/origin-backend-client'
@@ -24991,9 +25005,8 @@ packages:
             reflect-metadata: '*'
             rxjs: '*'
             swagger-ui-express: '*'
-            typeorm: '*'
         resolution:
-            integrity: sha512-asqljMmlrhq61cZj2G9Qs+kTqvU6FqDENt6987CHPt5q4xkxg4Z3cqtqpJ8m/DgFrrDgNTB1Wd023uVPGv20tw==
+            integrity: sha512-gbzX3doJxWaMhgSeJlUfJ5zW7+kx8868M0jg76b2dbv2PMtW7GobgjLLNuohHHqogNg8SPK/FZAN/cSoibdI7w==
             tarball: file:projects/origin-backend-client.tgz
         version: 0.0.0
     file:projects/origin-backend-core.tgz:
@@ -25132,18 +25145,21 @@ packages:
             ts-node: '*'
             webpack-cli: '*'
         resolution:
-            integrity: sha512-zkdMu3P2XsXNrakFUupC7YuPCAITtsC5/pWlLWK66w13JRFAEjoVc03qTyQrxAvszwqLuNOD8kdm2VX0/AHeNw==
+            integrity: sha512-UEyDwz761qPKunMIcFT47astv30zSKZMF+PBKsBQbeoTomwwRklyENGa5YG7zFYuaUM+LSV1IeWgRY1+Y5I2aA==
             tarball: file:projects/origin-backend.tgz
         version: 0.0.0
-    file:projects/origin-device-registry-api-client.tgz_9b37890039b73df5f060dec3ad140706:
+    file:projects/origin-device-registry-api-client.tgz_70fc1f5901943df09e211dd92f99e982:
         dependencies:
+            '@nestjs/passport': 7.1.5_e66302a0e1e407f8cdcb0546620a3bac
             '@nestjs/swagger': 4.7.13_ddfead43f77eda4656e2ba23605922fc
             '@nestjs/testing': 7.6.12_73c28f87771bbbd0c6784e8a1ef1188d
             '@nestjs/typeorm': 7.1.5_9d94bc13ab1d319ac58a33a78efb0e54
             '@openapitools/openapi-generator-cli': 2.1.24_class-transformer@0.3.1
+            '@types/chai': 4.2.15
             '@types/mocha': 8.2.1
             '@types/node': 12.20.4
             axios: 0.21.1
+            chai: 4.3.0
             json-to-pretty-yaml: 1.2.2
             mocha: 8.3.0
             prettier: 2.2.1
@@ -25155,12 +25171,13 @@ packages:
             '@nestjs/common': '*'
             '@nestjs/core': '*'
             class-transformer: '*'
+            passport: '*'
             reflect-metadata: '*'
             rxjs: '*'
             swagger-ui-express: '*'
             typeorm: '*'
         resolution:
-            integrity: sha512-RSsQTdeqcnD1QdE6wsYxXLQ942a3cWUePdvEgI9sAHY2GKZvJTXX7OR4VTTtltCk41kWjB+uGqafO66MrHro0g==
+            integrity: sha512-tEkFr6o2kdzp8A+PybVSyj+LVfANkSSvI+VItB8ulbEgSHlNZxt6d0CN2TiOt2Kkym9E3Zp3ScviekjVqQT54Q==
             tarball: file:projects/origin-device-registry-api-client.tgz
         version: 0.0.0
     file:projects/origin-device-registry-api.tgz_8128758b58063ea874b1685065e631c6:
@@ -25175,10 +25192,12 @@ packages:
             '@nestjs/swagger': 4.7.13_231b3718c58169eb5130cbc98a91707a
             '@nestjs/testing': 7.6.12_73c28f87771bbbd0c6784e8a1ef1188d
             '@nestjs/typeorm': 7.1.5_9d94bc13ab1d319ac58a33a78efb0e54
+            '@types/chai': 4.2.15
             '@types/express': 4.17.11
             '@types/mocha': 8.2.1
             '@types/node': 12.20.4
             '@types/supertest': 2.0.10
+            chai: 4.3.0
             class-sanitizer: 1.0.1
             class-transformer: 0.3.1
             class-validator: 0.13.1
@@ -25199,11 +25218,12 @@ packages:
             swagger-ui-express: '*'
             webpack-cli: '*'
         resolution:
-            integrity: sha512-u/SSotY9iZwUL70/28dX4TRwVLf9kJiNeLV1LUZnu/hD8tpzzfnOGnoZZgqRMHot3rK1YWVrnWkuF2sKnRf5Ng==
+            integrity: sha512-kG17UrBq2oo3ivM3yOQriCzTDc7XyoUw2y5bFP8liY3jZ6DrCanMgGv7ZvNjPuaUhiiOkHVFDCg1SFKv89JogA==
             tarball: file:projects/origin-device-registry-api.tgz
         version: 0.0.0
-    file:projects/origin-device-registry-irec-form-api-client.tgz_9b37890039b73df5f060dec3ad140706:
+    file:projects/origin-device-registry-irec-form-api-client.tgz_70fc1f5901943df09e211dd92f99e982:
         dependencies:
+            '@nestjs/passport': 7.1.5_e66302a0e1e407f8cdcb0546620a3bac
             '@nestjs/swagger': 4.7.13_ddfead43f77eda4656e2ba23605922fc
             '@nestjs/testing': 7.6.12_73c28f87771bbbd0c6784e8a1ef1188d
             '@nestjs/typeorm': 7.1.5_9d94bc13ab1d319ac58a33a78efb0e54
@@ -25222,12 +25242,13 @@ packages:
             '@nestjs/common': '*'
             '@nestjs/core': '*'
             class-transformer: '*'
+            passport: '*'
             reflect-metadata: '*'
             rxjs: '*'
             swagger-ui-express: '*'
             typeorm: '*'
         resolution:
-            integrity: sha512-AD3V+RCNzPh489e1oNLvgC0aezIEWKfNkD6TiZJAt8gZxGosuxjYZblZWKKCE9wHA9X7zDyz5IVrmG2xrLPFZg==
+            integrity: sha512-iMfcSapPJWSDjXYOuLdQhQwobPnct7bdd4wQkwxEF1V0ahFX2IiUeenT1ROa6A0ZcpIAFAcqae25KAhJCIEnvg==
             tarball: file:projects/origin-device-registry-irec-form-api-client.tgz
         version: 0.0.0
     file:projects/origin-device-registry-irec-form-api.tgz_8128758b58063ea874b1685065e631c6:
@@ -25242,13 +25263,16 @@ packages:
             '@nestjs/swagger': 4.7.13_231b3718c58169eb5130cbc98a91707a
             '@nestjs/testing': 7.6.12_73c28f87771bbbd0c6784e8a1ef1188d
             '@nestjs/typeorm': 7.1.5_9d94bc13ab1d319ac58a33a78efb0e54
+            '@types/dotenv': 6.1.1
             '@types/express': 4.17.11
             '@types/mocha': 8.2.1
             '@types/node': 12.20.4
             '@types/supertest': 2.0.10
+            '@types/uuid': 8.3.0
             class-sanitizer: 1.0.1
             class-transformer: 0.3.1
             class-validator: 0.13.1
+            dotenv: 8.2.0
             ethers: 5.0.31
             mocha: 8.3.0
             moment: 2.29.1
@@ -25268,11 +25292,12 @@ packages:
             swagger-ui-express: '*'
             webpack-cli: '*'
         resolution:
-            integrity: sha512-pcBoWTpnXvvv3CQ+VNv5xTCznMBMQjULWybsnw2e0UJ9ICHEbn1aNTkljWhL6FML/WuADK3Eu2RGy6EXobKEkw==
+            integrity: sha512-Q+WeBY3IyYC7DALQFbIsbjgKQyfSAvkeGTntis0Z/Tu2894hsKW1LJRl5efzf+huCUGKk89zW9K6cWVy7El8RQ==
             tarball: file:projects/origin-device-registry-irec-form-api.tgz
         version: 0.0.0
-    file:projects/origin-device-registry-irec-local-api-client.tgz_9b37890039b73df5f060dec3ad140706:
+    file:projects/origin-device-registry-irec-local-api-client.tgz_70fc1f5901943df09e211dd92f99e982:
         dependencies:
+            '@nestjs/passport': 7.1.5_e66302a0e1e407f8cdcb0546620a3bac
             '@nestjs/swagger': 4.7.13_ddfead43f77eda4656e2ba23605922fc
             '@nestjs/testing': 7.6.12_73c28f87771bbbd0c6784e8a1ef1188d
             '@nestjs/typeorm': 7.1.5_9d94bc13ab1d319ac58a33a78efb0e54
@@ -25291,12 +25316,13 @@ packages:
             '@nestjs/common': '*'
             '@nestjs/core': '*'
             class-transformer: '*'
+            passport: '*'
             reflect-metadata: '*'
             rxjs: '*'
             swagger-ui-express: '*'
             typeorm: '*'
         resolution:
-            integrity: sha512-+sDcKsRHou7HV4tOVn2ZhHHBofPwCLmQGM0hlizkBrOG1QzOOd1le8ZJ2Pw9NTDLfh3ukYRCG5xepB4nhdhCkA==
+            integrity: sha512-K5P22CwcVkLGKHv6vhxMIWl/WTf+5XKxRSgEt1aRFWn/L+YMRC6H2oy3Xl7DqfbBvzVjGjDKckgFotT9Uzw4VQ==
             tarball: file:projects/origin-device-registry-irec-local-api-client.tgz
         version: 0.0.0
     file:projects/origin-device-registry-irec-local-api.tgz_8128758b58063ea874b1685065e631c6:
@@ -25311,13 +25337,17 @@ packages:
             '@nestjs/swagger': 4.7.13_231b3718c58169eb5130cbc98a91707a
             '@nestjs/testing': 7.6.12_73c28f87771bbbd0c6784e8a1ef1188d
             '@nestjs/typeorm': 7.1.5_9d94bc13ab1d319ac58a33a78efb0e54
+            '@types/chai': 4.2.15
+            '@types/dotenv': 6.1.1
             '@types/express': 4.17.11
             '@types/mocha': 8.2.1
             '@types/node': 12.20.4
             '@types/supertest': 2.0.10
+            chai: 4.3.0
             class-sanitizer: 1.0.1
             class-transformer: 0.3.1
             class-validator: 0.13.1
+            dotenv: 8.2.0
             mocha: 8.3.0
             reflect-metadata: 0.1.13
             rxjs: 6.6.3
@@ -25334,11 +25364,12 @@ packages:
             swagger-ui-express: '*'
             webpack-cli: '*'
         resolution:
-            integrity: sha512-lIi3FUBm3WBuaNo03mZfdYXaatncPNYevMSQOTcrDyTZHEYDWJhX/alZDCBOp8tUI+10TggP72HfmyhP5C+DxQ==
+            integrity: sha512-pgCRO92NF7C+DbHy5Qk+0y331t+LOZhXJw50DH+8YTovN3I+gyg5zSs88yRjVc1cMj5Ot1/fliS8sWUOyJYmvA==
             tarball: file:projects/origin-device-registry-irec-local-api.tgz
         version: 0.0.0
-    file:projects/origin-energy-api-client.tgz_9b37890039b73df5f060dec3ad140706:
+    file:projects/origin-energy-api-client.tgz_70fc1f5901943df09e211dd92f99e982:
         dependencies:
+            '@nestjs/passport': 7.1.5_e66302a0e1e407f8cdcb0546620a3bac
             '@nestjs/swagger': 4.7.13_ddfead43f77eda4656e2ba23605922fc
             '@nestjs/testing': 7.6.12_73c28f87771bbbd0c6784e8a1ef1188d
             '@nestjs/typeorm': 7.1.5_9d94bc13ab1d319ac58a33a78efb0e54
@@ -25357,12 +25388,13 @@ packages:
             '@nestjs/common': '*'
             '@nestjs/core': '*'
             class-transformer: '*'
+            passport: '*'
             reflect-metadata: '*'
             rxjs: '*'
             swagger-ui-express: '*'
             typeorm: '*'
         resolution:
-            integrity: sha512-J7XfKiJhlAplC/czprNA3n3t4F4HbVnYtuk+e/Lvbey52XRyJf/9nYaiQt5916bVwYXtpWsN1Y6gGL8HM5nLuQ==
+            integrity: sha512-b28iMsunI3FPyzBKm79ZyUd4cw+nkAPdJKxZ2N+NQAgJ0/KqqYZbVDzvXdPwPUx70sEtP2xCVM1A5C9LjvuCpg==
             tarball: file:projects/origin-energy-api-client.tgz
         version: 0.0.0
     file:projects/origin-energy-api.tgz_b559761ec3c647bb225ca7aa5b8dcca3:
@@ -25398,7 +25430,7 @@ packages:
             integrity: sha512-4ka5ZOzYvots8elo4oE9dh1PgjDZ7cYS2E9BxodchiPaFC0alagd5vfQN1DzaoN5HhfDKVnzwp46MYXKwVUvBw==
             tarball: file:projects/origin-energy-api.tgz
         version: 0.0.0
-    file:projects/origin-organization-irec-api-client.tgz_9b37890039b73df5f060dec3ad140706:
+    file:projects/origin-organization-irec-api-client.tgz_ae1b90ce845afe7f0be2be58b20c1633:
         dependencies:
             '@nestjs/swagger': 4.7.13_ddfead43f77eda4656e2ba23605922fc
             '@nestjs/testing': 7.6.12_73c28f87771bbbd0c6784e8a1ef1188d
@@ -25411,6 +25443,7 @@ packages:
             mocha: 8.3.0
             prettier: 2.2.1
             ts-node: 9.1.1
+            typeorm: 0.2.31
         dev: false
         id: file:projects/origin-organization-irec-api-client.tgz
         name: '@rush-temp/origin-organization-irec-api-client'
@@ -25421,9 +25454,8 @@ packages:
             reflect-metadata: '*'
             rxjs: '*'
             swagger-ui-express: '*'
-            typeorm: '*'
         resolution:
-            integrity: sha512-Cw/EnRruEdjKYe9IgeVO2a4NAB9mAfSEZHAFpIpV1J1zAYu8Esb1yM6EZTrRPrqTGzzVFiHnacAafGmfSzErmA==
+            integrity: sha512-8hCyTZkdgudgMgtN/t/27leIOcfXQMsBU/RfSl+u2ViP6R2lem3OzZ/bJHxGChrTaBIpcbZ6JRa5Ove3zguJrA==
             tarball: file:projects/origin-organization-irec-api-client.tgz
         version: 0.0.0
     file:projects/origin-organization-irec-api.tgz_8128758b58063ea874b1685065e631c6:
@@ -25438,10 +25470,12 @@ packages:
             '@nestjs/swagger': 4.7.13_231b3718c58169eb5130cbc98a91707a
             '@nestjs/testing': 7.6.12_73c28f87771bbbd0c6784e8a1ef1188d
             '@nestjs/typeorm': 7.1.5_9d94bc13ab1d319ac58a33a78efb0e54
+            '@types/chai': 4.2.15
             '@types/express': 4.17.11
             '@types/mocha': 8.2.1
             '@types/node': 12.20.4
             '@types/supertest': 2.0.10
+            chai: 4.3.0
             class-transformer: 0.3.1
             class-validator: 0.13.1
             mocha: 8.3.0
@@ -25459,7 +25493,7 @@ packages:
             swagger-ui-express: '*'
             webpack-cli: '*'
         resolution:
-            integrity: sha512-eaaHHnY6/C+JAjmM1D1i2B8Pxvvf7FCGfoj+LJ8ijImzTmPEQqHMmW2t6ZoZ8YPE/11BuASO7/PMKPZAjkvvww==
+            integrity: sha512-Dbi1ZAS/2PAdoQ6txmn4R3KtqkB3nn9nP9EPTz4MRYjXRU3xK9KnlsBys6PnE0dMENptJYAdySEAncFAIfkt8Q==
             tarball: file:projects/origin-organization-irec-api.tgz
         version: 0.0.0
     file:projects/origin-ui-core.tgz_511642f8f9f16dbc319cf5a6e27e2c39:
@@ -25677,7 +25711,7 @@ packages:
         dev: false
         name: '@rush-temp/utils-general'
         resolution:
-            integrity: sha512-GtnUEhQaBKQFMslSwtyXv7Ze5CFM481bWoGzls66W24nL7xNI7+rrHPJ8BygxozefZFepepPSquAVdEOl7VhJw==
+            integrity: sha512-5CLBDQwAvGe3iyvxxKj8SK0DtJLhSA6zYXeX5DE/MmndBZSMi0WnRp/xUrgXs1vOqjDytkyPY+zsyvEelzxINw==
             tarball: file:projects/utils-general.tgz
         version: 0.0.0
     github.com/ethereumjs/ethereumjs-abi/1a27c59c15ab1e95ee8e5c4ed6ad814c49cc439e:
@@ -25689,10 +25723,11 @@ packages:
         resolution:
             tarball: https://codeload.github.com/ethereumjs/ethereumjs-abi/tar.gz/1a27c59c15ab1e95ee8e5c4ed6ad814c49cc439e
         version: 0.6.8
-registry: ''
 specifiers:
     '@energyweb/energy-api-influxdb': 0.7.0
     '@energyweb/migrations-irec': 1.0.2-alpha.13398.0
+    '@ethersproject/contracts': 5.0.11
+    '@ethersproject/providers': 5.0.23
     '@material-ui/core': 4.11.3
     '@material-ui/icons': 4.11.2
     '@material-ui/lab': 4.0.0-alpha.57
@@ -25755,6 +25790,7 @@ specifiers:
     '@typechain/ethers-v5': 1.0.0
     '@types/bcryptjs': 2.4.2
     '@types/body-parser': 1.19.0
+    '@types/chai': 4.2.15
     '@types/cors': 2.8.10
     '@types/dotenv': 6.1.1
     '@types/enzyme': 3.10.8
@@ -25886,6 +25922,7 @@ specifiers:
     webpack-dev-server: 3.11.2
     webpack-merge: 5.7.3
     winston: 3.3.3
+    winston-transport: ^4.4.0
     write-json-file: 4.3.0
     yaeti: 1.0.2
     yup: 0.32.9

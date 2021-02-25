@@ -45,7 +45,13 @@
         "ethlint": "1.2.5",
         "@types/mocha": "^8.2.1",
         "@types/node": "^12.20.4",
-        "mocha": "8.3.0"
+        "mocha": "8.3.0",
+        "winston": "3.3.3",
+        "winston-transport": "^4.4.0",
+        "@types/chai": "^4.2.0",
+        "chai": "4.3.0",
+        "@types/dotenv": "6.1.1",
+        "dotenv": "8.2.0"
     },
     "gitHead": "54beaf7fe6686810de74ca290daf99cbde510f9d",
     "publishConfig": {

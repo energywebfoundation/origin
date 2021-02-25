@@ -10,7 +10,7 @@ module.exports = {
     },
     compilers: {
         solc: {
-            version: '../../../node_modules/solc',
+            version: './node_modules/solc',
             settings: {
                 optimizer: {
                     enabled: true,

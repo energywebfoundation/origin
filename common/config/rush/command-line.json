@@ -12,8 +12,8 @@
      */
     "commands": [
         {
-            "commandKind": "bulk",
             "name": "lint",
+            "commandKind": "bulk",
             "summary": "Lint all packages",
             "safeForSimultaneousRushProcesses": true,
             "enableParallelism": true,

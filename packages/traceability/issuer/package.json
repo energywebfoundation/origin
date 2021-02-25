@@ -60,7 +60,15 @@
         "@types/node": "^12.20.4",
         "mocha": "8.3.0",
         "truffle": "5.1.67",
-        "solc": "0.5.16"
+        "solc": "0.5.16",
+        "@ethersproject/providers": "5.0.23",
+        "@ethersproject/contracts": "5.0.11",
+        "winston": "3.3.3",
+        "winston-transport": "^4.4.0",
+        "@types/dotenv": "6.1.1",
+        "dotenv": "8.2.0",
+        "@types/chai": "4.2.15",
+        "chai": "4.3.0"
     },
     "publishConfig": {
         "access": "public",
