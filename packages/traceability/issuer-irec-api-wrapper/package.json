@@ -1,6 +1,6 @@
 {
     "name": "@energyweb/issuer-irec-api-wrapper",
-    "version": "0.1.0",
+    "version": "0.2.0",
     "description": "A Typescript wrapper for I-REC Evident API",
     "main": "dist/src/index.js",
     "types": "dist/src/index.d.ts",
@@ -24,7 +24,7 @@
         "axios": "0.21.1",
         "class-transformer": "0.3.1",
         "class-validator": "0.13.1",
-        "form-data": "3.0.0",
+        "form-data": "3.0.1",
         "moment": "2.29.1",
         "moment-timezone": "0.5.33",
         "qs": "6.9.6",

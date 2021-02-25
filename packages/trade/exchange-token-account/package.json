@@ -9,7 +9,7 @@
     "bugs": {
         "url": "https://github.com/energywebfoundation/origin/issues"
     },
-    "version": "0.1.19",
+    "version": "0.1.20",
     "main": "dist/js/src/index.js",
     "files": [
         "dist/js/src"
@@ -34,13 +34,13 @@
     "types": "dist/js/src/index.d.ts",
     "dependencies": {
         "chai": "4.3.0",
-        "ethers": "5.0.29"
+        "ethers": "5.0.31"
     },
     "devDependencies": {
-        "@energyweb/issuer": "3.0.1",
+        "@energyweb/issuer": "3.1.0",
         "@typechain/ethers-v5": "1.0.0",
         "truffle-typings": "1.0.8",
-        "typechain": "4.0.1"
+        "typechain": "4.0.2"
     },
     "gitHead": "54beaf7fe6686810de74ca290daf99cbde510f9d",
     "publishConfig": {

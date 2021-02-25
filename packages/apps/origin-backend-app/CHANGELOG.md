@@ -3,6 +3,24 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.5.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-backend-app@1.4.0...@energyweb/origin-backend-app@1.5.0) (2021-02-12)
+
+
+### Bug Fixes
+
+* **origin-backend-app:** getting org admins ([f222079](https://github.com/energywebfoundation/origin/commit/f222079ecb766786a3872fe8498bc78242eee549))
+* skip dockerhub push due to reliability issues ([7981387](https://github.com/energywebfoundation/origin/commit/798138790ff8db351364edc5b7759288d354d186))
+* **deps:** update nest monorepo to v7.6.11 ([daee156](https://github.com/energywebfoundation/origin/commit/daee156b9c315c527311f0c78ffbdf4226b6785a))
+
+
+### Features
+
+* **origin-irec-organization-api:** added connection module ([09da211](https://github.com/energywebfoundation/origin/commit/09da2113acfb27d95dc442aadee6be2f36e257c8))
+
+
+
+
+
 # [1.4.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-backend-app@1.3.0...@energyweb/origin-backend-app@1.4.0) (2020-12-04)
 
 

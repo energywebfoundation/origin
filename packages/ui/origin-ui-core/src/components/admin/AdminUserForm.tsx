@@ -1,16 +1,14 @@
-import { IUser, UserStatus, KYCStatus } from '@energyweb/origin-backend-core';
+import React, { useEffect, useState } from 'react';
+import { useHistory } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
 import { Button, createStyles, Grid, makeStyles, Paper, useTheme } from '@material-ui/core';
 import { Skeleton } from '@material-ui/lab';
 import { Form, Formik, FormikHelpers } from 'formik';
-import React, { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
 import * as Yup from 'yup';
-import { setLoading } from '../../features/general/actions';
-import { getBackendClient } from '../../features/general/selectors';
+import { IUser, UserStatus, KYCStatus } from '@energyweb/origin-backend-core';
+import { setLoading, getBackendClient } from '../../features/general';
 import { NotificationType, showNotification } from '../../utils/notifications';
-import { FormInput } from '../Form/FormInput';
-import { FormSelect } from '../Form/FormSelect';
+import { FormInput, FormSelect } from '../Form';
 
 interface IProps {
     entity: IUser;

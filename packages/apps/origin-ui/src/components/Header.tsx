@@ -2,12 +2,8 @@ import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { Grid } from '@material-ui/core';
-import {
-    useLinks,
-    useTranslation,
-    getUserOffchain,
-    clearAuthenticationToken
-} from '@energyweb/origin-ui-core';
+import { useTranslation } from 'react-i18next';
+import { useLinks, getUserOffchain, clearAuthenticationToken } from '@energyweb/origin-ui-core';
 
 export function Header() {
     const user = useSelector(getUserOffchain);

@@ -1,10 +1,11 @@
 import React from 'react';
-import { useTranslation, isDeviceLocationEnabled, isDeviceGridOperatorEnabled } from '../../utils';
-import { HierarchicalMultiSelect } from '../HierarchicalMultiSelect';
-import { Grid, GridSize, Theme, useTheme } from '@material-ui/core';
 import { useSelector } from 'react-redux';
-import { getRegions, getOffchainConfiguration, getEnvironment } from '../../features';
+import { useTranslation } from 'react-i18next';
+import { Grid, GridSize, Theme, useTheme } from '@material-ui/core';
+import { getRegions, getOffchainConfiguration, getEnvironment } from '../../features/general';
+import { isDeviceLocationEnabled, isDeviceGridOperatorEnabled } from '../../utils/device';
 import { ANY_VALUE, ANY_OPERATOR } from '../../utils/exchange';
+import { HierarchicalMultiSelect } from '../Form';
 
 interface IProps {
     location: string[];

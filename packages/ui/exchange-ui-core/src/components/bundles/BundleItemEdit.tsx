@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
+import { useTranslation } from 'react-i18next';
 import { BigNumber } from 'ethers';
 import { Formik, Field, Form } from 'formik';
 import {
@@ -25,7 +26,6 @@ import {
     getEnvironment,
     getProducingDevices,
     EnergyTypes,
-    useTranslation,
     useValidation,
     ICertificateEnergy,
     ICertificateViewItem,

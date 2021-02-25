@@ -14,13 +14,13 @@ import {
     createStyles
 } from '@material-ui/core';
 import { DatePicker } from '@material-ui/pickers';
-
-import { ICustomFilter, CustomFilterInputType } from './FiltersHeader';
-import { CustomSlider, CustomSliderThumbComponent } from '../CustomSlider';
-import { dataTest } from '../../utils';
-import { HierarchicalMultiSelect } from '../HierarchicalMultiSelect';
-import { getConfiguration } from '../../features/selectors';
 import { CalendarToday, Clear } from '@material-ui/icons';
+
+import { getConfiguration } from '../../features/configuration';
+import { dataTest } from '../../utils/test';
+import { CustomSlider, CustomSliderThumbComponent } from '../Layout';
+import { HierarchicalMultiSelect } from '../Form';
+import { ICustomFilter, CustomFilterInputType } from './FiltersHeader';
 
 interface IProps {
     filter: ICustomFilter;

@@ -1,9 +1,24 @@
-import { ProducingDevice } from '@energyweb/device-registry';
-import { IExternalDeviceId } from '@energyweb/origin-backend-core';
-import { createStyles, makeStyles, useTheme } from '@material-ui/core';
-import { Skeleton } from '@material-ui/lab';
 import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
+import { useTranslation } from 'react-i18next';
+import { createStyles, makeStyles, useTheme } from '@material-ui/core';
+import { Skeleton } from '@material-ui/lab';
+import { ProducingDevice } from '@energyweb/device-registry';
+import { IExternalDeviceId } from '@energyweb/origin-backend-core';
+
+import { getBackendClient } from '../../../features/general';
+import { getConfiguration } from '../../../features/configuration';
+import { getProducingDevices } from '../../../features/devices';
+import { EnergyFormatter } from '../../../utils/EnergyFormatter';
+import { formatDate } from '../../../utils/time';
+import { LightenColor } from '../../../utils/colors';
+import { PowerFormatter } from '../../../utils/PowerFormatter';
+import { useOriginConfiguration } from '../../../utils/configuration';
+import { SmartMeterReadingsChart } from '../SmartMeterReadings/SmartMeterReadingsChart';
+import { SmartMeterReadingsTable } from '../SmartMeterReadings/SmartMeterReadingsTable';
+import { downloadFile } from '../../Documents';
+import { DeviceGroupForm } from '../DeviceGroupForm';
+import { DeviceMap } from '../DeviceMap';
 
 import iconGaseous from '../../../../assets/icon_gaseous.svg';
 import hydro from '../../../../assets/icon_hydro.svg';
@@ -15,21 +30,6 @@ import iconThermal from '../../../../assets/icon_thermal.svg';
 import wind from '../../../../assets/icon_wind.svg';
 import map from '../../../../assets/map.svg';
 import marker from '../../../../assets/marker.svg';
-import { getBackendClient } from '../../../features/general/selectors';
-import { getConfiguration, getProducingDevices } from '../../../features/selectors';
-import {
-    EnergyFormatter,
-    formatDate,
-    LightenColor,
-    PowerFormatter,
-    useTranslation
-} from '../../../utils';
-import { useOriginConfiguration } from '../../../utils/configuration';
-import { downloadFile } from '../../Organization/DownloadDocuments';
-import { DeviceGroupForm } from '../DeviceGroupForm';
-import { DeviceMap } from '../DeviceMap';
-import { SmartMeterReadingsChart } from '../SmartMeterReadings/SmartMeterReadingsChart';
-import { SmartMeterReadingsTable } from '../SmartMeterReadings/SmartMeterReadingsTable';
 
 interface IProps {
     id?: number;

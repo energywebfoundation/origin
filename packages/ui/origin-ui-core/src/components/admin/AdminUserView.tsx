@@ -1,8 +1,8 @@
-import { useParams, useLocation } from 'react-router-dom';
 import React, { useState, useEffect } from 'react';
-import { getBackendClient } from '../../features/general/selectors';
+import { useParams, useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { IUser } from '@energyweb/origin-backend-core';
+import { getBackendClient } from '../../features/general';
 import { AdminUserForm } from './AdminUserForm';
 import { IRecord } from './AdminUsersTable';
 

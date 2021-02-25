@@ -1,6 +1,6 @@
 {
     "name": "@energyweb/origin-backend-utils",
-    "version": "1.4.0",
+    "version": "1.5.0",
     "description": "",
     "main": "dist/js/index.js",
     "scripts": {
@@ -29,15 +29,15 @@
         "registry": "https://registry.npmjs.org"
     },
     "dependencies": {
-        "@energyweb/origin-backend-core": "7.0.1",
-        "@nestjs/common": "7.6.11",
+        "@energyweb/origin-backend-core": "8.0.0",
+        "@nestjs/common": "7.6.12",
         "@nestjs/config": "^0.6.0",
-        "@nestjs/core": "7.6.11",
-        "@nestjs/swagger": "4.7.12",
+        "@nestjs/core": "7.6.12",
+        "@nestjs/swagger": "4.7.13",
         "bn.js": "^5.1.2",
         "class-validator": "^0.13.0",
         "polly-js": "1.8.0",
         "rxjs": "6.6.3",
-        "typeorm": "0.2.30"
+        "typeorm": "0.2.31"
     }
 }

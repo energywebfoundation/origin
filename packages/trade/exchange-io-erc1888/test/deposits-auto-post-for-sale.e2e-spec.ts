@@ -8,7 +8,6 @@ import request from 'supertest';
 import {
     AccountService,
     Order,
-    IDeviceSettings,
     IExternalDeviceService,
     IProductInfo,
     testUtils
@@ -49,10 +48,6 @@ describe('Deposits automatic posting for sale', () => {
             province: 'Nakhon Pathom',
             operationalSince: 2016,
             gridOperator: 'TH-PEA'
-        }),
-        getDeviceSettings: async (): Promise<IDeviceSettings> => ({
-            postForSale: true,
-            postForSalePrice: defaultAskPrice
         })
     } as IExternalDeviceService;
 
@@ -83,13 +78,21 @@ describe('Deposits automatic posting for sale', () => {
 
     it('should automatically post deposit token to sell', async () => {
         const depositAmount = '10';
+        const deviceId = 'TEST001';
         const id = await issueToken(
             issuer,
             tokenReceiver.address,
             '1000',
             generationFrom,
-            generationTo
+            generationTo,
+            deviceId
         );
+
+        await request(app.getHttpServer())
+            .post('/supply')
+            .send({ active: true, price: defaultAskPrice, deviceId })
+            .expect(HttpStatus.CREATED);
+
         await depositToken(registry, tokenReceiver, depositAddress, depositAmount, id);
 
         await sleep(6000);

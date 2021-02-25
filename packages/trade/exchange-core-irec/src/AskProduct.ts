@@ -149,12 +149,13 @@ export class AskProduct implements IMatchableProduct<IRECProduct, IRECProductFil
     }
 
     private matchesGenerationTimes(product: IRECProduct) {
-        const range = moment.range(
+        const askRange = moment.range(
             this.product.generationTime.from,
             this.product.generationTime.to
         );
-        const askRange = moment.range(product.generationTime.from, product.generationTime.to);
 
-        return range.contains(askRange);
+        const range = moment.range(product.generationTime.from, product.generationTime.to);
+
+        return range.contains(askRange) || askRange.contains(range);
     }
 }

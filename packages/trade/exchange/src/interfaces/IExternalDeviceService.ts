@@ -9,13 +9,7 @@ export interface IProductInfo {
     gridOperator: string;
 }
 
-export interface IDeviceSettings {
-    postForSale: boolean;
-    postForSalePrice: number;
-}
-
 export const IExternalDeviceService = Symbol('IExternalDeviceService');
 export interface IExternalDeviceService {
     getDeviceProductInfo(id: IExternalDeviceId): Promise<IProductInfo>;
-    getDeviceSettings(id: IExternalDeviceId): Promise<IDeviceSettings>;
 }

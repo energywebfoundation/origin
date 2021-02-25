@@ -30,6 +30,9 @@
         },
         {
             "path": "../../trade/exchange-irec-client/tsconfig.json"
+        },
+        {
+            "path": "../../devices/origin-device-registry-irec-form-api-client/tsconfig.json"
         }
     ]
 }

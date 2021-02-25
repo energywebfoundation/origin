@@ -50,7 +50,7 @@ import { ExchangeClient } from '../../utils/clients/ExchangeClient';
 import { IRecClient } from '../../utils/clients/IRecClient';
 import { showNotification, NotificationType } from '../..';
 import { getI18n } from 'react-i18next';
-import { getWeb3 } from '../selectors';
+import { getWeb3 } from '../web3';
 import { pollExchangeAddress } from '../../utils/pollExchangeAddress';
 
 export const LOCAL_STORAGE_KEYS = {

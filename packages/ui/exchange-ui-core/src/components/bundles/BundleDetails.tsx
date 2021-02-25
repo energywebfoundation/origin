@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { useTranslation } from 'react-i18next';
 import {
     Dialog,
     DialogTitle,
@@ -15,7 +16,7 @@ import {
     Theme
 } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
-import { useTranslation, bundlePrice, formatCurrencyComplete } from '@energyweb/origin-ui-core';
+import { bundlePrice, formatCurrencyComplete } from '@energyweb/origin-ui-core';
 import { getShowBundleDetails, showBundleDetails } from '../../features/bundles';
 import { Bundle } from '../../utils/exchange';
 import { BundleContents } from './BundleContents';

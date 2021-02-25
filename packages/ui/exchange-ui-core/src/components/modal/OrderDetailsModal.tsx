@@ -1,5 +1,6 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
+import { useTranslation } from 'react-i18next';
 import { Dialog, Grid, IconButton, useTheme, Box, Divider, Button } from '@material-ui/core';
 import { Close as CloseIcon, ArrowRightAlt as ArrowRightAltIcon } from '@material-ui/icons';
 import { OrderSide } from '@energyweb/exchange-irec-client';
@@ -11,7 +12,6 @@ import {
     getProducingDevices,
     EnergyFormatter,
     deviceById,
-    useTranslation,
     DATE_FORMAT_INCLUDING_TIME,
     LightenColor
 } from '@energyweb/origin-ui-core';

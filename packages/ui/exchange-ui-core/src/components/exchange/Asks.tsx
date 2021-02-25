@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
+import { useTranslation } from 'react-i18next';
 import { Formik, Form } from 'formik';
 import { TableCell, Button, InputAdornment, Grid, Typography } from '@material-ui/core';
 import { IDevice, UserStatus } from '@energyweb/origin-backend-core';
@@ -7,7 +8,6 @@ import {
     getEnvironment,
     formatDate,
     moment,
-    useTranslation,
     useValidation,
     EnergyFormatter,
     getUserOffchain,

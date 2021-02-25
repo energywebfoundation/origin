@@ -1,6 +1,7 @@
 import React from 'react';
 import { FormControlLabel, Checkbox, Box, useTheme } from '@material-ui/core';
-import { useTranslation, ICertificateViewItem } from '@energyweb/origin-ui-core';
+import { useTranslation } from 'react-i18next';
+import { ICertificateViewItem } from '@energyweb/origin-ui-core';
 import { CertificateGroup } from './CertificateGroup';
 import { IOriginTypography } from '../../types/typography';
 

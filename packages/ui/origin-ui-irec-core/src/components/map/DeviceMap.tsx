@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { LoadScriptNext, GoogleMap, Marker, InfoWindow } from '@react-google-maps/api';
 import { CircularProgress } from '@material-ui/core';
 import { IPublicOrganization } from '@energyweb/origin-backend-core';
-import { useTranslation, useLinks, getBackendClient } from '@energyweb/origin-ui-core';
+import { useLinks, getBackendClient } from '@energyweb/origin-ui-core';
 import { ComposedPublicDevice } from '../../types';
 import { getEnvironment } from '../../features/general';
 

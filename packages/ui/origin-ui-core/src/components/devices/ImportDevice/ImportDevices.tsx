@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Grid, Typography } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
-import { CustomFilterInputType, FiltersHeader, ICustomFilterDefinition } from '../../Table';
-import { IDevice, ImportDeviceItem } from './ImportDeviceItem';
-import { useTranslation } from '../../../utils';
-import { ImportDeviceModal } from './ImportDeviceModal';
 import { Pagination } from '@material-ui/lab';
 import { useOriginConfiguration } from '../../../utils/configuration';
+import { CustomFilterInputType, FiltersHeader, ICustomFilterDefinition } from '../../Table';
+import { IDevice, ImportDeviceItem } from './ImportDeviceItem';
+import { ImportDeviceModal } from './ImportDeviceModal';
 
 export function ImportDevice(): JSX.Element {
     const configuration = useOriginConfiguration();

@@ -1,14 +1,6 @@
 import { DeviceCreateData, DeviceStatus } from '@energyweb/origin-backend-core';
 import { ApiProperty } from '@nestjs/swagger';
-import {
-    IsArray,
-    IsBoolean,
-    IsEnum,
-    IsNotEmpty,
-    IsNumber,
-    IsOptional,
-    IsString
-} from 'class-validator';
+import { IsArray, IsEnum, IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
 import { ExternalDeviceIdDTO } from './external-device-id.dto';
 import { SmartMeterReadDTO } from './smart-meter-readings.dto';
 
@@ -65,16 +57,6 @@ export class CreateDeviceDTO implements DeviceCreateData {
     @ApiProperty({ type: String })
     @IsString()
     typeOfPublicSupport: string;
-
-    @ApiProperty({ type: Number, required: false })
-    @IsNumber()
-    @IsOptional()
-    defaultAskPrice?: number;
-
-    @ApiProperty({ type: Boolean })
-    @IsBoolean()
-    @IsNotEmpty()
-    automaticPostForSale: boolean;
 
     @ApiProperty({ type: String })
     @IsString()

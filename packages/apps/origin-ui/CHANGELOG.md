@@ -3,6 +3,27 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.4.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-ui@2.3.2...@energyweb/origin-ui@2.4.0) (2021-02-12)
+
+
+### Bug Fixes
+
+* skip dockerhub push due to reliability issues ([7981387](https://github.com/energywebfoundation/origin/commit/798138790ff8db351364edc5b7759288d354d186))
+* **deps:** update dependency i18next to v19.8.7 ([6616021](https://github.com/energywebfoundation/origin/commit/6616021d005358d3998159c2066e9aaf22c9412e))
+* **deps:** update dependency webpack to v5.21.2 ([16c5b14](https://github.com/energywebfoundation/origin/commit/16c5b147b0c278127ca38590771ff15d849b966a))
+* **deps:** update webpack ([f323b5b](https://github.com/energywebfoundation/origin/commit/f323b5babca7089944cea81e244f0da0c81ab28b))
+* **origin-ui:** add alias for mui/styles ([7c0cddd](https://github.com/energywebfoundation/origin/commit/7c0cddd8edca23a8907b044701faf11646dc9d65))
+
+
+### Features
+
+* **origin-ui:** additional color variable ([c6c59a5](https://github.com/energywebfoundation/origin/commit/c6c59a5405f847ca2e023ae1814c12a8fc6e55e0))
+* **origin-ui:** get disabled features from env ([1d1e9b3](https://github.com/energywebfoundation/origin/commit/1d1e9b375800cdb1150af7fc23400bede24d273c))
+
+
+
+
+
 ## [2.3.2](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-ui@2.3.1...@energyweb/origin-ui@2.3.2) (2020-12-04)
 
 **Note:** Version bump only for package @energyweb/origin-ui

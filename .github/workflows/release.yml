@@ -1,0 +1,74 @@
+name: Deploy release
+
+on:
+  push:
+    branches:
+      - release
+
+jobs:
+  cancel-previous:
+    name: 'Cancel Previous Runs'
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - uses: styfle/cancel-workflow-action@0.5.0
+        with:
+          access_token: ${{ github.token }}
+
+  deploy-application:
+    services:
+      postgres:
+        image: postgres
+        env:
+          POSTGRES_DB: 'origin'
+          POSTGRES_PASSWORD: 'postgres'
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 10s
+          --health-retries 10  
+        ports:
+          - 5432:5432
+    runs-on: ubuntu-latest
+    needs: cancel-previous
+    steps:
+    - name: Inject slug/short variables
+      uses: rlespinasse/github-slug-action@v3.x
+
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+
+    - uses: actions/setup-node@v2-beta
+      with:
+        node-version: '14'
+
+    - name: Restore timestamp
+      run: |
+        sh scripts/restore-original-timestamps.sh
+
+    - name: Install application
+      # lerna doesn't work without additional fetch
+      run: |
+        git fetch origin master:master
+        yarn
+
+    - name: Build application
+      run: |
+        yarn build
+
+    - name: Set creds to npm 
+      run: |
+        echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" >> $HOME/.npmrc
+
+    - name: Login into docker hub 
+      run: |
+        wget -qO- https://toolbelt.heroku.com/install-ubuntu.sh | sh
+        echo "${{ secrets.DOCKER_PASS }}" | docker login -u "${{ secrets.DOCKER_USER }}" --password-stdin
+
+    - name: Release application
+      if:  false == contains('skip-deploy', ${{ github.event.head_commit.message }})
+      run: |
+        yarn publish:release 
+        npx sleep 5
+        yarn build:containers:release

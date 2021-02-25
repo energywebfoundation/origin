@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { useTranslation } from 'react-i18next';
 import {
     Typography,
     Paper,
@@ -30,7 +31,6 @@ import {
     EnergyTypes,
     energyImageByType,
     formatCurrencyComplete,
-    useTranslation,
     getCurrencies,
     getUserOffchain
 } from '@energyweb/origin-ui-core';
