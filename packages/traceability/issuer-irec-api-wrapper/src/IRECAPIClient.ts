@@ -286,7 +286,7 @@ export class IRECAPIClient extends EventEmitter {
             edit: async (
                 code: string,
                 device: Partial<DeviceCreateUpdateParams>
-            ): Promise<void> => {
+            ): Promise<Device> => {
                 const dev =
                     device instanceof DeviceCreateUpdateParams
                         ? device
@@ -295,7 +295,8 @@ export class IRECAPIClient extends EventEmitter {
                 await validateOrReject(dev, { skipMissingProperties: true });
 
                 const url = `${deviceManagementUrl}/${code}/edit`;
-                await this.axiosInstance.put(url, classToPlain(dev), this.config);
+                const response = await this.axiosInstance.put(url, classToPlain(dev), this.config);
+                return plainToClass(Device, response.data?.device);
             },
             getAll: async (): Promise<Device[]> => {
                 const response = await this.axiosInstance.get<unknown[]>(

@@ -36,14 +36,7 @@ import { plainToClass } from 'class-transformer';
 
 import { SuccessResponseDTO } from '../utils/success-response.dto';
 import { DeviceService } from './device.service';
-import {
-    CodeNameDTO,
-    CreateDeviceDTO,
-    DeviceDTO,
-    PublicDeviceDTO,
-    UpdateDeviceDTO,
-    UpdateDeviceStatusDTO
-} from './dto';
+import { CodeNameDTO, CreateDeviceDTO, DeviceDTO, PublicDeviceDTO, UpdateDeviceDTO } from './dto';
 
 @ApiTags('device')
 @ApiBearerAuth('access-token')
@@ -135,25 +128,6 @@ export class DeviceController {
         return plainToClass(DeviceDTO, device);
     }
 
-    @Put('/device/:id/status')
-    @UseGuards(AuthGuard(), ActiveUserGuard, RolesGuard)
-    @Roles(Role.Issuer, Role.Admin)
-    @ApiBody({ type: UpdateDeviceStatusDTO })
-    @ApiResponse({
-        status: HttpStatus.OK,
-        type: DeviceDTO,
-        description: `Updates a device's status`
-    })
-    @ApiNotFoundResponse({ description: 'Non existent device', type: SuccessResponseDTO })
-    async updateDeviceStatus(
-        @Param('id') id: string,
-        @Body() { status }: UpdateDeviceStatusDTO
-    ): Promise<DeviceDTO> {
-        const device = await this.deviceService.updateStatus(id, status);
-
-        return plainToClass(DeviceDTO, device);
-    }
-
     @Put('/device/:id')
     @UseGuards(AuthGuard(), ActiveUserGuard, RolesGuard)
     @Roles(Role.OrganizationAdmin, Role.OrganizationDeviceManager)
@@ -166,10 +140,16 @@ export class DeviceController {
     @ApiNotFoundResponse({ description: 'Non existent device', type: SuccessResponseDTO })
     async updateDevice(
         @Param('id') id: string,
-        @Body() { status }: UpdateDeviceStatusDTO
+        @Body() deviceData: UpdateDeviceDTO,
+        @UserDecorator() loggedInUser: ILoggedInUser
     ): Promise<DeviceDTO> {
-        const device = await this.deviceService.updateStatus(id, status);
+        const device = await this.deviceService.findOne(id);
+        if (device.ownerId !== loggedInUser.ownerId) {
+            throw new NotFoundException('Device not found');
+        }
 
-        return plainToClass(DeviceDTO, device);
+        const updatedDevice = await this.deviceService.update(loggedInUser, id, deviceData);
+
+        return plainToClass(DeviceDTO, updatedDevice);
     }
 }

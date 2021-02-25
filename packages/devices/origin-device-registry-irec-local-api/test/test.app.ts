@@ -21,7 +21,13 @@ import {
     Device as IrecDevice,
     DeviceState
 } from '@energyweb/issuer-irec-api-wrapper';
-import { Device, DeviceModule, DeviceService, IrecDeviceService } from '../src/device';
+import {
+    Device,
+    DeviceModule,
+    DeviceService,
+    IrecDeviceService,
+    UserIdentifier
+} from '../src/device';
 
 export enum TestUser {
     OrganizationAdmin = '0',
@@ -105,11 +111,16 @@ export const bootstrapTestInstance = async () => {
                 return {
                     ...deviceData,
                     code: '100500',
-                    status: DeviceState.Draft
+                    status: DeviceState.InProgress
                 };
             },
-            // eslint-disable-next-line @typescript-eslint/no-empty-function
-            update: async (): Promise<void> => {}
+            update: async (
+                user: UserIdentifier,
+                code: string,
+                device: Partial<IrecDevice>
+            ): Promise<Partial<IrecDevice>> => {
+                return { ...device, status: DeviceState.InProgress };
+            }
         })
         .compile();
 

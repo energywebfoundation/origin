@@ -6,12 +6,15 @@ import {
     AccessTokens,
     Device as IrecDevice,
     DeviceCreateUpdateParams,
+    DeviceState,
     IRECAPIClient
 } from '@energyweb/issuer-irec-api-wrapper';
 import {
     GetConnectionCommand,
     RefreshTokensCommand
 } from '@energyweb/origin-organization-irec-api';
+
+export type UserIdentifier = ILoggedInUser | string | number;
 
 @Injectable()
 export class IrecDeviceService {
@@ -20,7 +23,7 @@ export class IrecDeviceService {
         private readonly configService: ConfigService
     ) {}
 
-    async getIrecClient(user: ILoggedInUser) {
+    async getIrecClient(user: UserIdentifier | string | number) {
         const irecConnection = await this.commandBus.execute(new GetConnectionCommand(user));
 
         if (!irecConnection) {
@@ -41,18 +44,30 @@ export class IrecDeviceService {
     }
 
     async createIrecDevice(
-        user: ILoggedInUser,
+        user: UserIdentifier,
         deviceData: DeviceCreateUpdateParams
     ): Promise<IrecDevice> {
         const irecClient = await this.getIrecClient(user);
         const irecDevice = await irecClient.device.create(deviceData);
         await irecClient.device.submit(irecDevice.code);
+        irecDevice.status = DeviceState.InProgress;
         return irecDevice;
     }
 
-    async update(user: ILoggedInUser, code: string, device: Partial<IrecDevice>): Promise<void> {
+    async update(
+        user: UserIdentifier,
+        code: string,
+        device: Partial<IrecDevice>
+    ): Promise<IrecDevice> {
         const irecClient = await this.getIrecClient(user);
-        await irecClient.device.edit(code, device);
+        const iredDevice = await irecClient.device.edit(code, device);
         await irecClient.device.submit(code);
+        iredDevice.status = DeviceState.InProgress;
+        return iredDevice;
+    }
+
+    async getDevice(user: UserIdentifier, code: string): Promise<IrecDevice> {
+        const irecClient = await this.getIrecClient(user);
+        return irecClient.device.get(code);
     }
 }

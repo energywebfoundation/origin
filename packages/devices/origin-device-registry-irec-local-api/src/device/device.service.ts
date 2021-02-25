@@ -10,7 +10,7 @@ import { RegistrationService } from '@energyweb/origin-organization-irec-api';
 
 import { Device } from './device.entity';
 import { CodeNameDTO, CreateDeviceDTO, UpdateDeviceDTO } from './dto';
-import { DeviceCreatedEvent, DeviceStatusChangedEvent } from './events';
+import { DeviceCreatedEvent } from './events';
 import { IREC_FUEL_TYPES, IREC_FUELS } from './Fuels';
 import { IrecDeviceService } from './irec-device.service';
 
@@ -43,7 +43,7 @@ export class DeviceService {
 
         const deviceToStore = new Device({
             ...deviceData,
-            code: irecDevice.code,
+            ...irecDevice,
             ownerId: user.ownerId
         });
 
@@ -58,21 +58,6 @@ export class DeviceService {
         return this.repository.find(options);
     }
 
-    async updateStatus(id: string, status: DeviceState): Promise<Device> {
-        // TODO: change it. IREC logic is different
-        const device = await this.findOne(id);
-
-        if (!device) {
-            return null;
-        }
-
-        await this.repository.update(device.id, { status });
-
-        this.eventBus.publish(new DeviceStatusChangedEvent(device, status));
-
-        return this.findOne(id);
-    }
-
     async update(user: ILoggedInUser, id: string, deviceData: UpdateDeviceDTO): Promise<Device> {
         const device = await this.findOne(id);
 
@@ -80,9 +65,8 @@ export class DeviceService {
             return null;
         }
 
-        await this.irecDeviceService.update(user, device.code, deviceData);
-
-        await this.repository.update(device.id, { ...device, status: DeviceState.Draft });
+        const irecDevice = await this.irecDeviceService.update(user, device.code, deviceData);
+        await this.repository.update(device.id, { ...irecDevice, status: DeviceState.InProgress });
 
         return this.findOne(id);
     }
