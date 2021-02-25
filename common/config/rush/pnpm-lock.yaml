@@ -62,7 +62,6 @@ dependencies:
     '@testing-library/react': 11.2.5_react-dom@17.0.1+react@17.0.1
     '@typechain/ethers-v5': 1.0.0_typechain@4.0.2
     '@types/bcryptjs': 2.4.2
-    '@types/bn.js': 4.11.6
     '@types/body-parser': 1.19.0
     '@types/cors': 2.8.10
     '@types/dotenv': 6.1.1
@@ -4646,6 +4645,12 @@ packages:
         dev: false
         resolution:
             integrity: sha512-pqr857jrp2kPuO9uRjZ3PwnJTjoQy+fcdxvBTvHm6dkmEL9q+hDD/2j/0ELOBPtPnS8LjCX0gI9nbl8lVkadpg==
+    /@types/bn.js/5.1.0:
+        dependencies:
+            '@types/node': 14.14.31
+        dev: false
+        resolution:
+            integrity: sha512-QSSVYj7pYFN49kW77o2s9xTCwZ8F2xLbjLLSEVh8D2F4JUhZtPAGOFLTD+ffqksBx/u4cE/KImFjyhqCjn/LIA==
     /@types/body-parser/1.19.0:
         dependencies:
             '@types/connect': 3.4.34
@@ -4724,7 +4729,7 @@ packages:
             integrity: sha512-GWX0s/FFGWl6lO2nbd9nq3fh1x47vmLL/p4yDG1+VgCqrip1ErQrbHlTZThtEc6JrcmwCKB2H1de32Hdo3JdJg==
     /@types/express-serve-static-core/4.17.18:
         dependencies:
-            '@types/node': 12.20.4
+            '@types/node': 14.14.31
             '@types/qs': 6.9.5
             '@types/range-parser': 1.2.3
         dev: false
@@ -5080,7 +5085,7 @@ packages:
     /@types/serve-static/1.13.9:
         dependencies:
             '@types/mime': 1.3.2
-            '@types/node': 12.20.4
+            '@types/node': 14.14.31
         dev: false
         resolution:
             integrity: sha512-ZFqF6qa48XsPdjXV5Gsz0Zqmux2PerNd3a/ktL45mHpa19cuMi/cL8tcxdAx497yRh+QtYPuofjT9oWw9P7nkA==
@@ -10559,7 +10564,7 @@ packages:
             integrity: sha512-bfttrr3/7gG4E02HoWTDUcDDslN003OlOoBxk9virpAZQ1ja/jDgwkWB8QfJF7ojuEowrqy+lzp9VcJG7/k5bQ==
     /eth-lib/0.2.7:
         dependencies:
-            bn.js: 4.11.8
+            bn.js: 4.12.0
             elliptic: 6.5.4
             xhr-request-promise: 0.1.3
         dev: false
@@ -24499,6 +24504,7 @@ packages:
     file:projects/exchange-core-irec.tgz_7f4a34ca5146d425637124d62afe111d:
         dependencies:
             '@nestjs/common': 7.6.12_52401d58c5c3e74fef6173adb7a12ea0
+            '@types/bn.js': 5.1.0
             '@types/chai': 4.2.15
             '@types/mocha': 8.2.1
             '@types/node': 12.20.4
@@ -24516,7 +24522,7 @@ packages:
             class-transformer: '*'
             reflect-metadata: '*'
         resolution:
-            integrity: sha512-aMKV0PIuMM4WKf1+XSjDpVbWY503jQfxTZsfxaj385hUMvXWCy9KWN1PndkgImGdSsJRNgbhjB/WFttNcguGRQ==
+            integrity: sha512-AwwKXP7zvdBdlVKlRDFncg/urBpaOd4JRHhyT2gGdxGQu/dAKCa41/Ftrc5t8UX1seGs2zuj1c7pKrp1ZsV7sA==
             tarball: file:projects/exchange-core-irec.tgz
         version: 0.0.0
     file:projects/exchange-core.tgz_7f4a34ca5146d425637124d62afe111d:
@@ -25683,6 +25689,7 @@ packages:
         resolution:
             tarball: https://codeload.github.com/ethereumjs/ethereumjs-abi/tar.gz/1a27c59c15ab1e95ee8e5c4ed6ad814c49cc439e
         version: 0.6.8
+registry: ''
 specifiers:
     '@energyweb/energy-api-influxdb': 0.7.0
     '@energyweb/migrations-irec': 1.0.2-alpha.13398.0
@@ -25747,7 +25754,6 @@ specifiers:
     '@testing-library/react': 11.2.5
     '@typechain/ethers-v5': 1.0.0
     '@types/bcryptjs': 2.4.2
-    '@types/bn.js': 4.11.6
     '@types/body-parser': 1.19.0
     '@types/cors': 2.8.10
     '@types/dotenv': 6.1.1

@@ -23,7 +23,7 @@ export class HTTPLoggingInterceptor implements NestInterceptor {
                 this.logger.log(`${response.statusCode} | [${method}] ${url} - ${delay}ms`);
             }),
             catchError((error) => {
-                const response = context.switchToHttp().getResponse<Response>();
+                const response = context.switchToHttp().getResponse();
                 const delay = Date.now() - now;
                 this.logger.error(
                     `${response.statusCode} | [${method}] ${url} - ${JSON.stringify(
