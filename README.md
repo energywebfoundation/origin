@@ -10,7 +10,7 @@
 **Origin** is a set of toolkits that together provide a system for issuance and management of Energy Attribute Certificates (EACs). This repository is an entry point to Origin systems. It has a goal of explaining briefly the whole system and providing you with insight and info where to explore next.
 
 <p align="center">
-![Build](https://github.com/energywebfoundation/origin/actions/workflows/deploy-master.yml/badge.svg)
+  <img src="https://github.com/energywebfoundation/origin/actions/workflows/deploy-master.yml/badge.svg" />
 </p>
 
 ## Table of Contents
