@@ -39,6 +39,7 @@ import {
     TableActionId
 } from '../../Table';
 import { PublishForSaleModal, ClaimModal, WithdrawModal, DepositModal } from '../../Modal';
+import { getUserOffchain } from '../../../features/users';
 
 interface IProps {
     certificates?: ICertificateViewItem[];
@@ -92,6 +93,9 @@ export function CertificateTable(props: IProps) {
     const [withdrawModalVisibility, setWithdrawModalVisibility] = useState(false);
     const [depositModalVisibility, setDepositModalVisibility] = useState(false);
 
+    const user = useSelector(getUserOffchain);
+    const hasBlockchainAccount = Boolean(user.blockchainAccountAddress);
+
     async function getPaginatedData({
         requestedPageSize,
         offset,
@@ -141,9 +145,12 @@ export function CertificateTable(props: IProps) {
         };
     }
 
-    const { loadPage, paginatedData, pageSize, total } = usePaginatedLoaderFiltered<
-        IEnrichedCertificateData
-    >({
+    const {
+        loadPage,
+        paginatedData,
+        pageSize,
+        total
+    } = usePaginatedLoaderFiltered<IEnrichedCertificateData>({
         getPaginatedData
     });
 
@@ -210,6 +217,10 @@ export function CertificateTable(props: IProps) {
     }
 
     async function withdraw(rowIndex: string) {
+        if (!hasBlockchainAccount) {
+            showNotification(t('certificate.feedback.pleaseAddBlockchain'), NotificationType.Error);
+        }
+
         const certificate = getCertificateFromRow(rowIndex);
         setSelectedCertificate(certificate);
         setWithdrawModalVisibility(true);
