@@ -48,20 +48,9 @@ jobs:
       # lerna doesn't work without additional fetch
       run: |
         git fetch origin master:master
-        yarn
+        rush update
 
-    - name: Build application
+    - name: Rush Build application
       run: |
-        yarn build
+        rush build
 
-    - name: Run contract tests
-      run: |
-        yarn test:ci:contracts
-
-    - name: Run apps tests
-      run: |
-        yarn test:ci:apps
-
-    - name: Run e2e tests
-      run: |
-        yarn test:ci:e2e
