@@ -1,4 +1,8 @@
 import React, { useState } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { useTranslation } from 'react-i18next';
+import { Formik, Field, Form, FormikHelpers } from 'formik';
+import { TextField, CheckboxWithLabel } from 'formik-material-ui';
 import {
     Paper,
     Typography,
@@ -9,36 +13,28 @@ import {
     makeStyles,
     createStyles
 } from '@material-ui/core';
-import { useSelector, useDispatch } from 'react-redux';
-import { getConfiguration, getEnvironment } from '../../features';
-import { Formik, Field, Form, FormikHelpers } from 'formik';
-import { TextField, CheckboxWithLabel } from 'formik-material-ui';
+import { Skeleton } from '@material-ui/lab';
+import { CloudUpload } from '@material-ui/icons';
+import { DeviceStatus, IExternalDeviceId } from '@energyweb/origin-backend-core';
 import {
-    areDeviceSpecificPropertiesValid,
-    PowerFormatter,
-    showNotification,
-    NotificationType,
-    useValidation,
-    useTranslation,
-    usePermissions,
-    Moment
-} from '../../utils';
-import { FormikDatePicker } from '../Form/FormikDatePicker';
-import {
+    getEnvironment,
     requestDeviceCreation,
     getExternalDeviceIdTypes,
     getCompliance,
     getCountry,
     getBackendClient
 } from '../../features/general';
-import { HierarchicalMultiSelect } from '../HierarchicalMultiSelect';
-import { CloudUpload } from '@material-ui/icons';
-import { DeviceStatus, IExternalDeviceId } from '@energyweb/origin-backend-core';
-import { Skeleton } from '@material-ui/lab';
-import { FormInput } from '../Form';
+import { getConfiguration } from '../../features/configuration';
+import { PowerFormatter } from '../../utils/PowerFormatter';
+import { useValidation } from '../../utils/validation';
+import { areDeviceSpecificPropertiesValid } from '../../utils/device';
+import { usePermissions } from '../../utils/permissions';
+import { Moment } from '../../utils/time';
+import { showNotification, NotificationType } from '../../utils/notifications';
+import { FormikDatePicker, FormInput, HierarchicalMultiSelect } from '../Form';
+import { Upload, IUploadedFile } from '../Documents';
+import { Requirements } from '../Layout';
 import { DeviceSelectors } from './DeviceSelectors';
-import { Upload, IUploadedFile } from '../Upload';
-import { Requirements } from '../Requirements';
 
 interface IFormValues {
     facilityName: string;
@@ -179,8 +175,7 @@ export function AddDevice() {
                 images: JSON.stringify(imagesUploadedList),
                 files: JSON.stringify(uploadedDocFiles.filenames),
                 externalDeviceIds,
-                gridOperator: (selectedGridOperator && selectedGridOperator[0]) || '',
-                automaticPostForSale: false
+                gridOperator: (selectedGridOperator && selectedGridOperator[0]) || ''
             })
         );
         formikActions.setSubmitting(false);

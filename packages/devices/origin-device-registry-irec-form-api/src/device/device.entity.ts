@@ -1,23 +1,21 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 import {
+    DeviceStatus,
+    IDevice,
+    IExternalDeviceId,
+    ISmartMeterRead
+} from '@energyweb/origin-backend-core';
+import { ExtendedBaseEntity } from '@energyweb/origin-backend-utils';
+import {
+    IsEnum,
     IsInt,
-    Min,
     IsLatitude,
     IsLongitude,
     IsNotEmpty,
-    IsNumber,
-    IsString,
-    IsBoolean,
     IsOptional,
-    IsEnum
+    IsString,
+    Min
 } from 'class-validator';
-import {
-    ISmartMeterRead,
-    IExternalDeviceId,
-    IDevice,
-    DeviceStatus
-} from '@energyweb/origin-backend-core';
-import { ExtendedBaseEntity } from '@energyweb/origin-backend-utils';
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
 export class Device extends ExtendedBaseEntity implements IDevice {
@@ -119,14 +117,4 @@ export class Device extends ExtendedBaseEntity implements IDevice {
     @IsOptional()
     @IsString()
     gridOperator: string;
-
-    @Column({ nullable: true })
-    @IsOptional()
-    @IsNumber()
-    defaultAskPrice?: number;
-
-    @Column({ default: false })
-    @IsOptional()
-    @IsBoolean()
-    automaticPostForSale: boolean;
 }

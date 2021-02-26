@@ -30,13 +30,15 @@ import {
 
 import { setActiveBlockchainAccountAddress, UsersActions } from '../users/actions';
 import { getSearch, push } from 'connected-react-router';
-import { getConfiguration, getBaseURL } from '../selectors';
+import { getConfiguration, configurationUpdated } from '../configuration';
 import * as queryString from 'query-string';
 import * as Winston from 'winston';
 import { DeviceTypeService } from '@energyweb/utils-general';
-import { configurationUpdated, web3Updated } from '../actions';
+import { getBaseURL } from '../../utils/routing';
+
+import { web3Updated } from '../web3';
 import { Configuration, ProducingDevice } from '@energyweb/device-registry';
-import { producingDeviceCreatedOrUpdated } from '../producingDevices/actions';
+import { producingDeviceCreatedOrUpdated } from '../devices/actions';
 import { getI18n } from 'react-i18next';
 import {
     showNotification,
@@ -56,7 +58,7 @@ import {
 } from '../certificates';
 import { getCertificate } from '../certificates/sagas';
 import { getUserOffchain } from '../users/selectors';
-import { IProducingDeviceState } from '../producingDevices/reducer';
+import { IProducingDeviceState } from '../devices/reducer';
 import { getCertificatesClient, getBlockchainPropertiesClient } from '../certificates/selectors';
 import { certificateEnergyStringToBN } from '../../utils/certificates';
 import { BackendClient } from '../../utils/clients/BackendClient';

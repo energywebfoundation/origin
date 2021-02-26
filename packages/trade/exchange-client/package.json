@@ -15,7 +15,7 @@
     },
     "scripts": {
         "build": "yarn build:ts",
-        "build:ts": "tsc -b tsconfig.json && yarn build:client",
+        "build:ts": "yarn build:client && tsc -b tsconfig.json",
         "build:client": "yarn client:generate:schema && yarn client:generate && yarn client:clean",
         "clean": "shx rm -rf dist dist-shakeable",
         "client:generate": "openapi-generator-cli generate -g typescript-axios -i src/schema.yaml -o src --api-name-suffix Client --remove-operation-id-prefix",
@@ -30,9 +30,9 @@
         "@nestjs/swagger": "4.7.13",
         "@nestjs/testing": "7.6.12",
         "@nestjs/typeorm": "7.1.5",
-        "@openapitools/openapi-generator-cli": "2.1.23",
+        "@openapitools/openapi-generator-cli": "2.1.24",
         "json-to-pretty-yaml": "1.2.2",
-        "prettier": "2.1.2",
+        "prettier": "2.2.1",
         "ts-node": "9.1.1"
     },
     "publishConfig": {
@@ -41,8 +41,5 @@
     },
     "files": [
         "dist"
-    ],
-    "resolutions": {
-        "tslib": "1.13.0"
-    }
+    ]
 }

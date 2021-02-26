@@ -1,12 +1,8 @@
 import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
+import { useTranslation } from 'react-i18next';
 import { Grid, InputAdornment, Divider } from '@material-ui/core';
-import {
-    useValidation,
-    useTranslation,
-    getUserOffchain,
-    LightenColor
-} from '@energyweb/origin-ui-core';
+import { useValidation, getUserOffchain, LightenColor } from '@energyweb/origin-ui-core';
 import { FormInput, CalendarFieldOnPeriod, FormSelect } from '../Form';
 import { getExchangeClient } from '../../features/general';
 import { periodTypeOptions } from '../../utils/demand';

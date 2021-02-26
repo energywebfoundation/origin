@@ -1,12 +1,13 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { Button, Modal, Typography } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
-import { FormInput, FormSelect } from '../../Form';
 import { Form, Formik } from 'formik';
 import Close from '@material-ui/icons/Close';
-import { Upload } from '../../Upload';
-import { LightenColor, useTranslation } from '../../../utils';
+import { LightenColor } from '../../../utils/colors';
 import { useOriginConfiguration } from '../../../utils/configuration';
+import { Upload } from '../../Documents';
+import { FormInput, FormSelect } from '../../Form';
 
 export function ImportDeviceModal(props: {
     open: boolean;

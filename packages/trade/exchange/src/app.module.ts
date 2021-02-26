@@ -14,6 +14,7 @@ import { OrderAccountingModule, OrderModule } from './pods/order';
 import { PostForSaleModule } from './pods/post-for-sale/post-for-sale.module';
 import { TradeModule, TradeAccountingModule } from './pods/trade';
 import { TransferAccountingModule, TransferModule } from './pods/transfer';
+import { SupplyModule } from './pods/supply';
 
 @Module({
     imports: [
@@ -33,7 +34,8 @@ import { TransferAccountingModule, TransferModule } from './pods/transfer';
         BundleAccountingModule,
         OrderModule,
         OrderAccountingModule,
-        PostForSaleModule
+        PostForSaleModule,
+        SupplyModule
     ],
     providers: [IntUnitsOfEnergy]
 })

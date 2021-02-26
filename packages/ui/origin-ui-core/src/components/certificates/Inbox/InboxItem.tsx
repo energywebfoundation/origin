@@ -1,11 +1,13 @@
 import React from 'react';
-import { Checkbox, Button } from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
-import { useOriginConfiguration } from '../../../utils/configuration';
-import { EnergyFormatter, formatDate, LightenColor, moment, useTranslation } from '../../../utils';
-import { DeviceIcon } from '../../DeviceIcon';
-import { CertificateSource } from '../../../features/certificates';
+import { useTranslation } from 'react-i18next';
+import { Checkbox, Button, makeStyles } from '@material-ui/core';
 import { BigNumber } from 'ethers';
+import { CertificateSource } from '../../../features/certificates';
+import { useOriginConfiguration } from '../../../utils/configuration';
+import { LightenColor } from '../../../utils/colors';
+import { EnergyFormatter } from '../../../utils/EnergyFormatter';
+import { formatDate, moment } from '../../../utils/time';
+import { DeviceIcon } from '../../Icons';
 
 export interface IInboxItemData {
     id: string;
@@ -17,7 +19,7 @@ export interface IInboxItemData {
 }
 
 export interface IInboxCertificateData {
-    id: string;
+    id: number;
     dateStart: number;
     dateEnd: number;
     energy: BigNumber;
@@ -28,11 +30,11 @@ export interface IInboxCertificateData {
 
 export function InboxItem(props: {
     device: IInboxItemData;
-    selected: string[];
+    selected: number[];
     selectedDevices: string[];
     onDeviceSelect: (id: string) => void;
-    onCertificateSelect: (id: string, deviceId: string) => void;
-    onViewClick: (id: string) => void;
+    onCertificateSelect: (id: number, deviceId: string) => void;
+    onViewClick: (id: number) => void;
 }): JSX.Element {
     const {
         device,
@@ -47,8 +49,12 @@ export function InboxItem(props: {
     const {
         MAIN_BACKGROUND_COLOR,
         SIMPLE_TEXT_COLOR,
-        PRIMARY_COLOR_DIM
+        TEXT_COLOR_DEFAULT,
+        PRIMARY_COLOR_DIM,
+        PRIMARY_COLOR
     } = configuration?.styleConfig;
+
+    const unselectedIconColor = LightenColor(TEXT_COLOR_DEFAULT, -7);
 
     const useStyles = makeStyles({
         device: {
@@ -140,12 +146,14 @@ export function InboxItem(props: {
             </div>
             <div>
                 {device.certificates.map((cert) => {
+                    const isSelected = selected.includes(cert.id);
+
                     return (
                         <div
                             key={cert.id}
                             className={[
                                 classes.certificate,
-                                selected.includes(cert.id) ? classes.selected : ''
+                                isSelected ? classes.selected : ''
                             ].join(' ')}
                         >
                             <div className={classes.checkbox}>
@@ -155,7 +163,12 @@ export function InboxItem(props: {
                                     onChange={() => onCertificateSelect(cert.id, device.id)}
                                 />
                             </div>
-                            <div className={classes.iconContainer}>
+                            <div
+                                className={classes.iconContainer}
+                                style={{
+                                    fill: isSelected ? PRIMARY_COLOR : unselectedIconColor
+                                }}
+                            >
                                 <DeviceIcon type={device.type} className={classes.icon} />
                             </div>
                             <div style={{ flex: '1' }}>

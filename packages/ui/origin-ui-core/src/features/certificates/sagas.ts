@@ -20,12 +20,18 @@ import {
 import { moment, NotificationType, showNotification } from '../../utils';
 import { certificateEnergyStringToBN } from '../../utils/certificates';
 import { ExchangeClient } from '../../utils/clients/ExchangeClient';
-import { assertCorrectBlockchainAccount } from '../../utils/sagas';
-import { setLoading } from '../general/actions';
+import {
+    setLoading,
+    setNoAccountModalVisibilityAction,
+    setAccountMismatchModalPropertiesAction,
+    IAccountMismatchModalResolvedAction,
+    GeneralActions
+} from '../general/actions';
 import { enhanceCertificate, fetchDataAfterConfigurationChange } from '../general/sagas';
 import { getExchangeClient } from '../general/selectors';
-import { getConfiguration, getWeb3 } from '../selectors';
-import { getUserOffchain } from '../users/selectors';
+import { getConfiguration } from '../configuration';
+import { getWeb3 } from '../web3';
+import { getUserOffchain, getActiveBlockchainAccountAddress } from '../users/selectors';
 import {
     addCertificate,
     CertificatesActions,
@@ -329,6 +335,34 @@ function* requestPublishForSaleSaga(): SagaIterator {
             yield call(callback);
         }
     }
+}
+
+function* assertCorrectBlockchainAccount() {
+    const user: IUser = yield select(getUserOffchain);
+    const activeBlockchainAddress: string = yield select(getActiveBlockchainAccountAddress);
+
+    if (user) {
+        if (!user.blockchainAccountAddress || !activeBlockchainAddress) {
+            yield put(setNoAccountModalVisibilityAction(true));
+
+            return false;
+        } else if (
+            user.blockchainAccountAddress.toLowerCase() === activeBlockchainAddress?.toLowerCase()
+        ) {
+            return true;
+        }
+    }
+
+    yield put(
+        setAccountMismatchModalPropertiesAction({
+            visibility: true
+        })
+    );
+    const { payload: shouldContinue }: IAccountMismatchModalResolvedAction = yield take(
+        GeneralActions.accountMismatchModalResolved
+    );
+
+    return shouldContinue;
 }
 
 function* requestDepositSaga(): SagaIterator {

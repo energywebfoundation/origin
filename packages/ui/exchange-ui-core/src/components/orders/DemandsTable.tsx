@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
+import { useTranslation } from 'react-i18next';
 import { Remove, Visibility } from '@material-ui/icons';
 import {
-    useTranslation,
     EnergyFormatter,
     formatCurrencyComplete,
     getConfiguration,
@@ -104,8 +104,8 @@ export const DemandsTable = (props: IOwnProps) => {
         offset,
         requestedFilters
     }: IPaginatedLoaderHooksFetchDataParameters): Promise<IPaginatedLoaderFetchDataReturnValues> {
-        const filteredDemands = demands.filter((ask) => {
-            return checkRecordPassesFilters(ask, requestedFilters, deviceTypeService);
+        const filteredDemands = demands.filter((demand) => {
+            return checkRecordPassesFilters(demand, requestedFilters, deviceTypeService);
         });
         return {
             paginatedData: filteredDemands.slice(offset, offset + requestedPageSize),

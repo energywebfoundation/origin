@@ -6,11 +6,11 @@ import { useSelector } from 'react-redux';
 import { makeStyles, createStyles, useTheme } from '@material-ui/core';
 import { Skeleton } from '@material-ui/lab';
 import { IExternalDeviceId } from '@energyweb/origin-backend-core';
+import { useTranslation } from 'react-i18next';
 import {
     formatDate,
     EnergyFormatter,
     PowerFormatter,
-    useTranslation,
     LightenColor,
     downloadFile,
     // SmartMeterReadingsTable,

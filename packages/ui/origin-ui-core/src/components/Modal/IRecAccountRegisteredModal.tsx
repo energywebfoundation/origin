@@ -1,9 +1,11 @@
 import React from 'react';
 import { useHistory } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import { getUserOffchain } from '../../features/users/selectors';
+import { useTranslation } from 'react-i18next';
 import { Dialog, DialogTitle, DialogActions, Button, Box, useTheme, Grid } from '@material-ui/core';
-import { showNotification, NotificationType, useTranslation, useLinks } from '../..';
+import { getUserOffchain } from '../../features/users';
+import { showNotification, NotificationType } from '../../utils/notifications';
+import { useLinks } from '../../utils/routing';
 import iconAdded from '../../../assets/icon-org-added.svg';
 
 interface IProps {

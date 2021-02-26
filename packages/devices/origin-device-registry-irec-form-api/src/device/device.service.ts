@@ -1,7 +1,6 @@
 import { ConfigurationService } from '@energyweb/origin-backend';
 import {
     DeviceCreateData,
-    DeviceSettingsUpdateData,
     DeviceStatus,
     IDevice,
     IDeviceProductInfo,
@@ -220,30 +219,6 @@ export class DeviceService {
         return this.findOne(id);
     }
 
-    async updateSettings(id: string, update: DeviceSettingsUpdateData): Promise<ISuccessResponse> {
-        const device = await this.findOne(id);
-
-        if (!device) {
-            throw new NotFoundException(StorageErrors.NON_EXISTENT);
-        }
-
-        const { defaultAskPrice, automaticPostForSale } = update;
-
-        try {
-            await this.repository.update(id, { defaultAskPrice, automaticPostForSale });
-
-            return {
-                success: true,
-                message: `Device ${id} successfully updated`
-            };
-        } catch (error) {
-            throw new UnprocessableEntityException({
-                success: false,
-                message: `Device ${id} could not be updated due to an error: ${error.message}`
-            });
-        }
-    }
-
     private async getMeterStats(deviceId: string): Promise<ISmartMeterReadStats> {
         const smReads = await this.getAllSmartMeterReadings(deviceId);
 
@@ -276,30 +251,6 @@ export class DeviceService {
             certified: sumEnergy(energiesGenerated.filter((energyGen) => energyGen.certified)),
             uncertified: sumEnergy(energiesGenerated.filter((energyGen) => !energyGen.certified))
         };
-    }
-
-    async getSupplyBy(organizationId: number, facilityName: string, status: number) {
-        const _facilityName = `%${facilityName}%`;
-        const _status = status === 1;
-        const devices = (await this.repository
-            .createQueryBuilder('device')
-            .where(
-                `organizationId = :organizationId and device.facilityName ilike :_facilityName ${
-                    status > 0 ? `and device.automaticPostForSale = :_status` : ``
-                }`,
-                { organizationId, _facilityName, _status }
-            )
-            .getMany()) as IDevice[];
-
-        for (const device of devices) {
-            if (this.smartMeterReadingsAdapter) {
-                device.smartMeterReads = [];
-            }
-
-            device.meterStats = await this.getMeterStats(device.id.toString());
-        }
-
-        return devices;
     }
 
     private async attachMeterStats(devices: IDevice[]) {

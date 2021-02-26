@@ -1,8 +1,7 @@
 import React from 'react';
-import { Checkbox, FormControl } from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
+import { Checkbox, FormControl, makeStyles } from '@material-ui/core';
 import { useOriginConfiguration } from '../../../utils/configuration';
-import { LightenColor } from '../../../utils';
+import { LightenColor } from '../../../utils/colors';
 import { IDevice } from './CertificateImport';
 
 export function CertificateImportItem(props: { device: IDevice; selected: number[] }): JSX.Element {

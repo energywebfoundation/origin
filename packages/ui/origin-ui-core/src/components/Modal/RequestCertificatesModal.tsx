@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { moment, DATE_FORMAT_DMY, getDeviceId, EnergyFormatter, useTranslation } from '../../utils';
+import { useSelector, useDispatch } from 'react-redux';
+import { useTranslation } from 'react-i18next';
+import { BigNumber } from 'ethers';
+import MomentUtils from '@date-io/moment';
 import {
     Button,
     Dialog,
@@ -9,13 +12,13 @@ import {
     TextField
 } from '@material-ui/core';
 import { DatePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
-import { useSelector, useDispatch } from 'react-redux';
-import { requestCertificates } from '../../features/certificates/actions';
-import { Upload, IUploadedFile } from '../Upload';
-import { getEnvironment } from '../../features';
-import { BigNumber } from 'ethers';
-import MomentUtils from '@date-io/moment';
+import { getEnvironment } from '../../features/general';
+import { requestCertificates } from '../../features/certificates';
+import { getDeviceId } from '../../utils/device';
+import { moment, DATE_FORMAT_DMY } from '../../utils/time';
+import { EnergyFormatter } from '../../utils/EnergyFormatter';
 import { useOriginConfiguration } from '../../utils/configuration';
+import { Upload, IUploadedFile } from '../Documents';
 
 // Maximum number Solidity can handle is (2^256)-1
 export const MAX_ENERGY_PER_CERTIFICATE = BigNumber.from(2).pow(256).sub(1);

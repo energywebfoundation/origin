@@ -1,13 +1,13 @@
 import React, { useContext } from 'react';
-import { Dialog, DialogTitle, DialogActions, Grid, Box, Button, useTheme } from '@material-ui/core';
-import OrgAddedIcon from '../../../assets/icon-org-added.svg';
-import { useTranslation } from '../..';
-import { useLinks } from '../../utils';
 import { useSelector } from 'react-redux';
-import { getUserOffchain } from '../../features/users/selectors';
 import { useHistory } from 'react-router-dom';
-import { OriginConfigurationContext } from '..';
+import { useTranslation } from 'react-i18next';
+import { Dialog, DialogTitle, DialogActions, Grid, Box, Button, useTheme } from '@material-ui/core';
 import { OriginFeature } from '@energyweb/utils-general';
+import { getUserOffchain } from '../../features/users';
+import { useLinks } from '../../utils/routing';
+import { OriginConfigurationContext } from '../../PackageConfigurationProvider';
+import OrgAddedIcon from '../../../assets/icon-org-added.svg';
 
 interface IProps {
     showModal: boolean;

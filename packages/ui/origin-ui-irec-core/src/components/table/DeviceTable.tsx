@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, Redirect } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { DeviceStatus, isRole, Role } from '@energyweb/origin-backend-core';
 import { Fab, Tooltip } from '@material-ui/core';
 import { Add, Assignment, Check, Visibility } from '@material-ui/icons';
@@ -20,7 +21,6 @@ import {
     NotificationType,
     PowerFormatter,
     showNotification,
-    useTranslation,
     getExchangeDepositAddress,
     getUserOffchain,
     setLoading,

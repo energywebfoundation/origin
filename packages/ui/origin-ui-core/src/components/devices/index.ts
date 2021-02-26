@@ -1,4 +1,4 @@
 export * from './Device';
-export * from './deviceMenuCreator';
+export * from './deviceMenu';
 export * from './DeviceSelectors';
 export * from './SmartMeterReadings';

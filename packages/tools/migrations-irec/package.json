@@ -24,17 +24,18 @@
         "start-all": "concurrently --restart-tries 3 --restart-after 1500 -n eth,deploy \"yarn start-ganache\" \"wait-on tcp:8553 && yarn start:redeploy\"",
         "start-ganache": "ganache-cli -q -m \"chalk park staff buzz chair purchase wise oak receive avoid avoid home\" -l 8000000 -e 1000000 -a 40 -h 0.0.0.0 -p 8553",
         "prettier": "prettier --write --config-precedence file-override './src/**/*'",
-        "clean": "shx rm -rf dist"
+        "clean": "shx rm -rf dist",
+        "deploy:container:heroku:canary": "make build-canary push-heroku-canary"
     },
     "types": "dist/js/index.d.ts",
     "dependencies": {
         "@energyweb/issuer": "3.1.0",
         "@energyweb/origin-backend-core": "8.0.0",
         "@energyweb/utils-general": "11.0.1",
-        "@types/pg": "7.14.9",
+        "@types/pg": "7.14.10",
         "commander": "6.2.1",
         "dotenv": "8.2.0",
-        "ethers": "5.0.29",
+        "ethers": "5.0.31",
         "pg": "8.5.1",
         "winston": "3.3.3",
         "write-json-file": "4.3.0",
@@ -47,6 +48,5 @@
     "files": [
         "bin",
         "dist/js/src"
-    ],
-    "private": true
+    ]
 }

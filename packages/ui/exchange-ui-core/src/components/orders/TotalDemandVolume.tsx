@@ -1,12 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
+import { useTranslation } from 'react-i18next';
 import { Typography } from '@material-ui/core';
-import {
-    EnergyFormatter,
-    useTranslation,
-    getExchangeClient,
-    moment
-} from '@energyweb/origin-ui-core';
+import { EnergyFormatter, getExchangeClient, moment } from '@energyweb/origin-ui-core';
 import { Demand, calculateTotalVolume } from '../../utils/exchange';
 
 interface IProps {
