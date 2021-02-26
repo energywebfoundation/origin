@@ -50,7 +50,18 @@ jobs:
         git fetch origin master:master
         rush update
 
-    - name: Rush Build application
+    - name: Build application
       run: |
-        rush build
+        yarn build
 
+    - name: Run contract tests
+      run: |
+        yarn test:ci:contracts
+
+    - name: Run apps tests
+      run: |
+        yarn test:ci:apps
+
+    - name: Run e2e tests
+      run: |
+        yarn test:ci:e2e
