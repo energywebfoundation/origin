@@ -26,7 +26,7 @@
      * Specify one of: "pnpmVersion", "npmVersion", or "yarnVersion".  See the Rush documentation
      * for details about these alternatives.
      */
-    "pnpmVersion": "5.15.2",
+    "pnpmVersion": "5.17.3",
 
     // "npmVersion": "4.5.0",
     // "yarnVersion": "1.9.4",
@@ -74,7 +74,7 @@
          * After modifying this field, it's recommended to run "rush update --full" so that the package manager
          * will recalculate all version selections.
          */
-        // "resolutionStrategy": "fast",
+        "resolutionStrategy": "fewer-dependencies"
         /**
          * If true, then `rush install` will report an error if manual modifications
          * were made to the PNPM shrinkwrap file without running "rush update" afterwards.

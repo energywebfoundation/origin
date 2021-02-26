@@ -1,7 +1,6 @@
 {
     "extends": "../../../tsconfig.json",
     "compilerOptions": {
-        "composite": true,
         "rootDir": "./",
         "outDir": "./dist/js",
         "experimentalDecorators": true,
@@ -11,22 +10,5 @@
         "./src/**/*",
         "./test/**/*",
         "../exchange/test/deposits-auto-post-for-sale.e2e-spec.ts"
-    ],
-    "references": [
-        {
-            "path": "../../utils/utils-general/tsconfig.json"
-        },
-        {
-            "path": "../exchange/tsconfig.json"
-        },
-        {
-            "path": "../exchange-core/tsconfig.json"
-        },
-        {
-            "path": "../../origin-backend-core/tsconfig.json"
-        },
-        {
-            "path": "../../utils/origin-backend-utils/tsconfig.json"
-        }
     ]
 }

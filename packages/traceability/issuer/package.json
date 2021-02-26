@@ -52,6 +52,7 @@
         "winston": "3.3.3"
     },
     "devDependencies": {
+        "typescript": "4.1.5",
         "@typechain/ethers-v5": "1.0.0",
         "ethlint": "1.2.5",
         "truffle-typings": "1.0.8",
@@ -62,13 +63,19 @@
         "truffle": "5.1.67",
         "solc": "0.5.16",
         "@ethersproject/providers": "5.0.23",
+        "@ethersproject/abstract-provider": "5.0.9",
         "@ethersproject/contracts": "5.0.11",
+        "@ethersproject/abi": "5.0.12",
         "winston": "3.3.3",
         "winston-transport": "^4.4.0",
         "@types/dotenv": "6.1.1",
         "dotenv": "8.2.0",
         "@types/chai": "4.2.15",
-        "chai": "4.3.0"
+        "chai": "4.3.0",
+        "@openzeppelin/cli": "2.8.2",
+        "@openzeppelin/contracts-ethereum-package": "2.5.0",
+        "@openzeppelin/upgrades": "2.8.0",
+        "shx": "0.3.3"
     },
     "publishConfig": {
         "access": "public",

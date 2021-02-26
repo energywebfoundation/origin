@@ -6,34 +6,8 @@
         "moduleResolution": "node",
         "declaration": true,
         "noImplicitAny": false,
-        "composite": true,
+
         "types": ["jest"]
     },
-    "include": ["./src/**/*"],
-    "references": [
-        {
-            "path": "../../utils/utils-general/tsconfig.json"
-        },
-        {
-            "path": "../localization/tsconfig.json"
-        },
-        {
-            "path": "../origin-ui-core/tsconfig.json"
-        },
-        {
-            "path": "../../origin-backend-core/tsconfig.json"
-        },
-        {
-            "path": "../../devices/origin-device-registry-api/tsconfig.json"
-        },
-        {
-            "path": "../../devices/origin-device-registry-api-client/tsconfig.json"
-        },
-        {
-            "path": "../../devices/origin-device-registry-irec-local-api/tsconfig.json"
-        },
-        {
-            "path": "../../devices/origin-device-registry-irec-local-api-client/tsconfig.json"
-        }
-    ]
+    "include": ["./src/**/*"]
 }

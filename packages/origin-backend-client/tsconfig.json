@@ -1,15 +1,9 @@
 {
     "extends": "../../tsconfig.json",
     "compilerOptions": {
-        "composite": true,
         "outDir": "./dist/js",
         "emitDecoratorMetadata": true,
         "experimentalDecorators": true
     },
-    "include": ["src/**/*"],
-    "references": [
-        {
-            "path": "../origin-backend/tsconfig.json"
-        }
-    ]
+    "include": ["src/**/*"]
 }

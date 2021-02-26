@@ -69,6 +69,7 @@
         "@svgr/webpack": "^5.5.0"
     },
     "devDependencies": {
+        "typescript": "4.1.5",
         "@types/enzyme": "3.10.8",
         "@types/react": "17.0.1",
         "@types/react-redux": "7.1.16",

@@ -1,22 +1,9 @@
 {
     "extends": "../../tsconfig.json",
     "compilerOptions": {
-        "composite": true,
         "outDir": "./dist/js",
         "emitDecoratorMetadata": true,
-        "experimentalDecorators": true,
-        "types": ["node", "mocha"]
+        "experimentalDecorators": true
     },
-    "include": ["src/**/*", "migrations/*", "ormconfig*.ts", "test/*", "types/*"],
-    "references": [
-        {
-            "path": "../origin-backend-core/tsconfig.json"
-        },
-        {
-            "path": "../utils/utils-general/tsconfig.json"
-        },
-        {
-            "path": "../utils/origin-backend-utils/tsconfig.json"
-        }
-    ]
+    "include": ["src/**/*", "migrations/*", "ormconfig*.ts", "test/*", "types/*"]
 }

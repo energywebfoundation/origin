@@ -37,13 +37,23 @@
         "ethers": "5.0.31"
     },
     "devDependencies": {
+        "typescript": "4.1.5",
         "@energyweb/issuer": "3.1.0",
         "@typechain/ethers-v5": "1.0.0",
         "truffle-typings": "1.0.8",
         "typechain": "4.0.2",
         "@types/mocha": "^8.2.1",
         "@types/node": "^12.20.4",
-        "mocha": "8.3.0"
+        "mocha": "8.3.0",
+        "truffle": "5.1.67",
+        "solc": "0.5.16",
+        "@ethersproject/providers": "5.0.23",
+        "@ethersproject/abstract-provider": "5.0.9",
+        "@ethersproject/contracts": "5.0.11",
+        "@ethersproject/abi": "5.0.12",
+        "@openzeppelin/cli": "2.8.2",
+        "@openzeppelin/contracts-ethereum-package": "2.5.0",
+        "@openzeppelin/upgrades": "2.8.0"
     },
     "gitHead": "54beaf7fe6686810de74ca290daf99cbde510f9d",
     "publishConfig": {

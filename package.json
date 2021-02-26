@@ -2,6 +2,7 @@
     "name": "root",
     "private": true,
     "devDependencies": {
+        "typescript": "4.1.5",
         "@openzeppelin/cli": "2.8.2",
         "@openzeppelin/contracts-ethereum-package": "2.5.0",
         "@openzeppelin/upgrades": "2.8.0",
