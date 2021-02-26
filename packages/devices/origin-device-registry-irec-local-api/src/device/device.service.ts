@@ -1,5 +1,5 @@
 import { DeviceStatus, ILoggedInUser } from '@energyweb/origin-backend-core';
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { EventBus } from '@nestjs/cqrs';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FindManyOptions, Repository } from 'typeorm';
@@ -23,6 +23,14 @@ export class DeviceService {
     }
 
     async create(user: ILoggedInUser, newDevice: CreateDeviceDTO): Promise<Device> {
+        if (!this.isValidDeviceType(newDevice.deviceType)) {
+            throw new BadRequestException('Invalid device type');
+        }
+
+        if (!this.isValidFuelType(newDevice.fuel)) {
+            throw new BadRequestException('Invalid fuel type');
+        }
+
         const deviceToStore = new Device({
             ...CreateDeviceDTO.sanitize(newDevice),
             ownerId: user.ownerId,
@@ -61,5 +69,13 @@ export class DeviceService {
 
     getFuelTypes(): CodeNameDTO[] {
         return IREC_FUEL_TYPES;
+    }
+
+    isValidDeviceType(deviceType: string): boolean {
+        return !!this.getDeviceTypes().find((fuel) => fuel.code === deviceType);
+    }
+
+    isValidFuelType(fuelType: string): boolean {
+        return !!this.getFuelTypes().find((fuel) => fuel.code === fuelType);
     }
 }

@@ -30,7 +30,7 @@ jobs:
         ports:
           - 5432:5432
     runs-on: ubuntu-latest
-    needs: cancel-previous
+    needs: cancel-previous 
     steps:
     - uses: actions/checkout@v2
       with:
@@ -52,16 +52,4 @@ jobs:
 
     - name: Build application
       run: |
-        yarn build
-
-    - name: Run contract tests
-      run: |
-        yarn test:ci:contracts
-
-    - name: Run apps tests
-      run: |
-        yarn test:ci:apps
-
-    - name: Run e2e tests
-      run: |
-        yarn test:ci:e2e
+        rush build

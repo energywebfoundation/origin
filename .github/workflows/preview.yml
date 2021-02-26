@@ -43,27 +43,35 @@ jobs:
       with:
         node-version: '14'
 
+    - name: "Generate unique id"
+      id: generate_unique_id
+      uses: ./.github/actions/build_id
+
     - name: Restore timestamp
       run: |
         sh scripts/restore-original-timestamps.sh
 
-    - name: Build application
+    - name: Install application
       # lerna doesn't work without additional fetch
       run: |
         git fetch origin master:master
         yarn
+
+    - name: Build application
+      run: |
         yarn build
 
     - name: Set creds to npm 
       run: |
-        - echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" >> $HOME/.npmrc 2> /dev/null
-        - npm whoami
+        echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" >> $HOME/.npmrc
 
     - name: Login into docker hub 
       run: |
-        - wget -qO- https://toolbelt.heroku.com/install-ubuntu.sh | sh
-        - echo "${{ secrets.DOCKER_PASS }}" | docker login -u "${{ secrets.DOCKER_USER }}" --password-stdin
+        wget -qO- https://toolbelt.heroku.com/install-ubuntu.sh | sh
+        echo "${{ secrets.DOCKER_PASS }}" | docker login -u "${{ secrets.DOCKER_USER }}" --password-stdin
 
     - name: Preview application
       run: |
         yarn publish:preview
+      env:
+        BUILD_ID: ${{steps.generate_unique_id.outputs.unique_id}}
