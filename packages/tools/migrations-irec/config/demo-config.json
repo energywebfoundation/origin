@@ -89,31 +89,31 @@
         ]
     },
     "deviceTypes": [
-        ["ES100", "TC110"],
-        ["ES100", "TC120"],
-        ["ES100", "TC130"],
-        ["ES100", "TC140"],
-        ["ES100", "TC150"],
+        ["Solar", "PV Ground mounted"],
+        ["Solar", "PV Roof Mounted (single installation)"],
+        ["Solar", "PV Floating"],
+        ["Solar", "PV Aggregated"],
+        ["Solar", "Solar Thermal Concentration"],
 
-        ["ES200", "TC210"],
-        ["ES200", "TC220"],
+        ["Wind", "Onshore"],
+        ["Wind", "Offshore"],
 
-        ["ES300", "TC310"],
-        ["ES300", "TC320"],
-        ["ES300", "TC330"],
+        ["Hydro-electric", "Dam"],
+        ["Hydro-electric", "Run of river"],
+        ["Hydro-electric", "Pumped Hydro Storage (Natural in-flow only)"],
 
-        ["ES410", "TC410"],
-        ["ES410", "TC411"],
+        ["Marine Tidal", "Combined cycle gas turbine with heat recovery: Non CHP"],
+        ["Marine Tidal", "Combined cycle gas turbine with heat recovery: CHP"],
 
-        ["ES420", "TC421"],
-        ["ES420", "TC422"],
-        ["ES420", "TC423"],
-        ["ES420", "TC424"],
+        ["Marine Wave", "Steam turbine with back-pressure turbine (open cycle): Non CHP"],
+        ["Marine Wave", "Steam turbine with back-pressure turbine (open cycle): CHP"],
+        ["Marine Wave", "Steam turbine with condensation turbine (closed cycle): Non CHP"],
+        ["Marine Wave", "Steam turbine with condensation turbine (closed cycle): CHP"],
 
-        ["ES430", "TC431"],
-        ["ES430", "TC432"],
+        ["Marine Current", "Gas turbine with heat recovery: Non CHP"],
+        ["Marine Current", "Gas turbine with heat recovery: CHP"],
 
-        ["ES440", "TC441"],
-        ["ES440", "TC442"],
+        ["Marine Vertical Pressure", "Internal combustion engine: Non CHP"],
+        ["Marine Vertical Pressure", "Internal combustion engine: CHP"]
     ]
 }
