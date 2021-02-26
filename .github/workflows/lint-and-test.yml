@@ -30,7 +30,7 @@ jobs:
         ports:
           - 5432:5432
     runs-on: ubuntu-latest
-    needs: cancel-previous 
+    needs: cancel-previous
     steps:
     - uses: actions/checkout@v2
       with:
@@ -45,11 +45,9 @@ jobs:
         sh scripts/restore-original-timestamps.sh
 
     - name: Install application
-      # lerna doesn't work without additional fetch
       run: |
-        git fetch origin master:master
-        rush update
+        node common/scripts/install-run-rush.js update
+        node common/scripts/install-run-rush.js check
 
     - name: Build application
-      run: |
-        rush build
+      run: node common/scripts/install-run-rush.js rebuild --verbose
