@@ -3,7 +3,7 @@ name: Lint & test
 on:
     pull_request:
         branches:
-            - 'DOI-710-*'
+            - '*'
 
 jobs:
     cancel-previous:
