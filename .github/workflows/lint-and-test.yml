@@ -45,6 +45,20 @@ jobs:
                   sh scripts/restore-original-timestamps.sh
 
             - name: Build application with Rush
+              # lerna doesn't work without additional fetch
               run: |
-                  rush update
-                  rush build
+                  git fetch origin master:master
+                  yarn
+                  yarn build
+
+            - name: Run contract tests
+              run: |
+                  yarn test:ci:contracts
+
+            - name: Run apps tests
+              run: |
+                  yarn test:ci:apps
+
+            - name: Run e2e tests
+              run: |
+                  yarn test:ci:e2e
