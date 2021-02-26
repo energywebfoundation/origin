@@ -25,7 +25,12 @@ export class ExternalDeviceService implements IExternalDeviceService {
     public async getDeviceProductInfo({ id }: IExternalDeviceId): Promise<IProductInfo> {
         const device = await this.deviceService.findOne(id);
 
-        // TODO: proper mapping
+        const [deviceTypeName, fuelTypeName] = device.deviceType.split(';');
+
+        if (!deviceTypeName || !fuelTypeName) {
+            throw new Error(`Unknown device or fuel type for "${device.deviceType}"`);
+        }
+
         return {
             deviceType: device.deviceType,
             region: '',
