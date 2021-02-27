@@ -28,7 +28,7 @@
         "axios": "0.21.1"
     },
     "devDependencies": {
-        "@nestjs/swagger": "4.7.13",
+        "@nestjs/swagger": "4.7.15",
         "@nestjs/testing": "7.6.13",
         "@nestjs/typeorm": "7.1.5",
         "@openapitools/openapi-generator-cli": "2.1.26",
