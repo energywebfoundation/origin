@@ -41,9 +41,9 @@
         "@energyweb/origin-backend-core": "8.0.0",
         "@energyweb/origin-backend-utils": "1.5.0",
         "@energyweb/utils-general": "11.0.1",
-        "@nestjs/common": "7.6.12",
+        "@nestjs/common": "7.6.13",
         "@nestjs/config": "^0.6.0",
-        "@nestjs/core": "7.6.12",
+        "@nestjs/core": "7.6.13",
         "@nestjs/cqrs": "7.0.1",
         "@nestjs/jwt": "7.2.0",
         "@nestjs/passport": "7.1.5",
@@ -69,9 +69,9 @@
         "uuid": "8.3.2"
     },
     "devDependencies": {
-        "@nestjs/cli": "7.5.5",
+        "@nestjs/cli": "7.5.6",
         "@nestjs/schematics": "7.2.8",
-        "@nestjs/testing": "7.6.12",
+        "@nestjs/testing": "7.6.13",
         "@types/bcryptjs": "2.4.2",
         "@types/body-parser": "1.19.0",
         "@types/cors": "2.8.10",
