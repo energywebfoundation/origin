@@ -3090,6 +3090,16 @@
     tslib "2.1.0"
     uuid "8.3.2"
 
+"@nestjs/common@7.6.13":
+  version "7.6.13"
+  resolved "https://registry.yarnpkg.com/@nestjs/common/-/common-7.6.13.tgz#597558afedfddeb5021fe8a154327ee082279ab8"
+  integrity sha512-xijw6so4yA8Ywi8mnrA7Kz97ZC36u20Eyb5/XvmokdLcgTcTyHVdE39r44JYnjHPf8SKZoJ965zdu/fKl4s4GQ==
+  dependencies:
+    axios "0.21.1"
+    iterare "1.2.1"
+    tslib "2.1.0"
+    uuid "8.3.2"
+
 "@nestjs/config@0.6.3", "@nestjs/config@^0.6.0":
   version "0.6.3"
   resolved "https://registry.yarnpkg.com/@nestjs/config/-/config-0.6.3.tgz#ab0c0dccf79696509ced463a888567219c2e5b7d"
@@ -3106,6 +3116,19 @@
   version "7.6.12"
   resolved "https://registry.yarnpkg.com/@nestjs/core/-/core-7.6.12.tgz#231486b2eda74ccad5a0ceeb2a6e8ee7535c3cbd"
   integrity sha512-hxgWjkKyqA0XJsjs3wlXlh/NbOk03NF8uzGxIUM/HIogu0TaC+4BWpNAvmruduPVioIisCJCKWuFKsjm7S0A1A==
+  dependencies:
+    "@nuxtjs/opencollective" "0.3.2"
+    fast-safe-stringify "2.0.7"
+    iterare "1.2.1"
+    object-hash "2.1.1"
+    path-to-regexp "3.2.0"
+    tslib "2.1.0"
+    uuid "8.3.2"
+
+"@nestjs/core@7.6.13":
+  version "7.6.13"
+  resolved "https://registry.yarnpkg.com/@nestjs/core/-/core-7.6.13.tgz#b7518dceb436e6ed2c1fad2cff86ddf69b143e73"
+  integrity sha512-8oY8yZSgri2DngqmvBMtwYw1GIAaXbUXS7Y0mp/iSZ6jP7CQqYCybdcMPneunrt5PG8rtJsq6n+4JNRvxXrVmA==
   dependencies:
     "@nuxtjs/opencollective" "0.3.2"
     fast-safe-stringify "2.0.7"
@@ -3358,13 +3381,13 @@
   dependencies:
     "@octokit/openapi-types" "^4.0.3"
 
-"@openapitools/openapi-generator-cli@2.1.24":
-  version "2.1.24"
-  resolved "https://registry.yarnpkg.com/@openapitools/openapi-generator-cli/-/openapi-generator-cli-2.1.24.tgz#831681f193e255b030557c989d208538133f06af"
-  integrity sha512-YathHj3e0RK9Kfi6of2XFPGT49EzK0hmtKYVl3PFzIBCWS/cYJGm/v3xwN7ybyfFKVunmUv/jgsfOdX/zfR4Eg==
+"@openapitools/openapi-generator-cli@2.1.26":
+  version "2.1.26"
+  resolved "https://registry.yarnpkg.com/@openapitools/openapi-generator-cli/-/openapi-generator-cli-2.1.26.tgz#69108458c0c1a0a3964d9b3e2f0360b195c8ea5f"
+  integrity sha512-wr4LHQCoZCvLhf0/UY/9AZYTVi3nWvvOT+/JFjZYWDA/TIqC4eWxPjzM5tnSzGed6gBTuNHEh8gUonDz6WOZDw==
   dependencies:
-    "@nestjs/common" "7.6.12"
-    "@nestjs/core" "7.6.12"
+    "@nestjs/common" "7.6.13"
+    "@nestjs/core" "7.6.13"
     "@nuxtjs/opencollective" "0.3.2"
     chalk "4.1.0"
     commander "6.2.1"
@@ -3376,8 +3399,8 @@
     inquirer "7.3.3"
     lodash "4.17.21"
     reflect-metadata "0.1.13"
-    rxjs "6.6.3"
-    tslib "2.0.3"
+    rxjs "6.6.6"
+    tslib "1.13.0"
 
 "@openzeppelin/cli@2.8.2":
   version "2.8.2"
@@ -21567,6 +21590,13 @@ rxjs@6.6.3, rxjs@^6.4.0, rxjs@^6.5.2, rxjs@^6.5.3, rxjs@^6.6.0, rxjs@^6.6.3:
   dependencies:
     tslib "^1.9.0"
 
+rxjs@6.6.6:
+  version "6.6.6"
+  resolved "https://registry.yarnpkg.com/rxjs/-/rxjs-6.6.6.tgz#14d8417aa5a07c5e633995b525e1e3c0dec03b70"
+  integrity sha512-/oTwee4N4iWzAMAL9xdGKjkEHmIwupR3oXbQjCKywF1BeFohswF3vZdogbmEF6pZkOsXTzWkrZszrWpQTByYVg==
+  dependencies:
+    tslib "^1.9.0"
+
 safe-buffer@5.1.1:
   version "5.1.1"
   resolved "https://registry.yarnpkg.com/safe-buffer/-/safe-buffer-5.1.1.tgz#893312af69b2123def71f57889001671eeb2c853"
@@ -23953,10 +23983,10 @@ tsconfig-paths@3.9.0, tsconfig-paths@^3.4.0, tsconfig-paths@^3.9.0:
     minimist "^1.2.0"
     strip-bom "^3.0.0"
 
-tslib@2.0.3:
-  version "2.0.3"
-  resolved "https://registry.yarnpkg.com/tslib/-/tslib-2.0.3.tgz#8e0741ac45fc0c226e58a17bfc3e64b9bc6ca61c"
-  integrity sha512-uZtkfKblCEQtZKBF6EBXVZeQNl82yqtDQdv+eck8u7tdPxjLu2/lp5/uPW+um2tpuxINHWy3GhiccY7QgEaVHQ==
+tslib@1.13.0:
+  version "1.13.0"
+  resolved "https://registry.yarnpkg.com/tslib/-/tslib-1.13.0.tgz#c881e13cc7015894ed914862d276436fa9a47043"
+  integrity sha512-i/6DQjL8Xf3be4K/E6Wgpekn5Qasl1usyw++dAA35Ue5orEn65VIxOA+YvNNl9HV3qv70T7CNwjODHZrLwvd1Q==
 
 tslib@2.1.0, tslib@>=1.9.0, tslib@^2.0.0, tslib@^2.0.1, tslib@^2.0.3:
   version "2.1.0"
