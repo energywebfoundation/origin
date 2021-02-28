@@ -38,7 +38,7 @@
         "bn.js": "5.2.0",
         "immutable": "4.0.0-rc.12",
         "moment": "2.29.1",
-        "rxjs": "6.6.3"
+        "rxjs": "6.6.6"
     },
     "publishConfig": {
         "access": "public",

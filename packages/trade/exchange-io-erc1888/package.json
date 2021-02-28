@@ -44,7 +44,7 @@
         "@nestjs/typeorm": "7.1.5",
         "ethers": "5.0.31",
         "moment": "2.29.1",
-        "rxjs": "6.6.3"
+        "rxjs": "6.6.6"
     },
     "devDependencies": {
         "@nestjs/cli": "7.5.6",
