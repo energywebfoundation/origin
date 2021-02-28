@@ -29,7 +29,7 @@
         "prettier": "2.2.1",
         "shx": "0.3.3",
         "solc": "0.5.16",
-        "truffle": "5.1.67",
+        "truffle": "5.2.0",
         "ts-node": "9.1.1",
         "typescript": "4.2.2",
         "typescript-json-schema": "0.49.0",
