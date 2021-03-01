@@ -61,10 +61,7 @@
         "@types/mocha": "^8.2.1",
         "mocha": "8.3.0",
         "@types/chai": "4.2.15",
-        "chai": "4.3.0",
-        "@nestjs/passport": "7.1.5",
-        "@nestjs/common": "7.6.12",
-        "@nestjs/core": "7.6.12"
+        "chai": "4.3.0"
     },
     "publishConfig": {
         "access": "public",
