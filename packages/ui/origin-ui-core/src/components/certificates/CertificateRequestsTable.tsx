@@ -11,7 +11,7 @@ export function CertificateRequestsTable(): JSX.Element {
     const isIssuer = isRole(user, Role.Issuer);
     const { canAccessPage } = usePermissions();
 
-    if (!canAccessPage?.value && !isIssuer) {
+    if (!canAccessPage.value && !isIssuer) {
         return <Requirements />;
     }
 
