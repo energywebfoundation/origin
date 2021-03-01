@@ -10,7 +10,7 @@ import {
     SmartMeterAlreadyUsedError,
     UnableToVerifyOwnershipError
 } from './errors';
-import { NewDeviceDTO } from './new-device.dto';
+import { NewDeviceDTO } from './dto/new-device.dto';
 import { ValidateDeviceOwnershipQuery } from './queries/validate-device-ownership.query';
 
 @Injectable()
