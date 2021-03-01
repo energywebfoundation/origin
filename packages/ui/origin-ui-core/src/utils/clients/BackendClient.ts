@@ -9,6 +9,7 @@ import {
     AuthClient
 } from '@energyweb/origin-backend-client';
 import { DeviceClient } from '@energyweb/origin-device-registry-irec-form-api-client';
+import { MeterReadsClient } from '@energyweb/origin-energy-api-client';
 import { BaseClient } from './BaseClient';
 
 export class BackendClient extends BaseClient {
@@ -27,6 +28,8 @@ export class BackendClient extends BaseClient {
     organizationClient: OrganizationClient;
 
     userClient: UserClient;
+
+    meterReadsClient: MeterReadsClient;
 
     setup(accessToken?: string) {
         const config = new Configuration(
@@ -50,5 +53,6 @@ export class BackendClient extends BaseClient {
         this.invitationClient = new InvitationClient(config, this.backendUrl);
         this.organizationClient = new OrganizationClient(config, this.backendUrl);
         this.userClient = new UserClient(config, this.backendUrl);
+        this.meterReadsClient = new MeterReadsClient(config, this.backendUrl);
     }
 }

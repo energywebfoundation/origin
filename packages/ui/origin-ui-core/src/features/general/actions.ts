@@ -31,6 +31,7 @@ export interface IEnvironment {
     GOOGLE_MAPS_API_KEY: string;
     MARKET_UTC_OFFSET: number;
     DISABLED_UI_FEATURES: string;
+    SMART_METER_ID: string;
 }
 
 export interface ISetLoadingAction {

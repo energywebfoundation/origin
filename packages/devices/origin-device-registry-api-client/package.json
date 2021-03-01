@@ -28,10 +28,10 @@
     "devDependencies": {
         "typescript": "4.1.5",
         "@energyweb/origin-device-registry-api": "0.0.2",
-        "@nestjs/swagger": "4.7.13",
-        "@nestjs/testing": "7.6.12",
+        "@nestjs/swagger": "4.7.15",
+        "@nestjs/testing": "7.6.13",
         "@nestjs/typeorm": "7.1.5",
-        "@openapitools/openapi-generator-cli": "2.1.24",
+        "@openapitools/openapi-generator-cli": "2.1.26",
         "json-to-pretty-yaml": "1.2.2",
         "prettier": "2.2.1",
         "ts-node": "9.1.1",

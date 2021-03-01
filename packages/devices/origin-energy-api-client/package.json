@@ -6,7 +6,6 @@
     "author": "EnergyWeb DevHub GmbH; Aravind Cheziyan, aravind.cheziyan@energyweb.org; Piotr Kosinski, piotr.kosinski@energyweb.org",
     "license": "GPL-3.0-or-later",
     "main": "dist/js/src/index.js",
-    "private": true,
     "repository": {
         "type": "git",
         "url": "git+https://github.com/energywebfoundation/origin.git"
@@ -29,10 +28,10 @@
     },
     "devDependencies": {
         "typescript": "4.1.5",
-        "@nestjs/swagger": "4.7.13",
-        "@nestjs/testing": "7.6.12",
+        "@nestjs/swagger": "4.7.15",
+        "@nestjs/testing": "7.6.13",
         "@nestjs/typeorm": "7.1.5",
-        "@openapitools/openapi-generator-cli": "2.1.24",
+        "@openapitools/openapi-generator-cli": "2.1.26",
         "json-to-pretty-yaml": "1.2.2",
         "prettier": "2.2.1",
         "ts-node": "9.1.1",
