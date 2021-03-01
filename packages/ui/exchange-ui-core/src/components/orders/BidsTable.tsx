@@ -7,12 +7,9 @@ import {
     EnergyFormatter,
     formatCurrencyComplete,
     moment,
-    deviceById,
     EnergyTypes,
     getCurrencies,
     getConfiguration,
-    getEnvironment,
-    getProducingDevices,
     IPaginatedLoaderHooksFetchDataParameters,
     IPaginatedLoaderFetchDataReturnValues,
     usePaginatedLoaderFiltered,
@@ -23,6 +20,9 @@ import {
     TableMaterial,
     useLinks
 } from '@energyweb/origin-ui-core';
+import { getEnvironment } from '../../features/general';
+import { useDeviceDataLayer } from '../../deviceDataLayer';
+import { getDeviceName, deviceTypeChecker } from '../../utils/device';
 import { Order, ANY_VALUE, ANY_OPERATOR } from '../../utils/exchange';
 import { RemoveOrderConfirmation, OrderDetailsModal } from '../modal';
 
@@ -40,7 +40,10 @@ export const BidsTable = (props: IOwnProsp) => {
     const configuration = useSelector(getConfiguration);
     const deviceTypeService = configuration?.deviceTypeService;
     const environment = useSelector(getEnvironment);
-    const devices = useSelector(getProducingDevices);
+
+    const properDeviceSelector = useDeviceDataLayer().getAllDevices;
+    const devices = useSelector(properDeviceSelector);
+
     const { getExchangeLink } = useLinks();
     const history = useHistory();
 
@@ -76,14 +79,14 @@ export const BidsTable = (props: IOwnProsp) => {
         {
             property: (order: Order) =>
                 order.asset?.deviceId
-                    ? deviceById(order.asset.deviceId, environment, devices).facilityName
+                    ? getDeviceName(order.asset.deviceId, devices, environment)
                     : undefined,
             label: t('device.properties.facilityName'),
             input: {
                 type: CustomFilterInputType.dropdown,
                 availableOptions: devices.map((device) => ({
-                    label: device.facilityName,
-                    value: device.facilityName
+                    label: deviceTypeChecker(device) ? device.facilityName : device.name,
+                    value: deviceTypeChecker(device) ? device.facilityName : device.name
                 }))
             }
         },
@@ -119,9 +122,13 @@ export const BidsTable = (props: IOwnProsp) => {
         };
     }
 
-    const { paginatedData, loadPage, total, pageSize, setPageSize } = usePaginatedLoaderFiltered<
-        Order
-    >({
+    const {
+        paginatedData,
+        loadPage,
+        total,
+        pageSize,
+        setPageSize
+    } = usePaginatedLoaderFiltered<Order>({
         getPaginatedData,
         initialPageSize: ORDERS_PER_PAGE
     });
@@ -216,6 +223,7 @@ export const BidsTable = (props: IOwnProsp) => {
             />
             {bidToView && (
                 <OrderDetailsModal
+                    devices={devices}
                     order={bidToView}
                     close={() => setToView(null)}
                     showCancelOrder={(bid: Order) => {

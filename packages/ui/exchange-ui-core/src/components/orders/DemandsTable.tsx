@@ -113,9 +113,13 @@ export const DemandsTable = (props: IOwnProps) => {
         };
     }
 
-    const { paginatedData, loadPage, total, pageSize, setPageSize } = usePaginatedLoaderFiltered<
-        Demand
-    >({
+    const {
+        paginatedData,
+        loadPage,
+        total,
+        pageSize,
+        setPageSize
+    } = usePaginatedLoaderFiltered<Demand>({
         getPaginatedData,
         initialPageSize: DEMANDS_PER_PAGE
     });

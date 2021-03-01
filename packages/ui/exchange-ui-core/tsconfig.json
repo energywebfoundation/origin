@@ -33,6 +33,9 @@
         },
         {
             "path": "../../devices/origin-device-registry-irec-form-api-client/tsconfig.json"
+        },
+        {
+            "path": "../origin-ui-irec-core/tsconfig.json"
         }
     ]
 }

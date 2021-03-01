@@ -4,7 +4,6 @@ import { useTranslation } from 'react-i18next';
 import { BigNumber } from 'ethers';
 import { Edit, Remove } from '@material-ui/icons';
 import {
-    getBackendClient,
     formatCurrencyComplete,
     moment,
     usePermissions,
@@ -23,6 +22,7 @@ import { getEnvironment } from '../features/general';
 import { getSupplies, fetchSupplies } from '../features/supply';
 import { IDeviceWithSupply, ISupplyTableRecord } from '../types';
 import { UpdateSupplyModal, RemoveSupplyConfirmation } from '../components/modal';
+import { useDeviceDataLayer } from '../deviceDataLayer';
 
 export enum SupplyStatus {
     Active = 'Active',
@@ -30,8 +30,8 @@ export enum SupplyStatus {
 }
 
 export function SupplyTable() {
-    const backendClient = useSelector(getBackendClient);
-    const deviceClient = backendClient?.deviceClient;
+    const deviceDataLayer = useDeviceDataLayer();
+    const deviceClient = deviceDataLayer.deviceClient;
 
     const { t } = useTranslation();
     const currencies = useSelector(getCurrencies);
@@ -39,6 +39,10 @@ export function SupplyTable() {
     const environment = useSelector(getEnvironment);
     const issuerId = environment?.ISSUER_ID;
     const dispatch = useDispatch();
+
+    const deviceSelector = deviceDataLayer.getMyDevices;
+    const deviceFetcher = deviceDataLayer.fetchMyDevices;
+    const myDevices = useSelector(deviceSelector) || [];
 
     const [showUpdateModal, setShowModal] = useState<boolean>(false);
     const [entity, setEntity] = useState<IDeviceWithSupply>(null);
@@ -58,8 +62,6 @@ export function SupplyTable() {
         }
 
         let entities: IDeviceWithSupply[] = [];
-
-        const { data: myDevices } = await deviceClient.getMyDevices(false);
         const devicesEnrichedWithSupply = myDevices.map((device) => {
             const matchingSupply = supplySettings?.find(
                 (supply) =>
@@ -68,9 +70,9 @@ export function SupplyTable() {
             );
             if (matchingSupply) {
                 return {
-                    facilityName: device.facilityName,
+                    facilityName: 'facilityName' in device ? device.facilityName : device.name,
                     deviceType: device.deviceType,
-                    toBeCertified: device.meterStats?.uncertified,
+                    toBeCertified: 'meterStats' in device ? device.meterStats?.uncertified : '0',
                     externalDeviceIds: device.externalDeviceIds,
                     active: matchingSupply.active,
                     price: matchingSupply.price,
@@ -79,9 +81,9 @@ export function SupplyTable() {
                 };
             } else {
                 return {
-                    facilityName: device.facilityName,
+                    facilityName: 'facilityName' in device ? device.facilityName : device.name,
                     deviceType: device.deviceType,
-                    toBeCertified: device.meterStats?.uncertified,
+                    toBeCertified: 'meterStats' in device ? device.meterStats?.uncertified : '0',
                     price: 0,
                     externalDeviceIds: device.externalDeviceIds,
                     supplyCreated: false
@@ -107,9 +109,12 @@ export function SupplyTable() {
         };
     }
 
-    const { paginatedData, loadPage, total, pageSize } = usePaginatedLoaderFiltered<
-        ISupplyTableRecord
-    >({
+    const {
+        paginatedData,
+        loadPage,
+        total,
+        pageSize
+    } = usePaginatedLoaderFiltered<ISupplyTableRecord>({
         getPaginatedData
     });
 
@@ -121,6 +126,7 @@ export function SupplyTable() {
 
     useEffect(() => {
         if (deviceClient) {
+            dispatch(deviceFetcher());
             dispatch(fetchSupplies());
         }
     }, [deviceClient]);
