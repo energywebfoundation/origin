@@ -73,3 +73,5 @@ common/autoinstallers/*/.npmrc
 # !Ignore
 !.env.example
 !.env.test
+
+dist/

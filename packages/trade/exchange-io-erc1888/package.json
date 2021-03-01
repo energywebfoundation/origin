@@ -63,7 +63,11 @@
         "@types/mocha": "^8.2.1",
         "mocha": "8.3.0",
         "@types/chai": "4.2.15",
-        "chai": "4.3.0"
+        "chai": "4.3.0",
+        "@ethersproject/providers": "5.0.23",
+        "@ethersproject/abstract-provider": "5.0.9",
+        "@ethersproject/contracts": "5.0.11",
+        "@ethersproject/abi": "5.0.12"
     },
     "publishConfig": {
         "access": "public",

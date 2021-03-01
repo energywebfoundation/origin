@@ -2,7 +2,7 @@
     "name": "@energyweb/origin-backend-client",
     "version": "10.0.2",
     "description": "",
-    "main": "dist/js/src/index.js",
+    "main": "dist/js/index.js",
     "scripts": {
         "build": "yarn build:ts",
         "build:ts": "yarn build:client && tsc -b tsconfig.json",

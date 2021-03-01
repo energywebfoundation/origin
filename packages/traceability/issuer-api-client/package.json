@@ -5,7 +5,7 @@
     "homepage": "https://github.com/energywebfoundation/origin/tree/master/packages/issuer-api-client#readme",
     "author": "EnergyWeb DevHub GmbH; Joseph Bagaric, joseph.bagaric@energyweb.org",
     "license": "GPL-3.0-or-later",
-    "main": "dist/js/src/index.js",
+    "main": "dist/js/index.js",
     "repository": {
         "type": "git",
         "url": "git+https://github.com/energywebfoundation/origin.git"

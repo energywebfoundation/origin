@@ -6,9 +6,5 @@
         "experimentalDecorators": true,
         "emitDecoratorMetadata": true
     },
-    "include": [
-        "./src/**/*",
-        "./test/**/*",
-        "../exchange/test/deposits-auto-post-for-sale.e2e-spec.ts"
-    ]
+    "include": ["./src/**/*", "./test/**/*"]
 }
