@@ -10,6 +10,7 @@ import { ApprovedCertificates } from './ApprovedCertificates';
 import { CertificateImport } from './Import/CertificateImport';
 import { ExchangeInboxPage } from './ExchangeInboxPage';
 import { BlockchainInboxPage } from './BlockchainInboxPage';
+import { CertificateRequestsTable } from './CertificateRequestsTable';
 
 interface ICertificateMenuItem {
     key: string;
@@ -54,6 +55,13 @@ export const useCertificatesMenu = (): ICertificateMenuItem[] => {
             key: 'claims_report',
             label: 'navigation.certificates.claimsReport',
             component: ClaimedCertificates,
+            show: isIssuer || userIsActiveAndPartOfOrg,
+            features: [OriginFeature.Certificates, OriginFeature.Buyer]
+        },
+        {
+            key: 'requests',
+            label: 'navigation.certificates.requests',
+            component: CertificateRequestsTable,
             show: isIssuer || userIsActiveAndPartOfOrg,
             features: [OriginFeature.Certificates, OriginFeature.Buyer]
         },
