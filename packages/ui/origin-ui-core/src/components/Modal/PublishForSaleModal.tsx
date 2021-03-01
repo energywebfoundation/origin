@@ -16,7 +16,6 @@ import {
     Select,
     TextField
 } from '@material-ui/core';
-import { ProducingDevice } from '@energyweb/device-registry';
 import {
     requestPublishForSale,
     resyncCertificate,
@@ -27,16 +26,17 @@ import { getUserOffchain } from '../../features/users';
 import { formatDate } from '../../utils/time';
 import { countDecimals } from '../../utils/helper';
 import { EnergyFormatter } from '../../utils/EnergyFormatter';
+import { IOriginDevice } from '../../types';
 
 interface IProps {
     certificate: ICertificateViewItem;
-    producingDevice: ProducingDevice.Entity;
+    device: IOriginDevice;
     showModal: boolean;
     callback: () => void;
 }
 
 export function PublishForSaleModal(props: IProps) {
-    const { certificate, callback, producingDevice, showModal } = props;
+    const { certificate, callback, device, showModal } = props;
 
     const { t } = useTranslation();
 
@@ -139,7 +139,7 @@ export function PublishForSaleModal(props: IProps) {
     }
 
     const certificateId = certificate ? certificate.id : '';
-    const facilityName = producingDevice ? producingDevice.facilityName : '';
+    const facilityName = device ? device.facilityName : '';
 
     let creationTime: string;
 

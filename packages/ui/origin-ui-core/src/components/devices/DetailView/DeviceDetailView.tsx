@@ -1,48 +1,53 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
-import { createStyles, makeStyles, useTheme } from '@material-ui/core';
 import { Skeleton } from '@material-ui/lab';
-import { ProducingDevice } from '@energyweb/device-registry';
+import { DeviceClient } from '@energyweb/origin-device-registry-irec-form-api-client';
+import { OrganizationClient } from '@energyweb/origin-backend-client';
 import { IExternalDeviceId } from '@energyweb/origin-backend-core';
 
 import { getBackendClient } from '../../../features/general';
 import { getConfiguration } from '../../../features/configuration';
-import { getProducingDevices } from '../../../features/devices';
 import { EnergyFormatter } from '../../../utils/EnergyFormatter';
 import { formatDate } from '../../../utils/time';
 import { LightenColor } from '../../../utils/colors';
 import { PowerFormatter } from '../../../utils/PowerFormatter';
 import { useOriginConfiguration } from '../../../utils/configuration';
-import { SmartMeterReadingsChart } from '../SmartMeterReadings/SmartMeterReadingsChart';
-import { SmartMeterReadingsTable } from '../SmartMeterReadings/SmartMeterReadingsTable';
+// import { SmartMeterReadingsChart } from '../SmartMeterReadings/SmartMeterReadingsChart';
+// import { SmartMeterReadingsTable } from '../SmartMeterReadings/SmartMeterReadingsTable';
 import { downloadFile } from '../../Documents';
 import { DeviceGroupForm } from '../DeviceGroupForm';
 import { DeviceMap } from '../DeviceMap';
 
-import iconGaseous from '../../../../assets/icon_gaseous.svg';
-import hydro from '../../../../assets/icon_hydro.svg';
-import iconLiquid from '../../../../assets/icon_liquid.svg';
-import iconMarine from '../../../../assets/icon_marine.svg';
-import solar from '../../../../assets/icon_solar.svg';
-import iconSolid from '../../../../assets/icon_solid.svg';
-import iconThermal from '../../../../assets/icon_thermal.svg';
-import wind from '../../../../assets/icon_wind.svg';
+import { showNotification, NotificationType } from '../../../utils/notifications';
+import { IOriginDevice } from '../../../types';
+import { getDeviceLocationText } from '../../../utils/device';
+import { DeviceIcon } from '../../Icons';
 import map from '../../../../assets/map.svg';
 import marker from '../../../../assets/marker.svg';
+import { makeStyles } from '@material-ui/core';
 
 interface IProps {
-    id?: number;
-    externalId?: IExternalDeviceId;
+    id: number;
     showSmartMeterReadings: boolean;
     showCertificates: boolean;
+    externalId?: IExternalDeviceId;
 }
 
-export function ProducingDeviceDetailView(props: IProps) {
+const useStyles = makeStyles({
+    icon: {
+        width: 100,
+        height: 100,
+        marginTop: 20,
+        marginBottom: 20
+    }
+});
+
+export function DeviceDetailView(props: IProps) {
     const configuration = useSelector(getConfiguration);
-    const producingDevices = useSelector(getProducingDevices);
     const backendClient = useSelector(getBackendClient);
-    const organizationClient = useSelector(getBackendClient)?.organizationClient;
+    const deviceClient: DeviceClient = backendClient?.deviceClient;
+    const organizationClient: OrganizationClient = backendClient?.organizationClient;
 
     const originContext = useOriginConfiguration();
     const originBgColor = originContext?.styleConfig?.MAIN_BACKGROUND_COLOR;
@@ -50,77 +55,48 @@ export function ProducingDeviceDetailView(props: IProps) {
     const originSimpleTextColor = originContext?.styleConfig?.SIMPLE_TEXT_COLOR;
 
     const { t } = useTranslation();
+    const classes = useStyles();
 
     const bgColorDarken = LightenColor(originBgColor, -2);
-    const attributionTextColor = LightenColor(originBgColor, 20);
     const textColorDarken = LightenColor(originTextColor, -4);
     const textColorLighten = LightenColor(originTextColor, 52);
     const bgColorLighten = LightenColor(originBgColor, 5);
+    const unselectedIconColor = LightenColor(originTextColor, -7);
 
-    const useStyles = makeStyles(() =>
-        createStyles({
-            attributionText: {
-                fontSize: '10px',
-                color: attributionTextColor
+    const [selectedDevice, setSelectedDevice] = useState<IOriginDevice>(null);
+
+    const fetchDevice = async (deviceId: number) => {
+        try {
+            const { data: device } = await deviceClient.get(
+                deviceId.toString(),
+                props.showSmartMeterReadings
+            );
+
+            if (device) {
+                const {
+                    data: { name: orgName }
+                } = await organizationClient.getPublic(device.organizationId);
+
+                setSelectedDevice({
+                    ...device,
+                    organizationName: orgName,
+                    locationText: getDeviceLocationText(device)
+                });
             }
-        })
-    );
-
-    const classes = useStyles(useTheme());
-
-    let selectedDevice: ProducingDevice.Entity = null;
-    const [organizationName, setOrganizationName] = useState('');
-
-    if (props.id !== null && props.id !== undefined) {
-        selectedDevice = producingDevices.find((p) => p.id === props.id);
-    } else if (props.externalId) {
-        selectedDevice = producingDevices.find((p) =>
-            p.externalDeviceIds?.find(
-                (deviceExternalId) =>
-                    deviceExternalId.id === props.externalId.id &&
-                    deviceExternalId.type === props.externalId.type
-            )
-        );
-    }
-
-    const fetchOrganizationName = async (orgId: number) => {
-        if (orgId) {
-            const {
-                data: { name }
-            } = await organizationClient.getPublic(orgId);
-            setOrganizationName(name);
+        } catch (error) {
+            showNotification(t('device.feedback.errorGettingDevices'), NotificationType.Error);
+            console.log(error);
         }
     };
-    fetchOrganizationName(selectedDevice?.organizationId);
+
+    useEffect(() => {
+        if (props.id) {
+            fetchDevice(props.id);
+        }
+    }, [props.id]);
 
     if (!configuration || !organizationClient || !selectedDevice) {
         return <Skeleton variant="rect" height={200} />;
-    }
-
-    let tooltip = '';
-
-    const selectedDeviceType = selectedDevice.deviceType;
-    let image = solar;
-
-    if (selectedDeviceType.startsWith('Wind')) {
-        image = wind;
-    } else if (selectedDeviceType.startsWith('Hydro-electric Head')) {
-        image = hydro;
-    } else if (selectedDeviceType.startsWith('Thermal')) {
-        image = iconThermal;
-        tooltip = t('general.feedback.createdByNoun', { fullName: 'Adam Terpening' });
-    } else if (selectedDeviceType.startsWith('Solid')) {
-        image = iconSolid;
-        tooltip = t('general.feedback.createdByNoun', { fullName: 'ahmad' });
-    } else if (selectedDeviceType.startsWith('Liquid')) {
-        image = iconLiquid;
-        tooltip = t('general.feedback.createdByNoun', { fullName: 'BomSymbols' });
-    } else if (selectedDeviceType.startsWith('Gaseous')) {
-        image = iconGaseous;
-        tooltip = t('general.feedback.createdByNoun', { fullName: 'Deadtype' });
-    } else if (selectedDeviceType.startsWith('Marine')) {
-        image = iconMarine;
-        tooltip = t('general.feedback.createdByNoun', { fullName: 'Vectors Point' });
     }
 
     const data = [
@@ -131,7 +107,7 @@ export function ProducingDeviceDetailView(props: IProps) {
             },
             {
                 label: t('device.properties.deviceOwner'),
-                data: organizationName ?? ''
+                data: selectedDevice.organizationName ?? ''
             },
             {
                 label: t('device.properties.complianceRegistry'),
@@ -146,7 +122,11 @@ export function ProducingDeviceDetailView(props: IProps) {
             {
                 label: t('device.properties.deviceType'),
                 data: configuration.deviceTypeService?.getDisplayText(selectedDevice.deviceType),
-                image,
+                image: (
+                    <div style={{ fill: unselectedIconColor }}>
+                        <DeviceIcon className={classes.icon} type={selectedDevice.deviceType} />
+                    </div>
+                ),
                 rowspan: 2
             },
             {
@@ -243,23 +223,12 @@ export function ProducingDeviceDetailView(props: IProps) {
 
                                         {col.image &&
                                             (col.type !== 'map' ? (
-                                                <div className={`Image`}>
-                                                    <img
-                                                        src={col.image}
-                                                        style={{
-                                                            maxWidth: '200px',
-                                                            maxHeight: '250px'
-                                                        }}
-                                                    />
-                                                    {tooltip && (
-                                                        <div className={classes.attributionText}>
-                                                            {tooltip}
-                                                        </div>
-                                                    )}
+                                                <>
+                                                    {col.image}
                                                     {col.type === 'map' && (
                                                         <img src={marker} className="Marker" />
                                                     )}
-                                                </div>
+                                                </>
                                             ) : (
                                                 <div
                                                     className={`Image Map`}
@@ -300,11 +269,11 @@ export function ProducingDeviceDetailView(props: IProps) {
                     <div className="container-fluid">
                         <div className="row">
                             <div className="col-lg-4">
-                                <SmartMeterReadingsTable producingDevice={selectedDevice} />
+                                {/* <SmartMeterReadingsTable producingDevice={selectedDevice} /> */}
                             </div>
 
                             <div className="col-lg-8">
-                                <SmartMeterReadingsChart producingDevice={selectedDevice} />
+                                {/* <SmartMeterReadingsChart producingDevice={selectedDevice} /> */}
                             </div>
                         </div>
                     </div>
@@ -313,19 +282,6 @@ export function ProducingDeviceDetailView(props: IProps) {
             {selectedDevice?.deviceGroup && (
                 <DeviceGroupForm device={selectedDevice} readOnly={true} />
             )}
-            {/* {props.showCertificates && (
-                <>
-                    <br />
-                    <br />
-                    <CertificateTable
-                        certificates={certificates.filter(
-                            c => c.deviceId.toString() === props.id.toString()
-                        )}
-                        selectedState={SelectedState.ForSale}
-                        hiddenColumns={['deviceType', 'commissioningDate', 'locationText']}
-                    />
-                </>
-            )} */}
         </div>
     );
 }

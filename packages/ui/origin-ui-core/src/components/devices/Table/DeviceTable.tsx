@@ -2,22 +2,20 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, Redirect } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { ProducingDevice } from '@energyweb/device-registry';
 import { Fab, Tooltip } from '@material-ui/core';
 import { Add, Assignment, Check, Visibility } from '@material-ui/icons';
 import { DeviceStatus, isRole, Role } from '@energyweb/origin-backend-core';
-import { getBackendClient, getEnvironment, setLoading } from '../../../features/general';
-import { producingDeviceCreatedOrUpdated, getProducingDevices } from '../../../features/devices';
-import { getBaseURL, getProducingDeviceDetailLink } from '../../../utils/routing';
+import { getEnvironment } from '../../../features/general';
+import { getBaseURL, getDeviceDetailLink } from '../../../utils/routing';
 import { getConfiguration } from '../../../features/configuration';
-
+import { approveDevice } from '../../../features/devices';
 import { getExchangeDepositAddress, getUserOffchain } from '../../../features/users';
 import { EnergyFormatter } from '../../../utils/EnergyFormatter';
 import { moment } from '../../../utils/time';
 import { NotificationType, showNotification } from '../../../utils/notifications';
 import { PowerFormatter } from '../../../utils/PowerFormatter';
-import { getDeviceColumns, getDeviceLocationText } from '../../../utils/device';
-
+import { getDeviceColumns } from '../../../utils/device';
+import { IOriginDevice } from '../../../types';
 import { RequestCertificatesModal } from '../../Modal';
 import {
     checkRecordPassesFilters,
@@ -27,7 +25,8 @@ import {
     IPaginatedLoaderHooksFetchDataParameters,
     ITableAction,
     TableMaterial,
-    usePaginatedLoaderFiltered
+    usePaginatedLoaderFiltered,
+    TableFallback
 } from '../../Table';
 
 interface IOwnProps {
@@ -35,20 +34,16 @@ interface IOwnProps {
         requestCertificates?: boolean;
         approve?: boolean;
     };
+    devices: IOriginDevice[];
     owner?: number;
     showAddDeviceButton?: boolean;
     hiddenColumns?: string[];
     includedStatuses?: DeviceStatus[];
 }
 
-interface IEnrichedProducingDeviceData {
-    device: ProducingDevice.Entity;
-    organizationName: string;
-    locationText: string;
-}
-
 interface IDeviceRowData {
     owner: string;
+    orgId: number;
     readCertified: string;
     readToBeCertified: string;
     gridOperator: string;
@@ -59,66 +54,34 @@ interface IDeviceRowData {
     status: DeviceStatus;
 }
 
-export function ProducingDeviceTable(props: IOwnProps) {
+export function DeviceTable(props: IOwnProps) {
     const [detailViewForDeviceId, setDetailViewForDeviceId] = useState(null);
 
     const configuration = useSelector(getConfiguration);
     const user = useSelector(getUserOffchain);
-    const producingDevices = useSelector(getProducingDevices);
     const baseURL = useSelector(getBaseURL);
     const environment = useSelector(getEnvironment);
     const exchangeDepositAddress = useSelector(getExchangeDepositAddress);
-    const [showRequestCertModal, setShowRequestCertModal] = useState(false);
-    const [producingDeviceForModal, setProducingDeviceForModal] = useState(null);
+    const [showRequestCertModal, setShowRequestCertModal] = useState<boolean>(false);
+    const [deviceForRequest, setDeviceForRequest] = useState<IOriginDevice>(null);
     const dispatch = useDispatch();
-    const organizationClient = useSelector(getBackendClient)?.organizationClient;
-    const organizationCache = new Map<number, string>();
-
-    async function fetchOrganizationName(id: number): Promise<string> {
-        if (organizationCache.has(id)) {
-            return organizationCache.get(id);
-        }
-
-        const {
-            data: { name }
-        } = await organizationClient.getPublic(id);
-
-        organizationCache.set(id, name);
-
-        return name;
-    }
-
-    async function enrichProducingDeviceData(): Promise<IEnrichedProducingDeviceData[]> {
-        const enriched: IEnrichedProducingDeviceData[] = [];
-        for (const device of producingDevices) {
-            enriched.push({
-                device,
-                organizationName: await fetchOrganizationName(device?.organizationId),
-                locationText: getDeviceLocationText(device)
-            });
-        }
-
-        return enriched;
-    }
 
     async function getPaginatedData({
         requestedPageSize,
         offset,
         requestedFilters
     }: IPaginatedLoaderHooksFetchDataParameters): Promise<IPaginatedLoaderFetchDataReturnValues> {
-        const enrichedDeviceData = await enrichProducingDeviceData();
-
         const includedStatuses = props.includedStatuses || [];
 
-        const filteredEnrichedDeviceData = enrichedDeviceData.filter(
+        const filteredEnrichedDeviceData = props.devices.filter(
             (record) =>
                 checkRecordPassesFilters(
                     record,
                     requestedFilters,
                     configuration.deviceTypeService
                 ) &&
-                (!props.owner || record?.device?.organizationId === user?.organization?.id) &&
-                (includedStatuses.length === 0 || includedStatuses.includes(record.device.status))
+                (!props.owner || record?.organizationId === user?.organization?.id) &&
+                (includedStatuses.length === 0 || includedStatuses.includes(record.status))
         );
 
         const total = filteredEnrichedDeviceData.length;
@@ -131,9 +94,7 @@ export function ProducingDeviceTable(props: IOwnProps) {
         };
     }
 
-    const { paginatedData, loadPage, total, pageSize } = usePaginatedLoaderFiltered<
-        IEnrichedProducingDeviceData
-    >({
+    const { paginatedData, loadPage, total, pageSize } = usePaginatedLoaderFiltered<IOriginDevice>({
         getPaginatedData
     });
 
@@ -141,55 +102,40 @@ export function ProducingDeviceTable(props: IOwnProps) {
 
     useEffect(() => {
         loadPage(1);
-    }, [user, producingDevices]);
+    }, [user]);
 
     function viewDevice(rowIndex: number) {
-        const device = paginatedData[rowIndex].device;
+        const device = paginatedData[rowIndex];
 
         setDetailViewForDeviceId(device.id);
     }
 
-    async function requestCerts(rowIndex: string) {
-        const producingDevice = paginatedData[rowIndex].device;
+    async function requestCerts(rowIndex: number) {
+        const device = paginatedData[rowIndex];
 
-        if (producingDevice.status !== DeviceStatus.Active) {
+        if (device.status !== DeviceStatus.Active) {
             return showNotification(
                 `You can only request certificates for devices with status ${DeviceStatus.Active}.`,
                 NotificationType.Error
             );
         }
 
-        setProducingDeviceForModal(producingDevice);
+        setDeviceForRequest(device);
         setShowRequestCertModal(true);
     }
 
     async function approve(rowIndex: string) {
-        const producingDevice = paginatedData[rowIndex].device;
+        const deviceToApprove: IOriginDevice = paginatedData[rowIndex];
 
-        dispatch(setLoading(true));
+        dispatch(approveDevice(deviceToApprove.id));
 
-        try {
-            await producingDevice.setStatus(DeviceStatus.Active);
-            await dispatch(producingDeviceCreatedOrUpdated(await producingDevice.sync()));
-
-            showNotification(`Device has been approved.`, NotificationType.Success);
-
-            await loadPage(1);
-        } catch (error) {
-            showNotification(
-                `Unexpected error occurred when approving device.`,
-                NotificationType.Error
-            );
-            console.error(error);
-        }
-
-        dispatch(setLoading(false));
+        await loadPage(1);
     }
 
     const filters: ICustomFilterDefinition[] = [
         {
-            property: (record: IEnrichedProducingDeviceData) =>
-                `${record?.device?.facilityName}${record?.organizationName}`,
+            property: (record: IOriginDevice) =>
+                `${record?.facilityName}${record?.organizationName}`,
             label: t('search.searchByFacilityNameAndOrganization'),
             input: {
                 type: CustomFilterInputType.string
@@ -230,26 +176,21 @@ export function ProducingDeviceTable(props: IOwnProps) {
         }
     ] as const).filter((column) => !hiddenColumns.includes(column.id));
 
-    const rows: IDeviceRowData[] = paginatedData.map((enrichedData) => ({
-        owner: enrichedData.organizationName,
-        facilityName: enrichedData.device.facilityName,
-        deviceLocation: enrichedData.locationText,
-        type:
-            configuration?.deviceTypeService?.getDisplayText(enrichedData.device.deviceType) ?? '',
-        capacity: PowerFormatter.format(enrichedData.device.capacityInW),
-        readCertified: EnergyFormatter.format(enrichedData.device.meterStats?.certified ?? 0),
-        readToBeCertified: EnergyFormatter.format(enrichedData.device.meterStats?.uncertified ?? 0),
-        status: enrichedData.device.status,
-        gridOperator: enrichedData?.device?.gridOperator
+    const rows: IDeviceRowData[] = paginatedData.map((device) => ({
+        owner: device.organizationName,
+        orgId: device.organizationId,
+        facilityName: device.facilityName,
+        deviceLocation: device.locationText,
+        type: configuration?.deviceTypeService?.getDisplayText(device.deviceType) ?? '',
+        capacity: PowerFormatter.format(device.capacityInW),
+        readCertified: EnergyFormatter.format(device.meterStats?.certified ?? 0),
+        readToBeCertified: EnergyFormatter.format(device.meterStats?.uncertified ?? 0),
+        status: device.status,
+        gridOperator: device?.gridOperator
     }));
 
     if (detailViewForDeviceId !== null) {
-        return (
-            <Redirect
-                push={true}
-                to={getProducingDeviceDetailLink(baseURL, detailViewForDeviceId)}
-            />
-        );
+        return <Redirect push={true} to={getDeviceDetailLink(baseURL, detailViewForDeviceId)} />;
     }
 
     const actions: (ITableAction | ((row: IDeviceRowData) => ITableAction))[] = [];
@@ -266,7 +207,7 @@ export function ProducingDeviceTable(props: IOwnProps) {
         isRole(user, Role.OrganizationDeviceManager, Role.OrganizationAdmin)
     ) {
         actions.push((rowData) => {
-            if (rowData.status === DeviceStatus.Active) {
+            if (rowData.status === DeviceStatus.Active && rowData.orgId === user.organization.id) {
                 return {
                     icon: <Assignment />,
                     name: t('device.actions.requestCertificates'),
@@ -282,6 +223,10 @@ export function ProducingDeviceTable(props: IOwnProps) {
             name: t('device.actions.approve'),
             onClick: approve
         });
+    }
+
+    if (configuration === null) {
+        return <TableFallback />;
     }
 
     return (
@@ -312,7 +257,7 @@ export function ProducingDeviceTable(props: IOwnProps) {
             <RequestCertificatesModal
                 showModal={showRequestCertModal}
                 setShowModal={setShowRequestCertModal}
-                producingDevice={producingDeviceForModal}
+                device={deviceForRequest}
             />
         </>
     );

@@ -2,25 +2,32 @@ import React, { createContext, useEffect, useState } from 'react';
 import { useOriginConfiguration } from '../../utils/configuration';
 import { Checkbox, Grid, Tab, Tabs, Typography } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import {
     CertificateSource,
     getCertificates,
     ICertificateViewItem
 } from '../../features/certificates';
-import { getEnvironment, getProducingDevices, getUserOffchain } from '../../features';
+import {
+    getEnvironment,
+    getMyDevices,
+    getUserOffchain,
+    getBackendClient,
+    fetchMyDevices
+} from '../../features';
 import { getBaseURL, getCertificateDetailLink, getDeviceId } from '../../utils';
 import { IInboxCertificateData, IInboxItemData, InboxItem } from './Inbox';
 import { BigNumber } from 'ethers';
 import { makeStyles } from '@material-ui/styles';
 import { useHistory } from 'react-router-dom';
+import { TableFallback } from '../Table';
 
 export const InboxItemEditContext = createContext<{
     isEditing: boolean;
     setIsEditing: (state: boolean) => void;
 }>(null);
 
-export function InboxPanel(props: {
+interface IProps {
     mode: CertificateSource;
     title: string;
     tabs: string[];
@@ -33,14 +40,24 @@ export function InboxPanel(props: {
         setEnergy: (device: IInboxItemData, cert: IInboxCertificateData, value: BigNumber) => void;
         tabIndex: number;
     }) => JSX.Element;
-}): JSX.Element {
+}
+
+export function InboxPanel(props: IProps): JSX.Element {
     const { mode, title, tabs } = props;
     const configuration = useOriginConfiguration();
     const { t } = useTranslation();
+    const dispatch = useDispatch();
+    const deviceClient = useSelector(getBackendClient)?.deviceClient;
+
+    useEffect(() => {
+        if (deviceClient) {
+            dispatch(fetchMyDevices());
+        }
+    }, [deviceClient]);
 
     const allCertificates: ICertificateViewItem[] = useSelector(getCertificates);
     const [certificates, setCertificates] = useState<ICertificateViewItem[]>([]);
-    const producingDevices = useSelector(getProducingDevices);
+    const myDevices = useSelector(getMyDevices);
     const environment = useSelector(getEnvironment);
 
     const [allSelected, setAllSelected] = useState<boolean>(false);
@@ -63,36 +80,39 @@ export function InboxPanel(props: {
     }, [allCertificates]);
 
     const updateView = () => {
-        const newViewData = producingDevices
-            .map((device) => {
-                const deviceId = getDeviceId(device, environment);
-                const certs = certificates.filter((c) => c.deviceId === deviceId);
+        const newViewData =
+            myDevices !== null
+                ? myDevices
+                      .map((device) => {
+                          const deviceId = getDeviceId(device, environment);
+                          const certs = certificates.filter((c) => c.deviceId === deviceId);
 
-                return { certs, device };
-            })
-            .filter((d) => d.certs.length > 0)
-            .map((item) => {
-                return {
-                    id: item.device.id.toString(),
-                    name: item.device.facilityName,
-                    country: item.device.country,
-                    type: item.device.deviceType,
-                    capacity: item.device.capacityInW,
+                          return { certs, device };
+                      })
+                      .filter((d) => d.certs.length > 0)
+                      .map((item) => {
+                          return {
+                              id: item.device.id.toString(),
+                              name: item.device.facilityName,
+                              country: item.device.country,
+                              type: item.device.deviceType,
+                              capacity: item.device.capacityInW,
 
-                    certificates: item.certs.map((cert) => {
-                        const en = cert.energy.publicVolume;
-                        return {
-                            id: cert.id,
-                            dateStart: cert.generationStartTime,
-                            dateEnd: cert.generationEndTime,
-                            energy: en,
-                            maxEnergy: en,
-                            source: cert.source,
-                            assetId: cert.assetId
-                        };
-                    })
-                };
-            });
+                              certificates: item.certs.map((cert) => {
+                                  const en = cert.energy.publicVolume;
+                                  return {
+                                      id: cert.id,
+                                      dateStart: cert.generationStartTime,
+                                      dateEnd: cert.generationEndTime,
+                                      energy: en,
+                                      maxEnergy: en,
+                                      source: cert.source,
+                                      assetId: cert.assetId
+                                  };
+                              })
+                          };
+                      })
+                : [];
 
         setViewData(newViewData);
         setAllSelected(false);
@@ -102,7 +122,7 @@ export function InboxPanel(props: {
 
     useEffect(() => {
         updateView();
-    }, [certificates, producingDevices, user]);
+    }, [certificates, myDevices, user]);
 
     const getSelectedCertificates = (): IInboxCertificateData[] => {
         const allCerts: Record<string, IInboxCertificateData> = {};
@@ -147,7 +167,7 @@ export function InboxPanel(props: {
             setSelectedCerts([]);
         } else {
             setAllSelected(true);
-            setSelectedDevices(producingDevices.map((d) => d.id.toString()));
+            setSelectedDevices(myDevices.map((d) => d.id.toString()));
             setSelectedCerts(certificates.filter((c) => c.assetId !== undefined).map((c) => c.id));
         }
     };
@@ -295,6 +315,10 @@ export function InboxPanel(props: {
 
         return selectedDeviceCertPairs;
     };
+
+    if (allCertificates === null || myDevices === null) {
+        return <TableFallback />;
+    }
 
     return (
         <div>

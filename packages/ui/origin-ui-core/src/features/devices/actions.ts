@@ -1,19 +1,58 @@
-import { IProducingDeviceState } from './reducer';
+import {
+    ICreateDeviceAction,
+    IStoreAllDevicesAction,
+    IStoreMyDevicesAction,
+    IDeviceActions,
+    IApproveDeviceAction
+} from './types';
 
-export enum ProducingDevicesActions {
-    producingDeviceCreatedOrUpdated = 'PRODUCING_DEVICE_CREATED_OR_UPDATED'
+export enum DevicesActions {
+    FETCH_ALL_DEVICES = 'FETCH_ALL_DEVICES',
+    FETCH_MY_DEVICES = 'FETCH_MY_DEVICES',
+    CLEAR_ALL_DEVICES = 'CLEAR_ALL_DEVICES',
+    CLEAR_MY_DEVICES = 'CLEAR_MY_DEVICES',
+    CREATE_DEVICE = 'CREATE_DEVICE',
+    STORE_ALL_DEVICES = 'STORE_ALL_DEVICES',
+    STORE_MY_DEVICES = 'STORE_MY_DEVICES',
+    APPROVE_DEVICE = 'APPROVE_DEVICE'
 }
 
-export interface IProducingDeviceCreatedOrUpdatedAction {
-    type: ProducingDevicesActions.producingDeviceCreatedOrUpdated;
-    producingDevice: IProducingDeviceState;
-}
-
-export const producingDeviceCreatedOrUpdated = (producingDevice: IProducingDeviceState) => ({
-    type: ProducingDevicesActions.producingDeviceCreatedOrUpdated,
-    producingDevice
+export const fetchAllDevices = (): IDeviceActions => ({
+    type: DevicesActions.FETCH_ALL_DEVICES
 });
 
-export type TProducingDeviceCreatedOrUpdated = typeof producingDeviceCreatedOrUpdated;
+export const fetchMyDevices = (): IDeviceActions => ({
+    type: DevicesActions.FETCH_MY_DEVICES
+});
 
-export type IProducingDevicesAction = IProducingDeviceCreatedOrUpdatedAction;
+export const clearAllDevices = (): IDeviceActions => ({
+    type: DevicesActions.CLEAR_ALL_DEVICES
+});
+
+export const clearMyDevices = (): IDeviceActions => ({
+    type: DevicesActions.CLEAR_MY_DEVICES
+});
+
+export const storeAllDevices = (
+    payload: IStoreAllDevicesAction['payload']
+): IStoreAllDevicesAction => ({
+    type: DevicesActions.STORE_ALL_DEVICES,
+    payload
+});
+
+export const storeMyDevices = (
+    payload: IStoreMyDevicesAction['payload']
+): IStoreMyDevicesAction => ({
+    type: DevicesActions.STORE_MY_DEVICES,
+    payload
+});
+
+export const createDevice = (payload: ICreateDeviceAction['payload']): ICreateDeviceAction => ({
+    type: DevicesActions.CREATE_DEVICE,
+    payload
+});
+
+export const approveDevice = (payload: IApproveDeviceAction['payload']): IApproveDeviceAction => ({
+    type: DevicesActions.APPROVE_DEVICE,
+    payload
+});
