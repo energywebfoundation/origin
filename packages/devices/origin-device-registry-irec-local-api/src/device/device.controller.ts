@@ -53,7 +53,7 @@ export class DeviceController {
     constructor(private readonly deviceService: DeviceService) {}
 
     @Get()
-    @ApiResponse({ status: HttpStatus.OK, type: [DeviceDTO], description: 'Returns all Devices' })
+    @ApiResponse({ status: HttpStatus.OK, type: [PublicDeviceDTO], description: 'Returns all Devices' })
     async getAll(): Promise<PublicDeviceDTO[]> {
         const devices = await this.deviceService.findAll();
 
@@ -87,7 +87,7 @@ export class DeviceController {
     }
 
     @Get('/device/:id')
-    @ApiResponse({ status: HttpStatus.OK, type: DeviceDTO, description: 'Returns a Device' })
+    @ApiResponse({ status: HttpStatus.OK, type: PublicDeviceDTO, description: 'Returns a Device' })
     @ApiNotFoundResponse({
         status: HttpStatus.NOT_FOUND,
         description: `The device with the ID doesn't exist`
