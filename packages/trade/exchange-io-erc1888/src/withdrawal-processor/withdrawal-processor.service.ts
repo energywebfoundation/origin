@@ -238,9 +238,9 @@ export class WithdrawalProcessorService implements OnModuleInit {
             transfer.direction === TransferDirection.Withdrawal ? 'TransferSingle' : 'ClaimSingle';
 
         const hasLog = logs
-            .map((log) => this.blockchainProperties.registry.interface.parseLog(log))
-            .filter((log) => log.name === logName)
-            .some((log) => this.hasMatchingLog(transfer, log));
+            .map((log: any) => this.blockchainProperties.registry.interface.parseLog(log))
+            .filter((log: any) => log.name === logName)
+            .some((log: any) => this.hasMatchingLog(transfer, log));
 
         if (!hasLog) {
             this.logger.error(
