@@ -32,6 +32,7 @@
         "@energyweb/origin-backend-client": "10.0.2",
         "@energyweb/origin-backend-core": "8.0.0",
         "@energyweb/origin-organization-irec-api-client": "0.1.2",
+        "@energyweb/origin-energy-api-client": "1.0.1",
         "@energyweb/origin-device-registry-irec-form-api-client": "1.0.1",
         "@energyweb/utils-general": "11.0.1",
         "react": "17.0.1",
