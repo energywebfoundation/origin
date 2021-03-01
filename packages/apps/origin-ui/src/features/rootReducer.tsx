@@ -2,7 +2,7 @@ import { combineReducers } from 'redux';
 import { connectRouter } from 'connected-react-router';
 import {
     certificatesState,
-    producingDevicesState,
+    devicesState,
     configurationState,
     generalState,
     usersState,
@@ -14,13 +14,12 @@ import {
     exchangeGeneralState,
     supplyState
 } from '@energyweb/exchange-ui-core';
-import { iRecGeneralState, iRecDevicesState } from '@energyweb/origin-ui-irec-core';
 import { IStoreState } from '../types';
 
 export const createRootReducer = (history) =>
     combineReducers<IStoreState>({
         certificatesState,
-        producingDevicesState,
+        devicesState,
         generalState,
         configurationState,
         usersState,
@@ -29,7 +28,5 @@ export const createRootReducer = (history) =>
         ordersState,
         exchangeGeneralState,
         supplyState,
-        web3State,
-        iRecGeneralState,
-        iRecDevicesState
+        web3State
     });
