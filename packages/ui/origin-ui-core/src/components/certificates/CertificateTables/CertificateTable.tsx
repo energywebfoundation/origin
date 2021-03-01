@@ -141,9 +141,12 @@ export function CertificateTable(props: IProps) {
         };
     }
 
-    const { loadPage, paginatedData, pageSize, total } = usePaginatedLoaderFiltered<
-        IEnrichedCertificateData
-    >({
+    const {
+        loadPage,
+        paginatedData,
+        pageSize,
+        total
+    } = usePaginatedLoaderFiltered<IEnrichedCertificateData>({
         getPaginatedData
     });
 

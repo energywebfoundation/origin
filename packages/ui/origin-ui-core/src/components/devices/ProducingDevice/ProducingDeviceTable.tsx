@@ -131,9 +131,12 @@ export function ProducingDeviceTable(props: IOwnProps) {
         };
     }
 
-    const { paginatedData, loadPage, total, pageSize } = usePaginatedLoaderFiltered<
-        IEnrichedProducingDeviceData
-    >({
+    const {
+        paginatedData,
+        loadPage,
+        total,
+        pageSize
+    } = usePaginatedLoaderFiltered<IEnrichedProducingDeviceData>({
         getPaginatedData
     });
 

@@ -7,7 +7,7 @@ import { useOriginConfiguration } from '../../../utils/configuration';
 import { LightenColor } from '../../../utils/colors';
 import { EnergyFormatter } from '../../../utils/EnergyFormatter';
 import { formatDate, moment } from '../../../utils/time';
-import { DeviceIcon } from '../../Icons';
+import { DeviceIcon } from '../../icons';
 
 export interface IInboxItemData {
     id: string;
@@ -49,8 +49,12 @@ export function InboxItem(props: {
     const {
         MAIN_BACKGROUND_COLOR,
         SIMPLE_TEXT_COLOR,
-        PRIMARY_COLOR_DIM
+        TEXT_COLOR_DEFAULT,
+        PRIMARY_COLOR_DIM,
+        PRIMARY_COLOR
     } = configuration?.styleConfig;
+
+    const unselectedIconColor = LightenColor(TEXT_COLOR_DEFAULT, -7);
 
     const useStyles = makeStyles({
         device: {
@@ -142,12 +146,14 @@ export function InboxItem(props: {
             </div>
             <div>
                 {device.certificates.map((cert) => {
+                    const isSelected = selected.includes(cert.id);
+
                     return (
                         <div
                             key={cert.id}
                             className={[
                                 classes.certificate,
-                                selected.includes(cert.id) ? classes.selected : ''
+                                isSelected ? classes.selected : ''
                             ].join(' ')}
                         >
                             <div className={classes.checkbox}>
@@ -157,7 +163,12 @@ export function InboxItem(props: {
                                     onChange={() => onCertificateSelect(cert.id, device.id)}
                                 />
                             </div>
-                            <div className={classes.iconContainer}>
+                            <div
+                                className={classes.iconContainer}
+                                style={{
+                                    fill: isSelected ? PRIMARY_COLOR : unselectedIconColor
+                                }}
+                            >
                                 <DeviceIcon type={device.type} className={classes.icon} />
                             </div>
                             <div style={{ flex: '1' }}>

@@ -105,9 +105,10 @@ export function DeviceGroupForm(props: IProps) {
     const country = useSelector(getCountry);
     const externalDeviceIdTypes = useSelector(getExternalDeviceIdTypes);
     const { canAccessPage } = usePermissions();
-    const [initialFormValuesFromExistingEntity, setInitialFormValuesFromExistingEntity] = useState<
-        IFormValues
-    >(null);
+    const [
+        initialFormValuesFromExistingEntity,
+        setInitialFormValuesFromExistingEntity
+    ] = useState<IFormValues>(null);
 
     const dispatch = useDispatch();
 

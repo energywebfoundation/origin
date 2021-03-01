@@ -7,7 +7,7 @@ import { Unit } from '@energyweb/utils-general';
 import { useOriginConfiguration } from '../../../utils/configuration';
 import { LightenColor } from '../../../utils/colors';
 import { EnergyFormatter } from '../../../utils/EnergyFormatter';
-import { DeviceIcon } from '../../Icons';
+import { DeviceIcon } from '../../icons';
 import { IInboxCertificateData, IInboxItemData } from './InboxItem';
 import { InboxItemEditContext } from '../InboxPanel';
 
@@ -37,7 +37,7 @@ export function InboxSelectedItem(props: {
         icon: {
             width: 32,
             height: 32,
-            color: LightenColor(PRIMARY_COLOR, 3),
+            fill: LightenColor(PRIMARY_COLOR, 3),
             marginRight: '25px'
         },
 

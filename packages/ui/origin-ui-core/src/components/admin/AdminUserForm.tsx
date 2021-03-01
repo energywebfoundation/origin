@@ -38,9 +38,10 @@ export function AdminUserForm(props: IProps) {
     const { entity, readOnly } = props;
     const adminClient = useSelector(getBackendClient)?.adminClient;
 
-    const [initialFormValuesFromExistingEntity, setInitialFormValuesFromExistingEntity] = useState<
-        IUser
-    >(null);
+    const [
+        initialFormValuesFromExistingEntity,
+        setInitialFormValuesFromExistingEntity
+    ] = useState<IUser>(null);
 
     const history = useHistory();
 

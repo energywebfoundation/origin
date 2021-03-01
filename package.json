@@ -66,11 +66,11 @@
         "test:ci:contracts": "lerna run --scope @energyweb/issuer --scope @energyweb/utils-general test:concurrent --since master --parallel --stream",
         "test:ci:apps": "lerna run --scope @energyweb/exchange --scope @energyweb/origin-backend test:concurrent --since master --parallel --stream",
         "test:ci:e2e": "lerna run test:e2e --stream --ignore @energyweb/exchange-irec && lerna run test:e2e --stream --scope @energyweb/exchange-irec",
-        "publish:canary": "lerna publish --yes --skip-git --exact --cd-version=prerelease --pre-dist-tag canary --preid=alpha.$GITHUB_ACTION",
+        "publish:canary": "lerna publish --yes --skip-git --exact --cd-version=prerelease --pre-dist-tag canary --preid=alpha.$BUILD_ID",
         "publish:release": "lerna version --create-release github --conventional-commits --exact --yes --message \"chore(release): publish /skip-deploy\" && lerna publish from-git --yes",
         "build:containers:canary": "lerna run build:container:canary --stream",
         "build:containers:release": "lerna run build:container:latest --stream",
-        "publish:preview": "lerna publish --yes --skip-git --exact --cd-version=prerelease --pre-dist-tag preview --preid=$GITHUB_ACTION",
+        "publish:preview": "lerna publish --yes --skip-git --exact --cd-version=prerelease --pre-dist-tag preview --preid=$BUILD_ID",
         "deploy:heroku:canary": "lerna run deploy:container:heroku:canary --stream",
         "deploy:heroku:stable": "lerna run deploy:container:heroku:stable --scope @energyweb/migrations --stream && lerna run deploy:container:heroku:stable --scope @energyweb/origin-ui --scope @energyweb/solar-simulator --stream"
     },

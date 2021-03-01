@@ -14,7 +14,7 @@ import {
 } from '../../../features/users';
 import { useValidation } from '../../../utils/validation';
 import { FormInput } from '../../Form';
-import { IconPopover, IconSize } from '../../Icons';
+import { IconPopover, IconSize } from '../../icons';
 
 export function BlockchainAddresses(): JSX.Element {
     const { Yup } = useValidation();
