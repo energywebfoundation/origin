@@ -23,9 +23,9 @@ export type ComposedDevice = {
     timezone: string;
     gridOperator: string;
     smartMeterId: string;
-    externalDeviceIds: IExternalDeviceId[];
     description: string;
-    imageIds: string[];
+    externalDeviceIds?: IExternalDeviceId[];
+    imageIds?: string[];
 };
 
 export type ComposedPublicDevice = Omit<ComposedDevice, 'defaultAccount'>;

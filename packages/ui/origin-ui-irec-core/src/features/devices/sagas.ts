@@ -1,17 +1,19 @@
 import { SagaIterator } from 'redux-saga';
 import { all, fork, take, select, put, apply } from 'redux-saga/effects';
 import { showNotification, NotificationType, setLoading } from '@energyweb/origin-ui-core';
+import { 
+    DeviceDTO as OriginDeviceDTO, 
+    NewDeviceDTO as OriginCreateDeviceDTO 
+} from '@energyweb/origin-device-registry-api-client';
+import { 
+    DeviceDTO as IRecMyDeviceDTO, 
+    PublicDeviceDTO as IRecPublicDeviceDTO,
+    CreateDeviceDTO as IRecCreateDeviceDTO 
+} from '@energyweb/origin-device-registry-irec-local-api-client';
 import { DeviceClient } from '../../utils/client';
 import { composePublicDevices, composeMyDevices, composeCreatedDevice } from '../../utils/compose';
 import { decomposeForIRec, decomposeForOrigin } from '../../utils/decompose';
-import {
-    IRecDeviceDTO,
-    OriginDeviceDTO,
-    IRecPublicDeviceDTO,
-    ComposedDevice,
-    IRecCreateDeviceDTO,
-    OriginCreateDeviceDTO
-} from '../../types';
+import { ComposedDevice } from '../../types';
 import { getDeviceClient } from '../general';
 import {
     DevicesActions,
@@ -61,7 +63,7 @@ function* getMyDevices(): SagaIterator {
             ]);
 
             const originDevices: OriginDeviceDTO[] = originResponse.data;
-            const iRecDevices: IRecDeviceDTO[] = iRecResponse.data;
+            const iRecDevices: IRecMyDeviceDTO[] = iRecResponse.data;
 
             const composed = composeMyDevices(originDevices, iRecDevices);
             yield put(storeMyDevices(composed));
@@ -86,7 +88,7 @@ function* createNewDevice(): SagaIterator {
         const originCreateData: OriginCreateDeviceDTO = decomposeForOrigin(newDevice);
 
         try {
-            const createdIRecDevice: IRecDeviceDTO = yield apply(
+            const createdIRecDevice: IRecMyDeviceDTO = yield apply(
                 iRecClient,
                 iRecClient.createDevice,
                 [iRecCreateData]
@@ -126,7 +128,7 @@ function* updateDeviceStatus(): SagaIterator {
         const myDevices: ComposedDevice[] = yield select(getMyDevices);
 
         try {
-            const updatedDevice: IRecDeviceDTO = yield apply(
+            const updatedDevice: IRecPublicDeviceDTO = yield apply(
                 iRecClient,
                 iRecClient.updateDeviceStatus,
                 [id, status]

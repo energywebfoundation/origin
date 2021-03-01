@@ -1,10 +1,9 @@
-import {
-    OriginDeviceDTO,
-    IRecPublicDeviceDTO,
-    IRecDeviceDTO,
-    ComposedPublicDevice,
-    ComposedDevice
-} from '../types';
+import { DeviceDTO as OriginDeviceDTO} from '@energyweb/origin-device-registry-api-client';
+import { 
+    DeviceDTO as IRecMyDeviceDTO, 
+    PublicDeviceDTO as IRecPublicDeviceDTO
+} from '@energyweb/origin-device-registry-irec-local-api-client';
+import { ComposedPublicDevice, ComposedDevice } from '../types';
 
 export function composePublicDevices(
     originDevices: OriginDeviceDTO[],
@@ -27,7 +26,7 @@ export function composePublicDevices(
 
 export function composeMyDevices(
     originDevices: OriginDeviceDTO[],
-    iRecDevices: IRecDeviceDTO[]
+    iRecDevices: IRecMyDeviceDTO[]
 ): ComposedDevice[] {
     const composedResult: ComposedDevice[] = [];
 
@@ -46,7 +45,7 @@ export function composeMyDevices(
 
 export function composeCreatedDevice(
     originDevice: OriginDeviceDTO,
-    iRecDevice: IRecDeviceDTO
+    iRecDevice: IRecMyDeviceDTO
 ): ComposedDevice {
     return {
         ...originDevice,
