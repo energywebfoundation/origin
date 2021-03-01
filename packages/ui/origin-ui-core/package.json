@@ -1,11 +1,11 @@
 {
     "name": "@energyweb/origin-ui-core",
     "version": "1.13.0",
-    "main": "dist/src/index.js",
+    "main": "dist/index.js",
     "scripts": {
         "app:build": "yarn config-env && node --max-old-space-size=8192 ./node_modules/.bin/webpack --config webpack/prod.config.js",
         "build": "yarn build:static && yarn build:ts",
-        "build:static": "mkdir -p ./dist/src/styles/ && mkdir -p ./dist/assets/ && cp -r ./src/styles/*.scss ./dist/src/styles/ && cp -r ./assets/* ./dist/assets/",
+        "build:static": "mkdir -p ./dist/styles/ && mkdir -p ./dist/assets/ && cp -r ./src/styles/*.scss ./dist/styles/ && cp -r ./assets/* ./dist/assets/",
         "build:ts": "tsc -b tsconfig.json",
         "config-env": "bash env.sh",
         "deploy-storybook": "storybook-to-ghpages",

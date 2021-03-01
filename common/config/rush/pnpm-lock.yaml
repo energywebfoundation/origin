@@ -12,7 +12,7 @@ dependencies:
   '@material-ui/lab': 4.0.0-alpha.57_ea66e9ae910e767d612291152c5568d6
   '@material-ui/pickers': 3.2.10_c640d2d0176bfcab1d99b942ffa7ebe7
   '@material-ui/styles': 4.11.3_54f0cdf50b81d00d581db00613065534
-  '@nestjs-modules/mailer': 1.5.1_54bbe3459ce08b59259fe68dadf0c275
+  '@nestjs-modules/mailer': 1.4.3_54bbe3459ce08b59259fe68dadf0c275
   '@nestjs/cli': 7.5.6_webpack-cli@4.5.0
   '@nestjs/common': 7.6.13_9f17f37d5bb0263e79696464cc94163b
   '@nestjs/config': 0.6.3_813873694847d279c299c5d41a416301
@@ -67,7 +67,7 @@ dependencies:
   '@rush-temp/origin-organization-irec-api-client': file:projects/origin-organization-irec-api-client.tgz_a7a19e7990073e1971ec36279e65fb72
   '@rush-temp/origin-ui': file:projects/origin-ui.tgz_jest@26.6.3
   '@rush-temp/origin-ui-core': file:projects/origin-ui-core.tgz_35d292026153e35d629644adbd156288
-  '@rush-temp/origin-ui-irec-core': file:projects/origin-ui-irec-core.tgz
+  '@rush-temp/origin-ui-irec-core': file:projects/origin-ui-irec-core.tgz_ts-node@9.1.1
   '@rush-temp/solar-simulator': file:projects/solar-simulator.tgz
   '@rush-temp/utils-general': file:projects/utils-general.tgz
   '@storybook/addon-knobs': 6.1.20_54f0cdf50b81d00d581db00613065534
@@ -224,7 +224,6 @@ dependencies:
   webpack-dev-server: 3.11.2_webpack-cli@4.5.0+webpack@5.24.2
   webpack-merge: 5.7.3
   winston: 3.3.3
-  winston-transport: 4.4.0
   write-json-file: 4.3.0
   yaeti: 1.0.2
   yup: 0.32.9
@@ -2800,14 +2799,14 @@ packages:
       node: '>=4'
     resolution:
       integrity: sha512-bPHp6Ji8b41szTOcaP63VlnbbO5Ny6dwAATtY6JTjh5N2OLrb5Qk/Th5cRkRQhkWCt+EJsYrNB0MiL+Gpn6e3g==
-  /@nestjs-modules/mailer/1.5.1_54bbe3459ce08b59259fe68dadf0c275:
+  /@nestjs-modules/mailer/1.4.3_54bbe3459ce08b59259fe68dadf0c275:
     dependencies:
       '@nestjs/common': 7.6.13_9f17f37d5bb0263e79696464cc94163b
       '@nestjs/core': 7.6.13_1eb5e6299d748bf3a79eb1b79f4236dc
       glob: 7.1.6
       inline-css: 2.6.3
       nodemailer: 6.5.0
-      preview-email: 2.0.2
+      preview-email: 2.0.1
     dev: false
     optionalDependencies:
       '@types/ejs': 3.0.6
@@ -2820,7 +2819,7 @@ packages:
       '@nestjs/core': ^7.0.9
       nodemailer: ^6.4.6
     resolution:
-      integrity: sha512-Iyt3wEuJW4rNnEU71zKNqVap9qj+q6s21JXlSmhV2j3sq5CQcCRELAnw+itg650UYF4KiYH5O4ZR+TvKgYZyVw==
+      integrity: sha512-M1LHpDNKCwZlyDS9O5lKo9CttTalKUDQW4t6DvdqUU7uESeMb+RYh5SV5DchRoAbGYz3E0gtNnCdngXK3ohpLg==
   /@nestjs/cli/7.5.6_webpack-cli@4.5.0:
     dependencies:
       '@angular-devkit/core': 11.2.0
@@ -18311,7 +18310,7 @@ packages:
       node: '>= 0.8'
     resolution:
       integrity: sha1-t+PqQkNaTJsnWdmeDyAesZWALuE=
-  /preview-email/2.0.2:
+  /preview-email/2.0.1:
     dependencies:
       '@babel/runtime': 7.13.8
       dayjs: 1.10.4
@@ -18326,7 +18325,7 @@ packages:
     engines:
       node: '>=8'
     resolution:
-      integrity: sha512-FADpJ1p5VX0F/V57gcxc8IoxX63JuyDOOMN4Y7tJwil8K1/lvN0HtO7mZHIP2kgwhMMehjYTxqnjFtSGg1/LXw==
+      integrity: sha512-KXmv0oKonf9slHXjZ1O+QvGsq7IKJs3IINB4b8XWZ3IwONyGiGqpXthCrTZuDzhLG1kPn6FKOOikdm21bturcQ==
   /prismjs/1.23.0:
     dev: false
     optionalDependencies:
@@ -25985,12 +25984,13 @@ packages:
       pg: 8.5.1
       typescript: 4.1.5
       winston: 3.3.3
+      winston-transport: 4.4.0
       write-json-file: 4.3.0
       yaeti: 1.0.2
     dev: false
     name: '@rush-temp/migrations-irec'
     resolution:
-      integrity: sha512-N9pBEpe9g8/NMcPmK2zWLPxRiLq6TsDhqLWjOL2XYbXaKRc9LqoP7VYxcEzQQBjlNUqZ887SQM2zqZyEERH8Lg==
+      integrity: sha512-NCo5JrLZwXlA4StzKDxjgaF7kfjChTei1Y6mIOkFPnrptIbITI8TXTz6zyZIi5RcMDgRwxunRK2f/iMYUCXvfg==
       tarball: file:projects/migrations-irec.tgz
     version: 0.0.0
   file:projects/migrations.tgz:
@@ -26005,17 +26005,18 @@ packages:
       pg: 8.5.1
       typescript: 4.1.5
       winston: 3.3.3
+      winston-transport: 4.4.0
       write-json-file: 4.3.0
       yaeti: 1.0.2
     dev: false
     name: '@rush-temp/migrations'
     resolution:
-      integrity: sha512-SXoJNwsCIKDzuIcCpAJeqt7ABVbb7+GB6DT/CNLQMqkn9KwGtgeAEYDPBVv+wrWAAlC0DiDpz/vkn4XFgXg1zw==
+      integrity: sha512-H6/JfjhYSf34iilyP1eaaQzfm2ETcOQT6pZnl3hzlFj9MeCa+Cvflkp7rg1fHXKGUXneHxkZOcrfNZOhaUwfmQ==
       tarball: file:projects/migrations.tgz
     version: 0.0.0
   file:projects/origin-backend-app.tgz_6addd5d14f6050bcbc35cb0dd8901bd1:
     dependencies:
-      '@nestjs-modules/mailer': 1.5.1_54bbe3459ce08b59259fe68dadf0c275
+      '@nestjs-modules/mailer': 1.4.3_54bbe3459ce08b59259fe68dadf0c275
       '@nestjs/common': 7.6.13_9f17f37d5bb0263e79696464cc94163b
       '@nestjs/config': 0.6.3_813873694847d279c299c5d41a416301
       '@nestjs/core': 7.6.13_1eb5e6299d748bf3a79eb1b79f4236dc
@@ -26046,7 +26047,7 @@ packages:
       reflect-metadata: '*'
       rxjs: '*'
     resolution:
-      integrity: sha512-i9Gya/tRsLdWrFik99wUOCjePAnccxJo6sGvq4Pnrdnxcf8qoDG8mM6f7vRAOHUDReAPz3WVWG1qRf7DhPl6eg==
+      integrity: sha512-NXEtgxseifOcNe8OXpIcd3U8mQY345Rf9Mf24Dz5ksN8hkYAXlIwSXMJd7S6IbcB3UbkOH1DnA+56wM/1UYJMw==
       tarball: file:projects/origin-backend-app.tgz
     version: 0.0.0
   file:projects/origin-backend-client.tgz_e1fb6d521fe6c0b1805452ebfbbb259b:
@@ -26098,7 +26099,7 @@ packages:
   file:projects/origin-backend-irec-app.tgz_6addd5d14f6050bcbc35cb0dd8901bd1:
     dependencies:
       '@energyweb/migrations-irec': 1.0.2-alpha.13398.0
-      '@nestjs-modules/mailer': 1.5.1_54bbe3459ce08b59259fe68dadf0c275
+      '@nestjs-modules/mailer': 1.4.3_54bbe3459ce08b59259fe68dadf0c275
       '@nestjs/common': 7.6.13_9f17f37d5bb0263e79696464cc94163b
       '@nestjs/config': 0.6.3_813873694847d279c299c5d41a416301
       '@nestjs/core': 7.6.13_1eb5e6299d748bf3a79eb1b79f4236dc
@@ -26129,7 +26130,7 @@ packages:
       reflect-metadata: '*'
       rxjs: '*'
     resolution:
-      integrity: sha512-pigvdmjIHL1vDalKA6QPsMFdud/O5wC0vhLcyLyg4TIwmaOpudL+Zw7AP0glzAGsiORkMw6t70z2QysH81bKhA==
+      integrity: sha512-RszHTmcxoVhk5ycZh9xWrCzNcNNkbvDUYi20eBAjsYLCU0NgBq02+Hj5tDbBI2udSkEoil7npV9ajZH8iguQHA==
       tarball: file:projects/origin-backend-irec-app.tgz
     version: 0.0.0
   file:projects/origin-backend-utils.tgz_a5df9406a476462f1b7ccd7e962bcb31:
@@ -26630,6 +26631,7 @@ packages:
       '@types/mocha': 8.2.1
       '@types/node': 14.14.31
       '@types/react': 17.0.2
+      '@types/react-dom': 17.0.1
       '@types/react-redux': 7.1.16
       '@types/react-router-dom': 5.1.7
       '@types/redux-logger': 3.0.8
@@ -26678,10 +26680,10 @@ packages:
       webpack-cli: '*'
       webpack-dev-server: '*'
     resolution:
-      integrity: sha512-Tda+LGq1w2KfDF1haFjnyIqbzoUmtLHBISMteOdxT9Eg9a64NTqOx8uHyN+VQ2ek+OyXJTqjT7qnwbl2PS5kKA==
+      integrity: sha512-nKW0oYp6S6Z47sjY03yfegBy9vjQ48EbqyprUxeMsTqlg3idPt/q7T9O2HWSKXx3qJTDS8isW39DbCoE8dAw0w==
       tarball: file:projects/origin-ui-core.tgz
     version: 0.0.0
-  file:projects/origin-ui-irec-core.tgz:
+  file:projects/origin-ui-irec-core.tgz_ts-node@9.1.1:
     dependencies:
       '@date-io/moment': 2.10.6_moment@2.29.1
       '@material-ui/core': 4.11.3_54f0cdf50b81d00d581db00613065534
@@ -26704,6 +26706,7 @@ packages:
       formik-material-ui: 3.0.1_ca579687531b8bab2881da674b466dcd
       history: 4.10.1
       i18next: 19.9.0
+      jest: 26.6.3_ts-node@9.1.1
       mocha: 8.3.0
       moment: 2.29.1
       react: 17.0.1
@@ -26716,9 +26719,12 @@ packages:
       typescript: 4.1.5
       yup: 0.32.9
     dev: false
+    id: file:projects/origin-ui-irec-core.tgz
     name: '@rush-temp/origin-ui-irec-core'
+    peerDependencies:
+      ts-node: '*'
     resolution:
-      integrity: sha512-p1P3LL6A1qvJN66NKCISDqboSIrlVgZZOxq8ypxAJH9wrIpqEx27b4+lTZ+xMQSm+LJusKEtwnRV1XtO6arLgQ==
+      integrity: sha512-4MYVNMXZpVeqO2eP4bQ9BYUsC/fhRCODX4nbzAU83T+hrzo1bimUkevDZFpgHiqsVwUnMSdjRKzEWhSmBIqZog==
       tarball: file:projects/origin-ui-irec-core.tgz
     version: 0.0.0
   file:projects/origin-ui.tgz_jest@26.6.3:
@@ -26881,7 +26887,7 @@ specifiers:
   '@material-ui/lab': 4.0.0-alpha.57
   '@material-ui/pickers': 3.2.10
   '@material-ui/styles': 4.11.3
-  '@nestjs-modules/mailer': 1.5.1
+  '@nestjs-modules/mailer': 1.4.3
   '@nestjs/cli': 7.5.6
   '@nestjs/common': 7.6.13
   '@nestjs/config': 0.6.3
@@ -27093,7 +27099,6 @@ specifiers:
   webpack-dev-server: 3.11.2
   webpack-merge: 5.7.3
   winston: 3.3.3
-  winston-transport: ^4.4.0
   write-json-file: 4.3.0
   yaeti: 1.0.2
   yup: 0.32.9

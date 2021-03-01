@@ -1,10 +1,10 @@
 {
     "name": "@energyweb/origin-ui-irec-core",
     "version": "0.0.2",
-    "main": "dist/src/index.js",
+    "main": "dist/index.js",
     "scripts": {
         "build": "yarn build:static && yarn build:ts",
-        "build:static": "mkdir -p ./dist/src/styles/ && mkdir -p ./dist/assets/ && cp -r ./src/styles/*.scss ./dist/src/styles/ && cp -r ./assets/* ./dist/assets/",
+        "build:static": "mkdir -p ./dist/styles/ && mkdir -p ./dist/assets/ && cp -r ./src/styles/*.scss ./dist/styles/ && cp -r ./assets/* ./dist/assets/",
         "build:ts": "tsc -b tsconfig.json",
         "start": "tsc --preserveWatchOutput --watch",
         "start-all": "yarn start",
@@ -53,7 +53,8 @@
         "eslint-plugin-react-hooks": "4.2.0",
         "@types/mocha": "^8.2.1",
         "@types/node": "14.14.31",
-        "mocha": "8.3.0"
+        "mocha": "8.3.0",
+        "jest": "26.6.3"
     },
     "repository": {
         "type": "git",

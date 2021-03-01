@@ -5,7 +5,7 @@
     "scripts": {
         "build": "yarn build:full",
         "build:ts": "tsc -b tsconfig.json",
-        "build:full": "yarn config-env && node --max-old-space-size=8192 ./node_modules/.bin/webpack --config webpack/prod.config.js",
+        "build:full": "yarn config-env && node --max-old-space-size=8192 ./node_modules/webpack/bin/webpack.js --config webpack/prod.config.js",
         "build:container:canary": "make build-canary",
         "build:container:latest": "make build-latest",
         "deploy:container:heroku:canary": "make push-heroku-canary",
