@@ -11,8 +11,8 @@ import { getBackendClient } from '../../features/general/selectors';
 export const downloadFile = async (client: FileClient, id: string, name: string) => {
     if (!client) {
         return;
-    };
-    
+    }
+
     try {
         const response = await client.download(id);
         if (response) {
