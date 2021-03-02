@@ -2,8 +2,8 @@ import React, { useContext, useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { NavLink, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Typography, Box, Grid } from '@material-ui/core';
-import { isRole, Role, UserStatus } from '@energyweb/origin-backend-core';
+import { Typography, Box, Grid, Tooltip, Theme, withStyles } from '@material-ui/core';
+import { isRole, OrganizationStatus, Role, UserStatus } from '@energyweb/origin-backend-core';
 import { OriginFeature } from '@energyweb/utils-general';
 import {
     getUserOffchain,
@@ -92,6 +92,25 @@ export function SidebarMenu() {
     const openAdmin = activeTab === ActiveMenuItem.Admin;
     const openSettings = activeTab === ActiveMenuItem.Settings;
 
+    const LightTooltip = withStyles((theme: Theme) => ({
+        arrow: {
+            color: theme.palette.primary.main
+        },
+        tooltip: {
+            backgroundColor: theme.palette.primary.main,
+            color: theme.palette.common.white
+        }
+    }))(Tooltip);
+
+    const dotStyle = {
+        background: 'gold',
+        width: '12px',
+        height: '12px',
+        borderRadius: '50%',
+        display: 'inline-block',
+        marginLeft: '4px'
+    };
+
     return (
         <div className="SidebarMenu">
             <Box className="Logo">
@@ -99,9 +118,21 @@ export function SidebarMenu() {
             </Box>
             <Grid className="userNameAndOrg">
                 <Typography variant="h6">
-                    {user ? `${user.firstName} ${user.lastName}` : ''}
+                    {user?.status === UserStatus.Pending && (
+                        <LightTooltip arrow title={t('user.popover.yourAccountIsPending')}>
+                            <span style={dotStyle} />
+                        </LightTooltip>
+                    )}
+                    <span>{user ? `${user.firstName} ${user.lastName}` : ''}</span>
                 </Typography>
-                <Typography>{user?.organization ? `${user.organization.name}` : ''}</Typography>
+                <Typography>
+                    {user?.organization?.status === OrganizationStatus.Submitted && (
+                        <LightTooltip arrow title={t('user.popover.yourOrganizationIsPending')}>
+                            <span style={dotStyle} />
+                        </LightTooltip>
+                    )}
+                    <span>{user?.organization ? `${user.organization.name}` : ''}</span>
+                </Typography>
             </Grid>
 
             <Grid className="SidebarNavigation">
