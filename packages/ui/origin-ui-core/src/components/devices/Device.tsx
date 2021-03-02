@@ -30,8 +30,7 @@ export function Device() {
                     });
 
                     if (matches.length > 0 && key === 'producing_detail_view') {
-                        matches[0].component = () =>
-                            ProductionDetailView(id ? parseInt(id, 10) : id);
+                        matches[0].component = () => ProductionDetailView(parseInt(id, 10));
                     }
 
                     return (

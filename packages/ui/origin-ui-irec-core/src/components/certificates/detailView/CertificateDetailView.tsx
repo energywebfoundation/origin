@@ -18,7 +18,7 @@ import {
     LightenColor
 } from '@energyweb/origin-ui-core';
 import { useOriginConfiguration } from '../../../utils/configuration';
-import { DeviceDTO as OriginDeviceDTO } from '@energyweb/origin-device-registry-api-client';
+import { OriginDeviceDTO } from '@energyweb/origin-device-registry-api-client';
 import { PublicDeviceDTO as IRecDeviceDTO } from '@energyweb/origin-device-registry-irec-local-api-client';
 import { ComposedPublicDevice } from '../../../types';
 import { composePublicDevices } from '../../../utils/compose';

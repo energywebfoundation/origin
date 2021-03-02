@@ -3,8 +3,8 @@ import { ExtendedBaseEntity } from '@energyweb/origin-backend-utils';
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity({ name: 'device_registry_device' })
-export class Device extends ExtendedBaseEntity {
-    constructor(device: Partial<Device>) {
+export class OriginDevice extends ExtendedBaseEntity {
+    constructor(device: Partial<OriginDevice>) {
         super();
         Object.assign(this, device);
     }

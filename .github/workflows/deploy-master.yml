@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 3
     steps:
-      - uses: styfle/cancel-workflow-action@0.5.0
+      - uses: styfle/cancel-workflow-action@0.8.0
         with:
           access_token: ${{ github.token }}
 
@@ -42,14 +42,21 @@ jobs:
       with:
         node-version: '14'
 
+    - name: "Generate unique id"
+      id: generate_unique_id
+      uses: ./.github/actions/build_id
+
     - name: Restore timestamp
       run: |
         sh scripts/restore-original-timestamps.sh
 
-    - name: Build application
+    - name: Install application
       # lerna doesn't work without additional fetch
       run: |
         yarn
+
+    - name: Build application
+      run: |
         yarn build
 
     - name: Set creds to npm 
@@ -67,3 +74,12 @@ jobs:
         npx sleep 5 
         yarn build:containers:canary 
         yarn deploy:heroku:canary
+      env:
+        BUILD_ID: ${{ steps.generate_unique_id.outputs.unique_id }}
+        HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+        HEROKU_CANARY_APP_API: ${{ secrets.HEROKU_CANARY_APP_API }}
+        HEROKU_CANARY_APP_UI: ${{ secrets.HEROKU_CANARY_APP_UI }}
+        HEROKU_CANARY_APP_SIM: ${{ secrets.HEROKU_CANARY_APP_SIM }}
+        HEROKU_CANARY_APP_IREC_UI: ${{ secrets.HEROKU_CANARY_APP_IREC_UI }}
+        HEROKU_CANARY_APP_IREC_API: ${{ secrets.HEROKU_CANARY_APP_IREC_API }}
+        NPM_TOKEN: ${{ secrets.NPM_TOKEN }}

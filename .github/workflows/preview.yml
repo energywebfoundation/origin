@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 3
     steps:
-      - uses: styfle/cancel-workflow-action@0.5.0
+      - uses: styfle/cancel-workflow-action@0.8.0
         with:
           access_token: ${{ github.token }}
 
@@ -43,15 +43,22 @@ jobs:
       with:
         node-version: '14'
 
+    - name: "Generate unique id"
+      id: generate_unique_id
+      uses: ./.github/actions/build_id
+
     - name: Restore timestamp
       run: |
         sh scripts/restore-original-timestamps.sh
 
-    - name: Build application
+    - name: Install application
       # lerna doesn't work without additional fetch
       run: |
         git fetch origin master:master
         yarn
+
+    - name: Build application
+      run: |
         yarn build
 
     - name: Set creds to npm 
@@ -63,7 +70,8 @@ jobs:
         wget -qO- https://toolbelt.heroku.com/install-ubuntu.sh | sh
         echo "${{ secrets.DOCKER_PASS }}" | docker login -u "${{ secrets.DOCKER_USER }}" --password-stdin
 
-
     - name: Preview application
       run: |
         yarn publish:preview
+      env:
+        BUILD_ID: ${{steps.generate_unique_id.outputs.unique_id}}

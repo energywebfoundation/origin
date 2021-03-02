@@ -2,7 +2,7 @@ import { SagaIterator } from 'redux-saga';
 import { all, fork, take, select, put, apply } from 'redux-saga/effects';
 import { showNotification, NotificationType, setLoading } from '@energyweb/origin-ui-core';
 import {
-    DeviceDTO as OriginDeviceDTO,
+    OriginDeviceDTO,
     NewDeviceDTO as OriginCreateDeviceDTO
 } from '@energyweb/origin-device-registry-api-client';
 import {

@@ -1,4 +1,4 @@
-import { DeviceDTO as OriginDeviceDTO } from '@energyweb/origin-device-registry-api-client';
+import { OriginDeviceDTO } from '@energyweb/origin-device-registry-api-client';
 import {
     DeviceDTO as IRecMyDeviceDTO,
     PublicDeviceDTO as IRecPublicDeviceDTO

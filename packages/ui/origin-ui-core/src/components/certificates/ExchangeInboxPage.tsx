@@ -22,6 +22,8 @@ export function ExchangeInboxPage(): JSX.Element {
     const user = useSelector(getUserOffchain);
     const [price, setPrice] = useState(0);
 
+    const hasBlockchainAccount = Boolean(user.blockchainAccountAddress);
+
     async function publishForSale(certs: IInboxCertificateData[], callback: () => void) {
         certs.forEach((certificate) => {
             dispatch(
@@ -80,7 +82,7 @@ export function ExchangeInboxPage(): JSX.Element {
         <InboxPanel
             mode={CertificateSource.Exchange}
             title={'certificate.info.exchangeInbox'}
-            tabs={['Sell', 'Withdraw']}
+            tabs={hasBlockchainAccount ? ['Sell', 'Withdraw'] : ['Sell']}
         >
             {({
                 tabIndex,
@@ -133,7 +135,7 @@ export function ExchangeInboxPage(): JSX.Element {
                                 </div>
                             </TabContent>
                         )}
-                        {tabIndex === 1 && (
+                        {hasBlockchainAccount && tabIndex === 1 && (
                             <TabContent
                                 header="certificate.info.selectedForWithdraw"
                                 buttonLabel="certificate.actions.withdrawNCertificates"
