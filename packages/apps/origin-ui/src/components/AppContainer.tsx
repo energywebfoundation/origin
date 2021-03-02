@@ -95,12 +95,12 @@ export function AppContainer(props: IProps) {
         />
     );
     const iRecCertificateRoute = shareContextIRec(<IRecCertificateApp />);
-    const certificateRoute = !enabledFeatures.includes(OriginFeature.IRecUIApp)
+    const certificateRoute = !enabledFeatures?.includes(OriginFeature.IRecUIApp)
         ? certificatesCoreRoute
         : iRecCertificateRoute;
 
     const iRecDeviceRoute = shareContextIRec(<IRecDeviceApp />);
-    const deviceRoute = !enabledFeatures.includes(OriginFeature.IRecUIApp)
+    const deviceRoute = !enabledFeatures?.includes(OriginFeature.IRecUIApp)
         ? devicesCoreRoute
         : iRecDeviceRoute;
 
