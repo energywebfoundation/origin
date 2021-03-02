@@ -87,15 +87,11 @@ export function DeviceDetailView(props: IProps) {
     const [tooltip, setTooltip] = useState<string>('');
     const [deviceTypeImage, setDeviceTypeImage] = useState();
     useEffect(() => {
-        let isMounted = true;
-        if (isMounted) {
+        if (selectedDevice) {
             const [newTooltip, newImage] = selectIconOnDeviceType(selectedDevice, t);
             setTooltip(newTooltip);
             setDeviceTypeImage(newImage);
         }
-        return () => {
-            isMounted = false;
-        };
     }, [selectedDevice]);
 
     const [meterReadCertified, setMeterReadCertified] = useState(null);

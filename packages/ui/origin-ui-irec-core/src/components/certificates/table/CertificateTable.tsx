@@ -118,6 +118,7 @@ export function CertificateTable(props: IProps) {
             return {
                 certificate,
                 producingDevice,
+                // deepscan-disable-next-line INSUFFICIENT_NULL_CHECK
                 deviceTypeLabel: producingDevice?.deviceType,
                 locationText: getDeviceLocationText(producingDevice),
                 gridOperatorText: getDeviceGridOperatorText(producingDevice)
@@ -484,6 +485,7 @@ export function CertificateTable(props: IProps) {
         let commissioningDate = '';
         let compliance = '';
 
+        // deepscan-disable-next-line INSUFFICIENT_NULL_CHECK
         if (enrichedData.producingDevice) {
             deviceType = deviceTypeService?.getDisplayText(enrichedData.producingDevice.deviceType);
 

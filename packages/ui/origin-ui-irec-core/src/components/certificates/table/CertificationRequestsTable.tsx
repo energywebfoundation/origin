@@ -168,10 +168,13 @@ export function CertificationRequestsTable(props: IProps) {
 
     const rows = paginatedData.map(({ device, request }) => {
         return {
+            // deepscan-disable-next-line INSUFFICIENT_NULL_CHECK
             facility: device?.name,
             gridOperator: getDeviceGridOperatorText(device),
             deviceLocation: getDeviceLocationText(device),
+            // deepscan-disable-next-line INSUFFICIENT_NULL_CHECK
             type: configuration.deviceTypeService.getDisplayText(device?.deviceType),
+            // deepscan-disable-next-line INSUFFICIENT_NULL_CHECK
             capacity: PowerFormatter.format(device?.capacity),
             meterRead: EnergyFormatter.format(request.energy),
             files: request.files.map((fileId) => (
