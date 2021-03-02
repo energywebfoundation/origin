@@ -1,12 +1,10 @@
-import { ILoggedInUser } from '@energyweb/origin-backend-core';
 import { DeviceCreateUpdateParams, DeviceState } from '@energyweb/issuer-irec-api-wrapper';
+import { ILoggedInUser } from '@energyweb/origin-backend-core';
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { CommandBus, EventBus } from '@nestjs/cqrs';
+import { EventBus } from '@nestjs/cqrs';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FindManyOptions, Repository } from 'typeorm';
-
-import { RegistrationService } from '@energyweb/origin-organization-irec-api';
 
 import { Device } from './device.entity';
 import { CodeNameDTO, CreateDeviceDTO, UpdateDeviceDTO } from './dto';
@@ -20,8 +18,6 @@ export class DeviceService {
         @InjectRepository(Device)
         private readonly repository: Repository<Device>,
         private readonly eventBus: EventBus,
-        private readonly registrationService: RegistrationService,
-        private readonly commandBus: CommandBus,
         private readonly configService: ConfigService,
         private readonly irecDeviceService: IrecDeviceService
     ) {}
