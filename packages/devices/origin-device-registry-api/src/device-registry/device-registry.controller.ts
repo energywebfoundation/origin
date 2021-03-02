@@ -42,7 +42,11 @@ export class DeviceRegistryController {
     constructor(private readonly deviceRegistryService: DeviceRegistryService) {}
 
     @Get()
-    @ApiResponse({ status: HttpStatus.OK, type: [OriginDeviceDTO], description: 'Returns all Devices' })
+    @ApiResponse({
+        status: HttpStatus.OK,
+        type: [OriginDeviceDTO],
+        description: 'Returns all Devices'
+    })
     async getAll(): Promise<OriginDeviceDTO[]> {
         return this.deviceRegistryService.find();
     }
@@ -50,7 +54,11 @@ export class DeviceRegistryController {
     @Get('/my-devices')
     @UseGuards(AuthGuard(), ActiveUserGuard, RolesGuard)
     @Roles(Role.OrganizationAdmin, Role.OrganizationDeviceManager, Role.OrganizationUser)
-    @ApiResponse({ status: HttpStatus.OK, type: [OriginDeviceDTO], description: 'Returns my Devices' })
+    @ApiResponse({
+        status: HttpStatus.OK,
+        type: [OriginDeviceDTO],
+        description: 'Returns my Devices'
+    })
     async getMyDevices(@UserDecorator() { ownerId }: ILoggedInUser): Promise<OriginDeviceDTO[]> {
         return this.deviceRegistryService.find({ where: { ownerId } });
     }
