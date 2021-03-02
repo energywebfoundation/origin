@@ -68,7 +68,7 @@
         "query-string": "6.14.1",
         "toastr": "2.1.4",
         "winston": "3.3.3",
-        "@svgr/webpack": "^5.5.0"
+        "@svgr/webpack": "5.5.0"
     },
     "devDependencies": {
         "typescript": "4.1.5",

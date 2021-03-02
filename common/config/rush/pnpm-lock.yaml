@@ -114,6 +114,7 @@ dependencies:
   bn.js: 5.2.0
   body-parser: 1.19.0
   bootstrap: 4.6.0
+  buffer: 6.0.3
   chai: 4.3.0
   chart.js: 2.9.4
   class-sanitizer: 1.0.1
@@ -224,6 +225,7 @@ dependencies:
   webpack-dev-server: 3.11.2_webpack-cli@4.5.0+webpack@5.24.2
   webpack-merge: 5.7.3
   winston: 3.3.3
+  winston-transport: 4.4.0
   write-json-file: 4.3.0
   yaeti: 1.0.2
   yup: 0.32.9
@@ -7482,6 +7484,13 @@ packages:
     dev: false
     resolution:
       integrity: sha512-EHcyIPBQ4BSGlvjB16k5KgAJ27CIsHY/2JBmCRReo48y9rQ3MaUzWX3KVlBa4U7MyX02HdVj0K7C3WaB3ju7FQ==
+  /buffer/6.0.3:
+    dependencies:
+      base64-js: 1.5.1
+      ieee754: 1.2.1
+    dev: false
+    resolution:
+      integrity: sha512-FTiCpNxtwiZZHEZbcbTIcZjERVICn9yq/pDFkTl95/AxzD1naBctN7YO68riM/gLSDY7sdrMby8hofADYuuqOA==
   /bufferutil/4.0.3:
     dependencies:
       node-gyp-build: 4.2.3
@@ -25487,7 +25496,7 @@ packages:
     dev: false
     name: '@rush-temp/device-registry'
     resolution:
-      integrity: sha512-Ku2Lqm9LlIIoZku8NuXiWwCYIugtumMfPiehXyZIGEgvP9yN7WL50Iqy22jDJG63As89gJBcCHT2tmOu7zZkEg==
+      integrity: sha512-DC8zCvRwHFJzd4p379jI+OtosQ4ldr/B3PJT2J2L3pB/STnOunkRWltARiVc7F0s7h9MzdAAaUiHlqKMiu2Hsg==
       tarball: file:projects/device-registry.tgz
     version: 0.0.0
   file:projects/exchange-client.tgz_95f19a24f82c3c19bf052a455a548805:
@@ -25957,7 +25966,7 @@ packages:
     dev: false
     name: '@rush-temp/issuer'
     resolution:
-      integrity: sha512-1OpPJdH+Z1jp6Qm5ZMU2HbSwiEl7MBPWAXW5pcoFDO3coHsHiH3V2rnrzyA49vsZd+l1bJSD20cj0PDwxWQN3g==
+      integrity: sha512-yQm4RB6vW7jbpGV9bMTkeT5wQl9sEQNmJ+lA/JMEb6cliF0UGrpMNKGWScGs9dXOtKn6GA2CZo40MQ0oqjXqHw==
       tarball: file:projects/issuer.tgz
     version: 0.0.0
   file:projects/localization.tgz:
@@ -26680,7 +26689,7 @@ packages:
       webpack-cli: '*'
       webpack-dev-server: '*'
     resolution:
-      integrity: sha512-nKW0oYp6S6Z47sjY03yfegBy9vjQ48EbqyprUxeMsTqlg3idPt/q7T9O2HWSKXx3qJTDS8isW39DbCoE8dAw0w==
+      integrity: sha512-OaYSY044L7VtpxYGehAVkWygxJY+WgJr1bwRgCZwd0BZFmuTgN63vSKzvEp6UqvU2f9h53pchsoXeKbt9BbbZA==
       tarball: file:projects/origin-ui-core.tgz
     version: 0.0.0
   file:projects/origin-ui-irec-core.tgz_ts-node@9.1.1:
@@ -26734,9 +26743,11 @@ packages:
       '@material-ui/icons': 4.11.2_ea66e9ae910e767d612291152c5568d6
       '@material-ui/pickers': 3.2.10_c640d2d0176bfcab1d99b942ffa7ebe7
       '@material-ui/styles': 4.11.3_54f0cdf50b81d00d581db00613065534
+      '@svgr/webpack': 5.5.0
       '@types/react': 17.0.2
       '@types/react-dom': 17.0.1
       bootstrap: 4.6.0
+      buffer: 6.0.3
       connected-react-router: 6.9.1_3a32cfa7d6f442074e268f98a243a2ba
       copy-webpack-plugin: 7.0.0_webpack@5.24.2
       crypto-browserify: 3.12.0
@@ -26787,7 +26798,7 @@ packages:
     peerDependencies:
       jest: '*'
     resolution:
-      integrity: sha512-m59eB4qq/omSLW0KRvP/HfpepuaR0VcMHMqxzPVUarBNJDSxGWCS2kstx2qu6ynHfpAQRZmtXgllolDwl93xQg==
+      integrity: sha512-Z1ZMVFq6fQYb2mUq1/p2wS7NuOQEfInwrSfuKQXUrlPH6DZxnuw4J+fTi46ORaQ5pVfhsIdAcCC83ycSi1CLPg==
       tarball: file:projects/origin-ui.tgz
     version: 0.0.0
   file:projects/solar-simulator.tgz:
@@ -26948,7 +26959,7 @@ specifiers:
   '@storybook/addon-knobs': 6.1.20
   '@storybook/react': 6.1.20
   '@storybook/storybook-deployer': 2.8.7
-  '@svgr/webpack': ^5.5.0
+  '@svgr/webpack': 5.5.0
   '@testing-library/react': 11.2.5
   '@typechain/ethers-v5': 1.0.0
   '@types/bcryptjs': 2.4.2
@@ -26989,6 +27000,7 @@ specifiers:
   bn.js: 5.2.0
   body-parser: 1.19.0
   bootstrap: 4.6.0
+  buffer: 6.0.3
   chai: 4.3.0
   chart.js: 2.9.4
   class-sanitizer: 1.0.1
@@ -27099,6 +27111,7 @@ specifiers:
   webpack-dev-server: 3.11.2
   webpack-merge: 5.7.3
   winston: 3.3.3
+  winston-transport: 4.4.0
   write-json-file: 4.3.0
   yaeti: 1.0.2
   yup: 0.32.9

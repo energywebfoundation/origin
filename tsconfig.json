@@ -10,7 +10,6 @@
         "allowSyntheticDefaultImports": true,
         "resolveJsonModule": true,
         "esModuleInterop": true,
-        "types": ["node", "mocha"],
         "skipLibCheck": true,
         "pretty": true
     }
