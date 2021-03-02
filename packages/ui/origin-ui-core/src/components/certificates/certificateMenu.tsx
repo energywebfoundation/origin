@@ -62,21 +62,21 @@ export const useCertificatesMenu = (): ICertificateMenuItem[] => {
             key: 'requests',
             label: 'navigation.certificates.requests',
             component: CertificateRequestsTable,
-            show: isIssuer || userIsActiveAndPartOfOrg,
+            show: userIsActiveAndPartOfOrg || (userIsActive && isIssuer),
             features: [OriginFeature.Certificates, OriginFeature.Buyer]
         },
         {
             key: 'pending',
             label: 'navigation.certificates.pending',
             component: PendingCertificates,
-            show: (userIsActive && isIssuer) || userIsActiveAndPartOfOrg,
+            show: userIsActive && isIssuer,
             features: [OriginFeature.Certificates, OriginFeature.CertificationRequests]
         },
         {
             key: 'approved',
             label: 'navigation.certificates.approved',
             component: ApprovedCertificates,
-            show: (userIsActive && isIssuer) || userIsActiveAndPartOfOrg,
+            show: userIsActive && isIssuer,
             features: [OriginFeature.Certificates, OriginFeature.CertificationRequests]
         },
         {
