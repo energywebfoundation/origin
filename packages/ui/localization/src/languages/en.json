@@ -194,7 +194,8 @@
                 "bundle_created": "Bundle created",
                 "bundle_bought": "Bundle bought",
                 "bundleCanceld": "Bundle canceled",
-                "certificateNotFound": "Certificate not found"
+                "certificateNotFound": "Certificate not found",
+                "pleaseAddBlockchain": "Please add user blockchain address to withdraw"
             },
             "info": {
                 "certificates": "CERTIFICATES",
