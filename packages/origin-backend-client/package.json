@@ -5,7 +5,7 @@
     "main": "dist/js/index.js",
     "scripts": {
         "build": "yarn build:ts",
-        "build:ts": "yarn build:client && tsc -b tsconfig.json",
+        "build:ts": "yarn build:client 1>/dev/null 2>/dev/null && tsc -b tsconfig.json",
         "build:client": "yarn client:generate:schema && yarn client:generate && yarn client:post-generation && yarn client:clean",
         "clean": "shx rm -rf dist dist-shakeable",
         "client:generate": "openapi-generator-cli generate -g typescript-axios -i src/schema.yaml -o src --api-name-suffix Client --remove-operation-id-prefix",
