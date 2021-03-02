@@ -5,6 +5,10 @@ import {
     exchangeGeneralSaga,
     supplySaga
 } from '@energyweb/exchange-ui-core';
+import { 
+    iRecDevicesSaga,
+    iRecGeneralSaga
+ } from '@energyweb/origin-ui-irec-core';
 
 export const sagas = {
     generalSaga,
@@ -14,5 +18,7 @@ export const sagas = {
     exchangeGeneralSaga,
     ordersSaga,
     bundlesSaga,
-    supplySaga
+    supplySaga,
+    iRecDevicesSaga,
+    iRecGeneralSaga
 };

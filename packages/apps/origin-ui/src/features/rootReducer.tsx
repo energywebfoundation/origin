@@ -14,6 +14,7 @@ import {
     exchangeGeneralState,
     supplyState
 } from '@energyweb/exchange-ui-core';
+import { iRecDevicesState, iRecGeneralState } from '@energyweb/origin-ui-irec-core';
 import { IStoreState } from '../types';
 
 export const createRootReducer = (history) =>
@@ -28,5 +29,7 @@ export const createRootReducer = (history) =>
         ordersState,
         exchangeGeneralState,
         supplyState,
-        web3State
+        web3State,
+        iRecDevicesState, 
+        iRecGeneralState
     });
