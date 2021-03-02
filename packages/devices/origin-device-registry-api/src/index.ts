@@ -1,6 +1,6 @@
-import { Device } from './device-registry/device.entity';
+import { OriginDevice } from './device-registry/origin-device.entity';
 
 export * from './device-registry';
 export * from './app.module';
 
-export const entities = [Device];
+export const entities = [OriginDevice];
