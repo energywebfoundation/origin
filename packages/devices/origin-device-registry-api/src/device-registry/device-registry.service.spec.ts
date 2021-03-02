@@ -7,7 +7,7 @@ import * as sinon from 'ts-sinon';
 import { Repository, SelectQueryBuilder } from 'typeorm';
 
 import {
-    Device,
+    OriginDevice,
     DeviceRegistryService,
     NewDeviceDTO,
     UnableToVerifyOwnershipError,
@@ -58,8 +58,8 @@ describe('The DeviceRegistryService', () => {
         return queryHandler;
     };
 
-    const getRepository = (queryBuilder: SelectQueryBuilder<Device>) => {
-        const repository = sinon.stubInterface<Repository<Device>>();
+    const getRepository = (queryBuilder: SelectQueryBuilder<OriginDevice>) => {
+        const repository = sinon.stubInterface<Repository<OriginDevice>>();
         repository.createQueryBuilder.returns(queryBuilder);
 
         return repository;
@@ -67,7 +67,7 @@ describe('The DeviceRegistryService', () => {
 
     describe('when registering new device', async () => {
         it('should throw an error if device is not owned by requestor', async () => {
-            const queryBuilder = sinon.stubInterface<SelectQueryBuilder<Device>>();
+            const queryBuilder = sinon.stubInterface<SelectQueryBuilder<OriginDevice>>();
             queryBuilder.where.returnsThis();
             queryBuilder.getCount.onFirstCall().resolves(0);
             queryBuilder.getCount.onSecondCall().resolves(0);
@@ -77,7 +77,7 @@ describe('The DeviceRegistryService', () => {
 
             await init([
                 { provide: StubValidateDeviceOwnershipQueryHandler, useValue: queryHandler },
-                { provide: getRepositoryToken(Device), useValue: repository }
+                { provide: getRepositoryToken(OriginDevice), useValue: repository }
             ]);
 
             try {
@@ -90,7 +90,7 @@ describe('The DeviceRegistryService', () => {
         });
 
         it('should throw an error if device is with given id is already registered', async () => {
-            const queryBuilder = sinon.stubInterface<SelectQueryBuilder<Device>>();
+            const queryBuilder = sinon.stubInterface<SelectQueryBuilder<OriginDevice>>();
             queryBuilder.where.returnsThis();
             queryBuilder.getCount.onFirstCall().resolves(1);
             queryBuilder.getCount.onSecondCall().resolves(0);
@@ -100,7 +100,7 @@ describe('The DeviceRegistryService', () => {
 
             await init([
                 { provide: StubValidateDeviceOwnershipQueryHandler, useValue: queryHandler },
-                { provide: getRepositoryToken(Device), useValue: repository }
+                { provide: getRepositoryToken(OriginDevice), useValue: repository }
             ]);
 
             try {
@@ -113,7 +113,7 @@ describe('The DeviceRegistryService', () => {
         });
 
         it('should throw an error if smart meter is with given id is already registered', async () => {
-            const queryBuilder = sinon.stubInterface<SelectQueryBuilder<Device>>();
+            const queryBuilder = sinon.stubInterface<SelectQueryBuilder<OriginDevice>>();
             queryBuilder.where.returnsThis();
             queryBuilder.getCount.onFirstCall().resolves(0);
             queryBuilder.getCount.onSecondCall().resolves(1);
@@ -123,7 +123,7 @@ describe('The DeviceRegistryService', () => {
 
             await init([
                 { provide: StubValidateDeviceOwnershipQueryHandler, useValue: queryHandler },
-                { provide: getRepositoryToken(Device), useValue: repository }
+                { provide: getRepositoryToken(OriginDevice), useValue: repository }
             ]);
 
             try {
