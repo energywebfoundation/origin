@@ -53,7 +53,11 @@ export class DeviceController {
     constructor(private readonly deviceService: DeviceService) {}
 
     @Get()
-    @ApiResponse({ status: HttpStatus.OK, type: [PublicDeviceDTO], description: 'Returns all Devices' })
+    @ApiResponse({
+        status: HttpStatus.OK,
+        type: [PublicDeviceDTO],
+        description: 'Returns all Devices'
+    })
     async getAll(): Promise<PublicDeviceDTO[]> {
         const devices = await this.deviceService.findAll();
 
