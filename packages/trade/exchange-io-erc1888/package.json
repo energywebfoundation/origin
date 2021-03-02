@@ -36,18 +36,18 @@
         "@energyweb/origin-backend-core": "8.0.0",
         "@energyweb/origin-backend-utils": "1.5.0",
         "@energyweb/utils-general": "11.0.1",
-        "@nestjs/common": "7.6.12",
+        "@nestjs/common": "7.6.13",
         "@nestjs/config": "0.6.3",
-        "@nestjs/core": "7.6.12",
+        "@nestjs/core": "7.6.13",
         "@nestjs/cqrs": "7.0.1",
         "@nestjs/passport": "7.1.5",
         "@nestjs/typeorm": "7.1.5",
         "ethers": "5.0.31",
         "moment": "2.29.1",
-        "rxjs": "6.6.3"
+        "rxjs": "6.6.6"
     },
     "devDependencies": {
-        "@nestjs/cli": "7.5.5",
+        "@nestjs/cli": "7.5.6",
         "@types/node": "12.20.4",
         "@types/supertest": "2.0.10",
         "class-validator": "0.13.1",

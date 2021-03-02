@@ -1,12 +1,10 @@
+import { DeviceState } from '@energyweb/issuer-irec-api-wrapper';
 import { ILoggedInUser } from '@energyweb/origin-backend-core';
-import { DeviceCreateUpdateParams, DeviceState } from '@energyweb/issuer-irec-api-wrapper';
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { CommandBus, EventBus } from '@nestjs/cqrs';
+import { EventBus } from '@nestjs/cqrs';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FindManyOptions, Repository } from 'typeorm';
-
-import { RegistrationService } from '@energyweb/origin-organization-irec-api';
 
 import { Device } from './device.entity';
 import { CodeNameDTO, CreateDeviceDTO, UpdateDeviceDTO } from './dto';
@@ -20,8 +18,6 @@ export class DeviceService {
         @InjectRepository(Device)
         private readonly repository: Repository<Device>,
         private readonly eventBus: EventBus,
-        private readonly registrationService: RegistrationService,
-        private readonly commandBus: CommandBus,
         private readonly configService: ConfigService,
         private readonly irecDeviceService: IrecDeviceService
     ) {}
@@ -31,13 +27,21 @@ export class DeviceService {
     }
 
     async create(user: ILoggedInUser, newDevice: CreateDeviceDTO): Promise<Device> {
-        const deviceData: DeviceCreateUpdateParams = {
+        if (!this.isValidDeviceType(newDevice.deviceType)) {
+            throw new BadRequestException('Invalid device type');
+        }
+
+        if (!this.isValidFuelType(newDevice.fuel)) {
+            throw new BadRequestException('Invalid fuel type');
+        }
+
+        const deviceData = new Device({
             ...CreateDeviceDTO.sanitize(newDevice),
             registrantOrganization: this.configService.get<string>(
                 'IREC_PARTICIPANT_TRADE_ACCOUNT'
             ),
             issuer: this.configService.get<string>('IREC_ISSUER_ORGANIZATION_CODE')
-        };
+        });
 
         const irecDevice = await this.irecDeviceService.createIrecDevice(user, deviceData);
 
@@ -77,5 +81,13 @@ export class DeviceService {
 
     getFuelTypes(): CodeNameDTO[] {
         return IREC_FUEL_TYPES;
+    }
+
+    isValidDeviceType(deviceType: string): boolean {
+        return !!this.getDeviceTypes().find((fuel) => fuel.code === deviceType);
+    }
+
+    isValidFuelType(fuelType: string): boolean {
+        return !!this.getFuelTypes().find((fuel) => fuel.code === fuelType);
     }
 }

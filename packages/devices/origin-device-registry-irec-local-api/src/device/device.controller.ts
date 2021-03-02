@@ -24,6 +24,7 @@ import {
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import {
+    ApiBadRequestResponse,
     ApiBearerAuth,
     ApiBody,
     ApiForbiddenResponse,
@@ -119,6 +120,7 @@ export class DeviceController {
         status: HttpStatus.UNPROCESSABLE_ENTITY,
         description: 'Incorrect inputs'
     })
+    @ApiBadRequestResponse({ status: HttpStatus.BAD_REQUEST })
     async createDevice(
         @Body() newDevice: CreateDeviceDTO,
         @UserDecorator() loggedInUser: ILoggedInUser

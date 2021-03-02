@@ -14,8 +14,7 @@ module.exports = {
         // Add '.ts' and '.tsx' as resolvable extensions.
         extensions: ['.ts', '.tsx', '.js', '.json'],
         alias: {
-            'react-redux': require.resolve('react-redux'),
-            'react-i18next': require.resolve('../node_modules/react-i18next')
+            'react-redux': require.resolve('react-redux')
         },
         fallback: {
             stream: require.resolve('stream-browserify'),
@@ -73,7 +72,19 @@ module.exports = {
                 ]
             },
             {
-                test: /\.(png|jpg|gif|svg)$/,
+                test: /\.svg$/,
+                use: [
+                    '@svgr/webpack',
+                    {
+                        loader: 'url-loader',
+                        options: {
+                            limit: 8192
+                        }
+                    }
+                ],
+            },
+            {
+                test: /\.(png|jpg|gif)$/,
                 use: [
                     {
                         loader: 'url-loader',

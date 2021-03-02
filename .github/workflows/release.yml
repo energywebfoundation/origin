@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 3
     steps:
-      - uses: styfle/cancel-workflow-action@0.5.0
+      - uses: styfle/cancel-workflow-action@0.8.0
         with:
           access_token: ${{ github.token }}
 
@@ -47,22 +47,24 @@ jobs:
       run: |
         sh scripts/restore-original-timestamps.sh
 
-    - name: Build application
+    - name: Install application
       # lerna doesn't work without additional fetch
       run: |
         git fetch origin master:master
         yarn
+
+    - name: Build application
+      run: |
         yarn build
 
     - name: Set creds to npm 
       run: |
-        - echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" >> $HOME/.npmrc 2> /dev/null
-        - npm whoami
+        echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" >> $HOME/.npmrc
 
     - name: Login into docker hub 
       run: |
-        - wget -qO- https://toolbelt.heroku.com/install-ubuntu.sh | sh
-        - echo "${{ secrets.DOCKER_PASS }}" | docker login -u "${{ secrets.DOCKER_USER }}" --password-stdin
+        wget -qO- https://toolbelt.heroku.com/install-ubuntu.sh | sh
+        echo "${{ secrets.DOCKER_PASS }}" | docker login -u "${{ secrets.DOCKER_USER }}" --password-stdin
 
     - name: Release application
       if:  false == contains('skip-deploy', ${{ github.event.head_commit.message }})

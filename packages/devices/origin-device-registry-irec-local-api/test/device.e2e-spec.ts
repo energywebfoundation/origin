@@ -22,8 +22,8 @@ describe('Device e2e tests', () => {
     const exampleDevice: CreateDeviceDTO = {
         name: 'Test solar device',
         defaultAccount: 'MYTRADEACCOUNT001',
-        deviceType: 'TC140',
-        fuel: 'ES100',
+        deviceType: 'ES100',
+        fuel: 'TC110',
         countryCode: 'TH',
         capacity: 1000,
         commissioningDate: new Date('2020-01-01'),
