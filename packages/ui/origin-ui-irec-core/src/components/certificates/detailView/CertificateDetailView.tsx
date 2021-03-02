@@ -18,7 +18,7 @@ import {
     LightenColor
 } from '@energyweb/origin-ui-core';
 import { useOriginConfiguration } from '../../../utils/configuration';
-import { DeviceDTO as OriginDeviceDTO} from '@energyweb/origin-device-registry-api-client';
+import { DeviceDTO as OriginDeviceDTO } from '@energyweb/origin-device-registry-api-client';
 import { PublicDeviceDTO as IRecDeviceDTO } from '@energyweb/origin-device-registry-irec-local-api-client';
 import { ComposedPublicDevice } from '../../../types';
 import { composePublicDevices } from '../../../utils/compose';
@@ -48,10 +48,10 @@ export function CertificateDetailView(props: IProps) {
     const deviceClient = useSelector(getDeviceClient);
     const originClient = deviceClient?.originClient;
     const iRecClient = deviceClient?.iRecClient;
-    
+
     const certificates = useSelector(getCertificates);
     const environment = useSelector(getEnvironment);
-    const exchangeClient = useSelector(getExchangeClient);  
+    const exchangeClient = useSelector(getExchangeClient);
     const certificatesClient = useSelector(getCertificatesClient);
     const certificationRequestsClient = useSelector(getCertificationRequestsClient);
 
@@ -168,21 +168,26 @@ export function CertificateDetailView(props: IProps) {
     const [device, setDevice] = useState<ComposedPublicDevice>(null);
 
     const fetchDeviceById = async (issuerId: string) => {
-       const { data: originDevices }: {data: OriginDeviceDTO[]} = await originClient?.getAll();
-       const { data: iRecDevices }: {data: IRecDeviceDTO[]} = await iRecClient?.getAll();
+        const { data: originDevices }: { data: OriginDeviceDTO[] } = await originClient?.getAll();
+        const { data: iRecDevices }: { data: IRecDeviceDTO[] } = await iRecClient?.getAll();
 
-       const requiredOriginDevice = originDevices.find((d) =>
-                d.externalDeviceIds.find(
-                    (deviceExternalId) =>
+        const requiredOriginDevice = originDevices.find((d) =>
+            d.externalDeviceIds.find(
+                (deviceExternalId) =>
                     deviceExternalId.type === environment.ISSUER_ID &&
                     deviceExternalId.id === issuerId
-                )
-            );
-       
-       const requiredIRecDevice = iRecDevices.find(device => device.id === requiredOriginDevice.externalRegistryId);
-       const composedDevice = composePublicDevices([requiredOriginDevice], [requiredIRecDevice])[0];
-               
-       setDevice(composedDevice);
+            )
+        );
+
+        const requiredIRecDevice = iRecDevices.find(
+            (d) => d.id === requiredOriginDevice.externalRegistryId
+        );
+        const composedDevice = composePublicDevices(
+            [requiredOriginDevice],
+            [requiredIRecDevice]
+        )[0];
+
+        setDevice(composedDevice);
     };
 
     useEffect(() => {

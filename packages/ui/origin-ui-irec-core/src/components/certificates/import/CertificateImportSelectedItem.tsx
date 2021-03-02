@@ -11,17 +11,19 @@ export function CertificateImportSelectedItem(props: { cert: ICertificate }): JS
     const configuration = useOriginConfiguration();
     const { t } = useTranslation();
 
-    const { MAIN_BACKGROUND_COLOR, SIMPLE_TEXT_COLOR, PRIMARY_COLOR } = configuration?.styleConfig;
+    const mainBgColor = configuration?.styleConfig?.MAIN_BACKGROUND_COLOR;
+    const simpleTextColor = configuration?.styleConfig?.SIMPLE_TEXT_COLOR;
+    const primaryColor = configuration?.styleConfig?.PRIMARY_COLOR;
 
     const useStyles = makeStyles({
         item: {
             padding: '16px',
             marginBottom: '10px',
-            background: LightenColor(MAIN_BACKGROUND_COLOR, 1)
+            background: LightenColor(mainBgColor, 1)
         },
 
         itemEdit: {
-            background: LightenColor(MAIN_BACKGROUND_COLOR, 5)
+            background: LightenColor(mainBgColor, 5)
         },
 
         top: {
@@ -33,24 +35,24 @@ export function CertificateImportSelectedItem(props: { cert: ICertificate }): JS
         icon: {
             width: 32,
             height: 32,
-            color: LightenColor(PRIMARY_COLOR, 3),
+            color: LightenColor(primaryColor, 3),
             background: '#766493',
             marginRight: '25px'
         },
 
         text_1: {
             fontSize: '16px',
-            color: SIMPLE_TEXT_COLOR
+            color: simpleTextColor
         },
 
         text_2: {
             fontSize: '14px',
-            color: SIMPLE_TEXT_COLOR
+            color: simpleTextColor
         },
 
         text_3: {
             fontSize: '12px',
-            color: SIMPLE_TEXT_COLOR,
+            color: simpleTextColor,
             opacity: '.5'
         },
 

@@ -14,14 +14,14 @@ export function SelectedInboxList(prop: {
     const { pairs, setEnergy } = prop;
     const { t } = useTranslation();
 
-    const { TEXT_COLOR_DEFAULT } = configuration?.styleConfig;
+    const defaultTextColor = configuration?.styleConfig?.TEXT_COLOR_DEFAULT;
 
     const useStyles = makeStyles({
         selectedItemsEmpty: {
             padding: '64px 0',
             textAlign: 'center',
             fontSize: '14px',
-            color: TEXT_COLOR_DEFAULT
+            color: defaultTextColor
         }
     });
 

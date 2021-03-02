@@ -1,6 +1,6 @@
-import { DeviceDTO as OriginDeviceDTO} from '@energyweb/origin-device-registry-api-client';
-import { 
-    DeviceDTO as IRecMyDeviceDTO, 
+import { DeviceDTO as OriginDeviceDTO } from '@energyweb/origin-device-registry-api-client';
+import {
+    DeviceDTO as IRecMyDeviceDTO,
     PublicDeviceDTO as IRecPublicDeviceDTO
 } from '@energyweb/origin-device-registry-irec-local-api-client';
 import { ComposedPublicDevice, ComposedDevice } from '../types';

@@ -8,16 +8,15 @@ export function CertificateImportItem(props: { device: IDevice; selected: number
     const { device, selected = [] } = props;
     const configuration = useOriginConfiguration();
 
-    const {
-        MAIN_BACKGROUND_COLOR,
-        SIMPLE_TEXT_COLOR,
-        TEXT_COLOR_DEFAULT
-    } = configuration?.styleConfig;
+    const mainBgColor = configuration?.styleConfig?.MAIN_BACKGROUND_COLOR;
+    const simpleTextColor = configuration?.styleConfig?.SIMPLE_TEXT_COLOR;
+    const defaultTextColor = configuration?.styleConfig?.TEXT_COLOR_DEFAULT;
+    const primaryDimColor = configuration?.styleConfig?.PRIMARY_COLOR_DIM;
 
     const useStyles = makeStyles({
         device: {
             padding: '18px 20px',
-            background: LightenColor(MAIN_BACKGROUND_COLOR, 4),
+            background: LightenColor(mainBgColor, 4),
             boxShadow: '0 2px 4px rgba(0,0,0,.2)',
             display: 'flex',
             flexDirection: 'row'
@@ -29,7 +28,7 @@ export function CertificateImportItem(props: { device: IDevice; selected: number
 
         certificate: {
             padding: '18px 20px',
-            background: LightenColor(MAIN_BACKGROUND_COLOR, 6),
+            background: LightenColor(mainBgColor, 6),
             boxShadow: '0 2px 4px rgba(0,0,0,.2)',
             display: 'flex',
             flexDirection: 'row',
@@ -37,23 +36,23 @@ export function CertificateImportItem(props: { device: IDevice; selected: number
         },
 
         selected: {
-            background: '#362C45'
+            background: primaryDimColor
         },
 
         text_1: {
             fontSize: '16px',
-            color: SIMPLE_TEXT_COLOR
+            color: simpleTextColor
         },
 
         text_2: {
             fontSize: '14px',
-            color: SIMPLE_TEXT_COLOR,
+            color: simpleTextColor,
             opacity: '.5'
         },
 
         text_3: {
             fontSize: '12px',
-            color: SIMPLE_TEXT_COLOR,
+            color: simpleTextColor,
             opacity: '.5'
         },
 
@@ -71,8 +70,8 @@ export function CertificateImportItem(props: { device: IDevice; selected: number
         icon: {
             width: 55,
             height: 55,
-            color: TEXT_COLOR_DEFAULT,
-            background: TEXT_COLOR_DEFAULT,
+            color: defaultTextColor,
+            background: defaultTextColor,
             marginRight: '25px'
         }
     });

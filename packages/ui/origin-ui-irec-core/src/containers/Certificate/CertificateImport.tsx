@@ -81,11 +81,12 @@ export function CertificateImport(): JSX.Element {
         2: [1]
     };
 
-    const { MAIN_BACKGROUND_COLOR, TEXT_COLOR_DEFAULT } = configuration?.styleConfig;
+    const mainBgColor = configuration?.styleConfig?.MAIN_BACKGROUND_COLOR;
+    const defaultTextColor = configuration?.styleConfig?.TEXT_COLOR_DEFAULT;
 
     const useStyles = makeStyles({
         box: {
-            background: MAIN_BACKGROUND_COLOR,
+            background: mainBgColor,
             borderRadius: '2px',
             padding: '21px 24px',
             display: 'flex',
@@ -107,7 +108,7 @@ export function CertificateImport(): JSX.Element {
             padding: '64px 0',
             textAlign: 'center',
             fontSize: '14px',
-            color: TEXT_COLOR_DEFAULT
+            color: defaultTextColor
         }
     });
 

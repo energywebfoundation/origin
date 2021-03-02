@@ -507,7 +507,7 @@ export function CertificateTable(props: IProps) {
                     ? claimedVolume
                     : publicVolume.add(privateVolume)
             ),
-            gridOperator: enrichedData?.gridOperatorText,
+            gridOperator: enrichedData.gridOperatorText,
             source:
                 enrichedData.certificate.source === CertificateSource.Exchange
                     ? 'Exchange'

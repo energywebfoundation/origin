@@ -7,16 +7,16 @@ import { useOriginConfiguration } from '../../../utils/configuration';
 import { IDevice } from '../../../containers/Certificate/CertificateImport';
 
 export function ImportDeviceItem(props: { device: IDevice; onImport: () => void }): JSX.Element {
-    const {
-        MAIN_BACKGROUND_COLOR,
-        PRIMARY_COLOR,
-        SIMPLE_TEXT_COLOR,
-        TEXT_COLOR_DEFAULT
-    } = useOriginConfiguration()?.styleConfig;
+    const configuration = useOriginConfiguration();
+
+    const mainBgColor = configuration?.styleConfig?.MAIN_BACKGROUND_COLOR;
+    const simpleTextColor = configuration?.styleConfig?.SIMPLE_TEXT_COLOR;
+    const defaultTextColor = configuration?.styleConfig?.TEXT_COLOR_DEFAULT;
+    const primaryColor = configuration?.styleConfig?.PRIMARY_COLOR;
 
     const useStyles = makeStyles({
         device: {
-            background: LightenColor(MAIN_BACKGROUND_COLOR, 4),
+            background: LightenColor(mainBgColor, 4),
             marginBottom: '10px',
             boxShadow: '0 2px 4px rgba(0,0,0,.2)'
         },
@@ -29,7 +29,7 @@ export function ImportDeviceItem(props: { device: IDevice; onImport: () => void 
         footer: {
             padding: '12px 0 16px 0',
             boxSizing: 'border-box',
-            background: LightenColor(MAIN_BACKGROUND_COLOR, 6),
+            background: LightenColor(mainBgColor, 6),
             display: 'flex',
             justifyContent: 'space-evenly'
         },
@@ -37,25 +37,25 @@ export function ImportDeviceItem(props: { device: IDevice; onImport: () => void 
         icon: {
             width: 55,
             height: 55,
-            color: TEXT_COLOR_DEFAULT,
-            background: TEXT_COLOR_DEFAULT,
+            color: defaultTextColor,
+            background: defaultTextColor,
             marginRight: '22px'
         },
 
         label: {
             fontSize: 12,
-            color: SIMPLE_TEXT_COLOR,
+            color: simpleTextColor,
             opacity: 0.75
         },
 
         value: {
             fontSize: 14,
-            color: SIMPLE_TEXT_COLOR
+            color: simpleTextColor
         },
 
         name: {
             fontSize: 16,
-            color: SIMPLE_TEXT_COLOR
+            color: simpleTextColor
         },
 
         grow: {
@@ -63,11 +63,11 @@ export function ImportDeviceItem(props: { device: IDevice; onImport: () => void 
         },
 
         button: {
-            borderColor: PRIMARY_COLOR
+            borderColor: primaryColor
         },
 
         buttonLabel: {
-            color: PRIMARY_COLOR,
+            color: primaryColor,
             textTransform: 'uppercase'
         }
     });

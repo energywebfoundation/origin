@@ -243,11 +243,12 @@ export function InboxPanel(props: IProps): JSX.Element {
         }
     };
 
-    const { TEXT_COLOR_DEFAULT, MAIN_BACKGROUND_COLOR } = configuration?.styleConfig;
+    const defaultTextColor = configuration?.styleConfig?.TEXT_COLOR_DEFAULT;
+    const mainBgColor = configuration?.styleConfig?.MAIN_BACKGROUND_COLOR;
 
     const useStyles = makeStyles({
         box: {
-            background: MAIN_BACKGROUND_COLOR,
+            background: mainBgColor,
             borderRadius: '2px',
             padding: '21px 24px',
             display: 'flex',
@@ -270,7 +271,7 @@ export function InboxPanel(props: IProps): JSX.Element {
             padding: '64px 0',
             textAlign: 'center',
             fontSize: '14px',
-            color: TEXT_COLOR_DEFAULT
+            color: defaultTextColor
         }
     });
 

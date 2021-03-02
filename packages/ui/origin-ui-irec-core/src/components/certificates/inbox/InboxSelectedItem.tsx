@@ -17,13 +17,15 @@ export function InboxSelectedItem(props: {
     const { cert, device, setEnergy } = props;
     const configuration = useOriginConfiguration();
 
-    const { MAIN_BACKGROUND_COLOR, SIMPLE_TEXT_COLOR, PRIMARY_COLOR } = configuration?.styleConfig;
+    const mainBgColor = configuration?.styleConfig?.MAIN_BACKGROUND_COLOR;
+    const simpleTextColor = configuration?.styleConfig?.SIMPLE_TEXT_COLOR;
+    const primaryColor = configuration?.styleConfig?.PRIMARY_COLOR;
 
     const useStyles = makeStyles({
         item: {
             padding: '16px',
             marginBottom: '10px',
-            background: LightenColor(MAIN_BACKGROUND_COLOR, 1)
+            background: LightenColor(mainBgColor, 1)
         },
 
         top: {
@@ -35,23 +37,23 @@ export function InboxSelectedItem(props: {
         icon: {
             width: 32,
             height: 32,
-            fill: LightenColor(PRIMARY_COLOR, 3),
+            fill: LightenColor(primaryColor, 3),
             marginRight: '25px'
         },
 
         text_1: {
             fontSize: '16px',
-            color: SIMPLE_TEXT_COLOR
+            color: simpleTextColor
         },
 
         text_2: {
             fontSize: '14px',
-            color: SIMPLE_TEXT_COLOR
+            color: simpleTextColor
         },
 
         text_3: {
             fontSize: '12px',
-            color: SIMPLE_TEXT_COLOR,
+            color: simpleTextColor,
             opacity: '.5'
         },
 
@@ -128,7 +130,11 @@ export function InboxSelectedItem(props: {
                 <div className={classes.form}>
                     <TextField
                         type={'number'}
-                        style={{ flex: '1', marginRight: '10px', background: '#292929' }}
+                        style={{
+                            flex: '1',
+                            marginRight: '10px',
+                            background: LightenColor(mainBgColor, -0.5)
+                        }}
                         value={MWhValue}
                         onChange={(event) => {
                             const max = cert.maxEnergy.toNumber() / Unit.MWh;

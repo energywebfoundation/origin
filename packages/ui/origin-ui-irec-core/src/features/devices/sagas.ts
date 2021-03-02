@@ -1,14 +1,14 @@
 import { SagaIterator } from 'redux-saga';
 import { all, fork, take, select, put, apply } from 'redux-saga/effects';
 import { showNotification, NotificationType, setLoading } from '@energyweb/origin-ui-core';
-import { 
-    DeviceDTO as OriginDeviceDTO, 
-    NewDeviceDTO as OriginCreateDeviceDTO 
+import {
+    DeviceDTO as OriginDeviceDTO,
+    NewDeviceDTO as OriginCreateDeviceDTO
 } from '@energyweb/origin-device-registry-api-client';
-import { 
-    DeviceDTO as IRecMyDeviceDTO, 
+import {
+    DeviceDTO as IRecMyDeviceDTO,
     PublicDeviceDTO as IRecPublicDeviceDTO,
-    CreateDeviceDTO as IRecCreateDeviceDTO 
+    CreateDeviceDTO as IRecCreateDeviceDTO
 } from '@energyweb/origin-device-registry-irec-local-api-client';
 import { DeviceClient } from '../../utils/client';
 import { composePublicDevices, composeMyDevices, composeCreatedDevice } from '../../utils/compose';
