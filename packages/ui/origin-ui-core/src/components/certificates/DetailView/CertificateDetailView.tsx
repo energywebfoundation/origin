@@ -159,18 +159,17 @@ export function CertificateDetailView(props: IProps) {
     const [device, setDevice] = useState<DeviceDTO>(null);
 
     const fetchDeviceById = async (issuerId: string) => {
-        const { data: allDevices }: {data: DeviceDTO[]} = await deviceClient.getAll();
+        const { data: allDevices }: { data: DeviceDTO[] } = await deviceClient.getAll();
 
         const selectedDevice = allDevices.find((d) =>
-                d.externalDeviceIds.find(
-                    (deviceExternalId) =>
+            d.externalDeviceIds.find(
+                (deviceExternalId) =>
                     deviceExternalId.type === environment.ISSUER_ID &&
                     deviceExternalId.id === issuerId
-                )
-            );
+            )
+        );
         setDevice(selectedDevice);
     };
-
 
     useEffect(() => {
         async function init() {

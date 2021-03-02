@@ -186,7 +186,7 @@ export function DeviceTable(props: IOwnProps) {
         readCertified: EnergyFormatter.format(device.meterStats?.certified ?? 0),
         readToBeCertified: EnergyFormatter.format(device.meterStats?.uncertified ?? 0),
         status: device.status,
-        gridOperator: device?.gridOperator
+        gridOperator: device.gridOperator
     }));
 
     if (detailViewForDeviceId !== null) {

@@ -279,7 +279,7 @@ export function DeviceDetailView(props: IProps) {
                     </div>
                 </div>
             )}
-            {selectedDevice?.deviceGroup && (
+            {selectedDevice.deviceGroup && (
                 <DeviceGroupForm device={selectedDevice} readOnly={true} />
             )}
         </div>

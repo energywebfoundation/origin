@@ -499,7 +499,9 @@ export function CertificateTable(props: IProps) {
         return {
             deviceType,
             commissioningDate,
-            deviceLocation: getDeviceLocationText(enrichedData.producingDevice),
+            deviceLocation: enrichedData.producingDevice
+                ? getDeviceLocationText(enrichedData.producingDevice)
+                : '-',
             compliance,
             certificationDate: formatDate(moment.unix(enrichedData.certificate.creationTime)),
             energy: EnergyFormatter.format(
@@ -507,7 +509,7 @@ export function CertificateTable(props: IProps) {
                     ? claimedVolume
                     : publicVolume.add(privateVolume)
             ),
-            gridOperator: enrichedData?.gridOperatorText,
+            gridOperator: enrichedData.gridOperatorText,
             source:
                 enrichedData.certificate.source === CertificateSource.Exchange
                     ? 'Exchange'

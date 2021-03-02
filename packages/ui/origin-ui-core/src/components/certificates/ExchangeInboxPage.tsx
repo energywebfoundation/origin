@@ -59,18 +59,17 @@ export function ExchangeInboxPage(): JSX.Element {
     }
 
     const configuration = useOriginConfiguration();
-
-    const { SIMPLE_TEXT_COLOR } = configuration?.styleConfig;
+    const simpleTextColor = configuration?.styleConfig?.SIMPLE_TEXT_COLOR;
 
     const useStyles = makeStyles({
         text_1: {
             fontSize: '16px',
-            color: SIMPLE_TEXT_COLOR
+            color: simpleTextColor
         },
 
         text_2: {
             fontSize: '14px',
-            color: SIMPLE_TEXT_COLOR,
+            color: simpleTextColor,
             opacity: '.5'
         }
     });
