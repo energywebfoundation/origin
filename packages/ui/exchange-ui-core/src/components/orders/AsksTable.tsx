@@ -71,8 +71,8 @@ export const AsksTable = (props: IOwnProsp) => {
             input: {
                 type: CustomFilterInputType.dropdown,
                 availableOptions: devices.map((device) => ({
-                    label: deviceTypeChecker(device) ? device.facilityName : device.name,
-                    value: deviceTypeChecker(device) ? device.facilityName : device.name
+                    label: deviceTypeChecker(device) ? device?.facilityName : device?.name,
+                    value: deviceTypeChecker(device) ? device?.facilityName : device?.name
                 }))
             }
         },

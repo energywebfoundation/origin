@@ -9,7 +9,7 @@ import {
 import { Box, useTheme } from '@material-ui/core';
 import { GroupedCertificateList } from './GroupedCertificateList';
 import { getEnvironment } from '../../features/general';
-import { deviceById, deviceTypeChecker } from '../../utils/device';
+import { getDeviceName } from '../../utils/device';
 import { IOriginTypography } from '../../types/typography';
 import { MyDevice } from '../../types';
 
@@ -31,8 +31,7 @@ export const Certificates = (props: IOwnProps) => {
 
     const certificatesByFacility = () => {
         return certificates.reduce((grouped, cert) => {
-            const device = deviceById(cert.deviceId, devices, environment);
-            const deviceName = deviceTypeChecker(device) ? device.facilityName : device.name;
+            const deviceName = getDeviceName(cert.deviceId, devices, environment);
             grouped[deviceName] = grouped[deviceName]?.concat([cert]) || [cert];
             return grouped;
         }, {});

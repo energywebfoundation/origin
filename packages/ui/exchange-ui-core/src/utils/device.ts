@@ -23,6 +23,6 @@ export function deviceTypeChecker(device: AnyDevice): device is IOriginDevice {
 
 export function getDeviceName(id: string, devices: AnyDevice[], environment: IEnvironment): string {
     const device = deviceById(id, devices, environment);
-    const deviceName = deviceTypeChecker(device) ? device.facilityName : device.name;
-    return deviceName;
+    const deviceName = deviceTypeChecker(device) ? device?.facilityName : device?.name;
+    return deviceName ?? '-';
 }
