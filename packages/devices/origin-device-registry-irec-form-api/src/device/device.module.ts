@@ -7,6 +7,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { DeviceController } from './device.controller';
 import { Device } from './device.entity';
 import { DeviceService, SM_READS_ADAPTER } from './device.service';
+import { ValidateDeviceOwnershipQueryHandler } from './handlers/validate-device-ownership.handler';
 
 @Module({})
 export class DeviceModule {
@@ -19,7 +20,8 @@ export class DeviceModule {
                     provide: SM_READS_ADAPTER,
                     useValue: smartMeterReadingsAdapter
                 },
-                DeviceService
+                DeviceService,
+                ValidateDeviceOwnershipQueryHandler
             ],
             controllers: [DeviceController],
             exports: [DeviceService]
