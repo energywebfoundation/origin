@@ -43,7 +43,7 @@ export const BidsTable = (props: IOwnProsp) => {
 
     const deviceDataLayer = useDeviceDataLayer();
     const deviceClient = deviceDataLayer.deviceClient;
-    const deviceSelector = deviceDataLayer.getMyDevices;
+    const deviceSelector = deviceDataLayer.getAllDevices;
     const deviceFetcher = deviceDataLayer.fetchAllDevices;
     const devices = useSelector(deviceSelector) || [];
 
@@ -95,8 +95,8 @@ export const BidsTable = (props: IOwnProsp) => {
             input: {
                 type: CustomFilterInputType.dropdown,
                 availableOptions: devices.map((device) => ({
-                    label: deviceTypeChecker(device) ? device.facilityName : device.name,
-                    value: deviceTypeChecker(device) ? device.facilityName : device.name
+                    label: deviceTypeChecker(device) ? device?.facilityName : device?.name,
+                    value: deviceTypeChecker(device) ? device?.facilityName : device?.name
                 }))
             }
         },
