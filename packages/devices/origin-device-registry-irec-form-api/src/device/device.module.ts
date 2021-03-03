@@ -1,6 +1,7 @@
-import { ISmartMeterReadingsAdapter } from '@energyweb/origin-backend-core';
 import { ConfigurationModule } from '@energyweb/origin-backend';
+import { ISmartMeterReadingsAdapter } from '@energyweb/origin-backend-core';
 import { DynamicModule, Module } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { CqrsModule } from '@nestjs/cqrs';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
@@ -21,6 +22,7 @@ export class DeviceModule {
                     useValue: smartMeterReadingsAdapter
                 },
                 DeviceService,
+                ConfigService,
                 ValidateDeviceOwnershipQueryHandler
             ],
             controllers: [DeviceController],
