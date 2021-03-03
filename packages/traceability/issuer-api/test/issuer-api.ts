@@ -1,9 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { CertificateUtils, Contracts } from '@energyweb/issuer';
-import { Role, UserStatus } from '@energyweb/origin-backend-core';
+import { Role, UserStatus, ValidateDeviceOwnershipQuery } from '@energyweb/origin-backend-core';
 import { DatabaseService } from '@energyweb/origin-backend-utils';
 import { getProviderWithFallback } from '@energyweb/utils-general';
-import { CanActivate, ExecutionContext } from '@nestjs/common';
+import { CanActivate, ExecutionContext, Type } from '@nestjs/common';
+import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
 import { AuthGuard } from '@nestjs/passport';
 import { Test } from '@nestjs/testing';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -52,7 +53,16 @@ const authGuard: CanActivate = {
     }
 };
 
-export const bootstrapTestInstance: any = async () => {
+@QueryHandler(ValidateDeviceOwnershipQuery)
+export class StubValidateDeviceOwnershipQueryHandler
+    implements IQueryHandler<ValidateDeviceOwnershipQuery> {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    public async execute(query: ValidateDeviceOwnershipQuery): Promise<boolean> {
+        return true;
+    }
+}
+
+export const bootstrapTestInstance: any = async (handler: Type<any>) => {
     const registry = await deployRegistry();
     const issuer = await deployIssuer(registry.address);
 
@@ -69,7 +79,8 @@ export const bootstrapTestInstance: any = async () => {
                 logging: ['info'],
                 keepConnectionAlive: true
             }),
-            AppModule
+            AppModule,
+            handler ?? StubValidateDeviceOwnershipQueryHandler
         ],
         providers: [DatabaseService]
     })
