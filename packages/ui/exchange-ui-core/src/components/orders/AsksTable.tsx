@@ -7,12 +7,10 @@ import {
     EnergyFormatter,
     formatCurrencyComplete,
     moment,
-    deviceById,
     EnergyTypes,
     getCurrencies,
     getConfiguration,
     getEnvironment,
-    getProducingDevices,
     IPaginatedLoaderHooksFetchDataParameters,
     IPaginatedLoaderFetchDataReturnValues,
     usePaginatedLoaderFiltered,
@@ -23,6 +21,8 @@ import {
     TableMaterial,
     useLinks
 } from '@energyweb/origin-ui-core';
+import { useDeviceDataLayer } from '../../deviceDataLayer';
+import { getDeviceName, deviceTypeChecker } from '../../utils/device';
 import { Order, ANY_VALUE, ANY_OPERATOR } from '../../utils/exchange';
 import { RemoveOrderConfirmation, OrderDetailsModal } from '../modal';
 
@@ -40,7 +40,8 @@ export const AsksTable = (props: IOwnProsp) => {
     const configuration = useSelector(getConfiguration);
     const deviceTypeService = configuration?.deviceTypeService;
     const environment = useSelector(getEnvironment);
-    const devices = useSelector(getProducingDevices);
+    const properDeviceSelector = useDeviceDataLayer().getMyDevices;
+    const devices = useSelector(properDeviceSelector);
     const { getExchangeLink } = useLinks();
     const history = useHistory();
 
@@ -55,14 +56,13 @@ export const AsksTable = (props: IOwnProsp) => {
 
     const getTableFilters = (): ICustomFilterDefinition[] => [
         {
-            property: (record: Order) =>
-                deviceById(record.asset.deviceId, environment, devices).facilityName,
+            property: (record: Order) => getDeviceName(record.asset.deviceId, devices, environment),
             label: t('device.properties.facilityName'),
             input: {
                 type: CustomFilterInputType.dropdown,
                 availableOptions: devices.map((device) => ({
-                    label: device.facilityName,
-                    value: device.facilityName
+                    label: deviceTypeChecker(device) ? device.facilityName : device.name,
+                    value: deviceTypeChecker(device) ? device.facilityName : device.name
                 }))
             }
         },
@@ -110,9 +110,13 @@ export const AsksTable = (props: IOwnProsp) => {
         };
     }
 
-    const { paginatedData, loadPage, total, pageSize, setPageSize } = usePaginatedLoaderFiltered<
-        Order
-    >({
+    const {
+        paginatedData,
+        loadPage,
+        total,
+        pageSize,
+        setPageSize
+    } = usePaginatedLoaderFiltered<Order>({
         getPaginatedData,
         initialPageSize: ORDERS_PER_PAGE
     });
@@ -137,7 +141,7 @@ export const AsksTable = (props: IOwnProsp) => {
         return {
             volume: EnergyFormatter.format(Number(currentVolume), true),
             price: formatCurrencyComplete(price / 100, currency),
-            facilityName: deviceById(deviceId, environment, devices).facilityName,
+            facilityName: getDeviceName(deviceId, devices, environment),
             device_type: deviceType[0].split(';')[0],
             generationFrom: moment(generationFrom)
                 .utcOffset(Number(environment.MARKET_UTC_OFFSET))
@@ -235,6 +239,7 @@ export const AsksTable = (props: IOwnProsp) => {
             />
             {askToView && (
                 <OrderDetailsModal
+                    devices={devices}
                     order={askToView}
                     close={() => setToView(null)}
                     showCancelOrder={(ask: Order) => {

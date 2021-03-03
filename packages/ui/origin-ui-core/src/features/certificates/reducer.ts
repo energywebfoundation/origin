@@ -1,5 +1,4 @@
 import { CertificatesActions, ICertificatesAction } from './actions';
-import { ProducingDevice } from '@energyweb/device-registry';
 import {
     CertificatesClient,
     CertificationRequestsClient,
@@ -9,10 +8,6 @@ import { ICertificateViewItem } from '.';
 
 export interface ICertificatesState {
     certificates: ICertificateViewItem[];
-    requestCertificatesModal: {
-        visible: boolean;
-        producingDevice: ProducingDevice.Entity;
-    };
     blockchainPropertiesClient: BlockchainPropertiesClient;
     certificatesClient: CertificatesClient;
     certificationRequestsClient: CertificationRequestsClient;
@@ -20,10 +15,6 @@ export interface ICertificatesState {
 
 const defaultState: ICertificatesState = {
     certificates: [],
-    requestCertificatesModal: {
-        visible: false,
-        producingDevice: null
-    },
     blockchainPropertiesClient: null,
     certificatesClient: null,
     certificationRequestsClient: null
@@ -63,33 +54,6 @@ export function certificatesState(
                     action.payload,
                     ...state.certificates.slice(certificateIndex + 1)
                 ]
-            };
-
-        case CertificatesActions.showRequestCertificatesModal:
-            return {
-                ...state,
-                requestCertificatesModal: {
-                    ...state.requestCertificatesModal,
-                    producingDevice: action.payload.producingDevice
-                }
-            };
-
-        case CertificatesActions.setRequestCertificatesModalVisibility:
-            return {
-                ...state,
-                requestCertificatesModal: {
-                    ...state.requestCertificatesModal,
-                    visible: true
-                }
-            };
-
-        case CertificatesActions.hideRequestCertificatesModal:
-            return {
-                ...state,
-                requestCertificatesModal: {
-                    visible: false,
-                    producingDevice: null
-                }
             };
 
         case CertificatesActions.clearCertificates:

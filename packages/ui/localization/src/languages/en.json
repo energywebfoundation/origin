@@ -102,7 +102,13 @@
                 "imagesUploaded": "Images have been uploaded.",
                 "deviceCreated": "Device successfully created.",
                 "pleaseSelectUpToXImages": "Please select up to {limit} images. You've selected {actual}.",
-                "unexpectedErrorWhenUploadingImages": "Unexpected error occurred when uploading images."
+                "unexpectedErrorWhenUploadingImages": "Unexpected error occurred when uploading images.",
+                "errorGettingDevices": "Unexpected error occurred when getting devices",
+                "errorGettingDevice": "Unexpected error occurred when getting device",                
+                "successCreatingDevice": "Device has been created",
+                "errorCreatingDevice": "Unexpected error occurred when creating device",
+                "successApprovingDevice": "Device has been approved",
+                "errorApprovingDevice": "Unexpected error occurred when approving device"
             },
             "info": {
                 "general": "General",

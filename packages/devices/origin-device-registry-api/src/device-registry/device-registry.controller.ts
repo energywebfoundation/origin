@@ -29,10 +29,9 @@ import {
     ApiTags,
     ApiUnprocessableEntityResponse
 } from '@nestjs/swagger';
-
 import { DeviceRegistryService } from './device-registry.service';
-import { OriginDevice } from './origin-device.entity';
-import { NewDeviceDTO } from './new-device.dto';
+import { OriginDeviceDTO } from './dto/origin-device.dto';
+import { NewDeviceDTO } from './dto/new-device.dto';
 
 @ApiTags('device')
 @ApiBearerAuth('access-token')
@@ -45,28 +44,32 @@ export class DeviceRegistryController {
     @Get()
     @ApiResponse({
         status: HttpStatus.OK,
-        type: [OriginDevice],
+        type: [OriginDeviceDTO],
         description: 'Returns all Devices'
     })
-    async getAll(): Promise<OriginDevice[]> {
+    async getAll(): Promise<OriginDeviceDTO[]> {
         return this.deviceRegistryService.find();
     }
 
     @Get('/my-devices')
     @UseGuards(AuthGuard(), ActiveUserGuard, RolesGuard)
     @Roles(Role.OrganizationAdmin, Role.OrganizationDeviceManager, Role.OrganizationUser)
-    @ApiResponse({ status: HttpStatus.OK, type: [OriginDevice], description: 'Returns my Devices' })
-    async getMyDevices(@UserDecorator() { ownerId }: ILoggedInUser): Promise<OriginDevice[]> {
+    @ApiResponse({
+        status: HttpStatus.OK,
+        type: [OriginDeviceDTO],
+        description: 'Returns my Devices'
+    })
+    async getMyDevices(@UserDecorator() { ownerId }: ILoggedInUser): Promise<OriginDeviceDTO[]> {
         return this.deviceRegistryService.find({ where: { ownerId } });
     }
 
     @Get('/:id')
-    @ApiResponse({ status: HttpStatus.OK, type: OriginDevice, description: 'Returns a Device' })
+    @ApiResponse({ status: HttpStatus.OK, type: OriginDeviceDTO, description: 'Returns a Device' })
     @ApiNotFoundResponse({
         status: HttpStatus.NOT_FOUND,
         description: `The device with the ID doesn't exist`
     })
-    async get(@Param('id') id: string): Promise<OriginDevice> {
+    async get(@Param('id') id: string): Promise<OriginDeviceDTO> {
         return this.deviceRegistryService.findOne(id);
     }
 

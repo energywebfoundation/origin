@@ -1,5 +1,4 @@
-import React, { useState, useEffect } from 'react';
-import { useSelector } from 'react-redux';
+import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { BigNumber } from 'ethers';
 import { Formik, Field, Form } from 'formik';
@@ -22,9 +21,6 @@ import {
     energyImageByType,
     moment,
     EnergyFormatter,
-    deviceById,
-    getEnvironment,
-    getProducingDevices,
     EnergyTypes,
     useValidation,
     ICertificateEnergy,
@@ -33,6 +29,7 @@ import {
 } from '@energyweb/origin-ui-core';
 import { IOriginTypography } from '../../types/typography';
 import { useOriginConfiguration } from '../../utils/configuration';
+import { MyDevice } from '../../types';
 
 export interface IBundledCertificateEnergy extends ICertificateEnergy {
     volumeToBundle: BigNumber;
@@ -46,16 +43,14 @@ interface IOwnProps {
     certificate: IBundledCertificate;
     totalVolume: () => BigNumber;
     onChange: (cert: IBundledCertificate) => void;
+    device: MyDevice;
 }
 
 export const BundleItemEdit = (props: IOwnProps) => {
     const { t } = useTranslation();
-    const { onChange } = props;
-    let totalVolume = props.totalVolume;
-    const { certificate } = props;
+    const { certificate, device, onChange, totalVolume } = props;
     const {
         creationTime,
-        deviceId,
         energy: { publicVolume, volumeToBundle }
     } = certificate;
     const [selected, setSelected] = useState<boolean>(false);
@@ -67,8 +62,6 @@ export const BundleItemEdit = (props: IOwnProps) => {
     const fontSizeMd = ((useTheme().typography as unknown) as IOriginTypography)?.fontSizeMd;
     const spacing = useTheme().spacing;
 
-    const environment = useSelector(getEnvironment);
-    const devices = useSelector(getProducingDevices);
     const classes = makeStyles(() => ({
         formControl: {
             width: '100%',
@@ -84,12 +77,7 @@ export const BundleItemEdit = (props: IOwnProps) => {
         }
     }))();
 
-    useEffect(() => {
-        totalVolume = props.totalVolume;
-    }, [props.totalVolume]);
-
-    const { province, deviceType, facilityName } = deviceById(deviceId, environment, devices);
-    const type = deviceType.split(';')[0].toLowerCase() as EnergyTypes;
+    const type = device.deviceType.split(';')[0].toLowerCase() as EnergyTypes;
 
     const { Yup } = useValidation();
     const validationSchema = Yup.object().shape({
@@ -116,7 +104,8 @@ export const BundleItemEdit = (props: IOwnProps) => {
 
                     <Grid item xs={5}>
                         <Box fontSize={fontSizeMd} fontWeight="fontWeightBold">
-                            {province}, {facilityName}
+                            {'province' in device ? device.province : device.address},
+                            {'facilityName' in device ? device.facilityName : device.name}
                         </Box>
                         <Box fontSize={fontSizeMd} color="text.secondary">
                             {moment.unix(creationTime).format('MMM, YYYY')}

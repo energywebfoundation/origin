@@ -46,20 +46,18 @@ export function InboxItem(props: {
     } = props;
     const configuration = useOriginConfiguration();
 
-    const {
-        MAIN_BACKGROUND_COLOR,
-        SIMPLE_TEXT_COLOR,
-        TEXT_COLOR_DEFAULT,
-        PRIMARY_COLOR_DIM,
-        PRIMARY_COLOR
-    } = configuration?.styleConfig;
+    const mainBgColor = configuration?.styleConfig?.MAIN_BACKGROUND_COLOR;
+    const simpleTextColor = configuration?.styleConfig?.SIMPLE_TEXT_COLOR;
+    const defaultTextColor = configuration?.styleConfig?.TEXT_COLOR_DEFAULT;
+    const primaryDimColor = configuration?.styleConfig?.PRIMARY_COLOR_DIM;
+    const primaryColor = configuration?.styleConfig?.PRIMARY_COLOR;
 
-    const unselectedIconColor = LightenColor(TEXT_COLOR_DEFAULT, -7);
+    const unselectedIconColor = LightenColor(defaultTextColor, -7);
 
     const useStyles = makeStyles({
         device: {
             padding: '18px 20px',
-            background: LightenColor(MAIN_BACKGROUND_COLOR, 4),
+            background: LightenColor(mainBgColor, 4),
             boxShadow: '0 2px 4px rgba(0,0,0,.2)',
             display: 'flex',
             flexDirection: 'row'
@@ -76,7 +74,7 @@ export function InboxItem(props: {
 
         certificate: {
             padding: '18px 20px',
-            background: LightenColor(MAIN_BACKGROUND_COLOR, 6),
+            background: LightenColor(mainBgColor, 6),
             boxShadow: '0 2px 4px rgba(0,0,0,.2)',
             display: 'flex',
             flexDirection: 'row',
@@ -84,23 +82,23 @@ export function InboxItem(props: {
         },
 
         selected: {
-            background: PRIMARY_COLOR_DIM
+            background: primaryDimColor
         },
 
         text_1: {
             fontSize: '16px',
-            color: SIMPLE_TEXT_COLOR
+            color: simpleTextColor
         },
 
         text_2: {
             fontSize: '14px',
-            color: SIMPLE_TEXT_COLOR,
+            color: simpleTextColor,
             opacity: '.5'
         },
 
         text_3: {
             fontSize: '12px',
-            color: SIMPLE_TEXT_COLOR,
+            color: simpleTextColor,
             opacity: '.5'
         },
 
@@ -166,7 +164,7 @@ export function InboxItem(props: {
                             <div
                                 className={classes.iconContainer}
                                 style={{
-                                    fill: isSelected ? PRIMARY_COLOR : unselectedIconColor
+                                    fill: isSelected ? primaryColor : unselectedIconColor
                                 }}
                             >
                                 <DeviceIcon type={device.type} className={classes.icon} />
