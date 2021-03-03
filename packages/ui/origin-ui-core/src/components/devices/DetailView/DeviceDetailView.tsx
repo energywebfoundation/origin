@@ -13,8 +13,8 @@ import { formatDate } from '../../../utils/time';
 import { LightenColor } from '../../../utils/colors';
 import { PowerFormatter } from '../../../utils/PowerFormatter';
 import { useOriginConfiguration } from '../../../utils/configuration';
-// import { SmartMeterReadingsChart } from '../SmartMeterReadings/SmartMeterReadingsChart';
-// import { SmartMeterReadingsTable } from '../SmartMeterReadings/SmartMeterReadingsTable';
+import { SmartMeterReadingsChart } from '../SmartMeterReadings/SmartMeterReadingsChart';
+import { SmartMeterReadingsTable } from '../SmartMeterReadings/SmartMeterReadingsTable';
 import { downloadFile } from '../../Documents';
 import { DeviceGroupForm } from '../DeviceGroupForm';
 import { DeviceMap } from '../DeviceMap';
@@ -269,11 +269,11 @@ export function DeviceDetailView(props: IProps) {
                     <div className="container-fluid">
                         <div className="row">
                             <div className="col-lg-4">
-                                {/* <SmartMeterReadingsTable producingDevice={selectedDevice} /> */}
+                                <SmartMeterReadingsTable device={selectedDevice} />
                             </div>
 
                             <div className="col-lg-8">
-                                {/* <SmartMeterReadingsChart producingDevice={selectedDevice} /> */}
+                                <SmartMeterReadingsChart device={selectedDevice} />
                             </div>
                         </div>
                     </div>
