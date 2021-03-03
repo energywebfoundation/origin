@@ -1,4 +1,4 @@
-import { ILoggedInUser } from '@energyweb/origin-backend-core';
+import { ILoggedInUser, ValidateDeviceOwnershipQuery } from '@energyweb/origin-backend-core';
 import { Injectable } from '@nestjs/common';
 import { QueryBus } from '@nestjs/cqrs';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -11,7 +11,6 @@ import {
     UnableToVerifyOwnershipError
 } from './errors';
 import { NewDeviceDTO } from './new-device.dto';
-import { ValidateDeviceOwnershipQuery } from './queries/validate-device-ownership.query';
 
 @Injectable()
 export class DeviceRegistryService {
