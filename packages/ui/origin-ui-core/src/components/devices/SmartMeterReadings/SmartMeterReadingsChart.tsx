@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { Bar } from 'react-chartjs-2';
+import { useTranslation } from 'react-i18next';
+import { BigNumber } from 'ethers';
 import { moment, formatDate } from '../../../utils/time';
 import { Button, ButtonGroup, makeStyles, createStyles, useTheme } from '@material-ui/core';
-import { ProducingDevice } from '@energyweb/device-registry';
 import { reverse } from '../../../utils/helper';
 import { EnergyFormatter } from '../../../utils/EnergyFormatter';
 import { useOriginConfiguration } from '../../../utils/configuration';
-import { useTranslation } from 'react-i18next';
-import { BigNumber } from 'ethers';
+import { IOriginDevice } from '../../../types';
 
 enum TIMEFRAME {
     DAY = 'Day',
@@ -19,11 +19,11 @@ enum TIMEFRAME {
 const DEFAULT_TIMEFRAME = TIMEFRAME.MONTH;
 
 interface ISmartMeterReadingsChartProps {
-    producingDevice: ProducingDevice.Entity;
+    device: IOriginDevice;
 }
 
 export function SmartMeterReadingsChart(props: ISmartMeterReadingsChartProps) {
-    const { producingDevice } = props;
+    const { device } = props;
     const originConfiguration = useOriginConfiguration();
 
     const originBgColor = originConfiguration?.styleConfig?.MAIN_BACKGROUND_COLOR;
@@ -47,10 +47,10 @@ export function SmartMeterReadingsChart(props: ISmartMeterReadingsChartProps) {
     const [readings, setReadings] = useState([]);
 
     useEffect(() => {
-        (async () => {
-            setReadings(await producingDevice.getAmountOfEnergyGenerated());
-        })();
-    }, [producingDevice]);
+        if (device) {
+            setReadings(device.smartMeterReads);
+        }
+    }, [device]);
 
     const graphOptions = {
         maintainAspectRatio: false,
@@ -75,9 +75,7 @@ export function SmartMeterReadingsChart(props: ISmartMeterReadingsChartProps) {
         }
     };
 
-    const endDateInTimezone = moment(selectedTimeFrame?.endDate)
-        .tz(producingDevice?.timezone)
-        .clone();
+    const endDateInTimezone = moment(selectedTimeFrame?.endDate).tz(device.timezone).clone();
 
     function changeSelectedTimeFrame(increment = true) {
         const { timeframe } = selectedTimeFrame;
@@ -149,15 +147,15 @@ export function SmartMeterReadingsChart(props: ISmartMeterReadingsChartProps) {
             const currentDate = chartEndDate
                 .clone()
                 .subtract(currentIndex, measurementUnit)
-                .tz(producingDevice.timezone);
+                .tz(device.timezone);
 
             let totalEnergy = BigNumber.from(0);
 
             for (const reading of readings) {
-                const readingDate = moment.unix(reading.timestamp).tz(producingDevice.timezone);
+                const readingDate = moment.unix(reading.timestamp).tz(device.timezone);
 
                 if (readingDate.isSame(currentDate, measurementUnit)) {
-                    totalEnergy = totalEnergy.add(reading.energy);
+                    totalEnergy = totalEnergy.add(reading.meterReading);
                 }
             }
 
