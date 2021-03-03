@@ -62,7 +62,7 @@ export const useCertificatesMenu = (): ICertificateMenuItem[] => {
             key: 'requests',
             label: 'navigation.certificates.requests',
             component: CertificateRequestsTable,
-            show: userIsActiveAndPartOfOrg || (userIsActive && isIssuer),
+            show: userIsActiveAndPartOfOrg && !isIssuer,
             features: [OriginFeature.Certificates, OriginFeature.Buyer]
         },
         {
