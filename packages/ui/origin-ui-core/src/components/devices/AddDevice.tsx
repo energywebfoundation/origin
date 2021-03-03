@@ -18,7 +18,6 @@ import { CloudUpload } from '@material-ui/icons';
 import { DeviceStatus, IExternalDeviceId } from '@energyweb/origin-backend-core';
 import {
     getEnvironment,
-    requestDeviceCreation,
     getExternalDeviceIdTypes,
     getCompliance,
     getCountry,
@@ -35,6 +34,7 @@ import { FormikDatePicker, FormInput, HierarchicalMultiSelect } from '../Form';
 import { Upload, IUploadedFile } from '../Documents';
 import { Requirements } from '../Layout';
 import { DeviceSelectors } from './DeviceSelectors';
+import { createDevice } from '../../features/devices';
 
 interface IFormValues {
     facilityName: string;
@@ -153,7 +153,7 @@ export function AddDevice() {
         });
 
         dispatch(
-            requestDeviceCreation({
+            createDevice({
                 status: DeviceStatus.Submitted,
                 deviceType,
                 complianceRegistry: compliance,

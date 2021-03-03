@@ -35,16 +35,13 @@ import { getUserOffchain, getActiveBlockchainAccountAddress } from '../users/sel
 import {
     addCertificate,
     CertificatesActions,
-    hideRequestCertificatesModal,
     IRequestCertificateApprovalAction,
     IRequestCertificateEntityFetchAction,
     IRequestCertificatesAction,
     IRequestClaimCertificateAction,
     IRequestClaimCertificateBulkAction,
     IRequestPublishForSaleAction,
-    IRequestWithdrawCertificateAction,
-    IShowRequestCertificatesModalAction,
-    setRequestCertificatesModalVisibility
+    IRequestWithdrawCertificateAction
 } from './actions';
 import {
     getBlockchainPropertiesClient,
@@ -104,9 +101,9 @@ function* requestCertificatesSaga(): SagaIterator {
         );
 
         yield put(setLoading(true));
-        yield put(hideRequestCertificatesModal());
 
-        const { startTime, endTime, energy, files, deviceId } = action.payload;
+        const { startTime, endTime, energy, files, deviceId } = action.payload.requestData;
+        const closeModalCallback = action.payload.callback;
 
         try {
             const certificationRequestsClient: CertificationRequestsClient = yield select(
@@ -133,6 +130,10 @@ function* requestCertificatesSaga(): SagaIterator {
                 }
             ]);
 
+            if (closeModalCallback) {
+                yield call(closeModalCallback);
+            }
+
             showNotification(`Certificates requested.`, NotificationType.Success);
         } catch (error) {
             console.warn('Error while requesting certificates', error);
@@ -154,26 +155,6 @@ function* requestCertificatesSaga(): SagaIterator {
         }
 
         yield put(setLoading(false));
-    }
-}
-
-function* openRequestCertificatesModalSaga(): SagaIterator {
-    while (true) {
-        const action: IShowRequestCertificatesModalAction = yield take(
-            CertificatesActions.showRequestCertificatesModal
-        );
-        const device = action.payload.producingDevice;
-
-        const userOffchain: IUser = yield select(getUserOffchain);
-
-        if (device?.organizationId !== userOffchain?.organization?.id) {
-            showNotification(
-                `You need to own the device to request certificates.`,
-                NotificationType.Error
-            );
-        } else {
-            yield put(setRequestCertificatesModalVisibility(true));
-        }
     }
 }
 
@@ -579,14 +560,13 @@ function* reloadCertificatesSaga(): SagaIterator {
         if (!configuration) {
             continue;
         }
-        yield call(fetchDataAfterConfigurationChange, configuration);
+        yield call(fetchDataAfterConfigurationChange);
     }
 }
 
 export function* certificatesSaga(): SagaIterator {
     yield all([
         fork(requestCertificatesSaga),
-        fork(openRequestCertificatesModalSaga),
         fork(requestCertificateSaga),
         fork(requestPublishForSaleSaga),
         fork(requestClaimCertificateSaga),

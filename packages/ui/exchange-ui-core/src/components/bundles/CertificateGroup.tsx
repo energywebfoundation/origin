@@ -16,9 +16,6 @@ import {
     Theme
 } from '@material-ui/core';
 import {
-    getProducingDevices,
-    getEnvironment,
-    deviceById,
     energyImageByType,
     moment,
     EnergyFormatter,
@@ -26,8 +23,11 @@ import {
     ICertificateViewItem,
     LightenColor
 } from '@energyweb/origin-ui-core';
+import { getEnvironment } from '../../features/general';
 import { IOriginTypography } from '../../types/typography';
+import { deviceById, deviceTypeChecker } from '../../utils/device';
 import { useOriginConfiguration } from '../../utils/configuration';
+import { useDeviceDataLayer } from '../../deviceDataLayer';
 
 interface IOwnProps {
     certificates: ICertificateViewItem[];
@@ -44,13 +44,12 @@ const useStyles = makeStyles((theme: Theme) => ({
 export const CertificateGroup = (props: IOwnProps) => {
     const styles = useStyles();
     const { certificates, selected, setSelected } = props;
-    const devices = useSelector(getProducingDevices);
     const environment = useSelector(getEnvironment);
-    const { facilityName, gpsLatitude, gpsLongitude, gridOperator, province } = deviceById(
-        certificates[0]?.deviceId,
-        environment,
-        devices
-    );
+
+    const properDeviceSelector = useDeviceDataLayer().getMyDevices;
+    const devices = useSelector(properDeviceSelector);
+    const device = deviceById(certificates[0]?.deviceId, devices, environment);
+
     const configuration = useOriginConfiguration();
     const originBgColor = configuration?.styleConfig?.MAIN_BACKGROUND_COLOR;
     const bgColorLight = LightenColor(originBgColor, 2);
@@ -111,13 +110,16 @@ export const CertificateGroup = (props: IOwnProps) => {
                         }
                         label={
                             <Box mb={0} fontSize={fontSizeMd} fontWeight="fontWeightBold">
-                                {province}, {facilityName}
+                                {deviceTypeChecker(device) ? device.province : device.address},
+                                {deviceTypeChecker(device) ? device.facilityName : device.name}
                             </Box>
                         }
                     />
                 </Grid>
                 <Grid item xs={5}>
-                    {gridOperator} ({gpsLongitude}, {gpsLatitude})
+                    {device.gridOperator}(
+                    {deviceTypeChecker(device) ? device.gpsLongitude : device.longitude},
+                    {deviceTypeChecker(device) ? device.gpsLatitude : device.latitude})
                 </Grid>
             </Grid>
             <List style={{ padding: 0 }}>
@@ -126,8 +128,10 @@ export const CertificateGroup = (props: IOwnProps) => {
                         creationTime,
                         energy: { privateVolume, publicVolume }
                     } = cert;
-                    const device = deviceById(cert.deviceId, environment, devices);
-                    const type = device.deviceType.split(';')[0].toLowerCase() as EnergyTypes;
+                    const currentDevice = deviceById(cert.deviceId, devices, environment);
+                    const type = currentDevice.deviceType
+                        .split(';')[0]
+                        .toLowerCase() as EnergyTypes;
                     const energy = publicVolume.add(privateVolume);
                     return (
                         <ListItem

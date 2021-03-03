@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { Redirect } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { BigNumber } from 'ethers';
 import { AssignmentTurnedIn, Publish, Undo, BusinessCenter } from '@material-ui/icons';
-import { ProducingDevice } from '@energyweb/device-registry';
 import { getConfiguration } from '../../../features/configuration';
-import { getEnvironment } from '../../../features/general';
-import { getProducingDevices } from '../../../features/devices';
+import { getEnvironment, getBackendClient } from '../../../features/general';
+import { getAllDevices, fetchAllDevices } from '../../../features/devices';
 import {
     getCertificates,
     ICertificateViewItem,
@@ -25,6 +24,7 @@ import {
     getDeviceColumns,
     getDeviceSpecificPropertiesSearchTitle
 } from '../../../utils/device';
+import { IOriginDevice } from '../../../types';
 import {
     IPaginatedLoaderFetchDataReturnValues,
     TableMaterial,
@@ -36,7 +36,8 @@ import {
     usePaginatedLoaderFiltered,
     IPaginatedLoaderHooksFetchDataParameters,
     ITableAction,
-    TableActionId
+    TableActionId,
+    TableFallback
 } from '../../Table';
 import { PublishForSaleModal, ClaimModal, WithdrawModal, DepositModal } from '../../Modal';
 import { getUserOffchain } from '../../../features/users';
@@ -49,7 +50,7 @@ interface IProps {
 
 interface IEnrichedCertificateData {
     certificate: ICertificateViewItem;
-    producingDevice: ProducingDevice.Entity;
+    producingDevice: IOriginDevice;
     deviceTypeLabel: string;
     locationText: string;
     gridOperatorText: string;
@@ -76,8 +77,17 @@ export function CertificateTable(props: IProps) {
 
     const certificates = useSelector(getCertificates);
     const configuration = useSelector(getConfiguration);
-    const producingDevices = useSelector(getProducingDevices);
+    const allDevices = useSelector(getAllDevices);
     const environment = useSelector(getEnvironment);
+    const backendClient = useSelector(getBackendClient);
+    const deviceClient = backendClient?.deviceClient;
+    const dispatch = useDispatch();
+
+    useEffect(() => {
+        if (deviceClient) {
+            dispatch(fetchAllDevices());
+        }
+    }, [deviceClient]);
 
     const { selectedState } = props;
     const hiddenColumns = props.hiddenColumns || [];
@@ -104,7 +114,8 @@ export function CertificateTable(props: IProps) {
         const enrichedData: IEnrichedCertificateData[] = certificates.map((certificate) => {
             const producingDevice =
                 typeof certificate.deviceId !== 'undefined' &&
-                producingDevices.find(
+                allDevices !== null &&
+                allDevices.find(
                     (device) => getDeviceId(device, environment) === certificate.deviceId.toString()
                 );
 
@@ -156,7 +167,7 @@ export function CertificateTable(props: IProps) {
 
     useEffect(() => {
         loadPage(1);
-    }, [certificates]);
+    }, [certificates, allDevices]);
 
     async function claimCertificateBulk(selectedIndexes: string[]) {
         if (selectedIndexes.length === 0) {
@@ -496,7 +507,9 @@ export function CertificateTable(props: IProps) {
         return {
             deviceType,
             commissioningDate,
-            deviceLocation: getDeviceLocationText(enrichedData.producingDevice),
+            deviceLocation: enrichedData.producingDevice
+                ? getDeviceLocationText(enrichedData.producingDevice)
+                : '-',
             compliance,
             certificationDate: formatDate(moment.unix(enrichedData.certificate.creationTime)),
             energy: EnergyFormatter.format(
@@ -504,7 +517,7 @@ export function CertificateTable(props: IProps) {
                     ? claimedVolume
                     : publicVolume.add(privateVolume)
             ),
-            gridOperator: enrichedData?.gridOperatorText,
+            gridOperator: enrichedData.gridOperatorText,
             source:
                 enrichedData.certificate.source === CertificateSource.Exchange
                     ? 'Exchange'
@@ -520,6 +533,10 @@ export function CertificateTable(props: IProps) {
         Blockchain: [TableActionId.PublishForSale, TableActionId.Deposit, TableActionId.Claim],
         Exchange: [TableActionId.PublishForSale, TableActionId.Withdraw]
     };
+
+    if (certificates === null || allDevices === null) {
+        return <TableFallback />;
+    }
 
     return (
         <>
@@ -544,9 +561,9 @@ export function CertificateTable(props: IProps) {
 
             <PublishForSaleModal
                 certificate={selectedCertificate}
-                producingDevice={
+                device={
                     selectedCertificate
-                        ? producingDevices.find(
+                        ? allDevices.find(
                               (device) =>
                                   getDeviceId(device, environment) ===
                                   selectedCertificate.deviceId.toString()
@@ -559,9 +576,9 @@ export function CertificateTable(props: IProps) {
 
             <WithdrawModal
                 certificate={selectedCertificate}
-                producingDevice={
+                device={
                     selectedCertificate
-                        ? producingDevices.find(
+                        ? allDevices.find(
                               (device) =>
                                   getDeviceId(device, environment) ===
                                   selectedCertificate.deviceId.toString()
@@ -574,9 +591,9 @@ export function CertificateTable(props: IProps) {
 
             <DepositModal
                 certificate={selectedCertificate}
-                producingDevice={
+                device={
                     selectedCertificate
-                        ? producingDevices.find(
+                        ? allDevices.find(
                               (device) =>
                                   getDeviceId(device, environment) ===
                                   selectedCertificate.deviceId.toString()

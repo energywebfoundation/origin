@@ -1,4 +1,3 @@
-import { ProducingDevice } from '@energyweb/device-registry';
 import { Certificate, IClaimData } from '@energyweb/issuer';
 import {
     BlockchainPropertiesClient,
@@ -13,9 +12,6 @@ export enum CertificatesActions {
     updateCertificate = 'CERTIFICATE_UPDATED',
     resyncCertificate = 'CERTIFICATE_RESYNC',
     requestCertificates = 'REQUEST_CERTIFICATES',
-    showRequestCertificatesModal = 'SHOW_REQUEST_CERTIFICATES_MODAL',
-    setRequestCertificatesModalVisibility = 'SET_REQUEST_CERTIFICATES_MODAL_VISIBILITY',
-    hideRequestCertificatesModal = 'HIDE_REQUEST_CERTIFICATES_MODAL',
     requestCertificateEntityFetch = 'REQUEST_CERTIFICATE_ENTITY_FETCH',
     requestPublishForSale = 'CERTIFICATES_REQUEST_PUBLISH_FOR_SALE',
     requestClaimCertificate = 'CERTIFICATES_REQUEST_CLAIM_CERTIFICATE',
@@ -69,11 +65,14 @@ export type TResyncCertificateAction = typeof resyncCertificate;
 export interface IRequestCertificatesAction {
     type: CertificatesActions.requestCertificates;
     payload: {
-        deviceId: string;
-        energy: BigNumber;
-        startTime: number;
-        endTime: number;
-        files: string[];
+        requestData: {
+            deviceId: string;
+            energy: BigNumber;
+            startTime: number;
+            endTime: number;
+            files: string[];
+        };
+        callback?: () => void;
     };
 }
 
@@ -84,45 +83,45 @@ export const requestCertificates = (payload: IRequestCertificatesAction['payload
 
 export type TRequestCertificatesAction = typeof requestCertificates;
 
-export interface IShowRequestCertificatesModalAction {
-    type: CertificatesActions.showRequestCertificatesModal;
-    payload: {
-        producingDevice: ProducingDevice.Entity;
-    };
-}
+// export interface IShowRequestCertificatesModalAction {
+//     type: CertificatesActions.showRequestCertificatesModal;
+//     payload: {
+//         producingDevice: ProducingDevice.Entity;
+//     };
+// }
 
-export const showRequestCertificatesModal = (
-    payload: IShowRequestCertificatesModalAction['payload']
-) => ({
-    type: CertificatesActions.showRequestCertificatesModal,
-    payload
-});
+// export const showRequestCertificatesModal = (
+//     payload: IShowRequestCertificatesModalAction['payload']
+// ) => ({
+//     type: CertificatesActions.showRequestCertificatesModal,
+//     payload
+// });
 
-export type TShowRequestCertificatesModalAction = typeof showRequestCertificatesModal;
+// export type TShowRequestCertificatesModalAction = typeof showRequestCertificatesModal;
 
-export interface IHideRequestCertificatesModalAction {
-    type: CertificatesActions.hideRequestCertificatesModal;
-}
+// export interface IHideRequestCertificatesModalAction {
+//     type: CertificatesActions.hideRequestCertificatesModal;
+// }
 
-export const hideRequestCertificatesModal = () => ({
-    type: CertificatesActions.hideRequestCertificatesModal
-});
+// export const hideRequestCertificatesModal = () => ({
+//     type: CertificatesActions.hideRequestCertificatesModal
+// });
 
-export type THideRequestCertificatesModalAction = typeof hideRequestCertificatesModal;
+// export type THideRequestCertificatesModalAction = typeof hideRequestCertificatesModal;
 
-export interface ISetRequestCertificatesModalVisibilityAction {
-    type: CertificatesActions.setRequestCertificatesModalVisibility;
-    payload: boolean;
-}
+// export interface ISetRequestCertificatesModalVisibilityAction {
+//     type: CertificatesActions.setRequestCertificatesModalVisibility;
+//     payload: boolean;
+// }
 
-export const setRequestCertificatesModalVisibility = (
-    payload: ISetRequestCertificatesModalVisibilityAction['payload']
-) => ({
-    type: CertificatesActions.setRequestCertificatesModalVisibility,
-    payload
-});
+// export const setRequestCertificatesModalVisibility = (
+//     payload: ISetRequestCertificatesModalVisibilityAction['payload']
+// ) => ({
+//     type: CertificatesActions.setRequestCertificatesModalVisibility,
+//     payload
+// });
 
-export type TSetRequestCertificatesModalVisibilityAction = typeof setRequestCertificatesModalVisibility;
+// export type TSetRequestCertificatesModalVisibilityAction = typeof setRequestCertificatesModalVisibility;
 
 export interface IRequestCertificateEntityFetchAction {
     type: CertificatesActions.requestCertificateEntityFetch;
@@ -301,9 +300,9 @@ export type ICertificatesAction =
     | IUpdateCertificateAction
     | IResyncCertificateAction
     | IRequestCertificatesAction
-    | IShowRequestCertificatesModalAction
-    | ISetRequestCertificatesModalVisibilityAction
-    | IHideRequestCertificatesModalAction
+    // | IShowRequestCertificatesModalAction
+    // | ISetRequestCertificatesModalVisibilityAction
+    // | IHideRequestCertificatesModalAction
     | IRequestCertificateEntityFetchAction
     | IRequestPublishForSaleAction
     | IRequestClaimCertificateAction

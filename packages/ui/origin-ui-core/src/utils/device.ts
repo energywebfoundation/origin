@@ -18,6 +18,8 @@ import solid_selected from '../../assets/device_selected/icon-solid.svg';
 import thermal_selected from '../../assets/device_selected/icon-thermal.svg';
 import wind_selected from '../../assets/device_selected/icon-wind.svg';
 import marine_selected from '../../assets/device_selected/icon-marine.svg';
+import { IOriginDevice } from '../types';
+import { DeviceDTO } from '@energyweb/origin-device-registry-irec-form-api-client';
 
 type TranslateFunc = (key: string) => string;
 
@@ -42,11 +44,11 @@ export enum EnergyTypes {
 export const LOCATION_TITLE_TRANSLATION_KEY = 'device.properties.regionProvince';
 export const GRID_OPERATOR_TITLE_TRANSLATION_KEY = 'device.properties.gridOperator';
 
-export function getDeviceLocationText(device: ProducingDevice.Entity) {
+export function getDeviceLocationText(device: DeviceDTO) {
     return [device?.region, device?.province].filter((i) => i).join(', ');
 }
 
-export function getDeviceGridOperatorText(device: ProducingDevice.Entity) {
+export function getDeviceGridOperatorText(device: IOriginDevice) {
     return device?.gridOperator?.split(';')?.join(' ') || '';
 }
 
@@ -172,17 +174,6 @@ export function getDeviceSpecificPropertiesSearchTitle(
 
     return t('general.actions.search');
 }
-
-export const deviceById = (
-    id: string,
-    environment: IEnvironment,
-    devices: ProducingDevice.Entity[]
-): ProducingDevice.Entity => {
-    return devices.find((d) => {
-        const deviceId = getDeviceId(d, environment);
-        return deviceId === id;
-    });
-};
 
 export const energyImageByType = (type: EnergyTypes, selected = false): any => {
     const images = {

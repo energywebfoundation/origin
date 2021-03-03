@@ -22,7 +22,6 @@ import {
 } from '@material-ui/core';
 import { Skeleton } from '@material-ui/lab';
 import { Unit } from '@energyweb/utils-general';
-import { ProducingDevice } from '@energyweb/device-registry';
 import { DeviceStatus, IExternalDeviceId } from '@energyweb/origin-backend-core';
 import {
     getCompliance,
@@ -38,6 +37,7 @@ import { HierarchicalMultiSelect, FormInput } from '../Form';
 import { Upload, IUploadedFile } from '../Documents';
 import { Requirements } from '../Layout';
 import { DeviceSelectors } from './DeviceSelectors';
+import { IOriginDevice } from '../../types';
 
 const MAX_TOTAL_CAPACITY = 5 * Unit.MW;
 
@@ -93,7 +93,7 @@ function sumCapacityOfDevices(devices: IDeviceGroupChild[]) {
 }
 
 interface IProps {
-    device?: ProducingDevice.Entity;
+    device?: IOriginDevice;
     readOnly?: boolean;
 }
 
@@ -105,9 +105,10 @@ export function DeviceGroupForm(props: IProps) {
     const country = useSelector(getCountry);
     const externalDeviceIdTypes = useSelector(getExternalDeviceIdTypes);
     const { canAccessPage } = usePermissions();
-    const [initialFormValuesFromExistingEntity, setInitialFormValuesFromExistingEntity] = useState<
-        IFormValues
-    >(null);
+    const [
+        initialFormValuesFromExistingEntity,
+        setInitialFormValuesFromExistingEntity
+    ] = useState<IFormValues>(null);
 
     const dispatch = useDispatch();
 

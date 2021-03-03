@@ -1,4 +1,5 @@
-import { ICoreState } from '../../types';
+import { ICoreState, IOriginDevice } from '../../types';
 
-export const getProducingDevices = (state: ICoreState) =>
-    state.producingDevicesState.producingDevices;
+export const getAllDevices = (state: ICoreState): IOriginDevice[] => state.devicesState.allDevices;
+
+export const getMyDevices = (state: ICoreState): IOriginDevice[] => state.devicesState.myDevices;

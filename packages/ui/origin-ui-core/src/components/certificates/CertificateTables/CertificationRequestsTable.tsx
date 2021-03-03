@@ -5,14 +5,14 @@ import { Role, isRole } from '@energyweb/origin-backend-core';
 import {
     TableMaterial,
     IPaginatedLoaderHooksFetchDataParameters,
-    usePaginatedLoader
+    usePaginatedLoader,
+    TableFallback
 } from '../../Table';
 import { Skeleton } from '@material-ui/lab';
 import { Check } from '@material-ui/icons';
 import { CertificationRequestStatus } from '@energyweb/issuer-api-client';
-import { ProducingDevice } from '@energyweb/device-registry';
 import { getConfiguration } from '../../../features/configuration';
-import { getProducingDevices } from '../../../features/devices';
+import { getAllDevices, fetchAllDevices } from '../../../features/devices';
 import { getUserOffchain } from '../../../features/users';
 import { getBackendClient, getEnvironment } from '../../../features/general';
 import {
@@ -28,6 +28,7 @@ import {
 import { EnergyFormatter } from '../../../utils/EnergyFormatter';
 import { PowerFormatter } from '../../../utils/PowerFormatter';
 import { showNotification, NotificationType } from '../../../utils/notifications';
+import { IOriginDevice } from '../../../types';
 import { downloadFile } from '../../Documents';
 
 interface IProps {
@@ -36,27 +37,33 @@ interface IProps {
 
 interface IRecord {
     request: ICertificationRequest;
-    device: ProducingDevice.Entity;
+    device: IOriginDevice;
 }
 
 export function CertificationRequestsTable(props: IProps) {
     const configuration = useSelector(getConfiguration);
     const user = useSelector(getUserOffchain);
-    const producingDevices = useSelector(getProducingDevices);
+    const allDevices = useSelector(getAllDevices);
     const backendClient = useSelector(getBackendClient);
+    const deviceClient = backendClient?.deviceClient;
     const environment = useSelector(getEnvironment);
+    const dispatch = useDispatch();
+
+    useEffect(() => {
+        if (deviceClient) {
+            dispatch(fetchAllDevices());
+        }
+    }, [deviceClient]);
 
     const certificationRequestsClient = useSelector(getCertificationRequestsClient);
 
     const { t } = useTranslation();
 
-    const dispatch = useDispatch();
-
     async function getPaginatedData({
         requestedPageSize,
         offset
     }: IPaginatedLoaderHooksFetchDataParameters) {
-        if (!user || !backendClient || producingDevices.length === 0) {
+        if (!user || !backendClient || allDevices.length === 0) {
             return {
                 paginatedData: [],
                 total: 0
@@ -69,7 +76,7 @@ export function CertificationRequestsTable(props: IProps) {
             const { data: requests } = await certificationRequestsClient.getAll();
 
             for (const request of requests) {
-                const requestDevice = producingDevices.find(
+                const requestDevice = allDevices.find(
                     // eslint-disable-next-line no-loop-func
                     (device) =>
                         device.externalDeviceIds.some(
@@ -82,7 +89,7 @@ export function CertificationRequestsTable(props: IProps) {
                 if (
                     request.approved !== props.approved ||
                     request.status !== CertificationRequestStatus.Executed ||
-                    (!isIssuer && user?.organization?.id !== requestDevice?.organization?.id)
+                    (!isIssuer && user?.organization?.id !== requestDevice?.organizationId)
                 ) {
                     continue;
                 }
@@ -117,8 +124,10 @@ export function CertificationRequestsTable(props: IProps) {
     });
 
     useEffect(() => {
-        loadPage(1);
-    }, [props.approved, user, producingDevices.length, configuration]);
+        if (allDevices !== null) {
+            loadPage(1);
+        }
+    }, [props.approved, user, allDevices, configuration]);
 
     async function approve(rowIndex: number) {
         const certificationRequest = paginatedData[rowIndex].request;
@@ -159,10 +168,13 @@ export function CertificationRequestsTable(props: IProps) {
 
     const rows = paginatedData.map(({ device, request }) => {
         return {
+            // deepscan-disable-next-line INSUFFICIENT_NULL_CHECK
             facility: device?.facilityName,
             gridOperator: getDeviceGridOperatorText(device),
             deviceLocation: getDeviceLocationText(device),
+            // deepscan-disable-next-line INSUFFICIENT_NULL_CHECK
             type: configuration.deviceTypeService.getDisplayText(device?.deviceType),
+            // deepscan-disable-next-line INSUFFICIENT_NULL_CHECK
             capacity: PowerFormatter.format(device?.capacityInW),
             meterRead: EnergyFormatter.format(request.energy),
             files: request.files.map((fileId) => (
@@ -177,6 +189,10 @@ export function CertificationRequestsTable(props: IProps) {
             ))
         };
     });
+
+    if (allDevices === null) {
+        return <TableFallback />;
+    }
 
     return (
         <TableMaterial

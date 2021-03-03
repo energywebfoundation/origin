@@ -114,7 +114,7 @@ export function UserRegister() {
                 initialValues={initialFormValues}
                 onSubmit={submitForm}
                 validationSchema={VALIDATION_SCHEMA}
-                isInitialValid={false}
+                validateOnMount={true}
             >
                 {(formikProps) => {
                     const { isValid, isSubmitting, values } = formikProps;

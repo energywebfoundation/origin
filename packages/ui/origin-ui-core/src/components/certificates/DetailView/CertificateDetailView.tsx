@@ -1,13 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { ProducingDeviceDetailView } from '../../devices/ProducingDevice/ProducingDeviceDetailView';
+import { DeviceDetailView } from '../../devices/DetailView/DeviceDetailView';
 import { useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import { utils } from 'ethers';
 import { makeStyles, createStyles, useTheme } from '@material-ui/core';
 import { Skeleton } from '@material-ui/lab';
-import { ProducingDevice } from '@energyweb/device-registry';
-import { getEnvironment, getExchangeClient } from '../../../features/general';
-import { getProducingDevices } from '../../../features/devices';
+import { getEnvironment, getExchangeClient, getDeviceClient } from '../../../features/general';
 import {
     getCertificates,
     getCertificatesClient,
@@ -18,6 +16,7 @@ import { formatDate } from '../../../utils/time';
 import { EnergyFormatter } from '../../../utils/EnergyFormatter';
 import { LightenColor } from '../../../utils/colors';
 import { useOriginConfiguration } from '../../../utils/configuration';
+import { DeviceDTO } from '@energyweb/origin-device-registry-irec-form-api-client';
 
 interface IProps {
     id: number;
@@ -30,15 +29,20 @@ interface IEnrichedEvent {
     timestamp: number;
 }
 
+type TCertificateData = {
+    label: string;
+    data: string | string[];
+    link?: string;
+};
+
 export function CertificateDetailView(props: IProps) {
     const { t } = useTranslation();
-
     const { id } = props;
 
     const certificates = useSelector(getCertificates);
-    const producingDevices = useSelector(getProducingDevices);
     const environment = useSelector(getEnvironment);
     const exchangeClient = useSelector(getExchangeClient);
+    const deviceClient = useSelector(getDeviceClient);
     const certificatesClient = useSelector(getCertificatesClient);
     const certificationRequestsClient = useSelector(getCertificationRequestsClient);
 
@@ -150,6 +154,23 @@ export function CertificateDetailView(props: IProps) {
         setEvents(deduplicate(resolvedEvents).sort((a, b) => a.timestamp - b.timestamp));
     }
 
+    const [certificateData, setCertificateData] = useState<Array<TCertificateData[]>>([]);
+    const [eventsDisplay, setEventsDisplay] = useState<JSX.Element[]>([]);
+    const [device, setDevice] = useState<DeviceDTO>(null);
+
+    const fetchDeviceById = async (issuerId: string) => {
+        const { data: allDevices }: { data: DeviceDTO[] } = await deviceClient.getAll();
+
+        const selectedDevice = allDevices.find((d) =>
+            d.externalDeviceIds.find(
+                (deviceExternalId) =>
+                    deviceExternalId.type === environment.ISSUER_ID &&
+                    deviceExternalId.id === issuerId
+            )
+        );
+        setDevice(selectedDevice);
+    };
+
     useEffect(() => {
         async function init() {
             if (!selectedCertificate) {
@@ -162,131 +183,133 @@ export function CertificateDetailView(props: IProps) {
         init();
     }, [selectedCertificate?.id]);
 
-    let data: Array<{
-        label: string;
-        data: string | string[];
-        link?: string;
-    }>[];
-
-    let eventsDisplay = [];
-    if (selectedCertificate) {
-        let producingDevice: ProducingDevice.Entity = null;
-
-        if (selectedCertificate.deviceId) {
-            producingDevice = producingDevices.find((p) =>
-                p.externalDeviceIds?.find(
-                    (deviceExternalId) =>
-                        deviceExternalId.id === selectedCertificate.deviceId &&
-                        deviceExternalId.type === environment.ISSUER_ID
-                )
-            );
+    useEffect(() => {
+        if (selectedCertificate?.deviceId) {
+            fetchDeviceById(selectedCertificate.deviceId);
         }
+    }, [selectedCertificate]);
 
-        eventsDisplay = events.reverse().map((event, index) => (
-            <p key={index}>
-                <span className="timestamp text-muted">
-                    {formatDate(event.timestamp * 1000, true)}
-                    {event.txHash && (
-                        <>
-                            {' '}
-                            -{' '}
-                            <a
-                                href={`${environment.BLOCKCHAIN_EXPLORER_URL}/tx/${event.txHash}`}
-                                className="text-muted"
-                                target="_blank"
-                                rel="noopener"
-                            >
-                                {event.txHash}
-                            </a>
-                        </>
-                    )}
-                </span>
-                <br />
-                {event.label}
-                {event.description ? ` - ${event.description}` : ''}
-                <br />
-            </p>
-        ));
+    useEffect(() => {
+        if (events) {
+            const toDisplay = events.reverse().map((event, index) => (
+                <p key={index}>
+                    <span className="timestamp text-muted">
+                        {formatDate(event.timestamp * 1000, true)}
+                        {event.txHash && (
+                            <>
+                                {' '}
+                                -{' '}
+                                <a
+                                    href={`${environment.BLOCKCHAIN_EXPLORER_URL}/tx/${event.txHash}`}
+                                    className="text-muted"
+                                    target="_blank"
+                                    rel="noopener"
+                                >
+                                    {event.txHash}
+                                </a>
+                            </>
+                        )}
+                    </span>
+                    <br />
+                    {event.label}
+                    {event.description ? ` - ${event.description}` : ''}
+                    <br />
+                </p>
+            ));
+            setEventsDisplay(toDisplay);
+        }
+    }, [events]);
 
-        data = [
-            [
-                {
-                    label: t('certificate.properties.id'),
-                    data: selectedCertificate.id.toString()
-                },
-                {
-                    label: t('certificate.properties.claimed'),
-                    data: selectedCertificate.isClaimed
-                        ? selectedCertificate.isOwned
-                            ? t('general.responses.partially')
-                            : t('general.responses.yes')
-                        : t('general.responses.no')
-                },
-                {
-                    label: t('certificate.properties.creationDate'),
-                    data: formatDate(
-                        selectedCertificate.creationTime * 1000,
-                        false,
-                        producingDevice.timezone
-                    )
-                }
-            ],
-            [
-                {
-                    label: `${
-                        selectedCertificate.isClaimed
-                            ? t('certificate.properties.remainingEnergy')
-                            : t('certificate.properties.certifiedEnergy')
-                    } (${EnergyFormatter.displayUnit})`,
-                    data: EnergyFormatter.format(selectedCertificate.energy.publicVolume)
-                },
-                {
-                    label: t('certificate.properties.generationDateStart'),
-                    data: formatDate(
-                        selectedCertificate.generationStartTime * 1000,
-                        true,
-                        producingDevice.timezone
-                    )
-                },
-                {
-                    label: t('certificate.properties.generationDateEnd'),
-                    data: formatDate(
-                        selectedCertificate.generationEndTime * 1000,
-                        true,
-                        producingDevice.timezone
-                    )
-                }
-            ]
-        ];
-
-        if (selectedCertificate.isClaimed) {
-            const claims = selectedCertificate.myClaims.map((c) => c.claimData);
-            const uniqueClaims = [...new Set(claims)];
-
-            const claimInfo = [
-                {
-                    label: `${t('certificate.properties.claimedEnergy')} (${
-                        EnergyFormatter.displayUnit
-                    })`,
-                    data: EnergyFormatter.format(selectedCertificate.energy.claimedVolume) || ['']
-                }
+    useEffect(() => {
+        if (selectedCertificate && device) {
+            const dataToDisplay: Array<TCertificateData[]> = [
+                [
+                    {
+                        label: t('certificate.properties.id'),
+                        data: selectedCertificate.id.toString()
+                    },
+                    {
+                        label: t('certificate.properties.claimed'),
+                        data: selectedCertificate.isClaimed
+                            ? selectedCertificate.isOwned
+                                ? t('general.responses.partially')
+                                : t('general.responses.yes')
+                            : t('general.responses.no')
+                    },
+                    {
+                        label: t('certificate.properties.creationDate'),
+                        data: formatDate(
+                            selectedCertificate.creationTime * 1000,
+                            false,
+                            device.timezone
+                        )
+                    }
+                ],
+                [
+                    {
+                        label: `${
+                            selectedCertificate.isClaimed
+                                ? t('certificate.properties.remainingEnergy')
+                                : t('certificate.properties.certifiedEnergy')
+                        } (${EnergyFormatter.displayUnit})`,
+                        data: EnergyFormatter.format(selectedCertificate.energy.publicVolume)
+                    },
+                    {
+                        label: t('certificate.properties.generationDateStart'),
+                        data: formatDate(
+                            selectedCertificate.generationStartTime * 1000,
+                            true,
+                            device.timezone
+                        )
+                    },
+                    {
+                        label: t('certificate.properties.generationDateEnd'),
+                        data: formatDate(
+                            selectedCertificate.generationEndTime * 1000,
+                            true,
+                            device.timezone
+                        )
+                    }
+                ]
             ];
 
-            if (uniqueClaims.length > 0) {
-                const fieldData = uniqueClaims.map((oneBeneficiary) =>
-                    Object.values(oneBeneficiary)
-                        .filter((value) => value !== '')
-                        .join(', ')
-                );
+            if (selectedCertificate.isClaimed) {
+                const claims = selectedCertificate.myClaims.map((c) => c.claimData);
+                const uniqueClaims = [...new Set(claims)];
 
-                claimInfo.push({
-                    label: t('certificate.properties.claimBeneficiary'),
-                    data: fieldData
-                });
+                const claimInfo = [
+                    {
+                        label: `${t('certificate.properties.claimedEnergy')} (${
+                            EnergyFormatter.displayUnit
+                        })`,
+                        data: EnergyFormatter.format(selectedCertificate.energy.claimedVolume) || [
+                            ''
+                        ]
+                    }
+                ];
+
+                if (uniqueClaims.length > 0) {
+                    const fieldData = uniqueClaims.map((oneBeneficiary) =>
+                        Object.values(oneBeneficiary)
+                            .filter((value) => value !== '')
+                            .join(', ')
+                    );
+
+                    claimInfo.push({
+                        label: t('certificate.properties.claimBeneficiary'),
+                        data: fieldData
+                    });
+                }
+
+                dataToDisplay.push(claimInfo);
             }
 
-            data.push(claimInfo);
+            setCertificateData(dataToDisplay);
         }
+    }, [selectedCertificate, device]);
+
+    if (certificates === null) {
+        return <Skeleton height={500} />;
     }
 
     return (
@@ -297,7 +320,7 @@ export function CertificateDetailView(props: IProps) {
                         <div>
                             <table>
                                 <tbody>
-                                    {data.map((row, rowIndex) => (
+                                    {certificateData.map((row, rowIndex) => (
                                         <tr key={rowIndex}>
                                             {row.map((col) => (
                                                 <td key={col.label} rowSpan={1} colSpan={1}>
@@ -348,8 +371,9 @@ export function CertificateDetailView(props: IProps) {
                         </div>
                     )}
                 </div>
-                {selectedCertificate && (
-                    <ProducingDeviceDetailView
+                {selectedCertificate && device && (
+                    <DeviceDetailView
+                        id={device.id}
                         externalId={{
                             id: selectedCertificate.deviceId,
                             type: environment.ISSUER_ID
