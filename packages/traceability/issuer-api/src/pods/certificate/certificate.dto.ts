@@ -60,7 +60,11 @@ export class CertificateDTO {
     myClaims?: IClaim[];
 
     @ApiProperty({ required: false })
+    claims?: IClaim[];
+
+    @ApiProperty({ required: false })
     @ValidateIf((dto: CertificateDTO) => !!dto.blockchain)
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     blockchain?: any;
 
     @ApiProperty({ type: String, required: false })
