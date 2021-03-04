@@ -37,13 +37,7 @@ import { plainToClass } from 'class-transformer';
 
 import { SuccessResponseDTO } from '../utils/success-response.dto';
 import { DeviceService } from './device.service';
-import {
-    CodeNameDTO,
-    CreateDeviceDTO,
-    DeviceDTO,
-    PublicDeviceDTO,
-    UpdateDeviceStatusDTO
-} from './dto';
+import { CodeNameDTO, CreateDeviceDTO, DeviceDTO, PublicDeviceDTO, UpdateDeviceDTO } from './dto';
 
 @ApiTags('device')
 @ApiBearerAuth('access-token')
@@ -142,20 +136,26 @@ export class DeviceController {
 
     @Put('/device/:id')
     @UseGuards(AuthGuard(), ActiveUserGuard, RolesGuard)
-    @Roles(Role.Issuer, Role.Admin)
-    @ApiBody({ type: UpdateDeviceStatusDTO })
+    @Roles(Role.OrganizationAdmin, Role.OrganizationDeviceManager)
+    @ApiBody({ type: UpdateDeviceDTO })
     @ApiResponse({
         status: HttpStatus.OK,
         type: DeviceDTO,
-        description: `Updates a device's status`
+        description: `Updates a device data`
     })
     @ApiNotFoundResponse({ description: 'Non existent device', type: SuccessResponseDTO })
-    async updateDeviceStatus(
+    async updateDevice(
         @Param('id') id: string,
-        @Body() { status }: UpdateDeviceStatusDTO
+        @Body() deviceData: UpdateDeviceDTO,
+        @UserDecorator() loggedInUser: ILoggedInUser
     ): Promise<DeviceDTO> {
-        const device = await this.deviceService.updateStatus(id, status);
+        const device = await this.deviceService.findOne(id);
+        if (device.ownerId !== loggedInUser.ownerId) {
+            throw new NotFoundException('Device not found');
+        }
 
-        return plainToClass(DeviceDTO, device);
+        const updatedDevice = await this.deviceService.update(loggedInUser, id, deviceData);
+
+        return plainToClass(DeviceDTO, updatedDevice);
     }
 }
