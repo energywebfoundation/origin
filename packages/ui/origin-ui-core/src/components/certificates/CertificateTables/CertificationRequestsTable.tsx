@@ -23,16 +23,17 @@ import {
 import {
     getDeviceLocationText,
     getDeviceGridOperatorText,
-    getDeviceColumns
-} from '../../../utils/device';
-import { EnergyFormatter } from '../../../utils/EnergyFormatter';
-import { PowerFormatter } from '../../../utils/PowerFormatter';
-import { showNotification, NotificationType } from '../../../utils/notifications';
-import { IOriginDevice } from '../../../types';
+    getDeviceColumns,
+    EnergyFormatter,
+    PowerFormatter,
+    showNotification,
+    NotificationType
+} from '../../../utils';
 import { downloadFile } from '../../Documents';
+import { IOriginDevice } from '../../../types';
 
 interface IProps {
-    approved: boolean;
+    approved?: boolean;
 }
 
 interface IRecord {
@@ -40,7 +41,20 @@ interface IRecord {
     device: IOriginDevice;
 }
 
-export function CertificationRequestsTable(props: IProps) {
+interface IRowData {
+    approved: boolean;
+    files: JSX.Element[];
+    gridOperator: string;
+    type: string;
+    meterRead: string;
+    facility: string;
+    deviceLocation: string;
+    capacity: string;
+    status: string;
+}
+type Rows = IRowData[];
+
+export function CertificationRequestsTable(props: IProps): JSX.Element {
     const configuration = useSelector(getConfiguration);
     const user = useSelector(getUserOffchain);
     const allDevices = useSelector(getAllDevices);
@@ -87,7 +101,7 @@ export function CertificationRequestsTable(props: IProps) {
                 );
 
                 if (
-                    request.approved !== props.approved ||
+                    (props.approved !== undefined && request.approved !== props.approved) ||
                     request.status !== CertificationRequestStatus.Executed ||
                     (!isIssuer && user?.organization?.id !== requestDevice?.organizationId)
                 ) {
@@ -146,16 +160,16 @@ export function CertificationRequestsTable(props: IProps) {
         return <Skeleton variant="rect" height={200} />;
     }
 
-    const actions =
-        isRole(user, Role.Issuer) && !props.approved
-            ? [
-                  {
+    const actions = [
+        (rowData: IRowData) =>
+            isRole(user, Role.Issuer) && !rowData.approved
+                ? {
                       icon: <Check />,
                       name: 'Approve',
                       onClick: (row: string) => approve(parseInt(row, 10))
                   }
-              ]
-            : [];
+                : null
+    ];
 
     const columns = [
         { id: 'facility', label: 'Facility' },
@@ -163,10 +177,11 @@ export function CertificationRequestsTable(props: IProps) {
         { id: 'type', label: 'Type' },
         { id: 'capacity', label: `Capacity (${PowerFormatter.displayUnit})` },
         { id: 'meterRead', label: `Meter Read (${EnergyFormatter.displayUnit})` },
-        { id: 'files', label: 'Evidence files' }
+        { id: 'files', label: 'Evidence files' },
+        { id: 'status', label: 'Status' }
     ] as const;
 
-    const rows = paginatedData.map(({ device, request }) => {
+    const rows: Rows = paginatedData.map(({ device, request }) => {
         return {
             // deepscan-disable-next-line INSUFFICIENT_NULL_CHECK
             facility: device?.facilityName,
@@ -186,7 +201,9 @@ export function CertificationRequestsTable(props: IProps) {
                         {fileId}
                     </a>
                 </div>
-            ))
+            )),
+            approved: request.approved,
+            status: request.approved ? 'Approved' : 'Pending'
         };
     });
 
