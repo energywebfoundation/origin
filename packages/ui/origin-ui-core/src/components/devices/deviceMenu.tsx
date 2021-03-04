@@ -67,7 +67,7 @@ export const useDeviceMenu = (): IDeviceMenuItem[] => {
             label: t('navigation.devices.registerDeviceGroup'),
             component: DeviceGroupForm,
             features: [OriginFeature.Devices, OriginFeature.Seller],
-            show: isDeviceManagerOrAdmin()
+            show: false
         },
         {
             key: 'producing_detail_view',

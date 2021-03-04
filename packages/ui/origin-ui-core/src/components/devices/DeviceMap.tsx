@@ -1,38 +1,43 @@
 import React, { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { GoogleMap, InfoWindow, LoadScriptNext, Marker } from '@react-google-maps/api';
 import { CircularProgress } from '@material-ui/core';
-import { ProducingDevice } from '@energyweb/device-registry';
-import { IPublicOrganization } from '@energyweb/origin-backend-core';
 import { getBackendClient, getEnvironment } from '../../features/general';
-import { getProducingDevices } from '../../features/devices';
+import { getAllDevices, fetchAllDevices } from '../../features/devices';
 import { useLinks } from '../../utils/routing';
+import { IOriginDevice } from '../../types';
 
 interface IProps {
-    devices?: ProducingDevice.Entity[];
+    devices?: IOriginDevice[];
     height?: string;
 }
 
 export function DeviceMap(props: IProps) {
     const environment = useSelector(getEnvironment);
+    const deviceClient = useSelector(getBackendClient)?.deviceClient;
+    const dispatch = useDispatch();
 
-    const [deviceHighlighted, setDeviceHighlighted] = useState<ProducingDevice.Entity>(null);
-    const [organizations, setOrganizations] = useState<IPublicOrganization[]>();
+    const [deviceHighlighted, setDeviceHighlighted] = useState<IOriginDevice>(null);
     const [map, setMap] = useState(null);
 
-    const producingDevices = useSelector(getProducingDevices);
+    const allDevices = useSelector(getAllDevices) || [];
 
-    const { getProducingDeviceDetailLink } = useLinks();
-    const backendClient = useSelector(getBackendClient);
+    useEffect(() => {
+        if (deviceClient) {
+            dispatch(fetchAllDevices());
+        }
+    }, [deviceClient]);
+
+    const { getDeviceDetailLink } = useLinks();
     const { t } = useTranslation();
 
-    const devices = props.devices || producingDevices;
+    const devices: IOriginDevice[] = props.devices || allDevices;
 
     const { height = '250px' } = props;
 
-    async function showWindowForDevice(device: ProducingDevice.Entity) {
+    async function showWindowForDevice(device: IOriginDevice) {
         setDeviceHighlighted(device);
     }
 
@@ -71,13 +76,6 @@ export function DeviceMap(props: IProps) {
     useEffect(() => {
         updateBounds();
     }, [devices, map]);
-
-    useEffect(() => {
-        (async () => {
-            const { data: orgs } = await backendClient?.organizationClient?.getAll();
-            setOrganizations(orgs.map((org) => ({ ...org, status: org.status })) ?? []);
-        })();
-    }, [backendClient.organizationClient]);
 
     const defaultCenter =
         devices.length > 0
@@ -134,15 +132,10 @@ export function DeviceMap(props: IProps) {
                             <b>{deviceHighlighted.facilityName}</b>
                             <br />
                             <br />
-                            {t('deviceMap.properties.owner')}:{' '}
-                            {
-                                organizations?.find(
-                                    (o) => o?.id === deviceHighlighted.organizationId
-                                )?.name
-                            }
+                            {t('deviceMap.properties.owner')}: {deviceHighlighted.organizationName}
                             <br />
                             <br />
-                            <Link to={getProducingDeviceDetailLink(deviceHighlighted.id)}>
+                            <Link to={getDeviceDetailLink(deviceHighlighted.id)}>
                                 {t('deviceMap.actions.seeMore')}
                             </Link>
                         </div>

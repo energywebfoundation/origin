@@ -1,12 +1,12 @@
 import { ComposedPublicDevice, ComposedDevice, CreateDeviceData } from '../../types';
 
 export enum DevicesActions {
-    fetchPublicDevices = 'FETCH_PUBLIC_DEVICES',
-    fetchMyDevices = 'FETCH_MY_DEVICES',
-    storePublicDevices = 'STORE_PUBLIC_DEVICES',
-    storeMyDevices = 'STORE_MY_DEVICES',
-    createDevice = 'CREATE_DEVICE',
-    updateDeviceStatus = 'UPDATE_DEVICE_STATUS'
+    fetchPublicDevices = 'IREC_APP_FETCH_PUBLIC_DEVICES',
+    fetchMyDevices = 'IREC_APP_FETCH_MY_DEVICES',
+    storePublicDevices = 'IREC_APP_STORE_PUBLIC_DEVICES',
+    storeMyDevices = 'IREC_APP_STORE_MY_DEVICES',
+    createDevice = 'IREC_APP_CREATE_DEVICE',
+    updateDeviceStatus = 'IREC_APP_UPDATE_DEVICE_STATUS'
 }
 export interface IDevicesAction {
     type: DevicesActions;

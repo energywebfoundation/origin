@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Remove, Visibility, Search } from '@material-ui/icons';
@@ -7,12 +7,10 @@ import {
     EnergyFormatter,
     formatCurrencyComplete,
     moment,
-    deviceById,
     EnergyTypes,
     getCurrencies,
     getConfiguration,
     getEnvironment,
-    getProducingDevices,
     IPaginatedLoaderHooksFetchDataParameters,
     IPaginatedLoaderFetchDataReturnValues,
     usePaginatedLoaderFiltered,
@@ -23,6 +21,8 @@ import {
     TableMaterial,
     useLinks
 } from '@energyweb/origin-ui-core';
+import { useDeviceDataLayer } from '../../deviceDataLayer';
+import { getDeviceName, deviceTypeChecker } from '../../utils/device';
 import { Order, ANY_VALUE, ANY_OPERATOR } from '../../utils/exchange';
 import { RemoveOrderConfirmation, OrderDetailsModal } from '../modal';
 
@@ -40,9 +40,20 @@ export const AsksTable = (props: IOwnProsp) => {
     const configuration = useSelector(getConfiguration);
     const deviceTypeService = configuration?.deviceTypeService;
     const environment = useSelector(getEnvironment);
-    const devices = useSelector(getProducingDevices);
+    const deviceDataLayer = useDeviceDataLayer();
+    const deviceClient = deviceDataLayer.deviceClient;
+    const deviceSelector = deviceDataLayer.getMyDevices;
+    const deviceFetcher = deviceDataLayer.fetchMyDevices;
+    const devices = useSelector(deviceSelector) || [];
     const { getExchangeLink } = useLinks();
     const history = useHistory();
+    const dispatch = useDispatch();
+
+    useEffect(() => {
+        if (deviceClient) {
+            dispatch(deviceFetcher());
+        }
+    }, [deviceClient]);
 
     const columns = [
         { id: 'volume', label: t('order.properties.volume') },
@@ -55,14 +66,13 @@ export const AsksTable = (props: IOwnProsp) => {
 
     const getTableFilters = (): ICustomFilterDefinition[] => [
         {
-            property: (record: Order) =>
-                deviceById(record.asset.deviceId, environment, devices).facilityName,
+            property: (record: Order) => getDeviceName(record.asset.deviceId, devices, environment),
             label: t('device.properties.facilityName'),
             input: {
                 type: CustomFilterInputType.dropdown,
                 availableOptions: devices.map((device) => ({
-                    label: device.facilityName,
-                    value: device.facilityName
+                    label: deviceTypeChecker(device) ? device?.facilityName : device?.name,
+                    value: deviceTypeChecker(device) ? device?.facilityName : device?.name
                 }))
             }
         },
@@ -141,7 +151,7 @@ export const AsksTable = (props: IOwnProsp) => {
         return {
             volume: EnergyFormatter.format(Number(currentVolume), true),
             price: formatCurrencyComplete(price / 100, currency),
-            facilityName: deviceById(deviceId, environment, devices).facilityName,
+            facilityName: getDeviceName(deviceId, devices, environment),
             device_type: deviceType[0].split(';')[0],
             generationFrom: moment(generationFrom)
                 .utcOffset(Number(environment.MARKET_UTC_OFFSET))
@@ -239,6 +249,7 @@ export const AsksTable = (props: IOwnProsp) => {
             />
             {askToView && (
                 <OrderDetailsModal
+                    devices={devices}
                     order={askToView}
                     close={() => setToView(null)}
                     showCancelOrder={(ask: Order) => {

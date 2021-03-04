@@ -2,9 +2,9 @@ import { IEnvironment } from '@energyweb/origin-ui-core';
 import { DeviceClient } from '../../utils/client';
 
 export enum DeviceGeneralActions {
-    SET_ENVIRONMENT = 'SET_ENVIRONMENT',
-    INITIALIZE_DEVICE_APP = 'INITIALIZE_DEVICE_APP',
-    SET_DEVICE_CLIENT = 'SET_DEVICE_CLIENT'
+    SET_ENVIRONMENT = 'IREC_APP_SET_ENVIRONMENT',
+    INITIALIZE_DEVICE_APP = 'IREC_APP_INITIALIZE_DEVICE_APP',
+    SET_DEVICE_CLIENT = 'IREC_APP_SET_DEVICE_CLIENT'
 }
 export interface IDeviceGeneralAction {
     type: DeviceGeneralActions;

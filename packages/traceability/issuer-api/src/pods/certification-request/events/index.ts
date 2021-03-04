@@ -1,1 +1,1 @@
-export { CertificateRequestApprovedEvent } from './certificate-request-approved-event';
+export * from './certificate-request-approved-event';

@@ -1,4 +1,4 @@
-import { ValidateDeviceOwnershipQuery } from '@energyweb/origin-device-registry-api';
+import { ValidateDeviceOwnershipQuery } from '@energyweb/origin-backend-core';
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
 import { DeviceService } from '../device.service';
 

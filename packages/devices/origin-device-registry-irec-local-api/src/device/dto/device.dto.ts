@@ -2,6 +2,8 @@ import { DeviceState } from '@energyweb/issuer-irec-api-wrapper';
 import { ApiProperty } from '@nestjs/swagger';
 import { Expose } from 'class-transformer';
 
+export { DeviceState } from '@energyweb/issuer-irec-api-wrapper';
+
 export class DeviceDTO {
     @ApiProperty({ type: String })
     @Expose()
@@ -71,7 +73,7 @@ export class DeviceDTO {
     @Expose()
     notes: string;
 
-    @ApiProperty({ enum: DeviceState, enumName: 'DeviceStatus' })
+    @ApiProperty({ enum: DeviceState, enumName: 'DeviceState' })
     @Expose()
     status: DeviceState;
 

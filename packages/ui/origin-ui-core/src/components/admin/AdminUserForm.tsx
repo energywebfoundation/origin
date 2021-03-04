@@ -116,15 +116,15 @@ export function AdminUserForm(props: IProps) {
                 initialValues={initialFormValues}
                 onSubmit={submitForm}
                 validationSchema={VALIDATION_SCHEMA}
-                isInitialValid={false}
+                validateOnMount={false}
             >
                 {(formikProps) => {
-                    const { isValid, isSubmitting, errors } = formikProps;
+                    const { isValid, isSubmitting, errors, dirty } = formikProps;
 
                     const otherErrors = (errors as any)?.atLeastOneProp;
 
                     const fieldDisabled = isSubmitting || readOnly;
-                    const buttonDisabled = isSubmitting || !isValid;
+                    const buttonDisabled = isSubmitting || !isValid || !dirty;
                     return (
                         <Form translate="no">
                             <Grid container spacing={3}>

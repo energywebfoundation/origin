@@ -1,4 +1,4 @@
-import { ILoggedInUser } from '@energyweb/origin-backend-core';
+import { ILoggedInUser, ValidateDeviceOwnershipQuery } from '@energyweb/origin-backend-core';
 import { Injectable } from '@nestjs/common';
 import { QueryBus } from '@nestjs/cqrs';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -10,8 +10,7 @@ import {
     SmartMeterAlreadyUsedError,
     UnableToVerifyOwnershipError
 } from './errors';
-import { NewDeviceDTO } from './new-device.dto';
-import { ValidateDeviceOwnershipQuery } from './queries/validate-device-ownership.query';
+import { NewDeviceDTO } from './dto/new-device.dto';
 
 @Injectable()
 export class DeviceRegistryService {

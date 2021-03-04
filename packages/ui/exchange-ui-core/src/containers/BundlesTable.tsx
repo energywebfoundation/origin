@@ -9,11 +9,8 @@ import { Role, isRole, UserStatus } from '@energyweb/origin-backend-core';
 import {
     formatCurrencyComplete,
     EnergyFormatter,
-    energyShares,
-    getProducingDevices,
     EnergyTypes,
     getCurrencies,
-    getEnvironment,
     IPaginatedLoaderHooksFetchDataParameters,
     IPaginatedLoaderFetchDataReturnValues,
     usePaginatedLoaderFiltered,
@@ -24,8 +21,9 @@ import {
     Requirements,
     TableFallback
 } from '@energyweb/origin-ui-core';
+import { energyShares } from '../utils/bundles';
 import { Bundle, ExchangeClient } from '../utils/exchange';
-import { getExchangeClient } from '../features/general';
+import { getExchangeClient, getEnvironment } from '../features/general';
 import {
     getBundles,
     getShowBundleDetails,
@@ -34,6 +32,7 @@ import {
     storeBundle,
     fetchBundles
 } from '../features/bundles';
+import { useDeviceDataLayer } from '../deviceDataLayer';
 import { BundleDetails } from '../components/bundles';
 import { BundleBought } from '../components/modal';
 
@@ -52,6 +51,7 @@ const ENERGY_COLUMNS_TO_DISPLAY = [EnergyTypes.SOLAR, EnergyTypes.WIND, EnergyTy
 export const BundlesTable = (props: IBundleTableProps) => {
     const dispatch = useDispatch();
     const exchangeClient: ExchangeClient = useSelector(getExchangeClient);
+    const environment = useSelector(getEnvironment);
 
     useEffect(() => {
         if (exchangeClient) {
@@ -70,9 +70,20 @@ export const BundlesTable = (props: IBundleTableProps) => {
               .filter((b) => (owner ? b.own : true))
               .filter((b) => !(b.splits && b.splits.length === 0));
     const { t } = useTranslation();
-    const devices = useSelector(getProducingDevices);
+
+    const dataLayer = useDeviceDataLayer();
+    const deviceClient = dataLayer.deviceClient;
+    const deviceFetcher = props.owner ? dataLayer.fetchMyDevices : dataLayer.fetchAllDevices;
+    const deviceSelector = props.owner ? dataLayer.getMyDevices : dataLayer.getAllDevices;
+    const devices = useSelector(deviceSelector);
+
+    useEffect(() => {
+        if (deviceClient) {
+            dispatch(deviceFetcher());
+        }
+    }, [deviceClient]);
+
     const [selected, setSelected] = useState<Bundle>(null);
-    const environment = useSelector(getEnvironment);
     const isBundleDetailsVisible = useSelector(getShowBundleDetails);
     const [showBundleBoughtModal, setShowBundleBoughtModal] = useState<boolean>(false);
 
@@ -122,7 +133,7 @@ export const BundlesTable = (props: IBundleTableProps) => {
 
     const rows = paginatedData.map((bundle) => {
         return {
-            ...energyShares(bundle, environment, devices, ENERGY_COLUMNS_TO_DISPLAY),
+            ...energyShares(bundle, devices, ENERGY_COLUMNS_TO_DISPLAY, environment),
             price: ` ${formatCurrencyComplete(bundle.price / 100, currency)}`,
             bundleId: bundle.id
         };
@@ -206,7 +217,9 @@ export const BundlesTable = (props: IBundleTableProps) => {
                     handleRowClick={(rowIndex: string) => viewDetails(parseInt(rowIndex, 10))}
                 />
             )}
-            {isBundleDetailsVisible && <BundleDetails bundle={selected} owner={owner} />}
+            {isBundleDetailsVisible && (
+                <BundleDetails devices={devices} bundle={selected} owner={owner} />
+            )}
             {userIsActiveAndPartOfOrg && (
                 <Link to={'/exchange/create_bundle'}>
                     <Tooltip title={t('certificate.actions.create_bundle')}>

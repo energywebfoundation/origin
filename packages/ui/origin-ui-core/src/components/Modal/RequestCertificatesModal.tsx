@@ -19,6 +19,7 @@ import { moment, DATE_FORMAT_DMY } from '../../utils/time';
 import { EnergyFormatter } from '../../utils/EnergyFormatter';
 import { useOriginConfiguration } from '../../utils/configuration';
 import { Upload, IUploadedFile } from '../Documents';
+import { IOriginDevice } from '../../types';
 
 // Maximum number Solidity can handle is (2^256)-1
 export const MAX_ENERGY_PER_CERTIFICATE = BigNumber.from(2).pow(256).sub(1);
@@ -26,7 +27,7 @@ export const MAX_ENERGY_PER_CERTIFICATE = BigNumber.from(2).pow(256).sub(1);
 interface IProps {
     showModal: boolean;
     setShowModal: (showModal: boolean) => void;
-    producingDevice: any;
+    device: IOriginDevice;
 }
 
 export function RequestCertificatesModal(props: IProps) {
@@ -38,7 +39,7 @@ export function RequestCertificatesModal(props: IProps) {
         (f) => !f.removed && !f.cancelled && f.uploadProgress !== 100
     );
     const uploadedFiles = files.filter((f) => !f.removed && f.uploadedName);
-    const { showModal, setShowModal, producingDevice } = props;
+    const { showModal, setShowModal, device } = props;
     const environment = useSelector(getEnvironment);
     const configuration = useOriginConfiguration();
 
@@ -77,13 +78,14 @@ export function RequestCertificatesModal(props: IProps) {
         filesBeingUploaded.length === 0;
 
     useEffect(() => {
-        if (!producingDevice) {
+        if (!device) {
             return;
         }
 
+        setEnergyInDisplayUnit('');
         setFromDate(DEFAULTS.fromDate);
         setToDate(DEFAULTS.toDate);
-    }, [producingDevice]);
+    }, [device]);
 
     function handleClose() {
         setShowModal(false);
@@ -92,11 +94,14 @@ export function RequestCertificatesModal(props: IProps) {
     async function requestCerts() {
         dispatch(
             requestCertificates({
-                deviceId: getDeviceId(producingDevice, environment),
-                startTime: fromDate.unix(),
-                endTime: toDate.unix(),
-                energy: energyInBaseUnit,
-                files: uploadedFiles.map((f) => f.uploadedName)
+                requestData: {
+                    deviceId: getDeviceId(device, environment),
+                    startTime: fromDate.unix(),
+                    endTime: toDate.unix(),
+                    energy: energyInBaseUnit,
+                    files: uploadedFiles.map((f) => f.uploadedName)
+                },
+                callback: () => handleClose()
             })
         );
     }
@@ -106,7 +111,7 @@ export function RequestCertificatesModal(props: IProps) {
             <Dialog open={showModal || false} onClose={handleClose}>
                 <DialogTitle>
                     {t('certificate.info.requestCertificatesFor', {
-                        facilityName: producingDevice?.facilityName ?? ''
+                        facilityName: device?.facilityName ?? ''
                     })}
                 </DialogTitle>
                 <DialogContent>
