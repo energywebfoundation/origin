@@ -1,9 +1,4 @@
-import {
-    ComposedPublicDevice,
-    ComposedDevice,
-    CreateDeviceData,
-    ChangeDeviceStatus
-} from '../../types';
+import { ComposedPublicDevice, ComposedDevice, CreateDeviceData } from '../../types';
 
 export enum DevicesActions {
     fetchPublicDevices = 'IREC_APP_FETCH_PUBLIC_DEVICES',
@@ -50,14 +45,5 @@ export interface ICreateDevice {
 }
 export const createDevice = (payload: ICreateDevice['payload']) => ({
     type: DevicesActions.createDevice,
-    payload
-});
-
-export interface IUpdateDeviceStatus {
-    type: DevicesActions.updateDeviceStatus;
-    payload: ChangeDeviceStatus;
-}
-export const updateDeviceStatus = (payload: IUpdateDeviceStatus['payload']) => ({
-    type: DevicesActions.updateDeviceStatus,
     payload
 });
