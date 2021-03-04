@@ -77,7 +77,7 @@ export const BundleItemEdit = (props: IOwnProps) => {
         }
     }))();
 
-    const type = device.deviceType.split(';')[0].toLowerCase() as EnergyTypes;
+    const type = device?.deviceType.split(';')[0].toLowerCase() as EnergyTypes;
 
     const { Yup } = useValidation();
     const validationSchema = Yup.object().shape({
@@ -103,10 +103,12 @@ export const BundleItemEdit = (props: IOwnProps) => {
                     </Grid>
 
                     <Grid item xs={5}>
-                        <Box fontSize={fontSizeMd} fontWeight="fontWeightBold">
-                            {'province' in device ? device.province : device.address},
-                            {'facilityName' in device ? device.facilityName : device.name}
-                        </Box>
+                        {device && (
+                            <Box fontSize={fontSizeMd} fontWeight="fontWeightBold">
+                                {'province' in device ? device.province : device.address},
+                                {'facilityName' in device ? device.facilityName : device.name}
+                            </Box>
+                        )}
                         <Box fontSize={fontSizeMd} color="text.secondary">
                             {moment.unix(creationTime).format('MMM, YYYY')}
                         </Box>
