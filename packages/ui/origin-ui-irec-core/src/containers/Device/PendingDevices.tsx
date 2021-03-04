@@ -1,12 +1,13 @@
 import React, { useEffect } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { DeviceStatus, isRole, Role } from '@energyweb/origin-backend-core';
+import { useDispatch, useSelector } from 'react-redux';
+import { isRole, Role } from '@energyweb/origin-backend-core';
 import { getUserOffchain } from '@energyweb/origin-ui-core';
+import { DeviceState } from '@energyweb/origin-device-registry-irec-local-api';
 import {
-    getAllDevices,
-    getMyDevices,
+    fetchMyDevices,
     fetchPublicDevices,
-    fetchMyDevices
+    getAllDevices,
+    getMyDevices
 } from '../../features/devices';
 import { DeviceTable } from '../../components/devices/table';
 
@@ -24,7 +25,7 @@ export function PendingDevices() {
     return (
         <DeviceTable
             devices={devices}
-            includedStatuses={[DeviceStatus.Submitted]}
+            includedStatuses={[DeviceState.Draft, DeviceState.InProgress]}
             actions={{
                 approve: true
             }}
