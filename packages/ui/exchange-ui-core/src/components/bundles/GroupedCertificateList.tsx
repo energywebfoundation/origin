@@ -4,15 +4,17 @@ import { useTranslation } from 'react-i18next';
 import { ICertificateViewItem } from '@energyweb/origin-ui-core';
 import { CertificateGroup } from './CertificateGroup';
 import { IOriginTypography } from '../../types/typography';
+import { MyDevice } from '../../types';
 
 interface IOwnProps {
     groups: { [key: string]: ICertificateViewItem[] };
     selected: ICertificateViewItem[];
     setSelected: (certs: ICertificateViewItem[]) => void;
+    devices: MyDevice[];
 }
 
 export const GroupedCertificateList = (props: IOwnProps) => {
-    const { groups, selected, setSelected } = props;
+    const { groups, selected, setSelected, devices } = props;
     const certificates = Array.from(
         Object.values(groups).reduce((total, certs) => total.concat(certs), [])
     );
@@ -59,6 +61,7 @@ export const GroupedCertificateList = (props: IOwnProps) => {
                         certificates={groups[facility]}
                         selected={selected}
                         setSelected={setSelected}
+                        devices={devices}
                     />
                 </Box>
             ))}

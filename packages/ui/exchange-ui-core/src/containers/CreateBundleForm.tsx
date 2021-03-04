@@ -39,7 +39,7 @@ export const CreateBundleForm = () => {
         return <Requirements />;
     }
 
-    if (myDevices === null) {
+    if (!myDevices) {
         return <TableFallback />;
     }
 

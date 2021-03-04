@@ -46,6 +46,7 @@ export const Certificates = (props: IOwnProps) => {
                 groups={certificatesByFacility()}
                 selected={selected}
                 setSelected={setSelected}
+                devices={devices}
             />
         </Box>
     );
