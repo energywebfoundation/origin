@@ -14,6 +14,7 @@ import {
     entities as OriginDeviceEntities
 } from '@energyweb/origin-device-registry-api';
 import {
+    DeviceModule as IrecDeviceModule,
     AppModule as IRECDeviceRegistry,
     entities as IRECDeviceEntities
 } from '@energyweb/origin-device-registry-irec-local-api';
@@ -93,7 +94,8 @@ const OriginAppTypeOrmModule = () => {
         OriginDeviceRegistry,
         UserModule,
         CqrsModule,
-        RegistrationModule
+        RegistrationModule,
+        IrecDeviceModule
     ],
     providers: [
         { provide: APP_INTERCEPTOR, useClass: HTTPLoggingInterceptor },
