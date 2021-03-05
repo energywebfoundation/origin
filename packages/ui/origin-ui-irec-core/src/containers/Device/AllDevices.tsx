@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { DeviceState } from '@energyweb/origin-device-registry-irec-local-api';
+import { DeviceState } from '@energyweb/origin-device-registry-irec-local-api-client';
 import { fetchPublicDevices, getAllDevices } from '../../features/devices';
 import { getDeviceClient } from '../../features/general';
 import { DeviceTable } from '../../components/devices/table';

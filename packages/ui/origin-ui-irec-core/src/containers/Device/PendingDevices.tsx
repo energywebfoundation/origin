@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { isRole, Role } from '@energyweb/origin-backend-core';
 import { getUserOffchain } from '@energyweb/origin-ui-core';
-import { DeviceState } from '@energyweb/origin-device-registry-irec-local-api';
+import { DeviceState } from '@energyweb/origin-device-registry-irec-local-api-client';
 import {
     fetchMyDevices,
     fetchPublicDevices,
