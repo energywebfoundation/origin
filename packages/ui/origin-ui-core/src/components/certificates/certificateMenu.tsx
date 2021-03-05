@@ -10,6 +10,7 @@ import { ApprovedCertificates } from './ApprovedCertificates';
 import { CertificateImport } from './Import/CertificateImport';
 import { ExchangeInboxPage } from './ExchangeInboxPage';
 import { BlockchainInboxPage } from './BlockchainInboxPage';
+import { CertificateRequestsTable } from './CertificateRequestsTable';
 
 interface ICertificateMenuItem {
     key: string;
@@ -58,17 +59,24 @@ export const useCertificatesMenu = (): ICertificateMenuItem[] => {
             features: [OriginFeature.Certificates, OriginFeature.Buyer]
         },
         {
+            key: 'requests',
+            label: 'navigation.certificates.requests',
+            component: CertificateRequestsTable,
+            show: userIsActiveAndPartOfOrg && !isIssuer,
+            features: [OriginFeature.Certificates, OriginFeature.Buyer]
+        },
+        {
             key: 'pending',
             label: 'navigation.certificates.pending',
             component: PendingCertificates,
-            show: (userIsActive && isIssuer) || userIsActiveAndPartOfOrg,
+            show: userIsActive && isIssuer,
             features: [OriginFeature.Certificates, OriginFeature.CertificationRequests]
         },
         {
             key: 'approved',
             label: 'navigation.certificates.approved',
             component: ApprovedCertificates,
-            show: (userIsActive && isIssuer) || userIsActiveAndPartOfOrg,
+            show: userIsActive && isIssuer,
             features: [OriginFeature.Certificates, OriginFeature.CertificationRequests]
         },
         {

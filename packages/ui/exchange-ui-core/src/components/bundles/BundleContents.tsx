@@ -22,12 +22,8 @@ import {
 } from '@material-ui/icons';
 import { UserStatus } from '@energyweb/origin-backend-core';
 import {
-    getEnvironment,
-    getProducingDevices,
-    deviceById,
     moment,
     EnergyFormatter,
-    bundlePrice,
     EnergyTypes,
     energyImageByType,
     formatCurrencyComplete,
@@ -35,14 +31,19 @@ import {
     getUserOffchain
 } from '@energyweb/origin-ui-core';
 import { IOriginTypography } from '../../types/typography';
+import { getEnvironment } from '../../features/general';
 import { buyBundle } from '../../features/bundles';
 import { Bundle, Split } from '../../utils/exchange';
+import { bundlePrice } from '../../utils/bundles';
+import { deviceById, deviceTypeChecker } from '../../utils/device';
 import { useOriginConfiguration } from '../../utils/configuration';
+import { AnyDevice } from '../../types';
 
 interface IOwnProps {
     bundle: Bundle;
     owner: boolean;
     splits: Split[];
+    devices: AnyDevice[];
 }
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -76,16 +77,16 @@ const rowStyle = {
 };
 
 export const BundleContents = (props: IOwnProps) => {
-    const { bundle, splits } = props;
+    const { bundle, splits, devices } = props;
     const { price, items, id } = bundle;
-    const environment = useSelector(getEnvironment);
-    const devices = useSelector(getProducingDevices);
+
     const offerClasses = useStyles();
     const [selected, setSelected] = useState<Split>(null);
     const [firstItem, setFirstItem] = useState<number>(0);
     const [firstSplit, setFirstSplit] = useState<number>(0);
     const { t } = useTranslation();
     const dispatch = useDispatch();
+    const environment = useSelector(getEnvironment);
     const currency = useSelector(getCurrencies)[0];
     const configuration = useOriginConfiguration();
     const originSimpleTextColor = configuration?.styleConfig?.SIMPLE_TEXT_COLOR;
@@ -228,7 +229,7 @@ export const BundleContents = (props: IOwnProps) => {
                         itemIndex,
                         { length }
                     ) => {
-                        const device = deviceById(deviceId, environment, devices);
+                        const device = deviceById(deviceId, devices, environment);
                         return (
                             <Box
                                 key={itemIndex}
@@ -275,9 +276,13 @@ export const BundleContents = (props: IOwnProps) => {
                                                         fontSize={fontSize}
                                                         fontWeight="fontWeightBold"
                                                     >
-                                                        <Typography variant="caption">
-                                                            {device.facilityName}
-                                                        </Typography>
+                                                        {device && (
+                                                            <Typography variant="caption">
+                                                                {deviceTypeChecker(device)
+                                                                    ? device.facilityName
+                                                                    : device.name}
+                                                            </Typography>
+                                                        )}
                                                     </Box>
                                                     <Box
                                                         fontSize={fontSize}
@@ -294,7 +299,13 @@ export const BundleContents = (props: IOwnProps) => {
                                                         fontSize={fontSize}
                                                         fontWeight="fontWeightBold"
                                                     >
-                                                        <Typography>{device.province}</Typography>
+                                                        {device && (
+                                                            <Typography>
+                                                                {deviceTypeChecker(device)
+                                                                    ? device.province
+                                                                    : device.address}
+                                                            </Typography>
+                                                        )}
                                                     </Box>
                                                 </Box>
                                             </Box>
@@ -339,7 +350,7 @@ export const BundleContents = (props: IOwnProps) => {
                                             const { volume } = split.items.find(
                                                 ({ id: splitItemId }) => splitItemId === itemId
                                             );
-                                            const type = deviceById(deviceId, environment, devices)
+                                            const type = deviceById(deviceId, devices, environment)
                                                 .deviceType.split(';')[0]
                                                 .toLowerCase();
                                             return (

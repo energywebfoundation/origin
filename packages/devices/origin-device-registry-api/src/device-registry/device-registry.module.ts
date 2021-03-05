@@ -4,10 +4,10 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { DeviceRegistryController } from './device-registry.controller';
 import { DeviceRegistryService } from './device-registry.service';
-import { Device } from './device.entity';
+import { OriginDevice } from './origin-device.entity';
 
 @Module({
-    imports: [TypeOrmModule.forFeature([Device]), CqrsModule],
+    imports: [TypeOrmModule.forFeature([OriginDevice]), CqrsModule],
     providers: [DeviceRegistryService],
     exports: [DeviceRegistryService],
     controllers: [DeviceRegistryController]

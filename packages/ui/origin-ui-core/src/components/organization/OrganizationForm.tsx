@@ -99,9 +99,10 @@ const VALIDATION_SCHEMA = Yup.object({
 export function OrganizationForm(props: IProps) {
     const { entity, readOnly } = props;
     const organizationClient = useSelector(getBackendClient)?.organizationClient;
-    const [initialFormValuesFromExistingEntity, setInitialFormValuesFromExistingEntity] = useState<
-        IFormValues
-    >(null);
+    const [
+        initialFormValuesFromExistingEntity,
+        setInitialFormValuesFromExistingEntity
+    ] = useState<IFormValues>(null);
     const [companyProofs, setCompanyProofs] = useState<IUploadedFile[]>([]);
     const [signatoryId, setSignatoryId] = useState<IUploadedFile[]>([]);
     const user = useSelector(getUserOffchain);

@@ -98,11 +98,14 @@ export function RequestCertificatesModal(props: IProps) {
     async function requestCerts() {
         dispatch(
             requestCertificates({
-                deviceId: device.externalRegistryId,
-                startTime: fromDate.unix(),
-                endTime: toDate.unix(),
-                energy: energyInBaseUnit,
-                files: uploadedFiles.map((f) => f.uploadedName)
+                requestData: {
+                    deviceId: device.externalRegistryId,
+                    startTime: fromDate.unix(),
+                    endTime: toDate.unix(),
+                    energy: energyInBaseUnit,
+                    files: uploadedFiles.map((f) => f.uploadedName)
+                },
+                callback: () => handleClose()
             })
         );
     }

@@ -1,9 +1,16 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { CertificateUtils, Contracts } from '@energyweb/issuer';
-import { Role, UserStatus } from '@energyweb/origin-backend-core';
+import {
+    IUser,
+    OrganizationStatus,
+    Role,
+    UserStatus,
+    ValidateDeviceOwnershipQuery
+} from '@energyweb/origin-backend-core';
 import { DatabaseService } from '@energyweb/origin-backend-utils';
 import { getProviderWithFallback } from '@energyweb/utils-general';
-import { CanActivate, ExecutionContext } from '@nestjs/common';
+import { CanActivate, ExecutionContext, Type } from '@nestjs/common';
+import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
 import { AuthGuard } from '@nestjs/passport';
 import { Test } from '@nestjs/testing';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -27,6 +34,12 @@ export const registryDeployer = {
     privateKey: '0xc4b87d68ea2b91f9d3de3fcb77c299ad962f006ffb8711900cb93d94afec3dc3'
 };
 
+// ganache account 2
+export const otherDeviceManager = {
+    address: '0xB00F0793d0ce69d7b07db16F92dC982cD6Bdf651',
+    privateKey: '0xca77c9b06fde68bcbcc09f603c958620613f4be79f3abb4b2032131d0229462e'
+};
+
 const deployRegistry = async () => {
     return Contracts.migrateRegistry(provider, registryDeployer.privateKey);
 };
@@ -35,24 +48,73 @@ const deployIssuer = async (registry: string) => {
     return Contracts.migrateIssuer(provider, registryDeployer.privateKey, registry);
 };
 
-export const authenticatedUser = {
-    id: 1,
-    rights: Role.OrganizationDeviceManager,
-    organization: { id: '1000' },
-    blockchainAccountAddress: deviceManager.address,
-    status: UserStatus.Active
-};
+export enum TestUser {
+    UserWithoutBlockchainAccount = '1',
+    OrganizationDeviceManager = '2',
+    Issuer = '3',
+    OtherOrganizationDeviceManager = '4'
+}
+
+export const testUsers = new Map([
+    [
+        TestUser.OrganizationDeviceManager,
+        {
+            id: 1,
+            organization: { id: 1000, status: OrganizationStatus.Active },
+            status: UserStatus.Active,
+            rights: Role.OrganizationDeviceManager,
+            blockchainAccountAddress: deviceManager.address
+        } as IUser
+    ],
+    [
+        TestUser.UserWithoutBlockchainAccount,
+        {
+            id: 2,
+            organization: { id: 1001, status: OrganizationStatus.Active },
+            status: UserStatus.Active,
+            rights: Role.OrganizationAdmin
+        } as IUser
+    ],
+    [
+        TestUser.Issuer,
+        {
+            id: 3,
+            organization: { id: 1003, status: OrganizationStatus.Active },
+            status: UserStatus.Active,
+            rights: Role.Issuer,
+            blockchainAccountAddress: registryDeployer.address
+        } as IUser
+    ],
+    [
+        TestUser.OtherOrganizationDeviceManager,
+        {
+            id: 1,
+            organization: { id: 1000, status: OrganizationStatus.Active },
+            status: UserStatus.Active,
+            rights: Role.OrganizationDeviceManager,
+            blockchainAccountAddress: otherDeviceManager.address
+        } as IUser
+    ]
+]);
 
 const authGuard: CanActivate = {
     canActivate: (context: ExecutionContext) => {
         const req = context.switchToHttp().getRequest();
-        req.user = authenticatedUser;
-
+        req.user = testUsers.get(req.headers['test-user']);
         return true;
     }
 };
 
-export const bootstrapTestInstance: any = async () => {
+@QueryHandler(ValidateDeviceOwnershipQuery)
+export class StubValidateDeviceOwnershipQueryHandler
+    implements IQueryHandler<ValidateDeviceOwnershipQuery> {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    public async execute(query: ValidateDeviceOwnershipQuery): Promise<boolean> {
+        return true;
+    }
+}
+
+export const bootstrapTestInstance: any = async (handler: Type<any>) => {
     const registry = await deployRegistry();
     const issuer = await deployIssuer(registry.address);
 
@@ -69,7 +131,8 @@ export const bootstrapTestInstance: any = async () => {
                 logging: ['info'],
                 keepConnectionAlive: true
             }),
-            AppModule
+            AppModule,
+            handler ?? StubValidateDeviceOwnershipQueryHandler
         ],
         providers: [DatabaseService]
     })
@@ -95,6 +158,11 @@ export const bootstrapTestInstance: any = async () => {
     await CertificateUtils.approveOperator(
         registryDeployer.address,
         blockchainProperties.wrap(deviceManager.privateKey)
+    );
+
+    await CertificateUtils.approveOperator(
+        registryDeployer.address,
+        blockchainProperties.wrap(otherDeviceManager.privateKey)
     );
 
     app.useLogger(['log', 'error']);

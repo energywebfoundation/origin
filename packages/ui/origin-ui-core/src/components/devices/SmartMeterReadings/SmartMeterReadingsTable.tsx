@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { BigNumber } from 'ethers';
 import moment from 'moment-timezone';
-import { ProducingDevice } from '@energyweb/device-registry';
+import { useTranslation } from 'react-i18next';
 import { TableMaterial } from '../../Table/TableMaterial';
 import {
     usePaginatedLoader,
@@ -9,30 +9,30 @@ import {
 } from '../../Table/PaginatedLoaderHooks';
 import { EnergyFormatter } from '../../../utils/EnergyFormatter';
 import { formatDate } from '../../../utils/time';
-import { useTranslation } from 'react-i18next';
+import { IOriginDevice } from '../../../types';
 
 interface IProps {
-    producingDevice: ProducingDevice.Entity;
+    device: IOriginDevice;
 }
 
 type TRecord = [string, number];
 
 export function SmartMeterReadingsTable(props: IProps) {
-    const { producingDevice } = props;
+    const { device } = props;
     const { t } = useTranslation();
 
     async function getPaginatedData({
         requestedPageSize,
         offset
     }: IPaginatedLoaderHooksFetchDataParameters) {
-        const readings = await producingDevice.getAmountOfEnergyGenerated();
-        const deviceTimezone = producingDevice.timezone;
+        const readings = device.smartMeterReads;
+        const deviceTimezone = device.timezone;
 
         const data = [];
         let currentSmartMeterState = BigNumber.from(0);
 
         for (let i = 0; i < readings.length; i++) {
-            currentSmartMeterState = currentSmartMeterState.add(readings[i].energy);
+            currentSmartMeterState = currentSmartMeterState.add(readings[i].meterReading);
 
             data.push([
                 formatDate(moment.unix(readings[i].timestamp).tz(deviceTimezone), true),
@@ -61,13 +61,13 @@ export function SmartMeterReadingsTable(props: IProps) {
         return () => {
             isMounted = false;
         };
-    }, [producingDevice]);
+    }, [device]);
 
     const columns = [
         {
             id: 'time',
             label: t('meterReads.properties.time', {
-                timezone: producingDevice.timezone
+                timezone: device.timezone
             })
         },
         {
