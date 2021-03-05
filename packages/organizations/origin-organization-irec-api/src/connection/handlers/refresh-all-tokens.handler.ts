@@ -18,6 +18,10 @@ export class RefreshAllTokensHandler implements ICommandHandler<RefreshAllTokens
     ) {}
 
     async execute(): Promise<void> {
+        if (!this.isIrecIntegrationEnabled()) {
+            return;
+        }
+
         this.logger.log('Started RefreshAllTokensHandler command');
         const irecApiUrl = this.configService.get<string>('IREC_API_URL');
 
@@ -59,5 +63,9 @@ export class RefreshAllTokensHandler implements ICommandHandler<RefreshAllTokens
         this.logger.log(
             `Update IREC access tokens finished, updated: ${updated}, failed: ${failed}`
         );
+    }
+
+    isIrecIntegrationEnabled(): boolean {
+        return !!this.configService.get<string>('IREC_API_URL');
     }
 }

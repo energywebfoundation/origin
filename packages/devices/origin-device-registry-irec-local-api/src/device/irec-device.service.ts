@@ -23,7 +23,11 @@ export class IrecDeviceService {
         private readonly configService: ConfigService
     ) {}
 
-    async getIrecClient(user: UserIdentifier | string | number) {
+    isIrecIntegrationEnabled(): boolean {
+        return !!this.configService.get<string>('IREC_API_URL');
+    }
+
+    private async getIrecClient(user: UserIdentifier | string | number) {
         const irecConnection = await this.commandBus.execute(new GetConnectionCommand(user));
 
         if (!irecConnection) {
@@ -47,6 +51,13 @@ export class IrecDeviceService {
         user: UserIdentifier,
         deviceData: DeviceCreateUpdateParams
     ): Promise<IrecDevice> {
+        if (!this.isIrecIntegrationEnabled()) {
+            return {
+                ...deviceData,
+                status: DeviceState.InProgress,
+                code: ''
+            };
+        }
         const irecClient = await this.getIrecClient(user);
         const irecDevice = await irecClient.device.create(deviceData);
         await irecClient.device.submit(irecDevice.code);
@@ -59,6 +70,13 @@ export class IrecDeviceService {
         code: string,
         device: Partial<IrecDevice>
     ): Promise<IrecDevice> {
+        if (!this.isIrecIntegrationEnabled()) {
+            return {
+                ...device,
+                status: DeviceState.InProgress,
+                code
+            };
+        }
         const irecClient = await this.getIrecClient(user);
         const iredDevice = await irecClient.device.edit(code, device);
         await irecClient.device.submit(code);
