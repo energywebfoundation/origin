@@ -75,6 +75,10 @@ export class DeviceService {
         return this.findOne(id);
     }
 
+    async updateStatus(id: string, status: DeviceState): Promise<void> {
+        await this.repository.update(id, { status });
+    }
+
     getDeviceTypes(): CodeNameDTO[] {
         return IREC_FUELS;
     }
