@@ -1,5 +1,6 @@
 import { Expose, Transform } from 'class-transformer';
 import {
+    IsBoolean,
     IsDate,
     IsIn,
     IsLatitude,
@@ -88,6 +89,10 @@ export class DeviceCreateUpdateParams {
     @IsOptional()
     @IsString()
     notes?: string;
+
+    @IsOptional()
+    @IsBoolean()
+    active: boolean;
 }
 
 export class Device extends DeviceCreateUpdateParams {
