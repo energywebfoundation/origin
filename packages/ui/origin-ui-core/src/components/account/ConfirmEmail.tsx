@@ -53,13 +53,12 @@ export function ConfirmEmail(props: any) {
         case EmailConfirmationResponse.Expired:
             message = 'expired';
             break;
-        default:
-            message = 'loading';
     }
 
     return (
         <>
             {confirmationState !== null &&
+                message !== null &&
                 showNotification(
                     t(`user.feedback.emailConfirmation.${message}`),
                     NotificationType.Success

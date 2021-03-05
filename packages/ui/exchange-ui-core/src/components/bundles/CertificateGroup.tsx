@@ -27,12 +27,13 @@ import { getEnvironment } from '../../features/general';
 import { IOriginTypography } from '../../types/typography';
 import { deviceById, deviceTypeChecker } from '../../utils/device';
 import { useOriginConfiguration } from '../../utils/configuration';
-import { useDeviceDataLayer } from '../../deviceDataLayer';
+import { MyDevice } from '../../types';
 
 interface IOwnProps {
     certificates: ICertificateViewItem[];
     selected: ICertificateViewItem[];
     setSelected: (certs: ICertificateViewItem[]) => void;
+    devices: MyDevice[];
 }
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -43,11 +44,9 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 export const CertificateGroup = (props: IOwnProps) => {
     const styles = useStyles();
-    const { certificates, selected, setSelected } = props;
+    const { certificates, selected, setSelected, devices } = props;
     const environment = useSelector(getEnvironment);
 
-    const properDeviceSelector = useDeviceDataLayer().getMyDevices;
-    const devices = useSelector(properDeviceSelector);
     const device = deviceById(certificates[0]?.deviceId, devices, environment);
 
     const configuration = useOriginConfiguration();
@@ -109,18 +108,24 @@ export const CertificateGroup = (props: IOwnProps) => {
                             />
                         }
                         label={
-                            <Box mb={0} fontSize={fontSizeMd} fontWeight="fontWeightBold">
-                                {deviceTypeChecker(device) ? device.province : device.address},
-                                {deviceTypeChecker(device) ? device.facilityName : device.name}
-                            </Box>
+                            device ? (
+                                <Box mb={0} fontSize={fontSizeMd} fontWeight="fontWeightBold">
+                                    {deviceTypeChecker(device) ? device.province : device.address},
+                                    {deviceTypeChecker(device) ? device.facilityName : device.name}
+                                </Box>
+                            ) : (
+                                <></>
+                            )
                         }
                     />
                 </Grid>
-                <Grid item xs={5}>
-                    {device.gridOperator}(
-                    {deviceTypeChecker(device) ? device.gpsLongitude : device.longitude},
-                    {deviceTypeChecker(device) ? device.gpsLatitude : device.latitude})
-                </Grid>
+                {device && (
+                    <Grid item xs={5}>
+                        {device.gridOperator}(
+                        {deviceTypeChecker(device) ? device.gpsLongitude : device.longitude},
+                        {deviceTypeChecker(device) ? device.gpsLatitude : device.latitude})
+                    </Grid>
+                )}
             </Grid>
             <List style={{ padding: 0 }}>
                 {certificates.map((cert) => {
@@ -129,7 +134,7 @@ export const CertificateGroup = (props: IOwnProps) => {
                         energy: { privateVolume, publicVolume }
                     } = cert;
                     const currentDevice = deviceById(cert.deviceId, devices, environment);
-                    const type = currentDevice.deviceType
+                    const type = currentDevice?.deviceType
                         .split(';')[0]
                         .toLowerCase() as EnergyTypes;
                     const energy = publicVolume.add(privateVolume);
