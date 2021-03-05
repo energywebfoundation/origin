@@ -3,7 +3,8 @@
     "compilerOptions": {
         "outDir": "./dist/js",
         "emitDecoratorMetadata": true,
-        "experimentalDecorators": true
+        "experimentalDecorators": true,
+        "baseUrl": "./"
     },
     "include": ["src/**/*", "migrations/*", "ormconfig*.ts", "test/*", "types/*"]
 }
