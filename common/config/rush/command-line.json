@@ -36,6 +36,15 @@
             "autoinstallerName": "rush-prettier",
             // This will invoke common/autoinstallers/rush-prettier/node_modules/.bin/pretty-quick
             "shellCommand": "pretty-quick --staged"
+        },
+        {
+            "name": "test:e2e",
+            "commandKind": "bulk",
+            "summary": "Run all test:e2e in packages",
+            "safeForSimultaneousRushProcesses": false,
+            "enableParallelism": false,
+            "ignoreMissingScript": true,
+            "allowWarningsInSuccessfulBuild": true
         }
         // {
         //   /**

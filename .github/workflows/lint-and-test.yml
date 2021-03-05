@@ -51,3 +51,6 @@ jobs:
 
     - name: Build application
       run: node common/scripts/install-run-rush.js rebuild --verbose
+
+    - name: Run all test:e2e in packages
+      run: node common/scripts/install-run-rush.js test:e2e --verbose
