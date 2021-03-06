@@ -4941,10 +4941,10 @@
     original-require "^1.0.1"
     source-map-support "^0.5.19"
 
-"@truffle/db@^0.5.0":
-  version "0.5.0"
-  resolved "https://registry.yarnpkg.com/@truffle/db/-/db-0.5.0.tgz#b0ced9004667d320e9c9d561eb8257612b53a3f4"
-  integrity sha512-n+z0vVb/HBpsBAMGYGE2RWE+7bQyUfMmYanKJlGkrGUk3NK8aH960In5dklVh4MvX60VSV8wmy+xDQCtBiEKVw==
+"@truffle/db@^0.5.3":
+  version "0.5.3"
+  resolved "https://registry.yarnpkg.com/@truffle/db/-/db-0.5.3.tgz#1223ee5c9b9f112abf5883f647d46ae1e45d5dbd"
+  integrity sha512-cNQJgcqC77xAIvFrS9R1XHmppOnlZmVZvcEqHOv0PGzcf0XA+hUkUgiOHFYn5bwTvGxLMrBlBmAnBprKlJYsRg==
   dependencies:
     "@truffle/abi-utils" "^0.1.4"
     "@truffle/code-utils" "^1.2.23"
@@ -4955,6 +4955,7 @@
     graphql "^15.3.0"
     graphql-tag "^2.11.0"
     graphql-tools "^6.2.4"
+    json-stable-stringify "^1.0.1"
     jsondown "^1.0.0"
     pascal-case "^2.0.1"
     pluralize "^8.0.0"
@@ -4966,10 +4967,10 @@
     source-map-support "^0.5.19"
     web3-utils "1.2.9"
 
-"@truffle/debugger@^8.0.15":
-  version "8.0.15"
-  resolved "https://registry.yarnpkg.com/@truffle/debugger/-/debugger-8.0.15.tgz#918566bfe5c20f26c1f7d24a04bdd9280e031cf8"
-  integrity sha512-bhmqUpNMN7wvTGzgrNH7n7tSbj9brS/moQ5YJ7ZzDyftSAkLG6DRgts9j569nBctEq920TEEhem9Gy1GsElNfw==
+"@truffle/debugger@^8.0.17":
+  version "8.0.17"
+  resolved "https://registry.yarnpkg.com/@truffle/debugger/-/debugger-8.0.17.tgz#a13cd3c967bf045e71a00bd711fb371effa06752"
+  integrity sha512-CpxsW3edO0gPygLUmIkhFC4hgONltYuhJIM8jhdYL4KpDe8hRlFjWeiveH++iJX/1ka1A2Wbyk9G/TtCdiLY4Q==
   dependencies:
     "@truffle/abi-utils" "^0.1.5"
     "@truffle/codec" "^0.10.1"
@@ -26045,17 +26046,17 @@ truffle-typings@1.0.8:
     "@types/mocha" "^5.2.5"
     "@types/web3" "^1.0.18"
 
-truffle@5.2.0:
-  version "5.2.0"
-  resolved "https://registry.yarnpkg.com/truffle/-/truffle-5.2.0.tgz#977ea5940ea3fd35f4e3bc344af933d0880dad13"
-  integrity sha512-AGz1N5nHH1a7xrm3IK/JkIqhZHTIFNtzso8OUyONBcKjNnu0GyEd9zb3j+1Chz/EBcXvHqPzMpNwbjEoOn6uNA==
+truffle@5.2.3:
+  version "5.2.3"
+  resolved "https://registry.yarnpkg.com/truffle/-/truffle-5.2.3.tgz#6c1585da56b704397017833ea6b62e18303b924f"
+  integrity sha512-iOeOSaCZtQ+TWsEh6yc6Al+RVkWTsJQnceXNYSCYR86QcXssGY5CqDQ2JwIxwAN4YMRf4GZ/LRAPul6qX36b6A==
   dependencies:
-    "@truffle/debugger" "^8.0.15"
+    "@truffle/debugger" "^8.0.17"
     app-module-path "^2.2.0"
     mocha "8.1.2"
     original-require "^1.0.1"
   optionalDependencies:
-    "@truffle/db" "^0.5.0"
+    "@truffle/db" "^0.5.3"
 
 ts-dedent@^2.0.0:
   version "2.0.0"
