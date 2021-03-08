@@ -20,7 +20,7 @@ export enum IconSize {
 }
 
 interface IProps {
-    icon: React.ReactType;
+    icon: React.ElementType;
     iconSize: IconSize;
     popoverText: string[];
     className?: string;
@@ -28,7 +28,14 @@ interface IProps {
 }
 
 export function IconPopover(props: IProps) {
-    const { icon: Icon, iconSize, popoverText, className, clickable = false } = props;
+    const {
+        icon: Icon,
+        iconSize,
+        popoverText,
+        className,
+        clickable = false,
+        ...otherProps
+    } = props;
     const classes = useStyles();
     const [anchorEl, setAnchorEl] = useState(null);
     const open = Boolean(anchorEl);
@@ -62,7 +69,7 @@ export function IconPopover(props: IProps) {
     ));
 
     return (
-        <div className={className}>
+        <div className={className} {...otherProps}>
             {clickable ? (
                 <>
                     <Button aria-describedby={clickableId} onClick={handleClick}>

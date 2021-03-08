@@ -14,6 +14,7 @@ module.exports = {
         // Add '.ts' and '.tsx' as resolvable extensions.
         extensions: ['.ts', '.tsx', '.js', '.json'],
         alias: {
+            '@material-ui/styles': require.resolve('../node_modules/@material-ui/styles'),
             'react-redux': require.resolve('react-redux')
         },
         fallback: {
@@ -33,7 +34,12 @@ module.exports = {
     devServer: {
         port: 3000,
         compress: true,
-        historyApiFallback: true
+        historyApiFallback: true,
+        watchOptions: {
+            ignored: [
+                path.resolve(__dirname, '../cypress')
+            ]
+        }
     },
 
     plugins: [

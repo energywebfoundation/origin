@@ -40,7 +40,7 @@ export function SidebarSubMenu(props: IProps) {
                         const link = `${rootLink}/${menu.key}`;
 
                         return (
-                            <li key={menu.key}>
+                            <li key={menu.key} data-cy={menu.key}>
                                 <NavLink to={link}>{t(menu.label)}</NavLink>
                             </li>
                         );

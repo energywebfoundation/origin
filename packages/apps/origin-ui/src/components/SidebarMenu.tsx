@@ -103,7 +103,7 @@ export function SidebarMenu() {
     }))(Tooltip);
 
     const dotStyle = {
-        background: 'gold',
+        backgroundColor: 'rgb(255, 215, 0)',
         width: '12px',
         height: '12px',
         borderRadius: '50%',
@@ -120,7 +120,7 @@ export function SidebarMenu() {
                 <Typography variant="h6">
                     {user?.status === UserStatus.Pending && (
                         <LightTooltip arrow title={t('user.popover.yourAccountIsPending')}>
-                            <span style={dotStyle} />
+                            <span data-cy="user-pending-badge" style={dotStyle} />
                         </LightTooltip>
                     )}
                     <span>{user ? `${user.firstName} ${user.lastName}` : ''}</span>
@@ -139,7 +139,7 @@ export function SidebarMenu() {
                 <ul>
                     {enabledFeatures.includes(OriginFeature.Devices) && (
                         <>
-                            <li className="mainMenu">
+                            <li className="mainMenu" data-cy="devices-menu">
                                 <NavLink to={getDevicesLink()}>{t('header.devices')}</NavLink>
                             </li>
                             <SidebarSubMenu
@@ -158,7 +158,7 @@ export function SidebarMenu() {
                         userIsActiveAndPartOfOrg) ||
                         isIssuer) && (
                         <>
-                            <li className="mainMenu">
+                            <li className="mainMenu" data-cy="certificates-menu">
                                 <NavLink to={getCertificatesLink()}>
                                     {t('header.certificates')}
                                 </NavLink>
@@ -173,7 +173,7 @@ export function SidebarMenu() {
 
                     {enabledFeatures.includes(OriginFeature.Exchange) && (
                         <>
-                            <li className="mainMenu">
+                            <li className="mainMenu" data-cy="exchange-menu">
                                 <NavLink to={getExchangeLink()}>{t('header.exchange')}</NavLink>
                             </li>
                             <SidebarSubMenu
@@ -186,7 +186,7 @@ export function SidebarMenu() {
 
                     {isRole(user, Role.OrganizationAdmin, Role.Admin, Role.SupportAgent) && (
                         <>
-                            <li className="mainMenu">
+                            <li className="mainMenu" data-cy="organizations-menu">
                                 <NavLink to={getOrganizationLink()}>
                                     {t('header.organizations')}
                                 </NavLink>
@@ -200,7 +200,7 @@ export function SidebarMenu() {
                     )}
                     {isRole(user, Role.Admin) && (
                         <>
-                            <li className="mainMenu">
+                            <li className="mainMenu" data-cy="admin-menu">
                                 <NavLink to={getAdminLink()}>{t('header.admin')}</NavLink>
                             </li>
                             <SidebarSubMenu
@@ -213,7 +213,7 @@ export function SidebarMenu() {
 
                     {isRole(user, Role.SupportAgent) && (
                         <>
-                            <li className="mainMenu">
+                            <li className="mainMenu" data-cy="support-agent-menu">
                                 <NavLink to={getAdminLink()}>{t('header.supportAgent')}</NavLink>
                             </li>
                             <SidebarSubMenu
@@ -224,7 +224,7 @@ export function SidebarMenu() {
                         </>
                     )}
                     <>
-                        <li className="mainMenu">
+                        <li className="mainMenu" data-cy="settings-menu">
                             <NavLink to={getAccountLink()}>{t('settings.settings')}</NavLink>
                         </li>
                         <SidebarSubMenu
