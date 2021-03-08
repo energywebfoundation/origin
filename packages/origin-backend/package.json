@@ -15,7 +15,7 @@
         "build:ts": "tsc -b tsconfig.json && cp migrations/initial.sql dist/js/migrations/",
         "prettier": "prettier --write --config-precedence file-override './src/**/*'",
         "test:e2e": "yarn typeorm:run && mocha -r ts-node/register test/*.e2e-spec.ts --timeout 60000 --exit",
-        "typeorm": "ts-node -r tsconfig-paths/register ./node_modules/.bin/typeorm --config ormconfig-dev.ts",
+        "typeorm": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js --config ormconfig-dev.ts",
         "typeorm:migrate": "yarn typeorm migration:generate -- -n",
         "typeorm:run": "yarn typeorm migration:run",
         "typeorm:drop": "yarn typeorm schema:drop",

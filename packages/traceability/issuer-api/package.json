@@ -29,7 +29,7 @@
         "test:e2e": "yarn typeorm:run && concurrently --success first --kill-others -n eth,test \"yarn start-ganache\"  \"wait-on tcp:8581 && yarn test:mocha\"",
         "start-ganache": "ganache-cli -m 'chalk park staff buzz chair purchase wise oak receive avoid avoid home' -l 8000000 -e 1000000 -a 20 -p 8581 -q",
         "clean": "shx rm -rf dist dist-shakeable",
-        "typeorm": "ts-node -r tsconfig-paths/register ./node_modules/.bin/typeorm --config ormconfig-dev.ts",
+        "typeorm": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js --config ormconfig-dev.ts",
         "typeorm:migrate": "yarn typeorm migration:generate -- -n",
         "typeorm:run": "yarn typeorm migration:run",
         "typeorm:drop": "yarn typeorm schema:drop",
