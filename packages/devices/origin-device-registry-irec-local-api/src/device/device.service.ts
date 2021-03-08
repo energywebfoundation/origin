@@ -1,4 +1,4 @@
-import { DeviceCreateUpdateParams, DeviceState } from '@energyweb/issuer-irec-api-wrapper';
+import { Device as IrecDevice, DeviceCreateUpdateParams, DeviceState } from '@energyweb/issuer-irec-api-wrapper';
 import { ILoggedInUser } from '@energyweb/origin-backend-core';
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
@@ -93,5 +93,13 @@ export class DeviceService {
 
     isValidFuelType(fuelType: string): boolean {
         return !!this.getFuelTypes().find((fuel) => fuel.code === fuelType);
+    }
+
+    async getDevicesToImport(user: ILoggedInUser): Promise<IrecDevice[]> {
+        const irecDevices = await this.irecDeviceService.getDevices(user);
+        const devices = await this.repository.find({ where: { ownerId: user.ownerId } });
+        const deviceCodes: string[] = devices.map((d) => d.code);
+
+        return irecDevices.filter((d) => deviceCodes.includes(d.code));
     }
 }

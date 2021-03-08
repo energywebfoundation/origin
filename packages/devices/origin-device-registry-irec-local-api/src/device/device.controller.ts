@@ -37,7 +37,14 @@ import { plainToClass } from 'class-transformer';
 
 import { SuccessResponseDTO } from '../utils/success-response.dto';
 import { DeviceService } from './device.service';
-import { CodeNameDTO, CreateDeviceDTO, DeviceDTO, PublicDeviceDTO, UpdateDeviceDTO } from './dto';
+import {
+    CodeNameDTO,
+    CreateDeviceDTO,
+    DeviceDTO,
+    IrecDeviceDTO,
+    PublicDeviceDTO,
+    UpdateDeviceDTO
+} from './dto';
 
 @ApiTags('device')
 @ApiBearerAuth('access-token')
@@ -157,5 +164,19 @@ export class DeviceController {
         const updatedDevice = await this.deviceService.update(loggedInUser, id, deviceData);
 
         return plainToClass(DeviceDTO, updatedDevice);
+    }
+
+    @Get('/devices-to-import')
+    @UseGuards(AuthGuard(), ActiveUserGuard, RolesGuard)
+    @Roles(Role.OrganizationAdmin, Role.OrganizationDeviceManager, Role.OrganizationUser)
+    @ApiResponse({
+        status: HttpStatus.OK,
+        type: [IrecDeviceDTO],
+        description: 'Returns not imported IREC devices'
+    })
+    async getDevicesToImport(
+        @UserDecorator() loggedInUser: ILoggedInUser
+    ): Promise<IrecDeviceDTO[]> {
+        return this.deviceService.getDevicesToImport(loggedInUser);
     }
 }
