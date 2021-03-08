@@ -61,7 +61,7 @@ export const useExchangeMenu = (): IExchangeMenuItem[] => {
             features: [OriginFeature.Exchange, OriginFeature.Bundles]
         },
         {
-            key: 'my-trades',
+            key: 'my_trades',
             label: 'navigation.exchange.my_trades',
             component: MyTrades,
             show: userIsActiveAndPartOfOrg,
