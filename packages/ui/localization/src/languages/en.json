@@ -437,7 +437,7 @@
                 "blockchainWhatIs": "This address is separate from the exchange deposit address. You need it if you want to manage the platform with your own blockchain address.",
                 "blockchainWhatFor": "A connected user blockchain address is required to withdraw certificates from the exchange and retire certificates.",
                 "blockchainHowTo": "Select the right blockchain account in your MetaMask browser wallet and click “Connect Blockchain Address” to connect. Visit metamask.io to set up your own blockchain wallet.",
-                "yourAccountIsPending": "You user account status is pending",
+                "yourAccountIsPending": "Your user account status is pending",
                 "yourOrganizationIsPending": "Your organization status is pending"
             },
             "feedback": {
