@@ -81,7 +81,7 @@ export function UserEmailChange(): JSX.Element {
             validate={ValidationHandler}
         >
             {(formikProps: FormikProps<typeof INITIAL_VALUES>) => {
-                const { isSubmitting, touched } = formikProps;
+                const { isSubmitting, dirty } = formikProps;
                 const fieldDisabled = isSubmitting || !isEditing;
 
                 return (
@@ -91,6 +91,7 @@ export function UserEmailChange(): JSX.Element {
                             <Grid container spacing={3}>
                                 <Grid item xs={6}>
                                     <FormInput
+                                        data-cy="email"
                                         label={t('user.properties.email')}
                                         property="email"
                                         disabled={fieldDisabled}
@@ -101,12 +102,13 @@ export function UserEmailChange(): JSX.Element {
                             </Grid>
                             {isEditing && (
                                 <Button
+                                    data-cy="email-save-button"
                                     style={{ marginRight: 10 }}
                                     type="button"
                                     variant="contained"
                                     color="primary"
                                     className="mt-3 right"
-                                    disabled={!touched.email}
+                                    disabled={!dirty}
                                     onClick={async () => {
                                         await formikProps.validateForm();
                                         await formikProps.submitForm();
@@ -117,6 +119,7 @@ export function UserEmailChange(): JSX.Element {
                             )}
                             {isEditing && (
                                 <Button
+                                    data-cy="email-cancel-button"
                                     type="button"
                                     variant="contained"
                                     color="primary"
@@ -131,6 +134,7 @@ export function UserEmailChange(): JSX.Element {
                             )}
                             {!isEditing && (
                                 <Button
+                                    data-cy="email-edit-button"
                                     type="button"
                                     variant="contained"
                                     color="primary"
