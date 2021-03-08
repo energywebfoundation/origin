@@ -33,7 +33,12 @@ module.exports = {
     devServer: {
         port: 3000,
         compress: true,
-        historyApiFallback: true
+        historyApiFallback: true,
+        watchOptions: {
+            ignored: [
+                path.resolve(__dirname, '../cypress')
+            ]
+        }
     },
 
     plugins: [
