@@ -141,6 +141,7 @@ export function UserRegister() {
                                             {t('user.properties.title')}
                                         </InputLabel>
                                         <Field
+                                            data-cy="title-select"
                                             name="titleSelect"
                                             label={t('user.properties.title')}
                                             component={Select}
@@ -166,6 +167,7 @@ export function UserRegister() {
                                             required
                                         >
                                             <Field
+                                                data-cy="other-title-input"
                                                 label={t('user.properties.title')}
                                                 name="titleInput"
                                                 component={TextField}
@@ -178,6 +180,7 @@ export function UserRegister() {
                                     )}
 
                                     <FormInput
+                                        data-cy="first-name"
                                         label={t('user.properties.firstName')}
                                         property="firstName"
                                         disabled={fieldDisabled}
@@ -186,6 +189,7 @@ export function UserRegister() {
                                     />
 
                                     <FormInput
+                                        data-cy="last-name"
                                         label={t('user.properties.lastName')}
                                         property="lastName"
                                         disabled={fieldDisabled}
@@ -195,6 +199,7 @@ export function UserRegister() {
                                 </Grid>
                                 <Grid item xs={6}>
                                     <FormInput
+                                        data-cy="email"
                                         label={t('user.properties.email')}
                                         property="email"
                                         disabled={fieldDisabled}
@@ -203,6 +208,7 @@ export function UserRegister() {
                                     />
 
                                     <FormInput
+                                        data-cy="telephone"
                                         label={t('user.properties.telephone')}
                                         property="telephone"
                                         disabled={fieldDisabled}
@@ -217,6 +223,7 @@ export function UserRegister() {
                                         required
                                     >
                                         <Field
+                                            data-cy="password"
                                             label={t('user.properties.password')}
                                             name="password"
                                             component={TextField}
@@ -231,6 +238,7 @@ export function UserRegister() {
                             </Grid>
 
                             <Button
+                                data-cy="register-button"
                                 type="submit"
                                 variant="contained"
                                 color="primary"

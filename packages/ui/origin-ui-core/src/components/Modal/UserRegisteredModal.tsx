@@ -47,6 +47,7 @@ export const UserRegisteredModal = ({ showModal, setShowModal }: IProps) => {
             </DialogTitle>
             <DialogActions>
                 <Button
+                    data-cy="user-registered-modal-ok"
                     variant="contained"
                     color="primary"
                     onClick={() => history.push(getAccountLoginLink())}
