@@ -77,7 +77,8 @@ export const BundleItemEdit = (props: IOwnProps) => {
         }
     }))();
 
-    const type = device.deviceType.split(';')[0].toLowerCase() as EnergyTypes;
+    const type =
+        (device.deviceType.split(';')[0].toLowerCase() as EnergyTypes) ?? EnergyTypes.Solar;
 
     const { Yup } = useValidation();
     const validationSchema = Yup.object().shape({
