@@ -56,19 +56,9 @@ export class MatchingEngineService<TProduct, TProductFilter> implements OnModule
         this.logger.log(
             `Initializing matching engine with ${priceStrategy.constructor.name} strategy`
         );
-
-        const orders = await this.orderService.getAllActiveOrders();
-        this.logger.log(`Submitting ${orders.length} existing orders`);
-
         this.matchingEngine = new MatchingEngine(priceStrategy);
 
-        for (const order of orders) {
-            this.logger.log(`Submitting order ${order.id}`);
-
-            const mappedOrder = await this.orderMapperService.map(order);
-
-            this.matchingEngine.submitOrder(mappedOrder);
-        }
+        await this.initTrades();
 
         this.matchingEngine.trades.subscribe(async (trades) => this.onTradeExecutedEvent(trades));
         this.matchingEngine.actionResults.subscribe(async (actionResultEvents) =>
@@ -99,6 +89,12 @@ export class MatchingEngineService<TProduct, TProductFilter> implements OnModule
         this.matchingEngine.cancelOrder(orderId);
     }
 
+    public async clear(): Promise<void> {
+        this.matchingEngine.clear();
+
+        await this.initTrades();
+    }
+
     @Interval(Number(process.env.EXCHANGE_MATCHING_INTERVAL) || 1000)
     private executeMatching() {
         if (!this.initialized) {
@@ -106,6 +102,19 @@ export class MatchingEngineService<TProduct, TProductFilter> implements OnModule
         }
 
         this.matchingEngine.tick();
+    }
+
+    private async initTrades(): Promise<void> {
+        const orders = await this.orderService.getAllActiveOrders();
+        this.logger.log(`Submitting ${orders.length} existing orders`);
+
+        for (const order of orders) {
+            this.logger.log(`Submitting order ${order.id}`);
+
+            const mappedOrder = await this.orderMapperService.map(order);
+
+            this.matchingEngine.submitOrder(mappedOrder);
+        }
     }
 
     private async onTradeExecutedEvent(tradeEvents: List<TradeExecutedEvent>) {
