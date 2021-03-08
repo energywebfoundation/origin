@@ -66,13 +66,13 @@ describe('Inactive user rights', () => {
         cy.dataCy('info-save-button').click();
         cy.notification('Error to update User profile');
         cy.get('.toast').click();
-        cy.wait(300);
+        cy.wait(100);
 
         cy.dataCy('last-name').type('-edit');
         cy.dataCy('info-save-button').click();
         cy.notification('Error to update User profile');
         cy.get('.toast').click();
-        cy.wait(300);
+        cy.wait(200);
 
         cy.dataCy('telephone').type('-edit');
         cy.dataCy('info-save-button').click();
