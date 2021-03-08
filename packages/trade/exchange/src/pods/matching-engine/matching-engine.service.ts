@@ -90,9 +90,12 @@ export class MatchingEngineService<TProduct, TProductFilter> implements OnModule
     }
 
     public async clear(): Promise<void> {
-        this.matchingEngine.clear();
+        this.initialized = false;
 
+        this.matchingEngine.clear();
         await this.initTrades();
+
+        this.initialized = true;
     }
 
     @Interval(Number(process.env.EXCHANGE_MATCHING_INTERVAL) || 1000)
