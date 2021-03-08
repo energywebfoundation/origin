@@ -25,7 +25,7 @@ export function ChangePasswordForm(): JSX.Element {
         newPassword: Yup.string().label('New Password').required(),
         newPasswordConfirm: Yup.string()
             .oneOf([Yup.ref('newPassword'), null], "Entered value doesn't match new password")
-            .label('Confirm New Password')
+            .label('Confirm Password')
             .required()
     });
 
@@ -80,8 +80,9 @@ export function ChangePasswordForm(): JSX.Element {
             validate={ValidationHandler}
         >
             {(formikProps: FormikProps<typeof INITIAL_VALUES>) => {
-                const { isSubmitting, touched } = formikProps;
+                const { isSubmitting, isValid } = formikProps;
                 const fieldDisabled = isSubmitting || !isEditing;
+
                 return (
                     <Form translate="no">
                         <Paper className="container">
@@ -91,6 +92,7 @@ export function ChangePasswordForm(): JSX.Element {
                             <Grid container spacing={3}>
                                 <Grid item xs={4}>
                                     <FormInput
+                                        data-cy="current-password"
                                         label="Current Password"
                                         property="currentPassword"
                                         disabled={fieldDisabled}
@@ -101,6 +103,7 @@ export function ChangePasswordForm(): JSX.Element {
                                 </Grid>
                                 <Grid item xs={4}>
                                     <FormInput
+                                        data-cy="new-password"
                                         label="New Password"
                                         property="newPassword"
                                         disabled={fieldDisabled}
@@ -111,6 +114,7 @@ export function ChangePasswordForm(): JSX.Element {
                                 </Grid>
                                 <Grid item xs={4}>
                                     <FormInput
+                                        data-cy="confirm-password"
                                         label="Confirm Password"
                                         property="newPasswordConfirm"
                                         disabled={fieldDisabled}
@@ -123,12 +127,13 @@ export function ChangePasswordForm(): JSX.Element {
 
                             {isEditing && (
                                 <Button
+                                    data-cy="password-save-button"
                                     style={{ marginRight: 10 }}
                                     type="button"
                                     variant="contained"
                                     color="primary"
                                     className="mt-3 right"
-                                    disabled={!(touched.currentPassword || touched.newPassword)}
+                                    disabled={!isValid}
                                     onClick={async () => {
                                         await formikProps.validateForm();
                                         await formikProps.submitForm();
@@ -139,6 +144,7 @@ export function ChangePasswordForm(): JSX.Element {
                             )}
                             {isEditing && (
                                 <Button
+                                    data-cy="password-cancel-button"
                                     type="button"
                                     variant="contained"
                                     color="primary"
@@ -153,6 +159,7 @@ export function ChangePasswordForm(): JSX.Element {
                             )}
                             {!isEditing && (
                                 <Button
+                                    data-cy="password-edit-button"
                                     type="button"
                                     variant="contained"
                                     color="primary"

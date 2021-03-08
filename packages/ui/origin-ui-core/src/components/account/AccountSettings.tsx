@@ -121,6 +121,7 @@ export function AccountSettings() {
                     <FormControl fullWidth>
                         <InputLabel>{t('settings.properties.language')}</InputLabel>
                         <Select
+                            data-cy="language-select"
                             value={originConfiguration.language}
                             onChange={(e) => setOriginLanguage(e.target.value as ORIGIN_LANGUAGE)}
                         >
