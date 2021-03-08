@@ -42,7 +42,7 @@ export function SupplyTable() {
 
     const deviceSelector = deviceDataLayer.getMyDevices;
     const deviceFetcher = deviceDataLayer.fetchMyDevices;
-    const myDevices = useSelector(deviceSelector) || [];
+    const myDevices = useSelector(deviceSelector);
 
     const [showUpdateModal, setShowModal] = useState<boolean>(false);
     const [entity, setEntity] = useState<IDeviceWithSupply>(null);
@@ -119,10 +119,10 @@ export function SupplyTable() {
     });
 
     useEffect(() => {
-        if (deviceClient) {
+        if (supplySettings !== null && myDevices !== null) {
             loadPage(1);
         }
-    }, [deviceClient, supplySettings]);
+    }, [supplySettings, myDevices]);
 
     useEffect(() => {
         if (deviceClient) {
@@ -211,7 +211,7 @@ export function SupplyTable() {
     if (!canAccessPage?.value) {
         return <Requirements />;
     }
-    if (supplySettings === null) {
+    if (supplySettings === null || myDevices === null) {
         return <TableFallback />;
     }
 

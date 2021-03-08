@@ -159,18 +159,13 @@ export function TableMaterial<T extends readonly ITableColumn[]>(props: IProps<T
             })
             .filter((ac) => Boolean(ac));
 
+        const finalFinalActions = allowed
+            ? finalActionsList.filter((action) => allowed[(row as any).source]?.includes(action.id))
+            : finalActionsList;
+
         return (
             <TableCell key={id} className={classes.tableCellWrappingActions}>
-                <Actions
-                    actions={
-                        allowed
-                            ? finalActionsList.filter((action) =>
-                                  allowed[(row as any).source]?.includes(action.id)
-                              )
-                            : finalActionsList
-                    }
-                    id={id}
-                />
+                {finalFinalActions.length > 0 && <Actions actions={finalFinalActions} id={id} />}
             </TableCell>
         );
     }

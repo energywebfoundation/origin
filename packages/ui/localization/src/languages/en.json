@@ -29,6 +29,7 @@
                 "detailView": "Detail view",
                 "pending": "Pending",
                 "approved": "Approved",
+                "requests": "Requests",
                 "import": "Certificate import",
                 "exchangeInbox": "Exchange inbox",
                 "blockchainInbox": "Blockchain inbox"

@@ -2,7 +2,8 @@ import {
     ActiveUserGuard,
     RolesGuard,
     Roles,
-    ExceptionInterceptor
+    ExceptionInterceptor,
+    UserDecorator
 } from '@energyweb/origin-backend-utils';
 import {
     Body,
@@ -18,7 +19,13 @@ import {
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
-import { ISuccessResponse, Role } from '@energyweb/origin-backend-core';
+import {
+    ILoggedInUser,
+    ISuccessResponse,
+    ResponseFailure,
+    Role,
+    ValidateDeviceOwnershipQuery
+} from '@energyweb/origin-backend-core';
 
 import { ApiBearerAuth, ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CreateCertificationRequestCommand } from './commands/create-certification-request.command';
@@ -96,8 +103,17 @@ export class CertificationRequestController {
     })
     @ApiBody({ type: CreateCertificationRequestDTO })
     public async create(
+        @UserDecorator() { ownerId }: ILoggedInUser,
         @Body() dto: CreateCertificationRequestDTO
     ): Promise<CertificationRequestDTO | SuccessResponseDTO> {
+        const isOwnerOfTheDevice = await this.queryBus.execute(
+            new ValidateDeviceOwnershipQuery(ownerId, dto.deviceId)
+        );
+
+        if (!isOwnerOfTheDevice) {
+            return ResponseFailure('Not a device owner', HttpStatus.FORBIDDEN);
+        }
+
         const validationCheck = await this.commandBus.execute(
             new ValidateCertificationRequestCommand(dto)
         );

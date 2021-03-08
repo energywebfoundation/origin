@@ -41,6 +41,7 @@ export const certificateToDto = async (
         isOwned: publicVolume.add(privateVolume).gt(0),
         myClaims:
             certificate.claims?.filter((claim) => utils.getAddress(claim.to) === userAddress) ?? [],
+        claims: certificate.claims ?? [],
         issuedPrivately: certificate.issuedPrivately
     };
 };

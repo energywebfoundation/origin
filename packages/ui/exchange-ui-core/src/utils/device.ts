@@ -1,6 +1,5 @@
 import { AnyDevice } from '../types';
 import { IOriginDevice } from '@energyweb/origin-ui-core';
-// import { ComposedDevice, ComposedPublicDevice } from "@energyweb/origin-ui-irec-core";
 import { IEnvironment } from '../features/general';
 
 export function deviceById<T extends AnyDevice>(
@@ -15,11 +14,15 @@ export function deviceById<T extends AnyDevice>(
 }
 
 export function deviceTypeChecker(device: AnyDevice): device is IOriginDevice {
+    if (!device) {
+        return false;
+    }
+
     return Object.prototype.hasOwnProperty.call(device, 'facilityName');
 }
 
 export function getDeviceName(id: string, devices: AnyDevice[], environment: IEnvironment): string {
     const device = deviceById(id, devices, environment);
-    const deviceName = deviceTypeChecker(device) ? device.facilityName : device.name;
-    return deviceName;
+    const deviceName = deviceTypeChecker(device) ? device?.facilityName : device?.name;
+    return deviceName ?? '-';
 }

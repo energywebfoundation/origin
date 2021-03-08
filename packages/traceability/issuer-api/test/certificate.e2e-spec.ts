@@ -1,20 +1,21 @@
 /* eslint-disable no-unused-expressions */
+import { IClaim, IClaimData } from '@energyweb/issuer';
+import { DatabaseService } from '@energyweb/origin-backend-utils';
 import { HttpStatus, INestApplication } from '@nestjs/common';
 import { expect } from 'chai';
+import { BigNumber, constants } from 'ethers';
+import moment from 'moment';
 import request from 'supertest';
 
-import moment from 'moment';
-import { IClaimData, IClaim } from '@energyweb/issuer';
-import { Role } from '@energyweb/origin-backend-core';
-import { DatabaseService } from '@energyweb/origin-backend-utils';
-import { BigNumber, constants } from 'ethers';
+import { CERTIFICATES_TABLE_NAME } from '../src/pods/certificate/certificate.entity';
 import {
-    authenticatedUser,
     bootstrapTestInstance,
     deviceManager,
-    registryDeployer
+    otherDeviceManager,
+    registryDeployer,
+    TestUser,
+    testUsers
 } from './issuer-api';
-import { CERTIFICATES_TABLE_NAME } from '../src/pods/certificate/certificate.entity';
 
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -26,15 +27,20 @@ const certificateTestData = {
     energy: '1000000'
 };
 
-const setUserRole = (role: Role) => {
-    authenticatedUser.rights = role;
+const claimData: IClaimData = {
+    beneficiary: 'Testing beneficiary 1234',
+    address: 'Random address 123, Somewhere',
+    region: 'Northernmost Region',
+    zipCode: '321-45',
+    countryCode: 'DE'
 };
 
-const createCertificates = async (app: INestApplication) => {
+const createCertificates = async (app: INestApplication, user: TestUser) => {
     certificateTestData.deviceId = moment().unix().toString();
 
     await request(app.getHttpServer())
         .post('/certificate')
+        .set({ 'test-user': user })
         .send(certificateTestData)
         .expect(HttpStatus.CREATED)
         .expect((res) => {
@@ -47,6 +53,7 @@ const createCertificates = async (app: INestApplication) => {
 
     await request(app.getHttpServer())
         .post('/certificate')
+        .set({ 'test-user': user })
         .send(certificateTestData)
         .expect(HttpStatus.CREATED)
         .expect((res) => {
@@ -80,10 +87,9 @@ describe('Certificate tests', () => {
     });
 
     it('should deploy and create a certificate entry in the DB', async () => {
-        setUserRole(Role.Issuer);
-
         await request(app.getHttpServer())
             .post('/certificate')
+            .set({ 'test-user': TestUser.Issuer })
             .send(certificateTestData)
             .expect(HttpStatus.CREATED)
             .expect((res) => {
@@ -95,8 +101,7 @@ describe('Certificate tests', () => {
                     creationBlockHash,
                     tokenId,
                     isOwned,
-                    isClaimed,
-                    energy
+                    isClaimed
                 } = res.body;
 
                 expect(deviceId).to.equal(certificateTestData.deviceId);
@@ -105,41 +110,34 @@ describe('Certificate tests', () => {
                 expect(creationTime).to.be.above(1);
                 expect(creationBlockHash);
                 expect(tokenId).to.be.above(-1);
-                expect(isOwned).to.be.true;
+                expect(isOwned).to.be.false;
                 expect(isClaimed).to.be.false;
-                expect(energy.publicVolume).to.equal(certificateTestData.energy);
             });
-
-        setUserRole(Role.OrganizationDeviceManager);
 
         await request(app.getHttpServer())
             .get(`/certificate`)
+            .set({ 'test-user': TestUser.OrganizationDeviceManager })
             .expect(HttpStatus.OK)
             .expect((res) => {
-                expect(res.body.length).to.equal(1);
+                const { isOwned, energy } = res.body[0];
+
+                expect(isOwned).to.be.true;
+                expect(energy.publicVolume).to.equal(certificateTestData.energy);
             });
     });
 
     it('should transfer a certificate', async () => {
-        let certificateId: number;
-        setUserRole(Role.Issuer);
-
-        await request(app.getHttpServer())
+        const {
+            body: { id: certificateId }
+        } = await request(app.getHttpServer())
             .post('/certificate')
+            .set({ 'test-user': TestUser.Issuer })
             .send(certificateTestData)
-            .expect(HttpStatus.CREATED)
-            .expect((res) => {
-                const { id, isOwned, energy } = res.body;
-                certificateId = id;
-
-                expect(isOwned).to.be.true;
-                expect(energy.publicVolume).to.equal(certificateTestData.energy);
-            });
-
-        setUserRole(Role.OrganizationDeviceManager);
+            .expect(HttpStatus.CREATED);
 
         await request(app.getHttpServer())
             .put(`/certificate/${certificateId}/transfer`)
+            .set({ 'test-user': TestUser.OrganizationDeviceManager })
             .send({
                 to: registryDeployer.address,
                 amount: certificateTestData.energy
@@ -150,6 +148,7 @@ describe('Certificate tests', () => {
 
         await request(app.getHttpServer())
             .get(`/certificate/${certificateId}`)
+            .set({ 'test-user': TestUser.OrganizationDeviceManager })
             .expect(HttpStatus.OK)
             .expect((getResponse) => {
                 const { isOwned, energy } = getResponse.body;
@@ -161,38 +160,18 @@ describe('Certificate tests', () => {
 
     it('should claim a certificate', async () => {
         const value = '1000000';
-        const claimData: IClaimData = {
-            beneficiary: 'Testing beneficiary 1234',
-            address: 'Random address 123, Somewhere',
-            region: 'Northernmost Region',
-            zipCode: '321-45',
-            countryCode: 'DE'
-        };
 
-        let certificateId: number;
-
-        setUserRole(Role.Issuer);
-
-        await request(app.getHttpServer())
+        const {
+            body: { id: certificateId }
+        } = await request(app.getHttpServer())
             .post('/certificate')
+            .set({ 'test-user': TestUser.Issuer })
             .send(certificateTestData)
-            .expect(HttpStatus.CREATED)
-            .expect((res) => {
-                const { id, isOwned, energy, isClaimed, myClaims } = res.body;
-
-                expect(isOwned).to.be.true;
-                expect(isClaimed).to.be.false;
-                expect(energy.publicVolume).to.equal(certificateTestData.energy);
-                expect(energy.claimedVolume).to.equal('0');
-                expect(myClaims).to.be.empty;
-
-                certificateId = id;
-            });
-
-        setUserRole(Role.OrganizationDeviceManager);
+            .expect(HttpStatus.CREATED);
 
         await request(app.getHttpServer())
             .put(`/certificate/${certificateId}/claim`)
+            .set({ 'test-user': TestUser.OrganizationDeviceManager })
             .send({ claimData })
             .expect(HttpStatus.OK)
             .expect((claimResponse) => {
@@ -201,9 +180,10 @@ describe('Certificate tests', () => {
 
         await request(app.getHttpServer())
             .get(`/certificate/${certificateId}`)
+            .set({ 'test-user': TestUser.OrganizationDeviceManager })
             .expect(HttpStatus.OK)
             .expect((getResponse) => {
-                const { isOwned, energy, isClaimed, myClaims } = getResponse.body;
+                const { isOwned, energy, isClaimed, myClaims, claims } = getResponse.body;
 
                 expect(isOwned).to.be.false;
                 expect(isClaimed).to.be.true;
@@ -218,44 +198,93 @@ describe('Certificate tests', () => {
                             claim.value === parseInt(value, 10)
                     )
                 ).to.be.true;
+                expect(claims).to.deep.equal(myClaims);
+            });
+    });
+
+    it('should return all claiming information', async () => {
+        const {
+            body: { id }
+        } = await request(app.getHttpServer())
+            .post('/certificate')
+            .set({ 'test-user': TestUser.Issuer })
+            .send(certificateTestData)
+            .expect(HttpStatus.CREATED);
+
+        const amount = parseInt(certificateTestData.energy, 10) / 2;
+
+        await request(app.getHttpServer())
+            .put(`/certificate/${id}/transfer`)
+            .set({ 'test-user': TestUser.OrganizationDeviceManager })
+            .send({
+                to: otherDeviceManager.address,
+                amount
+            })
+            .expect(HttpStatus.OK);
+
+        await request(app.getHttpServer())
+            .put(`/certificate/${id}/claim`)
+            .set({ 'test-user': TestUser.OrganizationDeviceManager })
+            .send({ claimData })
+            .expect(HttpStatus.OK);
+
+        await request(app.getHttpServer())
+            .put(`/certificate/${id}/claim`)
+            .set({ 'test-user': TestUser.OtherOrganizationDeviceManager })
+            .send({ claimData })
+            .expect(HttpStatus.OK);
+
+        await request(app.getHttpServer())
+            .get(`/certificate/${id}`)
+            .set({ 'test-user': TestUser.OrganizationDeviceManager })
+            .expect(HttpStatus.OK)
+            .expect((getResponse) => {
+                const { claims } = getResponse.body;
+
+                expect(claims).to.have.length(2);
+                expect(
+                    claims.some(
+                        (claim: IClaim) =>
+                            claim.to === deviceManager.address &&
+                            claim.from === deviceManager.address &&
+                            JSON.stringify(claim.claimData) === JSON.stringify(claimData) &&
+                            claim.value === amount
+                    )
+                ).to.be.true;
+                expect(
+                    claims.some(
+                        (claim: IClaim) =>
+                            claim.to === otherDeviceManager.address &&
+                            claim.from === otherDeviceManager.address &&
+                            JSON.stringify(claim.claimData) === JSON.stringify(claimData) &&
+                            claim.value === amount
+                    )
+                ).to.be.true;
             });
     });
 
     xit('should bulk claim certificates', async () => {
         const value = '1000000';
-        const claimData: IClaimData = {
-            beneficiary: 'Testing beneficiary 1234',
-            address: 'Random address 123, Somewhere',
-            region: 'Northernmost Region',
-            zipCode: '321-45',
-            countryCode: 'DE'
-        };
 
-        let certificateId1: number;
-        let certificateId2: number;
-
-        setUserRole(Role.Issuer);
-
-        await request(app.getHttpServer())
+        const {
+            body: { id: certificateId1 }
+        } = await request(app.getHttpServer())
             .post('/certificate')
+            .set({ 'test-user': TestUser.Issuer })
             .send(certificateTestData)
-            .expect(HttpStatus.CREATED)
-            .expect((res) => {
-                certificateId1 = res.body.id;
-            });
+            .expect(HttpStatus.CREATED);
 
-        await request(app.getHttpServer())
+        const {
+            body: { id: certificateId2 }
+        } = await request(app.getHttpServer())
             .post('/certificate')
+            .set({ 'test-user': TestUser.Issuer })
             .send(certificateTestData)
-            .expect(HttpStatus.CREATED)
-            .expect((res) => {
-                certificateId2 = res.body.id;
-            });
-
-        setUserRole(Role.OrganizationDeviceManager);
+            .expect(HttpStatus.CREATED);
 
         await request(app.getHttpServer())
             .put(`/certificate/bulk-claim`)
+            .set({ 'test-user': TestUser.OrganizationDeviceManager })
             .send({ claimData, certificateIds: [certificateId1, certificateId2] })
             .expect(HttpStatus.OK)
             .expect((claimResponse) => {
@@ -266,6 +295,7 @@ describe('Certificate tests', () => {
 
         await request(app.getHttpServer())
             .get(`/certificate/${certificateId1}`)
+            .set({ 'test-user': TestUser.OrganizationDeviceManager })
             .expect(HttpStatus.OK)
             .expect((getResponse) => {
                 const { isOwned, energy, isClaimed, myClaims } = getResponse.body;
@@ -287,6 +317,7 @@ describe('Certificate tests', () => {
 
         await request(app.getHttpServer())
             .get(`/certificate/${certificateId2}`)
+            .set({ 'test-user': TestUser.OrganizationDeviceManager })
             .expect(HttpStatus.OK)
             .expect((getResponse) => {
                 const { isOwned, energy, isClaimed, myClaims } = getResponse.body;
@@ -308,75 +339,73 @@ describe('Certificate tests', () => {
     });
 
     it('should create a private certificate', async () => {
-        setUserRole(Role.Issuer);
-
         const {
-            body: { energy }
+            body: { id }
         } = await request(app.getHttpServer())
             .post('/certificate')
+            .set({ 'test-user': TestUser.Issuer })
             .send({
                 ...certificateTestData,
                 isPrivate: true
             })
             .expect(HttpStatus.CREATED);
 
-        expect(energy.privateVolume).to.equal(certificateTestData.energy);
+        await request(app.getHttpServer())
+            .get(`/certificate/${id}`)
+            .set({ 'test-user': TestUser.OrganizationDeviceManager })
+            .expect(HttpStatus.OK)
+            .expect((getResponse) => {
+                const { isOwned, energy } = getResponse.body;
+
+                expect(isOwned).to.be.true;
+                expect(energy.privateVolume).to.equal(certificateTestData.energy);
+                expect(energy.publicVolume).to.equal('0');
+            });
     });
 
     it('should transfer a private certificate', async () => {
-        setUserRole(Role.Issuer);
-
         const {
-            body: { id, energy: senderEnergy }
+            body: { id }
         } = await request(app.getHttpServer())
             .post('/certificate')
+            .set({ 'test-user': TestUser.Issuer })
             .send({
                 ...certificateTestData,
                 isPrivate: true
             })
             .expect(HttpStatus.CREATED);
-
-        expect(senderEnergy.privateVolume).to.equal(certificateTestData.energy);
-
-        setUserRole(Role.OrganizationDeviceManager);
 
         const {
             body: { success: transferSuccess }
         } = await request(app.getHttpServer())
             .put(`/certificate/${id}/transfer`)
+            .set({ 'test-user': TestUser.OrganizationDeviceManager })
             .send({
-                to: registryDeployer.address,
+                to: testUsers.get(TestUser.Issuer).blockchainAccountAddress,
                 amount: certificateTestData.energy
             })
             .expect(HttpStatus.OK);
 
         expect(transferSuccess).to.be.true;
 
-        authenticatedUser.blockchainAccountAddress = registryDeployer.address;
-
         const {
             body: { energy: receiverEnergy }
-        } = await request(app.getHttpServer()).get(`/certificate/${id}`).expect(HttpStatus.OK);
+        } = await request(app.getHttpServer())
+            .get(`/certificate/${id}`)
+            .set({ 'test-user': TestUser.Issuer })
+            .expect(HttpStatus.OK);
 
         expect(receiverEnergy.privateVolume).to.equal(certificateTestData.energy);
     });
 
     xit('should claim a private certificate', async () => {
         const value = '1000000';
-        const claimData: IClaimData = {
-            beneficiary: 'Testing beneficiary 1234',
-            address: 'Random address 123, Somewhere',
-            region: 'Northernmost Region',
-            zipCode: '321-45',
-            countryCode: 'DE'
-        };
 
         let certificateId: number;
 
-        setUserRole(Role.Issuer);
-
         await request(app.getHttpServer())
             .post('/certificate')
+            .set({ 'test-user': TestUser.Issuer })
             .send({
                 ...certificateTestData,
                 isPrivate: true
@@ -386,10 +415,9 @@ describe('Certificate tests', () => {
                 certificateId = res.body.id;
             });
 
-        setUserRole(Role.OrganizationDeviceManager);
-
         await request(app.getHttpServer())
             .put(`/certificate/${certificateId}/claim`)
+            .set({ 'test-user': TestUser.OrganizationDeviceManager })
             .send({ claimData })
             .expect(HttpStatus.OK)
             .expect((claimResponse) => {
@@ -398,6 +426,7 @@ describe('Certificate tests', () => {
 
         await request(app.getHttpServer())
             .get(`/certificate/${certificateId}`)
+            .set({ 'test-user': TestUser.OrganizationDeviceManager })
             .expect(HttpStatus.OK)
             .expect((getResponse) => {
                 const { isOwned, energy, isClaimed, myClaims, latestCommitment } = getResponse.body;
@@ -422,20 +451,18 @@ describe('Certificate tests', () => {
     it('should get all certificate events', async () => {
         let certificateId: number;
 
-        setUserRole(Role.Issuer);
-
         await request(app.getHttpServer())
             .post('/certificate')
+            .set({ 'test-user': TestUser.Issuer })
             .send(certificateTestData)
             .expect(HttpStatus.CREATED)
             .expect((res) => {
                 certificateId = res.body.id;
             });
 
-        setUserRole(Role.OrganizationDeviceManager);
-
         await request(app.getHttpServer())
             .get(`/certificate/${certificateId}/events`)
+            .set({ 'test-user': TestUser.OrganizationDeviceManager })
             .expect(HttpStatus.OK)
             .expect((eventsResponse) => {
                 const { body: events } = eventsResponse;
@@ -444,21 +471,16 @@ describe('Certificate tests', () => {
     });
 
     it('should return sum of all certified energy for a given device id', async () => {
-        setUserRole(Role.Issuer);
-
-        await createCertificates(app);
-
-        setUserRole(Role.OrganizationDeviceManager);
+        await createCertificates(app, TestUser.Issuer);
 
         const startDate = moment.unix(certificateTestData.fromTime).toISOString();
         const endDate = moment.unix(certificateTestData.toTime).toISOString();
-
-        authenticatedUser.blockchainAccountAddress = deviceManager.address;
 
         await request(app.getHttpServer())
             .get(
                 `/certificate/issuer/certified/${certificateTestData.deviceId}?start=${startDate}&end=${endDate}`
             )
+            .set({ 'test-user': TestUser.OrganizationDeviceManager })
             .expect(HttpStatus.OK)
             .expect((res) => {
                 expect(res.text).to.equal(
@@ -470,30 +492,22 @@ describe('Certificate tests', () => {
     });
 
     it('should get certificates without a blockchain account attached', async () => {
-        let certificateId: number;
-
-        setUserRole(Role.Issuer);
-
-        const blockchainAddress = authenticatedUser.blockchainAccountAddress;
-
-        await request(app.getHttpServer())
+        const {
+            body: { id }
+        } = await request(app.getHttpServer())
             .post('/certificate')
+            .set({ 'test-user': TestUser.Issuer })
             .send(certificateTestData)
-            .expect(HttpStatus.CREATED)
-            .expect((res) => {
-                certificateId = res.body.id;
-            });
-
-        setUserRole(Role.OrganizationDeviceManager);
-
-        authenticatedUser.blockchainAccountAddress = null;
+            .expect(HttpStatus.CREATED);
 
         await request(app.getHttpServer())
-            .get(`/certificate/${certificateId}`)
+            .get(`/certificate/${id}`)
+            .set({ 'test-user': TestUser.UserWithoutBlockchainAccount })
             .expect(HttpStatus.OK);
 
-        await request(app.getHttpServer()).get(`/certificate`).expect(HttpStatus.OK);
-
-        authenticatedUser.blockchainAccountAddress = blockchainAddress;
+        await request(app.getHttpServer())
+            .get(`/certificate`)
+            .set({ 'test-user': TestUser.UserWithoutBlockchainAccount })
+            .expect(HttpStatus.OK);
     });
 });

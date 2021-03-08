@@ -1,4 +1,8 @@
-import { ILoggedInUser, UserStatus } from '@energyweb/origin-backend-core';
+import {
+    ILoggedInUser,
+    UserStatus,
+    ValidateDeviceOwnershipQuery
+} from '@energyweb/origin-backend-core';
 import { CqrsModule, IQueryHandler, QueryHandler } from '@nestjs/cqrs';
 import { Test } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
@@ -6,13 +10,7 @@ import { expect } from 'chai';
 import * as sinon from 'ts-sinon';
 import { Repository, SelectQueryBuilder } from 'typeorm';
 
-import {
-    OriginDevice,
-    DeviceRegistryService,
-    NewDeviceDTO,
-    UnableToVerifyOwnershipError,
-    ValidateDeviceOwnershipQuery
-} from '.';
+import { OriginDevice, DeviceRegistryService, NewDeviceDTO, UnableToVerifyOwnershipError } from '.';
 import { ExternalDeviceAlreadyUsedError, SmartMeterAlreadyUsedError } from './errors';
 
 @QueryHandler(ValidateDeviceOwnershipQuery)

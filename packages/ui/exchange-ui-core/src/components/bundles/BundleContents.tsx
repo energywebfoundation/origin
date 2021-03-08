@@ -276,11 +276,13 @@ export const BundleContents = (props: IOwnProps) => {
                                                         fontSize={fontSize}
                                                         fontWeight="fontWeightBold"
                                                     >
-                                                        <Typography variant="caption">
-                                                            {deviceTypeChecker(device)
-                                                                ? device.facilityName
-                                                                : device.name}
-                                                        </Typography>
+                                                        {device && (
+                                                            <Typography variant="caption">
+                                                                {deviceTypeChecker(device)
+                                                                    ? device.facilityName
+                                                                    : device.name}
+                                                            </Typography>
+                                                        )}
                                                     </Box>
                                                     <Box
                                                         fontSize={fontSize}
@@ -297,11 +299,13 @@ export const BundleContents = (props: IOwnProps) => {
                                                         fontSize={fontSize}
                                                         fontWeight="fontWeightBold"
                                                     >
-                                                        <Typography>
-                                                            {deviceTypeChecker(device)
-                                                                ? device.province
-                                                                : device.address}
-                                                        </Typography>
+                                                        {device && (
+                                                            <Typography>
+                                                                {deviceTypeChecker(device)
+                                                                    ? device.province
+                                                                    : device.address}
+                                                            </Typography>
+                                                        )}
                                                     </Box>
                                                 </Box>
                                             </Box>
