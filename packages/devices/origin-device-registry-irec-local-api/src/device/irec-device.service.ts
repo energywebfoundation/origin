@@ -88,4 +88,31 @@ export class IrecDeviceService {
         const irecClient = await this.getIrecClient(user);
         return irecClient.device.get(code);
     }
+
+    async getDevices(user: UserIdentifier): Promise<IrecDevice[]> {
+        if (!this.isIrecIntegrationEnabled()) {
+            return [
+                {
+                    address: '1 Wind Farm Avenue, London',
+                    capacity: 500,
+                    commissioningDate: new Date('2001-08-10'),
+                    countryCode: 'GB',
+                    defaultAccount: 'someTradeAccount',
+                    deviceType: 'TC110',
+                    fuel: 'ES200',
+                    issuer: 'someIssuerCode',
+                    latitude: '53.405088',
+                    longitude: '-1.744222',
+                    name: 'DeviceXYZ',
+                    notes: 'Lorem ipsum dolor sit amet',
+                    registrantOrganization: 'someRegistrantCode',
+                    registrationDate: new Date('2001-09-20'),
+                    status: DeviceState.Approved,
+                    code: 'mockDeviceCode'
+                }
+            ];
+        }
+        const irecClient = await this.getIrecClient(user);
+        return irecClient.device.getAll();
+    }
 }
