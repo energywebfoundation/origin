@@ -50,7 +50,7 @@ dependencies:
   '@rush-temp/migrations': file:projects/migrations.tgz
   '@rush-temp/migrations-irec': file:projects/migrations-irec.tgz
   '@rush-temp/origin-backend': file:projects/origin-backend.tgz_163cd5ecc5491177807cc9c34c8a37e4
-  '@rush-temp/origin-backend-app': file:projects/origin-backend-app.tgz_6addd5d14f6050bcbc35cb0dd8901bd1
+  '@rush-temp/origin-backend-app': file:projects/origin-backend-app.tgz_2f744e4d7e3740a3f489b0353cf093ef
   '@rush-temp/origin-backend-client': file:projects/origin-backend-client.tgz_e1fb6d521fe6c0b1805452ebfbbb259b
   '@rush-temp/origin-backend-core': file:projects/origin-backend-core.tgz
   '@rush-temp/origin-backend-irec-app': file:projects/origin-backend-irec-app.tgz_6addd5d14f6050bcbc35cb0dd8901bd1
@@ -147,6 +147,7 @@ dependencies:
   formik-material-ui: 3.0.1_ca579687531b8bab2881da674b466dcd
   formik-material-ui-pickers: 0.0.12_6ee43dd412d3f6e2dbea524bc891d638
   fs-extra: 9.1.0
+  ganache-cli: 6.12.1
   ganache-core: 2.13.2
   geo-tz: 6.0.1
   history: 4.10.1
@@ -162,6 +163,7 @@ dependencies:
   jsonschema: 1.4.0
   mandrill-nodemailer-transport: 1.2.1_nodemailer@6.5.0
   mini-css-extract-plugin: 1.3.9_webpack@5.24.3
+  mocha: 8.3.0
   moment: 2.29.1
   moment-range: 4.0.2_moment@2.29.1
   moment-timezone: 0.5.33
@@ -219,6 +221,7 @@ dependencies:
   url-loader: 4.1.1_file-loader@6.2.0+webpack@5.24.3
   uuid: 8.3.2
   vm-browserify: 1.1.2
+  wait-on: 5.2.1
   webpack: 5.24.3_webpack-cli@4.5.0
   webpack-cli: 4.5.0_f774af0c441c49c6e8411a5ef11200ab
   webpack-dev-server: 3.11.2_webpack-cli@4.5.0+webpack@5.24.3
@@ -2360,6 +2363,16 @@ packages:
       node: '>=6'
     resolution:
       integrity: sha512-DT14xgw3PSzPxwS13auTEwxhMMOoz33DPUKNtmYK/QYbBSpLXJy78FGGs5yVoxVobEqPm4iW9MOIoz0A3bLTRQ==
+  /@hapi/hoek/9.1.1:
+    dev: false
+    resolution:
+      integrity: sha512-CAEbWH7OIur6jEOzaai83jq3FmKmv4PmX1JYfs9IrYcGEVI/lyL1EXJGCj7eFVJ0bg5QR8LMxBlEtA+xKiLpFw==
+  /@hapi/topo/5.0.0:
+    dependencies:
+      '@hapi/hoek': 9.1.1
+    dev: false
+    resolution:
+      integrity: sha512-tFJlT47db0kMqVm3H4nQYgn6Pwg10GTZHb1pwmSiv1K4ks6drQOtfEF5ZnPjkvC+y4/bUPHK+bc87QvLcL+WMw==
   /@icons/material/0.2.4_react@17.0.1:
     dependencies:
       react: 17.0.1
@@ -3611,6 +3624,20 @@ packages:
       yarn: '>= 1.13.0'
     resolution:
       integrity: sha512-0mN6qGnI31GVNYAKDdZ6ISiJMtN8Z0rekpJ/xNHK/lDNl/QkoJVBHDf68oEcNE8dvWMq86ULpznCdT1IBQ7YFA==
+  /@sideway/address/4.1.1:
+    dependencies:
+      '@hapi/hoek': 9.1.1
+    dev: false
+    resolution:
+      integrity: sha512-+I5aaQr3m0OAmMr7RQ3fR9zx55sejEYR2BFJaxL+zT3VM2611X0SHvPWIbAUBZVTn/YzYKbV8gJ2oT/QELknfQ==
+  /@sideway/formula/3.0.0:
+    dev: false
+    resolution:
+      integrity: sha512-vHe7wZ4NOXVfkoRb8T5otiENVlT7a3IAiw7H5M2+GO+9CDgcVUUsX1zalAztCmwyOr2RUTGJdgB+ZvSVqmdHmg==
+  /@sideway/pinpoint/2.0.0:
+    dev: false
+    resolution:
+      integrity: sha512-RNiOoTPkptFtSVzQevY/yWtZwf/RxyVnPy/OcA9HBM3MlGDnBEYL5B41H0MTn0Uec8Hi+2qUtTfG2WWZBmMejQ==
   /@sindresorhus/is/0.14.0:
     dev: false
     engines:
@@ -12305,6 +12332,15 @@ packages:
       node: '>=6'
     resolution:
       integrity: sha512-hT9yh/tiinkmirKrlv4KWOjztdoZo1mx9Qh4KvWqC7isoXwdUY3PNWUxceF4/qO9R6riA2C29jdTOeQOIROjgw==
+  /ganache-cli/6.12.1:
+    bundledDependencies:
+      - source-map-support
+      - yargs
+      - ethereumjs-util
+    dev: false
+    hasBin: true
+    resolution:
+      integrity: sha512-zoefZLQpQyEJH9jgtVYgM+ENFLAC9iwys07IDCsju2Ieq9KSTLH89RxSP4bhizXKV/h/+qaWpfyCBGWnBfqgIQ==
   /ganache-core/2.13.2:
     bundledDependencies:
       - keccak
@@ -14928,6 +14964,16 @@ packages:
       ts-node: '*'
     resolution:
       integrity: sha512-lGS5PXGAzR4RF7V5+XObhqz2KZIDUA1yD0DG6pBVmy10eh0ZIXQImRuzocsI/N2XZ1GrLFwTS27In2i2jlpq1Q==
+  /joi/17.4.0:
+    dependencies:
+      '@hapi/hoek': 9.1.1
+      '@hapi/topo': 5.0.0
+      '@sideway/address': 4.1.1
+      '@sideway/formula': 3.0.0
+      '@sideway/pinpoint': 2.0.0
+    dev: false
+    resolution:
+      integrity: sha512-F4WiW2xaV6wc1jxete70Rw4V/VuMd6IN+a5ilZsxG4uYtUXWu2kq9W5P2dz30e7Gmw8RCbY/u/uk+dMPma9tAg==
   /jquery/3.5.1:
     dev: false
     resolution:
@@ -23519,6 +23565,19 @@ packages:
       node: '>=10'
     resolution:
       integrity: sha512-4tzD0mF8iSiMiNs30BiLO3EpfGLZUT2MSX/G+o7ZywDzliWQ3OPtTZ0PTC3B3ca1UAf4cJMHB+2Bf56EriJuRA==
+  /wait-on/5.2.1:
+    dependencies:
+      axios: 0.21.1
+      joi: 17.4.0
+      lodash: 4.17.21
+      minimist: 1.2.5
+      rxjs: 6.6.6
+    dev: false
+    engines:
+      node: '>=8.9.0'
+    hasBin: true
+    resolution:
+      integrity: sha512-H2F986kNWMU9hKlI9l/ppO6tN8ZSJd35yBljMLa1/vjzWP++Qh6aXyt77/u7ySJFZQqBtQxnvm/xgG48AObXcw==
   /walker/1.0.7:
     dependencies:
       makeerror: 1.0.11
@@ -26268,6 +26327,7 @@ packages:
       class-validator: 0.13.1
       eslint-plugin-jest: 24.1.8_typescript@4.1.5
       ethers: 5.0.31
+      ganache-cli: 6.12.1
       immutable: 4.0.0-rc.12
       jest: 26.6.3_ts-node@9.1.1
       mocha: 8.3.0
@@ -26282,6 +26342,7 @@ packages:
       swagger-ui-express: 4.1.6_express@4.17.1
       typeorm: 0.2.31
       typescript: 4.1.5
+      wait-on: 5.2.1
     dev: false
     id: file:projects/exchange.tgz
     name: '@rush-temp/exchange'
@@ -26291,7 +26352,7 @@ packages:
       ts-node: '*'
       webpack-cli: '*'
     resolution:
-      integrity: sha512-Rbky+EvNU5nz5p8+E6NqZ2PcEgqRNYljuP8UMhLfZ+AMLAUfDFywROdmzF05LMT7dSfUC1jiR2ianVsj/HSkPg==
+      integrity: sha512-dZKaVfVrqtyKaf96SPbD4bCobd3N1XEZI28gYFovyczHyyZ4XN8zip3z6giI/HulpW8/a3BxbwAU8S96jUATow==
       tarball: file:projects/exchange.tgz
     version: 0.0.0
   file:projects/issuer-api-client.tgz_95f19a24f82c3c19bf052a455a548805:
@@ -26416,6 +26477,7 @@ packages:
       '@types/dotenv': 6.1.1
       '@types/mocha': 8.2.1
       '@types/node': 14.14.31
+      '@types/supertest': 2.0.10
       chai: 4.3.0
       dotenv: 8.2.0
       ethers: 5.0.31
@@ -26434,7 +26496,7 @@ packages:
     dev: false
     name: '@rush-temp/issuer'
     resolution:
-      integrity: sha512-A+Y5r8BAeXeL2yMYb2U/G3VCp12KHc0EoWgXKvQG+BxeMmrpE8s1JP5/GdK0jcTRdmB4cqFftBUlKrAeCgeHKA==
+      integrity: sha512-YesWS02iqI4+BuTM6d+/z/kK7ukshPg8hUg+95fMoFhRjBKh7wGIvhPlLb1BXBq9b2PcUonidBce4U/qkemqPA==
       tarball: file:projects/issuer.tgz
     version: 0.0.0
   file:projects/localization.tgz:
@@ -26491,24 +26553,28 @@ packages:
       integrity: sha512-JtvQz9YTi+5MYNw2yuHxM5C0nE2uBkaGJ4ycY9YEh2NjTFe+KcXyQuBhCPnYgQSv80PzJb55i6bc3ClVk6oe1g==
       tarball: file:projects/migrations.tgz
     version: 0.0.0
-  file:projects/origin-backend-app.tgz_6addd5d14f6050bcbc35cb0dd8901bd1:
+  file:projects/origin-backend-app.tgz_2f744e4d7e3740a3f489b0353cf093ef:
     dependencies:
       '@nestjs-modules/mailer': 1.4.3_54bbe3459ce08b59259fe68dadf0c275
       '@nestjs/common': 7.6.13_9f17f37d5bb0263e79696464cc94163b
       '@nestjs/config': 0.6.3_813873694847d279c299c5d41a416301
       '@nestjs/core': 7.6.13_1eb5e6299d748bf3a79eb1b79f4236dc
       '@nestjs/cqrs': 7.0.1_cf6f96cf4f2de066d2f4d8f12f38821a
+      '@nestjs/passport': 7.1.5_a72873bf376dac6b496f8d79b7ef8c30
       '@nestjs/swagger': 4.7.15_0c2e14e172e4f3851e56ccf422e6e79d
       '@nestjs/testing': 7.6.13_916a94de66c10c9d004288a2a21433c9
       '@nestjs/typeorm': 7.1.5_2c495002ac18a41e1fc11cddc33b6273
       '@types/mocha': 8.2.1
       '@types/node': 14.14.31
+      '@types/supertest': 2.0.10
       body-parser: 1.19.0
       class-validator: 0.13.1
       cors: 2.8.5
+      ethers: 5.0.31
       ganache-core: 2.13.2
       mandrill-nodemailer-transport: 1.2.1_nodemailer@6.5.0
       mocha: 8.3.0
+      moment: 2.29.1
       supertest: 6.1.3
       swagger-ui-express: 4.1.6_express@4.17.1
       typeorm: 0.2.31
@@ -26521,10 +26587,11 @@ packages:
       class-transformer: '*'
       express: '*'
       nodemailer: '*'
+      passport: '*'
       reflect-metadata: '*'
       rxjs: '*'
     resolution:
-      integrity: sha512-NXEtgxseifOcNe8OXpIcd3U8mQY345Rf9Mf24Dz5ksN8hkYAXlIwSXMJd7S6IbcB3UbkOH1DnA+56wM/1UYJMw==
+      integrity: sha512-GTJkd7+oOGHXSRzLsYnMiR41MeYbJeii6LvGhx1EGx9bZcQkhv9QJF/MrpZcWpD/+jLaCtKBLcmP16vvZ4CSHw==
       tarball: file:projects/origin-backend-app.tgz
     version: 0.0.0
   file:projects/origin-backend-client.tgz_e1fb6d521fe6c0b1805452ebfbbb259b:
@@ -26586,6 +26653,7 @@ packages:
       '@nestjs/typeorm': 7.1.5_2c495002ac18a41e1fc11cddc33b6273
       '@types/mocha': 8.2.1
       '@types/node': 14.14.31
+      '@types/supertest': 2.0.10
       body-parser: 1.19.0
       class-validator: 0.13.1
       cors: 2.8.5
@@ -26607,7 +26675,7 @@ packages:
       reflect-metadata: '*'
       rxjs: '*'
     resolution:
-      integrity: sha512-RszHTmcxoVhk5ycZh9xWrCzNcNNkbvDUYi20eBAjsYLCU0NgBq02+Hj5tDbBI2udSkEoil7npV9ajZH8iguQHA==
+      integrity: sha512-molER/l+LVDJ/LGYJ4SXby/IuRlYuBrvWpzEVn9EwAbxZXUa5ygXuo+2IAvaXoPCiuCbk3G38dLoWR3QX9ltxA==
       tarball: file:projects/origin-backend-irec-app.tgz
     version: 0.0.0
   file:projects/origin-backend-utils.tgz_a5df9406a476462f1b7ccd7e962bcb31:
@@ -27503,6 +27571,7 @@ specifiers:
   formik-material-ui: 3.0.1
   formik-material-ui-pickers: 0.0.12
   fs-extra: 9.1.0
+  ganache-cli: 6.12.1
   ganache-core: 2.13.2
   geo-tz: 6.0.1
   history: 4.10.1
@@ -27518,6 +27587,7 @@ specifiers:
   jsonschema: 1.4.0
   mandrill-nodemailer-transport: 1.2.1
   mini-css-extract-plugin: 1.3.9
+  mocha: 8.3.0
   moment: 2.29.1
   moment-range: 4.0.2
   moment-timezone: 0.5.33
@@ -27575,6 +27645,7 @@ specifiers:
   url-loader: 4.1.1
   uuid: 8.3.2
   vm-browserify: 1.1.2
+  wait-on: 5.2.1
   webpack: 5.24.3
   webpack-cli: 4.5.0
   webpack-dev-server: 3.11.2
