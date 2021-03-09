@@ -1,5 +1,5 @@
 import { ILoggedInUser } from '@energyweb/origin-backend-core';
-import { ForbiddenException, Injectable } from '@nestjs/common';
+import { BadRequestException, ForbiddenException, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { CommandBus } from '@nestjs/cqrs';
 import {
@@ -77,11 +77,17 @@ export class IrecDeviceService {
                 code
             };
         }
+
         const irecClient = await this.getIrecClient(user);
-        const iredDevice = await irecClient.device.edit(code, device);
+        const irecDevice = await irecClient.device.get(code);
+        if (irecDevice.status === DeviceState.InProgress) {
+            throw new BadRequestException('Device in "In Progress" state is not available to edit');
+        }
+
+        const updatedIredDevice = await irecClient.device.edit(code, device);
         await irecClient.device.submit(code);
-        iredDevice.status = DeviceState.InProgress;
-        return iredDevice;
+        updatedIredDevice.status = DeviceState.InProgress;
+        return updatedIredDevice;
     }
 
     async getDevice(user: UserIdentifier, code: string): Promise<IrecDevice> {
