@@ -123,7 +123,7 @@ dependencies:
   commander: 6.2.1
   concurrently: 5.3.0
   connected-react-router: 6.9.1_3a32cfa7d6f442074e268f98a243a2ba
-  copy-webpack-plugin: 7.0.0_webpack@5.24.3
+  copy-webpack-plugin: 8.0.0_webpack@5.24.3
   cors: 2.8.5
   crypto-browserify: 3.12.0
   css-loader: 5.1.1_webpack@5.24.3
@@ -8872,12 +8872,11 @@ packages:
     dev: false
     resolution:
       integrity: sha512-i13qo6kIHTTpCm8/Wup+0b1mVWETvu2kIMzKoK8FpkLkFxlt0znUAHcMzox+T8sPlqtZXq3CulEjQHsYiGFJUw==
-  /copy-webpack-plugin/7.0.0_webpack@5.24.3:
+  /copy-webpack-plugin/8.0.0_webpack@5.24.3:
     dependencies:
       fast-glob: 3.2.5
       glob-parent: 5.1.1
       globby: 11.0.2
-      loader-utils: 2.0.0
       normalize-path: 3.0.0
       p-limit: 3.1.0
       schema-utils: 3.0.0
@@ -8889,7 +8888,7 @@ packages:
     peerDependencies:
       webpack: ^5.1.0
     resolution:
-      integrity: sha512-SLjQNa5iE3BoCP76ESU9qYo9ZkEWtXoZxDurHoqPchAFRblJ9g96xTeC560UXBMre1Nx6ixIIUfiY3VcjpJw3g==
+      integrity: sha512-sqGe2FsB67wV/De+sz5azQklADe4thN016od6m7iK9KbjrSc1SEgg5QZ0LN+jGx5aZR52CbuXbqOhoIbqzzXlA==
   /core-js-compat/3.9.1:
     dependencies:
       browserslist: 4.16.3
@@ -27219,7 +27218,7 @@ packages:
       bootstrap: 4.6.0
       buffer: 6.0.3
       connected-react-router: 6.9.1_3a32cfa7d6f442074e268f98a243a2ba
-      copy-webpack-plugin: 7.0.0_webpack@5.24.3
+      copy-webpack-plugin: 8.0.0_webpack@5.24.3
       crypto-browserify: 3.12.0
       css-loader: 5.1.1_webpack@5.24.3
       cypress: 6.5.0
@@ -27269,7 +27268,7 @@ packages:
     peerDependencies:
       jest: '*'
     resolution:
-      integrity: sha512-m7YPShm7GwJvm/F+N9Gpi6vS0IxvH4K3ekdzTDH/J2N1z4cTvYjH1xx0odK21AeBsf4hQgQzxY1k/Et8h8YgZw==
+      integrity: sha512-kMjMjOaVaWQKqUBwesqNOYhSvcFtFojMx2l4GzGV+UtWAcdueRzfJQYvt582SUt58TTkNjsSIW4YDwlQXWlsmw==
       tarball: file:projects/origin-ui.tgz
     version: 0.0.0
   file:projects/solar-simulator.tgz:
@@ -27480,7 +27479,7 @@ specifiers:
   commander: 6.2.1
   concurrently: 5.3.0
   connected-react-router: 6.9.1
-  copy-webpack-plugin: 7.0.0
+  copy-webpack-plugin: 8.0.0
   cors: 2.8.5
   crypto-browserify: 3.12.0
   css-loader: 5.1.1
