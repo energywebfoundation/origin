@@ -141,7 +141,8 @@ function* fetchOffchainUserDetails(): SagaIterator {
     while (true) {
         yield take(UsersActions.refreshUserOffchain);
 
-        const { accountClient }: ExchangeClient = yield select(getExchangeClient);
+        const exchangeClient: ExchangeClient = yield select(getExchangeClient);
+        const accountClient = exchangeClient?.accountClient;
         const backendClient: BackendClient = yield select(getBackendClient);
         const features = yield getContext('enabledFeatures');
 
