@@ -43,10 +43,10 @@
     "types": "dist/js/src/index.d.ts",
     "dependencies": {
         "@energyweb/utils-general": "11.0.1",
-        "chai": "4.3.0",
+        "chai": "4.3.3",
         "dotenv": "8.2.0",
         "ethers": "5.0.31",
-        "mocha": "8.3.0",
+        "mocha": "8.3.1",
         "moment": "2.29.1",
         "precise-proofs-js": "1.2.0",
         "winston": "3.3.3"
@@ -55,7 +55,7 @@
         "@typechain/ethers-v5": "1.0.0",
         "ethlint": "1.2.5",
         "truffle-typings": "1.0.8",
-        "typechain": "4.0.2"
+        "typechain": "4.0.3"
     },
     "publishConfig": {
         "access": "public",
