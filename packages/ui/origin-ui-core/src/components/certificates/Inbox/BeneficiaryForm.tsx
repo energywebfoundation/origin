@@ -9,18 +9,11 @@ import {
 import React from 'react';
 import { Countries } from '@energyweb/utils-general';
 import { useTranslation } from 'react-i18next';
-
-export interface IBeneficiaryFormData {
-    beneficiary: string;
-    address: string;
-    zipCode: string;
-    region: string;
-    countryCode: string;
-}
+import { IClaimData } from '@energyweb/issuer';
 
 export function BeneficiaryForm(props: {
-    data: IBeneficiaryFormData;
-    setData: (data: IBeneficiaryFormData) => void;
+    data: IClaimData;
+    setData: (data: IClaimData) => void;
 }): JSX.Element {
     const { data, setData } = props;
 
