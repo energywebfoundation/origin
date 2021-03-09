@@ -114,12 +114,11 @@ export function ClaimModal(props: IProps) {
             : requestClaimCertificate({
                   certificateId: certificateIds[0],
                   claimData,
-                  amount: energyInBaseUnit
+                  amount: energyInBaseUnit,
+                  callback: handleClose
               });
 
         dispatch(action);
-
-        handleClose();
     }
 
     async function validateInputs(event) {

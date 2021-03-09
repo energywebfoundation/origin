@@ -409,7 +409,7 @@ function* requestClaimCertificateSaga(): SagaIterator {
             continue;
         }
 
-        const { certificateId, amount, claimData } = action.payload;
+        const { certificateId, amount, claimData, callback } = action.payload;
 
         yield put(setLoading(true));
 
@@ -438,6 +438,10 @@ function* requestClaimCertificateSaga(): SagaIterator {
             if (!txResult.status) {
                 showNotification('Claiming failed.', NotificationType.Error);
                 continue;
+            }
+
+            if (callback) {
+                yield call(callback);
             }
 
             showNotification(
