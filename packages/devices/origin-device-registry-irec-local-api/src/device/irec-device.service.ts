@@ -5,7 +5,8 @@ import { CommandBus } from '@nestjs/cqrs';
 import {
     AccessTokens,
     Device as IrecDevice,
-    DeviceCreateUpdateParams,
+    DeviceCreateParams,
+    DeviceUpdateParams,
     DeviceState,
     IRECAPIClient
 } from '@energyweb/issuer-irec-api-wrapper';
@@ -49,7 +50,7 @@ export class IrecDeviceService {
 
     async createIrecDevice(
         user: UserIdentifier,
-        deviceData: DeviceCreateUpdateParams
+        deviceData: DeviceCreateParams
     ): Promise<IrecDevice> {
         if (!this.isIrecIntegrationEnabled()) {
             return {
@@ -68,14 +69,14 @@ export class IrecDeviceService {
     async update(
         user: UserIdentifier,
         code: string,
-        device: Partial<IrecDevice>
+        device: DeviceUpdateParams
     ): Promise<IrecDevice> {
         if (!this.isIrecIntegrationEnabled()) {
             return {
                 ...device,
                 status: DeviceState.InProgress,
                 code
-            };
+            } as IrecDevice;
         }
 
         const irecClient = await this.getIrecClient(user);

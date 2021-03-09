@@ -1,4 +1,8 @@
-import { Device as IrecDevice, DeviceCreateUpdateParams, DeviceState } from '@energyweb/issuer-irec-api-wrapper';
+import {
+    Device as IrecDevice,
+    DeviceCreateParams,
+    DeviceState
+} from '@energyweb/issuer-irec-api-wrapper';
 import { ILoggedInUser } from '@energyweb/origin-backend-core';
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
@@ -35,7 +39,7 @@ export class DeviceService {
             throw new BadRequestException('Invalid fuel type');
         }
 
-        const deviceData: DeviceCreateUpdateParams = {
+        const deviceData: DeviceCreateParams = {
             ...CreateDeviceDTO.sanitize(newDevice),
             registrantOrganization: this.configService.get<string>(
                 'IREC_PARTICIPANT_TRADE_ACCOUNT'

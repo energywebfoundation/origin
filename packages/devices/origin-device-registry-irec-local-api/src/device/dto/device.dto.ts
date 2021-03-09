@@ -5,6 +5,14 @@ import { IrecDeviceDTO } from './irec-device.dto';
 export class DeviceDTO extends IrecDeviceDTO {
     @ApiProperty({ type: String })
     @Expose()
+    id: string;
+
+    @ApiProperty({ type: String })
+    @Expose()
+    ownerId: string;
+
+    @ApiProperty({ type: String })
+    @Expose()
     timezone: string;
 
     @ApiProperty({ type: String })

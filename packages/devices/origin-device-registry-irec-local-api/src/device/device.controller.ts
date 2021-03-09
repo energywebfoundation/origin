@@ -166,7 +166,7 @@ export class DeviceController {
         return plainToClass(DeviceDTO, updatedDevice);
     }
 
-    @Get('/devices-to-import')
+    @Get('/irec-devices-to-import')
     @UseGuards(AuthGuard(), ActiveUserGuard, RolesGuard)
     @Roles(Role.OrganizationAdmin, Role.OrganizationDeviceManager, Role.OrganizationUser)
     @ApiResponse({
@@ -174,7 +174,7 @@ export class DeviceController {
         type: [IrecDeviceDTO],
         description: 'Returns not imported IREC devices'
     })
-    async getDevicesToImport(
+    async getDevicesToImportFromIrec(
         @UserDecorator() loggedInUser: ILoggedInUser
     ): Promise<IrecDeviceDTO[]> {
         return this.deviceService.getDevicesToImport(loggedInUser);

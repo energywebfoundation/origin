@@ -17,7 +17,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { useContainer } from 'class-validator';
 
 import {
-    DeviceCreateUpdateParams,
+    DeviceCreateParams,
     Device as IrecDevice,
     DeviceState
 } from '@energyweb/issuer-irec-api-wrapper';
@@ -106,7 +106,7 @@ export const bootstrapTestInstance = async () => {
         .useValue({
             createIrecDevice: async (
                 user: ILoggedInUser,
-                deviceData: DeviceCreateUpdateParams
+                deviceData: DeviceCreateParams
             ): Promise<IrecDevice> => {
                 return {
                     ...deviceData,
