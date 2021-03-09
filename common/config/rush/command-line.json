@@ -38,12 +38,30 @@
             "shellCommand": "pretty-quick --staged"
         },
         {
+            "name": "test:ci:contracts",
+            "commandKind": "global",
+            "summary": "Run ci:contracts test",
+            "safeForSimultaneousRushProcesses": false,
+            "autoinstallerName": "rush-tools",
+            "shellCommand": "lerna run --scope @energyweb/issuer --scope @energyweb/utils-general test:concurrent --parallel --stream",
+            "allowWarningsInSuccessfulBuild": true
+        },
+        {
+            "name": "test:ci:apps",
+            "commandKind": "global",
+            "summary": "Run ci:apps test",
+            "safeForSimultaneousRushProcesses": false,
+            "autoinstallerName": "rush-tools",
+            "shellCommand": "lerna run --scope @energyweb/exchange --scope @energyweb/origin-backend test:concurrent --parallel --stream",
+            "allowWarningsInSuccessfulBuild": true
+        },
+        {
             "name": "test:e2e",
-            "commandKind": "bulk",
+            "commandKind": "global",
             "summary": "Run all test:e2e in packages",
             "safeForSimultaneousRushProcesses": false,
-            "enableParallelism": false,
-            "ignoreMissingScript": true,
+            "autoinstallerName": "rush-tools",
+            "shellCommand": "lerna run test:e2e --stream --ignore @energyweb/exchange-irec && lerna run test:e2e --stream --scope @energyweb/exchange-irec",
             "allowWarningsInSuccessfulBuild": true
         }
         // {

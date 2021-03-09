@@ -61,7 +61,8 @@
         "@types/mocha": "^8.2.1",
         "mocha": "8.3.0",
         "@types/chai": "4.2.15",
-        "chai": "4.3.0"
+        "chai": "4.3.0",
+        "ts-node": "9.1.1"
     },
     "publishConfig": {
         "access": "public",

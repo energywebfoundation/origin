@@ -88,7 +88,8 @@
         "chai": "4.3.0",
         "@types/chai": "4.2.15",
         "wait-on": "5.2.1",
-        "ganache-cli": "6.12.1"
+        "ganache-cli": "6.12.1",
+        "ts-node": "9.1.1"
     },
     "jest": {
         "moduleFileExtensions": [

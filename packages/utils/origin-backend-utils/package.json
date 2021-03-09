@@ -46,6 +46,7 @@
         "@types/node": "14.14.31",
         "mocha": "8.3.0",
         "@types/express": "4.17.11",
-        "@types/bn.js": "5.1.0"
+        "@types/bn.js": "5.1.0",
+        "ts-node": "9.1.1"
     }
 }
