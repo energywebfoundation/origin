@@ -107,6 +107,12 @@ export class MatchingEngine<TProduct, TProductFilter> {
         this.triggers.next();
     }
 
+    public clear(): void {
+        this.asks = this.asks.clear();
+        this.bids = this.bids.clear();
+        this.pendingActions = this.pendingActions.clear();
+    }
+
     private insertOrder(order: IMatchableOrder<TProduct, TProductFilter>) {
         if (order.side === OrderSide.Ask) {
             this.asks = this.insert(this.asks, order);

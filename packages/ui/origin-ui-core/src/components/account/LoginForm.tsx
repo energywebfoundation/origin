@@ -94,6 +94,7 @@ export const LoginForm = () => {
                     return (
                         <Form translate="no">
                             <Field
+                                data-cy="email"
                                 label={t('user.properties.email')}
                                 name="email"
                                 type="text"
@@ -106,6 +107,7 @@ export const LoginForm = () => {
                             />
 
                             <Field
+                                data-cy="password"
                                 label={t('user.properties.password')}
                                 name="password"
                                 required
@@ -122,6 +124,7 @@ export const LoginForm = () => {
                                 </Button>
                             </Box>
                             <Button
+                                data-cy="login-button"
                                 type="submit"
                                 variant="contained"
                                 color="primary"
@@ -136,6 +139,7 @@ export const LoginForm = () => {
                             </Box>
                             <Box pt={1} textAlign="left">
                                 <Button
+                                    data-cy="register-now-button"
                                     className={styles.button}
                                     onClick={() =>
                                         history.push(`${getAccountLink()}/user-register`)
