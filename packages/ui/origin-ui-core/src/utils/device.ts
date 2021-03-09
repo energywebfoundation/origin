@@ -1,5 +1,4 @@
 /* eslint-disable camelcase, @typescript-eslint/no-unused-vars */
-import { ProducingDevice } from '@energyweb/device-registry';
 import { IEnvironment } from '../features/general/actions';
 import { CustomFilterInputType, ICustomFilterDefinition } from '../components/Table/FiltersHeader';
 import gaseous from '../../assets/device/icon-gaseous.svg';
@@ -186,5 +185,6 @@ export const energyImageByType = (type: EnergyTypes, selected = false): any => {
         [EnergyTypes.WIND]: { regular: wind, selected: wind_selected },
         [EnergyTypes.MARINE]: { reguar: marine, selected: marine_selected }
     };
-    return images[type][selected ? 'selected' : 'regular'];
+    const deviceType = type || EnergyTypes.SOLAR;
+    return images[deviceType][selected ? 'selected' : 'regular'];
 };
