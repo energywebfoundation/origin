@@ -7,6 +7,10 @@ export function deviceById<T extends AnyDevice>(
     devices: T[],
     environment: IEnvironment
 ): T {
+    if (!devices) {
+        return null;
+    }
+
     return devices.find(
         (device) =>
             device.externalDeviceIds.find((ids) => ids.type === environment.ISSUER_ID).id === id

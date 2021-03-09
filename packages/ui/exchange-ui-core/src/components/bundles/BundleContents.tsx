@@ -350,9 +350,11 @@ export const BundleContents = (props: IOwnProps) => {
                                             const { volume } = split.items.find(
                                                 ({ id: splitItemId }) => splitItemId === itemId
                                             );
-                                            const type = deviceById(deviceId, devices, environment)
-                                                .deviceType.split(';')[0]
-                                                .toLowerCase();
+                                            const type = device
+                                                ? (device.deviceType
+                                                      .split(';')[0]
+                                                      .toLowerCase() as EnergyTypes)
+                                                : EnergyTypes.SOLAR;
                                             return (
                                                 <Box
                                                     style={{
