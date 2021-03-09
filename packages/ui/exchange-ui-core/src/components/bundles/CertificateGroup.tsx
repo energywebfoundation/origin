@@ -135,8 +135,8 @@ export const CertificateGroup = (props: IOwnProps) => {
                     } = cert;
                     const currentDevice = deviceById(cert.deviceId, devices, environment);
                     const type = currentDevice?.deviceType
-                        .split(';')[0]
-                        .toLowerCase() as EnergyTypes;
+                        ?.split(';')[0]
+                        ?.toLowerCase() as EnergyTypes;
                     const energy = publicVolume.add(privateVolume);
                     return (
                         <ListItem
@@ -170,7 +170,7 @@ export const CertificateGroup = (props: IOwnProps) => {
                                     </Grid>
 
                                     <Grid item>
-                                        <Box fontSize={fontSizeMd}>{type}</Box>
+                                        <Box fontSize={fontSizeMd}>{type || '-'}</Box>
                                         <Box fontSize={fontSizeMd} fontWeight="fontWeightBold">
                                             {EnergyFormatter.format(energy, true)}
                                         </Box>
