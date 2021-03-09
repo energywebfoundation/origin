@@ -18,6 +18,9 @@
         },
         {
             "path": "../origin-device-registry-api/tsconfig.json"
+        },
+        {
+            "path": "../../organizations/origin-organization-irec-api/tsconfig.json"
         }
     ]
 }

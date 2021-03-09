@@ -24,13 +24,7 @@
             "path": "../../origin-backend-core/tsconfig.json"
         },
         {
-            "path": "../../devices/origin-device-registry-api/tsconfig.json"
-        },
-        {
             "path": "../../devices/origin-device-registry-api-client/tsconfig.json"
-        },
-        {
-            "path": "../../devices/origin-device-registry-irec-local-api/tsconfig.json"
         },
         {
             "path": "../../devices/origin-device-registry-irec-local-api-client/tsconfig.json"
