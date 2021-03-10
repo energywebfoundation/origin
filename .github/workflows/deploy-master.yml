@@ -59,19 +59,8 @@ jobs:
       run: |
         yarn build
 
-    - name: Set creds to npm 
-      run: |
-        echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" >> $HOME/.npmrc
-
-    - name: Login into docker hub 
-      run: |
-        wget -qO- https://toolbelt.heroku.com/install-ubuntu.sh | sh
-        echo "${{ secrets.DOCKER_PASS }}" | docker login -u "${{ secrets.DOCKER_USER }}" --password-stdin
-
     - name: Deploy application
       run: |
-        yarn publish:canary 
-        npx sleep 5 
         yarn build:containers:canary 
         yarn deploy:heroku:canary
       env:
