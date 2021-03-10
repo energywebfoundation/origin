@@ -62,6 +62,7 @@ describe('User login', () => {
         cy.contains('Thank you for registering as a user on the marketplace');
         cy.get('button').contains('Not now').click();
         cy.url().should('include', '/devices/production');
+        cy.contains(`${testUser.firstName} ${testUser.lastName}`);
     });
 
     it('should redirect to Register Org page after modal action', () => {
