@@ -41,6 +41,7 @@ import {
     CodeNameDTO,
     CreateDeviceDTO,
     DeviceDTO,
+    ImportIrecDeviceDTO,
     IrecDeviceDTO,
     PublicDeviceDTO,
     UpdateDeviceDTO
@@ -178,5 +179,32 @@ export class DeviceController {
         @UserDecorator() loggedInUser: ILoggedInUser
     ): Promise<IrecDeviceDTO[]> {
         return this.deviceService.getDevicesToImport(loggedInUser);
+    }
+
+    @Post('/import-irec-device')
+    @UseGuards(AuthGuard(), ActiveUserGuard, RolesGuard, ActiveOrganizationGuard)
+    @Roles(Role.OrganizationAdmin, Role.OrganizationDeviceManager)
+    @ApiBody({ type: ImportIrecDeviceDTO })
+    @ApiResponse({
+        status: HttpStatus.CREATED,
+        type: DeviceDTO,
+        description: 'Imports a device from IREC'
+    })
+    @ApiForbiddenResponse({
+        status: HttpStatus.FORBIDDEN,
+        description: `User doesn't have the correct permissions`
+    })
+    @ApiUnprocessableEntityResponse({
+        status: HttpStatus.UNPROCESSABLE_ENTITY,
+        description: 'Incorrect inputs'
+    })
+    @ApiBadRequestResponse({ status: HttpStatus.BAD_REQUEST })
+    async importIrecDevice(
+        @Body() deviceToImport: ImportIrecDeviceDTO,
+        @UserDecorator() loggedInUser: ILoggedInUser
+    ): Promise<DeviceDTO> {
+        const device = await this.deviceService.importIrecDevice(loggedInUser, deviceToImport);
+
+        return plainToClass(DeviceDTO, device);
     }
 }
