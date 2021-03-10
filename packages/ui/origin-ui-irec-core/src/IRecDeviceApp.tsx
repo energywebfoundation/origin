@@ -52,7 +52,7 @@ export function IRecDeviceApp() {
 
                     if (matches.length > 0 && key === 'producing_detail_view') {
                         matches[0].component = () =>
-                            ProductionDetailView(id ? parseInt(id, 10) : id);
+                            ProductionDetailView(String(id ? parseInt(id, 10) : id));
                     }
 
                     return (

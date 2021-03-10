@@ -79,11 +79,11 @@ export class DeviceCreateUpdateParams {
 
     @IsOptional()
     @IsLatitude()
-    latitude?: number;
+    latitude?: string;
 
     @IsOptional()
     @IsLongitude()
-    longitude?: number;
+    longitude?: string;
 
     @IsOptional()
     @IsString()

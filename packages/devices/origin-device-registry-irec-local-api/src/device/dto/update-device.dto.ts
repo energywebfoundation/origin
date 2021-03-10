@@ -1,42 +1,36 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Expose, plainToClass, Type } from 'class-transformer';
 import {
     IsDate,
     IsISO31661Alpha2,
     IsLatitude,
     IsLongitude,
-    IsNotEmpty,
     IsNumber,
     IsOptional,
     IsString
 } from 'class-validator';
+import { Expose, Type } from 'class-transformer';
 
-export class CreateDeviceDTO {
+export class UpdateDeviceDTO {
     @ApiProperty({ type: String })
     @IsString()
-    @IsNotEmpty()
+    @IsOptional()
     @Expose()
     name: string;
 
     @ApiProperty({ type: String })
     @IsString()
-    @IsNotEmpty()
-    @Expose()
-    defaultAccount: string;
-
-    @ApiProperty({ type: String })
-    @IsString()
-    @IsNotEmpty()
+    @IsOptional()
     @Expose()
     deviceType: string;
 
     @ApiProperty({ type: String })
     @IsString()
-    @IsNotEmpty()
+    @IsOptional()
     @Expose()
     fuel: string;
 
     @ApiProperty({ type: String })
+    @IsOptional()
     @IsString()
     @IsISO31661Alpha2()
     @Expose()
@@ -44,35 +38,37 @@ export class CreateDeviceDTO {
 
     @ApiProperty({ type: Number })
     @IsNumber()
-    @IsNotEmpty()
+    @IsOptional()
     @Expose()
     capacity: number;
 
     @ApiProperty({ type: Date })
-    @IsNotEmpty()
+    @IsOptional()
     @IsDate()
     @Expose()
     @Type(() => Date)
     commissioningDate: Date;
 
     @ApiProperty({ type: Date })
-    @IsNotEmpty()
+    @IsOptional()
     @IsDate()
     @Expose()
     @Type(() => Date)
     registrationDate: Date;
 
     @ApiProperty({ type: String })
-    @IsNotEmpty()
+    @IsOptional()
     @Expose()
     address: string;
 
     @ApiProperty({ type: String })
+    @IsOptional()
     @IsLatitude()
     @Expose()
     latitude: string;
 
     @ApiProperty({ type: String })
+    @IsOptional()
     @IsLongitude()
     @Expose()
     longitude: string;
@@ -81,19 +77,4 @@ export class CreateDeviceDTO {
     @IsOptional()
     @Expose()
     notes?: string;
-
-    @ApiProperty({ type: String })
-    @IsString()
-    @Expose()
-    timezone: string;
-
-    @ApiProperty({ type: String })
-    @IsString()
-    @IsNotEmpty()
-    @Expose()
-    gridOperator: string;
-
-    public static sanitize(device: CreateDeviceDTO): CreateDeviceDTO {
-        return plainToClass(CreateDeviceDTO, device, { excludeExtraneousValues: true });
-    }
 }

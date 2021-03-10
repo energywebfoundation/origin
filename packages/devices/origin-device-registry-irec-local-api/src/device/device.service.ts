@@ -1,21 +1,25 @@
-import { DeviceStatus, ILoggedInUser } from '@energyweb/origin-backend-core';
+import { DeviceCreateUpdateParams, DeviceState } from '@energyweb/issuer-irec-api-wrapper';
+import { ILoggedInUser } from '@energyweb/origin-backend-core';
 import { BadRequestException, Injectable } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { EventBus } from '@nestjs/cqrs';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FindManyOptions, Repository } from 'typeorm';
 
 import { Device } from './device.entity';
-import { CreateDeviceDTO } from './dto/create-device.dto';
-import { DeviceStatusChangedEvent, DeviceCreatedEvent } from './events';
+import { CodeNameDTO, CreateDeviceDTO, UpdateDeviceDTO } from './dto';
+import { DeviceCreatedEvent } from './events';
 import { IREC_FUEL_TYPES, IREC_FUELS } from './Fuels';
-import { CodeNameDTO } from './dto';
+import { IrecDeviceService } from './irec-device.service';
 
 @Injectable()
 export class DeviceService {
     constructor(
         @InjectRepository(Device)
         private readonly repository: Repository<Device>,
-        private readonly eventBus: EventBus
+        private readonly eventBus: EventBus,
+        private readonly configService: ConfigService,
+        private readonly irecDeviceService: IrecDeviceService
     ) {}
 
     async findOne(id: string): Promise<Device> {
@@ -31,11 +35,20 @@ export class DeviceService {
             throw new BadRequestException('Invalid fuel type');
         }
 
-        const deviceToStore = new Device({
+        const deviceData: DeviceCreateUpdateParams = {
             ...CreateDeviceDTO.sanitize(newDevice),
-            ownerId: user.ownerId,
-            registrantOrganization: 'MYORG',
-            issuer: 'ISSUER'
+            registrantOrganization: this.configService.get<string>(
+                'IREC_PARTICIPANT_TRADE_ACCOUNT'
+            ),
+            issuer: this.configService.get<string>('IREC_ISSUER_ORGANIZATION_CODE')
+        };
+
+        const irecDevice = await this.irecDeviceService.createIrecDevice(user, deviceData);
+
+        const deviceToStore = new Device({
+            ...deviceData,
+            ...irecDevice,
+            ownerId: user.ownerId
         });
 
         const storedDevice = await this.repository.save(deviceToStore);
@@ -49,18 +62,21 @@ export class DeviceService {
         return this.repository.find(options);
     }
 
-    async updateStatus(id: string, status: DeviceStatus): Promise<Device> {
+    async update(user: ILoggedInUser, id: string, deviceData: UpdateDeviceDTO): Promise<Device> {
         const device = await this.findOne(id);
 
         if (!device) {
             return null;
         }
 
-        await this.repository.update(device.id, { status });
-
-        this.eventBus.publish(new DeviceStatusChangedEvent(device, status));
+        const irecDevice = await this.irecDeviceService.update(user, device.code, deviceData);
+        await this.repository.update(device.id, { ...irecDevice, status: DeviceState.InProgress });
 
         return this.findOne(id);
+    }
+
+    async updateStatus(id: string, status: DeviceState): Promise<void> {
+        await this.repository.update(id, { status });
     }
 
     getDeviceTypes(): CodeNameDTO[] {

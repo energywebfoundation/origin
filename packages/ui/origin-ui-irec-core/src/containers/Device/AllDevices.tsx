@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { DeviceStatus } from '@energyweb/origin-backend-core';
-import { getAllDevices, fetchPublicDevices } from '../../features/devices';
+import { useDispatch, useSelector } from 'react-redux';
+import { DeviceState } from '@energyweb/origin-device-registry-irec-local-api-client';
+import { fetchPublicDevices, getAllDevices } from '../../features/devices';
 import { getDeviceClient } from '../../features/general';
 import { DeviceTable } from '../../components/devices/table';
 
@@ -20,7 +20,7 @@ export function AllDevices() {
         <DeviceTable
             devices={allDevices}
             hiddenColumns={['status']}
-            includedStatuses={[DeviceStatus.Active]}
+            includedStatuses={[DeviceState.Approved]}
             actions={{}}
         />
     );

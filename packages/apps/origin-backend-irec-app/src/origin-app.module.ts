@@ -14,6 +14,7 @@ import {
     entities as OriginDeviceEntities
 } from '@energyweb/origin-device-registry-api';
 import {
+    DeviceModule as IrecDeviceModule,
     AppModule as IRECDeviceRegistry,
     entities as IRECDeviceEntities
 } from '@energyweb/origin-device-registry-irec-local-api';
@@ -25,6 +26,7 @@ import {
 import { Module } from '@nestjs/common';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { CqrsModule } from '@nestjs/cqrs';
+import { ScheduleModule } from '@nestjs/schedule';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import {
@@ -41,6 +43,7 @@ import {
 } from '.';
 import { IntegrationModule } from './integration';
 import { MailModule } from './mail';
+import { CheckDeviceStateTask, RefreshAllTokensTask } from './cron';
 
 const OriginAppTypeOrmModule = () => {
     const entities = [
@@ -76,6 +79,7 @@ const OriginAppTypeOrmModule = () => {
 
 @Module({
     imports: [
+        ScheduleModule.forRoot(),
         OriginAppTypeOrmModule(),
         OriginBackendModule,
         IRECDeviceRegistry,
@@ -90,7 +94,8 @@ const OriginAppTypeOrmModule = () => {
         OriginDeviceRegistry,
         UserModule,
         CqrsModule,
-        RegistrationModule
+        RegistrationModule,
+        IrecDeviceModule
     ],
     providers: [
         { provide: APP_INTERCEPTOR, useClass: HTTPLoggingInterceptor },
@@ -103,7 +108,9 @@ const OriginAppTypeOrmModule = () => {
         OrganizationMemberRoleChangedHandler,
         OrganizationStatusChangedHandler,
         RegistrationCreatedHandler,
-        OrganizationRegisteredHandler
+        OrganizationRegisteredHandler,
+        CheckDeviceStateTask,
+        RefreshAllTokensTask
     ]
 })
 export class OriginAppModule {}
