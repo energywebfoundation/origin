@@ -19,7 +19,8 @@ import {
     CustomFilterInputType,
     FilterRules,
     TableMaterial,
-    useLinks
+    useLinks,
+    TableFallback
 } from '@energyweb/origin-ui-core';
 import { useDeviceDataLayer } from '../../deviceDataLayer';
 import { getDeviceName, deviceTypeChecker } from '../../utils/device';
@@ -44,7 +45,7 @@ export const AsksTable = (props: IOwnProsp) => {
     const deviceClient = deviceDataLayer.deviceClient;
     const deviceSelector = deviceDataLayer.getMyDevices;
     const deviceFetcher = deviceDataLayer.fetchMyDevices;
-    const devices = useSelector(deviceSelector) || [];
+    const devices = useSelector(deviceSelector);
     const { getExchangeLink } = useLinks();
     const history = useHistory();
     const dispatch = useDispatch();
@@ -233,6 +234,10 @@ export const AsksTable = (props: IOwnProsp) => {
             onClick: (row: string) => cancelAsk(parseInt(row, 10))
         }
     ];
+
+    if (devices === null) {
+        return <TableFallback />;
+    }
 
     return (
         <>
