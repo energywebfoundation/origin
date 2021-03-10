@@ -133,4 +133,21 @@ describe('Device e2e tests', () => {
         expect(updatedDevice.status).to.equal(DeviceState.InProgress);
         expect(updatedDevice.name).to.equal('Changed Name');
     });
+
+    it('should import irec device to local irec device storage', async () => {
+        const {
+            body: [deviceToImport]
+        } = await test
+            .get('/irec/device-registry/irec-devices-to-import')
+            .set({ 'test-user': TestUser.OrganizationAdmin });
+
+        expect(deviceToImport.code).to.be.a('string');
+
+        const { body: createdDevice } = await test
+            .post('/irec/device-registry/import-irec-device')
+            .send({ code: deviceToImport.code, timezone: 'some', gridOperator: 'some' })
+            .set({ 'test-user': TestUser.OrganizationAdmin });
+
+        expect(createdDevice.id).to.be.a('string');
+    });
 });

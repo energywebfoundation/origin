@@ -4,14 +4,19 @@ import {
     DeviceState
 } from '@energyweb/issuer-irec-api-wrapper';
 import { ILoggedInUser } from '@energyweb/origin-backend-core';
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+    BadRequestException,
+    ConflictException,
+    Injectable,
+    NotFoundException
+} from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { EventBus } from '@nestjs/cqrs';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FindManyOptions, Repository } from 'typeorm';
 
 import { Device } from './device.entity';
-import { CodeNameDTO, CreateDeviceDTO, UpdateDeviceDTO } from './dto';
+import { CodeNameDTO, CreateDeviceDTO, ImportIrecDeviceDTO, UpdateDeviceDTO } from './dto';
 import { DeviceCreatedEvent } from './events';
 import { IREC_FUEL_TYPES, IREC_FUELS } from './Fuels';
 import { IrecDeviceService } from './irec-device.service';
@@ -104,6 +109,34 @@ export class DeviceService {
         const devices = await this.repository.find({ where: { ownerId: user.ownerId } });
         const deviceCodes: string[] = devices.map((d) => d.code);
 
-        return irecDevices.filter((d) => deviceCodes.includes(d.code));
+        return irecDevices.filter((d) => !deviceCodes.includes(d.code));
+    }
+
+    async importIrecDevice(
+        user: ILoggedInUser,
+        deviceToImport: ImportIrecDeviceDTO
+    ): Promise<Device> {
+        const irecDevice = await this.irecDeviceService.getDevice(user, deviceToImport.code);
+
+        if (!irecDevice) {
+            throw new NotFoundException(`Device with code ${deviceToImport.code} not found`);
+        }
+
+        const device = await this.repository.findOne({ where: { code: deviceToImport.code } });
+        if (device) {
+            throw new ConflictException(`Device with code ${deviceToImport.code} already exists`);
+        }
+
+        const deviceToStore = new Device({
+            ...deviceToImport,
+            ...irecDevice,
+            ownerId: user.ownerId
+        });
+
+        const storedDevice = await this.repository.save(deviceToStore);
+
+        this.eventBus.publish(new DeviceCreatedEvent(storedDevice, user.id));
+
+        return storedDevice;
     }
 }
