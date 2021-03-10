@@ -5,7 +5,8 @@ import { CommandBus } from '@nestjs/cqrs';
 import {
     AccessTokens,
     Device as IrecDevice,
-    DeviceCreateUpdateParams,
+    DeviceCreateParams,
+    DeviceUpdateParams,
     DeviceState,
     IRECAPIClient
 } from '@energyweb/issuer-irec-api-wrapper';
@@ -49,7 +50,7 @@ export class IrecDeviceService {
 
     async createIrecDevice(
         user: UserIdentifier,
-        deviceData: DeviceCreateUpdateParams
+        deviceData: DeviceCreateParams
     ): Promise<IrecDevice> {
         if (!this.isIrecIntegrationEnabled()) {
             return {
@@ -68,14 +69,14 @@ export class IrecDeviceService {
     async update(
         user: UserIdentifier,
         code: string,
-        device: Partial<IrecDevice>
+        device: DeviceUpdateParams
     ): Promise<IrecDevice> {
         if (!this.isIrecIntegrationEnabled()) {
             return {
                 ...device,
                 status: DeviceState.InProgress,
                 code
-            };
+            } as IrecDevice;
         }
 
         const irecClient = await this.getIrecClient(user);
@@ -93,5 +94,32 @@ export class IrecDeviceService {
     async getDevice(user: UserIdentifier, code: string): Promise<IrecDevice> {
         const irecClient = await this.getIrecClient(user);
         return irecClient.device.get(code);
+    }
+
+    async getDevices(user: UserIdentifier): Promise<IrecDevice[]> {
+        if (!this.isIrecIntegrationEnabled()) {
+            return [
+                {
+                    address: '1 Wind Farm Avenue, London',
+                    capacity: 500,
+                    commissioningDate: new Date('2001-08-10'),
+                    countryCode: 'GB',
+                    defaultAccount: 'someTradeAccount',
+                    deviceType: 'TC110',
+                    fuel: 'ES200',
+                    issuer: 'someIssuerCode',
+                    latitude: '53.405088',
+                    longitude: '-1.744222',
+                    name: 'DeviceXYZ',
+                    notes: 'Lorem ipsum dolor sit amet',
+                    registrantOrganization: 'someRegistrantCode',
+                    registrationDate: new Date('2001-09-20'),
+                    status: DeviceState.Approved,
+                    code: 'mockDeviceCode'
+                }
+            ];
+        }
+        const irecClient = await this.getIrecClient(user);
+        return irecClient.device.getAll();
     }
 }
