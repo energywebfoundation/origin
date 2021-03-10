@@ -22,6 +22,7 @@ import { IClaimData } from '@energyweb/issuer';
 export function BlockchainInboxPage(): JSX.Element {
     const [retireForBeneficiary, setRetireForBeneficiary] = useState<boolean>(false);
     const [beneficiaryFormData, setBeneficiaryFormData] = useState<IClaimData>();
+    const [disableButton, setDisableButton] = useState<boolean>(false);
 
     const dispatch = useDispatch();
     const { t } = useTranslation();
@@ -126,6 +127,7 @@ export function BlockchainInboxPage(): JSX.Element {
                                 buttonLabel="certificate.actions.retireNCertificates"
                                 onSubmit={() => claim(getSelectedCertificates()[0], updateView)}
                                 selectedCerts={selectedCerts}
+                                disableButton={disableButton}
                             >
                                 <SelectedInboxList
                                     pairs={getSelectedItems()}
@@ -153,6 +155,8 @@ export function BlockchainInboxPage(): JSX.Element {
                                     <BeneficiaryForm
                                         data={beneficiaryFormData}
                                         setData={setBeneficiaryFormData}
+                                        disabled={disableButton}
+                                        setDisabled={setDisableButton}
                                     />
                                 )}
                             </TabContent>
