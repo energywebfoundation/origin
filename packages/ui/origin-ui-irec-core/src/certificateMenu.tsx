@@ -14,7 +14,7 @@ import { BlockchainInboxPage } from './containers/Certificate/BlockchainInboxPag
 interface ICertificateMenuItem {
     key: string;
     label: string;
-    component: React.ReactType;
+    component: React.ElementType;
     show: boolean;
     features: OriginFeature[];
 }
@@ -54,7 +54,7 @@ export const useCertificatesMenu = (): ICertificateMenuItem[] => {
             key: 'claims_report',
             label: 'navigation.certificates.claimsReport',
             component: ClaimedCertificates,
-            show: isIssuer || userIsActiveAndPartOfOrg,
+            show: userIsActiveAndPartOfOrg && !isIssuer,
             features: [OriginFeature.Certificates, OriginFeature.Buyer]
         },
         {
