@@ -8,10 +8,15 @@ export const TabContent: FunctionComponent<{
     buttonLabel: string;
     onSubmit: () => void;
     selectedCerts: number[];
+    disableButton?: boolean;
 }> = (props): JSX.Element => {
+    const { selectedCerts, disableButton } = props;
+
     const { t } = useTranslation();
 
     const { isEditing } = useContext(InboxItemEditContext);
+    const submitButtonDisabled =
+        isEditing || selectedCerts.length === 0 || selectedCerts.length > 1 || disableButton;
 
     return (
         <div style={{ display: 'flex', flexDirection: 'column' }}>
@@ -31,9 +36,7 @@ export const TabContent: FunctionComponent<{
                 variant="contained"
                 size="small"
                 style={{ marginTop: '14px' }}
-                disabled={
-                    isEditing || props.selectedCerts.length === 0 || props.selectedCerts.length > 1
-                }
+                disabled={submitButtonDisabled}
                 onClick={() => props.onSubmit()}
             >
                 {t(props.buttonLabel, {
