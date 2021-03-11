@@ -10,7 +10,7 @@ import { ApprovedCertificates } from './ApprovedCertificates';
 import { CertificateImport } from './Import/CertificateImport';
 import { ExchangeInboxPage } from './ExchangeInboxPage';
 import { BlockchainInboxPage } from './BlockchainInboxPage';
-import { CertificateRequestsTable } from './CertificateRequestsTable';
+import { RequestsPage } from './RequestsPage';
 
 interface ICertificateMenuItem {
     key: string;
@@ -61,7 +61,7 @@ export const useCertificatesMenu = (): ICertificateMenuItem[] => {
         {
             key: 'requests',
             label: 'navigation.certificates.requests',
-            component: CertificateRequestsTable,
+            component: RequestsPage,
             show: userIsActiveAndPartOfOrg && !isIssuer,
             features: [OriginFeature.Certificates, OriginFeature.Buyer]
         },
