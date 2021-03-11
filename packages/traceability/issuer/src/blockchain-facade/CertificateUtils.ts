@@ -13,7 +13,15 @@ export const encodeClaimData = (claimData: IClaimData): string => {
 
     return utils.defaultAbiCoder.encode(
         ['string', 'string', 'string', 'string', 'string', 'string', 'string'],
-        [beneficiary, address, region, zipCode, countryCode, fromDate, toDate]
+        [
+            beneficiary ?? '',
+            address ?? '',
+            region ?? '',
+            zipCode ?? '',
+            countryCode ?? '',
+            fromDate ?? '',
+            toDate ?? ''
+        ]
     );
 };
 
