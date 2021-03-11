@@ -44,6 +44,7 @@ export function AppContainer(props: IProps) {
     const enabledFeatures = originConfiguration?.enabledFeatures;
     const changeContext = originConfiguration?.changeContext;
     const environment = useSelector(getEnvironment);
+
     useEffect(() => {
         if (environment?.DISABLED_UI_FEATURES) {
             const disabledFeatures = environment?.DISABLED_UI_FEATURES.split(';').map(
@@ -75,13 +76,17 @@ export function AppContainer(props: IProps) {
     const organizationRoute = shareContextCore(<Organization />);
     const adminRoute = shareContextCore(<Admin />);
 
+    const exchangeDeviceDataLayer = enabledFeatures?.includes(OriginFeature.IRecUIApp)
+        ? DeviceDataLayers.IRecDevice
+        : DeviceDataLayers.OriginFormDevice;
+
     const shareContextExchange = (component) => (
         <ExchangeAdapter
             store={store}
             configuration={config}
             history={props.history}
             component={component}
-            deviceDataLayer={DeviceDataLayers.OriginFormDevice}
+            deviceDataLayer={exchangeDeviceDataLayer}
         />
     );
     const exchangeRoute = shareContextExchange(<ExchangeApp />);
@@ -95,14 +100,15 @@ export function AppContainer(props: IProps) {
         />
     );
     const iRecCertificateRoute = shareContextIRec(<IRecCertificateApp />);
-    const certificateRoute = !enabledFeatures?.includes(OriginFeature.IRecUIApp)
-        ? certificatesCoreRoute
-        : iRecCertificateRoute;
-
     const iRecDeviceRoute = shareContextIRec(<IRecDeviceApp />);
-    const deviceRoute = !enabledFeatures?.includes(OriginFeature.IRecUIApp)
-        ? devicesCoreRoute
-        : iRecDeviceRoute;
+
+    const certificateRoute = enabledFeatures?.includes(OriginFeature.IRecUIApp)
+        ? iRecCertificateRoute
+        : certificatesCoreRoute;
+
+    const deviceRoute = enabledFeatures?.includes(OriginFeature.IRecUIApp)
+        ? iRecDeviceRoute
+        : devicesCoreRoute;
 
     const {
         baseURL,
