@@ -233,7 +233,7 @@ export function TableMaterial<T extends readonly ITableColumn[]>(props: IProps<T
 
     return (
         <>
-            <MuiPickersUtilsProvider utils={MomentUtils} locale={configuration.language}>
+            <MuiPickersUtilsProvider utils={MomentUtils} locale={configuration?.language}>
                 <FiltersHeader
                     filters={filters}
                     filtersChanged={filtersChanged}
