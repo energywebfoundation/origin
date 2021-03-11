@@ -37,7 +37,9 @@ describe('Certificate tests', () => {
         address: 'Random address 123, Somewhere',
         region: 'Northernmost Region',
         zipCode: '321-45',
-        countryCode: 'DE'
+        countryCode: 'DE',
+        fromDate: moment('2020-01-01').toISOString(),
+        toDate: moment('2020-02-1').toISOString()
     };
 
     const emptyClaimData: IClaimData = {
@@ -45,7 +47,9 @@ describe('Certificate tests', () => {
         address: '',
         region: '',
         zipCode: '',
-        countryCode: ''
+        countryCode: '',
+        fromDate: '',
+        toDate: ''
     };
 
     const setActiveUser = (wallet: Wallet) => {
