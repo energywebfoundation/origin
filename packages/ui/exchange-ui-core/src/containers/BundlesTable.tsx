@@ -199,24 +199,25 @@ export const BundlesTable = (props: IBundleTableProps) => {
         return <Requirements />;
     }
 
+    if (allBundles === null) {
+        return <TableFallback />;
+    }
+
     return (
         <>
-            {allBundles === null ? (
-                <TableFallback />
-            ) : (
-                <TableMaterial
-                    columns={columns}
-                    rows={rows}
-                    loadPage={loadPage}
-                    total={total}
-                    pageSize={pageSize}
-                    actions={actions}
-                    currentSort={currentSort}
-                    sortAscending={sortAscending}
-                    toggleSort={toggleSort}
-                    handleRowClick={(rowIndex: string) => viewDetails(parseInt(rowIndex, 10))}
-                />
-            )}
+            <TableMaterial
+                columns={columns}
+                rows={rows}
+                loadPage={loadPage}
+                total={total}
+                pageSize={pageSize}
+                actions={actions}
+                currentSort={currentSort}
+                sortAscending={sortAscending}
+                toggleSort={toggleSort}
+                handleRowClick={(rowIndex: string) => viewDetails(parseInt(rowIndex, 10))}
+            />
+
             {isBundleDetailsVisible && (
                 <BundleDetails devices={devices} bundle={selected} owner={owner} />
             )}

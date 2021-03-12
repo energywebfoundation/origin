@@ -32,7 +32,9 @@ const claimData: IClaimData = {
     address: 'Random address 123, Somewhere',
     region: 'Northernmost Region',
     zipCode: '321-45',
-    countryCode: 'DE'
+    countryCode: 'DE',
+    fromDate: moment().subtract(2, 'month').toISOString(),
+    toDate: moment().subtract(1, 'month').toISOString()
 };
 
 const createCertificates = async (app: INestApplication, user: TestUser) => {

@@ -37,7 +37,15 @@ import { plainToClass } from 'class-transformer';
 
 import { SuccessResponseDTO } from '../utils/success-response.dto';
 import { DeviceService } from './device.service';
-import { CodeNameDTO, CreateDeviceDTO, DeviceDTO, PublicDeviceDTO, UpdateDeviceDTO } from './dto';
+import {
+    CodeNameDTO,
+    CreateDeviceDTO,
+    DeviceDTO,
+    ImportIrecDeviceDTO,
+    IrecDeviceDTO,
+    PublicDeviceDTO,
+    UpdateDeviceDTO
+} from './dto';
 
 @ApiTags('device')
 @ApiBearerAuth('access-token')
@@ -157,5 +165,46 @@ export class DeviceController {
         const updatedDevice = await this.deviceService.update(loggedInUser, id, deviceData);
 
         return plainToClass(DeviceDTO, updatedDevice);
+    }
+
+    @Get('/irec-devices-to-import')
+    @UseGuards(AuthGuard(), ActiveUserGuard, RolesGuard)
+    @Roles(Role.OrganizationAdmin, Role.OrganizationDeviceManager, Role.OrganizationUser)
+    @ApiResponse({
+        status: HttpStatus.OK,
+        type: [IrecDeviceDTO],
+        description: 'Returns not imported IREC devices'
+    })
+    async getDevicesToImportFromIrec(
+        @UserDecorator() loggedInUser: ILoggedInUser
+    ): Promise<IrecDeviceDTO[]> {
+        return this.deviceService.getDevicesToImport(loggedInUser);
+    }
+
+    @Post('/import-irec-device')
+    @UseGuards(AuthGuard(), ActiveUserGuard, RolesGuard, ActiveOrganizationGuard)
+    @Roles(Role.OrganizationAdmin, Role.OrganizationDeviceManager)
+    @ApiBody({ type: ImportIrecDeviceDTO })
+    @ApiResponse({
+        status: HttpStatus.CREATED,
+        type: DeviceDTO,
+        description: 'Imports a device from IREC'
+    })
+    @ApiForbiddenResponse({
+        status: HttpStatus.FORBIDDEN,
+        description: `User doesn't have the correct permissions`
+    })
+    @ApiUnprocessableEntityResponse({
+        status: HttpStatus.UNPROCESSABLE_ENTITY,
+        description: 'Incorrect inputs'
+    })
+    @ApiBadRequestResponse({ status: HttpStatus.BAD_REQUEST })
+    async importIrecDevice(
+        @Body() deviceToImport: ImportIrecDeviceDTO,
+        @UserDecorator() loggedInUser: ILoggedInUser
+    ): Promise<DeviceDTO> {
+        const device = await this.deviceService.importIrecDevice(loggedInUser, deviceToImport);
+
+        return plainToClass(DeviceDTO, device);
     }
 }

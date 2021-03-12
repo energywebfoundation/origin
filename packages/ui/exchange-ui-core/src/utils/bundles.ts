@@ -13,9 +13,10 @@ export const energyByType = (
 ) => {
     return bundle.items.reduce(
         (grouped, item) => {
-            const type = deviceById(item.asset.deviceId, devices, environment)
-                .deviceType.split(';')[0]
-                .toLowerCase();
+            const device = deviceById(item.asset.deviceId, devices, environment);
+            const type = device
+                ? (device.deviceType.split(';')[0].toLowerCase() as EnergyTypes)
+                : EnergyTypes.SOLAR;
             const propName = grouped[type] ? type : 'other';
             grouped[propName] = grouped[propName].add(item.currentVolume);
             grouped.total = grouped.total.add(item.currentVolume);

@@ -1,0 +1,17 @@
+site_name: EW-Origin
+
+nav:
+    - Introduction: index.md
+    - Developer documentation:
+          - Getting started: getting-started.md
+          - Cookbook: cookbook.md
+
+theme: readthedocs
+
+plugins:
+    - mermaid2
+    - search
+    - autolinks
+
+extra_javascript:
+    - https://unpkg.com/mermaid@8.8.4/dist/mermaid.min.js

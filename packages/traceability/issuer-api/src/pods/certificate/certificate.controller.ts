@@ -17,7 +17,9 @@ import {
     Put,
     UseInterceptors,
     HttpStatus,
-    Query
+    Query,
+    UsePipes,
+    ValidationPipe
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
@@ -47,6 +49,7 @@ import { SuccessResponseDTO } from '../../utils/success-response.dto';
 @ApiBearerAuth('access-token')
 @Controller('certificate')
 @UseInterceptors(ExceptionInterceptor)
+@UsePipes(ValidationPipe)
 export class CertificateController {
     constructor(private readonly commandBus: CommandBus, private readonly queryBus: QueryBus) {}
 
