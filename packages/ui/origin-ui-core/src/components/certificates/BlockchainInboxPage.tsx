@@ -14,7 +14,6 @@ import { useTranslation } from 'react-i18next';
 import { IInboxCertificateData } from './Inbox/InboxItem';
 import { getUserOffchain } from '../../features/users';
 import { EnergyFormatter } from '../../utils/EnergyFormatter';
-import { getCountryCodeFromId } from '../../utils/countries';
 import { useOriginConfiguration } from '../../utils/configuration';
 import { makeStyles } from '@material-ui/styles';
 import { IClaimData } from '@energyweb/issuer';
@@ -35,7 +34,9 @@ export function BlockchainInboxPage(): JSX.Element {
             address: user?.organization?.address,
             zipCode: user?.organization?.zipCode,
             region: null,
-            countryCode: getCountryCodeFromId(user?.organization?.country)
+            countryCode: user?.organization?.country,
+            fromDate: new Date().toISOString(),
+            toDate: new Date().toISOString()
         });
     }, [user]);
 
