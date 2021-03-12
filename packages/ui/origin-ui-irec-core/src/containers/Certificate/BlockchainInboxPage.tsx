@@ -8,8 +8,7 @@ import {
     CertificateSource,
     requestClaimCertificate,
     requestDepositCertificate,
-    EnergyFormatter,
-    getCountryCodeFromId
+    EnergyFormatter
 } from '@energyweb/origin-ui-core';
 import { useOriginConfiguration } from '../../utils/configuration';
 import {
@@ -37,7 +36,9 @@ export function BlockchainInboxPage(): JSX.Element {
             address: user?.organization?.address,
             zipCode: user?.organization?.zipCode,
             region: null,
-            countryCode: getCountryCodeFromId(user?.organization?.country)
+            countryCode: user?.organization?.country,
+            fromDate: new Date().toISOString(),
+            toDate: new Date().toISOString()
         });
     }, [user]);
 
