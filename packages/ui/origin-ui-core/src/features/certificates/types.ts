@@ -1,3 +1,4 @@
+import { ClaimDTO } from '@energyweb/issuer-api-client';
 import { BigNumber } from 'ethers';
 
 export interface IEnergy {
@@ -15,7 +16,7 @@ export interface ICertificate {
     energy: IEnergy;
     isOwned: boolean;
     isClaimed: boolean;
-    myClaims?: any[];
+    myClaims?: ClaimDTO[];
 
     // Blockchain specific properties
     blockchain?: any;
