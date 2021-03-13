@@ -261,9 +261,6 @@ export type ICertificatesAction =
     | IUpdateCertificateAction
     | IResyncCertificateAction
     | IRequestCertificatesAction
-    // | IShowRequestCertificatesModalAction
-    // | ISetRequestCertificatesModalVisibilityAction
-    // | IHideRequestCertificatesModalAction
     | IRequestCertificateEntityFetchAction
     | IRequestPublishForSaleAction
     | IRequestClaimCertificateAction

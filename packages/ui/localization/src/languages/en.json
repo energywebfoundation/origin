@@ -11,7 +11,8 @@
         },
         "navigation": {
             "admin": {
-                "users": "Manage Users"
+                "users": "Manage Users",
+                "claims": "Claims"
             },
             "devices": {
                 "import": "Device import",

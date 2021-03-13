@@ -17,6 +17,7 @@ import { EnergyFormatter } from '../../../utils/EnergyFormatter';
 import { LightenColor } from '../../../utils/colors';
 import { useOriginConfiguration } from '../../../utils/configuration';
 import { DeviceDTO } from '@energyweb/origin-device-registry-irec-form-api-client';
+import { ClaimDataDTO } from '@energyweb/issuer-api-client';
 
 interface IProps {
     id: number;
@@ -275,7 +276,7 @@ export function CertificateDetailView(props: IProps) {
 
             if (selectedCertificate.isClaimed) {
                 const claims = selectedCertificate.myClaims.map((c) => c.claimData);
-                const uniqueClaims = [...new Set(claims)];
+                const uniqueClaims: ClaimDataDTO[] = [...new Set<ClaimDataDTO>(claims)];
 
                 const claimInfo = [
                     {
@@ -289,11 +290,16 @@ export function CertificateDetailView(props: IProps) {
                 ];
 
                 if (uniqueClaims.length > 0) {
-                    const fieldData = uniqueClaims.map((oneBeneficiary) =>
-                        Object.values(oneBeneficiary)
+                    const fieldData = uniqueClaims.map((oneBeneficiary) => {
+                        const { fromDate, toDate } = oneBeneficiary;
+
+                        oneBeneficiary.fromDate = fromDate && `[From: ${formatDate(fromDate)}`;
+                        oneBeneficiary.toDate = toDate && `To: ${formatDate(toDate)}]`;
+
+                        return Object.values(oneBeneficiary)
                             .filter((value) => value !== '')
-                            .join(', ')
-                    );
+                            .join(', ');
+                    });
 
                     claimInfo.push({
                         label: t('certificate.properties.claimBeneficiary'),

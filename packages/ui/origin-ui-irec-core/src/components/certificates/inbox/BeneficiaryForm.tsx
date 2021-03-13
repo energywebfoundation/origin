@@ -8,6 +8,7 @@ import {
     Select,
     TextField
 } from '@material-ui/core';
+import { MaterialDatePicker, getCountryName } from '@energyweb/origin-ui-core';
 import { Countries } from '@energyweb/utils-general';
 import { IClaimData } from '@energyweb/issuer';
 import { useForm } from 'react-hook-form';
@@ -101,6 +102,23 @@ export function BeneficiaryForm(props: IProps): JSX.Element {
                     />
                 </div>
 
+                <div style={{ display: 'flex' }}>
+                    <MaterialDatePicker
+                        label="From date"
+                        value={data.fromDate ?? ''}
+                        onChange={(date) => setField('fromDate', date.toISOString())}
+                        className="mt-4 mr-1"
+                        style={{ width: '50%' }}
+                    />
+                    <MaterialDatePicker
+                        label="To date"
+                        value={data.toDate ?? ''}
+                        onChange={(date) => setField('toDate', date.toISOString())}
+                        className="mt-4 ml-2"
+                        style={{ width: '50%' }}
+                    />
+                </div>
+
                 <FormControl fullWidth={true} variant="filled" className="mt-4">
                     <InputLabel>{t('certificate.properties.country')}</InputLabel>
                     <Select
@@ -112,7 +130,7 @@ export function BeneficiaryForm(props: IProps): JSX.Element {
                     >
                         {countryCodes?.map((item) => (
                             <MenuItem key={item} value={item}>
-                                {item}
+                                {getCountryName(item)}
                             </MenuItem>
                         ))}
                     </Select>

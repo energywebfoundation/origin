@@ -109,7 +109,7 @@ export function areDeviceSpecificPropertiesValid(
     let isValid = true;
 
     if (isDeviceLocationEnabled(environment)) {
-        isValid = isValid && location?.length === 2;
+        isValid = location?.length === 2;
     }
 
     if (isDeviceGridOperatorEnabled(environment)) {
@@ -188,3 +188,28 @@ export const energyImageByType = (type: EnergyTypes, selected = false): any => {
     const deviceType = type || EnergyTypes.SOLAR;
     return images[deviceType][selected ? 'selected' : 'regular'];
 };
+
+export function deviceById<T>(id: string, devices: any[], environment: IEnvironment): T {
+    if (!devices) {
+        return null;
+    }
+
+    return devices.find(
+        (device) =>
+            device?.externalDeviceIds.find((ids) => ids.type === environment.ISSUER_ID).id === id
+    );
+}
+
+export function deviceTypeChecker(device: any): device is IOriginDevice {
+    if (!device) {
+        return false;
+    }
+
+    return Object.prototype.hasOwnProperty.call(device, 'facilityName');
+}
+
+export function getDeviceName(id: string, devices: any[], environment: IEnvironment): string {
+    const device = deviceById(id, devices, environment);
+    const deviceName = deviceTypeChecker(device) ? device?.facilityName : (device as any)?.name;
+    return deviceName ?? '-';
+}
