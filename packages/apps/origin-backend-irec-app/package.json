@@ -51,7 +51,7 @@
         "@nestjs/config": "^0.6.0",
         "@nestjs/core": "7.6.13",
         "@nestjs/cqrs": "7.0.1",
-        "@nestjs/schedule": "0.4.2",
+        "@nestjs/schedule": "0.4.3",
         "@nestjs/swagger": "4.7.15",
         "@nestjs/typeorm": "7.1.5",
         "body-parser": "1.19.0",
