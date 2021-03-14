@@ -50,7 +50,7 @@
         "@nestjs/cqrs": "7.0.1",
         "@nestjs/passport": "7.1.5",
         "@nestjs/platform-express": "7.6.13",
-        "@nestjs/schedule": "0.4.2",
+        "@nestjs/schedule": "0.4.3",
         "@nestjs/swagger": "4.7.15",
         "@nestjs/testing": "7.6.13",
         "@nestjs/typeorm": "7.1.5",
