@@ -51,7 +51,7 @@
         "@nestjs/passport": "7.1.5",
         "@nestjs/platform-express": "7.6.13",
         "@nestjs/schedule": "0.4.3",
-        "@nestjs/swagger": "4.7.15",
+        "@nestjs/swagger": "4.7.16",
         "@nestjs/testing": "7.6.13",
         "@nestjs/typeorm": "7.1.5",
         "bn.js": "^5.1.1",
