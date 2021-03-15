@@ -36,7 +36,7 @@
         "@nestjs/swagger": "4.7.16",
         "bn.js": "^5.1.2",
         "class-validator": "^0.13.0",
-        "polly-js": "1.8.0",
+        "polly-js": "1.8.1",
         "rxjs": "6.6.6",
         "typeorm": "0.2.31"
     }
