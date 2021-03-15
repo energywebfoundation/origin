@@ -80,7 +80,7 @@ export function ExchangeInboxPage(): JSX.Element {
 
     const { canAccessPage } = usePermissions();
 
-    if (!canAccessPage?.value) {
+    if (!canAccessPage.value) {
         return <Requirements />;
     }
 

@@ -411,7 +411,6 @@ export function CertificateTable(props: IProps): JSX.Element {
                     onClick: claimCertificate
                 });
                 actions.push((row) => {
-                    console.log(row);
                     if (row?.source === 'Blockchain') {
                         return null;
                     }
