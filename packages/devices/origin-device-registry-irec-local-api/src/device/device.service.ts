@@ -105,6 +105,7 @@ export class DeviceService {
     }
 
     async getDevicesToImport(user: ILoggedInUser): Promise<IrecDevice[]> {
+        console.log('@@@@@@@');
         const irecDevices = await this.irecDeviceService.getDevices(user);
         const devices = await this.repository.find({ where: { ownerId: user.ownerId } });
         const deviceCodes: string[] = devices.map((d) => d.code);

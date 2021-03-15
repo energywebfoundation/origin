@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Grid, Typography } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
@@ -11,10 +11,31 @@ import {
 import { useOriginConfiguration } from '../../utils/configuration';
 import { ImportDeviceItem } from '../../components/devices/import';
 import { ImportDeviceModal } from '../../components/Modal';
-import { IDevice } from '../Certificate/CertificateImport';
+
+import { useDispatch, useSelector } from 'react-redux';
+import {
+    fetchDevicesToImport,
+    fetchMyDevices,
+    getDeviceClient,
+    getDevicesToImport,
+    getMyDevices
+} from '../../features';
+
+const PAGE_SIZE = 20;
 
 export function ImportDevice(): JSX.Element {
     const configuration = useOriginConfiguration();
+    const dispatch = useDispatch();
+    const myDevices = useSelector(getMyDevices) || [];
+    const devicesToImport = useSelector(getDevicesToImport) || [];
+    const deviceClient = useSelector(getDeviceClient);
+
+    useEffect(() => {
+        if (deviceClient) {
+            dispatch(fetchMyDevices());
+            dispatch(fetchDevicesToImport());
+        }
+    }, [deviceClient]);
 
     const useStyles = makeStyles({
         box: {
@@ -42,40 +63,6 @@ export function ImportDevice(): JSX.Element {
     const [modalOpen, setModalOpen] = useState(false);
     const { t } = useTranslation();
 
-    const devices: IDevice[] = [
-        {
-            id: 1,
-            name: 'test1',
-            country: 'poland',
-            capacity: 300
-        },
-        {
-            id: 2,
-            name: 'test2',
-            country: 'germany',
-            capacity: 250
-        },
-        {
-            id: 3,
-            name: 'test3',
-            country: 'italy',
-            capacity: 100
-        },
-        {
-            id: 4,
-            name: 'test4',
-            country: 'moon',
-            capacity: 1000
-        }
-    ];
-
-    const importedDevice: IDevice[] = devices.map((d) => {
-        return {
-            ...d,
-            imported: true
-        };
-    });
-
     const filters: ICustomFilterDefinition[] = [
         {
             label: 'test',
@@ -96,18 +83,20 @@ export function ImportDevice(): JSX.Element {
                         <Typography className={classes.header}>
                             {t('device.info.importDevice')}
                         </Typography>
-                        {devices.slice((page - 1) * 3, page * 3).map((a) => {
-                            return (
-                                <ImportDeviceItem
-                                    key={a.id}
-                                    device={a}
-                                    onImport={() => setModalOpen(true)}
-                                />
-                            );
-                        })}
+                        {devicesToImport
+                            .slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE)
+                            .map((a) => {
+                                return (
+                                    <ImportDeviceItem
+                                        key={a.id}
+                                        device={a}
+                                        onImport={() => setModalOpen(true)}
+                                    />
+                                );
+                            })}
                         <div className={classes.pagination}>
                             <Pagination
-                                count={Math.ceil(devices.length / 3)}
+                                count={Math.ceil(devicesToImport.length / PAGE_SIZE)}
                                 defaultPage={1}
                                 onChange={(e, index) => setPage(index)}
                             />
@@ -121,18 +110,20 @@ export function ImportDevice(): JSX.Element {
                         <Typography className={classes.header}>
                             {t('device.info.importedDevices')}
                         </Typography>
-                        {importedDevice.slice((pageImported - 1) * 3, pageImported * 3).map((a) => {
-                            return (
-                                <ImportDeviceItem
-                                    key={a.id}
-                                    device={a}
-                                    onImport={() => setModalOpen(true)}
-                                />
-                            );
-                        })}
+                        {myDevices
+                            .slice((pageImported - 1) * PAGE_SIZE, pageImported * PAGE_SIZE)
+                            .map((a) => {
+                                return (
+                                    <ImportDeviceItem
+                                        key={a.code}
+                                        device={a}
+                                        onImport={() => setModalOpen(true)}
+                                    />
+                                );
+                            })}
                         <div className={classes.pagination}>
                             <Pagination
-                                count={Math.ceil(importedDevice.length / 3)}
+                                count={Math.ceil(myDevices.length / PAGE_SIZE)}
                                 defaultPage={1}
                                 onChange={(e, index) => setImportedPage(index)}
                             />

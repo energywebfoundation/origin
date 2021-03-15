@@ -15,7 +15,13 @@ import { composeCreatedDevice, composeMyDevices, composePublicDevices } from '..
 import { decomposeForIRec, decomposeForOrigin } from '../../utils/decompose';
 import { ComposedDevice } from '../../types';
 import { getDeviceClient } from '../general';
-import { DevicesActions, ICreateDevice, storeMyDevices, storePublicDevices } from './actions';
+import {
+    DevicesActions,
+    ICreateDevice,
+    storeIrecDevicesToImport,
+    storeMyDevices,
+    storePublicDevices
+} from './actions';
 
 function* getPublicDevices(): SagaIterator {
     while (true) {
@@ -68,6 +74,39 @@ function* getMyDevices(): SagaIterator {
     }
 }
 
+function* getDevicesToImport(): SagaIterator {
+    while (true) {
+        yield take(DevicesActions.fetchDevicesToImport);
+
+        const deviceClient: DeviceClient = yield select(getDeviceClient);
+        const originClient = deviceClient.originClient;
+        const iRecClient = deviceClient.iRecClient;
+
+        try {
+            const [originResponse, iRecDevicesResponse, iRecDevicesToImportResponse] = yield all([
+                yield apply(originClient, originClient.getMyDevices, null),
+                yield apply(iRecClient, iRecClient.getMyDevices, null),
+                yield apply(iRecClient, iRecClient.getDevicesToImportFromIrec, null)
+            ]);
+
+            const originDevices: OriginDeviceDTO[] = originResponse.data;
+            const iRecDevices: IRecMyDeviceDTO[] = iRecDevicesResponse.data;
+            const iRecDevicesToImport: IRecMyDeviceDTO[] = iRecDevicesToImportResponse.data;
+
+            const iRecDevicesNotInOrigin: IRecMyDeviceDTO[] = iRecDevices.filter((device) => {
+                return !originDevices.find((d) => d.externalRegistryId === device.id);
+            });
+
+            yield put(
+                storeIrecDevicesToImport([...iRecDevicesNotInOrigin, ...iRecDevicesToImport])
+            );
+        } catch (error) {
+            showNotification(`Error while getting devices to import data`, NotificationType.Error);
+            console.log(error);
+        }
+    }
+}
+
 function* createNewDevice(): SagaIterator {
     while (true) {
         yield put(setLoading(true));
@@ -111,5 +150,10 @@ function* createNewDevice(): SagaIterator {
 }
 
 export function* iRecDevicesSaga(): SagaIterator {
-    yield all([fork(getPublicDevices), fork(getMyDevices), fork(createNewDevice)]);
+    yield all([
+        fork(getPublicDevices),
+        fork(getMyDevices),
+        fork(createNewDevice),
+        fork(getDevicesToImport)
+    ]);
 }

@@ -109,6 +109,23 @@ describe('Device e2e tests', () => {
         });
     });
 
+    it('should return my devices', async () => {
+        const { body: device } = await test
+            .post('/irec/device-registry')
+            .send(exampleDevice)
+            .set({ 'test-user': TestUser.OrganizationAdmin });
+
+        expect(device.status).to.equal(DeviceState.InProgress);
+
+        const { body: myDevices } = await test
+            .get('/irec/device-registry/my-devices')
+            .set({ 'test-user': TestUser.OrganizationAdmin });
+
+        expect(myDevices).to.be.an('array');
+        expect(myDevices[0].id).to.equal(device.id);
+        expect(myDevices[0].code).to.equal(device.code);
+    });
+
     it('should update device data', async () => {
         const { body: device } = await test
             .post('/irec/device-registry')
