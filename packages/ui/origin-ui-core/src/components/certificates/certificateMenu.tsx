@@ -2,7 +2,7 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { isRole, UserStatus, Role } from '@energyweb/origin-backend-core';
 import { OriginFeature } from '@energyweb/utils-general';
-import { getUserOffchain } from '../../features/users';
+import { getUserOffchain } from '../../features';
 import { CertificatesInbox } from './CertificatesInbox';
 import { ClaimedCertificates } from './ClaimedCertificates';
 import { PendingCertificates } from './PendingCertificates';

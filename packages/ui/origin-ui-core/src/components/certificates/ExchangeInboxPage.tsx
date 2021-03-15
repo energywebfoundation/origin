@@ -2,19 +2,19 @@ import { InboxPanel } from './InboxPanel';
 import {
     CertificateSource,
     requestPublishForSale,
-    requestWithdrawCertificate
-} from '../../features/certificates';
+    requestWithdrawCertificate,
+    getUserOffchain
+} from '../../features';
 import React, { useState } from 'react';
 import { TabContent } from './Inbox/InboxTabContent';
-import { SelectedInboxList } from './Inbox/SelectedInboxList';
-import { EnergyFormatter } from '../../utils';
+import { SelectedInboxList, IInboxCertificateData } from './Inbox';
+import { EnergyFormatter, usePermissions } from '../../utils';
 import TextField from '@material-ui/core/TextField';
-import { IInboxCertificateData } from './Inbox/InboxItem';
 import { useDispatch, useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
-import { getUserOffchain } from '../../features/users';
 import { makeStyles } from '@material-ui/styles';
 import { useOriginConfiguration } from '../../utils/configuration';
+import { Requirements } from '../Layout';
 
 export function ExchangeInboxPage(): JSX.Element {
     const dispatch = useDispatch();
@@ -78,6 +78,12 @@ export function ExchangeInboxPage(): JSX.Element {
 
     const classes = useStyles();
 
+    const { canAccessPage } = usePermissions();
+
+    if (!canAccessPage?.value) {
+        return <Requirements />;
+    }
+
     return (
         <InboxPanel
             mode={CertificateSource.Exchange}
@@ -103,6 +109,7 @@ export function ExchangeInboxPage(): JSX.Element {
                                     publishForSale(getSelectedCertificates(), updateView)
                                 }
                                 selectedCerts={selectedCerts}
+                                disableButton={price <= 0}
                             >
                                 <SelectedInboxList
                                     pairs={getSelectedItems()}
