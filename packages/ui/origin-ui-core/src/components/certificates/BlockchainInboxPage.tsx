@@ -17,6 +17,8 @@ import { EnergyFormatter } from '../../utils/EnergyFormatter';
 import { useOriginConfiguration } from '../../utils/configuration';
 import { makeStyles } from '@material-ui/styles';
 import { IClaimData } from '@energyweb/issuer';
+import { usePermissions } from '../../utils';
+import { Requirements } from '../Layout';
 
 export function BlockchainInboxPage(): JSX.Element {
     const [retireForBeneficiary, setRetireForBeneficiary] = useState<boolean>(false);
@@ -83,6 +85,12 @@ export function BlockchainInboxPage(): JSX.Element {
     });
 
     const classes = useStyles();
+
+    const { canAccessPage } = usePermissions();
+
+    if (!canAccessPage.value) {
+        return <Requirements />;
+    }
 
     return (
         <InboxPanel

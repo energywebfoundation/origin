@@ -8,13 +8,12 @@ import {
 import React, { useState } from 'react';
 import { TabContent } from './Inbox/InboxTabContent';
 import { SelectedInboxList, IInboxCertificateData } from './Inbox';
-import { EnergyFormatter, usePermissions } from '../../utils';
+import { EnergyFormatter } from '../../utils';
 import TextField from '@material-ui/core/TextField';
 import { useDispatch, useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import { makeStyles } from '@material-ui/styles';
 import { useOriginConfiguration } from '../../utils/configuration';
-import { Requirements } from '../Layout';
 
 export function ExchangeInboxPage(): JSX.Element {
     const dispatch = useDispatch();
@@ -77,12 +76,6 @@ export function ExchangeInboxPage(): JSX.Element {
     });
 
     const classes = useStyles();
-
-    const { canAccessPage } = usePermissions();
-
-    if (!canAccessPage.value) {
-        return <Requirements />;
-    }
 
     return (
         <InboxPanel
