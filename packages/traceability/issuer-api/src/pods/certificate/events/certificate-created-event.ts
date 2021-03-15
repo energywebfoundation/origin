@@ -5,7 +5,7 @@ interface IPrivateCertificateInfo {
 
 export class CertificateCreatedEvent {
     constructor(
-        public readonly certificateId: number,
+        public readonly tokenId: number,
         public readonly privateInfo?: IPrivateCertificateInfo
     ) {}
 }
