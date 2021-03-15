@@ -15,13 +15,16 @@ import {
     usePaginatedLoader
 } from '../Table';
 import { NotificationType, showNotification } from '../../utils/notifications';
-import { EnergyFormatter, getDeviceName } from '../../utils';
+import { EnergyFormatter, formatDate, getDeviceName } from '../../utils';
+import { useTranslation } from 'react-i18next';
 
 type Record = {
     certificateId: string;
     deviceName: string;
     energy: string;
     beneficiary: string;
+    fromDate: string;
+    toDate: string;
 };
 
 type DeviceNamesMap = Map<string, string>;
@@ -32,6 +35,7 @@ export function AdminClaimsTable(): JSX.Element {
     const deviceClient = backendClient?.deviceClient;
     const environment = useSelector(getEnvironment);
     const allDevices = useSelector(getAllDevices);
+    const { t } = useTranslation();
     const dispatch = useDispatch();
 
     useEffect(() => {
@@ -81,7 +85,9 @@ export function AdminClaimsTable(): JSX.Element {
                                 deviceNames
                             ),
                         energy: EnergyFormatter.format(claim.value, true),
-                        beneficiary: claim.claimData.beneficiary
+                        beneficiary: claim.claimData.beneficiary,
+                        fromDate: formatDate(claim.claimData.fromDate),
+                        toDate: formatDate(claim.claimData.toDate)
                     });
                 });
             });
@@ -110,10 +116,12 @@ export function AdminClaimsTable(): JSX.Element {
     }, [allDevices, certificatesClient]);
 
     const columns = [
-        { id: 'certificateId', label: 'Certificate id' },
-        { id: 'deviceName', label: 'Device name' },
-        { id: 'energy', label: 'Energy' },
-        { id: 'beneficiary', label: 'Beneficiary' }
+        { id: 'certificateId', label: t('certificate.claims.certificateId') },
+        { id: 'deviceName', label: t('certificate.claims.deviceName') },
+        { id: 'energy', label: t('certificate.claims.energy') },
+        { id: 'beneficiary', label: t('certificate.claims.beneficiary') },
+        { id: 'fromDate', label: t('certificate.claims.fromDate') },
+        { id: 'toDate', label: t('certificate.claims.toDate') }
     ];
     const rows: Record[] = paginatedData;
 
