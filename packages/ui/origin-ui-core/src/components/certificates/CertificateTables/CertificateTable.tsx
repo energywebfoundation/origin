@@ -4,17 +4,17 @@ import { Redirect } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { BigNumber } from 'ethers';
 import { AssignmentTurnedIn, Publish, Undo, BusinessCenter } from '@material-ui/icons';
-import { getConfiguration } from '../../../features/configuration';
-import { getEnvironment, getBackendClient } from '../../../features/general';
-import { getAllDevices, fetchAllDevices } from '../../../features/devices';
 import {
     getCertificates,
     ICertificateViewItem,
-    CertificateSource
-} from '../../../features/certificates';
-import { EnergyFormatter } from '../../../utils/EnergyFormatter';
-import { useLinks } from '../../../utils/routing';
-import { NotificationType, showNotification } from '../../../utils/notifications';
+    CertificateSource,
+    getConfiguration,
+    getEnvironment,
+    getBackendClient,
+    getAllDevices,
+    fetchAllDevices,
+    getUserOffchain
+} from '../../../features';
 import { formatDate, moment } from '../../../utils/time';
 import {
     getDeviceLocationText,
@@ -22,8 +22,12 @@ import {
     getDeviceFilters,
     getDeviceGridOperatorText,
     getDeviceColumns,
-    getDeviceSpecificPropertiesSearchTitle
-} from '../../../utils/device';
+    getDeviceSpecificPropertiesSearchTitle,
+    NotificationType,
+    showNotification,
+    EnergyFormatter,
+    useLinks
+} from '../../../utils';
 import { IOriginDevice } from '../../../types';
 import {
     IPaginatedLoaderFetchDataReturnValues,
@@ -35,12 +39,11 @@ import {
     checkRecordPassesFilters,
     usePaginatedLoaderFiltered,
     IPaginatedLoaderHooksFetchDataParameters,
-    ITableAction,
     TableActionId,
-    TableFallback
+    TableFallback,
+    TableAction
 } from '../../Table';
 import { PublishForSaleModal, ClaimModal, WithdrawModal, DepositModal } from '../../Modal';
-import { getUserOffchain } from '../../../features/users';
 
 interface IProps {
     certificates?: ICertificateViewItem[];
@@ -66,7 +69,7 @@ const CERTIFICATION_DATE_COLUMN_SORT_PROPERTIES = [
     (record: IEnrichedCertificateData) => record?.certificate?.creationTime
 ];
 
-export function CertificateTable(props: IProps) {
+export function CertificateTable(props: IProps): JSX.Element {
     const { currentSort, sortAscending, sortData, toggleSort } = usePaginatedLoaderSorting({
         currentSort: {
             id: CERTIFICATION_DATE_COLUMN_ID,
@@ -397,7 +400,7 @@ export function CertificateTable(props: IProps) {
     }
 
     function getActions() {
-        const actions: ITableAction[] = [];
+        const actions: TableAction[] = [];
 
         switch (selectedState) {
             case SelectedState.Inbox:
@@ -407,18 +410,25 @@ export function CertificateTable(props: IProps) {
                     icon: <AssignmentTurnedIn />,
                     onClick: claimCertificate
                 });
-                actions.push({
-                    id: TableActionId.PublishForSale,
-                    name: t('certificate.actions.publishForSale'),
-                    icon: <Publish />,
-                    onClick: publishForSale
+                actions.push((row) => {
+                    if (row?.source === 'Blockchain') {
+                        return null;
+                    }
+                    return {
+                        id: TableActionId.PublishForSale,
+                        name: t('certificate.actions.publishForSale'),
+                        icon: <Publish />,
+                        onClick: publishForSale
+                    };
                 });
-                actions.push({
-                    id: TableActionId.Withdraw,
-                    name: t('certificate.actions.withdraw'),
-                    icon: <Undo />,
-                    onClick: withdraw
-                });
+                if (user.blockchainAccountAddress !== null) {
+                    actions.push({
+                        id: TableActionId.Withdraw,
+                        name: t('certificate.actions.withdraw'),
+                        icon: <Undo />,
+                        onClick: withdraw
+                    });
+                }
                 actions.push({
                     id: TableActionId.Deposit,
                     name: t('certificate.actions.deposit'),
