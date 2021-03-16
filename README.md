@@ -13,6 +13,8 @@
   <img src="https://github.com/energywebfoundation/origin/actions/workflows/deploy-master.yml/badge.svg" />
 </p>
 
+:construction: Documentation available at [https://energy-web-foundation-origin.readthedocs-hosted.com/en/latest/](https://energy-web-foundation-origin.readthedocs-hosted.com/en/latest/) :construction:
+
 ## Table of Contents
 
 - [Table of Contents](#table-of-contents)
