@@ -1,6 +1,6 @@
 /// <reference types="cypress" />
 /// <reference types="../../support" />
-import { generateNewUser } from '../../utils/generateNewUser';
+import { generateNewUser } from '../../utils/generateMockData';
 
 describe('User login', () => {
     const testUser = generateNewUser();
@@ -14,7 +14,7 @@ describe('User login', () => {
         cy.visit(loginUrl);
     });
 
-    it('should allow to visit register form', () => {
+    it('should visit register user form', () => {
         cy.dataCy('register-now-button').click();
         cy.url().should('include', '/account/user-register');
     });
@@ -22,6 +22,12 @@ describe('User login', () => {
     it('should require email and password', () => {
         cy.inputRequired('email', 'password');
         cy.inputRequired('password', 'email');
+    });
+
+    it('should validate email', () => {
+        cy.dataCy('email').type(testUser.firstName);
+        cy.dataCy('password').click();
+        cy.contains('must be a valid email');
     });
 
     it('should not allow login with wrong password', () => {

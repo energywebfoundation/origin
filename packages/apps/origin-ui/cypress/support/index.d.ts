@@ -14,6 +14,26 @@ type UserLoginData = {
     password: string;
 };
 
+type OrganizationPostData = {
+    name: string;
+    address: string;
+    zipCode: string;
+    city: string;
+    country: string;
+    businessType: string;
+    tradeRegistryCompanyNumber: string;
+    vatNumber: string;
+    signatoryFullName: string;
+    signatoryAddress: string;
+    signatoryZipCode: string;
+    signatoryCity: string;
+    signatoryCountry: string;
+    signatoryEmail: string;
+    signatoryPhoneNumber: string;
+    signatoryDocumentIds?: string[];
+    documentIds?: string[];
+};
+
 declare namespace Cypress {
     interface Chainable {
         dataCy(value: string): Chainable<Element>;
@@ -26,5 +46,8 @@ declare namespace Cypress {
         apiRegisterUser(user: UserRegisterData): Chainable<Element>;
         apiLoginUser(loginData: UserLoginData): Chainable<Element>;
         apiRegisterAndApproveUser(user: UserRegisterData): Chainable<Element>;
+        fillOrgRegisterForm(orgData: OrganizationPostData): Chainable<Element>;
+        attachDocument(uploadDataCy: string): Chainable<Element>;
+        apiRegisterOrg(orgData: OrganizationPostData): Chainable<Element>;
     }
 }

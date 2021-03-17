@@ -1,6 +1,6 @@
 /// <reference types="cypress" />
 /// <reference types="../../support" />
-import { generateNewUser } from '../../utils/generateNewUser';
+import { generateNewUser } from '../../utils/generateMockData';
 
 describe('Active user profile user info block interactions', () => {
     const testUser = generateNewUser();
