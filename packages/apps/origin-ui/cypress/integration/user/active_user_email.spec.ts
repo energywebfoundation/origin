@@ -11,18 +11,19 @@ describe('Active user profile email block interactions', () => {
         cy.apiRegisterAndApproveUser(testUser);
     });
 
-    beforeEach(() => {
+    it('should validate email field as required', () => {
         cy.apiLoginUser(testUser);
         cy.visit('/account/user-profile');
-    });
 
-    it('should validate email field as required', () => {
         cy.dataCy('email-edit-button').click();
         cy.filledInputRequired('email', 'first-name');
         cy.dataCy('info-edit-button').click();
     });
 
     it('should revert email to default after pressing cancel button', () => {
+        cy.apiLoginUser(testUser);
+        cy.visit('/account/user-profile');
+
         cy.dataCy('email-edit-button').click();
         cy.clearInput('email');
 
@@ -35,6 +36,9 @@ describe('Active user profile email block interactions', () => {
     });
 
     it('should keep save email button disabled if email did not changed after editing', () => {
+        cy.apiLoginUser(testUser);
+        cy.visit('/account/user-profile');
+
         cy.dataCy('email-edit-button').click();
         cy.clearInput('email');
         cy.dataCy('email').type(testUser.email);
@@ -42,6 +46,9 @@ describe('Active user profile email block interactions', () => {
     });
 
     it('should change user email and log him out', () => {
+        cy.apiLoginUser(testUser);
+        cy.visit('/account/user-profile');
+
         cy.dataCy('email-edit-button').click();
         cy.clearInput('email');
 

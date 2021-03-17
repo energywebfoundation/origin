@@ -2,15 +2,14 @@
 /// <reference types="../../support" />
 import { generateNewOrg, generateNewUser } from '../../utils/generateMockData';
 
-describe('Organization with status Pending and User active flow', () => {
+describe('Organization with status Pending and User status active flow', () => {
     const testUser = generateNewUser();
     const testOrg = generateNewOrg(testUser);
 
     before(() => {
         cy.apiRegisterAndApproveUser(testUser);
-        cy.apiLoginUser(testUser);
+        cy.apiRegisterOrg(testUser, testOrg);
         cy.visit('/');
-        cy.apiRegisterOrg(testOrg);
     });
 
     beforeEach(() => {
@@ -82,25 +81,31 @@ describe('Organization with status Pending and User active flow', () => {
         cy.contains('The organization has to have a blockchain exchange deposit address');
     });
 
-    it('should display certificates pages', () => {
+    it('should display certificates pages with requirements', () => {
         cy.dataCy('certificates-menu').click();
 
         cy.url().should('include', 'inbox');
         cy.contains('you need to fulfill following criteria');
 
-        // add exchange inbox check after pulling master
-        // add blockchain inbox check after pulling master
+        cy.dataCy('exchange_inbox').click();
+        cy.url().should('include', 'exchange_inbox');
+        cy.contains('you need to fulfill following criteria');
+        cy.contains('exchange deposit address attached to the account');
+
+        // Add blockchain inbox check when requirements added
 
         cy.dataCy('claims_report').click();
         cy.url().should('include', 'claims_report');
+        cy.contains('you need to fulfill following criteria');
         cy.contains('The user should be a part of an approved organization');
 
         cy.dataCy('requests').click();
         cy.url().should('include', 'requests');
+        cy.contains('you need to fulfill following criteria');
         cy.contains('exchange deposit address attached to the account');
     });
 
-    it('should display exchange pages', () => {
+    it('should display exchange pages with requirements', () => {
         cy.dataCy('exchange-menu').click();
 
         cy.url().should('include', 'view-market');
