@@ -3,11 +3,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import { Checkbox } from '@material-ui/core';
 import { makeStyles } from '@material-ui/styles';
-import { Countries } from '@energyweb/utils-general';
 import {
     getUserOffchain,
     CertificateSource,
-    requestClaimCertificateBulk,
+    requestClaimCertificate,
     requestDepositCertificate,
     EnergyFormatter
 } from '@energyweb/origin-ui-core';
@@ -17,29 +16,29 @@ import {
     TabContent,
     SelectedInboxList,
     BeneficiaryForm,
-    IBeneficiaryFormData,
     IInboxCertificateData
 } from '../../components/certificates/inbox';
+import { IClaimData } from '@energyweb/issuer';
 
 export function BlockchainInboxPage(): JSX.Element {
     const [retireForBeneficiary, setRetireForBeneficiary] = useState<boolean>(false);
-    const [beneficiaryFormData, setBeneficiaryFormData] = useState<IBeneficiaryFormData>();
+    const [beneficiaryFormData, setBeneficiaryFormData] = useState<IClaimData>();
+    const [disableButton, setDisableButton] = useState<boolean>(false);
 
     const dispatch = useDispatch();
     const { t } = useTranslation();
     const user = useSelector(getUserOffchain);
 
     useEffect(() => {
-        const getCountryCodeFromId = (code: string) =>
-            Countries.find((country) => country.code === code)?.code;
-
         setRetireForBeneficiary(false);
         setBeneficiaryFormData({
             beneficiary: user?.organization?.name,
             address: user?.organization?.address,
             zipCode: user?.organization?.zipCode,
             region: null,
-            countryCode: getCountryCodeFromId(user?.organization?.country)
+            countryCode: user?.organization?.country,
+            fromDate: new Date().toISOString(),
+            toDate: new Date().toISOString()
         });
     }, [user]);
 
@@ -57,15 +56,15 @@ export function BlockchainInboxPage(): JSX.Element {
         });
     }
 
-    async function claim(certs: IInboxCertificateData[], callback: () => void) {
+    async function claim(cert: IInboxCertificateData, callback: () => void) {
         dispatch(
-            requestClaimCertificateBulk({
-                certificateIds: certs.map((c) => c.id),
-                claimData: beneficiaryFormData
+            requestClaimCertificate({
+                certificateId: cert.id,
+                claimData: beneficiaryFormData,
+                amount: cert.energy,
+                callback
             })
         );
-
-        callback();
     }
 
     const configuration = useOriginConfiguration();
@@ -129,8 +128,9 @@ export function BlockchainInboxPage(): JSX.Element {
                             <TabContent
                                 header="certificate.info.selectedForRetirement"
                                 buttonLabel="certificate.actions.retireNCertificates"
-                                onSubmit={() => claim(getSelectedCertificates(), updateView)}
+                                onSubmit={() => claim(getSelectedCertificates()[0], updateView)}
                                 selectedCerts={selectedCerts}
+                                disableButton={disableButton}
                             >
                                 <SelectedInboxList
                                     pairs={getSelectedItems()}
@@ -158,6 +158,8 @@ export function BlockchainInboxPage(): JSX.Element {
                                     <BeneficiaryForm
                                         data={beneficiaryFormData}
                                         setData={setBeneficiaryFormData}
+                                        disabled={disableButton}
+                                        setDisabled={setDisableButton}
                                     />
                                 )}
                             </TabContent>

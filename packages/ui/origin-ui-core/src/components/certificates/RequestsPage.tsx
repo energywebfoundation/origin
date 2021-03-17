@@ -6,7 +6,7 @@ import { usePermissions } from '../../utils';
 import { Requirements } from '../Layout';
 import { CertificationRequestsTable } from './CertificateTables';
 
-export function CertificateRequestsTable(): JSX.Element {
+export function RequestsPage(): JSX.Element {
     const user = useSelector(getUserOffchain);
     const isIssuer = isRole(user, Role.Issuer);
     const { canAccessPage } = usePermissions();

@@ -17,7 +17,9 @@ import {
     Put,
     UseInterceptors,
     HttpStatus,
-    Query
+    Query,
+    UsePipes,
+    ValidationPipe
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
@@ -42,11 +44,14 @@ import { CertificateEvent } from '../../types';
 import { GetAllCertificateEventsQuery } from './queries/get-all-certificate-events.query';
 import { CertificateDTO } from './certificate.dto';
 import { SuccessResponseDTO } from '../../utils/success-response.dto';
+import { certificateToDto } from './utils';
+import { Certificate } from './certificate.entity';
 
 @ApiTags('certificates')
 @ApiBearerAuth('access-token')
 @Controller('certificate')
 @UseInterceptors(ExceptionInterceptor)
+@UsePipes(ValidationPipe)
 export class CertificateController {
     constructor(private readonly commandBus: CommandBus, private readonly queryBus: QueryBus) {}
 
@@ -61,7 +66,11 @@ export class CertificateController {
         @Param('id', new ParseIntPipe()) id: number,
         @BlockchainAccountDecorator() blockchainAddress: string
     ): Promise<CertificateDTO> {
-        return this.queryBus.execute(new GetCertificateQuery(id, blockchainAddress));
+        const certificate = await this.queryBus.execute<GetCertificateQuery, Certificate>(
+            new GetCertificateQuery(id)
+        );
+
+        return certificateToDto(certificate, blockchainAddress);
     }
 
     @Get('/token-id/:tokenId')
@@ -75,7 +84,11 @@ export class CertificateController {
         @Param('tokenId', new ParseIntPipe()) tokenId: number,
         @BlockchainAccountDecorator() blockchainAddress: string
     ): Promise<CertificateDTO> {
-        return this.queryBus.execute(new GetCertificateByTokenIdQuery(tokenId, blockchainAddress));
+        const certificate = await this.queryBus.execute<GetCertificateByTokenIdQuery, Certificate>(
+            new GetCertificateByTokenIdQuery(tokenId)
+        );
+
+        return certificateToDto(certificate, blockchainAddress);
     }
 
     @Get()
@@ -88,7 +101,12 @@ export class CertificateController {
     public async getAll(
         @BlockchainAccountDecorator() blockchainAddress: string
     ): Promise<CertificateDTO[]> {
-        return this.queryBus.execute(new GetAllCertificatesQuery(blockchainAddress));
+        const certificates = await this.queryBus.execute<GetAllCertificatesQuery, Certificate[]>(
+            new GetAllCertificatesQuery()
+        );
+        return Promise.all(
+            certificates.map((certificate) => certificateToDto(certificate, blockchainAddress))
+        );
     }
 
     @Get('/issuer/certified/:deviceId')

@@ -83,46 +83,6 @@ export const requestCertificates = (payload: IRequestCertificatesAction['payload
 
 export type TRequestCertificatesAction = typeof requestCertificates;
 
-// export interface IShowRequestCertificatesModalAction {
-//     type: CertificatesActions.showRequestCertificatesModal;
-//     payload: {
-//         producingDevice: ProducingDevice.Entity;
-//     };
-// }
-
-// export const showRequestCertificatesModal = (
-//     payload: IShowRequestCertificatesModalAction['payload']
-// ) => ({
-//     type: CertificatesActions.showRequestCertificatesModal,
-//     payload
-// });
-
-// export type TShowRequestCertificatesModalAction = typeof showRequestCertificatesModal;
-
-// export interface IHideRequestCertificatesModalAction {
-//     type: CertificatesActions.hideRequestCertificatesModal;
-// }
-
-// export const hideRequestCertificatesModal = () => ({
-//     type: CertificatesActions.hideRequestCertificatesModal
-// });
-
-// export type THideRequestCertificatesModalAction = typeof hideRequestCertificatesModal;
-
-// export interface ISetRequestCertificatesModalVisibilityAction {
-//     type: CertificatesActions.setRequestCertificatesModalVisibility;
-//     payload: boolean;
-// }
-
-// export const setRequestCertificatesModalVisibility = (
-//     payload: ISetRequestCertificatesModalVisibilityAction['payload']
-// ) => ({
-//     type: CertificatesActions.setRequestCertificatesModalVisibility,
-//     payload
-// });
-
-// export type TSetRequestCertificatesModalVisibilityAction = typeof setRequestCertificatesModalVisibility;
-
 export interface IRequestCertificateEntityFetchAction {
     type: CertificatesActions.requestCertificateEntityFetch;
     payload: number;
@@ -162,6 +122,7 @@ export interface IRequestClaimCertificateAction {
         certificateId: Certificate['id'];
         amount: BigNumber;
         claimData: IClaimData;
+        callback?: () => void;
     };
 }
 
@@ -300,9 +261,6 @@ export type ICertificatesAction =
     | IUpdateCertificateAction
     | IResyncCertificateAction
     | IRequestCertificatesAction
-    // | IShowRequestCertificatesModalAction
-    // | ISetRequestCertificatesModalVisibilityAction
-    // | IHideRequestCertificatesModalAction
     | IRequestCertificateEntityFetchAction
     | IRequestPublishForSaleAction
     | IRequestClaimCertificateAction

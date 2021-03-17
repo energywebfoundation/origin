@@ -22,8 +22,8 @@ function* getPublicDevices(): SagaIterator {
         yield take(DevicesActions.fetchPublicDevices);
 
         const deviceClient: DeviceClient = yield select(getDeviceClient);
-        const originClient = deviceClient?.originClient;
-        const iRecClient = deviceClient?.iRecClient;
+        const originClient = deviceClient.originClient;
+        const iRecClient = deviceClient.iRecClient;
 
         try {
             const [originResponse, iRecResponse] = yield all([

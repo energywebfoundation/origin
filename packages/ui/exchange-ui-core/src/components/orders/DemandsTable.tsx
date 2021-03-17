@@ -22,9 +22,9 @@ import {
     configureDateFormat,
     periodTypeOptions,
     demandTypeOptions,
-    useDemandDependantFilters
-} from '../../utils/demand';
-import { Demand } from '../../utils/exchange';
+    useDemandDependantFilters,
+    Demand
+} from '../../utils';
 
 import { RemoveOrderConfirmation, DemandUpdateModal } from '../modal';
 

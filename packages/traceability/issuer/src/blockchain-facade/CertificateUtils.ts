@@ -8,39 +8,45 @@ export interface IShareInCertificate {
     [address: string]: string;
 }
 
-export const encodeClaimData = async (
-    claimData: IClaimData,
-    blockchainProperties: IBlockchainProperties
-): Promise<string> => {
-    const { beneficiary, address, region, zipCode, countryCode } = claimData;
+export const encodeClaimData = (claimData: IClaimData): string => {
+    const { beneficiary, address, region, zipCode, countryCode, fromDate, toDate } = claimData;
 
-    return blockchainProperties.issuer.encodeClaimData(
-        beneficiary ?? '',
-        address ?? '',
-        region ?? '',
-        zipCode ?? '',
-        countryCode ?? ''
+    return utils.defaultAbiCoder.encode(
+        ['string', 'string', 'string', 'string', 'string', 'string', 'string'],
+        [
+            beneficiary ?? '',
+            address ?? '',
+            region ?? '',
+            zipCode ?? '',
+            countryCode ?? '',
+            fromDate ?? '',
+            toDate ?? ''
+        ]
     );
 };
 
-export const decodeClaimData = async (
-    encodedClaimData: string,
-    blockchainProperties: IBlockchainProperties
-): Promise<IClaimData> => {
-    const {
-        _beneficiary,
-        _address,
-        _region,
-        _zipCode,
-        _countryCode
-    } = await blockchainProperties.issuer.decodeClaimData(encodedClaimData);
+export const decodeClaimData = (encodedClaimData: string): IClaimData => {
+    const [
+        beneficiary,
+        address,
+        region,
+        zipCode,
+        countryCode,
+        fromDate,
+        toDate
+    ] = utils.defaultAbiCoder.decode(
+        ['string', 'string', 'string', 'string', 'string', 'string', 'string'],
+        encodedClaimData
+    );
 
     return {
-        beneficiary: _beneficiary,
-        address: _address,
-        region: _region,
-        zipCode: _zipCode,
-        countryCode: _countryCode
+        beneficiary,
+        address,
+        region,
+        zipCode,
+        countryCode,
+        fromDate,
+        toDate
     };
 };
 
@@ -60,7 +66,7 @@ export async function claimCertificates(
 
     const values = certificates.map((cert) => BigNumber.from(cert.owners[claimer] ?? 0));
 
-    const encodedClaimData = await encodeClaimData(claimData, blockchainProperties);
+    const encodedClaimData = encodeClaimData(claimData);
     const data = utils.randomBytes(32);
 
     const registryWithSigner = registry.connect(activeUser);

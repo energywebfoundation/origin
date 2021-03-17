@@ -11,7 +11,8 @@
         },
         "navigation": {
             "admin": {
-                "users": "Manage Users"
+                "users": "Manage Users",
+                "claims": "Claims"
             },
             "devices": {
                 "import": "Device import",
@@ -220,6 +221,14 @@
                 "totalVolume": "Total volume",
                 "totalPrice": "Total price",
                 "retireForBeneficiary": "Retire for beneficiary"
+            },
+            "claims": {
+                "certificateId": "Certificate ID",
+                "deviceName": "Device name",
+                "energy": "Energy",
+                "beneficiary": "Beneficiary",
+                "fromDate": "From date",
+                "toDate": "To date"
             },
             "event": {
                 "name": {

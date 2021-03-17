@@ -18,7 +18,7 @@ import {
     TransactionResult,
     TransactionType
 } from './Account';
-import { Device, DeviceCreateUpdateParams } from './Device';
+import { Device, DeviceUpdateParams, DeviceCreateParams } from './Device';
 import { ApproveIssue, Issue, IssueWithStatus } from './Issue';
 import { Redemption, Transfer } from './Transfer';
 import { AccountItem, CodeName } from './Items';
@@ -270,11 +270,11 @@ export class IRECAPIClient extends EventEmitter {
         const deviceManagementUrl = `${this.endPointUrl}/api/irec/v1/device-management`;
 
         return {
-            create: async (device: DeviceCreateUpdateParams): Promise<Device> => {
+            create: async (device: DeviceCreateParams): Promise<Device> => {
                 const dev =
-                    device instanceof DeviceCreateUpdateParams
+                    device instanceof DeviceCreateParams
                         ? device
-                        : plainToClass(DeviceCreateUpdateParams, device);
+                        : plainToClass(DeviceCreateParams, device);
 
                 await validateOrReject(dev);
 
@@ -283,14 +283,11 @@ export class IRECAPIClient extends EventEmitter {
 
                 return plainToClass(Device, response.data?.device);
             },
-            edit: async (
-                code: string,
-                device: Partial<DeviceCreateUpdateParams>
-            ): Promise<Device> => {
+            edit: async (code: string, device: Partial<DeviceUpdateParams>): Promise<Device> => {
                 const dev =
-                    device instanceof DeviceCreateUpdateParams
+                    device instanceof DeviceUpdateParams
                         ? device
-                        : plainToClass(DeviceCreateUpdateParams, device);
+                        : plainToClass(DeviceUpdateParams, device);
 
                 await validateOrReject(dev, { skipMissingProperties: true });
 

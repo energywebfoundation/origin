@@ -31,10 +31,15 @@ module.exports = {
         }
     },
 
+    target: 'web',
     devServer: {
         port: 3000,
         compress: true,
         historyApiFallback: true,
+        transportMode: 'ws', 
+        injectClient: false,
+        hot: true,
+        inline: true,
         watchOptions: {
             ignored: [
                 path.resolve(__dirname, '../cypress')
