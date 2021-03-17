@@ -31,6 +31,7 @@ import {
 } from '../../../utils';
 import { downloadFile } from '../../Documents';
 import { IOriginDevice } from '../../../types';
+import moment from 'moment-timezone';
 
 interface IProps {
     approved?: boolean;
@@ -51,6 +52,7 @@ interface IRowData {
     deviceLocation: string;
     capacity: string;
     status: string;
+    timeFrame: JSX.Element;
 }
 type Rows = IRowData[];
 
@@ -178,8 +180,11 @@ export function CertificationRequestsTable(props: IProps): JSX.Element {
         { id: 'capacity', label: `Capacity (${PowerFormatter.displayUnit})` },
         { id: 'meterRead', label: `Meter Read (${EnergyFormatter.displayUnit})` },
         { id: 'files', label: 'Evidence files' },
+        { id: 'timeFrame', label: 'Time frame' },
         { id: 'status', label: 'Status' }
     ] as const;
+
+    const formatDate = (value: number) => moment(new Date(value * 1000)).format('DD MMM, YYYY');
 
     const rows: Rows = paginatedData.map(({ device, request }) => {
         return {
@@ -202,6 +207,11 @@ export function CertificationRequestsTable(props: IProps): JSX.Element {
                     </a>
                 </div>
             )),
+            timeFrame: (
+                <div style={{ whiteSpace: 'nowrap' }}>
+                    {formatDate(request.fromTime)} - {formatDate(request.toTime)}
+                </div>
+            ),
             approved: request.approved,
             status: request.approved ? 'Approved' : 'Pending'
         };
