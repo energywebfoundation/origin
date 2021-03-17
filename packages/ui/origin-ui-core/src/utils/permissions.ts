@@ -56,7 +56,7 @@ export function usePermissions(config = DefaultRequirements): { canAccessPage: I
         },
         [Requirement.HasUserBlockchainAddress]: {
             label: t('general.feedback.userHasToHaveBlockchainAccount'),
-            passing: Boolean(user.blockchainAccountAddress)
+            passing: Boolean(user?.blockchainAccountAddress)
         }
     };
 
