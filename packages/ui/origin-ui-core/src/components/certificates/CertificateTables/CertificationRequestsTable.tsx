@@ -180,7 +180,7 @@ export function CertificationRequestsTable(props: IProps): JSX.Element {
         { id: 'capacity', label: `Capacity (${PowerFormatter.displayUnit})` },
         { id: 'meterRead', label: `Meter Read (${EnergyFormatter.displayUnit})` },
         { id: 'files', label: 'Evidence files' },
-        { id: 'timeFrame', label: 'Time frame' },
+        { id: 'timeFrame', label: 'Request Date' },
         { id: 'status', label: 'Status' }
     ] as const;
 
