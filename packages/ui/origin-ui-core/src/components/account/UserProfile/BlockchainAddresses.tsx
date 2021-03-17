@@ -92,6 +92,7 @@ export function BlockchainAddresses(): JSX.Element {
                                     {exchangeAddress ? (
                                         <Grid item lg={6} md={10} xs={12}>
                                             <FormInput
+                                                data-cy="exchange-deposit-address"
                                                 property="exchangeDepositAddress"
                                                 disabled={true}
                                             />
