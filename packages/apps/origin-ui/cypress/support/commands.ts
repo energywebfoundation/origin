@@ -1,6 +1,6 @@
 /// <reference types="cypress" />
 import 'cypress-file-upload';
-import { IUser, KYCStatus, UserStatus } from '@energyweb/origin-backend-core';
+import { IUser, KYCStatus, OrganizationStatus, UserStatus } from '@energyweb/origin-backend-core';
 
 Cypress.Commands.add('dataCy', (value: string) => {
     cy.get(`[data-cy=${value}]`);
@@ -46,14 +46,18 @@ Cypress.Commands.add('notification', (text: string) => {
     cy.get('.toast').contains(text);
 });
 
-Cypress.Commands.add('apiRegisterUser', async (user: UserRegisterData) => {
-    const apiUrl = Cypress.env('apiUrl');
-    await fetch(`${apiUrl}/user/register`, {
+Cypress.Commands.add('apiRegisterUser', (user: UserRegisterData) => {
+    const registerUrl = `${Cypress.env('apiUrl')}/user/register`;
+    cy.request({
+        url: registerUrl,
         method: 'POST',
         body: JSON.stringify(user),
         headers: {
             'Content-Type': 'application/json;charset=UTF-8'
         }
+    }).then((response) => {
+        const registeredUser = response.body;
+        return registeredUser;
     });
 });
 
@@ -62,60 +66,46 @@ Cypress.Commands.add('fillUserLogin', (loginData: UserLoginData) => {
     cy.dataCy('password').type(loginData.password);
 });
 
-Cypress.Commands.add('apiLoginUser', async (loginData: UserLoginData) => {
+Cypress.Commands.add('apiLoginUser', (loginData: UserLoginData) => {
     const { email, password } = loginData;
-    const apiUrl = Cypress.env('apiUrl');
+    const loginUrl = `${Cypress.env('apiUrl')}/auth/login`;
     const reqBody = { username: email, password };
-    const response = await fetch(`${apiUrl}/auth/login`, {
+    cy.request({
+        url: loginUrl,
         method: 'POST',
         body: JSON.stringify(reqBody),
         headers: {
             'Content-Type': 'application/json;charset=UTF-8'
         }
-    });
-    response.json().then((res) => {
-        localStorage.setItem('AUTHENTICATION_TOKEN', res.accessToken);
+    }).then((res) => {
+        localStorage.setItem('AUTHENTICATION_TOKEN', res.body.accessToken);
+        return res.body.accessToken;
     });
 });
 
-Cypress.Commands.add('apiRegisterAndApproveUser', async (userData: UserRegisterData) => {
-    let userToApprove: IUser;
-
+Cypress.Commands.add('apiRegisterAndApproveUser', (userData: UserRegisterData) => {
     const apiUrl = Cypress.env('apiUrl');
-    const registerResponse = await fetch(`${apiUrl}/user/register`, {
-        method: 'POST',
-        body: JSON.stringify(userData),
-        headers: {
-            'Content-Type': 'application/json;charset=UTF-8'
-        }
-    });
-    registerResponse.json().then((user) => {
-        userToApprove = user;
-    });
 
-    const { email, password } = Cypress.env('adminUser');
-    const loginBody = { username: email, password };
-    const loginResponse = await fetch(`${apiUrl}/auth/login`, {
-        method: 'POST',
-        body: JSON.stringify(loginBody),
-        headers: {
-            'Content-Type': 'application/json;charset=UTF-8'
-        }
-    });
+    const adminLoginData = Cypress.env('adminUser');
 
-    loginResponse.json().then((res) => {
+    cy.apiRegisterUser(userData).then((userToApprove) => {
         const approveBody = {
             ...userToApprove,
             status: UserStatus.Active,
             kycStatus: KYCStatus.Passed
         };
-        fetch(`${apiUrl}/admin/users/${userToApprove.id}`, {
-            method: 'PUT',
-            body: JSON.stringify(approveBody),
-            headers: {
-                Authorization: `Bearer ${res.accessToken}`,
-                'Content-Type': 'application/json;charset=UTF-8'
-            }
+
+        cy.apiLoginUser(adminLoginData).then((token) => {
+            cy.request({
+                url: `${apiUrl}/admin/users/${userToApprove.id}`,
+                method: 'PUT',
+                body: JSON.stringify(approveBody),
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    'Content-Type': 'application/json;charset=UTF-8'
+                }
+            });
+            cy.clearLocalStorage();
         });
     });
 });
@@ -143,16 +133,54 @@ Cypress.Commands.add('fillOrgRegisterForm', (orgData: OrganizationPostData) => {
     cy.dataCy('organization-signatory-phone').type(orgData.signatoryPhoneNumber);
 });
 
-Cypress.Commands.add('apiRegisterOrg', async (orgData: OrganizationPostData) => {
-    const organizationUrl = `${Cypress.env('apiUrl')}/Organization`;
-    const token = localStorage.getItem('AUTHENTICATION_TOKEN');
+Cypress.Commands.add(
+    'apiRegisterOrg',
+    (userData: UserRegisterData, orgData: OrganizationPostData) => {
+        const organizationUrl = `${Cypress.env('apiUrl')}/Organization`;
+        const loginData: UserLoginData = { email: userData.email, password: userData.password };
 
-    await fetch(organizationUrl, {
-        method: 'POST',
-        body: JSON.stringify(orgData),
-        headers: {
-            Authorization: `Bearer ${token}`,
-            'Content-Type': 'application/json;charset=UTF-8'
-        }
-    });
+        cy.apiLoginUser(loginData).then((token) => {
+            cy.request({
+                url: organizationUrl,
+                method: 'POST',
+                body: JSON.stringify(orgData),
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    'Content-Type': 'application/json;charset=UTF-8'
+                }
+            }).then((response) => {
+                return response.body.id;
+            });
+        });
+    }
+);
+
+Cypress.Commands.add(
+    'apiRegisterAndApproveOrg',
+    (userData: UserRegisterData, orgData: OrganizationPostData) => {
+        const adminLoginData = Cypress.env('adminUser');
+        const apiUrl = Cypress.env('apiUrl');
+        const approveBody = {
+            status: OrganizationStatus.Active
+        };
+
+        cy.apiRegisterOrg(userData, orgData).then((orgId) => {
+            cy.apiLoginUser(adminLoginData).then((token) => {
+                cy.request({
+                    url: `${apiUrl}/Organization/${orgId}`,
+                    method: 'PUT',
+                    body: JSON.stringify(approveBody),
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        'Content-Type': 'application/json;charset=UTF-8'
+                    }
+                });
+                cy.clearLocalStorage();
+            });
+        });
+    }
+);
+
+Cypress.Commands.add('inputHasValue', (inputCy: string, value: string) => {
+    cy.dataCy(inputCy).find('input').should('have.value', value);
 });

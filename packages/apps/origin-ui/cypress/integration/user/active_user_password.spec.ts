@@ -2,9 +2,9 @@
 /// <reference types="../../support" />
 import { generateNewUser } from '../../utils/generateMockData';
 
-describe('Active user profile page interactions', () => {
+describe('Active user profile password block interactions', () => {
     const testUser = generateNewUser();
-    const { password: oldPassword, email, firstName, lastName } = testUser;
+    const { password: oldPassword, email } = testUser;
     const editNumbers = '1111';
     const newPassword = oldPassword + editNumbers;
 
@@ -12,12 +12,10 @@ describe('Active user profile page interactions', () => {
         cy.apiRegisterAndApproveUser(testUser);
     });
 
-    beforeEach(() => {
+    it('should validate password field as required', () => {
         cy.apiLoginUser(testUser);
         cy.visit('/account/user-profile');
-    });
 
-    it('should validate password field as required', () => {
         cy.dataCy('password-edit-button').click();
         cy.inputRequired('current-password', 'new-password');
         cy.inputRequired('new-password', 'confirm-password');
@@ -25,6 +23,9 @@ describe('Active user profile page interactions', () => {
     });
 
     it('should revert changes password inputs after cancel button is clicked', () => {
+        cy.apiLoginUser(testUser);
+        cy.visit('/account/user-profile');
+
         cy.dataCy('password-edit-button').click();
 
         cy.dataCy('current-password').type(oldPassword);
@@ -46,6 +47,9 @@ describe('Active user profile page interactions', () => {
     });
 
     it('should allow user to change password and logout', () => {
+        cy.apiLoginUser(testUser);
+        cy.visit('/account/user-profile');
+
         cy.dataCy('password-edit-button').click();
 
         cy.dataCy('current-password').type(oldPassword);
