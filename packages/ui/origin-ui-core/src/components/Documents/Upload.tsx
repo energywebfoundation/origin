@@ -217,7 +217,7 @@ export function Upload(props: IProps) {
     const thumbs = files.map((file, index) => {
         const uploadedFile = state[index];
 
-        if (!uploadedFile || uploadedFile?.removed) {
+        if (!uploadedFile || uploadedFile.removed) {
             return null;
         }
 
