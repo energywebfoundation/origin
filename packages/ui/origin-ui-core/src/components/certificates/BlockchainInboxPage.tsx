@@ -2,21 +2,21 @@ import { InboxPanel } from './InboxPanel';
 import {
     CertificateSource,
     requestDepositCertificate,
-    requestClaimCertificate
-} from '../../features/certificates';
+    requestClaimCertificate,
+    getUserOffchain
+} from '../../features';
 import React, { useEffect, useState } from 'react';
 import { TabContent } from './Inbox/InboxTabContent';
-import { SelectedInboxList } from './Inbox/SelectedInboxList';
+import { SelectedInboxList, IInboxCertificateData } from './Inbox';
 import { Checkbox } from '@material-ui/core';
 import { BeneficiaryForm } from './Inbox/BeneficiaryForm';
 import { useDispatch, useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
-import { IInboxCertificateData } from './Inbox/InboxItem';
-import { getUserOffchain } from '../../features/users';
-import { EnergyFormatter } from '../../utils/EnergyFormatter';
 import { useOriginConfiguration } from '../../utils/configuration';
 import { makeStyles } from '@material-ui/styles';
 import { IClaimData } from '@energyweb/issuer';
+import { Requirement, usePermissions, EnergyFormatter } from '../../utils';
+import { Requirements } from '../Layout';
 
 export function BlockchainInboxPage(): JSX.Element {
     const [retireForBeneficiary, setRetireForBeneficiary] = useState<boolean>(false);
@@ -83,6 +83,19 @@ export function BlockchainInboxPage(): JSX.Element {
     });
 
     const classes = useStyles();
+
+    const pageRequirements = [
+        Requirement.IsLoggedIn,
+        Requirement.IsActiveUser,
+        Requirement.IsPartOfApprovedOrg,
+        Requirement.HasUserBlockchainAddress
+    ];
+
+    const { canAccessPage } = usePermissions(pageRequirements);
+
+    if (!canAccessPage.value) {
+        return <Requirements rules={pageRequirements} />;
+    }
 
     return (
         <InboxPanel
