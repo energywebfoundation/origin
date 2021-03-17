@@ -1,4 +1,5 @@
 /// <reference types="cypress" />
+import 'cypress-file-upload';
 import { IUser, KYCStatus, UserStatus } from '@energyweb/origin-backend-core';
 
 Cypress.Commands.add('dataCy', (value: string) => {
@@ -116,5 +117,42 @@ Cypress.Commands.add('apiRegisterAndApproveUser', async (userData: UserRegisterD
                 'Content-Type': 'application/json;charset=UTF-8'
             }
         });
+    });
+});
+
+Cypress.Commands.add('attachDocument', (uploadDataCy: string) => {
+    cy.dataCy(uploadDataCy).find('input').attachFile({
+        filePath: 'testDocument.json',
+        mimeType: 'image/png',
+        encoding: 'binary'
+    });
+});
+
+Cypress.Commands.add('fillOrgRegisterForm', (orgData: OrganizationPostData) => {
+    cy.dataCy('organization-name').type(orgData.name);
+    cy.dataCy('organization-address').type(orgData.address);
+    cy.dataCy('organization-zipcode').type(orgData.zipCode);
+    cy.dataCy('organization-city').type(orgData.city);
+    cy.dataCy('organization-trade-registry').type(orgData.tradeRegistryCompanyNumber);
+    cy.dataCy('organization-vat').type(orgData.vatNumber);
+    cy.dataCy('organization-signatory-name').type(orgData.signatoryFullName);
+    cy.dataCy('organization-signatory-address').type(orgData.signatoryAddress);
+    cy.dataCy('organization-signatory-zipcode').type(orgData.signatoryZipCode);
+    cy.dataCy('organization-signatory-city').type(orgData.signatoryCity);
+    cy.dataCy('organization-signatory-email').type(orgData.signatoryEmail);
+    cy.dataCy('organization-signatory-phone').type(orgData.signatoryPhoneNumber);
+});
+
+Cypress.Commands.add('apiRegisterOrg', async (orgData: OrganizationPostData) => {
+    const organizationUrl = `${Cypress.env('apiUrl')}/Organization`;
+    const token = localStorage.getItem('AUTHENTICATION_TOKEN');
+
+    await fetch(organizationUrl, {
+        method: 'POST',
+        body: JSON.stringify(orgData),
+        headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json;charset=UTF-8'
+        }
     });
 });
