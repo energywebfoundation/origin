@@ -37,11 +37,12 @@ export function FormBusinessTypeSelect(props: IProps) {
         selectProperty,
         className,
         disabled,
-        required
+        required,
+        ...otherProps
     } = props;
 
     return (
-        <>
+        <div {...otherProps}>
             <FormSelect
                 options={BUSINESS_LEGAL_TYPE_OPTIONS}
                 property={selectProperty}
@@ -60,6 +61,6 @@ export function FormBusinessTypeSelect(props: IProps) {
                     disabled={disabled}
                 />
             )}
-        </>
+        </div>
     );
 }

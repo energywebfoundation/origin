@@ -158,7 +158,7 @@ export function OrganizationUsersTable() {
     });
 
     return (
-        <>
+        <div data-cy="organization-members-page">
             <TableMaterial
                 columns={columns}
                 rows={rows}
@@ -173,6 +173,6 @@ export function OrganizationUsersTable() {
                 showModal={showUserRoleChangeModal}
                 callback={changeRoleCallback}
             />
-        </>
+        </div>
     );
 }
