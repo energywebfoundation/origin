@@ -351,7 +351,10 @@ export function InboxPanel(props: IProps): JSX.Element {
                 <Grid item xs={12} md={5}>
                     <Tabs
                         value={tabIndex}
-                        onChange={(ev, index) => setTabIndex(index)}
+                        onChange={(ev, index) => {
+                            setIsEditing(false);
+                            setTabIndex(index);
+                        }}
                         indicatorColor="primary"
                         textColor="primary"
                         variant="scrollable"

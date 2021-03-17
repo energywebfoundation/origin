@@ -21,7 +21,7 @@ export class EnergyFormatter {
     static format(baseValue: BigNumberish, includeDisplayUnit?: boolean): string {
         const returnValue = BigNumber.from(baseValue);
         return `${utils.commify(EnergyFormatter.getValueInDisplayUnit(returnValue).toString())}${
-            includeDisplayUnit ? EnergyFormatter.displayUnit : ''
+            includeDisplayUnit ? ` ${EnergyFormatter.displayUnit}` : ''
         }`;
     }
 }

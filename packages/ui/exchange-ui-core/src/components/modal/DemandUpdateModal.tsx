@@ -19,11 +19,10 @@ import {
 import { Close } from '@material-ui/icons';
 import { EnergyFormatter, getCurrencies, LightenColor, moment } from '@energyweb/origin-ui-core';
 import { DemandStatus, TimeFrame } from '@energyweb/utils-general';
-import { updateDemand, pauseDemand, resumeDemand } from '../../features/orders/actions';
-import { periodTypeOptions } from '../../utils/demand';
-import { Demand, IProductDTO, Order } from '../../utils/exchange';
+import { updateDemand, pauseDemand, resumeDemand } from '../../features';
+import { Demand, IProductDTO, Order, periodTypeOptions } from '../../utils';
 import { CalendarFieldOnPeriod, FormInput, FormSelect } from '../Form';
-import { TotalDemandVolume } from '../orders/TotalDemandVolume';
+import { TotalDemandVolume } from '../orders';
 import { useOriginConfiguration } from '../../utils/configuration';
 
 interface IFormValues {
@@ -112,6 +111,7 @@ export function DemandUpdateModal(props: IProps) {
             .required()
             .positive()
             .integer()
+            .transform((_value, originalValue) => Number(originalValue.replace(/,/, '.')))
             .label(t('demand.properties.volume')),
         start: Yup.date().label(t('demand.properties.start')),
         end: Yup.date().label(t('demand.properties.end')),

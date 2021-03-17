@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { AdminUsersTable } from './AdminUsersTable';
 import { AdminUserView } from './AdminUserView';
+import { AdminClaimsTable } from './AdminClaimsTable';
 
 interface IAdminMenuItem {
     key: string;
@@ -17,6 +18,12 @@ export const useAdminMenu = (): IAdminMenuItem[] => {
             key: 'manage-user',
             label: t('navigation.admin.users'),
             component: AdminUsersTable,
+            show: true
+        },
+        {
+            key: 'claims',
+            label: t('navigation.admin.claims'),
+            component: AdminClaimsTable,
             show: true
         },
         {

@@ -22,6 +22,7 @@ import { OriginDeviceDTO } from '@energyweb/origin-device-registry-api-client';
 import { PublicDeviceDTO as IRecDeviceDTO } from '@energyweb/origin-device-registry-irec-local-api-client';
 import { ComposedPublicDevice } from '../../../types';
 import { composePublicDevices } from '../../../utils/compose';
+import { ClaimDataDTO } from '@energyweb/issuer-api-client';
 
 interface IProps {
     id: number;
@@ -294,7 +295,7 @@ export function CertificateDetailView(props: IProps) {
 
             if (selectedCertificate.isClaimed) {
                 const claims = selectedCertificate.myClaims.map((c) => c.claimData);
-                const uniqueClaims = [...new Set(claims)];
+                const uniqueClaims: ClaimDataDTO[] = [...new Set(claims)];
 
                 const claimInfo = [
                     {
@@ -308,11 +309,16 @@ export function CertificateDetailView(props: IProps) {
                 ];
 
                 if (uniqueClaims.length > 0) {
-                    const fieldData = uniqueClaims.map((oneBeneficiary) =>
-                        Object.values(oneBeneficiary)
+                    const fieldData = uniqueClaims.map((oneBeneficiary) => {
+                        const { fromDate, toDate } = oneBeneficiary;
+
+                        oneBeneficiary.fromDate = fromDate && `[From: ${formatDate(fromDate)}`;
+                        oneBeneficiary.toDate = toDate && `To: ${formatDate(toDate)}]`;
+
+                        return Object.values(oneBeneficiary)
                             .filter((value) => value !== '')
-                            .join(', ')
-                    );
+                            .join(', ');
+                    });
 
                     claimInfo.push({
                         label: t('certificate.properties.claimBeneficiary'),

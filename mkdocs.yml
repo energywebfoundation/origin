@@ -2,9 +2,15 @@ site_name: EW-Origin
 
 nav:
     - Introduction: index.md
-    - Developer documentation:
-          - Getting started: getting-started.md
-          - Cookbook: cookbook.md
+    - Getting started: getting-started.md
+    - Architecture: architecture.md
+    - SDK:
+          - Traceability: traceability.md
+          - Trade: trade.md
+          - Device Registry: device-registry.md
+          - Organizations: organizations.md
+    - Cookbook:
+          - How to deploy to Volta: volta-deployment.md
 
 theme: readthedocs
 
