@@ -2,7 +2,7 @@ import * as testUser from '../fixtures/testUser.json';
 import * as testOrg from '../fixtures/testOrganization.json';
 
 export const generateNewUser = (): UserRegisterData => {
-    const randomNumber = Math.round(Math.random() * 1000);
+    const randomNumber = Math.round(Math.random() * 100000);
 
     return {
         ...testUser,

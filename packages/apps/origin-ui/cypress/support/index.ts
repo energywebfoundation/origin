@@ -1,1 +1,3 @@
-import './commands';
+import './general';
+import './user';
+import './organization';

@@ -2,7 +2,7 @@
 /// <reference types="../../support" />
 import { generateNewUser } from '../../utils/generateMockData';
 
-describe('Inactive user rights', () => {
+describe('User with status Pending flow', () => {
     const testUser = generateNewUser();
 
     before(() => {
