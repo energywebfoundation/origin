@@ -90,12 +90,11 @@ export function DeviceTable(props: IOwnProps) {
                     ) &&
                     (!props.owner ||
                         // check if its true later
-                        record?.registrantOrganization === user?.organization?.id.toString()) &&
+                        record?.ownerId === user?.organization?.id.toString()) &&
                     (includedStatuses.length === 0 || includedStatuses.includes(record.status))
             ) || [];
 
         const total = filteredEnrichedDeviceData.length;
-
         const paginatedData = filteredEnrichedDeviceData.slice(offset, offset + requestedPageSize);
 
         return {
@@ -104,14 +103,11 @@ export function DeviceTable(props: IOwnProps) {
         };
     }
 
-    const {
-        paginatedData,
-        loadPage,
-        total,
-        pageSize
-    } = usePaginatedLoaderFiltered<IEnrichedDeviceData>({
-        getPaginatedData
-    });
+    const { paginatedData, loadPage, total, pageSize } = usePaginatedLoaderFiltered<ComposedDevice>(
+        {
+            getPaginatedData
+        }
+    );
 
     const { t } = useTranslation();
 
@@ -120,9 +116,7 @@ export function DeviceTable(props: IOwnProps) {
     }, [user, devices]);
 
     function viewDevice(rowIndex: number) {
-        const device = paginatedData[rowIndex].device;
-
-        setDetailViewForDeviceId(device.id);
+        setDetailViewForDeviceId(paginatedData[rowIndex].id);
     }
 
     async function requestCerts(rowIndex: string) {
@@ -181,21 +175,20 @@ export function DeviceTable(props: IOwnProps) {
         }
     ] as const).filter((column) => !hiddenColumns.includes(column.id));
 
-    const rows: IDeviceRowData[] = [];
-    // Adjust according to new properties
-
-    // paginatedData.map((enrichedData) => ({
-    //     owner: enrichedData.organizationName,
-    //     facilityName: enrichedData.device.facilityName,
-    //     deviceLocation: enrichedData.locationText,
-    //     type:
-    //         configuration?.deviceTypeService?.getDisplayText(enrichedData.device.deviceType) ?? '',
-    //     capacity: PowerFormatter.format(enrichedData.device.capacityInW),
-    //     readCertified: EnergyFormatter.format(enrichedData.device.meterStats?.certified ?? 0),
-    //     readToBeCertified: EnergyFormatter.format(enrichedData.device.meterStats?.uncertified ?? 0),
-    //     status: enrichedData.device.status,
-    //     gridOperator: enrichedData?.device?.gridOperator
-    // }));
+    const rows: IDeviceRowData[] = paginatedData.map((enrichedData) => ({
+        owner: enrichedData.registrantOrganization,
+        facilityName: enrichedData.name,
+        deviceLocation: enrichedData.address,
+        type: enrichedData.deviceType ?? '',
+        // type: configuration?.deviceTypeService?.getDisplayText(enrichedData.deviceType) ?? '',
+        capacity: PowerFormatter.format(enrichedData.capacity),
+        // readCertified: EnergyFormatter.format(enrichedData.device.meterStats?.certified ?? 0),
+        readCertified: '',
+        // readToBeCertified: EnergyFormatter.format(enrichedData.device.meterStats?.uncertified ?? 0),
+        readToBeCertified: '',
+        status: enrichedData.status,
+        gridOperator: enrichedData?.gridOperator ?? ''
+    }));
 
     if (detailViewForDeviceId !== null) {
         return <Redirect push={true} to={getDeviceDetailLink(baseURL, detailViewForDeviceId)} />;

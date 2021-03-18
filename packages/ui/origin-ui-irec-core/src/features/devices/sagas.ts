@@ -8,10 +8,16 @@ import {
 import {
     CreateDeviceDTO as IRecCreateDeviceDTO,
     DeviceDTO as IRecMyDeviceDTO,
-    PublicDeviceDTO as IRecPublicDeviceDTO
+    PublicDeviceDTO as IRecPublicDeviceDTO,
+    IrecDeviceDTO
 } from '@energyweb/origin-device-registry-irec-local-api-client';
 import { DeviceClient } from '../../utils/client';
-import { composeCreatedDevice, composeMyDevices, composePublicDevices } from '../../utils/compose';
+import {
+    composeCreatedDevice,
+    composeImportedDevices,
+    composeMyDevices,
+    composePublicDevices
+} from '../../utils/compose';
 import { decomposeForIRec, decomposeForOrigin } from '../../utils/decompose';
 import { ComposedDevice } from '../../types';
 import { getDeviceClient } from '../general';
@@ -91,15 +97,14 @@ function* getDevicesToImport(): SagaIterator {
 
             const originDevices: OriginDeviceDTO[] = originResponse.data;
             const iRecDevices: IRecMyDeviceDTO[] = iRecDevicesResponse.data;
-            const iRecDevicesToImport: IRecMyDeviceDTO[] = iRecDevicesToImportResponse.data;
+            const iRecDevicesToImport: IrecDeviceDTO[] = iRecDevicesToImportResponse.data;
 
             const iRecDevicesNotInOrigin: IRecMyDeviceDTO[] = iRecDevices.filter((device) => {
                 return !originDevices.find((d) => d.externalRegistryId === device.id);
             });
 
-            yield put(
-                storeIrecDevicesToImport([...iRecDevicesNotInOrigin, ...iRecDevicesToImport])
-            );
+            const composed = composeImportedDevices(iRecDevicesNotInOrigin, iRecDevicesToImport);
+            yield put(storeIrecDevicesToImport(composed));
         } catch (error) {
             showNotification(`Error while getting devices to import data`, NotificationType.Error);
             console.log(error);

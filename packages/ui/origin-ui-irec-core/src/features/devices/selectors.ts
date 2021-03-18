@@ -7,4 +7,4 @@ export const getMyDevices = (state: IIRecAppState): ComposedDevice[] =>
     state.iRecDevicesState.myDevices;
 
 export const getDevicesToImport = (state: IIRecAppState): ComposedDevice[] =>
-    state.iRecDevicesState.myDevices;
+    state.iRecDevicesState.devicesToImport;

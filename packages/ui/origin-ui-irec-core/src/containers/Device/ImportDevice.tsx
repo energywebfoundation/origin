@@ -26,16 +26,24 @@ const PAGE_SIZE = 20;
 export function ImportDevice(): JSX.Element {
     const configuration = useOriginConfiguration();
     const dispatch = useDispatch();
-    const myDevices = useSelector(getMyDevices) || [];
-    const devicesToImport = useSelector(getDevicesToImport) || [];
-    const deviceClient = useSelector(getDeviceClient);
+    const myDevices = useSelector(getMyDevices);
+    const devicesToImport = useSelector(getDevicesToImport);
+    const iRecClient = useSelector(getDeviceClient)?.iRecClient;
+    const originClient = useSelector(getDeviceClient)?.originClient;
+
+    console.log('myDevices', myDevices, '\n', 'devicesToImport', devicesToImport);
 
     useEffect(() => {
-        if (deviceClient) {
-            dispatch(fetchMyDevices());
+        if (iRecClient && !devicesToImport) {
             dispatch(fetchDevicesToImport());
         }
-    }, [deviceClient]);
+    }, [iRecClient, devicesToImport]);
+
+    useEffect(() => {
+        if (originClient && !myDevices) {
+            dispatch(fetchMyDevices());
+        }
+    }, [originClient, myDevices]);
 
     const useStyles = makeStyles({
         box: {
@@ -83,7 +91,7 @@ export function ImportDevice(): JSX.Element {
                         <Typography className={classes.header}>
                             {t('device.info.importDevice')}
                         </Typography>
-                        {devicesToImport
+                        {(devicesToImport ?? [])
                             .slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE)
                             .map((a) => {
                                 return (
@@ -96,7 +104,7 @@ export function ImportDevice(): JSX.Element {
                             })}
                         <div className={classes.pagination}>
                             <Pagination
-                                count={Math.ceil(devicesToImport.length / PAGE_SIZE)}
+                                count={Math.ceil(devicesToImport?.length ?? 0 / PAGE_SIZE)}
                                 defaultPage={1}
                                 onChange={(e, index) => setPage(index)}
                             />
@@ -110,7 +118,7 @@ export function ImportDevice(): JSX.Element {
                         <Typography className={classes.header}>
                             {t('device.info.importedDevices')}
                         </Typography>
-                        {myDevices
+                        {(myDevices ?? [])
                             .slice((pageImported - 1) * PAGE_SIZE, pageImported * PAGE_SIZE)
                             .map((a) => {
                                 return (
@@ -123,7 +131,7 @@ export function ImportDevice(): JSX.Element {
                             })}
                         <div className={classes.pagination}>
                             <Pagination
-                                count={Math.ceil(myDevices.length / PAGE_SIZE)}
+                                count={Math.ceil(myDevices?.length ?? 0 / PAGE_SIZE)}
                                 defaultPage={1}
                                 onChange={(e, index) => setImportedPage(index)}
                             />
