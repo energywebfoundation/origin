@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import { Formik, Form, FormikHelpers } from 'formik';
@@ -22,6 +22,8 @@ import { getUserOffchain } from '../../../features/users';
 import { showNotification, NotificationType } from '../../../utils/notifications';
 import { roleNames } from '../../../utils/organizationRoles';
 import { FormInput } from '../../Form';
+import { InvitationDTO } from '@energyweb/origin-backend-client';
+import { Skeleton } from '@material-ui/lab';
 
 interface IFormValues {
     email: string;
@@ -40,10 +42,28 @@ const VALIDATION_SCHEMA = Yup.object({
 export function OrganizationInvite() {
     const { t } = useTranslation();
 
-    const invitationClient = useSelector(getBackendClient)?.invitationClient;
+    const backendClient = useSelector(getBackendClient);
+    const invitationClient = backendClient?.invitationClient;
+    const organizationClient = backendClient?.organizationClient;
     const userOffchain = useSelector(getUserOffchain);
-
+    const [invitations, setInvitations] = useState<InvitationDTO[]>(null);
     const dispatch = useDispatch();
+
+    const getInvitations = async (): Promise<void> => {
+        const orgId = userOffchain.organization.id;
+        const {
+            data: orgInvitations
+        }: { data: InvitationDTO[] } = await organizationClient.getInvitationsForOrganization(
+            orgId
+        );
+        setInvitations(orgInvitations);
+    };
+
+    useEffect(() => {
+        if (organizationClient && userOffchain.organization.id) {
+            getInvitations();
+        }
+    }, [organizationClient, userOffchain]);
 
     const useStyles = makeStyles(() =>
         createStyles({
@@ -62,18 +82,28 @@ export function OrganizationInvite() {
         formikActions.setSubmitting(true);
         dispatch(setLoading(true));
 
+        const inviteAlreadySent = invitations.find((invite) => invite.email === values.email);
         try {
+            if (inviteAlreadySent) {
+                throw new Error();
+            }
             await invitationClient.invite({
                 email: values.email,
                 role: values.role
             });
-
+            formikActions.resetForm();
             showNotification(`Invitation sent`, NotificationType.Success);
+            getInvitations();
         } catch (error) {
             console.warn('Error while inviting user to organization', error);
             const _error = { ...error };
             if (error?.response?.status === 401) {
                 showNotification('Unauthorized.', NotificationType.Error);
+            } else if (inviteAlreadySent) {
+                showNotification(
+                    'You have already sent an invitation for this user',
+                    NotificationType.Error
+                );
             } else if (_error.response.status === 412) {
                 showNotification(
                     `Only active users can perform this action. Your status is ${userOffchain.status}`,
@@ -89,6 +119,10 @@ export function OrganizationInvite() {
     }
 
     const initialFormValues = INITIAL_FORM_VALUES;
+
+    if (invitations === null) {
+        return <Skeleton height={200} />;
+    }
 
     return (
         <Paper className={classes.container}>
@@ -110,6 +144,7 @@ export function OrganizationInvite() {
                             <Grid container spacing={3}>
                                 <Grid item xs={6}>
                                     <FormInput
+                                        data-cy="invitation-email"
                                         label="Email"
                                         property="email"
                                         disabled={fieldDisabled}
@@ -118,7 +153,12 @@ export function OrganizationInvite() {
                                     />
                                 </Grid>
                                 <Grid item xs={6}>
-                                    <FormControl fullWidth={true} variant="filled" className="mt-3">
+                                    <FormControl
+                                        data-cy="invitation-role"
+                                        fullWidth={true}
+                                        variant="filled"
+                                        className="mt-3"
+                                    >
                                         <InputLabel>Role</InputLabel>
                                         <Select
                                             value={selectedRole}
@@ -140,6 +180,7 @@ export function OrganizationInvite() {
                             </Grid>
 
                             <Button
+                                data-cy="invitation-submit"
                                 type="submit"
                                 variant="contained"
                                 color="primary"

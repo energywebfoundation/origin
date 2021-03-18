@@ -142,7 +142,7 @@ export function OrganizationInvitationTable(props: IProps) {
 
         if (
             [OrganizationInvitationStatus.Accepted, OrganizationInvitationStatus.Rejected].includes(
-                invitation.status
+                invitation?.status
             )
         ) {
             showNotification(`Invitation has already been processed`, NotificationType.Error);
@@ -193,12 +193,12 @@ export function OrganizationInvitationTable(props: IProps) {
                   OrganizationInvitationStatus.Pending
                       ? [
                             {
-                                icon: <Check />,
+                                icon: <Check data-cy="accept-invitation-icon" />,
                                 name: t('organization.invitations.actions.accept'),
                                 onClick: (row: string) => accept(parseInt(row, 10))
                             },
                             {
-                                icon: <Clear />,
+                                icon: <Clear data-cy="decline-invitation-icon" />,
                                 name: t('organization.invitations.actions.decline'),
                                 onClick: (row: string) => reject(parseInt(row, 10))
                             }
