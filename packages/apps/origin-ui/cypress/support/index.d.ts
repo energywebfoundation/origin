@@ -9,6 +9,26 @@ type UserRegisterData = {
     telephone: string;
 };
 
+declare enum OrganizationInvitationStatus {
+    Pending = 'Pending',
+    Rejected = 'Rejected',
+    Accepted = 'Accepted',
+    Viewed = 'Viewed'
+}
+
+declare enum Role {
+    OrganizationAdmin = 1,
+    OrganizationDeviceManager = 2,
+    OrganizationUser = 4,
+    Issuer = 8,
+    Admin = 16,
+    SupportAgent = 32
+}
+declare type OrganizationRole =
+    | Role.OrganizationUser
+    | Role.OrganizationDeviceManager
+    | Role.OrganizationAdmin;
+
 type UserLoginData = {
     email: string;
     password: string;
@@ -57,5 +77,14 @@ declare namespace Cypress {
             orgData: OrganizationPostData
         ): Chainable<Element>;
         inputHasValue(inputCy: string, value: string): Chainable<Element>;
+        apiUserProceedInvitation(
+            userDate: UserRegisterData,
+            status: OrganizationInvitationStatus
+        ): Chainable<Element>;
+        apiSendInvitation(
+            senderData: UserRegisterData,
+            receiverEmail: string,
+            role: OrganizationRole
+        ): Chainable<Element>;
     }
 }
