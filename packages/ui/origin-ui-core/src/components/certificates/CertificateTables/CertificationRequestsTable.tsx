@@ -103,7 +103,7 @@ export function CertificationRequestsTable(props: IProps): JSX.Element {
                 if (
                     (props.approved !== undefined && request.approved !== props.approved) ||
                     request.status !== CertificationRequestStatus.Executed ||
-                    (!isIssuer && user?.organization?.id !== requestDevice?.organizationId)
+                    (!isIssuer && user.organization?.id !== requestDevice?.organizationId)
                 ) {
                     continue;
                 }
