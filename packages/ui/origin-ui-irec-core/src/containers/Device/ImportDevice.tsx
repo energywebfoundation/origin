@@ -69,6 +69,7 @@ export function ImportDevice(): JSX.Element {
     const [page, setPage] = useState(1);
     const [pageImported, setImportedPage] = useState(1);
     const [modalOpen, setModalOpen] = useState(false);
+    const [activeDevice, setActiveDevice] = useState(null);
     const { t } = useTranslation();
 
     const filters: ICustomFilterDefinition[] = [
@@ -83,7 +84,7 @@ export function ImportDevice(): JSX.Element {
 
     return (
         <>
-            <ImportDeviceModal open={modalOpen} setOpen={setModalOpen} />
+            <ImportDeviceModal open={modalOpen} setOpen={setModalOpen} device={activeDevice} />
             <Grid container spacing={3}>
                 <Grid item xs={12} md={6}>
                     <FiltersHeader filters={filters} filtersChanged={(a) => console.log(a)} />
@@ -98,7 +99,10 @@ export function ImportDevice(): JSX.Element {
                                     <ImportDeviceItem
                                         key={a.id}
                                         device={a}
-                                        onImport={() => setModalOpen(true)}
+                                        onImport={() => {
+                                            setActiveDevice(a);
+                                            setModalOpen(true);
+                                        }}
                                     />
                                 );
                             })}
@@ -125,7 +129,10 @@ export function ImportDevice(): JSX.Element {
                                     <ImportDeviceItem
                                         key={a.code}
                                         device={a}
-                                        onImport={() => setModalOpen(true)}
+                                        onImport={() => {
+                                            setActiveDevice(a);
+                                            setModalOpen(true);
+                                        }}
                                     />
                                 );
                             })}
