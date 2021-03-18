@@ -42,7 +42,7 @@ There are two different blockchain addresses that are relevant for users on the 
 
 ### Exchange Deposit Address
 
-First there is the exchange deposit address. This is the address that is used by the marketplace's integrated exchange module. Every organization has one exchange deposit address. Certificates that are deposited to this address are made available to all organization members and can be traded on the exchange. As an organization admin you should create it for all user's of the organization. The address is created and managed by the platform and you do not need to connect your own blockchain wallet. By default 
+First there is the exchange deposit address. This is the address that is used by the marketplace's integrated exchange module. Every organization has one exchange deposit address. Certificates that are deposited to this address are made available to all organization members and can be traded on the exchange. As an organization admin you should create it for all user's of the organization. The address is created and managed by the platform and you do not need to connect your own blockchain wallet. By default, all certificates are directly issued to the organization's exchange deposit address.
 
 ### User Blockchain Address
 
