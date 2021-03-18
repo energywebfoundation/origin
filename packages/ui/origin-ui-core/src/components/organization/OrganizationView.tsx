@@ -112,6 +112,7 @@ export function OrganizationView() {
                 <Grid container spacing={3}>
                     <Grid item xs={6}>
                         <TextField
+                            data-cy="organization-name"
                             label={t('organization.registration.organizationName')}
                             className="mt-3"
                             value={formValues.name}
@@ -120,6 +121,7 @@ export function OrganizationView() {
                         />
 
                         <TextField
+                            data-cy="organization-address"
                             label={t('organization.registration.organizationAddress')}
                             className="mt-3"
                             value={formValues.address}
@@ -128,6 +130,7 @@ export function OrganizationView() {
                         />
 
                         <TextField
+                            data-cy="organization-business-type"
                             label={t('organization.registration.businessType')}
                             className="mt-3"
                             value={formValues.businessType}
@@ -136,6 +139,7 @@ export function OrganizationView() {
                         />
 
                         <TextField
+                            data-cy="organization-trade-registry"
                             label={t('organization.registration.tradeRegistryNumber')}
                             className="mt-3"
                             value={formValues.tradeRegistryCompanyNumber}
@@ -144,6 +148,7 @@ export function OrganizationView() {
                         />
 
                         <TextField
+                            data-cy="organization-vat-number"
                             label={t('organization.registration.vatNumber')}
                             value={formValues.vatNumber}
                             disabled
@@ -153,6 +158,7 @@ export function OrganizationView() {
                     </Grid>
                     <Grid item xs={6}>
                         <TextField
+                            data-cy="organization-signatory-name"
                             label={t('organization.registration.signatoryName')}
                             value={formValues.signatoryFullName}
                             disabled
@@ -161,6 +167,7 @@ export function OrganizationView() {
                         />
 
                         <TextField
+                            data-cy="organization-signatory-address"
                             label={t('organization.registration.signatoryAddress')}
                             value={formValues.signatoryAddress}
                             disabled
@@ -169,6 +176,7 @@ export function OrganizationView() {
                         />
 
                         <TextField
+                            data-cy="organization-signatory-email"
                             label={t('organization.registration.signatoryEmail')}
                             value={formValues.signatoryEmail}
                             disabled
@@ -177,6 +185,7 @@ export function OrganizationView() {
                         />
 
                         <TextField
+                            data-cy="organization-signatory-phone"
                             label={t('organization.registration.signatoryTelephone')}
                             value={formValues.signatoryPhoneNumber}
                             disabled
@@ -184,6 +193,7 @@ export function OrganizationView() {
                             fullWidth
                         />
                         <TextField
+                            data-cy="organization-signatory-status"
                             label={t('organization.registration.organizationStatus.status')}
                             value={t(
                                 `organization.registration.organizationStatus.${formValues.status}`
@@ -204,6 +214,7 @@ export function OrganizationView() {
 
                 {formValues.documentIds && (
                     <Download
+                        data-cy="company-proof-doc"
                         documents={formValues.documentIds}
                         name={t('organization.registration.companyProof')}
                     />
@@ -211,6 +222,7 @@ export function OrganizationView() {
 
                 {formValues.signatoryDocumentIds && (
                     <Download
+                        data-cy="signatory-id-doc"
                         documents={formValues.signatoryDocumentIds}
                         name={t('organization.registration.signatoryId')}
                     />

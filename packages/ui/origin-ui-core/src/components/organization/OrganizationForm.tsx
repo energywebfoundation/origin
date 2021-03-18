@@ -77,20 +77,20 @@ const INITIAL_FORM_VALUES: IFormValues = {
 };
 
 const VALIDATION_SCHEMA = Yup.object({
-    name: Yup.string().required().label('Name'),
-    address: Yup.string().required().label('Address'),
+    name: Yup.string().required().label('Organization Name'),
+    address: Yup.string().required().label('Organization Address'),
     businessType: Yup.string().required().label('Business Type'),
     city: Yup.string().required().label('City'),
-    zipCode: Yup.string().required().label('Zip Code'),
+    zipCode: Yup.string().required().label('Zip code'),
     country: Yup.string().label('Country'),
-    tradeRegistryCompanyNumber: Yup.string().required().label('Trade Registry Company Number'),
+    tradeRegistryCompanyNumber: Yup.string().required().label('Trade Registry Company number'),
     vatNumber: Yup.string().required().label('VAT number'),
     signatoryAddress: Yup.string().required().label('Signatory Address'),
     signatoryCity: Yup.string().required().label('Signatory City'),
     signatoryCountry: Yup.string().required().label('Signatory Country'),
     signatoryEmail: Yup.string().email().required().label('Signatory Email'),
     signatoryFullName: Yup.string().required().label('Signatory Full Name'),
-    signatoryPhoneNumber: Yup.string().required().label('Signatory Phone Number'),
+    signatoryPhoneNumber: Yup.string().required().label('Signatory Telephone'),
     signatoryZipCode: Yup.string().required().label('Signatory Zip Code'),
     signatoryDocumentIds: Yup.array().label('Upload Signatory ID'),
     documentIds: Yup.array().label('Upload Company Proof')
@@ -233,6 +233,7 @@ export function OrganizationForm(props: IProps) {
                                                 label={t(
                                                     'organization.registration.organizationName'
                                                 )}
+                                                data-cy="organization-name"
                                                 property="name"
                                                 disabled={fieldDisabled}
                                                 className="mt-3"
@@ -243,6 +244,7 @@ export function OrganizationForm(props: IProps) {
                                                 label={t(
                                                     'organization.registration.organizationAddress'
                                                 )}
+                                                data-cy="organization-address"
                                                 property="address"
                                                 disabled={fieldDisabled}
                                                 className="mt-3"
@@ -251,6 +253,7 @@ export function OrganizationForm(props: IProps) {
 
                                             <FormInput
                                                 label={t('organization.registration.zipCode')}
+                                                data-cy="organization-zipcode"
                                                 property="zipCode"
                                                 disabled={fieldDisabled}
                                                 className="mt-3"
@@ -259,6 +262,7 @@ export function OrganizationForm(props: IProps) {
 
                                             <FormInput
                                                 label={t('organization.registration.city')}
+                                                data-cy="organization-city"
                                                 property="city"
                                                 disabled={fieldDisabled}
                                                 className="mt-3"
@@ -267,6 +271,7 @@ export function OrganizationForm(props: IProps) {
 
                                             <FormCountrySelect
                                                 label={t('organization.registration.country')}
+                                                data-cy="organization-country"
                                                 property="country"
                                                 currentValue={values.country}
                                                 disabled={fieldDisabled}
@@ -276,6 +281,7 @@ export function OrganizationForm(props: IProps) {
 
                                             <FormBusinessTypeSelect
                                                 label={t('organization.registration.businessType')}
+                                                data-cy="organization-business-type"
                                                 selectProperty="businessType"
                                                 selectCurrentValue={values.businessType}
                                                 inputProperty="businessTypeInput"
@@ -288,6 +294,7 @@ export function OrganizationForm(props: IProps) {
                                                 label={t(
                                                     'organization.registration.tradeRegistryNumber'
                                                 )}
+                                                data-cy="organization-trade-registry"
                                                 property="tradeRegistryCompanyNumber"
                                                 disabled={fieldDisabled}
                                                 className="mt-3"
@@ -296,6 +303,7 @@ export function OrganizationForm(props: IProps) {
 
                                             <FormInput
                                                 label={t('organization.registration.vatNumber')}
+                                                data-cy="organization-vat"
                                                 property="vatNumber"
                                                 disabled={fieldDisabled}
                                                 className="mt-3"
@@ -303,7 +311,7 @@ export function OrganizationForm(props: IProps) {
                                             />
                                         </Grid>
                                         <Grid item xs={6}>
-                                            <Box pl={6} mt={6}>
+                                            <Box pl={6} mt={6} data-cy="organization-upload-proof">
                                                 <Typography>
                                                     {t(
                                                         'organization.registration.uploadCompanyProof'
@@ -327,6 +335,7 @@ export function OrganizationForm(props: IProps) {
                                             </Box>
                                             <FormInput
                                                 label={t('organization.registration.signatoryName')}
+                                                data-cy="organization-signatory-name"
                                                 property="signatoryFullName"
                                                 disabled={fieldDisabled}
                                                 className="mt-3"
@@ -337,6 +346,7 @@ export function OrganizationForm(props: IProps) {
                                                 label={t(
                                                     'organization.registration.signatoryAddress'
                                                 )}
+                                                data-cy="organization-signatory-address"
                                                 property="signatoryAddress"
                                                 disabled={fieldDisabled}
                                                 className="mt-3"
@@ -345,6 +355,7 @@ export function OrganizationForm(props: IProps) {
 
                                             <FormInput
                                                 label={t('organization.registration.zipCode')}
+                                                data-cy="organization-signatory-zipcode"
                                                 property="signatoryZipCode"
                                                 disabled={fieldDisabled}
                                                 className="mt-3"
@@ -353,6 +364,7 @@ export function OrganizationForm(props: IProps) {
 
                                             <FormInput
                                                 label={t('organization.registration.city')}
+                                                data-cy="organization-signatory-city"
                                                 property="signatoryCity"
                                                 disabled={fieldDisabled}
                                                 className="mt-3"
@@ -361,6 +373,7 @@ export function OrganizationForm(props: IProps) {
 
                                             <FormCountrySelect
                                                 label={t('organization.registration.country')}
+                                                data-cy="organization-signatory-country"
                                                 property="signatoryCountry"
                                                 currentValue={values.signatoryCountry}
                                                 disabled={fieldDisabled}
@@ -372,6 +385,7 @@ export function OrganizationForm(props: IProps) {
                                                 label={t(
                                                     'organization.registration.signatoryEmail'
                                                 )}
+                                                data-cy="organization-signatory-email"
                                                 property="signatoryEmail"
                                                 disabled={fieldDisabled}
                                                 className="mt-3"
@@ -382,6 +396,7 @@ export function OrganizationForm(props: IProps) {
                                                 label={t(
                                                     'organization.registration.signatoryTelephone'
                                                 )}
+                                                data-cy="organization-signatory-phone"
                                                 property="signatoryPhoneNumber"
                                                 disabled={fieldDisabled}
                                                 className="mt-3"
@@ -389,7 +404,7 @@ export function OrganizationForm(props: IProps) {
                                             />
                                         </Grid>
                                         <Grid item xs={6}>
-                                            <Box pl={6} mt={6}>
+                                            <Box pl={6} mt={6} data-cy="signatory-upload-id">
                                                 <Typography>
                                                     {t(
                                                         'organization.registration.uploadSignatoryId'
@@ -408,6 +423,7 @@ export function OrganizationForm(props: IProps) {
                                 {!readOnly && (
                                     <Box display="flex" justifyContent="flex-end">
                                         <Button
+                                            data-cy="register-submit-button"
                                             type="submit"
                                             variant="contained"
                                             color="primary"
