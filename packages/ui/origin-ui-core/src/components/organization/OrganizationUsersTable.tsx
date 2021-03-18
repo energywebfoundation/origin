@@ -127,12 +127,12 @@ export function OrganizationUsersTable() {
     if (userIsActive) {
         actions.push(
             {
-                icon: <DeleteOutline />,
+                icon: <DeleteOutline data-cy="remove-user-icon" />,
                 name: 'Remove',
                 onClick: (index: string) => remove(parseInt(index, 10))
             },
             {
-                icon: <PermIdentityOutlined />,
+                icon: <PermIdentityOutlined data-cy="edit-user-icon" />,
                 name: 'Edit Role',
                 onClick: (index: string) => changeRole(parseInt(index, 10))
             }
