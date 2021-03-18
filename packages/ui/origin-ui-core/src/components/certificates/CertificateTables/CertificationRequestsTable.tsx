@@ -11,15 +11,18 @@ import {
 import { Skeleton } from '@material-ui/lab';
 import { Check } from '@material-ui/icons';
 import { CertificationRequestStatus } from '@energyweb/issuer-api-client';
-import { getConfiguration } from '../../../features/configuration';
-import { getAllDevices, fetchAllDevices } from '../../../features/devices';
-import { getUserOffchain } from '../../../features/users';
-import { getBackendClient, getEnvironment } from '../../../features/general';
+
 import {
+    getConfiguration,
+    getAllDevices,
+    fetchAllDevices,
+    getUserOffchain,
+    getBackendClient,
+    getEnvironment,
     getCertificationRequestsClient,
     ICertificationRequest,
     requestCertificateApproval
-} from '../../../features/certificates';
+} from '../../../features';
 import {
     getDeviceLocationText,
     getDeviceGridOperatorText,
@@ -27,11 +30,11 @@ import {
     EnergyFormatter,
     PowerFormatter,
     showNotification,
-    NotificationType
+    NotificationType,
+    formatDate
 } from '../../../utils';
 import { downloadFile } from '../../Documents';
 import { IOriginDevice } from '../../../types';
-import moment from 'moment-timezone';
 
 interface IProps {
     approved?: boolean;
@@ -184,8 +187,6 @@ export function CertificationRequestsTable(props: IProps): JSX.Element {
         { id: 'status', label: 'Status' }
     ] as const;
 
-    const formatDate = (value: number) => moment(new Date(value * 1000)).format('DD MMM, YYYY');
-
     const rows: Rows = paginatedData.map(({ device, request }) => {
         return {
             // deepscan-disable-next-line INSUFFICIENT_NULL_CHECK
@@ -209,7 +210,7 @@ export function CertificationRequestsTable(props: IProps): JSX.Element {
             )),
             timeFrame: (
                 <div style={{ whiteSpace: 'nowrap' }}>
-                    {formatDate(request.fromTime)} - {formatDate(request.toTime)}
+                    {formatDate(request.fromTime * 1000)} - {formatDate(request.toTime * 1000)}
                 </div>
             ),
             approved: request.approved,
