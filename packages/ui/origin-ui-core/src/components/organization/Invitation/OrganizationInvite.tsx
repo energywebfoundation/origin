@@ -92,16 +92,22 @@ export function OrganizationInvite() {
                 role: values.role
             });
             formikActions.resetForm();
-            showNotification(`Invitation sent`, NotificationType.Success);
+            showNotification(
+                t('organization.invitations.notification.invitationSent'),
+                NotificationType.Success
+            );
             getInvitations();
         } catch (error) {
-            console.warn('Error while inviting user to organization', error);
+            console.warn(t('organization.invitations.notification.errorInvitingUser'), error);
             const _error = { ...error };
             if (error?.response?.status === 401) {
-                showNotification('Unauthorized.', NotificationType.Error);
+                showNotification(
+                    t('organization.invitations.notification.unauthorized'),
+                    NotificationType.Error
+                );
             } else if (inviteAlreadySent) {
                 showNotification(
-                    'You have already sent an invitation for this user',
+                    t('organization.invitations.notification.alreadySent'),
                     NotificationType.Error
                 );
             } else if (_error.response.status === 412) {
@@ -110,7 +116,10 @@ export function OrganizationInvite() {
                     NotificationType.Error
                 );
             } else {
-                showNotification('Could not invite user to organization.', NotificationType.Error);
+                showNotification(
+                    t('organization.invitations.notification.unableToInvite'),
+                    NotificationType.Error
+                );
             }
         }
 
