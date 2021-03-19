@@ -18,7 +18,9 @@ import {
     fetchMyDevices,
     clearAllDevices,
     clearMyDevices,
-    fetchAllDevices
+    fetchAllDevices,
+    addReadsAllDevices,
+    addReadsMyDevices
 } from './actions';
 import { ICreateDeviceAction, IApproveDeviceAction } from './types';
 
@@ -42,7 +44,6 @@ function* fetchAndFormatAllDevices(): SagaIterator {
             );
 
             allDevices.forEach((device) => allOrgIds.add(device.organizationId));
-
             for (const id of allOrgIds) {
                 const {
                     data: { name }
@@ -57,6 +58,13 @@ function* fetchAndFormatAllDevices(): SagaIterator {
             }));
             yield put(clearAllDevices());
             yield put(storeAllDevices(devicesWithOrg));
+
+            const { data: allDevicesWithReads }: { data: DeviceDTO[] } = yield apply(
+                deviceClient,
+                deviceClient.getAll,
+                [true]
+            );
+            yield put(addReadsAllDevices(allDevicesWithReads));
         } catch (error) {
             showNotification(i18n.t('device.feedback.errorGettingDevices'), NotificationType.Error);
             console.log(error);
@@ -98,6 +106,13 @@ function* fetchAndFormatMyDevices(): SagaIterator {
 
             yield put(clearMyDevices());
             yield put(storeMyDevices(devicesWithOrg));
+
+            const { data: myDevicesWithReads }: { data: DeviceDTO[] } = yield apply(
+                deviceClient,
+                deviceClient.getMyDevices,
+                [true]
+            );
+            yield put(addReadsMyDevices(myDevicesWithReads));
         } catch (error) {
             showNotification(i18n.t('device.feedback.errorGettingDevices'), NotificationType.Error);
             console.log(error);

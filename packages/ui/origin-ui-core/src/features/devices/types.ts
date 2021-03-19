@@ -1,4 +1,4 @@
-import { CreateDeviceDTO } from '@energyweb/origin-device-registry-irec-form-api-client';
+import { CreateDeviceDTO, DeviceDTO } from '@energyweb/origin-device-registry-irec-form-api-client';
 import { IOriginDevice } from '../../types';
 import { DevicesActions } from './actions';
 
@@ -30,4 +30,14 @@ export interface IStoreMyDevicesAction {
 export interface IApproveDeviceAction {
     type: DevicesActions.APPROVE_DEVICE;
     payload: number;
+}
+
+export interface IAddReadsAllDevices {
+    type: DevicesActions.ADD_READS_ALL_DEVICES;
+    payload: DeviceDTO[];
+}
+
+export interface IAddReadsMyDevices {
+    type: DevicesActions.ADD_READS_MY_DEVICES;
+    payload: DeviceDTO[];
 }
