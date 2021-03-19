@@ -163,7 +163,7 @@ export function ImportDeviceModal(props: {
                                             />
                                             <br />
 
-                                            {!device.timezone && (
+                                            {!device?.timezone && (
                                                 <>
                                                     <FormInput
                                                         property="timezone"
@@ -173,7 +173,7 @@ export function ImportDeviceModal(props: {
                                                 </>
                                             )}
 
-                                            {!device.gridOperator && (
+                                            {!device?.gridOperator && (
                                                 <>
                                                     <FormInput
                                                         property="gridOperator"

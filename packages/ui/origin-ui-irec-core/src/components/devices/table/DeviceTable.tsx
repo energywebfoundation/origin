@@ -187,7 +187,7 @@ export function DeviceTable(props: IOwnProps) {
         // readToBeCertified: EnergyFormatter.format(enrichedData.device.meterStats?.uncertified ?? 0),
         readToBeCertified: '',
         status: enrichedData.status,
-        gridOperator: enrichedData?.gridOperator ?? ''
+        gridOperator: enrichedData.gridOperator ?? ''
     }));
 
     if (detailViewForDeviceId !== null) {
