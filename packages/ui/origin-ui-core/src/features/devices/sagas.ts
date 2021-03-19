@@ -54,7 +54,8 @@ function* fetchAndFormatAllDevices(): SagaIterator {
             const devicesWithOrg: IOriginDevice[] = allDevices.map((device) => ({
                 ...device,
                 organizationName: orgNames.get(device.organizationId),
-                locationText: getDeviceLocationText(device)
+                locationText: getDeviceLocationText(device),
+                meterStats: null
             }));
             yield put(clearAllDevices());
             yield put(storeAllDevices(devicesWithOrg));
@@ -101,7 +102,8 @@ function* fetchAndFormatMyDevices(): SagaIterator {
             const devicesWithOrg: IOriginDevice[] = myDevices.map((device) => ({
                 ...device,
                 organizationName: ownOrgName,
-                locationText: getDeviceLocationText(device)
+                locationText: getDeviceLocationText(device),
+                meterStats: null
             }));
 
             yield put(clearMyDevices());

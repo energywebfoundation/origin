@@ -220,11 +220,6 @@ export function fillDevicesWithReads(
 ): IOriginDevice[] {
     const updatedDevices = stateDevices.map((stateDevice) => {
         const sameDeviceWithReads = devicesWithReads.find((d) => d.id === stateDevice.id);
-
-        if (stateDevice.smartMeterReads.length === sameDeviceWithReads.smartMeterReads.length) {
-            return stateDevice;
-        }
-
         return {
             ...stateDevice,
             smartMeterReads: sameDeviceWithReads.smartMeterReads,
