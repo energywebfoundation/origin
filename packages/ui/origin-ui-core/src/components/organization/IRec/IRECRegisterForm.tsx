@@ -202,7 +202,7 @@ export const IRECRegisterForm = () => {
         registrationYear: Yup.number()
             .min(1900)
             .required()
-            .label(t('organization.registration.yearRegistration')),
+            .label(t('organization.registration.yearOfRegistration')),
         employeesNumber: Yup.string()
             .required()
             .label(t('organization.registration.numberOfEmployees')),
@@ -293,6 +293,7 @@ export const IRECRegisterForm = () => {
                                         </Grid>
                                         <Grid item style={{ paddingLeft: spacing(1) }}>
                                             <FormSelect
+                                                data-cy="irec-account-type"
                                                 options={accountTypeOptions}
                                                 label={t(
                                                     'organization.registration.IRECAccountType'
@@ -305,6 +306,7 @@ export const IRECRegisterForm = () => {
                                             />
 
                                             <FormCountrySelect
+                                                data-cy="org-headquaters-country"
                                                 label={t(
                                                     'organization.registration.orgHeadquartersCountry'
                                                 )}
@@ -317,6 +319,7 @@ export const IRECRegisterForm = () => {
                                             <Grid container justify="space-between">
                                                 <Grid item xs={5}>
                                                     <FormInput
+                                                        data-cy="year-registration"
                                                         label={t(
                                                             'organization.registration.yearOfRegistration'
                                                         )}
@@ -328,6 +331,7 @@ export const IRECRegisterForm = () => {
                                                 </Grid>
                                                 <Grid item xs={5}>
                                                     <FormSelect
+                                                        data-cy="number-of-employees"
                                                         options={numberOfEmployeesOptions}
                                                         label={t(
                                                             'organization.registration.numberOfEmployees'
@@ -341,6 +345,7 @@ export const IRECRegisterForm = () => {
                                                 </Grid>
                                             </Grid>
                                             <FormInput
+                                                data-cy="shareholders-names"
                                                 label={t(
                                                     'organization.registration.shareholderNames'
                                                 )}
@@ -350,6 +355,7 @@ export const IRECRegisterForm = () => {
                                                 required
                                             />
                                             <FormInput
+                                                data-cy="org-website"
                                                 label={t('organization.registration.orgWebsite')}
                                                 property="website"
                                                 disabled={isSubmitting}
@@ -357,6 +363,7 @@ export const IRECRegisterForm = () => {
                                                 required
                                             />
                                             <FormCountryMultiSelect
+                                                data-cy="active-countries"
                                                 onChange={(value) =>
                                                     setFieldValue('activeCountries', value, true)
                                                 }
@@ -371,6 +378,7 @@ export const IRECRegisterForm = () => {
                                                 max={3}
                                             />
                                             <FormInput
+                                                data-cy="main-business"
                                                 label={t('organization.registration.mainBusiness')}
                                                 property="mainBusiness"
                                                 disabled={isSubmitting}
@@ -378,6 +386,7 @@ export const IRECRegisterForm = () => {
                                                 required
                                             />
                                             <FormInput
+                                                data-cy="ceo-name"
                                                 label={t('organization.registration.ceoName')}
                                                 property="ceoName"
                                                 disabled={isSubmitting}
@@ -385,6 +394,7 @@ export const IRECRegisterForm = () => {
                                                 required
                                             />
                                             <FormInput
+                                                data-cy="ceo-passport"
                                                 label={t('organization.registration.ceoPassport')}
                                                 property="ceoPassportNumber"
                                                 disabled={isSubmitting}
@@ -392,6 +402,7 @@ export const IRECRegisterForm = () => {
                                                 required
                                             />
                                             <FormInput
+                                                data-cy="last-balance"
                                                 label={t('organization.registration.lastBalance')}
                                                 property="balanceSheetTotal"
                                                 disabled={isSubmitting}
@@ -424,6 +435,7 @@ export const IRECRegisterForm = () => {
                                         </Grid>
                                         <Grid item className={classes.inputsHolder}>
                                             <FormInput
+                                                data-cy="primary-contact-org-name"
                                                 label={t(
                                                     'organization.registration.primaryContactOrgName'
                                                 )}
@@ -433,6 +445,7 @@ export const IRECRegisterForm = () => {
                                                 required
                                             />
                                             <FormInput
+                                                data-cy="primary-contact-org-address"
                                                 label={t(
                                                     'organization.registration.primaryContactOrgAddress'
                                                 )}
@@ -442,6 +455,7 @@ export const IRECRegisterForm = () => {
                                                 required
                                             />
                                             <FormInput
+                                                data-cy="primary-contact-org-postal-code"
                                                 label={t(
                                                     'organization.registration.primaryContactOrgPostalCode'
                                                 )}
@@ -451,6 +465,7 @@ export const IRECRegisterForm = () => {
                                                 required
                                             />
                                             <FormCountrySelect
+                                                data-cy="primary-contact-org-country"
                                                 label={t(
                                                     'organization.registration.primaryContactOrgCountry'
                                                 )}
@@ -463,6 +478,7 @@ export const IRECRegisterForm = () => {
                                                 required
                                             />
                                             <FormInput
+                                                data-cy="primary-contact-existing-irec"
                                                 label={t(
                                                     'organization.registration.existingIRECOrg'
                                                 )}
@@ -471,6 +487,7 @@ export const IRECRegisterForm = () => {
                                                 className="mt-3"
                                             />
                                             <FormInput
+                                                data-cy="primary-contact-person-name"
                                                 label={t(
                                                     'organization.registration.primaryContactName'
                                                 )}
@@ -480,6 +497,7 @@ export const IRECRegisterForm = () => {
                                                 required
                                             />
                                             <FormInput
+                                                data-cy="primary-contact-person-email"
                                                 label={t(
                                                     'organization.registration.primaryContactEmail'
                                                 )}
@@ -489,6 +507,7 @@ export const IRECRegisterForm = () => {
                                                 required
                                             />
                                             <FormInput
+                                                data-cy="primary-contact-person-phone"
                                                 label={t(
                                                     'organization.registration.primaryContactPhoneNumber'
                                                 )}
@@ -498,6 +517,7 @@ export const IRECRegisterForm = () => {
                                                 required
                                             />
                                             <FormInput
+                                                data-cy="primary-contact-person-fax"
                                                 label={t(
                                                     'organization.registration.primaryContactFax'
                                                 )}
@@ -523,6 +543,7 @@ export const IRECRegisterForm = () => {
                                         </Grid>
                                         <Grid item className={classes.inputsHolder}>
                                             <FormSelect
+                                                data-cy="lead-user-title"
                                                 options={TITLE_OPTIONS}
                                                 label={t('organization.registration.leadUserTitle')}
                                                 property="leadUserTitle"
@@ -543,6 +564,7 @@ export const IRECRegisterForm = () => {
                                                 />
                                             )}
                                             <FormInput
+                                                data-cy="lead-user-first-name"
                                                 label={t(
                                                     'organization.registration.leadUserFirstName'
                                                 )}
@@ -552,6 +574,7 @@ export const IRECRegisterForm = () => {
                                                 required
                                             />
                                             <FormInput
+                                                data-cy="lead-user-last-name"
                                                 label={t(
                                                     'organization.registration.leadUserLastName'
                                                 )}
@@ -561,6 +584,7 @@ export const IRECRegisterForm = () => {
                                                 required
                                             />
                                             <FormInput
+                                                data-cy="lead-user-email"
                                                 label={t('organization.registration.leadUserEmail')}
                                                 property="leadUserEmail"
                                                 disabled={isSubmitting}
@@ -568,6 +592,7 @@ export const IRECRegisterForm = () => {
                                                 required
                                             />
                                             <FormInput
+                                                data-cy="lead-user-phone"
                                                 label={t(
                                                     'organization.registration.leadUserPhoneNumber'
                                                 )}
@@ -577,6 +602,7 @@ export const IRECRegisterForm = () => {
                                                 required
                                             />
                                             <FormInput
+                                                data-cy="lead-user-fax"
                                                 label={t('organization.registration.leadUserFax')}
                                                 property="leadUserFax"
                                                 disabled={isSubmitting}
@@ -594,6 +620,7 @@ export const IRECRegisterForm = () => {
                                 >
                                     <Grid item>
                                         <Button
+                                            data-cy="register-irec-button"
                                             variant="contained"
                                             color="primary"
                                             type="submit"

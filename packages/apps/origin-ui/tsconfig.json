@@ -5,7 +5,8 @@
         "module": "es2015",
         "moduleResolution": "node",
         "declaration": false,
-        "noImplicitAny": false
+        "noImplicitAny": false,
+        "baseUrl": "./"
     },
     "include": ["./src/**/*"],
     "references": [

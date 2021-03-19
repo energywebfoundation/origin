@@ -189,13 +189,28 @@ export const PendingInvitationsModal = (props: IProps) => {
                 </Grid>
             </DialogTitle>
             <DialogActions>
-                <Button variant="outlined" color="primary" onClick={() => later()}>
+                <Button
+                    data-cy="invitations-later-button"
+                    variant="outlined"
+                    color="primary"
+                    onClick={() => later()}
+                >
                     {t('organization.invitations.actions.later')}
                 </Button>
-                <Button variant="outlined" color="primary" onClick={() => reject()}>
+                <Button
+                    data-cy="invitations-decline-button"
+                    variant="outlined"
+                    color="primary"
+                    onClick={() => reject()}
+                >
                     {t('organization.invitations.actions.decline')}
                 </Button>
-                <Button variant="contained" color="primary" onClick={() => accept()}>
+                <Button
+                    data-cy="invitations-accept-button"
+                    variant="contained"
+                    color="primary"
+                    onClick={() => accept()}
+                >
                     {t('organization.invitations.actions.accept')}
                 </Button>
             </DialogActions>

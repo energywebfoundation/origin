@@ -1,8 +1,8 @@
 /// <reference types="cypress" />
 /// <reference types="../../support" />
-import { generateNewUser } from '../../utils/generateNewUser';
+import { generateNewUser } from '../../utils/generateMockData';
 
-describe('Inactive user rights', () => {
+describe('User with status Pending flow', () => {
     const testUser = generateNewUser();
 
     before(() => {
@@ -32,6 +32,10 @@ describe('Inactive user rights', () => {
 
         cy.dataCy('owned').should('not.exist');
         cy.dataCy('add').should('not.exist');
+    });
+
+    it('should not display certificates menu', () => {
+        cy.dataCy('certificates-menu').should('not.exist');
     });
 
     it('should display exchange menu for inactive user', () => {

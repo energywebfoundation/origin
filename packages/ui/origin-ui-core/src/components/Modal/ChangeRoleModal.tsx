@@ -71,11 +71,18 @@ export function ChangeRoleModal(props: IProps) {
         handleClose();
     }
 
+    const buttonDisabled = currentUserRole === selectedRole;
+
     return (
         <Dialog open={showModal} onClose={handleClose}>
             <DialogTitle>{`Change role for ${user?.firstName} ${user?.lastName}`}</DialogTitle>
             <DialogContent>
-                <FormControl fullWidth={true} variant="filled" className="mt-4">
+                <FormControl
+                    data-cy="new-role-selector"
+                    fullWidth={true}
+                    variant="filled"
+                    className="mt-4"
+                >
                     <InputLabel>{t('organization.invitations.dialog.newRole')}</InputLabel>
                     <Select
                         value={selectedRole}
@@ -96,7 +103,12 @@ export function ChangeRoleModal(props: IProps) {
                 <Button onClick={handleClose} color="secondary">
                     {t('organization.invitations.actions.cancel')}
                 </Button>
-                <Button onClick={changeRole} color="primary">
+                <Button
+                    data-cy="change-role-button"
+                    disabled={buttonDisabled}
+                    onClick={changeRole}
+                    color="primary"
+                >
                     {t('organization.invitations.actions.change')}
                 </Button>
             </DialogActions>
