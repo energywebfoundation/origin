@@ -31,8 +31,6 @@ export function ImportDevice(): JSX.Element {
     const iRecClient = useSelector(getDeviceClient)?.iRecClient;
     const originClient = useSelector(getDeviceClient)?.originClient;
 
-    console.log('myDevices', myDevices, '\n', 'devicesToImport', devicesToImport);
-
     useEffect(() => {
         if (iRecClient && !devicesToImport) {
             dispatch(fetchDevicesToImport());

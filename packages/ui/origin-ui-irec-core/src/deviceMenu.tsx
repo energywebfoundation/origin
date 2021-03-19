@@ -15,7 +15,7 @@ import { ImportDevice } from './containers/Device/ImportDevice';
 interface IDeviceMenuItem {
     key: string;
     label: string;
-    component: React.ReactType;
+    component: React.ElementType;
     show: boolean;
     features: OriginFeature[];
 }
@@ -71,10 +71,17 @@ export function useDeviceMenu(): IDeviceMenuItem[] {
         //     show: isDeviceManagerOrAdmin()
         // },
         {
+            key: 'producing_detail_view',
+            label: 'Production detail',
+            component: null,
+            show: false,
+            features: [OriginFeature.Devices]
+        },
+        {
             key: 'import',
             label: t('navigation.devices.import'),
             component: ImportDevice,
-            features: [OriginFeature.DevicesImport],
+            features: [OriginFeature.Devices],
             show: true
         }
     ];
