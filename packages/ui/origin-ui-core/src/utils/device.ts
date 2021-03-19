@@ -213,3 +213,23 @@ export function getDeviceName(id: string, devices: any[], environment: IEnvironm
     const deviceName = deviceTypeChecker(device) ? device?.facilityName : (device as any)?.name;
     return deviceName ?? '-';
 }
+
+export function fillDevicesWithReads(
+    stateDevices: IOriginDevice[],
+    devicesWithReads: DeviceDTO[]
+): IOriginDevice[] {
+    const updatedDevices = stateDevices.map((stateDevice) => {
+        const sameDeviceWithReads = devicesWithReads.find((d) => d.id === stateDevice.id);
+
+        if (stateDevice.smartMeterReads.length === sameDeviceWithReads.smartMeterReads.length) {
+            return stateDevice;
+        }
+
+        return {
+            ...stateDevice,
+            smartMeterReads: sameDeviceWithReads.smartMeterReads,
+            meterStats: sameDeviceWithReads.meterStats
+        };
+    });
+    return updatedDevices;
+}
