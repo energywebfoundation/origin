@@ -73,7 +73,7 @@
         "sass-loader": "11.0.1",
         "source-map-loader": "2.0.1",
         "style-loader": "2.0.0",
-        "ts-jest": "26.5.3",
+        "ts-jest": "26.5.4",
         "ts-loader": "8.0.18",
         "url-loader": "4.1.1",
         "webpack": "5.25.1",
