@@ -77,7 +77,7 @@
         "@types/cors": "2.8.10",
         "@types/express": "4.17.11",
         "@types/jest": "26.0.20",
-        "@types/jsonwebtoken": "8.5.0",
+        "@types/jsonwebtoken": "8.5.1",
         "@types/multer": "1.4.5",
         "@types/nodemailer": "6.4.1",
         "@types/passport": "1.0.6",
