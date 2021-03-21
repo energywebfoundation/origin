@@ -67,7 +67,7 @@
         "query-string": "6.14.1",
         "toastr": "2.1.4",
         "winston": "3.3.3",
-        "react-hook-form": "6.15.4",
+        "react-hook-form": "6.15.5",
         "@hookform/resolvers": "1.3.5"
     },
     "devDependencies": {
@@ -85,7 +85,7 @@
         "jest": "26.6.3",
         "jest-environment-jsdom-fifteen": "1.0.2",
         "redux-logger": "3.0.6",
-        "ts-jest": "26.5.3",
+        "ts-jest": "26.5.4",
         "@storybook/react": "6.1.21",
         "@storybook/storybook-deployer": "2.8.7",
         "@storybook/addon-knobs": "6.1.21",

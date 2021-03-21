@@ -1,5 +1,7 @@
 import { IDeviceState, IDeviceActions } from './types';
 import { DevicesActions } from './actions';
+import { DeviceDTO } from '@energyweb/origin-device-registry-irec-form-api-client';
+import { fillDevicesWithReads } from '../../utils/device';
 
 const defaultState: IDeviceState = {
     allDevices: null,
@@ -16,10 +18,24 @@ export function devicesState(
                 ...state,
                 allDevices: payload
             };
+        case DevicesActions.ADD_READS_ALL_DEVICES:
+            const allDevicesWithReads: DeviceDTO[] = payload;
+            const updatedAllDevices = fillDevicesWithReads(state.allDevices, allDevicesWithReads);
+            return {
+                ...state,
+                allDevices: updatedAllDevices
+            };
         case DevicesActions.STORE_MY_DEVICES:
             return {
                 ...state,
                 myDevices: payload
+            };
+        case DevicesActions.ADD_READS_MY_DEVICES:
+            const myDevicesWithReads: DeviceDTO[] = payload;
+            const updatedMyDevices = fillDevicesWithReads(state.myDevices, myDevicesWithReads);
+            return {
+                ...state,
+                myDevices: updatedMyDevices
             };
         case DevicesActions.CLEAR_ALL_DEVICES:
             return {

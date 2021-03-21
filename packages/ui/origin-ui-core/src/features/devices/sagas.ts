@@ -18,7 +18,9 @@ import {
     fetchMyDevices,
     clearAllDevices,
     clearMyDevices,
-    fetchAllDevices
+    fetchAllDevices,
+    addReadsAllDevices,
+    addReadsMyDevices
 } from './actions';
 import { ICreateDeviceAction, IApproveDeviceAction } from './types';
 
@@ -42,7 +44,6 @@ function* fetchAndFormatAllDevices(): SagaIterator {
             );
 
             allDevices.forEach((device) => allOrgIds.add(device.organizationId));
-
             for (const id of allOrgIds) {
                 const {
                     data: { name }
@@ -53,10 +54,18 @@ function* fetchAndFormatAllDevices(): SagaIterator {
             const devicesWithOrg: IOriginDevice[] = allDevices.map((device) => ({
                 ...device,
                 organizationName: orgNames.get(device.organizationId),
-                locationText: getDeviceLocationText(device)
+                locationText: getDeviceLocationText(device),
+                meterStats: null
             }));
             yield put(clearAllDevices());
             yield put(storeAllDevices(devicesWithOrg));
+
+            const { data: allDevicesWithReads }: { data: DeviceDTO[] } = yield apply(
+                deviceClient,
+                deviceClient.getAll,
+                [true]
+            );
+            yield put(addReadsAllDevices(allDevicesWithReads));
         } catch (error) {
             showNotification(i18n.t('device.feedback.errorGettingDevices'), NotificationType.Error);
             console.log(error);
@@ -93,11 +102,19 @@ function* fetchAndFormatMyDevices(): SagaIterator {
             const devicesWithOrg: IOriginDevice[] = myDevices.map((device) => ({
                 ...device,
                 organizationName: ownOrgName,
-                locationText: getDeviceLocationText(device)
+                locationText: getDeviceLocationText(device),
+                meterStats: null
             }));
 
             yield put(clearMyDevices());
             yield put(storeMyDevices(devicesWithOrg));
+
+            const { data: myDevicesWithReads }: { data: DeviceDTO[] } = yield apply(
+                deviceClient,
+                deviceClient.getMyDevices,
+                [true]
+            );
+            yield put(addReadsMyDevices(myDevicesWithReads));
         } catch (error) {
             showNotification(i18n.t('device.feedback.errorGettingDevices'), NotificationType.Error);
             console.log(error);
